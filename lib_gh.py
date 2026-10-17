@@ -66,8 +66,11 @@ _HANDLERS = []
 if PROXY:
     _HANDLERS.append(urllib.request.ProxyHandler(
         {"http": PROXY, "https": PROXY}))
-OPENER = urllib.request.build_opener(*_HANDLERS) if _HANDLERS else \
-    urllib.request.build_opener()
+else:
+    # 显式空代理表:build_opener() 无参会自动装读注册表的系统代理
+    # handler(构造时缓存,Clash 关闭后残留 → WinError 10061),须主动覆盖
+    _HANDLERS.append(urllib.request.ProxyHandler({}))
+OPENER = urllib.request.build_opener(*_HANDLERS)
 _PROXY_ALIVE = bool(PROXY)   # 代理连接被拒后自动降级直连;恢复后自动切回
 _LAST_PROBE = 0.0
 
@@ -83,7 +86,9 @@ def _drop_proxy():
         if not _PROXY_ALIVE:
             return
         _PROXY_ALIVE = False
-        OPENER = urllib.request.build_opener()
+        # 同上:显式空代理表,防 build_opener 自动读注册表系统代理
+        OPENER = urllib.request.build_opener(
+            urllib.request.ProxyHandler({}))
         print(f"  [proxy] {PROXY} 连接被拒,本进程降级为直连", flush=True)
 
 

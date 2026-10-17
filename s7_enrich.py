@@ -27,11 +27,13 @@
 
 用法:
   python s7_enrich.py --tier all --max-calls 5000 --max-minutes 220 --wait-windows 8
+  python s7_enrich.py --tier all --workers 6     # 并发(CORE_PACE 自动限在配额内)
   python s7_enrich.py --tier head              # 只跑头部层
   python s7_enrich.py --only security          # 单维度
   python s7_enrich.py --tier all --dry-run     # 只看到期分布不联网
 """
 import argparse
+import concurrent.futures
 import json
 import sys
 import time
@@ -263,6 +265,9 @@ def main():
     ap.add_argument("--max-minutes", type=float, default=220.0)
     ap.add_argument("--wait-windows", type=int, default=8,
                     help="Core 触保底线后睡到下一小时窗续跑的最多次数")
+    ap.add_argument("--workers", type=int, default=1,
+                    help="并发线程数(默认 1=串行,兼容 Actions;本地建议 6,"
+                         "CORE_PACE 会把总请求速率压在 core 配额内)")
     ap.add_argument("--limit", type=int, help="最多处理 N 个到期目标(抽样)")
     ap.add_argument("--dry-run", action="store_true",
                     help="只看到期分布不联网")
@@ -354,58 +359,85 @@ def main():
         done0 = counts["done"] + counts["failed"] + counts["gone"]
         print(f"[窗 {windows}] 到期目标 {len(targets)} 项", flush=True)
         try:
-            for i, fn in enumerate(targets):
-                it = by_fn.get(fn, {})
-                tier = tier_of(it.get("stars") or 0)
-                rec = items.setdefault(fn, {"dims": {}, "fail_count": 0})
-                changed = (it.get("pushed_at") or "") != rec.get("pushed_checked")
-                dims = due_dims(rec, tier, changed)
-                if want_dims:
-                    dims = [d for d in dims if d in want_dims]
-                if not dims:
+            BATCH = 50
+            for b0 in range(0, len(targets), BATCH):
+                batch = targets[b0:b0 + BATCH]
+                jobs = []          # (fn, dims, changed):到期维度主线程预算好
+                for fn in batch:
+                    it = by_fn.get(fn, {})
+                    tier = tier_of(it.get("stars") or 0)
+                    rec = items.setdefault(fn, {"dims": {}, "fail_count": 0})
+                    changed = (it.get("pushed_at") or "") != rec.get("pushed_checked")
+                    dims = due_dims(rec, tier, changed)
+                    if want_dims:
+                        dims = [d for d in dims if d in want_dims]
+                    if dims:
+                        jobs.append((fn, dims, changed))
+                if not jobs:
                     continue
-                try:
-                    collect_dims(fn, cache, tuple(dims), changed)
-                    today = datetime.now(timezone.utc).strftime("%Y%m%d")
-                    for d in dims:            # 只给真正采到的维度盖时间戳
-                        rec.setdefault("dims", {})[d] = today
-                    rec["pushed_checked"] = it.get("pushed_at") or ""
-                    rec["fail_count"] = 0
-                    rec.pop("last_error", None)
-                    counts["done"] += 1
-                except urllib.error.HTTPError as e:
-                    if e.code in (404, 410):   # 仓库已删/私有:标记并隔离
-                        rec.update({"status": "gone",
-                                    "last_error": f"HTTP {e.code}"})
-                        counts["gone"] += 1
-                        continue
-                    # 其余 HTTP 状态按仓记振继续,绝不 raise:
-                    # 毒仓会每晚卡死在同一位置,阻断其后全部目标
-                    rec["fail_count"] += 1
-                    rec["last_error"] = f"HTTP {e.code}"[:200]
-                    if rec["fail_count"] >= THREE_STRIKES:
-                        rec["status"] = "failed"
-                        quarantined.append(fn)
-                    counts["failed"] += 1
-                    print(f"  {fn} HTTP {e.code}({rec['fail_count']})",
-                          flush=True)
-                    continue
-                except (gh.BudgetOut, gh.QuotaPatienceOut):
-                    raise                     # 预算/配额停止不算仓库失败
-                except Exception as e:        # noqa: BLE001
-                    rec["fail_count"] += 1
-                    rec["last_error"] = str(e)[:200]
-                    if rec["fail_count"] >= THREE_STRIKES:
-                        rec["status"] = "failed"
-                        quarantined.append(fn)
-                    counts["failed"] += 1
-                    print(f"  {fn} 失败({rec['fail_count']}): "
-                          f"{str(e)[:80]}", flush=True)
-                    continue
-                if (i + 1) % 50 == 0:
-                    st.atomic_write_json(STATE, s)
-                    cache.flush()
-                    print(f"  进度 {i + 1}/{len(targets)} {counts}", flush=True)
+                today = datetime.now(timezone.utc).strftime("%Y%m%d")
+                stop_exc = None
+                with concurrent.futures.ThreadPoolExecutor(
+                        max_workers=max(1, args.workers)) as ex:
+                    futs = {ex.submit(collect_dims, fn, cache, tuple(dims),
+                                      changed): (fn, dims)
+                            for fn, dims, changed in jobs}
+                    for fut in concurrent.futures.as_completed(futs):
+                        fn, dims = futs[fut]
+                        rec = items[fn]
+                        try:
+                            fut.result()
+                            for d in dims:        # 只给真正采到的维度盖时间戳
+                                rec.setdefault("dims", {})[d] = today
+                            rec["pushed_checked"] = \
+                                (by_fn.get(fn) or {}).get("pushed_at") or ""
+                            rec["fail_count"] = 0
+                            rec.pop("last_error", None)
+                            counts["done"] += 1
+                        except urllib.error.HTTPError as e:
+                            if e.code in (404, 410):   # 仓库已删/私有:标记并隔离
+                                rec.update({"status": "gone",
+                                            "last_error": f"HTTP {e.code}"})
+                                counts["gone"] += 1
+                                continue
+                            # 其余 HTTP 状态按仓记振继续,绝不 raise:
+                            # 毒仓会每晚卡死在同一位置,阻断其后全部目标
+                            rec["fail_count"] += 1
+                            rec["last_error"] = f"HTTP {e.code}"[:200]
+                            if rec["fail_count"] >= THREE_STRIKES:
+                                rec["status"] = "failed"
+                                quarantined.append(fn)
+                            counts["failed"] += 1
+                            print(f"  {fn} HTTP {e.code}({rec['fail_count']})",
+                                  flush=True)
+                            continue
+                        except (gh.BudgetOut, gh.CoreReserveOut,
+                                gh.QuotaPatienceOut) as e:
+                            # 预算/配额停止不算仓库失败:记下首个停止原因,
+                            # 取消未启动任务;在飞的很快会自行停止
+                            stop_exc = stop_exc or e
+                            for f2 in futs:
+                                f2.cancel()
+                            continue
+                        except concurrent.futures.CancelledError:
+                            continue            # 预算停止后未跑到的仓,留给下窗
+                        except Exception as e:   # noqa: BLE001
+                            rec["fail_count"] += 1
+                            rec["last_error"] = str(e)[:200]
+                            if rec["fail_count"] >= THREE_STRIKES:
+                                rec["status"] = "failed"
+                                quarantined.append(fn)
+                            counts["failed"] += 1
+                            print(f"  {fn} 失败({rec['fail_count']}): "
+                                  f"{str(e)[:80]}", flush=True)
+                            continue
+                # 批边界落盘:此刻 executor 已退出、无并发写,flush 安全
+                st.atomic_write_json(STATE, s)
+                cache.flush()
+                print(f"  进度 {min(b0 + BATCH, len(targets))}/{len(targets)}"
+                      f" {counts}", flush=True)
+                if stop_exc is not None:
+                    raise stop_exc
             break                             # 本窗自然扫完且无剩余到期项
         except gh.CoreReserveOut as e:
             # Core 触保底线:按响应头 reset 睡到下一小时窗再续(跨窗推进关键)

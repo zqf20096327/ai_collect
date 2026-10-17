@@ -225,5 +225,375 @@
    "contrib": "20261016",
    "lang": "20261016"
   }
+ },
+ "arabold/docs-mcp-server": {
+  "commit_90d": 265,
+  "commit_7d": 98,
+  "rel_ver": "v3.2.1",
+  "rel_pub": "2026-09-27",
+  "rel_days": 20,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "TypeScript": 98,
+   "CSS": 1,
+   "JavaScript": 1,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "semperai/amica": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "app-v0.2.1",
+  "rel_pub": "2023-12-23",
+  "rel_days": 1029,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 21,
+  "lang": {
+   "TypeScript": 89,
+   "JavaScript": 9,
+   "Shell": 0,
+   "Dockerfile": 0,
+   "Rust": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "loganthorneloe/ai-for-software-engineers": {
+  "commit_90d": 4,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "OpenRaiser/NanoResearch": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": "assets",
+  "rel_pub": "2026-03-19",
+  "rel_days": 212,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 76,
+   "TeX": 18,
+   "BibTeX Style": 5,
+   "HTML": 0,
+   "Jinja": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "strands-agents/tools": {
+  "commit_90d": 30,
+  "commit_7d": 0,
+  "rel_ver": "v0.8.9",
+  "rel_pub": "2026-09-15",
+  "rel_days": 32,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 5,
+  "sec_worst": "high",
+  "sec_last": "2026-08-25",
+  "sec_ids": [
+   "GHSA-qc8m-4887-8wwh(CVE-2026-78379,high)",
+   "GHSA-mqvc-p852-wf8x(CVE-2026-18733,high)",
+   "GHSA-ppcf-fpr3-x46v(CVE-2026-15746,medium)",
+   "GHSA-qhw6-2h72-m84v(CVE-2026-18394,medium)",
+   "GHSA-mpxq-953j-42m4(CVE-2026-19111,high)"
+  ],
+  "contrib_n": 82,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "test-zeus-ai/testzeus-hercules": {
+  "commit_90d": 5,
+  "commit_7d": 1,
+  "rel_ver": "1.0.2",
+  "rel_pub": "2026-08-03",
+  "rel_days": 75,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 17,
+  "lang": {
+   "Python": 93,
+   "Gherkin": 2,
+   "PowerShell": 1,
+   "Shell": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Finrandojin/alexandria-audiobook": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": "v1.5",
+  "rel_pub": "2026-03-03",
+  "rel_days": 228,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 60,
+   "HTML": 36,
+   "Jupyter Notebook": 2,
+   "JavaScript": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "OpenMined/TenSEAL": {
+  "commit_90d": 11,
+  "commit_7d": 0,
+  "rel_ver": "v0.3.18",
+  "rel_pub": "2026-09-12",
+  "rel_days": 35,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 22,
+  "lang": {
+   "C++": 42,
+   "Python": 30,
+   "Jupyter Notebook": 26,
+   "Starlark": 1,
+   "CMake": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "thuml/awesome-multi-task-learning": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "iblai/os": {
+  "commit_90d": 1351,
+  "commit_7d": 119,
+  "rel_ver": "v0.171.5",
+  "rel_pub": "2026-10-16",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "TypeScript": 89,
+   "Rust": 9,
+   "Shell": 1,
+   "JavaScript": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "sstklen/trump-code": {
+  "commit_90d": 90,
+  "commit_7d": 7,
+  "rel_ver": "v2.8.0",
+  "rel_pub": "2026-03-21",
+  "rel_days": 210,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 84,
+   "HTML": 15,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "MarioSieg/magnetron": {
+  "commit_90d": 147,
+  "commit_7d": 0,
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-09-30",
+  "rel_days": 17,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 56,
+   "Cuda": 14,
+   "C++": 14,
+   "Python": 14,
+   "CMake": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "dxos/dxos": {
+  "commit_90d": 1507,
+  "commit_7d": 143,
+  "rel_ver": "v0.14.0",
+  "rel_pub": "2026-10-10",
+  "rel_days": 7,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 41,
+  "lang": {
+   "TypeScript": 95,
+   "JavaScript": 3,
+   "HTML": 1,
+   "CSS": 1,
+   "Rust": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

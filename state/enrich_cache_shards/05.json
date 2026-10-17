@@ -321,5 +321,198 @@
    "contrib": "20261016",
    "lang": "20261016"
   }
+ },
+ "LiveHelperChat/livehelperchat": {
+  "commit_90d": 170,
+  "commit_7d": 36,
+  "rel_ver": "4.96v",
+  "rel_pub": "2026-10-14",
+  "rel_days": 3,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 18,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-14",
+  "sec_ids": [
+   "GHSA-jghw-3h56-x7r4(-,medium)",
+   "GHSA-h3pm-8383-3p28(-,medium)",
+   "GHSA-cwpv-hp73-hj82(-,critical)",
+   "GHSA-p4w9-wqp2-hmgg(-,high)",
+   "GHSA-x9m6-qx6j-hpxm(-,high)",
+   "GHSA-2vc6-m33r-8v36(-,high)",
+   "GHSA-gxmc-38j6-m839(-,high)",
+   "GHSA-x2h4-pg9f-mj6x(-,high)"
+  ],
+  "contrib_n": 62,
+  "lang": {
+   "PHP": 88,
+   "JavaScript": 10,
+   "Svelte": 1,
+   "CSS": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "gokayfem/awesome-vlm-architectures": {
+  "commit_90d": 17,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Markdown": 90,
+   "Python": 10
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "zai-org/SCAIL-2": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "CurvineIO/curvine": {
+  "commit_90d": 354,
+  "commit_7d": 17,
+  "rel_ver": "v0.5.3-alpha",
+  "rel_pub": "2026-10-10",
+  "rel_days": 7,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 44,
+  "lang": {
+   "Rust": 80,
+   "Python": 7,
+   "Shell": 4,
+   "Java": 3,
+   "Go": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Skythinker616/gpt-assistant-android": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v3.0.0",
+  "rel_pub": "2026-04-19",
+  "rel_days": 181,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "818000/bus": {
+  "commit_90d": 210,
+  "commit_7d": 0,
+  "rel_ver": "8.8.20",
+  "rel_pub": "2026-10-10",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Java": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "MaestroError/LarAgent": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "1.4.0",
+  "rel_pub": "2026-05-09",
+  "rel_days": 161,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "PHP": 100,
+   "Blade": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }
