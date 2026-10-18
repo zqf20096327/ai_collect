@@ -36,8 +36,8 @@
   }
  },
  "tbphp/gpt-load": {
-  "commit_7d": 28,
   "commit_90d": 914,
+  "commit_7d": 28,
   "rel_ver": "v2.0.0-rc.51",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -70,8 +70,8 @@
   }
  },
  "beelzebub-labs/beelzebub": {
-  "commit_7d": 3,
   "commit_90d": 39,
+  "commit_7d": 3,
   "rel_ver": "v3.9.2",
   "rel_pub": "2026-09-23",
   "rel_days": 24,
@@ -100,8 +100,8 @@
   }
  },
  "kubewall/kubewall": {
-  "commit_7d": 0,
   "commit_90d": 29,
+  "commit_7d": 0,
   "rel_ver": "v0.0.23",
   "rel_pub": "2026-09-01",
   "rel_days": 46,
@@ -130,8 +130,8 @@
   }
  },
  "NotJoeMartinez/yt-fts": {
-  "commit_7d": 0,
   "commit_90d": 0,
+  "commit_7d": 0,
   "rel_ver": "v0.1.62",
   "rel_pub": "2025-07-04",
   "rel_days": 470,
@@ -157,8 +157,8 @@
   }
  },
  "microsoft/CyberBattleSim": {
-  "commit_7d": 0,
   "commit_90d": 15,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -183,8 +183,8 @@
   }
  },
  "qdrant/qdrant-client": {
-  "commit_7d": 0,
   "commit_90d": 82,
+  "commit_7d": 0,
   "rel_ver": "v1.19.1",
   "rel_pub": "2026-09-16",
   "rel_days": 31,
@@ -210,8 +210,8 @@
   }
  },
  "fahadshamshad/awesome-transformers-in-medical-imaging": {
-  "commit_7d": 0,
   "commit_90d": 0,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -230,8 +230,8 @@
   }
  },
  "aimagelab/mammoth": {
-  "commit_7d": 0,
   "commit_90d": 0,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -252,8 +252,8 @@
   }
  },
  "jahwag/ctxsync": {
-  "commit_7d": 0,
   "commit_90d": 0,
+  "commit_7d": 0,
   "rel_ver": "v0.7.6",
   "rel_pub": "2026-03-08",
   "rel_days": 223,
@@ -278,8 +278,8 @@
   }
  },
  "basionwang-bot/HermesPet": {
-  "commit_7d": 3,
   "commit_90d": 3,
+  "commit_7d": 3,
   "rel_ver": "v1.5.13",
   "rel_pub": "2026-09-23",
   "rel_days": 24,
@@ -307,8 +307,8 @@
   }
  },
  "sharpdeveye/maestro": {
-  "commit_7d": 0,
   "commit_90d": 0,
+  "commit_7d": 0,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-04-26",
   "rel_days": 174,
@@ -336,8 +336,8 @@
   }
  },
  "kelindar/search": {
-  "commit_7d": 0,
   "commit_90d": 1,
+  "commit_7d": 0,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-09-19",
   "rel_days": 28,
@@ -366,8 +366,8 @@
   }
  },
  "lucidrains/e2-tts-pytorch": {
-  "commit_7d": 0,
   "commit_90d": 0,
+  "commit_7d": 0,
   "rel_ver": "2.2.2",
   "rel_pub": "2025-12-20",
   "rel_days": 301,
@@ -392,8 +392,8 @@
   }
  },
  "RafaelGodoyEbert/ViralCutter": {
-  "commit_7d": 0,
   "commit_90d": 4,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -418,8 +418,8 @@
   }
  },
  "awangwang123/jianhao-travel-planner": {
-  "commit_7d": 13,
   "commit_90d": 48,
+  "commit_7d": 13,
   "rel_ver": "v1.13",
   "rel_pub": "2026-10-15",
   "rel_days": 3,
@@ -446,8 +446,8 @@
   }
  },
  "ErickWendel/erickwendel-contributions-mcp": {
-  "commit_7d": 0,
   "commit_90d": 0,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -469,8 +469,8 @@
   }
  },
  "Johnson-Durui/Companion-Space": {
-  "commit_7d": 0,
   "commit_90d": 13,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -495,8 +495,8 @@
   }
  },
  "FlorianMarquardt/machine-learning-for-physicists": {
-  "commit_7d": 0,
   "commit_90d": 0,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -518,8 +518,8 @@
   }
  },
  "AdamPlatin123/Open-Deep-Research-workflow-on-Dify": {
-  "commit_7d": 0,
   "commit_90d": 1,
+  "commit_7d": 0,
   "rel_ver": "Publish",
   "rel_pub": "2025-02-16",
   "rel_days": 609,
@@ -542,8 +542,8 @@
   }
  },
  "bansky-cl/diffusion-nlp-paper-arxiv": {
-  "commit_7d": 11,
   "commit_90d": 127,
+  "commit_7d": 11,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -643,6 +643,355 @@
    "Go": 3,
    "Starlark": 2
   },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "brandonhimpfen/awesome-prompt-engineering": {
+  "commit_90d": 3,
+  "commit_7d": 1,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-05-05",
+  "rel_days": 166,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "CompPhysics/ComputationalPhysics2": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {},
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "Peiyang-Song/Awesome-LLM-Reasoning-Failures": {
+  "commit_90d": 2,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {},
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "Retsediv/WIFI_CSI_based_HAR": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Jupyter Notebook": 96,
+   "Python": 3,
+   "C": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "ItsWendell/palot": {
+  "commit_90d": 49,
+  "commit_7d": 24,
+  "rel_ver": "v0.18.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 3,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 99,
+   "CSS": 1,
+   "Objective-C++": 0,
+   "C++": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "pnegahdar/nano": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "InternScience/SGI-Bench": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "NVIDIA/physicsnemo-cfd": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Jupyter Notebook": 95,
+   "Python": 4,
+   "C++": 0,
+   "Standard ML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "a1exsun/dsh-council": {
+  "commit_90d": 35,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 94,
+   "JavaScript": 6,
+   "CSS": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "xai-org/xai-proto": {
+  "commit_90d": 7,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2025-06-30",
+  "rel_days": 475,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {},
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "sruthir28/enterprise-ai-skills": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "takashiishida/arxiv-latex-mcp": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-03-18",
+  "rel_days": 214,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "ykotseruba/attention_and_driving": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "Mayurji/MLWithPytorch": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "yousefebrahimi0/list-ai-extensions-chrome-addons-firefox": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
   "enriched_at": "20261018",
   "dim_ts": {
    "commit": "20261018",

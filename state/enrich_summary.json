@@ -1,1 +1,1 @@
-{"tiers": ["head", "mid", "tail"], "dims": "per-tier", "counts": {"done": 1666, "failed": 0, "gone": 0}, "windows": 2, "waits": 0, "elapsed_min": 189.0, "stop_reason": "调用数达上限 5000,已达总时长上限", "quarantined": []}
+{"tiers": ["head", "mid", "tail"], "dims": "per-tier", "counts": {"done": 7237, "failed": 0, "gone": 1}, "windows": 11, "waits": 8, "elapsed_min": 659.8, "stop_reason": "Core 剩余配额触保底线(remaining=800)", "quarantined": []}
