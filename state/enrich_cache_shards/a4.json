@@ -27,8 +27,8 @@
   }
  },
  "PaddlePaddle/FastDeploy": {
-  "commit_90d": 11,
   "commit_7d": 0,
+  "commit_90d": 11,
   "rel_ver": "v2.5.0",
   "rel_pub": "2026-04-09",
   "rel_days": 190,
@@ -57,8 +57,8 @@
   }
  },
  "alan-ai/alan-sdk-web": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v.1.8.143",
   "rel_pub": "2026-09-14",
   "rel_days": 33,
@@ -81,8 +81,8 @@
   }
  },
  "cogwheel0/conduit": {
-  "commit_90d": 579,
   "commit_7d": 12,
+  "commit_90d": 579,
   "rel_ver": "v4.2.1",
   "rel_pub": "2026-10-16",
   "rel_days": 1,
@@ -111,8 +111,8 @@
   }
  },
  "skrub-data/skrub": {
-  "commit_90d": 75,
   "commit_7d": 8,
+  "commit_90d": 75,
   "rel_ver": "0.11.0",
   "rel_pub": "2026-10-01",
   "rel_days": 16,
@@ -141,8 +141,8 @@
   }
  },
  "SSShooter/ebook-to-mindmap": {
-  "commit_90d": 26,
   "commit_7d": 0,
+  "commit_90d": 26,
   "rel_ver": "app-v0.1.3",
   "rel_pub": "2026-07-26",
   "rel_days": 83,
@@ -171,8 +171,8 @@
   }
  },
  "tensorflow/transform": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "v1.21.0",
   "rel_pub": "2026-06-11",
   "rel_days": 128,
@@ -197,8 +197,8 @@
   }
  },
  "FluxML/model-zoo": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -219,8 +219,8 @@
   }
  },
  "jenetics/jenetics": {
-  "commit_90d": 135,
   "commit_7d": 0,
+  "commit_90d": 135,
   "rel_ver": "v9.1.0",
   "rel_pub": "2026-09-02",
   "rel_days": 45,
@@ -249,8 +249,8 @@
   }
  },
  "jonigl/mcp-client-for-ollama": {
-  "commit_90d": 30,
   "commit_7d": 0,
+  "commit_90d": 30,
   "rel_ver": "v0.35.1",
   "rel_pub": "2026-09-30",
   "rel_days": 17,
@@ -275,8 +275,8 @@
   }
  },
  "nianticlabs/acezero": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -301,8 +301,8 @@
   }
  },
  "NeuroDiffGym/neurodiffeq": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.7.0",
   "rel_pub": "2025-07-08",
   "rel_days": 466,
@@ -331,8 +331,8 @@
   }
  },
  "ParisNeo/lollms_hub": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v9.0.0",
   "rel_pub": "2025-10-31",
   "rel_days": 351,
@@ -361,8 +361,8 @@
   }
  },
  "Meliwat/awesome-ios-design-md": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -381,8 +381,8 @@
   }
  },
  "ibrahimcetin/reins": {
-  "commit_90d": 1,
   "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": "2.3.2",
   "rel_pub": "2026-10-14",
   "rel_days": 3,
@@ -411,11 +411,11 @@
   }
  },
  "Prof-Harita/terminaI": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.27.0",
   "rel_pub": "2026-01-19",
-  "rel_days": 271,
+  "rel_days": 272,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -431,21 +431,21 @@
    "C++": 0,
    "Rust": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "joenorton/comfyui-mcp-server": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.1.1",
   "rel_pub": "2026-02-17",
-  "rel_days": 242,
+  "rel_days": 243,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -457,18 +457,18 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "DataTalksClub/datatalksclub.github.io": {
-  "commit_90d": 90,
   "commit_7d": 8,
+  "commit_90d": 90,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -483,18 +483,18 @@
    "Jupyter Notebook": 2,
    "JavaScript": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "EnnengYang/Awesome-Forgetting-in-Deep-Learning": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -503,21 +503,21 @@
   "sec_ids": [],
   "contrib_n": 3,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "Brain0-ai/brain0": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v0.1.1",
   "rel_pub": "2026-09-09",
-  "rel_days": 38,
+  "rel_days": 39,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -533,21 +533,21 @@
    "JavaScript": 3,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "proxy-intell/facebook-ads-library-mcp": {
-  "commit_90d": 9,
   "commit_7d": 1,
+  "commit_90d": 9,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-08-11",
-  "rel_days": 67,
+  "rel_days": 68,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -563,13 +563,95 @@
    "JavaScript": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "l5769389/voxenra": {
+  "commit_90d": 239,
+  "commit_7d": 11,
+  "rel_ver": "v2.1.1",
+  "rel_pub": "2026-10-14",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 82,
+   "QML": 17,
+   "Inno Setup": 0,
+   "JavaScript": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "ChristopherKahler/base": {
+  "commit_90d": 429,
+  "commit_7d": 0,
+  "rel_ver": "v0.16.0",
+  "rel_pub": "2026-10-06",
+  "rel_days": 12,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Rust": 84,
+   "Python": 9,
+   "Shell": 4,
+   "Svelte": 2,
+   "CSS": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "anujdutt9/Handwritten-Digit-Recognition-using-Deep-Learning": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  }
 }

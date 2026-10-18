@@ -63,8 +63,8 @@
   }
  },
  "mindee/doctr": {
-  "commit_90d": 51,
   "commit_7d": 4,
+  "commit_90d": 51,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-08-21",
   "rel_days": 56,
@@ -91,8 +91,8 @@
   }
  },
  "Eventual-Inc/Daft": {
-  "commit_90d": 101,
   "commit_7d": 5,
+  "commit_90d": 101,
   "rel_ver": "v0.7.26",
   "rel_pub": "2026-10-06",
   "rel_days": 10,
@@ -121,8 +121,8 @@
   }
  },
  "0xsline/OpenChatCut": {
-  "commit_90d": 1080,
   "commit_7d": 18,
+  "commit_90d": 1080,
   "rel_ver": "v0.2.17",
   "rel_pub": "2026-10-15",
   "rel_days": 2,
@@ -151,8 +151,8 @@
   }
  },
  "skalesapp/skales": {
-  "commit_90d": 85,
   "commit_7d": 5,
+  "commit_90d": 85,
   "rel_ver": "v12.9.51",
   "rel_pub": "2026-10-16",
   "rel_days": 1,
@@ -175,8 +175,8 @@
   }
  },
  "Paca-AI/paca": {
-  "commit_90d": 782,
   "commit_7d": 60,
+  "commit_90d": 782,
   "rel_ver": "v0.19.0",
   "rel_pub": "2026-10-12",
   "rel_days": 5,
@@ -214,8 +214,8 @@
   }
  },
  "google/budoux": {
-  "commit_90d": 129,
   "commit_7d": 21,
+  "commit_90d": 129,
   "rel_ver": "v0.9.3",
   "rel_pub": "2026-09-28",
   "rel_days": 19,
@@ -243,8 +243,8 @@
   }
  },
  "google/adk-java": {
-  "commit_90d": 205,
   "commit_7d": 29,
+  "commit_90d": 205,
   "rel_ver": "v1.12.0",
   "rel_pub": "2026-10-14",
   "rel_days": 3,
@@ -272,8 +272,8 @@
   }
  },
  "run-house/kubetorch": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-02-18",
   "rel_days": 241,
@@ -302,8 +302,8 @@
   }
  },
  "microsoft/Agents": {
-  "commit_90d": 157,
   "commit_7d": 0,
+  "commit_90d": 157,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -328,8 +328,8 @@
   }
  },
  "gzxx-2025/aid-studio": {
-  "commit_90d": 183,
   "commit_7d": 1,
+  "commit_90d": 183,
   "rel_ver": "v2.2.4",
   "rel_pub": "2026-09-30",
   "rel_days": 17,
@@ -358,8 +358,8 @@
   }
  },
  "cyrusbehr/tensorrt-cpp-api": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -384,8 +384,8 @@
   }
  },
  "keli-wen/agy-staff": {
-  "commit_90d": 54,
   "commit_7d": 0,
+  "commit_90d": 54,
   "rel_ver": "v0.7.4",
   "rel_pub": "2026-10-03",
   "rel_days": 14,
@@ -412,8 +412,8 @@
   }
  },
  "strands-labs/strands-decider": {
-  "commit_90d": 29,
   "commit_7d": 7,
+  "commit_90d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -435,8 +435,8 @@
   }
  },
  "Gabriella439/grace": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -461,11 +461,11 @@
   }
  },
  "CooperJiang/PixelPunk": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.0.0",
   "rel_pub": "2025-11-17",
-  "rel_days": 334,
+  "rel_days": 335,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -481,21 +481,21 @@
    "CSS": 3,
    "SCSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "muellerberndt/cadence": {
+  "commit_7d": 54,
   "commit_90d": 628,
-  "commit_7d": 57,
   "rel_ver": "v0.83.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -508,18 +508,18 @@
    "Python": 94,
    "HTML": 6
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "deepset-ai/haystack-tutorials": {
-  "commit_90d": 18,
   "commit_7d": 1,
+  "commit_90d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -531,13 +531,115 @@
    "Jupyter Notebook": 99,
    "Python": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "lj1270998580-crypto/Agnes-help-skill": {
+  "commit_90d": 10,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "MobiusQuant/Gendangzou-skill": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "ertugrulakben/cashclaw": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-05-19",
+  "rel_days": 152,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 90,
+   "CSS": 6,
+   "HTML": 4
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "detroittommy879/aicodeprep-gui": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.5.1",
+  "rel_pub": "2026-06-17",
+  "rel_days": 123,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 95,
+   "Rust": 2,
+   "HTML": 1,
+   "Shell": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  }
 }

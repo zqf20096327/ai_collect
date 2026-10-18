@@ -113,8 +113,8 @@
   }
  },
  "NeoVertex1/SuperPrompt": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -133,8 +133,8 @@
   }
  },
  "mbadry1/DeepLearning.ai-Summary": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -155,8 +155,8 @@
   }
  },
  "humphd/have-fun-with-machine-learning": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -177,8 +177,8 @@
   }
  },
  "Agenta-AI/agenta": {
-  "commit_90d": 9103,
   "commit_7d": 214,
+  "commit_90d": 9103,
   "rel_ver": "v0.122.7",
   "rel_pub": "2026-10-15",
   "rel_days": 1,
@@ -213,8 +213,8 @@
   }
  },
  "mcmonkeyprojects/SwarmUI": {
-  "commit_90d": 271,
   "commit_7d": 7,
+  "commit_90d": 271,
   "rel_ver": "0.9.8-Beta",
   "rel_pub": "2026-02-06",
   "rel_days": 252,
@@ -243,8 +243,8 @@
   }
  },
  "Tencent-Hunyuan/HunyuanImage-3.0": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -267,8 +267,8 @@
   }
  },
  "vmoranv/jshookmcp": {
-  "commit_90d": 495,
   "commit_7d": 12,
+  "commit_90d": 495,
   "rel_ver": "v0.4.2",
   "rel_pub": "2026-10-10",
   "rel_days": 7,
@@ -299,8 +299,8 @@
   }
  },
  "hyperfield/ai-file-sorter": {
-  "commit_90d": 81,
   "commit_7d": 0,
+  "commit_90d": 81,
   "rel_ver": "v1.9.2",
   "rel_pub": "2026-08-14",
   "rel_days": 64,
@@ -329,8 +329,8 @@
   }
  },
  "binance/binance-skills-hub": {
-  "commit_90d": 30,
   "commit_7d": 0,
+  "commit_90d": 30,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -353,8 +353,8 @@
   }
  },
  "antoniolupetti/algebrica": {
-  "commit_90d": 221,
   "commit_7d": 4,
+  "commit_90d": 221,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -373,8 +373,8 @@
   }
  },
  "aiflowy/aiflowy": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -399,8 +399,8 @@
   }
  },
  "yeyupiaoling/PaddlePaddle-DeepSpeech": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "1.0",
   "rel_pub": "2021-08-05",
   "rel_days": 1899,
@@ -428,8 +428,8 @@
   }
  },
  "LAMDA-CL/LAMDA-PILOT": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -450,8 +450,8 @@
   }
  },
  "GenielabsOpenSource/spine-animation-ai": {
-  "commit_90d": 5,
   "commit_7d": 0,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -475,11 +475,11 @@
   }
  },
  "stephenhky/PyShortTextCategorization": {
-  "commit_90d": 92,
   "commit_7d": 6,
+  "commit_90d": 92,
   "rel_ver": "4.1.0",
   "rel_pub": "2026-10-01",
-  "rel_days": 16,
+  "rel_days": 17,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -491,21 +491,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "yaroslavyaroslav/OpenAI-sublime-text": {
-  "commit_90d": 28,
   "commit_7d": 0,
+  "commit_90d": 28,
   "rel_ver": "6.3.2",
   "rel_pub": "2026-10-06",
-  "rel_days": 11,
+  "rel_days": 12,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -518,13 +518,41 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "openclaw/Tachikoma": {
+  "commit_90d": 89,
+  "commit_7d": 2,
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-10-11",
+  "rel_days": 7,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Swift": 100,
+   "Shell": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  }
 }

@@ -85,8 +85,8 @@
   }
  },
  "OpenMind/OM1": {
-  "commit_90d": 24,
   "commit_7d": 0,
+  "commit_90d": 24,
   "rel_ver": "nightly",
   "rel_pub": "2026-06-04",
   "rel_days": 135,
@@ -113,8 +113,8 @@
   }
  },
  "ray-project/kuberay": {
-  "commit_90d": 125,
   "commit_7d": 9,
+  "commit_90d": 125,
   "rel_ver": "v1.7.1",
   "rel_pub": "2026-09-21",
   "rel_days": 26,
@@ -143,8 +143,8 @@
   }
  },
  "ZHZisZZ/dllm": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -166,8 +166,8 @@
   }
  },
  "penecho/penecho": {
-  "commit_90d": 35,
   "commit_7d": 1,
+  "commit_90d": 35,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-10-07",
   "rel_days": 10,
@@ -196,8 +196,8 @@
   }
  },
  "wenhwu/awesome-remote-sensing-change-detection": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v1.0",
   "rel_pub": "2025-09-16",
   "rel_days": 396,
@@ -220,8 +220,8 @@
   }
  },
  "zhimaAi/chatwiki": {
-  "commit_90d": 27,
   "commit_7d": 3,
+  "commit_90d": 27,
   "rel_ver": "v2.9.6",
   "rel_pub": "2026-10-16",
   "rel_days": 1,
@@ -250,8 +250,8 @@
   }
  },
  "we0091234/Chinese_license_plate_detection_recognition": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -275,8 +275,8 @@
   }
  },
  "robustmq/robustmq": {
-  "commit_90d": 36,
   "commit_7d": 14,
+  "commit_90d": 36,
   "rel_ver": "v0.4.11",
   "rel_pub": "2026-07-31",
   "rel_days": 78,
@@ -305,8 +305,8 @@
   }
  },
  "ibelick/zola": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -330,8 +330,8 @@
   }
  },
  "Nixtla/mlforecast": {
-  "commit_90d": 59,
   "commit_7d": 10,
+  "commit_90d": 59,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-07-10",
   "rel_days": 99,
@@ -359,8 +359,8 @@
   }
  },
  "google/agentmesh": {
-  "commit_90d": 1313,
   "commit_7d": 158,
+  "commit_90d": 1313,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-10-16",
   "rel_days": 1,
@@ -393,8 +393,8 @@
   }
  },
  "OleksandrChekhovskyi/hax": {
-  "commit_90d": 253,
   "commit_7d": 6,
+  "commit_90d": 253,
   "rel_ver": "v0.6.1",
   "rel_pub": "2026-10-15",
   "rel_days": 2,
@@ -423,8 +423,8 @@
   }
  },
  "openflowkit/openflowkit": {
-  "commit_90d": 466,
   "commit_7d": 50,
+  "commit_90d": 466,
   "rel_ver": "v2.1.0",
   "rel_pub": "2026-10-13",
   "rel_days": 4,
@@ -453,8 +453,8 @@
   }
  },
  "chekusu/wanman": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -478,8 +478,8 @@
   }
  },
  "codag-megalith/codag-visualizer": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -504,8 +504,8 @@
   }
  },
  "liruifengv/we-drawing": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.0.0",
   "rel_pub": "2023-11-08",
   "rel_days": 1074,
@@ -533,8 +533,8 @@
   }
  },
  "SaseQ/discord-mcp": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-03-16",
   "rel_days": 215,
@@ -560,11 +560,11 @@
   }
  },
  "explainX/explainx": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "2.407",
   "rel_pub": "2021-02-07",
-  "rel_days": 2078,
+  "rel_days": 2079,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -576,18 +576,18 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "Adkid-Zephyr/oral-paper-skill": {
-  "commit_90d": 8,
   "commit_7d": 0,
+  "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -598,21 +598,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "apt-oss/libro": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.3.4",
   "rel_pub": "2025-01-07",
-  "rel_days": 648,
+  "rel_days": 649,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -628,21 +628,21 @@
    "Less": 2,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "shibing624/agentica": {
-  "commit_90d": 443,
   "commit_7d": 25,
+  "commit_90d": 443,
   "rel_ver": "v1.4.17",
   "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "rel_days": 3,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -658,13 +658,139 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "microsoft/winget-cli-restsource": {
+  "commit_90d": 9,
+  "commit_7d": 0,
+  "rel_ver": "1.10.1",
+  "rel_pub": "2026-09-26",
+  "rel_days": 22,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 29,
+  "lang": {
+   "C#": 86,
+   "PowerShell": 14
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "sb-ai-lab/Eco2AI": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": "0.3.12",
+  "rel_pub": "2025-03-10",
+  "rel_days": 587,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "langchain-ai/langchain-postgres": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": "langchain-postgres==0.0.19",
+  "rel_pub": "2026-10-06",
+  "rel_days": 12,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-10-06",
+  "sec_ids": [
+   "GHSA-39qm-gv6q-f43r(-,high)"
+  ],
+  "contrib_n": 31,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "stong/gradscii-art": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "masterFoad/NanoSage": {
+  "commit_90d": 10,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  }
 }

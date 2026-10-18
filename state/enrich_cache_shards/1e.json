@@ -104,8 +104,8 @@
   }
  },
  "alteryx/featuretools": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.31.0",
   "rel_pub": "2024-05-14",
   "rel_days": 885,
@@ -131,8 +131,8 @@
   }
  },
  "di-sukharev/opencommit": {
-  "commit_90d": 54,
   "commit_7d": 7,
+  "commit_90d": 54,
   "rel_ver": "github-action-v1.0.2",
   "rel_pub": "2023-05-21",
   "rel_days": 1244,
@@ -160,8 +160,8 @@
   }
  },
  "yandexdataschool/Practical_RL": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "spring20",
   "rel_pub": "2020-08-04",
   "rel_days": 2264,
@@ -189,8 +189,8 @@
   }
  },
  "google-deepmind/alphageometry": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -212,8 +212,8 @@
   }
  },
  "Manavarya09/design-extract": {
-  "commit_90d": 61,
   "commit_7d": 0,
+  "commit_90d": 61,
   "rel_ver": "v13.3.2",
   "rel_pub": "2026-09-23",
   "rel_days": 23,
@@ -242,8 +242,8 @@
   }
  },
  "ml-tooling/opyrator": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.0.11",
   "rel_pub": "2021-05-01",
   "rel_days": 1995,
@@ -271,8 +271,8 @@
   }
  },
  "fastmachinelearning/hls4ml": {
-  "commit_90d": 57,
   "commit_7d": 10,
+  "commit_90d": 57,
   "rel_ver": "v1.3.0",
   "rel_pub": "2026-03-20",
   "rel_days": 211,
@@ -301,8 +301,8 @@
   }
  },
  "emonney/QuickApp": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v10.21.0",
   "rel_pub": "2025-12-27",
   "rel_days": 294,
@@ -331,8 +331,8 @@
   }
  },
  "SunOner/sunone_aimbot": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -357,8 +357,8 @@
   }
  },
  "SynaLinks/synalinks-skills": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -379,8 +379,8 @@
   }
  },
  "rcarmo/piclaw": {
-  "commit_90d": 1732,
   "commit_7d": 67,
+  "commit_90d": 1732,
   "rel_ver": "v3.3.4",
   "rel_pub": "2026-10-15",
   "rel_days": 2,
@@ -409,8 +409,8 @@
   }
  },
  "SomeOddCodeGuy/WilmerAI": {
-  "commit_90d": 5,
   "commit_7d": 1,
+  "commit_90d": 5,
   "rel_ver": "v0.7.3",
   "rel_pub": "2026-09-08",
   "rel_days": 39,
@@ -437,8 +437,8 @@
   }
  },
  "ovh/shai": {
-  "commit_90d": 107,
   "commit_7d": 0,
+  "commit_90d": 107,
   "rel_ver": "v0.2.2",
   "rel_pub": "2026-10-09",
   "rel_days": 8,
@@ -464,8 +464,8 @@
   }
  },
  "mlwithme/BertWithPretrained": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -486,8 +486,8 @@
   }
  },
  "google-deepmind/dqn_zoo": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -511,8 +511,8 @@
   }
  },
  "tensorpool/tensorpool": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -523,21 +523,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "modelence/modelence": {
-  "commit_90d": 71,
   "commit_7d": 14,
+  "commit_90d": 71,
   "rel_ver": "modelence@0.27.0",
   "rel_pub": "2026-10-14",
-  "rel_days": 3,
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -551,18 +551,18 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "waynesutton/builder-skills": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -573,18 +573,18 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "resume-llm/resume-ai": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -599,21 +599,21 @@
    "Dockerfile": 2,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "mkbhardwas12/prismos-ai": {
-  "commit_90d": 127,
   "commit_7d": 0,
+  "commit_90d": 127,
   "rel_ver": "v0.7.0",
   "rel_pub": "2026-10-05",
-  "rel_days": 12,
+  "rel_days": 13,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -629,21 +629,21 @@
    "JavaScript": 2,
    "Python": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "AIGNE-io/aigne-framework": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "afs-utils-v1.0.0",
   "rel_pub": "2026-01-20",
-  "rel_days": 270,
+  "rel_days": 271,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -658,18 +658,18 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "JordyZomer/lemmalog": {
-  "commit_90d": 47,
   "commit_7d": 0,
+  "commit_90d": 47,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -682,21 +682,21 @@
    "Python": 2,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "berelevant-ai/slopless": {
-  "commit_90d": 53,
   "commit_7d": 5,
+  "commit_90d": 53,
   "rel_ver": "v0.2.41",
   "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -710,18 +710,18 @@
    "JavaScript": 3,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "claws-lab/XLingEval": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -735,13 +735,13 @@
    "HTML": 16,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  }
 }

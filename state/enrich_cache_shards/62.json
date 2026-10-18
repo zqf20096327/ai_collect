@@ -36,8 +36,8 @@
   }
  },
  "tbphp/gpt-load": {
-  "commit_90d": 914,
   "commit_7d": 28,
+  "commit_90d": 914,
   "rel_ver": "v2.0.0-rc.51",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -70,8 +70,8 @@
   }
  },
  "beelzebub-labs/beelzebub": {
-  "commit_90d": 39,
   "commit_7d": 3,
+  "commit_90d": 39,
   "rel_ver": "v3.9.2",
   "rel_pub": "2026-09-23",
   "rel_days": 24,
@@ -100,8 +100,8 @@
   }
  },
  "kubewall/kubewall": {
-  "commit_90d": 29,
   "commit_7d": 0,
+  "commit_90d": 29,
   "rel_ver": "v0.0.23",
   "rel_pub": "2026-09-01",
   "rel_days": 46,
@@ -130,8 +130,8 @@
   }
  },
  "NotJoeMartinez/yt-fts": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.1.62",
   "rel_pub": "2025-07-04",
   "rel_days": 470,
@@ -157,8 +157,8 @@
   }
  },
  "microsoft/CyberBattleSim": {
-  "commit_90d": 15,
   "commit_7d": 0,
+  "commit_90d": 15,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -183,8 +183,8 @@
   }
  },
  "qdrant/qdrant-client": {
-  "commit_90d": 82,
   "commit_7d": 0,
+  "commit_90d": 82,
   "rel_ver": "v1.19.1",
   "rel_pub": "2026-09-16",
   "rel_days": 31,
@@ -210,8 +210,8 @@
   }
  },
  "fahadshamshad/awesome-transformers-in-medical-imaging": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -230,8 +230,8 @@
   }
  },
  "aimagelab/mammoth": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -252,8 +252,8 @@
   }
  },
  "jahwag/ctxsync": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.7.6",
   "rel_pub": "2026-03-08",
   "rel_days": 223,
@@ -278,8 +278,8 @@
   }
  },
  "basionwang-bot/HermesPet": {
-  "commit_90d": 3,
   "commit_7d": 3,
+  "commit_90d": 3,
   "rel_ver": "v1.5.13",
   "rel_pub": "2026-09-23",
   "rel_days": 24,
@@ -307,8 +307,8 @@
   }
  },
  "sharpdeveye/maestro": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-04-26",
   "rel_days": 174,
@@ -336,8 +336,8 @@
   }
  },
  "kelindar/search": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-09-19",
   "rel_days": 28,
@@ -366,8 +366,8 @@
   }
  },
  "lucidrains/e2-tts-pytorch": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "2.2.2",
   "rel_pub": "2025-12-20",
   "rel_days": 301,
@@ -392,8 +392,8 @@
   }
  },
  "RafaelGodoyEbert/ViralCutter": {
-  "commit_90d": 4,
   "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -408,21 +408,21 @@
    "HTML": 2,
    "Jupyter Notebook": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "awangwang123/jianhao-travel-planner": {
-  "commit_90d": 48,
   "commit_7d": 13,
+  "commit_90d": 48,
   "rel_ver": "v1.13",
   "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "rel_days": 3,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -436,18 +436,18 @@
    "HTML": 46,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "ErickWendel/erickwendel-contributions-mcp": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -459,18 +459,18 @@
    "TypeScript": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "Johnson-Durui/Companion-Space": {
-  "commit_90d": 13,
   "commit_7d": 0,
+  "commit_90d": 13,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -485,18 +485,18 @@
    "JavaScript": 5,
    "PowerShell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "FlorianMarquardt/machine-learning-for-physicists": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -508,21 +508,21 @@
    "Jupyter Notebook": 99,
    "Python": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "AdamPlatin123/Open-Deep-Research-workflow-on-Dify": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "Publish",
   "rel_pub": "2025-02-16",
-  "rel_days": 608,
+  "rel_days": 609,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -532,18 +532,18 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "bansky-cl/diffusion-nlp-paper-arxiv": {
-  "commit_90d": 127,
   "commit_7d": 11,
+  "commit_90d": 127,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -554,13 +554,102 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "plur-ai/plur": {
+  "commit_90d": 965,
+  "commit_7d": 0,
+  "rel_ver": "v0.21.5",
+  "rel_pub": "2026-10-07",
+  "rel_days": 11,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "TypeScript": 90,
+   "Python": 4,
+   "Lean": 4,
+   "JavaScript": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "DeepPSP/torch_ecg": {
+  "commit_90d": 73,
+  "commit_7d": 41,
+  "rel_ver": "v0.0.33",
+  "rel_pub": "2026-10-12",
+  "rel_days": 6,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 98,
+   "Jupyter Notebook": 2,
+   "Dockerfile": 0,
+   "TeX": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "NVIDIA/OSMO": {
+  "commit_90d": 148,
+  "commit_7d": 4,
+  "rel_ver": "6.3.1",
+  "rel_pub": "2026-06-22",
+  "rel_days": 118,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 21,
+  "lang": {
+   "Python": 52,
+   "TypeScript": 34,
+   "Shell": 5,
+   "Go": 3,
+   "Starlark": 2
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  }
 }

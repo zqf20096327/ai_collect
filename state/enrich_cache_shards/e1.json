@@ -125,8 +125,8 @@
   }
  },
  "armankhondker/awesome-ai-ml-resources": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v2.0",
   "rel_pub": "2025-03-11",
   "rel_days": 584,
@@ -149,8 +149,8 @@
   }
  },
  "scikit-learn-contrib/hdbscan": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "release-0.8.44",
   "rel_pub": "2026-06-01",
   "rel_days": 138,
@@ -179,8 +179,8 @@
   }
  },
  "Ptero-ai/Ptero": {
-  "commit_90d": 24,
   "commit_7d": 1,
+  "commit_90d": 24,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -201,8 +201,8 @@
   }
  },
  "ThousandBirdsInc/chidori": {
-  "commit_90d": 33,
   "commit_7d": 0,
+  "commit_90d": 33,
   "rel_ver": "v3.8.1",
   "rel_pub": "2026-08-30",
   "rel_days": 48,
@@ -231,8 +231,8 @@
   }
  },
  "NVIDIA-Merlin/NVTabular": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v23.08.00",
   "rel_pub": "2023-08-29",
   "rel_days": 1145,
@@ -259,8 +259,8 @@
   }
  },
  "beltromatti/get-it": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-06-29",
   "rel_days": 110,
@@ -288,8 +288,8 @@
   }
  },
  "SylphxAI/anymd": {
-  "commit_90d": 456,
   "commit_7d": 42,
+  "commit_90d": 456,
   "rel_ver": "v8.5.4",
   "rel_pub": "2026-10-16",
   "rel_days": 1,
@@ -325,8 +325,8 @@
   }
  },
  "microsoft/work-iq": {
-  "commit_90d": 63,
   "commit_7d": 3,
+  "commit_90d": 63,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -349,8 +349,8 @@
   }
  },
  "filtalgo/Filtmall-Shopping-Skill": {
-  "commit_90d": 18,
   "commit_7d": 0,
+  "commit_90d": 18,
   "rel_ver": "v1.11.1",
   "rel_pub": "2026-09-17",
   "rel_days": 30,
@@ -375,8 +375,8 @@
   }
  },
  "IBM/differential-privacy-library": {
-  "commit_90d": 2,
   "commit_7d": 1,
+  "commit_90d": 2,
   "rel_ver": "0.6.6",
   "rel_pub": "2025-04-10",
   "rel_days": 555,
@@ -401,8 +401,8 @@
   }
  },
  "brucefan1983/GPUMD": {
-  "commit_90d": 717,
   "commit_7d": 4,
+  "commit_90d": 717,
   "rel_ver": "v5.9.1",
   "rel_pub": "2026-10-05",
   "rel_days": 12,
@@ -431,8 +431,8 @@
   }
  },
  "pat-jj/s3": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -455,8 +455,8 @@
   }
  },
  "risa-labs-inc/BossConsole": {
-  "commit_90d": 1377,
   "commit_7d": 9,
+  "commit_90d": 1377,
   "rel_ver": "v9.5.45",
   "rel_pub": "2026-10-16",
   "rel_days": 1,
@@ -485,8 +485,8 @@
   }
  },
  "hello-diana/MASCOT": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -511,8 +511,8 @@
   }
  },
  "genomoncology/biomcp": {
-  "commit_90d": 3816,
   "commit_7d": 894,
+  "commit_90d": 3816,
   "rel_ver": "v0.9.2",
   "rel_pub": "2026-10-13",
   "rel_days": 4,
@@ -541,8 +541,8 @@
   }
  },
  "avibe-bot/avibe": {
-  "commit_90d": 1889,
   "commit_7d": 301,
+  "commit_90d": 1889,
   "rel_ver": "gh-v3.2.2rc4",
   "rel_pub": "2026-10-17",
   "rel_days": 0,
@@ -571,11 +571,11 @@
   }
  },
  "opensolon/solon-ai": {
-  "commit_90d": 296,
   "commit_7d": 6,
+  "commit_90d": 296,
   "rel_ver": "v4.1.1",
   "rel_pub": "2026-10-01",
-  "rel_days": 16,
+  "rel_days": 17,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -588,18 +588,18 @@
    "Java": 100,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "understudy-ai/understudy": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -614,21 +614,21 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "Gabson0x/bountyforge": {
-  "commit_90d": 23,
   "commit_7d": 0,
+  "commit_90d": 22,
   "rel_ver": "v4.1.0",
   "rel_pub": "2026-09-16",
-  "rel_days": 31,
+  "rel_days": 32,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -643,18 +643,18 @@
    "Solidity": 6,
    "Shell": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "bcollazo/catanatron": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -669,18 +669,18 @@
    "HTML": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "TIGER-AI-Lab/MMLU-Pro": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -692,18 +692,18 @@
    "Python": 94,
    "Shell": 6
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "Softlandia-Ltd/vision-is-all-you-need": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -717,21 +717,21 @@
    "JavaScript": 1,
    "HTML": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "Saramanda9988/LunaBox": {
-  "commit_90d": 305,
   "commit_7d": 26,
+  "commit_90d": 305,
   "rel_ver": "v1.13.3",
   "rel_pub": "2026-10-06",
-  "rel_days": 11,
+  "rel_days": 12,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -747,21 +747,21 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "awekrx/ChatGPT-MidJourney-prompt": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "2.0.3",
   "rel_pub": "2023-03-24",
-  "rel_days": 1303,
+  "rel_days": 1304,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -773,21 +773,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "bosun-ai/kwaak": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.19.0",
   "rel_pub": "2025-08-16",
-  "rel_days": 427,
+  "rel_days": 428,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -803,21 +803,21 @@
    "Just": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "aayoawoyemi/Ori-Mnemos": {
-  "commit_90d": 64,
   "commit_7d": 0,
+  "commit_90d": 64,
   "rel_ver": "v0.8.1",
   "rel_pub": "2026-10-01",
-  "rel_days": 16,
+  "rel_days": 17,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -832,13 +832,146 @@
    "Python": 2,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "AgriciDaniel/claude-canvas": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "Shell": 3
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "robbyzhaox/myocr": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2025-05-17",
+  "rel_days": 519,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 82,
+   "Jupyter Notebook": 16,
+   "Shell": 2,
+   "Makefile": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "kermitt2/entity-fishing": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Java": 54,
+   "JavaScript": 39,
+   "HTML": 4,
+   "CSS": 3,
+   "CoffeeScript": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "tinyhumansai/tinycortex": {
+  "commit_90d": 111,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Rust": 97,
+   "TypeScript": 1,
+   "TeX": 1,
+   "CSS": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "VintLin/skill-flow": {
+  "commit_90d": 184,
+  "commit_7d": 0,
+  "rel_ver": "v1.6.11",
+  "rel_pub": "2026-10-03",
+  "rel_days": 15,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 52,
+   "Swift": 47,
+   "Shell": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  }
 }

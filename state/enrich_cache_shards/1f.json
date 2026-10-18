@@ -28,8 +28,8 @@
   }
  },
  "The-Swarm-Corporation/AutoHedge": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -50,8 +50,8 @@
   }
  },
  "Anil-matcha/AI-Youtube-Shorts-Generator": {
-  "commit_90d": 10,
   "commit_7d": 1,
+  "commit_90d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -72,8 +72,8 @@
   }
  },
  "vinta/pangu.js": {
-  "commit_90d": 1007,
   "commit_7d": 1,
+  "commit_90d": 1007,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -98,8 +98,8 @@
   }
  },
  "datawhalechina/daily-interview": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -118,8 +118,8 @@
   }
  },
  "enactic/openarm": {
-  "commit_90d": 63,
   "commit_7d": 9,
+  "commit_90d": 63,
   "rel_ver": "1.1",
   "rel_pub": "2025-10-31",
   "rel_days": 350,
@@ -148,8 +148,8 @@
   }
  },
  "microsoft/pai": {
-  "commit_90d": 29,
   "commit_7d": 0,
+  "commit_90d": 29,
   "rel_ver": "v1.8.0",
   "rel_pub": "2021-07-16",
   "rel_days": 1919,
@@ -178,8 +178,8 @@
   }
  },
  "NVlabs/nvdiffrec": {
-  "commit_90d": 6,
   "commit_7d": 0,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -204,8 +204,8 @@
   }
  },
  "LeoYeAI/openclaw-master-skills": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v0.21.0",
   "rel_pub": "2026-07-20",
   "rel_days": 89,
@@ -234,8 +234,8 @@
   }
  },
  "undreamai/LLMUnity": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v3.0.3",
   "rel_pub": "2026-03-08",
   "rel_days": 223,
@@ -260,8 +260,8 @@
   }
  },
  "OpenKore/openkore": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -286,8 +286,8 @@
   }
  },
  "sauravpanda/BrowserAI": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v2.2.0",
   "rel_pub": "2026-04-18",
   "rel_days": 182,
@@ -315,8 +315,8 @@
   }
  },
  "plemeri/transparent-background": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "1.3.4",
   "rel_pub": "2025-05-14",
   "rel_days": 521,
@@ -341,8 +341,8 @@
   }
  },
  "DmitryRyumin/ICCV-2023-25-Papers": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v2025.10.27-rc.1",
   "rel_pub": "2025-10-27",
   "rel_days": 355,
@@ -368,8 +368,8 @@
   }
  },
  "K-Dense-AI/agentic-data-scientist": {
-  "commit_90d": 5,
   "commit_7d": 0,
+  "commit_90d": 5,
   "rel_ver": "v0.2.3",
   "rel_pub": "2026-05-29",
   "rel_days": 141,
@@ -395,8 +395,8 @@
   }
  },
  "XHToken/Spark-X2.5": {
-  "commit_90d": 9,
   "commit_7d": 0,
+  "commit_90d": 9,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -415,8 +415,8 @@
   }
  },
  "modiqo/skillspec": {
-  "commit_90d": 46,
   "commit_7d": 0,
+  "commit_90d": 46,
   "rel_ver": "v0.2.2",
   "rel_pub": "2026-07-29",
   "rel_days": 80,
@@ -445,8 +445,8 @@
   }
  },
  "johnsonhk88/AI-Bank-Statement-Document-Automation-By-LLM-And-Personal-Finanical-Analysis-Prediction": {
-  "commit_90d": 36,
   "commit_7d": 0,
+  "commit_90d": 36,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -471,8 +471,8 @@
   }
  },
  "alex-ilgayev/MCPSpy": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.0.6",
   "rel_pub": "2025-11-15",
   "rel_days": 336,
@@ -501,8 +501,8 @@
   }
  },
  "andrew-shwetzer/career-ops-plugin-do-not-fork-currently-updating-v2-": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -513,18 +513,18 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "Azure-Samples/azure-ai-travel-agents": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -539,18 +539,18 @@
    "Java": 3,
    "PowerShell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "imteekay/machine-learning-research": {
-  "commit_90d": 232,
   "commit_7d": 18,
+  "commit_90d": 231,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -562,21 +562,21 @@
    "Jupyter Notebook": 100,
    "Python": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "faucetsdn/poseidon": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.18.2",
   "rel_pub": "2022-09-13",
-  "rel_days": 1495,
+  "rel_days": 1496,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -591,18 +591,18 @@
    "Dockerfile": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "SAILResearch/awesome-ai-leaderboard": {
-  "commit_90d": 67,
   "commit_7d": 6,
+  "commit_90d": 67,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -611,18 +611,18 @@
   "sec_ids": [],
   "contrib_n": 22,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "Devinterview-io/pytorch-interview-questions": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -631,21 +631,21 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "DeHor-Labs/mcp-fiscal-brasil": {
-  "commit_90d": 25,
-  "commit_7d": 2,
+  "commit_7d": 5,
+  "commit_90d": 27,
   "rel_ver": "v0.5.1",
   "rel_pub": "2026-06-21",
-  "rel_days": 118,
+  "rel_days": 119,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -655,26 +655,27 @@
   "sec_ids": [],
   "contrib_n": 4,
   "lang": {
-   "Python": 99,
+   "Python": 95,
+   "HTML": 4,
    "TypeScript": 1,
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "straylabs-ai/deadend-cli": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "v0.1.15",
   "rel_pub": "2026-04-11",
-  "rel_days": 189,
+  "rel_days": 190,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -690,13 +691,63 @@
    "Shell": 4,
    "Starlark": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "enlite-ai/maze": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2025-11-21",
+  "rel_days": 331,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Jupyter Notebook": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "basilevh/gcd": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  }
 }

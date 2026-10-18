@@ -94,8 +94,8 @@
   }
  },
  "greyhatguy007/Machine-Learning-Specialization-Coursera": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -117,8 +117,8 @@
   }
  },
  "microsoft/skill-recorder": {
-  "commit_90d": 164,
   "commit_7d": 0,
+  "commit_90d": 164,
   "rel_ver": "v0.7.0",
   "rel_pub": "2026-09-21",
   "rel_days": 25,
@@ -147,8 +147,8 @@
   }
  },
  "OpenCoworkAI/open-cowork": {
-  "commit_90d": 113,
   "commit_7d": 25,
+  "commit_90d": 113,
   "rel_ver": "v3.3.1",
   "rel_pub": "2026-05-23",
   "rel_days": 147,
@@ -177,8 +177,8 @@
   }
  },
  "amirhossein-kz/Awesome-Diffusion-Models-in-Medical-Imaging": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -197,8 +197,8 @@
   }
  },
  "stormzhang/ai-coding-guide": {
-  "commit_90d": 8,
   "commit_7d": 0,
+  "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -217,8 +217,8 @@
   }
  },
  "unicodeveloper/globalthreatmap": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -242,8 +242,8 @@
   }
  },
  "Barca0412/Introduction-to-Quantitative-Finance": {
-  "commit_90d": 63,
   "commit_7d": 6,
+  "commit_90d": 63,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -264,8 +264,8 @@
   }
  },
  "datawhalechina/key-book": {
-  "commit_90d": 7,
   "commit_7d": 0,
+  "commit_90d": 7,
   "rel_ver": "preview",
   "rel_pub": "2025-03-26",
   "rel_days": 570,
@@ -290,8 +290,8 @@
   }
  },
  "GradientHQ/parallax": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.1.2",
   "rel_pub": "2025-12-02",
   "rel_days": 319,
@@ -320,8 +320,8 @@
   }
  },
  "codelion/adaptive-classifier": {
-  "commit_90d": 38,
   "commit_7d": 0,
+  "commit_90d": 38,
   "rel_ver": "v0.3.1",
   "rel_pub": "2026-10-09",
   "rel_days": 8,
@@ -347,11 +347,11 @@
   }
  },
  "DrCoffey/DeepSqueak": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v3.1",
   "rel_pub": "2025-02-19",
-  "rel_days": 605,
+  "rel_days": 606,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -364,21 +364,21 @@
    "MATLAB": 99,
    "Python": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "kermitt2/delft": {
-  "commit_90d": 7,
   "commit_7d": 4,
+  "commit_90d": 7,
   "rel_ver": "v0.4.7",
   "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "rel_days": 2,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -391,18 +391,18 @@
    "Python": 97,
    "Shell": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "Helsinki-NLP/OPUS-MT-train": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -417,21 +417,21 @@
    "Python": 1,
    "PHP": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "CraftOS-dev/CraftBot": {
-  "commit_90d": 124,
   "commit_7d": 0,
+  "commit_90d": 124,
   "rel_ver": "v1.4.3",
   "rel_pub": "2026-09-28",
-  "rel_days": 19,
+  "rel_days": 20,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -447,18 +447,18 @@
    "JavaScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "emarco177/documentation-helper": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -470,21 +470,21 @@
    "Jupyter Notebook": 71,
    "Python": 29
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "fitchmultz/pi-cursor-sdk": {
-  "commit_90d": 178,
-  "commit_7d": 5,
+  "commit_7d": 4,
+  "commit_90d": 175,
   "rel_ver": "v0.5.3",
   "rel_pub": "2026-10-07",
-  "rel_days": 10,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -500,21 +500,21 @@
    "C": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "Picovoice/picollm": {
-  "commit_90d": 15,
   "commit_7d": 0,
+  "commit_90d": 15,
   "rel_ver": "v2.1",
   "rel_pub": "2026-04-27",
-  "rel_days": 173,
+  "rel_days": 174,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -530,13 +530,13 @@
    "TypeScript": 16,
    "Swift": 12
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  }
 }

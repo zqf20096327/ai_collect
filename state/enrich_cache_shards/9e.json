@@ -86,8 +86,8 @@
   }
  },
  "didilili/ai-agents-from-zero": {
-  "commit_90d": 31,
   "commit_7d": 24,
+  "commit_90d": 31,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -111,8 +111,8 @@
   }
  },
  "nexu-io/html-video": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -136,8 +136,8 @@
   }
  },
  "PrismML-Eng/Bonsai-demo": {
-  "commit_90d": 97,
   "commit_7d": 5,
+  "commit_90d": 97,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -160,8 +160,8 @@
   }
  },
  "openai/openai-fm": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -184,8 +184,8 @@
   }
  },
  "zilliztech/memsearch": {
-  "commit_90d": 67,
   "commit_7d": 0,
+  "commit_90d": 67,
   "rel_ver": "v0.4.21",
   "rel_pub": "2026-09-24",
   "rel_days": 23,
@@ -213,8 +213,8 @@
   }
  },
  "LearnPrompt/LearnPrompt": {
-  "commit_90d": 34,
   "commit_7d": 4,
+  "commit_90d": 34,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -239,8 +239,8 @@
   }
  },
  "MicrosoftDocs/mcp": {
-  "commit_90d": 14,
   "commit_7d": 0,
+  "commit_90d": 14,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -262,8 +262,8 @@
   }
  },
  "Vincentwei1021/video-talkcraft": {
-  "commit_90d": 84,
   "commit_7d": 1,
+  "commit_90d": 84,
   "rel_ver": "gallery-media",
   "rel_pub": "2026-08-28",
   "rel_days": 50,
@@ -292,8 +292,8 @@
   }
  },
  "hardhackerlabs/book": {
-  "commit_90d": 4,
   "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -315,8 +315,8 @@
   }
  },
  "PrunaAI/pruna": {
-  "commit_90d": 11,
   "commit_7d": 1,
+  "commit_90d": 11,
   "rel_ver": "v0.3.4",
   "rel_pub": "2026-06-22",
   "rel_days": 117,
@@ -341,8 +341,8 @@
   }
  },
  "qualcomm/ai-hub-models": {
-  "commit_90d": 510,
   "commit_7d": 51,
+  "commit_90d": 510,
   "rel_ver": "v0.64.0",
   "rel_pub": "2026-10-07",
   "rel_days": 10,
@@ -370,8 +370,8 @@
   }
  },
  "alexandre01/deepsvg": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -395,8 +395,8 @@
   }
  },
  "microsoft/DirectStorage": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -419,8 +419,8 @@
   }
  },
  "riba2534/happyclaw": {
-  "commit_90d": 1046,
   "commit_7d": 193,
+  "commit_90d": 1046,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -445,8 +445,8 @@
   }
  },
  "skyzh/vector-db-from-scratch": {
-  "commit_90d": 58,
   "commit_7d": 0,
+  "commit_90d": 58,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -471,8 +471,8 @@
   }
  },
  "google/edward2": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -494,8 +494,8 @@
   }
  },
  "Blazity/enterprise-commerce": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -519,8 +519,8 @@
   }
  },
  "rackslab/Slurm-web": {
-  "commit_90d": 13,
   "commit_7d": 2,
+  "commit_90d": 13,
   "rel_ver": "v7.0.0",
   "rel_pub": "2026-06-11",
   "rel_days": 128,
@@ -549,8 +549,8 @@
   }
  },
  "gykim80/perfectpixel-studio": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -575,8 +575,8 @@
   }
  },
  "oxbshw/Open-Workflow-Library": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -597,8 +597,8 @@
   }
  },
  "microsoft/Orchard-Agentic": {
-  "commit_90d": 12,
   "commit_7d": 0,
+  "commit_90d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -621,8 +621,8 @@
   }
  },
  "coderabbitai/awesome-coderabbit": {
-  "commit_90d": 6,
   "commit_7d": 0,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -641,11 +641,11 @@
   }
  },
  "kk7nc/RMDL": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "1.0.9",
   "rel_pub": "2020-12-07",
-  "rel_days": 2140,
+  "rel_days": 2141,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -657,21 +657,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "caidaoli/ccLoad": {
+  "commit_7d": 59,
   "commit_90d": 843,
-  "commit_7d": 60,
   "rel_ver": "v4.12.12-beta.1",
   "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -687,18 +687,18 @@
    "CSS": 3,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "microsoft/mastering-github-copilot-for-dotnet-csharp-developers": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -709,18 +709,18 @@
   "lang": {
    "C#": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "JeremieMelo/pytorch-onn": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -734,21 +734,21 @@
    "C++": 3,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "Epistates/pmetal": {
+  "commit_7d": 107,
   "commit_90d": 506,
-  "commit_7d": 122,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-05-08",
-  "rel_days": 162,
+  "rel_days": 163,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -764,13 +764,43 @@
    "C++": 2,
    "C": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "codecoradev/uteke": {
+  "commit_90d": 377,
+  "commit_7d": 40,
+  "rel_ver": "v0.21.1",
+  "rel_pub": "2026-10-15",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 91,
+   "Python": 4,
+   "Shell": 2,
+   "Go Template": 1,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  }
 }

@@ -49,8 +49,8 @@
   }
  },
  "skyzh/tiny-llm": {
-  "commit_90d": 121,
   "commit_7d": 0,
+  "commit_90d": 121,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -75,8 +75,8 @@
   }
  },
  "magefree/mage": {
-  "commit_90d": 1092,
   "commit_7d": 16,
+  "commit_90d": 1092,
   "rel_ver": "xmage_1.4.62V1",
   "rel_pub": "2026-10-03",
   "rel_days": 14,
@@ -105,8 +105,8 @@
   }
  },
  "1038lab/ComfyUI-RMBG": {
-  "commit_90d": 27,
   "commit_7d": 0,
+  "commit_90d": 27,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -128,8 +128,8 @@
   }
  },
  "coder-hxl/x-crawl": {
-  "commit_90d": 4,
   "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": "v10.1.0",
   "rel_pub": "2025-04-06",
   "rel_days": 559,
@@ -155,8 +155,8 @@
   }
  },
  "nndeploy/nndeploy": {
-  "commit_90d": 41,
   "commit_7d": 0,
+  "commit_90d": 41,
   "rel_ver": "v3.0.10",
   "rel_pub": "2026-04-04",
   "rel_days": 196,
@@ -185,8 +185,8 @@
   }
  },
  "u14app/neo-chat": {
-  "commit_90d": 49,
   "commit_7d": 7,
+  "commit_90d": 49,
   "rel_ver": "v2.5.0",
   "rel_pub": "2026-09-11",
   "rel_days": 36,
@@ -215,8 +215,8 @@
   }
  },
  "mosaicml/streaming": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.13.0",
   "rel_pub": "2025-07-15",
   "rel_days": 459,
@@ -243,8 +243,8 @@
   }
  },
  "wzyn20051216/solidworks-automation-skill": {
-  "commit_90d": 217,
   "commit_7d": 1,
+  "commit_90d": 217,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-10-05",
   "rel_days": 12,
@@ -273,8 +273,8 @@
   }
  },
  "agents-flex/agents-flex": {
-  "commit_90d": 337,
   "commit_7d": 0,
+  "commit_90d": 337,
   "rel_ver": "v2.3.0",
   "rel_pub": "2026-09-17",
   "rel_days": 30,
@@ -299,8 +299,8 @@
   }
  },
  "jianzongwu/Awesome-Open-Vocabulary": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -319,8 +319,8 @@
   }
  },
  "huggingface/dataset-viewer": {
-  "commit_90d": 60,
   "commit_7d": 6,
+  "commit_90d": 60,
   "rel_ver": "0.21.0",
   "rel_pub": "2023-02-14",
   "rel_days": 1341,
@@ -349,8 +349,8 @@
   }
  },
  "Optim-Agent/optim-agent": {
-  "commit_90d": 19,
   "commit_7d": 0,
+  "commit_90d": 19,
   "rel_ver": "0.1.1",
   "rel_pub": "2026-07-14",
   "rel_days": 95,
@@ -376,8 +376,8 @@
   }
  },
  "Hash-Studios/Prism": {
-  "commit_90d": 803,
   "commit_7d": 164,
+  "commit_90d": 803,
   "rel_ver": "v3.5.0+342",
   "rel_pub": "2026-10-16",
   "rel_days": 1,
@@ -406,8 +406,8 @@
   }
  },
  "avidevelops/claude-architect-exam-prep": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -426,8 +426,8 @@
   }
  },
  "awslabs/generative-ai-cdk-constructs": {
-  "commit_90d": 22,
   "commit_7d": 0,
+  "commit_90d": 22,
   "rel_ver": "v0.1.320",
   "rel_pub": "2026-09-01",
   "rel_days": 46,
@@ -456,8 +456,8 @@
   }
  },
  "AntonyCheng/spring-boot-init-template": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v2.2.0-jdk17",
   "rel_pub": "2024-10-15",
   "rel_days": 732,
@@ -486,8 +486,8 @@
   }
  },
  "thesysdev/open-intelligent-ui": {
-  "commit_90d": 12,
-  "commit_7d": 7,
+  "commit_7d": 8,
+  "commit_90d": 13,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -500,21 +500,21 @@
    "CSS": 11,
    "JavaScript": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "ViryaZheng/recomby-geo": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.4.3",
   "rel_pub": "2026-07-04",
-  "rel_days": 105,
+  "rel_days": 106,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -527,18 +527,18 @@
    "Python": 92,
    "HTML": 8
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "ErdemOzgen/Python-developer-roadmap": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -551,18 +551,18 @@
    "Dockerfile": 15,
    "Makefile": 11
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "WHU-Sigma/HyperSIGMA": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -577,18 +577,18 @@
    "HTML": 2,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "WellApp-ai/Well": {
-  "commit_90d": 27,
   "commit_7d": 0,
+  "commit_90d": 27,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -602,18 +602,18 @@
    "Shell": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "unslothai/unsloth-zoo": {
-  "commit_90d": 910,
   "commit_7d": 184,
+  "commit_90d": 910,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -625,13 +625,99 @@
    "Python": 100,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "yonatangross/orchestkit": {
+  "commit_90d": 1240,
+  "commit_7d": 68,
+  "rel_ver": "v10.0.0-beta.182",
+  "rel_pub": "2026-10-17",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-09-23",
+  "sec_ids": [
+   "GHSA-97cf-6g9r-2x39(-,high)"
+  ],
+  "contrib_n": 10,
+  "lang": {
+   "TypeScript": 47,
+   "Shell": 26,
+   "JavaScript": 14,
+   "Python": 10,
+   "HTML": 4
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "See-Sol-Lab/DeepSeekGUI": {
+  "commit_90d": 48,
+  "commit_7d": 0,
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-09-30",
+  "rel_days": 18,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "CSS": 1,
+   "Python": 1,
+   "JavaScript": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "haloshin/ip-diagram-creator": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-06-26",
+  "rel_days": 114,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  }
 }

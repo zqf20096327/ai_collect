@@ -87,8 +87,8 @@
   }
  },
  "deepseek-ai/DeepSeek-OCR-2": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -109,8 +109,8 @@
   }
  },
  "meizhong986/WhisperJAV": {
-  "commit_90d": 516,
   "commit_7d": 17,
+  "commit_90d": 516,
   "rel_ver": "v1.9.5",
   "rel_pub": "2026-10-12",
   "rel_days": 5,
@@ -139,8 +139,8 @@
   }
  },
  "datapizza-labs/datapizza-ai": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-03-13",
   "rel_days": 218,
@@ -166,8 +166,8 @@
   }
  },
  "benedekrozemberczki/awesome-fraud-detection-papers": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v_0006",
   "rel_pub": "2026-01-05",
   "rel_days": 285,
@@ -192,8 +192,8 @@
   }
  },
  "lucasastorian/llmwiki": {
-  "commit_90d": 17,
   "commit_7d": 6,
+  "commit_90d": 17,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -218,8 +218,8 @@
   }
  },
  "nobodywho-ooo/nobodywho": {
-  "commit_90d": 145,
   "commit_7d": 7,
+  "commit_90d": 145,
   "rel_ver": "nobodywho-swift-v5.1.0",
   "rel_pub": "2026-10-09",
   "rel_days": 8,
@@ -248,8 +248,8 @@
   }
  },
  "dust-tt/dust": {
-  "commit_90d": 5236,
   "commit_7d": 404,
+  "commit_90d": 5236,
   "rel_ver": "dsbx-v0.1.68",
   "rel_pub": "2026-10-13",
   "rel_days": 4,
@@ -278,8 +278,8 @@
   }
  },
  "skillsgate/skillsgate": {
-  "commit_90d": 29,
   "commit_7d": 5,
+  "commit_90d": 29,
   "rel_ver": "desktop-v0.8.1",
   "rel_pub": "2026-10-13",
   "rel_days": 4,
@@ -307,8 +307,8 @@
   }
  },
  "yuezhiai/jonex": {
-  "commit_90d": 37,
   "commit_7d": 1,
+  "commit_90d": 37,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -333,8 +333,8 @@
   }
  },
  "youngyangyang04/llm-master": {
-  "commit_90d": 6,
   "commit_7d": 0,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -353,8 +353,8 @@
   }
  },
  "langchain-ai/langchain-skills": {
-  "commit_90d": 41,
   "commit_7d": 0,
+  "commit_90d": 41,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-03-09",
   "rel_days": 222,
@@ -381,8 +381,8 @@
   }
  },
  "unstablebuild/rune": {
-  "commit_90d": 733,
   "commit_7d": 63,
+  "commit_90d": 733,
   "rel_ver": "v1.2.1",
   "rel_pub": "2026-09-11",
   "rel_days": 36,
@@ -411,8 +411,8 @@
   }
  },
  "xllm-go/bypass": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v3.0.0",
   "rel_pub": "2025-02-06",
   "rel_days": 618,
@@ -439,8 +439,8 @@
   }
  },
  "webwhiz-ai/webwhiz": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "2.0.0-beta.5",
   "rel_pub": "2024-04-04",
   "rel_days": 926,
@@ -469,8 +469,8 @@
   }
  },
  "NannyML/The-Little-Book-of-ML-Metrics": {
-  "commit_90d": 128,
   "commit_7d": 0,
+  "commit_90d": 128,
   "rel_ver": "nightly",
   "rel_pub": "2024-10-14",
   "rel_days": 733,
@@ -497,8 +497,8 @@
   }
  },
  "microsoft/bioemu": {
-  "commit_90d": 27,
   "commit_7d": 4,
+  "commit_90d": 27,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-07-20",
   "rel_days": 89,
@@ -525,8 +525,8 @@
   }
  },
  "idreesshaikh/Autonomous-Driving-in-Carla-using-Deep-Reinforcement-Learning": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -547,8 +547,8 @@
   }
  },
  "kyegomez/VisionMamba": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -560,18 +560,18 @@
    "Python": 83,
    "Shell": 17
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "tensorgi/TPA": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -585,21 +585,21 @@
    "C++": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "smithersai/smithers": {
-  "commit_90d": 15408,
-  "commit_7d": 1191,
+  "commit_7d": 1170,
+  "commit_90d": 15351,
   "rel_ver": "v0.35.0",
   "rel_pub": "2026-08-17",
-  "rel_days": 61,
+  "rel_days": 62,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -615,18 +615,18 @@
    "MDX": 2,
    "Rust": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "e2b-dev/ai-analyst": {
-  "commit_90d": 5,
   "commit_7d": 1,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -639,18 +639,18 @@
    "CSS": 2,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "BankkRoll/repo2pdf": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -662,18 +662,18 @@
    "JavaScript": 52,
    "TypeScript": 48
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "google-deepmind/physics-IQ-benchmark": {
-  "commit_90d": 67,
   "commit_7d": 0,
+  "commit_90d": 67,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -684,21 +684,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "rixinhahaha/snip": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.3.14",
   "rel_pub": "2026-05-07",
-  "rel_days": 163,
+  "rel_days": 164,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -714,21 +714,21 @@
    "Shell": 1,
    "Objective-C++": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "huggingface/hf-hub": {
-  "commit_90d": 20,
   "commit_7d": 0,
+  "commit_90d": 20,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-02-19",
-  "rel_days": 240,
+  "rel_days": 241,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -743,21 +743,21 @@
    "Shell": 0,
    "Nix": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "FlamxGames/godot-ai-assistant-hub": {
-  "commit_90d": 7,
   "commit_7d": 0,
+  "commit_90d": 7,
   "rel_ver": "v2.1.0",
   "rel_pub": "2026-09-01",
-  "rel_days": 46,
+  "rel_days": 47,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -769,21 +769,21 @@
   "lang": {
    "GDScript": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "ersilia-os/ersilia": {
-  "commit_90d": 87,
   "commit_7d": 0,
+  "commit_90d": 87,
   "rel_ver": "v0.1.63",
   "rel_pub": "2026-10-01",
-  "rel_days": 16,
+  "rel_days": 17,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -797,13 +797,67 @@
    "Jupyter Notebook": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "georgeguimaraes/awesome-ml-gen-ai-elixir": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": "v7.1.0",
+  "rel_pub": "2026-09-16",
+  "rel_days": 32,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {},
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "openhackathons-org/End-to-End-AI-for-Science": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": "V1-2023",
+  "rel_pub": "2024-08-30",
+  "rel_days": 779,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Jupyter Notebook": 99,
+   "Python": 1,
+   "Dockerfile": 0,
+   "Shell": 0,
+   "Singularity": 0
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  }
 }

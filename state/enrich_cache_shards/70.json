@@ -274,8 +274,8 @@
   }
  },
  "Blaizzy/mlx-audio": {
-  "commit_90d": 313,
   "commit_7d": 20,
+  "commit_90d": 313,
   "rel_ver": "v0.5.9",
   "rel_pub": "2026-10-13",
   "rel_days": 3,
@@ -303,8 +303,8 @@
   }
  },
  "QwenLM/Qwen3-ASR": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -325,8 +325,8 @@
   }
  },
  "jjyaoao/HelloAgents": {
-  "commit_90d": 4,
   "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": "V1.0.1",
   "rel_pub": "2026-10-06",
   "rel_days": 11,
@@ -354,8 +354,8 @@
   }
  },
  "rpamis/comet": {
-  "commit_90d": 126,
   "commit_7d": 15,
+  "commit_90d": 126,
   "rel_ver": "0.4.5",
   "rel_pub": "2026-10-10",
   "rel_days": 7,
@@ -384,8 +384,8 @@
   }
  },
  "dstackai/dstack": {
-  "commit_90d": 220,
   "commit_7d": 10,
+  "commit_90d": 220,
   "rel_ver": "0.22.4",
   "rel_pub": "2026-10-15",
   "rel_days": 2,
@@ -414,8 +414,8 @@
   }
  },
  "google-deepmind/concordia": {
-  "commit_90d": 80,
   "commit_7d": 16,
+  "commit_90d": 80,
   "rel_ver": "v2.4.0",
   "rel_pub": "2026-03-06",
   "rel_days": 225,
@@ -442,8 +442,8 @@
   }
  },
  "ScottfreeLLC/AlphaPy": {
-  "commit_90d": 5,
   "commit_7d": 0,
+  "commit_90d": 5,
   "rel_ver": "2.5.0",
   "rel_pub": "2020-08-29",
   "rel_days": 2240,
@@ -468,8 +468,8 @@
   }
  },
  "NVIDIA/Personal-AI-Router": {
-  "commit_90d": 75,
   "commit_7d": 18,
+  "commit_90d": 75,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-10-13",
   "rel_days": 4,
@@ -498,8 +498,8 @@
   }
  },
  "QwenLM/Qwen3-VL-Embedding": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -521,8 +521,8 @@
   }
  },
  "TIGER-AI-Lab/OpenResearcher": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -544,8 +544,8 @@
   }
  },
  "huggingface/llm.nvim": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -567,8 +567,8 @@
   }
  },
  "bytechefhq/bytechef": {
-  "commit_90d": 1691,
   "commit_7d": 307,
+  "commit_90d": 1691,
   "rel_ver": "v0.35.0",
   "rel_pub": "2026-10-13",
   "rel_days": 4,
@@ -597,8 +597,8 @@
   }
  },
  "ronibandini/reggaetonBeGone": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -619,8 +619,8 @@
   }
  },
  "peakoss/anti-slop": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.3.0",
   "rel_pub": "2026-04-15",
   "rel_days": 185,
@@ -646,8 +646,8 @@
   }
  },
  "Junchao-cs/SolarWM": {
-  "commit_90d": 18,
   "commit_7d": 8,
+  "commit_90d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -668,8 +668,8 @@
   }
  },
  "iAmCorey/kooky": {
-  "commit_90d": 113,
   "commit_7d": 3,
+  "commit_90d": 113,
   "rel_ver": "v0.51.12",
   "rel_pub": "2026-10-12",
   "rel_days": 5,
@@ -695,8 +695,8 @@
   }
  },
  "endink/Mediapipe4u-plugin": {
-  "commit_90d": 9,
   "commit_7d": 0,
+  "commit_90d": 9,
   "rel_ver": "license-auto-release",
   "rel_pub": "2025-04-04",
   "rel_days": 561,
@@ -719,8 +719,8 @@
   }
  },
  "khoj-ai/openpaper": {
-  "commit_90d": 187,
   "commit_7d": 0,
+  "commit_90d": 187,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -735,18 +735,18 @@
    "HTML": 2,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "appautomaton/latex-arxiv-SKILL": {
-  "commit_90d": 7,
   "commit_7d": 0,
+  "commit_90d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -759,21 +759,21 @@
    "Python": 8,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "speakeasy-api/speakeasy": {
-  "commit_90d": 29,
   "commit_7d": 1,
+  "commit_90d": 29,
   "rel_ver": "v1.802.0",
   "rel_pub": "2026-10-11",
-  "rel_days": 6,
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -789,21 +789,21 @@
    "TypeScript": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "Nayjest/Gito": {
-  "commit_90d": 47,
   "commit_7d": 0,
+  "commit_90d": 47,
   "rel_ver": "v4.5.0",
   "rel_pub": "2026-09-05",
-  "rel_days": 42,
+  "rel_days": 43,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -818,18 +818,18 @@
    "Inno Setup": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "GizClaw/flowcraft": {
-  "commit_90d": 913,
   "commit_7d": 232,
+  "commit_90d": 913,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -844,18 +844,18 @@
    "Makefile": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  },
  "JovianHQ/opendatasets": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -867,13 +867,95 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261018",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
-   "contrib": "20261017",
-   "lang": "20261017"
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "capsulerun/runtime": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": "v0.8.10",
+  "rel_pub": "2026-04-27",
+  "rel_days": 174,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 64,
+   "TypeScript": 22,
+   "Python": 14,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "LangGraph-GUI/LangGraph-GUI": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.2.3",
+  "rel_pub": "2026-01-24",
+  "rel_days": 267,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 63,
+   "Dockerfile": 37
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
+  }
+ },
+ "NavodPeiris/speechlib": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.0.2",
+  "rel_pub": "2026-04-19",
+  "rel_days": 182,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261018",
+  "dim_ts": {
+   "commit": "20261018",
+   "release": "20261018",
+   "security": "20261018",
+   "contrib": "20261018",
+   "lang": "20261018"
   }
  }
 }
