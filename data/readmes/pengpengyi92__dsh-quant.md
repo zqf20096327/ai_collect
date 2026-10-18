@@ -77,7 +77,7 @@ A common question: a quant project without `.py` files? **Answer: 0 Python files
 
 One goal: **build the most usable AI-native quant repo** 🐋
 
-**59 `quant_*` tools · 6 domains · 215 unit tests · zero runtime deps**. Full positioning: pinned [Issue #9](https://github.com/pengpengyi92/dsh-quant/issues/9).
+**59 `quant_*` tools · 6 domains · 298 tests · zero runtime deps**. Full positioning: pinned [Issue #9](https://github.com/pengpengyi92/dsh-quant/issues/9).
 
 ## 🤖 For visiting agents
 
@@ -85,6 +85,23 @@ Agents landing on this repo: start at [AGENTS.md](AGENTS.md) (root-level, auto-r
 by Copilot / Claude Code / dsh), then the closed-loop example
 [plugin/CASE_STUDY.md](plugin/CASE_STUDY.md) or [Discussion #38](https://github.com/pengpengyi92/dsh-quant/discussions/38),
 and the one-glance contract [mcp/AGENT_GUIDE.md](mcp/AGENT_GUIDE.md).
+
+## Compatibility release status
+
+The **0.91.1 release candidate** includes DSH 0.2.1-rc.2 compatibility, with
+0.1.0-rc.6 / 0.2.0-rc.2 / 0.2.1-alpha.3 coverage retained. npm was still at
+0.90.0 when this candidate was prepared on 2026-10-18. Check the
+[delivery record](docs/maintenance/RELEASE-0.91.1-2026-10-18.md) and
+`npm view dsh-quant version` before treating the fix as published.
+Original compatibility contribution: **@hufeide (#136)**; user reports:
+**@ziladan (#139 / #140)**.
+
+The `v0.91.1` tag is fixed to the reviewed source. Its first authenticated
+publisher attempt failed with npm E404, so the tag is **not** evidence of npm
+availability. See [delivery attempt](release/0.91.1/DELIVERY-ATTEMPT.md).
+Maintainers can manually run `release acceptance` with `source=candidate`
+to reproduce the Linux package, or `source=registry` after publication to
+verify four clean real-Loader consumers. The workflow never publishes.
 
 ## Quick Install (dsh users)
 
@@ -486,3 +503,15 @@ background, building this project as an open research sandbox.
 - [GitHub](https://github.com/pengpengyi92) · [LinkedIn](https://www.linkedin.com/in/pengyi-peng-625511253/)
 
 *Methods open, secrets internal — the author's research is public, the strategies are not.* 🐳
+
+### Compatibility contributors
+
+Thanks to **@hufeide** for the DSH 0.2.x adaptation in [#136](https://github.com/pengpengyi92/dsh-quant/pull/136), and **@ziladan** for requesting 0.2.1-rc.2 verification in [#139](https://github.com/pengpengyi92/dsh-quant/issues/139) / [#140](https://github.com/pengpengyi92/dsh-quant/issues/140). The [compatibility audit](docs/maintenance/DSH-0.2.1-RC.2-2026-10-18.md) records tested versions and release boundaries.
+
+### Test contribution under review
+
+**@Yuren0312** contributed offline market-provider tests in
+[#144](https://github.com/pengpengyi92/dsh-quant/pull/144) for #106. The
+[independent audit](docs/maintenance/PR-144-2026-10-18.md) confirms the coverage
+gain and records one requested Node-type correction. This contribution is
+under review, not yet merged or shipped.

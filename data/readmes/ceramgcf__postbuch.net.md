@@ -197,9 +197,9 @@ Docker Compose betreibt folgende Dienste:
 - Eine Ablage:
   - OneDrive: ein Microsoft-Konto – dazu gehört eine kostenlose eigene
     Azure-App-Registrierung, durch die dich der Einrichtungsassistent nach dem
-    ersten Login Schritt für Schritt führt. Beachte dabei den
-    [Zugriffsumfang](#sicherheitshinweise): postbuch.net erhält Vollzugriff auf
-    **alle** Ordner dieses Kontos, **oder**
+    ersten Login Schritt für Schritt führt. Neue Verbindungen erhalten nur
+    Zugriff auf den eigenen App-Ordner, siehe
+    [Sicherheitshinweise](#sicherheitshinweise), **oder**
   - Nextcloud/owncloud: ein eigener Server oder ein kommerzieller Anbieter
 - Optional, aber empfohlen: eine Domain für automatisches HTTPS – eine
   kostenlose DuckDNS-Subdomain reicht
@@ -249,9 +249,11 @@ beantwortet haben muss:
   Sicherung hochgeladen wird
 - eine kostenlose DuckDNS-Domain für automatisches HTTPS, wenn PWA oder Push
   genutzt werden sollen. Diese Funktionen brauchen eine gleichbleibend
-  erreichbare HTTPS-Adresse. Beim OneDrive-Browser-Redirect dient die Adresse
-  während der Kontoverknüpfung als Callback; der alternative Gerätecode kommt
-  ohne Callback-URL aus.
+  erreichbare HTTPS-Adresse. Die OneDrive-Verknüpfung per Gerätecode, der
+  Standard, kommt ohne Callback-URL aus; nur der alternative Browser-Redirect
+  nutzt die Adresse als Callback.
+- mit DuckDNS: ob die Oberfläche nur noch über HTTPS erreichbar sein soll –
+  später umschaltbar unter `Einstellungen → Allgemein → Erreichbarkeit`
 
 Mehr fragt der Installer nicht. Ablage, KI-Anbieter, Scanner,
 Benachrichtigungen und Backup gehören in die Oberfläche und werden dort
@@ -295,43 +297,51 @@ Ausführlich in [docs/installation.md](docs/installation.md).
 
 > [!WARNING]
 >
-> **Die Ablage-Verbindung ist ein Vollzugriff.**
+> **Die Ablage-Verbindung reicht weit.**
 >
-> Bei OneDrive verlangt postbuch.net die Berechtigung `Files.ReadWrite.All`:
-> lesen, ändern und löschen in **allen** Ordnern des verbundenen
-> Microsoft-Kontos, nicht nur im postbuch-Ordner. Das ist Absicht – nur so
-> liegen die Dokumente im gewöhnlichen Dateibaum und bleiben auch ohne
-> postbuch.net über OneDrive-App, Explorer oder onedrive.com erreichbar. Ein
-> abgeschotteter App-Ordner wäre die Alternative und würde die Dateien darin
-> einsperren.
+> Bei OneDrive nutzen neue Verbindungen die Berechtigung
+> `Files.ReadWrite.AppFolder`: postbuch.net arbeitet nur in seinem eigenen
+> App-Ordner unter `Apps/`, der über OneDrive-App, Explorer und onedrive.com
+> wie ein gewöhnlicher Ordner erreichbar ist. Ältere Verbindungen nutzen
+> `Files.ReadWrite.All` – lesen, ändern und löschen in **allen** Ordnern des
+> verbundenen Microsoft-Kontos –, bis sie unter `Einstellungen → Dateiablage`
+> auf den App-Ordner umgestellt werden. Ein Nextcloud-/WebDAV-App-Passwort
+> gilt meist für das ganze Cloud-Konto; dass postbuch.net nur in seinem Ordner
+> arbeitet, ist dort eine Selbstbeschränkung der Anwendung. Es lässt sich
+> allerdings einzeln widerrufen.
 >
-> Das dabei ausgestellte Token liegt **unverschlüsselt in der Datenbank** und
-> damit auch in jeder Backup-Datei. Wer Zugriff auf den Server, auf die
-> Datenbank oder auf ein Backup hat, hat vollen Zugriff auf das komplette
-> OneDrive – auch auf alles, was mit postbuch.net nichts zu tun hat. Für ein
-> Nextcloud-App-Passwort gilt sinngemäß dasselbe; es lässt sich dort allerdings
-> einzeln widerrufen.
+> Token bzw. App-Passwort liegen **unverschlüsselt in der Datenbank** und in
+> jedem verschlüsselten Backup; unverschlüsselte Backups enthalten keine
+> Zugangsdaten. Wer Zugriff auf den Server, auf die Datenbank oder auf ein
+> verschlüsseltes Backup samt Passwort hat, hat vollen Zugriff auf die
+> Ablage – beim OneDrive-Vollzugriff auf das komplette OneDrive, auch auf
+> alles, was mit postbuch.net nichts zu tun hat.
 >
 > Wer das nicht möchte: ein separates Microsoft-Konto nur für postbuch.net
 > verwenden oder eine eigene Nextcloud betreiben. Einzelheiten in
-> [docs/sicherheit.md](docs/sicherheit.md#der-zugriff-auf-die-ablage-ist-ein-vollzugriff).
+> [docs/sicherheit.md](docs/sicherheit.md#wie-weit-der-zugriff-auf-die-dateiablage-reicht).
 
 - Der Installer fragt Admin-Passwort und Instanzname ab und erzeugt Datenbank-
   und Session-Secret selbst, zufällig. Bei der manuellen Installation aus dem
   Quellcode ist das eigene Aufgabe – die Platzhalter in `.env` (u. a.
   `APP_PASSWORD=CHANGEME`) müssen vor dem ersten Start ersetzt werden.
-- HTTPS für jede Administration bevorzugen. Der direkte Web-Port 3420 und
-  ggf. der Scanner-Webhook-Port bleiben bewusst veröffentlicht – das eigene
-  Netz als vertrauenswürdig behandeln.
+- HTTPS für jede Administration bevorzugen. Der direkte Web-Port 3420 ist im
+  eigenen Netz erreichbar, solange er nicht unter
+  `Einstellungen → Allgemein → Erreichbarkeit` geschlossen ist; das eigene
+  Netz dann als vertrauenswürdig behandeln. Der Scanner-Webhook-Port ist bei
+  neuen Installationen nur auf dem Rechner selbst erreichbar und wird unter
+  `Einstellungen → Scanner` freigegeben; jeder Aufruf braucht den
+  Scanner-Token.
 - `.env` niemals committen oder weitergeben – sie enthält Admin-Passwort sowie
   Datenbank- und Session-Secret im Klartext. KI-Provider-Keys und
   OneDrive-/Nextcloud-Zugangsdaten stehen dort nicht: Sie werden im
   Einrichtungsassistenten bzw. unter `Einstellungen` eingetragen und liegen in
   der Datenbank. Nur bei der manuellen Installation kann ein KI-Key als
   Startwert in der `.env` stehen. Ein Datenbank-Backup ist standardmäßig
-  verschlüsselt; nur wenn diese Verschlüsselung im Einrichtungsassistenten
-  bewusst abgelehnt wird, enthält das Backup all diese Zugangsdaten im
-  Klartext und ist damit ein Generalschlüssel – auch zur Ablage.
+  verschlüsselt und enthält die Zugangsdaten; wer das Backup samt Passwort
+  hat, hat damit auch Zugriff auf Ablage und KI-Konten. Ist die
+  Verschlüsselung abgelehnt oder deaktiviert, lässt postbuch.net die
+  Zugangsdaten weg; alle übrigen Daten stehen dann im Klartext darin.
 
 Sicherheitslücke melden: siehe [SECURITY.md](SECURITY.md) – bitte GitHubs
 privates Vulnerability-Reporting nutzen (Tab „Security" → „Report a

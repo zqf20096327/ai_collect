@@ -83,7 +83,7 @@ routes messages to the agent, and serves a WebChat UI at
 `http://localhost:18790`:
 
 ```
-  wirken v2.1.0
+  wirken v2.2.0
   ──────
 
   Provider: ollama/llama3.2
@@ -110,6 +110,16 @@ modes are Linux and macOS only.
 2. Start Docker.
 3. `git clone https://github.com/gebruder/wirken && cd wirken`
 4. Run `scripts/demo/stage.sh up`, then `scripts/demo/stage.sh ask`; [scripts/demo/README.md](scripts/demo/README.md) is the runbook.
+
+Lyrik on code you don't trust: [docs/lyrik.md](docs/lyrik.md#running-on-code-you-dont-trust)
+lists each protection a Lyrik run has against a hostile target and the test
+that proves it. From the clone, on Linux with `git` and util-linux `script`:
+
+```bash
+cargo test -p wirken-cli --test lyrik_team_files_stay_locked --test lyrik_run_reaches_no_network \
+  --test lyrik_provenance_runs_nothing_the_repo_configures --test lyrik_exec_sandbox_only \
+  --test lyrik_signoff --test lyrik_inference_matches_the_chain
+```
 
 ## Uninstall
 

@@ -6,6 +6,20 @@
 ![Stars](https://img.shields.io/github/stars/woaiys3/deepseek-harness-android-app)
 ![Release](https://img.shields.io/github/v/release/woaiys3/deepseek-harness-android-app)
 
+## 🆕 最新版本 v1.20.1（2026-10-18）
+
+本版在 v1.20.0（内核 **0.2.1-rc.2**）基础上，把**五个自研插件**逐个走完「真实使用 → 让设备上的 AI 提 3 条改进 → 采纳/不采纳 → 改 → 重编 → 真机验证」闭环：
+
+- **AI 浏览器**：`snapshot{includeText}` 附带可见文本；`click` 直接回 `newText`；`fromGeneration/toGeneration` 支持真差分；`read` 命中输入框回 `tag/type/value/placeholder`；`type` 回 `via/dispatched`。
+- **android**：`overlay` 回真实窗口可见性；`input` 回注入坐标/屏幕/前台包且越界明确失败；`package`/`setting` 结构化返回。
+- **shizuku**：`setting_app` 增加 `action=get/put` 与 `oldValue/newValue`；`notify` 回 `posted/visible/evidence`。
+- **accessibility**：`a11y_status` 回结构化状态（running / 服务组件 / 前台应用 / 可读控件数 / 读屏·手势·截图能力）；`tap` 回命中信息（`matchedText/bounds/nodeIndex/clickableAncestor`）与 `pageChanged/newTitle`；`scroll/swipe` 回 `changed/atEdge` —— 「已经到底」不再被误判成「手势失效」。
+- **vscreen**：`launch` 回 `package/component/displayId`，并用启动前后截图 sha256 给 `screenChanged`（命令成功但画面没变会被如实指出）；`see` 支持 `waitMs` 等待首帧并按真实状态回 `errorCode`（`no_display` / `not_rendered` / `no_frame`）；`create` 接受 `orientation=0/1/"0"/portrait` 并回 displayId/尺寸/dpi；`key` 支持 `KEYCODE_BACK` 等别名。
+- **会话列表恢复**：兼容内核 0.2.1 的 `session.v4.jsonl.zstd`（此前控制台「会话管理 / 会话修复」显示 0 条会话，数据其实都在）。
+
+**验证**：三套包 `verify-v1193.sh` 各 **109 PASS / 0 FAIL**；official 全量回归 **31 步 OK / 0 步 FAIL，判据合计 772 PASS / 0 FAIL**。
+下载与完整说明见 [Releases](https://github.com/woaiys3/deepseek-harness-android-app/releases)。
+
 ## ✨ 核心亮点
 
 - 🌐 **AI 浏览器：AI 真的能操作网页**（v1.19.1 → v1.19.6）：给它一个地址，它就能**打开页面 → 读出结构化元素表（含稳定 ref）→ 找到要点的东西 → 点/输入 → 确认这一下点没点动 → 读正文**。定位靠**DOM 语义快照**而不是截图猜；`ref` 是元素身份指纹，**跨快照保持不变**；`snapshot{since}` 支持**真差分**（页面没变只花几十 token）。v1.19.6 起还有三件事：① 浏览器搬进**独立进程 `:browser`** —— **页面崩了不会带走控制台和引擎**（一键「整套丢弃」后下一次操作自动拉起全新进程）；② **多页签**（第 10 个工具 `browser_tabs`：列出 / 新建 / 切换 / 关闭；拿 A 页签的 ref 去点 B 页签会被拦下并提示先切换）；③ 控制台多了**「AI 浏览器」页** —— 看它正在哪一页、页签列表、「同屏查看」开关（把画面显示在屏幕上；**v1.19.1 起画面可直接点、拖顶部小条搬窗、点小条关闭**）；浏览器插件在「插件」页**可以随时开关**。工具共 10 个（caps/open/snapshot/find/click/type/read/nav/scroll/tabs），只允许 http/https 且**禁止访问本机回环地址**
@@ -20,6 +34,7 @@
 - 🖥️ **虚拟屏 vscreen**（v1.10+）：AI 可以创建一块**独立于主屏的真·虚拟屏**，把 App 启动进去、在里面点击/滑动/输入，**你的主屏照常用**；右上角悬浮窗**实时显示虚拟屏画面**（H.264 视频流，可拖动、可双指缩放），AI 在干什么全程可见。实现移植自开源项目 [Operit](https://github.com/AAswordman/Operit)（LGPL-3.0，详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)）
 - 🎛️ **原生控制台**（v1.12+）：冷启动先进 App 自己的控制台（**解压 / 权限 / 插件开关 / 日志** 四页），不必先等引擎起来；引擎状态判定全面重做——探测不再吃掉一次性 token、不再误报“未启动”、不会重复拉起两个引擎
 - 🎨 **控制台「一切皆自定义」**（v1.17.3 → v1.19.6）：一份 `/sdcard/<包名目录>/console/console.json` 就能改控制台的**外观**（配色 / 字号 / 圆角 / **照片背景**，含压暗·模糊·视差）、**布局**（卡片显隐顺序，甚至**整页自己拼控件树**）、**文案**（五十多个键）、**行为**（自定义按钮 + 动作，含 shell）；主题包可**导出/导入 zip**（v1.19.6 起**导入导出往返**已按真实用户路径验过：导出 → 删掉 → 再导入，配置与图片**逐字节还原**），主题页内置 **5 条「让 AI 做主题包」提示词**与离线自检工具。坏配置自动回退、救援面不可移除、长按品牌字一键回默认 —— **永不因为配置打不开 App**。**v1.19.1 起默认界面也吃主题**：`layout.hidden` / `cardOrder` 与 `actions[]` 自定义按钮在精简骨架上同样生效，`behavior` 五个字段（自动解压/自动起引擎/直进主界面/隐藏按钮/双击退出）也真生效
+- 🐋 **悬浮球动作可配置**（v1.20.0，#54）：桌面小鲸鱼的**单击 / 长按 / 双击**各自可配 —— 展开状态面板 / **打开指定应用** / **创建虚拟屏并启动指定应用** / 销毁虚拟屏 / 收起 / 无动作；控制台「系统 → 悬浮球」三行改完立即生效，**classic 布局**在运行环境卡片里也有入口；「收起」后还能从控制台「恢复显示悬浮球」找回（ColorOS 通知栏动作有时不显示）
 - 💻 **终端能用了**（v1.19.1）：终端页以前基本不可用，这一版把三个根因一起修好 —— ① **打不开**（默认 shell 指向 Termux 死路径、进程检查不认 `android`、终端后端依赖原生 `node-pty`、App 注入的 `bash` 包装脚本被套上 bash 专用 rc）；② **键盘弹一下就掉**（xterm 的 0×0 隐藏输入框被「防自动聚焦」误判）；③ **打进去的字上不了屏**（用普通管道冒充伪终端 ⇒ 不打提示符、不回显、全缓冲）。现在命令**真执行**、输出**真回流**。⚠ 如实说明：手机上没有真伪终端，`resize` 是空操作、没有 job control
 - 🧩 **「我的补丁」：自己改过的内核文件重启 / 重装都不丢**（v1.19.1）：控制台「运行环境」→「我的补丁」可以**保存我的修改为补丁 / 清空补丁（回到出厂）**。判据是**出厂基线**（不是随包清单，否则 App 自己运行时改的几十个文件会被当成你的改动）；每次启动引擎在**所有官方同步之后**自动回放；只收源码/配置/图片，**不收 .so/.dex/.sh**，单文件 ≤8MB，回放失败绝不让引擎起不来。「清空」会立刻从随包 payload **精确还原**出厂文件
 - 🩹 **混装树自愈**（v1.17.3）：升级后引擎起不来（`cosmokit does not provide an export named …` 那一类）**不用再清数据** —— 控制台点一次「重新解压」即可修好；清理只发生在内核自己的 `@deepseek-ai` 命名空间、**只删 `dsh*` 陈旧包，绝不碰用户数据与第三方插件**
@@ -28,7 +43,7 @@
 - 🔐 **Shizuku 通道改走 App 进程**（v1.13.1+）：特权命令执行从“引擎内 `rish` 子进程”改为**经 App 进程内的 Shizuku API**（新增本地 `/shell` 路由 + 随机令牌鉴权），根治手机上偶发的 `Request timeout. The connection between the current app … and Shizuku app …`
 - ⏰ **前台保活**（v1.4.0）：AI 干活时挂后台/锁屏不被杀，任务完成推送通知
 - 🔔 **AI 发通知**（v1.4.0）：只需通知权限，任务完成/需要关注时推送到通知栏
-- 🧠 **完整 DSH 内核**：`@deepseek-ai/dsh` **0.2.0-rc.2**（v1.17.0 升级，上游当前 latest），保留插件生态 + RPC API，前端用 DSH 原生界面
+- 🧠 **完整 DSH 内核**：`@deepseek-ai/dsh` **0.2.1-rc.2**（v1.20.0 升级，上游当前 next），保留插件生态 + RPC API，前端用 DSH 原生界面
 - 🐍 **内置 Python 3.14.6 + pip**（v1.16.0/1.16.1）：AI 可直接写脚本做数据处理、解析、统计；`pip install` 可用、`venv` 可用，**免安装免配置**
 - 📦 **内置 npm / npx 11.20.0**（v1.16.0/1.16.1）：AI 可自己装 node 包，装出来的 CLI **可直接执行**（已适配 Android 没有 `/usr/bin/env` 这件事）
 - 🔌 **插件三条输入全通**（v1.15.3→v1.15.8）：本地目录 / 包名 / **GitHub 地址** —— 内置 pnpm 与 git 2.55.0，并把 curl / git 的证书链修好（启动时用系统 CA 合成 bundle）
@@ -141,15 +156,14 @@
 - **`DeepSeekHarnessLite.apk`（Lite 共存版）**：包名 `com.deepseek.harness.beta`（端口 3082），与正式版完全独立、可同时安装；数据独立在 `/sdcard/DeepSeekHarnessLite/`，API Key 需单独填
 - **`DeepSeekHarnessCompat.apk`（兼容版）**：包名 `com.deepseek.harness.compat`（端口 3084），**内置 GeckoView（不依赖系统 WebView）**，老设备可用；体积约 250MB、要求 **Android 8.0（API 26）**及以上
 
-> ⚠️ **从任何旧版本升级，请直接装 v1.19.1**（GitHub 上 **v1.19.0 之后**的全部改动，覆盖 **v1.19.7 + v1.19.8** 两级）：
-> ① **AI 浏览器有了自己的独立进程** —— 页面崩了不带走控制台和引擎；**支持多页签**；各带一层 cookie / 存储隔离；
-> ② **控制台多了「AI 浏览器」页** —— 看它在哪一页、页签列表、「同屏查看」开关（v1.19.1 起可直接操作）；浏览器插件**可开可关**；
-> ③ **控制台全定制四层 + 导入导出往返全部真机测过**（导出 → 删掉 → 再导入，配置与图片逐字节还原）；
-> ④ **App 里第一次能删会话**（删除 = 先进回收站，随时捞回来）+ **会话级自愈**（坏附件只降级那一条，正文一字不动）+ **备份终于带上图片**（附件实体 95MB）；
-> ⑤ **主控台与八个细页面统一版式**（默认精简版，可切回完整版）；
-> ⑥ 修掉一批真缺陷：只写文案不写外观的主题被静默丢掉、长正文弹窗把按钮挤出屏幕、深色主题下日志弹窗"浅底浅字"、换页继承滚动位置、跨页签点错静默生效。
+> ⚠️ **从任何旧版本升级，请直接装 v1.20.0**（内核已升到 **0.2.1-rc.2**）：
+> ① **内核 0.2.1-rc.2**（旧法重建，16 个补丁全部合并；终端协议换成上游新的 attach 双向流，界面无感）；
+> ② **#44「插件安装失败 / 没有写入权限」真根因修掉** —— 内置 git 读 Termux 的 gitconfig 触发 EACCES；
+> ③ **#53 并发 fork 重复会话** —— 同一（会话 + 位置）的 fork 5 秒内只建一个；
+> ④ **#54 悬浮球动作可配置** —— 单击 / 长按 / 双击 可绑 打开应用 / 建虚拟屏 / 销毁 / 收起；
+> ⑤ **补齐 Lite / 兼容版的悬浮窗图标主题化**（此前只有正式版有）。
 > **覆盖安装不会丢配置**（模型/供应商、API Key、会话、插件都保留）；同签名可直接覆盖，无需卸载。
-> ⚠️ versionCode **55**（上一版 54）：覆盖安装**不会自动重新解压**，建议装完在控制台「系统」→「运行环境」→「重新解压」点一次，否则跑的还是旧插件。
+> ⚠️ versionCode **57**（上一版 56）：覆盖安装**不会自动重新解压**，建议装完在控制台「系统」→「运行环境」→「重新解压」点一次。
 > 完整变更见 [CHANGES.md](CHANGES.md)。
 
 > ℹ️ 内核仍是 **DSH 0.2.0-rc.2**，并**移除了自研定时任务**（0.2.0 内核自带 `@deepseek-ai/dsh-schedule`，到点作为 follow-up 投递回原会话，可在 控制台 →「插件」页启用）。v1.17.1 另修了两个社区报告的缺陷：虚拟屏入口闪退（[#36](https://github.com/woaiys3/deepseek-harness-android-app/issues/36)）、平板分屏界面白闪（[#37](https://github.com/woaiys3/deepseek-harness-android-app/issues/37)）。

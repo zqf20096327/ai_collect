@@ -98,6 +98,10 @@ reference and inspect the estimate before Generate. Results appear in Generation
 and your Output Folder, with actions for viewing or importing supported media.
 The [user guide](docs/USER_GUIDE.md) describes each lane and its controls.
 
+To rate the extension or tell Scenario what to improve, use the heart in the
+Scenario panel or **Feedback** in Studio. **Share anonymous usage data**, in the
+extension's preferences, stays off unless you turn it on.
+
 ## Features
 
 - [Image](docs/USER_GUIDE.md#image): generate from text or reference images and
@@ -137,9 +141,9 @@ server provides platform-wide collections, training, workflows and usage without
 requiring Blender; connect both when needed.
 
 The default local endpoint is `http://127.0.0.1:9876/mcp`. **Agents (MCP)** shows
-its status and bearer token and provides client setup for Claude Code, Cursor,
-Claude Desktop and Codex under the name `scenario-blender`. Treat the token and
-copied setup as secrets. Connected agents can read the scene and request paid
+its status, and its **Connect** buttons add it as `scenario-blender` to Claude
+Code, Codex, Cursor or Claude Desktop. It needs no credential, so any program on
+this computer can connect. Connected agents can read the scene and request paid
 work; arbitrary Python execution is a separate opt-in permission, disabled by default.
 
 Use the [MCP reference](docs/MCP.md) for complete client setup, tool contracts,
@@ -163,9 +167,10 @@ Cost previews send prompts and parameters to `https://api.cloud.scenario.com`
 while you edit, before Generate. Upload reference sends files, scene captures or
 exported meshes; generation and prompt tools spend credits. Catalogs, thumbnails
 and result previews load from Scenario; cloud history and Library assets load
-when requested. Saved keys, prompts, job state and media remain in Blender
-preferences, extension storage or output files. Connected local agents can read
-your scene and request paid work using your account. Read
+when requested. Anonymous usage data, off by default, and feedback you send go
+to `blender.scenario.com`. Saved keys, prompts, job state and media remain in
+Blender preferences, extension storage or output files. Connected local agents
+can read your scene and request paid work using your account. Read
 [Privacy and data handling](docs/PRIVACY.md) for destinations, storage, clipboard
 use and current limits.
 
@@ -188,8 +193,8 @@ choose **Watch > Custom > Releases** on GitHub for release notifications.
 
 Use [Support](SUPPORT.md) for bug reports, feature requests and the information
 to include. Account, billing and API-key questions go to support@scenario.com
-or Scenario's in-app support. Never post credentials, bearer tokens or signed
-asset URLs in a public issue.
+or Scenario's in-app support. Never post credentials or signed asset URLs in a
+public issue.
 
 Report vulnerabilities privately through **Security > Report a vulnerability**
 or the contact in [Security](SECURITY.md); do not open a public issue.
@@ -263,8 +268,8 @@ The local MCP design acknowledges
 (GPL-3.0-or-later, Blender Authors) as a design reference.
 Its [project page](https://www.blender.org/lab/mcp-server/) describes
 the upstream implementation, which uses a separate stdio MCP server and TCP
-connection to its Blender add-on. This extension implements authenticated
-loopback HTTP, main-thread tool dispatch and an opt-in Python gate.
+connection to its Blender add-on. This extension implements loopback HTTP,
+main-thread tool dispatch and an opt-in Python gate.
 
 The [SPZ reader](scenario/core/scene/spz.py) reads
 [Niantic's SPZ Gaussian splat format](https://github.com/nianticlabs/spz).

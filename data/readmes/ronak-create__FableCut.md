@@ -120,6 +120,8 @@ same time.
   ffmpeg; the clip's audio switches to it and **Off** switches back. Agents
   use `fablecut_denoise`.
 - **Project bin folders** — tree view with expand/collapse; drag media or folders to nest; right-click the **Project** tab → New folder; drop files onto a folder to import into it
+- **Media management** — each file's frame rate, codecs, audio channels and size (ffprobe); search by name, codec, resolution or `#tag`; filter by favorites, used / unused, kind, tag or collection; sort by any detail or by times used; a list view with metadata columns; favorites, tags and collections; **Find timeline instances** and **Reveal in project**; offline files flagged with a "Media offline" slate, **Relink…** (finds moved files by name and size) and **Replace file…**
+- **Proxies** — light, frame-accurate H.264 copies of 4K / HEVC / ProRes footage made in the background (ffmpeg); edit on the proxy with the monitor's **Proxy** button, export always renders the originals
 - **Import from URL** — **+ URL** downloads an HTTPS video/audio/image into
   `./media/` (same-origin after import). Remote SVG is refused. Agents use
   `fablecut_import_media` with an `https://` path. The URL is not kept as
@@ -308,18 +310,26 @@ same time.
 
 **Export**
 
+- **Delivery presets**: YouTube, YouTube Shorts, Instagram Reels, TikTok, X,
+  LinkedIn, Master, Broadcast (ProRes 422 HQ), Web, Archive (lossless FFV1) and
+  Custom. Every setting is a control: resolution and reframing (crop, fit or
+  stretch to another shape), frame rate, codec (H.264, HEVC, AV1, VP9, ProRes,
+  DNxHR, XDCAM HD422, FFV1) and hardware encoder, CRF / VBR / CBR, max rate,
+  keyframe interval, pixel format, color, container, audio codec, bitrate and
+  rate, a file-name template and metadata. Save your own presets; the dialog
+  warns about upscaling, crops and platform limits before it renders
 - Fast export: browser renders every frame + an offline audio mix; ffmpeg
-  encodes **JPEG frames** via an **encoding profile** from
+  encodes them with a delivery preset, or a raw **encoding profile** from
   `encoding-profiles.json` (keeps rendering if you switch tabs). Encode and
   upload run ahead of the compositor so a fast timeline is not stalled by
-  `toBlob`. The Export dialog has a profile selector; pin a project default
-  with `encodeProfile` in `project.json`
+  `toBlob`
 - WebCodecs export: the browser HW-encodes Annex-B H.264; the server
   stream-copies and muxes audio. Faster uploads; bitrate/VBR-CBR in the
   Export dialog. Unavailable while an export frame is set (use Fast)
 - Realtime MediaRecorder fallback when ffmpeg or WebCodecs isn't available
 - Agents export too: `fablecut_export` runs the Fast export in the open editor,
-  or in a headless Chrome / Edge the server starts, and returns the file path
+  or in a headless Chrome / Edge the server starts, and returns the file path;
+  `preset` and `delivery` pick and adjust a delivery preset
 - Export **Range** dropdown: Entire timeline or IN–OUT (defaults to IN–OUT when
   markers are set). Effective IN/OUT export bounds are clamped to `projDur()`.
 

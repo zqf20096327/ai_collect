@@ -21,8 +21,8 @@ Official code for *Adaptive deep learning framework for robust unsupervised unde
 | Model | Status | Weights | Speed (256×256) | Notes |
 |:--|:--|:--|:--|:--|
 | **UDnet&nbsp;V1** | Released | [`UDnet.pth`](https://huggingface.co/Alzayats/UDnet)&nbsp;·&nbsp;5.6&nbsp;MB | 457&nbsp;img/s&nbsp;GPU<br>11&nbsp;img/s&nbsp;CPU | Paper model. Fully unsupervised, 1.4 M parameters, runs on a CPU. |
-| **UDnet&nbsp;V2** | Preview | Coming&nbsp;soon | 100&nbsp;img/s&nbsp;GPU | Trained on paired images for stronger correction. See the [gallery](https://alzayats.github.io/UDnet/). |
-| **UDnet&nbsp;V2&nbsp;+&nbsp;AI** | Preview | Coming&nbsp;soon | 38&nbsp;img/s&nbsp;GPU | V2 plus an AI detail pass: sharper, 2× upscaled. Can invent fine texture, so it's for viewing, not measurement. |
+| **UDnet&nbsp;V2** | Preview | [`UDnet_v2.pth`](https://huggingface.co/Alzayats/UDnet)&nbsp;·&nbsp;59&nbsp;MB | 100&nbsp;img/s&nbsp;GPU | Trained on paired images for stronger correction. See the [gallery](https://alzayats.github.io/UDnet/). |
+| **UDnet&nbsp;V2&nbsp;+&nbsp;AI** | Preview | V2 + [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) | 38&nbsp;img/s&nbsp;GPU | V2 plus an AI detail pass: sharper, 2× upscaled. Can invent fine texture, so it's for viewing, not measurement. |
 
 <sub>Speed: one 256×256 image on an RTX 4090 (CPU: 24 threads), model time only.</sub>
 
@@ -35,19 +35,30 @@ git clone https://github.com/alzayats/UDnet.git
 cd UDnet
 pip install -r requirements.txt
 
+# V1, the paper model
 python Inference.py --input path/to/images --output results/
+# V2 (preview)
+python Inference.py --input path/to/images --output results/ --model v2
+# V2 + AI detail, 2× upscaled
+python Inference.py --input path/to/images --output results/ --model v2 --ai x2
+# a video
+python Inference.py --input dive.mp4 --output results/ --model v2
 ```
 
 The weights are downloaded on first run. A GPU is used if available, otherwise the CPU.
-On an RTX 4090, a 1920×1080 image takes about 0.1 s.
+Videos (`.mp4`, `.mov`, `.avi`, `.mkv`, `.m4v`) are enhanced frame by frame and written as `.mp4` at
+the original frame rate; the audio track is not copied. On an RTX 4090, 1080p video runs at about
+9 frames/s with V1 and 5 frames/s with V2.
 
-| Option | Default | |
+| Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Default | |
 |---|---|---|
-| `--input` | required | an image or a folder of images |
+| `--input` | required | an image or video file, or a folder of them |
 | `--output` | `results/` | output folder; file names are kept |
-| `--weights` | `weights/UDnet.pth` | any UDnet checkpoint, including ones from `Train.py` |
+| `--model` | `v1` | `v1` (paper model) or `v2` (preview) |
+| `--ai` | `none` | `x2` or `x4`: Real-ESRGAN detail pass that sharpens and upscales; for viewing, not measurement |
+| `--weights` | auto | a checkpoint, e.g. from `Train.py` or `Train_v2.py`; by default the released weights |
 | `--device` | `auto` | `cpu`, `cuda`, `cuda:1`, ... |
-| `--format` | `png` | `png`, `jpg`, or `same` as the input |
+| `--format` | `png` | image output: `png`, `jpg`, or `same` as the input |
 
 <details>
 <summary><b>Use it from Python</b></summary>
@@ -59,9 +70,27 @@ from model_utils.UDnet import load_udnet
 
 model = load_udnet('weights/UDnet.pth', device='cuda')
 img = np.asarray(Image.open('photo.jpg').convert('RGB'), dtype=np.float32) / 255
-out = model.enhance(torch.from_numpy(img).permute(2, 0, 1)[None].cuda())   # (1, 3, H, W) in [0, 1]
-Image.fromarray((out[0].permute(1, 2, 0).cpu().numpy() * 255).round().astype(np.uint8)).save('out.png')
+x = torch.from_numpy(img).permute(2, 0, 1)[None].cuda()  # (1, 3, H, W), 0-1
+out = model.enhance(x)                                    # same shape, 0-1
+out = (out[0].permute(1, 2, 0).cpu().numpy() * 255).round().astype(np.uint8)
+Image.fromarray(out).save('out.png')
 ```
+
+For V2, load it with `from model_utils.UDnet_v2 import load_udnet_v2` and
+`model = load_udnet_v2('weights/UDnet_v2.pth', device='cuda')`; `model.enhance` works the same way.
+
+</details>
+
+<details>
+<summary><b>V2 + AI Max (experimental, separate branch)</b></summary>
+
+The most detailed results in the [gallery](https://alzayats.github.io/UDnet/) add a diffusion-based
+detail-restoration stage ([DiffBIR](https://github.com/XPixelGroup/DiffBIR)) after V2. Because it needs
+its own environment, about 15 GB of disk, a GPU with about 10 GB of memory and roughly 25 s per image,
+it is kept on the [`ai-max`](https://github.com/alzayats/UDnet/tree/ai-max) branch rather than in the
+main installation. It can synthesise detail that was not captured, so it is intended for viewing, not
+for measurement. Requirements, limitations and licences are described in
+[`AI_MAX.md`](https://github.com/alzayats/UDnet/blob/ai-max/AI_MAX.md).
 
 </details>
 
@@ -75,7 +104,8 @@ reference images (matched by file name, any extension); UIQM and UCIQE are alway
 
 ```bash
 python Inference.py --input EUVP/test_samples/Inp --output results/EUVP
-python evaluate.py  --pred results/EUVP --ref EUVP/test_samples/GTr --csv results/EUVP.csv
+python evaluate.py --pred results/EUVP --ref EUVP/test_samples/GTr \
+    --csv results/EUVP.csv
 ```
 
 Add `--list splits/...txt` to score only the images in a split.
@@ -96,24 +126,67 @@ other implementations are not directly comparable. For UFO-120 the output is ups
 UDnet v1 is fully unsupervised: it never sees a reference image during training, so it is not
 trying to reproduce the reference style that PSNR and SSIM reward. UIQM and UCIQE need no reference.
 
+**UDnet V1 and V2 on full held-out test sets** (PSNR ↑ / SSIM ↑ at reference resolution):
+
+| Test set | Images | V1 | V2 (preview) |
+|---|---|---|---|
+| UIEB [`UIEB/test90`](splits/UIEB/test90.txt) | 90 | 19.86 / 0.842 | 22.86 / 0.909 |
+| LSUI [`V2/LSUI_test400`](splits/V2/LSUI_test400.txt) | 400 | 19.64 / 0.807 | 28.07 / 0.910 |
+| EUVP `test_samples` | 515 | 19.59 / 0.783 | 25.93 / 0.874 |
+| UFO-120 `TEST` | 120 | 18.53 / 0.628 | 24.71 / 0.734 |
+
+V2 is trained on paired images from UIEB and LSUI, which is what these reference-based scores
+reward; none of these test images, or near-duplicates of them, were used for training. EUVP and
+UFO-120 were not used to train V2 at all. V1 is fully unsupervised (see above).
+
 </details>
 
 ## Train
 
 <details>
-<summary><b>Train or fine-tune on your own images</b></summary>
+<summary><b>Train or fine-tune V1 on your own images</b></summary>
 
-UDnet needs only a folder of underwater images. Training targets are generated from each image on the fly.
+UDnet V1 needs only a folder of underwater images. Training targets are generated from each image on the fly.
 
 ```bash
-python Train.py --train_dir path/to/images                                        # from scratch
-python Train.py --train_dir path/to/images --pretrained weights/UDnet.pth --nEpochs 50  # fine-tune
-python Train.py --train_dir path/to/images --resume_train True                    # continue a run
-python Train.py --train_dir UIEB/raw-890 --train_list splits/UIEB/train800.txt    # use a split
+# from scratch
+python Train.py --train_dir path/to/images
+# fine-tune the released model
+python Train.py --train_dir path/to/images --pretrained weights/UDnet.pth \
+    --nEpochs 50
+# continue a run
+python Train.py --train_dir path/to/images --resume_train True
+# use a split
+python Train.py --train_dir UIEB/raw-890 --train_list splits/UIEB/train800.txt
 ```
 
 Checkpoints go to `weights/`: `epoch_last.pth` every 2 epochs and `epoch_<N>.pth` every `--snapshots` epochs.
 See `python Train.py -h` for all options.
+
+</details>
+
+<details>
+<summary><b>Train or fine-tune V2 on paired images</b></summary>
+
+V2 is trained on input/reference pairs from [UIEB](https://li-chongyi.github.io/proj_benchmark.html)
+(`raw-890`, `reference-890`) and [LSUI](https://lintaopeng.github.io/_pages/UIE%20Project%20Page.html)
+(`input`, `GT`), using the lists in [`splits/V2`](splits/V2). It needs a CUDA GPU and a few extra packages.
+
+```bash
+pip install kornia lpips tensorboard
+# from scratch
+python Train_v2.py --uieb path/to/UIEB --lsui path/to/LSUI --name my_v2
+# continue a run
+python Train_v2.py --uieb path/to/UIEB --lsui path/to/LSUI --name my_v2 --resume
+# fine-tune the released model
+python Train_v2.py --uieb path/to/UIEB --lsui path/to/LSUI --name ft \
+    --init weights/UDnet_v2.pth --iters 20000
+```
+
+The loss combines Charbonnier, SSIM, LPIPS and a frequency-domain term; training uses AdamW with
+warm-up and cosine decay, bfloat16 mixed precision and an EMA of the weights. The released
+`UDnet_v2.pth` is the EMA model at 80k of the default 100k iterations (the full run takes about 5 hours on an RTX 4090).
+Checkpoints go to `weights/v2_runs/<name>/`; use one with `Inference.py --model v2 --weights weights/v2_runs/<name>/best.pth`.
 
 </details>
 
@@ -135,13 +208,15 @@ Each file in [`splits/`](splits) lists image names, one per line.
 | `paper_test/DeepFish.txt` | 50 | [DeepFish](https://alzayats.github.io/DeepFish/) |
 | `paper_test/FishID.txt` | 50 | FishID |
 | `UIEB/train800.txt`, `UIEB/test90.txt` | 800 / 90 | UIEB `raw-890`, fixed random split (seed 0) |
+| `V2/UIEB_train.txt` | 738 | V2 training images: `UIEB/train800.txt` without near-duplicates of any test image |
+| `V2/LSUI_train.txt`, `V2/LSUI_test400.txt` | 3160 / 400 | [LSUI](https://lintaopeng.github.io/_pages/UIE%20Project%20Page.html); test images chosen by near-duplicate group, training images near-duplicate-free |
 
 </details>
 
 ## How it works
 
 <details>
-<summary><b>Model design in one paragraph</b></summary>
+<summary><b>UDnet V1: the unsupervised paper model</b></summary>
 
 <p align="center"><img src="model_utils/fig_8.png" width="90%"></p>
 
@@ -151,6 +226,22 @@ refined by a learned multi-colour-space stretch module (SGMCSS). A conditional v
 autoencoder learns from these noisy references, and a probabilistic adaptive instance
 normalisation block (PAdaIN) models how uncertain they are. At test time only the image encoder
 and decoder run. Details are in the [paper](https://www.sciencedirect.com/science/article/pii/S0957417424031816).
+
+</details>
+
+<details>
+<summary><b>UDnet V2: the supervised preview model</b></summary>
+
+V2 trades V1's independence from reference images for stronger correction. It is a
+[NAFNet](https://github.com/megvii-research/NAFNet)-style U-Net (Chen et al., ECCV 2022) with 29 M
+parameters, preceded by a small global colour branch that predicts a per-image 3×3 colour matrix
+and offset. Because underwater colour casts are largely global, this branch removes most of the
+cast before the U-Net restores local contrast and detail. V2 is trained on about 3,900 input/reference
+pairs from UIEB and LSUI (see [Train](#train)), so it learns the look of those references; V1 remains the
+better choice when no reference style should be imposed, or when only a CPU is available.
+
+The optional `--ai` pass runs [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) after V2 to sharpen
+and upscale. It is generative and can add texture that was not captured.
 
 </details>
 
@@ -175,3 +266,6 @@ MIT license; intended for academic research. UDnet builds on
 [USLN](https://github.com/deepxzy/USLN) and
 [PyTorch-Underwater-Image-Enhancement](https://github.com/xueleichen/PyTorch-Underwater-Image-Enhancement).
 The UIQM code is adapted from [FUnIE-GAN](https://github.com/xahidbuffon/FUnIE-GAN).
+UDnet V2 is built on the [NAFNet](https://github.com/megvii-research/NAFNet) architecture, and the
+`--ai` pass uses the official [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) weights (BSD-3-Clause),
+downloaded from their releases.

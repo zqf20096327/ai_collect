@@ -179,6 +179,10 @@ Rule of thumb: lasting always-on project instructions → `AGENTS.md`; growing w
 - Optional HTTP catalog for other OpenCode instances: `"skills": ["http://127.0.0.1:4747/skills/"]` (serves `/skills/index.json` and `/skills/<id>/<id>.md` — separate from the UI path).
 - REST: `GET/POST /api/skills`, `GET/PUT/DELETE /api/skills/:id`.
 
+### Health stats
+
+The web UI's **Stats** tab (at `/stats`) shows memory-system health at a glance: totals per scope, per-shard memory counts with stale/missing-shard warnings and a same-tag duplication proxy, the active user-profile version, and a 14-day activity series (captures, skipped captures, profile/compaction injections, and errors bucketed by message) parsed from the plugin's own structured logs in `~/.opencode-mem/`. It is read-only — `GET /api/stats` — and degrades per section if a database is unavailable, so it keeps reporting during incidents.
+
 ### Intelligent prompt-based memory extraction
 
 That phrase in the feature list is **auto-capture**: after a conversation, a background AI request summarizes technical work and saves it as memory. No special prompt from you is required. It uses `opencodeProvider` / `opencodeModel` when set, otherwise the manual `memoryProvider` fallback.

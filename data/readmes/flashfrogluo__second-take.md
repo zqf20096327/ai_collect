@@ -8,12 +8,10 @@
 [![License](https://img.shields.io/github/license/flashfrogluo/second-take?style=flat)](LICENSE)
 [![Version](https://img.shields.io/badge/version-1.7.1-blue)](CHANGELOG.md)
 [![Agent-Skill](https://img.shields.io/badge/Agent--Skill-agentskills.io-111111?logo=openai)](https://agentskills.io)
-[![Downloads](https://img.shields.io/github/downloads/flashfrogluo/second-take/total?style=flat&logo=github)](https://github.com/flashfrogluo/second-take/releases)
 [![Last commit](https://img.shields.io/github/last-commit/flashfrogluo/second-take?style=flat)](https://github.com/flashfrogluo/second-take/commits/main)
 [![CI](https://github.com/flashfrogluo/second-take/actions/workflows/ci.yml/badge.svg)](https://github.com/flashfrogluo/second-take/actions/workflows/ci.yml)
 
-[![Second Take 主视觉：待改善的 AI 成果 → 重拍单 → 更好的 AI 产出](docs/assets/hero-dark.svg#gh-light-mode-only)](https://github.com/flashfrogluo/second-take)
-[![Second Take 主视觉：待改善的 AI 成果 → 重拍单 → 更好的 AI 产出](docs/assets/hero-light.svg#gh-dark-mode-only)](https://github.com/flashfrogluo/second-take)
+[![Second Take 主视觉：待改善的 AI 成果 → 重拍单 → 更好的 AI 产出](docs/assets/hero.svg)](https://github.com/flashfrogluo/second-take)
 
 ## 它解决什么问题
 
@@ -231,6 +229,8 @@ npx skills add flashfrogluo/second-take
 
 只有用户指令和深度思考、没有产物和素材的纯文本问答场景也适用，这时检查重点落在指令冲突、覆盖不全、推理缺陷三项。
 
+一轮不满意可以继续说「哪里不对」，它会接着改；改的过程中想到新要求不必等它改完——见 [`docs/使用与迭代.md`](docs/使用与迭代.md)。
+
 ## 不同产物类型，提供哪些信息最准
 
 > **EN** — What to provide for the most accurate diagnosis, by output type (text/code, summary-only, image/video, with reference, or any type).
@@ -379,8 +379,6 @@ npx skills add flashfrogluo/second-take
 ## License
 
 MIT。见 `LICENSE`。
-
----
 
 ---
 

@@ -44,6 +44,76 @@ print("SRM detected?", srm.is_srm, "p=", srm.p_value, "chi2=", srm.chi2)
 result = DiffInMeans().fit(data).estimate(method="ttest", alpha=0.05)
 result.summary()
 ```
+
+### Select a prognostic segment with a held-out evaluation sample
+
+When historical outcomes are unavailable, train an outcome model on one part
+of the experiment and estimate effects on different users. Baseline features
+must still have been recorded **before experimental assignment**. The example
+below learns utilization probability with communication from treatment training
+users; it predicts an outcome, not incremental uplift.
+
+```python
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from causalis.data_contracts import CausalData
+from causalis.shared.rct_design import PrognosticEnrichment
+from causalis.scenarios.classic_rct import DiffInMeans
+
+data = CausalData.from_df(
+    df, treatment="treated", outcome="utilized",
+    confounders=["prior_activity", "prior_spend"], user_id="user_id",
+)
+rule = PrognosticEnrichment(
+    estimator=make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000)),
+    training_source="treatment",  # alternatively: "control"
+    train_fraction=0.3,
+    top_fraction=0.2,
+    split_seed=42,
+).fit(data, features=["prior_activity", "prior_spend"])
+
+# Supply the original planned experiment allocation; do not infer it from counts.
+report = rule.diagnostics(target_allocation={0: 0.5, 1: 0.5})
+print(report.counts)
+print(report.srm_evaluation, report.srm_selected)
+print(report.balance)
+print(report.warnings)
+
+selected = rule.select()  # CausalData containing only selected evaluation users
+effect = DiffInMeans().fit(selected).estimate(method="conversion_ztest")
+effect.summary()
+```
+
+The hash split uses user IDs and a separate analysis seed independently of
+treatment/outcome. Actual train/evaluation proportions may vary. The estimator
+is cloned and fitted only on the chosen training arm. A **single frozen cutoff**
+is the 80th percentile of predicted scores across both training arms; evaluation
+outcomes are never used to train the model or choose this cutoff. Evaluation users
+in both arms are selected with `score >= cutoff`. Ties are included, and the
+selected evaluation share need not be exactly 20%. For a fixed cutoff, use
+`top_fraction=None, threshold=0.1`. `get_partition()` returns a copy with
+`user_id`, `sample`, `score`, and `selected` columns for auditing; the ID column
+is named `user_id` even if the input uses another name.
+
+`select()` returns a contract for existing RCT estimators, including CUPED, and
+omits confounders that are constant in the selected segment. Diagnostic balance
+still includes those columns and the score. Empty/single-arm segments and
+constant outcomes cannot be converted to `CausalData`; `get_selected_df()` and
+`diagnostics()` remain usable for inspecting counts. A conversion z-test requires
+sufficient events and non-events; the report flags sparse segments. Do not change
+the cutoff to repair SRM, balance, or significance after examining evaluation.
+
+For binary-treatment `RctCausalData`, pass `outcome="utilized"` to `fit()` when
+multiple outcomes are declared. Multiple treatment columns are not supported.
+The workflow assumes independently randomized users; clustered or blocked
+experiments need a split and inference appropriate to their assignment design.
+The estimated effect targets the selected population, not the full audience,
+and enrichment does not guarantee a power gain. If evaluation outcomes have
+already guided model or subgroup selection, treat the analysis as exploratory
+and confirm it in a new experiment. The API cannot verify historical feature
+timestamps or enforce that users have not already examined evaluation results.
+
 # Quickstart: Observational study (Unconfoundedness / DML IRM)
 ```python
 from causalis.scenarios.unconfoundedness.dgp import generate_obs_hte_26
@@ -283,7 +353,7 @@ and a single `outcome`; the previous multi-outcome mapping interface is removed.
 Pre-specify a practically meaningful effect boundary and one or more
 domain-justified groups of observed **pre-treatment** confounders. The primary
 decision uses element-based long/short gain statistics for the benchmark
-group. Its `r2_y`, `r2_d`, and `rho` are calibrated jointly from the outcome
+group. Its `cf_y`, `cf_d`, and `rho` are calibrated jointly from the outcome
 variance, Riesz-representer variance, and actual effect shift. The 2× strength
 and forced `rho=1` scenarios are reported as secondary stress tests.
 
@@ -327,13 +397,53 @@ to the threshold does not pass. Use explicit `direction="positive"` or
 never overridden. Significance before sensitivity analysis alone does not
 guarantee a pass.
 
-Benchmark boundary handling matches DoubleML: raw `cf_y` and `cf_d` are
-clipped to `[0, 1]`. If either long/short gain is not strictly positive,
+Benchmark strengths use the relative gains
+`gain_y = (sigma2_short - sigma2_long) / sigma2_long` and
+`gain_d = (nu2_long - nu2_short) / nu2_short`, as in DoubleML and the paper's
+relative-strength construction. These calibrate an additional omitted
+confounder for the full model. Gains are clipped to `[0, 1]` as `cf_y` and
+`cf_d`; values at 1 are retained for auditing but marked uncalibratable because
+the sensitivity API requires strengths in `[0, 1)`. Such primary scenarios
+produce `FAIL`. If either long/short gain is not strictly positive,
 primary and stress use `rho=sign(theta_short-theta_long)`; the adversarial
 scenario still forces `rho=1`. `protocol["benchmarks"]` retains raw gains,
 clipping/fallback flags, long/short elements, and warnings for auditability.
 In particular, a negative `cf_d_raw` becomes a numerical `cf_d=0` boundary
 benchmark rather than a missing scenario.
+
+### Sensitivity parameter migration
+
+Binary `IRM` and `MultiTreatmentIRM` use `cf_y` and `cf_d` in `[0, 1)`:
+`cf_y` is the share of residual outcome variation explained by an omitted
+confounder, and `cf_d` measures its contribution to the Riesz representer's
+variation. In the default unsigned mode, the confounding bound is
+`abs(rho) * sqrt(sigma2 * nu2) * sqrt(cf_y * cf_d / (1 - cf_d))`.
+
+```python
+model.sensitivity_analysis(cf_y=0.02, cf_d=0.02, rho=1.0)
+```
+
+**Numerical compatibility:** deprecated `r2_y` and `r2_d` keywords are accepted
+with a `DeprecationWarning` and copied directly to `cf_y` and `cf_d`. They do
+not retain the previous outcome odds conversion. Re-running an old call can
+therefore change the sensitivity bounds and robustness values. Passing both a
+new keyword and its alias raises `ValueError`. Result `params` and protocol
+scenario tables use the new names; benchmark tables retain the old names as
+copies of `cf_y` and `cf_d`.
+
+Benchmark tables also report the nonnegative relative gains `gain_y` and
+`gain_d` before upper clipping, along with signed raw gains and calibration
+validity flags. Check `calibration_valid` before using `cf_y` and `cf_d` as
+sensitivity inputs. The benchmark uses the relative-strength construction of
+[Chernozhukov et al., Appendix F, equations (22)-(23)](https://arxiv.org/html/2112.13398v5#A6.SS5)
+and [DoubleML](https://docs.doubleml.org/stable/guide/sensitivity.html#benchmarking).
+
+The stress multiplier scales `cf_y` and `cf_d / (1 - cf_d)` linearly, so the
+default bound scales by that multiplier until `cf_y` is capped below one.
+`RV` is the common strength `cf_y = cf_d` needed for the confounding bounds to
+reach `H0`. `RVa` uses the original sampling standard error to approximate the
+corresponding threshold with sampling uncertainty; it does not solve for the
+threshold of the recalculated bound-specific confidence interval.
 
 # Pick your scenario
 

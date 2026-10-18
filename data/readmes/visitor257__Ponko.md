@@ -1,8 +1,11 @@
 # Ponko
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg) ![Release](https://img.shields.io/github/v/release/visitor257/Ponko?label=release&color=success) ![Platform](https://img.shields.io/badge/platform-Android-3DDC84?logo=android&logoColor=white) ![minSdk](https://img.shields.io/badge/minSdk-28-orange.svg) ![ABI](https://img.shields.io/badge/ABI-arm64--v8a-lightgrey.svg) ![Offline](https://img.shields.io/badge/offline-no%20telemetry-success.svg)
+![License](https://img.shields.io/badge/license-code_MIT_%2F_art_reserved-blue.svg) ![Release](https://img.shields.io/github/v/release/visitor257/Ponko?label=release&color=success) ![Platform](https://img.shields.io/badge/platform-Android-3DDC84?logo=android&logoColor=white) ![minSdk](https://img.shields.io/badge/minSdk-28-orange.svg) ![ABI](https://img.shields.io/badge/ABI-arm64--v8a-lightgrey.svg) ![Offline](https://img.shields.io/badge/offline-no%20telemetry-success.svg)
 
 > 名字来自日语「ポンコツ」(ponkotsu)——破铜烂铁。脑子不中用，但可以随时换成最好的模型。
+
+**本仓库不是单一许可证**：源码是 [MIT](LICENSE)；美术资源（应用图标、角色立绘、原始画稿）不适用 MIT，
+版权归作者所有、保留所有权利，条款见 [NOTICE](NOTICE)。
 
 [English](README.en.md) · 中文
 
@@ -216,6 +219,10 @@ powershell -File tools/build-release.ps1
 
 - **代码**：[MIT](LICENSE)
 - **美术资源**（应用图标、角色立绘、原始画稿）：版权归作者所有，保留所有权利，**不在 MIT 许可范围内** —— 详见 [NOTICE](NOTICE)
+
+  简言之：可以运行、可以自己构建自己用、可以在 fork 里保留（发布的是源码），
+  非商业介绍/评测/引用可贴未经修改的图并注明出处；**不可以**把含这些素材的安装包
+  分发出去或上架商店，也不可以修改、二创、单独摘出来再分发。
 - **第三方组件**：按各自许可证分发，完整清单见 [NOTICE](NOTICE)
 
 ## 第三方组件

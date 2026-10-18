@@ -8,14 +8,14 @@
 <p>CAgent 把你常用的 AI 模型与手边的资料放在一起，陪你把一个想法，慢慢做成一份成果。</p>
 
 <p>
-  <a href="https://github.com/luojuncheng0327-cell/CAgent/releases/tag/v0.2.1"><b>下载 Windows 版 ↗</b></a>
+  <a href="https://github.com/luojuncheng0327-cell/CAgent/releases/tag/v0.2.2"><b>下载 Windows 版 ↗</b></a>
   &nbsp; &nbsp; · &nbsp; &nbsp;
   <a href="#工作台一览">看看工作台</a>
   &nbsp; &nbsp; · &nbsp; &nbsp;
   <a href="#从一个想法开始">探索产品体验</a>
 </p>
 
-<p><sub>Windows x64 &nbsp; / &nbsp; v0.2.1 预览版 &nbsp; / &nbsp; 本地优先</sub></p>
+<p><sub>Windows x64 &nbsp; / &nbsp; v0.2.2 预览版 &nbsp; / &nbsp; 本地优先</sub></p>
 
 </div>
 
@@ -95,7 +95,7 @@
 
 ## 把 CAgent 放到桌面上
 
-1. **下载安装** — 在[发布页](https://github.com/luojuncheng0327-cell/CAgent/releases/tag/v0.2.1)选择 `CAgent-0.2.1-Windows-x64-Setup.exe`。
+1. **下载安装** — 在[发布页](https://github.com/luojuncheng0327-cell/CAgent/releases/tag/v0.2.2)选择 `CAgent-0.2.2-Windows-x64-Setup.exe`。
 2. **连接模型** — 跟随首次引导，填写模型接口和 API Key。
 3. **开始工作** — 发起一次对话，添加资料，或打开工作台里的文件。
 
@@ -107,7 +107,7 @@
 
 <h3>下一个想法，就从这里开始。</h3>
 
-<p><a href="https://github.com/luojuncheng0327-cell/CAgent/releases/tag/v0.2.1"><b>下载 CAgent · Windows x64 ↗</b></a></p>
+<p><a href="https://github.com/luojuncheng0327-cell/CAgent/releases/tag/v0.2.2"><b>下载 CAgent · Windows x64 ↗</b></a></p>
 
 <p><sub>CAgent &nbsp; · &nbsp; 让思考落在自己的工作台上。</sub></p>
 

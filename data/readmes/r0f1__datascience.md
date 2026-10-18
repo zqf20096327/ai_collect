@@ -1016,4 +1016,4 @@ RandomSurvivalForests (R packages: randomForestSRC, ggRandomForests).
 [eif](https://github.com/sahandha/eif) - Extended Isolation Forest.  
 [AnomalyDetection](https://github.com/twitter/AnomalyDetection) - Anomaly detection (R package).  
 [luminol](https://github.com/linkedin/luminol) - Anomaly Detection and Correlation library from Linkedin.  
-Distances for comparing histograms and detecting outliers - [Talk](https://www
+Distances for comparing histograms and detecting outliers - [Talk](https://www.youtube.co

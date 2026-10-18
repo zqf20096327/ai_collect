@@ -7,7 +7,7 @@
 <br>
 
 <a href="https://pypi.org/project/wayland-mcp-kurojs/"><img src="https://img.shields.io/pypi/v/wayland-mcp-kurojs?style=flat-square&logo=pypi&logoColor=white&color=3775A9" alt="PyPI Version"></a>
-<a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.8%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.8+"></a>
+<a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.10+"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-A42E2B?style=flat-square&logo=gnu&logoColor=white" alt="License GPL-3.0"></a>
 <a href="https://modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP-compatible-3DDC84?style=flat-square" alt="MCP Compatible"></a>
 <a href="README.md"><img src="https://img.shields.io/badge/platform-Linux%20%7C%20Wayland-lightgrey?style=flat-square" alt="Platform Linux/Wayland"></a>
@@ -82,7 +82,7 @@ at all: the compositor itself mediates input through the XDG portals.
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.10 or higher
 - A Wayland session (GNOME, KDE Plasma, COSMIC, Hyprland, Sway, ...)
 - No privileged setup and no root. See [Backends](#backends) for what each path
   needs; the server reports it itself through the `describe_environment` tool.
@@ -95,6 +95,11 @@ sudo apt install python3-gi        # Debian, Ubuntu, Pop!_OS
 sudo dnf install python3-gobject   # Fedora
 sudo pacman -S python-gobject      # Arch
 ```
+
+The `portal` capture backend works without GStreamer. These packages are only
+needed for the cursor in `portal` screenshots: GStreamer's PipeWire source and its
+introspection data, e.g.
+`sudo apt install gstreamer1.0-pipewire gir1.2-gstreamer-1.0` on Debian and Ubuntu.
 
 ### Quick install
 
@@ -235,6 +240,7 @@ controls input with none of it set.
 | `WAYLAND_MCP_CAPTURE_BACKEND` | Force a capture backend by name | auto |
 | `WAYLAND_MCP_INPUT_BACKEND` | Force an input backend by name | auto |
 | `WAYLAND_MCP_NO_PERSIST` | `1` to be asked for portal permission every time | unset |
+| `WAYLAND_MCP_CURSOR_STREAM` | `1` to try the ScreenCast stream for the cursor without a stored permission, which may prompt; `0` to never use it | unset: only with a stored permission |
 | `WAYLAND_MCP_RESTORE_TOKEN_PATH` | Where to keep the portal restore token | `$XDG_STATE_HOME/wayland-mcp/remote-desktop-token` |
 | **Behaviour** | | |
 | `WAYLAND_MCP_QUIET_CAPTURE` | `1` to silence animations and sound around a capture, restoring your settings afterwards | unset |
@@ -270,7 +276,7 @@ to see what it decided and why.
 | `cosmic-screenshot` | the binary, shipped with COSMIC | silent, no dialog; full screen only |
 | `grim` | `grim`, plus `zwlr_screencopy_manager_v1`, **or** `ext_image_copy_capture_manager_v1` with grim >= 1.5 | region capture via `slurp` |
 | `ksnip`, `gnome-screenshot`, `spectacle` | the respective binary | the upstream cascade, preserved |
-| `portal` | `org.freedesktop.portal.Screenshot` + PyGObject | works everywhere; may prompt |
+| `portal` | `org.freedesktop.portal.Screenshot` + PyGObject | works everywhere; may prompt. Draws the cursor from a ScreenCast stream when a portal permission is already stored, and the `cursor` field of the result says which path produced the image (see below) |
 
 **Input**, highest priority first:
 
@@ -314,6 +320,18 @@ from a live run.
   attached to the session. Where the portal refuses one, absolute moves raise an
   explanatory error instead of silently misplacing the cursor; use a relative
   move, or another input backend.
+- **The cursor in `portal` screenshots**: the Screenshot portal has no cursor
+  option, and GNOME leaves the pointer out. With `include_mouse` (the default) the
+  `portal` capture backend therefore takes the frame from a RemoteDesktop
+  session's ScreenCast stream, which embeds the cursor. It needs GStreamer's
+  `pipewiresrc`, and by default a portal permission has to be stored already --
+  using any input tool once stores one -- because opening that session without one
+  is what raises the remote-control dialog, and a screenshot is not worth that.
+  `WAYLAND_MCP_CURSOR_STREAM=1` forces the attempt without a stored permission and
+  may prompt; `=0` turns the cursor path off. A stream that fails falls back to the
+  Screenshot portal for the following 60 seconds, and is tried again after that. A
+  locked screen, where GNOME refuses new sessions, only costs the cursor of that
+  one capture. The `cursor` field of the result says which one you got.
 
 ### Example commands
 
@@ -495,7 +513,7 @@ unavailable, exactly what each candidate would have needed.
 
 **Server won't start**
 
-- Check Python: `python3 --version` (needs 3.8+).
+- Check Python: `python3 --version` (needs 3.10+).
 - Reinstall: `uv pip install -e ".[dev]"`, then `pytest`. The test suite runs
   headless and does not need a graphical session.
 

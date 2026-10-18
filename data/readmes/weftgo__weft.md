@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/weftgo/weft/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/weftgo/weft/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/weftgo/weft.svg)](https://pkg.go.dev/github.com/weftgo/weft)
-[![Version](https://img.shields.io/badge/version-v0.16.0-orange)](https://github.com/weftgo/weft/releases/tag/v0.16.0)
+[![Version](https://img.shields.io/badge/version-v0.17.0-orange)](https://github.com/weftgo/weft/releases/tag/v0.17.0)
 
 A modular framework for building AI agents in Go — designed the way the
 standard library is: small interfaces, `context` everywhere, functional
@@ -10,8 +10,8 @@ options, wrapped errors, and zero required configuration. One `go get`
 is the whole framework; one import path is the loop alone:
 
 ```sh
-go get github.com/weftgo/weft@v0.16.0       # the framework: every package below, one version
-go get github.com/weftgo/weft/core@v0.16.0  # the loop alone: its only dependency is the OTel API
+go get github.com/weftgo/weft@v0.17.0       # the framework: every package below, one version
+go get github.com/weftgo/weft/core@v0.17.0  # the loop alone: its only dependency is the OTel API
 ```
 
 | Package | What it gives you |
@@ -29,7 +29,7 @@ Concurrency is the point, not a feature: a step's tools fan out over
 goroutines, parallelism is a one-line dial, and tool failures never cancel
 their siblings.
 
-> **Status:** v0.16.0 — experimental, pre-1.0, released as one module
+> **Status:** v0.17.0 — experimental, pre-1.0, released as one module
 > (plus `core`; see [Releases](https://github.com/weftgo/weft/releases),
 > `CHANGELOG.md` and, coming from 0.8, [`MIGRATION-0.9.md`](MIGRATION-0.9.md)). The core's three load-bearing contracts — message
 > model, error model, tool contract — are implemented and tested, and
@@ -298,9 +298,16 @@ For logs, `weft.Logger(l)` writes one Debug line per phase — run start,
 run finish, model call, tool call — with ids, the model, durations,
 usage, and outcomes; never message text or tool arguments. The default
 (`slog.Default`, resolved at log time) is silent until your handler
-enables Debug; `slog.New(slog.DiscardHandler)` turns the lines off. A
-handler that bridges slog to OTel correlates the lines with the spans
-for free: they are logged on the span-carrying context.
+enables Debug; `slog.New(slog.DiscardHandler)` turns the lines off.
+`otel.Install(…, otel.Slog())` bridges `slog.Default` to the pipeline
+(or `slog.New(otel.SlogHandler(h))` any logger you build): every line
+logged on a span-carrying context — these, `mw.Log`'s, `mw.Audit`'s and
+your own, Debug included — reaches the Local and Studio destinations
+(`otel.AppLogs(true)` opts a third party in) under the span it was
+logged in — redacted and capped by the destination's `ContentConfig`
+like any content, stripped where content is off — and Studio shows it
+on the run's logs (`runs/{id}/logs`);
+a run recorded without the bridge says so there.
 `examples/otel` runs the whole thing against the real SDK offline.
 No prompt, message, tool argument or tool result reaches a span: ids,
 names, counts, durations, reasons, and error types only. Error *text*

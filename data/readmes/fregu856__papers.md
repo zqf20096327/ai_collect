@@ -23,6 +23,33 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-10-18] [paper596]
+- A Multimodal Whole-Slide Foundation Model for Pathology
+ [[pdf]](https://www.nature.com/articles/s41591-025-03982-3) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/A%20Multimodal%20Whole-Slide%20Foundation%20Model%20for%20Pathology.pdf)
+- `Nature Medicine, 2025`
+- [Computational Pathology], [Vision-Language Models]
+```
+Interesting and well-written paper, I really enjoyed reading this. The TITAN paper from the Mahmood lab, super solid / comprehensive / high-quality work. I read everything until the end of the "TITAN improves region and slide-level diagnostic capabilities" section in Results in a lot of detail (and also all figures in the main paper), then I had to go through the rest a bit quicker. In particular, I didn't have much time to read the Methods. The one main thing I don't understand is the "Rare cancer external" results in Figure 4.a, why is the vision-only TITAN_v suddenly quite a lot better than TITAN there?
+```
+
+##### [26-10-18] [paper595]
+- Incorporating Pathomics Into IgAN Risk Prediction
+ [[pdf]](https://www.sciencedirect.com/science/article/pii/S2468024926029402) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Incorporating%20Pathomics%20Into%20IgAN%20Risk%20Prediction.pdf)
+- `Kidney International Reports, 2026`
+- [Computational Pathology]
+```
+Quite interesting paper, further evaluation/application of the approach from "Next-Generation Morphometry for Pathomics-Data Mining in Histopathology" that I read previously, so these three papers directly build on each other. I think it was pretty useful for me to read all three. Here they use 10 segmentation-based features, and compare the performance with established risk scores.
+```
+
+##### [26-10-18] [paper594]
+- Next-Generation Morphometry for Pathomics-Data Mining in Histopathology
+ [[pdf]](https://www.nature.com/articles/s41467-023-36173-0) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Next-Generation%20Morphometry%20for%20Pathomics-Data%20Mining%20in%20Histopathology.pdf)
+- `Nature Communications, 2023`
+- [Computational Pathology]
+```
+Quite interesting paper, directly builds upon "Deep Learning-Based Segmentation and Quantification in Experimental Kidney Histopathology" that I read previously. I do think that this overall approach makes some sense, and the results in Figure 4 seem relatively strong. I don't understand how they actually do the pseudotime stuff in Figure 5 though.
+```
+
 ##### [26-10-16] [paper593]
 - Deep Learning-Based Segmentation and Quantification in Experimental Kidney Histopathology
  [[pdf]](https://www.ovid.com/jnls/jasn/fulltext/10.1681/asn.2020050597~deep-learningbased-segmentation-and-quantification-in) [_unfortunately not open access, thus no annotated pdf_]
@@ -1079,32 +1106,4 @@ Quite interesting paper. A lot of data, interesting problem, I quite enjoyed rea
 ```
 
 ##### [25-07-22] [paper476]
-- A Scalable Federated Learning Solution for Secondary Care Using Low-Cost Microcomputing: Privacy-Preserving Development and Evaluation of a COVID-19 Screening Test in UK Hospitals
- [[pdf]](https://www.thelancet.com/journals/landig/article/PIIS2589-7500(23)00226-1/fulltext) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/A%20Scalable%20Federated%20Learning%20Solution%20for%20Secondary%20Care%20Using%20Low-Cost%20Microcomputing%20Privacy-Preserving%20Development%20and%20Evaluation%20of%20a%20COVID-19%20Screening%20Test%20in%20UK%20Hospitals.pdf)
-- `The Lancet Digital Health, 2024`
-- [ML for Medicine/Healthcare]
-```
-Well written and solid paper, everything is explained well. I don't know much at all about federated learning, but this was easy to understand. Pretty neat that they could use Raspberry Pis for this entire study.
-```
-
-##### [25-07-22] [paper475]
-- A Multimodal Multidomain Multilingual Medical Foundation Model for Zero Shot Clinical Diagnosis
- [[pdf]](https://www.nature.com/articles/s41746-024-01339-7) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/A%20Multimodal%20Multidomain%20Multilingual%20Medical%20Foundation%20Model%20for%20Zero%20Shot%20Clinical%20Diagnosis.pdf)
-- `npj Digital Medicine, 2025`
-- [ML for Medicine/Healthcare], [Vision-Language Models]
-```
-Again not my main area of expertise, but quite interesting paper. Pretty cool approach, Figure 1 is neat, and I think the method/model makes sense overall. Difficult for me to properly judge how strong all results are though, in particular how well the Chinese report generation works, whether this actually would be useful in practice.
-```
-
-##### [25-07-21] [paper474]
-- Machine Learning Generalizability Across Healthcare Settings: Insights from Multi-Site COVID-19 Screening
- [[pdf]](https://www.nature.com/articles/s41746-022-00614-9) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Machine%20Learning%20Generalizability%20Across%20Healthcare%20Settings%20Insights%20from%20Multi-Site%20COVID-19%20Screening.pdf)
-- `npj Digital Medicine, 2022`
-- [ML for Medicine/Healthcare]
-```
-Well written and fairly interesting paper, pretty quick to read. Everything is solid, large datasets, results make sense etc. I'm trying to read quite broadly, different types of papers from the group.
-```
-
-##### [25-07-21] [paper473]
-- RiskAgent: Autonomous Medical AI Copilot for Generalist Risk Prediction
- [[pdf]](https://arxiv.org/abs/2503.03802) [[annotated pdf]](https://github.com/fregu856
+- A Scalable Federated Learning Solution for Se

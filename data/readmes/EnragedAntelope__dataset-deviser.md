@@ -1,0 +1,325 @@
+# Dataset Deviser
+
+**Turn a character, style, or concept into a ready-to-train LoRA dataset.** For a **character**,
+one reference image becomes ~24 consistent shots across camera angles, poses, emotions and
+settings; for a **concept**, 18 shots around one object — a turnaround plus framing and context.
+For a **style**, bring your own images and get smart, correctly-framed captions. Either way the
+output is a flat folder that drops straight into any trainer
+(**ai-toolkit / kohya / OneTrainer / …**), plus a ready-to-edit **training config** for
+ai-toolkit, kohya, musubi or Fizgig, and a validation pack for picking the best checkpoint.
+
+![Generate & curate tab](docs/images/ui-generate.png)
+
+## Why use it
+
+- **One reference → a full dataset.** No hunting for 24 angles of the same character (or 18 of
+  the same object) — generate them, consistently, from a single image.
+- **Character, style *or* concept.** Pick the **Dataset type** in the header; the shot plan,
+  captions and defaults retune so the trigger learns an identity, an aesthetic, or an object/idea.
+- **Local *or* cloud, per stage.** Every step has a free/private local path **and** a no-GPU
+  cloud path. Mix and match: generate on the cloud, caption on your GPU, or the reverse.
+- **Every stage is standalone.** Point any tab (or CLI subcommand) at any folder — preprocess
+  only, caption only, export only. Bring your own images at any step.
+- **Your reference's art style is kept, not "corrected".** An illustrated, painted or rendered
+  source stays that way by default — or convert the whole set to another medium (anime, comic,
+  3D render, ink, …) or one you describe yourself.
+- **Curate by clicking the images.** Toggle any shot straight from the gallery, with a ✅/⬜ mark
+  on each thumbnail. Your pick follows you: what you keep in ② is what ③ captions, and what ③
+  captions is what ④ preselects for export — nothing is silently re-added behind you.
+- **Trainer-ready output.** Flat `NN.png` + `NN.txt` (JPEG/WEBP sources keep their own extension),
+  `metadata.json`/`metadata.jsonl`, optional `.zip` and Hugging Face publish, and a generated config
+  for Flux / SDXL / Qwen-Image / Krea / Pony and more.
+- **Interruptible, and hard to derail.** **⏹ Stop** ends a long run after the current image and
+  keeps everything finished so far. One unusable source never costs you the batch — it's skipped,
+  named, and told you how to fix it, while the rest go through.
+- **Honest by design.** No telemetry, no upsell. Configs are generated and shown — **training is
+  never launched for you**. Cloud calls bill *your* key; this tool takes no cut.
+
+## The pipeline
+
+**① Preprocess → ② Generate & curate → ③ Caption → ④ Export → ⑤ Train config**
+
+New to this? Use the **⚡ Quick build** tab: drop your images, type a name at the top, pick Cloud
+or Local and a trainer, press **Build**. Untick any shot that looks wrong and press **Finish**: you
+get the captioned dataset, the trainer config with its run command, and the validation pack.
+Name anything the subject is holding (*"cup, plate"*) so it isn't redrawn in every shot. If a
+shadow or object crosses the face in your best photo, pick Cloud: Local tends to copy it into
+the generated shots, Cloud draws a clean face. Photos
+① had to enlarge a lot start unticked (they still guide generation). The trigger is made from
+the name if you leave it blank.
+
+The numbered tabs run the same steps one at a time, with every option. Run them in order (each
+step auto-fills the next) or jump straight to the one you need.
+
+| Stage | Local | Cloud |
+|---|---|---|
+| ① Restore / upscale | ComfyUI models, or basic Lanczos | — |
+| ① Subject isolation | **Built-in SAM3** (no ComfyUI) or ComfyUI SAM3 | — |
+| ② Generate shots *(character + concept)* | ComfyUI: Qwen-Image 2.1 *(Qwen Research License)* | Gemini (Nano Banana) |
+| ③ Caption | Qwen3-VL-8B, JoyCaption, NSFW finetune, **WD + e621 taggers**, LM Studio / Ollama / any OpenAI endpoint | Gemini Flash, Groq free tier |
+| ④ Export | always local (+ optional **.zip** and **Hugging Face** publish) | — |
+| ⑤ Train config | ai-toolkit (incl. SDXL) / **kohya sd-scripts** / musubi-tuner / **Fizgig** | — |
+
+## Dataset types
+
+Pick one in the header (it's remembered next launch) — it retunes the ② shot plan, caption framing,
+the ① isolation default, and the ⑤ sample prompt. The trigger word is what the LoRA learns;
+captions describe everything *except* it.
+
+The **name** and **trigger word** live in that same header, and there is exactly one of each: ②
+weaves the name into every shot prompt, ③ captions with both, ④ stamps them into the dataset folder
+and its metadata, and ⑤ writes the trigger into the sample prompt. Set them once and every stage
+agrees — nothing to re-type per tab, and nothing that can go stale between runs. ④'s result line
+repeats the pair it used, so a wrong one is visible before you train on it.
+
+| Type | Trigger learns | Captions describe | ② Generate |
+|---|---|---|---|
+| **Character** *(default)* | an identity | what *varies* (pose, angle, setting) | ✅ 24 shots: angles, poses, expressions |
+| **Style** | an aesthetic / look | the image **content**, not the style/medium | ✋ bring your own images |
+| **Concept** | an object, action or idea | the **context**, not the concept's fixed form | ✅ 18 shots: turnaround, framing, context |
+
+Style adds an optional **sparse captions** toggle (trigger + a few words) for a stronger style at
+the risk of the trigger absorbing content. Style never generates — a look can't be copied off a
+reference the way an identity or an object can, so collect images that share it and start at
+**③ Caption**. Concept generation suits a solid object you have a clean reference of; for an
+action or an abstract idea, bring your own images too.
+
+> 🤝 **Want a curation UI on top?** [**Idiot LoRa Builder**](https://github.com/Fablestarexpanse/Idiot-Lora-Builder)
+> by [Fablestarexpanse](https://github.com/Fablestarexpanse) is a separate desktop app that picks up
+> where ④ leaves off (including trigger words) — a fast grid for hundreds of images, ratings, a bucket-aware crop tool, batch
+> rename/resize. Tick **Prepare for Idiot LoRa Builder** at ④ and the export folder opens there with
+> your shots already triaged. Nothing is launched for you; it's one extra file in the folder.
+
+> 💡 **Need source images?** My separate **[YouTube Screenshot Extractor](https://github.com/EnragedAntelope/youtube-screenshot-extractor)**
+> pulls high-quality frames from YouTube **and 1000+ other sites (and local video files)** — with
+> automatic quality/blur filtering, scene detection and black-bar removal. It's a great way to
+> gather a consistent style or concept set (or extra character references) to feed in here.
+
+## Quick start
+
+```text
+# Windows                    # Linux / macOS
+setup.bat                    ./setup.sh
+start.bat                    ./start.sh
+```
+
+Needs **Python 3.10–3.13**. `setup.bat` asks whether to install the **NVIDIA-GPU (CUDA)** or
+**CPU-only** build — pick CPU if you have no NVIDIA card and lean on the cloud options. Then open
+<http://127.0.0.1:7861>. If that port is taken or reserved by Windows, the app picks a free
+one and prints the URL; set `LDS_PORT` in `.env` to pin a port.
+
+Setup then offers to store API keys in a gitignored `.env`. **Every key is optional** — skip them
+all and stay fully local. You can add or change one at any time, without re-running the installer:
+
+```text
+python cli.py keys                      # what's configured (masked)
+python cli.py keys --set GEMINI_API_KEY # set or replace one (input is hidden)
+python cli.py doctor                    # check the whole install
+```
+
+### Updating
+
+```text
+git pull
+setup.bat            # or ./setup.sh — installs anything the new version added
+```
+
+Re-running setup is safe and is also how you switch between the GPU and CPU builds. Skipping it
+after a `git pull` is the usual reason a new version won't start.
+
+### Troubleshooting
+
+**Start here: open 🩺 Check my setup in the app** (or run `python cli.py doctor`). It reports your
+Python version, dependencies, whether ComfyUI is reachable *and whether every model filename you've
+configured actually exists on it*, plus which API keys are set (masked) and what each missing one
+blocks.
+
+- **The window closed instantly / nothing happened.** Open a terminal in the project folder and run
+  `start.bat` (or `.venv\Scripts\python.exe app.py`) from there so the error stays on screen.
+- **It won't start after a `git pull`.** Re-run `setup.bat` — the new version almost certainly needs
+  a dependency you don't have yet.
+- **One image failed in ① Preprocess.** The rest still went through. The result note names each
+  skipped image and what to change — usually the **Subject to keep** prompt (SAM3 found no
+  `character`; try `person`, or the object's own noun), or just untick **Isolate subject** for that
+  one. Nothing half-processed is left in the output folder.
+- **A cloud captioner failed part-way through a batch.** Nothing is lost — every caption written
+  before the failure is already on disk. Tick **Skip images that already have a caption** in
+  *Tag options* and click ③ again to finish the rest, or switch captioner first. Overload (503)
+  and rate-limit (429) errors are retried automatically before you ever see them.
+- **ComfyUI says a node is missing.** The bundled workflows use **only core ComfyUI nodes**, so this
+  means your ComfyUI is older than the workflow: update it (Manager → Update ComfyUI, or `git pull`
+  in your ComfyUI folder) and restart it. The app names the node and checks before it uploads
+  anything.
+- **A job is taking too long.** Hit **⏹ Stop the running job**. It finishes the current image or
+  shot, then keeps everything already done — the result note tells you how to resume (② via
+  *Generate/regenerate UNCHECKED shots*, ③ via *Skip images that already have a caption*).
+
+> ### ⚠️ Costs & responsibility
+>
+> **Local options are free.** Cloud options are **billed directly to the API key you provide**
+> (Gemini by Google; custom endpoints by whoever runs them; Groq's free tier is rate-limited).
+> **This project never charges you and takes no cut.** In-app prices are build-time estimates —
+> check [current Google pricing](https://ai.google.dev/pricing).
+>
+> You are **solely responsible** for the images you supply and everything you generate, caption,
+> export or transmit. Use only images you have the rights to and follow each provider's policy.
+> [MIT licensed](LICENSE), **no warranty**.
+
+## Captioning
+
+Point **③ Caption** at any folder, pick a captioner, get `.txt` sidecars. Every caption is
+`{trigger}, {description}` — the description covers what *varies* (pose, angle, setting,
+lighting), because identity is what the trigger learns.
+
+**Caption style** — match your target base model:
+
+- **Prose** *(default)* — natural language. Right for Flux, **Krea**, Qwen-Image, SDXL 3 and
+  most modern text-encoders.
+- **Danbooru tags** — a comma-separated tag list for SDXL, Illustrious, NoobAI and other
+  Danbooru-trained checkpoints, which learn poorly from prose.
+- **e621 tags** — the furry/anthro vocabulary for Pony Diffusion and furry checkpoints.
+
+For **canonical** tags, pick a dedicated **tagger** (WD for Danbooru, Z3D for e621) — it reads
+tags straight from the image rather than instructing a VLM (needs `onnxruntime`, installed by
+setup). *Tag options* let you add a fixed **prefix/suffix** (e.g. Pony `score_9, score_8_up`),
+**drop noisy tags** (`watermark`, `signature`…), append a **rating** tag, keep raw underscores,
+tune tagger thresholds, and **skip already-captioned** images.
+
+The **inline editor** is a review pass, not a lookup: **◀ / ▶** step through the folder,
+the image you're captioning sits next to the text box, a `3 / 24` counter shows where you
+are, **💾 Save & next** moves you on in one click, and a ✓ marks every file already done.
+
+Pick which images to caption by **clicking the thumbnails** — each carries a ✅/⬜ mark,
+**shift-click extends the pick to a range**, and *Select all / none / only already-captioned*
+handle the bulk cases (tick **🔍 Zoom on click** when you'd rather enlarge an image than pick
+it). Whatever you leave selected is what gets captioned, stays selected afterwards, and is what
+**④ Export** preselects. Edit a caption inline and, if ④'s preview is already open, its
+✓/⚠ flag updates on its own.
+
+If a cloud captioner dies mid-batch, every caption written so far is already saved — retry the
+rest with *Skip images that already have a caption*, no double billing.
+
+After captioning, a one-click **health check** flags empty, too-short, trigger-missing or
+**identical** captions (the tell-tale of a captioner that returned junk) — and, for tag
+datasets, the tags that appear on *nearly every image* so you know exactly what to feed the
+drop-list. It's advisory: nothing is blocked or rewritten.
+
+| Captioner | Runs on | Notes |
+|---|---|---|
+| Qwen3-VL-8B Instruct *(default)* | your GPU, ~17 GB | best instruction-following, NSFW-capable |
+| JoyCaption Beta One | your GPU, ~17 GB | purpose-built diffusion captioner |
+| Qwen3-VL-8B NSFW-Caption | your GPU, ~17 GB | explicit-dataset specialist |
+| **WD EVA02 / ViT v3** *(tagger)* | GPU or CPU, ONNX | canonical **Danbooru** tags |
+| **Z3D e621 ConvNeXt** *(tagger)* | GPU or CPU, ONNX | canonical **e621/furry** tags |
+| Gemini Flash | Google API | SFW, ~$0.002/img est., billed to your key |
+| Groq Qwen3.8 27B | Groq API | SFW, free or paid plan, rate-limited |
+| LM Studio / Ollama / custom | your choice | any OpenAI-compatible endpoint |
+
+## Shot style
+
+**② Generate** has a **Shot style** control. The default, **Match the reference image**, keeps
+whatever medium your source is in — feed it a drawing and you get drawings, not photographs.
+Pick any other option to convert the whole set instead: photographic, anime/manga, Western
+comic, digital illustration, traditional painting, 3D render, ink line art, or **Custom**,
+where you describe the medium yourself (*"a 1970s screen-printed poster, halftone dots"*).
+
+Changing it rebuilds the shot plan, so hand-edited prompt cells are replaced — edit prompts
+after you've settled on a style. Use **👁 Preview final
+prompt** to see exactly what a row will send, including outfit and prop-exclusion. The style
+is recorded in the exported `metadata.json` and picked up by ⑤'s sample prompt.
+
+CLI: `--shot-style anime`, or `--shot-style custom --shot-style-text "a woodcut print"`.
+
+## Two things that ruin a character LoRA
+
+Both are handled by default, because both bit us:
+
+- **Same clothes in every image** → the LoRA learns the outfit as the character. The header's
+  **Identity policy** is *Identity only* by default: every angle/pose shot gets a different
+  outfit and the captions name the clothing. Pick *Signature costume* when the outfit **is** the
+  character (a superhero suit): outfits stay as drawn and captions leave them out.
+- **Props copied into every shot** (a backpack in the reference → the LoRA thinks the backpack
+  *is* the character). Best fix: **isolate the source in ①** and name anything held (a cup, a
+  plate) in **Objects to remove** — SAM3 counts a held object as part of the person. The
+  "Exclude props" toggle in ② helps too, on Gemini only.
+
+① keeps your photos' own backgrounds for training: the white cut-out it makes goes to
+`prepped/refs/` and is only ②'s reference. ② shows the coverage of the shots you keep (framing,
+turnaround, expressions, outfits) and can flag near-duplicates. If your only photos are cut off
+at the waist, ① says so: full-body shots will invent the legs, so add a full-body photo if you
+have one, or try ②'s **Anchor shot**, which builds every shot from one generated front view.
+
+## Picking the best checkpoint
+
+⑤ sets training in **epochs**: every epoch saves a checkpoint and renders the same 8 test
+prompts at the same seed. Leave **Repeats** at 0 and it sizes each epoch for you; the exposure
+line shows the total. The `validation/` folder it writes holds the prompts, a short guide and a
+score sheet. To test likeness fairly, set **Hold out N reference photos** in ④: those photos
+stay out of training, in a `-heldout` folder beside the dataset, to compare samples against.
+
+## CLI
+
+Every stage is a standalone subcommand; `--help` shows all options.
+
+```bash
+python cli.py preprocess ./sources --out ./prepped
+python cli.py generate ./prepped/refs --name "Sy Snootles" --engine comfyui
+python cli.py generate ./prepped/refs --name "Sy Snootles" --identity costume  # outfit is the character
+python cli.py generate ./prepped/refs --name "Sy Snootles" --shot-style anime  # keep an illustrated look
+python cli.py generate ./prepped/refs --name "brass compass" --dataset-type concept  # 18-shot object set
+python cli.py build ./photos --name "Ann Lee" --trigger annlee --exclude-prompt "cup" \
+  --trainer ai-toolkit --model krea                                       # everything, plus ⑤
+python cli.py caption ./folder --trigger sysnootles                       # prose sidecars
+python cli.py caption ./folder --trigger sysnootles --caption-style tags  # Danbooru tags
+python cli.py caption ./folder --trigger mystyle --dataset-type style     # style-framed
+python cli.py caption ./folder --captioner wd-eva02 --drop-tags "watermark, signature"
+python cli.py lint ./folder --trigger sysnootles                          # caption health report
+python cli.py export ./prepped ./generated --name "Sy Snootles" --trigger sysnootles --zip
+python cli.py build source.png --name "Sy Snootles" --trigger sysnootles  # all four stages
+python cli.py build ./my-style-shots --trigger mystyle --dataset-type style  # skips ② entirely
+python cli.py doctor                                                      # check this install
+python cli.py keys --set GROQ_API_KEY                                     # set/replace a key
+python cli.py custom-endpoint --base-url https://openrouter.ai/api/v1 \
+    --model qwen/qwen2.5-vl-72b-instruct --key-env OPENROUTER_API_KEY     # configure --captioner custom
+```
+
+## API keys (cloud options only)
+
+Set or change any of them with `python cli.py keys` — they live only in a gitignored `.env`, and
+`python cli.py doctor` shows which are configured.
+
+- **Gemini** — image generation and/or captioning: <https://aistudio.google.com/apikey>
+- **Groq** — free-tier captioning: <https://console.groq.com/keys>
+- **Hugging Face** (`HF_TOKEN`, or `HUGGINGFACE_API_KEY` in the environment when you have no `hf auth login`) — two uses:
+  - **Built-in SAM3 isolation.** `facebook/sam3` is **gated**: accept the licence on the
+    [model page](https://huggingface.co/facebook/sam3), wait for approval, then add a **read**
+    token. Weights (~3.4 GB) download once.
+  - **Publishing datasets to the Hub** (④, optional). Needs a **write** token; datasets are
+    **private by default**.
+
+## Good to know
+
+- **No GPU?** Choose CPU-only in setup and use cloud generation + cloud captioning. The local
+  8B captioners aren't practical on CPU (taggers are).
+- **ComfyUI is optional** — only for local generation / model-based restoration. Cloud
+  generation, built-in SAM3, local captioning and export all work without it. **No custom nodes
+  required.** See [docs/comfyui-setup.md](docs/comfyui-setup.md).
+- **Sources are never modified**; every stage writes copies.
+- **Alpha cutout, on request.** ① Preprocess can make the `refs/` cut-out transparent instead
+  of white (builtin SAM3 backend only) — for your own compositing workflows. ② expects a white
+  reference, so ① then leaves ②'s source folder for you to fill.
+- The UI binds to `127.0.0.1` with **no authentication** — don't expose it. So galleries can
+  preview images from any folder you point a tab at, the local file server can read any file the
+  app process can while it's running; that's safe only behind the localhost bind, so never forward
+  the port or add `share=True`.
+- Training configs are generated, never test-trained. Verify against your trainer's docs.
+- **Update check:** one anonymous request to GitHub's public releases API on launch (cached
+  24h); no data about you is sent. Disable with `LDS_UPDATE_CHECK_ENABLED=false`.
+
+More detail: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
+
+## License
+
+[MIT](LICENSE)
+</content>
+</invoke>

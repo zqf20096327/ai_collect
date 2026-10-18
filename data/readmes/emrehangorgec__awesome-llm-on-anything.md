@@ -35,7 +35,6 @@ Retro PCs, game consoles, handhelds, microcontrollers. If it has a CPU and someo
 | PlayStation Portable                        | stories260K                   | ?                                         | [llama2-psp](https://github.com/caiomadeira/llama2-psp) |
 | Nintendo Wii, 88MB RAM, 729 MHz PowerPC     | stories15M, int8              | 61.9 tok/s (GPU engine), 12.7 tok/s (CPU) | [iiama2.c](https://github.com/brysontang/iiama2.c)      |
 | Nintendo Switch, Tegra X1, Switchroot Linux | Llama 3.2 3B Instruct, Q4_K_M | 3.50 tok/s generation                     | [write-up](https://nocoffei.com/?p=352)                 |
-| PlayStation 5 Slim (jailbroken)             | Qwen 3.5 9B, Q4_K_M           | 55 tok/s                                  | [PS5LM](https://github.com/cobanov/PS5LM)               |
 
 ## Microcontrollers
 
@@ -61,10 +60,9 @@ The model runs elsewhere, but the device is still delightfully wrong.
 
 ## Extremes
 
-Not a benchmark, just the two ends of this list.
+Not a benchmark, just an extreme example from the list.
 
 - 🐢 **Slowest:** Commodore 64, about one token every 8 minutes. The first visible word shows up after roughly 16 minutes.
-- 🐇 **Biggest model:** PlayStation 5 Slim running Qwen 3.8 27B (UD-Q2_K_XL) at about 20 tok/s with 64k context.
 
 ## Wanted
 

@@ -107,6 +107,7 @@ Integration of agents with APIs, nodes, and conditional process flows.
 | Repository | Description | Stack | Engine | Deployment | Link |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **API.market MCP Gateway** | Proprietary hosted gateway with five tools for API discovery, execution, usage and subscriptions; OAuth or API keys; per-API free tiers and paid plans. | TypeScript/MCP | API-based | Web UI | [Gateway](https://api.market/api/mcp/gateway) |
+| **Aident Loadout** | Proprietary hosted MCP server (Streamable HTTP, OAuth sign-in) and CLI that let MCP clients search and run actions in connected third-party apps and use 400+ prebuilt Skills; stored API keys stay in Aident Vault and each action is logged in Audit; account required, pay-as-you-go. | TypeScript/MCP | API-based | CLI / Web UI | [Link](https://aident.ai) · [Docs](https://docs.aident.ai/loadout/mcp) |
 | **GitHub Agentic Workflows** | CI/CD pipeline wrapper converting natural language to GitHub Action YAML files triggering matrix runners. | YAML/TS | API-based | Docker | [Link](https://github.com/github/gh-aw) |
 | **Composio** | Authentication middleware providing OAuth2 bridging and strictly-typed endpoint mapping between LLM and 3rd party APIs. | Python/TS | Hybrid | Web UI | [Link](https://github.com/ComposioHQ/composio) |
 | **n8n** | Node-based visual workflow engine running native JS sandbox execution and asynchronous event-driven RPC triggers. | TS/Docker | Hybrid | Web UI | [Link](https://github.com/n8n-io/n8n) |

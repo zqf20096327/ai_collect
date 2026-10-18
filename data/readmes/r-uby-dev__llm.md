@@ -843,8 +843,9 @@ the whole column.
 There are six different concurrency strategies
 to choose from. A tool can be spawned on its own
 process, on its own ractor, on its own thread,
-on a thread that manages an `Async::Reactor`, or
-on its own fiber.
+on a thread that manages an `Async::Reactor`,
+on its own fiber, or on the same thread as the
+agent (sequential execution).
 
 Each strategy is built around an abstraction that
 makes them interchangeable - you can switch between
@@ -978,8 +979,8 @@ registry that contains every active instance of
 [`LLM::Agent`](https://r.uby.dev/api-docs/llm.rb/LLM/Agent.html),
 and that includes Sequel and ActiveRecord agents, too. An
 agent enters the registry when it starts a turn, and it
-exits the registry afterwards. The method returns true
-when it sent an interrupt, and otherwise it returns false.
+exits the registry afterwards. The method returns the
+agent it interrupted, and otherwise it returns false.
 
 There is often a window between when an agent is queued
 and when it runs, so a poll approach lets you eventually

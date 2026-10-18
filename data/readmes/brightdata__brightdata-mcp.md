@@ -18,7 +18,7 @@
   <a href="#quick-start">Quick Start</a> •
   <a href="#pricing-and-free-tier">Pricing</a> •
   <a href="#use-cases">Use Cases</a> •
-  <a href="#tools-reference-69-tools">Tools</a> •
+  <a href="#tools-reference-32-tools">Tools</a> •
   <a href="#agent-skills">Agent Skills</a> •
   <a href="#documentation">Docs</a> •
   <a href="#support">Support</a>
@@ -261,7 +261,6 @@ Answer questions using live web data instead of training data. Search, then read
 |------|-------|
 | Search the web for current information | `search_engine`, `search_engine_batch` |
 | Read a specific page as clean Markdown | `scrape_as_markdown`, `scrape_batch` |
-| Find the most relevant sources for a research question, ranked by AI relevance score | `discover` |
 
 Example prompts: "What's Tesla's current stock price?", "Get today's weather forecast for New York", "Find the most cited sources on EU AI regulation from the last 6 months".
 
@@ -285,7 +284,7 @@ Build competitor profiles from live data: funding, headcount, hiring, customer r
 | Company funding, size, employees, job postings (Crunchbase, ZoomInfo, LinkedIn) | `search_scrapers` → `run_scraper` |
 | Customer sentiment (Google Maps, Facebook, app store reviews) | `search_scrapers` → `run_scraper` |
 | Competitor pricing pages | `scrape_as_markdown`, `scrape_batch` |
-| Market discovery | `search_engine_batch`, `discover` |
+| Market discovery | `search_engine_batch` |
 
 Example prompt: "Analyze Notion as a competitor: pricing, funding, hiring focus, and what customers complain about".
 
@@ -346,7 +345,6 @@ Gather source material from many pages at once, filtered by recency and relevanc
 | Task | Tools |
 |------|-------|
 | Collect multiple sources in one call | `scrape_batch` (up to 10 URLs) |
-| Find sources by topic with date filtering | `discover` with `start_date` / `end_date` |
 | News and finance data | `search_engine` with news queries, `run_scraper` with the Yahoo Finance scraper |
 
 ---
@@ -359,7 +357,6 @@ Gather source material from many pages at once, filtered by recency and relevanc
 | Platform-specific structured JSON extractors | 1,200+ pre-built scrapers across e-commerce, social, business, finance, travel, app stores, through 6 tools | Rare; generic scraping only |
 | Unblocking (bot detection bypass, CAPTCHA solving, proxy rotation) | Built into every request | Usually none; blocked on protected sites |
 | Search engines | Google, Bing, Yandex | Usually one |
-| AI-relevance-ranked search with intent | Yes (`discover`) | Not offered |
 | Browser automation | 14 tools, remote browser, no local setup | Limited or none |
 | LLM response collection (ChatGPT, Perplexity) | Yes | Not offered |
 | Package registry data (npm, PyPI) | Yes | Not offered |
@@ -376,7 +373,7 @@ Tools are organized into groups so you only load what you need. Fewer tools mean
 - With no `GROUPS` or `TOOLS`, all 32 tools are enabled. Setting either one limits the server to those tools only
 - `GROUPS` enables tool bundles. Comma-separated: `GROUPS="scrapers,browser"` (local) or `&groups=scrapers,browser` (hosted URL)
 - `TOOLS` adds individual tools on top: `TOOLS="extract,scrape_as_html"`. On its own, it enables only the tools you list
-- Every group also includes `search_engine`, `scrape_as_markdown` and `discover`
+- Every group also includes `search_engine`, `scrape_as_markdown` and `ask_brightdata_assistant`
 - Group ID `custom` is reserved; use `TOOLS` for individual picks
 
 | Group ID | Contents | Tool count |
@@ -433,12 +430,12 @@ Coding agent setup (Claude Code / Cursor / Windsurf) — npm, PyPI and GitHub da
 
 - **Known URL, need the content:** `scrape_as_markdown`. Multiple URLs (up to 10): `scrape_batch`
 - **Need to find information:** `search_engine`. Multiple queries (up to 10): `search_engine_batch`
-- **Deep research or RAG, need relevance-ranked sources:** `discover` with an `intent`
 - **Structured data from a known platform (Amazon, LinkedIn, TikTok, npm, PyPI, etc.):** `search_scrapers` → `get_scraper_details` → `run_scraper` — returns clean JSON, faster and more reliable than scraping the same page
 - **Structured JSON from a page no scraper covers:** `extract`
 - **Raw HTML:** `scrape_as_html`
 - **Page requires interaction (click, type, scroll, login):** `scraping_browser_*` tools
 - **How ChatGPT/Perplexity answer a prompt:** `chatgpt_ai_insights` / `perplexity_ai_insights`
+- **Question about Bright Data itself (products, zones, errors, setup):** `ask_brightdata_assistant`
 
 Notes on scraper runs:
 
@@ -448,7 +445,7 @@ Notes on scraper runs:
 - If a run fails, `scrape_as_markdown` works on the same URL as a fallback
 
 <details>
-<summary><b>Search and Scraping — 8 tools</b></summary>
+<summary><b>Search and Scraping — 7 tools</b></summary>
 
 | Tool | Description | Group |
 |------|-------------|-------|
@@ -456,7 +453,6 @@ Notes on scraper runs:
 | `search_engine_batch` | Up to 10 search queries in one call | default / `advanced_scraping` |
 | `scrape_as_markdown` | Any URL as Markdown. Bot protection and CAPTCHA handled automatically | default / every group |
 | `scrape_batch` | Up to 10 URLs in one call; returns an array of URL/content pairs in Markdown | default / `advanced_scraping` |
-| `discover` | AI-relevance-ranked web search. Returns scored results (title, description, URL, relevance score). Supports intent-based ranking, geo-targeting, date filtering, keyword filtering | default / every group |
 | `scrape_as_html` | Any URL as raw HTML | default / `advanced_scraping` |
 | `extract` | Scrape a page and convert it to structured JSON using AI, with an optional custom extraction prompt | default / `advanced_scraping` |
 | `session_stats` | Tool usage counts for the current session | default / `advanced_scraping` |
@@ -531,6 +527,15 @@ Filter search over stored LinkedIn datasets; returns matching records at once, w
 
 </details>
 
+<details>
+<summary><b>Bright Data Assistant — 1 tool</b></summary>
+
+| Tool | Description | Group |
+|------|-------------|-------|
+| `ask_brightdata_assistant` | Ask Sophie, Bright Data's support assistant, about products, APIs, zones, errors or account setup. Pass the returned `dialog_id` to ask a follow-up in the same thread | default / every group |
+
+</details>
+
 [Full tool reference in the docs →](https://docs.brightdata.com/ai/mcp-server/tools)
 
 ---
@@ -581,8 +586,7 @@ Three of the highest-impact skills:
         "API_TOKEN": "your-token-here",
         "RATE_LIMIT": "100/1h",
         "WEB_UNLOCKER_ZONE": "custom",
-        "BROWSER_ZONE": "custom_browser",
-        "POLLING_TIMEOUT": "600"
+        "BROWSER_ZONE": "custom_browser"
       }
     }
   }
@@ -597,9 +601,9 @@ Three of the highest-impact skills:
 | `RATE_LIMIT` | Custom rate limiting | unlimited | `100/1h`, `50/30m` |
 | `WEB_UNLOCKER_ZONE` | Custom Web Unlocker zone name | `mcp_unlocker` | `my_custom_zone` |
 | `BROWSER_ZONE` | Custom Browser zone name | `mcp_browser` | `my_browser_zone` |
-| `POLLING_TIMEOUT` | Timeout for `discover` polling (seconds). Each second = 1 polling attempt | `600` | `300`, `1200` |
 | `CONTENT_GATE` | When page content returned by a data tool looks like instructions to change the MCP configuration, the server asks the user (via MCP elicitation) before returning it. Set to `off` to disable | `on` | `off` |
 | `CONTENT_GATE_TIMEOUT` | Seconds to wait for the user's answer before withholding the content | `120` | `60`, `300` |
+| `BROWSER_FILTERED_SNAPSHOT` | `scraping_browser_snapshot` always lists only buttons, links and fields. Saves tokens, and stops page text posing as a clickable element (for sensitive tasks). If necessary, Page text can then be read with `scraping_browser_get_text` | `off` | `on` |
 | `BASE_TIMEOUT` | Request timeout for base tools in seconds (search and scrape) | No limit | `60`, `120` |
 | `BASE_MAX_RETRIES` | Max retries for base tools on transient errors (0-3) | `0` | `1`, `3` |
 | `GROUPS` | Comma-separated tool group IDs. Limits the server to these groups | All tools | `scrapers,browser` |

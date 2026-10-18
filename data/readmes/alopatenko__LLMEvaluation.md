@@ -177,6 +177,16 @@ My view on LLM Evaluation: [Deck 24](LLMEvaluation.pdf), and [SF Big Analytics a
 ﻿---
 ### LLM Evaluation articles
 in tech media and blog posts and podcasts from companies
+- Vals Index, 2025, [vals.ai](https://vals.ai/benchmarks/vals_index)
+- Vals Finance Agent v2, 2026, [vals.ai](https://www.vals.ai/benchmarks/fabv2)
+- Harvey's Legal Agent Benchmark, May 2026, [blog](https://www.harvey.ai/blog/introducing-harveys-legal-agent-benchmark)
+- DeepSWE v1.1, Jun 2026, [blog](https://deepswe.datacurve.ai/blog/deepswe-v1-1)
+- FrontierSWE, 2026, [blog](https://www.frontierswe.com/blog)
+- Vibe Code Bench, Nov 2025, [vals.ai](https://www.vals.ai/benchmarks/vibe-code)
+- Terminal-Bench 4.0, 2026, [blog](https://www.tbench.ai/news/terminal-bench-4-0)
+- Terminal-Bench-Science 0.1, 2026, [blog](https://www.tbench.ai/news/tb-science-announcement)
+- GraphWalks, 2025, [Hugging Face](https://huggingface.co/datasets/openai/graphwalks)
+- CWE-bench v1, 2026, [blog](https://blog.collinear.ai/p/cwe-bench)
 - Measuring tactical intelligence targeting and conventional weapons capabilities of AI models, Sep 2026, [Anthropic Research](https://www.anthropic.com/research/intelligence-targeting-conventional-weapons-capabilities)
 - Who Grades the Graders? Rethinking Verifier Design for Computer Use Agents, Sep 2026, [arxiv](https://labs.scale.com/blog/verifier-design-for-cua)
 - Piloting the world's first double-blind AI evaluations, Aug 2026, [Google DeepMind blog](https://deepmind.google/blog/piloting-the-worlds-first-double-blind-ai-evaluations/)
@@ -214,8 +224,15 @@ in tech media and blog posts and podcasts from companies
 - Hamel Dev March 2024, [Your AI Product Needs Eval. How to construct domain-specific LLM evaluation systems](https://hamel.dev/blog/posts/evals/)
 ---
 ### Frontier models
+- Chartography: A Benchmark for Professional Chart Understanding, Aug 2026, [arxiv](https://arxiv.org/abs/2608.10677)
+- OSWorld 2.0: Benchmarking Computer Use Agents on Long-Horizon Real-World Tasks, Jun 2026, [arxiv](https://arxiv.org/abs/2606.29537)
+- Agents' Last Exam, Jun 2026, [arxiv](https://arxiv.org/abs/2606.05405)
 - FrontierOR: Benchmarking LLMs' Capacity for Efficient Algorithm Design in Large-Scale Optimization, May 2026, [arxiv](https://arxiv.org/abs/2604.12290)
+- AutomationBench, Apr 2026, [arxiv](https://arxiv.org/abs/2604.18934)
+- LABBench2: An Improved Benchmark for AI Systems Performing Biology Research, Apr 2026, [arxiv](https://arxiv.org/abs/2604.09554)
+- Riemann-Bench: A Benchmark for Moonshot Mathematics, Apr 2026, [arxiv](https://arxiv.org/abs/2604.06802)
 - Frontier-Eng: Benchmarking Self-Evolving Agents on Real-World Engineering Tasks with Generative Optimization, Apr 2026, [arxiv](https://arxiv.org/abs/2604.12290)
+- PostTrainBench: Can LLM Agents Automate LLM Post-Training?, Mar 2026, [arxiv](https://arxiv.org/abs/2603.08640)
 - FrontierMath: A Benchmark for Evaluating Advanced Mathematical Reasoning in AI, Nov 2025, [arxiv](https://arxiv.org/abs/2604.12290)
 - AA-Omniscience: Evaluating Cross-Domain Knowledge Reliability in Large Language Models, Nov 2025, [arxiv](https://arxiv.org/abs/2511.13029)
 - Global PIQA: Evaluating Physical Commonsense Reasoning Across 100+ Languages and Cultures, Oct 2025, [arxiv](https://arxiv.org/abs/2510.24081)
@@ -235,6 +252,7 @@ in tech media and blog posts and podcasts from companies
 - MMMU-Pro: A More Robust Multi-discipline Multimodal Understanding Benchmark, Sep 2024, [arxiv](https://arxiv.org/abs/2409.02813)
 - MRCR v2 (Multi-Round Coreference Resolution version 2), [leaderboard](https://llm-stats.com/benchmarks/mrcr-v2) Michelangelo: Long Context Evaluations Beyond Haystacks via Latent Structure Queries, [DeepMind](https://arxiv.org/abs/2409.12640v2)
 - CharXiv: Charting Gaps in Realistic Chart Understanding in Multimodal LLMs, Jun 2024, [arxiv](https://arxiv.org/abs/2406.18521)
+- LVBench: An Extreme Long Video Understanding Benchmark, Jun 2024, [arxiv](https://arxiv.org/abs/2406.08035)
 - SWE Bench Verified [blog and data at openai](https://openai.com/index/introducing-swe-bench-verified/)
 - ScreenSpot-Pro: GUI Grounding for Professional High-Resolution Computer Use, Apr 2024, [arxiv](https://arxiv.org/abs/2504.07981)
 - GPQA Diamond, [dataset](https://github.com/idavidrein/gpqa?tab=readme-ov-file) , original paper GPQA: A Graduate-Level Google-Proof Q&A Benchmark, Nov 2023, [arxiv](https://arxiv.org/abs/2311.12022)
@@ -242,13 +260,14 @@ in tech media and blog posts and podcasts from companies
 - Measuring Massive Multitask Language Understanding, May 2020, [arxiv](https://arxiv.org/abs/2009.03300)
 ---
 ### Large benchmarks
+- BabelArena: A Large-Scale Multilingual Benchmark for LLM Agents, Sep 2026, org not confirmed, [arxiv](https://arxiv.org/abs/2609.23490) — 16,146 instances, 23 languages, 13 domains
+- MCP-Atlas: A Large-Scale Benchmark for Tool-Use Competency with Real MCP Servers, Feb 2026, Scale AI, [arxiv](https://arxiv.org/abs/2602.00933) — 1,000 tasks, 36 real MCP servers
 - MMLU-Pro+: Evaluating Higher-Order Reasoning and Shortcut Learning in LLMs, Sep 2024, Audesk AI, [arxiv](https://arxiv.org/abs/2409.02257)
 - MMLU Pro Massive Multitask Language Understanding - Pro version, Jun 2024, [arxiv](https://arxiv.org/abs/2406.01574)
 - Super-NaturalInstructions: Generalization via Declarative Instructions on 1600+ NLP Tasks EMNLP 2022, [pdf](https://aclanthology.org/2022.emnlp-main.340.pdf)
 - Measuring Massive Multitask Language Understanding,  MMLU, ICLR, 2021, [arxiv](https://arxiv.org/pdf/2009.03300.pdf) [MMLU dataset](https://github.com/hendrycks/test)
 - BigBench: Beyond the Imitation Game: Quantifying and extrapolating the capabilities of language models, 2022, [arxiv](https://arxiv.org/abs/2206.04615),  [datasets](https://github.com/google/BIG-bench)
 - Challenging BIG-Bench Tasks and Whether Chain-of-Thought Can Solve Them, Oct 2022, [arxiv](https://arxiv.org/abs/2210.09261)
-  
 ---
 ### Evaluation of evaluation, Evaluation theory, evaluation methods, analysis of evaluation
 - What AI Benchmarks Actually Measure: Adapting Convergent and Discriminant Validity to Interrogate Fifty-Six AI Benchmarks, Sep 2026, [arxiv](https://arxiv.org/abs/2609.08812)
@@ -765,21 +784,4 @@ Agentic Tasks
 - TRAIL: Trace Reasoning and Agentic Issue Localization, May 2025, [arxiv](https://arxiv.org/abs/2505.08638)
 - Survey on Evaluation of LLM-based Agents, Mar 2025, [arxiv](https://arxiv.org/abs/2503.16416v1)
 - Embodied Agent Interface: Benchmarking LLMs for Embodied Decision Making, Oct 2024, [arxiv](https://arxiv.org/abs/2410.07166)
-- [AutoGenBench -- A Tool for Measuring and Evaluating AutoGen Agents from Microsoft](https://microsoft.github.io/autogen/0.2/blog/2024/01/25/AutoGenBench/) see an example how it's used in the evaluation of [Magentic-One: A Generalist Multi-Agent System for Solving Complex Tasks
-](https://arxiv.org/abs/2411.04468v1)
-- Overcoming the Machine Penalty with Imperfectly Fair AI Agents, Sep 2024, [arxiv](https://arxiv.org/abs/2410.03724)
-- LLM4RL: Enhancing Reinforcement Learning with Large Language Models, Aug 2024, [IEEE Explore](https://ieeexplore.ieee.org/document/10667224)
-- Put Your Money Where Your Mouth Is: Evaluating Strategic Planning and Execution of LLM Agents in an Auction Arena, Oct 2023, [arxiv](https://arxiv.org/abs/2310.05746)
-- Chapter 4 4 LLM-based autonomous agent evaluation in A survey on large language model based autonomous agents, Front. Comput. Sci., 2024, [Front. Comput. Sci., 2024, at Springer](https://link.springer.com/content/pdf/10.1007/s11704-024-40231-1.pdf#page=16.50)
-- LLM-Deliberation: Evaluating LLMs with Interactive Multi-Agent Negotiation Games, Sep 2023,[arxiv](https://arxiv.org/abs/2309.17234)
-- AgentBench: Evaluating LLMs as Agents, Aug 2023, [arxiv](https://arxiv.org/abs/2308.03688)
-- How Far Are We on the Decision-Making of LLMs? Evaluating LLMs' Gaming Ability in Multi-Agent Environments, Mar 2024, [arxiv](https://arxiv.org/abs/2403.11807)
-- R-Judge: Benchmarking Safety Risk Awareness for LLM Agents, Jan 2024, [arxiv](https://arxiv.org/abs/2401.10019)
-- ProAgent: Building Proactive Cooperative Agents with Large Language Models, Aug 2023, [arxiv](https://arxiv.org/abs/2308.11339)
-- Towards A Unified Agent with Foundation Models, Jul 2023, [arxiv](https://arxiv.org/abs/2307.09668)
-- RestGPT: Connecting Large Language Models with Real-World RESTful APIs, Jun 2023, [arxiv](https://arxiv.org/abs/2306.06624)
-- Large Language Models Are Semi-Parametric Reinforcement Learning Agents, Jun 2023, [arxiv](https://arxiv.org/abs/2306.07929)
-- ManiSkill2: A Unified Benchmark for Generalizable Manipulation Skills, Feb 2023, [arxiv](https://arxiv.org/abs/2302.04659)
----
-### AGI Evaluation
-AGI (Artificial General Intelligence) evalua
+- [AutoGenBench -- A Tool for Measuring and Evaluating AutoGen Agents from Microsoft](https://microsoft.github.io/autogen/0.2/blog/2024/01/25/AutoGe

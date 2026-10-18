@@ -61,8 +61,7 @@ Code-Graph-RAG parses a multi-language codebase with Tree-sitter, sharpened by c
 ## Latest News 🔥
 
 <!-- SECTION:latest_news -->
-- **Contextual Queries**: Support for more detailed context queries has been added, including reasons and evaluation ingestor reads, enhancing the understanding of code interactions.
-- **Graph Improvements**: The graph analysis capabilities have been expanded to follow cross-service links and implementors/overrides, providing a more comprehensive view of code dependencies.
+- **GitHub Sponsors**: Added support for GitHub Sponsors via the command line.
 <!-- /SECTION:latest_news -->
 
 See [NEWS.md](NEWS.md) for the full history.
@@ -226,6 +225,8 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines. Good 
 ## Support
 
 For issues or questions, check the [Troubleshooting](docs/advanced/troubleshooting.md) guide first, then open an issue.
+
+If cgr is useful to you, please consider pledging support on [GitHub Sponsors](https://github.com/sponsors/vitali87). cgr links the page under `cgr --version` and, in a terminal, after most commands finish; set `CGR_SPONSOR_PLEDGE=false` to hide that line.
 
 ## License
 

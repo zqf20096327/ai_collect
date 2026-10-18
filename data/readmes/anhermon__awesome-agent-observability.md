@@ -105,6 +105,7 @@ General-purpose OpenTelemetry backends that GenAI spans can be sent to when you 
 - [MCPJungle](https://github.com/mcpjungle/MCPJungle) - Self-hosted registry and single gateway endpoint for the MCP servers an organisation runs.
 - [MCP Context Forge](https://github.com/IBM/mcp-context-forge) - Gateway and registry that federates MCP servers and REST APIs behind one endpoint, with auth, plugins, and OpenTelemetry tracing of tool calls; Apache-2.0.
 - [Docker MCP Gateway](https://github.com/docker/mcp-gateway) - Docker CLI plugin that fronts multiple MCP servers behind one gateway with container isolation.
+- [Aident Loadout](https://docs.aident.ai/loadout/overview) - Proprietary hosted service, with an MIT-licensed client skill, that gives agents a CLI and MCP endpoint for actions on connected apps, with vault-held credentials, a pre-run cost estimate, and an audit of recent actions with status and, where applicable, cost.
 
 ## Agent frameworks with built-in tracing
 

@@ -331,7 +331,8 @@ src/omarchy_ai/
   myapi/      MyApi client, usage log and dashboard
   knowledge/  packaged Omarchy expert guide, capability registry, Arch notes
   cli/        omarchy-ai-settings, omarchy-ai-task, omarchy-ai-dashboard,
-              omarchy-ai-tool (tools the assistant writes for itself)
+              omarchy-ai-doctor (health checks), omarchy-ai-tool (tools
+              the assistant writes for itself)
 android-receiver/  Kotlin/Compose Android TV receiver app
 quickshell/        Quickshell/QML plugins: watchdog HUD, task/routine HUDs and
                    approval envelope, text chat, window labels, settings,
@@ -530,14 +531,16 @@ About 90 typed tools plus Omarchy's full command set:
   pins every file's hash, and the new tool is usable in the same
   conversation. A tool runs sandboxed with the MyApi vault and the
   network; its `tool.json` can ask for more with
-  `"sandbox": {"needs": ["assistant_keys", "desktop"]}` or opt out with
-  `"sandbox": false` (both part of what you approve).
+  `"sandbox": {"needs": ["assistant_keys", "desktop"]}`, cut the network
+  with `"network": false` in the same object, or opt out with
+  `"sandbox": false` (all part of what you approve).
 - **Skills.** A procedure that worked is saved as a named skill (`SKILL.md`
   under `~/.config/omarchy-ai/skills/`) and rewritten when it turns out
   wrong; Jev suggests the matching skill, or none.
 - **Memory.** Recent conversations are folded into the next session, and
-  standing preferences ("always type terminal commands in English") are
-  kept with `remember_preference`.
+  standing rules ("always type terminal commands in English") are kept
+  once you say yes to saving them (see
+  [Approvals, untrusted content and memory](#11-approvals-untrusted-content-and-memory)).
 
 ### 7. Voice and conversation
 
@@ -564,6 +567,20 @@ About 90 typed tools plus Omarchy's full command set:
 - **Escalation.** When something keeps failing, or it tells you it can't,
   the job goes to the Task Runtime with your words and everything that
   failed, instead of being dropped.
+- **Dropped connections.** When a Gemini Live session closes for a
+  transient reason (a 1011 internal error, a broken connection), it
+  reconnects once to the same model. In typed chat the unanswered line is
+  sent again, unless a tool call for it had already started; by voice it
+  says the connection dropped and asks you to repeat. If that reconnect
+  fails too, voice moves to the next model and the message names the
+  reason. Quota and auth errors do not reconnect.
+- **Prompt v2 (opt-in).** `prompt_version: v2` in
+  `~/.config/omarchy-ai/config.yaml` (or `OMARCHY_PROMPT_VERSION=v2` in the
+  service environment) uses a shorter system prompt
+  (`voice/prompt_v2.py`): about 6% fewer tokens per voice session, the same
+  tool routing in probes, and it asks before saving a rule. The default,
+  `legacy`, is unchanged. [`evals/README.md`](evals/README.md) compares the
+  two.
 
 ### 8. Phone, mirroring and TV: the server on your computer
 
@@ -655,17 +672,162 @@ flowchart LR
   connects Gmail, Calendar, Drive, Notion, Slack and 200+ services, with no
   OAuth redirect and no token shown. It prefers a real API call over a
   browser and a screenshot. Reads run directly; sends, creates, updates and
-  deletes require a fresh confirmation of the exact operation. Gmail attachments have a
+  deletes wait on a confirm card for the exact operation (see
+  [Approvals](#11-approvals-untrusted-content-and-memory)). Reading the
+  newest mail without a query is an inbox search. A message MyApi's
+  injection scanner withholds is reported as blocked, not as an empty
+  answer. Gmail attachments have a
   dedicated search-and-download flow into `~/Downloads/Omarchy_AI/`. A bar
   panel and `omarchy-ai-dashboard` show live per-service usage. Requires a
   MyApi Pro/Heavy/Enterprise plan.
 - **Updates.** `check_assistant_updates` / `update_assistant` install
-  checksum-verified GitHub Release bundles in a separate service, keeping
-  the previous install to roll back to. It mentions a new version on wake,
+  checksum- and signature-verified GitHub Release bundles side by side in a
+  separate service, and roll back on their own if the new version fails its
+  health check ([Updates](#updates)). It mentions a new version on wake,
   reads you the highlights (`get_release_notes`), and only installs when you
   ask.
 - **Issues.** A failed update, or *"file an issue about this"*, opens a
   GitHub issue with your login or a configured token.
+
+### 11. Approvals, untrusted content and memory
+
+One approval policy (`core/approvals.py`) covers voice, chat, the phone,
+the Task Runtime and scheduled jobs.
+
+- **Sends wait on a confirm card.** An email, a reply, or any write through
+  MyApi (a post, a calendar change, a REST call) is never sent on the call.
+  A card shows the exact recipient, subject and body, and only a yes or a
+  tap on **Send** for exactly those arguments lets it go out. A card waits
+  up to 7 days.
+- **A tap, not a spoken yes**, is needed for: HIGH-risk commands;
+  destructive actions (deleting a skill, overwriting an existing file, `rm`
+  or package removal in a terminal); any send once the conversation has
+  read untrusted content (below); a card older than 10 minutes; and, with
+  speaker ID on, a yes from an unrecognized voice or from someone who is
+  not the owner. ELEVATED commands accept a spoken yes from a verified
+  speaker.
+- **Standing approvals** (off by default, made only by you) let sends to
+  one exact recipient, for one kind of send, go out without a card. They
+  never apply when the recipient came from content:
+
+  ```bash
+  .venv/bin/python -m omarchy_ai.core.approvals standing add gmail_send someone@example.com
+  .venv/bin/python -m omarchy_ai.core.approvals standing list
+  .venv/bin/python -m omarchy_ai.core.approvals standing remove gmail_send someone@example.com
+  ```
+
+  The kinds are `gmail_send` and `gmail_reply`; they are stored in
+  `~/.local/state/omarchy-ai/standing_approvals.json`.
+- **Scheduled sends** are approved once, when you create them. At run time
+  only that exact send goes out; a changed one is refused and reported.
+- **Nothing is sent twice.** Every external or irreversible change is
+  journaled with an idempotency key first (`core/effects.py`). A send cut
+  off by a crash or restart is settled from that journal on startup and is
+  never re-sent on its own. If it may have gone out, an **"I may have sent
+  this"** card offers check (email only), resend or drop. Within one
+  request, an identical action repeated within 10 seconds runs once,
+  unless you asked for a count ("twice", "3 times").
+- **Untrusted content.** Results from email and MyApi, web pages, files,
+  terminal output, screenshots, camera looks and your own tools reach the
+  model inside an `<untrusted>` fence (`execution/provenance.py`).
+  Instructions in there are data: they are reported to you, not followed.
+  Once such content is in a conversation or task, an irreversible action
+  aimed at something you did not say yourself (a recipient, URL, path,
+  command or amount) waits for your tap.
+- **Secrets stay masked.** The Sudo Access password, spoken passwords,
+  MyApi vault values and the assistant's key files are masked before
+  anything reaches a model, speech synthesis, the phone, logs or state
+  files. `omarchy-ai-doctor --leaked` says what to rotate if one may have
+  leaked.
+- **Memory asks first.** `remember_preference` only proposes a rule. The
+  assistant asks "Save '…' as a standing rule?" and saves it after your yes
+  in the same conversation. A conversation that read untrusted content
+  saves nothing (say it again in a new one, or add it yourself). A
+  near-duplicate is offered as a replacement, and past 50 rules nothing is
+  dropped: the three least-used are listed for review. Manage them in the
+  settings panel's People tab (**Standing rules**) or:
+
+  ```bash
+  .venv/bin/omarchy-ai-settings memory-list
+  .venv/bin/omarchy-ai-settings memory-add "always type terminal commands in English"
+  .venv/bin/omarchy-ai-settings memory-edit <id> "<new text>"
+  .venv/bin/omarchy-ai-settings memory-forget <id>
+  .venv/bin/omarchy-ai-settings memory-confirm <id>
+  ```
+
+  Active rules are in `~/.local/state/omarchy-ai/learned_preferences.yaml`,
+  with their metadata and open proposals in `memory.json` beside it.
+- **Notes are recalled, not injected.** Facts ("the spare key is in the
+  blue drawer") and procedures are saved through the same ask-first flow
+  and the same untrusted-content rule, but only standing rules are in every
+  prompt: the catalog tool `recall` finds a note when it is needed (a local
+  SQLite FTS5 index; optional Gateway embeddings, off by default). A new
+  rule that contradicts a saved one asks which wins; a similar fact asks
+  whether to replace it or keep both. Each recall counts as a use, and
+  notes unused for 90 days are listed for review (nothing is dropped):
+
+  ```bash
+  .venv/bin/omarchy-ai-settings memory-add --kind fact "the spare key is in the blue drawer"
+  .venv/bin/omarchy-ai-settings memory-recall "spare key"
+  .venv/bin/omarchy-ai-settings memory-stale --days 90
+  .venv/bin/omarchy-ai-settings memory-confirm --keep-both <id>
+  .venv/bin/omarchy-ai-settings memory-embeddings on|off
+  ```
+
+  Notes are in `memory_notes.json` (older versions never touch it); the
+  index `memory_index.sqlite3` is a cache rebuilt from it.
+
+### 12. Health check, safe mode and logs
+
+- **Health check.** Ask the assistant to check its own health (the
+  `run_diagnostics` tool), or run `omarchy-ai-doctor` (also
+  `omarchy-ai doctor`; from an unpacked install, `.venv/bin/omarchy-ai-doctor`).
+  It runs 22 read-only checks, each green, yellow or red with a fix: config,
+  key files, Gateway credit, MyApi, quota and provider health, safe mode,
+  the service unit, microphone and speaker, wake models, Hyprland, `bwrap`,
+  native packages, state files, stuck pending actions, uncertain sends,
+  interrupted tasks, agenda leases, disk space and the version. It needs
+  nothing from the daemon and never restarts anything.
+
+  ```bash
+  omarchy-ai-doctor                  # every check, problems first
+  omarchy-ai-doctor --json           # the same as JSON
+  omarchy-ai-doctor --quick          # skip the network checks
+  omarchy-ai-doctor --trace <id>     # one session, turn, tool call or task from the logs
+  omarchy-ai-doctor --bundle [PATH]  # a redacted 0600 support tarball
+  omarchy-ai-doctor --leaked [SRC]   # what to rotate (sudo, spoken, vault, api_key)
+  ```
+
+- **Watchdog.** The service is `Type=notify` with `WatchdogSec=30`. The
+  daemon pings systemd only while its event loop, agenda heartbeat and tool
+  runner respond, so a hang is killed and restarted. Restarts back off from
+  2 to 30 seconds; after 5 starts in 2 minutes systemd gives up and the
+  unit shows as failed. `MemoryMax=10G` restarts a runaway instead of
+  pushing the desktop into swap. Unit changes take effect after
+  `bash install.sh` (it re-renders the unit).
+- **Safe mode.** A start after an unclean stop counts as a crash; a
+  deliberate restart never does. Three crashes within 5 minutes start the
+  daemon in safe mode with an urgent desktop and phone notification. Voice,
+  the phone bridge and a room speaker keep working; scheduled actions,
+  watches, task resume after a restart, co-pilot handover and update checks
+  are off. After 10 minutes without a crash it clears on its own and the
+  held-back work starts. Tasks that were not resumed stay interrupted until
+  you resume them. `omarchy-ai-doctor` shows the state.
+- **Hung tools.** Every tool call has a deadline (`execution/runner.py`).
+  One that runs past it is answered "timed out after N s; nothing was
+  confirmed" and the conversation goes on; other calls are not held up.
+  A hangup or "stop" cancels the calls still running. MyApi and Gmail reads
+  run in a worker process that is killed at the deadline.
+- **Provider health** survives restarts: a backend that just failed or ran
+  out of quota stays benched until its cooldown ends
+  (`~/.local/state/omarchy-ai/provider_health.json`; delete it to clear).
+- **Logs.** `journalctl --user -u omarchy-ai.service` reads as before. Every
+  record also goes to `~/.local/state/omarchy-ai/logs/omarchy-ai.jsonl`
+  with its session, turn, tool call, task, step, effect and run IDs, so
+  `omarchy-ai-doctor --trace <id>` can follow one request through tool
+  calls and the tasks they started. The file rolls over at 10 MiB or at
+  midnight and keeps 14 days (at most 40 files). Secrets are masked in
+  every log.
 
 ---
 
@@ -835,8 +997,9 @@ its rules must allow TCP 8766. Restart the service if Tailscale connects after
 it started, to refresh the certificate, and pair again after a hostname or IP
 change.
 
-**7. Android receiver** (casting only): the release package includes the APK.
-From source it is built on the first `install_receiver_on_tv` call, or with
+**7. Android receiver** (casting only): locally built release packages include
+the APK. Otherwise (CI-built releases, source checkouts) it is built on the
+first `install_receiver_on_tv` call, or with
 `cd android-receiver && mise exec -- ./gradlew :app:assembleDebug` (run
 `mise install` there first for the pinned JDK/SDK).
 
@@ -860,20 +1023,49 @@ check (2-second limit) and mentions a newer version in its first reply.
 Offline checks never block a conversation.
 
 Say **"Check for updates"**, **"Update yourself"** or **"What's the update
-status?"**. Only an explicit request installs. The updater verifies the
-checksum, unpacks the bundle and prepares a new environment before stopping
-the assistant, keeping your keys, settings, history and source checkout. It
-runs in `omarchy-ai-update.service`, keeps the previous install, and restores
-it if setup or startup fails. Progress is in
-`~/.local/state/omarchy-ai/updates/install.json`, output in
+status?"**. Only an explicit request installs. It runs in
+`omarchy-ai-update.service` and keeps your keys, settings and history:
+
+1. **Verify:** the `.sha256`, then the minisign signature (`.minisig`) when
+   the release has one, against the keys pinned in the running install
+   (`src/omarchy_ai/core/release-keys.pub`). A signature that does not verify
+   is refused. Unsigned releases are accepted by SHA-256 alone only while the
+   running install pins no key; once it pins one, newer releases must be
+   signed.
+2. **Install side by side** into `~/.local/share/omarchy-ai/versions/<version>`
+   and prepare its environment while the assistant keeps running.
+3. **Switch:** stop the assistant, point `~/.local/share/omarchy-ai/current`
+   at the new version, run its setup (the unit and plugins name `current`),
+   start it.
+4. **Check:** the startup check, then `omarchy-ai-doctor --quick`. A check that
+   turns red with the new version fails the update; reds that were already
+   there (a missing key, no microphone) do not.
+5. **Watch:** for 10 minutes, crash-loop safe mode or a failed unit also fails
+   it.
+
+Any failure after the switch **rolls back** on its own: `current` points at
+the previous version again, the previous unit file, plugins and shell hooks
+are restored, and the assistant restarts. The last two versions are kept.
+Progress is in `~/.local/state/omarchy-ai/updates/install.json`, output in
 `journalctl --user -u omarchy-ai-update.service`. Missing system packages are
 reported rather than prompting for sudo from a background session. Android
 receiver updates are separate.
 
+**Source checkouts are never self-updated.** When the service runs from a
+git checkout (`install.sh` from a clone), "update yourself" says so and
+leaves it alone; use `git pull --ff-only` and `bash install.sh`.
+
+**Older installs.** An install unpacked before `versions/` existed moves to
+it on its first update, once: the new version goes into `versions/`, the unit
+is repointed at `current`, and the old tree stays where it is as the
+rollback target (a rollback restores the old unit file). To undo it by hand,
+run `bash install.sh` from the old tree. Updaters up to 0.15.0 only know the
+`.tar.gz` and `.sha256` assets, which every release keeps publishing, so they
+keep updating and ignore the signature.
+
 Only Release assets are offered: the 0.2.0-0.4.0 bundles once committed
 under `dist/` are no longer tracked on `main` (they stay in git history),
-and the highest version wins. Integrity is the SHA-256 file shipped as a Release asset
-(not a separate publisher signature).
+and the highest version wins.
 
 **Issue reporting.** With a GitHub token configured, a failed self-update
 files an issue with the details, and *"file an issue about this"* works for
@@ -890,14 +1082,80 @@ GITHUB_ISSUE_TOKEN=<a fine-grained PAT, Issues: write only on omribenami/Omarchy
 
 ---
 
+## Maintainers: checks before a pull request
+
+CI (`.github/workflows/ci.yml`) runs on every push to `main` and every pull
+request, on Python 3.12 and 3.13. Run the same gates locally:
+
+```bash
+uv lock --check
+uv sync --frozen --group dev
+uv run --frozen ruff check
+uv run --frozen ruff format --check
+uv run --frozen mypy
+CI=1 uv run --frozen pytest -q      # unit tests, chaos tests and the deterministic evals
+node --test tests/phone_text.test.cjs
+```
+
+`CI=1` skips tests marked `live` or `hardware`. Tests run with throwaway
+XDG directories and cannot reach the desktop, devices or the keyring
+(`tests/no_live_desktop.py`). Files listed in `[tool.ruff.format] exclude`
+and the mypy `ignore_errors` list in `pyproject.toml` are existing debt:
+fix a file and remove its entry in the same change.
+
 ## Maintainers: build and publish a release
 
-Build from a clean, committed checkout; the tarball is a Release asset, not a
-git commit.
+Releases are built, signed and published by CI
+(`.github/workflows/release.yml`):
 
 1. Bump `version` in `pyproject.toml`, run `uv lock`, and rename
    `## [Unreleased]` in `CHANGELOG.md` to `## [<version>] - <date>` (its
-   `### Highlights` are what the assistant reads aloud as "what's new"). Commit and push.
+   `### Highlights` are what the assistant reads aloud as "what's new"). Merge
+   it to `main`.
+2. Tag that commit and push the tag:
+
+   ```bash
+   git tag v<version> && git push origin v<version>
+   ```
+
+The workflow checks that the tag matches `pyproject.toml`, builds the bundle
+with `scripts/build-install-package.sh --skip-android` (which also refuses a
+stale `uv.lock` or missing CHANGELOG highlights), checks the SHA-256, signs
+the tarball with minisign, verifies the signature with the updater's own code,
+adds a build provenance attestation (`gh attestation verify <tarball> --repo
+omribenami/Omarchy-AI`), and creates Release `v<version>` with the
+`.tar.gz`, `.sha256` and `.minisig`. It never replaces a published release; a
+broken one gets a new version. Pull requests that touch the release files run
+the same build as a dry run with a throwaway key, and publish nothing.
+
+CI bundles leave out the receiver APK: it is a debug build signed with the
+building machine's keystore, which a CI-built APK would not match. The
+assistant builds the APK from the bundled sources when it installs the
+receiver; a local build (below, without `--skip-android`) still bundles it.
+
+**Signing key (one-time setup).** Until it exists, tag releases are published
+unsigned (SHA-256 and attestation only) with a warning:
+
+```bash
+minisign -G -W -p omarchy-ai-release.pub -s omarchy-ai-release.key   # -W: no password, CI cannot type one
+gh secret set MINISIGN_SECRET_KEY --repo omribenami/Omarchy-AI < omarchy-ai-release.key
+sed -n 2p omarchy-ai-release.pub >> src/omarchy_ai/core/release-keys.pub   # commit this
+```
+
+Keep the secret key offline (or delete it; a new key can be added the same
+way). The pinned key protects updates from the first release that ships it:
+installs running that release refuse newer unsigned releases. A key pinned
+without the secret, or a secret whose key is not pinned, fails the release
+before anything is published. To rotate, add the new key line, release once
+signed with the old key, then switch the secret and remove the old line.
+
+### Local build and publish
+
+`scripts/publish-github-release.py` still works from a machine with `gh`, for
+when CI is unavailable. Build from a clean, committed checkout; the tarball is
+a Release asset, not a git commit.
+
+1. Bump the version and CHANGELOG as above; commit and push.
 2. Build:
 
    ```bash
@@ -909,8 +1167,11 @@ git commit.
    and its `.sha256`: the Python wheel and sdist, a fresh receiver APK
    (`--skip-android` omits it) and all tracked runtime files. `dist/` is
    gitignored; don't `git add` new tarballs.
-3. Publish tag `v<version>` with both files. HEAD must be `origin/main`.
-   Dry-run prints the `gh` command and REST steps; `--publish` uploads.
+3. Sign it, if a key is pinned (installs that pin one refuse unsigned
+   releases): `minisign -S -s omarchy-ai-release.key -m dist/omarchy-ai-<version>-linux-x86_64.tar.gz`.
+4. Publish tag `v<version>` with the files (the `.minisig` too when present).
+   HEAD must be `origin/main`. Dry-run prints the `gh` command and REST steps;
+   `--publish` uploads.
 
    ```bash
    .venv/bin/python scripts/publish-github-release.py          # inspect
@@ -918,7 +1179,7 @@ git commit.
    ```
 
 The publisher uses `gh` when available, otherwise `GH_TOKEN`/`GITHUB_TOKEN`
-(contents: write) against the REST API; re-running replaces the two assets.
+(contents: write) against the REST API; re-running replaces the assets.
 Download counts are `assets[].download_count` on the release, or:
 
 ```bash
@@ -941,11 +1202,10 @@ tarball bytes); run the Release publisher afterwards on a machine with `gh`:
 
 Documented honestly rather than papered over:
 
-- **Permissions are enforced in the Task Runtime, not yet for every live
-  tool.** Task Runtime commands go through the risk classifier and
-  approvals. The live model's own tools are still a hand-curated list of
-  read-only and reversible actions (plus Sudo Access, which you enable
-  explicitly), not a separate enforcement layer.
+- **The risk classifier covers Task Runtime commands, not every live
+  tool.** Live tools go through the approval policy by effect class (sends,
+  destructive actions and taint), but a live tool's own arguments are not
+  risk-classified the way a Task Runtime command is.
 - **Behaviour rules are prompts.** "Which machine", "copy, don't invent" and
   "no promise without a watch" were verified against the live model with
   scripted terminals, and still depend on the model following them; it can
@@ -967,7 +1227,7 @@ Documented honestly rather than papered over:
 - **"One job, one task" is a Jev judgement.** If Jev is unreachable or
   unsure, a new task starts rather than risk merging two different jobs.
 - **MyApi capabilities follow the scope granted to the enrolled device.**
-  External writes additionally require confirmation in the current conversation.
+  External writes additionally wait on a confirm card.
   Disconnecting in the panel only stops this machine; remove the device in
   your MyApi dashboard to fully revoke access.
 - The settings panel's path to the settings CLI is hardcoded to the original

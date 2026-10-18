@@ -98,7 +98,7 @@ curl -s localhost:8080/v1/choice -H 'content-type: application/json' -d '{
 
 ## Supported Models
 
-| Verdict-ready model | Languages | One command |
+| Verdict-ready&nbsp;model | Languages | One&nbsp;command |
 |---|---|---|
 | [`verdict-models/decider-2b`](https://huggingface.co/verdict-models/decider-2b) | English | `verdict serve verdict-models/decider-2b` |
 | [`verdict-models/von`](https://huggingface.co/verdict-models/von) | English | `verdict serve verdict-models/von` |
@@ -269,11 +269,11 @@ All numbers measured on one machine (RTX 4090, AMD EPYC 7543), end to end over H
 
 **GPU**
 
-| concurrency | Verdict rps | `decider.serve` rps | rps ratio | Verdict P50 / P99 (ms) | `decider.serve` P50 / P99 (ms) | P50 / P99 ratio |
+| concurrency | Verdict&nbsp;rps | `decider.serve`&nbsp;rps | rps&nbsp;ratio | Verdict&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | `decider.serve`&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | P50&nbsp;/&nbsp;P99&nbsp;ratio |
 |---|---:|---:|---:|---:|---:|---:|
-| 1 | 139.6 | 132.4 | 1.05x | 6.91 / 7.88 | 7.51 / 7.94 | 1.09 / 1.01x |
-| 8 | 436.5 | 314.0 | 1.39x | 18.23 / 20.17 | 25.41 / 26.87 | 1.39 / 1.33x |
-| 64 | 795.9 | 506.2 | 1.57x | 80.13 / 85.43 | 112.91 / 436.79 | 1.41 / 5.11x |
+| 1 | 139.6 | 132.4 | 1.05x | 6.91&nbsp;/&nbsp;7.88 | 7.51&nbsp;/&nbsp;7.94 | 1.09&nbsp;/&nbsp;1.01x |
+| 8 | 436.5 | 314.0 | 1.39x | 18.23&nbsp;/&nbsp;20.17 | 25.41&nbsp;/&nbsp;26.87 | 1.39&nbsp;/&nbsp;1.33x |
+| 64 | 795.9 | 506.2 | 1.57x | 80.13&nbsp;/&nbsp;85.43 | 112.91&nbsp;/&nbsp;436.79 | 1.41&nbsp;/&nbsp;5.11x |
 
 </details>
 
@@ -282,19 +282,19 @@ All numbers measured on one machine (RTX 4090, AMD EPYC 7543), end to end over H
 
 **GPU**
 
-| concurrency | Verdict rps | `von serve` rps | rps ratio | Verdict P50 / P99 (ms) | `von serve` P50 / P99 (ms) | P50 / P99 ratio |
+| concurrency | Verdict&nbsp;rps | `von serve`&nbsp;rps | rps&nbsp;ratio | Verdict&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | `von serve`&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | P50&nbsp;/&nbsp;P99&nbsp;ratio |
 |---|---:|---:|---:|---:|---:|---:|
-| 1 | 113.8 | 46.4 | 2.45x | 8.61 / 11.98 | 22.89 / 28.46 | 2.66 / 2.38x |
-| 8 | 536.4 | 31.2 | 17.2x | 14.86 / 16.61 | 250.91 / 435.99 | 16.9 / 26.2x |
-| 64 | 1476.1 | 22.3 | 66.1x | 42.58 / 53.24 | 2848.80 / 3333.40 | 66.9 / 62.6x |
+| 1 | 113.8 | 46.4 | 2.45x | 8.61&nbsp;/&nbsp;11.98 | 22.89&nbsp;/&nbsp;28.46 | 2.66&nbsp;/&nbsp;2.38x |
+| 8 | 536.4 | 31.2 | 17.2x | 14.86&nbsp;/&nbsp;16.61 | 250.91&nbsp;/&nbsp;435.99 | 16.9&nbsp;/&nbsp;26.2x |
+| 64 | 1476.1 | 22.3 | 66.1x | 42.58&nbsp;/&nbsp;53.24 | 2848.80&nbsp;/&nbsp;3333.40 | 66.9&nbsp;/&nbsp;62.6x |
 
 **CPU**
 
-| concurrency | Verdict rps | `von serve` rps | rps ratio | Verdict P50 / P99 (ms) | `von serve` P50 / P99 (ms) | P50 / P99 ratio |
+| concurrency | Verdict&nbsp;rps | `von serve`&nbsp;rps | rps&nbsp;ratio | Verdict&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | `von serve`&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | P50&nbsp;/&nbsp;P99&nbsp;ratio |
 |---|---:|---:|---:|---:|---:|---:|
-| 1 | 11.9 | 3.8 | 3.11x | 83.11 / 97.55 | 272.53 / 409.13 | 3.28 / 4.19x |
-| 8 | 20.7 | 5.0 | 4.17x | 383.82 / 449.74 | 1607.00 / 1927.80 | 4.19 / 4.29x |
-| 64 | 21.2 | 4.8 | 4.37x | 2989.60 / 3430.80 | 13644.60 / 15478.20 | 4.56 / 4.51x |
+| 1 | 11.9 | 3.8 | 3.11x | 83.11&nbsp;/&nbsp;97.55 | 272.53&nbsp;/&nbsp;409.13 | 3.28&nbsp;/&nbsp;4.19x |
+| 8 | 20.7 | 5.0 | 4.17x | 383.82&nbsp;/&nbsp;449.74 | 1607.00&nbsp;/&nbsp;1927.80 | 4.19&nbsp;/&nbsp;4.29x |
+| 64 | 21.2 | 4.8 | 4.37x | 2989.60&nbsp;/&nbsp;3430.80 | 13644.60&nbsp;/&nbsp;15478.20 | 4.56&nbsp;/&nbsp;4.51x |
 
 </details>
 
@@ -303,19 +303,19 @@ All numbers measured on one machine (RTX 4090, AMD EPYC 7543), end to end over H
 
 **GPU**
 
-| concurrency | Verdict rps | `laya-serve` rps | rps ratio | Verdict P50 / P99 (ms) | `laya-serve` P50 / P99 (ms) | P50 / P99 ratio |
+| concurrency | Verdict&nbsp;rps | `laya-serve`&nbsp;rps | rps&nbsp;ratio | Verdict&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | `laya-serve`&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | P50&nbsp;/&nbsp;P99&nbsp;ratio |
 |---|---:|---:|---:|---:|---:|---:|
-| 1 | 123.2 | 49.1 | 2.51x | 8.03 / 10.29 | 18.54 / 28.92 | 2.31 / 2.81x |
-| 8 | 553.4 | 46.3 | 11.9x | 13.99 / 19.79 | 184.36 / 204.24 | 13.2 / 10.3x |
-| 64 | 2534.4 | refused requests | — | 24.67 / 32.23 | refused requests | — |
+| 1 | 123.2 | 49.1 | 2.51x | 8.03&nbsp;/&nbsp;10.29 | 18.54&nbsp;/&nbsp;28.92 | 2.31&nbsp;/&nbsp;2.81x |
+| 8 | 553.4 | 46.3 | 11.9x | 13.99&nbsp;/&nbsp;19.79 | 184.36&nbsp;/&nbsp;204.24 | 13.2&nbsp;/&nbsp;10.3x |
+| 64 | 2534.4 | refused&nbsp;requests | — | 24.67&nbsp;/&nbsp;32.23 | refused&nbsp;requests | — |
 
 **CPU**
 
-| concurrency | Verdict rps | `laya-serve` rps | rps ratio | Verdict P50 / P99 (ms) | `laya-serve` P50 / P99 (ms) | P50 / P99 ratio |
+| concurrency | Verdict&nbsp;rps | `laya-serve`&nbsp;rps | rps&nbsp;ratio | Verdict&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | `laya-serve`&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | P50&nbsp;/&nbsp;P99&nbsp;ratio |
 |---|---:|---:|---:|---:|---:|---:|
-| 1 | 19.7 | 6.2 | 3.16x | 50.51 / 64.37 | 161.13 / 189.54 | 3.19 / 2.94x |
-| 8 | 33.4 | 5.7 | 5.84x | 238.10 / 269.73 | 1396.60 / 1661.30 | 5.87 / 6.16x |
-| 64 | 48.6 | refused requests | — | 1312.40 / 1422.60 | refused requests | — |
+| 1 | 19.7 | 6.2 | 3.16x | 50.51&nbsp;/&nbsp;64.37 | 161.13&nbsp;/&nbsp;189.54 | 3.19&nbsp;/&nbsp;2.94x |
+| 8 | 33.4 | 5.7 | 5.84x | 238.10&nbsp;/&nbsp;269.73 | 1396.60&nbsp;/&nbsp;1661.30 | 5.87&nbsp;/&nbsp;6.16x |
+| 64 | 48.6 | refused&nbsp;requests | — | 1312.40&nbsp;/&nbsp;1422.60 | refused&nbsp;requests | — |
 
 </details>
 
@@ -324,19 +324,19 @@ All numbers measured on one machine (RTX 4090, AMD EPYC 7543), end to end over H
 
 **GPU**
 
-| concurrency | Verdict rps | `laya-serve` rps | rps ratio | Verdict P50 / P99 (ms) | `laya-serve` P50 / P99 (ms) | P50 / P99 ratio |
+| concurrency | Verdict&nbsp;rps | `laya-serve`&nbsp;rps | rps&nbsp;ratio | Verdict&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | `laya-serve`&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | P50&nbsp;/&nbsp;P99&nbsp;ratio |
 |---|---:|---:|---:|---:|---:|---:|
-| 1 | 121.4 | 34.4 | 3.53x | 8.37 / 11.07 | 28.58 / 32.73 | 3.42 / 2.96x |
-| 8 | 501.4 | 35.4 | 14.2x | 15.99 / 22.42 | 227.96 / 250.60 | 14.3 / 11.2x |
-| 64 | 1353.0 | refused requests | — | 46.71 / 65.19 | refused requests | — |
+| 1 | 121.4 | 34.4 | 3.53x | 8.37&nbsp;/&nbsp;11.07 | 28.58&nbsp;/&nbsp;32.73 | 3.42&nbsp;/&nbsp;2.96x |
+| 8 | 501.4 | 35.4 | 14.2x | 15.99&nbsp;/&nbsp;22.42 | 227.96&nbsp;/&nbsp;250.60 | 14.3&nbsp;/&nbsp;11.2x |
+| 64 | 1353.0 | refused&nbsp;requests | — | 46.71&nbsp;/&nbsp;65.19 | refused&nbsp;requests | — |
 
 **CPU**
 
-| concurrency | Verdict rps | `laya-serve` rps | rps ratio | Verdict P50 / P99 (ms) | `laya-serve` P50 / P99 (ms) | P50 / P99 ratio |
+| concurrency | Verdict&nbsp;rps | `laya-serve`&nbsp;rps | rps&nbsp;ratio | Verdict&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | `laya-serve`&nbsp;P50&nbsp;/&nbsp;P99&nbsp;(ms) | P50&nbsp;/&nbsp;P99&nbsp;ratio |
 |---|---:|---:|---:|---:|---:|---:|
-| 1 | 11.8 | 4.4 | 2.67x | 84.21 / 100.87 | 223.81 / 273.16 | 2.66 / 2.71x |
-| 8 | 18.4 | 4.3 | 4.23x | 436.70 / 533.71 | 1882.50 / 2131.30 | 4.31 / 3.99x |
-| 64 | 16.9 | refused requests | — | 3796.80 / 4233.90 | refused requests | — |
+| 1 | 11.8 | 4.4 | 2.67x | 84.21&nbsp;/&nbsp;100.87 | 223.81&nbsp;/&nbsp;273.16 | 2.66&nbsp;/&nbsp;2.71x |
+| 8 | 18.4 | 4.3 | 4.23x | 436.70&nbsp;/&nbsp;533.71 | 1882.50&nbsp;/&nbsp;2131.30 | 4.31&nbsp;/&nbsp;3.99x |
+| 64 | 16.9 | refused&nbsp;requests | — | 3796.80&nbsp;/&nbsp;4233.90 | refused&nbsp;requests | — |
 
 </details>
 
@@ -344,7 +344,7 @@ All numbers measured on one machine (RTX 4090, AMD EPYC 7543), end to end over H
 
 Verdict runs its own inference pipeline, graded against a golden standard: the official SDK's offline output on CPU fp32. In accuracy PKs, Verdict and the model author's own server are graded against the same golden standard on one RTX 4090 (CUDA) — worst-case deviation across the whole corpus:
 
-| Model | Verdict | official server | result |
+| Model | Verdict | official&nbsp;server | result |
 |---|---:|---:|:--|
 | laya | 0.0 | 0.943 | Verdict ahead |
 | laya-multilingual | 1e-4 | 1.74 | Verdict ahead |
@@ -357,7 +357,7 @@ One subcommand: `verdict serve <MODEL_DIR_OR_REPO>`.
 
 | Flag | Default | Meaning |
 |---|---|---|
-| `--host` / `--port` | 127.0.0.1 / 8080 | address and port to serve on |
+| `--host` / `--port` | 127.0.0.1&nbsp;/&nbsp;8080 | address and port to serve on |
 | `--device` | auto | `auto` uses CUDA when available, else CPU; `cpu` / `cuda` force the choice |
 | `--max-batch-size` | 32 | max requests per batch |
 | `--batch-window-ms` | 5 | how long to wait for more requests before running a batch |

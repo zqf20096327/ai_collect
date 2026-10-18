@@ -21,15 +21,15 @@ Mercury is source-available. See [Licence](#licence) for the production-use term
 
 ## Install
 
-Release archives are available for Apple silicon and Intel Macs, Linux x64,
-and Windows x64. Install `git` separately; each archive includes Node and
-ripgrep, so a separate Node installation is unnecessary.
+Release archives are available for Apple silicon and Intel Macs, Linux x64
+and arm64, and Windows x64 and arm64. Install `git` separately; each archive
+includes Node and ripgrep, so a separate Node installation is unnecessary.
 
 Choose one installation method:
 
 ```sh
-curl -fsSL https://mercury-cli.ai/install | sh     # macOS and Linux x64
-irm https://mercury-cli.ai/install.ps1 | iex        # Windows x64, in PowerShell 7
+curl -fsSL https://mercury-cli.ai/install | sh     # macOS and Linux (x64 and arm64)
+irm https://mercury-cli.ai/install.ps1 | iex        # Windows (x64 and arm64), in PowerShell 7
 brew install Whq02/mercury/mercury                 # Homebrew: macOS and Linux x64
 npm install -g mercury-tech-cli                    # npm; `bun install -g mercury-tech-cli` is the same package
 mise use -g npm:mercury-tech-cli                   # mise, through the npm package
@@ -391,7 +391,7 @@ reason, until you release it.
 
 [docs/SESSIONS.md](docs/SESSIONS.md) covers the session lifecycle.
 
-## Providers and models: 13 provider sign-ins and `/localsetup`
+## Providers and models: 20 provider sign-ins and `/localsetup`
 
 Use `/logins` to connect a provider. It opens the same sign-in catalogue used
 during setup. `/accounts` manages connected provider slots afterwards.
@@ -408,8 +408,17 @@ during setup. `/accounts` manages connected provider slots afterwards.
 - **xAI (Grok):** sign in with your Grok subscription (SuperGrok / X Premium) or paste an API key through `/logins xai`.
 - **Meta (Muse):** Sign in with Meta (a Muse Code subscription, a device code in your browser) or a pay-as-you-go Model API key. Sign in with Meta exchanges the device code against Meta's OIDC endpoints (`https://auth.meta.com/oidc/device/authorization/` and `/oidc/device/token/`) under Muse Code's public client id, sends the resulting account token once to `https://api.meta.ai/muse-code/key` to mint the subscription's API key (and on bounded `/usage` reads for the plan's tier and usage windows), and sends only the minted key on every model request to `https://api.meta.ai/v1`. A pasted Model API key or `MODEL_API_KEY` / `META_API_KEY` bills pay-as-you-go.
 
+- **Qwen:** a QwenCloud key (Token Plan or pay-as-you-go) or an Alibaba Cloud
+  Model Studio key (pay-as-you-go, Token Plan or Coding Plan), checked on its
+  own endpoint before it is stored; a plan key lists the plan's models, Qwen3.8
+  Max first.
+- **MiniMax:** an Open Platform key or an M Plan subscription key.
+- **Together AI** and **Cohere:** API key.
+- **Groq**, **Cerebras** and **Fireworks AI:** API key; any family's key can
+  also come from a command named in `credentials.keyCommands.<family>`.
+
 Mistral, Nous Portal and OpenCode Zen connect through `/logins` as well, giving
-13 sign-in provider families in all. Local model servers (Ollama, LM Studio,
+20 sign-in provider families in all. Local model servers (Ollama, LM Studio,
 vLLM and llama.cpp) and custom OpenAI-compatible endpoints are discovered or
 configured without a provider sign-in; run `/localsetup` to install or start
 Ollama, pull a model sized to your machine's memory, set its context window,
@@ -547,8 +556,11 @@ the main agent's model calls; model calls made by crewmates appear as their own
 `step` rows tagged with `parent_call_id`.
 
 The status is `completed`, `blocked`, `refused`, `failed`, `interrupted`,
-`turn_limit`, `budget_limit`, `schema_unmet` or `loop_stopped`. A completed
-run exits 0, other outcomes exit 1, and a usage error exits 2. SIGINT and
+`turn_limit`, `budget_limit`, `time_limit`, `schema_unmet` or `loop_stopped`.
+A run under `--max-time` (seconds, or `10m`, `1h`) ends `time_limit` at the
+next step once the time is up; the model call or tool round under way is not
+cut. A completed run exits 0, other outcomes exit 1, and a usage error exits
+2. SIGINT and
 SIGTERM exit 130 and 143 after the interrupted turn's outcome is flushed. A
 refused tool call is listed in `denials`. When the refusal was an ask nobody
 could answer (a run with no host in a mode that asks, `--mode dontAsk`, or a
@@ -621,7 +633,9 @@ product reads everywhere: `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN`,
 `XAI_MANAGEMENT_API_KEY` for its usage meter), `DEEPSEEK_API_KEY`,
 `MOONSHOT_API_KEY`, `ZAI_API_KEY`, `OPENROUTER_API_KEY`, `HF_TOKEN`,
 `MISTRAL_API_KEY` (and `MISTRAL_ADMIN_API_KEY` for its organisation meter),
-`NOUS_API_KEY`, `OPENCODE_API_KEY`,
+`NOUS_API_KEY`, `OPENCODE_API_KEY`, `MINIMAX_API_KEY`,
+`TOGETHER_API_KEY` or `TOGETHER_AI_API_KEY`, `COHERE_API_KEY` or `CO_API_KEY`,
+`GROQ_API_KEY`, `CEREBRAS_API_KEY`, `FIREWORKS_API_KEY`, `DASHSCOPE_API_KEY`,
 `MODEL_API_KEY` or `META_API_KEY`, `MERCURY_COMPAT_API_KEY` for a custom
 OpenAI-compatible endpoint and `MERCURY_LOCAL_API_KEY` for a local server.
 With no key the run refuses in one line and exits 1. `docker run -i … mercury
@@ -671,11 +685,12 @@ Available commands include:
 - **`mercury health`**: diagnostic report, also called the
   health certificate. `--json` returns the full report, `--deep` runs the deep
   inventory, and `--fix` runs guided fixes.
-- **`mercury auth login|status|logout|mint`**: sign in or mint a long-lived
-  token for an Anthropic account (`login`, `mint`), check authentication
-  across all 13 provider families and exit 0 when the active model's provider
-  is signed in (`status`), or sign out (`logout`). Connect other provider
-  families through `/logins` or `/router key`.
+- **`mercury auth login [<family>]|list|status [<family>]|logout [<family>]|mint`**:
+  sign in (`login [<family>]`), list provider families (`list`), check whether
+  an account is signed in (`status [<family>]`), sign out (`logout [<family>]`),
+  or mint a long-lived Anthropic token (`mint`).
+- **`mercury models [--json]`**: print the models the signed-in accounts reach
+  (the same facts as `mercury://models`).
 - **`mercury mcp`**: manage MCP servers with `add`, `import`, `list`, `get`,
   `remove`, `trust-reset` and `serve`.
 - **`mercury extensions`**: install extensions and manage their sources.
@@ -691,6 +706,19 @@ Available commands include:
 - **`mercury daemon run|status|stop|restart`**: run, inspect, stop or restart
   the background daemon. Its session seats are `mercury runner` children; the
   daemon sends their prompts and hosts their permission asks.
+- **`mercury sessions delete <id>`**: delete one saved session on purpose —
+  its transcript and the records kept beside it (receipts, resume snapshot) —
+  after a question; `--yes` skips the question for scripts. A session the
+  daemon hosts now is refused, and an unknown id is refused with a hint to the
+  roster (`/sessions` inside Mercury). Saved sessions are otherwise never
+  deleted on their own.
+- **`mercury lsp list`** and **`mercury lsp install <server>`**: the
+  language-server catalogue, each server installed (with its binary) or
+  absent (with its install remedy); `install` shows a server's remedy, asks,
+  runs exactly it (`--yes` skips the question for scripts) and reports where
+  the binary landed. An unknown server is refused with the roster. Mercury
+  never installs a language server on its own; opening a file only starts a
+  server that is already installed.
 - **`mercury acp`**: serve an editor over the Agent Client Protocol, with a
   runner child for each session. `mercury bridge install` installs the
   VS Code extension; `mercury bridge status` checks it.
@@ -798,7 +826,7 @@ Available commands include:
   [Blender](docs/BLENDER-BRIDGE.md), [Godot](docs/VULCAN-GODOT-TOOLS.md) and
   [Aseprite](docs/ASEPRITE-BRIDGE.md).
 - **Extensions.** Each extension has one manifest. Add sources from a git
-  URL, local folder or archive, with approval tied to the contributions hash.
+  URL, local folder or archive, approved by its contributions hash.
   See [docs/EXTENSIONS.md](docs/EXTENSIONS.md).
 - **MCPs & Skills.** Per-repository configuration for what sessions load,
   with named presets and controls you can change during a session. See
@@ -833,14 +861,14 @@ commands.
 | Domain | Commands |
 | --- | --- |
 | current work | `/run` `/runs` `/workbench` `/diff` `/mission` |
-| crew & delegation | `/agents` `/crewmates` `/crew` `/workflows` `/router` `/daemon` `/saturn` `/seats` `/kill` `/unkill` |
+| crew & delegation | `/agents` `/crewmates` `/crew` `/workflows` `/daemon` `/saturn` `/seats` `/kill` `/unkill` |
 | session & context | `/clear` `/compact` `/context` `/rewind` `/sessions` `/concourse` `/rename` `/title` `/contract` `/export` `/copy` `/usage` `/realms` |
 | memory & goals | `/memory` `/console` |
 | model & effort | `/model` `/effort` `/submodels` `/advise` `/caching` |
 | git & review | `/review` `/audit` |
-| health & introspection | `/health` `/verify` `/trace` `/capabilities` |
+| health & introspection | `/health` `/verify` `/trace` `/capabilities` `/lsp` |
 | config & setup | `/config` `/jev` `/localsetup` `/permissions` `/hooks` `/mcp` `/extensions` `/skills` `/sandbox` `/browser` `/orient` `/keybindings` `/keys` `/vim` `/mouse` `/keysetup` `/bootmenu` `/voice` |
-| appearance & cockpit | `/appearance` `/critter` `/palette` |
+| appearance & cockpit | `/appearance` `/critter` `/palette` `/zen` `/browse` |
 | account & app | `/logins` `/logout` `/accounts` `/defaultprovider` `/update-notes` `/feedback` `/help` `/exit` |
 
 `/mouse off` returns the pointer to the terminal for native text selection

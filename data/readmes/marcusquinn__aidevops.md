@@ -25,12 +25,13 @@ token efficiency, and quality control built in.**
 [![Maintainability](https://qlty.sh/gh/marcusquinn/projects/aidevops/maintainability.svg)](https://qlty.sh/gh/marcusquinn/projects/aidevops)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2b1adbd66c454dae92234341e801b984)](https://app.codacy.com/gh/marcusquinn/aidevops/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/Version-3.39.39-blue.svg)](https://github.com/marcusquinn/aidevops/releases)
+[![Version](https://img.shields.io/badge/Version-3.39.45-blue.svg)](https://github.com/marcusquinn/aidevops/releases)
 [![npm version](https://img.shields.io/npm/v/aidevops)](https://www.npmjs.com/package/aidevops)
 [![Homebrew](https://img.shields.io/badge/homebrew-marcusquinn%2Ftap-orange)](https://github.com/marcusquinn/homebrew-tap)
 
 [![Lines of code](docs/metrics/badges/loc.svg)](docs/metrics/repo-metrics.md)
 [![Dependencies](docs/metrics/badges/dependencies.svg)](docs/metrics/repo-metrics.md)
+
 [![Languages by lines of code](docs/metrics/badges/languages.svg)](docs/metrics/repo-metrics.md)
 
 ## The Aim
@@ -434,8 +435,22 @@ aidevops secret set NAME
 aidevops security
 aidevops security status
 aidevops security scan
+aidevops secret audit-credentials  # Names-only JSON Lines, including tenant stores
+aidevops security fix             # Separate interactive terminal only
 aidevops source-access status
 ```
+
+Credential hygiene scans report parser errors, gopass drift, prune candidates,
+unsafe permissions, leftover backups and literal MCP environment secrets without
+printing values. Interactive fixes delegate to secret import/prune commands,
+confirm pruning and trash moves, and leave drift and malformed lines unchanged.
+Import and prune target only the active tenant. Scans do not probe provider APIs;
+an opt-in `--probe` may be added later. SSH checks parse `~/.ssh/config` and its
+`Include` files as text (never `ssh -G`, which runs `Match exec`): passphrase-less
+`id_*` and `IdentityFile` keys, loose key/config/`~/.ssh` permissions, and
+risky directives such as disabled host-key checking, global agent forwarding and
+command hooks, reported by keyword and line only. Fixes offer a per-file
+confirmed `chmod 600` for owned regular files, never through a symlinked target.
 
 ### Vault
 

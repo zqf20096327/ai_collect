@@ -118,7 +118,7 @@ If you only need a handful of metrics in a pytest file, a metric library alone i
 - **Built first for agents.** Sandboxed tasks, a hidden checker, tool-call and trajectory evaluators, pass@k and pass^k over trials, and gates that fail the build ([guide](docs/guides/gate-an-agent-in-ci.md)).
 - **RAG, scored where it breaks.** Retrieval and generation metrics side by side, with or without a judge, plus RAGAS and DeepEval ([guide](docs/guides/evaluate-rag.md)).
 - **Training, not only testing.** Evaluators as RL rewards for TRL, verl and OpenRLHF, and checkpoint checks against the base model ([guide](docs/guides/fine-tuning.md)).
-- **Works with your trace store.** Push OpenTelemetry (OTel GenAI, OpenInference, OpenLLMetry, MLflow), or let a trace source read MLflow, Phoenix, Langfuse or LangSmith, score the traces and write the scores back where your team already looks.
+- **Works with your trace store.** Push OpenTelemetry (OTel GenAI, OpenInference, OpenLLMetry, MLflow), or let a trace source read MLflow, Phoenix, Langfuse, LangSmith or Collector ClickHouse tables and write the scores back to that store.
 - **Four ways in.** **Run** an agent, a model or a RAG pipeline on a dataset with trials, gates and budgets, **Watch** live traces with online policies, **Score** outputs you already have, and **Reward** RL training.
 - **Pipeline controls.** Upload JSONL/Parquet datasets, retry keyed API writes without repeating execution, delete finished runs to recover quotas, or schedule bounded UTC trace-query windows as batch reports. See [pipeline contracts](docs/guides/integrate-an-agent-harness.md#5-pipeline-writes-datasets-and-retention) and [scheduled pulls](docs/guides/trace-sources.md#scheduled-batch-reports).
 - **Pluggable.** lm-evaluation-harness, Inspect AI, RAGAS and DeepEval run as isolated adapters; your own evaluators are Python functions or sandboxed Wasm modules. DeepEval brings 30 metrics for RAG, agents, safety and conversations, including G-Eval and JevEval.
@@ -256,7 +256,7 @@ uv run evalsi source apply -f ../examples/sources/studio-mlflow.yaml --server ht
 | LlamaIndex | OpenInference |
 | Claude Agent SDK | OpenInference, Claude Code's own traces |
 
-Each row is a real run of the framework, checked in and tested; the [agent frameworks guide](docs/guides/agent-frameworks.md) has the setup and what each instrumentation records. [Trace sources](docs/guides/trace-sources.md) read MLflow, Phoenix, Langfuse or LangSmith (history included), score the traces, and write the scores back as MLflow assessments, Phoenix annotations, Langfuse scores or LangSmith feedback. Self-hosted Langfuse 4.56.0 passed the recorded two-stage check; Databricks numeric-experiment bearer-token downloads are built and contract-tested, not live-verified. To add Evals.si to an agent platform, follow the [integration guide](docs/guides/integrate-an-agent-harness.md) and the [reference demos](examples/demo/README.md), which evaluate Deep Agents and DeepSeek Harness agents end to end.
+Each row is a real run of the framework, checked in and tested; the [agent frameworks guide](docs/guides/agent-frameworks.md) has the setup and what each instrumentation records. [Trace sources](docs/guides/trace-sources.md) read MLflow, Phoenix, Langfuse, LangSmith or Collector ClickHouse tables (history included), score the traces, and write back assessments, annotations, feedback or companion score rows. The [ClickHouse source](docs/guides/trace-sources.md#clickhouse) supports the Collector Map schema and latest-score queries with `FINAL`; it passed bounded live checks on ClickHouse 25.8.33.6. Self-hosted Langfuse 4.56.0 passed the recorded two-stage check; Databricks numeric-experiment bearer-token downloads are built and contract-tested, not live-verified. LangSmith has server/worker fixture coverage and an [opt-in live check](docs/guides/trace-sources.md#verify-your-langsmith-deployment); live verification still needs credentials. To add Evals.si to an agent platform, follow the [integration guide](docs/guides/integrate-an-agent-harness.md) and the [reference demos](examples/demo/README.md), which evaluate Deep Agents and DeepSeek Harness agents end to end.
 
 ### Evaluators and adapters
 
@@ -360,6 +360,11 @@ What is verified, in short:
 
 What is deferred or not yet verified is listed in [LEFTOVERS](docs/LEFTOVERS.md), sorted by what each item needs next. Maintainers: see the [release gates and publication procedure](docs/RELEASING.md).
 
+[Runtime verification](docs/verification/RUNTIME-VERIFICATION-2026-10-18.md)
+tracks real KVM and other remaining prerequisites. The
+[competitor benchmark results](docs/verification/COMPETITOR-BENCHMARKS-2026-10-18.md) compare deterministic
+local evaluation overhead, with separate limits for hosted platforms.
+
 ## Documentation
 
 | Start here | Guides | Reference |
@@ -409,6 +414,8 @@ For the Kubernetes pieces:
 - **The load test:** `EVALSI_LOAD=1 go test -run TestLoad -timeout 30m ./tests/e2e/`. `EVALSI_LOAD_SPANS` and `EVALSI_LOAD_RUN_RECORDS` set its sizes, and `EVALSI_LOAD_CLICKHOUSE_URL` runs the trace half against ClickHouse.
 
 The sandbox tests need bubblewrap and unprivileged user namespaces. On Ubuntu 24.04, also run `sudo sysctl kernel.apparmor_restrict_unprivileged_userns=0`.
+
+Controlled robustness checks include seeded prompt-injection tool faults, private completion canaries (`evalsi canary create`), and observed trial score diagnostics (`evalsi determinism`). Their scope and follow-ups are recorded in the [implementation review](docs/verification/STACK-101.md).
 
 ## Contributing
 

@@ -2,8 +2,8 @@
 
 > DeepSeek Harness（DSH）第三方插件精选目录与原生更新命令索引。
 
-[![Catalog Version](https://img.shields.io/badge/catalog-v1.44.2-blue.svg)](plugins.json)
-[![Plugins Count](https://img.shields.io/badge/plugins-9%20curated-brightgreen.svg)](plugins.json)
+[![Catalog Version](https://img.shields.io/badge/catalog-v1.48.0-blue.svg)](plugins.json)
+[![Plugins Count](https://img.shields.io/badge/plugins-11%20curated-brightgreen.svg)](plugins.json)
 [![Target Profile](https://img.shields.io/badge/profile-web-orange.svg)](#)
 [![Single Source of Truth](https://img.shields.io/badge/SSOT-plugins.json-blueviolet.svg)](plugins.json)
 
@@ -20,8 +20,9 @@
 | 插件名称 | 版本 | 用途 | 来源 |
 |---|---:|---|---|
 | `dsh-better-reasoning-effort` | 0.5.3 | 在官方 Models 页内嵌配置第三方模型的推理强度（Effort）、输入模态、请求头与端点兼容项 | [HaoyueQin/dsh-better-reasoning-effort](https://github.com/HaoyueQin/dsh-better-reasoning-effort) |
-| `billion-context` | 0.1.196 | 动态压缩长会话上下文：小窗口跑数十亿 token 超长会话，token 节省约 5 倍 | [ranxianglei/billion-context](https://github.com/ranxianglei/billion-context) |
-| `dsh-mnemon` | 0.5.28 | 可组合的视图化记忆系统：可插拔记忆源与策略，开箱即用分层记忆（Memory Spaces / Providers） | [omdsh-dev/dsh-mnemon](https://github.com/omdsh-dev/dsh-mnemon) |
+| `billion-context` | 0.1.199 | 动态压缩长会话上下文：小窗口跑数十亿 token 超长会话，token 节省约 5 倍 | [ranxianglei/billion-context](https://github.com/ranxianglei/billion-context) |
+| `dsh-mnemon` | 0.5.32 | 可组合的视图化记忆系统：可插拔记忆源与策略，开箱即用分层记忆（Memory Spaces / Providers） | [omdsh-dev/dsh-mnemon](https://github.com/omdsh-dev/dsh-mnemon) |
+| `dsh-our-free-model` | 2.5.3 | 免费模型接入：无需登录或 API Key 即可用 DeepSeek V4.1 Flash、Kimi K3 等前沿模型，另有十三个账号渠道、数据看板与本地网关 | [Ebony-Vinyl/dsh-our-free-model](https://github.com/Ebony-Vinyl/dsh-our-free-model) |
 
 ### 📊 计量与状态监控
 
@@ -33,16 +34,17 @@
 
 | 插件名称 | 版本 | 用途 | 来源 |
 |---|---:|---|---|
-| `dsh-retrace` | 0.4.49 | 消息撤回、编辑重发与重新生成，同步回退修改过的文件 | [daha1216/dsh-retrace](https://github.com/daha1216/dsh-retrace) |
+| `dsh-retrace` | 0.4.55 | 消息撤回、编辑重发与重新生成，同步回退修改过的文件 | [daha1216/dsh-retrace](https://github.com/daha1216/dsh-retrace) |
 | `@anysearch/anysearch-dsh` | 0.1.8 | 为 Agent 提供网页实时搜索与正文抓取能力 | [anysearch-team/anysearch-dsh](https://github.com/anysearch-team/anysearch-dsh) |
-| `dsh-update-checker` | 0.3.0 | 一键检查已装插件的上游更新（只检查不更新），展示更新内容 | [daha1216/dsh-update-checker](https://github.com/daha1216/dsh-update-checker) |
-| `@local/skills-manager` | 0.1.0 | 在设置页新增「技能」管理页：列出 / 查看 / 新建 / 编辑 / 删除本地技能，切换调用策略 | [daha1216/dsh-skills-manager](https://github.com/daha1216/dsh-skills-manager) |
+| `dsh-update-checker` | 0.3.2 | 一键检查已装插件的上游更新（只检查不更新），展示更新内容 | [daha1216/dsh-update-checker](https://github.com/daha1216/dsh-update-checker) |
+| `@local/skills-manager` | 0.3.1 | 在设置页新增「技能」管理页：列出 / 查看 / 新建 / 编辑 / 删除本地技能，切换调用策略，一键打开技能目录 | [daha1216/dsh-skills-manager](https://github.com/daha1216/dsh-skills-manager) |
+| `dsh-ops` | 0.3.0 | Rust 原生文件工具（grep / glob / replace / hex 查看）与随包 MSYS bash、PowerShell 7，替掉 Windows 下反复失败的原生 shell 调用，省 token 省时间 | [T-Auto/dsh-ops](https://github.com/T-Auto/dsh-ops) |
 
 ### 🎨 界面体验与多端协同
 
 | 插件名称 | 版本 | 用途 | 来源 |
 |---|---:|---|---|
-| `dsh-pocket` | 2.10.6 | 手机扫码同步电脑端 DSH，支持移动端操作 | [daha1216/dsh-pocket](https://github.com/daha1216/dsh-pocket) |
+| `dsh-pocket` | 2.10.9 | 手机扫码同步电脑端 DSH，支持移动端操作 | [daha1216/dsh-pocket](https://github.com/daha1216/dsh-pocket) |
 
 ---
 
@@ -108,10 +110,12 @@ bash install.sh --all
 | `@anysearch/anysearch-dsh` | `npx -y @deepseek-ai/dsh plugin --profile web update @anysearch/anysearch-dsh` |
 | `billion-context` | `dsh plugin --profile web add billion-context` |
 | `dsh-mnemon` | `dsh plugin --profile web add dsh-mnemon` |
+| `dsh-our-free-model` | `dsh plugin --profile web add https://github.com/Ebony-Vinyl/dsh-our-free-model/releases/download/v2.5.3/dsh-our-free-model-2.5.3.tgz` |
 | `dsh-retrace` | `dsh plugin --profile web add dsh-retrace` |
 | `dsh-watcher` | `dsh plugin --profile web add github:daha1216/dsh-watcher` |
 | `dsh-update-checker` | `dsh plugin --profile web add github:daha1216/dsh-update-checker` |
 | `@local/skills-manager` | `dsh plugin --profile web add github:daha1216/dsh-skills-manager` |
+| `dsh-ops` | `npx --yes dsh-ops@latest install --profile web` |
 
 ---
 
@@ -121,10 +125,17 @@ bash install.sh --all
 - **重跑 `add` 即更新**：多数插件（如 `billion-context` 等）上游 README 未设立独立的 update 命令，重新执行其 `add` 命令即可拉取最新提交或发布版。
 - **独立 `update` 动词**：部分插件（`anysearch-dsh`、`dsh-pocket`）支持并推荐使用原生的 `update` 动词。
 
-### 2. Registry 缓存滞后警示
+### 2. 插件样式与 DSH 主题令牌
+- 自绘 UI 的插件请只用宿主 `--dsw-alias-*` / `--ds-*` 令牌，不要写死色值，否则深色模式下必然出问题。三个高频陷阱：
+  - **`--dsw-alias-brand-primary` 不是品牌蓝**，它是**单色主按钮的底色**（深色主题下接近白色 `#f9fafb`）。写 `background: var(--dsw-alias-brand-primary); color: #fff` 会得到白底白字。做强调色用 `--dsw-alias-link`（浅色 `#4176e6` / 深色 `#7aaaff`）；做主按钮用配对 `--dsw-alias-button-primary-fill` + `--dsw-alias-label-primary-foreground`，hover 用 `--dsw-alias-button-primary-hover`。
+  - **`--dsh-code-font-family` 与 `--dsw-font-mono` 在 DSH 中不存在**（浏览器静默丢弃整条声明）。等宽字体令牌是 `--ds-font-family-code`；注意不是 `--dsh-font-family-code`，后者仅由 ThemePresenter 在用户配置了代码字体时以 body 内联样式写入。
+  - **自绘开关要连旋钮一起换令牌**：只改轨道不改旋钮，深色下会失去对比。照抄宿主 `._switch_1ik0f_5` / `._thumb_1ik0f_33` 的配对——未选中轨道 `--dsw-alias-border-l3` + 旋钮 `--dsw-alias-switch-thumb`，选中轨道 `--dsw-alias-button-primary-fill` + 旋钮 `--dsw-alias-label-primary-foreground`。
+  - 阴影用 `--dsw-shadow-lv1` / `--dsw-shadow-lv2`，不要写 `rgba(0,0,0,…)`。
+
+### 3. Registry 缓存滞后警示
 - 本机若通过 `github:` 源安装插件，后续更新时**切勿改跑不带 spec 的 `add <pkg>@latest`**，否则会被 npm registry 解析，可能拉取到落后于 GitHub HEAD 的历史旧包。更新请始终沿用显式 `github:<owner>/<repo>` 或上表对应的原生指令。
 
-### 3. 特殊插件与自维护 Fork
+### 4. 特殊插件与自维护 Fork
 - **`dsh-pocket`**：
   - 本条目指向安全加固版 Fork（`github:daha1216/dsh-pocket`），非上游原仓库。
   - 更新时必须保留 `-w` 参数（解决 pnpm workspace 根目录限制）；跨大版本升级时 `--latest` 必选。
@@ -133,6 +144,13 @@ bash install.sh --all
   - 本机实装与本目录均跟随自建兼容 Fork `github:daha1216/dsh-retrace`。
 - **`@local/skills-manager`**：
   - 目录收录公开仓库 `github:daha1216/dsh-skills-manager`；本地若处于开发态（`link:`），以本地代码优先。
+- **`dsh-our-free-model`**：
+  - **不要用 `npm` 安装同名包**——npm 上那个由第三方打包，`index.js`、`client.js` 被改且多出 `src/channel-visibility.js`，拿不到上游的签名清单校验与应用内升级。
+  - 本目录固定指向官方 Release 的 tarball 直链（文件名带版本号，升级时同步改 URL），这是 README 认可的安装制品。
+  - 装完后把 `distribution` 设为 `managed`（bundle config 或插件 `settings.json`）：包管理器拥有字节时，应用内升级、公告 feed 与热重载会停用，模型功能保留。
+- **`dsh-ops`**：
+  - npm 通道，更新用自带的 `npx --yes dsh-ops@latest install --profile ...`，会同时对齐随包 bash / pwsh 二进制；官方 CLI 的 `add dsh-ops@latest` 是等价替代。
+  - 装/升时务必显式指定官方源 `--registry=https://registry.npmjs.org`：其 `@dsh-ops/*-win32-x64` optionalDependencies 在 npmmirror 上缺版本，pnpm 重解析会报 `ERR_PNPM_NO_MATCHING_VERSION`。
 
 ---
 

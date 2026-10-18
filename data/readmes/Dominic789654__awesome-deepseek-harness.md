@@ -134,6 +134,7 @@ _Highlights personally recommended by **Tianyi Cui** ([@tianyi](https://x.com/ti
 
 _DSH's core composition mechanism: a **profile** stacks bundle patch layers, then your own `cordis.patch.yml` (profile-level, then `$DSH_HOME`-level, then `--patch` overlays) — letting you reshape the whole plugin tree without forking. This is the layer where **task-specialized runtime configurations** live: a long-horizon profile, a math-reasoning profile, a slides-editing profile are all just a different bundle stack + patch, not a different codebase. Tools and harnesses that operate at this layer (share/export a profile, or run DSH as a specialized backend under a task-specific patch) belong here rather than under generic plugins._
 
+- [Bryan-cmf/dsh-general-agentics](https://github.com/Bryan-cmf/dsh-general-agentics) — General Agentics distribution bundle for DSH: one install brings a white-label brand, curated plugins, bundled skills and MCP pre-configuration (MIT).
 - [lldwb/dsh-sub2api-provider](https://github.com/lldwb/dsh-sub2api-provider) — Sub2API third-party provider bundle for DeepSeek Harness, with Off / Low / High / Max thinking effort.
 - [cuddly-guacamole/dsh-orchestrator-preset](https://github.com/cuddly-guacamole/dsh-orchestrator-preset) — Thin-shell agent preset for DeepSeek Harness: nine lanes with declared tool boundaries, resident routing sections, four self-authored skills, and an evidence-based completion gate.
 - [AKI2253/Sidor_Character](https://github.com/AKI2253/Sidor_Character) — SIDOR persona card: a DeepSeek Harness plugin that batch-imports persona cards (.persona.md / SillyTavern character cards), switches them freely, applies them live in-session, and persists the agent preset.
@@ -335,6 +336,9 @@ _DSH's core composition mechanism: a **profile** stacks bundle patch layers, the
 
 - [zhengqiuyang/dsh-freeze](https://github.com/zhengqiuyang/dsh-freeze) — Hermetic composition lock for DeepSeek Harness: profile fingerprint; drifted compositions warn or fail in strict mode.
 - [taxueseek/dsh-router-flash](https://github.com/taxueseek/dsh-router-flash) — Explore-mode DeepSeek V4 Flash agent preset: channel-agnostic matching, a narrowed first-round tool surface, and declared-line delivery.
+- [dingminhua/dsh-connect-qoder](https://github.com/dingminhua/dsh-connect-qoder) — Connect Qoder (Lingma CN / international) models to DeepSeek Harness through their PATs, with a multi-account pool, daily check-in, automatic failover, and a read-only credits overview.
+- [doitian/dsh-provider-aliyun](https://github.com/doitian/dsh-provider-aliyun) — Aliyun DashScope (Bailian) model provider preset for DeepSeek Harness: adds an OpenAI-compatible aliyun route with a starter Qwen catalog to the llm-pi-ai adapter.
+- [sevenhsu7/dsh-cowork-mode](https://github.com/sevenhsu7/dsh-cowork-mode) — Paper mode agent preset for DeepSeek Harness: a non-coding work contract with one `AI-Cooperate/` archive, `YYMMDD-project-name` file naming, git-aware local ignore, auto-cleaned system-temp scratch (7 days) and 📑 session badges.
 
 ## Harnesses & Runtimes
 
@@ -556,9 +560,4 @@ _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime
 - [MayBeTheWorld/dsh-inherit](https://github.com/MayBeTheWorld/dsh-inherit) — Imports MCP servers and Skills from Claude Code / Cursor / Codex / cc-switch into DeepSeek Harness (Settings → General → import agent settings).
 - [unStone/dsh-xray-plugin](https://github.com/unStone/dsh-xray-plugin) — Ask what a DeepSeek Harness plugin can actually do, from inside your agent; companion to dsh-xray.
 - [morlay/session-persistence-rdb](https://github.com/morlay/session-persistence-rdb) — Relational-database persistence layer for DSH sessions.
-- [rainforest888/dsh-plugins-raincode](https://github.com/rainforest888/dsh-plugins-raincode) — Model layer for DeepSeek Harness: model pool/cache/retry plus a `/skills` browser.
-- [weijiafu14/dsh-remote-sandbox](https://github.com/weijiafu14/dsh-remote-sandbox) — Crash-resilient remote execution world for DeepSeek Harness: `ctx.fs`/`ctx.subprocess` over an E2B sandbox with heartbeat keep-alive, transparent recovery, and workspace sync.
-- [030611/dsh-telemetry-redactor](https://github.com/030611/dsh-telemetry-redactor) — Fail-closed export-copy redaction for DeepSeek Harness session telemetry.
-- [cnyac/dsh-polling](https://github.com/cnyac/dsh-polling) — Polling/scheduled-task plugin: cron scheduled tasks as real sessions, natural-language creation, model tools (`polling_*`), and a Web UI.
-- [cpj-dev/dsh-plugin-cc](https://github.com/cpj-dev/dsh-plugin-cc) — Bridges DeepSeek Harness into Claude Code for review, critique, delegation, and session import.
-- [khiqwq/dsh-system-proxy](https://github.com/khiqwq/dsh-system-proxy) — Host plugin for smart outbound HTTP(S)
+- [rainforest888

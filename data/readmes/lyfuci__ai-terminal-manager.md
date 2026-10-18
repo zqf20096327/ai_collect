@@ -108,12 +108,12 @@ atm install     # write key bindings to ~/.tmux.conf + install resurrect/continu
 
 The CLI speaks English, Chinese and Japanese, following your locale (`ATM_LANG=en|zh|ja` overrides).
 
-Optional tmux keyboard support: `atm config tmux.extended-keys true` writes `extended-keys on`
-in the managed block (applied live with readback). It stays off by default. The separate
-`tmux.extended-keys-format` defaults to `""` (unmanaged); opt in to `csi-u` or `xterm` only on a
-running tmux 3.5+ server whose public version/option probes confirm support. Unknown/unsupported
-requests are refused before saving; tmux 3.4 accepts only the existing `extended-keys on` path,
-not a format line. Probes use the target server, not the PATH client's version. Disabling removes
+tmux keyboard support is on by default: the managed block writes `extended-keys on` (applied live
+with readback), which Pi and Claude Code need for Shift+Enter and similar keys. The separate
+`tmux.extended-keys-format` defaults to `auto`: `csi-u` when the running tmux 3.5+ server's public
+version/option probes confirm support, otherwise no format line at all (tmux 3.4 rejects it in a
+config file). Explicit `csi-u` or `xterm` are refused before saving when support is unknown or
+missing; `""` leaves the format unmanaged and `tmux.extended-keys false` turns the keys off. Probes use the target server, not the PATH client's version. Disabling removes
 only atm's lines and leaves live values unchanged. ATM never restarts a server to silence warnings;
 outer terminal/client modified keys are unverified, so settings do not prove real Shift+Enter works.
 See [keyboard configuration](https://github.com/lyfuci/ai-terminal-manager/blob/main/docs/usage.md#memory-gate-atm-claude-vs-claude).

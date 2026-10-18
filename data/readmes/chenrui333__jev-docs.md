@@ -32,6 +32,13 @@ are MIT-licensed, but no license for the hosted documentation was found. The
 MIT license in this repository applies only to repository-authored code and
 documentation. It does not relicense TypeSafe material.
 
+New limitations output uses labeled, independently authored interpretations,
+matched to the exact reviewed model and section hash, rather than copying
+mitigation paragraphs. Unreviewed or changed sections have unknown summaries
+and link to official evidence. This is not a licensing determination: hosted
+documentation permissions remain uncertain. Historical state and events are
+not rewritten; their older excerpts remain part of the recorded history.
+
 ## How to read the repository
 
 - [`BEST_PRACTICES.md`](BEST_PRACTICES.md) is the concise current guide for
@@ -57,7 +64,10 @@ documentation. It does not relicense TypeSafe material.
 - `state/sdk-python.json` and `state/sdk-javascript.json` keep the SDK release
   streams independent. A mutable `main` commit is never treated as a package
   release. Python capabilities are attributed only after matching a published
-  package version, tag commit, release configuration and immutable changelog.
+  package name and version, tag commit, release configuration and immutable changelog.
+  Tag commits must be full 40-character hexadecimal GitHub SHAs; malformed
+  identities are explicit release-metadata discrepancies, never source pins
+  for current or historical releases. Unresolved release runtime stays unknown.
   JavaScript capability parity is not inferred; an empty capability list means
   this extractor has no independently established entries.
 
@@ -85,22 +95,51 @@ partial source fetch cannot erase a recommendation.
 ## Automation
 
 GitHub Actions runs pull-request validation and a strict synchronization every
-12 hours, with manual `workflow_dispatch`. Scheduled runs use concurrency
-protection, require no TypeSafe API key, and commit only actual generated
-changes. Per-attempt `newly_discovered` and `disappeared` IDs are returned by sync;
+12 hours, with manual `workflow_dispatch` restricted to `main`. Concurrency
+protection is unchanged. The ingestion/validation job has read-only repository
+permission, uses public sources without TypeSafe API keys, and never executes
+upstream code. All actions are pinned to immutable commits; the focused
+Renovate configuration maintains GitHub Actions digests. Checkouts never persist
+credentials.
+
+Only after sync completes promotion and the full checks and strict tree validation
+pass does ingestion upload a publication artifact: a generated-only Git patch
+(at most 16 MiB) and a small manifest binding its SHA-256 digest to the baseline
+commit, workflow run and run attempt. Artifact ID, baseline and eligibility cross
+the job boundary only as explicit outputs. The separate write-permission job
+checks out trusted scripts at that baseline, downloads that exact same-run
+artifact, verifies provenance and the current `origin/main` SHA, and uses
+`git apply --check` before applying. It rejects unexpected artifact entries,
+symlinks, executable modes, traversal and paths outside the generated JSON,
+dated reports and generated guides. After applying, it independently validates the
+complete generated tree with the unchanged trusted Python code before the
+token-bearing commit step. No downloaded scripts, dependency setup or ingested
+source are executed with the publication token. A signed-off commit uses
+a normal push, so a concurrent update to `main` is rejected rather than overwritten.
+An unchanged run creates no commit.
+
+Per-attempt `newly_discovered` and `disappeared` IDs are returned by sync;
 durable coverage contains the current complete inventory. This lets a successful
 addition land without requiring a cleanup commit on the next unchanged run.
 Failed scheduled/manual runs upload a small `sync-failed-attempt` artifact with
 the baseline SHA, failure phase and available candidate counts/versions. It is
-attempt metadata, never canonical history. A failed discovery or source fetch
-leaves the last-known-good generated state untouched and fails loudly. An SDK package/tag discrepancy is allowed a
-three-day observation grace period, then causes strict synchronization to fail
-until the upstream evidence converges.
+attempt metadata, never canonical history. Failed discovery or source fetch fails
+loudly without promoting that observation. A restart first recovers any earlier
+validated promotion, retaining its original events before observing new sources.
+An SDK package/tag discrepancy has a three-day observation grace period. Once expired,
+strict sync remains visibly failed, but explicitly eligible, fully promoted
+independent changes can still publish; a final health job also fails after the
+publication job finishes. Other failures cannot authorize publication. Older
+successful sync diagnostics without an explicit eligibility flag remain supported
+only when their phase is `sync-complete` and result is `success`.
 
 ## Local usage
 
-Python 3.10+ is supported. The tested uv version is pinned in `pyproject.toml`
-and used by both local commands and setup-uv. With that `uv` version installed:
+Python 3.10+ is supported. Python 3.11+ uses the standard-library `tomllib`
+parser; Python 3.10 installs the conditional `tomli>=2,<3` backport for the
+same project-scoped release verification. The tested uv version is pinned in
+`pyproject.toml` and used by both local commands and setup-uv.
+With that `uv` version installed:
 
 ```bash
 just setup
@@ -113,8 +152,18 @@ just check-strict
 ```
 
 `just sync` performs the public-source observation and generation. `just
-check-strict` validates generated JSON, provenance, and fixture-backed
-determinism checks. Run `actionlint` separately to validate workflow syntax; the
+check` validates generated JSON and provenance. `just check-strict` additionally
+requires event IDs to be unique across all history, each `changes/` report to be
+the rendering of its `events/` file, and `BEST_PRACTICES.md` to match its state.
+
+If interrupted promotion leaves `.jev-docs-pending/`, validation fails explicitly.
+Rerun `just sync` to recover the original batch; do not delete the pending journal.
+The ignored `.jev-docs.lock` serializes local writers and stays in place after use.
+Recurring transitions retain distinct predecessor-linked event IDs, while retries
+and unchanged observations remain deduplicated. See [the design](docs/DESIGN.md)
+for recovery boundaries.
+
+Run `actionlint` separately to validate workflow syntax; the
 live scheduled workflow additionally performs a strict sync. All commits in
 this repository must use `git commit -s`.
 

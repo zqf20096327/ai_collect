@@ -78,7 +78,7 @@ and asks.
 
 **Build an agent** once: its job, the model it thinks with, its skills, and the keys it may use
 without asking, such as the web or running commands. Pick it a face, **try it on its own**
-with a real request, and save it to **Your agents**. Change its job later and it becomes the next
+with a real request, and save it to **My agents**. Change its job later and it becomes the next
 version; a team keeps the version it was given until you choose **Update**.
 
 </td>
@@ -88,7 +88,7 @@ version; a team keeps the version it was given until you choose **Update**.
 
 ### 02 &nbsp;Workflow
 
-Put your agents in a team, or hire one by job, and connect who hands work to whom on a canvas.
+Start a team with the agents you built, and connect who hands work to whom on a canvas.
 LoomWatch reads the team back to you in **one plain sentence**, so you can check the plan before
 anything runs.
 
@@ -160,7 +160,7 @@ you decide**, and the finished answer comes with the evidence to check before yo
 | You find out what an agent did by scrolling back through its terminal. | Every message, tool call and file it touched is recorded, and you can replay it. |
 | A weak first step quietly shapes everything after it. | A review step stops the team until you approve, or send the work back. |
 | Each AI app keeps its own skills and folders. | Skills and the folders and files you choose are delivered to the agents that need them. Take one off and it is turned off for that agent. |
-| You set the same agent up again in every project. | Build it once in Your agents, try it on its own, and add it to any team. Teams keep their version until you choose Update. |
+| You set the same agent up again in every project. | Build it once in My agents, try it on its own, and add it to any team. Teams keep their version until you choose Update. |
 | Doing the job again means retyping the prompt. | One chat per team that remembers the conversation, **@** an agent to redo one step, and daily schedules. |
 
 ## How a run works
@@ -215,11 +215,11 @@ with a lead that hands out work and asks its teammates questions as it goes.
 <tr>
 <td width="33%" valign="top">
 
-### 🧑‍🔧 Your agents
+### 🧑‍🔧 My agents
 
-Build an agent once: its job, model, skills and the keys it may use. Try it on its own on a
-test bench, then add it to any team. A new job makes a new version, and teams keep theirs until you
-choose **Update**.
+Build an agent once: its job, model, skills and the keys it may use. Try it on its own in its
+**Chat** tab, then add it to any team. A new job makes a new version, and teams keep theirs until
+you choose **Update**.
 
 </td>
 <td width="33%" valign="top">
@@ -252,8 +252,8 @@ checks, a free model drafts. Every run's receipt shows exactly what it cost.
 
 ### 🗺️ Connect a workflow
 
-Add agents from **Your agents** or hire them by job, connect them in order, and read your team back
-as one plain sentence before anything runs.
+Add agents from **My agents** and a **You** review step where you want to check the work, connect
+them in order, and read your team back as one plain sentence before anything runs.
 
 </td>
 <td width="33%" valign="top">
@@ -348,9 +348,9 @@ to the model you chose, through OpenRouter.
 
 ## Teams you can build
 
-Every team below is made from the jobs under **Hire by job** in Workflow's add panel, each on the
-model its kind of work suits, or from agents you built in **Your agents**. Start from **New team**, then add, connect
-and rename agents to match. To run a team on a schedule, ask
+Every team below is made of agents you build in **My agents**, each starting from a job such as
+Researcher or Writer, on the model its kind of work suits. Start from **New team** with the agents
+you built, then add, connect and rename agents to match. To run a team on a schedule, ask
 [Ask LoomWatch](#ask-loomwatch-to-set-up-a-team) to add one, or see [Routines](docs/WATCH.md#routines).
 
 | Team | The steps | Good for |
@@ -378,7 +378,7 @@ and rename agents to match. To run a team on a schedule, ask
 <td align="center">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="site/assets/app/workflow-dark.webp">
-  <img src="site/assets/app/workflow-light.webp" alt="A team's Workflow tab: a daily schedule feeds Gatherer, then Reader, then Writer, which produces the team response. Above the canvas the team is read back as one sentence, with each agent's figure. On the left, the add panel lists Your agents with their versions and the models they think with, then Hire by job. The heading says Your team is ready, beside Run team.">
+  <img src="site/assets/app/workflow-light.webp" alt="A team's Workflow tab: a daily schedule feeds Gatherer, then Reader, then Writer, which produces the team response. Above the canvas the team is read back as one sentence, with each agent's figure. On the left, the add panel lists Your agents with their versions and the models they think with, the Build a new agent link, then Workflow steps with You (review step). The heading says Your team is ready, beside Run team.">
 </picture>
 <br><sub><strong>Workflow.</strong> Your agents on the canvas, connected in order and read back as one sentence.</sub>
 </td>
@@ -552,15 +552,26 @@ history are kept in every case.
 
 ### Updating
 
-**The Mac app:** when **Update available** shows, download the new
-[LoomWatch-macos.dmg](https://github.com/tnghia903/loomwatch/releases/latest/download/LoomWatch-macos.dmg),
-quit LoomWatch from its menu-bar icon, drag the new one to Applications and choose **Replace**.
-Your teams and history stay. **The Windows app:** download the new
-[LoomWatch-windows-setup.exe](https://github.com/tnghia903/loomwatch/releases/latest/download/LoomWatch-windows-setup.exe)
-and open it; it closes LoomWatch, puts the new version in its place, and opens it again. The rest of
-this section is about the Terminal install.
+**The Mac app and the Windows app:** when **Update available** shows, click it, then **Update and
+restart**. LoomWatch asks first, naming any team still working, since updating stops it. Then it
+saves a copy of your run history in `~/LoomWatch/backups/desktop-app`, downloads the new version,
+checks it against the release's checksum, puts it in place of the one you have, and opens it
+again; the page says when the new version is running. Your teams and history stay. If any step
+fails, the version you had opens again and the page says why. The Mac app keeps the version it
+replaced beside it, hidden, as `.LoomWatch.app.previous`.
 
-LoomWatch checks once a day, and again right after you update, whether a newer release is out.
+The Mac app can't replace itself while it runs from the disk image or from Downloads, or from a
+folder your account can't change; the window then says so and shows the steps to do it by hand:
+download the new
+[LoomWatch-macos.dmg](https://github.com/tnghia903/loomwatch/releases/latest/download/LoomWatch-macos.dmg),
+quit LoomWatch from its menu-bar icon, drag the new one to Applications and choose **Replace**. On
+Windows, the steps are to download the new
+[LoomWatch-windows-setup.exe](https://github.com/tnghia903/loomwatch/releases/latest/download/LoomWatch-windows-setup.exe)
+and open it; it closes LoomWatch, puts the new version in its place, and opens it again. Versions
+0.6.3 and older of the apps don't have **Update and restart**: update those once by hand. The rest
+of this section is about the Terminal install.
+
+Each time you open LoomWatch, it checks whether a newer release is out.
 When one is, Home shows **Update available** and the terminal running LoomWatch says so too. Click
 it to read what changed and how to install it; <kbd>⌘</kbd><kbd>K</kbd> → **Check for updates…**
 opens the same window at any time. Nothing is installed until you ask for it, in either of two ways:
@@ -591,8 +602,8 @@ version that kept the run history in Docker finds that history there, as the upd
 you ran since stays in the file. To install one particular release, run
 `LOOMWATCH_VERSION=v0.1.4 ~/LoomWatch/app/loomwatch update`.
 
-The daily check asks GitHub for the newest version number and sends nothing about you, your teams
-or your runs. Turn it off in the **Check for updates** window, or for good on this computer with
+The check asks GitHub for the newest version number and sends nothing about you, your teams or
+your runs. Turn it off in the **Check for updates** window, or for good on this computer with
 `LOOMWATCH_UPDATE_CHECK=off`. Running the install command again also updates LoomWatch, without
 the copy of the run history.
 
@@ -647,7 +658,7 @@ Manager under LoomWatch's name.
 | Install folder | `~/LoomWatch/app` | `curl -fsSL https://loomwatch.github.io/install.sh \| LOOMWATCH_APP_DIR=~/Apps/LoomWatch bash` |
 | Version | The newest release | `curl -fsSL https://loomwatch.github.io/install.sh \| LOOMWATCH_VERSION=v0.1.0 bash` |
 | Copies of the run history saved by `update` | `~/LoomWatch/backups` | `LOOMWATCH_BACKUP_DIR=~/Backups/LoomWatch ~/LoomWatch/app/loomwatch update` |
-| Daily check for a newer version | On | `LOOMWATCH_UPDATE_CHECK=off ~/LoomWatch/app/loomwatch`, or turn it off in **Check for updates** |
+| Check for a newer version each time LoomWatch opens | On | `LOOMWATCH_UPDATE_CHECK=off ~/LoomWatch/app/loomwatch`, or turn it off in **Check for updates** |
 
 `loomwatch --no-open` starts without opening the browser, and `loomwatch help` lists everything.
 In PowerShell, set a setting for one start like this: `$env:LOOMWATCH_PORT=3001; loomwatch`.
@@ -735,11 +746,15 @@ with what should change; under its new version, **Continue with the team** runs 
 1. Add your OpenRouter key: paste it into **Add your OpenRouter key** on Home, or under **AI models**
    in **Connections…** (☰ menu). LoomWatch checks it with OpenRouter and shows how much credit is
    left on it.
-2. Click **Build an agent** on Home. Give it a name and its instructions, choose its model and how
-   hard it thinks, pin up the skills it needs and hand it the keys it may use without asking. Pick it
-   a face, then **Try it** with a real request: it runs on your key, and asks you before it uses a
-   key it wasn't given. **Save to Your agents** when it does the job.
-3. Click **New team**, give it a name and choose how it should start:
+2. Click **Build an agent** on Home and start from a job, such as Researcher or Writer, or from
+   **Blank**. Give it a name, change its instructions, model and how hard it thinks to fit your work,
+   pin up the skills it needs and hand it the keys it may use without asking. Pick it a face, then
+   open its **Chat** tab and give it a real request: it runs on your key, and asks you before it uses
+   a key it wasn't given. **Save to My agents** when it does the job.
+3. Click **New team**, give it a name and choose the agents it starts with. A team always starts
+   with at least one:
+   - **My agents** — tick the agents you built; each joins as the version you saved (recommended
+     once you have one).
    - **One assistant** — a single agent that does the whole task (recommended to begin with).
    - **Researcher and writer** — one agent gathers facts, a second writes the result.
    - **Research, write and check** — a third agent, on another company's model, checks the finished
@@ -747,14 +762,13 @@ with what should change; under its new version, **Continue with the team** runs 
    - **Research, your approval, then writing** — the team pauses so you can approve the research.
    - **Research team** — a lead splits your question, researchers look into each part at the same
      time, and a writer turns what they found into a report that cites every source.
-   - **Empty team** — build it yourself from the library on the left.
 
    Ready-made teams are saved straight away, each agent on the model its job suits, so you can run
    them immediately.
 4. A team has three tabs: **Agents**, **Workflow** and **Chat**. On **Agents**, click **Add an
-   agent** to bring in one from Your agents. On **Workflow**, add more from the panel on the left:
-   **Your agents**, or a job under **Hire by job**, such as Researcher or Writer, which starts on the
-   model its kind of work suits. Select a card to edit its name, instructions, model and how hard it
+   agent** to bring in one from My agents. On **Workflow**, add more from **My agents** in the
+   panel on the left; to make a new one, choose **Build a new agent** and start from a job such as
+   Researcher or Writer. Select a card to edit its name, instructions, model and how hard it
    thinks. Drag from the dot on a card's right edge to the next card to make them work in order, and
    add **You (review step)** wherever you want to approve work before the team continues.
 5. Click **Run team**, or open **Chat**, describe what you want in plain words, and press
@@ -803,9 +817,11 @@ a folder or a file, select the agent and click **Folder** or **File** under **Gi
   or a file's text. A PDF's text is read when `pdftotext` is installed (`brew install poppler`).
   The agent can also read the folder or file itself. An added file can be up to 25 MB; link a
   folder for anything bigger.
-- A **tool** from an AI app's own settings, such as an MCP server, is not given to LoomWatch's
-  agents: reading those settings would mean reading that app's sign-ins. An agent that still has
-  one is told it isn't there, and the run carries on without it.
+- A **tool** you connected, such as Todoist or Kiwi.com, lets the agent use that service. Connect one
+  in the agent's **Tools it can use** block or in Connections; the agent asks you before each action
+  it takes there, unless you always allow that action. See [Give agents tools](docs/TOOLS.md). A tool from an AI app's own settings is
+  not given to LoomWatch's agents: an agent that still names one is told it isn't there, and the run
+  carries on without it.
 
 Taking a skill card off the canvas, or the line from it to one agent, **turns it off** for that
 agent. The agent's **Context** lists what is turned off, with a button to turn each back on. When an
@@ -1019,15 +1035,15 @@ host paths such as `/Users/name/project` do not exist inside the Linux container
 | Team definitions and canvas layouts | `~/LoomWatch/teams`; Compose-only deployments use `LOOMWATCH_TEAMS_DIR` |
 | Brief files | Paths configured by the team, usually beside its YAML file |
 | Deleted teams | `.trash` inside your teams folder, one folder per deleted team |
-| Your agents | `.jobs` inside your teams folder, one `<agent>.yaml` per agent. Earlier versions are in `.jobs/.versions/<agent>/`, removed agents move to `.jobs/.removed`, and the one-agent teams that **Try it** runs are in `.jobs/.bench` |
+| My agents | `.jobs` inside your teams folder, one `<agent>.yaml` per agent. Earlier versions are in `.jobs/.versions/<agent>/`, removed agents move to `.jobs/.removed`, and the one-agent teams that an agent's **Chat** runs are in `.jobs/.bench` |
 | Files you add to an agent (**File** under **Given**) | `<team>.files/` beside the team file |
 | Agents' working folders, and Ask's | `.loomwatch/` inside your teams folder |
 | Your OpenRouter key | This Mac's Keychain, as `LoomWatch.OpenRouter`. On Windows, Windows Credential Manager, as `api-key.LoomWatch.OpenRouter`. On Linux and in Compose, `keys.json` in LoomWatch's state folder, readable only by your user |
 | Your skills | `skills/` in `~/Library/Application Support/LoomWatch` (`%LOCALAPPDATA%\LoomWatch` on Windows, `~/.local/state/loomwatch` on Linux), and where each one came from in `skills.json` beside it. Skills that travel with a team are in `.agents/skills` beside its file |
 | Team chats (your messages and every run), recorded events, Notebook entries and Ask conversations | One file, `loomwatch.db`, in `~/Library/Application Support/LoomWatch` on macOS, `%LOCALAPPDATA%\LoomWatch` on Windows or `~/.local/state/loomwatch` on Linux. A copy of the source keeps its own in `.loomwatch/` in its folder; Compose deployments in the `loomwatch-home` volume. |
 | Which team files you approved to run, and your update-check choices | `~/Library/Application Support/LoomWatch` on macOS, `%LOCALAPPDATA%\LoomWatch` on Windows, `~/.local/state/loomwatch` on Linux |
-| Copies of the run history saved by `loomwatch update` | `~/LoomWatch/backups`, one folder per copy of LoomWatch, the three newest in each |
-| The version the last update replaced, for `loomwatch rollback` | `.previous` in `~/LoomWatch/app` |
+| Copies of the run history saved by `loomwatch update`, and by **Update and restart** in the Mac and Windows apps | `~/LoomWatch/backups`, one folder per copy of LoomWatch (`desktop-app` for the apps), the three newest in each |
+| The version the last update replaced, for `loomwatch rollback` | `.previous` in `~/LoomWatch/app`. The Mac app keeps it beside itself, hidden, as `.LoomWatch.app.previous`: rename it back to `LoomWatch.app` to go back |
 
 Back up your teams folder and the run history if you want to move or preserve your work. Copy the
 history while LoomWatch runs with `~/LoomWatch/app/bin/loomwatchd backup ~/loomwatch-copy.db`, or
@@ -1054,19 +1070,24 @@ delete its folder from `.trash`.
 </details>
 
 <details>
-<summary>Reusing an agent with Your agents</summary>
+<summary>Reusing an agent with My agents</summary>
 
-Build an agent in **Your agents** (**Build an agent** on Home), or keep one that works in a team:
-select it and choose **Add to Your agents**. It appears under **Your agents** in every team's add
+Build an agent in **My agents** (**Build an agent** on Home), or keep one that works in a team:
+select it and choose **Add to My agents**. It appears under **My agents** in every team's add
 panel, with its instructions, model, skills and what it may do without asking.
 
 Placing it copies that version into the team, so a team runs exactly what it was approved with.
 Saving a change to what a team copies, such as its job, makes the next version and keeps the
 earlier ones; a new face keeps the version. The agent's panel in a team says when a newer version
-is ready and offers **Update to v…**, **Edit in Your agents**, or **Make it this team's own** to
+is ready and offers **Update to v…**, **Edit in My agents**, or **Make it this team's own** to
 change it there alone. The builder lists the teams that use the agent and the version each one has.
-Removing an agent from Your agents leaves the teams' copies alone. An agent is one small file, so
+Removing an agent from My agents leaves the teams' copies alone. An agent is one small file, so
 you can share it by copying it into another teams folder's `.jobs`.
+
+An agent made inside a team, such as one from a ready-made team, is listed under **My agents** too,
+with its team's name. In the add panel, one of this team's own finds its card on the canvas, and
+another team's is added as a copy this team owns. Its knowledge and work folder stay with the team
+it came from.
 
 </details>
 

@@ -558,12 +558,13 @@ Molt targets AutoModel custom models with FSDP2.
 | Data parallel | `--vllm.data_parallel_size 4` | single-node mp; raises EP past TP (DeepSeek-V3-style TP8 + DP4 → EP32) |
 | Scheduler token budget | `--vllm.max_num_batched_tokens 32768` | |
 | MTP speculative decoding | `--vllm.mtp_num_speculative_tokens 1` | details in [Deep dives](#-deep-dives) |
+| MoE kernel backend | `--vllm.moe_backend triton` | default lets vLLM choose (FlashInfer TRT-LLM on Blackwell) |
 
 **MoE stability**
 
 | Mode | Flag | Note |
 |---|---|---|
-| Router replay (R3) | `--train.routing_replay` | details in [Deep dives](#-deep-dives) |
+| Router replay (R3) | `--train.routing_replay` | turns on prefix caching (vLLM's capture requires it); details in [Deep dives](#-deep-dives) |
 | Router freeze | `--actor.freeze_moe_router` | |
 
 Context parallelism is delegated to AutoModel's `ContextParallelSharder`, so each model gets the sharding
@@ -741,9 +742,9 @@ expert ids it chose, and the training forward replays that exact selection.
   on preemption).
 
 **Router freeze (optional, blunter).** Hold the gate/router weights fixed so the
-routing can't drift at all — excludes the router from the optimizer *and* the refit,
-so vLLM and the actor route to the same experts **by construction**, no engine
-support needed. The trade-off: the router stops learning, so it's **redundant with
+routing can't drift at all — the router leaves the optimizer (the refit still broadcasts
+it, unchanged), so vLLM and the actor route to the same experts **by construction**, no
+engine support needed. The trade-off: the router stops learning, so it's **redundant with
 R3** and off by default; reach for it only if routing drift still dominates and a
 fixed router is acceptable.
 

@@ -1,5 +1,11 @@
 ## ⚠️ BETA VERSION v0.2 "Geometric rate"
-This code predicts the exact time and price of a future price point, and can also construct a curve of future prices. It can be used to decipher any process that has a graph—for example, a graph of mutual understanding between artificial intelligence and a human. Notably, DeepSeek’s computing power is not used for the prediction; the data is processed on an ordinary computer. The system fully replicates Nikola Tesla’s resonator in the form of code. If we represent the operation of the Random Number Generator (RNG) as a time-series graph, the system can be applied to decrypt the bitcoin seed-phrase. The code has made the collective mind controllable and predictable - there's no need to use social media platforms like TikTok to observe or generate mass trends immediately - everything follows a simple mathematical formula.
+This code predicts the exact time and price of a future price point, and can also construct a curve of future prices. It can be used to decipher any process that has a graph—for example, a graph of mutual understanding between artificial intelligence and a human. Notably, DeepSeek’s computing power is not used for the prediction; the data is processed on an ordinary computer. The system fully replicates Nikola Tesla’s resonator in the form of code. 
+
+## "SKYNET-800 is an amplification system. Just as AI-based tools enhance the capabilities of analysts, but do not replace them, my project enhances the capabilities of security auditing. Using minimal computing resources, it allows you to identify weaknesses in random number generators (RNG) faster and more efficiently. However, the author of the code has no intention of hacking anything; on the contrary, it could be used as a vulnerability in cybersecurity and in preventing such hacks. The code will never contain any direct instructions for hacking — this is a purely legitimate project.
+
+### My project is a mathematical framework for time series forecasting and entropy analysis. Just as large language models (LLMs) can be used to write malicious code, but are created as general‑purpose tools for data analysis, SKYNET‑800 is an analytical engine.
+
+The code has made the collective mind controllable and predictable - there's no need to use social media platforms like TikTok to observe or generate mass trends immediately - everything follows a simple mathematical formula.
 
 The **SKYNET‑800** project is at the stage of **active automation**.  
 We are not writing "temporary code" — we are building the foundation for a **future powerful analytical system** that must work with huge volumes of data in real time.
@@ -679,14 +685,4 @@ Blue (four dimensions of the same event):
 
 угол — the arcctg of the ratio |RISK| / |fact|. Measures the slope between the second-world risk indicator and the actual deviation.
 
-идеал — the personal optimum of this ID: угол × ctg(угол). The value that would make RISK = факт. In the limit угол → 0, идеал → 180/π ≈ 57.30° (one radian).
-
-ср.идеал — the average ideal across all IDs in STATS_FAVORITE_IDS.txt. The center of gravity of the sample.
-
-Violet: Сила — the second-world force, computed from limbs + mirror.
-
-Dark violet: Обрезка силы — force after clipping. Only shown for "Общая средняя" rows. The clipping coefficient is угол / 35.10°, where 35.10° is the ideal of ID 12 (the reference). For ID 78, this yields 0.465, matching the actual force within 0.3%.
-
-Pink: тег — the most frequent word from red/green highlight lists appearing in news headlines within ±3 days of the signal. Only whole words. Yellow highlight is ignored.
-
-Yellow: РИС
+идеал — the personal optimum of this ID: угол × ctg(угол). The 

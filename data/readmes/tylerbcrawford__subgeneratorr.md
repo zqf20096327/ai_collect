@@ -1,6 +1,6 @@
 # Subgeneratorr
 
-**Subtitle generation for Plex, Jellyfin, and Emby — cloud or fully local. Transcribe with Deepgram Nova-3 or an offline Whisper engine on your own hardware, then let Claude, GPT, Gemini, or a local Ollama model handle translation into 54 languages.**
+**Subtitle generation for Plex, Jellyfin, and Emby — cloud or fully local. Transcribe with Deepgram Nova-3 or an offline Whisper engine on your own hardware, then let Claude, GPT, Gemini, or a local Ollama model handle keyterms and translation into 98 languages.**
 
 > **Built with Claude Code.** I set the requirements and the architecture, made the design decisions, and run it in production on my media server, with real users. The agent wrote most of the code under my direction.
 
@@ -12,10 +12,10 @@
 [![GHCR](https://img.shields.io/badge/ghcr.io-subgeneratorr--web-blue?logo=github)](https://github.com/tylerbcrawford/subgeneratorr/pkgs/container/subgeneratorr-web)
 
 <p align="center">
-  <img src="docs/demo/preview.gif" width="820" alt="Subgeneratorr workflow: browse the library, scan for missing subtitles, generate keyterms, transcribe with Deepgram Nova-3, and translate into more languages">
+  <img src="docs/demo/preview.gif" width="820" alt="Subgeneratorr workflow: browse the library, scan for missing subtitles, generate keyterms, transcribe with Deepgram Nova-3, translate with a local Ollama model, and customize the language lists">
 </p>
 
-Subgeneratorr generates language-tagged SRT subtitles for the media [Bazarr](https://www.bazarr.media/) can't find — obscure shows, older episodes, anything without community subs. It runs as a Docker container with a Web UI and CLI, uses **keyterm prompting** so proper nouns come out right, and can translate every subtitle it makes into 54 more languages with the original timing preserved.
+Subgeneratorr generates language-tagged SRT subtitles for the media [Bazarr](https://www.bazarr.media/) can't find — obscure shows, older episodes, anything without community subs. It runs as a Docker container with a Web UI and CLI, uses **keyterm prompting** so proper nouns come out right, and can translate every subtitle it makes into 58 more languages with the original timing preserved.
 
 *I created it to fill the hundreds of missing-subtitle gaps in my own media library.*
 
@@ -27,12 +27,12 @@ Since v3, transcription is a per-job switch right on the main screen:
 |---|---|---|
 | **Accuracy** | Best in class; keyterms boost proper nouns up to ~90% | ~89% word-level agreement with Nova-3 (`small` model) |
 | **Speed** | ~1% of runtime | Near-real-time on a modest CPU (0.3× measured on an N100) |
-| **Cost** | ~$0.0057/min, [$200 free credits](https://console.deepgram.com/) (~585 hrs) | **$0, forever** |
+| **Cost** | $0.0043/min (+$0.0013 with keyterms), [$200 free credits](https://console.deepgram.com/) (~600–775 hrs) | **$0, forever** |
 | **Privacy** | Audio goes to Deepgram's API | **Nothing leaves your machine** |
 | **Setup** | API key | No account, no key; larger image with the model baked in |
 | **Extras** | Diarization, redaction, audio intelligence | Core transcription (cloud-only options hide automatically) |
 
-Every AI step after transcription (keyterms, translation) is provider-agnostic too: Claude, GPT, Gemini, or a local **Ollama** model — pair Local Whisper with Ollama and the entire pipeline runs offline at $0, with no vendor lock-in anywhere.
+Every AI step after transcription is provider-agnostic too: keyterm generation and translation run on Claude, GPT, Gemini, or a local **Ollama** model picked from a list of the models installed on your server — pair Local Whisper with Ollama and the entire pipeline runs offline at $0, with no vendor lock-in anywhere.
 
 > Free and open-source. Not affiliated with Deepgram, Anthropic, OpenAI, or any other provider.
 
@@ -40,13 +40,14 @@ Every AI step after transcription (keyterms, translation) is provider-agnostic t
 
 ## Features
 
-- 🎯 **Deepgram Nova-3 speech-to-text** — strong on fast dialogue, accents, and 45+ transcription languages (55+ counting regional variants; General + Medical models), including the five added in Deepgram's August 2026 expansion: Afrikaans, Armenian, Georgian, Nepali, and Punjabi
+- 🎯 **Deepgram Nova-3 speech-to-text** — strong on fast dialogue, accents, and 59 transcription languages (91 language codes counting regional variants; General + Medical models), including Deepgram's 2026 additions: Afrikaans, Armenian, Georgian, Nepali, Punjabi, and, new in v3.2, Assamese, Kazakh, Mongolian, and Pashto
 - 🏠 **Local engine (v3)** — opt-in `-local` images transcribe on your own hardware via faster-whisper: CPU-only, offline, $0, default model baked in
-- 🔑 **Keyterm prompting** — feed character names, locations, and jargon to Nova-3 for up to ~90% better accuracy on proper nouns; generate them with one click via Claude, GPT, or Gemini
-- 🌐 **Subtitle translation into 54 languages** — turn one transcription into many: an LLM translates the generated SRT with timing preserved and writes tagged sidecars Plex, Jellyfin, and Emby pick up; use Claude, GPT, Gemini, or a local **Ollama** model for free offline translation
+- 🔑 **Keyterm prompting** — feed character names, locations, and jargon to Nova-3 for up to ~90% better accuracy on proper nouns; generate them with one click via Claude, GPT, Gemini, or a local Ollama model
+- 🌐 **Subtitle translation into 98 languages** — turn one transcription into many: an LLM translates the generated SRT with timing preserved and writes tagged sidecars Plex, Jellyfin, and Emby pick up; use Claude, GPT, Gemini, or a local **Ollama** model for free offline translation, and languages your chosen model doesn't support are greyed out
+- 🗂️ **Your languages, your list** — a Customize panel trims the transcription and translation dropdowns to the languages you actually use (saved on the server, so every browser sees the same list); the transcription list also follows the engine, swapping between Nova-3's languages and Whisper's 99
 - 🔍 **Library-wide scan** — find every file missing subtitles across your whole library, grouped by folder, with CSV export
 - 🗣️ **Speaker diarization** — labeled, character-named transcripts
-- 🌍 **Multilingual transcription** — auto-detect, `multi` code-switching, and regional variants across 55+ Nova-3 language codes
+- 🌍 **Multilingual transcription** — auto-detect, `multi` code-switching, and regional variants across 91 Nova-3 language codes
 - 🛡️ **Content control** — redaction (PCI/PII), profanity filtering, find & replace, dictation
 - 🧠 **Audio intelligence** — sentiment, summarization, topic/intent/entity detection (English)
 - 🐳 **Docker-based** — Web UI and CLI, batch processing with parallel workers and real-time progress
@@ -68,7 +69,7 @@ Every AI step after transcription (keyterms, translation) is provider-agnostic t
 
 <p align="center">
   <img src="docs/screenshots/keyterm-generation.png" width="780" alt="AI keyterm generation populated with character names and locations, with cost and token readout"><br>
-  <sub>One-click AI keyterms — here it read the filename and pulled 22 terms from <em>Tears of Steel</em> on its own, for $0.004.</sub>
+  <sub>One-click AI keyterms — here GPT-6 Luna read the filename and returned 21 names, places, and terms for <em>Tears of Steel</em> on its own, for well under a cent.</sub>
 </p>
 
 <p align="center">
@@ -82,8 +83,13 @@ Every AI step after transcription (keyterms, translation) is provider-agnostic t
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/translate-panel.png" width="780" alt="Translate panel with target language chips (Spanish, French, Japanese, Punjabi, Georgian) and a live cost estimate"><br>
-  <sub>Turn one subtitle into many — pick target languages (54 available) and an LLM provider; timing is preserved.</sub>
+  <img src="docs/screenshots/translate-panel.png" width="780" alt="Translate panel set to a local Ollama model picked from the installed models, with Spanish, French, German, Italian, and Portuguese chips, a note that Llama 3 officially supports 7 of the 98 targets, and a free cost line"><br>
+  <sub>Turn one subtitle into many — pick target languages (98 available) and an LLM provider; timing is preserved. With Ollama, pick from the models installed on your server; languages the model doesn't support are greyed out.</sub>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/customize-languages.png" width="780" alt="Customize languages dialog with Transcription and Translation tabs, search, All/None, a 128 of 133 languages shown count, and Cloud/Local badges on each language"><br>
+  <sub>Trim the dropdowns to the languages you actually use — saved on the server, with Cloud / Local badges showing which engine supports each one.</sub>
 </p>
 
 <sub>Demo library uses Creative Commons / public-domain titles (Blender open movies, Pioneer One, Night of the Living Dead) so nothing copyrighted appears in the shots.</sub>
@@ -94,7 +100,7 @@ Every AI step after transcription (keyterms, translation) is provider-agnostic t
 
 **Pick your flavor:**
 
-- ☁️ **Cloud (default)** — Deepgram Nova-3: best accuracy, processes in ~1% of runtime, ~$0.0057/min with [$200 free credits](https://console.deepgram.com/). Needs an API key.
+- ☁️ **Cloud (default)** — Deepgram Nova-3: best accuracy, processes in ~1% of runtime, from $0.0043/min with [$200 free credits](https://console.deepgram.com/). Needs an API key.
 - 🏠 **Fully local** — faster-whisper on your CPU: $0, offline, no account or key needed, near-real-time processing (larger image). Both engines stay selectable per job.
 
 **Requirements:** Docker + Docker Compose · media files (MKV, MP4, AVI, MOV, MP3, WAV, FLAC, …) · a [Deepgram API key](https://console.deepgram.com/) for the cloud flavor only
@@ -133,7 +139,11 @@ Provide them manually as a CSV, or click **Generate Keyterms** in the Web UI: an
 
 One transcription, many languages. After Nova-3 produces a subtitle, an LLM translates the cue text into the languages you pick and writes tagged sidecars (`.spa.srt`, `.fre.srt`, and so on) that Plex, Jellyfin, and Emby auto-detect. Timing is copied from the source frame for frame, so the translation never drifts, and the show's keyterms ride along as a glossary to keep names spelled consistently.
 
-Open the **Translate** panel in the Web UI, pick your target languages, and choose a provider: Claude, GPT, Gemini, or a local **Ollama** model. Ollama runs on your own hardware over its OpenAI-compatible endpoint, so translation is free and fully offline (the cost estimate shows $0.00) — use a capable 3B+ model like `qwen2.5:7b` for reliable results. Existing translations are skipped unless you choose to overwrite.
+Open the **Translate** panel in the Web UI, pick your target languages, and choose a provider: Claude, GPT, Gemini, or a local **Ollama** model. With Ollama, the Model dropdown lists the models installed on your server (↻ refreshes it; a Host field overrides `OLLAMA_HOST`). It runs on your own hardware, so translation is free and fully offline. Local models differ a lot in language coverage, so targets a model's card doesn't list are greyed out (e.g. Llama 3 covers 8 languages, while Qwen 3 and Gemma 3 cover 100+). Thinking models like `qwen3` are slower but work; use a 3B+ model for reliable results. Existing translations are skipped unless you choose to overwrite.
+
+### Customize your language lists
+
+The last entry in the language dropdown (and in the Translate panel's dropdown) is **Customize languages…**. It opens a panel with Transcription and Translation tabs where you tick just the languages you use; everything else disappears from the dropdowns. The choice is saved on the server (`SETTINGS_PATH`), so it follows you to any browser. With everything ticked (the default), languages added in future versions show up automatically.
 
 ### Run fully local (no cloud, $0)
 
@@ -173,7 +183,8 @@ Two values are required; everything else has sensible defaults.
 | `ENABLE_TRANSCRIPT` | Generate speaker-labeled transcripts | `0` |
 | `PROFANITY_FILTER` | `off` or `on` — masks profanity with asterisks | `off` |
 | `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY` | AI keyterm generation and translation (optional) | – |
-| `OLLAMA_HOST` | Local Ollama endpoint for free offline translation, e.g. `http://localhost:11434` (optional) | – |
+| `OLLAMA_HOST` | Local Ollama endpoint for free offline keyterms and translation, e.g. `http://localhost:11434` (optional) | – |
+| `SETTINGS_PATH` | Where the Web UI saves your language list choices | `/logs/subgeneratorr-settings.json` |
 
 `MEDIA_PATH` examples: `/home/you/media` (Linux), `/Users/you/Movies` (macOS), `C:/Users/You/Videos` (Windows). On Linux, set `PUID`/`PGID` to match your user so generated files keep the right ownership. Full reference: **[Technical docs](docs/technical.md#environment-variables-complete-reference)**.
 
@@ -181,23 +192,23 @@ Two values are required; everything else has sensible defaults.
 
 ## Pricing
 
-Nova-3 costs ~**$0.0057/min** of audio:
+Nova-3 pre-recorded audio is billed per minute at Deepgram's [pay-as-you-go rates](https://deepgram.com/pricing): **$0.0043/min** (or $0.0052/min for `multi` code-switching). Keyterm prompting adds $0.0013/min and redaction adds $0.0020/min. Diarization and smart formatting are included. The Web UI's estimate follows the options you pick.
 
-| Content | Cost |
-|---------|------|
-| 10-min episode | ~$0.06 |
-| 45-min episode | ~$0.26 |
-| 90-min movie | ~$0.51 |
-| 100 × 10-min episodes | ~$5.70 |
+| Content | Base | With keyterms |
+|---------|------|---------------|
+| 10-min episode | ~$0.04 | ~$0.06 |
+| 45-min episode | ~$0.19 | ~$0.25 |
+| 90-min movie | ~$0.39 | ~$0.50 |
+| 100 × 10-min episodes | ~$4.30 | ~$5.60 |
 
-New Deepgram accounts get **$200 in free credits** — roughly 35,000 minutes (~585 hours).
+New Deepgram accounts get **$200 in free credits**, roughly 35,000–46,000 minutes (~600–775 hours) depending on options.
 
 ---
 
 ## Documentation
 
 - **[Technical docs](docs/technical.md)** — architecture, API endpoints, advanced config, speaker maps, AI model benchmarks
-- **[Language support](docs/languages.md)** — the full Nova-3 transcription matrix (55+ with variants) and the 54 translation targets
+- **[Language support](docs/languages.md)** — the full Nova-3 transcription matrix (59 languages, 91 codes), the 99 local Whisper languages, the 98 translation targets and which models support them, and the Customize languages panel
 - **[Roadmap](docs/roadmap.md)** — planned features
 
 <details>
@@ -207,7 +218,7 @@ New Deepgram accounts get **$200 in free credits** — roughly 35,000 minutes (~
 Bazarr finds *existing* community subtitles; Subgeneratorr *generates* them from audio for whatever Bazarr can't find. Run Bazarr first, then Subgeneratorr on the gaps.
 
 **Cloud or local — which engine should I pick?**
-Cloud (Nova-3) for the best accuracy and speed at ~$0.0057/min; Local (Whisper) for $0, offline, fully private transcription at near-real-time speed. It's a per-job switch, so you can use both — see the [comparison table](#cloud-or-local--you-choose).
+Cloud (Nova-3) for the best accuracy and speed from $0.0043/min; Local (Whisper) for $0, offline, fully private transcription at near-real-time speed. It's a per-job switch, so you can use both — see the [comparison table](#cloud-or-local--you-choose).
 
 **What is keyterm prompting?**
 A list of show-specific terms (character names, places, made-up words) that Nova-3 prioritizes during transcription — up to ~90% better accuracy on those terms.
@@ -216,13 +227,13 @@ A list of show-specific terms (character names, places, made-up words) that Nova
 Yes — it writes language-tagged SRT sidecars (`.eng.srt`, `.spa.srt`, etc.) that all three auto-detect. Refresh your library after generation.
 
 **Can I auto-generate keyterms?**
-Yes — one-click generation via Claude, GPT, or Gemini infers the title from the file path and returns 20–50 terms. Gemini's free tier makes it effectively free.
+Yes — one-click generation via Claude, GPT, Gemini, or a local Ollama model infers the title from the file path and returns 20–50 terms. Gemini's free tier or Ollama makes it effectively free.
 
 **Can it translate subtitles?**
-Yes — after transcription, an LLM translates the cue text into any of 54 languages and writes tagged sidecars (`.spa.srt`, `.fre.srt`, …) with the original timing preserved. Use Claude, GPT, Gemini, or a free local Ollama model. See [Translate subtitles](#translate-subtitles).
+Yes — after transcription, an LLM translates the cue text into any of 98 languages and writes tagged sidecars (`.spa.srt`, `.fre.srt`, …) with the original timing preserved. Use Claude, GPT, Gemini, or a free local Ollama model. See [Translate subtitles](#translate-subtitles).
 
 **What languages are supported?**
-Nova-3 transcribes 45+ languages (55+ counting regional variants), with auto-detect and a `multi` code-switching mode. Translation then covers 54 target languages. See the [language guide](docs/languages.md).
+Nova-3 transcribes 59 languages (91 codes counting regional variants), with auto-detect and a `multi` code-switching mode. The Local Whisper engine transcribes 99 languages, including 40 that Nova-3 doesn't have (Welsh, Swahili, Yoruba, …). Translation then covers 98 target languages. See the [language guide](docs/languages.md).
 
 </details>
 

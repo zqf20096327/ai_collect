@@ -19,7 +19,7 @@ See [`docs/`](docs/README.md) for the user guide and technical documentation.
 
 ## What's Included
 
-Everything marked **Self-hosted** is scraped, stored, and served by this repo — **62 MCP tools**, no account, no key. [Equibles Cloud](https://equibles.com) runs this exact core over the same protocol with the same tool names, and adds more tools on top.
+Everything marked **Self-hosted** is scraped, stored, and served by this repo — **63 MCP tools**, no account, no key. [Equibles Cloud](https://equibles.com) runs this exact core over the same protocol with the same tool names, and adds more tools on top.
 
 | Domain | Data Source | Self-hosted | [Equibles Cloud](https://equibles.com) | Description |
 |--------|------------|:---:|:---:|-------------|
@@ -202,7 +202,7 @@ The web portal at `http://localhost:8080` provides a browser-based interface for
 
 - **Stocks** — Browse and search all tracked companies, view price charts with technical indicators (SMA, EMA, RSI, MACD, Bollinger Bands), golden/death-cross and price-streak badges, performance versus SPY, plus per-stock tabs for institutional holdings, short data, SEC filings, financial statements, insider trading, proposed (Form 144) sales, fund holdings (NPORT), fund operations (N-CEN), exempt offerings (Form D), and congressional trades
 - **Institutions** — Browse institutional holders (hedge funds, asset managers), view detailed profiles with portfolio breakdowns, industry allocation, quarterly activity, backtesting, and side-by-side comparisons. Filers are scored on risk-adjusted performance (alpha vs. a benchmark) and a Smart Money Index page aggregates the highest-scoring funds into a consensus signal. Includes a holdings screener with filters (filer count, value, float %, location, AUM/position-count, industry) and CSV export
-- **Advisers** — Browse SEC-registered investment advisers (`/advisers`), ranked by assets under management, with per-firm profiles (regulatory AUM, main office, employee count, fee structure)
+- **Advisers** — Browse SEC-registered and exempt reporting investment advisers (`/advisers`), ranked by assets under management, with per-firm profiles (regulatory AUM, main office, employee count, fee structure)
 - **Insider Trading** — Dashboard showing the top insider buys, sells, and biggest transactions over the last 90 days
 - **Short Activity** — Most-shorted leaderboard (`/most-shorted`, ranked by FINRA short interest) and largest daily short volume (`/short-volume`), each with a date selector, server-side sort, and pagination
 - **Economy** — Browse FRED economic indicators grouped by category (interest rates, inflation, employment, GDP, etc.) with charts and statistics
@@ -220,7 +220,7 @@ The MCP server exposes financial data tools for AI assistants (Claude, ChatGPT, 
 - **Congressional Trading** — Trades for a ticker, trades by one member, member search
 - **SEC Documents** — Full-text search, semantic search, document browsing, keyword search within filings
 - **Financial Statements** — XBRL fact time series per ticker, cross-ticker fact comparison, full income statement / balance sheet / cash flow per fiscal period
-- **Fund & Adviser Filings** — Fund portfolio holdings (NPORT), registered-fund operations (N-CEN), exempt offerings (Form D), and SEC-registered investment-adviser lookup and search (Form ADV)
+- **Fund & Adviser Filings** — Fund portfolio holdings (NPORT), registered-fund operations (N-CEN), exempt offerings (Form D), and SEC-registered and exempt reporting investment-adviser lookup and search (Form ADV)
 - **Short Data** — Daily short volume, market-wide largest daily short volume, bi-monthly short interest, and the latest short-interest snapshot across tickers
 - **Economic Indicators** — FRED data lookup, latest macro snapshot, indicator search across categories
 - **Stock Prices** — Daily OHLCV history with adjusted close, latest close across one or more tickers, and on-demand technical indicators (EMA, Stochastic Oscillator, Average True Range, On-Balance Volume, Bollinger Bands)
@@ -344,19 +344,20 @@ Build first: a plain `dotnet run` restores and prints build output on stdout, wh
 
 ## Tools
 
-This self-hosted build exposes 62 tools over MCP. The hosted server at `https://mcp.equibles.com/mcp` runs this same core and [adds more on top](#whats-included). Full catalog and client setup: [daniel3303/stock-market-mcp-server](https://github.com/daniel3303/stock-market-mcp-server).
+This self-hosted build exposes 63 tools over MCP. The hosted server at `https://mcp.equibles.com/mcp` runs this same core and [adds more on top](#whats-included). Full catalog and client setup: [daniel3303/stock-market-mcp-server](https://github.com/daniel3303/stock-market-mcp-server).
 
 **13F institutional holdings**
 
 - GetInstitutionCloneBacktest — backtest cloning a filer's 13F portfolio vs a benchmark
-- GetTopHolders — top institutional holders of a stock (13F-HR)
+- GetTopHolders — top institutional holders of a stock (13F-HR), with each holder's type and measured style, filterable by both
 - GetInstitutionalOwnershipHistory — institutional ownership trend across quarters
 - GetInstitutionPortfolio — an institution's 13F portfolio
-- SearchInstitutions — strict-first tokenized name/CIK search with filing date, 13F AUM, and position count
+- SearchInstitutions — strict-first tokenized name/CIK search with filing date, 13F AUM, position count, and holder type
 - GetTopInstitutionalBuyersSellers — biggest adds/reductions on a stock this quarter
 - GetMarketWide13FActivity — market-wide 13F leaderboards
 - GetMostHeldStocks — stocks by institutional breadth
-- GetInstitutionSummary — filer summary (value, concentration, turnover)
+- GetInstitutionSummary — filer summary (value, concentration, turnover, holder profile, style bands)
+- GetInstitutionStyleHistory — a filer's measured style, turnover and horizon bands quarter by quarter
 - GetInstitutionSectorAllocation — allocation by sector
 - GetInstitutionQuarterlyActivity — initiated/increased/reduced/exited vs prior quarter
 - CompareInstitutionPortfolios — portfolio overlap between two institutions

@@ -4,6 +4,10 @@ Author: karlarso · Apache-2.0
 
 English | [简体中文](README.zh-CN.md)
 
+![One prompt, a comment on a canvas element, then the agent edits the file and replies](docs/images/hero.gif)
+
+[Online demo](https://karlarso.github.io/easy-ui-canvas/demo/)
+
 > **⚠️ No authentication: use it on this machine or on a network you trust only.**
 
 > **Deploying? Hand [DEPLOY.md](DEPLOY.md) to your AI assistant.**
@@ -126,8 +130,8 @@ Real captures from a running instance, using the bundled example project (a thre
 ## 🧩 Features
 
 - 🗂️ **Multi-frame canvas**: tile view with zoom, pan, minimap and fit-to-window; frames are plain HTML/CSS fragments you or an agent write.
-- 💬 **Element comments**: click any element (or the whole frame), write feedback, track it as pending / changed / needs discussion, copy it for an AI, and reply from the command line.
-- 📱 **Flow view and phone preview**: mark buttons with `data-goto` to make a prototype clickable inside the canvas and at `/m/` on a phone (QR code included). Give the scrolling element of several states of one page the same `data-keep-scroll="name"` to keep the scroll position when jumping between them.
+- 💬 **Element comments**: click any element (or the whole frame, a frame title, a group title bar, or a free-standing note on the board), write feedback, track it as pending / changed / needs discussion, copy it for an AI, and reply from the command line.
+- 📱 **Flow view and phone preview**: mark buttons with `data-goto` to make a prototype clickable inside the canvas and at `/m/` on a phone (QR code included). In the canvas Flow view you can also turn on comment mode and comment on the screen you are looking at (clicks select instead of jumping); `/m/` stays read-only. Give the scrolling element of several states of one page the same `data-keep-scroll="name"` to keep the scroll position when jumping between them.
 - 🕘 **Snapshots**: keep earlier revisions with their comments and look back at them read-only.
 - 📋 **Many canvases, one list page**: each canvas is its own small server; a list page starts, stops and removes them.
 - 📤 **UI hand-off export**: one ZIP with offline pages, screenshots, assets and a `HANDOFF.md` (needs optional tools, see below).
@@ -135,6 +139,8 @@ Real captures from a running instance, using the bundled example project (a thre
 - 🪶 **No build step, no CDN, no third-party Python packages.**
 - 📁 **Plain files, git-friendly**: a canvas is just files in a directory (HTML, JSON, assets), so it can live in a git repository.
 - 📄 **Open source**: Apache-2.0.
+
+Comments reach beyond the screens: frame titles and subtitles and the title bars of group sections can be selected out of the box, and free-standing notes (`notes` in `project.json`, one HTML fragment each) can sit anywhere on the board. Comments on a note or a group bar are filed under the frame "Canvas". See [docs/project-format.md](docs/project-format.md).
 
 ## 🛠️ Manual setup (without AI-assisted deployment)
 
@@ -183,7 +189,7 @@ scripts/canvas.py        CLI and servers (Python stdlib)
 scripts/export_ui.py, export-ui.cjs   UI hand-off export
 assets/                  front end (canvas.html/js/css, list.html, mobile.html, i18n.js, i18n.json)
 examples/en, examples/zh example projects
-docs/                    format, behaviour, i18n, autostart
+docs/                    format, behaviour, i18n, autostart, Pages site
 DEPLOY.md, DEPLOY.zh-CN.md   deployment guide to hand to your AI assistant
 tests/                   tests
 SKILL.md                 agent instructions

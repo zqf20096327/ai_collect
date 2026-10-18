@@ -4,7 +4,12 @@
 
 By **Luca Celebrano · [@Lukecele](https://github.com/Lukecele)**
 
-[Try the chat](https://virtue-ecru.vercel.app/#booth) · [Explore the source](https://github.com/Lukecele/virtue) · [Star on GitHub](https://github.com/Lukecele/virtue) · [Follow Lukecele](https://github.com/Lukecele)
+[Try the chat](https://virtue-ecru.vercel.app/#booth) · [Explore the source](https://github.com/Lukecele/virtue) · [Follow Lukecele](https://github.com/Lukecele)
+
+> [!TIP]
+> **Enjoying Virtue?**  
+> If you find this rule-based conversational engine and calculator interesting or useful, please **give it a ⭐ Star on GitHub** in the top-right corner! Your support helps continued open-source development.
+
 
 [![CI](https://github.com/Lukecele/virtue/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Lukecele/virtue/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)

@@ -3,7 +3,7 @@
 [![CI](https://github.com/blisspixel/deepr/actions/workflows/ci.yml/badge.svg)](https://github.com/blisspixel/deepr/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/version-2.50.27-blue)](https://github.com/blisspixel/deepr/releases/tag/v2.50.27)
+[![Version](https://img.shields.io/badge/version-2.50.37-blue)](https://github.com/blisspixel/deepr/releases/tag/v2.50.37)
 
 **Persistent domain experts built from bounded, auditable research.**
 
@@ -171,6 +171,12 @@ deepr providers openrouter-check
 deepr costs doctor
 ```
 
+Current `deepr research` defaults keep web search off, and the attended
+OpenRouter route uses no tools. These answers use model knowledge and supplied
+context; they do not check live web sources. Human and JSON previews explain
+whether a tool was disabled by the caller or by the existing cost boundary.
+A previewed web-search request is not an admitted execution route.
+
 OpenRouter catalog slugs can be previewed write-free. Automatic routing, expert
 routing, and evaluation stay blocked. Explicit attended research can run one
 pinned completion after `deepr budget authorize openrouter`. Omitting `--model`
@@ -300,14 +306,68 @@ for tested behavior and the distinction from draft standards and host certificat
 
 ## Direction
 
-v2.50.27 points deep-research defaults at the live OpenAI substitutes.
-Retired model ids still validate and keep their historical wire names. Built-in
-web search stays off when a context window is larger than the reserved 128k
-input ceiling. Selectable Gemini models are `gemini-4-argon`,
-`gemini-3.8-flash`, and `gemini-3.5-flash-lite`. Gemini Deep Research uses
+v2.50.37 adds explicit local embedding roles and profile/dimension compatibility
+checks. A frozen published-label comparison leaves defaults unchanged; all
+embedding attempts are recorded at `$0`. See the [comparison and limits](docs/validation/local-embedding-profiles-2026-10-18.md).
+
+v2.50.36 records native local completion attempts at the shared transport
+boundary, including refusals and failures. Durable `$0` receipts contain no
+prompt or answer text. Rehearsal reuses the same recorder; no execution gate or
+expert-quality claim is widened.
+
+v2.50.35 completes experience inspection with an explicit decision review:
+original advice, recorded context, delivered prompts and later observations in
+one dated Markdown/JSON packet. Comparison shows input changes only. Missing
+legacy evidence and unreviewed judgments stay explicit; no expert state changes.
+
+v2.50.34 aligns first-run guidance and generated records: release installation
+comes first, noninteractive setup explains `--yes` before writing config, and
+storage inspection shows absolute paths. Formation reviews link only produced
+records. Currentness pages deduplicate identical notes for a matched study and
+keep older brief history visibly separate. Canonical history is preserved.
+
+v2.50.33 removes shut-down models from advertised choices while preserving
+explicit historical IDs and lifecycle notices. Help derives retained defaults
+and preview-only candidates from their owning registries. Gemini 2.5 is marked
+prior-user-only, with no claimed shutdown or verified account access. Local
+setup shows download size and estimates memory fit before suggesting a model.
+Reviewed defaults, historical pricing and execution gates remain intact.
+
+v2.50.32 makes setup inspection consistent: research previews explain web-search
+limits, capacity reads create no quota files, and doctor and expert inventory
+provide JSON with the same stored facts as their human views. No execution or
+learning authority changes.
+
+v2.50.31 makes the expert's evidence readable: linked finding pages quote the
+retained excerpts, positions show their recorded support labels, and new brief
+statements distinguish studied sources, broader knowledge and reasoning. Older
+perspectives remain explicitly unattributed. Consult shows the complete answer,
+grounds, support, currency and pushback. Failed first builds report their actual
+study and one consistent retry step; consult selects the completed build's
+model. These repairs do not establish advice quality. S0 remains the next gate.
+
+v2.50.29 makes a consult report whether its citations reach the loaded study
+and a retained passage. Local synthesis uses Ollama's native chat API at the
+same 16384-token window study uses, with thinking disabled. Recorded live
+items, unknowns, and dissent reach the prompt or are named when the prompt
+limit omits them. `dissent_preserved` reports that delivery. It does not judge
+the answer, and this release does not claim the expert got better.
+
+v2.50.28 adds a read-only currency inspection and two explicit world-time
+writes. `deepr expert currency` reports which live beliefs have an unknown
+end, which were affirmed in force, and which have a recorded end. Decay stays
+a rank. `close-claim` and `affirm-claim` require `--yes` and a retained
+reason. Consult still uses stored state and does not certify currentness.
+The same patch selects `gemini-4-argon`, `gemini-3.8-flash`, and
+`gemini-3.5-flash-lite`. Gemini Deep Research uses
 `deep-research-max-preview-04-2026` and stays gated because that agent has no
 provider spend ceiling. Older Gemini ids remain priced for historical
 settlement and are not selected.
+
+v2.50.27 points deep-research defaults at the live OpenAI substitutes.
+Retired model ids still validate and keep their historical wire names. Built-in
+web search stays off when a context window is larger than the reserved 128k
+input ceiling.
 
 v2.50.26 repairs core-only installation on ordinary Python 3.13 with canonical
 PyYAML and checks the core CLI, MCP and YAML surfaces on Python 3.12, 3.13 and

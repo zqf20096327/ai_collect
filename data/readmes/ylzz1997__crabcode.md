@@ -1,0 +1,2166 @@
+# CrabCode
+
+[中文](./README.zh-CN.md)
+
+AI coding assistant in the terminal — a Python reimplementation with a clean, frontend-backend separated architecture, Compatible with Claude Code Agent and Skills.
+
+> This project is inspired by the design of Claude Code.
+
+## Architecture
+
+- **crabcode-core**: The engine. Handles API calls, tool execution, prompt construction, session management, and MCP integration. Exposes a pure async event-stream interface — no I/O or terminal dependency.
+- **crabcode-cli**: A terminal frontend. Uses `rich` + `prompt_toolkit` for interactive REPL, Markdown rendering, and streaming output.
+- **crabcode-search** *(optional)*: Semantic codebase search. Embeds source files into a USearch vector index and exposes a `CodebaseSearch` tool that the agent can use for natural-language code lookup.
+- **crabcode-gateway** *(optional)*: Multi-protocol (HTTP/gRPC) gateway server. Exposes `crabcode-core` as a network service with REST API, SSE event streaming, WebSocket bidirectional channel, and gRPC — enabling integration with VSCode extensions, web UIs, and other clients.
+
+## Installation
+
+```bash
+# Basic install (no semantic search)
+pip install crabcode
+
+# With browser automation
+pip install crabcode[browser]
+
+# With semantic search
+pip install crabcode[search]
+
+# With cloud provider support
+pip install crabcode[bedrock]   # AWS Bedrock
+pip install crabcode[vertex]    # Google Vertex AI
+
+# With gateway server support
+pip install crabcode[gateway]
+
+# Install all optional features at once
+pip install crabcode[all]
+
+# Combine extras
+pip install crabcode[search,bedrock]
+pip install crabcode[browser,search]
+```
+
+On Windows PowerShell, set environment variables with
+`$env:ANTHROPIC_API_KEY = "YourKey"` (and use the same `$env:NAME` form for
+the provider-specific keys below).
+
+### Development
+
+```bash
+# Install packages in editable mode
+pip install -e packages/core packages/cli packages/search packages/debugger crabcode-gateway
+# Minimal install (core + cli only, no semantic search)
+pip install -e packages/core packages/cli
+# Browser automation dependency
+pip install -e packages/core[browser] packages/cli
+# Install Chromium once after enabling browser support
+playwright install chromium
+```
+
+## Quick Start
+
+```bash
+# Set your API key
+export ANTHROPIC_API_KEY=YourKey
+
+# Pipe mode
+echo "explain this codebase" | crabcode -p
+
+# Interactive REPL
+crabcode
+
+# Full Access for this run (skip tool permission prompts)
+crabcode --yolo
+
+# Resume last session
+crabcode --continue      # or -c
+
+# Resume a specific session
+crabcode --resume <id>   # or -r <id>
+```
+
+In the interactive CLI, **Enter** sends; **Ctrl+J** or **Alt/Opt+Enter** inserts a
+newline. You can also press **Esc**, then **Enter** to insert a newline. The
+input frame grows with newlines and wrapped text, and scrolls with the cursor
+when it fills the terminal. These keys also work while the agent is running.
+
+### Follow-up behavior
+
+CLI, VS Code, and Desktop support follow-ups during an active run. **Queue** is
+the default: messages run as separate turns in FIFO order after the current turn
+finishes. **Steer** adds guidance at a safe boundary of the current run, such as
+after a tool returns. Queued input retains its images and attached context.
+
+Choose the default in **Desktop Settings → General → Conversation → Follow-up
+behavior** or in VS Code's `crabcode.followUpMode` setting. Queued messages appear
+in cards above the composer, with Steer and Delete actions. The menu offers Edit
+message (recall the message and its images into the composer) and Disable queue
+(switch future messages to Steer while keeping existing queued messages).
+During a run, Enter uses the default and Cmd+Enter
+(macOS) / Ctrl+Enter (Windows/Linux) uses the opposite for just that message;
+Shift+Enter inserts a newline. Idle input keeps the configured send shortcut.
+
+In the CLI, `/follow-up queue` and `/follow-up steer` save `follow_up_mode` in user
+settings. Ctrl+S sends the opposite while working; Ctrl+Enter also works in
+terminals that report extended key codes. Ctrl+J and Alt/Opt+Enter insert newlines.
+With an empty composer and no pending image attachments, Ctrl+S / Ctrl+Enter
+moves the oldest queued message into steering, including its original attachments,
+without changing the default mode. Use `/queue` to list pending messages and
+`/queue steer [number]` to promote one (the number defaults to 1). Promotion applies
+at the next safe boundary; it leaves the message queued if steering fails.
+
+Stopping or failing a run discards its unexecuted queue. Desktop and VS Code keep
+that input available to restore into the composer; CLI prints the unsent messages.
+
+### Persistent Goals
+
+Use `/goal` to keep a measurable objective active across turns, compaction, and
+session resume. Goals are separate from execution plans: a goal describes the
+outcome, while `/plan` describes the steps.
+
+```text
+/goal Ship the auth fix and verify it with pytest tests/auth
+/goal                         # view the current goal
+/goal edit <objective>        # revise it
+/goal pause                   # stop injecting it into model context
+/goal resume
+/goal complete                # mark the outcome verified
+/goal blocked                 # mark it unable to progress
+/goal clear
+```
+
+Add `--budget N` when setting or editing a goal to track model token usage.
+Use `--no-budget` with `/goal edit` to remove an existing budget.
+
+### Session Management CLI
+
+```bash
+# List sessions for the current project
+crabcode sessions list
+
+# List sessions across all projects
+crabcode sessions list --all
+
+# Search sessions by keyword
+crabcode sessions search "refactor auth"
+
+# Export a session to Markdown or JSON
+crabcode sessions export <id> --format md --output chat.md
+
+# Fork a session from an assistant reply (full or unique-prefix IDs)
+crabcode sessions fork <session-id> <assistant-message-uuid>
+crabcode sessions fork <session-id> <assistant-message-uuid> --title "Try another approach"
+
+# Archive old sessions (older than 30 days) and clean up
+crabcode sessions prune --days 30 --delete-files
+
+# Show usage statistics
+crabcode stats
+crabcode stats --project   # current project only
+```
+
+Inside the interactive CLI, use `/fork [assistant-message-uuid]`; omitting the
+UUID forks from the latest completed assistant reply. UUIDs support completion
+and unique prefixes.
+
+## Multi-API Support
+
+### Gateway Server
+
+CrabCode can run as a multi-protocol network service, enabling integration with VSCode extensions, web UIs, and other external clients.
+
+```bash
+# Start HTTP gateway on port 4096
+crabcode gateway
+
+# Custom port and host
+crabcode gateway --port 8080 --host 0.0.0.0
+
+# With gRPC support
+crabcode gateway --port 4096 --grpc-port 50051
+
+# With Basic Auth
+crabcode gateway --password secret
+```
+
+#### Gateway security modes
+
+Gateway authentication is disabled by default. Configure `none`, `password`,
+`publickey`, or `mixed` in the user-level `~/.crabcode/settings.json`. Project
+settings cannot override this process-level security setting.
+
+```json
+{
+  "gateway": {
+    "security": {
+      "mode": "mixed",
+      "password": "change-me",
+      "authorized_keys": "~/.ssh/authorized_keys",
+      "token_ttl_seconds": 900
+    }
+  }
+}
+```
+
+For deployments, use `CRABCODE_GATEWAY_PASSWORD` instead of a plaintext
+`password`, or configure a `password_hash` in `pbkdf2_sha256$...` format.
+`publickey` and `mixed` read `~/.ssh/authorized_keys` by default and support
+Ed25519, RSA-SHA256, and ECDSA-SHA256. In `mixed` mode either method grants
+access, so the password must still be strong.
+
+```bash
+python -c 'from getpass import getpass; from crabcode_gateway.auth import hash_password; print(hash_password(getpass("Password: ")))'
+```
+
+Password clients submit `{"grant_type":"password","password":"..."}` to
+`POST /auth/token`. Public-key clients first call `GET /auth/challenge`, sign
+the returned UTF-8 `signing_payload` locally, then submit `grant_type=publickey`,
+the authorized-key comment or `SHA256:` fingerprint as `key_id`, the challenge,
+and the Base64 signature to `POST /auth/token`. The private key never leaves the
+client. Both flows return a short-lived JWT used as
+`Authorization: Bearer <token>` for HTTP, WebSocket, and gRPC requests.
+Challenges expire after 60 seconds and are single-use. Five consecutive
+password failures are rate-limited for 60 seconds.
+An explicitly configured `jwt_secret` must be at least 32 bytes; otherwise a
+new secret is generated for each gateway process.
+
+The existing `--password` and static Bearer/Basic password behavior remains
+compatible, but new clients should exchange credentials at `/auth/token`.
+Use HTTPS/WSS whenever the gateway is exposed beyond the local machine.
+
+**HTTP API endpoints:**
+
+| Endpoint | Method | Description |
+| ---------- | -------- | ------------- |
+| `/health` | GET | Health check with the CrabCode version and gateway protocol compatibility range |
+| `/session/new` | POST | Create a session; accepts `cwd` plus optional model overrides and composer-control defaults (`reasoning_effort`, `ultra_mode`, `mode`, `permission_mode`) |
+| `/session/send` | POST | Send a message (starts query loop, events via SSE) |
+| `/session/interrupt` | POST | Interrupt current turn |
+| `/session/compact` | POST | Trigger manual compaction |
+| `/session/clear` | POST | Clear the active context and persist the clear boundary |
+| `/session/messages` | GET | Read the structured active message projection |
+| `/session/fork` | POST | Atomically fork a session through any completed assistant reply; records the source session/message/title |
+| `/session/list` | GET | List persisted sessions for the current project, or for an optional `cwd` |
+| `/session/recent` | GET | List recent sessions across projects |
+| `/session/search` | POST | Search sessions by title or message |
+| `/session/resolve` | GET | Resolve a full ID, unique prefix, or current-project index |
+| `/session/resume` | POST | Resume by full ID, unique prefix, or index, with the same optional API overrides for a cold session |
+| `/session/status` | GET | Read model, mode, effort, and context-window status |
+| `/session/archive` | POST | Archive a loaded or persisted session |
+| `/session/prune` | POST | Archive stale inactive sessions and optionally purge artifacts |
+| `/session/export` | POST | Export Markdown or JSON by ID, prefix, or index |
+| `/session/stats` | GET | Read global, project, and per-model usage statistics |
+| `/agent/spawn` | POST | Spawn a sub-agent |
+| `/agent/{id}` | GET | Get agent status |
+| `/agent/list` | GET | List all agents |
+| `/agent/{id}/transcript` | GET | Read an agent transcript/log tail |
+| `/agent/{id}/cancel` | POST | Cancel an agent |
+| `/agent/{id}/input` | POST | Send input to an agent |
+| `/agent/wait` | POST | Wait for agent(s) to complete |
+| `/permission/respond` | POST | Respond to a permission request |
+| `/choice/respond` | POST | Respond to a choice request |
+| `/config/models` | GET | List available models |
+| `/config/model-settings` | GET/POST | Inspect and mutate raw/effective model settings for a working directory |
+| `/config/runtime-settings` | GET/POST | Inspect and mutate file snapshots and extra-tool settings for a working directory |
+| `/config/switch-model` | POST | Switch model |
+| `/config/switch-mode` | POST | Switch agent/plan mode |
+| `/config/reasoning-effort` | POST | Set reasoning effort |
+| `/config/ultra-mode` | POST | Toggle or set ultra mode |
+| `/config/permission-mode` | POST | Set the client tool-permission override |
+| `/config/goal` | GET/POST | View or manage the session goal |
+| `/config/plan-status` | GET | Read current plan execution status |
+| `/tools` | GET | List available tools (including MCP) |
+| `/skills` | GET | List available skills |
+| `/skills/expand` | POST | Expand a skill invocation with user input |
+| `/context` | POST | Push workspace context (active file, selection, cursor) |
+| `/context/{session_id}` | GET | Read the latest client workspace context |
+| `/workspace/info` | GET | Read the startup directory, user home, and allowed browse roots |
+| `/workspace/directories` | GET | List subdirectories within the allowed browse roots |
+| `/workspace/directories/create` | POST | Create one directory within an allowed browse root |
+| `/logs` | GET | List, tail, or clear background logs |
+| `/logs/follow` | GET | Follow a background log as SSE |
+| `/tasks`, `/tasks/{id}` | GET | List background tasks or read one task; `scope=global` lists tasks across loaded sessions |
+| `/tasks/{id}/output` | GET | Read persisted background-task output |
+| `/tasks/stop` | POST | Stop a background task |
+| `/schedule`, `/schedule/{id}` | GET | List scheduled jobs or read one job by ID/unique prefix |
+| `/schedule/{id}/runs` | GET | Read persisted execution history for a scheduled job |
+| `/schedule/create` | POST | Create a cron, interval, or one-shot job; supports enabled state, next-run override, reusable execution session, tags, and extra metadata |
+| `/schedule/pause`, `/schedule/resume` | POST | Pause or resume a scheduled job |
+| `/schedule/trigger`, `/schedule/cancel` | POST | Run a job immediately or permanently delete it |
+| `/peer/list`, `/peer/send` | GET/POST | List messageable sessions or send a peer message |
+| `/team/list`, `/team/{id}/*` | GET | Read teams, status, messages, and task boards |
+| `/team/create`, `/team/spawn`, `/team/shutdown` | POST | Manage the team lifecycle |
+| `/team/message`, `/team/broadcast` | POST | Send teammate messages |
+| `/team/remove`, `/team/messages/read` | POST | Remove a teammate or mark its messages read |
+| `/team/task/*` | POST | Add, claim, complete, or fail team tasks |
+| `/team/bridge`, `/team/{a}/bridge/{b}` | POST/GET | Register or inspect a cross-team bridge policy |
+| `/team/cross-message` | POST | Send a policy-checked cross-team message |
+| `/snapshot/checkpoint` | POST | Create checkpoint with file snapshot |
+| `/snapshot/list` | GET | List checkpoints for a session |
+| `/snapshot/revert` | POST | Revert files + conversation to a checkpoint |
+| `/snapshot/rollback` | POST | Rollback conversation only (no file restore) |
+| `/snapshot/undo` | POST | Revert the latest checkpoint |
+| `/event` | GET (SSE) | Real-time event stream with 10s heartbeat |
+| `/ws` | WebSocket | Bidirectional channel (preferred for VSCode) |
+
+`POST /config/model-settings` accepts `action` values `upsert_model`,
+`delete_model`, `upsert_group`, `delete_group`, `set_default_model`, and
+`clear_default_model`. Mutations target `userSettings`, `projectSettings`, or
+`localSettings`; project layers require a `cwd` within the Gateway workspace.
+`POST /config/runtime-settings` accepts `set_snapshot`, `set_computer_use_mode`, `add_extra_tool`, and
+`remove_extra_tool`, using the same configuration layers. Disabling snapshots
+skips only the file-system copy; conversation checkpoints are still persisted.
+
+**WebSocket `/ws`** supports the complete interactive command path: session lifecycle (`new_session`, `resume_session`), messages and steering, interrupt, permission/choice responses, workspace context, model/mode/permission changes, and plan actions. `new_session` and `resume_session` accept the same five API override fields as the HTTP lifecycle endpoints. Overrides are rejected for an already-loaded resume target so one client cannot silently replace another client's runtime. A connection remains subscribed to every session it explicitly selects, so background events from an earlier session remain visible after the active UI switches to another one; unrelated sessions are still filtered out. Foreground and plan commands carry an `operation_id`: steering and interrupt should send that ID to avoid targeting a newer turn. Command-validation failures use a typed, non-terminal error envelope, while every admitted operation finishes with exactly one `turn_complete` event. A complete client must also consume structured session history and the session-tagged `agent_state`, `agent_output`, `team_message`, `team_state`, `task_update`, `schedule_run`, `compact`, permission/choice response, file-change, snapshot, and revert events. Schedule CRUD uses the HTTP endpoints above; clients do not need to poll for execution completion.
+
+### Crab Desktop and Browser UI
+
+The React client in `packages/desktop` runs in a browser with `npm run dev`, or
+inside the Tauri shell with `npm run tauri dev`. Both forms support local and
+remote Gateways, projects, concurrent sessions, streaming chat, permissions,
+plans, diffs, and checkpoint recovery. Tauri additionally provides system
+credential storage and automatic local Gateway startup; browser mode connects
+to an already-running Gateway and retains passwords only for the current tab.
+
+In Desktop and the VS Code extension, every completed assistant reply can be
+forked into a new session. The new session opens immediately, preserves the
+conversation up to that reply, and shows its source session/title. Running
+turns, pending tools, permission requests, and WebSocket runtime state are not
+copied. In the VS Code chat, copy controls stay hidden until hover or focus;
+they are available for full replies, fenced code, Markdown tables, tool input
+and output, diffs, and error messages.
+
+Tauri writes non-secret UI state to `~/.crabcode/settings_desktop.json`.
+Gateway model and tool settings continue to use the normal `settings.json`.
+Desktop's **Settings → Runtime & Tools** section can edit remote file-snapshot
+settings and the `extra_tools` import-path list by configuration layer.
+
+Direct `! <cmd>` execution is intentionally a trusted-client feature: the CLI runs it in its local process and the VSCode extension sends it to a local integrated terminal. It is not exposed as a Gateway endpoint because doing so would create a permission-bypassing remote shell.
+
+#### High-fidelity PDF engine
+
+Layout-preserving PDF translation is provided by an optional, isolated
+BabelDOC 0.6.4 environment. It requires Python 3.10–3.13, uses approximately
+550 MiB for its models and fonts.
+requests still use the model selected by the active CrabCode session; model
+credentials are never passed to the BabelDOC worker.
+
+The Desktop **Document** settings show the install command. For a local Gateway,
+the Tauri app can execute it directly with the **Run install** button. The
+equivalent CLI commands are:
+
+```bash
+# Inspect, install, or remove the managed engine
+crabcode document-engine status
+crabcode document-engine install
+crabcode document-engine remove --yes
+```
+
+The default installer creates a separate virtual environment, installs the
+official BabelDOC package, downloads and verifies BabelDOC's upstream runtime
+assets, then records a local checksum manifest. Document processing is
+network-disabled after installation. Removing the engine does not delete PDFs
+that have already been translated.
+
+When the engine is ready, new full-document translations default to the
+high-fidelity path and produce a native translated PDF. The reader can switch
+between the original and translated PDFs. If high-fidelity processing fails,
+the UI offers an explicit **Retry in compatibility mode** action instead of
+silently changing engines mid-job.
+
+For a remote Gateway, run `crabcode document-engine install` on the Gateway
+host. CrabCode deliberately does not expose engine installation as a remote
+shell endpoint. Air-gapped installations can use a reviewed offline bundle:
+
+```bash
+crabcode document-engine install --bundle /path/to/crabcode-document-engine.zip
+```
+
+**gRPC** service is available when `--grpc-port` is set, with streaming conversation/event RPCs plus the typed agent, permission, choice, model, and mode RPCs defined in `packages/gateway/crabcode_gateway/grpc/proto/crabcode.proto`.
+
+### ACP (Agent Client Protocol) Support
+
+CrabCode supports the **Agent Client Protocol (ACP)**, an open JSON-RPC protocol that standardizes communication between code editors and AI coding agents. This lets you use CrabCode directly inside ACP-compatible editors like Zed and JetBrains IDEs.
+
+```bash
+# Start CrabCode as an ACP agent (communicates over stdio)
+crabcode acp
+```
+
+**How it works:**
+
+1. `crabcode acp` starts an internal Gateway HTTP server, then launches the ACP agent on stdio
+2. The editor (Zed, JetBrains) spawns `crabcode acp` as a subprocess
+3. Communication flows over stdin/stdout via JSON-RPC (ndjson)
+4. ACP events (tool calls, permissions, streaming text) are translated from CrabCode's EventBus in real-time
+
+**Zed configuration** — add to `settings.json`:
+
+```json
+{
+  "agent": {
+    "profiles": {
+      "crabcode": {
+        "command": "crabcode",
+        "args": ["acp"]
+      }
+    }
+  }
+}
+```
+
+**Supported ACP capabilities:**
+
+| Capability | Details |
+| ----------- | --------- |
+| Session management | new, load, list, fork, resume |
+| Prompt | text, image, resource links, embedded context |
+| MCP integration | HTTP and SSE MCP servers from the editor |
+| Permission requests | Allow once / Always allow / Reject |
+| Tool updates | real-time status (pending → in_progress → completed/failed) |
+| Streaming | agent message chunks, thought chunks |
+| Model switching | change model mid-session via config options |
+| Mode switching | agent mode / plan mode |
+
+**Architecture:** The ACP layer is a thin adapter — it translates between ACP JSON-RPC and CrabCode's Gateway REST API, so no core logic is duplicated.
+
+## Multi-API Support
+
+CrabCode supports multiple API backends:
+
+```bash
+# Anthropic (default)
+crabcode --provider anthropic --model claude-sonnet-4-20250514
+
+# OpenAI
+crabcode --provider openai --model gpt-4o
+export OPENAI_API_KEY=YourKey
+
+# OpenAI Codex / Responses API (o-series, codex-mini, etc.)
+crabcode --provider codex --model codex-mini-latest
+export OPENAI_API_KEY=YourKey
+
+# Third-party router (OpenAI-compatible)
+crabcode --provider router --base-url https://my-router.example.com/v1 --api-format openai
+
+# Third-party router (Anthropic-compatible)
+crabcode --provider router --base-url https://my-router.example.com --api-format anthropic
+
+# Third-party router (Codex/Responses API-compatible)
+crabcode --provider router --base-url https://my-router.example.com/v1 --api-format codex --model codex-mini-latest
+
+# Ollama (local)
+crabcode --provider ollama --model qwen3:32b
+# Or configure in settings.json:
+# {"api": {"provider": "ollama", "model": "qwen3:32b"}}
+
+# Google Gemini
+crabcode --provider gemini --model gemini-2.5-flash
+export GEMINI_API_KEY=YourKey
+
+# Azure OpenAI
+crabcode --provider azure --model my-gpt4o-deployment
+export AZURE_OPENAI_API_KEY=YourKey
+export AZURE_OPENAI_ENDPOINT=https://my-resource.openai.azure.com/
+```
+
+Or configure in `~/.crabcode/settings.json`:
+
+```json
+{
+  "api": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "base_url": "https://api.openai.com/v1",
+    "api_key_env": "OPENAI_API_KEY",
+    "http_headers": {
+      "X-Workspace": "crabcode"
+    },
+    "thinking_enabled": false,
+    "pass_reasoning_content": false,
+    "max_tokens": 16384
+  },
+  "env": {
+    "OPENAI_API_KEY": "YourKey"
+  }
+}
+```
+
+`api` field reference:
+
+| Field | Description | Default |
+| ------- | ------------- | --------- |
+| `provider` | Backend: `anthropic` \| `openai` \| `codex` \| `router` \| `ollama` \| `gemini` \| `azure` | `anthropic` |
+| `model` | Model ID | — |
+| `base_url` | Custom API endpoint (for routers or local deployments) | — |
+| `api_key_env` | **Name** of the env var that holds the API key (not the key itself) | `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` |
+| `codex_auth_path` | Codex CLI OAuth auth file path. Used only by the `codex` provider when no API key and no `base_url` are configured. | `$CODEX_HOME/auth.json` or `~/.codex/auth.json` |
+| `image_generation_enabled` | Explicitly enable `ImageGenerate` for a compatible Responses endpoint (`provider: "codex"`, or `provider: "router"` with `format: "codex"`). Does not affect automatic image generation availability in official Codex OAuth mode. | `false` |
+| `http_headers` | Extra HTTP headers to attach to every API request for this config | `{}` |
+| `anthropic_stream_transport` | Anthropic streaming implementation: `auto` \| `sdk` \| `httpx`. In `auto`, first-party Anthropic uses the SDK and custom `base_url` endpoints use direct SSE for proxies that reject SDK stream helper headers. | `auto` |
+| `format` | Wire format for router mode: `anthropic` \| `openai` \| `codex` | — |
+| `thinking_enabled` | Enable extended thinking (set `false` for models that don't support it) | `true` |
+| `thinking_budget` | Thinking token budget | `10000` |
+| `pass_reasoning_content` | Pass stored assistant `reasoning_content` back in OpenAI-compatible chat requests. DeepSeek V4 thinking mode with tool calls requires this. | `false` |
+| `reasoning_effort` | Model reasoning effort. OpenAI Responses/Codex sends it as `reasoning.effort`; Anthropic sends supported values as `output_config.effort`. When set, it takes precedence over the Codex `thinking_budget` mapping. Options: `none` \| `minimal` \| `low` \| `medium` \| `high` \| `xhigh` \| `max` (availability depends on the model/provider). | — |
+| `max_tokens` | Maximum output tokens | `16384` |
+| `timeout` | API call timeout in seconds (prevents hanging on slow/unresponsive APIs) | `300` |
+| `request_max_retries` | Silent HTTP request retry budget for transport failures and 5xx responses (429 is handled by the stream layer). Uses 200 ms exponential backoff with jitter. | `4` |
+| `max_retries` | Stream reconnect budget. Retryable drops are replayed from the last completed response item with 200 ms exponential backoff and jitter; completed tool calls are never executed twice. | `5` |
+| `unbounded_connection_retries` | Keep retrying connection-establishment failures with a separate 5–60 second exponential backoff. Stream failures still use `max_retries`. | `true` |
+| `context_window` | Override the model's context window size (tokens). Used when auto-detection fails or is inaccurate — see [Context Window](#context-window) below. | auto-detected |
+| `prompt_cache_key` | Prompt cache routing key for OpenAI Responses/Codex requests; defaults to `http_headers.session_id` when omitted | — |
+| `prompt_cache_retention` | OpenAI Responses/Codex prompt cache retention policy: `in_memory` \| `24h` | — |
+| `extra_body` | Provider-specific fields appended to the request JSON body | `{}` |
+
+The `env` map lets you define environment variables directly in the config file — they are injected at startup so you don't need to `export` them in your shell.
+
+For Codex OAuth, set `provider` to `codex` and omit `base_url` and API key settings. CrabCode will read the Codex CLI auth file from `$CODEX_HOME/auth.json` or `~/.codex/auth.json`; override it with `codex_auth_path` when needed:
+
+```json
+{
+  "api": {
+    "provider": "codex",
+    "model": "gpt-5.5",
+    "codex_auth_path": "/Users/you/.codex/auth.json"
+  }
+}
+```
+
+For a third-party Codex/Responses-compatible image generation endpoint, explicitly opt in:
+
+```json
+{
+  "models": {
+    "compatible-images": {
+      "provider": "codex",
+      "model": "your-provider-model-id",
+      "base_url": "https://your-provider.example/v1",
+      "api_key_env": "COMPATIBLE_CODEX_API_KEY",
+      "image_generation_enabled": true,
+      "timeout": 300
+    }
+  }
+}
+```
+
+Set `COMPATIBLE_CODEX_API_KEY` in the environment and select `compatible-images`. You can also put these fields under `api` or a shared `groups` entry. Omitted or `false` disables image generation for compatible endpoints; official `auth.json` mode remains automatic. Other wire formats ignore this flag.
+
+The endpoint must support `POST <base_url>/responses` with the native `image_generation` tool, `tool_choice`, `stream: true`, and `store: false`, returning a final base64 `image_generation_call.result` in Responses SSE events. An `/images/generations`-only API is not compatible with this option. Requests use the selected model ID, `api_key_env` and `http_headers`; they never load local Codex OAuth credentials for a custom endpoint. `extra_body` passes through provider-specific options, but cannot override the image request's `model`, `instructions`, `input`, `tools`, `tool_choice`, `stream`, or `store`. `prompt_cache_key` (or `http_headers.session_id`) and `prompt_cache_retention` are also forwarded when configured.
+
+After restarting with the updated configuration, ask for an image in the conversation. `ImageGenerate` accepts a `prompt` and optional `reference_image_paths` (up to five local images), saves unique files under the workspace's `output/imagegen/`, and returns inline images to Desktop and VS Code. Provider/model support and quotas still apply; enabling this flag does not add upstream image capabilities.
+
+For DeepSeek V4 thinking mode with tool calls, enable reasoning pass-through:
+
+```json
+{
+  "models": {
+    "deepseek": {
+      "provider": "openai",
+      "model": "deepseek-v4-flash",
+      "base_url": "https://api.deepseek.com",
+      "api_key_env": "DEEPSEEK_API_KEY",
+      "pass_reasoning_content": true,
+      "extra_body": {
+        "thinking": {
+          "type": "enabled"
+        }
+      }
+    }
+  }
+}
+```
+
+### Context Window
+
+CrabCode automatically manages the context window to prevent `400 token limit exceeded` errors.
+
+**How context window size is resolved** (in priority order):
+
+1. `context_window` field in your `api` config (explicit override)
+2. Built-in lookup table for known models (e.g. `glm-5.1-fp8` → 202752, `gpt-4o` → 128000)
+3. `DEFAULT_CONTEXT_WINDOW` fallback: `200000`
+
+If your model is not in the built-in table and you don't set an override, the 200k fallback is used. Set `context_window` explicitly when the provider exposes a different limit:
+
+```json
+{
+  "api": {
+    "provider": "openai",
+    "model": "glm-5.1-fp8",
+    "base_url": "https://open.bigmodel.cn/api/paas/v4",
+    "context_window": 202752
+  }
+}
+```
+
+**Automatic compaction**
+
+CrabCode measures the complete request (system prompts, messages, tool calls/results, tool schemas, and image payloads). It automatically compacts when input exceeds `context_window - max(max_tokens, compact_buffer_tokens)`, with `compact_buffer_tokens` defaulting to `20000`:
+
+1. Incrementally summarizes the full older history into a structured, resumable checkpoint
+2. Keeps up to two complete recent user turns, so tool calls are never separated from their results
+3. Atomically appends the compacted active context to the JSONL transcript; restarts resume from that boundary while exports retain the audit history
+4. Continues the current task in the same session without interruption
+
+Use `/compact [optional instructions]` to trigger it manually. `auto_compact_enabled` controls automatic compaction. `max_context_length` can set an earlier input threshold, but it cannot raise the threshold past the provider-safe limit.
+
+Configure these top-level fields in `settings.json`:
+
+```json
+{
+  "auto_compact_enabled": true,
+  "compact_buffer_tokens": 30000,
+  "max_context_length": null
+}
+```
+
+The buffer must be a nonnegative integer. Setting it to `0` still reserves the model's `max_tokens` output allowance. A `null` `max_context_length` uses the automatic threshold. All three controls are available in the VS Code chat settings menu → **上下文压缩** (or the **CrabCode：打开上下文压缩设置** command) and Desktop **Settings → 运行与工具 → 上下文压缩**. Both let you choose the configuration layer to save. Changes apply from the next conversation turn; a running turn keeps its original settings.
+
+> **Note**: Compaction uses the configured API model. If checkpoint generation fails, CrabCode keeps the original conversation unchanged; it never replaces history with a lossy fallback. Provider overflow recovery is attempted only before response output has started, avoiding duplicate tool calls after a partial response.
+
+### Logging
+
+You can configure runtime logging in `settings.json`:
+
+```json
+{
+  "logging": {
+    "level": "WARNING",
+    "file": ".crabcode/logs/crabcode.log"
+  }
+}
+```
+
+Notes:
+
+- `level` supports `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`
+- The default log file is `<project>/.crabcode/logs/crabcode.log`
+- `file` can override the log path
+- In the CLI, `/logs crabcode` shows the main runtime log
+
+### Hooks (Tool Call Hooks)
+
+`settings.json` supports hooks that run shell commands on these events:
+
+- `user_prompt_submit`: fires when a user message is submitted
+- `pre_tool_call`: fires before a tool call (can block that tool call)
+- `post_tool_call`: fires after a tool call
+- `pre_compact`: fires before manual, automatic, or overflow compaction (can block it)
+- `post_compact`: fires after a checkpoint is successfully generated
+
+Example:
+
+```json
+{
+  "hooks": {
+    "pre_tool_call": [
+      {
+        "matcher": "Bash",
+        "command": "python -c \"import os; print('[pre] tool=' + os.getenv('CRABCODE_HOOK_TOOL_NAME', ''))\""
+      }
+    ],
+    "post_tool_call": [
+      {
+        "matcher": "Bash",
+        "command": "python -c \"import os; print('[post] tool=' + os.getenv('CRABCODE_HOOK_TOOL_NAME', ''))\""
+      }
+    ],
+    "user_prompt_submit": [
+      {
+        "command": "echo '[submit] ok'"
+      }
+    ],
+    "pre_compact": [
+      {
+        "matcher": "manual",
+        "command": "python -c \"import os; print('[compact] trigger is in ' + os.getenv('CRABCODE_HOOK_PAYLOAD', ''))\""
+      }
+    ]
+  }
+}
+```
+
+Notes:
+
+- A non-zero exit code means hook failure; a failing `pre_tool_call` blocks that tool execution.
+- Use `continue_on_error: true` (or `continueOnError: true`) to keep going on hook failures.
+- Claude-style `PreToolUse` / `PostToolUse` / `PreCompact` / `PostCompact` keys and nested `hooks: [{\"type\":\"command\", ...}]` are also supported.
+- Compaction hook matchers receive `auto`, `manual`, or `overflow` as their match value.
+- Runtime env vars include `CRABCODE_HOOK_EVENT`, `CRABCODE_HOOK_PAYLOAD`, `CRABCODE_HOOK_TOOL_NAME`, `CRABCODE_HOOK_TOOL_USE_ID`, and `CRABCODE_HOOK_AGENT_ID`.
+
+### Multiple Named Models
+
+Define multiple model profiles in `settings.json` and switch between them at runtime without restarting:
+
+```json
+{
+  "default_model": "fast",
+  "models": {
+    "fast": {
+      "provider": "ollama",
+      "model": "qwen3:32b",
+      "thinking_enabled": false
+    },
+    "smart": {
+      "provider": "anthropic",
+      "model": "claude-opus-4-20250514"
+    },
+    "code": {
+      "provider": "openai",
+      "model": "gpt-4o"
+    },
+    "local": {
+      "provider": "ollama",
+      "model": "deepseek-coder-v2:236b",
+      "thinking_enabled": false
+    }
+  }
+}
+```
+
+Each entry under `models` is a full `ApiConfig` and can have its own `provider`, `base_url`, `api_key_env`, `codex_auth_path`, etc.
+
+For profiles that share a backend, define the common fields once under
+`groups` and reference the group from each model. A model field explicitly set
+under `models` overrides the value inherited from its group:
+
+```json
+{
+  "groups": {
+    "test_rourter": {
+      "provider": "codex",
+      "base_url": "https://router.example.com/v1",
+      "api_key_env": "TEST_ROUTER_KEY",
+      "reasoning_effort": "high",
+      "http_headers": {"originator": "codex_vscode"}
+    }
+  },
+  "models": {
+    "gpt-5.6": {"group": "test_rourter", "model": "gpt-5.6-sol"},
+    "gpt-5.5": {"group": "test_rourter", "model": "gpt-5.5", "reasoning_effort": "low"}
+  }
+}
+```
+
+`groups` and `models` accept the same API configuration fields. An unknown
+group leaves the model's own fields unchanged.
+
+**Select a profile at startup:**
+
+```bash
+crabcode --model-profile smart    # short: -M smart
+```
+
+**Switch inside the REPL:**
+
+```
+/model              # open the searchable model picker and switch profiles
+/model fast         # switch to the "fast" (ollama) profile
+/model smart        # switch to the "smart" (anthropic) profile
+/model code         # switch to the "code" (openai) profile
+/add                # guided menu: add a model or shared group
+/add model          # open the add-model wizard directly
+/del group          # choose and delete a group definition
+```
+
+Switching does not clear conversation history — you can mix models freely within a single session.
+The `/add` and `/del` wizards let you choose user, shared-project, or local-project
+settings. Delete targets show their exact source layer; the active model (or its
+group) is protected until you switch away from it.
+
+## Built-in Tools
+
+| Tool | Type | Description |
+| ------ | ------ | ------------- |
+| `Bash` | write | Execute shell commands |
+| `Read` | read | Read file contents |
+| `apply_patch` | write | Apply a validated, transactional multi-file patch |
+| `Write` | write | Create or overwrite files |
+| `StrReplace` | write | Precise in-place text replacement |
+| `Glob` | read | Find files by glob pattern |
+| `Grep` | read | Search file contents with regex |
+| `WebSearch` | read | Search the public web for current external information |
+| `Browser` | write | Open pages in headless Chromium, interact with DOM, extract content, and take screenshots |
+| `Lint` | read | Run linters and type-checkers |
+| `Memory` | write | Store and retrieve persistent notes |
+| `AskUser` | read | Present choices to the user and wait for selection |
+
+For shell-level discovery, CrabCode reports whether `rg`, `sed`, and `find` are
+available in the runtime environment. The agent prefers dedicated tools for
+ordinary reads and searches, while using read-only `sed -n` pipelines and
+advanced `find` predicates when they are a better fit. File mutation stays in
+`apply_patch`, `Edit`, or `Write`, so changes retain permission checks, snapshots,
+and diff rendering.
+
+### Lint
+
+The `Lint` tool runs the appropriate linter for the given language automatically:
+
+| Language | Linters |
+| ---------- | --------- |
+| Python | `ruff` (style), `pylint` (deep analysis), `mypy` (type check) |
+| JavaScript / TypeScript | `eslint` |
+| Go | `golangci-lint` |
+| Rust | `cargo clippy` |
+| C / C++ | `clang-tidy`, `cppcheck` |
+| Java | `checkstyle`, `pmd` |
+
+The agent calls `Lint` after editing files to verify there are no introduced errors. You can also invoke it directly in conversation: *"lint this file"*.
+
+### LSP Integration
+
+CrabCode integrates with **Language Server Protocol (LSP)** servers to provide real-time code intelligence — diagnostics, hover info, go-to-definition, and references — directly to the AI agent.
+
+**How it works:** When the agent writes or edits a file, CrabCode automatically notifies the relevant LSP server (e.g. `pyright` for Python, `typescript-language-server` for TS). The server analyzes the code and sends back diagnostics (errors, warnings). These are injected into the tool result so the LLM can see and fix issues immediately — forming a closed feedback loop.
+
+**Default behavior:** LSP is **enabled by default**. Language servers are lazily started — only when a file of the matching type is first accessed. Failed starts are remembered so they aren't retried. This means zero overhead for projects where LSP isn't needed.
+
+**Built-in servers** (detected from `PATH`):
+
+| Language | Server | Extensions |
+| ---------- | -------- | ------------ |
+| Python | `pyright-langserver` | `.py`, `.pyi`, `.pyw` |
+| TypeScript / JS | `typescript-language-server` | `.ts`, `.tsx`, `.js`, `.jsx`, `.mjs`, `.cjs` |
+| Go | `gopls` | `.go` |
+| Rust | `rust-analyzer` | `.rs` |
+| C / C++ | `clangd` | `.c`, `.cpp`, `.h`, `.hpp`, `.cc`, `.cxx` |
+| C# | `omnisharp` | `.cs` |
+| Java | `jdtls` | `.java` |
+| Ruby | `solargraph` | `.rb` |
+| PHP | `phpactor` | `.php` |
+| Dart | `dart language-server` | `.dart` |
+| Lua | `lua-language-server` | `.lua` |
+| Kotlin | `kotlin-language-server` | `.kt`, `.kts` |
+| Swift | `sourcekit-lsp` | `.swift` |
+| Zig | `zls` | `.zig` |
+| Elixir | `lexical` | `.ex`, `.exs` |
+| Scala | `metals` | `.scala` |
+
+If a server isn't installed, it's simply skipped — no error, no delay.
+
+**Configuration in `settings.json`:**
+
+```json
+{
+  "lsp": {
+    "python": { "disabled": true },
+    "my-custom-server": {
+      "command": ["my-lsp", "--stdio"],
+      "extensions": [".xyz"],
+      "env": {},
+      "initialization": {}
+    }
+  }
+}
+```
+
+| Field | Description |
+| ------- | ------------- |
+| `lsp` | `true` = enable (default), `false` = disable all, `{}` = enable with custom overrides |
+| `command` | Command to start the LSP server (must support `--stdio` mode) |
+| `extensions` | File extensions this server handles |
+| `env` | Extra environment variables for the server process |
+| `initialization` | `initializationOptions` passed to the LSP `initialize` request |
+| `disabled` | Set `true` to disable a specific built-in server |
+
+**Per-agent-type control:** Sub-agents can opt out of LSP via `enable_lsp`:
+
+```json
+{
+  "agent": {
+    "types": {
+      "explore": {
+        "allowed_tools": ["Read", "Grep", "Glob"],
+        "enable_lsp": false
+      }
+    }
+  }
+}
+```
+
+`enable_lsp` defaults to `true`. When `false`, the sub-agent's `ToolContext.lsp_manager` is `None` and no LSP operations are triggered.
+
+### Memory
+
+The `Memory` tool gives the agent persistent notes that survive across sessions.
+
+- **Global memory** — stored in `~/.crabcode/memories.json`
+- **Project memory** — stored in `<project>/.crabcode/memories.json`
+
+A bounded directory containing memory IDs and title summaries is automatically
+injected into each conversation. Full memory content stays out of the prompt until
+the agent retrieves it with `Memory`'s `search` and `read` actions. The tool also
+supports `create`, `update`, `delete`, and title-only `list` actions.
+
+### AskUser
+
+The `AskUser` tool lets the agent present a question with multiple options and wait for the user's selection. This is useful when the agent is unsure about the best approach and wants the user's input before proceeding.
+
+**When the agent calls it**, an interactive selection UI appears in the terminal:
+
+```
+  Which approach do you prefer?
+
+    ○ Refactor to a class
+  ❯ ● Add error handling
+    ○ Write tests first
+
+  ↑↓ navigate · enter select · esc cancel
+```
+
+- **Single select** (default): use ↑↓ to navigate, Enter to confirm
+- **Multi select** (`multiple: true`): use Space to toggle options, Enter to confirm
+- **Esc** / **Ctrl+C**: cancel the selection
+
+**When the agent should use it:**
+
+- Multiple reasonable approaches exist and user preference matters
+- Confirming direction before making significant changes
+- The user may have context the agent doesn't
+
+**When NOT to use it:**
+
+- The answer is obvious or there's a clear best approach
+- The user already told you what to do
+- A simple yes/no is enough (the agent can just ask in text)
+
+In **pipe mode** (non-interactive), the first option is auto-selected.
+
+### WebSearch
+
+The `WebSearch` tool searches the public web and returns compact search results with titles, URLs, and snippets.
+
+- **Default provider order** — Tavily first when `TAVILY_API_KEY` is configured, otherwise DuckDuckGo HTML search. If DuckDuckGo answers with a bot check, search continues with Bing RSS instead of reporting an empty result.
+- **Offline behavior** — if CrabCode cannot detect outbound network access during session startup, `WebSearch` is disabled for that session and is not exposed to the model
+- **Permission behavior** — `WebSearch` is read-only, but still asks for confirmation before each network request
+
+Configure via `tool_settings.WebSearch` in `settings.json`:
+
+```json
+{
+  "tool_settings": {
+    "WebSearch": {
+      "provider": "auto",
+      "api_key_env": "TAVILY_API_KEY",
+      "timeout_seconds": 8,
+      "max_results": 5
+    }
+  }
+}
+```
+
+Supported `provider` values:
+
+- `"auto"` — use Tavily when configured, otherwise DuckDuckGo; if Tavily fails at runtime, retry with DuckDuckGo once. If DuckDuckGo is blocked, fall back to Bing for about ten minutes
+- `"tavily"` — require a configured API key and use Tavily only
+- `"ddg"` — use DuckDuckGo only
+
+### Browser
+
+The `Browser` tool drives a persistent Chromium session for page interaction and extraction. It runs headless by default, but `create_session` can override that with `headless: false`.
+
+- Use `WebSearch` to discover URLs or current public-web results
+- Use `Browser` when you need to open a specific page, click, fill, evaluate page-side JavaScript, or capture a screenshot
+- Install support with `pip install crabcode[browser]` and run `playwright install chromium` once
+
+Supported actions:
+
+- `create_session`
+- `goto`
+- `click`
+- `fill`
+- `press`
+- `wait_for`
+- `extract`
+- `screenshot`
+- `evaluate`
+- `list_tabs`
+- `new_tab`
+- `switch_tab`
+- `close_tab`
+- `close_session`
+
+Example `create_session` inputs:
+
+```json
+{ "action": "create_session" }
+```
+
+```json
+{ "action": "create_session", "headless": false }
+```
+
+Configure via `tool_settings.Browser` in `settings.json`:
+
+```json
+{
+  "tool_settings": {
+    "Browser": {
+      "enabled": true,
+      "default_browser": "chromium",
+      "headless": true,
+      "default_timeout_seconds": 15,
+      "max_sessions": 3,
+      "launch_options": {},
+      "context_options": {},
+      "storage_dir": ".crabcode/browser",
+      "block_downloads": true,
+      "allowed_domains": [],
+      "blocked_domains": []
+    }
+  }
+}
+```
+
+Default permission behavior:
+
+- `create_session` and `goto` ask for confirmation
+- `fill`, `press`, and `evaluate` ask for confirmation
+- `extract`, `wait_for`, `list_tabs`, `switch_tab`, `close_tab`, and `close_session` are allowed by default
+- `screenshot` is allowed by default inside the working directory and asks when writing outside it
+
+`headless` in `tool_settings.Browser` is the session default. The tool input can override it per session when calling `create_session`.
+
+### Computer Use modes
+
+Desktop, VS Code and CLI share a standalone Computer Use component; VS Code and CLI do not require Crab Desktop. Platform wheels for macOS (Apple Silicon / Intel) and Windows x64 include the native executor, so `pip install crabcode` installs it too. The first CLI session automatically deploys it to the shared user directory, with no extra installation command or launch flag. Interactive and pipe sessions connect automatically; status appears in `/status`, without a startup banner. `crabcode computer-use status` also checks capabilities directly. Source installs and universal wheels can reuse an existing component; otherwise, use a platform wheel containing the native executor.
+
+In VS Code, `crabcode.computerUseEnabled` is enabled by default; set it to `false` to disable Computer Use. Use the Computer Use status-bar menu for monitoring, permission settings and refresh. Remote SSH/WSL/container windows use the **local** CrabCode Computer Use companion extension. On macOS, grant **Crab Computer Use** Accessibility and Screen Recording permissions. See [component development and packaging](packages/computer-use/README.md).
+
+Once a host is connected, agents can inspect and operate desktop applications. Background application mode is the default:
+
+```json
+{
+  "computer_use": {
+    "target_scope": "app_window",
+    "delivery_policy": "allow_foreground"
+  }
+}
+```
+
+On AX-capable macOS hosts, window observation prefers the accessibility tree. `observe` accepts `observation: "auto" | "ax" | "screenshot"`; `auto` falls back to pixels when AX observation is unavailable. Use `press`, `set_value` (replace the whole text value), or `perform_action` with the returned `window_id`, `snapshot_id` and `element_id`. Element actions return a fresh bounded tree; screenshots are optional. References belong to one host connection, session and agent, expire, and are invalidated by new observations, input and release. Re-observe stale references; never replay uncertain AX input through mouse events. An AX acknowledgement alone does not prove the intended effect occurred. After fresh observation, the agent can make a new decision using a screenshot: coordinate clicks on the new protocol use mouse delivery directly, without another AXPress attempt. `allow_foreground` also permits explicitly focusing the window before re-observing.
+
+AX observation works with Accessibility permission even without Screen Recording. Strict background still requires an exact validated OS/app/element/action profile and sampled isolation checks: currently TextEdit 1.20/415 on macOS build 25D125 arm64 supports `AXValue` on its `AXTextArea`. Other AX actions remain gated, and existing validated coordinate routes remain available. Desktop scope and local VMs retain their screenshot workflow.
+
+The target and delivery policy are independent:
+
+- `app_window` observes and sends input to a selected macOS application window; call `list_windows` first and pass `window_id`. `desktop` controls the complete desktop and real pointer/keyboard.
+- `strict_background` uses process/window-targeted delivery and does not expose `focus_window`; applications that require activation may ignore input.
+- `allow_foreground` permits activating the target window when background delivery is insufficient and can interrupt the current user. Desktop scope requires this policy.
+
+Crab Desktop can write these settings from **Settings → Runtime & Tools → Computer Use** at the user, project, or project-local layer. VS Code can explicitly override them with `crabcode.computerUseTargetScope` and `crabcode.computerUseDeliveryPolicy`. Delivery policy is independent of tool approval modes such as Full Access, and the agent cannot override it inside an action.
+
+### Diff Display
+
+When the agent edits files via `apply_patch`, `Edit`, or `Write`, the terminal shows an inline diff. Multi-file patches are grouped by file:
+
+```
+  ✎ src/auth.py  lines 42–55  (+8 / -3)
+```
+
+This gives you a precise audit trail of every change made.
+
+### Snapshot & Revert
+
+CrabCode automatically tracks file-system changes made during a session, allowing you to **undo** code changes by reverting to a previous checkpoint.
+
+**How it works:**
+
+1. Every time you create a checkpoint (`/checkpoint`), CrabCode takes a snapshot of the working directory state using git internals (or file-copy fallback for non-git projects).
+2. Tools that modify files (`apply_patch`, `Edit`, `Write`, `Bash`) also record per-file snapshots before each change.
+3. You can revert to any checkpoint to restore both the conversation **and** the files to that point.
+
+**Commands:**
+
+```
+/checkpoint "before refactor"    # create checkpoint with file snapshot
+/checkpoints                     # list checkpoints (✓ = has file snapshot)
+/revert 1                        # revert files + conversation to checkpoint #1
+/undo                            # revert the most recent checkpoint
+/rollback 1                      # rollback conversation only (no file restore)
+```
+
+**Difference between `/revert` and `/rollback`:**
+
+| Command | Conversation | Files |
+| --------- | ------------- | ------- |
+| `/revert` | Rolled back | Restored to snapshot |
+| `/rollback` | Rolled back | Not touched |
+| `/undo` | Same as `/revert` (targets most recent checkpoint) | Restored to snapshot |
+
+**How snapshots are stored:**
+
+- **Git repos** (preferred): uses `git write-tree` + `git update-ref` under `refs/crabcode/` — lightweight, zero-commit snapshots that don't pollute your git history.
+- **Non-git directories**: files are copied to `.crabcode/snapshots/` for tracking.
+
+**Snapshot safety settings:**
+
+File-system snapshots are enabled by default, with a cumulative workspace-size
+ceiling of 1024 MiB. Configure them in the project or user `settings.json`:
+
+```json
+{
+  "snapshot": {
+    "enabled": true,
+    "max_size_mb": 1024
+  }
+}
+```
+
+The scanner always skips the filesystem root and the user home directory. It
+also skips `.git`, `.crabcode`, dependency and cache directories. If the
+workspace exceeds `max_size_mb`, or `enabled` is `false`, only the file-system
+copy is skipped: the conversation checkpoint is still persisted. In that case
+`/revert` can roll back the conversation but reports that no file snapshot was
+available.
+
+Desktop exposes these fields under **Settings → Runtime & Tools**. The same
+section can add or remove `extra_tools` import paths on the remote Gateway;
+the package must be installed in that Gateway environment. Changes apply to
+new sessions or after reconnecting an existing session.
+
+For a local Gateway, Desktop also exposes **Settings → General → CrabCode
+Suite**. Automatic provisioning keeps the lightweight `gateway` extra, while
+the explicit installer keeps Gateway selected and lets you independently check
+Search, Debugger, and future optional capabilities. The VS Code extension uses
+the same multi-select model through **CrabCode: Select and Install Local Suite**
+and the link beside `crabcode.gatewayAutoInstall`. Remote environments are
+never modified by either client.
+
+**Gateway API:**
+
+| Endpoint | Method | Description |
+| ---------- | -------- | ------------- |
+| `/snapshot/checkpoint` | POST | Create checkpoint with file snapshot |
+| `/snapshot/list` | GET | List checkpoints for a session |
+| `/snapshot/revert` | POST | Revert files + conversation to a checkpoint |
+| `/snapshot/rollback` | POST | Rollback conversation only |
+
+## REPL Commands
+
+| Command | Description |
+| --------- | ------------- |
+| `/help` | Show all available commands and skills |
+| `/status` | Show runtime status (model, effort, ultra mode, context usage, compactions, agent summary) |
+| `/logs` | List background logs (for example search index logs) |
+| `/logs <name>` | Show tail of a specific log |
+| `/logs -f <name>` | Follow a specific log in real time (`Ctrl+C` to stop) |
+| `/logs --clear <name>` | Clear a specific log file |
+| `/model` | Open a searchable model picker organized by group; ↑/↓ select, Enter switches, Esc cancels, Tab and ←/→ filter groups |
+| `/model <name>` | Switch to a named model from `settings.models` |
+| `/add [model\|group]` | Add a named model or shared group with a guided, searchable configuration wizard |
+| `/del [model\|group]` | Delete a model or group from a selected writable settings layer |
+| `/effort` | Show the active reasoning effort |
+| `/effort <none\|minimal\|low\|medium\|high\|xhigh\|max>` | Set reasoning effort for subsequent requests in the current runtime session |
+| `/ultra` | Toggle ultra mode for subsequent requests |
+| `/ultra <true\|false>` | Explicitly enable or disable ultra mode |
+| `/agents` | List managed sub-agents in the current session |
+| `/peers` | List other live sessions available for cross-session messaging |
+| `/tasks` | List background agents and command/WebSocket monitors |
+| `/tasks stop <id>` | Stop a running background task |
+| `/agent <id>` | Show details for one agent (`status`, `usage`, `result`, transcript path) |
+| `/agent-log <id>` | Show the stored transcript for one agent |
+| `/agent-send <id> <prompt>` | Send additional input to an existing agent |
+| `/plan` | Switch to plan mode (read-only analysis and plan generation) |
+| `/agent` | Switch to agent mode (normal execution mode) |
+| `/plan-status` | Show current plan and mode status |
+| `/wait <id>` | Wait for one agent to finish and print its summary |
+| `/cancel-agent <id>` | Cancel a running agent |
+| `/team list` | List active agent teams |
+| `/team create <name> [max]` | Create a team |
+| `/team status <team_id>` | Show team status table |
+| `/team messages <team_id>` | Show team message history |
+| `/team tasks <team_id>` | Show the shared task board |
+| `/team spawn <team_id> [options] <prompt>` | Add a teammate |
+| `/team message <team_id> <agent_id> <text>` | Send a teammate message |
+| `/team broadcast <team_id> <text>` | Broadcast to teammates |
+| `/team task-add <team_id> <description>` | Add a task |
+| `/team task-claim <team_id> <task_id> [agent_id]` | Claim a task |
+| `/team task-complete <team_id> <task_id> [result]` | Complete a task |
+| `/team shutdown <team_id>` | Shut down a team |
+| `/schedule list` | List scheduled jobs |
+| `/schedule show <job_id>` | Show scheduled job details |
+| `/schedule runs <job_id>` | Show scheduled-job run history |
+| `/schedule create <name> <type> <schedule> <prompt>` | Create a cron/interval/once job |
+| `/schedule pause\|resume\|run\|cancel <job_id>` | Manage scheduled-job lifecycle |
+| `/new` | Start a fresh session (clear in-memory conversation history) |
+| `/compact` | Manually compact conversation history to save context |
+| `/clear` | Clear current in-memory conversation messages |
+| `/sessions` | List recent saved sessions for current project |
+| `/recent` | List recent sessions across all projects |
+| `/search <query>` | Search sessions by title or message content |
+| `/resume [id]` | Browse searchable history, or resume by full/partial id or index (supports cross-project) |
+| `/archive <id>` | Archive a session (hide from listings) |
+| `/export [md\|json] [path]` | Export current session to Markdown or JSON |
+| `/stats` | Show usage statistics (tokens, sessions, models) |
+| `/checkpoint [label]` | Create a checkpoint at the current conversation position (includes file snapshot) |
+| `/checkpoints` | List checkpoints for the current session (with file snapshot status) |
+| `/rollback <id\|#>` | Rollback conversation to a checkpoint (conversation only, no file restore) |
+| `/revert <id\|#>` | Revert both files AND conversation to a checkpoint |
+| `/undo` | Undo last checkpoint — revert files + conversation to the most recent checkpoint |
+| `/exit`, `/quit` | Exit CrabCode |
+| `/<skill>` | Invoke a skill by name (optional user input can follow) |
+| `! <shell command>` | Run a shell command directly from REPL (outside model tool loop) |
+
+### Notes
+
+- For commands that take `<id>`, you can usually pass the leading prefix shown by `/agents`.
+- `/agent-send` live output is controlled by `agent.stream_send_input_output` in `settings.json`.
+- `Ctrl+C` interrupts the current operation; pressing `Ctrl+C` again within a few seconds exits.
+- `/resume` opens a keyboard-driven history picker: type to search, ↑/↓ to browse, Enter to resume, Esc/Ctrl+C to return. Tab focuses the project filter (Cwd/All) or sort order (Updated/Created); ←/→ changes the option. `/resume <id>` still supports cross-project sessions via the metadata database.
+
+### Plan Mode Workflow
+
+When plan mode produces an execution plan, CrabCode does not auto-run it immediately. The REPL prints the full plan and asks what to do next:
+
+- `y` / `yes`: execute the plan via DAG scheduler in agent mode
+- `m` / `modify`: stay in plan mode and revise the plan
+- `n` / `no`: cancel and clear the pending plan
+
+This keeps the final execution decision with the user while preserving parallel DAG orchestration after confirmation.
+
+## Permissions
+
+Before executing any tool that modifies files or runs shell commands, CrabCode prompts for confirmation:
+
+```
+╭─ ⚠ Bash ──────────────────╮
+│ python main.py             │
+╰────────────────────────────╯
+  Allow Bash? (y)es / (n)o / (a)lways allow:
+```
+
+- **y** — allow this one call
+- **n** — deny; the model is told the call was rejected and should not retry it
+- **a** — always allow calls to this tool for the rest of the session (no more prompts)
+  For `Browser`, this is scoped to the current action, such as `Browser:goto` or `Browser:fill`.
+
+Read-only tools (`Read`, `Glob`, `Grep`) are always allowed without prompting. `WebSearch` is the exception: it is read-only, but still asks for confirmation before each network request.
+
+### Permission rules
+
+Fine-grained rules can be set in `settings.json` under `permissions`:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      { "tool": "Bash", "command": "git *" }
+    ],
+    "deny": [
+      { "tool": "Bash", "command": "rm *" }
+    ],
+    "ask": [
+      { "tool": "Write" }
+    ]
+  }
+}
+```
+
+Each rule matches on `tool` name (glob `*` matches any), plus optional `command` or `path` filters.
+
+### Default permission mode
+
+`permissions.default_mode` controls the fallback behavior after explicit `allow`, `deny`, and `ask` rules. Supported values are:
+
+- `"ask"` — default; ask before tools that need permission.
+- `"run_everything"` — skip permission prompts and allow tool calls automatically.
+- `"aiReview"` / `"ai_review"` — ask a reviewer model to decide.
+
+The legacy boolean `permissions.run_everything: true` is still supported as an alias for `"default_mode": "run_everything"`.
+
+### AI review mode
+
+AI review mode lets a reviewer model decide whether pending tool calls should be allowed, shown to the user, or denied. Explicit `allow`, `deny`, and `ask` rules still take priority. If the reviewer fails, times out, returns invalid JSON, or returns a decision outside the configured set, CrabCode falls back to `ask` by default.
+
+```json
+{
+  "permissions": {
+    "default_mode": "aiReview",
+    "ai_review": {
+      "model": "review-model",
+      "decisions": ["allow", "ask"],
+      "fallback": "ask",
+      "timeout": 30
+    }
+  },
+  "models": {
+    "review-model": {
+      "provider": "openai",
+      "model": "your-model-name",
+      "base_url": "https://your-api-endpoint/v1",
+      "api_key_env": "YOUR_API_KEY_ENV",
+      "thinking_enabled": false,
+      "max_tokens": 8000
+    }
+  }
+}
+```
+
+- `ai_review.model` is the name of an entry in `models`, such as `"review-model"` above.
+- Omit `ai_review.model` to use the current agent model.
+- Default `decisions` is `["allow", "ask"]`, so the reviewer cannot directly deny tool calls unless you opt in.
+- You can set `decisions` to `["allow", "ask", "deny"]` for stricter review, or `["allow", "deny"]` for non-interactive allow/deny behavior.
+
+### run_everything mode
+
+Set `"default_mode": "run_everything"` to skip all permission prompts and execute every tool call automatically. The CLI displays a warning at startup when this mode is active.
+
+```json
+{
+  "permissions": {
+    "default_mode": "run_everything"
+  }
+}
+```
+
+`"run_everything": true` is still accepted for backward compatibility.
+
+Use `crabcode --yolo` to enable Full Access for a single CLI run without
+changing `settings.json`. It also works with `-p`, `--continue`, and `--resume`,
+and overrides configured permission rules and AI review using the existing
+`run_everything` mode. Plan mode and Computer Use delivery policy still apply.
+
+> **Use with caution.** In this mode CrabCode will run shell commands and write files without asking.
+
+The VS Code extension defaults to **Follow settings** (`crabcode.permissionMode: "default"`),
+so it honors `permissions.default_mode` from `settings.json`. Choosing another mode
+explicitly from the extension footer overrides the file setting for the active gateway session.
+
+## Configuration
+
+Settings are loaded from multiple layers (later overrides earlier):
+
+1. `~/.crabcode/settings.json` (user)
+2. `<project>/.crabcode/settings.json` (project)
+3. `<project>/.crabcode/settings.local.json` (local, gitignored)
+4. Flag settings
+5. `~/.crabcode/managed-settings.json` (policy)
+
+### Custom Global Directory
+
+Set `CRABCODE_HOME` before starting CrabCode to use a different global directory:
+
+```bash
+export CRABCODE_HOME="$HOME/.config/crabcode"
+crabcode
+```
+
+On PowerShell: `$env:CRABCODE_HOME = "$HOME\.config\crabcode"`.
+Use an absolute directory path or `~/...`. An unset or blank value defaults to
+`~/.crabcode`; relative paths are rejected so different projects share the same
+global directory.
+
+The directory contains `settings.json`, `managed-settings.json`, global MCP
+configuration, skills, `CLAUDE.md`, memories, sessions, usage and schedules.
+Desktop settings and its managed Gateway environment also use this directory.
+Project-level `.crabcode` directories and explicit feature-specific paths
+(such as `CRABCODE_DOCUMENT_ENGINE_HOME`) keep their existing behavior.
+References to `~/.crabcode` elsewhere in this guide describe the default location.
+
+Existing files are not moved automatically; copy them into the new directory if
+you want to reuse them. Restart CLI, Gateway and Desktop after changing the
+variable, and ensure each process inherits it. A desktop app launched from the
+system launcher may not inherit variables exported in a terminal.
+
+### Ultra Mode
+
+Set the top-level `ultra_mode` field to make the main model proactively split non-trivial work across many sub-agents and run independent tasks in parallel:
+
+```json
+{
+  "ultra_mode": true
+}
+```
+
+`ultra_mode` defaults to `false`. It changes the model's delegation guidance; actual parallelism remains bounded by `agent.max_concurrency` and `agent.max_active_agents_per_run`.
+
+### Tool Call Timeout
+
+By default, CrabCode does not apply a global timeout to tool calls. Set the top-level `tool_call_timeout` field to cap each individual tool execution:
+
+```json
+{
+  "tool_call_timeout": 300
+}
+```
+
+Omit `tool_call_timeout` or set it to `null` to disable the global limit. Filesystem and tool-specific timeouts, such as `filesystem_timeout`, `Bash.timeout`, or `agent.timeout`, still apply independently and may be shorter.
+
+The shared filesystem tool timeout defaults to **3600 seconds** for Read, apply_patch, Write, Edit, Glob, Grep, and Bash. Set the top-level `filesystem_timeout` field in `~/.crabcode/settings.json` or the project's `.crabcode/settings.json` to change it:
+
+```json
+{
+  "filesystem_timeout": 3600
+}
+```
+
+The value must be a finite, positive number of seconds, or `null` to disable the filesystem timeout. Omitting the field keeps the 3600-second default. It applies to both main-session and sub-agent file tools, including file snapshots performed during a tool call. An explicit `Bash.timeout` overrides this default for that invocation, even when `filesystem_timeout` is `null`; a configured `tool_call_timeout` still caps the overall execution. Operations can still be cancelled when the timeout is disabled.
+
+## CLAUDE.md (project instructions)
+
+`CLAUDE.md` is a Markdown file whose contents are **automatically injected** as context at the start of every conversation — no command needed. Use it to encode project conventions, coding style rules, common commands, and anything else the model should always know about.
+
+### Where to put it
+
+Files from the following locations are loaded and concatenated in order:
+
+| Path | Scope |
+| ------ | ------- |
+| `~/.claude/CLAUDE.md` | User-global, Claude Code compatible |
+| `~/.crabcode/CLAUDE.md` | User-global, CrabCode native |
+| `<each dir from git-root to cwd>/CLAUDE.md` | Project-level, walked downward |
+| `<each dir from git-root to cwd>/.claude/CLAUDE.md` | Same, inside `.claude/` subdirectory |
+
+### Example
+
+```markdown
+# Project conventions
+
+- Use `ruff` for style checks — all commits must pass
+- Every new function needs a docstring
+- Database migrations go in `migrations/`, named `YYYYMMDD_description.sql`
+- Do not touch files under `legacy/` unless the user explicitly asks
+
+## Common commands
+
+- Run tests: `pytest -x`
+- Format: `ruff format .`
+- Start dev server: `make dev`
+```
+
+A global `~/.crabcode/CLAUDE.md` is good for personal preferences (preferred language, style habits). The project-level `CLAUDE.md` is for team conventions.
+
+## Skills
+
+Skills are Markdown instruction files stored on disk that let you package common workflows into reusable slash commands.
+
+### Creating a skill
+
+Place a `SKILL.md` file inside `.crabcode/skills/<skill-name>/` (project-level) or `~/.crabcode/skills/<skill-name>/` (global):
+
+```
+.crabcode/
+└── skills/
+    └── commit/
+        └── SKILL.md
+```
+
+`SKILL.md` format:
+
+```markdown
+---
+name: commit
+description: "Generate a conventional commit message and commit the staged changes"
+when_to_use: "When the user wants to commit code"
+---
+
+Inspect the current git diff, craft a commit message following the conventional commits
+specification, then run git commit.
+
+User's additional request: $USER_INPUT
+```
+
+Frontmatter fields:
+
+| Field | Description |
+| ------- | ------------- |
+| `name` | Skill name — also the slash-command trigger (defaults to directory name) |
+| `description` | Short description shown to the model to decide when to invoke the skill |
+| `when_to_use` | Additional trigger condition hint |
+| `paths` | Comma-separated glob list; skill is only activated for matching file paths (optional) |
+
+Use `$USER_INPUT` anywhere in the body — it will be replaced at runtime with whatever the user typed after the slash command.
+
+### Invoking a skill
+
+Type `/<skill-name>` in the REPL:
+
+```
+❯ /commit fix login page styling
+```
+
+`/help` automatically lists all available skills. The model can also invoke skills proactively when a task matches a skill's `description` or `when_to_use`.
+
+### Load priority
+
+Skills with the same name are merged in order (later entries override earlier ones):
+
+1. `~/.claude/skills/` — Claude Code global skills (compatibility)
+2. `~/.crabcode/skills/` — CrabCode global skills
+3. `.claude/skills/` — project-level, searched upward from cwd (compatibility)
+4. `.crabcode/skills/` — project-level, searched upward from cwd (highest priority)
+
+### Auto-trigger
+
+Skills can be **automatically triggered** based on the user's current context — no manual `/command` needed. When a user message matches a skill's patterns, the skill's instructions are injected into the conversation as a system reminder.
+
+Add pattern fields to the frontmatter:
+
+```markdown
+---
+name: python-dev
+description: "Python development workflow"
+pathPatterns: "**/*.py, **/*.pyi"
+bashPatterns:
+  - "pytest .*"
+  - "ruff .*"
+importPatterns:
+  - "from django"
+  - "import flask"
+chainTo: "python-test"
+---
+
+Follow PEP 8 conventions and use type hints.
+```
+
+Pattern fields:
+
+| Field | Type | Description |
+| ------- | ------ | ------------- |
+| `pathPatterns` | Comma-separated or YAML list | Glob patterns matched against file paths in the user's message (e.g. `"**/*.py"`, `"src/**/*.ts"`) |
+| `bashPatterns` | Comma-separated or YAML list | Regex patterns matched against shell commands in the user's message (e.g. `"pytest .*"`, `"git commit.*"`) |
+| `importPatterns` | Comma-separated or YAML list | Regex patterns matched against import/require lines in the user's message (e.g. `"from django"`, `"import React"`) |
+| `chainTo` | Comma-separated or YAML list | Skill names to automatically chain after this skill (e.g. `"lint"` triggers the `lint` skill next) |
+
+**How it works:**
+
+1. When a user sends a message, CrabCode extracts file paths, bash commands, and import lines from the text.
+2. Each skill's `pathPatterns`, `bashPatterns`, and `importPatterns` are checked against the extracted context.
+3. Matching skills are activated — their content is injected as a `<system-reminder>` message.
+4. If a matched skill has `chainTo`, the chained skills are also activated (circular chains are safely broken).
+
+**Example chain:**
+
+```markdown
+# .crabcode/skills/python-dev/SKILL.md
+---
+name: python-dev
+pathPatterns: "**/*.py"
+chainTo: "python-test"
+---
+Follow PEP 8 and use type hints.
+
+# .crabcode/skills/python-test/SKILL.md
+---
+name: python-test
+bashPatterns: "pytest .*"
+chainTo: "python-lint"
+---
+Run pytest with verbose output.
+
+# .crabcode/skills/python-lint/SKILL.md
+---
+name: python-lint
+---
+Run ruff check and mypy.
+```
+
+When a user mentions `src/app.py`, all three skills activate in order: `python-dev` → `python-test` → `python-lint`.
+
+## Cross-session messaging
+
+Independent CrabCode sessions on the same macOS/Linux machine can discover and
+message each other without sharing conversation history. Each live session
+publishes a small record under `~/.crabcode/peers/` and listens on a user-only,
+token-authenticated Unix domain socket. The model uses `ListAgents` to discover peers and
+`SendMessage` to deliver plain text by session name or ID.
+
+- Incoming messages received during a turn are injected after the current tool
+  batch and before the next model request. They start a synthetic turn when the
+  session is idle.
+- The receiver sees the sender name, session ID, and working directory. Peer
+  text never counts as user consent and cannot bypass local permissions.
+- `SendMessage` follows the normal write-tool permission flow. Registry and
+  socket files are restricted to the current OS user.
+- The default `auto` inbound policy immediately accepts messages when sender
+  and receiver use the same permission class, and otherwise holds them for
+  user approval. Use `hold` to approve every message, `accept` for an explicitly
+  trusted unattended worker, or `refuse` to disable inbound delivery.
+
+```json
+{
+  "cross_session": {
+    "enabled": true,
+    "name": "api-worker",
+    "inbound": "auto",
+    "queue_size": 50,
+    "max_message_size_bytes": 10000
+  }
+}
+```
+
+## Agent Teams
+
+Agent Teams let a lead AI spawn multiple teammates that coordinate through message passing and a shared task board. Each teammate runs in its own context window and can use a different model — enabling multi-model collaboration (e.g. Claude for coding, Gemini for research, GPT for review) within a single team.
+
+### How it works
+
+1. The lead agent calls `TeamCreate` to create a team, then `TeamSpawn` to add teammates with specific roles and optional model profiles.
+2. Teammates communicate via `TeamMessage` (peer-to-peer) or `TeamBroadcast` (to all teammates).
+3. The shared task board lets the lead assign work and teammates atomically claim tasks — concurrent claims are serialized via a lock.
+4. Messages are stored as JSONL (O(1) append writes) and injected into the recipient's session with auto-wake for idle agents.
+5. Backpressure: each teammate has a bounded queue (default 100 messages); overflow drops the oldest unread message with a warning.
+
+### Built-in Team Tools
+
+| Tool | Description |
+| ------ | ------------- |
+| `TeamCreate` | Create a new team |
+| `TeamSpawn` | Spawn a teammate with a role (worker/researcher/reviewer), optional model profile |
+| `TeamMessage` | Send a message to a specific teammate |
+| `TeamBroadcast` | Broadcast a message to all teammates |
+| `TeamStatus` | View team and teammate status |
+| `TeamTaskAdd` | Add a task to the shared task board |
+| `TeamTaskClaim` | Atomically claim an unclaimed task |
+| `TeamTaskComplete` | Mark a claimed task as completed |
+| `TeamShutdown` | Shut down the team and cancel all teammates |
+
+### Configuration
+
+Configure via the `team` field in `settings.json`:
+
+```json
+{
+  "team": {
+    "max_teammates": 8,
+    "inbox_dir": null,
+    "backpressure_queue_size": 100,
+    "message_size_limit": 10240
+  }
+}
+```
+
+| Field | Description | Default |
+| ------- | ------------- | --------- |
+| `max_teammates` | Maximum teammates per team | `8` |
+| `inbox_dir` | Custom directory for JSONL inbox files (default: `~/.crabcode/team_inbox/`) | `null` |
+| `backpressure_queue_size` | Per-teammate message queue size | `100` |
+| `message_size_limit` | Max message size in bytes | `10240` (10KB) |
+
+### Cross-team communication
+
+Teams are isolated by default. `TeamBridge` allows controlled messaging between teams with configurable policies:
+
+- `allow_all` — all cross-team messages pass through
+- `allow_tagged` — only messages with a specific tag are forwarded
+- `deny` — no cross-team messages (default)
+
+### Crash recovery
+
+The recovery helper can normalize stale `busy`/`cancelling` teammate states in an existing `TeamManager` runtime (without auto-restarting work). It is not currently wired into gateway startup, and team membership/state are held in memory rather than persisted. A new server process therefore cannot discover or recover teams from a previous process; callers must reconstruct the runtime and invoke recovery explicitly.
+
+### REPL commands
+
+| Command | Description |
+| --------- | ------------- |
+| `/team list` | List active teams |
+| `/team create <name> [max]` | Create a team |
+| `/team status <team_id>` | Show team status table |
+| `/team messages <team_id>` | Show team message history |
+| `/team tasks <team_id>` | Show the shared task board |
+| `/team spawn <team_id> [options] <prompt>` | Add a teammate |
+| `/team message <team_id> <agent_id> <text>` | Send a teammate message |
+| `/team broadcast <team_id> <text>` | Broadcast to teammates |
+| `/team task-add <team_id> <description>` | Add a task |
+| `/team task-claim <team_id> <task_id> [agent_id]` | Claim a task |
+| `/team task-complete <team_id> <task_id> [result]` | Complete a task |
+| `/team shutdown <team_id>` | Shut down a team |
+
+### Multi-model example
+
+```json
+{
+  "models": {
+    "coder": { "provider": "anthropic", "model": "claude-opus-4-20250514" },
+    "researcher": { "provider": "gemini", "model": "gemini-2.5-pro" },
+    "reviewer": { "provider": "openai", "model": "gpt-4o" }
+  }
+}
+```
+
+The lead spawns teammates with `model_profile` pointing to different named models — each teammate uses the corresponding provider and model.
+
+## Agent Settings
+
+The built-in `Agent` tool spawns sub-agents for parallel or isolated tasks. Its behavior can be configured via the `agent` field in `settings.json`:
+
+```json
+{
+  "agent": {
+    "max_turns": 10,
+    "timeout": 300,
+    "max_output_chars": 12000,
+    "stream_send_input_output": false,
+    "max_concurrency": 4,
+    "max_depth": 2,
+    "max_active_agents_per_run": 16,
+    "types": {}
+  }
+}
+```
+
+| Field | Description | Default |
+| ------- | ------------- | --------- |
+| `max_turns` | Maximum agentic turns per sub-agent invocation | `10` |
+| `timeout` | Total wall-clock timeout in seconds for a sub-agent | `300` |
+| `max_output_chars` | Truncate individual tool results beyond this many characters | `12000` |
+| `stream_send_input_output` | Stream live output after `/agent-send` in REPL; set `false` to send input silently | `false` |
+| `max_concurrency` | Maximum number of sub-agents that may execute concurrently; additional agents remain queued | `4` |
+| `max_depth` | Maximum nesting depth. The main agent is depth 0, so `2` allows children at depth 1 and grandchildren at depth 2 | `2` |
+| `max_active_agents_per_run` | Maximum number of unfinished managed agents in the current session, including queued and running agents | `16` |
+| `types` | Per-`subagent_type` overrides; see below | `{}` |
+
+Each entry under `types` supports these fields:
+
+```json
+{
+  "agent": {
+    "types": {
+      "explore": {
+        "model_profile": "fast-model",
+        "allowed_tools": ["Read", "Grep", "Glob"],
+        "prompt": "Explore the codebase and report evidence concisely.",
+        "enable_lsp": false
+      }
+    }
+  }
+}
+```
+
+| Field | Description | Default |
+| ------- | ------------- | --------- |
+| `model_profile` | Named entry from `models` used by this agent type; an explicit `Agent.model_profile` input takes precedence | Current model |
+| `allowed_tools` | Tool-name allowlist. An empty list is unrestricted for general-purpose agents; `explore` defaults to read-only tools | `[]` |
+| `prompt` | System prompt override for this agent type | Current prompt profile |
+| `enable_lsp` | Whether this agent type receives the configured LSP manager | `true` |
+
+Like Claude Code, `Agent` runs in the background by default and immediately returns an
+`async_launched` result. Set `run_in_background: false` only when the current turn needs the
+sub-agent result synchronously. When the
+sub-agent completes, fails, or is stopped, CrabCode injects a
+`<task-notification>` and automatically resumes its direct parent (then the main agent for
+top-level work). Nested callbacks are routed up the parent chain. Callback delivery is persisted
+across session resume and compaction, with the observable states `pending`, `injected`, and
+`delivered`. A queued or running agent left behind by a terminated process is restored as
+`stopped`, never as a phantom running task.
+
+"Sub-agent" describes the managed agent's parent-child relationship; it is not a separate runtime
+class. `TeamSpawn` creates the same kind of managed agent and then adds team membership, messaging,
+and team lifecycle state.
+
+The REPL renders automatic continuations while idle. Gateway clients receive the same
+background events through `/event` or `/ws`; pass `"callback": true` to
+`POST /agent/spawn`. Agent status responses include callback state, epoch, correlated
+message ID, finish time, and transcript path for monitoring and recovery.
+
+The separate `Monitor` tool follows Claude Code's event-driven watch model. Pass exactly one of
+`command` or `ws`, plus a short `description`; every merged stdout/stderr line or WebSocket
+message is injected as `<monitor-event>` and automatically resumes the main conversation. The
+default deadline is 300,000 ms (maximum 3,600,000 ms), while `persistent: true` runs until
+`TaskStop` or session end. Output is retained in a per-session task file. `TaskList` lists both
+monitors and agents, and `TaskStop` stops either kind by ID. Command monitors share Bash
+permission rules; WebSocket monitors require Monitor approval and reject credential-bearing,
+private, local, and reserved targets.
+
+Example browser-focused sub-agent profile:
+
+```json
+{
+  "agent": {
+    "types": {
+      "browser": {
+        "allowed_tools": ["Browser", "WebSearch", "Read", "Glob", "Grep"],
+        "prompt": "You are a browser-focused sub-agent. Reuse any existing session_id when possible and avoid creating duplicate browser sessions."
+      }
+    }
+  }
+}
+```
+
+## Display Settings
+
+The number of lines shown for tool results in the terminal can be configured via the `display` field in `settings.json`:
+
+```json
+{
+  "display": {
+    "default_max_lines": 50,
+    "max_chars": 50000,
+    "tool_max_lines": {
+      "Agent": 120,
+      "Bash": 60,
+      "Read": 80,
+      "Grep": 50
+    }
+  }
+}
+```
+
+| Field | Description | Default |
+| ------- | ------------- | --------- |
+| `default_max_lines` | Default maximum display lines for tool results | `50` |
+| `max_chars` | Character count safety cap for display content | `50000` |
+| `tool_max_lines` | Override `default_max_lines` per tool name; only configure tools you want to adjust | See below |
+
+Built-in tool line limits:
+
+| Tool | Default lines |
+| ------ | --------------- |
+| `Agent` | `120` |
+| `Bash` | `60` |
+| `Grep` | `50` |
+| `Glob` | `30` |
+| `Read` | `80` |
+| `Lint` | `60` |
+| `WebSearch` | `50` |
+| `Browser` | `60` |
+| `CodebaseSearch` | `50` |
+| Others | `50` (i.e. `default_max_lines`) |
+
+Content exceeding the line limit is truncated with a note showing how many lines were omitted. Content exceeding `max_chars` is also truncated.
+
+Sub-agents are concurrency-safe and run in parallel when the parent model issues multiple `Agent` calls in the same turn. Each sub-agent gets an isolated message history and the same tool set as the parent.
+
+## Extra Tools
+
+`extra_tools` lets you attach additional tool packages to the agent without modifying the core. Each entry is a Python import path to a `Tool` subclass.
+
+```json
+{
+  "extra_tools": [
+    "crabcode_search.CodebaseSearchTool"
+  ],
+  "tool_settings": {
+    "CodebaseSearch": {
+      "embedder": "ollama",
+      "model": "nomic-embed-text"
+    }
+  }
+}
+```
+
+When the session starts, each extra tool's `setup()` method is called with a `ToolContext` that includes:
+
+- `cwd` — the current working directory
+- `tool_config` — the matching entry from `tool_settings`
+- `on_event` — a callback for emitting real-time progress events to the CLI
+
+This is the extension point used by `crabcode-search` to kick off background indexing on startup.
+
+## crabcode-debugger (DAP and Process Debugging)
+
+`crabcode-debugger` is an optional package that lets agents use Debug Adapter
+Protocol adapters and process-level diagnostics. It is disabled by default.
+
+### Install
+
+```json
+{
+  "extra_tools": [
+    "crabcode_debugger.DebuggerTool",
+    "crabcode_debugger.ProcessDebuggerTool"
+  ],
+  "tool_settings": {
+    "Debugger": {
+      "allow_evaluate": false,
+      "default_timeout_seconds": 30
+    },
+    "ProcessDebugger": {
+      "default_timeout_seconds": 15
+    }
+  }
+}
+```
+
+```bash
+pip install -e packages/debugger
+```
+
+The debugger package intentionally relies on official or official-maintained
+debug adapters already installed on the machine. Use `Debugger` action
+`adapters` and `ProcessDebugger` action `capabilities` to see what is available
+in the current environment.
+
+### `Debugger` tool
+
+`Debugger` uses Debug Adapter Protocol (DAP) for source-level debugging. It
+supports C/C++, Rust, Python, Go, Java, TypeScript, and JavaScript when the
+corresponding adapter is installed.
+
+| Capability | Actions |
+| --- | --- |
+| Adapter discovery | `adapters` |
+| Session lifecycle | `start`, `attach`, `stop`, `sessions`, `events` |
+| Breakpoints and run control | `set_breakpoints`, `configuration_done`, `continue`, `pause`, `step_over`, `step_in`, `step_out` |
+| Runtime inspection | `threads`, `stack`, `scopes`, `variables`, `evaluate` |
+
+Built-in adapter discovery prefers:
+
+| Language | Preferred adapter |
+| --- | --- |
+| Python | `debugpy` |
+| Go | `dlv dap` |
+| C/C++ | `lldb-dap`, then GDB DAP |
+| Rust | `lldb-dap` |
+| Java | `vscode-java-debug` |
+| TypeScript/JavaScript | `vscode-js-debug` |
+
+Custom adapter commands can be provided with
+`tool_settings.Debugger.adapters`. `launch_config` and `attach_config` are passed
+through to the selected adapter for language-specific options.
+
+### `ProcessDebugger` tool
+
+`ProcessDebugger` provides best-effort process diagnostics and process-memory
+operations for local authorized processes.
+
+| Capability | Actions |
+| --- | --- |
+| Capability and process inventory | `capabilities`, `list_processes`, `inspect_process` |
+| Process debugging and control | `attach_debugger`, `detach`, `terminate`, `kill` |
+| Process diagnostics | `sample_stack`, `dump_core`, `memory_maps`, `trace_syscalls` |
+| Memory regions and values | `memory_regions`, `memory_read`, `memory_search`, `memory_refine`, `memory_write` |
+| Repeated value enforcement | `memory_freeze`, `memory_unfreeze`, `memory_freezes` |
+| Pattern and pointer location | `aob_scan`, `pointer_scan`, `pointer_resolve` |
+| Byte-level code patching | `code_read`, `code_patch`, `code_restore`, `code_patches` |
+
+Current platform support:
+
+| Platform | Process diagnostics | Direct memory operations |
+| --- | --- | --- |
+| Linux | `/proc`, `gdb`/`gcore`, `strace` when installed | Implemented through `/proc/<pid>/maps` and `/proc/<pid>/mem` |
+| macOS | `sample`, `vmmap`, `lldb` when available | Implemented through Mach `task_for_pid`, `mach_vm_region_recurse`, `mach_vm_read_overwrite`, `mach_vm_write`, and `mach_vm_protect` |
+| Windows | PowerShell process APIs, `cdb`/ProcDump when available | Implemented through `VirtualQueryEx`, `ReadProcessMemory`, `WriteProcessMemory`, and `VirtualProtectEx` |
+
+Memory and patch details:
+
+- `memory_search` supports numeric, string, and raw byte values.
+- `memory_refine` can narrow a previous search by `equals`, `changed`,
+  `unchanged`, `increased`, or `decreased`.
+- `aob_scan` supports byte patterns with wildcards such as `48 8B ?? 89`.
+- `pointer_scan` searches for process pointer chains with bounded depth, offset,
+  result count, and scan size.
+- `pointer_resolve` resolves an absolute base address or `module_path` +
+  `module_offset` plus offsets.
+- Module-relative pointer resolution depends on whether the active backend can
+  report module paths for memory regions.
+- `code_patch` writes explicit bytes only, stores the original bytes, can verify
+  `expected_hex` before writing, and uses backend protection/cache primitives
+  where available.
+- Patch hex input is validated strictly. Active patch IDs must be unique, and
+  overlapping active patches are rejected so the original bytes remain recoverable.
+- `code_restore` restores saved patches by `patch_id` or `all=true`.
+- Direct memory access is subject to operating-system process rights. Windows
+  requires sufficient `OpenProcess` rights and can fail for elevated or protected
+  processes. macOS requires debug permission or sufficient privileges through
+  `task_for_pid`, and SIP or protected processes can still deny access.
+
+### Permissions and Boundaries
+
+Process and debuggee actions default to permission confirmation. The tools return
+`ASK` for process inspection, memory reads/writes/freezes, attach, dump, trace,
+and code patching. When `permissions.default_mode` is `"run_everything"` or legacy `permissions.run_everything` is enabled, those `ASK`
+permissions are bypassed by the normal CrabCode permission mode.
+Adapter discovery also asks for confirmation when a configured adapter declares
+a custom `probe_command`, because discovery will execute that command.
+
+The intended use is local, authorized process debugging, diagnostics, testing,
+and research. `crabcode-debugger` does not provide stealth injection,
+anti-debugging bypass, DRM bypass, persistence, credential extraction, or remote
+process attack features. Code patching is byte-level only; the agent must supply
+the exact bytes to write and should use `expected_hex` before changing process
+code.
+
+## crabcode-search (Semantic Codebase Search)
+
+`crabcode-search` is an optional package that adds semantic code search to the agent.
+
+### Install
+
+```bash
+pip install -e packages/search          # AST chunking + all embedder backends
+```
+
+### How it works
+
+1. **Chunking** — source files are split into semantic units (functions, classes, methods). Uses tree-sitter AST parsing when available, falls back to regex-based boundary detection.
+2. **Embedding** — each chunk is embedded into a dense vector using a configurable model.
+3. **Storage** — vectors are stored in a local USearch index under `.crabcode/search/`. Repos with fewer than 100k chunks use exact inner-product search; larger repos automatically switch to approximate HNSW traversal.
+4. **Search** — at query time, the query is embedded and the nearest chunks are returned with file path, line range, and relevance score.
+
+### Indexing
+
+Indexing starts automatically in the background when the agent session starts. The CLI shows a live progress bar. The agent can still search while indexing is in progress — it will get partial results and a note to use `Grep` if needed.
+
+Subsequent runs use incremental mtime-based updates — only changed files are re-indexed.
+
+### Embedding backends
+
+Configure via `tool_settings.CodebaseSearch` in `settings.json`:
+
+| Backend | `embedder` value | Notes |
+| --------- | ----------------- | ------- |
+| Ollama (local) | `"ollama"` | Default. Requires a running Ollama instance. |
+| OpenAI API | `"openai"` | Requires `OPENAI_API_KEY`. |
+| Google Gemini API | `"gemini"` | Requires `GEMINI_API_KEY`. |
+| HuggingFace (local) | `"huggingface"` | Requires `pip install sentence-transformers`. |
+| ModelScope (local) | `"modelscope"` | Requires `pip install modelscope`. |
+
+### CPU thread limit
+
+Local backends (HuggingFace, ModelScope) use all available CPU cores by default, which can make your machine unresponsive during indexing. Use the `threads` option to cap the number of threads:
+
+```json
+{
+  "tool_settings": {
+    "CodebaseSearch": {
+      "embedder": "huggingface",
+      "model": "Qwen/Qwen3-Embedding-0.6B",
+      "threads": 4
+    }
+  }
+}
+```
+
+`threads` limits PyTorch (`torch.set_num_threads`) and the `OMP_NUM_THREADS` / `MKL_NUM_THREADS` environment variables simultaneously. A value of 2–4 is a good starting point on most laptops.
+
+Example configuration using Ollama:
+
+```json
+{
+  "extra_tools": ["crabcode_search.CodebaseSearchTool"],
+  "tool_settings": {
+    "CodebaseSearch": {
+      "embedder": "ollama",
+      "model": "nomic-embed-text",
+      "base_url": "http://localhost:11434"
+    }
+  }
+}
+```
+
+Example using Gemini:
+
+```json
+{
+  "tool_settings": {
+    "CodebaseSearch": {
+      "embedder": "gemini",
+      "model": "text-embedding-004",
+      "api_key_env": "GEMINI_API_KEY",
+      "dimension": 768
+    }
+  }
+}
+```
+
+## Prompt Profile
+
+The system prompt is fully configurable via a `prompt_profile` in `settings.json`. This lets you swap the agent's identity and behavioral sections without touching the engine code — useful for building non-coding agents on top of `crabcode-core`.
+
+Each section field follows the same rule:
+
+- **omitted / `null`** → use the built-in default
+- **`""`** → disable that section entirely
+- **non-empty string** → replace with your own content
+
+```json
+{
+  "prompt_profile": {
+    "prefix": "You are a customer support agent for Acme Inc.",
+    "doing_tasks": "",
+    "git_safety": "",
+    "actions": "",
+    "agent_prompt": "You are a support sub-agent. Answer concisely from the knowledge base.",
+    "extra_sections": [
+      "# Domain Rules\nAlways check the knowledge base before answering.\nNever share internal pricing."
+    ]
+  }
+}
+```
+
+`prompt_profile` field reference:
+
+| Field | Description | Default |
+| ------- | ------------- | --------- |
+| `prefix` | First sentence that names the assistant | `"You are CrabCode…"` |
+| `intro` | Full intro section override | built-in |
+| `system` | System behaviour rules | built-in |
+| `doing_tasks` | Task execution guidelines (coding-specific) | built-in |
+| `actions` | Reversibility / blast-radius rules | built-in |
+| `git_safety` | Git safety protocol | built-in |
+| `using_tools` | Tool usage guidelines | built-in |
+| `tone_and_style` | Tone and formatting rules | built-in |
+| `output_efficiency` | Verbosity rules | built-in |
+| `session_guidance` | Session-level hints | built-in |
+| `agent_prompt` | System prompt for spawned sub-agents | built-in |
+| `compact_prompt` | Checkpoint prompt for manual and automatic context compaction | built-in |
+| `extra_sections` | Additional sections appended after all built-in ones | `[]` |
+
+The desktop **Settings → Prompts** panel and VS Code's **CrabCode: Open Prompt Settings** command include a context-compaction prompt field. Load the built-in text to edit it, then save the template for subsequent manual, automatic, and sub-agent compaction. Clear the field or use **Restore default**, then save, to restore the built-in prompt. This field follows the active template and is included in template JSON imports and exports. Temporary instructions after `/compact` are still appended to the compaction prompt.
+
+You can also build profiles in code using `PromptProfile` from `crabcode_core.prompts.profile`:
+
+```python
+from crabcode_core.prompts.profile import PromptProfile, minimal_profile
+from crabcode_core.events import CoreSession
+from crabcode_core.types.config import CrabCodeSettings
+
+profile = minimal_profile()           # strips coding-specific sections
+profile.prefix = "You are a data analysis assistant."
+profile.extra_sections = ["Always use pandas for data manipulation."]
+
+session = CoreSession(settings=CrabCodeSettings(prompt_profile=profile.model_dump()))
+```
+
+`minimal_profile()` is a convenience preset that removes the `doing_tasks`, `actions`, and `git_safety` sections — a clean starting point for non-coding domains.
+
+## Project Structure
+
+```
+crabcode/
+├── packages/
+│   ├── core/crabcode_core/     # Core library
+│   │   ├── types/              # Pydantic types (Message, Tool, Event, Config)
+│   │   ├── api/                # API adapters (Anthropic, OpenAI, Router)
+│   │   ├── query/              # Agentic turn loop
+│   │   ├── tools/              # Built-in tools (Bash, Read, apply_patch, Edit, Write, Grep, Glob, WebSearch, Lint, Memory, AskUser, Team)
+│   │   ├── team/               # Agent Teams (models, message bus, manager, inbox, recovery, bridge)
+│   │   ├── lsp/                # LSP client integration (LSPClient, LSPManager, diagnostics formatting, server registry)
+│   │   ├── skills/             # Skill loading + auto-trigger matching (SkillDefinition, load_skills, auto_match)
+│   │   ├── prompts/            # System prompt construction
+│   │   ├── mcp/                # MCP server integration
+│   │   ├── compact/            # Conversation compaction
+│   │   ├── snapshot/           # File-system snapshots & revert (SnapshotManager, tracker)
+│   │   ├── session/            # Session persistence (JSONL)
+│   │   ├── config/             # Multi-layer settings
+│   │   ├── permissions/        # Tool permission management
+│   │   └── events.py           # CoreSession (main frontend interface)
+│   ├── cli/crabcode_cli/       # CLI frontend
+│   │   ├── app.py              # Entry point (typer)
+│   │   ├── repl.py             # Interactive REPL
+│   │   ├── pipe.py             # Pipe mode
+│   │   └── render/             # Terminal rendering
+│   └── search/crabcode_search/ # Semantic search (optional)
+│       ├── chunker.py          # AST + regex code chunking
+│       ├── embedder.py         # Embedding backends (Ollama, Gemini, OpenAI, HuggingFace, ModelScope)
+│       ├── store.py            # USearch vector store (exact → HNSW at 100k chunks)
+│       ├── indexer.py          # File scanning, change detection, batch indexing
+│       └── tool.py             # CodebaseSearchTool (extra_tools entry point)
+│   └── gateway/crabcode_gateway/ # Gateway server (optional)
+│       ├── server.py           # GatewayServer main entry
+│       ├── adapter.py          # ProtocolAdapter ABC (HTTP, gRPC)
+│       ├── schemas.py          # Pydantic request/response + CoreEvent serialization
+│       ├── middleware.py       # Auth, Logger, CORS, Error middleware
+│       ├── event_bus.py        # Multi-subscriber event bus (SSE + WS)
+│       ├── acp/                # ACP (Agent Client Protocol) layer
+│       │   ├── agent.py        # CrabCodeACPAgent — ACP Agent implementation
+│       │   ├── session.py      # ACPSessionManager — ACP session state
+│       │   ├── types.py        # ACP types + tool kind mapping
+│       │   └── transport.py    # stdio transport (run_agent wrapper)
+│       ├── routes/             # FastAPI route groups (session, agent, config, event, health)
+│       └── grpc/               # gRPC service + proto definition
+└── tests/
+```

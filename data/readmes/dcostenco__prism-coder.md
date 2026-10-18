@@ -59,6 +59,71 @@ A paid subscription adds cloud sync, higher model tiers, and team features throu
   never sent to the cloud), and local/cloud usage is recorded for
   review.
 
+### Explicit on-device oMLX drafts
+
+`prism_infer` keeps Ollama's four-tier routing by default. For an explicitly
+selected text-only code or advisory reviewer draft, pass `local_backend: "omlx"`,
+`mode: "code"`, and optionally `local_model` with the exact advertised model ID.
+This path authenticates `/v1/models` before classification or any Ollama unload;
+an unavailable, unauthenticated, or mismatched model refuses without substitution.
+It reads `OMLX_API_KEY` or the local `~/.omlx/settings.json` key, and model/context
+settings from `~/.omlx/model_settings.json`; `OMLX_MODEL` and a loopback-only
+`OMLX_BASE_URL` can select local configuration. Redirects are refused.
+
+**Requires** an oMLX build with Prism's control routes: the
+[`prism-v0.7.1rc1` branch of dcostenco/omlx](https://github.com/dcostenco/omlx/tree/prism-v0.7.1rc1), upstream oMLX
+0.7.1rc1 plus those routes ([install and settings](https://github.com/dcostenco/omlx/blob/prism-v0.7.1rc1/PRISM.md)). With stock
+oMLX every call is refused. Generation runs as an owned
+job through those routes, so a timeout or cancel is reported only once the
+server confirms the request stopped. An unconfirmed stop refuses later calls
+(`omlx_stop_unproved`, `omlx_provider_busy`).
+
+Before classification, Prism unloads every model Ollama has loaded
+(`keep_alive: 0`; the weights stay on disk and reload on the next Ollama call)
+and waits up to 10 seconds for Ollama to report none. A failed unload, a model
+that does not drain, or one loading meanwhile refuses the call; a newcomer is
+never unloaded. Ollama must be reachable for this step. An OS-owned loopback
+lease on port 19438 excludes other candidate MCP processes; ordinary calls within
+one process share this lease. A busy lease refuses (`omlx_resource_busy`) before
+classification or unloading, and process exit releases it without lock-file
+cleanup. In-process inference and classification wait while an oMLX call owns
+the device. Unknown Ollama state, newly loaded Ollama weights, or available
+memory below a 2 GiB reserve aborts/withholds the generation. Model caches and
+daemons remain in place. Legacy/unmodified MCP processes do not honor the lease;
+their contention is observed and rejected by the watcher.
+
+**Safety screen.** The classifier on this path is the public
+`dcostenco/prism-coder-9b-mlx-8bit`, installed under the name
+`prism-coder-9b-mlx-8bit` in oMLX's model folder (about 9.2 GB while loaded).
+Layer 1's rules only refuse here; the classifier reads everything else, and a
+prompt over 4,000 characters is read whole in 3,600-character windows (the most
+severe verdict stands), never as an excerpt. A classifier failure, an unreadable
+answer, or a missing classifier refuses the call; there is no keyword or Ollama
+fallback. Each classifier read is bounded by 90 seconds and by the call's
+remaining `timeout_ms`, so a classifier that macOS paged out during a long idle
+is waited for rather than refused, and an oversize prompt read in windows
+cannot outlast the call budget; the first unrecoverable read ends the
+classification.
+
+Configured oMLX sampling and reasoning are preserved unless `temperature` or
+`think` is explicit, including through repairs. Generic thinking-disable retries
+are disabled for oMLX, so a model with no thinking budget in oMLX's model
+settings can spend its whole answer reasoning and is refused `think_only`: give
+it a budget there, or pass `think: false`. The default 300-second budget bounds
+oMLX generation, repairs, and history answer checks; `timeout_ms` may override it
+up to 900 seconds. Context sizing uses conservative UTF-8 bytes and the
+configured window.
+
+The same entitlement, reserved-content, history, quality, output-safety, and
+verification policies apply. Explicit oMLX never falls back to Ollama/cloud
+inference. `cloud_fallback: false`, `verify: false`, and `route_guard: "local"`
+keep content-bearing cloud channels disabled for a local draft. Result metadata
+reports `backend: "omlx"`, the selected model, tokens, and `gate_outcome`.
+The MCP envelope carries this public metadata in `structuredContent` alongside
+the existing human header/output text; `next_step` remains available in both.
+Runtime authentication and internal verifier traces are excluded.
+A draft is advisory and requires independent host review; it is not final sign-off.
+
 ## Get started
 
 Memory search automatically applies ACT-R ranking: relevance plus recency,
@@ -169,6 +234,59 @@ or by re-enabling after each run.
 
 <details>
 <summary>Release history (optional)</summary>
+
+## What's New in v20.22.1
+
+**Why it matters:** on explicit oMLX, a long prompt could keep the device busy
+for minutes while being classified, and `timeout_ms` did not limit it.
+
+- **The call budget now covers classification.** `timeout_ms` (default 300 s)
+  starts before the safety screen, and each classifier read is bounded by the
+  remaining budget as well as its own 90 s.
+- **A failed read ends the classification.** An oversize prompt is read in
+  3,600-character windows; a read that fails already means refusal on this
+  path, so the remaining windows are no longer read. Before, a stalled server
+  could cost about four minutes per window.
+- **Tests:** the owned-job marker tests pin the size limit and the
+  non-blocking open directly.
+
+## What's New in v20.22.0
+
+**Why it matters:** on Apple Silicon, `prism_infer` can now draft code on an
+oMLX server instead of Ollama, opt-in per call, behind its own safety screen.
+Separately, Layer 1 now marks two more kinds of auth request reserved, on every
+path.
+
+- **Opt-in oMLX backend:** `local_backend: "omlx"` with `mode: "code"`, text
+  only. Nothing changes for calls that do not ask for it. It **requires** the
+  oMLX build with Prism's control routes, published as the
+  [`prism-v0.7.1rc1` branch of dcostenco/omlx](https://github.com/dcostenco/omlx/tree/prism-v0.7.1rc1)
+  ([install and settings](https://github.com/dcostenco/omlx/blob/prism-v0.7.1rc1/PRISM.md)); with stock oMLX every call is refused.
+- **Its own safety screen:** the 9b classifier on the same oMLX server reads
+  every request; rules only refuse. In our tests, of 327 labelled sensitive
+  requests, the 9b alone let 2 run locally, against 19 for the 4b classifier
+  on Ollama; two rules written after reviewing those rows bring this path to
+  0, so 0 is not an out-of-sample figure. Of 294 routine requests, 2 were
+  escalated (27 on Ollama). Of 135 adversarial probes, 3 ran locally, all one
+  shape (a documentation field).
+- **Speed and cost:** a classifier read took about 0.37 s at the 95th
+  percentile on an idle machine and up to 0.65 s under load. The first read
+  after a long idle took 14.5 s, because macOS had paged the classifier out,
+  so Prism waits up to 90 s for it instead of refusing. The classifier holds
+  about 9.2 GB while loaded (9.7 GB peak).
+- **Fails closed:** a classifier failure, an unreadable answer or a missing
+  model refuses the call; it never falls back to a keyword check or to
+  Ollama. A long prompt is read whole, in windows, not as an excerpt.
+- **Frees memory first:** Ollama's loaded models are unloaded before the call
+  (they reload on the next Ollama call), so the two runtimes do not hold large
+  models at once.
+- **Layer 1, every path:** a request that decides whether signed-out,
+  anonymous or guest users may reach a route, page or endpoint (granting or
+  blocking it), makes one public, or gives them admin rights is marked
+  reserved by rule, and so is code that exchanges an authorization code for
+  tokens. Measured on the 327 sensitive requests on
+  the default Ollama path: 18 now run locally, against 19 before; routine
+  escalations are unchanged (27 of 294).
 
 ## What's New in v20.21.27
 
@@ -1707,145 +1825,4 @@ Measured on 20.21.14 through the real handler, on the local 9b with cloud off:
 |------|-------|-------|----------|
 | `route` | Off (fast) — except a tier that reasons better, e.g. 9B | 9B default | MCP tool routing |
 | `chat` | Per tier: on for 9B, off for 4B/2B | 27B preferred | Conversation, reasoning |
-| `code` | Per tier: on for 9B, off for 4B/2B | 27B preferred | Code generation, debugging |
-
-Think is a **tier** property, not a mode property. Tiers with
-`prefersThinking` also declare a `minLocalTokens` floor that reserves budget for
-the answer; tiers without it spend the whole `num_predict` allowance inside
-`<think>` and return nothing. Pass `think` explicitly to override either way.
-
-Full TypeScript signatures live in [`src/tools/`](src/tools/); architecture in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
-
-### `inference_metrics` — see your local-model usage on demand
-
-Call `inference_metrics` anytime mid-session to see how many `prism_infer` calls ran locally vs cloud. Use `period: "all"` to atomically import the Synalux VS Code panel spool and include its local-serve rate in the persisted totals:
-
-```
-📊 Inference Metrics — local-model delegation (this session):
-  Total calls: 5 — Local: 5 (100%) | Cloud: 0 (0%)
-  Tokens: 1,240 in + 380 out = 1,620 total
-  Avg latency: 420ms
-  By model:
-    prism-coder:27b: 3 calls, 1,100 tokens, avg 520ms
-    prism-coder:9b: 2 calls, 520 tokens, avg 270ms
-```
-
-The same block also appears automatically in `session_save_ledger` and `session_save_handoff` responses at session end.
-
-**Note:** The default session view tracks this MCP process's `prism_infer` delegation. The all-time view combines persisted MCP calls with Synalux VS Code panel inference. Neither view includes the host agent's own token spend; use that host's native usage reporting when available.
-
-### `local_savings` — what local serving actually displaced
-
-`inference_metrics` reports raw counters. `local_savings` answers the question
-behind them: how much work never reached your cloud model. Call the tool in any
-host, or run `prism savings` from a terminal — `--period all|month|week|session`,
-`--days N` for any custom trailing window (e.g. `--days 90` for a quarter), and
-`--json` for machine-readable output:
-
-```
-💾 Local serving — LAST 30 DAYS (2026-08-02 → 2026-08-26)
-
-  ~510K tokens kept off your cloud model
-  53 call(s) served locally of 58 routed (91%)
-  Breakdown: 461,400 prompt + 48,400 completion
-
-  By model:
-    prism-coder:9b: 41 call(s), ~505K tokens
-    prism-coder:4b: 12 call(s), ~4.8K tokens
-
-  Follow-ups with your conversation:
-    12 answered locally (12 by the 9b) · 2 refused by the on-device screen · 0 sent to cloud
-    Refusals by stage: follow-up alone 1 · turns together 1
-
-  Counts tokens a local model handled instead of your cloud model. On the token
-  axis, the token count is measured — a floor, with known undercounts listed
-  when present. On the displacement axis, prism cannot observe the call your
-  host would have made, so whether all of it would have hit the cloud is an
-  assumption. Read it as: at most this much displacement, of at least this
-  token volume.
-
-  Caveats:
-    · 12 local call(s) hit the KV cache, so Ollama reported 0 prompt tokens for
-      context that was really submitted — prompt tokens are undercounted.
-    · 3 refused call(s) excluded — nothing was served, so nothing was displaced.
-```
-
-**Why tokens and not money.** Prism reports token volume and never a dollar
-figure, because it cannot honestly produce one: published rates change and a
-bundled price table would be wrong on a timer; prism never observes which model
-your host would have used, and that choice alone is a multiple-fold spread on
-the same tokens; and most users are on flat plans where a currency figure means
-nothing at all. Tokens are the one unit prism measured itself. If you know your
-own effective rate, multiply — the split is printed for exactly that reason.
-
-**Follow-ups.** Calls that carried your conversation (`messages`) get their
-own line:
-- how many the local model answered, and how many of those the 9b answered;
-- how many the on-device screen refused, and at which stage (the follow-up read
-  alone, an earlier turn read alone, or the turns read together);
-- how many went to the cloud.
-
-A refused follow-up went back to your host instead of being answered locally,
-so this line shows how much of your follow-up work local serving actually
-took. Refusals because your plan does not include multi-turn history, or the
-history is over its cap, are counted on their own line. They are recorded only
-when the host asks for a report (`escalation: "report"`); otherwise they fail
-before anything is recorded. The line appears for the `week`, `month`, `all`
-and `--days` views, which read the durable ledger.
-
-Refused calls are excluded, the VS Code panel-playground share is disclosed
-separately, and the known sources of undercount are listed inline rather than
-left implicit — so the durable (`week`/`month`/`all`/`--days`) headline is a
-measured floor rather than a number that merely looks precise. Figures are
-per-machine: each machine reports its own local ledger.
-
-**Team roll-up (paid).** On paid plans, `prism savings --sync-enable` opts this
-machine into savings sync: once a session, prism uploads per-day **counters** —
-call counts and token totals, never prompts, completions, project names, or
-model output (the upload payload is a closed field set; the server rejects
-anything else). `prism savings --team` (or the `local_savings` tool with
-`scope: "team"`) then shows the roll-up across your workspace: total tokens
-kept off cloud models, per-member share, device counts. Members who haven't
-opted in simply aren't counted, so the team figure is a floor. Sync is off by
-default, `--sync-disable` stops it, and the deeper session-content sync
-(handoffs) is a separate channel with end-to-end encryption — the two are
-deliberately not unified, because an E2E blob cannot be aggregated and a
-counter channel must never carry content. The `session` view is the one
-exception: on KV-cache hits it estimates submitted prompt tokens from text
-(the ledger counts the measured 0 instead), so it is marked `(est.)` and says
-so whenever that happens.
-
-### Local-model delegation (default)
-
-Prism routes qualifying bounded work—bulk classification, field extraction,
-mechanical formatting, test generation, and similar tasks—to local Ollama
-models before any host-native subagent. The agent checks `gate_outcome`,
-verifies the result, and continues in the current host thread when the local
-worker is unavailable, refused, or degraded.
-
-Pass project memory when the subtask depends on prior work:
-
-```json
-{
-  "prompt": "Generate the bounded regression-test cases.",
-  "project": "prism-mcp",
-  "context_depth": "standard",
-  "conversation_id": "<from session_bootstrap>",
-  "mode": "code",
-  "cloud_fallback": false,
-  "escalation": "report"
-}
-```
-
-Omit `context_depth` to use the dashboard setting. Turn off the dashboard Task
-Router toggle or set `PRISM_TASK_ROUTER_ENABLED=false` for an explicit opt-out.
-
-**Guardrails:**
-- **Local by default** — an explicit operator opt-out is preserved
-- **Never delegates:** code/text that ships to the user, security/safety logic, planning/reasoning, anything where a silent quality drop isn't obvious
-- **Always verifies:** checks `quality_gate_failed` and `used_cloud` before trusting local output
-
-<details>
-<summary>How Prism survives context compaction</summary>
-
-The LLM context window is treated as ephemeral scratch space; durable state lives in the persistent store (SQLite locally, the portal in the cloud). Every session begins with a mandatory no-argument `session_bootstrap` call, so Prism applies the dashboard's project and quick/standard/deep setting before the agent writes a response. When a projec
+| `code` | Per tier: on for 9B, off for 4B/2B | 27B preferred | Code gen

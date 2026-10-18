@@ -130,19 +130,48 @@ vibes mcp
 8. `vibes_compile_cache` — Compile and lock deterministic prompt prefix for KV-Cache optimization.
 9. `vibes_memory` — Read and write cross-session architectural decisions and emit compact checkpoints.
 10. `vibes_swarm` — Generate multi-agent execution plans (Fan-Out/Fan-In, Saga, Critic-Validator).
+11. `vibes_eval_sandbox` — Safely execute and verify ephemeral JavaScript/TypeScript code snippets in an isolated micro-sandbox.
+12. `vibes_critic_validate` — Autonomous Critic-in-the-Loop review gate verifying code quality and AST invariants.
+13. `vibes_visual_audit` — Multimodal visual UI compliance audit for Anti-Slop Pillar 7 rubrics.
+14. `vibes_swarm_dispatch` — Concurrently dispatch parallel multi-agent workers with automated skill binding, sandbox verification, and Critic-in-the-Loop auditing.
+15. `vibes_finops_report` — Query local FinOps token consumption metrics and estimated prompt caching (KV-Cache) cost savings.
 
-### ⚡ Vibes Studio & Remote MCP (Visual Cockpit)
-Vibes-Plug features a zero-dependency visual web cockpit and Server-Sent Events (SSE) remote transport:
+### ⚡ Vibes Studio, Visual DAG Canvas & Remote MCP (Visual Cockpit)
+Vibes-Plug features a zero-dependency visual web cockpit, topological DAG workflow designer, and Server-Sent Events (SSE) remote transport:
 ```bash
-# Launch visual web cockpit (opens http://localhost:3888)
+# Launch visual web cockpit (opens http://localhost:3888) with Visual DAG Canvas & Remote MCP
 vibes studio
+
+# Interactive Project Scaffolding Wizard (custom stack & tailored skills)
+vibes wizard
+
+# Execute and verify code in Ephemeral Micro-Sandbox (<2ms execution, timeout protection)
+vibes sandbox "<code|file>" [--timeout <ms>]
+
+# Dispatch parallel multi-agent workers concurrently with automated skill binding & synthesis
+vibes swarm:dispatch "<task>" [--concurrency 3]
+
+# Track token economics, KV-cache efficiency, and estimated financial savings
+vibes finops status
+
+# Run Critic-in-the-Loop code / PRD audit
+vibes critic <file>
+
+# Run Multimodal Visual UI audit (Pillar 7 Anti-Slop)
+vibes visual-audit <file|code>
 
 # Or run standalone Remote MCP Server for Claude Desktop, Cursor, or remote agents
 vibes mcp --transport sse --port 3333
 
-# Run the complete Sovereign Quality & Anti-Slop Guard (281 files + 13 tests)
+# Run the complete Sovereign Quality & Anti-Slop Guard (300 files + 21 tests)
 vibes guard
 ```
+
+### 💻 Native VSCode & Cursor IDE Companion Extension
+Vibes-Plug includes a native extension package in [`extensions/vscode/`](extensions/vscode/):
+- **Status Bar Indicator**: Live status displaying `$(zap) VibesPlug: 155 Skills Active`.
+- **Command Palette & Context Menus**: 1-Click access to Studio Cockpit, Scaffolding Wizard, Sovereign Guard, Active Document Critic, and Token FinOps Report.
+- **Packaging & Installation**: Build `.vsix` anytime via `cd extensions/vscode && vsce package` and install directly into VSCode, Cursor, or Windsurf.
 
 ---
 
@@ -247,6 +276,7 @@ The Swarm Director automatically intercepts the request, runs Step 1 Context Dis
 # Workspace & Skill Management
 vibes init <project-name>        # Scaffolds 8-Phase Zero-To-Prod structure (README, PROGRESS, BLUEPRINT, PRD)
 vibes bootstrap <type> <name>    # Super-scaffolds project + skills (saas | ecommerce | mobile | api | fullstack | spec-api)
+vibes wizard                     # Interactive CLI wizard to scaffold project stack & custom skill bundle
 vibes sync                       # Verifies & synchronizes master trigger across all IDE rules
 vibes ui                         # Interactive terminal TUI to visually select & install skills
 vibes studio [--port <n>]        # Launches local web Studio Cockpit dashboard (visual 155-skill explorer)
@@ -278,8 +308,26 @@ vibes anti-slop                  # Runs Sovereign Anti-Slop scanner (detects pla
 vibes anti-slop --strict         # Strict CI mode: fails build on any warning
 vibes anti-slop --fix            # Automatically removes syntax-narrating redundant comments
 vibes audit                      # Runs zero-tech-debt-auditor for dead code, magic numbers & strict types
+vibes critic <file>              # Runs deep Critic-in-the-Loop audit on code/PRD before commit
+vibes visual-audit <file>        # Audits UI code or screenshot image against Pillar 7 & generates vision rubric
 vibes doctor                     # Checks environment health & IDE integration integrity
 vibes hooks install              # Installs pre-commit Git hook enforcing zero-slop gates
+```
+
+### 🛡️ Reusable GitHub Action (CI/CD Quality Gate)
+Integrate the Sovereign Anti-Slop Gate and Critic-Validator directly into any repository:
+```yaml
+name: Sovereign Guard Gate
+on: [push, pull_request]
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: roedyrustam/vibes-plug/.github/actions/vibes-guard@main
+        with:
+          strict: 'true'
 ```
 
 ---

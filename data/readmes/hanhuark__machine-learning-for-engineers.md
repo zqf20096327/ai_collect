@@ -13,6 +13,10 @@ See [IMPLEMENTATIONS.md](IMPLEMENTATIONS.md) for the originating course and a tr
 
 The course uses Python tutorials as the primary reproducible pathway. MATLAB tutorials remain available where supplied, including a direct [MATLAB Online launch](https://matlab.mathworks.com/open/github/v1?repo=hanhuark/machine-learning-for-engineers), but new course development should not assume students have access to proprietary software.
 
+For an inspectable first run before a full tutorial, use the [short-code demonstrations](course_content/short_code_demos/). Each is designed around one method, one engineering check, and one modification prompt. The [math and short-code authoring guide](docs/MATH_AND_CODE_GUIDE.md) defines the editable TeX convention used in Markdown and on the GitHub Pages site.
+
+If you are unsure which approach fits a problem, begin with the [engineering AI method selector](docs/method-selector.md), then use the [engineering evidence checklist](docs/engineering-evidence-checklist.md) before interpreting a result. These pages prioritize physical variables, units, baselines, independent evaluation, and failure boundaries over algorithm novelty.
+
 ## What students learn
 
 - translate an engineering question into inputs, labels, assumptions, and appropriate metrics;
@@ -37,7 +41,7 @@ Students learn to use AI as accountable engineering practitioners: decide when a
 | [IV. Segmentation and object detection](course_content/iv_segmentation_and_object_detection/) | Identify bubbles and objects; U-Net, YOLO, transfer learning | Held-out condition performance, visual error audit |
 | [V. Reinforcement learning](course_content/v_reinforcement_learning/) | Make bounded sequential decisions; Q-learning and policy evaluation | Baseline policy, constraint audit, perturbed-condition evaluation |
 | [VI. Generative models and inverse engineering design](course_content/vi_generative_models/) | Evaluate synthetic/reconstructed data and design candidates under physical constraints | **Under development**; not yet a current assignment |
-| [VII. Time-series forecasting and prognostics](course_content/vii_time_series_forecasting/) | Forecast boiling dynamics; sequence-to-sequence RNN/GRU/LSTM candidates | **Validation refresh required** before graded use |
+| [VII. Time-series forecasting and prognostics](course_content/vii_time_series_forecasting/) | Forecast a simulated thermal state with known heat-load inputs; optional legacy boiling extension | **Ready to assign:** simulated thermal-RC core; legacy extension needs validation refresh |
 | [VIII. Physics-informed neural networks](course_content/viii_physics_informed_neural_networks/) | Solve and invert transient heat conduction; PINNs | Analytical/numerical verification, inverse estimate, failure audit |
 | [IX. AI agent harnesses](course_content/ix_ai_agent_harnesses/) | Constrain and verify AI-assisted engineering workflows; skills, MCP, and plugins | Harness specification, independent verification, failure audit, individual defense |
 
@@ -70,6 +74,7 @@ This repository does not rely on AI detection as evidence of learning. Current a
 Use:
 
 - [assessment policy](teaching_resources/ASSESSMENT_AND_AI_POLICY.md) for course-level expectations;
+- [quiz readiness guide](teaching_resources/QUIZ_READINESS_GUIDE.md) for the engineering-reasoning patterns assessed in short supervised checks;
 - [AI-use record template](teaching_resources/AI_USE_TEMPLATE.md) for AI-assisted work;
 - [shared rubric](teaching_resources/ENGINEERING_ML_RUBRIC.md) for grading;
 - [current Homework 1 specification](course_content/i_regression/ASSIGNMENT_AI_RESILIENT.md), [current Homework 2 specification](course_content/ii_classification/ASSIGNMENT_AI_RESILIENT.md), [current structure-discovery specification](course_content/iii_dimensionality_reduction_and_clustering/ASSIGNMENT_AI_RESILIENT.md), and [current visual-measurement specification](course_content/iv_segmentation_and_object_detection/ASSIGNMENT_AI_RESILIENT.md).
@@ -80,7 +85,47 @@ Legacy PDF/DOCX assignments remain available for historical context. Instructors
 
 Each module should state data provenance, evidence class, units, split rules, licenses/permissions, and limitations. The [data-card template](teaching_resources/DATA_CARD_TEMPLATE.md) and [reproducibility checklist](teaching_resources/REPRODUCIBILITY_CHECKLIST.md) provide the common standard. The PINN module demonstrates this pattern with synthetic data, metadata, deterministic generation, and tests.
 
+The [course-data registry](course_data/) records candidate NED3-backed teaching
+cases without copying source archives into this repository. Its status labels
+distinguish verified public sources from cases that still require release
+reconciliation, rights review, a runnable lesson, or instructor validation.
+
+## Book companion
+
+The [book companion](book_companion/) maps the proposed *Machine Learning for
+Mechanical Engineering* book chapters to canonical course modules, reusable
+engineering cases, and chapter-level reproducibility requirements. It keeps
+the semester course compact while providing a maintained path for deeper
+method, case-study, and AI-tool material.
+
+## References and text-first dissemination
+
+The [annotated reference library](references/) records the pedagogical, technical, AI-literacy, physical-AI, and open-course sources that guide development. It distinguishes open, library, local-copy, and contributor-controlled resources so that a citation is never mistaken for a redistribution right.
+
+The public teaching strategy is deliberately text-first: concise written explanations, reproducible demonstrations, GitHub Pages guides, case-study releases, LinkedIn posts that point to durable artifacts, and citable papers. It does not depend on lecture recordings. See the [text-first dissemination strategy](docs/text-first-dissemination.md).
+
+## Engineering AI platform development
+
+The repository is being expanded as an engineering-AI platform before it is
+treated as a book companion. The [platform roadmap](ENGINEERING_AI_PLATFORM_ROADMAP.md)
+connects a shared [engineering core](engineering_core/),
+[agentic engineering workflows](engineering_workflows/),
+[hardware and deployment pathways](hardware_and_deployment/),
+[application studios](case_studies/), and [capstone assessment](capstone_and_assessment/).
+Existing course modules remain the canonical learning route during this staged
+development.
+
 Do not upload student records, unpublished data, confidential sponsor data, restricted datasets, or material without redistribution permission.
+
+### Repository maintenance check
+
+Before opening an issue or pull request that changes public navigation or module readiness, run:
+
+```bash
+python tools/check_course_integrity.py
+```
+
+The offline check verifies repository-internal Markdown routes and confirms that a module labeled **Ready to assign** in `MODULE_STATUS.md` contains a current assignment file. It does not validate external websites, execute tutorials, or establish the scientific validity of an activity.
 
 ## Cite this curriculum
 

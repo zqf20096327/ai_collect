@@ -157,6 +157,7 @@ Data- and weight-level loops: the model produces its own training signal — dat
 - [Direct Nash Optimization: Teaching Language Models to Self-Improve with General Preferences](https://arxiv.org/abs/2404.03715) (arXiv 2024) - Introduces an iterative preference-optimisation method with monotonic improvement over a strong oracle.
 - [Constitutional AI: Harmlessness from AI Feedback](https://arxiv.org/abs/2212.08073) (arXiv 2022) - Demonstrates critique, revision, and preference modelling using AI feedback instead of human labels for harmlessness training.
 - [WizardLM: Empowering Large Language Models to Follow Complex Instructions](https://arxiv.org/abs/2304.12244) (arXiv 2023) [[code](https://github.com/nlpxucan/WizardLM)] - Introduces Evol-Instruct for generating increasingly complex instruction data from seed examples.
+- [Recursive Self-Improvement through Multi-Agent Self-Supervision](https://arxiv.org/abs/2610.12176) (arXiv 2026) [[code](https://github.com/SakanaAI/mass)] - Alternates multi-agent workflow search with post-training on self-ranked trajectories from the selected workflows, using the current model as executor, optimiser and evaluator in each cycle.
 
 ## Self-Play and Zero-Data Reasoning
 
@@ -175,6 +176,7 @@ Systems that generate their own progression of tasks or sub-problems and learn f
 - [LADDER: Self-Improving LLMs Through Recursive Problem Decomposition](https://arxiv.org/abs/2503.00735) (arXiv 2025) - Recursively generates easier sub-problems so models can learn progressively from self-guided difficulty reduction.
 - [Toward Self-Improvement of LLMs via Imagination, Searching, and Criticizing](https://arxiv.org/abs/2404.12253) (arXiv 2024) - Combines imagined tasks, Monte Carlo tree search, and critic feedback to build a self-improving learning loop.
 - [OpenSIR: Open-Ended Self-Improving Reasoner](https://arxiv.org/abs/2511.00602) (arXiv 2025) - Alternates teacher and student roles so a model can generate and solve new reasoning problems without external supervision.
+- [ActiveSaddler: Automated Curriculum Learning for Agent Harness Optimization](https://arxiv.org/abs/2610.00906) (arXiv 2026) [[code](https://github.com/microsoft/AutoSaddler/tree/feat/activesaddler)] - Co-evolves a training curriculum with an agent harness by treating recurring, diagnosed failure patterns as bandit arms that the optimiser explores or revisits at each iteration.
 
 ## Scaffold and Prompt Optimisation
 
@@ -186,6 +188,7 @@ Process-level loops in which prompts, workflows, and agent designs are themselve
 - [AFlow: Automating Agentic Workflow Generation](https://arxiv.org/abs/2410.10762) (arXiv 2024) - Searches over code-represented agent workflows with Monte Carlo tree search and execution feedback.
 - [TextGrad: Automatic "Differentiation" via Text](https://arxiv.org/abs/2406.07496) (arXiv 2024) - Backpropagates natural-language feedback through compound AI systems to optimise prompts, outputs, and code.
 - [Language Agents as Optimizable Graphs](https://arxiv.org/abs/2402.16823) (arXiv 2024) - Represents language-agent workflows as graphs whose prompts and connections can be automatically optimised.
+- [VERSE: Verified Self-Evolving Optimizer for Agent Harnesses](https://arxiv.org/abs/2610.02616) (arXiv 2026) [[code](https://github.com/wzekai/VERSE)] - Lets a harness optimiser evolve its own prompts, skills, tools, and hooks across rounds while improving an executor agent, gating each self-edit with execution-based verification, replay, and perturbation tools.
 
 ## Code Evolution and Algorithm Discovery
 
@@ -227,6 +230,7 @@ Self-improvement loops grounded in visual, simulated, or embodied environments.
 - [SRUM: Fine-Grained Self-Rewarding for Unified Multimodal Models](https://arxiv.org/abs/2510.12784) (arXiv 2025) - Applies self-rewarding post-training to unified multimodal models.
 - [SIMA 2: A Generalist Embodied Agent for Virtual Worlds](https://arxiv.org/abs/2512.04797) (arXiv 2025) - Pairs a Gemini reasoning core with self-generated tasks and rewards so an embodied agent can learn new skills in new 3D worlds without human demonstrations.
 - [Automating the Design of Embodied Agent Architectures](https://jianzhou0420.github.io/src/works/AgentCanvas/paper.html) (arXiv 2026) [[code](https://github.com/jianzhou0420/AgentCanvas)] - Introduces AgentCanvas and KDLoop for searching embodied agent architectures as editable typed graphs through coding-agent proposal, critique, experimentation, and distillation.
+- [Program-Verified Self-Evolution for Vision-Language Models](https://arxiv.org/abs/2609.33855) (arXiv 2026) [[code](https://github.com/ahmedheakl/VQS)] - Trains a vision-language model over repeated cycles on questions that fixed programs generate and answer from its own verified structured parses of unlabelled images, replacing majority-vote and model-judge labels.
 
 ## Frameworks and Implementations
 
@@ -245,6 +249,7 @@ Benchmarks and evaluations that measure whether improvement loops actually impro
 - [MLE-bench: Evaluating Machine Learning Agents on Machine Learning Engineering](https://arxiv.org/abs/2410.07095) (arXiv 2024) [[code](https://github.com/openai/mle-bench)] - Evaluates agents on real machine-learning engineering tasks derived from Kaggle competitions.
 - [ScienceAgentBench: Toward Rigorous Assessment of Language Agents for Data-Driven Scientific Discovery](https://openreview.net/forum?id=6z4YKr0GK6) (ICLR 2025) [[code](https://github.com/OSU-NLP-Group/ScienceAgentBench)] - Benchmarks language agents on code-driven tasks in data-driven scientific discovery.
 - [AIRS-Bench: a Suite of Tasks for Frontier AI Research Science Agents](https://arxiv.org/abs/2602.06855) (arXiv 2026) - Measures whether agents can handle the research lifecycle through idea generation, experiment analysis, and iterative refinement tasks.
+- [AutoDataBench: Can Agents Write the Data That Feeds the Self-Improvement Loop?](https://arxiv.org/abs/2609.35025) (arXiv 2026) [[code](https://github.com/StarDewXXX/AutoDataBench)] - Evaluates whether agents can author new executable training tasks for a target model, scoring deliveries on validity, novelty, difficulty, and behavioural coverage rather than downstream training outcomes.
 
 ## Safety, Governance, and Limits
 
@@ -263,6 +268,7 @@ Failure modes, dangerous-capability evaluations, and governance mechanisms that 
 - [Anthropic's Responsible Scaling Policy](https://www.anthropic.com/news/anthropics-responsible-scaling-policy) (Anthropic 2023) - Defines capability thresholds, including autonomy-related capabilities, that trigger stronger safeguards before further scaling.
 - [Introducing the Frontier Safety Framework](https://deepmind.google/discover/blog/introducing-the-frontier-safety-framework/) (Google DeepMind 2024) - Sets out critical capability levels, including machine-learning research automation, with mitigations applied as models approach them.
 - [METR](https://metr.org/) - Research organisation that evaluates frontier AI systems for autonomous-replication and AI research-and-development capabilities.
+- [False Frontiers: Diagnosing and Mitigating Co-Cheating in Self-Evolving Search Agents](https://arxiv.org/abs/2609.39102) (arXiv 2026) - Shows that proposer–solver self-evolution of search agents can converge on shared errors that raise internal reward without external correctness gains, and mitigates this with cross-fold feedback solvers.
 
 ## Related Awesome Lists
 

@@ -4,14 +4,16 @@
 
 包含两种 Agent 范式（原生 Function Calling / 文本式 ReAct）、工具注册表、
 SSE 流式解析、上下文压缩、asyncio 并发执行与失败隔离、**知识库检索（RAG）**，
-以及 **76 个零 API 成本的单元测试**。
+以及 **85 个零 API 成本的单元测试**。
 
 | 实测结果 | 数据 |
 |---|---|
 | 上下文压缩 | 输入 token **−42%**（2175 → 1253）、总成本 **−28%**，信息覆盖 5/5 零丢失 |
 | 批量并发 | 5 个任务耗时 **8.25s → 2.02s（4.1x）**，token 消耗差异 <1% |
 | RAG 检索 | 按 Markdown 结构切块后，recall@3 **0.81 → 0.94**、端到端 **0.80 → 0.93** |
-| 测试 | **76 个**用例，**不需要 API key、不产生费用**（裸跑约 0.6 秒，带覆盖率约 1.3 秒） |
+| 测试 | **85 个**用例，**不需要 API key、不产生费用**（裸跑约 0.6 秒，带覆盖率约 1.4 秒） |
+
+**在线演示**：<https://agent-playground-xc28.onrender.com> —— 免费层会休眠，首次打开约需 50 秒
 
 ## 这个项目做了什么
 
@@ -262,6 +264,110 @@ AI > 你好，lemon！很高兴认识你，大三同学。有什么我可以帮�
 预估花费：¥0.001279
 ```
 
+## API 服务
+
+CLI 是给人用的；`api.py` 把同一套能力包成 HTTP 接口，任何程序都能调——
+**调用方不用装 Python、不用配 key**，发一个 JSON 请求就行。
+
+### 在线演示
+
+> **<https://agent-playground-xc28.onrender.com>**
+
+打开是首页，上面列了三个**实测答得对**的示例问题，可以直接在 `/docs` 里试。
+
+两点需要知道：
+
+- **免费层 15 分钟无访问会休眠**，唤醒约需 **50 秒或更久**（Render 给出的提示原文如此）；
+  醒来之后 `/health` 实测约 **1.3 秒**返回
+- 演示环境每天限制 **200 次**生成调用；`/health` 和 `/search` 不限，它们不花钱
+
+想确认线上跑的是哪一版代码，打开 `/health` 看 `fingerprint`，和本地比一下：
+
+```bash
+uv run python -c "from agent_playground.rag import get_index; print(get_index()[0].fingerprint())"
+```
+
+### 本地启动
+
+```bash
+uv sync
+uv run uvicorn agent_playground.api:app --reload
+```
+
+两个页面：
+
+- <http://127.0.0.1:8000/> — 首页。一句话说明 + 三个**实测答得对**的示例问题
+- <http://127.0.0.1:8000/docs> — 自动生成的交互式文档，每个接口都能直接点
+  「Try it out」发请求，不用写代码
+
+两个注意：
+
+- `--reload` 只在开发时用（改 `.py` 会自动重启）
+- **改了 `docs/` 或 `README.md` 之后必须手动重启服务**——索引在进程内缓存，
+  而 `--reload` 只监听 `.py` 文件
+
+### 接口
+
+| 方法 | 路径 | 作用 | 花 API 钱 |
+|---|---|---|---|
+| GET | `/health` | 服务状态、知识库块数与指纹 | 否 |
+| POST | `/search` | 只检索，返回命中的块与相似度 | 否 |
+| POST | `/ask` | 检索 + 生成，返回答案与引用 | 是 |
+| POST | `/ask/stream` | 同上，用 SSE 边生成边推送 | 是 |
+
+**`/search` 和 `/ask` 分开是为了归因**：答案不对时先打 `/search`，就能分清是
+「检索没找到」还是「找到了但模型答错」；而且它不花钱，可以随便调。
+
+### 一次真实响应
+
+`POST /ask`，问「不做上下文压缩时总输入是多少 token？」（节选，`chunk` 已截断）：
+
+```json
+{
+  "answer": "不做上下文压缩时总输入是 **2175 tokens**。[1][3]",
+  "sources": ["docs/agent_notes.md", "docs/rag_notes.md"],
+  "hits": [
+    {"score": 0.421, "chunk": "## 一、先证明问题存在…", "source": "docs/rag_notes.md"},
+    {"score": 0.2491, "chunk": "## 一、先证明问题存在…", "source": "docs/rag_notes.md"},
+    {"score": 0.199, "chunk": "### 4. 上下文成本是累积的…", "source": "docs/agent_notes.md"}
+  ],
+  "prompt_tokens": 430,
+  "completion_tokens": 17
+}
+```
+
+`sources` 是答案实际引用的文件。**RAG 的价值一半在「答案对」，另一半在「能说出依据」。**
+
+（模型的措辞不固定——请求里没有固定 `temperature`，所以同样的问题两次调用，
+字数可能不同，但结论和引用应当一致。）
+
+### 错误码
+
+| 状态码 | 含义 | 例子 |
+|---|---|---|
+| **200** | 成功，**包括「知识库里没有答案」** | `{"answer": "资料中没有相关信息"}` |
+| 422 | 参数不合法（Pydantic 在进入函数前拦下） | `top_k=99` → `loc: ["body","top_k"]` |
+| 502 | 上游模型不可达 | `{"detail": "大模型调用失败，请稍后重试"}` |
+
+两个刻意的选择：
+
+- **「查不到」返 200 而不是 4xx**——那是业务结果，不是接口错误
+- **上游失败返 502 而不是 500**——500 表示「我的代码有 bug」，502 表示「我依赖的
+  服务挂了」。监控靠这个区分「该改代码」还是「该重试」
+
+### `/health` 里的指纹
+
+```json
+{"status": "ok", "chunks": 244, "files": 7, "fingerprint": "9571d2275279", "model": "deepseek-flash"}
+```
+
+`fingerprint` 是知识库内容的哈希，用途是**部署后确认线上跑的是哪一版语料**：
+改了文档、重启服务之后，指纹变了才说明新语料真的生效了。
+
+（上面的数值是示例——文档一改，块数和指纹都会变，这正是这个字段的意义。）
+
+这个机制来自评测，见 [`docs/rag_eval.md`](docs/rag_eval.md) 第七节。
+
 ## 目录结构
 
 ```
@@ -283,6 +389,7 @@ src/agent_playground/
 ├── batch.py           批量并发任务
 ├── eval_set.py        评测集加载与质量门禁（校验评测集本身是否可靠）
 ├── eval_rag.py        RAG 评测：召回 / 无答案拒答 / 端到端三层指标
+├── api.py             HTTP 接口：/health、/search、/ask、/ask/stream
 ├── cli.py             交互式命令行对话
 └── main.py            启动链路自检入口
 
@@ -293,7 +400,8 @@ tests/
 ├── test_context.py    上下文压缩（含回归用例）
 ├── test_cost.py       成本估算
 ├── test_llm_client.py LLM 客户端（mock，不花 API 费用）
-└── test_agent.py      Agent 主循环
+├── test_agent.py      Agent 主循环
+└── test_api.py        HTTP 接口（探针测试，不联网）
 ```
 
 ## 实现说明
@@ -347,7 +455,7 @@ uv run python -m agent_playground.agent "根据知识库，我的项目是怎么
 也可以绕过 Agent、直接跑检索加生成这条固定流程（用来对比两种形态）：
 
 ```bash
-uv run python -m agent_playground.rag "我的项目在不做上下文压缩时，单次任务的总输入是多少 token？"
+uv run python -m agent_playground.rag "这个项目的检索用的是什么算法？"
 ```
 
 ## 两种 Agent 实现
@@ -421,7 +529,7 @@ uv run python -m agent_playground.batch 5
    `client=None` 这类参数存在的唯一目的就是「可测试」——测不了的时间，等于没测。
 
 5. **压测用真 API，回归用假 client**。性能数字必须来自真实调用（否则不算数），
-   但每次改代码都打真 API 既慢又费钱，所以 76 个回归测试全部走假 client。
+但每次改代码都打真 API 既慢又费钱，所以 85 个回归测试全部走假 client。
 
 ## 已知限制
 
@@ -435,7 +543,7 @@ uv run python -m agent_playground.batch 5
 - **评测集只有 30 条，1 道题 = 3.3 个百分点**，识别不了小幅波动；
   要定阈值一类的参数，样本量得再上一个数量级
 - `rag.py` / `eval_set.py` / `eval_rag.py` **还没有单元测试**，
-  所以整体覆盖率从 40% 降到 28%——这是新增模块的缺口，不是原有代码退化
+所以整体覆盖率从 40% 降到 36%——这是新增模块的缺口，不是原有代码退化
 - 测试只覆盖了纯逻辑（工具、压缩、成本）和 Agent 主循环，
   `stream_chat` / `batch.py` / `cli.py` 这类入口尚未覆盖
 - `stream_chat` 内部自建 HTTP client，无法注入假对象——需要先重构才能测
@@ -446,7 +554,7 @@ uv run python -m agent_playground.batch 5
 uv run ruff format .    # 格式化
 uv run ruff check .     # 静态检查
 uv run pyright          # 类型检查
-uv run pytest           # 单元测试（76 个，约 0.6 秒）
+uv run pytest           # 单元测试（85 个，约 0.6 秒）
 ```
 
 测试全部使用假 client（见 `tests/conftest.py`），**不需要 API key、不产生任何费用**，
@@ -456,9 +564,10 @@ uv run pytest           # 单元测试（76 个，约 0.6 秒）
 uv run pytest --cov=src/agent_playground --cov-report=term-missing
 ```
 
-当前语句覆盖率 28%（1196 条语句，未覆盖 859 条）。未覆盖的部分集中在
-`rag.py` / `eval_set.py` / `eval_rag.py` 这三个新模块，以及
-`react_agent.py` / `batch.py` / `cli.py` 这些入口脚本上——是已知缺口，不是遗漏。
+当前语句覆盖率 36%（1315 条语句，未覆盖 839 条）。`api.py` 有 95%（它的 9 个测试
+全部用探针，不联网、不花钱）；未覆盖的部分集中在 `rag.py` / `eval_set.py` /
+`eval_rag.py` 这三个新模块，以及 `react_agent.py` / `batch.py` / `cli.py`
+这些入口脚本上——是已知缺口，不是遗漏。
 
 RAG 这部分的验证换了一种方式：**先建评测集**（而不是写单测），
 用 30 条问答对测召回和端到端准确率。评测集自己也有质量门禁：

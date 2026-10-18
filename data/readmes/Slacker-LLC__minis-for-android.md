@@ -14,8 +14,8 @@
 **Minis for Android** is an independently maintained AI agent runtime for rooted Android devices. The active Linux environment is Ubuntu 24.04 userspace running on the Android kernel through a direct chroot path; it is not a VM.
 
 ```text
-Android app → ExecutionCoordinator → RootPersistentShell → UbuntuKernel
-            → su → setsid → unshare -m → bind mounts → chroot
+Android app → ExecutionCoordinator → UbuntuKernel (per-session mount-namespace holder)
+            → per command: su → setsid → nsenter -m → chroot
             → setpriv(real App UID/GID, clear groups/caps) → bash
 ```
 
@@ -27,9 +27,10 @@ Active guest user data is App-owned and derived from `Context.filesDir`. `/data/
 
 The mainline is `main` in `Slacker-LLC/minis-for-android`. The integrated Eta capability line is part of this independent product.
 
-Baseline on 2026-10-08 (Debug): `:app:testDebugUnitTest` **3379 tests / 0 failures**; `:app:lintDebug`
-**0 errors** (394 warnings / 7 hints are pre-existing and tracked in `app/lint-baseline.xml`); the emulator
-instrumentation suite passes. Interface text lives in resources with **eight locales** — English default plus
+Baseline: version **1.1** (2026-10-18). Unit tests and lint (0 errors; existing warnings tracked in
+`app/lint-baseline.xml`) run in CI on every pull request and are the source of truth for pass counts; device
+behaviour is recorded per feature in [CHANGELOG.md](CHANGELOG.md) and
+[docs/contracts/06-CURRENT-GAPS.md](docs/contracts/06-CURRENT-GAPS.md), with anything not run on a device marked unverified. Interface text lives in resources with **eight locales** — English default plus
 Simplified Chinese, Traditional Chinese, Japanese, Korean, German, French and Russian; Simplified and
 Traditional Chinese are at full coverage, the other five still fall back to English for part of their strings
 ([docs/I18N.md](docs/I18N.md)).
@@ -53,4 +54,4 @@ The installed application identity and source namespace may differ; a repository
 
 Guest `minis-mcp-cli` is still missing; native MCP support does not replace that CLI, and full device acceptance remains incomplete. The other five locales still fall back to English for part of their strings. See [docs/contracts/06-CURRENT-GAPS.md](docs/contracts/06-CURRENT-GAPS.md), the [Chinese documentation index](docs/README.md), the [device report](docs/REAL-DEVICE-TEST-REPORT.md), and `docs/development/PROGRESS.md` for the per-slice record and the unverified list.
 
-**Version 1.0** is the first official release (`versionName` 1.0, `versionCode` 1000099); the 1.0 release was rebuilt on 2026-10-08 from the current `main`, see [CHANGELOG.md](CHANGELOG.md). Release notes are in [GitHub Releases](https://github.com/Slacker-LLC/minis-for-android/releases) and [CHANGELOG.md](CHANGELOG.md); the source tree at the release tag is the authoritative artifact. A release carries an APK only when it is signed with the project's production key, never a debug key, and you can always build your own. Privacy policy: [PRIVACY.md](PRIVACY.md). Open-source notices: [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). Build instructions: [BUILDING.md](BUILDING.md). Runtime details: [docs/EXECUTION-ENVIRONMENT.md](docs/EXECUTION-ENVIRONMENT.md). Security model: [docs/SECURITY.md](docs/SECURITY.md). Legal lineage: [PROVENANCE.md](PROVENANCE.md).
+**Version 1.1** (`versionName` 1.1, `versionCode` 1010099, 2026-10-18) follows 1.0 and installs over it; see [CHANGELOG.md](CHANGELOG.md). Release notes are in [GitHub Releases](https://github.com/Slacker-LLC/minis-for-android/releases) and [CHANGELOG.md](CHANGELOG.md); the source tree at the release tag is the authoritative artifact. A release carries an APK only when it is signed with the project's production key, never a debug key, and you can always build your own. Privacy policy: [PRIVACY.md](PRIVACY.md). Open-source notices: [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). Build instructions: [BUILDING.md](BUILDING.md). Runtime details: [docs/EXECUTION-ENVIRONMENT.md](docs/EXECUTION-ENVIRONMENT.md). Security model: [docs/SECURITY.md](docs/SECURITY.md). Legal lineage: [PROVENANCE.md](PROVENANCE.md).

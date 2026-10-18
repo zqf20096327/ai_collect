@@ -47,7 +47,8 @@ GPU hosts, including from a machine with NVIDIA hardware:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/utensils/mold/main/install.sh | MOLD_BACKEND=cpu sh
-MOLD_HOST=http://gpu-server:7680 mold run "a cat"
+mold host add                    # paste the link `mold host invite` printed on the GPU host
+mold run "a cat" --host workstation
 ```
 
 The CPU archive needs no NVIDIA driver or CUDA libraries. Local GPU generation
@@ -276,9 +277,10 @@ Run the engine where the GPU lives and connect from another machine:
 
 ```bash
 mold serve  # authenticated GPU host; enable Remote Access or configure its relay
-mold pairing create --output "$MOLD_HOME/secure/invitation.json"  # on the host
-mold pair --invite-file /private/invitation.json  # on the client
-MOLD_HOST=https://PAIRED_HOST_ORIGIN mold run "a cat"
+mold host invite                     # on the host: prints a one-use pairing link
+mold host add                        # on the client: paste the link; saves the host by name
+mold run "a cat" --host workstation  # or MOLD_HOST=workstation, or mold host use workstation
+mold library download --latest --host workstation  # save that print's original file here
 ```
 
 Use [encrypted remote connections](https://utensils.io/mold/deployment/relay)
@@ -287,9 +289,9 @@ private one-use invitation and receives its own revocable grant. The Lambda
 relay carries ciphertext; prompts, API credentials and media remain encrypted
 between client and host. Old proxy credentials require an upgrade and fresh
 pairing. Hosts may also opt into Regular direct HTTP access. Create a separate
-Regular invitation with `mold pairing create --mode regular --direct-url
+Regular invitation with `mold host invite --regular --direct-url
 http://HOST:7680 --output /private/regular-invitation.json`, then claim it with
-`mold pair --invite-file /private/regular-invitation.json --name 'My app'`.
+`mold host add /private/regular-invitation.json --device-name 'My app'`.
 Each app receives its own persistent device key; REST apps send it in
 `X-API-Key`. Keep the host operator key private and authentication enabled.
 See the [persistent REST app-key guide](https://utensils.io/mold/deployment/relay#a-persistent-key-for-your-rest-app)
@@ -341,7 +343,8 @@ mold downloads watch
 See the [remote workflow](https://utensils.io/mold/guide/remote-workflows) and
 [RunPod](https://utensils.io/mold/deployment/runpod-cli) guides. Use
 `mold queue` to manage remote work and `mold library` to browse and organize
-the host's prints, including `mold library source-media` to recover the
+the host's prints, including `mold library download` to save a print's original
+file, `mold library source-media` to recover the
 conditioning image a print was made from and `mold trash delete` to remove one
 permanently. Retained sources survive queue cleanup and remain available while
 any referencing library output exists, including in the trash. Matching retained

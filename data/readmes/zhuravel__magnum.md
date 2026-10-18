@@ -737,7 +737,10 @@ A new CLI version is the first suspect when launches start failing, so the daemo
 agent kind its roles use, as `magnum doctor` does (`<kind> --version` through its PATH), when it starts and
 at every tick's health check, and keeps it in the registry with the binary (the kind's command with its
 links resolved; for a mise shim, which links to mise itself, the binary `mise which <kind>` names) and its
-modification time. The version command runs again only once the binary changes. Another version than the
+modification time. The version command runs again only once the binary changes, except that a read that
+failed (an error, its 15-second timeout, a context that ended) leaves nothing recorded and is tried again at
+the next health check: one warning per cause since the daemon started, and a `kind.version_unknown` warning
+when three checks in a row failed (the start's read is the first; the reads go on). Another version than the
 one recorded is a `kind.version_changed` warning and one toast ("codex-cli 0.162.1 → 0.163.0 at 11:24"),
 and `magnum status` shows the versions on its `clis:` line, with "(changed at 11:24)" for a day after a
 change. For that day a PR that goes to needs attention because a role of that kind did not start (the
@@ -1088,7 +1091,15 @@ ends (each tick looks again, for a post to retry or a PR that changed), only whe
   hold it: once the head's other checks finished, a head whose every failing check also fails there is
   approved, and a `review.auto_approve_ci_base` event says so once per head and review (it names no
   check). The base tip's checks are read once per tip and ten minutes; a failure Magnum cannot match
-  (another check, another workflow, no known tip, a read that fails) still holds the PR;
+  (another check, another workflow, no known tip, a read that fails) still holds the PR. Where the
+  repository's `[[repo]] required_checks` lists checks, only the checks it names count (matched as the
+  board matches them) and the rollup no longer decides: a failing check outside the list never holds the
+  approval, whose `review.auto_approved` event and the daemon's log name it ("ignored 1 failing check
+  outside required_checks: Terraform scripts / lint"; the posted approval does not), one outside it that
+  still runs is not waited for, and a required one that fails or runs holds the PR as above, the base
+  tip's comparison included. When the head's stored checks cannot say (none read for the head, more than
+  GitHub lists, an entry that names no check on the head) every check counts, as without the key; the
+  list GitHub's rulesets declare does not change the gate;
 - on GitHub (read just before posting) you have not approved that head, have no review in progress, and
   have not reviewed the PR by hand; a PR with more reviews than Magnum reads (500) is not approved.
 
@@ -1221,18 +1232,4 @@ it short and the restart prompts it again on the new head, naming the head it mo
 that left no file only makes the candidates prompt ask for it. Crash recovery counts it with the
 reviewers (a daemon restart during it starts the round again), and a usage limit there pauses the round
 at the candidates prompt, whose turn the paused round then continues. A judge alone (a delta check, a re-review of the same head, a continued
-turn, a round whose reviewers were all dropped) gets one prompt, and `judge_own_pass = "after"` keeps one
-prompt after the reviewers.
-
-A watch without `roles = [...]` runs every role and its first judge. A second judge stands in reserve: the
-built-in `claude-judge` (kind claude, model opus, effort xhigh, the same `judge-*.md` prompts and skill,
-output `claude-judge.json`) runs for no watch until `[pipeline] judge_fallback = "claude-judge"` (or a
-`[[watch]]`'s) names it as the judge that takes a PR over after a Codex refusal, or a watch's `roles`
-names it as its judge. Validation refuses a `judge_fallback` that names no judge, a shell role, the
-watch's own judge, a judge of the same kind, or a role the watch's `roles` already list.
-
-A third kind of role takes part in no round: the fix role (`fix = true`). The built-in `claude-fix` (kind
-claude, model opus, effort high, the prompt `fix.md`, the fix skill, `timeout` 60m, no identity) belongs to
-the fix job, which fixes Magnum's findings on your own PRs (see [Fixing your own
-PRs](#fixing-your-own-prs)). Four `[pipeline]` keys configure the job, and a `[[watch]]` may set its own of
-the first three. `fix_role` (default `"claude-fix"`) names the role the job 
+turn, a round whose reviewers were all dropped) gets one prompt, and `judge_own_pass = "after"` keeps o

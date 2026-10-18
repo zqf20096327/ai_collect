@@ -1316,7 +1316,9 @@ immediately rather than burning the full attempt budget.
 A mid-stream Anthropic `error` event arrives on a response that already returned 200, so it
 carries no status of its own. The SDK maps the two transient kinds onto the statuses they
 would have had earlier — `overloaded_error` to 529 and `rate_limit_error` to 429, with
-`api_error` to 500 — which is what lets `retry_with_backoff` see them as retryable.
+`api_error` to 500 — which is what lets `retry_with_backoff` see them as retryable. Any
+other kind, such as `invalid_request_error`, becomes an `Error::Api` without a status and is
+never retried.
 
 ```rust
 use open_agent::Error;
@@ -1569,6 +1571,8 @@ MIT License - see [LICENSE](LICENSE) for details.
 [GitHub](https://github.com/slb350/open-agent-sdk-rust) is the canonical repository and CI/release host. Any family Gitea copy is a passive Git mirror and does not run a separate required Actions pipeline.
 
 ---
+
+**Unreleased (main, post-v0.11.6)**: Lockfile updated — rustls bumped to 0.23.46 to resolve RustSec advisories identified during CI migration qualification (transitive dependency through reqwest's TLS stack; `Cargo.toml` direct dependencies unchanged). Mutation CI routing returned to homelab-1 (`ci.yml` updated). No public API changed.
 
 **Status**: v0.11.6 is the current published crates.io release (in-stream server errors now surface as `Error::Api` rather than a stream parse failure, covering vLLM/llama.cpp whole-payload errors and OpenRouter `finish_reason: "error"` chunks; lockfile and GitHub Actions pins refreshed). No public API changed. See CHANGELOG.md.
 

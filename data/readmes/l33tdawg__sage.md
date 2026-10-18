@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.23.26`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.23.27`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,15 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.23.26 and earlier)</summary>
+<summary>Recent release notes (v11.23.27 and earlier)</summary>
+
+## What's New in v11.23.27
+
+**Find the exact MCP session before a handover.** `sage_sessions` is a new read-only, self-only inventory of this agent's live MCP claimant sessions on the local node. It returns each exact `session_id`, transport kind, provider/project, whether it is the current session, liveness from the same OS advisory lock used by claimant identity acquisition, and the exact count of unfinished claims held by that session. Stale identity records are counted separately and are not presented as live sessions. The tool never claims, hands off, replies, or grants authority; session IDs remain coordination metadata, not authorization principals.
+
+**Access Group controls say what they do.** CEREBRUM's Access Group editor now labels its close and delete actions accurately instead of putting Delete in the conventional close slot.
+
+**No chain migration.** App-v28 remains active. The MCP catalog grows to 38 tools; clients with a cached catalog should re-list or reconnect. Container: `ghcr.io/l33tdawg/sage:11.23.27`. SDK 11.23.27.
 
 ## What's New in v11.23.26
 
@@ -1053,23 +1061,4 @@ Container: `ghcr.io/l33tdawg/sage:11.19.4`. SDK 11.19.4.
 
 **Normal upgrades now preserve compatible governance state automatically.**
 The desktop updater reads the canonical pending plan and active proposal under
-one runtime-consistent view before changing the executable. A supported
-in-flight upgrade is included in the existing verified recovery snapshot and
-continues after restart; it is not a reason to interrupt the user or block the
-update. No terminal command, preflight ceremony, or governance expertise is
-required.
-
-Malformed canonical state, an undecodable upgrade ballot, or a target newer
-than this binary supports still fails closed before executable mutation. The
-technical `upgrade status` and stopped-node `upgrade preflight` commands remain
-available for headless and quorum operators. **Superseded safety notice:** the
-v11.19.3 live updater did not hold one uninterrupted fence across that check and
-snapshot capture. That does not impose a CLI step on a personal node; only
-quorum or externally managed governance needs the coordinated stopped-node
-procedure when leaving v11.19.3.
-
-This patch changes no consensus rule, AppHash input, transaction type, key
-encoding, fork target, or application version. Existing app-v27 chains replay
-byte-identically.
-
-Container: `ghcr.io/l33tdawg/sage
+one runtime-consistent view before changing 

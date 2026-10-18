@@ -61,13 +61,13 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 
 ## Current coverage
 
-- [Classification & Routing](categories/classification-routing.md) — 71 entries
+- [Classification & Routing](categories/classification-routing.md) — 72 entries
 - [Adaptive & Realtime UI](categories/adaptive-realtime-ui.md) — 11 entries
 - [Verification & Guardrails](categories/verification-guardrails.md) — 56 entries
 - [Scoring & Ranking](categories/scoring-ranking.md) — 44 entries
 - [Agent Decisions](categories/agent-decisions.md) — 62 entries
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 11 entries
-- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 44 entries
+- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 45 entries
 - [Calibration & Research](categories/calibration-research.md) — 54 entries
 - [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 117 entries
 - [Game & Simulation](categories/game-simulation.md) — 26 entries
@@ -192,6 +192,7 @@ Source file: [`categories/classification-routing.md`](categories/classification-
 - [AgentConnect](https://github.com/agentconnect-md/agentconnect) ![agent: Multi](https://img.shields.io/badge/agent-Multi-1F6FEB?style=flat-square) ![type: self-hosted](https://img.shields.io/badge/type-self--hosted-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/agentconnect-md/agentconnect?style=flat-square&label=%E2%98%85) - Team agent platform: asks Jev a typed `Choice` once at session start, not per message, to pick which coding-agent runtime and model runs the session, then chains follow-up decisions and pins the winner behind a 5-second deadline that falls back to the agent's configured runtime.
 - [E-commerce after-sales agent](https://github.com/guow7394/ecom-cs-agent) ![stars](https://img.shields.io/github/stars/guow7394/ecom-cs-agent?style=flat-square&label=%E2%98%85) - Intent and escalation: asks Jev for an intent with a confidence and a separate needs-human answer in one call, after its own v1 finding that intent confidence measures which intent fits rather than whether the bot can handle the request.
 - [System1 Thinking](https://github.com/trungnt13/claude-system1) ![agent: Claude Code](https://img.shields.io/badge/agent-Claude%20Code-C1512C?style=flat-square) ![stars](https://img.shields.io/github/stars/trungnt13/claude-system1?style=flat-square&label=%E2%98%85) - Effort routing: has Jev choose Claude Code's reasoning effort before selected model requests, so the thinking budget is set per request instead of the user picking a level and living with it.
+- [TypeSafe Jev x Salesforce](https://github.com/divingsbysangam/typesafe-jev-salesforce) ![stars](https://img.shields.io/github/stars/divingsbysangam/typesafe-jev-salesforce?style=flat-square&label=%E2%98%85) - Case triage: a working Salesforce DX project that puts a typed decision model inside Apex instead of a generative LLM, so every new Service Cloud case is classified, scored and routed by answers that are numbers rather than prose.
 
 ### Adaptive & Realtime UI
 
@@ -345,5 +346,4 @@ Source file: [`categories/agent-decisions.md`](categories/agent-decisions.md)
 - [Atomic](https://github.com/bastani-inc/atomic) ![stars](https://img.shields.io/github/stars/bastani-inc/atomic?style=flat-square&label=%E2%98%85) - Coding agent runtime: ships a first-class Jev structured-output provider so an agent's decisions come back typed, through the same decision resolver as its other providers.
 - [fast-jev-compaction](https://github.com/tamaratran/fast-jev-compaction) ![agent: Claude Code](https://img.shields.io/badge/agent-Claude%20Code-C1512C?style=flat-square) ![type: plugin](https://img.shields.io/badge/type-plugin-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/tamaratran/fast-jev-compaction?style=flat-square&label=%E2%98%85) - Context management: Claude Code plugin that replaces the compaction summary with Jev decisions, scoring every tool call and result for whether it is still needed instead of summarizing the session.
 - [fast-dev-compaction](https://github.com/leonaaardob/fast-dev-compaction) ![agent: Codex](https://img.shields.io/badge/agent-Codex-0D8668?style=flat-square) ![type: plugin](https://img.shields.io/badge/type-plugin-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/leonaaardob/fast-dev-compaction?style=flat-square&label=%E2%98%85) - Context management: Codex port of the Jev-guided compaction idea, restoring context verbatim around a session compaction rather than summarizing it.
-- [public-browser](https://github.com/Silbercue/public-browser) ![agent: Multi](https://img.shields.io/badge/agent-Multi-1F6FEB?style=flat-square) ![stars](https://img.shields.io/github/stars/Silbercue/public-browser?style=flat-square&label=%E2%98%85) - Browser control: lets Claude Code and Cursor drive a real Chrome profile, with a Jev loop deciding the actions, reporting roughly 30% fewer tokens and 25% lower cost.
-- [pi-typesafe-router](https://github.com/jekozyra/pi-typesafe-router) ![agent: Pi](https://img.shields.io/badge/agent-Pi-8250DF?style=flat-square) ![stars](https://img.shields.io/github/stars/jekozyra/pi-typesafe-router?style=flat-square&label=%E2%98%85) - Coding agents: routes Pi's work through
+- [public-browser](https://github.com/Silbercue/public-browser) ![agent: Multi](https://img.shields.io/badge/agent-Multi-1F6FEB?style=flat-square) ![stars](https://img.shields.io/github/stars/Silbercue/public-browser?style=flat-square&label=%E2%98%85) - Browser control: lets

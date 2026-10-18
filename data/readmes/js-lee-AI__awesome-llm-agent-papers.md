@@ -104,7 +104,7 @@ Fresh 2026 work that is already drawing attention.
   - [🤝 Multi-Agent Systems (57)](#multi-agent)
 - **🌍 Part II: Agents in Context**
   - [🌐 Interactive Environments (60)](#environments)
-  - [🚀 Applications (57)](#applications)
+  - [🚀 Applications (58)](#applications)
 - **⚖️ Part III: Cross-Cutting Concerns**
   - [📊 Evaluation & Benchmarks (57)](#evaluation)
   - [🛡️ Safety & Alignment (62)](#safety)

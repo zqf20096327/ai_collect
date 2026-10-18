@@ -4,7 +4,7 @@
 
 ![Hanai Worth · 值见——以向上 K 线、MACD 金叉与证据点构成的价值研究品牌图](docs/assets/hanai-worth-hero.svg)
 
-[![DeepSeek Harness](https://img.shields.io/badge/DeepSeek_Harness-0.2.0--rc.2-4F7CFF)](https://github.com/deepseek-ai/deepseek-harness)
+[![DeepSeek Harness](https://img.shields.io/badge/DeepSeek_Harness-0.2.1--rc.2-4F7CFF)](https://github.com/deepseek-ai/deepseek-harness)
 [![Node.js](https://img.shields.io/badge/Node.js-22.19%2B-339933?logo=nodedotjs&logoColor=white)](package.json)
 [![Tests](https://img.shields.io/badge/tests-passing-2EA44F)](packages)
 [![License](https://img.shields.io/badge/license-MIT-111827)](LICENSE)
@@ -13,7 +13,7 @@
 
 DeepSeek Harness（DSH）负责模型、Agent、工具、Session、流式事件和会话持久化；Hanai Worth 负责证券与估值数据、自选分组、研究资料、不可变报告快照和全部产品界面。产品包含“今日市场、自选与发现、大师研判、专家对谈、专家中心、设置与诊断”六个一级页面，以及个股、研判和对谈详情页。
 
-插件包名为 `hanai-investment-dsh`，独立 DSH Profile 名为 `hanai-investment`；安装和启动命令使用这两个名称。当前已验证的 DSH 版本为 `0.2.0-rc.2`。
+插件包名为 `hanai-investment-dsh`，独立 DSH Profile 名为 `hanai-investment`；安装和启动命令使用这两个名称。当前已验证的 DSH 版本为 `0.2.1-rc.2`。
 
 品牌中的两条趋势线在证据点形成金叉：价格给出市场报价，研究帮助看见价值。每一份研判，都应能回到证据、方法与上下文。
 
@@ -21,8 +21,11 @@ DeepSeek Harness（DSH）负责模型、Agent、工具、Session、流式事件�
 
 | 报告 | 在线页面 | 仓库内自包含 HTML | 内容 |
 | --- | --- | --- | --- |
-| 变盘点能力审计 | [GitHub Pages 首页](https://hancao97.github.io/hanai-investment-dsh/) | [turning-point-capability-audit-2026-08-23.html](docs/turning-point-capability-audit-2026-08-23.html) | 当前 10 类生产标记、22 个有效周期格、matched 增量、候选与缠论生命周期 |
+| 2026-10-18 A 股投资报告 | [五个方向 · 二十家公司](https://hancao97.github.io/hanai-investment-dsh/a-share-investment-report.html) | [a-share-investment-report-2026-10-18.html](docs/a-share-investment-report-2026-10-18.html) | 10 月 16 日收盘快照、宏观与全球局势、GF 摘要、20 家公司买入前提与经营反证、筛选与估值压力演示 |
+| 变盘点能力审计 | [在线审计报告](https://hancao97.github.io/hanai-investment-dsh/turning-point-capability-audit-2026-08-23.html) | [turning-point-capability-audit-2026-08-23.html](docs/turning-point-capability-audit-2026-08-23.html) | 当前 10 类生产标记、22 个有效周期格、matched 增量、候选与缠论生命周期 |
 | A 股未来一年周期展望 | [完整门禁版在线报告](https://hancao97.github.io/hanai-investment-dsh/a-share-cycle-outlook.html) | [a-share-cycle-outlook-2026-08-25.html](docs/a-share-cycle-outlook-2026-08-25.html) | 点时市场截面、主题A—C证据评分、六股质量/估值/相对强弱、条件历史比例、六门结果与Round 4全状态复核 |
+
+[GitHub Pages 报告目录](https://hancao97.github.io/hanai-investment-dsh/)保留各期入口。10 月投资报告使用软件公开行情与财务链路、官方宏观资料及公司公告；将东泰山、散户乙、段永平、巴菲特、芒格五个内置 Skill 的方法统一应用于研究，**没有独立专家投票**。20 家公司是附条件候选池，不是要求同时买入；GF 参考值、源标签和报告筛选门槛分别展示，数据日期、口径差异与反证均在页面内说明。
 
 周期展望实际调用仓库内五个专家 Skill，但它们是同源的 **AI 方法论角色**。完成版先冻结2026-08-25市场解析快照与官方财报，补齐事实、机制、质量、估值和反证五门，再由 Round 4 的独立 `council_vote` 关闭会商门；[专家实际读取的前置输入](docs/research-data/a-share-cycle-outlook-pre-council-2026-08-25.json)与五份[原始输出、提示词及 Skill 哈希](docs/research-data/a-share-cycle-expert-runs-2026-08-25.json)分别保存并以 SHA 绑定。主题映射核对和股票门禁核对不是独立投票，具体模型与reasoning配置也未在产物中冻结；报告不提供未经校准的概率、目标价或收益承诺。
 
@@ -198,17 +201,17 @@ flowchart LR
 
 - Node.js `^22.19.0` 或 `>=24.0.0`
 - pnpm `11.7.0`
-- DeepSeek Harness `0.2.0-rc.2`；CLI、CLI 自带的 Web App 与 Hanai 声明的 DSH 依赖版本必须一致
+- DeepSeek Harness `0.2.1-rc.2`；CLI、CLI 自带的 Web App 与 Hanai 声明的 DSH 依赖版本必须一致
 - 一个 DeepSeek API Key（只在实际运行 Agent 时需要）
 
-DSH 仍处于 pre-release，rc 之间不承诺兼容。安装器会在修改 Profile 前检查 CLI 是否为已验证的 `0.2.0-rc.2`。仓库把 Host、Client 和 profile 装配都纳入兼容性检查，但升级前仍应运行完整门禁。
+DSH 仍处于 pre-release，rc 之间不承诺兼容。安装器会在修改 Profile 前检查 CLI 是否为已验证的 `0.2.1-rc.2`。包内 `engines.dsh` 也限定同一版本，供 DSH 明确识别已验证的兼容版本。仓库把 Host、Client 和 profile 装配都纳入兼容性检查；升级时需运行完整门禁，并实际启动独立 Profile，不能只检查配置组合。
 
 ## 从源码安装
 
 ```bash
 git clone git@github.com:hancao97/hanai-investment-dsh.git
 cd hanai-investment-dsh
-npm install -g @deepseek-ai/dsh@0.2.0-rc.2
+npm install -g @deepseek-ai/dsh@0.2.1-rc.2
 pnpm install --frozen-lockfile
 pnpm run build
 pnpm run profile:install -- --package .

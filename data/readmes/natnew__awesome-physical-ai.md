@@ -30,7 +30,11 @@ Built for researchers and practitioners across the stack — from foundations to
 </p>
 
 <p align="center">
-  <sub><strong>Last updated:</strong> 2026-10-13 &middot; <strong>234 entries</strong> across 14 canonical categories</sub>
+
+  <sub><strong>Last updated:</strong> 2026-10-12 &middot; <strong>229 entries</strong> across 14 canonical categories</sub>
+
+  <sub><strong>Last updated:</strong> 2026-10-18 &middot; <strong>235 entries</strong> across 14 canonical categories</sub>
+
 </p>
 
 <div align="center">
@@ -407,6 +411,8 @@ Middleware, runtime stacks, and reference patterns for shipping robots in produc
 - [Zenoh](https://zenoh.io/) — Data-centric middleware for distributed robotics over constrained and heterogeneous networks.
 - [rosbag2](https://github.com/ros2/rosbag2) — Standard ROS 2 recording and replay pipeline for debugging and incident analysis.
 - [ABot-AgentOS](https://arxiv.org/abs/2607.10350) — Robotic agent operating layer for scene-conditioned planning, skill execution, verification, multimodal memory, and edge-cloud collaboration.
+- [CodeNinja Atoms Reference Architectures](https://codeatoms.ai) — Openly licensed reference designs for industrial physical AI deployments covering sensing, edge model placement, GPU sizing, and operating cost, with an accompanying dataset and MCP server.
+<!-- tags: framework -->
 - [Reducing Latency in LLM-Based Natural Language Commands Processing for Robot Navigation](https://arxiv.org/abs/2506.00075) — Integration study that connects ChatGPT directly to ROS 2 without a middleware transport layer to cut command latency for text and voice navigation in Gazebo.
 <!-- tags: paper, research-only -->
 
@@ -564,8 +570,10 @@ Physical robots for research and development.
 - [Open Manipulator](https://emanual.robotis.com/docs/en/platform/openmanipulator_x/overview/) - Affordable open-source robot arm from Robotis.
 - [LeRobot Hardware](https://github.com/huggingface/lerobot) - Reference designs for low-cost robot arms.
 - [SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) - Open-source anthropomorphic robot arm.
+- [Gearotons M17](https://github.com/tomrodinger/servomotor) - Open-source NEMA 17 integrated servomotor with built-in driver, motion controller and encoder, controlled over RS-485.
 - [SO-ARM 102](https://github.com/roboninecom/SO-ARM-102) - 3D-printable leader-follower arm with five arm degrees of freedom plus a parallel gripper, open CAD, a bill of materials, assembly instructions, and a follower URDF for LeRobot workflows.
 <!-- tags: open-source -->
+
 
 ## Conferences
 
@@ -659,6 +667,7 @@ Other curated lists covering adjacent topics.
 - [Awesome Deep RL](https://github.com/kengz/awesome-deep-rl) - Deep reinforcement learning resources.
 - [Awesome Imitation Learning](https://github.com/kristery/Awesome-Imitation-Learning) - Learning from demonstrations.
 - [Bipedal Robot Learning Collection](https://github.com/zita-ch/bipedal-robot-learning-collection) - Curated bipedal/humanoid robot-learning papers with a sim-to-real focus.
+- [Botstest](https://botstest.com) - Categorized embodied-AI and robotics reference directory covering robot learning, simulation, models, datasets, and hardware.
 
 ---
 

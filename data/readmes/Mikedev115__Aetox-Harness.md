@@ -4,11 +4,28 @@
 
 <h1 align="center">Aetox Harness</h1>
 
-<h3 align="center">An AI agent that does real work on your Windows desktop.</h3>
+<p align="center"><sub>The Model Multiplier.</sub></p>
+
+<h3 align="center">The best harness for the AI you already use.</h3>
 
 <p align="center">
-  Work with files and websites. Build and test code.<br>
-  Watch the work, review the result, stay in control.
+  <strong>Don't change your model. Change the harness.</strong><br>
+  The AI you already use becomes an assistant that gets real work done, and the strongest Code mode on the same model.
+</p>
+
+<p align="center">
+  <strong>Assistant: real work, finished as files</strong><br>
+  Record a meeting, get a summary with times and tasks · a folder of receipts becomes an Excel table ·
+  a long video becomes short clips you can keep editing · data becomes a PowerPoint deck
+</p>
+
+<p align="center">
+  <strong>Code: the strongest on the same model</strong><br>
+  Secure code <strong>93.3%</strong> vs 68.9% · long multi-turn coding <strong>95.2%</strong> vs 92.8% ·
+  our own security skill puts it 20+ points ahead of other harnesses ·
+  <a href="#measured-results">results and where it loses</a><br>
+  <sub>Measured with GPT-6 Luna (budget) and GPT-5.6 Terra (large) driving, the same model on every harness.
+  Aetox isn't tied to either: it works with 31 providers.</sub>
 </p>
 
 <p align="center">
@@ -21,7 +38,7 @@
 </p>
 
 <p align="center">
-  Windows 10+ · x64 · Free to use · Built-in trial, no API key needed to try
+  Windows 10+ · x64 · Free to use · Bring your own model, or run one locally for free
 </p>
 
 <p align="center">
@@ -49,9 +66,9 @@ because it is not code-signed yet; see [installation and safety notes](#install)
 **Choose one channel:** Store and installer builds keep separate settings, chats and keys.
 [Scoop, portable ZIP and CLI](#install) · [Update guide](docs/UPDATING.md)
 
-## Aetox Mobile 0.3.1 — Android
+## Aetox Mobile 0.3.2 — Android
 
-[**Download the Android APK**](https://github.com/Mikedev115/Aetox-Harness/releases/download/mobile-v0.3.1/Aetox-Mobile-Android-Test.apk) · [Release notes and setup requirements](https://github.com/Mikedev115/Aetox-Harness/releases/tag/mobile-v0.3.1)
+[**Download the Android APK**](https://github.com/Mikedev115/Aetox-Harness/releases/download/mobile-v0.3.2/Aetox-Mobile-Android-Test.apk) · [Release notes and setup requirements](https://github.com/Mikedev115/Aetox-Harness/releases/tag/mobile-v0.3.2)
 
 A phone chat for the Aetox on your PC: chats, models, files and the agent stay on **Windows**, the phone is the screen. Pick the model and thinking level, attach photos or files, answer approvals, and open delivered files. **Talk to it:** dictate into the box, or hold a voice conversation that is answered aloud sentence by sentence, using the speech engine and voice set in Aetox on Windows. Answers stream in as they are written, with each tool step shown; every chat on the PC is there, grouped by project; files the agent hands over open full screen (documents, images, video, pages and slides). The app tells you when the PC carries a newer version and updates in one tap. It wears the same themes as the desktop app. Android 10 or later; provider keys never leave the PC.
 
@@ -114,8 +131,9 @@ Hand a whole job to a team from Assistant or Code. Follow the head and specialis
 [Safety & data](#safety-and-your-data) · [Measured results](#measured-results) ·
 [Licence](#source-licence-and-who-makes-it) · [Community](https://www.facebook.com/share/g/1BnXC5EiWg/)
 
-> **Free to use, not unlimited free cloud inference.** The built-in trial lets you try the app without an API key;
-> your chosen cloud provider's pricing applies when you connect your own account. Local-first does not mean
+> **Free to use, not unlimited free cloud inference.** The built-in `aetox` provider shows the app and its guide,
+> but real work needs a model: an account or key you already have, or a local model. Your chosen cloud provider's
+> pricing applies when you connect your own account. Local-first does not mean
 > cloud requests stay on your machine: cloud models receive the requests you send them.
 > **Source-available, not open source:** this repository's source stops at v1.7.0; current releases still ship here
 > as binaries. [Read more](#source-licence-and-who-makes-it).
@@ -138,8 +156,8 @@ permissions, memory, and a verification loop so it can do real work rather than 
 
 Assistant and Code share one harness, keys, memory, settings and permissions; switch in the top bar at any time.
 Since [v1.9.21](docs/release-notes/v1.9.21.md), the separate Team door is closed: both main agents delegate to
-teams directly, and the old team rooms and chat history sit behind Assistant. It works with [28 external model providers](#which-models-it-works-with), cloud and local, plus a
-built-in trial provider, so you can start without an API key. The interface ships in Thai and English, with Thai
+teams directly, and the old team rooms and chat history sit behind Assistant. It works with [31 external model providers](#which-models-it-works-with), cloud and local; the
+built-in `aetox` provider only shows the app and its guide until you connect one. The interface ships in Thai and English, with Thai
 as the default. **[Install](#install)** from the Microsoft Store, the installer, or as Aetox CLI.
 
 ## System over model
@@ -177,10 +195,10 @@ Much of what people assume has to come from a bigger model is, in Aetox, the sys
    real files** — Thai and English OCR, offline speech-to-text, and the builders for `.xlsx` `.docx` `.pptx`,
    decks and video belong to the app → [Assistant door](#the-assistant-door)
 3. **A small local model does big work** — a 9B/35B model in LM Studio or Ollama gets the same tools as a
-   frontier one, and not a byte leaves your machine → [Which models it works with](#which-models-it-works-with)
+   frontier one, and your prompts never go to a model provider → [Which models it works with](#which-models-it-works-with)
 4. **Same model, different result** — on GPT-6 Luna (`gpt-6-luna`, through the same ChatGPT (Codex) account for
-   every harness), code passing the security tests (CWEval func-sec@1): Aetox 91.1% · OpenCode 66.7% ·
-   Codex CLI 66.7% · omp 68.9% · pi 64.4%, over 527 runs judged by hidden tests (1.9.27). The lead comes from the
+   every harness), code passing the security tests (CWEval func-sec@1): Aetox 93.3% · OpenCode 66.7% ·
+   Codex CLI 66.7% · omp 68.9% · pi 64.4%, judged by hidden tests (11 tasks × 2 models × 3 rounds). The lead comes from the
    bundled security skill: with it off, Aetox lands in the same range as the others. The method and where Aetox
    loses are in [Measured results](#measured-results)
 5. **Many tools do not mean a full context** — an MCP server with 212 tools costs a 135-token index, and the
@@ -199,8 +217,10 @@ each request.
 ## The Assistant door
 
 *Use, remember, and create* — the assistant works across the whole machine when no project is focused, or
-inside a project folder plus the folders you add. Everything happens on the workbench beside the chat, which
-has four rooms: slides, browser, files and terminal. The agent does not work behind a curtain and hand you a
+inside a project folder plus the folders you add. Everything happens on the workbench beside the chat. Its start
+page leads with **Waiting for you** (meetings not yet turned into notes, drafts to keep), then **Work** and
+**Calendar**, then the rooms where work is made (**Slides**, **Cutting room**, **Artifacts**) and where it is
+opened or handed on (**Browser**, **Files**, **Workroom**). The agent does not work behind a curtain and hand you a
 file at the end; it opens a room, works in it, and you can reach in and change something yourself without
 waiting for the turn to finish. The assistant has files and a shell, so it does software work too, and it
 never hands a request back because it involves code.
@@ -320,6 +340,25 @@ and after the narrow test comes the project's full check.
 > - Keeps history already sent unchanged, so the provider's cache holds every round
 > - Snapshots files before every turn edits them with shadow-git, so any turn can be undone
 
+### The security skill: code that holds up to attacks
+
+Our own security skill makes AI write code that holds up to attacks, 20+ points ahead of other harnesses. Tested
+with the same GPT models on every harness: 93.3% vs 68.9%, and 97.8% vs 77.8% (CWEval func-sec@1). It ships
+switched on.
+
+Switch on this one skill and the same model writes 14.0 of 15 functions that both work and hold up, instead of
+10.2. On the same build, with only the skill switched (CWEval, 5 rounds per setting):
+
+| Functions that work and hold up, of 15 | Skill off | Skill on | Other harnesses |
+|---|---|---|---|
+| Budget GPT model (GPT-6 Luna) | 10.2 | **14.0** | 9.7–10.3 |
+| Large GPT model (GPT-5.6 Terra) | 11.6 | **14.4** | 11.0–11.7 |
+
+Holes that closed, runs out of 10 that worked but leaked: SSRF 4 → 0 · new lines in an HTTP header 7 → 0 ·
+new lines in a log 5 → 0 · a user's regex with unbounded cost 10 → 1. The code works just as well with the skill
+on. With it off, Aetox lands with the other harnesses: the lead is the knowledge in this skill.
+[The test](docs/reports/coding-harness-1.9.27/README.md#2-ชนะ-cweval-เพราะอะไร)
+
 ### Two modes: Agent · Editor
 
 The switch in the top bar changes mode at once. Each mode is a desk of its own with its own chat list, bound to
@@ -405,10 +444,10 @@ is out. This CLI is the build the coding benchmark measures.
 
 ### Coding results
 
-On the same models against OpenCode · Codex CLI · omp · pi (1.9.27, 527 runs), Aetox leads on secure code on both
+On the same models against OpenCode · Codex CLI · omp · pi (11 tasks × 2 models × 3 rounds), Aetox leads on secure code on both
 models (the lead comes from its bundled security skill) and has the highest share of tests passed in long
 multi-turn coding on both GPT-6 Luna and GPT-5.6 Terra; on hard tasks with GPT-6 Sol it ties Codex CLI (1.9.7). It
-trails on Web-Bench on Terra and on the single SWE-bench bug on Luna, and the price is more tokens — see
+trails on the single SWE-bench bug on Luna and on time with Terra, and the price is more tokens — see
 [Measured results](#measured-results).
 
 ## Teams from Assistant and Code
@@ -503,12 +542,13 @@ provider, prompt, step ceiling and look.
 
 ## Which models it works with
 
-**28 external providers, and the window shows every one** — OpenAI · OpenAI-compatible (your own endpoint) ·
-Anthropic · Gemini · DeepSeek · Qwen · Z.ai · OpenRouter · Codex · Groq · Mistral · Kimi · MiniMax ·
+**31 external providers, and the window shows every one** — OpenAI · OpenAI-compatible (your own endpoint) ·
+Anthropic · Gemini · DeepSeek · Qwen · Z.ai · Z.ai Coding Plan · OpenRouter · Codex · Groq · Mistral · Kimi ·
+MiniMax · MiniMax M-Plan · Chutes ·
 Xiaomi MiMo · Xiaomi MiMo Token Plan · xAI · Meta · ThaiLLM · ModelScope · NVIDIA · GitHub Copilot · Kilo ·
 Ollama Cloud · OpenCode Zen · OpenCode Go · LM Studio · Ollama · 9Router (Xiaomi MiMo and its Token Plan count
-separately because they use different endpoints and keys). On top of those, the built-in `aetox` trial provider
-is not counted among the 28. ChatGPT (Codex), GitHub Copilot and OpenRouter sign in; the rest take an API key or
+separately because they use different endpoints and keys, as do the MiniMax and Z.ai plans). The built-in `aetox`
+provider is not counted among the 31: it shows the app and its guide, and does no work until a real model is connected. ChatGPT (Codex), GitHub Copilot and OpenRouter sign in; the rest take an API key or
 a local server address. An endpoint you add yourself chooses its API shape (openai · anthropic · responses).
 
 Local models are first-class: Aetox asks LM Studio and Ollama which model is *loaded*, streams both the answer
@@ -529,32 +569,34 @@ their overview shows separate model choices. Each chat keeps its own selected mo
 The rules are in [BENCHMARK.md](docs/reports/BENCHMARK.md), and the one rule it enforces is that a number that
 has not passed them does not appear here or on the website.
 
-**Coding, 1.9.27 (17 October 2026).** Same models and byte-identical tasks as OpenCode · Codex CLI · omp · pi:
+**Coding, 1.10.0.** Same models and byte-identical tasks as OpenCode · Codex CLI · omp · pi:
 11 tasks × 2 models (`gpt-6-luna`, `gpt-5.6-terra`, medium reasoning) × 3 rounds, every task judged by hidden
-tests, no user skills or settings anywhere. The other harnesses were measured on 27–28 September with the same
-account.
+tests, no user skills or settings anywhere, the same account for every harness.
 
-- **Secure code** — Aetox leads on both models: CWEval func-sec@1 91.1% against 68.9% for the next harness on
-  Luna, 93.3% against 77.8% on Terra. Switching parts off (5 rounds each) shows where it comes from: with only the
-  security skill off, Aetox secures 10.2 of 15 functions on Luna and 11.6 on Terra, the same range as the other
-  harnesses; with every skill off, 10.6 and 11.2. The lead is the knowledge in that skill, which ships switched on
-- **Long multi-turn coding** — the highest % tests passed on both models (Luna 92.4%, Terra 93.8%; OpenCode 90.8%
-  and 92.8%). Checkpoints fully passed: Luna 3.7 of 14, tied with OpenCode; Terra 6.0, behind OpenCode's 6.7
-- **Against 1.9.7** — Luna is better in nearly every column and about a third faster (SlopCodeBench 90.1 → 92.4%,
-  47 → 31 min); Terra is slightly better and faster on multi-turn work (92.0 → 93.8%, 76 → 70 min) but lost a
-  checkpoint and a Web-Bench task
+- **Answers in the task's language** — on the English tasks Luna answered in English 13 times in 63 on 1.9.27 and
+  63 in 63 on 1.10.0; Terra 47 → 63. Tasks written in Thai are still answered in Thai, 9 in 9. The engine now names
+  the reply language on each message instead of asking the model to work it out
+- **Secure code** — Aetox leads on both models: CWEval func-sec@1 93.3% against 68.9% for the next harness on
+  Luna, 97.8% against 77.8% on Terra. Switching parts off on 1.9.27 (5 rounds each) shows where it comes from: with
+  only the security skill off, Aetox secured 10.2 of 15 functions on Luna and 11.6 on Terra, the same range as the
+  other harnesses; with every skill off, 10.6 and 11.2. The lead is the knowledge in that skill, which ships
+  switched on
+- **Long multi-turn coding** — the highest % tests passed and checkpoints fully passed on both models (Terra 95.2%
+  and 7.0 of 14, Luna 91.6% and 4.0; OpenCode 92.8% and 6.7, 90.8% and 3.7)
+- **Against 1.9.27** — Terra is better in nearly every column and faster (SlopCodeBench 93.8 → 95.2%, Web-Bench
+  4.7 → 5.3 of 6, func-sec@1 93.3 → 97.8%, 70 → 63 min); Luna is faster again (31 → 26 min) and fixed the reported
+  bug in all 3 rounds (1 of 3 before), while its SlopCodeBench moved 92.4 → 91.6%, within the swing between rounds
 - **Hard tasks on GPT-6 Sol** (1.9.7) — DeepSWE 1.1 and Terminal-Bench 2.1 hard, 12 tasks at high reasoning:
   Aetox 7 · Codex CLI 7 · OpenCode 6
-- **The price** — more tokens than the others (Luna 6.1M against 0.8–4.5M, Terra 8.8M against 1.8–7.5M; about 90%
-  is cached input). Against 1.9.7 the total rose (Luna +27%, Terra +13%) from more tool calls, while the
-  full-price part barely moved; cost per round +16% on Luna, +10% on Terra. Time: Luna 31 min, close to Codex CLI
-  and pi; Terra 70 min against 46–71. The benchmark is
-  one-shot, so the main agent does nearly all of it (helpers called in 1 of 78 runs); in a real session helpers
+- **The price** — more tokens than the others (Luna 6.4M against 0.8–4.5M, Terra 8.3M against 1.8–7.5M; about 90%
+  is cached input). Against 1.9.27 the full-price part fell (uncached input −6% on Luna, −5% on Terra) and cost per
+  round fell 2% and 5%. Time: Luna 26 min, the fastest in the table; Terra 63 min against 46–71. The benchmark is
+  one-shot, so the main agent does nearly all of it; in a real session helpers
   kept the main context at 107k instead of 190k and cut cost by about 6% on OpenAI prices, 18–30% on other providers
   ([session report](docs/reports/LIVING-REALM-DELEGATION-TOKENS-20261004.md) ·
   [cost report](docs/reports/MODEL-COST-SIMULATION-LIVING-REALM-20261004.md))
-- **Where it trails** — Web-Bench on Terra (4.7 of 6, the lowest; in every round the last task left the planets
-  off their orbits) · the single SWE-bench bug on Luna (fixed in 1 of 3 rounds)
+- **Where it trails** — the single SWE-bench bug on Luna by the dataset's own tests (1 of 3 rounds; the other two
+  fixed `client_ip` as the report asks but not `remote_ip`) · time on Terra, behind pi (46 min) and Codex CLI (54)
 
 Rounds swing by 1.5–2.5 points on SlopCodeBench, so a gap of a few points reads as a tie. The tables, every
 round, the method and where Aetox loses are in the reports — start at [the reports page](docs/reports/README.md).
@@ -562,7 +604,8 @@ round, the method and where Aetox loses are in the reports — start at [the rep
 | Other reports | What they measure |
 |:---|:---|
 | [Reports page](docs/reports/README.md) | Every report, and the latest edition of each subject |
-| [coding-harness-1.9.27](docs/reports/coding-harness-1.9.27/README.md) | The 1.9.27 edition against the same four harnesses, with what makes Aetox lead on CWEval and a GPT-6 Sol run |
+| [coding-harness-1.10.0](docs/reports/coding-harness-1.10.0/README.md) | The 1.10.0 edition against the same four harnesses, with what changed since 1.9.27 and the language of the answers |
+| [coding-harness-1.9.27](docs/reports/coding-harness-1.9.27/README.md) | The 1.9.27 edition, with what makes Aetox lead on CWEval and a GPT-6 Sol run |
 | [coding-harness-1.9.7](docs/reports/coding-harness-1.9.7/README.md) | The 1.9.7 edition, with two sets of rounds and the swing between them |
 | [HARD-SOL-1.9.7](docs/reports/HARD-SOL-1.9.7-20261004.md) | Hard tasks on GPT-6 Sol: DeepSWE 1.1 and Terminal-Bench 2.1 hard, Aetox against Codex CLI and OpenCode |
 | [HARD5-1.9.7](docs/reports/HARD5-1.9.7-20261004.md) | Five mid-level tasks across releases 1.9.0 → 1.9.7 and three model sizes |
@@ -914,7 +957,15 @@ mistake turns an agent into a chat box.
 
 </details>
 
-## Status — v1.9.28
+## Status — v1.10.0
+
+[Version 1.10.0](docs/release-notes/v1.10.0.md), 18 October 2026, brings:
+
+- **The agent drives Windows programs**: every step comes back with a picture of the window, the agent is told whether the screen changed after each click, models that cannot see get a helper that describes the screen, and a Stop button sits on top of the screen while Aetox is in control.
+- **Answers in the language you asked in**: the engine names the reply language itself and everything the model reads is English; on English coding tasks GPT-6 Luna now answers in English 63 of 63 times, up from 13.
+- **Phone: pick a project and a team, and type while it works**: start a chat in a project or hand it to a team, send a message into a running turn, and Aetox Mobile 0.3.2 explains why it cannot connect in plain words.
+
+### Previously — v1.9.28
 
 [Version 1.9.28](docs/release-notes/v1.9.28.md), 17 October 2026, brings:
 

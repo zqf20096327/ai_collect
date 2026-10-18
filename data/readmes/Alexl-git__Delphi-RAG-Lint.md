@@ -123,16 +123,17 @@ Auto Document leaves it alone. The same submenu holds **Forms for testers
 (CSV)...**, a spreadsheet of every form and how to reach it. See
 [IDE Menu Reference](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/IDE-Menu-Reference).
 
-**From a terminal or an AI agent:** `charts\src\Ask-Report.ps1 -Question <id>
--Target <name> -Project <x.dproj> [-Open]` -- it finds the indexes itself and
-prints the answer as text. A single engine verb, `drag-lint ask`, is planned
-and not shipped yet. The chart scripts live in the repository's `charts\`
-folder (not in the release zip) and need PowerShell 7 and Graphviz.
+**From a terminal or an AI agent:** `drag-lint ask <id> --target <name>
+--project <x.dproj> [--open]` -- it finds the indexes itself and prints the
+answer as text. Every question is answered in-process by the engine; no
+PowerShell is needed (pictures need Graphviz).
 
 drag-lint is not a model: every chart comes from a formal call, and every row in
 it is a fact from the index with a file and a line. Each answer is a bundle --
-`graph.svg` whose rows link back to the source (`draglint://open`, handled by the
-IDE plugin), PNG and PDF exports of the same layout, a browser shell, a
+`graph.svg` whose rows link back to the source (`draglint://open`: a click is received by
+`drag-lint-open.exe`, which hands it to the IDE plugin, once `drag-lint protocol register` has made
+the link clickable -- see
+[Click-to-source links](#click-to-source-links-draglint)), PNG and PDF exports of the same layout, a browser shell, a
 `meta.json` that fingerprints the index and records the command that regenerates
 the chart, and a ready-to-paste DocInsight `<remarks>` reference. Full reference,
 one page per question: **[Diagrams and Charts](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Diagrams-and-Charts)**.
@@ -679,7 +680,30 @@ diagnostics (publishDiagnostics on didSave), workspaceSymbols.
 
 ### MCP server (Claude / Cursor)
 
-Add to your MCP config (e.g. `~/.claude/claude_desktop_config.json`):
+Register it with Claude Code and VS Code in one step:
+
+```
+drag-lint mcp-config --all [--db C:\Projects\MyApp\_D-RAG\MyApp.sqlite] [--dry-run]
+drag-lint mcp-config --claude-code --remove
+```
+
+`--claude-code` edits the top-level `"mcpServers"` object of `~\.claude.json`
+(`%CLAUDE_CONFIG_DIR%\.claude.json` when that is set); `--vscode` edits `"servers"` in
+`%APPDATA%\Code\User\mcp.json`; `--all` does both and skips a client that is not installed.
+The entry is `{"type":"stdio","command":"<engine>","args":["serve"(,"--db","<index>")]}`
+(plus `"env":{}` for Claude Code); `--engine <exe>` overrides the default (this exe), `--name <n>`
+the entry name (default `drag-lint`). The edit is **merged** (only that one entry changes; every
+other key and server is kept, numbers keep their text), **backed up** (`<file>.bak-<stamp>`) and
+**idempotent** (a matching entry is `unchanged` and nothing is written); keys you added to the entry,
+such as `env`, survive an update, and `env` / `headers` values print as `***` (an entry refused as not ours is never printed). An entry by that name that runs
+something other than `drag-lint.exe` is refused, as is a file holding comments or trailing commas
+(the entry to paste by hand is printed instead) or one that is not valid JSON. `--remove` takes only
+our entry out; `--dry-run` writes nothing; `--json` prints one object per target;
+`--config-path <file>` edits another file (with exactly one target), and `--home-dir` /
+`--appdata-dir` move where the default files are looked for (tests). Exit 0 done or unchanged,
+1 refused, 2 usage/setup. This verb replaces `charts\src\Set-DragLintMcpConfig.ps1`.
+
+Or add it to your MCP config by hand (e.g. `~/.claude/claude_desktop_config.json`):
 
 ```json
 {
@@ -693,6 +717,25 @@ Add to your MCP config (e.g. `~/.claude/claude_desktop_config.json`):
 15 tools are then available to Claude: `find_symbol`, `find_callers`,
 `get_symbol_doc`, `get_context_bundle`, `rename_symbol`, `run_compile_check`,
 and more (see [MCP tools](#mcp-tools-15) below).
+
+### Click-to-source links (draglint://)
+
+Chart rows link to `draglint://open?file=...&line=...`. One per-user registry key
+(`HKCU\Software\Classes\draglint`, never HKLM, no elevation) hands such a click to
+`drag-lint-open.exe`, which validates the link and hands it to the IDE plugin, which opens the line in the running IDE:
+
+```
+drag-lint protocol register [--handler <drag-lint-open.exe>] [--dry-run] [--force]
+drag-lint protocol status [--json]          # ours | legacy-powershell | foreign | none; exit 0 only when ours
+drag-lint protocol unregister [--dry-run] [--force]
+```
+
+`register` defaults to the `drag-lint-open.exe` beside `drag-lint.exe` and registers it in
+place. It refuses a handler inside a `*-wt\` worktree and a registration that belongs to
+another program unless `--force` is given; the older PowerShell registration made by
+`charts\src\Register-DragLintProtocol.ps1` is replaced silently, and its copy
+`%LOCALAPPDATA%\drag-lint\Open-DragLintUri.ps1` is deleted. `--dry-run` prints what would
+be written and writes nothing. This verb replaces `Register-DragLintProtocol.ps1`.
 
 ### RAD Studio 13 plugin
 
@@ -723,12 +766,12 @@ and more (see [MCP tools](#mcp-tools-15) below).
 |---|---:|---|
 | [Indexing](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#indexing) | 8 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#indexing) |
 | [Search and navigation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#search-and-navigation) | 31 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#search-and-navigation) |
-| [Linting](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#linting) | 20 (+ 190 rules, 23 fixable) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#linting) |
+| [Linting](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#linting) | 21 (+ 190 rules, 23 fixable) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#linting) |
 | [Documentation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#documentation) | 10 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#documentation) |
 | [Refactoring and code generation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#refactoring-and-code-generation) | 15 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#refactoring-and-code-generation) |
 | [Component conversion](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#component-conversion) | 10 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#component-conversion) |
 | [Graphs and reports](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#graphs-and-reports) | 19 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#graphs-and-reports) |
-| [Diagrams and charts](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#diagrams-and-charts) | 5 (+ 26 questions) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#diagrams-and-charts) |
+| [Diagrams and charts](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#diagrams-and-charts) | 6 (+ 26 questions) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#diagrams-and-charts) |
 | [Compiler integration](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#compiler-integration) | 12 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#compiler-integration) |
 | [Database and Firebird](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#database-and-firebird) | 2 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#database-and-firebird) |
 | [Editor integration](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#editor-integration) | 15 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#editor-integration) |
@@ -866,7 +909,7 @@ enabled by default, 23 with an auto-fix.**
 | Command | What it does | Notable flags |
 |---|---|---|
 | [`rules`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/rules) | List the rule catalog | `--json`, `--category <name>`, `--rules-dir <dir>` (load the external `.scm` pack from another folder; `lint` takes it too) |
-| `lint <path>` | Run built-in + external `.scm` rules on a file/folder (no index needed). Pass `--db <index>` and the store-backed checks join in -- exact type resolution, cross-unit virtual-in-constructor, and the exception-ancestry half of `type-name-prefix`. Without a store those degrade conservatively, which is why an editor buffer linted with no `--db` can show findings `lint-all` does not | `--rule <id>`, `--disable id1,id2`, `--json`, `--db <index.sqlite>`, `--library-db <lib.sqlite>` (override the manifest-resolved library index; the cross-store ancestry hop that lets a project class reach `TCustomForm` is otherwise untestable) |
+| `lint <path>` | Run built-in + external `.scm` rules on a file/folder (no index needed). Pass `--db <index>` and the store-backed checks join in -- exact type resolution, cross-unit virtual-in-constructor, and the expected `type-name-prefix` letter is traced through the project index AND the `--library-db` / manifest library index (`EKeyViolation = class(EDatabaseError)` -> E); an ancestor in neither index is an error-severity index-gap finding. Without a store those degrade conservatively, which is why an editor buffer linted with no `--db` can show findings `lint-all` does not | `--rule <id>`, `--disable id1,id2`, `--json`, `--db <index.sqlite>`, `--library-db <lib.sqlite>` (override the manifest-resolved library index; the cross-store ancestry hop that lets a project class reach `TCustomForm` is otherwise untestable) |
 | `lint <file> --db <db> --project-rules` | Also runs the per-declaration doc rules (`doc-drift`, `missing-doc`) for that one file. **Off by default on purpose:** they rebuild the expected facts block per declaration at ~16 ms each, so a 53-decl unit costs 0.83 s and a real DataCopy unit reached 8.75 s -- past the IDE plugin's hard 8 s timeout, whose failure branch shows *no* diagnostics at all | |
 | `lint <snapshot> --stand-in-for <realpath>` | Analyse `<snapshot>`'s **text** under `<realpath>`'s **identity**. For editors that lint an unsaved buffer by writing it to a temp file: store membership, file id, `unit-name-matches-file` and the reported path all answer for the real file, so a temp path no longer defeats the index | Used by the IDE plugin's live diagnostics |
 | `lint --file <f> --fix [--fix-line <L> --fix-rule <id>] [--fix-naming] [--apply]` | **Autofix one file.** Without `--apply` it is a dry run: reports what it would change, writes no source file (and no index: a stale owning index is reported `index=stale`, not reindexed; `--apply` may reindex it first). `--fix-line`+`--fix-rule` narrow to one finding; omit both to apply every fixable finding. Only rules with `"fixable": true` are ever applied. `--fix-naming` consents, in a batch run, to the opt-in naming fixes (renamed in every owning project) without an `"autofix"` entry, and prints `rename-local: <N>` (stderr) | This is what the Structure form's right-click **Fix it** / **Fix all in unit** run |
@@ -1119,48 +1162,4 @@ documented subset that never reaches them.
 | `global-only-uses-edge` | info | A global variable is the ONLY link from one unit to another -- relocating it (or injecting it, when it is interface-typed) deletes the `uses` edge |
 | `uses-global-census` | info | How many of a used unit's globals and consts this unit actually draws, **against how many that unit declares** -- 7 of 9 is a unit that travels with you, 7 of 206 is one you are dragging in for almost nothing. Acknowledge a travels-together pair with `// dl:unit <unit> accepted` |
 | `duplicate-global-decl` | warning | The same name declared at interface level in two or more units -- const, var, type, record, class, interface, enum or routine -- so which one compiles depends on `uses` order. **Library tier** (2026-09-16): a project global that also exists in a library unit the declaring file USES (interface or implementation `uses`) is reported too -- masking an RTL name is almost always a naming error; 2+ project units AND the library is the stronger 3-declaration message. No autofix on purpose: only you know which one is meant |
-| `with-hides-outer-symbol` | warning | A bare name inside a `with` body binds to the with-target while an outer scope declares the same name -- the compiler never warns |
-| `enum-read-inside-with` | warning | A bare name inside a `with` body names both an enum value and a with-target member -- the compiler binds the member, the index records the enum value. Since resolver 1.8.0-alpha the index binds the member wherever it can type the with-target, so this reports only targets the resolver could not type (a library class, an ambiguous type name) |
-| `stat-gated-destructive` | warning | Destructive act gated on a file-existence check (a failed stat answers False) |
-
-`global-only-uses-edge` and `uses-global-census` are ON by default but each
-costs a full `refs` scan (0.92 s and 1.26 s on a 144 MB index), so both stay
-behind an opt-in gate that now defaults to keeping them -- filtering them out
-after the fact would hide the cost rather than avoid it.
-
-Drop custom `.scm` + `.json` pairs in the `rules/` directory; see
-[rules/README.md](rules/README.md) for the schema.
-
-### RAD Studio plugin
-
-The plugin exposes **66 entry points across four surfaces**: 50 main-menu items,
-2 under `View > Tool Windows`, 13 on the Structure form's **right-click** menu,
-and 1 on the Project Manager's. Auto-fix (*Fix it* / *Fix all in unit* / *Fix all
-in project*) and *Allow this message* live **only** on that right-click menu.
-There are also 12 `Ctrl+Alt` shortcuts (`H` hover, `C` completion, `S` signature,
-`D` diagnostics, `R` rename, `M` extract-method, `I` inline info, `F` find usages,
-`T` symbol search, `U` quick-fix uses, `K` reverse call tree, `B` butterfly).
-
-**`drag-lint` menu** (top-level on the main menu bar -- falls back under Tools -- organized into submenus): Hover at Cursor, Show Completion, 
-Show Signature Help, Run Diagnostics, Rename Symbol, Compile & Diagnose, Import Build Log,
-Format with YADF, Show Structure, Run AST Checks, Find Usages, Symbol Search, dockable 
-panels (Structure / Usages / Graph), **Reports** submenu (every chart question, plus Forms for testers (CSV)...), 
-**Uses & Dependencies** submenu (cycles, uses-audit, uses-fix, reconcile, wiring, impact, reverse call tree,
-**Call Graph (Butterfly)...**), 
-**Reverse Call Tree (clickable, Messages window)** -- posts the N-deep upward
-call tree for the symbol under the cursor as clickable rows in the IDE
-Messages window (double-click a row to jump to that call site), 
-**Call Graph dock tab** -- callers above and callees below the symbol as a
-navigable tree (double-click a node to jump to file:line); open it via
-Ctrl+Alt+B, the Uses & Dependencies menu item above, or right-click a symbol
-in the Structure tab -> "Show in Call Graph", 
-**Inspect Symbol** submenu (surface, slice, type-at-cursor), 
-**Code Quality** submenu (dead code, undocumented, TODOs, compiler hints, top symbols),
-**Generate & Export** submenu (docs, tests, enums, graph, Obsidian),
-**Index & Maintenance** submenu, plus diagnostics & test tools, and
-**drag-lint Options...** (opens Tools > Options focused on the drag-lint
-pages).
-
-**Keystroke bindings** (registered via `IOTAKeyBindingServices`):
-
-| Shortcut | 
+| `with-hides-outer-symbol` | warning | A bare name inside a `with` body binds to the with-target while an outer scope declares the same name -- the compiler never w

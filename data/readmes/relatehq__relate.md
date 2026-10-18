@@ -287,6 +287,7 @@ for a complete example.
 | SQLite, Stripe and Salesforce (read-only) connectors                   | Cloud MCP clients (ChatGPT) for `relate dev`  |
 | MCP discovery and JS execution (stdio / Streamable HTTP)               |                                               |
 | `relate dev` model inspector, `/mcp` and activity log                  |                                               |
+| Activity feed, operation history and object provenance (host APIs)     |                                               |
 
 Relate runs embedded in a Node application and exposes actor-bound graph access
 through two MCP tools: `discover` and `execute`. Both stdio and Streamable HTTP
@@ -298,14 +299,6 @@ and a runnable example.
 After that comes work lineage: a graph of how an agent's work unfolded, linking
 each object it read, each traversal it followed and each action it took, so you
 can see what it looked at and why it did what it did.
-
-## Compact evidence
-
-Reads default to compact evidence, preserving exceptional field states and
-warnings. Pass `evidence: 'full'` for every selected field's provenance and
-freshness. See
-[Read Responses & Evidence](apps/docs/content/reference/read-responses.md) for
-the canonical response and options reference.
 
 ## Feedback
 

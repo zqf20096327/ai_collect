@@ -181,7 +181,7 @@ VS Code's settings panel and `benzi-login` share one config: log in once, and VS
 The full SWE-bench Verified set — 500 real GitHub issues from twelve Python repositories — run end to end on **DeepSeek V4.1-Flash**, one attempt per instance, graded by the official `swebench.harness.run_evaluation` inside its own per-instance Docker images, with network access to GitHub and PyPI blocked inside every container. **412 of 500 resolved (82.4%) for $12.96 in total**, about 3¢ per fix, with 97.6% of input tokens served from cache.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/swebench_cost_comparison.png" width="1000" alt="Benzi, compiler-backed coding agent, scores 82.4% on SWE-bench Verified for $12.96 in total, next to DeepSeek V4-Pro-Max, Gemini 3.1 Pro and GPT-5.6 Sol">
+  <img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/swebench_lines_read.png" width="1000" alt="Benzi, compiler-backed coding agent, reads 43% fewer lines than the bare model on real-world SWE tasks: 371,301 vs 645,752 lines across all 500 SWE-bench Verified issues, same model (mini-swe-agent as the baseline)">
 </p>
 
 Full technical report: [swebench-october/SWE_BENCH_REPORT.md](swebench-october/SWE_BENCH_REPORT.md) ([web version](https://varianttech.net/report)). Every instance's cost, tokens and turns: [varianttech.net/benchmark_swebench](https://varianttech.net/benchmark_swebench). The cross-harness efficiency comparison below (and the full 24-bug chart): [varianttech.net/benchmark](https://varianttech.net/benchmark).

@@ -790,6 +790,12 @@
   <a href="https://changdaeoh.github.io/sharpening-tax/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
   <a href="https://github.com/changdaeoh/sharpening-tax"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
 
+- **MiMo-V2.6: Scaling Reinforcement Learning Towards Self-Improvement** (2026.10) \
+  **Description**: MiMo-V2.6 scales agentic reinforcement learning through asynchronous large-batch training, diverse environments and harnesses, and groupwise agentic grading for more informative rewards on long-horizon tasks. Router freezing, layered defenses against reward hacking, and unified mixed-task rollout infrastructure support stable scaling across coding, general, visual, and cybersecurity tasks. \
+  <a href="https://arxiv.org/abs/2610.11959"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://mimo.xiaomi.com/rl/mimo-v26/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
+  <a href="https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Distill-Qwen-9B"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
+
 - **SafeEvolve: Harness-Policy Co-Evolution from Agent Experience for Safety Alignment** (2026.09) \
   **Description**: SafeEvolve uses safety evidence from on-policy agent trajectories to co-evolve runtime safety prompts, hierarchical skills, and the policy. It combines bounded, auditable harness updates with harness-use SFT and harness-augmented RL using verifier-decomposed rewards, improving the balance between safety and task utility during multi-step interactions. \
   <a href="https://arxiv.org/abs/2609.02786"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -830,10 +836,4 @@
   <a href="https://github.com/MSR-Orchard/OpenForge-RL"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
 
 - **OPID: On-Policy Skill Distillation for Agentic Reinforcement Learning** (2026.06) \
-  **Description**: This paper proposes OPID, which extracts hierarchical episode- and step-level skills from completed on-policy trajectories and converts their effect into token-level self-distillation advantages alongside the outcome advantage. Its critical-first routing supplies dense, distribution-matched hindsight supervision, improving agent performance, sample efficiency, and robustness on embodied, web-shopping, and search-based tasks. \
-  <a href="https://arxiv.org/abs/2606.26790"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://github.com/jinyangwu/OPID"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-
-- **Group-Graph Policy Optimization for Long-Horizon Agentic Reinforcement Learning** (2026.06) \
-  **Description**: This paper proposes Group-Graph Policy Optimization (G2PO), which converts sampled interaction trajectories into a global state-transition graph to reduce variance in state-value estimation for long-horizon agentic reinforcement learning. Its group-aggregation values and edge-centric advantages provide fine-grained credit assignment under sparse, delayed rewards, improving success rates by up to 22.2% over GRPO. \
-  <a href="https://arxiv.org/abs/2606.22995"><img src="assets/icons/arxiv.sv
+  **Description**: This paper proposes OPID, which extracts hierarchical episode- and step-level skills from completed on-policy trajectories and converts their effect into token-level self-distillation advantages alongside the outcome advantage. Its critical-first routing supplies dense, distribution-matched hindsight supervision, improving agent performance, sample efficiency, and robustness on embodied

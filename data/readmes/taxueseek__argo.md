@@ -24,8 +24,8 @@
 <p align="center">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-blue">
   <img alt="python" src="https://img.shields.io/badge/python-3.9+-green">
-  <img alt="version" src="https://img.shields.io/badge/version-2.9.4-informational">
-  <img alt="engines" src="https://img.shields.io/badge/engines-265-orange">
+  <img alt="version" src="https://img.shields.io/badge/version-2.9.6-informational">
+  <img alt="engines" src="https://img.shields.io/badge/engines-266-orange">
   <img alt="mcp" src="https://img.shields.io/badge/MCP-19%20tools-purple">
 </p>
 
@@ -47,176 +47,6 @@
 | 重复查询 | 每次都打网 | 每次都打网 | 靠页面缓存 | **双层缓存（内存 + SQLite），热查询约 10ms** |
 | 成本控制 | 不可控 | 单次贵 | 免费但费事 | **预算模式，免费优先，Key 全可选** |
 | 多语言 | 随模型走 | 随模型走 | 随引擎走 | **语言检测 + 引擎语言参数 + 多国语言支持** |
-
-## 性能 Benchmark
-
-| 指标 | 模型自带搜索 | AI 搜索（总结型） | 聚合搜索 / 搜索引擎 | **Argo** |
-|------|------------|-------------------|---------------------|----------|
-| 热查询延迟 | ~2000ms | ~1500ms | ~800ms | **~10ms** |
-| 结果形态 | 拼好的长文本 | 给人看的总结页 | SERP 链接清单 | **精简 JSON：证据候选 + 可信度分解** |
-| 证据可信度 | 无评分 | 无结构化评分 | 无评分 | **selection · absorption · freshness · 共识** |
-| 缓存 | 无 | 页面缓存 | 页面缓存 | **双层缓存（内存 + SQLite）** |
-| 成本控制 | 不可控 | 单次贵 | 免费但费事 | **预算模式，免费优先，Key 全可选** |
-| 多语言 | 随模型走 | 随模型走 | 随引擎走 | **语言检测 + 引擎语言参数 + 多国语言支持** |
-
-## 架构
-
-### 主流程
-
-```mermaid
-graph LR
-    A[用户查询] --> B[语言检测]
-    B --> C[引擎分诊]
-    C --> D[并行搜索]
-    D --> E[结果聚合]
-    E --> F[可信度评分]
-    F --> G[JSON 输出]
-    
-    H[双层缓存] -.-> D
-    I[预算控制] -.-> C
-```
-
-### 引擎分诊流程
-
-```mermaid
-graph TD
-    A[用户查询] --> B{语言检测}
-    B -->|中文| C[中文引擎组]
-    B -->|英文| D[英文引擎组]
-    B -->|日韩| E[日韩引擎组]
-    B -->|其他| F[通用引擎组]
-    
-    C --> G{领域判断}
-    D --> G
-    E --> G
-    F --> G
-    
-    G -->|学术| H[学术引擎]
-    G -->|代码| I[代码引擎]
-    G -->|购物| J[购物引擎]
-    G -->|金融| K[金融引擎]
-    G -->|新闻| L[新闻引擎]
-    G -->|通用| M[网页引擎]
-    
-    H --> N[并行搜索]
-    I --> N
-    J --> N
-    K --> N
-    L --> N
-    M --> N
-```
-
-### 缓存机制
-
-```mermaid
-graph LR
-    A[查询请求] --> B{内存缓存}
-    B -->|命中| C[直接返回]
-    B -->|未命中| D{SQLite 缓存}
-    D -->|命中| E[返回并更新内存]
-    D -->|未命中| F[执行搜索]
-    F --> G[结果写入 SQLite]
-    G --> H[结果写入内存]
-    H --> I[返回结果]
-```
-
-### 可信度评分流程
-
-```mermaid
-graph TD
-    A[搜索结果] --> B[Selection 评分]
-    A --> C[Absorption 评分]
-    A --> D[Freshness 评分]
-    A --> E[共识评分]
-    
-    B --> F[综合可信度]
-    C --> F
-    D --> F
-    E --> F
-    
-    F --> G{阈值判断}
-    G -->|高于阈值| H[保留]
-    G -->|低于阈值| I[丢弃]
-    
-    H --> J[JSON 输出]
-```
-
-### 预算控制流程
-
-```mermaid
-graph LR
-    A[搜索请求] --> B{预算检查}
-    B -->|预算充足| C[免费引擎优先]
-    B -->|预算紧张| D[仅免费引擎]
-    B -->|预算耗尽| E[返回缓存]
-    
-    C --> F{免费引擎有结果?}
-    D --> F
-    
-    F -->|有| G[返回结果]
-    F -->|无| H{有 Key?}
-    
-    H -->|有| I[付费引擎搜索]
-    H -->|无| J[返回空结果]
-    
-    I --> G
-```
-
-### 整体架构
-
-```mermaid
-graph TB
-    subgraph 用户层
-        A[Agent / 用户]
-    end
-    
-    subgraph 接入层
-        B[CLI]
-        C[MCP Server]
-        D[Python SDK]
-    end
-    
-    subgraph 核心层
-        E[语言检测]
-        F[引擎分诊]
-        G[并行搜索]
-        H[结果聚合]
-        I[可信度评分]
-    end
-    
-    subgraph 数据层
-        J[内存缓存]
-        K[SQLite 缓存]
-        L[265+ 搜索引擎]
-    end
-    
-    subgraph 控制层
-        M[预算控制]
-        N[多语言支持]
-    end
-    
-    A --> B
-    A --> C
-    A --> D
-    
-    B --> E
-    C --> E
-    D --> E
-    
-    E --> F
-    F --> G
-    G --> H
-    H --> I
-    
-    J -.-> G
-    K -.-> G
-    L --> G
-    
-    M -.-> F
-    N -.-> E
-    
-    I --> A
-```
 
 > 机制上，Argo 把搜索当成一条**证据管线**：语言检测 → 领域路由 → 多引擎召回 → RRF 融合 → 证据快评，交付的是 Agent 可直接排序、可 `fetch` 复核、不撑爆上下文的材料。工具链不用换，需要换的是「搜索结果应该长什么样」——再往下一层，还有和「再包一层搜索 API 的差别」，那是实现细节的对比。
 
@@ -325,7 +155,7 @@ freshness  ≈ 发布时间（会忽略「2015 年以来」这类历史对比年
 
 ## 快速开始
 
-任选一种即可。**以 GitHub 为唯一安装来源**（`npx github:taxueseek/argo` 或 `install.sh` / `install.ps1`），当前推荐 **v2.9.4**。**请勿用 `npm install argo-search`**——npm registry 上那份是**非官方陈旧版 v1.0.1**（非本仓库维护，功能残缺、不随本项目更新）。本包 `package.json` 已设 `private: true` 防止误发布到 npm registry。
+任选一种即可。**以 GitHub 为唯一安装来源**（`npx github:taxueseek/argo` 或 `install.sh` / `install.ps1`），当前推荐 **v2.9.6**。**请勿用 `npm install argo-search`**——npm registry 上那份是**非官方陈旧版 v1.0.1**（非本仓库维护，功能残缺、不随本项目更新）。本包 `package.json` 已设 `private: true` 防止误发布到 npm registry。
 
 **零配置就能跑**：不配 API Key 时走免费引擎 + 本地 `local_*` 引擎；配了 Key 的源质量通常更好，没配则自动跳过。
 
@@ -396,7 +226,7 @@ dsh plugin --profile web add "github:taxueseek/argo"
 dsh plugin --profile web add "github:taxueseek/argo#main&path:packages/dsh-plugin"
 ```
 
-重启 `dsh web` 后生效。包结构见 `packages/dsh-plugin/`；同 id `mcp-argo` / `wide-research` 可在用户层 `cordis.patch.yml` 覆盖。装法 B 的 `wide_research` 模块只存在于子包依赖树，主包 patch 不引用它，避免只装主包时 Cordis 解析失败。已在最新版 DSH 0.2.1-alpha.1 实测：三形态接入（原生一等工具 / web_search seam / wide_research）均可正常启用。
+重启 `dsh web` 后生效。包结构见 `packages/dsh-plugin/`；同 id `mcp-argo` / `wide-research` 可在用户层 `cordis.patch.yml` 覆盖。装法 B 的 `wide_research` 模块只存在于子包依赖树，主包 patch 不引用它，避免只装主包时 Cordis 解析失败。DSH 0.2.1-alpha.1 与 0.2.1-rc.2 均已实测：rc.2 上 `wide_research`（2 worker，passed=true / 14 sources）与原生 `argo_search`（count=3）真跑通，`dsh web` 启动无 argo 报错；web seam 随启动注册通过（headless 无 web 服务，未做实际调用）。
 
 ### 依赖清单（通俗版）
 
@@ -404,6 +234,7 @@ dsh plugin --profile web add "github:taxueseek/argo#main&path:packages/dsh-plugi
 |------|:------:|---------|-----------|
 | **PyYAML** | ✅ 必需 | 读配置文件 | 完全跑不起来，安装脚本会自动装 |
 | **curl_cffi** | ❌ 可选（v2.7.3 新增） | 模拟浏览器 TLS 指纹，过反爬站（Cloudflare 等） | 反爬站抓取成功率低一些，日常搜索无影响 |
+| **rapidfuzz** | ❌ 可选（v2.9.5 新增） | 去重的模糊近重复复核：同文换站后缀/镜像站在 minhash 近似命中带内二次判定 | 跨站同文少合几条，去重召回略降；站后缀归一仍生效 |
 | **ddgs CLI** | ❌ 可选 | 本地免 key 搜索的 10 个后端引擎 | 少一批零成本本地搜索源，其余不受影响 |
 | **realtime-index CLI** | ❌ 可选 | 实时索引引擎（搜刚发布的内容） | 该引擎自动禁用，显式指定会回退通用引擎 |
 | **Chrome** | ❌ 可选 | 页面截图、JS 渲染页、登录态抓取 | 截图工具不可用，其余正常 |
@@ -475,7 +306,7 @@ python3 -m pytest tests/test_unit.py -q             # 单测（可选）
 
 **1. 通用搜索 + 垂直搜索，双管齐下**
 
-日常问题走通用网页搜索；一问到行情、影视、体育、宏观这类「有标准答案」的问题，自动切到垂直源直接给答案，而不是扔给你一堆链接。目前 265 个源（229 个免密钥开箱可用）、94 个业务域，金融 / 宏观 / 影视 / 体育 / 地理 / 组织 / 媒体 / 化学 / 学术 / 代码等都有专门的路。
+日常问题走通用网页搜索；一问到行情、影视、体育、宏观这类「有标准答案」的问题，自动切到垂直源直接给答案，而不是扔给你一堆链接。目前 266 个源（229 个免密钥开箱可用）、94 个业务域，金融 / 宏观 / 影视 / 体育 / 地理 / 组织 / 媒体 / 化学 / 学术 / 代码等都有专门的路。
 
 **2. 缓存：不重复花冤枉钱**
 
@@ -512,6 +343,8 @@ python3 -m pytest tests/test_unit.py -q             # 单测（可选）
 | 页面抓取 | HTTP 优先，必要时浏览器降级 | `argo_fetch`（`mode=extract` 可结构化） |
 | 截图 / PDF | 页面截图、PDF 结构化提取 | `argo_screenshot` / `argo_pdf` |
 | 站点爬取 | 列表页批量抓取 | `argo_crawl` |
+| 查询操作符 | `site:`/`-site:`/`-词`/`-"短语"`/`"短语"`/`lang:`/`after:`/`before:` 从路由与检索两侧剥离（用法见 references/usage.md） | 查询词内直接写 |
+| 结果可信信号 | `authority_level` 离散等级（0-4，≥3 极权威）+ `summary` 摘要档（核验后回填） | 结果字段，`--fields agent` 可见 |
 | 社交与舆情 | 微博 / 小红书 / B 站 / Reddit / X 等 | `argo_social_search` |
 | 实时索引搜索 | 免 Key 实时索引源，结果带发布时间，适合「最近几天有什么新东西」。**需自装 `realtime-index` CLI**（未安装时该源停用，见 ENGINE_CATALOG 已停用清单；多数查询走其他源不受影响） | `--engine realtime_index` |
 | 时间窗过滤 | `--since` / `--until`（`7d` 或 `2026-08-01`）限定发布时间范围；支持引擎下推 + 融合后过滤（`time_filtered`），CLI 与 MCP 均支持 | `--since 7d` |
@@ -529,6 +362,8 @@ python3 -m pytest tests/test_unit.py -q             # 单测（可选）
 
 ### 当前大致能力（v2.9.3）
 
+- **DeepSeek Search 接入 + 查询操作符契约 + 传输层去重付费 + 路由快照门（v2.9.6 新增）**：官方 `deepseek_search` 引擎默认启用（无 `DEEPSEEK_API_KEY` 时路由自动跳过，其余 265 源不受影响；延迟 445-510ms，authority 权威分级 / rerank_score / 发布时间三引擎中唯一全覆盖，ja/ko/es 多语言与 anysearch 持平，`--since/--until` 时间窗唯一真生效；按次计费，不进域 combo，显式 `--engine deepseek_search` 为主路径；DSH 宿主经原生凭证 seam 共用同一把 key）；`site:` / `-site:` / `-词` / `lang:` / `after:` / `before:` 收敛为查询操作符契约层（`query_operators.py`，路由与缓存只认剥掉指令的 clean_query，`site:` 从「只解析不执行」到真正后置过滤并并入缓存键）；POST 走连接池复用（anysearch 省 320ms / octen 省 561ms 每次）+ MCP 预连接；octen 进通用兜底与对冲位（p90 3273→1614ms、max 6266→1928ms、错误 9→0，`ARGO_GENERAL_FALLBACK_LEGACY=1` 可退回旧序）；修复 RRF 口径隔离名次衰减（同引擎结果同分退化）与 Bing ck/a 跳转壳（此前 40.2% 空结果）；新增 pre-commit 快门禁（~12s 六道）与路由决策快照门（治 90 天 13 次 fix(route) 慢性病）；DSH 插件适配 0.2.1-rc.2 双栈（`startActivation` 新入口 + tool guard 承接已移除的 `toolFilter`），0.2.1-alpha.1 兼容分支单测覆盖
+- **汇率查询专域 + 去重双轨判定 + 排序误杀修复（v2.9.5 新增）**：`fx_query` 域让汇率/中间价类查询 675ms 出「即期汇率 + 每日快讯」（改前 1411ms 百科词条）；去重补站后缀归一（零依赖）+ rapidfuzz 模糊复核（可选依赖、`ARGO_DEDUP_FUZZY` 可控、缺失自动回退）；修复精排降级时标题分隔符 ×0.6 误杀（官方文档回到前排）；否定理解补「不是X」；daemon 落盘名字按检出目录隔离，多 worktree 互抢/误杀/静默旧代码三类故障根除
 - **显式引擎域归因 + 恢复链止损 + 门禁同步（v2.9.4 新增）**：`--engine X` 显式指定引擎时补 `match_domains` 域判定，修复缓存 TTL 一刀切 general；单引擎无备选时跳过 L1 同引擎空跑；`config.yaml` 域规则增强（`org_entity` 加 unless 股东尽调词、`fund_query` 加 unless 政策法规词）；`mcp_launch.sh` 环境变量导出收窄；local-search 引擎注册表层收口与质量提升；门禁同步（module_size_gate / ENGINE_CATALOG）
 - **X 帖子完整打包 `argo tweet`（v2.9.3 新增）**：一条命令打包指定 X 帖子的正文、串/引用/转发与互动数据；默认纯文本，`--out` 落四件套（post.md/raw.json/manifest.json/CHECKLIST.md），`--media` 才下载图片/视频；主帖失败原因随产物可见
 - **浏览器登录态车道 `argo auth`（v2.9.3 新增）**：`argo auth login/status/logout` 自持站点持久浏览器 profile，扫码一次即可抓取需登录页面；cookie 只存 Chrome 自身加密存储，登录态结果标记 `login_state_used` 并拒绝入公共缓存（`ARGO_AUTH_FETCH` 开启）
@@ -559,7 +394,7 @@ python3 -m pytest tests/test_unit.py -q             # 单测（可选）
 - **求职搜索 v3（v2.8.0 升级）**：`argo job` 结构化字段 + 增量监控 + 指纹去重，新增 Ashby ATS 免 Key 后端与北京高校就业源
 - **天气双源并行（v2.8.0 升级）**：wttr.in + Open-Meteo 双源，地理编码 + 空气质量，问天气不落空
 - **通用搜索增强（v2.8.0 新增）**：Parallel 搜索（长文摘录、多路召回）与 You.com（网页+新闻合并、时效动态化），无 Key 优雅降级
-- **265 个搜索源（229 个免密钥开箱可用）、94 个业务域**：通用网页 + 金融 / 宏观 / 影视 / 体育 / 地理 / 组织 / 媒体 / 化学 / 学术 / 代码等（来源：`config.yaml` 与 `engines/specs/*.yaml`）。**逐源清单（费用 / 密钥 / 状态 / 域组合 / 特别能力）见 [搜索源使用文档](docs/ENGINE_CATALOG.md)**，该文档由脚本从声明生成、有检查防漂移；选源判断与语义分工见 `references/engines.md`
+- **266 个搜索源（229 个免密钥开箱可用）、95 个业务域**：通用网页 + 金融 / 宏观 / 影视 / 体育 / 地理 / 组织 / 媒体 / 化学 / 学术 / 代码等（来源：`config.yaml` 与 `engines/specs/*.yaml`）。**逐源清单（费用 / 密钥 / 状态 / 域组合 / 特别能力）见 [搜索源使用文档](docs/ENGINE_CATALOG.md)**，该文档由脚本从声明生成、有检查防漂移；选源判断与语义分工见 `references/engines.md`
 - **双层缓存**：内存 LRU + SQLite 持久化，时效性弱的内容不重复打 API；登录态结果单独隔离，不污染公共缓存
 - **为 Agent 节省 Token**：MCP 响应可紧凑裁剪、snippet 可控，输出为精简 JSON 而非整页文本
 - **19 个 MCP 工具**（与 CLI 能力面对齐）：搜索、研究、证据、消歧、抓取、截图、PDF、社交舆情、本地文件搜索、站点爬取、本地预览、可复算、公众号文章全文、招聘聚合、结构化提取、URL 批量预检、直答、网页变化监控、DOI 引用条目
@@ -576,7 +411,7 @@ python3 -m pytest tests/test_unit.py -q             # 单测（可选）
 
 ## 引擎与路由
 
-当前配置 **265** 个源（**229** 个免密钥开箱可用）、**94** 个业务域（以 `config.yaml` 与 `--list-engines` 为准）。
+当前配置 **266** 个源（**229** 个免密钥开箱可用）、**95** 个业务域（以 `config.yaml` 与 `--list-engines` 为准）。
 
 ### 直连与垂类（节选）
 
@@ -798,6 +633,31 @@ argo/
 
 ## 最近更新
 
+### v2.9.6：DeepSeek Search 接入 + 查询操作符契约 + 传输层去重付费 + 路由快照门
+
+- 新引擎 `deepseek_search`（官方 `api.deepseek.com/v1/tools/search`）默认启用：无 `DEEPSEEK_API_KEY` 时路由自动跳过、其余 265 源不受影响；实测延迟 445-510ms（anysearch 1.7-4.5s / exa 3.7s），authority 权威分级 / rerank_score / 发布时间为三引擎中唯一全覆盖，ja/ko/es 多语言与 anysearch 持平；按次计费，不进域 combo，显式 `--engine deepseek_search` 为主路径；DSH 宿主经原生凭证 seam 与官方后端共用同一把 key（web Models 页轮换后下一跳生效，不落盘不打日志）
+- 修复 `--since/--until` 对 deepseek_search 静默无效（入 TIME_CAPABLE_ENGINES）
+- 新增 `query_operators.py` 查询操作符契约层：`site:` / `-site:` / `-词` / `-"短语"` / `lang:` / `after:` / `before:` 从五种散落形态收敛为结构化 operators；路由、缓存、查询理解只认剥掉指令后的 clean_query；`site:` / `-site:` 真正后置过滤执行（子域匹配、多站点 OR，过滤数进 `site_filtered`），操作符并入结果缓存键避免互串
+- `evidence.py`：新增 Agent 档双层摘要 `summary` 字段（借鉴 DeepSeek Search 摘要语义）
+- 传输层去重付费：POST 走连接池复用（实测同连接第二次请求省 320ms（anysearch）/ 561ms（octen）），含失效重借与响应体读干才还池；MCP 预连接；配额耗尽与死负缓存收口
+- 路由：octen 进通用兜底链第二位与 TF-IDF 对冲位（anysearch 抖动窗口 p90 3273→1614ms、max 6266→1928ms、错误 9→0；健康窗口中位无差，定位为尾部保险），`ARGO_GENERAL_FALLBACK_LEGACY=1` 逃生开关退回旧序
+- 修复 RRF 口径隔离名次衰减：同引擎所有结果同分（实测 anysearch 5 条均 0.017213），输出退化为按引擎权重整段拼接；新增测试锁「同引擎内分数严格递减」
+- 修复 Bing ck/a 跳转壳不还原导致聚合层整批滤掉结果（近 7 天 40.2% 空结果）：离线 base64url 解码还原真链，零网络
+- 修复 TF-IDF 领队组合拼出 `['anysearch','anysearch']` 并发跑两遍（双倍配额且 wasted_ms 记 0）：200 条真实查询重放，重复 combo 1→0
+- 搜索改进：失败负缓存、Nitter 故障转移、口径隔离、X Article 提取、查询词回声守卫（早停拒收 + 恢复链换引擎）
+- 工程化：新增 `scripts/pre-commit` 快门禁（static_lint / module_size_gate / usage_doc / consistency / routing_snapshot / context_budget + engine_catalog，实测 ~12s）；路由决策快照门把路由翻转变成可 diff 的 golden（三处标注集并集 115 条，只比对 domain 与 kind 不被环境噪声假红）；口径注册表同步测试锁「表里的引擎名必须真实注册」
+- DSH 插件适配 DSH 0.2.1-rc.2：运行时入口双栈（`startActivation({provider, label, request, signal, delivery})` 新 / `start(provider, request)` 旧），rc.2 移除 `toolFilter` 后由插件内 tool guard 阻止 worker 嵌套调用 `wide_research`；rc.2 上 `wide_research`（planner → 2 worker → synthesis，passed=true / 14 sources）与原生 `argo_search`（count=3）端到端实测通过；0.2.1-alpha.1 兼容分支由单测覆盖；插件单测 46→50
+- DSH 环境版本：**DSH 0.2.1-rc.2（当前运行中，端到端实测）+ DSH 0.2.1-alpha.1（兼容，start 旧分支单测覆盖）**；对照表见 `packages/dsh-plugin/README.md` 的 Compatibility 小节
+
+### v2.9.5：汇率查询专域 + 去重双轨 + 排序误杀修复 + daemon 多检出隔离
+
+- `config.yaml`：新增 `fx_query` 域——「人民币/美元 汇率、中间价、离岸」类查询不再落进宏观域空转后兜底百科词条，改为即期汇率 + 每日中间价快讯（实测 675ms，改前 1411ms 且答非所问）
+- `search_rank.py`：去重补两层判据——标题站后缀归一（零依赖）+ rapidfuzz 模糊近重复复核（仅近似命中带内启用；`ARGO_DEDUP_FUZZY=0` 关闭，未安装则自动回退纯 minhash）
+- 修复：精排降级时的标题分隔符误杀——含 `|` / `_` / `——` 的标题一律 ×0.6，官方文档被压 40%；无 Bocha Key 的用户每条 auto/deep 查询都在受益（判据收敛到 rank_signals 单一实现）
+- `query_understanding.py`：否定理解补「不是X」（疑问句式「是不是」不误判为否定）
+- `daemon.py`：socket/pid/指针等落盘名字按检出目录隔离——多 worktree/clone 互抢 daemon、互杀进程、「改了不生效」三类故障根除
+- 新增可选依赖 rapidfuzz（`pip install rapidfuzz`；install.sh 自动安装，缺失不影响核心功能）
+
 ### v2.9.4：显式引擎域归因 + 恢复链止损 + 门禁同步
 
 - `route.py`：显式 `--engine X` 时补 `match_domains` 域判定，修复缓存 TTL 一刀切 general
@@ -885,6 +745,8 @@ argo/
 
 | 版本 | 说明 |
 |------|------|
+| **v2.9.6** | **DeepSeek Search 接入 + 查询操作符契约 + 传输层去重付费 + 路由快照门**：新引擎 `deepseek_search` 默认启用（无 key 自动跳过；445-510ms，authority/rerank_score/发布时间唯一全覆盖，时间窗真生效；DSH 经原生凭证 seam 共用 key）；`site:`/`-site:`/`-词`/`lang:`/`after:`/`before:` 收敛为操作符契约层并真正后置过滤 + 入缓存键；POST 连接池复用（省 320-561ms/次）+ MCP 预连接；octen 进兜底与对冲位（p90 3273→1614ms，`ARGO_GENERAL_FALLBACK_LEGACY=1` 逃生）；修复 RRF 名次衰减与 Bing 跳转壳（40.2% 空结果）；新增 pre-commit 快门禁与路由决策快照门；DSH 插件适配 0.2.1-rc.2 双栈 + alpha.1 兼容单测。 |
+| **v2.9.5** | **汇率查询专域 + 去重双轨 + 排序误杀修复 + daemon 多检出隔离**：新增 `fx_query` 域（汇率/中间价 675ms 出即期+快讯，改前百科词条）；去重补站后缀归一（零依赖）+ rapidfuzz 模糊复核（可选、`ARGO_DEDUP_FUZZY` 可控、缺失回退）；修复标题分隔符 ×0.6 误杀（官方文档回前排）；否定补「不是X」；daemon 落盘名字按检出目录隔离。 |
 | **v2.9.4** | **显式引擎域归因 + 恢复链止损 + 门禁同步**：`--engine X` 补 `match_domains` 域判定修复缓存 TTL 一刀切；单引擎无备选跳过 L1 空跑；`config.yaml` 域规则增强（org_entity/fund_query unless 词）；`mcp_launch.sh` 环境变量导出收窄；local-search 引擎注册表层收口与质量提升；门禁同步。 |
 | **v2.9.3** | **X 帖子完整打包 + 浏览器登录态车道 + 本地链质速双修**：新增 `argo tweet`（正文/串/引用/转发/媒体按需打包，`--out` 四件套）；新增 `argo auth` 浏览器登录态车道（站点持久 profile，cookie 只存 Chrome 加密存储，登录态结果不入公共缓存）；本地中文链搜狗/百度跳转壳无会话解析（保留 1→5 条）+ 共识宽限自适应（英文分发 ~3.0s→2.2-2.5s）；js-run 接入 fetch 链第一级（Chrome 指纹重试）；火车票中转+经停（漏斗 10→1 修为如实 10→10）；`--academic-deep` 一键学术深挖；43 引擎领域接线 + 3 零 key 金融源 + 意图门误锁修复；本地图片指纹 158ms→3.9ms；agent 消费瘦身（MCP 固定开销 −32%）。 |
 | **v2.9.2** | **DSH 0.2.1-alpha.1 适配验证 + 路由/守卫一批修复 + js-run 子技能**：DSH 插件三形态在最新版 DSH 0.2.1-alpha.1 实测启用；`argo mcp inject` 补 WorkBuddy 覆盖到第 7 宿主；TF-IDF 弱证据辅源化、死源地板 + 熔断槽位回填、配额耗尽引擎路由隔离、serp_guard 连坐误杀修复；engines/evidence 惰性导入（import −50%）与准入存在集合短路（open 261→99）；MCP 入口与数值参数守卫收口；新增 js-run 子技能（无浏览器跑网页 JS，P50 ≈1ms）。 |
