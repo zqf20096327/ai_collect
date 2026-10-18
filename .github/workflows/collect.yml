@@ -66,7 +66,10 @@ jobs:
       # README 放最后,Core 触保底线睡到下一小时窗再续,不被挤成 0 完成。
       # 富集 100 分钟 = 6h 窗扣除池阶段(~195min)与 README 后的余量,
       # 首轮 ~17 万调用按 ~7k/晚铺,约 25 晚;稳态 ~30 分钟收工
+      # ENRICH_SKIP=true 时整步跳过(本地富集窗期间暂停远端,防两边重复烧;
+      # 本地窗收工后把变量改回 false 或删掉即恢复,无需改代码)
       - name: s7 富集(分层增量:未到期零调用,到期才采)
+        if: vars.ENRICH_SKIP != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
