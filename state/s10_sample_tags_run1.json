@@ -1,0 +1,2591 @@
+{
+ "meta": {
+  "vocab_ver": "1.0",
+  "model": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "sample": 80,
+  "seed": 7,
+  "wall_s": 69.9,
+  "ts": "2026-10-19 20:52:28"
+ },
+ "items": {
+  "CorentinJ/Real-Time-Voice-Cloning": {
+   "nominated": [
+    "tts",
+    "model-training"
+   ],
+   "tags": [
+    "tts"
+   ],
+   "decisions": [
+    {
+     "slug": "tts",
+     "include": true,
+     "reason": "核心功能是从文本与克隆音色合成语音，含语音克隆，属语音合成。"
+    }
+   ],
+   "secs": 2.1,
+   "tries": 1,
+   "ok": true
+  },
+  "Developer-Y/cs-video-courses": {
+   "nominated": [
+    "cybersecurity",
+    "tutorials",
+    "image-video-processing",
+    "reinforcement-learning"
+   ],
+   "tags": [
+    "tutorials",
+    "curated-list"
+   ],
+   "decisions": [
+    {
+     "slug": "tutorials",
+     "include": true,
+     "reason": "仓库收录带视频讲授的计算机科学课程链接，属于教学课程资源。"
+    },
+    {
+     "slug": "curated-list",
+     "include": true,
+     "reason": "仓库本质是按学科分类的课程链接聚合清单，由程序提名外补充词表内标签。"
+    },
+    {
+     "slug": "cybersecurity",
+     "include": false,
+     "reason": "topics 与简介中无网络安全场景内容，仅为关键词误命中。"
+    },
+    {
+     "slug": "image-video-processing",
+     "include": false,
+     "reason": "仓库不涉及图像视频处理，computer-vision 只是收录课程方向之一。"
+    },
+    {
+     "slug": "reinforcement-learning",
+     "include": false,
+     "reason": "RL 只是收录课程的一个学科方向，仓库本身非强化学习工具或框架。"
+    }
+   ],
+   "secs": 3.6,
+   "tries": 1,
+   "ok": true
+  },
+  "Dokploy/dokploy": {
+   "nominated": [
+    "multi-agent"
+   ],
+   "tags": [],
+   "decisions": [
+    {
+     "slug": "multi-agent",
+     "include": false,
+     "reason": "仓库是自托管 PaaS 部署平台，topics 中的 agents 与多智能体协作框架无关"
+    }
+   ],
+   "secs": 5.1,
+   "tries": 1,
+   "ok": false
+  },
+  "Ebony-Vinyl/dsh-our-free-model": {
+   "nominated": [
+    "model-gateway",
+    "inference-engine"
+   ],
+   "tags": [
+    "model-gateway"
+   ],
+   "decisions": [
+    {
+     "slug": "model-gateway",
+     "include": true,
+     "reason": "本地网关统一接入多提供商模型并提供 OpenAI/Anthropic 兼容端点与降级路由，属模型网关场景。"
+    },
+    {
+     "slug": "inference-engine",
+     "include": false,
+     "reason": "仓库转发请求到上游免费渠道，不提供模型推理运行时。"
+    }
+   ],
+   "secs": 4.9,
+   "tries": 1,
+   "ok": true
+  },
+  "GLips/Figma-Context-MCP": {
+   "nominated": [
+    "workflow-automation"
+   ],
+   "tags": [
+    "code-generation"
+   ],
+   "decisions": [
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "该仓库是向编码工具供给设计元数据的 MCP 服务器，不是多步骤任务编排引擎"
+    },
+    {
+     "slug": "code-generation",
+     "include": true,
+     "reason": "核心用途是让 AI 编码工具依据 Figma 设计稿生成界面代码"
+    }
+   ],
+   "secs": 19.2,
+   "tries": 2,
+   "ok": true
+  },
+  "GaiZhenbiao/ChuanhuChatGPT": {
+   "nominated": [
+    "chatbot",
+    "fine-tuning",
+    "inference-engine"
+   ],
+   "tags": [
+    "chatbot",
+    "document-qa"
+   ],
+   "decisions": [
+    {
+     "slug": "chatbot",
+     "include": true,
+     "reason": "面向最终用户的多模型 Web 对话界面，核心场景是聊天问答。"
+    },
+    {
+     "slug": "fine-tuning",
+     "include": false,
+     "reason": "仅内置 GPT-3.5 微调的附属功能，不是仓库主要场景，不确定宁可不选。"
+    },
+    {
+     "slug": "inference-engine",
+     "include": false,
+     "reason": "仓库是聊天前端界面，通过 API 或本地模型对话，不提供推理运行时服务。"
+    },
+    {
+     "slug": "document-qa",
+     "include": true,
+     "reason": "提供基于用户文件问答的知识库功能，属终端用户文档问答场景。"
+    }
+   ],
+   "secs": 2.9,
+   "tries": 1,
+   "ok": true
+  },
+  "GaneshShivalingappa/Parametric-NN-Models": {
+   "nominated": [
+    "research-tools"
+   ],
+   "tags": [
+    "research-tools"
+   ],
+   "decisions": [
+    {
+     "slug": "research-tools",
+     "include": true,
+     "reason": "科研代码项目，用于复现论文中 PINN/FEM-NN 材料参数反演的对比实验，属科研工作流辅助。"
+    }
+   ],
+   "secs": 5.7,
+   "tries": 2,
+   "ok": true
+  },
+  "GitHubDaily/GitHubDaily": {
+   "nominated": [],
+   "tags": [
+    "curated-list"
+   ],
+   "decisions": [
+    {
+     "slug": "curated-list",
+     "include": true,
+     "reason": "仓库本质是 awesome 式开源项目聚合清单，按年份与领域分类整理"
+    },
+    {
+     "slug": "tutorials",
+     "include": false,
+     "reason": "仓库为项目链接与简述的聚合，无教学内容或课程结构"
+    }
+   ],
+   "secs": 2.0,
+   "tries": 1,
+   "ok": true
+  },
+  "GokuMohandas/Made-With-ML": {
+   "nominated": [
+    "workflow-automation",
+    "knowledge-base",
+    "tutorials",
+    "mlops",
+    "model-training"
+   ],
+   "tags": [
+    "tutorials",
+    "mlops"
+   ],
+   "decisions": [
+    {
+     "slug": "tutorials",
+     "include": true,
+     "reason": "仓库本质是配套站点的课程教学内容，覆盖从实验到生产的完整学习路径。"
+    },
+    {
+     "slug": "mlops",
+     "include": true,
+     "reason": "课程内容为实验跟踪（MLflow）、测试、部署、模型服务等 ML 全流程工程化实践。"
+    },
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "演示的是 CI/CD 流水线，属 DevOps，不是多步骤任务编排引擎。"
+    },
+    {
+     "slug": "knowledge-base",
+     "include": false,
+     "reason": "无笔记或知识管理功能。"
+    },
+    {
+     "slug": "model-training",
+     "include": false,
+     "reason": "含分布式训练实践，但仓库是教学课程而非训练基础设施框架。"
+    }
+   ],
+   "secs": 4.6,
+   "tries": 1,
+   "ok": true
+  },
+  "HKUDS/Vibe-Trading": {
+   "nominated": [
+    "multi-agent",
+    "workflow-automation",
+    "quant-finance",
+    "model-quantization"
+   ],
+   "tags": [
+    "quant-finance",
+    "data-analysis"
+   ],
+   "decisions": [
+    {
+     "slug": "quant-finance",
+     "include": true,
+     "reason": "仓库核心是量化交易：回测、实盘、因子研究与券商接入，直接命中量化金融场景。"
+    },
+    {
+     "slug": "multi-agent",
+     "include": false,
+     "reason": "topics 含 multi-agent，但多体协作并非核心卖点，主体是单一交易 Agent 产品。"
+    },
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "回测调度与定时报告是交易功能组成部分，不是通用工作流编排引擎。"
+    },
+    {
+     "slug": "model-quantization",
+     "include": false,
+     "reason": "仅关键词误命中（quantitative），仓库无模型量化内容。"
+    },
+    {
+     "slug": "data-analysis",
+     "include": true,
+     "reason": "以自然语言做因子计算、组合分析与回测指标分析，属对话式数据分析。"
+    }
+   ],
+   "secs": 4.1,
+   "tries": 1,
+   "ok": true
+  },
+  "HumanSignal/label-studio": {
+   "nominated": [
+    "image-video-processing",
+    "object-detection",
+    "mlops",
+    "model-training"
+   ],
+   "tags": [
+    "mlops"
+   ],
+   "decisions": [
+    {
+     "slug": "image-video-processing",
+     "include": false,
+     "reason": "仓库是数据标注工具，不对图像视频做编辑增强等处理"
+    },
+    {
+     "slug": "object-detection",
+     "include": false,
+     "reason": "标注边界框是为检测模型准备数据，仓库本身不执行检测"
+    },
+    {
+     "slug": "mlops",
+     "include": true,
+     "reason": "标注是 ML 全流程数据准备环节，支持接入训练流水线与主动学习"
+    },
+    {
+     "slug": "model-training",
+     "include": false,
+     "reason": "仓库不做模型训练，仅产出可导出的训练数据"
+    }
+   ],
+   "secs": 4.6,
+   "tries": 1,
+   "ok": true
+  },
+  "KKKKhazix/khazix-skills": {
+   "nominated": [
+    "coding-agent"
+   ],
+   "tags": [
+    "ai-writing",
+    "research-tools"
+   ],
+   "decisions": [
+    {
+     "slug": "coding-agent",
+     "include": false,
+     "reason": "仓库是给 Agent 加载的技能指令集合，不是自主编码智能体本身"
+    },
+    {
+     "slug": "ai-writing",
+     "include": true,
+     "reason": "khazix-writer 技能用于按公众号风格生成长文，属文字内容生成"
+    },
+    {
+     "slug": "research-tools",
+     "include": true,
+     "reason": "hv-analysis 技能生成横纵向研究报告，属科研/投研辅助工作流"
+    }
+   ],
+   "secs": 3.7,
+   "tries": 1,
+   "ok": true
+  },
+  "Lightning-AI/pytorch-lightning": {
+   "nominated": [
+    "fine-tuning",
+    "model-training"
+   ],
+   "tags": [
+    "model-training"
+   ],
+   "decisions": [
+    {
+     "slug": "model-training",
+     "include": true,
+     "reason": "提供分布式多节点预训练/大规模训练的基础设施与训练循环抽象，属于训练框架"
+    },
+    {
+     "slug": "fine-tuning",
+     "include": false,
+     "reason": "微调仅为该通用训练框架的子用途之一，核心是通用训练工程化而非微调工具链"
+    },
+    {
+     "slug": "mlops",
+     "include": false,
+     "reason": "提供检查点、早停、实验管理特性，但定位是训练框架而非全流程 ML 工程化平台"
+    }
+   ],
+   "secs": 13.9,
+   "tries": 3,
+   "ok": true
+  },
+  "MagicCube/helixent": {
+   "nominated": [],
+   "tags": [
+    "agent-framework",
+    "coding-agent"
+   ],
+   "decisions": [
+    {
+     "slug": "agent-framework",
+     "include": true,
+     "reason": "提供 ReAct 式 agent 循环、Model/Message/Tool 抽象与中间件系统的开发库。"
+    },
+    {
+     "slug": "coding-agent",
+     "include": true,
+     "reason": "内置 bash、文件读写、补丁等工具并可自主多步执行编码任务的 CLI agent。"
+    }
+   ],
+   "secs": 2.8,
+   "tries": 1,
+   "ok": true
+  },
+  "MiniMax-AI/skills": {
+   "nominated": [
+    "coding-agent",
+    "tts",
+    "multimodal"
+   ],
+   "tags": [
+    "prompt-engineering"
+   ],
+   "decisions": [
+    {
+     "slug": "coding-agent",
+     "include": false,
+     "reason": "仓库是给编码 agent 用的技能包，本身不是编码智能体"
+    },
+    {
+     "slug": "tts",
+     "include": false,
+     "reason": "TTS 只是其中一个技能通过外部 API 调用的能力，非仓库核心场景"
+    },
+    {
+     "slug": "multimodal",
+     "include": false,
+     "reason": "多模态生成为部分技能经 MiniMax API 附带的能力，仓库主体是编码开发技能包"
+    },
+    {
+     "slug": "prompt-engineering",
+     "include": true,
+     "reason": "技能包本质是供编程 agent 复用的指令/提示资源集合"
+    }
+   ],
+   "secs": 15.5,
+   "tries": 3,
+   "ok": true
+  },
+  "NVIDIA/Megatron-LM": {
+   "nominated": [
+    "model-evaluation",
+    "model-training"
+   ],
+   "tags": [
+    "model-training"
+   ],
+   "decisions": [
+    {
+     "slug": "model-evaluation",
+     "include": false,
+     "reason": "仓库仅提供训练基准测试结果，评测不是其核心用途"
+    },
+    {
+     "slug": "model-training",
+     "include": true,
+     "reason": "核心是大规模 transformer 模型预训练与分布式训练基础设施"
+    }
+   ],
+   "secs": 2.2,
+   "tries": 1,
+   "ok": true
+  },
+  "NVlabs/instant-ngp": {
+   "nominated": [
+    "image-video-processing"
+   ],
+   "tags": [],
+   "decisions": [
+    {
+     "slug": "image-video-processing",
+     "include": false,
+     "reason": "仓库核心是 NeRF/SDF 等神经图形基元的训练与 3D 渲染，不属于通用图像/视频编辑、增强、超分、修复场景"
+    },
+    {
+     "slug": "model-training",
+     "include": false,
+     "reason": "这是具体研究方法（哈希编码 MLP）的参考实现，不是从头预训练或大规模训练模型的基础设施与框架"
+    }
+   ],
+   "secs": 3.7,
+   "tries": 1,
+   "ok": false
+  },
+  "Portkey-AI/gateway": {
+   "nominated": [
+    "agent-framework",
+    "model-gateway",
+    "llm-observability",
+    "multimodal"
+   ],
+   "tags": [
+    "model-gateway"
+   ],
+   "decisions": [
+    {
+     "slug": "model-gateway",
+     "include": true,
+     "reason": "仓库核心即统一接入与路由 1600+ 模型的网关，直接命中词表定义"
+    },
+    {
+     "slug": "llm-observability",
+     "include": false,
+     "reason": "用量分析仅是网关附属功能，核心卖点不是追踪监控调试，且部分可观测能力仅在 hosted 版提供"
+    },
+    {
+     "slug": "agent-framework",
+     "include": false,
+     "reason": "仓库不含 Agent 构建循环或编排能力，仅为模型路由网关"
+    },
+    {
+     "slug": "multimodal",
+     "include": false,
+     "reason": "路由的模型覆盖多模态，但仓库本身不是跨模态理解/生成的模型或应用"
+    }
+   ],
+   "secs": 3.5,
+   "tries": 1,
+   "ok": true
+  },
+  "QwenLM/Qwen3-TTS": {
+   "nominated": [
+    "tts",
+    "fine-tuning",
+    "inference-engine"
+   ],
+   "tags": [
+    "tts"
+   ],
+   "decisions": [
+    {
+     "slug": "tts",
+     "include": true,
+     "reason": "仓库核心是文本转语音模型，含语音克隆与流式合成"
+    },
+    {
+     "slug": "fine-tuning",
+     "include": false,
+     "reason": "仅提及 Base 模型可微调，微调工具链非仓库主要场景"
+    },
+    {
+     "slug": "inference-engine",
+     "include": false,
+     "reason": "vLLM 加载仅为使用方式，仓库本身不提供推理引擎"
+    }
+   ],
+   "secs": 2.2,
+   "tries": 1,
+   "ok": true
+  },
+  "Shubhamsaboo/awesome-llm-apps": {
+   "nominated": [
+    "multi-agent",
+    "coding-agent",
+    "rag"
+   ],
+   "tags": [
+    "multi-agent",
+    "rag",
+    "curated-list"
+   ],
+   "decisions": [
+    {
+     "slug": "multi-agent",
+     "include": true,
+     "reason": "仓库含多个多 agent 团队协作模板类别，多体协作是核心内容之一。"
+    },
+    {
+     "slug": "coding-agent",
+     "include": false,
+     "reason": "仓库是模板合集，仅为编码 agent 提供可安装技能，本身不是自动编写调试代码的智能体产品。"
+    },
+    {
+     "slug": "rag",
+     "include": true,
+     "reason": "包含本地 RAG 等 RAG 应用模板，用户用它搭建检索增强生成应用。"
+    },
+    {
+     "slug": "curated-list",
+     "include": true,
+     "reason": "awesome 式收录 100+ 模板的聚合清单，属补充标签。"
+    }
+   ],
+   "secs": 15.5,
+   "tries": 3,
+   "ok": true
+  },
+  "Tencent/ncnn": {
+   "nominated": [
+    "ocr",
+    "inference-engine",
+    "model-quantization"
+   ],
+   "tags": [
+    "inference-engine"
+   ],
+   "decisions": [
+    {
+     "slug": "inference-engine",
+     "include": true,
+     "reason": "仓库本身是神经网络推理运行时框架，CPU/Vulkan 后端执行模型推理"
+    },
+    {
+     "slug": "ocr",
+     "include": false,
+     "reason": "OCR 只是所支持的下游模型类型之一，仓库不做 OCR 本身"
+    },
+    {
+     "slug": "model-quantization",
+     "include": false,
+     "reason": "int8 量化是推理框架内置功能而非独立的量化工具仓库"
+    }
+   ],
+   "secs": 4.3,
+   "tries": 1,
+   "ok": true
+  },
+  "Twigpine/openclaude": {
+   "nominated": [
+    "workflow-automation",
+    "coding-agent",
+    "inference-engine"
+   ],
+   "tags": [
+    "coding-agent",
+    "model-gateway"
+   ],
+   "decisions": [
+    {
+     "slug": "coding-agent",
+     "include": true,
+     "reason": "仓库核心是自主执行多步编码工作的终端 agent CLI。"
+    },
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "无多步骤任务/服务编排引擎，统一终端工作流指 CLI 使用方式而非工作流自动化平台。"
+    },
+    {
+     "slug": "inference-engine",
+     "include": false,
+     "reason": "CLI 调用外部后端，自身不提供模型推理运行时。"
+    },
+    {
+     "slug": "model-gateway",
+     "include": true,
+     "reason": "通过统一 CLI 接入 OpenAI 兼容 API、Gemini、Ollama 等多家后端并做路由配置。"
+    }
+   ],
+   "secs": 3.4,
+   "tries": 1,
+   "ok": true
+  },
+  "Zackriya-Solutions/meetily": {
+   "nominated": [
+    "knowledge-base",
+    "asr",
+    "inference-engine"
+   ],
+   "tags": [
+    "asr",
+    "ai-writing"
+   ],
+   "decisions": [
+    {
+     "slug": "knowledge-base",
+     "include": false,
+     "reason": "产品是会议转录与摘要，不涉及笔记知识库管理。"
+    },
+    {
+     "slug": "asr",
+     "include": true,
+     "reason": "核心功能是用 Whisper/Parakeet 对会议音频做本地实时转录。"
+    },
+    {
+     "slug": "inference-engine",
+     "include": false,
+     "reason": "仓库调用外部模型服务（Ollama 等）而非提供推理运行时。"
+    },
+    {
+     "slug": "ai-writing",
+     "include": true,
+     "reason": "基于转录文本生成会议纪要与摘要的文本生成功能。"
+    }
+   ],
+   "secs": 3.8,
+   "tries": 1,
+   "ok": true
+  },
+  "alibaba/page-agent": {
+   "nominated": [
+    "browser-automation",
+    "gui-automation",
+    "multimodal"
+   ],
+   "tags": [
+    "browser-automation",
+    "ai-assistant"
+   ],
+   "decisions": [
+    {
+     "slug": "browser-automation",
+     "include": true,
+     "reason": "通过 DOM 操作驱动网页执行任务并提供 MCP Server 控制浏览器，属于浏览器自动化。"
+    },
+    {
+     "slug": "gui-automation",
+     "include": false,
+     "reason": "操作对象是网页 DOM 而非桌面/移动图形界面，按词表归入 browser-automation。"
+    },
+    {
+     "slug": "multimodal",
+     "include": false,
+     "reason": "仓库明确不使用截图或多模态模型，仅基于文本 DOM。"
+    },
+    {
+     "slug": "ai-assistant",
+     "include": true,
+     "reason": "核心用途是在 SaaS/ERP/CRM 中嵌入面向最终用户的 AI copilot 完成通用任务。"
+    }
+   ],
+   "secs": 3.1,
+   "tries": 1,
+   "ok": true
+  },
+  "alibaba/zvec": {
+   "nominated": [
+    "rag",
+    "semantic-search",
+    "vector-database"
+   ],
+   "tags": [
+    "vector-database"
+   ],
+   "decisions": [
+    {
+     "slug": "vector-database",
+     "include": true,
+     "reason": "仓库本质是嵌入式向量数据库，存储与检索向量并含索引引擎"
+    },
+    {
+     "slug": "semantic-search",
+     "include": false,
+     "reason": "语义检索能力内置于向量数据库产品，按词表不算单独标签"
+    },
+    {
+     "slug": "rag",
+     "include": false,
+     "reason": "仅作为下游使用场景提及，仓库本身不含 RAG 管线或框架"
+    }
+   ],
+   "secs": 3.2,
+   "tries": 1,
+   "ok": true
+  },
+  "anthropics/claude-code": {
+   "nominated": [
+    "workflow-automation",
+    "model-training"
+   ],
+   "tags": [
+    "coding-agent"
+   ],
+   "decisions": [
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "该仓库是编码智能体而非多步骤服务编排的工作流引擎"
+    },
+    {
+     "slug": "model-training",
+     "include": false,
+     "reason": "仓库不涉及模型训练基础设施"
+    },
+    {
+     "slug": "coding-agent",
+     "include": true,
+     "reason": "以自然语言自主执行多步编码、修改代码与处理 git 工作流的智能体"
+    },
+    {
+     "slug": "ai-assistant",
+     "include": false,
+     "reason": "场景限定于编码，不是通用任务助手"
+    }
+   ],
+   "secs": 2.8,
+   "tries": 1,
+   "ok": true
+  },
+  "atomicarchitects/nequix": {
+   "nominated": [
+    "fine-tuning",
+    "model-training"
+   ],
+   "tags": [
+    "fine-tuning",
+    "model-training"
+   ],
+   "decisions": [
+    {
+     "slug": "fine-tuning",
+     "include": true,
+     "reason": "仓库提供声子微调（PFT）方法与流程，属于在自有数据上微调模型的场景。"
+    },
+    {
+     "slug": "model-training",
+     "include": true,
+     "reason": "提供 nequix_train 训练流程与论文训练复现，属从头训练/大规模训练场景。"
+    }
+   ],
+   "secs": 3.0,
+   "tries": 1,
+   "ok": true
+  },
+  "binary-husky/gpt_academic": {
+   "nominated": [],
+   "tags": [
+    "document-qa",
+    "ai-writing",
+    "research-tools"
+   ],
+   "decisions": [
+    {
+     "slug": "document-qa",
+     "include": true,
+     "reason": "核心功能是对PDF/LaTeX/arxiv论文做翻译、总结与解读问答，面向用户提供文档问答能力。"
+    },
+    {
+     "slug": "ai-writing",
+     "include": true,
+     "reason": "提供论文润色、语法校对与写作优化功能。"
+    },
+    {
+     "slug": "research-tools",
+     "include": true,
+     "reason": "面向科研人员的论文阅读、arxiv翻译等学术工作流辅助。"
+    },
+    {
+     "slug": "chatbot",
+     "include": false,
+     "reason": "虽为LLM交互界面，但限定学术论文场景而非通用聊天。"
+    },
+    {
+     "slug": "code-generation",
+     "include": false,
+     "reason": "代码项目剖析与注释生成是辅助理解，非以生成代码为主要任务。"
+    }
+   ],
+   "secs": 3.4,
+   "tries": 1,
+   "ok": true
+  },
+  "botpress/botpress": {
+   "nominated": [
+    "agent-framework",
+    "chatbot"
+   ],
+   "tags": [
+    "agent-framework",
+    "chatbot"
+   ],
+   "decisions": [
+    {
+     "slug": "agent-framework",
+     "include": true,
+     "reason": "提供 SDK、CLI 与工具调用循环的聊天机器人/Agent 构建开发平台，面向开发者。"
+    },
+    {
+     "slug": "chatbot",
+     "include": true,
+     "reason": "仓库核心用途是搭建面向最终用户的业务聊天助手，topics 也含 chatbot。"
+    }
+   ],
+   "secs": 3.8,
+   "tries": 1,
+   "ok": true
+  },
+  "browser-use/browser-harness": {
+   "nominated": [
+    "browser-automation",
+    "workflow-automation",
+    "coding-agent"
+   ],
+   "tags": [
+    "browser-automation"
+   ],
+   "decisions": [
+    {
+     "slug": "browser-automation",
+     "include": true,
+     "reason": "仓库核心是驱动真实 Chrome 执行打开页面、点击、输入、下载等浏览器操作。"
+    },
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "无多步骤任务或服务的编排引擎，仅是浏览器操作能力。"
+    },
+    {
+     "slug": "coding-agent",
+     "include": false,
+     "reason": "它是供编码 Agent 使用的浏览器驱动工具，本身不是自主编码智能体。"
+    },
+    {
+     "slug": "web-scraping",
+     "include": false,
+     "reason": "用途含抓取下载网页内容，但通过浏览器驱动完成，且非纯抓取工具。"
+    }
+   ],
+   "secs": 3.3,
+   "tries": 1,
+   "ok": true
+  },
+  "cft0808/edict": {
+   "nominated": [
+    "multi-agent",
+    "workflow-automation"
+   ],
+   "tags": [
+    "multi-agent",
+    "workflow-automation"
+   ],
+   "decisions": [
+    {
+     "slug": "multi-agent",
+     "include": true,
+     "reason": "12 个 Agent 分工协作（规划、审议、执行）是多 Agent 编排的核心功能"
+    },
+    {
+     "slug": "workflow-automation",
+     "include": true,
+     "reason": "以三省六部流程编排多步骤任务、配套看板与状态机管理，属任务编排自动化平台"
+    },
+    {
+     "slug": "agent-framework",
+     "include": false,
+     "reason": "面向终端用户的多 Agent 产品而非供开发者构建 Agent 的通用框架"
+    }
+   ],
+   "secs": 3.2,
+   "tries": 1,
+   "ok": true
+  },
+  "chatchat-space/Langchain-Chatchat": {
+   "nominated": [
+    "agent-framework",
+    "chatbot",
+    "image-generation",
+    "document-qa",
+    "rag",
+    "vector-database",
+    "multimodal",
+    "fine-tuning",
+    "inference-engine"
+   ],
+   "tags": [
+    "rag",
+    "document-qa",
+    "chatbot",
+    "agent-framework"
+   ],
+   "decisions": [
+    {
+     "slug": "agent-framework",
+     "include": true,
+     "reason": "项目提供 Agent 与工具调用能力，面向开发者构建应用。"
+    },
+    {
+     "slug": "chatbot",
+     "include": true,
+     "reason": "提供面向最终用户的 WebUI/API 对话界面，知识库对话是其主形态。"
+    },
+    {
+     "slug": "image-generation",
+     "include": false,
+     "reason": "文生图仅是附带功能之一，不是仓库主要场景。"
+    },
+    {
+     "slug": "document-qa",
+     "include": true,
+     "reason": "知识库对话、文件对话是核心功能，面向用户提供文档问答产品。"
+    },
+    {
+     "slug": "rag",
+     "include": true,
+     "reason": "定位为本地知识库 RAG 应用，含检索（BM25+KNN）+生成的完整管线。"
+    },
+    {
+     "slug": "vector-database",
+     "include": false,
+     "reason": "faiss/milvus 是外接依赖，仓库本身不是向量数据库。"
+    },
+    {
+     "slug": "multimodal",
+     "include": false,
+     "reason": "仅有多模态图片对话附带功能，非跨模态通用模型或应用。"
+    },
+    {
+     "slug": "fine-tuning",
+     "include": false,
+     "reason": "综述明确不涉及模型微调与训练。"
+    },
+    {
+     "slug": "inference-engine",
+     "include": false,
+     "reason": "通过 Xinference/Ollama 等接入模型，自身不提供推理引擎。"
+    }
+   ],
+   "secs": 4.7,
+   "tries": 1,
+   "ok": true
+  },
+  "cmusatyalab/openface": {
+   "nominated": [
+    "image-generation",
+    "face-recognition",
+    "model-training"
+   ],
+   "tags": [
+    "face-recognition"
+   ],
+   "decisions": [
+    {
+     "slug": "image-generation",
+     "include": false,
+     "reason": "仓库是人脸识别而非图像生成"
+    },
+    {
+     "slug": "face-recognition",
+     "include": true,
+     "reason": "核心功能是人脸表示生成、对比与识别"
+    },
+    {
+     "slug": "model-training",
+     "include": false,
+     "reason": "仅附带模型训练脚本，非预训练基础设施，属于次要功能"
+    }
+   ],
+   "secs": 2.5,
+   "tries": 1,
+   "ok": true
+  },
+  "deepspeedai/DeepSpeed": {
+   "nominated": [
+    "model-training"
+   ],
+   "tags": [
+    "model-training",
+    "inference-engine"
+   ],
+   "decisions": [
+    {
+     "slug": "model-training",
+     "include": true,
+     "reason": "用于从头/大规模分布式训练千亿至万亿参数大模型的基础设施库。"
+    },
+    {
+     "slug": "inference-engine",
+     "include": true,
+     "reason": "提供大模型推理与显存/通信优化的运行时能力，属推理引擎场景。"
+    }
+   ],
+   "secs": 2.1,
+   "tries": 1,
+   "ok": true
+  },
+  "dipakkr/awesome-ai-engineering": {
+   "nominated": [
+    "prompt-engineering",
+    "rag",
+    "curated-list",
+    "cybersecurity",
+    "research-tools",
+    "tutorials",
+    "fine-tuning"
+   ],
+   "tags": [
+    "curated-list"
+   ],
+   "decisions": [
+    {
+     "slug": "curated-list",
+     "include": true,
+     "reason": "仓库是 awesome 式外部资源链接聚合清单。"
+    },
+    {
+     "slug": "tutorials",
+     "include": false,
+     "reason": "本体不包含教学内容，仅链接聚合到外部课程。"
+    },
+    {
+     "slug": "prompt-engineering",
+     "include": false,
+     "reason": "仅 topics 提及，仓库不含提示工程工具或资源为主的内容。"
+    },
+    {
+     "slug": "rag",
+     "include": false,
+     "reason": "仅关键词命中，无 RAG 相关实际内容。"
+    },
+    {
+     "slug": "cybersecurity",
+     "include": false,
+     "reason": "仅延伸方向中提到网络安全学习入口，非安全场景应用。"
+    },
+    {
+     "slug": "research-tools",
+     "include": false,
+     "reason": "只列论文检索入口链接，非科研工作流工具。"
+    },
+    {
+     "slug": "fine-tuning",
+     "include": false,
+     "reason": "仅 topics 出现，无微调工具链内容。"
+    }
+   ],
+   "secs": 4.6,
+   "tries": 1,
+   "ok": true
+  },
+  "e2b-dev/awesome-ai-sdks": {
+   "nominated": [
+    "agent-framework",
+    "llm-observability",
+    "curated-list"
+   ],
+   "tags": [
+    "curated-list"
+   ],
+   "decisions": [
+    {
+     "slug": "curated-list",
+     "include": true,
+     "reason": "仓库是 awesome 式的 SDK/工具策展清单，属资源聚合场景。"
+    },
+    {
+     "slug": "agent-framework",
+     "include": false,
+     "reason": "仓库本身是清单而非构建 Agent 的开发框架。"
+    },
+    {
+     "slug": "llm-observability",
+     "include": false,
+     "reason": "仅清单中提及可观测性工具条目，仓库自身不提供追踪监控功能。"
+    }
+   ],
+   "secs": 2.3,
+   "tries": 1,
+   "ok": true
+  },
+  "eeshsaxena/mamba-ssm-implementation": {
+   "nominated": [],
+   "tags": [
+    "tutorials",
+    "model-training"
+   ],
+   "decisions": [
+    {
+     "slug": "tutorials",
+     "include": true,
+     "reason": "仓库以教育为目的复现 Mamba 架构并附带讲解、示例与基准，属学习资源。"
+    },
+    {
+     "slug": "model-training",
+     "include": true,
+     "reason": "提供完整语言模型实现、训练示例与训练/推理两种扫描策略，涉及模型训练流程。"
+    },
+    {
+     "slug": "fine-tuning",
+     "include": false,
+     "reason": "无 LoRA/QLoRA 等微调工具链内容。"
+    },
+    {
+     "slug": "inference-engine",
+     "include": false,
+     "reason": "推理仅为串行扫描演示，非运行时或服务化引擎。"
+    }
+   ],
+   "secs": 5.7,
+   "tries": 1,
+   "ok": true
+  },
+  "explosion/spaCy": {
+   "nominated": [
+    "workflow-automation",
+    "model-training"
+   ],
+   "tags": [],
+   "decisions": [
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "spaCy 是 NLP 处理库，非工作流编排引擎"
+    },
+    {
+     "slug": "model-training",
+     "include": false,
+     "reason": "spaCy 提供的是 NLP 组件训练配置，非从头预训练或大规模训练基础设施"
+    }
+   ],
+   "secs": 3.0,
+   "tries": 1,
+   "ok": false
+  },
+  "fathah/hermes-desktop": {
+   "nominated": [
+    "chatbot",
+    "image-generation",
+    "tts",
+    "inference-engine"
+   ],
+   "tags": [
+    "chatbot",
+    "ai-assistant"
+   ],
+   "decisions": [
+    {
+     "slug": "chatbot",
+     "include": true,
+     "reason": "该桌面应用提供面向最终用户的对话式聊天界面与会话管理"
+    },
+    {
+     "slug": "image-generation",
+     "include": false,
+     "reason": "图像生成是底层 Hermes Agent 的工具集能力，非本仓库应用场景"
+    },
+    {
+     "slug": "tts",
+     "include": false,
+     "reason": "TTS 仅为所管理 agent 的工具集之一，非本仓库核心场景"
+    },
+    {
+     "slug": "inference-engine",
+     "include": false,
+     "reason": "仓库仅连接本地/远程端点，不提供推理运行时"
+    },
+    {
+     "slug": "ai-assistant",
+     "include": true,
+     "reason": "它是为个人用户提供通用任务助手（Hermes Agent）的安装配置与使用界面"
+    }
+   ],
+   "secs": 4.0,
+   "tries": 1,
+   "ok": true
+  },
+  "ggml-org/whisper.cpp": {
+   "nominated": [
+    "voice-agent",
+    "asr",
+    "model-quantization"
+   ],
+   "tags": [
+    "asr",
+    "inference-engine"
+   ],
+   "decisions": [
+    {
+     "slug": "voice-agent",
+     "include": false,
+     "reason": "仓库仅做语音识别转写，不涉及实时语音对话代理。"
+    },
+    {
+     "slug": "asr",
+     "include": true,
+     "reason": "Whisper 语音识别的本地推理实现，核心场景就是语音转文字。"
+    },
+    {
+     "slug": "model-quantization",
+     "include": false,
+     "reason": "量化只是降低内存占用的实现手段，仓库核心是推理而非量化工具。"
+    },
+    {
+     "slug": "inference-engine",
+     "include": true,
+     "reason": "提供多后端、跨平台的模型推理运行时，属于推理引擎场景。"
+    }
+   ],
+   "secs": 3.9,
+   "tries": 1,
+   "ok": true
+  },
+  "googleworkspace/cli": {
+   "nominated": [
+    "workflow-automation"
+   ],
+   "tags": [
+    "workflow-automation"
+   ],
+   "decisions": [
+    {
+     "slug": "workflow-automation",
+     "include": true,
+     "reason": "仓库附带 50 个 Gmail/Drive/Docs/Calendar/Sheets 多步骤工作流配方，可在无头/CI 环境执行 Workspace 自动化脚本，属于脚本式任务自动化场景。"
+    },
+    {
+     "slug": "browser-automation",
+     "include": false,
+     "reason": "仓库通过 Google API 而非驱动浏览器完成任务，未涉及浏览器操作。"
+    },
+    {
+     "slug": "web-scraping",
+     "include": false,
+     "reason": "读取 Discovery Service 是生成命令面而非抓取网页内容。"
+    },
+    {
+     "slug": "agent-framework",
+     "include": false,
+     "reason": "仓库提供调用 Workspace API 的 CLI 与技能文件，不是构建 Agent 的编排框架。"
+    }
+   ],
+   "secs": 5.0,
+   "tries": 1,
+   "ok": true
+  },
+  "gradio-app/gradio": {
+   "nominated": [
+    "data-analysis",
+    "chatbot"
+   ],
+   "tags": [],
+   "decisions": [
+    {
+     "slug": "data-analysis",
+     "include": false,
+     "reason": "仓库是通用 ML 演示 UI 构建库，数据分析并非其场景用途"
+    },
+    {
+     "slug": "chatbot",
+     "include": false,
+     "reason": "仅提供 Chatbot UI 组件供开发者搭建，非面向最终用户的聊天产品"
+    }
+   ],
+   "secs": 2.3,
+   "tries": 1,
+   "ok": false
+  },
+  "huggingface/datasets": {
+   "nominated": [
+    "vector-database",
+    "research-tools",
+    "image-video-processing",
+    "model-training"
+   ],
+   "tags": [
+    "mlops"
+   ],
+   "decisions": [
+    {
+     "slug": "vector-database",
+     "include": false,
+     "reason": "FAISS/Elasticsearch 相似性检索只是内置封装功能，核心是数据集加载与预处理"
+    },
+    {
+     "slug": "research-tools",
+     "include": false,
+     "reason": "面向 ML 开发者的通用数据加载库，非文献综述/论文检索等科研工作流工具"
+    },
+    {
+     "slug": "image-video-processing",
+     "include": false,
+     "reason": "仅能加载图像/视频数据集，不提供处理能力"
+    },
+    {
+     "slug": "model-training",
+     "include": false,
+     "reason": "不含训练基础设施或框架，只做训练数据的供给"
+    },
+    {
+     "slug": "mlops",
+     "include": true,
+     "reason": "数据加载、预处理与缓存 pipeline 属于 ML 全流程工程化的数据环节"
+    }
+   ],
+   "secs": 4.9,
+   "tries": 1,
+   "ok": true
+  },
+  "huggingface/peft": {
+   "nominated": [
+    "image-generation",
+    "fine-tuning",
+    "model-quantization",
+    "reinforcement-learning"
+   ],
+   "tags": [
+    "fine-tuning"
+   ],
+   "decisions": [
+    {
+     "slug": "fine-tuning",
+     "include": true,
+     "reason": "仓库核心是 LoRA 等参数高效微调工具链，直接命中微调场景。"
+    },
+    {
+     "slug": "image-generation",
+     "include": false,
+     "reason": "仅提供 Stable Diffusion LoRA 训练脚本作为微调用途，非文生图应用本身。"
+    },
+    {
+     "slug": "model-quantization",
+     "include": false,
+     "reason": "仅支持与 QLoRA 量化组合使用，量化非本库功能。"
+    },
+    {
+     "slug": "reinforcement-learning",
+     "include": false,
+     "reason": "仅可与 TRL 的 RLHF/DPO 组合，本库自身不提供 RL 训练框架。"
+    }
+   ],
+   "secs": 3.2,
+   "tries": 1,
+   "ok": true
+  },
+  "huggingface/trl": {
+   "nominated": [
+    "fine-tuning",
+    "model-quantization",
+    "model-training",
+    "reinforcement-learning"
+   ],
+   "tags": [
+    "fine-tuning",
+    "reinforcement-learning"
+   ],
+   "decisions": [
+    {
+     "slug": "fine-tuning",
+     "include": true,
+     "reason": "核心场景是 SFT/DPO/KTO 等后训练微调，含 LoRA/QLoRA。"
+    },
+    {
+     "slug": "reinforcement-learning",
+     "include": true,
+     "reason": "提供 GRPO、DPO、Reward trainer 等 RL+LLM 偏好对齐训练方法。"
+    },
+    {
+     "slug": "model-training",
+     "include": false,
+     "reason": "库面向已有基础模型的后训练，非从头预训练基础设施。"
+    },
+    {
+     "slug": "model-quantization",
+     "include": false,
+     "reason": "量化仅通过与 PEFT 集成间接支持，非库自身核心场景。"
+    }
+   ],
+   "secs": 6.7,
+   "tries": 2,
+   "ok": true
+  },
+  "jumpserver/jumpserver": {
+   "nominated": [
+    "ai-assistant"
+   ],
+   "tags": [
+    "cybersecurity"
+   ],
+   "decisions": [
+    {
+     "slug": "ai-assistant",
+     "include": false,
+     "reason": "仓库核心是特权访问管理堡垒机，AI 助手仅为内置辅助功能，非面向个人通用任务的助手产品"
+    },
+    {
+     "slug": "cybersecurity",
+     "include": true,
+     "reason": "堡垒机/PAM 属特权访问管控与审计的安全场景"
+    }
+   ],
+   "secs": 6.6,
+   "tries": 2,
+   "ok": true
+  },
+  "k4yt3x/video2x": {
+   "nominated": [
+    "image-video-processing"
+   ],
+   "tags": [
+    "image-video-processing"
+   ],
+   "decisions": [
+    {
+     "slug": "image-video-processing",
+     "include": true,
+     "reason": "仓库核心功能为视频超分辨率放大与帧插值，属非生成为主的视频增强处理"
+    }
+   ],
+   "secs": 3.2,
+   "tries": 1,
+   "ok": true
+  },
+  "leon-ai/leon": {
+   "nominated": [
+    "gui-automation",
+    "workflow-automation",
+    "ai-assistant",
+    "chatbot",
+    "voice-agent",
+    "tts",
+    "asr"
+   ],
+   "tags": [
+    "ai-assistant",
+    "gui-automation"
+   ],
+   "decisions": [
+    {
+     "slug": "ai-assistant",
+     "include": true,
+     "reason": "面向个人的通用任务 AI 助手产品，涵盖工具、记忆与 agent 执行等多种场景。"
+    },
+    {
+     "slug": "gui-automation",
+     "include": true,
+     "reason": "含 computer use 能力，可操作桌面与浏览器图形界面执行任务。"
+    },
+    {
+     "slug": "chatbot",
+     "include": false,
+     "reason": "对话仅是助手交互形式，核心是通用任务助手而非聊天产品。"
+    },
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "技能执行由助手与 agent 驱动，不是独立的工作流编排引擎。"
+    },
+    {
+     "slug": "voice-agent",
+     "include": false,
+     "reason": "语音非核心，仓库描述以文本工具与 agent 执行为主。"
+    },
+    {
+     "slug": "tts",
+     "include": false,
+     "reason": "无证据表明语音合成是主要场景。"
+    },
+    {
+     "slug": "asr",
+     "include": false,
+     "reason": "speech-recognition 仅出现在 topics，非仓库核心场景。"
+    }
+   ],
+   "secs": 5.3,
+   "tries": 1,
+   "ok": true
+  },
+  "letta-ai/letta": {
+   "nominated": [
+    "agent-framework",
+    "agent-memory"
+   ],
+   "tags": [
+    "agent-framework",
+    "agent-memory"
+   ],
+   "decisions": [
+    {
+     "slug": "agent-framework",
+     "include": true,
+     "reason": "提供 agent harness、SDK 与运行时的有状态 agent 开发平台，属于构建 Agent 的开发框架。"
+    },
+    {
+     "slug": "agent-memory",
+     "include": true,
+     "reason": "核心卖点是 agent 跨会话持久记忆与自我改进，记忆是核心能力而非附属功能。"
+    }
+   ],
+   "secs": 3.4,
+   "tries": 1,
+   "ok": true
+  },
+  "linshenkx/prompt-optimizer": {
+   "nominated": [
+    "prompt-engineering",
+    "image-generation"
+   ],
+   "tags": [
+    "prompt-engineering"
+   ],
+   "decisions": [
+    {
+     "slug": "prompt-engineering",
+     "include": true,
+     "reason": "核心功能即提示词的编写、优化、测试与评估管理，属提示词工具"
+    },
+    {
+     "slug": "image-generation",
+     "include": false,
+     "reason": "仅优化文生图的提示词，不生成或编辑图像本身"
+    }
+   ],
+   "secs": 1.8,
+   "tries": 1,
+   "ok": true
+  },
+  "liyupi/ai-guide": {
+   "nominated": [
+    "agent-framework",
+    "coding-agent",
+    "rag",
+    "tutorials"
+   ],
+   "tags": [
+    "tutorials",
+    "curated-list"
+   ],
+   "decisions": [
+    {
+     "slug": "agent-framework",
+     "include": false,
+     "reason": "仓库是教程与导航站点，不含 Agent 开发框架代码"
+    },
+    {
+     "slug": "coding-agent",
+     "include": false,
+     "reason": "教程介绍编码工具用法，本身不是编码智能体"
+    },
+    {
+     "slug": "rag",
+     "include": false,
+     "reason": "无 RAG 管线或框架实现"
+    },
+    {
+     "slug": "tutorials",
+     "include": true,
+     "reason": "核心内容是零基础 Vibe Coding 教程与配套视频课程"
+    }
+   ],
+   "secs": 3.0,
+   "tries": 1,
+   "ok": true
+  },
+  "lukasmasuch/best-of-ml-python": {
+   "nominated": [
+    "data-analysis"
+   ],
+   "tags": [
+    "curated-list"
+   ],
+   "decisions": [
+    {
+     "slug": "data-analysis",
+     "include": false,
+     "reason": "仓库是 ML Python 库的排名目录，不提供数据查询分析功能"
+    },
+    {
+     "slug": "curated-list",
+     "include": true,
+     "reason": "awesome 式项目聚合清单，收录 920 个项目按指标排序，每周自动更新"
+    }
+   ],
+   "secs": 3.9,
+   "tries": 1,
+   "ok": true
+  },
+  "microsoft/ML-For-Beginners": {
+   "nominated": [
+    "tutorials",
+    "reinforcement-learning"
+   ],
+   "tags": [
+    "tutorials"
+   ],
+   "decisions": [
+    {
+     "slug": "tutorials",
+     "include": true,
+     "reason": "12周26课的初学者机器学习课程，属教程课程类教学资源"
+    },
+    {
+     "slug": "reinforcement-learning",
+     "include": false,
+     "reason": "仅课程中包含一节RL主题课，仓库本身不是RL训练框架或工具"
+    }
+   ],
+   "secs": 1.9,
+   "tries": 1,
+   "ok": true
+  },
+  "microsoft/VibeVoice": {
+   "nominated": [
+    "image-generation",
+    "tts",
+    "asr",
+    "model-quantization"
+   ],
+   "tags": [
+    "asr",
+    "tts"
+   ],
+   "decisions": [
+    {
+     "slug": "image-generation",
+     "include": false,
+     "reason": "仓库与图像无关"
+    },
+    {
+     "slug": "tts",
+     "include": true,
+     "reason": "包含长音频与多说话人语音生成、实时流式 TTS 模型线"
+    },
+    {
+     "slug": "asr",
+     "include": true,
+     "reason": "长音频语音识别，输出说话人分离、时间戳与文本"
+    },
+    {
+     "slug": "model-quantization",
+     "include": false,
+     "reason": "量化只是 ASR-BitNet 的压缩附带特性，非仓库场景"
+    }
+   ],
+   "secs": 3.1,
+   "tries": 1,
+   "ok": true
+  },
+  "microsoft/qlib": {
+   "nominated": [
+    "workflow-automation",
+    "quant-finance",
+    "model-quantization",
+    "model-training",
+    "reinforcement-learning"
+   ],
+   "tags": [
+    "quant-finance"
+   ],
+   "decisions": [
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "量化研究流水线非通用低代码/脚本工作流引擎"
+    },
+    {
+     "slug": "quant-finance",
+     "include": true,
+     "reason": "仓库覆盖量化研究、回测、组合优化与交易执行的完整量化链条"
+    },
+    {
+     "slug": "model-quantization",
+     "include": false,
+     "reason": "关键词 qlib/quant 指量化投资，与模型压缩量化无关"
+    },
+    {
+     "slug": "model-training",
+     "include": false,
+     "reason": "训练的是量化投研模型而非通用预训练基础设施，场景归属量化研究"
+    },
+    {
+     "slug": "reinforcement-learning",
+     "include": false,
+     "reason": "强化学习仅是支持的建模范式之一，非仓库核心场景标签"
+    }
+   ],
+   "secs": 6.3,
+   "tries": 1,
+   "ok": true
+  },
+  "nltk/nltk": {
+   "nominated": [
+    "research-tools",
+    "tutorials"
+   ],
+   "tags": [],
+   "decisions": [
+    {
+     "slug": "research-tools",
+     "include": false,
+     "reason": "NLTK 是通用 NLP 工具库，不是文献综述、论文检索等科研工作流工具"
+    },
+    {
+     "slug": "tutorials",
+     "include": false,
+     "reason": "教程与书籍是配套资源，仓库核心是 NLP 代码库而非教学资源库"
+    }
+   ],
+   "secs": 4.0,
+   "tries": 1,
+   "ok": false
+  },
+  "nndl/nndl": {
+   "nominated": [
+    "tutorials",
+    "multimodal"
+   ],
+   "tags": [
+    "tutorials"
+   ],
+   "decisions": [
+    {
+     "slug": "tutorials",
+     "include": true,
+     "reason": "仓库为深度学习教材电子书与勘误入口，属教学资源"
+    },
+    {
+     "slug": "curated-list",
+     "include": false,
+     "reason": "仓库是教材资料入口而非 awesome 式资源聚合清单"
+    }
+   ],
+   "secs": 3.2,
+   "tries": 1,
+   "ok": true
+  },
+  "openai/codex": {
+   "nominated": [],
+   "tags": [
+    "coding-agent"
+   ],
+   "decisions": [
+    {
+     "slug": "coding-agent",
+     "include": true,
+     "reason": "仓库核心是自主执行多步编码工作的编程 Agent。"
+    },
+    {
+     "slug": "agent-framework",
+     "include": false,
+     "reason": "这是面向终端用户的编码产品，不是构建 Agent 的开发框架。"
+    },
+    {
+     "slug": "ai-assistant",
+     "include": false,
+     "reason": "产品限定于编码单一场景，不属通用助手。"
+    }
+   ],
+   "secs": 3.9,
+   "tries": 1,
+   "ok": true
+  },
+  "openai/openai-agents-python": {
+   "nominated": [
+    "multi-agent",
+    "workflow-automation",
+    "voice-agent",
+    "llm-observability"
+   ],
+   "tags": [
+    "multi-agent",
+    "agent-framework"
+   ],
+   "decisions": [
+    {
+     "slug": "multi-agent",
+     "include": true,
+     "reason": "核心是多 Agent 协作、handoffs 与编排，多体协作是框架核心卖点"
+    },
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "是 Agent 编排框架而非通用低代码工作流引擎"
+    },
+    {
+     "slug": "voice-agent",
+     "include": false,
+     "reason": "提供构建实时语音 Agent 的框架能力，非面向终端用户的语音对话产品"
+    },
+    {
+     "slug": "llm-observability",
+     "include": false,
+     "reason": "内置 tracing 是辅助功能，非独立的追踪监控工具"
+    },
+    {
+     "slug": "agent-framework",
+     "include": true,
+     "reason": "本质是构建 Agent 的开发框架，提供工具调用循环、护栏、会话等原语"
+    }
+   ],
+   "secs": 4.0,
+   "tries": 1,
+   "ok": true
+  },
+  "optuna/optuna": {
+   "nominated": [],
+   "tags": [
+    "mlops"
+   ],
+   "decisions": [
+    {
+     "slug": "mlops",
+     "include": true,
+     "reason": "超参数自动优化、实验跟踪与分布式训练搜索属于机器学习全流程工程化范畴"
+    },
+    {
+     "slug": "model-training",
+     "include": false,
+     "reason": "它优化超参数而非从头预训练模型的基础设施"
+    },
+    {
+     "slug": "fine-tuning",
+     "include": false,
+     "reason": "工具面向超参数搜索，不做模型微调流程"
+    },
+    {
+     "slug": "data-analysis",
+     "include": false,
+     "reason": "不涉及用 AI 做数据查询或分析可视化"
+    }
+   ],
+   "secs": 3.2,
+   "tries": 1,
+   "ok": true
+  },
+  "pathwaycom/serviette": {
+   "nominated": [
+    "document-qa",
+    "rag",
+    "semantic-search",
+    "vector-database"
+   ],
+   "tags": [
+    "document-qa",
+    "rag"
+   ],
+   "decisions": [
+    {
+     "slug": "document-qa",
+     "include": true,
+     "reason": "面向终端用户的文档问答产品，提供聊天界面与带来源引用的答案"
+    },
+    {
+     "slug": "rag",
+     "include": true,
+     "reason": "本质是外挂知识检索+LLM生成的实时 RAG 服务器管线"
+    },
+    {
+     "slug": "semantic-search",
+     "include": false,
+     "reason": "仓库通过多种向量数据库实现检索，但语义搜索能力内置于 RAG 管线而非独立产品"
+    },
+    {
+     "slug": "vector-database",
+     "include": false,
+     "reason": "仓库消费向量数据库作为后端，本身不是向量数据库或索引引擎"
+    }
+   ],
+   "secs": 24.8,
+   "tries": 4,
+   "ok": true
+  },
+  "piskvorky/gensim": {
+   "nominated": [
+    "tutorials"
+   ],
+   "tags": [
+    "semantic-search"
+   ],
+   "decisions": [
+    {
+     "slug": "tutorials",
+     "include": false,
+     "reason": "仓库主体是主题建模与相似度检索的库，教程仅是附带文档，非教学资源库"
+    },
+    {
+     "slug": "semantic-search",
+     "include": true,
+     "reason": "提供基于词向量/主题向量的文档相似度检索能力，属语义匹配搜索"
+    }
+   ],
+   "secs": 4.1,
+   "tries": 1,
+   "ok": true
+  },
+  "pydantic/pydantic-ai": {
+   "nominated": [
+    "agent-framework",
+    "multi-agent",
+    "workflow-automation",
+    "voice-agent",
+    "llm-observability",
+    "model-evaluation",
+    "image-generation",
+    "inference-engine"
+   ],
+   "tags": [
+    "agent-framework",
+    "multi-agent"
+   ],
+   "decisions": [
+    {
+     "slug": "agent-framework",
+     "include": true,
+     "reason": "核心定位即构建 Agent 的类型安全 SDK，带工具调用循环与执行引擎。"
+    },
+    {
+     "slug": "multi-agent",
+     "include": true,
+     "reason": "Harness 提供子 agent、规划能力，且用途中明确支持多 agent 工作流。"
+    },
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "持久化执行引擎是 Agent 运行时能力，不是通用工作流编排引擎。"
+    },
+    {
+     "slug": "voice-agent",
+     "include": false,
+     "reason": "实时语音仅是可选前端通道之一，非产品核心场景。"
+    },
+    {
+     "slug": "llm-observability",
+     "include": false,
+     "reason": "OpenTelemetry 集成为框架附带特性，非独立可观测性产品。"
+    },
+    {
+     "slug": "model-evaluation",
+     "include": false,
+     "reason": "Evals 评估是 SDK 配套功能，非主要定位。"
+    },
+    {
+     "slug": "image-generation",
+     "include": false,
+     "reason": "仅通过同栈 API 暴露图像生成，非本仓库场景。"
+    },
+    {
+     "slug": "inference-engine",
+     "include": false,
+     "reason": "仓库通过统一 API 调用各家模型，不提供推理运行时。"
+    }
+   ],
+   "secs": 5.2,
+   "tries": 1,
+   "ok": true
+  },
+  "rasbt/LLMs-from-scratch": {
+   "nominated": [
+    "knowledge-base",
+    "research-tools",
+    "tutorials",
+    "fine-tuning",
+    "model-training",
+    "reinforcement-learning"
+   ],
+   "tags": [
+    "tutorials",
+    "model-training",
+    "fine-tuning"
+   ],
+   "decisions": [
+    {
+     "slug": "tutorials",
+     "include": true,
+     "reason": "书籍配套代码、视频课程与测验，属于教学资源。"
+    },
+    {
+     "slug": "model-training",
+     "include": true,
+     "reason": "仓库包含从零预训练类 GPT 模型的完整实现。"
+    },
+    {
+     "slug": "fine-tuning",
+     "include": true,
+     "reason": "包含指令微调与加载 Llama/Qwen/Gemma 权重微调的代码。"
+    },
+    {
+     "slug": "research-tools",
+     "include": false,
+     "reason": "内容是 LLM 实现教学而非服务科研工作流的工具。"
+    },
+    {
+     "slug": "knowledge-base",
+     "include": false,
+     "reason": "与笔记或知识管理产品无关。"
+    },
+    {
+     "slug": "reinforcement-learning",
+     "include": false,
+     "reason": "DPO/GRPO 仅作为附录扩展材料，非仓库核心场景。"
+    }
+   ],
+   "secs": 3.8,
+   "tries": 1,
+   "ok": true
+  },
+  "richig8-web/lyn0-academy": {
+   "nominated": [],
+   "tags": [
+    "agent-memory",
+    "prompt-engineering"
+   ],
+   "decisions": [
+    {
+     "slug": "agent-memory",
+     "include": true,
+     "reason": "通过 SOUL/USER 模板让 agent 在新会话中持久持有身份与主人信息，属于 agent 记忆场景"
+    },
+    {
+     "slug": "prompt-engineering",
+     "include": true,
+     "reason": "提供模板化提示词资源并注入每轮系统提示，属提示词管理与复用"
+    },
+    {
+     "slug": "ai-assistant",
+     "include": false,
+     "reason": "仓库是任务包/模板配置，不是助手应用本身"
+    },
+    {
+     "slug": "agent-framework",
+     "include": false,
+     "reason": "不提供构建 agent 的框架或编排能力，仅依赖 Hermes Agent"
+    }
+   ],
+   "secs": 5.5,
+   "tries": 1,
+   "ok": true
+  },
+  "rtk-ai/rtk": {
+   "nominated": [
+    "model-gateway",
+    "coding-agent"
+   ],
+   "tags": [],
+   "decisions": [
+    {
+     "slug": "model-gateway",
+     "include": false,
+     "reason": "核心功能是压缩命令输出以省 token，可选 proxy 的模型路由仅为附带能力，非统一接入多模型的网关"
+    },
+    {
+     "slug": "coding-agent",
+     "include": false,
+     "reason": "仓库本身不是自主编码智能体，而是服务于编码 agent 的输出压缩工具"
+    }
+   ],
+   "secs": 3.8,
+   "tries": 1,
+   "ok": false
+  },
+  "scikit-learn/scikit-learn": {
+   "nominated": [
+    "data-analysis",
+    "workflow-automation"
+   ],
+   "tags": [],
+   "decisions": [
+    {
+     "slug": "data-analysis",
+     "include": false,
+     "reason": "scikit-learn 是通用机器学习算法库，不是面向用户的 AI 数据查询/分析工具"
+    },
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "仓库不含工作流编排或任务自动化能力"
+    }
+   ],
+   "secs": 4.0,
+   "tries": 1,
+   "ok": false
+  },
+  "sgl-project/sglang": {
+   "nominated": [
+    "image-generation",
+    "tts",
+    "video-generation",
+    "asr",
+    "multimodal",
+    "inference-engine",
+    "reinforcement-learning"
+   ],
+   "tags": [
+    "inference-engine"
+   ],
+   "decisions": [
+    {
+     "slug": "inference-engine",
+     "include": true,
+     "reason": "仓库核心是大模型推理运行时与服务化引擎"
+    },
+    {
+     "slug": "multimodal",
+     "include": false,
+     "reason": "支持视觉语言等多模态模型部署是推理引擎的能力范围，非跨模态通用模型本身"
+    },
+    {
+     "slug": "image-generation",
+     "include": false,
+     "reason": "内置扩散模型图像生成引擎的运行服务，属推理引擎能力而非生成应用工具链"
+    },
+    {
+     "slug": "video-generation",
+     "include": false,
+     "reason": "仅作为推理引擎承载视频生成模型服务，非视频生成场景工具"
+    },
+    {
+     "slug": "tts",
+     "include": false,
+     "reason": "仅通过 Omni 提供语音模型服务托管，非语音合成场景工具"
+    },
+    {
+     "slug": "asr",
+     "include": false,
+     "reason": "仅为语音识别模型提供服务运行时，非 ASR 场景应用"
+    },
+    {
+     "slug": "reinforcement-learning",
+     "include": false,
+     "reason": "只是为 RL 训练框架提供 rollout 生成集成，仓库本体不含 RL 训练框架"
+    }
+   ],
+   "secs": 4.6,
+   "tries": 1,
+   "ok": true
+  },
+  "shanraisshan/claude-code-best-practice": {
+   "nominated": [
+    "workflow-automation",
+    "coding-agent"
+   ],
+   "tags": [
+    "curated-list"
+   ],
+   "decisions": [
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "仓库是实践与工作流的编目文档，不是可执行的工作流编排引擎"
+    },
+    {
+     "slug": "coding-agent",
+     "include": false,
+     "reason": "内容是关于 Claude Code 的使用技巧与资源汇总，不是编码智能体本身"
+    },
+    {
+     "slug": "curated-list",
+     "include": true,
+     "reason": "内容以特性清单、社区工作流与技巧汇总的链接编目为主，属 awesome 式资源聚合"
+    }
+   ],
+   "secs": 13.0,
+   "tries": 3,
+   "ok": true
+  },
+  "siyuan-note/siyuan": {
+   "nominated": [
+    "knowledge-base"
+   ],
+   "tags": [
+    "knowledge-base"
+   ],
+   "decisions": [
+    {
+     "slug": "knowledge-base",
+     "include": true,
+     "reason": "仓库是个人知识管理工具，AI 增强的块级笔记与知识库产品，词表定义直接匹配。"
+    },
+    {
+     "slug": "document-qa",
+     "include": false,
+     "reason": "AI 问答仅是笔记内置辅助功能，核心场景是知识管理而非文档问答产品。"
+    },
+    {
+     "slug": "ai-writing",
+     "include": false,
+     "reason": "AI 写作是内置附加能力，仓库主体不是写作工具。"
+    }
+   ],
+   "secs": 4.9,
+   "tries": 1,
+   "ok": true
+  },
+  "stas00/ml-engineering": {
+   "nominated": [
+    "model-evaluation",
+    "multimodal",
+    "fine-tuning",
+    "mlops"
+   ],
+   "tags": [
+    "fine-tuning",
+    "mlops",
+    "tutorials"
+   ],
+   "decisions": [
+    {
+     "slug": "model-evaluation",
+     "include": false,
+     "reason": "仓库提供网络吞吐与TFLOPS基准脚本用于工程排查，不是模型或Agent评测基准工具。"
+    },
+    {
+     "slug": "multimodal",
+     "include": false,
+     "reason": "仅提及多模态模型训练内容，无跨模态理解或生成的模型/应用本身。"
+    },
+    {
+     "slug": "fine-tuning",
+     "include": true,
+     "reason": "手册覆盖微调方法论、工具与逐步操作说明，供训练工程师使用。"
+    },
+    {
+     "slug": "mlops",
+     "include": true,
+     "reason": "覆盖训练/推理的工程化方法论、调试、基准测试与slurm运维，属ML全流程工程实践。"
+    },
+    {
+     "slug": "tutorials",
+     "include": true,
+     "reason": "以教学性手册、速查指南和电子书形式提供方法论学习资源。"
+    }
+   ],
+   "secs": 4.7,
+   "tries": 1,
+   "ok": true
+  },
+  "steipete/CodexBar": {
+   "nominated": [
+    "coding-agent"
+   ],
+   "tags": [],
+   "decisions": [
+    {
+     "slug": "coding-agent",
+     "include": false,
+     "reason": "仓库是显示用量额度的菜单栏监控应用，不执行编码任务"
+    }
+   ],
+   "secs": 2.8,
+   "tries": 1,
+   "ok": false
+  },
+  "teableio/teable": {
+   "nominated": [
+    "workflow-automation"
+   ],
+   "tags": [
+    "workflow-automation",
+    "data-analysis"
+   ],
+   "decisions": [
+    {
+     "slug": "workflow-automation",
+     "include": true,
+     "reason": "自动化引擎支持记录变更/定时/webhook 触发并可插入 AI 步骤编排多步任务"
+    },
+    {
+     "slug": "data-analysis",
+     "include": true,
+     "reason": "AI Chat 以自然语言查询与操作表格数据，属对话式数据查询场景"
+    },
+    {
+     "slug": "knowledge-base",
+     "include": false,
+     "reason": "是数据库协作平台，不是笔记与知识管理产品"
+    }
+   ],
+   "secs": 5.3,
+   "tries": 1,
+   "ok": true
+  },
+  "teambit/bit": {
+   "nominated": [],
+   "tags": [],
+   "decisions": [
+    {
+     "slug": "coding-agent",
+     "include": false,
+     "reason": "Bit 是组件构建系统本身，AI agent 通过 MCP 调用它而非该仓库提供编码智能体"
+    },
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "覆盖开发到 CI 的构建流程属开发工具链，不是面向任务编排的工作流自动化平台"
+    },
+    {
+     "slug": "agent-framework",
+     "include": false,
+     "reason": "仓库核心是组件化构建系统，MCP 接入只是附属能力，非构建 Agent 的框架"
+    }
+   ],
+   "secs": 3.9,
+   "tries": 1,
+   "ok": false
+  },
+  "tensorflow/tfjs": {
+   "nominated": [
+    "model-training"
+   ],
+   "tags": [
+    "model-training",
+    "inference-engine"
+   ],
+   "decisions": [
+    {
+     "slug": "model-training",
+     "include": true,
+     "reason": "提供 Layers API 与 Data 加载，可在浏览器/Node.js 中训练神经网络模型。"
+    },
+    {
+     "slug": "inference-engine",
+     "include": true,
+     "reason": "多后端（WebGL/WASM/WebGPU/CPU/Node）提供模型在本地运行推理的运行时。"
+    }
+   ],
+   "secs": 6.2,
+   "tries": 1,
+   "ok": true
+  },
+  "unslothai/unsloth": {
+   "nominated": [
+    "coding-agent",
+    "image-generation",
+    "tts",
+    "rag",
+    "fine-tuning",
+    "model-quantization",
+    "reinforcement-learning"
+   ],
+   "tags": [
+    "fine-tuning",
+    "reinforcement-learning",
+    "inference-engine"
+   ],
+   "decisions": [
+    {
+     "slug": "coding-agent",
+     "include": false,
+     "reason": "只是把已有编码 agent 接到本地模型，本体不是编码智能体"
+    },
+    {
+     "slug": "image-generation",
+     "include": false,
+     "reason": "支持运行扩散模型是能力说明，仓库不以图像生成为场景"
+    },
+    {
+     "slug": "tts",
+     "include": false,
+     "reason": "仅声明可运行音频模型，非语音合成场景工具"
+    },
+    {
+     "slug": "rag",
+     "include": false,
+     "reason": "仅附带 RAG/搜索功能，非完整 RAG 管线或框架"
+    },
+    {
+     "slug": "fine-tuning",
+     "include": true,
+     "reason": "核心场景就是 LoRA/QLoRA/DPO 等微调大模型"
+    },
+    {
+     "slug": "model-quantization",
+     "include": false,
+     "reason": "导出 GGUF/FP8 是格式导出能力，非量化工具本体"
+    },
+    {
+     "slug": "reinforcement-learning",
+     "include": true,
+     "reason": "提供 GRPO/DPO 等 RL+LLM 训练支持"
+    }
+   ],
+   "secs": 5.1,
+   "tries": 1,
+   "ok": true
+  },
+  "walkinglabs/learn-harness-engineering": {
+   "nominated": [
+    "workflow-automation",
+    "code-generation",
+    "coding-agent",
+    "tutorials"
+   ],
+   "tags": [
+    "tutorials",
+    "coding-agent"
+   ],
+   "decisions": [
+    {
+     "slug": "tutorials",
+     "include": true,
+     "reason": "仓库本体是14讲+8项目的课程教学资源。"
+    },
+    {
+     "slug": "coding-agent",
+     "include": true,
+     "reason": "课程内容是教如何为 coding agent 构建 harness 并让其完成多步编码任务。"
+    },
+    {
+     "slug": "workflow-automation",
+     "include": false,
+     "reason": "课程不提供工作流编排引擎产品。"
+    },
+    {
+     "slug": "code-generation",
+     "include": false,
+     "reason": "内容不是单步代码生成工具。"
+    },
+    {
+     "slug": "agent-framework",
+     "include": false,
+     "reason": "提供的是模板与教学材料，不是可用的框架或编排库。"
+    }
+   ],
+   "secs": 3.7,
+   "tries": 1,
+   "ok": true
+  },
+  "winstonsmith1897/GTPO": {
+   "nominated": [
+    "knowledge-base",
+    "fine-tuning",
+    "reinforcement-learning"
+   ],
+   "tags": [
+    "fine-tuning",
+    "reinforcement-learning"
+   ],
+   "decisions": [
+    {
+     "slug": "knowledge-base",
+     "include": false,
+     "reason": "仓库是 RL 训练方法实现，与知识库管理无关，属关键词误命中。"
+    },
+    {
+     "slug": "fine-tuning",
+     "include": true,
+     "reason": "训练后保存 LoRA 适配器，属于对大模型的微调工具链。"
+    },
+    {
+     "slug": "reinforcement-learning",
+     "include": true,
+     "reason": "GTPO/GRPO 类 RL 后训练方法的官方实现，属 RL+LLM 工具。"
+    }
+   ],
+   "secs": 2.2,
+   "tries": 1,
+   "ok": true
+  },
+  "x1xhlol/system-prompts-and-models-of-ai-tools": {
+   "nominated": [
+    "prompt-engineering",
+    "coding-agent"
+   ],
+   "tags": [
+    "curated-list"
+   ],
+   "decisions": [
+    {
+     "slug": "prompt-engineering",
+     "include": false,
+     "reason": "该仓库仅收录系统提示词的文件集合，不提供提示词管理、优化或复用工具"
+    },
+    {
+     "slug": "coding-agent",
+     "include": false,
+     "reason": "仓库内容是编程工具的提示词资料，不是可执行编码任务的智能体"
+    },
+    {
+     "slug": "curated-list",
+     "include": true,
+     "reason": "以文件合集形式聚合多款 AI 工具系统提示词资源，属 awesome 式资料聚合"
+    }
+   ],
+   "secs": 3.3,
+   "tries": 1,
+   "ok": true
+  },
+  "xx025/carrot": {
+   "nominated": [
+    "ai-assistant"
+   ],
+   "tags": [
+    "curated-list"
+   ],
+   "decisions": [
+    {
+     "slug": "ai-assistant",
+     "include": false,
+     "reason": "仓库是工具网站导航清单，不是助手应用本身"
+    },
+    {
+     "slug": "curated-list",
+     "include": true,
+     "reason": "按类别聚合 AI 工具站点的导航目录，属 awesome 式资源清单"
+    }
+   ],
+   "secs": 2.5,
+   "tries": 1,
+   "ok": true
+  }
+ }
+}

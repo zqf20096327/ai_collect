@@ -1,0 +1,213 @@
+{
+ "sample_n": 80,
+ "errors": 0,
+ "model": {
+  "model": "glm-5.3",
+  "thinking": "off",
+  "max_tokens": 24000,
+  "seed": "42"
+ },
+ "tags_per_repo_new": {
+  "median": 1,
+  "p25": 1,
+  "p75": 2,
+  "zero": 7
+ },
+ "tags_per_repo_old": {
+  "median": 1
+ },
+ "jaccard_median": 0.333,
+ "zero_old_fill": {
+  "n": 28,
+  "filled": 22,
+  "pct": 78.6
+ },
+ "new_tag_counts": {
+  "curated-list": 10,
+  "tutorials": 9,
+  "fine-tuning": 7,
+  "model-training": 6,
+  "agent-framework": 5,
+  "coding-agent": 5,
+  "tts": 4,
+  "document-qa": 4,
+  "mlops": 4,
+  "prompt-engineering": 4,
+  "multi-agent": 4,
+  "inference-engine": 4,
+  "model-gateway": 3,
+  "asr": 3,
+  "ai-assistant": 3,
+  "workflow-automation": 3,
+  "reinforcement-learning": 3,
+  "code-generation": 2,
+  "chatbot": 2,
+  "research-tools": 2,
+  "quant-finance": 2,
+  "ai-writing": 2,
+  "image-video-processing": 2,
+  "rag": 2,
+  "browser-automation": 2,
+  "knowledge-base": 2,
+  "agent-memory": 2,
+  "llm-observability": 1,
+  "vector-database": 1,
+  "web-scraping": 1,
+  "face-recognition": 1,
+  "cybersecurity": 1,
+  "gui-automation": 1,
+  "semantic-search": 1,
+  "image-generation": 1,
+  "video-generation": 1,
+  "data-analysis": 1
+ },
+ "old_tag_counts": {
+  "agent-framework": 7,
+  "coding-agent": 7,
+  "curated-list": 6,
+  "fine-tuning": 5,
+  "model-training": 5,
+  "rag": 5,
+  "tts": 3,
+  "tutorials": 3,
+  "model-gateway": 3,
+  "document-qa": 3,
+  "inference-engine": 3,
+  "multi-agent": 3,
+  "quant-finance": 2,
+  "image-video-processing": 2,
+  "browser-automation": 2,
+  "vector-database": 2,
+  "asr": 2,
+  "image-generation": 2,
+  "agent-memory": 2,
+  "voice-agent": 2,
+  "llm-observability": 1,
+  "ai-writing": 1,
+  "gui-automation": 1,
+  "semantic-search": 1,
+  "chatbot": 1,
+  "face-recognition": 1,
+  "ai-assistant": 1,
+  "prompt-engineering": 1,
+  "data-analysis": 1,
+  "multimodal": 1,
+  "knowledge-base": 1,
+  "model-evaluation": 1,
+  "reinforcement-learning": 1
+ },
+ "top_new_only": {
+  "tutorials": 9,
+  "curated-list": 4,
+  "mlops": 4,
+  "prompt-engineering": 3,
+  "inference-engine": 3,
+  "model-training": 3,
+  "workflow-automation": 3,
+  "model-gateway": 2,
+  "code-generation": 2,
+  "chatbot": 2,
+  "research-tools": 2,
+  "fine-tuning": 2
+ },
+ "top_old_only": {
+  "tutorials": 3,
+  "agent-framework": 3,
+  "rag": 3,
+  "model-gateway": 2,
+  "inference-engine": 2,
+  "image-video-processing": 2,
+  "image-generation": 2,
+  "model-training": 2,
+  "voice-agent": 2,
+  "coding-agent": 2,
+  "llm-observability": 1,
+  "multi-agent": 1
+ },
+ "verdicts": {
+  "median_in_2_4": false,
+  "zero_new_le_5pct": false,
+  "jaccard_ge_034": false,
+  "zero_old_fill_ge_80": false,
+  "top100_landed_ge_90": true,
+  "zero_backfill_diagnostic": 30.0,
+  "density_ok": false,
+  "low_density_tags": [
+   "model-evaluation"
+  ]
+ },
+ "spot_check": [
+  {
+   "fn": "CorentinJ/Real-Time-Voice-Cloning",
+   "one_liner": "5 秒音频克隆声音、实时生成任意语音的工具箱",
+   "old_v2": "语音合成",
+   "new": "语音合成"
+  },
+  {
+   "fn": "Developer-Y/cs-video-courses",
+   "one_liner": "为学生收录带视频讲授的计算机科学课程链接清单",
+   "old_v2": "教程课程",
+   "new": "精选清单"
+  },
+  {
+   "fn": "Dokploy/dokploy",
+   "one_liner": "自托管 PaaS：部署和管理应用与数据库",
+   "old_v2": "",
+   "new": ""
+  },
+  {
+   "fn": "Ebony-Vinyl/dsh-our-free-model",
+   "one_liner": "dsh 插件：免登录免 Key 使用免费前沿模型清单",
+   "old_v2": "",
+   "new": "模型网关"
+  },
+  {
+   "fn": "GLips/Figma-Context-MCP",
+   "one_liner": "给 AI 编码工具提供 Figma 布局信息的 MCP 服务器",
+   "old_v2": "",
+   "new": "代码生成"
+  },
+  {
+   "fn": "GaiZhenbiao/ChuanhuChatGPT",
+   "one_liner": "为多种 LLM 提供带附加功能的 Web 聊天界面",
+   "old_v2": "模型网关、文档问答、微调",
+   "new": "聊天机器人、文档问答、微调"
+  },
+  {
+   "fn": "GaneshShivalingappa/Parametric-NN-Models",
+   "one_liner": "对比 PINN 与 FEM 增强神经网络在材料参数反演中的研究项目",
+   "old_v2": "",
+   "new": "科研工具"
+  },
+  {
+   "fn": "GitHubDaily/GitHubDaily",
+   "one_liner": "面向开发者的 GitHub 开源项目分享与年度盘点清单",
+   "old_v2": "精选清单",
+   "new": "精选清单"
+  },
+  {
+   "fn": "GokuMohandas/Made-With-ML",
+   "one_liner": "面向开发者的生产级 ML/MLOps 应用开发课程",
+   "old_v2": "LLM 可观测性、推理引擎",
+   "new": "教程课程、MLOps"
+  },
+  {
+   "fn": "HKUDS/Vibe-Trading",
+   "one_liner": "个人量化交易 Agent：回测、实盘与研究一站式",
+   "old_v2": "多智能体、金融量化",
+   "new": "金融量化"
+  },
+  {
+   "fn": "HumanSignal/label-studio",
+   "one_liner": "面向 ML 团队的多类型数据标注与标注工具",
+   "old_v2": "图像视频处理",
+   "new": "MLOps"
+  },
+  {
+   "fn": "KKKKhazix/khazix-skills",
+   "one_liner": "个人开源的 Agent Skills 合集，给 Claude Code 等 40+ Agent 装载使用",
+   "old_v2": "Agent 框架、AI 写作",
+   "new": "AI 写作、科研工具、提示工程"
+  }
+ ]
+}
