@@ -52,10 +52,10 @@ Just here for the results? **[Skip to the benchmark charts](#benchmark-charts)**
 | [GLiNER2.5-Decide](https://huggingface.co/fastino/GLiNER2.5-Decide) (`fastino/GLiNER-2.5-Decide` on the Fastino API — hosted id hyphenated, HF repo not) | cloud decision encoder — the hosted twin of the local decision-tuned sibling (classification primary, extraction still supported; rides the chat-completions schema, not GLiDE's System One endpoint) | 340M | API metered · Apache 2.0 weights | metered · $3.9e-7/q |
 | [TypeLLM](https://typellm.ai/) (`typellm-latest` on the TypeLLM API) | cloud type-safe generation harness (SGLang constrained decoding over a hosted Qwen3.8-27B: JSON-Schema fields answered by one-token enum picks — up to 512 values since v0.6.9, plus described `choices` and `box`/array-of-boxes detection since v0.7.x; optional per-question thinking at its own price; vision-capable, up to 8 images per request; the October releases also speak Jev's `/v1/systemone`) | 27B | Apache 2.0 (harness) · proprietary API | metered · $2.6e-6 plain / $6.1e-5 thinking /q † |
 | [Span-01](https://openrouter.ai/respan/span-01) / [Span-01 Lite](https://openrouter.ai/respan/span-01-lite) (`respan/span-01*`) | cloud behavior scorer (one noul probability per label, argmax = decision) | closed | proprietary API | metered · $9.0e-7/q · Lite free † |
-| [Decider](https://openrouter.ai/perplexity/pplx-decider-v1-27b) [V1](https://openrouter.ai/perplexity/pplx-decider-v1-27b) / [V1.1](https://openrouter.ai/perplexity/pplx-decider-v1.1-27b) 27B (`perplexity/pplx-decider-*`) | cloud decision model (Perplexity's Decisions-API entry: typed probabilistic answers — choice with per-option probabilities, noul, score rubrics — up to 128 questions per request; text/JSON state, image modality listed but not live yet) | 27B | proprietary API | metered · $4.4e-6 (V1) / $2.2e-6 (V1.1) /q |
+| [Decider](https://openrouter.ai/perplexity/pplx-decider-v1-27b) [V1](https://openrouter.ai/perplexity/pplx-decider-v1-27b) / [V1.1](https://openrouter.ai/perplexity/pplx-decider-v1.1-27b) / [V1.2](https://openrouter.ai/perplexity/pplx-decider-v1.2) 27B + [Flash V1.2](https://openrouter.ai/perplexity/pplx-decider-flash-v1.2) 4B (`perplexity/pplx-decider-*`) | cloud decision model (Perplexity's Decisions-API entry: typed probabilistic answers — choice with per-option probabilities, noul, score rubrics — up to 128 questions per request; text/JSON state, image modality listed but not live yet; V1.2 lifts context to 262k) | 27B · Flash 4B | proprietary API | metered · $4.4e-6 (V1) / $2.2e-6 (V1.1) / $1.0e-6 (V1.2) / $1.1e-6 (Flash) /q |
 | [Decision-1](https://openrouter.ai/microsoft/microsoft-decision-1) (`microsoft/microsoft-decision-1`) | cloud decision model (Microsoft's Model Foundry entry: Qwen3.5-9B post-trained for single-pass scoring, "updated continually while the API shape stays the same"; Azure is the only endpoint and it satisfies this account's enforced ZDR) | 9B | proprietary API | metered · $2.1e-6/q |
 | [Drex v1.5](https://openrouter.ai/nace-ai/drex-v1.5) (`nace-ai/drex-v1.5`) | cloud decision model (Nace.AI's MiMo-V2.6-Distill-Qwen-9B on the System One contract; the card claims Decision Index 0.2.1 rank 1; open weights plus an Apache-2.0 runtime adapted from Kev — the local fp32 twin needs ~36 GB and GGUF serving waits on Nace's llama.cpp/Ollaya fork, so it is benched hosted) | 9B | Nace.AI Open RAIL-M weights · Apache 2.0 runtime | metered · $1.4e-6/q |
-| [d1](https://openrouter.ai/liquid/d1) (`liquid/d1`) | cloud decision model (Liquid AI's structured decisions on the System One contract: choice/score/noul with calibrated probabilities) | undisclosed | proprietary API | metered · $2.7e-6/q † |
+| [d1](https://openrouter.ai/liquid/d1) / [d1-ultra](https://openrouter.ai/liquid/d1-ultra) (`liquid/d1*`) | cloud decision model (Liquid AI's structured decisions on the System One contract: choice/score/noul with calibrated probabilities; d1-ultra is the larger 2026-10-15 step-up, 32k context) | undisclosed | proprietary API | metered · $2.7e-6 (d1) / $2.2e-6 (ultra) /q † |
 | [Tev1 4B](https://openrouter.ai/togethercomputer/tev1-4b-experimental) (`togethercomputer/tev1-4b-experimental`) | cloud decision model (experimental Qwen3.5-4B SFT choosing one of 2–24 labeled options; keeps Qwen's next-token head, and OpenRouter serves it on the systemone schema anyway; the data recipe and training code are published) | 4B | proprietary API · open recipe | metered · $4.8e-6/q |
 | [Mercury Decide](https://openrouter.ai/inception/mercury-decide:free) (`inception/mercury-decide:free`) | cloud decision model (Inception's diffusion LM making typed decisions with calibrated probabilities, up to 14 decisions/s; same /v1/systemone schema as Jev) | undisclosed | proprietary API | free tier † |
 | [Qwen3-Reranker 8B](https://openrouter.ai/qwen/qwen3-reranker-8b) · [Voyage rerank-2.5](https://openrouter.ai/voyageai/rerank-2.5) (+lite) · [Cohere Rerank](https://openrouter.ai/cohere/rerank-4-pro) (4 Pro / 4 Fast / v3.5), all via OpenRouter | cloud rerankers (same (instruction, label) argmax mapping as the local ones) | 8B / closed / closed | proprietary API | metered · $1.4e-6–$2.5e-3/q |
@@ -67,7 +67,10 @@ Upstage endpoint on OpenRouter; the runs here used default routing, so
 both stay non-ZDR.
 The Decisions family splits: Perplexity's Deciders and Together's Tev1
 report `retainsPrompts: false` (no †), while one of d1's providers and
-Mercury's :free tier retain prompts, so they carry the †.
+Mercury's :free tier retain prompts, so they carry the † — d1-ultra
+inherits the marker from the same Liquid routing, and the V1.2/Flash
+endpoints expose no per-endpoint policy, so the Perplexity family's
+no-† carries.
 The Clef trio runs directly on Workers AI (not via OpenRouter) under
 Cloudflare's commitment to not read, store, or train on requests, so
 they carry no † — and their weights are open, so they can also run local.
@@ -191,10 +194,12 @@ exact span-set match (18 questions). † = hosted via OpenRouter (non-ZDR):
 |---|---|---|---|---|
 | Clef (Workers AI) | **97.9%** | 0.052 | n/a | |
 | GLiDE (Fastino) | **97.9%** | 0.056 | n/a | |
+| D1-ultra (OpenRouter) † | 95.8% | 0.027 | n/a | |
 | TypeLLM (hosted) † | 95.8% | 0.057 | n/a | |
 | Solar Decide (OpenRouter) † | 95.8% | 0.308 | n/a | |
 | Jev (cloud, jev-1.14.0) | 93.8% | 0.015 | n/a | |
 | D1 (OpenRouter) † | 93.8% | 0.031 | n/a | |
+| Decider V1.2 27B (OpenRouter) | 93.8% | 0.044 | n/a | |
 | Solar Decide Flash (OpenRouter) † | 93.8% | 0.069 | n/a | |
 | Decider V1 27B (OpenRouter) | 93.8% | 0.075 | n/a | |
 | Decider V1.1 27B (OpenRouter) | 93.8% | 0.080 | n/a | |
@@ -209,6 +214,7 @@ exact span-set match (18 questions). † = hosted via OpenRouter (non-ZDR):
 | qwen3-reranker-8b (OpenRouter) † | 87.5% | 0.564 | n/a | |
 | GLiNER2.5-Decide | 85.4% | 0.412 | 61% | 0.476 |
 | GLiNER2.5-Decide (Fastino) | 85.4% | 0.853 | 56% | 0.832 |
+| Decider Flash V1.2 (OpenRouter) | 85.4% | 0.066 | n/a | |
 | Kev 4B (OpenRouter) † | 85.4% | 0.079 | n/a | |
 | Span-01 † | 85.4% | 0.440 | n/a | |
 | jevk5 4B (Ollaya) | 85.4% | 7.299 | n/a | |
@@ -268,6 +274,20 @@ exact span-set match (18 questions). † = hosted via OpenRouter (non-ZDR):
 
 Takeaways:
 
+- **The OpenRouter Oct-16 arrivals: d1-ultra joins the hosted pool
+  lead, and the 12-question gate takes its second same-day overturn** —
+  the gate had scored these 9–10/12 (both misses mixed-sentiment), but
+  the full 48-question pool answers the same first-12 slice 12/12 and
+  lands Liquid's d1-ultra at 95.8% (46/48) in 0.027 s/q — fastest at
+  the top of the table, beside TypeLLM plain and Solar Decide, with
+  only two misses on the whole pool. Perplexity's Decider V1.2 ties the
+  93.8% incumbents tier (45/48) at $1.0e-6/q — a fifth of V1's price,
+  half of Jev's — and holds 54/54 multilingual like d1-ultra; Flash
+  V1.2 is the budget pick (85.4%, $1.1e-6/q, 53/54 with one Sinhala
+  miss). Perplexity's card claim of beating Jev on its own 11-task
+  panel (85.71% vs 84.51%) stays borrowed — the pools here have them
+  tied. The whole evidence run (gate + both suites × 3 models) cost
+  ≈ $0.0007.
 - **The latest arrivals: Drex ties the Decider tier, Decision-1
   and Clef-omni slot under it, and the local lane gets a new leader** —
   Nace's Drex v1.5 (open weights, 9B) lands at 93.8% beside both
@@ -484,11 +504,14 @@ TypeLLM adds $0.50 per M thinking tokens) × measured tokens:
 | Mercury Decide (OpenRouter) † | $0 | $0 | $0 (free tier) |
 | GLiNER2.5-base / -multi / -Decide (Fastino) | $0.000026 | $0.000031 | $0.00000039 |
 | Span-01 † | $0.000043 | $0.000040 | $0.0000009 |
+| Decider V1.2 27B (OpenRouter) | $0.000048 | $0.000124 | $0.0000010 |
+| Decider Flash V1.2 (OpenRouter) | $0.000051 | $0.000062 | $0.0000011 |
 | voyage-rerank-2.5-lite † | $0.000068 | $0.000115 | $0.0000014 |
 | Drex v1.5 (OpenRouter) | $0.000068 | $0.000101 | $0.0000014 |
 | Kev 4B (OpenRouter) | $0.000072 | $0.000106 | $0.0000015 |
 | Microsoft Decision-1 (OpenRouter) | $0.000103 | $0.000149 | $0.0000021 |
 | Decider V1.1 27B (OpenRouter) | $0.000105 | $0.000127 | $0.0000022 |
+| D1-ultra (OpenRouter) † | $0.000106 | $0.000171 | $0.0000022 |
 | TypeLLM (hosted) † | $0.00013 | $0.00017 | $0.0000026 |
 | D1 (OpenRouter) † | $0.000130 | $0.000163 | $0.0000030 |
 | voyage-rerank-2.5 † | $0.000170 | $0.000287 | $0.0000035 |
@@ -598,6 +621,8 @@ systems answer the same 54 texts.
 | Tev1 4B (OpenRouter) | 100% | 100% | 100% | **100%** |
 | Mercury Decide (OpenRouter) † | 100% | 100% | 100% | **100%** |
 | Microsoft Decision-1 (OpenRouter) | 100% | 100% | 100% | **100%** |
+| Decider V1.2 27B (OpenRouter) | 100% | 100% | 100% | **100%** |
+| D1-ultra (OpenRouter) † | 100% | 100% | 100% | **100%** |
 | winnow e4b (Ollaya) | 100% | 100% | 94% | 98% |
 | Span-01 † | 100% | 100% | 94% | 98% |
 | Kev 4B (OpenRouter) † | 100% | 100% | 94% | 98% |
@@ -605,6 +630,7 @@ systems answer the same 54 texts.
 | credence 7.5B (Ollaya) | 100% | 100% | 94% | 98% |
 | Clef-omni (Workers AI) | 100% | 100% | 94% | 98% |
 | Drex v1.5 (OpenRouter) | 100% | 100% | 94% | 98% |
+| Decider Flash V1.2 (OpenRouter) | 100% | 100% | 94% | 98% |
 | qwen3-reranker-8b (OpenRouter) † | 100% | 100% | 89% | 96% |
 | Lumma-fev 4B | 100% | 100% | 89% | 96% |
 | arbiter 4B (Ollaya) | 100% | 100% | 89% | 96% |
@@ -1232,13 +1258,4 @@ extra Laya checkpoints noted below):
 | `vllm-sr/Decision-2.0-Kai-0.6B` | 597M | Decision 2.0 Kai (the line behind Ollaya's `decision`; Qwen3-0.6B-Base backbone + trained candidate head scoring option descriptions, one batched forward, no generation; adds score-bias offsets and an 8,192-token budget); self-verifying snapshot — benchmarked via the in-process fp32 CPU loader (`DECISION2_HOME` prefix override; the loader re-keys the vendored fingerprint's path separators on Windows) |
 | `vllm-sr/Decision-2.0-Eos-0.8B` | 753M | Decision 2.0 Eos — fine-tune of Decision-1.0-Eos, same candidate-head mechanism at a 16,384-token budget — benchmarked |
 | `vllm-sr/Decision-2.0-Sol-2B` | 1.88B | Decision 2.0 Sol — the 2B fine-tune, the largest benched size of the family (16,384-token budget) — benchmarked |
-| `vllm-sr/d3-edge` | 594M (0.49B text + 0.10B vision encoder) | Decision 3.0 Edge (Qwen3.5-0.8B backbone fine-tune, the collection's floor); code-readout mechanism — every option rendered under a single-token answer code, a 255-way readout over the last prompt position scores them, one forward per question, no generation; images + videos ride the same system_one call (the benches exercise the text path) — benchmarked via the in-process bf16-CPU loader (`D3_HOME` prefix override; fp32 readout, Gated DeltaNet layers on the transformers reference kernels) |
-| `vllm-sr/d3-lite` | 853M | Decision 3.0 Lite — the full Qwen3.5-0.8B fine-tune (Edge is its pruned sibling), same code-readout mechanism; card self-reports 36.9 public-suite vs Decision 2.0 0.8B's 20.6 — benchmarked |
-| `vllm-sr/d3-nano` | 2.21B | Decision 3.0 Nano — the Qwen3.5-2B fine-tune, largest benched size of the family; card self-reports 42.2 public-suite vs Decision 2.0 2B's 30.1 — benchmarked |
-| Ollaya `nli` / `nli:modernbert-large` | 435M / 396M | MoritzLaurer NLI classifiers (DeBERTa-v3-large / ModernBERT-large), entailment-scored options — both benchmarked |
-| Ollaya `decision` | 0.75B | vLLM Semantic Router Decision 1.0 (Qwen3.5-0.8B + endpoint head) — benchmarked; larger Nox 4B / Lux 9B compute fp32 (17/32 GB) and are not in the library |
-| Ollaya `jevk5` | 4B | the full JevK5 v0.3 (Q8_0 GGUF on llama.cpp) — benchmarked alongside the in-process Lite build |
-| Ollaya `winnow:e4b` | E4B (8 GB Q8_0) | EldanRing Winnow, Gemma 4 E4B fine-tune on llama.cpp — benchmarked; 12B sibling skipped (see below) |
-| `LiquidAI/d1-3B` | 3.12B | Liquid's open d1 on LFM2.5-VL-3B (text + image state, 17-language card, GGUF + w8a8 variants on HF): state trunk encoded once, questions scored as branches of one batched forward, no generation — benchmarked via the in-process trust-remote-code loader (`D1_HOME` overrides the base dir) |
-| `LiquidAI/d1-omni-600M` | 587M | the omni sibling — same trunk+branch scoring plus a 16 kHz speech-state tower; ties the 3B on the English pool at ~25× the speed, collapses off-English (51.8%) — benchmarked |
-| Ollaya
+| `vllm-sr/d3-edge` | 594M (0.49B text + 0.10B vision encoder) | Decision 3.0 Edge (Qwen3.5-0.8B backbone fine-tune, the collection's floor); code-

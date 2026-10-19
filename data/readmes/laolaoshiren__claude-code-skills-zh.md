@@ -1,11 +1,11 @@
 # 🛠️ Claude Code Skills 中文精选集
 
-> 🚀 最实用的 Claude Code Skills / Agents / Plugins 合集 | 精选 437+ | 按场景分类 | 复制即装 | 持续更新
+> 🚀 最实用的 Claude Code Skills / Agents / Plugins 合集 | 精选 438+ | 按场景分类 | 复制即装 | 持续更新
 
 [![Stars](https://img.shields.io/github/stars/laolaoshiren/claude-code-skills-zh?style=social)](https://github.com/laolaoshiren/claude-code-skills-zh)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-437%2B-green.svg)](#original-skills)
-[![Updated](https://img.shields.io/badge/updated-2026--10--14-brightgreen.svg)](https://github.com/laolaoshiren/claude-code-skills-zh/commits/main)
+[![Skills](https://img.shields.io/badge/skills-438%2B-green.svg)](#original-skills)
+[![Updated](https://img.shields.io/badge/updated-2026--10--18-brightgreen.svg)](https://github.com/laolaoshiren/claude-code-skills-zh/commits/main)
 [![Website](https://img.shields.io/badge/website-claude--skills.bt199.com-6c5ce7.svg)](https://claude-skills.bt199.com)
 
 **中文开发者最好的 Claude Code Skills 资源站。** 不只是列表，更包含可直接安装的原创技能包。
@@ -274,6 +274,7 @@ cp -r claude-code-skills-zh/skills/* ~/.claude/skills/
 | [feishu-whiteboard-pro](https://github.com/LcpMarvel/feishu-whiteboard-pro) | 可编辑飞书 / Lark 白板设计 Skill：用布局组件、预渲染 fit-check 和独立设计评审生成有层次的真实白板；依赖已认证的 `lark-cli` 与飞书账号，写入租户前需确认权限和敏感内容（60⭐）|
 | [feishu_msg_card_skill](https://github.com/lageev/feishu_msg_card_skill) | 飞书 / Lark Card JSON 2.0 Skill：构造、审查和校验通知、报告、表单与回调卡片，附模板、专项校验器和只封装不发送的 Webhook 签名脚本；真正发送或更新卡片前仍需确认权限并保护密钥（11⭐）|
 | [claude-seo](https://github.com/AgriciDaniel/claude-seo) | Claude Code SEO 审计插件：25 个子技能 + 18 个专家 Agent 并行覆盖技术 SEO、内容质量（E-E-A-T）、Schema.org、AI 搜索优化（GEO）、本地 / 电商 / 国际 SEO，输出按优先级排序的行动计划；MIT 开源版可通过 `/plugin marketplace add` 安装（18.7K⭐）|
+| [notfair-plugin](https://github.com/nowork-studio/notfair-plugin) | 开源 SEO / GEO / 营销 Agent Skills：48 个 SKILL.md 覆盖站点审计、AI 搜索可见性、GA4 与 Search Console 分析，以及 Google / Meta / LinkedIn / Reddit / TikTok 广告诊断，支持 `/plugin marketplace add` 与 Gemini CLI 安装；部分技能只用仓库或导出文件离线分析，读取真实广告与分析账户需 OAuth 授权 NotFair MCP，账户改动需用户明确批准（3.9K⭐）|
 
 <a id="cat-dev"></a>
 ### 💻 开发效率
@@ -528,4 +529,161 @@ cp -r claude-code-skills-zh/skills/* ~/.claude/skills/
 |------|------|
 | [wondelai/skills](https://github.com/wondelai/skills) | 把商业、营销、UX 与工程经典书框架整理成 50 个 Skills + 12 条引导路径，支持 Claude Code / Codex / Cursor 等；适合产品、增长和团队决策参考，框架不能替代真实数据和专业判断（2.4K⭐）|
 | [dbskill](https://github.com/dontbesilent2025/dbskill) | 🏢 商业诊断技能包：市场分析、竞品调研、商业模式画布（10.6K⭐） |
-| [gtm-eng-skills](https://github.com/getaero-io/gtm-eng-skills) | GTM Engineering Claude Code Skills：覆盖 TAM 构建、联系人/LinkedIn 查找、线索富集、投放受众和 outbound 工作流
+| [gtm-eng-skills](https://github.com/getaero-io/gtm-eng-skills) | GTM Engineering Claude Code Skills：覆盖 TAM 构建、联系人/LinkedIn 查找、线索富集、投放受众和 outbound 工作流，内置成本门禁与 `npx skills add` 安装路径（66⭐）|
+| [financial-report-minesweeper](https://github.com/terancejiang/financial-report-minesweeper) | A 股财报排雷工具，28 条唐朝方法论检查（431⭐） |
+| [tech-digest](https://github.com/camilleroux/tech-digest) | HN/Lobste.rs 每日科技摘要，评分过滤（37⭐） |
+| [MobiusQuant/OpenMobius-skill](https://github.com/MobiusQuant/OpenMobius-skill) | ICT/SMC 交易知识 Skill（701⭐）|
+| [ViryaZheng/recomby-geo](https://github.com/ViryaZheng/recomby-geo) | GEO 生成式引擎优化（458⭐）|
+| [duolahypercho/fusion-fable](https://github.com/duolahypercho/fusion-fable) | 双模型融合（470⭐）|
+| [ybuild-ai/ai-game-art-pipeline-skill](https://github.com/ybuild-ai/ai-game-art-pipeline-skill) | AI 图片→可玩游戏美术资产（297⭐）|
+| [Utopai-Research/pai-pro](https://github.com/Utopai-Research/pai-pro) | 本地 AI 电影制作工作室（357⭐）|
+| [gauss314/skills](https://github.com/gauss314/skills) | 📊 金融市场数据消费 Skills：面向 Claude Code 与 AI Agent 的金融数据接入能力（247⭐）|
+| [luopan](https://github.com/zhangxiaoqiang1991/luopan) | 中文行业与公司研究路由 Skill：通过信源分级和对抗验证分析产业链权力、利润分布与公司质量，适合投资或求职研究，不替代投资建议（390⭐）|
+| [qlik-oss/agentic-skills](https://github.com/qlik-oss/agentic-skills) | Qlik 官方 Agentic Skills Hub：提供 Qlik Cloud AI readiness / MCP 优化 Skill、官方与社区插件分层、`npx skills add` 与 Claude Code plugin 安装路径（15⭐）|
+| [niubiskill](https://github.com/nathanskill/niubiskill) | 中文变现决策 Skill：打断无收入验证的瞎忙，找到离真实收钱最近的一步，二选一（引流 / 成交），停掉一件分散精力的事并给出 7 天证据测试，支持 `npx skills add nathanskill/niubiskill` 安装；不承诺收益，涉及受监管活动时需先核验权限（201⭐）|
+| [hello-boss](https://github.com/babyGao/agent-pilot-skills/tree/main/skills/hello-boss) | 冷启动获客流水线 Skill：五条穷举路径挖掘可买行业、四路信号从公开工商数据锁定经营主体与邮箱、输出调研报告与开发信模板；MIT 许可，流水线末段会实际批量发送邮件，运行前需确认发件账号与合规边界（1⭐）|
+| [ai-trader-team](https://github.com/TLSRUF/ai-trader-team) | 投资研究工作流框架：`/screen`、`/trade-team` 等 5 个 SKILL.md 驱动趋势 / 宏观 / 风险 / 资金面 4 个视角子 Agent 并行分析，分歧时明确标注 Gray Zone 而不强行折中，仓位与相关系数等计算交给 `tools/trading_rigor.py` 而非 LLM 心算；MIT 许可，行情取自 yfinance，仓库声明仅供教育研究、不构成投资建议，决策前请自行核实数据与风险（3⭐）|
+
+---
+
+<a id="cat-chinese"></a>
+### 🌏 中文专属
+
+| 技能 | 说明 |
+|------|------|
+| [oil-frontend](https://github.com/oil-oil/oil-frontend) | 中文前端 Agent 规范 Skill：统一产品界面、数据状态、组件组织、样式归属和迁移验证，适合复杂中后台前端重构；采用显式启用策略，不处理纯构建、部署、安全或后端任务（133⭐）|
+| [Humanizer-zh](https://github.com/op7418/Humanizer-zh) | 消除中文 AI 写作痕迹（19.5K⭐）|
+| [shuorenhua](https://github.com/MrGeDiao/shuorenhua) | 中文优先的去 AI 味改写 Skill：按发布场景分档，先锁定事实再处理语气，支持 Claude Code / Codex / Cursor / OpenClaw；代码、日志、配置和命令输出不应套用该 Skill（2.1K⭐）|
+| [financial-report-minesweeper](https://github.com/terancejiang/financial-report-minesweeper) | A 股财报排雷（唐朝方法论）（431⭐）|
+| [web-access](https://github.com/eze-is/web-access) | 给 Claude Code 装上完整联网能力：三层通道调度 + 浏览器 CDP（9.1K⭐）|
+| [awesome-agent-skills](https://github.com/JackyST0/awesome-agent-skills) | 🇨🇳 精选 AI Agent Skills 列表，适配 Cursor / Claude Code / GitHub Copilot（651⭐）|
+| [wx-favorites-report](https://github.com/zhuyansen/wx-favorites-report) | 微信收藏可视化 Skill：从加密 DB 到交互式 HTML 报告的端到端管线（643⭐）|
+| [awesome-openclaw-skills-zh](https://github.com/Rito-w/awesome-openclaw-skills-zh) | OpenClaw Skills 中文翻译与分类目录：整理 5,494 个社区技能、30 个中文分类和安装说明，并明确提示安装前进行安全审查（67⭐）|
+| [luban-skill](https://github.com/LearnPrompt/luban-skill) | 🔧 鲁班 Agent Skill 打磨工作坊：把能用的 Skill 打磨成能被装、能传播、能验证、能进化的公共资产（959⭐）|
+| [compass-skills](https://github.com/dongshuyan/compass-skills) | 🧭 司南：个性化 AI 任务总控 Skills 系统，面向中文用户的 Agent 任务编排（753⭐）|
+| [chubbyguan/chubbyskills](https://github.com/chubbyguan/chubbyskills) | 中文全渠道内容采集（抖音/B站/小红书/公众号）（1.2K⭐）|
+| [mingze21/bazi-ziwei-skill](https://github.com/mingze21/bazi-ziwei-skill) | 八字 + 紫微斗数算法排盘 Skill：不依赖 LLM 猜测，三种分析模式，一键生成水墨风 HTML 命盘海报，兼容 Claude / Codex / Cursor（24⭐）|
+| [lan1177/interview-prep](https://github.com/lan1177/interview-prep) | 产品/运营岗位面试准备文档生成器（97⭐）|
+| [ziwei-doushu](https://github.com/Linden-TR/ziwei-doushu-skill) | 🔮 紫微斗数命盘排盘与解读：中州派为宗，融合三合/飞星/钦天/河洛四大学派，支持十二宫分析、四化追踪、大限流年、45种格局识别，基于 MCP 的专业命理 Claude Code Skill（10⭐） |
+| [Bloom](https://github.com/Li-Evan/Bloom) | 🌸 基于 Bloom 2-Sigma 研究的中文苏格拉底式 AI 家教：自适应学习路径、反问引导、中文优先（285⭐）|
+| [yzfly/awesome-skills-zh](https://github.com/yzfly/awesome-skills-zh) | 中文 Skills 精选资源：收录 Claude Skills、LLM Skills、AI Skills，适合中文用户发现可迁移技能素材（55⭐）|
+| [zhuwujing28-del/codex-skills-cn](https://github.com/zhuwujing28-del/codex-skills-cn) | 面向中文用户的 Codex skills 收藏、适配和维护仓库，适合寻找 Codex 侧技能迁移参考（1⭐）|
+| [speak-human-tw](https://github.com/Raymondhou0917/speak-human-tw) | 繁体中文去 AI 味编辑 Skill：检查 38 类 AI 写作痕迹，校正台湾用语与标点，并通过“先列修改清单、确认后再动稿”保护事实和作者语气（1K⭐）|
+| [miniprogram-skills](https://github.com/Sun-sunshine06/miniprogram-skills) | 微信小程序开发 Codex / Claude Code Skills：6 个可复用技能覆盖 DevTools 诊断、官方脚手架校验、GUI 冒烟、架构重组和 UI 文案精简，中英文文档与验证脚本完整（27⭐）|
+| [skillforge](https://github.com/t115601251-hue/skillforge) | 中文优先的跨 Agent 技能闭环管理 CLI：用自然语言查找、安装、修改和创建 Claude Code / Codex / OpenClaw skills，零第三方运行时依赖，带 R/U/T 三维评分、OpenSSF Scorecard / OSV 安全审和 117 个单测（1⭐）|
+| [kc_ai_skills](https://github.com/KerberosClaw/kc_ai_skills) | 中文优先的 22 个通用 Agent Skills：覆盖仓库预检、ADR / PRD、故障诊断、报告和内容生成，兼容 Claude Code / Codex；其中 CTF / 逆向仅限授权环境，外部服务技能部署前需审查认证与网络配置（79⭐）|
+| [hermes-edu-skills](https://github.com/hezkvectory/hermes-edu-skills) | 面向中国教育场景的 170 个 Agent Skills：覆盖教材同步、备考、拍照答疑、错题复盘、亲子陪学和教师工具，Hermes 可直接安装并可导出到 Claude Code / Codex / Cursor；处理学生资料时需保护隐私，输出仍应由教师或家长核验（110⭐）|
+| [taiwan-translate-skill](https://github.com/Moksa1123/taiwan-translate-skill) | 台湾正体中文本地化 Skill：内置 2,300+ WordPress 官方词汇，支持 PO / POT 与双来源术语策略，可通过 npm 安装到 14 类 AI 工具；法律、医疗等专业文本仍需人工校对（14⭐）|
+
+---
+
+<a id="original-skills"></a>
+
+## 🎁 原创技能（本仓库独有）
+
+以下技能由本仓库原创开发，可直接安装使用：
+
+<a id="original-install"></a>
+### 📦 快速安装
+
+```bash
+# 安装单个技能
+cp -r skills/<skill-name> ~/.claude/skills/
+
+# 安装全部原创技能
+cp -r skills/* ~/.claude/skills/
+```
+
+### 🔍 技能列表
+
+| 技能 | 分类 | 说明 |
+|------|------|------|
+| [zh-code-reviewer](skills/zh-code-reviewer/) | 代码质量 | 中文代码审查专家，生成中文审查报告 |
+| [zh-docgen](skills/zh-docgen/) | 文档 | 从代码库自动生成中文技术文档 |
+| [git-workflow](skills/git-workflow/) | 开发效率 | 先审查改动，再按授权提交、建分支、推送或创建 PR |
+| [security-audit](skills/security-audit/) | 安全 | 代码安全审计：漏洞扫描 + 修复建议 |
+| [api-tester](skills/api-tester/) | 测试 | 依据真实 OpenAPI / 路由契约，在确认测试环境与授权后生成并验证 API 测试 |
+| [changelog-gen](skills/changelog-gen/) | 文档 | 从 Git 历史自动生成 CHANGELOG |
+| [refactor-advisor](skills/refactor-advisor/) | 代码质量 | 代码重构建议：识别坏味道 + 重构方案 |
+| [zh-readme](skills/zh-readme/) | 文档 | 先分析项目，再生成面向中文开发者的高质量 README |
+| [perf-profiler](skills/perf-profiler/) | 性能 | 基于可复现基线和 profiler 证据定位瓶颈并同条件复测 |
+| [db-migrator](skills/db-migrator/) | 数据库 | 数据库迁移助手：Schema diff + 迁移脚本 |
+| [i18n-helper](skills/i18n-helper/) | 开发效率 | 国际化/本地化：扫描硬编码文本 + i18n 配置生成 |
+| [log-analyzer](skills/log-analyzer/) | 调试 | 日志分析：异常模式检测 + 根因定位 + 分析报告 |
+| [error-translator](skills/error-translator/) | 调试 | 编程错误翻译：英文报错 → 中文解释 + 修复方案 |
+| [eslint-fix](skills/eslint-fix/) | 开发效率 | 使用项目锁定工具预检、限范围修复并复验 ESLint 问题 |
+| [dep-auditor](skills/dep-auditor/) | 安全 | 依赖安全审计：CVE 漏洞检测 + 过期检查 + 许可证风险 |
+| [test-generator](skills/test-generator/) | 测试 | 依据真实代码契约生成并运行单元测试或集成测试 |
+| [github-actions-gen](skills/github-actions-gen/) | CI/CD | 分析真实项目，生成安全、可验证的 GitHub Actions workflows |
+| [env-manager](skills/env-manager/) | 开发效率 | 环境变量管理：扫描 .env 文件 + 校验 + 安全检查 + 生成模板 |
+| [ds-mapper](skills/ds-mapper/) | 理解代码库 | 项目结构地图：生成带注释的可视化目录树，快速理解任意仓库 |
+| [skill-curator](skills/skill-curator/) | 资源维护 | 核验 GitHub 候选 Skill，输出中文分类、描述、评分与风险证据 |
+
+---
+
+<a id="how-to-create"></a>
+## 🚀 如何创建自己的 Skill
+
+每个 Skill 就是一个目录，里面放一个 `SKILL.md` 文件：
+
+```markdown
+---
+name: my-skill
+description: 技能的一句话描述
+---
+
+# 技能名称
+
+## 触发条件
+当用户要求 XXX 时激活此技能
+
+## 工作流程
+1. 第一步...
+2. 第二步...
+
+## 输出格式
+- 格式说明...
+```
+
+### Skill 最佳实践
+
+1. **触发条件要明确** — 避免与其他 skill 冲突
+2. **步骤要具体** — 让 Claude 知道该做什么
+3. **包含示例** — 给出输入/输出样例
+4. **保持精简** — 一个 skill 做一件事
+5. **中英混合** — 技术术语保留英文，说明用中文
+
+---
+
+## 🔗 官方入口
+
+- [Claude Code 官方文档](https://code.claude.com/docs)
+
+---
+
+## 📈 Star History
+
+[在 Star History 查看项目增长趋势](https://www.star-history.com/#laolaoshiren/claude-code-skills-zh&Date)
+
+---
+
+<a id="contributing"></a>
+## 🤝 贡献
+
+欢迎提交 PR！请将你的 skill 放入 `skills/` 目录并更新上方列表。
+
+📢 [推荐优质 Skills，审核后收录 →](https://github.com/laolaoshiren/claude-code-skills-zh/issues/1)
+
+维护和收录标准见：[项目维护手册](docs/MAINTENANCE.md)。
+
+---
+
+## ⭐ 如果这个项目帮到了你
+
+请给个 Star ⭐ 这是对我最大的鼓励！
+
+---
+
+## 📝 License
+
+MIT

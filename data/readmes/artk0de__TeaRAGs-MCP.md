@@ -363,8 +363,7 @@ npm install -g tea-rags
   "mcpServers": {
     "tea-rags": {
       "command": "tea-rags",
-      "args": ["server"],
-      "env": { "CODEGRAPH_ENABLED": "true" }
+      "args": ["server"]
     }
   }
 }
@@ -375,18 +374,19 @@ Voyage), an external Qdrant, and the built-in ONNX provider (beta) are covered
 in the
 [installation guide](https://artk0de.github.io/TeaRAGs-MCP/quickstart/installation).
 
-### 🕸️ Enable the call graph
+### 🕸️ The call graph
 
-The call graph is **off by default** while it is in beta. Turn it on with
-`CODEGRAPH_ENABLED=true` in the MCP server's environment — the JSON above
-already does — or, in Claude Code:
+The call graph is **on by default**. To index a project without it, set
+`CODEGRAPH_ENABLED=false` for that run, or pin it on an indexed project:
 
 ```bash
-claude mcp add tea-rags -s user -e CODEGRAPH_ENABLED=true -- tea-rags server
+tea-rags projects set-env --name <alias> CODEGRAPH_ENABLED=false
 ```
 
-Then reindex. The flag is recorded per project, so later runs from the CLI or
-auto-update keep the graph on. Details:
+The flag is recorded per project, so later runs from the CLI, the MCP server or
+auto-update keep each project's choice. Projects indexed while the call graph
+was opt-in keep the state they were indexed with; turn it on for one with
+`CODEGRAPH_ENABLED=true` in the same command. Details:
 [Codegraph Enrichments](https://artk0de.github.io/TeaRAGs-MCP/usage/advanced/codegraph-enrichments).
 
 ## 🚀 Quick Start
@@ -561,14 +561,34 @@ Rows are ordered by overall capability, richest support first.
 | **_Ruby_**       | 🌔 **full** · tree-sitter (RSpec block grouping, comment attachment, spec scope splitting, method-body splitting) | 🌖 **high** · RSpec scope chunker (one chunk per example, ancestor setup injected)                                                                                                         | untyped 🌖 **high** · YARD 🌕 **maximum** · RBS/Sorbet 🌑 **TBD** — 15-strategy chain + 4 dispatch components + 20-grammar DSL catalogue + YARD type-source + db/schema.rb column accessors |
 | **_Swift_**      | 🌔 **full** · tree-sitter                                                                                         | 🌖 **high** · XCTest + swift-testing recognition (test cases, setUp/tearDown, @Test/@Suite) plus Quick/Nimble DSL scope chunking (per-scenario chunks with ancestor beforeEach spliced in) | 🌖 **high** — 10-strategy chain + superclass dispatch + field and return-type receiver typing + nested-type and module-value receivers; no import narrowing                                 |
 | **_Python_**     | 🌔 **full** · tree-sitter                                                                                         | 🌓 **medium** · generic AST                                                                                                                                                                | 🌖 **high** — 10-strategy chain + C3 MRO + cone/union/callable-param/dict-table dispatch + re-export-aware imports + inferred return types + gated framework vocabularies                   |
+| **_Rust_**       | 🌔 **full** · tree-sitter (named-item extraction, #[cfg(test)] / #[test] scopes)                                  | 🌖 **high** · attribute-based test scope chunking (#[cfg(test)] / #[test])                                                                                                                 | 🌗 **moderate** — 7-strategy; trait dispatch; declared return/struct-field chains (Self, owner generics); same-file declared bare-call result locals                                        |
 | **_Go_**         | 🌔 **full** · tree-sitter (func/type split)                                                                       | 🌓 **medium** · generic AST                                                                                                                                                                | 🌗 **moderate** — 7-pass chain + scope-aware typed locals + struct-field chains + embedding promotion + go.mod module-path imports; no interface dispatch                                   |
 | **_Java_**       | 🌔 **full** · tree-sitter                                                                                         | 🌓 **medium** · generic AST                                                                                                                                                                | 🌗 **moderate** — 6-strategy + java.lang stdlib whitelist + overload disambiguation                                                                                                         |
-| **_Rust_**       | 🌔 **full** · tree-sitter (named-item extraction)                                                                 | 🌓 **medium** · generic AST (#[test] attrs not preserved)                                                                                                                                  | 🌗 **moderate** — 7-strategy; trait-based dispatch                                                                                                                                          |
 | **_Bash_**       | 🌔 **full** · tree-sitter                                                                                         | 🌒 **low** · generic AST (bats/shunit not recognized)                                                                                                                                      | 🌘 **minimal** — function-call extraction only, no dispatch                                                                                                                                 |
 | **_Markdown_**   | 🌔 **full** · MarkdownChunker (ToC + smart chunking)                                                              | 🌑 **N/A** · doc-only                                                                                                                                                                      | 🌑 **none** — no call graph                                                                                                                                                                 |
 | **_sql_**        | 🌑 **none** · CharacterChunker                                                                                    | 🌑 **N/A**                                                                                                                                                                                 | 🌑 **none**                                                                                                                                                                                 |
 | **_jsonc_**      | 🌑 **none** · CharacterChunker                                                                                    | 🌑 **N/A**                                                                                                                                                                                 | 🌑 **none**                                                                                                                                                                                 |
 | **_json_**       | 🌑 **none** · CharacterChunker                                                                                    | 🌑 **N/A**                                                                                                                                                                                 | 🌑 **none**                                                                                                                                                                                 |
+
+## Language / toolchain versions
+
+Descriptor policy is authoritative. Fixture-validated means syntax examples, not
+compiler conformance. Grammar-bounded means installed parser plus project
+fixtures; no certified release range. Unversioned means dialect-based documents
+or syntax-blind fallback. Internal revisions only route index rebuilds.
+
+| Language   | Language / toolchain policy | Grammar package version            | Internal revisions (chunking / walker / codegraphSchema) | Evidence and limits                                                                                                                                                                                               |
+| ---------- | --------------------------- | ---------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ruby       | grammar-bounded             | tree-sitter-ruby@0.23.1            | 2 / 10 / 2                                               | Installed grammar and project fixtures bound Ruby syntax; no Ruby/MRI release range or runtime conformance certified · tests/core/domains/language/capability/version-policy.test.ts                              |
+| typescript | grammar-bounded             | tree-sitter-typescript@0.23.2      | 2 / 15 / 2                                               | Installed TypeScript/TSX grammar and project fixtures bound syntax; TypeScript compiler package version does not certify a language release range · tests/core/domains/language/capability/version-policy.test.ts |
+| javascript | grammar-bounded             | tree-sitter-javascript@0.25.0      | 3 / 5 / 2                                                | Installed JavaScript/JSX grammar and project fixtures bound syntax; no ECMAScript edition or Node/browser runtime range certified · tests/core/domains/language/capability/version-policy.test.ts                 |
+| python     | grammar-bounded             | tree-sitter-python@0.25.0          | 1 / 12 / 2                                               | Installed grammar and project fixtures bound Python syntax; no Python/CPython release range or runtime conformance certified · tests/core/domains/language/capability/version-policy.test.ts                      |
+| go         | grammar-bounded             | tree-sitter-go@0.25.0              | 1 / 6 / 2                                                | Installed grammar and project fixtures bound Go syntax; no Go toolchain release range or compiler conformance certified · tests/core/domains/language/capability/version-policy.test.ts                           |
+| java       | grammar-bounded             | tree-sitter-java@0.23.5            | 1 / 4 / 2                                                | Installed grammar and project fixtures bound Java syntax; no JDK release range, preview-feature support or compiler conformance certified · tests/core/domains/language/capability/version-policy.test.ts         |
+| rust       | Rust 1.88.0 / edition 2024  | tree-sitter-rust@0.24.0            | 4 / 10 / 2                                               | Syntax fixtures only, not compiler conformance; latest upstream release unverified; macro expansion and nightly syntax not certified · tests/core/domains/language/capability/version-policy.test.ts              |
+| bash       | grammar-bounded             | tree-sitter-bash@0.25.1            | 2 / 2 / 2                                                | Installed Bash grammar and project fixtures bound shell syntax; no Bash release range or POSIX-shell runtime conformance certified · tests/core/domains/language/capability/version-policy.test.ts                |
+| swift      | grammar-bounded             | tree-sitter-swift@0.7.3-prebuild.1 | 4 / 9 / 2                                                | Installed grammar and project fixtures bound Swift syntax; no Swift toolchain release range or compiler conformance certified · tests/core/domains/language/capability/version-policy.test.ts                     |
+| markdown   | unversioned                 | N/A (no tree-sitter grammar)       | 1 / 1 / 1                                                | remark with GFM/frontmatter dialect plugins, not a compiler release; no complete CommonMark/GFM conformance certification · tests/core/domains/language/capability/version-policy.test.ts                         |
 
 </details>
 <!-- markdownlint-enable MD033 -->

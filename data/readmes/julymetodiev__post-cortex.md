@@ -54,7 +54,7 @@ post-cortex-proto ──► post-cortex-core ──► post-cortex-embeddings
 ## Installation
 
 ```bash
-# Cargo (any platform with Rust 1.90+) — ships the pcx CLI from crates.io
+# Cargo (any platform with Rust 1.95+) — ships the pcx CLI from crates.io
 cargo install post-cortex-daemon --features "embeddings,surrealdb-storage"
 
 # Homebrew (macOS / Linux)
@@ -174,6 +174,8 @@ Configure in `~/.post-cortex/daemon.toml`. See [Daemon Mode docs](docs/DAEMON_MO
 | `PC_PORT` | 3737 | Port |
 | `PC_DATA_DIR` | ~/.post-cortex/data | Storage location |
 | `PC_STORAGE_BACKEND` | rocksdb | `rocksdb` or `surrealdb` |
+| `PC_AUTH_TOKEN` | unset | Bearer token for HTTP (except `/health`) and gRPC |
+| `PC_ALLOWED_HOSTS` | loopback + `host` | Extra `Host` headers accepted on `/mcp` and `/api/*` (comma-separated `host` or `host:port`); set when binding to `0.0.0.0` — see [Allowed hosts](docs/DAEMON_MODE.md#allowed-hosts-dns-rebinding) |
 
 ## Development
 

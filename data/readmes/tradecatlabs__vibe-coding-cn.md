@@ -7,9 +7,9 @@
 
 <a id="vibe-coding-指南"></a>
 
-# vibe-coding-cn：Vibe Coding工具箱
+# vibe-coding-cn：非严肃开发的 Vibe Coding 工具箱
 
-**以Pi Agent与OpenAI GPT为主体底座，将既有Context、Skills和Extensions组合成可验证的工作流。**
+**以 Pi Agent 与 OpenAI GPT 为实现基座，整合并编排可见层中既有的 Context、Skills 与 Extensions 组件，构建高可用系统。**
 
 <!--
   徽章区域 (BADGES)
@@ -21,7 +21,6 @@
   <a href=".github/context/gongfa/README.md#原文文集"><img src="https://img.shields.io/badge/功法-体系-slateblue?style=flat" alt="功法体系：思想、准则、方法与流程"></a>
   <a href=".github/context/research/README.md"><img src="https://img.shields.io/badge/研究-证据-teal?style=flat" alt="研究事实与证据"></a>
   <a href=".github/context/getting-started/learning-map.md"><img src="https://img.shields.io/badge/入门-教程-red?style=flat" alt="从零开始完整入门"></a>
-  <a href=".github/extensions/codex-config/.codex/README.md"><img src="https://img.shields.io/badge/Codex-配置-blue?style=flat" alt="Codex 配置一键安装"></a>
   <a href=".github/skills/README.md#当前保留"><img src="https://img.shields.io/badge/Skills-技能-forestgreen?style=flat" alt="skills技能大全"></a>
   <a href=".github/context/prompts/README.md#在线提示词库"><img src="https://img.shields.io/badge/提示词-表格-blue?style=flat" alt="提示词在线表格"></a>
   <a href=".github/context/assets/README.md#外部资源本地注册表"><img src="https://img.shields.io/badge/资源-索引-teal?style=flat" alt="外部资源本地注册表"></a>
@@ -119,7 +118,7 @@ pi --skill .github/skills
 4. 用Pi原生`/model`选择已授权的OpenAI模型。先明确任务和验收，再让Agent按需读取资料、使用相应Skill并显式调用现有程序。
 
 加载不是执行许可，也不是运行或效果测试。不要把`.github/extensions/`整体传给`-e`。
-既有[Codex配置](.github/extensions/codex-config/.codex/README.md)和[从零开始](.github/context/getting-started/README.md)仍保留，按其中具体工具选择使用，不是新造第二套主体运行时。
+[从零开始](.github/context/getting-started/README.md)保留具体CLI的入门资料；原Codex配置基线及安装脚本已移除，不再提供一键安装入口。
 
 ### 🚀 从零开始
 
@@ -142,6 +141,8 @@ pi --skill .github/skills
 ## 🗂️ 项目目录结构概览
 
 资源只有三个域；下面列出域边界与Context的全部9个集合，不展开各原生包内部源码。完整对象分别在三个域的README中导航。
+法器与功法的[工具解释模板v0](.github/context/assets/templates/tool-explanation-template-v0.md)已登记：两份原模板按序拼接，保留15项，不自行合并或新增栏目。
+Extensions当前保留17个一级对象；用户点名的8项程序/配置/图文文件已移除，历史资料不代表当前可用入口。
 原Actions定义已移入Extensions保全，自动CI、打标签及欢迎流程已停用；本地`make test`保留。
 
 ```
@@ -157,7 +158,29 @@ pi --skill .github/skills
 ├── .gitignore                   # Git 忽略规则
 ├── .lychee.toml                 # 外部链接检查配置
 └── .github/                     # GitHub 配置与仓库内容
-    ├── AGENTS.md                # 本目录规则和平台边界
+    ├── AGENTS.md                # 本目录规则、维护入口和平台边界
+    ├── check-ai-citation.py     # AI引用校验
+    ├── check-directory-docs.py  # 目录文档校验
+    ├── check-doc-structure.py   # 文档结构校验
+    ├── check-external-resources.py # 外部资源校验
+    ├── check-gongfa.py          # 功法协议校验
+    ├── check-local-links.py     # 内链与锚点校验
+    ├── check-markdown-details.py # 折叠块与围栏校验
+    ├── check-metadata.py        # 机器导航校验
+    ├── check-research-raw.py    # 研究原始事实校验
+    ├── check-source-facts.py    # 源事实镜像校验
+    ├── check-wiki.py            # 独立Wiki校验
+    ├── test-faqi-catalog.py     # 法器维护测试
+    ├── test-gongfa-catalog.py   # 功法总表测试
+    ├── test-gongfa.py           # 功法协议测试
+    ├── test-markdown-details.py # 折叠块与围栏测试
+    ├── test-source-archive.py   # 原始资料档案测试
+    ├── source_boundaries.py    # 共享第三方与来源检查边界
+    ├── taxonomy.py             # 共享分类与文档导航读取
+    ├── source_archive.py       # 原始资料读取与完整性保护
+    ├── book_views.py           # 文集阅读视图与历史导航
+    ├── requirements-faqi.txt    # 法器维护依赖
+    ├── requirements-gongfa.txt  # 功法维护依赖
     ├── context/                 # 按需读取的既有资料
     │   ├── README.md            # 资料导航
     │   ├── AGENTS.md            # 原始数据、来源与信任规则
@@ -170,8 +193,8 @@ pi --skill .github/skills
     │   ├── ai-citation/         # 原AI引用语料
     │   ├── metadata/            # 原分类、术语与重定向
     │   └── assets/              # 原图片、数据与模板
-    ├── skills/                  # 2个自有 + 16个既有官方入口
-    ├── extensions/              # 原程序、脚本、小工具和适配
+    ├── skills/                  # 仅保留auto-skill、auto-tmux两个自有入口
+    ├── extensions/              # 原程序与公共维护工具；自有Skill封装已退役
     ├── CODEOWNERS               # 路径级 owner 评审基线
     ├── ISSUE_TEMPLATE/          # Issue 模板
     ├── PULL_REQUEST_TEMPLATE.md # PR 模板

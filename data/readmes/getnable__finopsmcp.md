@@ -64,6 +64,8 @@ run `nable scan --spend` for the spend breakdown (uses Cost Explorer, ~$0.02)
 
 Uses the AWS credentials already on your machine and reads only free cloud APIs, so scanning never adds to your bill. `uvx nable scan --demo` runs on sample data with no account at all. Add `--json` for CI, or `--spend` for a deeper breakdown.
 
+`uvx nable commitments status` lists the RDS, EC2, ElastiCache, Redshift, OpenSearch and MemoryDB reservations and the Savings Plans the account holds and when each ends, from free reads; `--fail-within 30` makes it a CI check (exit 1 when one ends within 30 days, 2 when one could not be read). [examples/github-actions/commitments-status.yml](examples/github-actions/commitments-status.yml) runs it every week through a read-only role assumed with GitHub OIDC and keeps the JSON.
+
 From there nable:
 
 - **Shows what you spend** across AWS, Azure, GCP, Kubernetes, and 15 AI, data and SaaS providers, in one place.
@@ -100,7 +102,7 @@ Infracost prices an infrastructure change as it is written and in the pull reque
 
 ## Agent guard
 
-`nable guard install` adds a hook to Claude Code (and `--all` to every supported agent it finds: Cursor, Codex CLI, GitHub Copilot, Gemini CLI, Cline) that checks each infrastructure command, or MCP call in Claude Code, Cursor and Codex, before it runs: a one-way door (destroy, terminate, a commitment) asks you first, and a launch is priced at list price so a ~$128k/mo `run-instances` (8x p4d.24xlarge) asks instead of passing. It also watches the pattern across calls: a velocity cap on the monthly run-rate let through per hour (`FINOPS_POLICY_VELOCITY_CAP_USD`, default four times the $500/mo per-action threshold) and loop detection for the same creation repeated (three identical `create-stack` in ten minutes asks). Every verdict goes to a local hash-chained ledger.
+`nable guard install` adds a hook to Claude Code (and `--all` to every supported agent it finds: Cursor, Codex CLI, GitHub Copilot, Gemini CLI, Cline) that checks each infrastructure command, or MCP call in Claude Code, Cursor and Codex, before it runs: a one-way door (destroy, terminate, a commitment purchase) asks you first, and a launch is priced at list price so a ~$128k/mo `run-instances` (8x p4d.24xlarge) asks instead of passing. An EC2 Capacity Reservation is priced the same way, since it bills from creation whether or not anything runs in it; with a commitment duration it is a commitment purchase, and asks whatever the policy says. The purchases it covers, and the ones it does not, are listed in [CHANGELOG.md](CHANGELOG.md#0130-2026-10-18). It also watches the pattern across calls: a velocity cap on the monthly run-rate let through per hour (`FINOPS_POLICY_VELOCITY_CAP_USD`, default four times the $500/mo per-action threshold) and loop detection for the same creation repeated (three identical `create-stack` in ten minutes asks). Every verdict goes to a local hash-chained ledger.
 
 **AI budgets that stay current.** When a Claude Code, Codex or Cursor spend cap is set, the guard weighs each call against it. Cursor usage comes from its Admin API (`CURSOR_ADMIN_API_KEY`): the hook never waits on the network, and when its copy is over an hour old it refreshes it in the background and says so (`FINOPS_GUARD_BACKGROUND_REFRESH=0` turns that off). `FINOPS_GUARD_AUTO_REFRESH_BUDGET=1` does the same for the cloud-budget figure, recomputing it from local cost history with no billed calls.
 
@@ -108,7 +110,7 @@ Infracost prices an infrastructure change as it is written and in the pull reque
 
 ```bash
 nable guard report --session <id>     # what it asked, blocked and let through, in dollars
-nable guard reconcile --hours 24      # CloudTrail's creates and destroys against the ledger
+nable guard reconcile --hours 24      # CloudTrail's creates, destroys and commitments against the ledger
 nable guard export --format cef       # the verified ledger, for a SIEM
 nable budget refresh                  # recompute budgets and the guard's spend figure
 nable budget ci-gate --fail-on-breach --json   # a pipeline step that fails on a breached budget
@@ -158,6 +160,17 @@ nable pack validate ./my-pack         # for authors
 
 An `ns/name` install reads a registry index named by `packs.registry` in your org policy, `--registry` or `NABLE_PACK_REGISTRY`; the default index (`getnable/registry` on GitHub) is not published yet and answers 404, so name one of your own. Your org policy file can limit where packs come from, cap what they may ask for, and require signatures (`packs:` in `nable.policy.yaml`). Details, the capability list and the honest limits of sandboxing on a laptop are in [docs/PACKS.md](docs/PACKS.md).
 
+## Bring it into a paid workspace
+
+Everything above runs on your machine and stays there. When you move to a paid workspace, `nable cloud connect` carries two things into it: your org model (the files in your org dir) and the guard's decision ledger, each line exactly as stored. The ledger's records are your agents' commands and the paths the guard judged, with credentials redacted and nothing else changed, so they can name paths, hosts and user names; the dry run counts the records that do. It is a dry run first, and a dry run sends nothing: it prints where the bytes would go, which files and how many records, the size, the sha256 and a confirm code, and saves those exact bytes for you to read.
+
+```bash
+nable cloud connect --box https://your-workspace.example.com                        # the dry run
+nable cloud connect --box https://your-workspace.example.com --send --confirm <code>
+nable cloud status  --box https://your-workspace.example.com                        # what the workspace holds
+```
+
+`--send` sends exactly the bytes the confirm code names, to the box it names (the code is the sha256 of the box, a newline and the bytes), and refuses if anything changed since you looked. Run it at your own terminal, or pass `--as WHO`; the guard asks before an agent runs it. HTTPS only, and never in air-gap mode. The workspace key is an analyst key made on the workspace's /workspace page, read from `NABLE_WORKSPACE_KEY`, a `--key-file` with mode 0600, or a hidden prompt; it is never taken from the command line and never stored. A ledger whose hash chain breaks, and a repo's `nable.org/` you have not trusted, are shown and not sent.
 
 ## Setup
 
@@ -388,7 +401,7 @@ az role assignment create --assignee <client-id> --role 'Monitoring Reader' --sc
 
 **Is nable free?** Yes. The terminal scan, every cost query, anomaly detection, all waste and rightsizing findings, and every connector are free forever. Every install starts with a 7-day trial of Pro features. Pro ($25/mo) adds ticket creation (Jira, Linear, GitHub Issues), email reports and digests sent on request, and the org-wide rollup across accounts. Team ($1,000/mo flat, unlimited seats) adds the conversational Slack bot and chat remediation. Forecasts, commitment recommendations, remediation PRs, and the Ledger are free today while their pricing is decided. Reports and alerts on a schedule, sent without anyone asking, are nable Cloud; this install sends them when you ask.
 
-**Does my billing data leave my machine?** nable never uploads it: it reads your cost data on your machine and sends it to no nable service, and telemetry is off unless you turn it on (and never carries cost figures). In an editor, the answers you ask for reach the model you chat with, as every MCP tool result does; `nable scan` and the rest of the CLI involve no model. You can confirm the no-egress behavior in the source.
+**Does my billing data leave my machine?** nable never uploads it: it reads your cost data on your machine and sends it to no nable service, and telemetry is off unless you turn it on (and never carries cost figures). The one thing that sends your own files anywhere is `nable cloud connect --send`, which you run to carry your org model and guard ledger into a paid workspace, and only with the confirm code its dry run showed you for those bytes and that box. In an editor, the answers you ask for reach the model you chat with, as every MCP tool result does; `nable scan` and the rest of the CLI involve no model. You can confirm the no-egress behavior in the source.
 
 **What clouds and providers does it support?** AWS, Azure and GCP; Kubernetes (a kubeconfig estimate, or OpenCost); AI and LLM providers (OpenAI, Anthropic, Bedrock, Vertex AI, OpenRouter, LiteLLM, Langfuse); data platforms (Databricks, Snowflake, MongoDB Atlas); and SaaS (Datadog, New Relic, Cloudflare, Twilio, Vercel). Modal, Together, Replicate, Cohere and Mistral connect but return no spend figure yet (see Connectors).
 

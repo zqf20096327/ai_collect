@@ -50,7 +50,7 @@ For a smaller initial tool catalog, set `ABLETON_MCP_TOOL_PROFILE=core` in the M
 
 ## What it does
 
-For separate creative and functional model contexts, configure optional [production specialists](docs/ableton-mcp/source/pages/guides/production-specialists.md). `ABLETON_MCP_TOOL_PROFILE=producer` exposes nine tools, with detailed context stored in private artifacts. Each role can use an installed Ollama model or a configured ACP agent; Live changes retain their existing confirmation guards.
+For separate creative and functional model contexts, configure optional [production specialists](docs/ableton-mcp/source/pages/guides/production-specialists.md). `ABLETON_MCP_TOOL_PROFILE=producer` exposes twelve tools, with detailed context and durable session history stored in private artifacts. Each role can use an installed Ollama model or a configured ACP agent; Live changes retain their existing confirmation guards.
 
 - **Reads**: transport, tempo, key and scale, quantization, grooves, cue points, tracks, scenes, clips, notes, clip envelopes, devices and parameters, mixer and routing, rack hierarchies, and the Live browser.
 - **Guarded mutations**: track, scene and clip lifecycle, device loading and parameters, MIDI note editing, mixing and routing, undo and redo, and panic.
@@ -58,20 +58,30 @@ For separate creative and functional model contexts, configure optional [product
 - **Audio analysis**: loudness, true peak, spectrum, pitch, transients and tuning of local audio files.
 - **Optional NKS preset catalog**: search, tags and favorites for presets discovered from your plug-in libraries.
 
-It publishes 297 tools, 9 concrete resources, 13 resource templates and 57 prompt templates. When Live's Remote Script API doesn't expose something, such as Arrangement automation, the tool reports that boundary and fails closed.
+It publishes 327 tools, 9 concrete resources, 13 resource templates and 89 prompt templates. When Live's Remote Script API doesn't expose something, such as Arrangement automation, the tool reports that boundary and fails closed.
 
 ## Documentation
 
+- [Remove a Return effect](docs/ableton-mcp/source/pages/guides/return-removal.md)
+
 - [Overview](docs/ableton-mcp/source/pages/introduction/overview.md), [Installation](docs/ableton-mcp/source/pages/introduction/installation.md), [Quickstart](docs/ableton-mcp/source/pages/introduction/quickstart.md)
+- [Develop a Session scene](docs/ableton-mcp/source/pages/guides/session-scene-development.md)
+- [Remove a Session scene](docs/ableton-mcp/source/pages/guides/session-scene-removal.md)
+- [Remove a track or Group](docs/ableton-mcp/source/pages/guides/track-removal.md)
 - [Guarded mutations](docs/ableton-mcp/source/pages/guides/guarded-mutations.md) and [MIDI clip variations](docs/ableton-mcp/source/pages/guides/midi-clip-variations.md)
+- [Repeat a phrase or play it once](docs/ableton-mcp/source/pages/guides/clip-phrase-loop.md)
 - [Cancel agent work](docs/ableton-mcp/source/pages/guides/request-cancellation.md)
 - [Resume work after an interruption](docs/ableton-mcp/source/pages/guides/resume-session-work.md)
+- [Crop a MIDI phrase](docs/ableton-mcp/source/pages/guides/midi-crop.md)
+- [Define MIDI phrase bounds](docs/ableton-mcp/source/pages/guides/midi-clip-markers.md)
 - [Create a playable musical sketch](docs/ableton-mcp/source/pages/guides/musical-sketch.md)
+- [Reverse a MIDI phrase](docs/ableton-mcp/source/pages/guides/midi-retrograde.md)
 - [Organize names and colors](docs/ableton-mcp/source/pages/guides/session-organization.md)
 - [Understand a Set and explore instruments](docs/ableton-mcp/source/pages/guides/session-orientation.md)
 - [Understand how MIDI parts relate](docs/ableton-mcp/source/pages/guides/musical-parts.md)
 - [Keep a Looper performance](docs/ableton-mcp/source/pages/guides/looper-performance.md)
 - [Capture and inspect Live audio](docs/ableton-mcp/source/pages/guides/live-audio-capture.md)
+- [Navigate to an Arrangement locator](docs/ableton-mcp/source/pages/guides/arrangement-navigation.md)
 - [Audition an Arrangement passage](docs/ableton-mcp/source/pages/guides/arrangement-audition.md)
 - [Compare instruments while keeping the original](docs/ableton-mcp/source/pages/guides/instrument-comparison.md)
 - [Refine an instrument sound](docs/ableton-mcp/source/pages/guides/instrument-refinement.md)

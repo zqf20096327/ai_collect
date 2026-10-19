@@ -11,7 +11,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 An [MCP](https://modelcontextprotocol.io) server that turns Claude, ChatGPT, Cursor or any MCP-capable assistant into a
-careful genealogist. It knows **where** the records of your ancestors are (114 archives and databases across Russia and
+careful genealogist. It knows **where** the records of your ancestors are (124 archives and databases across Russia and
 the former USSR, Europe, the British Isles, the USA and Latin America), **how** to search them (name variants,
 transliterations, old spelling, the Julian calendar), and **when a find really is your person** — so the assistant gives
 you working links and a plan instead of confident guesses.
@@ -25,9 +25,9 @@ repression files, emigration records — and every trap we fell into along the w
 
 ## At a glance
 
-- **114 archives and databases in 55 countries**, each with what it holds and *how to search it well* — and which
+- **124 archives and databases in 55 countries**, each with what it holds and *how to search it well* — and which
   archive holds the records of a historical province today (borders moved; the answer is often not the obvious one).
-- **24 tools** for the real work of a genealogist: name variants and 9 transliteration systems, Daitch–Mokotoff,
+- **28 tools** for the real work of a genealogist: name variants and 9 transliteration systems, Daitch–Mokotoff,
   Julian, Hebrew and French Republican calendars, dates by church feasts, Church Slavonic numerals, kinship in three
   languages, DNA, evidence checks, a tree audit, live search in open databases, archive request drafts.
 - **It works on your tree, not beside it.** Point it at the `.ged` file from MyHeritage, Ancestry, Gramps or RootsMagic
@@ -109,7 +109,7 @@ your program (Family Historian and webtrees work on GEDCOM directly). Files not 
 
 | Without it | With genealogy-mcp |
 |---|---|
-| The assistant names two or three famous websites | 114 sources chosen by country, years and kind of record, each with "how to search it well" |
+| The assistant names two or three famous websites | 124 sources chosen by country, years and kind of record, each with "how to search it well" |
 | Searches one spelling | Spelling variants, pre-1918 orthography, male/female forms, 9 transliteration systems, given-name equivalents (Иван = Іоаннъ = Jan = Johann = Juan) |
 | Invented or broken URLs | Ready search links built from tested URL templates; a weekly job checks every site |
 | "This is probably your ancestor" | An explicit evidence rule: a namesake is not a relative |
@@ -134,9 +134,11 @@ Everything runs on your computer. The server goes online only when the assistant
 - **Worldwide:** FamilySearch (records and the catalogue of unindexed images), Internet Archive full text, MyHeritage,
   Geni, WikiTree, Find a Grave, BillionGraves, Arolsen Archives, Yad Vashem, JewishGen, Matricula, Geneanet, Wikipedia.
 - **Russia and the USSR:** Yandex Archive, archive guides, VGD forum, Pamyat Naroda, OBD Memorial, gwar.mil.ru,
-  Open List, Immortal Barrack, Returned Names, PSTGU martyrs, Presidential and National Electronic Libraries,
-  historical libraries, old maps, church history, RIA-1914, regional archives, ZAGS, TsAMO, RGVIA, RGIA, GARF.
+  Road of Memory, Immortal Regiment, Open List, Immortal Barrack, Returned Names, PSTGU martyrs, NashiPredki,
+  metricabook.ru, Rodovod, Presidential and National Electronic Libraries, historical libraries, old maps, church
+  history, RIA-1914, regional archives, ZAGS, TsAMO, RGVIA, RGIA, GARF.
 - **Ukraine, Belarus, Moldova, Romania, Poland, the Baltics:** national archive portals and catalogues, TsDIAK,
+  genealogica.ro, Genealogy of Bessarabia, deportari.org, Cartea Memoriei, the Moldavian censuses of 1772–1774,
   Geneteka, Szukajwarchiwach, epaveldas, Raduraksti, the Estonian archives.
 - **Europe:** ICRC WWI prisoners, CWGC, Volksbund, ScotlandsPeople, FreeBMD, Irish civil and census records, Archion,
   GenWiki, FranceArchives, Mémoire des hommes, Antenati, PARES, Digitarq, Open Archives (NL), Belgian State Archives,
@@ -210,21 +212,25 @@ The package is on [PyPI](https://pypi.org/project/genealogy-mcp/) and in the [of
 | `plan_research` | A step-by-step plan for a country and period: which records exist, guides, sources in order |
 | `find_sources` | Sources by country/region (`europe`, `latin_america`, `russian_empire`…), years and record kind |
 | `source_details` | One source: coverage, access, how to search |
-| `where_are_records` | Which archives now hold the records of a historical province (Russian Empire, Poland, Galicia, Bukovina, East Prussia, the Baltics, the Caucasus) |
+| `where_are_records` | Which archives now hold the records of a historical province (Russian Empire, Poland, Galicia, Bukovina, East Prussia, the Baltics, the Caucasus); with a year, whose land it was then (southern Bessarabia: Moldavia/Romania 1857–1878, Romania 1918–1944); with a village, which church kept its books |
 | `search_links` | Ready search URLs for a name and its variants |
 | `search_online` | Live search: Internet Archive full text, Chronicling America, WikiTree, Open Archives, Open List |
-| `place_history` | Wikidata: what a village belonged to over the years, coordinates, Wikipedia article |
-| `name_variants` | Spelling, old orthography, gendered forms, transliterations, Daitch–Mokotoff codes, given-name equivalents (incl. Yiddish and Hebrew), patronymics |
+| `place_history` | Wikidata: what a village belonged to over the years, coordinates, Wikipedia article; the church it was attached to, where known |
+| `name_variants` | Spelling, old orthography, gendered forms, transliterations, Daitch–Mokotoff codes, given-name equivalents (incl. Yiddish and Hebrew), patronymics; Moldovan surnames in Romanian, Russian and Soviet Moldavian forms, a second surname («Мокану, он же Плеш») flagged |
 | `normalize_date` | "около 1899", "9 de octubre de 1899" → `ABT 1899`, `9 OCT 1899` |
 | `convert_calendar` | Julian ↔ Gregorian, Hebrew, French Republican |
 | `feast_date` | «на Покров», «после Петрова поста», Easter, Wielkanoc… → the date in a given year |
 | `cyrillic_numerals` | ҂аѡ҃п ↔ 1880 |
 | `birth_year_from_age` | The birth-year range from an age in a record |
+| `estimate_birth_year` | A birth year from relatives (eldest child −27, spouse and siblings ±8, parents +18…+45) and ages: `BET … AND …` / `ABT …` with a ready explanation; ages that cannot be one person flagged as likely namesakes |
 | `kinship` | The name of a relation in ru/en/ro, with the expected DNA share |
 | `dna_match` | Shared cM → the relationships it fits (Shared cM Project 4.0) |
 | `check_match` | Is a found record our person? A verdict with every fact compared (Hispanic double surnames too) |
+| `parent_hypothesis` | A parent hypothesis from a patronymic: candidates ranked by name, village and age, arguments for and against (grandson's name, godparents, sureties), a warning for namesakes from another village, the record that would settle it — a lead, never a link |
 | `audit_tree` | Impossible facts, duplicates and gaps in a GEDCOM or `family_tree.json` |
 | `project_view`, `project_save`, `project_log`, `project_transfer` | The research project between conversations: people, families, sources, leads, the search log, GEDCOM import/export — or a gene-archive site folder, written through its checks and logs, or your own `.ged` file, changed in place |
+| `project_coverage` | What has been read: parish → year → part → film and frames → complete / partial up to No. … / not found; what is still unread for these villages and years |
+| `film_reading_plan` | Reading an unindexed FamilySearch film page by page: which films in which order, thumbnails vs full frames, a request budget under the rate limit, what to log |
 | `draft_archive_request` | A request letter to a registry office or archive |
 | `record_guide` | How to read and find a kind of record |
 | `glossary` | Old Russian record terms explained |
@@ -246,9 +252,10 @@ The package is on [PyPI](https://pypi.org/project/genealogy-mcp/) and in the [of
 
 ## Benchmark
 
-`evals/tasks.json` holds 32 questions with checkable answers: dates by church feasts, Julian, Hebrew and Republican
-calendars, Cyrillic numerals, Daitch–Mokotoff, DNA, kinship, old terms, archives of historical provinces, evidence
-checks, record history. `evals/check_tools.py` runs in CI and checks that the tools answer all of them correctly.
+`evals/tasks.json` holds 35 questions with checkable answers: dates by church feasts, Julian, Hebrew and Republican
+calendars, Cyrillic numerals, Daitch–Mokotoff, Moldovan surnames, DNA, kinship, old terms, archives of historical
+provinces and borders by year, evidence checks, ages that cannot be one person,
+record history. `evals/check_tools.py` runs in CI and checks that the tools answer all of them correctly.
 `evals/run.py` asks a Claude model the same questions without the server and with it and scores both
 (needs an API key; it costs money, so it is run by hand: Actions → Benchmark).
 

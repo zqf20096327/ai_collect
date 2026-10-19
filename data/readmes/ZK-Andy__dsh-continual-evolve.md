@@ -1,127 +1,188 @@
 # dsh-continual-evolve
 
-English | [中文](README.zh.md)
+<p align="center">
+  <b>为 <a href="https://github.com/deepseek-ai/deepseek-harness">DeepSeek Harness</a> 提供有治理、可自进化的记忆层。</b><br>
+  模型提议，代码门禁，一个数据库落盘。
+</p>
 
-[![awesome · DSH plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
-[![npm](https://img.shields.io/npm/v/dsh-continual-evolve)](https://www.npmjs.com/package/dsh-continual-evolve)
-[![CI](https://github.com/ZK-Andy/dsh-continual-evolve/actions/workflows/ci.yml/badge.svg)](https://github.com/ZK-Andy/dsh-continual-evolve/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-339933)](package.json)
-[![Tests](https://img.shields.io/badge/tests-656%20passing-brightgreen)]()
-[![Coverage · statements](https://img.shields.io/badge/coverage_statements-97%25-brightgreen)]()
-[![Coverage · branches](https://img.shields.io/badge/coverage_branches-92%25-green)]()
-[![Coverage · functions](https://img.shields.io/badge/coverage_functions-100%25-brightgreen)]()
+<p align="center">
+  <a href="https://www.npmjs.com/package/dsh-continual-evolve"><img src="https://img.shields.io/npm/v/dsh-continual-evolve?color=4D6BFE" alt="npm"></a>
+  <a href="https://github.com/ZK-Andy/dsh-continual-evolve/actions/workflows/ci.yml"><img src="https://github.com/ZK-Andy/dsh-continual-evolve/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-339933" alt="Node"></a>
+</p>
 
-A workspace-memory plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`): every memory lives in one central SQLite database (`~/.dsh/evolve/memory.db`, rows partitioned by workspace), the index is injected at session start, and the plugin's code is the literal **sole writer** — the model proposes, code gates and lands.
+<p align="center">
+  <a href="https://awesome-dsh-plugin.com"><img src="https://awesome-dsh-plugin.com/badge.svg" alt="awesome DSH plugin"></a>
+  <img src="https://img.shields.io/badge/tests-700%20passing-brightgreen" alt="Tests">
+  <img src="https://img.shields.io/badge/coverage_statements-97%25-brightgreen" alt="Coverage statements">
+  <img src="https://img.shields.io/badge/coverage_branches-92%25-green" alt="Coverage branches">
+  <img src="https://img.shields.io/badge/coverage_functions-99%25-brightgreen" alt="Coverage functions">
+</p>
 
-## Why
+<p align="center">中文 | <a href="README.en.md">English</a></p>
 
-Reusable experience gathered in one session (user preferences, pitfalls, project context) is forgotten by the next. A folder of markdown files makes memory visible but leaves every write ungoverned: index drift, frontmatter rot, oversized files, and secrets are only visible *after* a bad write lands. This plugin keeps ZCode's memory shape (per-workspace partitioning, injected index, typed memories) but moves the store into one database whose every mutation passes mechanical gates.
+全部记忆、技能与提示词补充住在一个中央 SQLite 库里（`~/.dsh/evolve/memory.db`，按工作区路径行分区）。会话开局注入它的索引，而插件的代码是字面意义的**唯一写者**——每条模型提案都要在一个事务内过机械门禁才会落盘。这里没有任何安全属性依赖模型自觉。
 
-## How it works
+## 亮点
 
-1. **Session-start injection** — the plugin registers a single system-prompt section: the workspace's memory index as a store query (hooks only, whole-line truncated over budget, ordered feedback > user > reference), the central-library path, and a three-line guide. The section is computed once per session and reused byte-for-byte, keeping the system prompt stable and the prompt cache warm; an empty store costs zero tokens.
-2. **Two tools, one writer** — `evolve_write(kind, …)` (create/update/delete, plus an explicit `move-to-global` for skills) is the explicit path for "remember …" / "forget …" and for sedimenting reusable procedures: `kind` is `memory`, `skill`, or `prompt`, and every proposal passes the code gates (id shape, type enum, the feedback Why/How contract, secret screening carried over from v1, 64KB body cap, optional `corrects` links to the same-workspace active memory being superseded) inside one transaction. `evolve_read(kind, …)` fetches bodies by id and searches by keyword — whitespace-separated terms are AND-combined, with literal substring matching for short terms and whenever the trigram index misses; the injected index carries hooks only. Each body served by id increments that row's view counter (views + last viewed), a presence heartbeat — viewed, not applied, so long-unviewed rows are removal candidates while pruning itself stays human. Skills sediment through the same discipline (kebab ids, secret screening, 64KB cap, no duplicate ids or bodies across scopes); every applied skill is materialized by the plugin as `<workspace>/.agents/skills/<id>/SKILL.md` — the database is the source of truth, the files are a read-only projection patrol restores on drift; the project shadows a same-named global. On hosts without the tools service the plugin degrades to "tell the user" phrasing and stays functional.
-3. **Proposal-based extraction** — the trajectory-to-memory automation, audited in the `extraction_log`: every `agent/turn-stopping` schedules that session's boundary, with state kept **per session** (a run in flight keeps only its newest boundary — coalescing, not queueing; `compaction/start` and session close drain it) and **no idle timer**. A run reads the session increment since its cursor, feeds FTS-similar existing memories to one LLM call, and the model's structured proposal lands through the same gates; failures and rejections never advance the cursor. A cheap pre-gate (increment head + ownership triple-test + landing-point test, tiny verdict; the increment head also carries a `tools-this-turn` line — names only, never arguments or paths) runs first: refusals consume the increment as a model skip without the full call, and an unclear gate fails open to the full call — worst case degrades to the old single-call behavior, never to a stall. Full and gate usages ledger in separate `usage` / `cheap_usage` columns, and a gate that dies keeps its error head in the same row's `cheap_error` — a dead gate stays tellable from a gate that never existed. Internal agents, empty increments, turns without real user prose, and turns that already carried an explicit `evolve_write` are mechanically skipped — and every skip is ledgered, consecutive quiet turns of one session as a single row carrying how many wake-ups it stands for. Both tracks resolve their route from the session's *current* selection first (its `modelSelection` projection, then its last request header, then the agent's creation-time options, then the host default — the order the host itself uses), trace which candidate answered once per drain, and share one failure discipline: a route the provider refuses (`AUTH`, `NO_ADAPTER`) stops being called until it changes, while transient faults back off 0 → 5min → 15min → 1h → 6h instead of re-sending the whole increment on every turn boundary.
-4. **Autonomous content-quality loop** — the second background automation, independent from extraction by construction (own prompts, own daily budget, own `review_log` ledger, no cursor; only the store's write gates are shared): a cheap gate model call decides whether a memory/skill entry deserves a close look, and only approvals run the evolve pass that judges content quality (memories on home-ownership plus accuracy/usability/reusability/duplication/freshness, skills on home-ownership plus trigger precision/executability/duplication, where reuse is scope-aware: a project-partition skill is judged inside its project (in-project reuse) and the cross-project test applies to global-scope skills only — a repo-bound row in the global partition is the mis-homed case) and proposes the rewrite. Each of the four review jobs (memory and skill, gate and evolve) loads its own rubric from one subagent table — a single prompt cannot serve both, since a memory must survive having its repo name stripped while a project skill is supposed to be repo-bound. The same three home tests (user/environment vs repo-version subject, name-stripped sentence, repo facts live in ADR/docs) guard the extraction prompt, so repo-version specifics never enter as memories in the first place. Gate/leg failures ledger the error text instead of a bare code, along with the model they ran on and the tokens the failed call had already burned, and the output budget comes from the model's own advertised cap instead of a fixed number, so a thinking model is not cut off mid-verdict: a verdict that completed before a cut still counts, while a call that produced no verdict at all (route fault, budget cut) leaves the item queued instead of marking it reviewed. New writes are reviewed as they land; requeues are event-driven (a drop-in whose text lands near an existing item, a `corrects` link, or a correction-shaped feedback write records a linkage event — in the same transaction as the body — that puts the item back at the front), and the calendar is only a sampling backstop (`review.staleDays` is the longest exemption window — 30 days by default, doubled by consecutive keeps up to 120 — with a sample slot of a fifth of the batch). Verdicts reach four outcomes: rewrite, quarantine, archive (history kept, no longer injected; gated on zero references plus a second independent judgement and no correction pointing at it), and advice-only "this belongs in the repo docs" — the plugin never writes into your repository. Two hard guarantees bound the autonomy: delete never lands automatically (rewrite or quarantine only — quarantine hides, never deletes) and oversized rewrites degrade to quarantine. A daily cap (default 100 items, new > linkage/clock > sample priority, the tail drops instead of rolling over) bounds the token spend, and every terminal path lands one `item-review` verdict row plus one daily rollup row (budget vs reviewed vs backlog vs dropped, tokens split by cheap/evolve purpose) for later replay. Ships in trial mode (`review.dryRun`, default on): verdicts ledgered, nothing applied — and a declined rewrite now rides the row's `proposed` column, because a trial has to show what it would write, not just why. A refused route stops the whole drain after the first candidate — the remaining items stay queued, and no call is made again until the route changes — instead of each item buying the same refusal.
-5. **Memory layers with a two-stage promotion funnel** — memories are either L0 (about the person: collaboration preferences, language, machine facts; kept in the global partition) or L1 (about a project); L2 (session/task state) never enters the store. L0 is not a hand-maintained partition: a row reaches it only through **two independent judgements and a 30-day probation** — extraction marks `scope=person` when all three ownership tests pass (the row stays in its project), and the review's second judgement must say promote. The move is one transaction (global row built, project row archived, exactly one active copy) and carries a 30-day probation plus the origin partition. Probation rows are injected like any other, tagged「试用中」; when the window closes the review promotes them (cross-partition use was recorded), returns them home, or quarantines them. That gives "wrong home" layered answers: promote what belongs to the person, only *advise* "this belongs in the repo docs" (the card shows the tag; the plugin never writes into your repository), quarantine what is wrong or stale, and archive what should never have existed (history kept, no longer injected). `evolve_write(kind=memory, action=move-to-global)` is the manual fallback; physical deletion is always human.
-6. **Rollback is a ledger, not a mechanism** — every mutation lands an `extraction_log` row with full before/after snapshots; undo means rewriting the `before` values. Skill mutations land the same way in `skill_log`, review verdicts in `review_log`. A hygiene pass rides on every applied run: orphan FTS rows are dropped and secret-bearing rows are quarantined (hidden, never deleted; a quarantined skill's materialized file is removed so it stops loading). The read-only card surfaces quarantine anomalies. Plugin diagnostics have a durable home of their own: a stock host attaches no exporter to its logger, so `plugin_log` is the only home — the host logger is not mirrored. All four ledgers rotate on one 30-day window, pruned by a day-throttled check that rides store readiness, log writes and the post-extraction hygiene pass.
-6. **Cards: memory + review settings** — mounted on the plugin's page in the official plugin manager (the `plugins.bundle.config` slot; hosts without it silently degrade to no card), shaped like the market's own settings cards and aligned with ZCode's Settings → Memory viewer. The upper card edits the global `review.*` settings (two switches plus three numbers, explicit save; `enabled` needs a restart, the rest apply on the next drain) and never follows the workspace selector; the lower card is the read-only memory projection: a dropdown scope selector over the store's workspace partitions (opening on the host's current workspace), a search box, per-entry relative updated times, click-to-preview bodies (5 MiB cap), patrol warnings, and a skills section listing the workspace's project skills plus visible global skills (global rows badged, project shadowing global) with the same preview, each row showing its view count. Localized through the host's `locale/*.json` metadata channel; host theme tokens, the `Button` primitive, and zh/en copy that tracks the DSH language. The memory card is a request-time projection of the database and has no edit path; the settings card writes through the host config editor so the profile patch stays the single source of truth.
+- **一个库，一个写者**——全部状态住一个 SQLite 文件；只有插件代码能写它。
+- **开局注入索引**——本工作区的钩子作为单个 prompt section 注入，会话内冻结，feedback > user > reference 排序。
+- **预算超了降级，不丢条**——CJK 感知的 token 预算（默认 6000）：完整钩子行 → 只留 id 行 → 「其余 N 条」计数行。
+- **两个工具**——`evolve_write` 落记忆、技能与提示词补充；`evolve_read` 按 id 取正文、按关键词检索（trigram FTS，CJK 感知）。
+- **提案制提取**——按会话隔离的轮级自动化：无空闲计时器、便宜预检门、duplicate/no-change 预筛，每次跳过都记账。
+- **内容质量自进化环**——自有提示词、预算与账本；判词为改写／隔离／归档／仅建议；删除永不自动；默认试运行。
+- **记忆分层**——L0 跟人走，L1 跟项目走，L2 不进库；L0 只能经两次独立判定 + 30 天实习进入。
+- **观测是读数，不是体感**——代际自检、近 7 天注入→被读转化率、离线检索基线。
+- **回滚靠账本**——每次变更都留 before/after 快照，外加孤儿索引行与含密钥条目的巡检。
+- **插件管理卡片**——只读的库投影（搜索、预览）与全局 `review.*` 设置卡。
 
-Memory types follow the ZCode taxonomy: `user` (profile and environment facts), `feedback` (corrected or confirmed practices — bodies must carry **Why:** and **How to apply:** lines), `reference` (resource pointers). The extraction boundary is person- and environment-scoped knowledge only: decisions and trade-offs are repo-scoped by nature and belong to the repo's ADR route, never to memory.
-
-Legacy markdown stores (`<workspace>/.evolve/memory/*.md`) are imported losslessly on first contact and the directory is renamed aside as `memory-imported-<date>/` — never deleted.
-
-## Install
+## 快速开始
 
 ```bash
-# From npm (activates on install — ships its own bundle patch)
+# 从 npm（安装即激活——自带 bundle patch）
 dsh plugin add dsh-continual-evolve
 
-# Or from source (approve the allowBuilds build step on first GitHub install)
+# 或从源码（首次 GitHub 安装需批准 allowBuilds 构建步骤）
 dsh plugin add ZK-Andy/dsh-continual-evolve
 ```
 
-After installing or updating, restart the DSH profile you actually use (`dsh web` or the desktop host).
+装完或升级后，重启你实际在用的 profile（桌面端，或 `dsh <profile>`）。需要 Node ≥ 22.5（`node:sqlite`）；缺失时插件降级为 no-op 并在控制台告警。
 
-## Usage
+没有命令要记——直接说：
 
-No commands. On the first session after restart the index is injected automatically. Just tell the model "remember …" / "forget …" — it lands through `evolve_write` and the gates. To sediment a reusable procedure, tell the model to save it as a skill — it lands through `evolve_write` in the current project and materializes as a `SKILL.md` the `skill` tool discovers after restart; say "use it everywhere" and the model moves it to the global scope (the project copy archives). Memories and skills written mid-session become visible in the next session (the section is frozen to protect the prompt cache). To see the whole store, open the plugin's page in the official plugin manager: the memory card shows each workspace's entries and skills, search, and patrol anomalies, and the settings card above it edits the global `review.*` values. The store requires Node ≥ 22.5 (`node:sqlite`, part of the desktop host's EnsureNode runtime); without it the plugin degrades to a no-op with a console warning.
+```text
+「记住我做 review 用 oxlint，不用 eslint」  → evolve_write，过门禁落盘
+「把这套做法存成技能」                        → 物化成 SKILL.md，重启后 skill 工具能发现
+「所有项目都用」                              → 技能搬到全局分区
+```
 
-## Configuration
+> [!TIP]
+> 重启后打开插件管理里的本插件页面：第一行对比「运行代 / 盘面代」，两者不同会标红并写明需重启；`plugin_log` 里有同一条 `build-identity`。
 
-| Key | Default | Meaning |
+会话中途写入的记忆下个会话才可见——注入的 section 冻结以保 prompt cache。
+
+## 工作原理
+
+```
+  输入  ──  「记住…」(evolve_write)  ·  会话轮次 (提取)
+  门禁  ──  id 规范 · type · secret 筛查 · 64KB 上限 · Why/How 契约 · 单事务
+  存储  ──  memory.db，按工作区行分区
+  出口  ──  下个会话注入索引  ·  评审环（改写 / 隔离 / 归档）
+```
+
+### 开局注入
+
+- 只注册一个 system-prompt section（`order 400`）：本工作区的索引，只含钩子（id、标题、描述截 20 字、可选「不适用」）；类型不逐行标注，由块内 feedback > user > reference 排序承担。外加库路径与两段指南，并列按 id 稳定。
+- 每会话只算一次并逐字节复用——prompt cache 持续命中；空 store 零 token。
+- 预算按 token 计，CJK 感知（中文 1.5 token/字，其余 4 字符/token）。装不下分三档降级：完整钩子行 → 只留 `- [id]` 行 → `（其余 N 条未展开…）` 计数行。被裁掉的记忆仍能靠 `evolve_read` 捞回。
+
+### 唯一写路径
+
+- `evolve_write(kind, …)` 承接 `create` / `update` / `delete`（`kind = memory | skill | prompt`），技能另有 `move-to-global`。
+- 门禁在一个事务内完成：id 规范、type 枚举、feedback 的 **Why:**/**How to apply:** 契约、secret 筛查、64KB 正文上限、可选 `corrects` 纠错链、可选 `notWhen` 不适用条件。
+- `evolve_read(kind, …)` 按 id 取正文、按关键词检索：先按词组取 AND（trigram FTS，兜底 LIKE），再退 OR，中文片段按 3 字窗口展开。
+- 按 id 取到的每份正文计一次查阅——这是存在心跳，不是有用证明。长期零查阅是删除候选，但剪枝始终人工。
+
+### 提取
+
+轨迹到记忆的那条轨，全程 `extraction_log` 可对账。
+
+- 轮级且**按会话隔离**：`agent/turn-stopping` 调度该会话自己的边界，运行中只保留最新边界（合并，不排队）；`compaction/start` 与会话收尾触发 drain。**没有空闲计时器。**
+- 一次运行读取游标之后的增量，过一道便宜预检门，用 FTS 取相似既有记忆作上下文，一次 LLM 调用的提案过同一套门禁。预检拒绝按 model-skip 消费增量；门不清则 fail-open 透传。
+- 落盘前有**确定性预筛**：与既有正文全等的 `duplicate`、字段没变的 `no-change` 不进写门禁（原因落成 `pre-screen: duplicate×N`）。失败不推游标；每次跳过都记账。
+
+### 质量评审
+
+第二条后台轨，结构上独立：自有提示词、自有日预算（默认 100 条）、自有 `review_log`、无游标——只共享写门禁。
+
+- 便宜门先判某条值不值得细看，批了才跑贵改写。
+- 贵改写按内容质量打分并给出改写提案——记忆看归属 + 准确/可用/可复用/不重复/不过时；技能看触发精度/可执行完备/不重复，其中「可复用」按分区判。
+- 判词四个出口：改写 · 隔离（隐藏、永不删除）· 归档（保留历史、不再注入）· 仅建议「这条该进仓库文档」。插件绝不写你的仓库。
+- 新写即审，重审由事件驱动；日历只是兜底抽样（`review.staleDays` 是「最长免审期」，连续 keep 使其翻倍）。默认试运行。
+
+### 分层与提级
+
+- L0（跟人走，住全局分区）· L1（跟项目走）· L2（会话/任务状态，不进库）。
+- L0 不是手工维护的分区。进 L0 要过**两次独立判定 + 30 天实习**：提取时打 `scope=person`，评审第二次判定说 promote 才移动。
+- 移动是单事务——全局建行、项目行归档，永远只有一份 active——带实习期与来源分区。
+- 实习行照常注入并标「（试用中）」；到期按非来源分区的引用转正、退回或隔离。物理删除永远人工。
+
+### 回滚、巡检、观测
+
+- 每次变更落一条带 before/after 快照的行（`extraction_log`、`skill_log`、`review_log`），undo 就是取 before 重写。四张账本共用一个 30 天窗口按 UTC 日节流裁剪。
+- 每次应用后随跑巡检：孤儿 FTS 行清除、含密钥条目隔离（隐藏不删；被隔离技能的物化文件一并撤下，不再加载）、漂移的技能文件按库重写。
+- 诊断只落 `plugin_log`——宿主 logger 开箱没有 exporter。
+- 三件事从体感变读数：**代际自检**（导入时对入口文件取指纹、查询时重读盘面，不同即「需重启」）· **注入账本**（`injection_log`，近 7 天「注入 N 条 / 被读 M 条」——答「有没有被读」，不答「回答有没有用上」）· **检索评测**（`npm run eval:recall` 报 hit@1 与 MRR；空 fixture 按设计报红）。
+
+### 卡片
+
+- 挂在官方插件管理的本 bundle 页面；老宿主自动降级为无卡片。
+- 上面的卡片：全局 `review.*`——显式保存；`enabled` 需重启，其余下一轮生效。
+- 下面的卡片：只读投影——运行代/盘面代、近 7 天注入转化率、工作区下拉（= 库内分区）、搜索、相对更新时间、点击展开正文预览（5 MiB 上限）、巡检异常、技能区（全局行打标记，项目遮蔽全局）与查阅次数。
+
+类型沿 ZCode 分类法：`user`（画像与环境事实）、`feedback`（被纠正/确认的做法——正文必带 **Why:** 与 **How to apply:**）、`reference`（资源指针）。`notWhen` 是可选的「不适用条件」，随钩子渲染成「（不适用：…）」——只做提示，不参与检索过滤。提取边界：只收跟人与环境走的知识；决策与取舍天然属于仓库，走仓库的 ADR 路线。旧版 markdown 记忆库（`<workspace>/.evolve/memory/*.md`）首次接触时无损导入，原目录改名为 `memory-imported-<date>/` 保留——不删不丢。
+
+## 配置
+
+| 键 | 默认 | 含义 |
 |---|---|---|
-| `memoryIndex.enabled` | `true` | Register the memory section |
-| `memoryIndex.guide` | `true` | Inject the guide (zero tokens when off and the index is empty) |
-| `memoryIndex.order` | `400` | Section order (upstream named slots start at `PLAN_POLICY=500`) |
-| `memoryIndex.maxChars` | `6000` | Hard character budget for the injected index |
-| `memoryIndex.extraction` | `true` | The proposal-based extraction run (turn-level, per-session slots, no idle timer) |
-| `review.enabled` | `true` | The autonomous content-quality loop (own prompts/budget/ledger, trial dry-run) |
-| `review.dryRun` | `true` | Ledger verdicts without landing them (flip off after the trial distribution reads clean) |
-| `review.dailyBudget` | `100` | Reviewed items per UTC day (new > linkage/clock > sample, tail drops; counters kept per source) |
-| `review.batchSize` | `10` | Max items per drain run |
-| `review.staleDays` | `30` | Longest exemption window: past it an item becomes *eligible* for sampling (never a guaranteed re-review); consecutive keeps double it (30→60→120, capped); a review that produced no verdict never counts |
-| `memoryCard.enabled` | `true` | Memory + review-settings cards in the official plugin manager (degrades to no card when the host lacks `webServer`/`plugins.bundle.config`) |
+| `memoryIndex.enabled` | `true` | 注册记忆 section |
+| `memoryIndex.guide` | `true` | 注入指南（关闭且索引为空时零 token） |
+| `memoryIndex.order` | `400` | section 顺序（上游命名槽位自 `PLAN_POLICY=500` 起） |
+| `memoryIndex.maxTokens` | `6000` | 注入索引的硬 token 预算（CJK 感知；超预算的行降级为 id 行） |
+| `memoryIndex.extraction` | `true` | 提案制提取运行（轮级、按会话分槽、无空闲计时器） |
+| `review.enabled` | `true` | 内容质量自进化环（自有提示词/预算/账本，默认试运行） |
+| `review.dryRun` | `true` | 只记 verdict 不落盘 |
+| `review.dailyBudget` | `100` | 每 UTC 日最多审几条（新写 > 牵连/时钟 > 抽样，按来源分列计数） |
+| `review.batchSize` | `10` | 单次 drain 最多审几条 |
+| `review.staleDays` | `30` | 最长免审期：过了才有资格被抽样；连续 keep 使其翻倍（30→60→120，封顶） |
+| `memoryCard.enabled` | `true` | 插件管理里的记忆卡 + 评审设置卡 |
 
-Every `review.*` field is volatile: the settings card edits it without a remount, and the scheduler re-reads the values on every drain.
+`memoryIndex.maxChars`（0.19 之前的字符预算）只被读**一次**：首次读取时折算成 token（`floor(chars / 1.5)`）并记入库，此后 token 键是唯一活源。
 
-Profile patch example:
+`review.*` 全部 volatile：设置卡改了不必重挂，调度器每轮重新读值。
 
 ```yaml
 - id: continual-evolve
   config:
     memoryIndex:
-      maxChars: 8000
+      maxTokens: 8000
       extraction: true
     review:
       dryRun: false
 ```
 
-## Development
+## 开发
 
 ```bash
-pnpm install && pnpm build   # deps + clean build -> lib/
-pnpm test                    # vitest (656 tests)
-pnpm test:coverage           # v8 coverage, CI-enforced thresholds
-pnpm lint                    # oxlint src test client
-pnpm check:pack              # published-artifact consistency (also runs on prepack)
+pnpm install && pnpm build   # 装依赖 + 干净构建 -> lib/
+pnpm test                    # vitest（700 个测试）
+pnpm test:coverage           # v8 覆盖率，CI 门禁 91/83
+pnpm lint                    # oxlint src test client scripts
+pnpm check:docs              # ADR 格式、文档预算、链接、治理、交接
+pnpm check:pack              # 发布产物一致性（prepack 也跑）
+pnpm eval:recall             # 离线检索基线（fixture 上的 hit@1 / MRR）
 ```
 
-Layout:
+| 路径 | 内容 |
+|---|---|
+| `src/` | 71 个模块：注册、存储、`data/` 后端、`services/` 应用服务、`surfaces/` 表现层、`pages/memory-card/` |
+| `client/` | 手写客户端 bundle（记忆卡 + 评审设置卡） |
+| `locale/` | 双语显示名与描述（zh/en） |
+| `scripts/` | 门禁（ADR/文档/分层/预算/产物）+ `eval:recall` |
+| `test/` | vitest 套件，55 个文件 |
+| `docs/` | `design.md`（设计）· `FAQ.md`（踩坑记录） |
+| `.agents/` | AI 协作层（AGENTS.md、技能、ADR） |
 
-```
-├── src/
-│   ├── index.ts            # registration: config + host shapes + apply orchestration
-│   ├── assemble.ts         # shared mounts: tools + extraction + review + creator skills
-│   ├── store.ts            # store assembly: open/migrate, per-kind method builders, re-exports
-│   ├── store-types.ts      # store surface (single MemoryStore) + ledger/account shapes
-│   ├── data/               # storage back end: database, generic repository + descriptors,
-│   │                       # row/record shapes (single home), secret screen, migration, ledgers,
-│   │                       # review accounts, patrol
-│   ├── services/           # application services: write gates (rules + batch application),
-│   │                       # extraction/review loops (schedulers, chains, prompts, subagents),
-│   │                       # route resolution + failure discipline (model-route, extraction-failure),
-│   │                       # transport, accounting, retention, md import, skill files, plugin log
-│   ├── pages/
-│   │   └── memory-card/    # the plugin-manager page: routes + settings + mount + hint
-│   └── surfaces/           # presentation: unified evolve_* tools, injection, snapshots,
-│                           # section text + guide, creator-skill provider (read-only, patrol-reconciled)
-├── client/
-│   └── client.js          # hand-written client bundle: memory + review-settings cards
-├── locale/                # host package metadata: localized display name + description (zh/en)
-├── test/                  # vitest suite (48 files)
-├── lib/                   # build output (tsc)
-├── docs/                  # design.md (design) · FAQ.md (real-world pitfalls)
-└── .agents/               # AI collaboration layer (AGENTS.md, skills, ADR notes)
-```
+## 文档
 
-## Docs
+- 设计：[`docs/design.md`](docs/design.md) · 踩坑：[`docs/FAQ.md`](docs/FAQ.md)
+- 存储决策：[`.agents/notes/implemented/architecture/2026-10-06-sqlite-single-store.md`](.agents/notes/implemented/architecture/2026-10-06-sqlite-single-store.md)
+- 观测批次：[`.agents/notes/implemented/architecture/2026-10-18-absorb-memory-plugin-strengths.md`](.agents/notes/implemented/architecture/2026-10-18-absorb-memory-plugin-strengths.md)
 
-- Design: [`docs/design.md`](docs/design.md) · Pitfalls: [`docs/FAQ.md`](docs/FAQ.md) · Store decision: [`.agents/notes/implemented/architecture/2026-10-06-sqlite-single-store.md`](.agents/notes/implemented/architecture/2026-10-06-sqlite-single-store.md)
+## 许可
 
-## License
-
-MIT. Independent project — not affiliated with DeepSeek.
+MIT。独立项目，与 DeepSeek 官方无关。
 
 [![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)

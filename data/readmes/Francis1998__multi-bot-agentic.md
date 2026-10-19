@@ -149,6 +149,24 @@ Offline HITL advisor for `fanout_ratio` bands. Gap vs AutoGen/CrewAI/LangGraph o
 
 Offline HITL advisor for `recursion_depth_ratio` bands. Gap vs LangGraph/CrewAI subgraph recursion-cap monitors. Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### WorkerStarvationBandAdvisor
+
+![WorkerStarvationBandAdvisor](assets/demo/worker-starvation-band.gif)
+
+Offline HITL `starvation_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen worker-starvation band monitors. See `docs/guides/WORKER_STARVATION_BAND_ADVISOR_GUIDE.md`.
+
+### ToolPermissionDriftAdvisor
+
+![ToolPermissionDriftAdvisor](assets/demo/tool-permission-drift.gif)
+
+Offline HITL `drift_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen tool-permission drift monitors. See `docs/guides/TOOL_PERMISSION_DRIFT_ADVISOR_GUIDE.md`.
+
+### BlackboardLeaseThrashAdvisor
+
+![BlackboardLeaseThrashAdvisor](assets/demo/blackboard-lease-thrash.gif)
+
+Offline HITL `thrash_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen blackboard lease-thrash monitors. See `docs/guides/BLACKBOARD_LEASE_THRASH_ADVISOR_GUIDE.md`.
+
 ### HandoffTimeoutBandAdvisor
 
 ![HandoffTimeoutBandAdvisor](assets/demo/handoff-timeout-band.gif)

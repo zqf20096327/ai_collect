@@ -115,8 +115,9 @@ concrete near-miss.
 
 ## The commands
 
-One executable, five commands, six checks - `journal` is the one command with
-subcommands:
+One executable, seven commands - `journal` is the one command with
+subcommands, and `hook` and `init` are the runtime gate's (see
+[below](#in-an-agents-session-the-runtime-gate)):
 
 ```bash
 npx evidence-layer claims review.md          # is every claim backed by evidence?
@@ -202,10 +203,207 @@ rules are mechanical enough to check without reading the output for sense:
   `lintClaims(md, file, { requireWorkSummary: true })` also rejects a success
   claim over a lint or test artifact that carries no summary.
 
+Those rules read the claim's wording, which is deliberately narrow and only in
+English. A claim can also say outright which numbers it rests on, as
+predicates inside the tag:
+
+```markdown
+**Claim**: the suite runs 71 passing tests.
+**Grounding**: VERIFIED[tests-a3f91c: exit=0, passed>=71, failed=0]
+```
+
+Every key is read off the cited block, so a predicate checks the same way on
+any machine: `exit`, `stopped` (`none`, `timeout`, `overflow`, `killed`), and
+the work-summary counts - `passed failed skipped todo` on a test run, `files
+ignored errors warnings` on a lint run. Values are whole numbers; `stopped`
+takes only `=` and `!=`. An unknown key, a fragment that does not parse, a key
+given twice or a count the artifact does not carry is an error, never dropped,
+and so is a `VERIFIED[...]` bracket that is not an address at all - it does not
+fall back to bare `VERIFIED`. The skeleton writes the predicates for you, read
+off the run it gathered. There is no duration key: how long a run took is not
+a property of the code.
+
+Two different blocks under one id are an error too: an id is an address, and an
+address names one thing.
+
+The counts come from the project's own test report, read after the step has
+finished and appended by the gatherer - never by the tool, which is why only
+the last line counts. `evidence-layer/adapters/test-reports` reads the three
+shapes a run leaves: JUnit XML, which pytest, Maven and Gradle, `dotnet test`,
+`go-junit-report` and `jest-junit` all write; pytest's closing line; and
+vitest's `Tests` line. A Python project, say:
+
+```js
+import { gatherEvidence } from 'evidence-layer'
+import { summariseJUnit } from 'evidence-layer/adapters/test-reports'
+
+await gatherEvidence({
+  repo: '.',
+  base: 'origin/main',
+  skip: ['lint', 'lockfile'],
+  plan: {
+    typecheckCommand: () => 'mypy .',
+    testCommand: () => 'pytest -q --junitxml=reports/junit.xml',
+  },
+  summaries: { test: summariseJUnit('reports/junit.xml') },
+})
+```
+
+JUnit cases are counted from the `<testcase>` elements, not from a suite's own
+`tests=` attribute. A report older than the step - left behind by an earlier
+run - is refused rather than read, and a step with no usable summary says why
+in the bundle instead of going without one silently. Write the report where
+git does not look (`reports/` in `.gitignore`), or the gather will say,
+correctly, that the tree changed while it ran. A directory of reports, as
+Surefire writes, is summed.
+
 `runAsync` is the runner for those steps. A timeout kills the whole process
 tree - a process group on POSIX, `taskkill /T` on Windows - rather than only
 the direct child, and it reports within a grace period even when some process
 in the tree will not release the output.
+
+## The seal: was this block gathered, and is it still about this code?
+
+`claims` proves a tag points at a block in the document. On its own it cannot
+tell a block the gatherer wrote from one typed in by hand, or a review written
+right after the tests ran from one written after three more edits - which is
+what an agent does by default: it edits the code after running the suite, then
+reports the suite.
+
+So every `gatherEvidence()` also publishes a **sealed run** into the checkout's
+git directory (`git rev-parse --git-path evidence-layer`, never the source
+tree): the bundle it wrote, a hash of every artifact block in it, and a
+fingerprint of the source it ran against - a git tree id of the working
+directory's *content*, computed through a throwaway index so the real one is
+never touched. A gather whose own steps wrote into the files they were checking
+(a formatter, a code generator, a test that leaves a file behind) is not sealed,
+and the bundle names the step and the path.
+
+```bash
+npx evidence-layer claims review.md --seal
+```
+
+adds two checks. Every cited block must be one the current run produced,
+unedited. And the code must still be what that run was gathered from: editing a
+file after gathering is an error naming the file, while committing content that
+did not change is not, and neither is writing the review itself. A pass says
+exactly what it covers - tracked and non-ignored files, not ignored ones,
+dependencies or the environment - and an untracked file too large to hash makes
+it `unverifiable`, never a pass.
+
+The seal is not an attestation. It lives where the same agent can write, so it
+catches the default failure, not someone rewriting it on purpose; CI, which
+gathers its own evidence, stays the independent party. Without `--seal`,
+nothing changes and nothing local is read.
+
+## In an agent's session: the runtime gate
+
+CI checks a review after a person can already read it. The gate runs the same
+checks at the moment the agent says it is done, so an unbacked "tests pass" is
+caught by the agent that wrote it:
+
+- **When the session starts**, it tells the agent the claim grammar and
+  records which review files exist, so that it later checks only what *this*
+  session wrote.
+- **Before each file write**, it refuses a write into its own ledger - an
+  accidental-write guard, not a sandbox: a shell command can still write there.
+- **When the agent stops**, it runs `claims`, `receipt` and, against the sealed
+  run, provenance and freshness - over every review file the session changed
+  (default `review.md`) and the `**Claim**:` lines of the agent's final reply,
+  whose ids resolve against the sealed bundle. Ordinary prose is not graded. An
+  error blocks the stop with the findings as the reason, and the agent fixes its
+  claims.
+
+Two budgets keep it from becoming a trap. A **retry episode** opens at the first
+stop with errors and closes at the first clean one; inside it the gate blocks
+at most twice, then lets the agent through with the errors attached - editing
+text does not reset it, only a clean check does. And the gate **fails open**:
+if it cannot run, the session continues and is told why. `--keep-blocking`,
+`--fail-closed` and `--strict` (both, and `unverifiable` blocks too) are the
+stricter trades. Every decision - including each allow that checked nothing,
+which is never recorded as a pass - goes into a journal in the checkout's git
+directory, not the committed one; `npx evidence-layer journal report
+--include-gate` counts blocks, clean stops and stops let through without a
+clean check, and `journal tag <id> real|false --gate` marks a block.
+
+With the package installed in the project:
+
+```bash
+npx evidence-layer init claude            # or --local for .claude/settings.local.json
+```
+
+writes the three hooks into `.claude/settings.json`, keeps every hook that is
+not its own, and replaces its own in place when run again. Or install the
+Claude Code plugin from this repository, which finds the package the project
+installed and says the gate is inactive when there is none:
+
+```text
+/plugin marketplace add AndrewBogdanovTSS/evidence-layer
+/plugin install evidence-layer@evidence-layer
+```
+
+For Codex:
+
+```bash
+npx evidence-layer init codex             # writes .codex/hooks.json
+```
+
+merges the same three hooks into `.codex/hooks.json` the same way. Codex runs a
+project's hooks only once they are trusted, so approve them in `/hooks` - and
+again after `init` runs with different flags, since a changed command is a new
+hook to Codex. Codex gives a hook no project-directory variable, so the command
+finds the package from `git rev-parse --show-toplevel`, as Codex's
+documentation does; on Windows, where hooks run under `cmd.exe`, it uses
+`npx --no-install` instead. Codex edits files with `apply_patch`, so the
+pre-write guard reads every path the patch adds, updates, deletes or moves a
+file to.
+
+`npx evidence-layer hook claude|codex <event>` is what all of these run. It
+reads the hook's input on stdin and answers in the host's own protocol - always
+with exit 0, because both hosts read an exit code as a decision, and this
+package's `2` (bad usage) is their "block".
+
+## In CI: the GitHub Action
+
+```yaml
+- uses: actions/checkout@v5
+- uses: AndrewBogdanovTSS/evidence-layer@v0.7.0
+  with:
+    claims: review.md            # comma- or newline-separated
+    # receipt: review.md         # needs fetch-depth: 0 and the target branch
+    # governance: 'true'         # also run governance --enforce
+    # strict: 'true'             # warnings and unverifiable fail too
+```
+
+Every finding that is not a pass becomes an annotation on its line, titled by
+its [code](docs/evidence-layer.md#machine-readable-output), and the job
+summary lists them. The action runs the evidence-layer the project installed,
+so CI and a laptop give the same verdict; with none installed, it fetches the
+exact version the action was released with - never `latest`. Its outputs are
+`exit-code` and `conclusion` (`success`, `failure`, `flaky`, `misconfigured`),
+and a step with nothing to check, a missing review or an unusable package is
+`misconfigured`, never a pass.
+
+Outside the action, `--format github` on `claims`, `receipt` and `governance`
+does the same in any `run:` step. A review is text written by someone this
+package does not trust, so it is never handed to the runner as a command: the
+annotations are escaped as the runner reads them, and the report that quotes
+the review runs under `::stop-commands::` with a token chosen per run
+([DEC-0007](docs/decisions/0007-github-action.md)).
+
+## Supported hosts
+
+| Host | Adapter | Protocol checked against |
+| --- | --- | --- |
+| Claude Code | `src/hosts/claude-code.ts` | code.claude.com/docs/en/hooks, read 2026-10-17 |
+| Codex | `src/hosts/codex.ts` | developers.openai.com/codex/hooks and `codex-rs/hooks/schema/generated` at openai/codex 8c07694, read 2026-10-18 |
+
+A host is listed here only with an adapter and recorded inputs it is tested
+against (`test/fixtures/hosts/`), and `check:docs` holds the table to that. The
+inputs are written from the documented schema, not captured from a live
+session, so they show the adapter keeps to the protocol as documented - not
+that a later release of the host still speaks it. Other hosts follow once their
+hook protocol is documented well enough to write fixtures against.
 
 ## Exit codes are a contract
 
@@ -225,6 +423,13 @@ non-empty value - [no-color.org](https://no-color.org)'s exact rule, so an
 inherited opt-out can still be cancelled with `NO_COLOR=`. Colour is not gated
 on `isTTY`: sandboxed sessions and CI log viewers have no terminal attached and
 render ANSI perfectly well.
+
+For a program rather than a person, `claims`, `receipt` and `governance` take
+`--format json`: stdout is one JSON report and nothing else, and the exit code
+is the same. Each finding carries a `code` - `claims/predicate-unmet`,
+`receipt/wrong-base`, `seal/stale` - naming the rule that produced it. The
+sentences will be reworded; a released code keeps its meaning. Every code is
+listed in [`docs/evidence-layer.md`](docs/evidence-layer.md#machine-readable-output).
 
 ## What "zero-config" means, precisely
 
@@ -254,9 +459,11 @@ import { parseTestCount } from 'evidence-layer/adapters/node-default'
 ```
 
 Everything the CLI does is exported. `src/core/` has no knowledge of any
-project's stack; `src/adapters/node-default.ts` is the one file allowed to know
-it is running on Node and how a handful of common test reporters format their
-output.
+project's stack. The adapters are the files allowed to know one:
+`src/adapters/node-default.ts` knows it is running on Node and how a handful of
+common test reporters print their totals, and `src/adapters/test-reports.ts`
+knows the JUnit XML, pytest and vitest formats a test step's work summary is
+read from.
 
 ## The portability test
 
@@ -286,7 +493,7 @@ own checks and then checks that something actually runs them - an invariant no
 git hook or CI workflow reaches is a finding, because a rule with no trigger is
 decoration.
 
-The suite is **256 tests** across **21 files**, and that sentence is checked
+The suite is **401 tests** across **31 files**, and that sentence is checked
 too - `check:docs` runs the suite and compares. Change the number and watch it
 fail; a check nobody has seen fail is indistinguishable from a check that
 cannot fail.

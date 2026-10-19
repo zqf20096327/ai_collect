@@ -11,6 +11,8 @@ For developers who call an LLM API from an app, an agent or a script and want it
   <a href="https://docs.rs/tokio-prompt-orchestrator"><img alt="docs.rs" src="https://img.shields.io/docsrs/tokio-prompt-orchestrator"></a>
   <a href="https://gitlab.com/mattbusel/tokio-prompt-orchestrator/-/releases"><img alt="release" src="https://img.shields.io/gitlab/v/release/mattbusel%2Ftokio-prompt-orchestrator"></a>
   <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <a href="https://github.com/Mattbusel/tokio-prompt-orchestrator/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Mattbusel/tokio-prompt-orchestrator/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="MSRV 1.88" src="https://img.shields.io/badge/MSRV-1.88-blue.svg">
 </p>
 
 <img alt="Recorded session. Part 1: cargo run --example llm_pipeline answers 12 requests with 3 model calls, then during a simulated outage 5 calls fail with 503, the circuit breaker opens and the next 3 fail fast. Part 2: orchestrator --provider echo answers a question typed at its prompt while a second terminal sends a prompt with curl, fetches the result and reads /health." src="assets/demo.gif" width="100%">
@@ -78,7 +80,7 @@ x-orchestrator-dedup: cached
 {"choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"content":"Summarize this ticket","refusal":null,"role":"assistant"}}],"created":1790804186,"id":"chatcmpl-4d5284a811bd4c0f90bee01018103e1a","model":"echo","object":"chat.completion","system_fingerprint":null,"usage":{"completion_tokens":5,"prompt_tokens":5,"total_tokens":10}}
 ```
 
-The orchestrator answers with the provider and model it was started with (`--provider openai --model gpt-4o-mini`, say), whatever `model` the request names. Errors come back in OpenAI's format: 503 while the breaker is open, 429 at the spend cap. Details, auth and limits: [docs/REFERENCE.md](docs/REFERENCE.md#openai-compatible-api).
+The orchestrator answers with the provider and model it was started with (`--provider openai --model gpt-4o-mini`, say), whatever `model` the request names. Errors come back in OpenAI's format: 503 while the breaker is open (with `x-should-retry: false`, so the SDK does not retry it), 429 at the spend cap. Details, auth and limits: [docs/REFERENCE.md](docs/REFERENCE.md#openai-compatible-api).
 
 For OpenAI models the token counts in `usage` (and so the spend cap) come from the model's own tokenizer, so they match your OpenAI bill. Other models get an estimate of about 4 characters per token, which is what you see from `echo` above.
 
@@ -107,6 +109,21 @@ Now stream it
 ```
 
 Text conversations, system prompts and streaming are supported; image and tool blocks are rejected with a clear `invalid_request_error`. The key goes in `x-api-key` (as the Anthropic SDKs send it) or `Authorization: Bearer`.
+
+## Server flags
+
+The flags that change how `orchestrator` treats your provider (`orchestrator --help` lists them all):
+
+| Flag | Default | What it does |
+|---|---|---|
+| `--concurrency <N>` | 16 | Model calls sent upstream at the same time. 20 different prompts at once with a 1.5 s provider take about 1.5 s at the default; with `--concurrency 1` they queue and take about 30 s. Identical prompts in flight still share one call whatever the setting. |
+| `--timeout <seconds>` | 30 (60 for `anthropic`) | Longest one upstream call may take. A call that runs past it is answered `504 upstream_timeout` and counts as a failure for the circuit breaker, so a provider that accepts connections and never answers opens the breaker instead of holding every caller. |
+| `--retries <N>` | 0 | Retry a call that failed with a 429, a 5xx or a network error, with backoff. |
+| `--max-spend <dollars>` | none | Spend cap: the API answers 429 once it is reached. |
+| `--semantic-dedup [0.5-1.0]` | off | Also reuse answers to reworded questions (needs `fastembed`). |
+| `--docs <folder>` | off | Answer from your own Markdown and text files (needs `tantivy`). |
+
+When the breaker is open, refused requests come back as `503 circuit_open` with `x-should-retry: false` and a `Retry-After` set to when the breaker will try the provider again. The OpenAI and Anthropic SDKs read `x-should-retry`, so they fail at once instead of retrying a request that cannot succeed yet.
 
 ## Answer from your own documents
 
@@ -239,7 +256,7 @@ Keep your client. Each of these is a cargo feature that turns it into a worker, 
 |---|---|---|
 | [async-openai](https://crates.io/crates/async-openai) | `features = ["async-openai"]` | `AsyncOpenAiWorker::new(client, "gpt-4o-mini")`: OpenAI, Azure, or any OpenAI-compatible server (Ollama, vLLM, llama.cpp, LM Studio) |
 | [genai](https://crates.io/crates/genai) | `features = ["genai"]` | `GenaiWorker::new(genai::Client::default(), "claude-sonnet-4-6")`: OpenAI, Anthropic, Gemini, Ollama, Groq, DeepSeek, xAI and more, picked by model name |
-| [rig](https://crates.io/crates/rig-core) | `features = ["rig"]` | `RigWorker::new(OpenAI::from_env()?.completion("gpt-5.2"))`: any rig completion model (needs Rust 1.95+) |
+| [rig](https://crates.io/crates/rig-core) | `features = ["rig"]` | `RigWorker::new(OpenAI::from_env()?.completion("gpt-5.2"))`: any rig completion model; rig-core 0.43 or 0.44 (needs Rust 1.95+) |
 | [tower](https://crates.io/crates/tower) | `features = ["tower"]` | `ServiceWorker::new(svc)` runs any `Service<String>` (with your tower layers) as a worker; `WorkerService::new(worker)` goes the other way |
 
 ```rust,ignore
@@ -295,6 +312,8 @@ With no features the library is the pipeline, the workers and the resilience par
 | [docs.rs](https://docs.rs/tokio-prompt-orchestrator) | Full Rust API |
 
 Contributions welcome: see [CONTRIBUTING.md](CONTRIBUTING.md). MIT licensed, see [LICENSE](LICENSE).
+
+Source, issues and stars: [GitHub](https://github.com/Mattbusel/tokio-prompt-orchestrator). Mirror and release downloads: [GitLab](https://gitlab.com/mattbusel/tokio-prompt-orchestrator). More open-source Rust from the same author: [tensorust.com/open-source](https://tensorust.com/open-source/).
 
 ## Hire the author
 

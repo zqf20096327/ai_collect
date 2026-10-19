@@ -88,7 +88,7 @@ Agents and stewards setting up AIWG end-to-end should use the
 [![npm downloads](https://img.shields.io/npm/dm/aiwg?color=CB3837&logo=npm&style=flat-square)](https://www.npmjs.com/package/aiwg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/jmagly/aiwg?style=flat-square)](https://github.com/jmagly/aiwg/stargazers)
-[![Node Version](https://img.shields.io/badge/node-%E2%89%A520.0.0-brightgreen?style=flat-square&logo=node.js)](https://nodejs.org)
+[![Node Version](https://img.shields.io/badge/node-%E2%89%A524-brightgreen?style=flat-square&logo=node.js)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
 [![18 Providers](https://img.shields.io/badge/Providers-18-purple?style=flat-square)](#platform-support)
 [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/docs-aiwg-io)
@@ -670,7 +670,7 @@ reference](docs/cli/reference.md).
 
 ## Quick Start
 
-> **Prerequisites:** Node.js >=20.0.0 and an AI platform (Claude Code, GitHub Copilot, Cursor, Warp Terminal, or others). New installs should prefer Node 24. See [Prerequisites Guide](docs/getting-started/prerequisites.md) for details.
+> **Prerequisites:** Node.js >=24 and an AI platform (Claude Code, GitHub Copilot, Cursor, Warp Terminal, or others). See [Prerequisites Guide](docs/getting-started/prerequisites.md) for details.
 
 > **Release verification:** Inspect the provenance and signature material for the release you install. The
 [verification guide](docs/releases/verifying.md) describes the available artifacts and commands.
@@ -1635,4 +1635,20 @@ See [cross-platform overview](docs/integrations/cross-platform-overview.md) for 
 | OpenCode | `aiwg use all --provider opencode` | Agent/rule context | Provider-local agents, commands, rules | Good for lightweight terminal workflows. |
 | GitHub Copilot | `aiwg use all --provider copilot` | `.github` assets | Prompts, instructions, agents, MCP config | Uses `.github/prompts/*.prompt.md`, `.github/instructions/*.instructions.md`, and `.github/agents/*.agent.md`. |
 | Devin Desktop | `aiwg use all --provider devin` | `AGENTS.md` | Rules and workflows | Formerly Windsurf; `windsurf` remains the provider id and `devin` is its alias. See [quickstart](docs/integrations/windsurf-quickstart.md). |
-| DeepSeek Harness | `aiwg use all --provider dsh` | `AGENTS.md` | Provider-local skills and context | Experimental. See [DeepSeek Harness docs](docs/providers/
+| DeepSeek Harness | `aiwg use all --provider dsh` | `AGENTS.md` | Provider-local skills and context | Experimental. See [DeepSeek Harness docs](docs/providers/deepseek-harness.md). |
+| Factory | `aiwg use all --provider factory` | Factory context | Agents and commands where supported | Provider behavior depends on the installed Factory environment. |
+| Hermes | `aiwg use all --provider hermes` | `AGENTS.md` | Skills, with context aggregated into `AGENTS.md` | See [Hermes quickstart](docs/integrations/hermes-quickstart.md). |
+| OpenClaw | `aiwg use all --provider openclaw` | `AGENTS.md` | Native agents, skills, rules, and commands | User-scope deployment. See [OpenClaw quickstart](docs/integrations/openclaw-quickstart.md). |
+| OpenHuman | `aiwg use all --provider openhuman` | Provider-managed | Skills, with other assets indexed | Experimental. See [OpenHuman quickstart](docs/integrations/openhuman-quickstart.md). |
+| Warp Terminal | `aiwg use all --provider warp` | `WARP.md` | Skills, with context aggregated into `WARP.md` | See [Warp quickstart](docs/integrations/warp-terminal-quickstart.md). |
+| Grok Bot | `aiwg use all --provider grokbot` | `AGENTS.md` | Discover-first; native skills with `--scope user` and `AIWG_GROKBOT_SKILLS_DIR` | Stable; not Cursor / not xAI Grok Build. See [Grok Bot reference](docs/agents/providers/grokbot.md). |
+| Grok Build | `aiwg use all --provider grok-build` | `WORKSPACE.md` via generated `AGENTS.md` | `.grok/skills/` kernel; `$GROK_HOME` user skills | Experimental; distinct from Grok Bot and Grok web Build. [Quickstart](docs/integrations/grok-build-quickstart.md), [reference](docs/agents/providers/grok-build.md), [qualification](docs/providers/grok-build-qualification.md). |
+| Muse Code | `aiwg use all --provider muse` | `AGENTS.md` | `.agents/skills/` project; XDG user root at deploy time | Stable; no aliases. See [Muse quickstart](docs/integrations/muse-quickstart.md). |
+| Oh My Pi | `aiwg use all --provider omp` | `.omp/AGENTS.md` | Agents, prompts, rules, skills | Dedicated OMP quickstart: [Oh My Pi quickstart](docs/providers/omp.md). |
+| Pi Coding Agent | `aiwg use all --provider pi` | `AGENTS.md` | Agent Skills, prompt templates, trust-gated extension bridge | Experimental; see [Pi quickstart](docs/integrations/pi-quickstart.md). |
+| Antigravity | `aiwg use all --provider antigravity` | `AGENTS.md` and `.agents/` | Agents, skills, indexed commands, MCP config when enabled | See [Antigravity provider docs](docs/providers/antigravity.md). |
+| Generic Markdown | `aiwg use all --provider generic` | `AIWG.md` / `WORKSPACE.md` | Markdown instructions | Use when a provider reads repo docs but has no dedicated integration. |
+
+For CI jobs, [build verification](docs/integrations/build-verify.md) checks
+deployment and provider discovery before the provider runs a task. For routines,
+teamma

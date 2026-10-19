@@ -234,6 +234,40 @@ evolve. Use `{prompt}` where the message should go:
 
 Run `python3 -m agent2telegram doctor` to validate everything (config, token, agent binary).
 
+For groups, optional `"require_mention": true` together with `"bot_username": "your_bot"`
+accepts only @mentions, commands addressed to that bot, and replies to its messages.
+Other group messages are silently ignored, including receipt acknowledgments. Private chats
+are unchanged. The default is `false`; the authorized-user allowlist is always enforced.
+
+In attach mode, optional `"inbound_sender_label": true` adds sender/chat context immediately
+after `origin_prefix`: `[Od: Alex · DM]` or `[Od: Alex · skupina "Team"]`.
+Names come from the current Telegram sender, including voice messages, attachments and reactions;
+reply quotes do not replace the sender. Display names (64 characters) and group titles (80)
+are sanitized to one line without brackets, quotes or control characters.
+These user-controlled descriptions are not proof of identity or approval: authorization still
+uses Telegram user IDs. Routing is unchanged, and `notify` still targets the owner's DM.
+The default is `false`, preserving existing prompts.
+
+Operational notices: `"language": "cs"` translates the busy acknowledgment and the default
+startup notice into Czech (`"en"` is the default; this does not configure speech recognition).
+`"restart_notice": true` enables one short notice after successful bridge startup checks.
+Attach mode sends it to its owner chat; a group adapter can supply its configured group.
+One-shot mode sends it to the first authorized owner. `"restart_notice_text"` optionally
+overrides the text with a literal single line, maximum 200 characters.
+The default is off. A host-state marker enforces a 30-second cooldown across process restarts,
+including failed/uncertain sends. The notice is not retried in a background loop; an uncertain
+Telegram acknowledgement can mean no visible notice. Keep a distinct state directory for each bot.
+
+Background progress (attach mode, Claude Code): `"background_progress": true` shows work that
+runs outside a Telegram turn. Running sub-agents (Claude Code writes them to
+`<session>/subagents/`) get ONE message, edited in place with each sub-agent's description,
+elapsed time and latest tool call, and deleted when they finish or go silent. Turns not started
+from Telegram (e.g. a background-task notification) get the usual one-line tool status bubble,
+deleted at that turn's end. Only one short line per step is sent, never tool output, and nothing
+is shown for history replayed at startup. `"background_edit_interval"` (seconds, default 10)
+throttles edits; `"background_stale_after"` (default 300) drops progress that went silent. The
+labels follow `"language"`. The default is off.
+
 ---
 
 ## Run it forever (boot + auto‑restart)

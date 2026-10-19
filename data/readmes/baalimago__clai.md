@@ -1,59 +1,117 @@
-# clai: command line artificial intelligence
+# Command Line Artificial Intelligence
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/baalimago/clai)](https://goreportcard.com/report/github.com/baalimago/clai)
 ![Wakatime](https://wakatime.com/badge/user/018cc8d2-3fd9-47ef-81dc-e4ad645d5f34/project/018e07e1-bd22-4077-a213-c16290d3db52.svg)
+[![Go Reference](https://pkg.go.dev/badge/github.com/baalimago/clai.svg)](https://pkg.go.dev/github.com/baalimago/clai/pkg/agent)
 
-Test coverage: 43.595% 😒👍
+Test coverage: 91.5% 😍👌
 
-`clai` integrates AI models of multiple vendors via cli.
-You can generate images, text, summarize content and chat while using native terminal functionality, such as pipes and termination signals.
+<hr>
+<div align="center">
+  <p><code>clai</code> (<i>/klaɪ/</i>, like "cli" in "<b>cli</b>mate") is a command line context-feeder for any ai task.</p>
+</div>
 
-It's not (only) a LLM powered command suggester, instead it's a cli native LLM context feeder designed to fit into each user's own workflows.
-
-The multi-vendor aspect enables easy comparisons between different models, also removes the need for multiple subscriptions: most APIs are usage-based (some with expiration time).
-
-## Features
-
-Piping into LLM:
-![piping](./img/piping.gif "Piping data into queries")
-
-Easily configurable profiles (note the built in tools!):
-![profiles](./img/profiles.gif "Profiles allowing easily customized prompts")
-
-Conversation history and simple TUI to browse and continue old chats:
-![chats](./img/chats.gif "Conversation history and simple GUI to continue old chats:")
-
-These are the core features which can be combined.
-For instance, you can pipe data into an existing chat.
-Continue a chat with another profile, or another chat model.
-
-All the configuration files and chats are json, so manual tweaks and manipulation is easy to do.
-
-If you have time, check out [this blogpost](https://lorentz.app/blog-item.html?id=clai) for a slightly more structured introduction on how to use clai efficiently.
-
-## Supported vendors
-
-- **OpenAI API Key:** Set the `OPENAI_API_KEY` env var to your [OpenAI API key](https://platform.openai.com/docs/quickstart/step-2-set-up-your-api-key). [Text models](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo), [photo models](https://platform.openai.com/docs/models/dall-e).
-- **Anthropic API Key:** Set the `ANTHROPIC_API_KEY` env var to your [Anthropic API key](https://console.anthropic.com/login?returnTo=%2F). [Text models](https://docs.anthropic.com/claude/docs/models-overview#model-recommendations).
-- **Mistral API Key:** Set the `MISTRAL_API_KEY` env var to your [Mistral API key](https://console.mistral.ai/). [Text models](https://docs.mistral.ai/getting-started/models/)
-- **Deepseek:** Set the `DEEPSEEK_API_KEY` env var to your [Deepseek API key](https://api-docs.deepseek.com/). [Text models](https://api-docs.deepseek.com/quick_start/pricing)
-- **Novita AI:** Set the `NOVITA_API_KEY` env var to your [Novita API key](https://novita.ai/settings?utm_source=github_clai&utm_medium=github_readme&utm_campaign=link#key-management). Target the model using novita prefix, like this: `novita:<target>`, where `<target>` is one of the [text models](https://novita.ai/model-api/product/llm-api?utm_source=github_clai&utm_medium=github_readme&utm_campaign=link).
-- **Ollama:** Start your ollama server (defaults to localhost:11434). Target using model format `ollama:<target>`, where `<target>` is optional (defaults to llama3). Reconfigure url with `clai setup -> 1 -> <ollama-model-conf>`
-
-Note that you can only use the models that you have bought an API key for.
+<div align="center">
+  <img src="img/banner.jpg" alt="Banner">
+</div>
 
 ## Get started
 
-```bash
-go install github.com/baalimago/clai@latest
-```
-
-You may also use the setup script:
+Installing:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/baalimago/clai/main/setup.sh | sh
 ```
 
-Either look at `clai help` or the [examples](./EXAMPLES.md) for how to use `clai`.
+You can also install via go:
+
+```bash
+go install github.com/baalimago/clai@latest
+```
+
+Or run it from the Nix flake without installing (flakes must be enabled):
+
+```bash
+nix run github:baalimago/clai
+```
+
+Then run:
+
+```bash
+clai | clai query Please give a concise explanation of clai
+```
+
+Either run bare `clai` (or `clai <command> -h`) or look at the [examples](./examples.md) for how to use `clai`.
+Prompt text starting with `-` is read as a flag, so pass it after `--`: `clai q -- -why does this fail`.
+If you have time, you can also check out [this blogpost](https://lorentz.app/blog-item.html?id=clai) for a slightly more structured introduction on how to use Clai efficiently.
 
 Install [Glow](https://github.com/charmbracelet/glow) for formatted markdown output when querying text responses.
+
+## Use clai as a Go library
+
+Embed the agent loop in a Go program with `github.com/baalimago/clai/pkg/agent`:
+
+```go
+// Supports strucutred output via types
+// Support all things the CLI does
+review, err := agent.NewTyped[Review](agent.WithModel("gpt-5.2")).Query(ctx, chat)
+```
+
+The agent runs silent and returns typed errors. See [pkg/agent](https://pkg.go.dev/github.com/baalimago/clai/pkg/agent) for the option surface, the command ban list and the token stoploss, and [pkg/tools](https://pkg.go.dev/github.com/baalimago/clai/pkg/tools) for the tool catalog.
+
+## Features
+
+<div align="center">
+  <img src="img/showcase.gif" alt="Showcase">
+</div>
+
+- **[Shell context injection](./architecture/shell-context.md)** - Inject shell context into the system prompt via configurable templates.
+- **[Seamless conversation import](./architecture/continue-from-claudex.md)** - Ran out of session? Continue in clai!
+- **[Agent Skills](./architecture/skills.md)** - Import skills from custom global directories, or project-level `.agents/skills`.
+- **[Profiles](./examples.md#profiles-workflow-presets)** - Pre-prompted profiles enabling customized workflows and agents.
+- **[MCP client support](./examples.md#mcp-tools-external-tool-servers)** - Add any MCP server you'd like by pasting their configuration.
+- **Unix-like** - Clai follows the [unix philosophy](https://en.wikipedia.org/wiki/Unix_philosophy) and works with data piped in and out.
+
+All of these features are easily combined and tweaked, empowering users to accomplish very diverse use cases.
+See [examples](./examples.md) for additional info.
+
+## Supported vendors
+
+| Vendor      | Environment Variable | Models                                                                                                                                                             |
+| ----------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Jev         | `TYPESAFE_API_KEY`   | [System One](https://docs.typesafe.ai/api) evaluation, model `jev-latest`, questions from `-rf`                                                                    |
+| OpenRouter  | `OPENROUTER_API_KEY` | [Text models](https://openrouter.ai/models), use prefix `or:`                                                                                                      |
+| Ollama      | `OLLAMA_API_KEY`     | Use format `ollama:` (defaults to llama3), server defaults to localhost:11434                                                                                      |
+| HuggingFace | `HF_API_KEY`         | [Text models](https://huggingface.co/docs/inference-endpoints/chat-completions), use prefix `hf:`                                                                  |
+| Mistral     | `MISTRAL_API_KEY`    | [Text models](https://docs.mistral.ai/getting-started/models/)                                                                                                     |
+| OpenAI      | `OPENAI_API_KEY`     | [Text models](https://platform.openai.com/docs/models), [photo models](https://platform.openai.com/docs/models/dall-e)                                             |
+| DeepSeek    | `DEEPSEEK_API_KEY`   | [Text models](https://api-docs.deepseek.com/quick_start/pricing), key is optional, no prefix (defaults to `deepseek-chat`)                                         |
+| Berget AI   | `BERGET_API_KEY`     | [Text models](https://berget.ai/models), use prefix `berget:`                                                                                                      |
+| Gemini      | `GEMINI_API_KEY`     | [Text models](https://ai.google.dev/gemini-api/docs/models), [photo models](https://ai.google.dev/gemini-api/docs/image-generation#image_generation_text-to-image) |
+| xAi         | `XAI_API_KEY`        | [Text models](https://docs.x.ai/docs/models)                                                                                                                       |
+| Inception   | `INCEPTION_API_KEY`  | [Text models](https://platform.inceptionlabs.ai/docs#models)                                                                                                       |
+| Anthropic   | `ANTHROPIC_API_KEY`  | [Text models](https://platform.claude.com/docs/en/about-claude/models/overview)                                                                                    |
+
+---
+
+Shell completions are also available:
+
+```bash
+# bash
+mkdir -p ~/.local/share/bash-completion/completions
+clai completion bash > ~/.local/share/bash-completion/completions/clai
+```
+
+```bash
+# zsh
+mkdir -p ~/.zsh/completions
+clai completion zsh > ~/.zsh/completions/_clai
+```
+
+For zsh, ensure your `fpath` includes the completions directory before `compinit`, for example:
+
+```bash
+fpath=(~/.zsh/completions $fpath)
+autoload -Uz compinit && compinit
+```
+
+Then restart your shell or reload your shell configuration.

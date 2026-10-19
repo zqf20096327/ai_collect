@@ -1026,7 +1026,8 @@ RuntimeManager.Configure(new RuntimeManagerOptions
 
 A host that must not download before the user agrees asks each model package the same three questions through
 `LMSupply.Lifecycle.IModelArtifacts` — `GeneratorArtifacts(options)`, `EmbedderArtifacts(options)`, `RerankerArtifacts(options)`,
-`TranscriberArtifacts(options)`, `CaptionerArtifacts(options)` and `OcrArtifacts(options)` (its id is a language code, as for
+`TranscriberArtifacts(options)`, `DiarizationArtifacts(options)` (the speaker-diarization pair, one id `"default"`),
+`CaptionerArtifacts(options)` and `OcrArtifacts(options)` (its id is a language code, as for
 `LocalOcr.LoadForLanguageAsync`), built with the options the later load will use:
 
 ```csharp
@@ -1049,7 +1050,9 @@ await using var model = await LocalGenerator.LoadAsync("gguf:default", new Gener
 
 «Available offline» is exactly what a load with `DisableAutoDownload` needs, so that load then makes no network request.
 `GetRemainingDownloadBytesAsync` counts model files only (llama-server is a shared runtime of a few hundred MB, fetched once).
-For a transcriber whose options preload speaker diarization, its model pair is part of «available offline» and of the download.
+The speaker-diarization pair is a kind of its own (`"diarization"`), not part of the transcriber's — whatever
+`PreloadDiarization` says — so «transcription available» and «speaker labels available» are two statuses, each with its own
+consent and download. A host whose loads preload diarization treats the transcriber as ready when both kinds are.
 A host that loads from a path rather than an id finds the path after the download from the cache alone — for example
 `LocalGenerator.DownloadModelAsync(id, new GeneratorOptions { DisableAutoDownload = true })` returns it without a request.
 
@@ -1058,6 +1061,12 @@ with progress, `Ready`, or `Failed` with the exception), a stream of every chang
 and any caller can cancel (`CancelDownload` — partial files stay and resume), and delete by the id the host loads
 (`DeleteAsync` — the files a load of that id opens; refused while that model downloads, and a download is refused while it
 is being deleted). It never downloads on its own; a status read looks at the cache only.
+
+A caller's token stops only that caller waiting; the download goes on for the others. A caller that started the download for
+a surface that means «stop» when it goes away (a dialog) passes `DownloadWaitMode.CancelWhenAbandoned`: the download ends when
+its last waiter leaves, unless a `DownloadWaitMode.KeepRunning` caller (the default — «download in the background») joined it.
+The download counts its own waiters, so the host never reads the status to decide who may stop it (last lines of the example
+below).
 
 ```csharp
 using LMSupply.Captioner;
@@ -1071,7 +1080,7 @@ using LMSupply.Transcriber;
 var models = new ModelLifecycle(
 [
     new GeneratorArtifacts(), new EmbedderArtifacts(), new RerankerArtifacts(),
-    new TranscriberArtifacts(), new CaptionerArtifacts(), new OcrArtifacts(),
+    new TranscriberArtifacts(), new DiarizationArtifacts(), new CaptionerArtifacts(), new OcrArtifacts(),
 ]);
 
 var status = await models.GetStatusAsync("generator", "gguf:default");       // Missing / Downloading / Ready / Failed
@@ -1083,6 +1092,9 @@ _ = Task.Run(async () =>
 
 await models.DownloadAsync("generator", "gguf:default");                   // on the user's consent
 await models.DeleteAsync("generator", "gguf:default");                     // the user removes it; status goes back to Missing
+
+using var dialog = new CancellationTokenSource();                          // cancelled when the download dialog closes
+await models.DownloadAsync("generator", "gguf:default", DownloadWaitMode.CancelWhenAbandoned, dialog.Token);
 ```
 
 A `gguf:` registry alias deletes the file it loads on this host (every shard of a split model) — `gguf:gemma4-default` and

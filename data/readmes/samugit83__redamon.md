@@ -24,7 +24,7 @@
 
 <p align="center">
   <a href="https://github.com/samugit83/redamon/stargazers"><img height="24" src="https://img.shields.io/github/stars/samugit83/redamon?style=flat&color=2E8B57&label=Stars" alt="GitHub Stars"/></a>
-  <img height="24" src="https://img.shields.io/badge/v7.0.1-release-2E8B57?style=flat" alt="Version 7.0.1"/>
+  <img height="24" src="https://img.shields.io/badge/v7.0.3-release-2E8B57?style=flat" alt="Version 7.0.3"/>
   <img height="24" src="https://img.shields.io/badge/WARNING-SECURITY%20TOOL-B22222?style=flat" alt="Security Tool Warning"/>
   <img height="24" src="https://img.shields.io/badge/LICENSE-MIT-4169A1?style=flat" alt="MIT License"/>
   <img height="24" src="https://img.shields.io/badge/AI-AUTONOMOUS%20AGENT-6A5ACD?style=flat&logo=openai&logoColor=white" alt="AI Powered"/>
@@ -622,7 +622,7 @@ A **LangGraph-based autonomous agent** implementing the ReAct pattern. It progre
 | **Exploitation** | **metasploit_console** | Persistent msfconsole -- exploit execution, session management, post-exploitation | Exploit, Post | metasploit :8003 |
 | | **msf_restart** | Full Metasploit reset -- kills all sessions, clears module state | Exploit, Post | metasploit :8003 |
 | | **execute_hydra** | THC Hydra brute force -- 50+ protocols (SSH, FTP, RDP, SMB, HTTP, MySQL, etc.) | Exploit, Post | network_recon :8000 |
-| **Code Execution** | **kali_shell** | Full Kali Linux shell -- nikto, whatweb, testssl, commix, sstimap, tplmap, ysoserial, phpggc, ruby, viewgen, dnsrecon, dnsx, subzy, enum4linux-ng, netexec, kerbrute, bloodhound-python, bhgraph, certipy-ad, bloodyAD, jwt_tool, graphql-cop, graphqlmap, betterleaks, semgrep, hashcat, john, cewl, paramspider, Node.js + npm, Python libs (websockets, zeep, python3-saml, boto3, msal, azure-identity, google-auth, google-cloud-storage), pre-staged post-exploit toolkits at /opt/tools/{linux,windows}/ (linpeas, LinEnum, pspy64, deepce, winPEAS, PowerUp, PrivescCheck), and 70+ CLI tools | All | network_recon :8000 |
+| **Code Execution** | **kali_shell** | Full Kali Linux shell -- nikto, whatweb, testssl, commix, smuggler, h2csmuggler, sstimap, tplmap, ysoserial, phpggc, ruby, viewgen, dnsrecon, dnsx, subzy, enum4linux-ng, netexec, kerbrute, bloodhound-python, bhgraph, certipy-ad, bloodyAD, jwt_tool, graphql-cop, graphqlmap, clairvoyance, betterleaks, semgrep, hashcat, john, cewl, paramspider, Node.js + npm, Python libs (websockets, zeep, python3-saml, boto3, msal, azure-identity, google-auth, google-cloud-storage), pre-staged post-exploit toolkits at /opt/tools/{linux,windows}/ (linpeas, LinEnum, pspy64, deepce, winPEAS, PowerUp, PrivescCheck), and 70+ CLI tools | All | network_recon :8000 |
 | | **execute_code** | Write and run code files (Python, bash, Ruby, Perl, C, C++) -- no shell escaping | Exploit, Post | network_recon :8000 |
 | **Supply Chain** | **execute_osv_scanner** | Offline OSV verdict -- is a package known-malicious (`MAL-`) or known-vulnerable (`CVE`/`GHSA`)? Passive, zero network (reads the local OSV DB). Accepts a purl, lockfile, or SBOM | All | network_recon :8000 |
 | | **execute_guarddog** | Behavioural malware analysis of one package (install hooks, obfuscation, exfil, typosquat). Downloads the tarball, so it dispatches to the hardened analyzer sandbox -- never unpacked inline | Info, Exploit | network_recon :8000 |
@@ -1043,4 +1043,4 @@ Videos, writeups, and real-world experiences from security professionals using R
 | Who | What | Link |
 |-----|------|------|
 | Nipun Dinudaya | Deployed RedAmon on a company website, identified a critical SQL injection vulnerability that could have caused significant data exposure | [Read on LinkedIn](https://www.linkedin.com/posts/nipun-dinudaya-6159b32bb_redamon-cybersecurity-penetrationtesting-ugcPost-7431233870253166592-aLvb) |
-| Venkata Bhargav CH S | Used RedAmon during an internship at Ascent e-Digit Solutions: hands-on reconnaissance, DNS analysis, and attack 
+| Venkata Bhargav CH S | Used RedAmon during an internship at Ascent e-Digit Solutions: hands-on reconnaissance, DNS analysis, and attack surface mapping | [Read on LinkedIn](https://www.linkedin.com/posts/venk

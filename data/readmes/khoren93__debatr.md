@@ -1,30 +1,58 @@
-# 🤖 AI Debates · Debatr
+<div align="center">
+  <img src="frontend/public/favicon.svg" width="72" height="72" alt="">
+  <h1>Debatr</h1>
+  <p><strong>Two AIs. One topic. A video in minutes.</strong></p>
+  <p>
+    Stage debates between any LLMs on OpenRouter, watch them argue live with charts and fact-checks,<br>
+    get the judge's verdict and export a 16:9 episode plus a 9:16 Short right in your browser.
+  </p>
+  <p>
+    <a href="https://github.com/khoren93/debatr/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/khoren93/debatr/actions/workflows/ci.yml/badge.svg"></a>
+    <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+    <a href="https://ai-debates.net"><img alt="Live: ai-debates.net" src="https://img.shields.io/badge/live-ai--debates.net-D9FF3D.svg"></a>
+    <a href="https://pypi.org/project/debatr/"><img alt="debatr CLI on PyPI" src="https://img.shields.io/pypi/v/debatr.svg?label=debatr%20CLI"></a>
+    <img alt="Docker ready" src="https://img.shields.io/badge/docker-ready-blue.svg">
+  </p>
+</div>
 
-> **Two AIs. One topic. A video in minutes.**
+<img src="https://github.com/user-attachments/assets/9d06c118-6be6-4e54-9abc-bb78128eecb2" alt="Debatr: the debate page with the video, the judge's verdict and a 9:16 Short">
 
-![Project Status](https://img.shields.io/badge/status-active-success.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Docker](https://img.shields.io/badge/docker-ready-blue.svg)
-![VS Code](https://img.shields.io/badge/Made%20in-VS%20Code-0078d7.svg?style=flat&logo=visual-studio-code&logoColor=white)
+**[Try it live at ai-debates.net](https://ai-debates.net)** · free models cost nothing, or bring your
+own OpenRouter key.
 
 **Debatr** (the AI Debates studio) is a full-stack service that orchestrates structured debates between AI personas and turns them into content. Powered by **OpenRouter**, it lets you pit **hundreds of LLMs** against each other with custom roles, personalities and stances, watch the debate stream live, get a judge's verdict, and render a **16:9 YouTube video plus a 9:16 Short** right in the browser.
 
 Users sign up, run free models or bring their own OpenRouter key, buy credits with **Stripe**, keep a library of their debates and can publish them to a **public gallery** with share links.
 
-> **🚀 Try it live: [ai-debates.net](https://ai-debates.net)**
-
-![App Demo](https://github.com/user-attachments/assets/54c6768d-8b00-43a9-baa7-1312c8dc01a4)
-
 ---
 
 ## ✨ Key Features
 
+<table>
+  <tr>
+    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/e5fd9288-15cf-4b10-ac53-46e519ae2e1d" alt="Wizard step 1: trending topics from today's news"><br><sub>Topics from today's news</sub></td>
+    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/8149b106-ea3d-424e-b034-8bb9c96d3c20" alt="Wizard step 2: a model, a voice and a persona for every debater"><br><sub>Any model vs any model</sub></td>
+    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/dded1f51-6832-4bc4-a73e-4433eca70115" alt="Debate page: the video and the blind audience vote"><br><sub>The episode and the audience vote</sub></td>
+  </tr>
+  <tr>
+    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/4baf0c2d-bcbe-499a-8347-c9ae67847044" alt="The judge's verdict with feedback for every debater"><br><sub>The judge's verdict</sub></td>
+    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/f990d273-2ab6-4584-aabe-f37842eefe1b" alt="9:16 Short with a fact-checked figure on screen"><br><sub>A Short with fact-checked scenes</sub></td>
+    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/84ee7ba6-2788-45dc-a005-84db633ebdb5" alt="Model ranking from audience votes"><br><sub>The model leaderboard</sub></td>
+  </tr>
+</table>
+
 ### 🎬 Stage any debate
 - **⚔️ Any model vs any model**: pick from hundreds of LLMs on OpenRouter. Have **Claude** take
   on **GPT** while **Gemini** moderates, with a persona, a stance and a voice for every speaker.
-- **🧭 Ready in four steps**: topic, speakers, voices and format, then a review with the exact cost
-  and length before you hit start.
+  Or let OpenRouter's free router pick free models: each speaker keeps the model it got, and the
+  video and the leaderboard show which one argued.
+- **📰 Topics from today's news**: debate-ready questions drawn from the day's headlines across
+  major outlets, each with a short brief of what happened and links to the original articles,
+  one click away in the wizard.
+- **🧭 Ready in three steps**: a topic, the speakers (model, voice and persona), then format and
+  launch with the exact cost and length before you hit start.
 - **⚡ Watch it live**: arguments stream in word by word, and you can stop the debate at any moment.
+  If a model fails to answer, the debate stops on that turn and resumes from there with one click.
 
 ### ⚖️ Who won?
 - **🧑‍⚖️ AI judge**: a verdict with the winner (or a draw), a headline and feedback for every
@@ -60,7 +88,7 @@ Users sign up, run free models or bring their own OpenRouter key, buy credits wi
 ### 🤖 From the terminal and for AI agents
 - **⌨️ `debatr` CLI**: `uv tool install debatr`, approve your computer in the browser once and run
   a debate with one command. The turns stream into your terminal; `--json` makes it scriptable,
-  and transcripts and audio export from there too.
+  transcripts and audio export from there too, and `debatr resume` picks up a failed debate.
 - **🔌 MCP server**: give Claude, Cursor and other agents a debate tool (`debatr mcp`). They can
   stage a debate between any models to stress-test a decision or see both sides of a question,
   then read the verdict.
@@ -84,8 +112,6 @@ Users sign up, run free models or bring their own OpenRouter key, buy credits wi
   full debate, and the champion climbs the model leaderboard.
 - [ ] **📅 Debate of the day**: a fresh debate on a topical question every day, voiced and
   published to the gallery, ready for your vote.
-- [ ] **📰 Trending topics**: debate-ready questions drawn from today's news, one click away in
-  the wizard.
 - [ ] **🎞️ Animated avatars**: speakers that talk, react and lip-sync in the 16:9 episodes and
   9:16 Shorts.
 - [ ] **🔗 Embeddable player**: drop any public debate into a blog post or article with a simple
@@ -122,7 +148,7 @@ Users sign up, run free models or bring their own OpenRouter key, buy credits wi
 - **Auth**: personal API tokens (`Authorization: Bearer debatr_…`) and a browser device login
 
 ### DevOps
-- **Containers**: Docker Compose (Postgres, Redis, API, worker, Caddy)
+- **Containers**: Docker Compose (Postgres, Redis, API, debate workers, media worker, scheduler, Caddy)
 - **CI**: GitHub Actions (lint, type-check, tests, build)
 
 ---
@@ -156,7 +182,9 @@ Follow these steps to get a copy up and running locally or on your server.
 4. **Open**
    - **Frontend**: [http://localhost](http://localhost)
    - **API docs**: [http://localhost/api/docs](http://localhost/api/docs)
-   - **Admin panel**: [http://localhost/api/admin](http://localhost/api/admin) (`ADMIN_USER` / `ADMIN_PASSWORD`)
+   - **Admin console**: [http://localhost/admin](http://localhost/admin). Give your account access first:
+     `docker compose exec api python -m app.manage admin grant you@example.com` prints a one-time
+     enrollment code; sign in with your password, enter the code and set up an authenticator app.
 
 ### 💻 Local development (hot reload)
 
@@ -196,7 +224,9 @@ Run `make` to list every target. The most useful ones:
 | `make api` / `make worker` / `make web` | Run the API, worker and frontend with hot reload |
 | `make migrate` / `make migration m="..."` | Apply migrations / autogenerate a new one |
 | `make check` | Lint, type check, tests and frontend build |
+| `make screenshots` | Shoot the README images from the local stack (`scripts/screenshots`) |
 | `make deploy` | On the server: pull `main` and rebuild the production stack (`deploy.sh`) |
+| `make backup` / `make backup-check` | Dump Postgres into `./backups` / restore the newest dump into a scratch database and compare it |
 | `make prod-logs s=worker` / `make prod-ps` | On the server: production logs / container status |
 
 ---
@@ -225,11 +255,21 @@ Run `make` to list every target. The most useful ones:
    ```
    `deploy.sh` pulls the latest code, rebuilds the containers (migrations run on start) and
    prunes old images. In production set `ENVIRONMENT=production` and replace every placeholder
-   secret in `.env` (`SECRET_KEY`, `ADMIN_PASSWORD`, `POSTGRES_PASSWORD`).
+   secret in `.env` (`SECRET_KEY`, `POSTGRES_PASSWORD`, e.g. `openssl rand -base64 32`).
+   The admin console runs on its own host: point a subdomain (e.g. `admin.your-domain.com`) at
+   the server, set `ADMIN_HOST` to it, proxy it to the frontend container like the site, then
+   `docker compose exec api python -m app.manage admin grant you@your-domain.com`.
 6. **Update later**: SSH into the server and run it again from the project dir (pushes do not
    deploy automatically):
    ```bash
    make deploy    # same as ./deploy.sh
+   ```
+7. **Back up the database**: nothing in the stack does it for you. Add a nightly cron job in the
+   project dir and check a dump now and then (`make backup-check` restores it into a scratch
+   database). For an off-site copy set `BACKUP_RCLONE_REMOTE` to an encrypted rclone remote:
+   ```bash
+   crontab -e
+   # 15 3 * * * cd /path/to/debatr && mkdir -p backups && ./scripts/backup-db.sh >> backups/backup.log 2>&1
    ```
 
 ---
@@ -238,16 +278,18 @@ Run `make` to list every target. The most useful ones:
 
 1. Open the web interface at `https://your-domain.com` (or `http://localhost`) and create an account
    (new accounts receive `SIGNUP_BONUS_USD` of credits, 0 by default).
-2. Click **"+ New debate"** and walk through the wizard:
+2. Click **"+ New debate"** and walk through the wizard's three steps:
    - **Topic**: type a question or pick one of today's trending topics from the news, choose language, rounds and reply length.
    - **Speakers**: a host plus two or more debaters, each with a model (OpenRouter's free router by
      default), a voice and a persona. The voice engine is chosen here too: free Edge voices or premium
      ElevenLabs voices.
-   - **Format**: spoken or written style, which outputs to produce (audio, 16:9 video, 9:16 Short)
-     and the render quality. Your own OpenRouter / ElevenLabs keys are managed on the Account page.
-   - **Review**: the estimate shows cost, length, turns and your credits after the run.
+   - **Review**: spoken or written style, which outputs to produce (audio, 16:9 video, 9:16
+     Short) and the render quality, visual scenes (pictures, fact-check) and whether to publish to
+     the gallery; the estimate shows cost, length, turns and your credits after the run. Your own
+     OpenRouter / ElevenLabs keys are managed on the Account page.
 3. Hit **Start the debate** and watch it stream live. When it finishes the verdict is scored and the
-   audio track is built automatically; open the debate to render the MP4s in your browser.
+   audio track is built automatically; open the debate to render the MP4s in your browser. If a model
+   fails to answer, the debate stops on that turn: **Resume** runs it again and goes on.
 4. **Share**: publish the debate to the gallery and copy the share link.
 5. **Account**: top up credits (Stripe), see this month's usage, store a personal OpenRouter key so paid
    models run on your own account instead of credits.
@@ -273,12 +315,15 @@ server pass `--url http://localhost` (or set `DEBATR_URL`).
 
 ### 💳 Credits
 
-- Every run charges the OpenRouter cost reported for the debate × `CREDIT_MARKUP` once it finishes.
+- Every run charges the OpenRouter cost reported for the debate × `CREDIT_MARKUP` once it finishes
+  (a resumed debate is charged only for what the new run adds).
 - Premium voices on the system ElevenLabs key cost `TTS_CREDIT_PRICE_PER_1K_CHARS` per 1,000 characters.
 - Free models and free Edge voices cost nothing; a personal OpenRouter key makes model usage free.
 - Top-ups go through Stripe Checkout (`STRIPE_SECRET_KEY`, webhook `/api/billing/webhook` with the
   `checkout.session.completed` event and `STRIPE_WEBHOOK_SECRET`). Every movement is recorded in the
-  `credit_transactions` ledger and visible on the Account page and in the admin panel.
+  `credit_transactions` ledger and visible on the Account page and in the admin console.
+- Manual credits (gifts, refunds, corrections) are ledger rows too, from the server:
+  `docker compose exec api python -m app.manage credits user@example.com 5 --reason "…"`.
 
 ---
 
@@ -288,12 +333,16 @@ The system uses an event-driven architecture to handle long-running LLM generati
 
 1. **API Layer**: `POST /api/debates` validates the configuration and saves the debate with status `queued`.
    A user-supplied OpenRouter key is kept only in Redis for the lifetime of the debate, never in the database.
-2. **Queue (RQ)**: A chain of jobs runs in the worker: `start` → one job per turn → `verdict` → `finish`.
+2. **Queue (RQ)**: A chain of jobs per debate: `start` → one job per turn → `verdict` → `finish`.
+   Several workers (`TURN_WORKERS`) serve the queue, so debates run side by side; each user may have
+   two going at once, and a run whose worker died is picked up again by a recovery check every minute.
 3. **Scheduler**: Every round starts with the moderator (introduction, then short transitions) followed by
    each debater. Debater turns are typed `opening` / `rebuttal` / `closing`; the moderator's model then
    delivers a structured verdict.
 4. **Worker**: Builds role-specific prompts, streams the OpenRouter response, records token usage and cost
    per turn, and publishes events to Redis Pub/Sub. A debate can be stopped at any time from the UI.
+   Rate limits and provider errors are retried; a turn that still fails stops the debate, which the
+   owner can resume from that turn (`POST /api/debates/{id}/resume`).
 5. **Frontend**: Subscribes to `GET /api/debates/{id}/stream` (SSE) and renders turns token-by-token.
    Finished debates are served straight from the database.
 6. **Verdict & billing**: after the judge's turn a cheap model structures the verdict (winner, headline,
@@ -312,7 +361,8 @@ The system uses an event-driven architecture to handle long-running LLM generati
 `SIGNUP_BONUS_USD`, `CREDIT_MARKUP`, `TTS_CREDIT_PRICE_PER_1K_CHARS`, `TOPUP_AMOUNTS_USD`,
 `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` (or `DEV_FAKE_PAYMENTS`), `DEBATE_CREATE_RATE_LIMIT`,
 `LOGIN_RATE_LIMIT`, `TURN_JOB_TIMEOUT`, `LLM_TURN_TIMEOUT`, `TURN_WORKERS`,
-`MAX_ACTIVE_DEBATES_PER_USER`, `MAX_ACTIVE_MEDIA_PER_USER`, `FREE_MODELS_PER_MINUTE`, `MEDIA_JOB_TIMEOUT`, `ADMIN_USER` / `ADMIN_PASSWORD`, `SECRET_KEY`.
+`MAX_ACTIVE_DEBATES_PER_USER`, `MAX_ACTIVE_MEDIA_PER_USER`, `FREE_MODELS_PER_MINUTE`, `MEDIA_JOB_TIMEOUT`, `ADMIN_HOST` /
+`ADMIN_ALLOWED_IPS`, `SECRET_KEY`.
 
 ---
 

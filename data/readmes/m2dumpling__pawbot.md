@@ -37,6 +37,7 @@ without another model request, another token bill, or real tool side effects.
 | Understand the replay feature | [Record & Replay](#record--replay) |
 | Verify an AI-assisted code change | [Agent Harness Benchmark](#agent-harness-benchmark) |
 | Understand Agent state, approvals, and recovery | [Control flow and recovery](docs/agent-control-flow.md) |
+| Review a reproducible reliability fix | [Delegated tool policy case (Chinese)](docs/experiments/subagent-policy-regression.zh-CN.md) |
 | Run real-model evaluations with Promptfoo | [Promptfoo setup and usage](evals/promptfoo/README.md) |
 | Inspect traces or enable OTLP | [Evaluation and observability guide](docs/agent-evaluation-observability.md) |
 | Learn how to use all execution and evaluation features | [Usage guide](docs/usage.md) |
@@ -56,12 +57,12 @@ without another model request, another token bill, or real tool side effects.
 - Use Anthropic, OpenAI-compatible endpoints, local models, fallbacks, and
   model presets.
 - Reach the same agent from the WebUI, CLI/TUI, API, or supported chat channels.
+- Expose a Python SDK and an OpenAI-compatible API for your own applications.
 
 For durable preferences, use `/remember global reply_language=zh-CN` or save a user
 message as memory from the WebUI. Natural-language remember requests are extracted
 into reviewable candidates first; Dream suggestions remain candidates until you
 confirm them.
-- Expose a Python SDK and an OpenAI-compatible API for your own applications.
 
 ## How a turn works
 
@@ -103,7 +104,7 @@ checkpoints, tool side-effect boundaries, and an offline evidence trail.
 
 ### Reliability boundaries
 
-The current runtime also makes three boundaries explicit:
+The current runtime also makes the following boundaries explicit:
 
 - **Memory provenance:** confirmed preferences, Dream candidates, and external
   tool/web content have different trust levels and source references.
@@ -150,9 +151,9 @@ and MCP servers are explicit capabilities with documented security boundaries.
 
 ### Published package
 
-Current stable release: **[v0.8.0](https://github.com/m2dumpling/pawbot/releases/tag/v0.8.0)**
-([release notes](docs/release-notes/0.8.0.md),
-[PyPI](https://pypi.org/project/pawbot-ai/0.8.0/)).
+Current stable release: **[v0.8.1](https://github.com/m2dumpling/pawbot/releases/tag/v0.8.1)**
+([release notes](docs/release-notes/0.8.1.md),
+[PyPI](https://pypi.org/project/pawbot-ai/0.8.1/)).
 
 Install the latest published package and open the WebUI with one command:
 
@@ -195,19 +196,19 @@ For a fresh macOS or Linux desktop, the installer can be run directly from
 GitHub:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/m2dumpling/pawbot/v0.8.0/scripts/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/m2dumpling/pawbot/v0.8.1/scripts/install.sh | sh
 ```
 
 If `curl` is not available, use `wget` instead:
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/m2dumpling/pawbot/v0.8.0/scripts/install.sh | sh
+wget -qO- https://raw.githubusercontent.com/m2dumpling/pawbot/v0.8.1/scripts/install.sh | sh
 ```
 
 For native Windows PowerShell:
 
 ```powershell
-iex (irm https://raw.githubusercontent.com/m2dumpling/pawbot/v0.8.0/scripts/install.ps1)
+iex (irm https://raw.githubusercontent.com/m2dumpling/pawbot/v0.8.1/scripts/install.ps1)
 ```
 
 The installer selects an active virtual environment, `uv`, `pipx`, or a
@@ -468,6 +469,11 @@ uv run --no-sync python scripts/quality_gate.py
 The Harness separates trajectory checks from simple task contracts such as final
 content and required successful tools. A green replay or Harness result is not
 a general model-quality score.
+
+For a concrete before/after example, see the [delegated tool policy regression
+case](docs/experiments/subagent-policy-regression.zh-CN.md): the same nine
+deterministic checks reproduce missing subagent restrictions and approvals on
+the baseline, then verify the fix alongside authorized-operation controls.
 
 ### Agent Task Eval Set
 

@@ -12,7 +12,7 @@ OpenAI chat, vision, image generation, transcription, moderation, and web search
 - `/web` uses the **Responses API with native web search** and visible source links for recent information. It needs an OpenAI key with access to the chosen model and web search, with no Google account required. Search tool calls incur additional OpenAI charges.
 - `/dalle draw` keeps the familiar command name and generates images with the current **GPT Image** API. Image bytes are sent as Discord attachments. Retired DALL·E endpoints are no longer used.
 - Transcription and moderation use current OpenAI APIs. Long conversations, per-user keys, server roles, prompt optimization, and saved conversations remain available.
-- Document indexing, Google/Wolfram chat, Qdrant/Pinecone memory, Replicate, and E2B code execution are optional integrations with separate dependencies.
+- Document indexing, internet chat, Qdrant/Pinecone memory, Replicate, and E2B code execution are optional integrations with separate dependencies.
 
 The default chat model is `gpt-6.1-sol`, the low-cost helper model is `gpt-6-luna`, and image generation defaults to `gpt-image-2.5-flare`. Availability depends on your OpenAI project. Override models using the environment settings below. Model names and prices change; consult the [OpenAI model catalog](https://developers.openai.com/api/docs/models) and [pricing](https://openai.com/api/pricing/).
 
@@ -89,7 +89,7 @@ Install the extras you use and configure their keys. Missing configured dependen
 | Feature | Install | Configuration |
 | --- | --- | --- |
 | Document Q&A / indexes | `pip install '.[index]'` | `ENABLE_INDEXING=true` and OpenAI access |
-| Google/Wolfram chat | `pip install '.[search]'` | `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID`; optionally `WOLFRAM_API_KEY` |
+| Internet chat / Google search | `pip install '.[search]'` | OpenAI access for chat; Google keys only for `provider: google` or `/internet search` |
 | Pinecone memory | `pip install '.[pinecone]'` | `PINECONE_TOKEN`, `PINECONE_REGION` (default `us-east-1`) |
 | Qdrant memory | `pip install '.[qdrant]'` | `QDRANT_PATH` for persistent local storage, or `QDRANT_URL` and optional `QDRANT_API_KEY` |
 | E2B code execution | `pip install '.[code]'` | `E2B_API_KEY` |
@@ -98,9 +98,13 @@ Install the extras you use and configure their keys. Missing configured dependen
 
 Configure either Qdrant or Pinecone memory, never both. Leave both unset to keep local conversation summaries. See the [memory guide](detailed_guides/PERMANENT-MEMORY.md) for collection and migration details.
 
+`/internet chat` defaults to **OpenAI web search** using your existing OpenAI key, with clickable citations, conversation memory, and optional page crawling. The search integration loads automatically when its dependencies are installed; Google credentials are not required for OpenAI chat. Choose `provider: google` to retain Google search (requires `GOOGLE_SEARCH_API_KEY` and `GOOGLE_SEARCH_ENGINE_ID`). `search_scope` caps OpenAI web tool calls per model response or Google result links per search; it does not guarantee a number of sources. OpenAI hosted-search fees are separate from model token usage. `/web` remains available without optional dependencies.
+
 When `USER_INPUT_API_KEYS=true`, optional index/search/code sessions accept messages from their creator only, so other thread participants cannot spend that person's API credits. Changing or deleting the saved key blocks further work in an existing session; end it and start a new one with the current key.
 
 The index extra includes GitHub and YouTube readers. GitHub repositories use `GITHUB_TOKEN` and their default branch. YouTube videos need an accessible English transcript. Public Google Docs links use text export; upload an exported document for private Docs. Uploaded images use native vision, while supported audio/video uploads use speech transcription before indexing. These media operations incur OpenAI charges; video frames are not indexed. Legacy Office files, SVG, and PSD require conversion first.
+
+`/index add` selects the saved document for `/index query` and your next `/index chat`. Use `/index chat user_index:<name>` or `/index load` to choose another saved index. After a restart, chat defaults to your most recently saved index. The opening message identifies the connected source. Adding or loading documents inside your own chat connects them to that chat while preserving its existing documents and history. Empty chats ask you to connect a document before answering. PDF links must contain extractable text and be 25 MiB or smaller; scanned pages need OCR first.
 
 LlamaIndex currently requires OpenAI SDK 2.x. Installing its extra selects the current compatible SDK; the core also supports SDK 3.x. Requirements files delegate to `pyproject.toml` so dependencies have one source of truth.
 
@@ -128,9 +132,13 @@ CI builds both base and full images on pull requests. Registry publication is li
 5. Rebuild document indexes when changing embedding models. **Ada and embedding-3 vectors occupy different vector spaces even at the same dimension.** New Pinecone embedding namespaces keep these separate; selecting `text-embedding-ada-002` retains the legacy namespace. Re-ingest historical text to use the newer embeddings. Legacy Pinecone numeric conversation IDs above `2**53` must also be re-ingested; new records store exact string IDs. Old local LlamaIndex storage may also need re-ingestion after the library upgrade.
 6. Rebuild Docker images and check file ownership for existing volumes. Automatic deployment to the old hardcoded SSH host and formatter force-pushes have been removed. Configure deployment separately for your own host.
 
-Conversation sharing now uses an owner-only private TXT download instead of the obsolete ShareGPT service. Retired `best_of`, `mode`, and `use_org` settings are omitted from the settings UI.
+Conversation sharing now uses an owner-only private TXT download instead of the obsolete ShareGPT service. Retired `best_of`, `mode`, and `use_org` settings are no longer loaded or written. Old entries are ignored and removed when system settings are reset; conversations, indexes, and user API keys are preserved. API retirement decisions follow [OpenAI's API deprecations](https://developers.openai.com/api/docs/deprecations), reviewed on October 18, 2026.
 
-Generated images offer per-image **Vary** controls using the current GPT Image edit API. This creates a source-guided variation preserving the subject and style; it differs from retired DALL·E random variation sampling. Retry retains the source image. There is no general upload/edit slash command.
+Use `/dalle draw` to generate images and `/dalle optimize` to refine a prompt before drawing. The redundant `/dalle draw_old` alias has been removed. The message context menu also offers **Draw**.
+
+Generated images offer per-image **Vary** controls using the current GPT Image edit API. This creates a source-guided variation preserving the subject and style; it differs from retired DALL·E random variation sampling. Retry retains the source image. **Save** remains available after generation controls expire. There is no general upload/edit slash command.
+
+Image sizes are `auto`, square `1024x1024`, landscape `1536x1024`, or portrait `1024x1536`. Saved `256x256` and `512x512` settings migrate to `1024x1024`.
 
 The local usage total is an **estimate**, not an OpenAI invoice. Known text models use separate input, cached-input, and output token rates. Unknown models are logged and excluded rather than billed at an unrelated legacy rate. Image/audio/tool fees are not included in this token estimate; use your provider's usage dashboard for billing.
 

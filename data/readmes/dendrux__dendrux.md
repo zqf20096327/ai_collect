@@ -22,9 +22,21 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-green.svg" alt="License: Apache 2.0" /></a>
 </p>
 
-> `v0.3.0` - core API stabilizing, actively developed.
+> `v0.4.1` - core API stabilizing, actively developed.
 
 ---
+
+## What's new in 0.4.1
+
+- **Truncated answers are flagged**: `result.truncated` and `result.stop_reason` say when the final answer was cut off at the token limit, on all four providers. The run still succeeds, so check the flag.
+- **Anthropic strict mode**: `@tool(strict=True)` and structured output are sent strict on Anthropic when the schema allows it, with an automatic non-strict fallback and an `AnthropicProvider(strict=False)` opt-out.
+- **`tenant_id=` on run-control writes**: `submit_tool_results`, `submit_input`, `submit_approval`, `submit_resume`, `resume` and `resume_stream` reject runs outside the tenant before writing anything.
+- No migration. See the [CHANGELOG](packages/python/CHANGELOG.md).
+
+## What's new in 0.4.0
+
+- **Images**: `agent.run(["What is on this receipt?", Image.from_path("receipt.png")])`, tools that return `ToolOutput(result, images=[...])`, client tools that attach `ToolResult.images`, and MCP image results all reach the model as images. Images are stored once as tenant-scoped blobs (database by default, or your own `BlobStore` such as S3); runs, pauses and events hold references only. Anthropic, OpenAI Chat and Responses, and OpenRouter are supported; non-vision models get a typed error or a placeholder. See the [Images guide](docs/recipes/images.mdx).
+- **Migration**: run `dendrux db migrate` (new revision `c6d7e8f9a0b1`), even if you do not use images. See the [CHANGELOG](packages/python/CHANGELOG.md).
 
 ## What's new in 0.3.0
 
@@ -472,6 +484,8 @@ The dashboard shows runs, timelines, tool calls, token usage, delegation trees, 
 | [`17_full_stack_app/`](packages/python/examples/17_full_stack_app/) | **Canonical full-stack recipe:** read router + dashboard + all 4 governance layers + 4 agent methods in one FastAPI app |
 | [`30_mcp_agent.py`](packages/python/examples/30_mcp_agent.py) | Local tools + an SDK v2 MCP source with shared `MCPHost` lifecycle |
 | [`36_run_control.py`](packages/python/examples/36_run_control.py) | Per-call approvals, a `before_tool` policy hook and `request_pause` / `submit_resume`, with a mock provider (no API key) |
+| [`37_images.py`](packages/python/examples/37_images.py) | A user image plus a tool that returns an image, stored and inspected (mock provider by default, no API key) |
+| [`38_images_client_tool.py`](packages/python/examples/38_images_client_tool.py) | Client-tool screenshot: pause, submit the image from a second Agent, resume (mock provider by default) |
 | **Governance** | |
 | [`governance/01_tool_deny.py`](packages/python/examples/governance/01_tool_deny.py) | Block tools deterministically (batch + streaming) |
 | [`governance/02_approval.py`](packages/python/examples/governance/02_approval.py) | Human-in-the-loop approval with approve/reject CLI |

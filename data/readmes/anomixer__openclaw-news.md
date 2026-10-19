@@ -4,10 +4,10 @@
 
 > **WARNING**: The news contains excessive complaints, conspiracy theories, and profound philosophical thoughts on lobsters.
 > 
-> **Last Updated**: 2026-10-17
-> **Status**: OpenClaw reaches ~392.2K stars (+100 in 24h), **holding #6 globally on GitHub, gap to #5 free-programming-books at ~7.0K!** 🦎🚀
+> **Last Updated**: 2026-10-18
+> **Status**: OpenClaw reaches ~392.3K stars (+100 in 24h), **holding #6 globally on GitHub, gap to #5 free-programming-books at ~7.1K!** 🦎🚀
 
-> **OpenClaw Version**: v2026.10.4 (Latest Stable) / v2026.9.33 (extended-stable LTS) | **2026.10.4 is an update/recovery pass: no self-interrupts after sleep or clock jumps, chats resume after updating, Telegram polling and IRC reply fixes; beta line 10.10-beta.1 brings a steadier Gateway and Gemini 4 Argon as default** 🦞🏵
+> **OpenClaw Version**: v2026.10.4 (Latest Stable) / v2026.9.33 (extended-stable LTS) | **No new release on 10/18: 10.10-beta.1 (GitHub 10/15) is still the newest, bringing a steadier Gateway and Gemini 4 Argon as default; the latest official move is out-of-the-box install on RTX Spark laptops plus a new macOS installer flow** 🦞🏵
 
 ---
 
@@ -18,16 +18,17 @@
 
 ## ⏱️ TL;DR (30-second summary)
 
-1. **The Protagonist**: **OpenClaw** (🔥 ~392.2K stars, solid #6 all-time, +100 in 24h, ~7.0K from #5).
-2. **Today's earthquake**: export controls and a valuation cut — China proposes curbs on 23 AI technologies; Anthropic's IPO talk drops from $2T to $1.5T.
-3. **The counter-move**: v2026.10.4 lands the update/recovery fixes and 10.10-beta.1 brings a steadier Gateway; Hermes at 254.5K (+400, 2.3K over Linux).
-4. **Latest progress**: ~392.2K stars (+100) — v2026.10.4 is now latest stable; seven green days running, the lobster never stops. 🦎🚀
+1. **The Protagonist**: **OpenClaw** (🔥 ~392.3K stars, solid #6 all-time, +100 in 24h, ~7.1K from #5).
+2. **Today's earthquake**: India's CERT-In says agents under test reached live systems at local organisations — and not one victim noticed.
+3. **The counter-move**: DeepSeek ships V4.1-Flash-1017 under MIT with its own board scoring DeepSWE 77.0 over Opus 5, while Anthropic borrows $9B against five years of future chip fees.
+4. **Latest progress**: ~392.3K stars (+100) — no new release, but RTX Spark laptops put the lobster on the boot screen; eight green days running, the lobster never stops. 🦎🚀
 
 ---
 
 ## 📚 Table of Contents
 
 - **Part 1: 📅 Daily Battlefield News (The Logs)**
+  - 🟢 2026-10-18: six times the work hours; $9B compute loan; Stars ~392.3K 🦞🚀
   - 🟢 2026-10-17: export controls; valuation cut; Stars ~392.2K 🦞🚀
   - 🟢 2026-10-16: FTC subpoenas; eight states sue; Stars ~392.1K 🦞🚀
   - 🟢 2026-10-15: Argon opens wide; HomeView $299; Stars ~392K 🦞🚀
@@ -68,7 +69,7 @@
 - **Part 5: ⚔️ AI Face-Off**
   - 🌐 Antigravity's Perspective
   - 💬 Claude's Perspective
-  - 🤖 GPT-5.5's Executive Perspective
+  - 🤖 GPT-6's Executive Perspective
   - 🖥️ Deep Dive: Edge AI Hardware Wars
 - **Part 6: 🦞 Lobster Philosophy**
   - 🎬 Media Reviews & Community Quotes 3.0
@@ -79,6 +80,26 @@
 ## Part 1: 📅 Daily Battlefield News (The Logs)
 
 Because the battle is too fierce, to save everyone from scrolling through updates from the beginning every day, this section is now in a "Date-Descending Log Stream" format.
+
+### 🟢 2026-10-18: **six times the work hours; $9B compute loan** — agents outwork staff; India breached; Stars ~392.3K 🦞🚀
+
+- **🦞 RTX Spark laptops ship, the lobster lands on the boot screen (NVIDIA 10/16, OpenClaw blog 10/16-17)**: ASUS, Dell, HP, Lenovo, MSI and Microsoft put them on shelves the same day — up to 128GB unified memory and 1 petaflop of FP4; a "Getting Started" screen lets you pick and install an agent on first boot, with GitHub Copilot, Hermes, OpenClaw, Perplexity, Pi and WorkBuddy in the first wave; NVIDIA's OpenShell and MXC sandboxing ship alongside, with OpenClaw and Copilot already on MXC and Hermes's granular OpenShell controls due by the end of the month. Growers say: "128GB of memory, a petaflop, and one-click install — the lobster is setting up a stall at the front door." 🦞
+- **🧠 DeepSeek V4.1-Flash-1017 goes open source (HF/ModelScope 10/17, MIT)**: 763B total parameters, 1M context, tool calling plus thinking plus image input; on DeepSeek's own board DeepSWE v1.1 scores 77.0 against Claude Opus 5's 74.0 and Automation-Bench 60.5 against 50.3, while Terminal-Bench 4.0 lands at 42.3 versus Opus 5's 51.8 and NL2Repo-Bench 68.2 versus 75.3; new Search and Fetch APIs priced at $0.75 per 1,000 calls, billed from 16:00 UTC on Oct 31. Growers say: "Beating yourself on your own open-source leaderboard — every token saved lands on somebody else's meter." 🦞
+- **💰 Anthropic borrows $9B against compute that hasn't arrived (FT 10/16, Reuters 10/17)**: A Blackstone-managed fund provides the financing, collateralized on the semiconductor usage fees Anthropic will pay over the next five years, with reported yields above 10%; Reuters says it could not independently verify the details. Growers say: "The $9B lands today, the collateral is the electricity bill five years out — the interest arrives before the chips do." 🦞
+- **📊 Anthropic publishes its own hiring report: junior tech hires 27%→9% (official 10/16)**: Agent hours passed human hours for the first time in March 2026, and by August interactive agent hours ran at roughly six times employee hours; juniors fell from 21% to 14% of technical departments and technical departments from 61% to 56% of the whole workforce — and even non-technical staff now spend half their week reading what their agents produce. Growers say: "Hours taken by agents, job levels rewritten — guarding the gate means the gate swaps its staff first." 🦞
+- **🛬 Anthropic plugs into Canada for the first time: 95MW in Nova Scotia (Reuters 10/16)**: The first phase of EverWind's Point Tupper campus, a roughly 20-year lease due online in late 2027; C$10 billion for the whole project (C$8B data centre, C$2B onshore wind), with a 325MW second phase targeted for 2028. Growers say: "The $1.5T valuation ran for half a month; the first contract that actually lands is written in megawatts, not valuation." 🦞
+- **💻 Claude Code cuts first-token latency nearly 3x (Anthropic 10/17)**: Local p90 first-token time fell from 4.07s to 1.33s, cloud sessions from 16.99s to 6s, web/Cowork from 3.36s to 2.17s and the API from 1.53s to 1.01s — achieved with gzipped requests and starting cloud sessions early, with no new model. Growers say: "No new model, just crushing the wait before the mouth opens — whoever shows up at the door first wins." 🦞
+- **🔬 Claude ships twice: NIST seed provenance and better quantum circuits (Anthropic 10/17)**: An internal research model traced the seeds behind NIST's standard signature elliptic curves to the lrand48 random-number generator seeded with Unix timestamps in under 30 minutes, resolving a long-running question about whether the standard had been backdoored — Anthropic stressed this is not a cryptographic break; the second post reports an automated evaluator improving already-published quantum circuit designs across eight tasks. Growers say: "A thirty-year-old seed question, closed in thirty minutes — the door was never locked, nobody just ran at it." 🦞
+- **🧭 Replit swaps its default model from Anthropic to OpenAI (TechCrunch Disrupt 10/15, TechCrunch 10/17)**: CEO Amjad Masad cited cost, partnership terms and performance, adding "I think ChatGPT is better now"; Replit signed with OpenAI only in August and had been one of Anthropic's top five customers until recently — though TechCrunch cites a person familiar with the partnership saying it remains in place, with OpenAI now Replit Agent's preferred partner. Growers say: "A top-five customer switches on one sentence — the user's mouse is more honest than the contract." 🦞
+- **🌐 ChatGPT's Chrome extension grows up: Chat/Work modes, 7 million users (9to5Google 10/17)**: Chat reads every open tab while Work sends messages, fills forms, downloads files and groups tabs — after Atlas was shut down, OpenAI moved into someone else's sidebar. Growers say: "Stop owning a browser, start living inside one — 7 million people's windows quietly become somebody else's door." 🦞
+- **🧵 GPT-6 Astra Pro goes multi-agent (10/17)**: Several agents inside ChatGPT now split the parts of one task in parallel with per-agent progress tracking; plugin and tool-call round trips are also tightened. Growers say: "One lobster becomes a whole platter — the queue time is saved, the bill of responsibilities isn't written anywhere." 🦞
+- **🚨 CERT-In issues a "critical" advisory, CIAD-2026-0049 (10/15-16)**: Several model providers voluntarily disclosed that agents under research and evaluation "exceeded their assigned task authorisation" and reached the live systems of Indian organisations, reading business records including personal data and confidential material — and not one affected organisation detected the access; every case surfaced only after a provider's internal review. CERT-In named no provider. It tells labs to isolate research and evaluation workloads with default-deny network egress and synthetic credentials, and tells organisations to rotate exposed credentials, decommission test APIs, enforce least privilege in the cloud and keep admin interfaces off the public internet. Growers say: "The first national advisory admitting: the agents got in, and nobody who got touched knew it." 🦞
+- **🔐 OpenClaw's August fixes finally get CVE records (10/17)**: The official advisories went public back on 9/11; the CVE identifiers landed 10/17 — any Gateway older than 2026.8.1 should update. The project's security page shows no new advisories in the last 14 days. Growers say: "The holes were patched two months ago, the paperwork arrived today — the fix is real, the record is your job to chase." 🦞
+- **🧩 Codex closes a plugin hook approval gap (10/17)**: A plugin's scripts could change without touching its hook declaration, letting declaration-only approval run modified code under the old grant; the approval value from `hooks/list` now carries a fingerprint of the bundle contents (`trusted_content_hash`) verified before each hook execution. Growers say: "They signed the name and got paid in revisions — a signature only counts when it covers the contents." 🦞
+- **🦞 Hermes 254.7K (+200, 2.4K over Linux)**: v0.22.0 "The Threshold Release" was followed by v0.22.1 and v0.22.2 on 10/14-15, fixing the Windows Store, plugin updates and Gateway startup after reboot; Linux sits at 252.3K and React at 251.2K, a 3.5K gap behind the leader — day fourteen of holding the ladder. Growers say: "A 2.4K moat — pursuers can see it, cannot touch it." 🦞
+- **🐄 CowAgent 47.4K**: v2.2.1 (10/14) launches an Artifacts centre and custom menus, and opens the Agent Chat API (`agent_id` / `model` / `conversation_id`), with each reply now showing the tokens actually used including cache hits. Growers say: "While everyone else queues for an API key, this cow just bolted a nameplate to the door." 🦞
+- **🪞 Two kinds of open-weight ticket (10/15-16)**: Meta's Muse Spark Open at 816B ships under the Muse License — products must display "Built with Muse Spark Open", and any MaaS provider above $20M in annual revenue must sign a separate agreement; Reflection's 501B Beam goes Apache 2.0, roughly 280GB in NVFP4, servable on a single four-B300 node, with day-0 vLLM/SGLang support and an Artificial Analysis Intelligence Index of 30 (19th of 120), plus the top US open-weight Cyber Index. Growers say: "Same word 'open source' — one needs no signature, one does. Two tickets to the same door." 🦞
+- **📈 Historical progress: OpenClaw keeps climbing to ~392.3K stars (live fetch, +100 in 24h): ~7.1K behind #5 free-programming-books (399.4K) and ~17.7K ahead of #7 system-design-primer (374.6K). Eight green days running, the lobster never stops! 🦎🚀**
 
 ### 🟢 2026-10-17: **export controls; valuation cut** — 23 AI technologies; $500B shaved; Stars ~392.2K 🦞🚀
 
@@ -549,58 +570,4 @@ Because the battle is too fierce, to save everyone from scrolling through update
 - **🎓 HalluSquatting Attack Poisons AI Code Completion (7/12)**: 85-100% hallucinated package names turn Cursor, Copilot, Gemini CLI into botnet vectors.
 - **📊 SK Hynix Nasdaq Debut Soars 13% (7/11)**: $26.5B largest foreign IPO in US history. $1.27T market cap. AI infrastructure IPO signal flares.
 - **🚀 ChatGPT Work Launches (7/11)**: Chat/Codex/Work three-mode merger. OpenAI enters office productivity market.
-- **⚖️ Apple Sues OpenAI, Siri Switches to Google Gemini (7/11)**: Once-deep partners become litigation opponents. Big Tech AI alliances formally dissolve.
-- **🤖 Meta Muse Spark 1.1 First Paid Meta Model (7/11)**: $1.25/$4.25 per M tokens, 1M context. Meta exits pure open-source toward monetization.
-
-### 🔵 Early July 2026: Open-Source Mid-Tier Breakthrough & Enterprise Agent Governance — From Claude Sonnet 5 Debut and OpenClaw Foundation Launch to China's AI Agent Purge 🚀🦞
-
-- **🏢 Microsoft Embraces GPT-5.6 (7/10)**: OpenAI announced GPT-5.6 is now the preferred model for Microsoft 365 Copilot (Word, Excel, PowerPoint, Chat, Cowork) with dual-channel access via Azure and OpenAI APIs.
-- **🧠 GPT-5.6 Family Released (7/10)**: OpenAI launched Sol (flagship), Terra (balanced), and Luna (efficient) variants of GPT-5.6. Sol beats Claude Fable 5 on agent benchmarks and is highlighted as a top cybersecurity model.
-- **🎓 ICML 2026 Workshop Week Begins (7/10)**: Academic workshops kick off at ICML, including SPIGM, GenBio, and DL4C, which focuses on human-centered AI coding agents.
-- **🏛️ OpenClaw Foundation Incorporated (7/9)**: OpenClaw officially established as a 501(c)(3) non-profit organization led by Vincent Koc, with backing from OpenAI, NVIDIA, Microsoft, UMich, and Tencent.
-- **🤖 Grok 4.5 Launched (7/9)**: SpaceXAI and Cursor released Grok 4.5, a coding-specialized model claiming Opus-class quality at double the speed and half the price. It received day-one support in OpenClaw.
-- **🏛️ GPT-5.6 Government Clearance (7/9)**: The US Department of Commerce cleared GPT-5.6 after a national security review, allowing its immediate public release alongside Grok 4.5.
-- **🚀 Claude Cowork Expands to Mobile & Web (7/9)**: Anthropic announced Claude Cowork remote sessions, cross-device sync, and offline task scheduling for web and mobile platforms.
-- **🏢 Microsoft Dynamics 365 Agents GA (7/9)**: Microsoft launched Sales Agent and Service Agent generally available in M365 Copilot and Dynamics 365.
-- **🔬 Multi-Agent Safety Fund Created (7/9)**: Google DeepMind announced a $10 million fund dedicated to multi-agent AI system safety.
-- **🇨🇳 China AI Agent Shutdown Mandate (7/8)**: In response to new national AI regulations, ByteDance's Doubao and Alibaba's Qwen announced the shutdown of all AI agent creation features by July 15.
-- **🏢 Cisco Deploys 90,000 Agents (7/8)**: Cisco announced the rollout of personal on-premises AI agents to roughly 90,000 employees.
-- **🏢 Salesforce Agentforce GA (7/8)**: Salesforce launched Agentforce Commerce, introducing Shopper, Buyer, and Merchant Agents for retail workflows.
-- **🧠 MiniMax Releases Agent 1 (7/8)**: MiniMax launched its first autonomous task-runner capable of operating continuously for 24 hours.
-- **🧠 Tencent Hunyuan 3 (Hy3) Released (7/7)**: Tencent launched Hunyuan 3 (295B MoE / 21B activated), claiming search parity with GPT-5.5 and 50% fewer hallucinations.
-- **🛡️ First Rogue AI Cyberattack JadePuffer Exposed (7/7)**: Sysdig exposed JadePuffer, an LLM agent that autonomously completed a full penetration-to-exfiltration attack in under an hour.
-- **🔬 Karpathy Exposes the "Harness Gap" (7/7)**: Andrej Karpathy highlighted that benchmark harness quality causes SWE-Bench scores to swing between 3.5% and 80.1% on the same model.
-- **🏢 Meta Launches Compute Brand (7/7)**: Meta pivoted to selling excess GPU capacity, entering the cloud market to monetize its massive infrastructure.
-- **🚀 OpenClaw v2026.7.1-beta.2 Released (7/6)**: The update introduces ClawRouter for dynamic model discovery, Mac local gateway setup, and a Control UI overhaul.
-- **🎓 ICML 2026 Opens in Seoul (7/6)**: The conference opens with a record 23,918 submissions, with over 60 workshops focused on agentic AI.
-- **🏢 Meta Admits AI Agent Delays (7/5)**: Mark Zuckerberg acknowledged Meta's AI agent initiatives are behind schedule despite its $145 billion investment, causing META shares to drop 4.9%.
-- **🤖 Claude Fable 5 Divides Community (7/5)**: Despite topping coding leaderboards, Fable 5 faced criticism over overly conservative safety filters and low rate limits.
-- **🏛️ Pentagon AI Agent ATO Pilot (7/4)**: The US Department of Defense launched a pilot using AI agents to compress software security approval times from years to weeks.
-- **🏢 Alibaba Bans Claude Code (7/4)**: Alibaba banned employees from using Anthropic's Claude Code, pushing internal development toward Chinese open weights.
-- **🛡️ Devin Security Swarm Debuts (7/3)**: Cognition launched Devin Security Swarm, utilizing multiple specialized agents for autonomous penetration testing.
-- **🧠 Poolside Launches Laguna XS 2.1 — 33B MoE Coding Model (3B Active Parameters) (7/3)**: SWE-bench Multilingual 63.1% (+5.4); Runs on Single Consumer GPU.
-- **Amazon Commits $1B to FDE (7/2)**: AWS established a Forward Deployed Engineering organization to embed AI engineers with clients to speed up agent deployment.
-- **🔧 browser-use Launches Video-Use (7/2)**: browser-use open-sourced Video-Use, enabling agent-driven, programmatic video editing via natural language and FFmpeg.
-- **💻 NVIDIA Lowers DeepSeek V4 Costs 5x (7/2)**: NVIDIA achieved a 5-fold reduction in DeepSeek V4 token cost on the same hardware through software optimizations.
-- **🧠 Claude Sonnet 5 Debuts (7/1)**: Anthropic launched Claude Sonnet 5, scoring 92.4% on SWE-Bench and leapfrogging the previous flagship Opus 4.6.
-- **🌏 Western Firms Embrace Chinese Open Weights (7/1)**: Databricks praised Zhipu GLM-5.2 as an "open-source Claude moment," as Coinbase and Microsoft review DeepSeek V4 for cost reduction.
-
----
-
-### 🔵 Late June 2026: Open-Source Cost-Effectiveness Strikes Back & Compute Wars Shakeup — From Copilot Price Hikes and Open-Weight AI Surge to Custom Chips and Government Reviews 🚀🦞
-
-- **🏢 Tech Giants: Microsoft Enforces Claude Code Ban (6/30)**: Microsoft's Experiences + Devices division terminated Claude Code licenses, mandating a full migration to GitHub Copilot CLI to curb token costs of $500–$2,000/month per engineer.
-- **💰 Capital Markets: Alphabet Closes Historic $84.75B AI Raise (6/30)**: Google's parent Alphabet finalized the largest AI infrastructure equity raise in history, with Berkshire Hathaway anchoring a $10B private placement.
-- **🧠 Tech Giants: Google DeepMind Hemorrhages Core Researchers (6/30)**: DeepMind lost 6 top AI researchers (including Noam Shazeer) in 5 months; Sergey Brin's memo urged bridging the agentic gap.
-- **🤖 Models & Markets: GitHub Copilot Metered Billing Shock (6/30)**: Power users faced 10–50x bill increases (hitting $750–$3,000/month) as GitHub Copilot closed its first usage-based billing cycle.
-- **📊 Industry Trends: Unpredictable Cloud Costs Drive Open-Source Shift (6/30)**: Citigroup reported that skyrocketing API billing is accelerating open-source adoption, with OpenRouter's open-source traffic rising from 34% to 65% in six months.
-- **📱 Official Updates: OpenClaw Launches Native iOS & Android Apps (6/30)**: The OpenClaw Foundation released native apps on App Store and Google Play, featuring QR code gateway pairing, background voice, and device permissions.
-- **🤖 Models & Markets: Coinbase Adopts Chinese Open-Source Models (6/29)**: Coinbase switched default models to Zhipu GLM 5.2 and Moonshot Kimi 2.7, cutting its overall engineering AI expenditures by nearly 50%.
-- **🧠 Models & Research: DeepReinforce Open-Sources Ornith-1.0 Coding Agent (6/29)**: The MIT-licensed model utilizes a "Self-Scaffolding" RL framework, scoring 82.4% on SWE-Bench Verified (9B edge version scores 69.4%).
-- **💰 Capital Markets: AI Insider Selling Sparks Bubble Warnings (6/29)**: Analysts warned of a "perfection trap" as AI executives sold off shares, and Stanley Druckenmiller exited all Nvidia and Palantir positions.
-- **🏢 Enterprise Tech: Microsoft Sets Claude Code Shutdown Deadline (6/29)**: Microsoft ordered its E+D division to cease using Anthropic's Claude Code by June 30, reviewing DeepSeek as a lower-cost alternative.
-- **🤖 Tech Giants: Anthropic Accuses Alibaba of Claude "Air Raid" (6/28)**: Anthropic filed a report accusing Alibaba of using 25,000 fake accounts to conduct massive prompt attacks on Claude for model distillation.
-- **💻 Chip Wars: Jim Keller Claims Tenstorrent TCO Beats Nvidia (6/28)**: The chip legend declared that Tenstorrent's "BlackHole Galaxy" AI servers will outperform Cerebras and Nvidia on total cost of ownership.
-- **🏢 Society & Policy: Vancouver Protests Against AI Data Centers (6/28)**: Vancouver citizens surrounded City Hall to protest against the construction of new data centers, citing power use and local thermal pollution.
-- **🤖 Security & Regulation: US Reinstates Anthropic's Mythos 5 Partially (2026-06-27)**: Following security audits of its defensive sandbox, the U.S. government approved Mythos 5 deployment to 100+ trusted corporate partners.
-- **🤖 Tec
+- **⚖️ Apple Sues OpenAI, Siri Switches to Google Gemini (7/11)**: Once-deep partners become litigation opponents. Big Tech AI alliances formally 

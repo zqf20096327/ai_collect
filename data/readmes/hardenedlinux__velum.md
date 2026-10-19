@@ -121,9 +121,13 @@ present and falls back to CPU. Force the CPU backend with `VELUM_BACKEND=cpu`
 
 > Note: the LLM is large. `llm.gguf` is ~2.6 GB, but synthesis is two-phase: it
 > generates every speech token with the LLM, releases it, then loads Flow + HiFT,
-> so the LLM and the Flow DiT graph (~4 GiB — the real VRAM peak) never share the
-> GPU. If `cudaMalloc` reports out-of-memory, either free the GPU or prefix the
-> run with `VELUM_BACKEND=cpu`.
+> so the LLM and the Flow DiT graph (~4 GiB) never share the GPU. During Phase 2
+> the two VRAM peaks are the Flow DiT graph and the HiFT vocoder graph — both
+> grow linearly with audio length, and HiFT is the one that trips OOM first at
+> long audio (its weights are ~0.08 GiB but its conv-network activations dominate).
+> HiFT runs chunked (default 100 mel frames / 2 s) to bound its peak. If
+> `cudaMalloc` reports out-of-memory, either free the GPU or prefix the run with
+> `VELUM_BACKEND=cpu`.
 
 ## Prepare models & assets (offline, one-time)
 
@@ -291,10 +295,14 @@ the command line, and is equivalent to `--text`:
 
 ### Segmented input (per-sentence instructions)
 
-`--segments-file <path>` reads a JSON array of `{"text", "instruct"}` objects
-(`-` = stdin). Each segment is synthesized with its own instruction — `instruct`
-falls back to `--instruct` when omitted — and the segments are concatenated into
-one wav with `--segment-gap-ms` of silence between them (default 200 ms):
+`--segments-file <path>` reads a JSON array of `{"text", "instruct",
+"gap_after_ms"}` objects (`-` = stdin). Each segment is synthesized with its own
+instruction — `instruct` falls back to `--instruct` when omitted — and the
+segments are concatenated into one wav with silence between them. The silence
+after a segment is its `gap_after_ms` (a non-negative integer, milliseconds)
+when present, else the global `--segment-gap-ms` (default 200 ms); the last
+segment's `gap_after_ms` is ignored (no trailing silence). Any field other than
+`text` / `instruct` / `gap_after_ms` is an error:
 
 ```sh
 ./build/velum --segments-file segments.json --out scene.wav --segments-dir seg
@@ -302,16 +310,45 @@ one wav with `--segment-gap-ms` of silence between them (default 200 ms):
 
 ```json
 [
-  {"text": "欢迎来到我们的节目。", "instruct": "请用热情的语气表达。"},
+  {"text": "欢迎来到我们的节目。", "instruct": "请用热情的语气表达。", "gap_after_ms": 300},
   {"text": "今天我们聊聊天气情况。", "instruct": "请用平静的语气表达。"},
-  {"text": "感谢收听，我们下次再见。"}
+  {"text": "感谢收听，我们下次再见。", "gap_after_ms": 0}
 ]
 ```
+
+Here segment 1 is followed by 300 ms of silence, segment 2 by the default 200 ms,
+and segment 3's `gap_after_ms` is ignored (it is last).
 
 `--segments-dir` (optional) also writes each segment's audio to
 `segment_001.wav`, `segment_002.wav`, … so they can be used individually. The
 annotation syntax usable inside `"text"` (pinyin, CMU phonemes, markers,
 `<strong>`) is documented in `docs/annotation-syntax.md`.
+
+## Exit codes
+
+`velum` exits with a small, fixed set of codes so scripts can branch on failure:
+
+| code | meaning |
+|---|---|
+| `0` | success |
+| `1` | runtime error (missing/corrupt model or asset, I/O error, decode failure) |
+| `2` | usage error (bad arguments, malformed `--segments-file`, instruction body already wrapped) |
+| `3` | **out of memory** — a compute graph or weight buffer could not be allocated on the backend |
+
+On exit code `3`, stderr carries a `velum: out of memory: <stage> ...` line naming
+the stage (e.g. `llm prefill graph`, `flow DiT graph`, `hift vocoder graph`,
+`weight upload`), the bytes needed, and the free device memory. Both decoder
+graphs run through the ggml *graph allocator* (`ggml_gallocr`), which reuses
+buffers across a graph's topological order, so their live peaks are a small
+fraction of the static sum — the **Flow DiT graph** is ~80 MiB for a 12.8 s
+segment (its T×T attention scores grow quadratically, capping segments at ~135 s
+on an 8 GiB card) and the **HiFT vocoder graph** ~50 MiB per chunk (HiFT's
+*weights* are only ≈0.08 GiB, but its conv-network *activation* graph dominates).
+HiFT therefore runs *chunked* (`--hift-chunk-mel`, default 100 frames = 2 s) so
+its peak stays bounded. Velum pre-checks every segment's Flow DiT graph size
+against free VRAM *before producing any audio* and reports `segment N too long ...
+split this segment into shorter pieces` when one does not fit — rather than
+crashing inside ggml.
 
 ## Verify
 
@@ -359,7 +396,9 @@ Flow mel's float32 accumulation (see `docs/HIFT.md`). The CUDA path pins cuBLAS
 to `CUBLAS_DEFAULT_MATH` (TF32 disabled, `docs/adr/0002`). Synthesis is two-phase —
 the LLM generates every speech token and is released before Flow + HiFT load, so
 the resident LLM and the Flow DiT graph (~4 GiB) never share the GPU (they do not
-fit an 8 GiB card together). Not a bug; a real divergence would land in `RED`.
+fit an 8 GiB card together). Phase 2 has two audio-length-proportional peaks — the
+Flow DiT graph and the HiFT vocoder graph — and HiFT is chunked to keep its peak
+bounded. Not a bug; a real divergence would land in `RED`.
 
 The GREEN margin is **sequence-length dependent**: the HiFT max error is
 concentrated on a few isolated onset samples and grows with mel length. On a
@@ -381,6 +420,22 @@ that exact buffer from `build/flow_noise.bin` (generated by
 for **every** synthesis — this is a deliberate, permanent design choice that
 keeps the decoder deterministic and reproducible, **not** a configurable option
 and **not** a per-run RNG. There is no seed flag for it (see `docs/FLOW.md`).
+
+关于模型权重
+
+Velum 是一个推理运行时，本身不包含、不分发任何模型权重。构建时会从模型的官方发布渠道（Hugging Face / ModelScope）下载权重，用户获取和使用这些权重，受模型发布方的许可条款约束。
+
+目前默认支持的 Fun-CosyVoice3-0.5B-2512 由 FunAudioLLM 发布，许可信息请以其官方仓库为准。是否可以将模型用于商业用途，由用户根据模型许可自行判断并承担责任。
+
+Velum 代码本身以 GPLv3 发布，与模型权重的许可相互独立。
+
+About model weights
+
+Velum is an inference runtime. It does not contain or redistribute any model weights. Weights are downloaded at build time from the model’s official distribution channels (Hugging Face / ModelScope), and your use of them is governed by the model publisher’s license.
+
+The default supported model, Fun-CosyVoice3-0.5B-2512, is published by FunAudioLLM; refer to its official repository for licensing terms. Whether a model may be used commercially is for you to determine under that model’s license.
+
+Velum’s code is licensed under GPLv3, independently of any model weights.
 
 ## Docs
 

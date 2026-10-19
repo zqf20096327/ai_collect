@@ -7,12 +7,12 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/kevinelliott/agentmanager.svg)](https://pkg.go.dev/github.com/kevinelliott/agentmanager)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)](#installation)
-[![Agents in Catalog](https://img.shields.io/badge/agents%20in%20catalog-125-blueviolet)](#supported-agents)
+[![Agents in Catalog](https://img.shields.io/badge/agents%20in%20catalog-309-blueviolet)](#supported-agents)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A comprehensive CLI/TUI/Library application for detecting, managing, installing, and updating AI development CLI agents across macOS, Linux, and Windows.
 
-> **Catalog:** 125 agents and counting. See the full list in [Supported Agents](#supported-agents).
+> **Catalog:** 309 agents and counting. See the full list in [Supported Agents](#supported-agents).
 
 ## Features
 
@@ -67,7 +67,7 @@ make install
 
 ```bash
 agentmgr doctor          # Check system health and configuration
-agentmgr catalog list    # Confirm the embedded catalog loads (125 agents)
+agentmgr catalog list    # Confirm the embedded catalog loads
 ```
 
 > **Offline-first:** the catalog is embedded into the binary, so `agentmgr catalog list`
@@ -98,8 +98,10 @@ agentmgr --no-color agent list
 
 ### Example Output
 
+Catalog listings show tools supported on the selected platform; this example uses Linux.
+
 ```console
-$ agentmgr catalog list
+$ agentmgr catalog list --platform linux
 
 ID                NAME                METHODS     DESCRIPTION
 ----------------- ------------------- ----------- ----------------------------------
@@ -117,7 +119,7 @@ reasonix          DeepSeek-Reasonix   homebrew +1 DeepSeek-native AI coding agen
 smallcode         SmallCode           native +3   Terminal-native coding agent built to…
 …
 
-125 agents available
+145 agents available
 ```
 
 ```console
@@ -232,135 +234,322 @@ agentmgr api spec                # Output OpenAPI specification
 
 ## Supported Agents
 
-The catalog ships with **125 agents**, embedded in the binary and refreshable from the
+The catalog ships with **309 agents**, embedded in the binary and refreshable from the
 remote catalog with `agentmgr catalog refresh`. Use the `ID` with the agent commands,
 e.g. `agentmgr agent install claude-code` or `agentmgr catalog show gptme`.
+
+See [catalog research and update records](docs/catalog/README.md) for upstream
+verification sources and installation/setup limits.
 
 | Agent | ID | Installation Methods |
 |-------|----|----------------------|
 | abtop | `abtop` | cargo, native, powershell |
 | Agent CLI | `agent-cli` | pip, pipx, uv |
 | Agent Deck | `agent-deck` | brew, go, native |
+| Agent Eval | `agent-eval` | npm |
+| Agent Manager | `agent-manager` | brew |
 | Agent of Empires | `agent-of-empires` | brew, native |
+| Agent Stack CLI | `agentstack` | uv |
 | agent-browser | `agent-browser` | brew, npm |
+| agent-memory | `agent-memory` | native |
 | Agents CLI | `agents-cli` | pip, pipx, uv |
 | AIChat | `aichat` | binary, brew, cargo, scoop |
 | Aider | `aider` | pip, pipx, uv |
+| Airtable MCP Server | `airtable-mcp` | npm |
 | Amazon Q Developer CLI | `amazon-q` | brew, dmg, native |
 | Amp | `amp` | brew, chocolatey, native, npm |
+| Amplifier | `amplifier` | native |
+| amux | `amux` | brew |
 | Antigravity CLI | `antigravity-cli` | brew, native, powershell |
 | apfel | `apfel` | brew |
+| Apify CLI | `apify-cli` | npm |
+| Apify MCP Client | `mcpc` | npm |
+| Arize Phoenix CLI | `phoenix` | uv |
 | Atomic Agent | `atomic-agent` | native, powershell |
 | Auggie | `auggie` | npm |
+| Autohand | `autohand` | npm |
+| AWS AgentCore CLI | `aws-agentcore` | npm |
+| AWS Documentation MCP | `aws-documentation-mcp` | uv |
+| Azure MCP Server | `azure-mcp` | npm |
 | BBARIT Agent | `bbarit-agent` | native, powershell |
 | Beads | `beads` | brew, native, npm |
+| Beads Rust | `beads-rust` | brew |
+| BentoML CLI | `bentoml` | uv |
 | Bernstein | `bernstein` | native, pip, pipx, uv |
 | Blackbox CLI | `blackbox-cli` | native, npm, powershell |
+| BMad Method CLI | `bmad-method` | npm |
+| Brave Search MCP | `brave-search-mcp` | npm |
+| Browser Use | `browser-use` | uv |
+| Browserbase Browse | `browserbase-browse` | npm |
+| BrowserTools MCP | `browser-tools-mcp` | npm |
 | ByteRover CLI | `byterover-cli` | native, npm |
+| CASS | `cass` | brew |
 | Caveman Code | `caveman-code` | npm |
+| CC Switch CLI | `cc-switch-cli` | brew |
+| CCManager | `ccmanager` | npm |
+| ccstatusline | `ccstatusline` | npm |
 | ccusage | `ccusage` | brew, npm, npx |
+| Chroma CLI | `chroma` | uv |
+| Chrome DevTools MCP | `chrome-devtools-mcp` | npm |
+| Cisco MCP Scanner | `mcp-scanner` | uv |
+| Cisco Skill Scanner | `skill-scanner` | uv |
 | Claude Code | `claude-code` | native, npm |
+| Claude Code Log | `claude-code-log` | uv |
 | Claude Code Router | `claude-code-router` | brew, npm, npx |
+| Claude Code Templates | `claude-code-templates` | npm |
+| Claude Replay | `claude-replay` | npm |
 | Claude Squad | `claude-squad` | brew, native |
 | Claude-Codex Bridge | `claude-codex-bridge` | npm, npx |
 | Claw Orchestrator | `claw-orchestrator` | native, npm |
 | ClawCodex | `clawcodex` | native |
+| ClawHub | `clawhub` | npm |
+| ClickHouse MCP Server | `clickhouse-mcp` | uv |
 | Cline CLI | `cline-cli` | npm |
 | Cloudflare cf | `cloudflare-cf` | npm |
 | cmux | `cmux` | binary, brew |
 | CocoIndex Code | `cocoindex-code` | pip, pipx, uv |
+| Code2Prompt | `code2prompt` | brew |
 | Codebuff | `codebuff` | binary, npm |
+| Codeflash CLI | `codeflash` | uv |
 | CodeWhale | `codewhale` | cargo, npm |
 | Codex | `codex` | binary, brew, npm |
+| CodexBar CLI | `codexbar` | brew |
+| Cognee CLI | `cognee` | uv |
 | Command Code | `command-code` | npm |
+| Context Mode | `context-mode` | npm |
+| Context7 CLI | `context7` | npm |
 | Continue CLI | `continue-cli` | npm |
 | CoreCoder | `corecoder` | pip, pipx, uv |
 | Cortex Code | `cortex-code` | native |
+| Crawl4AI CLI | `crawl4ai` | uv |
+| CrewAI CLI | `crewai` | uv |
 | Crush | `crush` | brew, go, npm, scoop, winget |
 | Cursor CLI | `cursor-cli` | native |
 | dao-code | `dao-code` | native, npm, npx |
+| DBHub | `dbhub` | npm |
 | Deep Agents CLI | `deepagents-cli` | native, pip, uv |
+| DeepCode CLI | `deepcode` | uv |
+| DeepEval | `deepeval` | uv |
 | DeepSeek CLI | `deepseek-cli` | npm |
 | DeepSeek Harness | `deepseek-harness` | npm |
 | DeepSeek-Reasonix | `reasonix` | homebrew, npm |
+| Destructive Command Guard | `dcg` | brew |
 | Dexter | `dexter` | git |
+| Dirac | `dirac` | npm |
+| Docker Agent | `docker-agent` | brew |
+| Docling CLI | `docling` | uv |
+| Docling MCP Server | `docling-mcp` | uv |
+| Docling Serve CLI | `docling-serve` | uv |
 | Droid | `droid` | brew, native, powershell |
 | DSCODE | `dscode` | native |
+| dstack CLI | `dstack` | brew |
+| E2B CLI | `e2b-cli` | npm |
 | ElevenLabs CLI | `elevenlabs-cli` | npm |
 | Engram | `engram` | brew |
+| Exa MCP Server | `exa-mcp` | npm |
+| Fabric AI | `fabric` | brew |
 | fast-agent | `fast-agent` | pip, pipx, uv |
+| FastMCP CLI | `fastmcp` | uv |
+| fauxnix | `fauxnix` | npm |
 | fence | `fence` | brew, go, native |
 | FetchCoder | `fetchcoder` | npm |
+| Firecrawl CLI | `firecrawl-cli` | npm |
+| Firecrawl MCP Server | `firecrawl-mcp` | npm |
+| Foremerge | `foremerge` | npm |
 | Forge CLI | `forge-cli` | npm |
 | ForgeCode | `forgecode` | native, npm |
 | FrontierAgent | `frontier-agent` | native |
+| Gajae Code | `gajae-code` | native |
+| garak | `garak` | uv |
+| Gas Town | `gastown` | brew |
 | Gemini CLI | `gemini-cli` | npm |
 | GitHub Copilot CLI | `copilot-cli` | brew, npm, winget |
+| GitHub MCP Server | `github-mcp` | brew |
+| GitIngest | `gitingest` | uv |
+| Google ADK CLI | `google-adk` | uv |
+| Google Workspace CLI | `gws` | npm |
 | Goose | `goose` | brew, brew-cask, native, powershell |
 | gptme | `gptme` | brew, pip, pipx, uv |
+| GPUStack CLI | `gpustack` | uv |
+| Grafana MCP Server | `grafana-mcp` | brew |
+| grepai | `grepai` | brew |
 | Grok Build | `grok-build` | native |
 | Grok CLI | `grok-cli` | bun, npm |
+| Happy | `happy` | npm |
+| Harbor Agent Evaluation CLI | `harbor` | uv |
+| Hayhooks | `hayhooks` | uv |
 | Herdr | `herdr` | binary, brew, native, nix |
 | Hermes Agent | `hermes-agent` | native, source |
+| Hugging Face CLI | `huggingface-cli` | uv |
 | Hunk | `hunk` | brew, native, npm |
+| IBM ContextForge Gateway | `contextforge` | uv |
+| iCode | `icode` | uv |
+| Inspect AI | `inspect-ai` | uv |
+| IronClaw | `ironclaw` | native |
 | jcode | `jcode` | binary, brew, native |
 | jevgrep | `jevgrep` | npm |
 | Junie CLI | `junie-cli` | brew, native, npm |
 | Juno Code | `juno-code` | npm |
+| Jupyter MCP Server | `jupyter-mcp` | uv |
 | Kilocode CLI | `kilocode-cli` | npm |
+| Kimchi | `kimchi` | brew, native |
 | Kimi Code | `kimi-code` | binary, native, pip, pipx, uv |
 | Kiro CLI | `kiro-cli` | brew, native |
 | KlaatCode | `klaatcode` | brew, native, npm, npx |
 | Kode CLI | `kode-cli` | npm |
 | kubectl-ai | `kubectl-ai` | krew, native, nix |
+| Kubernetes MCP Server | `kubernetes-mcp` | npm |
+| Langflow CLI | `langflow` | uv |
+| LangGraph CLI | `langgraph-cli` | uv |
 | late | `late-cli` | binary, brew, native |
 | Letta Code | `letta-code` | npm |
+| Leviathan | `leviathan` | cargo |
+| LitServe CLI | `litserve` | uv |
 | little-coder | `little-coder` | native, npm |
+| llama-swap | `llama-swap` | brew |
+| llama.cpp CLI | `llama-cpp` | brew |
+| LLM | `llm` | uv |
+| llmfit | `llmfit` | brew |
+| macOS Harness | `macos-harness` | uv |
+| Magentic UI CLI | `magentic-ui` | uv |
+| MarkItDown | `markitdown` | uv |
+| Marvin CLI | `marvin` | uv |
 | Mastra Code | `mastracode` | npm |
+| MCO | `mco` | npm |
+| MCP Atlassian | `mcp-atlassian` | uv |
+| MCP Filesystem Server | `mcp-filesystem` | npm |
+| MCP for Blender | `mcp-for-blender` | uv |
+| MCP Inspector | `mcp-inspector` | npm |
+| MCP Proxy | `mcp-proxy` | uv |
+| MCP Publisher | `mcp-publisher` | brew |
+| MCP Remote | `mcp-remote` | npm |
+| MCP Toolbox for Databases | `mcp-toolbox` | brew |
+| mcp-use CLI | `mcp-use` | npm |
 | mcp2cli | `mcp2cli` | pip, uv |
+| MCPJam Inspector | `mcpjam-inspector` | npm |
+| MCPM | `mcpm` | uv |
+| MCPorter | `mcporter` | npm |
 | Meta Muse Code | `muse-code` | native |
+| Mini SWE Agent | `mini-swe-agent` | uv |
 | MiniMax Code | `minimax-code` | native, powershell |
 | Mistral Vibe | `mistral-vibe` | brew, native, pip, uv |
+| MLflow CLI | `mlflow` | uv |
+| MLX LM | `mlx-lm` | uv |
+| Modal CLI | `modal` | uv |
+| Moltis | `moltis` | brew |
+| MongoDB MCP Server | `mongodb-mcp` | npm |
+| MotherDuck and DuckDB MCP | `motherduck-mcp` | uv |
+| n8n CLI | `n8n` | npm |
+| Nanobot | `nanobot` | uv |
 | Nanocoder | `nanocoder` | brew, npm |
+| Neo4j MCP Server | `neo4j-mcp` | brew |
+| Neon MCP Server | `neon-mcp` | npm |
 | nono | `nono` | brew, cargo |
+| NTM | `ntm` | brew |
+| NullClaw | `nullclaw` | brew |
+| Oh My ClaudeCode | `oh-my-claudecode` | npm |
+| Oh My Codex | `oh-my-codex` | npm |
 | oh-my-pi | `oh-my-pi` | bun, native, npm, powershell |
+| Ollama CLI | `ollama` | brew |
 | Omnigent | `omnigent` | brew, native, pipx, uv |
+| OmO | `omo` | npm |
 | Ona | `ona` | binary, brew |
+| Only CLI / oc | `only-cli` | npm |
 | Open Interpreter | `open-interpreter` | pip, pipx, uv |
+| Open WebUI CLI | `open-webui` | uv |
+| open_scion | `open-scion` | native |
+| OpenAgents Control | `openagents-control` | npm |
+| OpenAgents Launcher | `openagents-launcher` | npm |
 | openclaude | `openclaude` | npm, npx |
 | OpenClaw | `openclaw` | brew, native, npm |
 | OpenCode | `opencode` | brew, chocolatey, curl, npm, scoop |
 | OpenHands CLI | `openhands` | native, pip, pipx, uv |
+| OpenQodex | `openqodex` | npm |
+| OpenSandbox CLI | `opensandbox-cli` | uv |
+| OpenSpec | `openspec` | brew, npm |
+| OpenViking | `openviking` | uv |
+| Opik CLI | `opik` | uv |
+| OptiLLM | `optillm` | uv |
+| Oracle | `oracle` | npm |
 | Ouroboros | `ouroboros` | native, pip, pipx, uv |
 | Paperclip | `paperclip` | npm, npx |
+| Peekaboo | `peekaboo` | brew |
 | Penguin Harness | `penguin-harness` | native, npm, npx |
+| Perplexity MCP | `perplexity-mcp` | npm |
 | Pi Agent Rust | `pi-agent-rust` | binary, native |
 | Pi Coding Agent | `pi-coding-agent` | binary, npm |
+| PicoClaw | `picoclaw` | brew |
 | Plandex | `plandex` | native |
+| Plannotator TUI | `plannotator-tui` | brew |
+| Playwright CLI | `playwright-cli` | npm |
+| Playwright MCP | `playwright-mcp` | npm |
+| Playwright Test CLI | `playwright-test` | npm |
+| Pochi | `pochi` | npm |
+| Prefect CLI | `prefect` | uv |
+| PromptFlow CLI | `promptflow` | uv |
+| Promptfoo | `promptfoo` | npm |
+| Pydantic AI CLI | `pydantic-clai` | uv |
+| Pydantic Logfire CLI | `logfire` | uv |
+| Qdrant MCP Server | `qdrant-mcp` | uv |
+| QMD | `qmd` | npm |
 | Qoder CLI | `qoder-cli` | binary |
 | Qwen Code | `qwen-code` | brew, npm |
 | RA.Aid | `ra-aid` | brew, pip, pipx, uv |
 | Rallies CLI | `rallies-cli` | pip, pipx |
 | Ralph TUI | `ralph-tui` | bun, bunx |
+| Ralphex | `ralphex` | brew |
+| RamaLama CLI | `ramalama` | brew |
+| Redis MCP Server | `redis-mcp` | uv |
+| Repomix | `repomix` | npm |
+| Resend MCP Server | `resend-mcp` | npm |
 | rmux | `rmux` | brew, cargo |
 | Roo Code CLI | `roo-code-cli` | native |
 | rtk | `rtk` | binary, brew, cargo, native |
 | Ruflo | `ruflo` | native, npm, npx |
+| RunPod CLI | `runpodctl` | brew |
+| RuVector CLI | `ruvector` | npm |
+| Sentry CLI | `sentry-cli` | npm |
+| Serena | `serena` | uv |
 | skills | `skills` | npm, npx |
+| Skillshare CLI | `skillshare` | brew |
 | SmallCode | `smallcode` | native, npm, npx, powershell |
+| Sno Station | `sno-station` | native |
+| Snyk Agent Scan | `snyk-agent-scan` | uv |
+| Spec Kit | `spec-kit` | uv |
+| Summarize | `summarize` | npm |
+| Supabase MCP Server | `supabase-mcp` | npm |
+| Supergateway | `supergateway` | npm |
+| SWE-ReX Remote Runtime | `swe-rex` | uv |
+| Symphony | `symphony` | native |
 | Tabnine CLI | `tabnine-cli` | native |
+| Tavily MCP | `tavily-mcp` | npm |
 | Tenere | `tenere` | brew, cargo, nix |
+| Terraform MCP Server | `terraform-mcp` | brew |
 | TokenTracker | `tokentracker` | npm, npx |
 | Tokscale | `tokscale` | bun, npm |
+| TOON CLI | `toon-cli` | npm |
 | Trae Agent | `trae-agent` | source |
+| Trigger.dev CLI | `trigger-dev` | npm |
+| tsk | `tsk` | brew, native |
+| tuicr | `tuicr` | brew |
 | TUIOS | `tuios` | brew, native |
 | TunaCode CLI | `tunacode-cli` | pip, pipx, uv |
+| Unreal Agent | `unreal-agent` | brew, native |
 | Valyu CLI | `valyu-cli` | npm |
+| Vast.ai CLI | `vastai` | uv |
+| Vibe Kanban | `vibe-kanban` | npm |
 | VibeMux | `vibemux` | binary, native |
+| VT Code | `vtcode` | brew, native |
+| wcgw | `wcgw` | uv |
+| Weights and Biases CLI | `wandb` | uv |
 | WhipCode | `whipcode` | native |
+| Workmux | `workmux` | brew |
+| Worktrunk | `worktrunk` | brew |
 | YYLO | `yylo` | npm |
 | ZCode | `zcode` | native |
+| ZenML CLI | `zenml` | uv |
 | zero | `zero` | native, npm |
+| ZeroClaw | `zeroclaw` | native |
 | Zeroshot | `zeroshot` | npm |
 | zerostack | `zerostack` | cargo, native |
 

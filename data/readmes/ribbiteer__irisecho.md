@@ -28,8 +28,8 @@ guidance, your own LoRAs, presets and side-by-side comparisons.
 
 | Studio | What you do | Models |
 |---|---|---|
-| **Image** | Describe a picture; get photos, illustration, lettering that reads; or follow the outlines, depth or pose of a guide picture | Z-Image Turbo (also with a guide picture\*), FLUX.1 schnell, Qwen-Image, FLUX.1 dev / Krea\*, Krea 2\* |
-| **Edit** | Say what should change in a picture, or only in an area you mark; combine up to three | Qwen Edit (fast and careful), FLUX.1 Kontext\* |
+| **Image** | Describe a picture; get photos, illustration, lettering that reads; or follow the outlines, depth or pose of a guide picture | Z-Image Turbo (also with a guide picture\*), FLUX.1 schnell, Qwen-Image, Qwen-Image 2.1\*, FLUX.1 dev / Krea\*, Krea 2\* |
+| **Edit** | Say what should change in a picture, or only in the areas you mark; combine up to ten pictures | Qwen Edit (fast and careful), Qwen-Image 2.1\*, FLUX.1 Kontext\* |
 | **Upscale** | Enlarge 2-4× and restore detail, no prompt needed | SeedVR2 3B and 7B |
 | **Video** | 2-5 s clips from text, a first frame, a last frame, or both; camera moves on presets; continue a clip from its last frame; LTX-2.5 makes the sound too | LTX-2.5\*, Wan 2.2 (and Fun Camera), HunyuanVideo 1.5\* |
 | **3D** | A picture or a description becomes a model to view, print or export (GLB, STL, 3MF, OBJ, PLY) | Pixal3D\* (one picture or front and back), TRELLIS.2\* |
@@ -38,7 +38,7 @@ guidance, your own LoRAs, presets and side-by-side comparisons.
 | **Music** | Beds, jingles and stingers from a few tags; seamless loops on the bar; cover, repaint or extend a recording | ACE-Step 1.5 |
 | **Sound** | One-shot effects: foley, UI sounds, impacts, ambience; variations of a sound you have | Stable Audio 3 SFX\* |
 
-<sub>\* Opt-in: non-commercial (FLUX.1 dev family), free for commercial use only under $1M a year (Krea 2) or $10M a year (LTX-2.5), not licensed in the EU, UK or South Korea (HunyuanVideo 1.5), gated (Stable Audio and LTX-2.5: accept the publisher's terms on Hugging Face and add a read token), under Meta's DINOv3 License, accepted in the app (Pixal3D, not offered in the EU, and TRELLIS.2), or with a pose reader built on Stable Diffusion 2 and its use restrictions, accepted in the app (Z-Image with a guide picture). IrisEcho shows each license and walks you through it.</sub>
+<sub>\* Opt-in: non-commercial (FLUX.1 dev family; Qwen-Image 2.1, research and evaluation only), free for commercial use only under $1M a year (Krea 2) or $10M a year (LTX-2.5), not licensed in the EU, UK or South Korea (HunyuanVideo 1.5), gated (Stable Audio and LTX-2.5: accept the publisher's terms on Hugging Face and add a read token), under Meta's DINOv3 License, accepted in the app (Pixal3D, not offered in the EU, and TRELLIS.2), or with a pose reader built on Stable Diffusion 2 and its use restrictions, accepted in the app (Z-Image with a guide picture). IrisEcho shows each license and walks you through it.</sub>
 
 **Improve** sits under every picture and video prompt: a small local model
 (Qwen3-VL) rewrites a rough idea the way the chosen model likes it, or describes
@@ -59,6 +59,14 @@ embedded prompts or settings unless you ask for them.
     <td><sub><b>Edit</b> · say what should change; the rest of the picture is kept</sub></td>
     <td><sub><b>Voice</b> · a whole script at once, one file per line, levels matched</sub></td>
   </tr>
+  <tr>
+    <td width="50%"><img src="docs/assets/screens/create-video.jpg" alt="The Video studio: Wan 2.2 with the night market picture as its first frame and a description of the motion on the left, and three finished clips on the right: a lighthouse at blue hour, the night market and the sea captain"></td>
+    <td width="50%"><img src="docs/assets/screens/create-music.jpg" alt="The Music studio: style tags with genre, mood and sound suggestions on the left, and three 30-second pieces on the right: synthwave, lo-fi hip hop and cinematic orchestral, each with its tempo and a waveform"></td>
+  </tr>
+  <tr>
+    <td><sub><b>Video</b> · bring a still to life, or start from a description</sub></td>
+    <td><sub><b>Music</b> · a few style tags; the song planner picks tempo, key and form</sub></td>
+  </tr>
 </table>
 
 <p align="center">
@@ -72,9 +80,13 @@ Every model starts on the settings it was tuned for, so nobody has to know what 
 sampler is. Turn on **Settings › Show advanced controls** and each studio gains a
 **More controls** section with what that model can actually use:
 
+<p align="center">
+  <img src="docs/assets/screens/advanced.jpg" alt="The Image studio with More controls open: a preset menu, size and steps with their recommended values, a note on where add-ons go, and an Expert section with shift, sampler and scheduler" width="100%">
+</p>
+
 - **Steps, guidance, size, sampler and shift** where they make a difference. A
   distilled model gets no guidance or negative prompt, because it would ignore them.
-- **Your own LoRAs** for FLUX.1, Z-Image and Wan 2.2: put `.safetensors` files in the
+- **Your own LoRAs** for FLUX.1, Z-Image, Qwen-Image 2.1 and Wan 2.2: put `.safetensors` files in the
   `loras` folder (or a ComfyUI folder you linked) and pick them with a strength.
   IrisEcho reads each file to tell which model it fits and shows its trigger words.
 - **Model-specific controls**, for example:
@@ -112,7 +124,8 @@ phone asks and watches it arrive.
 - **Your library in your pocket.** Browse, search, play, favourite and download
   what you have made.
 - **Nothing to install on the phone, no account, no cloud.** It is a page
-  served by your own computer.
+  served by your own computer; add it to your Home Screen for a one-tap
+  IrisEcho icon.
 - **Yours to control.** Off until you switch it on. Each phone pairs once with a
   short-lived code, is listed in Settings, and can be revoked there. Models,
   settings and folders stay on the computer. The connection is plain HTTP, so

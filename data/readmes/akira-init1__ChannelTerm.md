@@ -2,63 +2,62 @@
 
 # ChannelTerm
 
-ChannelTerm lets humans and AI share the same hardware terminal session.
+**Debug your board with AI. Stay in the same terminal.**
 
-AI does not replace your terminal. It joins it: the AI can read and operate the device while you remain attached, see what it writes, interact directly, and intervene when needed.
+ChannelTerm lets you and your AI client share a live serial or SSH terminal. Read the same device output, follow AI terminal commands, and take turns operating the board. It runs on Windows, Linux, and macOS and connects external AI clients through MCP.
+
+Use GDB to let AI set breakpoints, step through Linux programs, and inspect variables. Connect the serial port on Windows and run GDB in WSL2, or keep the shared console open while GDB uses the board's Ethernet connection. [Choose a debugging setup](#gdb-debugging).
+
+## Why ChannelTerm?
+
+Keep your terminal open while the AI works with the same device connection:
 
 ```text
-              Physical serial device
-                        |
-                 Serial Transport
-                  (one connection)
-                        |
-                        v
-              ChannelTerm Session SER-1
-                 /                 \
-                /                   \
-       Human terminal             AI / MCP client
-    channelterm attach        read and write tools
-                \                   /
-                 `--- same Session -'
+                         +---- Human terminal
+                         |
+Serial device ---- Session
+                         |
+                         +---- AI / MCP client
 ```
 
-ChannelTerm currently implements serial communication and SSH PTY shells on Windows, Linux, and macOS. It is not a built-in AI; it exposes real terminal Sessions to human CLI clients and external AI clients through MCP.
+Each client reads independently, so an AI reader does not consume the output you are watching. ChannelTerm displays AI terminal writes in your attachment; external debugger output has its own [visibility rules](#gdb-debugging).
 
-## Files over SSH
+## What It Enables
 
-Use SFTP for file transfer and remote file management, or legacy SCP for compatible POSIX servers:
+- **Share the console:** human CLI and AI/MCP clients use one serial or SSH Session.
+- **Follow the work:** see AI terminal commands alongside the device's output.
+- **Debug Linux programs:** use managed GDB, a serial bridge, or GDB over the network.
+- **Move files:** transfer over a shared serial Session with SHA-256 checks, or use dedicated SFTP/SCP connections.
+- **Start with one attachment:** `channelterm attach` can create the local shared Host automatically.
+
+## Installation
+
+Download the archive for your operating system and architecture from
+[Releases](https://github.com/akira-init1/ChannelTerm/releases) and verify it against that release's
+`SHA256SUMS`. Extract it, then run `.\channelterm.exe install` on Windows or `./channelterm install`
+on Linux/macOS from the extracted directory. Prebuilt binaries do not require Go.
+
+Building from source requires Go 1.26 or newer. Use a currently supported patched Go toolchain,
+then build the native executable from the repository root:
 
 ```bash
-channelterm sftp user@192.168.1.50 ls /tmp
-channelterm sftp user@192.168.1.50 put ./firmware.bin /tmp/firmware.bin
-channelterm sftp user@192.168.1.50 get /tmp/log.txt ./log.txt
-channelterm scp user@192.168.1.50 put ./release /tmp/release --recursive
+git clone https://github.com/akira-init1/ChannelTerm.git
+cd ChannelTerm
+go build ./cmd/channelterm
+./channelterm install
 ```
 
-These commands use the same key/password authentication and host verification as SSH, with a
-dedicated connection independent of terminal Sessions. Replacing existing files requires
-`--overwrite`. See [file transfer](docs/getting-started/file-transfer.md#sftp-and-scp-over-ssh)
-for directory semantics, cancellation, and protocol limits.
+`install` copies the running binary into the current user's standard program location, creates the
+`channelterm` and `cterm` commands, adds that location to the user PATH only when necessary, and
+initializes a missing minimal configuration. Open a new terminal when it reports a PATH change.
+`channelterm uninstall` removes the installer-owned commands and PATH change while preserving user
+data; `channelterm uninstall --purge` requires explicit confirmation before deleting configuration,
+device state, and the local HTTP credential.
 
-Transfers over shared terminal Sessions use a small Linux-shell protocol. Dedicated SSH file
-connections use SFTP or legacy SCP.
-
-## Shared SSH shell
-
-Connect using an authorized private key (encrypted keys prompt for a passphrase) or enter your
-login password when prompted. Passwords and key passphrases are not saved. For an unknown server,
-verify its displayed fingerprint and enter `yes` to save its public
-key in `~/.ssh/known_hosts`; changed keys are rejected. Prompts require an interactive terminal:
-
-```bash
-# Terminal 1: open the shell; then run uname -a at its prompt.
-channelterm ssh user@192.168.1.50
-
-# Terminal 2: observe and use the same shell.
-channelterm attach SSH-1
-```
-
-Keep the first command running: exiting it closes this Host and its Sessions. The default local sharing port must be free; use `--listen` and the printed attach endpoint for a separate Host. See the [SSH workflow](docs/getting-started/ssh-terminal.md) for key paths, host verification, ports, and current limits.
+Supported desktop targets are Windows, Linux, and macOS on amd64/arm64. See [Build and install from source](docs/getting-started/build.md), the exact
+[`install` / `uninstall` contract](docs/reference/cli.md#install-and-uninstall), and
+[configuration locations](docs/reference/configuration.md). Repository checks and cross-build
+scripts are covered by [Building and testing](docs/development/building-and-testing.md).
 
 ## Quick Start: One Command, One Terminal
 
@@ -72,18 +71,7 @@ channelterm list
 A running Host is optional. When it is unavailable, `list` reports MCP as offline and still shows
 local devices and profiles.
 
-| Common option | Effect |
-| --- | --- |
-| `--kind device`, `profile`, or `session` | Show only the selected result kinds; comma-separated values are accepted. |
-| `--transport serial` | Show only serial results. |
-| `--no-mcp` | Skip the MCP Host query and show only local sources. |
-| `--long`, `-l` | Include full opaque Session IDs in the table. |
-| `--json` | Emit structured JSON for scripts. |
-| `--endpoint URL` | Query Sessions from a non-default HTTP Host. |
-
 See the [CLI reference](docs/reference/cli.md#list) for the complete option contract.
-
-Skip this discovery step when the native target, such as `COM50`, is already known.
 
 If an AI client should join the Session, configure a supported client once before attaching:
 
@@ -142,39 +130,31 @@ A persistent Host is a separate long-running process. After it reports
 can create or join Sessions. Silence after the readiness line is normal; stop the Host with
 `Ctrl+C` when all of its Sessions should close.
 
-While attached:
+During ordinary terminal use, outside a file transfer or debugger takeover:
 
 ```text
 Ctrl+C      Send 0x03 to the remote terminal
 Ctrl+] q    Leave this CLI; an attachment-owned temporary Host also stops
 Ctrl+] ?    Show local escape help
-Ctrl+] ]    Send a literal Ctrl+] byte
-Ctrl+] t    Toggle local shell-prompt timestamps
-Ctrl+] f    Open the local file send/receive menu
-Ctrl+] Esc  Cancel local escape mode
 ```
 
-To add a supported AI client to the same Host, run `channelterm init --mcp`, select HTTP, and let
-the client list or operate `SER-1`. See [MCP Server](docs/getting-started/mcp-server.md) for the
-authentication and client workflow.
+See the [CLI reference](docs/reference/cli.md#attach) for all local controls and the [MCP workflow](docs/getting-started/mcp-server.md) for client setup and AI-created Sessions.
 
 For reusable workflow guidance, install the bundled
 [`cterm-serial-debug` Agent Skill](docs/getting-started/mcp-server.md#install-the-bundled-agent-skill)
 in an Agent Skills-compatible client. `channelterm init --mcp` configures MCP clients but does not
 install the Skill.
 
-Starting with v0.2.0, [Releases](https://github.com/akira-init1/ChannelTerm/releases) include
-`channelterm_skills_VERSION.zip`. Extract it and copy the complete `cterm-serial-debug` directory
-as described in the linked Skill installation workflow.
+The HTTP server requires a per-user Bearer token and defaults to a loopback-only listener. Built-in
+CLI clients use the local token automatically. It can also [listen on a trusted
+LAN](docs/getting-started/mcp-server.md#listen-on-a-lan); remote clients must use the Host's reachable
+address and send the same token through the `Authorization` header. Do not expose the endpoint
+without TLS and separate network access controls.
 
-An AI can also create the shared Session. First run `channelterm init --mcp` once and select HTTP to
-configure the client. Then start the persistent foreground Host with
-`channelterm mcp --transport http` and give the AI the exact serial target and settings. It can list
-ports, call `terminal_open_serial`, and report the resulting `SER-N` reference so a human can join
-it. Starting the Host alone never opens a port; a discovery-policy action of `ask` still requires
-explicit approval. `auto` returns `connect`, but the AI must still call `terminal_open_serial`; the
-Host never opens a port automatically. Stop the Host normally with `Ctrl+C`; this closes the
-Sessions it owns.
+<a id="example-workflows"></a>
+<a id="embedded-linux-debugging"></a>
+<a id="ai-operates-human-observes"></a>
+<a id="human-intervenes"></a>
 
 ## A Shared Terminal in Practice
 
@@ -199,35 +179,45 @@ derived from structured Session events; it is not inserted into the device byte 
 terminal output. Raw keys and interactive programs still use `terminal_write` and retain the
 device's normal history behavior.
 
-## Why ChannelTerm?
+## Shared SSH shell
 
-A traditional serial terminal gives the human the physical connection:
+Connect using an authorized private key (encrypted keys prompt for a passphrase) or enter your
+login password when prompted. Passwords and key passphrases are not saved. For an unknown server,
+verify its displayed fingerprint and enter `yes` to save its public
+key in `~/.ssh/known_hosts`; changed keys are rejected. Prompts require an interactive terminal:
 
-```text
-Human ---- terminal ---- Serial device
+```bash
+# Terminal 1: open the shell; then run uname -a at its prompt.
+channelterm ssh user@192.168.1.50
+
+# Terminal 2: observe and use the same shell.
+channelterm attach SSH-1
 ```
 
-An AI-only serial tool gives the AI the connection, but leaves the human outside the live terminal:
+Keep the first command running: exiting it closes this Host and its Sessions. The default local sharing port must be free; use `--listen` and the printed attach endpoint for a separate Host. See the [SSH workflow](docs/getting-started/ssh-terminal.md) for key paths, host verification, ports, and current limits.
 
-```text
-AI ---- MCP / serial ---- Serial device
+## Files over SSH
 
-Human         (not attached)
+Use SFTP for file transfer and remote file management, or legacy SCP for compatible POSIX servers:
+
+```bash
+channelterm sftp user@192.168.1.50 ls /tmp
+channelterm sftp user@192.168.1.50 put ./firmware.bin /tmp/firmware.bin
+channelterm sftp user@192.168.1.50 get /tmp/log.txt ./log.txt
+channelterm scp user@192.168.1.50 put ./release /tmp/release --recursive
 ```
 
-ChannelTerm keeps one physical connection in a shared Session:
+These commands use the same key/password authentication and host verification as SSH, with a
+dedicated connection independent of terminal Sessions. Replacing existing files requires
+`--overwrite`. See [file transfer](docs/getting-started/file-transfer.md#sftp-and-scp-over-ssh)
+for directory semantics, cancellation, and protocol limits.
 
-```text
-                         +---- Human terminal
-                         |
-Serial device ---- Session
-                         |
-                         +---- AI / MCP client
-```
+Transfers over shared terminal Sessions use a small Linux-shell protocol. Dedicated SSH file
+connections use SFTP or legacy SCP.
 
-The result is a hardware-debugging workflow where AI actions stay observable and the human remains present. Sharing is more than reopening the same port: every client sees retained raw output through an independent cursor, and all writes pass through the same Session.
+<a id="ai-files-and-local-controls"></a>
 
-## AI, Files, and Local Controls
+## Files over a shared Session
 
 That shared serial Session can also transfer regular files and directories without an AI client or a separately installed board-side transfer agent. In an active shared `attach`, press `Ctrl+]` and then `f` to open the guided send/receive menu. Directories use standard tar and acknowledged, cancellation-friendly chunks; the same operations are available as commands:
 
@@ -238,124 +228,117 @@ channelterm file send ./build/release /tmp/release --session SER-1
 channelterm file receive /var/log/myapp ./myapp --session SER-1
 ```
 
-When the command omits its remote destination, it saves under `/tmp/cterm/mcp-files/`; the interactive shortcut uses `/tmp/cterm/user-files/`. ChannelTerm creates a missing destination hierarchy and reuses it on later transfers. The Linux shell uses native `mkdir`, `stty`, `dd`, `wc`, `sha256sum`, and `sleep`, plus `tar` for directories; ChannelTerm streams bounded chunks, reports progress, and verifies end-to-end SHA-256 for file bytes and directory tar streams. Directory transfers use temporary target-side archives so cancellation stops after the active chunk instead of draining the remaining directory. A temporary file-transfer lease blocks other ChannelTerm writers until the command finishes. While that lease is active, `Ctrl+C` in any bundled attachment opens a default-No local cancellation confirmation; otherwise it keeps its normal remote-terminal meaning. See the [file-transfer workflow](docs/getting-started/file-transfer.md) for prerequisites and limits.
+Transfers require an idle Linux shell with the utilities listed in the [file-transfer workflow](docs/getting-started/file-transfer.md). They verify SHA-256 and select a new name instead of overwriting an existing destination. During a transfer, `Ctrl+C` in a shared attachment asks for cancellation; other writers remain blocked until cleanup releases the lease.
 
-To put an AI in that same Session, configure its MCP client to use the same Streamable HTTP endpoint:
+<a id="gdb-debugging"></a>
 
-```text
-http://127.0.0.1:37099/mcp
+## Remote debugging with GDB
+
+Choose how the debugger reaches your Linux program. Each path needs tools and symbols compatible with the target.
+
+| Path | GDB connection | Console / Session during debugging |
+| --- | --- | --- |
+| [Serial bridge](#gdb-serial-bridge) | Workstation GDB → ChannelTerm → board serial port; Windows + WSL2 example below | Reserved for GDB until restored |
+| [Serial console + TCP](#gdb-serial-tcp) | Workstation GDB → board network interface; WSL2, Linux, Windows, or macOS with compatible GDB | Available for independent shell/log work |
+| [Managed GDB/MI](docs/getting-started/gdb-debugging.md#managed-native-linux-prerequisites) | MCP tools control GDB; Host, shell, tools, and ELF must share one native Linux environment | The selected Session is reserved during debugging |
+
+<a id="gdb-serial-bridge"></a>
+
+### Serial GDB bridge: Windows + WSL2
+
+**Windows connects the serial port; WSL2 runs GDB; the AI coordinates remote debugging.** The Windows ChannelTerm Host keeps the COM port and shared Session open. A target-compatible GDB in WSL2 connects through the Linux `channelterm rsp-client` helper and the authenticated TLS/TCP bridge to the board's Linux gdbserver.
+
+```mermaid
+flowchart LR
+    AI["AI client"]
+    Human["Human terminal"]
+    subgraph Windows
+        Host["ChannelTerm Host"]
+        COM["COM port"]
+        Host <--> COM
+    end
+    subgraph WSL2["WSL2 / Linux"]
+        GDB["Target-compatible GDB"]
+        Helper["Linux channelterm rsp-client"]
+        GDB <--> Helper
+    end
+    Board["Linux board / gdbserver"]
+    AI -->|"MCP: prepare and manage"| Host
+    AI -->|"Process tool: GDB commands"| GDB
+    Human ---|"attach / AI reports"| Host
+    Helper <-->|"TLS/TCP"| Host
+    COM <-->|"Serial RSP"| Board
 ```
 
-The AI can use the MCP Session tools to list and read `SER-1`, run an idle Bash command with
-`terminal_exec`, or send explicitly raw terminal bytes with `terminal_write`; see the
-[MCP workflow](docs/getting-started/mcp-server.md) and
-[tool reference](docs/reference/mcp-tools.md). Run `channelterm init --mcp` to install client
-configuration or `channelterm init --mcp-show` to print it; both prompt for HTTP or stdio and
-default to HTTP. Printed HTTP configuration contains the local Bearer credential and must not be
-shared or committed.
+Keep your Windows serial driver and Linux toolchain: the serial device stays on Windows, and the board needs no network GDB port.
 
-Press `Ctrl+]` to enter local escape mode. ChannelTerm displays the available escape commands locally. `Ctrl+] f` starts a guided file/directory send/receive flow on the current attachment, with `/tmp/cterm/user-files/<basename>` and `./<basename>` defaults and non-overwriting `_1`, `_2` selection. `Ctrl+] t` is off by default and prepends local `[HH:MM:SS]` timestamps only to conservatively recognized shell prompts; it does not change shared Session or MCP output.
+1. On Windows, configure the AI client with `channelterm init --mcp` (HTTP), then open the board, for example `channelterm attach COM8 --baud 115200`. Use the board's confirmed serial settings and keep the owning Host running.
+2. Following the [bridge preparation steps](docs/getting-started/gdb-debugging.md#prepare-and-open), save the TTY state, prepare a compatible `gdbserver --once stdio` on the board, and call `debug_bridge_start` through MCP. The AI also needs a process execution tool to run GDB in WSL2.
+3. In WSL2, use Linux ChannelTerm and target-compatible GDB with the matching ELF. Save the private connection descriptor as `bridge.json` in WSL's filesystem (`chmod 600`). The [WSL2 guide](docs/getting-started/gdb-debugging.md#connect-independent-gdb-from-wsl2) covers networking and paths. Replace the descriptor path below:
 
-The HTTP server requires a per-user Bearer token and defaults to a loopback-only listener. Built-in
-CLI clients use the local token automatically. It can also [listen on a trusted
-LAN](docs/getting-started/mcp-server.md#listen-on-a-lan); remote clients must use the Host's reachable
-address and send the same token through the `Authorization` header. Do not expose the endpoint
-without TLS and separate network access controls.
+```text
+(gdb) target remote | channelterm rsp-client --connection /home/EXAMPLE/private/bridge.json
+(gdb) break main
+(gdb) continue
+(gdb) next
+(gdb) backtrace
+(gdb) detach
+```
 
-## What It Enables
+4. On Windows, use `channelterm gdb-list` or `channelterm gdb-list --json` to see bridge ports and states. After GDB detach, confirm the board has returned to its shell and call `debug_bridge_restore` with the saved TTY state to resume shared terminal use.
 
-- One host-owned serial connection shared by human CLI and MCP clients.
-- Independent output and activity cursors, so one reader does not consume another reader's data.
-- Visible Agent writes in attached terminals without modifying raw Session output.
-- Direct human input, including a remote `Ctrl+C`, while the AI remains connected.
-- Client detach without closing the Session used by other clients.
-- Serial discovery with native Windows, Linux, and macOS target names, TOML profiles, and private direct connections when sharing is not wanted.
-- MCP over stdio or Streamable HTTP, with the shared CLI workflow using the HTTP Session Host.
-- Bounded CLI file/directory send/receive over an existing serial Session, with SHA-256 verification and safe staged directory extraction.
+For this serial bridge, AI can publish actual commands and observations through `debug_bridge_report` so you can follow them in the attached terminal. Entries are labelled AI reports, not a complete automatic GDB transcript.
 
-## Example Workflows
+<a id="gdb-serial-tcp"></a>
 
-### Embedded Linux debugging
+### Shared serial console + GDB over Ethernet
 
-Attach to a board once. An AI reads the retained boot log and runs a focused diagnostic while the engineer watches the same device output and responds at the live shell.
+Keep the serial console available for shared logs and shell work while GDB uses the network. The serial Host and GDB can be on the same computer or different computers; choose each environment's serial driver and target toolchain independently.
 
-### AI operates, human observes
+```mermaid
+flowchart LR
+    AI["AI client"]
+    Human["Human terminal"]
+    Host["ChannelTerm Host"]
+    GDB["Workstation GDB: WSL2 / Linux / Windows / macOS"]
+    subgraph Board["Linux board"]
+        Console["Serial shell / logs"]
+        Server["gdbserver"]
+    end
+    Human ---|"attach"| Host
+    AI -->|"MCP"| Host
+    AI -->|"Process tool: GDB commands"| GDB
+    Host <-->|"Serial"| Console
+    GDB <-->|"TCP / Ethernet"| Server
+```
 
-At an idle Bash prompt, the AI sends a non-interactive command with `terminal_exec`. The attached
-CLI displays the command once as an `AI` activity block, followed by the real bytes returned by the
-device, while the command and internal bootstrap stay out of Bash history.
+Keep gdbserver running independently of the interactive serial shell if you want to continue issuing shell commands. Load the matching ELF in workstation GDB, then connect over a restricted network as below (replace `TARGET_IP` and the port). See the [serial-console + TCP workflow](docs/getting-started/gdb-debugging.md#shared-serial-console-with-tcp-gdb) for target startup, application I/O, and SSH tunnelling.
 
-### Human intervenes
+```text
+(gdb) target remote TARGET_IP:2345
+```
 
-The human can type into the shared Session or send `Ctrl+C` to the remote terminal, then continue
-observing or detach with `Ctrl+] q`. A short `terminal_exec` lease temporarily locks human input;
-ordinary raw writes retain byte-level serialization without shell-state arbitration, so clients
-must still avoid conflicting raw command sequences.
+This TCP path uses gdbserver directly, without `rsp-client` or `debug_bridge_*`. Human and AI see the shared serial activity; external GDB commands/results remain in the debugger's own output and are not automatically mirrored into the serial attachment.
+
+Managed GDB/MI and the external bridge have real GDB/gdbserver coverage on Linux PTYs in CI. See the [full workflow](docs/getting-started/gdb-debugging.md) for setup, compatibility, SSH alternatives, and recovery.
 
 ## How It Works
 
 ```text
-Human CLI ---------+
-                   |
-                   v
-            Session Host / Manager
-                   |
-AI via MCP --------+--> Session --> Serial Transport <--> Device
-                        |    |
-                        |    `-- serialized writes
-                        `------- retained raw output
+Human CLI -----+
+               +--> Session Host --> Session <--> Channel <--> Serial / SSH endpoint
+AI via MCP ----+                         |
+                                        +-- retained output, activity, events
+                                        `-- serialized writes
 ```
 
-The Session Host owns the physical port and the Session lifetime. A Serial Transport opens a protocol-neutral Channel; Session owns the single Channel reader, bounded in-memory output and activity retention, and write serialization. CLI and MCP adapters use the same Core behavior; presentation such as highlighting and the `AI` activity block stays outside stored terminal data.
+The Session Host owns connections and Session lifetimes. A Serial or SSH Transport establishes a protocol-neutral Channel; Session reads that Channel, retains bounded output, activity, and events in memory, and serializes writes. CLI and MCP adapters reuse the same Core behavior. Presentation such as highlighting and the `AI` activity block stays outside stored terminal data.
 
-Shared Session references such as `SER-1` are valid only within the owning host process. Stopping that host closes its Sessions; detaching one client does not.
+Readers have independent cursors. Raw writes are serialized but do not coordinate shell commands; application leases temporarily block other writers during command execution, transfers, and debugging. See [shared Sessions](docs/getting-started/shared-session.md) for ownership and concurrency.
 
-## Installation
-
-Download the archive for your operating system and architecture from
-[Releases](https://github.com/akira-init1/ChannelTerm/releases) and verify it against that release's
-`SHA256SUMS`. Extract it, then run `.\channelterm.exe install` on Windows or `./channelterm install`
-on Linux/macOS from the extracted directory. Prebuilt binaries do not require Go.
-
-Building from source requires Go 1.26 or newer. Use a currently supported patched Go toolchain,
-then build the native executable from the repository root:
-
-```bash
-git clone https://github.com/akira-init1/ChannelTerm.git
-cd ChannelTerm
-go build ./cmd/channelterm
-./channelterm install
-```
-
-`install` copies the running binary into the current user's standard program location, creates the
-`channelterm` and `cterm` commands, adds that location to the user PATH only when necessary, and
-initializes a missing minimal configuration. Open a new terminal when it reports a PATH change.
-`channelterm uninstall` removes the installer-owned commands and PATH change while preserving user
-data; `channelterm uninstall --purge` requires explicit confirmation before deleting configuration,
-device state, and the local HTTP credential.
-
-Default locations are summarized here; the installer prints the effective paths after every run:
-
-| Platform | Commands | Installation record | Default configuration |
-| --- | --- | --- | --- |
-| Windows | `%LOCALAPPDATA%\Programs\ChannelTerm\bin` | `%LOCALAPPDATA%\ChannelTerm\install.json` | `%APPDATA%\channelterm\config.toml` |
-| Linux | `~/.local/bin` | `$XDG_STATE_HOME/channelterm/install.json`, or `~/.local/state/channelterm/install.json` | `$XDG_CONFIG_HOME/channelterm/config.toml`, or `~/.config/channelterm/config.toml` |
-| macOS | `~/.local/bin` | `~/Library/Application Support/channelterm/install.json` | `~/Library/Application Support/channelterm/config.toml` |
-
-See [Build and install from source](docs/getting-started/build.md), the exact
-[`install` / `uninstall` contract](docs/reference/cli.md#install-and-uninstall), and
-[configuration locations](docs/reference/configuration.md). Repository checks and cross-build
-scripts are covered by [Building and testing](docs/development/building-and-testing.md).
+Shared references such as `SER-1` are valid only within the owning Host process. Stopping that Host closes its Sessions. A secondary attachment can leave independently. Exiting the attachment that owns a temporary Host, or the SSH command that created its Host, also closes that Host and its Sessions. See the [architecture overview](docs/architecture/overview.md) for the layer boundaries.
 
 ## Configuration
-
-ChannelTerm stores its local files under the platform user-configuration directory:
-
-| Platform | Default directory |
-| --- | --- |
-| Windows | `%AppData%\channelterm\` |
-| Linux | `$XDG_CONFIG_HOME/channelterm/`, or `~/.config/channelterm/` when unset |
-| macOS | `~/Library/Application Support/channelterm/` |
 
 `config.toml` contains user-owned serial profiles and connection policy. `state.json` is
 ChannelTerm-managed device identity state. `http-auth-token` is the secret used to authenticate MCP
@@ -384,6 +367,7 @@ validation, and persistence behavior.
 - [Shared Session workflow](docs/getting-started/shared-session.md)
 - [File-transfer workflow](docs/getting-started/file-transfer.md)
 - [MCP server workflow](docs/getting-started/mcp-server.md)
+- [GDB debugging workflow](docs/getting-started/gdb-debugging.md)
 - [CLI reference](docs/reference/cli.md)
 - [MCP tool reference](docs/reference/mcp-tools.md)
 - [Identifiers and references](docs/reference/identifiers.md)
@@ -395,7 +379,7 @@ For exact command flags and defaults, the running program's `--help` output is a
 
 Serial and SSH PTY shells are implemented Transports; dedicated SFTP and legacy SCP file clients are also available. Arbitrary SSH exec, Telnet, and stronger multi-writer coordination remain future directions rather than implemented features or release commitments.
 
-ChannelTerm does not currently implement GDB, JTAG/OpenOCD, virtual serial devices, a built-in AI, or multi-agent orchestration.
+ChannelTerm does not currently implement JTAG/OpenOCD, virtual serial devices, a built-in AI, or multi-agent orchestration.
 
 ## License
 

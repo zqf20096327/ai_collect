@@ -152,20 +152,20 @@ This is the **Perceive → Decide → Execute → Verify** cycle that no other p
 
 ---
 
-## 📥 Download — v26.10.6-1
+## 📥 Download — v26.10.16-1
 
 | Platform | Link | Size |
 |----------|------|:----:|
-| Windows x64 | [GitHub Releases](https://github.com/moching-ai-dev/moching/releases/latest) | 375 MB |
-| macOS (Apple Silicon) | [GitHub Releases](https://github.com/moching-ai-dev/moching/releases/latest) | 848 MB |
+| Windows x64 | [GitHub Releases](https://github.com/moching-ai-dev/moching/releases/latest) | 384 MB |
+| macOS (Apple Silicon) | [GitHub Releases](https://github.com/moching-ai-dev/moching/releases/latest) | 843 MB |
 | All Platforms | [HuggingFace Mirror](https://huggingface.co/mochingcode/moching) | — |
 
 <details>
 <summary>🔐 Full SHA256 checksums</summary>
 
 ```
-Windows: a0602207bd781f57c3151ac519ae2155559ea8a3c924e198e29ecc0fdf9ed36d
-macOS:   f3282dddd0ddb37a19a0ee57753f204f723a209bf165748566c69d21ccd3b2d1
+Windows: f637ccadac7c2b9710565565edc1b49298bf552194337f47ee5a403c2f1495a8
+macOS:   7fd68ab55545a18c461137a8c08c5c2ffac3484caa66c55a82b1f2f09885887c
 ```
 
 </details>
@@ -214,7 +214,8 @@ Moching asks: ***"What can I do for you?"***
 
 | Date | Version | Highlights |
 |------|---------|------------|
-| 2026-10-08 | v26.10.6-1 | Latest release. Windows 26.10.6-1 · macOS 26.10.6. Upgraded large-file Excel data reading, LSP capability upgrade, multi-task execution more stable and faster. 290+ built-in tools · 12 domains. |
+| 2026-10-18 | v26.10.16-1 | Latest release. Windows 26.10.16-1 · macOS 26.10.17. Full-capability upgrade across all domains; large-file & LSP strengthened; multi-task faster & stable. 290+ built-in tools · 12 domains. |
+| 2026-10-08 | v26.10.6-1 | Windows 26.10.6-1 · macOS 26.10.6. Upgraded large-file Excel data reading, LSP capability upgrade, multi-task execution more stable and faster. 290+ built-in tools · 12 domains. |
 | 2026-10-04 | v26.9.30-1 | Windows 26.9.30-1 · macOS 26.10.1. More reliable long tasks, refined screen & keyboard/mouse control, improved runtime logs and link stability. |
 | 2026-09-14 | v26.9.16-1 | Windows 26.9.16-1 · macOS 26.9.16. |
 | 2026-08-19 | v26.8.19-1 | First public GitHub release. Windows + macOS. |

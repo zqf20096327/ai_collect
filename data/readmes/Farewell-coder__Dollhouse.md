@@ -1,10 +1,21 @@
+<div align="center">
+
+<img src="assets/icon.png" width="112" height="112" alt="Dollhouse">
+
 # Dollhouse
 
-[![License](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/Farewell-coder/Dollhouse)](https://github.com/Farewell-coder/Dollhouse/releases)
-[![Android](https://img.shields.io/badge/Android-7.0%2B-3ddc84.svg)](#安装)
-
 Android 桌宠应用，把悬浮人偶、聊天和记忆管理放在一起。
+
+[![最新版](https://img.shields.io/github/v/release/Farewell-coder/Dollhouse?style=flat-square&label=%E6%9C%80%E6%96%B0%E7%89%88&color=6b4ee6)](https://github.com/Farewell-coder/Dollhouse/releases/latest)
+[![Android](https://img.shields.io/badge/Android-7.0%2B-3ddc84?style=flat-square)](#安装)
+[![License](https://img.shields.io/badge/License-GPL--3.0-blue?style=flat-square)](LICENSE)
+
+[![下载最新版本](https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC-APK-3ddc84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Farewell-coder/Dollhouse/releases/latest)
+[![English](https://img.shields.io/badge/Language-English-555555?style=for-the-badge)](README.en.md)
+
+</div>
+
+---
 
 当前人偶是鲸鱼娘「小肥鱼」。她会眨眼、待机摆动、贴边探头；可以拖动，点击弹出台词气泡，三击唤出迷你输入框。在其他应用上也能发起聊天，需要查看历史时再进入完整聊天界面。
 
@@ -38,22 +49,24 @@ Android 桌宠应用，把悬浮人偶、聊天和记忆管理放在一起。
 - ML Kit 及其 Google 依赖适用各自条款和数据处理规则，不能据此承诺应用完全不联网或不产生 SDK 诊断数据。
 - 授权后的设备命令可能读取界面、文件和设置，也可能修改设备状态。模型生成的指令可能出错，不应把工具输出或权限授权视为安全保证。
 
-## v0.0.7
+## v0.0.9
 
-- **外观页**改为顶栏四栏（主题 / 背景 / 聊天 / 弹窗），每栏配一枚语义独立的图标。
-- **背景解析**改为三层回落（人偶层 → 全局层 → 无）；编辑人偶新增「外观」栏，可单独设置这只人偶的聊天背景与气泡颜色。
-- **记忆库**主视图改为力导向图谱，支持拖拽、缩放、点节点看详情、点连线看关系与手动连边，搜索保留并可在图谱上定位。
-- 新增「**我的资料**」抽屉（聊天列表左上角头像进入）。
-- **人偶列表**改为 QQ 联系人形态（分组 + A-Z 拼音索引）。
-- 底栏第三格由「主页」更名为「说说」。
-- 修复全局背景不生效（页根不透明底将其盖死）。
-- 图标体系补齐语义，并删除无引用图标与常量 32 份。
+本次为稳定性更新：10 轮独立代码审计，共修复 **27 项缺陷**，涉及 17 个文件。
 
-详情见 [更新记录](CHANGELOG.md)。版本：versionName **0.0.7** / versionCode **7**。
+- **崩溃**：睡觉模式下若悬浮窗刚被摘除，会触发空指针并让悬浮进程一起崩溃，桌面上的人偶全部消失，已修。
+- **数据安全**：模型包导入中途失败时，会连带删掉原本可用的旧模型；现改为只有跨过提交点之后才清理，失败时磁盘状态与导入前一致。
+- **安全**：外部应用可发起「逐帧渲图」这类重活（长时间占满 CPU、持续写盘）；现只接受本应用、系统 shell 与 root 的调用，并校验人偶标识真实存在。
+- **资源泄漏 19 处**：文件、网络与位图句柄在异常路径上未释放，积累到上限后表现为「图片选不了、消息发不出去、下载卡在 0%」，已统一收口。
+- **内存与流畅度**：列表缩略图此前一律按 1024px 解码，46dp 头像浪费 55 倍内存、34dp 浪费 100 倍，且发生在主线程；现按真实显示尺寸解码。
+- **待机耗电**：熄屏停帧所依赖的广播注册在高版本系统上不合规而静默失效，熄屏后仍在满帧渲染，已修正。
+- **长用变卡**：「加载更早历史」的暂存区只增不减，且每条消息都要整体重写；现设上限并单点收敛。
+- 其余为可诊断性修正与过期分支清理。
+
+详情见 [更新记录](CHANGELOG.md)。版本：versionName **0.0.9** / versionCode **9**。
 
 ## 构建
 
-需要 JDK 17、Android SDK 35；工程使用 Gradle 8.7、AGP 8.5.2、Kotlin 1.9.24。源码为纯 Kotlin，无 Java 源文件。
+需要 JDK 17、Android SDK 36；工程使用 Gradle 8.11.1、AGP 8.9.1、Kotlin 2.2.10。源码为纯 Kotlin，无 Java 源文件。
 
 ```bash
 git clone https://github.com/Farewell-coder/Dollhouse.git

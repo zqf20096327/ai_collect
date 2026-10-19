@@ -319,6 +319,26 @@ Szlif nie jest narzędziem do omijania detektorów, a w tym teście wcale ich ni
 
 Inny model wskażesz przez `--model`, przy stronie i przy instalatorze (`python3 szlif.py instaluj --model NAZWA`). Lista na stronie pokazuje wszystkie modele zainstalowane w Ollamie.
 
+## Zasoby
+
+Zmierzone na Macu z 36 GB pamięci i Bielikiem 11B `Q6_K`:
+
+| Co | Kiedy działa | Ile zajmuje |
+|---|---|---|
+| Ollama (serwer) | stale, startuje z systemem | około 12 MB pamięci, 0% procesora bez pracy |
+| Bielik 11B | tylko gdy przepisuje albo sprawdza | około 10 GB pamięci |
+
+- **Model ładuje się przy pierwszym akapicie** (u nas w 9 s) i zostaje w pamięci, póki pracujesz.
+- **Zamknięcie Szlifu (Ctrl+C) od razu zwalnia model** użyty w tej sesji. Bez tego Ollama zwalnia go sama po 5 minutach bez pracy. Tak zostaje po `szlif.py przepisz`, żeby kolejne wywołania w skrypcie nie czekały na ładowanie modelu.
+- **Na zewnętrznym serwerze Szlif niczego nie zwalnia**, bo z serwera mogą korzystać inni.
+- **Ollama zostaje włączona.** Bez pracy prawie nic nie zużywa, a może jej używać inny program. Jeśli nie chcesz jej w tle:
+  - macOS: `brew services stop ollama` zatrzymuje ją i wyłącza start z systemem; `brew services start ollama` włącza ją z powrotem;
+  - Windows: kliknij ikonę Ollamy w zasobniku obok zegara i zamknij ją. Start z systemem wyłączysz w Menedżerze zadań, na karcie „Aplikacje autostartu”, przy pozycji `ollama`.
+
+  Gdy Ollama nie działa, strona Szlifu napisze, że nie może połączyć się z serwerem modelu.
+
+Źródło zachowania Ollamy: [Ollama FAQ](https://docs.ollama.com/faq).
+
 ## Testy
 
 ```

@@ -40,7 +40,9 @@ daydream search 'literal symbol' services/api/src --expand node_modules/pkg/dist
 Git's tracked files (including dotfiles and tracked ignored paths) plus nonignored
 untracked files in those roots. Ignore rules exclude ordinary untracked dependency,
 build and cache trees. Explicit expansion includes ignored files only under the
-named paths and records the reason in JSON output. Other tools, including `grep`
+named paths and records the reason in JSON output. Positional roots remain required
+with `--expand`: it authorizes ignored-path traversal rather than replacing roots.
+Other tools, including `grep`
 and regex-capable `rg`, remain supported with the same scoped file set; `rg` defaults
 alone may omit tracked hidden or ignored evidence.
 
@@ -329,7 +331,10 @@ Passing `--dataset-store DIR` also enables capture and chooses private local sto
 Capture preserves evidence as produced without additional redaction or secret scanning.
 The user controls this local data and is responsible for reviewing it before sharing.
 Collection works with `--no-archive` and tracing disabled.
-It retains the original analyzed revisions and input diff, trajectories, structured claims and
+When tracing creates an owned run root, `trace_id` retains its 32-character lowercase
+OTel trace identity; it is `null` when disabled or unavailable. The reference identifies
+a locally created trace and does not guarantee exporter delivery.
+Capture retains the original analyzed revisions and input diff, trajectories, structured claims and
 verification/fix associations at the existing frozen finalization boundary, including cooperative
 interruption. SIGKILL and power loss before that boundary can lose uncaptured evidence. A
 persistence refusal emits a sanitized collection diagnostic and preserves completed review
@@ -788,6 +793,35 @@ The fix-phase anti-degradation quality gate prevents a fix from degrading a file
 
 The gate is fail-open. A flagged file surfaces as a warning plus a manifest record. It never aborts a run. Daydream clamps the thresholds to finite non-negative numbers. An invalid value degrades to the named default.
 
+### JavaScript and TypeScript routing
+
+Automatic routing inspects source in the target worktree, including dirty files.
+The first matching extension `StackRule` takes precedence. Direct framework imports
+and explicit JSX runtime/import-source declarations establish file ownership;
+conflicting evidence uses generic review. Only React evidence selects the existing
+React reviewer. Angular, Vue, Svelte, other JSX runtimes, and inconclusive files
+use the generic reviewer. JS/TS source still counts as code for diagram eligibility
+when review routing selects generic.
+
+JSX without direct imports can use the nearest local tsconfig JSX settings and
+owning package dependencies. A React dependency alone never makes a plain JS/TS
+utility React. The nearest package stops parent/sibling inheritance; declared
+`package.json` workspaces and `pnpm-workspace.yaml` define boundaries even when
+local metadata is missing. Local tsconfig `extends` stays inside the repository
+with cycle and read-budget protection; package/remote extends and unsupported
+metadata fall back. No dependencies or executable configurations are loaded.
+`package.json` and `tsconfig.json` use their own local, unambiguous ownership,
+independent of other changed files.
+
+Inspection follows sorted paths and reads at most 256 source files (256 KiB each),
+128 metadata files (64 KiB each), and 4 MiB combined. Metadata is cached per run.
+Missing/deleted, unreadable, malformed, escaped/symlinked, or over-budget input
+receives generic coverage; partial file contents never establish ownership.
+Automatic tiny-diff collapse preserves generic JS/TS and project config scopes
+beside any language scope, along with explicit stack rules. Explicit shallow/stack choices
+still combine scopes as requested. Every changed path has one primary assignment;
+Structure additionally reviews their full union.
+
 ### Review budgets
 
 The review model pipeline defaults to 45 minutes for modest diffs, including
@@ -1207,6 +1241,12 @@ reuse additionally requires the typed coverage proofs described below.
 Analysis is `complete` only with positive completion or host no-op evidence for every planned reviewer and required phase. Valid work with unfinished coverage is `incomplete`; unusable analysis or an invalid findings projection is `failed`. Findings count, warning absence, CLI success and archive status cannot establish completeness. `pipeline_state` covers review finalization independently of later fixes or publication.
 
 Coverage records run identity, exact stack/shard outcomes, captured head, diff merge base and diff key, plus initial PR base tip when available. Backend/authentication, missing/malformed output, evidence and policy failures remain typed; model-turn, host wall/tool and pipeline budgets have distinct reasons.
+
+GitHub review comments start with `Actionable comments posted: N`, followed by any incomplete-review warnings and a linked reviewed commit. Additional findings appear before diagrams, followed by one `Run details` dropdown containing a copyable run UUID, model, timing, usage, cost and phase breakdown. Detailed analysis, source rationale and verification evidence remain in local reports and run artifacts rather than the GitHub comment.
+
+Local human reports retain a host-owned outcome summary even when there are no confirmed findings. Recorded scope/target completion is admission evidence, not independent proof of semantic coverage. Expandable source rationale retains bounded, redacted reviewer assertions and their available original run/snapshot attribution through reuse and resume; older or missing metadata stays unavailable. Optional `review_context` in schema version 2 carries the same report evidence to the poster. Producer and poster must use the same reviewed version.
+
+Verification is separate: source inspection and the already-fetched PR body are attributed assertions, not executed checks. Reports reuse existing check artifacts without running commands or refreshing CI; host test attempts retain command, outcome and execution identity, while absent artifacts remain unproduced. Final local reports refresh available evidence after later authorized test/CI steps without changing frozen review coverage or posting again. Empty findings and report context do not authorize publication or approval.
 
 Findings and coverage are validated and atomically published together. Valid partial findings survive normal finalization; incomplete/failed results publish COMMENT notices and cannot authorize approval or stale-thread resolution. Commit-bound exports require a clean checkout and use captured identity and diff for placement. Interactive dirty reviews remain supported; publishers validate the independently trusted target.
 

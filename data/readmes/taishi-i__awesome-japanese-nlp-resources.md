@@ -703,6 +703,7 @@ General-purpose tools supporting Japanese language processing
  * [jev-auto-ime](https://github.com/kzkhykw/jev-auto-ime) - 打っている言葉が日本語か英語かをJevに聞いて、Macの入力モードを切り替える道具。個人利用のみ。
  * [yomiyasu](https://github.com/nanaism/yomiyasu) - AI生成の日本語を自然な日本語へ推敲するAgent Skill / Agent Skill for Refining AI-Generated Japanese into Natural Japanese
  * [natural-japanese-writing](https://github.com/kojikojikojikoji/natural-japanese-writing) - An agent skill for Claude Code, Codex and Cursor that rewrites AI-sounding Japanese into natural Japanese without changing the facts.
+ * [TextToVoicevox](https://github.com/rakuyou211-blip/TextToVoicevox) - A free offline desktop app (Windows/macOS) that extracts Japanese text from PDFs, images, EPUB and Aozora Bunko and reads it aloud with VOICEVOX, with per-line speakers and SRT subtitle export.
 
 
 |Name|downloads/week|total downloads|stars|last commit|
@@ -1114,6 +1115,3 @@ Supplementary crates for Japanese text and IME processing
 | 🔗 [koharu](https://github.com/mayocream/koharu) | - | - | ⭐ 6k | 🟢 last thursday|
 | 🔗 [yomine](https://github.com/mcgrizzz/yomine) | - | - | ⭐ 64 | 🟢 october|
 | 🔗 [matsuba](https://github.com/mrpicklepinosaur/matsuba) | - | - | ⭐ 19 | 🔴 march 2023|
-| 🔗 [hujiang_dictionary](https://github.com/asutorufa/hujiang_dictionary) | - | - | ⭐ 72 | 🟢 october|
-| 🔗 [mecab-dic-converter](https://github.com/tomokane/mecab-dic-converter) | - | - | ⭐ 1 | 🟡 may|
-| 🔗 [jp-deinflector](https://github.com/btrkeks/jp-deinflector) | -

@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/roloVibes/Halo-Harness/releases"><img alt="version 3.0.6.0" src="https://img.shields.io/badge/version-3.0.6.0-5b4bd6"></a>
+  <a href="https://github.com/roloVibes/Halo-Harness/releases"><img alt="version 3.1.0.0" src="https://img.shields.io/badge/version-3.1.0.0-5b4bd6"></a>
   <a href="https://github.com/roloVibes/Halo-Harness/actions/workflows/suites.yml"><img alt="CI" src="https://github.com/roloVibes/Halo-Harness/actions/workflows/suites.yml/badge.svg"></a>
   <img alt="python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-3776ab">
   <img alt="Linux, macOS, Windows" src="https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-2b2b2b">
@@ -51,16 +51,18 @@ Halo reads your <code>~/.claude</code> setup in place, so nothing is configured 
 
 ## Install
 
+Install, then `halo start`:
+
 ```sh
-curl -fsSL https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.0.6.0/scripts/install-halo.sh | bash
+curl -fsSL https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.1.0.0/scripts/install-halo.sh | bash
 halo init        # the wizard: provider, model, permission mode, theme, lineup
-halo             # the full-screen TUI, from any directory
+halo start       # the ten-minute start: a lineup, a sample repo, one Orchestra run, its report and coach
 ```
 
 Windows:
 
 ```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.0.6.0/scripts/install-halo.ps1 | iex"
+powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.1.0.0/scripts/install-halo.ps1 | iex"
 ```
 
 The installer is fetched from a release tag, never a moving branch, and installs the
@@ -74,10 +76,16 @@ Windows): it asks first, shows what uv changed, and `--no-modify-path` (`-NoModi
 or `/update` inside the TUI. Offline work boxes, PEP 668 and reproducible installs are
 covered in [docs/INSTALL.md](docs/INSTALL.md).
 
-**Your first minute.** `halo init` asks for a provider key, a default model and a
-permission mode, then `halo` opens the session. Type a request, watch the phase line
-count up, and steer by typing while the model works. `halo doctor` explains anything
-that is not right and ends each warning with its fix.
+**Your first ten minutes.** `halo init` asks for a provider key, a default model and a
+permission mode (its last step offers the ten-minute start). `halo start` then walks one
+real piece of work, one screen per step: it copies a shipped lineup into one of yours,
+writes a small sample repo, gives your agents one Orchestra goal, shows the lead's plan
+for you to approve (or change on Studio's plan canvas), runs the lanes, and ends on the
+report, the coach and where to go next. `halo explain <word>` says what any word means
+([docs/GLOSSARY.md](docs/GLOSSARY.md)). Then `halo` opens the full-screen TUI from any
+directory: type a request, watch the phase line count up, and steer by typing while the
+model works. `halo doctor` explains anything that is not right and ends each warning with
+its fix.
 
 ## What Halo is
 
@@ -119,7 +127,7 @@ use Claude Code's own grammar, in the same files.
 > Both routes are **off until you accept** a one-time notice: `halo subscriptions
 > accept`, or `/subscriptions` in the TUI. The notice, the exact behaviour and the
 > consent record are described in
-> [docs/MODELS.md](docs/MODELS.md#subscription-routes-consent-halo-207-round-7b).
+> [docs/MODELS-references.md](docs/MODELS-references.md#subscription-routes-consent-halo-207-round-7b).
 
 ## What it feels like
 
@@ -220,9 +228,9 @@ every secret-shaped value stripped. `--copy` puts it on the clipboard.
 ## Halo Studio
 
 Halo has a GUI. `halo studio` starts a loopback-only server with a per-launch token,
-opens your browser, and shows one window with five sections and one header:
-**Orchestra** (`Alt+1`), **Roles** (`Alt+2`), **Org** (`Alt+3`), **Design** (`Alt+4`) and
-**Flow** (`Alt+5`). Each section opens on a Start view that says what it is for, and its
+opens your browser, and shows one window with seven sections and one header:
+**Orchestra** (`Alt+1`), **Roles** (`Alt+2`), **Org** (`Alt+3`), **Design** (`Alt+4`),
+**Flow** (`Alt+5`), **Fleet** (`Alt+6`) and **Team** (`Alt+7`). Each section opens on a Start view that says what it is for, and its
 panels sit in labelled group boxes you can move and resize. In the TUI, `/roles`, `/org`
 and `/design` open it straight into that section; `Ctrl`/`Cmd`+`K` opens the command
 palette and `?` opens "How this works". Nothing leaves your machine: no account, no CDN,
@@ -233,7 +241,7 @@ no fonts fetched, no analytics.
 The pictures below are headless-Chrome renders of Studio over fixture data
 (`tools/capture_studio.py`), the same way the TUI pictures are made. See
 [docs/STUDIO.md](docs/STUDIO.md) for every panel and shortcut, and the
-[Over SSH](docs/STUDIO.md#over-ssh) recipe when Halo runs on a box you reach remotely.
+[Over SSH](docs/STUDIO-security.md#over-ssh) recipe when Halo runs on a box you reach remotely.
 
 ### Orchestra: agents writing the same files
 
@@ -323,6 +331,14 @@ harness, then you approve and run it and the report says who did what and what i
 per harness. See [docs/FLEET.md](docs/FLEET.md) and [docs/MISSIONS.md](docs/MISSIONS.md).
 
 <a href="docs/media/studio-fleet-mission.png"><img alt="Studio's Fleet section: a mission planned across two harnesses, drawn on the map with its table under it" src="docs/media/studio-fleet-mission.png" width="100%"></a>
+
+### Team: people, blocks and stages
+
+Press `Alt+7` and the project's team file is one board: members as columns, stages as boxes
+that pulse while they run and turn amber at a gate you accept, redo or stop, and the blocks
+underneath with who holds which part and what changed. See [docs/TEAM.md](docs/TEAM.md).
+
+<a href="docs/media/studio-team.png"><img alt="Studio's Team section: draft done, review waiting at its gate with the gate card open, the notes block held by a hand edit, the change feed under the board" src="docs/media/studio-team.png" width="100%"></a>
 
 ## The levels
 
@@ -440,10 +456,14 @@ tool, so check each tool's own docs.
 
 ## Documentation
 
+[docs/README.md](docs/README.md) is the map: every doc, grouped by what you want to do, with one
+line on when to read it. The longest docs are split by task; their entry pages below link the parts.
+
 | Document | What it covers |
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | One-page install, upgrade and update guide |
 | [docs/HANDBOOK.md](docs/HANDBOOK.md) | The long-form guide: configuration, providers, permissions, steering, hooks, skills, MCP, sessions, themes, telemetry |
+| [docs/GLOSSARY.md](docs/GLOSSARY.md) | Every word Halo uses, one paragraph each (`halo explain <word>`) |
 | [docs/COMMANDS.md](docs/COMMANDS.md) | Every CLI command and flag |
 | [docs/SLASH-COMMANDS.md](docs/SLASH-COMMANDS.md) | Every slash command in the TUI |
 | [docs/CONFIG.md](docs/CONFIG.md) | Config keys, paths and environment variables |

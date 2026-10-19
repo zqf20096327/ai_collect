@@ -10,9 +10,9 @@ text and screenshots anywhere on screen, and types what you dictate into any
 app. Speech recognition and translation run on macOS's built-in frameworks
 or on local models — no cloud service is required.
 
-**Current version: 0.8.2 — internal test build.**
+**Current version: 0.9.0 — internal test build.**
 
-### [⬇ Download OmniVoice 0.8.2 (.dmg)](https://github.com/hdcola/OmniVoice/releases/download/v0.8.2/OmniVoice-0.8.2.dmg)
+### [⬇ Download OmniVoice 0.9.0 (.dmg)](https://github.com/hdcola/OmniVoice/releases/download/v0.9.0/OmniVoice-0.9.0.dmg)
 
 Or install with [Homebrew](https://brew.sh):
 
@@ -81,7 +81,7 @@ Runs fully on-device.
 Hold the right ⌥ Option key (or right ⌘ / ⌃), or tap to start and tap again
 to stop, in any app. Speak, and the text is typed at the cursor.
 
-- Uses system speech recognition, or borrows the local R2T2 model if it is
+- Uses system speech recognition, or borrows the local model if it is
   already loaded for transcription.
 - A bubble shows what it hears; Esc cancels; a time limit (default 2 min)
   closes the microphone if a key release is lost.
@@ -102,15 +102,16 @@ to stop, in any app. Speak, and the text is typed at the cursor.
 
 | | System (built in, no download) | Local models (offline) |
 |---|---|---|
-| Speech recognition | `SpeechAnalyzer` / `SpeechTranscriber` | R2T2 (Q4_K_M / Q8_0 / F16) |
+| Speech recognition | `SpeechAnalyzer` / `SpeechTranscriber` | R2T2 (Q4_K_M / Q8_0 / F16) via audio.cpp; small streaming Zipformer / Paraformer models via sherpa-onnx |
 | Translation | `Translation` framework | HY-MT1.5 1.8B (light), T3PO (high quality) |
 
 Choose the recognition and translation engines independently. Local models
 run in-process through `audio.cpp` and `llama.cpp`. The **Model Library**
 downloads them with progress, disk-space checks and SHA-256 verification,
 shows memory use, and can preload models at launch. The
-first-run wizard offers three run modes — lightweight (system engines),
-balanced (R2T2 + HY-MT1.5) and high-accuracy (all local).
+first-run wizard has three steps — permissions and switches, then a
+speech recognition model, then a translation model — and shows each choice's
+memory use next to your Mac's memory.
 
 ### App
 
@@ -132,8 +133,8 @@ Recognition, Voice Input, Quick Translate, Model Library, About.
 
 Requested only when the feature needs them: Microphone and Speech
 Recognition (transcription), Screen Recording (system audio, ⌥S),
-Accessibility (⌥A, typing dictated text, pausing music and video while dictating), Input Monitoring (voice input,
-⌘C ⌘C).
+Accessibility (⌥A, typing dictated text, pausing music with the play/pause key during dictation), Input
+Monitoring (Dictation, ⌘C ⌘C).
 
 ## Building from source
 

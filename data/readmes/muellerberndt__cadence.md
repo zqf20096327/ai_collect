@@ -107,10 +107,10 @@ Python 3.11+ and NumPy are required.
 Install the published release for this basic example:
 
 ```sh
-python -m pip install cadence-net==0.83.0
+python -m pip install cadence-net==0.84.2
 ```
 
-Its [released documentation](https://github.com/muellerberndt/cadence/blob/v0.83.0/docs/README.md)
+Its [released documentation](https://github.com/muellerberndt/cadence/blob/v0.84.2/docs/README.md)
 describes the APIs included in that package.
 
 ```python
@@ -130,8 +130,10 @@ assert action.shape == (1,)
 
 `live` takes the **preceding action's** measured reward, then chooses the next
 action for one continuing stream. Supply one observation row per call. A calm
-brain acts greedily without learning; youth or arousal enables exploration,
-learning and memory writes. There is no training/inference mode switch.
+brain acts greedily without learning (its working trace advances at every moment,
+as do the recall slots when that memory is on); youth or arousal enables
+exploration, learning and writes to the associative memory. There is no
+training/inference mode switch.
 [Continuous interaction](https://github.com/muellerberndt/cadence/blob/main/docs/continuous.md)
 covers arousal, resets and saved continuation.
 

@@ -729,4 +729,4 @@ Table of Contents
   - [WING NUS CS6101 Large Language Models (T2310)](https://www.youtube.com/playlist?list=PLzIZxnJJT7ORSBnYrXJMYBVnYeLryJtl7)
   - [CS 839: Foundation Models Fall 2025 - UW Madison](https://pages.cs.wisc.edu/~fredsala/cs839/fall2025/schedule.html) ([YouTube playlists](https://www.youtube.com/playlist?list=PLOq_oVZZBJosRA5_S823YxCcKcoyVRto-))
   - [CS 886: Recent Advances on Foundation Models Winter 2024 - University of Waterloo](https://cs.uwaterloo.ca/~wenhuche/teaching/cs886/)
-  - [UC Berkeley CS 194/294-196 Agentic AI Fall 2025](https://rdi.berkeley.edu/agentic-ai/f25) ([YouTube, 2025](https://www.youtube.com/playlist?list=PLS01nW3RtgoqGkm4UeqNeZLccW-OGc1fJ)) ([Notes, 2024](https://rdi.berkeley.edu/llm-agents/f24)) ([YouTube, 2024](https://www.youtube.com/playli
+  - [UC Berkeley CS 194/294-196 Agentic AI Fall 2025](https://rdi.berkeley.edu/agentic-ai/f25) ([YouTube, 2025](https://www.youtube.com/playlist?list=PLS01nW3RtgoqGkm4UeqNeZLccW-OGc1fJ)) ([Notes, 2024](https://rdi.berkeley.edu/llm-agents/f24)) ([YouTube, 2024](https://www.youtube.com/playlist?list=PLS01nW3RtgopsNLeM936V4TN

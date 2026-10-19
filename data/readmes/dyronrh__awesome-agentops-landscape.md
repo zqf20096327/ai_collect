@@ -20,7 +20,7 @@ Each week this repository highlights:
 [![License](https://img.shields.io/github/license/dyronrh/awesome-agentops-landscape?style=for-the-badge)](LICENSE)
 
 <!-- META:START -->
-**Last generated:** 2026-10-17  
+**Last generated:** 2026-10-18  
 **Automation:** GitHub Actions + GitHub API
 <!-- META:END -->
 
@@ -114,13 +114,13 @@ AgentOps platforms are instrumented via **OpenTelemetry**, where each agent sess
 <!-- OSS_TABLE:START -->
 | Tool | Stars | Links |
 |------|------|------|
-| LiteLLM | ⭐ 61.4k | https://github.com/BerriAI/litellm |
+| LiteLLM | ⭐ 61.5k | https://github.com/BerriAI/litellm |
 | Langfuse | ⭐ 36.0k | https://github.com/langfuse/langfuse |
 | Promptfoo | ⭐ 26.1k | https://github.com/promptfoo/promptfoo |
 | Opik (Comet) | ⭐ 22.7k | https://github.com/comet-ml/opik |
 | DeepEval | ⭐ 18.9k | https://github.com/confident-ai/deepeval |
 | AgentNeo | ⭐ 16.2k | https://github.com/raga-ai-hub/RagaAI-Catalyst |
-| RAGAS | ⭐ 16.0k | https://github.com/explodinggradients/ragas |
+| RAGAS | ⭐ 16.1k | https://github.com/explodinggradients/ragas |
 | Phoenix (Arize) | ⭐ 11.9k | https://github.com/Arize-ai/phoenix |
 | Bifrost | ⭐ 8.9k | https://github.com/maximhq/bifrost |
 | Evidently AI | ⭐ 8.0k | https://github.com/evidentlyai/evidently |
@@ -137,11 +137,11 @@ AgentOps platforms are instrumented via **OpenTelemetry**, where each agent sess
 | Future AGI | ⭐ 2.2k | https://github.com/future-agi/future-agi |
 | Weave (W&B) | ⭐ 1.1k | https://github.com/wandb/weave |
 | ClawBench | ⭐ 1.1k | https://github.com/TIGER-AI-Lab/ClawBench |
-| SandBase Harness | ⭐ 638 | https://github.com/sandbaseai/sandbase-harness |
+| SandBase Harness | ⭐ 640 | https://github.com/sandbaseai/sandbase-harness |
 | Agent Evaluation (AWS Labs) | ⭐ 376 | https://github.com/awslabs/agent-evaluation |
 | Monocle2AI | ⭐ 342 | https://github.com/monocle2ai/monocle |
 | OrcaReplay | ⭐ 285 | https://github.com/Continuum-AI-Corp/OrcaReplay |
-| traceAI | ⭐ 223 | https://github.com/future-agi/traceAI |
+| traceAI | ⭐ 224 | https://github.com/future-agi/traceAI |
 | AgentMeasure | ⭐ 218 | https://github.com/roy-tong/AgentMeasure |
 | agenttrace | ⭐ 147 | https://github.com/luoyuctl/agenttrace |
 | Open Bias | ⭐ 145 | https://github.com/open-bias/open-bias |

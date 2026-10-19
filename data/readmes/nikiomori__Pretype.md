@@ -53,7 +53,7 @@ Most autocomplete tools operate in one editor, and they send your text to a serv
 <img src="docs/demo-fix.gif" alt="The user selects a line with typos. After Option-Tab, a panel shows the fix as a word diff. Return replaces the line." width="720" />
 <p><sub><i><b>Rewrite.</b> <kbd>⏎</kbd> accepts it. <kbd>Esc</kbd> keeps your original text.</i></sub></p>
 
-<img src="docs/shot-settings.png" alt="Settings window with a glass sidebar and a Live Impact inspector. The inspector shows the measured accuracy, speed, memory, and compute." width="720" />
+<img src="docs/shot-settings.png" alt="Model pane of the Settings window: one card for each goal, and a Live Impact column that shows the measured accuracy, speed, memory, and compute." width="720" />
 <p><sub><i><b>Settings show their cost.</b> Hover over an option to see its effect on accuracy, speed, and memory.</i></sub></p>
 
 <img src="docs/shot-personal.png" alt="Personalization tab with a persona field and style instructions for Mail, Messages, and Notes" width="720" />
@@ -106,7 +106,7 @@ To reject a suggestion, continue to type. You can change the accept key to <kbd>
 * The speech models of macOS transcribe on your Mac. Audio does not go to the disk.
 * A tidy-up pass adds the punctuation and the capital letters.
 * Dictation uses the language of your keyboard layout.
-* **Voice commands.** Select text and dictate an instruction, for example *"make it shorter"* or *"translate to English"*. Enable this in **Settings → General → Dictation**.
+* **Voice commands.** Select text and dictate an instruction, for example *"make it shorter"* or *"translate to English"*. Enable this in **Settings → Dictation → Advanced**.
 * **Send.** Pretype can push <kbd>Return</kbd> after a dictation, for example in a chat. To enable this for an app, select **Press Return after Dictation** in the menu.
 * If the focus changes during a capture, Pretype puts the transcript on the clipboard.
 
@@ -141,7 +141,7 @@ Or download [`Pretype.app.zip`](https://github.com/nikiomori/Pretype/releases/la
 3. Wait for the model download to complete. The menu-bar icon shows the progress.
 4. Type in a text field.
 
-The model download is ≈1–5.7 GB. Pretype selects the default model from a fixed table of Mac memory sizes. The default uses less than a quarter of the memory. To use a different model, go to **Settings → Model**. [Choosing a model](docs/models.md) compares the models.
+The download of the default model is ≈1.5–5.3 GB. Pretype selects the default model from a fixed table of Mac memory sizes. The default uses less than a quarter of the memory. To use a different model, go to **Settings → Model**. [Choosing a model](docs/models.md) compares the models.
 
 To build from source, see [Development setup](CONTRIBUTING.md#development-setup).
 
@@ -197,8 +197,9 @@ If Pretype is useful to you, give it a star (⭐). Stars help other people find 
 | [MLX](https://github.com/ml-explore/mlx) and [mlx-swift-lm](https://github.com/ml-explore/mlx-swift-lm) | The on-device ML stack from Apple |
 | [Gemma](https://ai.google.dev/gemma) | The default model on Macs with 16 GB or more |
 | [Qwen](https://huggingface.co/Qwen) | The default model on 8 GB Macs |
-| [MiniCPM](https://huggingface.co/openbmb) | The fastest model in the catalog |
-| [swift-transformers](https://github.com/huggingface/swift-transformers) | The tokenizers and the Hugging Face hub client |
+| [MiniCPM](https://huggingface.co/openbmb) | One of the two fastest models in the catalog |
+| [swift-transformers](https://github.com/huggingface/swift-transformers) | The tokenizers |
+| [swift-huggingface](https://github.com/huggingface/swift-huggingface) | The Hugging Face hub client and cache |
 | [Cotypist](https://cotypist.app) | The original idea |
 
 ## License

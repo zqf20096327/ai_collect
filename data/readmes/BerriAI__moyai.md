@@ -119,7 +119,7 @@ The local quickstart's data is not automatically migrated into this topology.
 
 ### Option 3: Develop from source
 
-**Prerequisites:** Python 3.13, Node.js 22 or newer, and
+**Prerequisites:** Python 3.13, Node.js 22 or newer, Rust 1.88 or newer (to build AgentChat), and
 [uv](https://docs.astral.sh/uv/getting-started/installation/).
 
 ```sh
@@ -150,8 +150,8 @@ development. Preserve `.data` and its generated encryption key across restarts.
   member computers, and durable Pause/Resume/time controls on Pydantic AI.
 - [Architecture](docs/architecture.md): how requests move through the system and
   which data belongs to each service.
-- [Production deployment](docs/production-deploy.md): existing-product setup,
-  guarded maintenance, upgrade checks and recovery.
+- [Docker installation](deploy/docker/README.md): self-hosted installation and upgrades.
+- Managed deployment workflows and runbooks are maintained in a private repository.
 - [Verification](docs/verification.md): tests, packaging and Docker checks.
 - [Consolidation scope](docs/consolidation.md): retired code, preserved contracts
   and features that remain deferred.

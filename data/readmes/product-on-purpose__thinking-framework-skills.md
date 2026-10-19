@@ -134,7 +134,7 @@ The field of "thinking methods" has three uneven layers: a small **empirical cor
 This one does the opposite, and that honesty is the product:
 
 - **Grade evidence transparently.** Every skill carries a tier, and its dossier states what the research does and does *not* show. A practitioner-tier method labeled honestly is more trustworthy than one dressed up as science.
-- **Do not launder statistics.** The often-cited "premortems surface ~30% more reasons" measures the *number of reasons*, not a 30% gain in decision quality. Claims are scoped to what the studies actually measured.
+- **Do not launder statistics.** The often-cited premortem "30%" is usually credited to Klein's (2007) account, is not found in the study it describes, and was never a 30% gain in decision quality, so the library does not use it. Claims are scoped to what the studies actually measured.
 - **Mechanism over ritual.** The skill implements the durable move and names the branded ritual as lineage, never the reverse. (So the library ships *Parallel Perspectives Review*, not the trademarked Six Thinking Hats.)
 - **Flag transferred evidence.** Almost no studies test an *AI agent* running these methods. Where evidence comes from human-subject research, the page says so.
 
@@ -462,13 +462,13 @@ Two Gold checks are **not applicable** here, and the library says so rather than
 
 ## 📊 Project status
 
-`v0.18.3` - **public and growing.** The library grows additively, and evidence grades are refreshed as the research does. User-facing highlights live in [`RELEASE-NOTES.md`](RELEASE-NOTES.md); the full technical history is in [`CHANGELOG.md`](CHANGELOG.md).
+`v0.18.4` - **public and growing.** The library grows additively, and evidence grades are refreshed as the research does. User-facing highlights live in [`RELEASE-NOTES.md`](RELEASE-NOTES.md); the full technical history is in [`CHANGELOG.md`](CHANGELOG.md).
 
 ### At a glance
 
 |  |  |
 |---|---|
-| **Current version** | [v0.18.3](https://github.com/product-on-purpose/thinking-framework-skills/releases/tag/v0.18.3) |
+| **Current version** | [v0.18.4](https://github.com/product-on-purpose/thinking-framework-skills/releases/tag/v0.18.4) |
 | **Frameworks** | 63, across 12 cognitive-operation families (56 core + 7 contested lenses) |
 | **Tools** | 4 meta-skills (a router, two applicators, the research engine) |
 | **Recipes** | 9 (skill chains shipped as workflow components), each runnable as a slash command |
@@ -522,6 +522,7 @@ Full detail in [`CHANGELOG.md`](CHANGELOG.md); curated highlights in [`RELEASE-N
 
 | Version | Highlights |
 |---|---|
+| [**0.18.4**](https://github.com/product-on-purpose/thinking-framework-skills/releases/tag/v0.18.4) | Patch. The evidence decisions the two audits left open: a retracted 2002 study flagged on the pre-commitment page, four checked caveats (natural frequencies, WOOP, premortem, calibration feedback), the premortem "30%" wording corrected, three citations fixed, four eval answer keys widened, and a gate ratchet on deferred "confirm before a public claim" notes. No tier changes; catalog stays 56 core + 7 contested. |
 | [**0.18.3**](https://github.com/product-on-purpose/thinking-framework-skills/releases/tag/v0.18.3) | Patch. A second audit checked the other 199 published figures in the skill and library dossiers and corrected 21: wrong authors in two skills, theory papers cited as effect sizes, a 29% that a corrigendum made 19%, and CliftonStrengths figures re-credited to the right Gallup report. No tier changes; catalog stays 56 core + 7 contested. |
 | [**0.18.2**](https://github.com/product-on-purpose/thinking-framework-skills/releases/tag/v0.18.2) | Patch. The library audited its own published figures and corrected ten: WOOP rests on 21 controlled field studies with a modest effect, not "25+ RCTs"; natural frequencies lift accuracy from 16% to 46%, not "10% to 50-90%"; eight attributions or findings fixed. No tier changes; catalog stays 56 core + 7 contested. |
 | [**0.18.1**](https://github.com/product-on-purpose/thinking-framework-skills/releases/tag/v0.18.1) | Patch. `think-research-framework` now reaches its subagent under a plugin install. Three tier-C artifacts print their evidence tier. A reference page indexes where each authored file's rules live, and four roadmap items close on a checked premise. No new skills; catalog stays 56 core + 7 contested. |

@@ -4,24 +4,56 @@ A Python toolkit to download, load, and visualize predictive-maintenance
 datasets for research. Use a shared API with dataset-specific loaders; download
 only what you need.
 
+## Prerequisites
+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) on your `PATH`
+- Python **3.14** (installed automatically by `uv` from `.python-version`)
+- Optional: a system [libarchive](https://www.libarchive.org/) library if you
+  will download **IMS** (nested ZIP/7z/RAR). macOS usually includes one;
+  Debian/Ubuntu: `sudo apt-get install libarchive-dev`; see
+  [Usage](docs/usage.md) for Windows notes.
+
+Windows users can run the same `uv` commands in PowerShell, or use
+Git Bash / WSL for `./scripts/bootstrap.sh`.
+
 ## Getting started
 
-From the repository root, with `uv` installed:
+From the repository root:
 
 ```bash
 ./scripts/bootstrap.sh
-uv run --locked jupyter lab
 ```
 
-Setup creates the locked Python 3.11 environment and registers the
-`Python (pdmdata)` notebook kernel. It does not download datasets.
-Select that kernel in Jupyter and run:
+Or, without the shell script:
+
+```bash
+uv sync --locked
+uv run --locked python -m ipykernel install --user \
+  --name pdmdata --display-name "Python (pdmdata)"
+```
+
+Confirm the install:
+
+```bash
+uv run --locked python -c "import pdmdata; pdmdata.summary()"
+```
+
+Setup creates the locked Python 3.14 environment (runtime, Jupyter, and
+dev tooling) and registers the `Python (pdmdata)` notebook kernel. It does
+**not** download datasets. Data lands under `data/raw/` by default
+(see `pdmdata.toml`).
+
+Start JupyterLab, select the `Python (pdmdata)` kernel, and run:
+
+```bash
+uv run --locked jupyter lab
+```
 
 ```python
 import pdmdata
 
 pdmdata.summary()
-pdmdata.download("cmapss")
+pdmdata.download("cmapss")  # direct URL; no Kaggle login
 frame = pdmdata.load("cmapss", subset="FD001", split="train")
 frame.head()
 ```
@@ -43,13 +75,29 @@ figure.show()
 | Browse the task list and experiment views | [Task overview](pdmdata/tasks/README.md) |
 | Configure paths, downloads, and Kaggle auth | [Usage guide](docs/usage.md) |
 | Explore data or task examples | [Notebooks](notebooks/README.md) |
+| Run tests | `uv run --locked python -m unittest discover -s tests -q` |
 
 Open a dataset README from the catalog for selectors, schema details, and
 terms of use. Open a task README for experiment bundles and scoring
 protocols.
 
-## License
+## Acknowledgments
 
-Repository code and documentation are available under the MIT License. Each
-dataset remains subject to its own license and terms of use; consult its
-README and source before use.
+Thanks to the researchers, institutions, and data providers who create and
+share the predictive-maintenance datasets that this project downloads and
+loads. PdMData exists to make those sources easier to use; credit and
+citation belong with the original authors. Provider names, licenses, and
+suggested citations are listed in each dataset README and in the
+[dataset catalog](pdmdata/README.md).
+
+## License and data use
+
+Repository code and documentation are available under the MIT License.
+
+This repository does **not** redistribute dataset files. Downloads fetch
+data from the original providers (or their documented mirrors) into your
+local data directory. Each dataset remains under its own license and terms
+of use. Before downloading or using any dataset, review the provider’s
+rights, citation requirements, and restrictions, and proceed at your own
+responsibility. See the [dataset catalog](pdmdata/README.md) and the
+per-dataset READMEs for source links and terms.

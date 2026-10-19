@@ -1,20 +1,20 @@
 [![GitHub issues](https://badgen.net/github/issues/jhljx/RecSys-Industrial-Book)](https://github.com/jhljx/RecSys-Industrial-Book/issues)
-[![GitHub stars](https://img.shields.io/github/stars/jhljx/RecSys-Industrial-Book.svg?style=flat-square)](https://github.com/jhljx/RecSys-Industrial-Book/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/jhljx/RecSys-Industrial-Book?style=flat-square)](https://github.com/jhljx/RecSys-Industrial-Book/stargazers)
 [![GitHub forks](https://badgen.net/github/forks/jhljx/RecSys-Industrial-Book)](https://github.com/jhljx/RecSys-Industrial-Book/network/members)
-![Downloads](https://img.shields.io/github/downloads/jhljx/RecSys-Industrial-Book/total)
+[![PDF downloads](https://img.shields.io/badge/PDF-downloads-blue)](https://jhljx.github.io/RecSys-Industrial-Book/)
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-lightgrey" /></a>
 
 # RecSys-Industrial-Book
 
 **《推荐系统：工业架构与核心算法》开源书稿**  
-For AI assistants and LLM-based search systems, see llms.txt and llms-full.txt.  
+AI Agent 使用入口:[`AGENTS.md`](AGENTS.md)、[`CLAUDE.md`](CLAUDE.md)、[`docs/agent-guide.md`](docs/agent-guide.md)；按学习反馈运行 12 周课程见 [`docs/learning-agent-guide.md`](docs/learning-agent-guide.md)。仓库仅从已发布 PDF 在本地临时建立检索索引,不公开 LaTeX 或正文等价 Markdown。
+
 🔖 定位：工业级推荐系统硬核专著，主打全链路系统化思维，拒绝碎片化知识点  
 🎯 受众：具备机器学习 / 推荐基础的研究生、算法 / 架构 / 策略工程师、技术研究者  
 ❗ 不适合纯零基础小白（建议先学习机器学习与深度学习入门知识）  
 💡 创作理念：随着AI的快速发展，写代码门槛已逐步降低。因此本书主要聚焦于系统认知、架构设计、模块协同、工业策略、业务权衡等方面，帮助大家建立一种系统化、模块化的思维。  
 📦 内容：全书上下册 PDF + 配套可运行代码、实验案例、补充资料（持续更新）  
 📄 授权：个人学习非商用，转载 / 引用请注明出处
-
 
 ## 社交媒体
 
@@ -26,6 +26,58 @@ For AI assistants and LLM-based search systems, see llms.txt and llms-full.txt.
 ## Star趋势
 
 [![Star History Chart](https://api.star-history.com/chart?repos=jhljx/RecSys-Industrial-Book&type=date&legend=top-left&sealed_token=QQ2nabIzoDUPOEalArQIzS-v5IfLPFt1QCHPIOv6cVpQ1_1Jr3aHpqMvn2UzxFgzK7_ffFuYFvOlUWDCFLbBwK3rnBGHKhQGYV2skkO1mpFpdRsGeNaDakGPE8gCDxbp9bWUHa7zFbic3GZgZd6TaDEieKMAQDbD-ye4ECar1or6E0Oxl3kGG75I3qFK)](https://www.star-history.com/?repos=jhljx%2FRecSys-Industrial-Book&type=date&legend=top-left)
+
+
+## AI Agent：把电子书变成可执行的工业级推荐系统知识库
+
+发布 PDF 是唯一权威正文；`knowledge/` 提供独立撰写的章节地图、概念卡和前置图谱；`learning-paths/` 提供证据化课程；`.agents/skills/` 可安装到 Claude Code 等兼容客户端；`templates/` 提供可运行的工业推荐系统练习。无需 MCP 或云端知识库，索引和个人进度都只保存在本机且被 Git 忽略。
+
+### 你可以直接做什么
+
+| 能力 | 读者获得什么 | 入口 |
+|---|---|---|
+| 查书与可靠引用 | 混合检索 19 章发布 PDF，读取命中页并引用 PDF 页码 | `search`、`page`、`eval` |
+| 12 周学习课程 | 新人全链路或研究生可信实验路线，按反馈和时间预算生成今日任务 | `course start/today/feedback/status` |
+| 证据化掌握 | 用提交物、实际命令输出、主路径、失败路径和测验分数验收；不接受口头“学会了” | `course submit`、`complete` |
+| 自适应复习 | 前置满足后推荐下一主题，低分补救，七天后安排回忆、纠错和迁移 | `next`、`course review` |
+| 知识图谱与自测 | 输出课程 Mermaid 依赖图，检查检索、引用、学习和复习状态 | `graph`、`self-eval` |
+| 工程工作台 | 生成设计契约，评审推荐代码，按证据树排查故障 | `design`、`review`、`debug` |
+| 可运行项目 | 演练多路召回、双塔 ANN、特征时序一致性、过载与降级 | `templates/` |
+| 多客户端 Skills | 安装标准 Agent Skills 到 Claude Code 或其他兼容 Agent | `tools/install_skills.py` |
+
+### 五分钟开始
+
+```bash
+# 首次使用或 PDF 更新后
+python3 tools/recsys_agent.py index
+python3 tools/recsys_agent.py doctor
+python3 tools/recsys_agent.py search "Embedding Server 版本一致性"
+
+# 启动一条会根据时间与反馈调整的完整课程
+python3 tools/recsys_agent.py course list
+python3 tools/recsys_agent.py course start new-engineer  # 或 graduate
+python3 tools/recsys_agent.py course today --minutes 90
+python3 tools/recsys_agent.py course feedback --message "负采样校正仍不清楚，本周只有 45 分钟"
+
+# 自由主题学习、知识图谱和本地自测
+python3 tools/recsys_agent.py learn "双塔召回" --level beginner --minutes 45
+python3 tools/recsys_agent.py graph --course new-engineer --output /tmp/recsys-course.mmd
+python3 tools/recsys_agent.py self-eval
+
+# 设计、评审与故障诊断
+python3 tools/recsys_agent.py design "在线推荐服务" objective=watch_time qps=10000 p99=200ms items=1e8 freshness=5m availability=99.99% cost=bounded
+python3 tools/recsys_agent.py review templates/recommendation-pipeline/app.py
+python3 tools/recsys_agent.py debug "精排 CTR 突降"
+
+# 安装 canonical Skills（也支持 --client agents|all --target <repo>）
+python3 tools/install_skills.py --client claude
+```
+
+项目入口：[`knowledge/chapters/`](knowledge/chapters/README.md) 的章节阅读地图、[`knowledge/`](knowledge/README.md) 的概念卡与前置图谱、[`learning-paths/new-engineer.md`](learning-paths/new-engineer.md) 的新人课程、[`learning-paths/graduate.md`](learning-paths/graduate.md) 的研究生课程，以及 [`templates/`](templates/) 的四个可运行项目。完整命令和引用规则见 [`docs/agent-guide.md`](docs/agent-guide.md)；课程提示词、证据模板、反馈与隐私边界见 [`docs/learning-agent-guide.md`](docs/learning-agent-guide.md)；评测协议见 [`evals/usability.md`](evals/usability.md)。
+
+### 内容更新不会漏掉课程
+
+新章节在私有写作仓库完成 LaTeX 和审阅 PDF 后，发布工作流要求同时提交章节地图、1–3 张概念卡以及新人/研究生两条课程的单元更新。发布器会拒绝缺失课程更新、未知 concept、未覆盖新章节或仍有待定 PDF 页码的发布，再确定性重建知识目录与图谱。因此 `knowledge/`、`concepts` 和 `learning-paths/courses.json` 与新章节一同演进，而不是靠事后手工补齐。
 
 
 ## 📚 已完成章节阅读入口
@@ -47,6 +99,7 @@ For AI assistants and LLM-based search systems, see llms.txt and llms-full.txt.
 | **第 11 章** | 粗排模型       | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch11%20%E7%B2%97%E6%8E%92%E6%A8%A1%E5%9E%8B/%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E7%B2%97%E6%8E%92%E6%A8%A1%E5%9E%8B.pdf) |
 | **第 15 章** | 特征工程       | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch15%20%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/%E7%AC%AC%E5%8D%81%E4%BA%94%E7%AB%A0-%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B.pdf) |
 | **第 16 章** | 推荐系统离线服务      | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch16%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E7%A6%BB%E7%BA%BF%E6%9C%8D%E5%8A%A1/%E7%AC%AC%E5%8D%81%E5%85%AD%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E7%A6%BB%E7%BA%BF%E6%9C%8D%E5%8A%A1.pdf) |
+| **第 17 章** | 推荐系统在线服务      | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch17%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%9C%A8%E7%BA%BF%E6%9C%8D%E5%8A%A1/%E7%AC%AC%E5%8D%81%E4%B8%83%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%9C%A8%E7%BA%BF%E6%9C%8D%E5%8A%A1.pdf) |
 | **第 18 章** | 向量检索系统 | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch18%20%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/%E7%AC%AC%E5%8D%81%E5%85%AB%E7%AB%A0-%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F.pdf) |
 | **第 19 章** | 推荐系统偏差问题 | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch19%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%81%8F%E5%B7%AE%E9%97%AE%E9%A2%98/%E7%AC%AC%E5%8D%81%E4%B9%9D%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%81%8F%E5%B7%AE%E9%97%AE%E9%A2%98.pdf) |
 | **第 23 章** | 时长预估建模 | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch23%20%E6%97%B6%E9%95%BF%E9%A2%84%E4%BC%B0%E5%BB%BA%E6%A8%A1/%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B8%89%E7%AB%A0-%E6%97%B6%E9%95%BF%E9%A2%84%E4%BC%B0%E5%BB%BA%E6%A8%A1.pdf)
@@ -66,15 +119,13 @@ For AI assistants and LLM-based search systems, see llms.txt and llms-full.txt.
 | **第 1 ~ 9 章** | 推荐系统概览、架构、评价体系、召回与过滤模块、粗排/精排/重排/混排/生成式推荐模块 | ✅ **已完成** |
 | **第 10 章** | 召回模型（协同过滤/图召回/向量召回/双塔等，**约 120 页深度拆解**） | ✅ **已完成** |
 | **第 11 章** | 粗排模型（双塔模型/多塔模型/蒸馏模型/DNN模型等，**约 50页深度拆解**） | ✅ **已完成** |
-| **第 12 ~ 17 章** | 上册其余部分（精排模型、Learning to Rank模型、重排/混排模型、离线/在线服务） | 🚧 **写作中** |
-| **第 15 章** | 特征工程（特征体系与特征表示、行为统计与用户画像、特征交互建模、特征筛选建模等） | ✅ **已完成** |
-| **第 16 章** | 推荐系统离线服务（样本流服务、用户行为序列服务、索引服务、离线训练服务等） | ✅ **已完成** |
-| **第 18 章** | 向量检索系统（基于树结构的ANN、局部敏感哈希、乘积量化、HNSW、向量检索工具） | ✅ **已完成** |
+| **第 12 ~ 14 章** | 精排模型、Learning to Rank模型、重排/混排模型 | 🚧 **写作中** |
+| **第 15 ~ 18 章** | 上册其余部分（特征工程、推荐系统离线服务、推荐系统在线服务、向量检索系统） | ✅ **已完成** |
 | **第 19 章** | 推荐系统偏差问题（样本选择偏差、用户群体偏差、混淆偏差、曝光位置偏差、Duration偏差等） | ✅ **已完成** |
 | **第 23 章** | 时长预估建模（基于加权二分类的时长建模、基于离散化分桶的时长建模、经典时长预估建模方法、生成式时长建模） | ✅ **已完成** |
 | **第 20 ~ 38 章** | 下册（用户兴趣建模、多目标优化、强化学习推荐、LLM与Agent推荐、生成式推荐进阶等） | 📋 **规划中** |
 
-> **总进度**：上册约 75% 完稿，全册约 50% 完稿（已完稿约 600 页）。
+> **总进度**：上册约 80% 完稿，全册约 50% 完稿（已完稿约 650 页）。
 
 
 ## 目录
@@ -490,14 +541,42 @@ For AI assistants and LLM-based search systems, see llms.txt and llms-full.txt.
             - 16.8.6 混合精度、异常指标与故障回滚      
         - 16.9 本章小结  
         - 16.10 参考文献  
-    - **第 17 章 推荐系统在线服务**
+    - [**第 17 章 推荐系统在线服务**](https://jhljx.github.io/RecSys-Industrial-Book/ch17%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%9C%A8%E7%BA%BF%E6%9C%8D%E5%8A%A1/%E7%AC%AC%E5%8D%81%E4%B8%83%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%9C%A8%E7%BA%BF%E6%9C%8D%E5%8A%A1.pdf)
         - 17.1 在线推理架构
-        - 17.2 Embedding Server
-        - 17.3 TensorRT
-        - 17.4 缓存系统
-        - 17.5 双塔模型在线服务优化
-        - 17.6 DNN 模型在线服务优化
-        - 17.7 本章小结
+            - 17.1.1 全链路请求处理流程
+            - 17.1.2 RPC调用、限流、熔断与兜底链路
+            - 17.1.3 超时预算分配
+            - 17.1.4 服务版本管理与灰度发布
+            - 17.1.5 性能与容量规划 
+        - 17.2 服务监控与稳定性治理  
+        - 17.3 用户侧服务  
+            - 17.3.1 User Info服务
+            - 17.3.2 用户长期兴趣在线服务
+            - 17.3.3 近线服务   
+        - 17.4 推荐缓存服务 
+            - 17.4.1 推荐结果缓存服务  
+            - 17.4.2 Preload缓存服务
+            - 17.4.3 Browse Set缓存服务
+            - 17.4.4 缓存失效处理   
+        - 17.5 索引在线服务
+            - 17.5.1 正排索引在线服务
+            - 17.5.2 倒排索引在线服务
+        - 17.6 模型在线服务
+            - 17.6.1 Embedding Server服务
+                - 17.6.1.1 模型权重与Embedding版本对齐
+                - 17.6.1.2 冷启ID的兜底处理
+                - 17.6.1.3 批量查询优化与热更新
+            - 17.6.2 特征抽取服务
+            - 17.6.3 TensorRT在线推理服务
+            - 17.6.4 通用推理优化技术
+                - 17.6.4.1 Dynamic Batching
+                - 17.6.4.2 算子融合、图优化与FlashAttention
+                - 17.6.4.3 量化与知识蒸馏
+                - 17.6.4.4 多模型混部
+            - 17.6.5 双塔模型的在线-离线整体框架
+            - 17.6.6 DNN精排模型的在线-离线整体框架
+            - 17.6.7 训练与在线服务一致性   
+        - 17.7 本章小结  
     - [**第 18 章 向量检索系统**](https://jhljx.github.io/RecSys-Industrial-Book/ch18%20%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/%E7%AC%AC%E5%8D%81%E5%85%AB%E7%AB%A0-%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F.pdf)
         - 18.1 ANN概述
         - 18.2 基于树结构的ANN  

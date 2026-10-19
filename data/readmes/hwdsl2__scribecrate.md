@@ -8,7 +8,7 @@
 
 ScribeCrate is a self-hosted speech-to-text API for transcribing audio, generating subtitles, and translating speech into English. It provides OpenAI-compatible transcription and translation endpoints using [Whisper](https://github.com/openai/whisper) models, powered by [faster-whisper](https://github.com/SYSTRAN/faster-whisper). Deploy with Docker on CPU or an NVIDIA GPU.
 
-> Previously known as `docker-whisper`, maintained by [hwdsl2](https://github.com/hwdsl2). The Docker image remains `hwdsl2/whisper-server`.
+> Previously known as `docker-whisper`, maintained by [hwdsl2](https://github.com/hwdsl2). The Docker image name remains `hwdsl2/whisper-server`.
 
 **Features:**
 
@@ -195,8 +195,8 @@ This Docker image uses the following variables, that can be declared in an `env`
 | `WHISPER_LOG_LEVEL` | Log level: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. | `INFO` |
 | `WHISPER_BEAM` | Beam size for transcription and translation decoding. Higher values may improve accuracy at the cost of speed. Use `1` for fastest (greedy) decoding. | `5` |
 | `WHISPER_MAX_REQUEST_BEAM` | Maximum beam size allowed for the per-request `beam` override. Set to `0` to disable this limit. | `10` |
-| `WHISPER_CONDITION_ON_PREVIOUS_TEXT` | Condition decoding windows on previous text. Set `false` to reduce repetition feedback loops; may reduce cross-window consistency. | `true` |
-| `WHISPER_NO_REPEAT_NGRAM_SIZE` | Restrict repeated token n-grams within decoding. `0` disables this restriction; canonical decimal integer `0` through `2147483647`. N-grams are token sequences, not words. | `0` |
+| `WHISPER_CONDITION_ON_PREVIOUS_TEXT` | Condition decoding windows on previous text. Setting `false` may reduce repetition feedback loops but can reduce consistency between windows. | `true` |
+| `WHISPER_NO_REPEAT_NGRAM_SIZE` | Restrict repeated token n-grams within decoding. `0` disables this restriction; canonical decimal integer `0` through `2147483647`. N-grams are sequences of model tokens, not necessarily whole words. | `0` |
 | `WHISPER_MAX_UPLOAD_MB` | Maximum uploaded audio file size in MB. Requests above this limit return HTTP 413. Set to `0` to disable the limit. | `1024` |
 | `WHISPER_LOCAL_ONLY` | When set to any non-empty value (e.g. `true`), disables all HuggingFace model downloads. For offline or air-gapped deployments with pre-cached models. | *(not set)* |
 | `WHISPER_WORD_TIMESTAMPS` | When set to `true`, enables word-level timestamps globally for all requests. The `verbose_json` output will include a top-level `words` array with per-word timing and confidence. Can also be enabled per-request via `timestamp_granularities[]=word`. | *(not set)* |
@@ -207,11 +207,15 @@ This Docker image uses the following variables, that can be declared in an `env`
 
 **Note:** In your `env` file, you may enclose values in single quotes, e.g. `VAR='value'`. Do not add spaces around `=`. If you change `WHISPER_PORT`, update the `-p` flag in the `docker run` command accordingly.
 
-The repetition controls apply to transcription and translation, both batch and SSE. Defaults preserve existing decoding settings. For repetition-prone recordings, optionally try `WHISPER_CONDITION_ON_PREVIOUS_TEXT=false` and `WHISPER_NO_REPEAT_NGRAM_SIZE=3`. This may suppress legitimate repetition or reduce consistency; it does not guarantee hallucination-free output.
+The repetition controls apply to transcription and translation, both batch and SSE. For repetition-prone recordings, optionally try `WHISPER_CONDITION_ON_PREVIOUS_TEXT=false` and `WHISPER_NO_REPEAT_NGRAM_SIZE=3`. This may suppress legitimate repeated speech or reduce consistency between decoding windows; it does not guarantee hallucination-free output.
 
-These two new options trim surrounding ASCII whitespace and at most one matching quote pair, then trim again. Empty values use defaults; booleans accept ASCII case-insensitive `true`/`false`. Integers reject signs, leading zeros and non-ASCII digits. Invalid nonempty values stop startup before model loading. This does not change legacy option parsing or add per-request fields.
+These settings accept surrounding ASCII whitespace and at most one matching pair of outer quotes. Empty values use defaults. Booleans accept ASCII case-insensitive `true`/`false`; integers must use ASCII digits, without signs or leading zeros. Invalid nonempty values stop startup before model loading.
 
-Use an image containing this feature. If a patched `api_server.py` is bind-mounted, remove or rebase that mount first: it hides the image's updated API. After editing a bind-mounted `/whisper.env`, restart the container; if its file mount is stale, recreate only that container. Changes to Docker/Compose container environment or image selection require recreation using the same volumes and Compose project. A plain restart does not apply new container environment or switch images. Removing the options restores defaults; older code ignores them. Do not delete model volumes to update or roll back.
+A bind-mounted `api_server.py` overrides the API bundled with the image. Remove the mount to use the bundled API, or update your custom copy when upgrading.
+
+After editing a bind-mounted `/whisper.env`, restart the container. If it still sees the old file contents, recreate only that container. Changes to Docker/Compose container environment variables or the image require recreation, preserving the existing volumes and Compose project. A restart alone does not apply these changes.
+
+Removing these options restores the decoding defaults. Do not delete model volumes when updating or rolling back.
 
 Example using an `env` file:
 
@@ -227,7 +231,7 @@ docker run \
     -d hwdsl2/whisper-server
 ```
 
-The env file is bind-mounted into the container, so changes are picked up on every restart without recreating the container.
+The bind-mounted env file is read on startup. Restart the container to apply edits; if it still sees the old file contents, recreate it using the same volumes.
 
 <details>
 <summary>Alternatively, pass it with <code>--env-file</code></summary>

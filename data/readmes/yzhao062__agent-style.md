@@ -69,7 +69,7 @@ Sourced from writing authorities; each rule cites its source by chapter, section
 | 09 | Express coordinate ideas in similar form (parallel structure) | S&W §II.19 |
 | 10 | Keep related words together | S&W §II.20; Gopen & Swan 1990 |
 | 11 | Place new or important information in the stress position at the end of the sentence | Gopen & Swan 1990 |
-| 12 | Break long sentences; vary length (split sentences over 30 words) | S&W §II.18; Pinker 2014 Ch. 4 |
+| 12 | Break long sentences; vary length (split when the reader must hold more than one open clause) | S&W §II.18; Pinker 2014 Ch. 4 |
 
 ### Field-Observed Rules (RULE-A through RULE-I)
 
@@ -80,14 +80,14 @@ Structural patterns logged from LLM output across research, proposal, documentat
 | A | Do not convert prose into bullet points unless the content is a genuine list (and do not over-bullet where 2 items or a sentence fit) |
 | B | Do not use em or en dashes as casual sentence punctuation |
 | C | Do not start consecutive sentences with the same word or phrase |
-| D | Do not overuse transition words ("Additionally", "Furthermore", "Moreover") |
+| D | Do not open sentences with additive-only transition words ("Additionally", "Furthermore", "Moreover"); keep the ones that mark a contrast, cause, or sequence the text establishes |
 | E | Do not close every paragraph with a summary sentence |
 | F | Use consistent terms; do not redefine abbreviations mid-document |
-| G | Use title case for section and subsection headings (articles, short prepositions, and coordinating conjunctions stay lowercase) |
+| G | Use title case for section and subsection headings (articles, short prepositions, and coordinating conjunctions stay lowercase); a full-sentence bold run-in lead takes sentence case |
 | H | **Support factual claims with citation or concrete evidence; do not be handwavy (critical)** |
 | I | Prefer full forms over contractions in formal technical prose ("it is" over "it's") |
 
-**Escape hatch** (Orwell 1946 Rule 6): *"Break any of these rules sooner than say anything outright barbarous."* Rules are guides to clarity, not ends in themselves.
+**Escape hatch** (Orwell 1946 Rule 6): *"Break any of these rules sooner than say anything outright barbarous."* Most rules are defaults to apply with judgment, and human writers depart from any single one now and then. Depart when the sentence reads better for it, not to vary the pattern. A few are firm: no invented citations, evidence, or numbers, and no placeholders in finished text. A draft that obeys every default in every sentence reads as machine-made.
 
 See [`RULES.md`](RULES.md) for the full per-rule blocks with BAD/GOOD examples, enforcement tier, and rationale.
 
@@ -130,7 +130,7 @@ Install the CLI once; then pick the paths you want.
 ```bash
 pip install agent-style                              # Python users
 # or: npm install -g agent-style                     # Node users
-# or: npx --yes agent-style@0.7.0 <subcommand>       # no install needed
+# or: npx --yes agent-style@0.8.0 <subcommand>       # no install needed
 ```
 
 ### 1. Soft Enforcement — rules at generation time
@@ -219,7 +219,7 @@ For `print-only` and `multi-file-required`, the JSON output carries `manual_step
 </details>
 
 <details>
-<summary><b>Per-surface install table (v0.7.0 primary set)</b></summary>
+<summary><b>Per-surface install table (v0.8.0 primary set)</b></summary>
 <br>
 
 | Tool | install_mode | Target path |
@@ -246,7 +246,7 @@ The 11 planned v1.1 surfaces are Amazon Q Developer, JetBrains AI Assistant, Win
 Skip the package install; pin to a specific release so adapters and `RULES.md` stay consistent:
 
 ```bash
-AGENT_STYLE_REF=v0.7.0
+AGENT_STYLE_REF=v0.8.0
 mkdir -p .agent-style
 curl -fsSLo .agent-style/RULES.md       "https://raw.githubusercontent.com/yzhao062/agent-style/${AGENT_STYLE_REF}/RULES.md"
 curl -fsSLo .agent-style/claude-code.md "https://raw.githubusercontent.com/yzhao062/agent-style/${AGENT_STYLE_REF}/agents/claude-code.md"
@@ -339,7 +339,7 @@ After running `agent-style enable <tool>`, ask your agent:
 
 Expected reply:
 
-> agent-style v0.7.0 active: 21 rules (RULE-01..12 canonical + RULE-A..I field-observed); full bodies at .agent-style/RULES.md.
+> agent-style v0.8.0 active: 21 rules (RULE-01..12 canonical + RULE-A..I field-observed); full bodies at .agent-style/RULES.md.
 
 For `style-review` specifically, ask:
 
@@ -372,7 +372,7 @@ npx anywhere-agents        # Node.js path
 
 Opt out by adding `rule_packs: []` to `agent-config.yaml` at your project root; pin to a specific ref or swap for a fork via `rule_packs: - name: agent-style\n    ref: <tag>`. See [anywhere-agents rule-pack composition docs](https://github.com/yzhao062/anywhere-agents/blob/main/docs/rule-pack-composition.md) for the full contract.
 
-### v0.7.0+ Roadmap
+### v0.8.0+ Roadmap
 
 Planned CLI additions: `agent-style update` (refresh installed adapters to latest), `agent-style override <RULE-ID> disable` (per-rule opt-out), `agent-style clean` (one-command uninstall), `.agent-style/config.toml` (project-level config), RULE-02 / 07 / 09 / 10 structural detectors filled in, and filled adapters for the planned-adapter set above (v1.1). Track progress in [`CHANGELOG.md`](CHANGELOG.md).
 

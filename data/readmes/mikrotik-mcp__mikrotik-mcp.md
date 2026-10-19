@@ -44,7 +44,25 @@ Then just ask:
 > _"Build an IKEv2 site-to-site tunnel to 203.0.113.5 for 192.168.20.0/24."_
 > _"Why can't VLAN 50 reach the internet?"_
 
+## Dashboard
+
+<!-- Keep the GitHub video attachment URL alone in its paragraph so it renders as a player. -->
+
+https://github.com/user-attachments/assets/f6dba72e-60f8-47ef-9045-2e871d92c8f0
+
+**[Watch in browser](https://mikrotik-mcp.usestrict.dev/motion/index.html)** · [Download MP4](assets/motion/dashboard-film.mp4) · 60 seconds · 1080p · No audio
+
+An illustrated tour of all eight dashboard areas, from monitoring and routing to VPN sessions,
+security and recovery. Uses synthetic data, not a live screen recording or private router data.
+[Chapters and rendering instructions](assets/motion/README.md).
+
 ## Highlights
+
+- **Address sets:** exact IPv4/IPv6 set algebra, immutable revisions and guarded publication/rollback in Service Routing. [Workflow and safety limits](docs/address-sets.md).
+
+- **Policy verifier:** prove bounded IPv4 filter policies over address/port sets, with counterexamples and explicit Unknown results in Simulator. [Scope and limits](docs/policy-verifier.md).
+
+- **Collector health:** per-exporter freshness, template changes and incomplete-data diagnostics in Flows; see [collector health](docs/collector-health.md).
 
 - **IP Intelligence:** `lookup_ip_intelligence` and Diagnostics → IP Intelligence compare full ipquery/ipkit responses: ASN/organization, location, risk and every additional field, with searchable details and JSON export. Public IPs are sent only on submission; private IPs stay local. [Guide](docs/ip-intelligence.md).
 - **Service probes:** add, edit, search and remove approved HTTPS/TLS/TCP/DNS targets directly in Config or Service Routing, with explicit IP/CIDR boundaries and safe-apply confirmation. [Setup guide](docs/service-contracts.md#dashboard-setup-no-json-required).
@@ -236,9 +254,9 @@ mikrotik-mcp devices        # site-a (default) · site-b
 #### Docker: one writable `devices.json` for all MCP settings
 
 Use the published **[alimaster/mikrotik-mcp](https://hub.docker.com/r/alimaster/mikrotik-mcp)**
-image (`6.4.0`, or the moving `latest` tag). Docker selects `linux/amd64` or
+image (`latest`, or the moving `latest` tag). Docker selects `linux/amd64` or
 `linux/arm64` automatically; no local build is needed. Compose defaults to
-`6.4.0`; set `MIKROTIK_IMAGE_TAG` explicitly to select a different release.
+`latest`; set `MIKROTIK_IMAGE_TAG` explicitly to select a different release.
 
 **Not ARM-only:** the same image runs on x86-64 and ARM64 Linux hosts (including
 Ubuntu), and on Windows/macOS through Docker Desktop's **Linux containers**.
@@ -275,13 +293,13 @@ Create a real JSON file on the host (no comments or trailing commas). For exampl
 ```
 
 ```bash
-docker pull alimaster/mikrotik-mcp:6.4.0
+docker pull alimaster/mikrotik-mcp:latest
 docker run -d --name mikrotik-mcp --restart unless-stopped \
   -p 127.0.0.1:8000:8000 -p 127.0.0.1:9090:9090 \
   --mount type=volume,src=mikrotik-state,dst=/home/bun/.mikrotik-mcp \
   --mount type=bind,src=/absolute/path/devices.json,dst=/home/bun/.mikrotik-mcp/devices.json \
   --mount type=bind,src=/absolute/path/mikrotik_ed25519,dst=/run/secrets/mikrotik_key,readonly \
-  alimaster/mikrotik-mcp:6.4.0
+  alimaster/mikrotik-mcp:latest
 ```
 
 Dashboard: **http://localhost:9090** · MCP: **http://localhost:8000/mcp**.

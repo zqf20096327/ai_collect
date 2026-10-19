@@ -2,6 +2,10 @@
   <img src="assets/logo.svg" width="110" alt="Secret Guard logo">
 </p>
 
+<p align="center">
+  <a href="https://codecov.io/gh/luochen1990/secret-guard"><img src="https://codecov.io/gh/luochen1990/secret-guard/graph/badge.svg" alt="codecov badge"></a>
+</p>
+
 # Secret Guard
 
 **A lightweight local LLM gateway: outbound requests have their Secrets replaced with
@@ -40,6 +44,18 @@ Return:    local tools ◄──real Secret──  secret-guard  ◄──Mock r
 - **Return Restore**: when LLM responses come back (tool-call arguments included), Mocks
   are restored to real values — a curl command carrying a Secret lands on your machine
   with authentication passing as usual.
+- **Per-secret strategy**: redact/restore above is the default; a secret can instead be
+  configured `strategy = "reject"` to refuse forwarding (503) the moment it appears in a
+  request — for credentials that must never leave the machine — or `strategy =
+  "placeholder"` to swap it for an explicit `[REDACTED:{id}]` token that is never
+  restored. Every placeholder secret doubles as a canary: if its real value ever shows
+  up in an LLM response, you get an alert (WARN log + WebUI timeline badge, no secret
+  values in the alert) while the response itself passes through untouched.
+- **Built-in protection for Secret Guard's own credentials**: the sg API tokens it
+  issues (and the provider API keys you register with it) are protected automatically —
+  zero configuration, effective the instant a token is created. If a prompt injection
+  talks your Agent into pasting its own gateway token into the conversation, the LLM
+  vendor only ever sees an equal-length Mock.
 
 The same request, before and after it leaves the machine (captured from a real run; only
 the token value is fictional):
@@ -152,6 +168,47 @@ protocol** and the **target provider**:
 > SDK notes: the OpenAI SDK needs the `/v1` prefix included yourself; the Anthropic SDK
 > appends `/v1/messages` on its own, so `http://.../a/<provider-id>` is enough.
 
+### Point your agent harness at it (opencode / claude-code / any SDK)
+
+The real API key lives **only** in your local `secret-guard.toml` — the harness itself holds a
+dummy value. secret-guard injects the real key when forwarding upstream, so even a fully
+compromised harness (or a breach of its cloud storage) never exposes your key.
+
+**opencode** — custom provider via the OpenAI-compatible route, in `opencode.json`:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "secret-guard": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "secret-guard (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:18787/o/<provider-id>/v1",
+        "apiKey": "dummy-key-harness-never-sees-the-real-one"
+      },
+      "models": {
+        "<model-id>": { "name": "<any display name>" }
+      }
+    }
+  }
+}
+```
+
+Model IDs come from the upstream list — the gateway passes `GET /v1/models` straight
+through, so `curl http://127.0.0.1:18787/o/<provider-id>/v1/models` shows what you can use.
+
+**claude-code** — two env vars, zero config:
+
+```bash
+export ANTHROPIC_BASE_URL=http://127.0.0.1:18787/a/<provider-id>
+export ANTHROPIC_AUTH_TOKEN=dummy-key-harness-never-sees-the-real-one
+```
+
+Cross-protocol translation is built in (e.g. an OpenAI-form `o` route to an Anthropic
+upstream, streaming included), so pick the route that matches your harness — not your
+upstream.
+
 ### Two-layer configuration
 
 - `secret-guard.toml` — declarative config, hand-written, read-only in the process.
@@ -242,7 +299,7 @@ the full development guide lives in [AGENTS.md](AGENTS.md):
   in [docs/known-limitations.md](docs/known-limitations.md).
 - **Unknown-secret detection (NER / regex / entropy) as an alerting layer**: flag
   suspected undeclared secrets in the WebUI without auto-redacting (zero false-positive
-  replacements stay guaranteed). See [#252](https://git.lambda.lc/lc-studio/secret-guard/issues/252).
+  replacements stay guaranteed). See [#257](https://git.lambda.lc/lc-studio/secret-guard/issues/257).
 - **Real-Provider field validation**: integration-test profiles against real upstreams
   for the protocol matrix.
 

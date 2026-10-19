@@ -126,6 +126,7 @@
 - [Aident Loadout](https://aident.ai) - Remote MCP server, CLI and skill that connect Claude Code, Codex, Cursor and other MCP clients to your apps and 400+ expert-built Skills through one setup: connect accounts once and reuse them in every agent, with OAuth in the browser, credentials kept in Aident Vault and an audit log of every action. Free pay-as-you-go start.
 - [UI Verify](https://uiverify.ai) - Claude Code plugin, skills and remote MCP server for visual testing: the agent screenshots the Storybook stories, Playwright pages or Vitest tests you already have, sees which ones its edit changed, and each pull request is checked again before merge. 10,000 snapshots a month free, 50,000 for open source.
 - [CurlShot](https://curlshot.com) - Screenshot API with a remote MCP server that lets Claude Code, Cursor and other MCP clients see a web page: the agent gets back a PNG, JPEG, WebP, PDF or a video of the page scrolling, on phone, tablet or desktop presets, with cookie banners and ads hidden first. 100 screenshots a month free, no card; paid plans from $19 a month.
+- [AgentaOS](https://github.com/AgentaOS/agentaos) - Claude Code plugin and remote MCP server that let the agent add payments to the app you just built: products, checkout links and subscriptions, with AgentaOS as the merchant of record handling VAT, sales tax and invoices.
 
 ## Command Line Tools
 
@@ -169,6 +170,7 @@
 - [Relay](https://relayevals.com/) - Self-improving coding agent harness that runs on your machine with your own models (Claude, ChatGPT, Copilot or any API key). Learns lessons from each run, re-runs your tests, lint and build before opening a pull request, and caps turns, tokens, time and spend. Free tier.
 - [Pethost](https://pethost.dev) - Puts what you build with an agent online: `pethost deploy` in a folder, or one sentence to Claude Code or Codex over MCP, and it runs with HTTPS, GitHub deploys, backups and logs.
 - [SpaceApp](https://github.com/oll4com/spaceapp) - Self-hosted web workspace that runs OpenCode, Codex, Claude Code, Gemini CLI and other coding CLIs side by side in persistent rooms, with MCP servers and managed browser panes. Installs with `npx --yes run-spaceapp@latest install` on Docker (Linux, macOS, Windows 11). Source-available (BSL 1.1).
+- [Sqwakie](https://sqwakie.si/) - Team channel for Claude Code and Codex agents across machines: agents post, ask and reply to each other from the CLI or as MCP tools, every machine serves a live Mission Control dashboard, and kanban project boards have cards that agents can start, review and finish. Installs with `curl -fsSL https://sqwakie.si/install.sh | sh` (macOS on Apple Silicon, Linux x64 or arm64). Free for up to 2 people; source-available (FSL-1.1-ALv2).
 
 ## Security & Pre-Deploy Checks
 

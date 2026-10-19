@@ -1,5 +1,3 @@
-> [!IMPORTANT]
-> Remove this line to confirm you've reviewed this PR before submitting.
 
 <p align="center">
   <img src="assets/mini-ork-icon.svg" alt="mini-ork" width="112" height="112">
@@ -82,8 +80,12 @@ Methods, sample sizes, and what each number does *not* show: [docs/RESULTS.md](d
 > [warning](#warning-this-system-modifies-itself-unattended) before you turn it on.
 
 <p align="center">
-  <img src="assets/mini-ork-hero.jpg" alt="An ork operator on a starship bridge overseeing many isolated workstreams, each a self-contained environment running its own crew." width="860">
+  <img src="https://github.com/SourceShift/mini-ork/raw/main/assets/mini-ork-ide.png" alt="The mini-ork IDE showing one run end to end: the thread it came from, a live DAG laid out across model-family lanes (minimax, codex, verifier, opus, publisher), per-node cost, and the verification verdict." width="1000">
 </p>
+
+<p align="center"><em>The mini-ork IDE, one run end to end: the thread it came from, the live DAG laid
+out across model families, per-node cost, and the verdict the checks returned — every node paid for,
+every claim checked.</em></p>
 
 ## 🎯 Why this exists
 

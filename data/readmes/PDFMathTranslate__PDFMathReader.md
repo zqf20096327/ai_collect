@@ -1,4 +1,6 @@
-[English](README.md) · [简体中文](doc/README.zh-CN.md) · [日本語](doc/README.ja.md) · [हिन्दी](doc/README.hi.md) · [Français](doc/README.fr.md) · [Español](doc/README.es.md) · [বাংলা](doc/README.bn.md)
+<img src="doc/banner.jpg" alt="Demo" width="100%">
+
+[English](README.md) · [简体中文](doc/README.zh-CN.md) · [日本語](doc/README.ja.md) · [हिन्दी](doc/README.hi.md) · [Français](doc/README.fr.md) · [Español](doc/README.es.md) · [বাংলা](doc/README.bn.md) · [한국어](doc/README.ko.md)
 
 # <img src="doc/icon.png" alt="PDFMathReader app icon" style="height: 1em; width: auto;"> PDFMathReader
 
@@ -8,37 +10,56 @@
 <a href="./LICENSE">
 <img src="https://img.shields.io/github/license/PDFMathTranslate/PDFMathReader"></a>
 
-Read scientific documents in any language, with realtime translation, on any platform. Powered by [PDFMathTranslate](https://github.com/PDFMathTranslate/PDFMathTranslate).
+Read scientific documents in your language, in realtime, on any platform.  
+Powered by [PDFMathTranslate](https://github.com/PDFMathTranslate/PDFMathTranslate) with frontier artificial intelligence.
 
-<img src="doc/demo.gif" alt="Demo" width="100%">
+See [PDFMathReader-iOS](https://github.com/PDFMathTranslate/PDFMathReader-iOS) for the mobile companion.
 
 ## Features
 
-- **Layout preservation**: Preserve formulas, tables, and key information while keeping translated pages close to the original layout.
-- **Realtime translation**: Detect layouts and translate as you read, without waiting for the entire document to finish.
-- **Interface languages**: 16 languages, ordered by English country name, with English as the default. Includes Arabic, Egyptian Arabic, Hindi, Bengali, Russian, Portuguese, Urdu, German, and Nigerian Pidgin.
-- **Translation options**: Choose translation engines, services, languages, and full-document or nearby-page translation.
-- **ChatGPT Subscription (experimental)**: In the desktop app, sign in through your default browser under Experimental Features or Providers. Select **ChatGPT Subscription** and an account-specific model in Providers to translate with Ultra Fast, Fast, or Precise. Uses the [official ChatGPT plan usage flow](https://developers.openai.com/siwc/token-sharing-open-source); account permissions and shared plan limits apply. Manage access in [ChatGPT Settings → Usage](https://chatgpt.com/settings/usage).
-- **Bilingual reading**: Click detected paragraphs to switch between original text and translation.
-- **Flexible navigation**: Read with thumbnails, zoom, vertical or horizontal scrolling, and one-, two-, or four-page layouts.
-- **Multiple documents**: Open PDFs in independent windows and restore reading positions and display settings when reopening them.
-- **Reading links**: Save bidirectional links between search results and their reading origins for easy reference.
-- **Highlights and comments**: Highlight key passages and add comments to record your reading notes.
-- **File actions**: Reveal original or translated PDFs in Finder and send them with AirDrop on macOS; reveal them in File Explorer and open the native Windows sharing panel on Windows. Translated exports include available translated pages and retain the original pages where translation is not yet available.
+- **Read translated documents with layouts preserved**: Keep formulas, tables, and other essential content intact.
+- **Start reading without waiting**: Detect layouts and translate content as you read.
+- **Read in your preferred language**: Choose from a wide range of interface, source, and target languages, with options for further customization.
+- **Choose your preferred translation service**:
+  - Connect to major AI providers.
+  - Use custom services through OpenAI-compatible APIs.
+  - Access free translation through our partnerships, helping make multilingual reading more accessible.
+- **Keep your notes alongside your reading**: Highlight passages and add comments in both original and translated documents.
+- **Navigate efficiently**:
+  - Explore documents through thumbnails, quick links, search, outlines, page numbers, and gallery views.
+  - Choose from multiple reading layouts.
+  - Organize your work across windows and tabs.
+- **Tailor the reading experience**:
+  - Automatically emphasize topic sentences, scientific findings, and logical connections.
+  - Adjust translation behavior to suit your workflow.
+  - Customize fonts, icons, accent colors, and dark mode.
+  - Balance layout-detection speed and quality.
+  - Enable smooth scrolling.
+- **Make text easier to follow**:
+  - Emphasize distinctive terms with TF-IDF weighting.
+  - Enable bionic reading with fixed-length or word-root emphasis.
+- **Keep your workflow open**: Share and edit files across applications and devices—for example, use AirDrop to continue reading on a mobile device.
+- **Enjoy a familiar interface across platforms**: Read on macOS, Windows, Linux, and iOS.
+
+## At a glance
+
+<img src="doc/demo.gif" alt="Demo" width="100%">
 
 ## Recent updates
 
 | Date       | Feature                                                                                                                                                                | Contributor                        |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| 2026-10-18 | [build prepared demo with actual app UI](https://github.com/PDFMathTranslate/PDFMathReader/commit/aae85e7fc46e3b0788045823ba64d6361754b0b7)                            | [@reycn](https://github.com/reycn) |
 | 2026-10-17 | [shorten companion pairing codes to eight characters](https://github.com/PDFMathTranslate/PDFMathReader/commit/5bec25f69a04c0a7cb8811f1faed6ada1a84ba52)               | [@reycn](https://github.com/reycn) |
 | 2026-10-17 | [add an only-for-mouse option to force smooth scrolling](https://github.com/PDFMathTranslate/PDFMathReader/commit/b90ebdd8f2311d1060af6882ea20bc1c90404a8f)            | [@reycn](https://github.com/reycn) |
 | 2026-10-17 | [add art and zotero app icons and refresh the modern icon](https://github.com/PDFMathTranslate/PDFMathReader/commit/ea8fc7a0787fe67788e6501d5fffba02f6869e76)          | [@reycn](https://github.com/reycn) |
 | 2026-10-17 | [continue translations in service mode while windows are minimized](https://github.com/PDFMathTranslate/PDFMathReader/commit/b77dccaaefd92cfd145781c1b9164b67f02adf2b) | [@reycn](https://github.com/reycn) |
 | 2026-10-16 | [share kernels with remote devices and show connected clients](https://github.com/PDFMathTranslate/PDFMathReader/commit/6ecb48f5759d1eda69470c54d6236cbbe43b8204)      | [@reycn](https://github.com/reycn) |
 | 2026-10-16 | [copy selection or focused annotation with Cmd+C and show a toast](https://github.com/PDFMathTranslate/PDFMathReader/commit/b9e5cc82b22dee2ae35160df31db9dadace538ac)  | [@reycn](https://github.com/reycn) |
-| 2026-10-16 | [add app icon picker to Appearance settings](https://github.com/PDFMathTranslate/PDFMathReader/commit/729755524d0e3cf3464d0ebbf0020e8fb9ddf90d)                        | [@reycn](https://github.com/reycn) |
 
 ## Quick start
+
+### Desktop
 
 <table width="100%">
   <thead>
@@ -76,7 +97,12 @@ Read scientific documents in any language, with realtime translation, on any pla
     </tr>
   </tbody>
 </table>
-  *Due to the limited devices for testing, the compatibility checks on Windows and Linux are done periodically.*
+  *Due to the limited devices available for testing, the compatibility checks on Windows and Linux are done periodically (contribution welcome).*
+
+### Mobile
+
+- **iOS**: [Provided in this repository](https://github.com/PDFMathTranslate/PDFMathReader-iOS) with familar design to desktop clients
+- **Android**: (contribution welcome)
 
 ## Development
 

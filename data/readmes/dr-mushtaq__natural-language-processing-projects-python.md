@@ -444,6 +444,7 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 - **[Artificial-Intelligence-Courses by KAUST Academy](https://github.com/KAUST-Academy/Artificial-Intelligence-Courses/tree/main)** - FREE
 - **[How to Train Your GPT](https://github.com/raiyanyahya/how-to-train-your-gpt/tree/master)** - FREE
 - **[Zero to AI](https://github.com/PavanMudigonda/zero-to-ai)** - FREE
+- **[Finituning-Large-Language-Models](https://github.com/AngelFelipeMP/Finituning-Large-Language-Models)** - FREE
   
  ### Week 1-[**📚Chapter1:Introduction**]()
 
@@ -505,4 +506,4 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
  |---|---|---|---|
  |**🌐1-Common Crawl**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|
  |**✅1-FLOPs vs FLOPS**|[1](https://youtu.be/sqf66GBi3pA?si=1aBDSjNWmn5eRUrv)[-2](https://youtu.be/VlA_jt_3Qc4?si=OzJtfs54AIwhuaed) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|
- |**✅1-Computational Challenges of Training LLMs**|[1](https://drive.google.com/file/d/1rKHYcQ4n_ZRaFN1o8i2j8GXeFQ_7D27X/view?usp=sharing)[-2](https://youtu.be/VF7R0lSfIeU?si=StIjgjV5aSTmYGfd) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoCo
+ |**✅1-Computational Challenges of Training LLMs**|[1](https://drive.google.com/file/d/1rKHYcQ4n_ZRaFN1o8i2j8GXeFQ_7D27X/view?usp=sharing)[-2](https://youtu.be

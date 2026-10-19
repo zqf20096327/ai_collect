@@ -607,8 +607,8 @@ the structure.
 The Analyst sees a map of the words in its data description - the span, the passages by kind and
 month, the authors, the languages, the codes with their counts - never the text. In the kernel the
 words are `CTX`: `CTX.frame()` and `CTX.codes()` are the two tables, `CTX.grep(pattern)`,
-`CTX.around(date, days=3)`, `CTX.between(a, b)` and `CTX.on(activity_id)` find passages, `CTX.text(ref)`
-reads one whole. `READ CTX what` puts a question to the `Reader` over the passages, as over documents.
+`CTX.around(date, days=3)`, `CTX.between(a, b)` and `CTX.on(activity_id)` find passages (as text to
+print; `as_frame=True` returns the rows), `CTX.text(ref)` reads one whole. `READ CTX what` puts a question to the `Reader` over the passages, as over documents.
 The report cites a passage as `[C.417]`, quoted verbatim and marked *rendered* when it was translated;
 a count of codes is reported as the model's reading, not as what was said.
 
@@ -631,7 +631,8 @@ units and options - so the columns of the other files explain themselves. When t
 custom zone sets, a second file carries the time in each custom zone per ride. The intervals, wellness
 and summary files carry every custom field under its code - a select as its option's text, with the
 number beside it. Everything comes from the account's own record, nothing is named in code, and
-nothing identifying goes in (the record's e-mail, names and key stay out). The Analyst reads the thresholds from the file's rows in its data
+nothing identifying goes in (the record's e-mail, names and key stay out). The profile also says which end of the
+wellness file's 1–4 scales is the good one for each scale the account tracks - 1, by the platform's convention. The Analyst reads the thresholds from the file's rows in its data
 description, and the summary file carries the settings in force on each day. The design is
 `docs/RIDER_PROFILE_DESIGN.md`.
 

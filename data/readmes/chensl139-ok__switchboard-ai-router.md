@@ -9,14 +9,16 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GHCR](https://img.shields.io/badge/GHCR-amd64%20%7C%20arm64-2496ED?logo=docker&logoColor=white)](https://github.com/chensl139-ok/switchboard-ai-router/pkgs/container/switchboard-ai-router)
 
-![Switchboard console tour](docs/demo/switchboard-tour.gif)
+![Switchboard workspace — demo data](docs/demo/workspace.png)
 
-## Why Switchboard
+## Features
 
 - **Your keys stay on your machine.** Self-hosted BYOK gateway: provider keys are AES-256-GCM encrypted at rest, business API keys are stored hashed, and prompts/responses are never written to logs.
-- **Routing, not just proxying.** Six strategies — fixed, failover, weighted, latency-first, keyword rules and cost-first — with circuit breaking, timeouts and model-level fallback across providers.
-- **A real console, not a CLI puzzle.** Providers, models, policies, playground, people, audit and pricing in one web UI; also ships as a macOS desktop app with zero Docker/Node requirements.
-- **Small and auditable.** A single Node.js process with **only two runtime dependencies** (`ws`, `marked`). No message queue, no heavyweight framework, no telemetry. Full source is reviewable in an afternoon.
+- **Model-level routing.** Pick a preferred model and automatic or ordered backups, with price/latency/weight objectives, keyword exceptions, circuit breaking and a total request timeout.
+- **A shared workspace.** Providers, models, experiment history, keys, members and usage in one interface. `⌘K` / `Ctrl+K` searches pages and available models within your current permissions.
+- **Local deployment.** One Node.js process with two runtime dependencies (`ws`, `marked`). Native desktop shells use system WebKit on macOS and WebView2 on Windows; no separate Docker or Node installation is needed.
+
+The main branch includes [unreleased interface and workflow improvements](CHANGELOG.md#unreleased). Published v2.2.0 images do not automatically include main-branch commits. Build from source, or use a verified [main-branch image](#container-build-channels) to try the latest changes; back up data before upgrading.
 
 ## Quick start (5 minutes)
 
@@ -32,8 +34,8 @@ docker compose up -d --build
 Open [http://127.0.0.1:3100](http://127.0.0.1:3100), enter the `ADMIN_TOKEN` from `.env` and create the owner account. Then:
 
 1. **Providers & Models** — add an upstream base URL + API key, fetch its model list, enable the models you want to expose.
-2. **Routing** — pick the default provider, candidate order, strategy and attempt budget. Route preview is computed locally and never calls upstreams.
-3. **Model Lab** — test a call, compare 2–4 models side by side, run image/audio/video tasks.
+2. **Routing** — pick a preferred model and choose automatic backups, an ordered list or no model switching. Preview your draft before saving; it never calls upstreams.
+3. **Model Lab** — test a call, compare models, run media tasks and resume fully saved text conversations from History.
 4. **API Keys** — issue a business key with expiry and quota for your applications.
 
 Call it like any OpenAI-compatible endpoint:
@@ -53,7 +55,11 @@ curl http://127.0.0.1:3100/v1/chat/completions \
 
 Responses carry `x-router-provider`, `x-router-model`, `x-router-protocol`, `x-router-attempt` headers so you always know which model actually answered. Point any OpenAI-compatible client (Cherry Studio, NextChat, LobeChat, …) at `http://127.0.0.1:3100/v1` with your business key.
 
-No Docker? `npm ci && npm run setup && npm start`. Prefer not to build? Pull the multi-arch image from [GHCR](https://github.com/chensl139-ok/switchboard-ai-router/pkgs/container/switchboard-ai-router). On Apple Silicon Macs there is also a zero-dependency [desktop app](desktop/README.md).
+No Docker? `npm ci && npm run setup && npm start`. Prefer not to build? Pull the multi-arch image from [GHCR](https://github.com/chensl139-ok/switchboard-ai-router/pkgs/container/switchboard-ai-router). On Apple Silicon Macs running macOS 13+, the [desktop app](desktop/README.md) bundles its runtime: open the DMG, drag Switchboard into Applications, then launch it from there.
+
+macOS desktop builds currently use ad-hoc signing, without Apple Developer ID signing or notarization; another Mac may block a downloaded copy. The DMG contains no personal credentials or history. Each installation is a separate local platform, not an automatic connection to the sender's organization. See the [sharing notes](desktop/README.md#分享安装包) before distributing it.
+
+A separate [Windows x64 desktop build](desktop/windows/README.md) uses WinForms and system WebView2 with bundled Node. Unzip the sharing package and run Setup.exe; no Docker or Node installation is required. Windows builds are produced by a manual Actions workflow on main, are not yet code-signed, and are not automatically added to existing Releases.
 
 The local development build includes a personal ChatGPT plan connection preview using official OAuth, without an API key. Authorization, account-specific model discovery and text inference have been verified locally. Connections are private to the authorizing platform user and tenant, and are not exposed through shared providers or business API keys. This is not a subscription account pool; see the [desktop guide](desktop/README.md).
 
@@ -101,13 +107,13 @@ Snapshot October 2026 — check each project's latest docs, and please PR correc
 | License | **MIT** | MIT core + enterprise dir | MIT | AGPL-3.0 + extra terms | MIT |
 | Runtime | Node.js · **2 runtime deps** | Python SDK + proxy | Go single binary | Go single binary | Node CLI |
 | Web console | ✅ (CN-first, EN i18n planned) | ✅ | ✅ | ✅ | CLI-first |
-| Routing strategies | 6 (incl. keyword, cost) | broad | channel fallback | channel + convert | per-agent rules |
+| Routing strategies | Fixed / auto; 4 objectives + rules + failover | broad | channel fallback | channel + convert | per-agent rules |
 | Protocol conversion | OpenAI Chat / Responses / Completions + Anthropic Messages | broadest (100+ providers) | OpenAI-compatible | OpenAI / Claude / Gemini | agent-focused |
 | Multi-tenant RBAC + audit | ✅ built-in | enterprise tier | 🔶 basic users/groups | 🔶 basic users/groups | ❌ |
 | Model playground & compare | ✅ with latency metrics | 🔶 dashboard test | 🔶 | 🔶 | ❌ |
 | Media tasks (img/audio/video/embed/rerank) | ✅ | ✅ | 🔶 | ✅ | ❌ |
 | Credit/billing & redemption codes | paywall off (BYOK plan drafts) | 🔶 budgets | ✅ | ✅ | ❌ |
-| Desktop app | ✅ macOS | ❌ | ❌ | ❌ | CLI |
+| Desktop app | ✅ macOS / Windows x64 | ❌ | ❌ | ❌ | CLI |
 
 **When Switchboard is *not* the right pick:** you need 100+ exotic providers out of the box (LiteLLM), you run a public key-reselling storefront with redemption codes (one-api / new-api), or you want a personal CLI shim for one coding agent (claude-code-router). Switchboard is built for **individuals and teams who self-host one governed gateway** for many providers.
 
@@ -116,16 +122,26 @@ Snapshot October 2026 — check each project's latest docs, and please PR correc
 - **Single-instance by design**: config in files, usage in SQLite, rate limiting in-process. Never share one `data/` directory between processes; put it behind an HTTPS reverse proxy and back it up regularly (including `master.key`).
 - SSRF guard: non-HTTPS upstreams and private/reserved hosts are refused by default; allow-list explicitly if you must.
 - Hardened Compose profile: read-only rootfs, `no-new-privileges`, tmpfs `/tmp`, health checks, graceful shutdown.
-- Pre-built `linux/amd64` + `linux/arm64` images on GHCR, tagged `2.1.x` / `2.1` / `latest`; releases ship offline OCI tarballs with `SHA256SUMS`.
+- Pre-built `linux/amd64` + `linux/arm64` images on GHCR: stable `2.2.0` / `2.2` / `latest`, separately from main-branch builds; releases ship offline OCI tarballs with `SHA256SUMS`.
 
 Full details: [TENANCY.md](TENANCY.md) (roles & Feishu/Lark SSO), [API.md](API.md) (endpoints, media APIs, SDK notes), [ARCHITECTURE.md](ARCHITECTURE.md) (module boundaries), [CHANGELOG.md](CHANGELOG.md). Some deep-dive docs are currently in Chinese — translations are very welcome.
+
+### Container build channels
+
+| Tag | Content | Updated by |
+| --- | --- | --- |
+| `2.2.0`, `2.2`, `latest` | Published stable release | Version-tag release workflow |
+| `main` | Most recent tested main-branch image, not a release | Manual [Main branch image workflow](https://github.com/chensl139-ok/switchboard-ai-router/actions/workflows/image-main.yml) |
+| `sha-<full commit SHA>` | Traceable main-branch build | Same workflow; prefer its image digest for exact pinning |
+
+All images use `ghcr.io/chensl139-ok/switchboard-ai-router`. The main workflow tests the application and starts an isolated Linux container before publishing both architectures. It does not change stable tags or create a Release. A git push alone runs CI, not image publication. Desktop Windows installers are separate [workflow artifacts](https://github.com/chensl139-ok/switchboard-ai-router/actions/workflows/windows-desktop.yml), retained for 14 days; download them promptly if you need a lasting copy.
 
 ## Development
 
 ```sh
 npm ci
 npm run check    # syntax, TypeScript/Vue types, web build
-npm test         # 170+ automated tests
+npm test         # automated unit/integration tests
 npm start        # build web assets and serve locally
 ```
 

@@ -59,6 +59,8 @@ You can explicitly invoke `$rea-reconstruction-companion` in Codex or `/rea-reco
 
 Describe the software and the outcome you want in ordinary language. The companion uses available REA tools or supplied evidence, identifies gaps, and keeps the work at your requested scope. These examples are illustrations, not required prompts: paraphrases, casual wording, minor typos and follow-ups should work in context. Say what you want to understand or build; you do not need to name a mode or reproduce a template. Explicit corrections and exclusions take precedence, and a possible future rebuild does not request implementation now.
 
+If the original has awkward behavior, say which compatibility matters and what you want improved—for example, “Keep exports readable by my existing tools, but make failed saves clear.” The companion separates observed behavior from intended changes, checks affected dependencies, and keeps unresolved or deferred work visible. See the [worked quirk decisions](evals/quirk-decisions.md).
+
 **Understand and plan a future reconstruction.** Expect evidence-backed behavior and workflow requirements, known unknowns, and a staged roadmap before implementation:
 
 ```text
@@ -74,10 +76,19 @@ Stop after the specification and plan.
 ```text
 Use REA and the companion to investigate the desktop notes app I have open
 and build a local web app with similar note creation, editing, search,
-and save behavior in this workspace. Start with one working workflow,
-then add the remaining features in testable increments. Validate against
+and save behavior in this workspace. I need to trust today's notes first:
+it must work offline and reopen my saved notes. Start with that working
+journey, including save failures, then add search and the remaining
+features in testable increments. Animations can wait. Validate against
 the evidence and report differences and anything you could not verify.
 ```
+
+For a broad request, expect a compact plan around the first useful outcome, its
+essential dependencies and design-changing unknowns, with evidence-linked checks
+and deferred work kept visible. Explicit hard requirements remain binding. If
+finding existing notes matters most, that can lead instead of creating new ones;
+you do not need to use priority labels or complete a feature inventory. See the
+[worked prioritization example](evals/prioritization.md) for a plan and its limits.
 
 **Investigate one function or feature.** Expect a focused contract covering inputs, outputs, side effects, errors, and evidence gaps:
 
@@ -104,6 +115,14 @@ The agent must report missing tools or evidence instead of claiming live analysi
 Select the checkpoint or its path and identify any changed target or goal. The agent should read that record and the sources needed for the next step, check evidence applicability, and preserve historical results. Resuming a specification does not authorize building it. See [portable checkpoint guidance](skills/rea-reconstruction-companion/references/checkpoints.md) and the [worked resume example](evals/resume/WALKTHROUGH.md).
 
 For a small question, expect a compact evidence-linked answer or contract with limits and a useful next action. A feature build adds implementation and acceptance results; it need not produce a whole-app blueprint. If a consequential target or outcome is unclear, expect one focused clarification. Host activation and instruction following vary: explicit invocation can help select the skill, but examples and installation do not guarantee every host/model will interpret every phrasing correctly.
+
+**When a service is inaccessible.** “Build local editing now; keep actual sharing
+pending until I supply authorized service evidence.” Expect an explicitly labeled
+local substitute or finite replay where useful, with real-service requirements
+still pending. Client observations do not recover server internals, and a local
+demo cannot verify remote compatibility. The [runnable synthetic example](evals/unavailable-backend/README.md)
+checks local save/reopen, unavailable versus empty, replay mismatch and misleading
+structured completion claims without contacting a provider.
 
 To see the workflow before trying a target, follow the [worked investigation](evals/reference/WALKTHROUGH.md), [reconstruction](evals/reference/reconstruction/README.md), or [resume](evals/resume/WALKTHROUGH.md) for your goal. These disclose answers and prior source exposure; they are teaching material, not prerequisites or evidence of a fresh agent trial. The [first-use review](evals/first-use.md) separates manual intent scenarios from executable checks.
 
@@ -280,6 +299,8 @@ The [behavioral evaluation kit](evals/README.md) supplies portable tasks, raw ev
 **Worked reconstruction (v1.3.3):** [continue from those requirements to an implementation and validation](evals/reference/reconstruction/README.md). A standalone local candidate passes the 16-session checker and replays the ten captured observation sessions. The example links requirements to code and tests, records an environment-limited first attempt, and supplies a repeatable validator with evidence-integrity checks. It uses existing Node.js without packages or network/model calls. Prior source and reviewer exposure remain explicit; this teaching example is not an independent evaluation or certification.
 
 **Worked browser improvement (v1.3.14):** [preserve parity while improving save feedback and conflict recovery](evals/browser-improvement/README.md). Separate reference, parity and improved fixtures demonstrate failed-save feedback, retained drafts, explicit recovery and overlapping tab writes. The portable example includes acceptance requirements, replay routines and captured results, with cooperative-lock, controlled-injection and same-agent limits.
+
+**Measured optimization (v1.3.24):** [test a plausible improvement against complete import workloads](evals/measured-optimization/README.md). A frozen protocol, literal behavior oracles, raw paired samples and executable evidence checks show a candidate that passes the selected correctness cases but fails to demonstrate an overall speed benefit. The original reconstruction remains unchanged; no dependency, model benchmark or CI timing threshold is added.
 
 **Checkpoint/resume evaluation (v1.3.4):** [resume unchanged work or reassess a changed target](evals/resume/README.md). Two supplied-evidence cases exercise scoped reuse, partial implementation, preserved history and stale result handling. A local JSON-only checker performs 15 data comparisons per case; actual reasoning, actions and preservation still need human review. The skill includes a portable checkpoint guide, with no memory service, SDK, new dependency or automatic worker. The worked records are disclosed maintainer-authored examples, not cross-host/model certification.
 

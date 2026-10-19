@@ -12,7 +12,7 @@
   <strong>Architecture-aware autonomous software engineering that learns from every execution, locally and optionally across your team.</strong>
 </p>
 
-**Current release: 2.0.2.** Overdrive is an independent software development methodology for coding agents that understands the system before changing it.
+**Current release: 2.2.1.** Overdrive is an independent software development methodology for coding agents that understands the system before changing it.
 
 It combines architecture-aware discovery, a single authoritative spec, adaptive execution, autonomous decision-making, test-driven development, systematic debugging, isolated workspaces, code review, evidence-based verification, and a **local Experience Engine** (SQLite, FTS5, TurboVec, lazy MiniLM) that compounds operational knowledge across runs without a memory-management workflow. **1.2** adds opt-in **shared memory circles**; **2.0** adds the encrypted mesh dashboard on the same circle keys and allowed folders ([demo](#mesh-dashboard-in-action)).
 
@@ -627,7 +627,7 @@ The mesh dashboard (`OVERDRIVE_SHARE_UI`, default listen port + 1) is the browse
 | Control | Behavior |
 |---------|----------|
 | **Allowed folders** | Only paths you add with `share circle folder-add` export or accept peer recall. |
-| **Identity** | Ed25519 device keys; signed member lists; expiring invites; revocation. |
+| **Identity** | Ed25519 device keys bound to device ids; admissions signed by the inviting member and revocations signed by the creator, checked by every core; expiring invites; the circle key rotates on every revocation (HPKE, ML-KEM-768 + X25519). |
 | **Transport** | TCP batches (`encryptBatch` + wire envelope); bind with `OVERDRIVE_SHARE_LISTEN=0.0.0.0:7741`. |
 | **Indexes** | Local `experience-v2.tvim` plus peer index `experience-v2-peer.tvim`. |
 | **Hooks** | `sessionStart` syncs peer deltas and prints `share status`; `sessionEnd` runs consolidation. |
@@ -845,6 +845,10 @@ Full notes live in [CHANGELOG.md](CHANGELOG.md). Shipped tags:
 
 | Version | Date | What shipped |
 |---------|------|----------------|
+| [2.2.1](https://github.com/gfrancodev/overdrive/releases/tag/v2.2.1) | 2026-10-17 | Windows: TurboVec DLLs export their functions (MSVC, static CRT) and the runtime no longer crashes on a broken library; macOS tray compiles. |
+| [2.2.0](https://github.com/gfrancodev/overdrive/releases/tag/v2.2.0) | 2026-10-17 | Circle key rotation on every revoke (HPKE, ML-KEM-768 + X25519), `share circle rekey`, installer that never rewrites a running Core in place, tray unit that no longer stops the Core. |
+| [2.1.0](https://github.com/gfrancodev/overdrive/releases/tag/v2.1.0) | 2026-10-17 | Signed circle membership (admissions by the inviter, revocations by the creator), `--with-invitees` revoke, device keys bound to ids, Linux tray icon fix. |
+| [2.0.3](https://github.com/gfrancodev/overdrive/releases/tag/v2.0.3) | 2026-10-17 | Security: a terminal card shares its session only after the card is saved, all at once; revocation window for open streams documented. |
 | [2.0.2](https://github.com/gfrancodev/overdrive/releases/tag/v2.0.2) | 2026-10-17 | Security: live terminals need a per-session share from their owner; revoke closes live streams; mesh threat model in `SECURITY.md`. |
 | [2.0.1](https://github.com/gfrancodev/overdrive/releases/tag/v2.0.1) | 2026-10-16 | Optional mesh whitelabel (`share/whitelabel.json`), remote brand assets, tray icon from `logo`/`favicon`. |
 | [2.0.0](https://github.com/gfrancodev/overdrive/releases/tag/v2.0.0) | 2026-10-16 | Share mesh dashboard: encrypted chat, WebRTC calls, live terminals, tray, MCP, CI coverage gate. Includes the 1.4.0 continuity work (no separate tag). |

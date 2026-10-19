@@ -452,6 +452,7 @@ CLI tools for interacting with AI models and building AI-powered workflows.
 | [sgpt](https://github.com/tbckr/sgpt) | Open Source | Shell-GPT for command line | `pip install shell-gpt` |
 | [Warp AI](https://www.warp.dev/) | Warp | AI-native terminal | Desktop app |
 | [GitHub CLI + Copilot](https://cli.github.com/) | GitHub | Copilot in the terminal | `gh extension install github/gh-copilot` |
+| [YYLO](https://github.com/yylo-dev/yylo) | Open Source | Orchestrate AI coding agents — Kanban, task worktrees, and typed merge flows | `npm install -g @yylo/cli` |
 
 **[⬆ back to top](#contents)**
 
@@ -880,6 +881,7 @@ Structured learning paths and certifications for AI skills.
 | [Pixtral](https://mistral.ai/) | Mistral | Text, vision |
 | [Qwen2-VL](https://github.com/QwenLM/Qwen2-VL) | Alibaba | Text, vision (open weights) |
 | [Boogu-Image-0.1](https://github.com/Boogu-Project/Boogu-Image) | Boogu Project | Image understanding, text-to-image generation, image editing, bilingual text rendering (open weights) |
+| [MiMo-V2.6](https://huggingface.co/collections/XiaomiMiMo/mimo-v26) | Xiaomi | Text, vision, audio; agentic coding and tool use (open weights) |
 
 **[⬆ back to top](#contents)**
 
@@ -890,6 +892,7 @@ Structured learning paths and certifications for AI skills.
 * [Jukebox by OpenAI](https://openai.com/) - Generates music and singing in various styles based on user input.
 * [Soundraw](https://soundraw.io/) - AI tool for creating royalty-free music.
 * [Evoke](https://evokemusic.ai/) - AI-powered music library with a diverse collection.
+* [YuE2](https://github.com/multimodal-art-projection/YuE) - Open-weight song generation model that plans melody and chords as an editable score before rendering vocals and accompaniment.
 
 **[⬆ back to top](#contents)**
 
@@ -975,6 +978,9 @@ Structured learning paths and certifications for AI skills.
 * [Reasoning by Superposition](https://arxiv.org/abs/2505.12514) - Chain of continuous thought theoretical perspective.
 * [Gemini Robotics 1.5](https://arxiv.org/abs/2510.03342) - Embodied reasoning, thinking, and motion transfer.
 * [Weight Transfer for RL Post-Training](https://research.perplexity.ai/) - Training efficiency research.
+* [The Agent Loop: A Survey of Control Strategies, Skills, and Harnesses for LLM Agents (2026)](https://ssrn.com/abstract=7186738) - How agents run the reason-act-observe loop: control strategies, trained loops, termination and recovery, skills, and harnesses.
+* [Optical Diffusion Models for Image Generation (2024)](https://papers.nips.cc/paper_files/paper/2024/file/6cb81234ab47027e991728ed7dd76735-Paper-Conference.pdf) - Implements denoising diffusion image generation using passive diffractive optical layers.
+* [The Platonic Representation Hypothesis (2024)](https://arxiv.org/abs/2405.07987) - Argues that representations learned by models across modalities are converging toward a shared statistical model of reality.
 
 **[⬆ back to top](#contents)**
 
@@ -1325,6 +1331,7 @@ AI governance frameworks and regulations by jurisdiction.
 * [Claude by Anthropic](https://www.anthropic.com/) - AI assistant for text data processing and engaging in natural conversations.
 * [Frase IO](https://www.frase.io/) - Optimizes high-quality SEO content and creates content briefs.
 * [Peppertype.ai](https://www.peppercontent.io/) -  Generates content for blogs, product descriptions, and social media.
+* [ImagineYourBook](https://www.imagineyourbook.com/) - Plans and drafts full-length books chapter by chapter, with series story bibles and EPUB, Word, and Markdown export.
 
 **[⬆ back to top](#contents)**
 

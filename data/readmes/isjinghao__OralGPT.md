@@ -1,167 +1,157 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/isbrycee/OralGPT/main/assets/mmoral-logo.png" width="150px">
-  <img src="https://raw.githubusercontent.com/isbrycee/OralGPT/main/assets/logo_OralGPT-Plus.png" width="150px">
-  <img src="https://raw.githubusercontent.com/isbrycee/OralGPT/main/assets/logo_OralAgent.png" width="150px">
-  <img src="https://raw.githubusercontent.com/isbrycee/OralGPT/main/assets/logo_OralFlow.png" width="150px">
-  <img src="https://raw.githubusercontent.com/isbrycee/OralGPT/main/assets/logo_OralDetect.png" width="150px">
+  <img src="assets/mmoral-logo.png" width="150px">
+  <img src="assets/logo_OralGPT-Plus.png" width="150px">
+  <img src="assets/logo_OralAgent.png" width="150px">
+  <img src="assets/logo_OralFlow.png" width="150px">
+  <img src="assets/logo_OralDetect.png" width="150px">
   <br><br>
-
-  <!-- 链接部分 -->
-  <a href="https://arxiv.org/pdf/2509.09254" target="_blank">📄 <b>[NeurIPS'25] OralGPT</b></a> &nbsp;|&nbsp;
-  <a href="https://arxiv.org/abs/2511.22055" target="_blank">📄 <b>[CVPR'26] OralGPT-Omni</b></a> &nbsp;|&nbsp;
-  <a href="https://arxiv.org/abs/2603.06366" target="_blank">📄 <b>[CVPR'26] OralGPT-Plus</b></a> &nbsp;|&nbsp;
-  
-  <a href="https://arxiv.org/abs/2605.27378" target="_blank">📄 <b>[Arxiv'26] OralAgent</b></a> 
-
-    
-  <a href="https://huggingface.co/datasets/OralGPT/MMOral-OPG-Bench" target="_blank">
-    🤗 <b>MMOral-OPG-Bench</b>
-  </a> &nbsp;|&nbsp;
-  <a href="https://huggingface.co/OralGPT" target="_blank">
-    🤗 <b>MMOral-Uni-Bench (Coming soon)</b>
-  </a> &nbsp;|&nbsp;
-  <a href="https://huggingface.co/OralGPT" target="_blank">
-    🤗 <b>OralFlow-Bench (Coming soon)</b>
-  </a>
+  <p>
+    📄&ensp;<a href="https://arxiv.org/abs/2509.09254"><b>[NeurIPS'25]OralGPT</b></a>
+    &ensp;·&ensp;
+    <a href="https://arxiv.org/abs/2511.22055"><b>[CVPR'26]OralGPT-Omni</b></a>
+    &ensp;·&ensp;
+    <a href="https://arxiv.org/abs/2603.06366"><b>[CVPR'26]OralGPT-Plus</b></a>
+    <br>
+    <a href="https://arxiv.org/abs/2605.27378"><b>[arXiv'26]OralAgent</b></a>
+    &ensp;·&ensp;
+    <a href="https://doi.org/10.1038/s41746-026-03385-9"><b>[npj Digit. Med.'26]PlaqueSAM</b></a>
+    &ensp;·&ensp;
+    <b>OralFlow</b>
+  </p>
+  <p>
+    🤗&ensp;<a href="https://huggingface.co/datasets/OralGPT/MMOral-OPG-Bench"><b>MMOral-OPG-Bench</b></a>
+    &ensp;·&ensp;
+    <a href="https://huggingface.co/datasets/OralGPT/OralDetect-Bench"><b>OralDetect-Bench</b></a>
+    &ensp;·&ensp;
+    <a href="https://arxiv.org/abs/2605.27378"><b>OralQA-ZH</b></a>
+    <br>
+    🤗&ensp;<a href="https://huggingface.co/OralGPT"><b>[Coming]MMOral-Uni-Bench</b></a>
+    &ensp;·&ensp;
+    <a href="https://huggingface.co/OralGPT"><b>[Coming]OralFlow-Bench</b></a>
+  </p>
+  <p>
+    🚧&ensp;<a href="./OralDetect/"><b>OralDetect</b></a>
+    &ensp;·&ensp;
+    <b>OralClue</b>
+    &ensp;·&ensp;
+    <b>OralRSI</b>
+    &ensp;·&ensp;
+    <b>OralGPT-3D</b>
+    &ensp;·&ensp;
+    <a href="./OralGPT-X/"><b>OralGPT-X</b></a>
+    &ensp;·&ensp;
+    <a href="./OralGPT-V/"><b>OralGPT-V</b></a>
+  </p>
 </div>
 
-# OralGPT Family 🦷🦷
+# OralGPT Family 🦷
 
-**OralGPT** is a **family of dental multimodal large language models (MLLMs)** and benchmarks for **AI-driven digital dentistry**.
+**OralGPT** is a family of dental AI **models** and **benchmarks** for digital dentistry, covering multimodal large language models, tool-using agents, and clinical evaluation.
 
-- **For researchers**: benchmark + evaluation toolkit + papers.
-- **For developers**: ready-to-run evaluation pipeline + configs.
-- **For collaborators**: contact below.
+- **Researchers**: papers, benchmarks, and an evaluation toolkit.
+- **Developers**: in-repo training and evaluation entry points, plus released weights on [Hugging Face](https://huggingface.co/OralGPT).
+- **Collaborators**:<br>
+  💻 **AI**: [Jing HAO](https://isjinghao.github.io/) · [Xinpeng LU](https://scholar.google.com/citations?user=b3N2f4kAAAAJ&hl=zh-CN) · Siyuan DAI · [Yuci LIANG](https://scholar.google.com/citations?user=tewbmFkAAAAJ&hl=en) · Yuxuan FAN<br>
+  🦷 **clinical**: [Jiahao BAO](https://scholar.google.com/citations?user=nvCj17EAAAAJ&hl=zh-CN) · Lizhuo LIN
 
-## 📌 Quick Links
-
-- **Papers**: [OralGPT](https://arxiv.org/abs/2509.09254) · [OralGPT-Omni](https://arxiv.org/abs/2511.22055) · [OralGPT-Plus](https://arxiv.org/abs/2603.06366) · [OralAgent](https://arxiv.org/abs/2605.27378) 
-- **Datasets/Models**: [MMOral-OPG-Bench](https://huggingface.co/datasets/OralGPT/MMOral-OPG-Bench) · [Hugging Face Org](https://huggingface.co/OralGPT)
-- **Evaluation**: [MMOral-Bench-EvalKit](./MMOral-Bench-EvalKit/) for MMOral-OPG-Bench and MMOral-Omni-Bench
-
-## 📖 Table of Contents
+## Table of Contents
 
 - [News](#news)
-- [Overview](#overview)
-- [Getting Started (MMOral-OPG-Bench)](#getting-started-mmoral-opg-bench)
-- [Repository Structure](#repository-structure)
-- [MMOral-Bench](#mmoral-bench)
+- [Models](#models)
+- [Benchmarks](#benchmarks)
+- [Repository](#repository)
 - [Citation](#citation)
 - [Contact](#contact)
 
 ---
 
-## 🔔 News
-- **[2026-09-xx]** 🔥 **OralFlow** is coming soon...  
+## News
+
+- **[2026-10-11]** 🎉 **PlaqueSAM** has been published in **npj Digital Medicine**: [Photography-based dental plaque detection and report generation among preschool children using PlaqueSAM](https://www.nature.com/articles/s41746-026-03385-9). Code: [isjinghao/PlaqueSAM](https://github.com/isjinghao/PlaqueSAM).
+- **[2026-09-01]** 🔥 **OralFlow** is coming soon...
 - **[2026-08-29]** 🔥🔥 **OralDetect**, an open-vocabulary dental detector spanning 5 imaging modalities, has been released: weights on 🤗 [Hugging Face](https://huggingface.co/OralGPT/OralDetect-Family), with the [training set](https://huggingface.co/datasets/OralGPT/OralDetect-Training) and [benchmark](https://huggingface.co/datasets/OralGPT/OralDetect-Bench). 👏 Welcome to detect on your own dental images.
-- **[2026-04-09]** 🔥 **OralAgent** has been released on [arXiv](https://arxiv.org/abs/2605.27378).  
+- **[2026-04-09]** 🔥 **OralAgent** has been released on [arXiv](https://arxiv.org/abs/2605.27378).
 - **[2026-03-27]** 🔥 **[NeurIPS 2025] MMOral‑OPG‑Bench** is now supported on [**VLMEvalKit**](https://github.com/open-compass/VLMEvalKit/blob/main/vlmeval/dataset/mmoral_opg_open.py) for evaluation.
-- **[2026-03-02]** 🚀  **OralGPT-Captioning-4B-Base** has been released on 🤗 [Hugging Face](https://huggingface.co/OralGPT/OralGPT-Captioning-4B-Base). 👏 Welcome to generate visual description of dental images. 
-- **[2026-02-22]** 🎉 Our paper of **[OralGPT-Omni](https://arxiv.org/abs/2511.22055)** and **OralGPT-Plus** have been accepted by **CVPR 2026**.
+- **[2026-03-02]** 🚀 **OralGPT-Captioning-4B-Base** has been released on 🤗 [Hugging Face](https://huggingface.co/OralGPT/OralGPT-Captioning-4B-Base). 👏 Welcome to generate visual description of dental images.
+- **[2026-02-22]** 🎉 Our papers **[OralGPT-Omni](https://arxiv.org/abs/2511.22055)** and **OralGPT-Plus** have been accepted by **CVPR 2026**.
 - **[2025-12-17]** 🔥🔥🔥 **OralGPT-Omni-7B-Instruct** has been released on 🤗 [Hugging Face](https://huggingface.co/OralGPT/OralGPT-Omni-7B-Instruct). 👏 Welcome to try it.
-- **[2025-11-27]** 🔥🔥🔥 Our paper of **OralGPT-Omni** has been released on [arXiv](https://arxiv.org/abs/2511.22055).  
+- **[2025-11-27]** 🔥🔥🔥 Our paper of **OralGPT-Omni** has been released on [arXiv](https://arxiv.org/abs/2511.22055).
 - **[2025-10-31]** 🔥 **[NeurIPS 2025] MMOral-Bench** (MMOral-OPG-Bench) has been released on 🤗 [Hugging Face](https://huggingface.co/datasets/OralGPT/MMOral-OPG-Bench). 👏 Welcome to evaluate your MLLMs.
-- **[2025-09-22]** 🚀 Multiple **Dental Visual Expert Models** have been released on 🤗 [Hugging Face](https://huggingface.co/Bryceee/Teeth_Visual_Experts_Models). 
-- **[2025-09-19]** 🎉 Our paper of **OralGPT** has been accepted by **NeurIPS 2025**. 
-- **[2025-09-11]** 🎉 Our paper of **OralGPT** has been released on [arXiv](https://arxiv.org/abs/2509.09254).  
-- 🔜 We are actively developing **MMOral-Bench v2**, which will include:  
-  - ✅ More dental imaging modalities  
-  - ✅ Professional dentistry exam questions  
-  - ✅ Comprehensive evaluation of multiple MLLM performance in digital dentistry
+- **[2025-09-22]** 🚀 Multiple **Dental Visual Expert Models** have been released on 🤗 [Hugging Face](https://huggingface.co/Bryceee/Teeth_Visual_Experts_Models).
+- **[2025-09-19]** 🎉 Our paper of **OralGPT** has been accepted by **NeurIPS 2025**.
+- **[2025-09-11]** 🎉 Our paper of **OralGPT** has been released on [arXiv](https://arxiv.org/abs/2509.09254).
 - 🤝 For collaboration inquiries, please contact us at: 📮 isjinghao@gmail.com
 
 ---
 
-## ✨ Overview
+## Models
 
-**OralGPT** is a **series multimodal large language model (MLLM) specialized in digital dentistry**. It supports diverse dental imaging modalities, including:  
+Specialist and general models in the OralGPT family. PlaqueSAM lives in its own repository.
 
-- Intraoral images & videos  
-- Photographs  
-- Panoramic X-rays 
-- Periapical radiographs  
-- Cephalometric radiographs  
-- Histopathological images  
-- Textual Question & Conversation  
+| Model | Description | Paper | Code / weights |
+| --- | --- | --- | --- |
+| **OralGPT** | Dental MLLM for panoramic X-ray analysis, with chain-of-thought diagnostic reasoning | [NeurIPS 2025](https://arxiv.org/abs/2509.09254) | [MMOral-OPG](./MMOral-OPG/) |
+| **OralGPT-Omni** | Versatile dental MLLM across intraoral photos and video, radiographs, histopathology, and text | [CVPR 2026](https://arxiv.org/abs/2511.22055) | [HF](https://huggingface.co/OralGPT/OralGPT-Omni-7B-Instruct) · [MMOral-Omni](./MMOral-Omni/) |
+| **OralGPT-Plus** | Learns to use visual tools via reinforcement learning for panoramic X-ray analysis | [CVPR 2026](https://arxiv.org/abs/2603.06366) | [OralGPT-Plus](./OralGPT-Plus/) |
+| **OralAgent** | Interactive dental image analysis with reasoning, tools, and knowledge | [arXiv 2026](https://arxiv.org/abs/2605.27378) | [Paper](https://arxiv.org/abs/2605.27378) |
+| **OralGPT-CMF** | Fine-tuned multimodal model for oral and maxillofacial cases | Ongoing | [HF](https://huggingface.co/OralGPT/OralGPT-CMF-v1) · [OralGPT-CMF](./OralGPT-CMF/) |
+| **OralDetect** | Open-vocabulary detector across five imaging modalities | Released | [HF](https://huggingface.co/OralGPT/OralDetect-Family) · [OralDetect](./OralDetect/) |
+| **PlaqueSAM** | Plaque detection and visual report generation from smartphone photos of preschool children | [npj Digital Medicine 2026](https://doi.org/10.1038/s41746-026-03385-9) | [GitHub](https://github.com/isjinghao/PlaqueSAM) |
+| **OralGPT-X** | Oral image generation and translation for CBCT, MRI, and orthognathic imaging | Ongoing | [OralGPT-X](./OralGPT-X/) |
+| **OralGPT-V** | Oral world model | In progress | [OralGPT-V](./OralGPT-V/) |
 
-OralGPT aims to be the foundation MLLM for AI-driven digital dentistry — bridging multimodal reasoning with clinical expertise. With **Chain-of-Thought (CoT) reasoning**, OralGPT simulates the diagnostic process of radiologists, ensuring outputs that are **interpretable, trustworthy, and clinically reliable**.  
-
----
-
-## 🚀 Getting Started (MMOral-OPG-Bench)
-
-This is the fastest way to run an evaluation with the provided toolkit.
-
-### 1) Prepare API credentials
-
-Create a `.env` file under `MMOral-Bench-EvalKit/` and fill in your credentials:
-
-```bash
-OPENAI_API_KEY=
-OPENAI_API_BASE=
-```
-
-> **Tip:** `.env` contains private keys. Do **not** commit it to any public repo.
-
-### 2) Configure models & judge
-
-Edit the evaluation config (example file name used by the toolkit: `config_mmoral_opg.json`) to specify:
-
-- models to evaluate
-- benchmark split (e.g., `MMOral_OPG_CLOSED`, `MMOral_OPG_OPEN`)
-- judge model (e.g., `gpt-4-turbo` or `gpt-5-mini`)
-
-See: `MMOral-Bench-EvalKit/README.md` for full examples.
-
-### 3) Run evaluation
-
-From `MMOral-Bench-EvalKit/`, run:
-
-```bash
-python run.py --config config_mmoral_opg.json \
-  --mode all \
-  --api-nproc 8 \
-  --work-dir '.' \
-  --verbose
-  # --reuse
-```
-
-Add `--reuse` to resume existing results.
+Supported imaging and text inputs across the family include intraoral images and videos, photographs, panoramic X-rays, periapical radiographs, cephalometric radiographs, histopathological images, and textual question answering.
 
 ---
 
-## 🧭 Repository Structure
+## Benchmarks
 
-- **`MMOral-Bench-EvalKit/`**: unified evaluation toolkit for MMOral-OPG-Bench, MMOral-Omni-Bench, and newer benchmark variants.
-- **`MMOral-Omni/`**: OralGPT-Omni related materials (in progress).
-- **`LLaMA-Factory/`**: training framework (upstream project included for convenience).
+Clinical evaluation sets. Run MMOral language-model benchmarks with [MMOral-Bench-EvalKit](./MMOral-Bench-EvalKit/).
 
-## 📏 MMOral-Bench  
+| Benchmark | What it evaluates | Status | Link |
+| --- | --- | --- | --- |
+| **MMOral-OPG-Bench** | Open- and closed-ended panoramic X-ray understanding. Items are reviewed by clinical dentists. | Released | [Hugging Face](https://huggingface.co/datasets/OralGPT/MMOral-OPG-Bench) · [EvalKit](./MMOral-Bench-EvalKit/) |
+| **MMOral-Omni-Bench** | Multi-modality dental understanding | Coming | [EvalKit](./MMOral-Bench-EvalKit/) |
+| **MMOral-Uni-Bench** | Unified dental MLLM evaluation | Coming | [Hugging Face org](https://huggingface.co/OralGPT) |
+| **OralDetect-Bench** | Open-vocabulary detection on five modalities | Released | [Hugging Face](https://huggingface.co/datasets/OralGPT/OralDetect-Bench) |
+| **OralQA-ZH** | Chinese multiple-choice questions across 11 oral subspecialties, introduced with OralAgent | Released | [OralAgent](https://arxiv.org/abs/2605.27378) |
+| **OralFlow-Bench** | Longitudinal multimodal oral and maxillofacial trajectories | Coming | [OralFlow](./OralFlow/) |
+| **OralGPT-X-Bench** | CBCT restoration, orthognathic simulation, and MRI translation | In repo | [OralGPT-X](./OralGPT-X/oralgpt_x_bench/) |
 
-Currently, you can evaluate your MLLM’s performance on **panoramic X-ray analysis** using **MMOral-Bench**.  
-All benchmark data are **reviewed and validated by professional clinical dentists**, ensuring **accuracy and clinical reliability**.  
+Evaluation steps for MMOral-OPG-Bench are in [MMOral-Bench-EvalKit](./MMOral-Bench-EvalKit/).
 
-### Performance
-<div align="center">
-  <img src="https://raw.githubusercontent.com/isbrycee/OralGPT/main/assets/MMOral-OPG-Bench-Performance.jpg">
-</div>
+---
 
-### Evaluation of MMOral-Bench
+## Repository
 
-Our benchmark consists of both Open-Ended and Closed-Ended evaluation formats, with corresponding TSV files available at 🤗 [Hugging Face](https://huggingface.co/datasets/OralGPT/MMOral-OPG-Bench).
+| Path | Role |
+| --- | --- |
+| [MMOral-Bench-EvalKit](./MMOral-Bench-EvalKit/) | Evaluation toolkit for MMOral-OPG-Bench, MMOral-Omni-Bench, and newer splits |
+| [MMOral-OPG](./MMOral-OPG/) | Panoramic X-ray data generation (attributes, chat, reports, VQA) |
+| [MMOral-Omni](./MMOral-Omni/) | Multi-modality data for OralGPT-Omni |
+| [OralGPT-Plus](./OralGPT-Plus/) | OralGPT-Plus training and DentalProbe data tools |
+| [OralGPT-CMF](./OralGPT-CMF/) | OralGPT-CMF inference |
+| [OralGPT-X](./OralGPT-X/) | Generation data scripts and OralGPT-X-Bench |
+| [OralGPT-V](./OralGPT-V/) | Oral world model |
+| [OralDetect](./OralDetect/) | Open-vocabulary detection training and evaluation |
+| [OralFlow](./OralFlow/) | OralFlow-Bench construction pipeline |
+| [LLaMA-Factory](./LLaMA-Factory/) | Upstream training framework, vendored for convenience |
+| [PlaqueSAM](https://github.com/isjinghao/PlaqueSAM) | Separate repository |
 
-For benchmark evaluation, please use the unified [**MMOral-Bench-EvalKit**](./MMOral-Bench-EvalKit/) toolkit. It supports both MMOral-OPG-Bench splits:
+---
 
-- `MMOral_OPG_CLOSED` for closed-ended multiple-choice evaluation.
-- `MMOral_OPG_OPEN` for open-ended evaluation with an LLM judge.
+## Citation
 
-The same evaluation folder also supports MMOral-Omni-Bench and newer benchmark variants. To evaluate a model, edit the `data` field in `MMOral-Bench-EvalKit/config_mmoral_opg.json` or create a config with either `MMOral_OPG_CLOSED` or `MMOral_OPG_OPEN`, then run `python run.py --config <config>.json --mode all`.
-
-## 📌 Citation  
-
-If you find our work helpful, please cite us:  
+If you find our work helpful, please cite us:
 
 ```bibtex
+@article{hao2026plaquesam,
+  title={Photography-based dental plaque detection and report generation among preschool children using PlaqueSAM},
+  author={Hao, Jing and Guo, Kaixin and Shan, Zhiyi and Yang, Yanqi and Tsoi, James Kit Hon and Lam, Phoebe Pui Ying and Hung, Kuo Feng},
+  journal={npj Digital Medicine},
+  year={2026},
+  doi={10.1038/s41746-026-03385-9}
+}
 @article{hao2026oralagent,
   title={OralAgent: Integrating Reasoning, Tools, and Knowledge for Interactive Dental Image Analysis},
   author={Hao, Jing and Dai, Siyuan and Zhang, Yongxin and Liang, Yuci and Wu, Jiamin and Bao, Jiahao and Fan, Yuxuan and Ye, Zanting and Sun, Yanpeng and Zhang, Xinyu and others},
@@ -198,6 +188,6 @@ If you find our work helpful, please cite us:
 }
 ```
 
-## 🤝 Contact
+## Contact
 
 - 📮 **Email**: isjinghao@gmail.com

@@ -62,31 +62,18 @@ once. Made for macOS; and others.
 
 ## Install
 
-Needs [Node.js](https://nodejs.org) 22.18 or newer. On macOS, Linux x64 and
-Windows x64, setup downloads the app's binary from this repository's CI and
-checks its build attestation; elsewhere it builds it, which needs
-[Rust](https://rustup.rs), on macOS the Xcode Command Line Tools
-(`xcode-select --install`), and on Linux and Windows
-[Tauri's prerequisites](https://v2.tauri.app/start/prerequisites/).
+You need [Node.js](https://nodejs.org) 22.18 or newer.
 
 ```sh
-git clone https://github.com/ker0olos/ignite.git
-cd ignite
+git clone https://github.com/ker0olos/ignite.git && cd ignite
 npm run setup
 ```
 
-Setup installs Ignite's packages with [pnpm](https://pnpm.io) (installing pnpm
-for Ignite alone if needed, no admin rights), prepares Ignite once, then puts it in `~/Applications`
-on macOS, your app menu on Linux, or the Start Menu on Windows. It opens at
-once, builds updates in the background and asks you to restart for them, and
-goes back to the last working version if an update fails to start.
+Ignite opens when setup finishes, and lives in `~/Applications` on macOS, your
+app menu on Linux, or the Start Menu on Windows. It updates itself.
 
-Linux sandboxes commands with
-[bubblewrap](https://github.com/containers/bubblewrap) (`bwrap`). Windows, setup
-offers to sandbox them too (alpha, one admin prompt the first time); without
-it, Auto asks before every shell command. Settings → Agent switches it. Worktrees clone
-copy-on-write on Btrfs and XFS; elsewhere agents install and build their own
-dependencies.
+`npm run uninstall` removes
+Ignite and keeps your conversations.
 
 ## Make it yours
 

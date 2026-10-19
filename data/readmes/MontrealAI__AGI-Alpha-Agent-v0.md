@@ -15,10 +15,12 @@
 
 Browser preparation is free. Execution, participant review and settlement require their own configuration and approval. AGIJobManager settles in USDC; the Alpha / Jobs v0 contracts use $AGIALPHA. Source versions and published downloads can differ: use the evidence and instructions supplied with your chosen release.
 
+**New Ethereum Mainnet deployment, October 18, 2026:** [five contract addresses and verified graph](docs/agent/CURRENT_MAINNET_DEPLOYMENT.md). Publication records the deployment; operating approval remains separate.
+
 <!-- /current-entrypoints -->
 
-> **Current maintenance scope · 1.33.0.** [Start here](docs/agent/START_HERE.md) ·
-> [Release notes](docs/agent/RELEASE_NOTES_1.33.0.md) · [Release evidence and supported scope](docs/agent/RELEASE_READINESS.md).
+> **Current maintenance scope · 1.34.0.** [Start here](docs/agent/START_HERE.md) ·
+> [Release notes](docs/agent/RELEASE_NOTES_1.34.0.md) · [Release evidence and supported scope](docs/agent/RELEASE_READINESS.md).
 > This candidate adds inspectable Jobs adapters, bounded browser work and supplied-input demo journeys. Use matching published assets
 > from [Releases](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases); a source label alone is not publication.
 
@@ -1963,4 +1965,85 @@ docker compose up -d
 # Dashboard available at <http://localhost:8080>
 ```
 
-The Compose stack restricts the agents worker using Docker r
+The Compose stack restricts the agents worker using Docker resource limits. The
+`agents` service runs with `mem_limit: 8g`, `pids_limit: 512` and
+`network_mode: none` to prevent outbound traffic.
+
+The Helm chart under `infrastructure/helm-chart` mirrors this Compose
+setup:
+
+```bash
+helm upgrade --install alpha-demo ./infrastructure/helm-chart \
+  --values ./infrastructure/helm-chart/values.yaml \
+  --set env.RUN_MODE=web
+# Enable persistent storage for the audit ledger
+#   --set persistence.enabled=true --set persistence.size=5Gi
+# → browse to <http://localhost:8080>
+```
+
+`values.example.yaml` demonstrates typical overrides such as API tokens, service ports and replica counts.
+
+The Helm charts ship with placeholders like `NEO4J_PASSWORD` and
+`adminPassword` set to `REPLACE_ME`. Replace these with strong secrets
+in `values.yaml` or via `--set` before deploying.
+
+Terraform scripts in `infrastructure/terraform` provide GCP and AWS
+examples. Update the placeholder image and networking variables,
+then initialise and apply:
+
+```bash
+cd infrastructure/terraform
+terraform init
+terraform apply
+```
+
+| Target | Command | Notes |
+|--------|---------|-------|
+| **Docker Compose** | `docker compose up -d` | Web UI on `localhost:8080` |
+| **Helm (K8s)** | `helm install af helm/alpha-factory` | `--set env.RUN_MODE=web` |
+| **AWS Fargate** | `./infra/deploy_fargate.sh` | set `container_image` & `subnets` |
+| **IoT Edge** | `python edge_runner.py --agents manufacturing,energy` | Jetson Nano |
+<a name="71-deploying-securely"></a>
+### 🚀 Deploying securely
+See the [documentation](https://montrealai.github.io/AGI-Alpha-Agent-v0/) for TLS setup, API tokens and Vault usage. Mount secrets
+via Docker or Kubernetes and never commit them.
+
+
+---
+
+<a name="8-governance--compliance"></a>
+## 8 · Governance & Compliance ⚖️
+
+* **MCP envelopes** (SHA‑256, ISO‑8601, policy hash)  
+* **Red‑Team Suite** fuzzes prompts & actions  
+* **Attestations** — W3C Verifiable Credentials at every Actuator call
+
+---
+
+<a name="9-observability"></a>
+## 9 · Observability 🔭
+
+| Signal | Sink | Example |
+|--------|------|---------|
+| Metrics | Prometheus | `alpha_pnl_realised_usd` |
+| Traces | OpenTelemetry | `trace_id` |
+| Dashboards | Grafana | `alpha-factory/trade-lifecycle.json` |
+
+Prometheus scrapes metrics from the API server at `/metrics`.
+
+By default traces and metrics print to ``stdout``. To export to a collector such
+as **Jaeger**, set ``OTEL_EXPORTER_OTLP_ENDPOINT`` and start Jaeger locally:
+
+```bash
+docker run -p 16686:16686 -p 4317:4317 jaegertracing/all-in-one
+```
+
+Set ``OTEL_ENDPOINT`` to enable anonymous dashboard telemetry. Users are
+prompted for consent before any metrics are sent.
+
+### Telemetry Queue
+Anonymous usage metrics are buffered in the browser under the
+`telemetryQueue` key in `localStorage`. Each record includes:
+
+- `ts` – the timestamp when the entry was recorded.
+- `session` – a deterministic SHA‑256 hash identifying the session

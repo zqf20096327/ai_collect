@@ -36,12 +36,16 @@ performance) — source in
   snapshot exports (online-retunable), claim/release/renew/hibernate/fork/
   promote/checkpoint HTTP API, operator-catalog dataset volumes (read-only or
   writable; read-only ones change on a running claim), signed preview URLs,
-  the HTTP-upgrade byte relays to silkd and to any guest port, claim env with
+  the HTTP-upgrade byte relays to silkd and to any guest port, read-only file
+  access to hibernated or archived claims from a warm VM of their pool
+  (opt-in per pool `reader`), claim env with
   host-side credential injection and per-claim upstream proxies, runtime
   tenants, config reload (SIGHUP), usage + audit journals, /metrics, reap +
   restart reconcile with VMM cold restart, memberlist mesh with redirect
-  placement, and an optional shared PostgreSQL meta store for tenants,
-  pools and the cross-node adoption of archived claims
+  placement, a checkpoint store on a shared directory or S3 (sparse,
+  content-addressed chunks), and an optional shared PostgreSQL meta store
+  for tenants, pools, node leases and the cross-node adoption of archived
+  claims and of running claims a pool replicates (`replicate_seconds`)
 - `sdk/go/` — Go SDK: `Connect/New/Lookup`, `Exec/Run`, files,
   `Push/Pull`, sessions, `Find/Replace`, `Watch`, git verbs, `OpenPty`,
   `Renew/Fork/Hibernate/Promote/Checkpoint`, claim env, `DialPort/ProxyPort/PreviewURL`,

@@ -223,15 +223,14 @@ Ten sections, named like parts of a harbor, hold every setting:
 | `s` | Save |
 | Esc | Leave. Press it twice to drop changes you did not save |
 
-Each row says when a change starts to work:
-
-- `live` — it works right away, when you leave the screen.
-- `/voice on` — it works the next time you turn voice on.
-- `restart` — it works the next time you start ThreeToks.
+Every change works in the running chat, with no restart. The chat reads the config file again before it handles your next line, so a save from the screen, from `threetoks config set`, or from your editor all apply the same way. The chat prints the settings it applied. If the file has an error, the chat keeps its current settings and tells you the error. If one part cannot start (for example Chrome or a voice model), the chat says so, keeps the old value for that part, and tries again at the next save.
 
 A small symbol at the end of a row is a live check. It tells you that Ollama answers, that the model is downloaded, that the API key is set, that SearXNG answers, or that a path exists.
 
-When you save, ThreeToks changes only the lines you edited. Your own comments and the order of your keys stay as they are.
+A value that ThreeToks cannot use (for example `vote_k = 0` or `min_interval_s = soon`) falls back to its default. An unknown name (for example `[LLM]` or `votek`) is ignored. The chat, the screen, `config show`, `config set`, and `doctor` name each of these. The next save writes the default in place of a value that cannot be used.
+A comment can follow a value after a space: `vote_k = 3  # three votes`. `~` in a path setting means your home folder.
+
+When you save, ThreeToks changes only the lines you edited (and the values it named as unusable). Your own comments and the order of your keys stay as they are.
 Without a real terminal (for example in a pipe, or with `TERM=dumb`), `/setup` asks the same questions one line at a time.
 
 **Where ThreeToks looks for the config file**, in this order:
@@ -257,15 +256,17 @@ threetoks --version
 ```
 
 Put the flags `-m`, `-c`, and `--no-color` *before* the subcommand.
-`config set` checks your value like the screen does. It exits with code 2 for a bad key or value. It keeps the rest of the file as it was.
-`doctor` exits with code 1 when a check fails, so you can use it in scripts.
+`config set` checks your value like the screen does. It exits with code 2 for a bad key, a bad value, or a missing value. It exits with code 1 when the file has an error or cannot be written; it does not change a file that has an error.
+`doctor` exits with code 1 when a check fails or a value is ignored, so you can use it in scripts.
 
 ![](docs/assets/wave.svg)
 
 ## Agents
 
 Every request goes through a **router**. The router shows the model a menu of agent names. Each name has a one-line description. The model picks one digit.
-If the answer is not valid, ThreeToks uses the first agent in the list, `casual`.
+A small model can pick a different agent when only the order of the menu changes. So the router asks twice, with two different orders. If both answers agree, that agent runs. If not, it asks again (5 times at most) and takes the majority.
+If no answer is valid, ThreeToks uses the first agent in the list, `casual`.
+Questions about the code in the current project ("what does this repo do?", "where is the config loaded?") go to `code`. General questions about a language or tool ("how do decorators work?") go to `web`.
 
 A request with **several steps** goes to the `planner`. Example: "find the population of Japan, then write a script that prints it".
 
@@ -274,19 +275,20 @@ A request with **several steps** goes to the `planner`. Example: "find the popul
 | `casual` | Small talk and quick replies | It ranks ready-made replies by shared keywords. An exact match needs **no** model call. If nothing fits, it writes a short free reply. |
 | `web` | Answers questions with an internet search | It runs the [deep research](#deep-research) loop: search, read pages, follow links, take notes. |
 | `files` | Answers questions about your files and folders | It stays inside `services.files_root`. It can run one short shell command, but only after a fixed block-list and a fresh safety judge both allow it. |
-| `code` | "Where is X?", "Fix the bug in Y", "Work out Z from data.csv", "Write a script that…" | Four modes. See the list below. |
+| `code` | "Where is X?", "Fix the bug in Y", "Work out Z from data.csv", "Write a script that…", "Install numpy" | Five modes. See the list below. |
 | `light` | "Turn on the light" | Needs a Raspberry Pi and the `relay` add-on. Clear phrases are matched by simple rules, with no model call. Other phrases cost one menu decision. |
 | `look` | "What am I holding?" | Needs the `camera` add-on and a vision model (llava, qwen-vl, gpt-4o, claude, gemini, …). It takes one frame and makes one short vision decision. |
 | `planner` | "Find X, then write code with it" | It writes a plan, called a **trajectory**: the agents in order, each with a very short task. See below. |
 
-The `code` agent has four modes:
+The `code` agent has five modes:
 
 - **Navigate** finds code. It is free when your request names the symbol. Otherwise it shows a ranked short list.
 - **Edit** changes one function. It shows a ranked list, then a menu with the function's source. The model writes **only the changed function**. Your repo's tests, or an import check, judge it. You then see a diff. **Nothing is written until you press `y`.**
 - **Compute** runs a script once in `[files] root` and gives you the result.
-- **Author** plans small functions and writes them one by one.
+- **Author** plans small functions and writes them one by one, plus a `main()` that does the task. Then it **runs the script once** in `[files] root` with your project's Python (`.venv` there, else `python3`). Under the code you see the exit code, the time, and what the script printed. Files the script saves land in that folder. A script that crashes is marked UNVERIFIED.
+- **Shell** writes one terminal command: install a package, run the tests or a file, use git, move or delete files. You see the command first. **It runs only after you press `y`**, in `[files] root`, with your shell. `PYTHON`, `python` and `pip` in the command become your project's Python.
 
-Code that the agent writes runs in a closed box: a temporary folder, and no API keys in its environment.
+The functions that the agent writes are checked in a temporary folder with no API keys in the environment. The final author run and shell commands are **not sandboxed**: they can change any file you can change.
 
 The `planner` works in three parts:
 
@@ -294,8 +296,35 @@ The `planner` works in three parts:
 2. **Run.** Each agent does its step. Its task is only its own short task. Every model call of the step also sees the overall goal and the answers of the steps before it.
 3. **Correct.** After each step, the model says yes or no: must the next steps change? On yes, it plans the remaining steps again.
 
-A plan has 4 steps or fewer. A request runs 6 steps at most, and the plan changes 2 times at most. The ticker shows the plan and each step while they run.
+A plan has 4 steps or fewer. A request runs 6 steps at most, and the plan changes 2 times at most. The progress tree shows the plan, and each step is one branch of the tree.
 If the plan is not valid, the router picks one agent for the full request. When a plan has 2 or more steps, the final answer shows the answer of each step under its number. The planner is always the last agent in `/agents`. It is added only when 2 or more other agents are ready.
+
+### The progress tree
+
+While a request runs, the chat shows each model decision as one row of a tree:
+
+```text
+  ◆ pick an agent
+  ├ ▂ choose  web — look up facts or current informat…           2t·0.28s
+  ╰ web · 1 call · 2t · 0.3s
+  ◆ web agent
+  ├ ◆ round 1 · search and read
+  │ ├ ▂ choose  open result 5: RFI - All the news from …         2t·0.92s
+  │ │ ├ ▃ pick    24                                             3t·0.83s
+  │ │ │   · The soundtrack to France’s school protests
+  │ ├ ▂ choose  answer the task now                              2t·0.33s
+  │ │ ├ █ write   is 2025, and high school protests conti…      15t·0.51s
+  │ ╰ done · 4 calls · 22t · 6.9s
+  ├ ◆ check the answer
+  │ ├ ▂ judge   bad — vague, off-topic, or does not ans…         2t·0.41s
+  │ ╰ rejected · 1 call · 2t · 0.4s
+  ╰ answered · 5 calls · 24t · 7.3s
+```
+
+- A `◆` row starts one part of the request: choosing the agent, recalling past answers, the agent itself, each research round, the answer check, the choice of the next search, and each planner step.
+- A `╰` row ends that part. It gives the result (the agent, the verdict, the new search), the number of model calls, the tokens, and the time.
+- A `choose` row is an action that the model picked from a menu. The rows under it are the decisions that this action caused, for example the sentences the model picked from an opened page.
+- The bar at the start of a row is the token cost of the decision (`▁` = 1 token, `█` = 8 or more). Its color is the speed: green is fast, amber is steady, pink is slow.
 
 ### Chat commands
 
@@ -433,7 +462,7 @@ It does **not** download voice models for you. Get a `.onnx` file and its `.onnx
 - The add-on `voice` installs both sides. Each side also works alone: voice in with text out, or text in with voice out.
 - Set `[voice] enabled = true` to start the chat already listening.
 - `/setup` has an optional voice step. It explains that you need *both* the `.onnx` file and its `.onnx.json` file, offers to open the Vosk and Piper pages, and asks again until a path works (or you keep your own).
-- `/voice on` reads the saved config when it starts. So you do not need to restart. If voice is already on, run `/voice off` first.
+- A saved `[voice]` change restarts a live voice session with the new settings. Switching `enabled` on or off starts or stops voice at once.
 
 </details>
 
@@ -474,7 +503,7 @@ A local SearXNG (see `infra/searxng/`) helps, but it does not remove the problem
 When search fails completely, ThreeToks says so. It does not make up an answer:
 
 - If every search hop is blocked by a bot wall, the run ends with a **"search unavailable"** answer.
-- If every page failed to open, the run ends with **"could not open any web page"**. Each failed page also shows as a `fetch` line in the ticker, with the reason. The command-line tool exits with a non-zero code. ThreeToks does not write an answer from an empty note store.
+- If every page failed to open, the run ends with **"could not open any web page"**. Each failed page also shows as a `fetch` row in the progress tree, with the reason. The command-line tool exits with a non-zero code. ThreeToks does not write an answer from an empty note store.
 
 ## Under the hood
 

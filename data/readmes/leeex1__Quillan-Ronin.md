@@ -1,3 +1,16 @@
+---
+language: en
+license: mit
+pipeline_tag: text-generation
+tags:
+- quillan
+- ronin
+- ai
+- cognitive-architecture
+- mixture-of-experts
+- h-n-moe
+---
+
 <h1 align="center">Welcome 😊</h1>
 
 <div align="center">
@@ -1151,7 +1164,4 @@ class quillanSonic(nn.Module):
         self.generation_history = []
         
     def forward(self, text_embedding: torch.Tensor, apply_spectral: bool = True) -> Dict[str, Any]:
-        start_time = time.time()
-        encoded = self.text_encoder(text_embedding)
-        waveform = self.audio_decoder(encoded)
-        if apply_spec
+   

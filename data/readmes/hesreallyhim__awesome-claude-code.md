@@ -45,12 +45,13 @@ The current iteration of the list, such as you see it today, was launched with t
 - [Documentation, Knowledge & Learning](#documentation-knowledge--learning)
   - [Obsidian](#obsidian)
   - [Data Visualization](#data-visualization)
-- [Open Source Software](#open-source-software)
+- [Open Source Contribution & Maintenance](#open-source-contribution--maintenance)
 - [Research & Scientific Inquiry](#research--scientific-inquiry)
 - [Providers, Runtime & Integration Infrastructure](#providers-runtime--integration-infrastructure)
 - [Remote Control, Notifications & Voice I/O](#remote-control-notifications--voice-io)
 - [Alternative Clients](#alternative-clients)
 - [Status Lines](#status-lines)
+- [Mods](#mods)
 - [Design & UI/UX](#design--uiux)
 - [Writing & Prose Quality](#writing--prose-quality)
 - [Creative Media](#creative-media)
@@ -207,7 +208,7 @@ The current iteration of the list, such as you see it today, was launched with t
 - [Archify](https://github.com/tt-a1i/archify) by [tt-a1i](https://github.com/tt-a1i) - An Agent Skill for Claude Code that generates interactive architecture, workflow, sequence, data-flow, and lifecycle diagrams as standalone HTML. Typed JSON, local renderers, and delivery checks support source-linked node details, path tracing, themes, and export.  
 <img src="https://img.shields.io/github/created-at/tt-a1i/archify?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="created">&nbsp;&nbsp;<img src="https://img.shields.io/github/last-commit/tt-a1i/archify?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="last-commit">&nbsp;&nbsp;<img src="https://img.shields.io/github/license/tt-a1i/archify?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="license">&nbsp;&nbsp;<img src="https://img.shields.io/github/stars/tt-a1i/archify?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="stars">
 
-## Open Source Software
+## Open Source Contribution & Maintenance
 
 - [Netresearch Agentic Skills](https://github.com/netresearch/claude-code-marketplace) by [Netresearch](https://github.com/netresearch) - Skills for assessing and enhancing software projects to meet enterprise-grade standards for security, quality, and automation. Strong collection covering a range of development frameworks, enterprise-readiness, security, GitHub release management, branding, code review - really useful and well curated.  
 <img src="https://img.shields.io/github/created-at/netresearch/claude-code-marketplace?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="created">&nbsp;&nbsp;<img src="https://img.shields.io/github/last-commit/netresearch/claude-code-marketplace?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="last-commit">&nbsp;&nbsp;<img src="https://img.shields.io/github/license/netresearch/claude-code-marketplace?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="license">&nbsp;&nbsp;<img src="https://img.shields.io/github/stars/netresearch/claude-code-marketplace?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="stars">
@@ -351,6 +352,11 @@ The current iteration of the list, such as you see it today, was launched with t
 - [tmux-claude-status-tabs](https://github.com/LiveNL/tmux-claude-status-tabs) by [LiveNL](https://github.com/LiveNL) - Shows each Claude Code session's state in the tmux tab bar, per window: an animated spinner while it works, amber when it waits on input, red on a permission request, green when done. Event-driven via hooks with no polling; catches unreported transitions (Esc, permission grants, stop-hook continuations) with transcript watchers. 260+ test assertions run in CI.  
 <img src="https://img.shields.io/github/created-at/LiveNL/tmux-claude-status-tabs?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="created">&nbsp;&nbsp;<img src="https://img.shields.io/github/last-commit/LiveNL/tmux-claude-status-tabs?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="last-commit">&nbsp;&nbsp;<img src="https://img.shields.io/github/license/LiveNL/tmux-claude-status-tabs?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="license">&nbsp;&nbsp;<img src="https://img.shields.io/github/stars/LiveNL/tmux-claude-status-tabs?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="stars">
 
+## Mods
+
+- [prismantis](https://github.com/NahumLitvin/prismantis) by [Nahum Litvin](https://github.com/NahumLitvin) - Colorful, themeable Claude Code replies: tables, code, diagrams, charts and tool rows in over a dozen themes. Enhances mod development experience.  
+<img src="https://img.shields.io/github/created-at/NahumLitvin/prismantis?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="created">&nbsp;&nbsp;<img src="https://img.shields.io/github/last-commit/NahumLitvin/prismantis?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="last-commit">&nbsp;&nbsp;<img src="https://img.shields.io/github/license/NahumLitvin/prismantis?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="license">&nbsp;&nbsp;<img src="https://img.shields.io/github/stars/NahumLitvin/prismantis?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="stars">
+
 ## Design & UI/UX
 
 - [atelier](https://github.com/EthanY33/atelier) by [Ethan Yucetepe](https://github.com/EthanY33) - Claude Code plugin with eight design-automation skills driven by one schema-validated brand.json: design tokens for CSS, Tailwind, TypeScript and Figma, social cards, favicon and app-icon sets, responsive AVIF and WebP images, HTML-to-video recording, a WCAG 2.1 AA audit, and a runtime UX audit covering bfcache, INP, dialogs and mobile viewports.  
@@ -395,7 +401,4 @@ The current iteration of the list, such as you see it today, was launched with t
 <img src="https://img.shields.io/github/created-at/conorbronsdon/avoid-ai-writing?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="created">&nbsp;&nbsp;<img src="https://img.shields.io/github/last-commit/conorbronsdon/avoid-ai-writing?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="last-commit">&nbsp;&nbsp;<img src="https://img.shields.io/github/license/conorbronsdon/avoid-ai-writing?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="license">&nbsp;&nbsp;<img src="https://img.shields.io/github/stars/conorbronsdon/avoid-ai-writing?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="stars">
 
 - [Book Factory](https://github.com/robertguss/claude-skills) by [Robert Guss](https://github.com/robertguss) - A comprehensive pipeline of Skills that replicates traditional publishing infrastructure for nonfiction book creation using specialized Claude skills.  
-<img src="https://img.shields.io/github/created-at/robertguss/claude-skills?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="created">&nbsp;&nbsp;<img src="https://img.shields.io/github/last-commit/robertguss/claude-skills?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="last-commit">&nbsp;&nbsp;<img src="https://img.shields.io/github/license/robertguss/claude-skills?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="license">&nbsp;&nbsp;<img src="https://img.shields.io/github/stars/robertguss/claude-skills?style=flat-square&labelColor=2b2b2b&color=6b6b6b" alt="stars">
-
-- [Claude Style Patch](https://github.com/andrewroxby/claude-style-patch) by [Andrew Roxby](https://github.com/andrewroxby) - A CLAUDE.md section that constrains Claude's prose style. It bans specific habits, including announcing a point before making it, colon-hinged sentences where the left side labels the right, verbless fragment openers, and stacked compression. Each rule names the habit, shows an example, and gives the rewrite.  
-<img src="h
+<img src="https://img.shields.io/github/created-at/robertguss/claude-skills?style=flat-square&labelColor=2b2b2b&color=6b6

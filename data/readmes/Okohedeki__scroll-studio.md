@@ -82,6 +82,12 @@ tiktoken (`cl100k_base`) on the files in this repo; other tokenizers differ by r
 - **Frozen moments** (`freeze:` on a beat): when time stops, stop generating. One frame, upscaled, with a 2.5D depth
   camera moving through it, rendered offline in seconds, so a crowd stands still while the camera visits a couple's
   hands and feet and every face stays the same face. `image: { beat_frame: ... }` chains the next shot onto its last frame.
+  `detail:` builds a pyramid of re-drawn tiles so a 20x push stays sharp; `layers:` cuts people out onto planes over a
+  painted-out background so depth jumps have no halos.
+- **Camera moves on moving shots** (`camera:` on a beat): keyed camera paths for generated video, so the crowd keeps
+  walking while the camera pushes from the wide street to one girl and back out. The camera is flown through the start
+  image's depth into a guide video, with the walking people softened so they stay free, and the video model paints the
+  shot along it (measured: the view stays within 1% of the keys).
 - **Fly through a codebase** (`code` scene): live 3D, real text, diffs applied as you scroll.
 
 ### New in 1.2
@@ -556,6 +562,129 @@ wins at an edge), on the GPU when there is one and the CPU otherwise; it needs n
 the camera's boxes as flat crops of the source before anything renders, and `build --plan` prices a frozen beat apart
 from a generated one.
 
+### Deep zoom and layered depth (`freeze.detail`, `freeze.layers`)
+
+A frozen frame has only so many pixels: at a box a twentieth of the frame wide, 1920 px is a thumbnail enlarged twenty
+times (the 2x upscale buys one factor of two), and one depth map warped over one picture smears at every depth jump.
+Two fields on a frozen beat fix those.
+
+```yaml
+      - id: push
+        seconds: 14
+        freeze:
+          image: inputs/street.png
+          upscale: 2
+          camera:
+            - { t: 0.0,  box: [0, 0, 1, 1] }
+            - { t: 0.4,  box: [0.455, 0.80, 0.555, 0.96], hold: 0.05 }     # her boots
+            - { t: 0.55, box: [0.485, 0.845, 0.53, 0.89] }                 # a 22x close-up of the boot's top
+            - { t: 1.0,  box: [0, 0, 1, 1] }
+          detail: { prompt: "hand-drawn ink, clean outlines, fine hatching" }   # deep zoom ({} for the defaults)
+          layers: auto                                                          # layered depth (or a list of subjects)
+```
+
+- **Deep zoom** (`detail`). The frame is built into a pyramid of tiles instead of being enlarged: from the camera's keys the
+  engine finds which regions it visits at which scale (`studio freeze <project> <beat> --plan` prints them), as many levels
+  as the tightest box needs (`levels: auto` stops when a tile pixel falls on every output pixel; each level adds at most
+  `ratio` x the detail of the one above, default 2), and for each tile (a crop of its parent): SeedVR2 enlarges it, Z-Image
+  Turbo re-draws it at low `strength` (0.3 by default: fine detail in the picture's own style, nothing moved), it is aligned to
+  its parent (ECC), and then it is **given the parent's low frequencies exactly** (`lock`): colours, tone and shapes are the
+  parent's at every level, and only what is finer than a parent pixel is new. Its depth is the parent's, snapped to the
+  tile's own edges with the guided filter. The render takes every pixel from the finest tile that covers it and fades each
+  level in by screen-space pixel density (a mip chain turned inside out), with feathered tile borders: detail arrives as
+  the camera does and nothing swaps or pops. Every tile is its own cached stage, keyed by its box and its parent's key:
+  moving the deepest box rebuilds only the tiles that moved. Measured on a 14 s push from a 1920 street to a 22x close-up
+  (17 tiles, 4 levels): the sharpest edges take 5.6 output pixels at 20x against 11.3 for one upscaled frame (1.4 px at
+  1x, 1.8 at 2x), and the sharpness curve along the whole move is smooth: no level swaps. Needs ComfyUI (SeedVR2, Z-Image Turbo); without SeedVR2 the
+  enlarge falls back to Lanczos. The Qwen-Image-Edit re-draw (`method: qwen`) understands the picture (it draws laces on
+  a boot) but also moves and reshapes things by several percent, which a tile cannot be made to agree with (ghosting), so it is
+  experimental. The pyramid sharpens and adds texture; it cannot invent an object the frame does not already contain
+  (laces on a black silhouette): for that, give the freeze an `image:` that already has it.
+- **Layered depth** (`layers`). The frame is cut into planes, back to front: a **background plate** (the frame with the
+  subjects painted out: Qwen-Image-Edit through the subjects' mask, pixel-exact outside the hole) and **subject planes**
+  (`subjects: auto` finds every person with Florence-2 and cuts each out with SAM 2.1, or list `{prompt}` / `{box}` / `{points}`
+  subjects; subjects at a similar depth share a plane, at most `planes`). Each plane has its own smooth depth and a soft alpha
+  edge, and its colour has the plate's share removed at the edge, so it carries no fringe of the old background. The render
+  marches and samples the planes one after the other and composites them: at rest the result is the frame, and when the camera
+  moves a person slides over the background instead of smearing, with real background revealed where they stood. The planes
+  are cut from the same picture, and with `detail` from the same tiles (each tile carries its planes' alphas, refined at its
+  resolution, and continues the plate), so a layered deep zoom costs one attribute per plane per tile, not a pyramid per
+  plane, and every level agrees by construction. `planes.jpg` in the beat's `layers/` folder shows what was found.
+  Limits: an occluded part of one person behind another is not drawn (the plate shows through instead); a plate fill
+  leaves a faint pale ghost of the removed shape where the fog is uniform; and SAM cuts a person who is nearly the colour of
+  the fog out only in part (look at `planes.jpg`): the part left behind stays in the background plane and tears off the
+  person when the camera sways. Name such a subject with `points:` on its body, or keep `parallax` low.
+- **Measuring it.** `studio freeze <project> <beat> --report [--against <other beat>]` renders and measures the clip: how
+  many output pixels the sharpest edges take at each zoom the camera reaches (a crisp edge is 1-2 px), a frame-to-frame
+  difference plot with its spike ratio (a pop stands out of the curve), and a frame strip, written beside the clip.
+### A camera move on a moving shot (`camera:`)
+
+A video model takes camera direction only as words, and mostly ignores them, so "the crowd keeps walking while the camera
+pushes in to the girl" used to be a clip, then a cut to a still. A beat with `camera:` keys gets the camera it asks for
+by construction. The keys have the shape of a frozen moment's (`{t, box, hold}` and an `ease`), but the beat is still
+generated, so people walk, traffic moves and fog drifts:
+
+```yaml
+      - id: push
+        seconds: 5
+        prompt: A hand-drawn faceless crowd walking toward the viewer, one girl in the centre
+        motion: everyone in the crowd walks steadily toward the viewer down the foggy street
+        image: inputs/street.png
+        camera:
+          keys:
+            - { t: 0.0, box: [0, 0, 1, 1] }                  # the wide street
+            - { t: 0.5, box: [0.40, 0.38, 0.62, 0.97] }      # the camera has reached the girl
+            - { t: 1.0, box: [0, 0, 1, 1] }                  # and is back out again
+          subjects: the people                               # who is free to move (default)
+```
+
+What happens, each step cached by its own digest in the beat's folder:
+
+1. **Depth and people.** The beat's start image gets a depth map (Depth Anything V2) and the moving subjects (`subjects`)
+   are found by Florence-2 and cut out by SAM 2.1, the way `edit.region` does.
+2. **The guide.** The camera path is flown through that depth with the same renderer a frozen moment uses (parallax and
+   all), as a depth video. The subjects' depth is blurred into soft blobs (`soften`), so the guide fixes the camera and
+   the static world (street, buildings, lamps) and only hints where the people are. Two more videos come with it:
+   `guide_rgb.mp4`, the picture itself flown along the keys (a pure-camera preview you can look at before a minute of GPU
+   is spent: `studio camera <project> <beat> --guide`), and `guide_static.mp4`, where the static world is.
+3. **The shot.** LTX-2.3 (the IC-LoRA depth control a take uses) paints the beat along the guide from the start image,
+   with frames of the pure-camera render pinned along the way (`anchor`: once a second and at the end, which keeps the
+   subjects' looks and sharpens close-ups). It runs at about 1024x576 (`camera.res`; at 1536x896 the girl's black coat
+   turned white in a test) and is scaled to `beat_res`: add `beat_restore: 1088` to the film for the fine detail. `backend: wan` runs Wan 2.2 Fun Control on
+   the same guide; `backend: uni3c` is Wan's camera controlnet (needs a file that is not installed by default, see
+   docs/INSTALL.md; the engine fails with its name, URL and folder when it is missing).
+4. **The measurement.** `studio camera <project> <beat> --check` registers every generated frame against the first on the
+   static world and reports how far the camera is from the keyed view (zoom error in %, shift in view widths), how far the
+   people walked, and what a perfect camera scores on the same measurement; it writes `camera.json` and a contact sheet.
+
+Beats that **continue** one another share one camera. `camera.continues: true` makes the beat start where the previous
+camera beat ended, at the speed it ended at (a chain flows as one smooth path and rests only at its ends and on holds, so
+there is no ease to a stop at the cut), start on that beat's last frame (`beat_frame`, exactly, unless it names an
+`image`), and fly its guide through the chain's base plate (the first beat's start image: the world every beat of the
+chain looks at, so a camera that pulls back out of a close-up has the wide street to fly through). Its frames are graded
+back toward the plate's tone and grain (`match`, 0.7 when continuing), which stops a clip-to-clip drift in contrast, haze
+and grain from showing at the cut.
+
+```yaml
+      - id: in                      # pushes in and is still moving when the beat ends
+        seconds: 3
+        image: inputs/street.png
+        prompt: ...
+        motion: ...
+        camera: { keys: [{ t: 0, box: [0, 0, 1, 1] }, { t: 1, box: [0.18, 0.10, 0.82, 0.80] }] }
+      - id: out                     # carries on to the girl and back out, starting on the last frame of `in`
+        seconds: 3
+        prompt: ...
+        motion: ...
+        camera:
+          continues: true
+          keys: [{ t: 0.5, box: [0.40, 0.38, 0.62, 0.97] }, { t: 1, box: [0, 0, 1, 1] }]
+```
+
+`trim` and `end_image` do not combine with `camera` (the keys are timed over the whole clip; the path decides the last
+frame). Cost: the depth and the people mask once per start image (about a minute, mostly model loading), the guide in
+seconds, the shot as long as any LTX beat of that length (about 10 minutes for 5 s on a 4090). Changing a box re-renders the guide and the shot, not the depth.
+
 ### Edit only inside a region (`edit.region`)
 
 A plain image edit (Qwen-Image-Edit) redraws a little of everything: ask for richer shoes and the crowd around them
@@ -660,6 +789,33 @@ face's own aligned space so it never flickers. Off by default, cached by the cli
 
 About 0.7 s per frame of 1080p on an RTX 4090 with two faces in view. `studio setup-comfy` installs the nodes and
 weights.
+
+### Find the polish problems before the owner does (`studio inspect`)
+
+```bash
+studio inspect my-site [--section story] [--json] [--embed] [--video recording.mp4]
+```
+
+A finished film (beats, a take or any `video:`) is scored second by second and beat by beat, on the CPU, for the five
+things people see without being able to say why, each measured so it can be said in a sentence:
+
+| | what it measures | how it reads |
+|---|---|---|
+| **Pops** | a frame change that motion cannot explain, over a large part of the picture; a one-frame flicker; judder (motion updating under 12 times a second); and the dissolve between two beats that are meant to be one scene but do not line up (a double image, a colour change) | "Crossfade shoes to hands: at mid-fade 90% of the edges differ, so a double image shows" |
+| **Softness** | how much fine detail the busiest parts of the frame hold (a frequency-domain index, so a soft-focus photograph is not mistaken for an upscale), with the edge width in pixels beside it | "only 2% of the fine detail of this film's sharpest frames is left here (edges 3.1 px wide), as if enlarged" |
+| **Halos** | the share of clean edges with a bright rim or seam beside them, against the film's own usual share | "19% of the clean edges have a bright rim, 6.2x this film's usual 3%" |
+| **Style drift** | how far the look moves from the scene's first second: the share of the picture's structure that is weak hatching or pencil texture (drawn styles), grain, and, within a still shot, tone, line density and saturation; `--embed` adds a CLIP image-embedding distance (local OpenCLIP weights only, nothing is downloaded) | "66% of the structure is soft hatching, against 37% at the start of the scene (sketchier)" |
+| **Morphs** | the share of the change between frames that optical flow cannot explain: things appearing, dissolving or rearranging instead of moving | "93% of the change is things rebuilding themselves rather than travelling" |
+
+Beats that join like one scene (the two frames that meet look alike) are judged as a continuation; a join between frames
+that look nothing alike is a scene change, a dissolve on purpose, and is never flagged. It writes
+`.build/inspect/<section>.json` (the contract: per-beat scores 0-100, issues with a level, time span, reason and what to
+try, a per-second timeline) and `<section>.html`: a timeline strip of every metric by second, the worst moments as
+pictures (before and after, the dissolve's three frames, a 1:1 crop with the rim pixels marked) each with one line saying
+what is wrong, and a score table per beat. Reports are cached by the film's content (a copy of a build is the same key;
+an unchanged film answers at once), a rebuilt beat re-measures. The storyboard editor (`studio storyboard --edit`) shows a
+badge on every beat card with its worst problem, linking to the report, and a **Polish check** button; MCP: `inspect_film`.
+`--video` judges any video file as one shot, e.g. a `studio record` scroll-through.
 
 ### Two video models: LTX-2.3 and Wan 2.2
 

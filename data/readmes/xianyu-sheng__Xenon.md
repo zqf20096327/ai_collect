@@ -193,7 +193,7 @@ source .venv/bin/activate && pip install -e .   # Linux / macOS
 ## 环境变量
 
 <details>
-<summary>共 14 项（点击展开）</summary>
+<summary>共 16 项（点击展开）</summary>
 
 | 变量 | 作用 | 默认 |
 |---|---|---|
@@ -202,6 +202,7 @@ source .venv/bin/activate && pip install -e .   # Linux / macOS
 | `XENON_RETRY_BUDGET_MIN/MAX` | 重试轮的步数预算区间 | 10 / 40 |
 | `XENON_GATE_FUSE_THRESHOLD` | 同因结构失败的熔断阈值 | 2 |
 | `XENON_MAX_ITERATIONS` | 单次运行的步数上限（所有引擎统一 120） | 120 |
+| `XENON_ENGINE_TIMEOUT` | 单次运行的引擎绝对时限（秒）；超时返回已完成部分 | 600 |
 | `XENON_MAX_TOKENS` | 单次模型调用的输出上限 | 8192 |
 | `XENON_MAX_CONTINUATIONS` | 截断后的自动续写次数 | 3 |
 | `NO_COLOR` | 标准环境变量；关闭输出与输入提示的颜色 | 未设置 |
@@ -210,7 +211,8 @@ source .venv/bin/activate && pip install -e .   # Linux / macOS
 | `XENON_EXTRA_ROOTS` | 启动目录之外额外允许文件工具读写的根目录（Windows 用 `;` 分隔） | 空 = 仅启动目录及其子目录 |
 | `XENON_SESSION_EVENTS(_DIR)` | 事件日志开关 / 目录 | 开 |
 | `XENON_HOOKS` | 本地 hooks 开关 | 开 |
-| `GITHUB_TOKEN` / `GH_TOKEN` | GitHub 工具认证（提升 API 限额） | 空 |
+| `XENON_ATTRIBUTION` | 提交与 PR 是否附带 Xenon 署名（`0` 关闭） | 开 |
+| `GITHUB_TOKEN` / `GH_TOKEN` | GitHub 工具认证（提升 API 限额；未设置时自动回退到已登录的 `gh auth token`） | 空 |
 
 </details>
 

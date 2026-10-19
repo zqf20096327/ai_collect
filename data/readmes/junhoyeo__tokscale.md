@@ -1272,9 +1272,9 @@ Submitted data goes through Level 1 validation:
 
 Generate a beautiful year-in-review image summarizing your AI coding assistant usage—inspired by Spotify Wrapped.
 
-| `bunx tokscale@latest wrapped` | `bunx tokscale@latest wrapped --clients` | `bunx tokscale@latest wrapped --agents --disable-pinned` |
-|:---:|:---:|:---:|
-| ![Wrapped 2025 (Agents + Pin Sisyphus)](.github/assets/wrapped-2025-agents.png) | ![Wrapped 2025 (Clients)](.github/assets/wrapped-2025-clients.png) | ![Wrapped 2025 (Agents + Disable Pinned)](.github/assets/wrapped-2025-agents-disable-pinned.png) |
+| `bunx tokscale@latest wrapped` | `bunx tokscale@latest wrapped --clients` |
+|:---:|:---:|
+| ![Wrapped 2025 (Agents)](.github/assets/wrapped-2025-agents.png) | ![Wrapped 2025 (Clients)](.github/assets/wrapped-2025-clients.png) |
 
 ### Command
 
@@ -1569,4 +1569,5 @@ AI coding tools store their session data in cross-platform locations. Most tools
 | Roo Code | `~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/tasks/` | `%USERPROFILE%\.config\Code\User\globalStorage\rooveterinaryinc.roo-cline\tasks\` | VS Code globalStorage task logs |
 | Kilo | `~/.config/Code/User/globalStorage/kilocode.kilo-code/tasks/` | `%USERPROFILE%\.config\Code\User\globalStorage\kilocode.kilo-code\tasks\` | VS Code globalStorage task logs |
 | Cline | Linux: `~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/tasks/`; macOS: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/tasks/`; server: `~/.vscode-server/data/User/globalStorage/saoudrizwan.claude-dev/tasks/`; Cline CLI fallback: `~/.cline/data/sessions/` | `%APPDATA%\Code\User\globalStorage\saoudrizwan.claude-dev\tasks\`; Cline CLI fallback: `%USERPROFILE%\.cline\data\sessions\` | VS Code globalStorage task logs; Cline CLI selects the first available root in order `$CLINE_SESSION_DATA_DIR` → `$CLINE_DATA_DIR/sessions/` → `$CLINE_DIR/data/sessions/` → `~/.cline/data/sessions/`; blank/whitespace-only environment values are ignored |
-|
+| Mux | `~/.mux/sessions/` | `%USERPROFILE%\.mux\sessions\` | Same path on all platforms |
+| Codebuff | `~/.config/manicode/projects/` (+ `manicode-dev`, `manicode-staging`) | `%US

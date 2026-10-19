@@ -70,6 +70,9 @@ Manage your real investment portfolio with a sleek, "Webull-style" interface fea
 - **Groups**: Organize holdings into Dividend, Growth, Speculative, or custom categories
 - **Transactions**: Log buys and sells with dates, shares, and prices
 - **Real-Time Sync**: Pull current market data to calculate live P/L
+- **Clear price labels**: in the first minutes of a session, a stock that has traded but has no last-trade price yet shows today's **Open** price, labelled as such, instead of yesterday's close. A stock sitting at its daily limit gets a solid colour block (limit up / limit down, in your region's colours)
+- **Price alerts (到價設定通知)**: set an upper and/or lower price for any holding from its row `...` menu (desktop) or the 🔔 button on its card (mobile). When the price reaches either line, the alert shows in the notification bell; VIP and above also get a phone push during Taiwan market hours
+- **Phone push notifications (VIP)**: turn them on in Settings → Preferences → *Enable on this device*. Works in desktop and Android browsers; on iPhone (iOS 16.4+), add Marffet to the Home Screen first (Share → Add to Home Screen) and enable it from there. Tapping a notification opens your portfolio
 - **Responsive UX**: 7-column stacked desktop view and cyberpunk framed mobile cards with smooth stagger animations
 
 ### 5. Portfolio Trend 📈
@@ -96,7 +99,8 @@ See how your ROI compares against other Marffet users.
 Specialized tools for Convertible Bond investors.
 
 - **Premium Monitoring**: Track CB premiums and identify arbitrage opportunities
-- **Yield Hunter**: Alerts when premium falls below -1% (buy) or rises above 30% (sell)
+- **Yield Hunter**: Alerts when premium falls below -1% (buy) or rises above 40% (sell)
+- **Phone push (VIP)**: CB threshold crossings also arrive as a phone notification during Taiwan market hours
 
 ### 9. ETF Hub — Active Discount/Premium Board 🪐
 **The board we built because the number is so easy to get wrong.** A discount/premium (折溢價) figure only means something if the NAV and the market price come from the same source on the same date — and that is exactly what most tables quietly fail to guarantee. Ours is a focused board for Taiwan-listed **active ETFs**, built around that one rule.
@@ -189,6 +193,7 @@ An intelligent investment assistant powered by Google Gemini.
 | AI Copilot | ❌ | 🎓 Educator | 🎓 Educator | 💼 Wealth Manager |
 | CB Notifications | ❌ | ❌ | ✅ In-App | ✅ In-App + Email |
 | Rebalancing Alerts | ❌ | ❌ | ✅ In-App | ✅ In-App + Email |
+| Phone Push Notifications (Price Alerts + CB) | ❌ | ❌ | ❌ | ✅ |
 | Data Export | ❌ | 📦 Unfiltered | 📥 Filtered + 📦 Unfiltered | 📥 Filtered + 📦 Unfiltered |
 | Server-Side Data | ❌ | ✅ | ✅ | ✅ |
 | Priority Support | ❌ | ❌ | ❌ | ✅ |

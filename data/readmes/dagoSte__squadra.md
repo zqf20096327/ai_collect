@@ -16,15 +16,26 @@ The most complete team skill for Claude Code, Codex and Cursor.
 
 </div>
 
-[![Cisco security scan](https://img.shields.io/github/actions/workflow/status/dagoSte/squadra/cisco-skill-scan.yml?branch=main&label=Cisco%20security%20scan&logo=cisco)](https://github.com/dagoSte/squadra/actions/workflows/cisco-skill-scan.yml) [![Latest release](https://img.shields.io/github/v/release/dagoSte/squadra?label=release&color=2ea44f)](https://github.com/dagoSte/squadra/releases/latest) [![License](https://img.shields.io/github/license/dagoSte/squadra?color=blue)](https://github.com/dagoSte/squadra/blob/main/LICENSE) [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-3776AB?logo=python&logoColor=white)](#start) [![Dependencies: Python standard library only](https://img.shields.io/badge/dependencies-stdlib%20only-brightgreen)](#start) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-D97757?logo=claude&logoColor=white)](#start) [![Codex plugin](https://img.shields.io/badge/Codex-plugin-412991?logo=openai&logoColor=white)](#start) [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20POSIX-555)](#start) [![GitHub stars](https://img.shields.io/github/stars/dagoSte/squadra?style=flat&logo=github&color=yellow)](https://github.com/dagoSte/squadra/stargazers) [![Last commit](https://img.shields.io/github/last-commit/dagoSte/squadra)](https://github.com/dagoSte/squadra/commits/main)
+[![Cisco security scan](https://img.shields.io/github/actions/workflow/status/dagoSte/squadra/cisco-skill-scan.yml?branch=main&label=Cisco%20security%20scan&logo=cisco)](https://github.com/dagoSte/squadra/actions/workflows/cisco-skill-scan.yml) [![HOL Guard](https://img.shields.io/endpoint?url=https%3A%2F%2Fhol.org%2Fapi%2Fregistry%2Fbadges%2Fplugin%3Fslug%3Ddagoste%252Fsquadra%26metric%3Dtrust)](https://hol.org/registry/plugins/dagoste%2Fsquadra) [![Latest release](https://img.shields.io/github/v/release/dagoSte/squadra?label=release&color=2ea44f)](https://github.com/dagoSte/squadra/releases/latest) [![License](https://img.shields.io/github/license/dagoSte/squadra?color=blue)](https://github.com/dagoSte/squadra/blob/main/LICENSE) [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-3776AB?logo=python&logoColor=white)](#start) [![Dependencies: Python standard library only](https://img.shields.io/badge/dependencies-stdlib%20only-brightgreen)](#start) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-D97757?logo=claude&logoColor=white)](#start) [![Codex plugin](https://img.shields.io/badge/Codex-plugin-412991?logo=openai&logoColor=white)](#start) [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20POSIX-555)](#start) [![GitHub stars](https://img.shields.io/github/stars/dagoSte/squadra?style=flat&logo=github&color=yellow)](https://github.com/dagoSte/squadra/stargazers) [![Last commit](https://img.shields.io/github/last-commit/dagoSte/squadra)](https://github.com/dagoSte/squadra/commits/main)
 
 Static, behavioral and dependency checks, excluding `tests/`. Passing means no HIGH or CRITICAL findings; lower-severity findings remain in the report. Click the badge for results.
+
+<a id="one-sentence"></a>
+**Install it with one sentence.** Paste this into Claude Code, Codex or Cursor:
+
+```text
+Install Squadra by following https://github.com/dagoSte/squadra/blob/main/SETUP.md: show me the plan first, wait for my yes, then install it and check that it works.
+```
+
+The agent checks what you already have, shows each command with what it changes and how to undo it, waits for your yes, installs and runs a one-second check.
+
+One act stays with you: `/reload-plugins` in Claude Code, or a new session in Codex or Cursor.
+
+Other ways to install: [Installation](#start).
 
 **Watch the 80-second tour — turn the sound on in the player:**
 
 https://github.com/user-attachments/assets/69f512be-775c-40ae-95c2-e1e403b3f5d1
-
-It installs with `/plugin` in Claude Code and Codex. **Install:** see [Installation](#start).
 
 <a id="news"></a>
 ## What's new
@@ -37,6 +48,8 @@ The coordinator can deliver every message to its window, the dashboard updates o
 
 https://github.com/user-attachments/assets/6ea747a5-a993-4aa7-a58d-1b2b7f908720
 
+- **Install with one sentence.** Paste the sentence at the top of this page into your coding agent: it shows the plan, waits for your yes, installs and checks ([SETUP.md](SETUP.md)).
+- **Small changes take minutes.** Before starting, the agent tells you how many minutes it needs. A small change is simply made, with at most one check. A read by another window or the whole test suite runs only when you or the coordinator ask for it; for an important change it is suggested, with its time.
 - **Messages always find their way.** The coordinator can deliver any message, including one written by a sandboxed Codex window, and every delivery attempt is recorded. A Claude window receives its own mail as it arrives with `squadra inbox --follow`. A message to a Codex window that nobody has delivered yet is listed first, as «to forward», with how long it has been waiting.
 - **Waits that tell the truth.** The waits list only what is still open: a closed task's confirmations leave it, and a plan waiting for its reader shows up there.
 - **Search.** The search box finds past work by the words people wrote, in any order and with or without accents, including decisions, questions and reviews. The dropdown shows the newest results first and ends with a ready-made question for your agent.
@@ -155,7 +168,11 @@ More terms, such as log and exit, UTC, PID and cwd: [the page guide](references/
 
 **Requirements:** Python 3.12+, Git and the Python standard library. **Node.js** runs the dashboard's JavaScript checks in the test suite and in `selftest`: without it they fail, they are never skipped. A browser for the dashboard; the Codex or Claude CLI only for the native runners. macOS/POSIX is the tested process environment; Windows process controls and recovery with submodules, LFS or sparse checkouts are not qualified.
 
-### With /plugin (recommended)
+### With one sentence
+
+Paste [the sentence at the top of this page](#one-sentence) into Claude Code, Codex or Cursor. The agent follows [SETUP.md](SETUP.md): it checks what is already installed, shows the plan with every command, what it changes and how to undo it, and waits for your yes. Then it installs with the client's own commands (the plugin in Claude Code and Codex, the standalone installer in Cursor) and checks the installation on a throwaway registry. You then type `/reload-plugins` in Claude Code, or start a new session in Codex or Cursor.
+
+### With /plugin
 
 In Claude Code:
 

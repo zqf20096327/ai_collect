@@ -4,6 +4,8 @@
 
 > A production-shaped, evidence-first GenAI application for answering business questions from documents, KPI definitions, and structured revenue data.
 
+> 🚀 **Live demo (no signup, no API key):** https://business-intelligent-rag-agent.streamlit.app
+
 This is a focused portfolio project demonstrating how to build a safe RAG workflow beyond a generic “chat with PDFs” demo. It combines **LangChain orchestration**, governed SQL retrieval, a vector-ready knowledge layer, citations, and evaluation behind a typed FastAPI service.
 
 ## Portfolio highlights
@@ -91,6 +93,28 @@ LlamaIndex is intentionally not included: it overlaps with LangChain for this sc
 3. Open Streamlit at http://localhost:8501, or FastAPI docs at http://localhost:8000/docs.
 
 For a local API-only demo, run `pip install -r requirements.txt` then `uvicorn app.main:app --reload`. It uses SQLite automatically when `DATABASE_URL` is absent.
+
+`requirements.txt` is the light runtime set (API, Streamlit, evaluation). The optional PyTorch/SentenceTransformers semantic-retrieval stack lives in `requirements-semantic.txt` (`pip install -r requirements-semantic.txt`) and is only needed with `SEMANTIC_RETRIEVAL_ENABLED=true`.
+
+## Deploy to Streamlit Community Cloud (live demo)
+
+[`app.py`](app.py) is a self-contained Streamlit entrypoint that runs the RAG service **in-process** — no separate API server — so the hosted demo is a single free app. It answers deterministically without an `OPENAI_API_KEY`, so there is nothing to leak and no per-query cost.
+
+1. Sign in at https://share.streamlit.io with your GitHub account.
+2. Click **Create app** → **Yup, I have an app**.
+3. Repository `tejas-parjane/business-intelligent-rag-agent`, branch `main`, main file path `app.py`.
+4. (Optional) In **Advanced settings**, set the app URL subdomain to `business-intelligent-rag-agent`.
+5. Click **Deploy**.
+
+The app is **public** by default (deployed from a public repo). If you see component boxes show a `Failed to fetch dynamically imported module` error on a cold start, that is a known Streamlit Cloud chunk-loading race — a refresh clears it.
+
+Streamlit Community Cloud installs `requirements.txt`, which is intentionally light (no PyTorch). Free apps sleep after 12 hours of inactivity and wake on the next visit.
+
+To wire the LLM synthesis path, add `OPENAI_API_KEY` under **App settings → Secrets** — the public demo intentionally runs without it.
+
+## Deploy to Hugging Face Spaces (optional, paid)
+
+Hugging Face deprecated the built-in Streamlit SDK (2025-04-30) and, as of 2026, gated Docker/CPU Spaces behind a paid plan, so a Streamlit Space now requires **PRO** (or a paid org). If you have PRO, the root [`Dockerfile`](Dockerfile) already installs the light `requirements.txt` and launches Streamlit on port 8501 — create a Docker Space, add the front matter `sdk: docker` / `app_port: 8501`, and `git push`.
 
 ## Deploy to Render
 

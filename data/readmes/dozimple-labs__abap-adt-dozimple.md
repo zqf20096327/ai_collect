@@ -16,7 +16,7 @@ changes in the right transport after a human confirms them.
 **45 tools · 9 functional groups · 3 guided flows · ECC 6.0 (NW 7.50) and S/4HANA**
 
 [Features](#features-by-group) · [Full tool reference](docs/TOOLS.md) ·
-[Security](SECURITY.md) · [Threat model](docs/THREAT_MODEL.md) · [DoZimple Transport Risk](#dozimple-transport-risk) · [Credits](#credits) · [Contact](https://dozimple.cl)
+[Security](SECURITY.md) · [Threat model](docs/THREAT_MODEL.md) · [Parity with other SAP MCPs](docs/PARIDAD.md) · [DoZimple Transport Risk](#dozimple-transport-risk) · [Credits](#credits) · [Contact](https://dozimple.cl)
 
 </div>
 
@@ -58,11 +58,12 @@ and **a failure is never presented as an empty result or as success**.
 |---|---|---|
 | [Code review and transports](#g-revision) | Know what a transport really changes and what it may break, before releasing it. | 6 |
 | [Quality, ATC and remediation](#g-calidad) | Find, understand and fix findings with SAP's real syntax check and quick fixes. | 6 |
-| [Repository exploration](#g-exploracion) | Read and understand any ABAP object and its relations, on ECC and S/4HANA. | 13 |
-| [Data queries](#g-datos) | Query tables with ABAP SQL, read-only, with sensitive and personal data protected. | 5 |
-| [Incident diagnosis](#g-diagnostico) | One conversation for what used to take ST22, SM37, SLG1 and /IWFND/ERROR_LOG. | 5 |
+| [Repository exploration](#g-exploracion) | Read and understand any ABAP object and its relations, on ECC and S/4HANA. | 17 |
+| [Data queries](#g-datos) | Query tables with ABAP SQL, read-only, with sensitive and personal data protected. | 8 |
+| [Incident diagnosis](#g-diagnostico) | One conversation for what used to take ST22, SM37, SLG1 and /IWFND/ERROR_LOG. | 8 |
+| [Read-only debugging](#g-depuracion) | See where a program stops and what its values are, without changing anything and only in development. | 5 |
 | [SAP documentation](#g-documentacion) | Answer from official documentation and check which syntax exists in each release. | 7 |
-| [Controlled writes](#g-escritura) | Save changes only in development, in the right transport, previewed and confirmed by a human. | 8 |
+| [Controlled writes](#g-escritura) | Save changes only in development, in the right transport, previewed and confirmed by a human. | 10 |
 | [DoZimple Transport Risk](#g-transport-risk) | Decide whether a whole release can go to QA or production, with the why in business terms. | 7 |
 | [Operations and growth](#g-operacion) | See what works on each system and decide the next tool with data. | 4 |
 <!-- groups:end -->
@@ -137,6 +138,7 @@ Summary per group; each tool's details — parameters, types, defaults, requirem
 |---|---|---|
 | [`search_objects`](docs/TOOLS.md#exploracion) | **Search ABAP objects.** Searches repository objects by name (supports * wildcards). | read |
 | [`get_source`](docs/TOOLS.md#exploracion) | **Read ABAP source.** Reads the source of any object: program, include, class (and its includes), interface, function module (without knowing its group), CDS, table/structure, etc. | read |
+| [`object_context`](docs/TOOLS.md#exploracion) | **An object's whole context in one call.** Type, package, responsible, CTS lock and transport, source size, recent versions, usages, drift against QA/production (transport-risk module) and the last remembered ATC run; depth 0–2. Replaces the search_objects → get_source → edit_preflight → where_used → object_versions chain. | read |
 | [`where_used`](docs/TOOLS.md#exploracion) | **Where used.** Where-used list of an object: who references it, with package and owner. | read |
 | [`source_search`](docs/TOOLS.md#exploracion) | **Search text in source code.** Searches a text or regex in the source of a package (with subpackages), a transport or a list of objects, and returns object, include, line and the matching line; reaches what where-used misses (dynamic calls, literals, Z code outside the reference index). | read |
 | [`object_versions`](docs/TOOLS.md#exploracion) | **Object versions.** Version history of an object (date, author, transport). | read |
@@ -148,6 +150,9 @@ Summary per group; each tool's details — parameters, types, defaults, requirem
 | [`function_modules`](docs/TOOLS.md#exploracion) | **Function modules of a group.** Lists the function modules of a function group with their text and whether they are RFC or update modules; given a module, finds its group and siblings. Works with /XXX/ namespaces. | read |
 | [`text_elements`](docs/TOOLS.md#exploracion) | **Text symbols and selection texts.** Reads the text symbols (TEXT-001…), selection texts or headings of a program, class or function group. | read |
 | [`enhancements`](docs/TOOLS.md#exploracion) | **Enhancements and BAdIs.** Implementations of a BAdI (new and classic, active or not), source code enhancements implemented inside a program, class or function group (flagging those that overwrite standard code), or all enhancement implementations of a namespace by type. | read |
+| [`code_structure`](docs/TOOLS.md#exploracion) | **Structure and references of an object (local analysis).** Parses the source locally with abaplint: classes with methods and visibility, interfaces, forms, tables read, functions, classes and includes used, metrics and unused private methods. Nothing runs on SAP. | read |
+| [`package_dependencies`](docs/TOOLS.md#exploracion) | **Package dependencies (local analysis).** Dependency graph of a package or object list from their sources: tables, functions, classes and includes per object, internal vs external, most-used targets. | read |
+| [`unused_methods`](docs/TOOLS.md#exploracion) | **Unused methods (local analysis).** Private or protected methods no statement of their own class calls, across the classes of a package or list; protected ones flagged separately. | read |
 
 <a id="g-datos"></a>
 ### Data queries
@@ -161,6 +166,9 @@ Summary per group; each tool's details — parameters, types, defaults, requirem
 | [`count_rows`](docs/TOOLS.md#datos) | **Count rows.** Counts the rows of a table or view, with optional condition and grouping, without fetching data; same policy as sql_query. | read |
 | [`search_tables`](docs/TOOLS.md#datos) | **Search tables by description.** Finds tables, structures and views by a word in their description or name; metadata only. | read |
 | [`foreign_keys`](docs/TOOLS.md#datos) | **Foreign keys of a table.** Check tables a table uses and tables that use it as check table, field by field, with the JOIN condition ready for sql_query. | read |
+| [`elevate_access`](docs/TOOLS.md#datos) | **Elevate access to a data category.** Temporary, human-confirmed access on one system to a protected category (security and roles, HCM master data, payroll, personal data in clear); expires by itself; every use is audited. SECRETOS is never elevated. | read |
+| [`elevation_status`](docs/TOOLS.md#datos) | **Active elevations.** Which data categories are elevated now, with reason and minutes left. | read |
+| [`revoke_access`](docs/TOOLS.md#datos) | **Revoke an elevation.** Closes an elevation early; audited. | read |
 
 <a id="g-diagnostico"></a>
 ### Incident diagnosis
@@ -174,6 +182,22 @@ Summary per group; each tool's details — parameters, types, defaults, requirem
 | [`jobs`](docs/TOOLS.md#diagnostico) | **Background jobs (SM37).** Background jobs by name (supports *), user, status and date, with their steps (program and variant). | read |
 | [`application_log`](docs/TOOLS.md#diagnostico) | **Application log (SLG1) headers.** Application log headers (BALHDR) by object/subobject, external number, user and date, with error and warning counts. | read |
 | [`gateway_errors`](docs/TOOLS.md#diagnostico) | **SAP Gateway errors (/IWFND/ERROR_LOG).** Lists SAP Gateway (OData) errors: service, error, user, date. | read |
+| [`abap_traces`](docs/TOOLS.md#diagnostico) | **ABAP traces (SAT).** Recorded ABAP performance traces of a user: ABAP, system and database times; per trace, the hit list, the database accesses or the statements. Read-only: never activates or deletes traces. | read |
+| [`sql_traces`](docs/TOOLS.md#diagnostico) | **SQL traces (ST05).** Directory and state of the ST05 traces exposed by ADT (S/4HANA, NW ≥ 7.51). Read-only. | read |
+| [`system_messages`](docs/TOOLS.md#diagnostico) | **System messages (SM02).** Current or all system messages (text, client, server, validity, creator) from TEMSI/TEMSG. | read |
+
+<a id="g-depuracion"></a>
+### Read-only debugging
+
+*See where a program stops and what its values are, without changing anything and only in development.*
+
+| Tool | What it does | Access |
+|---|---|---|
+| [`debug_breakpoints`](docs/TOOLS.md#depuracion) | **External breakpoints (debugger).** Sets or clears external breakpoints for the connection user (object and line); only on development systems with test data, with confirmation. | executes (DEV) |
+| [`debug_listen`](docs/TOOLS.md#depuracion) | **Wait and attach to the debugger.** Listens up to a timeout for a program of the connection user to stop at an external breakpoint, attaches and returns the stack and the variables of the current frame. Read-only; personal variables masked on masked-data systems; disabled with production data. | executes (DEV) |
+| [`debug_variables`](docs/TOOLS.md#depuracion) | **Debugger variables.** With an attached session: values by name, components of a structure or table by id, and the stack. | executes (DEV) |
+| [`debug_step`](docs/TOOLS.md#depuracion) | **Debugger step.** Into, over, return or continue; returns the stack and variables afterwards; closes the session when the program ends. | executes (DEV) |
+| [`debug_stop`](docs/TOOLS.md#depuracion) | **Close the debug session.** Releases or terminates the debuggee, removes the listener and closes the session. | executes (DEV) |
 
 <a id="g-documentacion"></a>
 ### SAP documentation
@@ -197,9 +221,11 @@ Summary per group; each tool's details — parameters, types, defaults, requirem
 
 | Tool | What it does | Access |
 |---|---|---|
-| [`create_object`](docs/TOOLS.md#escritura) | **Create ABAP object.** Creates a new program, include, class, interface, function group, function module, CDS view or CDS access control in a development system: explicit package and transport (never chosen by the server), master language of the system, optional initial source checked by SAP before saving, preview and human confirmation. | writes (authorized DEV) |
+| [`create_object`](docs/TOOLS.md#escritura) | **Create ABAP object.** Creates a new program, include, class, interface, function group, function module, CDS view or access control and, on S/4 or NW ≥ 7.51, dictionary objects (table, structure, table type, data element, domain) and RAP objects (metadata extension, service definition, OData V2 binding, behavior definition) in a development system: explicit package and transport (never chosen by the server), master language of the system, optional initial source or properties checked before saving, preview and human confirmation. | writes (authorized DEV) |
 | [`write_source`](docs/TOOLS.md#escritura) | **Save source to SAP.** Replaces the FULL source of an existing object (or class include) in the given transport, after a preview with syntax check and diff and a human confirmation. | writes (authorized DEV) |
 | [`edit_source`](docs/TOOLS.md#escritura) | **Edit a fragment of the source.** Replaces specific fragments of an existing object's source without resending it whole (exact current text → new text), through the same preview, syntax check, diff, fingerprint, lock and transport as write_source. | writes (authorized DEV) |
+| [`push_sources`](docs/TOOLS.md#escritura) | **Save several sources in one operation.** Full sources of up to 20 existing objects (class includes included) in the same transport, with one consolidated preview (syntax and diff per object), one confirmation and a joint activation; failures reported per object. | writes (authorized DEV) |
+| [`write_ddic_properties`](docs/TOOLS.md#escritura) | **Write domain or data element properties.** Changes the properties of an existing domain (type, length, output, fixed values) or data element (domain or predefined type, labels, search help) through ADT on S/4 or NW ≥ 7.51, with a property diff preview, confirmation, explicit transport and activation. | writes (authorized DEV) |
 | [`revert_source`](docs/TOOLS.md#escritura) | **Revert to an earlier version.** Writes back an earlier version of an object (the last active one, the one before it, or a numbered one from object_versions) through the same preview, fingerprint, lock and transport as write_source; never reverts on its own. | writes (authorized DEV) |
 | [`change_package`](docs/TOOLS.md#escritura) | **Change an object's package.** Moves an existing object to another package and records it in the given transport (typically out of $TMP), like Eclipse's “Change Package Assignment”; the preview includes SAP's own validation and nothing is changed until confirmed. | writes (authorized DEV) |
 | [`activate`](docs/TOOLS.md#escritura) | **Activate objects.** Activates one object, a list, or all inactive objects of the connection user (optionally of one transport) together in a single SAP activation, which resolves mutual dependencies; never activates pending deletions. | writes (authorized DEV) |
@@ -276,6 +302,11 @@ Designed to pass a Security and Basis review without exceptions. Details: **[SEC
 - **No network surface:** stdio only; no ports are opened.
 - **Credentials in the OS keychain** (macOS Keychain or Linux Secret Service), never in files, logs or responses.
 - **Policy per role:** QA and production are never written; development only with explicit authorization.
+- **`core` tool profile (default):** at startup only the everyday tools are published (find, read, query, check,
+  save and `load_tools`); the rest stay registered but disabled and are loaded per catalog group with
+  `load_tools(groups)`, which notifies the client with `tools/list_changed`. Fewer tokens per conversation and less
+  tool confusion. `"tools": { "profile": "expert" }` or `ABAP_DZ_PROFILE=expert` publishes everything at startup. The
+  `only`/`except` filter overrides the profile: what it excludes cannot be loaded.
 - **Selective tool exposure:** `"tools": { "only": [...], "except": [...] }` in `systems.json`, or `ABAP_DZ_TOOLS`
   (comma-separated) in a project's MCP client configuration. Entries are tool names, catalog groups (`exploracion`,
   `escritura`…) or access kinds (`read`, `write`, `exec`). The environment never widens what the configuration allows;
@@ -283,11 +314,18 @@ Designed to pass a Security and Basis review without exceptions. Details: **[SEC
 - **Strict parameters:** an unknown or misspelled parameter is an error listing the accepted ones, never silently ignored.
 - **No write without human confirmation:** a preview with SAP's syntax check and the real diff, confirmed through MCP
   elicitation or a single-use token bound to those exact arguments.
-- **Hash-chained audit log** of every write and execution, fail-closed (no log, no write), verifiable with
+- **Hash-chained audit log** of every write and execution, and of every business-data read (`data_read`: tables,
+  masked columns, row count; never the values), fail-closed (no log, no write and no result), verifiable with
   `npm run audit:verify`.
-- **SAP credential material and HR data blocked** in SQL queries, also through views and CDS, even if the SAP user is
+- **Data categories with elevated access**: security and roles, HCM master data, payroll and personal data in clear
+  are read only under a temporary elevation the person confirms (`elevate_access`: system, category, minutes,
+  reason), allowed per system in the configuration; every grant, use and revocation is an `elevation_*` audit event.
+- **SAP credential material blocked** in SQL queries, also through views and CDS, even if the SAP user is
   authorized. Validated against a real S/4HANA 2023 system, where standard views and CDS read USR02 without naming it.
 - **Personal data masked and row caps** on systems with production data.
+- **Free SQL parsed, not pattern-matched**: FROM, JOIN, subqueries and CTEs are resolved to base tables; a query
+  whose sources cannot be determined (host variables, dynamic sources) is rejected. On production-data systems
+  `sql_query` and `table_contents` read in two steps: preview of tables and cap, then human confirmation, like a write.
 - **No customer data to the internet:** online documentation search is off by default and, when enabled, every query
   with objects, transports, systems, users or customer names is blocked.
 - **Third parties isolated** in their own process with a minimal environment.
@@ -304,12 +342,25 @@ Designed to pass a Security and Basis review without exceptions. Details: **[SEC
 
 ## Installation
 
-### From npm (recommended)
+### Quick start
+
+```sh
+npm install -g --ignore-scripts @dozimple/abap-adt@2.0.3
+abap-adt-dozimple init --client claude-code      # or claude-desktop · kiro · cursor · vscode
+```
+
+`init` asks for the system (id, URL, client, user, role), writes `~/.config/abap-adt-dozimple/systems.json` with
+600 permissions, stores the password in the OS secret store (the store itself prompts; nothing is written to a
+file) and registers the server in the chosen client without touching its other entries. `--dry-run` shows what it
+would do; `--force` replaces an existing system or entry; `init --help` lists every flag. Step by step, the same
+thing is:
+
+### From npm, step by step
 
 Pinned to an exact version, without install scripts, like the project's own dependencies:
 
 ```sh
-npm install -g --ignore-scripts @dozimple/abap-adt@1.6.1
+npm install -g --ignore-scripts @dozimple/abap-adt@2.0.3
 PKG="$(npm root -g)/@dozimple/abap-adt"
 mkdir -p ~/.config/abap-adt-dozimple && chmod 700 ~/.config/abap-adt-dozimple
 cp "$PKG/config/systems.example.json" ~/.config/abap-adt-dozimple/systems.json   # systems, roles and permissions
@@ -325,9 +376,26 @@ MCP client registration:
 ```
 
 Every release is published from CI with [npm provenance](https://docs.npmjs.com/generating-provenance-statements):
-`npm view @dozimple/abap-adt@1.6.1 dist.attestations` shows the attestation, and the GitHub release carries the
+`npm view @dozimple/abap-adt@2.0.3 dist.attestations` shows the attestation, and the GitHub release carries the
 tarball, its Sigstore bundle (`.sigstore.json`), the same bundle as in-toto provenance (`.intoto.jsonl`) and the
-SBOM. To check it: `gh attestation verify dozimple-abap-adt-1.6.1.tgz --repo <owner>/abap-adt-dozimple`.
+SBOM. To check it: `gh attestation verify dozimple-abap-adt-2.0.3.tgz --repo <owner>/abap-adt-dozimple`.
+
+### Team mode over HTTP (identity per person)
+
+```sh
+abap-adt-dozimple serve --host 127.0.0.1 --port 2235            # behind a TLS reverse proxy
+abap-adt-dozimple serve --host 0.0.0.0 --cert srv.pem --key srv.key   # or with its own TLS
+```
+
+Streamable HTTP endpoint (`/mcp`). Every request carries the SAP identity of the person using it
+(`Authorization: Basic user:password`), and the server talks to SAP **as that person**: their user in connections,
+locks, transports and the audit log. Passwords live only in memory while the session lasts and are never written
+to disk; the server refuses to listen outside loopback without TLS. Sessions are capped and expire after
+inactivity (`--max-sessions`, `--idle-minutes`, or `ABAP_DZ_HTTP_*` variables). Client registration:
+
+```json
+{ "mcpServers": { "abap-adt-doZimple": { "type": "http", "url": "https://sap-mcp.example/mcp", "headers": { "Authorization": "Basic <base64 user:password>" } } } }
+```
 
 ### From source
 
@@ -362,10 +430,10 @@ abap-adt-doZimple is built on other people's work, and says so: each tool lists 
 <!-- credits:start -->
 | Project | Author / holder | License | Type | Used in |
 |---|---|---|---|---|
-| [abap-adt-api](https://github.com/marcellourbani/abap-adt-api) | Marcello Urbani | MIT | dependency | all (core), `transport_diff`, `transport_contents`, `my_transports`, `inactive_objects`, `edit_preflight` and 30 more |
+| [abap-adt-api](https://github.com/marcellourbani/abap-adt-api) | Marcello Urbani | MIT | dependency | all (core), `transport_diff`, `transport_contents`, `my_transports`, `inactive_objects`, `edit_preflight` and 40 more |
 | [Model Context Protocol TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) | Model Context Protocol | MIT | dependency | all (core) |
 | [mcp-sap-docs](https://github.com/marianfoo/mcp-sap-docs) | Marian Zeis (marianfoo) | Apache-2.0 | dependency | `abap_feature_matrix`, `docs_search`, `docs_fetch`, `clean_core_objects`, `clean_core_object`, `abap_lint` and 1 more |
-| [abaplint](https://github.com/abaplint/abaplint) | Lars Hvam and contributors | MIT | dependency | `abap_lint` |
+| [abaplint](https://github.com/abaplint/abaplint) | Lars Hvam and contributors | MIT | dependency | `code_structure`, `package_dependencies`, `unused_methods`, `abap_lint` |
 | [zod](https://github.com/colinhacks/zod) | Colin McDonnell and contributors | MIT | dependency | all (core) |
 | [ABAP Keyword Documentation](https://help.sap.com/doc/abapdocu_latest_index_htm/latest/en-US/index.htm) | SAP SE | © SAP SE | data | `docs_search`, `docs_fetch` |
 | [ABAP Cheat Sheets](https://github.com/SAP-samples/abap-cheat-sheets) | SAP (SAP-samples) | Apache-2.0 | data | `docs_search` |
@@ -374,10 +442,10 @@ abap-adt-doZimple is built on other people's work, and says so: each tool lists 
 | [ABAP Feature Matrix](https://software-heroes.com/en/abap-feature-matrix) | Software-Heroes | © Software-Heroes | data | `abap_feature_matrix` |
 | [Released objects / Cloudification Repository (abap-atc-cr-cv-s4hc)](https://github.com/SAP/abap-atc-cr-cv-s4hc) | SAP | Apache-2.0 | data | `clean_core_objects`, `clean_core_object` |
 | [SAP Community / SAP Help Portal](https://community.sap.com) | SAP SE and community authors | SAP terms | data | `docs_community_search` |
-| [ABAP Remote FS (vscode_abap_remote_fs)](https://github.com/marcellourbani/vscode_abap_remote_fs) | Marcello Urbani | MIT | idea | `syntax_check`, `create_object` |
+| [ABAP Remote FS (vscode_abap_remote_fs)](https://github.com/marcellourbani/vscode_abap_remote_fs) | Marcello Urbani | MIT | idea | `syntax_check`, `debug_breakpoints`, `debug_listen`, `debug_variables`, `debug_step`, `debug_stop` and 1 more |
 | [mcp-abap-adt](https://github.com/mario-andreschak/mcp-abap-adt) | mario-andreschak | MIT | idea | `search_objects`, `get_source`, `package_contents`, `ddic_type_info`, `transaction_info`, `table_contents` |
-| [ARC-1](https://github.com/arc-mcp/arc-1) | arc-mcp (Marian Zeis and contributors) | MIT | idea | `transport_diff`, `atc_quickfix`, `gateway_errors` |
-| [vibing-steampunk](https://github.com/oisee/vibing-steampunk) | oisee and contributors | MIT | idea | `co_change`, `api_release_state`, `source_search`, `enhancements`, `jobs`, `application_log` |
+| [ARC-1](https://github.com/arc-mcp/arc-1) | arc-mcp (Marian Zeis and contributors) | MIT | idea | `transport_diff`, `atc_quickfix`, `object_context`, `gateway_errors` |
+| [vibing-steampunk](https://github.com/oisee/vibing-steampunk) | oisee and contributors | MIT | idea | `co_change`, `api_release_state`, `source_search`, `enhancements`, `code_structure`, `package_dependencies` and 6 more |
 | [ABAPilot MCP connector (catálogo de tools)](https://github.com/NicoHern/abapilot-mcp) | Crimson Consulting SL (NicoHern) | MIT | idea | `count_rows`, `search_tables`, `foreign_keys`, `diagnose_message` |
 | [ABAP Accelerator for Amazon Q Developer](https://github.com/aws-solutions-library-samples/guidance-for-deploying-sap-abap-accelerator-for-amazon-q-developer) | AWS Solutions Library Samples | MIT-0 | idea | all (core), `my_transports`, `create_object`, `usage_stats` |
 | [An O(ND) Difference Algorithm and Its Variations (1986)](https://doi.org/10.1007/BF01840446) | Eugene W. Myers | published algorithm | algorithm | `transport_diff`, `atc_quickfix` |
@@ -385,6 +453,12 @@ abap-adt-doZimple is built on other people's work, and says so: each tool lists 
 
 Full dependency licenses: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). If you are the author of one of these
 projects and want to adjust how you are credited, reach us at [dozimple.cl](https://dozimple.cl).
+
+## Are you using it?
+
+Tell us where and what for: **[open a short "I'm using it" issue](https://github.com/dozimple-labs/abap-adt-dozimple/issues/new?template=uso.yml)**
+(country, SAP release, MCP client, kind of use; no company or system names needed). npm and GitHub only give us
+anonymous counters, and what you tell us is what decides the next tools.
 
 ## About DoZimple
 

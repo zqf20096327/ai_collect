@@ -50,7 +50,7 @@ Built for **every kind of technologist**, across 21 role-targeted learning paths
 >
 > Whether you've never opened a terminal or you're chasing your fifth cert, start here.
 >
-> Patrick: Ex-AWS Solutions Architect | 10 Years in Tech | 60 Certifications & Accreditations | 18x Multi Cloud Certified
+> Patrick: Ex-AWS Solutions Architect | 10 Years in Tech | 65 Certifications & Accreditations | 20x Multi Cloud Certified
 >
 > 🎥 [@patrickwiloak](https://youtube.com/@patrickwiloak) | 💼 [LinkedIn](https://www.linkedin.com/in/patricklukewilson/)
 
@@ -58,6 +58,16 @@ Built for **every kind of technologist**, across 21 role-targeted learning paths
 ![Documentation Links](https://img.shields.io/badge/Documentation%20Links-12000+-green.svg)
 ![Providers](https://img.shields.io/badge/Providers-27-orange.svg)
 ![Free to Use](https://img.shields.io/badge/Free%20to%20Use-Educational-green.svg)
+
+<div align="center" markdown="1">
+
+[![Visit the website](https://img.shields.io/badge/Visit_the_website-patrickwiloak.github.io%2Fcloud--data--ai--security--zero--to--hero-FF9900?style=for-the-badge&logo=googlechrome&logoColor=white)](https://patrickwiloak.github.io/cloud-data-ai-security-zero-to-hero/)
+
+**[→ patrickwiloak.github.io/cloud-data-ai-security-zero-to-hero](https://patrickwiloak.github.io/cloud-data-ai-security-zero-to-hero/)**
+
+Full-text search across all 3.1M words, dark mode, mobile-friendly.
+
+</div>
 
 ---
 
@@ -396,7 +406,7 @@ If these materials helped you pass a certification or advance your career, pleas
 
 Created and maintained by **[Patrick Wiloak](https://patricklukewilson.com)**
 
-**18x Multi Cloud Certified** | **60 Certifications & Accreditations** | **Prev @ AWS** | **12x AWS Certified** | **4x GCP** | **2x Azure**
+**20x Multi Cloud Certified** | **65 Certifications & Accreditations** | **Prev @ AWS** | **15x AWS Certified** | **3x GCP** | **2x Azure**
 
 🎥 **[YouTube: @patrickwiloak](https://youtube.com/@patrickwiloak)** - Cloud certification tips and tutorials
 💼 **[LinkedIn: Patrick Luke Wilson](https://www.linkedin.com/in/patricklukewilson/)** - Let's connect
@@ -405,3 +415,42 @@ Created and maintained by **[Patrick Wiloak](https://patricklukewilson.com)**
 If this repository helped you, please ⭐ star it and share with others.
 
 </div>
+
+<!-- nobler-footer:start - shared block, kept in sync across Nobler Works public repos -->
+
+---
+
+<div align="center" markdown="1">
+
+## More from Nobler Works
+
+Free, open-source projects from the [Nobler Works](https://noblerworks.com/) team. If one helps you, a ⭐ helps the next person find it.
+
+</div>
+
+| Project | What it is | |
+|---|---|---|
+| 🛰️ **[IRONSIGHT](https://github.com/NoblerWorks-HQ/IRONSIGHT)** | Real-time OSINT command center - 50+ live intel feeds, no API keys | **[Website →](https://noblerworks-hq.github.io/IRONSIGHT/)** |
+| 🌍 **[War Games](https://github.com/NoblerWorks-HQ/WarGames)** | NATO, Russia, and China on one map, each commanded by an LLM | **[Website →](https://noblerworks-hq.github.io/WarGames/)** |
+| ⛏️ **[Minecraft Agentic Builder](https://github.com/NoblerWorks-HQ/minecraft-agentic)** | A crew of AI agents builds Minecraft worlds live in your browser | [Repo →](https://github.com/NoblerWorks-HQ/minecraft-agentic) |
+| 📚 **[Everything AI, Summarized](https://github.com/PatrickWiloak/genai-research-papers-summarized)** | 156 landmark AI papers and 31 explainers in plain language | **[Website →](https://patrickwiloak.github.io/genai-research-papers-summarized/)** |
+| 🧠 **[Bedrock RAG with S3 Vectors](https://github.com/PatrickWiloak/bedrock-rag-s3-vectors-tutorial)** | Deploy document Q&A on AWS Bedrock in under 10 minutes (CDK or Terraform) | [Repo →](https://github.com/PatrickWiloak/bedrock-rag-s3-vectors-tutorial) |
+| 🏃 **[Proper Training for Distance Running](https://github.com/PatrickWiloak/proper-distance-running-training-guidance)** | Evidence-based running guide with twelve 5K-to-marathon plans | **[Read online →](https://achilles.fit/guides)** |
+
+<div align="center" markdown="1">
+
+**Our products:** [gitGood.dev](https://gitgood.dev) - train for the tech role, not just the interview · [Achilles.fit](https://achilles.fit) - adaptive training plans with an AI coach
+
+**Follow Nobler Works**
+
+[![Website](https://img.shields.io/badge/Website-000000?style=for-the-badge&logo=googlechrome&logoColor=white)](https://noblerworks.com/) [![X](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/Nobler_Works) [![YouTube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@NoblerWorks) [![TikTok](https://img.shields.io/badge/TikTok-000000?style=for-the-badge&logo=tiktok&logoColor=white)](https://www.tiktok.com/@noblerworks) [![Threads](https://img.shields.io/badge/Threads-000000?style=for-the-badge&logo=threads&logoColor=white)](https://www.threads.com/@noblerworks)
+
+**Follow Patrick Wiloak**, founder
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/patricklukewilson) [![X](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/PatrickWiloak) [![YouTube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/@patrickwiloak) [![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/patrickwiloak) [![Portfolio](https://img.shields.io/badge/Portfolio-000000?style=for-the-badge&logo=googlechrome&logoColor=white)](https://patricklukewilson.com)
+
+**Need something like this built for your domain? [Get in touch →](https://noblerworks.com/)**
+
+</div>
+
+<!-- nobler-footer:end -->
