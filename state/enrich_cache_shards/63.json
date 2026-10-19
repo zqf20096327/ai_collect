@@ -1828,5 +1828,32 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "vlwkaos/ir": {
+  "rel_ver": "v0.18.2",
+  "rel_pub": "2026-10-15",
+  "rel_days": 4,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Rust": 74,
+   "Python": 14,
+   "Shell": 11,
+   "Nix": 1,
+   "Mermaid": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

@@ -1281,5 +1281,28 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "vstorm-co/pydantic-ai-todo": {
+  "rel_ver": "0.2.7",
+  "rel_pub": "2026-07-22",
+  "rel_days": 89,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

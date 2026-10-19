@@ -1185,5 +1185,32 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "Deep-Spark/DeepSparkHub": {
+  "rel_ver": "26.09",
+  "rel_pub": "2026-09-22",
+  "rel_days": 27,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Python": 88,
+   "C++": 6,
+   "Cuda": 3,
+   "C": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

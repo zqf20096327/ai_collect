@@ -1606,5 +1606,62 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "xuemian168/kuno": {
+  "rel_ver": "v1.4.6-rc.1",
+  "rel_pub": "2026-05-16",
+  "rel_days": 156,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": null,
+  "sec_last": "2025-10-06",
+  "sec_ids": [
+   "GHSA-4f5f-2c49-5mwm(CVE-2025-61768,medium)",
+   "GHSA-q3w2-2vqp-gx3r(CVE-2025-61681,medium)"
+  ],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 73,
+   "Go": 23,
+   "Shell": 3,
+   "CSS": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "JesperDramsch/ml.recipes": {
+  "rel_ver": "Citation-2023",
+  "rel_pub": "2023-12-14",
+  "rel_days": 1040,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "HTML": 80,
+   "Jupyter Notebook": 19,
+   "Python": 1,
+   "TeX": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

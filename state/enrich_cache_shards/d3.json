@@ -1345,5 +1345,62 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "Jovancoding/Network-AI": {
+  "rel_ver": "v5.16.0",
+  "rel_pub": "2026-10-17",
+  "rel_days": 2,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 20,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-17",
+  "sec_ids": [
+   "GHSA-v64j-mc7x-c7x7(-,high)",
+   "GHSA-mfxv-jg44-xj48(-,high)",
+   "GHSA-5mm5-4mh4-6gm6(-,high)",
+   "GHSA-qvf5-9prv-7r9c(-,high)",
+   "GHSA-hr6v-mfxm-4438(-,medium)",
+   "GHSA-9p2w-prp8-5722(-,high)",
+   "GHSA-4pvg-m42h-c3x2(-,low)",
+   "GHSA-743h-jr5x-mpcr(CVE-2026-73614,high)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 90,
+   "HTML": 5,
+   "Python": 5,
+   "JavaScript": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "dream-num/skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "JavaScript": 46,
+   "TypeScript": 32,
+   "HTML": 22
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

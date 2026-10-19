@@ -1283,5 +1283,32 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "Zentar-Ai/Zentara-Code": {
+  "rel_ver": "v.0.2.11",
+  "rel_pub": "2026-03-17",
+  "rel_days": 216,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 240,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1,
+   "CSS": 1,
+   "Shell": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

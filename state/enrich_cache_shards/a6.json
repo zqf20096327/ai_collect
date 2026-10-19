@@ -1574,5 +1574,26 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "TusKANNy/kannolo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Rust": 87,
+   "Python": 10,
+   "Jupyter Notebook": 3
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

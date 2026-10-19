@@ -1135,5 +1135,55 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "kailiang0120/monaw": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-09-08",
+  "rel_days": 41,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 77,
+   "TypeScript": 19,
+   "JavaScript": 1,
+   "CSS": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "joeycumines/go-behaviortree": {
+  "rel_ver": "v1.11.0",
+  "rel_pub": "2026-01-31",
+  "rel_days": 261,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 100
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

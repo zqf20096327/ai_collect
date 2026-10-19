@@ -1397,5 +1397,28 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "Mobile-Artificial-Intelligence/maise": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-09-03",
+  "rel_days": 46,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 100
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

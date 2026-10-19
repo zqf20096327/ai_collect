@@ -1372,5 +1372,83 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "scenario-labs/Scenario-Unity": {
+  "rel_ver": "unity-plugin-v0.2.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 0,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "C#": 92,
+   "Mathematica": 5,
+   "ShaderLab": 3,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "magicnight/Mac-MLX": {
+  "rel_ver": "v0.9.0",
+  "rel_pub": "2026-08-28",
+  "rel_days": 52,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Swift": 86,
+   "JavaScript": 11,
+   "HTML": 1,
+   "CSS": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "aashari/mcp-server-atlassian-jira": {
+  "rel_ver": "v3.3.0",
+  "rel_pub": "2025-12-03",
+  "rel_days": 320,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 89,
+   "JavaScript": 11
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

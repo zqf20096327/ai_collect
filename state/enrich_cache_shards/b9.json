@@ -1492,5 +1492,32 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "ActiveMemory/ctx": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-03-24",
+  "rel_days": 209,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "HTML": 63,
+   "Go": 35,
+   "TypeScript": 1,
+   "Shell": 1,
+   "Rust": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

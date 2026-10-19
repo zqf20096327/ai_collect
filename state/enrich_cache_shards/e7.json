@@ -1568,5 +1568,85 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "hoangsonww/Moodify-Emotion-Music-App": {
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-05-24",
+  "rel_days": 148,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 41,
+   "Python": 32,
+   "HCL": 9,
+   "HTML": 8,
+   "Shell": 4
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "GalaxyXieyu/Awesome-Langgraph-Learn": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 90,
+   "Jupyter Notebook": 6,
+   "JavaScript": 2,
+   "CSS": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "embedded-society/altium-designer-mcp": {
+  "rel_ver": "v1.2.2",
+  "rel_pub": "2026-10-09",
+  "rel_days": 10,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": null,
+  "sec_last": "2026-10-09",
+  "sec_ids": [
+   "GHSA-9q2r-7gw3-4wvm(-,medium)",
+   "GHSA-p2qw-h8m7-5x69(-,medium)"
+  ],
+  "contrib_n": 5,
+  "lang": {
+   "Rust": 93,
+   "Pascal": 5,
+   "PowerShell": 1,
+   "Python": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

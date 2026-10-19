@@ -1216,5 +1216,102 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "HDFGroup/hdf5-json": {
+  "rel_ver": "v2.0.1",
+  "rel_pub": "2026-10-02",
+  "rel_days": 17,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "ICME-Lab/jolt-atlas": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2026-06-18",
+  "sec_ids": [
+   "GHSA-333f-w2cf-wch9(-,medium)"
+  ],
+  "contrib_n": 8,
+  "lang": {
+   "Rust": 95,
+   "Python": 5
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "AntChainOpenLabs/Smart-Intermediate-Representation": {
+  "rel_ver": "v0.0.2",
+  "rel_pub": "2024-02-26",
+  "rel_days": 966,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "Rust": 61,
+   "C": 29,
+   "C++": 9,
+   "Dockerfile": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "roedyrustam/vibes-plug": {
+  "rel_ver": "v4.3.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 81,
+   "Python": 19
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

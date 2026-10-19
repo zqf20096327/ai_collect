@@ -1306,5 +1306,31 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "aws-samples/sample-agentic-attack-tree-generator": {
+  "rel_ver": "v0.4.2",
+  "rel_pub": "2026-05-20",
+  "rel_days": 152,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "TypeScript": 93,
+   "Python": 6,
+   "JavaScript": 2,
+   "Perl": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

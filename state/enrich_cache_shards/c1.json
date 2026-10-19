@@ -1330,5 +1330,32 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "liekzejaws/rushlight": {
+  "rel_ver": "v1.4.1",
+  "rel_pub": "2026-03-13",
+  "rel_days": 220,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 266,
+  "lang": {
+   "Java": 90,
+   "Kotlin": 10,
+   "AIDL": 1,
+   "CSS": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

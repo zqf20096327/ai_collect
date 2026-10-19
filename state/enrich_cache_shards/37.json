@@ -1122,5 +1122,58 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "theanshsonkar/carto": {
+  "rel_ver": "v2.1.5",
+  "rel_pub": "2026-08-31",
+  "rel_days": 49,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 100,
+   "TypeScript": 0,
+   "Python": 0,
+   "Shell": 0,
+   "Go": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "galihlprakoso/logseq-plugin-assistseq-ai-assistant": {
+  "rel_ver": "v2.8.0",
+  "rel_pub": "2025-11-08",
+  "rel_days": 345,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1,
+   "HTML": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }
