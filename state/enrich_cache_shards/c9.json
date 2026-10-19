@@ -1325,5 +1325,54 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "MarcoPorcellato/matryca-plumber": {
+  "commit_90d": 337,
+  "commit_7d": 11,
+  "rel_ver": "v2.0.1-rc.3",
+  "rel_pub": "2026-08-31",
+  "rel_days": 49,
+  "rel_n90": 9,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Python": 95,
+   "TypeScript": 3,
+   "Shell": 1,
+   "Makefile": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "ShuweiShao/IEBins": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

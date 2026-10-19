@@ -1351,5 +1351,30 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "pixelnull/sillytavern-DeepLore": {
+  "rel_ver": "v2.6.2",
+  "rel_pub": "2026-07-04",
+  "rel_days": 107,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 90,
+   "CSS": 5,
+   "HTML": 5
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

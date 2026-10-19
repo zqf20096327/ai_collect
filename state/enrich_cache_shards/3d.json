@@ -1410,5 +1410,78 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "PaddlePaddle/GraphNet": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 42,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "thomaswantstobeaskeleton/BallonsTranslator-Pro": {
+  "rel_ver": "v1",
+  "rel_pub": "2026-05-18",
+  "rel_days": 154,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 32,
+  "lang": {
+   "Python": 99,
+   "CSS": 0,
+   "JavaScript": 0,
+   "Shell": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "Remi-Coulom/gogui": {
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2025-03-12",
+  "rel_days": 586,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Java": 99,
+   "Shell": 1,
+   "HTML": 0,
+   "NSIS": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

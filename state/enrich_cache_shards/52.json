@@ -1397,5 +1397,68 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "zereight/gitlab-mcp": {
+  "commit_90d": 677,
+  "commit_7d": 145,
+  "rel_ver": "v2.3.4",
+  "rel_pub": "2026-10-19",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 23,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-15",
+  "sec_ids": [
+   "GHSA-g4cw-m236-q72h(-,low)",
+   "GHSA-2jv7-p2g4-9f2h(-,medium)",
+   "GHSA-3gfg-wh5g-cf74(-,medium)",
+   "GHSA-64g9-hrwx-9g6m(-,medium)",
+   "GHSA-ffr3-5f57-gf93(-,medium)",
+   "GHSA-vhp9-2xfv-rrfv(-,high)",
+   "GHSA-5w3p-qj7g-79v5(-,high)",
+   "GHSA-qcj2-qcc2-5fg4(-,high)"
+  ],
+  "contrib_n": 130,
+  "lang": {
+   "TypeScript": 98,
+   "Shell": 1,
+   "JavaScript": 1,
+   "Python": 0,
+   "Nix": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "brontoguana/ktop": {
+  "rel_ver": "v1.0.17",
+  "rel_pub": "2026-05-06",
+  "rel_days": 166,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 98,
+   "Shell": 2
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

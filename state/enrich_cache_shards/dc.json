@@ -1408,5 +1408,112 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "Ojhaharsh/30u30": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 81,
+   "Jupyter Notebook": 17,
+   "HTML": 2
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "talirezun/the-curator": {
+  "commit_90d": 1268,
+  "commit_7d": 0,
+  "rel_ver": "v3.82.1",
+  "rel_pub": "2026-10-08",
+  "rel_days": 11,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 95,
+   "CSS": 4,
+   "HTML": 0,
+   "Shell": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "CodeAlive-AI/codealive-mcp": {
+  "rel_ver": "v3.0.3",
+  "rel_pub": "2026-07-21",
+  "rel_days": 90,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 99,
+   "Shell": 1,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "Kim2091/vapourkit": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-08-18",
+  "rel_days": 62,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 84,
+   "C++": 9,
+   "Python": 6,
+   "NSIS": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

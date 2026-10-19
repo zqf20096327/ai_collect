@@ -1385,5 +1385,58 @@
    "lang": "20261018"
   }
  },
- "AstraZeneca/awesome-drug-pair-scoring": {}
+ "AstraZeneca/awesome-drug-pair-scoring": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v_00002",
+  "rel_pub": "2022-01-03",
+  "rel_days": 1750,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {},
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "Peon-sh/Peon": {
+  "commit_90d": 511,
+  "commit_7d": 41,
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 0,
+   "CSS": 0,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ }
 }

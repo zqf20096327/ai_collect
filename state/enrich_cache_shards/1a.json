@@ -1272,5 +1272,73 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "linzm1007/nano-vllm-ascend": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 89,
+   "C++": 11,
+   "CMake": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "INFOKOM-KI/Wazuh-MCP-Server": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-09-03",
+  "sec_ids": [
+   "GHSA-pw2j-pj4h-f5vg(-,high)"
+  ],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 2
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "fkxianzhou/ComfyUI-Jimeng-API": {
+  "rel_ver": "v2.5.0",
+  "rel_pub": "2026-08-25",
+  "rel_days": 55,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 90,
+   "JavaScript": 10
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

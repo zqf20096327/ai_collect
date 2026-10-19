@@ -1315,5 +1315,58 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "cosai-oasis/secure-ai-tooling": {
+  "commit_90d": 267,
+  "commit_7d": 9,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Python": 97,
+   "JavaScript": 2,
+   "Shell": 1,
+   "Mermaid": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "MaximeRivest/functai": {
+  "rel_ver": "ts-v0.1.0",
+  "rel_pub": "2026-10-03",
+  "rel_days": 16,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 46,
+   "TypeScript": 20,
+   "Julia": 18,
+   "R": 16,
+   "Shell": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

@@ -1346,5 +1346,29 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "treesoop/hwp-mcp": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-05-26",
+  "rel_days": 146,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 87,
+   "JavaScript": 13
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

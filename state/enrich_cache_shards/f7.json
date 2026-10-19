@@ -1455,5 +1455,86 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "obsei/obsei": {
+  "commit_90d": 116,
+  "commit_7d": 50,
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-10-17",
+  "rel_days": 2,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "Python": 82,
+   "CSS": 5,
+   "TypeScript": 4,
+   "Astro": 4,
+   "MDX": 3
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "zgcagi/Harness-RSI": {
+  "commit_90d": 42,
+  "commit_7d": 17,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TeX": 77,
+   "Python": 7,
+   "HTML": 6,
+   "CSS": 6,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "alchemiststudiosDOTai/tinyAgent": {
+  "rel_ver": "v1.2.29",
+  "rel_pub": "2026-07-10",
+  "rel_days": 101,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 87,
+   "Rust": 12,
+   "Shell": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

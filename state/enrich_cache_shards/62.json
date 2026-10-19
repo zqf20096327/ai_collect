@@ -1000,5 +1000,80 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "boris-kz/CogAlg": {
+  "commit_90d": 67,
+  "commit_7d": 7,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 90,
+   "HTML": 10,
+   "Julia": 0,
+   "C": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "antiv/mate": {
+  "rel_ver": "v1.5.1",
+  "rel_pub": "2026-10-17",
+  "rel_days": 2,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-09-26",
+  "sec_ids": [
+   "GHSA-35hg-8vcr-5h6h(-,critical)"
+  ],
+  "contrib_n": 12,
+  "lang": {
+   "Python": 64,
+   "HTML": 18,
+   "JavaScript": 17,
+   "CSS": 1,
+   "PLpgSQL": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "lgomezt/Intro_Python": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 93,
+   "HTML": 7,
+   "Python": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

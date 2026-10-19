@@ -1405,5 +1405,82 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "cjinhuo/blazwitcher": {
+  "commit_90d": 23,
+  "commit_7d": 0,
+  "rel_ver": "1.6.1",
+  "rel_pub": "2026-10-09",
+  "rel_days": 10,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "TypeScript": 95,
+   "CSS": 2,
+   "Python": 2,
+   "JavaScript": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "kamwoh/orthohash": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "aws-samples/sample-genai-on-eks-starter-kit": {
+  "rel_ver": "v1.1.3",
+  "rel_pub": "2026-09-04",
+  "rel_days": 45,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 17,
+  "lang": {
+   "JavaScript": 49,
+   "Python": 19,
+   "HCL": 19,
+   "Shell": 7,
+   "TypeScript": 4
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

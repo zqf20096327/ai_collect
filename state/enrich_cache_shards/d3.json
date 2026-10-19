@@ -1318,5 +1318,32 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "ndom91/open-plan-annotator": {
+  "rel_ver": "v1.0.17",
+  "rel_pub": "2026-03-07",
+  "rel_days": 226,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 73,
+   "JavaScript": 22,
+   "CSS": 3,
+   "Shell": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

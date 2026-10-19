@@ -1227,5 +1227,28 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "vins13pattar/principal-ai-engineer-handbook": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "MDX": 48,
+   "Python": 27,
+   "TypeScript": 23,
+   "Astro": 1,
+   "Mermaid": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

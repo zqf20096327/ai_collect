@@ -1391,5 +1391,32 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "unoplat/unoplat-code-confluence": {
+  "rel_ver": "unoplat-code-confluence-v0.47.0",
+  "rel_pub": "2026-08-27",
+  "rel_days": 53,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 65,
+   "TypeScript": 29,
+   "MDX": 4,
+   "CSS": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

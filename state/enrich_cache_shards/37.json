@@ -1040,5 +1040,60 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "hanssmail/quantQ": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.0",
+  "rel_pub": "2019-11-26",
+  "rel_days": 2519,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "q": 100
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "fdueblab/Micro-Agent": {
+  "commit_90d": 31,
+  "commit_7d": 0,
+  "rel_ver": "v2026.08.12.3",
+  "rel_pub": "2026-08-12",
+  "rel_days": 68,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 98,
+   "Jinja": 2,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

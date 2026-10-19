@@ -1167,5 +1167,81 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "thiientv/godmode": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-08-13",
+  "rel_days": 67,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "ArkaneFans/servllama": {
+  "rel_ver": "1.2.2",
+  "rel_pub": "2026-09-26",
+  "rel_days": 23,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Dart": 99,
+   "Kotlin": 1,
+   "Shell": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "OpenVisualCloud/Video-Super-Resolution-Library": {
+  "rel_ver": "v23.11.1",
+  "rel_pub": "2025-03-11",
+  "rel_days": 587,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "C++": 70,
+   "Shell": 15,
+   "C": 13,
+   "CMake": 2
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

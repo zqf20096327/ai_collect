@@ -1471,5 +1471,32 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "supernovae-st/nika": {
+  "rel_ver": "v0.123.0-preview.1",
+  "rel_pub": "2026-10-09",
+  "rel_days": 10,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 95,
+   "Shell": 2,
+   "JavaScript": 2,
+   "Python": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

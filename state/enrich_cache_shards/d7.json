@@ -1474,5 +1474,138 @@
    "contrib": "20261018",
    "lang": "20261018"
   }
+ },
+ "microsoft/benchmark-qed": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "release/v0.3.0",
+  "rel_pub": "2025-06-30",
+  "rel_days": 476,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "commit": "20261019",
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "langchain-ai/helm": {
+  "rel_ver": "langsmith-0.18.0-rc.36",
+  "rel_pub": "2026-10-16",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 4,
+  "sec_worst": "critical",
+  "sec_last": "2026-08-20",
+  "sec_ids": [
+   "GHSA-747p-c922-m55f(-,medium)",
+   "GHSA-2c9q-c2q9-qgqv(CVE-2026-55235,medium)",
+   "GHSA-jfj5-wrj9-63x4(CVE-2026-55236,medium)",
+   "GHSA-r8wq-jwgw-p74g(CVE-2026-25750,critical)"
+  ],
+  "contrib_n": 73,
+  "lang": {
+   "Shell": 38,
+   "Python": 34,
+   "Go Template": 26,
+   "Go": 1,
+   "PLpgSQL": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "CommandCodeAI/langbase-examples": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "TypeScript": 82,
+   "Shell": 11,
+   "CSS": 6,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "AKMessi/vex": {
+  "rel_ver": "v0.1.0rc24",
+  "rel_pub": "2026-07-14",
+  "rel_days": 97,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "JavaScript": 3,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "arsbr/Veritensor": {
+  "rel_ver": "v1.9.4",
+  "rel_pub": "2026-08-04",
+  "rel_days": 76,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }
