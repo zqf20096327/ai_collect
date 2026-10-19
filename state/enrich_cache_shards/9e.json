@@ -1188,5 +1188,54 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "tensorly/torch": {
+  "rel_ver": "0.5.0",
+  "rel_pub": "2024-06-09",
+  "rel_days": 862,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "kucherenko/gangsta": {
+  "rel_ver": "gangsta-v1.11.6",
+  "rel_pub": "2026-08-14",
+  "rel_days": 66,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Shell": 78,
+   "JavaScript": 11,
+   "TypeScript": 8,
+   "Batchfile": 3
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

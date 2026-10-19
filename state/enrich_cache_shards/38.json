@@ -1362,5 +1362,71 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "nathandev0/Tinder_Automation_Bot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "Sega757/Fast-AtomRAG-Core": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 88,
+   "Dockerfile": 12
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "microblink/blinkid-flutter": {
+  "rel_ver": "v8001.0.0",
+  "rel_pub": "2026-09-09",
+  "rel_days": 40,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "Dart": 60,
+   "Swift": 21,
+   "Kotlin": 18,
+   "Shell": 1,
+   "Ruby": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

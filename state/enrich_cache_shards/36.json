@@ -1397,5 +1397,28 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "AEON-7/comfyui-aeon-spark": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Shell": 43,
+   "Python": 23,
+   "Dockerfile": 16,
+   "JavaScript": 14,
+   "Slim": 3
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

@@ -1482,5 +1482,32 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "hoangsonww/Agentic-AI-Pipeline": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2025-07-27",
+  "rel_days": 449,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 37,
+   "HCL": 24,
+   "HTML": 15,
+   "Shell": 6,
+   "C#": 6
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

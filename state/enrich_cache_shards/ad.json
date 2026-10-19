@@ -1764,5 +1764,48 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "csy-csy123/pr-review-agent-council": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "kartikkabadi/opencode-go-proxy": {
+  "rel_ver": "v0.4.10",
+  "rel_pub": "2026-08-14",
+  "rel_days": 66,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 95,
+   "Swift": 5
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

@@ -1534,5 +1534,30 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "scitex-ai/scitex-python": {
+  "rel_ver": "v2.30.8",
+  "rel_pub": "2026-07-07",
+  "rel_days": 104,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 89,
+   "Shell": 10,
+   "Makefile": 2
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

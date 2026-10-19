@@ -1544,5 +1544,53 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "iamsonal/aiAgentStudio": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Apex": 49,
+   "JavaScript": 44,
+   "HTML": 5,
+   "CSS": 2,
+   "MDX": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "jsxlei/SCALEX": {
+  "rel_ver": "v1.0.4",
+  "rel_pub": "2024-06-02",
+  "rel_days": 869,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Jupyter Notebook": 71,
+   "Python": 28,
+   "R": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

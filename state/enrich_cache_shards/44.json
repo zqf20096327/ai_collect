@@ -1284,5 +1284,74 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "appboypov/pew-pew-plaza-packs": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2025-08-24",
+  "rel_days": 421,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 96,
+   "Makefile": 4
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "Metaculus/forecasting-tools": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "Python": 67,
+   "Jupyter Notebook": 33,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "dahlia/yoyak": {
+  "rel_ver": "0.6.0",
+  "rel_pub": "2026-03-23",
+  "rel_days": 210,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

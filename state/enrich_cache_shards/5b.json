@@ -1493,5 +1493,56 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "jplenio/ComfyUI-MiniMax-Music-Production-Toolkit": {
+  "rel_ver": "v3.1.3",
+  "rel_pub": "2026-09-20",
+  "rel_days": 29,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 95,
+   "JavaScript": 5,
+   "Shell": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "HumeAI/hume-typescript-sdk": {
+  "rel_ver": "0.16.0",
+  "rel_pub": "2026-06-17",
+  "rel_days": 124,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "TypeScript": 100,
+   "JavaScript": 0,
+   "Just": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

@@ -1255,5 +1255,32 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "hooshyar/flutter_gen_ai_chat_ui": {
+  "rel_ver": "v2.20.0",
+  "rel_pub": "2026-10-02",
+  "rel_days": 17,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Dart": 97,
+   "C++": 1,
+   "CMake": 1,
+   "Ruby": 0,
+   "Swift": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

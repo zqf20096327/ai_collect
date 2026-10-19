@@ -1481,5 +1481,29 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "google-deepmind/nuclease_design": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2024-11-14",
+  "rel_days": 704,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Jupyter Notebook": 99,
+   "Python": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

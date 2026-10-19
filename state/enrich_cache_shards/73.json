@@ -1938,5 +1938,31 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "lukabudik/alza-mcp-community": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-10-07",
+  "rel_days": 12,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "TypeScript": 84,
+   "JavaScript": 9,
+   "Python": 4,
+   "Shell": 3
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

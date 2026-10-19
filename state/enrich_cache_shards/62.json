@@ -1075,5 +1075,32 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "hivementality-ai/hivemind": {
+  "rel_ver": "2026.09.01-rc",
+  "rel_pub": "2026-09-08",
+  "rel_days": 41,
+  "rel_n90": 5,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Ruby": 78,
+   "HTML": 16,
+   "JavaScript": 5,
+   "Shell": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

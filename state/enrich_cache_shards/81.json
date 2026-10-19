@@ -1443,5 +1443,27 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "microsoft/AIAgentsforITOps": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "PowerShell": 70,
+   "C#": 17,
+   "HTML": 12,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

@@ -1441,5 +1441,32 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "lkimuk/Wuwe": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-08-12",
+  "rel_days": 68,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 97,
+   "CMake": 1,
+   "JavaScript": 1,
+   "PowerShell": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

@@ -1510,5 +1510,55 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "tmonk/mcp-stata": {
+  "rel_ver": "v3.3.0",
+  "rel_pub": "2026-05-10",
+  "rel_days": 162,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 89,
+   "HTML": 3,
+   "PowerShell": 3,
+   "Shell": 2,
+   "Rust": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "softcite/software-mentions": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "JavaScript": 43,
+   "Java": 42,
+   "Python": 9,
+   "CSS": 4,
+   "HTML": 2
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

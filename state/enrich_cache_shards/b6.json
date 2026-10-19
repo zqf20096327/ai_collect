@@ -1133,5 +1133,27 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "lobehub/fluent-emoji": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 84,
+   "MDX": 10,
+   "JavaScript": 5,
+   "Shell": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

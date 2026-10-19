@@ -1453,5 +1453,54 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "synadia-ai/synadia-agents": {
+  "rel_ver": "python-v0.8.1",
+  "rel_pub": "2026-10-14",
+  "rel_days": 5,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "TypeScript": 61,
+   "Python": 37,
+   "JavaScript": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "Atharva-Phatak/torchflare": {
+  "rel_ver": "0.2.4",
+  "rel_pub": "2021-09-27",
+  "rel_days": 1848,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

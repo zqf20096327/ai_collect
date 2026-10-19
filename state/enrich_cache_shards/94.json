@@ -1509,5 +1509,31 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "maxgfr/csv-ai-analyzer": {
+  "rel_ver": "v1.17.5",
+  "rel_pub": "2026-10-17",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 96,
+   "CSS": 3,
+   "JavaScript": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

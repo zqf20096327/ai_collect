@@ -1643,5 +1643,54 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "gilzamir18/AI4U": {
+  "rel_ver": "v2.0.0-alpha",
+  "rel_pub": "2025-10-21",
+  "rel_days": 363,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C#": 79,
+   "Python": 21
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "takeshy/obsidian-local-llm-hub": {
+  "rel_ver": "0.22.10",
+  "rel_pub": "2026-10-12",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 73,
+   "CSS": 26,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

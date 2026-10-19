@@ -1507,5 +1507,49 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "betagouv/ComparIA": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 246,
+  "lang": {
+   "Python": 56,
+   "Svelte": 25,
+   "TypeScript": 16,
+   "HTML": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "Cloud-CV/EvalAI-Starters": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 17,
+  "lang": {
+   "Python": 89,
+   "HTML": 10,
+   "Shell": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

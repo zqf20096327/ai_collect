@@ -1889,5 +1889,53 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "SciML/HighDimPDE.jl": {
+  "rel_ver": "v2.7.1",
+  "rel_pub": "2026-09-07",
+  "rel_days": 42,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Julia": 100
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "icarito/gtk-llm-chat": {
+  "rel_ver": "v4.0.4",
+  "rel_pub": "2025-06-09",
+  "rel_days": 497,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 98,
+   "Shell": 2,
+   "NSIS": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

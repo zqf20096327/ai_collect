@@ -1472,5 +1472,55 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "MLMI2-CSSI/foundry": {
+  "rel_ver": "v1.2.2",
+  "rel_pub": "2026-01-22",
+  "rel_days": 270,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "0dayInc/pwn": {
+  "rel_ver": "0.5.700",
+  "rel_pub": "2026-08-25",
+  "rel_days": 55,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Ruby": 99,
+   "Shell": 1,
+   "Python": 0,
+   "C": 0,
+   "Java": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

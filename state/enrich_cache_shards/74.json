@@ -1697,5 +1697,32 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "jobovy/extreme-deconvolution": {
+  "rel_ver": "1.4",
+  "rel_pub": "2014-01-17",
+  "rel_days": 4658,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 46,
+   "C": 35,
+   "IDL": 11,
+   "R": 5,
+   "Makefile": 3
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

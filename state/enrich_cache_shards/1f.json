@@ -1210,5 +1210,32 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "GrapeCity-AI/gc-qa-rag": {
+  "rel_ver": "v1.0.7",
+  "rel_pub": "2025-11-26",
+  "rel_days": 327,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 59,
+   "TypeScript": 33,
+   "SCSS": 5,
+   "JavaScript": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

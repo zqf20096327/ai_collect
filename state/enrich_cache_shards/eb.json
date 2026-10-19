@@ -1126,5 +1126,84 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "p2plabsxyz/peersky-browser": {
+  "rel_ver": "v1.0.0-beta.30",
+  "rel_pub": "2026-10-11",
+  "rel_days": 8,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "JavaScript": 91,
+   "CSS": 6,
+   "HTML": 4
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "pivanov/ctx-wire": {
+  "rel_ver": "0.1.73",
+  "rel_pub": "2026-10-17",
+  "rel_days": 2,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 87,
+   "TypeScript": 9,
+   "Shell": 1,
+   "PowerShell": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "erroralex/Latent-Library": {
+  "rel_ver": "v1.2.2",
+  "rel_pub": "2026-08-24",
+  "rel_days": 56,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 64,
+   "Vue": 26,
+   "JavaScript": 6,
+   "CSS": 3,
+   "HTML": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

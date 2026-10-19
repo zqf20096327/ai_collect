@@ -1332,5 +1332,58 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "MetaConfigurator/meta-configurator": {
+  "rel_ver": "2.0.0",
+  "rel_pub": "2024-09-27",
+  "rel_days": 752,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "TypeScript": 67,
+   "Vue": 24,
+   "Python": 7,
+   "Shell": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "Sallyn0225/gemini-rss-app": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-01-17",
+  "rel_days": 275,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 96,
+   "JavaScript": 3,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

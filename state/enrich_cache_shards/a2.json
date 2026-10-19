@@ -1350,5 +1350,27 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "microsoft/azure-trust-agents": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 78,
+   "Jupyter Notebook": 12,
+   "Shell": 9,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

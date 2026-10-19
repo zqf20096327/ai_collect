@@ -1404,5 +1404,31 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "THU-Team-Eureka/EurekAgent": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-08-10",
+  "rel_days": 70,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 84,
+   "HTML": 15,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

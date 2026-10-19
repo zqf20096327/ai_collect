@@ -1549,5 +1549,57 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "julianmb/halofpx": {
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-09-09",
+  "rel_days": 40,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 90,
+   "Shell": 9,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "teolex2020/aura-memory": {
+  "rel_ver": "v1.62.0",
+  "rel_pub": "2026-10-11",
+  "rel_days": 8,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 78,
+   "Python": 20,
+   "JavaScript": 0,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

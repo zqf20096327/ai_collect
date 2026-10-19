@@ -1500,5 +1500,73 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "fox-in-the-box-ai/fox-in-the-box": {
+  "rel_ver": "v0.7.72",
+  "rel_pub": "2026-09-24",
+  "rel_days": 25,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 57,
+   "JavaScript": 22,
+   "Shell": 11,
+   "TypeScript": 4,
+   "CSS": 2
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "Leaf48/YOLO-Models-For-Valorant": {
+  "rel_ver": "dataset-v3.0",
+  "rel_pub": "2024-08-05",
+  "rel_days": 805,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "H21lab/Anomaly-Detection": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 95,
+   "Python": 5
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

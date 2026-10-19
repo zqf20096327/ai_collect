@@ -1779,5 +1779,54 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "slokam-ai/localgcp": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-04-12",
+  "rel_days": 190,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 57,
+   "HTML": 43,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "lambdalisue/nvim-aibo": {
+  "rel_ver": "v0.12.0",
+  "rel_pub": "2026-07-07",
+  "rel_days": 104,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Lua": 100,
+   "Just": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

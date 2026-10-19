@@ -1317,5 +1317,32 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "wiseria-ai-labs/pie-ai-agent": {
+  "rel_ver": "v1.5.1",
+  "rel_pub": "2026-09-16",
+  "rel_days": 33,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 91,
+   "JavaScript": 5,
+   "C#": 1,
+   "Python": 1,
+   "Swift": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

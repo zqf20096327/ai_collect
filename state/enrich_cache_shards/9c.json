@@ -1192,5 +1192,32 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "Abe404/root_painter": {
+  "rel_ver": "0.3.3",
+  "rel_pub": "2026-10-10",
+  "rel_days": 9,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 96,
+   "Shell": 3,
+   "NSIS": 0,
+   "PowerShell": 0,
+   "Inno Setup": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

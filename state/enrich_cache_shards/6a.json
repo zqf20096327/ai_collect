@@ -1944,5 +1944,53 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "zhou2030109-glitch/Remit": {
+  "rel_ver": "candidate-20261003-7407a60",
+  "rel_pub": "2026-10-03",
+  "rel_days": 16,
+  "rel_n90": 6,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 79,
+   "Vue": 11,
+   "TypeScript": 6,
+   "PowerShell": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "cs-internship/cs-internship-spec": {
+  "rel_ver": "v1.1",
+  "rel_pub": "2022-03-03",
+  "rel_days": 1691,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 47,
+  "lang": {},
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

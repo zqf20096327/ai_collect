@@ -1231,5 +1231,53 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "itsjwill/gsd-pro": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 62,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "hyperterse/hyperterse": {
+  "rel_ver": "v2.5.0",
+  "rel_pub": "2026-04-21",
+  "rel_days": 181,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2026-03-12",
+  "sec_ids": [
+   "GHSA-92gp-jfgx-9qpv(CVE-2026-31841,medium)"
+  ],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 86,
+   "TypeScript": 9,
+   "Shell": 4,
+   "JavaScript": 1,
+   "Ruby": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

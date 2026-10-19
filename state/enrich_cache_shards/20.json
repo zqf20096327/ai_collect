@@ -1393,5 +1393,31 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "star5o/reverse-check": {
+  "rel_ver": "v0.0.1",
+  "rel_pub": "2025-03-05",
+  "rel_days": 593,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Vue": 53,
+   "JavaScript": 42,
+   "CSS": 4,
+   "HTML": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }

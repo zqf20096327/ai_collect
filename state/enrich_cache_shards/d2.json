@@ -1464,5 +1464,79 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "UraniumCorporation/maiar-ai": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2025-06-27",
+  "rel_days": 479,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "TypeScript": 81,
+   "CSS": 8,
+   "JavaScript": 4,
+   "Liquid": 4,
+   "TeX": 3
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "cocoonstack/sandbox": {
+  "rel_ver": "v0.1.18",
+  "rel_pub": "2026-10-18",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Go": 82,
+   "Rust": 9,
+   "Python": 6,
+   "Shell": 2,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
+ },
+ "JeffFessler/book-la-demo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100,
+   "Julia": 0
+  },
+  "enriched_at": "20261019",
+  "dim_ts": {
+   "release": "20261019",
+   "security": "20261019",
+   "contrib": "20261019",
+   "lang": "20261019"
+  }
  }
 }
