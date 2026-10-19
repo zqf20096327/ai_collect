@@ -44,12 +44,11 @@
    "扩散模型",
    "Python库"
   ],
-  "domain": "AI/机器学习框架与工具",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-generation",
    "fine-tuning"
   ]
  },

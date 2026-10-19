@@ -42,12 +42,12 @@
    "代码检索/重构",
    "Agent工具"
   ],
-  "domain": "AI 编码工具/开发工具",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework"
+   "coding-agent"
   ]
  },
  "intel": {

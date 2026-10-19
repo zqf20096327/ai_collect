@@ -43,12 +43,13 @@
    "计算机视觉",
    "教学/课程"
   ],
-  "domain": "机器学习/深度学习框架",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-video-processing"
+   "fine-tuning",
+   "model-training"
   ]
  },
  "intel": {

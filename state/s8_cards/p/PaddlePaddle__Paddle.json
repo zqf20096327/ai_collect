@@ -43,12 +43,13 @@
    "科学计算",
    "大模型训练"
   ],
-  "domain": "AI 框架/深度学习基础设施",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "model-training"
+   "model-training",
+   "inference-engine"
   ]
  },
  "intel": {

@@ -43,13 +43,12 @@
    "语义分割",
    "PyTorch/TensorFlow"
   ],
-  "domain": "教育/计算机视觉",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "tutorials",
-   "object-detection"
+   "tutorials"
   ]
  },
  "intel": {

@@ -43,13 +43,11 @@
    "AI写作",
    "提示工程"
   ],
-  "domain": "内容创作/写作辅助",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework",
-   "prompt-engineering",
    "ai-writing"
   ]
  },

@@ -42,7 +42,7 @@
    "LoRA微调",
    "模型压缩"
   ],
-  "domain": "LLM 基础设施/推理优化",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,7 +51,7 @@
   ],
   "scenario_tags_v2": [
    "inference-engine",
-   "model-quantization"
+   "fine-tuning"
   ]
  },
  "intel": {

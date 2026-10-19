@@ -43,14 +43,15 @@
    "模型推理",
    "模型微调"
   ],
-  "domain": "大语言模型/自然语言处理",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "vllm"
   ],
   "scenario_tags_v2": [
-   "inference-engine"
+   "fine-tuning",
+   "model-quantization"
   ]
  },
  "intel": {

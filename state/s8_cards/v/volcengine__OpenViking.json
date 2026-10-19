@@ -42,7 +42,7 @@
    "RAG",
    "向量数据库"
   ],
-  "domain": "LLM 基础设施/Agent 记忆与上下文",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -50,8 +50,8 @@
   ],
   "scenario_tags_v2": [
    "agent-memory",
-   "rag",
-   "vector-database"
+   "semantic-search",
+   "knowledge-base"
   ]
  },
  "intel": {

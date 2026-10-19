@@ -43,12 +43,13 @@
    "LLM框架",
    "合规"
   ],
-  "domain": "AI Agent/客户服务",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework"
+   "agent-framework",
+   "chatbot"
   ]
  },
  "intel": {

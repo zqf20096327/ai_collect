@@ -44,7 +44,7 @@
    "MCP",
    "LLM基础设施"
   ],
-  "domain": "AI 基础设施/LLM Gateway",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -55,7 +55,8 @@
    "ollama"
   ],
   "scenario_tags_v2": [
-   "model-gateway"
+   "model-gateway",
+   "llm-observability"
   ]
  },
  "intel": {

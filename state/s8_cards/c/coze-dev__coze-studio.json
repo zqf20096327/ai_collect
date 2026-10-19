@@ -42,13 +42,14 @@
    "工作流编排",
    "chatbot"
   ],
-  "domain": "AI Agent 开发平台",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "workflow-automation",
-   "chatbot"
+   "agent-framework",
+   "chatbot",
+   "workflow-automation"
   ]
  },
  "intel": {

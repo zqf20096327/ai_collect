@@ -43,14 +43,15 @@
    "本地优先",
    "CLI工具"
   ],
-  "domain": "LLM 基础设施/记忆系统",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "semantic-search"
+   "semantic-search",
+   "agent-memory"
   ]
  },
  "intel": {

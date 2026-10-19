@@ -42,7 +42,7 @@
    "开发者工具",
    "多服务商聚合"
   ],
-  "domain": "开发者工具/AI 用量监控",
+  "domain": "评测与运维",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -55,7 +55,9 @@
    "bedrock",
    "groq"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "llm-observability"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

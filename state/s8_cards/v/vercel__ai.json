@@ -43,14 +43,15 @@
    "前端集成",
    "TypeScript"
   ],
-  "domain": "LLM 基础设施/开发工具库",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "agent-framework"
+   "agent-framework",
+   "model-gateway"
   ]
  },
  "intel": {

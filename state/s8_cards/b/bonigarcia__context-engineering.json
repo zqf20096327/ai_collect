@@ -42,13 +42,12 @@
    "提示工程",
    "知识资源"
   ],
-  "domain": "LLM 工程知识资源",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework",
-   "prompt-engineering"
+   "tutorials"
   ]
  },
  "intel": {

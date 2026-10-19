@@ -44,12 +44,12 @@
    "RAG",
    "agent工作流"
   ],
-  "domain": "安全合规/企业应用",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "rag"
+   "document-qa"
   ]
  },
  "intel": {

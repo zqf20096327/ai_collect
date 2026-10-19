@@ -43,7 +43,7 @@
    "MCP",
    "知识库"
   ],
-  "domain": "AI 应用/生产力工具",
+  "domain": "对话与助手",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,7 +52,7 @@
   ],
   "scenario_tags_v2": [
    "ai-assistant",
-   "knowledge-base"
+   "document-qa"
   ]
  },
  "intel": {

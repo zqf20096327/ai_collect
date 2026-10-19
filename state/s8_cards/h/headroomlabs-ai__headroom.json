@@ -42,14 +42,16 @@
    "token 优化",
    "代理/中间件"
   ],
-  "domain": "LLM 基础设施/上下文工程",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic",
    "xai"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "agent-memory"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

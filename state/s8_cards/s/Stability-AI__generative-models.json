@@ -43,13 +43,14 @@
    "4D生成",
    "研究代码"
   ],
-  "domain": "AI 生成模型/多模态生成",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
    "image-generation",
-   "video-generation"
+   "video-generation",
+   "inference-engine"
   ]
  },
  "intel": {

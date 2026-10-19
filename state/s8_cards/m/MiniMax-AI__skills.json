@@ -44,13 +44,14 @@
    "多模态生成",
    "开发工具"
   ],
-  "domain": "AI 开发工具/agent 技能包",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework",
-   "coding-agent"
+   "tts",
+   "image-generation",
+   "video-generation"
   ]
  },
  "intel": {

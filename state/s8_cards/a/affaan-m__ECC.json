@@ -42,11 +42,14 @@
    "开发者工具",
    "安全扫描"
   ],
-  "domain": "开发者工具/Agent 基础设施",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "coding-agent",
+   "cybersecurity"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

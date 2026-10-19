@@ -42,11 +42,13 @@
    "有限元",
    "代理模型"
   ],
-  "domain": "计算力学/科学机器学习",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "research-tools"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

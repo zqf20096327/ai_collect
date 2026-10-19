@@ -43,13 +43,13 @@
    "WebUI",
    "模型训练"
   ],
-  "domain": "图像生成/机器学习工具",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
    "image-generation",
-   "model-training"
+   "fine-tuning"
   ]
  },
  "intel": {

@@ -45,11 +45,14 @@
    "社交媒体运营",
    "TypeScript库"
   ],
-  "domain": "社交媒体自动化/AI Agent",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "agent-framework",
+   "ai-writing"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

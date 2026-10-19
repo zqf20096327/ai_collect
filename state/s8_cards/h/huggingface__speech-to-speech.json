@@ -43,15 +43,14 @@
    "本地推理",
    "实时语音"
   ],
-  "domain": "语音/AI 应用框架",
+  "domain": "对话与助手",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "vllm"
   ],
   "scenario_tags_v2": [
-   "voice-agent",
-   "inference-engine"
+   "voice-agent"
   ]
  },
  "intel": {

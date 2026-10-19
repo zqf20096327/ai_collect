@@ -45,11 +45,13 @@
    "HPC/SIMD",
    "C++机器学习库"
   ],
-  "domain": "机器学习/神经计算",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "model-training"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

@@ -44,11 +44,14 @@
    "CI/CD",
    "批处理"
   ],
-  "domain": "云原生/工作流编排",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "workflow-automation",
+   "mlops"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

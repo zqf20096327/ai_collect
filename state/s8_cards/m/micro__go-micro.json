@@ -43,11 +43,14 @@
    "Go框架",
    "MCP"
   ],
-  "domain": "分布式系统/AI Agent 框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "agent-framework",
+   "workflow-automation"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

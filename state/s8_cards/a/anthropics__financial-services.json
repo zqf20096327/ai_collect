@@ -44,13 +44,16 @@
    "技能包",
    "Claude插件"
   ],
-  "domain": "金融服务/企业应用",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "quant-finance",
+   "document-parsing"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

@@ -43,14 +43,16 @@
    "agent运行时",
    "多渠道接入"
   ],
-  "domain": "LLM 基础设施/Agent 运行时",
+  "domain": "对话与助手",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "ollama",
    "anthropic"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "ai-assistant"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

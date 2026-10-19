@@ -43,11 +43,13 @@
    "建站",
    "AI平台"
   ],
-  "domain": "运维/服务器管理",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

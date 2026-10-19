@@ -43,7 +43,7 @@
    "模型微调",
    "推理部署"
   ],
-  "domain": "AI 模型/代码生成",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,7 +52,8 @@
    "llama.cpp"
   ],
   "scenario_tags_v2": [
-   "code-generation"
+   "code-generation",
+   "fine-tuning"
   ]
  },
  "intel": {

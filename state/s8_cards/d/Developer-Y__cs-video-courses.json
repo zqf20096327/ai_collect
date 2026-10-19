@@ -42,12 +42,13 @@
    "公开课/视频课程",
    "学习资源"
   ],
-  "domain": "教育/计算机科学学习资源",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "tutorials"
+   "tutorials",
+   "curated-list"
   ]
  },
  "intel": {

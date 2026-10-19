@@ -42,11 +42,13 @@
    "LLM提示词",
    "token优化"
   ],
-  "domain": "LLM 基础设施/数据序列化",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "prompt-engineering"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

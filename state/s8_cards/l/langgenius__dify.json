@@ -43,13 +43,14 @@
    "Agent",
    "低代码"
   ],
-  "domain": "LLM 应用开发平台",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
    "workflow-automation",
-   "rag"
+   "rag",
+   "agent-framework"
   ]
  },
  "intel": {

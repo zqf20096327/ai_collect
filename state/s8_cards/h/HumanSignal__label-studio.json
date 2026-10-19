@@ -43,12 +43,12 @@
    "机器学习数据准备",
    "NLP标注"
   ],
-  "domain": "机器学习/数据标注",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-video-processing"
+   "mlops"
   ]
  },
  "intel": {

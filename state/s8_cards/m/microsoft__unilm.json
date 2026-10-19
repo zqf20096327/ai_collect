@@ -43,13 +43,13 @@
    "语音",
    "研究汇总"
   ],
-  "domain": "AI 研究/预训练模型",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "multimodal",
-   "model-training"
+   "model-training",
+   "curated-list"
   ]
  },
  "intel": {

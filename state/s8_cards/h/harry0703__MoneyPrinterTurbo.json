@@ -42,7 +42,7 @@
    "视频自动化",
    "内容创作"
   ],
-  "domain": "内容创作/视频生成",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -55,7 +55,8 @@
    "ollama"
   ],
   "scenario_tags_v2": [
-   "ai-writing"
+   "video-generation",
+   "tts"
   ]
  },
  "intel": {

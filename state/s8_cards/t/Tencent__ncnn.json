@@ -42,11 +42,13 @@
    "边缘计算",
    "模型转换"
   ],
-  "domain": "深度学习推理基础设施",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

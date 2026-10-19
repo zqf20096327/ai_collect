@@ -44,12 +44,12 @@
    "MCP",
    "LLM基础设施"
   ],
-  "domain": "LLM 基础设施/数据抓取",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "rag"
+   "web-scraping"
   ]
  },
  "intel": {

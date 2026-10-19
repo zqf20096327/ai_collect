@@ -43,7 +43,7 @@
    "LLM基础设施",
    "本地部署"
   ],
-  "domain": "LLM 基础设施/API 网关",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -53,7 +53,7 @@
    "ollama"
   ],
   "scenario_tags_v2": [
-   "coding-agent"
+   "model-gateway"
   ]
  },
  "intel": {

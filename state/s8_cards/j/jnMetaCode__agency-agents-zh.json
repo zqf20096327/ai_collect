@@ -44,13 +44,16 @@
    "AI编程工具",
    "中国市场运营"
   ],
-  "domain": "AI 编程工具生态/提示词资产",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "prompt-engineering",
+   "multi-agent"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

@@ -43,12 +43,13 @@
    "Office/PDF转换",
    "LLM工具"
   ],
-  "domain": "聊天机器人/文档处理",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "chatbot"
+   "document-qa",
+   "document-parsing"
   ]
  },
  "intel": {

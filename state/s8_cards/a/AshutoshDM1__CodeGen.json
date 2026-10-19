@@ -42,11 +42,13 @@
    "AI代码辅助",
    "Web应用"
   ],
-  "domain": "开发者工具/在线编程平台",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "code-generation"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

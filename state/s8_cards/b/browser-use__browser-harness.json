@@ -42,12 +42,13 @@
    "CDP",
    "MCP"
   ],
-  "domain": "浏览器自动化/AI Agent 工具",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "browser-automation"
+   "browser-automation",
+   "coding-agent"
   ]
  },
  "intel": {

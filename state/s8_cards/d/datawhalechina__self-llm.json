@@ -43,12 +43,12 @@
    "多模态大模型",
    "国产硬件适配"
   ],
-  "domain": "AI 教育与知识/LLM 基础设施",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "multimodal",
+   "tutorials",
    "fine-tuning"
   ]
  },

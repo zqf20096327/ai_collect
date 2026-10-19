@@ -44,7 +44,7 @@
    "自托管",
    "ATS优化"
   ],
-  "domain": "求职/文档工具",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -55,7 +55,8 @@
    "ollama"
   ],
   "scenario_tags_v2": [
-   "ai-writing"
+   "ai-writing",
+   "document-parsing"
   ]
  },
  "intel": {

@@ -42,14 +42,16 @@
    "开发工具",
    "AI编程助手"
   ],
-  "domain": "开发者工具/AI 编程助手",
+  "domain": "编码与开发",
   "alternative_to": [
    "GitHub Copilot"
   ],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "code-generation"
+   "code-generation",
+   "rag",
+   "chatbot"
   ]
  },
  "intel": {

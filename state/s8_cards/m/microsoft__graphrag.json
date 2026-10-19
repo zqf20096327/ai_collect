@@ -42,13 +42,13 @@
    "非结构化文本抽取",
    "问答"
   ],
-  "domain": "LLM/RAG 基础设施",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "knowledge-graph",
-   "rag"
+   "rag",
+   "knowledge-graph"
   ]
  },
  "intel": {

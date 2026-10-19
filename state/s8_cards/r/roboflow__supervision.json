@@ -43,14 +43,13 @@
    "数据集处理",
    "低代码"
   ],
-  "domain": "计算机视觉/工具库",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "workflow-automation",
-   "image-video-processing",
-   "object-detection"
+   "object-detection",
+   "image-video-processing"
   ]
  },
  "intel": {

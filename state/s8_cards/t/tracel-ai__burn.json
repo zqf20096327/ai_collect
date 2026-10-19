@@ -44,12 +44,13 @@
    "跨平台推理",
    "训练"
   ],
-  "domain": "机器学习/深度学习基础设施",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "model-training"
+   "model-training",
+   "inference-engine"
   ]
  },
  "intel": {

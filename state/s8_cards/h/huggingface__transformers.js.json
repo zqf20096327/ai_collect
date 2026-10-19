@@ -44,11 +44,13 @@
    "ONNX",
    "Transformer模型"
   ],
-  "domain": "机器学习/Web 端推理框架",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

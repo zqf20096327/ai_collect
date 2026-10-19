@@ -44,11 +44,13 @@
    "封面生成",
    "HTML"
   ],
-  "domain": "办公/演示工具",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "image-generation"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

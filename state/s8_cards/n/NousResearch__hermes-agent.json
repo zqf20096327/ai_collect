@@ -43,11 +43,14 @@
    "技能学习",
    "自动化"
   ],
-  "domain": "LLM 基础设施/Agent 框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "agent-memory",
+   "ai-assistant"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

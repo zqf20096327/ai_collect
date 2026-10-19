@@ -43,11 +43,13 @@
    "Python库",
    "命名实体识别"
   ],
-  "domain": "自然语言处理/机器学习工具",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "model-training"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

@@ -43,7 +43,7 @@
    "自托管",
    "可视化编排"
   ],
-  "domain": "AI agent 构建平台/工作流自动化",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,7 +51,8 @@
    "vllm"
   ],
   "scenario_tags_v2": [
-   "workflow-automation"
+   "workflow-automation",
+   "agent-framework"
   ]
  },
  "intel": {

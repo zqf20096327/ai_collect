@@ -46,12 +46,14 @@
    "MCP插件",
    "团队协作"
   ],
-  "domain": "AI 应用/多智能体平台",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "multi-agent"
+   "multi-agent",
+   "chatbot",
+   "agent-memory"
   ]
  },
  "intel": {

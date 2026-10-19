@@ -46,12 +46,14 @@
    "跨平台框架",
    "推理"
   ],
-  "domain": "端侧机器学习框架",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-video-processing"
+   "image-video-processing",
+   "inference-engine",
+   "object-detection"
   ]
  },
  "intel": {

@@ -42,12 +42,13 @@
    "网络安全/CTF",
    "科研工具"
   ],
-  "domain": "开发者工具/软件工程自动化",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "research-tools"
+   "coding-agent",
+   "cybersecurity"
   ]
  },
  "intel": {

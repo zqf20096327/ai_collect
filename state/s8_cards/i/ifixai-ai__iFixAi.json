@@ -43,7 +43,7 @@
    "CLI工具",
    "LLM评测"
   ],
-  "domain": "LLM 基础设施/Agent 评估与审计",
+  "domain": "评测与运维",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,7 +51,9 @@
    "openrouter",
    "bedrock"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "model-evaluation"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

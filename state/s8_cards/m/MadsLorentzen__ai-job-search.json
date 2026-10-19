@@ -44,14 +44,15 @@
    "Claude Code",
    "LaTeX"
   ],
-  "domain": "求职/职业工具",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "coding-agent"
+   "workflow-automation",
+   "agent-framework"
   ]
  },
  "intel": {

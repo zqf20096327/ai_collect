@@ -42,12 +42,13 @@
    "任务委派",
    "开发工具"
   ],
-  "domain": "开发者工具/AI 编程",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "code-review"
+   "code-review",
+   "coding-agent"
   ]
  },
  "intel": {

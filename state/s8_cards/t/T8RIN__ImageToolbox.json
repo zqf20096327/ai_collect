@@ -44,11 +44,14 @@
    "背景移除",
    "F-Droid"
   ],
-  "domain": "图像处理/移动应用",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "image-video-processing",
+   "ocr"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

@@ -45,13 +45,15 @@
    "AI Agent",
    "安全研究"
   ],
-  "domain": "网络安全/逆向工程",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "cybersecurity"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

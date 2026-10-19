@@ -46,16 +46,14 @@
    "团队协作",
    "向量检索"
   ],
-  "domain": "AI Agent 基础设施/记忆管理",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "deepseek"
   ],
   "scenario_tags_v2": [
-   "agent-memory",
-   "knowledge-base",
-   "vector-database"
+   "agent-memory"
   ]
  },
  "intel": {

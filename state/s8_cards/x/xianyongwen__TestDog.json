@@ -43,12 +43,13 @@
    "AI脚本生成",
    "桌面应用"
   ],
-  "domain": "Web 测试/开发工具",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "browser-automation"
+   "browser-automation",
+   "code-generation"
   ]
  },
  "intel": {

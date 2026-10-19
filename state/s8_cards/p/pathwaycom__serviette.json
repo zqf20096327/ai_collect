@@ -43,7 +43,7 @@
    "实时索引",
    "no-code"
   ],
-  "domain": "LLM 基础设施/RAG",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,8 +51,7 @@
   ],
   "scenario_tags_v2": [
    "document-qa",
-   "rag",
-   "vector-database"
+   "rag"
   ]
  },
  "intel": {

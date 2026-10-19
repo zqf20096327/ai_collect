@@ -43,14 +43,13 @@
    "预训练模型",
    "zero-shot分类"
   ],
-  "domain": "计算机视觉/多模态深度学习",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-video-processing",
-   "multimodal",
-   "model-training"
+   "model-training",
+   "multimodal"
   ]
  },
  "intel": {

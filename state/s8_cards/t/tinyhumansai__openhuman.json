@@ -46,7 +46,7 @@
    "MCP",
    "本地优先"
   ],
-  "domain": "LLM 基础设施/Agent 运行时",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [
    "Claude Code"
@@ -55,8 +55,8 @@
    "ollama"
   ],
   "scenario_tags_v2": [
-   "agent-framework",
-   "multi-agent"
+   "ai-assistant",
+   "agent-framework"
   ]
  },
  "intel": {

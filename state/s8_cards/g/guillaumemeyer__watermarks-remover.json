@@ -50,9 +50,7 @@
    "anthropic",
    "xai"
   ],
-  "scenario_tags_v2": [
-   "agent-framework"
-  ]
+  "scenario_tags_v2": []
  },
  "intel": {
   "maintainer_type": "individual",

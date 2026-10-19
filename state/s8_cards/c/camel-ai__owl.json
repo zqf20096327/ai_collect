@@ -43,7 +43,7 @@
    "agent框架",
    "浏览器自动化"
   ],
-  "domain": "LLM 基础设施/Multi-Agent 框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,9 +52,10 @@
    "deepseek"
   ],
   "scenario_tags_v2": [
-   "agent-framework",
    "multi-agent",
-   "browser-automation"
+   "browser-automation",
+   "document-parsing",
+   "multimodal"
   ]
  },
  "intel": {

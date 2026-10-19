@@ -42,11 +42,13 @@
    "CLI工具",
    "MCP"
   ],
-  "domain": "AI Agent 基础设施",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "web-scraping"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

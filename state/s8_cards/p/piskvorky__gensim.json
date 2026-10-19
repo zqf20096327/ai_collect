@@ -42,11 +42,13 @@
    "信息检索",
    "词向量"
   ],
-  "domain": "自然语言处理/机器学习",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "semantic-search"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

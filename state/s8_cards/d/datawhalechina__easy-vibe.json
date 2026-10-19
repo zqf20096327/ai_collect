@@ -48,11 +48,13 @@
    "全栈开发",
    "AI编程工具"
   ],
-  "domain": "教育/AI 编程课程",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
  },
  "intel": {
   "maintainer_type": "media",

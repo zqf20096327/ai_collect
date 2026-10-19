@@ -42,11 +42,12 @@
    "强化学习",
    "论文官方实现"
   ],
-  "domain": "LLM 后训练/强化学习",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "fine-tuning",
    "reinforcement-learning"
   ]
  },

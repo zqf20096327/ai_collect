@@ -43,12 +43,12 @@
    "NLP",
    "教学"
   ],
-  "domain": "教育/AI 学习资源",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-video-processing"
+   "tutorials"
   ]
  },
  "intel": {

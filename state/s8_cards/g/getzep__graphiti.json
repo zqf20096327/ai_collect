@@ -42,13 +42,13 @@
    "AI Agent",
    "记忆/上下文"
   ],
-  "domain": "LLM 基础设施/知识图谱",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
    "knowledge-graph",
-   "rag"
+   "agent-memory"
   ]
  },
  "intel": {

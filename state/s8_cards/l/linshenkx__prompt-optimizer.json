@@ -44,7 +44,7 @@
    "MCP",
    "多模型接入"
   ],
-  "domain": "AI 工具/Prompt 工程",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -55,9 +55,7 @@
    "openrouter"
   ],
   "scenario_tags_v2": [
-   "model-gateway",
-   "prompt-engineering",
-   "image-generation"
+   "prompt-engineering"
   ]
  },
  "intel": {

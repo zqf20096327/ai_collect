@@ -43,7 +43,7 @@
    "MCP",
    "安全工具"
   ],
-  "domain": "AI 安全 / agent 生态工具",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,7 +52,9 @@
    "vllm",
    "bedrock"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "cybersecurity"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

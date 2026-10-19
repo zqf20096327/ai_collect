@@ -40,11 +40,12 @@
    "MCP/agent接入",
    "可追溯性"
   ],
-  "domain": "科研工具/知识管理",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "research-tools",
    "knowledge-base"
   ]
  },

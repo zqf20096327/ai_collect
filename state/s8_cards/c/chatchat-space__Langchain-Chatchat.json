@@ -43,15 +43,16 @@
    "Agent",
    "LLM应用"
   ],
-  "domain": "LLM 应用/RAG",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "ollama"
   ],
   "scenario_tags_v2": [
+   "rag",
    "document-qa",
-   "rag"
+   "agent-framework"
   ]
  },
  "intel": {

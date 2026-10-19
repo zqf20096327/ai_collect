@@ -44,13 +44,12 @@
    "姿态估计",
    "模型部署"
   ],
-  "domain": "计算机视觉/目标检测",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "object-detection",
-   "inference-engine"
+   "object-detection"
   ]
  },
  "intel": {

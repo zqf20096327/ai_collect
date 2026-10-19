@@ -44,13 +44,13 @@
    "扩散模型生成",
    "RL rollout"
   ],
-  "domain": "LLM 基础设施/推理服务",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "multimodal",
-   "inference-engine"
+   "inference-engine",
+   "reinforcement-learning"
   ]
  },
  "intel": {

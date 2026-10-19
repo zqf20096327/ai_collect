@@ -43,12 +43,12 @@
    "图像生成",
    "桌面工具"
   ],
-  "domain": "图像生成/桌面工具",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-generation"
+   "image-video-processing"
   ]
  },
  "intel": {

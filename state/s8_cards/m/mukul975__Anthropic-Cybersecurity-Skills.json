@@ -43,13 +43,13 @@
    "安全运营",
    "知识库"
   ],
-  "domain": "网络安全/Agent 技能知识库",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "knowledge-base",
-   "cybersecurity"
+   "cybersecurity",
+   "curated-list"
   ]
  },
  "intel": {

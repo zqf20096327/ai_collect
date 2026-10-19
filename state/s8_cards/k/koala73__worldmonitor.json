@@ -43,14 +43,16 @@
    "新闻聚合",
    "MCP"
   ],
-  "domain": "情报/态势感知",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "ollama",
    "openrouter"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "web-scraping"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

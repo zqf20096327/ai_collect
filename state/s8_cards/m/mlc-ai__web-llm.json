@@ -44,11 +44,13 @@
    "前端SDK",
    "隐私计算"
   ],
-  "domain": "LLM 基础设施/浏览器推理",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

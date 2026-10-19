@@ -42,12 +42,11 @@
    "AI编程助手",
    "agent-skills"
   ],
-  "domain": "开发工具/AI 编程助手生态",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework",
    "curated-list"
   ]
  },

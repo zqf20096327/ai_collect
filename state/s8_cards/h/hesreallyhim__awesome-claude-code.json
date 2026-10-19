@@ -42,15 +42,13 @@
    "agent技能",
    "资源聚合"
   ],
-  "domain": "开发者工具/AI 编程资源聚合",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "agent-framework",
-   "coding-agent",
    "curated-list"
   ]
  },

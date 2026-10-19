@@ -44,15 +44,15 @@
    "流式ASR",
    "研究模型"
   ],
-  "domain": "语音 AI / 语音识别与合成",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "vllm"
   ],
   "scenario_tags_v2": [
-   "tts",
-   "asr"
+   "asr",
+   "tts"
   ]
  },
  "intel": {

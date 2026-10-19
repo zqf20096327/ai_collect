@@ -44,7 +44,7 @@
    "RAG",
    "代码解释器"
   ],
-  "domain": "LLM 基础设施/Agent 框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -53,7 +53,8 @@
   ],
   "scenario_tags_v2": [
    "agent-framework",
-   "rag"
+   "rag",
+   "document-qa"
   ]
  },
  "intel": {

@@ -44,13 +44,14 @@
    "AI Agent 平台",
    "私有化部署"
   ],
-  "domain": "LLM 应用开发平台/知识库问答",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "rag",
    "document-qa",
-   "rag"
+   "workflow-automation"
   ]
  },
  "intel": {

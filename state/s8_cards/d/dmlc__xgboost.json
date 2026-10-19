@@ -41,12 +41,11 @@
    "分布式训练",
    "数据科学"
   ],
-  "domain": "机器学习/数据科学",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "data-analysis",
    "model-training"
   ]
  },

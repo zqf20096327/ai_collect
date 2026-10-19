@@ -42,13 +42,12 @@
    "网页集成",
    "MCP"
   ],
-  "domain": "浏览器自动化/前端 AI 集成",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "browser-automation",
-   "gui-automation"
+   "browser-automation"
   ]
  },
  "intel": {

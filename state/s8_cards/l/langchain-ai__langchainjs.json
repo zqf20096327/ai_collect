@@ -43,12 +43,13 @@
    "TypeScript",
    "应用开发框架"
   ],
-  "domain": "LLM 应用开发框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework"
+   "agent-framework",
+   "rag"
   ]
  },
  "intel": {

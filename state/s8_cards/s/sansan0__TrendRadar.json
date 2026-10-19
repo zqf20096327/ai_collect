@@ -44,7 +44,7 @@
    "MCP",
    "推送通知"
   ],
-  "domain": "信息聚合/舆情监控",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,7 +52,9 @@
    "anthropic",
    "ollama"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "web-scraping"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

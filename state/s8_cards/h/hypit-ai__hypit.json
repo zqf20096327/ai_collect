@@ -43,11 +43,14 @@
    "DSL/编译器",
    "短视频营销"
   ],
-  "domain": "生成式 AI/AI 视频创作工具",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "video-generation",
+   "workflow-automation"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

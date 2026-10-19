@@ -42,13 +42,11 @@
    "agent工具",
    "PDF问答"
   ],
-  "domain": "LLM 基础设施/RAG",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework",
-   "document-qa",
    "rag"
   ]
  },

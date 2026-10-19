@@ -43,14 +43,14 @@
    "RAG",
    "文档站点"
   ],
-  "domain": "AI 教育与知识聚合",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
    "prompt-engineering",
-   "rag",
-   "tutorials"
+   "tutorials",
+   "curated-list"
   ]
  },
  "intel": {

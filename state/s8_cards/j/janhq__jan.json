@@ -42,7 +42,7 @@
    "OpenAI兼容API",
    "MCP"
   ],
-  "domain": "AI 桌面客户端/本地推理",
+  "domain": "对话与助手",
   "alternative_to": [
    "ChatGPT"
   ],
@@ -52,7 +52,8 @@
    "groq"
   ],
   "scenario_tags_v2": [
-   "model-gateway"
+   "chatbot",
+   "inference-engine"
   ]
  },
  "intel": {

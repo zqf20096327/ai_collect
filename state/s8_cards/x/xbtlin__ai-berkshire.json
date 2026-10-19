@@ -43,14 +43,14 @@
    "多Agent",
    "财报分析"
   ],
-  "domain": "金融/投资研究",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "multi-agent"
+   "quant-finance"
   ]
  },
  "intel": {

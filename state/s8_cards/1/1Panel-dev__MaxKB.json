@@ -44,12 +44,15 @@
    "智能体平台",
    "MCP"
   ],
-  "domain": "企业级智能体/RAG 平台",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "rag"
+   "rag",
+   "chatbot",
+   "document-qa",
+   "workflow-automation"
   ]
  },
  "intel": {

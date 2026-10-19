@@ -43,13 +43,13 @@
    "MCP",
    "学习资源"
   ],
-  "domain": "LLM 应用开发/知识聚合",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "rag",
-   "tutorials"
+   "tutorials",
+   "curated-list"
   ]
  },
  "intel": {

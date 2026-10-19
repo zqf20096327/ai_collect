@@ -45,14 +45,16 @@
    "AI集成",
    "桌面应用"
   ],
-  "domain": "数据库/开发工具",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "bedrock",
    "ollama"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "code-generation"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

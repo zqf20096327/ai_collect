@@ -43,11 +43,13 @@
    "个性化",
    "自托管服务"
   ],
-  "domain": "LLM 基础设施/智能体记忆",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "agent-memory"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

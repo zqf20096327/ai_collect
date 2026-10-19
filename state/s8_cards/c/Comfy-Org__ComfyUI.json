@@ -43,12 +43,14 @@
    "扩散模型",
    "桌面应用"
   ],
-  "domain": "AIGC/内容生成工具",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-generation"
+   "image-generation",
+   "video-generation",
+   "inference-engine"
   ]
  },
  "intel": {

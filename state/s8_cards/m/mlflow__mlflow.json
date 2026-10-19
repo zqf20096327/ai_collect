@@ -44,12 +44,15 @@
    "AI Gateway",
    "ML 生命周期"
   ],
-  "domain": "LLM/ML 基础设施",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "llm-observability"
+   "llm-observability",
+   "model-evaluation",
+   "mlops",
+   "prompt-engineering"
   ]
  },
  "intel": {

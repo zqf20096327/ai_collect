@@ -43,7 +43,7 @@
    "自托管",
    "本地LLM"
   ],
-  "domain": "AI 搜索/信息检索",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,7 +52,8 @@
    "ollama"
   ],
   "scenario_tags_v2": [
-   "rag"
+   "semantic-search",
+   "document-qa"
   ]
  },
  "intel": {

@@ -42,14 +42,14 @@
    "self-evolving agents",
    "LLM训练框架"
   ],
-  "domain": "LLM 基础设施/Agent 工具链",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "agent-framework"
+   "prompt-engineering"
   ]
  },
  "intel": {

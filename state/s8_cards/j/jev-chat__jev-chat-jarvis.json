@@ -45,11 +45,13 @@
    "桌面/移动辅助工具",
    "隐私自助"
   ],
-  "domain": "消费级 AI 聊天辅助",
+  "domain": "对话与助手",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "ai-assistant"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

@@ -44,7 +44,7 @@
    "DevSecOps",
    "CLI工具"
   ],
-  "domain": "网络安全/应用安全",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -54,7 +54,8 @@
    "deepseek"
   ],
   "scenario_tags_v2": [
-   "cybersecurity"
+   "cybersecurity",
+   "code-review"
   ]
  },
  "intel": {

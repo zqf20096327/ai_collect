@@ -44,12 +44,15 @@
    "本地优先",
    "工作流自动化"
   ],
-  "domain": "效率工具/AI 记忆基础设施",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "workflow-automation"
+   "asr",
+   "ocr",
+   "multimodal",
+   "agent-memory"
   ]
  },
  "intel": {

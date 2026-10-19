@@ -47,12 +47,13 @@
    "论文写作",
    "local-first"
   ],
-  "domain": "数学建模/科研辅助工具",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "multi-agent"
+   "multi-agent",
+   "ai-writing"
   ]
  },
  "intel": {

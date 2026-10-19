@@ -42,14 +42,15 @@
    "Agent开发",
    "快速入门"
   ],
-  "domain": "LLM 应用开发/示例代码",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "agent-framework"
+   "tutorials",
+   "data-analysis"
   ]
  },
  "intel": {

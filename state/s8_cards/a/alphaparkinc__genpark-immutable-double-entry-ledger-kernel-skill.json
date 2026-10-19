@@ -49,9 +49,7 @@
   "ecosystem_compat": [
    "anthropic"
   ],
-  "scenario_tags_v2": [
-   "agent-framework"
-  ]
+  "scenario_tags_v2": []
  },
  "intel": {
   "maintainer_type": "company",

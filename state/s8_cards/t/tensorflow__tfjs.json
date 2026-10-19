@@ -43,11 +43,14 @@
    "深度学习",
    "JavaScript库"
   ],
-  "domain": "机器学习框架/前端 ML",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "model-training",
+   "inference-engine"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

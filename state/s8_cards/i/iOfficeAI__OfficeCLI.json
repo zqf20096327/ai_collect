@@ -46,11 +46,13 @@
    "文档生成",
    "Skill"
   ],
-  "domain": "办公文档自动化/LLM 基础设施",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "document-parsing"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

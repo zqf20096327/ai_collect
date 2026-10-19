@@ -42,12 +42,12 @@
    "LLM推理",
    "系统设计"
   ],
-  "domain": "开发者教育/技术内容",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "inference-engine"
+   "tutorials"
   ]
  },
  "intel": {

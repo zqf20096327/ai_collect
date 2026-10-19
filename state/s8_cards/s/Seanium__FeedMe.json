@@ -43,11 +43,13 @@
    "静态站点",
    "GitHub Pages"
   ],
-  "domain": "信息聚合/阅读工具",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "web-scraping"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

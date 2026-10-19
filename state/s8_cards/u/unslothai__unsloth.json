@@ -44,7 +44,7 @@
    "RAG",
    "AI Agent"
   ],
-  "domain": "LLM 基础设施/模型训练与推理",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,8 +52,9 @@
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "rag",
-   "fine-tuning"
+   "fine-tuning",
+   "model-quantization",
+   "reinforcement-learning"
   ]
  },
  "intel": {

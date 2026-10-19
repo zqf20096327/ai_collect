@@ -45,11 +45,12 @@
    "合成数据生成",
    "科研工具"
   ],
-  "domain": "AI/多智能体系统研究框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "multi-agent",
    "research-tools"
   ]
  },

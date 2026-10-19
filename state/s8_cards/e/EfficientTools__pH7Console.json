@@ -42,11 +42,14 @@
    "macOS桌面应用",
    "隐私优先"
   ],
-  "domain": "开发者工具/终端",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "code-generation",
+   "ai-assistant"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

@@ -42,16 +42,15 @@
    "RAG",
    "推荐系统"
   ],
-  "domain": "数据库/AI 基础设施",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "cohere"
   ],
   "scenario_tags_v2": [
-   "rag",
-   "semantic-search",
    "vector-database",
+   "semantic-search",
    "recommender-system"
   ]
  },

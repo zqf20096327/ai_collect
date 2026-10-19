@@ -42,12 +42,13 @@
    "回测",
    "图书配套代码"
   ],
-  "domain": "金融科技/量化交易",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "quant-finance"
+   "quant-finance",
+   "tutorials"
   ]
  },
  "intel": {

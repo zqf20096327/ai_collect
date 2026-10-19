@@ -44,14 +44,12 @@
    "技术教程合集",
    "LLMOps"
   ],
-  "domain": "大模型工程化/知识聚合",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "llm-observability",
-   "inference-engine",
-   "model-training"
+   "tutorials"
   ]
  },
  "intel": {

@@ -42,13 +42,15 @@
    "低代码/无代码",
    "生成式AI"
   ],
-  "domain": "AI 应用开发工具",
+  "domain": "编码与开发",
   "alternative_to": [
    "Lovable"
   ],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

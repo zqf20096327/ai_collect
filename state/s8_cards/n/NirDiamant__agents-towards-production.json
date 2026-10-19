@@ -41,11 +41,13 @@
    "生产部署",
    "多Agent协调"
   ],
-  "domain": "AI 开发教育/教程",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

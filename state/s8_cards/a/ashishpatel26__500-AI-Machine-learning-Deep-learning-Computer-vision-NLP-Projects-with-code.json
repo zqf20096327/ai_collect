@@ -43,12 +43,12 @@
    "计算机视觉",
    "NLP"
   ],
-  "domain": "AI 教育/知识聚合",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-video-processing"
+   "curated-list"
   ]
  },
  "intel": {

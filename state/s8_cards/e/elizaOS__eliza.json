@@ -43,13 +43,15 @@
    "钱包操作",
    "OS发行版"
   ],
-  "domain": "AI agent 框架/运行时",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
    "agent-framework",
-   "inference-engine"
+   "multi-agent",
+   "ai-assistant",
+   "chatbot"
   ]
  },
  "intel": {

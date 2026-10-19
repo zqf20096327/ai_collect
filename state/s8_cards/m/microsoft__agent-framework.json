@@ -43,7 +43,7 @@
    "SDK",
    "工作流"
   ],
-  "domain": "AI 基础设施/Agent 框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,8 +51,7 @@
   ],
   "scenario_tags_v2": [
    "agent-framework",
-   "multi-agent",
-   "workflow-automation"
+   "multi-agent"
   ]
  },
  "intel": {

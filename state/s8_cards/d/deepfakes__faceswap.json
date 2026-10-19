@@ -42,11 +42,13 @@
    "图像/视频处理",
    "桌面工具"
   ],
-  "domain": "深度学习/图像视频处理",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "image-video-processing"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

@@ -42,12 +42,13 @@
    "Claude Code",
    "Python"
   ],
-  "domain": "AI 教育/agent 开发教学",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "coding-agent"
+   "tutorials",
+   "multi-agent"
   ]
  },
  "intel": {

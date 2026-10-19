@@ -43,11 +43,14 @@
    "MCP",
    "开发工具"
   ],
-  "domain": "AI Agent/开发工具",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "ai-assistant",
+   "coding-agent"
+  ]
  },
  "intel": {
   "maintainer_type": "university",

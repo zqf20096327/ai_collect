@@ -43,13 +43,15 @@
    "模型训练",
    "模型库"
   ],
-  "domain": "机器学习基础设施",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "multimodal",
    "inference-engine",
-   "model-training"
+   "model-training",
+   "fine-tuning"
   ]
  },
  "intel": {

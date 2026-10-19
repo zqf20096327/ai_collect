@@ -42,7 +42,7 @@
    "LLM应用",
    "代码转换"
   ],
-  "domain": "开发工具/UI 生成",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,7 +51,9 @@
    "cohere",
    "ollama"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "code-generation"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

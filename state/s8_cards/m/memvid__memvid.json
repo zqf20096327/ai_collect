@@ -42,14 +42,12 @@
    "向量检索",
    "知识库"
   ],
-  "domain": "LLM 基础设施/Agent 记忆",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-memory",
-   "knowledge-base",
-   "vector-database"
+   "agent-memory"
   ]
  },
  "intel": {

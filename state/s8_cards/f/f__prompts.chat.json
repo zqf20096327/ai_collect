@@ -45,12 +45,14 @@
    "MCP",
    "awesome-list"
   ],
-  "domain": "AI 提示词资源聚合",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "curated-list"
+   "prompt-engineering",
+   "curated-list",
+   "tutorials"
   ]
  },
  "intel": {

@@ -44,7 +44,7 @@
    "知识库/RAG",
    "微服务"
   ],
-  "domain": "企业应用开发/低代码平台",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [
    "Dify"
@@ -55,8 +55,9 @@
    "anthropic"
   ],
   "scenario_tags_v2": [
+   "code-generation",
    "workflow-automation",
-   "code-generation"
+   "document-qa"
   ]
  },
  "intel": {

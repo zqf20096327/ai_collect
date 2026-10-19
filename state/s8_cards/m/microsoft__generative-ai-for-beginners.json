@@ -43,15 +43,14 @@
    "RAG",
    "LLM入门"
   ],
-  "domain": "教育/生成式 AI 开发学习",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "azure"
   ],
   "scenario_tags_v2": [
-   "prompt-engineering",
-   "rag"
+   "tutorials"
   ]
  },
  "intel": {

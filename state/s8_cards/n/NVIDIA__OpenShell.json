@@ -42,11 +42,13 @@
    "策略管控",
    "基础设施"
   ],
-  "domain": "AI 基础设施/agent 安全运行时",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

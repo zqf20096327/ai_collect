@@ -43,14 +43,13 @@
    "LLM基础设施",
    "文档解析"
   ],
-  "domain": "LLM 基础设施/RAG",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "document-parsing",
-   "knowledge-graph",
-   "rag"
+   "rag",
+   "knowledge-graph"
   ]
  },
  "intel": {

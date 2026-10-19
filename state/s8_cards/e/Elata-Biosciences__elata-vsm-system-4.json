@@ -42,11 +42,14 @@
    "神经科技/BCI",
    "自动化监控"
   ],
-  "domain": "神经科技/DAO 治理工具",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "web-scraping",
+   "research-tools"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

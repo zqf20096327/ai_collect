@@ -43,12 +43,11 @@
    "机器人",
    "科研"
   ],
-  "domain": "机器学习/强化学习",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "research-tools",
    "reinforcement-learning"
   ]
  },

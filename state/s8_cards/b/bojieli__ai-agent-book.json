@@ -43,13 +43,12 @@
    "RAG",
    "多Agent协作"
   ],
-  "domain": "教育/技术图书",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "multi-agent",
-   "rag"
+   "tutorials"
   ]
  },
  "intel": {

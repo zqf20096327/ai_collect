@@ -44,12 +44,14 @@
    "知识工作自动化",
    "私有化部署"
   ],
-  "domain": "AI Agent 平台/知识工作",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "model-gateway"
+   "ai-assistant",
+   "coding-agent",
+   "workflow-automation"
   ]
  },
  "intel": {

@@ -43,7 +43,7 @@
    "本地部署",
    "桌面应用"
   ],
-  "domain": "LLM 应用/知识库",
+  "domain": "效率与自动化",
   "alternative_to": [
    "ChatGPT"
   ],
@@ -60,7 +60,8 @@
   ],
   "scenario_tags_v2": [
    "document-qa",
-   "rag"
+   "workflow-automation",
+   "gui-automation"
   ]
  },
  "intel": {

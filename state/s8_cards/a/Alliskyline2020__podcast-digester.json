@@ -43,7 +43,7 @@
    "双语字幕",
    "本地优先"
   ],
-  "domain": "内容消费/知识管理",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,7 +51,8 @@
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "knowledge-base"
+   "asr",
+   "ai-writing"
   ]
  },
  "intel": {

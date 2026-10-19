@@ -44,13 +44,14 @@
    "代码生成",
    "CI/CD"
   ],
-  "domain": "开发者工具/AI 编码",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "coding-agent",
    "code-generation",
-   "coding-agent"
+   "code-review"
   ]
  },
  "intel": {

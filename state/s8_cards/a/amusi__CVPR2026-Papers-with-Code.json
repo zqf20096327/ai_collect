@@ -42,13 +42,12 @@
    "学术资源",
    "知识聚合"
   ],
-  "domain": "计算机视觉/学术资源聚合",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "curated-list",
-   "image-video-processing"
+   "curated-list"
   ]
  },
  "intel": {

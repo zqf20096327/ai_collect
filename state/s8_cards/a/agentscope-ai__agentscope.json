@@ -44,7 +44,7 @@
    "语音agent",
    "MCP"
   ],
-  "domain": "LLM 基础设施/agent 框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -53,8 +53,7 @@
   ],
   "scenario_tags_v2": [
    "agent-framework",
-   "multi-agent",
-   "voice-agent"
+   "multi-agent"
   ]
  },
  "intel": {

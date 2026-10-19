@@ -43,11 +43,13 @@
    "漏洞分类",
    "供应链安全"
   ],
-  "domain": "AI 安全/标准",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "cybersecurity"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

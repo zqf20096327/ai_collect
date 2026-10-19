@@ -44,7 +44,7 @@
    "LLM应用",
    "桌面应用"
   ],
-  "domain": "视频工具/字幕处理",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,7 +52,7 @@
   ],
   "scenario_tags_v2": [
    "asr",
-   "image-video-processing"
+   "tts"
   ]
  },
  "intel": {

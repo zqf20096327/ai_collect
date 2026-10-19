@@ -43,11 +43,13 @@
    "隐私优先",
    "桌面应用"
   ],
-  "domain": "会议/办公效率工具",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "asr"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

@@ -42,12 +42,14 @@
    "深度学习库",
    "PyTorch"
   ],
-  "domain": "AI 生成/深度学习工具库",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-generation"
+   "image-generation",
+   "video-generation",
+   "model-training"
   ]
  },
  "intel": {

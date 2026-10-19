@@ -43,13 +43,11 @@
    "RAG",
    "全文检索"
   ],
-  "domain": "数据库/检索基础设施",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "rag",
-   "semantic-search",
    "vector-database"
   ]
  },

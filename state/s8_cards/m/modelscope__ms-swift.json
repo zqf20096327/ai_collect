@@ -43,14 +43,19 @@
    "强化学习GRPO",
    "模型量化部署"
   ],
-  "domain": "LLM 基础设施/训练框架",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "deepseek",
    "vllm"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "fine-tuning",
+   "model-training",
+   "reinforcement-learning",
+   "model-quantization"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

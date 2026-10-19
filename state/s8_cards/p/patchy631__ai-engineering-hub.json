@@ -43,12 +43,11 @@
    "MCP",
    "学习路线"
   ],
-  "domain": "AI 工程/教程与学习资源",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "rag",
    "tutorials"
   ]
  },

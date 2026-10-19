@@ -40,11 +40,14 @@
    "机器学习",
    "Python库"
   ],
-  "domain": "自然语言处理/科研工具",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "research-tools",
+   "tutorials"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

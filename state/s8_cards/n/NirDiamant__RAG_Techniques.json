@@ -42,14 +42,15 @@
    "LLM基础设施",
    "信息检索"
   ],
-  "domain": "LLM 基础设施/RAG",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "ollama"
   ],
   "scenario_tags_v2": [
-   "rag"
+   "rag",
+   "tutorials"
   ]
  },
  "intel": {

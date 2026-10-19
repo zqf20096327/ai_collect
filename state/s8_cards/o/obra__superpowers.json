@@ -43,13 +43,13 @@
    "技能框架",
    "TDD"
   ],
-  "domain": "AI 编程工具/开发流程",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework",
-   "coding-agent"
+   "coding-agent",
+   "agent-framework"
   ]
  },
  "intel": {

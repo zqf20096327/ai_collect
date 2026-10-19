@@ -42,14 +42,13 @@
    "编码Agent",
    "工作流自动化"
   ],
-  "domain": "LLM 基础设施/Agent 技能清单",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "workflow-automation",
-   "coding-agent",
-   "curated-list"
+   "curated-list",
+   "prompt-engineering"
   ]
  },
  "intel": {

@@ -42,13 +42,13 @@
    "文生视频",
    "图生视频"
   ],
-  "domain": "多模态/视频生成",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-generation",
-   "video-generation"
+   "video-generation",
+   "fine-tuning"
   ]
  },
  "intel": {

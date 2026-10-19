@@ -44,11 +44,13 @@
    "工程效能",
    "Linear集成"
   ],
-  "domain": "开发者工具/工程效能",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

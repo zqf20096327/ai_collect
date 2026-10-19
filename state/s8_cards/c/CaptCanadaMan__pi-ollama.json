@@ -51,10 +51,7 @@
   "ecosystem_compat": [
    "ollama"
   ],
-  "scenario_tags_v2": [
-   "coding-agent",
-   "inference-engine"
-  ]
+  "scenario_tags_v2": []
  },
  "intel": {
   "maintainer_type": "individual",

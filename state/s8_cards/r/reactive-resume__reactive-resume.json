@@ -43,7 +43,7 @@
    "自托管",
    "AI助手"
   ],
-  "domain": "求职/文档工具",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,7 +51,7 @@
    "ollama"
   ],
   "scenario_tags_v2": [
-   "ai-assistant"
+   "ai-writing"
   ]
  },
  "intel": {

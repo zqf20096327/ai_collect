@@ -43,12 +43,11 @@
    "命令行工具",
    "图像处理"
   ],
-  "domain": "图像处理/OCR",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-video-processing",
    "ocr"
   ]
  },

@@ -44,7 +44,7 @@
    "数据科学",
    "Kaggle"
   ],
-  "domain": "研发自动化/数据科学",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,8 +52,10 @@
    "azure"
   ],
   "scenario_tags_v2": [
-   "data-analysis",
-   "quant-finance"
+   "quant-finance",
+   "fine-tuning",
+   "agent-framework",
+   "data-analysis"
   ]
  },
  "intel": {

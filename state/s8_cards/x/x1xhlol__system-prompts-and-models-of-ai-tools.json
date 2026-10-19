@@ -40,11 +40,14 @@
    "资料合集",
    "AI工具"
   ],
-  "domain": "LLM 生态/知识聚合",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "prompt-engineering",
+   "curated-list"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

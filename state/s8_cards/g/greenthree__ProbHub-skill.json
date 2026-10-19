@@ -44,11 +44,13 @@
    "DOMjudge",
    "Typst排版"
   ],
-  "domain": "算法竞赛/开发工具",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "workflow-automation"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

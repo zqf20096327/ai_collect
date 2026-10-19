@@ -43,13 +43,15 @@
    "音频生成",
    "LoRA训练"
   ],
-  "domain": "AIGC/生成模型框架",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
    "image-generation",
-   "video-generation"
+   "video-generation",
+   "fine-tuning",
+   "model-quantization"
   ]
  },
  "intel": {

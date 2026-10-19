@@ -42,13 +42,14 @@
    "开发工作流",
    "教程/知识库"
   ],
-  "domain": "开发者工具/AI 编程方法论",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
    "prompt-engineering",
-   "coding-agent"
+   "tutorials",
+   "curated-list"
   ]
  },
  "intel": {

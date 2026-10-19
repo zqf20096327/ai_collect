@@ -44,7 +44,7 @@
    "分布式推理",
    "AI Agent"
   ],
-  "domain": "AI 基础设施/模型推理服务",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -53,8 +53,6 @@
    "ollama"
   ],
   "scenario_tags_v2": [
-   "model-gateway",
-   "multimodal",
    "inference-engine"
   ]
  },

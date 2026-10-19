@@ -43,11 +43,13 @@
    "桌面应用",
    "个人数据主权"
   ],
-  "domain": "AI 隐私工具/提示词管理",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "prompt-engineering"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

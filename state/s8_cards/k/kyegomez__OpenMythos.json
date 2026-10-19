@@ -42,11 +42,13 @@
    "训练脚本",
    "MoE"
   ],
-  "domain": "AI 模型架构/研究实现",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "model-training"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

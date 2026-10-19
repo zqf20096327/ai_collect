@@ -44,7 +44,7 @@
    "文档解析",
    "Agent"
   ],
-  "domain": "LLM 应用框架/企业 RAG",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -53,9 +53,9 @@
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "document-parsing",
    "rag",
-   "inference-engine"
+   "document-parsing",
+   "agent-framework"
   ]
  },
  "intel": {

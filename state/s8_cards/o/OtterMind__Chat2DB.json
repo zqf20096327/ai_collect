@@ -46,12 +46,12 @@
    "AI助手",
    "MCP"
   ],
-  "domain": "数据库工具",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "ai-assistant"
+   "data-analysis"
   ]
  },
  "intel": {

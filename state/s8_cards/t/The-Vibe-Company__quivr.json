@@ -45,11 +45,14 @@
    "告警/监控",
    "RAG基础设施"
   ],
-  "domain": "搜索引擎/数据基础设施",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "semantic-search",
+   "web-scraping"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

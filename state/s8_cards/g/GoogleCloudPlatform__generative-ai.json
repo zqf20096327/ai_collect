@@ -42,11 +42,14 @@
    "生成式AI",
    "notebooks"
   ],
-  "domain": "生成式AI 开发示例/云平台",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "tutorials",
+   "rag"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

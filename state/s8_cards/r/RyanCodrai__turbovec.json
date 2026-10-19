@@ -43,12 +43,11 @@
    "RAG",
    "Rust/Python库"
   ],
-  "domain": "LLM 基础设施/向量检索",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "rag",
    "vector-database"
   ]
  },

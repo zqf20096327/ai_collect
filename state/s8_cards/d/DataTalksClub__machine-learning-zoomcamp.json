@@ -43,12 +43,12 @@
    "模型部署",
    "教育培训"
   ],
-  "domain": "教育/机器学习工程",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "inference-engine"
+   "tutorials"
   ]
  },
  "intel": {

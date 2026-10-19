@@ -42,15 +42,14 @@
    "Claude生态",
    "文档处理"
   ],
-  "domain": "LLM 生态/Agent 技能",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "agent-framework",
-   "document-parsing"
+   "agent-framework"
   ]
  },
  "intel": {

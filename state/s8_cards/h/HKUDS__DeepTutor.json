@@ -43,14 +43,14 @@
    "知识库",
    "教育"
   ],
-  "domain": "教育/AI 学习助手",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
    "multi-agent",
-   "knowledge-base",
-   "rag"
+   "rag",
+   "document-qa"
   ]
  },
  "intel": {

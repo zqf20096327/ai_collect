@@ -43,7 +43,7 @@
    "开发者工具",
    "本地推理"
   ],
-  "domain": "AI 开发者工具/agent 基础设施",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,8 +51,7 @@
    "deepseek"
   ],
   "scenario_tags_v2": [
-   "agent-memory",
-   "inference-engine"
+   "agent-memory"
   ]
  },
  "intel": {

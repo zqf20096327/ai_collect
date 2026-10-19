@@ -43,13 +43,17 @@
    "信息检索",
    "评测基准"
   ],
-  "domain": "LLM/Agent 模型",
+  "domain": "评测与运维",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "openrouter"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "reinforcement-learning",
+   "model-evaluation",
+   "research-tools"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

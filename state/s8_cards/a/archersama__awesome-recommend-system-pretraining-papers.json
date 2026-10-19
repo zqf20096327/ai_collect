@@ -43,13 +43,13 @@
    "LLM",
    "科研文献"
   ],
-  "domain": "推荐系统/机器学习研究",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "recommender-system",
-   "model-training"
+   "curated-list",
+   "recommender-system"
   ]
  },
  "intel": {

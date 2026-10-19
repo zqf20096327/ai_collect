@@ -42,7 +42,7 @@
    "多Agent协作",
    "桌面应用"
   ],
-  "domain": "开发工具/Agentic Coding",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -50,8 +50,8 @@
    "deepseek"
   ],
   "scenario_tags_v2": [
-   "multi-agent",
-   "coding-agent"
+   "coding-agent",
+   "multi-agent"
   ]
  },
  "intel": {

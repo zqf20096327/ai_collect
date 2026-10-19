@@ -44,7 +44,7 @@
    "OCR",
    "Agent"
   ],
-  "domain": "AI 模型/多模态",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,7 +52,9 @@
   ],
   "scenario_tags_v2": [
    "multimodal",
-   "ocr"
+   "document-parsing",
+   "ocr",
+   "gui-automation"
   ]
  },
  "intel": {

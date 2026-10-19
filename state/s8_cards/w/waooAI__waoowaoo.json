@@ -46,15 +46,15 @@
    "AI影视制作",
    "自托管"
   ],
-  "domain": "内容创作/影视视频",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "openrouter"
   ],
   "scenario_tags_v2": [
-   "image-generation",
-   "video-generation"
+   "video-generation",
+   "image-generation"
   ]
  },
  "intel": {

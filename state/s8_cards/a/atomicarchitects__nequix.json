@@ -44,11 +44,14 @@
    "基础模型",
    "分子动力学"
   ],
-  "domain": "材料科学/机器学习原子间势",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "fine-tuning",
+   "model-training"
+  ]
  },
  "intel": {
   "maintainer_type": "university",

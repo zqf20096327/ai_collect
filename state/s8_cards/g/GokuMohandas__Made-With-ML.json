@@ -42,13 +42,13 @@
    "LLMOps",
    "模型部署"
   ],
-  "domain": "教育/ML 基础设施",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "llm-observability",
-   "inference-engine"
+   "tutorials",
+   "mlops"
   ]
  },
  "intel": {

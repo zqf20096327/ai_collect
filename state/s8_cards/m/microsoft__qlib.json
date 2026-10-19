@@ -42,12 +42,13 @@
    "金融数据",
    "回测"
   ],
-  "domain": "金融科技/量化投资",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "quant-finance"
+   "quant-finance",
+   "model-training"
   ]
  },
  "intel": {

@@ -43,11 +43,13 @@
    "LLM agent",
    "软件工程"
   ],
-  "domain": "软件工程/AIOps 评测",
+  "domain": "评测与运维",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "model-evaluation"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

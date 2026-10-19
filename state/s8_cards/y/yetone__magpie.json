@@ -44,7 +44,7 @@
    "代理工具",
    "桌面应用"
   ],
-  "domain": "LLM 基础设施/网关与路由",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -57,8 +57,7 @@
    "ollama"
   ],
   "scenario_tags_v2": [
-   "model-gateway",
-   "coding-agent"
+   "model-gateway"
   ]
  },
  "intel": {

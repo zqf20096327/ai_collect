@@ -43,13 +43,16 @@
    "记忆系统",
    "效率工具"
   ],
-  "domain": "个人 AI 基础设施/效率工具",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "agent-memory",
+   "ai-assistant"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

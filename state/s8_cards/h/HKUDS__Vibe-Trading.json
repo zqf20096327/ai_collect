@@ -44,12 +44,11 @@
    "券商连接",
    "金融研究"
   ],
-  "domain": "金融科技/量化交易",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "multi-agent",
    "quant-finance"
   ]
  },

@@ -47,7 +47,7 @@
    "MCP/工具调用",
    "私有化问答"
   ],
-  "domain": "LLM 基础设施/私有化部署",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -56,7 +56,8 @@
    "vllm"
   ],
   "scenario_tags_v2": [
-   "rag"
+   "rag",
+   "document-qa"
   ]
  },
  "intel": {

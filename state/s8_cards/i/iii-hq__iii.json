@@ -44,13 +44,12 @@
    "可观测性",
    "开发者工具"
   ],
-  "domain": "后端开发/运行时引擎",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework",
-   "llm-observability"
+   "workflow-automation"
   ]
  },
  "intel": {

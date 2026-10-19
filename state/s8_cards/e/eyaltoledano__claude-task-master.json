@@ -42,7 +42,7 @@
    "AI编程",
    "开发工具"
   ],
-  "domain": "开发工具/AI 辅助编程",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -50,7 +50,7 @@
    "openrouter"
   ],
   "scenario_tags_v2": [
-   "coding-agent"
+   "workflow-automation"
   ]
  },
  "intel": {

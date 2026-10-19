@@ -43,11 +43,13 @@
    "GPU内核",
    "开发平台"
   ],
-  "domain": "AI 开发与部署平台/编程语言",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

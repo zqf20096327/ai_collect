@@ -44,14 +44,16 @@
    "LoRA微调",
    "量化投资"
   ],
-  "domain": "金融科技/LLM",
+  "domain": "评测与运维",
   "alternative_to": [],
   "competitors_mentioned": [
    "ChatGPT"
   ],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "quant-finance"
+   "quant-finance",
+   "fine-tuning",
+   "model-evaluation"
   ]
  },
  "intel": {

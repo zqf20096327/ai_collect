@@ -44,12 +44,12 @@
    "RAG",
    "API服务"
   ],
-  "domain": "搜索/数据库基础设施",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "rag"
+   "semantic-search"
   ]
  },
  "intel": {

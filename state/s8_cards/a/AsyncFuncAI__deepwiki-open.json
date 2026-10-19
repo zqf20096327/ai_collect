@@ -39,11 +39,13 @@
    "代码文档",
    "仓库分析"
   ],
-  "domain": "开发者工具/文档生成",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "document-qa"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

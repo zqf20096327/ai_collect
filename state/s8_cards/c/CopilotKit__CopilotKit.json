@@ -42,11 +42,13 @@
    "聊天UI",
    "AG-UI协议"
   ],
-  "domain": "AI 应用开发框架/Agent 前端",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

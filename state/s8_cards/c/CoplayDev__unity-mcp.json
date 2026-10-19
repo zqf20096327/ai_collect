@@ -43,12 +43,13 @@
    "编辑器自动化",
    "AI助手"
   ],
-  "domain": "游戏开发/开发工具",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "ai-assistant"
+   "coding-agent",
+   "workflow-automation"
   ]
  },
  "intel": {

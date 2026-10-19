@@ -43,11 +43,12 @@
    "OCR",
    "Python工具"
   ],
-  "domain": "开发工具/文档处理",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "document-parsing",
    "ocr"
   ]
  },

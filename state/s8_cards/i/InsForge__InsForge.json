@@ -43,11 +43,13 @@
    "自托管",
    "全栈开发"
   ],
-  "domain": "开发工具/后端平台",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

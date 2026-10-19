@@ -42,11 +42,13 @@
    "AI协议",
    "多语言示例"
   ],
-  "domain": "开发者教育/AI 协议",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

@@ -44,12 +44,12 @@
    "MLOps",
    "可观测性"
   ],
-  "domain": "数据工程/编排",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "llm-observability",
+   "workflow-automation",
    "mlops"
   ]
  },

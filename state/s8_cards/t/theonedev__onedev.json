@@ -43,14 +43,15 @@
    "AI编码助手",
    "自托管"
   ],
-  "domain": "开发工具/DevOps",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "coding-agent"
+   "coding-agent",
+   "code-review"
   ]
  },
  "intel": {

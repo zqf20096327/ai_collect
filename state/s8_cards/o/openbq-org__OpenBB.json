@@ -42,11 +42,13 @@
    "数据集成",
    "MCP"
   ],
-  "domain": "金融科技/数据平台",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "quant-finance"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

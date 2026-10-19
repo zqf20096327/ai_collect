@@ -44,14 +44,13 @@
    "菜单栏应用",
    "OpenAI兼容API"
   ],
-  "domain": "LLM 基础设施/本地推理",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "model-gateway",
    "inference-engine"
   ]
  },

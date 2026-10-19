@@ -43,12 +43,14 @@
    "LLM推理/服务",
    "超参数调优"
   ],
-  "domain": "机器学习基础设施/分布式计算",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "mlops"
+   "reinforcement-learning",
+   "inference-engine",
+   "model-training"
   ]
  },
  "intel": {

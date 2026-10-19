@@ -44,13 +44,15 @@
    "ML监控",
    "负责任AI"
   ],
-  "domain": "AI 公平性评测/可信 AI",
+  "domain": "评测与运维",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "ollama"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "model-evaluation"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

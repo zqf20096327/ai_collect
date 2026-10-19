@@ -42,14 +42,15 @@
    "语音转文字",
    "llama.cpp"
   ],
-  "domain": "LLM 基础设施/本地推理",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "llama.cpp"
   ],
   "scenario_tags_v2": [
-   "inference-engine"
+   "inference-engine",
+   "asr"
   ]
  },
  "intel": {

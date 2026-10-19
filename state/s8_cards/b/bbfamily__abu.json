@@ -42,12 +42,13 @@
    "机器学习",
    "金融"
   ],
-  "domain": "金融/量化投资",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "quant-finance"
+   "quant-finance",
+   "tutorials"
   ]
  },
  "intel": {

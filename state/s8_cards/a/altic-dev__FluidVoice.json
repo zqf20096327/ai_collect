@@ -43,13 +43,16 @@
    "本地优先/隐私",
    "macOS"
   ],
-  "domain": "语音输入/桌面工具",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "groq"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "asr",
+   "gui-automation"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

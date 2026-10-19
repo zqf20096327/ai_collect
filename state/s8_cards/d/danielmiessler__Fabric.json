@@ -43,7 +43,7 @@
    "LLM集成",
    "效率工具"
   ],
-  "domain": "开发者工具/AI 增强",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -55,7 +55,10 @@
    "groq",
    "openrouter"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "prompt-engineering",
+   "ai-writing"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

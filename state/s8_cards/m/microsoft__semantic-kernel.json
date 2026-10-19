@@ -43,14 +43,17 @@
    "多智能体编排",
    "开发者框架"
   ],
-  "domain": "LLM 基础设施/Agent 框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "azure",
    "ollama"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "agent-framework",
+   "multi-agent"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

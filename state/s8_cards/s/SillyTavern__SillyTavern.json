@@ -42,14 +42,16 @@
    "角色扮演",
    "本地部署"
   ],
-  "domain": "LLM 前端/聊天工具",
+  "domain": "对话与助手",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic",
    "openrouter"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "chatbot"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

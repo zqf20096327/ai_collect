@@ -44,7 +44,7 @@
    "Agent编排",
    "私有化部署"
   ],
-  "domain": "AI + 数据/数据分析平台",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,9 +52,9 @@
    "mistral"
   ],
   "scenario_tags_v2": [
-   "multi-agent",
    "data-analysis",
-   "rag"
+   "rag",
+   "agent-framework"
   ]
  },
  "intel": {

@@ -43,7 +43,7 @@
    "LLM接入",
    "插件系统"
   ],
-  "domain": "LLM 应用/机器人平台",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,7 +51,11 @@
    "ollama",
    "anthropic"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "chatbot",
+   "rag",
+   "workflow-automation"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

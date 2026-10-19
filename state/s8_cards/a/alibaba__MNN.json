@@ -43,14 +43,16 @@
    "移动端",
    "IoT"
   ],
-  "domain": "深度学习推理引擎/端侧 AI",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "deepseek"
   ],
   "scenario_tags_v2": [
-   "model-training"
+   "inference-engine",
+   "model-quantization",
+   "image-generation"
   ]
  },
  "intel": {

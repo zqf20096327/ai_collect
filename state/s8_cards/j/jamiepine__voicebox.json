@@ -44,11 +44,14 @@
    "MCP/Agent",
    "本地优先"
   ],
-  "domain": "语音 AI/桌面工具",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "tts",
+   "asr"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

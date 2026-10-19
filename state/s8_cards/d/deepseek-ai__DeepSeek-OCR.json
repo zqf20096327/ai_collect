@@ -42,7 +42,7 @@
    "文档转Markdown",
    "视觉语言模型"
   ],
-  "domain": "AI/视觉语言模型",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -50,7 +50,8 @@
    "vllm"
   ],
   "scenario_tags_v2": [
-   "ocr"
+   "ocr",
+   "document-parsing"
   ]
  },
  "intel": {

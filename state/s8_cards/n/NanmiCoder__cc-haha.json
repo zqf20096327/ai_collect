@@ -44,7 +44,7 @@
    "Computer Use",
    "MCP"
   ],
-  "domain": "开发者工具/AI Coding",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -54,9 +54,8 @@
    "ollama"
   ],
   "scenario_tags_v2": [
-   "multi-agent",
-   "gui-automation",
-   "coding-agent"
+   "coding-agent",
+   "multi-agent"
   ]
  },
  "intel": {

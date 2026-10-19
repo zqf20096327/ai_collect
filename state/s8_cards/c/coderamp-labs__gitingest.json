@@ -43,11 +43,13 @@
    "CLI工具",
    "自托管"
   ],
-  "domain": "LLM 基础设施/开发者工具",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "document-parsing"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

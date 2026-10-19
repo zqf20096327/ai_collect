@@ -44,7 +44,7 @@
    "桌面应用",
    "远程访问"
   ],
-  "domain": "AI 应用/Agent 平台",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -54,7 +54,10 @@
    "deepseek",
    "openrouter"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "multi-agent",
+   "ai-assistant"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

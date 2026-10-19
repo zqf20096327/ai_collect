@@ -43,14 +43,14 @@
    "Agent框架",
    "语义搜索"
   ],
-  "domain": "LLM 基础设施/编排框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
    "agent-framework",
-   "rag",
-   "semantic-search"
+   "multi-agent",
+   "rag"
   ]
  },
  "intel": {

@@ -42,13 +42,13 @@
    "微调",
    "LLM基础设施"
   ],
-  "domain": "AI 基础设施/模型训练",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
    "fine-tuning",
-   "model-training"
+   "reinforcement-learning"
   ]
  },
  "intel": {

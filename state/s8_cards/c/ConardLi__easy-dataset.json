@@ -43,7 +43,7 @@
    "RAG",
    "模型评测"
   ],
-  "domain": "LLM 基础设施/数据工程",
+  "domain": "评测与运维",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,8 +52,7 @@
   ],
   "scenario_tags_v2": [
    "model-evaluation",
-   "rag",
-   "fine-tuning"
+   "document-parsing"
   ]
  },
  "intel": {

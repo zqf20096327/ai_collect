@@ -43,13 +43,12 @@
    "计算机视觉",
    "语音/文本"
   ],
-  "domain": "机器学习/浏览器端推理",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-video-processing",
-   "model-training"
+   "object-detection"
   ]
  },
  "intel": {

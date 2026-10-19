@@ -41,11 +41,13 @@
    "安全工具",
    "主机发现"
   ],
-  "domain": "网络/安全工具",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "cybersecurity"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

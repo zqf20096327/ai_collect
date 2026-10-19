@@ -43,11 +43,13 @@
    "前端框架",
    "可视化"
   ],
-  "domain": "LLM 应用/生成式 UI",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

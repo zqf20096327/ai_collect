@@ -46,11 +46,13 @@
    "本地优先",
    "多平台同步"
   ],
-  "domain": "AI Agent 工具链/技能资产管理",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "prompt-engineering"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

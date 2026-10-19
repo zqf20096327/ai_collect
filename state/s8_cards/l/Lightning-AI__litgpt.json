@@ -43,13 +43,15 @@
    "推理部署",
    "模型评估"
   ],
-  "domain": "LLM 基础设施/训练与推理框架",
+  "domain": "评测与运维",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
    "fine-tuning",
-   "model-training"
+   "model-quantization",
+   "model-training",
+   "model-evaluation"
   ]
  },
  "intel": {

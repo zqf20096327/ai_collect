@@ -42,7 +42,7 @@
    "GRPO/RL",
    "数据集"
   ],
-  "domain": "LLM 训练/机器学习研究",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -50,7 +50,9 @@
    "vllm"
   ],
   "scenario_tags_v2": [
-   "model-training"
+   "model-training",
+   "reinforcement-learning",
+   "fine-tuning"
   ]
  },
  "intel": {

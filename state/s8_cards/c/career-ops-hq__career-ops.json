@@ -44,13 +44,16 @@
    "CLI工具",
    "本地优先"
   ],
-  "domain": "求职/职业工具",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "ai-writing",
+   "web-scraping"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

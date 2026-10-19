@@ -43,13 +43,14 @@
    "OCR",
    "隐私优先"
   ],
-  "domain": "开发者工具/多模态视觉",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "multimodal",
    "ocr",
-   "inference-engine"
+   "object-detection"
   ]
  },
  "intel": {

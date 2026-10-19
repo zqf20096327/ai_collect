@@ -43,11 +43,12 @@
    "低代码平台",
    "自托管"
   ],
-  "domain": "AI Agent 平台/自动化",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "agent-framework",
    "workflow-automation"
   ]
  },

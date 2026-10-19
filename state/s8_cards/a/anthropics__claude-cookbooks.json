@@ -42,14 +42,15 @@
    "cookbook",
    "开发者资源"
   ],
-  "domain": "LLM 应用开发/教程资源",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "tutorials"
+   "tutorials",
+   "prompt-engineering"
   ]
  },
  "intel": {

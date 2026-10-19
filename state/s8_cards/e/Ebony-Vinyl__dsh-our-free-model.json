@@ -42,7 +42,7 @@
    "免费模型",
    "本地网关"
   ],
-  "domain": "LLM 基础设施/模型接入",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -53,7 +53,9 @@
    "bedrock",
    "ollama"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

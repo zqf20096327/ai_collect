@@ -43,13 +43,15 @@
    "记忆系统",
    "技能自进化"
   ],
-  "domain": "AI Agent 框架/自动化",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [
    "Claude Code"
   ],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "agent-framework",
+   "agent-memory",
    "browser-automation",
    "gui-automation"
   ]

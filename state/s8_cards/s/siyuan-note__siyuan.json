@@ -43,12 +43,13 @@
    "自托管",
    "Markdown"
   ],
-  "domain": "知识管理/笔记工具",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "knowledge-base"
+   "knowledge-base",
+   "ai-writing"
   ]
  },
  "intel": {

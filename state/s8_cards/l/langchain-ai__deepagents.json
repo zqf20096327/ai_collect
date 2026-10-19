@@ -43,7 +43,7 @@
    "编码代理",
    "多智能体"
   ],
-  "domain": "LLM 基础设施/agent 框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [
    "Claude Code",
@@ -55,7 +55,6 @@
   ],
   "scenario_tags_v2": [
    "agent-framework",
-   "multi-agent",
    "coding-agent"
   ]
  },

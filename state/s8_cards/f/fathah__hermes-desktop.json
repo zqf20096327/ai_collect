@@ -44,7 +44,7 @@
    "LLM前端",
    "消息网关"
   ],
-  "domain": "AI Agent 桌面工具",
+  "domain": "对话与助手",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -55,7 +55,9 @@
    "vllm",
    "anthropic"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "chatbot"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

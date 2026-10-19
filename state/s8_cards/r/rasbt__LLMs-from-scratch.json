@@ -42,12 +42,12 @@
    "PyTorch",
    "微调"
   ],
-  "domain": "教育/LLM 实现",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "fine-tuning"
+   "tutorials"
   ]
  },
  "intel": {

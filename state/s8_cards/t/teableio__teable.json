@@ -44,11 +44,13 @@
    "数据库协作",
    "自托管"
   ],
-  "domain": "企业应用/低代码数据平台",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "workflow-automation"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

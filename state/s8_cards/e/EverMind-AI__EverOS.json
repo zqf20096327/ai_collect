@@ -44,14 +44,13 @@
    "MCP",
    "agent基础设施"
   ],
-  "domain": "AI 基础设施/Agent 记忆",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "openrouter"
   ],
   "scenario_tags_v2": [
-   "agent-framework",
    "agent-memory"
   ]
  },

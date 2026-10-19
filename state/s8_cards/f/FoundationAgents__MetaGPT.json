@@ -42,12 +42,14 @@
    "LLM基础设施",
    "Agent开发"
   ],
-  "domain": "LLM 基础设施/多智能体框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework"
+   "multi-agent",
+   "agent-framework",
+   "data-analysis"
   ]
  },
  "intel": {

@@ -43,7 +43,7 @@
    "MCP",
    "本地优先"
   ],
-  "domain": "开发者工具/编码 agent",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -54,7 +54,8 @@
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "coding-agent"
+   "coding-agent",
+   "multi-agent"
   ]
  },
  "intel": {

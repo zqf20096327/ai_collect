@@ -42,13 +42,16 @@
    "开发者工具",
    "CLI"
   ],
-  "domain": "开发者工具/AI 编码基础设施",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "workflow-automation",
+   "coding-agent"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

@@ -47,7 +47,7 @@
    "Agent",
    "向量数据库"
   ],
-  "domain": "LLM 基础设施/应用开发框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [
    "LangChain"
@@ -56,7 +56,7 @@
   "scenario_tags_v2": [
    "agent-framework",
    "rag",
-   "vector-database"
+   "model-gateway"
   ]
  },
  "intel": {

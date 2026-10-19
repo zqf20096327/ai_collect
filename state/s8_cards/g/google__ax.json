@@ -46,12 +46,12 @@
    "沙箱执行",
    "基础设施"
   ],
-  "domain": "AI 基础设施/Agent 编排",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "multi-agent"
+   "agent-framework"
   ]
  },
  "intel": {

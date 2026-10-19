@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parent
 POOL_DIR = ROOT / "data" / "live"
 BACKFILL_REPORT = ROOT / "state" / "s10_backfill_report.json"
 SAMPLE_OUT = ROOT / "state" / "s10_sample_tags.json"
+RETAG_OUT = ROOT / "state" / "s10_retag_run.json"
 EVAL_OUT = ROOT / "state" / "s10_eval_report.json"
 BACKUP_DIR = ROOT / "state" / "backup_tags_v1"
 
@@ -250,37 +251,80 @@ def cmd_backfill(args) -> dict:
     return rep_out
 
 
+def derive_domain(tags: list[str]) -> str | None:
+    """domain 组名派生（方案 §7）：取组序最靠前的标签所属组的中文名。
+
+    无标签返回 None（调用方保留原 domain——0 标签仓的老 domain 至少是个线索）。
+    """
+    v = tv.load_vocab()
+    gname = {g["gid"]: g["name_zh"] for g in v["groups"]}
+    for s in sorted(tags, key=lambda x: v["_by_slug"][x]["group"]):
+        return gname[v["_by_slug"][s]["group"]]
+    return None
+
+
 def cmd_tag(args) -> dict:
     cards = cstore.all_cards()
     fns = sorted(cards)
-    rng = random.Random(args.seed)
-    sample = rng.sample(fns, min(max(args.sample, 1), len(fns)))
+    apply_mode = args.missing or args.force
+    if args.force:
+        targets = fns                                    # 全量重打（覆盖 v2）
+    elif args.missing:
+        targets = [fn for fn in fns                     # 增量：只补缺 v2 的卡
+                   if not (cards[fn].get("links") or {}).get("scenario_tags_v2")]
+    else:
+        rng = random.Random(args.seed)
+        targets = rng.sample(fns, min(max(args.sample, 1), len(fns)))
+    if args.limit:
+        targets = targets[:args.limit]
     topics_idx = load_pool_topics()
     client = AIClient()
     items: dict[str, dict] = {}
     t0 = time.time()
     done = 0
+
+    def persist(fn: str, result: dict) -> None:
+        """apply 模式把裁决写回卡片（主线程调用，无并发写）。"""
+        tags = result.get("tags") or []
+        card = cards[fn]
+        if not isinstance(card.get("links"), dict):
+            card["links"] = {}
+        if not isinstance(card.get("trust"), dict):
+            card["trust"] = {}
+        card["links"]["scenario_tags_v2"] = tags
+        card["trust"]["vocab_ver"] = tv.load_vocab()["vocab_ver"]
+        dom = derive_domain(tags)
+        if dom:
+            card["links"]["domain"] = dom
+        cstore.write_card(card)
+
     with ThreadPoolExecutor(max_workers=args.concurrency) as ex:
         futs = {ex.submit(adjudicate, client, cards[fn], topics_idx.get(fn, [])): fn
-                for fn in sample}
+                for fn in targets}
         for fut in as_completed(futs):
             fn = futs[fut]
             try:
-                items[fn] = fut.result()
+                r = fut.result()
+                if apply_mode:
+                    persist(fn, r)
             except Exception as e:                       # noqa: BLE001 全身防御（s8 教训）
                 log.error("%s 失败: %s", fn, str(e)[:200])
-                items[fn] = {"error": str(e)[:200], "tags": [], "ok": False}
+                r = {"error": str(e)[:200], "tags": [], "ok": False}
+            items[fn] = r
             done += 1
-            if done % 10 == 0:
-                log.info("进度 %d/%d (%.0fs)", done, len(sample), time.time() - t0)
-    out = {"meta": {"vocab_ver": tv.load_vocab()["vocab_ver"],
-                    "model": client.harness, "sample": len(sample),
+            if done % 20 == 0:
+                log.info("进度 %d/%d (%.0fs)", done, len(targets), time.time() - t0)
+    mode = ("force" if args.force else "missing") if apply_mode else "sample"
+    out = {"meta": {"mode": mode, "vocab_ver": tv.load_vocab()["vocab_ver"],
+                    "model": client.harness, "targets": len(targets),
                     "seed": args.seed, "wall_s": round(time.time() - t0, 1),
                     "ts": time.strftime("%F %T")},
            "items": dict(sorted(items.items()))}
-    SAMPLE_OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
+    out_path = RETAG_OUT if apply_mode else SAMPLE_OUT
+    out_path.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     ok = sum(1 for r in items.values() if r.get("ok"))
-    print(f"完成 {ok}/{len(sample)}（失败 {len(sample)-ok}），wall {out['meta']['wall_s']}s -> {SAMPLE_OUT}")
+    print(f"[{mode}] 完成 {ok}/{len(targets)}（0 标签 {len(targets)-ok}），"
+          f"wall {out['meta']['wall_s']}s -> {out_path}")
     return out
 
 
@@ -386,6 +430,11 @@ def main():
     t.add_argument("--sample", type=int, default=80)
     t.add_argument("--seed", type=int, default=7)
     t.add_argument("--concurrency", type=int, default=6)
+    t.add_argument("--missing", action="store_true",
+                   help="增量模式：只给缺 scenario_tags_v2 的卡打标并写回")
+    t.add_argument("--force", action="store_true",
+                   help="全量重打：覆盖所有卡的 v2 并写回（含 domain 组名派生）")
+    t.add_argument("--limit", type=int, default=0, help="missing/force 模式的数量上限")
     t.set_defaults(fn=cmd_tag)
     e = sub.add_parser("evaluate", help="对比抽样与回填，出验收判据")
     e.set_defaults(fn=cmd_evaluate)

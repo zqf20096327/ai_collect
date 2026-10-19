@@ -45,12 +45,12 @@
    "agent技能",
    "开发工作流"
   ],
-  "domain": "软件工程/AI 开发工作流",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework"
+   "coding-agent"
   ]
  },
  "intel": {

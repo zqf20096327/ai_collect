@@ -42,13 +42,12 @@
    "LLMOps",
    "RAG"
   ],
-  "domain": "LLM 基础设施/评估",
+  "domain": "评测与运维",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "llm-observability",
-   "rag"
+   "model-evaluation"
   ]
  },
  "intel": {

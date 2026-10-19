@@ -42,7 +42,7 @@
    "LLM框架",
    "回测"
   ],
-  "domain": "金融/交易研究",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -56,7 +56,6 @@
    "vllm"
   ],
   "scenario_tags_v2": [
-   "agent-framework",
    "multi-agent",
    "quant-finance"
   ]

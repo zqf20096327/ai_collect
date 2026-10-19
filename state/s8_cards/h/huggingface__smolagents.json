@@ -42,7 +42,7 @@
    "LLM工具调用",
    "沙箱执行"
   ],
-  "domain": "LLM 基础设施/Agent 框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,7 +51,8 @@
    "bedrock"
   ],
   "scenario_tags_v2": [
-   "agent-framework"
+   "agent-framework",
+   "browser-automation"
   ]
  },
  "intel": {

@@ -42,14 +42,13 @@
    "知识管理",
    "PDF转Markdown"
   ],
-  "domain": "LLM 基础设施/知识管理",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework",
-   "document-parsing",
-   "knowledge-base"
+   "knowledge-base",
+   "document-parsing"
   ]
  },
  "intel": {

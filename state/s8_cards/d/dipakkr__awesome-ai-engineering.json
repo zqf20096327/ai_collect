@@ -42,13 +42,12 @@
    "LLM课程",
    " awesome-list"
   ],
-  "domain": "教育/知识聚合",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "curated-list",
-   "tutorials"
+   "curated-list"
   ]
  },
  "intel": {

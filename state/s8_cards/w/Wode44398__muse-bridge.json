@@ -42,7 +42,7 @@
    "多模型接入",
    "部署工具"
   ],
-  "domain": "AI 应用部署/agent 工作台",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -50,7 +50,8 @@
    "deepseek"
   ],
   "scenario_tags_v2": [
-   "model-gateway"
+   "coding-agent",
+   "ai-assistant"
   ]
  },
  "intel": {

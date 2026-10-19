@@ -46,13 +46,14 @@
    "自托管",
    "开发者工具"
   ],
-  "domain": "开发者工具/AI agent 基础设施",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "coding-agent",
    "multi-agent",
-   "coding-agent"
+   "code-review"
   ]
  },
  "intel": {

@@ -43,11 +43,13 @@
    "数据结构",
    "机器学习实现"
   ],
-  "domain": "教育/算法与数据结构",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
  },
  "intel": {
   "maintainer_type": null,

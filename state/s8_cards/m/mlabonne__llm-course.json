@@ -43,11 +43,12 @@
    "量化",
    "Colab笔记本"
   ],
-  "domain": "教育/LLM 学习资源",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "tutorials",
    "fine-tuning",
    "model-quantization"
   ]

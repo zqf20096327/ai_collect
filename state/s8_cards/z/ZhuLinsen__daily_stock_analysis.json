@@ -42,7 +42,7 @@
    "自动推送",
    "金融数据聚合"
   ],
-  "domain": "金融/量化分析",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -50,7 +50,9 @@
    "deepseek",
    "ollama"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "quant-finance"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

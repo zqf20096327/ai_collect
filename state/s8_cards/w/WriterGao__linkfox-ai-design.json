@@ -42,11 +42,13 @@
    "全栈Web应用",
    "AIGC"
   ],
-  "domain": "电商设计/AI图像生成",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "image-generation"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

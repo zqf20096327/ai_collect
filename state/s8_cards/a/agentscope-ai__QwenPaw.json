@@ -47,14 +47,15 @@
    "MCP",
    "多Agent"
   ],
-  "domain": "个人 AI 助手/Agent 平台",
+  "domain": "对话与助手",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "ollama"
   ],
   "scenario_tags_v2": [
-   "multi-agent"
+   "ai-assistant",
+   "chatbot"
   ]
  },
  "intel": {

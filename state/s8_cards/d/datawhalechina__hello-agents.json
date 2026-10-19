@@ -44,12 +44,12 @@
    "Agentic RL",
    "开源课程"
   ],
-  "domain": "教育/AI 学习教程",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "rag"
+   "tutorials"
   ]
  },
  "intel": {

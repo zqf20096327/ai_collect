@@ -44,7 +44,7 @@
    "企业知识管理",
    "自托管"
   ],
-  "domain": "LLM 基础设施/知识管理",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,8 +52,9 @@
    "ollama"
   ],
   "scenario_tags_v2": [
+   "rag",
    "document-qa",
-   "rag"
+   "knowledge-graph"
   ]
  },
  "intel": {

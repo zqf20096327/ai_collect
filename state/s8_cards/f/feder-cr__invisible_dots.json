@@ -45,14 +45,16 @@
    "自托管",
    "虚拟机"
   ],
-  "domain": "AI Agent/浏览器自动化",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "openrouter"
   ],
   "scenario_tags_v2": [
-   "browser-automation"
+   "browser-automation",
+   "gui-automation",
+   "ai-assistant"
   ]
  },
  "intel": {

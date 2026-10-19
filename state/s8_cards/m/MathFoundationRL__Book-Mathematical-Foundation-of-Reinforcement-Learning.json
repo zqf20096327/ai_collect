@@ -43,11 +43,12 @@
    "课程资源",
    "数学基础"
   ],
-  "domain": "教育/学术资源",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "tutorials",
    "reinforcement-learning"
   ]
  },

@@ -43,12 +43,13 @@
    "代码审查",
    "AI agent 工具"
   ],
-  "domain": "前端开发/开发工具",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "code-review"
+   "code-review",
+   "curated-list"
   ]
  },
  "intel": {

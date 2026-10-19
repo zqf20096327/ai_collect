@@ -42,12 +42,12 @@
    "NLU",
    "LLM agent"
   ],
-  "domain": "对话式 AI / 聊天机器人框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "chatbot"
+   "agent-framework"
   ]
  },
  "intel": {

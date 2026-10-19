@@ -44,7 +44,7 @@
    "自托管",
    "企业搜索"
   ],
-  "domain": "LLM 基础设施/企业知识检索",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -56,7 +56,9 @@
   ],
   "scenario_tags_v2": [
    "document-qa",
-   "rag"
+   "rag",
+   "workflow-automation",
+   "agent-framework"
   ]
  },
  "intel": {

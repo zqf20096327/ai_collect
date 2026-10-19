@@ -42,11 +42,14 @@
    "AI资讯导航",
    "提示词资源"
   ],
-  "domain": "AI 知识聚合/教育",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "tutorials",
+   "curated-list"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

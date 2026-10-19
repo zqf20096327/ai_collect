@@ -43,11 +43,12 @@
    "量化推理",
    "预训练/精调"
   ],
-  "domain": "NLP/大语言模型",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "model-training",
    "fine-tuning"
   ]
  },

@@ -43,14 +43,15 @@
    "影视制作",
    "桌面应用"
   ],
-  "domain": "创意工具/AI 内容生成",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "xai"
   ],
   "scenario_tags_v2": [
-   "image-generation"
+   "image-generation",
+   "video-generation"
   ]
  },
  "intel": {

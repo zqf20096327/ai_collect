@@ -44,7 +44,7 @@
    "算法交易",
    "桌面应用"
   ],
-  "domain": "金融/投资研究",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -54,7 +54,8 @@
    "ollama"
   ],
   "scenario_tags_v2": [
-   "quant-finance"
+   "quant-finance",
+   "research-tools"
   ]
  },
  "intel": {

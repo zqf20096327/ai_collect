@@ -43,14 +43,17 @@
    "CI/CD",
    "安全扫描"
   ],
-  "domain": "LLM 基础设施/评估与安全",
+  "domain": "评测与运维",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "bedrock",
    "ollama"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "model-evaluation",
+   "cybersecurity"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

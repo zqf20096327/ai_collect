@@ -43,11 +43,14 @@
    "自托管部署",
    "企业内部工具"
   ],
-  "domain": "LLM 基础设施/企业 agent 平台",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "coding-agent",
+   "agent-framework"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

@@ -43,13 +43,12 @@
    "知识库问答",
    "LLM开发入门"
   ],
-  "domain": "LLM 教育学习/RAG",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework",
-   "document-qa",
+   "tutorials",
    "rag"
   ]
  },

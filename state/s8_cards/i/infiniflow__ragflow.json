@@ -44,14 +44,13 @@
    "文档解析",
    "企业搜索"
   ],
-  "domain": "LLM 基础设施/RAG",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "document-parsing",
-   "document-qa",
-   "rag"
+   "rag",
+   "agent-framework"
   ]
  },
  "intel": {

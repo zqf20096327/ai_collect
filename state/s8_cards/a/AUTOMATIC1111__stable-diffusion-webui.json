@@ -43,12 +43,13 @@
    "Web UI",
    "扩散模型"
   ],
-  "domain": "AIGC/图像生成",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "image-generation"
+   "image-generation",
+   "image-video-processing"
   ]
  },
  "intel": {

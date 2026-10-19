@@ -45,12 +45,13 @@
    "个人数据",
    "聊天机器人"
   ],
-  "domain": "AI 应用/个性化对话模型",
+  "domain": "对话与助手",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "chatbot"
+   "chatbot",
+   "fine-tuning"
   ]
  },
  "intel": {

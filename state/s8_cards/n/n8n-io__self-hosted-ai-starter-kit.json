@@ -43,14 +43,15 @@
    "Docker模板",
    "AI Agent"
   ],
-  "domain": "LLM 基础设施/自托管工具链",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "ollama"
   ],
   "scenario_tags_v2": [
-   "workflow-automation"
+   "workflow-automation",
+   "document-qa"
   ]
  },
  "intel": {

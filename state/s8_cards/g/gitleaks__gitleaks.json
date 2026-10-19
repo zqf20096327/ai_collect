@@ -45,11 +45,13 @@
    "CLI工具",
    "devsecops"
   ],
-  "domain": "安全/DevSecOps",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "cybersecurity"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

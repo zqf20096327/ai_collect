@@ -42,12 +42,12 @@
    "技能目录",
    "开发者工具"
   ],
-  "domain": "AI 开发者工具/agent 技能生态",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework"
+   "curated-list"
   ]
  },
  "intel": {

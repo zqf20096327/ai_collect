@@ -44,13 +44,15 @@
    "AI SQL助手",
    "桌面应用"
   ],
-  "domain": "开发工具/数据库管理",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "ollama"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "code-generation"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

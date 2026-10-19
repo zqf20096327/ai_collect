@@ -44,11 +44,12 @@
    "MCP",
    "网络爬取"
   ],
-  "domain": "AI Agent/研究自动化",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "research-tools",
    "multi-agent"
   ]
  },

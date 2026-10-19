@@ -42,7 +42,7 @@
    "开发者工具",
    "多模型接入"
   ],
-  "domain": "开发者工具/AI 编码",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [
    "Claude Code"
@@ -53,7 +53,7 @@
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "model-gateway"
+   "coding-agent"
   ]
  },
  "intel": {

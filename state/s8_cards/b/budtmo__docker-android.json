@@ -43,14 +43,16 @@
    "自动化测试",
    "MCP/AI-Agent"
   ],
-  "domain": "开发测试/移动端模拟",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "ollama",
    "vllm"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "gui-automation"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

@@ -42,7 +42,7 @@
    "模型推理",
    "WASM"
   ],
-  "domain": "机器学习框架/基础设施",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [

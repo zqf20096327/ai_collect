@@ -44,7 +44,7 @@
    "实时语音",
    "持久化工作流"
   ],
-  "domain": "LLM 基础设施/Agent 框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [
    "LangChain"
@@ -58,7 +58,8 @@
   ],
   "scenario_tags_v2": [
    "agent-framework",
-   "voice-agent"
+   "multi-agent",
+   "model-evaluation"
   ]
  },
  "intel": {

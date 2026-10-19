@@ -42,12 +42,11 @@
    "RAG",
    "分布式存储"
   ],
-  "domain": "数据库/LLM 基础设施",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "rag",
    "vector-database"
   ]
  },

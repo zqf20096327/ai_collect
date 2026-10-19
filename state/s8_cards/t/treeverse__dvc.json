@@ -43,11 +43,13 @@
    "pipeline",
    "开发者工具"
   ],
-  "domain": "机器学习基础设施/数据版本控制",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "mlops"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

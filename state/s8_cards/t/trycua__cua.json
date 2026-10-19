@@ -45,12 +45,13 @@
    "虚拟机/沙箱",
    "MCP"
   ],
-  "domain": "AI Agent 基础设施/computer-use",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "gui-automation"
+   "gui-automation",
+   "model-evaluation"
   ]
  },
  "intel": {

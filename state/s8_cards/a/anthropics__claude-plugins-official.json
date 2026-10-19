@@ -41,14 +41,14 @@
    "Claude Code",
    "开发者生态"
   ],
-  "domain": "开发者工具/AI 插件生态",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "coding-agent"
+   "curated-list"
   ]
  },
  "intel": {

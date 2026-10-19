@@ -42,7 +42,7 @@
    "小模型",
    "PyTorch"
   ],
-  "domain": "AI/LLM 训练与学习",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -50,7 +50,10 @@
    "vllm"
   ],
   "scenario_tags_v2": [
-   "model-training"
+   "tutorials",
+   "model-training",
+   "fine-tuning",
+   "reinforcement-learning"
   ]
  },
  "intel": {

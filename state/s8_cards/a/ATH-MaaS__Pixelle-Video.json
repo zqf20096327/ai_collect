@@ -43,7 +43,7 @@
    "TTS",
    "Web应用"
   ],
-  "domain": "内容创作/AIGC 视频",
+  "domain": "内容生成",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,6 +51,7 @@
    "ollama"
   ],
   "scenario_tags_v2": [
+   "video-generation",
    "image-generation",
    "tts"
   ]

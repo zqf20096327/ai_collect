@@ -44,7 +44,7 @@
    "MCP",
    "多渠道接入"
   ],
-  "domain": "AI Agent/个人助手",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -52,7 +52,9 @@
    "deepseek"
   ],
   "scenario_tags_v2": [
-   "agent-framework"
+   "ai-assistant",
+   "agent-memory",
+   "knowledge-graph"
   ]
  },
  "intel": {

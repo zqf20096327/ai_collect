@@ -43,13 +43,14 @@
    "MCP",
    "学习资源"
   ],
-  "domain": "LLM 基础设施/应用模板",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "multi-agent",
    "rag",
-   "tutorials"
+   "curated-list"
   ]
  },
  "intel": {

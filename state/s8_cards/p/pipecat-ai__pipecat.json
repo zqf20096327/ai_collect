@@ -44,7 +44,7 @@
    "Agent框架",
    "Python框架"
   ],
-  "domain": "LLM 基础设施/语音与多模态代理框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -58,7 +58,8 @@
   ],
   "scenario_tags_v2": [
    "agent-framework",
-   "multimodal"
+   "voice-agent",
+   "multi-agent"
   ]
  },
  "intel": {

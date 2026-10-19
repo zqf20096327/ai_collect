@@ -42,7 +42,7 @@
    "网页自动化",
    "语音助手"
   ],
-  "domain": "LLM 基础设施/Agent",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,7 +51,9 @@
    "openrouter"
   ],
   "scenario_tags_v2": [
-   "voice-agent"
+   "ai-assistant",
+   "browser-automation",
+   "coding-agent"
   ]
  },
  "intel": {

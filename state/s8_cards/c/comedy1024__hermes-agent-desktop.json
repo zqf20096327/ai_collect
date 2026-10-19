@@ -42,7 +42,7 @@
    "远程桌面/noVNC",
    "自托管部署"
   ],
-  "domain": "AI Agent 部署/容器化",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,7 +51,9 @@
    "anthropic",
    "openrouter"
   ],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
  },
  "intel": {
   "maintainer_type": "individual",

@@ -42,12 +42,13 @@
    "MCP",
    "插件市场"
   ],
-  "domain": "云服务/开发工具",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework"
+   "curated-list",
+   "prompt-engineering"
   ]
  },
  "intel": {

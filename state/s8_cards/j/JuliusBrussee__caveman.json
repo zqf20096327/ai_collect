@@ -42,14 +42,14 @@
    "编码agent",
    "代理/中间件"
   ],
-  "domain": "LLM 工具链/开发效率",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "coding-agent"
+   "prompt-engineering"
   ]
  },
  "intel": {

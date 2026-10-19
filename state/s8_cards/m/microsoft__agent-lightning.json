@@ -42,15 +42,15 @@
    "RL基础设施",
    "MLOps"
   ],
-  "domain": "LLM 基础设施/agent RL 训练",
+  "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "vllm"
   ],
   "scenario_tags_v2": [
-   "mlops",
-   "reinforcement-learning"
+   "reinforcement-learning",
+   "mlops"
   ]
  },
  "intel": {

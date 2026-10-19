@@ -42,12 +42,11 @@
    "AI 编程工作流",
    "知识聚合"
   ],
-  "domain": "AI 编程/知识聚合",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "coding-agent",
    "curated-list"
   ]
  },

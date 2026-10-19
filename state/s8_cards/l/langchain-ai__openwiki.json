@@ -43,11 +43,14 @@
    "知识图谱可视化",
    "CI自动化"
   ],
-  "domain": "开发者工具/代码文档",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "knowledge-base",
+   "rag"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

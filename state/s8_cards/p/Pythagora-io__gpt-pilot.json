@@ -43,7 +43,7 @@
    "开发者工具",
    "CLI"
   ],
-  "domain": "开发者工具/代码生成",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -51,8 +51,8 @@
    "openrouter"
   ],
   "scenario_tags_v2": [
-   "multi-agent",
-   "code-generation"
+   "coding-agent",
+   "multi-agent"
   ]
  },
  "intel": {

@@ -42,11 +42,13 @@
    "AI",
    "汇总仓库"
   ],
-  "domain": "科研/机器学习",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
  },
  "intel": {
   "maintainer_type": "company",

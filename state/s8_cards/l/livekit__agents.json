@@ -43,11 +43,13 @@
    "Agent框架",
    "WebRTC"
   ],
-  "domain": "语音 AI/实时通信框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "voice-agent",
+   "multimodal",
    "agent-framework"
   ]
  },

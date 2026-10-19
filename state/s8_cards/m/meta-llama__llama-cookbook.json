@@ -42,13 +42,14 @@
    "微调",
    "RAG"
   ],
-  "domain": "LLM 基础设施/示例教程",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "rag",
-   "fine-tuning"
+   "tutorials",
+   "fine-tuning",
+   "rag"
   ]
  },
  "intel": {

@@ -42,7 +42,7 @@
    "多模态模型",
    "设备控制"
   ],
-  "domain": "AI Agent/手机自动化",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -50,7 +50,8 @@
    "local-weights"
   ],
   "scenario_tags_v2": [
-   "gui-automation"
+   "gui-automation",
+   "agent-framework"
   ]
  },
  "intel": {

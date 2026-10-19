@@ -42,11 +42,14 @@
    "Next.js模板",
    "逆向工程"
   ],
-  "domain": "开发者工具/AI 辅助开发",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "web-scraping",
+   "code-generation"
+  ]
  },
  "intel": {
   "maintainer_type": "team",

@@ -44,14 +44,16 @@
    "深度学习框架",
    "并行计算"
   ],
-  "domain": "AI 基础设施/分布式训练",
+  "domain": "训练与推理",
   "alternative_to": [
    "ChatGPT"
   ],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "model-training"
+   "model-training",
+   "fine-tuning",
+   "inference-engine"
   ]
  },
  "intel": {

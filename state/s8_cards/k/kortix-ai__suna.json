@@ -44,15 +44,15 @@
    "企业协作",
    "工作流自动化"
   ],
-  "domain": "AI Agent 平台/企业协作",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [
    "ChatGPT"
   ],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "agent-framework",
-   "workflow-automation"
+   "workflow-automation",
+   "coding-agent"
   ]
  },
  "intel": {

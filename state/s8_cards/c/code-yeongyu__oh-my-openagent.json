@@ -42,7 +42,7 @@
    "CLI工具",
    "模型订阅接入"
   ],
-  "domain": "开发者工具/AI 编码代理",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [
    "Cursor",
@@ -52,8 +52,8 @@
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "multi-agent",
-   "coding-agent"
+   "coding-agent",
+   "multi-agent"
   ]
  },
  "intel": {

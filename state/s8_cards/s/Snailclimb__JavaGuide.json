@@ -42,12 +42,11 @@
    "知识库",
    "学习路线"
   ],
-  "domain": "教育/职业求职",
+  "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "knowledge-base",
    "tutorials"
   ]
  },

@@ -44,14 +44,13 @@
    "模型训练",
    "模型导出"
   ],
-  "domain": "计算机视觉",
+  "domain": "感知与多模态",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "cpu-infer"
   ],
   "scenario_tags_v2": [
-   "image-video-processing",
    "object-detection",
    "model-training"
   ]

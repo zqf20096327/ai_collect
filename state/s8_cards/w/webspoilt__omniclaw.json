@@ -45,12 +45,13 @@
    "实验平台",
    "多agent编排"
   ],
-  "domain": "AI 安全研究/自主 agent",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "multi-agent"
+   "multi-agent",
+   "cybersecurity"
   ]
  },
  "intel": {

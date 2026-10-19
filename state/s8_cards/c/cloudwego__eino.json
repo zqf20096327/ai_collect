@@ -42,7 +42,7 @@
    "Go语言",
    "编排/工作流"
   ],
-  "domain": "LLM 应用开发框架",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -50,7 +50,9 @@
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "agent-framework"
+   "agent-framework",
+   "multi-agent",
+   "rag"
   ]
  },
  "intel": {
