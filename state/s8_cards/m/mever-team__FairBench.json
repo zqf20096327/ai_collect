@@ -1,0 +1,120 @@
+{
+ "fn": "mever-team/FairBench",
+ "sha": "f5db3f0f0f29",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Python AI 公平性评测库：300+ 指标计算与报告生成",
+  "review": "MAI-BIAS 生态下的低代码公平性分析工具包的 Python 库组件：为模型预测提供 300 余个公平性指标的标准计算、多维度多属性分析（多种族、性别等），覆盖表格、图像、文本、图数据模态，并支持 LLM 偏差评估（示例用 Ollama 加载模型）。计算可回溯中间量，输出可在终端/浏览器查看的报告与 stamps，附带社会学家提炼的注意事项与建议。兼容 numpy/pandas/torch/tensorflow/jax 等栈，Python 3.9+（详测 3.11-3.14）。面向 ML 工程师、研究者、审计与合规团队。",
+  "highlights": [
+   "300+ 公平性指标的标准计算与组织化报告",
+   "多维度多属性、跨模态（表格/图像/文本/图）分析",
+   "计算可回溯中间量，报告附注意事项与建议",
+   "兼容 numpy/pandas/torch/tensorflow/jax/transformers/ollama"
+  ],
+  "use_cases": [
+   "在 Python 项目中评估模型的多维度公平性",
+   "生成可追溯的公平性报告供审计与合规使用",
+   "检测 LLM 输出中的偏差",
+   "随时间跟踪部署系统各项公平性指标"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "公平性评测",
+   "AI审计/合规",
+   "可解释报告",
+   "ML监控",
+   "负责任AI"
+  ],
+  "domain": "AI 公平性评测/可信 AI",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L32: FairBench can be imported in Python AI projects to",
+   "L34: fairness metrics. It also produces reports that organize",
+   "L141: model = fb.bench.text.Ollama(\"llama3.2:latest\")"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     67,
+     141
+    ],
+    "note": "列出 ollama 为兼容后端，LLM 公平性示例经 fb.bench.text.Ollama 加载模型",
+    "quotes": [
+     "🖥️ ML and LLM compatible: *numpy,pandas,torch,tensorflow,jax,transformers,ollama*",
+     "model = fb.bench.text.Ollama(\"llama3.2:latest\")"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     91
+    ],
+    "quotes": [
+     "pip install fairbench"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

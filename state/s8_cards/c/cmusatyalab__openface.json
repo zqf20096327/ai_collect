@@ -1,0 +1,88 @@
+{
+ "fn": "cmusatyalab/openface",
+ "sha": "8176ec0314e5",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于深度神经网络的开源人脸识别库（CMU）",
+  "review": "Carnegie Mellon University 发布的开源人脸识别研究项目，以深度神经网络生成人脸表示。仓库提供批量图像表示生成（batch-represent）、双图对比、分类器训练与使用、摄像头实时分类等 demo，附带 LFW 精度评估脚本、Python 库代码、模型训练脚本与测试。安装与使用讨论通过 gitter/mailing list 支持；源码与训练模型默认采用 Apache 2.0 许可，包含多个修改过的第三方组件。",
+  "highlights": [
+   "提供 Python 库及批量表示生成、对比、分类器训练等脚本",
+   "包含 LFW 精度评估脚本与网络输出可视化 demo",
+   "支持 webcam 实时分类器与实时 web demo",
+   "附训练新模型脚本与含神经网络训练的测试"
+  ],
+  "use_cases": [
+   "对批量人脸图像生成深度神经网络表示",
+   "训练并部署自己的人脸分类器",
+   "在 LFW 上评估人脸识别精度"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": "https://cmusatyalab.github.io/openface/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "人脸识别",
+   "深度学习",
+   "计算机视觉",
+   "研究工具"
+  ],
+  "domain": "计算机视觉/人脸识别",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "face-recognition",
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: *Free and open source face recognition with",
+   "L33: + openface: Python library code.",
+   "L54: model files are copyright Carnegie Mellon University and licensed"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,112 @@
+{
+ "fn": "davisking/dlib",
+ "sha": "47d73a7eefa7",
+ "source": "readme",
+ "identity": {
+  "one_liner": "C++ 机器学习与数据分析算法工具库",
+  "review": "一个 C++ 工具包，包含机器学习算法与用于构建复杂软件的工具，同时提供 Python API。README 给出三条使用路径：编译 examples 目录的 C++ 示例程序（需 C++17 编译器与 CMake）、通过 vcpkg 安装 C++ 库、以及从 PyPI 或 GitHub 源码安装 Python API。构建时可开启 AVX 指令加速，支持通过 setup.py 参数或 DLIB_* 环境变量调整构建选项。采用 Boost 软件许可证，允许闭源商业使用。",
+  "highlights": [
+   "C++ 机器学习算法工具包，附 Python API",
+   "vcpkg 单命令安装 C++ 库并集成 CMake",
+   "AVX 指令加速选项与 DLIB_* 环境变量构建配置",
+   "Boost 许可证，允许闭源商业使用"
+  ],
+  "use_cases": [
+   "在 C++ 项目中集成机器学习算法",
+   "在 Python 中使用 dlib 的机器学习功能",
+   "通过 vcpkg 管理依赖的 C++ 工程引入该库"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "机器学习库",
+   "C++",
+   "计算机视觉",
+   "Python API"
+  ],
+  "domain": "机器学习/C++ 库",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Dlib is a modern C++ toolkit containing machine learning algorithms and tools for creating complex software in C++ to so",
+   "L7: You need a C++17 compiler and CMake. Go into the examples folder and type:",
+   "L38: Either fetch the latest stable release of dlib from PyPi and install that:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     38,
+     40
+    ],
+    "quotes": [
+     "Either fetch the latest stable release of dlib from PyPi and install that:",
+     "pip install dlib"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     44,
+     46
+    ],
+    "quotes": [
+     "git clone https://github.com/davisking/dlib.git",
+     "pip install ."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

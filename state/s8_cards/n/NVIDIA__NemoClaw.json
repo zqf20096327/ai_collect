@@ -1,0 +1,146 @@
+{
+ "fn": "NVIDIA/NemoClaw",
+ "sha": "eec3c2065100",
+ "source": "readme",
+ "identity": {
+  "one_liner": "在 NVIDIA OpenShell 沙箱中更安全运行 AI agent 的参考栈",
+  "review": "NVIDIA 开源的参考栈，将 OpenClaw、Hermes、LangChain Deep Agents Code 三种 AI agent 运行在 OpenShell 沙箱内，通过 NemoClaw CLI 及其 agent 专属别名提供引导式上手、托管推理、网络策略、托管集成、沙箱化状态持久化与生命周期操作。安装器支持在 DGX 或 WSL 主机上以推荐预设快速安装，也可交互式选择 agent、沙箱名称、推理提供商与模型。官方文档另覆盖沙箱加固与网络安全最佳实践。",
+  "highlights": [
+   "支持 OpenClaw（默认）、Hermes、LangChain Deep Agents Code 三种 agent",
+   "托管推理与可配置网络策略、出口控制",
+   "OpenShell 沙箱隔离与加固（能力裁剪、进程限制）",
+   "CLI 交互式选择沙箱名称、推理提供商与模型"
+  ],
+  "use_cases": [
+   "在沙箱环境中运行 OpenClaw 或 Hermes agent",
+   "为本地编码 agent（Cursor、Claude Code、Codex、Copilot）生成安装 NemoClaw 的引导提示词",
+   "按网络策略控制 agent 的出口流量与集成权限"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent沙箱",
+   "AI安全",
+   "agent运行时",
+   "托管推理"
+  ],
+  "domain": "AI 基础设施/agent 沙箱运行时",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: NVIDIA NemoClaw is an open source reference stack for running supported AI agents more safely inside NVIDIA OpenShell sa",
+   "L8: It provides guided onboarding, managed inference, network policy, managed integrations, OpenShell-backed state persisten",
+   "L12: - OpenClaw (default)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "none",
+    "lines": [
+     22
+    ],
+    "note": "L22 提及本地编码 agent 清单，未出现 Anthropic 的专门接入",
+    "quotes": [
+     "Use the starter prompt when you want Cursor, Claude Code, Codex, Copilot, or another local coding agent to install NemoC"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     14,
+     34,
+     41
+    ],
+    "note": "作为受支持的 agent 运行对象，非替代/竞品",
+    "quotes": [
+     "- LangChain Deep Agents Code",
+     "Enter `n` if you want to choose Hermes or LangChain Deep Agents Code, a sandbox name, an inference provider, and a model",
+     "|LangChain Deep Agents Code|Quickstart with LangChain Deep Agents Code|"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     22
+    ],
+    "note": " Starter prompt 场景中提及的本地编码 agent",
+    "quotes": [
+     "Use the starter prompt when you want Cursor, Claude Code, Codex, Copilot, or another local coding agent to install NemoC"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     22
+    ],
+    "note": "Starter prompt 场景中提及的本地编码 agent",
+    "quotes": [
+     "Use the starter prompt when you want Cursor, Claude Code, Codex, Copilot, or another local coding agent to install NemoC"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     22
+    ],
+    "note": "Starter prompt 场景中提及的本地编码 agent",
+    "quotes": [
+     "Use the starter prompt when you want Cursor, Claude Code, Codex, Copilot, or another local coding agent to install NemoC"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

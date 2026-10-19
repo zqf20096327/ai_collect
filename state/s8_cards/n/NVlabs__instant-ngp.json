@@ -1,0 +1,144 @@
+{
+ "fn": "NVlabs/instant-ngp",
+ "sha": "31dfdc3a2127",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 NeRF/图形研究者：用哈希编码 MLP 秒级训练并渲染神经图形基元",
+  "review": "实现四类神经图形基元：NeRF、符号距离函数（SDF）、神经图像与神经体渲染，核心是用多分辨率哈希输入编码训练 MLP，基于 tiny-cuda-nn 框架实现。提供交互式 GUI（VR 查看、相机路径编辑、NeRF/SDF 转网格、快照保存加载）与 Python 绑定。Windows 提供按显卡系列划分的预编译包，Linux 或需要开发者绑定时须自行用 CMake 编译，要求 NVIDIA GPU 与 CUDA。README 含数据集制作、故障排查 FAQ 与 Colab 示例指引。",
+  "highlights": [
+   "支持 NeRF、SDF、神经图像、神经体四类基元的训练与渲染",
+   "多分辨率哈希输入编码 + tiny-cuda-nn 框架",
+   "GUI 含 VR 模式、相机路径编辑、网格导出与快照管理",
+   "全部 GUI 功能均有 Python 绑定，可脚本化运行"
+  ],
+  "use_cases": [
+   "从照片集训练 NeRF 并渲染环绕视频",
+   "将 NeRF/SDF 模型转换为网格导出",
+   "通过 Python 绑定做自动化实验",
+   "在 VR 头显中查看训练好的场景"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "none",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://github.com/nvlabs/instant-ngp#project-page--paper--video--presentation--real-time-live--bibtex",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "NeRF",
+   "3D重建",
+   "实时渲染",
+   "CUDA",
+   "图形学"
+  ],
+  "domain": "计算机图形学/3D 重建",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5: Here you will find an implementation of four __neural graphics primitives__, being neural radiance fields (NeRF), signed",
+   "L6: In each case, we train and render a MLP with multiresolution hash input encoding using the __tiny-cuda-nn__ framework.",
+   "L147: - __(optional) Python 3.8 or higher__ for interactive bindings. Also, run `pip install -r requirements.txt`."
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker",
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     135,
+     174,
+     180,
+     181
+    ],
+    "quotes": [
+     "## Building instant-ngp (Windows & Linux)",
+     "$ git clone --recursive https://github.com/nvlabs/instant-ngp",
+     "instant-ngp$ cmake . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo",
+     "instant-ngp$ cmake --build build --config RelWithDebInfo -j"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     238,
+     240
+    ],
+    "note": "FAQ 提及可在 Colab 运行并给出示例链接",
+    "quotes": [
+     "__Q:__ Does this codebase run on Google Colab?",
+     "__A:__ Yes. See this example inspired on the notebook created by user @myagues. Caveat: this codebase requires large amo"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     147
+    ],
+    "note": "pip 仅安装 requirements.txt 依赖，非本产品分发途径",
+    "quotes": [
+     "- __(optional) Python 3.8 or higher__ for interactive bindings. Also, run `pip install -r requirements.txt`."
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     243
+    ],
+    "note": "FAQ 提及 Docker 容器，正文在窗外",
+    "quotes": [
+     "__Q:__ Is there a Docker container?"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,158 @@
+{
+ "fn": "opendataloader-project/opendataloader-pdf",
+ "sha": "09f0dae8aade",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 AI 数据管道解析 PDF 的开源工具：输出 Markdown/JSON/HTML",
+  "review": "Python/Node.js/Java 三种 SDK 提供的 PDF 解析器：本地确定性模式用 XY-Cut++ 阅读序与边界框坐标输出 Markdown、JSON、HTML；hybrid 模式将复杂页（复杂表格、扫描件、公式、图表）路由到 AI 后端处理，内置 80+ 语言 OCR。另提供无障碍功能：将未标记 PDF 自动标记为屏幕阅读器可用的 Tagged PDF（Apache 2.0），PDF/UA-1/2 导出为企业版附加项。依赖 Java 11+。",
+  "highlights": [
+   "输出带边界框的 JSON、Markdown 与 HTML，支持 RAG 分块与来源引用",
+   "hybrid 模式：简单页本地处理，复杂页路由到 AI 后端",
+   "内置 80+ 语言 OCR，支持 EasyOCR/RapidOCR/Tesseract/ocrmac 等多种 OCR 引擎",
+   "自动将未标记 PDF 生成 Tagged PDF（Apache 2.0 免费层）"
+  ],
+  "use_cases": [
+   "为 RAG 系统把 PDF 转成结构化 Markdown 并按标题层级分块",
+   "批量处理扫描件并提取带坐标的表格与公式",
+   "批量将未标记 PDF 转为屏幕阅读器可用的 Tagged PDF"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "dual",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": "cpu-ok",
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "PDF解析",
+   "RAG数据准备",
+   "OCR",
+   "文档无障碍"
+  ],
+  "domain": "文档处理/AI 数据准备",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "document-parsing",
+   "ocr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L13: 🔍 **PDF parser for AI data extraction** — Extract Markdown, JSON (with bounding boxes), and HTML from any PDF. #1 in ben",
+   "L75: |Auto-tagging → Tagged PDF for untagged PDFs|Yes|Free (Apache 2.0)|",
+   "L76: |PDF/UA-1, PDF/UA-2 export|💼 Available|Enterprise|"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     6,
+     18,
+     34,
+     111,
+     112,
+     125,
+     168
+    ],
+    "quotes": [
+     "PyPI version",
+     "- **How do I use this for RAG?** — `pip install opendataloader-pdf`, convert in 3 lines. Outputs structured Markdown for",
+     "pip install -U opendataloader-pdf",
+     "|Standard digital PDF|Fast (default)|`pip install opendataloader-pdf`|None needed|`opendataloader-pdf file1.pdf file2.pd",
+     "|Complex or nested tables|**Hybrid**|`pip install \"opendataloader-pdf[hybrid]\"`|`opendataloader-pdf-hybrid --port 5002`|",
+     "pip install -U opendataloader-pdf",
+     "pip install -U \"opendataloader-pdf[hybrid]\""
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     7,
+     138
+    ],
+    "quotes": [
+     "npm version",
+     "npm install @opendataloader/pdf"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "No GPU required",
+    "rel": "support",
+    "lines": [
+     79
+    ],
+    "note": "能力矩阵中明确 GPU required: No",
+    "quotes": [
+     "|Process Word/Excel/PPT|No|—|"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     18
+    ],
+    "note": "提供集成，非替代/竞品",
+    "quotes": [
+     "- **How do I use this for RAG?** — `pip install opendataloader-pdf`, convert in 3 lines. Outputs structured Markdown for"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    23,
+    54,
+    76,
+    77
+   ],
+   "note": "核心功能 Apache 2.0，PDF/UA 导出与无障碍编辑器为企业版附加项",
+   "quotes": [
+    "- **What's free?** — Layout analysis + auto-tagging (Apache 2.0). Untagged PDF in → Tagged PDF out. No proprietary SDK d",
+    "|**Manual PDF remediation cost** — Accessibility regulations (EAA, ADA, Section 508) demand Tagged PDFs. Manual remediat",
+    "|PDF/UA-1, PDF/UA-2 export|💼 Available|Enterprise|",
+    "|Accessibility studio (visual editor)|💼 Available|Enterprise|"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

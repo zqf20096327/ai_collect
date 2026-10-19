@@ -1,0 +1,214 @@
+{
+ "fn": "obra/superpowers",
+ "sha": "cf104af98852",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给编码 agent 的技能框架与软件开发方法论",
+  "review": "Superpowers 是一套面向编码 agent 的软件开发方法论，由一组可组合的技能与启动指令构成。技能按阶段自动触发：先通过头脑风暴澄清需求并产出设计文档，再生成细粒度实现计划，随后以子 agent 驱动或内联方式执行任务，强制红绿 TDD、代码评审与分支收尾流程。以插件形式分发到 Claude Code、Codex、Cursor、Gemini CLI 等多种编码工具，另提供企业商业支持联系方式。",
+  "highlights": [
+   "可组合技能库：测试、调试、协作、元技能四类（如 TDD、系统化调试、git worktree）",
+   "brainstorming→计划→子 agent 执行→评审→分支收尾的七步工作流，技能自动触发",
+   "提供 diagnosing-superpowers 技能，读取会话记录定位流程异常",
+   "支持十余种编码工具的插件安装途径"
+  ],
+  "use_cases": [
+   "让编码 agent 在写代码前先澄清需求并产出设计文档",
+   "以子 agent 分派任务并附带两阶段评审的自动化开发流程",
+   "强制执行 TDD 与代码评审约束的团队开发",
+   "排查编码 agent 会话中技能未触发或偏离计划的问题"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "编码agent",
+   "软件开发方法论",
+   "技能框架",
+   "TDD"
+  ],
+  "domain": "AI 编程工具/开发流程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Superpowers is a complete software development methodology for your coding agents, built on top of a set of composable s",
+   "L15: Next up, once you say \"go\", it launches a *subagent-driven-development* process, having agents work through each enginee",
+   "L29: Superpowers is available via the official Claude plugin marketplace"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     27,
+     29,
+     33,
+     36
+    ],
+    "quotes": [
+     "### Claude Code",
+     "Superpowers is available via the official Claude plugin marketplace",
+     "- Install the plugin from Anthropic's official marketplace:",
+     "  /plugin install superpowers@claude-plugins-official"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     159,
+     161,
+     163,
+     166
+    ],
+    "quotes": [
+     "### Grok Build CLI",
+     "Superpowers is available via the official Grok plugin marketplace.",
+     "- Install the plugin from xAI's official marketplace:",
+     "  grok plugin install superpowers@xai-official --trust"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     266
+    ],
+    "quotes": [
+     "  git clone https://github.com/obra/superpowers.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     27,
+     41,
+     226,
+     254
+    ],
+    "quotes": [
+     "### Claude Code",
+     "The Superpowers marketplace provides Superpowers and some other related plugins for Claude Code.",
+     "Qwen Code installs plugins from Claude Code marketplaces directly.",
+     "Superpowers is available as a native Muse plugin — same repo, same skills, all harnesses. The `using-superpowers` bootst"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     93,
+     95
+    ],
+    "quotes": [
+     "### Cursor",
+     "- In Cursor Agent chat, install from marketplace:"
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     103,
+     108
+    ],
+    "quotes": [
+     "### Devin CLI",
+     "  devin plugins install obra/superpowers"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     145,
+     150,
+     156
+    ],
+    "quotes": [
+     "### GitHub Copilot CLI",
+     "  copilot plugin marketplace add obra/superpowers-marketplace",
+     "  copilot plugin install superpowers@superpowers-marketplace"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     175,
+     177
+    ],
+    "quotes": [
+     "### Kimi Code",
+     "Superpowers is available in Kimi Code's plugin marketplace."
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     224,
+     226,
+     231
+    ],
+    "quotes": [
+     "### Qwen Code",
+     "Qwen Code installs plugins from Claude Code marketplaces directly.",
+     "  qwen extensions install obra/superpowers"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

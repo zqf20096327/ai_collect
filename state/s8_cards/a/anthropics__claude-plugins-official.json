@@ -1,0 +1,122 @@
+{
+ "fn": "anthropics/claude-plugins-official",
+ "sha": "365816217d2b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Anthropic 官方维护的 Claude Code 插件市场目录",
+  "review": "由 Anthropic 管理的 Claude Code 插件官方目录，分内部插件（/plugins，Anthropic 团队开发）与外部插件（/external_plugins，第三方伙伴与社区提交，需通过质量与安全审核）。插件通过 Claude Code 内置插件系统安装（/plugin install 命令或 Discover 界面浏览）。README 还规定了插件目录结构（plugin.json 清单）、插件名 slug 不可变更及 renames 迁移机制、以及无清单仓库以 skills 数组打包技能的方式。",
+  "highlights": [
+   "官方市场，插件可经 /plugin install {name}@claude-plugins-official 安装",
+   "内部插件由 Anthropic 开发，外部插件需质量与安全审核",
+   "插件名 slug 不可变，renames 映射支持重命名自动迁移",
+   "支持 skill-bundle 形式：无清单仓库可直接声明 SKILL.md 技能路径"
+  ],
+  "use_cases": [
+   "在 Claude Code 中发现并安装官方与社区插件",
+   "第三方开发者按规范向官方市场提交插件",
+   "插件作者为存量用户提供 slug 重命名的平滑迁移"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "插件市场",
+   "Claude Code",
+   "开发者生态"
+  ],
+  "domain": "开发者工具/AI 插件生态",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: A curated directory of high-quality plugins for Claude Code.",
+   "L9: - **`/plugins`** - Internal plugins developed and maintained by Anthropic",
+   "L10: - **`/external_plugins`** - Third-party plugins from partners and the community"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     1,
+     3,
+     9,
+     24
+    ],
+    "note": "Anthropic 官方维护，内部插件由 Anthropic 团队开发",
+    "quotes": [
+     "# Claude Code Plugins Directory",
+     "A curated directory of high-quality plugins for Claude Code.",
+     "- **`/plugins`** - Internal plugins developed and maintained by Anthropic",
+     "Internal plugins are developed by Anthropic team members. See `/plugins/example-plugin` for a reference implementation."
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     1,
+     3,
+     14
+    ],
+    "note": "本目录是 Claude Code 的插件市场，宿主关系非竞品",
+    "quotes": [
+     "# Claude Code Plugins Directory",
+     "A curated directory of high-quality plugins for Claude Code.",
+     "Plugins can be installed directly from this marketplace via Claude Code's plugin system."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

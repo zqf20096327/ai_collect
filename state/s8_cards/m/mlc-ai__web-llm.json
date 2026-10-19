@@ -1,0 +1,136 @@
+{
+ "fn": "mlc-ai/web-llm",
+ "sha": "03facd47074b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开发者用浏览器内 LLM 推理引擎：WebGPU 加速、无需服务器",
+  "review": "运行在浏览器中的 LLM 推理引擎，依赖 WebGPU 做硬件加速，推理全部在客户端完成、无服务器参与。以 npm 包形式提供 MLCEngine 接口，兼容 OpenAI API 风格（流式、JSON-mode、seed、function-calling 为初步支持），支持 Web Worker 与 Service Worker 将计算移出主线程，提供 Chrome 扩展示例。模型以 MLC 格式接入，首次加载需下载模型文件。是 MLC LLM 的伴生项目。",
+  "highlights": [
+   "浏览器内推理，WebGPU 硬件加速，无服务器支持",
+   "全量兼容 OpenAI API：流式、JSON-mode、seed、function-calling（WIP）",
+   "支持 Web Worker / Service Worker 卸载计算与离线缓存",
+   "四种缓存后端（Cache API、IndexedDB、OPFS、cross-origin 扩展）"
+  ],
+  "use_cases": [
+   "在 Web 应用中本地运行 LLM 聊天补全而不搭建后端",
+   "利用 Service Worker 实现模型缓存的离线推理页面",
+   "开发内置 LLM 的 Chrome 扩展",
+   "隐私敏感场景下的客户端推理"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "浏览器推理",
+   "WebGPU",
+   "LLM运行时",
+   "前端SDK",
+   "隐私计算"
+  ],
+  "domain": "LLM 基础设施/浏览器推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L15: WebLLM is a high-performance in-browser LLM inference engine that brings language model inference directly onto web brow",
+   "L18: WebLLM is **fully compatible with OpenAI API.**",
+   "L24: You can use WebLLM as a base npm package and build your own web application on top of it by following the examples below"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     84,
+     86,
+     88
+    ],
+    "quotes": [
+     "npm install @mlc-ai/web-llm",
+     "yarn add @mlc-ai/web-llm",
+     "pnpm install @mlc-ai/web-llm"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     329
+    ],
+    "note": "窗外行为自定义模型编译相关语境",
+    "quotes": [
+     "To build from source, simply run:"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     34
+    ],
+    "quotes": [
+     "- **Structured JSON Generation**: WebLLM supports state-of-the-art JSON mode structured generation, implemented in the W"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     36,
+     58
+    ],
+    "quotes": [
+     "- **Extensive Model Support**: WebLLM natively supports a range of models including Llama 3, Phi 3, Gemma, Mistral, Qwen",
+     "- **Qwen (通义千问)**: Qwen2 0.5B, 1.5B, 7B"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

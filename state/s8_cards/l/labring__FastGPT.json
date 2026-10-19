@@ -1,0 +1,115 @@
+{
+ "fn": "labring/FastGPT",
+ "sha": "985288382b24",
+ "source": "readme",
+ "identity": {
+  "one_liner": "知识库问答应用构建平台：可视化工作流编排 + RAG",
+  "review": "基于 LLM 的 AI Agent 构建平台，提供数据处理、RAG 检索、模型调用等开箱即用能力，并通过 Flow 可视化界面编排对话工作流与插件工作流。核心模块包括应用编排、应用调试（调用链路日志、应用评测）、知识库（多格式导入、混合检索与重排）、插件与运营（免登录分享、iframe 嵌入、对话记录标注）。支持云服务、Docker 自托管、Sealos 一键部署三种方式，另有商业版提供扩展功能与服务。",
+  "highlights": [
+   "Flow 可视化编排对话与插件工作流，含 RPA 节点与用户交互",
+   "知识库支持 TXT/MD/HTML/PDF/Docx/PPTX/CSV/XLSX 导入及 URL 读取",
+   "双向 MCP 支持与 Agent Skill 编排",
+   "混合检索 & 重排，对话可反馈引用并修改删除"
+  ],
+  "use_cases": [
+   "私有化部署企业知识库问答系统",
+   "可视化编排复杂 AI 对话应用工作流",
+   "搭建可嵌入网站的自助问答窗口",
+   "对知识库 chunk 与引用进行管理调试"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "知识库问答",
+   "可视化工作流",
+   "AI Agent 平台",
+   "私有化部署"
+  ],
+  "domain": "LLM 应用开发平台/知识库问答",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "document-qa",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "简体中文 README",
+   "飞书社区群",
+   "关联 Sealos/labring 国内团队"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: FastGPT 是一个 AI Agent 构建平台，提供开箱即用的数据处理、模型调用等能力，同时可以通过 Flow 可视化进行工作流编排，从而实现复杂的应用场景。",
+   "L64:  - [x] 对话工作流、插件工作流，包含基础的 RPA 节点",
+   "L78:  - [x] 多库复用，混用"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     31,
+     37
+    ],
+    "quotes": [
+     "可以通过 Docker 快速启动 FastGPT，在终端输入以下命令，根据引导完成输入即可拉取配置。",
+     "docker compose up -d"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    162,
+    163,
+    165
+   ],
+   "quotes": [
+    "1. 允许作为后台服务直接商用，但不允许提供 SaaS 服务。",
+    "2. 未经商业授权，任何形式的商用服务均需保留相关版权信息。",
+    "4. 联系方式：Dennis@sealos.io，点击查看商业版定价策略"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

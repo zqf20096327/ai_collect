@@ -1,0 +1,168 @@
+{
+ "fn": "Lightning-AI/litgpt",
+ "sha": "9b14745e33e1",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者用的 LLM 预训练/微调/部署全流程库",
+  "review": "以从零实现方式提供 20+ 开源 LLM（Llama、Qwen、Phi、Gemma、Mistral 等）的 PyTorch 库，通过统一 CLI 提供下载、chat、finetune、pretrain、continued pretraining、evaluate、serve 等工作流，并附 YAML 训练配置。支持 LoRA/QLoRA/Adapter 等参数高效微调、Flash Attention、FSDP 多卡与 TPU、4/8/16 位量化与权重格式导出；模型下载可能需要额外访问令牌。Apache 2.0 许可，pip 安装或从源码运行，由 Lightning AI 维护。",
+  "highlights": [
+   "统一 CLI 覆盖下载/chat/finetune/pretrain/evaluate/serve 工作流",
+   "支持 LoRA、QLoRA、Adapter 与 Adapter v2 参数高效微调",
+   "Flash Attention v2、FSDP 多 GPU、TPU/XLA 支持",
+   "4-bit/8-bit 量化降低显存需求"
+  ],
+  "use_cases": [
+   "在自己的数据上微调开源 LLM",
+   "从头预训练并试验最新研究想法",
+   "把模型部署为推理 API 集成到应用中",
+   "在 MMLU、TruthfulQA 等基准上评估模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM训练",
+   "微调",
+   "推理部署",
+   "模型评估"
+  ],
+  "domain": "LLM 基础设施/训练与推理框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "fine-tuning",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: **20+ high-performance LLMs with recipes to pretrain, finetune, and deploy at scale.**",
+   "L181: # litgpt [action] [model]",
+   "L345: ✅ State-of-the-art optimizations: Flash Attention v2, multi-GPU support via fully-sharded data parallelism, optional CPU"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     104
+    ],
+    "note": "模型列表中收录 DeepSeek R1 Distill Llama，非接入服务商",
+    "quotes": [
+     "|R1 Distill Llama|8B, 70B|DeepSeek AI|DeepSeek AI 2025|"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "mention",
+    "lines": [
+     130,
+     132
+    ],
+    "note": "模型列表中收录 Mistral/Mixtral 模型",
+    "quotes": [
+     "|Mixtral MoE|8x7B|Mistral AI|Mistral AI 2023|",
+     "|Mixtral MoE|8x22B|Mistral AI|Mistral AI 2024|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     54,
+     85
+    ],
+    "quotes": [
+     "pip install 'litgpt[extra]'",
+     "pip install -e \".[extra,compiler,test]\""
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     80
+    ],
+    "quotes": [
+     "git clone https://github.com/Lightning-AI/litgpt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     102,
+     146,
+     148,
+     149,
+     150
+    ],
+    "note": "支持列表中的模型（Qwen 系列），非替代/竞品关系",
+    "quotes": [
+     "|Qwen2.5|0.5B, 1.5B, 3B, 7B, 14B, 32B, 72B|Alibaba Group|Qwen Team 2024|",
+     "|Qwen2.5 1M (Long Context)|7B, 14B|Alibaba Group|Qwen Team 2025|",
+     "|QwQ|32B|Alibaba Group|Qwen Team 2025|",
+     "|QwQ-Preview|32B|Alibaba Group|Qwen Team 2024|",
+     "|Qwen3|0.6B, 1.7B, 4B{Hybrid, Thinking-2507, Instruct-2507}, 8B, 14B, 32B|Alibaba Group|Qwen Team 2025|"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     205
+    ],
+    "note": "示例数据集的下载来源",
+    "quotes": [
+     "curl -L https://huggingface.co/datasets/ksaw008/finance_alpaca/resolve/main/finance_alpaca.json -o my_custom_dataset.jso"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

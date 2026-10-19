@@ -1,0 +1,187 @@
+{
+ "fn": "modelscope/ms-swift",
+ "sha": "d7e868defd77",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者微调与部署 600+ LLM/400+ MLLM 的训练框架",
+  "review": "ModelScope 社区提供的大模型与多模态大模型微调及部署框架，覆盖预训练、微调、人类对齐训练、推理、评测、量化和部署全流程。集成 Megatron 并行（TP/PP/CP/EP）加速训练，内置 GRPO 系列强化学习算法（GRPO、DAPO、GSPO 等）与 DPO/KTO/SimPO 等偏好学习算法，支持 Embedding/Reranker 训练。通过 vLLM/SGLang/LMDeploy 加速推理，AWQ/GPTQ/BNB/FP8 量化。提供 Web-UI 界面，内置 150+ 数据集，支持自定义数据集一键训练。",
+  "highlights": [
+   "支持 600+ 纯文本与 400+ 多模态大模型的训练到部署全流程",
+   "内置 GRPO/DAPO/GSPO 等强化学习算法与 DPO/KTO 等偏好学习算法",
+   "支持 LoRA/QLoRA/DoRA 等轻量微调与 Megatron/DeepSpeed/FSDP 分布式训练",
+   "支持量化模型训练，7B 模型仅需 9GB 训练资源"
+  ],
+  "use_cases": [
+   "用 LoRA 或全参数方式微调 Qwen、Llama 等开源模型",
+   "对多模态模型做图文音视频混合数据训练",
+   "用 GRPO 算法对模型做强化学习对齐",
+   "训练后量化导出并用 vLLM 部署推理服务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM微调",
+   "多模态训练",
+   "强化学习GRPO",
+   "模型量化部署"
+  ],
+  "domain": "LLM 基础设施/训练框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "vllm"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中英双语",
+   "ModelScope 社区出品",
+   "支持 Ascend NPU 等国产硬件"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L23: 🍲 **ms-swift** is a large model and multimodal large model fine-tuning and deployment framework provided by the ModelSco",
+   "L31: - **Hardware Support**: Supports NVIDIA GPUs (A100/H100/RTX series, etc., via CUDA), AMD GPUs (MI300 series, etc., via R",
+   "L90: To install using pip:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     23,
+     50
+    ],
+    "note": "列出 DeepSeek 系列模型的训练/推理支持",
+    "quotes": [
+     "🍲 **ms-swift** is a large model and multimodal large model fine-tuning and deployment framework provided by the ModelSco",
+     "- 🔥 2026.09.21: Support for DeepSeek-V4.1-Flash: Megatron-SWIFT full-parameter training (SFT and GRPO) plus vLLM inferen"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     25,
+     43,
+     45,
+     121
+    ],
+    "note": "作为推理加速引擎支持并列入运行环境依赖",
+    "quotes": [
+     "🍔 In addition, ms-swift integrates the latest training technologies, including Megatron parallelism techniques such as T",
+     "- **Inference Acceleration**: Supports Transformers, vLLM, SGLang, and LmDeploy inference acceleration engines, providin",
+     "- **Model Quantization**: Supports quantization export for AWQ, GPTQ, FP8, and BNB. Exported models support inference ac",
+     "|vllm|>=0.5.1|0.11.0/0.23.0|Inference/Deployment|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     90,
+     92,
+     95,
+     96
+    ],
+    "quotes": [
+     "To install using pip:",
+     "pip install ms-swift -U",
+     "pip install uv",
+     "uv pip install ms-swift -U --torch-backend=auto"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     99,
+     103
+    ],
+    "quotes": [
+     "To install from source:",
+     "git clone https://github.com/modelscope/ms-swift.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     23,
+     55
+    ],
+    "note": "列为支持的模型，非替代/竞品对象",
+    "quotes": [
+     "🍲 **ms-swift** is a large model and multimodal large model fine-tuning and deployment framework provided by the ModelSco",
+     "- 🎁 2026.07.22: Support inference for the moonshotai multimodal model Kimi-K3, including the XTML chat template, thinkin"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     146
+    ],
+    "quotes": [
+     "- By default, **ModelScope** is used for downloading models and datasets. If you want to use HuggingFace, simply specify"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     245
+    ],
+    "quotes": [
+     "    --model Qwen/Qwen3-4B-Instruct-2507 \\"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

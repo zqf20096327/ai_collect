@@ -1,0 +1,86 @@
+{
+ "fn": "NLP-LOVE/ML-NLP",
+ "sha": "c4dadbd85186",
+ "source": "readme",
+ "identity": {
+  "one_liner": "机器学习/NLP 面试知识点与代码实现的中文知识库",
+  "review": "面向算法工程师求职与复习的学习资料仓库：按模块整理机器学习、深度学习、NLP 面试常考知识点，每章列出可能被问到的面试问题，并附算法实战代码案例；以建立清晰知识体系为目标，定位为常读常记的复习材料。作者自述不以全面为目标，思维导图需通过微信公众号回复关键词获取。",
+  "highlights": [
+   "机器学习/深度学习/NLP 面试常考知识点整理",
+   "各章附算法实战代码案例",
+   "按模块组织的知识体系，附思维导图获取途径"
+  ],
+  "use_cases": [
+   "算法工程师岗位面试前复习知识点",
+   "系统性学习机器学习与 NLP 基础理论",
+   "面试前查阅高频考点与代码实现"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "面试准备",
+   "机器学习",
+   "NLP",
+   "学习资料"
+  ],
+  "domain": "计算机科学/教育学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "通过微信公众号获取思维导图"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: - 此项目是**机器学习、NLP面试**中常考到的**知识点和代码实现**，也是作为一个算法工程师必会的理论基础知识。",
+   "L5: - 此项目以各个模块为切入点，让大家有一个清晰的知识体系。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,131 @@
+{
+ "fn": "khoj-ai/khoj",
+ "sha": "c0e986472ac6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管的个人 AI 第二大脑：检索文档与网络、构建自定义 agent",
+  "review": "Khoj 是一个可自托管的个人 AI 应用，支持接入本地或在线 LLM，从互联网和本地文档（PDF、Markdown、Notion、Word、org-mode 等）中检索并回答问题；可创建带有自定义知识、persona、聊天模型与工具的 agent，支持定时自动化研究与通知。可通过浏览器、Obsidian、Emacs、桌面、手机或 WhatsApp 访问，提供云端版本供免安装使用，另有面向企业的云/本地/混合部署形态。",
+  "highlights": [
+   "支持 llama3、qwen、mistral、gpt、claude、gemini、deepseek 等本地或在线 LLM",
+   "读取 PDF、Markdown、Notion、Word、org-mode 等多种文档并做语义搜索",
+   "创建自定义知识、persona、模型与工具的 agent，支持自动化研究任务",
+   "支持自托管，也提供云端直接使用入口"
+  ],
+  "use_cases": [
+   "在 Obsidian/Emacs 中对个人笔记与文档提问",
+   "自托管私有 AI 助手并接入本地模型",
+   "让 agent 定时执行研究并推送通知"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://app.khoj.dev",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "个人知识库",
+   "自托管",
+   "AI助手/Agent",
+   "语义搜索"
+  ],
+  "domain": "个人知识管理/LLM 应用",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "semantic-search"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L28: Khoj is a personal AI app to extend your capabilities. It smoothly scales up from an on-device personal AI to a cloud-sc",
+   "L30: - Chat with any local or online LLM (e.g llama3, qwen, gemma, mistral, gpt, claude, gemini, deepseek).",
+   "L37: - Khoj is open-source, self-hostable. Always."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     30
+    ],
+    "quotes": [
+     "- Chat with any local or online LLM (e.g llama3, qwen, gemma, mistral, gpt, claude, gemini, deepseek)."
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     30
+    ],
+    "quotes": [
+     "- Chat with any local or online LLM (e.g llama3, qwen, gemma, mistral, gpt, claude, gemini, deepseek)."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     5
+    ],
+    "quotes": [
+     "pypi"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     30
+    ],
+    "note": "README 中以 qwen 列为可接入的模型之一，非替代/竞品关系",
+    "quotes": [
+     "- Chat with any local or online LLM (e.g llama3, qwen, gemma, mistral, gpt, claude, gemini, deepseek)."
+    ]
+   }
+  ]
+ }
+}

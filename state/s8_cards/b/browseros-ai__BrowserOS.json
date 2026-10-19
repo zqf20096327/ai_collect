@@ -1,0 +1,87 @@
+{
+ "fn": "browseros-ai/BrowserOS",
+ "sha": "3170d3c173e3",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI agent 用的第二浏览器：代理执行登录态网页任务",
+  "review": "一个面向 AI agent 的浏览器：从 Chrome 一键导入登录态、书签与扩展，连接 Claude Code、Codex、Cursor 等任意 MCP 协议的 agent，让 agent 在独立标签页并行执行网页任务；提供实时仪表盘、会话录像回放（含动作时间线）与本地存储（~/.browserclaw/）。基于 Chromium fork，数据不出本机。与内置 AI 的 BrowserOS 由同一 monorepo 发布。AGPL-3.0 许可。",
+  "highlights": [
+   "一键连接 Claude Code、Codex、Cursor、VS Code 等支持 MCP 的 agent",
+   "从 Chrome 一键导入登录态，agent 以真实账号执行任务",
+   "会话保存为可拖动回放的视频并附动作时间线",
+   "会话、截图、历史本地存储，数据不上传"
+  ],
+  "use_cases": [
+   "让 agent 用我的登录账号订机票、发社媒、清理收件箱",
+   "并行给多个 agent 派发网页任务并回放审查操作过程",
+   "需要登录态的浏览器自动化而非 CI 无头场景"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agentic浏览器",
+   "浏览器自动化",
+   "MCP",
+   "桌面应用"
+  ],
+  "domain": "浏览器/AI 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "browser-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L21: A second browser, just for your AI agents. Import your logins from Chrome in one click, connect Claude Code, Codex, or a",
+   "L86: - **Not a locked-in AI browser.** Atlas, Comet, and Dia only work with their own AI. BrowserOS neo works with the agents",
+   "L121: Both browsers ship from this monorepo. Two main subsystems: the **browser** (Chromium fork, C++ and Python) and the **ag"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

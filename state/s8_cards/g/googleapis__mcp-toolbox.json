@@ -1,0 +1,201 @@
+{
+ "fn": "googleapis/mcp-toolbox",
+ "sha": "3c5ff095aec1",
+ "source": "readme",
+ "identity": {
+  "one_liner": "连接 AI agent/IDE 与企业数据库的开源 MCP 服务器",
+  "review": "Google 维护的 Model Context Protocol 服务器，双用途：一是开箱即用的预置通用工具（如 list_tables、execute_sql），让 Gemini CLI、Claude Code、Codex 等 MCP 客户端直接探索数据库、生成代码；二是通过 tools.yaml 定义结构化查询、语义搜索与 NL2SQL 的自定义工具框架，供生产 agent 集成。内置连接池、IAM 认证与 OpenTelemetry 可观测性。支持 AlloyDB、BigQuery、PostgreSQL、MySQL、MongoDB、Redis 等多种数据库，提供二进制、Docker、Homebrew、Go、npm 等多种安装方式。",
+  "highlights": [
+   "预置通用工具可直接接入 Gemini CLI、Claude Code、Codex 等 MCP 客户端",
+   "tools.yaml 自定义工具框架：结构化查询、语义搜索、NL2SQL",
+   "支持 AlloyDB、BigQuery、PostgreSQL、MySQL、MongoDB、Redis 等多种数据库",
+   "内置连接池、IAM 集成认证与 OpenTelemetry 指标与追踪"
+  ],
+  "use_cases": [
+   "在 IDE 中用自然语言查询数据库、自动发现与管理 schema",
+   "为生产环境 agent 构建带访问限制的数据库工具",
+   "少于 10 行代码将数据库工具集成进 ADK、LangChain 或 LlamaIndex"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "MCP",
+   "数据库",
+   "AI agent",
+   "开发者工具"
+  ],
+  "domain": "AI 基础设施/数据库工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L18: MCP Toolbox for Databases is an open source Model Context Protocol (MCP) server that connects your AI agents, IDEs, and ",
+   "L23: 1. **Ready-to-use MCP Server (Build-Time):** Instantly connect Gemini CLI, Google Antigravity, Claude Code, Codex, or ot",
+   "L24: 2. **Custom Tools Framework (Run-Time):** A robust framework to build specialized, highly secure AI tools for your produ"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     23,
+     50,
+     54
+    ],
+    "quotes": [
+     "1. **Ready-to-use MCP Server (Build-Time):** Instantly connect Gemini CLI, Google Antigravity, Claude Code, Codex, or ot",
+     "You can use the Toolbox in any MCP-compatible IDE or client (e.g., Gemini CLI, Google Antigravity, Claude Code, Codex, e",
+     "1. Add the following to your client's MCP configuration file (usually `mcp.json` or `claude_desktop_config.json`):"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     169,
+     307
+    ],
+    "quotes": [
+     "npx @toolbox-sdk/server --config tools.yaml",
+     "npm install -g @google/gemini-cli"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     181,
+     194,
+     233
+    ],
+    "quotes": [
+     "For the latest version, check the [releases page][releases] and use the",
+     "> # see releases page for other versions",
+     "> :: see releases page for other versions"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     282,
+     344
+    ],
+    "quotes": [
+     "docker pull us-central1-docker.pkg.dev/database-toolbox/toolbox/toolbox:$VERSION",
+     "docker run -p 5000:5000 \\"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     287,
+     290
+    ],
+    "quotes": [
+     "To install Toolbox using Homebrew on macOS or Linux:",
+     "brew install mcp-toolbox"
+    ]
+   },
+   {
+    "term": "go",
+    "rel": "support",
+    "lines": [
+     296,
+     299
+    ],
+    "quotes": [
+     "Go installed, and then run the following command:",
+     "go install github.com/googleapis/mcp-toolbox@v1.14.0"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     434,
+     454
+    ],
+    "quotes": [
+     "    pip install toolbox-core",
+     "    pip install toolbox-langchain"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     23,
+     50
+    ],
+    "quotes": [
+     "1. **Ready-to-use MCP Server (Build-Time):** Instantly connect Gemini CLI, Google Antigravity, Claude Code, Codex, or ot",
+     "You can use the Toolbox in any MCP-compatible IDE or client (e.g., Gemini CLI, Google Antigravity, Claude Code, Codex, e"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     41
+    ],
+    "quotes": [
+     "- **Simplified Development:** Integrate tools into your Agent Development Kit (ADK), LangChain, LlamaIndex, or custom ag"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    29,
+    33
+   ]
+  }
+ }
+}

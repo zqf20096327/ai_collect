@@ -1,0 +1,115 @@
+{
+ "fn": "scikit-learn/scikit-learn",
+ "sha": "1a518d0e9189",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 Python 用户提供构建于 SciPy 之上的机器学习模块",
+  "review": "基于 SciPy 的 Python 机器学习模块，以 3-Clause BSD 许可分发。项目 2007 年由 David Cournapeau 在 Google Summer of Code 中发起，现由志愿者社区并获多个组织支持维护。要求 Python ≥3.12 及 NumPy、SciPy、Narwhals、joblib、threadpoolctl 等依赖；绘图功能需 Matplotlib。支持 pip 或 conda-forge 安装，可用 pytest 运行测试套件，通过 git clone 获取最新源码，并附开发指南与变更日志。",
+  "highlights": [
+   "基于 SciPy 的 Python 机器学习模块，BSD 3-Clause 许可",
+   "支持 pip 与 conda-forge 两种安装途径",
+   "绘图能力（plot_ 函数与 *Display 类）依赖 Matplotlib",
+   "提供开发指南、测试套件与 SKLEARN_SEED 随机种子控制"
+  ],
+  "use_cases": [
+   "在 Python 环境中安装并使用机器学习模块",
+   "为已有 NumPy/SciPy 工作流补充机器学习能力",
+   "以贡献者身份参与代码、文档与测试开发"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    51,
+    155
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "机器学习",
+   "数据科学",
+   "Python库",
+   "统计分析"
+  ],
+  "domain": "机器学习/数据科学工具库",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "data-analysis"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L48: **scikit-learn** is a Python module for machine learning built on top of",
+   "L56: It is currently maintained by a community of contributors, with volunteers but also `support from several",
+   "L61: Installation"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     86,
+     88,
+     113
+    ],
+    "quotes": [
+     "the easiest way to install scikit-learn is using ``pip``::",
+     " pip install -U scikit-learn",
+     "- Download releases: https://pypi.org/project/scikit-learn/"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     121
+    ],
+    "quotes": [
+     " git clone https://github.com/scikit-learn/scikit-learn.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,196 @@
+{
+ "fn": "linshenkx/prompt-optimizer",
+ "sha": "7e36c689b1ac",
+ "source": "readme",
+ "identity": {
+  "one_liner": "提示词优化工具：编写、测试与评估更好的 AI 提示词",
+  "review": "面向使用 AI 模型的用户，提供提示词的优化、测试、评估与收藏管理。支持系统提示词与用户提示词双模式优化、多轮迭代改进、单结果与对比评估、上下文变量与多轮对话测试，并提供文本生成图像提示词的优化。提供网页版、桌面应用、Chrome 扩展与 Docker 四种使用方式，纯客户端处理，数据直接与模型服务商交互；通过 MCP 协议可接入 Claude Desktop 等 AI 应用。使用前需自行配置模型 API key。",
+  "highlights": [
+   "一键优化与多轮迭代改进，支持系统/用户提示词双模式",
+   "多模型接入：OpenAI、Gemini、DeepSeek、Grok、智谱、SiliconFlow、MiniMax 等",
+   "文本生成图像（T2I/I2I/多图）提示词优化与模型参数配置",
+   "MCP 协议支持，可集成 Claude Desktop 等 MCP 兼容应用"
+  ],
+  "use_cases": [
+   "为不同模型编写并迭代优化提示词",
+   "通过对比评估判断提示词是否真正改进",
+   "优化文生图提示词以获得更可控的画面描述",
+   "通过 MCP 将提示词优化能力接入桌面 AI 应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://prompt.always200.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "提示词工程",
+   "Prompt优化",
+   "文生图",
+   "MCP",
+   "多模型接入"
+  ],
+  "domain": "AI 工具/Prompt 工程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "xai",
+   "anthropic",
+   "ollama",
+   "openrouter"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway",
+   "prompt-engineering",
+   "image-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "作者 linshenkx",
+   "README 提供中文版本",
+   "智谱/SiliconFlow/MiniMax 等国内模型接入"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L21: Prompt Optimizer is a powerful AI prompt optimization tool that helps you write better AI prompts and improve the qualit",
+   "L44: - 🤖 **Multi-model Integration**: Support for mainstream AI models including OpenAI, Gemini, DeepSeek, Grok, Zhipu AI, Si",
+   "L52: - 🧩 **MCP Protocol Support**: Supports Model Context Protocol (MCP), enabling integration with MCP-compatible AI applica"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     44,
+     174,
+     228
+    ],
+    "quotes": [
+     "- 🤖 **Multi-model Integration**: Support for mainstream AI models including OpenAI, Gemini, DeepSeek, Grok, Zhipu AI, Si",
+     "MCP_DEFAULT_MODEL_PROVIDER=openai  # Options: openai, gemini, anthropic, deepseek, grok, siliconflow, zhipu, dashscope, ",
+     "3. Click on the model you need to configure (such as OpenAI, Gemini, DeepSeek, Grok, etc.)"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     44,
+     45,
+     60,
+     174,
+     228
+    ],
+    "quotes": [
+     "- 🤖 **Multi-model Integration**: Support for mainstream AI models including OpenAI, Gemini, DeepSeek, Grok, Zhipu AI, Si",
+     "- 🖼️ **Image Generation**: Support for Text-to-Image (T2I), Image-to-Image (I2I), and Multi-Image generation with models",
+     "- 🔌 **Multi-model Support**: Integrated with mainstream image generation models like Gemini, Seedream, Grok",
+     "MCP_DEFAULT_MODEL_PROVIDER=openai  # Options: openai, gemini, anthropic, deepseek, grok, siliconflow, zhipu, dashscope, ",
+     "3. Click on the model you need to configure (such as OpenAI, Gemini, DeepSeek, Grok, etc.)"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     174
+    ],
+    "quotes": [
+     "MCP_DEFAULT_MODEL_PROVIDER=openai  # Options: openai, gemini, anthropic, deepseek, grok, siliconflow, zhipu, dashscope, "
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     121
+    ],
+    "quotes": [
+     "- ✅ **No CORS Limitations**: As a native desktop application, it completely eliminates browser Cross-Origin Resource Sha"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     174
+    ],
+    "quotes": [
+     "MCP_DEFAULT_MODEL_PROVIDER=openai  # Options: openai, gemini, anthropic, deepseek, grok, siliconflow, zhipu, dashscope, "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     129,
+     134,
+     141
+    ],
+    "quotes": [
+     "### 5. Docker Deployment",
+     "docker run -d -p 8081:80 --restart unless-stopped --name prompt-optimizer linshen/prompt-optimizer",
+     " Click to view Docker Compose deployment steps"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     144
+    ],
+    "quotes": [
+     "git clone https://github.com/linshenkx/prompt-optimizer.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

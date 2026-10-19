@@ -1,0 +1,121 @@
+{
+ "fn": "langchain4j/langchain4j",
+ "sha": "dad933cbf1db",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 JVM/Java 开发者的 LLM 应用开发库",
+  "review": "LangChain4j 是一个面向 JVM 的开源 Java 库，目标是简化在 Java 应用中集成 LLM 的过程。它提供统一 API 屏蔽各 LLM 提供商与向量数据库的专有接口，支持在 20+ LLM 提供商与 30+ 嵌入存储之间切换而无需重写代码。工具箱覆盖提示词模板、聊天记忆管理、函数调用，直至 Agents 与 RAG 等高层模式，每个抽象都带接口与多种实现。该库按 Java 惯例从零设计（类型安全、POJO、注解、依赖注入），与 Quarkus、Spring Boot、Helidon、Micronaut 一级集成，与 Python 版 LangChain 的 API 与发布周期相互独立。",
+  "highlights": [
+   "统一 API 覆盖 20+ LLM 提供商与 30+ 嵌入存储，可切换实现",
+   "工具箱从提示词模板、聊天记忆、函数调用到 Agents 与 RAG",
+   "按 Java 惯例原生设计，一级集成 Quarkus/Spring Boot/Helidon/Micronaut",
+   "MCP 相关工具调用支持"
+  ],
+  "use_cases": [
+   "在 Spring Boot/Quarkus 等 Java 企业应用中接入 LLM",
+   "构建从数据摄取到检索的完整 RAG 管线",
+   "开发带工具调用的聊天机器人或 Agent",
+   "在不重写代码的前提下试验和更换不同 LLM 提供商"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    37,
+    38
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM框架",
+   "Java",
+   "RAG",
+   "Agent",
+   "向量数据库"
+  ],
+  "domain": "LLM 基础设施/应用开发框架",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "LangChain"
+  ],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "rag",
+   "vector-database"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: The goal of LangChain4j is to simplify integrating LLMs into Java applications.",
+   "L23:  LangChain4j currently supports 20+ popular LLM providers",
+   "L43: type safety, POJOs, annotations, interfaces, dependency injection, fluent APIs, and first-class integrations with Quarku"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "competitor",
+    "lines": [
+     41,
+     44
+    ],
+    "note": "明确声明并非 LangChain 的 Java 移植，API 与发布周期独立",
+    "quotes": [
+     "**Despite the name, LangChain4j is not a Java port of LangChain (Python) — it is built for Java, not ported to it.**",
+     "Its API, internals, and release cycle are independent of the Python LangChain project."
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     37
+    ],
+    "note": "作为 2023 年发展背景提及",
+    "quotes": [
+     "LangChain4j began development in early 2023 amid the ChatGPT hype."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

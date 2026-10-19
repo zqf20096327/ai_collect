@@ -1,0 +1,190 @@
+{
+ "fn": "camel-ai/owl",
+ "sha": "051259e1b3fa",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的多智能体协作框架，自动化真实世界任务",
+  "review": "基于 CAMEL-AI Framework 构建的多智能体协作框架，通过动态 agent 交互完成真实世界任务自动化。内置在线搜索、浏览器自动化（Playwright）、多模态数据处理、文档解析（Word/Excel/PDF/PPT）与 Python 代码执行等工具包，并支持 MCP 协议接入工具。提供 uv/venv/conda/Docker 多种安装方式，运行需配置 LLM API key，模型需具备工具调用能力，多模态任务需多模态模型。提供 Web 界面与示例脚本，已开源训练数据集与模型检查点。",
+  "highlights": [
+   "基于 Playwright 的浏览器自动化与多种搜索引擎接入",
+   "内置 MCP、代码执行、文档解析等大量工具包",
+   "支持多种 LLM 后端，含 Claude、Gemini、OpenRouter 等示例脚本",
+   "提供 Web 界面、Docker 镜像与社区 agent 挑战活动"
+  ],
+  "use_cases": [
+   "让多个 agent 协作完成联网检索、浏览器操作等自动化任务",
+   "解析本地文档并基于内容回答问题",
+   "对图像、视频、音频进行多模态分析",
+   "复现 GAIA benchmark 上的多智能体实验"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "多智能体",
+   "任务自动化",
+   "agent框架",
+   "浏览器自动化"
+  ],
+  "domain": "LLM 基础设施/Multi-Agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "openrouter",
+   "anthropic",
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "multi-agent",
+   "browser-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L27: 🦉 OWL is a cutting-edge framework for multi-agent collaboration that pushes the boundaries of task automation, built on ",
+   "L75: - **Browser Automation**: Utilize the Playwright framework for simulating browser interactions, including scrolling, cli",
+   "L231: - **Tool Calling**: OWL requires models with robust tool calling capabilities to interact with various toolkits. Models "
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     54
+    ],
+    "quotes": [
+     "- **[2025.03.21]**: Integrated OpenRouter model platform, fix bug with Gemini tool calling."
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     244,
+     245
+    ],
+    "quotes": [
+     "# Run with Claude model",
+     "python examples/run_claude.py"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     392
+    ],
+    "quotes": [
+     "- **Easy Model Selection**: Choose between different models (OpenAI, Qwen, DeepSeek, etc.)"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     107
+    ],
+    "quotes": [
+     "git clone https://github.com/camel-ai/owl.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     137
+    ],
+    "quotes": [
+     "docker compose up -d"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     320,
+     321
+    ],
+    "note": "MCP 依赖服务的安装方式，非本产品安装途径",
+    "quotes": [
+     "npm install -g @executeautomation/playwright-mcp-server",
+     "npx playwright install-deps"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     314
+    ],
+    "note": "Node.js 的安装方式，非本产品安装途径",
+    "quotes": [
+     "brew install node"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     9,
+     47
+    ],
+    "note": "数据集与 checkpoint 发布渠道，非替代/竞品对象",
+    "quotes": [
+     "[![Hugging Face][huggingface-image]][huggingface-url]",
+     "- **[2025.07.21]**: We open-sourced the training dataset and model checkpoints of OWL project. Training code coming soon"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

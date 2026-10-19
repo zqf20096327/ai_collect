@@ -1,0 +1,122 @@
+{
+ "fn": "camenduru/stable-diffusion-webui-colab",
+ "sha": "b5777572c6c5",
+ "source": "readme",
+ "identity": {
+  "one_liner": "在 Google Colab 上运行 Stable Diffusion WebUI 的笔记本合集",
+  "review": "为 Stable Diffusion WebUI 提供的一组 Google Colab 笔记本，提供 lite、stable、nightly 三种分支：stable 含 ControlNet v1.1，nightly 使用 PyTorch 2.0 并每日更新扩展。覆盖 txt2img、img2img、inpainting、DreamBooth 与 LoRA 训练（training 分支）等场景，并收录数十个社区模型的 Open In Colab 一键入口。README 声明该仓库已停止更新，建议转向 TostUI。",
+  "highlights": [
+   "lite/stable/nightly 三种分支可选，stable 含 ControlNet v1.1，nightly 基于 PyTorch 2.0",
+   "提供数十个社区模型的 Open In Colab 一键运行入口",
+   "提供 DreamBooth 与 LoRA 训练分支及 Google Drive 安装分支",
+   "支持 stable-diffusion、waifu-diffusion、inpainting、v2 系列等多种模型"
+  ],
+  "use_cases": [
+   "在 Colab 上无需本地 GPU 运行 Stable Diffusion WebUI",
+   "为特定社区模型快速生成对应的 WebUI 运行环境",
+   "在 Colab 上进行 DreamBooth 或 LoRA 训练"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图像生成",
+   "Stable Diffusion",
+   "Colab",
+   "WebUI",
+   "模型训练"
+  ],
+  "domain": "图像生成/机器学习工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: # WebUI Restrictions Lifted! 🥳 Free WebUI is Back! 🔥 This repository is outdated and no longer receives updates. Please ",
+   "L19: `lite` has a stable WebUI and stable installed extensions.",
+   "L23: ## 🦒 Colab"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     8,
+     14,
+     23,
+     26,
+     27
+    ],
+    "quotes": [
+     "https://github.com/camenduru/stable-diffusion-webui-colab/tree/training",
+     "https://github.com/camenduru/stable-diffusion-webui-colab/tree/drive",
+     "## 🦒 Colab",
+     "Open In Colab | Open In Colab | Open In Colab | stable_diffusion_webui_colab CompVis/stable-diffusion-v-1-4-original",
+     "Open In Colab | Open In Colab | Open In Colab | waifu_diffusion_webui_colab hakurei/waifu-diffusion-v1-3"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Midjourney",
+    "rel": "mention",
+    "lines": [
+     33
+    ],
+    "note": "midjourney_v4_diffusion 社区模型条目，非竞品对比",
+    "quotes": [
+     "Open In Colab | Open In Colab | Open In Colab | midjourney_v4_diffusion_webui_colab (Use the tokens `mdjrny-v4 style` in"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    5
+   ]
+  }
+ }
+}

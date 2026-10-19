@@ -1,0 +1,105 @@
+{
+ "fn": "jfilter/split-folders",
+ "sha": "7e9668057b37",
+ "source": "readme",
+ "identity": {
+  "one_liner": "把含文件的文件夹按比例切分为训练/验证/测试集的 Python 工具",
+  "review": "面向机器学习/深度学习数据准备阶段的 Python 包（含 CLI）：读取含类别子目录或扁平结构的输入文件夹，按 ratio 或 fixed 两种模式切分为 train/val/test（val/test 可选）。支持任意文件类型、随机种子可复现、可关闭 shuffle 以适配时间序列、对不平衡数据做随机过采样（仅作用于 train）。提供按前缀/stem/兄弟目录/callable 的分组机制，保证图像与标注等关联文件同切分，也支持仅切分指定扩展名与移动/复制/软链接三种方式。无外部依赖，开发用 poetry。",
+  "highlights": [
+   "ratio 与 fixed 两种切分模式，seed 可复现",
+   "不平衡数据的随机过采样（仅 train 集）",
+   "按 stem/sibling/callable 分组，保持图像与标注成对",
+   "同时提供 Python 模块与 CLI，纯 Python 无外部依赖"
+  ],
+  "use_cases": [
+   "训练图像分类模型前把数据集切分为训练/验证/测试集",
+   "把图像及其标注文件成对地分到同一子集",
+   "对类别不平衡的数据集做训练集过采样"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据集准备",
+   "机器学习工具",
+   "Python包",
+   "数据划分"
+  ],
+  "domain": "机器学习/数据工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3: Split folders with files (e.g. images) into **train**, **validation** and **test** (dataset) folders.",
+   "L32: This should get you started to do some serious deep learning on your data. Read here why it's a good idea to split your "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     1,
+     51,
+     57
+    ],
+    "quotes": [
+     "# `split-folders` Build Status PyPI PyPI - Python Version PyPI - Downloads",
+     "pip install split-folders",
+     "pip install split-folders[full]"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

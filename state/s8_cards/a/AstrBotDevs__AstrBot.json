@@ -1,0 +1,187 @@
+{
+ "fn": "AstrBotDevs/AstrBot",
+ "sha": "5faaf4f9b04e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "对接多家 IM 平台与 LLM 的开源 Agent 聊天机器人平台",
+  "review": "AstrBot 是一个开源的一体化 Agent 聊天机器人平台，接入 QQ、微信企业版、飞书、钉钉、Telegram、Slack、Discord 等 20 个即时通讯平台，提供 LLM 对话、多模态、MCP、知识库、人设、自动上下文压缩等能力，并以插件机制扩展（README 称有 1000+ 插件可一键安装）。支持 Dify、阿里云百炼、Coze 等 agent 平台接入，Agent Sandbox 提供代码与 shell 的隔离执行。部署途径包括 uv、Docker、桌面应用、启动器及宝塔/1Panel/CasaOS 等。",
+  "highlights": [
+   "接入 20 个 IM 平台（QQ、Telegram、Discord、飞书、钉钉等），官方/社区维护",
+   "支持多家 LLM 服务与 API 网关，含 Ollama、LM Studio 自托管",
+   "1000+ 插件一键安装的插件扩展机制（README 自述）",
+   "Agent Sandbox 隔离执行代码与 shell 调用"
+  ],
+  "use_cases": [
+   "在 QQ/微信/Telegram 等 IM 里搭一个 AI 助手或智能客服",
+   "构建企业知识库问答机器人",
+   "通过插件扩展定制自己的聊天机器人功能"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "聊天机器人",
+   "IM机器人",
+   "Agent框架",
+   "LLM接入",
+   "插件生态"
+  ],
+  "domain": "AI 聊天机器人/LLM 应用平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "chatbot"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "多语言文档含简繁中文置于首位",
+   "QQ 群 15+ 社区",
+   "赞助渠道为爱发电（Afdian）",
+   "感谢 NapCatQQ 等国内生态项目"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L24: AstrBot is an open-source all-in-one Agent chatbot platform that integrates with mainstream instant messaging apps. It p",
+   "L33: 4. 🌐 Multi-Platform: QQ, WeChat Work, Feishu, DingTalk, WeChat Official Accounts, Telegram, Slack, and more.",
+   "L127: |OpenAI and Compatible Services|LLM Services|"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     132
+    ],
+    "note": "支持模型服务列表中列出 DeepSeek",
+    "quotes": [
+     "|DeepSeek|LLM Services|"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     133
+    ],
+    "note": "模型服务列表列出 Ollama（Self-hosted）",
+    "quotes": [
+     "|Ollama (Self-hosted)|LLM Services|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     16,
+     70
+    ],
+    "note": "Docker / Docker Compose 部署为推荐途径之一",
+    "quotes": [
+     "Docker pull",
+     "For users familiar with containers and looking for a more stable, production-ready deployment method, we recommend deplo"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     175
+    ],
+    "note": "Manual Deployment 基于源码 git clone 安装",
+    "quotes": [
+     "git clone https://github.com/AstrBotDevs/AstrBot"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     176
+    ],
+    "note": "pip 仅用于安装开发用 pre-commit，非本产品安装途径",
+    "quotes": [
+     "pip install pre-commit"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     32,
+     144
+    ],
+    "note": "被接入的 agent 平台/LLMOps，非替代或竞品关系",
+    "quotes": [
+     "3. 🤖 Supports integration with Dify, Alibaba Cloud Bailian, Coze, and other agent platforms.",
+     "|Dify|LLMOps Platforms|"
+    ]
+   },
+   {
+    "term": "Coze",
+    "rel": "mention",
+    "lines": [
+     32,
+     146
+    ],
+    "note": "被接入的 agent 平台，非替代或竞品关系",
+    "quotes": [
+     "3. 🤖 Supports integration with Dify, Alibaba Cloud Bailian, Coze, and other agent platforms.",
+     "|Coze|LLMOps Platforms|"
+    ]
+   }
+  ]
+ }
+}

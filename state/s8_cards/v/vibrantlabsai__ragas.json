@@ -1,0 +1,128 @@
+{
+ "fn": "vibrantlabsai/ragas",
+ "sha": "0a972661f64e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 LLM 应用提供评估指标与测试集生成的工具包",
+  "review": "Python 工具包，提供 LLM 应用的客观评估指标（含 LLM-based 与传统指标）、自动化测试数据生成与基于生产数据的反馈闭环。通过 pip 从 PyPI 或源码安装，附 ragas quickstart 命令可生成示例工程（rag_eval 评估 RAG 系统，agent_evals 等模板标注 Coming Soon）。与 LangChain 及主流可观测性工具集成，运行示例需设置 OPENAI_API_KEY。另提供咨询服务，并默认收集匿名使用数据（可通过 RAGAS_DO_NOT_TRACK 退出）。",
+  "highlights": [
+   "提供 LLM-based 与传统两类评估指标",
+   "自动生成覆盖多场景的测试数据集",
+   "与 LangChain 及主流可观测性工具集成",
+   "ragas quickstart 提供完整示例工程模板"
+  ],
+  "use_cases": [
+   "评估 RAG 系统的回答质量",
+   "为待评估的 LLM 应用自动生成测试集",
+   "利用生产数据构建持续改进的反馈闭环"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM评估",
+   "测试集生成",
+   "LLMOps",
+   "RAG"
+  ],
+  "domain": "LLM 基础设施/评估",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "llm-observability",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L36: Objective metrics, intelligent test generation, and data-driven insights for LLM apps",
+   "L38: Ragas is your ultimate toolkit for evaluating and optimizing Large Language Model (LLM) applications. Say goodbye to tim",
+   "L45: - 🔗 Seamless Integrations: Works flawlessly with popular LLM frameworks like LangChain and major observability tools."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     15,
+     50,
+     53,
+     59
+    ],
+    "quotes": [
+     " <a href=\"https://pypi.org/project/ragas/\">",
+     "Pypi:",
+     "pip install ragas",
+     "pip install git+https://github.com/vibrantlabsai/ragas"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     23
+    ],
+    "note": "仅 DeepWiki 徽章图片来自 devin.ai，非产品关系",
+    "quotes": [
+     " src=\"https://devin.ai/assets/deepwiki-badge.png\""
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     45
+    ],
+    "note": "被集成的框架，非替代/竞品对象",
+    "quotes": [
+     "- 🔗 Seamless Integrations: Works flawlessly with popular LLM frameworks like LangChain and major observability tools."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

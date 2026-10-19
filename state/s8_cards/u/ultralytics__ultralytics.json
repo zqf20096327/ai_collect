@@ -1,0 +1,148 @@
+{
+ "fn": "ultralytics/ultralytics",
+ "sha": "e89f57429c97",
+ "source": "readme",
+ "identity": {
+  "one_liner": "YOLO 系列视觉模型库：检测/分割/分类/姿态/跟踪一体化",
+  "review": "Ultralytics 维护的 YOLO 模型库，覆盖目标检测、实例分割、语义分割、深度估计、图像分类、姿态估计、旋转框检测与多帧目标跟踪任务。通过 pip 安装后提供 CLI（yolo 命令）与 Python API 两种调用方式，预训练权重在首次使用时自动从官方 release 下载。模型在 COCO、Cityscapes、ImageNet、DOTAv1、NYU Depth V2 等数据集上预训练，README 附带各系列模型的精度与速度指标表。商业使用需向官方申请 Enterprise License。",
+  "highlights": [
+   "支持检测、分割、深度估计、分类、姿态、OBB、跟踪七类视觉任务",
+   "CLI（yolo 命令）与 Python API 两种调用方式",
+   "预训练权重首次使用时自动下载，含 COCO/Cityscapes/ImageNet/DOTA/NYU 等预训练版本",
+   "提供 YOLO27 预告（尚未发布，无发布日期）"
+  ],
+  "use_cases": [
+   "在图像/视频上做目标检测与实例分割",
+   "训练自定义数据集的视觉模型",
+   "对检测/分割/姿态结果做跨帧目标跟踪",
+   "在 CPU 或 GPU 上部署推理"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "dual",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://docs.ultralytics.com/tasks",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "目标检测",
+   "图像分割",
+   "计算机视觉",
+   "模型库",
+   "姿态估计"
+  ],
+  "domain": "计算机视觉/深度学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing",
+   "object-detection"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L19: Ultralytics creates cutting-edge, state-of-the-art (SOTA) YOLO models built on years of foundational research in compute",
+   "L43: ## 📄 Documentation",
+   "L91: Ultralytics supports a wide range of YOLO models, from early versions like YOLOv3 to the latest YOLO26. The tables below"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cpu-infer",
+    "rel": "mention",
+    "lines": [
+     101,
+     110
+    ],
+    "note": "速度表中给出 CPU ONNX 推理延迟指标",
+    "quotes": [
+     "|Model|size (pixels)|mAP val 50-95|mAP val 50-95(e2e)|Speed CPU ONNX (ms)|Speed T4 TensorRT10 (ms)|params (M)|FLOPs (B)|",
+     "- **Speed** metrics are averaged over COCO val images using an Amazon EC2 P4d instance. CPU speeds measured with ONNX ex"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     51,
+     54
+    ],
+    "quotes": [
+     "PyPI - Version Ultralytics Downloads PyPI - Python Version",
+     "pip install ultralytics"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     59
+    ],
+    "note": "作为替代安装方式在 Quickstart 中提及",
+    "quotes": [
+     "Conda Version Docker Image Version Ultralytics Docker Pulls"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     13
+    ],
+    "note": "提供在线运行入口，非本产品安装途径",
+    "quotes": [
+     " Open Ultralytics In Colab"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    23
+   ],
+   "note": "商业使用需申请 Enterprise License",
+   "quotes": [
+    "Request an Enterprise License for commercial use at Ultralytics Licensing."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,147 @@
+{
+ "fn": "iii-hq/iii",
+ "sha": "05bf06d64888",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为后端开发者提供统一实时组合、扩展与观测服务的引擎",
+  "review": "iii 是一个以 Rust 引擎为核心的后端服务运行时，将队列、cron、HTTP、状态、可观测性、agent 与沙箱统一到一个实时系统面。一切能力映射为三个原语：Worker（注册到引擎的进程）、Trigger（触发函数运行的事件）与 Function（带稳定标识的工作单元）。各 worker 加入实时目录后互相可发现、可调用；agent 使用与开发者相同的目录与函数调用接口，可在运行时添加 worker。提供 Node.js/Python/Rust/Go SDK、开发者 Console 与可安装到第三方 harness 的 agent skills。",
+  "highlights": [
+   "Worker/Trigger/Function 三原语统一队列、cron、HTTP、状态与可观测性",
+   "实时目录：worker 注册后其他 worker 可立即发现并调用",
+   "agent 与开发者共用同一函数目录，可运行时添加 worker 并追踪",
+   "提供 Node.js、Python、Rust、Go 四语言 SDK 与开发者 Console"
+  ],
+  "use_cases": [
+   "用一份 worker-compose.yaml 统一声明项目中的队列、定时任务与服务",
+   "让 agent 在运行中发现并调用后端已有函数能力",
+   "通过 Console 检查 workers、traces、日志与实时状态",
+   "为第三方 agent harness 安装 iii 的技能包"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "后端框架",
+   "服务编排",
+   "Agent基础设施",
+   "可观测性",
+   "开发者工具"
+  ],
+  "domain": "后端开发/运行时引擎",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "llm-observability"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L47: That is the agent story too: when a task needs a capability the system does not have, an agent can",
+   "L87: Platform teams publish workers. Application teams register functions and declare triggers. Agents",
+   "L55: **Workers** are processes that register with the iii engine and then register triggers and"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     9,
+     17,
+     117
+    ],
+    "quotes": [
+     " PyPI",
+     " PyPI downloads",
+     "|Python|`iii-sdk`|`pip install iii-sdk`|"
+    ]
+   },
+   {
+    "term": "cargo",
+    "rel": "support",
+    "lines": [
+     10,
+     118
+    ],
+    "quotes": [
+     " Crates.io",
+     "|Rust|`iii-sdk`|Add to `Cargo.toml`|"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     7
+    ],
+    "quotes": [
+     " Docker"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     8,
+     116,
+     128,
+     138,
+     139,
+     140
+    ],
+    "quotes": [
+     " npm",
+     "|Node.js|`iii-sdk`|`pnpm add iii-sdk` or `npm install iii-sdk`|",
+     "npx skills add iii-hq/iii/skills",
+     "npx skills add iii-hq/workers --list        # list available worker skills",
+     "npx skills add iii-hq/workers --skill database # one worker",
+     "npx skills add iii-hq/workers --all         # every worker skill"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

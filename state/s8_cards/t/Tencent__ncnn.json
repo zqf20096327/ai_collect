@@ -1,0 +1,112 @@
+{
+ "fn": "Tencent/ncnn",
+ "sha": "9ffd38ce0c73",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向移动/嵌入式/桌面端部署的神经网络推理框架",
+  "review": "ncnn 是腾讯开源的神经网络推理框架，无第三方运行时依赖，支持 CPU 与 Vulkan GPU 后端，提供 C++ API 与 Python 绑定。通过 pnnx 工具将 PyTorch 和 ONNX 模型转换为 ncnn 格式，并保留 Caffe/MXNet/Darknet 等旧格式转换器。支持 int8 量化、fp16 计算、自定义层与模型优化工具。提供覆盖 Android、iOS、Windows、Linux、WebAssembly 等平台的预编译包，也可从源码构建。已在 QQ、微信等腾讯应用中使用，覆盖分类、检测、分割、OCR 等模型类型。",
+  "highlights": [
+   "无第三方运行时依赖，纯 C++ 实现，提供 C API 与 Python 绑定",
+   "CPU（ARM NEON、多核调度）与 Vulkan GPU 两种推理后端",
+   "pnnx 工具完成 PyTorch/ONNX 模型转换，支持 int8 量化与 fp16",
+   "提供 Android/iOS/WebAssembly/HarmonyOS 等多平台预编译包与构建指南"
+  ],
+  "use_cases": [
+   "在手机 App 中离线部署视觉模型（分类、检测、人脸、OCR）",
+   "在树莓派、Jetson 等嵌入式设备上运行推理",
+   "将 PyTorch 训练的模型转换为移动端可运行格式"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "推理框架",
+   "移动端部署",
+   "边缘计算",
+   "模型转换"
+  ],
+  "domain": "深度学习推理基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文对照说明（L14-17）",
+   "腾讯维护，用于 QQ/微信等应用"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: ncnn is a high-performance neural network inference framework optimized for mobile, embedded, and desktop deployment.",
+   "L10: It has no third-party runtime dependencies, runs across CPU and Vulkan GPU backends, and provides tools such as pnnx for",
+   "L181: - Optimized CPU inference for mobile and embedded processors, including ARM NEON and multi-core scheduling."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     26
+    ],
+    "note": "pip3 install pnnx 为模型转换工具安装，ncnn Python 绑定亦经 Quick Start 引导",
+    "quotes": [
+     "pip3 install pnnx"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     154,
+     159
+    ],
+    "quotes": [
+     "Use the prebuilt packages above when possible. To build from source, see the full how to build ncnn library guide for Li",
+     "git clone --recursive https://github.com/Tencent/ncnn.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

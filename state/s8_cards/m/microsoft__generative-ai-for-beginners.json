@@ -1,0 +1,159 @@
+{
+ "fn": "microsoft/generative-ai-for-beginners",
+ "sha": "c41436af3808",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向初学者的生成式 AI 应用开发入门课程（21 课）",
+  "review": "微软云推广团队制作的 21 课生成式 AI 应用开发课程，第 3 版。课程分 \"Learn\"（讲解概念：LLM 原理、模型选择、负责任 AI、提示工程、微调等）与 \"Build\"（配套 Python 与 TypeScript 代码示例：文本生成、聊天、向量检索、图像生成、RAG、AI Agent 等）两类，每课含视频介绍、README 讲义与延伸资源。代码可接入 Azure OpenAI、Microsoft Foundry Models、OpenAI API 或本地运行的 Foundry Local；仓库提供 50+ 语言翻译，并给出排除翻译目录的 sparse checkout 克隆方式。",
+  "highlights": [
+   "21 课覆盖概念讲解与代码实践，代码示例提供 Python 与 TypeScript 两种语言",
+   "支持 Azure OpenAI、Microsoft Foundry Models、OpenAI API 及本地离线运行的 Foundry Local 四种模型接入途径",
+   "提供 50+ 语言翻译版本，可用 sparse checkout 排除翻译目录以减小克隆体积",
+   "课程主题包含提示工程、RAG 与向量数据库、函数调用、微调、SLM 及 Mistral/Meta 模型使用"
+  ],
+  "use_cases": [
+   "系统性学习生成式 AI 应用开发的基础概念与代码实践",
+   "按课程示例动手搭建文本生成、聊天、图像生成或 RAG 应用",
+   "在没有云订阅的情况下用 Foundry Local 在本地设备上运行课程代码"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教程/课程",
+   "生成式AI",
+   "提示工程",
+   "RAG",
+   "LLM入门"
+  ],
+  "domain": "教育/生成式 AI 开发学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "azure"
+  ],
+  "scenario_tags_v2": [
+   "prompt-engineering",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: ### 21 Lessons teaching everything you need to know to start building Generative AI applications",
+   "L45: Learn the fundamentals of building Generative AI applications with our 21-lesson comprehensive course by Microsoft Cloud",
+   "L51: Lessons are labeled either \"Learn\" lessons explaining a Generative AI concept or \"Build\" lessons that explain a concept "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     59,
+     93,
+     106
+    ],
+    "note": "课程代码示例明确支持 Azure OpenAI Service 接入",
+    "quotes": [
+     " - Azure OpenAI Service - **Lessons:** \"aoai-assignment\"",
+     "- Python and TypeScript code samples supporting Azure OpenAI and OpenAI API",
+     "|06|Building Text Generation Applications|**Build:** A text generation app using Azure OpenAI / OpenAI API|Video|Learn M"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     29,
+     36
+    ],
+    "note": "通过 git clone 获取课程仓库",
+    "quotes": [
+     "> git clone --filter=blob:none --sparse https://github.com/microsoft/generative-ai-for-beginners.git",
+     "> git clone --filter=blob:none --sparse https://github.com/microsoft/generative-ai-for-beginners.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    60
+   ],
+   "note": "README 注明 GitHub Models 将于 2026 年 7 月底退役，改用 Microsoft Foundry Models"
+  },
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     133,
+     134,
+     135,
+     136
+    ],
+    "note": "同团队的其他课程系列，非本课程替代/竞品对象",
+    "quotes": [
+     "### LangChain",
+     "LangChain4j for Beginners",
+     "LangChain.js for Beginners",
+     "LangChain for Beginners"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     159,
+     160,
+     161,
+     162
+    ],
+    "note": "Copilot 系列课程链接，非替代/竞品关系",
+    "quotes": [
+     "### Copilot Series",
+     "Copilot for AI Paired Programming",
+     "Copilot for C#/.NET",
+     "Copilot Adventure"
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,120 @@
+{
+ "fn": "livekit/agents",
+ "sha": "8938b6093498",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者：构建实时语音 AI Agent 的 Python 框架",
+  "review": "LiveKit Agents 是用于在服务器上构建实时、可编程参与者的框架，用于创建能看、能听、能理解的多模态对话语音 Agent。机制包括：STT/LLM/TTS/Realtime API 的可组合插件生态、内置任务调度与分发 API、基于 transformer 的语义轮次检测、MCP 工具一行代码接入、内置测试框架与 judge。提供 dev 热重载、console 终端测试与生产三种运行模式，需连接 LiveKit Cloud 或自托管服务器。Apache-2.0 许可，轮次检测模型采用单独的 LiveKit Model License。",
+  "highlights": [
+   "STT/LLM/TTS/Realtime API 插件生态，可自由组合模型供应商",
+   "内置任务调度与分发 API，连接终端用户与 Agent",
+   "语义轮次检测与 MCP 原生支持",
+   "内置测试框架，支持 pytest 集成与 console 终端本地音频测试"
+  ],
+  "use_cases": [
+   "构建可拨打电话的语音对话 Agent",
+   "为房间内多个用户生成转写",
+   "接入 Tavus 等服务的视频数字人",
+   "用 Gemini Live 构建具备视觉能力的 Agent"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音AI",
+   "实时通信",
+   "Agent框架",
+   "WebRTC"
+  ],
+  "domain": "语音 AI/实时通信框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L14: The Agent Framework is designed for building realtime, programmable participants",
+   "L20: - **Flexible integrations**: A comprehensive ecosystem to mix and match the right STT, LLM, TTS, and Realtime API to sui",
+   "L35: pip install \"livekit-agents[openai,deepgram,cartesia]\""
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     3,
+     35
+    ],
+    "quotes": [
+     "PyPI - Version",
+     "pip install \"livekit-agents[openai,deepgram,cartesia]\""
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     51
+    ],
+    "note": "AI coding assistant 技能的安装方式，非本产品安装途径",
+    "quotes": [
+     "   npx skills add livekit/agent-skills --skill livekit-agents"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    172
+   ],
+   "quotes": [
+    "The Agents framework is licensed under Apache-2.0. The LiveKit turn detection models are licensed under the LiveKit Mode"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

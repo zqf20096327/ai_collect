@@ -1,0 +1,91 @@
+{
+ "fn": "apache/doris",
+ "sha": "0d96178d7695",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向实时分析与混合搜索场景的 MPP 架构分析型数据库",
+  "review": "基于 MPP 架构的开源实时分析与搜索数据库，提供三条核心能力线：支持流式摄入与高并发亚秒查询的实时分析、基于 Iceberg/Delta Lake/Hudi 等开放表格式的湖仓查询加速、以及覆盖 JSON、全文与向量数据的混合搜索。支持存算一体与存算分离两种部署形态，提供 Flink/Spark/Kafka 连接器与 Kubernetes Operator。README 未含安装命令细节，安装与编译指引在官网文档中。",
+  "highlights": [
+   "MPP 架构下的实时分析：流式摄入、增量转换、高并发亚秒查询",
+   "湖仓分析：对 Iceberg、Delta Lake、Hudi 开放表格式做 SQL 加速",
+   "混合搜索：同一 SQL 引擎内查询向量、文本、JSON 与结构化数据",
+   "支持存算耦合与存算分离部署，分离模式下计算组运行于共享对象存储"
+  ],
+  "use_cases": [
+   "面向外部用户交付亚秒级交互式分析应用",
+   "搭建跨业务域的实时数据仓库",
+   "用 SQL 分析高吞吐日志、事件与指标",
+   "在单一 SQL 引擎中做面向 AI 的向量与文本检索"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "OLAP",
+   "湖仓",
+   "实时分析",
+   "向量检索",
+   "可观测性"
+  ],
+  "domain": "数据基础设施/分析型数据库",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "llm-observability",
+   "vector-database"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L24: Apache Doris is an open-source, real-time analytics and search database built on MPP architecture. It provides fast SQL ",
+   "L35: |Doris for AI|Use vector, text, JSON, and structured search in one SQL engine.|",
+   "L43: |Real-Time Analytics|Streaming ingestion, incremental transformation, and sub-second queries under high concurrency.|",
+   "L65: Apache Doris supports both compute-storage coupled and compute-storage decoupled deployments. In decoupled mode, statele"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

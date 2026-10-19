@@ -1,0 +1,203 @@
+{
+ "fn": "paperclipai/paperclip",
+ "sha": "a4e05af0e979",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给团队的 AI 代理编排控制台：目标、预算、治理一体化",
+  "review": "一个 Node.js 服务器加 React UI，用于编排一组 AI 代理执行业务工作：用户定义目标、按角色组建代理团队（org chart）、审批与运行任务，并在仪表板中跟踪工作与成本。核心机制包括心跳唤醒、原子任务领取与执行锁、预算阈值与硬停、审批门与配置回滚、技能注入与定时例程。可接入多种代理运行时（Claude Code、Codex、Cursor、Gemini CLI 等），支持多组织隔离与模板导出导入。面向需要协调多个代理并控制成本与权限的团队。",
+  "highlights": [
+   "跨运行时接入任意代理：能接收心跳即可入编（适配器/HTTP/自定义进程扩展）",
+   "组织级治理：审批门、权限边界、配置版本化与回滚",
+   "预算与成本控制：按公司/代理/项目维度跟踪花费、阈值告警、硬停",
+   "任务系统：原子任务领取、阻塞依赖、会话持久化、定时例程（cron/webhook/API 触发）"
+  ],
+  "use_cases": [
+   "把多个编码/办公代理组编成一个有角色和汇报线的虚拟团队",
+   "给代理团队设预算并自动在超限时暂停工作",
+   "用定时例程代替手动触发重复性代理任务",
+   "从手机或仪表板审批、审计 24/7 自主运行的代理工作"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent编排",
+   "AI治理",
+   "成本控制",
+   "多代理协作"
+  ],
+  "domain": "LLM 基础设施/代理编排",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multi-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L23: Open-source orchestration for teams of AI agents.",
+   "L27: Paperclip is a Node.js server and React UI that orchestrates a team of AI agents to run a business. Bring your own agent",
+   "L77: |**Agentic OS** — The infrastructure that makes the work run.|IT & platform|Cross-provider runtime: any model, any agent"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     41,
+     59,
+     60,
+     132,
+     137
+    ],
+    "note": "以 Claude Code/Claude 代理运行时形式出现，非模型供应商接入声明",
+    "quotes": [
+     " Claude Code Claude Code",
+     "- ✅ You **coordinate many different agents** (OpenClaw, Codex, Claude, Cursor) toward a common goal",
+     "- ✅ You have **20 simultaneous Claude Code terminals** open and lose track of what everyone is doing",
+     "|❌ You have 20 Claude Code tabs open and can't track which one does what. On reboot you lose everything.|✅ Tasks are tic",
+     "|❌ You have an idea, you have to find your repo, fire up Claude Code, keep a tab open, and babysit it.|✅ Add a task in P"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     49
+    ],
+    "note": "Grok Build 作为可用代理运行时列出",
+    "quotes": [
+     " Grok Build Grok Build"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     229,
+     231
+    ],
+    "note": "窗外候选行，README 架构/运行时语境",
+    "quotes": [
+     "OPENROUTER_API_KEY=... npx paperclipai test-drive \\",
+     "  --model openrouter/anthropic/claude-sonnet-4.5"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     215,
+     227,
+     228,
+     229
+    ],
+    "quotes": [
+     "npx paperclipai@latest onboard --yes",
+     "ANTHROPIC_API_KEY=... npx paperclipai test-drive",
+     "OPENAI_API_KEY=... npx paperclipai test-drive --harness codex",
+     "OPENROUTER_API_KEY=... npx paperclipai test-drive \\"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     270
+    ],
+    "quotes": [
+     "git clone https://github.com/paperclipai/paperclip.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     41,
+     60,
+     132,
+     137,
+     169
+    ],
+    "note": "被编排的代理运行时，非替代/竞品对象",
+    "quotes": [
+     " Claude Code Claude Code",
+     "- ✅ You have **20 simultaneous Claude Code terminals** open and lose track of what everyone is doing",
+     "|❌ You have 20 Claude Code tabs open and can't track which one does what. On reboot you lose everything.|✅ Tasks are tic",
+     "|❌ You have an idea, you have to find your repo, fire up Claude Code, keep a tab open, and babysit it.|✅ Add a task in P",
+     "**Org Chart & Agents** — Agents have roles, titles, reporting lines, permissions, and budgets. Adapter examples match th"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     43,
+     59,
+     169
+    ],
+    "quotes": [
+     " Cursor and Cursor Cloud Cursor + Cloud",
+     "- ✅ You **coordinate many different agents** (OpenClaw, Codex, Claude, Cursor) toward a common goal",
+     "**Org Chart & Agents** — Agents have roles, titles, reporting lines, permissions, and budgets. Adapter examples match th"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     50
+    ],
+    "quotes": [
+     " Kimi Code Kimi Code"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

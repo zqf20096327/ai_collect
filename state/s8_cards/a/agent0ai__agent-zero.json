@@ -1,0 +1,117 @@
+{
+ "fn": "agent0ai/agent-zero",
+ "sha": "59630c61c8f7",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 agent 一个完整 Dockerized Linux 环境的开源框架",
+  "review": "开源 agent 框架，核心是在 Docker 容器内提供完整 Linux 桌面（XFCE），agent 可操作真实 GUI 软件、终端与文件。功能包括内置浏览器（DOM 标注/改写元素）、与 agent 实时协作编辑 Markdown 与 LibreOffice 文档、100+ 社区插件的 Plugin Hub、项目级记忆与配置隔离、子 agent 分工协作，以及通过 A0 CLI 连接宿主机文件。依赖 Docker 运行，提供 Launcher 安装器、脚本安装器与直接 docker run 三条路径。",
+  "highlights": [
+   "容器内真实 XFCE Linux 桌面，agent 可驱动 GUI 软件如 Blender",
+   "浏览器 Annotate 模式：点击页面元素生成检查/修改/复刻指令",
+   "Plugin Hub 提供 100+ 社区插件，支持 MCP 服务器与 A2A 连接",
+   "子 agent 分工协作与项目级记忆/密钥隔离"
+  ],
+  "use_cases": [
+   "让 agent 操作真实桌面软件完成建模、编辑等任务",
+   "在浏览器上标注 UI 并让 agent 实现修改",
+   "与 agent 实时协作编辑文档和表格",
+   "通过 A0 CLI 让容器内 agent 操作本地代码仓库"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent框架",
+   "Linux桌面",
+   "浏览器自动化",
+   "文档协作",
+   "多agent"
+  ],
+  "domain": "AI Agent 框架/开发工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "multi-agent",
+   "browser-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6: Agent Zero is an open agent framework for work that needs more than chat: a Dockerized Linux desktop, a browser with DOM",
+   "L26: |**Full Linux desktop**|The agent can use real GUI software, terminals, files, and desktop apps inside the Canvas.|",
+   "L110: Agent Zero opens its own Linux desktop inside the right-side Canvas. Not a remote VM, not a shared clipboard, but a real"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     41,
+     85
+    ],
+    "note": "官方运行方式为 Docker，含直接 docker run 命令",
+    "quotes": [
+     "Agent Zero runs wherever Docker runs, from a $6 VPS or Raspberry Pi to a local workstation or GPU server.",
+     "docker run -p 80:80 -v a0_usr:/a0/usr agent0ai/agent-zero"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     177
+    ],
+    "note": "提及未来可能支持的集成，非替代/竞品关系",
+    "quotes": [
+     "This is the first step toward account-backed LLM plans in Agent Zero. More integrations are coming, including Gemini CLI"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

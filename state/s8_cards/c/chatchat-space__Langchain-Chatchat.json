@@ -1,0 +1,219 @@
+{
+ "fn": "chatchat-space/Langchain-Chatchat",
+ "sha": "1d82166df7d4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的可离线部署本地知识库 RAG 与 Agent 应用",
+  "review": "基于 Langchain 框架构建的本地知识库问答与 Agent 应用项目，原名为 Langchain-ChatGLM。支持接入 ChatGLM、Qwen、Llama 等语言模型，通过 Xinference、Ollama、LocalAI、FastChat 等模型部署框架加载本地模型，也可接入 OpenAI、Azure、Anthropic 等在线 API。提供知识库对话、文件对话、数据库对话、搜索引擎对话、文生图、多模态图片对话等功能，底层支持 BM25+KNN 等多种检索方式。以 Python 库（pip）形式安装，或通过 Docker 部署；不涉及模型微调与训练。",
+  "highlights": [
+   "支持 Xinference、Ollama、LocalAI、FastChat 等本地模型部署框架接入",
+   "支持 BM25+KNN 等多种检索方式与本地知识库管理",
+   "以 Python 库形式安装（pip install langchain-chatchat），提供 Docker 镜像",
+   "Agent 与工具调用，支持多模态图片对话与文生图"
+  ],
+  "use_cases": [
+   "在企业内网离线部署本地知识库问答系统",
+   "基于自有文档构建 RAG 问答与检索服务",
+   "通过 WebUI 或 API 进行知识库对话与文件对话"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "知识库问答",
+   "本地部署",
+   "Agent",
+   "LLM应用"
+  ],
+  "domain": "LLM 应用/RAG",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "document-qa",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文 README",
+   "清华源建议",
+   "腾讯云国内镜像",
+   "微信公众号/微信群交流"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: 基于 ChatGLM 等大语言模型与 Langchain 等应用框架实现，开源、可离线部署的 RAG 与 Agent 应用项目。",
+   "L29: ✅ 本项目支持市面上主流的开源 LLM、 Embedding 模型与向量数据库，可实现全部使用**开源**模型**离线私有部署**。与此同时，本项目也支持",
+   "L122: 从 0.3.0 版本起，Langchain-Chatchat 提供以 Python 库形式的安装方式，具体安装请执行："
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     23,
+     89,
+     142
+    ],
+    "quotes": [
+     "启发，建立了全流程可使用开源模型实现的本地知识库问答应用。本项目的最新版本中可使用 Xinference、Ollama",
+     "|模型部署框架|Xinference|LocalAI|Ollama|FastChat|",
+     "及后续会提供支持的多模态模型等，均改为支持市面常见的各大模型推理框架接入，如 Xinference、Ollama、LocalAI、FastChat、One API"
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     92
+    ],
+    "note": "作为部署框架的加速推理引擎列出",
+    "quotes": [
+     "|加速推理引擎|GPTQ, GGML, vLLM, TensorRT, mlx|GPTQ, GGML, vLLM, TensorRT|GGUF, GGML|vLLM|"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     102
+    ],
+    "quotes": [
+     "框架接入提供了支持，支持包括 OpenAI ChatGPT、Azure OpenAI API、Anthropic Claude、智谱清言、百川"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "mention",
+    "lines": [
+     102
+    ],
+    "quotes": [
+     "框架接入提供了支持，支持包括 OpenAI ChatGPT、Azure OpenAI API、Anthropic Claude、智谱清言、百川"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     125,
+     129,
+     135
+    ],
+    "quotes": [
+     "pip install langchain-chatchat -U",
+     "> 为确保所使用的 Python 库为最新版，建议使用官方 Pypi 源或清华源。",
+     "> pip install \"langchain-chatchat[xinference]\" -U"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     272,
+     274
+    ],
+    "quotes": [
+     "docker pull chatimage/chatchat:0.3.1.3-93e2c87-20240829",
+     "docker pull ccr.ccs.tencentyun.com/langchain-chatchat/chatchat:0.3.1.3-93e2c87-20240829 # 国内镜像"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     11,
+     17,
+     25
+    ],
+    "note": "项目所基于的框架",
+    "quotes": [
+     "基于 ChatGLM 等大语言模型与 Langchain 等应用框架实现，开源、可离线部署的 RAG 与 Agent 应用项目。",
+     "🤖️ 一种利用 langchain",
+     "等模型，依托于 langchain"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     59,
+     65,
+     76,
+     79
+    ],
+    "note": "作为可接入/推荐模型提及",
+    "quotes": [
+     "|Agent|❌不稳定|✅针对ChatGLM3和Qwen进行优化,Agent能力显著提升||",
+     "|多模态图片对话|❌|✅ 推荐使用 qwen-vl-chat||",
+     "|选中\"启用Agent\",选择多个工具|由LLM自动进行工具调用|使用ChatGLM3/Qwen或在线API等具备Agent能力的模型|",
+     "|不选中任何工具，上传一个图片|图片对话|使用 qwen-vl-chat 等多模态模型|"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     102
+    ],
+    "note": "作为可接入的在线 API 提及",
+    "quotes": [
+     "框架接入提供了支持，支持包括 OpenAI ChatGPT、Azure OpenAI API、Anthropic Claude、智谱清言、百川"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

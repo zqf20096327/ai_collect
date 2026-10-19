@@ -1,0 +1,124 @@
+{
+ "fn": "datawhalechina/hello-agents",
+ "sha": "589877fccf3d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的从零构建智能体系统开源教程",
+  "review": "Datawhale 社区出品的系统性智能体学习教程，共 16 章，覆盖智能体基础、经典范式（ReAct、Plan-and-Solve、Reflection）、低代码平台使用、主流框架应用、自研框架 HelloAgents 构建、RAG 与记忆、上下文工程、MCP 等通信协议、Agentic RL 训练与性能评估，并附智能旅行助手、DeepResearch 复现、赛博小镇等实战案例。提供在线阅读、PDF 下载与配套代码。要求读者具备基础 Python 能力与 LLM 概念性了解，采用 CC BY-NC-SA 4.0 协议。",
+  "highlights": [
+   "16 章教程覆盖从 LLM 基础到多智能体应用的全流程",
+   "基于 OpenAI 原生 API 从零构建自研框架 HelloAgents",
+   "提供配套代码仓库与社区贡献章节（面试题、踩坑经验等）",
+   "提供在线阅读、国内加速访问与 PDF 下载渠道"
+  ],
+  "use_cases": [
+   "系统学习智能体原理与经典范式并动手实现",
+   "了解 Dify、Coze 等低代码平台与 LangGraph 等框架的使用",
+   "跟随实战章节开发旅行助手、深度研究智能体等多智能体项目",
+   "准备 Agent 岗位求职面试"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://www.datawhale.cn/learn/summary/239",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "智能体教程",
+   "LLM",
+   "RAG",
+   "Agentic RL",
+   "开源课程"
+  ],
+  "domain": "教育/AI 学习教程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "media",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "Datawhale 社区项目",
+   "国内加速下载地址 datawhale.cn"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L22: &emsp;&emsp;Hello-Agents 是 Datawhale 社区的 系统性智能体学习教程 。如今 Agent 构建主要分为两派，一派是 Dify，Coze，n8n 这类软件工程类 Agent，其本质是流程驱动的软件开发，LLM",
+   "L37: - 🛠️ 自研框架 HelloAgents 基于 Openai 原生 API 从零构建一个自己的智能体框架",
+   "L103: &emsp;&emsp;本项目内容兼顾理论与实战，旨在帮助你系统性地掌握从单个智能体到多智能体系统的设计与开发全流程。因此，尤其适合有一定编程基础的 AI 开发者、软件工程师、在校学生 以及对前沿 AI 技术抱有浓厚兴趣的 自学者 。在学习"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     22,
+     54,
+     80
+    ],
+    "note": "教程中介绍的低代码平台之一，非替代/竞品关系",
+    "quotes": [
+     "&emsp;&emsp;Hello-Agents 是 Datawhale 社区的 系统性智能体学习教程 。如今 Agent 构建主要分为两派，一派是 Dify，Coze，n8n 这类软件工程类 Agent，其本质是流程驱动的软件开发，LLM",
+     "|第五章 基于低代码平台的智能体搭建|了解 Coze、Dify、n8n 等低代码智能体平台使用|✅|",
+     "|03-Dify智能体创建保姆级教程|Dify智能体创建保姆级教程|"
+    ]
+   },
+   {
+    "term": "Coze",
+    "rel": "mention",
+    "lines": [
+     22,
+     54,
+     109
+    ],
+    "note": "教程中介绍的低代码平台之一，非替代/竞品关系",
+    "quotes": [
+     "&emsp;&emsp;Hello-Agents 是 Datawhale 社区的 系统性智能体学习教程 。如今 Agent 构建主要分为两派，一派是 Dify，Coze，n8n 这类软件工程类 Agent，其本质是流程驱动的软件开发，LLM",
+     "|第五章 基于低代码平台的智能体搭建|了解 Coze、Dify、n8n 等低代码智能体平台使用|✅|",
+     "- 第二部分：构建你的大语言模型智能体 （第四章～第七章），这是你动手实践的起点。你将亲手实现 ReAct 等经典范式，体验 Coze 等低代码平台的便捷，并掌握 Langgraph 等主流框架的应用。最终，我们还会带你从零开始构建一个属于"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

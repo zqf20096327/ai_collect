@@ -1,0 +1,169 @@
+{
+ "fn": "nautechsystems/nautilus_trader",
+ "sha": "0af742ba4dce",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给量化交易者的多资产多市场 Rust 原生交易引擎",
+  "review": "以 Rust 为核心、Python 作为策略控制面的开源交易引擎，覆盖研究、确定性回测模拟与实盘执行，采用事件驱动架构并通过 PyO3 提供 Python 绑定。通过模块化适配器接入带 REST API 或 WebSocket 的任意交易场所，当前集成覆盖 CEX/DEX 加密货币交易所、外汇/股票/期货/期权等传统市场及博彩交易所。预编译 wheel 安装无需 Rust 工具链；v2 迁移期 v1 仅接收关键安全回补，当前仍处活跃开发、版本间可能出现破坏性变更。",
+  "highlights": [
+   "同一策略代码可在回测与实盘系统间复用",
+   "Rust 核心（mimalloc/tokio）+ Python 控制面的双层架构",
+   "20+ 交易所与数据商的模块化适配器集成表",
+   "支持 128 位高精度与 64 位标准精度两种数值模式"
+  ],
+  "use_cases": [
+   "加密货币与传统市场的多场所量化策略回测与实盘执行",
+   "训练强化学习交易 agent（RL/ES）",
+   "通过适配器接入自有 REST/WebSocket 数据源构建交易系统"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    198
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "量化交易",
+   "回测框架",
+   "交易引擎",
+   "加密货币",
+   "Rust"
+  ],
+  "domain": "金融科技/算法交易",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "quant-finance"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L30: NautilusTrader is an open-source, production-grade, Rust-native engine for multi-asset,",
+   "L63: - **AI Training**: Engine fast enough to train AI trading agents (RL/ES).",
+   "L85: Python bindings are provided via PyO3 for the Rust-native v2 runtime."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     7,
+     172,
+     249,
+     258,
+     261
+    ],
+    "quotes": [
+     "pypi-version",
+     "- PyPI and crates.io use OIDC Trusted Publishing through a protected `release` environment.",
+     "1. Pre-built binary wheel from PyPI *or* the Nautech Systems package index.",
+     "### From PyPI",
+     "the v2 release-candidate wheels from PyPI using Python's pip package manager:"
+    ]
+   },
+   {
+    "term": "cargo",
+    "rel": "support",
+    "lines": [
+     4,
+     155,
+     172,
+     609
+    ],
+    "quotes": [
+     "crates.io",
+     "- Rust dependencies come only from crates.io; lock files pin dependencies with cryptographic checksums.",
+     "- PyPI and crates.io use OIDC Trusted Publishing through a protected `release` environment.",
+     "cargo install cargo-nextest"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     250,
+     454
+    ],
+    "quotes": [
+     "2. Build from source.",
+     "    git clone --branch develop --depth 1 https://github.com/nautechsystems/nautilus_trader"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     397
+    ],
+    "quotes": [
+     " - Download and install `rustup-init.exe`"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     56,
+     554,
+     560,
+     561
+    ],
+    "quotes": [
+     "- **Portable**: Runs on Linux, macOS, and Windows. Deploy using Docker.",
+     "docker pull ghcr.io/nautechsystems/<image_variant_tag> --platform linux/amd64",
+     "docker pull ghcr.io/nautechsystems/jupyterlab:nightly --platform linux/amd64",
+     "docker run -p 8888:8888 ghcr.io/nautechsystems/jupyterlab:nightly"
+    ]
+   },
+   {
+    "term": "go",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

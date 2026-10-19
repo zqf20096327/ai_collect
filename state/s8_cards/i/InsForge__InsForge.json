@@ -1,0 +1,118 @@
+{
+ "fn": "InsForge/InsForge",
+ "sha": "1ff707924931",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为编码 Agent 提供数据库/认证/存储/托管的一体化后端平台",
+  "review": "开源后端平台，将数据库（Postgres）、用户认证、S3 兼容存储、Model Gateway、边缘函数、站点部署等能力打包为一套可自托管的服务。编码 Agent 通过 MCP Server（自托管与云）或 CLI + Skills（仅云）两种接口调用其操作：读取后端 schema、元数据与运行日志，执行数据库迁移、部署边缘函数、创建存储桶、配置认证提供方等。自托管经 Docker Compose 完成，要求 Docker 与 Compose v2，默认本地文件系统存储，可挂接 S3 兼容存储后端。",
+  "highlights": [
+   "通过 MCP Server 将后端操作暴露为 Agent 可调用工具",
+   "Postgres 数据库、认证、S3 兼容存储、边缘函数、站点部署一体化",
+   "Model Gateway 提供 OpenAI 兼容 API 跨多个 LLM 提供方",
+   "支持 Docker Compose 自托管与 Railway/Zeabur/Sealos 等一键部署"
+  ],
+  "use_cases": [
+   "让编码 Agent 端到端搭建并运维全栈应用的后端",
+   "自托管一套含数据库、认证与存储的应用后端",
+   "通过统一网关调用多个 LLM 提供方"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://insforge.dev",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "后端即服务",
+   "Agentic Coding",
+   "MCP",
+   "自托管",
+   "全栈开发"
+  ],
+  "domain": "开发工具/后端平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L32: The all-in-one, open-source backend platform for agentic coding. InsForge gives your coding agent database, auth, storag",
+   "L40: - **MCP Server** (self-hosted and cloud): exposes InsForge's operations as tools any MCP-compatible agent can call.",
+   "L78: Prerequisites: Docker with Compose v2."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     76,
+     95,
+     98,
+     114,
+     178
+    ],
+    "quotes": [
+     "### Self-hosted: Docker Compose",
+     "docker compose up -d",
+     "`.env` sets `COMPOSE_FILE`, so plain `docker compose` commands work from that",
+     "docker compose -f docker-compose.prod.yml up",
+     "cd ~/project1 && docker compose up -d"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "compat",
+    "lines": [
+     103,
+     110
+    ],
+    "note": "源码构建面向参与 InsForge 开发本身，非常规使用途径",
+    "quotes": [
+     " Building from source instead",
+     "git clone https://github.com/InsForge/InsForge.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

@@ -1,0 +1,139 @@
+{
+ "fn": "dzhng/deep-research",
+ "sha": "1e06cba1da6e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向研究者的极简深度研究 agent：迭代搜索生成带来源报告",
+  "review": "以搜索、网页抓取与 LLM 组合实现迭代式深度研究的助手：根据研究目标生成搜索查询，处理结果、递归下钻，可配置研究广度（breadth）与深度（depth），并通过追问澄清需求，最终产出含来源的 markdown 报告。代码量控制在 500 行内以便理解与二次开发。需 Node.js 环境及 Firecrawl、OpenAI 的 API key，默认用 o3-mini；支持本地 LLM、DeepSeek R1（经 Fireworks）及任意 OpenAI 兼容端点，提供 npm 与 Docker 两种运行方式。",
+  "highlights": [
+   "迭代式深度研究：生成查询→处理结果→递归下钻",
+   "可配置研究广度与深度，带追问澄清机制",
+   "支持本地 LLM、DeepSeek R1 与 OpenAI 兼容自定义端点",
+   "并行并发处理多个搜索与结果分析"
+  ],
+  "use_cases": [
+   "对任意主题自动完成多轮搜索并汇总成报告",
+   "以极简代码为底座开发自己的深度研究 agent",
+   "配合本地模型离线运行研究流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度研究",
+   "agent",
+   "搜索聚合",
+   "报告生成"
+  ],
+  "domain": "LLM 应用/研究助手",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: An AI-powered research assistant that performs iterative, deep research on any topic by combining search engines, web sc",
+   "L5: The goal of this repo is to provide the simplest implementation of a deep research agent - e.g. an agent that can refine",
+   "L30: - API keys for:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     109,
+     111,
+     117
+    ],
+    "quotes": [
+     "### DeepSeek R1",
+     "Deep research performs great on R1! We use Fireworks as the main provider for the R1 model. To use R1, simply set a Fire",
+     "The system will automatically switch over to use R1 instead of `o3-mini` when the key is detected."
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     121
+    ],
+    "quotes": [
+     "There are 2 other optional env vars that lets you tweak the endpoint (for other OpenAI compatible APIs like OpenRouter o"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     42,
+     84
+    ],
+    "quotes": [
+     "npm install",
+     "npm start"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     65,
+     70,
+     76
+    ],
+    "quotes": [
+     "3. Run `docker build -f Dockerfile`",
+     "docker compose up -d",
+     "docker exec -it deep-research npm run docker"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

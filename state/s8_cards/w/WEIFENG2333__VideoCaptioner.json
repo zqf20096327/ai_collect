@@ -1,0 +1,165 @@
+{
+ "fn": "WEIFENG2333/VideoCaptioner",
+ "sha": "0a7bf2d19e90",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给视频创作者提供 LLM 驱动的字幕生成、优化与翻译工具",
+  "review": "基于大语言模型的视频字幕处理工具，覆盖语音识别、字幕断句、LLM 优化、翻译与视频合成的全流程。提供 CLI 与 GUI 桌面版两种形态，pip 安装即用；必剪语音识别与必应/谷歌翻译为免费功能，无需 API Key。LLM 仅用于字幕优化和大模型翻译，支持所有 OpenAI 兼容接口服务商。另提供 Claude Code Skill，使 AI 编程助手可直接调用该工具处理视频。开发依赖 uv 管理环境。",
+  "highlights": [
+   "语音识别、断句、LLM 优化、翻译、视频合成一站式 CLI 命令",
+   "免费功能（必剪识别、必应/谷歌翻译）安装即用、无需 API Key",
+   "支持所有 OpenAI 兼容接口的服务商",
+   "提供 Claude Code Skill 供 AI 编程助手调用"
+  ],
+  "use_cases": [
+   "为视频批量生成并翻译字幕",
+   "用 LLM 优化断句和校正已有字幕",
+   "将字幕烧录进视频或生成配音音轨",
+   "下载 YouTube、B站视频后直接处理字幕"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "字幕生成",
+   "视频处理",
+   "翻译",
+   "LLM应用",
+   "桌面应用"
+  ],
+  "domain": "视频工具/字幕处理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "asr",
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "必剪/剪映语音识别",
+   "B站视频下载",
+   "VideoCaptioner 中转站（api.videocaptioner.cn）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3:  基于大语言模型的视频字幕处理工具 — 语音识别、字幕优化、翻译、视频合成一站式处理",
+   "L39: |`transcribe`|语音转字幕。引擎：`faster-whisper`、`whisper-api`、`bijian`（免费）、`jianying`（免费）、`whisper-cpp`|",
+   "L100: 音视频输入 → 语音识别 → 字幕断句 → LLM 优化 → 翻译 → 视频合成"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     78,
+     86
+    ],
+    "note": "中转站支持列表提及 Claude；Claude Code Skill 为调用本工具的技能",
+    "quotes": [
+     "|**VideoCaptioner 中转站**|api.videocaptioner.cn — 高并发，性价比高，支持 GPT/Claude/Gemini 等|",
+     "本项目提供了 Claude Code Skill，让 AI 编程助手可以直接调用 VideoCaptioner 处理视频。"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     80
+    ],
+    "note": "OpenAI 兼容接口服务商之一，填入 API Key 即可使用",
+    "quotes": [
+     "|DeepSeek|platform.deepseek.com|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     10,
+     52
+    ],
+    "quotes": [
+     "pip install videocaptioner          # 安装 CLI + GUI 桌面版",
+     "pip install videocaptioner"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     111,
+     113
+    ],
+    "quotes": [
+     "git clone https://github.com/WEIFENG2333/VideoCaptioner.git",
+     "uv sync && uv run videocaptioner     # 运行 GUI"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     84,
+     86,
+     88,
+     95
+    ],
+    "note": "本工具以 Skill 形式被 Claude Code 调用，非替代/竞品关系",
+    "quotes": [
+     "## Claude Code Skill",
+     "本项目提供了 Claude Code Skill，让 AI 编程助手可以直接调用 VideoCaptioner 处理视频。",
+     "安装到 Claude Code：",
+     "然后在 Claude Code 中输入 `/videocaptioner transcribe video.mp4 --asr bijian` 即可使用。"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

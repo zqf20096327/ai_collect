@@ -1,0 +1,139 @@
+{
+ "fn": "Usagi-org/ai-goofish-monitor",
+ "sha": "b439ea8f69c9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向闲鱼用户的商品实时监控与 AI 智能分析系统",
+  "review": "基于 Playwright 的闲鱼多任务监控系统，提供 Web 管理界面，覆盖任务管理、账号登录态管理、AI 标准编辑、运行日志与结果浏览。支持自然语言创建任务（后台异步生成分析标准）与关键词规则两种模式，多模态模型分析商品图片，结果持久化到 SQLite。支持 Cron 定时调度、多账号与代理池轮换、ntfy/企业微信/Bark/Telegram/Webhook 通知，Docker 一键部署。通过 Chrome 扩展导出闲鱼登录态，作者提示需遵守平台协议、避免账号被限制。",
+  "highlights": [
+   "自然语言创建监控任务，AI 模式后台 job 异步生成分析标准",
+   "多模态模型深度分析商品，需支持图片输入的模型",
+   "多账号管理与代理池轮换、失败重试与任务暂停保护",
+   "SQLite 主存储，自动从旧 config.json/jsonl/price_history 导入历史数据"
+  ],
+  "use_cases": [
+   "实时或定时监控闲鱼指定关键词的新发布商品",
+   "按价格范围、区域等条件筛选并接收多渠道通知",
+   "追踪商品价格历史与监控任务运行日志"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "电商监控",
+   "爬虫/自动化",
+   "Playwright",
+   "Web管理界面"
+  ],
+  "domain": "电商监控/自动化工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "browser-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "监控闲鱼（国内二手平台）",
+   "支持企业微信、Bark 等国内通知渠道"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5: 基于 Playwright 和 AI 的闲鱼多任务实时监控，提供完整的 Web 管理界面。",
+   "L10: - **AI 驱动**: 自然语言创建任务，多模态模型深度分析商品",
+   "L11: - **多任务并发**: 独立配置关键词、价格、筛选条件和 AI Prompt"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     25,
+     28,
+     31,
+     47
+    ],
+    "quotes": [
+     "## 🐳 Docker 部署（推荐）",
+     "git clone https://github.com/Usagi-org/ai-goofish-monitor && cd ai-goofish-monitor",
+     "docker compose up -d",
+     "- 官方镜像地址：`ghcr.io/usagi-org/ai-goofish:latest`"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     126,
+     134,
+     135,
+     138
+    ],
+    "quotes": [
+     "git clone https://github.com/Usagi-org/ai-goofish-monitor",
+     "chmod +x start.sh",
+     "./start.sh",
+     "`start.sh` 会先检查 Playwright CLI 和浏览器前置条件；在前置条件满足后自动安装项目依赖、构建前端、复制构建产物并启动后端。"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     122
+    ],
+    "note": "pip 安装 Playwright 依赖的方式，非本产品安装途径",
+    "quotes": [
+     "- Playwright CLI 与 Chromium，首次运行前建议执行 `python3 -m pip install playwright && python3 -m playwright install chromium`"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

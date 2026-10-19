@@ -1,0 +1,150 @@
+{
+ "fn": "Fission-AI/OpenSpec",
+ "sha": "8063b3c124be",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 AI 编码助手提供规范化规格开发（SDD）工作流的 CLI 工具",
+  "review": "OpenSpec 以 CLI 形式在项目中建立 specs/changes 目录结构，让人与 AI 助手在写代码前先对齐规格：AI 按斜杠命令（/opsx:explore、/opsx:propose 等）读取代码并生成 Markdown 格式的需求与场景，由人审核后再进入实现。每个变更独立成目录，包含提案、规格、设计与任务。支持 30+ AI 编码工具，通过 openspec init 生成对应命令形式；提供 beta 阶段的 Stores 机制支持跨仓库团队共享规格。需 Node.js 20.19.0+，经 npm 或 Homebrew 安装。",
+  "highlights": [
+   "通过 /opsx:explore、/opsx:propose 等斜杠命令驱动 AI 生成 Markdown 规格",
+   "支持 30+ AI 编码工具，init 自动输出各工具的命令形式",
+   "Stores 机制（beta）支持跨仓库、团队共享的规格存储",
+   "openspec update 可刷新各项目内 AI 指引"
+  ],
+  "use_cases": [
+   "在使用 AI 编码助手前先与其对齐需求规格",
+   "团队跨多个代码仓库协作同一功能的规划与需求共享",
+   "平台团队维护规格供其他团队以只读方式消费"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "规格驱动开发",
+   "AI编码助手",
+   "CLI工具",
+   "需求管理"
+  ],
+  "domain": "软件开发流程/工程效能",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L134: - **Use your tools** — works with 30+ AI assistants via slash commands",
+   "L129: AI coding assistants are powerful but unpredictable when requirements live only in chat history. OpenSpec adds a lightwe"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     140
+    ],
+    "note": "对比 Kiro 时提及 Claude 模型，非本产品接入",
+    "quotes": [
+     "**vs. Kiro** (AWS) — Powerful but you're locked into their IDE and limited to Claude models. OpenSpec works with the too"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     77,
+     149
+    ],
+    "quotes": [
+     "npm install -g @fission-ai/openspec@latest",
+     "npm install -g @fission-ai/openspec@latest"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     72,
+     80,
+     83,
+     152
+    ],
+    "quotes": [
+     "**Requires Node.js 20.19.0 or higher.** Homebrew installs it as a dependency.",
+     "Or install the official Homebrew formula on macOS or Linux:",
+     "brew install openspec",
+     "If you installed OpenSpec with Homebrew:"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     102
+    ],
+    "note": "支持的工具之一，命令拼写差异说明",
+    "quotes": [
+     "`/opsx:propose` is the canonical name; your tool may spell it `/opsx-propose` (Cursor, GitHub Copilot), `@opsx-propose` "
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     102
+    ],
+    "note": "支持的工具之一",
+    "quotes": [
+     "`/opsx:propose` is the canonical name; your tool may spell it `/opsx-propose` (Cursor, GitHub Copilot), `@opsx-propose` "
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

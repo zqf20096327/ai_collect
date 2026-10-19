@@ -1,0 +1,101 @@
+{
+ "fn": "JuliaLang/julia",
+ "sha": "4e8bcabaa968",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向技术计算的高性能动态编程语言",
+  "review": "Julia 是一种面向技术计算的高级动态编程语言，官方仓库提供源代码、编译与安装说明。安装推荐使用 juliaup 管理多版本，也可手动下载二进制或从源码 git clone 后用 make 编译，编译需约 2GiB 磁盘与 4GiB 虚拟内存。README 还涵盖源码目录结构、REPL 使用、以及 Emacs/Vim/VS Code/Jupyter/Pluto 等编辑与笔记本环境支持。",
+  "highlights": [
+   "面向技术计算的高级动态语言",
+   "juliaup 安装管理器支持多版本共存与更新",
+   "支持从源码 make 编译构建",
+   "提供 REPL 及多种编辑器/IDE/笔记本支持"
+  ],
+  "use_cases": [
+   "科学与数值计算开发",
+   "高性能计算场景下的编程",
+   "机器学习相关开发",
+   "通过 IJulia/Pluto 做交互式笔记本计算"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "编程语言",
+   "科学计算",
+   "数值计算",
+   "高性能计算"
+  ],
+  "domain": "编程语言/科学计算",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L17: Julia is a high-level, high-performance dynamic language for technical",
+   "L52: The recommended way of installing Julia is to use `juliaup` which will install",
+   "L88: To build the `julia` executable, run `make` from within the julia directory."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     74,
+     80,
+     88
+    ],
+    "quotes": [
+     "## Building Julia",
+     " git clone https://github.com/JuliaLang/julia.git",
+     "To build the `julia` executable, run `make` from within the julia directory."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

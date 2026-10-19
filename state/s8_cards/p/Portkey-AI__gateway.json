@@ -1,0 +1,220 @@
+{
+ "fn": "Portkey-AI/gateway",
+ "sha": "b58b1702c64a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为开发者提供统一的 AI 网关，路由 1600+ 模型并集成 guardrails",
+  "review": "开源 AI Gateway，通过单一 API 将请求路由到 1600+ 语言、视觉、音频与图像模型。核心机制包括自动重试与 fallback、负载均衡与条件路由、40+ 预置 guardrails、虚拟密钥管理与用量分析；另提供 MCP Gateway 作为组织级 MCP 服务器的集中控制平面（认证、访问控制、可观测性）。通过 npx 本地运行，支持 Docker、Cloudflare 等多种部署方式；部分功能（语义缓存、prompt 管理等）仅 hosted/企业版提供。",
+  "highlights": [
+   "单一 API 路由 1600+ 多模态模型，支持 45+ provider",
+   "fallback、自动重试、负载均衡等可靠路由机制",
+   "40+ 预置 guardrails 验证 LLM 输入输出",
+   "MCP Gateway 提供集中认证、访问控制与调用日志"
+  ],
+  "use_cases": [
+   "在多个 LLM provider 之间做故障切换与负载均衡",
+   "为 AI 应用统一添加输入输出 guardrails",
+   "集中管理组织的 MCP 服务器访问权限与调用日志",
+   "本地或私有化部署 LLM 网关"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM网关",
+   "路由/负载均衡",
+   "guardrails",
+   "MCP",
+   "LLM基础设施"
+  ],
+  "domain": "AI 基础设施/LLM Gateway",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "azure",
+   "cohere",
+   "together",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L24: The **AI Gateway** is designed for fast, reliable & secure routing to 1600+ language, vision, audio, and image models. I",
+   "L37: - Manage MCP servers with enterprise auth & observability using **MCP Gateway**"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     180
+    ],
+    "quotes": [
+     "||Anthropic|✅|✅|"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     177
+    ],
+    "quotes": [
+     "||Azure OpenAI|✅|✅|"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "support",
+    "lines": [
+     181
+    ],
+    "quotes": [
+     "||Cohere|✅|✅|"
+    ]
+   },
+   {
+    "term": "together",
+    "rel": "support",
+    "lines": [
+     182
+    ],
+    "quotes": [
+     "||Together AI|✅|✅|"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     189
+    ],
+    "quotes": [
+     "||Ollama|✅|✅|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     51
+    ],
+    "quotes": [
+     "npx @portkey-ai/gateway"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     68
+    ],
+    "note": "portkey-ai Python SDK 的 pip 安装，为调用端依赖而非网关本体",
+    "quotes": [
+     "# pip install -qU portkey-ai"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     79,
+     146,
+     201
+    ],
+    "note": "支持的集成框架，非替代/竞品对象",
+    "quotes": [
+     "&nbsp; Langchain",
+     "- **Agents Support**: Seamlessly integrate with popular agent frameworks to build complex AI applications. The gateway s",
+     "|LangChain|✅|✅|✅|✅|✅|✅|"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     123
+    ],
+    "note": "MCP 兼容客户端",
+    "quotes": [
+     "Works with Claude Desktop, Cursor, VS Code, and any MCP-compatible client. Get started →"
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     165
+    ],
+    "note": "cookbook 中的搭配使用对象",
+    "quotes": [
+     "* Use the LLM Gateway with Vercel's AI SDK"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     183
+    ],
+    "note": "支持的 provider 列表项",
+    "quotes": [
+     "||Perplexity|✅|✅|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,136 @@
+{
+ "fn": "sagents-ai/sagents",
+ "sha": "65bc9339022a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 Elixir 开发者的交互式 AI Agent 编排框架",
+  "review": "构建于 Elixir LangChain 之上的 Agent 编排层：每个 agent 以受监督的 OTP GenServer 进程运行，支持 Human-In-The-Loop 工具审批（含并行工具逐个审批、SubAgent 中断向父级传播）、显式可组合执行管线、until_tool 结构化完成、SubAgent 委派、虚拟文件系统、状态持久化、PubSub 实时事件与 Phoenix LiveView 集成，并提供 mix 生成器脚手架会话持久层与可选 Horde 集群分布。面向需实时对话、人工监督与多并发隔离会话的 Elixir 交互式应用开发者，需配置 LLM provider API key 使用。",
+  "highlights": [
+   "每个 agent 运行为受监督 OTP 进程，带生命周期管理与闲置关停",
+   "HITL 审批系统支持并行工具逐个批准/编辑/拒绝，SubAgent 中断向上传播",
+   "可组合中间件：TodoList、虚拟 FileSystem、SubAgent、Summarization 等",
+   "mix sagents.setup 生成器产出持久层、Factory 与 Coordinator 模块"
+  ],
+  "use_cases": [
+   "构建带人工审批的实时对话 AI 应用",
+   "将复杂任务委派给 SubAgent 并行执行",
+   "为 Phoenix LiveView 应用接入多并发隔离的 agent 会话"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent框架",
+   "Elixir/OTP",
+   "Human-in-the-Loop",
+   "实时交互",
+   "编排"
+  ],
+  "domain": "LLM Agent 框架/基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: A sage is a person who has attained wisdom and is often characterized by sound judgment and deep understanding. Sagents ",
+   "L71: Sagents builds on the Elixir LangChain library for LLM integration. To use Sagents, you need to configure an LLM provide"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     74,
+     83,
+     85
+    ],
+    "note": "配置 ANTHROPIC_API_KEY 并以 ChatAnthropic 为默认模型示例",
+    "quotes": [
+     "# For Anthropic (Claude)",
+     "# Anthropic Claude",
+     "model = ChatAnthropic.new!(%{model: \"claude-sonnet-4-5-20250929\"})"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     291
+    ],
+    "note": "仅在可切换 LLM provider 的说明中列举",
+    "quotes": [
+     "- `get_model_config/0` - Change LLM provider (OpenAI, Ollama, etc.)"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     53,
+     71
+    ],
+    "note": "作为其构建基础的底层库，非替代/竞品对象",
+    "quotes": [
+     "LangChain is automatically included as a dependency.",
+     "Sagents builds on the Elixir LangChain library for LLM integration. To use Sagents, you need to configure an LLM provide"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

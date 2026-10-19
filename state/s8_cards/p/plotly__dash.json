@@ -1,0 +1,117 @@
+{
+ "fn": "plotly/dash",
+ "sha": "64654f7c488c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "用纯 Python 构建数据应用与仪表盘的 Web 框架",
+  "review": "基于 Plotly.js、React 与 Flask 的 Python 框架，将下拉框、滑块、图表等 UI 元素直接绑定到分析代码，声明式响应式编写交互应用，无需写 JavaScript。README 给出下拉联动图表、交叉筛选、Mapbox 地图、PDF 风格财务报告等示例。开源版在本地运行；另提供 Dash Enterprise 商业版，含部署、Kubernetes 扩缩、认证、任务队列、低代码组件与 GPU/Dask 加速等功能。",
+  "highlights": [
+   "纯 Python 编写交互式数据 Web 应用，无需 JavaScript",
+   "基于 Plotly.js，支持约 50 种图表类型（含地图）",
+   "声明式响应式代码模型，示例含交叉筛选应用",
+   "提供 Dash Enterprise 版本（部署/认证/任务队列/低代码组件）"
+  ],
+  "use_cases": [
+   "为机器学习与数据科学项目搭建交互式 Web 应用",
+   "构建可交叉筛选的数据仪表盘",
+   "生成报表风格的数据应用界面",
+   "企业内部署与扩展数据应用（Dash Enterprise）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "dual",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据可视化",
+   "仪表盘",
+   "Web框架",
+   "数据科学"
+  ],
+  "domain": "数据科学/可视化开发框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "data-analysis"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L9: #### *Dash is the most downloaded, trusted Python framework for building ML & data science web apps*.",
+   "L11: Built on top of Plotly.js, React and Flask, Dash ties modern UI elements like dropdowns, sliders, and graphs directly to",
+   "L32: ### Dash OSS & Dash Enterprise"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     5,
+     6
+    ],
+    "note": "PyPI 徽章，表明发布于 PyPI，README 未给安装命令",
+    "quotes": [
+     "PyPI",
+     "PyPI - Python Version"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    32,
+    34,
+    36,
+    58
+   ],
+   "note": "开源版（OSS）与商业版（Dash Enterprise）并存",
+   "quotes": [
+    "### Dash OSS & Dash Enterprise",
+    "With Dash Open Source, Dash apps run on your local laptop or workstation, but cannot be easily accessed by others in you",
+    "Scale up with Dash Enterprise when your Dash app is ready for department or company-wide consumption. Or, launch your in",
+    "Dash Enterprise"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

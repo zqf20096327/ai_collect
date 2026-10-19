@@ -1,0 +1,132 @@
+{
+ "fn": "NVIDIA/TensorRT-LLM",
+ "sha": "42c4a84942df",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开发者在 NVIDIA GPU 上高效运行 LLM 推理的优化库",
+  "review": "NVIDIA 开源的 LLM 与视觉生成模型推理优化库：提供针对 attention、GEMM、MoE 等常见操作的定制 kernel，以及 Prefill-Decode 分离、Wide Expert Parallelism、Speculative Decoding 等运行时优化。基于 PyTorch 架构，提供高层 Python LLM API，覆盖单卡到多卡、多节点部署，内置多种并行策略，并可与 NVIDIA Dynamo 和 Triton Inference Server 集成；含 Python 和 C++ 运行时组件。Quick Start、安装指南、支持硬件与模型清单、性能基准文档均指向官方文档站点。",
+  "highlights": [
+   "提供针对 attention/GEMM/MoE 等操作的定制 kernel 与运行时算法优化",
+   "基于 PyTorch 的 Python LLM API，支持单 GPU 到多 GPU/多节点部署",
+   "内置多种并行策略，可扩展、可用原生 PyTorch 代码自定义预定义模型",
+   "支持扩散模型视觉生成，与 NVIDIA Dynamo 和 Triton Inference Server 集成"
+  ],
+  "use_cases": [
+   "在 NVIDIA GPU 上部署 LLM 推理服务",
+   "对 DeepSeek、Llama 等模型做多 GPU/多节点推理优化",
+   "运行视觉生成（扩散模型）推理任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    98,
+    100
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM推理",
+   "GPU优化",
+   "推理服务",
+   "视觉生成"
+  ],
+  "domain": "LLM 基础设施/推理引擎",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L263: TensorRT LLM is an open-sourced library for optimizing LLM and Visual Gen inference. It provides state-of-the-art optimi",
+   "L265: Architected on PyTorch, TensorRT LLM provides a high-level Python LLM API that supports a wide range of inference setups",
+   "L267: TensorRT LLM is designed to be modular and easy to modify. Its PyTorch-native architecture allows developers to experime"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     29,
+     53,
+     84,
+     87,
+     90
+    ],
+    "quotes": [
+     "* [07/17] DeepSeek-V4 on NVIDIA Blackwell: Model-Specific and Agentic-Workload Optimizations in TensorRT LLM",
+     "* [01/09] Optimizing DeepSeek-V3.2 on NVIDIA Blackwell GPUs",
+     "* [05/30] Optimizing DeepSeek R1 Throughput on NVIDIA Blackwell GPUs: A Deep Dive for Developers",
+     "* [05/23] DeepSeek R1 MTP Implementation and Optimization",
+     "* [05/16] Pushing Latency Boundaries: Optimizing DeepSeek-R1 Performance on NVIDIA B200 GPUs"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "mention",
+    "lines": [
+     224
+    ],
+    "quotes": [
+     "* [2024/07/02] Let the @MistralAI MoE tokens fly 📈 🚀 #Mixtral 8x7B with NVIDIA #TensorRT #LLM on #H100."
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Stable Diffusion",
+    "rel": "mention",
+    "lines": [
+     229
+    ],
+    "quotes": [
+     "* [2024/06/18] CYMI: 🤩 Stable Diffusion 3 dropped last week 🎊 🏎️ Speed up your SD3 with #TensorRT INT8 Quantization➡️ li"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    280
+   ]
+  }
+ }
+}

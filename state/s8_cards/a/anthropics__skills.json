@@ -1,0 +1,123 @@
+{
+ "fn": "anthropics/skills",
+ "sha": "3dd6bd741102",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 Claude 提供 Agent Skills 示例、规范与模板的官方仓库",
+  "review": "Anthropic 官方的 Agent Skills 仓库：Skill 是含 SKILL.md（YAML frontmatter + 指令）的文件夹，Claude 按任务动态加载。仓库包含四类示例技能（创意、技术、企业、文档）、Agent Skills 规范与模板，文档类 docx/pdf/pptx/xlsx 技能为 source-available 许可，其余多为 Apache 2.0。官方声明仅供演示与教学用途，关键任务前需自行测试。可通过 Claude Code 插件市场、Claude.ai（付费计划）及 Claude API 使用。",
+  "highlights": [
+   "技能以 SKILL.md 文件夹形式自包含，仅需 name 与 description 两个字段",
+   "含文档技能（docx/pdf/pptx/xlsx）生产实现作为参考",
+   "可作为 Claude Code 插件市场注册安装",
+   "提供 Agent Skills 规范与技能模板"
+  ],
+  "use_cases": [
+   "在 Claude Code / Claude.ai 中安装官方示例技能",
+   "参考 SKILL.md 模式编写自定义技能",
+   "通过 Claude API 上传自定义技能扩展 Claude 能力"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent Skills",
+   "技能市场",
+   "Claude生态",
+   "文档处理"
+  ],
+  "domain": "LLM 生态/Agent 技能",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "document-parsing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: > **Note:** This repository contains Anthropic's implementation of skills for Claude. For information about the Agent Sk",
+   "L16: This repository contains skills that demonstrate what's possible with Claude's skills system. These skills range from cr",
+   "L20: Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that p"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     1,
+     61
+    ],
+    "quotes": [
+     "> **Note:** This repository contains Anthropic's implementation of skills for Claude. For information about the Agent Sk",
+     "You can use Anthropic's pre-built skills, and upload custom skills, via the Claude API. See the Skills API Quickstart fo"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     31,
+     33,
+     34
+    ],
+    "note": "作为使用入口被提及，非替代/竞品对象",
+    "quotes": [
+     "# Try in Claude Code, Claude.ai, and the API",
+     "## Claude Code",
+     "You can register this repository as a Claude Code Plugin marketplace by running the following command in Claude Code:"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    20
+   ],
+   "quotes": [
+    "Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that p"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

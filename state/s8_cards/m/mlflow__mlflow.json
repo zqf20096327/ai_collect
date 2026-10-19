@@ -1,0 +1,240 @@
+{
+ "fn": "mlflow/mlflow",
+ "sha": "23c13649e58c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI 工程 平台：调试/评估/监控 agent 与 LLM 应用",
+  "review": "面向 agents、LLM 与 ML 模型的开源 AI 工程平台，功能包括基于 OpenTelemetry 的可观测性追踪、带 50+ 内置指标与 LLM judge 的系统化评估、带版本与血缘的 prompt 管理与自动优化、以及提供 OpenAI 兼容接口的 AI Gateway；另覆盖实验追踪、模型注册与部署等传统 ML 生命周期管理。支持 Python、TypeScript/JavaScript、Java 等语言，对 60+ 框架提供一行式自动追踪，可本地、本地集群或云平台部署。",
+  "highlights": [
+   "基于 OpenTelemetry 的 LLM/agent 追踪可观测性，支持 60+ 框架一行接入",
+   "50+ 内置评估指标与 LLM judge，跟踪质量指标与回归",
+   "AI Gateway：OpenAI 兼容统一网关，含限流、回退、凭证管理与 A/B 流量切分",
+   "实验追踪、模型评估、模型注册与部署（Docker/Kubernetes/Azure ML/AWS SageMaker）"
+  ],
+  "use_cases": [
+   "为 LLM 应用与 agent 建立生产环境的调用链追踪与监控",
+   "系统化评估模型质量并跟踪回归",
+   "版本化与自动优化 prompt",
+   "管理 ML 实验与模型部署生命周期"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLMOps",
+   "可观测性/追踪",
+   "评估",
+   "AI Gateway",
+   "ML 生命周期"
+  ],
+  "domain": "LLM/ML 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "llm-observability"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: MLflow is the largest open source **AI engineering platform for agents, LLMs, and ML models**. MLflow enables teams of a",
+   "L73: MLflow provides everything you need to build, debug, evaluate, and deploy production-quality LLM applications and AI age",
+   "L122: MLflow supports all agent frameworks, LLM providers, tools, and programming languages. We offer one-line automatic traci"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     173,
+     209
+    ],
+    "quotes": [
+     " Anthropic",
+     " Claude Code"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "mention",
+    "lines": [
+     145,
+     176
+    ],
+    "quotes": [
+     " Bedrock AgentCore",
+     " Amazon Bedrock"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     180
+    ],
+    "quotes": [
+     " xAI / Grok"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     181
+    ],
+    "quotes": [
+     " Ollama"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     182
+    ],
+    "quotes": [
+     " Groq"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     183
+    ],
+    "quotes": [
+     " DeepSeek"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     187
+    ],
+    "quotes": [
+     " Cohere"
+    ]
+   },
+   {
+    "term": "together",
+    "rel": "mention",
+    "lines": [
+     191
+    ],
+    "quotes": [
+     " Together AI"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     198
+    ],
+    "quotes": [
+     " OpenRouter"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     17
+    ],
+    "quotes": [
+     "PyPI Downloads"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     43,
+     209
+    ],
+    "quotes": [
+     "> Run this from your project's Git repository with Claude Code, Codex, or OpenCode installed. The wizard guides you thro",
+     " Claude Code"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     130,
+     159
+    ],
+    "quotes": [
+     " LangChain",
+     " LangChain"
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     161
+    ],
+    "quotes": [
+     " Vercel AI SDK"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     184
+    ],
+    "quotes": [
+     " Qwen"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

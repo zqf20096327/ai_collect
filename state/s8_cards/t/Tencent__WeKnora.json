@@ -1,0 +1,225 @@
+{
+ "fn": "Tencent/WeKnora",
+ "sha": "15d496c87e81",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向企业的开源 LLM 知识平台：文档转 RAG、Agent 与 Wiki",
+  "review": "腾讯开源的 LLM 知识框架，围绕同一知识库提供三种模式：RAG（混合检索、多模态解析、引用溯源）、Agent（多步推理、技能沙箱、本地浏览器、MCP 工具与记忆）、Wiki（知识图谱组织与回滚）。支持飞书、Confluence、Notion 等 10 余种数据源自动同步与 10+ 文档格式解析；内置 29 家模型供应商；多工作区 RBAC、任务队列治理与 Langfuse 追踪。可通过 Docker Compose、Kubernetes Helm、Lite 单二进制或桌面应用部署，数据可留在自有环境。",
+  "highlights": [
+   "RAG、Agent、Wiki 三模式共享同一知识库",
+   "技能经 ClawHub/Git/ZIP 安装并在 Docker/E2B/Cube 沙箱运行，支持操作本地 Chrome/Edge",
+   "29 家内置模型供应商目录，含 OpenAI、DeepSeek、Ollama 等，模型/向量库/存储后端可替换",
+   "飞书、Confluence、GitLab、Notion 等数据源自动同步，10+ 文档格式解析"
+  ],
+  "use_cases": [
+   "把团队文档搭建成可引用溯源的企业问答系统",
+   "用 Agent 沙箱执行基于知识库的多步任务",
+   "将文档组织为带知识图谱的内部 Wiki",
+   "通过企业微信、飞书、Slack 等 IM 渠道接入问答"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "知识库问答",
+   "Agent",
+   "企业知识管理",
+   "自托管"
+  ],
+  "domain": "LLM 基础设施/知识管理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "document-qa",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "腾讯出品",
+   "支持飞书、企业微信、语雀、钉钉、腾讯 IMA 等数据源",
+   "多语言含简体中文"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L32: WeKnora is an open-source, LLM-powered knowledge framework for enterprise document understanding, semantic retrieval and",
+   "L40:  01 RAG: answers you can check, with hybrid search, multimodal parsing and citations. 02 Agent: tasks done with knowledg",
+   "L49: - **Models**: 29 built-in vendors with a generated model catalog, including OpenAI, DeepSeek, Qwen (Alibaba Cloud), Zhip"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     48
+    ],
+    "quotes": [
+     "- **Channels and integrations**: Q&A in WeCom, Feishu, Slack, Telegram and other IM apps; an embed widget for external w"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     49,
+     174
+    ],
+    "quotes": [
+     "- **Models**: 29 built-in vendors with a generated model catalog, including OpenAI, DeepSeek, Qwen (Alibaba Cloud), Zhip",
+     "- **Ecosystem**: official DeepSeek Harness plugin `@wxg-prc-cpg/dsh-weknora`; LiteLLM; Exa and Metaso web search."
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     49,
+     85
+    ],
+    "quotes": [
+     "- **Models**: 29 built-in vendors with a generated model catalog, including OpenAI, DeepSeek, Qwen (Alibaba Cloud), Zhip",
+     "> To use a local Ollama model, run `ollama serve > /dev/null 2>&1 &` first. For the Ollama embedding model name, `OLLAMA"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     151
+    ],
+    "quotes": [
+     "- **Administration and integrations**: platform user management, invitation-only signup mode, administrator model catalo"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "openrouter",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     67,
+     70,
+     72,
+     78,
+     79
+    ],
+    "quotes": [
+     " Deploy with Docker or Kubernetes and configure models, storage and networking yourself.",
+     "### Run with Docker Compose",
+     "Requires Docker, Docker Compose and Git.",
+     "docker compose pull     # Pull the latest images",
+     "docker compose up -d    # Start core services"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     131
+    ],
+    "note": "桌面应用需从源码构建，非主部署途径",
+    "quotes": [
+     "|**Desktop app**|The Lite runtime with a GUI, login-free start and a macOS host sandbox; no installer is published yet, "
+    ]
+   },
+   {
+    "term": "helm",
+    "rel": "support",
+    "lines": [
+     129
+    ],
+    "quotes": [
+     "|**Kubernetes (Helm)**|Production clusters; the chart is in `helm/`|"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     48
+    ],
+    "note": "MCP Server 服务的 AI 工具，非竞品",
+    "quotes": [
+     "- **Channels and integrations**: Q&A in WeCom, Feishu, Slack, Telegram and other IM apps; an embed widget for external w"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     49
+    ],
+    "note": "内置模型供应商之一",
+    "quotes": [
+     "- **Models**: 29 built-in vendors with a generated model catalog, including OpenAI, DeepSeek, Qwen (Alibaba Cloud), Zhip"
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    159
+   ]
+  }
+ }
+}

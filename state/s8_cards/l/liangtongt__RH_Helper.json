@@ -1,0 +1,124 @@
+{
+ "fn": "liangtongt/RH_Helper",
+ "sha": "73d0642afc58",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 RunningHub 用户的 latent 解码与去水印辅助工具",
+  "review": "集成 ComfyUI 环境的一键运行工具：解压后双击 run.bat 即可使用，提供图片/视频 latent 解码（可选 VAE 模型，默认 vae-ft-mse-840000-ema-pruned）、图片快速/质量去水印、去马赛克与模型下载管理。面向 RunningHub 工作流用户，绕过平台输出限制；亦提供自有 ComfyUI 环境用户的直接工作流方案。当前主版本为 CPU 运行，解码速度受 CPU 性能限制，另发布 CUDA 版本（2G 显存可解码）。仅支持 Windows，含移动端浏览器访问界面。",
+  "highlights": [
+   "图片/视频 latent 解码，支持自行加载其他 VAE 模型",
+   "快速/质量去水印与去马赛克功能",
+   "集成全部环境依赖与模型，双击运行，无需配置",
+   "另有 CUDA 版本，2G 显存即可解码"
+  ],
+  "use_cases": [
+   "我在 RunningHub 上跑的工作流想拿到完整解码结果",
+   "需要解码本地 latent 文件为图片或视频",
+   "给生成的图片快速去水印"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": "gpu-8g",
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "ComfyUI周边",
+   "latent解码",
+   "去水印",
+   "图像生成",
+   "桌面工具"
+  ],
+  "domain": "图像生成/桌面工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "夸克网盘国内下载链接"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L40: - 图片latent解码",
+   "L53: 在对比了常见VAE模型后，选择了vae-ft-mse-840000-ema-pruned.safetensors 作为默认模型，解码速度较快，占用内存少。需要兼容其他模型可自行下载放于comfyui/models/vae文件夹下。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     64,
+     65,
+     66
+    ],
+    "note": "压缩包内置 exe 与启动脚本，解压双击运行",
+    "quotes": [
+     "├── comfyui.exe",
+     "├── ffprobe.exe         # web中预览视频必须",
+     "├── RH_Helper.exe"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "2G显存",
+    "rel": "support",
+    "lines": [
+     30
+    ],
+    "note": "CUDA 版本自身硬件要求：2G 显存即可解码",
+    "quotes": [
+     "- 发布cuda版本，比之前的cpu版本快，2G显存也能解码"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

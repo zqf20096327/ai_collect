@@ -1,0 +1,181 @@
+{
+ "fn": "sansan0/TrendRadar",
+ "sha": "41b6f389242c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向个人用户的多平台热点聚合监控与 AI 舆情筛选推送工具",
+  "review": "聚合多平台热榜与 RSS 订阅，按关键词或自然语言兴趣描述筛选新闻，通过微信、飞书、钉钉、Telegram、邮件、ntfy、bark、slack 等渠道推送。AI 功能包括智能筛选（自动提取标签并对新闻打分，失败时回退关键词匹配）、标题翻译、分析简报（趋势概述、情感倾向等），底层经 LiteLLM 统一接入 100+ 模型提供商。支持 Docker、GitHub Actions、本地部署与 Cloudflare Pages，数据本地/云端自持；另提供 MCP Server，支持自然语言对话式查询与分析。",
+  "highlights": [
+   "AI 智能筛选：自然语言兴趣描述自动打分，失败回退关键词匹配",
+   "通过 LiteLLM 接入 DeepSeek、OpenAI、Gemini、Anthropic 等 100+ 提供商",
+   "MCP Server 提供 21 个工具与 4 个资源，支持对话式分析与文章正文读取",
+   "9 个推送渠道，含通用 Webhook 适配 Discord/IFTTT 等平台"
+  ],
+  "use_cases": [
+   "每天定时收到按我的关键词和 AI 兴趣筛选的热点推送",
+   "追踪某话题在不同平台热榜的排名变化趋势",
+   "把英文科技新闻翻译后推送到我的 IM",
+   "用 AI 对话方式查询和分析近期热点"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "舆情监控",
+   "热点聚合",
+   "RSS",
+   "MCP",
+   "推送通知"
+  ],
+  "domain": "信息聚合/舆情监控",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "anthropic",
+   "ollama"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "公众号/QQ 群社区",
+   "人民币打赏记录",
+   "小众软件/阮一峰周刊推荐"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L339: - **统一 AI 接口**：使用 LiteLLM 替代手动实现，支持 100+ AI 提供商",
+   "L269: - **AI 智能筛选系统**：不用再手动设关键词！在 `ai_interests.txt` 里用日常语言写下你关注的方向（如\"我想看 AI 和新能源相关新闻\"），AI 会自动提取标签并对每条新闻打分，只推送真正和你相关的内容。万一 AI "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     348,
+     404
+    ],
+    "note": "默认支持的模型提供商之一",
+    "quotes": [
+     " - DeepSeek: `deepseek/deepseek-chat`",
+     "- **多 AI 提供商支持**：支持 DeepSeek（默认，性价比高）、OpenAI、Google Gemini 及任意 OpenAI 兼容接口"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     351
+    ],
+    "note": "经 LiteLLM 模型格式示例列出",
+    "quotes": [
+     " - Anthropic: `anthropic/claude-3-5-sonnet`"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     1099
+    ],
+    "note": "窗外行，经 LiteLLM 兼容接入",
+    "quotes": [
+     "- **多提供商**：基于 LiteLLM 统一接口，支持 100+ AI 提供商（DeepSeek、OpenAI、Gemini、Anthropic、本地 Ollama 等），还支持备用模型自动切换"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     16,
+     37,
+     652
+    ],
+    "quotes": [
+     "Docker Pulls",
+     "Docker",
+     "- 新增 `WEWORK_MSG_TYPE` 环境变量配置，支持 GitHub Actions、Docker、docker compose 等多种部署方式"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     538,
+     1215
+    ],
+    "quotes": [
+     "- 优化 Docker 部署 章节：新增镜像说明、推荐 git clone 部署、重组部署方式",
+     "   git clone https://github.com/sansan0/TrendRadar.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     434
+    ],
+    "note": "窗外行，提及",
+    "quotes": [
+     "- **不会写正则？** README 新增 AI 生成正则的引导，告诉 ChatGPT/Gemini/DeepSeek 你想匹配什么，让 AI 帮你写"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     693
+    ],
+    "note": "窗外行，提及（MCP 客户端语境）",
+    "quotes": [
+     " - 多客户端支持：Claude Desktop、Cherry Studio、Cursor、Cline 等"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

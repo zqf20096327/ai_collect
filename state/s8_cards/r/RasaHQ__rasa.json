@@ -1,0 +1,128 @@
+{
+ "fn": "RasaHQ/rasa",
+ "sha": "ed03567071f5",
+ "source": "readme",
+ "identity": {
+  "one_liner": "构建文本/语音对话助手的开源机器学习框架",
+  "review": "Rasa Open Source 是用于自动化文本与语音对话的开源机器学习框架，支持 NLU 与对话管理，可接入 Facebook Messenger、Slack、Telegram、Twilio 等多种对话渠道构建上下文助手。README 声明该项目当前处于维护模式，开发重心转向基于 CALM 引擎的 Hello Rasa（LLM 处理对话理解、业务流以 Flows 描述、带 Inspector 实时决策查看）。开发者安装走 PyPI，源码开发使用 Poetry 管理依赖，项目采用 Apache 2.0 许可证。",
+  "highlights": [
+   "支持 NLU 与对话管理，可连接 Slack、Facebook、Telegram、Twilio 等渠道",
+   "新方向 CALM/Hello Rasa：LLM 理解对话、代码强制业务规则",
+   "Flows 以逻辑步骤而非对话树描述业务流程",
+   "源码开发使用 Poetry 与 make 构建"
+  ],
+  "use_cases": [
+   "构建接入多渠道的文本/语音客服或对话助手",
+   "在浏览器 playground 中用模板原型化 AI agent",
+   "维护基于经典 Rasa 框架的存量对话系统"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://hello-rasa（Hello Rasa playground，L4/L37）",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "对话式AI",
+   "chatbot框架",
+   "NLU",
+   "LLM agent"
+  ],
+  "domain": "对话式 AI / 聊天机器人框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "chatbot"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L62: Rasa is an open source machine learning framework for automating text and voice-based conversations. With Rasa, you can ",
+   "L12:  Rasa Open Source is currently in maintenance mode.",
+   "L22: **Hello Rasa** is our new interactive playground for prototyping AI agents. It combines LLM fluency with the reliability"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     5,
+     79
+    ],
+    "quotes": [
+     "PyPI version",
+     "- 😁 Install Rasa"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     91,
+     93
+    ],
+    "quotes": [
+     "2. **Build from source**:",
+     "    make install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     28
+    ],
+    "note": "Hello Rasa 内置 copilot 助手描述，与 GitHub Copilot 产品无直接关系",
+    "quotes": [
+     "* **Built-in copilot:** A specialized AI assistant helps you generate code, debug flows, and expand your agent instantly"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    10,
+    12,
+    58
+   ]
+  }
+ }
+}

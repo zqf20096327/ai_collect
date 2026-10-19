@@ -1,0 +1,170 @@
+{
+ "fn": "AI4Finance-Foundation/FinGPT",
+ "sha": "e17b5ec8375e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向金融场景的开源大语言模型项目与微调框架",
+  "review": "由 AI4Finance Foundation 维护的金融大语言模型项目：在 HuggingFace 发布基于 Llama2/ChatGLM2/Falcon/Bloom/MPT/Qwen 等开源底座、以 LoRA 微调的金融模型，任务覆盖情感分析、关系抽取、NER、金融问答与股价走势预测（FinGPT-Forecaster）。配套指令微调数据集、基准测试与五层架构（数据源/数据工程/LLM/任务/应用）。可用云 API（OpenAI）推理或本地 GPU 运行，单张 RTX 3090 可完成 8bit/QLoRA 微调。",
+  "highlights": [
+   "发布多任务金融 LLM 与情感分析模型至 HuggingFace",
+   "LoRA/QLoRA 轻量微调，单张 RTX 3090 即可训练",
+   "FinGPT-Forecaster 提供股票下周走势预测的 HuggingFace Space 演示",
+   "提供指令微调数据集与 FinGPT-Benchmark 基准"
+  ],
+  "use_cases": [
+   "对财经新闻和推文做金融情感分析",
+   "微调出适配特定市场的金融 LLM",
+   "输入 ticker 生成公司分析与下周股价走势预测",
+   "运行金融 NLP 任务（NER、关系抽取、金融问答）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": "cpu-ok",
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "金融",
+   "大语言模型",
+   "情感分析",
+   "LoRA微调",
+   "量化投资"
+  ],
+  "domain": "金融科技/LLM",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "ChatGPT"
+  ],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "quant-finance"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供面向中国市场的 v1.x 模型（L87, L136）",
+   "中文金融评测指令数据集 fingpt-fineval（L150）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L22: FinGPT is an open-source financial large language model project developed and maintained by the AI4Finance Foundation.",
+   "L109:  * What's new: **Best trainable and inferable FinGPT for sentiment analysis on a single RTX 3090, which is even better t"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     8
+    ],
+    "quotes": [
+     "PyPI"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     52
+    ],
+    "quotes": [
+     "git clone https://github.com/AI4Finance-Foundation/FinGPT.git"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "no GPU required",
+    "rel": "support",
+    "lines": [
+     64
+    ],
+    "note": "使用云 API 推理路径无需 GPU；本地路径另需 RTX 3090 等（L44, L109）",
+    "quotes": [
+     "# Using cloud API (no GPU required)"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     15,
+     30,
+     59,
+     80,
+     82
+    ],
+    "note": "模型与演示的发布平台",
+    "quotes": [
+     "<https://huggingface.co/FinGPT>",
+     " - [Model Release] Nov, 2023: We release FinGPT-Forecaster! 🔥Demo, Medium Blog & Model are available on Huggingface🤗!",
+     "Visit our HuggingFace Space to try FinGPT-Forecaster without any installation!",
+     "Try the latest released FinGPT-Forecaster demo at our HuggingFace Space",
+     "The dataset for FinGPT-Forecaster: https://huggingface.co/datasets/FinGPT/fingpt-forecaster-dow30-202305-202405"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "competitor",
+    "lines": [
+     76,
+     109
+    ],
+    "note": "基准对比对象",
+    "quotes": [
+     "3). The key technology is \"RLHF (Reinforcement learning from human feedback)\", which is missing in BloombergGPT. RLHF en",
+     " * What's new: **Best trainable and inferable FinGPT for sentiment analysis on a single RTX 3090, which is even better t"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     167
+    ],
+    "note": "作为微调底座模型",
+    "quotes": [
+     "|fingpt-mt_qwen-7b_lora|Fine-tuned qwen-7b model with LoRA|Multi-Task|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

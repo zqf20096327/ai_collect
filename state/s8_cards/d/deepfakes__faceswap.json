@@ -1,0 +1,85 @@
+{
+ "fn": "deepfakes/faceswap",
+ "sha": "c3552d40a40f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给研究/创作者用深度学习换脸图片与视频的工具",
+  "review": "FaceSwap 是一个用深度学习识别并替换图片和视频中人脸的 Python 程序，工作流分为提取人脸、训练模型、应用转换三步，均通过 faceswap.py 命令行调用，另提供 GUI 入口和基于 ffmpeg 的视频转换工具。可运行于 Windows、Linux 和 macOS，README 建议使用支持 CUDA 的现代 GPU 以获得更好性能，AMD GPU 在 Linux 上可经 ROCm 支持。项目明确列出伦理约束，禁止用于未经同意或不当内容的制作，支持主要通过 Discord 和论坛提供。",
+  "highlights": [
+   "extract/train/convert 三段式换脸工作流与 GUI 入口",
+   "支持 Windows/Linux/macOS 多平台",
+   "AMD GPU 可通过 ROCm 支持（Linux）",
+   "附视频格式转换工具（effmpeg/ffmpeg）"
+  ],
+  "use_cases": [
+   "将照片或视频中的人脸替换为模型学到的另一张脸",
+   "动手实验和学习深度学习人脸技术",
+   "影视或社会评论类的合规换脸制作"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "换脸",
+   "深度学习",
+   "图像/视频处理",
+   "桌面工具"
+  ],
+  "domain": "深度学习/图像视频处理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6:  FaceSwap is a tool that utilizes deep learning to recognize and swap faces in pictures and videos.",
+   "L45: FaceSwap is a Python program that will run on multiple Operating Systems including Windows, Linux, and MacOS.",
+   "L47: See INSTALL.md for full installation instructions. You will need a modern GPU with CUDA support for best performance. Ma"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

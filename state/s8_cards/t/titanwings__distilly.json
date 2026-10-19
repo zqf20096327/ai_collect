@@ -1,0 +1,172 @@
+{
+ "fn": "titanwings/distilly",
+ "sha": "0b8fe4e41b68",
+ "source": "readme",
+ "identity": {
+  "one_liner": "把人物经验沉淀为可复用 Agent 技能的人物建模工具",
+  "review": "从聊天记录、文档、访谈、公开资料等素材中提炼人物的经验、判断与表达方式，生成可移植、有出处依据的 Person Profile，并打包为 Agent Skill 供兼容宿主安装调用。覆盖同事、关系、名人三类人物族，各有人物素材收集策略与分析维度。支持八种 Agent 宿主的本地 Skill 发现，数据源包括 Lark、钉钉、Slack、微信（经 WeChatMsg/PyWxDump 导出）、邮件与手动上传。安装方式为将仓库克隆到宿主的 Skills 目录。README 注明当前仍为 demo 版本。",
+  "highlights": [
+   "三类人物族（colleague/relationship/celebrity）单一工作流生成 Person Profile",
+   "支持 Claude Code、Codex、DeepSeek Harness 等八种 Agent 宿主的本地 Skill 发现",
+   "数据源覆盖 Lark/钉钉/Slack API、微信聊天记录 SQLite、PDF/邮件/Markdown 手动上传",
+   "生成的 Skill 支持 delta 合并、对话纠正写入 Correction 层、自动版本归档回滚"
+  ],
+  "use_cases": [
+   "同事离职前沉淀其工作流程与判断方式供团队 Agent 复用",
+   "整理与家人朋友的聊天记录生成关系型 Persona Skill",
+   "基于公开访谈与著作为公众人物构建研究型 Profile"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org (COLLEAGUE.SKILL technical report, L229)",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    225
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent-skills",
+   "人物建模",
+   "数字分身",
+   "知识蒸馏"
+  ],
+  "domain": "AI Agent 生态/技能生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "创建者 @titanwings",
+   "支持微信/钉钉/飞书数据源",
+   "示例含 ByteDance 工程师"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L24: Distilly is the person-modeling layer for agents. It turns the materials you provide into a portable, source-grounded Pe",
+   "L74: The old version only ran in Claude Code. Distilly now supports native local Skill discovery across eight agent hosts.",
+   "L88: Each generated Person Profile is packaged as an Agent Skill and can be installed into any supported host."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     40,
+     74,
+     76,
+     136
+    ],
+    "note": "Claude Code 为宿主支持与 CLAUDE.md 路径提及",
+    "quotes": [
+     "> 🧬 **2026.08.24 Update** — The creator is now named **Distilly** end to end and documents native local Skill discovery ",
+     "The old version only ran in Claude Code. Distilly now supports native local Skill discovery across eight agent hosts.",
+     " Claude Code",
+     "**New personal agent?** Say *\"Use Distilly to set up my profile.\"* Distilly interviews you for about five minutes, shows"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     40,
+     81
+    ],
+    "note": "DeepSeek Harness 列为支持的宿主之一",
+    "quotes": [
+     "> 🧬 **2026.08.24 Update** — The creator is now named **Distilly** end to end and documents native local Skill discovery ",
+     " DeepSeek Harness"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     40,
+     83,
+     86,
+     94
+    ],
+    "note": "Grok Build/Grok Bot 列为支持或预览宿主",
+    "quotes": [
+     "> 🧬 **2026.08.24 Update** — The creator is now named **Distilly** end to end and documents native local Skill discovery ",
+     " Grok Build",
+     "**Grok Bot preview:** Grok Bot supports saved/private Skills, but its official docs do not describe direct local `SKILL.",
+     " Grok Bot Grok Bot saved Skill · preview"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     128,
+     129
+    ],
+    "quotes": [
+     "```bash",
+     "git clone https://github.com/titanwings/distilly <DISTILLY_SKILL_DIR>"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     40,
+     74,
+     76,
+     136
+    ],
+    "note": "支持的宿主平台之一，非替代/竞品对象",
+    "quotes": [
+     "> 🧬 **2026.08.24 Update** — The creator is now named **Distilly** end to end and documents native local Skill discovery ",
+     "The old version only ran in Claude Code. Distilly now supports native local Skill discovery across eight agent hosts.",
+     " Claude Code",
+     "**New personal agent?** Say *\"Use Distilly to set up my profile.\"* Distilly interviews you for about five minutes, shows"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

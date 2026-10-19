@@ -1,0 +1,137 @@
+{
+ "fn": "ggml-org/llama.cpp",
+ "sha": "5c6741a9d8d6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让开发者在本地和云端多种硬件上运行 LLM/VLM 推理",
+  "review": "以 C/C++ 实现的 LLM（含 VLM）推理项目，目标是以最小配置在广泛硬件上运行推理。核心机制包括：无依赖的纯 C/C++ 实现、1.5-bit 到 8-bit 整数量化以降低内存占用、CPU+GPU 混合推理，以及 CUDA/HIP/MUSA/Metal/Vulkan/SYCL 等多后端。提供 cli 与 server 等工具，server 提供 OpenAI 兼容 API 与内置 Web UI。基于 ggml 库构建，MIT 许可，可经安装脚本、Docker、预编译二进制或源码构建获取。",
+  "highlights": [
+   "纯 C/C++ 实现且无依赖，支持从 1.5-bit 到 8-bit 的整数量化",
+   "覆盖 CUDA、HIP、MUSA、Metal、Vulkan、SYCL 等多后端与多架构指令集",
+   "CPU+GPU 混合推理，可运行超过总 VRAM 容量的模型",
+   "llama serve 提供 OpenAI 兼容 API 与内置 Web UI"
+  ],
+  "use_cases": [
+   "在本地笔记本或台式机上运行 GGUF 格式的大语言模型",
+   "通过 OpenAI 兼容 API server 为应用提供推理服务",
+   "在 Apple Silicon、NVIDIA/AMD GPU、RISC-V 等多种硬件上部署推理",
+   "用量化模型在显存受限设备上运行较大模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM推理",
+   "本地部署",
+   "推理引擎",
+   "量化"
+  ],
+  "domain": "LLM 基础设施/推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine",
+   "model-quantization"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5:  LLM inference in C/C++",
+   "L51: The main goal of `llama.cpp` is to enable LLM (and VLM) inference with minimal setup and state-of-the-art performance on",
+   "L54: - Plain C/C++ implementation without any dependencies"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "llama.cpp",
+    "rel": "none",
+    "lines": [],
+    "note": "为本项目自身，非接入的模型提供方",
+    "quotes": []
+   },
+   {
+    "term": "cpu-infer",
+    "rel": "none",
+    "lines": [],
+    "note": "README 未出现该词",
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     30
+    ],
+    "quotes": [
+     "- Download pre-built binaries from the releases page"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     31
+    ],
+    "quotes": [
+     "- Build from source by cloning this repository - check out our build guide"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     46
+    ],
+    "note": "示例中运行 Qwen 3.6 模型，仅提及非竞品",
+    "quotes": [
+     " Built-in web UI against `llama serve` running Qwen 3.6"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

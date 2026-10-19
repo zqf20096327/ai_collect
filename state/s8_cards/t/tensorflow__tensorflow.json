@@ -1,0 +1,130 @@
+{
+ "fn": "tensorflow/tensorflow",
+ "sha": "0397f17f6156",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向研究者与开发者的端到端开源机器学习平台",
+  "review": "端到端开源机器学习平台，提供工具、库与社区资源，供研究者推进 ML 研究并让开发者构建和部署 ML 应用。最初由 Google Brain 机器智能团队的研究者与工程师开发。提供稳定的 Python 与 C++ API，并为其他语言提供非保证向后兼容的 API。通过 pip 安装，含 CUDA GPU 支持包与 CPU-only 精简包，另有 nightly 测试包与 Docker 容器、源码构建途径。",
+  "highlights": [
+   "端到端机器学习平台，含工具、库与社区资源生态",
+   "稳定 Python 与 C++ API，其他语言 API 非保证向后兼容",
+   "pip 安装含 GPU（CUDA）包 tensorflow 与 CPU-only 包 tensorflow-cpu",
+   "官方构建覆盖 Linux/macOS/Windows/Android(LiteRT)/树莓派"
+  ],
+  "use_cases": [
+   "训练与部署机器学习/深度神经网络模型",
+   "在 Ubuntu/Windows 上使用 CUDA GPU 加速训练",
+   "在 Android 或树莓派等平台部署模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": "cpu-ok",
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "机器学习框架",
+   "深度学习",
+   "神经网络",
+   "分布式训练"
+  ],
+  "domain": "机器学习框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L15: TensorFlow is an end-to-end open source platform",
+   "L28: TensorFlow provides stable Python"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     2,
+     51,
+     60,
+     68,
+     126
+    ],
+    "quotes": [
+     "PyPI",
+     " pip install tensorflow",
+     " pip install tensorflow-cpu",
+     "tf-nightly-cpu packages on PyPI.*",
+     "**Linux CPU** | PyPI"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     44,
+     114
+    ],
+    "quotes": [
+     "build from source.",
+     "* Build the TensorFlow pip"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU-only",
+    "rel": "support",
+    "lines": [
+     57,
+     60
+    ],
+    "quotes": [
+     "A smaller CPU-only TensorFlow package is also available:",
+     " pip install tensorflow-cpu"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

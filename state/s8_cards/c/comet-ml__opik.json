@@ -1,0 +1,272 @@
+{
+ "fn": "comet-ml/opik",
+ "sha": "a8bf7d11ec2e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 LLM 应用团队的观测、评估与 Agent 追踪平台",
+  "review": "由 Comet 开发的开源 LLM 可观测性与评估平台，Apache-2.0 授权，包含服务端后端与 Web 应用，可完整自托管。核心能力：多步 Agent 与工具调用的追踪树、基于数据集与实验的 LLM 评估（含 LLM-as-a-judge 指标如幻觉检测）、Prompt 管理与 Playground、生产仪表盘与在线评估规则、PyTest CI/CD 集成，自述设计规模为每日 4000 万条以上 trace。提供 Python/TypeScript SDK、REST API 与 OpenTelemetry 支持，另可通过 MCP 命令接入 Claude Code、Cursor 等编码代理。",
+  "highlights": [
+   "AI Agent 追踪：多步 trace 树覆盖 LLM 调用、工具执行与检索步骤",
+   "LLM 评估：数据集、实验与 LLM-as-a-judge 指标（幻觉检测、审核、RAG 评估）",
+   "Apache-2.0 完整平台可自托管，支持 Docker Compose 与 Kubernetes/Helm",
+   "MCP 命令接入 Claude Code、Cursor、VS Code Copilot 等编码代理"
+  ],
+  "use_cases": [
+   "为生产环境的 Agent 工作流记录和分析多步调用链路",
+   "用数据集和 LLM-as-a-judge 指标自动化评估 RAG 应用质量",
+   "在内网自托管部署，让 trace 数据不出自有基础设施",
+   "在 CI/CD 中对 LLM 流水线做每次提交的回归测试"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM可观测性",
+   "LLM评估",
+   "Agent追踪",
+   "Prompt管理",
+   "LLMOps"
+  ],
+  "domain": "LLM 基础设施/可观测性与评估",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "bedrock",
+   "cohere",
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "prompt-engineering",
+   "llm-observability"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文翻译版本（L1）"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L10:  Opik is the open-source LLM observability and evaluation platform for AI agent tracing, LLM evaluation, prompt manageme",
+   "L33: - **AI Agent Tracing & Observability**: Deep tracing of LLM calls, conversation logging, and agent activity, with full t",
+   "L190: Opik provides a suite of client libraries and a REST API to interact with the Opik server. This includes SDKs for Python"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     228
+    ],
+    "quotes": [
+     "|Anthropic|Log traces for Anthropic LLM calls|Documentation|"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "compat",
+    "lines": [
+     230
+    ],
+    "quotes": [
+     "|Bedrock|Log traces for Amazon Bedrock LLM calls|Documentation|"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "compat",
+    "lines": [
+     236
+    ],
+    "quotes": [
+     "|Cohere|Log traces for Cohere LLM calls|Documentation|"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     239
+    ],
+    "quotes": [
+     "|DeepSeek|Log traces for DeepSeek LLM calls|Documentation|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     71,
+     199
+    ],
+    "quotes": [
+     "pip install opik",
+     "# install using pip"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     98
+    ],
+    "note": "npx add-mcp 命令用于 MCP 接入，非本产品安装途径",
+    "quotes": [
+     "The badges and the `add-mcp` fallback below target Opik Cloud; the command above also handles self-hosted deployments. O"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     145,
+     147,
+     180
+    ],
+    "quotes": [
+     "Deploy Opik in your own environment. Choose between Docker for local setups or Kubernetes for scalability.",
+     "#### Self-Hosting with Docker Compose (for Local Development & Testing)",
+     "Use the `--help` or `--info` options to troubleshoot issues. Dockerfiles now ensure containers run as non-root users for"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     154,
+     163
+    ],
+    "quotes": [
+     "# Clone the Opik repository",
+     "# Clone the Opik repository"
+    ]
+   },
+   {
+    "term": "helm",
+    "rel": "support",
+    "lines": [
+     182,
+     184
+    ],
+    "quotes": [
+     "#### Self-Hosting with Kubernetes & Helm (for Scalable Deployments)",
+     "For production or larger-scale self-hosted deployments, Opik can be installed on a Kubernetes cluster using our Helm cha"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     89
+    ],
+    "quotes": [
+     "Let Claude Code, Cursor, VS Code Copilot, Codex or opencode read your traces, score outputs and run evaluations from cha"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     89,
+     234
+    ],
+    "quotes": [
+     "Let Claude Code, Cursor, VS Code Copilot, Codex or opencode read your traces, score outputs and run evaluations from cha",
+     "|Claude Code|Log traces for Claude Code sessions via the Opik plugin|GitHub|"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     89,
+     95,
+     238
+    ],
+    "quotes": [
+     "Let Claude Code, Cursor, VS Code Copilot, Codex or opencode read your traces, score outputs and run evaluations from cha",
+     "Add to Cursor",
+     "|Cursor|Log traces for Cursor conversations|Documentation|"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     112
+    ],
+    "quotes": [
+     "|Framework-agnostic|Yes|Partly, built around LangChain|Yes|Yes|Yes|Yes|Yes|"
+    ]
+   },
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     240
+    ],
+    "quotes": [
+     "|Dify|Log traces for Dify agent runs|Documentation|"
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     284
+    ],
+    "note": "集成列表中被支持的框架，非竞品",
+    "quotes": [
+     "|Vercel AI SDK|Log traces for Vercel AI SDK calls|Documentation|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

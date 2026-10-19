@@ -1,0 +1,185 @@
+{
+ "fn": "The-PR-Agent/pr-agent",
+ "sha": "24b508d8cd47",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发团队的 AI 代码审查 agent，自动审查 PR",
+  "review": "PR-Agent 是开源的 AI 代码审查 agent，已在 GitHub 上由 Qodo 捐赠给开源社区，现为社区维护项目，与 Qodo 商业产品相区分。核心工具包括 /describe、/review、/improve、/ask，以 PR 评论或 CLI 方式触发，每个工具使用单次 LLM 调用（约 30 秒）。支持 GitHub、GitLab、BitBucket、Azure DevOps、Gitea 平台，通过 PR Compression 策略处理大小 PR，基于 JSON 的提示词可经配置文件自定义。部署途径含 GitHub Action、CLI、Docker、自托管 webhook。",
+  "highlights": [
+   "/review、/improve、/describe、/ask 等工具以 PR 评论或 CLI 方式运行",
+   "PR Compression 策略处理任意规模的 PR",
+   "JSON 提示词经配置文件自定义审查类别与行为",
+   "支持 GitHub/GitLab/BitBucket/Azure DevOps/Gitea 与多种部署方式"
+  ],
+  "use_cases": [
+   "为仓库配置 GitHub Action 自动审查每个 PR",
+   "本地对指定 PR 运行 review/improve 命令",
+   "在自托管环境中控制代码数据的流向",
+   "通过评论命令向 AI 询问 PR 相关问题"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "代码审查",
+   "DevTools",
+   "CI/CD",
+   "PR自动化"
+  ],
+  "domain": "开发者工具/代码审查",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "deepseek",
+   "openrouter",
+   "azure",
+   "bedrock",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "code-review"
+  ]
+ },
+ "intel": {
+  "maintainer_type": null,
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9:  This repository contains the open-source PR Agent Project.",
+   "L12: PR-Agent is an open-source, AI-powered code review agent and a community-maintained legacy project of Qodo. It is distin",
+   "L72: - **AI Models**: OpenAI GPT, Anthropic Claude, Google Gemini, DeepSeek, Mistral, and any other model reachable through L"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     "- **AI Models**: OpenAI GPT, Anthropic Claude, Google Gemini, DeepSeek, Mistral, and any other model reachable through L"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     "- **AI Models**: OpenAI GPT, Anthropic Claude, Google Gemini, DeepSeek, Mistral, and any other model reachable through L"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     "- **AI Models**: OpenAI GPT, Anthropic Claude, Google Gemini, DeepSeek, Mistral, and any other model reachable through L"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     "- **AI Models**: OpenAI GPT, Anthropic Claude, Google Gemini, DeepSeek, Mistral, and any other model reachable through L"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     "- **AI Models**: OpenAI GPT, Anthropic Claude, Google Gemini, DeepSeek, Mistral, and any other model reachable through L"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     "- **AI Models**: OpenAI GPT, Anthropic Claude, Google Gemini, DeepSeek, Mistral, and any other model reachable through L"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     21,
+     71
+    ],
+    "quotes": [
+     "> **Docker Hub namespace migration.** Releases `0.34.2` and later are published under `pragent/pr-agent`. Older releases",
+     "- **Deployment**: CLI, GitHub Actions, Docker, self-hosted, webhooks"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     42
+    ],
+    "quotes": [
+     "pip install \"pr-agent[github]\""
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

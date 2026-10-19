@@ -1,0 +1,101 @@
+{
+ "fn": "GokuMohandas/Made-With-ML",
+ "sha": "b8623f265e1d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的生产级 ML/MLOps 应用开发课程",
+  "review": "一个以课程形式组织的仓库，配套站点 madewithml.com 提供课程内容，代码覆盖从实验（设计+开发）到生产（部署+迭代）的完整流程：Jupyter notebook 交互式讲解后重构为带测试、文档、日志的 Python 脚本，使用 MLflow 做实验跟踪，通过 Ray 本地或 Anyscale 集群运行训练、调参、评估、推理与服务，并演示 CI/CD 工作流。读者为各方向开发者、应届毕业生与想建立技术基础的产品/管理层。可在个人笔记本运行，也可按 Anyscale 配置使用 GPU 集群。",
+  "highlights": [
+   "从 notebook 交互式学习到软件工程化脚本（测试、日志、版本化）的完整工作流",
+   "支持本地笔记本与 Anyscale 集群两种运行环境，并可部署到 AWS/GCP/K8s",
+   "使用 MLflow 做实验跟踪与模型注册",
+   "通过 Ray 提供模型服务，可用 cURL/Python 调用"
+  ],
+  "use_cases": [
+   "系统学习把 ML 模型从实验推进到生产部署的流程",
+   "在本地或云集群上实践分布式训练与模型服务",
+   "搭建 MLOps 各组件（跟踪、测试、服务、编排）的端到端练习项目"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://madewithml.com/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "MLOps 教程",
+   "机器学习课程",
+   "LLMOps",
+   "模型部署"
+  ],
+  "domain": "教育/ML 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "llm-observability",
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: Learn how to combine machine learning with software engineering to design, develop, deploy and iterate on production-gra",
+   "L27: In this course, we'll go from experimentation (design + development) to production (deployment + iteration). We'll do th",
+   "L38: - **⚙️ MLOps**: connect MLOps components (tracking, testing, serving, orchestration, etc.) as we build an end-to-end mac"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     90,
+     112
+    ],
+    "quotes": [
+     "git clone https://github.com/GokuMohandas/Made-With-ML.git .",
+     "  python3 -m venv venv  # recommend using Python 3.10"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

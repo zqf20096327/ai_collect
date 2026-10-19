@@ -1,0 +1,156 @@
+{
+ "fn": "liyupi/ai-guide",
+ "sha": "760fcdbf783e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向零基础者的 Vibe Coding 教程与 AI 资源知识库",
+  "review": "以 VuePress 建站的免费 AI 知识共享平台，内容分为两部分：一是《Vibe Coding 零基础入门教程》，覆盖 AI 编程工具选用、项目实战、经验技巧、产品变现与进阶学习路线；二是 AI 知识库导航，收录 DeepSeek 上手与本地部署、Cursor/Claude Code 用法、Spring AI/LangChain 框架教程及工具测评文章。配套 B 站视频课程，提供中英双语版本，教程内容采用 CC BY-NC-SA 4.0、建站代码采用 MIT 的双协议，商业使用需授权。",
+  "highlights": [
+   "Vibe Coding 零基础教程：工具选型、项目实战、变现模式、学习路线",
+   "AI 知识库导航：含 DeepSeek 本地部署、Cursor/Claude Code 技巧、MCP 开发",
+   "提供英文与繁体中文翻译版本及 B 站配套视频课程",
+   "教程内容 CC BY-NC-SA 4.0 + 建站代码 MIT 的双协议"
+  ],
+  "use_cases": [
+   "零基础学习用 AI 编程工具从 0 到 1 做出产品",
+   "查找 DeepSeek、Cursor 等工具的中文上手教程",
+   "了解 AI 产品的变现路径与运营方法"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://ai.codefather.cn/vibe",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI教程/知识库",
+   "Vibe Coding",
+   "AI资讯导航",
+   "提示词资源"
+  ],
+  "domain": "AI 知识聚合/教育",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "B站视频教程",
+   "公众号【程序员鱼皮】"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: 这是一个 **完全免费开放** 的 AI 知识共享平台，汇总整合目前热门的 AI 工具相关信息，包括产品介绍、使用指南、工具测评、技巧分享、应用场景、AI 变现、行业资讯、教程资源等一系列内容。",
+   "L20: ## 🔥 鱼皮的 Vibe Coding 零基础入门教程",
+   "L66: ## AI 知识库导航"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     73,
+     74,
+     84
+    ],
+    "quotes": [
+     "|关于 DeepSeek|什么是 DeepSeek ｜ 快速上手指南|",
+     "|本地部署|DeepSeek 本地部署 ｜ API 调用教程|",
+     "|实战项目|用 DeepSeek 给对象做网站 ｜ 模拟面试系统 ｜ 亲戚计算器|"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     85,
+     93,
+     96
+    ],
+    "note": "以 Claude Code/Claude 4 教程与测评形式提及",
+    "quotes": [
+     "|进阶技术|Claude Code 神级技巧 ｜ 用 AI 手搓 Claude Code ｜ MCP 服务开发|",
+     "|Claude 4 炸裂发布！凭什么敢称宇宙最强编程 AI？|",
+     "|开源 AI 编程工具能干掉 Claude Code？OpenCode 体验实测！|"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     83,
+     94
+    ],
+    "note": "教程与测评对象，非替代/竞品声明",
+    "quotes": [
+     "|Cursor 技巧|一文秒懂 Cursor 开发的正确姿势 ｜ 10 个超实用的 Cursor 使用技巧 ｜ 7 个 Cursor 极限省钱大法|",
+     "|Cursor 2.0 炸裂发布！这 3 大亮点必学|"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     85,
+     96
+    ],
+    "note": "教程与测评对象",
+    "quotes": [
+     "|进阶技术|Claude Code 神级技巧 ｜ 用 AI 手搓 Claude Code ｜ MCP 服务开发|",
+     "|开源 AI 编程工具能干掉 Claude Code？OpenCode 体验实测！|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    144,
+    146,
+    147,
+    149
+   ],
+   "quotes": [
+    "本项目采用双协议：",
+    "- **教程文档内容**（所有 Markdown 文件及配图）采用 CC BY-NC-SA 4.0 协议：可以自由分享和改编，但需要署名、**禁止商业使用**，且衍生作品需采用相同协议。",
+    "- **建站代码**（`.vuepress` 目录下的主题、组件和构建脚本）采用 MIT 协议：可以自由使用，包括商业用途。",
+    "教程内容的著作权归 **程序员鱼皮** 所有，作者保留全部商业使用权利。如需商业授权（企业内训、付费课程、出版发行、平台转载等），请通过微信 **yupi996** 联系获取书面授权。"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

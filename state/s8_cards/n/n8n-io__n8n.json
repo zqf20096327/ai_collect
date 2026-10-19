@@ -1,0 +1,116 @@
+{
+ "fn": "n8n-io/n8n",
+ "sha": "6e16f5263757",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI 工作流自动化平台：可视化编排 agents 与 1500+ 集成",
+  "review": "Fair-code 工作流自动化平台，用于构建和部署 AI agents 与多步工作流：可视化画布结合 JavaScript/Python 自定义代码与 npm 包，支持自托管或云部署。内置模型灵活性，可接入 OpenAI、Anthropic、Google 或开源模型并切换而不改架构；工作流支持逻辑分支、工具调用、人工审批与可观测性。提供基于角色的访问控制、审计日志与敏感数据处理能力，附带 1500+ 集成和 9000+ 工作流模板。采用 Sustainable Use License 与企业许可分发。",
+  "highlights": [
+   "可视化画布与 JavaScript/Python 代码及 npm 包结合构建 AI 工作流",
+   "可接入 OpenAI、Anthropic、Google 或开源模型，切换不改架构",
+   "1500+ 集成与 9000+ 工作流模板",
+   "支持自托管/云部署、角色权限、审计日志"
+  ],
+  "use_cases": [
+   "搭建多步 AI agent 工作流并投入生产",
+   "连接企业现有系统与 AI 模型做自动化",
+   "在私有环境自托管处理敏感数据的自动化流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "工作流自动化",
+   "AI agents",
+   "低代码平台",
+   "iPaaS",
+   "集成框架"
+  ],
+  "domain": "工作流自动化/iPaaS",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "workflow-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: - **AI-Native Automation Platform**: Build and operationalize AI workflows and multi-step agents using your own data, mo",
+   "L12: - **Model Flexibility, No Lock-In**: Connect to OpenAI, Anthropic, Google, or open-source models and switch providers wi"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     20,
+     30
+    ],
+    "quotes": [
+     "Try n8n instantly with our install script (requires Docker):",
+     "docker run -it --rm --name n8n -p 5678:5678 -v n8n_data:/home/node/.n8n docker.n8n.io/n8nio/n8n"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     40
+    ],
+    "note": "资源区提供的指南文档，非替代/竞品对象",
+    "quotes": [
+     "- 🤖 AI & LangChain Guide"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    47
+   ],
+   "quotes": [
+    "n8n is fair-code distributed under the Sustainable Use License and n8n Enterprise License."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

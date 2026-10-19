@@ -1,0 +1,86 @@
+{
+ "fn": "modular/modular",
+ "sha": "202f93357ca3",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 AI 开发与部署的平台：MAX 框架 + Mojo 语言",
+  "review": "该仓库托管 Modular Platform 的开源组件，覆盖 AI 开发与部署全链路：MAX 框架提供模型创作（Python）、推理服务端（OpenAI 兼容端点）、Mojo 编写的计算内核与 GPU 编程抽象、模型流水线；Mojo 语言提供编译器与标准库。README 指出正持续开源更多组件，即当前并非全部源码开放。接受两部分代码的贡献与 bug 报告，采用 Apache License v2.0，并提示用户自行核验第三方（如 Hugging Face）下载内容的许可证。",
+  "highlights": [
+   "MAX 推理服务器提供 OpenAI 兼容端点",
+   "Mojo 编译器与标准库已开源",
+   "MAX 内核与 GPU 编程抽象以 Mojo 编写",
+   "Apache License v2.0 许可"
+  ],
+  "use_cases": [
+   "部署兼容 OpenAI 接口的模型推理服务",
+   "用 Python 进行模型创作与构建流水线",
+   "用 Mojo 编写 GPU 计算内核",
+   "参与 Mojo/MAX 的开源贡献"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI推理",
+   "编程语言",
+   "GPU内核",
+   "开发平台"
+  ],
+  "domain": "AI 开发与部署平台/编程语言",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: This repo hosts open-source components of the Modular Platform,",
+   "L6: a unified platform for AI development and deployment,",
+   "L35: - MAX inference server: /max/python/max/serve"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

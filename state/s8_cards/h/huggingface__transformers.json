@@ -1,0 +1,162 @@
+{
+ "fn": "huggingface/transformers",
+ "sha": "f91279f14c04",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为文本/视觉/音频/多模态模型提供统一模型定义，用于推理与训练",
+  "review": "Hugging Face 的 Transformers 库作为模型定义框架，集中维护各模态预训练模型的定义，使其可被 Axolotl、DeepSpeed 等训练框架与 vLLM、TGI 等推理引擎复用。提供 Pipeline 高层推理 API，覆盖文本生成、语音识别、图像分类、视觉问答等任务，模型从 Hub 下载并缓存。要求 Python 3.10+ 与 PyTorch 2.6+，可通过 pip/uv 安装或从源码构建；Hub 上有 1M+ 模型检查点可用，另提供 transformers chat 命令行对话与 serve 本地服务。",
+  "highlights": [
+   "统一模型定义框架，兼容主流训练框架与推理引擎",
+   "Pipeline API 覆盖文本、音频、视觉、多模态任务",
+   "Hub 上 1M+ 预训练模型检查点可直接调用",
+   "同一模型可在 PyTorch/JAX/TF2.0 之间切换"
+  ],
+  "use_cases": [
+   "加载预训练模型做文本生成、语音识别或图像分类",
+   "统一管理各模态模型的定义供训练/推理框架复用",
+   "通过 transformers chat 在命令行直接与模型对话"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度学习",
+   "预训练模型",
+   "模型推理",
+   "模型训练",
+   "模型库"
+  ],
+  "domain": "机器学习基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L34: Transformers acts as the model-definition framework for state-of-the-art machine learning with text, computer",
+   "L85: Get started with Transformers right away with the Pipeline API. The `Pipeline` is a high-level inference class that supp",
+   "L51: Transformers works with Python 3.10+, and PyTorch 2.6+."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     39
+    ],
+    "note": "列为可搭配 transformers 模型定义的推理引擎，非本产品接入对象",
+    "quotes": [
+     "frameworks (Axolotl, Unsloth, DeepSpeed, FSDP, PyTorch-Lightning, ...), inference engines (vLLM, SGLang, TGI, ...),"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "none",
+    "lines": [],
+    "note": "误命中：候选词未在可见行命中 Mistral 模型相关内容",
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     68,
+     71
+    ],
+    "quotes": [
+     "pip install \"transformers[torch]\"",
+     "uv pip install \"transformers[torch]\""
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     77
+    ],
+    "quotes": [
+     "git clone https://github.com/huggingface/transformers.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     120,
+     169
+    ],
+    "note": "本产品维护方及 Hub 模型平台，非替代/竞品对象",
+    "quotes": [
+     "pipeline(\"https://huggingface.co/datasets/Narsil/asr_dummy/resolve/main/mlk.flac\")",
+     "<a target=\"_blank\" href=\"https://huggingface.co/enterprise\">"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     92,
+     102,
+     221,
+     238
+    ],
+    "note": "示例中加载的 Qwen 模型，为被使用的模型而非竞品",
+    "quotes": [
+     "pipeline = pipeline(task=\"text-generation\", model=\"Qwen/Qwen2.5-1.5B\")",
+     "> transformers chat Qwen/Qwen2.5-0.5B-Instruct",
+     "- Image or text to text with Qwen-VL",
+     "- Text classification with Qwen"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

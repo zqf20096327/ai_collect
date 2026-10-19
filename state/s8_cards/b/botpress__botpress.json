@@ -1,0 +1,113 @@
+{
+ "fn": "botpress/botpress",
+ "sha": "6865db38ddf6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的开源聊天机器人/Agent 构建与部署平台",
+  "review": "Botpress Cloud 的主仓库，包含 Botpress Hub 的公开集成、开发者工具（CLI、SDK、API Client）以及仅用 SDK 和 CLI 编写的 \"as code\" 机器人示例。开发者可通过 npm/yarn/pnpm 安装 @botpress/cli，用 bp init 从模板生成集成，修改 integration.definition.ts 与 src/index.ts 后用 bp deploy 部署到工作区，并可设为公开分享到 Hub。所有包以 MIT 许可开源。README 明确说明 bots-as-code 不是官方推荐方式，Studio 才是主要构建途径。",
+  "highlights": [
+   "提供 @botpress/cli、@botpress/client、@botpress/sdk 三类开发者工具包",
+   "bp init 从模板生成集成，bp deploy 部署并支持公开可见性",
+   "包含 Botpress Hub 全部公开集成与 as-code 机器人示例",
+   "全部包以 MIT 许可开源"
+  ],
+  "use_cases": [
+   "为 Botpress Hub 开发并发布自己的集成",
+   "用 SDK 和 CLI 以代码方式程序化构建机器人",
+   "基于 OpenAI 驱动的能力搭建业务聊天助手"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "聊天机器人",
+   "Agent平台",
+   "集成开发",
+   "LLM应用"
+  ],
+  "domain": "LLM 应用/聊天机器人平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "chatbot"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: Botpress is the ultimate platform for building **next-generation chatbots** and assistants powered by OpenAI. Start buil",
+   "L21: - **Integrations** – all public integrations on the Botpress Hub maintained by Botpress",
+   "L22: - **Devtools** – all Botpress Cloud dev tools (CLI, SDK, API Client)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     37,
+     39,
+     104
+    ],
+    "quotes": [
+     "npm install -g @botpress/cli # for npm",
+     "pnpm install -g @botpress/cli # for pnpm",
+     "- `pnpm`: PNPM is a fast, disk space efficient package manager."
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     114
+    ],
+    "quotes": [
+     "git clone https://github.com/botpress/botpress.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

@@ -1,0 +1,91 @@
+{
+ "fn": "microsoft/onnxruntime",
+ "sha": "547eb704fd76",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者提供跨平台高性能的 ML 推理与训练加速运行时",
+  "review": "ONNX Runtime 是跨平台的机器学习加速运行时：推理侧可读取来自 PyTorch、TensorFlow/Keras 等深度学习框架，以及 scikit-learn、LightGBM、XGBoost 等经典机器学习库导出的模型，利用硬件加速器与图优化/变换提升性能；训练侧通过在现有 PyTorch 训练脚本中添加一行代码，加速多节点 NVIDIA GPU 上 transformer 模型的训练。以 MIT 许可发布，由微软维护，配套独立的推理与训练示例仓库及 QNN Plugin EP 插件仓库。项目可能收集使用数据并回传 Microsoft。",
+  "highlights": [
+   "跨平台推理加速，支持 PyTorch/TensorFlow/Keras/scikit-learn/LightGBM/XGBoost 等来源模型",
+   "利用硬件加速器并结合图优化与 transforms 提供性能",
+   "训练侧一行代码接入现有 PyTorch 脚本，加速多节点 NVIDIA GPU 上 transformer 训练",
+   "提供独立的推理/训练示例仓库与 QNN Plugin EP 插件仓库"
+  ],
+  "use_cases": [
+   "将已训练好的深度学习或经典 ML 模型部署到多平台做推理",
+   "加速 transformer 模型在多节点 NVIDIA GPU 上的训练",
+   "在兼容的硬件加速器上运行模型以提升性能"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "推理引擎",
+   "训练加速",
+   "深度学习",
+   "模型部署"
+  ],
+  "domain": "机器学习基础设施/推理与训练运行时",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: **ONNX Runtime is a cross-platform inference and training machine-learning accelerator**.",
+   "L3: **ONNX Runtime inference** can enable faster customer experiences and lower costs, supporting models from deep learning ",
+   "L5: **ONNX Runtime training** can accelerate the model training time on multi-node NVIDIA GPUs for transformer models with a"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [
+    45
+   ],
+   "quotes": [
+    "This project is licensed under the MIT License."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

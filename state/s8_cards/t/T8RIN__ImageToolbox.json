@@ -1,0 +1,106 @@
+{
+ "fn": "T8RIN/ImageToolbox",
+ "sha": "b3ee42154229",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Android 用户的开源高级图像编辑工具，覆盖裁剪到 OCR 多种处理",
+  "review": "基于 Kotlin 与 Jetpack Compose 构建的 Android 图像编辑应用，提供裁剪、滤镜、EXIF 编辑、背景擦除、OCR 与批量处理等功能，支持 500 多种滤镜的链式叠加。分发上提供 FOSS 与 Market 两个版本：FOSS 版使用 ONNX、OpenCV、Zxing 等开源实现且不含 Google 依赖与分析组件，Market 版改用 MlKit 并包含分析组件。安装途径包括 GitHub Releases、Google Play、F-Droid 与 Obtainium 的 APK，也可克隆仓库用 Gradle 构建。",
+  "highlights": [
+   "500+ 滤镜链式叠加处理与批量处理",
+   "自动背景移除：FOSS 版用 ONNX，Market 版用 MlKit",
+   "EXIF 数据编辑与 OCR",
+   "FOSS 版不含 Google 依赖与分析组件，含 OpenCV 文档扫描"
+  ],
+  "use_cases": [
+   "在 Android 手机上批量裁剪、加滤镜、处理照片",
+   "擦除图片背景或扫描文档",
+   "查看和编辑图片的 EXIF 元数据",
+   "从 F-Droid 安装无 Google 依赖的纯开源版本"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图像编辑",
+   "Android应用",
+   "滤镜",
+   "背景移除",
+   "F-Droid"
+  ],
+  "domain": "图像处理/移动应用",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "HelloGitHub 收录标识"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L42: ImageToolbox is a versatile image editing tool designed for efficient photo manipulation. It allows",
+   "L43: users to crop, apply filters, edit EXIF data, erase backgrounds, and even enhance images with AI.",
+   "L89: # ⚔️ FOSS vs MARKET"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     79,
+     81,
+     85,
+     87
+    ],
+    "quotes": [
+     "1. Clone the repository:",
+     "   git clone https://github.com/yourusername/ImageToolbox.git",
+     " bash ./gradlew build",
+     " bash ./gradlew run"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

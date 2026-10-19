@@ -1,0 +1,127 @@
+{
+ "fn": "budtmo/docker-android",
+ "sha": "6b30ca0cb864",
+ "source": "readme",
+ "identity": {
+  "one_liner": "在 Docker 中运行 Android 模拟器的镜像，供开发测试与 AI-Agent 场景",
+  "review": "提供封装 Android 模拟器的 Docker 镜像，覆盖 9.0–14.0 多个 Android 版本与多种手机/平板设备配置。功能包括：noVNC 网页查看容器内部、日志 Web-UI 共享、adb connect 从容器外控制模拟器、运行 Appium/Espresso 等测试框架构建 Android 项目。含 beta 版 MCP-Server 与 AI-Agent 支持（AI-Agent 属 pro 版），支持对接 Genymotion 云及 Azure/AWS/GCP 部署。要求宿主机为 Ubuntu 并支持虚拟化（KVM），macOS/Windows 需借助虚拟机或 WSL2。",
+  "highlights": [
+   "多 Android 版本与设备配置的模拟器 Docker 镜像",
+   "noVNC 网页查看与 Web-UI 日志共享",
+   "支持 adb connect 外部控制与 Appium/Espresso UI 测试",
+   "beta 版 MCP-Server；AI-Agent 支持本地 LLM 服务器 Ollama/VLLM（pro 版）"
+  ],
+  "use_cases": [
+   "在容器中构建 Android 项目并运行单元与 UI 测试",
+   "CI（如 Jenkins）中运行 Android 模拟器测试",
+   "通过网页浏览器查看与操作容器内模拟器",
+   "在云端部署 Android 模拟器环境"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Android模拟器",
+   "Docker镜像",
+   "自动化测试",
+   "MCP/AI-Agent"
+  ],
+  "domain": "开发测试/移动端模拟",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama",
+   "vllm"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Docker-Android is a docker image built to be used for everything related to Android. It can be used for Application deve",
+   "L13: 8. It support (http) MCP-Server (beta-version)",
+   "L14: 9. It support AI-Agent (beta-version) - supported local-LLM server: Ollama, VLLM"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     14,
+     149
+    ],
+    "quotes": [
+     "9. It support AI-Agent (beta-version) - supported local-LLM server: Ollama, VLLM",
+     "|ai-agent|No|Yes|Currently supported local-LLM server: Ollama, VLLM|"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     14,
+     149
+    ],
+    "quotes": [
+     "9. It support AI-Agent (beta-version) - supported local-LLM server: Ollama, VLLM",
+     "|ai-agent|No|Yes|Currently supported local-LLM server: Ollama, VLLM|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     47,
+     61
+    ],
+    "quotes": [
+     "1. Docker is installed on your system.",
+     "    docker run -d -p 6080:6080 -e EMULATOR_DEVICE=\"Samsung Galaxy S10\" -e WEB_VNC=true --device /dev/kvm --name android-"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

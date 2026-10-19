@@ -1,0 +1,154 @@
+{
+ "fn": "QwenLM/Qwen3-TTS",
+ "sha": "5a02c35d133f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开发者用的开源 TTS 模型系列：语音克隆、音色设计与流式生成",
+  "review": "阿里通义 Qwen 团队发布的 TTS 模型系列（0.6B/1.7B），基于自研 Qwen3-TTS-Tokenizer-12Hz 与离散多码本 LM 架构，覆盖 10 种语言及多种方言音色。提供三种模型形态：CustomVoice（9 种预置音色加指令风格控制）、VoiceDesign（自然语言描述设计音色）、Base（3 秒参考音频快速克隆，可微调）。单模型同时支持流式与非流式生成，README 称端到端首包延迟可低至 97ms。通过 PyPI 的 qwen-tts 包安装，也可用 vLLM 加载，并提供本地 Web UI demo（Base 模型部署建议 HTTPS 以启用浏览器麦克风）。",
+  "highlights": [
+   "3 秒参考音频快速语音克隆（Base 模型），支持微调",
+   "自然语言指令驱动的音色设计与音色/情感/韵律控制",
+   "单模型流式与非流式生成，双轨混合流式架构",
+   "覆盖中英日韩德法俄葡西意 10 种语言及多个方言音色"
+  ],
+  "use_cases": [
+   "为应用集成低延迟流式语音合成",
+   "用参考音频克隆特定说话人音色生成内容",
+   "用文字描述设计角色音色并跨多句复用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "见 README L3 链接（Paper）",
+  "demo_url": "见 README L5（Hugging Face/ModelScope Demo），本地 Web UI 见 L176-L195",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "TTS语音合成",
+   "语音克隆",
+   "音色设计",
+   "模型开源"
+  ],
+  "domain": "语音生成/TTS",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "tts"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "Qwen/通义团队（阿里巴巴）",
+   "提供 ModelScope 与微信渠道",
+   "ModelScope 标注为中国大陆用户推荐下载途径"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: We release **Qwen3-TTS**, a series of powerful speech generation capabilities developed by Qwen, offering comprehensive ",
+   "L17: Qwen3-TTS covers 10 major languages (Chinese, English, Japanese, Korean, German, French, Russian, Portuguese, Spanish, a",
+   "L55: The easiest way to quickly use Qwen3-TTS is to install the `qwen-tts` Python package from PyPI. This will pull in the re"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     42
+    ],
+    "note": "vLLM 为可选的模型加载/运行途径之一",
+    "quotes": [
+     "During model loading in the qwen-tts package or vLLM, model weights will be automatically downloaded based on the model "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     55,
+     65
+    ],
+    "quotes": [
+     "The easiest way to quickly use Qwen3-TTS is to install the `qwen-tts` Python package from PyPI. This will pull in the re",
+     "pip install -U qwen-tts"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     71,
+     73
+    ],
+    "quotes": [
+     "git clone https://github.com/QwenLM/Qwen3-TTS.git",
+     "pip install -e ."
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "96GB of RAM",
+    "rel": "mention",
+    "lines": [
+     82
+    ],
+    "note": "flash-attn 编译时的机器内存说明，非产品自身硬件要求",
+    "quotes": [
+     "If your machine has less than 96GB of RAM and lots of CPU cores, run:"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     7
+    ],
+    "note": "命中 Qwen 品牌，即本产品自身，非竞品/替代对象",
+    "quotes": [
+     "We release **Qwen3-TTS**, a series of powerful speech generation capabilities developed by Qwen, offering comprehensive "
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,136 @@
+{
+ "fn": "meilisearch/meilisearch",
+ "sha": "61bb05221049",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为网站与应用提供 AI 混合搜索的搜索引擎 API",
+  "review": "开源搜索引擎，提供 RESTful API 与多语言 SDK，供应用与网站集成搜索功能。核心机制包括语义与全文结合的混合搜索、输入即搜（50 毫秒内返回）、容错、过滤与分面、地理搜索、多语言支持（含中文/日文优化）与多租户。支持自然语言对话式搜索并生成基于检索结果的 AI 回答，可与 LangChain 及 MCP 配合。分社区版（MIT）与企业版（商业许可/BSL 1.1，生产环境需商业协议），官方提供 Cloud 托管服务，并默认收集可关闭的匿名遥测数据。",
+  "highlights": [
+   "混合搜索：语义搜索与全文搜索结合",
+   "对话式搜索：基于检索结果生成 AI 回答",
+   "支持地理搜索、分面过滤、同义词与多租户",
+   "开箱支持 LangChain 与 Model Context Protocol"
+  ],
+  "use_cases": [
+   "给电商网站加带过滤分面的商品搜索",
+   "为媒体平台做语义混合搜索找影片",
+   "让用户用自然语言提问并获得基于站内内容的回答",
+   "多租户 SaaS 中的联系人/客户搜索"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "dual",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "搜索引擎",
+   "全文检索",
+   "混合搜索",
+   "RAG",
+   "API服务"
+  ],
+  "domain": "搜索/数据库基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "对中文语言的优化支持（L52）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L45: - **Hybrid search:** Combine the best of both semantic & full-text search to get the most relevant results",
+   "L57: - **Conversational search:** let users ask questions in natural language and get AI-generated answers grounded in your s",
+   "L62: - **AI-ready:** works out of the box with LangChain and the Model Context Protocol (MCP)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     150
+    ],
+    "note": "发布页提供二进制文件",
+    "quotes": [
+     "Meilisearch releases and their associated binaries are available on the project's releases page."
+    ]
+   },
+   {
+    "term": "cargo",
+    "rel": "none",
+    "lines": [
+     154
+    ],
+    "note": "README 明确本仓库 crates 未发布到 crates.io，非安装途径",
+    "quotes": [
+     "Differently from the binaries, crates in this repository are not currently available on crates.io and do not follow SemV"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     62
+    ],
+    "note": "声称为可配合的集成框架，非替代/竞品",
+    "quotes": [
+     "- **AI-ready:** works out of the box with LangChain and the Model Context Protocol (MCP)"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    95,
+    99,
+    109,
+    110
+   ],
+   "quotes": [
+    "Meilisearch is available in two editions:",
+    "- Fully open source under the MIT license",
+    "- Governed by a commercial license or the Business Source License 1.1",
+    "- Not allowed in production without a commercial agreement with Meilisearch."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,260 @@
+{
+ "fn": "ghbalf/freecad-ai",
+ "sha": "ddd9199c2b74",
+ "source": "readme",
+ "identity": {
+  "one_liner": "FreeCAD 的 AI 助手工作台：用自然语言生成并执行 3D 建模代码",
+  "review": "作为 FreeCAD 工作台安装的 AI 助手插件：通过聊天界面接收自然语言描述，由 LLM 生成 Python 代码在 FreeCAD 中执行以创建 3D 模型。提供 Plan/Act 两种模式、50 个结构化 FreeCAD 工具调用、技能系统、视觉路由与上下文压缩；支持 24 个 LLM 提供商（含本地 Ollama 与任意 OpenAI 兼容端点），仅依赖 Python 标准库。声明为 Alpha 阶段，可能出现破坏性变更与 LLM 代码导致的 FreeCAD 崩溃；需 FreeCAD 1.0+，通过克隆仓库至 Mod 目录（符号链接）安装。",
+  "highlights": [
+   "自然语言生成并执行 Python 代码创建 3D 模型，Plan 模式可在执行前审查代码",
+   "24 个 LLM 提供商 + 任意 OpenAI 兼容端点，含本地 Ollama",
+   "50 个结构化 FreeCAD 工具调用与技能系统（含技能自动优化循环）",
+   "仅依赖 Python 标准库，零外部依赖"
+  ],
+  "use_cases": [
+   "用自然语言描述需求让 AI 在 FreeCAD 中生成 3D 模型",
+   "通过工具调用模式进行更可控的结构化建模操作",
+   "在断网或敏感场景下接本地 Ollama 模型使用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    3
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "CAD",
+   "AI助手/Agent",
+   "代码生成",
+   "桌面插件",
+   "MCP"
+  ],
+  "domain": "CAD/工程设计",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama",
+   "deepseek",
+   "groq",
+   "cohere",
+   "openrouter",
+   "anthropic",
+   "xai"
+  ],
+  "scenario_tags_v2": [
+   "code-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: An AI-powered assistant workbench for FreeCAD that generates and executes Python code to create 3D models from natural l",
+   "L24: - **24 LLM providers** — Anthropic, OpenAI, Ollama, Gemini, OpenRouter, Requesty, Cloudflare Workers AI, Moonshot, DeepS"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     24,
+     35,
+     153
+    ],
+    "quotes": [
+     "- **24 LLM providers** — Anthropic, OpenAI, Ollama, Gemini, OpenRouter, Requesty, Cloudflare Workers AI, Moonshot, DeepS",
+     "- An LLM provider (local Ollama, or an API key for a cloud provider)",
+     "|Ollama|No|Local models, default `http://localhost:11434`|"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     24,
+     161
+    ],
+    "quotes": [
+     "- **24 LLM providers** — Anthropic, OpenAI, Ollama, Gemini, OpenRouter, Requesty, Cloudflare Workers AI, Moonshot, DeepS",
+     "|DeepSeek|Yes|DeepSeek-V3|"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     24,
+     163
+    ],
+    "quotes": [
+     "- **24 LLM providers** — Anthropic, OpenAI, Ollama, Gemini, OpenRouter, Requesty, Cloudflare Workers AI, Moonshot, DeepS",
+     "|Groq|Yes|Ultra-fast inference|"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "support",
+    "lines": [
+     24,
+     168
+    ],
+    "quotes": [
+     "- **24 LLM providers** — Anthropic, OpenAI, Ollama, Gemini, OpenRouter, Requesty, Cloudflare Workers AI, Moonshot, DeepS",
+     "|Cohere|Yes|Command models|"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     24,
+     157
+    ],
+    "quotes": [
+     "- **24 LLM providers** — Anthropic, OpenAI, Ollama, Gemini, OpenRouter, Requesty, Cloudflare Workers AI, Moonshot, DeepS",
+     "|OpenRouter|Yes|Multi-provider gateway|"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     24,
+     154
+    ],
+    "quotes": [
+     "- **24 LLM providers** — Anthropic, OpenAI, Ollama, Gemini, OpenRouter, Requesty, Cloudflare Workers AI, Moonshot, DeepS",
+     "|Anthropic|Yes|Claude models via native API|"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     167
+    ],
+    "quotes": [
+     "|xAI|Yes|Grok models|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "mention",
+    "lines": [
+     326,
+     334
+    ],
+    "note": "窗外行，语境为打包/发布相关提及，可见范围内无二进制安装命令",
+    "quotes": [
+     "  /path/to/FreeCAD.AppImage /path/to/freecad-ai/mcp_server_http.py",
+     "    'exec 3>&1 1>&2 && /path/to/FreeCAD.AppImage -c /path/to/freecad-ai/mcp_server_entry.py'"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     175
+    ],
+    "note": "作为受支持的 LLM 提供商列出，非竞品",
+    "quotes": [
+     "|Perplexity|Yes|Orchestrator API (OpenAI-compatible)|"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     173
+    ],
+    "note": "作为推理 API 提供商列出",
+    "quotes": [
+     "|HuggingFace|Yes (`hf_...`)|Serverless inference API|"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     162
+    ],
+    "note": "Qwen/DashScope 作为受支持提供商",
+    "quotes": [
+     "|Qwen|Yes|Alibaba DashScope (international)|"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     160
+    ],
+    "note": "Moonshot 提供商的模型",
+    "quotes": [
+     "|Moonshot|Yes|Kimi models (default params pre-configured)|"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     311,
+     339
+    ],
+    "note": "窗外行，仅提及",
+    "quotes": [
+     "### Connecting external MCP clients (Claude Code, Claude Desktop, …)",
+     "Note that Claude Code loads MCP tools **at session start** — a server added mid-session won't appear until the next laun"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

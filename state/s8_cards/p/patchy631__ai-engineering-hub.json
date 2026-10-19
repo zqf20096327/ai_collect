@@ -1,0 +1,195 @@
+{
+ "fn": "patchy631/ai-engineering-hub",
+ "sha": "5b085164e734",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 AI 工程学习者的 LLM/RAG/Agent 教程项目合集（93+）",
+  "review": "按难度分层的 AI 工程教程仓库，收录 93+ 个可运行项目，覆盖 OCR、聊天界面、基础与高级 RAG、多模态、语音、MCP、模型评测、微调与生产系统等类别，每个项目附实现代码与教程。面向初学者、从业者与研究者，提供从入门路线图到高级微调的学习路径，并接受社区通过 fork 分支与 PR 方式贡献。仓库采用 MIT 许可证。",
+  "highlights": [
+   "93+ 个项目按初/中/高难度三级分类",
+   "覆盖 RAG、Agent、MCP、多模态、语音、微调等方向",
+   "提供 AI Engineering Roadmap 学习路径",
+   "MIT 许可证并接受社区贡献"
+  ],
+  "use_cases": [
+   "按路线图系统学习 AI 工程开发",
+   "查找 RAG 或 Agent 的参考实现来改编到自己的项目",
+   "对比不同模型在 RAG 与代码生成任务中的表现示例"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教程合集",
+   "RAG",
+   "AI Agent",
+   "MCP",
+   "学习路线"
+  ],
+  "domain": "AI 工程/教程与学习资源",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "rag",
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14: - **93+ Production-Ready Projects** across all skill levels",
+   "L15: - In-depth tutorials on **LLMs, RAG, Agents, and more**",
+   "L16: - Real-world **AI agent** applications"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     53,
+     86,
+     143
+    ],
+    "quotes": [
+     "- **Local ChatGPT with DeepSeek** - Mini-ChatGPT with DeepSeek-R1 and Chainlit",
+     "- **Agentic RAG with DeepSeek** - Enterprise agentic RAG with GroundX",
+     "- **DeepSeek Fine-tuning** - Fine-tune DeepSeek with Unsloth and Ollama"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     62,
+     143
+    ],
+    "quotes": [
+     "- **Simple RAG Workflow** - Basic RAG with LlamaIndex and Ollama",
+     "- **DeepSeek Fine-tuning** - Fine-tune DeepSeek with Unsloth and Ollama"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     75
+    ],
+    "quotes": [
+     "- **AI News Generator** - News generation with CrewAI and Cohere"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     107
+    ],
+    "quotes": [
+     "- **Fastest RAG with Milvus and Groq** - Sub-15ms retrieval latency"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     132
+    ],
+    "note": "以 Claude 模型形式出现于对比教程",
+    "quotes": [
+     "- **O3 vs Claude Code** - Compare Claude 3.7 and o3"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     50
+    ],
+    "quotes": [
+     "- **Qwen 2.5 OCR** - Text extraction using Qwen 2.5 VL model"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     53,
+     54,
+     55
+    ],
+    "note": "作为本地聊天应用的参照对象",
+    "quotes": [
+     "- **Local ChatGPT with DeepSeek** - Mini-ChatGPT with DeepSeek-R1 and Chainlit",
+     "- **Local ChatGPT with Llama** - ChatGPT clone using Llama 3.2 vision",
+     "- **Local ChatGPT with Gemma 3** - Local chat interface with Gemma 3"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     117,
+     120
+    ],
+    "quotes": [
+     "- **Cursor Linkup MCP** - Custom MCP with deep web search",
+     "- **MCP Agentic RAG** - MCP-powered Agentic RAG for Cursor"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     132
+    ],
+    "quotes": [
+     "- **O3 vs Claude Code** - Compare Claude 3.7 and o3"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

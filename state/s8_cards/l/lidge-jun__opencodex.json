@@ -1,0 +1,306 @@
+{
+ "fn": "lidge-jun/opencodex",
+ "sha": "eab8d2382778",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地代理：让 Codex/Claude Code 等工具运行任意 LLM",
+  "review": "opencodex 是一个本地代理服务，将 Codex 的 Responses API 翻译为各提供商的协议（流式、工具调用、推理 token、图像双向转换），使 Claude Code、Codex、Claude Desktop、Grok Build 可调用 40+ 内置提供商或任意 OpenAI 兼容端点。通过 `provider/model` 语法路由模型，支持 Combo 故障转移/加权轮询、子代理任意模型、ChatGPT 账号池配额路由、xAI/Anthropic/Kimi OAuth 登录。CLI 经 npm 安装（Node 18+，Bun 运行时自动捆绑），另提供 beta 桌面应用（.dmg/.msi/.AppImage/.deb），仪表盘运行在 localhost:10100。",
+  "highlights": [
+   "将 Codex Responses API 翻译为各提供商协议，40+ 内置提供商",
+   "ChatGPT 账号池：配额刷新、最低用量路由、线程亲和",
+   "Combo 虚拟模型：跨提供商 failover 或加权轮询",
+   "内存有界管理：14 个保留存储按 256 MiB 预算驱逐"
+  ],
+  "use_cases": [
+   "让 Codex CLI 改用 Claude、Gemini、Ollama 等非 OpenAI 模型干活",
+   "管理多个 ChatGPT 账号自动分摊 Codex 配额",
+   "在仪表盘集中查看各提供商状态与实时请求日志",
+   "为子代理挑选不同厂商模型并配置回退链"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM代理网关",
+   "开发者工具",
+   "模型路由",
+   "CLI工具"
+  ],
+  "domain": "开发者工具/LLM 网关",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "xai",
+   "deepseek",
+   "ollama",
+   "azure",
+   "groq",
+   "openrouter"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体/繁体中文翻译"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L48: opencodex is a lightweight local proxy that translates Codex's Responses API into whatever your",
+   "L120: - **Use any LLM with Codex, Claude Code, Claude Desktop, and Grok Build** — 40+ providers out of",
+   "L114: The CLI install requires Node 18+; the desktop app needs neither Node nor Bun. The Bun runtime is bundled on `npm instal"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     50,
+     120,
+     138,
+     207
+    ],
+    "quotes": [
+     "Gemini, Grok, GLM, DeepSeek, Kimi, Qwen, Ollama, or any other LLM with Codex, Claude Code, Claude",
+     "- **Use any LLM with Codex, Claude Code, Claude Desktop, and Grok Build** — 40+ providers out of",
+     "- **Log in once, skip the API key** — OAuth for xAI, Anthropic, and Kimi; or forward",
+     "OpenAI (ChatGPT login or API key), Anthropic, Google Gemini, xAI, Kimi, Azure OpenAI, Ollama"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     138,
+     207
+    ],
+    "quotes": [
+     "- **Log in once, skip the API key** — OAuth for xAI, Anthropic, and Kimi; or forward",
+     "OpenAI (ChatGPT login or API key), Anthropic, Google Gemini, xAI, Kimi, Azure OpenAI, Ollama"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     50,
+     208,
+     209
+    ],
+    "quotes": [
+     "Gemini, Grok, GLM, DeepSeek, Kimi, Qwen, Ollama, or any other LLM with Codex, Claude Code, Claude",
+     "(local + Cloud), Cursor (experimental), and every OpenAI-compatible endpoint — plus DeepSeek,",
+     "Groq, OpenRouter, OpenGateway, Together, Fireworks, Cerebras, Mistral, Hugging Face, NVIDIA NIM, MiniMax,"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     50,
+     179,
+     200,
+     207
+    ],
+    "quotes": [
+     "Gemini, Grok, GLM, DeepSeek, Kimi, Qwen, Ollama, or any other LLM with Codex, Claude Code, Claude",
+     "codex -m \"ollama/llama3\" \"Refactor this function\"",
+     "A JEV Combo can instead ask a self-hosted decision model, such as Ollama's keyless `tev1`: add a",
+     "OpenAI (ChatGPT login or API key), Anthropic, Google Gemini, xAI, Kimi, Azure OpenAI, Ollama"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     207
+    ],
+    "quotes": [
+     "OpenAI (ChatGPT login or API key), Anthropic, Google Gemini, xAI, Kimi, Azure OpenAI, Ollama"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     209
+    ],
+    "quotes": [
+     "Groq, OpenRouter, OpenGateway, Together, Fireworks, Cerebras, Mistral, Hugging Face, NVIDIA NIM, MiniMax,"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     209
+    ],
+    "quotes": [
+     "Groq, OpenRouter, OpenGateway, Together, Fireworks, Cerebras, Mistral, Hugging Face, NVIDIA NIM, MiniMax,"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     13,
+     60,
+     114
+    ],
+    "quotes": [
+     "npm install -g @bitkyc08/opencodex",
+     "npm install -g @bitkyc08/opencodex   # Node 18+; the Bun runtime is bundled automatically",
+     "The CLI install requires Node 18+; the desktop app needs neither Node nor Bun. The Bun runtime is bundled on `npm instal"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     17,
+     18,
+     19,
+     20,
+     79,
+     80,
+     81
+    ],
+    "quotes": [
+     " Download for macOS (.dmg)",
+     " Download for Windows (.msi)",
+     " Download for Linux (.AppImage)",
+     " Download for Linux (.deb)",
+     "|macOS 13+ (Apple Silicon and Intel)|`OpenCodex-<version>-macos.dmg`|Universal build, signed with a Developer ID and not",
+     "|Windows (x64)|`OpenCodex-<version>-windows-x64.msi`|Not code-signed yet: SmartScreen asks once, choose **More info → Ru",
+     "|Linux (x86_64)|`OpenCodex-<version>-linux-x86_64.AppImage` or `-linux-amd64.deb`|The tray needs an AppIndicator-capable"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     288
+    ],
+    "quotes": [
+     "git clone https://github.com/lidge-jun/opencodex.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     1,
+     4,
+     22,
+     24
+    ],
+    "note": "被代理接入的工具，非替代/竞品对象",
+    "quotes": [
+     "opencodex — universal provider proxy for Codex, Claude Code, Claude Desktop and Grok Build",
+     " Universal provider proxy for OpenAI Codex, Claude Code, Claude Desktop &amp; Grok Build",
+     "### Claude Code, running any model",
+     "The picker is stock Claude Code. The brain behind it isn't."
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     50,
+     138,
+     207
+    ],
+    "note": "被接入的提供商",
+    "quotes": [
+     "Gemini, Grok, GLM, DeepSeek, Kimi, Qwen, Ollama, or any other LLM with Codex, Claude Code, Claude",
+     "- **Log in once, skip the API key** — OAuth for xAI, Anthropic, and Kimi; or forward",
+     "OpenAI (ChatGPT login or API key), Anthropic, Google Gemini, xAI, Kimi, Azure OpenAI, Ollama"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     50,
+     210
+    ],
+    "note": "被接入的提供商（Qwen）",
+    "quotes": [
+     "Gemini, Grok, GLM, DeepSeek, Kimi, Qwen, Ollama, or any other LLM with Codex, Claude Code, Claude",
+     "Qwen Cloud, Qoder Global and CN (official PAT + CLI), SiliconFlow, and more. Full list: `ocx init` or the"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     51,
+     95,
+     141
+    ],
+    "note": "被接入的账号来源",
+    "quotes": [
+     "Desktop, and Grok Build. It can also manage a **ChatGPT account pool** for Codex auth: add accounts,",
+     "opencodex can also manage a **ChatGPT account pool** for Codex auth. Add multiple ChatGPT / Codex accounts,",
+     " through a sidecar over your ChatGPT login."
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     208
+    ],
+    "note": "被接入的提供商（experimental）",
+    "quotes": [
+     "(local + Cloud), Cursor (experimental), and every OpenAI-compatible endpoint — plus DeepSeek,"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

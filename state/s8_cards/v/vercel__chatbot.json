@@ -1,0 +1,142 @@
+{
+ "fn": "vercel/chatbot",
+ "sha": "d975405c5848",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 Next.js 开源 AI 聊天机器人模板",
+  "review": "由 Vercel 构建的 Next.js + AI SDK 聊天机器人模板，覆盖对话界面、聊天历史与用户数据的 Postgres 持久化、文件存储、Auth.js 认证等模块。模型访问通过 Vercel AI Gateway 统一接口完成，在 lib/ai/models.ts 中按模型配置 provider 路由，内置 Mistral、Moonshot、DeepSeek、OpenAI、xAI 等模型；非 Vercel 部署需自行设置 AI_GATEWAY_API_KEY。可一键部署到 Vercel，本地运行依赖 .env 环境变量与数据库迁移。",
+  "highlights": [
+   "基于 Next.js App Router、RSC 与 Server Actions 构建",
+   "通过 Vercel AI Gateway 统一接入多家模型提供商",
+   "Neon Serverless Postgres 保存聊天历史，Vercel Blob 存储文件",
+   "Auth.js 认证与 shadcn/ui + Tailwind 界面组件"
+  ],
+  "use_cases": [
+   "作为起点快速搭建自己的聊天机器人应用",
+   "部署到 Vercel 运行一个可用的 AI 对话站点",
+   "需要多模型切换与工具调用的 LLM 应用开发"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "聊天机器人",
+   "Next.js模板",
+   "LLM应用",
+   "Web应用"
+  ],
+  "domain": "LLM 应用/前端模板",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "cohere"
+  ],
+  "scenario_tags_v2": [
+   "chatbot"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6:  Chatbot (formerly AI Chatbot) is a free, open-source template built with Next.js and the AI SDK that helps you quickly ",
+   "L34: This template uses the Vercel AI Gateway to access multiple AI models through a unified interface. Models are configured"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     34
+    ],
+    "note": "AI Gateway 内置模型之一",
+    "quotes": [
+     "This template uses the Vercel AI Gateway to access multiple AI models through a unified interface. Models are configured"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "compat",
+    "lines": [
+     42
+    ],
+    "note": "可切换直连的提供商之一",
+    "quotes": [
+     "With the AI SDK, you can also switch to direct LLM providers like OpenAI, Anthropic, Cohere, and many more with just a f"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     56,
+     61
+    ],
+    "note": "npm 安装 Vercel CLI 与 pnpm install 依赖",
+    "quotes": [
+     "1. Install Vercel CLI: `npm i -g vercel`",
+     "pnpm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     6,
+     19,
+     42
+    ],
+    "note": "本模板依赖的框架，非替代/竞品对象",
+    "quotes": [
+     " Chatbot (formerly AI Chatbot) is a free, open-source template built with Next.js and the AI SDK that helps you quickly ",
+     "- AI SDK",
+     "With the AI SDK, you can also switch to direct LLM providers like OpenAI, Anthropic, Cohere, and many more with just a f"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

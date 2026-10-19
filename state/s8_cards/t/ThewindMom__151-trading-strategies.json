@@ -1,0 +1,109 @@
+{
+ "fn": "ThewindMom/151-trading-strategies",
+ "sha": "ca138ac69ebe",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向量化开发者的 151 交易策略 FastAPI 实现（68 个非期权策略）",
+  "review": "以 FastAPI 实现论文《151 Trading Strategies》（Kakushadze & Serur, 2018）中 68 个非期权交易策略的 REST API 服务：覆盖股票、ETF、固定收益、指数、波动率、外汇、大宗商品、期货、结构化产品、可转债、加密货币与宏观等 16 类资产，每个策略对应一个 POST 端点；其中少量策略使用机器学习方法（KNN、ANN、情绪分析）。明确排除需期权数据的策略（第 2 节全部及 6.3/7.4/7.5/13.2）。通过 pip 安装依赖并用 uvicorn 启动，自带 Swagger 文档。适用于量化研究与策略原型验证。",
+  "highlights": [
+   "68 个非期权策略按 16 类资产组织为 REST 端点",
+   "FastAPI 自带交互式 API 文档（/docs）",
+   "少量策略采用机器学习方法（KNN、ANN、情绪分析）",
+   "明确列出不实现的期权类策略清单"
+  ],
+  "use_cases": [
+   "快速调用论文中的交易策略进行量化研究验证",
+   "为量化原型系统提供统一的策略计算后端",
+   "按资产类别浏览并测试动量、套利、均值回归等策略"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "量化交易",
+   "算法策略",
+   "REST API",
+   "金融工程"
+  ],
+  "domain": "量化金融/算法交易",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "quant-finance"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "low",
+  "evidence": [
+   "L3: FastAPI implementation of non-options trading strategies from the paper \"151 Trading Strategies\" by Zura Kakushadze and ",
+   "L41: |POST /stocks/knn|3.17 Machine Learning (KNN)|",
+   "L145: |POST /crypto/ann|18.2 ANN (Neural Network)|"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     8
+    ],
+    "note": "pip install -r requirements.txt 为依赖库安装，非本产品发布包",
+    "quotes": [
+     "pip install -r requirements.txt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

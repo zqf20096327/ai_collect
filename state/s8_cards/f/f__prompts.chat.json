@@ -1,0 +1,188 @@
+{
+ "fn": "f/prompts.chat",
+ "sha": "3ca0e06a0ec0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI 用户的社区开源提示词库，可浏览、收藏与自托管",
+  "review": "一个社区共建的提示词集合（前身为 Awesome ChatGPT Prompts），提供网站浏览与 CSV、Markdown、Hugging Face Dataset 三种数据格式，用户可通过网站提交提示词并自动同步。支持用 npx/npm 自托管私有提示词库，含品牌、主题与 GitHub/Google/Azure AD 认证配置向导，数据库使用 PostgreSQL。另提供 CLI、Claude Code 插件与 MCP Server 三种接入方式，并附免费交互式提示工程教程与儿童学习模块。",
+  "highlights": [
+   "提示词数据以 CSV、PROMPTS.md、Hugging Face Dataset 发布",
+   "npx prompts.chat 一键创建自托管库，支持 GitHub/Google/Azure AD 认证",
+   "提供 CLI、Claude Code 插件与 MCP Server 接入",
+   "附 28+ 章交互式提示工程教程"
+  ],
+  "use_cases": [
+   "给组织自托管一个私有提示词库",
+   "为 ChatGPT/Claude/Gemini 等助手查找现成提示词",
+   "把提示词库作为 MCP server 接入自己的 AI 工具"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "dual",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://prompts.chat",
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    29
+   ],
+   "note": "自称首个提示词库（2022年12月）"
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "提示词库",
+   "自托管",
+   "MCP",
+   "awesome-list"
+  ],
+  "domain": "AI 提示词资源聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L40: A curated collection of **prompts** for AI chat models. Originally created for ChatGPT, these prompts work great with an",
+   "L67: ## 🚀 Self-Hosting",
+   "L111: ### MCP Server",
+   "L191: This project is dual-licensed:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     9,
+     104
+    ],
+    "note": "Claude 作为兼容模型被提及，另有 Claude Code 插件安装方式",
+    "quotes": [
+     " Works with ChatGPT, Claude, Gemini, Llama, Mistral, and more",
+     "### Claude Code Plugin"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     73,
+     81,
+     101
+    ],
+    "quotes": [
+     "npx prompts.chat new my-prompt-library",
+     "npm install && npm run setup",
+     "npx prompts.chat"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     79
+    ],
+    "quotes": [
+     "git clone https://github.com/f/prompts.chat.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     9,
+     11,
+     40
+    ],
+    "note": "提示词最初面向的对象，非竞品声明",
+    "quotes": [
+     " Works with ChatGPT, Claude, Gemini, Llama, Mistral, and more",
+     " formerly known as Awesome ChatGPT Prompts",
+     "A curated collection of **prompts** for AI chat models. Originally created for ChatGPT, these prompts work great with an"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     104
+    ],
+    "note": "提供插件安装渠道",
+    "quotes": [
+     "### Claude Code Plugin"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     180
+    ],
+    "note": "致谢开发工具",
+    "quotes": [
+     " Built with Windsurf and Devin"
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     180
+    ],
+    "note": "致谢开发工具",
+    "quotes": [
+     " Built with Windsurf and Devin"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    191,
+    193,
+    195
+   ],
+   "note": "源码 MIT，提示词内容 CC0",
+   "quotes": [
+    "This project is dual-licensed:",
+    "- **Source code and site-authored content** is licensed under the MIT License,",
+    "- **Prompt content and data** (prompts.csv, PROMPTS.md, user-submitted prompts) is dedicated to the public domain under "
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,241 @@
+{
+ "fn": "iOfficeAI/AionUi",
+ "sha": "42d6b02e2ddd",
+ "source": "readme",
+ "identity": {
+  "one_liner": "连接 20+ CLI Agent 的桌面 Cowork 平台，支持内置助手与多智能体协作",
+  "review": "跨平台桌面应用，内置 aionrs agent 引擎，提供 21 个办公助手（PPT/Word/Excel 生成等）及文件读写、网页搜索、MCP 工具调用能力。可自动检测本机已安装的 CLI Agent（Claude Code、Codex、Gemini CLI、OpenClaw 等 20 余种）并纳入统一界面并行运行；Team 模式下由 Leader 智能体拆解任务并经 Team MCP Server 分派给 Teammate。支持 30+ 模型平台接入，WebUI 可从浏览器远程访问，并可经 Telegram/Lark/钉钉/微信对话。安装包从 GitHub Releases 下载。",
+  "highlights": [
+   "内置 agent 引擎，粘贴 API key 即可使用，无需另装 CLI 工具",
+   "自动检测已安装 CLI Agent，20+ 外部智能体统一界面并行运行",
+   "Team 模式：Leader 拆解任务、Teammate 并行执行、共享任务板与异步邮箱",
+   "WebUI + Telegram/Lark/钉钉/微信远程访问与 Cron 定时自动化"
+  ],
+  "use_cases": [
+   "在统一界面里同时使用已装的多个 CLI Agent",
+   "用对话方式生成可编辑的 PPT、Word、Excel 文档",
+   "多智能体分工协作处理复杂任务",
+   "通过手机 Telegram/微信远程调用电脑上的 agent"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "CLI Agent集成",
+   "多智能体协作",
+   "办公自动化",
+   "桌面应用",
+   "远程访问"
+  ],
+  "domain": "AI 应用/Agent 平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "bedrock",
+   "ollama",
+   "deepseek",
+   "openrouter"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "简体中文/繁体中文文档与微信社群",
+   "钉钉/飞书/企业微信集成",
+   "Kimi 合作活动与国内平台接入"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13:  A free, open-source, Cowork app with AI Agents",
+   "L103: **Supported Agents:** Built-in Agent (powered by the embedded aionrs agent engine) • Claude Code • Codex • Qwen Code • G",
+   "L144: Same agent capabilities — file read/write, web search, image generation, tool use — regardless of which model powers it."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     139,
+     152
+    ],
+    "quotes": [
+     "|Anthropic API Key|Claude-powered Cowork Agent|",
+     "- **Official Platforms** — Gemini, Gemini (Vertex AI), Anthropic (Claude), OpenAI"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     140,
+     153
+    ],
+    "quotes": [
+     "|AWS Bedrock credentials|Bedrock-powered Agent via Aion CLI (aionrs)|",
+     "- **Cloud Providers** — AWS Bedrock, New API (unified AI model gateway)"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     141,
+     156
+    ],
+    "quotes": [
+     "|Ollama / LM Studio (local)|Local model Cowork Agent|",
+     "- **Local Models** — Ollama, LM Studio (via Custom platform with local API endpoint)"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     155
+    ],
+    "quotes": [
+     "- **International Platforms** — DeepSeek, MiniMax, Novita, OpenRouter, SiliconFlow, xAI, Ark (Volcengine), Poe"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     155
+    ],
+    "quotes": [
+     "- **International Platforms** — DeepSeek, MiniMax, Novita, OpenRouter, SiliconFlow, xAI, Ark (Volcengine), Poe"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     16,
+     17,
+     458
+    ],
+    "quotes": [
+     " <a href=\"https://github.com/iOfficeAI/AionUi/releases\">",
+     " Download Latest Release",
+     "Click the button above to go to the Releases page and download the installer for your platform (macOS / Windows / Linux)"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     28,
+     32,
+     154
+    ],
+    "note": "合作活动与平台接入对象",
+    "quotes": [
+     " 🎁 AionUi × Kimi Partnership : Free premium Kimi \"Allegretto\" plans ($39/mo · ¥199/mo value) for our contributors!",
+     " Kimi K3 is here and works out of the box in AionUi — get a Kimi For Coding plan or an API key (Global / China) · ready ",
+     "- **Chinese Platforms** — Dashscope (Qwen), Dashscope Coding Plan, Zhipu, Moonshot (Kimi), Qianfan (Baidu), Hunyuan (Ten"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     101,
+     103,
+     120,
+     126
+    ],
+    "note": "被接入的外部 CLI Agent",
+    "quotes": [
+     "If you already use Claude Code, Codex, Hermes Agent, or OpenClaw, AionUi auto-detects them and lets you Cowork with all ",
+     "**Supported Agents:** Built-in Agent (powered by the embedded aionrs agent engine) • Claude Code • Codex • Qwen Code • G",
+     "- **Leader orchestration** — Leader assigns, tracks, and aggregates results; supported backends include Claude Code, Cod",
+     "- **Supported backends** — Claude Code, Codex, Gemini, Snow CLI, Aion CLI (aionrs); other ACP backends with `mcpCapabili"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     51,
+     103
+    ],
+    "note": "被接入的外部 CLI Agent",
+    "quotes": [
+     "|Multiple AI Agents at once|No|**Dozens of external agents — including Claude Code, Codex, Qwen Code, Hermes Agent, Curs",
+     "**Supported Agents:** Built-in Agent (powered by the embedded aionrs agent engine) • Claude Code • Codex • Qwen Code • G"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     51,
+     103,
+     154
+    ],
+    "note": "Qwen Code 与 Dashscope 平台接入",
+    "quotes": [
+     "|Multiple AI Agents at once|No|**Dozens of external agents — including Claude Code, Codex, Qwen Code, Hermes Agent, Curs",
+     "**Supported Agents:** Built-in Agent (powered by the embedded aionrs agent engine) • Claude Code • Codex • Qwen Code • G",
+     "- **Chinese Platforms** — Dashscope (Qwen), Dashscope Coding Plan, Zhipu, Moonshot (Kimi), Qianfan (Baidu), Hunyuan (Ten"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     103
+    ],
+    "note": "被接入的外部 CLI Agent",
+    "quotes": [
+     "**Supported Agents:** Built-in Agent (powered by the embedded aionrs agent engine) • Claude Code • Codex • Qwen Code • G"
+    ]
+   }
+  ]
+ }
+}

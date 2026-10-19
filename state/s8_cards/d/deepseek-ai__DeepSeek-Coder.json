@@ -1,0 +1,219 @@
+{
+ "fn": "deepseek-ai/DeepSeek-Coder",
+ "sha": "7bdf7cc487f2",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的开源代码大模型系列（1B-33B）",
+  "review": "DeepSeek Coder 是一系列从零训练的代码语言模型，训练语料 2T tokens，其中 87% 为代码、13% 为中英文自然语言。模型提供 1B、5.7B、6.7B、33B 多个规模，采用 16K 窗口与 fill-in-the-blank 任务训练，支持项目级代码补全与填充。提供 Base 与指令微调的 Instruct 两类模型，附 Hugging Face transformers 推理示例、vLLM 高吞吐推理路径、微调脚本及 llama.cpp/GPTQ 量化问答。代码仓库为 MIT 许可，模型使用另有 Model License，声明支持商业使用。",
+  "highlights": [
+   "1B/5.7B/6.7B/33B 多规模模型，87% 代码 + 13% 中英文语料从零训练",
+   "16K 窗口与 fill-in-the-blank 任务支持项目级代码补全与填充",
+   "提供 finetune_deepseekcoder.py 微调脚本，支持 DeepSpeed 训练",
+   "支持 vLLM 高吞吐推理及 GGUM/GPTQ 量化路径"
+  ],
+  "use_cases": [
+   "在 IDE 或工作流中做项目级代码补全与插入",
+   "下载 Instruct 模型搭建代码问答助手",
+   "在下游任务上微调自己的代码模型",
+   "通过 vLLM 部署高吞吐推理服务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "README L5 提供论文链接（arXiv，标题见 L229）",
+  "demo_url": "README L62：Hugging Face Space demo 及本地 app.py",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "代码大模型",
+   "代码补全",
+   "模型微调",
+   "推理部署"
+  ],
+  "domain": "AI 模型/代码生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "vllm",
+   "llama.cpp"
+  ],
+  "scenario_tags_v2": [
+   "code-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 含微信入口（L3）",
+   "联系方式 service@deepseek.com（L235）",
+   "仓库归属 deepseek-ai 组织"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L11: DeepSeek Coder is composed of a series of code language models, each trained from scratch on 2T tokens, with a compositi",
+   "L17: - **Highly Flexible & Scalable**: Offered in model sizes of 1B, 5.7B, 6.7B and 33B, enabling users to choose the setup m",
+   "L167: ### Inference with vLLM"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     1,
+     9,
+     11,
+     97,
+     110
+    ],
+    "quotes": [
+     "DeepSeek Coder",
+     "### 1. Introduction of DeepSeek Coder",
+     "DeepSeek Coder is composed of a series of code language models, each trained from scratch on 2T tokens, with a compositi",
+     "tokenizer = AutoTokenizer.from_pretrained(\"deepseek-ai/deepseek-coder-6.7b-instruct\", trust_remote_code=True)",
+     "You are an AI programming assistant, utilizing the DeepSeek Coder model, developed by DeepSeek Company, and you only ans"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     167,
+     169,
+     171,
+     174
+    ],
+    "quotes": [
+     "### Inference with vLLM",
+     "You can also employ vLLM for high-throughput inference.",
+     "**Text Completion**",
+     "from vllm import LLM, SamplingParams"
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "compat",
+    "lines": [
+     195,
+     197,
+     199,
+     202
+    ],
+    "note": "通过提交 PR 使 llama.cpp 支持其分词器以生成 GGUF 量化模型",
+    "quotes": [
+     "##### GGUF(llama.cpp)",
+     "We have submitted a PR to the popular quantization repository llama.cpp to fully support all HuggingFace pre-tokenizers,",
+     "While waiting for the PR to be merged, you can generate your GGUF model using the following steps:",
+     "git clone https://github.com/DOGEwbx/llama.cpp.git"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "none",
+    "lines": [
+     24
+    ],
+    "note": "误命中：语言支持列表中的 dockerfile，非 Docker 安装途径",
+    "quotes": [
+     "`['ada', 'agda', 'alloy', 'antlr', 'applescript', 'assembly', 'augeas', 'awk', 'batchfile', 'bluespec', 'c', 'c-sharp', "
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     58,
+     60,
+     135
+    ],
+    "note": "pip install -r requirements.txt 及微调依赖安装",
+    "quotes": [
+     "Before proceeding, you'll need to install the necessary dependencies. You can do this by running the following command:",
+     "pip install -r requirements.txt",
+     "pip install -r finetune/requirements.txt"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     202,
+     203,
+     204
+    ],
+    "note": "git clone 的是 llama.cpp 分支用于生成 GGUF，非本产品安装方式",
+    "quotes": [
+     "git clone https://github.com/DOGEwbx/llama.cpp.git",
+     "cd llama.cpp",
+     "git checkout regex_gpt2_preprocess"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     62,
+     70,
+     193,
+     197
+    ],
+    "note": "模型分发平台与所依赖的 tokenizer/Space 生态，非替代或竞品",
+    "quotes": [
+     "A demo is also available on the 🤗 Hugging Face Space, and you can run the demo locally using `app.py` in the demo folder",
+     "tokenizer = AutoTokenizer.from_pretrained(\"deepseek-ai/deepseek-coder-6.7b-base\", trust_remote_code=True)",
+     "DeepSeek Coder utilizes the HuggingFace Tokenizer to implement the Bytelevel-BPE algorithm, with specially designed pre-",
+     "We have submitted a PR to the popular quantization repository llama.cpp to fully support all HuggingFace pre-tokenizers,"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    221,
+    223
+   ],
+   "note": "代码 MIT 许可，模型使用另有 Model License，声明支持商业使用",
+   "quotes": [
+    "This code repository is licensed under the MIT License. The use of DeepSeek Coder models is subject to the Model License",
+    "See the LICENSE-CODE and LICENSE-MODEL for more details."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

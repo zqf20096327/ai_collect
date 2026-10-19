@@ -1,0 +1,112 @@
+{
+ "fn": "BasedHardware/omi",
+ "sha": "ef681a191ba1",
+ "source": "readme",
+ "identity": {
+  "one_liner": "记录屏幕与对话并生成摘要行动项的 AI 可穿戴伴侣应用",
+  "review": "开源的 AI 记录工具：捕获屏幕画面与对话，实时转写、生成摘要与行动项，并提供带有完整记忆的 AI 聊天。覆盖桌面、手机与可穿戴设备三种形态，macOS 应用从源码构建并连接云端后端，Windows 由 Node.js 从源码运行，移动端提供 App Store 与 Google Play 安装。项目包含多个组件：Swift 桌面应用、Flutter 移动应用、Python/FastAPI 后端、nRF/Zephyr 固件及 ESP32-S3 的 Omi Glass 硬件，并提供 REST API 与多语言设备 SDK。",
+  "highlights": [
+   "实时转写屏幕与对话，生成摘要与行动项",
+   "支持桌面、手机与可穿戴设备多形态",
+   "提供 REST API、MCP Server 及 Python/Swift/RN 设备 SDK",
+   "开源可穿戴硬件（Omi 项链与 Omi Glass）设计公开"
+  ],
+  "use_cases": [
+   "佩戴可穿戴设备全程记录对话并回顾要点",
+   "在桌面端捕获屏幕内容并让 AI 记住所见所闻",
+   "基于设备 SDK 开发自己的音频流或聊天工具应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "可穿戴设备",
+   "语音转写",
+   "个人记忆/AI聊天",
+   "移动应用"
+  ],
+  "domain": "消费级 AI 硬件/个人助理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: Omi captures your screen and conversations, transcribes in real-time, generates summaries and action items, and gives yo",
+   "L95: |Component|Path|Stack|",
+   "L137: ## Omi Hardware"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     20,
+     30,
+     69
+    ],
+    "quotes": [
+     "git clone https://github.com/BasedHardware/omi.git && cd omi/desktop/macos && ./run.sh --yolo",
+     "git clone https://github.com/BasedHardware/omi.git",
+     "./run.sh"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     32,
+     34
+    ],
+    "quotes": [
+     "npm install",
+     "npm run dev"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

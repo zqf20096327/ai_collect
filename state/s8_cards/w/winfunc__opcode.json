@@ -1,0 +1,176 @@
+{
+ "fn": "winfunc/opcode",
+ "sha": "8e9a4684b411",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 Claude Code 用户的桌面 GUI：管理会话、自建 agent 与用量",
+  "review": "基于 Tauri 2 的桌面应用，为 Claude Code CLI 提供图形界面：浏览 ~/.claude/projects 下的项目与会话并恢复历史、创建带自定义系统提示词与权限的 CC Agents 并在独立进程后台运行、集中管理 MCP 服务器、会话检查点时间线与回滚、CLAUDE.md 内置编辑器、用量与成本仪表盘。数据本地存储，无遥测；依赖 Claude Code CLI 在 PATH 中可用；AGPL 许可。README 说明发布版可执行文件尚未提供，需从源码构建。",
+  "highlights": [
+   "可视化浏览与恢复 ~/.claude/projects 会话历史",
+   "自定义 CC Agents：系统提示词、权限配置、独立进程后台执行",
+   "MCP 服务器集中管理，支持从 Claude Desktop 导入配置",
+   "会话检查点时间线、分支回滚与 diff 查看"
+  ],
+  "use_cases": [
+   "用图形界面管理多个 Claude Code 项目与历史会话",
+   "为不同任务创建可复用的专用编码 agent",
+   "按模型/项目/日期追踪 Claude API 用量与成本",
+   "统一管理 MCP 服务器配置并测试连接"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "viral",
+  "deploy": "desktop",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/6bceea0f-60b6-4c3e-a745-b891de00b8d0",
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    18
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Claude Code",
+   "GUI",
+   "Agent管理",
+   "开发者工具",
+   "桌面应用"
+  ],
+  "domain": "开发者工具/AI 编码辅助",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L25: **opcode** is a powerful desktop application that transforms how you interact with Claude Code. Built with Tauri 2, it p",
+   "L44: - **Custom AI Agents**: Create specialized agents with custom system prompts and behaviors",
+   "L127: - **Claude Code CLI**: Install from Claude's official site"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     21,
+     25,
+     27,
+     127,
+     165
+    ],
+    "note": "专为 Claude Code（Anthropic CLI）构建的 GUI，依赖其 CLI；README 声明与 Anthropic 无隶属",
+    "quotes": [
+     "> This project is not affiliated with, endorsed by, or sponsored by Anthropic. Claude is a trademark of Anthropic, PBC. ",
+     "**opcode** is a powerful desktop application that transforms how you interact with Claude Code. Built with Tauri 2, it p",
+     "Think of opcode as your command center for Claude Code - bridging the gap between the command-line tool and a visual exp",
+     "- **Claude Code CLI**: Install from Claude's official site",
+     "4. **Claude Code CLI**"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     131,
+     196,
+     202,
+     215
+    ],
+    "note": "发布版可执行文件尚未发布，当前安装途径为源码构建",
+    "quotes": [
+     "## 🔨 Build from Source",
+     "   git clone https://github.com/getAsterisk/opcode.git",
+     "   bun install",
+     "   bun run tauri build"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     161,
+     184,
+     185
+    ],
+    "note": "构建依赖（git、pkg-config）的安装方式，非本产品安装途径",
+    "quotes": [
+     "   # macOS: brew install git",
+     "# Install additional dependencies via Homebrew (optional)",
+     "brew install pkg-config"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "RAM**: Minimum 4GB",
+    "rel": "support",
+    "lines": [
+     140
+    ],
+    "note": "源码构建的系统要求",
+    "quotes": [
+     "- **RAM**: Minimum 4GB (8GB recommended)"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     5,
+     7,
+     25,
+     27
+    ],
+    "note": "本项目是其 GUI 工具包，非替代/竞品关系",
+    "quotes": [
+     " A powerful GUI app and Toolkit for Claude Code",
+     " Create custom agents, manage interactive Claude Code sessions, run secure background agents, and more.",
+     "**opcode** is a powerful desktop application that transforms how you interact with Claude Code. Built with Tauri 2, it p",
+     "Think of opcode as your command center for Claude Code - bridging the gap between the command-line tool and a visual exp"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

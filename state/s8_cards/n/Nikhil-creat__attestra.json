@@ -1,0 +1,94 @@
+{
+ "fn": "Nikhil-creat/attestra",
+ "sha": "bfeb3dea21d0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为客户安全问卷起草带引用答案的 AI agent 应用",
+  "review": "面向企业合规场景的 AI 应用：上传自身安全政策文档与问卷 XLSX（支持 SOC 2、SIG、自定义表格），流水线执行 chunk→TF-IDF 检索→LLM 或抽取式起草→critic 校验→人工审批→导出 XLSX。Critic 规则要求无引用、引用越界或来源支持度低的答案转人工，敏感主题一律需人工批准。含答案库复用、PII 脱敏、审计日志、差距分析。MVP 阶段为内存存储、无认证，作者声明不适用于真实客户数据。",
+  "highlights": [
+   "带引用的答案起草（LLM 或离线抽取式双模式）",
+   "critic 校验规则与敏感主题强制人工审批",
+   "PII 脱敏、审计日志、答案库复用与差距分析",
+   "无 API key 时可离线运行抽取式模式"
+  ],
+  "use_cases": [
+   "填写 SOC 2 / SIG 等客户安全问卷时从自有政策生成带引用的草稿",
+   "复用已批准答案应对重复问卷问题",
+   "通过差距分析发现政策未覆盖的问卷问题"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": "https://nikhil-creat.github.io/questionnaire-ai/demo.html",
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    55
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "安全合规",
+   "问卷自动化",
+   "RAG",
+   "agent工作流"
+  ],
+  "domain": "安全合规/企业应用",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: AI agents that draft **cited** answers to customer security questionnaires (SOC 2, SIG, custom spreadsheets) from your o",
+   "L36: `chunk -> retrieve (TF-IDF) -> draft (LLM or extractive) -> critic -> approve -> export`"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

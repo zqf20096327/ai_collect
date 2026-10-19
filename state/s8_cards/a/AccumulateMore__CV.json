@@ -1,0 +1,90 @@
+{
+ "fn": "AccumulateMore/CV",
+ "sha": "fb1c55b890a1",
+ "source": "readme",
+ "identity": {
+  "one_liner": "中文自学者的深度学习与大模型课程笔记合集",
+  "review": "以 Jupyter Notebook 形式整理的中文深度学习学习笔记，覆盖四个视频课程系列：土堆 Pytorch（100-122 号笔记）、李沐动手学深度学习（200-268）、吴恩达深度学习（300-354）、大飞大模型 Agent（400-409），并预告另一 Agent 系列待上线。附百度网盘分享的数据集、在线观看图片/公式显示问题的说明、Jupyter Notebook 目录插件建议及自学交流群。面向中文自学入门者，仓库本身不含代码工程或安装流程。",
+  "highlights": [
+   "四套视频课程的中文笔记（PyTorch、李沐、吴恩达、大模型 Agent）",
+   "以 Jupyter Notebook 组织，可在线阅读或下载本地查看",
+   "附百度网盘数据集分享与交流群入口"
+  ],
+  "use_cases": [
+   "跟着土堆视频学 PyTorch 时对照笔记复习",
+   "通过李沐/吴恩达课程笔记自学深度学习",
+   "入门大模型 Agent 概念的中文资料查阅"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "学习笔记",
+   "深度学习",
+   "大模型",
+   "Jupyter Notebook",
+   "中文教程"
+  ],
+  "domain": "教育/机器学习学习资料",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "bilibili 视频课程链接",
+   "百度网盘数据集分享",
+   "微信交流群"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # 超级全面的 深度学习 笔记（包含CV、NLP、大模型、Agent）",
+   "L5: Pytorch 视频讲解【主讲人：土堆】【对应笔记：100-122】",
+   "L17: 大模型Agent 视频讲解【主讲人：大飞】【对应笔记：400-409】"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

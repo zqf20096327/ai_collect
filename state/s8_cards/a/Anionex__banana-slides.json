@@ -1,0 +1,244 @@
+{
+ "fn": "Anionex/banana-slides",
+ "sha": "dc4e8e6107ae",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于图像生成模型的 AI PPT 应用，自然语言生成与修改幻灯片",
+  "review": "前后端分离的 Web 应用（另提供桌面版）：以 nano banana pro / gpt-image 等图像生成模型为核心，从一句话、大纲或页面描述生成整套幻灯片页面，支持上传 PDF/Docx/MD 等文件解析素材、上传模板图片匹配风格、框选区域口头修改，导出 PPTX/PDF 及带 AI 旁白的讲解视频。部署提供 Docker Compose 预构建镜像与源码运行两种途径，依赖各图像/文本模型的 API Key，AGPL-3.0 许可下闭源商业使用需另行授权。",
+  "highlights": [
+   "想法/大纲/页面描述三种创作路径，支持自然语言修改与局部重绘",
+   "上传 PDF/Docx/MD/Txt 等文件自动解析为素材，图片自动入库",
+   "一键导出 PPTX/PDF，含可编辑 PPTX 导出（Beta）与讲解视频（多语言音色、字幕）",
+   "通过 LazyLLM 注册 11 家在线供应商，支持 gemini/openai/volcengine/vertex 等接口格式"
+  ],
+  "use_cases": [
+   "零设计经验快速生成一套演示文稿",
+   "上传文档素材和模板图片，按指定风格批量出页面",
+   "对已生成页面框选区域用口头指令修改",
+   "导出带旁白和字幕的幻灯片讲解视频"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": "self-host",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://www.bananaslides.com",
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    3,
+    66
+   ],
+   "note": "v0.9.0 候选版本 RC 阶段，自称基于图像生成模型的原生 AI PPT 应用"
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI PPT",
+   "文生图",
+   "演示文稿",
+   "办公工具"
+  ],
+  "domain": "办公/内容创作工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "image-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README 为主",
+   "微信群交流",
+   "国内镜像源配置",
+   "雨云/火山引擎等国内服务"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3:  基于图像生成模型的原生 AI PPT 应用，",
+   "L96: 但是，nano banana🍌模型的出现让一切有了转机。我尝试使用🍌pro进行ppt页面生成，发现生成的结果无论是质量、美感还是一致性，都做的非常好，且几乎能精确渲染prompt要求的所有文字+遵循参考图的风格。那为什么不基于🍌pro，做一",
+   "L122: 支持**想法**、**大纲**、**页面描述**三种起步方式，满足不同创作习惯。"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm",
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     50
+    ],
+    "note": "仅出现在赞助商聚合平台的模型列举中",
+    "quotes": [
+     " 感谢 AIHubMix 赞助本项目！AIHubMix 是稳定、高并发的 AI 大模型 API 聚合平台，一个 API Key 即可接入 Claude、GPT、Gemini、DeepSeek 等主流模型，兼容多种协议。"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     72,
+     240
+    ],
+    "note": "作为注册的 LazyLLM 在线供应商之一可接入",
+    "quotes": [
+     "- **[2026-07-31]**：桌面打包版完整注册 11 家 LazyLLM 在线供应商（qwen / doubao / deepseek / glm / kimi / minimax / sensenova / siliconflo",
+     "> (qwen, doubao, deepseek, glm, kimi, minimax, sensenova, siliconflow, ppio,"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     200,
+     201,
+     269
+    ],
+    "note": "Docker Compose 为主要部署途径",
+    "quotes": [
+     "### 使用 Docker Compose🐳",
+     "通过docker compose快速启动前后端服务。",
+     "docker compose -f docker-compose.prod.yml up -d"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     339,
+     353
+    ],
+    "note": "提供从源码部署章节",
+    "quotes": [
+     "### 从源码部署",
+     "#### 后端安装"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     237,
+     291
+    ],
+    "note": "PyPI 仅作为镜像源或依赖发布语境提及",
+    "quotes": [
+     "> LazyLLM also exposes `lazyllm install online-advanced`, but the PyPI wheel may not publish that group as a standard in",
+     "> PYPI_INDEX_URL=https://mirrors.cloud.tencent.com/pypi/simple"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     370,
+     371
+    ],
+    "note": "ffmpeg 依赖的安装方式",
+    "quotes": [
+     "# macOS（Homebrew）",
+     "brew install ffmpeg-full"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     395
+    ],
+    "note": "前端依赖安装步骤，非本产品整体安装途径",
+    "quotes": [
+     "npm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     72,
+     240
+    ],
+    "note": "作为可接入的在线供应商列举",
+    "quotes": [
+     "- **[2026-07-31]**：桌面打包版完整注册 11 家 LazyLLM 在线供应商（qwen / doubao / deepseek / glm / kimi / minimax / sensenova / siliconflo",
+     "> (qwen, doubao, deepseek, glm, kimi, minimax, sensenova, siliconflow, ppio,"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     72,
+     240
+    ],
+    "note": "作为可接入的在线供应商列举",
+    "quotes": [
+     "- **[2026-07-31]**：桌面打包版完整注册 11 家 LazyLLM 在线供应商（qwen / doubao / deepseek / glm / kimi / minimax / sensenova / siliconflo",
+     "> (qwen, doubao, deepseek, glm, kimi, minimax, sensenova, siliconflow, ppio,"
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     72,
+     240
+    ],
+    "note": "作为可接入的在线供应商列举",
+    "quotes": [
+     "- **[2026-07-31]**：桌面打包版完整注册 11 家 LazyLLM 在线供应商（qwen / doubao / deepseek / glm / kimi / minimax / sensenova / siliconflo",
+     "> (qwen, doubao, deepseek, glm, kimi, minimax, sensenova, siliconflow, ppio,"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    447,
+    448,
+    450
+   ],
+   "note": "AGPL-3.0 开源，闭源商业用途需授权并提及多租户商业版本",
+   "quotes": [
+    "本项目采用 **GNU Affero General Public License v3.0（AGPL-3.0）** 开源，",
+    "可自由用于个人学习、研究、试验、教育或非营利科研活动等非商业用途；闭源商业用途需获取授权。",
+    "如有疑问或合作意向、获取多租户商业版本，可联系: davidyang042@gmail.com"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

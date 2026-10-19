@@ -1,0 +1,115 @@
+{
+ "fn": "langchain-ai/langchain",
+ "sha": "56283ab172b8",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的构建 agent 与 LLM 应用的框架",
+  "review": "LangChain 是用于构建 agent 和 LLM 应用的 Python 框架，通过标准接口统一模型、嵌入、向量存储等组件，支持可互换的第三方集成。提供 init_chat_model 统一入口调用各厂商模型，经 uv/pip 从 PyPI 安装。同生态包含 Deep Agents（高层 agent 包）、LangGraph（底层编排框架）、LangSmith（评估/观测/部署），并提供 JS/TS 版本。README 未给出具体模型接入配置细节，需查文档。",
+  "highlights": [
+   "模型、嵌入、向量存储等组件的标准接口与可互换性",
+   "与 LangGraph、Deep Agents、LangSmith 组成的产品矩阵",
+   "uv add langchain 一条命令安装",
+   "同时提供 JS/TS 等效库 LangChain.js"
+  ],
+  "use_cases": [
+   "开发由 LLM 驱动的应用原型并快速迭代",
+   "构建需要编排多步骤任务的 agent 工作流",
+   "在实验中切换比较不同模型供应商"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM框架",
+   "agent开发",
+   "应用开发"
+  ],
+  "domain": "LLM 应用开发框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14: LangChain is a framework for building agents and LLM-powered applications. It helps you chain together interoperable com",
+   "L22: uv add langchain"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     9,
+     10,
+     22
+    ],
+    "quotes": [
+     " PyPI - License",
+     " PyPI - Downloads",
+     "uv add langchain"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     14,
+     17,
+     22
+    ],
+    "quotes": [
+     "LangChain is a framework for building agents and LLM-powered applications. It helps you chain together interoperable com",
+     "> Just getting started? Check out **Deep Agents** — a higher-level package built on LangChain for agents that have built",
+     "uv add langchain"
+    ]
+   }
+  ]
+ }
+}

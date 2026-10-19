@@ -1,0 +1,119 @@
+{
+ "fn": "explosion/spaCy",
+ "sha": "d5f4e9dac30e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Python 开发者的工业级 NLP 处理库",
+  "review": "Python/Cython 编写的自然语言处理库，提供预训练流水线，支持 70+ 语言的分词与训练，内置分词、词性标注、依存句法分析、命名实体识别、文本分类、实体链接等组件，支持与 BERT 等预训练 transformer 进行多任务学习，并包含训练系统与模型打包、部署和工作流管理功能。采用 MIT 许可证，可通过 pip、conda 安装或从源码编译，另有商业定制服务。",
+  "highlights": [
+   "支持 70+ 语言的分词与训练，提供多语言预训练流水线",
+   "内置命名实体识别、句法分析、文本分类等 NLP 组件",
+   "支持 PyTorch、TensorFlow 等框架的自定义模型",
+   "提供训练系统与模型打包、部署、工作流管理"
+  ],
+  "use_cases": [
+   "在 Python 项目中做分词、词性标注与依存句法分析",
+   "训练自己的命名实体识别或文本分类模型",
+   "下载预训练流水线快速处理多语言文本",
+   "把训练好的模型打包集成到生产应用中"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "high",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "NLP",
+   "深度学习",
+   "Python库",
+   "命名实体识别"
+  ],
+  "domain": "自然语言处理/机器学习工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: spaCy is a library for **advanced Natural Language Processing** in Python and",
+   "L9: state-of-the-art speed and **neural network models** for tagging, parsing,",
+   "L74: - Production-ready **training system**"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     105,
+     106,
+     110,
+     123
+    ],
+    "quotes": [
+     "pip install -U pip setuptools wheel",
+     "pip install spacy",
+     "run `pip install spacy[lookups]` or install",
+     "pip install spacy"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     202,
+     224
+    ],
+    "quotes": [
+     "The other way to install spaCy is to clone its",
+     "git clone https://github.com/explosion/spaCy"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [
+    15
+   ],
+   "quotes": [
+    "MIT license."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,115 @@
+{
+ "fn": "roboflow/supervision",
+ "sha": "6bc64dfd7ac5",
+ "source": "readme",
+ "identity": {
+  "one_liner": "计算机视觉开发者的可复用工具集：模型接入、标注、数据集处理",
+  "review": "面向计算机视觉应用的 Python 工具库：提供模型无关的检测/分类/分割结果封装（sv.Detections），内置 Ultralytics、Transformers、MMDetection、Inference、rfdetr 等库的连接器；提供可自定义的图像标注器，以及 YOLO 等（含 COCO）格式的数据集加载、拆分、合并、转换与保存工具。需 Python>=3.10，通过 pip 安装，含教程与文档。使用 Inference 模型需 Roboflow API KEY。",
+  "highlights": [
+   "模型无关设计，内置多框架检测结果连接器",
+   "高度可自定义的图像标注器",
+   "数据集加载、拆分、合并、格式转换与保存工具",
+   "提供区域计数、跟踪、速度估计等教程"
+  ],
+  "use_cases": [
+   "接入自选检测/分割模型并可视化标注结果",
+   "在 YOLO、COCO 等格式间转换与拆分数据集",
+   "做区域驻留时间分析、车辆跟踪测速等应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://supervision.roboflow.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "计算机视觉",
+   "目标检测",
+   "图像标注",
+   "数据集处理",
+   "低代码"
+  ],
+  "domain": "计算机视觉/工具库",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "workflow-automation",
+   "image-video-processing",
+   "object-detection"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L22: **We are your essential toolkit for computer vision.** From data loading to real-time zone counting, we provide the buil",
+   "L38: Supervision was designed to be model agnostic. Just plug in any classification, detection, or segmentation model. For yo"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     26,
+     29,
+     40
+    ],
+    "quotes": [
+     "Pip install the supervision package in a **Python>=3.10** environment.",
+     "pip install supervision",
+     "Install the optional dependencies for this example with `pip install pillow rfdetr`."
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     12
+    ],
+    "note": "徽章形式出现",
+    "quotes": [
+     "Snyk Security colab gradio discord"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

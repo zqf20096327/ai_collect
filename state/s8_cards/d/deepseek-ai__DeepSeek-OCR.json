@@ -1,0 +1,157 @@
+{
+ "fn": "deepseek-ai/DeepSeek-OCR",
+ "sha": "ada43f4108b5",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向研究者的视觉文本压缩 OCR 模型",
+  "review": "DeepSeek AI 发布的开源模型，探索从 LLM 中心视角研究视觉编码器的作用，将文本上下文以视觉形式压缩表示。提供 vLLM 与 Transformers 两条推理路径，支持图片流式输出、PDF 处理与基准批量评测，提供 5 种分辨率模式（Tiny 至 Gundam 动态分辨率）与文档转 Markdown、OCR、Free OCR 等 prompt 模板。模型权重发布于 Hugging Face，环境依赖 CUDA 11.8 与 torch 2.6.0，README 注明 vLLM/transformers 同环境安装可能报依赖版本冲突。",
+  "highlights": [
+   "支持 vLLM 与 Transformers 两条推理路径",
+   "5 种分辨率模式：512×512 至动态 Gundam 模式",
+   "提供文档转 Markdown、OCR、Free OCR 等 prompt 模板",
+   "已获上游 vLLM 官方支持"
+  ],
+  "use_cases": [
+   "将图片或 PDF 文档转换为 Markdown 文本",
+   "批量评测 OCR 基准",
+   "研究视觉-文本压缩机制"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "arXiv:2510.18234",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "OCR",
+   "视觉文本压缩",
+   "文档转Markdown",
+   "视觉语言模型"
+  ],
+  "domain": "AI/视觉语言模型",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "ocr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L23:  DeepSeek-OCR: Contexts Optical Compression",
+   "L30: - [2025/10/20]🚀🚀🚀 We release DeepSeek-OCR, a model to investigate the role of vision encoders from an LLM-centric viewpo",
+   "L104: The current open-source model supports the following modes:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     1,
+     23
+    ],
+    "quotes": [
+     "DeepSeek AI",
+     " DeepSeek-OCR: Contexts Optical Compression"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     29,
+     56,
+     57
+    ],
+    "quotes": [
+     "- [2025/10/23]🚀🚀🚀 DeepSeek-OCR is now officially supported in upstream vLLM. Thanks to the vLLM team for their help.",
+     "## vLLM-Inference",
+     "- VLLM:"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     36,
+     38
+    ],
+    "quotes": [
+     "1. Clone this repository and navigate to the DeepSeek-OCR folder",
+     "git clone https://github.com/deepseek-ai/DeepSeek-OCR.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     49,
+     50,
+     51,
+     52
+    ],
+    "quotes": [
+     "pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu118",
+     "pip install vllm-0.8.5+cu118-cp38-abi3-manylinux1_x86_64.whl",
+     "pip install -r requirements.txt",
+     "pip install flash-attn==2.7.3 --no-build-isolation"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     8
+    ],
+    "quotes": [
+     " <a href=\"https://huggingface.co/deepseek-ai/DeepSeek-OCR\" target=\"_blank\">"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

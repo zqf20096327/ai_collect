@@ -1,0 +1,127 @@
+{
+ "fn": "kyegomez/OpenMythos",
+ "sha": "954ee5889a6e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "对 Claude Mythos 架构的理论性开源重建：循环深度 Transformer 实现",
+  "review": "以 PyPI 包形式发布的理论性模型实现：按公开研究与猜测重建被称为 Claude Mythos 的架构，实现三段式 Recurrent-Depth Transformer（Prelude / 循环 Recurrent Block / Coda），注意力可在 MLA 与 GQA 间切换，前馈层为带路由与共享专家的稀疏 MoE。提供 1B 到 1T 参数的预配置变体、基于 FineWeb-Edu 的 3B 训练脚本（单卡与 torchrun 多卡）、API 文档，并附架构假设、稳定性约束与循环模型缩放律的说明。README 明确声明与 Anthropic 无关联。",
+  "highlights": [
+   "三段式 RDT 实现：Prelude、可循环 Recurrent Block（至多 max_loop_iters）、Coda",
+   "注意力可在 GQA（可选 Flash Attention 2）与 MLA（DeepSeek-V2 式压缩 KV 缓存）间切换",
+   "提供 1B–1T 参数的预配置变体与 3B FineWeb-Edu 训练脚本",
+   "通过参数化约束注入矩阵 A 使谱半径 ρ(A)<1，保证训练稳定性"
+  ],
+  "use_cases": [
+   "研究和实验循环/looped transformer 架构",
+   "在自有 GPU 上训练并复现 3B 规模的 RDT 模型",
+   "按论文描述的缩放律探索推理时循环深度的效果"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "模型架构",
+   "looped transformer",
+   "训练脚本",
+   "MoE"
+  ],
+  "domain": "AI 模型架构/研究实现",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L24: > **Disclaimer:** OpenMythos is an independent, community-driven theoretical reconstruction based solely on publicly ava",
+   "L26: OpenMythos is an open-source, theoretical implementation of the Claude Mythos model. It implements a Recurrent-Depth Tra",
+   "L28: ## Installation"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     24,
+     26,
+     107
+    ],
+    "quotes": [
+     "> **Disclaimer:** OpenMythos is an independent, community-driven theoretical reconstruction based solely on publicly ava",
+     "OpenMythos is an open-source, theoretical implementation of the Claude Mythos model. It implements a Recurrent-Depth Tra",
+     "Claude Mythos is suspected to be a **Recurrent-Depth Transformer (RDT)** — also called a Looped Transformer (LT). Rather"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     145
+    ],
+    "quotes": [
+     "|`\"mla\"`|`MLAttention`|Multi-Latent Attention (DeepSeek-V2) — caches a compressed KV latent (`kv_lora_rank`) rather than"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     3,
+     31,
+     33,
+     39
+    ],
+    "quotes": [
+     " <a href=\"https://pypi.org/project/open-mythos/\" target=\"_blank\">",
+     "pip install open-mythos",
+     "#uv pip install open-mythos",
+     "pip install open-mythos[flash]"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

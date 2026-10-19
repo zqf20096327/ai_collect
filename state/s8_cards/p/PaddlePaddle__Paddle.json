@@ -1,0 +1,91 @@
+{
+ "fn": "PaddlePaddle/Paddle",
+ "sha": "d9151da28199",
+ "source": "readme",
+ "identity": {
+  "one_liner": "深度学习框架，支持分布式训练与跨平台部署",
+  "review": "源自产业实践的深度学习平台，2016 年开源，覆盖核心框架、模型库、端到端开发套件与组件。3.x 版本支持动/静统一图与自动并行（单卡配置注解自动推导分布式策略）、大模型训练与推理一体化、高阶自动微分用于科学计算、神经网络编译器，以及多硬件芯片的统一适配方案。提供中英文文档与社区贡献渠道，采用 Apache-2.0 许可证。",
+  "highlights": [
+   "动/静统一图与自动并行分布式训练策略",
+   "大模型训练与推理同一框架、代码复用",
+   "高阶自动微分支持科学计算（微分方程求解）",
+   "多芯片异构适配，标准化接口抽象不同硬件栈"
+  ],
+  "use_cases": [
+   "工业场景的分布式深度学习模型训练",
+   "大模型的训练与推理一体化开发",
+   "数学、力学、材料、气象等科学计算探索",
+   "在多种国产/异构硬件芯片上部署训练"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度学习框架",
+   "分布式训练",
+   "科学计算",
+   "大模型训练"
+  ],
+  "domain": "AI 框架/深度学习基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中国首个自主研发深度学习平台",
+   "提供简体中文文档"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: PaddlePaddle, as the first independent R&D deep learning platform in China, has been officially open-sourced to professi",
+   "L24: ## **PaddlePaddle New Generation Framework 3.2**",
+   "L28:  By requiring only minimal tensor partitioning annotations based on a single-card configuration, PaddlePaddle automatica"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

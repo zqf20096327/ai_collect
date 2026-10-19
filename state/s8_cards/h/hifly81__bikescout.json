@@ -1,0 +1,127 @@
+{
+ "fn": "hifly81/bikescout",
+ "sha": "fad41c3469c4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向骑行者的 MCP 骑行路线规划与地形分析工具服务",
+  "review": "为 MTB、公路、砾石与电助力骑行提供路线规划的 AI 引擎：作为 MCP 工具服务接入 Claude Desktop、Cursor、Codex 等 Agent 客户端，也提供自带 GUI。读取 OpenStreetMap/OpenRouteService 地图数据与 Open-Meteo 天气预报，生成含泥泞风险预测（TAEL 泥浆模型）、S-Scale 地形分级、海拔剖面与胎压建议的路线情报。以 Python 编写，AGPLv3 许可，README 未给出具体安装命令。",
+  "highlights": [
+   "以 MCP 工具服务形式接入多种 Agent 客户端，另提供 GUI",
+   "泥泞风险预测与 S-Scale 地形分级",
+   "聚合 OpenRouteService/OpenStreetMap/Open-Meteo 开放数据",
+   "输出装备建议、胎压计算与安全检查清单"
+  ],
+  "use_cases": [
+   "通过对话式 Agent 规划适配车型与天气的骑行路线",
+   "出发前评估路线的泥泞风险与技术难度",
+   "赛后结合地形数据复盘配速表现"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "MCP工具",
+   "骑行规划",
+   "地理空间分析",
+   "agent技能"
+  ],
+  "domain": "运动/地理空间导航",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L17: - instruction, using the **BikeScout GUI**",
+   "L18: - instruction, using your favourite MCP Agent client: Claude Desktop, Cursor, Codex, Google Antigravity, Windsurf"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     18
+    ],
+    "note": "Claude Desktop 被列为可用的 MCP Agent 客户端之一",
+    "quotes": [
+     "- instruction, using your favourite MCP Agent client: Claude Desktop, Cursor, Codex, Google Antigravity, Windsurf"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     18
+    ],
+    "note": "列为可用 MCP 客户端",
+    "quotes": [
+     "- instruction, using your favourite MCP Agent client: Claude Desktop, Cursor, Codex, Google Antigravity, Windsurf"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     18
+    ],
+    "note": "列为可用 MCP 客户端",
+    "quotes": [
+     "- instruction, using your favourite MCP Agent client: Claude Desktop, Cursor, Codex, Google Antigravity, Windsurf"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

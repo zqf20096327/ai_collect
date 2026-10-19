@@ -1,0 +1,163 @@
+{
+ "fn": "code-yeongyu/oh-my-openagent",
+ "sha": "fb3ead2df9d4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "单命令编码 Agent：编排多 Agent 图执行研究与编码任务",
+  "review": "OmO 是一个通过 `omo` 命令运行的终端编码 Agent，运行在自研的 senpi（pi 的 fork）之上。在提示中加入 `ulw` 或 `mass ulw` 可将任务展开为多 Agent 图，各部分在不同模型上并行执行并逐一校验；内置以 git 仓库中 markdown 文件存储的记忆系统、按任务加载的技能、会话恢复（/resume、omo -c）等机制。安装方式为官方安装脚本或 npm/bun 全局包（包名 omo-ai），提供 Windows PowerShell 安装路径。",
+  "highlights": [
+   "`mass ulw` 关键词将任务展开为多 Agent 图并行执行",
+   "记忆系统存储于 git 仓库中的 markdown 文件，由辅助模型读取并提示主 Agent",
+   "/login 支持 Claude、ChatGPT、Kimi、GLM 订阅登录，每个模型配套专用系统提示",
+   "独立工具调用合并执行，支持长任务断点续做与配置热加载"
+  ],
+  "use_cases": [
+   "在终端中用自然语言描述任务并让 Agent 完成编码",
+   "跨数千来源的深度研究与 ML 流水线类批量任务",
+   "从 OpenCode 或 LazyCodex 迁移现有配置（omo setup）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "编码Agent",
+   "多Agent编排",
+   "CLI工具",
+   "模型订阅接入"
+  ],
+  "domain": "开发者工具/AI 编码代理",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "Cursor",
+   "Claude Code"
+  ],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文等多语言版本（L38）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L40: OmO is one `omo` command that turns your tokens into finished work: research across ten thousand sources, a deck people ",
+   "L65: **Hundreds of agents, one keyword.** Type `mass ulw` and the whole job becomes a graph of agents: deep research over tho"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     69
+    ],
+    "note": "/login 支持 Claude 订阅登录",
+    "quotes": [
+     "**Mix models without thinking about it.** Use the frontier models you love together with the cheap ones. Just sign in: `"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     51
+    ],
+    "note": "npm i -g omo-ai 为官方安装途径之一",
+    "quotes": [
+     "Prefer a package manager? `bun add -g omo-ai` (or `npm i -g omo-ai`) installs the same OmO. The package is `omo-ai`; the"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     69
+    ],
+    "note": "订阅登录支持的模型服务，非替代/竞品表述",
+    "quotes": [
+     "**Mix models without thinking about it.** Use the frontier models you love together with the cheap ones. Just sign in: `"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     69
+    ],
+    "note": "订阅登录支持的模型服务",
+    "quotes": [
+     "**Mix models without thinking about it.** Use the frontier models you love together with the cheap ones. Just sign in: `"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "competitor",
+    "lines": [
+     90
+    ],
+    "note": "用户评价中提及取消 Cursor 订阅改用本产品",
+    "quotes": [
+     "> \"It made me cancel my Cursor subscription. Unbelievable things are happening in the open source community.\" - Arthur G"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "competitor",
+    "lines": [
+     92
+    ],
+    "note": "用户评价中与 Claude Code 对比",
+    "quotes": [
+     "> \"If Claude Code does in 7 days what a human does in 3 months, OmO does it in 1 hour.\" - B, Quant Researcher"
+    ]
+   }
+  ]
+ }
+}

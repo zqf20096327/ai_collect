@@ -1,0 +1,168 @@
+{
+ "fn": "vllm-project/vllm",
+ "sha": "7a5690629d1d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 LLM 高吞吐推理与服务引擎",
+  "review": "vLLM 提供 LLM 推理与服务能力：以 PagedAttention 管理 KV 内存，支持连续批处理、chunked prefill、前缀缓存、投机解码与量化方案（FP8/INT8/GPTQ/AWQ/GGUF 等）；兼容 Hugging Face 200+ 模型架构，输出 OpenAI 兼容 API、Anthropic Messages API 与 gRPC，支持张量/流水线/专家并行及多 LoRA。项目源自 UC Berkeley Sky Computing Lab，由社区维护，通过 uv/pip 安装。",
+  "highlights": [
+   "PagedAttention KV 内存管理与连续批处理",
+   "OpenAI 兼容 API 服务器，另支持 Anthropic Messages API 与 gRPC",
+   "支持 NVIDIA/AMD/Intel GPU 与 x86/ARM/PowerPC CPU 及 TPU、Ascend 等硬件插件",
+   "200+ Hugging Face 模型架构，覆盖 MoE、多模态、嵌入模型"
+  ],
+  "use_cases": [
+   "为自己的模型部署高吞吐推理服务",
+   "以 OpenAI 兼容 API 对外提供 LLM 服务",
+   "在多种 GPU/CPU 硬件上运行量化模型推理"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://dl.acm.org/doi/10.1145/3600006.3613165",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM推理",
+   "模型服务",
+   "推理引擎",
+   "vLLM基础设施"
+  ],
+  "domain": "LLM 基础设施/推理服务",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: vLLM is a fast and easy-to-use library for LLM inference and serving.",
+   "L37: - OpenAI-compatible API server, plus Anthropic Messages API and gRPC support",
+   "L39: - Support for NVIDIA GPUs, AMD GPUs, Intel GPUs, and x86/ARM/PowerPC CPUs. Additionally, diverse hardware plugins such a"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "none",
+    "lines": [
+     1,
+     12
+    ],
+    "note": "命中项目自身名称",
+    "quotes": [
+     "vLLM",
+     "vLLM is a fast and easy-to-use library for LLM inference and serving."
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "none",
+    "lines": [],
+    "note": "L22 仅列 GGUF 量化格式，未提及 llama.cpp",
+    "quotes": []
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     44
+    ],
+    "note": "作为支持的 MoE 模型示例被提及",
+    "quotes": [
+     "- Mixture-of-Expert LLMs (e.g., Mixtral, DeepSeek-V3, Qwen-MoE, GPT-OSS)"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "none",
+    "lines": [],
+    "note": "清单标注行 L44 未含 Mistral，未在可见行出现",
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     54,
+     57
+    ],
+    "note": "pip install vllm 为官方安装途径",
+    "quotes": [
+     "Install vLLM with `uv` (recommended) or `pip`:",
+     "uv pip install vllm"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     61
+    ],
+    "quotes": [
+     "Or build from source for development."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     43,
+     44,
+     46,
+     48
+    ],
+    "note": "Qwen 系列作为可运行模型被列出，非替代/竞品关系",
+    "quotes": [
+     "- Decoder-only LLMs (e.g., Llama, Qwen, Gemma)",
+     "- Mixture-of-Expert LLMs (e.g., Mixtral, DeepSeek-V3, Qwen-MoE, GPT-OSS)",
+     "- Multi-modal models (e.g., LLaVA, Qwen-VL, Pixtral)",
+     "- Reward and classification models (e.g., Qwen-Math)"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

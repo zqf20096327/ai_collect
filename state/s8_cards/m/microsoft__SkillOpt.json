@@ -1,0 +1,193 @@
+{
+ "fn": "microsoft/SkillOpt",
+ "sha": "572bf622ef23",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为冻结参数的 LLM agent 训练可复用自然语言技能文档的优化器",
+  "review": "将技能文档视为冻结 agent 的可训练状态：由独立的优化器模型把带评分的轨迹转化为对单个技能文档的有界增/删/改编辑，默认路径下候选编辑仅在提升留出验证分数时被接受，配合文本学习率预算、被拒编辑缓冲与按 epoch 的慢/元更新。部署产物为 300–2,000 token 的 best_skill.md，推理时不增加模型调用。以 PyPI 包发布，含多后端支持、六个内置基准与可选 WebUI 仪表盘，另提供 skillopt-sleep 夜间离线自进化 CLI。",
+  "highlights": [
+   "技能文档作为可训练状态：rollout→reflect→aggregate→select→update→evaluate 训练循环",
+   "验证门控编辑接受机制与文本学习率预算、被拒编辑缓冲",
+   "多后端支持：OpenAI / Azure / Claude / Qwen / MiniMax 及多种 exec 后端",
+   "部署产物 best_skill.md（300–2,000 token），推理时零额外模型调用"
+  ],
+  "use_cases": [
+   "为编码 agent（Claude Code / Codex / Copilot）离线沉淀经过验证的技能",
+   "在基准任务上以文本优化方式提升冻结模型的 agent 表现",
+   "通过 WebUI 监控技能训练过程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "arXiv:2605.23904",
+  "demo_url": "https://github.com/user-attachments/assets/eb12d3bc-371c-467f-904d-91b61f339ed7",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent技能",
+   "文本优化器",
+   "self-evolving agents",
+   "LLM训练框架"
+  ],
+  "domain": "LLM 基础设施/Agent 工具链",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L17: - **[2026-06-02]** 🎉 **SkillOpt v0.1.0 is now available on PyPI!** Install with `pip install skillopt`. This initial rel",
+   "L26: **SkillOpt treats the skill document as the trainable state of a frozen",
+   "L57: A backend = a chat / exec target (e.g. `openai_chat`, `claude_chat`,"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     17,
+     57,
+     58,
+     59
+    ],
+    "quotes": [
+     "- **[2026-06-02]** 🎉 **SkillOpt v0.1.0 is now available on PyPI!** Install with `pip install skillopt`. This initial rel",
+     "A backend = a chat / exec target (e.g. `openai_chat`, `claude_chat`,",
+     "`qwen_chat`, `minimax_chat`, `copilot_chat`, `openai_compatible`, `codex_exec`,",
+     "`claude_code_exec`, `cursor_exec`, `copilot_exec`). If a provider implements the OpenAI Chat Completions"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     5,
+     14,
+     17,
+     80
+    ],
+    "quotes": [
+     "Project Page Paper Project Video PyPI Python 3.10+ License: MIT",
+     "- **[2026-07-02]** 🚀 **SkillOpt v0.2.0 is out on PyPI!** Headline feature: **SkillOpt-Sleep**, a nightly offline self-ev",
+     "- **[2026-06-02]** 🎉 **SkillOpt v0.1.0 is now available on PyPI!** Install with `pip install skillopt`. This initial rel",
+     "pip install -e \".[webui]\""
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     14,
+     15,
+     58,
+     59
+    ],
+    "note": "作为集成 shell/后端被支持，非替代或竞品对象",
+    "quotes": [
+     "- **[2026-07-02]** 🚀 **SkillOpt v0.2.0 is out on PyPI!** Headline feature: **SkillOpt-Sleep**, a nightly offline self-ev",
+     "- **[2026-06-15]** 😴 **SkillOpt-Sleep (preview)** — a nightly offline self-evolution companion for local coding agents (",
+     "`qwen_chat`, `minimax_chat`, `copilot_chat`, `openai_compatible`, `codex_exec`,",
+     "`claude_code_exec`, `cursor_exec`, `copilot_exec`). If a provider implements the OpenAI Chat Completions"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     14,
+     15,
+     38,
+     41,
+     42
+    ],
+    "note": "执行 harness 与集成对象",
+    "quotes": [
+     "- **[2026-07-02]** 🚀 **SkillOpt v0.2.0 is out on PyPI!** Headline feature: **SkillOpt-Sleep**, a nightly offline self-ev",
+     "- **[2026-06-15]** 😴 **SkillOpt-Sleep (preview)** — a nightly offline self-evolution companion for local coding agents (",
+     "chat, Codex CLI, Claude Code CLI), SkillOpt is best or tied-best on **all",
+     "the Codex agentic loop, and +19.1 inside Claude Code**. Optimized skill",
+     "artifacts transfer across model scales, between Codex and Claude Code"
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     14
+    ],
+    "quotes": [
+     "- **[2026-07-02]** 🚀 **SkillOpt v0.2.0 is out on PyPI!** Headline feature: **SkillOpt-Sleep**, a nightly offline self-ev"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     17,
+     58
+    ],
+    "note": "作为 chat 后端（qwen）被支持，非产品竞品关系",
+    "quotes": [
+     "- **[2026-06-02]** 🎉 **SkillOpt v0.1.0 is now available on PyPI!** Install with `pip install skillopt`. This initial rel",
+     "`qwen_chat`, `minimax_chat`, `copilot_chat`, `openai_compatible`, `codex_exec`,"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     59
+    ],
+    "quotes": [
+     "`claude_code_exec`, `cursor_exec`, `copilot_exec`). If a provider implements the OpenAI Chat Completions"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

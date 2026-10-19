@@ -1,0 +1,235 @@
+{
+ "fn": "asgeirtj/system_prompts_leaks",
+ "sha": "3b67973d1e5b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "收录各家聊天产品系统提示词原文的资料集",
+  "review": "以 Markdown 目录形式聚合多家 AI 产品的系统提示词全文，按厂商分节（Anthropic、OpenAI、Google、xAI、Meta、Perplexity、Cursor、Moonshot、DeepSeek、Qwen、Microsoft 等），每个条目附链接指向仓库内文件；维护“最近新增”变更表，标注旧模型与弃用功能的提示词归档分区；欢迎通过 PR 提交新抓取结果，README 声明定期更新。仓库为纯资料集合，无安装或运行说明。",
+  "highlights": [
+   "收录 20 余家厂商产品的系统提示词原文链接",
+   "Claude 按模型版本、Claude Code 形态（桌面/云/headless/子代理）分目录",
+   "OpenAI 区分 ChatGPT、Codex、API 注入提示词与弃用功能分区",
+   "维护带日期的最近新增/变更表"
+  ],
+  "use_cases": [
+   "查阅特定版本聊天产品的系统提示词内容",
+   "研究不同厂商提示词的组织方式与差异",
+   "跟踪各家产品提示词的更新记录"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "提示词资料集",
+   "系统提示词",
+   "AI产品研究",
+   "知识聚合"
+  ],
+  "domain": "AI 知识/资料聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: # System Prompts Leaks",
+   "L12: The full verbatim system prompts behind the most popular chatbots in the world. Carefully curated and complete. Feel fre"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     43,
+     49,
+     52
+    ],
+    "quotes": [
+     "## Anthropic — Claude",
+     "|**Claude Haiku 5.5**|**Claude Haiku 5.5 system prompt**|",
+     "|**Claude Fable 5.1**|**Claude Fable 5.1 system prompt**|"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     186,
+     190,
+     197
+    ],
+    "quotes": [
+     "## SpaceXAI — Grok",
+     "|**Grok 4.7**|**Grok 4.7 system prompt** (grok.com) · Grok CLI|",
+     "|Grok Bot|Grok Bot system prompt|"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     248,
+     252
+    ],
+    "quotes": [
+     "## DeepSeek",
+     "|DeepSeek|DeepSeek system prompt (chat.deepseek.com)|"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     105,
+     109,
+     116
+    ],
+    "quotes": [
+     "## OpenAI — ChatGPT",
+     "|ChatGPT 5.6 Sol|ChatGPT 5.6 system prompt (Sol, extra high)|",
+     "|ChatGPT Atlas|ChatGPT Atlas system prompt|"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     62,
+     66,
+     72
+    ],
+    "quotes": [
+     "### Claude Code system prompts",
+     "|**Opus 5.5 Claude Code**|**Claude Code system prompt (Opus 5.5)**|",
+     "|**Fable 5.1 Claude Code headless**|**Claude Code headless system prompt (Fable 5.1)**|"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     218,
+     222,
+     224
+    ],
+    "quotes": [
+     "## Perplexity",
+     "|**Perplexity**|**Perplexity AI system prompt**|",
+     "|**Deep Research**|**Perplexity Deep Research system prompt**|"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     228,
+     232
+    ],
+    "quotes": [
+     "## Cursor",
+     "|Cursor|Cursor system prompt|"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     241,
+     245,
+     246
+    ],
+    "quotes": [
+     "## Moonshot — Kimi",
+     "|**Kimi K3**|**Kimi K3 system prompt**|",
+     "|Kimi K2.6|Kimi K2.6 system prompt|"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     266,
+     270,
+     271
+    ],
+    "note": "README 节名为 Qwen",
+    "quotes": [
+     "## Qwen",
+     "|**Qwen 3.8 Max**|**Qwen 3.8 Max system prompt**|",
+     "|Qwen 3.6 Plus|Qwen 3.6 Plus system prompt|"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     273,
+     277,
+     278
+    ],
+    "quotes": [
+     "## Microsoft — Copilot",
+     "|GitHub Copilot|GitHub Copilot system prompt|",
+     "|VS Code Copilot Agent|VS Code Copilot agent system prompt|"
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     289
+    ],
+    "quotes": [
+     "|Devin CLI|Devin CLI system prompt|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

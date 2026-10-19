@@ -1,0 +1,132 @@
+{
+ "fn": "lutzroeder/netron",
+ "sha": "5c9b5c69c009",
+ "source": "readme",
+ "identity": {
+  "one_liner": "神经网络与机器学习模型的可视化查看器",
+  "review": "Netron 是一个模型结构查看工具，以图形方式展示神经网络、深度学习与机器学习模型的层次结构。支持 ONNX、TensorFlow Lite、PyTorch、TensorFlow、Core ML、Keras 等格式的主线支持，并对 MLIR、GGUF、PaddlePaddle 等提供实验性支持。可通过浏览器、macOS/Linux/Windows 桌面安装包或 Python 包（pip install netron）使用，附带示例模型文件供打开浏览。",
+  "highlights": [
+   "支持 ONNX、TensorFlow Lite、PyTorch、Core ML 等多种模型格式",
+   "提供浏览器、桌面应用与 Python 库多种使用方式",
+   "对 MLIR、GGUF、RKNN、PaddlePaddle 等提供实验性支持",
+   "提供多种格式的示例模型文件"
+  ],
+  "use_cases": [
+   "在浏览器中打开并查看模型网络结构",
+   "本地安装桌面应用检查 ONNX 或 TFLite 模型",
+   "用 Python 在代码中启动模型可视化服务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "模型可视化",
+   "深度学习工具",
+   "模型查看器"
+  ],
+  "domain": "机器学习/开发工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: Netron is a viewer for neural network, deep learning and machine learning models.",
+   "L3: Netron supports ONNX, TensorFlow Lite, PyTorch, torch.export, ExecuTorch, TorchScript, TensorFlow, Core ML, OpenVINO, Ke",
+   "L9: **Browser**: **Start** the browser version."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cpu-infer",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     11
+    ],
+    "quotes": [
+     "**macOS**: **Download** the `.dmg` file or run `brew install --cask netron`."
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     11,
+     13,
+     15
+    ],
+    "quotes": [
+     "**macOS**: **Download** the `.dmg` file or run `brew install --cask netron`.",
+     "**Linux**: **Download** the `.deb` or `.rpm` file.",
+     "**Windows**: **Download** the `.exe` installer or run `winget install -s winget netron`."
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     17
+    ],
+    "quotes": [
+     "**Python**: `pip install netron`, then run `netron [FILE]` or `netron.start('[FILE]')`."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

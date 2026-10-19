@@ -1,0 +1,169 @@
+{
+ "fn": "infiniflow/ragflow",
+ "sha": "b33840486af5",
+ "source": "readme",
+ "identity": {
+  "one_liner": "企业级开源 RAG 引擎：融合 Agent 能力为 LLM 提供上下文层",
+  "review": "RAGFlow 是 infiniflow 维护的开源检索增强生成引擎，结合 Agent 能力为 LLM 提供上下文层。核心机制包括基于模板的分块、文档/数据集级知识编译（生成 Wiki、图谱、树、思维导图等）、多步 Agentic 检索（Low 到 Ultra 四档思考模式）、可追溯引用的可视化分块。支持 Word、PDF、网页等异构数据源接入，提供 API 集成。本地部署支持 Docker 或源码构建，另提供 cloud.ragflow.io 云服务。注意源码构建依赖 Go 1.27、Clang 20 等工具链。",
+  "highlights": [
+   "模板化分块与文档可视化干预，引用可溯源",
+   "知识编译生成 Wiki、Graph、Tree、PageIndex 等结构化产物",
+   "Agentic 检索支持 Low/Medium/High/Ultra 四档思考模式",
+   "支持 Word/PPT/Excel/PDF/网页等多格式数据源"
+  ],
+  "use_cases": [
+   "为企业知识库搭建检索增强问答系统",
+   "对复杂格式文档做深度理解与知识提取",
+   "用预置 Agent 模板构建生产级 AI 应用",
+   "通过 API 将 RAG 能力集成到业务系统"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://demo.ragflow.io",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "知识库问答",
+   "Agent引擎",
+   "文档解析",
+   "企业搜索"
+  ],
+  "domain": "LLM 基础设施/RAG",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "document-parsing",
+   "document-qa",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "简体/繁体中文自述文件",
+   "infiniflow（英灵无限）"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L57: RAGFlow is a leading open-source Retrieval-Augmented Generation (RAG) engine that fuses cutting-edge RAG with Agent capa",
+   "L131: Local deployment supports both Docker deployment and launching from source. Docker is suitable for quick evaluation, int"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     131,
+     133,
+     138,
+     187
+    ],
+    "quotes": [
+     "Local deployment supports both Docker deployment and launching from source. Docker is suitable for quick evaluation, int",
+     "### 🐳 Docker Deployment",
+     "- Docker ≥ 24.0.0, Docker Compose ≥ v2.26.1.",
+     "   docker compose -f docker-compose.yml up -d"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     131,
+     227,
+     229,
+     251
+    ],
+    "quotes": [
+     "Local deployment supports both Docker deployment and launching from source. Docker is suitable for quick evaluation, int",
+     "### 🔨 Launch from Source",
+     "#### 📝 Source Build Prerequisites",
+     "   ./build.sh --all"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     131,
+     299,
+     303
+    ],
+    "note": "仅前端开发所需，非本产品安装途径",
+    "quotes": [
+     "Local deployment supports both Docker deployment and launching from source. Docker is suitable for quick evaluation, int",
+     "7. Only when developing the frontend, install Node.js and npm, then start the React frontend:",
+     "   npm install"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "16 GB RAM",
+    "rel": "support",
+    "lines": [
+     137
+    ],
+    "note": "Docker 部署推荐起步配置：4 CPU、16GB 内存、50GB 磁盘",
+    "quotes": [
+     "- Recommended starting configuration: 4 CPU cores, 16 GB RAM, and 50 GB of available disk space. Actual requirements dep"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     246
+    ],
+    "note": "依赖下载脚本所用的库，非竞品对象",
+    "quotes": [
+     " `download_dev_deps.py` pulls and unpacks pdfium, pdf_oxide, office_oxide, and onnxruntime under `~/ragflow-native-libs`"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

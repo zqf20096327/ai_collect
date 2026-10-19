@@ -1,0 +1,183 @@
+{
+ "fn": "Zackriya-Solutions/meetily",
+ "sha": "928aa2d92438",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地运行的隐私优先 AI 会议记录与摘要应用",
+  "review": "Meetily 是一款运行在用户本机的会议助手，基于 Tauri（Rust 后端 + Next.js 前端）构建，可捕获麦克风与系统音频、用 Whisper 或 Parakeet 模型实时转录，并生成会议摘要。全部处理与存储在本地完成，不发送数据到云端。摘要支持多种 AI 提供方（推荐本地 Ollama），也可接 Claude、Groq、OpenRouter 或自定义 OpenAI 兼容端点。提供 Windows 安装包、macOS dmg，Linux 需从源码构建；说话人分离在社区版尚未提供（规划于 PRO）。",
+  "highlights": [
+   "Whisper/Parakeet 模型本地实时转录，无需云端",
+   "多 AI 提供方摘要：Ollama（本地）、Claude、Groq、OpenRouter、OpenAI 兼容端点",
+   "麦克风与系统音频同时采集，含 ducking 与削波防护",
+   "GPU 加速：macOS Metal/CoreML 自动启用，Windows 包含 Vulkan 构建"
+  ],
+  "use_cases": [
+   "在本地处理会议录音并生成纪要，数据不出设备",
+   "离线环境下对导入的音频文件生成转录与摘要",
+   "组织使用自建 OpenAI 兼容端点生成会议摘要"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "会议纪要",
+   "语音转录",
+   "本地AI",
+   "隐私优先",
+   "桌面应用"
+  ],
+  "domain": "会议/办公效率工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L23: A privacy-first AI meeting assistant that captures, transcribes, and summarizes meetings entirely on your infrastructure",
+   "L37: Meetily is a privacy-first AI meeting assistant that runs entirely on your local machine. It captures your meetings, tra",
+   "L67: - **Flexible AI Provider Support:** Choose from Ollama (local), Claude, Groq, OpenRouter, or use your own OpenAI-compati"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     67,
+     119
+    ],
+    "quotes": [
+     "- **Flexible AI Provider Support:** Choose from Ollama (local), Claude, Groq, OpenRouter, or use your own OpenAI-compati",
+     "Generate meeting summaries with your choice of AI provider. **Ollama** (local) is recommended, with support for Claude, "
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     67,
+     119
+    ],
+    "quotes": [
+     "- **Flexible AI Provider Support:** Choose from Ollama (local), Claude, Groq, OpenRouter, or use your own OpenAI-compati",
+     "Generate meeting summaries with your choice of AI provider. **Ollama** (local) is recommended, with support for Claude, "
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     67,
+     119
+    ],
+    "quotes": [
+     "- **Flexible AI Provider Support:** Choose from Ollama (local), Claude, Groq, OpenRouter, or use your own OpenAI-compati",
+     "Generate meeting summaries with your choice of AI provider. **Ollama** (local) is recommended, with support for Claude, "
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     67,
+     119
+    ],
+    "note": "README 推荐本地使用，但未见专门适配细节",
+    "quotes": [
+     "- **Flexible AI Provider Support:** Choose from Ollama (local), Claude, Groq, OpenRouter, or use your own OpenAI-compati",
+     "Generate meeting summaries with your choice of AI provider. **Ollama** (local) is recommended, with support for Claude, "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     73,
+     80,
+     81,
+     82
+    ],
+    "quotes": [
+     "1. Download the latest `x64-setup.exe` from Releases",
+     "1. Download `meetily_0.4.1_aarch64.dmg` from Releases",
+     "2. Open the downloaded `.dmg` file",
+     "3. Drag **Meetily** to your Applications folder"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     87,
+     95,
+     98
+    ],
+    "quotes": [
+     "Build from source following our detailed guides:",
+     "git clone https://github.com/Zackriya-Solutions/meeting-minutes",
+     "./build-gpu.sh"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     97
+    ],
+    "note": "pnpm 安装前端依赖，非本产品安装途径",
+    "quotes": [
+     "pnpm install --frozen-lockfile"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "note": "社区版 MIT（L206），PRO 为商业产品但非双许可同一代码库",
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

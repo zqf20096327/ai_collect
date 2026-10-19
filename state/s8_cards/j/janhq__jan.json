@@ -1,0 +1,191 @@
+{
+ "fn": "janhq/jan",
+ "sha": "d57be3b9a58d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给个人用户的本地离线 LLM 客户端：下载并运行模型",
+  "review": "基于 Tauri 与 llama.cpp 的桌面应用，可在本地下载并运行 HuggingFace 上的 LLM（Llama、Gemma、Qwen 等）。支持接入 OpenAI、Anthropic、Groq、Mistral 等云端模型，提供 localhost:1337 的 OpenAI 兼容 API 服务器，并集成 MCP 以支持 agent 能力。提供 Windows/macOS/Linux 安装包与源码构建途径，Apache 2.0 许可。",
+  "highlights": [
+   "本地下载并运行 HuggingFace 上的 LLM",
+   "localhost:1337 提供 OpenAI 兼容 API 服务器",
+   "MCP 集成支持 agentic 能力",
+   "多种引擎变体（cpu/vulkan/metal/cuda12/cuda13/hip）"
+  ],
+  "use_cases": [
+   "在无网络或注重隐私的环境下离线运行本地大模型",
+   "把本地模型作为 OpenAI 兼容 API 供其他应用调用",
+   "通过 MCP 让本地模型执行 agent 任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "desktop",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "high",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "本地LLM",
+   "桌面应用",
+   "OpenAI兼容API",
+   "MCP"
+  ],
+  "domain": "AI 桌面客户端/本地推理",
+  "alternative_to": [
+   "ChatGPT"
+  ],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "groq"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L62: - **Local AI Models**: Download and run LLMs (Llama, Gemma, Qwen, GPT-oss etc.) from HuggingFace",
+   "L63: - **Cloud Integration**: Connect to GPT models via OpenAI, Claude models via Anthropic, Mistral, Groq, MiniMax, and othe",
+   "L65: - **OpenAI-Compatible API**: Local server at `localhost:1337` for other applications"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     63
+    ],
+    "note": "Cloud Integration 列出 Claude 模型 via Anthropic",
+    "quotes": [
+     "- **Cloud Integration**: Connect to GPT models via OpenAI, Claude models via Anthropic, Mistral, Groq, MiniMax, and othe"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     63
+    ],
+    "note": "Cloud Integration 列出 Groq",
+    "quotes": [
+     "- **Cloud Integration**: Connect to GPT models via OpenAI, Claude models via Anthropic, Mistral, Groq, MiniMax, and othe"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     69,
+     84
+    ],
+    "quotes": [
+     "## Build from Source",
+     "git clone https://github.com/janhq/jan"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     69,
+     84
+    ],
+    "quotes": [
+     "## Build from Source",
+     "git clone https://github.com/janhq/jan"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "8GB RAM",
+    "rel": "support",
+    "lines": [
+     129
+    ],
+    "quotes": [
+     "- **macOS**: 13.6+ (8GB RAM for 3B models, 16GB for 7B, 32GB for 13B)"
+    ]
+   },
+   {
+    "term": "RAM for 3B models, 16GB",
+    "rel": "support",
+    "lines": [
+     129
+    ],
+    "quotes": [
+     "- **macOS**: 13.6+ (8GB RAM for 3B models, 16GB for 7B, 32GB for 13B)"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "alternative",
+    "lines": [
+     1
+    ],
+    "note": "标题自称 Open-source ChatGPT replacement",
+    "quotes": [
+     "# Jan - Open-source ChatGPT replacement"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     62
+    ],
+    "note": "模型下载来源，非竞品",
+    "quotes": [
+     "- **Local AI Models**: Download and run LLMs (Llama, Gemma, Qwen, GPT-oss etc.) from HuggingFace"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "none",
+    "lines": [],
+    "note": "误命中：Qwen 为阿里模型，README 仅列为可下载模型而非提及通义千问产品？实为命中同一处 Qwen——若按模型名视为 mention",
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,127 @@
+{
+ "fn": "korotovsky/slack-mcp-server",
+ "sha": "442bc137ab5e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让 MCP 客户端读写 Slack 工作区的 MCP 服务器",
+  "review": "面向 Slack 工作区的 Model Context Protocol 服务器，供支持 Stdio/SSE/HTTP 传输的 MCP 客户端调用。提供 9 个工具：按频道名或 ID 拉取频道与线程历史（按日期或条数分页）、跨频道/DM 搜索消息、列出频道与用户组、搜索用户、添加消息与表情回应（发消息和表情操作默认禁用，需环境变量开启并可限定频道）。支持 OAuth 令牌与无需额外权限的 stealth 模式，兼容 Enterprise/GovSlack 场景，可配置代理，内置用户与频道缓存。",
+  "highlights": [
+   "9 个工具覆盖历史读取、搜索、发消息、表情回应、用户与用户组查询",
+   "OAuth 与 stealth（无需工作区权限/机器人安装）两种模式",
+   "发消息与表情操作默认禁用，经环境变量开启且可限定频道白名单",
+   "Stdio/SSE/HTTP 三种传输与出站代理配置"
+  ],
+  "use_cases": [
+   "让 AI 助手读取并检索 Slack 频道、线程和私信内容",
+   "通过 AI 客户端在指定频道发消息或添加表情回应",
+   "在企业/GovSlack 环境下接入工作区消息数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "MCP",
+   "Slack",
+   "LLM工具接入",
+   "企业协作"
+  ],
+  "domain": "LLM 工具/协作平台接入",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L4: Model Context Protocol (MCP) server for Slack Workspaces. The most powerful MCP Slack server — supports Stdio, SSE and H",
+   "L22: - **Stdio/SSE/HTTP Transports & Proxy Support**: Use the server with any MCP client that supports Stdio, SSE or HTTP tra"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     319
+    ],
+    "note": "窗外配置示例中提及，非专门适配声明",
+    "quotes": [
+     "tail -n 20 -f ~/Library/Logs/Claude/mcp*.log"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     316
+    ],
+    "quotes": [
+     "npx @modelcontextprotocol/inspector go run mcp/mcp-server.go --transport stdio"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "none",
+    "lines": [
+     39,
+     77
+    ],
+    "note": "误命中：分页参数 cursor，非 Cursor 编辑器",
+    "quotes": [
+     " - `cursor` (string, optional): Cursor for pagination. Use the value of the last row and column in the response as next_",
+     " - `cursor` (string, default: \"\"): Cursor for pagination. Use the value of the last row and column in the response as ne"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

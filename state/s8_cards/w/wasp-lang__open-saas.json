@@ -1,0 +1,138 @@
+{
+ "fn": "wasp-lang/open-saas",
+ "sha": "b360a63ea5e9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的开源 JS 全栈 SaaS 起始模板",
+  "review": "基于 Wasp 框架（React + NodeJS + Prisma）的 SaaS 应用模板，内置邮件+社交登录认证、邮件发送、后台定时任务/队列、落地页、Stripe/Polar.sh/Lemon Squeezy 支付、ShadCN UI、AWS S3 文件上传、文档与博客（Astro Starlight）以及 Plausible/Google Analytics 统计。模板提供针对 Claude Code、Cursor 等 AI 编码工具的插件、Skills 与规则文件，并含 OpenAI API function calling 示例；可通过 CLI 一条命令部署到 Railway 或 Fly.io。安装依赖 npm 全局安装 Wasp CLI。",
+  "highlights": [
+   "内置认证（Email、Google、GitHub、Slack、MS）、支付、邮件、后台任务、S3 上传等 SaaS 常用模块",
+   "提供面向 Claude Code/Cursor 等 AI 编码工具的插件、Skills 与规则文件",
+   "含 OpenAI API function calling 示例",
+   "CLI 一条命令部署到 Railway 或 Fly.io"
+  ],
+  "use_cases": [
+   "启动一个新的全栈 SaaS 项目而无需从零搭建基础设施",
+   "为项目快速接入支付、订阅与文件上传功能",
+   "在 AI 编码工具辅助下基于模板开发 SaaS 应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://OpenSaaS.sh（L21 提及）",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "SaaS模板",
+   "boilerplate",
+   "全栈框架",
+   "AI编码工具配套"
+  ],
+  "domain": "软件开发/应用脚手架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L28: - 🐝 Wasp - a full-stack React, NodeJS, Prisma framework with superpowers",
+   "L32: - 🤖 AI-Ready - Custom Plugins, Skills, & Rules for AI-assisted coding with Claude Code, Cursor, or your favorite AI-assi",
+   "L19: 4. ready to work with your favorite AI coding tool or agent (Claude Code, Cursor, Codex, OpenCode, etc.)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     19,
+     32
+    ],
+    "note": "通过 Claude Code 等工具提及，未列专属 SDK 接入",
+    "quotes": [
+     "4. ready to work with your favorite AI coding tool or agent (Claude Code, Cursor, Codex, OpenCode, etc.)",
+     "- 🤖 AI-Ready - Custom Plugins, Skills, & Rules for AI-assisted coding with Claude Code, Cursor, or your favorite AI-assi"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     57
+    ],
+    "note": "npm 全局安装 Wasp CLI 为本模板的安装途径",
+    "quotes": [
+     "npm i -g @wasp.sh/wasp-cli"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     19,
+     32
+    ],
+    "note": "兼容/配套的 AI 编码工具，非替代或竞品",
+    "quotes": [
+     "4. ready to work with your favorite AI coding tool or agent (Claude Code, Cursor, Codex, OpenCode, etc.)",
+     "- 🤖 AI-Ready - Custom Plugins, Skills, & Rules for AI-assisted coding with Claude Code, Cursor, or your favorite AI-assi"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     19,
+     32
+    ],
+    "note": "兼容/配套的 AI 编码工具，非替代或竞品",
+    "quotes": [
+     "4. ready to work with your favorite AI coding tool or agent (Claude Code, Cursor, Codex, OpenCode, etc.)",
+     "- 🤖 AI-Ready - Custom Plugins, Skills, & Rules for AI-assisted coding with Claude Code, Cursor, or your favorite AI-assi"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

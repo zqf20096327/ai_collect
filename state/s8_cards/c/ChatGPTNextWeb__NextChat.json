@@ -1,0 +1,176 @@
+{
+ "fn": "ChatGPTNextWeb/NextChat",
+ "sha": "98feca52d603",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给消费者/开发者提供零配置跨平台 AI 聊天客户端",
+  "review": "基于 Next.js 的跨平台 AI 聊天助手客户端，提供 Web、iOS、macOS、Android、Linux、Windows 版本。通过环境变量接入 OpenAI、Azure、Gemini、Claude、DeepSeek、百度、字节、阿里、讯飞、ChatGLM 等多家服务，支持自定义模型列表与视觉模型；提供 prompt 模板（mask）、聊天记录自动压缩、WebDAV 同步、访问密码控制，数据存于浏览器本地。可一键部署到 Vercel 或用 Docker 运行，另设有企业版提供私有部署与权限管理。",
+  "highlights": [
+   "一次部署接入 OpenAI/Azure/Gemini/Claude/DeepSeek/百度/字节/阿里/讯飞/ChatGLM 等多家 API",
+   "支持 MCP（Model Context Protocol），通过 ENABLE_MCP=true 开启",
+   "聊天记录自动压缩以支持长对话并节省 token，支持 WebDAV 同步",
+   "客户端体积约 5MB，覆盖六大平台"
+  ],
+  "use_cases": [
+   "自建一个网页版多模型 AI 聊天站供个人或团队使用",
+   "在桌面和手机上使用同一套聊天客户端",
+   "企业管理员统一配置多个 AI 资源并控制成员权限（企业版）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://nextchat.club",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI聊天客户端",
+   "多模型聚合",
+   "Vercel部署",
+   "跨平台桌面应用"
+  ],
+  "domain": "AI 应用/聊天客户端",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "deepseek"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "简体中文 README 双语",
+   "接入百度/字节/阿里/讯飞/ChatGLM 等国内服务商"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L67: - **Deploy for free with one-click** on Vercel in under 1 minute",
+   "L69: - Fully compatible with self-deployed LLMs, recommended for use with RWKV-Runner or LocalAI",
+   "L176: ### `ANTHROPIC_API_KEY` (optional)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     176,
+     178,
+     180,
+     182,
+     184,
+     186
+    ],
+    "quotes": [
+     "### `ANTHROPIC_API_KEY` (optional)",
+     "anthropic claude Api Key.",
+     "### `ANTHROPIC_API_VERSION` (optional)",
+     "anthropic claude Api version.",
+     "### `ANTHROPIC_URL` (optional)",
+     "anthropic claude Api Url."
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     236,
+     238,
+     240,
+     242
+    ],
+    "quotes": [
+     "### `DEEPSEEK_API_KEY` (optional)",
+     "DeepSeek Api Key.",
+     "### `DEEPSEEK_URL` (optional)",
+     "DeepSeek Api Url."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     366,
+     368,
+     369,
+     371,
+     374
+    ],
+    "quotes": [
+     "### Docker (Recommended)",
+     "```shell",
+     "docker pull yidadaa/chatgpt-next-web",
+     "docker run -d -p 3000:3000 \\",
+     "   yidadaa/chatgpt-next-web"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     11,
+     87
+    ],
+    "note": "README 提及 OpenAI/GPT 服务，本项目非 ChatGPT 替代品的自称，也未作竞品对比",
+    "quotes": [
+     "✨ Light and Fast AI Assistant,with Claude, DeepSeek, GPT4 & Gemini Pro support.",
+     "1. Get OpenAI API Key;"
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     282,
+     284
+    ],
+    "note": "作为字节系模型接入（Doubao-lite-4k 模型配置示例）",
+    "quotes": [
+     "For ByteDance: use `modelName@bytedance=deploymentName` to customize model name and deployment name.",
+     "> Example: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx` will show option `Doubao-lite-4k(ByteDance)` in model list."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    417
+   ]
+  }
+ }
+}

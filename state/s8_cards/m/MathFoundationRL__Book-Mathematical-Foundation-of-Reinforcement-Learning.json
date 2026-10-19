@@ -1,0 +1,91 @@
+{
+ "fn": "MathFoundationRL/Book-Mathematical-Foundation-of-Reinforcement-Learning",
+ "sha": "3b46cf00e2ea",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给强化学习学习者提供数学基础教材及配套课程资源",
+  "review": "《Mathematical Foundations of Reinforcement Learning》一书的主页仓库，提供 Latex/Beamer 制作的幻灯片源码获取方式、全书章节目录、读者对象说明与引用格式。作者自 2019 年起在研究生课程中编写讲义成书，由 Springer 与清华大学出版社出版。仓库还汇总了读者制作的 Python/Matlab/R/C++ 代码实现与多语言学习笔记，并提供中英文课程视频链接；教授可邮件索取幻灯片源码用于授课。PDF 文件托管于 GitHub，另附印刷版勘误表。",
+  "highlights": [
+   "以数学视角系统介绍强化学习基本概念、问题与经典算法（共 10 讲）",
+   "配套中英文课程视频（Bilibili/YouTube），累计播放超 210 万次",
+   "汇总读者贡献的多语言代码实现与学习笔记链接",
+   "全部示例基于 grid world 任务展开"
+  ],
+  "use_cases": [
+   "零基础系统学习强化学习的数学原理",
+   "高年级本科生或研究生配合课程视频自学",
+   "教师备课借鉴课程内容与幻灯片",
+   "查找本书配套的第三方代码实现与学习笔记"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "强化学习",
+   "教材/书籍",
+   "课程资源",
+   "数学基础"
+  ],
+  "domain": "教育/学术资源",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "reinforcement-learning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "作者主页为西湖大学（westlake.edu.cn）",
+   "提供中文课程视频与中文 PPT"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: This book aims to provide a **mathematical but friendly** introduction to the fundamental concepts, basic problems, and ",
+   "L27: This book is designed for senior undergraduate students, graduate students, researchers, and practitioners interested in",
+   "L36: I have been teaching a graduate-level course on reinforcement learning since 2019. Along with teaching, I have been prep"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

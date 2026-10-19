@@ -1,0 +1,105 @@
+{
+ "fn": "anthropics/claude-cookbooks",
+ "sha": "00e0abaa7983",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 Claude 使用示例与指南手册",
+  "review": "以 notebook/recipe 形式提供可复制的代码片段与指南，覆盖分类、RAG、摘要、工具调用、第三方集成、多模态、提示缓存、成本优化、JSON 输出、内容审核等主题。使用示例需要 Claude API key，代码以 Python 为主但说明可适配其他支持 Claude API 的语言。内容组织为 Capabilities、Tool Use、Third-Party Integrations、Multimodal、Advanced Techniques 等章节。",
+  "highlights": [
+   "提供分类、RAG、摘要、工具调用等能力的示例 notebook",
+   "包含 Pinecone、Wikipedia、Voyage AI 等第三方集成示例",
+   "涵盖子 agent、提示缓存、成本优化、自动评估等进阶技术",
+   "提供 Claude API Fundamentals 课程作为入门路径"
+  ],
+  "use_cases": [
+   "为项目集成 Claude API 时复制现成代码片段",
+   "学习 RAG、视觉、工具调用等能力的实现方式",
+   "通过成本优化清单寻找 agent 的成本/效果配置"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "代码示例",
+   "LLM 教程",
+   "cookbook",
+   "开发者资源"
+  ],
+  "domain": "LLM 应用开发/教程资源",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # Claude Cookbooks",
+   "L3: The Claude Cookbooks provide code and guides designed to help developers build with Claude, offering copy-able code snip",
+   "L7: To make the most of the examples in this cookbook, you'll need a Claude API key (sign up for free here)."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     1,
+     3,
+     7
+    ],
+    "note": "Anthropic 官方仓库，围绕 Claude API 构建",
+    "quotes": [
+     "# Claude Cookbooks",
+     "The Claude Cookbooks provide code and guides designed to help developers build with Claude, offering copy-able code snip",
+     "To make the most of the examples in this cookbook, you'll need a Claude API key (sign up for free here)."
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

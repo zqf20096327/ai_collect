@@ -1,0 +1,186 @@
+{
+ "fn": "lobehub/lobehub",
+ "sha": "93a11e8cdb2d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "多智能体协作平台：像团队一样雇佣、调度、汇报 AI 代理",
+  "review": "LobeHub 是一个面向多智能体协作的工作空间：以 Agent 为工作单元，提供 Agent Builder 一键生成智能体配置、Agent Groups 并行协作、Pages 共享上下文协作写作、Schedule 定时运行、Workspace 团队空间，以及结构化可编辑的 Personal Memory 持续学习机制。声称支持 10,000+ 技能工具与 MCP 兼容插件。支持通过 Vercel、Zeabur、Sealos、阿里云或 Docker 镜像自行部署，配置 OPENAI_API_KEY 等环境变量后使用。README 注明项目仍在活跃开发中。",
+  "highlights": [
+   "Agent Builder 一句话生成智能体配置",
+   "Agent Groups 多智能体并行协作与定时调度",
+   "10,000+ 工具/MCP 兼容插件库",
+   "结构化、可编辑的白盒 Personal Memory"
+  ],
+  "use_cases": [
+   "把多个 AI 智能体组成团队按项目协作",
+   "通过定时任务让代理在离线时执行工作",
+   "在团队工作区中与智能体共享上下文协作",
+   "自托管私人聊天机器人服务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    56
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "多智能体",
+   "AI 工作台",
+   "自托管",
+   "MCP插件",
+   "团队协作"
+  ],
+  "domain": "AI 应用/多智能体平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multi-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文版本"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L76: LobeHub is a work-and-lifestyle space to find, build, and collaborate with agent teammates that grow with you. In LobeHu",
+   "L93: - **Unified Intelligence**: Seamlessly access any model and any modality—all under your control.",
+   "L128: LobeHub provides Self-Hosted Version with Vercel, Alibaba Cloud, and [Docker Image][docker-release-link]. This allows yo"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     229
+    ],
+    "quotes": [
+     "||**AIHubMix**|Uses the OpenAI enterprise API; all models site-wide at **14% off** the official price (incl. GPT-5.6 and"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     159,
+     165,
+     182
+    ],
+    "quotes": [
+     "### `B` Deploying with Docker",
+     "We provide a Docker image for deploying the LobeHub service on your own private device. Use the following command to sta",
+     "docker compose up -d"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     280
+    ],
+    "quotes": [
+     "$ git clone https://github.com/lobehub/lobehub.git"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     282
+    ],
+    "quotes": [
+     "$ pnpm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     197
+    ],
+    "quotes": [
+     "|`OPENAI_MODEL_LIST`|No|Used to control the model list. Use `+` to add a model, `-` to hide a model, and `model_name=dis"
+    ]
+   },
+   {
+    "term": "Midjourney",
+    "rel": "mention",
+    "lines": [
+     331
+    ],
+    "quotes": [
+     "- **[⛵️ Lobe Midjourney WebUI][lobe-midjourney-webui]:** WebUI for Midjourney, leverages AI to quickly generate a wide a"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     332,
+     333
+    ],
+    "quotes": [
+     "- **[🌏 Lobe i18n][lobe-i18n] :** Lobe i18n is an automation tool for the i18n (internationalization) translation process",
+     "- **[💌 Lobe Commit][lobe-commit]:** Lobe Commit is a CLI tool that leverages Langchain/ChatGPT to generate Gitmoji-based"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     333
+    ],
+    "quotes": [
+     "- **[💌 Lobe Commit][lobe-commit]:** Lobe Commit is a CLI tool that leverages Langchain/ChatGPT to generate Gitmoji-based"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

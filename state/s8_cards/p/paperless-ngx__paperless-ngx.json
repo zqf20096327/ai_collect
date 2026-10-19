@@ -1,0 +1,102 @@
+{
+ "fn": "paperless-ngx/paperless-ngx",
+ "sha": "63e91fb10706",
+ "source": "readme",
+ "identity": {
+  "one_liner": "将纸质文档扫描、索引并归档为可搜索在线档案的文档管理系统",
+  "review": "社区维护的文档管理系统，把实体文档转化为可搜索的在线归档，主题标签涉及 OCR、机器学习、PDF 等能力方向。项目是 Paperless 与 Paperless-ng 的官方继任者，由团队分工推进，提供多语言翻译协作、GitHub Discussions 收集功能请求，并有在线 demo。README 提醒文档可能包含敏感信息，数据明文存储，建议在本地可信服务器上运行并做好备份。",
+  "highlights": [
+   "将实体文档转化为可搜索在线归档",
+   "提供 docker compose 部署路径与安装脚本",
+   "支持多语言翻译协作与社区团队分工",
+   "提供官方在线 demo（demo.paperless-ngx.com）"
+  ],
+  "use_cases": [
+   "把家庭或办公室的纸质文件扫描归档成可检索的在线档案",
+   "发票、税单等敏感文档的本地私有化管理",
+   "从 Paperless-ng 迁移到维护更活跃的版本"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "viral",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://demo.paperless-ngx.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "文档管理",
+   "OCR",
+   "归档/搜索",
+   "自托管"
+  ],
+  "domain": "文档管理/知识管理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "ocr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": null
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: Paperless-ngx is a document management system that transforms your physical documents into a searchable online archive s",
+   "L29: The easiest way to deploy paperless is `docker compose`. The files in the `/docker/compose` directory are configured to ",
+   "L12: Paperless-ngx is the official successor to the original Paperless & Paperless-ng projects and is designed to distribute "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     29,
+     31,
+     34
+    ],
+    "quotes": [
+     "The easiest way to deploy paperless is `docker compose`. The files in the `/docker/compose` directory are configured to ",
+     "If you'd like to jump right in, you can configure a `docker compose` environment with our install script:",
+     "bash -c \"$(curl -L https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/main/install-paperless-ngx.sh)\""
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

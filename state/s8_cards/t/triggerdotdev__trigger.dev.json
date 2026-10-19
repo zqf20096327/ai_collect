@@ -1,0 +1,107 @@
+{
+ "fn": "triggerdotdev/trigger.dev",
+ "sha": "684a54c08fd0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为开发者提供 TypeScript 平台构建部署持久化 AI 工作流",
+  "review": "开源的 TypeScript AI 工作流构建平台：以 SDK 形式在用户代码库中编写任务，部署后获得无超时的长运行任务、自动重试、队列与幂等、检查点与版本化，并附全量日志追踪的可观测面板。支持人审节点暂停、流式输出回传前端、批量触发与多环境管理；可使用云托管或通过 Docker Compose / Helm 自托管。任务运行时可运行浏览器、Python 脚本、FFmpeg 等系统包。",
+  "highlights": [
+   "长运行任务无超时，带自动重试、队列与幂等机制",
+   "人机协同节点：任务可暂停等待人工审批或反馈",
+   "实时运行订阅与 LLM 流式输出支持",
+   "提供 Docker Compose 与 Kubernetes Helm chart 自托管路径"
+  ],
+  "use_cases": [
+   "把需要长时间运行的 AI 代理任务从 serverless 平台迁移到无超时环境",
+   "在关键决策点加入人工审核的自动化工作流",
+   "为前端应用实时订阅任务进度和流式 AI 输出"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "工作流编排",
+   "AI Agent",
+   "后台任务",
+   "TypeScript SDK"
+  ],
+  "domain": "LLM 基础设施/工作流编排",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "workflow-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L19: Trigger.dev is the open-source platform for building AI workflows in TypeScript. Long-running tasks with retries, queues",
+   "L103: - Docker self-hosting guide - use Docker Compose to spin up a Trigger.dev instance"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     103
+    ],
+    "quotes": [
+     "- Docker self-hosting guide - use Docker Compose to spin up a Trigger.dev instance"
+    ]
+   },
+   {
+    "term": "helm",
+    "rel": "support",
+    "lines": [
+     104
+    ],
+    "quotes": [
+     "- Kubernetes self-hosting guide - use our official Helm chart to deploy Trigger.dev to your Kubernetes cluster"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

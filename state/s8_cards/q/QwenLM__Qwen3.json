@@ -1,0 +1,176 @@
+{
+ "fn": "QwenLM/Qwen3",
+ "sha": "df0b1551d86a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "阿里通义千问团队的开源大语言模型系列 Qwen3",
+  "review": "Qwen3 是阿里云 Qwen 团队开发的大语言模型系列，提供密集与 MoE 两种结构、0.6B 到 235B-A22B 多种规模，以及 Instruct 与 Thinking 两种 2507 变体。README 给出通过 Transformers、llama.cpp、Ollama、LM Studio、MLX 等框架运行模型的方式，并提供涵盖推理、本地运行、部署、量化（GPTQ/AWQ/GGUF）与后训练（SFT/RLHF）的文档指引。权重公开在 Hugging Face 与 ModelScope，支持 100+ 语言与 256K 上下文（可扩展至 1M token）。",
+  "highlights": [
+   "密集与 MoE 模型，0.6B 至 235B-A22B 共 9 种规模",
+   "Thinking/Non-thinking 两种模式变体（2507 版本各自独立模型）",
+   "支持 100+ 语言与 256K 长上下文，可扩展至 1M token",
+   "提供 Transformers、llama.cpp、Ollama、MLX 等多框架运行指引"
+  ],
+  "use_cases": [
+   "本地或云端部署开源大模型用于推理服务",
+   "移动端/端侧运行模型（ExecuTorch、MNN）",
+   "构建 RAG、Agent 等应用接入 Qwen3",
+   "对模型做量化以在消费级硬件上运行"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "大语言模型",
+   "开源权重",
+   "推理框架",
+   "多语言"
+  ],
+  "domain": "AI 模型/大语言模型",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama",
+   "vllm",
+   "llama.cpp"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "微信社区入口",
+   "ModelScope 建议大陆用户使用",
+   "阿里巴巴 Qwen 团队"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L40:  We are excited to announce the release of Qwen3, the latest addition to the Qwen family of large language models.",
+   "L46:  Dense and Mixture-of-Experts (MoE) models of various sizes , available in 0.6B, 1.7B, 4B, 8B, 14B, 32B and 30B-A3B, 235",
+   "L74: ### 🤗 Transformers"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     13,
+     147,
+     149,
+     151,
+     152
+    ],
+    "quotes": [
+     "- Run Locally: the instructions for running LLM locally on CPU and GPU, with frameworks like llama.cpp, Ollama, and LM S",
+     "### Ollama",
+     "After installing Ollama, you can initiate the Ollama service with the following command (Ollama v0.9.0 or higher is reco",
+     "ollama serve",
+     "# You need to keep this service running whenever you are using ollama"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     14,
+     63,
+     121
+    ],
+    "quotes": [
+     "- Deployment: the demonstration of how to deploy Qwen for large-scale inference with frameworks like SGLang, vLLM, TGI, ",
+     "- 2024.03.28: We released the first MoE model of Qwen: Qwen1.5-MoE-A2.7B! Temporarily, only HF transformers and vLLM sup",
+     "For vLLM and SGLang, the environment variable `VLLM_USE_MODELSCOPE=true` and `SGLANG_USE_MODELSCOPE=true` can be used re"
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "compat",
+    "lines": [
+     15,
+     130,
+     136
+    ],
+    "quotes": [
+     "- Quantization: the practice of quantizing LLMs with GPTQ, AWQ, as well as the guidance for how to make high-quality qua",
+     "./llama-cli -hf Qwen/Qwen3-8B-GGUF:Q8_0 --jinja --color -ngl 99 -fa -sm row --temp 0.6 --top-k 20 --top-p 0.95 --min-p 0",
+     "./llama-server -hf Qwen/Qwen3-8B-GGUF:Q8_0 --jinja --reasoning-format deepseek -ngl 99 -fa -sm row --temp 0.6 --top-k 20"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     136
+    ],
+    "note": "仅作为 reasoning-format 参数值出现",
+    "quotes": [
+     "./llama-server -hf Qwen/Qwen3-8B-GGUF:Q8_0 --jinja --reasoning-format deepseek -ngl 99 -fa -sm row --temp 0.6 --top-k 20"
+    ]
+   },
+   {
+    "term": "cpu-infer",
+    "rel": "mention",
+    "lines": [
+     199
+    ],
+    "quotes": [
+     "### OpenVINO"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     3,
+     40
+    ],
+    "note": "即 Qwen 官方模型系列本身",
+    "quotes": [
+     " 💜 Qwen Chat &nbsp&nbsp | &nbsp&nbsp🤗 Hugging Face&nbsp&nbsp | &nbsp&nbsp🤖 ModelScope&nbsp&nbsp | &nbsp&nbsp 📑 Paper &nb",
+     " We are excited to announce the release of Qwen3, the latest addition to the Qwen family of large language models."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

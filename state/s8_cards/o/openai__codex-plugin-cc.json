@@ -1,0 +1,146 @@
+{
+ "fn": "openai/codex-plugin-cc",
+ "sha": "34b2f6c57fe0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让 Claude Code 用户调用 Codex 做代码审查与任务委派的插件",
+  "review": "OpenAI 官方发布的 Claude Code 插件，通过 /plugin marketplace 安装后，在 Claude Code 工作流内提供 /codex:review、/codex:adversarial-review 等斜杠命令调用 Codex 做只读代码审查，并提供 /codex:rescue、/codex:transfer 等命令把任务委派给 Codex、迁移会话上下文、管理后台作业。插件封装本地 Codex CLI 与 app server，复用已有安装、认证与 config.toml 配置；需要 ChatGPT 订阅或 OpenAI API key，以及 Node.js 18.18+。可选启用 review gate 在 Claude 停止前执行 Codex 审查。",
+  "highlights": [
+   "/codex:review 只读审查与 /codex:adversarial-review 可定向质询审查",
+   "/codex:rescue 通过子代理把调查、修 bug 等任务委派给 Codex",
+   "/codex:transfer 把 Claude Code 会话迁移为 Codex 线程，可在 App/TUI 续接",
+   "复用本地 Codex CLI 的安装、认证与 config.toml 配置"
+  ],
+  "use_cases": [
+   "在 Claude Code 里对未提交改动或分支差异跑 Codex 代码审查",
+   "把调试、修测试等任务委派给 Codex 后台运行并查看进度",
+   "在 Claude Code 与 Codex 之间无缝续接同一会话上下文"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "./docs/plugin-demo.webm",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "代码审查",
+   "Claude Code插件",
+   "任务委派",
+   "开发工具"
+  ],
+  "domain": "开发者工具/AI 编程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "code-review"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Use Codex from inside Claude Code for code reviews or to delegate tasks to Codex.",
+   "L18: - **ChatGPT subscription (incl. Free) or OpenAI API key.**",
+   "L269: The Codex plugin wraps the Codex app server. It uses the global `codex` binary installed in your environment and applies"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     1,
+     3,
+     5
+    ],
+    "note": "Claude Code 为宿主环境，非本插件接入的模型服务商",
+    "quotes": [
+     "# Codex plugin for Claude Code",
+     "Use Codex from inside Claude Code for code reviews or to delegate tasks to Codex.",
+     "This plugin is for Claude Code users who want an easy way to start using Codex from the workflow"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     48,
+     53
+    ],
+    "note": "npm 安装 Codex CLI 为本插件依赖路径",
+    "quotes": [
+     "`/codex:setup` will tell you whether Codex is ready. If Codex is missing and npm is available, it can offer to install C",
+     "npm install -g @openai/codex"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     1,
+     3,
+     5
+    ],
+    "note": "宿主平台，非替代/竞品对象",
+    "quotes": [
+     "# Codex plugin for Claude Code",
+     "Use Codex from inside Claude Code for code reviews or to delegate tasks to Codex.",
+     "This plugin is for Claude Code users who want an easy way to start using Codex from the workflow"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     18,
+     300
+    ],
+    "note": "Codex 的登录/订阅凭证来源",
+    "quotes": [
+     "- **ChatGPT subscription (incl. Free) or OpenAI API key.**",
+     "If you only use Claude Code today and have not used Codex yet, you will also need to sign in to Codex with either a Chat"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

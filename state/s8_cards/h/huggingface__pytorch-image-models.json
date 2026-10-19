@@ -1,0 +1,136 @@
+{
+ "fn": "huggingface/pytorch-image-models",
+ "sha": "af877e0bf157",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 PyTorch 开发者提供图像编码器/骨干网络集合与预训练权重",
+  "review": "timm 是一个 PyTorch 图像模型库，收录多种视觉骨干网络（ResNet、EfficientNet、ViT、Swin Transformer、ConvNeXt 等）的定义与预训练权重，并提供训练、评估、推理、导出脚本（train.py / validate.py / inference.py）以及 ONNX 导出支持。面向计算机视觉研究与工程开发者。近期更新包括 sweep.py 超参网格/随机搜索、多标签分类任务（BCE 训练与 mAP/F1 评估）、WSD 学习率调度器，以及一批新模型权重的接入。",
+  "highlights": [
+   "提供多种图像分类骨干网络的模型定义与预训练权重",
+   "附带 train.py、validate.py、inference.py、export 脚本及新的 sweep.py 超参搜索",
+   "支持多标签分类任务与 mAP/F1 评估指标",
+   "支持 ONNX 导出与 torch.compile"
+  ],
+  "use_cases": [
+   "用预训练权重做图像分类模型的训练与微调",
+   "为自己的任务挑选并评估不同的视觉骨干网络",
+   "将训练好的模型导出为 ONNX 用于部署推理"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图像分类",
+   "PyTorch",
+   "预训练模型",
+   "视觉骨干网络"
+  ],
+  "domain": "计算机视觉/深度学习模型库",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "object-detection",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # PyTorch Image Models",
+   "L8: * Hyperparameter sweeps via a new `sweep.py`: grid / random search over any `train.py` argument, one effective `--config",
+   "L39:  * Add `--task multilabel` to `train.py` / `validate.py`, trained with BCE (`MultiLabelClassificationTask`). See the"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     87
+    ],
+    "note": "提及新增 DeepSeek-V4/V4.1 ViT 分类器与编码器权重，非模型提供方接入",
+    "quotes": [
+     "* Add DeepSeek-V4 / V4.1 ViT classifiers and encoders with native timm Hub weights. Thanks Yonghye Kwon."
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     75,
+     83
+    ],
+    "note": "新增 Qwen 系列视觉塔权重，仅作为模型来源提及",
+    "quotes": [
+     "* Add Qwen-Drive-1.0-4B vision tower weights.",
+     "* Add Qwen3-VL / Qwen3.5 / Qwen3.8 ViT classifier and encoder variants, including classifiers w/ and w/o the native spat"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     153,
+     154,
+     155,
+     157,
+     158
+    ],
+    "note": "权重发布在 Hugging Face Hub，仅提及",
+    "quotes": [
+     " * https://huggingface.co/timm/vit_dlittle_patch16_reg1_gap_256.sbb_nadamuon_in1k (83.24% top-1)",
+     " * https://huggingface.co/timm/vit_dwee_patch16_reg1_gap_256.sbb_nadamuon_in1k (81.80% top-1)",
+     " * https://huggingface.co/timm/vit_dpwee_patch16_reg1_gap_256.sbb_nadamuon_in1k (81.67% top-1)",
+     " * https://huggingface.co/timm/csatv2_21m.sw_r640_in1k (83.13% top-1)",
+     " * https://huggingface.co/timm/csatv2_21m.sw_r512_in1k (82.58% top-1)"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    10
+   ],
+   "note": "宣布弃用 PlateauLRScheduler（--sched plateau）"
+  }
+ }
+}

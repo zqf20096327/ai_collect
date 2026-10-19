@@ -1,0 +1,188 @@
+{
+ "fn": "bytedance/deer-flow",
+ "sha": "921f4d5ae80e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的长时程 SuperAgent 编排框架：研究、编码与创作",
+  "review": "DeerFlow 是字节跳动开源的 super agent harness，通过编排子代理、记忆、沙箱与可扩展技能来处理耗时数分钟到数小时的任务。安装提供 make setup 交互式向导，引导选择 LLM 提供商、可选网络搜索及沙箱/bash/文件写入等安全偏好，生成 config.yaml 与 .env；另有面向编码代理的一句话引导安装说明。README 详述多种搜索/抓取后端（Brave、Tavily、DuckDuckGo、Serper、InfoQuest、Jina 等）对畸形响应的结构化错误处理，并提供 make doctor 自检与 make support-bundle 问题诊断包。v2.0 为完全重写，v1.x 分支继续维护原 Deep Research 框架。",
+  "highlights": [
+   "编排子代理、记忆与沙箱的长时程任务 harness",
+   "make setup 交互式向导配置 LLM 提供商与安全偏好",
+   "多种网络搜索与抓取后端的结构化错误处理",
+   "make doctor 自检与 support-bundle 问题诊断流程"
+  ],
+  "use_cases": [
+   "搭建能自主完成研究、编码与内容创作的长时程代理",
+   "为代理任务配置沙箱、bash 访问与文件写入等安全选项",
+   "接入多种网络搜索/抓取后端做深度调研"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    10
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent框架",
+   "deep-research",
+   "编排/harness",
+   "LLM基础设施"
+  ],
+  "domain": "LLM 基础设施/Agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "字节跳动（bytedance）维护",
+   "提供中文 README",
+   "面向中国大陆开发者的指引"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L12: DeerFlow (**D**eep **E**xploration and **E**fficient **R**esearch **Flow**) is an open-source **super agent harness** th",
+   "L17: > **DeerFlow 2.0 is a ground-up rewrite.** It shares no code with v1. If you're looking for the original Deep Research f",
+   "L103:  This launches an interactive wizard that guides you through choosing an LLM provider, optional web search, and executio"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker",
+    "npm",
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     32
+    ],
+    "note": "推荐用于运行 DeerFlow 的模型之一",
+    "quotes": [
+     "- We strongly recommend using Doubao-Seed-2.0-Code, DeepSeek v3.2 and Kimi 2.5 to run DeerFlow"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     75
+    ],
+    "note": "提及 Claude 适配器的重试行为",
+    "quotes": [
+     "Enabling it disables exposed SDK retries and the Claude and Codex adapters'"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     91,
+     100
+    ],
+    "quotes": [
+     "   git clone https://github.com/bytedance/deer-flow.git",
+     "   make setup"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    17
+   ]
+  },
+  "products": [
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     32
+    ],
+    "quotes": [
+     "- We strongly recommend using Doubao-Seed-2.0-Code, DeepSeek v3.2 and Kimi 2.5 to run DeerFlow"
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     32
+    ],
+    "quotes": [
+     "- We strongly recommend using Doubao-Seed-2.0-Code, DeepSeek v3.2 and Kimi 2.5 to run DeerFlow"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     54
+    ],
+    "quotes": [
+     "If you use Claude Code, Codex, Cursor, Windsurf, or another coding agent, you can hand it the setup instructions in one "
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     54
+    ],
+    "quotes": [
+     "If you use Claude Code, Codex, Cursor, Windsurf, or another coding agent, you can hand it the setup instructions in one "
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     54
+    ],
+    "quotes": [
+     "If you use Claude Code, Codex, Cursor, Windsurf, or another coding agent, you can hand it the setup instructions in one "
+    ]
+   }
+  ]
+ }
+}

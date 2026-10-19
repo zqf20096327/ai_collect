@@ -1,0 +1,136 @@
+{
+ "fn": "YaoFANGUK/video-subtitle-remover",
+ "sha": "51e13754f074",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给需要去除视频硬字幕/文本水印的用户，本地AI修复填充",
+  "review": "基于AI的视频/图片硬字幕与文本水印去除工具：对字幕区域进行填充（非相邻像素填充），以无损分辨率输出去除后的文件。支持自定义字幕位置或全视频自动去除所有文本，支持图片批量去水印。内置 GUI 与 CLI 两种使用方式，去除算法含 STTN、LAMA、ProPainter 三种可配置模式，模型可通过 backend/tools/train 自行训练替换。本地运行，无需申请第三方 API。Windows 提供多个预构建包，也可源码安装。",
+  "highlights": [
+   "无损分辨率去除硬字幕/文本水印，本地运行无需第三方 API",
+   "三种填充算法可选（STTN/LAMA/ProPainter），参数可调",
+   "支持 CUDA、DirectML、CPU、macOS Apple Silicon 四种运行模式",
+   "提供 GUI、CLI、Docker 三种使用方式"
+  ],
+  "use_cases": [
+   "去除视频中嵌入的硬字幕并保留原分辨率",
+   "批量去除图片上的文本水印",
+   "无 NVIDIA 显卡时用 DirectML 或 CPU 模式运行",
+   "对去字幕效果不满意时自行训练替换模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "视频处理",
+   "字幕去除",
+   "水印去除",
+   "图像修复"
+  ],
+  "domain": "视频/图像处理工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "QQ群讨论"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L15: Video-subtitle-remover (VSR) 是一款基于AI技术，将视频中的硬字幕去除的软件。",
+   "L115: 本项目支持 CUDA (NVIDIA显卡加速)、CPU (无 GPU)、 DirectML (AMD、Intel等GPU/APU加速) 和 macOS (Apple Silicon) 四种运行模式。",
+   "L19: - 提取原视频字幕，可配合：video-subtitle-extractor (VSE)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     45,
+     48
+    ],
+    "quotes": [
+     "**Docker版本：**",
+     "  docker run -it --name vsr --gpus all eritpchy/video-subtitle-remover:1.4.0-cuda11.8 python backend/main.py -i test/tes"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     75,
+     77
+    ],
+    "note": "Python 依赖的安装方式，非本产品安装途径",
+    "quotes": [
+     "- MacOS 用户可以使用 Homebrew 安装：",
+     "  brew install python@3.12"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     139,
+     143,
+     148,
+     155,
+     157
+    ],
+    "note": "pip 安装项目依赖",
+    "quotes": [
+     "  pip install paddlepaddle-gpu==3.0.0 -i https://www.paddlepaddle.org.cn/packages/stable/cu118/",
+     "  pip install torch==2.7.0 torchvision==0.22.0 --index-url https://download.pytorch.org/whl/cu118",
+     "  pip install -r requirements.txt",
+     "  pip install onnxruntime-gpu==1.22.0",
+     "  pip install onnxruntime-gpu==1.20.1 --index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/onnxru"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

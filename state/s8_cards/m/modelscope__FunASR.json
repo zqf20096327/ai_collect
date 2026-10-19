@@ -1,0 +1,237 @@
+{
+ "fn": "modelscope/FunASR",
+ "sha": "db1b5389252b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的语音识别工具包：训练/推理/流式 ASR 与部署服务",
+  "review": "FunASR 是一个语音识别工具包，将任务、checkpoint 与运行时分开选择：提供文件转写、流式转写、VAD、标点、说话人分离、情感与音频事件识别等 pipeline，模型库含 SenseVoiceSmall、Paraformer、Fun-ASR-Nano 等。支持 Python AutoModel、CLI、OpenAI 兼容 HTTP 服务、Docker 流式服务、vLLM 批处理加速以及 llama.cpp/GGUF 的无 Python 边缘部署，并提供 MCP Server 供 Claude/Cursor 等 agent 调用。工具包本身为 MIT 许可，第三方模型许可单独约定。",
+  "highlights": [
+   "任务/checkpoint/运行时分离的工具包架构，含模型选择与部署矩阵指南",
+   "多种部署路径：Python、CLI、OpenAI 兼容服务、Docker、vLLM、llama.cpp/GGUF",
+   "提供 MCP Server 与 OpenAI API 接入 LangChain/Dify/AutoGen 等 agent 框架",
+   "GPU（CUDA/Vulkan）与 CPU/边缘设备的预编译二进制分发"
+  ],
+  "use_cases": [
+   "为中文/多语言音频做文件转写、标点与说话人分段",
+   "部署实时流式 ASR 的 WebSocket 服务",
+   "在无 GPU 的边缘设备上以 GGUF 二进制运行语音识别",
+   "把语音转写接入 Claude/Cursor 等 agent 工作流"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": "cpu-ok",
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2305.11013",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音识别",
+   "流式ASR",
+   "说话人分离",
+   "边缘部署",
+   "模型服务"
+  ],
+  "domain": "语音/AI 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "llama.cpp",
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "asr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文版本",
+   "阿里 OSS 示例音频与达摩院模型示例文本",
+   "modelscope 组织"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5:  Industrial speech recognition toolkit for offline, streaming, and edge deployment.",
+   "L6:  ASR · VAD · punctuation · speaker pipelines · emotion and audio-event models · OpenAI-compatible serving",
+   "L112: FunASR is a toolkit: choose the task, checkpoint, and runtime separately."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "llama.cpp",
+    "rel": "support",
+    "lines": [
+     123,
+     231,
+     233,
+     238
+    ],
+    "quotes": [
+     "|Native CPU/edge transcription|Fun-ASR-Nano or SenseVoiceSmall GGUF|llama.cpp runtime|Requires matching converted weight",
+     "### CPU / Edge — llama.cpp / GGUF (no GPU, no Python)",
+     "Run **SenseVoice / Paraformer / Fun-ASR-Nano** as a **single self-contained binary** on CPU and edge devices — this is t",
+     "./llama-funasr-sensevoice -m ./gguf/sensevoice-small-q8.gguf --vad ./gguf/fsmn-vad.gguf -a audio.wav"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     95,
+     98,
+     100
+    ],
+    "quotes": [
+     "At scale, accelerate Fun-ASR-Nano with vLLM (batch processing):",
+     "from funasr.auto.auto_model_vllm import AutoModelVLLM",
+     "model = AutoModelVLLM(model=\"FunAudioLLM/Fun-ASR-Nano-2512\", tensor_parallel_size=1)"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     106
+    ],
+    "note": "MCP Server 供 Claude 使用，非专门 SDK 接入",
+    "quotes": [
+     "> **Use with AI agents:** MCP Server for Claude/Cursor · OpenAI API for LangChain/Dify/AutoGen"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     35,
+     37,
+     134,
+     143
+    ],
+    "quotes": [
+     "# CPU-only installs can use the default PyPI wheels.",
+     "pip install funasr",
+     "pip install funasr",
+     "Requirements: Python ≥ 3.8. Install PyTorch + torchaudio first (pytorch.org), then `pip install funasr`."
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     28,
+     30,
+     129
+    ],
+    "quotes": [
+     "Open In Colab",
+     "No local setup? Open the Colab quickstart to transcribe a public sample or upload your own audio in a browser.",
+     "Trying FunASR for the first time? Use the Colab quickstart before setting up a local environment. Choosing a first model"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     140,
+     141
+    ],
+    "quotes": [
+     "git clone https://github.com/modelscope/FunASR.git && cd FunASR",
+     "pip install -e ./"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     228
+    ],
+    "quotes": [
+     "docker pull registry.cn-hangzhou.aliyuncs.com/funasr_repo/funasr:funasr-runtime-sdk-online-cpu-0.1.12"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU-only",
+    "rel": "support",
+    "lines": [
+     35
+    ],
+    "note": "CPU-only 安装可用默认 PyPI wheel",
+    "quotes": [
+     "# CPU-only installs can use the default PyPI wheels."
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     106
+    ],
+    "note": "MCP Server 的使用方，非竞品",
+    "quotes": [
+     "> **Use with AI agents:** MCP Server for Claude/Cursor · OpenAI API for LangChain/Dify/AutoGen"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     106
+    ],
+    "note": "OpenAI API 的配合框架",
+    "quotes": [
+     "> **Use with AI agents:** MCP Server for Claude/Cursor · OpenAI API for LangChain/Dify/AutoGen"
+    ]
+   },
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     106
+    ],
+    "note": "OpenAI API 的配合框架",
+    "quotes": [
+     "> **Use with AI agents:** MCP Server for Claude/Cursor · OpenAI API for LangChain/Dify/AutoGen"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

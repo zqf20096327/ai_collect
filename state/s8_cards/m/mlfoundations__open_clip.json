@@ -1,0 +1,131 @@
+{
+ "fn": "mlfoundations/open_clip",
+ "sha": "3c112733cbca",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给研究者的开源 CLIP（图文对比学习）PyTorch 实现",
+  "review": "CLIP 的开源实现，基于 PyTorch 提供图文对比学习模型的训练与推理。main 分支的训练栈围绕 TrainingTask 封装、dict 批次、FSDP2、NaFlex 图像/音频管线与多种 torch.compile 策略组织，新增 CLAP 音频-文本、CoCa、MaMMUT、SigLIP 等模型族配置；旧版训练 API 需固定到 v3 分支或 PyPI 3.x 版本。预训练图文模型的推理用法保持兼容。提供论文链接与 Colab 示例。",
+  "highlights": [
+   "CLIP 的开源 PyTorch 实现，支持训练与预训练模型推理",
+   "训练支持 FSDP2、多种 torch.compile 策略与 NaFlex 可变分辨率/音频管线",
+   "包含 CLIP、SigLIP、CoCa、MaMMUT、CLAP 等模型族配置",
+   "提供交互式 Colab notebook 与论文引用入口"
+  ],
+  "use_cases": [
+   "训练自定义图文对比学习模型",
+   "加载预训练 CLIP/CoCa 模型做图像-文本特征提取",
+   "音频-文本对比学习（CLAP）实验"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://arxiv.org/abs/2212.07143",
+  "demo_url": "https://colab.research.google.com/github/mlfoundations/open_clip/blob/master/docs/Interacting_with_open_clip.ipynb",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "多模态",
+   "对比学习",
+   "计算机视觉",
+   "预训练模型",
+   "zero-shot分类"
+  ],
+  "domain": "计算机视觉/多模态深度学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing",
+   "multimodal",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # OpenCLIP",
+   "L8: > `main` now uses the post-refactor training stack by default. Training is organized around `TrainingTask` wrappers, dic",
+   "L45: > - Training pipeline wraps `model + loss` in a `TrainingTask` subclass (`CLIPTask`, `SigLIPTask`, `CoCaTask`, `DistillC"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     4,
+     8
+    ],
+    "quotes": [
+     "pypi",
+     "> `main` now uses the post-refactor training stack by default. Training is organized around `TrainingTask` wrappers, dic"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     3
+    ],
+    "note": "Colab 示例链接，非安装途径",
+    "quotes": [
+     "[[Paper]](https://arxiv.org/abs/2212.07143) [[Citations]](#citing) [[Clip Colab]](https://colab.research.google.com/gith"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     16,
+     44
+    ],
+    "note": "作为文本塔来源与权重加载路径被使用",
+    "quotes": [
+     "> - **Hugging Face ModernBERT text towers** — e.g. `gte-modernbert-base-ViT-B-32-256`",
+     "> - `load_openai_model`, `list_openai_models`, and `build_model_from_openai_state_dict` removed. Original-OpenAI weights"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    23,
+    24
+   ]
+  }
+ }
+}

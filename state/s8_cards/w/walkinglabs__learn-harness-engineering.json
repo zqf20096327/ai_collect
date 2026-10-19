@@ -1,0 +1,167 @@
+{
+ "fn": "walkinglabs/learn-harness-engineering",
+ "sha": "58eb016e442d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 AI coding agent harness 工程课程（14 讲+8 项目）",
+  "review": "以项目制课程形式讲解如何为 AI coding agent 构建运行环境（harness）：覆盖指令、状态、验证、范围、会话生命周期五个子系统，以及 loop engineering 与 graph engineering 等进阶主题。内容含 14 讲、8 个动手项目、可复制的模板资源库（AGENTS.md、feature_list.json、init.sh 等），全部课程材料以 MIT 许可发布并提供 15 种语言翻译，可通过 npm 脚本在本地生成 PDF 教材。毕设项目为一个 Electron 知识库桌面应用，随课程阶段演进。",
+  "highlights": [
+   "harness 五子系统框架：指令、状态、验证、范围、会话生命周期",
+   "提供可复制模板库与 harness-creator 脚手架技能（AGENTS.md、init.sh、验证流程）",
+   "14 讲 + 8 项目，15 种语言翻译，MIT 许可",
+   "含 Claude Code、Codex、DeepSeek、Pi 四个生产 harness 的拆解章节"
+  ],
+  "use_cases": [
+   "学习如何在真实仓库中让 coding agent 可靠地完成多轮任务",
+   "为自己的项目搭建 AGENTS.md、状态文件与验证工作流",
+   "参考生产级 agent harness（Claude Code/Codex/DeepSeek/Pi）的设计方式"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教程/课程",
+   "AI Agent",
+   "Harness 工程",
+   "编码代理"
+  ],
+  "domain": "AI 开发教育/Agent 工程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L19:  A project-based course on building the environment, state management, verification, and control mechanisms that make AI",
+   "L136: A harness has five subsystems:",
+   "L187: 1. **Lectures**: 13 conceptual units explaining the theory behind harness engineering.",
+   "L188: 2. **Projects**: 7 hands-on projects where you build an agentic workspace from scratch."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     69,
+     70,
+     111,
+     37
+    ],
+    "note": "引用其 harness 工程文章与 Claude Code 拆解，非接入其服务",
+    "quotes": [
+     "- Anthropic: Effective harnesses for long-running agents",
+     "- Anthropic: Harness design for long-running application development",
+     "The evidence is clear. Anthropic ran a controlled experiment: same model (Opus 4.5), same prompt (\"build a 2D retro game",
+     "|**Claude Code**|How Claude Code builds its harness — four-layer memory, five-level compaction, hooks, and sub-agent iso"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     39
+    ],
+    "note": "harness 拆解章节对象之一，非模型接入",
+    "quotes": [
+     "|**DeepSeek**|How DeepSeek builds its harness — \"everything is a plugin,\" capability seams, and an event pipeline.|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     365
+    ],
+    "note": "npm run pdf:build 生成本地 PDF 教材",
+    "quotes": [
+     "npm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     37,
+     200,
+     208
+    ],
+    "note": "被拆解的 harness 案例与文件命名兼容说明，非替代/竞品",
+    "quotes": [
+     "|**Claude Code**|How Claude Code builds its harness — four-layer memory, five-level compaction, hooks, and sub-agent iso",
+     "    ├── CLAUDE.md              <-- (alternative, if using Claude Code)",
+     "Claude Code and is not updated automatically by any agent. Codex, OpenHands,"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     397
+    ],
+    "note": "窗外行，仅提及",
+    "quotes": [
+     "- LangChain: Improving Deep Agents with harness engineering"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     399
+    ],
+    "note": "窗外行，仅提及",
+    "quotes": [
+     "- Cursor: Continually improving our agent harness"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

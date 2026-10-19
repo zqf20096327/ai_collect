@@ -1,0 +1,101 @@
+{
+ "fn": "google-research/google-research",
+ "sha": "f21ce455a915",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Google Research 开源研究代码汇总仓库",
+  "review": "该仓库集中存放 Google Research 发布的研究代码，内容按子目录划分为多个独立项目，覆盖主题标签所列的 AI 与机器学习研究方向。仓库体量较大，README 建议仅下载感兴趣的子目录（可通过 github.dev 编辑器下载），或以浅克隆方式获取源码。数据集采用 CC BY 4.0 许可，源代码采用 Apache 2.0 许可，仓库声明非 Google 官方产品。",
+  "highlights": [
+   "集中托管 Google Research 发布的多个研究项目代码",
+   "数据集采用 CC BY 4.0，源代码采用 Apache 2.0 双许可结构",
+   "支持通过 github.dev 编辑器按子目录下载",
+   "提供浅克隆命令以减小下载体积"
+  ],
+  "use_cases": [
+   "按子目录下载感兴趣的研究项目代码",
+   "复现或查阅论文配套的开源实现",
+   "以浅克隆方式浏览仓库内容"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "研究代码",
+   "机器学习",
+   "AI",
+   "汇总仓库"
+  ],
+  "domain": "科研/机器学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3: This repository contains code released by",
+   "L12: Because the repo is large, we recommend you download only the subdirectory of"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     24
+    ],
+    "quotes": [
+     "git clone git@github.com:google-research/google-research.git --depth=1"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    6,
+    9
+   ],
+   "quotes": [
+    "All datasets in this repository are released under the CC BY 4.0 International",
+    "repository are released under the Apache 2.0 license, the text of which can be"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

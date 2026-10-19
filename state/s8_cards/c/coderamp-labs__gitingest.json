@@ -1,0 +1,131 @@
+{
+ "fn": "coderamp-labs/gitingest",
+ "sha": "28025cf72069",
+ "source": "readme",
+ "identity": {
+  "one_liner": "把 Git 仓库转成 LLM 可用文本摘要的开发者工具",
+  "review": "将任意 Git 仓库 URL 或本地目录转换为面向 LLM 提示词优化的文本摘要，输出文件/目录结构、提取大小与 token 统计（基于 tiktoken 估算）。提供三种使用途径：网页版（改 GitHub URL 中的 hub 为 ingest）、CLI 命令行工具与 Python 包（同步/异步 API，兼容 Jupyter）。默认跳过 .gitignore 文件，私有仓库需 GitHub PAT。支持 Docker/Compose 自托管服务端，可选 MinIO S3 存储、Prometheus 指标与 Sentry 错误跟踪。",
+  "highlights": [
+   "CLI、Python 包（含 sync/async API）与浏览器扩展三种使用方式",
+   "输出文件结构、提取大小与 token 统计（tiktoken 估算）",
+   "默认跳过 .gitignore，可用 --include-gitignored 覆盖，支持 STDOUT 管道输出",
+   "Docker Compose 提供 prod/dev 两套 profile，dev 集成 MinIO 对象存储"
+  ],
+  "use_cases": [
+   "把代码库内容喂给 LLM 做分析或问答前先提取上下文",
+   "命令行里把仓库摘要直接管道给其他工具处理",
+   "在 Jupyter notebook 中异步提取仓库内容做代码研究",
+   "自托管一个仓库摘要网页服务供团队使用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "代码上下文提取",
+   "LLM工具链",
+   "CLI工具",
+   "自托管"
+  ],
+  "domain": "LLM 基础设施/开发者工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供中文等多语言 README"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L20: Turn any Git repository into a prompt-friendly text ingest for LLMs.",
+   "L37: - **Easy code context**: Get a text digest from a Git repository URL or a directory",
+   "L43: - **CLI tool**: Run it as a shell command",
+   "L44: - **Python package**: Import it in your code"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     53,
+     57,
+     63
+    ],
+    "quotes": [
+     "Gitingest is available on PyPI.",
+     "pip install gitingest",
+     "pip install gitingest[server]"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     72
+    ],
+    "note": "pipx 的安装方式之一，非本产品直接安装途径",
+    "quotes": [
+     "brew install pipx"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     180,
+     186,
+     275,
+     281
+    ],
+    "quotes": [
+     "   docker build -t gitingest .",
+     "   docker run -d --name gitingest -p 8000:8000 gitingest",
+     "docker compose --profile dev up",
+     "docker compose --profile prod up -d"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,132 @@
+{
+ "fn": "Jim-jimu/mabe-behavior-recognition",
+ "sha": "962efc5b238c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "从姿态轨迹识别小鼠行为并定位起止时间区间的科研项目",
+  "review": "面向 MABe Challenge 的完整小鼠行为识别方案：从姿态轨迹提取头身运动解耦、有向双鼠交互（施动者→目标）与多尺度时间上下文特征，按“关键点配置×个体/双鼠类型×行为”训练 84 个 LightGBM 二分类任务，视频分组五折交叉验证并做 OOF 阈值优化，推理输出施动者—目标—行为—起止帧区间。支持可恢复训练（检查点、磁盘/时间预算）与离线推理，CPU 训练。Kaggle 隐藏测试集 Public/Private 分数 0.49911/0.48777。",
+  "highlights": [
+   "36 类行为、9 种关键点配置、84 个任务的完整训练与推理流程",
+   "视频分组五折 LightGBM 与 OOF 阈值优化",
+   "可恢复训练：每折检查点、任务数/时间/磁盘预算控制",
+   "推理输出可直接分析的施动者—目标—行为—时间区间"
+  ],
+  "use_cases": [
+   "在 MABe 数据上复现训练并生成行为识别提交",
+   "分析小鼠个体动作与双鼠有向交互的时间区间",
+   "用仓库自带预测结果零数据快速可视化行为时间轴"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "行为识别",
+   "姿态分析",
+   "时间序列",
+   "Kaggle竞赛",
+   "计算神经科学"
+  ],
+  "domain": "动物行为分析/机器学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README 为主"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L7: **从姿态轨迹中识别“谁对谁做了什么”，并定位行为的起止时间。** 本项目面向不同帧率、空间尺度和关键点配置下的小鼠行为分析，将头身运动分解、有向交互关系和多尺度时间上下文结合起来，以五折 LightGBM 完成逐帧识别与事件解码。",
+   "L79: |模型|LightGBM 二分类器|"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     110
+    ],
+    "quotes": [
+     "git clone https://github.com/Jim-jimu/mabe-behavior-recognition.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     114,
+     125
+    ],
+    "note": "pip install -r 安装依赖文件，非发布 PyPI 包",
+    "quotes": [
+     "python -m pip install -r requirements-viz.txt",
+     "python -m pip install -r requirements.txt"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     128
+    ],
+    "note": "macOS 缺 libomp 时的可选处理，非本产品安装途径",
+    "quotes": [
+     "运行环境为 **Python 3.12、LightGBM 4.6.0、scikit-learn 1.8.0、NumPy 1.26.4**，使用 CPU 训练与推理。macOS 若提示缺少 `libomp`，先执行 `brew install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

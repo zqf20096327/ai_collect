@@ -1,0 +1,124 @@
+{
+ "fn": "recommenders-team/recommenders",
+ "sha": "8b406a8b4479",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向研究者与开发者的推荐系统最佳实践库与示例集",
+  "review": "Recommenders 是 Linux Foundation of AI and Data 旗下的推荐系统项目，以 Jupyter notebook 形式提供构建推荐系统的示例与最佳实践，覆盖数据准备、模型构建、离线评估、超参调优与模型在 Azure 上的生产化五类任务，并附带数据加载、评估、训练/测试切分等工具。仓库收录多种经典与深度学习推荐算法实现，提供 uv 管理环境与 PyPI 安装途径，可选 gpu/spark/experimental 等扩展，附算法对比基准 notebook（MovieLens 数据集）。",
+  "highlights": [
+   "以 Jupyter notebook 提供 Quick start 与 Deep dive 两级示例",
+   "收录 ALS、xDeepFM、LightGCN、SASRec 等多类推荐算法实现",
+   "提供 gpu、spark、dev、all、experimental 等安装扩展选项",
+   "提供基于 MovieLens 的算法对比基准 notebook"
+  ],
+  "use_cases": [
+   "为推荐算法原型实验查找可运行的示例代码",
+   "按数据准备、建模、评估、调优、上线流程学习推荐系统",
+   "对比不同协同过滤算法在 MovieLens 上的指标表现",
+   "将推荐模型部署到 Azure 生产环境"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "推荐系统",
+   "Jupyter notebook",
+   "机器学习",
+   "深度学习",
+   "模型评估"
+  ],
+  "domain": "推荐系统/机器学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "recommender-system"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L19: Recommenders objective is to assist researchers, developers and enthusiasts in prototyping, experimenting with and bring",
+   "L23: This repository contains examples and best practices for building recommendation systems, provided as Jupyter notebooks.",
+   "L21: Recommenders is a project under the Linux Foundation of AI and Data."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     4
+    ],
+    "note": "窗外行：PyPI Version 徽章，作为安装途径",
+    "quotes": [
+     "PyPI Version"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "30Gb of RAM",
+    "rel": "mention",
+    "lines": [
+     107
+    ],
+    "note": "基准测试所用机器配置，非产品硬件要求",
+    "quotes": [
+     "We provide a benchmark notebook to illustrate how different algorithms could be evaluated and compared. In this notebook"
+    ]
+   },
+   {
+    "term": "RAM, and 1 G",
+    "rel": "mention",
+    "lines": [
+     107
+    ],
+    "note": "同上，基准运行环境描述",
+    "quotes": [
+     "We provide a benchmark notebook to illustrate how different algorithms could be evaluated and compared. In this notebook"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

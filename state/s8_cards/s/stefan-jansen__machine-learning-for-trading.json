@@ -1,0 +1,123 @@
+{
+ "fn": "stefan-jansen/machine-learning-for-trading",
+ "sha": "8f8928460ea6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为交易研究者提供机器学习交易策略的图书配套代码库",
+  "review": "Stefan Jansen《Machine Learning for Trading》第三版的全书代码：27 章、9 个案例研究，围绕一条从数据基础设施、策略研究到部署监控的端到端工作流组织。覆盖梯度提升、深度时间序列、因果机器学习、强化学习、生成式 AI（基于 SEC 文件的 RAG、Graph RAG、多智能体研究系统）与合成金融数据生成。数据层使用 Polars，每章提供可复现的 Docker 环境。",
+  "highlights": [
+   "27 章与 9 个横贯全书的案例研究（ETF、加密永续、日内股票、期权、外汇、期货等）",
+   "模型工具箱含 XGBoost/LightGBM/CatBoost 与 PatchTST、iTransformer、Mamba 等时间序列架构",
+   "生成式 AI 章节：SEC 文件 RAG、知识图谱与 Graph RAG、多智能体研究系统",
+   "每章提供可复现 Docker 环境，数据层基于 Polars"
+  ],
+  "use_cases": [
+   "按书中章节复现机器学习交易策略的回测流程",
+   "学习从数据管道到实盘部署的量化研究工作流",
+   "参考合成金融数据与因果推断在交易研究中的实现"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "量化交易",
+   "机器学习",
+   "回测",
+   "图书配套代码"
+  ],
+  "domain": "金融科技/量化交易",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "quant-finance"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: The code for *Machine Learning for Trading, 3rd Edition* by",
+   "L37: - **Generative AI**: retrieval-augmented generation grounded in SEC filings, knowledge graphs and Graph RAG, and",
+   "L51: The data layer moves to **Polars** for fast, expression-based manipulation, and every chapter ships in **reproducible"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     182
+    ],
+    "quotes": [
+     "|**24. Autonomous Agents**|ReAct, Tree of Thoughts, and Reflexion architectures, memory systems, tool contracts, the eng"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     217
+    ],
+    "quotes": [
+     "git clone https://github.com/stefan-jansen/machine-learning-for-trading.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     51,
+     225
+    ],
+    "quotes": [
+     "The data layer moves to **Polars** for fast, expression-based manipulation, and every chapter ships in **reproducible",
+     "docker compose pull ml4t"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    12
+   ]
+  }
+ }
+}

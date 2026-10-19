@@ -1,0 +1,117 @@
+{
+ "fn": "langchain-ai/langchainjs",
+ "sha": "2ea6401b52ba",
+ "source": "readme",
+ "identity": {
+  "one_liner": "JavaScript 开发者构建 LLM 应用的组件化框架",
+  "review": "LangChain.js 是 TypeScript 编写的框架，用于构建由 LLM 驱动的应用：提供 agents、models、embeddings、vector stores 等的统一接口，可组合互操作组件与第三方集成。README 列出数据增强、模型互换、快速原型等用途，并指向生态内的 Deep Agents、LangGraph.js（agent 编排）与 LangSmith（构建/测试/监控平台）。通过 npm/pnpm/yarn 安装，支持 Node.js、Cloudflare Workers、浏览器、Deno、Bun 等运行环境。",
+  "highlights": [
+   "为 agents、模型、嵌入、向量库等提供统一标准接口",
+   "可替换模型的互操作层，含模型供应商/工具/向量库集成库",
+   "支持 Node.js、Cloudflare Workers、Vercel/Next.js、Deno、Bun 等多种环境",
+   "npm/pnpm/yarn 三种包管理器安装"
+  ],
+  "use_cases": [
+   "用 TypeScript 构建 LLM 驱动的应用与 agent",
+   "在不同模型供应商之间切换以测试选型",
+   "连接 LLM 与内部/外部数据源做检索增强",
+   "从原型到生产部署 LLM 应用（配合 LangSmith 监控调试）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM框架",
+   "Agent开发",
+   "TypeScript",
+   "应用开发框架"
+  ],
+  "domain": "LLM 应用开发框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: LangChain is a framework for building LLM-powered applications. It helps you chain together interoperable components and",
+   "L32: LangChain helps developers build applications powered by LLMs through a standard interface for agents, models, embedding",
+   "L55: - Node.js (ESM and CommonJS) - 20.x, 22.x, 24.x"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     26,
+     28
+    ],
+    "quotes": [
+     "You can use npm, pnpm, or yarn to install LangChain.js",
+     "`npm install -S langchain` or `pnpm install langchain` or `yarn add langchain`"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     11,
+     14,
+     20
+    ],
+    "note": "本仓库即 LangChain 的 JS 版本；L20 提及对应的 Python 库",
+    "quotes": [
+     "LangChain is a framework for building LLM-powered applications. It helps you chain together interoperable components and",
+     "> Just getting started? Check out **Deep Agents** — a higher-level package built on LangChain for agents that have built",
+     "For an equivalent Python library, check out LangChain."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

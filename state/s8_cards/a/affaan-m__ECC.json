@@ -1,0 +1,211 @@
+{
+ "fn": "affaan-m/ECC",
+ "sha": "025a818f0cac",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 Claude Code 等 AI 编码 harness 安装 agent 工程系统的插件",
+  "review": "ECC 是面向 AI 编码代理的开源 harness 系统，以 Claude Code 插件（ecc@ecc）和 npm 包（ecc-universal）形式分发，提供 71 个 agent、311 个技能、97 个命令、hooks、规则包、记忆与持续学习机制，以及 AgentShield 安全扫描（扫描 prompts、hooks、MCP 配置、权限、密钥）。项目按 plan→test→implement→review→verify→remember→improve 流程组织。对 Claude Code 提供引导式插件安装，Codex 与 Kimi Code 有引导路径，Cursor、OpenCode、Gemini、Zed、GitHub Copilot、Qwen 等通过能力受限的适配器支持；README 注明需查看支持状态矩阵，不保证功能对等。MIT 许可，另有面向私有仓库的托管 Pro 版 GitHub App。",
+  "highlights": [
+   "71 个 agent、311 个技能与 97 个命令的插件化分发",
+   "AgentShield 扫描 prompts、hooks、MCP 配置、权限与密钥",
+   "hooks、记忆、会话摘要与持续学习等运行时机制",
+   "提供 npx/pnpm/yarn/bun 引导式安装与 dry-run 预检"
+  ],
+  "use_cases": [
+   "为 Claude Code 或 Codex 安装统一的计划-测试-审查工作流",
+   "扫描 agent 相关配置中的密钥与权限风险",
+   "把反复成功的做法沉淀为可复用的技能与规则包"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent工具链",
+   "编码助手插件",
+   "开发者工具",
+   "安全扫描"
+  ],
+  "domain": "开发者工具/Agent 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L98: Your agent can write code, but ECC gives it a coordinated engineering system and toolbox: it plans before it builds, ver",
+   "L108: ECC is MIT-licensed open source. It works best with Claude Code today, has native Codex and Qoder plugin paths, and prov",
+   "L110: Access to 71 agents, 311 skills, and 97 legacy command shims, plus hooks, rules, memory, continuous learning, and AgentS"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     296
+    ],
+    "quotes": [
+     "This is intentional. Anthropic marketplace/plugin installs are keyed by a canonical plugin identifier, so ECC uses `ecc@"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     139,
+     177,
+     178,
+     179,
+     180,
+     191,
+     205
+    ],
+    "quotes": [
+     "npx ecc-universal@2.2.3 setup",
+     "|npm / npx|`npx ecc-universal@2.2.3 setup`|",
+     "|pnpm|`pnpm dlx ecc-universal@2.2.3 setup`|",
+     "|Yarn 2+|`yarn dlx ecc-universal@2.2.3 setup`|",
+     "|Bun|`bunx ecc-universal@2.2.3 setup`|",
+     "npx ecc-universal@2.2.3 install --guided",
+     "npx ecc-universal@2.2.3 install --guided \\"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "compat",
+    "lines": [
+     266,
+     267
+    ],
+    "quotes": [
+     "git clone https://github.com/affaan-m/ECC.git",
+     "cd ECC"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     56,
+     108,
+     130,
+     132,
+     198
+    ],
+    "note": "主要目标 harness，非替代/竞品对象",
+    "quotes": [
+     "## Install with Claude Code",
+     "ECC is MIT-licensed open source. It works best with Claude Code today, has native Codex and Qoder plugin paths, and prov",
+     "> ECC 2.2 includes guided package setup for Claude Code, Codex, and Kimi Code.",
+     "> requires Git and Claude Code 2.1 or newer on `PATH`.",
+     "|Claude Code|Native `ecc@ecc` plugin with one `user`, `project`, or `local` scope and an ECC hook profile|"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     130,
+     186,
+     194,
+     200
+    ],
+    "quotes": [
+     "> ECC 2.2 includes guided package setup for Claude Code, Codex, and Kimi Code.",
+     "The wizard inventories the official marketplace and every native Claude install scope before making changes, then instal",
+     "It lets you select any combination of Claude Code, Codex, and Kimi Code, shows each install channel and destination, pre",
+     "|Kimi Code|Managed project files under `./.kimi-code`; ECC hooks, model/provider settings, and authentication are not co"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     108
+    ],
+    "quotes": [
+     "ECC is MIT-licensed open source. It works best with Claude Code today, has native Codex and Qoder plugin paths, and prov"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     108,
+     228
+    ],
+    "quotes": [
+     "ECC is MIT-licensed open source. It works best with Claude Code today, has native Codex and Qoder plugin paths, and prov",
+     "ECC also ships advanced managed adapters for `cursor`, `antigravity`, `gemini`, `opencode`, `codebuddy`, `joycode`, `qwe"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     108,
+     228
+    ],
+    "quotes": [
+     "ECC is MIT-licensed open source. It works best with Claude Code today, has native Codex and Qoder plugin paths, and prov",
+     "ECC also ships advanced managed adapters for `cursor`, `antigravity`, `gemini`, `opencode`, `codebuddy`, `joycode`, `qwe"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     563
+    ],
+    "quotes": [
+     "`/astra-review` sends Claude-written code to GPT-6-Astra for an independent cross-provider review. It runs the locally i"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

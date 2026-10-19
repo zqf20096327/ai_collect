@@ -1,0 +1,139 @@
+{
+ "fn": "JaidedAI/EasyOCR",
+ "sha": "39ff5f35cf49",
+ "source": "readme",
+ "identity": {
+  "one_liner": "支持80+语言的即用型 OCR 图文识别库",
+  "review": "基于 PyTorch 的开源 OCR 库：检测端使用 CRAFT 算法，识别端使用 CRNN（Resnet/VGG 特征提取 + LSTM 序列标注 + CTC 解码），支持拉丁、中文、阿拉伯、天城文、西里尔等 80+ 种语言的文字检测与识别，输出边界框、文本与置信度。以 Python 包与命令行两种方式使用，模型权重自动下载或从模型库手动放置；无 GPU 或显存不足时可切换 CPU-only 模式。手写体识别尚在开发计划中，新语言需按流程提交字符表与词典 PR。",
+  "highlights": [
+   "支持 80+ 语言与主流书写系统，多语言可同时传入识别",
+   "检测用 CRAFT、识别用 CRNN（Resnet/VGG + LSTM + CTC）",
+   "提供 Python API 与命令行两种使用方式，模型权重自动下载",
+   "GPU 不可用或显存低时可用 gpu=False 以 CPU 模式运行"
+  ],
+  "use_cases": [
+   "从图片中提取多语言文字及其位置和置信度",
+   "接入 Python 项目或脚本做批量图片 OCR",
+   "训练或替换自己的检测/识别模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": "cpu-ok",
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "OCR",
+   "计算机视觉",
+   "多语言文字识别",
+   "深度学习"
+  ],
+  "domain": "计算机视觉/OCR",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing",
+   "ocr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L8: Ready-to-use OCR with 80+ supported languages and all popular writing scripts including: Latin, Chinese, Arabic, Devanag",
+   "L84: In case you do not have a GPU, or your GPU has low memory, you can run the model in CPU-only mode by adding `gpu=False`.",
+   "L120: All deep learning execution is based on Pytorch. :heart:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     29,
+     34,
+     40
+    ],
+    "quotes": [
+     "Install using `pip`",
+     "pip install easyocr",
+     "pip install git+https://github.com/JaidedAI/EasyOCR.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     45
+    ],
+    "quotes": [
+     "Note 2: We also provide a Dockerfile here."
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU-only",
+    "rel": "support",
+    "lines": [
+     84,
+     87
+    ],
+    "note": "无 GPU 或低显存时 gpu=False 运行，同时要求安装与 CUDA 版本匹配的 torch（L43）",
+    "quotes": [
+     "In case you do not have a GPU, or your GPU has low memory, you can run the model in CPU-only mode by adding `gpu=False`.",
+     "reader = easyocr.Reader(['ch_sim','en'], gpu=False)"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     12
+    ],
+    "note": "Web Demo 托管于 Hugging Face Spaces，非替代/竞品关系",
+    "quotes": [
+     "Integrated into Huggingface Spaces 🤗 using Gradio. Try out the Web Demo: Hugging Face Spaces"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

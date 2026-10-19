@@ -1,0 +1,240 @@
+{
+ "fn": "hpcaitech/ColossalAI",
+ "sha": "f53e1d19ecde",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的大模型分布式训练与推理加速系统",
+  "review": "分布式深度学习训练与推理框架：提供数据并行、流水线并行、1D/2D/2.5D/3D 张量并行、序列并行、ZeRO、自动并行等并行策略，以及异构内存管理（PatrickStar）；支持通过配置文件声明并行方式，用少量代码启动分布式训练与推理。附带应用示例（Open-Sora 视频生成、Colossal-LLaMA-2、ColossalChat RLHF 流水线、Stable Diffusion 加速、AlphaFold 加速）和 LLaMA3/2/1、MoE、GPT、BERT 等训练 demo，并提供文档、示例与论坛。",
+  "highlights": [
+   "多种并行策略：数据/流水线/1D-2D-2.5D-3D 张量/序列并行/ZeRO/自动并行",
+   "异构内存管理（PatrickStar）与配置文件驱动的并行声明",
+   "附带 ColossalChat 完整 RLHF 流水线与 Open-Sora 视频生成应用",
+   "提供 LLaMA、GPT、BERT、MoE、AlphaFold 等训练示例"
+  ],
+  "use_cases": [
+   "在多卡/多机环境训练大语言模型并选择并行策略",
+   "微调 LLaMA 类模型或跑 RLHF 训练流程",
+   "加速 Stable Diffusion、AlphaFold 等模型的训练与推理",
+   "在消费级 GPU 上以低显存做小规模训练 demo"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "分布式训练",
+   "大模型",
+   "推理加速",
+   "深度学习框架",
+   "并行计算"
+  ],
+  "domain": "AI 基础设施/分布式训练",
+  "alternative_to": [
+   "ChatGPT"
+  ],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文版本(L22)",
+   "公司为新加坡 HPC-AI Tech(L72)",
+   "提供 ModelScope 模型权重链接(L139)"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L93: Colossal-AI provides a collection of parallel components for you. We aim to support you to write your",
+   "L95: distributed training and inference in a few lines.",
+   "L97: - Parallelism strategies"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     47
+    ],
+    "note": "价格对比提及，非接入",
+    "quotes": [
+     "* **Unbeatable Pricing**: Stop overpaying for API endpoints. Get premier inference speed at up to 50% cheaper than OpenR"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     69
+    ],
+    "note": "新闻中提及微调指南",
+    "quotes": [
+     "* [2025/02] DeepSeek 671B Fine-Tuning Guide Revealed—Unlock the Upgraded DeepSeek Suite with One Click, AI Players Ecsta"
+    ]
+   },
+   {
+    "term": "google",
+    "rel": "mention",
+    "lines": [
+     255
+    ],
+    "note": "提及 Google PaLM 模型实现",
+    "quotes": [
+     "- PaLM-colossalai: Scalable implementation of Google's Pathways Language Model (PaLM)."
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "xai",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     322,
+     327,
+     335,
+     340,
+     344
+    ],
+    "note": "窗外行，安装章节",
+    "quotes": [
+     "### Install from PyPI",
+     "pip install colossalai",
+     "BUILD_EXT=1 pip install colossalai",
+     "We also keep releasing the nightly version to PyPI every week. This allows you to access the unreleased features and bug",
+     "pip install colossalai-nightly"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     352
+    ],
+    "note": "窗外行",
+    "quotes": [
+     "git clone https://github.com/hpcaitech/ColossalAI.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     385,
+     387,
+     392,
+     398
+    ],
+    "note": "窗外行，提供 Docker 镜像",
+    "quotes": [
+     "Run the following command to build a docker image from Dockerfile provided.",
+     "> Building Colossal-AI from scratch requires GPU support, you need to use Nvidia Docker Runtime as the default when doin",
+     "docker build -t colossalai ./docker",
+     "docker run -ti --gpus all --rm --ipc=host colossalai bash"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     18,
+     138,
+     144
+    ],
+    "note": "模型权重托管于 HuggingFace，badge 提及",
+    "quotes": [
+     " HuggingFace badge",
+     "[[HuggingFace model weights]](https://huggingface.co/hpcai-tech/Colossal-LLaMA-2-7b-base)",
+     "[[HuggingFace model weights]](https://huggingface.co/hpcai-tech/Colossal-LLaMA-2-13b-base)"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     45
+    ],
+    "note": "云 API 提供的模型之一",
+    "quotes": [
+     "* **Latest & Greatest Models**: Experience state-of-the-art performance with Kimi 2.5, MiniMax 2.5, and GLM 5.1. Perfect"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     156
+    ],
+    "note": "评测表格中的对比模型 Qwen-7B",
+    "quotes": [
+     "|Qwen-7B|-|2.2T|54.29 (56.70)|56.03 (58.80)|52.47|56.42|59.60|"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "alternative",
+    "lines": [
+     174,
+     176
+    ],
+    "note": "自称开源 ChatGPT 克隆方案",
+    "quotes": [
+     "ColossalChat: An open-source solution for cloning ChatGPT with a complete RLHF pipeline.",
+     "[[blog]](https://medium.com/@yangyou_berkeley/colossalchat-an-open-source-solution-for-cloning-chatgpt-with-a-complete-r"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

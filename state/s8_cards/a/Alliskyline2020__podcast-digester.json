@@ -1,0 +1,218 @@
+{
+ "fn": "Alliskyline2020/podcast-digester",
+ "sha": "443c789eb8c0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地播客/视频蒸馏工具：贴链接生成转录、摘要与亮点",
+  "review": "本地单用户的播客/视频蒸馏应用：粘贴 YouTube/Bilibili/抖音/小宇宙链接或本地文件，经下载→转录→清洗→分章→摘要→亮点→洞察的多阶段流水线，产出 TL;DR 与值听裁定（Deep Listen/Skim/Skip）、逐章中文摘要、五类带时间戳引用的亮点、产品/技术/市场洞察，以及与播放器时间轴对齐的双语字幕。面向中文 PM、研究员、投资人等信息消费者。LLM 通过 openai_compatible/anthropic_compatible 两种 adapter 可插拔切换（DeepSeek/OpenAI/Claude/GLM/通义/豆包/Kimi），串行队列支持断点续跑与崩溃自愈。全局词库沉淀纠错结果。macOS 13+ 全功能（无字幕源需 Apple AFM 3 本地转录），Linux 仅支持自带字幕源，Windows 未测试；需 Python 3.11–3.13、Node.js 18+ 与 ffmpeg。",
+  "highlights": [
+   "多阶段流水线（下载→转录→分章→摘要→亮点→洞察）带 JSON checkpoint 断点续跑",
+   "五类亮点（fact/insight/quote/contrarian/story）每条带原始字幕引用与时间戳，点击跳转播放",
+   "可插拔多 Provider LLM，设置页零代码配置或环境变量切换，不改代码",
+   "全局词库纠错：批量纠错、编辑器 difflib 自学习、新播客自动套用"
+  ],
+  "use_cases": [
+   "把长播客/视频蒸馏成 5 分钟可决策的摘要与亮点，决定是否深听",
+   "生成与播放器时间轴对齐的双语字幕，按章节/亮点跳着听",
+   "批量粘贴链接排队处理，导出 HTML 成果与音频库归档"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "播客转录",
+   "内容摘要",
+   "知识管理",
+   "双语字幕",
+   "本地优先"
+  ],
+  "domain": "内容消费/知识管理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "knowledge-base"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "简体中文 README",
+   "面向中文 PM/研究员/投资人",
+   "支持 B站/小宇宙/抖音国内平台",
+   "国内厂商分组的 LLM 预设（GLM/通义/豆包/Kimi/DeepSeek）"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5: 粘贴一个链接 → 自动排队、下载、转录、清洗、分章、摘要、提炼亮点 → 双语字幕点击即跳转播放。",
+   "L21: 信息工作者面对一集 2 小时的播客，最大的成本不是「听不懂」，而是**「不知道值不值得听」**。Podcast Digester 把一集音频蒸馏成：",
+   "L23: - 一句话 **TL;DR** + **值听裁定**（`Deep Listen` / `Skim` / `Skip` 三档，拿不准默认 `Skim`）"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm",
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     133,
+     151,
+     152
+    ],
+    "quotes": [
+     "|`deepseek`|国内|`openai_compatible`|`api.deepseek.com`|`deepseek-v4-flash`|推荐，性价比高|",
+     "# —— DeepSeek（默认）——",
+     "LLM_PROVIDER=deepseek"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     115,
+     140,
+     321
+    ],
+    "quotes": [
+     "- `anthropic_compatible` —— `anthropic.AsyncAnthropic` 包装，覆盖 Claude 系列",
+     "|`anthropic`|国际|`anthropic_compatible`|SDK 官方默认|`claude-3-5-sonnet-latest`|Claude 系列|",
+     "- [x] 可插拔多 Provider LLM（DeepSeek / OpenAI / Claude / GLM / 通义 / 豆包 / Kimi）"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     205,
+     212
+    ],
+    "quotes": [
+     "git clone https://github.com/Alliskyline2020/podcast-digester.git",
+     "./setup.sh"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     196,
+     253
+    ],
+    "note": "ffmpeg 依赖及 Python 3.12 的安装方式，非本产品安装途径",
+    "quotes": [
+     "- **ffmpeg**（yt-dlp 后处理需要）：macOS `brew install ffmpeg` / Linux `sudo apt install ffmpeg`",
+     "- **`pip install` 报 `Failed building wheel for av` / `pydantic-core`** → 多半是 **Python 3.14**（缺预编译 wheel）。改用 3.11–3.13：`b"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     253
+    ],
+    "note": "依赖安装报错排查语境",
+    "quotes": [
+     "- **`pip install` 报 `Failed building wheel for av` / `pydantic-core`** → 多半是 **Python 3.14**（缺预编译 wheel）。改用 3.11–3.13：`b"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     254
+    ],
+    "note": "前端依赖安装排查语境",
+    "quotes": [
+     "- **`npm install` 后 `vite: command not found`** → 机器全局设了 `NODE_ENV=production`，npm 跳过了 devDependencies。用 `npm install --"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     138
+    ],
+    "note": "作为可插拔 LLM provider 预设接入，非竞品",
+    "quotes": [
+     "|`moonshot`|国内|`openai_compatible`|`api.moonshot.cn/v1`|`moonshot-v1-8k`|月之暗面 Kimi|"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     136
+    ],
+    "note": "provider 预设，非竞品",
+    "quotes": [
+     "|`qwen`|国内|`openai_compatible`|`dashscope.aliyuncs.com/compatible-mode/v1`|`qwen-plus`|通义千问|"
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     137
+    ],
+    "note": "provider 预设，非竞品",
+    "quotes": [
+     "|`doubao`|国内|`openai_compatible`|`ark.cn-beijing.volces.com/api/v3`|*（自填）*|字节豆包，模型 id 实为 endpoint id|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

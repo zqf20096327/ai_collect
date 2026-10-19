@@ -1,0 +1,189 @@
+{
+ "fn": "itsmeadarsh2008/opencode-senses",
+ "sha": "1dca8d00e54d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 OpenCode 纯文本模型加本地视觉层的插件：OCR/检测/定位",
+  "review": "OpenCode 编辑器的视觉插件（TypeScript）加自动配置的 Python 运行时，为纯文本编码模型提供图像理解：附加图片时自动注入结构化场景读解、caption 与精确 OCR，并提供 13 个 senses_* 工具（inspect、OCR、detect、point、segment、crop、zoom、colors、diff、annotate、metadata、reverse search、status）。默认本地运行 Moondream 2（约 6 GB VRAM），权重首次使用时从 Hugging Face 下载，无需 API key（微调模型除外）。图像内文本被包裹为不可信数据以防提示注入。要求 NVIDIA Ampere+ GPU 或 Apple Silicon。npm 安装，OpenCode 配置中启用即可。",
+  "highlights": [
+   "附加图片自动注入场景读解、caption 与精确 OCR（无需工具调用）",
+   "13 个 senses_* 工具，返回归一化、有据可依的结构化证据",
+   "默认本地运行 moondream2（6 GB VRAM），无 API key",
+   "图像内文本标记为不可信观察，防提示注入"
+  ],
+  "use_cases": [
+   "让纯文本编码模型读懂截图、报错图与 UI 设计稿",
+   "对截图做精确 OCR、目标定位与局部放大重读",
+   "基于感知哈希在本地文件中做反向图片搜索"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": "gpu-8g",
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "编程助手插件",
+   "多模态/视觉",
+   "本地推理",
+   "OCR",
+   "隐私优先"
+  ],
+  "domain": "开发者工具/多模态视觉",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "ocr",
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L21: Senses adds a vision layer to OpenCode so any image becomes useful to your text-only coding model: screenshots get exact",
+   "L47: - The **plugin** (TypeScript, runs inside the OpenCode session) spawns the Python runtime, exposes the `senses_*` tools,"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     88,
+     94
+    ],
+    "quotes": [
+     "   npm install -g opencode-senses",
+     "   npm install opencode-senses"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     78,
+     126
+    ],
+    "quotes": [
+     "- Bun only needed to build from source — npm users don't need it.",
+     "git clone https://github.com/itsmeadarsh2008/opencode-senses.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     63,
+     112
+    ],
+    "note": "运行时依赖 moondream 的 pip 安装，非本产品安装途径",
+    "quotes": [
+     "Senses currently uses the **Moondream family via Kestrel/Photon** (`pip install moondream`). Kestrel supports additional",
+     "> **How the runtime installs**: if `uv` is on your `PATH`, Senses uses it (`uv venv` + `uv pip install moondream`) — 10–"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "6 GB VRAM",
+    "rel": "support",
+    "lines": [
+     36,
+     76
+    ],
+    "quotes": [
+     "- **Free forever** — runs on your own GPU. `moondream2` (6 GB VRAM) is the default; larger Kestrel families available fo",
+     "- **GPU**: an **NVIDIA GPU (Ampere or newer)** or **Apple Silicon (M-series)**. 6 GB VRAM is enough for the default mode"
+    ]
+   },
+   {
+    "term": "16 GB VRAM",
+    "rel": "mention",
+    "lines": [
+     289
+    ],
+    "note": "更大模型家族的显存要求，非默认配置",
+    "quotes": [
+     "- **`CUDA out of memory`** — lower `SENSES_KV_CACHE_PAGES` (e.g. `2048`), close other GPU apps (Steam, browsers, that on"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     49,
+     53,
+     63
+    ],
+    "note": "Kestrel 引擎支持的模型家族列举，Senses 插件仅接入 Moondream 系列",
+    "quotes": [
+     "- **Vision model**: Kestrel (Photon engine) by default `moondream2` — fits a 6 GB GPU comfortably (peaks at ~4.5 GB). Se",
+     "**Run Moondream Locally** — Photon is Moondream's high-performance local inference engine for **NVIDIA GPUs** (Linux x86",
+     "Senses currently uses the **Moondream family via Kestrel/Photon** (`pip install moondream`). Kestrel supports additional"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     133,
+     265
+    ],
+    "note": "模型权重下载来源",
+    "quotes": [
+     "The model weights (~3.9 GB for Moondream 2) download automatically from Hugging Face on first use and cache under `~/.ca",
+     "|`HF_HOME`|`~/.cache/huggingface`|Where model weights are cached.|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

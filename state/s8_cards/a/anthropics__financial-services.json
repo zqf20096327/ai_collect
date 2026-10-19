@@ -1,0 +1,129 @@
+{
+ "fn": "anthropics/financial-services",
+ "sha": "c354fdc6b2b9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向金融从业者的 Claude 参考智能体、技能与数据连接器合集",
+  "review": "由 Anthropic 维护的金融服务领域参考仓库，提供端到端工作流 Agent（Pitch Agent、Market Researcher、GL Reconciler 等）、按 FSI 垂直方向打包的插件（技能、斜杠命令、MCP 连接器），以及 Managed Agents 部署模板。同一套系统提示与技能可通过 Claude Cowork 插件安装，也可经 /v1/agents API 部署。所有输出均标注为供专业人士审阅的分析草稿，不构成投资建议，不执行交易。全部内容基于 markdown/JSON 文件，无构建步骤。",
+  "highlights": [
+   "10 个端到端工作流 Agent，以自包含插件形式提供",
+   "9 个垂直插件，含 comps/DCF/LBO 等建模技能与斜杠命令",
+   "集中管理 11 个 MCP 数据连接器（Daloopa、FactSet、Morningstar 等）",
+   "支持 Cowork 插件安装与 Claude Managed Agents API 两种部署方式"
+  ],
+  "use_cases": [
+   "为投行/卖方工作流生成路演材料与可比公司分析",
+   "财报后自动更新模型并起草研究笔记",
+   "基金运营中对账、月末结账与估值复核",
+   "KYC 文档解析与规则引擎筛查"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "金融服务",
+   "Agent模板",
+   "MCP连接器",
+   "技能包",
+   "Claude插件"
+  ],
+  "domain": "金融服务/企业应用",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Reference agents, skills, and data connectors for the financial-services workflows we see most — investment banking, equ",
+   "L5: Everything here is available **two ways from one source**: install it as a Claude Cowork plugin, or deploy it through th",
+   "L12: - **Agents** — named, end-to-end workflow agents (Pitch Agent, Market Researcher, GL Reconciler, …). Each ships as a Cow"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     1,
+     5,
+     12
+    ],
+    "quotes": [
+     "# Claude for Financial Services",
+     "Everything here is available **two ways from one source**: install it as a Claude Cowork plugin, or deploy it through th",
+     "- **Agents** — named, end-to-end workflow agents (Pitch Agent, Market Researcher, GL Reconciler, …). Each ships as a Cow"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "mention",
+    "lines": [
+     127
+    ],
+    "note": "Microsoft 365 插件路由选项之一（Vertex AI、Bedrock 或内部网关），非本仓库专属适配",
+    "quotes": [
+     "If your firm runs Claude inside Excel, PowerPoint, Word, and Outlook via the Microsoft 365 add-in, `claude-for-msft-365-"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     54,
+     129
+    ],
+    "note": "安装途径之一，非替代/竞品对象",
+    "quotes": [
+     "### Claude Code",
+     "It's a Claude Code plugin (not a Cowork plugin) that walks an IT admin through generating the customized add-in manifest"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

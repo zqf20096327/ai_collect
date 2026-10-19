@@ -1,0 +1,103 @@
+{
+ "fn": "stas00/ml-engineering",
+ "sha": "3ee168580017",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 LLM 训练工程师的训练/微调/推理方法论开源手册",
+  "review": "作者基于参与 BLOOM-176B、IDEFICS-80B 训练及 Contextual.AI 工作的经验整理的开放技术手册，覆盖大语言模型与多模态模型的训练、微调和推理的方法论、工具与逐步操作说明。内容以脚本和可复制粘贴的命令为主，供 LLM/VLM 训练工程师和运维人员使用。提供 PDF/EPUB 电子书版本，附两个供 AI agent 使用的 SKILL.md 文件、网络吞吐与 TFLOPS 基准测试脚本、PyTorch 调试与 slurm 速查指南，以及加速器与网络的对比表格。以 CC BY-SA 4.0 分发。",
+  "highlights": [
+   "提供脚本与可直接复制的命令，覆盖 LLM/VLM 训练、微调与推理",
+   "附 torch-dist-bench、mamf-finder 等网络与 TFLOPS 基准工具",
+   "提供两个 SKILL.md 文件用于训练 AI agent",
+   "提供 PDF/EPUB 电子书格式，托管于 Hugging Face Hub"
+  ],
+  "use_cases": [
+   "排查分布式 PyTorch 训练中的挂起或中断问题",
+   "大规模训练前测试节点间网络连通性与吞吐",
+   "测量加速器实际可达的 TFLOPS 水平",
+   "快速查阅 slurm 用法与技巧"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM训练",
+   "工程手册/知识库",
+   "GPU调试",
+   "基准测试"
+  ],
+  "domain": "机器学习工程/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-evaluation",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: This is an open collection of methodologies, tools and step by step instructions to help with successful training and fi",
+   "L7: This is a technical material suitable for LLM/VLM training engineers and operators. That is the content here contains lo",
+   "L31: I maintain two SKILL.md files that you can use to teach your AI agent:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     27,
+     81
+    ],
+    "note": "电子书托管许可与 BLOOM 训练经历致谢，非替代/竞品对象",
+    "quotes": [
+     "Thanks to HuggingFace for giving me permission to host my book's ebook formats at the HF hub.",
+     "Special thanks go to Thom Wolf who proposed that I lead the BLOOM-176B training back when I didn't know anything about l"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

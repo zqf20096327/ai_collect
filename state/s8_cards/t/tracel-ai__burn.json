@@ -1,0 +1,128 @@
+{
+ "fn": "tracel-ai/burn",
+ "sha": "f25f7cba1eaf",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 Rust 开发者的训练+推理统一张量库与深度学习框架",
+  "review": "Burn 是同时作为张量库与深度学习框架的 Rust 项目，通过统一 API 执行多平台张量运算，使训练代码与生产部署代码一致。基于 CubeCL 的后端覆盖 CUDA、ROCm、Metal、Vulkan、WebGPU 及 CPU，并可通过 autodiff、kernel fusion、remote 执行等装饰器组合；同一应用内可启用多后端并在运行时选择设备。提供训练 TUI 仪表盘、burn-onnx 导入、PyTorch/Safetensors 权重加载及 WebAssembly 浏览器推理。LibTorch 后端在 0.22.0 起废弃并已从 main 移除。",
+  "highlights": [
+   "单一统一 API 覆盖训练与推理，多平台后端可运行时切换",
+   "JIT 编译张量运算流并自动 kernel fusion",
+   "autodiff、fusion、remote 后端装饰器可组合",
+   "burn-onnx 将 ONNX 模型转成原生 Rust 代码"
+  ],
+  "use_cases": [
+   "在 Rust 中从原型到部署用同一套代码训练和运行模型",
+   "把 PyTorch/TensorFlow 导出的 ONNX 模型迁到 Rust 后端运行",
+   "在浏览器（WebAssembly）或嵌入式设备上做推理",
+   "云端训练后部署到用户不同硬件设备上"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://www.youtube.com/watch?v=N9RM5CQbNQc",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度学习框架",
+   "张量库",
+   "Rust",
+   "跨平台推理",
+   "训练"
+  ],
+  "domain": "机器学习/深度学习基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: **Burn is both a tensor library and a deep learning framework, optimized for numerical",
+   "L17: Burn unifies the two. By executing multi-platform tensor operations via a single, unified API, the",
+   "L50: Burn's CubeCL backends (CUDA, ROCm, Metal, Vulkan, WebGPU,"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     13
+    ],
+    "note": "仅作为生产推理引擎提及，非接入对象",
+    "quotes": [
+     "exported to an open format like ONNX or optimized for production engines like vLLM, ONNX Runtime, or"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "cargo",
+    "rel": "mention",
+    "lines": [
+     2
+    ],
+    "note": "crates.io 版本徽章表明经 crates.io 分发",
+    "quotes": [
+     "Current Crates.io Version"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     83
+    ],
+    "note": "社区 crate 清单中提及 langchain-rust，非本产品关系对象",
+    "quotes": [
+     "||langchain-rust|LangChain-style chain orchestration|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    127,
+    128
+   ]
+  }
+ }
+}

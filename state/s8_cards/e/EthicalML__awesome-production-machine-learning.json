@@ -1,0 +1,269 @@
+{
+ "fn": "EthicalML/awesome-production-machine-learning",
+ "sha": "ab1c18df7dc3",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 ML 从业者的生产化开源工具策展清单",
+  "review": "按月更新的开源机器学习生产化库策展清单，覆盖部署、监控、版本管理、扩缩容与安全等环节。条目按 24 个类别组织，包括 AutoML、计算与通信优化、数据管道、部署与服务、可解释性与公平性、特征存储、模型与实验管理等；通过 GitHub releases 订阅每月新增库的摘要，另提供搜索工具包辅助导航，并有 10 分钟视频概述与相关 GenAI 姊妹清单。",
+  "highlights": [
+   "24 个生产 ML 类别的开源库目录",
+   "按月通过 GitHub releases 发布新增库摘要",
+   "提供工具链搜索工具包与 10 分钟视频概述",
+   "含姊妹清单 Awesome Production GenAI List"
+  ],
+  "use_cases": [
+   "为模型上线部署、监控环节查找开源库",
+   "选型 MLOps 工具链时浏览分类目录",
+   "跟踪每月新增的生产 ML 开源库"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome-list",
+   "MLOps",
+   "机器学习生产化",
+   "工具目录"
+  ],
+  "domain": "机器学习基础设施/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list",
+   "mlops"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L6: This repository contains a curated list of awesome open source libraries that will help you deploy, monitor, version, sc",
+   "L16: |🔧 AutoML|🧮 Computation & Communication Optimisation|🏷️ Data Annotation & Synthesis|",
+   "L58: ## AutoML"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     241
+    ],
+    "note": "清单条目收录，非本产品接入",
+    "quotes": [
+     "* GoModel - GoModel is a self-hosted AI gateway written in Go that exposes a unified OpenAI-compatible API across OpenAI"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     241,
+     274
+    ],
+    "note": "清单条目收录",
+    "quotes": [
+     "* GoModel - GoModel is a self-hosted AI gateway written in Go that exposes a unified OpenAI-compatible API across OpenAI",
+     "* Open WebUI - Open WebUI is an extensible, feature-rich, and user-friendly self-hosted AI platform designed to operate "
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     244
+    ],
+    "quotes": [
+     "* LiteLLM - LiteLLM is a Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI format - Bedrock, Azure,"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "mention",
+    "lines": [
+     244
+    ],
+    "note": "作为清单条目提及",
+    "quotes": [
+     "* LiteLLM - LiteLLM is a Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI format - Bedrock, Azure,"
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "mention",
+    "lines": [
+     248,
+     270
+    ],
+    "quotes": [
+     "* jevos - jevos is an open-source alternative to TypeSafe's Jev for yes/no decisions: a 1B-parameter binary classifier (",
+     "* NobodyWho - NobodyWho is an on-device LLM inference engine written in Rust on top of llama.cpp, running GGUF models lo"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     268,
+     292
+    ],
+    "quotes": [
+     "* nano-vllm - nano-vllm is a lightweight vLLM implementation built from scratch, providing fast offline inference with o",
+     "* vLLM - vLLM is a high-throughput and memory-efficient inference and serving engine for LLMs."
+    ]
+   },
+   {
+    "term": "cpu-infer",
+    "rel": "mention",
+    "lines": [
+     273
+    ],
+    "quotes": [
+     "* OpenVINO - OpenVINO is an open-source toolkit for optimizing and deploying AI inference."
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     338
+    ],
+    "quotes": [
+     "* onWatch - onWatch is a lightweight Go CLI that tracks AI API quota usage across multiple providers (Anthropic Pro/Max "
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     339
+    ],
+    "quotes": [
+     "* OpenCompass - OpenCompass is an LLM evaluation platform, supporting a wide range of models (LLaMA, LLaMa2, ChatGLM2, C"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     379
+    ],
+    "note": "所收录库的安装方式描述",
+    "quotes": [
+     "* Featureform - A virtual featurestore. Plug-&-play with your existing infra. Data Scientist approved. Discovery, Govern"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU-only",
+    "rel": "mention",
+    "lines": [
+     248
+    ],
+    "note": "被收录库条目中的语境，非本清单自身要求",
+    "quotes": [
+     "* jevos - jevos is an open-source alternative to TypeSafe's Jev for yes/no decisions: a 1B-parameter binary classifier ("
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     199
+    ],
+    "quotes": [
+     "* Casibase - Casibase is a LangChain-like RAG (Retrieval-Augmented Generation) knowledge database with web UI and Enterp"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     244
+    ],
+    "quotes": [
+     "* LiteLLM - LiteLLM is a Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI format - Bedrock, Azure,"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     277,
+     339
+    ],
+    "quotes": [
+     "* Prompt2Model - Prompt2Model is a system that takes a natural language task description (like the prompts used for LLMs",
+     "* OpenCompass - OpenCompass is an LLM evaluation platform, supporting a wide range of models (LLaMA, LLaMa2, ChatGLM2, C"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     338
+    ],
+    "quotes": [
+     "* onWatch - onWatch is a lightweight Go CLI that tracks AI API quota usage across multiple providers (Anthropic Pro/Max "
+    ]
+   },
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     430
+    ],
+    "quotes": [
+     "* Dify - Dify is an open-source LLM app development platform whose intuitive interface combines agentic AI workflow, RAG"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

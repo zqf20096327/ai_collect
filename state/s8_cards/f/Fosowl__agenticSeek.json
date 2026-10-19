@@ -1,0 +1,224 @@
+{
+ "fn": "Fosowl/agenticSeek",
+ "sha": "b60ab5d1b538",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地运行的自主 AI 代理：浏览网页、写代码、规划任务",
+  "review": "一个完全本地运行的自主代理助手，通过本地推理模型在用户硬件上完成网页搜索、信息提取、表单填写，以及 Python/C/Go/Java 等语言的代码编写与调试；可自动选择代理并把大任务拆分为步骤执行，附带语音输入功能（标注为进行中）。运行依赖 Python 3.10.x、Docker（含 SearxNG、Redis 等服务），通过 config.ini 配置本地或云端提供商；硬件不足以本地运行 LLM 时可改用 API 方式。",
+  "highlights": [
+   "完全本地运行，数据不离开设备，API key 对本地运行用户为可选项",
+   "自主网页浏览：搜索、读取、提取信息、填写表单",
+   "自动选择代理并拆分执行多步任务",
+   "支持 ollama、lm-studio、openai 兼容 API 等本地提供商"
+  ],
+  "use_cases": [
+   "在本地硬件上运行隐私优先的自主代理",
+   "让代理自动搜索网页并汇总信息",
+   "让代理自主编写和调试代码"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/b8ca60e9-7b3b-4533-840e-08f9ac426316",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "自主代理",
+   "本地LLM",
+   "网页自动化",
+   "语音助手"
+  ],
+  "domain": "LLM 基础设施/Agent",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama",
+   "deepseek",
+   "openrouter"
+  ],
+  "scenario_tags_v2": [
+   "voice-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文等多语言版本"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: *A **100% local alternative to Manus AI**, this voice-enabled AI assistant autonomously browses the web, writes code, an",
+   "L116: To run LLMs locally, you'll need sufficient hardware. At a minimum, a GPU capable of running Magistral, Qwen or Deepseek",
+   "L241: By default AgenticSeek is run fully in docker."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     75,
+     120,
+     131,
+     145,
+     162
+    ],
+    "quotes": [
+     "- **OLLAMA_PORT**: Port number for the Ollama service.",
+     "Start your local provider (for example with ollama):",
+     "ollama serve",
+     "provider_name = ollama # or lm-studio, openai, etc..",
+     "|ollama|Yes|Run LLMs locally with ease using ollama as a LLM provider|"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     116,
+     138,
+     222
+    ],
+    "quotes": [
+     "To run LLMs locally, you'll need sufficient hardware. At a minimum, a GPU capable of running Magistral, Qwen or Deepseek",
+     "Change the config.ini file to set the provider_name to a supported provider and provider_model to a LLM supported by you",
+     "|Deepseek|`deepseek`|No|Use Deepseek models via their API.|platform.deepseek.com|"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "mention",
+    "lines": [
+     116,
+     138,
+     210
+    ],
+    "quotes": [
+     "To run LLMs locally, you'll need sufficient hardware. At a minimum, a GPU capable of running Magistral, Qwen or Deepseek",
+     "Change the config.ini file to set the provider_name to a supported provider and provider_model to a LLM supported by you",
+     "provider_model = gpt-3.5-turbo # Or gemini-1.5-flash, deepseek-chat, mistralai/Mixtral-8x7B-Instruct-v0.1 etc."
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     225
+    ],
+    "quotes": [
+     "|OpenRouter|`openrouter`|No|Use OpenRouter Models|https://openrouter.ai/|"
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "mention",
+    "lines": [
+     164
+    ],
+    "quotes": [
+     "|openai|Yes|Use openai compatible API (eg: llama.cpp server)|"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     41,
+     42,
+     43,
+     241,
+     245
+    ],
+    "quotes": [
+     "* **Docker Engine & Docker Compose:** For running bundled services like SearxNG.",
+     " * Install Docker Desktop (which includes Docker Compose V2): Windows | Mac | Linux",
+     " * Alternatively, install Docker Engine and Docker Compose separately on Linux: Docker Engine | Docker Compose (ensure y",
+     "By default AgenticSeek is run fully in docker.",
+     "Start required services. This will start all services from the docker-compose.yml, including:"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     48
+    ],
+    "quotes": [
+     "git clone https://github.com/Fosowl/agenticSeek.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     209,
+     223
+    ],
+    "quotes": [
+     "provider_name = openai # Or google, deepseek, togetherAI, huggingface",
+     "|Hugging Face|`huggingface`|No|Use models from Hugging Face Inference API.|huggingface.co/settings/tokens|"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     220
+    ],
+    "quotes": [
+     "|OpenAI|`openai`|No|Use ChatGPT models via OpenAI's API.|platform.openai.com/signup|"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

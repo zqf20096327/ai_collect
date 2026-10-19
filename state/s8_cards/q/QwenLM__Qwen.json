@@ -1,0 +1,225 @@
+{
+ "fn": "QwenLM/Qwen",
+ "sha": "a7a5ac9f8d66",
+ "source": "readme",
+ "identity": {
+  "one_liner": "阿里云开源的通义千问大语言模型官方仓库",
+  "review": "Qwen（通义千问）系列的官方仓库，收录 1.8B/7B/14B/72B 四个规模的基础模型与 Chat 对话模型，提供权重下载链接（Hugging Face、ModelScope）。内容覆盖：Transformers/ModelScope 推理示例、GPTQ 与 KV cache 量化、全参数/LoRA/Q-LoRA 微调教程、vLLM 与 FastChat 部署、WebUI/CLI demo、DashScope API 与 OpenAI 风格 API 搭建、工具调用/Agent/代码解释器用法。注意仓库声明不再积极维护，后续跟进指向 QwenLM/Qwen2。",
+  "highlights": [
+   "提供 1.8B 至 72B 四种规模的基础模型与 Chat 模型",
+   "量化模型（Int4/Int8、GPTQ、KV cache 量化）降低推理显存需求",
+   "微调教程覆盖全参数、LoRA、Q-LoRA",
+   "支持工具调用、Agent 与代码解释器用法"
+  ],
+  "use_cases": [
+   "下载并本地推理通义千问系列模型",
+   "对模型做 LoRA/Q-LoRA 微调",
+   "通过 vLLM/FastChat 部署为 API 服务",
+   "用 DashScope 云端 API 直接调用 Qwen"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "大语言模型",
+   "中文NLP",
+   "模型推理",
+   "模型微调"
+  ],
+  "domain": "大语言模型/自然语言处理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "通义千问中文名称",
+   "提供微信社群",
+   "阿里巴巴云发布"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L19: We opensource our **Qwen** series, now including **Qwen**, the base language models, namely **Qwen-1.8B**, **Qwen-7B**, ",
+   "L21: In brief, we have strong base language models, which have been stably pretrained for up to 3 trillion tokens of multilin"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     36,
+     181
+    ],
+    "note": "部署示例中配合使用的推理框架",
+    "quotes": [
+     "* Instructions on deployment, with the example of vLLM and FastChat.",
+     "However, though this method is simple, the efficiency of the native pipeline parallelism is low. We advise you to use vL"
+    ]
+   },
+   {
+    "term": "cpu-infer",
+    "rel": "mention",
+    "lines": [
+     184
+    ],
+    "note": "OpenVINO 语境下的 CPU 部署建议",
+    "quotes": [
+     "When deploy on Core™/Xeon® Scalable Processors or with Arc™ GPU, OpenVINO™ Toolkit is recommended. You can install and r"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     98,
+     105,
+     107,
+     109
+    ],
+    "quotes": [
+     "pip install -r requirements.txt",
+     "cd flash-attention && pip install .",
+     "# pip install csrc/layer_norm",
+     "# pip install csrc/rotary"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     104
+    ],
+    "quotes": [
+     "git clone https://github.com/Dao-AILab/flash-attention"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     795
+    ],
+    "note": "窗外行：预构建 docker 镜像提及",
+    "quotes": [
+     "To make a change to single-GPU Q-LoRA for example, you just need to modify the bash command inside `docker run`:"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "cpu-only",
+    "rel": "mention",
+    "lines": [
+     707
+    ],
+    "note": "窗外行：CPU 部署相关内容",
+    "quotes": [
+     "You can change your arguments, e.g., `-c` for checkpoint name or path, `--cpu-only` for CPU deployment, etc. If you meet"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     10,
+     12,
+     19,
+     25,
+     26
+    ],
+    "note": "本仓库自身的模型系列名称，非竞品",
+    "quotes": [
+     "> This repo (QwenLM/Qwen) is no longer actively maintained, due to substantial codebase differences.",
+     "||Qwen-Chat|Qwen-Chat (Int4)|Qwen-Chat (Int8)|Qwen|",
+     "We opensource our **Qwen** series, now including **Qwen**, the base language models, namely **Qwen-1.8B**, **Qwen-7B**, ",
+     "|Qwen-1.8B|23.11.30|32K|✅|2.2T|5.8GB|2.9GB|✅|",
+     "|Qwen-7B|23.08.03|32K|❎|2.4T|11.5GB|8.2GB|✅|"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     136
+    ],
+    "note": "模型权重分发渠道",
+    "quotes": [
+     "In the event of a network issue while attempting to download model checkpoints and codes from HuggingFace, an alternativ"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     809
+    ],
+    "note": "窗外行",
+    "quotes": [
+     "Qwen-Chat has been optimized for tool usage and function calling capabilities. Users can develop agents, LangChain appli"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     941
+    ],
+    "note": "窗外行",
+    "quotes": [
+     "|ChatGPT-3.5-16k|16K|60.73|**63.51**|**84.00**|61.38|78.43|**12.22**|64.84|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

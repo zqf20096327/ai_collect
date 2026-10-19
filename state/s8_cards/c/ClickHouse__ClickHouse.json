@@ -1,0 +1,94 @@
+{
+ "fn": "ClickHouse/ClickHouse",
+ "sha": "9b45adc34192",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的实时分析型列式数据库管理系统",
+  "review": "开源列式数据库管理系统，用于实时生成分析数据报告。通过官方脚本一行命令安装于 Linux、macOS 和 FreeBSD，并提供 ClickHouse Cloud 托管服务作为免安装使用方式。README 同时维护月度发布与社区电话会议、全球线下 meetup、培训与招聘信息，公司由该数据库的创建者与维护者运营。核心定位为 OLAP 场景下的分析查询，主题标签覆盖分布式、云原生、lakehouse 等部署形态。",
+  "highlights": [
+   "列式存储的实时分析数据报告生成",
+   "一行 curl 脚本安装，支持 Linux/macOS/FreeBSD",
+   "提供托管服务 ClickHouse Cloud 免安装试用"
+  ],
+  "use_cases": [
+   "搭建实时数据分析报表与查询服务",
+   "需要分布式、云原生部署的分析型数据库选型",
+   "构建 lakehouse 场景下的查询引擎"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据库",
+   "OLAP",
+   "实时分析",
+   "大数据"
+  ],
+  "domain": "数据库/大数据分析",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6:  ClickHouse® is an open-source column-oriented database management system that allows generating analytical data reports",
+   "L11: curl https://clickhouse.com/ | sh"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     59
+    ],
+    "quotes": [
+     "* Grok Bot Montreal Build Day - October 3rd, 2026"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

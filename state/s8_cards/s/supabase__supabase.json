@@ -1,0 +1,89 @@
+{
+ "fn": "supabase/supabase",
+ "sha": "73a471ddb228",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 Web/移动/AI 应用开发者提供 Postgres 后端开发平台",
+  "review": "基于 Postgres 的开发平台，将数据库、认证授权、自动生成 API、实时订阅、函数、文件存储与向量嵌入工具集组合为一体化后端。架构由 PostgREST、GoTrue、Realtime、Storage、pg_graphql 等开源组件构成。提供托管平台（注册即用）与自托管/本地开发两种方式；官方客户端库覆盖 JavaScript、Flutter、Swift、Python、Kotlin 等，并有 C#、Go、Java、Ruby、Rust、Godot 等社区库。README 未列出安装命令与硬件要求。",
+  "highlights": [
+   "托管 Postgres 数据库与认证授权、REST/GraphQL 自动生成 API",
+   "Realtime 通过 websocket 广播数据库变更（基于 Elixir 服务器）",
+   "AI + Vector/Embeddings Toolkit 与 pg_graphql 扩展",
+   "多语言官方客户端库（JS/Flutter/Swift/Python/Kotlin 等）"
+  ],
+  "use_cases": [
+   "为 Web 或移动应用搭建带认证与实时功能的 Postgres 后端",
+   "为 AI 应用存储和检索向量嵌入",
+   "自托管一套开源的 Firebase 类后端服务",
+   "用 Edge Functions 编写服务端逻辑"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Postgres",
+   "后端即服务",
+   "数据库",
+   "向量检索",
+   "认证"
+  ],
+  "domain": "开发者平台/数据库",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "vector-database"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Supabase is the Postgres development platform. We're building the features of Firebase using enterprise-grade open sourc",
+   "L15: - [x] AI + Vector/Embeddings Toolkit. Docs",
+   "L43: Supabase is a hosted platform. You can sign up and start using Supabase without installing anything."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

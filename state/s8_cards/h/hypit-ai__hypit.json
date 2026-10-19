@@ -1,0 +1,136 @@
+{
+ "fn": "hypit-ai/hypit",
+ "sha": "7d4a45d4e005",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给编码 Agent 用的视频克隆工作流 DSL 与技能：一条命令产出多版本视频",
+  "review": "Hypit 以 Skill 形式安装（npx skills add），为 Claude Code、Codex 等编码 Agent 提供 SVML 标记语言和组件系统来制作视频：放入参考视频后 Agent 将其克隆为完整工作流（素材、字幕、B-roll、特效），时间轴锚定到词而非秒；也可从模板起步或由 Agent 从零编写。工作流编译为成品视频，可通过无头 Chromium 进程并发渲染，生成模型为可选项（纯代码渲染可不调用生成 API）。开源无席位费、单次渲染费或水印，模型服务按所选服务商计费。",
+  "highlights": [
+   "视频克隆为可编辑、可重跑的完整工作流（SVML 语言 + 插件组件系统）",
+   "一个工作流批量生成变体：换主持人、换文案、换语言，一处结构多处复用",
+   "支持无生成模型的纯代码渲染路径（字幕、动效、代码视觉本地渲染）",
+   "npx skills add 一条命令安装到编码 Agent"
+  ],
+  "use_cases": [
+   "克隆爆款短视频并批量替换产品、主持人或语言做投放变体",
+   "为 TikTok Shop/联盟带货每天用同一格式产出不同 SKU 视频",
+   "做十种语言的本地化版本，改一行台词时间轴自动重排",
+   "不调生成 API，用前端代码纯本地渲染视频"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI视频生成",
+   "Agent技能/Skill",
+   "DSL/编译器",
+   "短视频营销"
+  ],
+  "domain": "生成式 AI/AI 视频创作工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供简体中文文档入口（L12）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L34: Hypit gives AI agents (Claude Code, Codex...) a language and system to create video. Drop in a video, and your agent clo",
+   "L36: **To be clear:** cloning a video is the fastest way in, not the only one. You can start from our templates, or just desc",
+   "L45: npx skills add hypit-ai/hypit -g"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     34,
+     200
+    ],
+    "quotes": [
+     "Hypit gives AI agents (Claude Code, Codex...) a language and system to create video. Drop in a video, and your agent clo",
+     " AgentSky is a cloud platform for running AI agents such as Claude Code, Codex, OpenClaw, and Hermes. Each agent works o"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     216
+    ],
+    "quotes": [
+     " Monid is the OpenRouter for agent tools: one key, one wallet, hundreds of tools, billed per call. Hypit can route Seeda"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     45
+    ],
+    "quotes": [
+     "npx skills add hypit-ai/hypit -g"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     34,
+     200
+    ],
+    "note": "被支持/接入的编码 Agent 环境，非替代或竞品对象",
+    "quotes": [
+     "Hypit gives AI agents (Claude Code, Codex...) a language and system to create video. Drop in a video, and your agent clo",
+     " AgentSky is a cloud platform for running AI agents such as Claude Code, Codex, OpenClaw, and Hermes. Each agent works o"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

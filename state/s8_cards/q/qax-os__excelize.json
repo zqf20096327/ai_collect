@@ -1,0 +1,89 @@
+{
+ "fn": "qax-os/excelize",
+ "sha": "a1281fe0f1fe",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 Go 开发者的 Excel 读写库：操作 XLSX 等电子表格文件",
+  "review": "Excelize 是纯 Go 编写的库，提供读写 XLAM/XLSM/XLSX/XLTM/XLTX 电子表格文件的函数集合，支持 Microsoft Excel 2007 及以后版本生成的文档，要求 Go 1.26.0 或更高版本。README 展示的用法包括创建、读取电子表格，添加图表（可基于工作表数据或无数据生成），以及在文件中添加图片。提供流式 API 用于处理包含大量数据的工作表。通过 go get 安装，兼容 Go Modules，采用 BSD 3-Clause 许可证。",
+  "highlights": [
+   "纯 Go 实现，读写 XLAM/XLSM/XLSX/XLTM/XLTX 文件",
+   "流式 API 支持生成或读取海量数据的工作表",
+   "图表生成与管理，可基于工作表数据或无数据构建",
+   "支持在电子表格中添加图片"
+  ],
+  "use_cases": [
+   "在 Go 程序中生成带图表和图片的 Excel 报表",
+   "读取处理包含大量数据的电子表格文件",
+   "与 Microsoft Excel 2007 及以后版本生成的文档交互"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "电子表格",
+   "Go库",
+   "Excel",
+   "办公文档"
+  ],
+  "domain": "办公文档处理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: Excelize is a library written in pure Go providing a set of functions that allow you to write to and read from XLAM / XL",
+   "L20: go get github.com/xuri/excelize",
+   "L76: This program is under the terms of the BSD 3-Clause License. See https://opensource.org/licenses/BSD-3-Clause."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [
+    76
+   ],
+   "quotes": [
+    "This program is under the terms of the BSD 3-Clause License. See https://opensource.org/licenses/BSD-3-Clause."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

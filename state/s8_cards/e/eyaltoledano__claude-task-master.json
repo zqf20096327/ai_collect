@@ -1,0 +1,205 @@
+{
+ "fn": "eyaltoledano/claude-task-master",
+ "sha": "11156f51babd",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI 驱动的开发任务管理系统，可接入多款 AI 编辑器",
+  "review": "以 MCP 服务器与 npm CLI 两种形式运行的任务管理系统：解析 PRD 生成任务，支持任务拆分、依赖管理、状态更新、复杂度分析与研究命令，提供 36 个 MCP 工具并可按 all/standard/core/custom 模式选择性加载以控制上下文占用。需配置至少一个 AI 供应商的 API key（或 Claude Code/Codex CLI OAuth），可定义主模型、研究模型与回退模型。采用 MIT + Commons Clause 许可，禁止将其本身作为托管服务出售。",
+  "highlights": [
+   "MCP 服务器形式接入 Cursor、Windsurf、VS Code、Q CLI 等编辑器",
+   "36 个 MCP 工具支持 selective tool loading（all/standard/core/custom 四种模式）",
+   "支持主/研究/回退三类模型配置，多供应商 API key 接入",
+   "npm CLI 提供 init 与任务管理命令"
+  ],
+  "use_cases": [
+   "在 AI 编辑器中从 PRD 生成并管理开发任务",
+   "通过命令行初始化和管理任务依赖",
+   "配置多模型切换以控制 API 成本"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "任务管理",
+   "MCP服务器",
+   "AI编程",
+   "开发工具"
+  ],
+  "domain": "开发工具/AI 辅助编程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "openrouter"
+  ],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5:  Taskmaster : A task management system for AI-driven development, designed to work seamlessly with any AI chat.",
+   "L76: Taskmaster utilizes AI across several commands, and those require a separate API key. You can use a variety of models fr",
+   "L226: Task Master's MCP server supports selective tool loading to reduce context window usage. By default, all 36 tools are lo"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     24,
+     76,
+     82
+    ],
+    "quotes": [
+     "A task management system for AI-driven development with Claude, designed to work seamlessly with Cursor AI.",
+     "Taskmaster utilizes AI across several commands, and those require a separate API key. You can use a variety of models fr",
+     "- Anthropic API key (Claude API)"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     87
+    ],
+    "quotes": [
+     "- OpenRouter API Key (for research or main model)"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     196,
+     199
+    ],
+    "quotes": [
+     "npm install -g task-master-ai",
+     "npm install task-master-ai"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     301
+    ],
+    "note": "troubleshooting 中 clone 仓库运行 init.js，非主要安装途径",
+    "quotes": [
+     "git clone https://github.com/eyaltoledano/claude-task-master.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     56,
+     103,
+     137
+    ],
+    "note": "提供一键安装与 MCP 配置说明，属支持平台而非竞品",
+    "quotes": [
+     "#### Quick Install for Cursor 1.0+ (One-Click)",
+     "|**Cursor**|Global|`~/.cursor/mcp.json`|`%USERPROFILE%\\.cursor\\mcp.json`|`mcpServers`|",
+     "Open Cursor Settings (Ctrl+Shift+J) ➡ Click on MCP tab on the left ➡ Enable task-master-ai with the toggle"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     64,
+     88,
+     280
+    ],
+    "note": "支持的模型接入途径",
+    "quotes": [
+     "For Claude Code users:",
+     "- Claude Code (no API key required - requires Claude Code CLI)",
+     "Task Master now supports Claude models through the Claude Code CLI, which requires no API key:"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     85
+    ],
+    "note": "研究模型的 API key 选项",
+    "quotes": [
+     "- Perplexity API key (for research model)"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     89
+    ],
+    "note": "Codex CLI OAuth 依赖的订阅来源",
+    "quotes": [
+     "- Codex CLI (OAuth via ChatGPT subscription - requires Codex CLI)"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     105,
+     111
+    ],
+    "note": "支持配置的编辑器",
+    "quotes": [
+     "|**Windsurf**|Global|`~/.codeium/windsurf/mcp_config.json`|`%USERPROFILE%\\.codeium\\windsurf\\mcp_config.json`|`mcpServers",
+     "###### Cursor & Windsurf & Q Developer CLI (`mcpServers`)"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

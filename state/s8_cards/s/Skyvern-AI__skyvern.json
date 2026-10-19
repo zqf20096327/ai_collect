@@ -1,0 +1,186 @@
+{
+ "fn": "Skyvern-AI/skyvern",
+ "sha": "9abb6f5eb1c0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "用 LLM 与视觉自动执行浏览器工作流的工具",
+  "review": "提供 Playwright 兼容的 SDK 与无代码工作流构建器，用视觉 LLM 理解网页并执行操作，可在未见过的网站上运行且不依赖预定义 XPath。核心命令包括 page.act/extract/validate/prompt，支持任务链（Workflows）、连接本地 Chrome、凭证管理（Skyvern/Bitwarden/1Password）。安装途径有 pip、Docker Compose，默认 SQLite 可选 Postgres，另提供托管云版本。面向技术与非技术用户自动化网页操作流程。",
+  "highlights": [
+   "Playwright 兼容 SDK，提供 act/extract/validate/prompt 四个 AI 页面命令",
+   "支持 Python 与 TypeScript 双 SDK（npm @skyvern/client）",
+   "无代码工作流构建器，任务可链式组合",
+   "可接管本地 Chrome（CDP 连接）并经隧道由云版控制"
+  ],
+  "use_cases": [
+   "自动化表单填写、登录、文件下载等 RPA 类任务",
+   "在多个网站上复用同一工作流抓取或下载数据",
+   "无代码方式搭建电商下单等网页操作流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/5cab4668-e8e2-4982-8551-aab05ff73a7f",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "浏览器自动化",
+   "RPA",
+   "agent",
+   "Playwright"
+  ],
+  "domain": "浏览器自动化/AI agent",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "browser-automation",
+   "workflow-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: Skyvern automates browser-based workflows using LLMs and computer vision. It provides a Playwright-compatible SDK that a",
+   "L11: Instead of only relying on code-defined XPath interactions, Skyvern relies on Vision LLMs to learn and interact with the",
+   "L105: **Skyvern is a Playwright extension that adds AI-powered browser automation.** It gives you the full power of Playwright"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     409
+    ],
+    "quotes": [
+     "|Anthropic|Claude 4.7 Opus, Claude 4.6 (Sonnet, Opus), Claude 4.5 (Haiku, Sonnet, Opus)|"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "mention",
+    "lines": [
+     410
+    ],
+    "quotes": [
+     "|Azure OpenAI|Any GPT models deployed to your Azure subscription|"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "mention",
+    "lines": [
+     411
+    ],
+    "quotes": [
+     "|AWS Bedrock|Claude 4.7, Claude 4.6 (Sonnet, Opus), Claude 4.5 (Sonnet, Opus)|"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     413
+    ],
+    "quotes": [
+     "|Ollama|Run any locally hosted model via Ollama|"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     414
+    ],
+    "quotes": [
+     "|OpenRouter|Access models through OpenRouter|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     40,
+     65,
+     81
+    ],
+    "quotes": [
+     "> **Database default**: `skyvern quickstart` and `skyvern run server` default to a SQLite database at `~/.skyvern/data.d",
+     "### Option B: Docker Compose",
+     "   docker compose up -d"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     42,
+     54
+    ],
+    "quotes": [
+     "### Option A: pip install (Recommended for Python-managed local setup)",
+     "pip install \"skyvern[all]\""
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     "   git clone https://github.com/skyvern-ai/skyvern.git && cd skyvern"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     112
+    ],
+    "quotes": [
+     "- TypeScript: `npm install @skyvern/client`"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

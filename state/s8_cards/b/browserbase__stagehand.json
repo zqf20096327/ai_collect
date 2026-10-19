@@ -1,0 +1,155 @@
+{
+ "fn": "browserbase/stagehand",
+ "sha": "ec7a1a4bd0ec",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 agent 开发者的浏览器自动化 SDK：浏览、操作并提取网页数据",
+  "review": "以 SDK 形式提供的浏览器代理工具库，提供 goto/click/locator/screenshot 等 Playwright 风格 API，并以自然语言驱动 act/observe/extract 三类操作与数据抽取；支持通过无障碍树裁剪控制 token 用量，站点变更时自愈刷新动作。提供 TypeScript、Python、Go 三种 SDK，可本地运行（需安装 Chrome），也可指向 Browserbase 云端运行并配置 Model Gateway 接入模型；另提供托管 MCP server、Search/Fetch 接口与多框架集成。MIT 协议。",
+  "highlights": [
+   "Playwright 风格 API（goto/click/locator/screenshot）加自然语言 act/observe/extract",
+   "TypeScript、Python、Go 三语言 SDK",
+   "托管 MCP server 可供 Claude Code、Cursor、Codex 等 MCP 客户端使用",
+   "Search/Fetch 支持无浏览器的网页搜索与 URL 转 markdown"
+  ],
+  "use_cases": [
+   "让 agent 自动浏览网页并抽取结构化数据",
+   "为编码 agent（Claude Code/Cursor/Codex）接入浏览器能力",
+   "将现有 Playwright 测试套件迁移到 agent 化自动化",
+   "无需启动浏览器的网页抓取与搜索"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "浏览器自动化",
+   "browser-agent",
+   "数据抽取",
+   "MCP",
+   "Playwright"
+  ],
+  "domain": "开发者工具/浏览器自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "browser-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7:  Stagehand is the SDK for browser agents",
+   "L100:  One complete browser driver across TypeScript, Python, and Go.",
+   "L135: The hosted Browserbase MCP server puts `navigate`, `act`, `observe`, and `extract` in any MCP client — no install, no lo"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     138,
+     184
+    ],
+    "note": "以 MCP 客户端/集成形式提及 Claude Code，非模型 provider 接入说明",
+    "quotes": [
+     "claude mcp add --transport http browserbase https://mcp.browserbase.com/mcp \\",
+     " CrewAI, Mastra, Deep Agents, Vercel AI SDK, Claude Code, Codex"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     65
+    ],
+    "quotes": [
+     "pnpm add @browserbasehq/stagehand 'zod@~4.4.3'"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     71
+    ],
+    "quotes": [
+     "pip install stagehand"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     142
+    ],
+    "quotes": [
+     " Cursor, Codex, and other MCP clients"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     184
+    ],
+    "quotes": [
+     " CrewAI, Mastra, Deep Agents, Vercel AI SDK, Claude Code, Codex"
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     184
+    ],
+    "quotes": [
+     " CrewAI, Mastra, Deep Agents, Vercel AI SDK, Claude Code, Codex"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

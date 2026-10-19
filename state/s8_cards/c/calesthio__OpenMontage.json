@@ -1,0 +1,265 @@
+{
+ "fn": "calesthio/OpenMontage",
+ "sha": "9727b6758338",
+ "source": "readme",
+ "identity": {
+  "one_liner": "把 AI 编码助手变成完整视频制作工作室的 agentic 系统",
+  "review": "OpenMontage 是一套以 agent 驱动的视频生产系统：12 条制作流水线、100+ 工具、700+ agent 技能与制作知识文件，用户用自然语言描述需求，由 AI 编码助手（Claude Code/Cursor/Copilot/Windsurf/Codex）完成调研、脚本、素材生成、剪辑与合成。支持图片式视频与真实素材路径（从 Archive.org、NASA 等开放档案检索动态片段后剪辑渲染）。依赖 Python 3.10+、FFmpeg、Node.js 18+，通过 make setup 或手动 venv/npm 安装；所有 API key 可选，零 key 时用 Piper TTS 等免费工具。含 Backlot 本地看板用于实时展示制作进度与人工审批门。",
+  "highlights": [
+   "12 条制作流水线、100+ 工具、700+ agent 技能与制作知识文件",
+   "从 YouTube/Shorts/TikTok/本地片段出发生成有依据的制作方案与成本预估",
+   "Backlot 本地看板：分阶段展示进度、分镜审批门与可审计的 provider 决策日志",
+   "零 API key 路径：Piper TTS 旁白、开放档案素材、Remotion/HyperFrames 合成、FFmpeg 后期"
+  ],
+  "use_cases": [
+   "用自然语言让编码助手生成动画短片、纪录片或产品宣传视频",
+   "从参考视频出发生成风格相近的新主题视频方案",
+   "GPU 本地离线生成视频片段，避免按次付费 API"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "high",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "视频生成",
+   "agentic工作流",
+   "内容创作",
+   "AI编码助手扩展"
+  ],
+  "domain": "视频创作/AI 工具链",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "xai",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "ai-writing",
+   "video-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L34: Turn your AI coding assistant into a full video production studio. Describe what you want in plain language — your agent",
+   "L93: Works with **Claude Code, Cursor, Copilot, Windsurf, Codex** — any AI coding assistant that can read files and run code.",
+   "L167:  OpenMontage is pipeline-driven. Real work goes through `pipeline_defs/`, stage director skills in `skills/pipelines/`, "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     93,
+     130
+    ],
+    "note": "通过 Claude Code 配合使用",
+    "quotes": [
+     "Works with **Claude Code, Cursor, Copilot, Windsurf, Codex** — any AI coding assistant that can read files and run code.",
+     "- **An AI coding assistant** — Claude Code, Cursor, Copilot, Windsurf, or Codex"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "compat",
+    "lines": [
+     362,
+     380
+    ],
+    "note": "窗外行：.env 中可选 API key",
+    "quotes": [
+     "|**Grok Imagine Video**|Cloud API|Strong reference-image video and xAI-native short-form generation|",
+     "|**Grok Imagine Image**|Cloud API|Strong image edits, style transfer, and multi-image compositing|"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     540
+    ],
+    "note": "窗外行：provider 菜单相关",
+    "quotes": [
+     "> **Coming soon:** Local LLM support via **Ollama** and **LM Studio** — run the full production pipeline without any clo"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     135,
+     137
+    ],
+    "quotes": [
+     "git clone https://github.com/calesthio/OpenMontage.git",
+     "make setup"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     154,
+     156
+    ],
+    "note": "pip install 依赖",
+    "quotes": [
+     "> **No `make`?** macOS/Linux: `python3 -m venv .venv && source .venv/bin/activate && python -m pip install -r requiremen",
+     "> Windows PowerShell: `py -3 -m venv .venv; .\\.venv\\Scripts\\Activate.ps1; python -m pip install -r requirements.txt; cd "
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     128
+    ],
+    "note": "FFmpeg 依赖的安装方式",
+    "quotes": [
+     "- **FFmpeg** — `brew install ffmpeg` / `sudo apt install ffmpeg` / ffmpeg.org"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     154,
+     156,
+     158
+    ],
+    "note": "remotion-composer 前端依赖安装",
+    "quotes": [
+     "> **No `make`?** macOS/Linux: `python3 -m venv .venv && source .venv/bin/activate && python -m pip install -r requiremen",
+     "> Windows PowerShell: `py -3 -m venv .venv; .\\.venv\\Scripts\\Activate.ps1; python -m pip install -r requirements.txt; cd ",
+     "> **Windows:** If `npm install` fails with `ERR_INVALID_ARG_TYPE`, use `npx --yes npm install` instead."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     93,
+     130
+    ],
+    "note": "支持的宿主编码助手，非竞品表述",
+    "quotes": [
+     "Works with **Claude Code, Cursor, Copilot, Windsurf, Codex** — any AI coding assistant that can read files and run code.",
+     "- **An AI coding assistant** — Claude Code, Cursor, Copilot, Windsurf, or Codex"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     93,
+     130
+    ],
+    "quotes": [
+     "Works with **Claude Code, Cursor, Copilot, Windsurf, Codex** — any AI coding assistant that can read files and run code.",
+     "- **An AI coding assistant** — Claude Code, Cursor, Copilot, Windsurf, or Codex"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     93,
+     130
+    ],
+    "quotes": [
+     "Works with **Claude Code, Cursor, Copilot, Windsurf, Codex** — any AI coding assistant that can read files and run code.",
+     "- **An AI coding assistant** — Claude Code, Cursor, Copilot, Windsurf, or Codex"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     93,
+     130
+    ],
+    "quotes": [
+     "Works with **Claude Code, Cursor, Copilot, Windsurf, Codex** — any AI coding assistant that can read files and run code.",
+     "- **An AI coding assistant** — Claude Code, Cursor, Copilot, Windsurf, or Codex"
+    ]
+   },
+   {
+    "term": "Runway",
+    "rel": "mention",
+    "lines": [
+     360
+    ],
+    "note": "窗外行：provider 选项",
+    "quotes": [
+     "|**Runway Gen-4**|Cloud API|Cinematic quality, Gen-3 Alpha Turbo / Gen-4 Turbo / Gen-4 Aleph|"
+    ]
+   },
+   {
+    "term": "Suno",
+    "rel": "mention",
+    "lines": [
+     411
+    ],
+    "note": "窗外行：provider 选项",
+    "quotes": [
+     "|**Suno AI**|Cloud API|Full song generation with vocals, lyrics, any genre. Up to 8 minutes.|"
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     403
+    ],
+    "note": "窗外行：provider 选项",
+    "quotes": [
+     "|**DashScope / Doubao / Fish Audio**|Cloud API|Additional multilingual and expressive voice options|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

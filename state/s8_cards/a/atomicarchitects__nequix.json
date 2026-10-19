@@ -1,0 +1,117 @@
+{
+ "fn": "atomicarchitects/nequix",
+ "sha": "b3a7d7eb6f96",
+ "source": "readme",
+ "identity": {
+  "one_liner": "材料科学机器学习原子间势基础模型（含声子微调）",
+  "review": "Nequix 提供材料领域基础模型的源码与预训练权重，覆盖 MPtrj、OMat24 等数据集训练的多个模型变体，以及声子微调（PFT）方法。支持 JAX 与 PyTorch 双后端、OpenEquivariance GPU 内核、ASE 计算器接口、解析 Hessian 与声子计算，通过 nequix_train 命令用单个 YAML 配置训练。限制：PFT 训练仅支持 JAX 后端；复现训练需单节点 4×A100，耗时约 60-140 小时。",
+  "highlights": [
+   "提供 5 个预训练模型权重（MP/OMat/OAM 系列及 PFT 变体）",
+   "JAX/Torch 双后端，GPU 支持 OpenEquivariance 内核",
+   "ASE 计算器接口，支持解析 Hessian 与声子计算",
+   "声子微调（PFT）训练流程与预处理数据下载脚本"
+  ],
+  "use_cases": [
+   "用预训练模型在 ASE 中做材料能量/力/Hessian 计算",
+   "在自有数据上训练或微调机器学习原子间势",
+   "做声子与振动性质计算（有限位移或解析 Hessian）",
+   "复现论文中的 Nequix-MP-1 / OMat / OAM 训练"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "机器学习势",
+   "材料模拟",
+   "计算材料学",
+   "基础模型",
+   "分子动力学"
+  ],
+  "domain": "材料科学/机器学习原子间势",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Source code and model weights for the Nequix foundation model, and Phonon fine-tuning (PFT).",
+   "L37: Using `nequix.calculator.NequixCalculator`, you can perform calculations in"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     18,
+     24,
+     32
+    ],
+    "quotes": [
+     "pip install nequix",
+     "pip install nequix[oeq]",
+     "pip install nequix[torch]"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     104
+    ],
+    "quotes": [
+     "git clone https://github.com/atomicarchitects/nequix.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

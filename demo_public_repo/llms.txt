@@ -1,0 +1,20 @@
+# AI Repo Atlas
+
+> 每日更新的 GitHub 开源 AI 项目中立目录:42,853 个仓库池,每仓一张结构化解读卡(是什么/给谁用/怎么装/有什么限制),七个可筛选的硬约束枚举,每个判断带 README 行号证据。卡片为中文(解决中文查询命中英文 README 的语言归一问题)。
+
+Docs:
+- [DATASET.md](DATASET.md): 字段字典与全部枚举定义。回答"某个字段什么含义/怎么筛选"先读这个。
+- [README.md](README.md): 项目介绍、规模、质量口径、许可(CC BY 4.0)。
+- [CHANGELOG.md](CHANGELOG.md): 数据与格式的变更历史。
+
+Data:
+- [data/catalog.jsonl](data/catalog.jsonl): 机器主表,一仓一行 JSON,按 fn 排序。含 one_liner/review/highlights/use_cases(检索组)、七个筛选枚举(filters)、替代品与竞品(links)、行号证据(trust.evidence)。
+- [data/schema/card.schema.json](data/schema/card.schema.json): 主表 JSON Schema。
+- [data/cards/](data/cards): 人读 markdown 卡片,一仓一文件,路径 `data/cards/{owner首字母}/{owner}__{repo}.md`。
+- [trends/](trends): 周度趋势报告。
+
+Examples:
+- [OpenClaw 卡片](data/cards/o/openclaw__openclaw.md): 自托管开源 AI 助手,接 20+ 聊天渠道,基金会维护。ai_role=ai-native / license=permissive / deploy=desktop。
+- [REA 卡片](data/cards/m/morluto__rea.md): 把逆向工程工具集接入 agent 的 MCP 服务器。ai_role=ai-ecosystem / license=permissive / deploy=library。
+
+Usage: 查询示例——找"可商用、能本地部署、对显卡没要求"的 AI 项目,读 catalog.jsonl 过滤 `filters.license_risk=="permissive" and filters.deploy in ("self-host","desktop") and (filters.hardware=="cpu-ok" or filters.hardware==null)`;`null` 表示 README 未提及,不是"没有"。

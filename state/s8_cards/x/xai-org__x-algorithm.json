@@ -1,0 +1,87 @@
+{
+ "fn": "xai-org/x-algorithm",
+ "sha": "65954e1862b6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "X 平台 For You 信息流排序算法的参考实现",
+  "review": "xai-org 开源的 X 平台 For You 信息流核心代码：请求路径上由 Thunder 读取关注账号的在网内容，Phoenix 检索与 SimClusters 提供非关注来源内容，经预过滤、Phoenix 打分（按行为预测概率加权求和）、TopK 选择、可见性过滤后输出时间线；另含标注路径（botmaker 规则、agatha/bdsm 账号评分、媒体模型）驱动 visibility-filtering 的 ALLOW/NOTICE/INTERSTITIAL/DROP 判定。2026 年 8 月版本加入权重配置参数、可见性过滤系统与 Phoenix 训练及合成数据生成代码。README 未给出安装运行步骤。",
+  "highlights": [
+   "Phoenix 模型按行为预测概率加权合成帖子分数",
+   "visibility-filtering 输出 ALLOW/NOTICE/INTERSTITIAL/DROP 四种可见性判定",
+   "SimClusters 与 popular_posts_source 作为非关注内容候选来源",
+   "Phoenix 训练代码与合成数据生成，可运行概念验证训练"
+  ],
+  "use_cases": [
+   "研究 X For You 信息流的检索、打分与过滤机制",
+   "查看账号或帖子可见性限制背后的规则实现",
+   "参考工业级信息流系统的架构组织方式"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "推荐系统",
+   "信息流排序",
+   "社交平台",
+   "透明度"
+  ],
+  "domain": "推荐系统/社交平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "recommender-system"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: This repository contains the core code that determines which posts a viewer sees in the **For You** feed on X. It combin",
+   "L44: Both are ranked together by the same model. **Phoenix** reads the viewer's recent engagement history and predicts, for e",
+   "L30: 1. **Visibility filtering:** `visibility-filtering/` determines whether to show a post, drop it, or show it behind an in"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

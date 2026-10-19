@@ -1,0 +1,133 @@
+{
+ "fn": "agno-agi/agno",
+ "sha": "d784a97ad617",
+ "source": "readme",
+ "identity": {
+  "one_liner": "供开发者构建、运行并管理 agent 平台的框架与运行时",
+  "review": "Agno 提供 SDK 与 AgentOS 运行时：用 SDK 构建 agent，作为服务运行（REST API、SSE、websockets），并通过 Web UI 管理平台。数据与链路存于自有 Postgres 数据库，内置 JWT RBAC、多租户隔离、人工审批、OpenTelemetry 可观测性与定时任务。上手路径是把提示词交给编码 agent（Claude Code、Cursor 等）从模板仓库部署，也支持手写代码；模板覆盖 Railway、Docker、AWS、GCP、Azure 等部署目标。每轮 agent 运行发送遥测事件，可用 AGNO_TELEMETRY=false 关闭。",
+  "highlights": [
+   "SDK 构建 + AgentOS 运行时 + Web UI 管理的组合",
+   "50+ 端点的生产 API，支持 SSE 与 websockets",
+   "JWT RBAC 与多用户多租户隔离",
+   "100+ 预置工具集成（GitHub、Slack、Postgres 等）"
+  ],
+  "use_cases": [
+   "为自家产品搭建自托管的 agent 服务平台",
+   "用自有数据库存储会话、记忆与 traces",
+   "通过 Slack、Telegram、WhatsApp、Discord 等接口暴露 agent",
+   "在任意支持容器的云平台部署 agent 平台"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent框架",
+   "agent平台",
+   "开发者工具",
+   "部署/运行时"
+  ],
+  "domain": "LLM 基础设施/agent 开发框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: Agno is a framework and runtime for agent platforms. Build agents, run them as a service, manage your platform using a w",
+   "L13: - Build your agent platform using the Agno SDK.",
+   "L14: - Run your agent platform using the AgentOS runtime."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     23
+    ],
+    "note": "Claude Code 作为可用的编码 agent 被提及，非模型接入适配",
+    "quotes": [
+     "Hand this prompt to your coding agent (Claude Code, Cursor, Codex):"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     23
+    ],
+    "quotes": [
+     "Hand this prompt to your coding agent (Claude Code, Cursor, Codex):"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     23,
+     60
+    ],
+    "quotes": [
+     "Hand this prompt to your coding agent (Claude Code, Cursor, Codex):",
+     "2. Add Agno docs as an indexed source. In Cursor: Settings → Indexing & Docs → Add `https://docs.agno.com/llms-full.txt`"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     60
+    ],
+    "quotes": [
+     "2. Add Agno docs as an indexed source. In Cursor: Settings → Indexing & Docs → Add `https://docs.agno.com/llms-full.txt`"
+    ]
+   }
+  ]
+ }
+}

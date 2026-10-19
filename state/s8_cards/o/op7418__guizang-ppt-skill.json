@@ -1,0 +1,170 @@
+{
+ "fn": "op7418/guizang-ppt-skill",
+ "sha": "89fe830f52ca",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI Agent 用的网页 PPT 生成技能：产出单文件 HTML 演示",
+  "review": "适配 Claude Code / Codex 等 Agent 环境的 Skill，生成单文件 HTML 横向翻页 PPT、配图与多平台封面。内置两套视觉系统：电子杂志风（10 种布局）与瑞士国际主义风（22 种锁定版式、4 套锚点色），含主题色预设并禁止自定义 hex。提供配图流程、演讲者模式（双窗口观众屏、备注、计时、排练）与脚本校验器。输出为无需构建与服务器、浏览器直接打开的单文件 HTML，不支持导出 PPTX。",
+  "highlights": [
+   "双视觉系统：电子杂志风 10 种布局 + 瑞士风 22 种锁定版式",
+   "演讲者模式：双窗口观众屏、备注、计时排练、激光笔与故障恢复",
+   "Codex 中可用 GPT-Image 生成配图与多平台封面",
+   "单文件 HTML 交付，按 B 键可退回低性能静态模式"
+  ],
+  "use_cases": [
+   "把长文章或 Markdown 转成演讲 PPT",
+   "生成公众号/小红书等多平台封面图",
+   "线下分享现场用演讲者模式排练与放映",
+   "产品截图统一风格后再设计为 PPT 配图"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "网页PPT",
+   "AI-agent skill",
+   "演示文稿",
+   "封面生成",
+   "HTML"
+  ],
+  "domain": "办公/演示工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "由歸藏线下分享沉淀",
+   "真格 Token Grant 资助",
+   "公众号/小红书/视频号等国内平台封面规格"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: 一个适配 Claude Code / Codex 等 Agent 环境的网页 PPT 技能,用于生成**单文件 HTML 横向翻页 PPT**、PPT 配图和多平台封面,并内置完整的排练与演讲者模式。",
+   "L128: |Claude Code|支持|原生 Skill 工作流,适合生成和迭代 HTML deck|"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     7,
+     16
+    ],
+    "note": "Claude Code 平台语境出现，未提 Anthropic SDK 接入",
+    "quotes": [
+     "Claude Code",
+     "一个适配 Claude Code / Codex 等 Agent 环境的网页 PPT 技能,用于生成**单文件 HTML 横向翻页 PPT**、PPT 配图和多平台封面,并内置完整的排练与演讲者模式。"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     37,
+     139
+    ],
+    "quotes": [
+     "npx skills add https://github.com/op7418/guizang-ppt-skill --skill guizang-ppt-skill",
+     "npx skills add https://github.com/op7418/guizang-ppt-skill --skill guizang-ppt-skill"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     147,
+     156
+    ],
+    "quotes": [
+     "> 2. 执行 `git clone https://github.com/op7418/guizang-ppt-skill.git ~/.claude/skills/guizang-ppt-skill`",
+     "git clone https://github.com/op7418/guizang-ppt-skill.git ~/.claude/skills/guizang-ppt-skill"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     7,
+     16,
+     128
+    ],
+    "note": "支持平台，非替代/竞品对象",
+    "quotes": [
+     "Claude Code",
+     "一个适配 Claude Code / Codex 等 Agent 环境的网页 PPT 技能,用于生成**单文件 HTML 横向翻页 PPT**、PPT 配图和多平台封面,并内置完整的排练与演讲者模式。",
+     "|Claude Code|支持|原生 Skill 工作流,适合生成和迭代 HTML deck|"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     83
+    ],
+    "note": "Skill 可上架的渠道平台",
+    "quotes": [
+     "|Kimi work|kimi.com（安装后在 Skill 商店搜索 guizang ppt skill）|"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     130,
+     151
+    ],
+    "note": "可用平台",
+    "quotes": [
+     "|Cursor / 其他本地 Agent|可用|需要能读写文件并执行 shell 命令|",
+     "把这段话复制粘贴给 Claude Code / Cursor / 任何有 shell 权限的 AI Agent,它会自动完成安装。"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

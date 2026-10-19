@@ -1,0 +1,193 @@
+{
+ "fn": "getzep/graphiti",
+ "sha": "81bafdcd5ef9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 AI Agent 构建可查询的时序知识图谱框架",
+  "review": "Graphiti 是构建和查询时序上下文图谱的开源框架，面向处理动态数据的 AI Agent。事实带时间有效期窗口、追溯至原始数据（episodes），支持 Pydantic 定义或从数据涌现的本体，新数据增量集成无需全图重算，检索采用语义嵌入+BM25 关键词+图遍历的混合方式。图数据库后端支持 Neo4j、FalkorDB、Amazon Neptune、Kuzu（已弃用），默认使用 OpenAI 做推理与嵌入，另附 MCP server 实现。",
+  "highlights": [
+   "事实带时间有效期窗口，历史查询无需全图重算",
+   "混合检索：语义嵌入 + BM25 关键词 + 图遍历",
+   "增量图构建，支持规定式与习得式本体（Pydantic 模型）",
+   "提供 MCP server，供 AI 助手调用图谱能力"
+  ],
+  "use_cases": [
+   "为 AI Agent 构建随交互持续演化的知识图谱",
+   "对频繁变化的数据做时间点查询与事实失效追踪",
+   "替代静态文档切片的 RAG，做结构化上下文检索"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "知识图谱",
+   "RAG",
+   "AI Agent",
+   "记忆/上下文"
+  ],
+  "domain": "LLM 基础设施/知识图谱",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "knowledge-graph",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L27: Graphiti is a framework for building and querying temporal context graphs for AI agents. Unlike static knowledge graphs,",
+   "L143: - Neo4j 5.26 / FalkorDB 1.1.2 / Amazon Neptune Database Cluster or Neptune Analytics Graph + Amazon OpenSearch",
+   "L165: pip install graphiti-core"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     154,
+     238
+    ],
+    "quotes": [
+     "- Google Gemini, Anthropic, or Groq API key (for alternative LLM providers)",
+     "> Support for Anthropic, Gemini, and Groq is available, too. Other LLM providers — both hosted OpenAI-compatible APIs"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     239
+    ],
+    "quotes": [
+     "> (DeepSeek, Together, OpenRouter, …) and local servers (Ollama, vLLM, llama.cpp, LM Studio) — may be used via their"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     239
+    ],
+    "quotes": [
+     "> (DeepSeek, Together, OpenRouter, …) and local servers (Ollama, vLLM, llama.cpp, LM Studio) — may be used via their"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     239
+    ],
+    "quotes": [
+     "> (DeepSeek, Together, OpenRouter, …) and local servers (Ollama, vLLM, llama.cpp, LM Studio) — may be used via their"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     239
+    ],
+    "quotes": [
+     "> (DeepSeek, Together, OpenRouter, …) and local servers (Ollama, vLLM, llama.cpp, LM Studio) — may be used via their"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "mention",
+    "lines": [
+     358
+    ],
+    "quotes": [
+     "## Using Graphiti with Azure OpenAI"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     256,
+     263,
+     271
+    ],
+    "quotes": [
+     "### Running with Docker Compose",
+     "  docker compose up",
+     "  docker compose --profile falkordb up"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     165,
+     171
+    ],
+    "quotes": [
+     "pip install graphiti-core",
+     "uv add graphiti-core"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     530
+    ],
+    "quotes": [
+     "- Building an agent with LangChain's LangGraph and Graphiti"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    144,
+    188
+   ]
+  },
+  "audit_note": "Kuzu 后端已声明弃用，上游项目不再维护"
+ }
+}

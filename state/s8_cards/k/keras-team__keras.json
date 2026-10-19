@@ -1,0 +1,144 @@
+{
+ "fn": "keras-team/keras",
+ "sha": "47cfd8c8f6e3",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给深度学习开发者用的多后端神经网络框架",
+  "review": "Keras 3 是多后端深度学习框架，可在 JAX、TensorFlow、PyTorch 之上运行，另提供仅推理的 OpenVINO 后端；通过环境变量 KERAS_BACKEND 或配置文件切换后端，导入后不可更改。覆盖计算机视觉、自然语言处理、音频、时序、推荐等任务，可作为 tf.keras 的替代（drop-in replacement），Keras 模型可用 tf.data.Dataset 或 PyTorch DataLoader 数据集训练。Linux/macOS 直接安装，Windows 建议 WSL2。",
+  "highlights": [
+   "多后端支持：JAX、TensorFlow、PyTorch、OpenVINO（仅推理）",
+   "通过 KERAS_BACKEND 环境变量或 ~/.keras/keras.json 配置后端",
+   "作为 tf.keras 的 drop-in replacement，支持迁移现有代码",
+   "提供各后端 CUDA 依赖的 requirements 文件"
+  ],
+  "use_cases": [
+   "在多个底层框架上运行同一套高层建模工作流",
+   "将现有 tf.keras 代码迁移到 JAX 或 PyTorch 后端",
+   "编写跨框架可用的自定义层、模型与指标",
+   "从笔记本扩展到 GPU/TPU 集群进行大规模训练"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": "cpu-ok",
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度学习",
+   "多后端框架",
+   "神经网络",
+   "模型训练"
+  ],
+  "domain": "机器学习/深度学习框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "cpu-infer"
+  ],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Keras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inferen",
+   "L84: You can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json`"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cpu-infer",
+    "rel": "support",
+    "lines": [
+     3,
+     30,
+     70,
+     103
+    ],
+    "quotes": [
+     "Keras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inferen",
+     "The `openvino` backend is available with support for model inference only.",
+     "The `requirements.txt` file will install a CPU-only version of TensorFlow, JAX, and PyTorch. For GPU support, we also",
+     "**Note:** The OpenVINO backend is an inference-only backend, meaning it is designed only for running model"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     19,
+     24,
+     42
+    ],
+    "quotes": [
+     "Keras 3 is available on PyPI as `keras`. Note that Keras 2 remains available as the `tf-keras` package.",
+     "pip install keras --upgrade",
+     "pip install -r requirements.txt"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     91
+    ],
+    "quotes": [
+     "In Colab, you can do:"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU-only",
+    "rel": "support",
+    "lines": [
+     70,
+     71
+    ],
+    "quotes": [
+     "The `requirements.txt` file will install a CPU-only version of TensorFlow, JAX, and PyTorch. For GPU support, we also",
+     "provide a separate `requirements-{backend}-cuda.txt` for TensorFlow, JAX, and PyTorch. These install all CUDA"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

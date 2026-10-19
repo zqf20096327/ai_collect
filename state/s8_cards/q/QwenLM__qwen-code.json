@@ -1,0 +1,180 @@
+{
+ "fn": "QwenLM/qwen-code",
+ "sha": "a68fd51d23a4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的终端 AI 编码 agent，支持多模型多界面",
+  "review": "开源命令行 AI 编码 agent，提供终端、桌面应用、Web UI、编辑器插件与 IM 渠道等多种使用界面。内置 SubAgents、Agent Teams、Auto-Memory、Auto-Skills 与 MCP 支持，支持 OpenAI、Anthropic、Gemini、Qwen 协议及第三方本地模型，可在运行时切换。通过 npm、Homebrew 或安装脚本部署，需 Node.js 22+（npm 路径）。README 提供 SWE-bench Verified 评测数据（76.40%–77.80%）。",
+  "highlights": [
+   "支持多协议模型接入：OpenAI/Anthropic/Gemini/Qwen API 及 Ollama/vLLM 本地模型",
+   "多种使用界面：终端、桌面、Web UI、VS Code/Zed/JetBrains 插件、Telegram/钉钉/微信/飞书渠道",
+   "Headless 模式可嵌入脚本、CI/CD 与批处理，另提供 TypeScript/Python/Java SDK",
+   "Agent Arena 支持多模型在同一任务上对比运行"
+  ],
+  "use_cases": [
+   "在终端里用自然语言让 AI 阅读、解释和修改项目代码",
+   "在 CI/CD 或脚本中以 headless 模式自动执行编码任务",
+   "通过 IM 渠道（如飞书/钉钉）远程调用编码 agent"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "CLI编码助手",
+   "AI agent",
+   "开发者工具",
+   "多模型接入"
+  ],
+  "domain": "开发者工具/AI 编码",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "Claude Code"
+  ],
+  "ecosystem_compat": [
+   "ollama",
+   "vllm",
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供中文 README 入口（L10）",
+   "安装包托管于阿里云杭州 OSS（L35, L41）",
+   "产品关联通义千问/Qwen 模型生态"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L8: **The open-source AI coding agent for your terminal, editor, desktop, browser, and chat.**",
+   "L24: - **Multi-protocol** — Supports OpenAI, Anthropic, Gemini, and Qwen APIs. Any third-party provider or local model (Ollam",
+   "L112: |Feature|Qwen Code|Claude Code|"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     24
+    ],
+    "quotes": [
+     "- **Multi-protocol** — Supports OpenAI, Anthropic, Gemini, and Qwen APIs. Any third-party provider or local model (Ollam"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     24
+    ],
+    "quotes": [
+     "- **Multi-protocol** — Supports OpenAI, Anthropic, Gemini, and Qwen APIs. Any third-party provider or local model (Ollam"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     24
+    ],
+    "quotes": [
+     "- **Multi-protocol** — Supports OpenAI, Anthropic, Gemini, and Qwen APIs. Any third-party provider or local model (Ollam"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     54,
+     57
+    ],
+    "quotes": [
+     "**Homebrew** (macOS / Linux):",
+     "brew install qwen-code"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     48,
+     51
+    ],
+    "quotes": [
+     "**NPM** (requires Node.js 22+):",
+     "npm install -g @qwen-code/qwen-code@latest"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     23,
+     24
+    ],
+    "note": "README 中为同生态的 Qwen 模型提及，非替代/竞品对象",
+    "quotes": [
+     "- **Open-source, inside and out** — The framework and the Qwen models are open-source. They evolve together. No vendor l",
+     "- **Multi-protocol** — Supports OpenAI, Anthropic, Gemini, and Qwen APIs. Any third-party provider or local model (Ollam"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "competitor",
+    "lines": [
+     110,
+     112
+    ],
+    "note": "功能对标表格中列出 Claude Code",
+    "quotes": [
+     "If you know Claude Code, you already know Qwen Code — and then some. We've put significant effort into bringing Qwen Cod",
+     "|Feature|Qwen Code|Claude Code|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

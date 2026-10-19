@@ -1,0 +1,269 @@
+{
+ "fn": "bojieli/ai-agent-book",
+ "sha": "eed8f3398e12",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向工程师的 AI Agent 开源书：10 章正文加 109 个配套实验",
+  "review": "开源图书仓库，正文按 Agent = LLM + 上下文 + 工具的框架分 10 章，主题覆盖上下文工程、用户记忆与 RAG、MCP 工具、Coding Agent、评估、后训练与多 Agent 协作。提供 15 种语言的 PDF/EPUB 下载与在线阅读，正文源码为 markdown，可自行编译（需 pandoc/xelatex/ElegantBook）。实验代码统一支持 Python 3.11–3.13，用 uv 或 pip 按章节安装依赖，调用模型需自行配置 API Key；第 6/7/8/10 章部分实验需另行克隆 22 个外部仓库。",
+  "highlights": [
+   "10 章正文与 109 个配套实验全部开源（Apache 2.0）",
+   "15 种语言的 PDF/EPUB 构建与在线阅读，main 分支推送后自动更新",
+   "实验环境用 uv.lock 固定，按章节 extra 安装依赖",
+   "配套代码由 coding agent 生成，附思考题参考答案与学习建议"
+  ],
+  "use_cases": [
+   "系统学习 AI Agent 的设计原理与工程实践",
+   "跟着 109 个实验动手实现自己的 coding agent",
+   "为团队搭建 Agent 评估集与持续改进流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "技术书籍",
+   "AI Agent",
+   "教学实验",
+   "RAG",
+   "多Agent协作"
+  ],
+  "domain": "教育/技术图书",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文原版正文，其余语言为社区翻译",
+   "作者李博杰",
+   "推荐 Kimi、智谱 GLM 等中国大陆可访问平台"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: **Agent = LLM + 上下文 + 工具**——本书围绕这个核心公式，用 10 章把 AI Agent 从原理讲到工程实战。全书正文、配图、**109 个配套实验**全部开源，欢迎亲手把实验跑一遍。",
+   "L64: |1|🚀 **AI Agent 入门**|**Agent = LLM + 上下文 + 工具**；Harness 工程才是竞争力|读|4|",
+   "L91: 运行会调用模型的实验前，请按该实验 README 配置凭据：支持根目录配置的实验可复制 `.env.example` 为 `.env` 并填入至少一个提供商 Key；有些实验要求在自身目录放 `.env` 或直接导出环境变量。只有在实验 R"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     91,
+     103
+    ],
+    "note": "仅在实验明确列出时可用本地 Ollama，属可选本地推理方式",
+    "quotes": [
+     "运行会调用模型的实验前，请按该实验 README 配置凭据：支持根目录配置的实验可复制 `.env.example` 为 `.env` 并填入至少一个提供商 Key；有些实验要求在自身目录放 `.env` 或直接导出环境变量。只有在实验 R",
+     "- 浏览器、CUDA、FFmpeg、Ollama、Playwright 浏览器及外部仓库等系统依赖，请继续参考各实验 README。第 8 章部分内置第三方组件需要 Python 3.12+。"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     102
+    ],
+    "note": "作为 uv sync 的可选 extra 出现",
+    "quotes": [
+     "- `all` 是不含本地训练栈的 CPU 友好组合，并不代表每个实验；`uv sync` 每次都会精确同步当前选择，使用特殊 extra 时请合并到同一条命令，例如 `uv sync --locked --extra ch2 --extr"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     113,
+     114,
+     116,
+     117
+    ],
+    "note": "作为推荐申请 API Key 的平台/被列举的模型提及",
+    "quotes": [
+     "|**Siliconflow**|<https://siliconflow.cn/>|各种开源模型（DeepSeek、Qwen 等），中国大陆访问速度快|中国大陆|",
+     "|**DeepSeek**|<https://platform.deepseek.com/>|DeepSeek 官方 API|全球 + 中国大陆|",
+     "|**Krill AI**|www.krill-code.com|一站式访问全球及国内主流模型（OpenAI、Claude、Gemini、Grok、Kimi、GLM、DeepSeek、Qwen、Minimax）|全球 + 中国大陆|",
+     "|**OpenRouter**|<https://openrouter.ai/>|一站式访问全球及国内主流模型（GPT、Claude、Gemini、Kimi、GLM、DeepSeek、Qwen 等）|全球|"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     116,
+     117,
+     125,
+     137,
+     148
+    ],
+    "note": "Claude/Anthropic 相关模型与工具被提及，无专门接入",
+    "quotes": [
+     "|**Krill AI**|www.krill-code.com|一站式访问全球及国内主流模型（OpenAI、Claude、Gemini、Grok、Kimi、GLM、DeepSeek、Qwen、Minimax）|全球 + 中国大陆|",
+     "|**OpenRouter**|<https://openrouter.ai/>|一站式访问全球及国内主流模型（GPT、Claude、Gemini、Kimi、GLM、DeepSeek、Qwen 等）|全球|",
+     "引言的“前置知识”一节有完整说明：能读懂并修改中等复杂度的 Python 代码；用过 ChatGPT、Claude 等 LLM 产品；熟悉至少一款 AI 辅助编程工具（Claude Code、Codex、Cursor 等）；了解命令行、Gi",
+     "推荐从头做一个像 Claude Code、Codex 那样的 coding agent：第 1–5 章足以做出一个可用的 coding agent；第 7、9 章帮它建立评估集并从失败案例中持续改进；第 8 章介入模型本身；第 6、10 章",
+     "感谢 **Krill AI** 赞助本项目！Krill 提供 GPT / Claude / Gemini / 多款国产模型的官方稳定极速 API 中转服务，支持企业级定制、报销开票、7×16h 专属技术支持，更有独家适配的 WebSocke"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     116
+    ],
+    "note": "Grok 在聚合平台模型列表中被提及",
+    "quotes": [
+     "|**Krill AI**|www.krill-code.com|一站式访问全球及国内主流模型（OpenAI、Claude、Gemini、Grok、Kimi、GLM、DeepSeek、Qwen、Minimax）|全球 + 中国大陆|"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     117
+    ],
+    "note": "列为建议申请 Key 的聚合平台",
+    "quotes": [
+     "|**OpenRouter**|<https://openrouter.ai/>|一站式访问全球及国内主流模型（GPT、Claude、Gemini、Kimi、GLM、DeepSeek、Qwen 等）|全球|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     88,
+     102
+    ],
+    "note": "pip 安装是实验依赖的官方支持途径",
+    "quotes": [
+     "python -m pip install -e \".[ch1]\"",
+     "- `all` 是不含本地训练栈的 CPU 友好组合，并不代表每个实验；`uv sync` 每次都会精确同步当前选择，使用特殊 extra 时请合并到同一条命令，例如 `uv sync --locked --extra ch2 --extr"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "none",
+    "lines": [
+     164,
+     165
+    ],
+    "note": "git clone 命令针对外部复现仓库，非本产品安装途径",
+    "quotes": [
+     "git clone https://github.com/anthropics/claude-quickstarts.git chapter6/claude-quickstarts && git -C chapter6/claude-qui",
+     "git clone https://github.com/browser-use/browser-use.git chapter6/browser-use && git -C chapter6/browser-use checkout --"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     111,
+     116,
+     117
+    ],
+    "note": "推荐 API 平台/被列举模型",
+    "quotes": [
+     "|**Kimi**（月之暗面）|<https://platform.moonshot.cn/>|Kimi 系列，Coding、Agent 能力强|中国大陆|",
+     "|**Krill AI**|www.krill-code.com|一站式访问全球及国内主流模型（OpenAI、Claude、Gemini、Grok、Kimi、GLM、DeepSeek、Qwen、Minimax）|全球 + 中国大陆|",
+     "|**OpenRouter**|<https://openrouter.ai/>|一站式访问全球及国内主流模型（GPT、Claude、Gemini、Kimi、GLM、DeepSeek、Qwen 等）|全球|"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     113,
+     116,
+     117
+    ],
+    "note": "Qwen 在聚合平台模型列表中被提及",
+    "quotes": [
+     "|**Siliconflow**|<https://siliconflow.cn/>|各种开源模型（DeepSeek、Qwen 等），中国大陆访问速度快|中国大陆|",
+     "|**Krill AI**|www.krill-code.com|一站式访问全球及国内主流模型（OpenAI、Claude、Gemini、Grok、Kimi、GLM、DeepSeek、Qwen、Minimax）|全球 + 中国大陆|",
+     "|**OpenRouter**|<https://openrouter.ai/>|一站式访问全球及国内主流模型（GPT、Claude、Gemini、Kimi、GLM、DeepSeek、Qwen 等）|全球|"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     125,
+     137
+    ],
+    "note": "前置知识示例与落地项目参照对象",
+    "quotes": [
+     "引言的“前置知识”一节有完整说明：能读懂并修改中等复杂度的 Python 代码；用过 ChatGPT、Claude 等 LLM 产品；熟悉至少一款 AI 辅助编程工具（Claude Code、Codex、Cursor 等）；了解命令行、Gi",
+     "推荐从头做一个像 Claude Code、Codex 那样的 coding agent：第 1–5 章足以做出一个可用的 coding agent；第 7、9 章帮它建立评估集并从失败案例中持续改进；第 8 章介入模型本身；第 6、10 章"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     125
+    ],
+    "note": "AI 辅助编程工具前置知识示例",
+    "quotes": [
+     "引言的“前置知识”一节有完整说明：能读懂并修改中等复杂度的 Python 代码；用过 ChatGPT、Claude 等 LLM 产品；熟悉至少一款 AI 辅助编程工具（Claude Code、Codex、Cursor 等）；了解命令行、Gi"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     125
+    ],
+    "note": "前置知识示例",
+    "quotes": [
+     "引言的“前置知识”一节有完整说明：能读懂并修改中等复杂度的 Python 代码；用过 ChatGPT、Claude 等 LLM 产品；熟悉至少一款 AI 辅助编程工具（Claude Code、Codex、Cursor 等）；了解命令行、Gi"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

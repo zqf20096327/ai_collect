@@ -1,0 +1,114 @@
+{
+ "fn": "ggml-org/ggml",
+ "sha": "e0b7aec07fdc",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向机器学习的 C/C++ 张量计算库",
+  "review": "以纯 C/C++ 实现的机器学习张量库，目标是简单、可移植、高效且安装配置最少。无任何外部依赖，支持 x86、ARM、RISC-V、LoongArch、PowerPC、s390x 与 WebAssembly 多平台，为 x86/ARM/RISC-V 提供 SIMD 优化内核；后端覆盖 CPU、GPU、NPU 与浏览器，支持 2-8 位整数量化及 MXFP4/NVFP4 微缩格式，运行期零内存分配。通过 CMake 从源码构建，MIT 协议。",
+  "highlights": [
+   "纯 C/C++ 实现，无外部依赖",
+   "跨平台支持 x86、ARM、RISC-V 等 7 类架构与 WebAssembly",
+   "后端覆盖 CPU、GPU、NPU 与浏览器",
+   "支持 2-8 位整数量化与 MXFP4/NVFP4 格式"
+  ],
+  "use_cases": [
+   "在多种硬件平台上部署机器学习推理计算",
+   "为需要无依赖、可移植性的项目提供张量运算底座",
+   "在受限环境（如浏览器）中运行机器学习计算"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "张量计算",
+   "机器学习基础设施",
+   "量化",
+   "跨平台推理"
+  ],
+  "domain": "机器学习基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "mlops",
+   "model-quantization"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L28: The main goal of `ggml` is to be a simple, portable, and efficient tensor library for machine learning with minimal setu",
+   "L33: - Broad backend support - CPU, GPU, NPU, and browser"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "llama.cpp",
+    "rel": "mention",
+    "lines": [
+     39
+    ],
+    "note": "文档区提及 GGUF 文件格式，llama.cpp 为同组织项目，README 未直接写明",
+    "quotes": [
+     "- The GGUF file format"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     13,
+     16,
+     20
+    ],
+    "quotes": [
+     "Build from source:",
+     "git clone https://github.com/ggml-org/ggml",
+     "cmake .."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

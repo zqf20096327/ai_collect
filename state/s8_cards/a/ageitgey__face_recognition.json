@@ -1,0 +1,114 @@
+{
+ "fn": "ageitgey/face_recognition",
+ "sha": "d90bf9bf30ca",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 Python/命令行用户提供的简单人脸识别库",
+  "review": "基于 dlib 深度学习模型构建的 Python 库与命令行工具：支持从图片中定位人脸、提取眼睛/鼻子/嘴等面部特征点、生成人脸编码并比对识别人物，提供 face_recognition 与 face_detection 两个 CLI 命令，支持 --tolerance 阈值与 --cpus 多核并行。模型在 LFW 基准上自报准确率 99.38%。要求 Python 3.3+/2.7 与 macOS/Linux（Windows 非官方支持），依赖预装 dlib 与 cmake，亦可经 Docker 运行。",
+  "highlights": [
+   "提供 Python API 与 face_recognition/face_detection 命令行工具",
+   "人脸定位、特征点提取、编码与比对三类功能",
+   "支持 --cpus 多核并行与 --tolerance 匹配阈值调节",
+   "提供 CNN 模型选项（model=\"cnn\"）的检测示例"
+  ],
+  "use_cases": [
+   "从一批照片中识别已知人物并输出 CSV 结果",
+   "提取图片中人脸的关键点轮廓（如数字化妆应用）",
+   "配合其他 Python 库实现实时人脸识别"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "人脸识别",
+   "计算机视觉",
+   "命令行工具",
+   "机器学习"
+  ],
+  "domain": "计算机视觉/人脸识别",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "face-recognition",
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L8: Built using dlib's state-of-the-art face recognition",
+   "L63: ## Installation",
+   "L82: Finally, install this module from pypi using `pip3` (or `pip2` for Python 2):"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     15,
+     82,
+     85
+    ],
+    "quotes": [
+     "PyPI",
+     "Finally, install this module from pypi using `pip3` (or `pip2` for Python 2):",
+     "pip3 install face_recognition"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     80
+    ],
+    "note": "安装依赖 cmake 的途径，非本产品安装途径",
+    "quotes": [
+     "```brew install cmake```"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

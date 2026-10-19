@@ -1,0 +1,129 @@
+{
+ "fn": "langgenius/dify",
+ "sha": "11d3f69f4b32",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给团队的 LLM 应用开发平台：可视化构建工作流、RAG 与 Agent",
+  "review": "开源 LLM 应用开发平台，界面整合 AI 工作流、RAG 管道、Agent 能力、模型管理与可观测性（含 Opik、Langfuse、Arize Phoenix 集成）。工作流在可视化画布上构建；模型支持数百个专有/开源 LLM 及 OpenAI API 兼容模型；Agent 带独立沙箱，可运行命令、安装软件、处理文件，并接入 Marketplace 工具、MCP 服务器与自有 API。所有功能提供对应 API（Backend-as-a-Service）。部署方式：Docker Compose 自托管、Cloud 托管或企业版（SSO/RBAC）。最低要求 CPU 2 核、内存 4 GiB。",
+  "highlights": [
+   "可视化画布构建 AI 工作流，RAG 管道覆盖文档摄取到检索（支持 PDF/PPT 抽取）",
+   "接入数百个专有/开源 LLM 及任意 OpenAI API 兼容模型",
+   "Agent 自带沙箱，可执行命令、安装软件、连接 MCP 服务器与自有 API",
+   "全部功能附 API，Cloud/VPC/自托管三种部署路径"
+  ],
+  "use_cases": [
+   "团队在协作工作区里从原型快速搭建到生产的 LLM 应用",
+   "给文档知识库接入 RAG 问答管道",
+   "用可视化编排把多个模型和工具串成自动化工作流"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM应用平台",
+   "工作流编排",
+   "RAG",
+   "Agent",
+   "低代码"
+  ],
+  "domain": "LLM 应用开发平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "workflow-automation",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L58: Dify is an open-source LLM app development platform. Its intuitive interface combines AI workflow, RAG pipeline, agent c",
+   "L90: Seamless integration with hundreds of proprietary / open-source LLMs from dozens of inference providers and self-hosted ",
+   "L113: - **Self-hosting Dify Community Edition **"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     67,
+     73
+    ],
+    "quotes": [
+     "The easiest way to start the Dify server is through Docker Compose. Before running Dify with the following commands, mak",
+     "docker compose up -d"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "RAM >= 4 G",
+    "rel": "support",
+    "lines": [
+     65
+    ],
+    "quotes": [
+     "> - RAM >= 4 GiB"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     58,
+     113,
+     117
+    ],
+    "note": "产品自身名称，非替代/竞品对象",
+    "quotes": [
+     "Dify is an open-source LLM app development platform. Its intuitive interface combines AI workflow, RAG pipeline, agent c",
+     "- **Self-hosting Dify Community Edition **",
+     "- **Dify Enterprise **"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

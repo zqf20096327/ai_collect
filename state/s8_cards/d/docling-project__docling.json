@@ -1,0 +1,115 @@
+{
+ "fn": "docling-project/docling",
+ "sha": "590518b63bab",
+ "source": "readme",
+ "identity": {
+  "one_liner": "文档解析转换库：为生成式 AI 准备各格式文档",
+  "review": "解析 PDF、Office 文档、HTML、音频、图像等多种格式，输出统一的 DoclingDocument 表示，可导出 Markdown、HTML、JSON 等；含版面/阅读顺序/表格结构理解、OCR、ASR、VLM 流水线。提供 Python API、CLI、docling-serve API 服务与 MCP server。本地可运行，适合敏感数据与离线环境。需 Python 3.10+，由 IBM 研究团队发起、LF AI & Data 基金会托管。",
+  "highlights": [
+   "多格式解析：PDF、DOCX、PPTX、HTML、音频、图像等",
+   "高级 PDF 理解：版面、阅读顺序、表格结构、公式",
+   "与 LangChain、LlamaIndex、Crew AI、Haystack 的集成及 MCP server",
+   "支持本地执行，可用于气隙环境"
+  ],
+  "use_cases": [
+   "把 PDF/Office 文档转成 Markdown/JSON 喂给 LLM 应用",
+   "扫描件 OCR 与表格结构抽取",
+   "为 agent/RAG 流水线提供文档解析后端",
+   "内网离线环境处理敏感文档"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "文档解析",
+   "RAG/数据准备",
+   "OCR",
+   "文档转换"
+  ],
+  "domain": "AI 应用基础设施/文档处理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "document-parsing",
+   "ocr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L27: Docling simplifies document processing by parsing diverse formats — including advanced PDF understanding — and providing",
+   "L37: - 🤖 Plug-and-play [integrations][integrations] incl. LangChain, LlamaIndex, Crew AI & Haystack for agentic AI"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     11,
+     12,
+     57
+    ],
+    "quotes": [
+     "PyPI version",
+     "PyPI - Python Version",
+     "pip install docling"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     37
+    ],
+    "note": "被集成的框架，非替代/竞品对象",
+    "quotes": [
+     "- 🤖 Plug-and-play [integrations][integrations] incl. LangChain, LlamaIndex, Crew AI & Haystack for agentic AI"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

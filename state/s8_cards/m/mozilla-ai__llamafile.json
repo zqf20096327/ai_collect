@@ -1,0 +1,134 @@
+{
+ "fn": "mozilla-ai/llamafile",
+ "sha": "68512a7fd6d3",
+ "source": "readme",
+ "identity": {
+  "one_liner": "把 LLM 打包成单文件分发与本地运行的开发者工具",
+  "review": "将 llama.cpp 与 Cosmopolitan Libc 结合，把 LLM 运行时压缩为单个可执行文件（llamafile），在多数操作系统与 CPU 架构上本地运行，无需安装；另含基于 whisper.cpp 的单文件语音转文字工具 whisperfile。0.10.0 起改用新构建系统以跟进 llama.cpp 最新模型与功能，旧版本仍可从 releases 页获取。Windows 下可执行文件有 4GB 上限，超限时需以二进制搭配外部 GGUF 权重运行。",
+  "highlights": [
+   "LLM 运行时与模型打包为单文件可执行，免安装跨平台运行",
+   "whisperfile：单文件语音转写与翻译工具",
+   "0.10.0 新构建系统对齐 llama.cpp 最新版本",
+   "支持下载预构建 llamafile 或从源码安装"
+  ],
+  "use_cases": [
+   "向最终用户分发开箱即用的本地 LLM",
+   "无安装条件下跨系统本地推理",
+   "本地音频转写与翻译"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "本地LLM推理",
+   "单文件分发",
+   "语音转文字",
+   "llama.cpp"
+  ],
+  "domain": "LLM 基础设施/本地推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "llama.cpp"
+  ],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: **llamafile lets you distribute and run LLMs with a single file.**",
+   "L19: combining llama.cpp with Cosmopolitan Libc into one",
+   "L24: llamafile also includes **whisperfile**, a single-file speech-to-text tool built on whisper.cpp and the same Cosmopolita"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "llama.cpp",
+    "rel": "support",
+    "lines": [
+     8,
+     19
+    ],
+    "quotes": [
+     "Based on llama.cpp",
+     "combining llama.cpp with Cosmopolitan Libc into one"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     33,
+     47
+    ],
+    "quotes": [
+     "releases page. Our pre-built llamafiles always",
+     "curl -LO https://huggingface.co/mozilla-ai/llamafile_0.10/resolve/main/Qwen3.5-0.8B-Q8_0.llamafile"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     47
+    ],
+    "note": "示例模型下载来源，非替代/竞品",
+    "quotes": [
+     "curl -LO https://huggingface.co/mozilla-ai/llamafile_0.10/resolve/main/Qwen3.5-0.8B-Q8_0.llamafile"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [
+    78,
+    79
+   ],
+   "note": "Apache 2.0 + 对 llama.cpp/whisper.cpp 的 MIT 修改，均为开源许可",
+   "quotes": [
+    "While the llamafile project is Apache 2.0-licensed, our changes",
+    "to llama.cpp and whisper.cpp are licensed under MIT (just like the projects"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,144 @@
+{
+ "fn": "rasbt/LLMs-from-scratch",
+ "sha": "b342bec66cdb",
+ "source": "readme",
+ "identity": {
+  "one_liner": "学习者/研究者：从零用 PyTorch 逐步实现类 GPT 大模型",
+  "review": "《Build a Large Language Model (From Scratch)》一书的官方代码仓库，按章节组织：用 PyTorch 从零实现、预训练与指令微调一个类 GPT 模型，不依赖外部 LLM 库。包含练习解答、附录材料（BPE 分词器、KV Cache、MoE、DPO 等扩展笔记）以及加载 Llama/Qwen/Gemma 等预训练权重进行微调的代码。配套 17 小时视频课程与 170 页测验 PDF。作者要求不提交偏离印刷书内容的主章节代码贡献。",
+  "highlights": [
+   "从零实现、预训练与指令微调类 GPT 模型，不使用外部 LLM 库",
+   "附加 Llama 3.2、Qwen3、Gemma 3 等模型的 From Scratch 实现与预训练权重加载",
+   "提供 Docker 环境搭建指南与 17 小时配套视频课程",
+   "包含 DPO 对齐与 RLVR/GRPO 等扩展材料"
+  ],
+  "use_cases": [
+   "系统学习 LLM 内部原理与实现细节",
+   "为自己的科研模型做分类/指令微调实验",
+   "在普通笔记本上复现 GPT 训练流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教学/书籍",
+   "LLM实现",
+   "PyTorch",
+   "微调"
+  ],
+  "domain": "教育/LLM 实现",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "fine-tuning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: This repository contains the code for developing, pretraining, and finetuning a GPT-like LLM and is the official code re",
+   "L32: This book uses PyTorch to implement the code from scratch without using any external LLM libraries. While proficiency in",
+   "L38: The code in the main chapters of this book is designed to run on conventional laptops within a reasonable timeframe and "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     95
+    ],
+    "quotes": [
+     " - DeepSeek Sparse Attention (DSA)"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     125,
+     128
+    ],
+    "quotes": [
+     " - Evaluating Instruction Responses Using the OpenAI API and Ollama",
+     " - Generating a Preference Dataset With Llama 3.1 70B and Ollama"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     17
+    ],
+    "quotes": [
+     "git clone --depth 1 https://github.com/rasbt/LLMs-from-scratch.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     7
+    ],
+    "note": "作为类比提及，非竞品对比",
+    "quotes": [
+     "The method described in this book for training and developing your own small-but-functional model for educational purpos"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "none",
+    "lines": [
+     116
+    ],
+    "note": "Qwen3.5 是开源模型复现，与阿里通义千问产品无对比关系",
+    "quotes": [
+     " - Qwen3.5 From Scratch"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

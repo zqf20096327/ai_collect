@@ -1,0 +1,107 @@
+{
+ "fn": "tradecatlabs/vibe-coding-cn",
+ "sha": "2c54ba70ae69",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向中文开发者的 Vibe Coding 资源工具箱：整理提示词、Skill 与工作流资产",
+  "review": "以 Pi Agent 与 OpenAI GPT 为运行底座的 Vibe Coding 工具箱，将既有 Context、Skills、Extensions 组合为可验证的工作流。内容分为功法体系（思想、准则、方法与流程）、法器总表（30 项工具分级登记）、从零入门路线与 Codex 配置一键安装；交付路径为需求→上下文文档→实施计划→分步实现→自测→进度记录。仓库以 git submodule 锁定来源，Skill 通过 pi --skill 显式加载；README 声明只整理既有资产，未完成正式效能验证。",
+  "highlights": [
+   "功法体系：按问题选用思想、准则、思维模型与工程流程",
+   "法器总表：30 项工具按天/地/玄/黄四阶分级登记",
+   "从零入门路线覆盖网络环境、CLI 配置、首个项目与 Git 闭环",
+   "闭环交付路径：需求→上下文→计划→实现→自测→进度记录"
+  ],
+  "use_cases": [
+   "从零搭建 AI 结对编程的工作流与验收流程",
+   "按任务查找和复用现成的提示词与 Skill 资产",
+   "为团队建立可复盘、可移交的上下文管理规范"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI编程",
+   "提示词工程",
+   "开发工作流",
+   "教程/知识库"
+  ],
+  "domain": "开发者工具/AI 编程方法论",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "prompt-engineering",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "Telegram 中文交流群 glue_coding",
+   "人民币语境的打赏地址与中文社区链接"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: **以Pi Agent与OpenAI GPT为主体底座，将既有Context、Skills和Extensions组合成可验证的工作流。**",
+   "L46: - `vibe-coding-cn` 是Vibe Coding工具箱，主体底座为Pi Agent与OpenAI GPT；本次只整理已有资产，不增加业务Skill。",
+   "L109: 一句话：Vibe Coding = **规划驱动 + 上下文固定 + AI 结对执行**，让「从想法到可维护代码」变成一条可审计的流水线，而不是一团无法迭代的巨石文件。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    96
+   ],
+   "note": "原 Actions 定义移入 Extensions，自动 CI 流程已停用"
+  },
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     65
+    ],
+    "note": "提示 ChatGPT 订阅不自动等同于 API 权限，仅提及",
+    "quotes": [
+     "1. 准备当前系统可用的Pi Agent及已授权OpenAI GPT模型，通过Pi原生模型选择配置；不把ChatGPT订阅自动等同于API权限，也不在仓内保存凭据。"
+    ]
+   }
+  ]
+ }
+}

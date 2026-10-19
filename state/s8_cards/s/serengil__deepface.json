@@ -1,0 +1,118 @@
+{
+ "fn": "serengil/deepface",
+ "sha": "bef30ade1672",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Python 人脸识别与人脸属性分析库，一行代码完成验证/检索/分析",
+  "review": "用于 Python 的人脸识别与人脸属性分析框架，封装 VGG-Face、FaceNet、ArcFace、Buffalo_L 等模型，后台完成检测、对齐、归一化、表示、验证五段流水线。提供验证（verify）、1:N 检索（find，支持 s3/ftp）、数据库后端注册与搜索（postgres、pgvector、milvus 等 15 种）、属性分析（年龄/性别/表情/种族）、嵌入向量提取、实时视频流、反欺骗检测；另带 REST/gRPC API 与 Docker 化脚本，并提供 deepface.dev 托管 API（含 MCP 端点）。MIT 许可，附 BibTeX 引用条目。",
+  "highlights": [
+   "封装 10 种人脸识别模型，支持验证、1:N 检索与嵌入向量提取",
+   "数据库后端人脸识别：支持 postgres、pgvector、milvus、qdrant 等 15 种后端及近似最近邻",
+   "年龄/性别/表情/种族属性分析与反欺骗（anti-spoofing）模块",
+   "提供 REST API、gRPC API 与 Docker 脚本，支持摄像头实时分析"
+  ],
+  "use_cases": [
+   "判断两张人脸图片是否为同一人",
+   "在图像库或数据库中检索输入人脸的身份",
+   "从图片或实时视频中预测年龄、性别、表情与种族",
+   "通过 API 把人脸识别能力接入移动端或 Web 应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "人脸识别",
+   "计算机视觉",
+   "生物特征",
+   "API服务"
+  ],
+  "domain": "计算机视觉/人脸识别",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "face-recognition",
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: DeepFace is a lightweight face recognition and facial attribute analysis (age, gender, emotion and race) framework for p",
+   "L13: A modern face recognition pipeline consists of 5 common stages: detect, align, normalize, represent and verify. While De",
+   "L62: DeepFace supports database-backed operations for scalable face recognition, allowing embeddings to be explicitly registe"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     17,
+     19,
+     23
+    ],
+    "quotes": [
+     "## Installation PyPI",
+     "The easiest way to install deepface is to download it from `PyPI`. It's going to install the library itself and its prer",
+     "$ pip install deepface"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     28,
+     31,
+     33
+    ],
+    "quotes": [
+     "Alternatively, you can also install deepface from its source code. Source code may have new features not published in pi",
+     "$ git clone https://github.com/serengil/deepface.git",
+     "$ pip install -e .  # runs on onnxruntime, or pip install -e .[tensorflow] or pip install -e .[pytorch]"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,134 @@
+{
+ "fn": "onlook-dev/onlook",
+ "sha": "225022667bf2",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给设计/前端工程师的开源可视化 AI 代码编辑器",
+  "review": "面向 Next.js + TailwindCSS 项目的开源可视化编辑器：在浏览器 iFrame 中直接编辑 DOM 元素并映射回代码位置，支持从文本或图像起步创建应用、实时预览、图层浏览、分支试验设计、检查点保存恢复，以及带代码访问能力的 AI 聊天。架构上把代码加载进 web 容器运行，通过插桩把元素映射到代码位置，编辑同步回代码。README 明确当前聚焦 Next.js + Tailwind，非该栈的项目尚在待办中；托管托管版处于 early access。",
+  "highlights": [
+   "可视化编辑 iFrame 元素并同步写回代码（插桩映射元素到代码位置）",
+   "AI 聊天具备代码读取与编辑工具",
+   "分支机制用于试验设计变体，支持检查点保存与恢复",
+   "架构声明可扩展到任何声明式 DOM 语言，目前聚焦 Next.js + TailwindCSS"
+  ],
+  "use_cases": [
+   "在真实代码库上做可视化设计与样式调整",
+   "从文本或图像快速生成 Next.js 原型",
+   "在浏览器中拖拽调整布局并实时查看代码"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    4,
+    33
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "可视化编辑器",
+   "design-to-code",
+   "Next.js",
+   "AI编程",
+   "前端"
+  ],
+  "domain": "开发者工具/前端设计",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "Lovable"
+  ],
+  "ecosystem_compat": [
+   "openrouter"
+  ],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供中文等多语言 README（L24）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L35: # An Open-Source, Visual-First Code Editor",
+   "L37: Craft websites, prototypes, and designs with AI in Next.js + TailwindCSS. Make",
+   "L152: - OpenRouter - LLM model provider"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "compat",
+    "lines": [
+     151,
+     152
+    ],
+    "note": "技术栈中作为 LLM 模型提供方，经 AI SDK 接入",
+    "quotes": [
+     "- AI SDK - LLM client",
+     "- OpenRouter - LLM model provider"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Lovable",
+    "rel": "competitor",
+    "lines": [
+     39
+    ],
+    "note": "README 称自身为 Bolt.new、Lovable、V0 等的开源替代",
+    "quotes": [
+     "code. An open-source alternative to Bolt.new, Lovable, V0, Replit Agent, Figma"
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     151
+    ],
+    "note": "作为自身技术栈的 LLM 客户端，非竞品",
+    "quotes": [
+     "- AI SDK - LLM client"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

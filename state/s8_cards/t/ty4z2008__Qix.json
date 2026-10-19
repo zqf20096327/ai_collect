@@ -1,0 +1,92 @@
+{
+ "fn": "ty4z2008/Qix",
+ "sha": "86aa03c88318",
+ "source": "readme",
+ "identity": {
+  "one_liner": "机器学习/分布式系统/Go/PostgreSQL 学习资源合集",
+  "review": "个人维护的学习资源仓库，按主题分章节组织：机器学习与深度学习资料、Golang 学习资源、PostgreSQL 数据库资源、分布式系统资源及数据库系统资源。另包含译者对 node-mysql 官方文档的中文翻译。作者声明文章可能存在不准确信息，欢迎通过邮件或 PR 反馈纠错；同时提醒使用者尊重原作署名，发现署名错误时提交反馈。仓库采用 MIT 许可证。",
+  "highlights": [
+   "按章节组织机器学习/深度学习、Golang、PostgreSQL、分布式系统等主题资源",
+   "包含 node-mysql 官方文档中文翻译",
+   "开放 PR 协作与纠错反馈机制",
+   "MIT 许可证"
+  ],
+  "use_cases": [
+   "查找机器学习与深度学习的中文学习资料",
+   "入门 Golang 与 PostgreSQL 时收集学习资源",
+   "查阅 node-mysql 文档的中文翻译"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "学习资源",
+   "awesome清单",
+   "机器学习",
+   "分布式系统",
+   "PostgreSQL"
+  ],
+  "domain": "开发者学习资源/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list",
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "作者微博/推ter 昵称为中文（廖君）",
+   "node-mysql 文档中文翻译"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L27: ## Machine Learning And deep learning Resources",
+   "L33: ## Golang learning resources",
+   "L41: ## Distributed system resources"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

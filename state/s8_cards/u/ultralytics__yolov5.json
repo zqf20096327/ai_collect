@@ -1,0 +1,161 @@
+{
+ "fn": "ultralytics/yolov5",
+ "sha": "acb2217cdc38",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于 PyTorch 的目标检测/实例分割/分类模型及训练导出工具",
+  "review": "Ultralytics 发布的 YOLOv5 视觉模型仓库：基于 PyTorch 框架，覆盖目标检测、实例分割与图像分类任务。提供 detect.py 推理脚本、PyTorch Hub 加载、train.py 训练（COCO 复现，n/s/m/l/x 五档模型），并支持导出 TFLite、ONNX、CoreML、TensorRT 等部署格式。安装需 Python>=3.8 与 PyTorch>=1.8，通过克隆仓库安装依赖；预训练权重从 release 自动下载。README 另提示最新任务（姿态估计、OBB）可使用 ultralytics 统一包。",
+  "highlights": [
+   "目标检测、实例分割、图像分类三类任务的训练与推理",
+   "导出 TFLite/ONNX/CoreML/TensorRT 部署格式",
+   "n/s/m/l/x 五档 COCO 预训练权重自动下载",
+   "多 GPU DDP 训练、TTA、模型剪枝与超参数演化教程"
+  ],
+  "use_cases": [
+   "在自己的数据集上训练目标检测模型",
+   "将检测/分割模型导出为 ONNX/TensorRT 部署到边缘设备（如 NVIDIA Jetson）",
+   "通过 PyTorch Hub 快速加载预训练模型做推理",
+   "复现 COCO 基准结果"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "dual",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "计算机视觉",
+   "目标检测",
+   "实例分割",
+   "模型训练",
+   "模型导出"
+  ],
+  "domain": "计算机视觉",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "cpu-infer"
+  ],
+  "scenario_tags_v2": [
+   "image-video-processing",
+   "object-detection",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L14: Ultralytics YOLOv5 🚀 is a fast, accurate, and easy-to-use computer vision model developed by Ultralytics. Based on the P",
+   "L52: Clone the repository and install dependencies in a **Python>=3.8.0** environment. Ensure you have **PyTorch>=1.8** insta",
+   "L85: The commands below demonstrate how to reproduce YOLOv5 COCO dataset results. Both models and datasets are downloaded aut"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker",
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cpu-infer",
+    "rel": "support",
+    "lines": [
+     144,
+     146
+    ],
+    "note": "性能表列出 CPU 推理速度指标",
+    "quotes": [
+     "|Model|Size (pixels)|mAP val 50-95|mAP val 50|Speed CPU b1 (ms)|Speed V100 b1 (ms)|Speed V100 b32 (ms)|Params (M)|FLOPs ",
+     "|YOLOv5n|640|28.0|45.7|**45**|**6.3**|**0.6**|**1.9**|**4.5**|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     7
+    ],
+    "note": "徽章显示 Docker Pulls",
+    "quotes": [
+     " Docker Pulls"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     11,
+     190
+    ],
+    "quotes": [
+     " Open In Colab",
+     " Segmentation Usage Examples &nbsp;Open In Colab"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     40
+    ],
+    "note": "安装的是 ultralytics 统一包，非本仓库 yolov5",
+    "quotes": [
+     "pip install ultralytics"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     56
+    ],
+    "quotes": [
+     "git clone https://github.com/ultralytics/yolov5"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    18
+   ],
+   "quotes": [
+    "To request an Enterprise License, please complete the form at Ultralytics Licensing."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -15,3 +15,4 @@ state/*.json.[0-9][0-9]
 state/enrich_cache_shards/*.tmp
 # 快照归档打包暂存目录
 _archive_tmp/
+state/logs/

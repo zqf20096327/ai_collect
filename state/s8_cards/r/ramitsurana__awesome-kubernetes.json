@@ -1,0 +1,97 @@
+{
+ "fn": "ramitsurana/awesome-kubernetes",
+ "sha": "a787e74f82d5",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Kubernetes 学习资源与工具的精选链接清单",
+  "review": "由 @sindresorhus 的 awesome 系列启发的 Kubernetes 资源精选清单，收录入门概念介绍、历史背景、教程文章、书籍与部署指南等链接。内容提供 Gitbook 电子书形式下载阅读，配有 Links Validator、Python 应用等自动化校验机制；清单接受社区贡献，对不再维护或不合适的条目欢迎提交 pull request 更新。",
+  "highlights": [
+   "精选 Kubernetes 教程、书籍与部署指南链接",
+   "提供 Gitbook 电子书形式阅读",
+   "Links Validator 自动校验链接有效性",
+   "社区贡献机制维护清单内容"
+  ],
+  "use_cases": [
+   "查找 Kubernetes 入门与概念学习资料",
+   "检索特定场景（CentOS/Ubuntu/Windows）的集群部署教程",
+   "了解 Kubernetes 生态工具与书籍推荐"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome清单",
+   "Kubernetes",
+   "容器编排",
+   "学习资源"
+  ],
+  "domain": "云原生/开发运维",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list",
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L10: A curated list for awesome kubernetes sources inspired by @sindresorhus' awesome",
+   "L21: **Thanks to Gitbook.This awesome list can now be downloaded and read in the form of a book. Check it out --> https://ram"
+  ],
+  "xcheck": {
+   "depre_hint": "提名有弃坑声明而模型未确认"
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [
+    113
+   ],
+   "note": "仅 Creative Commons 单一许可证，非双重许可",
+   "quotes": [
+    "Creative Commons License awesome-kubernetes by Ramit Surana is licensed under a Creative Commons Attribution-NonCommerci"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    23
+   ],
+   "note": "L23 为欢迎提交 PR 移除不再维护条目的说明，非本产品弃用声明"
+  }
+ }
+}

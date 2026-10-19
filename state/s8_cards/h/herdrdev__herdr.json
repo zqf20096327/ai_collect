@@ -1,0 +1,158 @@
+{
+ "fn": "herdrdev/herdr",
+ "sha": "337822678d40",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给编码 Agent 提供后台会话复用与多机终端管理的运行时",
+  "review": "用 Rust 编写的终端复用器，定位为编码 Agent 的运行时：客户端断开或 SSH 掉线后终端在后台服务器继续运行，重启后恢复布局并可恢复受支持的 Agent 会话；支持本地与 SSH 机器合并为统一 Agent 列表，每个窗格标记 working/blocked/idle 状态。Agent 可通过 CLI 与 socket API 驱动 herdr（互相生成窗格、发送提示、等待阻塞）。单个二进制运行，提供插件与市场。",
+  "highlights": [
+   "客户端关闭/SSH 掉线后台服务器保持运行，重启后恢复布局与部分 Agent 会话",
+   "窗格状态标记（working/blocked/idle），Agent 阻塞等待输入时提示",
+   "agent-native：CLI 与 socket API 供 Agent 生成窗格、互相提示与等待",
+   "单一 Rust 二进制，tmux 风格快捷键与鼠标操作并存"
+  ],
+  "use_cases": [
+   "SSH 远程跑编码 Agent，断线后回来继续会话",
+   "一个窗口管理本地与多台远程机器上的多个 Agent",
+   "让 Agent 之间通过 CLI/socket API 协作执行任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "终端复用器",
+   "编码Agent",
+   "多机管理",
+   "developer-tools"
+  ],
+  "domain": "开发者工具/终端与 Agent 编排",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L18: **the runtime your coding agents live on.**",
+   "L23: - **agent-native** — agents drive herdr through the cli and socket api: they can spawn panes, prompt each other, and wai",
+   "L24: - **runs what you already run** — claude code, codex, cursor, opencode, grok and the rest. herdr doesn't wrap or replace"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     24
+    ],
+    "note": "claude code 作为可运行 Agent 被提及",
+    "quotes": [
+     "- **runs what you already run** — claude code, codex, cursor, opencode, grok and the rest. herdr doesn't wrap or replace"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     24
+    ],
+    "note": "grok 作为可运行 Agent 被提及",
+    "quotes": [
+     "- **runs what you already run** — claude code, codex, cursor, opencode, grok and the rest. herdr doesn't wrap or replace"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     13,
+     35
+    ],
+    "quotes": [
+     " Homebrew version",
+     "or `brew install herdr` · `mise use -g herdr` · windows: `powershell -ExecutionPolicy Bypass -c \"irm https://herdr.dev/i"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     62,
+     64
+    ],
+    "quotes": [
+     "git clone https://github.com/herdrdev/herdr",
+     "cargo build --release"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     24
+    ],
+    "note": "herdr 承载其终端，非替代/竞品",
+    "quotes": [
+     "- **runs what you already run** — claude code, codex, cursor, opencode, grok and the rest. herdr doesn't wrap or replace"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     24
+    ],
+    "note": "同上",
+    "quotes": [
+     "- **runs what you already run** — claude code, codex, cursor, opencode, grok and the rest. herdr doesn't wrap or replace"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

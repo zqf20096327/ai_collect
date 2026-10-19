@@ -1,0 +1,106 @@
+{
+ "fn": "datawhalechina/happy-llm",
+ "sha": "621d075c935f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 LLM 学习者的大模型原理与训练系统教程",
+  "review": "Datawhale 出品的系统性 LLM 学习教程，从 NLP 基础、Transformer 架构、预训练语言模型讲起，到基于 PyTorch 亲手实现 LLaMA2、训练 Tokenizer 并完成预训练、SFT 与 LoRA/QLoRA 微调，再延伸至 RAG、Agent 与 GRPO 等 Agentic RL 内容。提供在线阅读、PDF 与 PPT 资源，第5/6章训练代码按章节拆分依赖，需具备 Python 与深度学习基础。",
+  "highlights": [
+   "8 章覆盖从 NLP 基础到 Agentic-RL（GRPO、Search-R1、ReTool）的完整学习路径",
+   "动手实现 LLaMA2 并完成预训练、SFT、LoRA/QLoRA 微调全流程",
+   "提供教程 PDF 与配套 PPT 下载，附 ModelScope 模型与创空间体验",
+   "Extra Chapter 开放社区 Blog 投稿（PR 贡献机制）"
+  ],
+  "use_cases": [
+   "系统学习 Transformer 与大语言模型原理",
+   "按教程用 PyTorch 与 Transformers 框架动手训练小型 LLM",
+   "了解 RAG、Agent 与 Agentic RL 的入门实践"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教程/课程",
+   "LLM原理",
+   "模型训练",
+   "RAG",
+   "Agent"
+  ],
+  "domain": "AI 教育/学习教程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "rag",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "media",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "Datawhale 国内开源社区",
+   "公众号二维码",
+   "CCF × GitLink 联合课程"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L22: &emsp;&emsp;本项目是一个**系统性的 LLM 学习教程**，将从 NLP 的基本研究方法出发，根据 LLM 的思路及原理逐层深入，依次为读者剖析 LLM 的架构基础和训练过程。同时，我们会结合目前 LLM 领域最主流的代码框架，",
+   "L97: &emsp;&emsp;本项目分为两部分——基础知识与实战应用。第1章～第4章是基础知识部分，从浅入深介绍 LLM 的基本原理。其中，第1章简单介绍 NLP 的基本任务和发展，为非 NLP 领域研究者提供参考；第2章介绍 LLM 的基本架构",
+   "L145: 本作品采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     64
+    ],
+    "note": "Blog 标题提及 vLLM，非本教程接入的推理通道",
+    "quotes": [
+     "- S1: Thinking Budget with vLLM @不要葱姜蒜 2025-8-03"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

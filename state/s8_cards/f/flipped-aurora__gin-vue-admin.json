@@ -1,0 +1,122 @@
+{
+ "fn": "flipped-aurora/gin-vue-admin",
+ "sha": "ac8d48afca4b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 Go+Vue 全栈开发者提供带 AI 辅助的后台开发基础平台",
+  "review": "基于 Gin 与 Vue 的前后端分离基础平台，内置 JWT 鉴权、Casbin 权限管理、动态路由与菜单、代码生成器、表单生成器、分页封装、多点登录拦截、文件上传下载（七牛云/阿里云/腾讯云）等后台开发常用功能。AI 相关机制包括：高度适配 AI 编辑器的 MCP 服务、AI 生成结构并生成基础 CRUD 代码的一分钟流程、内置 skills 管理，支持 TS 和 JS 混用。以源码方式运行，另提供商业授权版。",
+  "highlights": [
+   "高度适配 AI 编辑器的 MCP，可由 AI 生成结构、代码与权限分配",
+   "内置 skills 管理，支持 TS 和 JS 混用",
+   "基于 jwt 与 casbin 的权限管理及动态路由/菜单",
+   "代码生成器、表单生成器与可配置的导入导出"
+  ],
+  "use_cases": [
+   "快速搭建中小型项目的后台管理系统骨架",
+   "通过 AI 编辑器配合 MCP 一键生成前后端基础 CRUD 代码",
+   "需要角色/菜单/API 级权限控制的企业内部系统"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "dual",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "http://demo.gin-vue-admin.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "后台管理",
+   "代码生成",
+   "MCP",
+   "全栈框架",
+   "AI辅助开发"
+  ],
+  "domain": "企业应用/开发框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "code-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "软件著作权证书",
+   "QQ/微信交流群"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: ## 支持 Claw 生态",
+   "L13:  ⭐️ 高度适配AI编辑器的MCP",
+   "L56: > Gin-vue-admin是一个基于 vue 和 gin 开发的全栈前后端分离的开发基础平台，集成jwt鉴权，动态路由，动态菜单，casbin鉴权，表单生成器，代码生成器等功能，提供多种示例文件，让您把更多时间专注在业务开发上。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     88,
+     97
+    ],
+    "quotes": [
+     "git clone https://github.com/flipped-aurora/gin-vue-admin.git",
+     "cd web"
+    ]
+   },
+   {
+    "term": "go",
+    "rel": "mention",
+    "lines": [
+     107
+    ],
+    "note": "swagger 工具的 go install 方式，非本产品安装途径",
+    "quotes": [
+     "go install github.com/swaggo/swag/cmd/swag@latest"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    40,
+    221
+   ],
+   "quotes": [
+    "想了解授权版提供的完整体验，可先访问授权版演示站；如需授权版功能或官方商业支持，请购买商业授权。",
+    "授权版功能与官方商业支持请通过商业授权页面获取。"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

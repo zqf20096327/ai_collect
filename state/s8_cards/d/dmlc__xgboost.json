@@ -1,0 +1,107 @@
+{
+ "fn": "dmlc/xgboost",
+ "sha": "69dfb64ae0a2",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向数据科学者的分布式梯度提升树库",
+  "review": "XGBoost 是一个分布式梯度提升库，实现 Gradient Boosting 框架下的机器学习算法，提供并行树提升（GBDT/GBM）。同一份代码可运行在单机及 Kubernetes、Hadoop、SGE、Dask、Spark、PySpark 等分布式环境，可处理超过十亿样本规模的问题。以库形式提供，经 PyPI、Conda、CRAN 等渠道分发，支持 Python、R 等多种语言，源自华盛顿大学研究项目，基于 Apache-2 许可证发布。",
+  "highlights": [
+   "并行树提升（GBDT/GBM）实现",
+   "同一代码运行于 Kubernetes/Hadoop/SGE/Dask/Spark/PySpark 等分布式环境",
+   "支持 Python、R、Java、Scala、C 等多语言接口",
+   "支持 Colab 在线运行"
+  ],
+  "use_cases": [
+   "在单机或 Spark/Dask 集群上训练梯度提升模型",
+   "处理十亿级样本的分类回归问题"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://doi.org/10.1145/2939672.2939785",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "机器学习",
+   "梯度提升",
+   "分布式训练",
+   "数据科学"
+  ],
+  "domain": "机器学习/数据科学",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "data-analysis",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L20: XGBoost is an optimized distributed gradient boosting library designed to be highly ***efficient***, ***flexible*** and ",
+   "L23: The same code runs on major distributed environment (Kubernetes, Hadoop, SGE, Dask, Spark, PySpark) and can solve proble"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     7
+    ],
+    "quotes": [
+     "PyPI version"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     12
+    ],
+    "quotes": [
+     "Open In Colab"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

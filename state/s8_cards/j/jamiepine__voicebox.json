@@ -1,0 +1,184 @@
+{
+ "fn": "jamiepine/voicebox",
+ "sha": "4bf565df6b84",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地优先的 AI 语音工作室：克隆声音、生成语音、全局听写",
+  "review": "本地优先的开源语音应用，整合语音输入与输出两个环节：从几秒参考音频做零样本克隆，支持 8 个 TTS 引擎与 23 种语言生成语音，通过全局热键做听写并以 Whisper 转写，还可经内置 MCP 服务器让 MCP 感知的 agent 以克隆声音发声。附带后期音效处理、多轨 Stories 编辑器、生成版本管理与 REST API。模型与音频数据全程留在本机。基于 Tauri (Rust) 构建，macOS/Windows 提供安装包，Linux 需从源码构建。",
+  "highlights": [
+   "8 个可切换的 TTS 引擎（Qwen3-TTS、Chatterbox、Kokoro 等）与 23 种语言",
+   "零样本声音克隆与 50+ 预置声音",
+   "全局热键听写 + Whisper 语音转写，支持 LLM 清理口头语",
+   "内置 MCP 服务器与 REST API，agent 可通过 voicebox_speak 发声"
+  ],
+  "use_cases": [
+   "从几秒参考音频克隆声音并批量生成长文本语音",
+   "系统级全局热键听写输入到任意应用",
+   "给 Claude Code/Cursor 等 agent 配上克隆声音输出",
+   "制作多角色对话、播客与叙事音频"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://voicebox.sh",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音合成/TTS",
+   "声音克隆",
+   "语音听写/STT",
+   "MCP/Agent",
+   "本地优先"
+  ],
+  "domain": "语音 AI/桌面工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L61: Voicebox is a **local-first AI voice studio** — a free and open-source alternative to **ElevenLabs** and **WisprFlow** i",
+   "L74: - **Agent voice output** — one tool call (`voicebox_speak`) and any MCP-aware agent (Claude Code, Cursor, Cline) speaks ",
+   "L78: - **Runs everywhere** — macOS (MLX/Metal), Windows (CUDA), Linux, AMD ROCm, Intel Arc, Docker"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     74,
+     234
+    ],
+    "quotes": [
+     "- **Agent voice output** — one tool call (`voicebox_speak`) and any MCP-aware agent (Claude Code, Cursor, Cline) speaks ",
+     "- **Per-agent voice binding** — in **Settings → MCP**, pin Claude Code to Morgan and Cursor to Scarlett so you can tell "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     87
+    ],
+    "quotes": [
+     "|Docker|`docker compose up`|"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     356
+    ],
+    "quotes": [
+     "git clone https://github.com/jamiepine/voicebox.git"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "1GB VRAM",
+    "rel": "mention",
+    "lines": [
+     106
+    ],
+    "quotes": [
+     "|**LuxTTS**|English|Lightweight (~1GB VRAM), 48kHz output, 150x realtime on CPU|"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     66,
+     103,
+     104,
+     105
+    ],
+    "note": "集成的 Qwen 系列 TTS 引擎，非替代/竞品对象",
+    "quotes": [
+     "- **8 TTS engines** — Qwen3-TTS, Qwen CustomVoice, Qwen VoiceDesign, LuxTTS, Chatterbox Multilingual, Chatterbox Turbo, ",
+     "|**Qwen3-TTS** (0.6B / 1.7B)|10|High-quality multilingual cloning, delivery instructions (\"speak slowly\", \"whisper\")|",
+     "|**Qwen CustomVoice**|10|9 curated preset voices with natural-language delivery control — no reference audio required|",
+     "|**Qwen VoiceDesign**|10|Builds a voice from a written description — no reference audio or preset needed|"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     74,
+     234
+    ],
+    "quotes": [
+     "- **Agent voice output** — one tool call (`voicebox_speak`) and any MCP-aware agent (Claude Code, Cursor, Cline) speaks ",
+     "- **Per-agent voice binding** — in **Settings → MCP**, pin Claude Code to Morgan and Cursor to Scarlett so you can tell "
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     74,
+     234
+    ],
+    "quotes": [
+     "- **Agent voice output** — one tool call (`voicebox_speak`) and any MCP-aware agent (Claude Code, Cursor, Cline) speaks ",
+     "- **Per-agent voice binding** — in **Settings → MCP**, pin Claude Code to Morgan and Cursor to Scarlett so you can tell "
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     236
+    ],
+    "quotes": [
+     "- **HTTP + stdio transports** — install as a URL in Claude Code / Cursor / Windsurf / VS Code MCP, or point stdio-only c"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

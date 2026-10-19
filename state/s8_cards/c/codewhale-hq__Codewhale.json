@@ -1,0 +1,200 @@
+{
+ "fn": "codewhale-hq/Codewhale",
+ "sha": "890b8b777266",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源 Rust 编码 agent 引擎与终端客户端，任意模型可选",
+  "review": "Codewhale 提供本地运行的 Rust agent 引擎与终端客户端：读取项目、编辑文件、执行命令并自查工作，模型由用户自选（40+ 内置 provider 路由，含本地运行时）。核心机制包括 Plan/Work/Operate 三种模式、Ask/Auto-Review/Full Access 三种审批姿态、/undo 与 /restore 工作区恢复、/receipts 会话操作清单，以及 OS 沙箱（macOS Seatbelt、Linux bubblewrap）。安装覆盖 curl 脚本、winget、npm、cargo、Docker、Nix 等多条路线。",
+  "highlights": [
+   "40+ 内置 provider 路由，支持 OpenAI 兼容端点与 Ollama/vLLM/SGLang 本地模型",
+   "Plan/Work/Operate 模式与审批姿态、/receipts 全量操作回执",
+   "子 agent 委派与受监督 agent 团队（含 pre-spend check）",
+   "MCP 服务器、skills、plugins、hooks 扩展，并加载 Claude Code 插件"
+  ],
+  "use_cases": [
+   "在终端里用自选模型执行修测试、改代码等编码任务",
+   "脚本或 CI 中以 headless 方式运行编码 agent",
+   "本地模型场景下做审批可控的代码修改与 PR 评审"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "编码agent",
+   "终端工具",
+   "多模型",
+   "MCP",
+   "本地优先"
+  ],
+  "domain": "开发者工具/编码 agent",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama",
+   "deepseek",
+   "openrouter",
+   "vllm",
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文/繁体中文翻译版本 (L16)"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: **The open-source coding agent that works with any model.**",
+   "L95: - **Any model, no lock-in.** Over 40 built-in provider routes — Anthropic,",
+   "L77: Every client drives the same local Codewhale Engine, so"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     59,
+     97
+    ],
+    "quotes": [
+     " pick a local runtime. If Ollama is already running with a chat model,",
+     " any OpenAI-compatible endpoint and local models through Ollama, vLLM, or"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     96
+    ],
+    "quotes": [
+     " DeepSeek, Google, Mistral, Moonshot, OpenAI, OpenRouter, xAI and more — plus"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     96
+    ],
+    "quotes": [
+     " DeepSeek, Google, Mistral, Moonshot, OpenAI, OpenRouter, xAI and more — plus"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     97
+    ],
+    "quotes": [
+     " any OpenAI-compatible endpoint and local models through Ollama, vLLM, or"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     96
+    ],
+    "note": "L95-96 列为内置 provider 路由",
+    "quotes": [
+     " DeepSeek, Google, Mistral, Moonshot, OpenAI, OpenRouter, xAI and more — plus"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "cargo",
+    "rel": "support",
+    "lines": [
+     40
+    ],
+    "quotes": [
+     "cargo install codewhale-cli --locked  # build from crates.io"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     39
+    ],
+    "quotes": [
+     "npm install -g codewhale            # wraps the same release binaries"
+    ]
+   },
+   {
+    "term": "go",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     43
+    ],
+    "note": "仅提及 Homebrew on Linux 在安装指南中覆盖",
+    "quotes": [
+     "Docker, Nix, Homebrew on Linux, Android/Termux, manual downloads with checksum"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     111
+    ],
+    "note": "可加载其插件，非替代/竞品表述",
+    "quotes": [
+     " Claude Code plugins."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

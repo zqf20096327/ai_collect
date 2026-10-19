@@ -1,0 +1,300 @@
+{
+ "fn": "nidhinjs/prompt-master",
+ "sha": "50eeea47084a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给各 AI 工具写精准提示词的 Claude skill",
+  "review": "以 Claude skill 形式分发的提示词生成器：对用户请求运行结构化流水线——检测目标工具、提取 9 维意图、最多 3 个澄清问题、自动路由到 13 个提示词模板之一、应用 5 种声明为安全的技术、做 token 效率审计后输出单个可复制提示词。内置 30+ 工具 profile，未收录的工具用 4 问 Universal Fingerprint 处理。明确排除 Tree of Thought 等易幻觉方法。面向使用多个 AI 工具的普通用户。",
+  "highlights": [
+   "覆盖推理、编码、图像、视频、语音、自动化等 30+ 工具的专用 profile",
+   "13 个提示词模板自动选择并对用户隐藏框架名",
+   "检测 37 种浪费额度的提示词模式并给出改写",
+   "max 3 个澄清问题与 token 效率审计机制"
+  ],
+  "use_cases": [
+   "为 Claude Code / Cursor 等编码工具生成任务提示词",
+   "为 Midjourney、Stable Diffusion 生成图像提示词",
+   "把写坏的提示词拆解并改写成适配其他工具的版本"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "提示词工程",
+   "Claude skill",
+   "生产力工具"
+  ],
+  "domain": "提示词工程/生产力工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "prompt-engineering"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: A Claude skill that writes the accurate prompts for any AI tool. Zero tokens or credits wasted. Full context and memory ",
+   "L71: Prompt Master runs a structured pipeline on every request:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     1,
+     10
+    ],
+    "quotes": [
+     "A Claude skill that writes the accurate prompts for any AI tool. Zero tokens or credits wasted. Full context and memory ",
+     "2. Go to **claude.ai → Sidebar → Customize → Skills → Upload a Skill**"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     129
+    ],
+    "quotes": [
+     "|**Grok 4.6**|Reasoning and agentic LLM|Search grounding, reasoning effort, tools, caching, and stop conditions|"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     132
+    ],
+    "quotes": [
+     "|**Ollama**|Local LLM|Asks which model is loaded, includes system prompt for Modelfile|"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     135
+    ],
+    "quotes": [
+     "|**DeepSeek-R1**|Reasoning LLM|Short clean instructions, strips CoT, suppresses thinking output if needed|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     9,
+     15,
+     16
+    ],
+    "quotes": [
+     "1. Download this repo as a ZIP",
+     "mkdir -p ~/.claude/skills",
+     "git clone https://github.com/nidhinjs/prompt-master.git ~/.claude/skills/prompt-master"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Midjourney",
+    "rel": "mention",
+    "lines": [
+     3,
+     50,
+     86,
+     98,
+     151
+    ],
+    "quotes": [
+     "**Works with:** Claude, ChatGPT, Codex, Grok, Gemini, o1/o3, MiniMax, Cursor, Claude Code, GitHub Copilot, Windsurf, Bol",
+     "Generate a Midjourney prompt for a cyberpunk city at night",
+     "Write me a midjourney prompt for a realistic samurai standing in the rain at night",
+     "**🎯 Target:** Midjourney · **⚡ Framework:** Visual Descriptor · **💰 Tokens:** Light (~60) · **💡 Strategy:** Comma-separa",
+     "|**Midjourney**|Image AI|Comma-separated descriptors, parameters, negative prompts|"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     3,
+     140,
+     178
+    ],
+    "quotes": [
+     "**Works with:** Claude, ChatGPT, Codex, Grok, Gemini, o1/o3, MiniMax, Cursor, Claude Code, GitHub Copilot, Windsurf, Bol",
+     "|**GitHub Copilot**|Autocomplete AI|Exact function contract as docstring|",
+     "|**File-Scope Template**|Cursor, Windsurf, Copilot — any code editing AI|"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     3,
+     12,
+     42,
+     66,
+     104
+    ],
+    "quotes": [
+     "**Works with:** Claude, ChatGPT, Codex, Grok, Gemini, o1/o3, MiniMax, Cursor, Claude Code, GitHub Copilot, Windsurf, Bol",
+     "### OR Clone directly into Claude Code skills directory (Not Suggested)",
+     "I need a prompt for Claude Code to build a REST API — ask me what you need to know",
+     "I want to ask Claude Code to build a todo app with React and Supabase",
+     "Build a claude code prompt for a landing page for a business"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     3,
+     38,
+     138,
+     178
+    ],
+    "quotes": [
+     "**Works with:** Claude, ChatGPT, Codex, Grok, Gemini, o1/o3, MiniMax, Cursor, Claude Code, GitHub Copilot, Windsurf, Bol",
+     "Write me a prompt for Cursor to refactor my auth module",
+     "|**Cursor / Windsurf**|IDE AI|File path, function name, do-not-touch list, sequential prompt guidance|",
+     "|**File-Scope Template**|Cursor, Windsurf, Copilot — any code editing AI|"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     3,
+     127
+    ],
+    "quotes": [
+     "**Works with:** Claude, ChatGPT, Codex, Grok, Gemini, o1/o3, MiniMax, Cursor, Claude Code, GitHub Copilot, Windsurf, Bol",
+     "|**ChatGPT / GPT-5.6**|Reasoning and agentic LLM|Sol/Terra/Luna routing, lean contracts, autonomy and effort control|"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     3,
+     148,
+     150
+    ],
+    "quotes": [
+     "**Works with:** Claude, ChatGPT, Codex, Grok, Gemini, o1/o3, MiniMax, Cursor, Claude Code, GitHub Copilot, Windsurf, Bol",
+     "|**Perplexity Computer**|Computer-use agent|Artifact-first prompting, scoped permissions, verification steps|",
+     "|**Perplexity / SearchGPT**|Search AI|Mode spec: search vs analyze vs compare|"
+    ]
+   },
+   {
+    "term": "Runway",
+    "rel": "mention",
+    "lines": [
+     3,
+     159
+    ],
+    "quotes": [
+     "**Works with:** Claude, ChatGPT, Codex, Grok, Gemini, o1/o3, MiniMax, Cursor, Claude Code, GitHub Copilot, Windsurf, Bol",
+     "|**Sora / Runway**|Video AI|Camera movement, duration, cut style|"
+    ]
+   },
+   {
+    "term": "Lovable",
+    "rel": "mention",
+    "lines": [
+     3,
+     142
+    ],
+    "quotes": [
+     "**Works with:** Claude, ChatGPT, Codex, Grok, Gemini, o1/o3, MiniMax, Cursor, Claude Code, GitHub Copilot, Windsurf, Bol",
+     "|**Bolt / v0 / Lovable**|Full-stack generator|Stack spec, version, what NOT to scaffold|"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     3,
+     138,
+     178
+    ],
+    "quotes": [
+     "**Works with:** Claude, ChatGPT, Codex, Grok, Gemini, o1/o3, MiniMax, Cursor, Claude Code, GitHub Copilot, Windsurf, Bol",
+     "|**Cursor / Windsurf**|IDE AI|File path, function name, do-not-touch list, sequential prompt guidance|",
+     "|**File-Scope Template**|Cursor, Windsurf, Copilot — any code editing AI|"
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     3,
+     145,
+     179
+    ],
+    "quotes": [
+     "**Works with:** Claude, ChatGPT, Codex, Grok, Gemini, o1/o3, MiniMax, Cursor, Claude Code, GitHub Copilot, Windsurf, Bol",
+     "|**Devin / SWE-agent**|Autonomous agent|Starting state, target state, stop conditions|",
+     "|**ReAct + Stop Conditions**|Claude Code, Devin, AutoGPT — any autonomous agent|"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     133
+    ],
+    "quotes": [
+     "|**Qwen 2.5 / Qwen3**|Open-weight LLM|Chat template format, thinking vs non-thinking mode detection|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

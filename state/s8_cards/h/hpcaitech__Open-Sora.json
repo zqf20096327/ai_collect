@@ -1,0 +1,132 @@
+{
+ "fn": "hpcaitech/Open-Sora",
+ "sha": "2f8a372ab476",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的开源高质量视频生成模型与训练工具集",
+  "review": "提供 11B 参数的视频生成模型（Open-Sora 2.0），支持文生视频与图生视频，支持 256px/768px 分辨率及多种宽高比与帧长设置，并通过 torchrun 支持单卡与多卡（ColossalAI 序列并行）推理。发布 checkpoints 与完整训练代码，含数据预处理管线；提供 arXiv 技术报告与 Hugging Face Spaces 上的 Gradio demo。安装依赖 conda 环境与 Python 3.10，可选安装 flash attention 提速。",
+  "highlights": [
+   "11B 模型一个 checkpoint 同时支持 T2V 与 I2V，覆盖 256px 与 768px",
+   "发布完整训练代码与 checkpoints，报告训练成本为 $200K",
+   "支持多分辨率、多宽高比（16:9/9:16/1:1/2.39:1）与帧长调节",
+   "多 GPU 推理基于 colossalai 序列并行"
+  ],
+  "use_cases": [
+   "自己训练或微调视频生成模型",
+   "用文本或参考图生成视频",
+   "研究视频生成模型的训练成本优化"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2503.09642v1",
+  "demo_url": "https://huggingface.co/spaces/hpcai-tech/open-sora",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "视频生成",
+   "扩散模型",
+   "文生视频",
+   "图生视频"
+  ],
+  "domain": "多模态/视频生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation",
+   "video-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: We design and implement **Open-Sora**, an initiative dedicated to **efficiently** producing high-quality video. We hope ",
+   "L25: - **[2025.03.12]** 🔥 We released **Open-Sora 2.0** (11B). 🎬 11B model achieves on-par performance with 11B HunyuanVideo ",
+   "L131: Our 11B model supports 256px and 768px resolution. Both T2V and I2V are supported by one model. 🤗 Huggingface 🤖 ModelSco"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     124
+    ],
+    "quotes": [
+     "git clone https://github.com/Dao-AILab/flash-attention # 4f0640d5"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     136,
+     143
+    ],
+    "note": "huggingface_hub 与 modelscope 经 pip 安装用于模型下载",
+    "quotes": [
+     "pip install \"huggingface_hub[cli]\"",
+     "pip install modelscope"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     26,
+     131,
+     133,
+     136,
+     137
+    ],
+    "note": "模型分发与 demo 平台，非替代/竞品对象",
+    "quotes": [
+     "- **[2025.02.20]** 🔥 We released **Open-Sora 1.3** (1B). With the upgraded VAE and Transformer architecture, the quality",
+     "Our 11B model supports 256px and 768px resolution. Both T2V and I2V are supported by one model. 🤗 Huggingface 🤖 ModelSco",
+     "Download from huggingface:",
+     "pip install \"huggingface_hub[cli]\"",
+     "huggingface-cli download hpcai-tech/Open-Sora-v2 --local-dir ./ckpts"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

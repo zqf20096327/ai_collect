@@ -1,0 +1,136 @@
+{
+ "fn": "Alibaba-NLP/DeepResearch",
+ "sha": "66c11d26f7c0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向长程深度信息检索任务的 30B 级开源 agent 模型",
+  "review": "通义实验室发布的 agentic 大语言模型，总参数 30.5B、每 token 激活 3.3B，上下文 128K，面向长程深度信息检索任务。训练机制包括全自动合成数据管线、基于 GRPO 定制框架的端到端强化学习；推理兼容 ReAct 与基于 IterResearch 的 Heavy 测试时扩展两种范式。提供 HuggingFace/ModelScope 权重下载、本地推理评测脚本，并可通过 OpenRouter API 无 GPU 调用；官方在线 demo 仅用于快速探索，稳定体验建议本地部署。",
+  "highlights": [
+   "30.5B 总参数、每 token 激活 3.3B 的 MoE 结构，128K 上下文",
+   "全自动合成数据管线支持 agentic 预训练、SFT 与强化学习",
+   "兼容 ReAct 与 IterResearch Heavy 两种推理范式",
+   "提供 OpenRouter API 通道，无 GPU 也可运行推理"
+  ],
+  "use_cases": [
+   "在评测数据集上运行深度信息检索基准评估",
+   "本地部署 30B-A3B 权重开展 agent 搜索研究",
+   "通过 OpenRouter API 直接调用模型做问答实验"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "arXiv:2510.24701",
+  "demo_url": "ModelScope/HuggingFace online demo",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "deep research",
+   "Web Agent",
+   "开源大模型",
+   "信息检索",
+   "评测基准"
+  ],
+  "domain": "LLM/Agent 模型",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "openrouter"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "通义实验室/阿里出品",
+   "ModelScope 与微信渠道",
+   "杭州/北京/上海招聘信息"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L20: We present **Tongyi DeepResearch**, an agentic large language model featuring 30.5 billion total parameters, with only 3",
+   "L31: - 🤖 **Agent Inference Paradigm Compatibility**: At inference, Tongyi DeepResearch is compatible with two inference parad",
+   "L154: Tongyi-DeepResearch-30B-A3B is now available at OpenRouter. You can run the inference without any GPUs."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     43,
+     152,
+     154,
+     158
+    ],
+    "quotes": [
+     "[2025/09/20]🚀 Tongyi-DeepResearch-30B-A3B is now on OpenRouter! Follow the Quick-start guide.",
+     "### 6. You can use OpenRouter's API to call our model",
+     "Tongyi-DeepResearch-30B-A3B is now available at OpenRouter. You can run the inference without any GPUs.",
+     "- In the call_server function: Set the API key and URL to your OpenRouter account’s API and URL."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     67
+    ],
+    "quotes": [
+     "pip install -r requirements.txt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     8,
+     13,
+     39
+    ],
+    "note": "权重分发与在线 demo 平台，非替代/竞品",
+    "quotes": [
+     "🤗 HuggingFace ｜",
+     "👏 Welcome to try Tongyi DeepResearch via our ** Modelscope online demo** or **🤗 Huggingface online demo** or **bailian s",
+     "|Tongyi-DeepResearch-30B-A3B|🤗 HuggingFace 🤖 ModelScope|30B-A3B|128K|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,164 @@
+{
+ "fn": "Open-LLM-VTuber/Open-LLM-VTuber",
+ "sha": "d048242b9db8",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地运行的语音交互 AI 陪伴：Live2D 形象+免手操作对话",
+  "review": "跨平台语音交互 AI 陪伴项目：整合 LLM 推理、语音识别与语音合成方案，支持实时语音对话、语音打断、视觉感知（摄像头/截屏/录屏）与 Live2D 虚拟形象。提供网页版与桌面客户端两种模式，桌面客户端支持透明背景桌宠模式。全部功能可完全离线运行于本地。通过配置文件切换各功能模块，可自定义 Live2D 模型、人设 Prompt 与声音克隆。安装依赖 uv，v1.0.0 存在破坏性变更需重新部署。",
+  "highlights": [
+   "完全离线模式：本地模型运行，对话数据不出设备",
+   "语音打断（免耳机）与视觉感知（摄像头/屏幕截图）",
+   "Live2D 表情映射、桌宠模式与触摸交互",
+   "模块化可扩展：LLM/ASR/TTS 模块经配置文件切换"
+  ],
+  "use_cases": [
+   "在本机搭建可语音对话的 Live2D 虚拟角色陪伴",
+   "作为透明背景桌宠挂在屏幕上随时互动",
+   "离线环境下保障隐私的语音 AI 陪伴"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    29
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI陪伴",
+   "虚拟主播/VTuber",
+   "语音交互",
+   "Live2D",
+   "本地部署"
+  ],
+  "domain": "AI 陪伴/虚拟形象交互",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "deepseek",
+   "ollama",
+   "vllm",
+   "groq"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文 README 与中文常见问题文档",
+   "QQ 用户群",
+   "腾讯问卷",
+   "初始目标是复刻 neuro-sama"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L35: **Open-LLM-VTuber** is a unique **voice-interactive AI companion** that not only supports **real-time voice conversation",
+   "L70:  - 🤖 Large Language Models (LLM): Ollama, OpenAI (and any OpenAI-compatible API), Gemini, Claude, Mistral, DeepSeek, Zhi",
+   "L54: - 🔒 **Offline mode support**: Run completely offline using local models - no internet required. Your conversations stay "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     70
+    ],
+    "quotes": [
+     " - 🤖 Large Language Models (LLM): Ollama, OpenAI (and any OpenAI-compatible API), Gemini, Claude, Mistral, DeepSeek, Zhi"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     70
+    ],
+    "quotes": [
+     " - 🤖 Large Language Models (LLM): Ollama, OpenAI (and any OpenAI-compatible API), Gemini, Claude, Mistral, DeepSeek, Zhi"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     70
+    ],
+    "quotes": [
+     " - 🤖 Large Language Models (LLM): Ollama, OpenAI (and any OpenAI-compatible API), Gemini, Claude, Mistral, DeepSeek, Zhi"
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     70
+    ],
+    "quotes": [
+     " - 🤖 Large Language Models (LLM): Ollama, OpenAI (and any OpenAI-compatible API), Gemini, Claude, Mistral, DeepSeek, Zhi"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "compat",
+    "lines": [
+     71
+    ],
+    "quotes": [
+     " - 🎙️ Automatic Speech Recognition (ASR): sherpa-onnx, FunASR, Faster-Whisper, Whisper.cpp, Whisper, Groq Whisper, Azure"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    113,
+    115,
+    117
+   ],
+   "quotes": [
+    "This project includes Live2D sample models provided by Live2D Inc. These assets are licensed separately under the Live2D",
+    "This content uses sample data owned and copyrighted by Live2D Inc. The sample data are utilized in accordance with the t",
+    "Note: For commercial use, especially by medium or large-scale enterprises, the use of these Live2D sample models may be "
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

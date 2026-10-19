@@ -1,0 +1,158 @@
+{
+ "fn": "simstudioai/sim",
+ "sha": "32e7a0c12801",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的可视化 AI agent 与工作流构建平台",
+  "review": "Sim 提供一个协作工作区，用于构建、部署和管理 AI agent 与工作流：支持可视化/对话式/代码三种构建方式，内置数据库表格、文件存储、知识库，可接入 270+ 集成（5,400+ 动作、520+ 触发器），并提供运行监控、日志与调度。部署方式包括云端（sim.ai）、macOS 桌面应用（需 macOS 12+）和自托管（npx sim-setup 向导，需 Node.js 20+ 与 Docker）。自托管 Chat 服务由 Sim 管理并需 API key。",
+  "highlights": [
+   "270+ 集成、5,400+ 动作、520+ 触发器",
+   "可视化/对话式/代码三种 agent 构建方式",
+   "内置表格数据库、文件存储与知识库（agent 共享工作区）",
+   "自托管安装向导 sim-setup 支持 Docker Compose、本地开发与 Kubernetes 模式"
+  ],
+  "use_cases": [
+   "搭建自动化工作流连接 Slack、Notion、Salesforce 等服务",
+   "团队协作构建并监控 AI agent",
+   "自托管部署并接入本地模型运行 agent"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://sim.ai",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI agent",
+   "工作流自动化",
+   "低代码",
+   "自托管",
+   "可视化编排"
+  ],
+  "domain": "AI agent 构建平台/工作流自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama",
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "workflow-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13:  A workspace to build, deploy and manage AI agents and workflows.",
+   "L37: - Connect 270+ integrations (5,400+ actions, 520+ triggers) and every major LLM",
+   "L61: **Requirements:** Node.js 20+ and Docker."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     94
+    ],
+    "quotes": [
+     "Sim also supports local models via Ollama and vLLM. See the self-hosting docs for details."
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     94
+    ],
+    "quotes": [
+     "Sim also supports local models via Ollama and vLLM. See the self-hosting docs for details."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     24,
+     63,
+     72,
+     73,
+     74
+    ],
+    "quotes": [
+     "npx sim-setup",
+     "`npx sim-setup` is an interactive wizard that creates a small `sim/` deployment directory, provisions the database, gene",
+     "npx sim-setup config",
+     "npx sim-setup add email",
+     "npx sim-setup add storage"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     63,
+     78
+    ],
+    "quotes": [
+     "`npx sim-setup` is an interactive wizard that creates a small `sim/` deployment directory, provisions the database, gene",
+     "`npx sim-setup config` detects the effective local-dev, Docker Compose, or current-context"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     7
+    ],
+    "quotes": [
+     " Set Up with Cursor"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [
+    127
+   ],
+   "quotes": [
+    "This project is licensed under the Apache License 2.0 - see the LICENSE file for details."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

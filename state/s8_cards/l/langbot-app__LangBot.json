@@ -1,0 +1,208 @@
+{
+ "fn": "langbot-app/LangBot",
+ "sha": "5d97a7e269a6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的多平台 IM 聊天机器人开发与运行平台",
+  "review": "开源平台，将大语言模型接入 Slack、Discord、Telegram、微信/企业微信、飞书、钉钉、QQ 等 IM 平台，构建能对话、执行任务的智能体。内置 RAG 知识库，深度集成 Dify、Coze、n8n、Langflow 等编排工具；提供 Web 管理面板做配置与监控、插件生态、访问控制与限流。支持 uvx 一行启动、Docker Compose 与多家云平台部署，并通过 MCP Server 与 CLI（lbctl）供编程代理管理机器人、流水线与插件。",
+  "highlights": [
+   "一套代码接入 Discord、Telegram、Slack、LINE、QQ、微信、企业微信、飞书、钉钉、KOOK 等 IM 平台",
+   "内置 RAG 知识库，集成 Dify、Coze、n8n、Langflow、Deerflow、Weknora",
+   "内置 MCP 端点与 lbctl CLI，供编程代理管理机器人、流水线、插件与模型",
+   "插件生态与事件驱动架构，Web 面板配置无需 YAML"
+  ],
+  "use_cases": [
+   "在 Slack/Discord/Telegram 部署基于自有知识库的客服机器人",
+   "把 n8n/Dify 工作流接入企业微信/钉钉做业务自动化",
+   "用一个面板统一管理多平台的机器人"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "IM机器人",
+   "Agent",
+   "RAG知识库",
+   "LLM接入",
+   "插件系统"
+  ],
+  "domain": "LLM 应用/机器人平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "ollama",
+   "anthropic"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "简体中文文档与多语言README",
+   "飞书/钉钉/企业微信/QQ 等国内平台适配",
+   "阿里云百炼/硅基流动/火山方舟等国内网关支持"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L28: LangBot is an **open-source, production-grade platform** for building AI-powered instant messaging bots. It connects Lar",
+   "L34: - **AI Conversations & Agents** — Multi-turn dialogues, tool calling, multi-modal support, streaming output. Built-in RA",
+   "L144: - **MCP Server** — LangBot exposes a built-in Model Context Protocol endpoint at `/mcp`, mirroring the HTTP API so an ag"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     108
+    ],
+    "quotes": [
+     "|DeepSeek|LLM|✅|"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     113
+    ],
+    "quotes": [
+     "|Ollama|Local LLM|✅|"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     107
+    ],
+    "quotes": [
+     "|Anthropic|LLM|✅|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     71,
+     74
+    ],
+    "quotes": [
+     "```bash",
+     "docker compose --profile all up -d"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     "git clone https://github.com/langbot-app/LangBot"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     34,
+     115,
+     136
+    ],
+    "note": "被集成的 LLMOps 平台，非竞品",
+    "quotes": [
+     "- **AI Conversations & Agents** — Multi-turn dialogues, tool calling, multi-modal support, streaming output. Built-in RA",
+     "|Dify|LLMOps|✅|",
+     "|**Internal Tools**|Connect n8n/Dify workflows to WeCom/DingTalk for automated business processes|"
+    ]
+   },
+   {
+    "term": "Coze",
+    "rel": "mention",
+    "lines": [
+     34
+    ],
+    "note": "被集成的平台",
+    "quotes": [
+     "- **AI Conversations & Agents** — Multi-turn dialogues, tool calling, multi-modal support, streaming output. Built-in RA"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     142
+    ],
+    "note": "可操作本项目的编程代理工具",
+    "quotes": [
+     "LangBot is **agent-friendly by design** — your coding agents (Claude Code, Codex, Copilot, Cursor, …) can operate, exten"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     142
+    ],
+    "note": "可操作本项目的编程代理工具",
+    "quotes": [
+     "LangBot is **agent-friendly by design** — your coding agents (Claude Code, Codex, Copilot, Cursor, …) can operate, exten"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     142
+    ],
+    "note": "可操作本项目的编程代理工具",
+    "quotes": [
+     "LangBot is **agent-friendly by design** — your coding agents (Claude Code, Codex, Copilot, Cursor, …) can operate, exten"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

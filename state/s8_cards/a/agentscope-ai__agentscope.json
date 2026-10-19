@@ -1,0 +1,170 @@
+{
+ "fn": "agentscope-ai/agentscope",
+ "sha": "159a070752ea",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的 agent 构建框架与服务运行时",
+  "review": "AgentScope 2.0 是一个 agent 框架，提供 SDK 层与服务层两部分：SDK 层以 ReAct 循环、工具集、模型接入、上下文压缩、记忆、权限/人工确认、沙箱执行等构件组合出 agent；服务层为 FastAPI 后端加预置 Web UI，提供多租户多会话、leader-worker 团队编排、IM 渠道接入（飞书/Discord）、RAG 服务、MCP 与技能中心、持久化与定时调度。需 Python 3.11+，从 PyPI 或源码安装，Web UI 依赖 pnpm。",
+  "highlights": [
+   "ReAct 循环 agent 构建块：结构化输出、实时中断恢复、批量工具执行",
+   "模型层接入 OpenAI、Anthropic、Gemini、DashScope、DeepSeek、Moonshot、Volcengine、xAI、Ollama 等",
+   "内置 agent 服务：多租户多会话、团队编排、飞书/Discord 渠道、RAG、持久化",
+   "支持 A2A 协议与 MCP 服务器、实时语音 agent（WebRTC）"
+  ],
+  "use_cases": [
+   "构建带工具调用与沙箱执行的开发 agent",
+   "用 FastAPI 服务层把 agent 发布为多会话 Web 应用",
+   "把 agent 接入飞书或 Discord 作为消息渠道",
+   "搭建 leader-worker 多 agent 协作与任务规划流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2402.14034",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent框架",
+   "多agent协作",
+   "LLM基础设施",
+   "语音agent",
+   "MCP"
+  ],
+  "domain": "LLM 基础设施/agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "multi-agent",
+   "voice-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文主页链接",
+   "作者列表含中文姓名与阿里相关域名 alicdn"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L56: AgentScope 2.0 is a production-ready, easy-to-use agent framework with essential abstractions that keep up with rising m",
+   "L110: |**Model**|LLM, embedding, and TTS across major providers (OpenAI, Anthropic, Gemini, DashScope, DeepSeek, Moonshot, Vol",
+   "L129: AgentScope ships a batteries-included **agent service** — a FastAPI backend with a pre-built Web UI (`examples/web_ui`) "
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     110
+    ],
+    "quotes": [
+     "|**Model**|LLM, embedding, and TTS across major providers (OpenAI, Anthropic, Gemini, DashScope, DeepSeek, Moonshot, Vol"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     110
+    ],
+    "quotes": [
+     "|**Model**|LLM, embedding, and TTS across major providers (OpenAI, Anthropic, Gemini, DashScope, DeepSeek, Moonshot, Vol"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     87,
+     90
+    ],
+    "quotes": [
+     "#### From PyPI",
+     "uv pip install agentscope"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     97,
+     163
+    ],
+    "quotes": [
+     "git clone -b main https://github.com/agentscope-ai/agentscope.git",
+     "git clone -b main https://github.com/agentscope-ai/agentscope.git"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     176
+    ],
+    "note": "Web UI 依赖安装方式，非本产品安装途径",
+    "quotes": [
+     "pnpm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     47
+    ],
+    "note": "DeepWiki 徽章 'Ask Devin'，非产品关系",
+    "quotes": [
+     " src=\"https://img.shields.io/badge/DeepWiki-Ask_Devin-navy.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAA"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

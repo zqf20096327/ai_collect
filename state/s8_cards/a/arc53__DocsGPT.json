@@ -1,0 +1,174 @@
+{
+ "fn": "arc53/DocsGPT",
+ "sha": "884449f4b35c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向企业与开发者的自托管文档问答与 AI Agent 平台",
+  "review": "DocsGPT 将文档、网站与已连接的应用转为可引用出处的 AI Agent：支持可视化工作流编排、知识同步（Google Drive、SharePoint、Confluence、GitHub、S3 等）与 GraphRAG，每个回答附带来源引用。模型可任选云端（OpenAI、Anthropic、Groq 等）或本地（Ollama、vLLM），整个栈运行在用户自身环境内。提供一键安装脚本、`docsgpt` CLI 管理命令，另有 Docker Compose、pip、Kubernetes 及离线部署途径；MIT 许可，包含 SSO、团队与配额等团队功能。",
+  "highlights": [
+   "Agent 与深度研究模式：自定义提示、知识与工具，支持多步回答",
+   "拖拽式可视化工作流：串联 Agent、条件与沙箱代码",
+   "答案带来源引用，知识源可从多平台持续同步",
+   "OpenAI 兼容 API、MCP server、网站 widget、Discord/Slack/Telegram 机器人与 CLI 多种接入方式"
+  ],
+  "use_cases": [
+   "在企业内网自建文档问答与知识检索系统",
+   "把产品手册做成嵌入网站的客服 Agent",
+   "需要数据不出本地环境的私有化 LLM 应用部署",
+   "通过可视化工作流串联多个 Agent 处理业务流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "文档问答",
+   "RAG",
+   "AI Agent",
+   "自托管",
+   "企业搜索"
+  ],
+  "domain": "LLM 基础设施/企业知识检索",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "groq",
+   "openrouter",
+   "ollama",
+   "vllm",
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "document-qa",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3:  Open-source AI agents grounded in your docs. Private, self-hosted, any model.",
+   "L45: DocsGPT turns your documents, sites and connected apps into AI agents that answer with sources. Build agents and",
+   "L66: - 🧠 **Any model:** OpenAI, Anthropic, Google, Groq, OpenRouter, or local models through Ollama, vLLM and other OpenAI-co"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     66
+    ],
+    "quotes": [
+     "- 🧠 **Any model:** OpenAI, Anthropic, Google, Groq, OpenRouter, or local models through Ollama, vLLM and other OpenAI-co"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     66
+    ],
+    "quotes": [
+     "- 🧠 **Any model:** OpenAI, Anthropic, Google, Groq, OpenRouter, or local models through Ollama, vLLM and other OpenAI-co"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     66
+    ],
+    "quotes": [
+     "- 🧠 **Any model:** OpenAI, Anthropic, Google, Groq, OpenRouter, or local models through Ollama, vLLM and other OpenAI-co"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     66
+    ],
+    "quotes": [
+     "- 🧠 **Any model:** OpenAI, Anthropic, Google, Groq, OpenRouter, or local models through Ollama, vLLM and other OpenAI-co"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     66
+    ],
+    "quotes": [
+     "- 🧠 **Any model:** OpenAI, Anthropic, Google, Groq, OpenRouter, or local models through Ollama, vLLM and other OpenAI-co"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     52,
+     56,
+     122
+    ],
+    "quotes": [
+     "The installer above checks for Docker, installs the `docsgpt` command and",
+     "Prefer Docker Compose, pip, Kubernetes or an air-gapped install? See Choose a deployment.",
+     "Docker Compose,"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     91
+    ],
+    "note": "作为可访问 MCP server 的客户端被列举，非替代/竞品对象",
+    "quotes": [
+     "- **MCP server:** let Claude, Cursor or any MCP client search your agent's knowledge."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

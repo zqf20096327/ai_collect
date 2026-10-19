@@ -1,0 +1,128 @@
+{
+ "fn": "amark/gun",
+ "sha": "cd23063b9ffa",
+ "source": "readme",
+ "identity": {
+  "one_liner": "去中心化图数据同步协议，供开发者构建 P2P 加密应用",
+  "review": "GUN 是一个图数据同步协议及配套工具生态，提供端到端加密的实时 P2P 状态同步，支持键值、表、文档等多种数据形态的图存储，本地优先、可离线运行。由 Mark Nadal 于 2014 年创建，核心引擎压缩后约 9KB。以 npm 包分发，可在浏览器通过 CDN 脚本引入，也提供 Docker 镜像、Linux 安装脚本、Heroku 等多种 relay 部署途径。框架适配方面给出 React、Vue、Svelte、Electron 等文档入口。",
+  "highlights": [
+   "实时 P2P 状态同步，本地优先、可离线、端到端加密",
+   "图数据模型兼容键值/表/文档等多种访问方式",
+   "约 9KB gzipped 的嵌入式引擎，含 CRDT 冲突解决与加密模块",
+   "提供 npm 包、浏览器 CDN、Docker 镜像等多种接入与部署方式"
+  ],
+  "use_cases": [
+   "为多人协作应用做实时 P2P 数据同步",
+   "构建无中心服务器的社区应用",
+   "离线优先应用中跨设备同步数据",
+   "为开发团队部署去中心化 relay 节点"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "http://try.axe.eco/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "去中心化",
+   "P2P数据库",
+   "图数据同步",
+   "CRDT",
+   "端到端加密"
+  ],
+  "domain": "去中心化数据库/数据同步",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L4: **GUN** is an ecosystem of **tools** that let you build community run and encrypted applications - like an Open Source F",
+   "L63: Technically, **GUN is a graph synchronization protocol** with a *lightweight embedded engine*, capable of doing *20M+ AP",
+   "L122: To quickly spin up a GUN relay peer for your development team, utilize Heroku, Docker, or any others listed below. Or so"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     19,
+     95,
+     103
+    ],
+    "quotes": [
+     " - Or `npm install gun` and run the examples with `cd node_modules/gun && npm start` (**5min** ~ average developer).",
+     "You will need to `npm install -g mocha` first. Then in the gun root folder run `npm test`. Tests will trigger persistent",
+     "`npm install @peculiar/webcrypto --save`"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     153
+    ],
+    "quotes": [
+     "git clone https://github.com/amark/gun.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     176,
+     184,
+     185,
+     192
+    ],
+    "quotes": [
+     "docker run -p 8765:8765 gundb/gun",
+     "docker build -t myrepo/gundb:v1 .",
+     "docker run -p 8765:8765 myrepo/gundb:v1",
+     "docker run -p 8765:8765 username/gun:git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,85 @@
+{
+ "fn": "opencv/opencv",
+ "sha": "ef41f5c643f2",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源计算机视觉库：提供图像处理与视觉算法",
+  "review": "OpenCV 是开源计算机视觉库，README 提供主页、文档（5.x）、课程、问答论坛、issue 跟踪及附加功能模块 opencv_contrib 的链接。仓库以 C++ 为主（主题标签含 c-plus-plus），主题标签还涉及计算机视觉、深度学习与图像处理。README 本身不包含安装步骤或 API 说明，仅给出资源入口与贡献指南摘要（每个 issue 一个 PR、需含测试与文档、遵循编码风格等）。",
+  "highlights": [
+   "提供在线文档（docs.opencv.org 5.x）与问答论坛入口",
+   "附加功能通过 opencv_contrib 仓库提供",
+   "以 C++ 为主，主题标签覆盖计算机视觉、深度学习、图像处理"
+  ],
+  "use_cases": [
+   "需要图像处理与计算机视觉算法的 C++ 开发",
+   "查找 OpenCV 文档与社区支持渠道",
+   "基于 OpenCV 开发项目并参与社区（Community Friday）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "计算机视觉",
+   "图像处理",
+   "C++库"
+  ],
+  "domain": "计算机视觉",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L1: ## OpenCV: Open Source Computer Vision Library",
+   "L7: * Docs: <https://docs.opencv.org/5.x/>",
+   "L28: * Follow OpenCV on LinkedIn for daily posts showing the state-of-the-art in computer vision & AI"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,133 @@
+{
+ "fn": "invoke-ai/InvokeAI",
+ "sha": "7e4cd2cc32c0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向创作者的 Stable Diffusion 本地图像生成 WebUI 与工作流工具",
+  "review": "Invoke 是一个基于 Stable Diffusion 系列模型的本地图像生成引擎：在本机运行 Web 服务器与 React UI，提供统一画布（内绘/外绘、笔刷工具）、节点式工作流管理与图库管理。支持 ckpt、diffusers 及部分 gguf 格式模型，覆盖 SD 1.5 至 Flux.2、Z-Image、Qwen Image 等二十余个模型，其中 Nano Banana、GPT Image、Wan 仅经 API 调用。采用商业友好许可证，通过专用 Launcher 下载安装，并作为多个商业产品的基础。",
+  "highlights": [
+   "本地托管 Web 服务器与 React UI",
+   "统一画布：内绘/外绘、笔刷工具与生成能力集成",
+   "节点式工作流创建、管理与分享",
+   "支持 20+ 图像模型及 ckpt/diffusers/gguf 格式"
+  ],
+  "use_cases": [
+   "本地生成与迭代 AI 图像作品",
+   "搭建可复用的节点式生成工作流",
+   "对图像做内绘/外绘编辑与放大处理"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图像生成",
+   "Stable Diffusion",
+   "WebUI",
+   "工作流",
+   "内绘/外绘"
+  ],
+  "domain": "AI 图像生成/创意工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "workflow-automation",
+   "image-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: Invoke is a leading creative engine built to empower professionals and enthusiasts alike. Generate and create stunning v",
+   "L39: Invoke runs a locally hosted web server & React UI with an industry-leading user experience.",
+   "L53: ### Model Support"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "llama.cpp",
+    "rel": "mention",
+    "lines": [
+     85
+    ],
+    "note": "仅提及支持部分 gguf 格式模型，未直接提及 llama.cpp",
+    "quotes": [
+     "- Support for ckpt, diffusers, and some gguf models"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     74,
+     75
+    ],
+    "note": "作为支持的图像模型（Qwen Image / Qwen Image Edit），非竞品对比",
+    "quotes": [
+     "- Qwen Image",
+     "- Qwen Image Edit"
+    ]
+   },
+   {
+    "term": "文心一言",
+    "rel": "mention",
+    "lines": [
+     77,
+     78
+    ],
+    "note": "作为支持的图像模型（ERNIE-Image 系列），非竞品对比",
+    "quotes": [
+     "- ERNIE-Image",
+     "- ERNIE-Image-Turbo"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [
+    11
+   ],
+   "note": "L11 称商业友好许可证，未见双许可声明",
+   "quotes": [
+    "- Free to use under a commercially-friendly license"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

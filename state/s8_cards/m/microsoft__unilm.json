@@ -1,0 +1,106 @@
+{
+ "fn": "microsoft/unilm",
+ "sha": "d33576eeaf3e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "微软研究院的大规模自监督预训练模型与工具汇总库",
+  "review": "微软研究院维护的统一入口仓库，汇总其团队在跨任务、跨语言（100+语言）、跨模态（文本、图像、语音、文档版式）方向的自监督预训练研究成果：涵盖 UniLM、BEiT/BEiT-3、LayoutLM 系列、WavLM、VALL-E、Kosmos 系列、E5 等模型，以及 TorchScale 基础架构库、s2s-ft 微调工具包与 TrOCR 等应用。每个模型指向各自的子仓库/发布页，README 本身以目录与新闻列表为主，未提供统一安装步骤；许可需查看根目录 LICENSE 文件。",
+  "highlights": [
+   "汇总数十个跨语言、视觉、语音与多模态预训练模型及其子仓库入口",
+   "包含 LayoutLM/LayoutXLM 文档 AI 模型与 TrOCR、LayoutReader 等应用",
+   "提供 TorchScale 基础架构库与 s2s-ft 微调工具包",
+   "发布历史记录各模型在 HuggingFace 等平台的模型发布"
+  ],
+  "use_cases": [
+   "查找微软研究院各类预训练模型（文档理解、语音、多模态）的官方入口",
+   "了解自监督预训练研究脉络与各模型的发布时间线",
+   "为文档 AI、OCR、TTS 等任务定位对应的模型资源"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "预训练模型",
+   "多模态",
+   "文档AI",
+   "语音",
+   "研究汇总"
+  ],
+  "domain": "AI 研究/预训练模型",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multimodal",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L38: **The Big Convergence** - Large-scale self-supervised pre-training across ```tasks``` (predictive and generative), ```la",
+   "L5: # Foundation Architecture"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     146,
+     148,
+     150,
+     153
+    ],
+    "note": "模型发布平台，非替代/竞品关系",
+    "quotes": [
+     "- [Model Release] October 2021: **TrOCR** is on HuggingFace",
+     "- [Model Release] September, 2021: **LayoutLM-cased** are on HuggingFace",
+     "- August 2021: **LayoutLMv2** and **LayoutXLM** are on HuggingFace",
+     "- August 2021: **BEiT** is on HuggingFace"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

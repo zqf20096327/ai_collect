@@ -1,0 +1,154 @@
+{
+ "fn": "camel-ai/camel",
+ "sha": "b249e14498a8",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向研究者的多智能体系统开源框架与数据生成工具",
+  "review": "CAMEL 是一个开源多智能体框架与社区，定位为研究 agent 行为与规模的实验平台。框架支持大规模 agent 系统仿真、状态记忆、角色扮演式多 agent 协作（Workforce）、多种基准测试与工具集成；提供 CoT、Self-Instruct 等合成数据生成模块，以及 Agents、Memory、Retrievers（RAG）、Benchmarks 等模块化组件。通过 PyPI 安装，附 Cookbooks 与文档，主要面向从事 Multi-Agent Systems 研究的科研群体，社区包含 100+ 研究者并附论文引用入口。",
+  "highlights": [
+   "支持最多 1M 规模 agent 的仿真与协调（框架设计目标）",
+   "Role Playing 与 Workforce 多智能体协作机制",
+   "CoT、Self-Instruct、Source2Synth 等合成数据生成模块",
+   "含 Memory、Retrievers、Benchmarks 等 13 个核心模块"
+  ],
+  "use_cases": [
+   "研究大规模多智能体系统的协作与涌现行为",
+   "用 agent 管线生成 CoT / 指令格式的合成训练数据",
+   "基于 RAG 与工具集成搭建任务自动化 agent"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://arxiv.org/abs/2303.17760",
+  "demo_url": "https://docs.camel-ai.org",
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    1,
+    32
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "多智能体框架",
+   "Agent研究",
+   "合成数据生成",
+   "科研工具"
+  ],
+  "domain": "AI/多智能体系统研究框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "research-tools"
+  ]
+ },
+ "intel": {
+  "maintainer_type": null,
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L32:  🐫 CAMEL is an open-source community dedicated to finding the scaling laws of agents. We believe that studying these age",
+   "L69: We are a community-driven research collective comprising over 100 researchers dedicated to advancing frontier research i",
+   "L137: Installing CAMEL is a breeze thanks to its availability on PyPI. Simply open your terminal and run:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     137,
+     140,
+     150
+    ],
+    "quotes": [
+     "Installing CAMEL is a breeze thanks to its availability on PyPI. Simply open your terminal and run:",
+     "pip install camel-ai",
+     "  pip install 'camel-ai[web_tools]'"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     197
+    ],
+    "note": "提供的在线演示环境，非本产品安装途径",
+    "quotes": [
+     "We provide a Google Colab demo showcasing a conversation between two ChatGPT agents playing roles as a python programmer"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     10,
+     280,
+     323
+    ],
+    "note": "数据托管与上传目标平台",
+    "quotes": [
+     "[![Hugging Face][huggingface-image]][huggingface-url]",
+     "> **Data (Hosted on Hugging Face)**",
+     "|**CoT Data Generation and Upload Data to Huggingface**|Uncover how to generate CoT data with CAMEL and seamlessly uploa"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     197
+    ],
+    "note": "Colab 演示中两个 agent 的角色描述",
+    "quotes": [
+     "We provide a Google Colab demo showcasing a conversation between two ChatGPT agents playing roles as a python programmer"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     324
+    ],
+    "note": "Cookbook 中 SFT 微调对象，非竞品对比",
+    "quotes": [
+     "|**CoT Data Generation and SFT Qwen with Unsolth**|Discover how to generate CoT data using CAMEL and SFT Qwen with Unsol"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

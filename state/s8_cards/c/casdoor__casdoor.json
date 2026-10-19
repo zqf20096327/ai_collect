@@ -1,0 +1,128 @@
+{
+ "fn": "casdoor/casdoor",
+ "sha": "6493008e6f17",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为应用与 AI agent 提供自托管 SSO/IAM 的认证服务器",
+  "review": "自托管的单点登录与身份认证服务器，带 Web 管理控制台。支持 OAuth 2.0、OIDC、SAML 2.0、CAS、LDAP、SCIM 2.0、WebAuthn、TOTP/MFA、Face ID 等协议，并可对接 Google Workspace、Entra ID、GitHub 等身份提供方。组织、应用、登录方式等均在控制台配置，无需改动配置文件重新部署；授权策略基于 Casbin（ACL/RBAC/ABAC）。AI 相关部分包括 MCP 网关与 A2A 通信支持。提供 Docker、Docker Compose、Helm、源码四种安装路径及商业托管版 Casdoor Cloud。",
+  "highlights": [
+   "多协议认证：OAuth 2.0/OIDC、SAML 2.0、CAS、LDAP、SCIM 2.0、WebAuthn、TOTP/MFA、Face ID",
+   "MCP 网关：暴露 Model Context Protocol 服务器并控制访问，另支持 A2A 通信",
+   "Casbin 策略授权（ACL/RBAC/ABAC）与多租户组织管理",
+   "四种安装路径：Docker all-in-one、Docker Compose+MySQL、Helm、源码构建"
+  ],
+  "use_cases": [
+   "为多个新旧应用统一接入单点登录",
+   "为 AI agent 的 MCP 服务器做访问控制",
+   "企业内对接 Google/GitHub/Entra ID 等登录方式",
+   "以 Git 文件或 Terraform 管理组织、用户与权限配置"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://demo.casdoor.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "IAM/SSO",
+   "认证服务器",
+   "MCP网关",
+   "自托管",
+   "Web控制台"
+  ],
+  "domain": "身份认证与访问管理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7:  Casdoor is a single sign-on (SSO) and authentication server with a web console.",
+   "L225: - **MCP gateway** — expose Model Context Protocol servers and control access to them",
+   "L226: - **A2A** — agent-to-agent communication support"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     64,
+     107,
+     110,
+     119
+    ],
+    "quotes": [
+     "docker run -p 8000:8000 casbin/casdoor-all-in-one",
+     "### Docker — all-in-one (evaluation)",
+     "docker run -p 8000:8000 casbin/casdoor-all-in-one",
+     "`docker-compose.yml` starts Casdoor next to a MySQL 8 container."
+    ]
+   },
+   {
+    "term": "helm",
+    "rel": "support",
+    "lines": [
+     144,
+     149
+    ],
+    "quotes": [
+     "### Kubernetes — Helm",
+     "helm install casdoor oci://ghcr.io/casdoor/helm-charts/casdoor"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     173,
+     178
+    ],
+    "quotes": [
+     "### From source — for development",
+     "git clone https://github.com/casdoor/casdoor.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

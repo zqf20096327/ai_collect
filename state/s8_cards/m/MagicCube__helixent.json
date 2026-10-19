@@ -1,0 +1,136 @@
+{
+ "fn": "MagicCube/helixent",
+ "sha": "699b92e9100a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于 Bun 的 ReAct 式 agent 循环库与编码 agent CLI",
+  "review": "TypeScript 库，提供可复用的 ReAct 风格 agent 循环、Model/Message/Tool 核心抽象和中间件系统，并在其上构建面向编码场景的 agent 层（bash、read_file、str_replace、apply_patch 等工具）与交互式 TUI CLI。支持标准 agent 技能格式从多个目录发现加载、AGENTS.md 项目指引、工具调用审批的人机协同。面向开发者，可通过 npm 全局安装或 npx 直接运行，也作为库导入并用 OpenAI 兼容 provider 构建 agent。运行时栈为 Bun，可编译为单一可执行文件。",
+  "highlights": [
+   "中间件系统覆盖 agent 循环各阶段（8 个 hook）",
+   "标准 agent 技能格式，从 4 类目录发现加载",
+   "编码 agent 预置 bash/文件读写/补丁等工具与计划模式",
+   "工具调用的人机协同审批支持"
+  ],
+  "use_cases": [
+   "直接用 CLI 在项目中运行交互式编码 agent",
+   "以库形式构建自定义 ReAct agent 与 provider 接入",
+   "通过中间件扩展 agent 的状态管理与工具编排"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/4ad89f14-e338-43e4-82ce-91cb83d58be2",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent框架",
+   "编码agent",
+   "TypeScript/Bun",
+   "CLI工具",
+   "中间件"
+  ],
+  "domain": "AI agent 框架/编码工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文版本入口（L1）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L30:  - A reusable ReAct-style agent loop.",
+   "L177: - **Model** — A unified abstraction over LLM providers. Define a model once, swap providers without changing agent code.",
+   "L194: A domain-specific agent built on top of the generic agent loop, pre-configured with coding-oriented tools (`read_file`, "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     51,
+     58,
+     68
+    ],
+    "quotes": [
+     "Helixent is now available on `npm`, so you can install globally and run, or choose to run via npx without installing:",
+     "npm install -g helixent@latest",
+     "npx helixent@latest"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     116,
+     137
+    ],
+    "quotes": [
+     "### Develop & Build from Source",
+     "bun run build:bin"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     234
+    ],
+    "note": "仅说明 Bun 同为 Claude Code 的运行时，非替代/竞品声明",
+    "quotes": [
+     "- **Same runtime as Claude Code** — Bun powers Claude Code and a growing number of TypeScript-first tools. It's built fo"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

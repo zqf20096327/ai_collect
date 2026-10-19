@@ -1,0 +1,87 @@
+{
+ "fn": "huggingface/agents-course",
+ "sha": "9d22bb67dac7",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向学习者的免费 AI Agent 入门课程（4 单元+认证）",
+  "review": "Hugging Face 官方的 Agents 课程仓库，内容分为 4 个单元：从 agent 与 LLM 基础概念，到 smolagents、LlamaIndex、LangGraph 三个框架的构建实践，再到 Agentic RAG 用例与最终作业（含自动化评测、排行榜与认证）。附有 bonus 单元覆盖 LLM 函数调用微调、可观测性评估与游戏场景。面向具备基础 Python 与 LLM 知识的学习者，免费报名，课程通过 hf.co 访问，仓库接受 typo 修复与新单元的贡献。",
+  "highlights": [
+   "4 个单元从 agent 基础到带 benchmark 的最终作业",
+   "覆盖 smolagents、LangGraph、LlamaIndex 三个框架的构建教学",
+   "最终项目提供 agent 自动化评测与学员排行榜",
+   "Bonus 单元含函数调用微调、可观测性与游戏场景"
+  ],
+  "use_cases": [
+   "系统入门 AI Agent 的概念与框架",
+   "学习用 smolagents/LlamaIndex/LangGraph 构建 agent",
+   "通过最终认证项目检验学习成果"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://hf.co/learn/agents-course",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教程/课程",
+   "AI Agent",
+   "教育",
+   "LLM框架"
+  ],
+  "domain": "AI 教育/课程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: The course is divided into 4 units. These will take you from **the basics of agents to a final assignment with a benchma",
+   "L20: |2|Frameworks for AI Agents|Overview of `smolagents`, `LangGraph` and `LlamaIndex`.|",
+   "L26: |4|Final Project - Create, Test and Certify Your Agent|Automated evaluation of agents and leaderboard with student resul"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

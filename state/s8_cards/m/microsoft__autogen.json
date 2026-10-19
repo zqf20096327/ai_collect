@@ -1,0 +1,130 @@
+{
+ "fn": "microsoft/autogen",
+ "sha": "d22ab0386054",
+ "source": "readme",
+ "identity": {
+  "one_liner": "微软多智能体 AI 应用框架：构建可自主运行或与人协作的 agent 应用",
+  "review": "面向创建多智能体 AI 应用的 Python/.NET 框架，采用分层可扩展设计：Core API 提供消息传递、事件驱动 agent 与本地/分布式运行时，AgentChat 提供快速原型的高层 API，Extensions 提供模型客户端与代码执行等能力；配套 AutoGen Studio 无代码 GUI 与 AutoGen Bench 基准套件。注意：项目已被微软归档，不再提供 bug 修复、安全修复与新特性，新用户被引导至 Microsoft Agent Framework。",
+  "highlights": [
+   "分层框架：Core / AgentChat / Extensions 三层 API",
+   "AutoGen Studio 无代码 GUI 构建多 agent 工作流",
+   "支持 MCP Server 接入与 AgentTool 多 agent 编排",
+   "Core API 支持 .NET 与 Python 跨语言"
+  ],
+  "use_cases": [
+   "用无代码 GUI 快速原型多 agent 工作流",
+   "构建需要 web 浏览、代码执行、文件处理的多 agent 团队",
+   "历史项目维护与迁移评估（注意已归档）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "多智能体框架",
+   "agent编排",
+   "LLM应用开发"
+  ],
+  "domain": "LLM 基础设施/agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "multi-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L11: **AutoGen** is a framework for creating multi-agent AI applications that can act autonomously or work alongside humans.",
+   "L108: The autogen _framework_ uses a layered and extensible design. Layers have clearly divided responsibilities and build on ",
+   "L14: > **⚠️ Project archived and no longer maintained**"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     34,
+     41,
+     137
+    ],
+    "quotes": [
+     "pip install -U \"autogen-agentchat\" \"autogen-ext[openai]\"",
+     "pip install -U \"autogenstudio\"",
+     "|Packages|PyPi autogen-core PyPi autogen-agentchat PyPi autogen-ext|NuGet Contracts NuGet Core NuGet Core.Grpc NuGet Run"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     64
+    ],
+    "note": "MCP 服务器（被调用组件）的安装方式，非本产品安装途径",
+    "quotes": [
+     "# First run `npm install -g @playwright/mcp@latest` to install the MCP server."
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "ramework 1.0 g",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    9,
+    14,
+    16,
+    18,
+    106
+   ]
+  }
+ }
+}

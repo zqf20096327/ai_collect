@@ -1,0 +1,219 @@
+{
+ "fn": "usestrix/strix",
+ "sha": "f22f931752ac",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者与安全团队的自主 AI 渗透测试 agent 工具",
+  "review": "以 CLI 形式运行的自主渗透测试 agent：动态运行目标代码、发现漏洞并以实际 PoC 验证，覆盖 OWASP Top 10 类漏洞；支持多 agent 编排（Graph of Agents）分布式测试、SAST+DAST、自动生成补丁与合规报告，并可接入 GitHub Actions CI。运行依赖 Docker 沙箱与外部 LLM API key，推荐模型默认为 OpenRouter 上的 GLM-5.3；另提供 Strix Cloud 托管平台与企业版（SSO、VPC/自托管），本地 Web 查看器以 strix view 启动。",
+  "highlights": [
+   "多 agent 编排：侦察/利用/后渗透分工协作",
+   "以可运行 PoC 验证漏洞，并自动生成修复补丁与合规报告",
+   "支持 OpenAPI/Swagger/Postman 合约驱动的 API 测试与无头模式",
+   "可接入外部 MCP 服务器扩展 agent 工具"
+  ],
+  "use_cases": [
+   "对应用做自动化渗透测试并输出合规报告",
+   "在 CI/CD 中扫描 PR 并阻断不安全代码",
+   "自动化 bug bounty 研究与 PoC 生成",
+   "对接 API 合约文件批量测试声明的端点"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "渗透测试",
+   "网络安全",
+   "Agent",
+   "DevSecOps",
+   "CLI工具"
+  ],
+  "domain": "网络安全/应用安全",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "openrouter",
+   "ollama",
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "cybersecurity"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L30: Strix are autonomous AI penetration testing agents that act just like real hackers - they run your code dynamically, fin",
+   "L55: - An LLM API key from any supported provider (OpenAI, Anthropic, Google, etc.)",
+   "L148: - **Distributed Pentesting** - Specialized AI agents for recon, exploitation, and post-exploitation"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     281
+    ],
+    "quotes": [
+     "- Anthropic Claude Sonnet 4.6 - `anthropic/claude-sonnet-4-6`"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     228,
+     279
+    ],
+    "quotes": [
+     "export STRIX_LLM=\"openrouter/z-ai/glm-5.3\"",
+     "- Z.ai GLM-5.3 on OpenRouter - `openrouter/z-ai/glm-5.3` (the default pick)"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     232
+    ],
+    "quotes": [
+     "export LLM_API_BASE=\"your-api-base-url\"  # if using a local model, e.g. Ollama, LMStudio"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     283
+    ],
+    "quotes": [
+     "- DeepSeek V4 Pro - `deepseek/deepseek-v4-pro`"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "mention",
+    "lines": [
+     286
+    ],
+    "quotes": [
+     "See the LLM Providers documentation for all supported providers including Vertex AI, Bedrock, Azure, and local models."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     79
+    ],
+    "quotes": [
+     "Installed with pipx, uv, or pip? `strix --update` prints the matching upgrade command instead (`pipx upgrade strix-agent"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     110
+    ],
+    "quotes": [
+     "npx skills add usestrix/strix"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     107
+    ],
+    "quotes": [
+     "Strix is agent-ready. Give Claude Code, Cursor, Codex, or any SKILL.md-compatible agent the ability to run pentests, fix"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     107
+    ],
+    "quotes": [
+     "Strix is agent-ready. Give Claude Code, Cursor, Codex, or any SKILL.md-compatible agent the ability to run pentests, fix"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     239,
+     241,
+     244,
+     245
+    ],
+    "quotes": [
+     "#### Sign in with a ChatGPT subscription",
+     "Instead of a metered API key, you can run Strix on your ChatGPT Plus/Pro subscription:",
+     "strix auth login chatgpt             # sign in with your ChatGPT account",
+     "export STRIX_LLM=\"chatgpt/gpt-5.4\"   # chatgpt/<model> runs on the subscription"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     284
+    ],
+    "quotes": [
+     "- Moonshot Kimi K3 - `moonshot/kimi-k3`"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

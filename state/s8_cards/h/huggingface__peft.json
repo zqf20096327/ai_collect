@@ -1,0 +1,147 @@
+{
+ "fn": "huggingface/peft",
+ "sha": "9b9ca242831c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "大模型参数高效微调库：小参数量适配下游任务",
+  "review": "Hugging Face 的参数高效微调（PEFT）库，通过仅微调少量（额外）参数实现大模型向下游任务的适配，降低计算与存储开销，检查点仅数 MB 量级。与 Transformers 集成用于训练推理、Diffusers 管理适配器、Accelerate 支持分布式训练推理，并可与量化（QLoRA）、TRL（RLHF/DPO）组合使用。通过 pip 安装，README 提供 LoRA 训练与推理的代码示例及各方法的概念指南与 API 参考。",
+  "highlights": [
+   "仅微调少量参数即可适配大模型（示例中仅训练 0.19% 参数）",
+   "与 Transformers/Diffusers/Accelerate 集成，支持适配器加载与切换",
+   "支持 LoRA 等多种 PEFT 方法，可与量化、TRL/RLHF 组合",
+   "提供 Stable Diffusion LoRA DreamBooth 训练脚本与示例 Space"
+  ],
+  "use_cases": [
+   "在消费级 GPU 上微调 LLM 而不 OOM",
+   "为 Stable Diffusion 训练 LoRA 适配器",
+   "用 RLHF/DPO 微调 LLM 时降低显存与存储开销",
+   "为多个下游任务保存轻量适配器而非完整模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "微调",
+   "LoRA",
+   "LLM基础设施",
+   "扩散模型",
+   "Python库"
+  ],
+  "domain": "AI/机器学习框架与工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation",
+   "fine-tuning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3:  State-of-the-art Parameter-Efficient Fine-Tuning (PEFT) methods",
+   "L5: Fine-tuning large pretrained models is often prohibitively costly due to their scale. Parameter-Efficient Fine-Tuning (P",
+   "L7: PEFT is integrated with Transformers for easy model training and inference, Diffusers for conveniently managing differen"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     16,
+     19
+    ],
+    "quotes": [
+     "Install PEFT from pip:",
+     "pip install peft"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "rams)|47.14GB",
+    "rel": "mention",
+    "lines": [
+     50
+    ],
+    "note": "基准测试表格中的内存数据，非产品硬件要求",
+    "quotes": [
+     "|bigscience/T0_3B (3B params)|47.14GB GPU / 2.96GB CPU|14.4GB GPU / 2.96GB CPU|9.8GB GPU / 17.8GB CPU|"
+    ]
+   },
+   {
+    "term": "rams)|OOM GPU|56GB",
+    "rel": "mention",
+    "lines": [
+     51
+    ],
+    "quotes": [
+     "|bigscience/mt0-xxl (12B params)|OOM GPU|56GB GPU / 3GB CPU|22GB GPU / 52GB CPU|"
+    ]
+   },
+   {
+    "term": "rams)|OOM GPU|32GB",
+    "rel": "mention",
+    "lines": [
+     52
+    ],
+    "quotes": [
+     "|bigscience/bloomz-7b1 (7B params)|OOM GPU|32GB GPU / 3.8GB CPU|18.1GB GPU / 35GB CPU|"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     145
+    ],
+    "note": "引用条目中的仓库 URL，属生态归属而非替代/竞品关系",
+    "quotes": [
+     "  howpublished = {\\url{https://github.com/huggingface/peft}},"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

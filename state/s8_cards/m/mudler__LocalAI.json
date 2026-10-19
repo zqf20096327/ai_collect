@@ -1,0 +1,232 @@
+{
+ "fn": "mudler/LocalAI",
+ "sha": "3c068e0f7ed0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地运行各类 AI 模型的开源引擎，无需 GPU",
+  "review": "以小型核心加按需拉取后端镜像的架构运行 LLM、视觉、语音、图像、视频模型，每个后端封装 llama.cpp、vLLM、whisper.cpp 等引擎。提供 OpenAI/Anthropic/ElevenLabs 兼容 API、API key 认证与用户配额、内置带工具调用与 RAG 的 Agent、分布式模式与 WebUI。CPU 可运行，也支持 NVIDIA/AMD/Intel/Apple Silicon 加速；macOS 提供 DMG，其余通过容器镜像分发。",
+  "highlights": [
+   "OpenAI、Anthropic、ElevenLabs API 兼容的多模态统一接口",
+   "60+ 后端按需以 OCI 镜像安装，含自研 C++/GGML 引擎",
+   "内置自主 Agent（工具调用、RAG、MCP、skills）",
+   "分布式集群模式（PostgreSQL + NATS）与 P2P 推理"
+  ],
+  "use_cases": [
+   "在无 GPU 的本地硬件上运行 LLM 和多模态模型",
+   "为应用提供 OpenAI 兼容的本地推理 API 端点",
+   "搭建多用户、带配额与认证的内部模型服务平台",
+   "运行本地语音识别、TTS、图像/视频生成服务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": "cpu-ok",
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "本地推理",
+   "OpenAI兼容API",
+   "多模态",
+   "分布式推理",
+   "AI Agent"
+  ],
+  "domain": "AI 基础设施/模型推理服务",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm",
+   "llama.cpp",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway",
+   "multimodal",
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文等 9 种语言翻译"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L26: **LocalAI** is the open-source AI engine. Run any model - LLMs, vision, voice, image, video - on any hardware. No GPU re",
+   "L32: - **Drop-in API compatibility**: OpenAI, Anthropic, and ElevenLabs APIs across every backend",
+   "L36: - **Built-in AI agents**: autonomous agents with tool use, RAG, MCP, and skills"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     28,
+     39,
+     175,
+     197
+    ],
+    "quotes": [
+     "**A small core, not a bundle.** Each backend wraps a best-in-class engine (llama.cpp, vLLM, whisper.cpp, stable-diffusio",
+     "A small LocalAI core with backends (llama.cpp, vLLM, MLX, whisper.cpp, stable-diffusion, kokoro, parakeet.cpp...) plugge",
+     "- Text generation (`llama.cpp`, `transformers`, `vllm` ... and more)",
+     "LocalAI supports **60+ backends** including llama.cpp, vLLM, SGLang, transformers, whisper.cpp, diffusers, MLX, MLX-VLM,"
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "support",
+    "lines": [
+     28,
+     39,
+     153,
+     175,
+     197
+    ],
+    "quotes": [
+     "**A small core, not a bundle.** Each backend wraps a best-in-class engine (llama.cpp, vLLM, whisper.cpp, stable-diffusio",
+     "A small LocalAI core with backends (llama.cpp, vLLM, MLX, whisper.cpp, stable-diffusion, kokoro, parakeet.cpp...) plugge",
+     "- **June 2026**: New native biometric backends from the LocalAI team: voice-detect.cpp for speaker recognition and voice",
+     "- Text generation (`llama.cpp`, `transformers`, `vllm` ... and more)",
+     "LocalAI supports **60+ backends** including llama.cpp, vLLM, SGLang, transformers, whisper.cpp, diffusers, MLX, MLX-VLM,"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     159
+    ],
+    "note": "提供 drop-in Ollama API 兼容",
+    "quotes": [
+     "- **May 2026**: **LocalAI 4.2.0** - LocalAI sees and hears: voice recognition, face recognition + antispoofing liveness,"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     75,
+     79
+    ],
+    "quotes": [
+     "<a href=\"https://github.com/mudler/LocalAI/releases/latest/download/LocalAI.dmg\">",
+     "> **Note:** The DMG is not signed by Apple. After installing, run: `sudo xattr -d com.apple.quarantine /Applications/Loc"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     81,
+     88,
+     95,
+     103,
+     109,
+     115
+    ],
+    "quotes": [
+     "### Containers (Docker, podman, ...)",
+     "docker run -ti --name local-ai -p 8080:8080 localai/localai:latest",
+     "docker run -ti --name local-ai -p 8080:8080 --gpus all localai/localai:latest-gpu-nvidia-cuda-13",
+     "docker run -ti --name local-ai -p 8080:8080 --device=/dev/kfd --device=/dev/dri --group-add=video localai/localai:latest",
+     "docker run -ti --name local-ai -p 8080:8080 --device=/dev/dri/card1 --device=/dev/dri/renderD128 localai/localai:latest-",
+     "docker run -ti --name local-ai -p 8080:8080 localai/localai:latest-gpu-vulkan"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     234
+    ],
+    "note": "窗外行，源码安装途径",
+    "quotes": [
+     "- Build from source"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "No GPU required",
+    "rel": "support",
+    "lines": [
+     26
+    ],
+    "quotes": [
+     "**LocalAI** is the open-source AI engine. Run any model - LLMs, vision, voice, image, video - on any hardware. No GPU re"
+    ]
+   },
+   {
+    "term": "CPU-only",
+    "rel": "support",
+    "lines": [
+     34
+    ],
+    "quotes": [
+     "- **Any hardware**: NVIDIA, AMD, Intel, Apple Silicon, Vulkan, or CPU-only"
+    ]
+   },
+   {
+    "term": "CPU only",
+    "rel": "support",
+    "lines": [
+     85
+    ],
+    "quotes": [
+     "#### CPU only:"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     123,
+     183
+    ],
+    "note": "模型下载来源，非替代/竞品对象",
+    "quotes": [
+     "# From Huggingface",
+     "- Download models from Huggingface"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

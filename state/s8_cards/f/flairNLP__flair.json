@@ -1,0 +1,101 @@
+{
+ "fn": "flairNLP/flair",
+ "sha": "72c35e3399ba",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 NLP 任务库：NER、情感分析、词性标注与文本嵌入",
+  "review": "由柏林洪堡大学等开发的 PyTorch NLP 框架，当前版本 0.15.1。提供预训练模型覆盖命名实体识别、情感分析、词性标注、 biomedical 文本处理、词义消歧与分类，支持多语言。同时作为文本嵌入库提供词与文档嵌入的组合接口，可直接基于 PyTorch 训练自定义模型。模型托管于 Hugging Face model hub，README 附带在线 demo 与评分对比表，需 Python 3.9+。",
+  "highlights": [
+   "提供 NER、情感分析、词性标注等任务的预训练模型",
+   "支持组合多种词与文档嵌入（含 Flair embeddings 与 transformers）",
+   "构建于 PyTorch 之上，可训练自定义模型",
+   "模型托管在 Hugging Face model hub 并提供在线试用"
+  ],
+  "use_cases": [
+   "对文本做命名实体识别与实体抽取",
+   "判断句子或评论的情感倾向",
+   "为词和文档生成嵌入向量",
+   "处理生物医学文本的实体识别"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://aclanthology.org/C18-1139/",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "NLP",
+   "命名实体识别",
+   "文本嵌入",
+   "PyTorch"
+  ],
+  "domain": "自然语言处理/机器学习框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: A very simple framework for **state-of-the-art NLP**. Developed by Humboldt University of Berlin and friends.",
+   "L21: * **A PyTorch NLP framework.** Our framework builds directly on PyTorch, making it easy to",
+   "L51: Flair requires Python 3.9+."
+  ],
+  "xcheck": {
+   "license_from_readme": "MIT"
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     4,
+     48
+    ],
+    "quotes": [
+     "PyPI version",
+     "pip install flair"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

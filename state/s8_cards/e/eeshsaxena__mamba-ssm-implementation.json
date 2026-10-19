@@ -1,0 +1,133 @@
+{
+ "fn": "eeshsaxena/mamba-ssm-implementation",
+ "sha": "b8e7b2db967d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向学习研究的 Mamba 选择性状态空间模型 PyTorch 实现",
+  "review": "以教育为目的的 Mamba（选择性状态空间模型）PyTorch 复现：实现核心选择性 SSM 模块、门控残差 Mamba 块、并行/串行两种扫描策略，并附带完整语言模型实现、测试、训练示例与性能基准。README 阐述输入依赖参数（B/C/Δ）的选择性机制与 O(N) 复杂度对比，要求 Python 3.8+ 与 PyTorch 2.0+，通过 git clone 源码加 requirements 安装，提供引用条目指向原论文。",
+  "highlights": [
+   "核心选择性 SSM 与门控残差 Mamba 块实现",
+   "并行扫描（训练）与串行扫描（推理）两种策略",
+   "含完整语言模型实现、测试、训练示例与基准",
+   "要求 Python 3.8+ / PyTorch 2.0+，MIT 许可"
+  ],
+  "use_cases": [
+   "学习 Mamba 架构的选择性扫描与数学原理",
+   "在自有实验中复现或修改 Mamba 语言模型",
+   "对比线性复杂度序列建模与 Transformer 的表现"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://arxiv.org/abs/2312.00752",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "序列建模",
+   "状态空间模型",
+   "深度学习",
+   "教育实现"
+  ],
+  "domain": "深度学习/序列建模",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L10: This repository provides a clean, educational PyTorch implementation of **Mamba**, the selective state space model archi",
+   "L49: - ✅ Core Selective SSM implementation"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     61,
+     62,
+     63
+    ],
+    "note": "git clone 后 pip install -r requirements.txt",
+    "quotes": [
+     "git clone https://github.com/yourusername/mamba-ssm-implementation.git",
+     "cd mamba-ssm-implementation",
+     "pip install -r requirements.txt"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "none",
+    "lines": [
+     63
+    ],
+    "note": "误命中：pip install -r 为依赖安装，非 PyPI 发布",
+    "quotes": [
+     "pip install -r requirements.txt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Perplexity",
+    "rel": "none",
+    "lines": [
+     122
+    ],
+    "note": "误命中：WikiText-103 语言建模困惑度指标，非 Perplexity AI 产品",
+    "quotes": [
+     "- **Perplexity:** Comparable to Transformers"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

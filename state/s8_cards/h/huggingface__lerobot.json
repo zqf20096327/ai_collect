@@ -1,0 +1,115 @@
+{
+ "fn": "huggingface/lerobot",
+ "sha": "57c3c7ba757c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为机器人提供模型、数据集与工具的开源库",
+  "review": "Hugging Face 的机器人学 PyTorch 库：提供统一的 Robot 硬件控制接口（覆盖 SO100、LeKiwi、Reachy2 等原生支持型号）、托管于 HF Hub 的 LeRobotDataset 数据格式（Parquet+MP4）及配套工具、纯 PyTorch 实现的策略模型（涵盖模仿学习、强化学习、VLA、世界模型、奖励模型五类），并提供 lerobot-train 与 lerobot-eval 训练评估脚本，支持 LIBERO、MetaWorld 基准。通过 lerobot_ 前缀包名机制自动发现社区硬件插件。面向机器人研究者与开发者。",
+  "highlights": [
+   "统一 Robot 类接口解耦控制逻辑与硬件，原生支持 SO100、LeKiwi、Unitree G1 等设备",
+   "LeRobotDataset 标准数据格式托管于 HF Hub，支持流式读取与可视化",
+   "提供五类策略模型：模仿学习、强化学习、VLA、世界模型、奖励模型",
+   "社区硬件插件按包名前缀自动发现与接入"
+  ],
+  "use_cases": [
+   "为低成本的机械臂采集、训练和部署操作策略",
+   "在 LIBERO、MetaWorld 基准上评估策略",
+   "在 Hub 上存储与共享大规模机器人数据集",
+   "接入第三方机械臂等硬件并录制遥操作数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://github.com/huggingface/lerobot",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "机器人学习",
+   "具身智能",
+   "数据集格式",
+   "策略训练"
+  ],
+  "domain": "机器人/机器学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文教程链接（同济子豪兄）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: **LeRobot** aims to provide models, datasets, and tools for real-world robotics in PyTorch. The goal is to lower the bar",
+   "L47: **Supported Hardware:** SO100, LeKiwi, Koch, HopeJR, OMX, EarthRover, Reachy2, Gamepads, Keyboards, Phones, OpenARM, Uni",
+   "L72: LeRobot implements state-of-the-art policies in pure PyTorch, covering Imitation Learning, Reinforcement Learning, Visio"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     24,
+     27,
+     118
+    ],
+    "quotes": [
+     "LeRobot can be installed directly from PyPI.",
+     "pip install lerobot",
+     "pip install lerobot_robot_<name> lerobot_teleoperator_<name>"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     146
+    ],
+    "note": "引用信息中的组织归属",
+    "quotes": [
+     "    howpublished = \"\\url{https://github.com/huggingface/lerobot}\","
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

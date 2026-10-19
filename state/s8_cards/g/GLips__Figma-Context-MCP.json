@@ -1,0 +1,103 @@
+{
+ "fn": "GLips/Figma-Context-MCP",
+ "sha": "a4dc59b864f9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI 编码工具提供 Figma 布局信息的 MCP 服务器",
+  "review": "一个 Model Context Protocol 服务器，将 Figma 文件的布局与样式元数据提供给 Cursor 等 AI 编码工具。工作流程：在 IDE 聊天中粘贴 Figma 文件/框架/组链接，客户端从 Figma API 获取元数据后，该服务器先对响应做简化与转换，仅保留最相关的布局与样式信息再传给模型，以减少上下文量。使用前需创建 Figma API 访问令牌，通过 MCP 配置文件接入，提供 macOS/Linux 与 Windows 配置示例，也可通过环境变量设置 FIGMA_API_KEY 与 PORT。",
+  "highlights": [
+   "作为 MCP 服务器向 AI 编码客户端提供 Figma 布局与样式信息",
+   "对 Figma API 响应做简化与翻译，仅传最相关的布局与样式数据",
+   "支持通过 MCP 配置文件或 FIGMA_API_KEY/PORT 环境变量配置",
+   "提供 macOS/Linux 与 Windows 两种配置示例"
+  ],
+  "use_cases": [
+   "在 Cursor 中根据 Figma 设计稿直接生成界面代码",
+   "让 AI 编码代理读取设计稿的布局与样式元数据",
+   "在任意框架中实现 Figma 设计的还原"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://framelink.ai/discord",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "MCP服务器",
+   "Figma",
+   "设计转代码",
+   "AI编码工具"
+  ],
+  "domain": "开发工具/设计转代码",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L23: Give Cursor and other AI-powered coding tools access to your Figma files with this Model Context Protocol server.",
+   "L42: This MCP server is specifically designed for use with Cursor. Before responding with context from the Figma API, it simp",
+   "L52: > NOTE: You will need to create a Figma access token to use this server. Instructions on how to create a Figma API acces"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     23,
+     25,
+     37,
+     42
+    ],
+    "note": "主要适配的客户端工具，非替代/竞品对象",
+    "quotes": [
+     "Give Cursor and other AI-powered coding tools access to your Figma files with this Model Context Protocol server.",
+     "When Cursor has access to Figma design data, it's **way** better at one-shotting designs accurately than alternative app",
+     "1. Open your IDE's chat (e.g. agent mode in Cursor).",
+     "This MCP server is specifically designed for use with Cursor. Before responding with context from the Figma API, it simp"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,109 @@
+{
+ "fn": "lightgbm-org/LightGBM",
+ "sha": "16b9e3aa1f36",
+ "source": "readme",
+ "identity": {
+  "one_liner": "机器学习用户：基于决策树的分布式梯度提升框架",
+  "review": "LightGBM 是基于决策树算法的梯度提升框架（GBT/GBDT/GBRT/GBM/MART），用于排序、分类等机器学习任务。支持并行、分布式与 GPU 训练，可处理大规模数据。官方提供 Python、R 包，以及 CUDA 版本和 SWIG 封装，并通过 PyPI、conda、CRAN、NuGet、Winget 等渠道分发。文档托管于 readthedocs，另收录数十个非官方生态项目（PMML 转换、Spark/Kubernetes 集成、各语言绑定、可解释性与可视化工具等）。",
+  "highlights": [
+   "基于决策树的梯度提升框架，用于排序、分类等任务",
+   "支持并行、分布式与 GPU 学习，可处理大规模数据",
+   "官方提供 Python/R 包及 CUDA、SWIG 构建，多渠道分发",
+   "收录大量第三方生态：Spark/K8s 集成、多语言绑定、模型转换与可解释工具"
+  ],
+  "use_cases": [
+   "大规模数据的分类、排序等表格机器学习任务",
+   "多机分布式训练加速模型迭代",
+   "参加 Kaggle 等机器学习竞赛",
+   "在 Spark/Ray/Kubernetes 等平台上运行梯度提升训练"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "机器学习",
+   "梯度提升",
+   "表格数据",
+   "分布式训练"
+  ],
+  "domain": "机器学习框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L27: LightGBM is a gradient boosting framework that uses tree based learning algorithms. It is designed to be distributed and",
+   "L32: - Support of parallel, distributed, and GPU learning."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     21
+    ],
+    "quotes": [
+     "PyPI Version"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "mention",
+    "lines": [
+     61
+    ],
+    "note": "changelog 相关行，非明确安装途径",
+    "quotes": [
+     "Please refer to changelogs at GitHub releases page."
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

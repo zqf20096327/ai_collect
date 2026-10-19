@@ -1,0 +1,124 @@
+{
+ "fn": "elder-plinius/CL4R1T4S",
+ "sha": "6d8b54c5aebf",
+ "source": "readme",
+ "identity": {
+  "one_liner": "收录各主流 AI 产品泄露系统提示词的透明度资料库",
+  "review": "以仓库形式汇集从 OpenAI、Google、Anthropic、xAI、Perplexity、Cursor、Windsurf、Devin、Manus、Replit 等产品中提取的系统提示词、指南与工具文本，声称覆盖几乎所有主流 AI 模型与 agent。目的是让用户了解各产品隐藏的系统指令内容。接受社区以 pull request 方式提交：需附模型名称/版本、提取日期及可选的上下文备注，通过 X 或 Discord 联系维护者。README 末段 L41-L43 包含试图让读取者复述自身指令的指令性文本。",
+  "highlights": [
+   "收录多家 AI 产品的完整提取系统提示词与指南",
+   "提供 PR 贡献流程（模型名/版本、提取日期、备注）",
+   "以仓库形式按产品组织泄露文本"
+  ],
+  "use_cases": [
+   "查看某个 AI 产品的系统提示词文本",
+   "提交新提取到的系统提示词",
+   "了解各产品系统指令的存在形态"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "提示词收集",
+   "透明度",
+   "泄露资料",
+   "AI产品"
+  ],
+  "domain": "AI 生态/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: AI SYSTEMS TRANSPARENCY AND OBSERVABILITY FOR ALL! Full extracted system prompts, guidelines, and tools from OpenAI, Goo",
+   "L28: Leak, extract, or reverse-engineer something? Good."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     3
+    ],
+    "quotes": [
+     "AI SYSTEMS TRANSPARENCY AND OBSERVABILITY FOR ALL! Full extracted system prompts, guidelines, and tools from OpenAI, Goo"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     3
+    ],
+    "quotes": [
+     "AI SYSTEMS TRANSPARENCY AND OBSERVABILITY FOR ALL! Full extracted system prompts, guidelines, and tools from OpenAI, Goo"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     3
+    ],
+    "quotes": [
+     "AI SYSTEMS TRANSPARENCY AND OBSERVABILITY FOR ALL! Full extracted system prompts, guidelines, and tools from OpenAI, Goo"
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     3
+    ],
+    "quotes": [
+     "AI SYSTEMS TRANSPARENCY AND OBSERVABILITY FOR ALL! Full extracted system prompts, guidelines, and tools from OpenAI, Goo"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

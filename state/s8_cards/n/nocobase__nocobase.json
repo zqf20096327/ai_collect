@@ -1,0 +1,159 @@
+{
+ "fn": "nocobase/nocobase",
+ "sha": "723b1e43c8fe",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI + 无代码平台：快速搭建企业业务系统",
+  "review": "开源无代码平台，以数据模型驱动方式提供内置的数据建模、权限、工作流与审计日志模块。AI 侧包含两类机制：一是与主流编码 Agent 配合的 CLI 与 skills，使 AI 可承担部署、开发、迁移、发布；二是运行在系统内的 AI 员工，接入业务工作流执行表单填写、文档识别、任务路由等任务。所有 AI 操作遵循与人类用户相同的细粒度权限，并记录审计日志。通过 MCP、HTTP API、CLI 开放接口连接外部 Agent 平台。数据保存在用户自有数据库中，插件采用微内核架构。",
+  "highlights": [
+   "AI 编码代理（Claude Code、Cursor、Codex、OpenCode、TRAE）通过 CLI 与 skills 端到端处理部署、开发、迁移、发布",
+   "系统内 AI 员工自动获取业务上下文并执行前端分析与后端任务",
+   "MCP、HTTP API、CLI 标准接口连接 OpenClaw、Hermes、Dify、Coze、n8n 等平台",
+   "数据模型、权限、工作流、审计日志开箱即用，微内核插件架构"
+  ],
+  "use_cases": [
+   "为团队快速搭建内部管理工具、CRM、ERP 等业务系统",
+   "让 AI 员工加入工作流，处理文档识别与任务路由",
+   "在权限受控的前提下让外部 Agent 安全查询数据、触发业务动作",
+   "无代码界面下可视化配置数据模型、页面与权限"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": "https://demo.nocobase.com/new",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "无代码",
+   "内部工具",
+   "AI Agent",
+   "工作流",
+   "CRM/ERP"
+  ],
+  "domain": "无代码开发平台/企业应用",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "workflow-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文版本",
+   "创始团队与官网中文背景"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: NocoBase is an open-source AI + no-code platform for building business systems fast. Instead of generating everything fr",
+   "L49: Coding agents get a full CLI and skills, while people get a WYSIWYG no-code interface, so both can collaborate efficient",
+   "L82: NocoBase includes AI employees, so AI can work directly inside the system."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     55
+    ],
+    "note": "Claude Code 作为可配合的编码 Agent 被提及，非专门适配",
+    "quotes": [
+     "- Works with mainstream agents like Claude Code, Cursor, Codex, OpenCode, and TRAE"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     32,
+     33
+    ],
+    "quotes": [
+     "# Install NocoBase CLI",
+     "npm install -g @nocobase/cli"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     55
+    ],
+    "quotes": [
+     "- Works with mainstream agents like Claude Code, Cursor, Codex, OpenCode, and TRAE"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     55
+    ],
+    "quotes": [
+     "- Works with mainstream agents like Claude Code, Cursor, Codex, OpenCode, and TRAE"
+    ]
+   },
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     98
+    ],
+    "quotes": [
+     "- Platforms like OpenClaw, Hermes, Dify, Coze, and n8n connect through standard protocols"
+    ]
+   },
+   {
+    "term": "Coze",
+    "rel": "mention",
+    "lines": [
+     98
+    ],
+    "quotes": [
+     "- Platforms like OpenClaw, Hermes, Dify, Coze, and n8n connect through standard protocols"
+    ]
+   }
+  ],
+  "note": "均为可连接或配合使用的平台，非替代/竞品关系",
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

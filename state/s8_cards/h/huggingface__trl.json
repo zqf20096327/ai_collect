@@ -1,0 +1,154 @@
+{
+ "fn": "huggingface/trl",
+ "sha": "c73ac7de96aa",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为开发者提供基础模型后训练（SFT/DPO/GRPO 等）的库",
+  "review": "构建于 Transformers 之上的基础模型后训练库，通过 SFTTrainer、GRPOTrainer、DPOTrainer、KTOTrainer、RewardTrainer 等 trainer 提供 SFT、GRPO、DPO、KTO 等训练方法；基于 Accelerate 支持从单卡到多节点集群的 DDP/DeepSpeed/FSDP 分布式训练，配合 PEFT 通过量化与 LoRA/QLoRA 在有限硬件上训练大模型，并集成 Unsloth 加速内核。提供无需写代码的 CLI，pip 安装，Apache-2.0 许可。",
+  "highlights": [
+   "多种训练方法 trainer：SFT、GRPO、DPO、KTO、Reward",
+   "基于 Accelerate 的 DDP/DeepSpeed/FSDP 分布式训练支持",
+   "与 PEFT 集成，支持量化与 LoRA/QLoRA",
+   "CLI 无需写代码即可微调模型"
+  ],
+  "use_cases": [
+   "在自己的数据集上对语言模型做监督微调",
+   "用 DPO/GRPO 对模型做偏好对齐后训练",
+   "在有限硬件上用 LoRA/QLoRA 训练大模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "模型训练",
+   "RLHF/对齐",
+   "微调",
+   "LLM基础设施"
+  ],
+  "domain": "AI 基础设施/模型训练",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "fine-tuning",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7:  A comprehensive library to post-train foundation models",
+   "L24: TRL is a cutting-edge library designed for post-training foundation models using advanced techniques like Supervised Fin",
+   "L31:  - Leverages 🤗 Accelerate to scale from single GPU to multi-node clusters using methods like DDP and DeepSpeed."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     80
+    ],
+    "note": "提及 GRPO 曾用于训练 DeepSeek R1，非接入关系",
+    "quotes": [
+     "`GRPOTrainer` implements the Group Relative Policy Optimization (GRPO) algorithm that is more memory-efficient than PPO "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     44,
+     52,
+     162
+    ],
+    "quotes": [
+     "pip install trl",
+     "pip install git+https://github.com/huggingface/trl.git",
+     "pip install -e .[dev]"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     60
+    ],
+    "quotes": [
+     "git clone https://github.com/huggingface/trl.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     52,
+     60
+    ],
+    "note": "仓库托管方与生态基础，非替代/竞品",
+    "quotes": [
+     "pip install git+https://github.com/huggingface/trl.git",
+     "git clone https://github.com/huggingface/trl.git"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     132,
+     140,
+     148
+    ],
+    "note": "CLI 示例中使用的模型，非竞品",
+    "quotes": [
+     "trl sft --model_name_or_path Qwen/Qwen2.5-0.5B \\",
+     "trl dpo --model_name_or_path Qwen/Qwen2.5-0.5B-Instruct \\",
+     "trl kto --model_name_or_path Qwen/Qwen2.5-0.5B-Instruct \\"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,151 @@
+{
+ "fn": "cactus-compute/needle",
+ "sha": "f25bdbe8a640",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向小型设备的端侧自动化基础模型（8-29 MB）",
+  "review": "Cactus Compute 团队构建的基础模型，单一二进制文件 8-29 MB，为手机、可穿戴、智能家居、机器人、汽车和微控制器提供端侧能力：根据应用暴露的函数生成工具调用并填充参数、按声明结构抽取类型化字段、句子级文本嵌入，配套 16.9 MB 的 Whistle 语音转文字模型共享同一引擎。支持 2-bit 量化的 .cact 容器格式，可通过 LoRA 或平台微调裁剪到 2 层子网络部署到更小设备。权衡说明：模型以牺牲通用对话能力换取工具调用表现。默认开启遥测，可用环境变量关闭。",
+  "highlights": [
+   "工具调用：从用户话语生成函数调用并填充参数，无覆盖时返回空列表",
+   "结构化抽取：由 schema 编译的字节级语法约束解码，保证输出可解析",
+   "Whistle 语音模型与 Needle 共享 .cact 容器与 C++ 引擎，音频入、工具调用出",
+   "本地（JAX CPU/CUDA/Metal）与平台两种微调路径，子网络最小可至 2 层"
+  ],
+  "use_cases": [
+   "为手机/可穿戴/微控制器上的应用添加离线工具调用",
+   "在设备本地做结构化抽取与文本嵌入检索",
+   "麦克风常开的设备需要离线语音输入并触发动作"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "cactuscompute.com/needle",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "端侧AI",
+   "工具调用",
+   "语音识别",
+   "嵌入式/TinyML"
+  ],
+  "domain": "端侧 AI/自动化基础模型",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "asr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: A foundation model for mobiles, wearables, robots, smart home, automotive and microcontrollers. The whole model is a sin",
+   "L164: Needle is built by the Cactus Compute team. If you use it in your work, please cite:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     103
+    ],
+    "note": "基准对比对象",
+    "quotes": [
+     "Needle was designed to be customised. Its capacity is a ladder, and a subnetwork as small as 2 layers, fine-tuned on one"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     148,
+     153
+    ],
+    "quotes": [
+     "Every deployment target ships a prebuilt engine that loads the `needle3.cact` weights at start. `needle build --platform",
+     "needle build --platform macos-arm64"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     25,
+     83
+    ],
+    "quotes": [
+     "pip install cactus-needle",
+     "pip install \"cactus-needle[train]\""
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     46
+    ],
+    "quotes": [
+     "npm install cactus-needle"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     144
+    ],
+    "note": "可交付 key 由其运行微调循环，非替代/竞品",
+    "quotes": [
+     "Or hand the key to Claude Code or Codex with cactuscompute.com/llms.txt and let the agent run the loop. `needle platform"
+    ]
+   }
+  ]
+ }
+}

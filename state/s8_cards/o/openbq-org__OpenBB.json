@@ -1,0 +1,126 @@
+{
+ "fn": "openbq-org/OpenBB",
+ "sha": "c3f768a4a54a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为量化分析师与 AI agent 提供统一金融数据接入的开源平台",
+  "review": "OpenBB 的开放数据平台（ODP）是帮助数据工程师将专有、授权与公开数据源整合进下游应用的 Python 工具集，面向量化人员、分析师与 AI agent。核心机制为\"一次连接、多处消费\"：同一数据层同时暴露给 Python 环境、OpenBB Workspace/Excel、MCP 服务器与 REST API。安装通过 PyPI 的 pip 完成，`openbb-api` 命令可启动 FastAPI/Uvicorn 本地服务（127.0.0.1:6900）。数据准确性免责声明明确提示不保证准确。",
+  "highlights": [
+   "提供统一 Python 接口访问股票、加密、衍生品、固收等金融数据",
+   "支持 REST API、MCP server、Python 多种消费方式",
+   "openbb-api 一键启动 FastAPI 本地数据后端",
+   "可与 OpenBB Workspace 企业 UI 连接使用"
+  ],
+  "use_cases": [
+   "为量化研究在 Python 中获取历史行情数据",
+   "为 AI copilot/agent 通过 MCP 提供金融数据层",
+   "将自有数据源接入研究看板与 Excel"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": "https://colab.research.google.com/github/OpenBB-finance/OpenBB/blob/develop/examples/googleColab.ipynb",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "金融数据",
+   "量化金融",
+   "数据集成",
+   "MCP"
+  ],
+  "domain": "金融科技/数据平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L15: Open Data Platform by OpenBB (ODP) is the open-source toolset that helps data engineers integrate proprietary, licensed,",
+   "L17: ODP operates as the \"connect once, consume everywhere\" infrastructure layer that consolidates and exposes data to multip",
+   "L72: This will launch a FastAPI server, via Uvicorn, at `127.0.0.1:6900`."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     25,
+     63,
+     104,
+     114
+    ],
+    "quotes": [
+     "Get started with: `pip install openbb`",
+     "pip install openbb",
+     "The ODP Python Package can be installed from PyPI package by running `pip install openbb`",
+     "It can be installed by running `pip install openbb-cli`"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     106,
+     116
+    ],
+    "quotes": [
+     "or by cloning the repository directly with `git clone https://github.com/OpenBB-finance/OpenBB.git`.",
+     "or by cloning the repository directly with `git clone https://github.com/OpenBB-finance/OpenBB.git`."
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     10,
+     11
+    ],
+    "quotes": [
+     "<a target=\"_blank\" href=\"https://colab.research.google.com/github/OpenBB-finance/OpenBB/blob/develop/examples/googleCola",
+     " Open In Colab"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

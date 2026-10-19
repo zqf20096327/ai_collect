@@ -1,0 +1,167 @@
+{
+ "fn": "jeet-dhandha/agent-webbridge",
+ "sha": "9e7390ece54e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让 AI agent 驱动本机已登录 Chrome 的 MCP 服务器",
+  "review": "面向 Claude Code、Cursor 等 MCP 客户端的开源浏览器自动化工具：通过本地 Node 守护进程与 MV3 Chrome 扩展，让 agent 在用户真实登录态的 Chrome 上执行导航、点击、填表、截图、网络抓取等 15 个工具操作。支持多 Chrome 配置文件、每标签页独立 DevTools 并行（profiles × tabs 并发），全部流量仅监听 127.0.0.1，无云端与遥测。提供 npm 全局安装、CLI、Node/Python SDK 与 MCP 注册表条目；平台支持 macOS 与 Windows，Linux 路径已接入但未测试。",
+  "highlights": [
+   "驱动已登录的真实 Chrome，免去无头浏览器重登录/2FA 问题",
+   "per-tab CDP 附件实现多标签并行，基准 5 标签 3.5s vs 串行 9.3s",
+   "15 个原生工具 + 状态查询，支持多 profile 并发",
+   "本地运行（127.0.0.1），MIT 开源，含 Node/Python SDK"
+  ],
+  "use_cases": [
+   "让 Claude Code/Cursor 等 agent 操作我已登录的网页账号",
+   "多账号并行抓取或填写网页表单",
+   "以已认证会话执行社区 recipe（如 Google SERP 提取）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "jeet-dhandha.github.io/agent-webbridge",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "MCP服务器",
+   "浏览器自动化",
+   "AI Agent 工具",
+   "Chrome 扩展",
+   "本地优先"
+  ],
+  "domain": "AI Agent 基础设施/浏览器自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "browser-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: > **WebBridge** (`agent-webbridge`): Drive **your real, logged-in Chrome** with Claude Code, Cursor and any MCP client —",
+   "L48: `agent-webbridge` is a tiny Node daemon (one runtime dependency: `ws`) plus a clean-room MV3 Chrome extension. An agent ",
+   "L137:   AI agent  ──HTTP POST /command──▶  router (127.0.0.1:10086)   routes by \"profile\""
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     10,
+     20,
+     30,
+     32,
+     163
+    ],
+    "note": "支持接入 Claude Desktop/Claude Code 作为 MCP 客户端，并发布为 Claude Code skill",
+    "quotes": [
+     "> **WebBridge** (`agent-webbridge`): Drive **your real, logged-in Chrome** with Claude Code, Cursor and any MCP client —",
+     "Then add the MCP server to Claude Desktop, Claude Code, Cursor or Windsurf:",
+     "Claude Code: `claude mcp add chrome -- npx -y agent-webbridge mcp`",
+     "Or install it as an agent skill (Claude Code, Cursor, Codex and others): `npx skills add jeet-dhandha/agent-webbridge`",
+     "Ship it as a Claude Code skill / plugin — the bundled `agent-webbridge` skill teaches an agent the full flow (install vi"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     17,
+     71
+    ],
+    "quotes": [
+     "npm i -g agent-webbridge && awb setup \"Work\"     # once: installs the daemon + the Chrome extension",
+     "npm i -g agent-webbridge        # 1. the daemon + the `awb` CLI"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     10,
+     30
+    ],
+    "note": "被支持的 MCP 客户端，非竞品",
+    "quotes": [
+     "> **WebBridge** (`agent-webbridge`): Drive **your real, logged-in Chrome** with Claude Code, Cursor and any MCP client —",
+     "Claude Code: `claude mcp add chrome -- npx -y agent-webbridge mcp`"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     10,
+     32
+    ],
+    "note": "被支持的 MCP 客户端",
+    "quotes": [
+     "> **WebBridge** (`agent-webbridge`): Drive **your real, logged-in Chrome** with Claude Code, Cursor and any MCP client —",
+     "Or install it as an agent skill (Claude Code, Cursor, Codex and others): `npx skills add jeet-dhandha/agent-webbridge`"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     20
+    ],
+    "note": "被支持的 MCP 客户端",
+    "quotes": [
+     "Then add the MCP server to Claude Desktop, Claude Code, Cursor or Windsurf:"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

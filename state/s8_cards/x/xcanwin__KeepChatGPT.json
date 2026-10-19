@@ -1,0 +1,121 @@
+{
+ "fn": "xcanwin/KeepChatGPT",
+ "sha": "e5d0a3fd09d4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 ChatGPT 用户提供保持活跃、数据脱敏等增强功能的浏览器插件",
+  "review": "以 UserScript（Tampermonkey 脚本）形式分发的 ChatGPT 网页增强插件，通过 Tampermonkey 安装，支持电脑系统与移动系统（鸿蒙、iOS、Android）。功能包括定时保活请求以减少网络报错、敏感信息脱敏（按用户自定义正则规则）、拦截跟踪请求、克隆对话、取消审计提示、净化页面、展示大屏、言无不尽、侧边栏增强等。提供 npm 依赖安装与开发调试流程；README 提示谷歌/微软应用商店存在非作者上传的付费版本。",
+  "highlights": [
+   "定时保活请求，缓解 NetworkError 等网络报错与页面刷新",
+   "数据安全功能：按正则规则对输入内容自动脱敏并风险提示",
+   "拦截跟踪请求，减少页面追踪类网络请求",
+   "克隆对话、言无不尽、净化页面、展示大屏等界面与交互增强"
+  ],
+  "use_cases": [
+   "ChatGPT 网页频繁报网络错误需刷新时保活",
+   "向 ChatGPT 粘贴代码或日志前自动脱敏敏感信息",
+   "减少页面跟踪请求、保护隐私",
+   "让 ChatGPT 回复持续输出直至完成"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "浏览器插件",
+   "userscript",
+   "数据安全",
+   "ChatGPT增强"
+  ],
+  "domain": "浏览器扩展/效率工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "爱发电赞赏（支持微信、支付宝）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: - 这是一款提高```ChatGPT```的数据安全能力和效率的插件。它可以让你的聊天无比丝滑，省去足足几十数百个多余步骤，一劳永逸摆脱各种```报错```和```警告```。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消",
+   "L84: 1. 安装```Tampermonkey```，通过 官网；",
+   "L42: 13. 支持移动系统 (鸿蒙、iOS、Android)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     107
+    ],
+    "note": "开发调试的依赖安装途径",
+    "quotes": [
+     "2. 安装依赖：`npm install`"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     16,
+     86,
+     94,
+     111,
+     120
+    ],
+    "note": "插件作用对象，非替代/竞品",
+    "quotes": [
+     "- 这是一款提高```ChatGPT```的数据安全能力和效率的插件。它可以让你的聊天无比丝滑，省去足足几十数百个多余步骤，一劳永逸摆脱各种```报错```和```警告```。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消",
+     "3. 访问 ChatGPT（兼容旧域名 `chat.openai.com`）；",
+     "5. 访问 ChatGPT；",
+     "6. 修改 `KeepChatGPT.user.js` 后，刷新 ChatGPT 页面即可生效",
+     "我已开启 `npm run dev`，请用浏览器打开 `https://chatgpt.com/`，确认 `KeepChatGPT.dev.user.js` 是否已正常工作，并且页面是否成功加载 `http://localhost:8888"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

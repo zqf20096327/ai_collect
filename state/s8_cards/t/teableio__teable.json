@@ -1,0 +1,127 @@
+{
+ "fn": "teableio/teable",
+ "sha": "9e607c6b7568",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向企业的 AI 电子表格：数据管理、AI 工作流与应用构建一体",
+  "review": "基于 PostgreSQL 的数据库协作平台，自托管时提供四合一部署：按会话隔离的 agent 沙箱容器、以独立容器运行的应用部署平台、由记录变更/定时/webhook 触发并含 AI 步骤的自动化引擎，以及表格/视图/权限/API 的协作数据库。功能包括自然语言操作数据的 AI Chat、描述需求即由 agent 构建并一键部署的 App Builder、批量填充字段的 AI field filling。提供云端托管与自托管两种形态，独立自托管版不含 AI 功能与应用构建。",
+  "highlights": [
+   "AI Chat 以自然语言查询与操作表格数据",
+   "App Builder 在隔离沙箱中构建应用并一键部署到独立 URL",
+   "自动化引擎支持记录变更、定时与 webhook 触发并可插入 AI 步骤",
+   "数据底层为真实 PostgreSQL，支持表格、视图、权限与 SQL 查询"
+  ],
+  "use_cases": [
+   "把业务表格数据升级为带协作与权限的在线数据库",
+   "用自然语言生成贴合自身流程的内部应用并部署",
+   "为记录变更配置含 AI 步骤的自动化流程",
+   "在企业自有基础设施上自托管 AI 数据平台"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": "https://teable.ai",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "无代码/低代码",
+   "AI电子表格",
+   "应用构建",
+   "数据库协作",
+   "自托管"
+  ],
+  "domain": "企业应用/低代码数据平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L4:  One platform where data management, AI workflows, and app building come together — spreadsheet-simple on the surface, r",
+   "L33: - **A secure, scalable agent sandbox** — every AI session runs in its own isolated container, started on demand and gone",
+   "L36: - **A full-featured database collaboration platform on PostgreSQL** — tables, views, permissions, and API."
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     78
+    ],
+    "note": "L78 提到可将部署仓库交给 Claude Code 等 agent，非模型接入通道",
+    "quotes": [
+     "to your AI agent** (Claude Code, Codex, …) together with a domain, a DNS token,"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     94
+    ],
+    "note": "开发环境使用 pnpm install 安装依赖，非本产品面向用户的安装途径",
+    "quotes": [
+     "pnpm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     78
+    ],
+    "note": "作为可代为执行部署的 agent 工具被提及，非替代/竞品对象",
+    "quotes": [
+     "to your AI agent** (Claude Code, Codex, …) together with a domain, a DNS token,"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,115 @@
+{
+ "fn": "keon/awesome-nlp",
+ "sha": "71c4923881af",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 NLP 学习者与研究者精选资源清单",
+  "review": "一个以自然语言处理为主题的 curated 资源清单，收录研究动态跟踪源、著名 NLP 实验室、教程/课程、书籍以及多语言 NLP 库链接。README 声明其范围限定于语言分析、多语言工具、经典与神经方法、数据集和评测；大语言模型仅在推进或评测核心 NLP 任务时收录，通用聊天机器人、agent 框架等被排除并指向其他清单。通过社区 pull request 持续维护，条目含 archived 标注。",
+  "highlights": [
+   "按研究动态、实验室、教程、课程、书籍、库等栏目组织的资源链接",
+   "README 明确界定收录范围：LLM 仅限推进核心 NLP 任务的场景",
+   "覆盖 Node.js/JavaScript 与 Python 等语言的 NLP 库条目",
+   "部分条目标注 archived 状态"
+  ],
+  "use_cases": [
+   "系统学习 NLP 时查找课程、书籍与教程",
+   "为项目挑选合适的 NLP 库或标注工具",
+   "跟踪 NLP 研究进展与论文来源"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome清单",
+   "NLP",
+   "资源聚合",
+   "学习资源"
+  ],
+  "domain": "自然语言处理/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list",
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: A curated list of resources dedicated to Natural Language Processing",
+   "L11: This list covers natural language processing — linguistic analysis, multilingual tooling, classical and neural methods, "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     94
+    ],
+    "note": "作为课程资源被提及",
+    "quotes": [
+     "* Cohere LLM University - free course on LLMs, embeddings, semantic search, and NLP applications."
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     65,
+     95,
+     153
+    ],
+    "note": "其课程与库作为资源被收录提及",
+    "quotes": [
+     "* Train a new language model from scratch - Hugging Face 🤗",
+     "* Hugging Face NLP Course - hands-on NLP with Transformers, Datasets, and Tokenizers libraries.",
+     " - Haystack - End-to-end Python framework for building natural language search interfaces to data. Leverages Transformer"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,246 @@
+{
+ "fn": "shanraisshan/claude-code-best-practice",
+ "sha": "2693d5e7caa7",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Claude Code 最佳实践与工作流编目，面向使用 Claude Code 的开发者",
+  "review": "该仓库整理 Claude Code 的功能清单与使用实践：涵盖 Subagents、Commands、Skills、Hooks、MCP Servers、Memory、Checkpointing 等特性的位置与用法；收录 Command→Agent→Skill 的编排工作流示例；汇总 12 套社区开发工作流、跨模型协作（Plugin/MCP/Router 三种机制）、技能与子代理合集，以及 83 条来自 Boris Cherny、Thariq 等来源的提示与技巧。面向使用 Claude Code 的开发者与工程团队。内容以编目与链接为主，非可安装的软件工具。",
+  "highlights": [
+   "Claude Code 全特性清单（Subagents/Skills/Hooks/MCP/Memory 等）及文件位置",
+   "Command → Agent → Skill 编排工作流实现",
+   "12 套社区工作流与跨模型协作机制（Plugin/MCP/Router）编目",
+   "83 条提示、规划、上下文与会话管理技巧"
+  ],
+  "use_cases": [
+   "为团队制定 Claude Code 使用规范",
+   "查找适配自己流程的社区工作流",
+   "排查上下文管理与会话使用问题"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "最佳实践清单",
+   "Claude Code",
+   "AI 编程工作流",
+   "知识聚合"
+  ],
+  "domain": "AI 编程/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "coding-agent",
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # claude-code-best-practice",
+   "L20: ## 🧠 CONCEPTS",
+   "L98: All major workflows converge on the same architectural pattern: **Research → Plan → Execute → Review → Ship**"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     1,
+     123
+    ],
+    "quotes": [
+     "# claude-code-best-practice",
+     "- Thariq (Anthropic) Workflow — Skills · Session Management Thariq"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     129,
+     139
+    ],
+    "quotes": [
+     "Use Claude Code together with other models — Codex, Gemini, GPT, Kimi, DeepSeek, local — via three mechanisms:",
+     "|musistudio/claude-code-router|34k|Router|OpenRouter, DeepSeek, Ollama, Gemini, Kimi, Qwen, Groq, +more|Routes Claude Co"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     139
+    ],
+    "quotes": [
+     "|musistudio/claude-code-router|34k|Router|OpenRouter, DeepSeek, Ollama, Gemini, Kimi, Qwen, Groq, +more|Routes Claude Co"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     139,
+     142
+    ],
+    "quotes": [
+     "|musistudio/claude-code-router|34k|Router|OpenRouter, DeepSeek, Ollama, Gemini, Kimi, Qwen, Groq, +more|Routes Claude Co",
+     "|BeehiveInnovations/pal-mcp-server|12k|MCP|Gemini, OpenAI, Azure, Grok, Ollama, OpenRouter (50+ models)|Multi-model MCP "
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     139,
+     142
+    ],
+    "quotes": [
+     "|musistudio/claude-code-router|34k|Router|OpenRouter, DeepSeek, Ollama, Gemini, Kimi, Qwen, Groq, +more|Routes Claude Co",
+     "|BeehiveInnovations/pal-mcp-server|12k|MCP|Gemini, OpenAI, Azure, Grok, Ollama, OpenRouter (50+ models)|Multi-model MCP "
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     142
+    ],
+    "quotes": [
+     "|BeehiveInnovations/pal-mcp-server|12k|MCP|Gemini, OpenAI, Azure, Grok, Ollama, OpenRouter (50+ models)|Multi-model MCP "
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     4,
+     39,
+     58
+    ],
+    "note": "编目主题本身，非替代/竞品对象",
+    "quotes": [
+     "updated with Claude Code GitHub Stars",
+     "|**Best Practices**||Prompt Engineering · Extend Claude Code|",
+     "|**Claude Code Web** beta|`claude.ai/code`|Routines|"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     129,
+     139
+    ],
+    "quotes": [
+     "Use Claude Code together with other models — Codex, Gemini, GPT, Kimi, DeepSeek, local — via three mechanisms:",
+     "|musistudio/claude-code-router|34k|Router|OpenRouter, DeepSeek, Ollama, Gemini, Kimi, Qwen, Groq, +more|Routes Claude Co"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     139
+    ],
+    "note": "以 Qwen 名义出现在 Router 桥接列表",
+    "quotes": [
+     "|musistudio/claude-code-router|34k|Router|OpenRouter, DeepSeek, Ollama, Gemini, Kimi, Qwen, Groq, +more|Routes Claude Co"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     328
+    ],
+    "quotes": [
+     "|iTerm/Ghostty/tmux terminals instead of IDE (VS Code/Cursor)|Boris|"
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     399
+    ],
+    "quotes": [
+     "|**Code Review**|Greptile, CodeRabbit, Devin Review, OpenDiff, Cursor BugBot|"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     404
+    ],
+    "quotes": [
+     "|**Cowork**|ChatGPT Agent, Perplexity Computer, Manus|"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     404
+    ],
+    "quotes": [
+     "|**Cowork**|ChatGPT Agent, Perplexity Computer, Manus|"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     408
+    ],
+    "quotes": [
+     "|**Agent SDK**|LangChain, LangGraph, CrewAI, AutoGen, OpenAI Assistants API|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

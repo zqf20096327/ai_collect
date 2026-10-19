@@ -1,0 +1,89 @@
+{
+ "fn": "tesseract-ocr/tesseract",
+ "sha": "2af580546cbe",
+ "source": "readme",
+ "identity": {
+  "one_liner": "OCR 引擎：为开发者提供图片文字识别库与命令行工具",
+  "review": "包含 OCR 引擎 libtesseract 与命令行程序 tesseract 两个部分。第 4 版引入基于 LSTM 神经网络的行识别引擎，同时通过 --oem 0 兼容第 3 版的字符模式识别引擎。支持 Unicode/UTF-8，开箱可识别 100 多种语言，支持 PNG、JPEG、TIFF 等图像输入，输出纯文本、hOCR、PDF、TSV、ALTO、PAGE 等格式。不含 GUI，可通过 tessdata 训练数据支持更多语言，开发者可经 C/C++ API 或多语言 wrapper 集成。依赖 Leptonica 库读取图像。",
+  "highlights": [
+   "提供 libtesseract 库与 tesseract 命令行程序两种使用方式",
+   "支持 LSTM 引擎与 Legacy 引擎两种 OCR 模式（--oem 切换）",
+   "开箱支持 100 多种语言，输出文本/hOCR/PDF/TSV/ALTO/PAGE 等格式",
+   "提供 C/C++ API 与其他语言的 wrapper 绑定"
+  ],
+  "use_cases": [
+   "从 PNG/JPEG/TIFF 图片中批量提取文字",
+   "生成带文本层的可搜索 PDF 或 hOCR 结构化输出",
+   "通过 C/C++ API 在自有应用中嵌入 OCR 能力",
+   "训练引擎识别新的语言或字符集"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "OCR",
+   "文字识别",
+   "命令行工具",
+   "图像处理"
+  ],
+  "domain": "图像处理/OCR",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing",
+   "ocr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14: This package contains an **OCR engine** - `libtesseract` and a **command line program** - `tesseract`.",
+   "L16: Tesseract 4 adds a new neural net (LSTM) based OCR engine which is focused on line recognition, but also still supports ",
+   "L22: Tesseract has **unicode (UTF-8) support**, and can **recognize more than 100 languages** \"out of the box\"."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

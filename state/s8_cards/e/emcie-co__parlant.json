@@ -1,0 +1,100 @@
+{
+ "fn": "emcie-co/parlant",
+ "sha": "455545f738e7",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向企业客服场景的 AI Agent 对话控制框架",
+  "review": "面向客户服务的 Agent 框架，核心机制是按对话轮次动态收窄上下文：开发者以代码定义规则、知识与工具，引擎在每轮匹配仅相关的指令与工具再调用 LLM。提供 Guidelines（条件-动作规则）、Journeys（多轮 SOP）、Canned Responses（预审模板）、工具按需触发与 OpenTelemetry 全链路追踪。通过 pip 安装，提供 Python SDK 与官方 React 聊天组件，Apache 2.0 协议。",
+  "highlights": [
+   "条件-动作式 Guidelines，引擎按轮次匹配相关规则注入上下文",
+   "Journeys 多轮 SOP 流程，支持快进、回退与节奏自适应",
+   "Canned Responses 预审模板限制关键回复用词",
+   "内置 OpenTelemetry 日志、指标与追踪"
+  ],
+  "use_cases": [
+   "搭建需遵守话术与合规要求的客服 Agent",
+   "在金融、保险、医疗等需要可解释审计的场景部署对话系统",
+   "管理数百条行为规则而不想让系统提示词超载",
+   "为现有 LangGraph/LlamaIndex 工作流补充行为控制层"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "客服Agent",
+   "对话控制",
+   "LLM框架",
+   "合规"
+  ],
+  "domain": "AI Agent/客户服务",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: ### The interaction control harness for customer-facing AI agents",
+   "L45: Parlant is an agentic harness offering optimized context engineering for conversational use cases: getting the right con"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     5,
+     71
+    ],
+    "quotes": [
+     " PyPI",
+     "pip install parlant"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

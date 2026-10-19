@@ -1,0 +1,150 @@
+{
+ "fn": "awslabs/generative-ai-cdk-constructs",
+ "sha": "bd1d12ce9063",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AWS CDK 的生成式 AI 基础设施模式库：用代码定义可复用架构",
+  "review": "AWS CDK 的开源扩展库，为生成式 AI 场景提供多服务、高层抽象的 constructs 模式：SageMaker 基础模型部署（JumpStart/Hugging Face/S3 自定义）、Bedrock 批量推理与数据自动化、OpenSearch 向量集合与索引、Aurora DSQL、S3 Vectors 等。面向在 AWS 上用基础设施即代码构建生成式 AI 应用的开发者，以 npm/PyPI/NuGet/Go/Maven 多语言分发。README 标注 Experimental，所有类可能发生非向后兼容变更或移除；Bedrock L2 constructs 已声明弃用并迁移至 aws-cdk 核心仓库。",
+  "highlights": [
+   "L3 constructs 覆盖 SageMaker 模型部署与 Bedrock 批量推理/数据自动化",
+   "L2 constructs 覆盖 OpenSearch 向量集合/索引、Aurora DSQL、S3 Vectors",
+   "五种语言分发：TypeScript/Python/C#/Go/Java",
+   "附 Terraform 版 Bedrock/OpenSearch/SageMaker/Streamlit 模块"
+  ],
+  "use_cases": [
+   "用 CDK 代码快速定义生成式 AI 基础设施并保持可重复部署",
+   "部署 SageMaker 端点承载基础模型",
+   "为 RAG 应用创建 OpenSearch 向量检索基础设施"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    3,
+    5,
+    6
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "IaC/基础设施即代码",
+   "AWS",
+   "生成式AI基础设施",
+   "LLM部署"
+  ],
+  "domain": "云基础设施/生成式 AI",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "bedrock"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L26: The AWS Generative AI Constructs Library is an open-source extension of the AWS Cloud Development Kit (AWS CDK) that pro",
+   "L28: The patterns defined in AWS Generative AI CDK Constructs are high level, multi-service abstractions of AWS CDK construct"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     106,
+     107,
+     108,
+     118
+    ],
+    "note": "多个 construct 直接构建于 Amazon Bedrock 之上",
+    "quotes": [
+     "|Amazon Bedrock Monitoring (Amazon CloudWatch Dashboard)|Amazon CloudWatch dashboard to monitor model usage from Amazon ",
+     "|Bedrock Data Automation|Use Amazon bedrock data automation client to to build and manage intelligent document processin",
+     "|Bedrock Batch Step Functions|Manage Bedrock model invocation jobs(batch inference) in AWS Step Functions state machines",
+     "|Amazon Bedrock|CDK L2 Constructs for Amazon Bedrock.|Amazon Bedrock, Amazon OpenSearch Serverless, AWS Lambda|"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     141
+    ],
+    "note": "仅出现在示例资源 bedrock-claude-chat 描述中",
+    "quotes": [
+     "|bedrock-claude-chat|Code sample|AWS-native chatbot using Bedrock + Claude (+Mistral).|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     46
+    ],
+    "quotes": [
+     "- Run `npm install @cdklabs/generative-ai-cdk-constructs`"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     56
+    ],
+    "quotes": [
+     " - `pip install cdklabs.generative-ai-cdk-constructs`"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    113,
+    114
+   ],
+   "note": "Bedrock L2 constructs 已弃用并迁移至 aws-cdk 核心仓库"
+  },
+  "products": []
+ }
+}

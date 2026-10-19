@@ -1,0 +1,120 @@
+{
+ "fn": "cft0808/edict",
+ "sha": "d94d0115b620",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给个人/团队用的多 Agent 协作编排系统，以三省六部制分权制衡执行任务",
+  "review": "基于 OpenClaw 的多 Agent 编排系统，由 12 个 Agent 模拟三省六部流程：太子分拣消息、中书省规划、门下省审议封驳、尚书省派发、六部与吏部并行执行。配套 React 军机处看板，提供 Kanban 任务管理、任务叫停/取消/恢复、奏折归档、模型热切换、技能管理、Token 统计与新闻推送。依赖已安装的 OpenClaw、Python 3.10+ 与 macOS/Linux，后端基于 Python 标准库 http.server，服务间经 Redis Streams 事件总线通信，支持 Docker Demo 镜像与 systemd 部署。",
+  "highlights": [
+   "门下省专职审核，封驳不合格产出并强制返工",
+   "Kanban 看板实时监控，支持叫停/取消/恢复与状态机校验",
+   "Agent 权限矩阵与奏折流转审计日志",
+   "看板内按 Agent 热切换 LLM 与远程 Skills 导入"
+  ],
+  "use_cases": [
+   "通过飞书/Telegram/Signal 下达任务，让多个 Agent 分工完成并全程可视化监控",
+   "需要规划、审核、执行分离的任务流程管理",
+   "为每个 Agent 独立配置模型与技能，按看板切换"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "多Agent编排",
+   "任务看板",
+   "自动化工作流",
+   "Agent协作"
+  ],
+  "domain": "LLM 基础设施/Multi-Agent 编排",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multi-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "微信公众号推广",
+   "三省六部/奏折等中式制度命名"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5:  12 个 AI Agent（11 个业务角色 + 1 个兼容角色）组成三省六部：太子分拣、中书省规划、门下省审核封驳、尚书省派发、六部+吏部并行执行。 比 CrewAI 多一层 制度性审核 ，比 AutoGen 多一个 实时看板 。",
+   "L97: ### 📋 军机处看板（10 个功能面板）",
+   "L217: - OpenClaw 已安装"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     40,
+     193,
+     206,
+     211
+    ],
+    "quotes": [
+     "> 🐳 **没有 OpenClaw？** 跑一行 `docker run -p 7891:7891 cft0808/edict` 即可体验完整看板 Demo（预置模拟数据）。",
+     "docker run -p 7891:7891 cft0808/sansheng-demo",
+     "docker run --platform linux/amd64 -p 7891:7891 cft0808/sansheng-demo",
+     "docker compose up"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     224,
+     226
+    ],
+    "quotes": [
+     "git clone https://github.com/cft0808/edict.git",
+     "chmod +x install.sh && ./install.sh"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

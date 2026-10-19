@@ -1,0 +1,137 @@
+{
+ "fn": "dbeaver/dbeaver",
+ "sha": "a7a40101fcd9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者和管理员的多平台通用数据库工具与 SQL 客户端",
+  "review": "基于 Java/Eclipse RCP 的桌面数据库管理工具，采用 OSGI 插件架构（社区版 130+ 插件），开箱支持 100+ 数据库驱动，任何有 JDBC/ODBC 驱动的数据库均可连接。功能覆盖 schema/SQL/数据编辑、ER 图、数据导入导出迁移、执行计划、SSH 隧道等。AI 集成方面提供类 LLM 聊天视图，可将数据库结构、SQL 方言等上下文提供给模型以生成/分析/优化 SQL；社区版接入 OpenAI 与 Copilot，Pro 版额外支持 Anthropic/Grok/Azure/Bedrock/Gemini/Ollama。运行需 Java（发行包内置 OpenJDK 25），另有商业化 PRO 版本。",
+  "highlights": [
+   "开箱支持 100+ 数据库驱动，兼容任意 JDBC/ODBC 数据库",
+   "AI Chat 视图：生成/分析/优化 SQL，注入数据库结构与方言上下文",
+   "OSGI 插件架构，社区版含 130+ 插件",
+   "提供 GitHub Releases 预编译二进制与每日 Early Access 版本"
+  ],
+  "use_cases": [
+   "用一个客户端连接和管理多种数据库",
+   "借助 AI 聊天在不熟悉 SQL 的情况下查询和维护数据库",
+   "跨数据库做数据导入导出与迁移",
+   "通过 ER 图查看和编辑数据库结构"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    18
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据库工具",
+   "SQL客户端",
+   "AI集成",
+   "桌面应用"
+  ],
+  "domain": "数据库/开发工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "bedrock",
+   "ollama"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L8: Free multi-platform database tool for developers, SQL programmers, database administrators and analysts.",
+   "L64: - All DBeaver products contain AI Chat view similar to classic LLM chats.",
+   "L71: - Pro versions provide additional AI tools + native support of Anthropic/Grok/Azure/Bedrock/Gemini/Ollama providers."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     71
+    ],
+    "note": "以 Grok 名义出现在 Pro 版原生支持列表中",
+    "quotes": [
+     "- Pro versions provide additional AI tools + native support of Anthropic/Grok/Azure/Bedrock/Gemini/Ollama providers."
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     71
+    ],
+    "note": "Pro 版原生支持 Bedrock",
+    "quotes": [
+     "- Pro versions provide additional AI tools + native support of Anthropic/Grok/Azure/Bedrock/Gemini/Ollama providers."
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     71
+    ],
+    "note": "Pro 版原生支持 Ollama",
+    "quotes": [
+     "- Pro versions provide additional AI tools + native support of Anthropic/Grok/Azure/Bedrock/Gemini/Ollama providers."
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     70
+    ],
+    "note": "作为社区版可选 AI provider 列出，非替代/竞品表述",
+    "quotes": [
+     " - Copilot"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,206 @@
+{
+ "fn": "fathah/hermes-desktop",
+ "sha": "c46bad7f5c71",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 Hermes Agent 提供安装、配置与对话的桌面应用",
+  "review": "社区维护的原生桌面应用，把 Hermes Agent 的安装、provider 配置与日常使用集中到 GUI：首次启动引导本地安装（调用官方安装脚本，存放于 ~/.hermes）或连接远程 API，本地模式经 127.0.0.1:8642 以 SSE 流式通信。覆盖会话管理、多 Profile 隔离、记忆条目编辑、SOUL.md 人格编辑、cron 定时任务、16 个消息网关与备份/日志查看。API key 默认存于 .env，可选 command provider 对接多种密码管理器；该 provider 仅限 POSIX 系统。项目处于活跃开发期。",
+  "highlights": [
+   "引导式首次安装 Hermes Agent（本地/远程两种模式）",
+   "多 provider 支持：OpenRouter、Anthropic、OpenAI、Gemini、Grok 等 11 类及 OpenAI 兼容本地端点",
+   "22 个 slash 命令与 14 个工具集（浏览器、终端、图像生成、TTS 等）",
+   "secrets command provider 可对接 KeePassXC、GnuPG、pass、1Password CLI 等"
+  ],
+  "use_cases": [
+   "不想手动操作 CLI、用图形界面安装和管理 Hermes Agent",
+   "在本地运行 Ollama/LM Studio 等模型端点并与桌面聊天 UI 配合",
+   "通过 Telegram/Discord/微信等消息平台接入同一个 agent"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    24
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "桌面应用",
+   "AI助手/Agent",
+   "LLM前端",
+   "消息网关"
+  ],
+  "domain": "AI Agent 桌面工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "groq",
+   "xai",
+   "openrouter",
+   "ollama",
+   "vllm",
+   "anthropic"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供简体中文等多语言 README"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L26: Hermes One is a community maintained native desktop app for installing, configuring, and chatting with Hermes Agent — a ",
+   "L88: - **Multi-provider support** — OpenRouter, Anthropic, OpenAI, Google (Gemini), xAI (Grok), Nous Portal, Qwen, MiniMax, H"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     88,
+     154
+    ],
+    "quotes": [
+     "- **Multi-provider support** — OpenRouter, Anthropic, OpenAI, Google (Gemini), xAI (Grok), Nous Portal, Qwen, MiniMax, H",
+     "|**Groq**|Fast inference (voice/STT)|"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     88,
+     149
+    ],
+    "quotes": [
+     "- **Multi-provider support** — OpenRouter, Anthropic, OpenAI, Google (Gemini), xAI (Grok), Nous Portal, Qwen, MiniMax, H",
+     "|**xAI (Grok)**|Grok models|"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     88,
+     145,
+     173
+    ],
+    "quotes": [
+     "- **Multi-provider support** — OpenRouter, Anthropic, OpenAI, Google (Gemini), xAI (Grok), Nous Portal, Qwen, MiniMax, H",
+     "|**OpenRouter**|200+ models via single API (recommended)|",
+     "- `OpenRouter`"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     88,
+     157,
+     182
+    ],
+    "quotes": [
+     "- **Multi-provider support** — OpenRouter, Anthropic, OpenAI, Google (Gemini), xAI (Grok), Nous Portal, Qwen, MiniMax, H",
+     "Local presets are included for LM Studio, Atomic Chat, Ollama, vLLM, and llama.cpp.",
+     "- Ollama"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     88,
+     157,
+     183
+    ],
+    "quotes": [
+     "- **Multi-provider support** — OpenRouter, Anthropic, OpenAI, Google (Gemini), xAI (Grok), Nous Portal, Qwen, MiniMax, H",
+     "Local presets are included for LM Studio, Atomic Chat, Ollama, vLLM, and llama.cpp.",
+     "- vLLM"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     146,
+     174
+    ],
+    "quotes": [
+     "|**Anthropic**|Direct Claude access|",
+     "- `Anthropic`"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     38,
+     40
+    ],
+    "note": "L38 明确 npm install 非受支持的桌面安装方式；L40 为开发模式安装依赖",
+    "quotes": [
+     "Download the desktop app for your operating system from hermesone.org or GitHub Releases. `npm install hermes-desktop` i",
+     "To run the app in development, clone this repository and follow the Contributing Guide. Its `npm install` step installs "
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     88,
+     151
+    ],
+    "note": "作为受支持的 LLM provider 接入，非替代/竞品关系",
+    "quotes": [
+     "- **Multi-provider support** — OpenRouter, Anthropic, OpenAI, Google (Gemini), xAI (Grok), Nous Portal, Qwen, MiniMax, H",
+     "|**Qwen**|QwenAI models|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

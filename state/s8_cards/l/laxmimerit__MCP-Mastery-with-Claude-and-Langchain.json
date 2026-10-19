@@ -1,0 +1,175 @@
+{
+ "fn": "laxmimerit/MCP-Mastery-with-Claude-and-Langchain",
+ "sha": "859454c55e64",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI/ML 付费课程合集目录：MCP、LangChain、RAG、深度学习等",
+  "review": "KGP Talkie 维护的 AI 与机器学习课程推广目录，列出 MCP 服务器与客户端开发、Agentic RAG、LangChain/LangGraph、LLM 微调、深度学习、NLP、机器学习基础与生产部署等约 15 门课程，每门附简介、技术栈（Python、Streamlit、ChromaDB、Ollama、Qdrant 等）与付费注册链接。仓库本身不提供代码或软件安装，定位为课程营销入口，面向学习者与开发者。",
+  "highlights": [
+   "覆盖 MCP、Agentic RAG、LangChain/LangGraph agents、LLM 微调等主题的课程条目",
+   "每门课程列出技术栈与学习要点",
+   "提供指向 kgptalkie.com 与 Udemy 的注册链接"
+  ],
+  "use_cases": [
+   "查找 MCP 或 RAG 相关的系统化课程",
+   "按技术栈（Ollama、LangChain、Qdrant）筛选 AI 开发教程",
+   "了解从深度学习基础到生产部署的课程路径"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "课程目录",
+   "LLM开发",
+   "RAG/Agent",
+   "机器学习"
+  ],
+  "domain": "AI/机器学习教育",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "media",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # 🚀 Complete AI & Machine Learning Course Collection",
+   "L30: Enroll Now"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     12,
+     18,
+     27
+    ],
+    "note": "课程技术栈中列举",
+    "quotes": [
+     "🦙 LangChain & Ollama • 🤖 AI Agents • 📊 Machine Learning • 🚀 Production",
+     "> **🎯 Build MCP servers & clients with Python, Streamlit, ChromaDB, LangChain, LangGraph agents, and Ollama integrations",
+     "**🎯 Technologies:** Python • Streamlit • ChromaDB • LangChain • LangGraph • Ollama"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     16,
+     22
+    ],
+    "note": "Claude Desktop 集成为课程内容",
+    "quotes": [
+     " 🔥 MCP Mastery: Build AI Apps with Claude, LangChain and Ollama",
+     "- ✅ **Claude Desktop Integration:** Direct MCP server connections"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     35,
+     51,
+     68
+    ],
+    "note": "课程中使用的模型",
+    "quotes": [
+     "> **🎯 Step-by-Step Guide to RAG with LangChain, LangGraph, and Ollama | DeepSeek R1, QWEN, LLAMA, FAISS**",
+     "> **🎯 Master Langchain v1, Local LLM Projects, Ollama, DeepSeek, LLAMA 3.2, Complete Integration Guide**",
+     "> **🎯 Agentic RAG and Chatbot, AI Agent, DeepSeek, LLAMA 3.2 Agent, FAISS Vector Database**"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     160,
+     166
+    ],
+    "note": "RAG 课程多 LLM 支持之一",
+    "quotes": [
+     "- ✅ **Multi-LLM Support:** OpenAI GPT, Groq, Google Gemini, Ollama, and HuggingFace embeddings",
+     "**🎯 Technologies:** LangChain • Qdrant • LangGraph • CrewAI • AutoGen • Chainlit • FastAPI • OpenAI • Groq • Gemini"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     6,
+     16,
+     27
+    ],
+    "note": "课程教授的框架，非替代对象",
+    "quotes": [
+     "LangChain",
+     " 🔥 MCP Mastery: Build AI Apps with Claude, LangChain and Ollama",
+     "**🎯 Technologies:** Python • Streamlit • ChromaDB • LangChain • LangGraph • Ollama"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     120,
+     130
+    ],
+    "note": "微调课程使用的库",
+    "quotes": [
+     " 🔬 Fine Tuning LLM with Hugging Face Transformers for NLP",
+     "**🎯 Technologies:** Hugging Face Transformers • PyTorch • Custom Datasets • Advanced NLP"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

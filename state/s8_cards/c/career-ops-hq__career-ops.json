@@ -1,0 +1,221 @@
+{
+ "fn": "career-ops-hq/career-ops",
+ "sha": "ec2f980dcd1c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给求职者的本地 AI 求职 agent：评分匹配并代拟申请材料",
+  "review": "运行在用户已有 AI CLI（Claude Code、Codex 等）中的求职辅助系统：粘贴职位后检查岗位是否仍开放、按用户真实 CV 做 A-H 多维评估（1-5 评分、低于 4.0 提示不投）、生成 ATS 可读 PDF 简历与求职信草稿、STAR+R 面试准备、申请追踪与漏斗统计。设计上不自动提交、不发邮件、无遥测，数据全部留在本机；支持批量无头 worker、100+ 公司门户扫描、可选插件集成。经 npx 或全局 npm 安装。",
+  "highlights": [
+   "按用户 CV 对职位做 A-H 评估打分（1-5），低于 4.0 默认劝阻投递并允许覆盖",
+   "ATS 可读简历与求职信 PDF 生成（HTML + Playwright 流水线）",
+   "人工在环设计：脚本不 POST、不发邮件，用户亲自点击 Submit",
+   "批量并行评估、重发检测、拒绝模式分析与终端 TUI 看板"
+  ],
+  "use_cases": [
+   "投递前判断某岗位与我的 CV 匹配度是否值得花时间",
+   "针对具体 JD 定制 ATS 友好的简历和求职信",
+   "追踪所有申请状态并分析被拒模式与漏斗数据",
+   "准备行为面试问题并整理可复用的 STAR 故事库"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "求职",
+   "AI Agent",
+   "简历生成",
+   "CLI工具",
+   "本地优先"
+  ],
+  "domain": "求职/职业工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L76:  Open source. Local. In the AI CLI you already use. Free and local models included.",
+   "L110: - **Where does it all go?** Every application stays on your machine. Nothing is uploaded to us.",
+   "L171: claude   # or codex / qwen / opencode / agy / grok — open your AI CLI here"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     171
+    ],
+    "note": "通过 claude CLI 作为运行时配合使用；L145 的 Anthropic 为职位门户扫描对象，非模型接入",
+    "quotes": [
+     "claude   # or codex / qwen / opencode / agy / grok — open your AI CLI here"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     171
+    ],
+    "note": "grok 作为可用 AI CLI 被提及",
+    "quotes": [
+     "claude   # or codex / qwen / opencode / agy / grok — open your AI CLI here"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     449
+    ],
+    "note": "窗外行，README 后文提及",
+    "quotes": [
+     "Yes. career-ops is CLI-agnostic and runs on free and local models (OpenRouter free models, Ollama or any OpenAI-compatib"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     449
+    ],
+    "note": "窗外行，提及本地模型；L76 亦称 Free and local models included",
+    "quotes": [
+     "Yes. career-ops is CLI-agnostic and runs on free and local models (OpenRouter free models, Ollama or any OpenAI-compatib"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     73,
+     160,
+     180,
+     194
+    ],
+    "quotes": [
+     "npx @santifer/career-ops init",
+     "npx @santifer/career-ops init",
+     "cd career-ops && npm install",
+     "npm i -g @santifer/career-ops"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     176,
+     179,
+     180
+    ],
+    "note": "git clone 手动安装路径",
+    "quotes": [
+     " Prefer to set it up manually? (git clone)",
+     "git clone https://github.com/career-ops-hq/career-ops.git",
+     "cd career-ops && npm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     165,
+     171
+    ],
+    "note": "作为运行 career-ops 的 AI CLI 被提及，非替代/竞品",
+    "quotes": [
+     "> (Already using a Claude Code / Codex CLI? Then you already have it.)",
+     "claude   # or codex / qwen / opencode / agy / grok — open your AI CLI here"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     171
+    ],
+    "note": "qwen CLI 作为可选运行环境",
+    "quotes": [
+     "claude   # or codex / qwen / opencode / agy / grok — open your AI CLI here"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "LangChain",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "Kimi",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

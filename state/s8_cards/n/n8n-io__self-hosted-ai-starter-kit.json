@@ -1,0 +1,148 @@
+{
+ "fn": "n8n-io/self-hosted-ai-starter-kit",
+ "sha": "706d4634571b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管本地 AI 工作流入门模板：一条 Docker Compose 拉起整套环境",
+  "review": "由 n8n 官方维护的 Docker Compose 模板，组合四个组件：n8n 低代码平台（400+ 集成与 AI 节点）、Ollama 本地 LLM 运行时、Qdrant 向量库、PostgreSQL。按 GPU 型号（Nvidia/AMD/Apple Silicon/CPU）提供不同 compose profile，一条命令启动；预配置网络与存储，含示例工作流与本地文件共享目录挂载。README 说明面向原型验证，非生产环境优化。",
+  "highlights": [
+   "一条 docker compose 命令启动 n8n + Ollama + Qdrant + PostgreSQL 组合",
+   "按 Nvidia GPU / AMD GPU / Mac / CPU 提供不同启动 profile",
+   "内置示例工作流与 400+ 集成的 n8n 平台",
+   "本地文件共享目录挂载至 n8n 容器 /data/shared"
+  ],
+  "use_cases": [
+   "在本地搭建自托管的 AI 工作流开发环境",
+   "构建不泄露数据的 PDF 摘要、财务文档分析等私有文档处理流程",
+   "快速原型化 AI Agent 与 Slack 机器人等自动化场景"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "自托管",
+   "工作流自动化",
+   "本地LLM",
+   "Docker模板",
+   "AI Agent"
+  ],
+  "domain": "LLM 基础设施/自托管工具链",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "workflow-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: **Self-hosted AI Starter Kit** is an open-source Docker Compose template designed to swiftly initialize a comprehensive ",
+   "L7: Curated by <https://github.com/n8n-io>, it combines the self-hosted n8n",
+   "L115: The core of the Self-hosted AI Starter Kit is a Docker Compose file, pre-configured with network and storage settings, m"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     19,
+     79,
+     82,
+     97
+    ],
+    "quotes": [
+     "✅ **Ollama** - Cross-platform LLM platform to install",
+     "2. Run Ollama on your Mac for faster inference, and connect to that from the",
+     "If you want to run Ollama on your mac, check the",
+     "1. Set OLLAMA_HOST to `host.docker.internal:11434` in your .env file."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     48,
+     56,
+     69,
+     90,
+     110
+    ],
+    "quotes": [
+     "### Running n8n using Docker Compose",
+     "docker compose --profile gpu-nvidia up",
+     "docker compose --profile gpu-amd up",
+     "docker compose up",
+     "docker compose --profile cpu up"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     43
+    ],
+    "quotes": [
+     "git clone https://github.com/n8n-io/self-hosted-ai-starter-kit.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     173
+    ],
+    "note": "推荐阅读清单中的教程标题，非替代/竞品对象",
+    "quotes": [
+     "- Langchain Concepts in n8n"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

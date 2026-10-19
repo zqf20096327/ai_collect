@@ -1,0 +1,125 @@
+{
+ "fn": "openai/openai-python",
+ "sha": "a288f6af6173",
+ "source": "readme",
+ "identity": {
+  "one_liner": "OpenAI API 官方 Python 客户端库",
+  "review": "面向 Python 3.10+ 应用的 OpenAI REST API 官方 SDK，由 OpenAPI 规范生成，包含全部请求参数与响应字段的类型定义，提供同步与异步客户端。功能覆盖 Responses API、Chat Completions、流式响应（SSE）、Realtime API（WebSocket 音视频对话）、视觉输入、自动分页、文件上传与 Webhook 签名校验；支持 API key、Kubernetes/Azure/GCP 工作负载身份及 X.509 mTLS 多种认证方式，错误按状态码映射为类型化异常。",
+  "highlights": [
+   "同步与异步客户端，HTTPX2 默认传输，可选 aiohttp",
+   "支持 SSE 流式与 Realtime WebSocket 多模态会话",
+   "多认证方式：API key、K8s/Azure/GCP 工作负载身份、X.509 mTLS",
+   "自动分页迭代器与 TypedDict/Pydantic 类型定义"
+  ],
+  "use_cases": [
+   "在 Python 应用中调用 OpenAI 模型生成文本或处理图像",
+   "构建低延迟多模态语音/文本实时对话应用",
+   "在云托管环境中用工作负载身份短时令牌替代长期 API key",
+   "接收并校验 OpenAI Webhook 回调事件"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "SDK/API客户端",
+   "Python",
+   "LLM",
+   "官方库"
+  ],
+  "domain": "LLM 基础设施/SDK",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: The OpenAI Python library provides convenient access to the OpenAI REST API from any Python 3.10+",
+   "L9: It is generated from our OpenAPI specification.",
+   "L19: pip install openai"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "azure",
+    "rel": "mention",
+    "lines": [
+     52,
+     63,
+     124
+    ],
+    "note": "README 中作为工作负载身份认证的云环境提及",
+    "quotes": [
+     "For secure, automated environments like cloud-managed Kubernetes, Azure, and Google Cloud Platform, you can use workload",
+     "#### Azure (managed identity)",
+     "client to change the identity. Azure clients do not support X.509 workload"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     3,
+     18,
+     19,
+     176
+    ],
+    "quotes": [
+     "PyPI version)",
+     "# install from PyPI",
+     "pip install openai",
+     "pip install openai[aiohttp]"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

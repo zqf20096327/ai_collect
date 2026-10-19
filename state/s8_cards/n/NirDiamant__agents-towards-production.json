@@ -1,0 +1,127 @@
+{
+ "fn": "NirDiamant/agents-towards-production",
+ "sha": "a3ccd5624331",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的生产级 GenAI Agent 教程合集",
+  "review": "以代码优先的教程仓库形式，收录 28 个覆盖 GenAI Agent 生产环节的教程，主题包括有状态工作流、向量记忆、实时网络搜索 API、Docker 部署、FastAPI 端点、安全护栏、GPU 扩展、浏览器自动化、微调、多 Agent 协调、可观测性、评估与 UI 开发。教程由多个公司以赞助形式提供，附作者付费课程、Newsletter 与 YouTube 频道。定位读者为希望将 Agent 从原型推进到企业部署的开发者。",
+  "highlights": [
+   "28 个代码优先的生产级 Agent 教程",
+   "覆盖部署、安全护栏、GPU 扩展、多 Agent 协调、可观测性与评估等生产环节",
+   "含 LangGraph、Redis、Mem0、RunPod 等公司贡献的分步教程"
+  ],
+  "use_cases": [
+   "学习如何把 Agent 原型推进到生产部署",
+   "查找 Docker/FastAPI/GPU 扩展等 Agent 工程化环节的代码示例",
+   "了解多 Agent 协调与可观测性的实现方式"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教程/学习资源",
+   "GenAI Agent",
+   "生产部署",
+   "多Agent协调"
+  ],
+  "domain": "AI 开发教育/教程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5: **Agents Towards Production is your go‑to resource for building production‑ready GenAI agents that scale from prototype ",
+   "L28: > **28 production-grade tutorials** covering stateful workflows, vector memory, web search APIs, Docker deployment, secu",
+   "L32: Companies that have contributed step-by-step tutorials to this repository."
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     233
+    ],
+    "note": "YouTube 视频标题提及 Claude Code，非模型接入说明",
+    "quotes": [
+     " Stop Thinking Claude Code Is Magic. Here's How It Works"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     38,
+     42,
+     47
+    ],
+    "note": "教程涉及的框架，非替代/竞品对象",
+    "quotes": [
+     " <a href=\"tutorials/LangGraph-agent\" title=\"Open LangChain tutorial\">",
+     " <img src=\"assets/repos_images/sponsors_logos/trimmed_padded/trimmed_padded_langchain.png\"",
+     " <a href=\"https://langchain.com\">"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     233
+    ],
+    "note": "YouTube 视频标题提及，仅内容话题",
+    "quotes": [
+     " Stop Thinking Claude Code Is Magic. Here's How It Works"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,250 @@
+{
+ "fn": "Cinnamon/kotaemon",
+ "sha": "7f841ce4f4ab",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向终端用户与开发者的开源 RAG 文档问答 UI",
+  "review": "提供开箱即用的 RAG 文档问答 Web UI 与供开发者构建自定义 RAG pipeline 的框架。面向想对文档做问答的终端用户和想自建 RAG 流水线的开发者。关键机制包括混合检索（全文+向量）加重排序、带 PDF 高亮预览的引用展示、多模态文档解析选项，以及可扩展的 GraphRAG 索引示例。限制方面：Python 3.10+，处理 pdf/html/mhtml/xlsx 之外的文件需另装 Unstructured，非 Docker 安装涉及较多环境配置步骤。",
+  "highlights": [
+   "混合 RAG 流水线：全文+向量检索加重排序",
+   "浏览器内 PDF 引用预览与相关度分数展示",
+   "支持多模态文档解析与图表问答",
+   "提供 GraphRAG/LightRAG 等索引接入示例"
+  ],
+  "use_cases": [
+   "自托管一个文档问答系统并支持多用户协作",
+   "在 Gradio UI 上调试自己的 RAG 流水线",
+   "通过 Ollama 或 llama-cpp-python 在本地离线做文档问答",
+   "对含图表表格的文档做多模态问答"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "文档问答",
+   "自托管",
+   "本地LLM"
+  ],
+  "domain": "LLM 基础设施/RAG",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama",
+   "azure",
+   "llama.cpp"
+  ],
+  "scenario_tags_v2": [
+   "document-qa",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L30: This project serves as a functional RAG UI for both end users who want to do QA on their",
+   "L43: - **Support for Various LLMs**: Compatible with LLM API providers (OpenAI, AzureOpenAI, Cohere, etc.) and local LLMs (vi",
+   "L48: - **Framework for RAG Pipelines**: Tools to build your own RAG-based document QA pipeline."
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     43
+    ],
+    "quotes": [
+     "- **Support for Various LLMs**: Compatible with LLM API providers (OpenAI, AzureOpenAI, Cohere, etc.) and local LLMs (vi"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     43,
+     56,
+     97,
+     284,
+     286
+    ],
+    "quotes": [
+     "- **Support for Various LLMs**: Compatible with LLM API providers (OpenAI, AzureOpenAI, Cohere, etc.) and local LLMs (vi",
+     "- **Organize your LLM & Embedding models**: Support both local LLMs & popular API providers (OpenAI, Azure, Ollama, Groq",
+     " - To use the `full` version with bundled **Ollama** for _local / private RAG_.",
+     " - Using `ollama` OpenAI compatible server:",
+     " - Install ollama and start the application."
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     56
+    ],
+    "quotes": [
+     "- **Organize your LLM & Embedding models**: Support both local LLMs & popular API providers (OpenAI, Azure, Ollama, Groq"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     268,
+     270,
+     274
+    ],
+    "quotes": [
+     " - **Azure OpenAI**",
+     " For OpenAI models via Azure platform, you need to provide your Azure endpoint and API",
+     "    ```shell"
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "support",
+    "lines": [
+     299,
+     303
+    ],
+    "quotes": [
+     " - Using `GGUF` with `llama-cpp-python`",
+     " - GGUF"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     13
+    ],
+    "quotes": [
+     "Colab Notebook (Local RAG)"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     23,
+     89,
+     101,
+     108,
+     111
+    ],
+    "quotes": [
+     "docker pull ghcr.io/cinnamon/kotaemon:latest</a>",
+     "     docker run \\",
+     "     docker run <...> ghcr.io/cinnamon/kotaemon:main-ollama",
+     "    docker run <...> ghcr.io/cinnamon/kotaemon:main-lite",
+     "2. We currently support and test two platforms: `linux/amd64` and `linux/arm64` (for newer Mac). You can specify the pla"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     74
+    ],
+    "quotes": [
+     "> If you are not a developer and just want to use the app, please check out our easy-to-follow User Guide. Download the "
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     129
+    ],
+    "quotes": [
+     "   git clone https://github.com/Cinnamon/kotaemon"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     148,
+     149,
+     181,
+     189
+    ],
+    "quotes": [
+     "  pip install -e \"libs/kotaemon[all]\"",
+     "  pip install -e \"libs/ktem\"",
+     "- Install nano-GraphRAG: `pip install nano-graphrag`",
+     "- Install LightRAG: `pip install git+https://github.com/HKUDS/LightRAG.git`"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "16 GB of RAM",
+    "rel": "mention",
+    "lines": [
+     306
+    ],
+    "note": "本地 GGUF 模型选型的内存建议示例，非本产品自身硬件要求",
+    "quotes": [
+     " about 2 GB. For example, if you have 16 GB of RAM in total, of which 12 GB is available,"
+    ]
+   },
+   {
+    "term": "10 GB of RAM",
+    "rel": "mention",
+    "lines": [
+     307
+    ],
+    "note": "同上，模型大小选择建议",
+    "quotes": [
+     " then you should choose a model that takes up at most 10 GB of RAM. Bigger models tend to"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

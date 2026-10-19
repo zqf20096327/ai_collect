@@ -1,0 +1,119 @@
+{
+ "fn": "Data-Centric-AI-Community/fg-data-profiling",
+ "sha": "5042087e1174",
+ "source": "readme",
+ "identity": {
+  "one_liner": "一行代码生成 DataFrame 数据质量剖析与 EDA 报告",
+  "review": "ydata-profiling 更名后的 Python 包，为 Pandas 与 Spark DataFrame 提供一行式探索性数据分析：类型推断、缺失/偏斜等质量警告、单变量与多变量统计、时间序列与文本分析、文件与图像元信息、数据集对比，报告可导出为 HTML/JSON 或 Jupyter widget。支持 pip/conda/源码安装与 CLI 处理 CSV。需 Python 3，报告渲染需现代浏览器；数据库级剖析引导至 YData Fabric 商业产品。",
+  "highlights": [
+   "一行代码生成剖析报告，支持 HTML/JSON/Jupyter widget 导出",
+   "支持 Pandas 与 Spark（pyspark extra）处理大规模数据",
+   "覆盖时间序列、文本（Unicode）、文件与图像分析",
+   "提供 CLI 直接处理 CSV 文件"
+  ],
+  "use_cases": [
+   "建模前快速审查数据集质量与分布",
+   "对比同一数据集的多个版本",
+   "为大规模数据集生成剖析报告",
+   "在 Jupyter 中交互式探索数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据分析",
+   "数据质量",
+   "EDA",
+   "HTML报告"
+  ],
+  "domain": "数据科学/数据分析工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "data-analysis"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L25: `fg-data-profiling` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and",
+   "L93: - **Type inference**: automatic detection of columns' data types (*Categorical*, *Numerical*, *Date*, etc.)",
+   "L111: - Want to scale? Check the latest release with ⭐⚡Spark support!"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     43,
+     67,
+     210
+    ],
+    "quotes": [
+     "pip install fg-data-profiling",
+     "pip install fg-data-profiling",
+     "pip install -U fg-data-profiling"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     185,
+     186
+    ],
+    "note": "示例报告提供 Colab 入口，非本产品安装途径",
+    "quotes": [
+     "* NASA Meteorites (comprehensive set of meteorite landing - object properties and locations) Open In Colab Binder",
+     "* Titanic (the \"Wonderwall\" of datasets) Open In Colab Binder"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    3
+   ],
+   "note": "旧包名 ydata-profiling 不再更新，迁移至新名"
+  }
+ }
+}

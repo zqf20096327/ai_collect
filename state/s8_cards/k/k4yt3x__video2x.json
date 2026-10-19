@@ -1,0 +1,117 @@
+{
+ "fn": "k4yt3x/video2x",
+ "sha": "c327d1ef0f13",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于机器学习的视频超分辨率与插帧框架",
+  "review": "用 C/C++ 重写的视频处理框架，支持超分辨率放大与帧插值两种模式，通过 ncnn 与 Vulkan 运行 Anime4K v4、Real-ESRGAN、Real-CUGAN、RIFE 模型及 MPV 兼容 GLSL 着色器。提供 Windows 安装包（含 GUI，支持多语言界面）、Linux 发行版包与 AppImage、Docker/Podman 容器镜像，以及 Google Colab 免费使用方式。预编译二进制要求 CPU 支持 AVX2，GPU 需支持 Vulkan。",
+  "highlights": [
+   "支持超分辨率与帧插值两种模式",
+   "通过 ncnn 与 Vulkan 运行 Real-ESRGAN、Real-CUGAN、RIFE 模型",
+   "支持 Anime4K v4 及所有 MPV 兼容 GLSL 着色器",
+   "处理过程无需额外磁盘空间"
+  ],
+  "use_cases": [
+   "将低分辨率动漫视频放大到高分辨率",
+   "为低帧率视频补帧提升流畅度",
+   "无本地 GPU 时在 Google Colab 上处理视频"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://docs.video2x.org/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "视频超分辨率",
+   "帧插值",
+   "视频放大",
+   "桌面应用"
+  ],
+  "domain": "多媒体/视频处理工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "作者维护 archlinuxcn 包",
+   "GUI 支持简体中文",
+   "Bilibili 视频演示链接"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L24: - supports Real-ESRGAN, Real-CUGAN, and RIFE (all models) via ncnn and Vulkan;",
+   "L31: Your system must meet the minimum hardware requirements below to run Video2X."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     34,
+     45,
+     47,
+     70
+    ],
+    "quotes": [
+     " - The precompiled binaries require CPUs with AVX2 support.",
+     "**Download the Latest Windows Installer Executable (6.4.0)**",
+     "You can download the latest Windows release on the releases page. For basic GUI usage, refer to the documentation. If yo",
+     "- Other distros: `Video2X-x86_64.AppImage` on the releases page."
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     76,
+     78
+    ],
+    "quotes": [
+     "## 📔 Google Colab",
+     "You can use Video2X on Google Colab **for free** if you don't have a powerful GPU of your own. You can borrow a powerful"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,116 @@
+{
+ "fn": "sinaptik-ai/pandas-ai",
+ "sha": "21eae0eadf9f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "用自然语言对话查询数据库与数据文件的 Python 库",
+  "review": "PandasAI 是一个 Python 库，通过 LLM 让用户以自然语言向数据提问，支持 SQL、CSV、parquet 等数据源。定位为帮助非技术用户以更自然的方式与数据交互，也帮助技术用户节省时间。提供 df.chat 接口提问、生成图表、多 DataFrame 关联问答；可通过 pandasai-docker 在 Docker 沙箱中隔离执行生成的代码。安装依赖 Python 3.8–3.11，pip 或 poetry 安装，LLM 接入经 pandasai-litellm 扩展包。仓库 ee 目录另有单独许可。",
+  "highlights": [
+   "df.chat 自然语言提问数据并返回文本答案",
+   "按自然语言指令生成图表（直方图等）",
+   "多个 DataFrame 关联查询",
+   "Docker 沙箱隔离执行代码（pandasai-docker）"
+  ],
+  "use_cases": [
+   "用自然语言查询 SQL 数据库或 CSV/parquet 文件",
+   "非技术成员自助做数据分析",
+   "让模型按描述生成数据可视化图表",
+   "在隔离沙箱中安全执行 LLM 生成的分析代码"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据分析",
+   "Text-to-SQL",
+   "数据可视化",
+   "LLM应用"
+  ],
+  "domain": "数据分析/LLM 应用",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "data-analysis"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: PandasAI is a Python library that makes it easy to ask questions to your data in natural language. It helps non-technica",
+   "L93: You can run PandasAI in a Docker sandbox, providing a secure, isolated environment to execute code safely and mitigate t"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     30,
+     31,
+     98
+    ],
+    "quotes": [
+     "pip install pandasai",
+     "pip install pandasai-litellm",
+     "pip install \"pandasai-docker\""
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     9
+    ],
+    "quotes": [
+     "Open in Colab"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    118
+   ],
+   "quotes": [
+    "PandasAI is available under the MIT expat license, except for the `pandasai/ee` directory of this repository, which has "
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

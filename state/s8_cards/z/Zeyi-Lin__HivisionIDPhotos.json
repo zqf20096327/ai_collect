@@ -1,0 +1,148 @@
+{
+ "fn": "Zeyi-Lin/HivisionIDPhotos",
+ "sha": "20fa8c375ca0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI 证件照制作工具：抠图、换底、排版一站式生成",
+  "review": "基于 AI 模型工作流的证件照制作工具：对人像照片进行离线抠图（仅需 CPU 推理），按尺寸规格生成标准证件照与六寸排版照，支持自定义底色、美颜与裁剪。提供 Gradio Demo、Python 推理脚本与 FastAPI 服务三种使用形态，支持纯离线或端云推理（Face++ 在线人脸检测为可选项）。Apache-2.0 许可，支持 Docker 部署，社区有 ComfyUI、微信小程序、Windows GUI 等扩展。",
+  "highlights": [
+   "轻量级人像抠图，纯离线且仅需 CPU 即可推理",
+   "多种抠图模型可选（MODNet、hivision_modnet、rmbg-1.4、birefnet-v1-lite）",
+   "生成标准证件照、六寸排版照，支持五种排版尺寸与 HEX 自定义底色",
+   "提供 Gradio Demo、Python CLI 与 API 服务，支持 Docker 部署"
+  ],
+  "use_cases": [
+   "离线批量制作标准证件照并排版打印",
+   "为应用集成证件照生成 API 服务",
+   "对人像照片做抠图与背景替换"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://huggingface.co/spaces（L32 提及 Spaces 在线体验，具体 URL 未展示）",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图像处理",
+   "证件照",
+   "人像抠图",
+   "图像分割",
+   "部署工具"
+  ],
+  "domain": "图像处理/计算机视觉",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing",
+   "object-detection"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文 README",
+   "中文尺寸/颜色配置 CSV",
+   "SwanHub 下载源",
+   "AtomGit/ModelScope/昇腾社区徽章"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L47: HivisionIDPhoto 旨在开发一种实用、系统性的证件照智能制作算法。",
+   "L49: 它利用一套完善的AI模型工作流程，实现对多种用户拍照场景的识别、抠图与证件照生成。",
+   "L53: 1. 轻量级抠图（纯离线，仅需 **CPU** 即可快速推理）"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     90
+    ],
+    "quotes": [
+     "git clone https://github.com/Zeyi-Lin/HivisionIDPhotos.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     99,
+     100,
+     153,
+     154
+    ],
+    "quotes": [
+     "pip install -r requirements.txt",
+     "pip install -r requirements-app.txt",
+     "pip install onnxruntime-gpu==1.18.0",
+     "pip install torch --index-url https://download.pytorch.org/whl/cu121"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     244,
+     252,
+     260,
+     270
+    ],
+    "quotes": [
+     "docker pull linzeyi/hivision_idphotos",
+     "docker build -t linzeyi/hivision_idphotos .",
+     "docker compose build",
+     "docker run -d -p 7860:7860 linzeyi/hivision_idphotos"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "内存16GB",
+    "rel": "support",
+    "lines": [
+     293
+    ],
+    "quotes": [
+     "|RUN_MODE|可选|运行模式，可选值为`beast`(野兽模式)。野兽模式下人脸检测和抠图模型将不释放内存，从而获得更快的二次推理速度。建议内存16GB以上尝试。|`beast`|"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

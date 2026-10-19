@@ -1,0 +1,128 @@
+{
+ "fn": "RightNow-AI/openfang",
+ "sha": "4305e983d6e8",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给需要自主运行的 agent 的 Rust 单二进制操作系统",
+  "review": "用 Rust 编写的开源 Agent OS，编译为约 32MB 的单个二进制文件，含 14 个 crate 与 1,767+ 测试。核心概念是 Hands：预置的自主能力包（HAND.toml 清单+系统提示词+SKILL.md+审批护栏），按计划独立运行，内置 Clip、Lead、Collector、Predictor、Researcher、Twitter、Browser 共 7 个。系统自带 16 项安全机制（WASM 沙箱、Merkle 审计链、提示注入扫描等）、40 个频道适配器、SQLite+向量记忆与 Web 仪表盘。当前为 pre-1.0 版本，README 提示小版本间可能有破坏性变更。",
+  "highlights": [
+   "7 个内置自主 Hand，按计划运行无需人工提示",
+   "编译为单个约 32MB 二进制，Hand 全部编译进二进制无需额外下载",
+   "16 项安全机制：WASM 沙箱、Merkle 哈希链审计、Ed25519 签名清单、提示注入扫描等",
+   "40 个频道适配器（Telegram/Discord/Slack/飞书/钉钉等），支持按频道覆盖模型"
+  ],
+  "use_cases": [
+   "让 agent 定时跑竞品监控、线索挖掘并推送到 Telegram",
+   "自主管理 Twitter/X 账号内容与回复（带审批队列）",
+   "通过浏览器 Hand 自动化填表与多步网页流程（购买需人工确认）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    22
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent OS",
+   "自主Agent",
+   "Rust",
+   "消息频道集成",
+   "安全沙箱"
+  ],
+  "domain": "LLM 基础设施/Agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "low",
+  "evidence": [
+   "L26: OpenFang is an **open-source Agent Operating System**. Not a chatbot framework. Not a Python wrapper around an LLM. Not ",
+   "L30: The entire system compiles to a **single ~32MB binary**. One install, one command, your agents are live.",
+   "L203: openfang-api         140+ REST/WS/SSE endpoints, OpenAI-compatible API, dashboard"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker",
+    "npm",
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     59
+    ],
+    "note": "README 声明无需 pip install，非本产品安装途径",
+    "quotes": [
+     "All compiled into the binary. No downloading, no pip install, no Docker pull."
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     59
+    ],
+    "note": "README 声明无需 Docker pull",
+    "quotes": [
+     "All compiled into the binary. No downloading, no pip install, no Docker pull."
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     235
+    ],
+    "note": "WhatsApp 网关依赖的安装方式，非本产品安装途径",
+    "quotes": [
+     "npm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

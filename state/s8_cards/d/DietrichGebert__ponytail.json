@@ -1,0 +1,180 @@
+{
+ "fn": "DietrichGebert/ponytail",
+ "sha": "d4ba9a8f2849",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI 编码 agent 注入“极简优先”编码原则的提示词技能包",
+  "review": "以单个 SKILL.md 提示词为核心的 agent 技能：在写代码前按七级阶梯依次判断“是否需要写、仓库已有、标准库、平台特性、已有依赖、能否一行”，只在必要时写最小实现；不做代码高尔夫，验证、错误处理、安全与可访问性不在裁剪范围，含分支/循环/解析/金钱/安全的逻辑要求附带小测试。提供 /ponytail-review（读 diff 之外被触碰的代码做审查）与 /ponytail-audit（全仓库按优先级排序）等命令，以及 Claude Code 中的成本/token/复用率状态条与本地统计面板。宣称在 20 个 agent 上可用。",
+  "highlights": [
+   "七级阶梯决策：优先复用仓库代码、标准库与平台特性",
+   "/ponytail-review 读取变更触碰的全部代码而非仅 diff",
+   "Claude Code 提示条展示成本、token、agent 时间与代码复用率",
+   "/ponytail-debt 汇集 shortcut: 注释为技术债清单"
+  ],
+  "use_cases": [
+   "让编码 agent 复用仓库现有组件而不是重造轮子",
+   "审查 diff 之外被改动波及的文件与安全隐患",
+   "统计并追踪 AI 编码的成本、token 与复用率"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "prompt工程",
+   "agent技能",
+   "编码助手",
+   "代码审查"
+  ],
+  "domain": "开发者工具/AI 编码",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "code-review"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L96: Ponytail is one prompt: `skills/ponytail/SKILL.md`. The compact version, for agents that read a rules file, is `AGENTS.m",
+   "L139: Commands need a skill-capable host (Claude Code, Codex, Devin CLI, OpenCode, Gemini, Antigravity CLI, pi, Hermes Agent, "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     26,
+     78,
+     100
+    ],
+    "note": "README 未直接点名 Anthropic，仅通过其产品 Claude Code 间接相关",
+    "quotes": [
+     " Benchmarked in Claude Code, the same agent with and without the skill: 39 tasks including a real FastAPI + React repo, ",
+     "In Claude Code, ponytail now shows a band above the prompt: what the current task costs, how many tokens and how much ag",
+     "**Claude Code**, as two separate prompts:"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     139
+    ],
+    "note": "仅以宿主 'Grok Build' 形式出现，非模型接入声明",
+    "quotes": [
+     "Commands need a skill-capable host (Claude Code, Codex, Devin CLI, OpenCode, Gemini, Antigravity CLI, pi, Hermes Agent, "
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     26,
+     76,
+     78,
+     100
+    ],
+    "note": "主要支持宿主，非替代/竞品",
+    "quotes": [
+     " Benchmarked in Claude Code, the same agent with and without the skill: 39 tasks including a real FastAPI + React repo, ",
+     " The ponytail band in Claude Code, above the prompt. Detail mode: cost $23.80, last turn $1.14, average $0.72 per turn; ",
+     "In Claude Code, ponytail now shows a band above the prompt: what the current task costs, how many tokens and how much ag",
+     "**Claude Code**, as two separate prompts:"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     118,
+     139
+    ],
+    "note": "列出的可加载 agent 之一",
+    "quotes": [
+     "**Any other agent:** copy `AGENTS.md` into your project, or ask your agent to install `skills/ponytail/SKILL.md` as a sk",
+     "Commands need a skill-capable host (Claude Code, Codex, Devin CLI, OpenCode, Gemini, Antigravity CLI, pi, Hermes Agent, "
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     118,
+     139
+    ],
+    "note": "支持的宿主，仅规则文件/等级切换",
+    "quotes": [
+     "**Any other agent:** copy `AGENTS.md` into your project, or ask your agent to install `skills/ponytail/SKILL.md` as a sk",
+     "Commands need a skill-capable host (Claude Code, Codex, Devin CLI, OpenCode, Gemini, Antigravity CLI, pi, Hermes Agent, "
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     139
+    ],
+    "note": "指令适配器宿主之一",
+    "quotes": [
+     "Commands need a skill-capable host (Claude Code, Codex, Devin CLI, OpenCode, Gemini, Antigravity CLI, pi, Hermes Agent, "
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     139
+    ],
+    "note": "Devin CLI 作为技能宿主被提及",
+    "quotes": [
+     "Commands need a skill-capable host (Claude Code, Codex, Devin CLI, OpenCode, Gemini, Antigravity CLI, pi, Hermes Agent, "
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,86 @@
+{
+ "fn": "micro/go-micro",
+ "sha": "c89bb1e51837",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Go 分布式系统开发框架，含 Agent 与工作流支持",
+  "review": "面向 Go 语言的分布式系统开发框架，提供 RPC（含流式）、服务发现、消息、存储与配置五类核心能力，每个组件以 Go 接口加默认实现的方式组织，可替换。在服务层之上提供 Agents（模型、对话历史、工具与 agent 执行）与 Workflows（有序步骤、重试、检查点），agent 将服务作为工具调用。通过 go get 安装，附 quickstart、services 与 agent 指南文档，采用 Apache 2.0 许可。",
+  "highlights": [
+   "提供 RPC（含流式）、服务发现、消息、存储与配置",
+   "Agents：模型、对话历史、工具与 agent 执行",
+   "Workflows：有序步骤、重试与检查点",
+   "组件均为可替换默认实现的 Go 接口"
+  ],
+  "use_cases": [
+   "用 Go 构建微服务/分布式系统",
+   "开发以服务为工具的 AI Agent",
+   "编排带重试与检查点的多步工作流"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "微服务",
+   "分布式系统",
+   "AI Agent",
+   "Go框架",
+   "MCP"
+  ],
+  "domain": "分布式系统/AI Agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Go Micro is a Go framework for distributed systems development.",
+   "L6: Agents use services as tools; workflows coordinate service calls and agent tasks.",
+   "L12: - **Agents:** models, conversation history, tools, and agent execution."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

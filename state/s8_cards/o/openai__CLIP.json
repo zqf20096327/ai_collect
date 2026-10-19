@@ -1,0 +1,110 @@
+{
+ "fn": "openai/CLIP",
+ "sha": "7e02b2d977cc",
+ "source": "readme",
+ "identity": {
+  "one_liner": "研究者的图像-文本对比预训练模型库",
+  "review": "OpenAI 发布的 CLIP（Contrastive Language-Image Pre-Training）神经网络，在大量（图像, 文本）对上训练，可用自然语言指令在给定图像时预测最相关的文本片段，README 称其在 ImageNet 零样本设置下达到 ResNet50 的性能水平。以 Python 包形式发布，提供 clip.load、clip.tokenize、encode_image、encode_text 等 API，附零样本预测与线性探测（配合 scikit-learn）两个示例，另提供 Blog、Paper、Model Card 与 Colab 链接。",
+  "highlights": [
+   "在图像-文本对上训练的对比预训练神经网络",
+   "提供 clip.load / clip.tokenize / encode_image / encode_text 等 API",
+   "README 附零样本预测与线性探测评估两个示例",
+   "支持从本地 checkpoint 路径加载模型"
+  ],
+  "use_cases": [
+   "对图像做零样本文本标签预测",
+   "提取图像或文本的特征向量",
+   "在图像特征上做线性探测分类评估"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://arxiv.org/abs/2103.00020",
+  "demo_url": "https://colab.research.google.com/github/openai/clip/blob/master/notebooks/Interacting_with_CLIP.ipynb",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "多模态",
+   "图像-文本匹配",
+   "零样本分类",
+   "深度学习模型"
+  ],
+  "domain": "多模态/计算机视觉",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multimodal"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: CLIP (Contrastive Language-Image Pre-Training) is a neural network trained on a variety of (image, text) pairs. It can b",
+   "L13: First, install PyTorch 1.7.1 (or later) and torchvision, as well as small additional dependencies, and then install this",
+   "L18: $ pip install git+https://github.com/openai/CLIP.git"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     3
+    ],
+    "quotes": [
+     "[[Blog]](https://openai.com/blog/clip/) [[Paper]](https://arxiv.org/abs/2103.00020) [[Model Card]](model-card.md) [[Cola"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     17,
+     18
+    ],
+    "quotes": [
+     "$ pip install ftfy regex tqdm",
+     "$ pip install git+https://github.com/openai/CLIP.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

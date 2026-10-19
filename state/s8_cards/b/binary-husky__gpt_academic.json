@@ -1,0 +1,184 @@
+{
+ "fn": "binary-husky/gpt_academic",
+ "sha": "fba6f8bd3e21",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为学术用户提供LLM交互接口，优化论文阅读润色写作",
+  "review": "一个面向学术场景的LLM交互前端，围绕论文阅读/润色/写作提供插件化功能：LaTeX/PDF论文翻译与总结、arxiv论文精细翻译、语法校对、代码项目剖析与自译解、批量注释生成等。支持通过functional.py动态生成自定义按钮与热更新函数插件，可并行问询多种模型，支持多API-key负载均衡与本地模型后端（ChatGLM/MOSS/RWKV）。Windows/Linux/macOS可直接运行，另提供Docker与一键脚本部署。",
+  "highlights": [
+   "一键解读/翻译latex与pdf论文并生成摘要，支持arxiv精细翻译",
+   "虚空终端：用自然语言调度本项目其他插件",
+   "插件支持热更新，按钮由functional.py动态生成可自定义",
+   "多LLM并行问询，多API-key共存与负载均衡"
+  ],
+  "use_cases": [
+   "阅读英文论文时一键翻译全文并生成摘要",
+   "润色和校对LaTeX论文并输出对照PDF",
+   "让GPT剖析整个代码工程并生成解读报告",
+   "同时接入多家国内大模型 API 做对比问询"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "学术写作",
+   "论文翻译",
+   "LLM前端",
+   "插件系统"
+  ],
+  "domain": "科研工具/LLM交互前端",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文README",
+   "接入通义千问/文心一言/讯飞星火/智谱GLM等国内模型",
+   "开发者QQ群"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L12:  GPT 学术优化 (GPT Academic)",
+   "L32: 功能（⭐= 近期新增功能） | 描述",
+   "L43: 读论文、翻译论文 | [插件] 一键解读latex/pdf论文全文并生成摘要"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     121,
+     128,
+     138,
+     148
+    ],
+    "quotes": [
+     "### 安装方法II：使用Docker",
+     "    docker-compose up",
+     "    docker-compose up",
+     "    docker-compose up"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     99,
+     100,
+     111
+    ],
+    "note": "用于安装项目依赖，非本产品安装途径",
+    "quotes": [
+     "    # （选择I: 如熟悉python, python推荐版本 3.9 ~ 3.11）备注：使用官方pip源或者阿里pip源, 临时换源方法：python -m pip install -r requirements.txt -i ht",
+     "    python -m pip install -r requirements.txt",
+     "python -m pip install -r request_llms/requirements_chatglm.txt"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     85,
+     118
+    ],
+    "quotes": [
+     "    git clone --depth=1 https://github.com/binary-husky/gpt_academic.git",
+     "    python main.py"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     9,
+     34,
+     143,
+     225
+    ],
+    "note": "可接入的模型，非竞品",
+    "quotes": [
+     "> 2024.3.11: 全力支持Qwen、GLM、DeepseekCoder等中文大语言模型！ SoVits语音克隆模块，查看详情",
+     "⭐接入新模型 | 百度千帆与文心一言, 通义千问Qwen，上海AI-Lab书生，讯飞星火，LLaMa2，智谱GLM4，DALLE3, DeepseekCoder",
+     "2. ChatGPT + GLM3 + MOSS + LLAMA2 + 通义千问（需要熟悉Nvidia Docker运行时）",
+     "- version 3.48: 支持阿里达摩院通义千问，上海AI-Lab书生，讯飞星火"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     55
+    ],
+    "note": "部署方式提及",
+    "quotes": [
+     "更多LLM模型接入，支持huggingface部署 | 加入Newbing接口(新必应)，引入清华Jittorllms支持LLaMA和盘古α"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     67,
+     69,
+     131,
+     143
+    ],
+    "note": "可接入的模型，非竞品",
+    "quotes": [
+     "- 懒得看项目代码？直接把整个工程炫ChatGPT嘴里",
+     "- 多种大语言模型混合调用（ChatGLM + OpenAI-GPT3.5 + GPT4）",
+     "1. 仅ChatGPT + GLM4 + 文心一言+spark等在线模型（推荐大多数人选择）",
+     "2. ChatGPT + GLM3 + MOSS + LLAMA2 + 通义千问（需要熟悉Nvidia Docker运行时）"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

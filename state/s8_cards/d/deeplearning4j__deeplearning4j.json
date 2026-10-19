@@ -1,0 +1,102 @@
+{
+ "fn": "deeplearning4j/deeplearning4j",
+ "sha": "ea0e7846d24f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "JVM 平台的深度学习训练与部署工具套件",
+  "review": "Eclipse Deeplearning4J 是面向 JVM 的深度学习项目集合，覆盖从数据加载、预处理到构建与调优各类深度网络的流程。套件包含高层 API（DL4J）、线性代数库 ND4J（基于 C++ 的 LibND4J，提供 CPU/GPU 加速）、自动微分框架 SameDiff、ETL 工具 DataVec 与 Python4J。支持 Keras、TensorFlow、ONNX 模型导入，可在 Apache Spark 上分布式训练。仅支持通过构建工具使用，可从源码构建。由 Konduit K.K. 团队开发。",
+  "highlights": [
+   "ND4J 提供 500+ 数学/线性代数/深度学习运算，底层 C++ 支持 CPU（AVX2/512）与 CUDA GPU 加速",
+   "SameDiff 自动微分框架支持导入 TensorFlow .pb 模型",
+   "DL4J 支持 Keras h5 模型导入与 Apache Spark 分布式训练",
+   "支持 Java、Scala、Kotlin、Clojure 等 JVM 语言"
+  ],
+  "use_cases": [
+   "在 Java/Scala 等 JVM 技术栈中训练和部署深度学习模型",
+   "将 Keras、TensorFlow、ONNX 模型导入 JVM 环境运行",
+   "在 Spark 集群上做分布式模型训练",
+   "对机器学习数据做多格式 ETL 处理"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度学习",
+   "JVM",
+   "线性代数库",
+   "模型导入",
+   "分布式训练"
+  ],
+  "domain": "AI/深度学习框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L8: The **Eclipse Deeplearning4J** (DL4J) ecosystem is a set of projects intended to support all the needs of a JVM based de",
+   "L14: - **ND4J**: General purpose linear algebra library with over 500 mathematical, linear algebra and deep learning operatio",
+   "L84: Deeplearning4J is actively developed by the team at Konduit K.K.."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     61,
+     62
+    ],
+    "quotes": [
+     "## Building from source",
+     "It is preferred to use the official pre-compiled releases (see above). But if you want to build from source, first take "
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

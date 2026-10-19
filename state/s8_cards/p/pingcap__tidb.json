@@ -1,0 +1,91 @@
+{
+ "fn": "pingcap/tidb",
+ "sha": "af96c39633d3",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源分布式 SQL 数据库：面向事务、分析与向量检索负载",
+  "review": "TiDB 是开源、云原生的分布式 SQL 数据库，采用存算分离架构，通过两阶段提交与 Raft 协议提供分布式事务、强一致与高可用。内置 TiKV 行存与 TiFlash 列存双引擎，支持 HTAP 混合负载；兼容 MySQL 8.0 协议与工具生态，提供迁移工具；支持向量搜索。可部署于本地、公有云或 Kubernetes（TiDB Operator），亦提供全托管的 TiDB Cloud（含免费计划）。以 Go 编写，Apache 2.0 许可。",
+  "highlights": [
+   "两阶段提交 + Raft 多副本的分布式事务与自动故障转移",
+   "TiKV 行存与 TiFlash 列存双引擎 HTAP 架构",
+   "兼容 MySQL 8.0 协议、框架与工具，支持向量搜索",
+   "支持本地、Kubernetes（TiDB Operator）与 TiDB Cloud 托管部署"
+  ],
+  "use_cases": [
+   "为水平扩展的 OLTP 应用替换 MySQL 后端",
+   "在同一数据库中同时运行交易与分析查询",
+   "在 Kubernetes 上自管理分布式数据库集群",
+   "为 AI 应用存储事务数据并执行向量检索"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://www.pingcap.com/?utm_source=github&utm_medium=tidb",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "分布式数据库",
+   "SQL",
+   "HTAP",
+   "向量搜索",
+   "云原生"
+  ],
+  "domain": "数据库/基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "PingCAP 中国背景",
+   "TiDB 中文用户案例",
+   "TiDB Chinese Forum"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14: TiDB (/’taɪdiːbi:/, \"Ti\" stands for Titanium) is an open-source, cloud-native, distributed SQL database designed for hig",
+   "L26: - **Hybrid Transactional/Analytical Processing (HTAP)**: TiDB provides two storage engines: TiKV, a row-based storage en",
+   "L28: - **Cloud-Native**: TiDB can be deployed in public clouds, on-premises, or natively in Kubernetes. TiDB Operator helps m"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

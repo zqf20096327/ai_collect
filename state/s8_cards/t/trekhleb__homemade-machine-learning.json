@@ -1,0 +1,98 @@
+{
+ "fn": "trekhleb/homemade-machine-learning",
+ "sha": "a4cb237cac96",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为学习者提供从零实现的经典机器学习算法示例与交互演示",
+  "review": "该仓库以 Python 从零实现流行机器学习算法，每个算法附数学原理讲解与交互式 Jupyter Notebook 演示，可在浏览器中调整训练数据与算法配置并查看结果、图表与预测。内容覆盖监督学习（线性/逻辑回归）、无监督学习（K-means、高斯异常检测）与多层感知机，讲解多基于 Andrew Ng 的机器学习课程。作者明确声明这些实现不用于生产环境。",
+  "highlights": [
+   "从零实现算法并配数学原理讲解，基于 Andrew Ng 课程",
+   "每个算法提供交互式 Jupyter Notebook 演示，浏览器内即可运行",
+   "覆盖回归、分类、聚类、异常检测与多层感知机",
+   "提供 NBViewer 在线预览与 Binder 在线执行入口"
+  ],
+  "use_cases": [
+   "学习机器学习算法背后的数学原理",
+   "通过交互演示调参并观察模型预测结果",
+   "阅读从零实现来理解算法内部机制"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "机器学习教学",
+   "Jupyter演示",
+   "算法实现",
+   "学习资源"
+  ],
+  "domain": "机器学习/教育",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L22: > This repository contains examples of popular machine learning algorithms implemented in **Python** with mathematics be",
+   "L24: The purpose of this repository is _not_ to implement machine learning algorithms by using 3 rd party library one-liners "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     122
+    ],
+    "note": "通过 pip install -r requirements.txt 安装依赖",
+    "quotes": [
+     "pip install -r requirements.txt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

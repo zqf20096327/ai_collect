@@ -1,0 +1,104 @@
+{
+ "fn": "letta-ai/letta",
+ "sha": "7c9279a4e359",
+ "source": "readme",
+ "identity": {
+  "one_liner": "构建可跨会话记忆并自我改进的有状态 AI agent 平台",
+  "review": "Letta（前名 MemGPT）提供有状态 agent 开发平台：agent 具备持久记忆，可在多次交互中学习并自我改进。当前源码位于 letta-code 仓库，包含 agent harness、终端交互 UI、App Server、多渠道接入与运行时。安装后通过 `letta` 命令启动终端 UI，`letta server` 运行本地或自托管的 agent 服务；另提供 macOS/Windows/Linux 桌面应用、网页端、Slack/Telegram/Discord 渠道、TypeScript SDK 与云托管服务。archive 分支保留已退役的 V1 API 服务器。",
+  "highlights": [
+   "agent 具备持久记忆，支持跨会话学习与自我改进",
+   "npm 全局安装后提供终端交互 UI 与本地/自托管 App Server",
+   "支持桌面应用、网页端、Slack/Telegram/Discord 等多渠道接入",
+   "提供 TypeScript Agent SDK 与 Letta Cloud 云端服务"
+  ],
+  "use_cases": [
+   "构建需要长期记忆与个性化积累的对话 agent",
+   "本地或自托管运行 agent 服务",
+   "将 agent 嵌入 TypeScript 应用开发"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://chat.letta.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "有状态agent",
+   "agent记忆",
+   "agent平台"
+  ],
+  "domain": "LLM 基础设施/Agent 平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "agent-memory"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Build stateful agents with memory that can learn and improve over time.",
+   "L29: - the desktop app for macOS, Windows, and Linux",
+   "L32: - the Letta Agent SDK for building agents into TypeScript applications"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     9,
+     12
+    ],
+    "quotes": [
+     "Install Letta from npm:",
+     "npm install -g @letta-ai/letta-code"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    39
+   ],
+   "note": "archive 分支标注 V1 API 服务器已退役"
+  },
+  "note": ""
+ }
+}

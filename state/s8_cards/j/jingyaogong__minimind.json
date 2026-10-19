@@ -1,0 +1,217 @@
+{
+ "fn": "jingyaogong/minimind",
+ "sha": "1e4aa4e5511c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "从零训练 64M 超小语言模型的开源教程项目",
+  "review": "从 0 开始完整复现小语言模型训练的开源项目：核心算法用 PyTorch 原生实现，不依赖第三方高层封装，覆盖 MoE、数据清洗、预训练、SFT、LoRA、DPO、PPO/GRPO/CISPO、Tool Use、Agentic RL、自适应思考与模型蒸馏全流程。提供全阶段开源数据集、Streamlit 聊天 WebUI、兼容 OpenAI API 协议的服务端，模型结构对齐 Qwen3 生态，可被 transformers/llama.cpp/vllm/ollama 等框架加载。适合想亲手理解 LLM 训练链路的个人，单张 NVIDIA 3090 上 SFT 1 epoch 实测约 2 小时。",
+  "highlights": [
+   "全训练链路代码从 0 用 PyTorch 原生实现，不依赖第三方框架封装",
+   "覆盖 Pretrain/SFT/LoRA/DPO/PPO/GRPO/CISPO/Tool Use/Agentic RL/蒸馏全流程",
+   "开源全阶段数据集，主线模型结构对齐 Qwen3/Qwen3-MoE 生态",
+   "兼容 transformers、llama.cpp、vllm、ollama 及 OpenAI API 协议服务端"
+  ],
+  "use_cases": [
+   "从零动手训练并复现一个极小语言模型，理解 LLM 内部机制",
+   "在个人 GPU 上跑通预训练、SFT 到强化学习的完整流程",
+   "接入 FastGPT、Open-WebUI 等聊天界面做本地推理实验"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "ModelScope 创空间在线体验（L150-L151）",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM训练",
+   "教育/教程",
+   "小模型",
+   "PyTorch"
+  ],
+  "domain": "AI/LLM 训练与学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama",
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "ModelScope 发布渠道",
+   "阿里云 PyPI 镜像安装",
+   "SwanLab 替代 WandB（国内访问友好）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: * 此开源项目旨在完全从 0 开始，仅用 3 块钱成本与 2 小时训练时间，即可训练出规模约为 64M 的超小语言模型 MiniMind。",
+   "L18: * 项目同时开源了大模型的极简结构与完整训练链路，覆盖 MoE、数据清洗、预训练（Pretrain）、监督微调（SFT）、LoRA、RLHF（DPO）、RLAIF（PPO / GRPO / CISPO）、Tool Use、Agentic R",
+   "L20: * 项目所有核心算法代码均从 0 使用 PyTorch 原生实现，不依赖第三方库提供的高层抽象接口。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     40,
+     131
+    ],
+    "note": "提及 DeepSeek 及蒸馏系列，非接入的服务商",
+    "quotes": [
+     "大语言模型（Large Language Model, LLM）的出现，引发了全球范围内对 AI 的空前关注。无论是 ChatGPT、DeepSeek 还是 Qwen，都以惊艳的效果让人真切感受到这场技术浪潮的冲击力。然而，动辄数百亿参数的",
+     "- minimind2-DeepSeek-R1系列蒸馏模型诞生！"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     53,
+     208,
+     209
+    ],
+    "note": "官方提供 ollama run 运行模型的支持",
+    "quotes": [
+     "- 兼容 `transformers`、`trl`、`peft` 等主流框架，以及 `llama.cpp`、`vllm`、`ollama` 等常用推理引擎与 `Llama-Factory` 等训练框架。",
+     "# ollama",
+     "ollama run jingyaogong/minimind-3"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     53,
+     210,
+     211
+    ],
+    "note": "提供 vllm serve 推理示例",
+    "quotes": [
+     "- 兼容 `transformers`、`trl`、`peft` 等主流框架，以及 `llama.cpp`、`vllm`、`ollama` 等常用推理引擎与 `Llama-Factory` 等训练框架。",
+     "# vllm",
+     "vllm serve /path/to/model --served-model-name \"minimind\""
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     172
+    ],
+    "quotes": [
+     "git clone --depth 1 https://github.com/jingyaogong/minimind"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     173,
+     200
+    ],
+    "note": "pip install -r requirements.txt 安装依赖",
+    "quotes": [
+     "cd minimind && pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple",
+     "# 可能需要`python>=3.10`，安装 `pip install streamlit`"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "RAM: 128 GB",
+    "rel": "mention",
+    "lines": [
+     161
+    ],
+    "note": "作者本人参考配置，非硬性要求；单卡 3090 即可训练",
+    "quotes": [
+     "* RAM: 128 GB"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     30,
+     185,
+     393
+    ],
+    "note": "模型发布与数据集下载渠道",
+    "quotes": [
+     " <a href=\"https://huggingface.co/collections/jingyaogong/minimind\" style=\"text-decoration: none;\">",
+     "git clone https://huggingface.co/jingyaogong/minimind-3",
+     "MiniMind训练数据集下载地址： ModelScope | HuggingFace"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     40
+    ],
+    "note": "项目背景介绍中提及",
+    "quotes": [
+     "大语言模型（Large Language Model, LLM）的出现，引发了全球范围内对 AI 的空前关注。无论是 ChatGPT、DeepSeek 还是 Qwen，都以惊艳的效果让人真切感受到这场技术浪潮的冲击力。然而，动辄数百亿参数的"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     40
+    ],
+    "note": "项目背景介绍中提及 Qwen",
+    "quotes": [
+     "大语言模型（Large Language Model, LLM）的出现，引发了全球范围内对 AI 的空前关注。无论是 ChatGPT、DeepSeek 还是 Qwen，都以惊艳的效果让人真切感受到这场技术浪潮的冲击力。然而，动辄数百亿参数的"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    116,
+    316
+   ],
+   "note": "minimind-v1 系列停止维护并下线；mistral_tokenizer 不再维护"
+  }
+ }
+}

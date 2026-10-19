@@ -1,0 +1,134 @@
+{
+ "fn": "CoplayDev/unity-mcp",
+ "sha": "f4a60671d52b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 Unity 开发者的 MCP 桥：让 AI 助手控制编辑器",
+  "review": "通过 Model Context Protocol 将 AI 助手（Claude、Cursor、VS Code、本地 LLM 等）接入 Unity Editor，提供 50 个 MCP 工具入口，支持自然语言创建场景与 GameObject、编辑 C# 脚本、管理资产、运行测试、性能分析与构建。要求 Unity 2021.3 LTS 至 6.x 及 Python 3.10+（经 uv）。安装方式为 Unity Package Manager 的 git URL 或 openupm，可在多个客户端自动配置，MIT 许可，另支持多实例路由、工具分组、远程服务器鉴权等。",
+  "highlights": [
+   "50 个 MCP 工具入口，任意 MCP 客户端可用",
+   "自然语言控制 Unity Editor：场景、脚本、资产、测试、构建",
+   "支持多 Unity 实例路由与按领域分组的工具组",
+   "提供远程托管服务器与鉴权选项"
+  ],
+  "use_cases": [
+   "用自然语言让 AI 在 Unity 中创建场景和 GameObject",
+   "让 AI 助手批量管理和整理项目资产",
+   "让 AI 编辑 C# 脚本并运行测试",
+   "自动化游戏开发中的构建与分析流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "游戏开发",
+   "MCP",
+   "编辑器自动化",
+   "AI助手"
+  ],
+  "domain": "游戏开发/开发工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "ai-assistant"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L8:  Create your Unity apps with LLMs. MCP for Unity bridges AI assistants — Claude, Codex, VS Code, local LLMs, and more — ",
+   "L24: Control the Unity Editor in natural language from any MCP client — create scenes & GameObjects, edit C# scripts, manage ",
+   "L30: **Requirements:** Unity **2021.3 LTS → 6.x** · Python **3.10+** (via `uv`). Works with **any MCP client** — Claude Deskt"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     8,
+     30
+    ],
+    "note": "Claude 作为被支持的 MCP 客户端被提及，非专门适配的模型供应商通道",
+    "quotes": [
+     " Create your Unity apps with LLMs. MCP for Unity bridges AI assistants — Claude, Codex, VS Code, local LLMs, and more — ",
+     "**Requirements:** Unity **2021.3 LTS → 6.x** · Python **3.10+** (via `uv`). Works with **any MCP client** — Claude Deskt"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     30
+    ],
+    "note": "被支持的 MCP 客户端，非替代/竞品对象",
+    "quotes": [
+     "**Requirements:** Unity **2021.3 LTS → 6.x** · Python **3.10+** (via `uv`). Works with **any MCP client** — Claude Deskt"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     30
+    ],
+    "note": "被支持的 MCP 客户端",
+    "quotes": [
+     "**Requirements:** Unity **2021.3 LTS → 6.x** · Python **3.10+** (via `uv`). Works with **any MCP client** — Claude Deskt"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    64,
+    65,
+    66
+   ],
+   "note": "同一维护方旗下 MCP for Unity 为 MIT 免费，Aura for Unity 为付费产品",
+   "quotes": [
+    "Aura offers 2 AI tools for Unity:",
+    "- **MCP for Unity** is available freely under the MIT license.",
+    "- **Aura for Unity** is a premium Unity/Unreal AI assistant built for game devs."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

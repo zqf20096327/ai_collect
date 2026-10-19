@@ -1,0 +1,129 @@
+{
+ "fn": "Stability-AI/generative-models",
+ "sha": "bbb7b6854315",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Stability AI 的开源生成模型仓库：SV4D/SV3D/SVD/SDXL",
+  "review": "Stability AI 发布多代生成模型的官方代码库，以 News 形式按时间累积收录：SV4D 2.0（视频到 4D 新视角合成）、SV4D、SV3D（单图生成多视角轨道视频）、SDXL-Turbo、Stable Video Diffusion、SDXL 系列等，均注明面向研究用途。代码库采用配置驱动架构，通过 yaml 配置中的 instantiate_from_config() 组合子模块；训练基于 PyTorch Lightning，推理提供 streamlit demo、独立 python 脚本与社区 gradio demo。模型权重从 HuggingFace 下载，部分早期模型需通过组织邮箱申请访问。",
+  "highlights": [
+   "SV4D 2.0 视频到 4D 扩散模型：12 帧输入生成 48 帧（12 帧 x 4 视角）576x576 输出，支持自回归生成更长视频",
+   "低显存运行选项：--encoding_t=1、--decoding_t=1 或降低分辨率 --img_size=512",
+   "配置驱动的模块化代码库：yaml 配置组合子模块，guiders 与 samplers 分离且独立于模型",
+   "提供 streamlit demo、独立推理脚本与社区 gradio demo 多种运行入口"
+  ],
+  "use_cases": [
+   "从单个视频生成多视角 novel-view 视频与 4D 资产",
+   "从单张图片生成轨道式多视角视频",
+   "运行 SDXL、SVD 等已发布模型的推理与研究复现"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "扩散模型",
+   "图像生成",
+   "视频生成",
+   "4D生成",
+   "研究代码"
+  ],
+  "domain": "AI 生成模型/多模态生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation",
+   "video-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # Generative Models by Stability AI",
+   "L152: Modularity is king. This repo implements a config-driven approach where we build and combine submodules by",
+   "L157: For training, we use PyTorch Lightning, but it should be easy to use other"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     38,
+     39,
+     40,
+     41,
+     96
+    ],
+    "note": "pip 安装 torch/依赖及本仓库包",
+    "quotes": [
+     "pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 # check CUDA version",
+     "pip3 install -r requirements/pt2.txt",
+     "pip3 install .",
+     "pip3 install -e git+https://github.com/Stability-AI/datapipelines.git@main#egg=sdata",
+     " - Follow the installation instructions or update the existing environment with `pip install streamlit-keyup`."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     15,
+     18,
+     31,
+     53,
+     79
+    ],
+    "note": "模型权重下载渠道，非替代/竞品",
+    "quotes": [
+     "- `python scripts/sampling/simple_video_sample_4d2.py --input_path assets/sv4d_videos/camel.gif --output_folder outputs`",
+     "- Download SV4D 2.0 model (`sv4d2.safetensors`) from here to `checkpoints/`: `huggingface-cli download stabilityai/sv4d2",
+     " - Download the model from huggingface: `huggingface-cli download stabilityai/sv4d2.0 sv4d2_8views.safetensors --local-d",
+     "**QUICKSTART** : `python scripts/sampling/simple_video_sample_4d.py --input_path assets/sv4d_videos/test_video1.mp4 --ou",
+     "- Download `sv3d_u.safetensors` from https://huggingface.co/stabilityai/sv3d to `checkpoints/sv3d_u.safetensors`"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

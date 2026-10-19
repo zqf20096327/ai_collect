@@ -1,0 +1,186 @@
+{
+ "fn": "PaddlePaddle/PaddleOCR",
+ "sha": "9ac51c8d61ce",
+ "source": "readme",
+ "identity": {
+  "one_liner": "将 PDF/图片文档转为结构化数据的 OCR 与文档解析工具包",
+  "review": "PaddleOCR 将 PDF 与图像转换为 JSON/Markdown 等结构化格式，供下游 LLM/RAG/Agent 应用使用。核心机制包括：面向文档解析的轻量视觉语言模型 PaddleOCR-VL（0.9B）、提供细粒度坐标信息的 PP-StructureV3、支持 100+ 语言的 PP-OCR 系列文本识别模型，以及面向 LLM 微调的数据集构建流水线。以 Python 工具包形式发布于 PyPI，另提供浏览器端 PaddleOCR.js 与 C++ 本地部署方案，支持 NVIDIA GPU、Intel CPU、昆仑芯 XPU 等硬件后端。",
+  "highlights": [
+   "PaddleOCR-VL-0.9B 文档解析 VLM，输出 Markdown/JSON，支持 109 种语言",
+   "PP-StructureV3 将复杂 PDF/图像转为 Markdown 或 JSON 并提供表格单元格与文本坐标",
+   "PP-OCRv6 单模型统一支持 50 种语言，提供 tiny/small/medium 三档部署规模",
+   "提供 LLM 训练数据集构建流水线，并与 Dify、RAGFlow 等框架集成"
+  ],
+  "use_cases": [
+   "把 PDF 论文、报告批量转成 Markdown 喂给 RAG 知识库",
+   "识别身份证、街景、书籍、工业部件等自然场景中的文字",
+   "解析含表格、公式、印章、图表的复杂版面文档",
+   "为 LLM 微调构建高质量的文本识别训练数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "OCR",
+   "文档解析",
+   "RAG 数据准备",
+   "多语言识别"
+  ],
+  "domain": "文档处理/OCR 与文档 AI",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm",
+   "cpu-infer"
+  ],
+  "scenario_tags_v2": [
+   "document-parsing",
+   "ocr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文版本入口",
+   "PP-OCRv6 原生支持中文",
+   "支持中国藏文与孟加拉文等语言",
+   "昆仑芯 XPU 硬件后端支持"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L17: **PaddleOCR converts PDF documents and images into structured, LLM-ready data (JSON/Markdown) with industry-leading accu",
+   "L24: * **SOTA Document VLM**: Featuring **PaddleOCR-VL-1.6 (0.9B)**, the industry's leading lightweight vision-language model",
+   "L39: * **LLM Data Flywheel**: A complete pipeline to build high-quality datasets, providing a sustainable \"Data Engine\" for f"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "bedrock",
+    "rel": "none",
+    "lines": [
+     17
+    ],
+    "note": "误命中：原文为 'bedrock' 比喻用法，非 AWS Bedrock",
+    "quotes": [
+     "**PaddleOCR converts PDF documents and images into structured, LLM-ready data (JSON/Markdown) with industry-leading accu"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     46
+    ],
+    "note": "HPD-Parsing 支持 vLLM 定制化运行时推理",
+    "quotes": [
+     "- HPD-Parsing supports both OpenAI-compatible serving and local inference through a customized vLLM runtime, making it s"
+    ]
+   },
+   {
+    "term": "cpu-infer",
+    "rel": "support",
+    "lines": [
+     56,
+     148
+    ],
+    "quotes": [
+     " - **Faster inference**: 5.2× CPU speedup (OpenVINO), 6.1× on Apple M4 (tiny), 0.13s on A100 GPU.",
+     "- Accelerate inference using engines like OpenVINO, ONNX Runtime, TensorRT, or perform inference using ONNX format model"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     7
+    ],
+    "quotes": [
+     "PyPI Downloads"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     17,
+     38
+    ],
+    "quotes": [
+     "**PaddleOCR converts PDF documents and images into structured, LLM-ready data (JSON/Markdown) with industry-leading accu",
+     "* **Seamless Integration**: The premier choice for the AI Agent ecosystem—deeply integrated with **Dify, RAGFlow, Pathwa"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     58,
+     67,
+     83,
+     89
+    ],
+    "note": "模型发布渠道与 Transformers 推理后端，非替代/竞品对象",
+    "quotes": [
+     " - **Model availability**: All models are available on HuggingFace and ModelScope.",
+     " - **Try it now**: Available on HuggingFace or our Official Website.",
+     " * **Try it now**: Available on HuggingFace or our Official Website.",
+     " - **PaddleOCR-VL** is a SOTA and resource-efficient model tailored for document parsing. Its core component is PaddleOC"
+    ]
+   },
+   {
+    "term": "文心一言",
+    "rel": "mention",
+    "lines": [
+     89,
+     92
+    ],
+    "note": "ERNIE-4.5-0.3B 为 PaddleOCR-VL 的语言模型组件",
+    "quotes": [
+     " - **PaddleOCR-VL** is a SOTA and resource-efficient model tailored for document parsing. Its core component is PaddleOC",
+     " - **Compact yet Powerful VLM Architecture**: We present a novel vision-language model that is specifically designed for"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

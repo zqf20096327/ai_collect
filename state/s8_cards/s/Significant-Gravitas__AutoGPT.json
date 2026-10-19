@@ -1,0 +1,104 @@
+{
+ "fn": "Significant-Gravitas/AutoGPT",
+ "sha": "d9b3cba04445",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向用户与开发者的 AI agent 构建与运行平台",
+  "review": "AutoGPT 提供构建、部署和运行 AI agent 的开源平台，支持用自然语言描述任务（AutoPilot）或在可视化画布（Build）中逐步编排工作流，agent 可按需、按计划或由触发器运行。平台包含 Agents 仪表盘与 Marketplace 社区 agent 市场，连接 45+ 平台与数百个 AI 模型。提供托管 Platform（付费、含模型访问）与自托管（免费、需自备 Docker 基础设施与模型 API key）两条路径；原独立版 AutoGPT Classic 保留于 classic/ 目录，采用 MIT 许可证。",
+  "highlights": [
+   "AutoPilot 对话转 agent 与可视化 Build 画布两种构建方式",
+   "45+ 平台集成（Gmail、GitHub、Slack、Notion 等）",
+   "托管 Platform 与自托管双路径，同一代码仓库",
+   "AutoGPT Classic 以 MIT 许可证保留在 classic/ 目录"
+  ],
+  "use_cases": [
+   "用自然语言把日常流程变成定时或触发式运行的 agent",
+   "自托管平台并接入自己的模型 API key 构建自动化工作流",
+   "从 Marketplace 选取现成社区 agent 定制使用",
+   "用 Classic 版本构建或基准测试独立 agent"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI Agent",
+   "工作流自动化",
+   "低代码平台",
+   "自托管"
+  ],
+  "domain": "AI Agent 平台/自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "workflow-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L31: AutoGPT lets you build, deploy, and run AI agents that carry out complete workflows. Describe an outcome in plain Englis",
+   "L84: ### Self-host AutoGPT",
+   "L155: Looking for the original standalone AutoGPT agent? It remains available in `classic/` under the MIT License."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     92,
+     96,
+     105
+    ],
+    "note": "自托管走手动指南/开发检出路径；L96 说明单容器安装器本身不从源码构建",
+    "quotes": [
+     "use the manual self-hosting guide.",
+     "runs its immutable digest; it does not install Docker or build from source.",
+     "|Access|Public signup|Operate the published appliance or a development checkout|"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

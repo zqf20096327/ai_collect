@@ -1,0 +1,178 @@
+{
+ "fn": "ggml-org/whisper.cpp",
+ "sha": "365030d96bb6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "在本地多平台离线运行 Whisper 语音识别的 C/C++ 推理实现",
+  "review": "OpenAI Whisper 语音识别模型的 C/C++ 移植，无依赖的纯 C/C++ 实现，基于 ggml 机器学习库构建。提供 C 风格 API、整数量化、VAD、混合精度推理，支持 Metal、Core ML、CUDA、Vulkan、OpenVINO 及 AMD NPU 等后端。模型需转换为 ggml 格式后由 whisper-cli 等示例程序运行，仅支持 16-bit WAV 输入，其他音频需用 ffmpeg 预先转换。支持 macOS/iOS/Android/Linux/Windows/WebAssembly 等平台，MIT 许可。",
+  "highlights": [
+   "纯 C/C++ 无依赖实现，基于 ggml 库，提供 C 风格 API",
+   "多后端支持：Metal、Core ML、ANE、CUDA、Vulkan、OpenVINO、AMD NPU",
+   "整数量化降低模型内存与磁盘占用（tiny 75 MiB 至 large 2.9 GiB）",
+   "跨平台覆盖 iOS、Android、WebAssembly、树莓派、Docker 等"
+  ],
+  "use_cases": [
+   "在手机或嵌入式设备上完全离线运行语音转文字",
+   "搭建本地离线语音助手应用",
+   "在 Apple Silicon 或 NVIDIA GPU 上加速语音识别推理"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": "cpu-ok",
+  "install_friction": "high",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音识别",
+   "本地推理",
+   "C/C++",
+   "边缘设备",
+   "语音转文字"
+  ],
+  "domain": "语音识别/推理引擎",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "cpu-infer"
+  ],
+  "scenario_tags_v2": [
+   "asr",
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L11: High-performance inference of OpenAI's Whisper automatic speech recognition (ASR) model:",
+   "L13: - Plain C/C++ implementation without dependencies",
+   "L26: Supported platforms:"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cpu-infer",
+    "rel": "support",
+    "lines": [
+     21,
+     159,
+     310
+    ],
+    "quotes": [
+     "- Support for CPU-only inference",
+     "speed-up - more than x3 faster compared with CPU-only execution. Here are the instructions for generating a Core ML mode",
+     "On AMD Ryzen™ AI 300 and 400 Series processors with a dedicated NPU, whisper.cpp can fully offload the Whisper encoder t"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     59,
+     78,
+     79
+    ],
+    "quotes": [
+     "git clone https://github.com/ggml-org/whisper.cpp.git",
+     "cmake -B build",
+     "cmake --build build -j --config Release"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     164,
+     165,
+     166,
+     246,
+     247
+    ],
+    "note": "Core ML/OpenVINO 模型转换所需的 Python 依赖安装，非本产品安装途径",
+    "quotes": [
+     "  pip install ane_transformers",
+     "  pip install openai-whisper",
+     "  pip install coremltools",
+     "  python -m pip install --upgrade pip",
+     "  pip install -r requirements-openvino.txt"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "mention",
+    "lines": [
+     271
+    ],
+    "note": "OpenVINO 包下载，非本产品安装途径",
+    "quotes": [
+     " Download OpenVINO package from release page. The recommended version to use is 2026.3.0. Ready to use Binaries of the r"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU-only",
+    "rel": "support",
+    "lines": [
+     21
+    ],
+    "quotes": [
+     "- Support for CPU-only inference"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     369
+    ],
+    "note": "VitisAI encoder 缓存下载来源之一",
+    "quotes": [
+     "The VitisAI script queries the AMD Ryzen AI Whisper NPU collection on Hugging Face and downloads the `.rai` encoder cach"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

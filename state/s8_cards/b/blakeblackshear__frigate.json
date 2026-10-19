@@ -1,0 +1,89 @@
+{
+ "fn": "blakeblackshear/frigate",
+ "sha": "14bee4f8be37",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地实时目标检测的 IP 摄像头 NVR",
+  "review": "面向 Home Assistant 的完全本地化 NVR，使用 OpenCV 与 TensorFlow 对 IP 摄像头画面做实时目标检测，无需将视频上传云端。通过自定义组件与 Home Assistant 集成，以低开销运动检测决定何时何地运行目标检测，经 MQTT 与其他系统通信。支持基于检测对象的录像保留策略、24/7 录像、RTSP 转流及 WebRTC/MSE 低延迟实时查看。文档注明建议使用 GPU 或 AI 加速器以获得更好效果。",
+  "highlights": [
+   "本地运行 TensorFlow 实时目标检测",
+   "与 Home Assistant 通过自定义组件紧密集成",
+   "MQTT 通信，便于接入其他系统",
+   "RTSP 转流与 WebRTC/MSE 低延迟实时查看"
+  ],
+  "use_cases": [
+   "为 Home Assistant 智能家庭添加摄像头目标检测",
+   "本地录像并按检测对象设置保留策略",
+   "多摄像头实时查看与回放检索"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "NVR",
+   "目标检测",
+   "智能家居",
+   "摄像头",
+   "本地AI"
+  ],
+  "domain": "智能家居/视频监控",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "object-detection"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供简体中文 README"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: A complete and local NVR designed for Home Assistant with AI object detection. Uses OpenCV and Tensorflow to perform rea",
+   "L15: Use of a GPU or AI accelerator is highly recommended. AI accelerators will outperform even the best CPUs with very littl"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

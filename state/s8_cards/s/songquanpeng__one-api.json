@@ -1,0 +1,222 @@
+{
+ "fn": "songquanpeng/one-api",
+ "sha": "af5ec4d38dfd",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开发者的 LLM API 网关：统一多家模型接口并管理分发 key",
+  "review": "以 Go 编写的 LLM API 管理与分发系统，将数十家模型服务商的接口统一为 OpenAI API 格式对外提供。核心机制包括渠道管理、负载均衡、失败重试、令牌（额度、过期时间、IP 范围、模型范围）与兑换码管理、多机部署主从节点、按分组的倍率计费。默认 SQLite 存储，可通过环境变量切换 MySQL/PostgreSQL 并配置 Redis 缓存。提供单可执行文件、Docker 镜像及宝塔、Sealos、Zeabur、Render 等部署途径。README 提醒需遵循 OpenAI 使用条款及中国区备案要求。",
+  "highlights": [
+   "支持 30 余家模型服务商，统一以 OpenAI API 格式访问",
+   "令牌与兑换码管理：额度、过期时间、IP 范围、模型访问控制",
+   "多渠道负载均衡与失败自动重试，支持多机主从部署",
+   "单可执行文件 + Docker 镜像，支持 SQLite/MySQL/PostgreSQL"
+  ],
+  "use_cases": [
+   "为团队或应用统一管理多家模型服务商的 API key",
+   "将 key 二次分发给多个用户并控制额度与权限",
+   "在多个上游渠道间做负载均衡和失败重试",
+   "自建 LLM 网关供前端应用（如 ChatGPT Next Web）接入"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://openai.justsong.cn",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "API网关",
+   "key管理/分发",
+   "多模型接入",
+   "LLM基础设施"
+  ],
+  "domain": "LLM 基础设施/API 网关",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "azure",
+   "anthropic",
+   "groq",
+   "ollama",
+   "cohere",
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文 README（含日英多语言入口）",
+   "支持文心一言、通义千问、讯飞星火、智谱 ChatGLM 等国内模型",
+   "提供宝塔面板部署教程"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: _✨ 通过标准的 OpenAI API 格式访问所有的大模型，开箱即用 ✨_",
+   "L57: 1. 支持多种大模型：",
+   "L89: 6. 支持**令牌管理**，设置令牌的过期时间、额度、允许的 IP 范围以及允许的模型访问。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     58
+    ],
+    "quotes": [
+     " + [x] OpenAI ChatGPT 系列模型（支持 Azure OpenAI API）"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     59
+    ],
+    "quotes": [
+     " + [x] Anthropic Claude 系列模型 (支持 AWS Claude)"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     " + [x] Groq"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     73
+    ],
+    "quotes": [
+     " + [x] Ollama"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "support",
+    "lines": [
+     77
+    ],
+    "quotes": [
+     " + [x] Cohere"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     78
+    ],
+    "quotes": [
+     " + [x] DeepSeek"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     16,
+     119,
+     122,
+     135,
+     160
+    ],
+    "quotes": [
+     " docker pull",
+     "docker run --name one-api -d --restart always -p 3000:3000 -e TZ=Asia/Shanghai -v /home/ubuntu/data/one-api:/data justso",
+     "docker run --name one-api -d --restart always -p 3000:3000 -e SQL_DSN=\"root:123456@tcp(localhost:3306)/oneapi\" -e TZ=Asi",
+     "更新命令：`docker run --rm -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower -cR`",
+     "### 基于 Docker Compose 进行部署"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     173,
+     175
+    ],
+    "quotes": [
+     "1. 从 GitHub Releases 下载可执行文件或者从源码编译：",
+     "   git clone https://github.com/songquanpeng/one-api.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     58,
+     209,
+     210,
+     213,
+     218
+    ],
+    "note": "支持接入的模型系列及配合使用的第三方前端，非替代/竞品关系",
+    "quotes": [
+     " + [x] OpenAI ChatGPT 系列模型（支持 Azure OpenAI API）",
+     "#### ChatGPT Next Web",
+     "项目主页：https://github.com/Yidadaa/ChatGPT-Next-Web",
+     "docker run --name chat-next-web -d -p 3001:3000 yidadaa/chatgpt-next-web",
+     "#### ChatGPT Web"
+    ]
+   },
+   {
+    "term": "Coze",
+    "rel": "mention",
+    "lines": [
+     76
+    ],
+    "note": "功能列表中列为支持的模型服务，非替代/竞品对象",
+    "quotes": [
+     " + [x] Coze"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

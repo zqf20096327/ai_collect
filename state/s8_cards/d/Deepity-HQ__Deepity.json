@@ -1,0 +1,122 @@
+{
+ "fn": "Deepity-HQ/Deepity",
+ "sha": "461cf39a1f53",
+ "source": "readme",
+ "identity": {
+  "one_liner": "C++/CUDA 实现的预测编码网络训练引擎库",
+  "review": "面向科研与高性能计算开发者的裸 C++/CUDA 预测编码网络（PCN）引擎：以逐层局部预测误差替代全局反向传播，避免存储反向计算图，宣称 O(1) 内存占用；提供经典 settling（SimplePCN/FullPCN）与 Direct Kolen-Pollack（DKPPCN）两种训练方式。手写 AVX2/AVX-512/SSE 激活核与 OpenBLAS/MKL 后端，CUDA 后端在 A100 上开发。多数用户经 nanobind 的 pydeepity Python 绑定使用。需从源码经 build.py 构建；ImageNet 规模训练仍在进行中，项目自述从学术研究转型为基础设施工具。",
+  "highlights": [
+   "逐层局部学习规则替代全局反向传播，不存储反向计算图",
+   "SIMD（AVX2/AVX-512/SSE）手写激活核，Tanh/Sigmoid/GELU 各尺寸测得加速",
+   "DKPPCN 变体：2 推理步即可训练，速度/精度权衡曲线另一端",
+   "pydeepity Python 绑定（nanobind）声明网络并训练"
+  ],
+  "use_cases": [
+   "用预测编码算法训练小型分类网络（如 MNIST）",
+   "研究局部学习规则与反向传播的内存/速度差异",
+   "在 CPU 或 NVIDIA GPU 上跑 PC 训练基准并与 ngc-learn 对照"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": "cpu-ok",
+  "install_friction": "high",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    171,
+    176
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "预测编码",
+   "神经科学启发的学习规则",
+   "HPC/SIMD",
+   "C++机器学习库"
+  ],
+  "domain": "机器学习/神经计算",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: A high-performance C++ / CUDA engine for Predictive Coding Networks (PCNs) and Direct Kolen-Pollack algorithms.",
+   "L17: Deepity trains networks differently. Each layer holds a belief about its own activity and compares it against a top-down"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     147,
+     148,
+     149
+    ],
+    "quotes": [
+     "git clone https://github.com/Ra4ster/Deepity.git",
+     "cd Deepity",
+     "python build.py Release OpenBLAS --fast"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU-only",
+    "rel": "support",
+    "lines": [
+     29,
+     138
+    ],
+    "note": "引擎可在无 CUDA 的 CPU-only 路径构建运行，基准数据为 CPU 路径",
+    "quotes": [
+     "Development and testing for the CUDA backend happens on the Ohio Supercomputer Center (Project PAS0350), on NVIDIA A100 ",
+     "- CUDA Toolkit (optional -- the CUDA backend is detected automatically if present; the project builds and runs CPU-only "
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

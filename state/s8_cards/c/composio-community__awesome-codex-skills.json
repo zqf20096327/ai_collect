@@ -1,0 +1,163 @@
+{
+ "fn": "composio-community/awesome-codex-skills",
+ "sha": "4a916845a092",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 Codex CLI/API 用户提供自动化工作流技能的策展清单",
+  "review": "由 Composio 维护的 Codex 技能清单，按开发工具、效率协作、写作、数据分析、元工具等类别收录数十个 SKILL.md 格式的技能条目，覆盖代码审查、迁移审计、会议纪要、发票整理、幻灯片生成等场景。提供 Python 技能安装脚本与手动复制两种安装方式，技能放入 $CODEX_HOME/skills 目录后由 Codex 按 description 触发；同时包含技能创建模板与最佳实践说明。",
+  "highlights": [
+   "分类收录数十个 Codex 技能（SKILL.md 格式）",
+   "提供 skill-installer Python 脚本从 GitHub 安装技能",
+   "含 SKILL.md 模板与渐进式披露的技能创建指南",
+   "配套 Composio MCP Gateway 提供 1,000+ 集成的接入入口"
+  ],
+  "use_cases": [
+   "给 Codex CLI 查找并安装工作流自动化技能",
+   "按模板编写自己的 Codex 技能",
+   "用技能自动生成会议纪要、发票整理、PR 审查等产出"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome清单",
+   "Codex技能",
+   "编码Agent",
+   "工作流自动化"
+  ],
+  "domain": "LLM 基础设施/Agent 技能清单",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "workflow-automation",
+   "coding-agent",
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L25: A curated list of practical Codex skills for automating workflows across the Codex CLI and API.",
+   "L56: Codex skills are modular instruction bundles that tell Codex how to execute a task the way you want it done. Each skill "
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     63,
+     77,
+     82,
+     108
+    ],
+    "note": "以 Claude Code/Claude 产品形式被提及，非接入的模型提供方",
+    "quotes": [
+     "- bringyour-migration-auditor - Audit Claude Code to Codex harness migrations for AGENTS.md/CLAUDE.md scope, hooks, MCP ",
+     "- polywave - Parallel agent coordination with structural merge safety. Scout decomposes, Wave agents implement in isolat",
+     "- connect-apps/ - Wire up Composio CLI connections for Claude and kick off app workflows from the shell.",
+     "- unslop - External repo: CLI and MCP server that removes AI writing patterns from text: tricolons, em-dash overuse, hed"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     38,
+     41
+    ],
+    "note": "git clone 仓库后用脚本安装技能",
+    "quotes": [
+     "git clone https://github.com/ComposioHQ/awesome-codex-skills.git",
+     "python skill-installer/scripts/install-skill-from-github.py --repo ComposioHQ/awesome-codex-skills --path meeting-notes-"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     75
+    ],
+    "note": "AuraKit 单个技能的安装途径，非本清单主体安装方式",
+    "quotes": [
+     "- AuraKit - All-in-one skill framework: 46 modes, 23 sub-agents, 6-layer OWASP security, 10 lifecycle hooks, ~55% token "
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     63,
+     77,
+     108
+    ],
+    "note": "部分技能声明兼容或迁移对象，非替代/竞品",
+    "quotes": [
+     "- bringyour-migration-auditor - Audit Claude Code to Codex harness migrations for AGENTS.md/CLAUDE.md scope, hooks, MCP ",
+     "- polywave - Parallel agent coordination with structural merge safety. Scout decomposes, Wave agents implement in isolat",
+     "- unslop - External repo: CLI and MCP server that removes AI writing patterns from text: tricolons, em-dash overuse, hed"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     108,
+     125
+    ],
+    "quotes": [
+     "- unslop - External repo: CLI and MCP server that removes AI writing patterns from text: tricolons, em-dash overuse, hed",
+     "- agent-deep-links/ - Build and validate deep links for Codex, Cursor, and VS Code with Slack-safe formatting and fallba"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

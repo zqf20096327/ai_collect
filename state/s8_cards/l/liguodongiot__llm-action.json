@@ -1,0 +1,231 @@
+{
+ "fn": "liguodongiot/llm-action",
+ "sha": "0ef3064a1bcf",
+ "source": "readme",
+ "identity": {
+  "one_liner": "大模型工程化与实践教程合集：覆盖训练、推理、压缩、评测",
+  "review": "以文章目录形式组织的大模型工程化知识库，内容按 LLM 训练、推理、压缩、测评、数据工程、提示工程、算法架构、应用开发等章节编排。训练部分汇总从 6B 到 65B、覆盖全量微调与 LoRA/QLoRA/P-Tuning v2 等高效微调及 RLHF 的实战教程；推理部分列出 vLLM、SGLang、TensorRT-LLM 等引擎与优化技术文章；另含分布式训练并行技术系列与量化/剪枝/蒸馏原理讲解。各条目多为外链教程，部分附带配套代码。",
+  "highlights": [
+   "覆盖 6B–65B 模型的全量微调、LoRA/QLoRA/P-Tuning v2 与 RLHF 实战教程",
+   "九篇分布式训练并行技术系列（数据/流水线/张量/序列/自动并行等）",
+   "推理引擎汇总：vLLM、SGLang、TensorRT-LLM、LMDeploy 及轻量实现",
+   "量化（GPTQ/AWQ/SmoothQuant 等）、剪枝、知识蒸馏原理系列文章"
+  ],
+  "use_cases": [
+   "查找 LoRA/QLoRA 等高效微调方法的实战教程和配套代码",
+   "学习分布式训练并行技术的原理讲解",
+   "对比选择大模型推理引擎和推理性能压测工具",
+   "了解模型量化与压缩技术的原理系列文章"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM训练",
+   "LLM推理",
+   "模型压缩/量化",
+   "技术教程合集",
+   "LLMOps"
+  ],
+  "domain": "大模型工程化/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "llm-observability",
+   "inference-engine",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "百川智能、ChatGLM 等中文模型技术剖析条目"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L6: ## LLM训练",
+   "L120: ## LLM推理",
+   "L182: ## LLM压缩"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     135,
+     140,
+     320
+    ],
+    "quotes": [
+     "- Nano-vLLM源码注释：从头开始构建的轻量级 vLLM 实现。",
+     "- vLLM",
+     "- GuideLLM：vLLM开源的性能测试工具"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     380,
+     385,
+     399,
+     400
+    ],
+    "quotes": [
+     "- 大模型算法架构：DeepSeek技术演进及剖析",
+     "- DeepSeek 视觉语言大模型技术演进（从DeepSeek VL/VL2到DeepSeek OCR）",
+     "|DeepSeek-V4-Pro|1.6T|49B|~3.1%|384 选 6 + 1 共享|CSA + HCA|",
+     "|DeepSeek-V4-Flash|284B|13B|-|-|-|"
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "mention",
+    "lines": [
+     510
+    ],
+    "quotes": [
+     "- 一文搞懂大模型文件存储格式新宠GGUF"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     549
+    ],
+    "quotes": [
+     "- Docker Dockerfile 指令大全"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "48G显存",
+    "rel": "mention",
+    "lines": [
+     23
+    ],
+    "note": "教程中 LLaMA-65B QLoRA 微调所需显存描述，非本仓库自身要求",
+    "quotes": [
+     "|LLaMA|QLoRA|7B/65B|高效微调技术QLoRA实战，基于LLaMA-65B微调仅需48G显存，真香|配套代码|"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     46,
+     50,
+     51,
+     52,
+     53
+    ],
+    "quotes": [
+     "下面给大家分享**大模型参数高效微调技术实战**，该系列主要针对 HuggingFace PEFT 框架支持的一些高效微调技术进行讲解。",
+     "|大模型参数高效微调技术实战（一）-PEFT概述及环境搭建|N/A|HuggingFace PEFT|",
+     "|大模型参数高效微调技术实战（二）-Prompt Tuning|配套代码|HuggingFace PEFT|",
+     "|大模型参数高效微调技术实战（三）-P-Tuning|配套代码|HuggingFace PEFT|",
+     "|大模型参数高效微调技术实战（四）-Prefix Tuning / P-Tuning v2|配套代码|HuggingFace PEFT|"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     381,
+     441,
+     442
+    ],
+    "quotes": [
+     "- 大模型算法架构：QWen技术演进及剖析",
+     "- 大模型国产化适配8-基于昇腾MindIE推理工具部署Qwen-72B实战（推理引擎、推理服务化）",
+     " - Qwen-72B、Baichuan2-7B、ChatGLM3-6B"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     401,
+     402
+    ],
+    "quotes": [
+     "|Kimi K2.6|1T|32B|-|-|-|",
+     "|Kimi K3|2.8T|104B|~3.7%|896 选 16 + 2 共享|69 KDA + 24 Gated MLA，3:1|"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     408
+    ],
+    "quotes": [
+     "大模型是基座，要想让其变成一款产品，我们还需要一些其他相关的技术，比如：向量数据库（Pinecone、Milvus、Vespa、Weaviate），LangChain等。"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     430,
+     505,
+     569
+    ],
+    "quotes": [
+     "随着 ChatGPT 的现象级走红，引领了AI大模型时代的变革，从而导致 AI 算力日益紧缺。与此同时，中美贸易战以及美国对华进行AI芯片相关的制裁导致 AI 算力的国产化适配势在必行。本系列将对一些国产化 AI 加速卡进行讲解。",
+     "- ChatGLM 和 ChatGPT 的技术区别在哪里？",
+     "如今人工智能的发展可谓是如火如荼，ChatGPT、Sora、文心一言等AI大模型如雨后春笋般纷纷涌现。AI大模型优势在于它能处理复杂性问题；因此，越来越多的企业需要具备**AI算法设计、AI应用开发、模型推理加速及模型压缩**等AI工程化落"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,86 @@
+{
+ "fn": "corsairdev/corsair",
+ "sha": "4e47c07bf050",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为开发者提供统一的第三方应用集成平台，供 agent 与应用调用",
+  "review": "Corsair 是一个产品集成平台，基于 REST API 构建，为第三方 API 集成提供统一语法并由官方维护适配器。同一集成层可同时服务 agent、后端服务与多租户用户仪表盘。支持自托管，也可使用 Hub 由官方托管 OAuth 刷新与 webhook。以 npm 包发布，采用 Apache 2.0 许可证。README 未给出具体安装命令与支持的服务列表。",
+  "highlights": [
+   "基于 REST API 的集成层，兼容 agent、后端服务与用户仪表盘",
+   "所有集成统一语法，适配器由项目维护",
+   "支持自托管，Hub 托管模式提供 OAuth 刷新与 webhook",
+   "开源（Apache 2.0），npm 发布"
+  ],
+  "use_cases": [
+   "为 agent 接入多个第三方 API 而不重复编写对接代码",
+   "自建多租户仪表盘让用户连接自己的应用",
+   "自托管集成平台以掌控用户 token 与数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "API集成",
+   "agent工具",
+   "开发者工具",
+   "function-calling"
+  ],
+  "domain": "开发者工具/API 集成平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L9: Corsair is a fully-featured product integration platform with a seamless DX. Build anything, from an agent working acros",
+   "L17: Most agent integration tools are MCP-only. Corsair is built on a REST API, so the same integration layer works for agent"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

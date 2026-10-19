@@ -1,0 +1,96 @@
+{
+ "fn": "richig8-web/lyn0-academy",
+ "sha": "e6c73abf05db",
+ "source": "readme",
+ "identity": {
+  "one_liner": "个人 AI agent 的分周任务包：教 agent 认识其主人",
+  "review": "面向 Hermes Agent 用户的任务包（mission pack）仓库：Mission 01 提供任务说明、由 agent 执行的访谈文档（10 个二选一 + 3 个开放问题）、SOUL/USER 两份模板，以及一个 Python 安装器。install.py 自动定位 Hermes home（Windows 为 %LOCALAPPDATA%\\hermes，macOS/Linux 为 ~/.hermes），安装前自动备份，--check 检查空缺项。模板内容会被注入到每轮系统提示中，使 agent 持有身份与主人信息。要求本机已安装并运行 Hermes Agent，Python 3.9+，无其他依赖、无网络调用。MIT 许可。",
+  "highlights": [
+   "SOUL.md / USER.md 模板注入每轮系统提示",
+   "install.py 自动定位 Hermes home 并做时间戳备份",
+   "install.py --check 报告模板中仍空白或缺失的项",
+   "访谈由 agent 运行而非用户手工填写"
+  ],
+  "use_cases": [
+   "让本地 Hermes Agent 记住我的身份、工作与边界",
+   "每周完成一个任务逐步搭建个人 agent",
+   "检查 agent 在新会话中是否自行加载了主人信息"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    66
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "个人AI",
+   "agent记忆",
+   "提示模板",
+   "本地运行",
+   "教程/任务包"
+  ],
+  "domain": "AI agent 工具/模板",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-memory"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L9: This repository holds the mission packs. One folder per week. Install it, run it, and your",
+   "L18: |`mission.md`|The mission itself: why it matters, the mechanism, the 5 steps|",
+   "L22: |`install.py`|Finds your Hermes home, backs up what's there, installs the templates|"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

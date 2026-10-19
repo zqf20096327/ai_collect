@@ -1,0 +1,129 @@
+{
+ "fn": "cloudwego/eino",
+ "sha": "46282335117d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Go 语言的 LLM/AI 应用开发框架",
+  "review": "Eino 是面向 Golang 的 LLM 应用开发框架，设计上参照 LangChain、Google ADK 等开源框架并遵循 Go 语言惯例。核心提供：可复用组件抽象（ChatModel、Tool、Retriever、ChatTemplate 等，官方实现含 OpenAI、Ollama 等）、Agent 开发工具包 ADK（工具调用、多 Agent 协作、人机协同的中断/恢复、编排为图与工作流）、全链路流式处理与回调切面（日志/追踪/指标注入）。框架由本仓库与 EinoExt、Eino Devops、EinoExamples 四部分组成，依赖 Go 1.18+，采用 Apache-2.0 许可。",
+  "highlights": [
+   "组件抽象带官方实现（OpenAI、Claude、Gemini、Ark、Ollama、Elasticsearch 等）",
+   "ADK 支持工具调用、多 Agent 协作与人机协同的中断/恢复",
+   "compose 将组件编排为图/工作流，可作为工具暴露给 Agent",
+   "编排全程自动处理流式拼接、合并与复制"
+  ],
+  "use_cases": [
+   "用 Go 构建基于 LLM 的应用与 Agent 服务",
+   "需要精确控制执行流程的领域工作流与 LLM 组合",
+   "搭建需要人机协同审批、可从检查点恢复的 Agent 流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM框架",
+   "Agent开发",
+   "Go语言",
+   "编排/工作流"
+  ],
+  "domain": "LLM 应用开发框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama",
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文版本入口",
+   "维护方为 Byte/CloudWeGo 生态（安全联系指向 Bytedance Security）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L17: **Eino['aino]** is an LLM application development framework in Golang. It draws from LangChain, Google ADK, and other op",
+   "L20: - **Components**: reusable building blocks like `ChatModel`, `Tool`, `Retriever`, and `ChatTemplate`, with official impl",
+   "L21: - **Agent Development Kit (ADK)**: build AI agents with tool use, multi-agent coordination, context management, interrup"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     20,
+     94
+    ],
+    "quotes": [
+     "- **Components**: reusable building blocks like `ChatModel`, `Tool`, `Retriever`, and `ChatTemplate`, with official impl",
+     "Eino defines component abstractions (ChatModel, Tool, Retriever, Embedding, etc.) with official implementations for Open"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     94
+    ],
+    "note": "README 以 Claude 名称列出官方实现",
+    "quotes": [
+     "Eino defines component abstractions (ChatModel, Tool, Retriever, Embedding, etc.) with official implementations for Open"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     17
+    ],
+    "note": "设计参考的开源框架之一，未自称替代或竞品",
+    "quotes": [
+     "**Eino['aino]** is an LLM application development framework in Golang. It draws from LangChain, Google ADK, and other op"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

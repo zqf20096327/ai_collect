@@ -1,0 +1,103 @@
+{
+ "fn": "microsoft/OpenRCA",
+ "sha": "3d6e8a2a7176",
+ "source": "readme",
+ "identity": {
+  "one_liner": "评测 LLM 软件故障根因分析能力的基准数据集",
+  "review": "ICLR'25 论文配套基准：给定自然语言查询，要求 LLM 分析 KPI 时序、依赖 trace 图、半结构化日志等遥测数据，定位软件故障的根因要素（时间、组件、故障类型）。覆盖 Telecom、Bank、Market 三个系统的遥测数据（经 Google Drive 分发），并提供 RCA-agent 作为基线：用 Python 做数据检索与分析，使模型专注于推理。支持结果评测、论文复现与基于自有遥测生成新任务。建议设备配置为 80GB 存储、32GB 内存。",
+  "highlights": [
+   "三个系统（Telecom/Bank/Market）的遥测数据与根因查询任务",
+   "评测脚本读取预测 CSV 并输出报告",
+   "RCA-agent 基线：Python 检索分析替代长上下文处理",
+   "可基于自有遥测数据生成新任务（task_specification.json）"
+  ],
+  "use_cases": [
+   "评测我的 LLM agent 在故障根因定位上的表现",
+   "复现论文中 RCA-agent 与基线结果",
+   "用私有遥测数据生成新的根因分析任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "基准/评测",
+   "AIOps",
+   "根因分析",
+   "LLM agent",
+   "软件工程"
+  ],
+  "domain": "软件工程/AIOps 评测",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: OpenRCA is a benchmark for assessing LLMs' root cause analysis ability in a software operating scenario. When given a na",
+   "L9: We also introduce RCA-agent as a baseline for OpenRCA. By using Python for data retrieval and analysis, the model avoids"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     58
+    ],
+    "note": "RCA-agent (Claude ver.) 归档预测示例，非专门适配",
+    "quotes": [
+     "For example, to evaluate the archived predictions of RCA-agent (Claude ver.), you can use the following command:"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

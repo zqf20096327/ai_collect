@@ -1,0 +1,109 @@
+{
+ "fn": "dailydotdev/daily",
+ "sha": "ea2d22c1b1a6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开发者的个性化新闻聚合 feed 与社区：浏览器新标签页/移动端获取技术内容",
+  "review": "daily.dev 是面向开发者的个性化新闻聚合服务：聚合 2,000+ 来源的文章、教程、发布说明与新闻，按用户关注的标签及阅读行为生成个性化 feed。产品形态包括 Chrome/Edge 新标签页扩展、Web 应用与 iOS/Android 移动应用，核心功能免费，另提供付费订阅 daily.dev Plus；商业模式为广告支持。代码按 AGPL-3.0 开源，前端应用位于 dailydotdev/apps 仓库，本仓库为项目中心枢纽与文档所在。每个账号可创建公共 API 的个人访问令牌，同一 API 亦提供 MCP server 供 agent 客户端接入。",
+  "highlights": [
+   "聚合 2,000+ 来源的内容并按标签与阅读行为个性化 feed",
+   "Chrome/Edge 新标签页扩展、Web 应用与 iOS/Android 应用多种形态",
+   "公共 API 提供个人访问令牌，并以 MCP server 形式供 agent 接入",
+   "Squads 社区、评论、书签与全站搜索功能"
+  ],
+  "use_cases": [
+   "在浏览器新标签页按自己关注的标签浏览技术资讯",
+   "通过公共 API 或 MCP 在自己的工具或 AI agent 中读取 feed、搜索与书签",
+   "在 Squads 社区中与开发者分享讨论内容"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://daily.dev",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "新闻聚合",
+   "浏览器扩展",
+   "开发者社区",
+   "MCP"
+  ],
+  "domain": "开发者工具/内容聚合与社区",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L35: daily.dev is a free, open source personalized news feed for developers, used by millions of developers worldwide. It agg",
+   "L107: Yes. Every account can create a free personal access token for the daily.dev public API: your feed, search, bookmarks, c",
+   "L95: Yes. daily.dev is open source under the AGPL-3.0 license. This repository is the central hub, and the frontend applicati"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     107
+    ],
+    "note": "MCP server 提及可供 Claude 使用，Claude 为提及对象而非专门适配声明",
+    "quotes": [
+     "Yes. Every account can create a free personal access token for the daily.dev public API: your feed, search, bookmarks, c"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     107
+    ],
+    "note": "仅作为可接入 MCP server 的 agent 客户端提及",
+    "quotes": [
+     "Yes. Every account can create a free personal access token for the daily.dev public API: your feed, search, bookmarks, c"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

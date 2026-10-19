@@ -1,0 +1,192 @@
+{
+ "fn": "screenpipe/screenpipe",
+ "sha": "0241ed1383ce",
+ "source": "readme",
+ "identity": {
+  "one_liner": "持续录制电脑屏幕与音频，为企业/个人构建可搜索的 AI 记忆",
+  "review": "本地持续捕获屏幕与音频的应用：事件驱动截屏（配 accessibility tree，OCR 兜底）、Whisper 本地语音转写与说话人识别、自然语言检索（SQLite FTS5）、时间线回放。通过 Markdown 定义的 Pipes 运行 AI agent（如 meeting-summary、day-recap），带 YAML 确定性数据权限控制；以 MCP server 与 localhost REST API 向 AI 助手暴露屏幕历史。source-available 许可：个人非商用免费，商用需购买许可。桌面应用支持 macOS/Windows/Linux，也可经 CLI 运行。",
+  "highlights": [
+   "事件驱动截屏 + accessibility tree/OCR 兜底，本地 Whisper (Large-V3-Turbo) 转写",
+   "Pipes 插件系统：markdown 定义的定时 AI agent，含三层确定性数据权限",
+   "MCP server 零配置接入 Claude Desktop、Cursor 等 MCP 客户端",
+   "localhost REST API 与 JS/TS SDK，支持原始 SQL 访问 SQLite"
+  ],
+  "use_cases": [
+   "回忆/检索自己在电脑上看过的内容与会议录音",
+   "给 AI 编码助手提供工作上下文",
+   "自动生成会议纪要、每日总结与时间分配报告",
+   "分析团队工作流，找出可自动化的环节"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "dual",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "屏幕录制",
+   "AI记忆",
+   "MCP",
+   "本地优先",
+   "工作流自动化"
+  ],
+  "domain": "效率工具/AI 记忆基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "workflow-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文翻译（L146），无其他中文来源信号"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12:  Continuously record your company's computer work, map workflows, help find work worth automating, and power agents' con",
+   "L51: - **Local-first** - capture history stays on your device by default. Cloud AI, sync, integrations, and managed team stor",
+   "L166: - **License**: Screenpipe Commercial License (source-available; personal, non-commercial use permitted, commercial use r"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     73,
+     76,
+     80,
+     112,
+     171
+    ],
+    "note": "Claude 相关命令与编码 agent 提及，非模型接入适配",
+    "quotes": [
+     "claude mcp add screenpipe -- npx -y screenpipe-mcp@latest",
+     "then ask claude `what did i see in the last 5 mins?` or `summarize today conversations` or `create a pipe that updates l",
+     "If Claude Code, Codex, Gemini CLI, Cursor, or another coding agent is working from this repository, give it this instruc",
+     "requirements. Agents should also read AGENTS.md; CLAUDE.md",
+     "- **Developers** who want to give AI coding assistants (Cursor, Claude Code, Cline, Continue) context about what they're"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     244
+    ],
+    "note": "窗外行，属其他语境提及",
+    "quotes": [
+     "- **Local AI support**: Use a supported local model such as Ollama for inference on your device. Configure transcription"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     65,
+     71,
+     87
+    ],
+    "note": "npx screenpipe 为本产品 CLI 安装/运行途径",
+    "quotes": [
+     "npx screenpipe record",
+     "npx screenpipe setup",
+     "npx screenpipe setup"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "3 GB RAM",
+    "rel": "mention",
+    "lines": [
+     96
+    ],
+    "note": "窗口内为 capture RAM 估计 0.5-3GB；建议 8GB 在 L187",
+    "quotes": [
+     "- RAM: approximately 0.5-3 GB for capture; local models and additional workloads can use more"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     80,
+     171
+    ],
+    "quotes": [
+     "If Claude Code, Codex, Gemini CLI, Cursor, or another coding agent is working from this repository, give it this instruc",
+     "- **Developers** who want to give AI coding assistants (Cursor, Claude Code, Cline, Continue) context about what they're"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     80,
+     171,
+     233
+    ],
+    "quotes": [
+     "If Claude Code, Codex, Gemini CLI, Cursor, or another coding agent is working from this repository, give it this instruc",
+     "- **Developers** who want to give AI coding assistants (Cursor, Claude Code, Cline, Continue) context about what they're",
+     "- Works with Claude Desktop, Cursor, VS Code (Cline, Continue), and any MCP-compatible client"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     278
+    ],
+    "quotes": [
+     "- **AI chat assistants**: ChatGPT (via MCP), Claude Desktop (via MCP), any MCP-compatible client"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    166
+   ],
+   "note": "source-available 商业许可：非商用免费，商用需授权",
+   "quotes": [
+    "- **License**: Screenpipe Commercial License (source-available; personal, non-commercial use permitted, commercial use r"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

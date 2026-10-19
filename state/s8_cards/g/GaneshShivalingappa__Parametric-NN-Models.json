@@ -1,0 +1,90 @@
+{
+ "fn": "GaneshShivalingappa/Parametric-NN-Models",
+ "sha": "00d34cec202d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "对比 PINN 与 FEM 增强神经网络在材料参数反演中的研究项目",
+  "review": "科研代码项目：在一维杆受拉场景下，对物理信息神经网络（PINN）、有限元增强神经网络（FEM-NN）与基于 FEM 数据的神经网络（FEM-Data-NN）进行性能与训练时间对比，用于材料参数辨识的逆向问题求解，可作为代理模型。结果与解析解基准对比并计算相对误差。通过 Singularity 容器分发，含容器构建命令与多个 singularity run --app 入口用于复现图表，未提供 pip 安装。",
+  "highlights": [
+   "PINN / FEM-NN / FEM-Data-NN 三种模型的对比分析",
+   "以解析解为基准计算相对误差",
+   "训练时间分析（固定节点变样本 / 固定样本变节点）",
+   "Singularity 容器化复现流程"
+  ],
+  "use_cases": [
+   "复现论文中的材料参数辨识对比实验",
+   "研究 PINN 与 FEM 增强方法的计算效率差异",
+   "作为逆向问题代理模型的参考实现"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "科学计算",
+   "物理信息神经网络",
+   "有限元",
+   "代理模型"
+  ],
+  "domain": "计算力学/科学机器学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: In this project, we conducted a comparative analysis between the Physics Informed Neural Network (PINN) and the Finite E",
+   "L14: The container can be built by running the follwing command in the terminal."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

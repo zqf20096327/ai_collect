@@ -1,0 +1,122 @@
+{
+ "fn": "p-e-w/heretic",
+ "sha": "59a085290697",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自动去除语言模型审查（abliteration）的命令行工具",
+  "review": "Heretic 是一个对 transformer 语言模型执行去审查（移除安全对齐）的工具，采用方向消融（abliteration）实现，并用 Optuna 的 TPE 参数优化器自动搜索消融参数，目标为同时最小化拒答数与与原模型的 KL 散度。支持多数稠密模型、部分多模态、MoE 及混合架构，纯状态空间模型暂不支持。通过 pip 安装后以命令行运行，提供内置评估、量化（bitsandbytes）、保存、上传 Hugging Face 与聊天测试等功能。",
+  "highlights": [
+   "方向消融 + TPE 自动参数优化，无需手动调参与 transformer 内部知识",
+   "同时最小化拒答数与 KL 散度以保留原模型能力",
+   "运行前自动基准测试系统以确定最优 batch size",
+   "支持 bitsandbytes 量化以降低 VRAM 占用，完成后可上传 Hugging Face"
+  ],
+  "use_cases": [
+   "对已发布的开源模型自动生成去审查版本",
+   "复现/评估消融模型的拒答率与 KL 散度指标",
+   "在不了解 transformer 内部机制的情况下批量处理模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "模型去审查",
+   "abliteration",
+   "模型修改",
+   "LLM工具"
+  ],
+  "domain": "LLM 模型修改工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: Heretic is a tool that removes censorship (aka \"safety alignment\") from",
+   "L13: with a TPE-based parameter optimizer powered by Optuna.",
+   "L89: pip install -U heretic-llm"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     89
+    ],
+    "quotes": [
+     "pip install -U heretic-llm"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "16gb vram",
+    "rel": "mention",
+    "lines": [
+     70
+    ],
+    "note": "用户评论中提及运行某模型的硬件语境，非本产品自身硬件要求",
+    "quotes": [
+     "> Has been the best unquantized abliterated model that I have been able to run on 16gb vram.\""
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     90,
+     93
+    ],
+    "note": "Qwen 模型作为示例/输入对象出现，非竞品或替代关系",
+    "quotes": [
+     "heretic Qwen/Qwen3-4B-Instruct-2507",
+     "Replace `Qwen/Qwen3-4B-Instruct-2507` with whatever model you want to decensor."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

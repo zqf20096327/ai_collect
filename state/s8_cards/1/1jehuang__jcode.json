@@ -1,0 +1,119 @@
+{
+ "fn": "1jehuang/jcode",
+ "sha": "04dbdf9fb063",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Rust 编写的编码 agent 运行器：并行跑大量 agent 且低内存",
+  "review": "用 Rust 编写的终端编码 agent 工具（TUI/CLI），面向多 agent 并行开发流程。核心机制：无头 swarm worker 每会话额外内存约 3.1 MB，支持在同一仓库生成多个 agent 并由服务器管理协作（文件变更通知、DM/广播消息、自动冲突处理）；agent 可自主生成子 swarm。附带 agentgrep 检索工具返回文件结构并按已见内容裁剪结果以节省上下文。安装提供 macOS/Linux 一键脚本，Windows 另有说明。",
+  "highlights": [
+   "多 agent swarm：服务器管理的协作、消息通道与冲突通知",
+   "agentgrep 工具返回文件结构并自适应裁剪以节省上下文",
+   "支持 Claude OAuth 与 OpenAI Codex OAuth 等多种 provider",
+   "self dev 模式：agent 可修改、构建、测试自身源码并热重载"
+  ],
+  "use_cases": [
+   "在同一仓库并行运行数十个编码 agent",
+   "让多个 agent 协作修改代码并自动处理文件冲突",
+   "作为终端 TUI 编码 agent 日常开发工具"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/1jehuang/jcode/releases/download/readme-assets/jcode-yc-launch.mp4",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "编码agent",
+   "TUI/CLI",
+   "多agent协作",
+   "Rust"
+  ],
+  "domain": "开发工具/AI 编码",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "Claude Code"
+  ],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7:  High-performance coding agents.",
+   "L8:  Run dozens of agents in parallel without melting your machine. More agents, less RAM, no lag.",
+   "L78: Spawn two or more agents in the same repo, and they will automatically be managed by the server to allow native collabor",
+   "L111: Supports a wide range of providers, including Claude OAuth and OpenAI Codex OAuth."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     111
+    ],
+    "note": "README 提到支持 Claude OAuth 等 provider，未列专门适配细节",
+    "quotes": [
+     "Supports a wide range of providers, including Claude OAuth and OpenAI Codex OAuth."
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "competitor",
+    "lines": [
+     49,
+     66
+    ],
+    "note": "基准对比对象",
+    "quotes": [
+     "|**Claude Code**|~164 MB|**~54× more RAM**|",
+     "|**Claude Code**|3512.8 ms|**72.2× slower**|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

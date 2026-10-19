@@ -1,0 +1,99 @@
+{
+ "fn": "dyad-sh/dyad",
+ "sha": "82ce94d93cda",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地运行的开源 AI 应用构建器，面向进阶用户",
+  "review": "Dyad 是一个在本地机器上运行的开源 AI 应用构建器，定位为 Lovable、v0、Bolt 的替代品。采用自带 API 密钥（bring your own keys）模式，用户使用自己的 AI API 密钥，无需注册即可下载使用，支持 Mac 与 Windows 双平台。代码采用 Apache 2.0 许可证，仓库中 `src/pro` 目录之外的代码开源。项目维护 Reddit 社区（r/dyadbuilders）供用户分享项目与交流。",
+  "highlights": [
+   "本地运行，自带 API 密钥，无供应商锁定",
+   "支持 Mac 与 Windows 跨平台",
+   "无需注册，下载即用",
+   "代码以 Apache 2.0 许可开源（src/pro 除外）"
+  ],
+  "use_cases": [
+   "在本地机器上用 AI 生成应用",
+   "使用自己的 AI API 密钥构建应用",
+   "参与 AI 应用构建社区交流项目"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI应用构建器",
+   "本地优先",
+   "低代码/无代码",
+   "生成式AI"
+  ],
+  "domain": "AI 应用开发工具",
+  "alternative_to": [
+   "Lovable"
+  ],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Dyad is a local, open-source AI app builder. It's fast, private, and fully under your control — like Lovable, v0, or Bol",
+   "L11: - ⚡️ **Local**: Fast, private and no lock-in.",
+   "L12: - 🛠 **Bring your own keys**: Use your own AI API keys — no vendor lock-in."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Lovable",
+    "rel": "alternative",
+    "lines": [
+     3
+    ],
+    "note": "自称类似/替代 Lovable 的本地运行版本",
+    "quotes": [
+     "Dyad is a local, open-source AI app builder. It's fast, private, and fully under your control — like Lovable, v0, or Bol"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

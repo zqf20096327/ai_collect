@@ -1,0 +1,152 @@
+{
+ "fn": "google/magika",
+ "sha": "84a412b0fbbd",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者与安全场景用的 AI 文件类型检测工具",
+  "review": "基于深度学习的文件内容类型检测工具：模型体积约数 MB，可在单 CPU 上毫秒级完成识别，支持 200+ 内容类型（含二进制与文本），训练与评估数据集约 1 亿样本。提供 Rust 编写的命令行工具、Python API，以及 Rust、JavaScript/TypeScript（实验性 npm 包）和 Go（开发中）绑定；支持递归扫描目录、按内容类型的阈值系统与多种预测模式（high-confidence/medium-confidence/best-guess）。README 注明非 Google 官方项目。",
+  "highlights": [
+   "CLI、Python API 与 Rust/JS/Go 多语言绑定",
+   "200+ 内容类型，~100M 样本训练评估",
+   "单 CPU 每文件推理约 5ms，近恒定耗时与文件大小无关",
+   "按内容类型阈值与多种预测模式控制误判容忍度"
+  ],
+  "use_cases": [
+   "安全扫描前识别上传文件的真实类型",
+   "批量递归扫描目录做内容类型归类",
+   "在浏览器或 Node 环境中做文件类型检测"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "README 提及 ICSE 2025 研究论文（L22，未附直链）",
+  "demo_url": "README 提及浏览器本地运行的 web demo（L24，未附直链）",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "文件类型检测",
+   "安全",
+   "CLI工具",
+   "深度学习"
+  ],
+  "domain": "开发工具/安全",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "cybersecurity"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: Magika is a novel AI-powered file type detection tool that relies on the recent advance of deep learning to provide accu",
+   "L28: - Available as a command line tool written in Rust, a Python API, and additional bindings for Rust, JavaScript/TypeScrip"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     13,
+     14,
+     48,
+     50,
+     76
+    ],
+    "quotes": [
+     "PyPI Monthly Downloads",
+     "PyPI Downloads",
+     "Via `magika` python package:",
+     "pipx install magika",
+     "pip install magika"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     53,
+     55
+    ],
+    "quotes": [
+     "Via brew (macOS / Linux)",
+     "brew install magika"
+    ]
+   },
+   {
+    "term": "cargo",
+    "rel": "support",
+    "lines": [
+     68,
+     70
+    ],
+    "quotes": [
+     "Via `magika-cli` Rust package:",
+     "cargo install --locked magika-cli"
+    ]
+   },
+   {
+    "term": "go",
+    "rel": "mention",
+    "lines": [
+     28
+    ],
+    "note": "Go 绑定 WIP，未提供 go install 途径",
+    "quotes": [
+     "- Available as a command line tool written in Rust, a Python API, and additional bindings for Rust, JavaScript/TypeScrip"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     79,
+     82
+    ],
+    "quotes": [
+     "### JavaScript package",
+     "npm install magika"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

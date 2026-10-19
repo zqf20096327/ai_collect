@@ -1,0 +1,125 @@
+{
+ "fn": "bryanbao-lab/blade-slides",
+ "sha": "f6c135483226",
+ "source": "readme",
+ "identity": {
+  "one_liner": "将已验收幻灯片图片还原为可编辑 PowerPoint 的 Agent 技能包",
+  "review": "面向 AI Agent 的 SKILL 包：通过图层契约（layer contract）把获认可的平面幻灯片图片分类为原生文本、原生形状、透明资产与固定场景元素，重建为可在 Microsoft PowerPoint 中实际编辑的 PPTX。配套确定性 QA 脚本（契约验证、人类可编辑性审计、自检），支持单页重建与多页 deck 的多 Agent 编排。需 Python 3.10+ 与真实 PowerPoint 做最终验收；定位为保真优先的分层可编辑，非自动全量矢量化。",
+  "highlights": [
+   "图层契约将对象分类为 native_text/native_shape/transparent_png 等类型",
+   "确定性 QA 脚本：validate_layer_contract、audit_human_editability、self_check",
+   "V2.2.0 支持多页 deck 的有界多 Agent 编排",
+   "中英双语 SKILL 与参考资料，可安装到 Codex 等 Agent 平台的 skill 目录"
+  ],
+  "use_cases": [
+   "把设计定稿的图片型 PPT/PDF 还原为可编辑的 PPTX 交付",
+   "审计已交付 deck 是否存在伪可编辑问题",
+   "在 AI Agent 中通过图层契约逐页重建并验证幻灯片"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "PPT生成/还原",
+   "agent-skill",
+   "文档处理",
+   "办公自动化"
+  ],
+  "domain": "办公文档/Agent 技能",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "document-parsing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文优先双语 README",
+   "完整中文 SKILL 与中文参考资料（L24-L29）"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L9: 先用图像方式制作 PPT，往往能得到很好的视觉效果；但最终页面通常会变成一张平面图。BLADE 提供一套 Agent 工作流、图层契约和确定性 QA 脚本，把已验收设计还原成实用的 PowerPoint 图层系统。",
+   "L59: 需要：能读取 skill/instruction 目录的 AI Agent、Python 3.10+、Pillow、python-pptx；用于处理干净底图与透明素材的图像编辑或生成能力；以及用于最终验收的真实 Microsoft Powe",
+   "L79: 将仓库克隆或复制到平台的 skill/instruction 目录，并命名为 `blade-slides`。若平台忽略 YAML front matter，直接提供 `SKILL.md` 或中文场景下的 `SKILL.zh-CN.md`；同"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     66
+    ],
+    "note": "git clone 到 Agent skill 目录为官方安装方式",
+    "quotes": [
+     "git clone https://github.com/bryanbao-lab/blade-slides.git ~/.codex/skills/blade-slides"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     67,
+     114
+    ],
+    "note": "pip install -r requirements.txt 安装依赖，非发布为 PyPI 包",
+    "quotes": [
+     "python3 -m pip install -r ~/.codex/skills/blade-slides/requirements.txt",
+     "python3 -m pip install -r requirements.txt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,216 @@
+{
+ "fn": "guillaumemeyer/watermarks-remover",
+ "sha": "3b57560c781d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给内容所有者去除多厂商 AI 水印/溯源标记的 agent skill 与本地服务",
+  "review": "由 agent skill（纯 Markdown 薄客户端，经 HTTP 调用）与 Python stdlib 服务两部分组成，用于清除用户自有内容中的 AI 溯源标记。分三层：A 层确定性脚本清理不可见 Unicode/bidi/标签字符；B 层借助模型改写处理统计型文本水印（可选）；文件层读取 C2PA/EXIF/XMP/文档属性，覆盖 PNG、JPEG、PDF、DOCX、MP4 等多种格式。支持安装到 Claude Code、Codex、Cursor、Grok 等宿主，并提供 Claude Code PostToolUse hook 与 pre-commit 门禁实现确定性清理。需 Python 3.10+；hook 无法改写聊天消息本身。",
+  "highlights": [
+   "三层清理：不可见 Unicode（确定性脚本）、统计型文本水印（模型改写）、文件元数据（C2PA/EXIF/XMP）",
+   "skill 为无代码 HTTP 薄客户端，宿主无需 Python；服务仅需 Python 3.10+ stdlib 无依赖",
+   "支持 Claude Code/Codex/Cursor/Cowork/Grok 多宿主安装，含 Claude Code plugin marketplace 一键安装",
+   "PostToolUse hook 提供确定性 check/clean 两种模式，并支持 pre-commit 门禁与 SARIF 导出"
+  ],
+  "use_cases": [
+   "清理自己用 AI 生成文档中的 C2PA 与 EXIF 元数据",
+   "在 Claude Code 中通过 hook 自动检测/清理 agent 写出文件中的溯源标记",
+   "git 提交前用 pre-commit 门禁拦截带水印文件",
+   "为 claude.ai/Cowork 云会话打包上传自包含的纯文本清理 skill"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "水印清理",
+   "内容溯源/C2PA",
+   "Agent Skills",
+   "隐私"
+  ],
+  "domain": "内容安全/隐私工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "xai"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L14: Agent skill + stdlib Python service to strip **multi-vendor AI provenance marks** from text and files — for privacy and ",
+   "L37: (Python 3.10+ stdlib, no dependencies):",
+   "L22: Vendors / ecosystems (class-level): **Claude**, **Gemini / SynthID-Text**, **OpenAI** provenance surfaces, **open-LLM** "
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker",
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     22,
+     34,
+     40,
+     45
+    ],
+    "quotes": [
+     "Vendors / ecosystems (class-level): **Claude**, **Gemini / SynthID-Text**, **OpenAI** provenance surfaces, **open-LLM** ",
+     "In Claude Code, the fastest route is the bundled",
+     "python3 install_skill.py --skill remove-ai-marks --target claude-code",
+     "|Claude Code (personal)|`--target claude-code`|`~/.claude/skills/<skill>` (honors `CLAUDE_CONFIG_DIR`)|"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "compat",
+    "lines": [
+     209,
+     212,
+     213,
+     214
+    ],
+    "note": "Grok Build 通过符号链接目录接入 skill",
+    "quotes": [
+     "### Grok",
+     "# Grok Build / project-local",
+     "mkdir -p .grok/skills",
+     "ln -sfn \"$(pwd)/skills/remove-ai-marks\" .grok/skills/remove-ai-marks"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "deepseek",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     245,
+     253,
+     255,
+     257
+    ],
+    "note": "文档提及 Docker/compose 用于完整基础设施，本产品路径明确\"no Docker\"",
+    "quotes": [
+     "The fastest path is a local HTTP server (Python 3.10+ stdlib only — no deps, no Docker):",
+     "### Windows (no Docker)",
+     "See docs/windows-autostart.md for auto-starting the service at Windows login without Docker.",
+     "For the whole infra (core + optional harness/heavy backends), see Docker / compose below."
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU-only",
+    "rel": "none",
+    "lines": [],
+    "note": "窗外行无法验证；README 仅声明 Python 3.10+ stdlib 要求",
+    "quotes": []
+   }
+  ],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     34,
+     45,
+     46,
+     136,
+     146
+    ],
+    "note": "集成宿主，非替代/竞品",
+    "quotes": [
+     "In Claude Code, the fastest route is the bundled",
+     "|Claude Code (personal)|`--target claude-code`|`~/.claude/skills/<skill>` (honors `CLAUDE_CONFIG_DIR`)|",
+     "|Claude Code (project)|`--target claude-project --project-dir PATH`|`PATH/.claude/skills/<skill>`|",
+     "before you read it. Claude Code's `Stop` hook receives `last_assistant_message`",
+     "The repository is also a Claude Code **plugin** and a single-plugin"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     50,
+     138,
+     227,
+     231,
+     240
+    ],
+    "note": "集成宿主，非替代/竞品",
+    "quotes": [
+     "|Cursor|`--target cursor` (default)|`~/.cursor/skills/<skill>`|",
+     "this project already documents for Cursor rules. So the deterministic guarantee",
+     "python3 install_skill.py --skill clean-user-facing-text --target cursor",
+     "workflow in Cursor can also copy the optional rule:",
+     "Rules improve consistency but remain model instructions; Cursor does not expose"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    28
+   ],
+   "note": "仅记录更名迁移（formerly remove-claude-marks），非弃用"
+  }
+ }
+}

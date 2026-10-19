@@ -1,0 +1,216 @@
+{
+ "fn": "volcengine/OpenViking",
+ "sha": "0199df7d7e1d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI Agent 的上下文数据库：统一记忆、知识与技能",
+  "review": "OpenViking 把 Agent 的知识、记忆与技能统一组织为 `viking://` 虚拟文件系统，Agent 可用 ls/read/grep 等文件操作浏览和编辑上下文；目录携带 L0 摘要/L1 概览/L2 全文三层结构，检索可限定在子树内。会话提交后可抽取记忆为可检查的 Markdown，VikingBot 可将素材编译为 wiki/知识图谱。服务端以 AGPLv3 开源，另提供火山引擎托管 SaaS 与 BYOC 商业版；安装依赖 uv 与 Python 3.10+，需配置一个带嵌入模型和 VLM 的模型服务。",
+  "highlights": [
+   "知识与记忆、技能统一为可浏览的虚拟文件系统（viking:// URI）",
+   "L0 摘要/L1 概览/L2 全文三层上下文加载",
+   "支持 Claude Code、Codex、Cursor 等记忆插件一键安装，提供 Python/Go/TypeScript SDK 与 HTTP API",
+   "附带 LoCoMo 与 tau2-bench 基准评测脚本（./benchmark）"
+  ],
+  "use_cases": [
+   "给编码 Agent 加跨会话记忆",
+   "把项目文档/代码导入后做目录级语义检索",
+   "自建带用户隔离与 ACL 的记忆服务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2605.29640",
+  "demo_url": "https://studio.openviking.ai",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent记忆",
+   "上下文数据库",
+   "RAG",
+   "向量数据库"
+  ],
+  "domain": "LLM 基础设施/Agent 记忆与上下文",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "agent-memory",
+   "rag",
+   "vector-database"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "volcengine（火山引擎）维护",
+   "提供微信群社区（L23）",
+   "托管版部署在中国区（api.vikingdb.cn-beijing）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L31: OpenViking is an open-source context database for AI agents — one filesystem for everything an agent knows: knowledge, m",
+   "L45: - **One filesystem for knowledge, memory, and skills.** Resources hold documents and code; memories retain user preferen"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     131,
+     156,
+     157,
+     170
+    ],
+    "note": "以 Claude Code 集成形式出现，未直接提及 Anthropic 作为模型提供方",
+    "quotes": [
+     "Connect your coding agent to OpenViking for cross-session memory. The memory plugin installer covers Claude Code, Codex,",
+     "  Claude Code",
+     "    Next: restart Claude Code",
+     " Claude"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     108
+    ],
+    "note": "init 配置明确支持本地 Ollama",
+    "quotes": [
+     "`init` writes `~/.openviking/ov.conf` and supports Volcengine, OpenAI, Codex OAuth, Kimi, GLM and local Ollama; see the "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     105,
+     231
+    ],
+    "note": "uv tool install openviking 与 pip install openviking[bot]",
+    "quotes": [
+     "uv tool install openviking --upgrade && openviking-server init",
+     "pip install \"openviking[bot]\""
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     78,
+     200
+    ],
+    "note": "评测所用 VLM 及 Doubao Work 集成对象",
+    "quotes": [
+     "The memory evaluation used Doubao 2.0 Pro as the VLM and Doubao-embedding-vision-251215 as the embedding model.",
+     " Doubao&nbsp;Work"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     80,
+     131,
+     156,
+     157
+    ],
+    "note": "被接入的 Agent，非替代/竞品关系",
+    "quotes": [
+     " Benchmark results. LoCoMo accuracy: OpenClaw 24.20% native vs 82.08% with OpenViking; Hermes 33.38% vs 82.86%; Claude C",
+     "Connect your coding agent to OpenViking for cross-session memory. The memory plugin installer covers Claude Code, Codex,",
+     "  Claude Code",
+     "    Next: restart Claude Code"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     108
+    ],
+    "quotes": [
+     "`init` writes `~/.openviking/ov.conf` and supports Volcengine, OpenAI, Codex OAuth, Kimi, GLM and local Ollama; see the "
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     131,
+     176
+    ],
+    "quotes": [
+     "Connect your coding agent to OpenViking for cross-session memory. The memory plugin installer covers Claude Code, Codex,",
+     " Cursor"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     203,
+     214
+    ],
+    "note": "框架集成对象，提供包与指南",
+    "quotes": [
+     " LangChain",
+     "For framework applications, see the LangChain/LangGraph and Microsoft Agent Framework packages, with a guide to adding o"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    246,
+    248,
+    249,
+    253,
+    254
+   ],
+   "note": "开源版 AGPLv3，另有托管 SaaS 与 BYOC 商业版（license key）",
+   "quotes": [
+    "Managed SaaS",
+    " ☁️ Managed SaaS",
+    " Volcano Engine hosts and operates OpenViking. Personal and Enterprise plans cover individual and team use, with migrati",
+    " 🏢 Self-Managed",
+    " Deploy in your own cloud account / VPC (BYOC) or an offline environment. This edition adds distributed deployment and o"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

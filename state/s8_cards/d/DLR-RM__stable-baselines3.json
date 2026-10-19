@@ -1,0 +1,116 @@
+{
+ "fn": "DLR-RM/stable-baselines3",
+ "sha": "ab35425ecc0c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 RL 研究者与工程师提供 PyTorch 强化学习算法参考实现库",
+  "review": "基于 PyTorch 的强化学习算法实现集合（Stable Baselines 的后续主要版本），提供 A2C、PPO、DQN、SAC、TD3 等算法的统一接口，支持自定义环境与自定义策略、Dict 观测空间、Tensorboard 日志与回调机制。代码遵循 sklearn 风格语法。面向研究社区与工业界，用于复现、对比与新想法验证；README 提示使用者需具备一定 RL 基础。核心仓库目前聚焦于 bug 修复与维护，新算法在 SB3-Contrib、SBX 等关联仓库中开发。",
+  "highlights": [
+   "提供 A2C、PPO、DQN、SAC、TD3 等多种强化学习算法的统一接口实现",
+   "支持自定义环境、自定义策略、Dict 观测空间与多进程训练",
+   "与 Weights & Biases、Hugging Face 存在文档记载的集成",
+   "提供 Google Colab 在线运行示例与配套训练框架 RL Baselines3 Zoo"
+  ],
+  "use_cases": [
+   "训练和评估自定义 Gymnasium 环境上的强化学习智能体",
+   "作为基线实现，将新提出的 RL 算法与已有方法做对比",
+   "复用常见环境的调优超参数快速训练模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://jmlr.org/ (JMLR paper, see L9/L224-229)",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "强化学习",
+   "PyTorch",
+   "机器学习库",
+   "机器人",
+   "科研"
+  ],
+  "domain": "机器学习/强化学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "research-tools",
+   "reinforcement-learning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: Stable Baselines3 (SB3) is a set of reliable implementations of reinforcement learning algorithms in PyTorch. It is the ",
+   "L11: These algorithms will make it easier for the research community and industry to replicate, refine, and identify new idea",
+   "L94: **Note:** Stable-Baselines3 supports PyTorch >= 2.8"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     106,
+     111,
+     187
+    ],
+    "quotes": [
+     "pip install 'stable-baselines3[extra]'",
+     "pip install stable-baselines3",
+     "pip install -e '.[docs,tests,extra]'"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     138,
+     140
+    ],
+    "quotes": [
+     "## Try it online with Colab Notebooks!",
+     "All the following examples can be executed online using Google Colab notebooks:"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

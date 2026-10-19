@@ -1,0 +1,134 @@
+{
+ "fn": "AUTOMATIC1111/stable-diffusion-webui",
+ "sha": "108bf7e29c09",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给创作者提供 Stable Diffusion 的浏览器图像生成界面",
+  "review": "基于 Gradio 实现的 Stable Diffusion Web 界面，提供 txt2img 与 img2img 两种生成模式，附带外绘、内绘、提示词矩阵、放大（RealESRGAN/SwinIR 等）、Textual Inversion、Lora、检查点合并、批量处理、CLIP 反推提示词、API 等功能。通过一键脚本安装运行，支持 NVidia GPU、AMD GPU、Intel CPU/GPU 与 Ascend NPU，也给出 Windows/Linux/Apple Silicon 的安装说明；生成参数可保存于图像元数据中供还原。",
+  "highlights": [
+   "txt2img 与 img2img 两种生成模式及内绘/外绘",
+   "集成 GFPGAN、CodeFormer、RealESRGAN 等修复与放大网络",
+   "生成参数写入 PNG/EXIF 元数据并可一键还原",
+   "提供 API 与社区扩展脚本机制"
+  ],
+  "use_cases": [
+   "在本地浏览器界面里用提示词生成和修改图像",
+   "对已有图片做内绘、外绘或放大修复",
+   "训练和使用 Textual Inversion 嵌入与 Lora",
+   "合并多个 Stable Diffusion 检查点模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图像生成",
+   "Stable Diffusion",
+   "Web UI",
+   "扩散模型"
+  ],
+  "domain": "AIGC/图像生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L2: A web interface for Stable Diffusion, implemented using Gradio library.",
+   "L96: - NVidia (recommended)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     101,
+     103
+    ],
+    "quotes": [
+     "Alternatively, use online services (like Google Colab):",
+     "- List of Online Services"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     106
+    ],
+    "quotes": [
+     "1. Download `sd.webui.zip` from v1.0.0-pre and extract its contents."
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     114,
+     138
+    ],
+    "quotes": [
+     "3. Download the stable-diffusion-webui repository, for example by running `git clone https://github.com/AUTOMATIC1111/st",
+     "git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Stable Diffusion",
+    "rel": "mention",
+    "lines": [
+     158
+    ],
+    "note": "所依赖的模型来源，非竞品",
+    "quotes": [
+     "- Stable Diffusion - https://github.com/Stability-AI/stablediffusion, https://github.com/CompVis/taming-transformers, ht"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

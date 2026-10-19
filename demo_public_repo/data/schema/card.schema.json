@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ai-repo-atlas/ai-repo-atlas/data/schema/card.schema.json",
+  "title": "AI Repo Atlas catalog row",
+  "description": "一行一仓:卡片六组字段 + GitHub 元数据。null 表示 README 未提及,不是'没有'。",
+  "type": "object",
+  "required": ["fn", "card_sha", "card_at", "meta", "identity", "filters", "trust"],
+  "additionalProperties": false,
+  "properties": {
+    "fn": {"type": "string", "pattern": "^[^/]+/[^/]+$", "description": "owner/repo 主键"},
+    "card_sha": {"type": "string", "description": "解读依据的 README 内容 sha 前缀"},
+    "card_at": {"type": "string", "format": "date"},
+    "meta": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "owner_type": {"type": ["string", "null"], "enum": ["User", "Organization", null]},
+        "stars": {"type": "integer"},
+        "forks": {"type": "integer"},
+        "language": {"type": ["string", "null"]},
+        "license": {"type": ["string", "null"], "description": "GitHub 元数据口径,NOASSERTION=非标准许可"},
+        "topics": {"type": "array", "items": {"type": "string"}},
+        "archived": {"type": "boolean"},
+        "created_at": {"type": ["string", "null"]},
+        "pushed_at": {"type": ["string", "null"]},
+        "homepage": {"type": ["string", "null"]},
+        "html_url": {"type": "string"}
+      }
+    },
+    "identity": {
+      "type": "object",
+      "required": ["one_liner", "review"],
+      "properties": {
+        "one_liner": {"type": "string", "description": "≤30字:给谁+解决什么"},
+        "review": {"type": "string", "description": "100-150字,含 description 之外的信息"},
+        "highlights": {"type": "array", "items": {"type": "string"}},
+        "use_cases": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "filters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ai_role": {"type": ["string", "null"], "enum": ["ai-native", "ai-ecosystem", "ai-enhanced", "ai-knowledge", null]},
+        "license_risk": {"type": ["string", "null"], "enum": ["permissive", "viral", "dual", "none", null]},
+        "deploy": {"type": ["string", "null"], "enum": ["desktop", "cloud-api", "self-host", "library", null]},
+        "model_dep": {"type": ["string", "null"], "enum": ["no-llm", "local-ok", "locked-api", null]},
+        "hardware": {"type": ["string", "null"], "enum": ["gpu-24g", "gpu-8g", "cpu-ok", null]},
+        "install_friction": {"type": ["string", "null"], "enum": ["low", "medium", "high", null]},
+        "maturity": {"type": ["string", "null"], "enum": ["idea", "mvp", "stable", "deprecated", null]}
+      }
+    },
+    "eval": {
+      "type": "object",
+      "properties": {
+        "target_user": {"type": ["string", "null"]},
+        "paper_url": {"type": ["string", "null"]},
+        "demo_url": {"type": ["string", "null"]},
+        "self_declared_early": {
+          "type": "object",
+          "properties": {"flag": {"type": "boolean"}, "lines": {"type": "array", "items": {"type": "integer"}}}
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": {
+        "scenario_tags": {"type": "array", "items": {"type": "string"}},
+        "domain": {"type": ["string", "null"]},
+        "alternative_to": {"type": "array", "items": {"type": "string"}},
+        "competitors_mentioned": {"type": "array", "items": {"type": "string"}},
+        "ecosystem_compat": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "intel": {
+      "type": "object",
+      "properties": {
+        "maintainer_type": {"type": ["string", "null"], "enum": ["individual", "team", "company", "university", "media", null]},
+        "zh_origin": {"type": "boolean"},
+        "zh_origin_signals": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "signals": {
+      "type": "object",
+      "description": "P0 信号组:维护健康/涨星速度/包下载/平台协议。B 层迷你卡可缺省。",
+      "properties": {
+        "maintenance": {
+          "type": ["object", "null"],
+          "properties": {
+            "status": {"type": ["string", "null"], "enum": ["active", "maintenance", "declining", "abandoned", null]},
+            "pushed_days": {"type": ["number", "null"]},
+            "last_release_days": {"type": ["number", "null"]},
+            "releases_per_year": {"type": ["integer", "null"]},
+            "contributors": {"type": ["integer", "null"]},
+            "issue_close_days_med": {"type": ["number", "null"]}
+          }
+        },
+        "velocity": {
+          "type": ["object", "null"],
+          "properties": {
+            "stars_now": {"type": "integer"},
+            "net_window": {"type": "integer"},
+            "window_days": {"type": "integer"},
+            "window_from": {"type": "string"},
+            "domain_rank": {"type": ["integer", "null"]},
+            "domain_size": {"type": ["integer", "null"]},
+            "trend": {"type": ["string", "null"], "enum": ["accelerating", "steady", "decelerating", null]}
+          }
+        },
+        "downloads": {
+          "type": ["object", "null"],
+          "properties": {
+            "ecosystem": {"type": "string", "enum": ["pypi", "npm"]},
+            "package": {"type": "string"},
+            "downloads_month": {"type": ["integer", "null"]}
+          }
+        },
+        "platform": {
+          "type": ["object", "null"],
+          "properties": {
+            "os": {"type": "array", "items": {"type": "string", "enum": ["windows", "macos", "linux", "android", "ios", "web"]}},
+            "protocols": {"type": "array", "items": {"type": "string", "enum": ["openai-api", "mcp", "ollama"]}},
+            "interface_lang": {"type": "array", "items": {"type": "string", "enum": ["en", "zh"]}}
+          }
+        }
+      }
+    },
+    "trust": {
+      "type": "object",
+      "required": ["confidence", "evidence"],
+      "properties": {
+        "confidence": {"type": "string", "enum": ["high", "mid", "low"]},
+        "evidence": {"type": "array", "items": {"type": "string"}, "description": "行号级引句,如 'L11: ...'"},
+        "ver": {"type": "integer"},
+        "prompt_ver": {"type": "string"},
+        "generated_at": {"type": "string", "format": "date"},
+        "softened": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

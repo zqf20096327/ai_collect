@@ -1,0 +1,146 @@
+{
+ "fn": "NVIDIA/Megatron-LM",
+ "sha": "db376b25e8bc",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向研究团队的大规模 transformer 模型分布式训练库",
+  "review": "NVIDIA 维护的大规模 transformer 训练代码库，含两个组件：Megatron-LM 提供预配置训练脚本，供研究团队学习分布式训练与快速实验；Megatron Core 提供可组合的 GPU 优化构建块，含 TP/PP/DP/EP/CP 并行策略、FP16/BF16/FP8/FP4 混合精度与多种模型架构，供框架开发者搭建自定义训练流水线。提供 2B 到 462B 参数模型的基准测试结果与 Hugging Face 双向 checkpoint 转换工具 Megatron Bridge。即将发布的 0.17.0 版本将停止支持 Python 3.10。",
+  "highlights": [
+   "五种并行策略（TP、PP、DP、EP、CP）与 FP16/BF16/FP8/FP4 混合精度支持",
+   "基准测试覆盖 2B 至 462B 参数模型、数千 GPU 规模",
+   "Megatron Bridge 提供 Hugging Face 与 Megatron checkpoint 双向转换",
+   "MoE 模型训练配置与 checkpoint 转换工具（DeepSeek-V3、Mixtral、Qwen3）"
+  ],
+  "use_cases": [
+   "研究团队学习分布式训练并快速开展实验",
+   "框架开发者用 Megatron Core 构建自定义训练流水线",
+   "在数千 GPU 上训练大型语言模型",
+   "与 Hugging Face 生态互转 checkpoint"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "arXiv:1909.08053",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    54
+   ],
+   "note": "Megatron Dev Branch 标注 early access"
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM训练",
+   "分布式训练",
+   "transformer",
+   "并行计算",
+   "MoE"
+  ],
+  "domain": "AI 基础设施/模型训练",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: **Megatron-LM** is a reference example that includes Megatron Core plus pre-configured training scripts, ideal for resea",
+   "L15: **Megatron Core** is a composable library with GPU-optimized building blocks for custom training frameworks. It provides",
+   "L75: The codebase efficiently trains models from 2B to 462B parameters across thousands of GPUs, achieving up to **47% Model "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     46,
+     56,
+     58
+    ],
+    "note": "dev 分支含 DeepSeek-V4 初始实现；MoE 路线图与 Model Zoo 覆盖 DeepSeek-V3 训练配方",
+    "quotes": [
+     "- **[2026/05]** **DeepSeek-V4 initial support** - Megatron Core's `dev` branch includes the initial DeepSeek-V4 implemen",
+     "- **[2025/08]** **Mixture of Experts (MoE) Q3–Q4 2025 Roadmap** - Comprehensive roadmap for MoE features including DeepS",
+     "- **[2025/06]** **Megatron MoE Model Zoo** - Best practices and optimized configurations for training DeepSeek-V3, Mixtr"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     21,
+     24,
+     32,
+     35
+    ],
+    "quotes": [
+     "**Install from PyPI:**",
+     "uv pip install megatron-core",
+     "uv pip install -e .",
+     "> **Note:** Building from source can use a lot of memory. If the build runs out of memory, limit parallel compilation jo"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     30
+    ],
+    "quotes": [
+     "git clone https://github.com/NVIDIA/Megatron-LM.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    51
+   ],
+   "note": "0.17.0 版本将停止支持 Python 3.10"
+  },
+  "products": []
+ }
+}

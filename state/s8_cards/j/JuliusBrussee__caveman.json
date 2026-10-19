@@ -1,0 +1,187 @@
+{
+ "fn": "JuliusBrussee/caveman",
+ "sha": "f790443f2802",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给编码 agent 省token的代理与技能：压缩回答与读取内容",
+  "review": "以 CLI 安装的代理加技能组合，让编码 agent 用受控短语风格输出，压缩日志、JSON、CSV、测试输出等模型读取内容；包含六项功能：短回答、读前压缩、按任务选模型与effort的 Auto、脚本复用 Blocks、token 浪费修复、网页压缩。通过 npx 一条命令覆盖 Mac/Linux/Windows，需 Node.js 22.13+，在本机以用户自己的密钥与登录运行，支持 Claude Code、Codex、Gemini CLI 等 30+ agent；README 标注部分测量为中期数据或未复测。",
+  "highlights": [
+   "短回答技能：同一修复 63 token 降至 20，代码与命令保持原样",
+   "读前压缩：日志/JSON/CSV/测试输出整体会话输入 token 减少 33.2%（README 自报）",
+   "Auto 模式按任务选择模型与 effort，README 自报成本降 54%",
+   "Blocks 代码模式：脚本保留在仓库并在 PR 检查，提供 8 个内置 block"
+  ],
+  "use_cases": [
+   "降低 Claude Code 等 agent 的日常 token 开销",
+   "压缩 agent 读取的大体积日志与测试输出",
+   "按任务难度自动分配模型档位以控制成本"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "Adobe Research CAVEWOMAN paper（README 提及引用本仓库）",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "prompt工程",
+   "token优化",
+   "编码agent",
+   "代理/中间件"
+  ],
+  "domain": "LLM 工具链/开发效率",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: **Caveman make your AI agent say less and read less. Code stay exact. Brain still big.**",
+   "L47: One command. Mac, Linux, Windows. Caveman find your agents and your logins, show what it change. Press Enter. Done. Need",
+   "L49: After that, plain `claude` stays caveman'd. So do Codex, Gemini CLI, OpenCode, and 30+ more. It runs on your machine, wi"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     49,
+     174,
+     180,
+     183,
+     211
+    ],
+    "note": "Auto 默认 Claude 模型；warm cache 针对 Anthropic prompt cache",
+    "quotes": [
+     "After that, plain `claude` stays caveman'd. So do Codex, Gemini CLI, OpenCode, and 30+ more. It runs on your machine, wi",
+     "|**Auto**, plus OpenAI and open models|42.9%|$3.47|16.7 min|",
+     "caveman providers add openai   # optional: give Auto more models, on your own key",
+     "Works in Claude Code, OpenCode, and Codex on a ChatGPT login, with API keys, Claude Pro/Max, or ChatGPT. Any other model",
+     "|Warm cache · new|Step away and the provider forgets your session, so the next ask pays full price. Caveman keeps Anthro"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     44,
+     108,
+     136,
+     140,
+     142
+    ],
+    "quotes": [
+     "npx @caveman-ai/cli@latest",
+     "npx skills add JuliusBrussee/caveman -g",
+     "irm https://raw.githubusercontent.com/JuliusBrussee/caveman/v4.0.1/install.ps1 | iex",
+     "`npx --allow-git=root -y github:JuliusBrussee/caveman#v4.0.1`",
+     "Changed your mind: `npx -y github:JuliusBrussee/caveman -- --uninstall` (on npm 12+, add `--allow-git=root` too)"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     12,
+     120,
+     126,
+     152
+    ],
+    "note": "被支持的目标 agent，非替代/竞品对象",
+    "quotes": [
+     " 33.2% fewer input tokens, whole sessions 54 Claude Code runs, 18 of 18 answers right",
+     "# Claude Code plugin, auto-starts every interactive session, subagents too",
+     "Already inside Claude Code? Same rock, slash form. Type these where you talk to Claude:",
+     "|File type|The file, through caveman|File saved|Whole Claude Code session, 3 runs|Session saved|"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     103
+    ],
+    "quotes": [
+     "\"Be concise\" is the real baseline; new models already know it. On top of it, `/caveman` cuts 3% more at the median and `"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     183
+    ],
+    "quotes": [
+     "Works in Claude Code, OpenCode, and Codex on a ChatGPT login, with API keys, Claude Pro/Max, or ChatGPT. Any other model"
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     214
+    ],
+    "quotes": [
+     "|Middleware|Same shrinking inside the Vercel AI SDK, LangChain, OpenAI, or Anthropic call you already make. TypeScript ·"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     214
+    ],
+    "note": "middleware 可嵌入的框架",
+    "quotes": [
+     "|Middleware|Same shrinking inside the Vercel AI SDK, LangChain, OpenAI, or Anthropic call you already make. TypeScript ·"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

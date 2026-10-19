@@ -1,0 +1,203 @@
+{
+ "fn": "mem0ai/mem0",
+ "sha": "9bcaef7b81c3",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 AI 智能体和应用提供可持久化记忆层的基础设施",
+  "review": "Mem0 为 AI 助手和智能体添加记忆层：记录用户偏好与状态，随交互持续学习。提供三种形态——pip/npm 安装的库（测试原型用）、docker compose 启动的自托管服务器（含 Dashboard 与鉴权）、云平台（托管服务）。记忆提取采用单遍 ADD-only 机制，检索融合语义、BM25 关键词与实体匹配，并含时间感知检索。需外部 LLM 运行（默认 OpenAI gpt-5-mini），嵌入默认 text-embedding-3-small。提供 CLI 管理记忆，Apache 2.0 协议。",
+  "highlights": [
+   "多层级记忆：User/Session/Agent 状态保留与个性化",
+   "多信号检索：语义、BM25 关键词、实体匹配并行融合，含时间感知排序",
+   "提供 Python/JavaScript SDK、CLI 及支持 skills 标准的编码助手技能包",
+   "库 / Docker 自托管 / 云平台三种部署形态"
+  ],
+  "use_cases": [
+   "客服机器人记住历史工单与用户偏好",
+   "AI 助手跨会话保持上下文连续性",
+   "医疗场景记录患者偏好与历史",
+   "自托管部署记忆服务供团队使用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "arXiv:2504.19413",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "智能体记忆",
+   "LLM基础设施",
+   "个性化",
+   "自托管服务"
+  ],
+  "domain": "LLM 基础设施/智能体记忆",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L70: Mem0 (\"mem-zero\") enhances AI assistants and agents with an intelligent memory layer, enabling personalized AI interacti",
+   "L102: |**Setup**|`pip install mem0ai`|`docker compose up`|Sign up at app.mem0.ai|",
+   "L186: Mem0 requires an LLM to function, with `gpt-5-mini` from OpenAI as the default. However, it supports a variety of LLMs; "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     204
+    ],
+    "note": "浏览器扩展提及 Claude，非专门适配",
+    "quotes": [
+     "- **Browser Extension**: Store memories across ChatGPT, Perplexity, and Claude (Chrome Extension)"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     92,
+     102,
+     112
+    ],
+    "quotes": [
+     "npm install -g @mem0/cli      # or: pip install mem0-cli",
+     "|**Setup**|`pip install mem0ai`|`docker compose up`|Sign up at app.mem0.ai|",
+     "pip install mem0ai"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     92,
+     125,
+     169
+    ],
+    "quotes": [
+     "npm install -g @mem0/cli      # or: pip install mem0-cli",
+     "npm install mem0ai",
+     "npx skills add https://github.com/mem0ai/mem0 --skill mem0"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     102,
+     137
+    ],
+    "quotes": [
+     "|**Setup**|`pip install mem0ai`|`docker compose up`|Sign up at app.mem0.ai|",
+     "cd server && docker compose up -d    # http://localhost:3000"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     164
+    ],
+    "quotes": [
+     "Teach your AI coding assistant (Claude Code, Codex, Cursor, Windsurf, OpenCode, OpenClaw, and any tool that supports the"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     164
+    ],
+    "quotes": [
+     "Teach your AI coding assistant (Claude Code, Codex, Cursor, Windsurf, OpenCode, OpenClaw, and any tool that supports the"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     164
+    ],
+    "quotes": [
+     "Teach your AI coding assistant (Claude Code, Codex, Cursor, Windsurf, OpenCode, OpenClaw, and any tool that supports the"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     188
+    ],
+    "note": "嵌入模型推荐语提及 Qwen，非对比关系",
+    "quotes": [
+     "Mem0 uses `text-embedding-3-small` from OpenAI as the default embedding model. For best results with hybrid search (sema"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     203,
+     204
+    ],
+    "quotes": [
+     "- **ChatGPT with Memory**: Personalized chat powered by Mem0 (Live Demo)",
+     "- **Browser Extension**: Store memories across ChatGPT, Perplexity, and Claude (Chrome Extension)"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     204
+    ],
+    "quotes": [
+     "- **Browser Extension**: Store memories across ChatGPT, Perplexity, and Claude (Chrome Extension)"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,135 @@
+{
+ "fn": "microsoft/agent-framework",
+ "sha": "1eb7fedb4d96",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向团队构建生产级 AI agent 与多 agent 工作流的多语言框架",
+  "review": "Microsoft Agent Framework（MAF）是支持 Python、.NET 与 Go 的多语言开源框架，用于构建、编排与部署 AI agent 及多 agent 工作流。面向要把 agent 从原型推进到生产的团队，提供图式编排（顺序、并发、handoff、群协作）、检查点与断点恢复、OpenTelemetry 可观测性、YAML 声明式 agent、中间件管道与 DevUI 调试界面；通过 PyPI（agent-framework）与 NuGet（Microsoft.Agents.AI）分发，另有 AF Labs 实验包与从 Semantic Kernel、AutoGen 迁移的指南。",
+  "highlights": [
+   "支持 Python、.NET 与 Go，跨语言一致 API",
+   "图式多 agent 工作流：顺序/并发/handoff/群协作，含检查点、human-in-the-loop 与 time-travel",
+   "内置 OpenTelemetry 分布式追踪；YAML 声明式定义 agent",
+   "Foundry 托管部署（2 行代码）与 DevUI 开发调试界面"
+  ],
+  "use_cases": [
+   "构建需在生产环境运行、要求可恢复与可治理的 agent 应用",
+   "编排多 agent 协作工作流（handoff、群聊等模式）",
+   "从 Semantic Kernel 或 AutoGen 迁移现有 agent 项目",
+   "将 agent 部署到 Foundry 托管基础设施或云端"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://www.youtube.com/watch?v=AAgdMhftj8w",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent框架",
+   "多agent编排",
+   "SDK",
+   "工作流"
+  ],
+  "domain": "AI 基础设施/Agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "azure"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "multi-agent",
+   "workflow-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: Microsoft Agent Framework (MAF) is an open, multi-language framework for building **production-grade AI agents and multi",
+   "L13: Microsoft Agent Framework is built for teams taking agents from prototype to production. It provides a consistent founda",
+   "L46: - **Orchestration Patterns & Workflows**: Build multi-agent systems with graph-based workflows supporting sequential, co"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     13,
+     48,
+     96
+    ],
+    "note": "支持 Azure OpenAI 与 Foundry 部署，快速start使用 Azure Responses Agent",
+    "quotes": [
+     "Microsoft Agent Framework is built for teams taking agents from prototype to production. It provides a consistent founda",
+     "- **Foundry Hosted Agents (new)**: Deploy and host your agents to Foundry-hosted infrastructure with just 2 additional l",
+     "Create a simple Azure Responses Agent that writes a haiku about the Microsoft Agent Framework"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     7,
+     68,
+     99
+    ],
+    "quotes": [
+     "PyPI",
+     "pip install agent-framework",
+     "# pip install agent-framework"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     13
+    ],
+    "note": "生态支持中提及 GitHub Copilot SDK，非替代/竞品关系",
+    "quotes": [
+     "Microsoft Agent Framework is built for teams taking agents from prototype to production. It provides a consistent founda"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,85 @@
+{
+ "fn": "conwnet/github1s",
+ "sha": "0620abb4d178",
+ "source": "readme",
+ "identity": {
+  "one_liner": "浏览器中秒开 GitHub 仓库的 VS Code 代码阅读器",
+  "review": "基于 VS Code 的浏览器端代码浏览工具：在仓库 URL 中插入 1s 即可在线浏览文件、搜索代码、查看提交历史与 PR/MR diff，无需克隆仓库。内置 AI 聊天面板可解释文件或选中代码并检索相关代码，用户自行配置可接受浏览器请求的模型端点。公共仓库免登录浏览，私有仓库需授权；远程仓库只读。另支持 GitLab 与 npm 包浏览，可通过开发指南本地运行。",
+  "highlights": [
+   "URL 插入 1s 即可浏览器内浏览仓库，无需克隆",
+   "基于 VS Code 界面的目录浏览、文件查找与代码搜索",
+   "内置 AI 聊天：解释文件/选中代码并检索相关代码",
+   "同时支持 GitHub、GitLab 与 npm 包浏览"
+  ],
+  "use_cases": [
+   "快速在线阅读 GitHub 仓库代码而不必克隆",
+   "查看分支、提交历史和 PR/MR 的 diff",
+   "借助 AI 聊天理解不熟悉的复杂代码"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github1s.com/microsoft/vscode",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "代码阅读",
+   "浏览器工具",
+   "VS Code",
+   "AI聊天"
+  ],
+  "domain": "开发者工具/代码浏览",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: GitHub1s is a browser-based code explorer built on VS Code. Browse files, search code, and review changes without clonin",
+   "L34: ## 🤖 GitHub1s AI",
+   "L32: Remote repositories are **read-only**. Search and code navigation depend on the repository platform and available upstre"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

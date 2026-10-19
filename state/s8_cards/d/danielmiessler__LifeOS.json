@@ -1,0 +1,144 @@
+{
+ "fn": "danielmiessler/LifeOS",
+ "sha": "109f8329a518",
+ "source": "readme",
+ "identity": {
+  "one_liner": "个人 AI 操作系统：让 AI 基于你的上下文推动你达成目标",
+  "review": "LifeOS 是一个通用 AI Harness，以单个自包含 skill 形式分发，安装即向 Claude Code、Cursor、Codex 等 AI 编码代理粘贴一段 prompt 完成配置。系统围绕「从当前状态到理想状态」概念组织，包含持久记忆（Cortex）、49 个技能、hooks、意图路由、七阶段 Algorithm 循环与 TELOS 身份层等组件。代码为 TypeScript 与 Bash，运行依赖 AI coding harness 和 bun，主要在 Claude Code 上测试。",
+  "highlights": [
+   "通过粘贴 prompt 或 curl 一行命令由 AI 完成安装",
+   "持久记忆、技能库、智能路由与自我改进机制",
+   "七阶段 Algorithm 循环并按复杂度分级验证",
+   "设计为 harness 无关，基于通用原语（hooks、skills、context files）"
+  ],
+  "use_cases": [
+   "为个人 AI 助手添加长期记忆与上下文管理",
+   "在 AI 编码工具上构建个人目标与任务管理系统",
+   "整合研究、写作、安全等自定义技能到日常工作流"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "个人AI基础设施",
+   "AI harness",
+   "技能系统",
+   "记忆系统",
+   "效率工具"
+  ],
+  "domain": "个人 AI 基础设施/效率工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L25: **LifeOS** is a General Purpose AI Harness for doing anything you want to do in life and work with AI. It captures who y",
+   "L84: Any high-end one. LifeOS is harness-agnostic by design — it's built on universal primitives (hooks, skills, context file",
+   "L198: - **Skill-based distribution** — the whole system now ships as a single self-contained skill (`LifeOS/`): the orchestrat"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     14,
+     54,
+     86,
+     143
+    ],
+    "quotes": [
+     "Built with Claude",
+     "Either path needs a capable AI coding harness — we build and run on Claude Code — and bun.",
+     "Daniel builds and runs it on Claude Code, so that's the most-tested path today. But LifeOS isn't locked to it, and it's ",
+     "**Anthropic and the Claude Code team** — First and foremost. You are moving AI further and faster than anyone right now."
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     110
+    ],
+    "quotes": [
+     "|**Local Model Support**|Run LifeOS with local models (Ollama, llama.cpp) for privacy and cost control|"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     40,
+     48,
+     54,
+     86,
+     143
+    ],
+    "quotes": [
+     "**Give it to your AI.** LifeOS is installed *by* an AI, so the install is just a prompt. Paste this into your AI coding ",
+     "**Prefer the terminal?** There's a one-line shortcut for Claude Code on macOS/Linux:",
+     "Either path needs a capable AI coding harness — we build and run on Claude Code — and bun.",
+     "Daniel builds and runs it on Claude Code, so that's the most-tested path today. But LifeOS isn't locked to it, and it's ",
+     "**Anthropic and the Claude Code team** — First and foremost. You are moving AI further and faster than anyone right now."
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     40
+    ],
+    "quotes": [
+     "**Give it to your AI.** LifeOS is installed *by* an AI, so the install is just a prompt. Paste this into your AI coding "
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

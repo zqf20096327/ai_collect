@@ -1,0 +1,105 @@
+{
+ "fn": "google/adk-python",
+ "sha": "17181f54bb09",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的代码优先 Python AI Agent 构建与部署框架",
+  "review": "Google 开源的 Python 工具包，将软件工程方法应用于 AI Agent 开发：提供图式执行引擎（支持路由、循环、状态管理、human-in-the-loop）、多 Agent 层级组合、Task API 结构化委派，以及覆盖预置工具/自定义函数/OpenAPI/MCP 的工具生态。代码优先定义 Agent，另支持无代码的 Agent Config。内置 CLI、Web 开发 UI 与评估命令；可容器化部署到 Cloud Run 或 Vertex AI Agent Engine。要求 Python 3.11+。",
+  "highlights": [
+   "图式工作流引擎：路由、fan-out/fan-in、循环、重试、状态管理、human-in-the-loop",
+   "模块化多 Agent 系统与 Task API 结构化委派",
+   "工具生态覆盖预置工具、自定义函数、OpenAPI、MCP",
+   "内置开发 UI、评估命令与 docker/cloud_run 部署命令"
+  ],
+  "use_cases": [
+   "用 Python 代码构建并编排多 Agent 工作流",
+   "本地或云端部署并调试 AI Agent 应用",
+   "对 Agent 行为进行评估测试"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent框架",
+   "LLM应用开发",
+   "多Agent编排",
+   "Python"
+  ],
+  "domain": "AI Agent 开发框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "multi-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12:  An open-source, code-first Python framework for building, evaluating, and deploying sophisticated AI agents with flexib",
+   "L25: Agent Development Kit (ADK) is a flexible and modular framework that applies",
+   "L28: tasks to complex systems. While optimized for Gemini, ADK is model-agnostic,"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     4,
+     6,
+     67,
+     87
+    ],
+    "quotes": [
+     "PyPI version",
+     "PyPI downloads",
+     "pip install google-adk",
+     "pip install \"google-adk[extensions]\""
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

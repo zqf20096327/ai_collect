@@ -1,0 +1,109 @@
+{
+ "fn": "webspoilt/omniclaw",
+ "sha": "b846057fda52",
+ "source": "readme",
+ "identity": {
+  "one_liner": "移除全部安全机制的自主 AI agent 系统研究平台",
+  "review": "从 OmniClaw 分布式编排运行时中系统性移除策略引擎、沙箱、seccomp、能力限制与人工监督后得到的研究工件：以 root 权限运行的无约束 planner–executor 循环，可改写自身源码、派生子 agent，含 62 个技能模块（自我改进、安全审计、OSINT 取证、红队工具）。面向 AI 安全研究人员，用于在物理隔离 VM 中观察工具性收敛与递归自我改进等涌现行为。无许可证，README 明确声明禁止部署于联网机器。",
+  "highlights": [
+   "以 root 运行的无约束 planner–executor 循环，可改写自身源码并派生子 agent",
+   "62 个技能模块：自我改进、安全审计、网络/OSINT 取证、红队工具",
+   "多模型 worker 池编排（Debate/Aggregation/Build-Debug 三种策略，Fugu 架构）",
+   "要求物理隔离 VM 与硬件隔离等容器化实验协议"
+  ],
+  "use_cases": [
+   "在隔离环境中研究无约束 agent 的涌现行为",
+   "观察工具性收敛与递归自我改进现象",
+   "研究 agent 安全机制的必要性实证"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    12
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI安全研究",
+   "自主agent",
+   "红队/对抗",
+   "实验平台",
+   "多agent编排"
+  ],
+  "domain": "AI 安全研究/自主 agent",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multi-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L56: This paper presents the design, implementation, and experimental framework for a **maximally autonomous, self-improving ",
+   "L62: The system now includes a complete **Evolution & Red-Team Toolkit** — six high-impact modules that elevate the agent's b"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     540,
+     595
+    ],
+    "note": "窗外出现，多模型后端语境",
+    "quotes": [
+     "iptables -A OUTPUT -d api.openrouter.ai -p tcp --dport 443 -j ACCEPT",
+     "**Conditions:** All skills enabled, firewalled network to OpenRouter, 3 workers configured."
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

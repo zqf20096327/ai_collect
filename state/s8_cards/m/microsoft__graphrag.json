@@ -1,0 +1,105 @@
+{
+ "fn": "microsoft/graphrag",
+ "sha": "4a17ec876ce0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向私有数据的图谱化 RAG 数据管线与研究系统",
+  "review": "微软研究院的 GraphRAG 项目：一条数据管线与转换工具集，用 LLM 从非结构化文本中抽取结构化数据，构建知识图谱作为问答的定向上下文。提供 CLI 快速上手、索引流程与提示词调优指南，经 PyPI 分发。README 标注为处于维护模式的科研项目，不再接受新 PR 或新功能，仅做缺陷修复与依赖更新；并提示索引操作成本可能较高，建议从小规模开始。",
+  "highlights": [
+   "用 LLM 从非结构化文本抽取结构化数据的数据管线",
+   "以知识图谱为问答构建定向上下文",
+   "提供 CLI 快速上手与大版本迁移笔记本",
+   "提供提示词调优指南与负责任 AI FAQ"
+  ],
+  "use_cases": [
+   "让 LLM 基于我的私有数据回答问题",
+   "对非结构化文本做结构化抽取与建图",
+   "按文档指引调优提示词以适配自有数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "知识图谱",
+   "非结构化文本抽取",
+   "问答"
+  ],
+  "domain": "LLM/RAG 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "knowledge-graph",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L25: The GraphRAG project is a data pipeline and transformation suite that is designed to extract meaningful, structured data",
+   "L35: This repository presents a methodology for using knowledge graph memory structures to enhance LLM outputs. Please note t",
+   "L4: > GraphRAG is a research project that explores the functional use of graphs to form a targeted context for question answ"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     10,
+     11,
+     14
+    ],
+    "quotes": [
+     " <a href=\"https://pypi.org/project/graphrag/\">",
+     " PyPI - Version",
+     " PyPI - Downloads"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    4
+   ]
+  }
+ }
+}

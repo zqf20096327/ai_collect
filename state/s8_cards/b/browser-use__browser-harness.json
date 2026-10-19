@@ -1,0 +1,141 @@
+{
+ "fn": "browser-use/browser-harness",
+ "sha": "a4e7126f9696",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让编码 Agent 驱动真实 Chrome，以登录态完成浏览器操作",
+  "review": "通过一段 setup prompt 将 Claude Code、Codex 或 Cursor 连接到用户本机已登录的 Chrome：经 DevTools Protocol（CDP）通信，支持打开页面、点击、输入、读取与下载。Agent 运行时在本地工作区补写可复用 helper，`SKILL.md` 提供工作流说明，`src/` 目录保持受保护。另提供 `browser-harness-mcp`，经 stdio 将浏览器控制 helper 暴露为 MCP 工具供任意 MCP 客户端调用。MIT 许可。",
+  "highlights": [
+   "通过 CDP 连接用户真实已登录 Chrome 执行操作",
+   "Agent 运行时自动补写可复用 helper",
+   "提供 browser-harness-mcp，支持任意 MCP 客户端驱动浏览器",
+   "setup prompt 一步安装（uv + Python 3.12）"
+  ],
+  "use_cases": [
+   "让编码 Agent 以我的登录态抓取或下载网页内容",
+   "自动化日常网页操作而无需自己打开浏览器",
+   "通过 MCP 客户端直接驱动浏览器任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "浏览器自动化",
+   "AI Agent",
+   "CDP",
+   "MCP"
+  ],
+  "domain": "浏览器自动化/AI Agent 工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "browser-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: Browser Harness lets Claude Code, Codex or Cursor use your real Chrome browser: open pages, click, type, read and downlo",
+   "L45: Use your local browser for logged-in, personal work. When you want many browsers in parallel—with live previews, proxies",
+   "L49: `browser-harness-mcp` exposes the browser control helpers as MCP tools over"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     5,
+     26,
+     50
+    ],
+    "note": "提及 Claude Code 等客户端，非模型接入说明",
+    "quotes": [
+     "Browser Harness lets Claude Code, Codex or Cursor use your real Chrome browser: open pages, click, type, read and downlo",
+     "Paste into Claude Code or Codex:",
+     "stdio, so any MCP client (Claude Code, Devin, Cursor, etc.) can drive the"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     5,
+     26,
+     50
+    ],
+    "quotes": [
+     "Browser Harness lets Claude Code, Codex or Cursor use your real Chrome browser: open pages, click, type, read and downlo",
+     "Paste into Claude Code or Codex:",
+     "stdio, so any MCP client (Claude Code, Devin, Cursor, etc.) can drive the"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     5,
+     50
+    ],
+    "quotes": [
+     "Browser Harness lets Claude Code, Codex or Cursor use your real Chrome browser: open pages, click, type, read and downlo",
+     "stdio, so any MCP client (Claude Code, Devin, Cursor, etc.) can drive the"
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     50
+    ],
+    "note": "MCP 客户端示例，非替代/竞品表述",
+    "quotes": [
+     "stdio, so any MCP client (Claude Code, Devin, Cursor, etc.) can drive the"
+    ]
+   }
+  ]
+ }
+}

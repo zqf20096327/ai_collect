@@ -1,0 +1,234 @@
+{
+ "fn": "jlcodes99/cockpit-tools",
+ "sha": "ae1874da883d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "管理多款 AI IDE/Cli 账号的桌面工具：切号、配额、多开",
+  "review": "本地桌面工具，统一管理 Antigravity、Codex、GitHub Copilot、Windsurf、Kiro、Cursor、Grok CLI、CodeBuddy、Qoder、Trae、Zed、ZCode 等平台的账号：一键切换、OAuth/Token 导入、配额监控、定时唤醒任务，以及各平台应用的多账号多实例并行运行。数据保存在本机目录，提供 WebSocket 本机 API 供插件联动。支持 macOS/Windows/Linux 与 18 种界面语言。Grok CLI 凭据以明文保存在本机，README 提示依赖系统文件权限保护。",
+  "highlights": [
+   "覆盖 16 个 AI IDE/CLI 平台的账号切换与配额监控",
+   "各平台多账号多实例并行运行与参数隔离",
+   "内置 Rust/Go 双引擎本地网关，提供 OpenAI 兼容等接口",
+   "WebSocket 仅监听 127.0.0.1，提供本机切号 API"
+  ],
+  "use_cases": [
+   "同时持有多个 AI IDE 账号，需要在工作与个人项目间快速切换",
+   "监控各平台订阅配额的剩余量与重置时间",
+   "为不同账号启动相互隔离的多个 IDE 实例"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI IDE 账号管理",
+   "桌面工具",
+   "配额监控",
+   "应用多开"
+  ],
+  "domain": "开发者工具/AI IDE 周边工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "xai",
+   "ollama"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "支持 CodeBuddy CN、Trae CN 等中国区客户端",
+   "中文赞助商 APIKEY.FUN 与 RoxyBrowser"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L10: 一款**通用的 AI IDE 账号管理工具**，目前支持 **Antigravity IDE**、**Codex**、**GitHub Copilot**、**Windsurf**、**Kiro**、**Cursor**、**Grok CL",
+   "L271: - **这是本地桌面工具**：不需要单独注册平台账号，也不依赖项目自建云端来存你的账号列表。"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     160,
+     161,
+     162,
+     163,
+     164
+    ],
+    "quotes": [
+     "- **OAuth 授权**：支持 xAI 官方 OIDC device flow，在浏览器完成验证后自动保存账号",
+     "- **API Key 与第三方接口**：支持官方 xAI API Key，也支持配置 OpenAI 兼容的第三方 `Base URL` 与模型 ID；配置写入账号专属 `config.toml`，密钥只在启动对应 CLI 进程时通过环境变",
+     "- **导入与脱敏导出**：可从默认 `~/.grok/auth.json` 或指定 JSON 导入官方凭据；账号页导出及通用账号备份均不含 access token/refresh token，不能用于恢复登录，迁移时需单独导入官方 `a",
+     "- **真实切号**：将选中账号按 Grok CLI 官方 registry 格式写回默认 `~/.grok/auth.json`，并保留文件中其他 registry scope",
+     "- **配额与套餐**：查询官方 billing/user/subscriptions 接口，展示周期、用量、产品配额和套餐原始值，并记录 Grok Code 访问能力"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     28,
+     81
+    ],
+    "quotes": [
+     " APIKEY.FUN 是一家专业的企业级 AI 中转站，致力于为企业和个人开发者提供稳定、高效、低成本的 AI 模型 API 接入服务。平台支持 Claude、OpenAI、Gemini 等主流热门模型，价格低至官方原价的 7%。通过本项",
+     "- **API 服务**：新安装及首次升级默认使用「Rust 原生」，之后保留用户的选择，可在 API 服务页面或快捷面板切回内置 Go CLIProxyAPI sidecar。Rust 在宿主内实现 Responses 的 HTTP/SS"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     81
+    ],
+    "quotes": [
+     "- **API 服务**：新安装及首次升级默认使用「Rust 原生」，之后保留用户的选择，可在 API 服务页面或快捷面板切回内置 Go CLIProxyAPI sidecar。Rust 在宿主内实现 Responses 的 HTTP/SS"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     361,
+     363,
+     367,
+     373,
+     386
+    ],
+    "quotes": [
+     "### 选项 B: Homebrew 安装 (macOS)",
+     "> 需要先安装 Homebrew。",
+     "brew install --cask cockpit-tools",
+     "brew install --cask --no-quarantine cockpit-tools",
+     "brew install --cask --force cockpit-tools"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     414
+    ],
+    "quotes": [
+     "npm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     10,
+     14,
+     48,
+     98,
+     105
+    ],
+    "note": "被管理的平台之一，非替代/竞品对象",
+    "quotes": [
+     "一款**通用的 AI IDE 账号管理工具**，目前支持 **Antigravity IDE**、**Codex**、**GitHub Copilot**、**Windsurf**、**Kiro**、**Cursor**、**Grok CL",
+     "**功能**：一键切号 · 多账号管理 · 应用多开 · 配额监控 · 唤醒任务 · 插件联动 · GitHub Copilot 管理 · Windsurf 管理 · Kiro 管理 · Cursor 管理 · Grok CLI 管理 · ",
+     "- **十六平台支持**：同时展示 Antigravity IDE、Codex、GitHub Copilot、Windsurf、Kiro、Cursor、Grok CLI、CodeBuddy、CodeBuddy CN、Qoder、Trae、T",
+     "### 4. GitHub Copilot 账号管理",
+     "#### 4.1 GitHub Copilot 应用多开"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     10,
+     14,
+     48,
+     143,
+     148
+    ],
+    "note": "被管理的平台之一",
+    "quotes": [
+     "一款**通用的 AI IDE 账号管理工具**，目前支持 **Antigravity IDE**、**Codex**、**GitHub Copilot**、**Windsurf**、**Kiro**、**Cursor**、**Grok CL",
+     "**功能**：一键切号 · 多账号管理 · 应用多开 · 配额监控 · 唤醒任务 · 插件联动 · GitHub Copilot 管理 · Windsurf 管理 · Kiro 管理 · Cursor 管理 · Grok CLI 管理 · ",
+     "- **十六平台支持**：同时展示 Antigravity IDE、Codex、GitHub Copilot、Windsurf、Kiro、Cursor、Grok CLI、CodeBuddy、CodeBuddy CN、Qoder、Trae、T",
+     "### 7. Cursor 账号管理",
+     "- **切号注入**：支持切号后注入并启动 Cursor"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     10,
+     14,
+     48,
+     113,
+     118
+    ],
+    "note": "被管理的平台之一",
+    "quotes": [
+     "一款**通用的 AI IDE 账号管理工具**，目前支持 **Antigravity IDE**、**Codex**、**GitHub Copilot**、**Windsurf**、**Kiro**、**Cursor**、**Grok CL",
+     "**功能**：一键切号 · 多账号管理 · 应用多开 · 配额监控 · 唤醒任务 · 插件联动 · GitHub Copilot 管理 · Windsurf 管理 · Kiro 管理 · Cursor 管理 · Grok CLI 管理 · ",
+     "- **十六平台支持**：同时展示 Antigravity IDE、Codex、GitHub Copilot、Windsurf、Kiro、Cursor、Grok CLI、CodeBuddy、CodeBuddy CN、Qoder、Trae、T",
+     "### 5. Windsurf 账号管理",
+     "- **切号注入**：支持切号后注入并启动 Windsurf"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     84
+    ],
+    "note": "OAuth 转写提及 ChatGPT backend",
+    "quotes": [
+     "- **语音反代**：支持 Codex backend 实时语音路由与 `/transcribe` 转写入口，并提供 `/v1/audio/transcriptions`、`/v1/audio/translations`、`/v1/audi"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

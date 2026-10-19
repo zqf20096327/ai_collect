@@ -1,0 +1,86 @@
+{
+ "fn": "docmost/docmost",
+ "sha": "189587ab0d62",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给团队提供的开源协作 wiki 与文档软件",
+  "review": "Docmost 是一个开源的协作 wiki 与文档软件，自称是 Confluence 和 Notion 的开源替代品。功能包括实时协作、图表绘制（Draw.io、Excalidraw、Mermaid）、空间管理、权限管理、群组、评论、页面历史、搜索、文件附件与嵌入（Airtable、Loom、Miro 等），支持 10+ 种语言翻译。可参考其文档自行部署，或使用官方提供的云版本。核心采用 AGPL 3.0 许可证。",
+  "highlights": [
+   "实时协作编辑",
+   "支持 Draw.io、Excalidraw、Mermaid 图表",
+   "空间与权限管理、群组、页面历史",
+   "10+ 种语言翻译支持"
+  ],
+  "use_cases": [
+   "团队知识库与内部 wiki",
+   "项目与产品文档协作撰写",
+   "替代 Confluence/Notion 的自托管文档方案"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "wiki",
+   "文档协作",
+   "知识库",
+   "自托管"
+  ],
+  "domain": "企业协作/知识管理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "knowledge-base"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3:  Open-source collaborative wiki and documentation software.",
+   "L33: Docmost core is licensed under the open-source AGPL 3.0 license."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

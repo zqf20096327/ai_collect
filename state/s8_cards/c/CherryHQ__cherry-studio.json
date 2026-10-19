@@ -1,0 +1,171 @@
+{
+ "fn": "CherryHQ/cherry-studio",
+ "sha": "04f78afe5974",
+ "source": "readme",
+ "identity": {
+  "one_liner": "多模型桌面 AI 客户端：统一接入云/本地 LLM 与助手",
+  "review": "支持多 LLM 提供商的桌面客户端，覆盖 Windows、Mac 和 Linux。核心功能包括：接入主流云服务（OpenAI、Gemini、Anthropic 等）与本地模型（Ollama、LM Studio）；300+ 预配置助手与自定义助手、多模型同时对话；支持文本/图片/Office/PDF 文档处理、WebDAV 备份、Mermaid 图表；集成搜索、翻译、MCP 服务器等工具。安装后即用，无需环境配置。另有企业版提供私有部署、统一模型管理与知识库（非完全开源）。社区版采用 AGPL-3.0 许可，商业豁免需联系官方。",
+  "highlights": [
+   "支持 OpenAI、Gemini、Anthropic 等云服务与 Ollama、LM Studio 本地模型",
+   "300+ 预配置 AI 助手，支持多模型同时对话",
+   "支持 MCP（Model Context Protocol）服务器与小程序",
+   "跨平台桌面应用，开箱即用无需环境配置"
+  ],
+  "use_cases": [
+   "在一个桌面客户端中统一使用多家云 LLM 与本地模型",
+   "调用预配置助手处理文档、翻译和代码任务",
+   "企业私有部署集中管理团队模型访问与知识库"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "桌面客户端",
+   "多模型聚合",
+   "AI助手",
+   "MCP",
+   "知识库"
+  ],
+  "domain": "AI 应用/生产力工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "ai-assistant",
+   "knowledge-base"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "QQ 群（575014769）",
+   "HelloGitHub 推荐",
+   "DeepSeek/Qwen 贡献者激励",
+   "harmonyOS 鸿蒙版路线图"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L25: Cherry Studio is a desktop client that supports multiple LLM providers, available on Windows, Mac and Linux.",
+   "L39: - ☁️ Major LLM Cloud Services: OpenAI, Gemini, Anthropic, and more",
+   "L41: - 💻 Local Model Support with Ollama, LM Studio"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     39
+    ],
+    "quotes": [
+     "- ☁️ Major LLM Cloud Services: OpenAI, Gemini, Anthropic, and more"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     41
+    ],
+    "quotes": [
+     "- 💻 Local Model Support with Ollama, LM Studio"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     160,
+     219
+    ],
+    "note": "L160 为贡献者奖励提及，L219 为关联项目 Poe 描述中提及",
+    "quotes": [
+     "- **Unlimited Model Access**: Get **unlimited** API calls for the **DeepSeek** and **Qwen** models.",
+     "- Poe: Poe gives you access to the best AI, all in one place. Explore GPT-5, Claude Opus 4.1, DeepSeek-R1, Veo 3, Eleven"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    243,
+    247
+   ],
+   "quotes": [
+    "The Cherry Studio Community Edition is governed by the standard GNU Affero General Public License v3.0 (AGPL-3.0), avail",
+    "Should you require a commercial license that provides an exemption from the AGPL-3.0 requirements, please contact us at "
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     40
+    ],
+    "note": "作为可接入的 AI Web 服务提及",
+    "quotes": [
+     "- 🔗 AI Web Service Integration: Claude, Perplexity, Poe, and others"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     159
+    ],
+    "note": "贡献者奖励中提及订阅赞助，非竞品对比",
+    "quotes": [
+     "- **Cursor Subscription Sponsorship**: Receive a **$70 USD** credit or reimbursement for your Cursor subscription, makin"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     160
+    ],
+    "note": "贡献者奖励中提及 Qwen 模型无限调用",
+    "quotes": [
+     "- **Unlimited Model Access**: Get **unlimited** API calls for the **DeepSeek** and **Qwen** models."
+    ]
+   }
+  ]
+ }
+}

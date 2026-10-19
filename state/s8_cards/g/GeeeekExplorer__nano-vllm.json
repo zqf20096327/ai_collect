@@ -1,0 +1,142 @@
+{
+ "fn": "GeeeekExplorer/nano-vllm",
+ "sha": "8e630f23484c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的轻量级 LLM 离线推理引擎，从零实现 vLLM 接口",
+  "review": "以约 1,200 行 Python 从零实现的 vLLM 式推理引擎，提供离线批量推理，API 镜像 vLLM 接口（LLM.generate 有细微差异）。内置前缀缓存、张量并行、Torch 编译、CUDA graph 等优化项，README 附 RTX 4070 Laptop 8GB 上 Qwen3-0.6B 的吞吐对比数据。通过 pip 直接从 GitHub 安装，模型权重从 Hugging Face 下载，示例基于 Qwen/Qwen3-0.6B。",
+  "highlights": [
+   "约 1,200 行 Python 代码的可读实现",
+   "支持前缀缓存、张量并行、Torch 编译、CUDA graph 等优化",
+   "API 镜像 vLLM 的 LLM/SamplingParams 接口",
+   "提供 bench.py 基准测试脚本与吞吐数据"
+  ],
+  "use_cases": [
+   "在单机 GPU 上离线批量运行 Qwen 等开源模型",
+   "阅读源码学习 LLM 推理引擎的内部机制",
+   "对轻量部署场景做吞吐基准测试"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM推理",
+   "推理引擎",
+   "离线推理",
+   "PyTorch"
+  ],
+  "domain": "AI基础设施/LLM推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: A lightweight vLLM implementation built from scratch.",
+   "L10: * 📖 **Readable codebase** - Clean implementation in ~ 1,200 lines of Python code",
+   "L30: See `example.py` for usage. The API mirrors vLLM's interface with minor differences in the `LLM.generate` method:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     3,
+     5,
+     9
+    ],
+    "note": "实现对象与对比基线，非模型服务商接入",
+    "quotes": [
+     "# Nano-vLLM",
+     "A lightweight vLLM implementation built from scratch.",
+     "* 🚀 **Fast offline inference** - Comparable inference speeds to vLLM"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     16
+    ],
+    "note": "pip 从 GitHub 仓库直接安装",
+    "quotes": [
+     "pip install git+https://github.com/GeeeekExplorer/nano-vllm.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     23,
+     24
+    ],
+    "note": "模型权重下载来源",
+    "quotes": [
+     "huggingface-cli download --resume-download Qwen/Qwen3-0.6B \\",
+     "  --local-dir ~/huggingface/Qwen3-0.6B/ \\"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     23,
+     46
+    ],
+    "note": "示例使用的模型（Qwen3-0.6B）",
+    "quotes": [
+     "huggingface-cli download --resume-download Qwen/Qwen3-0.6B \\",
+     "- Model: Qwen3-0.6B"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

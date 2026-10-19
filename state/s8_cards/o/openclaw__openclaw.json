@@ -1,0 +1,126 @@
+{
+ "fn": "openclaw/openclaw",
+ "sha": "964a5a8366f7",
+ "source": "readme",
+ "identity": {
+  "one_liner": "运行在自有设备上的开源 AI 助手，接入聊天渠道",
+  "review": "OpenClaw 是开源 AI 助手，运行在用户自己的设备上，通过 Discord、iMessage、Slack、Telegram、WhatsApp 等 20+ 聊天渠道以及 macOS/iOS/Android/Windows/Linux 原生应用交付。一个 Gateway 既可作为个人助手运行，也可作为团队共享部署。状态、记忆与凭证存于本地硬件；模型与 agent harness 作为可替换插件接入；默认仅每日版本检查联网，匿名统计需主动开启。由独立 501(c)(3) 基金会维护，无付费层或托管服务。",
+  "highlights": [
+   "Gateway 本地控制面管理会话、工具、事件与渠道连接",
+   "接入 20+ 聊天渠道及多平台原生应用",
+   "模型与 agent harness（Claude、Codex、本地模型）以插件方式可替换",
+   "沙箱配置与消息发送者配对等安全机制"
+  ],
+  "use_cases": [
+   "在自有设备上部署个人 AI 助手并通过常用聊天软件交互",
+   "团队共享部署一个统一的助手实例",
+   "搭配本地模型实现数据不出本地的助手使用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI助手",
+   "聊天集成",
+   "自托管",
+   "Gateway"
+  ],
+  "domain": "AI 助手/基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "ai-assistant"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: OpenClaw is an open-source AI assistant that runs on your own computer and meets you in the channels you already use: Di",
+   "L13: **Yours, with no catch.** State, memory, and credentials live on your hardware. Models and agent harnesses (Claude, Code",
+   "L63: - The Gateway is the local control plane for sessions, tools, events, and channel connections."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     13
+    ],
+    "note": "Claude 作为可换插件被提及，无专门适配细节",
+    "quotes": [
+     "**Yours, with no catch.** State, memory, and credentials live on your hardware. Models and agent harnesses (Claude, Code"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     31,
+     34
+    ],
+    "quotes": [
+     "Already manage Node.js? Install the published package instead (Node 24.16+ or 26.1+; Node 26 recommended):",
+     "npm install -g openclaw@latest --allow-scripts=openclaw"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     92,
+     94,
+     95
+    ],
+    "quotes": [
+     "git clone https://github.com/openclaw/openclaw.git",
+     "pnpm install",
+     "pnpm build"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

@@ -1,0 +1,116 @@
+{
+ "fn": "WenyuChiou/research-hub",
+ "sha": "84355acc1462",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向研究者的本地科研工作区，供人与 AI 助手协作管理文献到手稿",
+  "review": "连接 Zotero、Obsidian、NotebookLM 的本地研究工作区，以六页工作区 UI 组织项目问题、文献筛选、证据-来源关联、方法与结果、手稿登记与评审交付。通过 CLI、MCP、REST 接入 AI 助手：支持便携式任务交接（导出任务给 AI host、导入其文稿与哈希）或经认证的 Codex CLI 连接写作，产出均需人工评审后接受。任务保留输入版本与决策记录，注册字节变更可标记任务过期。工作区预览版未合入主线且未发布，PyPI 1.2.0 不含；现有文献仪表盘可经 pip 安装体验。NotebookLM 集成上次认证尝试失败，处于降级/未核验状态。",
+  "highlights": [
+   "文献-证据-手稿的可追溯六页工作区，任务保留输入版本与决策记录",
+   "便携 AI 交接与经认证的 Codex 连接写作两种模式，产出需人工评审",
+   "通过 CLI/MCP/REST/dashboard 接入，可选 Zotero、Semantic Scholar、Tavily/Brave 搜索后端",
+   "主工作区为未合入 PR 的预览快照，PyPI 现行版本仅含文献仪表盘"
+  ],
+  "use_cases": [
+   "组织文献综述的纳入/排除决策并连接证据声明与来源",
+   "把手稿写作任务交给 AI 助手并保留人工评审与接受记录",
+   "跨 Zotero/Obsidian/NotebookLM 统一管理本地研究材料"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": null
+ },
+ "links": {
+  "scenario_tags": [
+   "科研工作流",
+   "文献管理",
+   "知识管理",
+   "MCP/agent接入",
+   "可追溯性"
+  ],
+  "domain": "科研工具/知识管理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "knowledge-base"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供繁體中文入口"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L68: |Portable handoff|Export a task for your AI host; import its prose and candidate hashes. Export leaves the task waiting ",
+   "L69: |Connected Codex|An authenticated, compatible Codex CLI uses an explicitly trusted public writing bundle to produce pros",
+   "L103: Connect through MCP/REST, check the AI host support matrix, or use local file import. The CLI reference, EZproxy guide, "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     7,
+     56
+    ],
+    "quotes": [
+     "PyPI",
+     "python -m pip install research-hub-pipeline"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     43
+    ],
+    "quotes": [
+     "git clone -c core.autocrlf=false https://github.com/WenyuChiou/research-hub.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

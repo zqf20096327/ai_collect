@@ -1,0 +1,96 @@
+{
+ "fn": "siyuan-note/siyuan",
+ "sha": "ba0e97beeeed",
+ "source": "readme",
+ "identity": {
+  "one_liner": "隐私优先自托管知识管理工具，人与 AI agent 协作",
+  "review": "思源笔记是一个隐私优先的个人知识管理系统，支持块级引用与 Markdown 所见即所得编辑，涵盖双向链接、SQL 查询嵌入、数据库表格视图、间隔重复闪卡、PDF 标注、导出为 PDF/Word/HTML 等功能。AI 方面通过 OpenAI API 提供写作与问答聊天，主题标签与项目描述表明支持 MCP 与 agent 协作场景。桌面端通过应用商店或安装包分发，移动端有 Android/iOS/HarmonyOS 应用，服务端提供 Docker 部署与社区维护的 Helm chart，部分功能仅对付费会员开放。",
+  "highlights": [
+   "块级引用、双向链接与 SQL 查询嵌入的内容块体系",
+   "通过 OpenAI API 提供 AI 写作与问答聊天",
+   "Docker 部署支持 PUID/PGID 权限配置与 OIDC 认证",
+   "多端应用：Android/iOS/HarmonyOS 与桌面安装包"
+  ],
+  "use_cases": [
+   "自托管搭建个人知识库并做块级笔记管理",
+   "在笔记中调用 AI 进行写作与问答",
+   "通过 Docker 在服务器上部署浏览器访问的知识工作空间"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "知识管理",
+   "笔记",
+   "AI agent",
+   "自托管",
+   "Markdown"
+  ],
+  "domain": "知识管理/笔记工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "knowledge-base"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文版本",
+   "导出支持微信公众号、知乎、语雀",
+   "B3log 社区背景"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L18: SiYuan is a privacy-first personal knowledge management system, supporting fine-grained block-level reference and Markdo",
+   "L53: - AI writing and Q/A chat via OpenAI API",
+   "L59: - Docker deployment"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

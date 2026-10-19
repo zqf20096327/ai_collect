@@ -1,0 +1,112 @@
+{
+ "fn": "pyg-team/pytorch_geometric",
+ "sha": "2da1cea7a3dd",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于 PyTorch 的图神经网络库，面向结构化数据",
+  "review": "构建在 PyTorch 之上的库，用于编写和训练图神经网络（GNN），覆盖结构化数据相关应用。收录来自多篇已发表论文的图与不规则结构深度学习方法（几何深度学习）；提供小图与巨型图的 mini-batch 加载器、多 GPU 支持、torch.compile 与 DataPipe 支持、常见基准数据集接口，以及面向任意图、3D 网格与点云的变换。架构分为 engine、storage、operators、models 四层，GNN 层基于 nn.MessagePassing 接口实现，面向机器学习研究者与初学者。",
+  "highlights": [
+   "通过 MessagePassing 接口实现数十种论文发表的 GNN 层（GCN、GAT、SAGE、GIN 等）",
+   "支持大规模图训练：百万级节点图、动态图、异构图，提供多种采样方案",
+   "多 GPU、torch.compile、TorchScript 与 DataPipe 支持",
+   "10-20 行代码即可完成一个 GNN 模型训练，附带 Colab 笔记本与 OGB 示例"
+  ],
+  "use_cases": [
+   "在引文网络等图结构数据上做节点分类等机器学习研究",
+   "复现或扩展论文中的图神经网络架构",
+   "处理 3D 网格与点云的深度学习任务",
+   "在异构图数据上构建预测模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图神经网络",
+   "深度学习",
+   "科研工具",
+   "PyTorch生态"
+  ],
+  "domain": "机器学习/图深度学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "research-tools"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: **PyG** *(PyTorch Geometric)* is a library built upon PyTorch to easily write and train Graph Neural Networks (GNNs) for",
+   "L84: - The PyG **engine** utilizes the powerful PyTorch deep learning framework with full `torch.compile` and TorchScript sup",
+   "L94: All Graph Neural Network layers are implemented via the **`nn.MessagePassing`** interface."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     1,
+     2
+    ],
+    "quotes": [
+     "[![PyPI Version][pypi-image]][pypi-url]",
+     "[![PyPI Download][pypi-download-image]][pypi-download-url]"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     9
+    ],
+    "note": "提供 Colab 笔记本资源链接，非安装途径",
+    "quotes": [
+     "**Colab Notebooks** |"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

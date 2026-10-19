@@ -1,0 +1,115 @@
+{
+ "fn": "xszyou/Fay",
+ "sha": "c7b39418b358",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为数字人与大语言模型连通业务系统的 agent 框架",
+  "review": "Fay 数字人框架向上适配各类数字人模型技术（2.5d、3d、移动、pc、网页），向下接入 openai 兼容接口与 deepseek 等大语言模型，并可更换 TTS、ASR 模型，为单片机、app、网站等终端提供数字人应用接口。功能包含全时流式、多用户多路并发、自动播报模式（虚拟教师/主播/新闻播报）、自定义知识库与人设、唤醒打断对话、MCP 工具管理与 agent 自主决策工具调用、仿生记忆等。源码启动需 Python 3.12，支持 Windows/macOS/Ubuntu。",
+  "highlights": [
+   "支持任意终端接入：单片机、app、网站、大屏、三方业务系统",
+   "支持多用户多路并发与全时流式",
+   "提供文字/语音交互、数字人驱动、自动播报、意图等接口",
+   "支持 MCP 工具管理（sse、studio）与 agent 自主决策工具调用"
+  ],
+  "use_cases": [
+   "搭建虚拟主播、虚拟教师等自动播报数字人",
+   "为网页或 app 接入语音交互数字人",
+   "自定义知识库与人设搭建业务问答数字人"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数字人",
+   "agent框架",
+   "语音交互",
+   "TTS/ASR"
+  ],
+  "domain": "数字人/agent框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "国内镜像链接 compshare.cn",
+   "飞书文档"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: 我们致力于思考面向终端的数字人落地应用，并通过完整代码把思考结果呈现给大家。Fay数字人框架，向上适配各种数字人模型技术，向下接入各式大语言模型，并且便于更换诸如TTS、ASR等模型，为单片机、app、网站提供全面的数字人应用接口。",
+   "L16: - 自由匹配数字人模型、大语言模型（openai 兼容接口）、ASR、TTS模型"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     29
+    ],
+    "quotes": [
+     "- 支持deepseek等thinking llm"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     60
+    ],
+    "note": "通过 pip 安装 requirements.txt 依赖",
+    "quotes": [
+     "pip install -r requirements.txt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

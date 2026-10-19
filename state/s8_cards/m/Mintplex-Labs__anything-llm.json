@@ -1,0 +1,212 @@
+{
+ "fn": "Mintplex-Labs/anything-llm",
+ "sha": "2234cbe0b505",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地优先的一体化 AI 应用：私聊文档、运行 AI Agent",
+  "review": "一体化 AI 应用：接入本地或云端 LLM，导入 PDF/DOCX 等文档后即可对话，内置 agent、多用户权限、向量数据库与文档处理管道。支持 Docker 多用户部署与可嵌入聊天组件，桌面版覆盖 Mac/Windows/Linux，Android 客户端开源。自带本地 LLM 引擎（Lemonade/llama.cpp，支持 CUDA/Vulkan），遥测可关闭。",
+  "highlights": [
+   "内置本地 LLM 引擎，CPU/GPU（CUDA/Vulkan）运行本地模型",
+   "支持 40+ LLM 提供商与 9 种向量数据库",
+   "无代码 AI Agent 构建器与 MCP 兼容",
+   "多用户实例与权限管理（Docker 版）"
+  ],
+  "use_cases": [
+   "搭一个私有化、多用户的文档问答系统",
+   "用本地模型和内置 Agent 自动化工作流",
+   "通过可嵌入聊天组件在网站上接入 AI 问答"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "知识库问答",
+   "AI Agent",
+   "本地部署",
+   "桌面应用"
+  ],
+  "domain": "LLM 应用/知识库",
+  "alternative_to": [
+   "ChatGPT"
+  ],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "azure",
+   "bedrock",
+   "ollama",
+   "together",
+   "openrouter",
+   "deepseek",
+   "groq",
+   "cohere"
+  ],
+  "scenario_tags_v2": [
+   "document-qa",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L37: AnythingLLM is the all-in-one AI application that lets you build a private, fully-featured ChatGPT—without compromises. ",
+   "L43: - Built-in local LLM engine - Run local models on your CPU or GPU (NVIDIA via CUDA, AMD and Intel via Vulkan) with no ex",
+   "L52: - 👤 Multi-user instance support and permissioning _Docker version only_"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     70,
+     110
+    ],
+    "quotes": [
+     "- Azure OpenAI",
+     "- Azure OpenAI"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     71
+    ],
+    "quotes": [
+     "- AWS Bedrock"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     75,
+     113
+    ],
+    "quotes": [
+     "- Ollama (chat models)",
+     "- Ollama (all)"
+    ]
+   },
+   {
+    "term": "together",
+    "rel": "support",
+    "lines": [
+     78
+    ],
+    "quotes": [
+     "- Together AI (chat models)"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     81,
+     116
+    ],
+    "quotes": [
+     "- OpenRouter (chat models)",
+     "- OpenRouter"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     82
+    ],
+    "quotes": [
+     "- DeepSeek (chat models)"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     84
+    ],
+    "quotes": [
+     "- Groq"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "support",
+    "lines": [
+     85,
+     118
+    ],
+    "quotes": [
+     "- Cohere",
+     "- Cohere"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "alternative",
+    "lines": [
+     37
+    ],
+    "note": "自称可构建私有 ChatGPT",
+    "quotes": [
+     "AnythingLLM is the all-in-one AI application that lets you build a private, fully-featured ChatGPT—without compromises. "
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     80
+    ],
+    "note": "作为受支持的 LLM 提供商列出",
+    "quotes": [
+     "- Perplexity (chat models)"
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,120 @@
+{
+ "fn": "CopilotKit/CopilotKit",
+ "sha": "586c12c792d4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者提供 agent 前端接入栈与 Generative UI",
+  "review": "面向构建 agent 应用的前端 SDK：将聊天 UI、Generative UI、共享状态与 human-in-the-loop 工作流接入 React、Angular、Vue、React Native 等框架，并通过 Channels SDK 将同一 agent 发布到 Slack、Microsoft Teams、Discord、WhatsApp、Telegram 等渠道。底层的 agent 前端通信由其维护的 AG-UI Protocol 承担，提供 useAgent hook 编程式控制 agent 连接。安装走 npm/npx 脚手架命令，另有可选的 CopilotKit Intelligence 托管或自托管平台（持久会话、用户记忆、分析）。MIT 许可。",
+  "highlights": [
+   "支持 React/Angular/Vue/React Native 前端框架接入",
+   "提供 Generative UI、共享状态与 human-in-the-loop 机制",
+   "Channels SDK 支持发布到 Slack/Teams/Discord/WhatsApp/Telegram",
+   "维护 AG-UI Protocol 并提供 useAgent hook"
+  ],
+  "use_cases": [
+   "为现有 agent 搭建 Web 或移动端聊天与生成式界面",
+   "把同一个 agent 同时发布到 Slack、Teams 等聊天渠道",
+   "构建需要用户确认或编辑输入的 agent 工作流"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/7372b27b-8def-40fb-a11d-1f6585f556ad",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent前端",
+   "Generative UI",
+   "聊天UI",
+   "AG-UI协议"
+  ],
+  "domain": "AI 应用开发框架/Agent 前端",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: Build **agent-native applications** — on any framework, on any surface.",
+   "L38: CopilotKit is a best-in-class SDK for building full-stack agentic applications, Generative UI, and chat applications.",
+   "L132: Your agent logic stays the same — AG-UI handles the wire protocol, CopilotKit handles the UI layer for each framework an"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     18,
+     19,
+     56,
+     64,
+     72,
+     187
+    ],
+    "quotes": [
+     " <a href=\"https://www.npmjs.com/package/@copilotkit/react-core\" target=\"_blank\">",
+     " NPM",
+     "npx --yes copilotkit@latest onboard start",
+     "npx copilotkit@latest skills install",
+     "npx copilotkit@latest create",
+     "npx create-ag-ui-app my-agent-app"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     42,
+     180
+    ],
+    "note": "作为集成方/采纳方提及，非替代或竞品",
+    "quotes": [
+     "We are the company behind the **AG-UI Protocol** — adopted by Google, LangChain, AWS, Microsoft, Mastra, PydanticAI, and",
+     "Connect agent workflows to user-facing apps, with deep partnerships and 1st-party integrations across the agentic stack—"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

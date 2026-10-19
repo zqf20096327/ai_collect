@@ -1,0 +1,211 @@
+{
+ "fn": "liu673/skill-studio",
+ "sha": "9e9d6b337002",
+ "source": "readme",
+ "identity": {
+  "one_liner": "管理 AI Agent 技能资产的本地优先桌面工具",
+  "review": "基于 Tauri（Rust 后端 + React 前端）的桌面应用，面向使用 AI Agent 的开发者和团队：把散落的本地 Skill 文件（skill.md 及相关文件）整合为可追踪的资产，提供创建、导入（本地目录/Git 仓库/市场/模板）、快照版本化、版本差异对比与回滚、生效版本设定，以及向 45+ 种 Agent 平台目录的同步（目录复制或符号链接）。内置团队空间的提交、评审、合并与拉取流程。默认纯本地存储于 ~/.skill-studio/，仅市场浏览和 Git 导入产生网络请求，不自动执行导入的 Skill。当前为 v0.1.0 未签名预览版。",
+  "highlights": [
+   "快照式版本管理：创建、对比差异、回滚、设定生效版本",
+   "内置 45+ 种 Agent 平台的目录识别规则并支持自定义平台",
+   "团队空间提供 Skill 库提交、差异评审、合并与拉取流程",
+   "默认纯本地存储，不依赖云服务，不自动执行导入的 Skill"
+  ],
+  "use_cases": [
+   "把我散落在各平台目录的 Skill 文件统一管理和版本化",
+   "为不同项目编排 Skill 集合并同步到对应 Agent 平台目录",
+   "团队协作维护 Skill 库，通过评审和合并发布稳定版本"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    18,
+    28
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "桌面应用",
+   "Agent技能管理",
+   "版本控制",
+   "本地优先",
+   "多平台同步"
+  ],
+  "domain": "AI Agent 工具链/技能资产管理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14: Skill Studio 是一个本地优先的桌面端 Skill 资产管理工具，用于创建、导入、组织、版本化、对比和同步 AI Agent 技能。它把个人 Skill 工作区、版本快照、外部市场、平台目录、项目空间和团队交付流程整合到同一个应用",
+   "L16: 支持的平台包括 Cursor、Claude Code、Codex、Windsurf、Roo Code 等 45+ 种 Agent 平台。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     16,
+     108,
+     117
+    ],
+    "note": "Claude Code 作为可同步的 Agent 平台被列举，无 SDK 接入",
+    "quotes": [
+     "支持的平台包括 Cursor、Claude Code、Codex、Windsurf、Roo Code 等 45+ 种 Agent 平台。",
+     "|**平台连接**|某 Agent 平台的 Skill 目录配置（如 Cursor、Claude Code、Codex）。|",
+     "Cursor · Claude Code · Codex · OpenCode · Antigravity · Amp · Kilo Code ·"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     24,
+     25,
+     26
+    ],
+    "quotes": [
+     "|Windows|从 Releases 下载 `.exe` 或 `.msi`|",
+     "|macOS|从 Releases 下载 `.dmg`|",
+     "|Linux|从 Releases 下载 `.AppImage`、`.deb` 或 `.rpm`|"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     82,
+     86
+    ],
+    "quotes": [
+     "### 从源码构建",
+     "git clone https://github.com/liu673/skill-studio.git"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     88
+    ],
+    "quotes": [
+     "npm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     16,
+     108,
+     117
+    ],
+    "note": "被识别和同步的平台目录，非替代关系",
+    "quotes": [
+     "支持的平台包括 Cursor、Claude Code、Codex、Windsurf、Roo Code 等 45+ 种 Agent 平台。",
+     "|**平台连接**|某 Agent 平台的 Skill 目录配置（如 Cursor、Claude Code、Codex）。|",
+     "Cursor · Claude Code · Codex · OpenCode · Antigravity · Amp · Kilo Code ·"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     16,
+     108,
+     117
+    ],
+    "quotes": [
+     "支持的平台包括 Cursor、Claude Code、Codex、Windsurf、Roo Code 等 45+ 种 Agent 平台。",
+     "|**平台连接**|某 Agent 平台的 Skill 目录配置（如 Cursor、Claude Code、Codex）。|",
+     "Cursor · Claude Code · Codex · OpenCode · Antigravity · Amp · Kilo Code ·"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     16,
+     119
+    ],
+    "quotes": [
+     "支持的平台包括 Cursor、Claude Code、Codex、Windsurf、Roo Code 等 45+ 种 Agent 平台。",
+     "Windsurf · TRAE IDE · Cline · Deep Agents · Firebender · Kimi Code CLI ·"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     118
+    ],
+    "quotes": [
+     "Roo Code · Goose · Gemini CLI · GitHub Copilot · OpenClaw · Droid ·"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     119
+    ],
+    "quotes": [
+     "Windsurf · TRAE IDE · Cline · Deep Agents · Firebender · Kimi Code CLI ·"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

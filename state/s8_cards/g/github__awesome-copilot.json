@@ -1,0 +1,108 @@
+{
+ "fn": "github/awesome-copilot",
+ "sha": "fbb51d16dc76",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 GitHub Copilot 用户提供社区贡献的自定义 agent 与配置集合",
+  "review": "社区创建的资源集合，收录自定义 agents、instructions、skills、hooks、workflows 与 plugins，供 GitHub Copilot 用户扩展其工作方式。资源按 Agents（可集成 MCP 服务器）、Instructions（按文件模式自动应用）、Skills、Plugins（打包组合）、Cookbook（API 配方）等类别组织；配套网站提供全文检索、筛选与 Learning Hub 教程，并提供机器可读的 llms.txt。通过 Copilot CLI/VS Code 的 marketplace 安装插件。",
+  "highlights": [
+   "收录 agents、instructions、skills、hooks、workflows、plugins 六类资源",
+   "Agents 支持集成 MCP 服务器；Instructions 按文件模式自动应用",
+   "提供 copilot plugin install 命令行安装插件",
+   "网站提供全文检索与 Learning Hub 教程，并提供 llms.txt 供 AI agent 读取"
+  ],
+  "use_cases": [
+   "为 GitHub Copilot 查找社区维护的自定义 agent 与 skills",
+   "按文件模式为团队应用统一的编码规范指令",
+   "通过 Copilot CLI 一键安装打包好的插件组合"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "awesome-copilot.github.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome清单",
+   "prompt工程",
+   "AI编程助手",
+   "agent-skills"
+  ],
+  "domain": "开发工具/AI 编程助手生态",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L4: A community-created collection of custom agents, instructions, skills, hooks, workflows, and plugins to supercharge your",
+   "L23: |🤖 Agents|Specialized Copilot agents that integrate with MCP servers|All agents →|",
+   "L31: ## Install a Plugin"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     1,
+     2,
+     4,
+     7,
+     15
+    ],
+    "note": "本仓库是围绕 Copilot 的社区资源集合，非替代或竞品关系",
+    "quotes": [
+     "# 🤖 Awesome GitHub Copilot",
+     "Powered by Awesome Copilot GitHub contributors from allcontributors.org",
+     "A community-created collection of custom agents, instructions, skills, hooks, workflows, and plugins to supercharge your",
+     "> **Explore the full collection on the website →** awesome-copilot.github.com",
+     "New to GitHub Copilot customization? The **Learning Hub** on the website offers curated articles, walkthroughs, and refe"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

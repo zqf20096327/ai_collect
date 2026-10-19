@@ -1,0 +1,84 @@
+{
+ "fn": "janishar/mit-deep-learning-book-pdf",
+ "sha": "fce1da321a00",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为学习者提供 MIT 深度学习教材的 PDF 版本",
+  "review": "将 MIT Press《Deep Learning》（Ian Goodfellow、Yoshua Bengio、Aaron Courville 著）的 HTML 免费版本排版装订为 PDF，提供完整全书与分章节两种 PDF 下载。README 说明原书官网不提供 PDF 下载，作者按官网建议以 Chrome 打印 HTML 内容制作本版本；另收录练习题、讲义幻灯片与外部链接等学习资源入口，并引导读者购买纸质书支持原作者。",
+  "highlights": [
+   "提供完整全书 PDF 与分章节 PDF 两种形式",
+   "内容源自官方免费 HTML 版本（deeplearningbook.org）",
+   "收录练习题、讲义幻灯片与外部链接清单"
+  ],
+  "use_cases": [
+   "离线阅读深度学习教材",
+   "按章节选择性查阅特定主题",
+   "配合练习题与讲义自学"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": "http://www.deeplearningbook.org/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教材/书籍",
+   "深度学习",
+   "PDF资源",
+   "机器学习"
+  ],
+  "domain": "教育/学习资源",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6: MIT Deep Learning Book in PDF format (complete and parts) by Ian Goodfellow, Yoshua Bengio and Aaron Courville.",
+   "L38: 1. The pdf version of the book which is available in html at http://www.deeplearningbook.org/",
+   "L39: 2. The book is available in chapter wise PDFs as well as complete book in PDF."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

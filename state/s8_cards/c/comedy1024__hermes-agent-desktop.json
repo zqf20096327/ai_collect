@@ -1,0 +1,199 @@
+{
+ "fn": "comedy1024/hermes-agent-desktop",
+ "sha": "7e459a8f904c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "将 Hermes Agent 与 WebUI 打包进浏览器可访问的 Linux KDE 桌面 Docker 镜像",
+  "review": "一体化 Docker 镜像：基于 openclaw_computer（Debian 12 + KDE + TigerVNC + noVNC）集成 NousResearch/hermes-agent 与 Hermes WebUI，在浏览器 7860 端口提供完整 Linux 桌面，8648 提供 Web 管理界面，8642 提供 OpenAI 兼容 Gateway API。支持 OpenAI/Anthropic/DeepSeek/Ollama 等十余种 LLM 提供商，配置、记忆与日志持久化于 /root/hermes-data。镜像每日自动检查上游更新，双架构（amd64/arm64）发布，附 ModelScope/HuggingFace Spaces 部署说明；须设置 GATEWAY_ALLOW_ALL_USERS=true 否则 Gateway 拒绝请求。",
+  "highlights": [
+   "noVNC 浏览器访问完整 Debian 12 KDE 桌面",
+   "集成 Hermes Agent、WebUI 与 OpenAI 兼容 Gateway API（三端口）",
+   "支持 OpenAI/Anthropic/OpenRouter/Gemini/DeepSeek/Ollama/智谱/Kimi 等十余种 LLM 提供商",
+   "每日定时自动构建，linux/amd64 与 linux/arm64 双架构镜像"
+  ],
+  "use_cases": [
+   "在 ModelScope/HuggingFace 等 Cloud Spaces 单端口平台上运行带桌面的 AI Agent",
+   "通过浏览器远程使用 Linux 桌面环境与 Hermes Agent 聊天/管理界面",
+   "本地 Docker 一键部署 Hermes Agent 并获得 OpenAI 兼容 API"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI Agent",
+   "Docker 镜像",
+   "远程桌面/noVNC",
+   "自托管部署"
+  ],
+  "domain": "AI Agent 部署/容器化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "ollama",
+   "anthropic",
+   "openrouter"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "支持智谱 GLM / Kimi / MiniMax 国产模型提供商",
+   "ModelScope 创空间部署文档",
+   "预装 fcitx5 中文输入法"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: 基于 openclaw_computer + NousResearch/hermes-agent + Hermes WebUI 打包的一体化 Docker 镜像。",
+   "L16: - 🤖 **Hermes Agent** — 自演化 AI Agent 框架，支持 OpenAI / Anthropic / DeepSeek / Ollama 等",
+   "L243:   ├─ Hermes Gateway (:8642) → 后台进程，自动重启"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     16,
+     76
+    ],
+    "quotes": [
+     "- 🤖 **Hermes Agent** — 自演化 AI Agent 框架，支持 OpenAI / Anthropic / DeepSeek / Ollama 等",
+     "|**DeepSeek**|`DEEPSEEK_API_KEY`|platform.deepseek.com|DeepSeek-V3/R1|"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     16,
+     77,
+     82
+    ],
+    "quotes": [
+     "- 🤖 **Hermes Agent** — 自演化 AI Agent 框架，支持 OpenAI / Anthropic / DeepSeek / Ollama 等",
+     "|**Ollama Cloud**|`OLLAMA_API_KEY`|ollama.com|开源模型云端托管|",
+     "|**本地 Ollama**|无需 Key|容器内运行 Ollama|Llama、Qwen 等开源模型|"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     73
+    ],
+    "quotes": [
+     "|**Anthropic**|`ANTHROPIC_API_KEY`|console.anthropic.com|Claude Opus 4、Claude Sonnet 4|"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     74
+    ],
+    "quotes": [
+     "|**OpenRouter**|`OPENROUTER_API_KEY`|openrouter.ai|多模型统一入口|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     47,
+     66,
+     188
+    ],
+    "quotes": [
+     "docker run -d \\",
+     "根据你要使用的模型，在 `docker run` 时通过环境变量传入，或启动后在容器内编辑 `/root/hermes-data/.env`。",
+     "2. 在创空间仓库中添加 `Dockerfile` 文件："
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     20,
+     209
+    ],
+    "note": "作为云平台部署目标与模型来源被提及",
+    "quotes": [
+     "- ☁️ **云平台友好** — noVNC (WebSocket VNC) 完美兼容 ModelScope/HuggingFace 等单端口 HTTP 反代平台",
+     "## 部署到 HuggingFace Spaces"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     79
+    ],
+    "note": "作为受支持的 LLM 提供商列举",
+    "quotes": [
+     "|**Kimi / Moonshot**|`KIMI_API_KEY`|platform.kimi.ai|Kimi K2.5|"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     82
+    ],
+    "note": "本地 Ollama 可运行的开源模型示例",
+    "quotes": [
+     "|**本地 Ollama**|无需 Key|容器内运行 Ollama|Llama、Qwen 等开源模型|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

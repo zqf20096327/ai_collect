@@ -1,0 +1,191 @@
+{
+ "fn": "eosphoros-ai/DB-GPT",
+ "sha": "5c5a69338264",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者和企业的开源 Agent 式 AI 数据分析助手",
+  "review": "连接数据库、CSV/Excel、数仓与知识库，用自然语言驱动 AI 自动生成 SQL 与 Python 代码，在沙箱中执行分析并输出图表、仪表盘与 HTML 报告。平台层提供 Agent 编排、AWEL 工作流、RAG 与多模型接入；默认安装含 FastAPI、ChromaDB 向量库，首次运行有交互式配置向导。支持私有模型部署、代理脱敏与沙箱执行。以一行安装脚本、PyPI 包与 Docker 提供，Web 界面运行在 localhost:5670。",
+  "highlights": [
+   "自然语言转 SQL 与 Python 代码的自主执行",
+   "可复用 skills 机制打包领域分析流程",
+   "沙箱化代码执行与可控工具调用",
+   "Text2SQL 微调支持 LLaMA、Qwen、ChatGLM2 等 11 类模型"
+  ],
+  "use_cases": [
+   "连数据库用自然语言问数，自动生成 SQL 查询",
+   "分析 CSV/Excel 文件并生成可视化报告",
+   "为企业团队搭建 AI 原生数据助手应用",
+   "财务报告的代码化分析并输出图表与摘要"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2312.17449（见 Citation 节 bibtex）",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据分析",
+   "Text2SQL",
+   "RAG",
+   "Agent编排",
+   "私有化部署"
+  ],
+  "domain": "AI + 数据/数据分析平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "mistral"
+  ],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "data-analysis",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "简体中文文档入口",
+   "Bilibili 官方账号",
+   "微调表含 Baichuan/InternLM/Qwen/XVERSE 等中文模型"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L43: > **An open-source AI data assistant that connects to your data, writes SQL and code, runs skills in sandboxed environme",
+   "L59: DB-GPT is also a platform for building **AI-native data agents, workflows, and applications** with agents, AWEL, RAG, an",
+   "L191: The default installation includes the core framework (CLI, FastAPI, Agent), OpenAI-compatible LLM support, DashScope / T"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     212
+    ],
+    "note": "文档中作为本地 GPU 模型部署方式被提及",
+    "quotes": [
+     "For Docker, local GPU models (vLLM, llama.cpp), or manual source-code setup, see the full docs:"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     289,
+     292,
+     293,
+     294,
+     295
+    ],
+    "quotes": [
+     " DeepSeek",
+     " 🔥🔥🔥 DeepSeek-R1-0528",
+     " 🔥🔥🔥 DeepSeek-V3-0324",
+     " 🔥🔥🔥 DeepSeek-R1",
+     " 🔥🔥🔥 DeepSeek-V3"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "support",
+    "lines": [
+     354,
+     357
+    ],
+    "note": "支持模型表中列出 Mixtral",
+    "quotes": [
+     " Mixtral",
+     " 🔥🔥🔥 Mixtral-8x7B"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     175,
+     177,
+     185,
+     188
+    ],
+    "quotes": [
+     "### Install via PyPI",
+     "Install DB-GPT from PyPI and start it with a single command — no source checkout required.",
+     "uv pip install dbgpt-app",
+     "pip install dbgpt-app"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     125,
+     129,
+     146,
+     150
+    ],
+    "note": "安装脚本提供的模型 profile 之一",
+    "quotes": [
+     "For Kimi 2.5 via Moonshot API:",
+     "  | MOONSHOT_API_KEY=sk-xxx bash -s -- --profile kimi",
+     "Or reuse your local repo with Kimi 2.5:",
+     "  bash scripts/install/install.sh --profile kimi --repo-dir \"$(pwd)\" --yes"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     277,
+     297,
+     300
+    ],
+    "note": "支持的模型/DashScope 接入，非竞品或替代对象",
+    "quotes": [
+     "|Qwen|✅|",
+     " 🔥🔥🔥 DeepSeek-R1-Distill-Qwen-32B",
+     " Qwen"
+    ]
+   }
+  ]
+ }
+}

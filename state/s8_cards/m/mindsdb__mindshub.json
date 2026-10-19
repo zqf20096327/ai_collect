@@ -1,0 +1,165 @@
+{
+ "fn": "mindsdb/mindshub",
+ "sha": "2d05b724d1a1",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向知识工作者的开源 Agent 工作台：可自选模型完成研究与开发任务",
+  "review": "开源 Agent 工作台，定位为完成知识工作与软件开发的统一工作空间，支持研究、分析、内容创作与软件开发。仓库为平台 superproject，聚合桌面/Web 应用、Agent 后端与数据引擎，可从源码构建运行。关键机制包括模型路由器（在多个闭源与开源模型间切换）、可互换的开源 agent harness（Anton 默认与 Hermes）、跨会话记忆、技能库、定时任务与制品发布。部署上支持本机、VPC、云端及隔离环境；Web 版免安装，macOS/Windows 提供桌面安装包，Linux 从源码构建。",
+  "highlights": [
+   "Model Router 在 Claude/GPT/Gemini 与 DeepSeek/Qwen/Kimi 间切换，无需逐家配 key",
+   "可互换的开源 agent harness：Anton（默认）与 Hermes，下拉切换",
+   "安全数据保险箱连接 BigQuery/Postgres/Gmail/Drive 等，凭据按连接隔离",
+   "Agent 输出转为文档、仪表盘、应用并发布到在线 URL，支持定时任务与跨会话记忆"
+  ],
+  "use_cases": [
+   "用 Agent 自动化报告、监控、定时运营等多步骤读写工作",
+   "不写代码搭建内部 AI 工具（应用、仪表盘、文档）并分享给团队",
+   "在 VPC 或隔离环境中私有化部署 Agent 工作台",
+   "在同一工作区内切换多家模型供应商"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://console.mindshub.ai",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent工作台",
+   "模型路由",
+   "桌面应用",
+   "知识工作自动化",
+   "私有化部署"
+  ],
+  "domain": "AI Agent 平台/知识工作",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文等多语言版本（L18）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: **MindsHub is an agent workspace for completing knowledge work and developing software, with open-source agent harnesses",
+   "L22: MindsHub gives you the freedom to choose among models and providers instead of being locked into one ecosystem. Use its ",
+   "L49: - **Model Router.** Switch between frontier models (Claude, GPT, Gemini) and open models (DeepSeek, Qwen, Kimi) without "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     49
+    ],
+    "note": "Model Router 中提及 Claude 模型，非专门适配",
+    "quotes": [
+     "- **Model Router.** Switch between frontier models (Claude, GPT, Gemini) and open models (DeepSeek, Qwen, Kimi) without "
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     49
+    ],
+    "note": "作为可选开源模型提及",
+    "quotes": [
+     "- **Model Router.** Switch between frontier models (Claude, GPT, Gemini) and open models (DeepSeek, Qwen, Kimi) without "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     33,
+     34
+    ],
+    "note": "macOS .pkg 与 Windows .exe 桌面安装包",
+    "quotes": [
+     "- **macOS.** Download the desktop app (`.pkg`).",
+     "- **Windows.** Download the desktop app (`.exe`)."
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     35,
+     54,
+     59
+    ],
+    "quotes": [
+     "- **Linux.** Build from source.",
+     "## Build from source",
+     "git clone --recurse-submodules https://github.com/mindsdb/minds.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     49
+    ],
+    "note": "Qwen 作为可选模型被提及",
+    "quotes": [
+     "- **Model Router.** Switch between frontier models (Claude, GPT, Gemini) and open models (DeepSeek, Qwen, Kimi) without "
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     49
+    ],
+    "note": "作为可选开源模型提及",
+    "quotes": [
+     "- **Model Router.** Switch between frontier models (Claude, GPT, Gemini) and open models (DeepSeek, Qwen, Kimi) without "
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

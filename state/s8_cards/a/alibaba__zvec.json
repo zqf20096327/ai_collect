@@ -1,0 +1,114 @@
+{
+ "fn": "alibaba/zvec",
+ "sha": "ad14580bd246",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向应用开发者的嵌入式向量数据库，提供进程内相似度检索",
+  "review": "以进程内库形式运行的向量数据库，直接嵌入应用程序，无需独立服务。支持稠密与稀疏向量、多种索引类型（内存到磁盘）、关键词全文检索，并可在单条查询中融合向量相似度、全文与结构化过滤。通过预写日志（WAL）保证持久化，支持多进程并发读。官方提供 Python/Node.js/Go/Rust/Dart SDK，及 zvec-grep 搜索 CLI 与 Zvec Studio 可视化工具。预编译二进制覆盖 Linux/macOS/Windows/Android/iOS。",
+  "highlights": [
+   "稠密+稀疏向量、多向量查询，索引类型覆盖内存到磁盘",
+   "混合检索：向量相似度、全文检索与结构化过滤单查询融合",
+   "WAL 持久化与多进程并发读取",
+   "提供 Python/Node.js/Go/Rust/Dart 官方 SDK"
+  ],
+  "use_cases": [
+   "为本地或边缘应用嵌入相似度搜索能力",
+   "构建 RAG 应用的向量与全文混合检索层",
+   "为 AI agent 提供本地记忆/工作区搜索后端"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "向量数据库",
+   "嵌入式",
+   "语义检索",
+   "RAG",
+   "全文检索"
+  ],
+  "domain": "数据库/检索基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "rag",
+   "semantic-search",
+   "vector-database"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中英双语",
+   "社区渠道含钉钉与微信群"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L22: **Zvec** is an open-source, in-process vector database — lightweight, lightning-fast, and designed to embed directly int",
+   "L28: > - **ReMe integration**: zvec is now a file store backend in ReMe, the memory management kit for agents, providing in-p",
+   "L43: - **Hybrid Search**: Fuse vector similarity, full-text search, and structured filters in a single query for precise resu"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     52
+    ],
+    "quotes": [
+     "- **Python**: `pip install zvec` (requires 64-bit Python 3.10–3.14)"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     53
+    ],
+    "quotes": [
+     "- **Node.js**: `npm install @zvec/zvec`"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

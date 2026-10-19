@@ -1,0 +1,248 @@
+{
+ "fn": "headroomlabs-ai/headroom",
+ "sha": "70ed6d23b8ef",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 AI agent 压缩上下文输入输出的本地压缩层",
+  "review": "在工具输出、日志、RAG 片段、文件与对话历史进入 LLM 前进行压缩，以 Python/TypeScript 库、本地代理、agent 包装命令和 MCP server 四种形式提供。内部按内容类型路由到不同压缩器（JSON/代码/文本），原文本地缓存并可通过 headroom_retrieve 按需取回。还提供输出 token 削减（verbosity steering、effort routing）与跨 agent 共享记忆。压缩在本地运行，不外发内容。",
+  "highlights": [
+   "库、代理、wrap 命令、MCP server 四种接入方式",
+   "CCR 机制本地缓存原文，可按需取回",
+   "支持 20 余种 agent CLI 的一键包装与还原",
+   "输出 token 削减开关与 savings/评估命令"
+  ],
+  "use_cases": [
+   "给 coding agent 降低工具输出与日志的 token 消耗",
+   "为 RAG 管道压缩检索片段",
+   "团队统一管理多个 agent CLI 的上下文成本"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "上下文压缩",
+   "agent 基础设施",
+   "token 优化",
+   "代理/中间件"
+  ],
+  "domain": "LLM 基础设施/上下文工程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "xai"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L26: Headroom compresses everything your AI agent reads — tool outputs, logs, RAG",
+   "L38: - **Library** — `compress(messages)` in Python or TypeScript, inline in any app.",
+   "L41: - **MCP server** — `headroom_compress`, `headroom_retrieve`, `headroom_stats` for any MCP client."
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     145,
+     147,
+     223
+    ],
+    "note": "对 Anthropic /v1/messages 与 thinking 预算有专门适配",
+    "quotes": [
+     "Both apply to Anthropic `/v1/messages` and to OpenAI-compatible",
+     "`reasoning_effort` on OpenAI and `thinking.budget_tokens` / `output_config.effort`",
+     "For Anthropic `/v1/messages`, `--mode cache` skips automatic `--memory` context injection so the provider prefix remains"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "compat",
+    "lines": [
+     40,
+     200
+    ],
+    "note": "Grok CLI 可 wrap，经 GROK_MODELS_BASE_URL 路由",
+    "quotes": [
+     "- **Agent wrap** — `headroom wrap claude|codex|grok|copilot|cursor|aider|opencode|cline|continue|goose|openhands|opencla",
+     "|Grok CLI|✅|routes via `GROK_MODELS_BASE_URL`|"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     69,
+     70,
+     286
+    ],
+    "quotes": [
+     "uv tool install --python 3.13 \"headroom-ai[all]\"  # CLI in a self-contained env",
+     "pip install \"headroom-ai[all]\"                    # Python — ships the `headroom` CLI",
+     "pip install \"headroom-ai[proxy]\""
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     8,
+     91,
+     92
+    ],
+    "note": "npm 包提供 TypeScript SDK",
+    "quotes": [
+     " npm",
+     "The `headroom` CLI ships only in the PyPI package. The npm `headroom-ai` package",
+     "is the TypeScript SDK — a library you import"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     259
+    ],
+    "note": "Docker/CI 中凭据传递语境，非本产品安装途径",
+    "quotes": [
+     "Docker and CI, pass an explicit `GITHUB_COPILOT_TOKEN` or"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     203,
+     204,
+     225
+    ],
+    "note": "被包装路由的 agent，非替代/竞品",
+    "quotes": [
+     "|Copilot CLI|✅|starts proxy + launches|",
+     "|VS Code Copilot|✅|transparent proxy; keeps the selected model|",
+     " GitHub Copilot CLI subscription mode"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     40,
+     201
+    ],
+    "quotes": [
+     "- **Agent wrap** — `headroom wrap claude|codex|grok|copilot|cursor|aider|opencode|cline|continue|goose|openhands|opencla",
+     "|Cursor|Manual setup|starts the proxy and prints base URLs for Cursor settings|"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     40,
+     86,
+     198
+    ],
+    "quotes": [
+     "- **Agent wrap** — `headroom wrap claude|codex|grok|copilot|cursor|aider|opencode|cline|continue|goose|openhands|opencla",
+     "Headroom. For Claude Code, Serena is registered for the wrapped project only",
+     "|Claude Code|✅|`--memory` · `--code-graph` · `--1m` · `--tool-search`|"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     51
+    ],
+    "quotes": [
+     "   (Claude Code, Cursor, Codex, LangChain, Agno, Strands, your own code…)"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     214
+    ],
+    "quotes": [
+     "|Kimi CLI|✅|OAuth bearer forwarded — log in once|"
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

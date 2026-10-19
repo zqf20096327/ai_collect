@@ -1,0 +1,117 @@
+{
+ "fn": "deepspeedai/DeepSpeed",
+ "sha": "0b10b97597a6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向大模型训练与推理的分布式优化库",
+  "review": "DeepSpeed 是一个深度学习优化库，提供分布式训练与推理能力，核心机制包括 ZeRO、ZeRO-Infinity、3D 并行、Ulysses 序列并行、DeepSpeed-MoE 等。支持 NVIDIA（Pascal 至 Hopper）、AMD MI100/MI200，并有华为昇腾 NPU、Intel Gaudi 2/Xeon/XPU、Tecorigin SDAA 等社区贡献的硬件适配。通过 pip 安装，C++/CUDA 扩展默认以 JIT 方式在运行时构建；Windows 支持部分训练与推理功能。曾用于训练 MT-530B、BLOOM 等大模型。",
+  "highlights": [
+   "ZeRO/ZeRO-Infinity、3D 并行、Ulysses 序列并行、DeepSpeed-MoE 等系统机制",
+   "多硬件后端：NVIDIA/AMD/CPU/Gaudi2/XPU/昇腾 NPU/SDAA",
+   "与 Transformers、Accelerate、Lightning、MosaicML、Determined、MMEngine 等框架集成",
+   "pip 安装 + torch JIT 编译扩展，ds_report 校验环境"
+  ],
+  "use_cases": [
+   "训练数百亿到万亿参数规模的大模型",
+   "分布式训练/推理的显存与通信优化",
+   "在 AMD、昇腾、Gaudi 等多类加速器上运行训练任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "high",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/1910.02054",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度学习训练",
+   "分布式训练",
+   "模型推理优化",
+   "大模型"
+  ],
+  "domain": "机器学习基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文版本(L11)",
+   "中文知乎频道(L8)"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L52: # Extreme Speed and Scale for DL Training",
+   "L54: ***DeepSpeed enabled the world's most powerful language models (at the time of this writing) such as MT-530B and BLOOM**",
+   "L100: # Installation",
+   "L110: ## Requirements"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     102,
+     129,
+     130,
+     133,
+     144
+    ],
+    "quotes": [
+     "The quickest way to get started with DeepSpeed is via pip, this will install",
+     "## PyPI",
+     "We regularly push releases to PyPI and encourage users to install from there in most cases.",
+     "pip install deepspeed",
+     "of JIT compiling) or install pre-compiled ops via PyPI please see our [advanced"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,189 @@
+{
+ "fn": "AlexsJones/llmfit",
+ "sha": "f5f453d75543",
+ "source": "readme",
+ "identity": {
+  "one_liner": "检测本机硬件并推荐可流畅运行的本地 LLM 的命令行工具",
+  "review": "Rust 编写的终端工具：自动检测 CPU、内存、GPU/VRAM 与加速器配置，对模型目录中的模型按内存占用、预估速度、质量与上下文四维打分，推荐适配当前硬件的量化版本。支持 GGUF/AWQ/GPTQ/EXL2 量化格式、多 GPU 与 MoE 架构、硬件模拟，提供交互式 TUI、经典 CLI、Web UI 与 REST API。社区基准数据可通过 PR 回传，合并后同硬件用户可看到实测数值。安装途径覆盖 Scoop/Homebrew/MacPorts/安装脚本/uv/pip/预编译二进制/Docker/源码编译。",
+  "highlights": [
+   "硬件自动检测：CPU、内存、GPU/VRAM、统一内存架构（CUDA/Apple Silicon/ROCm/OneAPI）",
+   "兼容性引擎：分析参数量、上下文长度与量化格式，投影内存占用与 tok/s",
+   "TUI/CLI/Web UI/REST API 多种形态，支持脚本与 agent 消费 JSON 输出",
+   "社区基准共享：实测 tok/s 经 PR 合并后替代估算值"
+  ],
+  "use_cases": [
+   "挑选能在自己电脑上流畅运行的本地模型",
+   "为自动化部署流水线提供硬件适配的模型清单",
+   "对比不同硬件配置下的模型运行方案"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "本地LLM",
+   "硬件检测",
+   "模型推荐",
+   "CLI工具"
+  ],
+  "domain": "LLM 基础设施/本地部署工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: Find out which open-source Large Language Models (LLMs) your hardware can comfortably run. `llmfit` inspects your CPU, s",
+   "L25: - **Model Compatibility Engine**: Analyzes model parameter counts, context lengths, and quantization formats (GGUF, AWQ,",
+   "L27: - **REST API Endpoint**: Exposes standard HTTP JSON endpoints (`/api/v1/system`, `/api/v1/models`) for integration into "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "llama.cpp",
+    "rel": "mention",
+    "lines": [
+     33
+    ],
+    "quotes": [
+     "Ships with an interactive TUI (default) and a classic CLI mode. Supports multi-GPU setups, MoE architectures, dynamic qu"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     33,
+     40,
+     230
+    ],
+    "quotes": [
+     "Ships with an interactive TUI (default) and a classic CLI mode. Supports multi-GPU setups, MoE architectures, dynamic qu",
+     "- llmfit-gui — a Windows desktop GUI (PowerShell + WinForms) for llmfit: browse recommendations, download into LM Studio",
+     "If you're looking for a different approach, check out llm-checker -- a Node.js CLI tool with Ollama integration that can"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     230
+    ],
+    "quotes": [
+     "If you're looking for a different approach, check out llm-checker -- a Node.js CLI tool with Ollama integration that can"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "mention",
+    "lines": [
+     230
+    ],
+    "quotes": [
+     "If you're looking for a different approach, check out llm-checker -- a Node.js CLI tool with Ollama integration that can"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "cargo",
+    "rel": "support",
+    "lines": [
+     141
+    ],
+    "quotes": [
+     "cargo build --release"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     66,
+     71
+    ],
+    "quotes": [
+     "brew install AlexsJones/llmfit/llmfit",
+     "brew install llmfit"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     106
+    ],
+    "quotes": [
+     "Download release binaries for Linux, macOS, and Windows directly from the GitHub Releases page. Windows binaries are sig"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     117,
+     125,
+     134,
+     179
+    ],
+    "quotes": [
+     "docker run -it --rm ghcr.io/alexsjones/llmfit --tui",
+     "docker run ghcr.io/alexsjones/llmfit",
+     "docker run --rm -it ghcr.io/alexsjones/llmfit --tui",
+     "docker run -d -p 8787:8787 ghcr.io/alexsjones/llmfit serve"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     139
+    ],
+    "quotes": [
+     "git clone https://github.com/AlexsJones/llmfit.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

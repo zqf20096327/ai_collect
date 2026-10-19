@@ -1,0 +1,158 @@
+{
+ "fn": "ymcui/Chinese-LLaMA-Alpaca",
+ "sha": "e593f9f6ec81",
+ "source": "readme",
+ "identity": {
+  "one_liner": "在LLaMA上扩充中文词表并二次预训练/精调的开源中文大模型",
+  "review": "开源中文LLaMA基座模型与指令精调的中文Alpaca模型：在原版LLaMA上扩充中文词表、用中文语料二次预训练，Alpaca再经中文指令数据精调。发布LoRA权重（7B/13B/33B，基础/Plus/Pro版），需与原版LLaMA合并后使用；同时开源预训练与指令精调脚本。支持llama.cpp、transformers、text-generation-webui、LlamaChat、LangChain、privateGPT等量化推理与本地CPU/GPU部署，提供C-Eval评测结果与在线竞技场。",
+  "highlights": [
+   "扩充中文词表并开源中文二次预训练与指令精调模型（LoRA权重，7B-33B）",
+   "开源预训练脚本与指令精调脚本，可继续训练",
+   "支持llama.cpp、transformers、text-generation-webui、LlamaChat、LangChain、privateGPT等部署方式",
+   "支持个人电脑CPU/GPU本地量化部署"
+  ],
+  "use_cases": [
+   "在中文NLP研究中使用或继续预训练开源大模型",
+   "在个人电脑上量化部署并体验中文对话模型",
+   "基于开源脚本进行指令精调训练自己的模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://arxiv.org/abs/2304.08177",
+  "demo_url": "http://llm-arena.ymcui.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "中文大模型",
+   "LoRA",
+   "本地部署",
+   "量化推理",
+   "预训练/精调"
+  ],
+  "domain": "NLP/大语言模型",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "fine-tuning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中英双语README以中文为主",
+   "接入百度网盘与ModelScope下载渠道",
+   "入驻机器之心SOTA模型平台"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: 本项目开源了**中文LLaMA模型和指令精调的Alpaca大模型**，以进一步促进大模型在中文NLP社区的开放研究。这些模型**在原版LLaMA的基础上扩充了中文词表**并使用了中文数据进行二次预训练，进一步提升了中文基础语义理解能力。同时",
+   "L19: - 🚀 快速使用笔记本电脑（个人PC）的CPU/GPU本地量化和部署体验大模型",
+   "L20: - 🚀 支持🤗transformers, llama.cpp, text-generation-webui, LlamaChat, LangChain, privateGPT等生态"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     155,
+     180
+    ],
+    "note": "提供Colab notebook在线转换量化与Gradio Demo",
+    "quotes": [
+     "|**在线转换**|Colab用户可利用本项目提供的notebook进行在线转换并量化模型|链接|",
+     "|**Colab Gradio Demo**|Colab中启动基于Gradio的交互式Web服务|通用|✅|✅|✅|❌|link|"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     20,
+     90,
+     93,
+     178,
+     179
+    ],
+    "note": "可配合的LLM应用开发框架，非替代/竞品",
+    "quotes": [
+     "- 🚀 支持🤗transformers, llama.cpp, text-generation-webui, LlamaChat, LangChain, privateGPT等生态",
+     "|LangChain示例 / privateGPT|不适用|直接提供Alpaca模型位置即可|",
+     "*[1] llama.cpp/LlamaChat/HF推理代码/web-demo代码/LangChain示例等已内嵌，无需手动添加模板。*",
+     "|**LangChain**|LLM应用开发框架，适用于进行二次开发|通用|✅ †|✅|✅ †|❌|link|",
+     "|**privateGPT**|基于LangChain的多文档本地问答框架|通用|✅|✅|✅|❌|link|"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     79,
+     99
+    ],
+    "note": "作为模型类型类比（类ChatGPT对话交互），非对比声明",
+    "quotes": [
+     "|模型类型|基座模型|指令理解模型（类ChatGPT）|",
+     "以下为本项目推荐使用的模型列表，通常使用了更多的训练数据和优化的模型训练方法和参数，请优先使用这些模型（其余模型请查看其他模型）。**如希望体验类ChatGPT对话交互，请使用Alpaca模型，而不是LLaMA模型。** 对于Alpaca模"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     103,
+     104,
+     105,
+     106,
+     107
+    ],
+    "note": "模型发布平台渠道",
+    "quotes": [
+     "|Chinese-LLaMA-Plus-7B|基座模型|通用120G|原版LLaMA-7B|790M|[[🤗HF]](https://huggingface.co/hfl/chinese-llama-plus-lora-7b) [[🤖Mod",
+     "|Chinese-LLaMA-Plus-13B|基座模型|通用120G|原版LLaMA-13B|1.0G|[[🤗HF]](https://huggingface.co/hfl/chinese-llama-plus-lora-13b) [[🤖",
+     "|Chinese-LLaMA-Plus-33B 🆕|基座模型|通用120G|原版LLaMA-33B|1.3G [6]|[[🤗HF]](https://huggingface.co/hfl/chinese-llama-plus-lora-33",
+     "|Chinese-Alpaca-Pro-7B 🆕|指令模型|指令4.3M|*原版LLaMA-7B & LLaMA-Plus-7B* [4]|1.1G|[[🤗HF]](https://huggingface.co/hfl/chinese-al",
+     "|Chinese-Alpaca-Pro-13B 🆕|指令模型|指令4.3M|*原版LLaMA-13B & LLaMA-Plus-13B [4] *|1.3G|[[🤗HF]](https://huggingface.co/hfl/chines"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

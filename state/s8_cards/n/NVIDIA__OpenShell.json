@@ -1,0 +1,136 @@
+{
+ "fn": "NVIDIA/OpenShell",
+ "sha": "fdaebf9b07a9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为自主 AI agent 提供安全隔离运行时与策略管控",
+  "review": "面向多 agent 舰队（fleets of autonomous AI agents）的运行时：agent 需要读文件、装包、调 API、用凭证才有用，OpenShell 通过策略声明限定其可触达范围并在运行时强制执行。机制包括内核级隔离沙箱（文件、系统调用、网络逐一管控，真实凭证不暴露给 agent）与形式化验证（策略变更先标记高风险新增访问，等待人工审查）。提供 CLI 安装脚本、Python/TypeScript/Go/Rust SDK、agent skills 包及 Helm 部署网关。",
+  "highlights": [
+   "内核级沙箱强制执行文件/系统调用/网络策略",
+   "策略变更经形式化验证后进入人工审查",
+   "凭证仅注入发往已批准端点的请求",
+   "提供 Python/TypeScript/Go/Rust 四语言 SDK 与 Helm 部署"
+  ],
+  "use_cases": [
+   "运行能读写文件、调用 API 的自主 agent 但限制其权限",
+   "为 agent 使用的推理凭证做按端点的隔离注入",
+   "在 Kubernetes 上部署网关统一管理沙箱与策略"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent安全",
+   "沙箱运行时",
+   "策略管控",
+   "基础设施"
+  ],
+  "domain": "AI 基础设施/agent 安全运行时",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: OpenShell is the safe, private runtime for fleets of autonomous AI agents. Agents are most useful when they can read fil",
+   "L15: OpenShell governs what agents can do in two ways: it instruments the kernel to enforce policy on every file access, syst",
+   "L17: - **Kernel-level enforcement.** Each agent runs in an isolated sandbox. Kernel controls confine which files it can acces"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     31
+    ],
+    "note": "首次运行示例中经由 OpenRouter 免费模型驱动 OpenCode，非官方适配通道",
+    "quotes": [
+     "The installer sets up the CLI and a local gateway. The default sandbox image is minimal Ubuntu with no agent installed. "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     4,
+     60
+    ],
+    "note": "徽章与 uv add openshell",
+    "quotes": [
+     "PyPI",
+     "|Python|`uv add openshell`|README|"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     49,
+     61
+    ],
+    "note": "skills 安装与 TypeScript SDK",
+    "quotes": [
+     "npx skills add NVIDIA/OpenShell",
+     "|TypeScript|`npm install @nvidia/openshell-sdk` (GitHub Packages)|README|"
+    ]
+   },
+   {
+    "term": "helm",
+    "rel": "support",
+    "lines": [
+     39,
+     69
+    ],
+    "quotes": [
+     "- Kubernetes: deploy the gateway with Helm. Your CNI must enforce `NetworkPolicy`.",
+     "OpenShell collects anonymous telemetry, limited to operational categories and counts, to help improve the project. It do"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,228 @@
+{
+ "fn": "EverMind-AI/EverOS",
+ "sha": "6cdcccb90bac",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI agent 的本地优先可携带记忆层",
+  "review": "Python 库与本地优先的 agent 记忆运行时：将对话、文件与 agent 轨迹存为可读 Markdown，配合本地 SQLite 与 LanceDB 索引实现检索与离线反思（合并片段、精炼画像与技能）。支持按 user_id/agent_id/app_id/project_id/session_id 正交检索，提供本地服务器与 /api/v2 端点；一个 OpenRouter key 即可运行核心流程，embedding/rerank 为可选配置；Office 文档解析需系统安装 LibreOffice。",
+  "highlights": [
+   "Markdown 为事实源，可用 Git 版本化并直接编辑，级联 watcher 同步索引",
+   "本地三件套 Markdown+SQLite+LanceDB，无需 MongoDB/Elasticsearch/Redis",
+   "分层配置：[llm] 基础流程，[embedding]/[rerank]/[multimodal] 逐步解锁混合检索、反思与多模态摄取",
+   "提供 MCP Server（uvx everos-mcp）接入 Claude Code、Codex、Cursor 等编码助手"
+  ],
+  "use_cases": [
+   "为跨应用/跨会话的 AI agent 添加持久长期记忆",
+   "给 Claude Code/Cursor 等编码助手接入自动保存与召回上下文",
+   "本地自托管记忆服务，用 Markdown 文件管理与审计 agent 记忆",
+   "构建需要跨会话自我演进的助手（学习、创意、个人助理等）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent记忆",
+   "长期记忆",
+   "本地优先",
+   "MCP",
+   "agent基础设施"
+  ],
+  "domain": "AI 基础设施/Agent 记忆",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "openrouter"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "agent-memory"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文版本链接（L8）",
+   "微信社群（L6）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: EverOS is a Python library and local-first memory runtime for agents and",
+   "L19: trajectories as readable Markdown, then syncs local SQLite and LanceDB indexes",
+   "L67: > One OpenRouter API key is enough to start EverOS, write durable memories,"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     59
+    ],
+    "note": "DeepSeek Harness 为集成平台之一，非模型通道适配",
+    "quotes": [
+     " DeepSeek Harness DeepSeek Harness"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     67,
+     73,
+     113,
+     114
+    ],
+    "note": "默认 LLM 通道，官方配置即为 OpenRouter",
+    "quotes": [
+     "> One OpenRouter API key is enough to start EverOS, write durable memories,",
+     "- One OpenRouter API key",
+     "api_key = \"<OPENROUTER_API_KEY>\"",
+     "base_url = \"https://openrouter.ai/api/v1\""
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     274,
+     282,
+     446
+    ],
+    "note": "提及 Claude Code/Claude Desktop 作为可接入对象，非 Anthropic 模型适配",
+    "quotes": [
+     "Browser-native hive-mind for CLI coding agents - Claude Code, Codex, Gemini, and OpenCode collaborate as real PTY proces",
+     "Plug EverOS memory into Claude Code, Codex, Claude Desktop or Cursor with `uvx everos-mcp`. Works with EverOS Cloud and ",
+     "#### Claude Code Plugin"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     78,
+     79,
+     214
+    ],
+    "quotes": [
+     "uv pip install everos",
+     "# or: pip install everos",
+     "uv pip install 'everos[multimodal]'   # or: pip install 'everos[multimodal]'"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     231
+    ],
+    "note": "LibreOffice 系统依赖的安装方式，非本产品安装",
+    "quotes": [
+     "brew install --cask libreoffice              # macOS"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     238,
+     240
+    ],
+    "quotes": [
+     "git clone https://github.com/EverMind-AI/EverOS.git",
+     "uv sync                              # creates ./.venv and installs deps"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     4
+    ],
+    "quotes": [
+     " HuggingFace"
+    ]
+   },
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     63
+    ],
+    "note": "生态集成平台之一",
+    "quotes": [
+     " Dify Dify"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     282,
+     446,
+     448
+    ],
+    "note": "可接入的产品对象，非替代/竞品",
+    "quotes": [
+     "Plug EverOS memory into Claude Code, Codex, Claude Desktop or Cursor with `uvx everos-mcp`. Works with EverOS Cloud and ",
+     "#### Claude Code Plugin",
+     "Persistent memory for Claude Code. Automatically saves and recalls context from past coding sessions."
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     282
+    ],
+    "quotes": [
+     "Plug EverOS memory into Claude Code, Codex, Claude Desktop or Cursor with `uvx everos-mcp`. Works with EverOS Cloud and "
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    414,
+    416
+   ],
+   "note": "Legacy OpenClaw Agent Memory 为 pre-1.0.0 存档插件，新集成应使用当前 API"
+  }
+ }
+}

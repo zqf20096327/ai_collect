@@ -1,0 +1,87 @@
+{
+ "fn": "Developer-Y/cs-video-courses",
+ "sha": "172814a07ce7",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为学生收录带视频讲授的计算机科学课程链接清单",
+  "review": "以列表形式收录大学（学院）级别的计算机科学课程及其视频讲授链接，覆盖计算机科学导论、数据结构与算法、系统编程、操作系统等方向，条目标注学校、教师、学期并附视频播放列表、讲义或课程网站链接。收录标准为正式的大学级别课程，明确排除小型 MOOC、基础教程与站点广告。项目通过 CONTRIBUTING.md 接受 PR 贡献，并对空 issue 等行为设有限制规则。",
+  "highlights": [
+   "按学科分类组织大学级别课程链接清单",
+   "每条附视频播放列表/课程网站/讲义链接",
+   "收录 UNSW、MIT、Stanford、Berkeley、IIT 等多校课程",
+   "PR 贡献制并设有收录标准（排除基础教程与广告）"
+  ],
+  "use_cases": [
+   "按方向查找含视频讲授的大学公开课",
+   "自学计算机科学核心课程时选择不同学校版本",
+   "为课程收录贡献新的大学级公开课链接"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "课程清单",
+   "计算机科学",
+   "公开课/视频课程",
+   "学习资源"
+  ],
+  "domain": "教育/计算机科学学习资源",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # Computer Science courses with video lectures",
+   "L8: - You are welcome to contribute, please create PR for actual college/University level courses. Please do not add links f",
+   "L14: ## Courses"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

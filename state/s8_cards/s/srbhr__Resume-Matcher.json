@@ -1,0 +1,238 @@
+{
+ "fn": "srbhr/Resume-Matcher",
+ "sha": "73ad0e5f8fc5",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地自托管的 AI 简历定制与 ATS 优化工具",
+  "review": "开源简历工具：上传主简历（PDF/DOCX）与目标职位描述，生成针对该职位的定制简历、求职信与面试准备内容，并导出可被 ATS 解析的 PDF。架构为 FastAPI 后端 + Next.js 前端 + SQLite，本机运行、无需注册账号，数据存于本地数据库。支持接入云端 API 或本地模型（Ollama）；另提供 MCP 服务器，可由 Claude Code、Cursor 等编码代理驱动生成，无需 LLM key。ATS 评分与 ATS 检查为纯代码实现，不调用 LLM。定制提示词禁止添加主简历中不存在的经历。",
+  "highlights": [
+   "主简历+职位描述生成定制简历、求职信与面试准备",
+   "支持云端 API 与本地模型（Ollama），数据留在本机",
+   "ATS 评分与解析检查为纯代码（pdfminer），不调用 LLM",
+   "10 套模板，其中 7 套提供可编辑 pdfLaTeX 工程；多语言界面与内容生成"
+  ],
+  "use_cases": [
+   "针对每个职位描述定制主简历并导出 PDF",
+   "用 ATS 检查核验简历 PDF 的可解析性",
+   "本地模型运行下让简历数据不出本机",
+   "批量粘贴多个职位描述排队后台定制"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "简历工具",
+   "求职",
+   "AI写作",
+   "自托管",
+   "ATS优化"
+  ],
+  "domain": "求职/文档工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "deepseek",
+   "groq",
+   "openrouter",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "ai-writing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L47: - **It runs on your machine.** A FastAPI backend, a Next.js frontend and a SQLite file. Clone the repo or start one Dock",
+   "L48: - **You choose the model.** Bring an API key for OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter or Groq, or run a local",
+   "L49: - **Claude Code can drive it.** The MCP server lets Claude Code, Cursor or Codex write the tailored resume while Resume "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     233,
+     236
+    ],
+    "note": "支持列表中的云端 Provider（API key 或 Claude CLI 订阅方式）",
+    "quotes": [
+     "|**Claude subscription (via Claude Code)**|Cloud (via local CLI)|Runs your installed `claude` CLI, so this app needs no ",
+     "|**Anthropic**|Cloud|Claude Haiku 4.5|"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     9,
+     48
+    ],
+    "note": "说明中列出的可接入模型，示例中搭配 API key 使用",
+    "quotes": [
+     "Free, open-source resume builder that tailors your resume (CV) to each job description. A self-hosted AI harness for Cla",
+     "- **You choose the model.** Bring an API key for OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter or Groq, or run a local"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "compat",
+    "lines": [
+     48
+    ],
+    "quotes": [
+     "- **You choose the model.** Bring an API key for OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter or Groq, or run a local"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "compat",
+    "lines": [
+     48
+    ],
+    "quotes": [
+     "- **You choose the model.** Bring an API key for OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter or Groq, or run a local"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     232
+    ],
+    "note": "支持列表中的本地 Provider，独立成行",
+    "quotes": [
+     "|**Ollama**|Local|Free, runs on your machine|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     218
+    ],
+    "note": "git clone 后本地运行",
+    "quotes": [
+     "git clone https://github.com/srbhr/Resume-Matcher.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     47,
+     252
+    ],
+    "note": "README 说明可启动单个 Docker 容器运行",
+    "quotes": [
+     "- **It runs on your machine.** A FastAPI backend, a Next.js frontend and a SQLite file. Clone the repo or start one Dock",
+     "docker run --name resume-matcher \\"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     234
+    ],
+    "note": "作为接入的模型提供方（Sign in with ChatGPT），非竞品对比",
+    "quotes": [
+     "|**ChatGPT plan (Sign in with ChatGPT)**|Cloud|Community-built. Uses OpenAI's official Sign in with ChatGPT for open-sou"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     9
+    ],
+    "note": "可接入模型列表提及",
+    "quotes": [
+     "Free, open-source resume builder that tailors your resume (CV) to each job description. A self-hosted AI harness for Cla"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     49,
+     231,
+     233
+    ],
+    "note": "通过 MCP/CLI 驱动本工具的编码代理，集成关系",
+    "quotes": [
+     "- **Claude Code can drive it.** The MCP server lets Claude Code, Cursor or Codex write the tailored resume while Resume ",
+     "|**Your coding agent**|Local|No API key. Open Claude Code, Codex, Cursor or Copilot in this folder and ask it to set up ",
+     "|**Claude subscription (via Claude Code)**|Cloud (via local CLI)|Runs your installed `claude` CLI, so this app needs no "
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     49,
+     231
+    ],
+    "quotes": [
+     "- **Claude Code can drive it.** The MCP server lets Claude Code, Cursor or Codex write the tailored resume while Resume ",
+     "|**Your coding agent**|Local|No API key. Open Claude Code, Codex, Cursor or Copilot in this folder and ask it to set up "
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     231
+    ],
+    "quotes": [
+     "|**Your coding agent**|Local|No API key. Open Claude Code, Codex, Cursor or Copilot in this folder and ask it to set up "
+    ]
+   }
+  ]
+ }
+}

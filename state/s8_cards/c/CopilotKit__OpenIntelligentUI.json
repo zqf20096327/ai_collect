@@ -1,0 +1,120 @@
+{
+ "fn": "CopilotKit/OpenIntelligentUI",
+ "sha": "c8a0065e3fc9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源生成式 UI 聊天框架：把问题变成可交互的解释与工具",
+  "review": "基于 CopilotKit 与 AG-UI 构建的开源聊天界面：agent 根据任务在纯文本、原生组件和自定义交互 UI（3D 解释、图表、计算器、地图）之间选择呈现方式。Python Deep Agent 生成结构化任务答案，generateSandboxedUi 将 HTML/CSS/JS 流式注入隔离 iframe 形成交互控件。默认模型为 OpenAI chat-latest，Jev（jev-latest）负责可视化路由；需要 Node.js 22+、pnpm 9+、Python 3.12+ 与 uv，通过 git clone 与 make 命令运行，API key 可在界面填入且不落盘。",
+  "highlights": [
+   "agent 按任务自动选择文本、原生组件或自定义交互 UI 呈现",
+   "generateSandboxedUi 将生成的 HTML/CSS/JS 流式注入隔离沙箱 iframe",
+   "内置 3D 解释、表格转图表、账单分摊计算器、USGS 地图行程等演示场景",
+   "可选独立 MCP server，暴露技能资源、提示模板与 assemble_document 工具"
+  ],
+  "use_cases": [
+   "克隆并接入自己的模型，改造成面向特定工作流的交互式问答界面",
+   "为知识解释、方案对比类问题生成可操作的可视化回答",
+   "研究生成式 UI / agent 驱动前端的参考实现"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/eb1666c1-e177-410b-96eb-9eb5c5534d95",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "生成式UI",
+   "agent聊天界面",
+   "LLM应用",
+   "前端框架",
+   "可视化"
+  ],
+  "domain": "LLM 应用/生成式 UI",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L25: Ask a question, explore an idea, compare your options, or make a tool for the moment. The agent chooses a direct text an",
+   "L117: The Python Deep Agent uses a task-first system prompt and focused skills. CopilotKit carries the agent stream to the Nex",
+   "L105: The default model is `chat-latest`, OpenAI’s documented alias for the latest ChatGPT Instant model, requiring `OPENAI_AP"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     95,
+     97,
+     100
+    ],
+    "note": "git clone + make setup/dev 源码运行",
+    "quotes": [
+     "git clone https://github.com/CopilotKit/OpenIntelligentUI.git",
+     "make setup",
+     "make dev"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     105
+    ],
+    "note": "chat-latest 是 OpenAI 的 ChatGPT Instant 模型别名，仅指模型来源",
+    "quotes": [
+     "The default model is `chat-latest`, OpenAI’s documented alias for the latest ChatGPT Instant model, requiring `OPENAI_AP"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,82 @@
+{
+ "fn": "elder-plinius/L1B3RT4S",
+ "sha": "5c3e41a2b226",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向各旗舰 AI 模型的越狱提示词收集仓库",
+  "review": "该仓库收集针对多个旗舰 AI 模型的提示词文本（README 称为 jailbreaks/liberation prompts），以 Markdown 文件组织，并附有 Discord 社区链接。仓库作者署名为 Pliny the Prompter/Liberator。README 未提供安装步骤、运行说明或使用文档，内容为提示词文本本身；仓库描述含乱码字符与模拟提示注入的口号文本。适用对象为对这些提示词文本进行研究或查阅的用户。",
+  "highlights": [
+   "收集针对多个旗舰 AI 模型的提示词文本",
+   "以 Markdown 文件按模型组织的仓库结构",
+   "提供关联 Discord 社区链接"
+  ],
+  "use_cases": [
+   "查阅针对不同模型的提示词文本内容",
+   "参考仓库中的提示词样本进行研究"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "提示词集合",
+   "越狱提示",
+   "AI安全",
+   "安全研究"
+  ],
+  "domain": "AI 安全/提示词集合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3: J̴̡̢̡̧̧̨̛̛̺̼̫̝̲̦̪͔̮̭͔͙͕͓̱̲͖͓̹̞͉̤͖̬̟͙̟̳̦̯͚̺͔͍̲̓͐͒̾͐͂̈́̑̑̊̓̔͂̈́̂͌̈́̊͐̌̓̊͒͌̉̈͜͜͝͝A̸̛͌̀̓̈́͂͋̿̈́̃̒̂͊̈̓̉̃͑̉̊̈̈́͋̉̃̊́̉͛͛̏͋́̐̍͘͘̚͝͠͠",
+   "L8: CLICK TO JOIN->: BASI Discord"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

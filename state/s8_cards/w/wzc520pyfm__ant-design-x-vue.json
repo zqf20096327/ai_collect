@@ -1,0 +1,105 @@
+{
+ "fn": "wzc520pyfm/ant-design-x-vue",
+ "sha": "562dc1067322",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Ant Design X 的 Vue 实现：构建 AI 对话界面的组件库",
+  "review": "将 React 版 Ant Design X 组件库移植到 Vue 生态的 UI 组件库，面向需要搭建 AI 对话/LUI 页面的 Vue 开发者。提供 Bubble、XProvider 等组件，覆盖 AI 对话场景组件、数据流管理功能、多种应用模板，可对接符合 OpenAI 标准的模型推理服务。使用 TypeScript 开发并提供完整类型支持，支持细粒度样式调整。通过 npm/yarn/pnpm 安装，需搭配 ant-design-vue 使用，MIT 许可。",
+  "highlights": [
+   "AI 对话场景组件（Bubble、XProvider 等）的 Vue 实现",
+   "数据流管理功能与多种 LUI 应用模板",
+   "可对接符合 OpenAI 标准的模型推理服务",
+   "TypeScript 开发，提供完整类型支持"
+  ],
+  "use_cases": [
+   "在 Vue 项目中搭建 AI 聊天/对话界面",
+   "对接 OpenAI 标准模型服务并快速启动 LUI 应用开发",
+   "复用模板快速构建个性化 AI 交互页面"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": null
+ },
+ "links": {
+  "scenario_tags": [
+   "AI 聊天 UI",
+   "Vue 组件库",
+   "chat-ui",
+   "copilot 界面"
+  ],
+  "domain": "前端/AI 界面组件",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "微信公众号与 QQ 交流群"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L19: 这里是 Ant Design X 的 Vue 实现。",
+   "L25: - ⚡ 轻松对接符合 OpenAI 标准的模型推理服务"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     34,
+     38,
+     42
+    ],
+    "quotes": [
+     "$ npm i ant-design-vue ant-design-x-vue",
+     "$ yarn add ant-design-vue ant-design-x-vue",
+     "$ pnpm add ant-design-vue ant-design-x-vue"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

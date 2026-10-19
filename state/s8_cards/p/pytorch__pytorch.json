@@ -1,0 +1,147 @@
+{
+ "fn": "pytorch/pytorch",
+ "sha": "89caefa5d882",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的 GPU 加速张量计算与动态神经网络 Python 库",
+  "review": "提供 GPU 加速的 NumPy 式张量计算与基于 tape 机制的自动微分动态神经网络，组件包括 torch、torch.autograd、torch.nn、torch.multiprocessing 与 torch.utils。定位为深度学习研究平台，强调 Python 优先集成、命令式执行、可扩展的 C/C++ 扩展 API。安装途径为官网提供的 conda/pip 二进制，或从源码构建（需 Python 3.10+、C++20 编译器、10 GB 磁盘等），并分别给出 CUDA、ROCm、Intel GPU 的构建说明。",
+  "highlights": [
+   "GPU 加速张量计算与基于 tape 的自动微分",
+   "组件划分：torch / autograd / nn / multiprocessing / utils",
+   "支持 CUDA、AMD ROCm、Intel GPU 三类 GPU 后端构建",
+   "提供二进制（conda/pip）与源码两种安装途径"
+  ],
+  "use_cases": [
+   "用 GPU 加速替代 NumPy 做科学计算",
+   "搭建并训练深度神经网络模型",
+   "用 Python 编写自定义神经网络层并通过扩展 API 接入 C/C++"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": "cpu-ok",
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度学习框架",
+   "张量计算",
+   "自动微分",
+   "GPU加速"
+  ],
+  "domain": "机器学习/深度学习框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: PyTorch is a Python package that provides two high-level features:",
+   "L4: - Tensor computation (like NumPy) with strong GPU acceleration",
+   "L112: Commands to install binaries via Conda or pip wheels are on our website: https://pytorch.org/get-started/locally/",
+   "L158: ##### NVIDIA CUDA Support"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     120,
+     194,
+     244
+    ],
+    "quotes": [
+     "### From Source",
+     "git clone https://github.com/pytorch/pytorch",
+     "python -m pip install --no-build-isolation -v -e ."
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     207,
+     213,
+     244
+    ],
+    "quotes": [
+     "pip install --group dev",
+     "pip install mkl-static mkl-include",
+     "python -m pip install --no-build-isolation -v -e ."
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     340,
+     345,
+     351,
+     353
+    ],
+    "note": "窗外行：L4T container 等镜像发布",
+    "quotes": [
+     "docker run --gpus all --rm -ti --ipc=host pytorch/pytorch:latest",
+     "should increase shared memory size either with `--ipc=host` or `--shm-size` command line options to `nvidia-docker run`.",
+     "The Dockerfile is supplied to build images with CUDA 12.6 support and cuDNN v9.",
+     "unset to use the default, as the Dockerfile uses system Python."
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU-only",
+    "rel": "support",
+    "lines": [
+     258,
+     260
+    ],
+    "quotes": [
+     "**CPU-only builds**",
+     "In this mode PyTorch computations will run on your CPU, not your GPU."
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,103 @@
+{
+ "fn": "amusi/CVPR2026-Papers-with-Code",
+ "sha": "65fdbe9e1bd1",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向计算机视觉研究者的 CVPR 2026 论文与开源项目目录",
+  "review": "以 Markdown 目录形式持续收录 CVPR 2026 录用论文及其开源代码、项目页、模型链接，按 3DGS、Agent、多模态大语言模型、具身智能、自动驾驶、医学图像分割、3D 重建等数十个方向分类组织。条目附 arXiv 论文链接与 GitHub 代码仓库地址，部分含 Hugging Face 模型链接。读者可通过提交 issue 补充条目，README 同时导向维护者的往届 CV 论文盘点仓库与学术交流社群。",
+  "highlights": [
+   "按数十个研究方向分类组织的 CVPR 2026 论文目录",
+   "每条条目附 arXiv 论文链接及代码/项目页/模型链接",
+   "欢迎通过 issue 提交新论文与开源项目",
+   "关联往届 ICCV/ECCV/CVPR 论文盘点仓库"
+  ],
+  "use_cases": [
+   "查找 CVPR 2026 某个研究方向（如 3D 重建、医学图像分割）的论文与代码",
+   "调研某篇论文是否已开源及其项目主页",
+   "跟踪计算机视觉领域的最新工作动向"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "论文合集",
+   "计算机视觉",
+   "学术资源",
+   "知识聚合"
+  ],
+  "domain": "计算机视觉/学术资源聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list",
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "CVer学术交流群",
+   "知识星球"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # CVPR 2026 论文和开源项目合集(Papers with Code)",
+   "L14: # 【CVPR 2026 论文开源目录】"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     86
+    ],
+    "note": "论文模型的托管平台链接，非替代/竞品关系",
+    "quotes": [
+     "- Model: https://huggingface.co/internlm/Spatial-SSRL-7B"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

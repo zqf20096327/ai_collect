@@ -1,0 +1,163 @@
+{
+ "fn": "datawhalechina/easy-vibe",
+ "sha": "2c067bc6cdae",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 AI 原生产品构建者的 vibe coding 入门教程",
+  "review": "Datawhale 出品的多语言（10 种）在线教程，教零基础学习者通过对话式 AI 编程把想法做成产品。内容分三个阶段：产品原型（需求验证、原型搭建、接入 AI 能力）、全栈开发（前端、Git、Supabase、API、部署、Stripe 计费）、进阶（Claude Code、MCP、Skills、Agent Teams、跨平台项目），另附 9 大知识领域的附录知识库与交互式演示组件。面向初学者、产品经理、创始人及各级开发者，提供学习路径导航与 Vibe Stories 用户案例。",
+  "highlights": [
+   "三阶段路径：产品原型→全栈交付→Claude Code 进阶工作流",
+   "10 种语言完整覆盖教程内容",
+   "提供 llms.txt 供 OpenClaw、Claude、Cursor、Trae 等 AI agent 读取仓库结构",
+   "附录含 9 大知识领域、80+ 交互式主题与用户研究方法（Double Diamond、JTBD、The Mom Test）"
+  ],
+  "use_cases": [
+   "零基础用 AI 对话做出第一个可演示的产品原型",
+   "把想法推进到带登录、计费的全栈 SaaS 应用",
+   "学习 Claude Code、MCP、Agent Teams 等进阶 AI 协作工作流",
+   "产品经理快速验证想法并搭建 MVP"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    5,
+    6
+   ],
+   "note": "自称 The first course for AI-native product builders / 从零开始学 AI 编程"
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教程/课程",
+   "vibe coding",
+   "产品原型",
+   "全栈开发",
+   "AI编程工具"
+  ],
+  "domain": "教育/AI 编程课程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "media",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "datawhalechina 组织",
+   "中英双语 README",
+   "微信登录/小程序相关内容"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5:  Learn AI coding from zero by shipping real products.",
+   "L90: - **[2026-08-12]** 📘 **Stage 1 has been restructured and polished**: The beginner path now starts with real problems and",
+   "L140: ### AI-Native: I want advanced Claude Code and agent workflows"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     99,
+     100,
+     140,
+     142,
+     158
+    ],
+    "note": "教程内容覆盖 Claude Code 工作流，非产品自身接入该 provider",
+    "quotes": [
+     "- **[2026-03-02]** 🦞 **OpenClaw and AI Agent friendly support**: Added `llms.txt` so OpenClaw, Claude, Cursor, Trae, and",
+     "- **[2026-03-01]** The Advanced Development section has been comprehensively upgraded with deep guides for Claude Code, ",
+     "### AI-Native: I want advanced Claude Code and agent workflows",
+     "**What you will learn**: Claude Code, MCP, Skills, Agent Teams, long-running tasks, Spec Coding, and cross-platform app ",
+     "- If you want advanced Claude Code workflows or cross-platform projects, go to Stage 3"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "none",
+    "lines": [],
+    "note": "可见范围内未出现 npm 安装途径",
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     99
+    ],
+    "note": "作为可读取仓库的 AI 工具被提及",
+    "quotes": [
+     "- **[2026-03-02]** 🦞 **OpenClaw and AI Agent friendly support**: Added `llms.txt` so OpenClaw, Claude, Cursor, Trae, and"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     100,
+     140,
+     142,
+     158
+    ],
+    "note": "进阶教程的教学对象，非替代/竞品对象",
+    "quotes": [
+     "- **[2026-03-01]** The Advanced Development section has been comprehensively upgraded with deep guides for Claude Code, ",
+     "### AI-Native: I want advanced Claude Code and agent workflows",
+     "**What you will learn**: Claude Code, MCP, Skills, Agent Teams, long-running tasks, Spec Coding, and cross-platform app ",
+     "- If you want advanced Claude Code workflows or cross-platform projects, go to Stage 3"
+    ]
+   },
+   {
+    "term": "Dify",
+    "rel": "none",
+    "lines": [],
+    "note": "可见范围内未出现",
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

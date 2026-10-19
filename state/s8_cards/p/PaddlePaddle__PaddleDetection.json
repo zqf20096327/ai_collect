@@ -1,0 +1,93 @@
+{
+ "fn": "PaddlePaddle/PaddleDetection",
+ "sha": "cb4352dc74e6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的目标检测端到端开发套件",
+  "review": "基于 PaddlePaddle 框架的目标检测开发套件，覆盖 2D/3D 目标检测、实例分割、多目标跟踪、关键点检测、人脸检测与半监督学习等方向。将模型解耦为 backbone、neck、loss、数据增强等可组合模块，提供 PP-YOLOE+、PP-PicoDet、PP-TinyPose、PP-HumanV2、PP-Vehicle 等产业特色模型与预训练权重，并整理农业、工业、交通等领域的应用范例。部署路径包括 Paddle Inference、Paddle Lite、Paddle Serving 及 ONNX 导出。安装说明需另行参考安装文档。",
+  "highlights": [
+   "模型库覆盖 2D/3D 检测、实例分割、多目标跟踪、关键点检测等方向",
+   "模块化设计：backbone/neck/loss/数据增强组件可自定义组合",
+   "提供 Paddle Inference/Paddle Lite/Paddle Serving 部署与 ONNX 导出",
+   "PP 系列产业模型附带预训练模型与产业应用示例代码"
+  ],
+  "use_cases": [
+   "训练和部署自定义目标检测模型",
+   "做行人/车辆分析、多目标跟踪等视频分析任务",
+   "在移动端和嵌入式设备上部署轻量级检测模型",
+   "按产业范例流程打通数据标注到部署的链路"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "目标检测",
+   "实例分割",
+   "多目标跟踪",
+   "姿态估计",
+   "模型部署"
+  ],
+  "domain": "计算机视觉/目标检测",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "object-detection",
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 以简体中文为主",
+   "基于百度飞桨 PaddlePaddle 框架",
+   "昇腾/昆仑芯/寒武纪等国产硬件适配描述"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L8: PaddleDetection是一个基于PaddlePaddle的目标检测端到端开发套件，在提供丰富的模型组件和测试基准的同时，注重端到端的产业落地应用，通过打造产业级特色模型|工具、建设产业应用范例等手段，帮助开发者实现数据准备、模型选型",
+   "L54: PaddleDetection支持大量的最新主流的算法基准以及预训练模型，涵盖2D/3D目标检测、实例分割、人脸检测、关键点检测、多目标跟踪、半监督学习等方向。`传送门`：📱模型库、⚖️模型性能对比。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

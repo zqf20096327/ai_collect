@@ -1,0 +1,122 @@
+{
+ "fn": "Kong/kong",
+ "sha": "63acf325c218",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 API/LLM/MCP 流量的云原生网关",
+  "review": "Kong Gateway 是一个云原生、平台无关的网关，提供代理、路由、负载均衡、健康检查、认证等功能，作为微服务或常规 API 流量的中央编排层，并扩展至 LLM 与 MCP 流量。AI 能力包括多 LLM 提供商路由、语义安全、MCP 流量治理与可观测性、语义路由与缓存等。支持 Kubernetes Ingress Controller、数据库无关部署与混合部署（控制面/数据面分离），通过插件机制扩展功能，另有 Kong Konnect 云托管与商业订阅版本。",
+  "highlights": [
+   "Universal LLM API 支持跨 OpenAI、Anthropic、Gemini、Bedrock 等多家提供商路由",
+   "MCP 流量治理、安全与可观测性，并可从任意 RESTful API 自动生成 MCP",
+   "60+ AI 功能，含 AI 可观测性、语义安全与缓存、语义路由",
+   "通过官方 Kubernetes Ingress Controller 原生运行于 Kubernetes"
+  ],
+  "use_cases": [
+   "为组织内微服务与 API 提供统一的认证、限流与路由网关",
+   "统一接入和治理多个 LLM 提供商的流量",
+   "对 MCP 流量做安全与可观测性管控",
+   "在 Kubernetes 上以 Ingress Controller 方式管理入口流量"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "API网关",
+   "LLM网关",
+   "Kubernetes",
+   "微服务",
+   "MCP"
+  ],
+  "domain": "云原生/API 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "bedrock"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: Kong or Kong Gateway is a cloud-native, platform-agnostic, scalable **API 𖧹 LLM 𖧹 MCP** Gateway distinguished for its hi",
+   "L57: - Universal LLM API to route across multiple providers like OpenAI, Anthropic, GCP Gemini, AWS Bedrock, Azure AI, Databr"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     57
+    ],
+    "note": "Universal LLM API 明确支持 AWS Bedrock 作为提供商",
+    "quotes": [
+     "- Universal LLM API to route across multiple providers like OpenAI, Anthropic, GCP Gemini, AWS Bedrock, Azure AI, Databr"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "none",
+    "lines": [],
+    "note": "L27 是克隆 docker-kong 仓库用于 docker-compose 部署，非源码编译安装途径",
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     57
+    ],
+    "note": "作为可路由的 LLM 提供商被提及，非替代/竞品关系",
+    "quotes": [
+     "- Universal LLM API to route across multiple providers like OpenAI, Anthropic, GCP Gemini, AWS Bedrock, Azure AI, Databr"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

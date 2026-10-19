@@ -1,0 +1,89 @@
+{
+ "fn": "fengdu78/Coursera-ML-AndrewNg-Notes",
+ "sha": "b9c5c036df2d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "机器学习入门者的吴恩达课程中文学习笔记",
+  "review": "整理斯坦福 2014 年吴恩达机器学习课程的中文笔记，覆盖 10 周 18 节内容：监督学习、无监督学习、SVM、神经网络、推荐系统等。提供 markdown、word、html 三种笔记格式及 pdf 下载，随附课程原版 ppt 课件、中英文字幕（mp4 存百度云）、python 课程代码及 B 站课程视频链接。html 版公式已转为图片以便在线阅读。面向中文机器学习学习者。",
+  "highlights": [
+   "笔记提供 word/markdown/html 三种格式及 pdf 下载",
+   "附课程原版 ppt 与中英文字幕",
+   "包含课程 python 代码",
+   "html 在线版公式已转为图片"
+  ],
+  "use_cases": [
+   "配合吴恩达 Coursera 机器学习课程做中文笔记阅读",
+   "下载课程字幕和 ppt 辅助自学",
+   "查阅课程配套 python 代码练习"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "机器学习",
+   "课程笔记",
+   "中文翻译",
+   "在线课程"
+  ],
+  "domain": "机器学习教育/知识整理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "微信公众号：机器学习初学者",
+   "国内 qq 群与百度云分享"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: **斯坦福大学2014（吴恩达）机器学习教程中文笔记**",
+   "L19: 本人2014年下半年开始翻译本课程字幕，并写了课程的中文笔记。笔记被下载了几万次，应该帮助了不少人，也有很多人一直在帮助我，现在我把笔记的**word**原稿和**markdown**原稿分享给大家。",
+   "L21: **markdown**的笔记和课程中英文字幕我将放在**github**，希望大家能继续完善。为方便数学公式的在线显示，在线观看的是**html**文件，公式已经被转为图片，公式源码在**markdown**文件。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

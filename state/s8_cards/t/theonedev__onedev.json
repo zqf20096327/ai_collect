@@ -1,0 +1,114 @@
+{
+ "fn": "theonedev/onedev",
+ "sha": "baaab18e8ff7",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管 DevOps 平台：代码托管+CI/CD+_issue 管理+AI 助手",
+  "review": "自托管的统一开发平台，覆盖代码搜索与导航、pull request 与代码保护规则、issue 工作流与看板、服务台邮件联动、CI/CD 编辑器与多种执行器（容器/Kubernetes/agent）、内置包仓库、版本化 Wiki、仪表盘与高可用集群。AI 部分：内置自然语言查询、代码解释、提交与 PR 审查、构建错误排查；AI 用户可在 issue/PR 流程中自主实现任务、修复失败；Workspaces 在浏览器中提供预配置 dev container 以运行终端编码 agent。README 注明服务器最低可在 1 核 2G 内存环境运行中型项目。",
+  "highlights": [
+   "内置 AI：自然语言查询、代码解释、PR 审查、CI/CD 规格辅助与构建错误调查",
+   "AI 用户在 issue/PR 流程中自主实现 issue、修复 CI 失败与合并冲突",
+   "Workspaces 提供服务端预配置 dev container，浏览器内使用终端编码 agent",
+   "TOD CLI 与内置 skills 供编码 agent 查询/编辑 issue、PR、build 并触发 CI"
+  ],
+  "use_cases": [
+   "自托管一体化管理代码托管、CI/CD 与项目看板",
+   "让 AI 以团队成员身份认领 issue、审查 PR 并修复构建失败",
+   "在浏览器中用 Claude Code 等终端 agent 直接开发，免去本地环境配置"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "CI/CD",
+   "代码托管",
+   "DevOps",
+   "AI编码助手",
+   "自托管"
+  ],
+  "domain": "开发工具/DevOps",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L156: ## 🤖 Built-in AI for DevOps Intelligence",
+   "L165: Work on any branch with preconfigured dev containers on server. Use OpenCode, Claude Code, Codex, or other terminal agen",
+   "L179: AI users work autonomously in your issue and pull request flow: implement assigned issues, review and improve pull reque"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     165
+    ],
+    "note": "Workspaces 中可使用 Claude Code，属配合可用而非专门适配",
+    "quotes": [
+     "Work on any branch with preconfigured dev containers on server. Use OpenCode, Claude Code, Codex, or other terminal agen"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     165
+    ],
+    "note": "Workspaces 中可运行的终端 agent 之一，非替代/竞品关系",
+    "quotes": [
+     "Work on any branch with preconfigured dev containers on server. Use OpenCode, Claude Code, Codex, or other terminal agen"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

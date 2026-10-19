@@ -1,0 +1,113 @@
+{
+ "fn": "jev-chat/jev-chat-jarvis",
+ "sha": "e5fbc52ea978",
+ "source": "readme",
+ "identity": {
+  "one_liner": "聊天回复决策助手：先判断对方意图与风险，再起草回复供你发送",
+  "review": "面向终端用户的聊天辅助工具：读取屏幕上的对话（Android 无障碍服务、桌面截图+端上 OCR、iOS 复制消息），先用判断模型分析对方意图、当下风险与应对方式，再起草多条经校验排序的回复，一键填入输入框，由用户自行发送。支持 WhatsApp/QQ/飞书/X 等应用；请求仅发往用户自行配置的模型服务商，项目方不运行服务器。跨 Android/Windows/macOS/iOS 提供 5 个应用，Android 双版本在本仓库，iOS 仅源码。在第三方应用内使用可能违反其服务条款。",
+  "highlights": [
+   "先判断意图/风险再起草回复，草稿经校验并排序",
+   "Android 无障碍服务、桌面 OCR、iOS 键盘多端读取方式",
+   "请求仅发往用户配置的模型服务商，自备 key，无官方服务器",
+   "只填入输入框、不代发消息"
+  ],
+  "use_cases": [
+   "拿不准对方意图或语气风险时，先看分析再决定怎么回",
+   "在 WhatsApp/QQ 等聊天中快速获得多条候选回复并一键填入",
+   "关注隐私的用户希望聊天数据只发往自己配置的模型服务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://chatjevs.com",
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    51
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "聊天助手",
+   "AI回复生成",
+   "意图/风险判断",
+   "桌面/移动辅助工具",
+   "隐私自助"
+  ],
+  "domain": "消费级 AI 聊天辅助",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文版本（QQ/飞书/X 中文聊天场景）",
+   "微信公众号联系方式",
+   "多语言 README 含简体中文"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L38: **jev-chat** judges first. Its Jev judgment model reads the conversation and works out the other person's intent, the ri",
+   "L98: 1. **Read.** Jev reads the conversation on your screen: through the accessibility service on Android, the chat window on",
+   "L99: 2. **Judge first.** Before any reply is written, a judgment model works out what the other person really wants, how risk"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     79,
+     86,
+     90
+    ],
+    "quotes": [
+     "|Download|jev-whatsapp-v0.1.0-release.apk|jev-assistant-v1.7-release.apk|",
+     "Download the latest version from the Releases page. See the project README for setup.",
+     "Download the latest version from the Releases page. Apple Silicon only. See the project README for setup."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

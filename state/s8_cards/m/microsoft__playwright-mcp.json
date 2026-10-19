@@ -1,0 +1,207 @@
+{
+ "fn": "microsoft/playwright-mcp",
+ "sha": "34ec08ab1c98",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 LLM 提供浏览器自动化能力的 MCP 服务器",
+  "review": "基于 Playwright 的 Model Context Protocol 服务器，使 LLM 通过结构化无障碍快照与网页交互，无需截图或视觉模型。README 逐项给出 Amp、Claude Code、Codex、Cursor、Gemini CLI、Goose、VS Code、Windsurf 等约 20 种 MCP 客户端的接入配置。要求 Node.js 18 及以上，通过 npx 运行 @playwright/mcp。提供约 30 个配置参数，涵盖浏览器选择、CDP 连接、代码生成、移动设备模拟、无头模式、文件访问限制等。另提及面向编码代理的 CLI+SKILLS 替代路径。",
+  "highlights": [
+   "基于无障碍树的结构化交互，不依赖视觉模型",
+   "提供 20 余种 MCP 客户端的逐步接入配置",
+   "约 30 个配置参数：CDP 端点、设备模拟、headless、文件访问控制等",
+   "支持 vision/pdf/devtools 附加能力（--caps）"
+  ],
+  "use_cases": [
+   "让 Claude Code、Cursor 等客户端通过 MCP 操控浏览器",
+   "搭建长期自主工作流中保持浏览器上下文的自动化",
+   "为自愈测试或探索性自动化提供页面结构推理能力"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "MCP",
+   "浏览器自动化",
+   "LLM工具接入",
+   "测试"
+  ],
+  "domain": "LLM 基础设施/浏览器自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "browser-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3: A Model Context Protocol (MCP) server that provides browser automation capabilities using Playwright. This server enable",
+   "L21: - VS Code, Cursor, Windsurf, Claude Desktop, Goose, Grok, Junie or any other MCP client",
+   "L280: Playwright MCP server supports following arguments. They can be provided in the JSON configuration above, as a part of t"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     21,
+     76,
+     78
+    ],
+    "note": "Claude Desktop/Claude Code 作为可接入的 MCP 客户端列出",
+    "quotes": [
+     "- VS Code, Cursor, Windsurf, Claude Desktop, Goose, Grok, Junie or any other MCP client",
+     " Claude Desktop",
+     "Follow the MCP install guide, use the standard config above."
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     21,
+     168,
+     173
+    ],
+    "note": "Grok 作为可接入的 MCP 客户端列出",
+    "quotes": [
+     "- VS Code, Cursor, Windsurf, Claude Desktop, Goose, Grok, Junie or any other MCP client",
+     " Grok",
+     "grok mcp add playwright -- npx @playwright/mcp@latest"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     54,
+     73,
+     100,
+     140
+    ],
+    "note": "统一通过 npx @playwright/mcp 运行",
+    "quotes": [
+     "amp mcp add playwright -- npx @playwright/mcp@latest",
+     "claude mcp add playwright npx @playwright/mcp@latest",
+     "codex mcp add playwright npx \"@playwright/mcp@latest\"",
+     "Go to `Cursor Settings` -> `MCP` -> `Add new MCP Server`. Name to your liking, use `command` type with the command `npx "
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     457,
+     470
+    ],
+    "note": "窗外行，README 后文 Docker 安装章节",
+    "quotes": [
+     "docker run -d -i --rm --init --pull=always \\",
+     "docker build -t mcr.microsoft.com/playwright/mcp ."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     21,
+     132,
+     140
+    ],
+    "quotes": [
+     "- VS Code, Cursor, Windsurf, Claude Desktop, Goose, Grok, Junie or any other MCP client",
+     " Cursor",
+     "Go to `Cursor Settings` -> `MCP` -> `Add new MCP Server`. Name to your liking, use `command` type with the command `npx "
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     21,
+     274,
+     276
+    ],
+    "quotes": [
+     "- VS Code, Cursor, Windsurf, Claude Desktop, Goose, Grok, Junie or any other MCP client",
+     " Windsurf",
+     "Follow Windsurf MCP documentation. Use the standard config above."
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     68,
+     70
+    ],
+    "quotes": [
+     " Claude Code",
+     "Use the Claude Code CLI to add the Playwright MCP server:"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     113,
+     260
+    ],
+    "note": "Copilot 作为接入客户端，非竞品表述",
+    "quotes": [
+     " Copilot",
+     "After installation, the Playwright MCP server will be available for use with your GitHub Copilot agent in VS Code."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

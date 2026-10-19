@@ -1,0 +1,145 @@
+{
+ "fn": "huggingface/sentence-transformers",
+ "sha": "5b9a33beb5d1",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为开发者提供文本嵌入、检索与重排模型的训练和推理框架",
+  "review": "Python 框架，提供 SentenceTransformer、CrossEncoder、SparseEncoder、MultiVectorEncoder 四类模型的加载与推理 API，可计算嵌入、相似度分数、稀疏嵌入与 ColBERT 式 token 级嵌入。支持在自定义数据上微调嵌入/重排/稀疏模型，提供 20+ 损失函数、训练中评估、多语言与多任务学习。Hugging Face 上有超过 15,000 个预训练模型可直接使用，覆盖 100+ 语言。安装要求 Python 3.10+、PyTorch 2.2+、transformers v5.0+。",
+  "highlights": [
+   "四类模型支持：嵌入、重排（Cross-Encoder）、稀疏嵌入、多向量（ColBERT 式）检索",
+   "支持 BERT、RoBERTa、XLM-R、DistilBERT、Electra、BART 等骨干网络",
+   "20+ 嵌入损失函数、10+ 重排与稀疏损失函数，训练中自动评估选优",
+   "提供 Matryoshka 嵌入、静态嵌入训练、嵌入量化等效率技术文档"
+  ],
+  "use_cases": [
+   "为语义搜索和 RAG 管线计算文本稠密/稀疏嵌入",
+   "训练或微调面向特定任务的自定义嵌入模型",
+   "检索后用 Cross-Encoder 对候选段落重排",
+   "做语义文本相似度、聚类、复述挖掘等多语言应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/1908.10084",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "文本嵌入",
+   "语义检索",
+   "重排序",
+   "模型微调"
+  ],
+  "domain": "NLP/嵌入模型基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "semantic-search"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: # Sentence Transformers: Embeddings, Retrieval, and Reranking",
+   "L9: This framework provides an easy method to compute embeddings for accessing, using, and training state-of-the-art embeddi",
+   "L141: - Support of various transformer networks including BERT, RoBERTa, XLM-R, DistilBERT, Electra, BART, ..."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cpu-infer",
+    "rel": "mention",
+    "lines": [
+     164
+    ],
+    "note": "提及 CPU 友好的静态嵌入模型，非推理服务提供方",
+    "quotes": [
+     "- Train 400x faster Static Embedding Models: CPU-friendly embedding models without attention."
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "none",
+    "lines": [],
+    "note": "L122 为 AI coding agent 列表举例，Anthropic 未在可见文本中出现",
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     3,
+     4,
+     20
+    ],
+    "quotes": [
+     "[PyPI - Python Version][#pypi-package]",
+     "[PyPI - Package Version][#pypi-package]",
+     "pip install -U sentence-transformers"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     122
+    ],
+    "note": "作为可安装 Agent Skill 的 AI 编码代理之一被提及",
+    "quotes": [
+     "> **Tip:** Using an AI coding agent (Claude Code, Codex, Cursor, Gemini CLI, ...)? Install the `train-sentence-transform"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     122
+    ],
+    "note": "同上，仅列举",
+    "quotes": [
+     "> **Tip:** Using an AI coding agent (Claude Code, Codex, Cursor, Gemini CLI, ...)? Install the `train-sentence-transform"
+    ]
+   }
+  ]
+ }
+}

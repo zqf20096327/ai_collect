@@ -1,0 +1,101 @@
+{
+ "fn": "Dokploy/dokploy",
+ "sha": "620f2ba5126d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管 PaaS：部署和管理应用与数据库",
+  "review": "免费、可自托管的平台即服务（PaaS），用于简化应用与数据库的部署管理。支持部署多种语言应用（Node.js、PHP、Python、Go、Ruby 等）及 MySQL、PostgreSQL、MongoDB、MariaDB、Redis 等数据库；基于 Docker Swarm 实现多节点集群，内置 Traefik 路由集成、数据库外部备份、一键部署开源模板、实时资源监控与日志指标推送（Grafana、Datadog 等），并提供 CLI 与 API 管理入口。在 VPS 上通过一行脚本安装，另有 Dokploy Cloud 托管选项。",
+  "highlights": [
+   "部署多语言应用与管理 6 种数据库",
+   "Docker Swarm 多节点伸缩与 Traefik 自动集成",
+   "日志与指标推送至 Grafana、Datadog、AWS CloudWatch 等多个平台",
+   "CLI 与 API 管理途径，支持多服务器远程部署"
+  ],
+  "use_cases": [
+   "在自有 VPS 上托管 Web 应用与数据库",
+   "为数据库配置到外部存储的自动备份",
+   "用 Docker Compose 管理复杂多容器应用",
+   "一键部署 Plausible、Pocketbase 等开源模板"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "PaaS",
+   "自托管",
+   "DevOps",
+   "Docker",
+   "应用部署"
+  ],
+  "domain": "开发运维/部署平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L2:  Dokploy - Open Source Alternative to Vercel, Heroku and Netlify.",
+   "L10: Dokploy is a free, self-hostable Platform as a Service (PaaS) that simplifies the deployment and management of applicati",
+   "L20: - **Multi Node**: Scale applications to multiple nodes using Docker Swarm to manage the cluster."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     19,
+     38
+    ],
+    "note": "基于 Docker 的部署体系并随安装脚本部署",
+    "quotes": [
+     "- **Docker Compose**: Native support for Docker Compose to manage complex applications.",
+     "curl -sSL https://dokploy.com/install.sh | bash"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,109 @@
+{
+ "fn": "aryankumar06/Dailysync.ai",
+ "sha": "f6a3512ab287",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地部署的任务/习惯/项目管理 Web 应用",
+  "review": "README 实际内容为 Productivity Panda：基于 React/TypeScript/Radix UI 的生产力 Web 应用，提供层级任务管理、习惯打卡、层级项目管理、拖拽交互与图表进度可视化，后端使用 Supabase（需自建项目并执行附带 SQL 建表）。安装路径为 git clone 源码 + npm install + 配置 .env 后 npm run dev。仓库描述提及 AI 任务排序与 agent 自动跟进，但 README 正文未出现任何 AI 功能说明，AI 能力无法从 README 验证。注意：项目声明无许可证，默认保留所有权利。",
+  "highlights": [
+   "层级任务与项目管理、习惯打卡",
+   "Supabase 后端，附带 SQL schema 文件",
+   "拖拽交互、命令面板（CMDK）与 Recharts 进度可视化"
+  ],
+  "use_cases": [
+   "本地运行一个自托管的任务/习惯/项目管理应用",
+   "配合 Supabase 搭建带账号登录的 productivity 面板"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "任务管理",
+   "习惯打卡",
+   "项目管理",
+   "自托管Web应用"
+  ],
+  "domain": "生产力工具/Web 应用",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "low",
+  "evidence": [
+   "L15: * ✅ **Intuitive Task Management**: Organize your daily to-dos with support for hierarchical tasks, ensuring clarity and ",
+   "L18: * 🚀 **Modern User Interface**: Enjoy a smooth and responsive experience built with TypeScript, React, Radix UI, and anim"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     40
+    ],
+    "quotes": [
+     "    git clone https://github.com/aryankumar06/productivity_panda.git"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     50
+    ],
+    "quotes": [
+     "    npm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

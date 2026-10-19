@@ -1,0 +1,134 @@
+{
+ "fn": "toon-format/toon",
+ "sha": "df5d8e91ca2c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 LLM 提示词设计的紧凑 JSON 序列化格式，降低 token 消耗",
+  "review": "定义了一种对 JSON 数据模型的紧凑、人类可读编码格式（SPEC v4.4）：用缩进替代大括号、对同构数组/键值集合采用表头声明一次的表格形式，提供长度 [N] 与字段 {fields} 声明以便模型解析与校验，并支持无损往返转换。附带 TypeScript SDK、CLI（npx @toon-format/cli，可统计 token 节省量）与基准测试：244 个数据检索问题、4 个模型，含按数据集与问题类型的准确率对比表。README 同时列出适用边界：深层嵌套或非同构数据、纯表格数据（CSV 更小）、延迟敏感场景不适用。MIT 许可。",
+  "highlights": [
+   "JSON 数据模型的无损、确定性往返编码",
+   "表格形式对同构数据声明一次字段列表，逐行输出",
+   "[N] 行数与 {fields} 字段声明提供截断/畸形输出防护",
+   "附 CLI（npx 免安装试用）与多模型、多格式基准测试"
+  ],
+  "use_cases": [
+   "把已有 JSON 数据编码进 LLM 提示词以减少 token 开销",
+   "需要模型输出可校验的结构化数据（行数/字段声明护栏）",
+   "评估不同序列化格式在自家模型上的 token 与准确率权衡"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据格式",
+   "序列化",
+   "LLM提示词",
+   "token优化"
+  ],
+  "domain": "LLM 基础设施/数据序列化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: **Token-Oriented Object Notation** is a compact, human-readable encoding of the JSON data model that minimizes tokens an",
+   "L15: Think of it as a translation layer: use JSON programmatically, and encode it as TOON for LLM input – a drop-in, lossless",
+   "L90: - 🌐 **Multi-Language Ecosystem:** Official implementations, plus dozens of community ports, all targeting one spec with "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     182
+    ],
+    "note": "基准测试中的被测模型 claude-haiku，非接入/适配关系",
+    "quotes": [
+     "claude-haiku-4-5-20251001"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     345,
+     348
+    ],
+    "note": "窗外行，基准测试模型列表语境",
+    "quotes": [
+     "- **Models tested**: `claude-haiku-4-5-20251001`, `gemini-3.6-flash`, `gpt-5.4-nano`, `grok-4.5`",
+     "- **Reasoning**: Disabled via the AI SDK's universal `reasoning: 'none'` (Gemini 3 floors at minimal thinking, `grok-4.5"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     73
+    ],
+    "note": "npx @toon-format/cli 为本产品 CLI 的运行途径；窗外行含 SDK 安装",
+    "quotes": [
+     "> cat data.json | npx @toon-format/cli --stats"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     348
+    ],
+    "note": "窗外行，集成语境，非替代/竞品",
+    "quotes": [
+     "- **Reasoning**: Disabled via the AI SDK's universal `reasoning: 'none'` (Gemini 3 floors at minimal thinking, `grok-4.5"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

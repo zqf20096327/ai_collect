@@ -1,0 +1,124 @@
+{
+ "fn": "Unstructured-IO/unstructured",
+ "sha": "b392a98a3958",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 LLM 开发者的文档解析 ETL 库：把文档转为结构化数据",
+  "review": "提供开源组件用于摄取和预处理图像与文本文档（PDF、HTML、Word 等），核心是 partition 函数，自动检测文件类型并路由到对应的分区函数，输出结构化元素。安装方式包括 PyPI 安装（按文档类型选择 extras）、Docker 容器运行及本地开发（uv 管理依赖）。README 注明开源库永久免费，但官方推荐更高精度的 Transform v2 API（商业产品），并默认发送轻量遥测，可通过环境变量关闭。",
+  "highlights": [
+   "partition 函数自动检测文件类型并路由到对应分区函数",
+   "按文档类型提供 pip extras 安装（如 unstructured[docx,pptx]）",
+   "提供多平台 Docker 镜像（x86_64 与 Apple silicon）",
+   "默认遥测可通过 DO_NOT_TRACK 或 SCARF_NO_ANALYTICS 关闭"
+  ],
+  "use_cases": [
+   "把 PDF/HTML/Word 等文档解析为结构化输出供 LLM 使用",
+   "用 Docker 容器快速搭建文档预处理环境",
+   "批量摄取不同格式文档并统一为结构化元素"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "文档解析",
+   "ETL",
+   "数据管道",
+   "LLM预处理"
+  ],
+  "domain": "数据管道/文档解析",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "document-parsing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L29: The `unstructured` library provides open-source components for ingesting and pre-processing images and text documents, s",
+   "L100: - Install the Python SDK to support all document types with `pip install \"unstructured[all-docs]\"`",
+   "L238: Unstructured sends lightweight analytics to `GET https://packages.unstructured.io/python-telemetry` by default: one libr"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     6,
+     46,
+     100,
+     101,
+     102
+    ],
+    "quotes": [
+     " https://pypi.python.org/pypi/unstructured/",
+     " 1. Install from PyPI",
+     "- Install the Python SDK to support all document types with `pip install \"unstructured[all-docs]\"`",
+     " - For plain text files, HTML, XML, JSON and Emails that do not require any extra dependencies, you can run `pip install",
+     " - To process other doc types, you can install the extras required for those documents, such as `pip install \"unstructur"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     55,
+     57,
+     60,
+     67,
+     78
+    ],
+    "quotes": [
+     "NOTE: we build multi-platform images to support both x86_64 and Apple silicon hardware. `docker pull` should download th",
+     "We build Docker images for all pushes to `main`. We tag each image with the corresponding short commit hash (e.g. `fbc7a",
+     "docker pull downloads.unstructured.io/unstructured-io/unstructured:latest",
+     "docker run -dt --name unstructured downloads.unstructured.io/unstructured-io/unstructured:latest",
+     "of the packages/requirements necessary for other data types. See Dockerfile to know which lines are necessary"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,238 @@
+{
+ "fn": "AiHubCN/Awesome-Chinese-LLM",
+ "sha": "75c55f18090c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "中文开源大语言模型资源清单：收录模型、应用、数据集与教程",
+  "review": "收集和梳理中文 LLM 相关开源资料的 awesome 清单，收录资源达 100+ 个，以规模较小、可私有化部署、训练成本较低的模型为主。内容组织为底座模型概览表（含参数量、训练 token 数、上下文长度、可商用性）、文本 LLM 模型条目、垂直领域微调及应用、数据集与教程等类别；每个模型条目提供仓库地址与简介，欢迎社区通过 PR 贡献新条目。",
+  "highlights": [
+   "提供常见底座模型细节概览表（参数、token 数、最大长度、商用许可）",
+   "收录 100+ 个中文 LLM 相关开源模型、应用、数据集与教程",
+   "以规模较小、可私有化部署、训练成本较低的模型为收录重点"
+  ],
+  "use_cases": [
+   "查找可私有化部署的小规模中文大模型",
+   "对比各底座模型的参数规模与商用许可情况",
+   "寻找中文 LLM 的微调数据集与教程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome-list",
+   "中文大模型",
+   "LLM资源聚合",
+   "NLP"
+  ],
+  "domain": "LLM 基础设施/资源聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "收录 ChatGLM/百川/通义千问等国产模型",
+   "由中文社区维护"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: 自ChatGPT为代表的大语言模型（Large Language Model, LLM）出现以后，由于其惊人的类通用人工智能（AGI）的能力，掀起了新一轮自然语言处理领域的研究和应用的浪潮。尤其是以ChatGLM、LLaMA等平民玩家都能跑",
+   "L37: ## 目录",
+   "L21: 常见底座模型细节概览："
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "mistral",
+    "rel": "mention",
+    "lines": [
+     31,
+     227,
+     228,
+     230
+    ],
+    "quotes": [
+     "|Mixtral|Base&Chat|8x7B|-|32k|可商用|",
+     "* Chinese-Mixtral-8x7B",
+     " * 地址：https://github.com/HIT-SCIR/Chinese-Mixtral-8x7B",
+     " * 简介：该项目基于Mixtral-8x7B稀疏混合专家模型进行了中文扩词表增量预训练，开源了Chinese-Mixtral-8x7B扩词表模型以及训练代码。该模型的的中文编解码效率较原模型显著提高。同时通过在大规模开源语料上进行的增量预"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     33,
+     71,
+     72,
+     74
+    ],
+    "quotes": [
+     "|DeepSeek|Base&Chat|1.3B/7B/33B/67B|-|4k|可商用|",
+     "* DeepSeek-V2",
+     " * 地址：https://github.com/deepseek-ai/DeepSeek-V2",
+     " * 简介：DeepSeek-V2：强大、经济、高效的专家混合语言模型"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     58
+    ],
+    "quotes": [
+     " * 简介：GLM-4-9B 是智谱 AI 推出的最新一代预训练模型 GLM-4 系列中的开源版本。 在语义、数学、推理、代码和知识等多方面的数据集测评中， **GLM-4-9B** 及其人类偏好对齐的版本 **GLM-4-9B-Chat*"
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "mention",
+    "lines": [
+     90,
+     94,
+     98
+    ],
+    "quotes": [
+     " * 简介：由深圳元象科技自主研发的支持多语言的大语言模型，支持 8K 的上下文长度（Context Length），使用 2.6 万亿 token 的高质量、多样化的数据对模型进行充分训练，支持中、英、俄、西等 40 多种语言。并包含GG",
+     " * 简介：由深圳元象科技自主研发的支持多语言的大语言模型，支持 8K 的上下文长度（Context Length），使用 3.2 万亿 token 的高质量、多样化的数据对模型进行充分训练，支持中、英、俄、西等 40 多种语言。包含长序列",
+     " * 简介：由深圳元象科技自主研发的支持多语言的大语言模型，支持 16K 的上下文长度（Context Length），使用 2.6 万亿 token 的高质量、多样化的数据对模型进行充分训练，支持中、英、俄、西等 40 多种语言。包含增量"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     90,
+     94,
+     98
+    ],
+    "quotes": [
+     " * 简介：由深圳元象科技自主研发的支持多语言的大语言模型，支持 8K 的上下文长度（Context Length），使用 2.6 万亿 token 的高质量、多样化的数据对模型进行充分训练，支持中、英、俄、西等 40 多种语言。并包含GG",
+     " * 简介：由深圳元象科技自主研发的支持多语言的大语言模型，支持 8K 的上下文长度（Context Length），使用 3.2 万亿 token 的高质量、多样化的数据对模型进行充分训练，支持中、英、俄、西等 40 多种语言。包含长序列",
+     " * 简介：由深圳元象科技自主研发的支持多语言的大语言模型，支持 16K 的上下文长度（Context Length），使用 2.6 万亿 token 的高质量、多样化的数据对模型进行充分训练，支持中、英、俄、西等 40 多种语言。包含增量"
+    ]
+   },
+   {
+    "term": "openai",
+    "rel": "mention",
+    "lines": [
+     831
+    ],
+    "quotes": [
+     " * 数据集说明：通过self-instruct生成，使用了中文种子任务，以及openai的text-davinci-003接口,涉及175个种子任务"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     13,
+     150
+    ],
+    "quotes": [
+     "自ChatGPT为代表的大语言模型（Large Language Model, LLM）出现以后，由于其惊人的类通用人工智能（AGI）的能力，掀起了新一轮自然语言处理领域的研究和应用的浪潮。尤其是以ChatGLM、LLaMA等平民玩家都能跑",
+     " * 简介：该项目开源了推理能力增强的中英双语LLaMA模型。模型的主要特性有：较大提升LLaMA的中文理解能力，并尽可能减少对原始LLaMA英文能力的损伤；训练过程增加较多的任务型数据，利用ChatGPT生成解析，强化模型理解任务求解逻辑"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     27,
+     58,
+     59,
+     62
+    ],
+    "quotes": [
+     "|Qwen|Qwen/1.5/2/2.5 Base&Chat&VL|7B/14B/32B/72B/110B|2.2T/3T/18T|8k/32k|可商用|",
+     " * 简介：GLM-4-9B 是智谱 AI 推出的最新一代预训练模型 GLM-4 系列中的开源版本。 在语义、数学、推理、代码和知识等多方面的数据集测评中， **GLM-4-9B** 及其人类偏好对齐的版本 **GLM-4-9B-Chat*",
+     "* Qwen/Qwen1.5/Qwen2/Qwen2.5/Qwen-3",
+     " * 简介：通义千问是阿里云研发的通义千问大模型系列。其中，Qwen-3是阿里云通义实验室推出的Qwen系列最新一代通用大模型的开源版本，涵盖了多种不同参数规模的模型，包括17亿（1.7B）、40亿（4B）、80亿（8B）、140亿（14B"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     142
+    ],
+    "quotes": [
+     " * 简介：Robin (罗宾)是香港科技大学LMFlow团队开发的中英双语大语言模型。仅使用180K条数据微调得到的Robin第二代模型，在Huggingface榜单上达到了第一名的成绩。LMFlow支持用户快速训练个性化模型，仅需单张3"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     620,
+     622,
+     624,
+     628,
+     630
+    ],
+    "quotes": [
+     "#### 2.2 LangChain应用",
+     "* langchain-ChatGLM：",
+     " * 地址：https://github.com/imClumsyPanda/langchain-ChatGLM",
+     "* LangChain-ChatGLM-Webui：",
+     " * 地址：https://github.com/thomas-yanxin/LangChain-ChatGLM-Webui"
+    ]
+   },
+   {
+    "term": "文心一言",
+    "rel": "mention",
+    "lines": [
+     632
+    ],
+    "quotes": [
+     " * 简介：利用LangChain和ChatGLM-6B系列模型制作的Webui, 提供基于本地知识的大模型应用。目前支持上传 txt、docx、md、pdf等文本格式文件, 提供包括ChatGLM-6B系列、Belle系列等模型文件以及G"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

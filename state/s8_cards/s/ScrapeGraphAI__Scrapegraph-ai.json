@@ -1,0 +1,163 @@
+{
+ "fn": "ScrapeGraphAI/Scrapegraph-ai",
+ "sha": "db32b2f48f69",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于 LLM 的 Python 网页抓取库，自然语言即抽取",
+  "review": "使用 LLM 与图（graph）逻辑构建抓取流水线的 Python 库，支持网站与本地文档（XML、HTML、JSON、Markdown）的信息抽取，用户给出提示词与来源即可输出结构化字典。内置 SmartScraperGraph、SearchGraph、SpeechGraph、ScriptCreatorGraph 等多种流水线及多页并行版本，可通过 OpenAI、Groq、Azure、Gemini、MiniMax 等 API 或 Ollama 本地模型调用 LLM。安装需配合 Playwright，另有官方托管云 API（Python/Node SDK）与匿名遥测（可关闭）。",
+  "highlights": [
+   "提示词驱动的抓取流水线（SmartScraperGraph 等 6 种及 multi 并行版本）",
+   "支持 OpenAI/Groq/Azure/Gemini/MiniMax 等 API 与 Ollama 本地模型",
+   "可抓取网站与本地文档（XML/HTML/JSON/Markdown），并可生成 Python 脚本或音频文件",
+   "同时提供开源库与托管云 API 两种形态（MIT 许可）"
+  ],
+  "use_cases": [
+   "给定 URL 和提示词，抽取单页或多页的结构化信息",
+   "结合搜索引擎结果做多页信息聚合",
+   "用本地 Ollama 模型在自有环境运行抽取流程",
+   "让库生成 Python 抓取脚本供后续复用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "网页抓取",
+   "数据抽取",
+   "RAG",
+   "LLM应用"
+  ],
+  "domain": "数据采集/LLM 应用",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "web-scraping",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L24: ScrapeGraphAI is a *web scraping* python library that uses LLM and direct graph logic to create scraping pipelines for w",
+   "L103: It is possible to use different LLM through APIs, such as **OpenAI**, **Groq**, **Azure**, **Gemini**, **MiniMax** and m"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     103,
+     120
+    ],
+    "quotes": [
+     "It is possible to use different LLM through APIs, such as **OpenAI**, **Groq**, **Azure**, **Gemini**, **MiniMax** and m",
+     "|**LLM**|Bring your own (OpenAI, Groq, Gemini, Azure, local via Ollama)|Managed for you|"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     103,
+     105,
+     120,
+     130
+    ],
+    "quotes": [
+     "It is possible to use different LLM through APIs, such as **OpenAI**, **Groq**, **Azure**, **Gemini**, **MiniMax** and m",
+     "Remember to have Ollama installed and download the models using the **ollama pull** command, if you want to use local mo",
+     "|**LLM**|Bring your own (OpenAI, Groq, Gemini, Azure, local via Ollama)|Managed for you|",
+     "**Choose the open-source library** if you want full control, on-prem/self-hosted data, local LLMs (Ollama), or fine-grai"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     46,
+     49
+    ],
+    "quotes": [
+     "The reference page for Scrapegraph-ai is available on the official page of PyPI: pypi.",
+     "pip install scrapegraphai"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     109
+    ],
+    "quotes": [
+     "Open In Colab"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     40
+    ],
+    "quotes": [
+     "- **LLM Frameworks**: Langchain, Llama Index, Crew.ai, Agno, CamelAI"
+    ]
+   },
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     41
+    ],
+    "quotes": [
+     "- **Low-code Frameworks**: Pipedream, Bubble, Zapier, n8n, Dify, Toolhouse"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

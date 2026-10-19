@@ -1,0 +1,89 @@
+{
+ "fn": "udecode/plate",
+ "sha": "391a4dd90d13",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 React 开发者提供带 AI 能力的富文本编辑器框架",
+  "review": "基于 Slate 的 React 富文本编辑器框架，README 提供三种起步模板：Notion 风格模板（含插件与 AI）、playground 模板、最小模板。核心机制通过插件体系组织功能，文档站与中文文档、Discord 中文频道支持中文使用者。README 本身内容简短，功能细节需查阅文档。",
+  "highlights": [
+   "基于 Slate 的 React 富文本编辑器框架",
+   "提供 Notion 风格、playground、minimal 三种模板",
+   "模板可组合插件与 AI 能力",
+   "提供中文文档与 Discord 中文频道"
+  ],
+  "use_cases": [
+   "在 React 应用中搭建所见即所得编辑器",
+   "参照 Notion 风格模板快速搭建文档类产品编辑器",
+   "中文团队查阅中文文档接入编辑器"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "富文本编辑器",
+   "React",
+   "WYSIWYG",
+   "AI写作"
+  ],
+  "domain": "前端/编辑器组件",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "ai-writing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供中文文档与 Discord 中文频道"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: Plate",
+   "L11: |Option|Plate|Plugins|AI|Backend|",
+   "L25: ## 中文文档"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

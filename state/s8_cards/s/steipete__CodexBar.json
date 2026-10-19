@@ -1,0 +1,303 @@
+{
+ "fn": "steipete/CodexBar",
+ "sha": "efe917a8dbeb",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI 编码用户在菜单栏显示各家服务商用量与额度",
+  "review": "一个 macOS 14+ 菜单栏应用（另有 Qt 6 Linux 桌面版与 CLI），聚合 106 个 AI 编码服务商的用量数据：会话/周/月窗口余量、重置倒计时、余额与支出、服务状态徽标。不要求单独登录，复用用户已有的 OAuth、设备流、API key、浏览器 Cookie 或本地文件会话读取用量；每服务商一个图标或合并模式，配置存于 ~/.config/codexbar/config.json，可用 CLI 脚本化管理。通过 Homebrew、AUR 或 GitHub Releases 分发。",
+  "highlights": [
+   "聚合 106 个 AI 编码服务商的额度/用量/余额数据",
+   "复用已有会话读取数据，不存储密码",
+   "会话、周、月窗口的重置倒计时与服务状态徽标",
+   "macOS 菜单栏、Linux 桌面（Wayland/X11）与 CLI 三种形态"
+  ],
+  "use_cases": [
+   "在长任务前确认各家订阅的用量窗口何时重置",
+   "统一查看多个 AI 编码订阅的余额与支出",
+   "监控服务商故障状态并在菜单栏获得提示"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "用量监控",
+   "菜单栏工具",
+   "开发者工具",
+   "多服务商聚合"
+  ],
+  "domain": "开发者工具/AI 用量监控",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "xai",
+   "azure",
+   "anthropic",
+   "ollama",
+   "openrouter",
+   "deepseek",
+   "bedrock",
+   "groq"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: CodexBar — every AI coding limit in your menu bar. 106 providers.",
+   "L15: Tiny macOS 14+ menu bar app that keeps **AI coding-provider limits visible** and shows when each window resets. See the ",
+   "L26: - **Privacy-first.** Reuses existing provider sessions — OAuth, device flow, API keys, browser cookies, local files — so"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     148,
+     163
+    ],
+    "quotes": [
+     "- Grok — Grok CLI billing RPC plus grok.com browser-session fallback.",
+     "- xAI — Management API key + team ID for prepaid credit balance and daily platform spend."
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     97
+    ],
+    "quotes": [
+     "- Azure OpenAI — API key, endpoint, and deployment validation probe."
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     98,
+     119
+    ],
+    "quotes": [
+     "- Claude — OAuth API, browser cookies, or CLI PTY fallback; session and weekly usage where available.",
+     "- Vertex AI — Google Cloud gcloud OAuth with token cost tracking from local Claude logs."
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     122
+    ],
+    "quotes": [
+     "- Ollama — API key access plus browser cookies for Ollama Cloud usage windows."
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     128
+    ],
+    "quotes": [
+     "- OpenRouter — API token for credit-based usage tracking across multiple AI providers."
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     137
+    ],
+    "quotes": [
+     "- DeepSeek — API key for credit balance tracking (paid vs. granted breakdown)."
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     147
+    ],
+    "quotes": [
+     "- AWS Bedrock — AWS access keys or a named AWS profile (SSO/assume-role via the AWS CLI) for Cost Explorer spend, monthl"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     149
+    ],
+    "quotes": [
+     "- Groq — Browser session for console spend and usage, with an Enterprise Prometheus API-key fallback."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     8,
+     32,
+     35,
+     57
+    ],
+    "quotes": [
+     "Homebrew",
+     "Requires macOS 14+ (Sonoma). Download from GitHub Releases, or install with Homebrew:",
+     "brew install --cask codexbar",
+     "brew install steipete/tap/codexbar"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     81,
+     100
+    ],
+    "quotes": [
+     "codexbar config disable --provider cursor",
+     "- Cursor — Browser session cookies for plan + usage + billing resets."
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     105
+    ],
+    "quotes": [
+     "- Qwen Cloud — 5-hour and weekly individual Token Plan usage via browser/manual cookies."
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     109
+    ],
+    "quotes": [
+     "- Copilot — GitHub device flow + Copilot internal usage API."
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     110
+    ],
+    "quotes": [
+     "- Devin — Chrome localStorage session or manual Bearer token for daily and weekly quotas."
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     116,
+     141
+    ],
+    "quotes": [
+     "- Kimi — Auth token (JWT from `kimi-auth` cookie) for weekly quota + 5‑hour rate limit.",
+     "- Moonshot / Kimi API — API key for Moonshot/Kimi API account balance tracking."
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     129
+    ],
+    "quotes": [
+     "- Windsurf — Browser localStorage session import or local SQLite cache for plan usage."
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     131
+    ],
+    "quotes": [
+     "- Perplexity — Account usage credits from Perplexity usage data."
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     133
+    ],
+    "quotes": [
+     "- Doubao — API key for Volcengine Ark request-limit probes."
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     98
+    ],
+    "quotes": [
+     "- Claude — OAuth API, browser cookies, or CLI PTY fallback; session and weekly usage where available."
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

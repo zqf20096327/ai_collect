@@ -1,0 +1,172 @@
+{
+ "fn": "topoteretes/cognee",
+ "sha": "9715d6a9171c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI agent 提供持久长期记忆的开源知识图谱平台",
+  "review": "将文档、代码与会话内容转化为可自托管的知识图谱，agent 可在多次会话间存储（remember）、检索（recall）、增补（improve）和删除（forget）记忆。默认路径使用本地 GLiNER 抽取与本地嵌入模型，无需 API key 即可在 CPU 上运行；配置 LLM key 后可生成回答，支持 OpenAI 或本地 Ollama。提供 Python 库、CLI、REST API、MCP server 及 Claude Code/Codex 插件，支持 Docker Compose 部署，Postgres 单机整合当前为 demo 特性。",
+  "highlights": [
+   "无 LLM key 时用本地 GLiNER 与嵌入模型在 CPU 上构建图谱",
+   "remember/recall/improve/forget 四种记忆操作",
+   "Claude Code、Codex、OpenClaw、MCP 客户端等多种接入接口",
+   "Docker 镜像内置 GLiNER 运行时，可用 COGX 格式从 Mem0/Letta/Zep/Graphiti 导入"
+  ],
+  "use_cases": [
+   "为 agent 保留跨会话的项目上下文与历史决策",
+   "把团队文档、工单、代码汇入共享的 Company Brain",
+   "在自有基础设施上运行自托管记忆层",
+   "从其他记忆方案（Mem0/Letta/Zep/Graphiti）迁移记忆数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2507.xxxxx (Optimizing the Interface Between Knowledge Graphs and LLMs for Complex Reasoning, Markovic et al. 2025，README 未给直接链接)",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent记忆",
+   "知识图谱",
+   "RAG",
+   "自托管"
+  ],
+  "domain": "LLM 基础设施/Agent 记忆",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "agent-memory",
+   "knowledge-graph",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文等多语言版本"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L32:  Cognee is a free open-source AI memory platform that gives AI agents persistent long-term memory across sessions. Turn ",
+   "L34:  Runs locally for free — no API key required.",
+   "L116: Once a key is set, Cognee uses OpenAI for language models and embeddings, and processing and generated answers make prov"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     116,
+     203
+    ],
+    "quotes": [
+     "Once a key is set, Cognee uses OpenAI for language models and embeddings, and processing and generated answers make prov",
+     "- Run with local Ollama models, including a local embedding model."
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     149,
+     152
+    ],
+    "note": "Claude Code 插件接入，非 LLM 提供方适配",
+    "quotes": [
+     "Install the Claude Code plugin:",
+     "claude plugin marketplace add topoteretes/cognee-integrations"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     76,
+     126
+    ],
+    "quotes": [
+     "uv pip install \"cognee[gliner]\"",
+     "This command works with the base `pip install cognee` package. It loads bundled sample data and runs keyword search with"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     214,
+     226
+    ],
+    "quotes": [
+     "docker run --rm -it -p 8000:8000 \\",
+     "docker compose --profile ui --profile mcp up"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     149,
+     180,
+     201
+    ],
+    "note": "通过插件接入的平台，非替代/竞品对象",
+    "quotes": [
+     "Install the Claude Code plugin:",
+     "|Claude Code memory plugin|Install and configure the plugin|",
+     "- Build a Company Brain from your database, ticket export, and docs (or a sample company), then browse it in the UI and "
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     182
+    ],
+    "note": "列出的 MCP 客户端之一",
+    "quotes": [
+     "|Cursor, Cline, and other MCP clients|Cognee MCP guide and server README|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

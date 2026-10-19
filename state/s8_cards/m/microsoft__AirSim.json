@@ -1,0 +1,90 @@
+{
+ "fn": "microsoft/AirSim",
+ "sha": "f5228c400121",
+ "source": "readme",
+ "identity": {
+  "one_liner": "无人机/自动驾驶仿真平台：供 AI 研究者做模拟实验",
+  "review": "基于 Unreal Engine（另有实验性 Unity 版本）的开源跨平台仿真器，支持无人机、汽车等载具的物理与视觉仿真。提供平台无关 API（C++/Python/C#/Java，经 RPC 暴露），可读取图像与状态、控制载具；支持 PX4、ArduPilot 的软件在环与 PX4 硬件在环仿真。提供录制位姿与图像生成训练数据、ComputerVision 模式收集深度/视差/分割等图像，以及 API 控制的天气效果。面向自主载具的深度学习、计算机视觉与强化学习研究。",
+  "highlights": [
+   "通过 RPC 暴露多语言 API，读取图像/状态并控制载具",
+   "支持 PX4、ArduPilot 软件在环与 PX4 硬件在环仿真",
+   "ComputerVision 模式可采集深度、视差、表面法线、分割图像",
+   "录制按钮一键生成位姿+图像训练数据"
+  ],
+  "use_cases": [
+   "在仿真中实验深度学习/强化学习的自主驾驶与飞行算法",
+   "采集带位姿标注的图像数据训练模型",
+   "在仿真器中写代码再迁移到真实载具（伴随计算机部署）",
+   "切换天气条件做计算机视觉实验"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "仿真器",
+   "自动驾驶",
+   "无人机",
+   "强化学习",
+   "计算机视觉"
+  ],
+  "domain": "机器人/自动驾驶仿真",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing",
+   "reinforcement-learning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: AirSim is a simulator for drones, cars and more, built on Unreal Engine (we now also have an experimental Unity release)",
+   "L7: Our goal is to develop AirSim as a platform for AI research to experiment with deep learning, computer vision and reinfo",
+   "L55: AirSim exposes APIs so you can interact with the vehicle in the simulation programmatically. You can use these APIs to r"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

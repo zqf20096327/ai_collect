@@ -1,0 +1,84 @@
+{
+ "fn": "jujumilk3/leaked-system-prompts",
+ "sha": "3d0b10862d98",
+ "source": "readme",
+ "identity": {
+  "one_liner": "收录主流 LLM 服务泄露系统提示词的文档集合",
+  "review": "以文档形式收集被泄露的、来自广泛使用的基于 LLM 的服务的系统提示词。收录流程要求提交的 PR 与现有文档格式一致，并附可验证来源或可复现的提示词；不便走 PR 流程时可在 Issues 区贴链接，由维护者核实后合并。README 说明该仓库被多篇论文引用，并要求提交者不包含敏感商业源代码，以避免 DMCA 下架风险。除收录与提交规范外，README 未描述其他工具或功能。",
+  "highlights": [
+   "收集来自广泛使用的 LLM 服务的泄露系统提示词",
+   "收录需附可验证来源或可复现提示词",
+   "通过 Issues 贴链接的替代投稿通道",
+   "声明被多篇论文引用并规定 DMCA 风险规避规范"
+  ],
+  "use_cases": [
+   "查阅主流 LLM 服务使用的系统提示词原文",
+   "投稿或补充带可验证来源的泄露提示词",
+   "为论文引用提供提示词样本来源"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "系统提示词",
+   "文档合集",
+   "LLM",
+   "提示词研究"
+  ],
+  "domain": "LLM/提示词资料汇编",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: This repository is a collection of leaked system prompts from widely used LLM based services.",
+   "L7: 1. If you would like to submit a PR, please match the format of other documents. You must include sources that I can ver"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

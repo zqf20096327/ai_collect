@@ -1,0 +1,93 @@
+{
+ "fn": "MODSetter/SurfSense",
+ "sha": "70e4b0425703",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地离线运行的开源 NotebookLM 替代桌面应用",
+  "review": "面向需要在本地处理文档的用户：桌面应用读取 PDF、Office、图像、音视频等格式，提供带引用的回答、文档创建、编辑副本与格式转换，索引保存在本机磁盘，模型可任选本地或 OpenAI 兼容远程 API，无需账号。官方插件（Google 搜索、网页爬取、YouTube 等）需输入邮箱获取 30 天免费许可证；第三方接入走 MCP。托管网页版将停止服务，需在期限内导出工作区迁移到桌面版。",
+  "highlights": [
+   "支持 PDF/Word/Excel/PPT/图像/录音等多种格式的研究、创建、编辑与转换",
+   "索引保留在本地磁盘，可选用本地模型，无需账号",
+   "插件生态：官方网络插件 + MCP 服务器接入",
+   "Apache-2.0 许可，提供 Windows/macOS/Linux 安装包"
+  ],
+  "use_cases": [
+   "在内网或断网环境处理涉密/敏感文档",
+   "对本地文档做带引用的问答与信息提取",
+   "批量编辑、合并、转换 PDF 与 Office 文件",
+   "爬取网页、YouTube 等公开内容整理成资料"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "本地知识库",
+   "文档处理",
+   "自托管",
+   "AI助手/Agent"
+  ],
+  "domain": "文档管理/RAG 桌面应用",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "document-parsing",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L28: SurfSense is a free, open-source desktop app for documents you can't upload. A privacy-focused, NotebookLM-style AI agen",
+   "L91: |Open source|No|**Apache-2.0**|",
+   "L97: Apache-2.0. See LICENSE."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    37
+   ],
+   "note": "托管网页版将于 2026 年 10 月 18 日前停止服务，需导出迁移"
+  }
+ }
+}

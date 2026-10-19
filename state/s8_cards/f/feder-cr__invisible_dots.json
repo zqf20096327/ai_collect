@@ -1,0 +1,160 @@
+{
+ "fn": "feder-cr/invisible_dots",
+ "sha": "5eba0cb44172",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管的个人 AI 智能体：给每个用户一台带反检测浏览器的 VM",
+  "review": "以 Node.js CLI 与 Web 服务器形式提供的自托管平台：`setup --all` 通过 QEMU（KVM 或 Windows Hypervisor Platform 加速）构建/下载 Dot 的镜像，每个 Dot 拥有一台带持久磁盘的 Linux 桌面虚拟机，空闲休眠、有任务时唤醒。浏览器基于 C++ 补丁版 Firefox（invisible_playwright_mcp），指纹在引擎内设置，各身份独立保存 cookies 与登录态；支持 MCP 服务器接入、权限分级（allow/ask/deny）、定时任务队列、以及 Web UI/CLI/HTTP API/Telegram/WhatsApp 多通道触达，重启后消息与任务不丢失。README 注明状态为 alpha，仅支持 Linux 与 Windows，使用时需遵守目标站点条款与 robots.txt。",
+  "highlights": [
+   "硬件加速 VM 内运行 Linux 桌面，持久磁盘，空闲休眠/按任务唤醒",
+   "C++ 补丁版 Firefox 浏览器，指纹在引擎内设置，身份级 cookies 与登录态",
+   "MCP 服务器声明式接入与 allow/ask/deny 权限分级，ask 请求可在重启后恢复",
+   "Web UI、CLI、HTTP API、Telegram、WhatsApp 多通道接入"
+  ],
+  "use_cases": [
+   "让智能体每天定时查询机票价格并写入 CSV 汇报最低价",
+   "以指定身份登录网站下载发票并记住页面位置供下次使用",
+   "在自托管环境运行浏览器自动化任务，持久保存各身份登录态"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    84
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "浏览器自动化",
+   "自主智能体",
+   "反检测浏览器",
+   "自托管",
+   "虚拟机"
+  ],
+  "domain": "AI Agent/浏览器自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "openrouter"
+  ],
+  "scenario_tags_v2": [
+   "browser-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L51: |**A computer of its own**|A hardware-accelerated VM with a Linux desktop and a persistent disk. It sleeps when idle and",
+   "L52: |**A browser that is not blocked**|invisible_playwright_mcp: Firefox patched in C++, the fingerprint set inside the engi",
+   "L54: |**Your MCP servers**|Any MCP server you declare, a program on its computer or a URL, as in Claude Code. Its keys stay o"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     53,
+     54
+    ],
+    "note": "以 Claude Code 的行为作类比说明，非接入 Anthropic 通道",
+    "quotes": [
+     "|**Memory and skills**|It writes its own notes and how-tos in its home folder, as Claude Code does, and reads them on th",
+     "|**Your MCP servers**|Any MCP server you declare, a program on its computer or a URL, as in Claude Code. Its keys stay o"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     1,
+     3
+    ],
+    "note": "仅将 Grok Bot 列为同类产品对比",
+    "quotes": [
+     "invisible_dots, an open-source, self-hosted alternative to OpenAI Dots, Meta Muse, Grok Bot, Manus Cue and Claude Cowork",
+     "Open-source, self-hosted alternative to OpenAI Dots, Grok Bot. Built to be undetectable by anti-bot systems."
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     7,
+     31
+    ],
+    "note": "运行前提需 OpenRouter key，在 Web UI 中填入",
+    "quotes": [
+     "You need Node 24+, Go 1.25+, Git and hardware virtualization (x86-64), plus an OpenRouter key.",
+     "paste your OpenRouter key and create your first Dot. Every step and its failure modes:"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     13,
+     23
+    ],
+    "note": "git clone 后本地构建安装是唯一安装途径",
+    "quotes": [
+     "git clone https://github.com/feder-cr/invisible_dots; cd invisible_dots",
+     "git clone https://github.com/feder-cr/invisible_dots && cd invisible_dots"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     53,
+     54
+    ],
+    "note": "以 Claude Code 类比记忆/技能与 MCP 机制，非替代/竞品声明",
+    "quotes": [
+     "|**Memory and skills**|It writes its own notes and how-tos in its home folder, as Claude Code does, and reads them on th",
+     "|**Your MCP servers**|Any MCP server you declare, a program on its computer or a URL, as in Claude Code. Its keys stay o"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,98 @@
+{
+ "fn": "puckeditor/puck",
+ "sha": "d7d92601b48f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "React 开发者的可视化拖拽页面编辑器",
+  "review": "Puck 是一个模块化的 React 可视化编辑器，本身以 React 组件形式提供，可在自有应用中嵌入并基于自己的 React 组件构建拖拽式编辑体验，兼容 Next.js 等环境，数据由使用者自持、无供应商锁定。采用 MIT 许可，可用于内部系统与商业应用。通过 npm 安装 @puckeditor/core，或用 create-puck-app 脚手架生成预配置应用，官方提供 Next.js 与 React Router v7 两种 recipe，另设文档、Demo、Discord 社区与付费咨询渠道。",
+  "highlights": [
+   "以 React 组件形式嵌入自有应用，支持自定义拖拽体验",
+   "兼容 Next.js、React Router 等 React 环境",
+   "MIT 许可，可用于商业应用",
+   "create-puck-app 提供预配置应用模板"
+  ],
+  "use_cases": [
+   "在 React/Next.js 应用中搭建可视化页面搭建能力",
+   "让非开发人员通过拖拽方式编辑页面内容",
+   "基于自有组件库构建内部内容管理系统"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://puckeditor.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "低代码/无代码",
+   "页面搭建",
+   "React",
+   "可视化编辑器"
+  ],
+  "domain": "Web 开发工具/低代码",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L15: Puck is a modular, open-source visual editor for React.js. You can use Puck to build custom drag-and-drop experiences wi",
+   "L17: Because Puck is just a React component, it plays well with all React.js environments, including Next.js. You own your da",
+   "L19: Puck is also licensed under MIT, making it suitable for both internal systems and commercial applications."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     26,
+     54
+    ],
+    "quotes": [
+     "npm i @puckeditor/core --save # or npx create-puck-app my-app",
+     "npx create-puck-app my-app"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

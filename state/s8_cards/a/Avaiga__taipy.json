@@ -1,0 +1,101 @@
+{
+ "fn": "Avaiga/taipy",
+ "sha": "c80a080e7bbd",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给数据科学家/ML工程师：把数据和AI算法快速变成Web应用",
+  "review": "Taipy 是 Avaiga 维护的 Python 库，面向数据科学家与机器学习工程师，用于构建数据与 AI 驱动的 Web 应用。功能覆盖用户界面生成、数据集成、流水线编排、假设分析与场景管理、认证与用户管理、定时任务调度。生态还包括 Taipy Designer、Taipy Studio、预定义模板与数据平台集成，并随附 CLI、部署脚本、版本管理、数据迁移和遥测监控等生产运维材料。仅需 Python（3.9–3.12），通过 pip 安装。",
+  "highlights": [
+   "以纯 Python 构建 Web 应用，无需学习其他语言",
+   "提供 UI 生成、数据集成、流水线编排与场景管理",
+   "内置认证、角色与用户管理、Cron 调度",
+   "附带 CLI、部署脚本、版本管理与遥测监控等运维工具"
+  ],
+  "use_cases": [
+   "把训练好的模型包装成生产可用的 Web 应用",
+   "为业务用户搭建假设分析和场景管理界面",
+   "对数据流水线做编排与定时调度",
+   "部署并维护数据/AI 应用的生产环境"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Web应用框架",
+   "数据科学",
+   "MLOps",
+   "流水线编排",
+   "低代码UI"
+  ],
+  "domain": "数据科学/应用开发工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "data-analysis",
+   "mlops"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L56: Taipy is designed for data scientists and machine learning engineers to create",
+   "L66: Taipy includes the Taipy Python library enabling developers to easily empower their end-users with:",
+   "L120: Copyright 2021-2025 Avaiga Private Limited"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     92
+    ],
+    "quotes": [
+     "pip install taipy"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

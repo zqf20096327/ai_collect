@@ -1,0 +1,132 @@
+{
+ "fn": "upscayl/upscayl",
+ "sha": "e2b6e29916bf",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向普通用户的免费开源 AI 图像放大与增强桌面应用",
+  "review": "基于 Real-ESRGAN 模型与 Vulkan 架构的图像放大工具，将低分辨率图像放大并增强细节，后端以 AGPLv3 开源。提供 Linux（Flatpak/AppImage/AUR/Snap/RPM/DEB）、macOS（dmg/App Store/Homebrew）、Windows（exe）安装包，附带 CLI 工具 upscayl-ncnn 与自定义模型仓库。限制：需要 Vulkan 兼容 GPU，多数集成显卡与 CPU 不可用；不支持去模糊或对焦调整。",
+  "highlights": [
+   "使用 Real-ESRGAN 模型放大低分辨率图像，后端 AGPLv3 开源",
+   "提供批量处理，可加载 custom-models 仓库的更多模型",
+   "附带 CLI 工具 upscayl-ncnn",
+   "三平台桌面安装包覆盖 Linux/macOS/Windows"
+  ],
+  "use_cases": [
+   "把低分辨率老照片放大到可打印的尺寸",
+   "批量处理一批像素化截图并保持画质",
+   "在无网络环境下用本地模型增强图片"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图像放大",
+   "桌面应用",
+   "Real-ESRGAN",
+   "图像增强"
+  ],
+  "domain": "图像处理/桌面工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L45: #### Free and Open Source AI Image Upscaler",
+   "L46: Upscayl lets you enlarge and enhance low-resolution images using advanced AI algorithms.",
+   "L167:  - Upscayl uses AI models to enhance your images by guessing what the details could be. It uses Real-ESRGAN and Vulkan a"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     87,
+     100,
+     113
+    ],
+    "quotes": [
+     "2. Download the `upscayl-x.x.x-linux.AppImage` file.",
+     "2. Download the `upscayl-x.x.x-mac.dmg` file.",
+     "2. Download the `upscayl-x.x.x-win.exe` file."
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     107
+    ],
+    "quotes": [
+     "`brew install --cask upscayl`"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     149
+    ],
+    "quotes": [
+     "git clone https://github.com/upscayl/upscayl"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     159
+    ],
+    "quotes": [
+     "npm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

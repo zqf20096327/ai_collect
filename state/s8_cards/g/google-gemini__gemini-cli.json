@@ -1,0 +1,132 @@
+{
+ "fn": "google-gemini/gemini-cli",
+ "sha": "93eb1a1bd648",
+ "source": "readme",
+ "identity": {
+  "one_liner": "在终端中使用 Gemini 模型的开源 AI agent CLI",
+  "review": "Google 发布的开源命令行 AI agent，将 Gemini 模型接入终端：支持查询与编辑代码库、从 PDF/图片/草图生成应用、自然语言调试、以脚本方式非交互运行并输出 JSON/流式 JSON。通过 OAuth 登录、Gemini API Key 或 Vertex AI 三种方式认证，支持 MCP server 扩展工具、GEMINI.md 上下文文件、检查点、令牌缓存与沙箱执行。经 npm/brew/MacPorts 安装，提供 preview/stable/nightly 三个发布通道。README 注明免费层与 Google One 用户已被 Antigravity CLI 取代。",
+  "highlights": [
+   "三种认证方式：Google OAuth、Gemini API Key、Vertex AI",
+   "MCP server 集成以扩展自定义工具（含 Imagen/Veo/Lyria 媒体生成）",
+   "非交互脚本模式，支持 JSON 与 stream-json 输出",
+   "preview/stable/nightly 三个发布通道"
+  ],
+  "use_cases": [
+   "在终端里用自然语言查询和编辑大型代码库",
+   "将 Gemini 调用嵌入 shell 脚本做工作流自动化",
+   "配置 MCP server 连接 GitHub/Slack/数据库等工具",
+   "企业环境通过 Vertex AI 接入生产工作负载"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "CLI工具",
+   "AI agent",
+   "代码助手",
+   "MCP"
+  ],
+  "domain": "开发者工具/终端 AI 助手",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L24: Gemini CLI is an open-source AI agent that brings the power of Gemini directly",
+   "L124: ## 🔐 Authentication Options",
+   "L308: Configure MCP servers in `~/.gemini/settings.json` to extend Gemini CLI with"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     41,
+     42,
+     48,
+     85,
+     95
+    ],
+    "quotes": [
+     "# Using npx (no installation required)",
+     "npx @google/gemini-cli",
+     "npm install -g @google/gemini-cli",
+     "npm install -g @google/gemini-cli@preview",
+     "npm install -g @google/gemini-cli@latest"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     51,
+     54
+    ],
+    "quotes": [
+     "#### Install globally with Homebrew (macOS/Linux)",
+     "brew install gemini-cli"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     236
+    ],
+    "note": "示例中 git clone 本仓库用于演示，非安装途径",
+    "quotes": [
+     "git clone https://github.com/google-gemini/gemini-cli"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    3,
+    4
+   ],
+   "note": "免费层与 Google One 用户已于 2026-06-18 被 Antigravity CLI 取代"
+  }
+ }
+}

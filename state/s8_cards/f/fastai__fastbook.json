@@ -1,0 +1,107 @@
+{
+ "fn": "fastai/fastbook",
+ "sha": "d6fc6f413202",
+ "source": "readme",
+ "identity": {
+  "one_liner": "以 Jupyter Notebook 形式发布的 fastai 深度学习教材",
+  "review": "《Deep Learning for Coders with fastai and PyTorch》一书的 Notebook 版仓库，内容覆盖深度学习入门、fastai 分层 API 与 PyTorch，包含从 MNIST 基础到 NLP、卷积、优化器与回调等 20 章内容。代码部分采用 GPL v3 许可，散文部分（markdown 单元格）不允许再分发或商业使用，仅可自用复制或 fork。面向学习深度学习的读者，推荐通过 Google Colab 在浏览器中直接运行，无需本地搭建 Python 环境。",
+  "highlights": [
+   "以 Jupyter Notebook 形式提供全部章节内容",
+   "覆盖深度学习、fastai 与 PyTorch 入门，含 20 章",
+   "支持通过 Google Colab 在浏览器中打开运行",
+   "代码部分采用 GPL v3 许可，配套 MOOC 课程"
+  ],
+  "use_cases": [
+   "零环境配置地在 Colab 里学习深度学习课程",
+   "本地克隆仓库结合 fastai 框架实践书中示例",
+   "作为 MOOC 教材按章节系统学习 fastai 与 PyTorch"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "fastai paper 在 L5 被提及但未给出完整 URL",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教材/教程",
+   "深度学习",
+   "Jupyter Notebook",
+   "Python"
+  ],
+  "domain": "教育/数据科学",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供中文翻译版本链接（L1）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: # The fastai book",
+   "L5: These notebooks cover an introduction to deep learning, fastai, and PyTorch. fastai is a layered API for deep learning; "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     13,
+     15,
+     17
+    ],
+    "note": "官方推荐通过 Colab 打开各章节",
+    "quotes": [
+     "## Colab",
+     "Instead of cloning this repo and opening it on your machine, you can read and work with the notebooks using Google Colab",
+     "You can open any chapter of the book in Colab by clicking on one of these links: Introduction to Jupyter | Chapter 1, In"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    9
+   ],
+   "note": "代码 GPL v3 与散文内容限制性版权双轨授权",
+   "quotes": [
+    "The code in the notebooks and python `.py` files is covered by the GPL v3 license; see the LICENSE file for details. The"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

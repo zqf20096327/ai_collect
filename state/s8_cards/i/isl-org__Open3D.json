@@ -1,0 +1,121 @@
+{
+ "fn": "isl-org/Open3D",
+ "sha": "b14d58afc9eb",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 C++/Python 开发者提供 3D 数据处理的开源库",
+  "review": "Open3D 是处理 3D 数据的开源库，前端在 C++ 与 Python 中提供数据结构与算法，后端针对并行化设置。功能覆盖 3D 数据结构、处理算法、场景重建、表面对齐、3D 可视化、基于物理的渲染（PBR），并支持 PyTorch 与 TensorFlow 的 3D 机器学习及核心操作的 GPU 加速。提供 pip 预编译包（Ubuntu/macOS/Windows）、C++ 二进制包、独立 Viewer 应用与 Open3D-ML 扩展，发布工件含 SLSA 构建来源证明。",
+  "highlights": [
+   "C++ 与 Python 双接口，覆盖 3D 数据结构与处理算法",
+   "支持 PyTorch 与 TensorFlow 的 3D 机器学习（Open3D-ML 扩展）",
+   "核心 3D 操作支持 GPU 加速",
+   "提供 pip 预编译包与独立 3D Viewer 应用"
+  ],
+  "use_cases": [
+   "点云处理、网格操作与 3D 可视化开发",
+   "场景重建与表面对齐任务",
+   "结合 PyTorch/TensorFlow 做 3D 机器学习"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": "cpu-ok",
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "arXiv:1801.09847",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "3D数据处理",
+   "点云",
+   "计算机图形学",
+   "3D机器学习"
+  ],
+  "domain": "3D 数据处理/计算机视觉与图形学",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L33: - 3D machine learning support with PyTorch and TensorFlow",
+   "L105: Open3D-ML is an extension of Open3D for 3D machine learning tasks. It builds on"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     67,
+     68
+    ],
+    "quotes": [
+     "pip install open3d       # or",
+     "pip install open3d-cpu   # Smaller CPU only wheel on x86_64 Linux (v0.17+)"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     88,
+     101
+    ],
+    "quotes": [
+     "- Download Open3D binary package: Release or latest development version",
+     "release page."
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU only",
+    "rel": "support",
+    "lines": [
+     68
+    ],
+    "note": "提供 CPU-only wheel 选项，属产品自身分发配置",
+    "quotes": [
+     "pip install open3d-cpu   # Smaller CPU only wheel on x86_64 Linux (v0.17+)"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

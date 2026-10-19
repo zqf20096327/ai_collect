@@ -1,0 +1,129 @@
+{
+ "fn": "microsoft/markitdown",
+ "sha": "2287a6ff1e1d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 LLM 场景的文件转 Markdown Python 工具",
+  "review": "轻量级 Python 工具，将多类文件转换为 Markdown，目标消费者是 LLM 与文本分析流水线，转换时保留标题、列表、表格、链接等文档结构。支持 PDF、Office 文档、图片（EXIF/OCR）、音频（转录）、HTML、YouTube URL 等。提供 CLI、Python API、第三方插件机制与 Docker 运行方式；另可通过 Azure Document Intelligence / Content Understanding 或 OpenAI 客户端进行云端增强转换与图片描述。README 明确定位为库而非面向最终用户的应用，不接受 Web 服务或桌面应用贡献。",
+  "highlights": [
+   "多格式转 Markdown：PDF、Word、PowerPoint、Excel、图片、音频、HTML、EPub 等",
+   "提供 CLI、Python API、Docker 三种使用方式",
+   "支持第三方插件机制（#markitdown-plugin）",
+   "可选接入 Azure Document Intelligence / Content Understanding 与 LLM 图片描述"
+  ],
+  "use_cases": [
+   "把本地文档批量转换后喂给 LLM 做文本分析",
+   "为 RAG 流水线准备结构化 Markdown 语料",
+   "用 OCR/语音转录插件提取图片与音频中的文本"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "文档转换",
+   "Markdown",
+   "LLM数据准备",
+   "OCR",
+   "Python工具"
+  ],
+  "domain": "开发工具/文档处理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "ocr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: MarkItDown is a lightweight Python utility for converting various files to Markdown for use with LLMs and related text a",
+   "L263: To use Large Language Models for image descriptions (currently only for pptx and image files), provide `llm_client` and ",
+   "L287: MarkItDown is a Python utility for converting files to Markdown for use with LLMs and related text analysis pipelines. T"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     62,
+     94,
+     136,
+     159
+    ],
+    "quotes": [
+     "To install MarkItDown, use pip: `pip install 'markitdown[all]'`. Alternatively, you can install it from the source:",
+     "pip install 'markitdown[pdf, docx, pptx]'",
+     "pip install markitdown-ocr",
+     "Install: `pip install 'markitdown[az-content-understanding]'`"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     65,
+     67
+    ],
+    "quotes": [
+     "git clone git@github.com:microsoft/markitdown.git",
+     "pip install -e 'packages/markitdown[all]'"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     279,
+     280
+    ],
+    "quotes": [
+     "docker build -t markitdown:latest .",
+     "docker run --rm -i markitdown:latest < ~/your-file.pdf > output.md"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

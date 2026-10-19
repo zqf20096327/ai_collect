@@ -1,0 +1,129 @@
+{
+ "fn": "treeverse/dvc",
+ "sha": "0a0f05b1da9b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 ML 团队的开源数据与模型版本控制及实验管理工具",
+  "review": "DVC 是一个命令行工具（配套 VS Code 扩展），通过在 Git 仓库中保存数据/模型的版本元信息，将实际文件存储在 Git 之外的缓存或云存储中，实现 ML 项目的可复现开发。功能覆盖数据与模型版本管理、轻量级 pipeline 定义与增量执行、本地实验跟踪与对比、远程数据共享与协作复现。支持 S3、Azure、Google Cloud、SSH 等远程存储，按存储类型可选安装 dvc-s3、dvc-azure 等附加依赖。以 Apache 2.0 许可分发。",
+  "highlights": [
+   "数据/模型版本元信息入 Git，文件本体存 Git 外缓存或云存储",
+   "pipeline 计算图只重跑受变更影响的步骤",
+   "本地实验跟踪，可按超参数和指标过滤、比较并绘图",
+   "VS Code 扩展提供 GUI（实验跟踪与数据管理）"
+  ],
+  "use_cases": [
+   "给训练数据和模型文件做版本管理而不塞进 Git 仓库",
+   "跟踪和比较多轮实验的参数、指标与图表",
+   "把数据/模型推到 S3 等远程存储并复现他人实验"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://mcis.cs.queensu.ca/publications/2021/saner.pdf",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据版本控制",
+   "ML 实验",
+   "可复现性",
+   "pipeline",
+   "开发者工具"
+  ],
+  "domain": "机器学习基础设施/数据版本控制",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L20: **Data Version Control** or **DVC** is a command line tool and `VS Code Extension`_ to help you develop reproducible mac",
+   "L72: #. **Git for data**: Store and share data artifacts (like Git-LFS but without a server) and models, connecting them with",
+   "L143: Depending on the remote storage type you plan to use to keep and share your data, you might need to install optional dep"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     145,
+     147,
+     151,
+     154
+    ],
+    "quotes": [
+     "PyPI (Python)",
+     "|PyPI|",
+     " pip install dvc",
+     "The command should look like this: ``pip install 'dvc[s3]'`` (in this case AWS S3 dependencies such as ``boto3`` will be"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     126,
+     132
+    ],
+    "quotes": [
+     "Brew (mac OS)",
+     " brew install dvc"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     162,
+     166,
+     167
+    ],
+    "quotes": [
+     "Package (Platform-specific)",
+     "Self-contained packages for Linux, Windows, and Mac are available.",
+     "The latest version of the packages can be found on the GitHub `releases page <https://github.com/treeverse/dvc/releases>"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,164 @@
+{
+ "fn": "MiniMax-AI/skills",
+ "sha": "45d6a524b815",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 AI 编程 agent 提供前端/全栈/移动端开发技能包",
+  "review": "MiniMax 维护的 AI 编程 agent 技能集合，提供 16 个技能，覆盖前端、全栈、Android/iOS 原生、Flutter、React Native 与 GLSL shader 开发，另含 PDF/PPTX/XLSX/DOCX 文档生成及音乐、视频、图像等多模态生成技能（部分依赖 MiniMax API）。安装方式为通过 Claude Code 插件市场安装，或以 git clone 后软链方式接入 Cursor、Codex、OpenCode；VS Code 无独立扩展，需在集成终端运行支持的 CLI 工具。项目处于 Beta 阶段，接口与配置格式可能变动。",
+  "highlights": [
+   "16 个技能覆盖前端、全栈、Android/iOS、Flutter、React Native、shader 开发",
+   "部分技能通过 MiniMax API 调用图像/视频/音频/TTS 生成能力",
+   "支持 Claude Code、Cursor、Codex、OpenCode 四种 agent 工具接入",
+   "文档生成技能覆盖 PDF、PPTX、XLSX、DOCX 四种格式"
+  ],
+  "use_cases": [
+   "给 Claude Code 等 AI 编程工具加装前端/全栈开发指导技能",
+   "在编程 agent 中生成 PDF、PPT 等办公文档",
+   "通过 agent 调用 MiniMax API 生成音乐、视频与图像素材"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    5
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI编程",
+   "agent技能",
+   "多模态生成",
+   "开发工具"
+  ],
+  "domain": "AI 开发工具/agent 技能包",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供中文版说明",
+   "MiniMax 公司维护"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: Development skills for AI coding agents. Plug into your favorite AI coding tool and get structured, production-quality g",
+   "L33: ### Claude Code",
+   "L43: git clone https://github.com/MiniMax-AI/skills.git ~/.cursor/minimax-skills"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     33,
+     36,
+     37,
+     77
+    ],
+    "note": "Claude Code 为接入的 agent 工具之一，非模型接入适配",
+    "quotes": [
+     "### Claude Code",
+     "claude plugin marketplace add https://github.com/MiniMax-AI/skills",
+     "claude plugin install minimax-skills",
+     "- Claude Code"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     43,
+     52,
+     63
+    ],
+    "note": "Cursor/Codex/OpenCode 均通过 git clone 安装",
+    "quotes": [
+     "git clone https://github.com/MiniMax-AI/skills.git ~/.cursor/minimax-skills",
+     "git clone https://github.com/MiniMax-AI/skills.git ~/.codex/minimax-skills",
+     "git clone https://github.com/MiniMax-AI/skills.git ~/.minimax-skills"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     33,
+     36,
+     37,
+     77
+    ],
+    "note": "作为接入目标工具，非替代/竞品对象",
+    "quotes": [
+     "### Claude Code",
+     "claude plugin marketplace add https://github.com/MiniMax-AI/skills",
+     "claude plugin install minimax-skills",
+     "- Claude Code"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     40,
+     43,
+     46,
+     47,
+     80
+    ],
+    "note": "作为接入目标工具，非替代/竞品对象",
+    "quotes": [
+     "### Cursor",
+     "git clone https://github.com/MiniMax-AI/skills.git ~/.cursor/minimax-skills",
+     "Add to your Cursor settings — point the skills path to `~/.cursor/minimax-skills/skills/`.",
+     "For Windows setup and verification, see `.cursor-plugin/INSTALL.md`.",
+     "If you want native local-skills configuration from this repo, use Cursor and follow `.cursor-plugin/INSTALL.md`."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

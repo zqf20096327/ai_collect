@@ -1,0 +1,125 @@
+{
+ "fn": "google-deepmind/mujoco",
+ "sha": "0462d756e200",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向机器人与仿真研究的通用多关节接触动力学物理引擎",
+  "review": "MuJoCo（Multi-Joint dynamics with Contact）是一个通用物理引擎，服务于机器人、生物力学、图形动画、机器学习等需要对铰接结构与环境交互进行快速精确仿真的领域。提供 C API，运行时仿真模块基于内置 XML 编译器预分配的底层数据结构运作，含 OpenGL 原生交互可视化 GUI 与物理量计算工具函数。提供 Python 绑定与 Unity 插件，版本化发布每月一次，由 Google DeepMind 维护。",
+  "highlights": [
+   "提供 C API 与官方 Python 绑定（pip install mujoco）",
+   "含 OpenGL 原生交互式可视化查看器 simulate",
+   "MJX 分支基于 JAX 编写，支持可微物理教程",
+   "提供 Unity 插件及 JS/C#/MATLAB 等第三方绑定"
+  ],
+  "use_cases": [
+   "机器人强化学习训练环境的物理仿真",
+   "生物力学中的铰接结构动力学建模",
+   "为图形动画与游戏引擎提供物理仿真",
+   "在 Colab 中学习可微物理与控制器综合"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "物理引擎",
+   "机器人仿真",
+   "科研工具",
+   "可微物理"
+  ],
+  "domain": "科研仿真/机器人",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "research-tools"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: **MuJoCo** stands for **Mu**lti-**Jo**int dynamics with **Co**ntact. It is a",
+   "L19: This repository is maintained by Google DeepMind.",
+   "L21: MuJoCo has a C API and is intended for researchers and developers. The runtime"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     48,
+     51
+    ],
+    "quotes": [
+     "running on Google Colab:",
+     " Open In Colab"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     73,
+     74
+    ],
+    "quotes": [
+     "Versioned releases are available as precompiled binaries from the GitHub",
+     "[releases page], built for Linux (x86-64 and AArch64), Windows (x86-64 only),"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     86,
+     89
+    ],
+    "quotes": [
+     "be installed from [PyPI] via:",
+     "pip install mujoco"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

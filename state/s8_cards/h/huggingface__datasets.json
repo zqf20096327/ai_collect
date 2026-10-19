@@ -1,0 +1,121 @@
+{
+ "fn": "huggingface/datasets",
+ "sha": "756bba187ea0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "ML 从业者的一站式数据集加载与预处理库",
+  "review": "Hugging Face 的 Python 数据集库：通过 load_dataset() 一行命令加载 Hub 上图像、音频、文本（467 种语言）、视频、PDF、NIfTI 等公开数据集，也可读取本地 CSV/JSON/Parquet 等文件或 Python 对象。基于 Apache Arrow 后端做零拷贝内存映射与智能缓存，支持 streaming=True 流式迭代、map() 多进程预处理，并可转换为 NumPy/Pandas/PyTorch/TensorFlow/JAX/Spark 等框架格式。面向训练与评估 ML 模型的开发者与科研人员。",
+  "highlights": [
+   "load_dataset() 一行加载 Hub 公开数据集与本地文件",
+   "Apache Arrow 零拷贝内存映射，支持 streaming 流式迭代",
+   "多框架互转：NumPy/Pandas/Polars/PyTorch/TensorFlow/JAX/Spark",
+   "内置 FAISS 与 Elasticsearch 相似性检索索引支持"
+  ],
+  "use_cases": [
+   "为模型训练/评估快速加载公开数据集",
+   "磁盘装不下的大规模数据集用 streaming 方式迭代",
+   "对本地 CSV/JSON/Parquet 数据做可复现预处理",
+   "加载和处理 agent traces 数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据集加载",
+   "数据预处理",
+   "机器学习",
+   "多模态数据"
+  ],
+  "domain": "机器学习/数据工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: 🤗 Datasets is a lightweight library providing **two** main features:",
+   "L13: - **one-line dataloaders for many public datasets**: one-liners to download and pre-process any of the number of dataset",
+   "L24: |📦 **One-line dataset loading**|Load AI-ready datasets from the Hugging Face Hub or local files with `load_dataset()`|"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     41,
+     44,
+     50,
+     65
+    ],
+    "quotes": [
+     "🤗 Datasets can be installed from PyPi and should be installed in a virtual environment (venv or conda for instance):",
+     "pip install datasets",
+     "pip install \"datasets @ git+https://github.com/huggingface/datasets.git\"",
+     "pip install datasets[audio]"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     13,
+     50,
+     56,
+     151
+    ],
+    "note": "本库为 Hugging Face 官方产品，Hub 为其依托平台，非替代/竞品",
+    "quotes": [
+     "- **one-line dataloaders for many public datasets**: one-liners to download and pre-process any of the number of dataset",
+     "pip install \"datasets @ git+https://github.com/huggingface/datasets.git\"",
+     "conda install -c huggingface -c conda-forge datasets",
+     "We have a very detailed step-by-step guide to add a new dataset to the number of datasets datasets already provided on t"
+    ]
+   }
+  ]
+ }
+}

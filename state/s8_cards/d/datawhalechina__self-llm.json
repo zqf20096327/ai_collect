@@ -1,0 +1,186 @@
+{
+ "fn": "datawhalechina/self-llm",
+ "sha": "3eefe9c69b04",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向国内初学者的开源大模型配置、部署与微调中文教程",
+  "review": "Datawhale 出品的开源大模型教程仓库，基于 Linux 平台覆盖环境配置、本地部署（命令行调用、在线 Demo、LangChain 集成）与微调（分布式全量微调、LoRA、ptuning）全流程，收录 50+ 主流大语言与多模态模型，并设 AMD GPU（ROCm）、昇腾 Ascend NPU、Apple M 等硬件平台专区。面向学生、研究者等需要本地部署与低成本使用 LLM 的初学者，内容为纯教程，由社区协作维护。",
+  "highlights": [
+   "收录 50+ 主流开源大模型，每个模型提供部署、微调与使用教程",
+   "设 AMD GPU（ROCm）、昇腾 Ascend NPU、Apple M 等硬件平台专区",
+   "微调覆盖分布式全量微调、LoRA、ptuning 等方法",
+   "含 Chat-嬛嬛、天机、AMChat 等实战 Example 系列"
+  ],
+  "use_cases": [
+   "初学者按教程完成开源大模型的环境配置与本地部署",
+   "学习 LoRA/全参数微调并制作领域特色私域模型",
+   "在 AMD GPU 或昇腾 NPU 上查找对应的模型部署教程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM教程",
+   "微调",
+   "本地部署",
+   "多模态大模型",
+   "国产硬件适配"
+  ],
+  "domain": "AI 教育与知识/LLM 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multimodal",
+   "fine-tuning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "针对国内初学者的定位（L5）",
+   "Datawhale 开源社区维护"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: &emsp;&emsp;本项目是一个围绕开源大模型、针对国内初学者、基于 Linux 平台的中国宝宝专属大模型教程，针对各类开源大模型提供包括环境配置、本地部署、高效微调等技能在内的全流程指导，简化开源大模型的部署、使用和应用流程，让更多的",
+   "L69:  ✨ 已支持 50+ 主流大语言模型 ✨",
+   "L141:  🚀 AMD GPU 平台已支持模型"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     93,
+     96,
+     101
+    ],
+    "note": "已支持模型列表中列出，非专门接入通道",
+    "quotes": [
+     " • DeepSeek-Coder-V2",
+     " • DeepSeek-R1",
+     " • DeepSeek"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     142,
+     149
+    ],
+    "note": "AMD 专区部署工具之一",
+    "quotes": [
+     " 每个模型都提供完整的 ROCm 环境配置与部署教程（LM Studio / vLLM / Ollama / llama.cpp）",
+     " • LM Studio / vLLM / Ollama / llama.cpp"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     142,
+     149,
+     162
+    ],
+    "note": "部署教程中使用的推理框架",
+    "quotes": [
+     " 每个模型都提供完整的 ROCm 环境配置与部署教程（LM Studio / vLLM / Ollama / llama.cpp）",
+     " • LM Studio / vLLM / Ollama / llama.cpp",
+     " • vLLM-ascend 部署调用"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     11
+    ],
+    "note": "部署应用指导中提及的集成框架",
+    "quotes": [
+     " 3. 开源 LLM 的部署应用指导，包括命令行调用、在线 Demo 部署、LangChain 框架集成等；"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     76,
+     104
+    ],
+    "note": "已支持模型列表中列出",
+    "quotes": [
+     " • Kimi-K2.5",
+     " • Kimi"
+    ]
+   },
+   {
+    "term": "文心一言",
+    "rel": "mention",
+    "lines": [
+     106
+    ],
+    "note": "ERNIE-4.5 出现在已支持模型列表",
+    "quotes": [
+     " • ERNIE-4.5"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     114,
+     124
+    ],
+    "note": "Qwen 系列出现在已支持模型列表",
+    "quotes": [
+     " • Qwen 1.5",
+     " • Qwen-Audio"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

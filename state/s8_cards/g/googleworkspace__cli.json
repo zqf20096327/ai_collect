@@ -1,0 +1,159 @@
+{
+ "fn": "googleworkspace/cli",
+ "sha": "21031d37a7d0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向人类与 AI agent 的 Google Workspace 统一命令行工具",
+  "review": "单一 CLI 覆盖 Drive、Gmail、Calendar、Sheets、Docs、Chat、Admin 等 Workspace API：运行时读取 Google Discovery Service 动态生成命令面，新端点自动纳入。输出为结构化 JSON，支持 --dry-run 预览与自动分页；附带 100+ 个 SKILL.md 格式的 agent 技能与 50 个工作流配方，支持 npx skills add 与 OpenClaw 安装，并作为 Gemini CLI 扩展接入。认证覆盖交互式 OAuth、Service Account、预取 token 等多种方式；凭据以 AES-256-GCM 加密存放于系统钥匙串。预编译二进制发布于 GitHub Releases，也可经 npm、cargo、Homebrew、Nix 安装。README 声明非 Google 官方支持产品，v1.0 前可能有破坏性变更。",
+  "highlights": [
+   "运行时读取 Discovery Service 动态构建全部命令，无需随 API 更新发版",
+   "输出结构化 JSON，附带 100+ agent 技能与 50 个 Gmail/Drive/Docs/Calendar/Sheets 配方",
+   "多种认证工作流：交互式 OAuth、Service Account、预取 token、无头 CI 导出",
+   "带 + 前缀的手工 helper 命令（+agenda、+send、+triage 等）与 Model Armor 提示注入扫描"
+  ],
+  "use_cases": [
+   "让 LLM agent 通过技能直接管理 Google Workspace 邮件、日历与文档",
+   "在终端用一条命令调用任意 Workspace API 并获得 JSON 输出",
+   "在无头/CI 环境导出凭据后运行 Workspace 自动化脚本",
+   "用 Model Armor 模板扫描 API 响应中的提示注入后再交给 agent"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    7,
+    19
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "CLI",
+   "Google Workspace",
+   "agent技能",
+   "自动化",
+   "Gemini CLI 扩展"
+  ],
+  "domain": "开发者工具/办公自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: **One CLI for all of Google Workspace — built for humans and AI agents.**",
+   "L190: The repo ships 100+ Agent Skills (`SKILL.md` files) — one for every supported API, plus higher-level helpers for common "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     25,
+     33,
+     36,
+     194,
+     197,
+     198
+    ],
+    "note": "npm install -g @googleworkspace/cli 为官方安装途径之一",
+    "quotes": [
+     "- **Node.js 18+** — for `npm install` (or download a pre-built binary from GitHub Releases)",
+     "For convenience, you can also use `npm` to automate downloading the appropriate binary from GitHub Releases:",
+     "npm install -g @googleworkspace/cli",
+     "npx skills add https://github.com/googleworkspace/cli",
+     "npx skills add https://github.com/googleworkspace/cli/tree/main/skills/gws-drive",
+     "npx skills add https://github.com/googleworkspace/cli/tree/main/skills/gws-gmail"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     39
+    ],
+    "note": "提供 build from source 途径",
+    "quotes": [
+     "Or build from source:"
+    ]
+   },
+   {
+    "term": "cargo",
+    "rel": "support",
+    "lines": [
+     42
+    ],
+    "note": "cargo install 从源码构建",
+    "quotes": [
+     "cargo install --git https://github.com/googleworkspace/cli --locked"
+    ]
+   },
+   {
+    "term": "go",
+    "rel": "none",
+    "lines": [
+     42
+    ],
+    "note": "误命中：该行为 cargo 命令，非 Go 构建途径",
+    "quotes": [
+     "cargo install --git https://github.com/googleworkspace/cli --locked"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     51,
+     54
+    ],
+    "note": "macOS/Linux 支持 Homebrew 安装",
+    "quotes": [
+     "On macOS and Linux, you can also install via Homebrew:",
+     "brew install googleworkspace-cli"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

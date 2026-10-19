@@ -1,0 +1,199 @@
+{
+ "fn": "Panniantong/Agent-Reach",
+ "sha": "4c1687bc7263",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI Agent 一键配置读取与搜索互联网渠道的 CLI 能力层",
+  "review": "Agent Reach 定位为能力层：为 Claude Code、OpenClaw、Cursor 等可执行命令行的 Agent 选型、安装并体检各平台的读取工具，覆盖网页、YouTube、RSS、GitHub、Twitter、B站、Reddit、小红书等 17 个渠道。每个平台维护「首选+备选」的有序后端列表，按序真实探测选择可用路径，接入方式失效时切换路由。凭据仅存本地，`agent-reach doctor` 可诊断各渠道状态；安装默认只读检查，显式 `--system` 才修改系统。",
+  "highlights": [
+   "17 个平台渠道，6 个零配置即用，其余按引导配置登录态",
+   "每平台「首选+备选」多后端路由，失效自动换路径",
+   "agent-reach doctor 一条命令诊断各渠道可用性",
+   "凭据本地存储、默认不修改系统的安全安装流程"
+  ],
+  "use_cases": [
+   "让 Agent 帮我读 YouTube 字幕、搜 B站、刷小红书内容",
+   "给新装的 Agent 一句话配好各平台读取环境",
+   "平台接口被封后不用自己折腾，切换到可用路由"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent-infrastructure",
+   "网络读取/搜索",
+   "CLI工具",
+   "MCP"
+  ],
+  "domain": "AI Agent 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "支持 B站/小红书/Boss直聘/雪球等国内平台",
+   "提供 AtomGit 国内镜像",
+   "作者联系方式为 foxmail 邮箱与微信"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L75: |🤖 **兼容所有 Agent**|Claude Code、OpenClaw、Cursor、Windsurf……任何能跑命令行的 Agent 都能用|",
+   "L165: **Agent Reach 是一个能力层（capability layer），不是又一个工具。**",
+   "L178: ├── twitter.py      → twitter-cli ▸ OpenCLI ▸ bird"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     32
+    ],
+    "note": "赞助商广告中提及的模型，非本产品接入对象",
+    "quotes": [
+     " 优刻得星图astraflow大模型，支持200+模型一键调用：内置 Kimi K3、DeepSeek V4/V3、Qwen 3、GLM5.2、happyhorse等全球领先开源大模型，无需自训，开箱即用"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     75,
+     118
+    ],
+    "note": "提及 Claude Code 等兼容 Agent，未提及 Anthropic 官方接入",
+    "quotes": [
+     "|🤖 **兼容所有 Agent**|Claude Code、OpenClaw、Cursor、Windsurf……任何能跑命令行的 Agent 都能用|",
+     "> 设置后重启 Gateway（`openclaw gateway restart`）并开启新对话即可。其他平台（Claude Code、Cursor、Windsurf 等）不受此限制。"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     141,
+     248
+    ],
+    "note": "明确提示不要从 PyPI 安装同名包；pip uninstall 为卸载方式",
+    "quotes": [
+     "1. **安装 CLI 工具** — 从本仓库安装 `agent-reach` 命令行（自带 yt-dlp、feedparser；不要从 PyPI 安装同名包，它不是本项目）",
+     "卸载 Python 包本身：`pip uninstall agent-reach`"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     32
+    ],
+    "note": "赞助商广告中提及",
+    "quotes": [
+     " 优刻得星图astraflow大模型，支持200+模型一键调用：内置 Kimi K3、DeepSeek V4/V3、Qwen 3、GLM5.2、happyhorse等全球领先开源大模型，无需自训，开箱即用"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     32
+    ],
+    "note": "赞助商广告中提及",
+    "quotes": [
+     " 优刻得星图astraflow大模型，支持200+模型一键调用：内置 Kimi K3、DeepSeek V4/V3、Qwen 3、GLM5.2、happyhorse等全球领先开源大模型，无需自训，开箱即用"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     75,
+     118,
+     120
+    ],
+    "note": "支持的宿主 Agent 平台，非替代/竞品",
+    "quotes": [
+     "|🤖 **兼容所有 Agent**|Claude Code、OpenClaw、Cursor、Windsurf……任何能跑命令行的 Agent 都能用|",
+     "> 设置后重启 Gateway（`openclaw gateway restart`）并开启新对话即可。其他平台（Claude Code、Cursor、Windsurf 等）不受此限制。",
+     "复制这句话给你的 AI Agent（Claude Code、OpenClaw、Cursor 等）："
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     75,
+     118,
+     120
+    ],
+    "note": "支持的宿主 Agent 平台",
+    "quotes": [
+     "|🤖 **兼容所有 Agent**|Claude Code、OpenClaw、Cursor、Windsurf……任何能跑命令行的 Agent 都能用|",
+     "> 设置后重启 Gateway（`openclaw gateway restart`）并开启新对话即可。其他平台（Claude Code、Cursor、Windsurf 等）不受此限制。",
+     "复制这句话给你的 AI Agent（Claude Code、OpenClaw、Cursor 等）："
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     75,
+     118
+    ],
+    "note": "支持的宿主 Agent 平台",
+    "quotes": [
+     "|🤖 **兼容所有 Agent**|Claude Code、OpenClaw、Cursor、Windsurf……任何能跑命令行的 Agent 都能用|",
+     "> 设置后重启 Gateway（`openclaw gateway restart`）并开启新对话即可。其他平台（Claude Code、Cursor、Windsurf 等）不受此限制。"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

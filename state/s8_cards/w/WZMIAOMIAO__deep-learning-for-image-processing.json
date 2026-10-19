@@ -1,0 +1,93 @@
+{
+ "fn": "WZMIAOMIAO/deep-learning-for-image-processing",
+ "sha": "5b5760178810",
+ "source": "readme",
+ "identity": {
+  "one_liner": "图像处理深度学习入门教程：讲解与代码实现经典网络",
+  "review": "作者整理研究生期间学习内容的教程项目，以视频课程形式在 bilibili 分享。内容覆盖图像分类（LeNet 至 ConvNeXt/MobileViT）、目标检测（Faster-RCNN、SSD、YOLO 系列等）、语义分割（FCN、DeepLabV3、U-Net 等）、实例分割、关键点检测。每个网络按“结构与创新点讲解→PyTorch 搭建→TensorFlow2 搭建”三段式教学，配套 PPT 放在 course_ppt 文件夹供下载，各模型源码以目录形式组织在仓库中。",
+  "highlights": [
+   "每个网络提供 PyTorch 与 TensorFlow2 双框架实现",
+   "覆盖分类、检测、分割、关键点检测四大任务方向",
+   "配套 bilibili 视频教程与可下载的课程 PPT",
+   "涵盖 LeNet 到 Swin Transformer、ConvNeXt 等多代网络"
+  ],
+  "use_cases": [
+   "跟着视频入门图像分类与目标检测的网络结构",
+   "对照源码学习用 PyTorch 或 TensorFlow2 搭建经典网络",
+   "下载 PPT 辅助复习深度学习课程知识点"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度学习教程",
+   "图像分类",
+   "目标检测",
+   "语义分割",
+   "PyTorch/TensorFlow"
+  ],
+  "domain": "教育/计算机视觉",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials",
+   "object-detection"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "微信公众号（阿喆学习小记）",
+   "bilibili 频道"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # 深度学习在图像处理中的应用教程",
+   "L7: 2）使用Pytorch进行网络的搭建与训练",
+   "L13: * 图像分类"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

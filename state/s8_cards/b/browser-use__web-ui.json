@@ -1,0 +1,161 @@
+{
+ "fn": "browser-use/web-ui",
+ "sha": "9f870456d565",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于 Gradio 的浏览器 AI Agent Web 界面",
+  "review": "在 browser-use 基础上构建的 Web UI，通过 Gradio 提供对浏览器 agent 功能的图形化操作界面。集成多家 LLM 提供商，支持使用用户自有浏览器（复用登录态与认证），支持在任务间保持浏览器会话以保留完整交互历史，并提供高清屏幕录制。提供本地 Python（uv）与 Docker 两种安装方式，Docker 部署附带 VNC 以查看浏览器操作过程，支持 ARM64 平台。",
+  "highlights": [
+   "基于 Gradio 的 Web 界面，支持多数 browser-use 功能",
+   "集成多家 LLM：Google、OpenAI、Azure OpenAI、Anthropic、DeepSeek、Ollama 等",
+   "支持使用自有浏览器，复用登录态并支持高清录屏",
+   "Docker 部署附 VNC 观看浏览器交互，支持 ARM64"
+  ],
+  "use_cases": [
+   "通过图形界面运行浏览器自动化 AI 任务",
+   "复用本地 Chrome 登录态执行需认证的站点操作",
+   "通过 VNC 观看 agent 的浏览器操作过程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "浏览器自动化",
+   "AI Agent",
+   "Web UI",
+   "Gradio"
+  ],
+  "domain": "AI Agent/浏览器自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "azure",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "browser-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L8: This project builds upon the foundation of the browser-use, which is designed to make websites accessible for AI agents.",
+   "L12: **WebUI:** is built on Gradio and supports most of `browser-use` functionalities. This UI is designed to be user-friendl",
+   "L14: **Expanded LLM Support:** We've integrated support for various Large Language Models (LLMs), including: Google, OpenAI, "
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     14
+    ],
+    "quotes": [
+     "**Expanded LLM Support:** We've integrated support for various Large Language Models (LLMs), including: Google, OpenAI, "
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     14
+    ],
+    "quotes": [
+     "**Expanded LLM Support:** We've integrated support for various Large Language Models (LLMs), including: Google, OpenAI, "
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     14
+    ],
+    "quotes": [
+     "**Expanded LLM Support:** We've integrated support for various Large Language Models (LLMs), including: Google, OpenAI, "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     30
+    ],
+    "quotes": [
+     "git clone https://github.com/browser-use/web-ui.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     109,
+     111,
+     131,
+     133,
+     137
+    ],
+    "quotes": [
+     "- Docker and Docker Compose installed",
+     " - Docker Engine and Docker Compose (For Linux)",
+     "#### Step 3: Docker Build and Run",
+     "docker compose up --build",
+     "TARGETPLATFORM=linux/arm64 docker compose up --build"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

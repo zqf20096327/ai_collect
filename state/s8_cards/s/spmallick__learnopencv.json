@@ -1,0 +1,138 @@
+{
+ "fn": "spmallick/learnopencv",
+ "sha": "1689c90205c4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为学习计算机视觉/深度学习的开发者提供博客配套代码示例库",
+  "review": "该仓库收录 LearnOpenCV.com 博客文章对应的 C++ 与 Python 示例代码，主题覆盖 OpenCV 基础操作（图像读写、边缘检测、轮廓、相机标定、光流）、深度学习模型（YOLO 系列、SAM、DETR、CLIP、Gemma、Stable Diffusion 等）以及 3D 重建、SLAM、RAG、VLM、边缘部署等内容。以「博客文章—代码」链接清单为主要组织形式，由 BigVision.AI 公司维护，未在可见 README 中给出统一安装步骤。",
+  "highlights": [
+   "博客文章与配套代码一一对应的索引清单",
+   "覆盖 OpenCV C++/Python 双语言示例",
+   "内容横跨传统 CV、深度学习、3D 视觉、多模态与边缘部署",
+   "由 CV 咨询公司 BigVision.AI 维护"
+  ],
+  "use_cases": [
+   "查找某个 OpenCV 功能（如相机标定、光流）的可运行示例",
+   "跟随博客教程跑通 YOLO、SAM 等模型的代码",
+   "检索 3D 重建、SLAM、RAG 等主题的入门代码"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://bigvision.ai/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "计算机视觉",
+   "深度学习教程",
+   "OpenCV",
+   "代码示例集合"
+  ],
+  "domain": "计算机视觉/教育",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials",
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3: This repository contains code for Computer Vision, Deep learning, and AI research articles shared on our blog LearnOpenC",
+   "L11:  LearnOpenCV is maintained by BigVision.AI , a computer vision and AI consulting company. We help organizations design, ",
+   "L19: ## List of Blog Posts"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     90
+    ],
+    "note": "Jetson 上使用 vLLM 部署 LLM 的博客条目，非产品接入",
+    "quotes": [
+     "|Deployment on Edge: LLM Serving on Jetson using vLLM|Code|"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     97
+    ],
+    "note": "DeepSeek OCR 解析文章条目",
+    "quotes": [
+     "|What Makes DeepSeek OCR So Powerful|Code|"
+    ]
+   },
+   {
+    "term": "cpu-infer",
+    "rel": "none",
+    "lines": [],
+    "note": "候选行在窗外，README 可见部分无对应内容",
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "none",
+    "lines": [],
+    "note": "候选行在窗外，可见 README 未出现安装说明",
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Midjourney",
+    "rel": "none",
+    "lines": [],
+    "note": "候选行在窗外，可见部分无对应内容",
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

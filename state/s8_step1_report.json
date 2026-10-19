@@ -1,0 +1,71 @@
+{
+ "ran_at": "2026-10-18 12:29",
+ "n": 200,
+ "seed": 20261018,
+ "window_chars": 12000,
+ "secs": 4.3,
+ "compression_pct": {
+  "mean": 26.8,
+  "median": 24.7,
+  "p10": 7.6,
+  "p90": 45.6,
+  "min": 1.7,
+  "max": 85.6
+ },
+ "cleaned_lines_mean": 171.3,
+ "nomination": {
+  "providers": {
+   "files_hit": 114,
+   "files_hit_pct": 57.0,
+   "total_hits": 573,
+   "mean_hits_per_hit_file": 5.03,
+   "distinct_terms": 13
+  },
+  "install": {
+   "files_hit": 135,
+   "files_hit_pct": 67.5,
+   "total_hits": 491,
+   "mean_hits_per_hit_file": 3.64,
+   "distinct_terms": 10
+  },
+  "hardware": {
+   "files_hit": 6,
+   "files_hit_pct": 3.0,
+   "total_hits": 11,
+   "mean_hits_per_hit_file": 1.83,
+   "distinct_terms": 9
+  },
+  "dual": {
+   "files_hit": 6,
+   "files_hit_pct": 3.0,
+   "total_hits": 7,
+   "mean_hits_per_hit_file": 1.17,
+   "distinct_terms": 1
+  },
+  "depre": {
+   "files_hit": 1,
+   "files_hit_pct": 0.5,
+   "total_hits": 2,
+   "mean_hits_per_hit_file": 2.0,
+   "distinct_terms": 1
+  },
+  "products": {
+   "files_hit": 101,
+   "files_hit_pct": 50.5,
+   "total_hits": 469,
+   "mean_hits_per_hit_file": 4.64,
+   "distinct_terms": 17
+  }
+ },
+ "out_of_window": {
+  "nominations": 1553,
+  "oow": 158,
+  "oow_pct": 10.17,
+  "files_with_oow": 37,
+  "files_with_oow_pct": 18.5
+ },
+ "form_detection": {
+  "awesome-name": 5
+ },
+ "sample_files": []
+}

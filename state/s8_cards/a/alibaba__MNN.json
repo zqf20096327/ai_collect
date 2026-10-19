@@ -1,0 +1,106 @@
+{
+ "fn": "alibaba/MNN",
+ "sha": "8b3f12779ac0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的端侧深度学习推理与训练框架，支持本地部署 LLM 与扩散模型",
+  "review": "MNN 是一个轻量级深度学习框架，支持深度学习模型的推理与训练，已被集成进阿里巴巴 30 多个应用（淘宝、天猫、优酷、钉钉等）及 IoT 嵌入式设备。基于该引擎提供 MNN-LLM 端侧大模型运行时（覆盖手机/PC/IoT）与 MNN-Diffusion 稳定扩散运行时；附带模型转换、压缩、训练、CV 等工具链，支持 Tensorflow/Caffe/ONNX/Torchscript 模型转换与 FP16/Int8 量化，通过 Metal/OpenCL/Vulkan/CUDA 支持 GPU 推理。",
+  "highlights": [
+   "MNN-LLM 支持在手机/PC/IoT 上本地部署大语言模型（含 Qwen、LLAMA 等）",
+   "支持 Tensorflow/Caffe/ONNX/Torchscript 模型转换（合计数百个 OP）与 FP16/Int8 量化",
+   "通过 Metal/OpenCL/Vulkan/CUDA 支持 GPU 推理，另含 Hexagon DSP 后端",
+   "提供 MNN-LLM Android/iOS 多模态应用及 TaoAvatar、Sana 等衍生应用"
+  ],
+  "use_cases": [
+   "在 Android/iOS 设备上离线运行大语言模型与多模态模型",
+   "将 Tensorflow/ONNX 等框架训练的模型转换部署到移动端或嵌入式设备",
+   "在端侧本地运行稳定扩散图像生成与 3D 数字人对话"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://www.usenix.org/conference/osdi22/presentation/lv",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "端侧推理",
+   "LLM部署",
+   "深度学习框架",
+   "移动端",
+   "IoT"
+  ],
+  "domain": "深度学习推理引擎/端侧 AI",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "阿里巴巴维护，集成于淘宝/天猫/钉钉等",
+   "提供简繁中文版本",
+   "钉钉讨论群为主中文"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L60: MNN is a highly efficient and lightweight deep learning framework. It supports inference and training of deep learning m",
+   "L62: MNN-LLM is a large language model runtime solution developed based on the MNN engine. The mission of this project is to ",
+   "L90: ## Key Features"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     48
+    ],
+    "note": "Android 应用支持 deepseek r1 1.5b 模型，非推理服务接入",
+    "quotes": [
+     "- [2025/02/11] android app support for deepseek r1 1.5b."
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

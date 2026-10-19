@@ -1,0 +1,139 @@
+{
+ "fn": "TabbyML/tabby",
+ "sha": "d1805ddf16da",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管 AI 编程助手：团队私有化部署代码补全与问答",
+  "review": "Tabby 是一个可自托管的开源 AI 编程助手，定位为 GitHub Copilot 的本地化部署替代方案。核心功能包括代码补全、聊天侧边栏、Answer Engine 知识问答；支持通过 REST API 接入自有文档、索引 GitLab Merge Request 作为上下文、LDAP 认证与团队管理。无需外部数据库或云服务，提供 Docker 一键启动方式，支持消费级 GPU；另可从 Rust 源码构建。IDE 侧通过 VSCode/Vim/IntelliJ 插件接入。",
+  "highlights": [
+   "自包含部署，无需 DBMS 或云服务",
+   "支持消费级 GPU 及 Apple M1/M2 Metal 推理",
+   "提供 OpenAPI 接口与 VSCode/Vim/IntelliJ 插件",
+   "RAG 代码补全、Answer Engine 与 GitLab MR 索引"
+  ],
+  "use_cases": [
+   "团队私有化部署代码补全与 AI 问答服务",
+   "接入内部文档和代码仓库构建工程知识引擎",
+   "在无外部云依赖的环境下为 IDE 提供补全"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "代码补全",
+   "自托管",
+   "开发工具",
+   "AI编程助手"
+  ],
+  "domain": "开发者工具/AI 编程助手",
+  "alternative_to": [
+   "GitHub Copilot"
+  ],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "code-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14: Tabby is a self-hosted AI coding assistant, offering an open-source and on-premises alternative to GitHub Copilot. It bo",
+   "L15: * Self-contained, with no need for a DBMS or cloud service.",
+   "L17: * Supports consumer-grade GPUs."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     71,
+     74,
+     76
+    ],
+    "quotes": [
+     "The easiest way to start a Tabby server is by using the following Docker command:",
+     "docker run -it \\",
+     "  tabbyml/tabby \\"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     88,
+     113
+    ],
+    "quotes": [
+     "git clone --recurse-submodules https://github.com/TabbyML/tabby",
+     "4. Now, you can build Tabby by running the command `cargo build`."
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     101
+    ],
+    "note": "构建依赖 protobuf 的安装方式，非本产品安装途径",
+    "quotes": [
+     "brew install protobuf"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "alternative",
+    "lines": [
+     14
+    ],
+    "note": "自述为其开源本地部署替代方案",
+    "quotes": [
+     "Tabby is a self-hosted AI coding assistant, offering an open-source and on-premises alternative to GitHub Copilot. It bo"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

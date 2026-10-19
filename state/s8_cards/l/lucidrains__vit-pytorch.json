@@ -1,0 +1,121 @@
+{
+ "fn": "lucidrains/vit-pytorch",
+ "sha": "ac7340901dbc",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为研究者提供 PyTorch 版 Vision Transformer 及多种变体实现",
+  "review": "以 PyTorch 库形式实现的 Vision Transformer（ViT）图像分类模型，通过 pip 安装后在 Python 中以 `from vit_pytorch import ViT` 方式使用。核心是单一 transformer encoder 结构，参数覆盖 image_size、patch_size、depth、heads、mlp_dim、dropout 等。除基础 ViT 外，还收录 Simple ViT、NaViT、DistillableViT、Deep ViT、CaiT、CCT、Cross ViT、MaxViT、MobileViT 等数十种论文变体的实现，各变体以独立子模块导入，附对应用法代码示例。",
+  "highlights": [
+   "提供基础 ViT 实现及 image_size/patch_size/depth/heads 等参数配置",
+   "收录数十种 ViT 论文变体：Simple ViT、NaViT、CaiT、CCT、CrossViT、MaxViT、MobileViT 等",
+   "支持从卷积网络（如 Resnet50）到 ViT 的蒸馏训练（DistillableViT，可 `.to_vit` 转回 ViT）",
+   "pip 一条命令安装，各变体独立子模块导入"
+  ],
+  "use_cases": [
+   "在 PyTorch 中搭建图像分类的 Vision Transformer 模型",
+   "复现或试验不同 ViT 论文变体架构",
+   "从 CNN 教师模型蒸馏出小型视觉 Transformer"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "视觉Transformer",
+   "图像分类",
+   "计算机视觉",
+   "PyTorch",
+   "模型实现"
+  ],
+  "domain": "计算机视觉/深度学习模型实现",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing",
+   "object-detection"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: Implementation of Vision Transformer, a simple way to achieve SOTA in vision classification with only a single transform",
+   "L20: $ pip install vit-pytorch",
+   "L27: from vit_pytorch import ViT"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "none",
+    "lines": [],
+    "note": "可见窗口内无该服务接入证据",
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     20
+    ],
+    "quotes": [
+     "$ pip install vit-pytorch"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Devin",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "Kimi",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

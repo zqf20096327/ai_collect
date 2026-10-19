@@ -1,0 +1,96 @@
+{
+ "fn": "GoogleCloudPlatform/generative-ai",
+ "sha": "efae06353a13",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 Google Cloud 生成式 AI 示例与笔记本集",
+  "review": "Google Cloud 平台上的生成式 AI 示例仓库，收录 notebooks、代码示例与样例应用，演示如何使用 Agent Platform 开发与管理生成式 AI 工作流。按主题目录组织：Gemini 入门笔记本、Agent Search 网站与企业数据搜索、RAG 与 Grounding、Imagen/Veo 视觉、Chirp 语音，以及 Google Colab 与 Workbench 的环境配置说明。README 声明该仓库本身并非官方支持产品，代码仅作演示用途。",
+  "highlights": [
+   "提供 Gemini 入门笔记本、函数调用与样例应用目录",
+   "RAG 与 Grounding 主题的跨目录笔记本索引",
+   "涵盖 Imagen/Veo 视觉与 Chirp 语音的从零构建示例",
+   "提供 Google Colab 与 Workbench 环境配置说明"
+  ],
+  "use_cases": [
+   "在 Google Cloud 上上手 Gemini 模型的入门学习",
+   "为企业数据搭建 RAG 或 Agent Search 搜索方案",
+   "查找视觉、语音等模态的示例代码与笔记本"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "示例代码",
+   "Google Cloud",
+   "生成式AI",
+   "notebooks"
+  ],
+  "domain": "生成式AI 开发示例/云平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: This repository contains notebooks, code samples, sample apps, and other resources that demonstrate how to use, develop ",
+   "L15:  <code>gemini/</code>",
+   "L47:  Instructions on how to set up Google Cloud, the Gen AI Python SDK, and notebook environments on Google Colab and Workbe"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     47
+    ],
+    "quotes": [
+     " Instructions on how to set up Google Cloud, the Gen AI Python SDK, and notebook environments on Google Colab and Workbe"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

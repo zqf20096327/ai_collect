@@ -1,0 +1,86 @@
+{
+ "fn": "aaif-goose/goose",
+ "sha": "6b7d0e19fd92",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地运行的通用开源 AI agent：桌面应用、CLI 与 API 三形态",
+  "review": "goose 是运行在用户本机的通用 AI agent，用途不限于代码，也覆盖研究、写作、自动化与数据分析。提供 macOS/Linux/Windows 桌面应用、完整 CLI 与嵌入用 API，以 Rust 构建并开源（Apache-2.0）。接入 15+ 模型提供商，支持 API key 或经 ACP 使用已有的 Claude/ChatGPT/Gemini 订阅；通过 MCP 开放标准连接 70+ 扩展，并支持自定义发行版（预配置 provider、扩展与品牌）。项目隶属 Linux Foundation 下的 Agentic AI Foundation。",
+  "highlights": [
+   "桌面应用、CLI、API 三种交付形态，Rust 构建",
+   "支持 15+ 模型提供商，可经 ACP 复用已有订阅",
+   "通过 MCP 标准连接 70+ 扩展",
+   "支持构建自定义发行版（Custom Distributions）"
+  ],
+  "use_cases": [
+   "在本地终端用自然语言执行安装、编辑、测试等开发任务",
+   "接入自有模型 API key 做自动化工作流",
+   "用桌面应用进行研究、写作、数据分析等日常任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI agent",
+   "桌面应用",
+   "CLI工具",
+   "MCP",
+   "开发工具"
+  ],
+  "domain": "AI Agent/开发工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: goose is a general-purpose AI agent that runs on your machine. Not just for code — use it for research, writing, automat",
+   "L20: goose works with 15+ providers — Anthropic, OpenAI, Google, Ollama, OpenRouter, Azure, Bedrock, and more. Use API keys o",
+   "L18: A native desktop app for macOS, Linux, and Windows. A full CLI for terminal workflows. An API to embed it anywhere. Buil"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

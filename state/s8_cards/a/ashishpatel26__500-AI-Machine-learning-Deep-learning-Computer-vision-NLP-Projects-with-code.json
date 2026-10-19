@@ -1,0 +1,88 @@
+{
+ "fn": "ashishpatel26/500-AI-Machine-learning-Deep-learning-Computer-vision-NLP-Projects-with-code",
+ "sha": "479f382cfac6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 AI/ML 学习者提供 500+ 带代码项目的清单",
+  "review": "以 Markdown 表格形式收录的 AI/机器学习/深度学习/计算机视觉/NLP 项目链接清单，条目按序号组织，覆盖时间序列预测、情感分析、聊天机器人、推荐系统、OpenCV、GAN、AutoML、数据集等方向，部分条目为论文与代码合集或学习资源合集。作者声明清单持续更新并接受 pull request 贡献，链接经过测试。README 本身不含安装与运行说明，各项目代码需跳转对应链接获取。",
+  "highlights": [
+   "500+ 条带代码的 AI/ML/DL/CV/NLP 项目链接",
+   "覆盖 NLP、计算机视觉、时间序列、推荐系统、AutoML 等多方向",
+   "包含 Kaggle 项目合集与论文带代码合集",
+   "作者声明持续更新并接受社区贡献"
+  ],
+  "use_cases": [
+   "寻找带源码的机器学习练手项目",
+   "按方向（CV/NLP/深度学习）检索学习资源与项目合集",
+   "收集数据集与项目灵感"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "项目清单",
+   "机器学习",
+   "深度学习",
+   "计算机视觉",
+   "NLP"
+  ],
+  "domain": "AI 教育/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: ## 500 + 𝗔𝗿𝘁𝗶𝗳𝗶𝗰𝗶𝗮𝗹 𝗜𝗻𝘁𝗲𝗹𝗹𝗶𝗴𝗲𝗻𝗰𝗲 𝗣𝗿𝗼𝗷𝗲𝗰𝘁 𝗟𝗶𝘀𝘁 𝘄𝗶𝘁𝗵 𝗰𝗼𝗱𝗲",
+   "L7: ***This list is continuously updated.*** - You can take pull requests and contribute. All Links are tested and working f",
+   "L9: |Sr No|Name|Link|"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,103 @@
+{
+ "fn": "HandsOnLLM/Hands-On-Large-Language-Models",
+ "sha": "05faf3cd4e0a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "O'Reilly《Hands-On Large Language Models》图书代码仓库",
+  "review": "存放 Jay Alammar 与 Maarten Grootendez 所著《Hands-On Large Language Models》全书示例代码，按书中章节组织，配合近 300 幅自绘图示讲解 LLM 的实践工具与概念。仓库还收录补充内容（Mamba、量化、稳定扩散、MoE、推理 LLM、DeepSeek-R1 等可视化指南），并提供书籍的 BibTeX 引用条目。购书渠道覆盖 Amazon、O'Reilly、Kindle、Barnes and Noble 等平台。",
+  "highlights": [
+   "收录全书各章节示例代码",
+   "提供 Mamba/量化/MoE/推理 LLM/DeepSeek-R1 等补充可视化指南",
+   "提供 BibTeX 学术引用条目",
+   "书籍在 Amazon、O'Reilly、Kindle 等多平台发售"
+  ],
+  "use_cases": [
+   "跟随图书章节运行代码学习 LLM 概念",
+   "科研写作中引用该书",
+   "阅读补充可视化指南深入了解新技术"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图书配套代码",
+   "LLM教程",
+   "可视化学习"
+  ],
+  "domain": "教育/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Welcome! In this repository you will find the code for all examples throughout the book Hands-On Large Language Models w",
+   "L7: Through the visually educational nature of this book and with **almost 300 custom made figures**, learn the practical to",
+   "L51: **A Visual Guide to Mixture of Experts** | **A Visual Guide to Reasoning LLMs** | **The Illustrated DeepSeek-R1**"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cohere",
+    "rel": "none",
+    "lines": [],
+    "note": "可见行号范围内未出现，无法核实",
+    "quotes": []
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     51
+    ],
+    "note": "补充内容中的可视化指南，非模型接入",
+    "quotes": [
+     "**A Visual Guide to Mixture of Experts** | **A Visual Guide to Reasoning LLMs** | **The Illustrated DeepSeek-R1**"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

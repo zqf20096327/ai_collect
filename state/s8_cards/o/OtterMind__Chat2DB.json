@@ -1,0 +1,128 @@
+{
+ "fn": "OtterMind/Chat2DB",
+ "sha": "f9bb86abbc03",
+ "source": "readme",
+ "identity": {
+  "one_liner": "连接 40+ 数据库的本地优先 SQL 客户端，支持自带 AI 模型",
+  "review": "面向开发者、DBA、分析师与数据团队的跨平台数据库客户端与 SQL 工作区，完全运行在本机。支持通过 JDBC 配置接入 40+ 数据库，提供 SQL 编辑、补全、格式化、执行历史、元数据浏览、DDL/DML 管理、数据导入导出、仪表盘与 ER 图。AI 部分采用自带模型（BYOM）方式：用户接入自己的模型来生成、解释和优化 SQL；开源 CLI 提供 MCP 支持。桌面版从 Releases 安装，另提供 Docker/Web 部署与源码构建路径；数据源密码与 AI API key 以 AES-256-GCM 本地加密。",
+  "highlights": [
+   "40+ 数据库连接，新 JDBC 数据库仅靠配置即可接入",
+   "自带 AI 模型生成/解释/优化 SQL，开源 CLI 支持 MCP",
+   "AES-256-GCM 本地加密数据源密码与 AI API key",
+   "桌面、Web/Docker、CLI 多形态分发"
+  ],
+  "use_cases": [
+   "在同一工作区管理 MySQL、ClickHouse、MongoDB 等多种数据库",
+   "用自然语言生成并优化 SQL 查询",
+   "本地环境可视化浏览数据、绘制仪表盘与 ER 图"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "dual",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    35,
+    37,
+    39
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据库客户端",
+   "SQL工作区",
+   "AI助手",
+   "MCP"
+  ],
+  "domain": "数据库工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "ai-assistant"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "简体中文版自述文件(L8)"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L15: Chat2DB Community is a free, cross-platform database client for Windows, macOS, and Linux. It runs entirely on your mach",
+   "L19: - **AI assistant** — bring your own AI model to generate, explain, and optimize SQL in natural language.",
+   "L178: The Community edition contains the full local database client described above, including custom AI model support. The co"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     51,
+     68,
+     74
+    ],
+    "quotes": [
+     "Requirements: Docker 19.03.0+, Docker Compose 2.0.0+ (Compose V2, only for the Compose variant), 2+ CPU cores, 4+ GiB RA",
+     "docker compose --file docker/docker-compose.yml up --detach",
+     "- The `docker run` example stores application data in `$HOME/.chat2db-community-docker`; the Compose definition uses the"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     57,
+     131,
+     142
+    ],
+    "quotes": [
+     "git clone https://github.com/OtterMind/Chat2DB.git && cd Chat2DB",
+     "## Build from Source",
+     "git clone https://github.com/OtterMind/Chat2DB.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    176,
+    178
+   ],
+   "quotes": [
+    "## Community vs Commercial Editions",
+    "The Community edition contains the full local database client described above, including custom AI model support. The co"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

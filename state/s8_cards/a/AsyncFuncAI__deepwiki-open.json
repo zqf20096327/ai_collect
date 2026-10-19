@@ -1,0 +1,102 @@
+{
+ "fn": "AsyncFuncAI/deepwiki-open",
+ "sha": "e7076e4c0070",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 GitHub/GitLab/Bitbucket 仓库自动生成 AI Wiki 的工具",
+  "review": "输入仓库名即可为 GitHub、GitLab 或 Bitbucket 仓库自动生成可交互的 Wiki：分析代码结构、生成文档、创建可视化图解、组织为可导航的 Wiki，并生成面向代码导览的 codemap。项目自称是对 DeepWiki 的自有实现，2.0 版本以 Grok-Wiki 名称发布，提供 grok-wiki.com 下载入口。README 采用多语言（含简繁中文等 9 种语言），以 MIT 许可证发布，接受社区 issue 与 PR 贡献。",
+  "highlights": [
+   "输入仓库名即可生成分析文档、可视化图解与 codemap",
+   "支持 GitHub、GitLab、Bitbucket 三类仓库托管平台",
+   "2.0 版本以 Grok-Wiki 名称发布，提供站点下载入口"
+  ],
+  "use_cases": [
+   "为不熟悉的开源仓库快速生成交互式文档 Wiki",
+   "用 codemap 做以代码为中心的导览式阅读"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Wiki生成",
+   "代码文档",
+   "仓库分析"
+  ],
+  "domain": "开发者工具/文档生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文等多语言版本（仅语言选项，非中文来源信号）"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5: **DeepWiki** is my own implementation attempt of DeepWiki, automatically creates beautiful, interactive wikis for any Gi",
+   "L20: ## Deepwiki-Open 2.0 (Grok Wiki is now live)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     1,
+     3,
+     20,
+     22
+    ],
+    "note": "2.0 版本以 Grok-Wiki 名称发布，README 未写明模型接入细节",
+    "quotes": [
+     "# DeepWiki-Open (Grok-Wiki)",
+     "grok-wiki",
+     "## Deepwiki-Open 2.0 (Grok Wiki is now live)",
+     "- **Download at** https://grok-wiki.com"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "extra": ""
+ }
+}

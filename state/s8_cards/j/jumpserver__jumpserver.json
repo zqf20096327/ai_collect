@@ -1,0 +1,99 @@
+{
+ "fn": "jumpserver/jumpserver",
+ "sha": "935261dffc73",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 DevOps/IT 团队提供带 AI 能力的开源堡垒机（PAM）平台",
+  "review": "JumpServer 是开源的特权访问管理（PAM）平台，即堡垒主机。它为 DevOps 与 IT 团队提供统一工作区，安全接入 SSH、RDP、Kubernetes、数据库、网站、RemoteApp、VirtualApp 等资产。采用多组件架构：JumpServer 核心平台、Lina Web 界面、Luna Web 终端与原生客户端、KoKo 协议连接代理、Chen 数据库连接器、Kael AI 组件；另有企业版组件（Windows 应用连接器、RDP/数据库/VNC 协议代理、会话录像转码等）。支持 11 种语言界面，通过一键脚本在 64 位 Linux 服务器上部署，默认管理员账号 admin。",
+  "highlights": [
+   "统一接入 SSH、RDP、Kubernetes、数据库、网站、RemoteApp、VirtualApp 等多种协议与资产",
+   "内置 AI 能力：终端 AI 提示与 AI 助手（Kael 组件）",
+   "KoKo TUI 终端支持资产搜索与多会话管理",
+   "组件化架构，社区版与企业版组件分层"
+  ],
+  "use_cases": [
+   "为企业服务器与数据库的特权访问做集中审计与管控",
+   "运维团队通过 Web 终端/原生客户端统一管理大量资产",
+   "替代手工分发凭据，按授权分配可访问目标"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "堡垒机",
+   "PAM",
+   "运维审计",
+   "SSH/RDP 接入"
+  ],
+  "domain": "网络安全/运维工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "版权方 FIT2CLOUD",
+   "README 提供简体/繁体中文语言版本"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L17: JumpServer is an open-source Privileged Access Management (PAM) platform with AI-powered capabilities. It gives DevOps a",
+   "L83:  JumpServer AI component",
+   "L142: Copyright (c) 2014-2026 FIT2CLOUD, All rights reserved."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [
+   {
+    "term": "8 GB of RAM",
+    "rel": "support",
+    "lines": [
+     23
+    ],
+    "quotes": [
+     "Prepare a clean 64-bit Linux server with at least 4 CPU cores and 8 GB of RAM."
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,215 @@
+{
+ "fn": "chatboxai/chatbox",
+ "sha": "8e19c358b53e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向桌面/移动端用户的多模型 AI 聊天客户端",
+  "review": "Chatbox 社区版是一个开源（GPLv3）的桌面 AI 客户端，支持接入多家 LLM 服务（OpenAI、Azure OpenAI、Claude、Gemini、Ollama、ChatGLM-6B 等），提供本地数据存储、Dall-E-3 图像生成、Markdown/LaTeX 渲染、流式回复、提示词库、团队 API 共享、多语言界面等。覆盖 Windows/macOS/Linux 桌面端及 iOS/Android/Web。仓库与商业 pro 版定期双向同步代码，非完全独立演进。",
+  "highlights": [
+   "支持多家 LLM 提供商：OpenAI、Azure OpenAI、Claude、Gemini、Ollama 本地模型、ChatGLM-6B",
+   "数据本地存储，提供桌面、Web、iOS/Android 多端形态",
+   "Dall-E-3 图像生成、Markdown/LaTeX 渲染、流式回复、提示词库",
+   "GPLv3 开源社区版，与 pro 仓库定期同步代码"
+  ],
+  "use_cases": [
+   "在桌面端统一使用多个 LLM 服务聊天",
+   "通过 Ollama 访问本地模型以保持数据不外发",
+   "团队内共享 OpenAI API 资源协作"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "dual",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://chatboxai.app",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "桌面客户端",
+   "聊天机器人",
+   "多模型接入",
+   "本地模型"
+  ],
+  "domain": "AI 客户端/桌面工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "azure",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway",
+   "chatbot"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供简体/繁体中文 README",
+   "支持简体中文本地化"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L7:  Your Ultimate AI Copilot on the Desktop. Chatbox is a desktop client for ChatGPT, Claude and other LLMs, available on W",
+   "L35: This is the repository for the Chatbox Community Edition, open-sourced under the GPLv3 license.",
+   "L105: - **Support for Multiple LLM Providers**"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     7,
+     91,
+     109
+    ],
+    "quotes": [
+     " Your Ultimate AI Copilot on the Desktop. Chatbox is a desktop client for ChatGPT, Claude and other LLMs, available on W",
+     "3. Configure your AI provider (OpenAI, Claude, etc.) in settings",
+     " - Claude"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     108
+    ],
+    "quotes": [
+     " - Azure OpenAI"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "mention",
+    "lines": [
+     111
+    ],
+    "note": "作为 Ollama 可访问的本地模型名称出现，非直接接入 Mistral 服务",
+    "quotes": [
+     " - Ollama (enable access to local models like llama2, Mistral, Mixtral, codellama, vicuna, yi, and solar)"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     111
+    ],
+    "quotes": [
+     " - Ollama (enable access to local models like llama2, Mistral, Mixtral, codellama, vicuna, yi, and solar)"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     89
+    ],
+    "quotes": [
+     "1. Download the appropriate installer for your platform from the releases page"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     227
+    ],
+    "quotes": [
+     "   git clone https://github.com/chatboxai/chatbox.git"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     233,
+     271,
+     272
+    ],
+    "note": "依赖安装使用 pnpm，npm 仅在排障提示中以'不要用 npm'形式提及",
+    "quotes": [
+     "   pnpm install",
+     "**Issue**: `pnpm install` fails",
+     "- **Solution**: Ensure you're using pnpm (not npm or yarn) and Node.js version is within the required range. Run `corepa"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     7
+    ],
+    "note": "tagline 中 Copilot 一词作泛指用语出现",
+    "quotes": [
+     " Your Ultimate AI Copilot on the Desktop. Chatbox is a desktop client for ChatGPT, Claude and other LLMs, available on W"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     7,
+     25,
+     107
+    ],
+    "note": "作为可接入的服务列出，非替代/竞品表述",
+    "quotes": [
+     " Your Ultimate AI Copilot on the Desktop. Chatbox is a desktop client for ChatGPT, Claude and other LLMs, available on W",
+     "Chatbox - Better&#0032;UI&#0032;&#0038;&#0032;Desktop&#0032;App&#0032;for&#0032;ChatGPT&#0044;&#0032;Claude&#0032;and&#0",
+     " - OpenAI (ChatGPT)"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    35,
+    39
+   ],
+   "note": "GPLv3 社区版与商业 pro 仓库并存，定期同步代码",
+   "quotes": [
+    "This is the repository for the Chatbox Community Edition, open-sourced under the GPLv3 license.",
+    "We regularly sync code from the pro repo to this repo, and vice versa."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

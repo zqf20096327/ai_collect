@@ -1,0 +1,163 @@
+{
+  "_说明": "s8 few-shot 范例（agent_batch 模式生产）。行号基于 lib_rm_clean 清理文的非空行编号，已对真实清理文逐条核验。步骤3 interpret.py 落地后，本文件卡片须过同一套校验闸门方可入提示词。",
+  "_notes": [
+    "rel 取值 support|compat|mention|none：none=误命中（如 Minecraft 基岩版命中 AWS bedrock），程序组装时丢弃——待回写 spec §6",
+    "FMCL 的 brew@L57（ffmpeg 依赖安装）与 16G内存@L20（MC 服务器内存配置）是『提名正确但语境不符』的教学例：提名的职责是找到行，语境裁决归模型",
+    "binary 提名漏掉 FMCL 的 .exe 安装包（模式要求 download 前缀），由模型自由抽取兜住 desktop_builds=true——提名与自由抽取互补的实例；词表 v2 待补 setup/installer 模式",
+    "Dokis 的 LangChain 是被集成的框架，products 裁决记 mention 而非 alternative/competitor"
+  ],
+  "examples": [
+    {
+      "fn": "Vbj1808/Dokis",
+      "readme_ref": "data/readmes/Vbj1808__Dokis.md",
+      "facts": {
+        "identity": {
+          "one_liner": "RAG 回答的运行时来源审计库：核验每条回答是否有出处",
+          "review": "嵌入在检索与回答交付之间的检查层：从回答中抽取事实声明，映射到检索片段与来源 URL，输出合规率、违规清单与新鲜度判定；检索前按来源白名单过滤片段。默认路径用 BM25 匹配，无需 LLM 调用与 API key，输出确定性可复现。以 Python 库形式提供，另带 CLI 与三个示例工程。",
+          "highlights": [
+            "claim→chunk→URL 的溯源映射与合规率计算",
+            "默认 BM25 路径无需 LLM 调用与 API key，输出确定性",
+            "来源白名单过滤与新鲜度策略（fresh/stale/unsupported 判定）",
+            "提供 LangChain / LlamaIndex 集成扩展包"
+          ],
+          "use_cases": [
+            "RAG 系统上线后拦截无来源或编造的回答",
+            "企业问答系统按来源白名单做合规审计",
+            "核验回答所依赖资料的时效性"
+          ]
+        },
+        "open": {
+          "scenario_tags_free": ["RAG", "知识库问答", "审计/可靠性", "LLM基础设施"],
+          "domain": "LLM 基础设施/RAG",
+          "target_user": "开发者",
+          "ai_role": "ai-native",
+          "maintainer_type": "individual",
+          "zh_origin_signals": []
+        },
+        "verdicts": {
+          "providers": [
+            {"term": "ollama", "rel": "compat", "lines": [271, 272, 273], "note": "示例工程中配合本地 Ollama 使用"}
+          ],
+          "install": [
+            {"term": "pypi", "rel": "support", "lines": [3, 122]}
+          ],
+          "hardware": [],
+          "dual_license": {"flag": false, "lines": []},
+          "deprecation": {"flag": false, "lines": []},
+          "products": [
+            {"term": "LangChain", "rel": "mention", "lines": [125], "note": "被集成的框架，非替代/竞品对象"}
+          ]
+        },
+        "facts": {
+          "needs_compile": false,
+          "system_deps": [],
+          "docker_available": false,
+          "self_declared_early": {"flag": false, "lines": []},
+          "paper_url": null,
+          "demo_url": null
+        },
+        "audit": {"confidence": "high", "evidence_lines": [18, 35]}
+      }
+    },
+    {
+      "fn": "Janson20/FMCL",
+      "readme_ref": "data/readmes/Janson20__FMCL.md",
+      "facts": {
+        "identity": {
+          "one_liner": "带 AI 助手与离线语音输入的 Minecraft 启动器",
+          "review": "基于 CustomTkinter 的 Minecraft 启动器，功能覆盖版本管理、8 种模组加载器安装、BMCLAPI 国内镜像加速、整合包管理、一键开服、P2P 联机、存档备份与音乐播放等。其中 AI 部分：自然语言控制启动器的 Agent 助手（33 个可调用工具、多模型、流式输出）、基于 SenseVoice-Small 的离线语音输入，以及识别 11 种崩溃类型的 AI 分析。Windows 提供安装包，macOS/Linux 从源码运行。",
+          "highlights": [
+            "自然语言控制启动器的 Agent 助手（33 个可调用工具）",
+            "SenseVoice-Small 离线语音输入（DirectML/CPU 自适应）",
+            "8 种模组加载器一站式安装与国内镜像加速",
+            "识别 11 种崩溃类型并给出 AI 分析"
+          ],
+          "use_cases": [
+            "一站式管理 Minecraft 版本、模组与整合包",
+            "通过对话让 AI 助手代为操作启动器功能",
+            "国内网络环境下加速游戏资源下载"
+          ]
+        },
+        "open": {
+          "scenario_tags_free": ["游戏工具", "AI助手/Agent", "语音输入", "桌面应用"],
+          "domain": "游戏/桌面工具",
+          "target_user": "消费者",
+          "ai_role": "ai-enhanced",
+          "maintainer_type": "individual",
+          "zh_origin_signals": ["全中文 README", "BMCLAPI 国内镜像", "国内音源（酷我/酷狗/咪咕/QQ/网易）"]
+        },
+        "verdicts": {
+          "providers": [
+            {"term": "bedrock", "rel": "none", "lines": [23], "note": "误命中：基岩版（Bedrock Edition）非 AWS Bedrock"}
+          ],
+          "install": [
+            {"term": "source", "rel": "support", "lines": [77]},
+            {"term": "brew", "rel": "mention", "lines": [57], "note": "ffmpeg 可选依赖的安装方式，非本产品安装途径"}
+          ],
+          "hardware": [
+            {"term": "16G 内存", "rel": "mention", "lines": [20], "note": "MC 服务器内存配置选项，非启动器自身硬件要求"}
+          ],
+          "dual_license": {"flag": false, "lines": []},
+          "deprecation": {"flag": false, "lines": []},
+          "products": []
+        },
+        "facts": {
+          "desktop_builds": true,
+          "needs_compile": false,
+          "system_deps": ["Java 8+", "python3-tk（Linux）", "ffmpeg（可选，音效）"],
+          "docker_available": false,
+          "self_declared_early": {"flag": false, "lines": []},
+          "paper_url": null,
+          "demo_url": null
+        },
+        "audit": {"confidence": "high", "evidence_lines": [9, 24]}
+      }
+    },
+    {
+      "fn": "BioTender-max/awesome-bio-agent-skills",
+      "readme_ref": "data/readmes/BioTender-max__awesome-bio-agent-skills.md",
+      "facts": {
+        "identity": {
+          "one_liner": "生物医学 AI agent 技能策展清单（1,722 条，16 类）",
+          "review": "由 BioTender 维护的生物医学研究 AI 技能聚合清单：从 22 个开源仓库去重收录 1,722 个 SKILL.md 格式的 agent 技能，按基因组学、蛋白质组学、单细胞分析、临床 AI 等 16 个类别组织；条目兼容 Claude 类 agent 框架（OpenClaw/NanoClaw/Biomni），并跟踪 NVIDIA BioNeMo 与 Claude Science 技能生态，提供 npm 安装器按需安装技能。",
+          "highlights": [
+            "1,722 个去重技能来自 22 个开源仓库",
+            "16 个生物医学类别组织条目",
+            "npx bioskill 命令行按需安装技能"
+          ],
+          "use_cases": [
+            "为 Claude 类 agent 框架查找生物医学领域技能",
+            "了解生物医学 agent 技能生态的覆盖范围"
+          ]
+        },
+        "open": {
+          "scenario_tags_free": ["技能清单", "生物医学", "agent技能"],
+          "domain": "生命科学/知识聚合",
+          "target_user": "开发者",
+          "ai_role": "ai-knowledge",
+          "maintainer_type": "media",
+          "zh_origin_signals": []
+        },
+        "verdicts": {
+          "providers": [],
+          "install": [
+            {"term": "npm", "rel": "support", "lines": [19, 20]}
+          ],
+          "hardware": [],
+          "dual_license": {"flag": false, "lines": []},
+          "deprecation": {"flag": false, "lines": []},
+          "products": []
+        },
+        "facts": {
+          "needs_compile": false,
+          "system_deps": [],
+          "docker_available": false,
+          "self_declared_early": {"flag": false, "lines": []},
+          "paper_url": null,
+          "demo_url": null
+        },
+        "audit": {"confidence": "high", "evidence_lines": [32]}
+      }
+    }
+  ]
+}

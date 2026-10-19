@@ -1,0 +1,152 @@
+{
+ "fn": "ZhuLinsen/daily_stock_analysis",
+ "sha": "cb22c0f9e454",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给个人投资者：LLM 每日自动分析自选股并推送决策仪表盘",
+  "review": "基于大模型的多市场股票分析系统，覆盖 A股/港股/美股/日股/韩股/台股与 ETF。聚合 AkShare、Tushare 等行情源与多路新闻搜索，生成包含结论、评分、买卖点位、风险警报的 AI 决策报告，并推送到企业微信/飞书/Telegram/Discord/Slack/邮箱。部署方式包括 GitHub Actions 定时运行（零成本、无需服务器）、本地运行与 Docker；附带 Web 工作台与 Agent 策略问股（15 种内置策略）。README 声明仅供学习研究，不构成投资建议。",
+  "highlights": [
+   "每日自动分析并推送决策仪表盘到 6 类通知渠道",
+   "GitHub Actions 定时运行，零成本无需服务器",
+   "Agent 策略问股：多轮追问，15 种内置策略",
+   "多源行情（AkShare/Tushare/Baostock/YFinance 等）默认零配置可运行"
+  ],
+  "use_cases": [
+   "每个工作日自动收到自选股的 AI 分析报告推送",
+   "在 Web 工作台通过对话式 Agent 按策略问股",
+   "用免费数据源零成本搭建个人股票定时分析流水线"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "量化/股票分析",
+   "LLM应用",
+   "自动推送",
+   "金融数据聚合"
+  ],
+  "domain": "金融/量化分析",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "deepseek",
+   "ollama"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "A股/企业微信/飞书渠道",
+   "通义千问、博查搜索、小红书推广"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: > 🤖 基于 AI 大模型的 A股/港股/美股/日股/韩股/台股自选股智能分析系统，每日自动分析并推送「决策仪表盘」到企业微信/飞书/Telegram/Discord/Slack/邮箱",
+   "L48: |AI 模型|Modelflare、AIHubMix、Gemini、OpenAI 兼容、DeepSeek、通义千问、Claude、Ollama 本地模型等|"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     48,
+     78
+    ],
+    "quotes": [
+     "|AI 模型|Modelflare、AIHubMix、Gemini、OpenAI 兼容、DeepSeek、通义千问、Claude、Ollama 本地模型等|",
+     "|`ANTHROPIC_API_KEY`|Anthropic Claude API Key|可选|"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     22
+    ],
+    "note": "仅赞助商文案提及 Grok",
+    "quotes": [
+     " Modelflare 感谢 Modelflare 赞助本项目！由美国 Havenbyte LLC 运营，满血稳定不掺水，低成本接入 GPT、Claude、Gemini、Grok 及 40+ 图片/视频模型。指定 OpenAI 分组提供 6"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     48,
+     79
+    ],
+    "quotes": [
+     "|AI 模型|Modelflare、AIHubMix、Gemini、OpenAI 兼容、DeepSeek、通义千问、Claude、Ollama 本地模型等|",
+     "|`OPENAI_API_KEY`|OpenAI 兼容 API Key（支持 DeepSeek、通义千问等）|可选|"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     48,
+     82
+    ],
+    "note": "明确支持 Ollama 本地模型",
+    "quotes": [
+     "|AI 模型|Modelflare、AIHubMix、Gemini、OpenAI 兼容、DeepSeek、通义千问、Claude、Ollama 本地模型等|",
+     "> Ollama 更适合本地 / Docker 部署，GitHub Actions 推荐使用云端 API。"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     147
+    ],
+    "quotes": [
+     "git clone https://github.com/ZhuLinsen/daily_stock_analysis.git && cd daily_stock_analysis"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

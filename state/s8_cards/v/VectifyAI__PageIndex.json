@@ -1,0 +1,114 @@
+{
+ "fn": "VectifyAI/PageIndex",
+ "sha": "93086187c45a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向长专业文档 RAG 的树状索引检索引擎，无需向量库",
+  "review": "PageIndex 用层次化树索引替代向量索引：索引阶段从文档版式提取树结构并由基础模型摘要精炼，检索阶段由 LLM 在树上推理式搜索定位相关章节，不需要向量数据库与分块。以 pip 包提供 SDK，支持本地模式（本地索引/检索/对话，用自有 LLM key）与 PageIndex Cloud（托管解析、OCR、存储）两种形态；提供 OpenAI Agents SDK、Claude Agent SDK 集成路径。开源版仅处理文本型 PDF；扫描件与图像文档需走云服务。",
+  "highlights": [
+   "树状索引 + LLM 推理检索，无向量库、无分块",
+   "SDK 本地模式：本机索引/检索/对话，用自有 LLM key",
+   "可接入 OpenAI Agents SDK / Claude Agent SDK 等 agent 框架",
+   "本地索引成本与耗时的基准数据（约 $0.001/页，9–1,098 页文档 13 秒–4.5 分钟）"
+  ],
+  "use_cases": [
+   "对财报、法律文件、技术手册等长 PDF 做问答检索",
+   "把文档检索工具接入自己的 agent 框架",
+   "本地用自有模型 key 建立可溯源的文档索引"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "文档检索",
+   "agent工具",
+   "PDF问答"
+  ],
+  "domain": "LLM 基础设施/RAG",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "document-qa",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: # PageIndex: Vectorless, Reasoning-based RAG",
+   "L30: 1. **Index**: generate a **tree-structure index** for each document",
+   "L76: Drop PageIndex tools into the OpenAI Agents SDK, the Claude Agent SDK, or any other framework."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     76
+    ],
+    "note": "Claude Agent SDK 集成途径，非专门适配的模型提供方",
+    "quotes": [
+     "Drop PageIndex tools into the OpenAI Agents SDK, the Claude Agent SDK, or any other framework."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     19,
+     55
+    ],
+    "quotes": [
+     "- [Aug '26] 🔥 **PageIndex SDK**: `pip install -U pageindex` now ships **local mode**: index, retrieve, and chat entirely",
+     "pip install -U pageindex"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

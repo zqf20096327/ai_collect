@@ -1,0 +1,101 @@
+{
+ "fn": "mrdbourke/pytorch-deep-learning",
+ "sha": "8fb3d765d652",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向深度学习初学者的 PyTorch 免费课程材料库",
+  "review": "Zero to Mastery「Learn PyTorch for Deep Learning」课程的配套材料仓库，含 10 个章节（00-09）的 notebook、练习与解答、幻灯片，覆盖 PyTorch 基础、工作流、分类、计算机视觉、自定义数据集、模块化、迁移学习、实验跟踪、论文复现与模型部署。全部代码以 Google Colab/Jupyter notebook 形式提供，材料免费在线书（learnpytorch.io）、YouTube 视频与 Udemy 课程形式发布，共 321 个视频。面向机器学习初学者，前置要求为 3-6 个月 Python 经验。",
+  "highlights": [
+   "10 个章节配套 notebook、练习/解答与幻灯片",
+   "在线书（learnpytorch.io）与 YouTube 前 25 小时视频免费开放",
+   "3 个里程碑项目围绕 FoodVision 食物图像分类模型",
+   "含 PyTorch 2.0 快速教程与速查表"
+  ],
+  "use_cases": [
+   "从零开始通过写代码学习 PyTorch 与深度学习概念",
+   "按章节做练习并参考解答巩固 PyTorch 工作流",
+   "在 Colab 中运行 FoodVision 等里程碑项目积累作品集"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教程/课程",
+   "深度学习",
+   "PyTorch",
+   "notebook"
+  ],
+  "domain": "教育/深度学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L63: **This course:** Teaches you PyTorch and many machine learning concepts in a hands-on, code-first way.",
+   "L86: The code is all written via Google Colab Notebooks (you could also use Jupyter Notebooks), an incredible free resource t",
+   "L116: The course uses a free tool called Google Colab. If you've got no experience with it, I'd go through the free Introducti"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     86,
+     116,
+     121
+    ],
+    "note": "课程指定通过 Google Colab 打开并运行 notebook",
+    "quotes": [
+     "The code is all written via Google Colab Notebooks (you could also use Jupyter Notebooks), an incredible free resource t",
+     "The course uses a free tool called Google Colab. If you've got no experience with it, I'd go through the free Introducti",
+     "2. Click the \"Open in Colab\" button up the top."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

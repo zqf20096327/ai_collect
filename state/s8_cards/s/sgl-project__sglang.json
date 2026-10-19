@@ -1,0 +1,151 @@
+{
+ "fn": "sgl-project/sglang",
+ "sha": "3b52f2ed0651",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的大模型与多模态模型推理服务框架",
+  "review": "开源推理框架，支持大语言模型、视觉语言模型与扩散模型的部署服务，面向 agentic 工作负载、大规模服务与 RL rollout 场景进行优化。仓库内置 SGLang Diffusion 图像与视频生成引擎，并通过 SGLang Omni 提供语音模型的 TTS/ASR 服务。通过 Docker 镜像或 uv/pip 从 PyPI 安装；开发环境提供 dev 镜像与可编辑安装方式。项目由 LMSYS 托管，覆盖 GPU、TPU、NPU、CPU 及 Apple Silicon 多类平台。",
+  "highlights": [
+   "支持大语言、视觉语言与扩散模型的服务",
+   "内置 SGLang Diffusion 图像与视频生成引擎",
+   "覆盖 NVIDIA/AMD/TPU/Intel/Apple Silicon/昇腾/摩尔线程等硬件平台",
+   "生态包含 SpecForge 投机解码与多个 RL 训练框架集成"
+  ],
+  "use_cases": [
+   "为大模型应用搭建推理服务后端",
+   "在国产 NPU 或多类加速硬件上部署模型",
+   "运行图像与视频生成模型服务",
+   "RL 训练流程中的 rollout 生成"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM推理",
+   "推理服务",
+   "多模态",
+   "扩散模型生成",
+   "RL rollout"
+  ],
+  "domain": "LLM 基础设施/推理服务",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multimodal",
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L15: SGLang is an open-source inference framework for large language, vision-language, and diffusion models, optimized for ag",
+   "L40: SGLang supports a wide range of GPUs, TPUs, NPUs, CPUs, and Apple Silicon platforms."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "none",
+    "lines": [
+     98
+    ],
+    "note": "误命中：L98 为贡献者编码代理赞助计划提及 Claude Code，非接入 Anthropic 服务",
+    "quotes": [
+     "- **Contributor sponsorship:** Long-term active SGLang contributors are eligible for coding agent sponsorship, including"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     30,
+     76,
+     79
+    ],
+    "quotes": [
+     "uv pip install --prerelease=allow sglang",
+     "pip install -e \"python\"",
+     "In an activated virtual environment, you can use `uv pip install --prerelease=allow -e \"python\"` instead. See the develo"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     24,
+     73
+    ],
+    "quotes": [
+     "docker pull lmsysorg/sglang:latest",
+     "Start from the `lmsysorg/sglang:dev` Docker image, which provides development tools and most dependencies. Clone or moun"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     98
+    ],
+    "note": "贡献者赞助计划中提及的编码代理",
+    "quotes": [
+     "- **Contributor sponsorship:** Long-term active SGLang contributors are eligible for coding agent sponsorship, including"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     98
+    ],
+    "note": "贡献者赞助计划中提及的编码代理",
+    "quotes": [
+     "- **Contributor sponsorship:** Long-term active SGLang contributors are eligible for coding agent sponsorship, including"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

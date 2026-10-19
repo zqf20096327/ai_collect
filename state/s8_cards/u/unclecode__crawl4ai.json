@@ -1,0 +1,180 @@
+{
+ "fn": "unclecode/crawl4ai",
+ "sha": "285872f1693e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 LLM 与 AI Agent 提供网页抓取，输出干净 Markdown",
+  "review": "开源网页爬取与抓取库，把任意网页转换为面向 LLM 的 Markdown，用于 RAG、AI Agent 与数据管道。提供 Python 库、CLI（crwl）、Docker 自托管服务器与 Crawl4AI Cloud 托管服务四种形态；内置 CSS/XPath/正则等免 LLM 的结构化抽取策略，也支持接入任意 LLM 做 JSON 抽取；通过 Playwright 控制浏览器，支持会话、代理、深爬与自适应爬取。Apache 2.0 协议并要求署名。",
+  "highlights": [
+   "pip 安装后 crawl4ai-setup 一键配置浏览器",
+   "CSS/XPath/正则免 LLM 抽取与 LLM 抽取策略并存",
+   "Docker 自托管 REST API 与 MCP 端点，提供 AMD64/ARM64 镜像",
+   "云服务提供 /scrape、/extract、/search、/serp、/answer 端点"
+  ],
+  "use_cases": [
+   "为 RAG 知识库把网页批量转成 Markdown 语料",
+   "给 AI Agent 提供 MCP 形式的网页抓取工具",
+   "用 CSS/XPath 模式从页面抽取结构化 JSON",
+   "自托管爬取服务器供团队内部调用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "网页爬取",
+   "RAG",
+   "数据抽取",
+   "MCP",
+   "LLM基础设施"
+  ],
+  "domain": "LLM 基础设施/数据抓取",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L19: Crawl4AI turns any website into clean, LLM-ready Markdown for RAG, AI agents and data pipelines. Run the open-source web",
+   "L100: - 🔎 **CSS and XPath schemas**: fast extraction with no LLM (`JsonCssExtractionStrategy`, `JsonXPathExtractionStrategy`, ",
+   "L157: pip install -U crawl4ai"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     53,
+     56,
+     137,
+     150
+    ],
+    "note": "Claude Code 作为 MCP 接入示例，非 LLM provider 适配",
+    "quotes": [
+     "3. Give it to your AI agent. Claude Code shown; Codex, Cursor and OpenCode →",
+     "   claude mcp add --transport http crawl4ai https://api.crawl4ai.com/mcp \\",
+     "- 🤖 **MCP**: connect Claude Code and other agents to your own server.",
+     "- 🤝 **MCP for your agent**: one line in Claude Code, Codex, Cursor or OpenCode. Docs →"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     26,
+     157,
+     168,
+     175
+    ],
+    "quotes": [
+     "pip install -U crawl4ai",
+     "pip install -U crawl4ai",
+     "Pre-release versions: `pip install crawl4ai --pre`",
+     "pip install -e \".[all]\"     # or: pip install -e .   (the core only)"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     173,
+     175
+    ],
+    "note": "贡献者开发安装",
+    "quotes": [
+     "git clone https://github.com/unclecode/crawl4ai.git",
+     "pip install -e \".[all]\"     # or: pip install -e .   (the core only)"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     184,
+     186
+    ],
+    "quotes": [
+     "docker run -d -p 11235:11235 --name crawl4ai --shm-size=1g \\",
+     "  unclecode/crawl4ai:latest"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     53,
+     56,
+     137,
+     150
+    ],
+    "note": "MCP 接入示例对象",
+    "quotes": [
+     "3. Give it to your AI agent. Claude Code shown; Codex, Cursor and OpenCode →",
+     "   claude mcp add --transport http crawl4ai https://api.crawl4ai.com/mcp \\",
+     "- 🤖 **MCP**: connect Claude Code and other agents to your own server.",
+     "- 🤝 **MCP for your agent**: one line in Claude Code, Codex, Cursor or OpenCode. Docs →"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     53,
+     150
+    ],
+    "note": "MCP 接入示例对象",
+    "quotes": [
+     "3. Give it to your AI agent. Claude Code shown; Codex, Cursor and OpenCode →",
+     "- 🤝 **MCP for your agent**: one line in Claude Code, Codex, Cursor or OpenCode. Docs →"
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,153 @@
+{
+ "fn": "microsoft/OmniParser",
+ "sha": "95de138747ad",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为视觉 GUI Agent 解析界面截图的结构化工具",
+  "review": "微软发布的屏幕解析工具：将用户界面截图解析为结构化、易于理解的元素，供 GPT-4V 等视觉模型将动作准确定位到界面区域。配套 OmniTool 可用视觉模型控制 Windows 11 虚拟机，支持 OpenAI、DeepSeek、Qwen 与 Anthropic Computer Use 等模型。提供交互区域检测模型（YOLOv9-E）与图标功能描述模型，权重托管于 Hugging Face；通过 conda/pip 安装，附带 Gradio demo 与 demo.ipynb 示例。",
+  "highlights": [
+   "将 UI 截图解析为结构化可交互元素",
+   "交互区域检测模型（YOLOv9-E）与图标描述模型（Florence caption）",
+   "OmniTool 支持接入多家视觉模型控制 Windows 11 VM",
+   "Hugging Face Space 在线 demo 与 gradio_demo.py 本地 demo"
+  ],
+  "use_cases": [
+   "为 GUI 自动化 Agent 提供屏幕元素定位",
+   "用 OmniParser+OmniTool 在本地轨迹日志上构建训练数据管线",
+   "在 Hugging Face Space 或本地 Gradio 中试解析效果"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "arXiv",
+  "demo_url": "HuggingFace Space Demo",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "GUI Agent",
+   "屏幕解析",
+   "视觉定位",
+   "界面自动化"
+  ],
+  "domain": "GUI Agent/视觉解析",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "gui-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # OmniParser: Screen Parsing tool for Pure Vision Based GUI Agent",
+   "L10: **OmniParser** is a comprehensive method for parsing user interface screenshots into structured and easy-to-understand e",
+   "L17: - [2025/2] We introduce OmniTool: Control a Windows 11 VM with OmniParser + your vision model of choice. OmniTool suppor"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     17
+    ],
+    "quotes": [
+     "- [2025/2] We introduce OmniTool: Control a Windows 11 VM with OmniParser + your vision model of choice. OmniTool suppor"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     21
+    ],
+    "quotes": [
+     "- [2024/10] Feel free to checkout our demo on huggingface space! (stay tuned for OmniParser + Claude Computer Use)"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     31
+    ],
+    "note": "通过 pip install -r requirements.txt 安装依赖",
+    "quotes": [
+     "pip install -r requirements.txt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     8,
+     20,
+     36,
+     42
+    ],
+    "quotes": [
+     "📢 [Project Page] [V2 Blog Post] [Models V2] [Models V1.5] [HuggingFace Space Demo]",
+     "- [2024/10] OmniParser was the #1 trending model on huggingface model hub (starting 10/29/2024).",
+     "huggingface-cli download microsoft/OmniParser-v2.0 icon_detect_v3/model.pt \\",
+     "   for f in icon_caption/{config.json,generation_config.json,model.safetensors}; do huggingface-cli download microsoft/O"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     17
+    ],
+    "note": "OmniTool 支持的模型之一（Qwen 2.5VL）",
+    "quotes": [
+     "- [2025/2] We introduce OmniTool: Control a Windows 11 VM with OmniParser + your vision model of choice. OmniTool suppor"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    56
+   ],
+   "note": "模型权重许可证混合：YOLOv9 检测器 MIT，早期 Ultralytics 系检测器保留 AGPL，caption 模型 MIT",
+   "quotes": [
+    "`icon_detect_v3` is based on the MIT-licensed YOLOv9 implementation. Earlier Ultralytics-based icon detectors retain the"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

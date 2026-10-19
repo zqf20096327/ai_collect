@@ -1,0 +1,150 @@
+{
+ "fn": "lukasmasuch/best-of-ml-python",
+ "sha": "eee43dfcb9c0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 ML 开发者的 Python 库排名清单，每周更新",
+  "review": "以自动化方式维护的机器学习 Python 开源项目目录：收录 920 个项目、划分为 34 个类别，按从 GitHub 与包管理器自动采集的指标计算项目质量分并排序。条目附星数、贡献者/下载/依赖数量、活跃状态、许可证警告等标记，并给出各库的 git clone、pip、conda、docker 安装命令。内容每周自动更新，社区可通过 issue、PR 或直接编辑 projects.yaml 参与维护。",
+  "highlights": [
+   "收录 920 个开源项目，分 34 个类别，基于质量分自动排序",
+   "指标自动采集自 GitHub 与多个包管理器，每周更新",
+   "条目标注关联生态（TensorFlow/PyTorch/JAX/Pandas 等）与活跃度、许可证警告",
+   "支持通过编辑 projects.yaml 直接贡献条目"
+  ],
+  "use_cases": [
+   "为机器学习任务选型 Python 库时浏览同类候选",
+   "按星数、下载量、维护活跃度等指标筛选开源项目",
+   "关注某个生态（如 JAX 或 PyTorch）相关的库列表"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "viral",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome清单",
+   "机器学习",
+   "选型目录",
+   "Python"
+  ],
+  "domain": "机器学习/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3:  🏆&nbsp; A ranked list of awesome machine learning Python libraries. Updated weekly.",
+   "L5: This curated list contains 920 awesome open-source projects with a total of 5.1M stars grouped into 34 categories. All p"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker",
+    "npm",
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     48,
+     68
+    ],
+    "note": "所收录库的 git clone 命令，非本产品安装途径",
+    "quotes": [
+     "\tgit clone https://github.com/tensorflow/tensorflow",
+     "\tgit clone https://github.com/pytorch/pytorch"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     50,
+     52
+    ],
+    "note": "所收录库的 pip 安装命令，非本产品安装途径",
+    "quotes": [
+     "- PyPi (📥 26M / month · 📦 9.6K · ⏱️ 13.08.2025):",
+     "\tpip install tensorflow"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     58,
+     60
+    ],
+    "note": "所收录库的 Docker Hub 命令，非本产品安装途径",
+    "quotes": [
+     "- Docker Hub (📥 81M · ⭐ 2.8K · ⏱️ 30.10.2025):",
+     "\tdocker pull tensorflow/tensorflow"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     1198
+    ],
+    "note": "清单中收录的项目，仅提及",
+    "quotes": [
+     "\tgit clone https://github.com/huggingface/transformers"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

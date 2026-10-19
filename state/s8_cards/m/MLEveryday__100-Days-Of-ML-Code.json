@@ -1,0 +1,117 @@
+{
+ "fn": "MLEveryday/100-Days-Of-ML-Code",
+ "sha": "49c68a468704",
+ "source": "readme",
+ "identity": {
+  "one_liner": "机器学习中文学习路线：Day1~54 讲解、代码与练习",
+  "review": "基于 Avik-Jain 英文项目的中文版机器学习学习路线，覆盖 Day 1～54（Day 55～100 未编写）。内容含数据预处理、监督/无监督学习、神经网络基础、CNN 与聚类等，提供逐日课程目录、Python 3.11/3.12 环境安装说明、数据集准备与常见问题解答；以分步代码与 Markdown 注释为源，用脚本同步生成 .md 与 .ipynb 课程文件。基础课程不需要 GPU。",
+  "highlights": [
+   "逐日课程目录：目标、代码与练习（Day 1～54）",
+   "运行 tools/sync_lessons.py 生成配套 .md 与 .ipynb",
+   "更新至现代 scikit-learn 与 Keras 3 用法",
+   "基础课程不需要 GPU"
+  ],
+  "use_cases": [
+   "零基础或有基础者按 100 天路线系统学习机器学习",
+   "需要中文讲解配合可运行代码练习",
+   "复现数据预处理、分类、聚类等教学实验"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": "cpu-ok",
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "机器学习教程",
+   "学习路线",
+   "中文翻译",
+   "Jupyter Notebook"
+  ],
+  "domain": "教育/机器学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "中文版翻译项目"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: 本项目基于 Avik-Jain 的英文项目，提供中文机器学习学习路线、讲解与练习。",
+   "L12: - 环境安装与运行：Python 3.11/3.12、基础和深度学习依赖、Notebook 内核。",
+   "L24: 脚本默认把图形保存在 `outputs/`。打开 Notebook 时按顺序运行所有单元；完整说明见安装文档。深度学习依赖单独安装，基础课程不需要 GPU。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     20
+    ],
+    "note": "pip install -r requirements.txt 安装依赖",
+    "quotes": [
+     "python -m pip install -r requirements.txt"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "不需要 GPU",
+    "rel": "support",
+    "lines": [
+     24
+    ],
+    "note": "基础课程不需要 GPU，属学习环境要求",
+    "quotes": [
+     "脚本默认把图形保存在 `outputs/`。打开 Notebook 时按顺序运行所有单元；完整说明见安装文档。深度学习依赖单独安装，基础课程不需要 GPU。"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    7
+   ],
+   "note": "Day 55～100 尚未编写（非弃用，标注为进行中状态）"
+  }
+ }
+}

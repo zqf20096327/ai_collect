@@ -1,0 +1,109 @@
+{
+ "fn": "SillyTavern/SillyTavern",
+ "sha": "1413429f6fab",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向高级用户的本地 LLM 聊天前端界面",
+  "review": "本地安装的用户界面，用于与文本生成 LLM、图像生成引擎和 TTS 语音模型交互。统一接入多种 LLM API（KoboldAI/CPP、Horde、NovelAI、OpenAI、OpenRouter、Claude、Mistral 等），提供移动端友好布局、Visual Novel 模式、Automatic1111 与 ComfyUI 图像生成集成、TTS、WorldInfo（lorebooks）、自定义 UI、自动翻译，并支持第三方扩展。不提供在线托管服务，也不收集用户数据；运行需 NodeJS 20 及以上。",
+  "highlights": [
+   "统一界面接入多种 LLM API",
+   "集成 Automatic1111 与 ComfyUI 图像生成及 TTS",
+   "支持 WorldInfo（lorebooks）、自定义 UI 与第三方扩展",
+   "支持 Windows、macOS/Linux、Android (Termux) 与 Docker 安装"
+  ],
+  "use_cases": [
+   "在本地通过统一前端使用多家 LLM 服务对话",
+   "为聊天角色配置 lorebooks 与提示词选项",
+   "在对话中集成图像生成与语音合成"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM前端",
+   "聊天界面",
+   "角色扮演",
+   "本地部署"
+  ],
+  "domain": "LLM 前端/聊天工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "openrouter"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: SillyTavern provides a single unified interface for many LLM APIs (KoboldAI/CPP, Horde, NovelAI, Ooba, Tabby, OpenAI, Op",
+   "L16: SillyTavern (or ST for short) is a locally installed user interface that allows you to interact with text generation LLM",
+   "L28: The hardware requirements are minimal: it will run on anything that can run NodeJS 20 or higher. If you intend to do LLM"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     10
+    ],
+    "quotes": [
+     "SillyTavern provides a single unified interface for many LLM APIs (KoboldAI/CPP, Horde, NovelAI, Ooba, Tabby, OpenAI, Op"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     10
+    ],
+    "quotes": [
+     "SillyTavern provides a single unified interface for many LLM APIs (KoboldAI/CPP, Horde, NovelAI, Ooba, Tabby, OpenAI, Op"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

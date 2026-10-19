@@ -1,0 +1,88 @@
+{
+ "fn": "meta-llama/llama-cookbook",
+ "sha": "efbf01a5fbf9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Meta 官方 Llama 模型使用指南：推理、微调、RAG 示例集",
+  "review": "Meta 官方的 Llama 模型家族构建指南仓库，覆盖推理、微调、RAG 入门示例及跨领域端到端用例；包含第三方服务商集成教程（3P Integrations）与 Llama 4 系列新配方（长上下文、WhatsApp 集成、论文分析等）。由 llama-recipes 更名而来，近期做过仓库重构，旧内容归档于 archive-main 分支。以 Python 代码配方形式组织，附微调 FAQ。",
+  "highlights": [
+   "推理、微调、RAG 三类入门参考配方",
+   "Llama 4 Scout/Maverick 最新示例（5M 长上下文、论文分析等）",
+   "多家 Llama 服务商的集成与端到端用例",
+   "保留原 llama-recipes 库源码与微调 FAQ"
+  ],
+  "use_cases": [
+   "开始用 Llama 模型做推理或微调时找参考代码",
+   "在第三方服务商平台上运行 Llama 模型",
+   "查找文本与视觉模型的端到端应用示例"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "示例代码/教程",
+   "LLM",
+   "微调",
+   "RAG"
+  ],
+  "domain": "LLM 基础设施/示例教程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "rag",
+   "fine-tuning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: Welcome to the official repository for helping you get started with inference, fine-tuning and end-to-end use-cases of b",
+   "L26: - 3P Integrations: Getting Started Recipes and End to End Use-Cases from various Llama providers",
+   "L36:  **A:** We recently renamed llama-recipes to llama-cookbook."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

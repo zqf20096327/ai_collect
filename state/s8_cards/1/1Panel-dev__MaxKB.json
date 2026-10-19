@@ -1,0 +1,151 @@
+{
+ "fn": "1Panel-dev/MaxKB",
+ "sha": "bebb67ed7097",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给企业搭建智能体的开源平台：RAG+工作流+MCP 工具调用",
+  "review": "MaxKB（Max Knowledge Brain）是一个构建企业级智能体的开源平台，集成 RAG 管道（文档上传/在线文档抓取、自动分块、向量化）、工作流引擎、函数库与 MCP 工具调用能力，支持文本/图像/音频/视频多模态输入输出，可零编码接入第三方业务系统。技术栈为 Vue.js + Django + LangChain + PostgreSQL/pgvector，采用 GPL v3 协议，通过 Docker 容器一键启动，适用智能客服、企业内部知识库、学术研究与教育等场景。",
+  "highlights": [
+   "RAG 管道：文档上传/自动抓取、自动分块与向量化",
+   "Agentic 工作流引擎、函数库与 MCP 工具调用",
+   "多模型接入：私有模型与公开模型均支持",
+   "原生支持文本、图像、音频、视频多模态"
+  ],
+  "use_cases": [
+   "搭建企业智能客服系统",
+   "建设公司内部知识库问答",
+   "学术研究和教育场景的问答应用",
+   "为零代码接入现有业务系统添加问答能力"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "企业知识库",
+   "智能客服",
+   "智能体平台",
+   "MCP"
+  ],
+  "domain": "企业级智能体/RAG 平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文（简体）文档",
+   "中文描述'强大易用的企业级智能体平台'",
+   "针对中国用户提供 Docker 镜像 Pull 失败的离线安装文档"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14: MaxKB = Max Knowledge Brain, it is an open-source platform for building enterprise-grade agents. MaxKB integrates Retrie",
+   "L19: - **Model-Agnostic**: Supports various large models, including private models (such as DeepSeek, Llama, Qwen, etc.) and ",
+   "L27: docker run -d --name=maxkb --restart=always -p 8080:8080 -v ~/.maxkb:/opt/maxkb 1panel/maxkb"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     19
+    ],
+    "quotes": [
+     "- **Model-Agnostic**: Supports various large models, including private models (such as DeepSeek, Llama, Qwen, etc.) and "
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     19
+    ],
+    "note": "作为可接入的私有模型列举，非专门适配说明",
+    "quotes": [
+     "- **Model-Agnostic**: Supports various large models, including private models (such as DeepSeek, Llama, Qwen, etc.) and "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     24,
+     27
+    ],
+    "quotes": [
+     "Execute the script below to start a MaxKB container using Docker:",
+     "docker run -d --name=maxkb --restart=always -p 8080:8080 -v ~/.maxkb:/opt/maxkb 1panel/maxkb"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     19
+    ],
+    "note": "Qwen 作为可接入模型列举",
+    "quotes": [
+     "- **Model-Agnostic**: Supports various large models, including private models (such as DeepSeek, Llama, Qwen, etc.) and "
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     49
+    ],
+    "note": "技术栈中使用的 LLM 框架，非替代/竞品对象",
+    "quotes": [
+     "- LLM Framework：LangChain"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

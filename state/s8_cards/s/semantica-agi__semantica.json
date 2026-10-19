@@ -1,0 +1,129 @@
+{
+ "fn": "semantica-agi/semantica",
+ "sha": "3b2ade90533f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 AI 系统提供上下文图谱与决策溯源的开源基础设施",
+  "review": "以 Python 库形式提供的语义/上下文层：摄取企业数据后抽取实体与关系，构建 Context Graph 与知识图谱，并支持 Rete/Datalog/SPARQL 确定性推理、W3C PROV-O 溯源、SHACL/OWL 本体治理与决策记录。图谱构建、推理与溯源不依赖 LLM，LLM 调用为可选项。图存储支持 RDF 与 LPG 多后端互换，提供 REST API、MCP server、CLI 与可视化界面。面向 AI/ML 平台团队、企业数据团队与受监管行业的合规/审计场景。",
+  "highlights": [
+   "每个事实带 W3C PROV-O 溯源，决策作为一等图节点可查询",
+   "确定性推理引擎（前向链、Rete、Datalog、SPARQL），图谱构建无需 LLM",
+   "多源摄取连接器：Databricks、Snowflake、SAP、Kafka、Git 等",
+   "RDF（Oxigraph、Blazegraph 等）与 LPG（Neo4j、FalkorDB 等）存储可互换"
+  ],
+  "use_cases": [
+   "为 agent 提供结构化、可查询的上下文记忆层",
+   "把数据仓库中的表变成带血缘的知识图谱",
+   "为受监管行业的 AI 决策提供可审计的溯源记录",
+   "从多源数据构建知识图谱并检测冲突事实"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "知识图谱",
+   "agent记忆",
+   "AI治理/溯源",
+   "数据管道",
+   "本体管理"
+  ],
+  "domain": "AI 基础设施/知识图谱",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-memory",
+   "knowledge-graph"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L54: Semantica is the semantic/context layer underneath your LLM, vector store, and agent framework: deterministic infrastruc",
+   "L74: - **Context Graphs:** A structured, queryable graph of everything your agent knows, decides, and reasons about",
+   "L101: Semantica complements your existing stack rather than replacing it. Keep your LLM, vector store, and agent framework exa"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     54
+    ],
+    "note": "提及 semantica.llms 支持的 LLM 提供方之一，未见专属适配细节",
+    "quotes": [
+     "Semantica is the semantic/context layer underneath your LLM, vector store, and agent framework: deterministic infrastruc"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     25,
+     35,
+     106
+    ],
+    "quotes": [
+     "GitHub Stars GitHub Forks Contributors PyPI Total Downloads Python 3.10+ License: MIT CI Install Matrix OpenSSF Scorecar",
+     "pip install semantica",
+     "pip install semantica"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     84
+    ],
+    "note": "集成的 agent 框架，非替代/竞品对象",
+    "quotes": [
+     "- **Drop-in Integrations:** Agno, CrewAI, and LangChain support, a full MCP server, a CLI, a REST API, and plugins acros"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

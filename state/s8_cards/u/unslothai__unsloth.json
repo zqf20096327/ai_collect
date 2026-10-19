@@ -1,0 +1,248 @@
+{
+ "fn": "unslothai/unsloth",
+ "sha": "784e42fd7095",
+ "source": "readme",
+ "identity": {
+  "one_liner": "在本地运行和微调 LLM 与扩散模型的桌面应用",
+  "review": "Unsloth 提供三种使用形态：桌面应用（Unsloth Desktop）、Web UI（Unsloth Studio）与代码库（Unsloth Core）。功能覆盖本地运行与训练 LLM、GGUF、MLX、扩散、嵌入、音频等模型；微调支持 LoRA、QLoRA、GRPO、DPO、FP8 等；提供 OpenAI 兼容 API、RAG/搜索、LAN 与 Cloudflare 远程访问；通过 unsloth start 一条命令将 Claude Code、Codex 等 agent 接到本地模型。支持 Windows/macOS/Linux，含 Docker 镜像与免费 Colab 类 notebook。",
+  "highlights": [
+   "运行与训练 LLM、GGUF、MLX、扩散、嵌入、音频模型",
+   "微调支持 RL、LoRA、QLoRA、GRPO、DPO、FP8，导出 GGUF/NVFP4/FP8",
+   "unsloth start 命令连接 Claude Code、Codex、MCP 等本地 agent",
+   "提供 OpenAI 兼容 API、RAG、LAN/Cloudflare 远程访问"
+  ],
+  "use_cases": [
+   "在本地桌面运行和微调大模型",
+   "把 Claude Code/Codex 等 agent 接入本地模型",
+   "从 PDF/CSV/DOCX 构建数据集并训练模型",
+   "在局域网或远程安全访问本地模型服务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "本地LLM",
+   "微调",
+   "桌面应用",
+   "RAG",
+   "AI Agent"
+  ],
+  "domain": "LLM 基础设施/模型训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "llama.cpp",
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "rag",
+   "fine-tuning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6: Unsloth is the first desktop app to run and train models.",
+   "L78: * Run and train LLMs, MLX, GGUF, diffusion, decision, embedding, audio models: Qwen3.8, GLM-5.3-Flash, Kimi K3, Qwen-Ima",
+   "L86: * **Fine-tuning:** Train LLMs, diffusion, decision, TTS, and embedding models 2× faster with 70% less VRAM with no accur"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     78,
+     104
+    ],
+    "note": "可运行的模型之一及 agent 命令，非推理服务商接入",
+    "quotes": [
+     "* Run and train LLMs, MLX, GGUF, diffusion, decision, embedding, audio models: Qwen3.8, GLM-5.3-Flash, Kimi K3, Qwen-Ima",
+     "|DeepSeek Harness|`unsloth start dsh`|"
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "compat",
+    "lines": [
+     373,
+     377,
+     381
+    ],
+    "note": "可配置 llama.cpp 后端（vulkan/cpu/cuda/rocm）",
+    "quotes": [
+     "#### Vulkan, custom llama.cpp backends:",
+     "export UNSLOTH_LLAMA_CPP_BACKEND=vulkan   # or cpu, cuda, rocm, auto",
+     "$env:UNSLOTH_LLAMA_CPP_BACKEND=\"vulkan\"   # or cpu, cuda, rocm, auto"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     79,
+     93,
+     96,
+     101
+    ],
+    "note": "支持将本地模型接到 Claude Code",
+    "quotes": [
+     "* **Agents & Tools:** Use local models with Claude Code, Codex, and MCP, including tool calling and code execution.",
+     "Unsloth Start connects Claude Code, Codex and other agents to local models with one command.",
+     "unsloth start claude --model unsloth/Qwen3.8-27B-GGUF:UD-Q4_K_XL",
+     "|Claude Code|`unsloth start claude`|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     58,
+     60
+    ],
+    "quotes": [
+     "#### Homebrew:",
+     "brew install --cask unsloth"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     54,
+     56,
+     153,
+     163
+    ],
+    "quotes": [
+     "#### Docker:",
+     "The Unsloth Docker image `unsloth/unsloth` is available on Docker. Read guide.",
+     "#### Docker",
+     "docker run -d --name unsloth --gpus all --ipc=host \\"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     214,
+     223
+    ],
+    "note": "uv pip install unsloth，Core 版安装途径",
+    "quotes": [
+     "uv pip install unsloth --torch-backend=auto",
+     "uv pip install unsloth --torch-backend=auto"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     261,
+     281
+    ],
+    "quotes": [
+     "git clone https://github.com/unslothai/unsloth",
+     "git clone https://github.com/unslothai/unsloth.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     78
+    ],
+    "note": "可运行/训练的模型，非竞品表述",
+    "quotes": [
+     "* Run and train LLMs, MLX, GGUF, diffusion, decision, embedding, audio models: Qwen3.8, GLM-5.3-Flash, Kimi K3, Qwen-Ima"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     78
+    ],
+    "note": "可运行的模型之一",
+    "quotes": [
+     "* Run and train LLMs, MLX, GGUF, diffusion, decision, embedding, audio models: Qwen3.8, GLM-5.3-Flash, Kimi K3, Qwen-Ima"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     79,
+     93,
+     101
+    ],
+    "note": "可连接的 agent 工具，非替代/竞品",
+    "quotes": [
+     "* **Agents & Tools:** Use local models with Claude Code, Codex, and MCP, including tool calling and code execution.",
+     "Unsloth Start connects Claude Code, Codex and other agents to local models with one command.",
+     "|Claude Code|`unsloth start claude`|"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     83
+    ],
+    "note": "可连接其订阅，非对比",
+    "quotes": [
+     "* **Connect:** Serve models through an OpenAI compatible API. Also connect your ChatGPT/Codex subscription and cloud pro"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

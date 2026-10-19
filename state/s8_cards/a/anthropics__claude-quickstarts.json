@@ -1,0 +1,118 @@
+{
+ "fn": "anthropics/claude-quickstarts",
+ "sha": "888d0e12007b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "帮助开发者快速上手 Claude API 构建应用的示例项目集",
+  "review": "Anthropic 维护的快速入门项目集合，每个子项目演示一类 Claude API 用法：客服 Agent、金融数据分析、桌面/浏览器计算机操作（含 toolset 最小示例）、基于 Claude Agent SDK 的自主编码 Agent、以及一批基于 Managed Agents 的集成示例（Slack、Linear、Sentry、MCP Server、知识 Wiki、定时简报等）。各子项目附独立 README 与安装说明，通用流程为克隆仓库、安装依赖、配置 API key 后运行。要求持有 Claude API key。",
+  "highlights": [
+   "覆盖客服 Agent、金融分析、计算机操作、浏览器自动化等多类入门示例",
+   "含 computer_toolset_20260801 与 browser_toolset_20260801 的 Python/TypeScript 最小驱动示例",
+   "Managed Agents 系列演示 Slack/Linear/Sentry webhook 桥接、cron 部署与 MCP Server 封装",
+   "MIT 许可证，各子项目附独立安装说明"
+  ],
+  "use_cases": [
+   "作为起点搭建接入 Claude API 的客服或数据分析应用",
+   "学习 Claude 计算机操作与浏览器操作工具集的接口用法",
+   "参考 Managed Agents 示例接入 Slack、Linear 等渠道"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "示例项目集",
+   "Claude API",
+   "Agent开发",
+   "快速入门"
+  ],
+  "domain": "LLM 应用开发/示例代码",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Claude Quickstarts is a collection of projects designed to help developers quickly get started with building application",
+   "L9: ## Available Quickstarts",
+   "L115: Each quickstart project comes with its own README and setup instructions. Generally, you'll follow these steps:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     3,
+     7,
+     13,
+     19
+    ],
+    "quotes": [
+     "Claude Quickstarts is a collection of projects designed to help developers quickly get started with building application",
+     "To use these quickstarts, you'll need an Claude API key. If you don't have one yet, you can sign up for free at console.",
+     "A customer support agent powered by Claude. This project demonstrates how to leverage Claude's natural language understa",
+     "A financial data analyst powered by Claude. This project demonstrates how to leverage Claude's capabilities with interac"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     91
+    ],
+    "note": "作为可驱动 MCP server 的客户端被提及",
+    "quotes": [
+     "An MCP server that exposes the Claude Managed Agents Sessions API as nine tools. This project demonstrates how to let Cl"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

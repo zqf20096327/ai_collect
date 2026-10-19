@@ -1,0 +1,144 @@
+{
+ "fn": "RyanCodrai/turbovec",
+ "sha": "2a88cbd33957",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 Python/Rust 开发者的 2-4 比特量化内存向量索引库",
+  "review": "基于 Google Research TurboQuant 的进程内向量索引，提供 Python 与 Rust 双 API。将向量以 2 或 4 bit/维存储并用 SIMD 内核直接检索，无需训练步骤，支持增量持久化（sync 只写变更）、id 过滤搜索与微秒级删除。以库而非服务形式分发，无网络 API；x86 内核运行时按 CPU 特性选择。提供与 LangChain、LlamaIndex、Haystack、Agno 的集成包，并可从源码用 maturin 构建。",
+  "highlights": [
+   "2/4 bit 每维量化存储，内存较 float32 缩小 7.8–15.5 倍",
+   "无需训练与重建，增删向量即时生效，sync() 增量落盘且崩溃安全",
+   "提供 LangChain/LlamaIndex/Haystack/Agno 的 drop-in 替代集成",
+   "Rust API 与 Python 对应，支持 allowlist/bitmask 过滤检索"
+  ],
+  "use_cases": [
+   "在本机进程内为 RAG 应用存储和检索嵌入向量",
+   "资源受限环境下降低大规模嵌入的内存占用",
+   "需要完全离线嵌入+检索栈的本地部署",
+   "作为框架内存向量存储的替换组件接入现有检索管线"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2410.18657（README L6/L123 指向 TurboQuant ICLR 2026 论文，具体 URL 未在可见文本给出）",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "向量检索",
+   "量化/压缩",
+   "RAG",
+   "Rust/Python库"
+  ],
+  "domain": "LLM 基础设施/向量检索",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "rag",
+   "vector-database"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L17: turbovec is an in-process vector index for Python and Rust. It stores each vector at 2 or 4 bits per dimension using Goo",
+   "L50: Framework integrations are drop-in replacements for each framework's in-memory store — same public surface, same persist",
+   "L95: - **You need a graph index.** turbovec scans every vector. At 100K vectors a query costs 0.13–0.25 ms on all eight cores"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     4,
+     29,
+     51,
+     111,
+     112
+    ],
+    "quotes": [
+     " PyPI version",
+     "pip install turbovec",
+     "LangChain (`pip install turbovec[langchain]`) ·",
+     "pip install maturin",
+     "cd turbovec-python && maturin build --release && pip install target/wheels/*.whl"
+    ]
+   },
+   {
+    "term": "cargo",
+    "rel": "support",
+    "lines": [
+     5,
+     59
+    ],
+    "quotes": [
+     " crates.io version",
+     "cargo add turbovec"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "31 GB of RAM",
+    "rel": "mention",
+    "lines": [
+     15
+    ],
+    "note": "float32 存储场景的内存对比描述，非本产品自身要求",
+    "quotes": [
+     "**Ten million 768-dimensional embeddings take 31 GB of RAM as float32. turbovec holds them in 4 GB and searches them 4.4"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     51
+    ],
+    "note": "提供集成包的被集成框架，非替代/竞品对象",
+    "quotes": [
+     "LangChain (`pip install turbovec[langchain]`) ·"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

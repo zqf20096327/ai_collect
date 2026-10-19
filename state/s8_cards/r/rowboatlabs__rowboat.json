@@ -1,0 +1,158 @@
+{
+ "fn": "rowboatlabs/rowboat",
+ "sha": "b9ad51d7746e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地优先的个人 AI 助手，带知识图谱与团队 Spaces 协作",
+  "review": "面向个人与团队的桌面端 AI 助手：将邮件、会议、Slack 与助手对话索引为 Obsidian 风格的双链知识图谱（Brain），并在此基础上提供邮件客户端、笔记、内置浏览器、会议记录、Code Mode（并行编码 agent）等工作界面。团队通过 Spaces（基于开源 Harbor 服务器）协作，各成员的助手在本机运行，仅以本人身份向房间发帖；个人数据以本地 Markdown 存储。支持 Ollama/LM Studio 本地模型或自带 API key。Mac/Windows/Linux 提供安装包，Harbor 可自托管。",
+  "highlights": [
+   "将邮件、会议、Slack、对话索引为本地双链知识图谱",
+   "基于事件或定时的后台 agent，可调用工具、搜索网页并经 Claude Code/Codex 写代码",
+   "Spaces 多人协作：@rowboat 以用户身份在房间内干活，私有上下文不出本机",
+   "通过 MCP 连接外部工具，本地优先存储为纯 Markdown"
+  ],
+  "use_cases": [
+   "在本地积累长期工作知识，避免每次从零检索上下文",
+   "让 agent 按日程或邮件事件在后台自动处理工作",
+   "团队共享白板/文档，各自助手以本人名义参与协作",
+   "自托管 Spaces 服务器供组织使用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://www.youtube.com/watch?v=et5yQABJ3xI",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "个人AI助手",
+   "知识图谱",
+   "多agent协作",
+   "本地优先",
+   "MCP"
+  ],
+  "domain": "个人助理/协作办公",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "knowledge-graph"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6:  Open-source personal AI assistant with built-in docs, whiteboard and email. Works solo or with your team.",
+   "L27: Rowboat indexes your work into a living knowledge graph and uses that to get work done on your machine. It includes work",
+   "L42: Rowboat indexes email, meetings, slack and assistant conversations into a living Obsidian-style backlinked knowledge gra"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     52,
+     67,
+     101
+    ],
+    "note": "以 Claude Code 作为编码 agent 的选项，非模型接入适配",
+    "quotes": [
+     "You can set up background agents that run on events like new email or on schedule like every day at 8am. They can connec",
+     "Code mode lets you spin up parallel coding agents with Claude Code or Codex, and have Rowboat drive them with all the wo",
+     "<code>@rowboat implement the proposal</code> hands the work to Claude Code or Codex on that teammate's machine, with the"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     193
+    ],
+    "note": "本地模型接入途径",
+    "quotes": [
+     "- **Local models** via Ollama or LM Studio"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     235
+    ],
+    "note": "Harbor 自托管构建使用 pnpm install",
+    "quotes": [
+     "pnpm install && pnpm build"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     241
+    ],
+    "note": "Harbor 部署提供 Dockerfile 构建镜像",
+    "quotes": [
+     "**Deploy it for a team.** The Dockerfile builds the deployment image. Orgs are served by hostname under your apex domain"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     52,
+     67,
+     101
+    ],
+    "note": "被驱动使用的编码 agent，非替代/竞品对象",
+    "quotes": [
+     "You can set up background agents that run on events like new email or on schedule like every day at 8am. They can connec",
+     "Code mode lets you spin up parallel coding agents with Claude Code or Codex, and have Rowboat drive them with all the wo",
+     "<code>@rowboat implement the proposal</code> hands the work to Claude Code or Codex on that teammate's machine, with the"
+    ]
+   }
+  ]
+ }
+}

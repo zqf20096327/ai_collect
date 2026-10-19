@@ -1,0 +1,142 @@
+{
+ "fn": "nguyenvanduocit/jira-mcp",
+ "sha": "d50d61260e4c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Go 编写的 Jira MCP 服务器，让 AI 助手操作 Jira",
+  "review": "基于 Go 的 MCP 服务器，通过 20 余个工具将 Jira 操作暴露给 Claude、Cursor 等 AI 助手：问题管理、JQL 搜索、Sprint 管理、状态流转、评论、工时记录、变更历史、问题关联、版本与开发信息（分支/PR/commit）。认证使用 Atlassian API token（host/email/token 环境变量），支持 STDIO 与可选 HTTP 模式，可经 ENABLED_TOOLS 限制暴露的工具子集（如只读 15 个读工具）。另附带独立的 jira-cli 命令行二进制，无需 MCP 客户端即可在终端执行常用 Jira 操作。安装途径包括 Homebrew、go install 与 Docker。",
+  "highlights": [
+   "20+ 个 MCP 工具覆盖问题/Sprint/评论/工时/开发信息等 Jira 操作",
+   "ENABLED_TOOLS 环境变量按白名单限制暴露工具，支持只读 agent 配置",
+   "附带独立 jira-cli 命令行二进制，无需 MCP 客户端",
+   "支持 STDIO 与可选 HTTP 模式运行"
+  ],
+  "use_cases": [
+   "在 Claude Desktop/Cursor 中直接查询和操作 Jira 问题与 Sprint",
+   "为 AI agent 提供只读的 Jira 数据视图",
+   "在终端用 jira-cli 快速执行 Jira 操作"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "MCP",
+   "Jira集成",
+   "AI工具接入",
+   "项目管理",
+   "开发工具"
+  ],
+  "domain": "开发工具/项目管理集成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L131: - This is a Go-based MCP server that connects AI assistants to Jira",
+   "L57: Install the Jira MCP server (https://github.com/nguyenvanduocit/jira-mcp) for my Claude Desktop or Cursor IDE. Read the "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     57,
+     124
+    ],
+    "quotes": [
+     "Install the Jira MCP server (https://github.com/nguyenvanduocit/jira-mcp) for my Claude Desktop or Cursor IDE. Read the ",
+     "1. **CLAUDE.md** - Comprehensive project documentation including architecture, development commands, and coding conventi"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "go",
+    "rel": "support",
+    "lines": [
+     71
+    ],
+    "quotes": [
+     "go install github.com/nguyenvanduocit/jira-mcp/cmd/jira-cli@latest"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     212,
+     215
+    ],
+    "quotes": [
+     "### Homebrew (macOS/Linux)",
+     "brew install nguyenvanduocit/tap/jira-mcp"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     57,
+     146,
+     165
+    ],
+    "quotes": [
+     "Install the Jira MCP server (https://github.com/nguyenvanduocit/jira-mcp) for my Claude Desktop or Cursor IDE. Read the ",
+     "### 2) Add to Cursor",
+     "### 3) Try it in Cursor"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

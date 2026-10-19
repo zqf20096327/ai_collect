@@ -1,0 +1,88 @@
+{
+ "fn": "netdata/netdata",
+ "sha": "33b770a937ec",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为基础设施团队提供每秒级实时监控与 ML 异常检测",
+  "review": "Netdata 是开源实时基础设施监控平台，Agent 部署在被监控节点上执行采集、存储、边缘 ML 训练与告警，覆盖系统资源、存储、网络、容器、虚拟机、日志、云服务与 800+ 集成；采用 Parent-Child 架构实现集中化与横向扩展，可选连接 Netdata Cloud 获得多节点视图与 RBAC，数据保留在本地基础设施。存储约 0.5 字节/样本，生产环境默认资源占用约 5% CPU、150MiB RAM。",
+  "highlights": [
+   "每秒级指标采集与实时可视化（1 秒延迟）",
+   "边缘训练 ML 模型做每指标无监督异常检测",
+   "800+ 集成，自动发现节点上的指标",
+   "指标可导出至 Prometheus、InfluxDB、OpenTSDB、Graphite 等"
+  ],
+  "use_cases": [
+   "监控服务器、容器与 Kubernetes 集群的实时性能",
+   "无需中心化采集地保留监控数据在本地",
+   "通过内置 ML 自动发现指标异常",
+   "把多节点指标导出到既有时间序列数据库"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": "https://www.netdata.cloud（L183-L196 列出多个 Live Demo 站点链接）",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "可观测性",
+   "基础设施监控",
+   "异常检测",
+   "DevOps"
+  ],
+  "domain": "DevOps/可观测性",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "llm-observability"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L42: Netdata is an open-source, real-time infrastructure monitoring platform. Monitor, detect, and act across your entire inf",
+   "L83: |**ML-Powered**|Unsupervised anomaly detection|Trains multiple ML models per metric at the edge|",
+   "L232: |**Edge-Based ML**|• ML models trained at the edge • Automatic anomaly detection per metric • Pattern recognition based "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

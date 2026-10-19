@@ -1,0 +1,163 @@
+{
+ "fn": "gradio-app/gradio",
+ "sha": "6f1ca837c72a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 ML 开发者：用纯 Python 快速构建并分享模型演示 Web 应用",
+  "review": "开源 Python 包，用于为机器学习模型、API 或任意 Python 函数生成演示或 Web 应用，无需 JavaScript/CSS 或 Web 托管经验。提供高层 Interface 类、低层 Blocks 布局类和 ChatInterface 聊天界面类，内置 30 余个组件；launch(share=True) 可生成公开 URL 而计算保留在本地。附带 Python/JS 客户端库以编程方式查询应用，支持热重载模式与 --vibe 自然语言编辑，提供 gradio skills add 为 AI 编码助手安装 Gradio 知识技能。要求 Python 3.10+，Apache 2.0 许可。",
+  "highlights": [
+   "Interface/Blocks/ChatInterface 三层抽象，30+ 内置组件",
+   "share=True 一键生成公开访问 URL，计算保留本地",
+   "gradio_client（Python）与 @gradio/client（JS）编程查询",
+   "gradio skills add 为编码助手安装 Gradio 技能"
+  ],
+  "use_cases": [
+   "为机器学习模型快速搭一个可分享的在线演示",
+   "在 Jupyter/Colab 中内嵌交互式模型界面",
+   "用 Blocks 搭建多数据流的定制化 Web 应用",
+   "为聊天机器人快速生成 Chatbot UI"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/1906.02569",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "ML演示",
+   "Web应用构建",
+   "模型分享",
+   "聊天界面"
+  ],
+  "domain": "机器学习应用开发工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L21: # Gradio: Build Machine Learning Web Apps — in Python",
+   "L63:  > When developing locally, you can run your Gradio app in hot reload mode , which automatically reloads the Gradio app ",
+   "L136: Gradio provides a \"skill\" that enriches AI coding assistants (like Cursor, Claude Code, Codex, etc.) with Gradio-specifi"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     136,
+     142
+    ],
+    "note": "提及 Claude Code 等编码助手及 --claude 技能目录链接参数，非模型接入",
+    "quotes": [
+     "Gradio provides a \"skill\" that enriches AI coding assistants (like Cursor, Claude Code, Codex, etc.) with Gradio-specifi",
+     "This installs to the shared `.agents/skills` directory used by Codex, Cursor, OpenCode, and other compatible agents. Use"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     10,
+     11,
+     31,
+     34
+    ],
+    "quotes": [
+     "PyPI",
+     "PyPI downloads",
+     "We recommend installing Gradio using `pip`, which is included by default in Python. Run this in your terminal or command",
+     "pip install --upgrade gradio"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     42
+    ],
+    "note": "运行环境选项之一，非安装途径",
+    "quotes": [
+     "You can run Gradio in your favorite code editor, Jupyter notebook, Google Colab, or anywhere else you write Python. Let'"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     136
+    ],
+    "note": "技能可 enrich 的编码助手示例",
+    "quotes": [
+     "Gradio provides a \"skill\" that enriches AI coding assistants (like Cursor, Claude Code, Codex, etc.) with Gradio-specifi"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     136,
+     142
+    ],
+    "quotes": [
+     "Gradio provides a \"skill\" that enriches AI coding assistants (like Cursor, Claude Code, Codex, etc.) with Gradio-specifi",
+     "This installs to the shared `.agents/skills` directory used by Codex, Cursor, OpenCode, and other compatible agents. Use"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     160
+    ],
+    "note": "Spaces 为托管渠道、开源栈展示徽章，非替代/竞品",
+    "quotes": [
+     "huggingface"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

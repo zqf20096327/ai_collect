@@ -1,0 +1,209 @@
+{
+ "fn": "Canner/WrenAI",
+ "sha": "3f159500deef",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI agent 提供受治理 text-to-SQL 与语义层的开源 GenBI 引擎",
+  "review": "以 CLI（pip 安装）与 SDK 形式提供的开源 GenBI 引擎：用 MDL 建模语言将指标定义、枚举、连接关系等业务语义以 YAML/Markdown 文件托管在 Git 中，为已有 agent（Claude Code、Cursor、MCP 客户端等）提供语义层与上下文层，把自然语言问题转成经 dry-plan 校验的 SQL 并可部署为可分享的 dashboard。核心引擎、SDK 与 skills 为 Apache-2.0 且可自托管；行列级安全、GenBI UI、Agentic Mode 等属商业版 Wren AI Cloud / Enterprise Plus。旧 Docker 版 GenBI 应用已归档至 legacy/v1 分支，无新特性与安全修复。",
+  "highlights": [
+   "MDL 语义层与 AI 上下文层以可审查的 YAML/Markdown 文件存于 Git",
+   "覆盖 22+ 数据源（BigQuery、Snowflake、PostgreSQL、ClickHouse 等）的治理式执行",
+   "提供 wren-langchain、wren-pydantic 等 Agent SDK 与 MCP server",
+   "agent 构建的浏览器端 dashboard 可部署到 Vercel 或 Cloudflare Pages"
+  ],
+  "use_cases": [
+   "让 agent 基于公司统一的指标定义生成可信 SQL",
+   "把业务语义作为版本化文件纳入 PR 审查流程",
+   "用自然语言问答生成可分享的 BI dashboard",
+   "自托管或离线环境中部署 GenBI 能力"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "dual",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "text-to-SQL",
+   "GenBI",
+   "语义层",
+   "AI-agent工具",
+   "数据仓库"
+  ],
+  "domain": "数据/商业智能",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "data-analysis"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供清华 PyPI 镜像安装指引",
+   "提供 hf-mirror.com 环境变量配置"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L24: WrenAI is the open-source **generative BI (GenBI) engine**. It gives the AI agents you already use (Claude Code, Cursor,",
+   "L147: - **Engine**: Apache DataFusion based. BigQuery, Snowflake, PostgreSQL, ClickHouse, Amazon Redshift, Databricks, DuckDB,",
+   "L150: - **Agent SDKs**: `wren-langchain` (LangChain / LangGraph), `wren-pydantic`, and a reference Python integration for othe"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     24,
+     32,
+     83,
+     94
+    ],
+    "note": "以 Claude Code 形式出现，作为可搭配的 agent 而非模型接入通道",
+    "quotes": [
+     "WrenAI is the open-source **generative BI (GenBI) engine**. It gives the AI agents you already use (Claude Code, Cursor,",
+     "Three commands, then your agent does the rest. Works with Claude Code, Cursor, Cline, Codex, and 50+ other agents.",
+     "- **Works through the agents you already run.** Claude Code, Cursor, Cline, Codex, MCP clients, LangChain. Wren is a lay",
+     "|Works through *your* agents (Claude Code, Cursor, MCP…)|✅|❌|❌|✅|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     37,
+     40,
+     61
+    ],
+    "quotes": [
+     "pip install wrenai",
+     "Add connector extras as you need them, for example `pip install \"wrenai[postgres,memory]\"`.",
+     "pip install wrenai -i https://pypi.tuna.tsinghua.edu.cn/simple"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     45
+    ],
+    "note": "npx skills add 安装发现 stub，属本产品安装步骤之一",
+    "quotes": [
+     "npx skills add Canner/WrenAI"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     24,
+     32,
+     83,
+     94
+    ],
+    "quotes": [
+     "WrenAI is the open-source **generative BI (GenBI) engine**. It gives the AI agents you already use (Claude Code, Cursor,",
+     "Three commands, then your agent does the rest. Works with Claude Code, Cursor, Cline, Codex, and 50+ other agents.",
+     "- **Works through the agents you already run.** Claude Code, Cursor, Cline, Codex, MCP clients, LangChain. Wren is a lay",
+     "|Works through *your* agents (Claude Code, Cursor, MCP…)|✅|❌|❌|✅|"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     24,
+     32,
+     83,
+     94
+    ],
+    "quotes": [
+     "WrenAI is the open-source **generative BI (GenBI) engine**. It gives the AI agents you already use (Claude Code, Cursor,",
+     "Three commands, then your agent does the rest. Works with Claude Code, Cursor, Cline, Codex, and 50+ other agents.",
+     "- **Works through the agents you already run.** Claude Code, Cursor, Cline, Codex, MCP clients, LangChain. Wren is a lay",
+     "|Works through *your* agents (Claude Code, Cursor, MCP…)|✅|❌|❌|✅|"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     24,
+     83,
+     150
+    ],
+    "note": "提供 wren-langchain SDK，属集成框架",
+    "quotes": [
+     "WrenAI is the open-source **generative BI (GenBI) engine**. It gives the AI agents you already use (Claude Code, Cursor,",
+     "- **Works through the agents you already run.** Claude Code, Cursor, Cline, Codex, MCP clients, LangChain. Wren is a lay",
+     "- **Agent SDKs**: `wren-langchain` (LangChain / LangGraph), `wren-pydantic`, and a reference Python integration for othe"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     64
+    ],
+    "note": "模型下载超时时的镜像配置语境",
+    "quotes": [
+     "If HuggingFace model downloads time out, run `export HF_ENDPOINT=https://hf-mirror.com` before using the CLI."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    124,
+    126,
+    128,
+    133
+   ],
+   "note": "open core：引擎 Apache-2.0，行列级安全/GenBI UI/Agentic Mode 等为商业版",
+   "quotes": [
+    "### Open core: what's OSS, what's commercial",
+    "The engine in this repo (MDL semantic layer, governed text-to-SQL, MCP server, CLI, 22+ connectors) is Apache-2.0, free ",
+    "- **Row- and column-level security** and access control with users and groups",
+    "Same engine underneath. Your MDL stays in your Git either way. **Read the published boundary →**"
+   ]
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    191
+   ],
+   "note": "旧 Docker 版 GenBI 应用归档为 legacy/v1 分支，无新特性与安全修复"
+  }
+ }
+}

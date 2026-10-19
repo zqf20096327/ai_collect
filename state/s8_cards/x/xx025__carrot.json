@@ -1,0 +1,254 @@
+{
+ "fn": "xx025/carrot",
+ "sha": "9723e96c6969",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向普通用户的 AI 工具网站导航清单，按类别收录可用站点",
+  "review": "以列表形式收录 AI 助手、Agent、开发工具、创作工具和行业应用类网站的导航目录，附发布网站与 Issues 反馈渠道。条目按「热门、通用助手与智能搜索、Agent 与自动化、模型/API 与算力、编程与开发工具、图像设计、音视频、写作办公」等类别组织，每条含名称、简介、链接及免费/需登录/需国际网络等标注。通过 Issues 接受站点提交、失效反馈与信息更正。未提供本地安装或运行方式。",
+  "highlights": [
+   "按用途分类的 AI 工具站点目录，含免费/需登录/需国际网络标注",
+   "覆盖助手、Agent、API 算力、编程、图像、音视频、写作办公等类别",
+   "通过 GitHub Issues 接收站点提交与失效反馈"
+  ],
+  "use_cases": [
+   "找免费可用的 ChatGPT 或国产大模型网页入口",
+   "按类别浏览 AI 编程、绘画、视频工具网站",
+   "发现自己收录站点失效时提交更正"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://cc.ai55.cc/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "导航目录",
+   "AI工具聚合",
+   "资源清单"
+  ],
+  "domain": "AI 工具导航/资源聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "收录大量国内站点（豆包、千问、讯飞星火、秘塔等）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L4: 这里收录了可用的 AI 助手、Agent、开发工具、创作工具和行业应用。",
+   "L15: ## 热门",
+   "L820: ## Agent 与自动化"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     33,
+     988
+    ],
+    "quotes": [
+     " Claude",
+     " ggwkChat：高效快捷的api服务，包括Claude，G..."
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     40,
+     127
+    ],
+    "quotes": [
+     " DeepSeek",
+     " 热门的国产AI 大模型"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     168,
+     169
+    ],
+    "quotes": [
+     " Grok",
+     " 🌏Grok 是由 xAI 设计的免费 AI 助手"
+    ]
+   },
+   {
+    "term": "google",
+    "rel": "mention",
+    "lines": [
+     420
+    ],
+    "quotes": [
+     " 多模型聚合平台，支持GPT3.5、GPT4.0，谷歌Gemi..."
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     19,
+     105
+    ],
+    "quotes": [
+     " ChatGPT",
+     " ChatGPT"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     61,
+     147
+    ],
+    "quotes": [
+     " Perplexity",
+     " Perplexity"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     82,
+     1122
+    ],
+    "quotes": [
+     " Cursor",
+     " Cursor"
+    ]
+   },
+   {
+    "term": "Midjourney",
+    "rel": "mention",
+    "lines": [
+     89,
+     1320
+    ],
+    "quotes": [
+     " Midjourney",
+     " Midjourney"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     161
+    ],
+    "quotes": [
+     " Kimi"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     600
+    ],
+    "quotes": [
+     " QWEN CHAT"
+    ]
+   },
+   {
+    "term": "文心一言",
+    "rel": "mention",
+    "lines": [
+     670
+    ],
+    "quotes": [
+     " 🔑国内ERNIE-Bot模型"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     1050
+    ],
+    "quotes": [
+     " huggingface.co"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     1270
+    ],
+    "quotes": [
+     " GitHubCopilot"
+    ]
+   },
+   {
+    "term": "Lovable",
+    "rel": "mention",
+    "lines": [
+     1199
+    ],
+    "quotes": [
+     " Lovable"
+    ]
+   },
+   {
+    "term": "Suno",
+    "rel": "mention",
+    "lines": [
+     1504
+    ],
+    "quotes": [
+     " Suno"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

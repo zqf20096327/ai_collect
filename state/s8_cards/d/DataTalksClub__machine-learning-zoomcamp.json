@@ -1,0 +1,88 @@
+{
+ "fn": "DataTalksClub/machine-learning-zoomcamp",
+ "sha": "81c5e780ec5d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向工程师的免费 4 个月机器学习工程实战课程",
+  "review": "DataTalks.Club 出品的免费机器学习工程课程，覆盖从问题定义、数据准备、模型训练评估到通过 API 部署上线的完整流程。技术栈包括 Python、scikit-learn、TensorFlow、PyTorch、FastAPI、Docker、Kubernetes 与 AWS Lambda。支持随直播批次学习（含作业评分、同伴评审、证书资格）或按材料自学（免费但不评分、无证书）。前置要求为至少一年编程经验，不要求 ML 经验或本地 GPU，深度学习模块使用云端资源。",
+  "highlights": [
+   "10 个模块 + 期中与两个 capstone 项目的完整课程结构",
+   "覆盖模型训练到 FastAPI/Docker/Kubernetes/AWS Lambda 部署全链路",
+   "支持直播批次（证书/评审/排行榜）与自学两种参与方式",
+   "深度学习模块使用云端资源，不要求本地 GPU"
+  ],
+  "use_cases": [
+   "有编程经验想转入机器学习工程方向",
+   "系统学习模型从开发到生产部署的完整流程",
+   "积累可放进作品集的端到端 ML 项目",
+   "自学模式下免费使用全部课程材料"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "在线课程",
+   "机器学习",
+   "模型部署",
+   "教育培训"
+  ],
+  "domain": "教育/机器学习工程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "media",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L34: Machine Learning Zoomcamp is a free, practical course for people who want to learn machine learning engineering by build",
+   "L40: You will work with Python, NumPy, pandas, scikit-learn, TensorFlow, PyTorch, FastAPI, Docker, Kubernetes, and AWS Lambda",
+   "L81: - A powerful computer or local GPU. The deep learning modules use cloud resources for more intensive computation."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

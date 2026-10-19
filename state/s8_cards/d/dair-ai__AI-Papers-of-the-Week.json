@@ -1,0 +1,86 @@
+{
+ "fn": "dair-ai/AI-Papers-of-the-Week",
+ "sha": "3578e578d1ee",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 ML 从业者的每周 AI 论文精选清单",
+  "review": "DAIR.AI 维护的每周 AI 论文精选仓库：按周汇总当周值得关注的 AI/ML 论文链接，列表自 2023 年 1 月起持续更新至 2026 年，按年份分组归档；另有 newsletter 订阅渠道将每周清单发送至邮箱，并通过 Twitter 与 Discord 进行发布和社区交流。仓库本身为索引型内容，不包含安装或运行步骤。",
+  "highlights": [
+   "按周归档的 AI 论文清单（2023 年至今，按年份分组）",
+   "提供 newsletter 邮件订阅渠道",
+   "配套 Twitter 与 Discord 发布/交流渠道"
+  ],
+  "use_cases": [
+   "每周追踪 AI/ML 领域新论文",
+   "按时间线回溯某段时间的代表性论文",
+   "通过邮件订阅定期获取论文列表"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "论文推荐",
+   "AI资讯",
+   "newsletter",
+   "知识聚合"
+  ],
+  "domain": "AI/学术资讯聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Subscribe to our newsletter to get a weekly list of top AI papers in your inbox.",
+   "L5: At DAIR.AI we ❤️ reading AI papers so we've created this repo to highlight the top AI papers of every week.",
+   "L7: Here is the weekly series:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

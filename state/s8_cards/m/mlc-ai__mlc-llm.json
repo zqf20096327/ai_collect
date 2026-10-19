@@ -1,0 +1,87 @@
+{
+ "fn": "mlc-ai/mlc-llm",
+ "sha": "1d55b057e8fa",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向多平台本地部署 LLM 的编译与推理引擎",
+  "review": "MLC LLM 是面向大语言模型的机器学习编译器与部署引擎，通过 ML Compilation 将模型编译后在统一推理引擎 MLCEngine 上运行，覆盖 Linux/Windows（Vulkan、ROCm、CUDA）、macOS（Metal）、Web 浏览器（WebGPU/WASM）、iOS/iPadOS 与 Android（OpenCL on Adreno/Mali）等平台。MLCEngine 提供 OpenAI 兼容 API，可通过 REST server、Python、JavaScript、iOS、Android 调用。安装与上手方式指向官方文档，项目以软件引用（bibtex）形式给出引文信息，并列出其底层技术（如 TensorIR）的学术论文。",
+  "highlights": [
+   "统一推理引擎 MLCEngine 跨桌面、移动与浏览器平台运行",
+   "提供 OpenAI 兼容 API，支持 REST server、Python、JavaScript、iOS、Android 接入",
+   "支持 NVIDIA/AMD/Apple/Intel GPU 与 Metal、Vulkan、CUDA、ROCm、WebGPU、OpenCL 等后端",
+   "以机器学习编译（ML Compilation）为核心技术路线"
+  ],
+  "use_cases": [
+   "在本地 GPU 或移动设备上部署大语言模型",
+   "在浏览器中通过 WebGPU/WASM 运行 LLM",
+   "为 iOS/Android 应用集成本地 LLM 推理能力",
+   "通过 REST server 提供 OpenAI 兼容接口"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM推理",
+   "模型编译",
+   "本地部署",
+   "跨平台"
+  ],
+  "domain": "LLM 基础设施/推理部署",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14: MLC LLM is a machine learning compiler and high-performance deployment engine for large language models. The mission of ",
+   "L43: MLC LLM compiles and runs code on MLCEngine -- a unified high-performance LLM inference engine across the above platform"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,242 @@
+{
+ "fn": "llmware-ai/llmware",
+ "sha": "faab47c6beb8",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为企业在本地/边缘设备构建小型专用模型 RAG 应用的统一框架",
+  "review": "llmware 是一个 Python 框架，包含模型目录（300+ 预打包量化模型，含 50+ 自研 SLIM/Bling/Dragon/Industry-Bert 微调模型）与 RAG Pipeline（文档解析、分块、嵌入、知识库构建与查询）两大组件，用于将知识源接入生成式 AI 模型。推理层支持 GGUF、OpenVINO、ONNXRuntime、ONNXRuntime-QNN、WindowsLocalFoundry、Pytorch 等后端，并支持 OpenAI、Anthropic、Google 云端模型；数据层提供 3 种文本库与 10 种向量库组合，默认 SQLite+ChromaDB 开箱即用。主要面向企业流程自动化场景。",
+  "highlights": [
+   "模型目录含 300+ 模型，其中 50+ 为 RAG 优化的小参数量微调模型（1-7B）",
+   "支持 GGUF、OpenVINO、ONNXRuntime-QNN（骁龙 NPU）等多推理后端",
+   "集成 3 种文本数据库与 10 种向量数据库，含 Docker Compose 部署脚本",
+   "LLMfx Agent 支持基于 SLIM 模型的函数调用多步工作流"
+  ],
+  "use_cases": [
+   "在本地笔记本或企业内网环境运行知识库问答与文档分析",
+   "解析 PDF/Word/PPT/Excel 等文档构建可查询知识库",
+   "用 SLIM 模型在 CPU 上跑多步骤函数调用 Agent",
+   "对合同等业务文档做问题回答与键值提取"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "企业应用",
+   "本地推理",
+   "文档解析",
+   "Agent"
+  ],
+  "domain": "LLM 应用框架/企业 RAG",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "llama.cpp",
+   "cpu-infer",
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "document-parsing",
+   "rag",
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: `llmware` is optimized for AI PC and local laptop, edge and self-hosted deployment across a wide range of Windows, Mac a",
+   "L13:  1. **Model catalog with 300+ models** - models prepackaged in quantized, optimized formats, to leverage on device GPU a",
+   "L15:  2. **RAG Pipeline** - integrated components for the full lifecycle of connecting knowledge sources to generative AI mod"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "llama.cpp",
+    "rel": "support",
+    "lines": [
+     9,
+     32
+    ],
+    "quotes": [
+     "`llmware` is optimized for AI PC and local laptop, edge and self-hosted deployment across a wide range of Windows, Mac a",
+     "#   Full support for GGUF, OpenVINO, Onnxruntime, HuggingFace, Sentence Transformers and major API-based models"
+    ]
+   },
+   {
+    "term": "cpu-infer",
+    "rel": "support",
+    "lines": [
+     9,
+     32
+    ],
+    "quotes": [
+     "`llmware` is optimized for AI PC and local laptop, edge and self-hosted deployment across a wide range of Windows, Mac a",
+     "#   Full support for GGUF, OpenVINO, Onnxruntime, HuggingFace, Sentence Transformers and major API-based models"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     220
+    ],
+    "quotes": [
+     "- Using Ollama Models"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "azure",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     13
+    ],
+    "quotes": [
+     " 1. **Model catalog with 300+ models** - models prepackaged in quantized, optimized formats, to leverage on device GPU a"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     173,
+     175,
+     176
+    ],
+    "quotes": [
+     "**Step 1 - Install llmware** - `pip3 install llmware` or `pip3 install 'llmware[full]'`",
+     "- core install (minimal set of dependencies)",
+     "- full install (adds to the core with wider set of related python libraries)."
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     235,
+     244,
+     246
+    ],
+    "quotes": [
+     "git clone git@github.com:llmware-ai/llmware.git",
+     "1. **install requirements.txt** - inside the /llmware path - e.g., ```pip3 install -r llmware/requirements.txt```",
+     "2. **install requirements_extras.txt** - inside the /llmware path - e.g., ```pip3 install -r llmware/requirements_extras"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     250,
+     262,
+     266,
+     275
+    ],
+    "quotes": [
+     "4. **install vector db** - no-install vector db options include milvus lite, chromadb, faiss and lancedb - which do not ",
+     " Speed + Scale : use MongoDB (text collection) and Milvus (vector db) - install with Docker Compose",
+     "docker compose up -d",
+     " Postgres : use Postgres for both text collection and vector DB - install with Docker Compose"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     23,
+     121
+    ],
+    "quotes": [
+     "Join us on Discord | Watch Youtube Tutorials | Explore our Model Families on Huggingface",
+     "- Model Depot on Huggingface"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "facts": {
+   "desktop_builds": false,
+   "needs_compile": false,
+   "system_deps": [],
+   "docker_available": true,
+   "self_declared_early": {
+    "flag": false,
+    "lines": []
+   },
+   "paper_url": null,
+   "demo_url": null
+  },
+  "audit": {
+   "confidence": "high",
+   "evidence_lines": [
+    9,
+    13,
+    15
+   ]
+  }
+ }
+}

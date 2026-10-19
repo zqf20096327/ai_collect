@@ -1,0 +1,133 @@
+{
+ "fn": "milvus-io/milvus",
+ "sha": "b58d32ac9246",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 AI 应用的分布式向量数据库：存储并检索大规模向量",
+  "review": "以 Go 和 C++ 编写的云原生向量数据库，存储向量与标量数据并支持向量 ANN 检索、元数据过滤与混合搜索。支持分布式（K8s 部署、计算存储分离）、单机 Standalone 与 Python pip 安装的 Milvus Lite 三种形态。索引类型覆盖 HNSW、IVF、FLAT、SCANN、DiskANN 及 GPU 索引（如 NVIDIA CAGRA），并原生支持 BM25 全文检索与 SPLADE/BGE-M3 稀疏向量。提供用户认证、TLS、RBAC 等企业特性，Apache 2.0 许可，隶属 LF AI & Data 基金会。",
+  "highlights": [
+   "支持 HNSW、IVF、DiskANN 等多种索引类型及 GPU 索引（CAGRA）",
+   "分布式架构支持水平扩展，并提供 Standalone 与 Milvus Lite 部署形态",
+   "原生支持 BM25 全文检索与 SPLADE/BGE-M3 稀疏向量的混合搜索",
+   "提供用户认证、TLS 加密与 RBAC 访问控制"
+  ],
+  "use_cases": [
+   "为 RAG 应用搭建向量检索后端",
+   "构建文本、图像语义搜索与推荐系统",
+   "企业场景下多租户向量数据管理与权限控制"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://milvus.io/milvus-demos",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "向量数据库",
+   "ANN检索",
+   "RAG",
+   "分布式存储"
+  ],
+  "domain": "数据库/LLM 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "rag",
+   "vector-database"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: 🐦 Milvus is a high-performance vector database built for scale. It powers AI applications by efficiently organizing and ",
+   "L134:  Milvus integrates with a comprehensive suite of AI development tools, such as LangChain, LlamaIndex, OpenAI and Hugging"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     30,
+     37
+    ],
+    "quotes": [
+     "$ pip install -U pymilvus",
+     "* You can also try Milvus Lite for quickstart by installing `pymilvus[milvus-lite]`. To create a local vector database, "
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     172,
+     176
+    ],
+    "quotes": [
+     "Clone Milvus repo and build.",
+     "$ git clone https://github.com/milvus-io/milvus.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     134
+    ],
+    "quotes": [
+     " Milvus integrates with a comprehensive suite of AI development tools, such as LangChain, LlamaIndex, OpenAI and Hugging"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     134
+    ],
+    "quotes": [
+     " Milvus integrates with a comprehensive suite of AI development tools, such as LangChain, LlamaIndex, OpenAI and Hugging"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

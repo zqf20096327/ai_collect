@@ -1,0 +1,197 @@
+{
+ "fn": "huggingface/open-r1",
+ "sha": "04c09e70dc3f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "复现 DeepSeek-R1 训练流程的开源项目",
+  "review": "以 DeepSeek-R1 技术报告为蓝本，提供三步复现路径：蒸馏复刻 R1-Distill 模型、纯 RL 管线（R1-Zero 路径）、多阶段训练。仓库包含 SFT、GRPO 训练脚本与基于 Distilabel 的合成数据生成脚本，配套 Makefile 快捷命令与 YAML 配方。已发布 Mixture-of-Thoughts（350k）、OpenR1-Math-220k、CodeForces-CoTs 等数据集。训练默认配置为 8×H100 节点，依赖 CUDA 12.4、vLLM 0.8.5.post1、PyTorch 2.6.0，多节点经 Slurm 调度。README 声明项目已停止维护，训练部分后续由 TRL 承接。",
+  "highlights": [
+   "提供 sft.py/grpo.py/generate.py 覆盖 R1 流水线的训练与数据生成",
+   "发布 350k Mixture-of-Thoughts 与 OpenR1-Math-220k 等蒸馏推理数据集",
+   "支持 DDP 与 DeepSpeed ZeRO-2/3，GRPO 可经 TRL vLLM 后端多节点扩展",
+   "代码奖励函数支持 E2B 与 Morph 两种沙箱执行提供方"
+  ],
+  "use_cases": [
+   "按配方在自有数据上对模型做 SFT 蒸馏与 GRPO 强化训练",
+   "从 R1 蒸馏的推理轨迹数据集训练数学/代码推理模型",
+   "搭建多节点 Slurm 集群上的大规模 RL 训练"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "high",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM训练",
+   "模型复现",
+   "GRPO/RL",
+   "数据集"
+  ],
+  "domain": "LLM 训练/机器学习研究",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: *A fully open reproduction of DeepSeek-R1.*",
+   "L25: The goal of this repo is to build the missing pieces of the R1 pipeline such that everybody can reproduce and build on t",
+   "L103: We support training models with either DDP or DeepSpeed (ZeRO-2 and ZeRO-3). For example, to perform SFT on a dataset di"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     7,
+     37,
+     38,
+     103
+    ],
+    "note": "以 DeepSeek-R1 及其蒸馏数据为复现对象与数据来源，非模型 API 接入",
+    "quotes": [
+     "*A fully open reproduction of DeepSeek-R1.*",
+     "* Step 1: replicate the R1-Distill models by distilling a high-quality corpus from DeepSeek-R1.",
+     "* Step 2: replicate the pure RL pipeline that DeepSeek used to create R1-Zero. This will likely involve curating new, la",
+     "We support training models with either DDP or DeepSpeed (ZeRO-2 and ZeRO-3). For example, to perform SFT on a dataset di"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     44
+    ],
+    "note": "仅基准对比中提及 Claude 3.7 Sonnet",
+    "quotes": [
+     "* **⚡️ [2025/03/11] (update #3):** We release the **CodeForces-CoTs** dataset of 10k competitive programming problems an"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     66,
+     69,
+     180,
+     186,
+     263
+    ],
+    "note": "作为 GRPO 训练后端与推理服务安装使用",
+    "quotes": [
+     "Next, install vLLM and FlashAttention:",
+     "uv pip install vllm==0.8.5.post1",
+     "We use TRL's vLLM backend to scale training to large models across multiple nodes. For single-node training of smol mode",
+     "    --vllm_mode colocate",
+     "CUDA_VISIBLE_DEVICES=0 trl vllm-serve --model Qwen/Qwen2.5-1.5B-Instruct"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     60,
+     69,
+     70,
+     76,
+     214
+    ],
+    "quotes": [
+     "uv venv openr1 --python 3.11 && source openr1/bin/activate && uv pip install --upgrade pip",
+     "uv pip install vllm==0.8.5.post1",
+     "uv pip install setuptools && uv pip install flash-attn --no-build-isolation",
+     "GIT_LFS_SKIP_SMUDGE=1 uv pip install -e \".[dev]\"",
+     "uv pip install -e '.[code]'"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     43,
+     126,
+     141,
+     146,
+     263
+    ],
+    "note": "作为基座模型使用，非替代/竞品关系",
+    "quotes": [
+     "* **🧑‍🍳 [2025/05/26] (Step 1 completed!)** We release **Mixture-of-Thoughts**--a curated reasoning dataset of 350k verif",
+     "    --model_name_or_path Qwen/Qwen3-0.6B-Base \\",
+     "Most base models like `meta-llama/Llama-3.2-1B` do not have a chat template, so we set ChatML as the default during trai",
+     "    --model_name_or_path Qwen/Qwen2.5-1.5B \\",
+     "CUDA_VISIBLE_DEVICES=0 trl vllm-serve --model Qwen/Qwen2.5-1.5B-Instruct"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     79,
+     82,
+     86,
+     120
+    ],
+    "note": "模型推送与登录平台，非替代/竞品关系",
+    "quotes": [
+     "Next, log into your Hugging Face and Weights and Biases accounts as follows:",
+     "huggingface-cli login",
+     "Finally, check whether your system has Git LFS installed so that you can load and push models/datasets to the Hugging Fa",
+     "By default, these scripts will push each model to your Hugging Face Hub username, i.e. `{username}/{model_name}-{task}`."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    4,
+    5
+   ]
+  }
+ }
+}

@@ -1,0 +1,181 @@
+{
+ "fn": "assafelovic/gpt-researcher",
+ "sha": "c31ac8559e4e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为研究任务生成带引文报告的自主深度研究 Agent",
+  "review": "面向个人与组织的自动化研究 Agent：将任务拆解为研究问题，由 planner 与 execution 多智能体分工检索、汇总并生成超过 2,000 词、引用 20+ 来源的报告。支持网页与本地文档（PDF、CSV、Excel、Markdown、Word 等）两类数据源，提供 pip 包、Docker 部署、HTML/NextJS 前端、MCP 客户端与服务端、LangGraph 多智能体助手及 LangSmith 追踪。默认依赖 OpenAI 与 Tavily API key，也可通过 OPENAI_BASE_URL 接入自定义模型。",
+  "highlights": [
+   "planner/execution/publisher 多智能体架构，递归式广度+深度研究",
+   "支持网页搜索与本地文档研究，报告可导出 PDF/Word/Markdown",
+   "Jev 上下文过滤，无 key 时回退 BM25 关键词过滤",
+   "提供 MCP Server（独立仓库 gptr-mcp）与 Claude Desktop 集成"
+  ],
+  "use_cases": [
+   "为调研课题自动生成带引用来源的研究报告",
+   "基于本地文档库开展检索与汇总研究",
+   "通过 MCP 把深度研究能力接入 Claude 等 AI 应用",
+   "用 LangGraph 多智能体演示从规划到发布的协作流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://www.youtube.com/watch?v=f60rlc_QCxE",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度研究",
+   "多智能体",
+   "报告生成",
+   "MCP",
+   "网络爬取"
+  ],
+  "domain": "AI Agent/研究自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multi-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L20: **GPT Researcher the first open deep research agent designed for both web and local research on any given task.**",
+   "L22: The agent produces detailed, factual, and unbiased research reports with citations. GPT Researcher provides a full suite",
+   "L51: The core idea is to utilize 'planner' and 'execution' agents. The planner generates research questions, while the execut"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     41,
+     47,
+     257,
+     263
+    ],
+    "note": "Claude 作为可安装 Skill 与 MCP 集成的客户端，非模型接入对象",
+    "quotes": [
+     "Extend Claude's deep research capabilities by installing GPT Researcher as a Claude Skill:",
+     "Once installed, Claude can leverage GPT Researcher's deep research capabilities directly within your conversations.",
+     "The GPT Researcher MCP Server enables AI applications like Claude to conduct deep research. While LLM apps can access we",
+     "- Claude Desktop integration"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     131
+    ],
+    "quotes": [
+     "pip install gpt-researcher"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     11
+    ],
+    "quotes": [
+     "Open In Colab"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     44
+    ],
+    "note": "作为 Claude Skill 的安装途径",
+    "quotes": [
+     "npx skills add assafelovic/gpt-researcher"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     94
+    ],
+    "quotes": [
+     "    git clone https://github.com/assafelovic/gpt-researcher.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     225,
+     230
+    ],
+    "quotes": [
+     "docker-compose up --build",
+     "docker compose up --build"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     108,
+     109,
+     283,
+     284,
+     285
+    ],
+    "note": "可观测性集成与多智能体框架依赖，非替代/竞品对象",
+    "quotes": [
+     "    # export LANGCHAIN_TRACING_V2=true",
+     "    # export LANGCHAIN_API_KEY={Your LangChain API Key here}",
+     "   export LANGCHAIN_TRACING_V2=true",
+     "   export LANGCHAIN_API_KEY=your_api_key",
+     "   export LANGCHAIN_PROJECT=\"gpt-researcher\""
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

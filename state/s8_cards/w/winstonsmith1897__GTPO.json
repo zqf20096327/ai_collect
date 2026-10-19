@@ -1,0 +1,149 @@
+{
+ "fn": "winstonsmith1897/GTPO",
+ "sha": "bde146d11d69",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 LLM 的 GTPO 强化学习训练方法官方实现",
+  "review": "GTPO（Group-relative Trajectory-based Policy Optimization）的官方 PyTorch 实现，论文作者来自学术界团队。方法在 GRPO 基础上引入冲突感知梯度修正（保护正负奖励样本中共现的冲突 token）与基于熵的正则化（过滤高熵不稳定样本），训练时不需 KL 散度正则与参考模型。以 train_model.py 为单一入口，从 YAML 配置加载模型/数据集/训练器/奖励函数，支持 CLI 覆盖，基于 Unsloth 补丁运行，保存 LoRA 适配器；提供 GSM8K 与 Hendrycks MATH 数据集配方及 Colab 演示笔记本。实验在 LLaMA-8B 与 Qwen 2.5-3B 上进行。",
+  "highlights": [
+   "冲突感知梯度修正：识别并保护正负奖励完成中共现的冲突 token",
+   "基于熵的正则化过滤高熵不稳定样本，防止策略崩溃",
+   "无需参考模型与 KL 散度正则",
+   "YAML 配置 + CLI 覆盖的单一入口训练脚本，训练器与奖励函数按虚线路径动态导入"
+  ],
+  "use_cases": [
+   "我需要对 LLM 做 GRPO 类后训练并缓解梯度冲突与策略崩溃",
+   "我在 GSM8K/MATH 等数学推理数据集上训练 LoRA 适配器",
+   "我想在 Colab 上快速复现论文训练流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RLHF/后训练",
+   "LLM 训练算法",
+   "强化学习",
+   "论文官方实现"
+  ],
+  "domain": "LLM 后训练/强化学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "reinforcement-learning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L15: This repository contains the official implementation of **GTPO (Group-relative Trajectory-based Policy Optimization)**, ",
+   "L21: GTPO introduces **conflict-aware gradient corrections** and **entropy-based regularization** to mitigate these issues, e"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ],
+   "license_from_readme": "MIT"
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     61
+    ],
+    "quotes": [
+     "git clone https://github.com/winstonsmith1897/GTPO.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     68,
+     69
+    ],
+    "note": "pip/uv 安装 requirements.txt 依赖，非本产品发布为包",
+    "quotes": [
+     "pip install uv",
+     "uv pip install -r requirements.txt"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     72,
+     74
+    ],
+    "quotes": [
+     "# Try GTPO on Colab",
+     "You can run our demo notebook directly in Google Colab:"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     40,
+     146,
+     249
+    ],
+    "note": "Qwen 2.5-3B 作为实验/可切换的基础模型",
+    "quotes": [
+     " Extensive experiments on **GSM8K**, **MATH**, **AIME 2024**, **AIME 2025** and **AMC** benchmarks using **LLaMA-8B** an",
+     "* `--model-name` : Override the base model (e.g., `Qwen/Qwen2.5-3B-Instruct`).",
+     "  --model.model_name Qwen/Qwen2.5-3B-Instruct \\"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,172 @@
+{
+ "fn": "microsoft/mcp-for-beginners",
+ "sha": "50203bd1770b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 MCP（模型上下文协议）入门教学课程",
+  "review": "微软维护的开源课程，通过 .NET、Java、TypeScript、JavaScript、Rust、Python 六种语言的真实示例讲解 Model Context Protocol 基础。内容按 Foundation、Building、Growing、Mastery 四阶段组织为 11 个模块，覆盖核心概念、安全实践、服务器/客户端构建、调试与生产部署、数据库集成等；Module 11 为 13 个实验的 PostgreSQL 集成实战路径。课程基于 MCP 2026-07-28 规范编写，含 CIMD/DCR 授权对比示例，并提供 50+ 语言翻译（可 sparse checkout 跳过翻译目录）。",
+  "highlights": [
+   "六种语言（C#/Java/TS/JS/Rust/Python）的跨语言实战示例",
+   "11 个模块分四阶段学习路径，Module 11 含 13 个动手实验",
+   "基于 MCP 2026-07-28 规范，覆盖无状态请求与 Extensions 框架",
+   "提供 50+ 语言翻译及稀疏克隆方式"
+  ],
+  "use_cases": [
+   "从零学习 MCP 协议并构建第一个 MCP server/client",
+   "在 VS Code 等开发工具中集成 MCP 实践",
+   "学习 MCP 安全最佳实践与生产部署策略"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教学课程",
+   "MCP",
+   "AI协议",
+   "多语言示例"
+  ],
+  "domain": "开发者教育/AI 协议",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L48: ## **Learn MCP with Hands-on Code Examples in C#, Java, JavaScript, Rust, Python, and TypeScript**",
+   "L61: The current protocol revision is **MCP Specification 2026-07-28**. The MCP",
+   "L149: Module 11 deserves special mention - it's a complete 13-lab hands-on learning path that teaches you to build production-"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     174
+    ],
+    "note": "窗外行，MCP 协议背景提及",
+    "quotes": [
+     "|3.12|MCP Hosts|Configure Claude Desktop, Cursor, Cline, and other MCP hosts|Guide|"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "mention",
+    "lines": [
+     214
+    ],
+    "note": "窗外行，课程模块提及 Azure 云平台集成（参见 L143）",
+    "quotes": [
+     "|11.8|Semantic Search|Implementing vector embeddings with Azure OpenAI and pgvector|Lab 07|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     17,
+     32
+    ],
+    "quotes": [
+     "2. **Clone the Repository**: `git clone https://github.com/microsoft/mcp-for-beginners.git`",
+     "> git clone --filter=blob:none --sparse https://github.com/microsoft/mcp-for-beginners.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     174,
+     180
+    ],
+    "note": "窗外行，作为支持 MCP 的开发工具提及",
+    "quotes": [
+     "|3.12|MCP Hosts|Configure Claude Desktop, Cursor, Cline, and other MCP hosts|Guide|",
+     "|4.1|Pagination|Handle large result sets with cursor-based pagination|Guide|"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     221,
+     371,
+     372,
+     373,
+     374
+    ],
+    "note": "窗外行，课程示例中提及",
+    "quotes": [
+     "|12.1|Tooling|MCP usage in Copilot App|Guide|",
+     "### Copilot Series",
+     "Copilot for AI Paired Programming",
+     "Copilot for C#/.NET",
+     "Copilot Adventure"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     345,
+     347,
+     348
+    ],
+    "note": "窗外行，课程内容中提及",
+    "quotes": [
+     "### LangChain",
+     "LangChain.js for Beginners",
+     "LangChain for Beginners"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    67
+   ],
+   "note": "L67 提到规范层面弃用 Roots/Sampling/Logging，属课程内容而非仓库弃用"
+  }
+ }
+}

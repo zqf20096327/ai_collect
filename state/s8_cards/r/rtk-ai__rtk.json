@@ -1,0 +1,196 @@
+{
+ "fn": "rtk-ai/rtk",
+ "sha": "8990ace3aed3",
+ "source": "readme",
+ "identity": {
+  "one_liner": "压缩开发命令输出的 CLI 代理，降低 agent 读取的 token 消耗",
+  "review": "RTK 以 shell hook 方式拦截 agent 的命令调用，在输出进入 LLM 上下文前按命令类型做过滤、分组、截断与去重，覆盖 git、cargo、npm、pytest、docker 等 100+ 命令。单个 Rust 二进制、无运行时依赖，安装后通过 `rtk init` 为各编码 agent 配置集成；`rtk gain` 提供节省统计。部分版本含 BUSL-1.1 授权的可选 proxy 守护进程，将压缩扩展到 provider API 流量。注意 README 明确节省比例仅针对 bash 输出部分，不等于整体账单降幅。",
+  "highlights": [
+   "支持 18 个 AI 编码工具的 hook/规则集成（Claude Code、Copilot、Cursor、Gemini CLI 等）",
+   "覆盖 100+ 开发命令的输出过滤，宣称 <10ms 开销",
+   "按 Apache-2.0 与 BUSL-1.1 双版本分发（oss 版无压缩引擎）",
+   "可选 rtk-proxy 守护进程处理 provider API 流量并支持模型路由"
+  ],
+  "use_cases": [
+   "为 Claude Code 等 agent 减少命令输出占用的上下文",
+   "统计并可视化 agent 会话的 token 节省情况",
+   "通过代理压缩 agent 的 provider API 请求流量"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "dual",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "开发者工具",
+   "token优化",
+   "agentic-coding",
+   "CLI"
+  ],
+  "domain": "LLM 基础设施/开发工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文等多语言版本链接(L21)"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L31: rtk filters and compresses command outputs before they reach your LLM context. Single Rust binary, 100+ supported comman",
+   "L143: RTK supports 18 AI coding tools. Each integration rewrites shell commands to `rtk` equivalents, reducing the bash output",
+   "L147: |**Claude Code**|`rtk init -g`|PreToolUse hook (native binary)|"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     126,
+     139
+    ],
+    "note": "README 中的 Claude 指向 Anthropic 模型使用场景，非 provider 接入通道",
+    "quotes": [
+     "  Claude  --git status-->  shell  -->  git         Claude  --git status-->  RTK  -->  git",
+     "> **Does RTK break Claude's prompt cache?** No. RTK filters output once per command. The result is stored in history and"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     66,
+     101
+    ],
+    "quotes": [
+     "brew install rtk                                              # macOS / Linux",
+     "brew install rtk-ai/tap/rtk-oss"
+    ]
+   },
+   {
+    "term": "cargo",
+    "rel": "support",
+    "lines": [
+     78
+    ],
+    "note": "L78 提及 Cargo 为安装途径之一（详见安装指南）",
+    "quotes": [
+     "> Cargo, pre-built binaries, native Windows, WSL, and uninstall: **Installation guide**"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     110,
+     148,
+     149
+    ],
+    "quotes": [
+     "rtk init -g                     # Claude Code / Copilot (default)",
+     "|**GitHub Copilot (VS Code)**|`rtk init -g --copilot`|PreToolUse hook — transparent rewrite|",
+     "|**GitHub Copilot CLI**|`rtk init -g --copilot`|PreToolUse deny-with-suggestion (CLI limitation)|"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     110,
+     147
+    ],
+    "quotes": [
+     "rtk init -g                     # Claude Code / Copilot (default)",
+     "|**Claude Code**|`rtk init -g`|PreToolUse hook (native binary)|"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     150
+    ],
+    "quotes": [
+     "|**Cursor**|`rtk init -g --agent cursor`|preToolUse hook (hooks.json)|"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     153
+    ],
+    "quotes": [
+     "|**Windsurf**|`rtk init -g --agent windsurf`|.windsurfrules (project-scoped)|"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     163
+    ],
+    "quotes": [
+     "|**Kimi AI**|`rtk init --agent kimi`|AGENTS.md (project-scoped)|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    9,
+    93,
+    94,
+    95,
+    97,
+    210
+   ],
+   "quotes": [
+    " License: Apache-2.0 and BUSL-1.1",
+    "|`rtk-<target>`|Apache-2.0 + BUSL-1.1|Hook core, every command filter, **and** the compression engine|",
+    "|`rtk-oss-<target>`|Apache-2.0 only|Hook core and every command filter. No engine.|",
+    "|`rtk-proxy-<target>`|BUSL-1.1|The RTK Proxy daemon. Never bundled with either `rtk`.|",
+    "**Production use is free**, engine and daemon included. What the BUSL grant does not cover is offering RTK or a derivati",
+    "It is a separate binary under a separate licence (BUSL-1.1), shipped as its own `rtk-proxy-<target>` archive — `rtk` nev"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

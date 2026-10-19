@@ -1,0 +1,131 @@
+{
+ "fn": "microsoft/ai-agents-for-beginners",
+ "sha": "41998c062eac",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向初学者的 AI Agent 构建 18 课教程课程",
+  "review": "微软官方出品的 AI Agent 教学课程，共 18 课，内容覆盖 Agent 基础概念、设计模式（工具使用、规划、多智能体、元认知）、Agentic RAG、MCP/A2A 协议、上下文工程、记忆管理、生产部署与安全等。每课含文字教材、短视频、Python 代码示例与扩展资源。代码示例使用 Microsoft Agent Framework 与 Microsoft Foundry Agent Service V2，需要 Azure 账户；部分示例兼容 OpenAI 兼容服务商（如 MiniMax）。",
+  "highlights": [
+   "18 节课程，每课含文字教材、视频、Python 代码示例",
+   "覆盖设计模式、Agentic RAG、MCP/A2A 协议、记忆与安全等主题",
+   "代码示例基于 Microsoft Agent Framework 与 Foundry Agent Service V2",
+   "提供 50+ 语言翻译版本，支持 sparse checkout 加速克隆"
+  ],
+  "use_cases": [
+   "系统学习构建 AI Agent 的基础与设计模式",
+   "按课程代码示例动手实践 Agent 框架用法",
+   "了解 MCP、A2A 等协议与生产部署知识"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教程课程",
+   "AI Agent",
+   "agentic-ai",
+   "学习路线"
+  ],
+  "domain": "教育/AI 教程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: ## A course teaching everything you need to know to start building AI Agents",
+   "L69: This course uses the following AI Agent frameworks and services from Microsoft:",
+   "L71: - Microsoft Agent Framework (MAF)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     25,
+     32
+    ],
+    "quotes": [
+     "> git clone --filter=blob:none --sparse https://github.com/microsoft/ai-agents-for-beginners.git",
+     "> git clone --filter=blob:none --sparse https://github.com/microsoft/ai-agents-for-beginners.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     115,
+     117,
+     118
+    ],
+    "note": "同一团队的其他课程系列名称，非替代/竞品声明",
+    "quotes": [
+     "### LangChain",
+     "LangChain.js for Beginners",
+     "LangChain for Beginners"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     142,
+     143,
+     144
+    ],
+    "note": "Copilot 系列课程条目，仅列出",
+    "quotes": [
+     "Copilot for AI Paired Programming",
+     "Copilot for C#/.NET",
+     "Copilot Adventure"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

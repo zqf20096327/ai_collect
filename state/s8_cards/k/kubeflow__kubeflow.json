@@ -1,0 +1,85 @@
+{
+ "fn": "kubeflow/kubeflow",
+ "sha": "1cc74e76e05e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 AI 从业者与管理员的云原生 AI 平台",
+  "review": "Kubeflow 是由模块化开源项目组成的 Kubernetes 原生技术栈，面向 AI 从业者、平台管理员与决策者，支持数据、AI/ML 与 HPC 工作负载。项目由社区工作组维护，覆盖 AI 生命周期各环节，强调可移植（本地/本地机房/云同一套代码）与可扩展（超大规模训练与高吞吐 AI agent）。本仓库主要作为各子项目的入口与共享元数据，开发在子项目仓库进行；README 未给出安装与运行步骤。",
+  "highlights": [
+   "由模块化开源项目组成，可按需组合跨 AI 生命周期使用",
+   "同一代码可在本地笔记本、本地机房或任意云上运行",
+   "社区主导，由多个工作组与委员会维护",
+   "本仓库作为子项目入口与项目元数据承载"
+  ],
+  "use_cases": [
+   "在 Kubernetes 上运行机器学习训练工作负载",
+   "在本地、机房或云间迁移同一套 AI 工作负载",
+   "组建团队级数据与 AI 平台时按模块选型子项目"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Kubernetes",
+   "机器学习平台",
+   "AI基础设施",
+   "云原生"
+  ],
+  "domain": "AI 基础设施/云原生平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L7: Kubeflow is _the_ Cloud Native AI platform.",
+   "L9: Kubeflow is composed of modular, open source projects that form the Kubernetes-native stack",
+   "L43: This repository serves primarily as a gateway to Kubeflow subprojects and shared project metadata."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

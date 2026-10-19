@@ -1,0 +1,199 @@
+{
+ "fn": "Graphify-Labs/graphify",
+ "sha": "dd6bda435f4b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI 编码助手把代码库映射成可查询知识图谱的 CLI 工具",
+  "review": "以 `/graphify` 技能形式注册到 Claude Code、Cursor、Codex、Gemini CLI 等 20+ 编码助手，用 tree-sitter AST 本地确定性解析代码，构建覆盖 ~40 语言的 calls/imports/inherits 跨文件知识图谱，输出 graph.html、GRAPH_REPORT.md 与 graph.json 三个文件；每条边带 EXTRACTED/INFERRED 标签，提供 query/path/explain 三类命令。文档、PDF、图像、音视频经语义 pass 也并入图。代码解析不调用 LLM、无向量索引；语义 pass 需配置模型或 API key。依赖 Python 3.10+ 与 uv/pipx。",
+  "highlights": [
+   "tree-sitter AST 本地解析 ~40 语言，代码解析零 LLM 调用、数据不出本机",
+   "每条边带 EXTRACTED/INFERRED 置信标签",
+   "无嵌入与向量库，图遍历支持 query/path/explain",
+   "一条命令注册到 Claude Code、Cursor、Codex 等 20+ 平台"
+  ],
+  "use_cases": [
+   "代替 grep 在大型代码库中追问概念间关联与调用路径",
+   "用图谱查看新项目的核心概念（god nodes/社区划分）",
+   "把文档注释、ADR/RFC 与 PDF 等材料并入代码图谱统一检索"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "知识图谱",
+   "代码分析",
+   "AI编码助手",
+   "GraphRAG",
+   "开发者工具"
+  ],
+  "domain": "开发者工具/代码知识图谱",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "coding-agent",
+   "knowledge-graph"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L22: Type `/graphify` in your AI coding assistant and it maps your entire project (code, docs, PDFs, images, videos) into a *",
+   "L24: - **Code maps for free, fully local.** Code is parsed with tree-sitter AST: deterministic, no LLM, nothing leaves your m",
+   "L61: **One install, any assistant, any OS.** Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, and 20+ more, on macOS, "
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     9,
+     147,
+     158
+    ],
+    "quotes": [
+     " PyPI",
+     "> **Official package:** The PyPI package is `graphifyy` (double-y). Other `graphify*` packages on PyPI are not affiliate",
+     "pip install graphifyy       # may need PATH setup, see Troubleshooting below"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     127,
+     129
+    ],
+    "quotes": [
+     "**macOS quick install (Homebrew):**",
+     "brew install python@3.12 uv"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     211
+    ],
+    "note": "提及 npx skills 读取 ~/.agents/skills，非本产品安装途径",
+    "quotes": [
+     "`--platform agents` (alias `--platform skills`) targets the generic cross-framework Agent-Skills locations: the spec's u"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     61,
+     191,
+     192
+    ],
+    "note": "支持注册技能的平台之一",
+    "quotes": [
+     "**One install, any assistant, any OS.** Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, and 20+ more, on macOS, ",
+     "|GitHub Copilot CLI|`graphify install --platform copilot`|",
+     "|VS Code Copilot Chat|`graphify vscode install`|"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     61,
+     185,
+     186,
+     209
+    ],
+    "note": "支持的集成平台",
+    "quotes": [
+     "**One install, any assistant, any OS.** Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, and 20+ more, on macOS, ",
+     "|Claude Code (Linux/Mac)|`graphify install`|",
+     "|Claude Code (Windows)|`graphify install` (auto-detected) or `graphify install --platform windows`|",
+     "Codex users also need `multi_agent = true` under `[features]` in `~/.codex/config.toml` for parallel extraction. CodeBud"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     61,
+     205
+    ],
+    "note": "支持的集成平台",
+    "quotes": [
+     "**One install, any assistant, any OS.** Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, and 20+ more, on macOS, ",
+     "|Cursor|`graphify cursor install`|"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     200
+    ],
+    "note": "支持的集成平台 Kimi Code",
+    "quotes": [
+     "|Kimi Code|`graphify install --platform kimi`|"
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     206
+    ],
+    "note": "支持的集成平台 Devin CLI",
+    "quotes": [
+     "|Devin CLI|`graphify devin install`|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

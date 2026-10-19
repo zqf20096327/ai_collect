@@ -1,0 +1,105 @@
+{
+ "fn": "Lightning-AI/pytorch-lightning",
+ "sha": "9f9d3535ab23",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为深度学习开发者提供的 PyTorch 训练框架，自动化工程代码",
+  "review": "组织 PyTorch 代码的深度学习框架，将反向传播、混合精度、多 GPU 与分布式训练等工程代码自动化，用户保留模型逻辑控制。提供两个核心包：PyTorch Lightning（Trainer 抽象）与 Lightning Fabric（专家级控制）。通过 pip/conda 安装，支持从 CPU 到多节点 GPU/TPU 运行，提供 40+ 高级特性如早停、检查点、ONNX/TorchScript 导出，并维护多平台 CI 测试矩阵。",
+  "highlights": [
+   "Trainer 接口无需改代码即可切换 CPU/GPU/TPU、多 GPU 与多节点训练",
+   "Fabric 提供对训练循环与扩展策略（DDP/FSDP/DeepSpeed）的专家级控制",
+   "支持 TorchScript 与 ONNX 导出用于生产部署",
+   "早停、检查点、实验管理等 40+ 高级特性"
+  ],
+  "use_cases": [
+   "在多个 GPU 节点上预训练或微调大模型",
+   "将现有 PyTorch 代码重构为可扩展的训练脚本",
+   "复现学术论文中的分类、分割、摘要等训练实验"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度学习框架",
+   "训练加速",
+   "分布式训练",
+   "PyTorch"
+  ],
+  "domain": "机器学习/深度学习训练框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: **The deep learning framework to pretrain and finetune AI models.**",
+   "L34: Training models in plain PyTorch requires writing and maintaining a lot of repetitive engineering code. Handling backpro",
+   "L45: PyTorch Lightning: Train and deploy PyTorch at scale.",
+   "L264:  Use state-of-the-art distributed training strategies (DDP, FSDP, DeepSpeed) and mixed precision out of the box"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     15,
+     57,
+     65,
+     93
+    ],
+    "quotes": [
+     "PyPI - Python Version",
+     "pip install lightning",
+     "pip install lightning['extra']",
+     "pip install -iU https://test.pypi.org/simple/ pytorch-lightning"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

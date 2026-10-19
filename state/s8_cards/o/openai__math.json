@@ -1,0 +1,97 @@
+{
+ "fn": "openai/math",
+ "sha": "8cd3a12303d7",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向数学研究者的 OpenAI 模型生成数学论文集与证明工件",
+  "review": "该仓库收录由 OpenAI 内部模型产出的数学稿件及配套证明材料，共 719 篇手稿、组织为 372 个结果族，按数学学科分类。提供概览、手稿地图、preprints 目录（含 PDF、源文件与构建说明）、Lean 形式化目录与 Comparator 校验说明，约 42% 顶级结果已形式化；部分结果尚无 Lean 形式化且可能存在问题。每篇手稿目录内含 BibTeX 引用块，版本修订以新版本形式保留。",
+  "highlights": [
+   "719 篇手稿按 372 个结果族组织，按数学学科分类",
+   "约 42% 顶级结果附带 Lean 形式化证明",
+   "提供手稿推理摘要与 preprints 源文件及构建说明",
+   "版本历史保留，修订以新版本发布"
+  ],
+  "use_cases": [
+   "查阅 OpenAI 模型在开放数学问题上的产出结果",
+   "获取带 Lean 形式化的数学证明材料",
+   "按结果族引用具体手稿（BibTeX）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数学研究",
+   "形式化证明",
+   "论文集",
+   "模型评估"
+  ],
+  "domain": "科研/数学",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: This repository contains mathematical manuscripts and supporting proof artifacts produced by an internal OpenAI model.",
+   "L14: The current catalogue contains 719 manuscripts organized into 372 families. A family groups related papers, which may in",
+   "L19: - The Lean library and formalization catalogue describe the available formal proofs, their associated papers, and verifi"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     41
+    ],
+    "note": "提及结果平均消耗 ChatGPT Pro 算力，非替代/竞品关系",
+    "quotes": [
+     "The vast majority of results were obtained with the same procedure using an unreleased internal OpenAI model. On average"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

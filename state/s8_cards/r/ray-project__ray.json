@@ -1,0 +1,99 @@
+{
+ "fn": "ray-project/ray",
+ "sha": "61a2ca83f9c9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "分布式 AI 计算引擎：把 ML 工作负载从笔记本扩展到集群",
+  "review": "Ray 提供一个核心分布式运行时和一组 AI 库，用于扩展 AI 与 Python 应用。AI 库包括 Data（可扩展数据集）、Train（分布式训练）、Tune（超参数调优）、RLlib（强化学习）、Serve（服务化）；Ray Core 提供 Tasks、Actors、Objects 三种抽象。支持在任意机器、集群、云提供商与 Kubernetes 上运行，并有社区集成生态。通过 pip 安装，提供 Dashboard 监控与分布式调试器。",
+  "highlights": [
+   "核心分布式运行时（Tasks/Actors/Objects）与 5 个 AI 库（Data/Train/Tune/RLlib/Serve）",
+   "同一代码可在笔记本与集群间扩展",
+   "运行于任意机器、集群、云提供商与 Kubernetes",
+   "提供 Ray Dashboard 监控与 Distributed Debugger 调试"
+  ],
+  "use_cases": [
+   "将单机 Python ML 代码扩展到多机集群运行",
+   "分布式训练与超参数调优",
+   "部署可扩展的模型推理服务",
+   "强化学习工作负载的规模化训练"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/1712.05889",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "分布式计算",
+   "机器学习基础设施",
+   "LLM推理/服务",
+   "超参数调优"
+  ],
+  "domain": "机器学习基础设施/分布式计算",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "mlops"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L18: Ray is a unified framework for scaling AI and Python applications. Ray consists of a core distributed runtime and a set ",
+   "L47: Install Ray with: ``pip install ray``. For nightly wheels, see the",
+   "L44: Ray runs on any machine, cluster, cloud provider, and Kubernetes, and features a growing"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     47
+    ],
+    "quotes": [
+     "Install Ray with: ``pip install ray``. For nightly wheels, see the"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

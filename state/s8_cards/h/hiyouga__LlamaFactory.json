@@ -1,0 +1,246 @@
+{
+ "fn": "hiyouga/LlamaFactory",
+ "sha": "9314dfb37019",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 100+ LLM/VLM 统一微调工具",
+  "review": "以 CLI 与零代码 Web UI 提供 100+ 大语言模型与视觉语言模型的微调能力，覆盖预训练、SFT、奖励建模及 PPO/DPO/KTO/ORPO 等训练方法，支持 LoRA 与多比特 QLoRA 量化微调。内置数十个模型对话模板，提供 Hugging Face 数据集清单、TensorBoard/Wandb 等实验监控，并可经 vLLM/SGLang worker 以 OpenAI 风格 API、Gradio UI 或 CLI 推理。README 给出按训练方法与模型规模估算的显存需求表，支持本地训练与 Colab/PAI-DSW/AMD GPU Cloud 云端训练。",
+  "highlights": [
+   "支持 100+ LLM/VLM 与 8 种训练方法（Pre-Training/SFT/Reward/PPO/DPO/KTO/ORPO/SimPO）",
+   "LoRA 与 2/3/4/5/6/8-bit QLoRA 量化微调",
+   "零代码 CLI 与 Web UI，附带 OpenAI 风格 API 与 vLLM/SGLang 推理 worker",
+   "内置大量中英文训练数据集清单与模型模板管理"
+  ],
+  "use_cases": [
+   "微调开源大模型适配领域任务",
+   "用 LoRA/QLoRA 在有限显存下训练模型",
+   "微调后通过 API 部署推理服务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    79,
+    81,
+    82
+   ],
+   "note": "Day-0/Day-1 支持前沿模型表格"
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM微调",
+   "LoRA/QLoRA",
+   "模型训练",
+   "多模态"
+  ],
+  "domain": "LLM 基础设施/模型训练",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "mistral",
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "multimodal",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中英双语 README",
+   "大量中文数据集（BELLE/CCI3/Firefly 等）",
+   "WeChat 用户群",
+   "ASCEND NPU 文档"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L35: ### Easily fine-tune 100+ large language models with zero-code CLI and Web UI",
+   "L68: - **Various models**: LLaMA, LLaVA, Mistral, Mixtral-MoE, Qwen3, Qwen3-VL, DeepSeek, Gemma, GLM, Phi, etc.",
+   "L69: - **Integrated methods**: (Continuous) pre-training, (multimodal) supervised fine-tuning, reward modeling, PPO, DPO, KTO"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     68,
+     112,
+     113,
+     114
+    ],
+    "note": "DeepSeek 系列列为受支持模型",
+    "quotes": [
+     "- **Various models**: LLaMA, LLaVA, Mistral, Mixtral-MoE, Qwen3, Qwen3-VL, DeepSeek, Gemma, GLM, Phi, etc.",
+     "|DeepSeek (LLM/Code/MoE)|7B/16B/67B/236B|deepseek|",
+     "|DeepSeek 3-3.2|236B/671B|deepseek3|",
+     "|DeepSeek R1 (Distill)|1.5B/7B/8B/14B/32B/70B/671B|deepseekr1|"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "support",
+    "lines": [
+     68,
+     145
+    ],
+    "quotes": [
+     "- **Various models**: LLaMA, LLaVA, Mistral, Mixtral-MoE, Qwen3, Qwen3-VL, DeepSeek, Gemma, GLM, Phi, etc.",
+     "|Mistral/Mixtral|7B/8x7B/8x22B|mistral|"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     75,
+     316
+    ],
+    "note": "推理 worker 及可选依赖",
+    "quotes": [
+     "- **Faster inference**: OpenAI-style API, Gradio UI and CLI with vLLM worker or SGLang worker.",
+     "|vllm|0.4.3|0.8.2|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     7,
+     294
+    ],
+    "quotes": [
+     "PyPI",
+     "pip install \"huggingface_hub<1.0.0\""
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     9
+    ],
+    "quotes": [
+     "Docker Pulls"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     16,
+     51
+    ],
+    "note": "云端训练途径，非本地安装方式",
+    "quotes": [
+     "Open in Colab",
+     "- **Colab (free)**: https://colab.research.google.com/drive/1eRTPn37ltBbYsISy9Aw2NuI2Aq5CQrD9?usp=sharing"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     339,
+     341
+    ],
+    "quotes": [
+     "#### Install from Source",
+     "```bash"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     81,
+     151,
+     152
+    ],
+    "note": "列为受支持模型",
+    "quotes": [
+     "|Day 0|Qwen3 / Qwen2.5-VL / Gemma 3 / GLM-4.1V / InternLM 3 / MiniCPM-o-2.6|",
+     "|Qwen2 (Code/Math/MoE/QwQ)|0.5B/1.5B/3B/7B/14B/32B/72B/110B|qwen|",
+     "|Qwen3 (MoE/Instruct/Thinking/Next)|0.6B/1.7B/4B/8B/14B/32B/80B/235B|qwen3/qwen3_nothink|"
+    ]
+   },
+   {
+    "term": "文心一言",
+    "rel": "mention",
+    "lines": [
+     115
+    ],
+    "note": "ERNIE-4.5 列为受支持模型",
+    "quotes": [
+     "|ERNIE-4.5|0.3B/21B/300B|ernie_nothink|"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     128
+    ],
+    "note": "Kimi-VL 列为受支持模型",
+    "quotes": [
+     "|Kimi-VL|16B|kimi_vl|"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     291,
+     294,
+     295
+    ],
+    "note": "用于登录下载数据集，非替代/竞品对象",
+    "quotes": [
+     "Some datasets require confirmation before using them, so we recommend logging in with your Hugging Face account using th",
+     "pip install \"huggingface_hub<1.0.0\"",
+     "huggingface-cli login"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

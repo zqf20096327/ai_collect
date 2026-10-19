@@ -1,0 +1,87 @@
+{
+ "fn": "argoproj/argo-workflows",
+ "sha": "95512c65a73b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 Kubernetes 的容器化并行任务工作流引擎",
+  "review": "Argo Workflows 是以 Kubernetes CRD 形式实现的开源工作流引擎，用于编排并行作业：每个步骤以容器运行，支持以任务序列或 DAG 建模多步骤流程。提供工作流模板、cron 定时调度、归档、重试/超时/挂起恢复、步骤级输入输出、UI 管理界面、REST/gRPC 服务端接口以及 Java/Golang/Python/TypeScript SDK。制品存储支持 S3、GCS、Azure Blob 等。面向在 Kubernetes 上运行机器学习、数据处理、CI/CD 等计算密集型作业的用户。为 CNCF 毕业项目。",
+  "highlights": [
+   "以 Kubernetes CRD 实现，每步为一个容器",
+   "支持 DAG 与 Steps 两种工作流声明方式",
+   "提供 UI、REST/gRPC 接口与四种语言 SDK",
+   "支持 cron 调度、重试、超时、归档、并行度限制等"
+  ],
+  "use_cases": [
+   "在 Kubernetes 上运行机器学习训练流水线",
+   "数据与批处理作业编排",
+   "搭建 CI/CD 流水线",
+   "基础设施自动化任务编排"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "工作流引擎",
+   "Kubernetes",
+   "ML流水线",
+   "CI/CD",
+   "批处理"
+  ],
+  "domain": "云原生/工作流编排",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14: Argo Workflows is an open source container-native workflow engine for orchestrating parallel jobs on Kubernetes.",
+   "L15: Argo Workflows is implemented as a Kubernetes CRD (Custom Resource Definition).",
+   "L21: Argo is a Cloud Native Computing Foundation (CNCF) graduated project."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

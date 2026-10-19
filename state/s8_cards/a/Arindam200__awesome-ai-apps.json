@@ -1,0 +1,162 @@
+{
+ "fn": "Arindam200/awesome-ai-apps",
+ "sha": "2e44ec1b9a69",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 132 个 LLM 应用示例合集（agent/RAG/MCP/语音）",
+  "review": "收录 132 个项目、教程与配方的清单仓库，覆盖文本 agent、语音助手、RAG 应用与 MCP 工具等 LLM 应用类型，按 Starter Agents、Simple Agents、Voice Agents、MCP Agents、Memory Agents、RAG Applications 等类别组织，每个条目注明所用框架（AutoGen、LangChain/LangGraph、CrewAI、Agno、LlamaIndex、LiveKit、Pipecat 等）。面向学习各 AI 框架与技术栈的开发者，作为参考指南使用，多数示例由 Nebius Token Factory 等赞助方提供推理支持。",
+  "highlights": [
+   "收录 132 个 LLM 应用示例项目，按 6+ 类别组织",
+   "覆盖 text agent、voice assistant、RAG、MCP 工具等类型",
+   "条目标明所用框架与技术栈，便于按框架检索",
+   "部分类别含多 agent、记忆与沙箱执行等进阶示例"
+  ],
+  "use_cases": [
+   "学习某个 AI 框架（LangGraph、CrewAI、Agno 等）的入门示例",
+   "为构建语音助手或 MCP 工具寻找参考实现",
+   "对比不同框架下同类 agent 应用的写法"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "示例合集",
+   "Agent",
+   "RAG",
+   "MCP",
+   "学习资源"
+  ],
+  "domain": "LLM 应用开发/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "rag",
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: This repository is a comprehensive collection of **132 projects**, tutorials, and recipes for building powerful LLM-powe",
+   "L119: **Quick-start agents for learning and extending different AI frameworks.** _21 projects_",
+   "L184: **Examples using Model Context Protocol for external tool integration.** _14 projects_"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     291,
+     292
+    ],
+    "quotes": [
+     "- Open-Source LLM Fine-Tuning on Token Factory: Colab-first LoRA fine-tuning walkthrough to upload a dataset, train, mon",
+     "- Standalone Customer Support Fine-Tuning (Colab): Fully standalone Colab notebook for the customer-support distillation"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     327
+    ],
+    "quotes": [
+     "   git clone https://github.com/Arindam200/awesome-ai-apps.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     348
+    ],
+    "quotes": [
+     "   pip install -r requirements.txt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     132,
+     156,
+     159,
+     160,
+     165
+    ],
+    "note": "示例项目所用框架，非替代/竞品对象",
+    "quotes": [
+     "- LangChain Tool-Calling Starter: LangChain tool-calling agent with `create_tool_calling_agent` + `AgentExecutor`, power",
+     "- LangChain Operations Agent Collection: Nebius-powered incident response, support, vendor risk, and data quality agents",
+     "- Natural-Language Database Assistant: Natural language database queries with GibsonAI and LangChain",
+     "- Natural-Language SQL Agent (LangChain): Natural-language-to-SQL data agent with LangGraph, Nebius, read-only SQL safet",
+     "- VoyageCompass Travel Planner: LangChain and Nebius travel planner with weather, research, currency conversion, budgets"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     170,
+     179
+    ],
+    "note": "语音编码 agent 使用的 Cursor SDK，非替代/竞品对象",
+    "quotes": [
+     "**Real-time voice assistants and streaming speech pipelines** — including LiveKit, Pipecat, Gradium, and VoxCode (Deepgr",
+     "- VoxCode — Deepgram + Cursor Voice Coding Agent: Local voice workspace for codebase summaries and architecture Q&A; Dee"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

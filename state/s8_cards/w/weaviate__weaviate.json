@@ -1,0 +1,211 @@
+{
+ "fn": "weaviate/weaviate",
+ "sha": "a58a49eea174",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的开源向量数据库，支持语义搜索与 RAG",
+  "review": "用 Go 编写的云原生向量数据库，同时存储对象与向量，将向量相似搜索、关键词过滤、检索增强生成（RAG）与重排序整合在单一查询接口。支持导入时用集成模型自动向量化，或直接导入预计算向量；生产部署内置多租户、复制、RBAC 与向量压缩。通过 REST/gRPC/GraphQL API 访问，提供 Python、JavaScript/TypeScript、Java、Go、C# 等客户端库。许可为 BSD 3-Clause 加 wl/ 目录下的商业许可，企业功能需许可证密钥。",
+  "highlights": [
+   "向量搜索、关键词过滤、RAG 与重排序在单一查询接口",
+   "导入时自动向量化（集成 OpenAI、Cohere、HuggingFace 等模型）或导入自有向量",
+   "内置多租户、复制、RBAC、向量压缩等生产特性",
+   "提供面向 Claude Code、Cursor 等 coding agent 的 Weaviate Agent Skills"
+  ],
+  "use_cases": [
+   "搭建 RAG 系统与问答机器人",
+   "对十亿级向量做语义搜索与混合搜索",
+   "构建推荐引擎与内容分类应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "dual",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "向量数据库",
+   "语义搜索",
+   "RAG",
+   "推荐系统"
+  ],
+  "domain": "数据库/AI 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "cohere"
+  ],
+  "scenario_tags_v2": [
+   "rag",
+   "semantic-search",
+   "vector-database",
+   "recommender-system"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L9: **Weaviate** is a cloud-native vector database that stores both objects and vectors, enabling semantic search at scale. ",
+   "L75: Weaviate exposes REST API, gRPC API, and GraphQL API to communicate with the database server.",
+   "L146: |**LLM and Agent Frameworks**|Build agents and generative AI applications|Agno, Composio, CrewAI, DSPy, Dynamiq, Haystac"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cohere",
+    "rel": "compat",
+    "lines": [
+     11,
+     83
+    ],
+    "quotes": [
+     "Weaviate supports two approaches to store vectors: automatic vectorization at import using integrated models (OpenAI, Co",
+     "- **🔌 Flexible Vectorization**: Seamlessly vectorize data at import time with integrated vectorizers from OpenAI, Cohere"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     22,
+     30,
+     43
+    ],
+    "quotes": [
+     "- Docker",
+     "You can easily start Weaviate and a local vector embedding model with Docker.",
+     "docker compose up -d"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     49
+    ],
+    "quotes": [
+     "pip install -U weaviate-client"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     106
+    ],
+    "note": "npm 安装的是 agent-skills 集合，非数据库本身",
+    "quotes": [
+     "npx skills add weaviate/agent-skills"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     11,
+     83
+    ],
+    "note": "作为集成向量化提供方提及",
+    "quotes": [
+     "Weaviate supports two approaches to store vectors: automatic vectorization at import using integrated models (OpenAI, Co",
+     "- **🔌 Flexible Vectorization**: Seamlessly vectorize data at import time with integrated vectorizers from OpenAI, Cohere"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     101
+    ],
+    "note": "agent skills 适用对象",
+    "quotes": [
+     "Weaviate Agent Skills is a collection of skills for AI coding agents (Claude Code, Cursor, GitHub Copilot, and others) t"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     101
+    ],
+    "quotes": [
+     "Weaviate Agent Skills is a collection of skills for AI coding agents (Claude Code, Cursor, GitHub Copilot, and others) t"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     101
+    ],
+    "quotes": [
+     "Weaviate Agent Skills is a collection of skills for AI coding agents (Claude Code, Cursor, GitHub Copilot, and others) t"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     146
+    ],
+    "note": "集成框架清单中的配合使用，非替代/竞品",
+    "quotes": [
+     "|**LLM and Agent Frameworks**|Build agents and generative AI applications|Agno, Composio, CrewAI, DSPy, Dynamiq, Haystac"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    152
+   ],
+   "quotes": [
+    "This repository contains code in our Community Edition and our Enterprise Edition. Most of this repository is available "
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

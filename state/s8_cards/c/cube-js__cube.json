@@ -1,0 +1,100 @@
+{
+ "fn": "cube-js/cube",
+ "sha": "92660131f580",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 AI、BI 与嵌入式分析的开源语义层",
+  "review": "Cube Core 是开源语义层：以代码形式集中定义指标、维度、关联与访问规则，通过 SQL、REST 和 GraphQL API 向下游暴露给 BI 工具、自定义应用或 AI agent。支持所有 SQL 数据源（Snowflake、Databricks、BigQuery、Presto、Amazon Athena、Postgres 等），内置关系缓存引擎以降低 API 请求延迟并支撑高并发。无头设计，不附带 UI。Docker 本地或自托管运行；开发模式存在认证绕过，仅限本机调试，不可用于生产。",
+  "highlights": [
+   "一次定义指标/维度/访问规则，经 SQL、REST、GraphQL API 供下游消费",
+   "兼容 Snowflake、Databricks、BigQuery、Athena、Postgres 等 SQL 数据源",
+   "内置关系缓存引擎，提供亚秒级延迟与高并发",
+   "无头设计，数据模型与商业版 Cube 双向兼容"
+  ],
+  "use_cases": [
+   "为 AI agent 提供受治理的语义层 API",
+   "自建嵌入式分析，把指标接口暴露给产品",
+   "统一内部 BI 工具的指标定义，避免重复建模"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语义层",
+   "BI/分析",
+   "嵌入式分析",
+   "数据建模"
+  ],
+  "domain": "数据/BI与分析基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: __Cube Core is the open-source semantic layer.__ Define metrics, dimensions, joins, and access rules once in code, then ",
+   "L26: Cube Core is an open, standalone semantic layer that any analytics application or AI agent can consume through standard ",
+   "L66: Cube is our commercial product — an agentic analytics platform built on Cube Core. Same semantic layer underneath, plus "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     30,
+     35,
+     39
+    ],
+    "quotes": [
+     "You can run Cube Core locally or self-host it with Docker.",
+     "docker run -p 4000:4000 \\",
+     "  cubejs/cube"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

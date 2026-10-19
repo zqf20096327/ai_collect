@@ -1,0 +1,91 @@
+{
+ "fn": "nmap/nmap",
+ "sha": "120a36986826",
+ "source": "readme",
+ "identity": {
+  "one_liner": "网络扫描与主机发现工具，供网络管理员使用",
+  "review": "GitHub 上的 Nmap 官方 SVN 镜像仓库。Nmap 是网络扫描工具（Network Mapper），提供主机发现、端口扫描等网络探测功能，并附带图形界面前端 Zenmap。README 说明安装方式为源码编译（configure/make/make install），Windows、macOS 与 Linux（RPM）的二进制安装包从 Nmap.org 获取，完整文档在 Nmap.org 网站。采用基于 GPLv2 但与其不兼容的自定义许可证，终端用户可免费使用，企业再分发需商业许可。",
+  "highlights": [
+   "提供源码编译安装（./configure && make && make install）",
+   "Windows/macOS/Linux 提供 Nmap.org 官方二进制安装包",
+   "内置 Zenmap 图形界面前端",
+   "自定义许可证：终端用户免费，企业再分发需商业许可"
+  ],
+  "use_cases": [
+   "扫描网络中的主机与开放端口",
+   "使用 Zenmap 图形界面进行网络探测",
+   "从源码在 Linux 环境编译安装 Nmap"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "网络扫描",
+   "安全工具",
+   "主机发现"
+  ],
+  "domain": "网络/安全工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L19: Installing",
+   "L30: Nmap has a lot of features, but getting started is as easy as running `nmap"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    3,
+    4,
+    5
+   ],
+   "quotes": [
+    "Nmap is released under a custom license, which is based on (but not compatible",
+    "with) GPLv2. The Nmap license allows free usage by end users, and we also offer",
+    "a commercial license for companies that wish to redistribute Nmap technology"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

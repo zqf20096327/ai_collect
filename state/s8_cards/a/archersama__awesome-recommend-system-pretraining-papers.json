@@ -1,0 +1,115 @@
+{
+ "fn": "archersama/awesome-recommend-system-pretraining-papers",
+ "sha": "b5c4ce44fe05",
+ "source": "readme",
+ "identity": {
+  "one_liner": "推荐系统预训练模型论文清单：面向科研人员的文献目录",
+  "review": "由北京大学 Xiangyang Li 维护的论文列表，收录推荐系统预训练方向的文献，按综述、数据集、实证研究、序列/会话推荐、用户表示预训练、双塔预训练、语言模型作为推荐模型、图预训练等类别组织，条目附论文链接，部分附代码链接。同时覆盖 LLM 用于推荐（ChatGPT 评测、P5、TALLRec 等）相关研究，并列出相关工作坊与相关 hub。内容以论文索引为主，不提供可运行的代码或安装方式。",
+  "highlights": [
+   "按 8+ 个研究类别组织的论文索引，条目附论文链接",
+   "覆盖 LLM 用于推荐的子方向（P5、TALLRec、LlamaRec 等）",
+   "收录数据集清单（Yelp、Tenrec、PixelRec、NineRec 等）",
+   "部分论文附代码仓库链接"
+  ],
+  "use_cases": [
+   "查找推荐系统预训练方向的论文与综述",
+   "调研 LLM 用于推荐系统的研究进展",
+   "寻找推荐系统预训练相关的公开数据集"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "论文清单",
+   "推荐系统",
+   "预训练",
+   "LLM",
+   "科研文献"
+  ],
+  "domain": "推荐系统/机器学习研究",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "recommender-system",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "作者署名北京大学",
+   "含中文博客链接（L64）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # A Paper List for Recommend-system PreTrained Models",
+   "L5: This is a paper list for pretrained recommend System (recommendation) models. It also contains some related research are"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     65,
+     66,
+     67,
+     68
+    ],
+    "note": "多篇论文以 ChatGPT 为研究对象的评测文献",
+    "quotes": [
+     "- Is ChatGPT a Good Recommender A Preliminary Study, arxiv 2023, [[paper]](https://arxiv.org/pdf/2304.10149.pdf)",
+     "- Is ChatGPT Good at Search? Investigating Large Language Models as Re-Ranking Agent, arxiv 2023, [[paper]](https://arxi",
+     "- Uncovering ChatGPT’s Capabilities in Recommender Systems, arxiv 2023, [[paper]](https://arxiv.org/pdf/2305.02182.pdf)[",
+     "- Sparks of Artificial General Recommender (AGR): Early Experiments with ChatGPT, arxiv 2023, [[paper]](https://arxiv.or"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

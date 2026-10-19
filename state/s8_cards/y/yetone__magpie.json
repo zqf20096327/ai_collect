@@ -1,0 +1,292 @@
+{
+ "fn": "yetone/magpie",
+ "sha": "b97e1bd077f3",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为多 agent 统一接入模型与账号的本地网关应用",
+  "review": "在多个 AI coding agent 与多个模型提供方之间做统一接入的本地应用：一个位于 127.0.0.1:3425 的本地网关读写各 agent 自身的配置文件，把模型选择、订阅账号、路由规则集中到一处。网关以 OpenAI Chat、OpenAI Responses、Anthropic Messages、Gemini 四种协议互通，含流式、工具调用与 reasoning。核心机制包括：按 agent 粒度改写配置（保持注释与格式）、配额耗尽时的多账号故障转移路由组、五种调度策略（smart/order/rotate/usage/pace）、基于 npm/Bun 的插件与网关中间件、用量与成本统计、局域网/远程共享。限多 agent 多 provider 用户使用；单一 agent 单一订阅的用户 README 明确表示不适用。",
+  "highlights": [
+   "本地网关翻译 OpenAI/Anthropic/Gemini 协议，含流式、工具调用与 reasoning",
+   "配额耗尽自动切换账号/模型，五种路由策略（smart/order/rotate/usage/pace）",
+   "原子改写各 agent 自身配置，保留注释与格式；Profiles 一键切换全套配置",
+   "npm/Bun 插件体系与网关中间件（param-override、model-map、word-guard 等）"
+  ],
+  "use_cases": [
+   "在多个 coding agent 间统一切换模型与提供方",
+   "多个订阅账号之间做配额故障转移与轮换",
+   "给不能联网搜索的模型统一挂上网络搜索能力",
+   "在服务器/NAS 上以 Docker 部署共享网关给局域网设备"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM网关",
+   "coding agent",
+   "模型路由",
+   "代理工具",
+   "桌面应用"
+  ],
+  "domain": "LLM 基础设施/网关与路由",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "deepseek",
+   "xai",
+   "groq",
+   "openrouter",
+   "bedrock",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "赞助商含中文名称（零词元）",
+   "支持简体中文文档",
+   "支持国内厂商预设（DeepSeek/Kimi/智谱/百度千帆/火山方舟等）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L8: Switch any of them from the menu bar. One local gateway serves them all,",
+   "L73: The gateway at `127.0.0.1:3425` speaks OpenAI Chat, OpenAI Responses, Anthropic Messages and Gemini, and translates betw",
+   "L91: > **Presets include** Anthropic · OpenAI · Google Gemini · Google Vertex AI · Amazon Bedrock (runtime and Mantle) · Deep"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     7,
+     27,
+     67,
+     91,
+     101
+    ],
+    "note": "官方预设与 Anthropic Messages 协议、Claude 订阅接入",
+    "quotes": [
+     "**Claude Code on Kimi. Codex on DeepSeek. Gemini CLI on GLM. OpenCode on your ChatGPT plan.**",
+     "- **Use one provider everywhere**: an API key, a local model, or the Claude, ChatGPT, Copilot, Gemini or Grok plan you'r",
+     "export ANTHROPIC_BASE_URL=http://127.0.0.1:3425     ANTHROPIC_API_KEY=magpie",
+     "> **Presets include** Anthropic · OpenAI · Google Gemini · Google Vertex AI · Amazon Bedrock (runtime and Mantle) · Deep",
+     "- **Claude**: drives the real local `claude` binary and bridges your agent's tools over MCP"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     7,
+     51,
+     91
+    ],
+    "note": "官方预设与示例命令",
+    "quotes": [
+     "**Claude Code on Kimi. Codex on DeepSeek. Gemini CLI on GLM. OpenCode on your ChatGPT plan.**",
+     "magpie provider add deepseek sk-…              # a preset needs only the key",
+     "> **Presets include** Anthropic · OpenAI · Google Gemini · Google Vertex AI · Amazon Bedrock (runtime and Mantle) · Deep"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     91,
+     103
+    ],
+    "note": "xAI 预设与 Grok 订阅",
+    "quotes": [
+     "> **Presets include** Anthropic · OpenAI · Google Gemini · Google Vertex AI · Amazon Bedrock (runtime and Mantle) · Deep",
+     "- **GitHub Copilot**, **Gemini (Code Assist)**, **Antigravity**, **Grok (SuperGrok)** and more"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     91
+    ],
+    "quotes": [
+     "> **Presets include** Anthropic · OpenAI · Google Gemini · Google Vertex AI · Amazon Bedrock (runtime and Mantle) · Deep"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     91
+    ],
+    "quotes": [
+     "> **Presets include** Anthropic · OpenAI · Google Gemini · Google Vertex AI · Amazon Bedrock (runtime and Mantle) · Deep"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     91
+    ],
+    "note": "Amazon Bedrock 作为官方预设接入",
+    "quotes": [
+     "> **Presets include** Anthropic · OpenAI · Google Gemini · Google Vertex AI · Amazon Bedrock (runtime and Mantle) · Deep"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     91
+    ],
+    "note": "本地模型预设",
+    "quotes": [
+     "> **Presets include** Anthropic · OpenAI · Google Gemini · Google Vertex AI · Amazon Bedrock (runtime and Mantle) · Deep"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "go",
+    "rel": "mention",
+    "lines": [
+     42
+    ],
+    "note": "go install 为安装途径之一",
+    "quotes": [
+     " Mac builds are signed and notarised, and every build updates itself. Behind a firewall, use `--proxy` or `--mirror`. Or"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     7,
+     57,
+     61,
+     93
+    ],
+    "note": "被接入/被管理的 agent，非替代对象",
+    "quotes": [
+     "**Claude Code on Kimi. Codex on DeepSeek. Gemini CLI on GLM. OpenCode on your ChatGPT plan.**",
+     "magpie finds the subscriptions your agents are signed in to by reading their sign-ins (Claude Code's and Codex's files, ",
+     "Claude Code · Claude Desktop · Claude Science · Codex · Gemini CLI · Antigravity CLI · OpenCode · OpenChamber · MiMo Cod",
+     "**Import** brings in the providers from CC Switch, Claude Code, Codex and Alma. **Add to magpie** links let a provider's"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     102,
+     106
+    ],
+    "note": "作为订阅来源接入",
+    "quotes": [
+     "- **Codex / ChatGPT**: your ChatGPT plan's models, in every other agent",
+     "**Daily warm-up** starts each Claude and ChatGPT account's 5-hour window at the times you choose, or the moment the last"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     7,
+     53,
+     91
+    ],
+    "note": "提供方/预设，非竞品宣称",
+    "quotes": [
+     "**Claude Code on Kimi. Codex on DeepSeek. Gemini CLI on GLM. OpenCode on your ChatGPT plan.**",
+     "magpie codex moonshot/kimi-k2.5                 # Codex on Kimi",
+     "> **Presets include** Anthropic · OpenAI · Google Gemini · Google Vertex AI · Amazon Bedrock (runtime and Mantle) · Deep"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     103
+    ],
+    "note": "作为订阅来源接入",
+    "quotes": [
+     "- **GitHub Copilot**, **Gemini (Code Assist)**, **Antigravity**, **Grok (SuperGrok)** and more"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     61
+    ],
+    "quotes": [
+     "Claude Code · Claude Desktop · Claude Science · Codex · Gemini CLI · Antigravity CLI · OpenCode · OpenChamber · MiMo Cod"
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     61
+    ],
+    "quotes": [
+     "Claude Code · Claude Desktop · Claude Science · Codex · Gemini CLI · Antigravity CLI · OpenCode · OpenChamber · MiMo Cod"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     91
+    ],
+    "note": "Qwen 预设，提供方接入",
+    "quotes": [
+     "> **Presets include** Anthropic · OpenAI · Google Gemini · Google Vertex AI · Amazon Bedrock (runtime and Mantle) · Deep"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

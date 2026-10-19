@@ -1,0 +1,104 @@
+{
+ "fn": "leon-ai/leon",
+ "sha": "153f4fad2373",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源个人 AI 助手：以工具、上下文、记忆与 agent 执行完成任务",
+  "review": "Leon 是一个开源个人 AI 助手，围绕工具、上下文、记忆与 agentic 执行构建。三种运行模式：smart 自动选择、controlled 走确定性原生技能、agent 逐步规划；技能分 native 与 SKILL.md 格式的 agent 两类，并含可操作桌面与浏览器界面的 computer use 能力。支持本地与远程 AI 提供商以平衡隐私。需 Node.js >= 24，克隆仓库后 pnpm 运行，默认本地 http://localhost:5366 访问。当前为 2.0 Developer Preview，新文档尚未就绪。",
+  "highlights": [
+   "smart/controlled/agent 三种执行模式",
+   "原生技能与 SKILL.md agent 技能双层体系",
+   "渐进加载的 computer use 可操作桌面与浏览器界面",
+   "支持本地与远程 AI 提供商"
+  ],
+  "use_cases": [
+   "本地运行个人助手以减少数据经第三方服务",
+   "让助手用工具端到端完成确定性工作流",
+   "用 agent 模式逐步规划复杂任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    14,
+    17,
+    113
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "个人助理",
+   "AI助手/Agent",
+   "本地优先",
+   "自动化"
+  ],
+  "domain": "个人助手/自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "ai-assistant"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L31: **Leon** is **your open-source personal AI assistant** built around **tools, context, memory, and agentic execution**.",
+   "L41: - Leon can run in different ways depending on the task: `smart` mode chooses for you, `controlled` mode follows determin",
+   "L47: - Leon supports both local and remote AI providers, which helps balance privacy, control, and capability."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     70,
+     72
+    ],
+    "quotes": [
+     "```sh",
+     "git clone https://github.com/leon-ai/leon.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

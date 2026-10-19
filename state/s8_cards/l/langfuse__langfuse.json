@@ -1,0 +1,227 @@
+{
+ "fn": "langfuse/langfuse",
+ "sha": "7620421440d4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "LLM 应用的开源追踪与评估平台：开发、监控、调试 AI 应用",
+  "review": "开源 LLM 工程平台，供团队协作开发、监控、评估和调试 AI 应用。核心机制包括：应用埋点摄入 trace 以跟踪 LLM 调用、检索、嵌入与 agent 动作；集中式 Prompt 管理与版本控制（服务端/客户端缓存）；支持 LLM-as-a-judge、代码评估器、用户反馈、人工标注等评估方式；数据集支持测试集与基准；LLM Playground 迭代提示词。可通过 Docker Compose、Kubernetes (Helm) 或 Terraform 自托管，也提供 Langfuse Cloud 托管版与 Python/JS-TS SDK。",
+  "highlights": [
+   "可观测性：摄取 trace 跟踪 LLM 调用、检索、嵌入与 agent 动作",
+   "Prompt 集中管理与版本控制，含服务端与客户端缓存",
+   "评估支持 LLM-as-a-judge、代码评估器、用户反馈、人工标注与自定义管线",
+   "提供 Python/JS-TS SDK、OpenAPI 规范与 Postman 集合"
+  ],
+  "use_cases": [
+   "为我的 LLM 应用接入 trace 追踪，检查复杂日志和用户会话",
+   "用数据集和 LLM-as-a-judge 在部署前测试评估我的应用",
+   "自托管一套平台集中管理团队提示词与评估流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://langfuse.com/demo",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM可观测性",
+   "评估/Evals",
+   "Prompt管理",
+   "LLMOps"
+  ],
+  "domain": "LLM 基础设施/可观测性与评估",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "prompt-engineering",
+   "llm-observability"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L49: Langfuse is an **open source LLM engineering** platform. It helps teams collaboratively",
+   "L62: - LLM Application Observability: Instrument your app and start ingesting traces to Langfuse, thereby tracking LLM calls ",
+   "L74: ## 📦 Deploy Langfuse"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     129
+    ],
+    "note": "LiteLLM 集成描述中列举的模型来源之一",
+    "quotes": [
+     "|LiteLLM|Python, JS/TS (proxy only)|Use any LLM as a drop in replacement for GPT. Use Azure, OpenAI, Cohere, Anthropic, "
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     129,
+     141
+    ],
+    "note": "列为已集成的本地模型运行器",
+    "quotes": [
+     "|LiteLLM|Python, JS/TS (proxy only)|Use any LLM as a drop in replacement for GPT. Use Azure, OpenAI, Cohere, Anthropic, ",
+     "|Ollama|Model (local)|Easily run open source LLMs on your own machine.|"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     129
+    ],
+    "note": "LiteLLM 描述中列举",
+    "quotes": [
+     "|LiteLLM|Python, JS/TS (proxy only)|Use any LLM as a drop in replacement for GPT. Use Azure, OpenAI, Cohere, Anthropic, "
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "mention",
+    "lines": [
+     142
+    ],
+    "note": "Amazon Bedrock 作为可追踪的模型来源，非 AWS Bedrock 专属适配通道",
+    "quotes": [
+     "|Amazon Bedrock|Model|Run foundation and fine-tuned models on AWS.|"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     90,
+     97,
+     98,
+     101
+    ],
+    "quotes": [
+     "- Local (docker compose): Run Langfuse on your own machine in 5 minutes using Docker Compose.",
+     "  # Run the langfuse docker compose",
+     "  docker compose up",
+     "- VM: Run Langfuse on a single Virtual Machine using Docker Compose."
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     175
+    ],
+    "note": "SDK 安装方式",
+    "quotes": [
+     "pip install langfuse openai"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     94
+    ],
+    "note": "git clone 仓库以获取 docker compose 文件",
+    "quotes": [
+     "  git clone --depth=1 https://github.com/langfuse/langfuse.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     68,
+     126
+    ],
+    "note": "被集成的框架",
+    "quotes": [
+     "- Datasets enable test sets and benchmarks for evaluating your LLM application. They support continuous improvement, pre",
+     "|Langchain|Python, JS/TS|Automated instrumentation by passing callback handler to Langchain application.|"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     129
+    ],
+    "note": "LiteLLM 描述中列举",
+    "quotes": [
+     "|LiteLLM|Python, JS/TS (proxy only)|Use any LLM as a drop in replacement for GPT. Use Azure, OpenAI, Cohere, Anthropic, "
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     130
+    ],
+    "note": "列为主要集成",
+    "quotes": [
+     "|Vercel AI SDK|JS/TS|TypeScript toolkit designed to help developers build AI-powered applications with React, Next.js, V"
+    ]
+   },
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     146
+    ],
+    "note": "列为已集成的包",
+    "quotes": [
+     "|Dify|Chat/Agent&nbsp;UI|Open source LLM app development platform with no-code builder.|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

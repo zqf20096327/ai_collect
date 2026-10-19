@@ -1,0 +1,154 @@
+{
+ "fn": "owainlewis/awesome-artificial-intelligence",
+ "sha": "a96b5513d4aa",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者学习构建生成式与 Agent 系统的 AI 资源清单",
+  "review": "一份由自动化流程每周评审维护的 AI 学习与实践资源精选清单，收录书籍、课程、论文、指南与开源工具链接，覆盖基础理论、LLM 应用工程、协议规范、Agent 框架、检索、评估、部署观测及编码 Agent 等分类。声明每条目须经质量门槛筛选，非全量产品目录。以 Markdown 清单形式提供，无安装或运行环节，资源多为外部链接。",
+  "highlights": [
+   "按学习路径组织：书籍/课程/基础论文到构建、评估、部署",
+   "收录 Agent 框架、MCP/A2A 协议及编码 Agent 等工程资源条目",
+   "声明由证据驱动的自动化流程每周评审与合并更新"
+  ],
+  "use_cases": [
+   "系统学习大模型与 Agent 开发的基础知识",
+   "查找 LLM 应用工程各环节的开源工具与指南",
+   "按论文（Transformer、RAG、LoRA、RLHF 等）溯源技术原理"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "资源清单",
+   "AI学习",
+   "Agent开发",
+   "LLM"
+  ],
+  "domain": "AI 教育/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: An opinionated, actively maintained collection of resources for software developers learning to build and ship generativ",
+   "L14: This is not a comprehensive directory of AI products. Every entry must clear an absolute quality bar for technical depth",
+   "L20: ## Learn"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     68,
+     75
+    ],
+    "note": "指南与提示工程技术来源方",
+    "quotes": [
+     "- Building Effective Agents: Anthropic's practical patterns and tradeoffs for agentic systems.",
+     "- Anthropic Prompt Engineering: Techniques for defining success criteria, testing prompts, and improving model behaviour"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     70
+    ],
+    "quotes": [
+     "- Awesome DeepSeek Agent: DeepSeek's official setup guides for integrating its models with coding agents including Claud"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     116
+    ],
+    "note": "清单条目，非接入方式",
+    "quotes": [
+     "- vLLM: An inference and serving engine for language models."
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     126
+    ],
+    "note": "清单收录条目，非替代/竞品",
+    "quotes": [
+     "- Claude Code: A terminal agent with hooks, subagents, skills, and repository-level instructions."
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     129
+    ],
+    "quotes": [
+     "- Cursor CLI: A terminal agent connected to Cursor's editor and cloud workflows."
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     130
+    ],
+    "quotes": [
+     "- GitHub Copilot coding agent: An asynchronous agent that works from GitHub issues and opens pull requests."
+    ]
+   }
+  ]
+ }
+}

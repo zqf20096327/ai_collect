@@ -1,0 +1,307 @@
+{
+ "fn": "harry0703/MoneyPrinterTurbo",
+ "sha": "3be95074f7e4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给内容创作者：按主题一键生成配音字幕齐全的高清短视频",
+  "review": "以主题或关键词为输入的自动化短视频生成流水线：依次完成脚本生成、素材匹配（本地/库存/AI 文生视频）、配音（Edge TTS 等多种服务）、字幕生成（edge/whisper 两种模式）、背景音乐合成与成片剪辑，支持 9:16/16:9/1:1 三种画幅及批量生成。提供 AI Agent、WebUI、API 和 CLI 四种使用方式，可一键上传至 TikTok、Instagram、YouTube Shorts。脚本生成依赖外部大模型 API Key，GPU 非必需。",
+  "highlights": [
+   "提供 AI Agent、WebUI、API 和 CLI 四种使用方式",
+   "支持 Kimi、OpenAI、Claude、Gemini、DeepSeek、通义千问等多种模型服务及统一网关",
+   "集成 Edge TTS（免费无 Key）等十余种配音服务与 faster-whisper 本地转写",
+   "支持跨平台自动发布至 TikTok、Instagram、YouTube Shorts"
+  ],
+  "use_cases": [
+   "输入一个主题批量产出带货或科普短视频",
+   "用 CLI 批处理清单顺序生成多条视频任务",
+   "通过 API 把视频生成接入自己的自动化工作流"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": "gpu-8g",
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI视频生成",
+   "短视频创作",
+   "视频自动化",
+   "内容创作"
+  ],
+  "domain": "内容创作/视频生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "anthropic",
+   "xai",
+   "azure",
+   "groq",
+   "openrouter",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "ai-writing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "Kimi/火山引擎/通义千问等国内服务接入"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: 只需提供视频 主题 或 关键词 ，即可自动生成视频脚本、匹配素材、生成字幕和背景音乐，并合成高清短视频。",
+   "L118: - [x] 提供 **AI Agent、WebUI、API 和 CLI** 四种使用方式，既能快速上手，也能接入自动化流程",
+   "L125: - [x] 支持 Kimi / Moonshot AI、OpenAI、Anthropic Claude、Google Gemini、DeepSeek、阿里云通义千问、Microsoft Azure OpenAI、火山引擎方舟、xAI Gro"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     125
+    ],
+    "quotes": [
+     "- [x] 支持 Kimi / Moonshot AI、OpenAI、Anthropic Claude、Google Gemini、DeepSeek、阿里云通义千问、Microsoft Azure OpenAI、火山引擎方舟、xAI Gro"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     125
+    ],
+    "quotes": [
+     "- [x] 支持 Kimi / Moonshot AI、OpenAI、Anthropic Claude、Google Gemini、DeepSeek、阿里云通义千问、Microsoft Azure OpenAI、火山引擎方舟、xAI Gro"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     125
+    ],
+    "quotes": [
+     "- [x] 支持 Kimi / Moonshot AI、OpenAI、Anthropic Claude、Google Gemini、DeepSeek、阿里云通义千问、Microsoft Azure OpenAI、火山引擎方舟、xAI Gro"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     125
+    ],
+    "quotes": [
+     "- [x] 支持 Kimi / Moonshot AI、OpenAI、Anthropic Claude、Google Gemini、DeepSeek、阿里云通义千问、Microsoft Azure OpenAI、火山引擎方舟、xAI Gro"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     126
+    ],
+    "quotes": [
+     "- [x] 兼容 胜算云、APIMart、Cloudflare AI Gateway、魔搭 ModelScope、AIHubMix、AIML API、EvoLink、OpenRouter、API Route、Fluxion AI、Ollam"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     126
+    ],
+    "quotes": [
+     "- [x] 兼容 胜算云、APIMart、Cloudflare AI Gateway、魔搭 ModelScope、AIHubMix、AIML API、EvoLink、OpenRouter、API Route、Fluxion AI、Ollam"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     126
+    ],
+    "quotes": [
+     "- [x] 兼容 胜算云、APIMart、Cloudflare AI Gateway、魔搭 ModelScope、AIHubMix、AIML API、EvoLink、OpenRouter、API Route、Fluxion AI、Ollam"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     214,
+     216,
+     218
+    ],
+    "quotes": [
+     "### 在 Google Colab 中运行",
+     "免去本地环境配置，点击直接在 Google Colab 中快速体验 MoneyPrinterTurbo",
+     "Open in Colab"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     238,
+     262
+    ],
+    "quotes": [
+     "官方 PyPI 包名为 **mpt**，由 `harry0703` 维护。",
+     "python -m pip install mpt"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     291
+    ],
+    "quotes": [
+     "git clone https://github.com/harry0703/MoneyPrinterTurbo.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     311,
+     315
+    ],
+    "quotes": [
+     "docker compose -f docker-compose.release.yml up",
+     "> 如果你需要本地重新构建镜像，可以继续使用 `docker compose up`。"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "RAM|4 GB",
+    "rel": "support",
+    "lines": [
+     189
+    ],
+    "quotes": [
+     "|RAM|4 GB|8 GB|16 GB 及以上|"
+    ]
+   },
+   {
+    "term": "4 GB 显存",
+    "rel": "support",
+    "lines": [
+     190
+    ],
+    "quotes": [
+     "|GPU|非必须|4 GB 显存及以上|8 GB 显存及以上|"
+    ]
+   },
+   {
+    "term": "不需要 GPU",
+    "rel": "support",
+    "lines": [
+     184
+    ],
+    "quotes": [
+     "- GPU 不是必需项，但如果你希望本地转录、更快的视频处理或更顺畅的批量生成体验，建议使用带显存的独立显卡"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     25,
+     125
+    ],
+    "note": "赞助商及支持的模型服务，非竞品对比",
+    "quotes": [
+     " Kimi 赞助 MoneyPrinterTurbo",
+     "- [x] 支持 Kimi / Moonshot AI、OpenAI、Anthropic Claude、Google Gemini、DeepSeek、阿里云通义千问、Microsoft Azure OpenAI、火山引擎方舟、xAI Gro"
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     34
+    ],
+    "note": "赞助文案中提及的模型",
+    "quotes": [
+     " 感谢字节火山引擎赞助本项目！火山方舟 Agent/Coding Plan 国模套餐 首购 9.9 ，支持 GLM-5.3、Kimi-K3、DeepSeek、MiniMax、Doubao 等，注册免费领 2500w Token ，统一 AP"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     62
+    ],
+    "note": "赞助文案中提及的模型",
+    "quotes": [
+     " 感谢胜算云对本项目的赞助！胜算云是面向 AI 原生团队的模型 API 聚合平台，汇集 Claude、ChatGPT、Gemini 等海内外大语言模型及多媒体模型，支持统一接入与按量调用。"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     71
+    ],
+    "note": "聚合平台文案中提及，另有 L125 支持接入",
+    "quotes": [
+     " 🚀 200+ 大模型一键调用，新模型当日上架 ：聚合 DeepSeek V4.1、Kimi K3、Qwen 3.8 Max、GLM 5.3 等 200+ 主流大模型，新模型上线当天即可接入"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     126
+    ],
+    "note": "兼容的订阅接入方式",
+    "quotes": [
+     "- [x] 兼容 胜算云、APIMart、Cloudflare AI Gateway、魔搭 ModelScope、AIHubMix、AIML API、EvoLink、OpenRouter、API Route、Fluxion AI、Ollam"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

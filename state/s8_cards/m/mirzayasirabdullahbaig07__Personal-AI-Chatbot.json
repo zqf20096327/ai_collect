@@ -1,0 +1,92 @@
+{
+ "fn": "mirzayasirabdullahbaig07/Personal-AI-Chatbot",
+ "sha": "86b5b0f08b25",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于 Gemini API 的网页版个人聊天机器人前端项目",
+  "review": "用 HTML、CSS 与原生 JavaScript 实现的浏览器端聊天机器人，通过 Google Gemini API 生成实时回复。功能包括逐词打字效果、上传图片/PDF/CSV/文本并预览、明暗主题切换（localStorage 保存偏好）、建议提示面板、清空聊天记录与中断回复，界面响应式适配多设备。使用方式为直接打开 index.html；README 声明仅用于教育目的，不供商业使用。",
+  "highlights": [
+   "接入 Google Gemini API 实时生成回复",
+   "支持上传图片、PDF、CSV、文本并预览",
+   "明暗主题切换与聊天记录管理",
+   "纯前端实现（HTML5/CSS3/原生 JS），打开 index.html 即可运行"
+  ],
+  "use_cases": [
+   "学习 Gemini API 集成与前端聊天界面的实现",
+   "教育演示用个人 AI 聊天助手",
+   "体验带文件上传与主题切换的网页对话应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "聊天机器人",
+   "前端项目",
+   "Gemini API",
+   "教学示例"
+  ],
+  "domain": "对话应用/前端",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "chatbot"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: A **fully interactive AI-powered chatbot** built with **HTML, CSS, and JavaScript**, integrated with **Google Gemini API",
+   "L10: - **Conversational AI**: Uses Google Gemini API for generating intelligent responses."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

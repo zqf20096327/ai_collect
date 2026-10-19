@@ -1,0 +1,282 @@
+{
+ "fn": "rohitg00/agentmemory",
+ "sha": "d654d9ae4f66",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI 编码 agent 提供跨会话持久记忆的 MCP 服务器",
+  "review": "基于 iii 引擎的记忆服务：通过 12 个自动 hook 捕获 agent 会话，压缩为可检索记忆，下次会话时注入相关上下文；支持 BM25、本地向量嵌入（Xenova/all-MiniLM-L6-v2）与图结构匹配的混合检索（RRF 融合），提供 54 个 MCP 工具与 REST API。兼容支持 hooks、MCP 或 REST 的任意 agent，官方列出 20 余个适配器。无外部数据库依赖（SQLite + 内置 iii 引擎）。可配置 LLM provider 实现 LLM 压缩，也可完全 keyless 运行。",
+  "highlights": [
+   "54 个 MCP 工具 + 12 个自动 hook，静默捕获会话并注入上下文",
+   "BM25 + 本地向量 + 图匹配的混合检索，keyless 模式默认可用",
+   "20+ agent 适配器（Claude Code、Codex CLI、Cursor 等），共享同一记忆服务器",
+   "无外部数据库依赖，状态存于本地 SQLite + iii 引擎"
+  ],
+  "use_cases": [
+   "避免每次会话向编码 agent 重复解释项目架构与偏好",
+   "多个编码工具（如 Claude Code 与 Cursor）间共享同一份项目记忆",
+   "本地离线运行语义记忆检索（本地嵌入模型，无 API key）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent记忆",
+   "MCP",
+   "编码助手",
+   "开发者工具",
+   "本地推理"
+  ],
+  "domain": "AI 开发者工具/agent 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "agent-memory",
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L6:  Persistent memory for Claude Code, GitHub Copilot CLI, Cursor, Gemini CLI, Codex CLI, Hermes, OpenClaw, pi, OpenCode, a",
+   "L132: agentmemory works with any agent that supports hooks, MCP, or REST API. All agents share the same memory server.",
+   "L236: You explain the same architecture every session. You re-discover the same bugs. You re-teach the same preferences. Built"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker",
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     6,
+     89
+    ],
+    "note": "Claude Code 为接入对象，可配置 LLM provider",
+    "quotes": [
+     " Persistent memory for Claude Code, GitHub Copilot CLI, Cursor, Gemini CLI, Codex CLI, Hermes, OpenClaw, pi, OpenCode, a",
+     "The first run is an interactive setup: pick the agents to wire (Claude Code, Cursor, Codex, Gemini CLI, OpenCode, ...), "
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     214
+    ],
+    "note": "DeepSeek Harness 通过 MCP 服务器接入",
+    "quotes": [
+     "DeepSeek Harness"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "openrouter",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "ollama",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "vllm",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     79,
+     86,
+     117
+    ],
+    "quotes": [
+     "- Node.js 20 or newer with npm and npx (`node -v`, `npm -v`, and `npx -v`).",
+     "npx -y @agentmemory/agentmemory@latest",
+     "npm install -g @agentmemory/agentmemory@latest"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "mention",
+    "lines": [
+     112
+    ],
+    "note": "Windows 需手动下载 iii.exe，属依赖组件非本产品安装途径",
+    "quotes": [
+     "The fast path is WSL2. Native Windows engine setup requires the pinned v0.22.1 ZIP to be downloaded and `iii.exe` extrac"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "source",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     251
+    ],
+    "note": "Docker Desktop 为 Windows 支持路径，bind-mount 数据目录",
+    "quotes": [
+     "Native and Docker launches use this same resolved host directory; Docker bind-mounts it at `/data`. `--instance 1` appen"
+    ]
+   },
+   {
+    "term": "cargo",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "go",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     6,
+     142
+    ],
+    "note": "被接入的 agent，非替代/竞品对象",
+    "quotes": [
+     " Persistent memory for Claude Code, GitHub Copilot CLI, Cursor, Gemini CLI, Codex CLI, Hermes, OpenClaw, pi, OpenCode, a",
+     " GitHub Copilot CLI"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     6,
+     134
+    ],
+    "note": "被接入的 agent",
+    "quotes": [
+     " Persistent memory for Claude Code, GitHub Copilot CLI, Cursor, Gemini CLI, Codex CLI, Hermes, OpenClaw, pi, OpenCode, a",
+     "Claude Code"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     6,
+     146
+    ],
+    "note": "被接入的 agent；另在 L236 提及其内置 .cursorrules 局限",
+    "quotes": [
+     " Persistent memory for Claude Code, GitHub Copilot CLI, Cursor, Gemini CLI, Codex CLI, Hermes, OpenClaw, pi, OpenCode, a",
+     " Cursor"
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     154
+    ],
+    "note": "被接入的 agent",
+    "quotes": [
+     "Devin"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     210
+    ],
+    "note": "Qwen Code 通过 MCP 服务器接入",
+    "quotes": [
+     " Qwen Code"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "none",
+    "lines": [],
+    "note": "Xenova/all-MiniLM-L6-v2 为嵌入模型，未见 Hugging Face 平台提及",
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

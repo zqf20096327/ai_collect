@@ -1,0 +1,258 @@
+{
+ "fn": "DayuanJiang/next-ai-draw-io",
+ "sha": "7428f882f746",
+ "source": "readme",
+ "identity": {
+  "one_liner": "通过对话生成与编辑 draw.io 图表的 AI 工具",
+  "review": "以自然语言描述生成 draw.io 图表的工具，支持手动编辑、选中局部让 AI 修改、每次 AI 变更生成可对比/恢复/撤销的版本卡片，导出 .drawio/.png/.svg。内置 AWS/Azure/GCP/Kubernetes 图标库，可上传截图、草图、PDF、Markdown 等由 AI 重绘为图表。提供 Web 应用、Windows/macOS/Linux 桌面应用及面向 Claude Code、Cursor、VS Code 等 agent 的 MCP 服务器；支持 25 家模型服务商，API key 存于本地浏览器。自托管需配置服务商与 API key。",
+  "highlights": [
+   "对话生成与局部选中编辑，每次 AI 变更为可对比/恢复的版本卡片",
+   "MCP 服务器形式接入 Claude Code、Cursor、VS Code 等客户端",
+   "内置 AWS、Azure、GCP、Kubernetes 图标库与连接线流动动画",
+   "支持 25 家模型服务商及 OpenAI 兼容自定义 URL，key 保留在本地"
+  ],
+  "use_cases": [
+   "一句话生成云架构图、流程图、时序图",
+   "把截图、草图或代码文件重绘为图表",
+   "在 Cursor/VS Code 等 agent 中直接绘制图表",
+   "自托管部署给团队内部使用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "next-ai-drawio.jiang.jp",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图表生成",
+   "draw.io",
+   "MCP服务器",
+   "对话式编辑",
+   "架构图"
+  ],
+  "domain": "开发者工具/图表生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "ollama",
+   "deepseek",
+   "openrouter",
+   "azure",
+   "bedrock"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: **Draw and edit draw.io diagrams by chatting with an AI.**",
+   "L18: Available as a web app, a desktop app for Windows, macOS and Linux, and an MCP server for AI agents such as Claude Code,",
+   "L150: 25 providers are supported: AWS Bedrock (default), OpenAI, Anthropic, Google AI, Google Vertex AI, Azure OpenAI, Ollama,"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     150
+    ],
+    "quotes": [
+     "25 providers are supported: AWS Bedrock (default), OpenAI, Anthropic, Google AI, Google Vertex AI, Azure OpenAI, Ollama,"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     150
+    ],
+    "quotes": [
+     "25 providers are supported: AWS Bedrock (default), OpenAI, Anthropic, Google AI, Google Vertex AI, Azure OpenAI, Ollama,"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     150
+    ],
+    "quotes": [
+     "25 providers are supported: AWS Bedrock (default), OpenAI, Anthropic, Google AI, Google Vertex AI, Azure OpenAI, Ollama,"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     150
+    ],
+    "quotes": [
+     "25 providers are supported: AWS Bedrock (default), OpenAI, Anthropic, Google AI, Google Vertex AI, Azure OpenAI, Ollama,"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     150
+    ],
+    "quotes": [
+     "25 providers are supported: AWS Bedrock (default), OpenAI, Anthropic, Google AI, Google Vertex AI, Azure OpenAI, Ollama,"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     150
+    ],
+    "quotes": [
+     "25 providers are supported: AWS Bedrock (default), OpenAI, Anthropic, Google AI, Google Vertex AI, Azure OpenAI, Ollama,"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     150
+    ],
+    "quotes": [
+     "25 providers are supported: AWS Bedrock (default), OpenAI, Anthropic, Google AI, Google Vertex AI, Azure OpenAI, Ollama,"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     83
+    ],
+    "quotes": [
+     "Download the Windows, macOS or Linux installer from the Releases page."
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     131
+    ],
+    "quotes": [
+     "npm install"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     129
+    ],
+    "quotes": [
+     "git clone https://github.com/DayuanJiang/next-ai-draw-io"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     18,
+     100,
+     106
+    ],
+    "note": "MCP 客户端接入对象，非替代/竞品",
+    "quotes": [
+     "Available as a web app, a desktop app for Windows, macOS and Linux, and an MCP server for AI agents such as Claude Code,",
+     "For Claude Code, one command does it (`--scope user` makes it available in every project):",
+     "It is also a plugin in the Claude Code community marketplace (Claude Code 2.1.275 or later):"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     18,
+     98
+    ],
+    "note": "MCP 客户端接入对象",
+    "quotes": [
+     "Available as a web app, a desktop app for Windows, macOS and Linux, and an MCP server for AI agents such as Claude Code,",
+     "In VS Code or Cursor, one click adds it: Install in VS Code Add to Cursor"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     150
+    ],
+    "note": "列为受支持的模型服务商",
+    "quotes": [
+     "25 providers are supported: AWS Bedrock (default), OpenAI, Anthropic, Google AI, Google Vertex AI, Azure OpenAI, Ollama,"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     150
+    ],
+    "note": "列为受支持的模型服务商",
+    "quotes": [
+     "25 providers are supported: AWS Bedrock (default), OpenAI, Anthropic, Google AI, Google Vertex AI, Azure OpenAI, Ollama,"
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     150
+    ],
+    "note": "ByteDance Doubao，列为受支持的模型服务商",
+    "quotes": [
+     "25 providers are supported: AWS Bedrock (default), OpenAI, Anthropic, Google AI, Google Vertex AI, Azure OpenAI, Ollama,"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,191 @@
+{
+ "fn": "pydantic/pydantic-ai",
+ "sha": "96552837b32c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 Python 开发者的类型安全 AI Agent SDK",
+  "review": "Pydantic 团队出品的 Python AI SDK，核心是带类型标注的可扩展 agent 循环：结构化输出、依赖注入与工具参数校验由 Pydantic 类型系统保证。同一 agent 定义可运行于终端 CLI、Web 聊天、实时语音会话、持久化后台队列或 GitHub Actions。配套 Harness 能力库提供记忆、护栏、子 agent、规划等能力；另有 Evals 评估、Graph 控制流、OpenTelemetry 原生可观测性。安装经 PyPI/uv，无需编译，内置 'test' 模型可不带 API key 起步。",
+  "highlights": [
+   "任意模型通过字符串切换，统一 Python API（OpenAI、Anthropic、Google、Bedrock、Ollama 等数十家）",
+   "类型端到端：结构化输出、类型化依赖注入与工具 schema 校验",
+   "九种持久化执行引擎（Temporal、DBOS、Prefect、Restate、AWS Lambda 等），支持人审",
+   "实时语音（OpenAI Realtime、Gemini Live、Azure、xAI Grok Voice）与图像生成同栈提供"
+  ],
+  "use_cases": [
+   "用 Python 构建带类型校验的结构化数据抽取 pipeline",
+   "搭建需要长时运行、可从崩溃恢复的多 agent 工作流",
+   "在终端或 GitHub Actions 中运行编码 agent",
+   "为同一 agent 增加实时语音对话前端"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent框架",
+   "LLM基础设施",
+   "类型安全",
+   "实时语音",
+   "持久化工作流"
+  ],
+  "domain": "LLM 基础设施/Agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "LangChain"
+  ],
+  "ecosystem_compat": [
+   "anthropic",
+   "xai",
+   "groq",
+   "bedrock",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "voice-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L18: **Pydantic AI** is the Python AI SDK: a typed, extensible agent loop with every model a string swap away. The same agent",
+   "L157: - **Any model, one Python API.** Virtually every model and provider (OpenAI, Anthropic, Google, Bedrock, Azure AI Foundr",
+   "L163: - **Batteries, composably.** One primitive, the capability, bundles tools, instructions, hooks, and model settings into "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     157
+    ],
+    "quotes": [
+     "- **Any model, one Python API.** Virtually every model and provider (OpenAI, Anthropic, Google, Bedrock, Azure AI Foundr"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     157,
+     165
+    ],
+    "quotes": [
+     "- **Any model, one Python API.** Virtually every model and provider (OpenAI, Anthropic, Google, Bedrock, Azure AI Foundr",
+     "- **Every interface.** One agent definition runs as a CLI, a built-in web chat, or realtime speech (OpenAI Realtime, Gem"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     157
+    ],
+    "quotes": [
+     "- **Any model, one Python API.** Virtually every model and provider (OpenAI, Anthropic, Google, Bedrock, Azure AI Foundr"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     157
+    ],
+    "quotes": [
+     "- **Any model, one Python API.** Virtually every model and provider (OpenAI, Anthropic, Google, Bedrock, Azure AI Foundr"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     157
+    ],
+    "quotes": [
+     "- **Any model, one Python API.** Virtually every model and provider (OpenAI, Anthropic, Google, Bedrock, Azure AI Foundr"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     11,
+     37,
+     71
+    ],
+    "quotes": [
+     " PyPI",
+     "uv add pydantic-ai pydantic-ai-harness",
+     "uv add pydantic-ai"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "competitor",
+    "lines": [
+     169,
+     171
+    ],
+    "note": "对比/迁移对象",
+    "quotes": [
+     "- **Coming from another framework?** The comparisons show where Pydantic AI differs from LangChain, Google ADK, the Clau",
+     "Built by the Pydantic team: Pydantic Validation is the validation layer of the OpenAI SDK, the Anthropic SDK, the Google"
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     165
+    ],
+    "note": "作为可对接的 UI 事件流协议提及",
+    "quotes": [
+     "- **Every interface.** One agent definition runs as a CLI, a built-in web chat, or realtime speech (OpenAI Realtime, Gem"
+    ]
+   }
+  ]
+ }
+}

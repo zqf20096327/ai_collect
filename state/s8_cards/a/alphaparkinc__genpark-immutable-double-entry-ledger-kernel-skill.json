@@ -1,0 +1,135 @@
+{
+ "fn": "alphaparkinc/genpark-immutable-double-entry-ledger-kernel-skill",
+ "sha": "76abead87968",
+ "source": "readme",
+ "identity": {
+  "one_liner": "零依赖 Python 双式记账引擎：借 贷平衡与哈希链审计，供 MCP agent 调用",
+  "review": "纯标准库（hmac/hashlib）实现的加密双式记账引擎：强制 sum(Debits)==sum(Credits) 不变量、HMAC-SHA256 签名校验、哈希链审计轨迹与滑动窗口欺诈检测。以 MCP skill 形式提供，可接入 Claude Desktop、Cursor、Windsurf 等 MCP 客户端，也可直接用 Python 导入或 CLI 运行（python mcp_server.py --test 验证协议）。面向自主金融 agent、支付 webhook 与实时账务场景，要求 Python 3.9+，无外部 pip 依赖。",
+  "highlights": [
+   "强制 Debits=Credits 不变量与 HMAC-SHA256 签名校验",
+   "哈希链审计轨迹与滑动窗口欺诈检测",
+   "100% Python 标准库实现，零 pip 依赖",
+   "原生 MCP 支持，接入 Claude Desktop/Cursor/Windsurf"
+  ],
+  "use_cases": [
+   "为金融 agent 提供带审计轨迹的不可变记账能力",
+   "校验支付 webhook 事件的账务平衡与欺诈风险",
+   "在 MCP 客户端中作为记账工具服务调用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "金融科技",
+   "双式记账",
+   "MCP skill",
+   "欺诈检测",
+   "agent工具"
+  ],
+  "domain": "金融科技/账务核算",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9:  Production-Grade FinTech & Autonomous Financial Ledger Skill • 100% Standard Library Python • Native Model Context Prot",
+   "L21: * 🔌 **Native Model Context Protocol (MCP)**: Seamlessly plugs into Cursor IDE, Claude Desktop, and Windsurf."
+  ],
+  "xcheck": {
+   "license_from_readme": "MIT"
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     54,
+     56
+    ],
+    "note": "提供 claude_desktop_config.json 配置接入 Claude Desktop",
+    "quotes": [
+     "Connect this skill to **Claude Desktop**, **Cursor**, or any MCP-compliant client:",
+     "### `claude_desktop_config.json`"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     21,
+     54
+    ],
+    "note": "作为可接入的 MCP 客户端被提及",
+    "quotes": [
+     "* 🔌 **Native Model Context Protocol (MCP)**: Seamlessly plugs into Cursor IDE, Claude Desktop, and Windsurf.",
+     "Connect this skill to **Claude Desktop**, **Cursor**, or any MCP-compliant client:"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     21
+    ],
+    "quotes": [
+     "* 🔌 **Native Model Context Protocol (MCP)**: Seamlessly plugs into Cursor IDE, Claude Desktop, and Windsurf."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,122 @@
+{
+ "fn": "naptha/tesseract.js",
+ "sha": "5a3f5e80b30e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "JS 库：浏览器/Node 从图片识别 100+ 语言文字",
+  "review": "Tesseract.js 是 JavaScript OCR 库，通过封装 Tesseract 的 WebAssembly 移植版，在浏览器（webpack/ESM/script 标签+CDN）和 Node.js 中从图片提取文字。支持图片识别与视频实时识别示例，v4 起提供旋转预处理与并行处理（schedulers）。项目范围明确：不修改 Tesseract 核心识别模型、不支持 PDF；需 PDF 提取或精度改进的项目被指引至 Scribe.js。npm/yarn 或 CDN 安装，v7 需 Node.js v16+。",
+  "highlights": [
+   "支持 100+ 语言图片文字识别",
+   "浏览器与 Node.js 双端运行（WebAssembly 封装）",
+   "旋转/灰度/二值化预处理选项与并行调度器",
+   "多图识别的 worker 复用模式"
+  ],
+  "use_cases": [
+   "网页中上传图片并提取其中文字",
+   "Node 服务端批量识别多语言图片文本",
+   "文档扫描类 Web 应用的 OCR 底层"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://tesseract.projectnaptha.com/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "OCR",
+   "JavaScript库",
+   "WebAssembly",
+   "图像识别"
+  ],
+  "domain": "OCR/前端工具库",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "ocr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L17: Tesseract.js is a javascript library that gets words in almost any language out of images. (Demo)",
+   "L27: Tesseract.js works in the browser using webpack, esm, or plain script tags with a CDN and on the server with Node.js.",
+   "L62: Tesseract.js aims to bring the Tesseract OCR engine (a separate project) to the browser and Node.js, and works by wrappi"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     39,
+     56
+    ],
+    "quotes": [
+     "Tesseract.js works with a `<script>` tag via local copy or CDN, with webpack via `npm` and on Node.js with `npm/yarn`.",
+     "npm install tesseract.js"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     131
+    ],
+    "quotes": [
+     "git clone https://github.com/naptha/tesseract.js.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     81
+    ],
+    "note": "社区示例中的扩展项目涉及 ChatGPT，非竞品关系",
+    "quotes": [
+     " - Chrome Extension (with Manifest V3): https://github.com/Tshetrim/Image-To-Text-OCR-extension-for-ChatGPT"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,184 @@
+{
+ "fn": "langchain-ai/deepagents",
+ "sha": "82b131261373",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的开箱即用 agent harness，构建长程多步 agent",
+  "review": "LangChain 团队开源的 agent harness，基于 LangGraph 构建，提供子代理、可插拔文件系统后端、上下文管理与持久化记忆等默认组件，每个部件可覆盖或替换而不需 fork。支持任何具备工具调用能力的模型（前沿 API、开源权重或本地模型），随流式输出、检查点持久化与经 LangSmith 的追踪评估能力一同提供。提供 Python 与 JavaScript/TypeScript 两个库版本，另有终端编码代理 Deep Agents Code，通过 curl 脚本安装。",
+  "highlights": [
+   "子代理机制：将任务委派给具有独立上下文窗口的代理",
+   "可插拔文件系统（本地/沙箱/远程后端）与 shell 执行",
+   "上下文管理：摘要长对话并将工具输出落盘",
+   "人在回路审批、按需加载的 Skills 与任意 MCP 服务器接入"
+  ],
+  "use_cases": [
+   "构建需要长程规划与多步执行的生产级 agent",
+   "为 agent 配置子代理分工与隔离上下文",
+   "接入本地或开源权重模型运行 agent",
+   "在终端中使用预构建编码代理辅助编程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent框架",
+   "LLM基础设施",
+   "编码代理",
+   "多智能体"
+  ],
+  "domain": "LLM 基础设施/agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "Claude Code",
+   "Cursor"
+  ],
+  "ecosystem_compat": [
+   "ollama",
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "multi-agent",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14: Deep Agents is an open source agent harness — an opinionated agent that runs out of the box. Extend, override, or replac",
+   "L20: - **Model-agnostic** — works with any LLM that supports tool calling: frontier, open-weight, or local",
+   "L21: - **Production-ready** — built on LangGraph (streaming, persistence, checkpointing) with first-class tracing, evaluation"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     65
+    ],
+    "quotes": [
+     "Yes. Any model that supports tool calling works — frontier APIs (OpenAI, Anthropic, Google), open-weight models hosted o"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     65
+    ],
+    "note": "作为自托管模型运行途径被列举，经 LangChain chat model 接入",
+    "quotes": [
+     "Yes. Any model that supports tool calling works — frontier APIs (OpenAI, Anthropic, Google), open-weight models hosted o"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     65
+    ],
+    "note": "同上",
+    "quotes": [
+     "Yes. Any model that supports tool calling works — frontier APIs (OpenAI, Anthropic, Google), open-weight models hosted o"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     9,
+     10,
+     42
+    ],
+    "quotes": [
+     " PyPI - License",
+     " PyPI - Downloads",
+     "uv add deepagents"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     59,
+     61,
+     71
+    ],
+    "note": "同一生态栈的组件层级关系说明",
+    "quotes": [
+     "### How is this different from LangGraph or LangChain?",
+     "LangGraph is the graph runtime. LangChain's `create_agent` is a minimal agent harness on top of it. Deep Agents is a mor",
+     "### When should I use Deep Agents vs. LangChain or LangGraph directly?"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "competitor",
+    "lines": [
+     37,
+     91
+    ],
+    "note": "Deep Agents Code 被描述为 similar to Claude Code，致谢中称受其启发",
+    "quotes": [
+     "> **Deep Agents Code** — a pre-built coding agent in your terminal, similar to Claude Code or Cursor, powered by any LLM",
+     "Inspired by Claude Code: an attempt to identify what makes it general-purpose, and push that further."
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "competitor",
+    "lines": [
+     37
+    ],
+    "note": "Deep Agents Code 被描述为 similar to Cursor",
+    "quotes": [
+     "> **Deep Agents Code** — a pre-built coding agent in your terminal, similar to Claude Code or Cursor, powered by any LLM"
+    ]
+   }
+  ]
+ }
+}

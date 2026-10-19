@@ -1,0 +1,160 @@
+{
+ "fn": "hacksider/Deep-Live-Cam",
+ "sha": "842864138f76",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给创作者提供单张图片实时换脸与一键视频 deepfake",
+  "review": "开源的实时换脸工具：选择一张源人脸图像后，可对图片/视频进行换脸输出，或在摄像头模式下实时替换面部并配合 OBS 推流。功能包括 Mouth Mask 保留原始嘴部动作、多人 Face Mapping、以及基于 execution provider 的多硬件加速路径（CUDA/CoreML/DirectML/OpenVINO/CPU）。安装分预构建版（官网付费 Ultimate 版）与手动源码安装，手动安装需自行下载两个模型文件并配置 Python 环境，需 ffmpeg 等系统依赖。",
+  "highlights": [
+   "单张图片驱动的实时摄像头换脸与图片/视频换脸",
+   "Mouth Mask 保留原始嘴部、Face Mapping 多人多脸同时替换",
+   "支持 CUDA、CoreML、DirectML、OpenVINO 等 GPU 加速执行提供者",
+   "内置内容检查，阻止处理裸露等不当媒体"
+  ],
+  "use_cases": [
+   "视频通话/直播中实时替换面部",
+   "为动画角色制作提供面部驱动",
+   "制作换脸梗图与娱乐内容"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "换脸/deepfake",
+   "实时视频",
+   "摄像头/直播",
+   "桌面应用"
+  ],
+  "domain": "媒体生成/图像视频处理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "cpu-infer"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3:  Real-time face swap and video deepfake with a single click and only a single image.",
+   "L173: **Run:** If you don't have a GPU, you can run Deep-Live-Cam using `python run.py`. Note that initial execution will down",
+   "L175: ### GPU Acceleration"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cpu-infer",
+    "rel": "support",
+    "lines": [
+     261,
+     266,
+     267,
+     270,
+     272
+    ],
+    "note": "提供 Intel OpenVINO Execution Provider 支持及版本对应表",
+    "quotes": [
+     "**OpenVINO™ Execution Provider (Intel)**",
+     "pip uninstall onnxruntime onnxruntime-openvino",
+     "pip install onnxruntime-openvino==1.21.0",
+     "**Note:** `onnxruntime-openvino` newer than 1.21.0 must be installed together with `openvino`, and the two versions must",
+     "|onnxruntime-openvino|OpenVINO|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     124
+    ],
+    "quotes": [
+     "git clone --depth 1 https://github.com/hacksider/Deep-Live-Cam.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     143,
+     186,
+     188,
+     237,
+     252
+    ],
+    "quotes": [
+     "pip install -r requirements.txt",
+     "pip install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128",
+     "pip install onnxruntime-gpu==1.26.0",
+     "pip install onnxruntime-coreml==1.21.0",
+     "pip install onnxruntime-directml==1.21.0"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     159,
+     221
+    ],
+    "quotes": [
+     "brew install python@3.14",
+     "- If you get error about `_tkinter` missing, reinstall the tkinter package: `brew reinstall python-tk@3.14`"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     310
+    ],
+    "note": "模型下载链接托管于 Hugging Face，非竞品/替代",
+    "quotes": [
+     "## Download all models in this huggingface link"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

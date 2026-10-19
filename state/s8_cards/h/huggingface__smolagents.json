@@ -1,0 +1,190 @@
+{
+ "fn": "huggingface/smolagents",
+ "sha": "0f04c0e97a87",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的极简 Agent 库：以代码片段作为行动形式",
+  "review": "Hugging Face 维护的 Python Agent 库，核心是 CodeAgent——LLM 以 Python 代码片段形式书写动作并执行，另提供基于 JSON/文本工具调用的 ToolCallingAgent 与多 Agent 层级。模型侧通过 InferenceClientModel、LiteLLMModel、OpenAIModel、TransformersModel、AzureOpenAIModel、AmazonBedrockModel 等封装接入多类推理来源；工具可来自 MCP 服务器或 LangChain，Agent/工具可经 Hub 分享。代码执行存在安全风险，需在 E2B/Blaxel/Modal/Docker 等沙箱中运行，内置 LocalPythonExecutor 不构成安全边界。",
+  "highlights": [
+   "CodeAgent 以 Python 代码片段作为动作形式，agents.py 主代码约 1,000 行",
+   "支持 E2B、Blaxel、Modal、Docker 沙箱执行与本地 LocalPythonExecutor",
+   "模型来源可换：transformers/ollama 本地模型、Hub 提供商、LiteLLM、OpenAI 兼容服务、Azure、Bedrock",
+   "提供 smolagent/webagent 两个 CLI 命令与 Hub 上的 Agent/工具分享"
+  ],
+  "use_cases": [
+   "让 Agent 以代码形式执行多步工具调用任务",
+   "通过 CLI 快速运行网页浏览类 Agent",
+   "在 Hub 上分享和复用他人构建的 Agent 与工具"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent框架",
+   "CodeAgent",
+   "LLM工具调用",
+   "沙箱执行"
+  ],
+  "domain": "LLM 基础设施/Agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "together",
+   "openrouter",
+   "bedrock"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: `smolagents` is a library that enables you to run powerful agents in a few lines of code. It offers:",
+   "L14: 🧑‍💻 **First-class support for Code Agents**. Our `CodeAgent` writes its actions in code (as opposed to \"agents being use",
+   "L18: 🌐 **Model-agnostic**: smolagents supports any LLM. It can be a local `transformers` or `ollama` model, one of many provi"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     18
+    ],
+    "quotes": [
+     "🌐 **Model-agnostic**: smolagents supports any LLM. It can be a local `transformers` or `ollama` model, one of many provi"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     62,
+     192
+    ],
+    "quotes": [
+     "    model_id=\"deepseek-ai/DeepSeek-R1\",",
+     " benchmark of different models on agentic workflows. Open model DeepSeek-R1 beats closed-source models."
+    ]
+   },
+   {
+    "term": "together",
+    "rel": "support",
+    "lines": [
+     76,
+     82
+    ],
+    "quotes": [
+     " OpenAI-compatible servers: Together AI",
+     "…（5 行代码略）"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     85,
+     91
+    ],
+    "quotes": [
+     " OpenAI-compatible servers: OpenRouter",
+     "…（5 行代码略）"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     112,
+     116,
+     118
+    ],
+    "quotes": [
+     " Amazon Bedrock models",
+     "from smolagents import AmazonBedrockModel",
+     "model = AmazonBedrockModel("
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     33
+    ],
+    "quotes": [
+     "pip install \"smolagents[toolkit]\""
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     22
+    ],
+    "quotes": [
+     "🛠️ **Tool-agnostic**: you can use tools from any MCP server, from LangChain, you can even use a Hub Space as a tool."
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     216
+    ],
+    "quotes": [
+     "  howpublished = {\\url{https://github.com/huggingface/smolagents}},"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

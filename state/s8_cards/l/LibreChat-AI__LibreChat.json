@@ -1,0 +1,260 @@
+{
+ "fn": "LibreChat-AI/LibreChat",
+ "sha": "30b92eac4816",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管多模型 AI 聊天平台：统一接入多家服务商",
+  "review": "自托管的 AI 对话平台，将多家模型服务商统一在一个界面中，支持自定义端点（任何 OpenAI 兼容 API）。提供 Agent 构建与市场、MCP 工具接入、SKILL.md 技能包、代码解释器沙箱（Python/Node.js/Go 等多语言）、联网搜索、图像生成、Artifacts、语音输入输出、消息搜索与导入导出。多用户场景支持 OAuth2/LDAP/邮箱登录、管理面板与按角色权限配置，可单机或配合 Redis 水平扩展部署，提供 Docker Compose 一键部署栈。",
+  "highlights": [
+   "统一界面接入多家模型服务商，支持任意 OpenAI 兼容自定义端点",
+   "Agent 体系：无代码构建、市场分享、子代理、MCP 与 SKILL.md 技能",
+   "沙箱化代码解释器支持 Python、Node.js、Go、C/C++ 等语言",
+   "多用户安全认证（OAuth2/LDAP）、管理面板与 Token 用量工具"
+  ],
+  "use_cases": [
+   "自建一个统一管理多家模型接口的私有聊天界面",
+   "为团队部署带用户权限与用量统计的多用户 AI 助手",
+   "通过 MCP 和 Agent 给 AI 接入自定义工具与文件搜索",
+   "导入既有 ChatGPT 对话记录做统一管理"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "聊天界面",
+   "多模型接入",
+   "自托管",
+   "AI Agent",
+   "MCP"
+  ],
+  "domain": "LLM 应用/聊天前端平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "azure",
+   "bedrock",
+   "groq",
+   "cohere",
+   "ollama",
+   "deepseek",
+   "openrouter"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供简繁中文界面翻译（L8, L119）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L63: - 🤖 **AI Model Selection**:",
+   "L173: LibreChat is a self-hosted AI chat platform that unifies all major AI providers in a single, privacy-focused interface.",
+   "L175: Beyond chat, LibreChat provides AI Agents, Model Context Protocol (MCP) support, Artifacts, Code Interpreter, custom act"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     64,
+     115,
+     142
+    ],
+    "quotes": [
+     " - Anthropic (Claude), AWS Bedrock, OpenAI, Azure OpenAI, Google, Vertex AI, OpenAI Responses API (incl. Azure)",
+     " - Chat with Files using Custom Endpoints, OpenAI, Azure, Anthropic, AWS Bedrock, & Google 🗃️",
+     " - Supports OpenAI, Azure OpenAI, and Elevenlabs"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     64,
+     142
+    ],
+    "quotes": [
+     " - Anthropic (Claude), AWS Bedrock, OpenAI, Azure OpenAI, Google, Vertex AI, OpenAI Responses API (incl. Azure)",
+     " - Supports OpenAI, Azure OpenAI, and Elevenlabs"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     64,
+     87,
+     115
+    ],
+    "quotes": [
+     " - Anthropic (Claude), AWS Bedrock, OpenAI, Azure OpenAI, Google, Vertex AI, OpenAI Responses API (incl. Azure)",
+     " - Compatible with Custom Endpoints, OpenAI, Azure, Anthropic, AWS Bedrock, Google, Vertex AI, Responses API, and more",
+     " - Chat with Files using Custom Endpoints, OpenAI, Azure, Anthropic, AWS Bedrock, & Google 🗃️"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "compat",
+    "lines": [
+     67
+    ],
+    "quotes": [
+     " - Ollama, AMD Lemonade, groq, Cohere, Mistral AI, Apple MLX, koboldcpp, together.ai,"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "compat",
+    "lines": [
+     67
+    ],
+    "quotes": [
+     " - Ollama, AMD Lemonade, groq, Cohere, Mistral AI, Apple MLX, koboldcpp, together.ai,"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     66,
+     67
+    ],
+    "note": "列于 Local & Remote AI Providers 兼容列表",
+    "quotes": [
+     " - Compatible with Local & Remote AI Providers:",
+     " - Ollama, AMD Lemonade, groq, Cohere, Mistral AI, Apple MLX, koboldcpp, together.ai,"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     68
+    ],
+    "quotes": [
+     " - OpenRouter, Helicone, Perplexity, ShuttleAI, Deepseek, Qwen, and more"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "compat",
+    "lines": [
+     68
+    ],
+    "quotes": [
+     " - OpenRouter, Helicone, Perplexity, ShuttleAI, Deepseek, Qwen, and more"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     158
+    ],
+    "note": "Docker Compose 栈一键部署管理面板",
+    "quotes": [
+     " - Bundled with the Docker Compose stacks for one-command setup"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "none",
+    "lines": [],
+    "note": "releases 页为版本发布说明入口，README 未提供二进制安装途径",
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Runway",
+    "rel": "none",
+    "lines": [
+     50
+    ],
+    "note": "误命中：runway pressure 指上下文余量，非 Runway 公司",
+    "quotes": [
+     "- **Context Usage:** Inspect dialogue, retained tool traffic, Agent instructions, cache, cost, and runway pressure witho"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     61,
+     145
+    ],
+    "note": "UI 灵感来源与对话导入来源，非替代/竞品表述",
+    "quotes": [
+     "- 🖥️ **UI & Experience** inspired by ChatGPT with enhanced design and features",
+     " - Import Conversations from LibreChat, ChatGPT, Chatbot UI"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     68
+    ],
+    "note": "兼容服务商列表中提及",
+    "quotes": [
+     " - OpenRouter, Helicone, Perplexity, ShuttleAI, Deepseek, Qwen, and more"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     68
+    ],
+    "note": "Qwen 列于兼容服务商列表",
+    "quotes": [
+     " - OpenRouter, Helicone, Perplexity, ShuttleAI, Deepseek, Qwen, and more"
+    ]
+   }
+  ]
+ }
+}

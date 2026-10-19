@@ -1,0 +1,162 @@
+{
+ "fn": "dipakkr/awesome-ai-engineering",
+ "sha": "fcbbd74a0a1c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向学生与新手的 AI/编程学习资源聚合清单",
+  "review": "以课程、教程、GitHub 仓库、研究论文入口、认证与竞赛机会为主的资源目录，覆盖 AI 工具、Python、机器学习、LLM、深度学习，并延伸至 Web3、网络安全、云计算与前端等方向；用 :baby: 标注零基础内容、:heavy_dollar_sign: 标注付费内容、:star: 标注普遍推荐项。仓库本体不包含可安装的软件，内容以外部链接聚合形式提供。",
+  "highlights": [
+   "LLM 板块列出课程、论文入口与在线 Playground（OpenAI Playground、Google AI Studio、OpenRouter 等）",
+   "以 emoji 标记零基础/推荐/付费属性，附 Quick Start 路径",
+   "覆盖 ML/LLM/深度学习之外的多技术方向学习入口",
+   "汇总 hackathon、开源、面试准备等学生机会类资源"
+  ],
+  "use_cases": [
+   "我是零基础学生，想按路径找 AI/ML 入门课程",
+   "我想找 LLM 相关的公开课和论文检索入口",
+   "我想查 AI 常用工具和在线 Playground 的清单"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "资源清单",
+   "学习路线",
+   "LLM课程",
+   " awesome-list"
+  ],
+  "domain": "教育/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list",
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L20: AI Tools and Resources",
+   "L58: # AI Tools and Resources",
+   "L176: ## Large Language Models (LLMs)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     184
+    ],
+    "note": "作为 LLM 课程来源列出",
+    "quotes": [
+     " - Intro to LLMs | Cohere"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     201,
+     210
+    ],
+    "note": "作为研究入口与 Playground 列出",
+    "quotes": [
+     " - Anthropic Research",
+     " - Anthropic Console (Claude)"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     211
+    ],
+    "note": "作为 Playground 工具列出",
+    "quotes": [
+     " - OpenRouter (Multi-LLM API Playground)"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     67,
+     76
+    ],
+    "note": "作为 AI 工具列出",
+    "quotes": [
+     " - ChatGPT - Advanced AI chatbot for conversations and tasks",
+     " - Awesome ChatGPT"
+    ]
+   },
+   {
+    "term": "Midjourney",
+    "rel": "mention",
+    "lines": [
+     68
+    ],
+    "note": "作为 AI 工具列出",
+    "quotes": [
+     " - Midjourney - AI art generation platform"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     183,
+     212
+    ],
+    "note": "作为课程与 Playground 语境提及",
+    "quotes": [
+     " - LangChain for LLM Application Development | DeepLearning.AI",
+     " - LangChain + OpenAI Agent Playground"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

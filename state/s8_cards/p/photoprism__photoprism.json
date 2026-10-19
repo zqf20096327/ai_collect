@@ -1,0 +1,91 @@
+{
+ "fn": "photoprism/photoprism",
+ "sha": "4c52ca068af4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向个人的自托管 AI 照片管理应用：整理、检索与分享",
+  "review": "PhotoPrism 是一个以隐私为先的 Web 相册应用，运行于自托管服务器或云端，提供照片与视频的浏览、组织和分享功能。基于内容与位置自动打标签，并识别人脸；搜索过滤器支持标签、位置、分辨率、色彩等属性组合。元数据可从 Exif、XMP 及 Google Photos 等来源提取合并；支持 WebDAV 客户端直接连接。以 Go 语言编写（主题标签含 golang/tensorflow），采用 AGPL 许可，社区版通过 Docker 安装，另提供付费会员与商业许可。",
+  "highlights": [
+   "基于内容与位置自动打标签，支持人脸识别",
+   "组合式搜索过滤器（标签、位置、分辨率、色彩、质量等）",
+   "从 Exif/XMP/Google Photos 提取合并元数据",
+   "WebDAV 直接挂载，PWA 跨设备使用"
+  ],
+  "use_cases": [
+   "在家里服务器上自托管个人照片库",
+   "从 Google Photos 迁移并合并照片元数据",
+   "在 iOS/Android 手机上备份和浏览家庭照片"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://demo.photoprism.app（README L12 提及公共 demo，具体 URL 未见）",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "照片管理",
+   "自托管",
+   "人脸识别",
+   "Google Photos 迁移"
+  ],
+  "domain": "个人媒体管理/自托管应用",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "face-recognition"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: PhotoPrism® is an AI-powered, privacy-first app for browsing, organizing, and sharing photos and videos. It helps tag, s",
+   "L21: * Automatically labels your pictures based on content and location, and recognizes the faces of your family and friends",
+   "L32: Step-by-step installation instructions for our self-hosted community edition can be found on docs.photoprism.app - all y"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    77
+   ],
+   "quotes": [
+    "**Because sustained funding is key to quickly releasing new features, we encourage you to support our mission by signing"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

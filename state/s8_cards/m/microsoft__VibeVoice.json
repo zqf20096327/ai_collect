@@ -1,0 +1,136 @@
+{
+ "fn": "microsoft/VibeVoice",
+ "sha": "1f18ad932485",
+ "source": "readme",
+ "identity": {
+  "one_liner": "语音 AI 模型家族：长音频识别与多说话人语音生成",
+  "review": "微软开源的语音 AI 模型家族，含 TTS 与 ASR 两条线：ASR 模型单次处理 60 分钟长音频，联合输出说话人、时间戳与文本，支持自定义热词、流式识别与 50+ 语言；TTS 支持最长 90 分钟、最多 4 说话人的语音生成，另有 0.5B 实时流式 TTS（约 300 毫秒首响）。核心机制为 7.5 Hz 连续语音 tokenizer 与 next-token diffusion 框架。注意：TTS 代码已于 2025-09 从仓库移除，模型仅限研究用途。",
+  "highlights": [
+   "ASR 单次处理 60 分钟音频，联合输出说话人/时间戳/内容",
+   "TTS 单次生成最长 90 分钟、最多 4 说话人的对话语音",
+   "0.5B 实时流式 TTS，支持流式文本输入",
+   "ASR-BitNet 经量化压缩至 1.58 GB，可在 CPU 上实时推理"
+  ],
+  "use_cases": [
+   "将长会议或播客音频转写为含说话人与时间戳的结构化文本",
+   "用自定义热词提升领域术语的识别准确率",
+   "生成多说话人长对话语音用于研究实验",
+   "在 CPU 边缘设备上运行流式语音识别"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": "cpu-ok",
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音识别",
+   "语音合成",
+   "长音频转写",
+   "流式ASR",
+   "研究模型"
+  ],
+  "domain": "语音 AI / 语音识别与合成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "tts",
+   "asr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L40: VibeVoice is a **family of open-source frontier voice AI models** that includes both Text-to-Speech (TTS) and Automatic ",
+   "L34: 2025-09-05: VibeVoice is an open-source research framework intended to advance collaboration in the speech synthesis com",
+   "L140: We do not recommend using VibeVoice in commercial or real-world applications without further testing and development. Th"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     26,
+     27
+    ],
+    "quotes": [
+     "- ⚡️ **vLLM inference** is now supported for faster inference; see vllm-asr for more details.",
+     "- 🎤 **Streaming recognition** transcribes while the audio is still arriving, emitting text once per chunk; see asr-strea"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     6,
+     32,
+     52,
+     129
+    ],
+    "quotes": [
+     "Colab",
+     "2025-12-03: 📣 We open-sourced VibeVoice‑Realtime‑0.5B , a real‑time text‑to‑speech model that supports streaming text in",
+     "|VibeVoice-Realtime-0.5B|HF Link|Colab|",
+     "📖 Documentation | 🤗 Hugging Face | 🚀 Colab"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "no GPU required",
+    "rel": "support",
+    "lines": [
+     17
+    ],
+    "quotes": [
+     " 2026-07-23: ⚡ We released VibeVoice-ASR-BitNet, an edge CPU inference engine for VibeVoice-ASR. Through heterogeneous q"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    34,
+    51
+   ]
+  }
+ }
+}

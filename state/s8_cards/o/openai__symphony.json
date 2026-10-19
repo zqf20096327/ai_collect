@@ -1,0 +1,91 @@
+{
+ "fn": "openai/symphony",
+ "sha": "9f3867375e05",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给工程团队的自主编码任务编排器：监控任务板并派发 agent 执行",
+  "review": "Symphony 将项目工作转化为隔离的、自主的实现运行（implementation runs），团队通过管理任务而非逐个监督编码 agent。机制上：监控 Linear 任务板，为任务生成 agent，agent 完成任务后提供工作量证明（CI 状态、PR 审查反馈、复杂度分析、演示视频），被接受后安全合入 PR。适合已采用 harness engineering 的代码库。README 标注为工程预览版，建议在可信环境中测试。提供两种获取方式：按 SPEC.md 自行实现，或使用 Elixir 参考实现。",
+  "highlights": [
+   "监控 Linear 任务板并自动派发 agent 处理任务",
+   "agent 提供工作量证明：CI 状态、PR 审查反馈、复杂度分析、视频",
+   "提供 SPEC.md 规范可自行实现，附 Elixir 参考实现",
+   "任务隔离运行，工程师以更高层级管理工作"
+  ],
+  "use_cases": [
+   "团队将任务板上的工作自动分派给编码 agent 执行",
+   "通过 CI 状态与 PR 反馈验收 agent 产出的代码",
+   "在已采用 harness engineering 的代码库中转向以工作为单元的管理方式"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    11
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "编码agent编排",
+   "任务自动化",
+   "工程效能",
+   "Linear集成"
+  ],
+  "domain": "开发者工具/工程效能",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3: Symphony turns project work into isolated, autonomous implementation runs, allowing teams to manage",
+   "L8: _In this demo video, Symphony monitors a Linear board for work and spawns agents to handle the tasks. The agents complet",
+   "L11: > Symphony is a low-key engineering preview for testing in trusted environments."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [
+    38
+   ],
+   "quotes": [
+    "This project is licensed under the Apache License 2.0."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

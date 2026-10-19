@@ -1,0 +1,219 @@
+{
+ "fn": "Twigpine/openclaude",
+ "sha": "ed8dfb78f3df",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的多后端编码 agent CLI，统一终端工作流",
+  "review": "OpenClaude 是一个开源编码 agent CLI，通过一套终端工作流接入云 API 与本地模型后端：支持 prompts、工具调用、agents、MCP、slash 命令与流式输出。通过 /provider 命令做引导式后端配置并保存 profile，凭证存于 .openclaude-profile.json；不自动加载项目 .env，需显式导出或使用 --provider-env-file。会话支持恢复、分叉（仅对话分支，无文件系统隔离）、后台运行（本地子进程，无 daemon）。需 Node.js >=22；配置独立于 Claude Code 存储。",
+  "highlights": [
+   "单一 CLI 接入 OpenAI 兼容 API、Gemini、GitHub Models、Codex OAuth、Ollama 等后端",
+   "/provider 引导式配置与 profile 保存，支持多个网关型服务商的专属通道",
+   "后台会话管理：--bg 运行、ps/logs/kill 进程管理",
+   "内置 bash、文件工具、grep/glob、agents、tasks、MCP 与 web 工具，附带 VS Code 扩展"
+  ],
+  "use_cases": [
+   "用一套 CLI 在云端 API 与本地 Ollama 模型之间切换编码 agent 工作流",
+   "在终端运行长时间后台编码任务并管理会话",
+   "通过多个网关服务商使用 DeepSeek、Qwen 等模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "编码agent",
+   "CLI工具",
+   "多模型后端",
+   "MCP",
+   "终端应用"
+  ],
+  "domain": "开发工具/AI 编码助手",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: OpenClaude is an open-source coding-agent CLI for cloud and local model providers.",
+   "L9: Use OpenAI-compatible APIs, Gemini, GitHub Models, Codex OAuth, Codex, Ollama, Atomic Chat, and other supported backends",
+   "L103: - Coding-agent workflows in one place: bash, file tools, grep, glob, agents, tasks, MCP, and web tools"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     265,
+     287,
+     289
+    ],
+    "quotes": [
+     "### Fastest local Ollama setup",
+     "For Ollama, OpenClaude uses Ollama's native chat API and requests a 32768-token",
+     "truncated by Ollama's OpenAI-compatible shim. Set `OPENCLAUDE_OLLAMA_NUM_CTX`"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     232,
+     233
+    ],
+    "note": "仅说明不读取 Claude/Claude Code 配置目录，无 Anthropic 接入",
+    "quotes": [
+     "by default. It does not read `~/.claude`, project `.claude/` directories, or",
+     "`CLAUDE_CONFIG_DIR`; new users can start with an empty OpenClaude config and do"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     316,
+     319,
+     322
+    ],
+    "quotes": [
+     "|OpenAI-compatible|`/provider` or env vars|Works with OpenAI, OpenRouter, DeepSeek, Groq, Mistral, LM Studio, and other ",
+     "|Concentrate|`/provider` or `CONCENTRATE_API_KEY`|Unified OpenAI-compatible gateway at `https://api.concentrate.ai/v1`; ",
+     "|ApiSmart|`/provider` or `APISMART_API_KEY`|Uses `https://gw.apismart.ai/v1`, defaults to `DEEPSEEK_V4_FLASH`, and suppo"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     316
+    ],
+    "quotes": [
+     "|OpenAI-compatible|`/provider` or env vars|Works with OpenAI, OpenRouter, DeepSeek, Groq, Mistral, LM Studio, and other "
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     316
+    ],
+    "quotes": [
+     "|OpenAI-compatible|`/provider` or env vars|Works with OpenAI, OpenRouter, DeepSeek, Groq, Mistral, LM Studio, and other "
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "azure",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     111,
+     115,
+     118
+    ],
+    "quotes": [
+     "OpenClaude requires Node.js `>=22.0.0` for npm installs and runtime. Bun is",
+     "npm install -g @twigpine/openclaude@latest",
+     "**Upgrading from `@gitlawb/openclaude`?** The package moved to the `@twigpine`"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     232,
+     234,
+     239
+    ],
+    "note": "说明配置路径独立、无需安装 Claude Code，非替代/竞品自称",
+    "quotes": [
+     "by default. It does not read `~/.claude`, project `.claude/` directories, or",
+     "not need Claude Code installed.",
+     "Do not blanket-copy `.claude`, and do not copy Claude Code credentials or auth"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "none",
+    "lines": [],
+    "note": "仅命中 Qwen 模型名，非与通义千问产品的对比关系",
+    "quotes": []
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    118,
+    119,
+    124
+   ],
+   "note": "旧包 @gitlawb/openclaude 不再更新，需迁移到 @twigpine scope"
+  }
+ }
+}

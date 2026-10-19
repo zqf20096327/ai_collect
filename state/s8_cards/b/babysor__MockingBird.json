@@ -1,0 +1,131 @@
+{
+ "fn": "babysor/MockingBird",
+ "sha": "c57c094eb1db",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给需要中文语音克隆的用户：5秒音频实时合成任意语音",
+  "review": "基于 SV2TTS 的中文语音克隆工具箱，由 encoder、synthesizer、vocoder 三部分组成，支持用多套中文数据集（aidatatang_200zh、magicdata、aishell3 等）训练或使用社区共享的预训练模型。提供 Web 服务（web.py）、图形工具箱（PyQt5）与命令行三种使用方式，可复用预训练 encoder/vocoder 仅重训 synthesizer。README 注明作者已不再积极更新，转向商业化项目 noiz.ai；demo_cli 在中文预训练模型下不可用，需额外 synthesizer 模型。",
+  "highlights": [
+   "支持中文普通话，可在多套中文数据集上训练",
+   "提供 Web 服务、桌面工具箱与命令行三种入口",
+   "可复用预训练 encoder/vocoder，仅训练新 synthesizer",
+   "支持 Windows、Linux 及 M1 macOS（x86 转译方案）"
+  ],
+  "use_cases": [
+   "用几秒目标说话人的音频生成中文语音",
+   "在自己的中文语音数据集上训练定制化合成模型",
+   "通过 Web 界面在浏览器里体验克隆语音效果"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/1806.04558",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音克隆",
+   "TTS",
+   "语音合成",
+   "深度学习"
+  ],
+  "domain": "语音/深度学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tts"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供中文 README",
+   "面向中文普通话数据集与社区模型分享（百度网盘链接）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: 🌍 **Chinese** supported mandarin and tested with multiple datasets: aidatatang_200zh, magicdata, aishell3, data_aishell,",
+   "L166: |**1806.04558**|**SV2TTS**|**Transfer Learning from Speaker Verification to Multispeaker Text-To-Speech Synthesis**|This",
+   "L19: 🌍 **Webserver Ready** to serve your result with remote calling"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     33,
+     35,
+     61,
+     62,
+     66
+    ],
+    "quotes": [
+     "* Run `pip install -r requirements.txt` to install the remaining necessary packages.",
+     "* Install webrtcvad `pip install webrtcvad-wheels`(If you need)",
+     "    pip install --upgrade pip",
+     "    pip install pyqt5",
+     "> Both packages seem to be unique to this project and are not seen in the original Real-Time Voice Cloning project. When"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     69
+    ],
+    "quotes": [
+     " * `brew install python` `Python.h` can come with Python installed by brew"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     75
+    ],
+    "quotes": [
+     " * `git clone https://github.com/lumaku/ctc-segmentation.git`"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    1
+   ]
+  }
+ }
+}

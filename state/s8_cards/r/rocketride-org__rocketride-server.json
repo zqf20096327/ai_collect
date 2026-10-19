@@ -1,0 +1,176 @@
+{
+ "fn": "rocketride-org/rocketride-server",
+ "sha": "60e95bf9c355",
+ "source": "readme",
+ "identity": {
+  "one_liner": "在 IDE 中构建、调试和部署 AI/LLM 管线的开源引擎",
+  "review": "RocketRide 是一个开源 AI 管线构建器与运行时：管线以 .pipe JSON 定义，可在 VS Code 可视化画布中编辑，由多线程 C++ 引擎执行，也可在 Docker、本地或 RocketRide Cloud 部署。README 称含 100+ 节点，覆盖 15+ LLM 提供商、9 个向量数据库、OCR、NER、PII 匿名化等，节点可用 Python 扩展；提供 Python/TypeScript/MCP SDK、VS Code 扩展，内置 CrewAI 与 LangChain 支持，带 token 用量与延迟等可观测性功能。示例管线可在本地模型上运行，无需 API key。",
+  "highlights": [
+   "管线以可移植 JSON（.pipe）定义，VS Code 可视化画布构建与调试",
+   "C++ 多线程运行时执行，节点可 Python 扩展",
+   "提供 Python、TypeScript 与 MCP SDK，集成到应用中调用",
+   "内建可观测性：调用树、token 用量、内存与延迟追踪"
+  ],
+  "use_cases": [
+   "在 IDE 里搭建 RAG 文档问答管线",
+   "构建含 OCR/NER/PII 处理的文档处理流程",
+   "将 AI 管线作为函数从 Python 或 TypeScript 应用调用",
+   "在自有基础设施上运行多 agent 工作流"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM 管线",
+   "可视化编排",
+   "RAG",
+   "Agent编排",
+   "开发者工具"
+  ],
+  "domain": "LLM 基础设施/工作流编排",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5:  RocketRide is the open source AIDE: the AI Development Environment.",
+   "L14:  Under the hood, RocketRide is an open source data pipeline builder and runtime built for AI and ML workloads. With 100+",
+   "L56: |**TypeScript, Python & MCP SDKs**|Integrate pipelines into native apps, expose them as callable tools for AI assistants"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     119
+    ],
+    "note": "在节点术语表中作为提供商示例提及",
+    "quotes": [
+     "|**Node**|One step. Providers (OpenAI, Anthropic…), tools (GitHub, Slack…), stores, parsers|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     73
+    ],
+    "quotes": [
+     " - **On-Premises** - Run the server on your own hardware for full control and data residency. Pull the image and deploy "
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     143,
+     144,
+     145
+    ],
+    "quotes": [
+     "     ```bash",
+     "     docker pull ghcr.io/rocketride-org/rocketride-engine:latest",
+     "     docker create --name rocketride-engine -p 5565:5565 ghcr.io/rocketride-org/rocketride-engine:latest"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     96
+    ],
+    "quotes": [
+     "   pip install rocketride"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     106
+    ],
+    "quotes": [
+     " TypeScript works the same way: `npm install rocketride` · SDK docs"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     54
+    ],
+    "note": "内置支持的 agent 框架，非替代/竞品",
+    "quotes": [
+     "|**Multi-Agent Workflows**|Built-in CrewAI and LangChain support. Chain agents, share memory across pipeline runs, and m"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     55
+    ],
+    "note": "被自动检测的编码 agent，非竞品对比",
+    "quotes": [
+     "|**Coding Agent Ready**|RocketRide auto-detects your coding agent: Claude, Cursor, and more. Build, modify, and deploy p"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [
+    45,
+    186
+   ],
+   "quotes": [
+    "**Open source, MIT.** The whole engine is MIT-licensed and OSI-compliant. No enterprise edition, nothing behind a paywal",
+    " Run it yourself, free Docker, on-prem, or local. Full control and data residency. Open source, MIT, no lock-in, ever."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

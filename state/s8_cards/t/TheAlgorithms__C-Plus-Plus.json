@@ -1,0 +1,86 @@
+{
+ "fn": "TheAlgorithms/C-Plus-Plus",
+ "sha": "88b1a775df83",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向教学的多领域 C++ 算法实现集合",
+  "review": "The Algorithms 社区维护的 C++ 算法实现集合，覆盖计算机科学、数学与统计、数据科学、机器学习、工程等主题，MIT 许可证开源。每个源码文件独立、仅使用 STL、无需外部库，遵循 C++17 标准，每次提交在 Windows/macOS/Ubuntu 三系统上用 MSVC/AppleClang/GNU 编译测试。文档由源码自动生成，提供程序执行说明、流程图示与 STL 函数链接。定位为教育者与学生的学习资源，同一目标可能提供多种算法策略的实现。",
+  "highlights": [
+   "仅依赖 STL、无需外部库即可编译运行的原子化实现",
+   "每次提交在三大操作系统上以三种编译器编译测试",
+   "文档由源码生成，含执行说明与程序流程图",
+   "遵循 C++17 标准，可移植到 ESP32、ARM Cortex 等嵌入式平台"
+  ],
+  "use_cases": [
+   "学习算法原理并阅读带注释的 C++ 实现",
+   "教师在课程中作为教学素材与参考实现",
+   "面试准备时练习算法与数据结构"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "算法",
+   "C++",
+   "教育",
+   "数据结构",
+   "机器学习实现"
+  ],
+  "domain": "教育/算法与数据结构",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": null,
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L15: This repository is a collection of open-source implementation of a variety of algorithms implemented in C++ and licensed",
+   "L21: - Each source code is atomic using STL classes and _no external libraries_ are required for their compilation and execut",
+   "L22: - Source codes are compiled and tested for every commit on the latest versions of three major operating systems viz., Wi"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

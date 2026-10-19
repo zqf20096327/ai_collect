@@ -1,0 +1,170 @@
+{
+ "fn": "modelscope/DiffSynth-Studio",
+ "sha": "5720e9a8cadf",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为开发者提供的开源 Diffusion 模型推理与训练引擎",
+  "review": "由 ModelScope 社区团队维护的 Diffusion 模型引擎，集成图像生成、视频生成、音频生成与图像质量评估类开源模型。框架提供跨磁盘/内存/显存的动态参数调度，使低显存消费级 GPU 可运行大模型推理；支持 NF4、INT8 等量化以降低推理与 LoRA 训练的显存需求；推理支持的模型基本均可训练，训练过程可拆分为两阶段。相关派生项目包括 ComfyUI 节点包与 LoRA 训练 WebUI。README 说明开发人力有限，旧版本功能不再维护。",
+  "highlights": [
+   "集成图像/视频/音频生成与图像质量评估模型",
+   "跨磁盘、内存、显存的动态参数调度，低显存 GPU 可推理大模型",
+   "NF4/INT8 等量化后端（含自研 EntroPack 压缩库）",
+   "提供 Agent Skills 用于自动化模型集成流程"
+  ],
+  "use_cases": [
+   "在消费级 GPU 上运行大参数量扩散模型的推理与 LoRA 训练",
+   "通过 ComfyUI 节点搭建扩散模型工作流",
+   "对音乐、视频、图像生成模型做量化与低显存部署"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2609.34185",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Diffusion模型",
+   "图像生成",
+   "视频生成",
+   "音频生成",
+   "LoRA训练"
+  ],
+  "domain": "AIGC/生成模型框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation",
+   "video-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "ModelScope 社区团队维护",
+   "提供中文版文档切换",
+   "模型托管于 modelscope.cn"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: Welcome to the magical world of Diffusion models! DiffSynth-Studio is an open-source Diffusion model engine developed an",
+   "L20: * Model Support: The framework integrates mainstream open-source Diffusion models, covering image generation, video gene",
+   "L21: * VRAM Management: Dynamically schedules model parameters across disk, memory, and VRAM, allowing consumer-grade GPUs wi"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     5,
+     294
+    ],
+    "quotes": [
+     "PyPI",
+     "pip install -e ."
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     292
+    ],
+    "quotes": [
+     "git clone https://github.com/modelscope/DiffSynth-Studio.git"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "24GB VRAM",
+    "rel": "mention",
+    "lines": [
+     224
+    ],
+    "quotes": [
+     "- **December 19, 2024** We implemented advanced VRAM management for HunyuanVideo, enabling video generation with resolut"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     53,
+     55,
+     72
+    ],
+    "quotes": [
+     " * Example Code: Z-Image-Turbo, Qwen-Image-2.1, MiniMax-H3, LoRA Training Example",
+     "- **September 20, 2026** Qwen-Image-2.1 was open-sourced. The model supports text-to-image generation, image editing, an",
+     "- **August 31, 2026** We have integrated Qwen-Video-Edit, a video editing model developed by open-source community contr"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     115,
+     116
+    ],
+    "quotes": [
+     " * Model collections: ModelScope | ModelScope International | HuggingFace",
+     " * Datasets: ModelScope | ModelScope International | HuggingFace"
+    ]
+   },
+   {
+    "term": "文心一言",
+    "rel": "mention",
+    "lines": [
+     343,
+     612,
+     613
+    ],
+    "quotes": [
+     " - ERNIE-Image: Documentation, Example code",
+     "|ERNIE-Image|PaddlePaddle/ERNIE-Image|code|code|code|code|code|code|",
+     "|ERNIE-Image|PaddlePaddle/ERNIE-Image-Turbo|code|code|—|—|—|—|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    40
+   ]
+  }
+ }
+}

@@ -1,0 +1,159 @@
+{
+ "fn": "bee-san/Ciphey",
+ "sha": "becf0bcb61d5",
+ "source": "readme",
+ "identity": {
+  "one_liner": "无需密钥自动解密/解码文本的 Rust CLI 工具",
+  "review": "终端工具：粘贴被编码或加密的文本，无需密钥或密码名，自动搜索解码器链条并输出明文；支持 24 种解码器（Base64/Base32/Hex/Morse/Caesar/Vigenère 等），默认 5 秒超时，支持 regex crib 与词表匹配判定明文，LemmeKnow 识别 120+ 格式。Rust 编写，A* 搜索、Rayon 并行与 sqlite 缓存。可作 crate 库使用，另提供 MCP server 供 AI 助手调用；crates.io 发布版与 master 分支 API 存在差异。",
+  "highlights": [
+   "24 种解码器，支持多层嵌套链条自动搜索（A* 优先尝试最有希望链条）",
+   "LemmeKnow 识别 120+ 格式（IP、token、CTF flag 等）",
+   "regex crib 与词表模式限定明文判定",
+   "提供 ciphey-mcp MCP server，含 decode/decode_with/detect_plaintext/list_decoders 四个工具"
+  ],
+  "use_cases": [
+   "CTF 中遇到未知编码/加密的字符串时自动还原明文",
+   "脚本中用 -d 无交互模式批量解码",
+   "让 Claude Desktop / Kiro 等 AI 助手通过 MCP 调用解码能力"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "密码学",
+   "CTF",
+   "解码工具",
+   "MCP"
+  ],
+  "domain": "安全/密码学工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "cybersecurity"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L92: Ciphey doesn't need to be told what it's looking at. It searches chains of decoders (Base64 inside hex inside ROT13, fou",
+   "L197: `ciphey-mcp` is a Model Context Protocol server, so AI assistants such as Claude Desktop and Kiro can decode text with C"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     197,
+     243
+    ],
+    "note": "Claude Desktop 作为 MCP 客户端被提及，非官方接入通道",
+    "quotes": [
+     "`ciphey-mcp` is a Model Context Protocol server, so AI assistants such as Claude Desktop and Kiro can decode text with C",
+     "### Claude Desktop"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "cargo",
+    "rel": "support",
+    "lines": [
+     24,
+     200,
+     202,
+     205
+    ],
+    "quotes": [
+     "cargo install ciphey",
+     "cargo install ciphey --features mcp --bin ciphey-mcp",
+     "cargo install --path . --features mcp --bin ciphey-mcp",
+     "The `mcp` feature isn't in a crates.io release yet (0.12.0 is the latest), so until the next one, install from git: `car"
+    ]
+   },
+   {
+    "term": "go",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     27
+    ],
+    "quotes": [
+     "Prebuilt binaries for Linux (x86_64), macOS (Intel and Apple silicon) and Windows (x86_64) are on the releases page, eac"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     29,
+     32
+    ],
+    "quotes": [
+     "To build from source, you need a Rust toolchain:",
+     "git clone https://github.com/bee-san/Ciphey"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    187,
+    205
+   ],
+   "note": "crates.io 发布版落后于 master，MCP feature 未随发布提供，需从 git 安装"
+  }
+ }
+}

@@ -1,0 +1,147 @@
+{
+ "fn": "JordanGunn/oasr",
+ "sha": "dde25384657c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "跨 IDE 的 AI agent 技能注册与同步 CLI，一处注册多处分发",
+  "review": "面向使用 AI 编码助手的开发者的命令行工具：将本地文件夹或 GitHub/GitLab URL 中的 agent 技能注册到统一注册表，避免在多个 IDE 间手工复制造成版本漂移（skill drift）；通过 `oasr adapter` 为 Cursor、Windsurf、Codex、GitHub Copilot、Claude Code 五种 IDE 生成对应格式的适配文件，`oasr sync` 检测来源变更，`oasr exec` 配合策略配置执行技能。另提供动态 Shell 补全（Bash/Zsh/Fish/PowerShell）与 JSON 输出模式。README 引用 docs 中的 Quickstart 文档，未直接给出安装命令。",
+  "highlights": [
+   "单一注册表同步本地与 GitHub/GitLab 远程技能来源",
+   "为 Cursor/Windsurf/Codex/Copilot/Claude Code 生成 IDE 适配器",
+   "`oasr exec` 按策略配置安全执行技能",
+   "支持 Bash/Zsh/Fish/PowerShell 动态补全与 `--json v2` 结构化输出"
+  ],
+  "use_cases": [
+   "我在多个 AI 编码工具间复用同一套技能，不想手工复制",
+   "追踪技能在不同 IDE 间的版本漂移并自动同步",
+   "直接从 GitHub/GitLab 仓库引用团队共享的技能"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent技能管理",
+   "CLI工具",
+   "多IDE同步",
+   "开发者效率"
+  ],
+  "domain": "开发者工具/agent 技能生态",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: **Open Agent Skill Registry** — Register, sync, and reuse AI agent skills across IDEs with a single source of truth.",
+   "L22: ASR keeps your skills in a registry, syncs local and remote sources, and generates thin adapters for each IDE."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     113
+    ],
+    "note": "Claude Code 作为适配目标 IDE 出现，非专门接入 Anthropic API",
+    "quotes": [
+     "|Claude Code|`claude`|`.claude/commands/*.md`|"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     109
+    ],
+    "note": "作为技能分发的目标 IDE",
+    "quotes": [
+     "|Cursor|`cursor`|`.cursor/commands/*.md`|"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     110
+    ],
+    "note": "作为技能分发的目标 IDE",
+    "quotes": [
+     "|Windsurf|`windsurf`|`.windsurf/workflows/*.md`|"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     112
+    ],
+    "note": "作为技能分发的目标 IDE",
+    "quotes": [
+     "|GitHub Copilot|`copilot`|`.github/prompts/*.prompt.md`|"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     113
+    ],
+    "note": "作为技能分发的目标 IDE",
+    "quotes": [
+     "|Claude Code|`claude`|`.claude/commands/*.md`|"
+    ]
+   }
+  ]
+ }
+}

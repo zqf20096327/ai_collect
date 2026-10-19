@@ -1,0 +1,207 @@
+{
+ "fn": "NanmiCoder/cc-haha",
+ "sha": "0fbd6f34c578",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 Claude Code 用户的跨平台桌面工作台：多 Agent 协作与可视化管理",
+  "review": "基于 Electron 的桌面应用，将 Claude Code CLI 包装为图形化工作台：多会话管理、分支/Worktree 启动、Diff 审阅、内置浏览器预览、MCP 与 SubAgent 可视化管理、Agent Teams 协作、动态 Workflow 编排、Computer Use、技能市场、桌面宠物，以及 H5 与 IM 远程接入。模型侧支持官方账号登录、第三方 API 预设与本地模型端点。需在设置中配置模型提供商与 API Key；许可证为源码可用许可，非 OSI 认证，商业使用须书面授权。",
+  "highlights": [
+   "多会话工作台：Worktree 启动、Diff 审阅、Cmd+K 全局搜索",
+   "Agent Teams 多 Agent 协作与动态 Workflow 编排",
+   "Computer Use 跨应用操作，macOS 上不占用真实鼠标键盘",
+   "MCP 图形化管理与技能市场（ClawHub / SkillHub）"
+  ],
+  "use_cases": [
+   "想在图形界面里管理多个 Claude Code 会话和代码改动",
+   "通过手机 H5 或微信/飞书远程审批与对话",
+   "搭建多 Agent 协作团队执行编排任务",
+   "接入本地模型端点运行 Coding Agent"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Coding Agent",
+   "桌面应用",
+   "多Agent协作",
+   "Computer Use",
+   "MCP"
+  ],
+  "domain": "开发者工具/AI Coding",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "xai",
+   "deepseek",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "gui-automation",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "企业微信用户群",
+   "微信/支付宝打赏"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: cc-haha 是一个**桌面端 Claude Code 工作台**：多会话与全局搜索、分支 / Worktree 启动、Diff 审阅、内置浏览器预览、图形化权限审批、模型自选（Claude / ChatGPT / Grok / 预设 /",
+   "L109: - **模型自选**：Claude / ChatGPT / Grok 官方账号可直接登录；DeepSeek、Kimi、智谱 GLM 等第三方 API 有现成预设；LM Studio、Ollama 的本地模型也接得上。",
+   "L162: 当前采用 cc-haha Community Source License 1.0。允许个人非商业使用及企业内部自用；接单、对外商业盈利、收费修改或二次开发、商业分发及付费服务须事先取得书面商业授权；二次分发须显著保留来源署名。历史 MIT"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     147,
+     109
+    ],
+    "note": "API 层使用 Anthropic SDK，支持 Claude 官方账号登录",
+    "quotes": [
+     "|API|Anthropic SDK|",
+     "- **模型自选**：Claude / ChatGPT / Grok 官方账号可直接登录；DeepSeek、Kimi、智谱 GLM 等第三方 API 有现成预设；LM Studio、Ollama 的本地模型也接得上。"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     109,
+     110
+    ],
+    "note": "Grok 官方账号登录与图片生成",
+    "quotes": [
+     "- **模型自选**：Claude / ChatGPT / Grok 官方账号可直接登录；DeepSeek、Kimi、智谱 GLM 等第三方 API 有现成预设；LM Studio、Ollama 的本地模型也接得上。",
+     "- **图片生成**：聊天中直接生成和编辑图片——ChatGPT / Grok 授权登录即可使用，也支持接入任意 OpenAI 兼容的 Images API。"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     109
+    ],
+    "note": "第三方 API 现成预设",
+    "quotes": [
+     "- **模型自选**：Claude / ChatGPT / Grok 官方账号可直接登录；DeepSeek、Kimi、智谱 GLM 等第三方 API 有现成预设；LM Studio、Ollama 的本地模型也接得上。"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     109
+    ],
+    "note": "本地模型可接入",
+    "quotes": [
+     "- **模型自选**：Claude / ChatGPT / Grok 官方账号可直接登录；DeepSeek、Kimi、智谱 GLM 等第三方 API 有现成预设；LM Studio、Ollama 的本地模型也接得上。"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     68,
+     73,
+     75
+    ],
+    "note": "bun install 后从源码启动 CLI；另有 Releases 桌面端安装包",
+    "quotes": [
+     "## 从源码启动 CLI",
+     "bun install",
+     "./bin/claude-haha"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    162
+   ],
+   "quotes": [
+    "当前采用 cc-haha Community Source License 1.0。允许个人非商业使用及企业内部自用；接单、对外商业盈利、收费修改或二次开发、商业分发及付费服务须事先取得书面商业授权；二次分发须显著保留来源署名。历史 MIT"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     3,
+     16
+    ],
+    "note": "本产品是其桌面工作台，非替代或竞品",
+    "quotes": [
+     " cc-haha — Claude Code 源码可用桌面端",
+     "cc-haha 是一个**桌面端 Claude Code 工作台**：多会话与全局搜索、分支 / Worktree 启动、Diff 审阅、内置浏览器预览、图形化权限审批、模型自选（Claude / ChatGPT / Grok / 预设 /"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     109,
+     110
+    ],
+    "note": "可接入的模型选项之一",
+    "quotes": [
+     "- **模型自选**：Claude / ChatGPT / Grok 官方账号可直接登录；DeepSeek、Kimi、智谱 GLM 等第三方 API 有现成预设；LM Studio、Ollama 的本地模型也接得上。",
+     "- **图片生成**：聊天中直接生成和编辑图片——ChatGPT / Grok 授权登录即可使用，也支持接入任意 OpenAI 兼容的 Images API。"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     109
+    ],
+    "note": "可接入的第三方 API 预设之一",
+    "quotes": [
+     "- **模型自选**：Claude / ChatGPT / Grok 官方账号可直接登录；DeepSeek、Kimi、智谱 GLM 等第三方 API 有现成预设；LM Studio、Ollama 的本地模型也接得上。"
+    ]
+   }
+  ]
+ }
+}

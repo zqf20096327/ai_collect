@@ -1,0 +1,97 @@
+{
+ "fn": "HKUDS/Vibe-Trading",
+ "sha": "e309c4739710",
+ "source": "readme",
+ "identity": {
+  "one_liner": "个人量化交易 Agent：回测、实盘与研究一站式",
+  "review": "由 HKUDS 开发的个人交易 Agent，以 Python 包（vibe-trading-ai）分发，通过 FastAPI 后端与 React 前端提供 Web 界面。功能覆盖策略回测（Sortino、Monte Carlo、walk-forward 等指标）、实盘运行调度（决策会话、每日用量预算）、研究工作流（因子计算、SEC 文件、证据溯源 grounding gate）以及多渠道接入（Email、Slack、Discord、飞书、WeChat、WebSocket）。支持 18 家券商连接器与多市场数据（A 股、美港股、加密货币等），v0.1.16 起数字需经工具证据校验。",
+  "highlights": [
+   "回测引擎输出 Sortino、turnover、Monte Carlo p 值等结构化指标并以 CSV 佐证",
+   "grounding gate 按数字角色（observed/derived/proposed/cited/count）校验模型输出与工具证据一致性",
+   "18 家券商连接器（含 KIS、Upbit、Toss Securities、Scalable Capital 等）与多市场数据源",
+   "Email/Slack/Discord/飞书/WeChat/WebSocket 等多渠道接入及定时报告（PDF 支持 AES-256 加密）"
+  ],
+  "use_cases": [
+   "用自然语言让 Agent 跑策略回测并出具带证据的报告",
+   "接入券商做实盘运行并设置每日模型用量预算",
+   "对 A 股/美港股/加密资产做因子研究与组合分析",
+   "通过飞书/Slack 等接收定时交易与研究报告"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "量化交易",
+   "回测",
+   "多Agent",
+   "券商连接",
+   "金融研究"
+  ],
+  "domain": "金融科技/量化交易",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "quant-finance"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "HKUDS（香港大学数据科学实验室）",
+   "飞书/微信社区支持"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5:  Vibe-Trading: Your Personal Trading Agent",
+   "L33:  pip install vibe-trading-ai",
+   "L79: - **2026-09-29** 🚀 **v0.1.16 released** (Release notes, `pip install -U vibe-trading-ai`): 492 commits and 116 merged pu"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

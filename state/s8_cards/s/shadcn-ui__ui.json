@@ -1,0 +1,81 @@
+{
+ "fn": "shadcn-ui/ui",
+ "sha": "8da378c28cb1",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的可定制 React 组件集合，用于构建自己的组件库",
+  "review": "shadcn/ui 提供一组可组合、注重可访问性的 React 组件，代码复制到用户项目中，可自行定制与扩展，用于构建自己的组件库。README 说明文档位于 ui.shadcn.com/docs，采用 MIT 许可证，接受社区贡献。README 本身仅作入口，安装方式与框架集成细节（如 Next.js、Radix UI 等主题标签所示）需查阅其文档站点。",
+  "highlights": [
+   "可组合、注重可访问性的组件集",
+   "代码归用户所有，可定制、扩展并构建自有组件库",
+   "MIT 许可证开源"
+  ],
+  "use_cases": [
+   "为 React 应用搭建一套可完全控制的组件库",
+   "在定制 UI 组件时参考其组件实现"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "UI组件库",
+   "React",
+   "前端开发"
+  ],
+  "domain": "前端开发/UI 组件",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: A set of beautifully designed components that you can customize, extend, and build on. Start here then make it your own.",
+   "L14: Licensed under the MIT license."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

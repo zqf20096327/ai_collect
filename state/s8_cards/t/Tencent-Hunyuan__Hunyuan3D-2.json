@@ -1,0 +1,135 @@
+{
+ "fn": "Tencent-Hunyuan/Hunyuan3D-2",
+ "sha": "44ebe8bd2d4a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给创作者/开发者的图像与文本生成高分辨率带纹理 3D 资产的扩散模型系统",
+  "review": "腾讯混元发布的 Hunyuan3D 2.0 开源 3D 生成系统，采用两阶段管线：基于流扩散 transformer 的形状生成模型 Hunyuan3D-DiT 依据条件图像生成网格，纹理合成模型 Hunyuan3D-Paint 为生成或手工网格生成纹理贴图。提供多系列模型（1.1B 标准、0.6B mini、多视图 mv、蒸馏加速 Turbo/Fast 版本），支持 macOS/Windows/Linux，输出 glb/obj 格式。提供 Python API、Gradio App、本地 API Server 与 Blender 插件；形状生成需 6 GB 显存，形状+纹理共需 16 GB。",
+  "highlights": [
+   "两阶段管线：形状生成（Hunyuan3D-DiT）+ 纹理合成（Hunyuan3D-Paint）",
+   "提供 mini/mv/turbo 等多系列模型，0.6B 起可选",
+   "提供 Python API、Gradio App、API Server 与 Blender 插件四种使用方式",
+   "形状生成 6 GB 显存即可运行"
+  ],
+  "use_cases": [
+   "从单张或多视图图片生成带纹理的 3D 网格资产",
+   "为手工建模的网格生成纹理贴图",
+   "通过 Blender 插件在建模工作流中直接调用 3D 生成",
+   "部署本地 API 服务供其他应用调用图像转 3D"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": "gpu-8g",
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "3D生成",
+   "图像转3D",
+   "纹理生成",
+   "扩散模型",
+   "游戏美术"
+  ],
+  "domain": "AIGC/3D 资产生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供「中文阅读」链接",
+   "腾讯 Hunyuan 团队",
+   "社区整合包条目含中文「整合包」"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L42: We present Hunyuan3D 2.0, an advanced large-scale 3D synthesis system for generating high-resolution textured 3D assets.",
+   "L60: Hunyuan3D 2.0 features a two-stage generation pipeline, starting with the creation of a bare mesh, followed by the",
+   "L120: Hunyuan3D 2.0 supports Macos, Windows, Linux. You may follow the next steps to use Hunyuan3D 2.0 via:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     129,
+     130
+    ],
+    "note": "pip install requirements 与 pip install -e . 为本产品安装途径",
+    "quotes": [
+     "pip install -r requirements.txt",
+     "pip install -e ."
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "6 GB VRAM",
+    "rel": "support",
+    "lines": [
+     82
+    ],
+    "note": "README 声明形状生成需 6 GB 显存",
+    "quotes": [
+     "It takes 6 GB VRAM for shape generation and 16 GB for shape and texture generation in total."
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     31,
+     86,
+     254
+    ],
+    "note": "模型托管平台与致谢对象，非替代/竞品",
+    "quotes": [
+     " via huggingface space and",
+     "|Model|Description|Date|Size|Huggingface|",
+     "the Trellis, DINOv2, Stable Diffusion, FLUX, diffusers, HuggingFace, CraftsMan3D,"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

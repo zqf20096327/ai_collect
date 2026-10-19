@@ -1,0 +1,130 @@
+{
+ "fn": "WriterGao/linkfox-ai-design",
+ "sha": "11b1eed2a1db",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向电商设计的 AI 图像生成全栈平台（Spring Boot + Vue3）",
+  "review": "基于 Spring Boot 3.2 与 Vue 3.4 的前后端分离 Web 平台，提供智能修图、场景替换、商品图生成、AI 穿衣、真人模特、批量生图六类 AI 图像功能，并配套用户注册登录、积分与 VIP 等级、作品上传与作品广场等系统。数据层用 MySQL 8 + MyBatis Plus 与 Redis，安全用 Spring Security + JWT。支持 Docker Compose 一键启动或 Maven/npm 手动构建运行，README 未说明各 AI 功能所调用的具体模型或外部服务。",
+  "highlights": [
+   "智能修图、场景制变、商品图、AI 穿衣、真人模特、批量生图六大功能",
+   "完整用户体系：注册登录、权限管理、积分与 VIP 等级",
+   "作品管理：上传、分类、点赞收藏与作品广场展示",
+   "Docker Compose 一键部署，前后端分离架构"
+  ],
+  "use_cases": [
+   "电商商家批量制作商品图与场景图",
+   "通过虚拟试衣功能预览服装上身效果",
+   "搭建带用户与积分系统的 AI 设计服务网站"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI图像生成",
+   "电商设计",
+   "全栈Web应用",
+   "AIGC"
+  ],
+  "domain": "电商设计/AI图像生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "后端遵循阿里巴巴 Java 开发规范"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L15: LinkFox AI设计平台是一个功能强大的AI驱动的图像生成和电商设计平台，提供智能修图、场景制变、商品图生成、AI穿衣、真人模特等多种AI设计功能。",
+   "L21: LinkFox AI设计平台提供智能修图、场景制变、商品图、AI穿衣、真人模特、批量生图等六大核心功能。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     56,
+     66
+    ],
+    "quotes": [
+     "- **容器化**: Docker + Docker Compose",
+     "- Docker & Docker Compose"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     73,
+     94,
+     95
+    ],
+    "quotes": [
+     "git clone https://github.com/WriterGao/linkfox-ai-design.git",
+     "cd backend",
+     "mvn clean install"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     103
+    ],
+    "quotes": [
+     "npm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,105 @@
+{
+ "fn": "openai/swarm",
+ "sha": "d4d9ef450cc7",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的轻量多 Agent 编排教学框架",
+  "review": "OpenAI 团队维护的实验性教育框架，用于探索多 Agent 编排模式。核心机制为 Agent（封装 instructions 与 functions）和 handoffs（通过函数返回值转移执行权）两个原语；client.run() 实现补全-工具执行-换 Agent-更新上下文的循环，函数自动转 JSON Schema，支持流式输出与 REPL 调试循环。完全基于 Chat Completions API，无状态运行，默认模型 gpt-4o。README 明确其已被 OpenAI Agents SDK 取代，生产场景建议迁移。",
+  "highlights": [
+   "Agent 与 handoffs 两个原语表达多 Agent 编排",
+   "函数自动转换为 Chat Completions tools 的 JSON Schema",
+   "基于 Chat Completions API 的无状态设计",
+   "提供 airline、support_bot、triage_agent 等 6 组示例"
+  ],
+  "use_cases": [
+   "学习多 Agent 编排与 handoff 模式",
+   "构建客户服务分流/多 Agent 协作原型",
+   "在本地 REPL 中流式调试 Agent 对话"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "多Agent编排",
+   "教学框架",
+   "Agent框架",
+   "LLM基础设施"
+  ],
+  "domain": "LLM 基础设施/多 Agent 编排",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "multi-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6: > Swarm is now replaced by the OpenAI Agents SDK, which is a production-ready evolution of Swarm. The Agents SDK feature",
+   "L43: Swarm focuses on making agent **coordination** and **execution** lightweight, highly controllable, and easily testable.",
+   "L56: The Assistants API is a great option for developers looking for fully-hosted threads and built in memory management and "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     15,
+     21
+    ],
+    "quotes": [
+     "pip install git+ssh://git@github.com/openai/swarm.git",
+     "pip install git+https://github.com/openai/swarm.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    3,
+    6,
+    8
+   ]
+  }
+ }
+}

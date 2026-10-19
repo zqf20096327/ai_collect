@@ -1,0 +1,108 @@
+{
+ "fn": "tensorflow/tfjs-models",
+ "sha": "ebc280b02502",
+ "source": "readme",
+ "identity": {
+  "one_liner": "前端开发者在浏览器中运行 TensorFlow.js 预训练模型集合",
+  "review": "托管一组已移植到 TensorFlow.js 的预训练模型，发布在 NPM 与 unpkg 上，可直接使用或在 TensorFlow.js 中做迁移学习。涵盖图像分类、手部/人体姿态检测、目标检测、语义分割、人脸关键点、语音命令分类、文本编码与毒性评分、人像深度估计，另附 KNN 分类器等通用工具。API 设计上隐藏张量细节，面向非机器学习专家，每个模型有独立目录与 README。",
+  "highlights": [
+   "提供 MobileNet 图像分类、Coco SSD 目标检测、DeepLab v3 语义分割等图像模型",
+   "支持浏览器端实时手部/人体姿态检测与 3D 人脸关键点检测",
+   "包含语音命令分类、文本编码/毒性评分、人像深度估计",
+   "提供 KNN 分类器工具包，支持迁移学习场景"
+  ],
+  "use_cases": [
+   "在网页中做图像分类或目标检测",
+   "浏览器端实时人体/手部姿态与面部关键点检测",
+   "为文本任务生成句向量或给评论打毒性分",
+   "基于预训练模型做迁移学习构建自定义应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "预训练模型",
+   "浏览器端推理",
+   "计算机视觉",
+   "语音/文本"
+  ],
+  "domain": "机器学习/浏览器端推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: This repository hosts a set of pre-trained models that have been ported to",
+   "L6: The models are hosted on NPM and unpkg so they can be used in any project out of the box. They can be used directly or u",
+   "L11: non-machine learning experts."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     6,
+     29,
+     36,
+     43,
+     50
+    ],
+    "quotes": [
+     "The models are hosted on NPM and unpkg so they can be used in any project out of the box. They can be used directly or u",
+     " <code>npm i @tensorflow-models/mobilenet</code>",
+     " <code>npm i @tensorflow-models/hand-pose-detection</code>",
+     " <code>npm i @tensorflow-models/pose-detection</code>",
+     " <code>npm i @tensorflow-models/coco-ssd</code>"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

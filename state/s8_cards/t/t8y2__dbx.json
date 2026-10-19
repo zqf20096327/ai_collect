@@ -1,0 +1,195 @@
+{
+ "fn": "t8y2/dbx",
+ "sha": "61a1cb96968f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的 25MB 跨平台数据库管理客户端，支持 100+ 数据库",
+  "review": "用 Rust 构建的轻量级开源数据库管理工具，单个约 25MB 二进制文件，无 JRE/Python/Chromium 依赖，提供 macOS、Windows、Linux 桌面端、Docker/Web 部署与 CLI。支持 100+ 数据库连接（含国产数据库达梦、人大金仓等）及消息队列/中间件控制台。内置 AI SQL 助手支持自然语言生成 SQL、解释与优化，并独立分发 MCP Server 供 AI 编码代理查询数据库，权限分 read_only/safe_write/high_risk_write 三档。另有签名沙箱插件商店与 Go/TypeScript SDK。",
+  "highlights": [
+   "单二进制约 25MB，无 JRE、Python venv、Chromium 依赖",
+   "内置 AI SQL 助手，支持 Claude、OpenAI、本地模型及 OpenAI 兼容端点，AI 生成 SQL 经内置安全检查",
+   "独立分发的 Rust MCP Server，供 Claude Code、Cursor 等 AI 代理通过已配置连接查询数据库",
+   "支持消息队列与中间件控制台：Kafka、RocketMQ、RabbitMQ、Pulsar、MQTT、Nacos 等"
+  ],
+  "use_cases": [
+   "用一个客户端管理 MySQL、PostgreSQL、Redis、MongoDB 等多种数据库连接",
+   "通过自然语言生成并检查 SQL，减少在工具间复制粘贴",
+   "自托管 Docker/Web 版本供团队统一访问数据库",
+   "让 Claude Code/Cursor 等 AI 编码代理安全地查询已有数据库连接"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据库管理",
+   "数据库客户端",
+   "MCP Server",
+   "AI SQL助手",
+   "桌面应用"
+  ],
+  "domain": "开发工具/数据库管理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "QQ/微信群",
+   "支持达梦、人大金仓、OceanBase、TiDB 等国产数据库",
+   "简体中文界面",
+   "HelloGitHub 精选"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: 100+ databases in 25 MB. Desktop, Docker, CLI, built-in AI assistant, and MCP Server.",
+   "L128:  Highlight a table, describe what you want, get SQL back — no copy-paste between tools. Works with Claude, OpenAI, or lo",
+   "L208: DBX provides a separate Rust-powered MCP server that lets AI coding agents query databases using connections configured "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     128
+    ],
+    "note": "AI 助手提及可搭配 Claude 模型，未声明专门适配",
+    "quotes": [
+     " Highlight a table, describe what you want, get SQL back — no copy-paste between tools. Works with Claude, OpenAI, or lo"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     128
+    ],
+    "note": "AI 助手提及通过 Ollama 使用本地模型",
+    "quotes": [
+     " Highlight a table, describe what you want, get SQL back — no copy-paste between tools. Works with Claude, OpenAI, or lo"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     211
+    ],
+    "quotes": [
+     "npx @dbx-app/mcp-server"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     247,
+     248
+    ],
+    "quotes": [
+     "# or via Homebrew",
+     "brew tap t8y2/tap && brew install dbx-cli"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     260
+    ],
+    "quotes": [
+     "Download the latest release from the Releases page."
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     301,
+     309
+    ],
+    "quotes": [
+     "docker run -d --pull=always --name dbx -p 4224:4224 \\",
+     "For Docker Compose, `deploy/docker-compose.yml` remains the source-build"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     131,
+     208
+    ],
+    "quotes": [
+     " DBX speaks the Model Context Protocol. Claude Code, Cursor, Windsurf, and other AI coding agents can query your databas",
+     "DBX provides a separate Rust-powered MCP server that lets AI coding agents query databases using connections configured "
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     131
+    ],
+    "quotes": [
+     " DBX speaks the Model Context Protocol. Claude Code, Cursor, Windsurf, and other AI coding agents can query your databas"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     131
+    ],
+    "quotes": [
+     " DBX speaks the Model Context Protocol. Claude Code, Cursor, Windsurf, and other AI coding agents can query your databas"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

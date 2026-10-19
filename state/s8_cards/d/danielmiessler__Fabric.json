@@ -1,0 +1,247 @@
+{
+ "fn": "danielmiessler/Fabric",
+ "sha": "6a06de459335",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向命令行用户的 AI 提示词组织与调用框架",
+  "review": "开源 AI 框架，将提示词组织为 Patterns（按现实任务分类的可复用单元），供用户在各工具中调用，也可作为命令行界面直接使用。覆盖提取视频要点、写文章、摘要论文、生成总结等任务场景。提供 Go 实现与 REST API，支持 10 余种原生接入的 AI 提供商及数十家 OpenAI 兼容供应商，配置按 Pattern 映射模型。安装覆盖脚本、二进制、多包管理器与 Docker。",
+  "highlights": [
+   "以 Patterns（提示词单元）组织 AI 能力，按任务分类管理",
+   "原生接入十余家 AI 提供商，另支持数十家 OpenAI 兼容供应商",
+   "提供 CLI 与 REST API（含 Swagger/OpenAPI 文档）两种使用方式",
+   "支持按 Pattern 配置模型映射（FABRIC_MODEL_PATTERN_NAME 环境变量）"
+  ],
+  "use_cases": [
+   "在命令行中直接调用整理好的提示词完成摘要/写作等任务",
+   "把常用的 AI 提示词集中收集、版本化管理",
+   "通过 YouTube/播客转录提取内容要点",
+   "统一配置多家 AI 供应商并在不同 Pattern 间切换模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "CLI工具",
+   "提示词管理",
+   "LLM集成",
+   "效率工具"
+  ],
+  "domain": "开发者工具/AI 增强",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "azure",
+   "bedrock",
+   "ollama",
+   "deepseek",
+   "groq",
+   "openrouter"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L22:  <code>fabric</code> is an open-source framework for augmenting humans using AI.",
+   "L50: **Fabric was created to address this by creating and organizing the fundamental units of AI—the prompts themselves!**",
+   "L253: Fabric supports a wide range of AI providers:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     259,
+     260
+    ],
+    "quotes": [
+     "- Anthropic (Claude)",
+     "- Claude Code (Claude subscription via the local `claude` CLI)"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     263,
+     71,
+     72
+    ],
+    "quotes": [
+     "- Azure OpenAI",
+     "- v1.4.417 (Feb 21, 2026) — **Azure AI Gateway Plugin**: Added Azure AI Gateway plugin supporting multiple backends (AWS",
+     "- v1.4.416 (Feb 21, 2026) — **Azure Entra ID Authentication**: Added Azure Entra ID authentication plugin with shared Az"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     264
+    ],
+    "quotes": [
+     "- Amazon Bedrock"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     262
+    ],
+    "quotes": [
+     "- Ollama (local models)"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     277
+    ],
+    "quotes": [
+     "- DeepSeek"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     282
+    ],
+    "quotes": [
+     "- Groq"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     290
+    ],
+    "quotes": [
+     "- OpenRouter"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     173
+    ],
+    "quotes": [
+     "`brew install fabric-ai`"
+    ]
+   },
+   {
+    "term": "go",
+    "rel": "support",
+    "lines": [
+     195
+    ],
+    "quotes": [
+     "go install github.com/danielmiessler/fabric/cmd/fabric@latest"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     204
+    ],
+    "quotes": [
+     "docker run --rm -it kayvan/fabric:latest --version"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     73
+    ],
+    "note": "Microsoft 365 Copilot 集成声明，非竞品对比",
+    "quotes": [
+     "- v1.4.380 (Jan 15, 2026) — **Microsoft 365 Copilot Integration**: Added support for corporate Microsoft 365 Copilot, en"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     258
+    ],
+    "note": "作为 Codex 订阅后端的说明",
+    "quotes": [
+     "- OpenAI Codex (ChatGPT/Codex subscription OAuth via private backend)"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     260
+    ],
+    "note": "作为可用后端接入，非替代/竞品关系",
+    "quotes": [
+     "- Claude Code (Claude subscription via the local `claude` CLI)"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     267
+    ],
+    "note": "作为接入的供应商列出，非竞品关系",
+    "quotes": [
+     "- Perplexity"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

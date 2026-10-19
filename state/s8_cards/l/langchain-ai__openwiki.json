@@ -1,0 +1,201 @@
+{
+ "fn": "langchain-ai/openwiki",
+ "sha": "22476650364e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为代码库生成并维护代理可读的 Markdown wiki 的 CLI",
+  "review": "OpenWiki 将代码库与知识源转换为相互链接的 Markdown wiki，供编码代理检索上下文、回答问题。工作流为：在编码代理内或通过独立 CLI 初始化 wiki，工具以 Claims 形式把事实追溯到源证据，后续更新只处理变更部分，支持中断恢复与逐页保存进度。可通过 openwiki link 将多个仓库组成 workspace 做跨库检索，内置本地可视化图谱与静态导出，并提供 GitHub Actions/GitLab CI/Bitbucket 定时更新模板。依赖 Node.js 22.22.0+。",
+  "highlights": [
+   "Claims 溯源机制：事实关联源证据，更新时识别需关注的部分",
+   "通过 MCP 生命周期工具（begin/submit_plan/next_page/…）与宿主代理协作",
+   "openwiki link 组建跨仓库 workspace 检索与阅读",
+   "提供交互式图谱可视化与可发布的静态导出"
+  ],
+  "use_cases": [
+   "让编码代理快速理解陌生仓库的结构与上下文",
+   "多仓库服务通过 workspace 做统一文档检索",
+   "用 CI 定时任务保持代码文档与代码同步"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "代码文档",
+   "编码代理集成",
+   "MCP",
+   "知识图谱可视化",
+   "CI自动化"
+  ],
+  "domain": "开发者工具/代码文档",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: OpenWiki turns your codebase and knowledge sources into a linked Markdown wiki that you own. Your coding agent can use i",
+   "L30: The easiest way to get started is inside the coding agent you already use. OpenWiki uses that agent's authenticated mode",
+   "L96: The MCP generation lifecycle is `openwiki_begin → openwiki_submit_plan → openwiki_next_page → openwiki_submit_page → … →"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "bedrock",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "openrouter",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "ollama",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "deepseek",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "azure",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     37,
+     88
+    ],
+    "quotes": [
+     "npm install -g openwiki",
+     "On Windows, install with a Node.js package manager (`npm install -g openwiki` or `pnpm add -g openwiki`). Installing wit"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     11
+    ],
+    "note": "徽章中的仓库名（langchain-ai 组织），非替代/竞品表述",
+    "quotes": [
+     "langchain-ai%2Fopenwiki | Trendshift"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     22,
+     57,
+     85
+    ],
+    "note": "支持的集成目标之一",
+    "quotes": [
+     "- **More coding-agent integrations:** Oh My Pi, Antigravity, IBM Bob / Bob Shell, and Kiro join Codex, Claude Code, Open",
+     "|GitHub Copilot CLI|`openwiki integrations install copilot`|",
+     "- GitHub Copilot CLI uses `~/.copilot/skills` and `~/.copilot/mcp-config.json` at user scope; `.github/skills` and `.git"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     22,
+     50
+    ],
+    "note": "支持的集成目标之一",
+    "quotes": [
+     "- **More coding-agent integrations:** Oh My Pi, Antigravity, IBM Bob / Bob Shell, and Kiro join Codex, Claude Code, Open",
+     "|Claude Code|`openwiki integrations install claude`|"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     22,
+     52
+    ],
+    "note": "支持的集成目标之一",
+    "quotes": [
+     "- **More coding-agent integrations:** Oh My Pi, Antigravity, IBM Bob / Bob Shell, and Kiro join Codex, Claude Code, Open",
+     "|Cursor|`openwiki integrations install cursor`|"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "通义千问",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

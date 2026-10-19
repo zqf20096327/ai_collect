@@ -1,0 +1,161 @@
+{
+ "fn": "NirDiamant/GenAI_Agents",
+ "sha": "b7f57f4f118d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向学习者的 50+ 生成式 AI Agent 教程与实现合集",
+  "review": "以教程/笔记本形式组织的生成式 AI Agent 合集，按初学者、框架、教育、商业、创意、分析、新闻等分类收录 57 个实现，每个条目标注所用框架（LangChain、LangGraph、PydanticAI、AutoGen、CrewAI 等）与关键功能，涵盖对话机器人、多智能体协作、RAG Agent、任务与内容生成等。仓库还提供作者付费课程、newsletter、YouTube 讲解频道及配套项目（RAG Techniques、Agent Memory Techniques 等），接受社区贡献。",
+  "highlights": [
+   "57 个按类别组织的 Agent 教程实现，标注框架与功能",
+   "覆盖 LangChain、LangGraph、PydanticAI、AutoGen、CrewAI 等框架",
+   "从简单对话代理到多智能体系统的渐进式学习路径",
+   "接受社区贡献并持续更新条目"
+  ],
+  "use_cases": [
+   "从零开始学习构建第一个 AI Agent",
+   "查找特定场景（客服、论文综述、内容生成）的 Agent 实现参考",
+   "比较不同框架下同类 Agent 的实现方式"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教程合集",
+   "AI Agent",
+   "LLM",
+   "学习资源"
+  ],
+  "domain": "AI 教育/Agent 教程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: Welcome to one of the most extensive and dynamic collections of Generative AI (GenAI) agent tutorials and implementation",
+   "L135: |#|Category|Agent Name|Framework|Key Features|",
+   "L137: |1|🌱 **Beginner**|Simple Conversational Agent|LangChain/PydanticAI|Context-aware conversations, history management|"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     81
+    ],
+    "quotes": [
+     " Stop Thinking Claude Code Is Magic. Here's How It Works"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     185
+    ],
+    "note": "教程条目中配合 Ollama 本地 LLM 使用",
+    "quotes": [
+     "|49|🎓 **Educational**|Gutenberg Sage|LangGraph + Ollama|Local LLM RAG, NER-enhanced retrieval|"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     81
+    ],
+    "note": "YouTube 视频标题中提及，非替代/竞品关系",
+    "quotes": [
+     " Stop Thinking Claude Code Is Magic. Here's How It Works"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     137,
+     138,
+     139,
+     158,
+     159
+    ],
+    "note": "教程实现所用的框架，非替代/竞品对象",
+    "quotes": [
+     "|1|🌱 **Beginner**|Simple Conversational Agent|LangChain/PydanticAI|Context-aware conversations, history management|",
+     "|2|🌱 **Beginner**|Simple Question Answering|LangChain|Query understanding, concise answers|",
+     "|3|🌱 **Beginner**|Simple Data Analysis|LangChain/PydanticAI|Dataset interpretation, natural language queries|",
+     "|22|📊 **Analysis**|Memory-Enhanced Conversational|LangChain|Short/long-term memory integration|",
+     "|23|📊 **Analysis**|Multi-Agent Collaboration|LangChain|Historical research, data analysis|"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ]
+ }
+}

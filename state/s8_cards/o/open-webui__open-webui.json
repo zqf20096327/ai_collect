@@ -1,0 +1,190 @@
+{
+ "fn": "open-webui/open-webui",
+ "sha": "346c3774f88b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管 AI 交互界面，接入本地与云端多模型",
+  "review": "自托管 Web 平台，通过 Ollama 与 OpenAI 兼容 API 连接本地及云端模型，提供 RBAC 用户组、插件体系（Filters/Actions/Pipes/Tools/Skills）、MCP 与 OpenAPI 工具服务器接入、RAG（9 种向量数据库、混合检索）、网络搜索注入、图像生成、语音视频通话、日历与定时任务、企业认证（LDAP/SSO/SCIM）及 OpenTelemetry 可观测性。可通过 pip、Docker、Kubernetes 安装，支持纯 CPU 或 CUDA 镜像，另有 macOS/Windows/Linux 原生桌面应用。",
+  "highlights": [
+   "支持 Ollama 与任何 OpenAI 兼容 API（LMStudio、GroqCloud、Mistral、OpenRouter、vLLM 等）",
+   "插件体系与 MCP/OpenAPI 工具服务器接入，可构建带终端与文件系统的 Agent",
+   "RAG 支持 9 种向量数据库、BM25+向量混合检索与多家网络搜索提供商",
+   "企业功能：RBAC、LDAP/SSO/SCIM、多节点水平扩展、OpenTelemetry"
+  ],
+  "use_cases": [
+   "在本地或私有服务器上部署多模型对话界面",
+   "团队共享的 AI 工作台，带权限管理与用量统计",
+   "基于文档知识库的检索增强问答",
+   "给 Agent 配置工具与终端执行多步任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": "cpu-ok",
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM交互界面",
+   "自托管",
+   "RAG",
+   "多模型接入",
+   "企业AI平台"
+  ],
+  "domain": "LLM 基础设施/交互界面",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama",
+   "openrouter",
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: Open WebUI is **a home for AI**, a self-hosted AI platform that's **extensible**, **feature-rich**, user-friendly, and b",
+   "L31: - 🧩 **Plugin Support**: Extend Open WebUI with **Filters**, **Actions**, **Pipes**, **Tools**, and **Skills**. Connect e",
+   "L57: - 📚 **Local RAG Integration**: Retrieval Augmented Generation backed by 9 vector databases and multiple content-extracti"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     12,
+     25,
+     27,
+     136
+    ],
+    "quotes": [
+     "Open WebUI is **a home for AI**, a self-hosted AI platform that's **extensible**, **feature-rich**, user-friendly, and b",
+     "- 🚀 **Effortless Setup**: Install seamlessly via pip, uv, Docker, or Kubernetes (kubectl, kustomize, or helm), with `:ol",
+     "- 🤝 **Broad Model & API Integration**: Connect any OpenAI-compatible API alongside local Ollama models. Point the API UR",
+     "> If you wish to utilize Open WebUI with Ollama included or CUDA acceleration, we recommend utilizing our official image"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "compat",
+    "lines": [
+     27
+    ],
+    "quotes": [
+     "- 🤝 **Broad Model & API Integration**: Connect any OpenAI-compatible API alongside local Ollama models. Point the API UR"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     27
+    ],
+    "quotes": [
+     "- 🤝 **Broad Model & API Integration**: Connect any OpenAI-compatible API alongside local Ollama models. Point the API UR"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     109,
+     115
+    ],
+    "quotes": [
+     "Open WebUI can be installed using pip, the Python package installer. Before proceeding, ensure you're using **Python 3.1",
+     "   pip install open-webui"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     127,
+     143,
+     151,
+     157,
+     165,
+     176
+    ],
+    "quotes": [
+     "### Quick Start with Docker 🐳",
+     "  docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-we",
+     "  docker run -d -p 3000:8080 -e OLLAMA_BASE_URL=https://example.com -v open-webui:/app/backend/data --name open-webui --",
+     "  docker run -d -p 3000:8080 --gpus all --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --n",
+     "  docker run -d -p 3000:8080 -e OPENAI_API_KEY=your_secret_key -v open-webui:/app/backend/data --name open-webui --resta",
+     "  docker run -d -p 3000:8080 --gpus=all -v ollama:/root/.ollama -v open-webui:/app/backend/data --name open-webui --rest"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU Only",
+    "rel": "support",
+    "lines": [
+     179,
+     183
+    ],
+    "note": "官方提供纯 CPU 运行的容器镜像变体",
+    "quotes": [
+     "- **For CPU Only**:",
+     "  docker run -d -p 3000:8080 -v ollama:/root/.ollama -v open-webui:/app/backend/data --name open-webui --restart always "
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     59
+    ],
+    "note": "作为网络搜索提供商之一列出，非竞品对比",
+    "quotes": [
+     "- 🔍 **Web Search for RAG**: Search the web through dozens of providers including `SearXNG`, `Google PSE`, `Brave Search`"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

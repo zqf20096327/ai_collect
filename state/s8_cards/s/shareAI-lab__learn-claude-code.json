@@ -1,0 +1,139 @@
+{
+ "fn": "shareAI-lab/learn-claude-code",
+ "sha": "4c3cce1762c9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "教学仓库：从 0 到 1 构建类 Claude Code 的 agent harness",
+  "review": "一个 harness 工程教学课程，用 Python 从零实现类 Claude Code 的 agent 运行时，分 17 个递进章节，每章只讲一个机制：agent loop、工具注册、权限、hooks、TodoWrite、subagent、技能按需加载、上下文压缩、记忆、文件任务系统、后台任务、定时任务、MCP、多 agent 团队等。核心论点是「智能来自模型，工程者的工作是构建 harness」。每章含英/中/日三语 README 与可运行 code.py。属教学材料，非生产框架。",
+  "highlights": [
+   "17 个递进章节，每章实现一个 harness 机制并提供可运行 code.py",
+   "以单一 agent loop 为核心，工具经 dispatch map 注册",
+   "README 提供英文、中文、日文三语版本",
+   "保留 legacy 12 课版本并提供新旧章节映射表"
+  ],
+  "use_cases": [
+   "想理解 Claude Code 类工具内部机制的开发者逐课跟学",
+   "按章节动手实现自己的 agent loop 与工具系统",
+   "用 s01-s17 章节作为 agent 工程教学材料"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教学/课程",
+   "agent harness",
+   "Claude Code",
+   "Python"
+  ],
+  "domain": "AI 教育/agent 开发教学",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供中文翻译版本",
+   "含日本語多语言页"
+  ]
+ },
+ "trust": {
+  "confidence": "low",
+  "evidence": [
+   "L5: # Learn Claude Code -- Harness Engineering for Real Agents",
+   "L124:  The root-level `s01_*` ... `s17_*` folders are the canonical version. Each chapter contains an English default README, ",
+   "L156: > **s01** &nbsp; *\"One loop & Bash is all you need\"* &mdash; one tool + one loop = one agent"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm",
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     5,
+     82,
+     84
+    ],
+    "note": "围绕 Claude Code 的机制讲解与 API 调用示例，非专门适配声明",
+    "quotes": [
+     "# Learn Claude Code -- Harness Engineering for Real Agents",
+     "### Why Claude Code",
+     "Because Claude Code is the most elegant, most complete agent harness implementation we have seen. Not because of any cle"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     124
+    ],
+    "note": "各章节提供可运行 code.py，从仓库获取运行",
+    "quotes": [
+     " The root-level `s01_*` ... `s17_*` folders are the canonical version. Each chapter contains an English default README, "
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     5,
+     84,
+     86
+    ],
+    "note": "教学参照对象，非竞品/替代关系声明",
+    "quotes": [
+     "# Learn Claude Code -- Harness Engineering for Real Agents",
+     "Because Claude Code is the most elegant, most complete agent harness implementation we have seen. Not because of any cle",
+     "Strip Claude Code down to its essence:"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

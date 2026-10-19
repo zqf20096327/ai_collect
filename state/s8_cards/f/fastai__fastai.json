@@ -1,0 +1,129 @@
+{
+ "fn": "fastai/fastai",
+ "sha": "9db4607be0ff",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于 PyTorch 的深度学习库：分层 API 兼顾易用与可扩展",
+  "review": "fastai 是构建在 PyTorch 之上的深度学习库，面向从业者提供高层组件以快速在标准深度学习领域训练模型，同时为研究者提供可组合的低层组件以构建新方法。关键机制包括 Python 类型分发系统、GPU 优化的计算机视觉库、可重构的优化器抽象、双向回调系统与 data block API。依赖 PyTorch，提供 pip/conda 安装、Colab 免安装使用与官方 Docker 容器；Windows 上 Jupyter 下 num_workers 被重置为 0，视觉任务速度受限。",
+  "highlights": [
+   "分层 API：高层快速建模与低层可组合构件",
+   "Python 类型分发系统与张量语义类型层级",
+   "GPU 优化的计算机视觉库，可用纯 Python 扩展",
+   "双向回调系统与 data block API"
+  ],
+  "use_cases": [
+   "用约 5 行代码训练图像分类、分割、文本情感、推荐、表格模型",
+   "在自有数据集上训练自己的模型",
+   "从 PyTorch/Ignite/Lightning 等库迁移并减少训练代码量"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://www.mdpi.com/2078-2489/11/2/108/htm",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度学习",
+   "机器学习",
+   "PyTorch",
+   "计算机视觉",
+   "教学/课程"
+  ],
+  "domain": "机器学习/深度学习框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L57: fastai is a deep learning library which provides practitioners with",
+   "L63: possible thanks to a carefully layered architecture, which expresses",
+   "L67: underlying Python language and the flexibility of the PyTorch library."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     18,
+     31
+    ],
+    "quotes": [
+     "You can install fastai on your own machines with: `pip install fastai`.",
+     " pip install -e \"fastai[dev]\""
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     10,
+     11,
+     13,
+     14
+    ],
+    "quotes": [
+     "You can use fastai without any installation by using [Google",
+     "Colab](https://colab.research.google.com/). In fact, every page of this",
+     "in colab” at the top of any page to open it (be sure to change the Colab",
+     "runtime to “GPU” to have it run fast!) See the fast.ai documentation on"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     30,
+     31
+    ],
+    "quotes": [
+     " git clone https://github.com/fastai/fastai",
+     " pip install -e \"fastai[dev]\""
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

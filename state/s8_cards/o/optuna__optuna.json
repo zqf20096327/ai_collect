@@ -1,0 +1,123 @@
+{
+ "fn": "optuna/optuna",
+ "sha": "39707ac4699a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向机器学习的超参数自动优化 Python 框架",
+  "review": "为机器学习提供超参数优化的 Python 框架，采用 define-by-run 命令式 API，用户可用普通 Python 语法（含条件与循环）动态构建搜索空间。核心机制包括采样与剪枝算法、study/trial 抽象、以少量代码改动扩展到数十至数百 worker 的并行化，以及优化历史绘图。另提供 Rust 实现的实验性版本 Rustuna、Web 仪表盘 optuna-dashboard 与特性共享平台 OptunaHub。要求 Python 3.10 及以上，MIT 许可。",
+  "highlights": [
+   "define-by-run API 动态构建搜索空间",
+   "并行化扩展至数十至数百 worker",
+   "Rustuna：Rust 实现，支持 TPE/MOTPE/NSGA-II/CMA-ES 采样器",
+   "Optuna Dashboard 实时查看优化历史与超参数重要性"
+  ],
+  "use_cases": [
+   "为机器学习模型自动搜索超参数",
+   "多目标与带约束的优化任务",
+   "分布式环境下扩展超参数搜索规模",
+   "通过仪表盘分析优化历史与参数重要性"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://dl.acm.org/conference/kdd",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "超参数优化",
+   "机器学习",
+   "分布式",
+   "Python库"
+  ],
+  "domain": "机器学习/超参数优化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L18: *Optuna* is an automatic hyperparameter optimization software framework, particularly designed",
+   "L38: - Lightweight, versatile, and platform agnostic architecture",
+   "L79: Optuna is available at the Python Package Index and on Anaconda Cloud."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     79,
+     82,
+     83
+    ],
+    "quotes": [
+     "Optuna is available at the Python Package Index and on Anaconda Cloud.",
+     "# PyPI",
+     "$ pip install optuna"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     63
+    ],
+    "quotes": [
+     "Open in Colab"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU only",
+    "rel": "mention",
+    "lines": [
+     154
+    ],
+    "note": "AutoSampler 依赖 PyTorch 的 CPU 版安装说明，非本产品自身硬件要求",
+    "quotes": [
+     "# Install AutoSampler dependencies (CPU only is sufficient for PyTorch)"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

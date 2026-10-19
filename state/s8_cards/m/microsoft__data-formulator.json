@@ -1,0 +1,130 @@
+{
+ "fn": "microsoft/data-formulator",
+ "sha": "ccb093e0630a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给分析师的 AI 数据探索工作台：连接、分析并可视化数据",
+  "review": "微软研究院出品的交互式数据分析系统，将 UI 交互与自然语言结合：数据连接器统一接入文件、本地文件夹、数据库与 Databricks 等平台并维护数据间关系记忆；Data Thread 支持分支提问、对比分析路径；可视化由 Flint 图表语言驱动，支持 30+ 图表类型、风格微调 agent 与报告分享。支持 CSV/TSV/Excel/JSON/截图/文本等输入。提供桌面版（Windows/macOS，未签名）与 uv/pip/Docker 运行方式，浏览器访问 localhost:5567，UI 支持英文/中文。",
+  "highlights": [
+   "数据连接器统一接入文件、数据库与数据平台，并维护数据关系记忆",
+   "Data Thread 分支式分析：从任意步骤分支探索替代路径",
+   "基于 Flint 图表语言的 30+ 图表类型与风格微调 agent",
+   "通过 LiteLLM 支持 OpenAI、Azure、Ollama、Anthropic 等模型"
+  ],
+  "use_cases": [
+   "用自然语言探索 CSV、Excel 或数据库中的数据并生成图表",
+   "多数据源场景下管理数据间关系并分支比较分析思路",
+   "把分析过程整理成报告分享给团队"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据分析",
+   "数据可视化",
+   "AI Agent",
+   "桌面/Web应用"
+  ],
+  "domain": "数据分析/可视化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "data-analysis"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L73: **Data Formulator** is a Microsoft Research project for data exploration with visualizations powered by AI agents. It co",
+   "L29: 1. **Data connectors** give agents a common way to connect to different data",
+   "L65: - **Model Support**: OpenAI, Azure, Ollama, Anthropic via LiteLLM (feedback)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     65
+    ],
+    "note": "经 LiteLLM 列为可接入的模型提供方之一",
+    "quotes": [
+     "- **Model Support**: OpenAI, Azure, Ollama, Anthropic via LiteLLM (feedback)"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     10,
+     47,
+     48,
+     121
+    ],
+    "quotes": [
+     " PyPI&ensp;",
+     "> Preview with `pip install --pre data_formulator==0.8.0b1` or `uvx data_formulator@0.8.0b1`.",
+     "> Install the latest stable release (0.7) with `pip install data_formulator` or run instantly with `uvx data_formulator`",
+     "  pip install data_formulator # install"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     127,
+     130,
+     133
+    ],
+    "quotes": [
+     "- **Option 3: Run with Docker**",
+     "  docker compose up --build",
+     " Open http://localhost:5567 in your browser. To stop, press `Ctrl+C` or run `docker compose down`."
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

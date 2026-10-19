@@ -1,0 +1,100 @@
+{
+ "fn": "gunthercox/ChatterBot",
+ "sha": "0e3af236d0b8",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 Python 机器学习对话引擎，用于创建聊天机器人",
+  "review": "基于机器学习的对话引擎 Python 库：从已知对话集合中生成回复，输入语句会被保存并与对应回复关联，随输入增多可回复的数量与准确度提升；通过搜索最匹配的已知语句、按回复出现频率选出最可能的回应。语言无关设计，可训练为任意语言，内置十余种语言的训练数据模块（chatterbot-corpus），社区欢迎提交语料。通过 PyPI 安装，BSD 3-clause 许可。",
+  "highlights": [
+   "从已知对话集合生成匹配回复，随输入累积提升准确度",
+   "语言无关设计，可训练为任意语言",
+   "内置十余种语言的训练数据模块",
+   "提供 ChatterBotCorpusTrainer 训练接口"
+  ],
+  "use_cases": [
+   "为应用接入基于已知对话语料的自动回复机器人",
+   "用自有语料训练特定语言的对话机器人",
+   "向 chatterbot-corpus 贡献多语言训练数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "聊天机器人",
+   "对话引擎",
+   "机器学习",
+   "NLP"
+  ],
+  "domain": "对话系统/NLP",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "chatbot"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: ChatterBot is a machine-learning based conversational dialog engine built in",
+   "L25: An untrained instance of ChatterBot starts off with no knowledge of how to communicate. Each time a user enters a statem",
+   "L81: ChatterBot is licensed under the BSD 3-clause license."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     34,
+     37
+    ],
+    "quotes": [
+     "This package can be installed from PyPi by running:",
+     "pip install chatterbot"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

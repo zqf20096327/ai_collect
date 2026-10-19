@@ -1,0 +1,147 @@
+{
+ "fn": "koala73/worldmonitor",
+ "sha": "12a88a191788",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向研究者与分析师的实时全球情报仪表盘",
+  "review": "以 TypeScript 构建的实时全球情报仪表盘，将新闻聚合、地缘政治监测与基础设施追踪整合到统一态势感知界面。提供 3D 地球与 WebGL 平面地图双引擎、31 个 Tier-1 国家的国家不稳定指数（CII v8）、金融雷达、跨流信号关联，并可用 Ollama 本地运行 AI 功能而无需 API key。支持 Web、桌面端（Tauri 2）及六个站点变体，面向 OSINT、地缘政治分析等用途的用户。",
+  "highlights": [
+   "跨军事、经济、灾害与升级信号的跨流关联",
+   "31 个 Tier-1 国家的实时 CII v8 评分与 24 小时变化",
+   "通过 Ollama 本地运行 AI，无需 API key",
+   "提供 MCP server、REST API、CLI 与 Python/Ruby/Go SDK"
+  ],
+  "use_cases": [
+   "跟踪全球地缘政治事件并生成 AI 简报",
+   "在一个界面中监测金融、能源与灾害信号",
+   "通过 MCP/SDK 将情报数据接入 agent 与脚本"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://worldmonitor.app",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "OSINT",
+   "地缘政治监测",
+   "情报仪表盘",
+   "新闻聚合",
+   "MCP"
+  ],
+  "domain": "情报/态势感知",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama",
+   "openrouter"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L41: - **Curated news feeds** across global and regional categories, AI-synthesized into briefs",
+   "L47: - **Local AI** — run everything with Ollama, no API keys required",
+   "L107: - **MCP server** — `https://worldmonitor.app/mcp` (Streamable HTTP). Public `tools/list`; `tools/call` authenticates wit"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     47,
+     96
+    ],
+    "quotes": [
+     "- **Local AI** — run everything with Ollama, no API keys required",
+     "|**AI/ML**|Ollama / OpenRouter, Transformers.js (browser-side)|"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "compat",
+    "lines": [
+     96
+    ],
+    "quotes": [
+     "|**AI/ML**|Ollama / OpenRouter, Transformers.js (browser-side)|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     22,
+     70,
+     114
+    ],
+    "quotes": [
+     " npm i worldmonitor&nbsp;",
+     "npm install",
+     "  npm install -g worldmonitor     # or install the `worldmonitor` (alias `wm`) command"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     24
+    ],
+    "quotes": [
+     " pip install worldmonitor-sdk&nbsp;"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     68
+    ],
+    "quotes": [
+     "git clone https://github.com/koala73/worldmonitor.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,191 @@
+{
+ "fn": "debpalash/VoiceStudio",
+ "sha": "435f07bd08ac",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地运行的开源语音工作台：克隆、配音、转写与有声书制作",
+  "review": "基于 Electron 的桌面语音工作台，默认引擎为 k2-fsa/OmniVoice，支持语音克隆、语音设计、视频配音、听写、转写与有声书批量制作，覆盖 646 种语言。本地工作流在用户硬件上运行，按 GPU/CPU 提供不同加速方式（CUDA、Metal、CPU），并可安装管理本地语音模型；提供本地 API 与 MCP 接入供 agent 调用，支持配方与监视文件夹。Tauri 桌面壳已移除，Electron 为唯一桌面应用与 Web UI。",
+  "highlights": [
+   "语音克隆、语音设计、视频配音、听写、转写、有声书制作，支持 646 种语言",
+   "CUDA / Metal (MPS) / CPU 三类硬件加速路径，无独显也可用（较慢）",
+   "本地 API 与 MCP 接口，支持 agent 集成与监视文件夹等自动化",
+   "一键安装脚本覆盖 macOS/Linux/Windows，也可从源码运行"
+  ],
+  "use_cases": [
+   "克隆自己的声音并生成语音或有声书",
+   "给视频做带时间轴的本地配音",
+   "在没有云端服务依赖的环境下做语音转写与听写",
+   "让编码 agent 按文档在本机安装并验证语音工具链"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "dual",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": "cpu-ok",
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音克隆",
+   "文字转语音",
+   "视频配音",
+   "语音转写",
+   "本地推理"
+  ],
+  "domain": "语音/多媒体桌面工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tts",
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文与日文文档入口 (L13-L14)"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L30: Start with **VoiceStudio** (default, powered by k2-fsa/OmniVoice), or choose another engine. Features & engine catalog.",
+   "L72: |NVIDIA GPU (Windows / Linux)|CUDA acceleration|",
+   "L108: > **Electron is the only desktop app and web UI.** Version 0.5.3 was the final Tauri release. Existing Tauri users must "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     82
+    ],
+    "note": "仅作为可粘贴安装提示的 coding agent 举例之一",
+    "quotes": [
+     "Paste into your coding agent (Claude Code, Codex, Cursor, …):"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     53,
+     59,
+     66
+    ],
+    "quotes": [
+     "# Latest Electron release",
+     "On Windows, run `irm https://voicestudio.sh/install | iex` in PowerShell.",
+     "Or download from Releases (macOS `.dmg`, Windows `.exe`, Linux `.AppImage` or `.deb`) and follow your platform guide:"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     91,
+     119
+    ],
+    "note": "npx skills add 作为 agent skills 安装途径",
+    "quotes": [
+     "can also run `npx skills add debpalash/VoiceStudio`.",
+     "Agent skills: `npx skills add debpalash/VoiceStudio` — choose **voicestudio** for audio workflows or **voicestudio-maint"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     96,
+     98,
+     99,
+     100
+    ],
+    "quotes": [
+     "git clone https://github.com/debpalash/VoiceStudio.git",
+     "bun install",
+     "bun run setup:api  # prepare Python dependencies before starting Electron",
+     "bun run dev"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU only",
+    "rel": "support",
+    "lines": [
+     74,
+     75
+    ],
+    "note": "硬件支持表列明无独显时 CPU 可用、Windows on ARM 仅 CPU 实验性",
+    "quotes": [
+     "|No dedicated GPU (Intel/AMD integrated graphics, older PCs)|Fully usable on the CPU, slower; setup installs the small C",
+     "|Windows on ARM (Snapdragon X etc.)|**Experimental**, validation pending: native ARM64 app, x64 Python backend under emu"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     82
+    ],
+    "quotes": [
+     "Paste into your coding agent (Claude Code, Codex, Cursor, …):"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     82
+    ],
+    "quotes": [
+     "Paste into your coding agent (Claude Code, Codex, Cursor, …):"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    124
+   ],
+   "note": "应用为 AGPL-3.0，付费应用许可与模型权重/声音等权利分离",
+   "quotes": [
+    "AGPL-3.0 covers the application, including commercial use under its conditions. Model weights, tokenizers, voices and ge"
+   ]
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    108
+   ],
+   "note": "Tauri 桌面壳已弃用并移除，0.5.3 为最终 Tauri 版本"
+  }
+ }
+}

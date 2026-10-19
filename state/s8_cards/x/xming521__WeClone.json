@@ -1,0 +1,153 @@
+{
+ "fn": "xming521/WeClone",
+ "sha": "cb8b5769cc65",
+ "source": "readme",
+ "identity": {
+  "one_liner": "用聊天记录微调 LLM 打造个人数字分身并接入聊天机器人",
+  "review": "端到端数字分身流水线：从 Telegram 导出聊天记录（JSON/图片），经预处理去除手机号、邮箱、IP 等隐私信息，再用 LoRA/QLoRA 等方法以 Qwen2.5-VL-7B-Instruct（默认）微调 LLM，支持图像模态数据；推理以 OpenAI 兼容 API 服务提供，可接入 AstrBot、LangBot 部署到 Discord/Telegram/Slack/微信等平台。数据支持加密存储，默认微调后不支持工具调用。Windows 未严格测试，建议 WSL。",
+  "highlights": [
+   "聊天数据导出→预处理→训练→部署的完整流程（CLI 驱动）",
+   "默认 Qwen2.5-VL-7B-Instruct + LoRA SFT，支持图像模态微调",
+   "Microsoft Presidio 隐私过滤 + blocked_words 黑名单 + 加密存储模式",
+   "多卡训练（DeepSpeed）与按模型大小/精度的显存需求表"
+  ],
+  "use_cases": [
+   "用自己的 Telegram 聊天记录微调出个人风格的对话模型",
+   "把数字分身接入 Telegram/Discord/微信等 IM 机器人",
+   "本地化训练与部署聊天数据以控制隐私"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    51
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数字分身",
+   "LLM微调",
+   "聊天记录",
+   "个人数据",
+   "聊天机器人"
+  ],
+  "domain": "AI 应用/个性化对话模型",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "chatbot"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "作者 xming521",
+   "HelloGitHub 收录",
+   "QQ 群入口"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L24: - 💫 Complete end-to-end solution for creating digital avatars, including chat data export, preprocessing, model training",
+   "L25: - 💬 Fine-tune LLM using chat history with support for image modal data, infusing it with that authentic \"flavor\"",
+   "L46: |WeChat (Personal Account)|✅ (Based on **openclaw-weixin**)|"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     79
+    ],
+    "quotes": [
+     "git clone https://github.com/xming521/WeClone.git && cd WeClone"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     82,
+     99,
+     178,
+     257
+    ],
+    "note": "uv pip 安装依赖，非本产品发布渠道",
+    "quotes": [
+     "uv pip install --group main -e .",
+     "5. (Optional) Install FlashAttention to accelerate training and inference: `uv pip install flash-attn --no-build-isolati",
+     "uv pip install \"deepspeed<=0.16.9\"",
+     "uv pip install --group dev -e ."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     102,
+     105
+    ],
+    "note": "模型下载渠道",
+    "quotes": [
+     "It is recommended to use Hugging Face to download models, or use the following command:",
+     "git clone https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct models/Qwen2.5-VL-7B-Instruct"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     62,
+     105
+    ],
+    "note": "默认使用的基座模型 Qwen2.5-VL-7B-Instruct",
+    "quotes": [
+     "The project uses Qwen2.5-VL-7B-Instruct model by default with LoRA method for SFT stage fine-tuning. You can also use ot",
+     "git clone https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct models/Qwen2.5-VL-7B-Instruct"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

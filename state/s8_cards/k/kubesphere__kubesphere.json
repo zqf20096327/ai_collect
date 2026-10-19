@@ -1,0 +1,90 @@
+{
+ "fn": "kubesphere/kubesphere",
+ "sha": "5f513602aa8a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "企业级 Kubernetes 容器平台：多云/多集群/边缘统一管理",
+  "review": "以 Kubernetes 为内核的分布式云原生应用管理系统，采用微内核+扩展组件架构（LuBan），核心仅含基础功能，功能模块以扩展组件形式在运行期动态管理。功能覆盖多集群集中管控与应用跨云分发、基于 Argo CD 与 Jenkins 的 DevOps 流水线、多租户 RBAC 与配额、监控告警日志、基于 Istio 的服务 Mesh、Helm 应用商店、集成 KubeEdge 的边缘部署、GPU 工作负载调度与配额管理。通过 Helm 在既有 K8s 集群安装，也托管于多家云厂商一键部署，支持离线（air-gapped）安装。",
+  "highlights": [
+   "多集群集中控制面，支持应用跨云厂商分发",
+   "微内核+扩展组件架构（LuBan），运行期动态管理扩展",
+   "集成 KubeEdge 的边缘计算平台与 GPU 负载调度",
+   "Helm 一条命令安装，支持离线 air-gapped 部署"
+  ],
+  "use_cases": [
+   "企业统一管理分布在不同云上的多个 Kubernetes 集群",
+   "为开发团队提供带 Web UI 的 DevOps 与 CI/CD 流水线",
+   "多租户场景下做角色权限与资源配额隔离",
+   "在边缘设备上部署应用并集中查看日志与监控"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Kubernetes",
+   "多云管理",
+   "DevOps",
+   "边缘计算",
+   "多租户"
+  ],
+  "domain": "云原生/容器平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "QingCloud AppCenter(QKE) 托管服务（L108）",
+   "README 提供中英双语（L12）"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3:  The container platform tailored for Kubernetes multi-cloud, datacenter, and edge management",
+   "L75: KubeSphere 4.x adopts a microkernel + extension components architecture (codename LuBan). The core part (KubeSphere Core",
+   "L97: helm upgrade --install -n kubesphere-system --create-namespace ks-core https://charts.kubesphere.io/main/ks-core-1.1.3.t"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

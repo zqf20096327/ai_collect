@@ -1,0 +1,163 @@
+{
+ "fn": "branover/hexgraph",
+ "sha": "03b04365b712",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管 AI 漏洞研究工作台：对二进制/固件做分析并记录到类型化图谱",
+  "review": "本地自托管的安全研究工作台：输入二进制或固件镜像后，由 AI agent 在无网络的 Docker 沙箱中执行反编译、字符串/导入分析、模糊测试与 PoC 验证等工具，将结果以带类型边的图谱（目标/函数/套接字/假设/发现）存入 SQLite，并附研究日志与假设工作清单。模型接入 BYOK：Anthropic API key、本地 Claude Code 或离线 mock 后端。模型只调度工具，不接触原始目标字节。提供 Web UI（仅监听 localhost）与 MCP 接口，pre-1.0 阶段。",
+  "highlights": [
+   "目标→任务→结构化发现→图谱→派生下一任务的闭环",
+   "所有目标解析与分析在无网络、限资源的沙箱容器中执行，默认仅静态",
+   "类型化图谱 + 时间戳研究日志 + 假设工作清单共享工作记忆",
+   "BYOK：Anthropic key / 本地 Claude Code / 免 key 离线 mock 三种后端"
+  ],
+  "use_cases": [
+   "对固件与二进制目标做 AI 辅助的漏洞研究并沉淀结构化发现",
+   "通过 Claude Code/Codex 等 agent 经 MCP 驱动沙箱化逆向分析",
+   "运行覆盖率引导的模糊测试活动并对崩溃做去重与复验"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "self-host",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    34
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "二进制分析",
+   "固件安全",
+   "模糊测试",
+   "AI Agent",
+   "安全研究"
+  ],
+  "domain": "网络安全/逆向工程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6: driven by whatever model access you already have, and writes every result down as a structured",
+   "L140: an agent loop. The model asks for sandboxed tools (decompile, strings, imports, xrefs, fuzz), HexGraph",
+   "L156: |`anthropic`|`--backend anthropic` / `HEXGRAPH_LLM_BACKEND=anthropic`|Your own key via `ANTHROPIC_API_KEY` (env or `conf"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     23,
+     156,
+     157
+    ],
+    "note": "BYOK 专用后端之一，通过 ANTHROPIC_API_KEY 接入",
+    "quotes": [
+     " local Claude Code session, or the built-in **mock** backend. The mock is the default, it needs no",
+     "|`anthropic`|`--backend anthropic` / `HEXGRAPH_LLM_BACKEND=anthropic`|Your own key via `ANTHROPIC_API_KEY` (env or `conf",
+     "|`claude_code`|`--backend claude_code`|Uses your local `claude` CLI, headless.|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     90,
+     93
+    ],
+    "quotes": [
+     "docker compose up --build      # or: just up   →  http://127.0.0.1:8765",
+     "That builds an app image bundling the web UI and the Python backend, runs the database migrations on"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     52,
+     54
+    ],
+    "quotes": [
+     "git clone https://github.com/branover/hexgraph.git hexgraph && cd hexgraph",
+     "# Option A — with the `just` task runner (recommended):"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     95,
+     102
+    ],
+    "quotes": [
+     "(`127.0.0.1:8765:8765`), so it stays local to your machine exactly the way the pip install does. Your",
+     "run on your host daemon, isolated the same way they are under the pip install. Mounting the daemon"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     145,
+     157
+    ],
+    "note": "作为可选本地后端与 MCP 客户端被支持，非替代对象",
+    "quotes": [
+     "HexGraph as an MCP server (the setup wizard can also do it for you), and Claude Code, Codex, or",
+     "|`claude_code`|`--backend claude_code`|Uses your local `claude` CLI, headless.|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

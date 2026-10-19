@@ -1,0 +1,157 @@
+{
+ "fn": "anthropics/claude-code",
+ "sha": "1788fe37f265",
+ "source": "readme",
+ "identity": {
+  "one_liner": "终端里的 agentic 编码工具，用自然语言操作代码库",
+  "review": "Anthropic 出品的命令行编码代理：读取并理解代码库，通过自然语言执行例行任务、解释复杂代码、处理 git 工作流。可在终端、IDE 中使用，也可在 GitHub 上以 @claude 触发。仓库附带插件机制，以自定义命令和 agent 扩展功能。安装支持 macOS/Linux/Windows 的官方脚本、Homebrew 与 WinGet，npm 安装方式已被标注为弃用。使用数据（代码接受/拒绝、会话数据）会被收集用于反馈，官方声明有限保留期且不用于模型训练。",
+  "highlights": [
+   "终端内自然语言驱动的 agentic 编码，理解代码库上下文",
+   "支持终端、IDE、GitHub @claude 多种使用入口",
+   "插件机制通过自定义命令和 agent 扩展功能",
+   "内置 /bug 命令直接上报问题"
+  ],
+  "use_cases": [
+   "在终端用自然语言完成例行编码任务",
+   "让 AI 解释复杂代码逻辑",
+   "用自然语言处理 git 工作流",
+   "通过插件为工作流添加自定义命令和 agent"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "编码代理",
+   "CLI 工具",
+   "git 工作流",
+   "插件系统"
+  ],
+  "domain": "开发者工具/AI 编码",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5: Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster ",
+   "L46: This repository includes several Claude Code plugins that extend functionality with custom commands and agents. See the "
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     3,
+     5
+    ],
+    "quotes": [
+     " [![npm]](https://www.npmjs.com/package/@anthropic-ai/claude-code)",
+     "Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     11,
+     37,
+     39
+    ],
+    "note": "npm 安装方式已弃用，仅作为遗留途径提及",
+    "quotes": [
+     "> Installation via npm is deprecated. Use one of the recommended methods below.",
+     " **NPM (Deprecated):**",
+     "    npm install -g @anthropic-ai/claude-code"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     22,
+     24
+    ],
+    "quotes": [
+     " **Homebrew (MacOS/Linux):**",
+     "    brew install --cask claude-code"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     1,
+     5,
+     15,
+     46,
+     50
+    ],
+    "note": "本产品自身",
+    "quotes": [
+     "# Claude Code",
+     "Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster ",
+     "1. Install Claude Code:",
+     "This repository includes several Claude Code plugins that extend functionality with custom commands and agents. See the ",
+     "We welcome your feedback. Use the `/bug` command to report issues directly within Claude Code, or file a GitHub issue."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    11,
+    37
+   ]
+  }
+ }
+}

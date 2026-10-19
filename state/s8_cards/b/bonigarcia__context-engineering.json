@@ -1,0 +1,180 @@
+{
+ "fn": "bonigarcia/context-engineering",
+ "sha": "36f3a182ccb0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "上下文工程书籍的配套代码示例与在线资源库",
+  "review": "Boni Garcia 所著《Context Engineering》一书的配套仓库：按 12 章组织示例代码，覆盖模型提供方交互、指令、RAG、工具（MCP）、记忆与状态、提示技术、上下文编排、评测观测、治理、AI 框架、面向软件开发的应用及前沿综述，示例提供 Python/Jupyter/JavaScript/Java 多语言版本。另含 5 个在线资源：AI 生态索引、上下文感知提示构建器、SDLC 提示库、上下文工程雷达与参考文献目录。面向采用上下文工程实践的开发者。",
+  "highlights": [
+   "12 章示例代码，含 Python/Jupyter/JavaScript/Java 多语言实现",
+   "覆盖 OpenAI/Anthropic/Google/Ollama 等模型提供方的基础与流式交互",
+   "5 个配套在线工具：生态索引、提示构建器、SDLC 提示库、雷达与参考目录"
+  ],
+  "use_cases": [
+   "跟书学习上下文工程各主题的可运行示例",
+   "查找不同框架与工具在上下文工程中的用法",
+   "复用结构化提示模板与 SDLC 角色提示库"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://bonigarcia.dev/context-engineering/ai-ecosystem.html",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "上下文工程",
+   "LLM应用开发",
+   "示例代码库",
+   "提示工程",
+   "知识资源"
+  ],
+  "domain": "LLM 工程知识资源",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "prompt-engineering"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: Tobi Lütke, the CEO of Shopify, coined the term _context engineering_ in a tweet on June 19, 2025. He defined context en",
+   "L9: This GitHub repository is intended to be a companion resource for this book and a reference for practitioners looking to"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     25,
+     26,
+     33
+    ],
+    "note": "作为示例代码中的模型提供方之一",
+    "quotes": [
+     "- Basic interaction (Ollama): Python · Jupyter · JavaScript · Java",
+     "- Streaming (Ollama): Python · Jupyter · JavaScript · Java",
+     "- System prompts (Ollama): Python · Jupyter · JavaScript · Java"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     21,
+     22,
+     31
+    ],
+    "note": "示例代码覆盖的模型提供方之一",
+    "quotes": [
+     "- Basic interaction (Anthropic): Python · Jupyter · JavaScript · Java",
+     "- Streaming (Anthropic): Python · Jupyter · JavaScript · Java",
+     "- System prompts (Anthropic): Python · Jupyter · JavaScript · Java"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "mention",
+    "lines": [
+     100
+    ],
+    "note": "第 10 章列举 Amazon Bedrock AgentCore 平台",
+    "quotes": [
+     "- AI application platforms: Zapier · n8n · OpenClaw · Temporal · Amazon Bedrock AgentCore · Gemini Enterprise Agent Plat"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     40,
+     98
+    ],
+    "quotes": [
+     "- Advanced RAG: LangChain · Qdrant · PageIndex (Python) · PageIndex (Jupyter) · RAGFlow",
+     "- AI application frameworks: LangChain · LlamaIndex · Haystack · Spring AI · LangChain4j · Pydantic AI · DSPy · AI SDK"
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     98
+    ],
+    "note": "列为 AI 应用框架之一",
+    "quotes": [
+     "- AI application frameworks: LangChain · LlamaIndex · Haystack · Spring AI · LangChain4j · Pydantic AI · DSPy · AI SDK"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     105
+    ],
+    "quotes": [
+     "- Agent skills: Claude Code"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     106
+    ],
+    "note": "Cursor rules 作为指令工件示例",
+    "quotes": [
+     "- Instructions artifact: Cursor rules"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

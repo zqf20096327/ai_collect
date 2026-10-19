@@ -1,0 +1,100 @@
+{
+ "fn": "shap/shap",
+ "sha": "0798f75890c5",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给机器学习模型输出提供 Shapley 值解释的 Python 库",
+  "review": "基于博弈论 Shapley 值，为任意机器学习模型的输出计算特征归因（SHAP 值），并提供 force plot、beeswarm、scatter、bar、dependence plot 等可视化接口。针对不同模型类型提供多种解释器：TreeExplainer（树模型精确高速 C++ 实现）、DeepExplainer 与 GradientExplainer（TensorFlow/Keras/PyTorch 深度模型近似）、LinearExplainer（线性模型）、KernelExplainer（模型无关）。以 Python 包形式发布，支持 PyPI 与 conda-forge 安装，可选 CUDA extra 启用 GPU 加速的 Tree SHAP。",
+  "highlights": [
+   "TreeExplainer 对 XGBoost/LightGBM/CatBoost/scikit-learn/pyspark 树模型提供 C++ 精确算法",
+   "DeepExplainer/GradientExplainer 支持 TensorFlow/Keras/PyTorch 深度模型",
+   "KernelExplainer 为模型无关方法，可解释任意函数",
+   "TreeExplainer 支持 SHAP interaction values 的成对交互精确计算"
+  ],
+  "use_cases": [
+   "解释树集成模型（如 XGBoost）每个特征对预测的贡献",
+   "可视化深度学习模型（如图像分类）的输入归因",
+   "分析特征交互与特征重要性排序",
+   "对 NLP transformers 模型输出做特征归因解释"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "模型可解释性",
+   "特征归因",
+   "机器学习",
+   "可视化"
+  ],
+  "domain": "机器学习/模型可解释性",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: **SHAP (SHapley Additive exPlanations)** is a game theoretic approach to explain the output of any machine learning mode",
+   "L40: While SHAP can explain the output of any machine learning model, we have developed a high-speed exact algorithm for tree"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     14,
+     17,
+     27
+    ],
+    "quotes": [
+     "SHAP can be installed from either PyPI or conda-forge:",
+     "pip install shap",
+     "pip install shap[cuda]"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

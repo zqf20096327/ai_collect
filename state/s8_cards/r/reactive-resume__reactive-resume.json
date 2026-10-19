@@ -1,0 +1,142 @@
+{
+ "fn": "reactive-resume/reactive-resume",
+ "sha": "6beaa906a88e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向求职者的开源隐私优先简历与求职追踪构建器",
+  "review": "开源简历构建器，覆盖简历与求职信编写、实时 PDF 预览、17 套模板、可读性与职位关键词检查、求职申请追踪，以及通过公共链接分享。AI 部分为可选功能：文档旁的 AI 助手可提出修改建议、审阅写作、依据职位描述起草求职信；用户提供 OpenAI、Anthropic、Gemini、Ollama 等自有服务接入。提供 REST API 与 MCP server。可通过托管服务使用，或经 Docker、Vercel、Cloudflare Workers、Hostinger 自托管，依赖 PostgreSQL 与上传存储。",
+  "highlights": [
+   "可选 AI 助手：逐条接受/拒绝建议的编辑工作流",
+   "接入 OpenAI、Anthropic、Gemini、OpenRouter、Ollama 等 provider 及兼容端点",
+   "提供 REST API 与 MCP server 用于文档管理、导入导出与检查",
+   "支持 Docker、Vercel、Cloudflare Workers、Hostinger 多种自托管方式"
+  ],
+  "use_cases": [
+   "编写简历和求职信并导出 PDF/Word/Markdown/JSON",
+   "在自有服务器上自托管、不依赖第三方托管的简历工具",
+   "追踪求职申请进度、安排面试并管理跟进记录",
+   "为保存的职位定制简历并起草求职信"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "简历构建",
+   "求职工具",
+   "自托管",
+   "AI助手"
+  ],
+  "domain": "求职/文档工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "openrouter",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "ai-assistant"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L92: **AI Assistant**",
+   "L97: - Connect OpenAI, Anthropic, Google Gemini, OpenRouter, Ollama, or other supported providers and compatible endpoints",
+   "L110: - Self-host with Docker, Vercel, Cloudflare Workers, or a 1-click deploy on Hostinger"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     97
+    ],
+    "quotes": [
+     "- Connect OpenAI, Anthropic, Google Gemini, OpenRouter, Ollama, or other supported providers and compatible endpoints"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     97
+    ],
+    "quotes": [
+     "- Connect OpenAI, Anthropic, Google Gemini, OpenRouter, Ollama, or other supported providers and compatible endpoints"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     170,
+     260,
+     264,
+     267
+    ],
+    "quotes": [
+     "Use the hosted app to start writing, or build this checkout locally with Docker and Docker Compose:",
+     "Published releases are available from Docker Hub and GitHub Container Registry (`latest` tracks the latest stable releas",
+     "docker pull amruthpillai/reactive-resume:latest",
+     "docker pull ghcr.io/reactive-resume/reactive-resume:latest"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     174,
+     179
+    ],
+    "note": "git clone 用于本地构建与源码开发，非面向用户的安装途径",
+    "quotes": [
+     "git clone --depth=1 https://github.com/reactive-resume/reactive-resume.git reactive-resume",
+     "This builds the checked-out source. For a deployment using published images, follow the Docker guide. For source develop"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

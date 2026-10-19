@@ -1,0 +1,87 @@
+{
+ "fn": "apache/tvm",
+ "sha": "9dae7c21ebac",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 ML 开发者的开源机器学习编译框架",
+  "review": "Apache TVM 是开源机器学习编译框架，采用 Python-first 开发方式，支持对编译流水线的快速自定义，并将模型部署为最小可部署模块。当前设计以 TensorIR 作为张量级表示、Relax 作为图级表示，可联合优化计算图、张量程序与库；定位为构建面向 LLM 等领域的 Python-first 垂直编译器的基础设施。采用 Apache committer 社区治理模式，源自深度学习编译研究项目，受 Halide、Loopy、Theano 影响。安装教程见其文档站点。",
+  "highlights": [
+   "TensorIR（张量级）与 Relax（图级）跨层表示设计",
+   "Python-first 变换，多数转换可用 Python 自定义",
+   "通用部署，将模型编译为最小可部署模块",
+   "定位为构建 LLM 等领域垂直编译器的基础设施"
+  ],
+  "use_cases": [
+   "为深度学习模型做编译优化与部署",
+   "在 Python 中自定义机器学习编译流水线",
+   "基于 TVM 构建面向特定领域（如 LLM）的编译器"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "ML编译器",
+   "深度学习",
+   "模型部署",
+   "性能优化"
+  ],
+  "domain": "机器学习编译/基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: Apache TVM is an open machine learning compilation framework,",
+   "L39: and Relax as the graph-level representation and Python-first transformations.",
+   "L43: infra for building Python-first vertical compilers for domains, such as LLMs."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

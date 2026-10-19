@@ -1,0 +1,87 @@
+{
+ "fn": "pytorch/vision",
+ "sha": "406c42b8bd8b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 CV 开发者提供数据集、模型架构与图像变换的 PyTorch 库",
+  "review": "torchvision 是 PyTorch 官方的计算机视觉库，提供三部分内容：常用公开数据集（下载与预处理工具）、模型架构（含预训练权重）以及常见图像变换。安装需与 torch 版本配套，README 给出二者与 Python 版本的对应表；支持 torch tensors 与 PIL（含 Pillow-SIMD）两种图像后端。README 声明库本身不托管数据集，数据集与预训练模型可能附带各自的许可条款（如 SWAG 模型为 CC-BY-NC 4.0），使用许可由用户自行判断。",
+  "highlights": [
+   "提供公开数据集、模型架构与常见图像变换",
+   "与 torch 版本一一配套（版本对应表）",
+   "支持 torch tensors 与 PIL/Pillow-SIMD 图像后端",
+   "部分预训练模型（SWAG）使用 CC-BY-NC 4.0 许可"
+  ],
+  "use_cases": [
+   "在 PyTorch 中加载和预处理计算机视觉数据集",
+   "使用预训练视觉模型做训练或推理",
+   "为训练流水线构建图像变换"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "计算机视觉",
+   "深度学习",
+   "数据集",
+   "PyTorch生态"
+  ],
+  "domain": "机器学习/计算机视觉",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6: The torchvision package consists of popular datasets, model architectures, and common image transformations for computer",
+   "L7: vision.",
+   "L60: Torchvision currently supports the following image backends:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

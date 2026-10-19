@@ -1,0 +1,134 @@
+{
+ "fn": "microsoft/qlib",
+ "sha": "84b0d91a0720",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向量化研究的 AI 量化投资平台",
+  "review": "Qlib 是微软开源的量化投资研究平台，覆盖数据处理、模型训练、回测的完整机器学习流水线，以及 Alpha 挖掘、风险建模、组合优化、订单执行的量化全链条。支持监督学习、市场动态建模（概念漂移适应）与强化学习等多种建模范式，内置多个已发表论文的量化模型。组件采用松耦合设计，可独立使用。安装方面提供 pip 与源码两种途径；官方数据集当前临时禁用，可使用社区数据源或自行从 Yahoo Finance 抓取数据。",
+  "highlights": [
+   "覆盖量化投资全链条：Alpha 挖掘、风险建模、组合优化、订单执行",
+   "支持监督学习、市场动态建模、强化学习多种 ML 范式",
+   "内置多个已发表量化模型（论文模型 Zoo）与嵌套交易决策框架",
+   "提供 RD-Agent（LLM 自动因子挖掘与模型优化）集成"
+  ],
+  "use_cases": [
+   "搭建从数据处理到回测的完整量化研究工作流",
+   "复现和实验已发表的量化论文模型",
+   "用强化学习建模连续投资决策与交易执行"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://arxiv.org/abs/2009.11189",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "量化投资",
+   "机器学习平台",
+   "金融数据",
+   "回测"
+  ],
+  "domain": "金融科技/量化投资",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "quant-finance"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L92: Qlib is an open-source, AI-oriented quantitative investment platform that aims to realize the potential, empower researc",
+   "L96: It contains the full ML pipeline of data processing, model training, back-testing; and covers the entire chain of quanti",
+   "L173:   pip install pyqlib"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     173
+    ],
+    "quotes": [
+     "  pip install pyqlib"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     190,
+     191
+    ],
+    "quotes": [
+     "    git clone https://github.com/microsoft/qlib.git && cd qlib",
+     "    pip install .  # `pip install -e .[dev]` is recommended for development. check details in docs/developer/code_standa"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     196
+    ],
+    "note": "Mac M1 上安装 OpenMP 依赖的方式，非本产品安装途径",
+    "quotes": [
+     "**Tips for Mac**: If you are using Mac with M1, you might encounter issues in building the wheel for LightGBM, which is "
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     279,
+     283
+    ],
+    "note": "窗口外行",
+    "quotes": [
+     "    docker pull pyqlib/qlib_image_stable:stable",
+     "    docker run -it --name <container name> -v <Mounted local directory>:/app pyqlib/qlib_image_stable:stable"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

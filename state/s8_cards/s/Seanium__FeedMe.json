@@ -1,0 +1,131 @@
+{
+ "fn": "Seanium/FeedMe",
+ "sha": "7221f55a298d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI 自动摘要的轻量自托管 RSS 阅读器，静态页面多平台部署",
+  "review": "基于 TypeScript/React/Vite 的响应式静态 RSS 阅读器：抓取多源 RSS 内容，通过可配置的 LLM API 自动生成多语言文章摘要（可调提示词、temperature、maxTokens），GitHub Actions 或容器内 Cron 定时更新。提供四种部署方式：GitHub Pages、Vercel、阿里云 ESA Pages、Docker 本地部署；RSS 源、更新频率与 AI 配置均由用户在 YAML 配置文件中自定义。无强制登录与客户端下载，AI 摘要功能依赖外部 LLM 服务密钥。",
+  "highlights": [
+   "LLM 自动生成多语言文章摘要，提示词与参数可配置",
+   "GitHub Pages / Vercel / 阿里云 ESA Pages / Docker 四种部署方式",
+   "GitHub Actions 或容器内 Cron 定时抓取 RSS 并重建",
+   "RSS 源、分类与更新频率通过 YAML 配置自定义"
+  ],
+  "use_cases": [
+   "自建零成本 RSS 聚合阅读页面",
+   "定时获取带 AI 摘要的订阅内容更新",
+   "通过 Docker 在私有服务器上部署阅读器"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RSS阅读器",
+   "自托管",
+   "AI摘要",
+   "静态站点",
+   "GitHub Pages"
+  ],
+  "domain": "信息聚合/阅读工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文 README",
+   "阿里云 ESA 提供加速与部署支持",
+   "示例 LLM 服务为 SiliconFlow、GLM 模型"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L22: - 🤖 **效率至上**：AI 自动生成文章摘要，把握重点",
+   "L30: - **聚合摘要**：一站式整合多源 RSS，通过 LLM 自动生成摘要"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     128
+    ],
+    "quotes": [
+     "    git clone https://github.com/Seanium/feedme.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     146
+    ],
+    "quotes": [
+     "    docker-compose up --build"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     168
+    ],
+    "note": "pnpm install 为开发流程依赖安装命令",
+    "quotes": [
+     "   pnpm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

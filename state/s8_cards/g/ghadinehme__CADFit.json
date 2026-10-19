@@ -1,0 +1,116 @@
+{
+ "fn": "ghadinehme/CADFit",
+ "sha": "446ae09a55e1",
+ "source": "readme",
+ "identity": {
+  "one_liner": "从水密网格恢复可编辑 CAD 程序的混合优化框架（ICML 2026 论文官方代码）",
+  "review": "MIT 与 Siemens 合作的论文官方代码库。CADFit 将网格重建 CAD 构造序列问题表述为对可执行 CAD 程序的 IoU 驱动优化：通过 CadQuery 内核逐步拟合与验证参数化操作（拉伸/旋转/圆角/倒角/布尔并/差），并做迭代残差修正与向后剪枝，输出重建 STL、等价 CadQuery Python 脚本与 IoU 报告。网格来源不限（STL、点云、图像转 3D，示例搭配 Hunyuan3D），无需重训练。以 conda+pip 源码方式运行，许可证为 CC BY-NC 4.0（限非商业/学术用途）。",
+  "highlights": [
+   "IoU 驱动的可执行 CAD 程序优化，CadQuery 内核验证，基准切片 Invalid Ratio 为 0",
+   "算子集覆盖 Extrude/Revolve/Fillet/Chamfer/Union/Cut",
+   "模态无关：同一算法处理 STL、点云、图像转 3D 网格，无需重训练",
+   "输出等价 CadQuery Python 脚本，可直接编辑复现实体"
+  ],
+  "use_cases": [
+   "把 STL 网格反推为可编辑的参数化 CAD 程序",
+   "结合图像转 3D 模型搭建端到端 image-to-CAD 流程",
+   "为下游学习模型生成更紧凑的 CAD 程序监督数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://arxiv.org/abs/2605.01171",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "3D重建",
+   "逆向工程/CAD",
+   "论文官方代码",
+   "几何优化",
+   "image-to-CAD"
+  ],
+  "domain": "三维几何/CAD 逆向工程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: **CADFit** is a hybrid optimization-based framework that recovers complex, editable CAD construction sequences from wate",
+   "L27: CADFit is agnostic to where the mesh comes from. Pairing it with a pretrained image-to-3D model — we use Hunyuan3D — and",
+   "L33: ## Quick Start"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     37
+    ],
+    "note": "pip install -r requirements.txt 安装本产品依赖以运行",
+    "quotes": [
+     "pip install -r requirements.txt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     7
+    ],
+    "note": "项目页面链接，非替代/竞品关系",
+    "quotes": [
+     "arXiv Project Page HuggingFace YouTube CADStudio"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

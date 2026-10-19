@@ -1,0 +1,123 @@
+{
+ "fn": "HumanSignal/label-studio",
+ "sha": "96e4f93f87ef",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 ML 团队的多类型数据标注与标注工具",
+  "review": "开源数据标注工具，支持对音频、文本、图像、视频、时间序列等数据类型进行标注，提供直观 UI 并可导出多种模型训练格式，用于准备原始数据或改进已有训练数据。关键机制包括：多用户账号与多项目管理、可配置的标注界面模板与专用配置语言、从 AWS S3/Google Cloud Storage 或文件导入、通过 ML SDK 连接模型后端实现预标注、在线学习与主动学习、REST API 嵌入数据流水线。限制方面：README 未提及移动端；Windows 需额外安装 wheel 依赖；Python 要求 >=3.10。",
+  "highlights": [
+   "支持图像、音频、文本、HTML、时间序列、视频等多类型数据标注",
+   "通过 ML SDK 连接模型后端，支持预标注、在线学习与主动学习",
+   "提供 Docker、pip、poetry、Anaconda 等多种安装与部署方式",
+   "REST API 支持嵌入现有数据流水线，前端/后端可独立集成"
+  ],
+  "use_cases": [
+   "为计算机视觉项目标注图像与边界框数据集",
+   "为 NLP 模型准备文本标注训练数据",
+   "多人协作标注团队的项目与账号管理",
+   "结合模型后端做主动学习式标注迭代"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据标注",
+   "计算机视觉",
+   "机器学习数据准备",
+   "NLP标注"
+  ],
+  "domain": "机器学习/数据标注",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: Label Studio is an open source data labeling tool. It lets you label data types like audio, text, images, videos, and ti",
+   "L158: - **Integration with machine learning models** so that you can visualize and compare predictions from different models a",
+   "L167: Connect your favorite machine learning model using the Label Studio Machine Learning SDK. Follow these steps:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     21,
+     22,
+     26,
+     27,
+     34,
+     40
+    ],
+    "quotes": [
+     "### Install locally with Docker",
+     "Official Label Studio docker image is here and it can be downloaded with `docker pull`.",
+     "docker pull heartexlabs/label-studio:latest",
+     "docker run -it -p 8080:8080 -v $(pwd)/mydata:/label-studio/data heartexlabs/label-studio:latest",
+     "docker run -it -p 8080:8080 -v $(pwd)/mydata:/label-studio/data heartexlabs/label-studio:latest label-studio --log-level",
+     "docker build -t heartexlabs/label-studio:latest ."
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     69,
+     90,
+     95
+    ],
+    "quotes": [
+     "pip install label-studio",
+     "pip install label-studio",
+     "You can run the latest Label Studio version locally without installing the package from pypi."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

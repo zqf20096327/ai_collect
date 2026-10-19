@@ -1,0 +1,137 @@
+{
+ "fn": "yc-software/qm",
+ "sha": "088e850bb9ed",
+ "source": "readme",
+ "identity": {
+  "one_liner": "企业级多人共享 agent 运行框架，部署在自有云上，Slack 与网页使用",
+  "review": "QM 是面向初创公司的多人 agent 运行框架：每位员工获得隔离工作区（独立记忆、文件、密钥视图、权限、定时任务、沙箱），同时可在 Slack 频道、群消息和项目中协作使用。核心以 TypeScript 运行在 Node 上，用 Postgres 持久化会话与状态，agent 通过固定工具面中的 execute 在持久沙箱执行命令。harness、模型、会话存储、沙箱、记忆均藏在接口之后可替换，部署配置集中在部署目录，由 qm CLI 校验并部署到运营者自己的云账户。提供 Strict/Auto/Dangerous 三档安全姿态与内容筛查、审计。",
+  "highlights": [
+   "个人与共享双作用域：每人和每个房间有独立的记忆、文件、权限与沙箱",
+   "harness 与模型可插拔，Pi 和 Claude Code 驱动同一核心",
+   "Strict/Auto/Dangerous 三档工具调用审批姿态与内容筛查、审计日志",
+   "支持定时任务、监听与入站 webhook 等后台工作"
+  ],
+  "use_cases": [
+   "让全公司员工在 Slack 里共享使用一个可协作的 agent",
+   "在自有云账户中用自选模型部署企业内部 agent",
+   "让 agent 检索内部笔记、邮件、数据库并按计划处理收件箱",
+   "让 agent 在已有仓库中跑测试、开 PR、监控 CI"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "多用户agent平台",
+   "Slack集成",
+   "自托管部署",
+   "企业内部工具"
+  ],
+  "domain": "LLM 基础设施/企业 agent 平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: **A multiplayer agent harness for work. In Slack and on the web.**",
+   "L74: Every turn runs through a central core, which can use a variety of models and harnesses",
+   "L89: `qm` CLI validates and deploys. Every substrate (harness, session"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     23
+    ],
+    "note": "提及 Pi 可运行多家提供商的模型，非专门适配",
+    "quotes": [
+     "them. Pi and Claude Code both drive the same core, and Pi runs models from many"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     129,
+     131
+    ],
+    "quotes": [
+     "npm exec --yes --package=@yc-software/qm@latest -- \\",
+     "npm install"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     160,
+     187
+    ],
+    "quotes": [
+     "git clone --single-branch --branch main --no-tags git@github.com:yc-software/qm qm-private",
+     "From the source checkout, install dependencies with `npm ci` and use the in-tree CLI."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     23,
+     95
+    ],
+    "note": "作为可驱动核心的 harness 与安全姿态参照提及，非替代/竞品关系",
+    "quotes": [
+     "them. Pi and Claude Code both drive the same core, and Pi runs models from many",
+     "QM's approach follows local coding agents like OpenCode, Codex, and Claude Code: the"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

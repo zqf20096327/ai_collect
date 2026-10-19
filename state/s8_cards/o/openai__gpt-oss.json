@@ -1,0 +1,151 @@
+{
+ "fn": "openai/gpt-oss",
+ "sha": "d7597260c8a6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "OpenAI 开放权重的两个开源语言模型（120B/20B）",
+  "review": "本仓库提供 gpt-oss-120b 与 gpt-oss-20b 两个开放权重模型的参考实现与工具链：PyTorch、Triton、Metal 三种推理实现，浏览器与 Python 两个内置工具，终端聊天客户端与 Responses API 示例服务器。模型采用 harmony 响应格式训练，需以该格式调用；权重经 MXFP4 量化，120b 可在单张 80GB GPU 上运行，20b 可在 16GB 内存内运行。提供 Transformers、vLLM、Ollama、LM Studio 等多种推理途径。",
+  "highlights": [
+   "两个开放权重模型：117B/5.1B 激活与 21B/3.6B 激活",
+   "MXFP4 量化 MoE 权重，120b 适配单张 80GB GPU，20b 适配 16GB 内存",
+   "原生函数调用、网页浏览、Python 代码执行与 Structured Outputs 能力",
+   "Apache 2.0 许可，支持参数微调与三档推理努力配置"
+  ],
+  "use_cases": [
+   "在自有 GPU 或消费级硬件上本地部署推理服务",
+   "为 Agent 应用接入函数调用与浏览/代码执行工具",
+   "基于开放权重做微调定制",
+   "研究模型架构与推理过程的参考实现"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "开源大模型",
+   "本地推理",
+   "Agent能力",
+   "权重开放"
+  ],
+  "domain": "LLM/开源模型",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: Welcome to the gpt-oss series, OpenAI's open-weight models designed for powerful reasoning, agentic tasks, and versatile",
+   "L28: - **MXFP4 quantization:** The models were post-trained with MXFP4 quantization of the MoE weights, making `gpt-oss-120b`",
+   "L104: This repository provides a collection of reference implementations:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     45,
+     47,
+     50,
+     55
+    ],
+    "quotes": [
+     "#### vLLM",
+     "vLLM recommends using `uv` for Python dependency management. You can use vLLM to spin up an OpenAI-compatible web server",
+     "uv pip install --pre vllm==0.10.1+gptoss \\",
+     "vllm serve openai/gpt-oss-20b"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     76,
+     78,
+     82,
+     83
+    ],
+    "quotes": [
+     "#### Ollama",
+     "If you are trying to run `gpt-oss` on consumer hardware, you can use Ollama by running the following commands after inst",
+     "ollama pull gpt-oss:20b",
+     "ollama run gpt-oss:20b"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     128,
+     132,
+     134
+    ],
+    "quotes": [
+     "If you want to try any of the code you can install it directly from PyPI",
+     "pip install gpt-oss",
+     "pip install gpt-oss[torch]"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     142,
+     183
+    ],
+    "quotes": [
+     "git clone https://github.com/openai/gpt-oss.git",
+     "git clone https://github.com/triton-lang/triton"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

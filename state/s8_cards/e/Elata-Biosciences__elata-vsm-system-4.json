@@ -1,0 +1,113 @@
+{
+ "fn": "Elata-Biosciences/elata-vsm-system-4",
+ "sha": "c5b47ace6364",
+ "source": "readme",
+ "identity": {
+  "one_liner": "DAO 的环境扫描平台：用 GPT 聚合神经科技与 BCI 资讯",
+  "review": "Elata Biosciences（DAO 组织）维护的 VSM System 4 实现：作为组织的外部环境感知器官，用 Node.js/Express/TypeScript 编写的爬虫引擎通过 OpenAI API 与 NewsAPI 聚合科学论文、行业动态与去中心化科学资讯，经 GPT 分析转化为供代币持有者决策的情报，前端为 Next.js 15 平台（news.elata.bio 在线可访问）。项目以 GPL-3.0 许可，模块化包含 scraper/web/shared-types 三部分，安装方式为 git clone 源码后按各模块指南配置。",
+  "highlights": [
+   "基于 Stafford Beer 控制论 VSM System 4 框架的 DAO 环境扫描实现",
+   "OpenAI API 内容分析 + NewsAPI 关键词新闻聚合",
+   "Next.js 15 前端平台，含服务端渲染",
+   "Zod schema 用于数据校验与结构化输出"
+  ],
+  "use_cases": [
+   "为 DAO 决策者聚合神经科技与 BCI 领域动态",
+   "追踪去中心化科学与行业趋势",
+   "通过在线平台浏览 AI 处理后的资讯情报"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": "https://news.elata.bio",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "DAO治理",
+   "情报聚合",
+   "神经科技/BCI",
+   "自动化监控"
+  ],
+  "domain": "神经科技/DAO 治理工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L21: The platform acts as the DAO's environmental scanner, using GPT to process information about scientific papers, industry",
+   "L31: ├── scraper/         # AI-powered news aggregation engine"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     41
+    ],
+    "quotes": [
+     "git clone https://github.com/Elata-Biosciences/elata-vsm-system-4.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     72
+    ],
+    "note": "Zod 支持 ChatGPT 结构化输出，非替代/竞品",
+    "quotes": [
+     "- Zod schemas for data validation and ChatGPT structured outputs"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

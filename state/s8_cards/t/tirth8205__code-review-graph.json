@@ -1,0 +1,164 @@
+{
+ "fn": "tirth8205/code-review-graph",
+ "sha": "09a527ca5631",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI 编码工具的本地代码知识图谱：MCP 提供精准审查上下文",
+  "review": "用 Tree-sitter 将代码库解析为持久化图谱（函数/类/导入为节点，调用/继承/测试覆盖为边），存于 SQLite，并通过 MCP 服务器向 AI 编码工具提供紧凑上下文。变更时通过调用边追踪影响面（blast radius），让助手只读受影响文件；hooks、pre-commit 与 watch 模式基于 SHA-256 做增量更新。`install` 命令检测已装 AI 工具并写入 MCP 配置。同一分析可作为 GitHub Action 在 CI 中运行，附带可复现的 token 基准测试。需 Python 3.10+。",
+  "highlights": [
+   "Tree-sitter 解析 + SQLite 持久化图谱，覆盖 30+ 语言，可用 languages.toml 扩展",
+   "blast-radius 分析返回变更影响的最小文件集",
+   "hooks/watch 增量更新：~3,000 文件项目两文件编辑约 2.5 秒重建",
+   "GitHub Action 形式的 PR 风险评分评论，可设 fail-on-risk 合并门禁"
+  ],
+  "use_cases": [
+   "让 AI 编码助手审查 PR 时只读受影响文件而非整个仓库",
+   "在 CI 中对每个 PR 生成风险评分函数清单与测试缺口",
+   "管理大型多语言仓库中 AI 问答的 token 消耗"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "代码审查",
+   "MCP",
+   "知识图谱",
+   "静态分析",
+   "AI编码"
+  ],
+  "domain": "开发者工具/代码智能",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "code-review",
+   "knowledge-graph"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12:  A local code knowledge graph that gives AI coding tools precise review context over MCP.",
+   "L38: AI coding tools often re-read large parts of a codebase to review a change. `code-review-graph` builds a structural map ",
+   "L86: The repository is parsed into ASTs with Tree-sitter and stored as a graph of nodes (functions, classes, imports) and edg"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     20,
+     45
+    ],
+    "quotes": [
+     " PyPI",
+     "pip install code-review-graph          # or: pipx install code-review-graph"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     52,
+     54
+    ],
+    "quotes": [
+     " One install, every platform: detects Codex, Claude Code, CodeBuddy Code, Cursor, Windsurf, Zed, Continue, OpenCode, Ant",
+     "To configure one platform, pass `--platform` with one of `codex`, `claude-code`, `cursor`, `windsurf`, `zed`, `continue`"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     52
+    ],
+    "quotes": [
+     " One install, every platform: detects Codex, Claude Code, CodeBuddy Code, Cursor, Windsurf, Zed, Continue, OpenCode, Ant"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     52,
+     54,
+     57
+    ],
+    "quotes": [
+     " One install, every platform: detects Codex, Claude Code, CodeBuddy Code, Cursor, Windsurf, Zed, Continue, OpenCode, Ant",
+     "To configure one platform, pass `--platform` with one of `codex`, `claude-code`, `cursor`, `windsurf`, `zed`, `continue`",
+     "code-review-graph install --platform cursor"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     52,
+     54
+    ],
+    "quotes": [
+     " One install, every platform: detects Codex, Claude Code, CodeBuddy Code, Cursor, Windsurf, Zed, Continue, OpenCode, Ant",
+     "To configure one platform, pass `--platform` with one of `codex`, `claude-code`, `cursor`, `windsurf`, `zed`, `continue`"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     52,
+     54
+    ],
+    "note": "Qwen 作为被检测/配置的 AI 编码工具出现",
+    "quotes": [
+     " One install, every platform: detects Codex, Claude Code, CodeBuddy Code, Cursor, Windsurf, Zed, Continue, OpenCode, Ant",
+     "To configure one platform, pass `--platform` with one of `codex`, `claude-code`, `cursor`, `windsurf`, `zed`, `continue`"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

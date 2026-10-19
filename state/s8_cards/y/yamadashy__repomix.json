@@ -1,0 +1,214 @@
+{
+ "fn": "yamadashy/repomix",
+ "sha": "6071af56fa23",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者把整个仓库打包成单文件供 LLM 使用",
+  "review": "一个 CLI/网站/浏览器扩展工具，将仓库内容打包为单个 AI 友好格式文件。提供 XML/Markdown/JSON/纯文本四种输出格式，统计每文件与整仓 token 数，支持 .gitignore 感知、Secretlint 凭证检测排除、Tree-sitter 代码压缩，可打包远程仓库与 stdin 文件列表。通过 npm 安装或 Docker 运行，也可在 repomix.com 网页使用，另提供 Chrome/Firefox 扩展与社区 VSCode 扩展。生成文件可发送给各类 AI 工具做代码审查、文档生成、测试用例生成等。",
+  "highlights": [
+   "单命令打包整仓并生成 repomix-output.xml 等格式文件",
+   "token 计数与 Tree-sitter 代码压缩（--compress）",
+   "Secretlint 凭证格式检测并从输出中排除",
+   "支持远程仓库打包、git log 注入与 stdin 文件列表"
+  ],
+  "use_cases": [
+   "把代码库喂给 AI 助手做代码审查与重构建议",
+   "基于仓库内容生成文档或测试用例",
+   "通过 JSON 输出配合 jq 做程序化文件分析"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://repomix.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "代码打包",
+   "LLM 工具",
+   "开发者工具",
+   "CLI"
+  ],
+  "domain": "开发者工具/LLM 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L46: 📦 Repomix is a powerful tool that packs your entire repository into a single, AI-friendly file.",
+   "L71: - **AI-Optimized**: Formats your codebase in a way that's easy for AI to understand and process.",
+   "L238: Once you have generated the packed file, you can use it with Generative AI tools like ChatGPT, DeepSeek, Perplexity, Gem"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     47,
+     340,
+     343
+    ],
+    "quotes": [
+     "It is perfect for when you need to feed your codebase to Large Language Models (LLMs) or other AI tools like Claude,",
+     "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/use-xml-tags",
+     "> game-changer. They help Claude parse your prompts more accurately, leading to higher-quality outputs."
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     48,
+     238,
+     265
+    ],
+    "quotes": [
+     "ChatGPT, DeepSeek, Perplexity, Gemini, Gemma, Llama, Grok, and more.",
+     "Once you have generated the packed file, you can use it with Generative AI tools like ChatGPT, DeepSeek, Perplexity, Gem",
+     "Once you have generated the packed file with Repomix, you can use it with AI tools like ChatGPT, DeepSeek, Perplexity, G"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     48,
+     238,
+     265
+    ],
+    "quotes": [
+     "ChatGPT, DeepSeek, Perplexity, Gemini, Gemma, Llama, Grok, and more.",
+     "Once you have generated the packed file, you can use it with Generative AI tools like ChatGPT, DeepSeek, Perplexity, Gem",
+     "Once you have generated the packed file with Repomix, you can use it with AI tools like ChatGPT, DeepSeek, Perplexity, G"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     86,
+     93
+    ],
+    "quotes": [
+     "npx repomix@latest",
+     "npm install -g repomix"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     248,
+     254,
+     260
+    ],
+    "quotes": [
+     "docker run -v .:/app -it --rm ghcr.io/yamadashy/repomix",
+     "docker run -v .:/app -it --rm ghcr.io/yamadashy/repomix path/to/directory",
+     "docker run -v ./output:/app -it --rm ghcr.io/yamadashy/repomix --remote https://github.com/yamadashy/repomix"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     48,
+     238,
+     265
+    ],
+    "quotes": [
+     "ChatGPT, DeepSeek, Perplexity, Gemini, Gemma, Llama, Grok, and more.",
+     "Once you have generated the packed file, you can use it with Generative AI tools like ChatGPT, DeepSeek, Perplexity, Gem",
+     "Once you have generated the packed file with Repomix, you can use it with AI tools like ChatGPT, DeepSeek, Perplexity, G"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     48,
+     238,
+     265
+    ],
+    "quotes": [
+     "ChatGPT, DeepSeek, Perplexity, Gemini, Gemma, Llama, Grok, and more.",
+     "Once you have generated the packed file, you can use it with Generative AI tools like ChatGPT, DeepSeek, Perplexity, Gem",
+     "Once you have generated the packed file with Repomix, you can use it with AI tools like ChatGPT, DeepSeek, Perplexity, G"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     751
+    ],
+    "quotes": [
+     "**For Cursor:**"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     759
+    ],
+    "quotes": [
+     "**For Claude Code:**"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     1021
+    ],
+    "quotes": [
+     "Repomix provides a ready-to-use **Repomix Explorer** skill that enables AI coding assistants to analyze and explore code"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

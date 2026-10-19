@@ -1,0 +1,179 @@
+{
+ "fn": "iOfficeAI/OfficeCLI",
+ "sha": "7ac9e96a3d8d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让 AI Agent 读写并自动化 Word/Excel/PPT 的 CLI 套件",
+  "review": "以单一二进制分发的命令行工具，供 AI Agent 创建、读取、修改与自动化 .docx/.xlsx/.pptx 文件，运行无需安装 Office。内置 HTML 渲染引擎可将文档渲染为 HTML 或逐页 PNG，供多模态 Agent 执行渲染-检查-修正循环；Excel 写入时自动求值 350+ 内置函数。officecli install 会将 skill 文件装入检测到的 AI 编码 Agent。自述以 skill 文件引导 Agent 一行命令完成安装。",
+  "highlights": [
+   "单二进制内嵌 .NET 运行时，无需安装 Office 或管理依赖",
+   "内置渲染引擎：view html / view screenshot / watch 三种模式，支持 PNG 截图供多模态 Agent 读取",
+   "Word/Excel/PPT 三类格式的读取、修改、创建能力矩阵",
+   "Excel 公式引擎：350+ 函数写入时自动求值，含动态数组与财务统计函数"
+  ],
+  "use_cases": [
+   "让 AI Agent 根据用户提示生成演示文稿",
+   "在 CI/CD 或无显示器的容器环境中做无头 Office 文档自动化",
+   "批量对文档做查找替换、样式更新等批处理",
+   "从文档中抽取结构化数据为 JSON"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    3
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "CLI工具",
+   "Office自动化",
+   "AI Agent",
+   "文档生成",
+   "Skill"
+  ],
+  "domain": "办公文档自动化/LLM 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文版本（L14）"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3: > **OfficeCLI is the world's first and the best Office suite designed for AI agents.**",
+   "L68: This copies the binary to your PATH and installs the **officecli skill** into every AI coding agent it detects — Claude "
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     73
+    ],
+    "quotes": [
+     "# 1. Install (macOS / Linux) — or: brew install officecli / npm install -g @officecli/officecli"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     73,
+     168,
+     169
+    ],
+    "quotes": [
+     "# 1. Install (macOS / Linux) — or: brew install officecli / npm install -g @officecli/officecli",
+     "# Homebrew (macOS / Linux)",
+     "brew install officecli"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "source",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     68
+    ],
+    "quotes": [
+     "This copies the binary to your PATH and installs the **officecli skill** into every AI coding agent it detects — Claude "
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     68
+    ],
+    "quotes": [
+     "This copies the binary to your PATH and installs the **officecli skill** into every AI coding agent it detects — Claude "
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     68
+    ],
+    "quotes": [
+     "This copies the binary to your PATH and installs the **officecli skill** into every AI coding agent it detects — Claude "
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     68
+    ],
+    "quotes": [
+     "This copies the binary to your PATH and installs the **officecli skill** into every AI coding agent it detects — Claude "
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

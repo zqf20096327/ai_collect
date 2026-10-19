@@ -1,0 +1,197 @@
+{
+ "fn": "MemoriLabs/Memori",
+ "sha": "c385b3f8f7bb",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 agent 的记忆基础设施：把执行与对话转为持久化结构化记忆",
+  "review": "提供 Python 与 TypeScript SDK 的 agent 记忆层，将 LLM 交互与 agent 执行（含工具调用、决策、结果）捕获为按 entity/process/session 分级的结构化记忆，后台增强生成 attributes、facts、preferences 等类型，不增加请求延迟。LLM、数据存储与框架无关，支持 OpenAI 等多种 LLM 与 LangChain 等框架，可接入自有数据库（BYODB）或使用 Memori Cloud；通过 MCP 一条命令接入 Claude Code、Cursor 等客户端；默认高级增强免账号但限速。",
+  "highlights": [
+   "entity/process/session 三级记忆归属与后台增强（attributes/facts/preferences 等）",
+   "MCP 单命令接入 Claude Code、Cursor、Codex、Warp 等客户端，无需 SDK 集成",
+   "LLM/datastore/framework 无关，提供 BYODB 模式接入自有数据库",
+   "OpenClaw 插件与 Hermes 记忆 provider 两种开箱集成"
+  ],
+  "use_cases": [
+   "让 agent 跨会话记住用户偏好、项目约定与历史决策",
+   "为生产环境的 agent 系统沉淀结构化执行轨迹，减少重复工具调用",
+   "团队共享 coding 约定与审阅偏好上下文"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent记忆",
+   "记忆管理",
+   "LLM基础设施",
+   "MCP",
+   "企业级"
+  ],
+  "domain": "LLM 基础设施/agent 记忆",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "bedrock",
+   "deepseek",
+   "xai"
+  ],
+  "scenario_tags_v2": [
+   "agent-memory"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3:  Memory from what agents do, not just what they say.",
+   "L43: Set `MEMORI_API_KEY` and your LLM API key (e.g. `OPENAI_API_KEY`), then:",
+   "L170: ## Supported LLMs"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     172
+    ],
+    "quotes": [
+     "- Anthropic"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     173
+    ],
+    "quotes": [
+     "- Bedrock"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     174,
+     189
+    ],
+    "quotes": [
+     "- DeepSeek",
+     "- DeepSeek"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     176
+    ],
+    "quotes": [
+     "- Grok (xAI)"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     36,
+     103,
+     221
+    ],
+    "quotes": [
+     "pip install memori",
+     "pip install hermes-memori",
+     "python -m memori sign-up <email_address>"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     30
+    ],
+    "quotes": [
+     "npm install @memorilabs/memori"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     119,
+     125
+    ],
+    "quotes": [
+     "If you use Claude Code, Cursor, Codex, Warp, or Antigravity, you can connect Memori with no SDK integration needed:",
+     "  --header \"X-Memori-Process-Id: claude-code\""
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     119,
+     128
+    ],
+    "quotes": [
+     "If you use Claude Code, Cursor, Codex, Warp, or Antigravity, you can connect Memori with no SDK integration needed:",
+     "For Cursor, Codex, Warp, and other clients, see the MCP client setup guide."
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     184
+    ],
+    "note": "被支持的集成框架，非替代/竞品对象",
+    "quotes": [
+     "- LangChain"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

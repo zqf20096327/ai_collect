@@ -1,0 +1,219 @@
+{
+ "fn": "MemPalace/mempalace",
+ "sha": "7a801314b0cb",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI 编码代理提供本地化、可溯源的会话记忆存储与语义检索",
+  "review": "以逐字文本存储对话历史，不做摘要或改写，通过语义搜索检索；索引按 wing/room/drawer 层级结构化以支持范围化搜索。检索后端可插拔（默认 ChromaDB），支持 Milvus、Qdrant、pgvector、SQLite、Rust 原生引擎等六种。以 CLI 与 MCP 服务器形式提供，共 47 个 MCP 工具；含时间性知识图谱、多 agent 协作日志流，以及 Claude Code、Codex CLI、Cursor IDE 的自动保存 hooks。默认路径无需 API key 与云服务，数据默认留在本地。",
+  "highlights": [
+   "逐字存储 + 语义检索，默认路径零 API 调用、零云端依赖",
+   "可插拔检索后端：ChromaDB 默认，另支持 Milvus/Qdrant/pgvector/SQLite/Rust 原生",
+   "47 个 MCP 工具与结构化 wing/room/drawer 索引",
+   "LongMemEval 基准 96.6% R@5（原始语义检索，无 LLM）可复现"
+  ],
+  "use_cases": [
+   "让 Claude Code 等 MCP 客户端跨会话回忆历史对话内容",
+   "为多 agent 系统提供本地持久记忆与协调日志",
+   "在离线/隐私要求环境下存储与检索 AI 会话记录"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI记忆",
+   "MCP服务器",
+   "语义检索",
+   "本地优先",
+   "CLI工具"
+  ],
+  "domain": "LLM 基础设施/记忆系统",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "semantic-search"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: Local-first AI memory. Verbatim storage, pluggable backend, 96.6% R@5 raw on LongMemEval — zero API calls.",
+   "L22: MemPalace stores your conversation history as verbatim text and retrieves",
+   "L264: 47 MCP tools cover palace reads/writes, knowledge-graph operations,"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     125,
+     224,
+     225
+    ],
+    "note": "可作为 MCP 客户端接入 Claude Code；rerank 管线可用 Claude 模型但明确无 Anthropic 依赖",
+    "quotes": [
+     "Wire it into an MCP client (e.g. Claude Code) as a stdio server. Mount",
+     "capable model — we have reproduced it with Claude Haiku, Claude Sonnet,",
+     "and minimax-m2.7 via Ollama Cloud (no Anthropic dependency). The gap"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     225
+    ],
+    "note": "rerank 测试中经 Ollama Cloud 使用 minimax 模型",
+    "quotes": [
+     "and minimax-m2.7 via Ollama Cloud (no Anthropic dependency). The gap"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     13,
+     88,
+     250
+    ],
+    "quotes": [
+     "> **Beware of impostor sites.** MemPalace has no other official websites. The **only** official sources are this **GitHu",
+     "pip install mempalace",
+     "uv sync --extra dev   # or: pip install -e \".[dev]\""
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     48
+    ],
+    "note": "npx 安装 agent skills，为引导式安装途径",
+    "quotes": [
+     "npx skills add MemPalace/mempalace"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     68
+    ],
+    "note": "提及 Homebrew Python 的 PEP 668 问题，非安装途径",
+    "quotes": [
+     "PEP 668 errors on Debian/Ubuntu/Homebrew Pythons and to keep mempalace's"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     102,
+     107,
+     115,
+     148
+    ],
+    "quotes": [
+     "A container image is also available for running the MCP server or the CLI",
+     "docker pull ghcr.io/mempalace/mempalace:latest",
+     "docker run -i --rm -v mempalace-data:/data ghcr.io/mempalace/mempalace",
+     "`docker compose run --rm mcp` works too (see `docker-compose.yml`), and"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     248,
+     250
+    ],
+    "quotes": [
+     "git clone https://github.com/MemPalace/mempalace.git",
+     "uv sync --extra dev   # or: pip install -e \".[dev]\""
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     16,
+     125,
+     195,
+     199
+    ],
+    "note": "被接入的 MCP 客户端，非替代/竞品对象",
+    "quotes": [
+     "> **Claude Code sessions expire in 30 days without auto-save hooks wired.** Read this →",
+     "Wire it into an MCP client (e.g. Claude Code) as a stdio server. Mount",
+     "mempalace mine ~/.claude/projects/ --mode convos   # Claude Code sessions (scope with --wing per project)",
+     "For Claude Code, Gemini CLI, Antigravity,"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     279,
+     284
+    ],
+    "note": "提供 hooks 的 IDE 客户端",
+    "quotes": [
+     "Auto-save hooks for **Claude Code, Codex CLI, and Cursor IDE** save",
+     "- Cursor IDE (adds session-start recall and a transcript snapshot before"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

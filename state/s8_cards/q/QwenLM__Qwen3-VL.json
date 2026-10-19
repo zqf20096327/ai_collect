@@ -1,0 +1,206 @@
+{
+ "fn": "QwenLM/Qwen3-VL",
+ "sha": "64a9bd7aa55f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的开源多模态视觉语言模型系列及使用代码",
+  "review": "阿里云 Qwen 团队开发的多模态大语言模型系列，提供 Dense 与 MoE 两种架构、2B 到 235B 多种规模及 Instruct/Thinking 版本。模型能力覆盖视觉 Agent（操作 PC/手机 GUI）、从图像/视频生成代码、2D/3D 空间定位、原生 256K 上下文（可扩展至 1M）、32 语言 OCR 等。README 提供 Transformers 与 ModelScope 的推理示例、qwen-vl-utils 工具包用法、图像/视频像素预算控制方法，并附 Colab Cookbook 集合。",
+  "highlights": [
+   "提供 2B/4B/8B/32B/30B-A3B/235B-A22B 多种规模的 Dense 与 MoE 模型及 FP8 版本",
+   "支持 32 语言 OCR、原生 256K 上下文（可扩展至 1M）与小时级视频理解",
+   "提供 qwen-vl-utils 工具包控制图像/视频像素预算与视觉 token 数量",
+   "通过 Colab 提供 12 类能力 Cookbook（识别、文档解析、视频理解、Agent 等）"
+  ],
+  "use_cases": [
+   "构建操作 PC/手机图形界面的视觉 Agent",
+   "文档解析、OCR 与关键信息抽取",
+   "长视频理解与时间戳定位",
+   "基于图像/视频生成前端代码"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "README 中提及（L3/L41 链接指向 paper）",
+  "demo_url": "README 头部提供 Demo 链接（L5）",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "多模态大模型",
+   "视觉语言模型",
+   "视频理解",
+   "OCR",
+   "Agent"
+  ],
+  "domain": "AI 模型/多模态",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "multimodal",
+   "ocr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "阿里云 Qwen 团队",
+   "提供微信群入口",
+   "建议中国大陆用户使用 ModelScope"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # Qwen3-VL",
+   "L8: Meet Qwen3-VL — the most powerful vision-language model in the Qwen series to date.",
+   "L12: Available in Dense and MoE architectures that scale from edge to cloud, with Instruct and reasoning‑enhanced Thinking ed"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     283,
+     292,
+     295,
+     342,
+     344
+    ],
+    "note": "窗外行，README 后续部署章节提供 vLLM 部署指南",
+    "quotes": [
+     "For supported frameworks (currently transformers and vLLM), you could modify `max_position_embeddings` and `rope_scaling",
+     "When using vLLM for serving, you can also enable YaRN by adding the additional arguments `--rope-scaling` and `--max-mod",
+     "vllm serve Qwen/Qwen3-VL-235B-A22B-Instruct --rope-scaling '{\"rope_type\":\"yarn\",\"factor\":3.0,\"original_max_position_embe",
+     "We recommend using vLLM for fast Qwen3-VL deployment and inference. You need to install `vllm>=0.11.0` to enable Qwen3-V",
+     "Please check vLLM official documentation for more details about online serving and offline inference for multimodal mode"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     66,
+     67,
+     68,
+     69,
+     70,
+     71,
+     72,
+     73,
+     74,
+     75,
+     76,
+     77
+    ],
+    "note": "Cookbook 以 Colab 形式提供",
+    "quotes": [
+     "|Omni Recognition|Not only identify animals, plants, people, and scenic spots but also recognize various objects such as",
+     "|Powerful Document Parsing Capabilities|The parsing of documents has reached a higher level, including not only text but",
+     "|Precise Object Grounding Across Formats|Using relative position coordinates, it supports both boxes and points, allowin",
+     "|General OCR and Key Information Extraction|Stronger text recognition capabilities in natural scenes and multiple langua",
+     "|Video Understanding|Better video OCR, long video understanding, and video grounding.|Colab|",
+     "|Mobile Agent|Locate and think for mobile phone control.|Colab|",
+     "|Computer-Use Agent|Locate and think for controlling computers and Web.|Colab|",
+     "|3D Grounding|Provide accurate 3D bounding boxes for both indoor and outdoor objects.|Colab|",
+     "|Thinking with Images|Utilize image_zoom_in_tool and search_tool to facilitate the model’s precise comprehension of fine",
+     "|MultiModal Coding|Generate accurate code based on rigorous comprehension of multimodal information.|Colab|",
+     "|Long Document Understanding|Achieve rigorous semantic comprehension of ultra-long documents.|Colab|",
+     "|Spatial Understanding|See, understand and reason about the spatial information|Colab|"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     85,
+     161,
+     163
+    ],
+    "quotes": [
+     "pip install \"transformers>=4.57.0\"",
+     "pip install qwen-vl-utils==0.0.14",
+     "# pip install qwen-vl-utils[decord]"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     437
+    ],
+    "note": "窗外行，提供 Docker 部署",
+    "quotes": [
+     "docker run --gpus all --ipc=host --network=host --rm --name qwen3vl -it qwenllm/qwenvl:qwen3vl-cu128 bash"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     3,
+     8,
+     141
+    ],
+    "note": "Qwen 系列自身，非替代/竞品关系",
+    "quotes": [
+     " 💜 Qwen Chat &nbsp&nbsp | &nbsp&nbsp🤗 Hugging Face&nbsp&nbsp | &nbsp&nbsp🤖 ModelScope&nbsp&nbsp | &nbsp&nbsp📑 Blog&nbsp&",
+     "Meet Qwen3-VL — the most powerful vision-language model in the Qwen series to date.",
+     "processor = AutoProcessor.from_pretrained(\"Qwen/Qwen3-VL-235B-A22B-Instruct\")"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     3,
+     44,
+     91
+    ],
+    "note": "模型分发与推理库渠道，非替代/竞品",
+    "quotes": [
+     " 💜 Qwen Chat &nbsp&nbsp | &nbsp&nbsp🤗 Hugging Face&nbsp&nbsp | &nbsp&nbsp🤖 ModelScope&nbsp&nbsp | &nbsp&nbsp📑 Blog&nbsp&",
+     "* 2025.10.4: We have released the Qwen3-VL-30B-A3B-Instruct and Qwen3-VL-30B-A3B-Thinking. We have also released the FP8",
+     "### Using 🤗 Transformers to Chat"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

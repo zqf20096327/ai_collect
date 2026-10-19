@@ -1,0 +1,206 @@
+{
+ "fn": "zhayujie/CowAgent",
+ "sha": "81940e341e1f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "个人 AI 助手框架：任务规划、工具技能、多渠道接入",
+  "review": "CowAgent 是一个开源自托管个人 AI 助手/Agent Harness 参考实现：消息经 Channels 接入，Agent Core 基于记忆、知识与工具进行任务规划与执行，模型层生成回复。三层记忆架构（上下文→日→长期）加夜间 Deep Dream 蒸馏，自动维护 Markdown 知识库与知识图谱，支持 Skill Hub 一键装技能、MCP 协议接入工具，Web 控制台统一配置。提供一行安装脚本、Docker、桌面客户端，可 24/7 运行于个人电脑或服务器。",
+  "highlights": [
+   "三层记忆架构（上下文→每日→长期）与 Deep Dream 夜间蒸馏",
+   "Skill Hub/GitHub/对话式生成技能，原生 MCP 集成（stdio/SSE，热重载）",
+   "内置 10+ 工具（文件、终端、浏览器自动化、搜索、调度等）",
+   "多渠道并行：Web、微信、飞书、钉钉、Telegram、Slack 等 12 种"
+  ],
+  "use_cases": [
+   "在个人电脑或服务器上长期运行自己的 AI 助手",
+   "通过微信/飞书/钉钉等 IM 与助手对话并执行任务",
+   "让助手自动整理对话为个人知识库与长期记忆",
+   "通过 MCP 与自定义 Skill 扩展助手能力"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/8625a19f-615c-4343-8be8-3707ce4d4d4e",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "个人AI助手",
+   "Agent框架",
+   "IM机器人",
+   "MCP",
+   "多渠道接入"
+  ],
+  "domain": "AI Agent/个人助手",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "作者 zhayujie，主题含 chatgpt-on-wechat",
+   "支持微信/企业微信/QQ 等国内渠道",
+   "支持 DeepSeek/Qwen/GLM/Kimi/豆包/文心等国内模型"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14: **CowAgent** is an open-source super AI assistant that proactively plans tasks, controls your computer and external serv",
+   "L52: CowAgent is a complete **Agent Harness**: messages flow in through **Channels**; the **Agent Core** plans and reasons ov",
+   "L172: **MCP protocol** integrates the open ecosystem of Model Context Protocol servers. A single `mcp.json` is enough — suppor"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     45,
+     112,
+     214
+    ],
+    "quotes": [
+     "|Models|Claude, GPT, Gemini, DeepSeek, Qwen, GLM, Kimi, MiniMax, Doubao, and more — swap providers from the Web console ",
+     "|Claude|claude-opus-5-5 / fable-5.1|✅|✅|||||",
+     "> **2026.06.01:** v2.1.0 — Internationalization, new channels (Telegram, Discord, Slack, WeChat Customer Service), CLI i"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     45,
+     111
+    ],
+    "quotes": [
+     "|Models|Claude, GPT, Gemini, DeepSeek, Qwen, GLM, Kimi, MiniMax, Doubao, and more — swap providers from the Web console ",
+     "|DeepSeek|deepseek-flash (V4.1) / pro|✅|✅|||||"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     75,
+     76
+    ],
+    "quotes": [
+     "curl -O https://cdn.link-ai.tech/code/cow/docker-compose.yml",
+     "docker compose up -d"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     45,
+     117
+    ],
+    "note": "作为可配置的模型供应商列出，非竞品对象",
+    "quotes": [
+     "|Models|Claude, GPT, Gemini, DeepSeek, Qwen, GLM, Kimi, MiniMax, Doubao, and more — swap providers from the Web console ",
+     "|Qwen|qwen3.8-flash|✅|✅|✅|✅|✅|✅|"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     45,
+     118,
+     210
+    ],
+    "note": "模型供应商，非竞品",
+    "quotes": [
+     "|Models|Claude, GPT, Gemini, DeepSeek, Qwen, GLM, Kimi, MiniMax, Doubao, and more — swap providers from the Web console ",
+     "|Kimi|kimi-k3|✅|✅|||||",
+     "> **2026.06.18:** v2.1.2 — Web console upgrades (scheduled task management, knowledge base categories, multiple custom m"
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     45,
+     119
+    ],
+    "note": "模型供应商，非竞品",
+    "quotes": [
+     "|Models|Claude, GPT, Gemini, DeepSeek, Qwen, GLM, Kimi, MiniMax, Doubao, and more — swap providers from the Web console ",
+     "|Doubao|doubao-seed-2.1 series|✅|✅|✅|||✅|"
+    ]
+   },
+   {
+    "term": "文心一言",
+    "rel": "mention",
+    "lines": [
+     120
+    ],
+    "note": "ERNIE 模型供应商条目，非竞品",
+    "quotes": [
+     "|ERNIE|ernie-5.1|✅|✅|||||"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     228
+    ],
+    "note": "Cow Skill Hub 兼容工具列举，非替代/竞品声明",
+    "quotes": [
+     "- **Cow Skill Hub** — open skill marketplace for AI Agents; works with CowAgent, OpenClaw, Claude Code, and more"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

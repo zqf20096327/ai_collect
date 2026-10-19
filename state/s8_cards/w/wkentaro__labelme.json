@@ -1,0 +1,110 @@
+{
+ "fn": "wkentaro/labelme",
+ "sha": "4b585278f85a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 CV 研究者/开发者的图形化图像标注工具，含 AI 辅助标注",
+  "review": "用 Python 与 Qt 编写的图形图像标注工具，灵感来自 MIT labelme 项目。支持多边形、矩形、圆、线、点等图元标注，覆盖图像分类 flag、视频标注场景，可将标注导出为 VOC 或 COCO 格式数据集，标注结果以 JSON 文件保存。AI 机制方面：内置 SAM/EfficientSAM 做点到多边形/掩码辅助标注，YOLO-world/SAM3 支持文本到标注。安装途径包括 pip、独立可执行文件（付费）与 Linux 发行版包。v7 起不提供稳定 Python API，仅保证 CLI、JSON 格式与配置文件三个公开接口。",
+  "highlights": [
+   "多图元标注：多边形、矩形、圆、线、点及分类 flag",
+   "AI 辅助标注：SAM/EfficientSAM 点到多边形/掩码，YOLO-world/SAM3 文本到标注",
+   "导出 VOC/COCO 格式数据集，标注以 JSON 保存",
+   "支持 20 种语言界面"
+  ],
+  "use_cases": [
+   "为语义分割和实例分割制作训练数据集",
+   "给图像分类项目做图片标注与清洗",
+   "标注视频数据",
+   "用文本描述配合模型自动生成标注草稿"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图像标注",
+   "计算机视觉",
+   "数据集制作",
+   "分割标注"
+  ],
+  "domain": "计算机视觉/数据标注工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: Labelme is a graphical image annotation tool inspired by <http://labelme.csail.mit.edu>.\\",
+   "L36: - [x] AI-assisted point-to-polygon/mask annotation by SAM, EfficientSAM models",
+   "L91: - **Qt binding:** the GUI moved from PyQt5 (Qt5) to PySide6 (Qt6). `pip install labelme` now pulls PySide6 instead of Py"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     50,
+     53,
+     91,
+     99,
+     102
+    ],
+    "quotes": [
+     "pip install labelme",
+     "# pip install git+https://github.com/wkentaro/labelme.git",
+     "- **Qt binding:** the GUI moved from PyQt5 (Qt5) to PySide6 (Qt6). `pip install labelme` now pulls PySide6 instead of Py",
+     "pip install 'labelme<7'",
+     "All previous releases remain installable from PyPI, so existing pins keep working."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    96,
+    100
+   ]
+  }
+ }
+}

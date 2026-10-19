@@ -1,0 +1,234 @@
+{
+ "fn": "NVIDIA/SkillSpector",
+ "sha": "747786e000f0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给安装 AI agent 技能前的用户做安全扫描的命令行工具",
+  "review": "SkillSpector 是面向 AI agent 技能（SKILL.md、MCP 等）的安全扫描器，在安装前检测漏洞模式、恶意行为、提示注入、数据外泄与供应链风险。提供 71 种检测模式、两阶段分析（静态分析 + 可选 LLM 语义评估）、0-100 风险评分、基线误报抑制、多格式输入与输出报告，支持 Docker 运行与批量扫描，并可作为 Pi/OpenCode 扩展嵌入 agent 会话。它是 NVIDIA Verified Skills 流水线的组成部分。LLM 语义分析需配置 OpenAI 兼容端点；对超大输入设有 fail-closed 上限。",
+  "highlights": [
+   "71 种漏洞模式，覆盖提示注入、数据外泄、供应链、MCP 工具投毒等 17 类",
+   "静态分析 + 可选 LLM 语义评估的两阶段扫描",
+   "支持 openai/anthropic/bedrock/gemini/ollama/vllm 等多种 SKILLSPECTOR_PROVIDER",
+   "基线机制抑制已知误报，重复扫描只暴露新问题"
+  ],
+  "use_cases": [
+   "安装 Claude Code / Codex / MCP 技能前检测恶意模式与提示注入",
+   "CI 中批量扫描技能目录并按 JSON/SARIF 报告做门禁",
+   "对比 MCP Registry 快照，发现服务器身份与字段变化"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent安全",
+   "供应链安全",
+   "技能扫描",
+   "MCP",
+   "安全工具"
+  ],
+  "domain": "AI 安全 / agent 生态工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "ollama",
+   "vllm",
+   "bedrock"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3: **Security scanner for AI agent skills.** Detect vulnerabilities, malicious patterns, and security risks before installi",
+   "L14: SkillSpector is part of the NVIDIA Verified Skills pipeline, which scans, evaluates, and signs agent skills before publi",
+   "L26: - **Multi-format input**: Scan Git repos, URLs, zip files, directories, or single files",
+   "L260: |Provider (`SKILLSPECTOR_PROVIDER`)|Credential env var|Endpoint|Default model|"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     263,
+     264
+    ],
+    "note": "SKILLSPECTOR_PROVIDER 明确支持的提供商，含默认模型",
+    "quotes": [
+     "|`anthropic`|`ANTHROPIC_API_KEY`|api.anthropic.com|`claude-opus-4-6` (`meta_analyzer`: `claude-sonnet-4-6`)|",
+     "|`anthropic_proxy`|`ANTHROPIC_PROXY_API_KEY` + `ANTHROPIC_PROXY_ENDPOINT_URL`|Any Vertex-style raw-predict proxy|`claude"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     167,
+     168,
+     171
+    ],
+    "note": "默认配置目标，但注明将 sunset 且需手动补丁",
+    "quotes": [
+     "> **Note on LLM support:** The default configuration targets DeepSeek as the",
+     "> cheapest public option. DeepSeek-Chat is",
+     "> originally tested with OpenAI-compatible endpoints — DeepSeek's lack of"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     268,
+     257
+    ],
+    "note": "provider 表中明确支持本地 OpenAI 兼容服务器",
+    "quotes": [
+     "|`ollama`|_(none)_|`OLLAMA_BASE_URL` (default `http://localhost:11434/v1`)|`llama3.1:8b`|",
+     "local OpenAI-compatible servers (Ollama, vLLM, llama.cpp) and managed"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     257,
+     173
+    ],
+    "note": "明确列出可对接的本地 OpenAI 兼容服务器",
+    "quotes": [
+     "local OpenAI-compatible servers (Ollama, vLLM, llama.cpp) and managed",
+     "> contribute a more universal backend (Ollama, vLLM, or a different provider),"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     265
+    ],
+    "note": "SKILLSPECTOR_PROVIDER=bedrock，AWS Bedrock Runtime 接入",
+    "quotes": [
+     "|`bedrock`|`AWS_PROFILE` (optional) + `AWS_REGION` — SigV4 via boto3|AWS Bedrock Runtime|`us.anthropic.claude-sonnet-4-6"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "mention",
+    "lines": [
+     269
+    ],
+    "note": "窗外行提及，可见范围未确认细节",
+    "quotes": [
+     "|`azure_openai`|`AZURE_OPENAI_API_KEY` + `AZURE_OPENAI_ENDPOINT`|Azure OpenAI Service|`gpt-4o` (deployment defaults to t"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     55,
+     59
+    ],
+    "quotes": [
+     "**From source:**",
+     "git clone https://github.com/NVIDIA/skillspector.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     66,
+     72,
+     78
+    ],
+    "quotes": [
+     "Run SkillSpector without installing Python by building it locally from the included Dockerfile. The image is based on th",
+     "# or: docker build -t skillspector .",
+     "docker run --rm -v \"$PWD:/scan\" skillspector scan ./my-skill/ --no-llm"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     757
+    ],
+    "note": "窗外行，仅以依赖安装方式提及",
+    "quotes": [
+     "SC4 uses the OSV.dev API to check dependencies against the full Open Source Vulnerabilities database — covering tens of "
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     10
+    ],
+    "note": "作为技能使用方被提及，非替代/竞品",
+    "quotes": [
+     "AI agent skills (used by Claude Code, Codex CLI, Gemini CLI, etc.) execute with implicit trust and minimal vetting. In t"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     288
+    ],
+    "note": "窗外行提及",
+    "quotes": [
+     "Structured output is requested through LangChain's `with_structured_output`."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

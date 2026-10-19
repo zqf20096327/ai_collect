@@ -1,0 +1,192 @@
+{
+ "fn": "wandb/openui",
+ "sha": "0470ec085f29",
+ "source": "readme",
+ "identity": {
+  "one_liner": "用自然语言描述并实时渲染生成 UI 的开源工具",
+  "review": "OpenUI 让用户以想象描述界面，实时看到渲染结果，并支持将 HTML 转换为 React、Svelte、Web Components 等框架代码。模型接入通过 LiteLLM 统一代理，支持 OpenAI、Groq、Gemini、Anthropic、Cohere、Mistral 及 OpenAI 兼容端点，也可连接本地 Ollama 实例。安装途径包括 Docker（ghcr.io 镜像）、源码运行（uv/pip）、Docker Compose、Codespace 与 Gitpod。该项目由 W&B 维护，也用于其内部 LLM 应用工具链的原型测试。",
+  "highlights": [
+   "描述 UI 并实时渲染，可转换为 React/Svelte/Web Components 等框架代码",
+   "通过 LiteLLM 接入多种 LLM 服务，支持 OpenAI 兼容端点",
+   "支持本地 Ollama 模型（如 llava），可配置 OLLAMA_HOST",
+   "提供 Docker、源码、Codespace、Gitpod 多种运行方式"
+  ],
+  "use_cases": [
+   "快速将界面描述变成可运行的 UI 原型",
+   "把生成的 HTML 转换为 React 或 Svelte 组件",
+   "用本地 Ollama 模型离线生成 UI"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "UI 生成",
+   "前端原型",
+   "LLM应用",
+   "代码转换"
+  ],
+  "domain": "开发工具/UI 生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "groq",
+   "cohere",
+   "ollama"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: Building UI components can be a slog. OpenUI aims to make the process fun, fast, and flexible. It's also a tool we're us",
+   "L11: OpenUI let's you describe UI using your imagination, then see it rendered live. You can ask for changes and convert HTML",
+   "L19: OpenUI supports OpenAI, Groq, and any model LiteLLM supports such as Gemini or Anthropic (Claude). The following environ"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     19,
+     24
+    ],
+    "quotes": [
+     "OpenUI supports OpenAI, Groq, and any model LiteLLM supports such as Gemini or Anthropic (Claude). The following environ",
+     "- **Anthropic** `ANTHROPIC_API_KEY`"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     19,
+     22,
+     83
+    ],
+    "quotes": [
+     "OpenUI supports OpenAI, Groq, and any model LiteLLM supports such as Gemini or Anthropic (Claude). The following environ",
+     "- **Groq** `GROQ_API_KEY`",
+     "To use the super fast Groq models, set `GROQ_API_KEY` to your Groq api key which you can find here. To use one of the Gr"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "support",
+    "lines": [
+     25
+    ],
+    "quotes": [
+     "- **Cohere** `COHERE_API_KEY`"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     31,
+     33,
+     119
+    ],
+    "quotes": [
+     "### Ollama",
+     "You can also use models available to Ollama. Install Ollama and pull a model like Llava. If Ollama is not running on htt",
+     "### Ollama"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     35,
+     42,
+     69,
+     92
+    ],
+    "quotes": [
+     "### Docker (preferred)",
+     "docker run --rm --name openui -p 7878:7878 -e OPENAI_API_KEY -e ANTHROPIC_API_KEY -e OLLAMA_HOST=http://host.docker.inte",
+     "docker run -n openui -p 7878:7878 -v $(pwd)/litellm-config.yaml:/app/litellm-config.yaml ghcr.io/wandb/openui",
+     "docker-compose up -d"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     47,
+     52
+    ],
+    "quotes": [
+     "### From Source / Python",
+     "git clone https://github.com/wandb/openui"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     75
+    ],
+    "quotes": [
+     "pip install .[litellm]"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "16GB of Ram",
+    "rel": "mention",
+    "lines": [
+     108
+    ],
+    "note": "Codespace 中运行 Ollama 的内存建议，非产品自身要求",
+    "quotes": [
+     "Choose more options when creating a Codespace, then select **New with options...**. Select the US West region if you wan"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

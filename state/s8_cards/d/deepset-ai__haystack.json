@@ -1,0 +1,136 @@
+{
+ "fn": "deepset-ai/haystack",
+ "sha": "cf5414c7cef5",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 Python 开发者的 LLM 应用编排框架",
+  "review": "Haystack 是一个 Python 开源编排框架，用于构建生产级 LLM 应用。提供模块化 Pipeline 与 Agent 工作流，对检索、路由、记忆、生成环节做显式控制；同一 Pipeline 支持同步/异步运行与逐 token 流式输出，Agent 可并发调用工具并暴露生命周期钩子与 token/工具调用计数。模型与厂商无关，内置组件可自建扩展，可通过 pip 或 Docker 安装，另有 Hayhooks 将流水线封装为 REST API 或 MCP 服务。",
+  "highlights": [
+   "模块化 Pipeline 与 Agent 工作流，显式控制检索/路由/记忆/生成",
+   "同一 Pipeline 支持同步、异步与逐 token 流式输出，Agent 可并发工具调用",
+   "模型与厂商无关，可替换模型或基础设施组件",
+   "匿名组件级遥测，可按文档说明关闭"
+  ],
+  "use_cases": [
+   "构建带检索、排序、路由控制的 RAG 应用",
+   "搭建需要显式上下文控制的 agent 工作流",
+   "构建多模态应用与语义搜索/问答系统",
+   "通过 Hayhooks 把流水线部署为 REST API 或 MCP 服务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM编排框架",
+   "RAG",
+   "Agent框架",
+   "语义搜索"
+  ],
+  "domain": "LLM 基础设施/编排框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "rag",
+   "semantic-search"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: Haystack is an open-source AI orchestration framework for building production-ready LLM applications in Python.",
+   "L57: Integrate with OpenAI, Mistral, Anthropic, Cohere, Hugging Face, Google, Azure OpenAI, AWS Bedrock, local models, and ma"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     57
+    ],
+    "quotes": [
+     "Integrate with OpenAI, Mistral, Anthropic, Cohere, Hugging Face, Google, Azure OpenAI, AWS Bedrock, local models, and ma"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "mention",
+    "lines": [
+     57
+    ],
+    "quotes": [
+     "Integrate with OpenAI, Mistral, Anthropic, Cohere, Hugging Face, Google, Azure OpenAI, AWS Bedrock, local models, and ma"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "mention",
+    "lines": [
+     57
+    ],
+    "note": "AWS Bedrock 作为可集成的模型提供方列举，非专门适配说明",
+    "quotes": [
+     "Integrate with OpenAI, Mistral, Anthropic, Cohere, Hugging Face, Google, Azure OpenAI, AWS Bedrock, local models, and ma"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     18,
+     21,
+     26
+    ],
+    "quotes": [
+     "The simplest way to get Haystack is via pip:",
+     "pip install haystack-ai",
+     "pip install --pre haystack-ai"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

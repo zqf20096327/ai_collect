@@ -1,0 +1,218 @@
+{
+ "fn": "ifixai-ai/iFixAi",
+ "sha": "c7101931d6a2",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 AI Agent 的独立审计 CLI，120 秒内给出合规评分",
+  "review": "提供 CLI 与 IDE 插件两种形态的 AI Agent 审计工具：对被测 agent 生成对抗性探针（默认 10 项检查，全量 60 项），覆盖权限越界、提示注入、数据越权、任务偏离等行为，由独立 vendor 的 judge 模型评分，输出 JSON 与 Markdown 报告。要求 Python 3.10+，通过 pip 安装并按被测 provider 安装 extra；可引述的评分需来自不同厂商的 SUT 与 judge 两把 API key，缺第二把时只能以 --eval-mode self 做冒烟测试。",
+  "highlights": [
+   "三种运行方式：向导式 CLI、显式 flag CLI、Claude Code/Codex 插件与任意 agent 的 skill 脚手架",
+   "独立 judge 评分机制：SUT 与 judge 须来自不同厂商，缺省则标记为 self-judged",
+   "默认 10 项检查覆盖权限、注入、数据隔离、任务保持等，全量 60 项",
+   "Policy Lab 检查最短有害操作序列与权限修复"
+  ],
+  "use_cases": [
+   "上线前对客服/业务 agent 做权限与策略行为审计",
+   "在 CI 中以脚本化批量方式运行可审计的检查",
+   "为符合 EU AI Act / ISO 42001 类要求留存评分报告"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://www.ifixai.ai/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent评估",
+   "AI安全/对齐",
+   "审计/合规",
+   "CLI工具",
+   "LLM评测"
+  ],
+  "domain": "LLM 基础设施/Agent 评估与审计",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "openrouter",
+   "bedrock"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L46: Is the agent doing the job it is supposed to do based on the business KPIs and Organizational Structure? iFixAi gives yo",
+   "L148: A grade is **citable** when a second, independent provider graded your agent, not the agent",
+   "L195: `ifixai run` runs **10 inspections** unless you ask for more. They are the `essential` suite: six"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     75,
+     170,
+     180
+    ],
+    "note": "作为可测 provider 与 judge 模型使用",
+    "quotes": [
+     "pip install \"ifixai[openai]\"   # or anthropic, gemini, etc.: install the provider extra you'll test",
+     "|**Single judge: Sonnet**|`anthropic/claude-sonnet-4.6`|~$12–18|",
+     "--eval-mode single --judge-provider openrouter --judge-model anthropic/claude-sonnet-4.6"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "compat",
+    "lines": [
+     161,
+     180,
+     185
+    ],
+    "note": "作为 judge provider 通道",
+    "quotes": [
+     "OpenRouter, OrcaRouter, Requesty, Cloudflare AI Gateway, Vercel AI Gateway, Gemini, Azure, Bedrock, Hugging Face) instal",
+     "--eval-mode single --judge-provider openrouter --judge-model anthropic/claude-sonnet-4.6",
+     "\\* Rough total for one full-suite run at OpenRouter list prices (mid-2026), based on the ~2,000"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "compat",
+    "lines": [
+     161
+    ],
+    "note": "列为可安装 extra 的 provider 之一",
+    "quotes": [
+     "OpenRouter, OrcaRouter, Requesty, Cloudflare AI Gateway, Vercel AI Gateway, Gemini, Azure, Bedrock, Hugging Face) instal"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     34,
+     58,
+     75,
+     143
+    ],
+    "note": "pip install ifixai 为主要安装途径",
+    "quotes": [
+     " PyPI version",
+     "|**Setup**|`pip install \"ifixai[<provider>]\"` + `ifixai setup`|`pip install \"ifixai[<provider>]\"` + export keys|Claude C",
+     "pip install \"ifixai[openai]\"   # or anthropic, gemini, etc.: install the provider extra you'll test",
+     "pip install \"ifixai[anthropic]\""
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     88,
+     95,
+     98
+    ],
+    "note": "本工具作为其插件运行，非替代/竞品",
+    "quotes": [
+     "### Plugin (Claude Code and Codex)",
+     "**Claude Code**, from inside Claude Code:",
+     "/plugin marketplace add ifixai-ai/iFixAi"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     64,
+     122,
+     127
+    ],
+    "note": "支持的宿主 agent",
+    "quotes": [
+     "|**Works in**|any terminal|any terminal / CI|Claude Code, Cursor, Codex, VS Code, Windsurf, Cline, Continue, Gemini, Zed",
+     "a native **`/ifixai-skill`** slash command into any agent: **Claude Code, Codex**, Cursor, VS Code",
+     "uvx ifixai install --agents cursor   # any slug: claude, codex, vscode, windsurf, cline, continue, gemini, zed"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     64,
+     123,
+     127
+    ],
+    "note": "支持的宿主 agent",
+    "quotes": [
+     "|**Works in**|any terminal|any terminal / CI|Claude Code, Cursor, Codex, VS Code, Windsurf, Cline, Continue, Gemini, Zed",
+     "/ Copilot, Windsurf, Cline, Continue, Gemini, or Zed (plus an `AGENTS.md` bridge). Only `uv` and",
+     "uvx ifixai install --agents cursor   # any slug: claude, codex, vscode, windsurf, cline, continue, gemini, zed"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     123
+    ],
+    "note": "支持的宿主 agent",
+    "quotes": [
+     "/ Copilot, Windsurf, Cline, Continue, Gemini, or Zed (plus an `AGENTS.md` bridge). Only `uv` and"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     162
+    ],
+    "note": "提供的适配器之一",
+    "quotes": [
+     "HTTP and LangChain adapters need no provider extra: **docs/testing-your-agent.md**."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

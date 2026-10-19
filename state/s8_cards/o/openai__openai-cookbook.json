@@ -1,0 +1,85 @@
+{
+ "fn": "openai/openai-cookbook",
+ "sha": "46ba09efcc5a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 OpenAI API 使用者提供示例代码与任务指南",
+  "review": "OpenAI 官方维护的示例代码与指南合集，覆盖使用 OpenAI API 完成常见任务的方法。示例以 Python 为主，概念可迁移到其他语言。运行示例需要 OpenAI 账号与 API key，通过 OPENAI_API_KEY 环境变量或 .env 文件配置。内容在 cookbook.openai.com 提供导航，项目采用 MIT 许可证。",
+  "highlights": [
+   "常见任务的示例代码与指南合集",
+   "示例以 Python 为主，概念可应用于其他语言",
+   "通过 OPENAI_API_KEY 环境变量或 .env 文件配置密钥",
+   "MIT 许可证开源"
+  ],
+  "use_cases": [
+   "查阅 OpenAI API 完成常见任务的示例代码",
+   "为其他编程语言移植 API 使用概念提供参考",
+   "搭建本地环境运行官方示例 notebook"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://cookbook.openai.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "示例代码",
+   "API指南",
+   "教程"
+  ],
+  "domain": "AI 应用开发/教程资源",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: Example code and guides for accomplishing common tasks with the OpenAI API. To run these examples, you'll need an OpenAI",
+   "L11: Most code examples are written in Python, though the concepts can be applied in any language."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

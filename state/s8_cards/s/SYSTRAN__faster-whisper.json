@@ -1,0 +1,119 @@
+{
+ "fn": "SYSTRAN/faster-whisper",
+ "sha": "768ac87ec835",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于 CTranslate2 的 Whisper 语音转写推理库",
+  "review": "使用 CTranslate2 推理引擎重新实现的 OpenAI Whisper 语音转写库，提供 Python API 加载模型并对音频文件转写。支持 CPU 与 GPU 运行，支持 int8/fp16 量化与批量转写管线，内置 Silero VAD 过滤无语音片段，可输出词级时间戳。模型可按尺寸从 Hugging Face Hub 自动下载，也可用脚本将 Transformers 兼容的 Whisper 模型转换为 CTranslate2 格式。经 PyPI 安装，GPU 运行需另行安装 cuBLAS 与 cuDNN 9。",
+  "highlights": [
+   "基于 CTranslate2 的 Whisper 推理，支持 int8/fp16 量化",
+   "BatchedInferencePipeline 批量转写，接口与单条转写兼容",
+   "集成 Silero VAD 过滤静音段，支持词级时间戳",
+   "提供模型转换脚本，可加载微调后的 Whisper 模型"
+  ],
+  "use_cases": [
+   "把音频文件批量转写为带时间戳的文字",
+   "在 CPU 或 GPU 上本地运行 Whisper 语音识别",
+   "将自定义微调的 Whisper 模型转为 CTranslate2 格式部署"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音识别",
+   "语音转文本",
+   "推理引擎",
+   "模型量化"
+  ],
+  "domain": "语音识别/推理基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "asr",
+   "inference-engine",
+   "model-quantization"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: **faster-whisper** is a reimplementation of OpenAI's Whisper model using CTranslate2, which is a fast inference engine f",
+   "L7: This implementation is up to 4 times faster than openai/whisper for the same accuracy while using less memory. The effic"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cpu-infer",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     96,
+     99
+    ],
+    "quotes": [
+     "The module can be installed from PyPI:",
+     "pip install faster-whisper"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     68
+    ],
+    "note": "依赖库 ctranslate2 降级的 pip 安装说明",
+    "quotes": [
+     "**Note**: The latest versions of `ctranslate2` only support CUDA 12 and cuDNN 9. For CUDA 11 and cuDNN 8, the current wo"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

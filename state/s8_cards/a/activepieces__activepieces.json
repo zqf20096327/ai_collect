@@ -1,0 +1,141 @@
+{
+ "fn": "activepieces/activepieces",
+ "sha": "dd569bae4a08",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源 AI 工作流自动化平台：为 AI 代理提供 MCP 工具集",
+  "review": "Activepieces 是用 TypeScript 编写的可扩展自动化平台，通过类型安全的 pieces 框架提供 200+ 集成（如 Google Sheets、Discord、RSS），覆盖循环、分支、重试、HTTP、代码块等构建器功能，并提供无代码构建器供非技术用户使用。所有 pieces 自动可作为 MCP server 供 LLM 客户端调用；内置原生 AI pieces 与 AI SDK 用于创建 agent 和构建流程，支持人工审批、延迟执行、聊天/表单人工输入触发。社区版 MIT 许可，企业功能采用商业许可。",
+  "highlights": [
+   "280+ pieces 自动作为 MCP servers，供 Claude Desktop、Cursor、Windsurf 等 LLM 客户端使用",
+   "原生 AI pieces 与 AI SDK，可在构建器内创建 agent",
+   "TypeScript pieces 框架，npm 包形式发布，支持本地开发热重载",
+   "支持人工审批、延迟执行与聊天/表单人工输入触发"
+  ],
+  "use_cases": [
+   "用无代码构建器搭建跨 200+ 服务的自动化工作流",
+   "为 AI 代理（如 Claude Desktop、Cursor）提供 280+ MCP 工具",
+   "构建需要人工审批环节的企业自动化流程",
+   "自托管、断网环境下的内部自动化平台"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "工作流自动化",
+   "MCP",
+   "AI Agent",
+   "无代码/低代码",
+   "集成平台"
+  ],
+  "domain": "自动化/集成平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "workflow-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L39: All-in-one AI automation designed to be **extensible** through a **type-safe** pieces framework written in **TypeScript*",
+   "L48: - **🛠️ Largest open source MCP toolkit**: All our pieces (280+) are available as MCP that you can use with LLMs on Claud",
+   "L52: - **🤖 AI-First**: Native AI pieces let you experiment with various providers, or create your own agents using our AI SDK"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     40,
+     48
+    ],
+    "note": "作为可使用 MCP 的 LLM 客户端（Claude Desktop）被提及，非模型接入适配",
+    "quotes": [
+     "When you contribute pieces to Activepieces they become automatically available as MCP servers that you can use with LLMs",
+     "- **🛠️ Largest open source MCP toolkit**: All our pieces (280+) are available as MCP that you can use with LLMs on Claud"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     40,
+     48
+    ],
+    "note": "可使用 MCP 的客户端提及",
+    "quotes": [
+     "When you contribute pieces to Activepieces they become automatically available as MCP servers that you can use with LLMs",
+     "- **🛠️ Largest open source MCP toolkit**: All our pieces (280+) are available as MCP that you can use with LLMs on Claud"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     40,
+     48
+    ],
+    "note": "可使用 MCP 的客户端提及",
+    "quotes": [
+     "When you contribute pieces to Activepieces they become automatically available as MCP servers that you can use with LLMs",
+     "- **🛠️ Largest open source MCP toolkit**: All our pieces (280+) are available as MCP that you can use with LLMs on Claud"
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "none",
+    "lines": [],
+    "note": "L52 提及的是自有 AI SDK，非 Vercel AI SDK",
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    86
+   ],
+   "quotes": [
+    "Activepieces' Community Edition is released as open source under the MIT license and enterprise features are released un"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

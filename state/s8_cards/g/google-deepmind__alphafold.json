@@ -1,0 +1,211 @@
+{
+ "fn": "google-deepmind/alphafold",
+ "sha": "0debb7a95289",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为科研人员提供蛋白质结构预测 AlphaFold2 推理代码",
+  "review": "DeepMind 开源的 AlphaFold v2 推理流水线实现，读取 FASTA 格式的蛋白序列，输出预测的蛋白质结构。附带 AlphaFold-Multimer（多链复合物预测）实现、v2.3.0 技术说明与 CASP15 基线预测。运行依赖 Linux、Docker、NVIDIA GPU，需下载约 556 GB（解压 2.62 TB）的遗传数据库与模型参数；模型参数以 CC BY 4.0 授权，代码为 Apache 2.0。代码发布使用，发表成果需引用相应论文。",
+  "highlights": [
+   "提供 AlphaFold2 单体与 AlphaFold-Multimer 推理流水线",
+   "提供 monomer/casp14/ptm/multimer 等多种 model_preset",
+   "附下载脚本统一获取遗传数据库与模型参数",
+   "支持 --gpu_devices、--max_template_date、reduced_dbs 等运行参数"
+  ],
+  "use_cases": [
+   "预测蛋白质的三维结构",
+   "预测蛋白复合物（AlphaFold-Multimer）",
+   "在受控模板日期下复现 CASP14/15 基线预测"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "dual",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "蛋白质结构预测",
+   "计算生物学",
+   "科研工具",
+   "深度学习推理"
+  ],
+  "domain": "生命科学/计算生物学",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "research-tools"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5: This package provides an implementation of the inference pipeline of AlphaFold",
+   "L40: You will need a machine running Linux, AlphaFold does not support other",
+   "L42: genetic databases (SSD storage is recommended) and a modern NVIDIA GPU (GPUs",
+   "L289: **The simplest way to run AlphaFold is using the provided Docker script.** This"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     55,
+     58,
+     106,
+     125,
+     140
+    ],
+    "quotes": [
+     "1. Clone this repository and `cd` into it.",
+     "    git clone https://github.com/deepmind/alphafold.git",
+     "    docker build -f docker/Dockerfile -t alphafold .",
+     "    pip3 install -r docker/requirements.txt",
+     "    python3 docker/run_docker.py \\"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     47,
+     88,
+     106,
+     289
+    ],
+    "quotes": [
+     "1. Install Docker.",
+     "    docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi",
+     "    docker build -f docker/Dockerfile -t alphafold .",
+     "**The simplest way to run AlphaFold is using the provided Docker script.** This"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     125
+    ],
+    "note": "pip 安装的是 run_docker.py 的依赖，非本产品通过 pypi 分发",
+    "quotes": [
+     "    pip3 install -r docker/requirements.txt"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     660,
+     664,
+     677
+    ],
+    "note": "窗外行：官方 Colab notebook 运行途径",
+    "quotes": [
+     "Colab notebooks provided by the community (please note that these notebooks may",
+     " ColabFold AlphaFold2 notebook",
+     "* Colab"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "85 GB of RAM",
+    "rel": "mention",
+    "lines": [
+     291
+    ],
+    "note": "Google Cloud 测试环境配置描述",
+    "quotes": [
+     "with 12 vCPUs, 85 GB of RAM, a 100 GB boot disk, the databases on an additional"
+    ]
+   },
+   {
+    "term": "RAM, a 100 GB",
+    "rel": "mention",
+    "lines": [
+     291
+    ],
+    "note": "同上测试环境描述",
+    "quotes": [
+     "with 12 vCPUs, 85 GB of RAM, a 100 GB boot disk, the databases on an additional"
+    ]
+   },
+   {
+    "term": "8 GB of RAM",
+    "rel": "support",
+    "lines": [
+     328
+    ],
+    "note": "窗外行：运行所需内存要求",
+    "quotes": [
+     " requires 8 CPU cores (vCPUs), 8 GB of RAM, and 600 GB of disk space."
+    ]
+   },
+   {
+    "term": "RAM, and 600 GB",
+    "rel": "support",
+    "lines": [
+     328
+    ],
+    "note": "窗外行：硬盘/资源要求",
+    "quotes": [
+     " requires 8 CPU cores (vCPUs), 8 GB of RAM, and 600 GB of disk space."
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    221,
+    222,
+    223
+   ],
+   "note": "代码 Apache 2.0、模型参数 CC BY 4.0，双许可",
+   "quotes": [
+    "While the AlphaFold code is licensed under the Apache 2.0 License, the AlphaFold",
+    "parameters and CASP15 prediction data are made available under the terms of the",
+    "CC BY 4.0 license. Please see the Disclaimer below"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    271,
+    273
+   ],
+   "note": "仅为旧版模型权重使用说明，项目本身未弃用"
+  }
+ }
+}

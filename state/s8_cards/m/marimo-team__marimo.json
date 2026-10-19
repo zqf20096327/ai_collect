@@ -1,0 +1,164 @@
+{
+ "fn": "marimo-team/marimo",
+ "sha": "093ab134d230",
+ "source": "readme",
+ "identity": {
+  "one_liner": "反应式 Python 笔记本：可复现实验、SQL 查询、可部署为应用",
+  "review": "一个反应式 Python 笔记本环境：运行或交互某个单元格时自动执行依赖单元格或标记为过期，消除隐藏状态，按变量引用确定性执行。笔记本以纯 Python 文件存储，可用 git 版本管理，可作为脚本执行或部署为 Web 应用。内置 SQL 引擎可查询 dataframe、数据库等，支持包管理序列化到文件并在隔离 venv 中自动安装。提供 VS Code 扩展、PyCharm 插件，支持 Jupyter 笔记本一键转换，可配合 Claude Code 等 agent 或使用编辑器内置 AI 补全（可自带 API key 或本地模型）。",
+  "highlights": [
+   "反应式执行：自动运行依赖单元格，无隐藏状态，确定性执行顺序",
+   "笔记本存储为纯 .py 文件，可作为脚本执行或部署为 Web 应用/幻灯片",
+   "内置 SQL 引擎，查询 dataframe、数据库、lakehouse、CSV、Google Sheets",
+   "支持 molab 云端笔记本服务与 WASM 浏览器运行"
+  ],
+  "use_cases": [
+   "替代 Jupyter 做可复现的数据科学实验",
+   "把分析笔记本一键变成可分享的交互式 Web 应用",
+   "在笔记本中混合 Python 与 SQL 查询数据仓库",
+   "让 Claude Code 等 agent 与笔记本协作生成代码"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://molab.marimo.io/notebooks",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "笔记本",
+   "数据科学",
+   "SQL",
+   "反应式编程",
+   "开发者工具"
+  ],
+  "domain": "开发者工具/数据科学",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "data-analysis"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文翻译版本"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L23: **marimo** is a reactive Python notebook: run a cell or interact with a UI",
+   "L35: - 🤖 **AI-native**: pair with AI agents like Claude Code, or use our editor's built-in AI features",
+   "L91: CSVs, Google Sheets, or anything else using our built-in SQL engine, which"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     81
+    ],
+    "note": "Claude Code 作为可搭配的 agent 被提及，非专属接入",
+    "quotes": [
+     "your favorite agent, such as Claude Code, Codex, or OpenCode, using [marimo"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     45,
+     130,
+     138
+    ],
+    "quotes": [
+     "pip install marimo && marimo tutorial intro",
+     "pip install marimo  # or conda install -c conda-forge marimo",
+     "pip install \"marimo[recommended]\""
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "none",
+    "lines": [
+     181
+    ],
+    "note": "molab 类似于 Google Colab，但 molab 是独立云服务，非本产品的 Colab 安装途径",
+    "quotes": [
+     "service similar to Google Colab, to create and share notebook links."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     35,
+     81
+    ],
+    "quotes": [
+     "- 🤖 **AI-native**: pair with AI agents like Claude Code, or use our editor's built-in AI features",
+     "your favorite agent, such as Claude Code, Codex, or OpenCode, using [marimo"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     41,
+     113
+    ],
+    "quotes": [
+     "- ⌨️ **a modern editor**: GitHub Copilot, AI assistants, vim keybindings, variable explorer, and more",
+     "**Batteries-included.** marimo comes with GitHub Copilot, AI assistants, Ruff"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     42
+    ],
+    "quotes": [
+     "- 🧑‍💻 **use your favorite editor**: run in VS Code/Cursor or PyCharm, or edit in neovim, Zed, or any other text editor"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

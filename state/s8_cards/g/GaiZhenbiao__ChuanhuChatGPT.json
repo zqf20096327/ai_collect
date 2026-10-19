@@ -1,0 +1,208 @@
+{
+ "fn": "GaiZhenbiao/ChuanhuChatGPT",
+ "sha": "0eefabe5443a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为多种 LLM 提供带附加功能的 Web 聊天界面",
+  "review": "基于 Gradio 的 Web 图形界面，为 ChatGPT 等多种 LLM 提供对话入口。支持 API 调用模型（ChatGPT、Azure OpenAI、Gemini、Claude、DeepSeek 等）与本地部署模型（ChatGLM、LLaMA、Qwen 等），并提供川虎助理（类 AutoGPT 全自动代理）、在线搜索、基于文件问答的知识库、GPT-3.5 微调、Prompt 模板、对话历史管理与多 api-key 负载均衡等功能。通过 git clone 加 pip 安装依赖后以 Python 启动，可部署到服务器或 Hugging Face Space，也支持作为 PWA 安装。",
+  "highlights": [
+   "接入多种 API 模型与本地部署模型（含 Lora 支持）",
+   "川虎助理、在线搜索、文件问答知识库、GPT-3.5 微调",
+   "支持 PWA 安装与移动端适配，多用户历史记录隔离",
+   "支持自定义 api-host、代理与多 api-key 负载均衡"
+  ],
+  "use_cases": [
+   "在统一界面里使用 ChatGPT、Gemini、Claude 等多家模型对话",
+   "基于自己的文档向大模型提问",
+   "一键在本地部署开源大语言模型进行对话",
+   "对 GPT-3.5 做微调以获得个性化回答"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM聊天界面",
+   "多模型接入",
+   "知识库问答",
+   "微调",
+   "Agent"
+  ],
+  "domain": "LLM 工具/对话界面",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "local-weights",
+   "azure",
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway",
+   "document-qa",
+   "fine-tuning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "简体中文 README 为默认语言",
+   "支持国产模型（ChatGLM、讯飞星火、浪潮源 1.0、MiniMax、DeepSeek）",
+   "项目名与作者为中文名（川虎 Chat / GaiZhenbiao）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9:  为ChatGPT等多种LLM提供了一个轻快好用的Web图形界面和众多附加功能",
+   "L57: |API 调用模型|备注|本地部署模型|备注|",
+   "L125: git clone https://github.com/GaiZhenbiao/ChuanhuChatGPT.git"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     21,
+     63
+    ],
+    "quotes": [
+     " 支持 GPT-5 & DeepSeek R1 · 基于文件问答 · LLM 本地部署 · 联网搜索 · Agent 助理 · 支持 Fine-tune",
+     "|DeepSeek|DeepSeek Chat 与 DeepSeek R1|Qwen||"
+    ]
+   },
+   {
+    "term": "local-weights",
+    "rel": "support",
+    "lines": [
+     57,
+     77
+    ],
+    "quotes": [
+     "|API 调用模型|备注|本地部署模型|备注|",
+     "- **本地部署LLM**：一键部署，获取属于你自己的大语言模型。"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     60
+    ],
+    "quotes": [
+     "|Azure OpenAI||LLaMA|支持 Lora 模型|"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     62
+    ],
+    "quotes": [
+     "|Claude|Claude 3 Opus / 3.5 Sonnet / 3 Haiku|MOSS||"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     125
+    ],
+    "quotes": [
+     "git clone https://github.com/GaiZhenbiao/ChuanhuChatGPT.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     127
+    ],
+    "quotes": [
+     "pip install -r requirements.txt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     9,
+     59,
+     75,
+     76,
+     78
+    ],
+    "note": "接入的模型之一，非替代/竞品对象",
+    "quotes": [
+     " 为ChatGPT等多种LLM提供了一个轻快好用的Web图形界面和众多附加功能",
+     "|ChatGPT (GPT-5, GPT-4o, GPT-4, o1)|支持微调 gpt-3.5|ChatGLM (ChatGLM2) (ChatGLM3)||",
+     "- **在线搜索**：ChatGPT 的数据太旧？给 LLM 插上网络的翅膀；",
+     "- **知识库**：让 ChatGPT 帮你量子速读！根据文件回答问题。",
+     "- **GPT 3.5微调**：支持微调 GPT 3.5，让 ChatGPT 更加个性化。"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     63
+    ],
+    "note": "以 Qwen 名义列为本地部署模型",
+    "quotes": [
+     "|DeepSeek|DeepSeek Chat 与 DeepSeek R1|Qwen||"
+    ]
+   },
+   {
+    "term": "Midjourney",
+    "rel": "mention",
+    "lines": [
+     68
+    ],
+    "note": "接入的图像生成服务",
+    "quotes": [
+     "|Midjourney|不支持流式传输|||"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

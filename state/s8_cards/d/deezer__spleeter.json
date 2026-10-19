@@ -1,0 +1,136 @@
+{
+ "fn": "deezer/spleeter",
+ "sha": "e01fc7a36b06",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为开发者提供音频音轨分离库与预训练模型",
+  "review": "Deezer 出品的 Python 音源分离库，基于 TensorFlow，提供预训练模型：2 stems（人声/伴奏）、4 stems、5 stems 三种分离配置。可从命令行直接使用，也可作为 Python 库嵌入开发管线。依赖 ffmpeg 与 libsndfile，可通过 pip 或 Docker 安装，另提供 Google Colab 在线试用。2.1.0 版本引入 CLI 选项命名变更并移除独立 GPU 包；Apple M1 芯片存在已知兼容问题；另有商业版 Spleeter Pro。",
+  "highlights": [
+   "提供 2/4/5 stems 三种预训练分离模型",
+   "支持命令行与 Python 库两种使用方式",
+   "可 pip 或 Docker 安装，并提供 Colab 试用",
+   "GPU 上 4 stems 分离速度达实时 100 倍"
+  ],
+  "use_cases": [
+   "从歌曲中分离人声与伴奏",
+   "将鼓、贝斯、钢琴等分轨提取为独立音频",
+   "在自己的音频处理管线中集成分离能力"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "dual",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://doi.org/10.21105/joss.02154",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "音频处理",
+   "音源分离",
+   "深度学习",
+   "TensorFlow"
+  ],
+  "domain": "音频处理/深度学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L8: **Spleeter** is Deezer source separation library with pretrained models",
+   "L9: written in Python and uses Tensorflow. It makes it easy",
+   "L20: as well as directly in your own development pipeline as a Python library. It can be installed with pip or be used with"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     20,
+     53
+    ],
+    "quotes": [
+     "as well as directly in your own development pipeline as a Python library. It can be installed with pip or be used with",
+     "# install spleeter with pip"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     21
+    ],
+    "quotes": [
+     "Docker."
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     1,
+     45
+    ],
+    "quotes": [
+     "Github actions PyPI - Python Version PyPI version Conda Docker Pulls Open In Colab Gitter chat status",
+     "Want to try it out but don't want to install anything ? We have set up a Google Colab."
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     "git clone https://github.com/Deezer/spleeter && cd spleeter"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    39,
+    41
+   ],
+   "quotes": [
+    "## Spleeter Pro (Commercial version)",
+    "Check out our commercial version : Spleeter Pro. Benefit from our expertise for precise audio separation, faster process"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

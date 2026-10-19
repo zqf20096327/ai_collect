@@ -1,0 +1,168 @@
+{
+ "fn": "zylon-ai/private-gpt",
+ "sha": "5c5e22cadea3",
+ "source": "readme",
+ "identity": {
+  "one_liner": "把本地模型变成私有 AI 应用的开源 API 层",
+  "review": "以 Claude API 为参照模型的 API 层，为本地模型提供消息、文件摄取、带引用的检索与 agentic RAG、内置工具、MCP、数据库/CSV 访问、嵌入与编排等后端原语。自身不运行模型，通过 OPENAI_API_BASE 连接任意 OpenAI 兼容推理服务器。附内置演示 UI，API 为核心产品。2023 年以离线文档问答脚本起步，后重构为 1.0 API 层，由 Zylon 团队维护。",
+  "highlights": [
+   "兼容 Claude API 的消息流式、文件摄取、引用检索与工具调用",
+   "内置 web search/fetch、代码执行工具与 MCP 连接器",
+   "连接任意 OpenAI 兼容推理服务器（Ollama、llama.cpp、vLLM 等）",
+   "提供 brew/uv 安装与内置演示 UI"
+  ],
+  "use_cases": [
+   "在本地推理服务器之上搭建私有 AI 应用后端",
+   "为 Claude Code、Claude Desktop 等客户端接入本地模型",
+   "企业内网无云依赖的文档问答与检索场景",
+   "用 API 层为终端产品封装 RAG、数据库问答等能力"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    175,
+    179
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "本地部署/on-premise",
+   "API层",
+   "MCP/工具调用",
+   "私有化问答"
+  ],
+  "domain": "LLM 基础设施/私有化部署",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "ollama",
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: **PrivateGPT is the open-source API layer that turns local models into production AI applications.**",
+   "L12: Running a model locally is only the first step. To build useful AI applications you need a set of higher-level building ",
+   "L24: > PrivateGPT does **not** run models itself. It connects to any OpenAI-compatible inference server via `OPENAI_API_BASE`"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     12,
+     97,
+     137,
+     139
+    ],
+    "quotes": [
+     "Running a model locally is only the first step. To build useful AI applications you need a set of higher-level building ",
+     "Go to http://localhost:8080/ui. The API is at `http://localhost:8080` and follows the Anthropic API spec.",
+     "## Claude API compatibility",
+     "PrivateGPT follows the Claude API as the reference for modern AI application APIs. The goal is full coverage where it ma"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     21,
+     42,
+     73,
+     76
+    ],
+    "quotes": [
+     "OpenAI-compatible inference server (Ollama, llama.cpp, vLLM, …)",
+     "**Prerequisites:** You need a running OpenAI-compatible LLM server. Ollama is the easiest starting point.",
+     "# Example with Ollama",
+     "ollama serve"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     21,
+     196,
+     200
+    ],
+    "quotes": [
+     "OpenAI-compatible inference server (Ollama, llama.cpp, vLLM, …)",
+     "Ollama / LM Studio / LocalAI / vLLM / llama.cpp  =  local inference layer",
+     "Use them together. Run your model with whichever inference server you prefer, then point PrivateGPT at it."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     48,
+     49
+    ],
+    "quotes": [
+     "brew tap zylon-ai/tap",
+     "brew install private-gpt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     122
+    ],
+    "note": "可指向 PrivateGPT 后端的集成工具，非替代/竞品",
+    "quotes": [
+     "|**Claude Code**|Use your local models as the backend for agentic coding in the terminal|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

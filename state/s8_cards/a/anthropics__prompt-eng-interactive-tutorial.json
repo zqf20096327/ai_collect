@@ -1,0 +1,104 @@
+{
+ "fn": "anthropics/prompt-eng-interactive-tutorial",
+ "sha": "9fb028bf0092",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 Claude 提示词工程交互式教程",
+  "review": "Anthropic 官方的提示词工程交互式课程，共 9 章（初级到高级）加附录，每章配练习与答案，按章节顺序学习。每节课末尾提供 Example Playground，可修改提示词并观察 Claude 响应变化；示例使用 Claude 3 Haiku 模型，另提供基于 Claude for Sheets 扩展的 Google Sheets 版本。内容覆盖提示词结构、消除幻觉、思维链、示例使用及法律/金融/编码等行业用例。",
+  "highlights": [
+   "9 章分级课程，每章配练习与答案",
+   "每课附带 Example Playground 供实验",
+   "行业用例章节含法律、金融、编码复杂提示练习",
+   "附录覆盖提示链、工具使用、检索"
+  ],
+  "use_cases": [
+   "从头学习 Claude 提示词的编写与调试",
+   "为客服机器人、法律、金融等场景构建复杂提示",
+   "了解常见提示失效模式及应对方法"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "提示词工程",
+   "教程",
+   "学习资料",
+   "LLM"
+  ],
+  "domain": "LLM 教育与知识",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "prompt-engineering",
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # Welcome to Anthropic's Prompt Engineering Interactive Tutorial",
+   "L19: Note: This tutorial uses our smallest, fastest, and cheapest model, Claude 3 Haiku. Anthropic has two other models, Clau"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     1,
+     19,
+     21
+    ],
+    "quotes": [
+     "# Welcome to Anthropic's Prompt Engineering Interactive Tutorial",
+     "Note: This tutorial uses our smallest, fastest, and cheapest model, Claude 3 Haiku. Anthropic has two other models, Clau",
+     "*This tutorial also exists on Google Sheets using Anthropic's Claude for Sheets extension. We recommend using that versi"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

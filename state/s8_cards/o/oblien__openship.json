@@ -1,0 +1,124 @@
+{
+ "fn": "oblien/openship",
+ "sha": "ff1d2b6dce69",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的自托管部署平台：从仓库到带 TLS 的线上应用",
+  "review": "自托管部署平台，内置 CI/CD：指向一个 GitHub 仓库、本地目录或预构建产物后，执行检测栈、构建（Docker 镜像或裸发布）、以容器或受管进程运行、由 OpenResty 边缘写反向代理并签发 Let's Encrypt 证书的完整流水线，支持 GitHub webhook 推送部署与单体仓库增量重建。提供桌面应用、Web 面板、CLI、JS/TS SDK 四种接口，另暴露 MCP 端点供 AI agent 调用（仅显式开放的路由成为工具，每次调用重查权限）。运行形态分桌面本机、Compose 模式（Linux+Docker）与 bare 模式；多节点与负载均衡 UI 尚在计划中。",
+  "highlights": [
+   "从仓库检测到反向代理 + Let's Encrypt 证书的一体化部署流水线",
+   "桌面应用 / Web 面板 / CLI / JS/TS SDK 四种操作接口",
+   "MCP 端点供 AI agent 调用，权限路由显式开放、逐次校验",
+   "内置 CI/CD、数据库/域名/SSL/CDN/邮件/备份统一管理"
+  ],
+  "use_cases": [
+   "把 GitHub 仓库推送后自动构建部署到自己的 VPS",
+   "在单台机器上管理应用域名、TLS、数据库与备份",
+   "在 CI 中用 CLI 或 SDK 脚本化部署",
+   "让 AI agent 通过 MCP 端点执行部署操作"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "自托管",
+   "部署平台",
+   "CI/CD",
+   "PaaS"
+  ],
+  "domain": "开发者工具/部署平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3:  Open-source, self-hostable deployment platform with built-in CI/CD.",
+   "L170: An **MCP** endpoint (for AI agents) and a **REST API** round it out for automation. Only routes that opt in are exposed "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     67,
+     168
+    ],
+    "quotes": [
+     "curl -fsSL https://get.openship.io | sh          # install  (or: npm i -g openship — needs Node 22+)",
+     "- **Ship SDK** — deploy and manage resources from JavaScript or TypeScript. Connect to an existing instance with `Opensh"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     131,
+     138,
+     143
+    ],
+    "quotes": [
+     " Self-host with raw Docker Compose (no CLI)",
+     "docker compose --env-file .env -f docker/docker-compose.yml up -d",
+     "**Upgrade:** pin `OPENSHIP_VERSION` in `.env` for reproducible pulls, then `docker compose --env-file .env -f docker/doc"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     136,
+     143
+    ],
+    "quotes": [
+     "git clone https://github.com/oblien/openship.git && cd openship",
+     "**Upgrade:** pin `OPENSHIP_VERSION` in `.env` for reproducible pulls, then `docker compose --env-file .env -f docker/doc"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

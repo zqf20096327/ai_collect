@@ -1,0 +1,114 @@
+{
+ "fn": "Unity-Technologies/ml-agents",
+ "sha": "1336ddbc64be",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让游戏与仿真成为强化学习智能体训练环境的 Unity 工具包",
+  "review": "Unity 官方开源项目，将 2D/3D/VR/AR 游戏与仿真作为智能体训练环境：基于 PyTorch 提供 PPO、SAC、MA-POCA、自博弈等深度强化学习算法和 BC、GAIL 模仿学习算法，含 17+ 示例环境、课程学习、多实例并发训练。通过 Python API 和 Gym/PettingZoo 封装供研究人员使用，训练产物可经 Inference Engine 跨平台推理。以 Unity 包（com.unity.ml-agents）+ Python 包双组件发布，已迁移至 Unity Package 文档并停止维护 web 文档。",
+  "highlights": [
+   "基于 PyTorch 的 PPO/SAC/MA-POCA/自博弈等强化学习与 BC/GAIL 模仿学习实现",
+   "17+ 示例 Unity 环境，支持单智能体、多智能体合作与对抗训练",
+   "可封装为 Gym 与 PettingZoo 环境，从 Python 控制 Unity 环境",
+   "经 Inference Engine 提供原生跨平台推理支持"
+  ],
+  "use_cases": [
+   "训练控制 NPC 行为的智能体（含多智能体与对抗场景）",
+   "对游戏构建做自动化测试",
+   "发布前评估不同游戏设计决策",
+   "研究人员用 Python API 做强化学习/模仿学习/神经进化实验"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "强化学习",
+   "游戏AI",
+   "仿真环境",
+   "模仿学习",
+   "多智能体"
+  ],
+  "domain": "游戏/强化学习工具链",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "reinforcement-learning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: **The Unity Machine Learning Agents Toolkit** (ML-Agents) is an open-source project that enables games and simulations t",
+   "L15: - Support for training single-agent, multi-agent cooperative, and multi-agent competitive scenarios via several Deep Rei",
+   "L37: - The `com.unity.ml-agents` package is verified for Unity 2020.1 and later. Verified packages releases are numbered 1.0."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     68,
+     70
+    ],
+    "note": "仅作为教程与模型托管资源链接提及",
+    "quotes": [
+     "* Introduction to ML-Agents by Huggingface",
+     "* ML-Agents models on Huggingface"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    30
+   ],
+   "note": "web 文档维护已 deprecated，迁移至 Unity Package 文档"
+  }
+ }
+}

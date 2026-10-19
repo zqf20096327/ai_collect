@@ -1,0 +1,118 @@
+{
+ "fn": "elizaOS/eliza",
+ "sha": "70b9e04008c4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的自主 AI agent 开源 TypeScript 框架与产品栈",
+  "review": "以 monorepo 形式提供：核心运行时、Eliza 应用（web/桌面/移动）、CLI、云服务、原生桥接与第一方插件。运行时模型无关，通过插件注册 actions、providers、evaluators、services、model handlers 等组件；应用能力覆盖聊天、语音、记忆、知识、消息连接器、浏览器与桌面自动化、EVM/Solana 钱包操作等，实际可用性取决于操作系统、已装插件与配置的模型/服务商。另含可引导的 Linux 与 AOSP 发行版工具链及本地推理路径（Eliza-1，基于 Gemma 4 的 2B–27B 档位）。",
+  "highlights": [
+   "模型无关运行时 @elizaos/core，插件可注册 actions/providers/evaluators/services/model handlers 等",
+   "本地推理路径含 2B/4B/9B/27B 模型档位及本地嵌入、语音、视觉、图像生成资产",
+   "按能力将模型请求路由到本地、直连服务商或 Eliza Cloud 三类后端",
+   "提供可引导的 Linux 与 AOSP 发行版（packages/os）"
+  ],
+  "use_cases": [
+   "从源码运行并开发自有 agent 或插件",
+   "构建覆盖聊天、语音、知识与设备桥接的个人助理应用",
+   "把整台设备作为 elizaOS 运行（Linux/AOSP 发行版）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent框架",
+   "本地推理",
+   "桌面/移动应用",
+   "钱包操作",
+   "OS发行版"
+  ],
+  "domain": "AI agent 框架/运行时",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: elizaOS is an open-source TypeScript framework and product stack for autonomous",
+   "L90: The framework is model-agnostic and extended through plugins:",
+   "L108: `@elizaos/plugin-local-inference` provides the"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "llama.cpp",
+    "rel": "mention",
+    "lines": [
+     39
+    ],
+    "note": "嵌入 GGUF 由运行时管理下载，未明确点名 llama.cpp，仅 GGUF 语境命中",
+    "quotes": [
+     "`libelizainference`. The embedding GGUF remains runtime-managed and downloads"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     25,
+     31,
+     33,
+     34
+    ],
+    "quotes": [
+     "## Run Eliza from source",
+     "git clone --filter=blob:none https://github.com/elizaos/eliza.git",
+     "bun install",
+     "bun run dev"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

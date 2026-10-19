@@ -1,0 +1,164 @@
+{
+ "fn": "ConardLi/easy-dataset",
+ "sha": "1b1d2c1c4c87",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为开发者从领域文档生成微调/RAG/评测数据集",
+  "review": "面向构建 LLM 数据集的应用：内置文档解析（PDF/Markdown/DOCX/TXT/EPUB）、多种文本切分算法、问题与答案（含 COT）自动生成、数据清洗与领域标签树管理；支持单轮 QA、多轮对话、图像 QA、数据蒸馏等数据集类型，并含自动评测（Judge Model）、人工盲测（Arena）体系。导出 Alpaca/ShareGPT 等格式，一键生成 LLaMA Factory 配置，可上传 Hugging Face Hub。提供 Windows/macOS/Linux 桌面客户端、NPM 与 Docker 运行方式。",
+  "highlights": [
+   "文档转多类型数据集：单轮 QA、多轮对话、图像 QA、数据蒸馏",
+   "自动评测体系：Judge Model 评分与双盲人工 Arena 盲测",
+   "导出 Alpaca/ShareGPT/Multilingual-Thinking 格式并集成 LLaMA Factory",
+   "兼容所有 OpenAI 格式 API，支持 Ollama 本地模型"
+  ],
+  "use_cases": [
+   "把领域文档加工成微调训练数据集",
+   "生成测试集自动评估垂直领域模型表现",
+   "评估 RAG 召回率与微调后模型效果",
+   "将数据集上传 Hugging Face Hub 分享"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2507.04009v1",
+  "demo_url": "https://github.com/user-attachments/assets/6ddb1225-3d1b-4695-90cd-aa4cb01376a8",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据集构建",
+   "微调",
+   "RAG",
+   "模型评测"
+  ],
+  "domain": "LLM 基础设施/数据工程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "openrouter",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "model-evaluation",
+   "rag",
+   "fine-tuning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "简体中文 README",
+   "B站教程视频"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L23: Easy Dataset is an application specifically designed for building large language model (LLM) datasets. It features an in",
+   "L71: - **Wide Model Compatibility**: Compatible with all LLM APIs that follow the OpenAI format"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     "- **Multi-Provider Support**: OpenAI, MiniMax, Ollama (local models), Zhipu AI, Alibaba Bailian, OpenRouter, and more"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     "- **Multi-Provider Support**: OpenAI, MiniMax, Ollama (local models), Zhipu AI, Alibaba Bailian, OpenRouter, and more"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     73
+    ],
+    "note": "作为视觉模型用于 PDF 解析与图像 QA",
+    "quotes": [
+     "- **Vision Models**: Support Gemini, Claude, etc. for PDF parsing and image QA"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     121
+    ],
+    "quotes": [
+     "   git clone https://github.com/ConardLi/easy-dataset.git"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     128,
+     136
+    ],
+    "quotes": [
+     "   npm install",
+     "   npm run start"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     166,
+     185,
+     191
+    ],
+    "quotes": [
+     "docker-compose up -d",
+     "docker build -t easy-dataset .",
+     "docker run -d \\"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

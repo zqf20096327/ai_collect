@@ -1,0 +1,147 @@
+{
+ "fn": "OpenHands/OpenHands",
+ "sha": "d4a1a44ea490",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管的编码 agent 控制中心：管理多 agent 与自动化",
+  "review": "OpenHands Agent Canvas 是一个自托管开发者控制中心，用于启动与编码 agent 的对话并自动化日常任务，如生成报告发布到 Slack、将 GitHub issue 分解为任务。默认本地运行，可连接多个 agent 后端：本地、Docker 容器、VM 或企业基础设施，也可选用 OpenHands Cloud/Enterprise。开箱即用运行开源 OpenHands agent，也支持 Claude Code、Codex、Gemini CLI、Pi、OpenCode 等 ACP 兼容 agent。提供 npm 安装与 Docker 沙箱模式，项目状态为 beta。",
+  "highlights": [
+   "支持 OpenHands、Claude Code、Codex、Gemini 等 ACP 兼容 agent",
+   "本地/Docker/VM/云多种后端可切换，不丢失焦点",
+   "创建定时或 webhook 触发的自动化，集成 Slack、GitHub、Notion 等",
+   "支持任意 LLM（bring your own model）"
+  ],
+  "use_cases": [
+   "自托管管理多个编码 agent 并在本地与云端后端间切换",
+   "配置定时或 webhook 触发的自动化任务并推送结果到 Slack",
+   "在多个 Docker 沙箱中并发运行 agent 做代码审查和依赖更新"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    8
+   ],
+   "note": "项目状态 beta"
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "编码agent",
+   "agent编排",
+   "自动化",
+   "自托管",
+   "开发者工具"
+  ],
+  "domain": "开发者工具/AI agent 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L4:  The self-hosted developer control center for coding agents and automations.",
+   "L29: Agent Canvas runs the open source OpenHands agent out-of-the-box, but can use third-party agents such as Claude Code, Co",
+   "L37: |**Bring your own model**|Use with any LLM|"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     6,
+     29
+    ],
+    "note": "以 Claude Code/Claude 形式被列为可用第三方 agent，非专门适配",
+    "quotes": [
+     " Run OpenHands, Claude Code, Codex, Gemini, Pi, OpenCode, or any ACP-compatible agent across local, remote, and cloud ba",
+     "Agent Canvas runs the open source OpenHands agent out-of-the-box, but can use third-party agents such as Claude Code, Co"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     63,
+     103,
+     121
+    ],
+    "quotes": [
+     "npm install -g @openhands/agent-canvas",
+     "npm install -g @openhands/agent-canvas",
+     "npm install"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     119
+    ],
+    "quotes": [
+     "git clone https://github.com/OpenHands/OpenHands.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     6,
+     29,
+     38
+    ],
+    "note": "被支持的第三方 agent，非替代/竞品对比",
+    "quotes": [
+     " Run OpenHands, Claude Code, Codex, Gemini, Pi, OpenCode, or any ACP-compatible agent across local, remote, and cloud ba",
+     "Agent Canvas runs the open source OpenHands agent out-of-the-box, but can use third-party agents such as Claude Code, Co",
+     "|**Use with any agent**|Use with OpenHands, Claude Code, Codex, Gemini, Pi, OpenCode, or any agent with Agent-Client Pro"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

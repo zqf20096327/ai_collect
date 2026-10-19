@@ -1,0 +1,144 @@
+{
+ "fn": "NVIDIA/TensorRT",
+ "sha": "2fa0690c213b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 NVIDIA GPU 深度学习推理 SDK 开源组件仓库",
+  "review": "本仓库包含 NVIDIA TensorRT 的开源组件（OSS）：TensorRT 插件、ONNX 解析器的源码，以及演示平台用法与能力的示例应用。这些开源组件是 TensorRT GA 发布版本的子集，含部分扩展与修复。仓库提供预编译 Python 包的 pip 安装途径，也可通过 Docker 构建容器或本机 CMake 从源码构建，支持 x86-64 与 aarch64（含 Jetson、DriveOS 交叉编译）目标。企业支持通过 NVIDIA AI Enterprise 提供。",
+  "highlights": [
+   "包含 TensorRT 插件与 ONNX 解析器源码及示例应用",
+   "提供 pip install tensorrt 预编译 Python 包安装途径",
+   "支持 Docker 构建容器与本机 CMake 源码构建，覆盖 x86-64/aarch64 与 Jetson、DriveOS、QNX 交叉编译",
+   "提供与编码代理（coding agent）配合使用的 TensorRT 使用与基准测试技能"
+  ],
+  "use_cases": [
+   "为部署在 NVIDIA GPU 上的模型准备推理所需的插件与解析器组件",
+   "参考官方示例应用了解 TensorRT 的使用方式",
+   "为 Jetson 或 DriveOS 等 aarch64 平台交叉编译 TensorRT OSS 组件"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度学习推理",
+   "GPU加速",
+   "SDK",
+   "模型部署"
+  ],
+  "domain": "AI 基础设施/推理引擎",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: This repository contains the Open Source Software (OSS) components of NVIDIA TensorRT. It includes the sources for Tenso",
+   "L34: We provide the TensorRT Python package for an easy installation. \\",
+   "L56: - CUDA"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     38
+    ],
+    "quotes": [
+     "pip install tensorrt"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     95,
+     97,
+     177
+    ],
+    "quotes": [
+     "   git clone -b main https://github.com/nvidia/TensorRT TensorRT",
+     "   git submodule update --init --recursive",
+     "  cmake .. -DCMAKE_PREFIX_PATH=$TRT_ROOT \\"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     128,
+     135,
+     159
+    ],
+    "quotes": [
+     "For Linux platforms, we recommend that you generate a docker container for building TensorRT OSS as described below. For",
+     "   ./docker/build.sh --file docker/ubuntu-24.04.Dockerfile --tag tensorrt-ubuntu24.04-cuda13.4",
+     "   ./docker/launch.sh --tag tensorrt-ubuntu24.04-cuda13.4 --gpus all"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     18
+    ],
+    "note": "作为导入路径之一被提及，非替代/竞品对象",
+    "quotes": [
+     "- For step-by-step walkthroughs of the TensorRT import paths (ONNX, Torch-TensorRT, HuggingFace/Optimum, Network Definit"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    8,
+    9,
+    10,
+    11,
+    12
+   ]
+  }
+ }
+}

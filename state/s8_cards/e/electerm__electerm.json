@@ -1,0 +1,118 @@
+{
+ "fn": "electerm/electerm",
+ "sha": "15076ab77d80",
+ "source": "readme",
+ "identity": {
+  "one_liner": "跨平台终端/SSH/SFTP/RDP/VNC 客户端，带 AI 助手",
+  "review": "基于 Electron 的终端与远程连接客户端，支持 ssh/sftp/ftp/telnet/serialport/RDP/VNC/Spice 协议，覆盖 Linux/Mac/Windows/Android/HarmonyOS/iOS，兼容 UOS、Kylin、LoongArch、RISC-V 等系统。提供书签同步、隧道/跳板、Zmodem/Trzsz、代理、多语言等终端功能。AI 部分集成多 LLM API 格式（OpenAI Chat Completions/Responses、Anthropic Messages），提供命令建议、脚本编写、选中内容解释，以及 agent 模式直接执行终端操作，另有 MCP widget 供外部工具接入。",
+  "highlights": [
+   "AI 助手支持 OpenAI Chat Completions、OpenAI Responses、Anthropic Messages 三种 API 格式",
+   "agent 模式可代为执行终端操作，支持创建书签/主题",
+   "MCP widget 供 AI 助手与外部工具集成",
+   "支持 ssh 隧道、跳板连接、Zmodem/Trzsz、全局/会话代理"
+  ],
+  "use_cases": [
+   "在多平台统一管理 SSH/SFTP 远程连接与文件传输",
+   "让 AI 助手解释终端输出并生成命令/脚本",
+   "在 UOS/Kylin/LoongArch 等国产化环境使用终端客户端",
+   "通过 MCP 将终端能力接入外部 AI 工具"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://electerm.org/videos",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "终端",
+   "SSH客户端",
+   "远程桌面",
+   "AI助手",
+   "MCP"
+  ],
+  "domain": "开发工具/远程连接",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "ai-assistant"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "作者邮箱与微信捐赠渠道",
+   "支持 UOS/Kylin/LoongArch 等国产系统",
+   "README 提供中文版本"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: Open-sourced terminal/ssh/sftp/telnet/serialport/RDP/VNC/Spice/ftp client(Linux, Mac, Windows, Android, HarmonyOS, iOS).",
+   "L50: - AI assistant integration (supporting multiple LLM API formats — OpenAI Chat Completions, OpenAI Responses, and Anthrop",
+   "L51: - MCP (Model Context Protocol) widget for AI assistants and external tools integration - see MCP Widget Usage Guide"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     57
+    ],
+    "quotes": [
+     "- For Mac user: `brew install --cask electerm`"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     76,
+     79,
+     87
+    ],
+    "quotes": [
+     "- Install from npm",
+     "npm i -g electerm",
+     "- Npm: If you install from npm, just run `npm i -g electerm` again."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

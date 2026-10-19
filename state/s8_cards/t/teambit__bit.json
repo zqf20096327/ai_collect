@@ -1,0 +1,99 @@
+{
+ "fn": "teambit/bit",
+ "sha": "5b6e896c9ed9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为开发者提供组件化代码构建系统并让 AI agent 复用组件",
+  "review": "Bit 是一个连接组件与应用、覆盖开发到 CI 的构建系统：将源码组织为可组合的组件，支持创建可复用 UI 组件、定义组件蓝图模板、组合应用外壳、部署应用与服务。通过 MCP 让 AI agent 创建和复用组件。支持 monorepo、polyrepo 或无仓库结构，提供 NodeJS、React、Angular、Vue、React Native、NextJS 等官方开发环境，原生支持 TypeScript 与 ESM。通过 npx 安装器装到 PATH，组件可通过标准包管理器安装；托管 scope 需使用 Bit Cloud 或自托管。",
+  "highlights": [
+   "通过 MCP 使 AI agent 能创建和复用组件",
+   "提供 NodeJS、React、Angular、Vue、React Native、NextJS 等官方开发环境",
+   "支持 monorepo、polyrepo 或无仓库的代码结构",
+   "组件可用 npm 等标准包管理器安装"
+  ],
+  "use_cases": [
+   "在 monorepo 或多仓库中管理可复用的 UI 组件与模块",
+   "组合可复用组件构建应用外壳并部署",
+   "让 AI agent 在开发流程中复用已有组件避免重复创建"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "组件化开发",
+   "monorepo",
+   "前端",
+   "构建系统",
+   "AI agent"
+  ],
+  "domain": "软件开发工具/前端工程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: Bit is the build system to connect components and apps from development to CI in the AI era. Bit organizes source code i",
+   "L21: Bit supports all tooling in the JS ecosystem and comes out of the box with official dev environments for NodeJS, React, "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     32,
+     108
+    ],
+    "note": "npx 安装器安装 Bit；组件通过 npm install 安装",
+    "quotes": [
+     "npx @teambit/bvm install",
+     "npm install @my-org/users.pages.login"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

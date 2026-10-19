@@ -1,0 +1,182 @@
+{
+ "fn": "XiaomiMiMo/MiMo-Code",
+ "sha": "9745a768986e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的终端原生 AI 编码助手，带持久记忆与多 Agent",
+  "review": "终端（TUI）内运行的 AI 编码助手：读写代码、执行命令、管理 Git，并通过 SQLite FTS5 驱动的跨会话持久记忆（项目记忆、会话检查点、任务日志）保持对项目的理解。内置 build/plan 双 Agent、子 Agent 并行、目标停止条件判定、JavaScript 工作流（deep-research、fact-check 等 3 个内置）与技能系统（arxiv、pdf、pptx 等内置技能）。可通过 OAuth 或 API key 连接多家 LLM 提供商，另可迁移 Claude Code 认证；附带以 MiMo Code 为核心引擎的桌面版。安装提供 macOS/Linux 一行脚本；macOS 不支持自带 Terminal.app。",
+  "highlights": [
+   "SQLite FTS5 跨会话持久记忆，会话恢复自动注入上下文",
+   "多 Agent 与子 Agent 并行，/goal 独立裁判模型判定停止条件",
+   "JavaScript 编写的确定性工作流 + BM25 技能检索系统",
+   "上下文预算管理与按模型的 /context-limit 压缩点调节"
+  ],
+  "use_cases": [
+   "在终端里让 AI 助手完成编码、测试与 Git 操作",
+   "跨会话维护对同一项目的长期记忆与任务进度",
+   "用内置工作流生成带引用的深度研究报告或做事实核查",
+   "运行可机械验证指标的自主优化实验循环"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI编码助手",
+   "CLI工具",
+   "多Agent",
+   "持久记忆",
+   "工作流"
+  ],
+  "domain": "开发工具/AI 编码助手",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "xai"
+  ],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "workflow-automation",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中英双语 README（L7）",
+   "小米 Xiaomi MiMo 品牌",
+   "WSL/Windows 中文乱码（zh-CN GBK）场景说明"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: MiMoCode is a terminal-native AI coding assistant. It can read and write code, run commands, manage Git, and use a persi",
+   "L29: MiMoCode supports connecting to any mainstream LLM provider API.",
+   "L19: Xiaomi MiMo Desktop is built for real-world work: one conversation can handle office work, design, coding, and multimoda"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     43,
+     194
+    ],
+    "note": "从 Claude Code 迁移认证及委托任务给其 CLI，非接入 Anthropic 模型通道",
+    "quotes": [
+     "- **Import from Claude Code** — migrate existing authentication in one step",
+     "|`claude-code`|Delegate coding, testing, review, and Git tasks to the Claude Code CLI|"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "compat",
+    "lines": [
+     44
+    ],
+    "note": "目录提供商列表中以 xAI/Grok 为 OAuth 示例",
+    "quotes": [
+     "- **Provider list** — connect catalog providers by API key, or OAuth where supported (e.g. xAI/Grok)"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     147
+    ],
+    "note": "作为上下文窗口说明中的分销渠道举例",
+    "quotes": [
+     " key, or a reseller such as OpenRouter — so a catalog figure of 1M does not mean your route"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     59
+    ],
+    "note": "安装 iTerm2 的方式，非本产品安装途径",
+    "quotes": [
+     "brew install --cask iterm2"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     42,
+     146
+    ],
+    "quotes": [
+     "- **Codex (ChatGPT Pro/Plus)** — OpenAI OAuth login",
+     " usable window depending on how you reach it — a ChatGPT/Codex subscription, a direct API"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     43,
+     194
+    ],
+    "note": "可迁移其认证并委托任务，未自称替代或竞品",
+    "quotes": [
+     "- **Import from Claude Code** — migrate existing authentication in one step",
+     "|`claude-code`|Delegate coding, testing, review, and Git tasks to the Claude Code CLI|"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     92
+    ],
+    "note": "MiMo 模型可用的其他编码工具举例",
+    "quotes": [
+     "Beyond MiMoCode, Xiaomi MiMo models also work in other agents and coding tools like Cursor, Cline, and Zed."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

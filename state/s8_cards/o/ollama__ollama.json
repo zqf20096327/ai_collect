@@ -1,0 +1,276 @@
+{
+ "fn": "ollama/ollama",
+ "sha": "043c4d0499fb",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地与云端运行开源大模型的工具：下载即用多款开放模型",
+  "review": "Ollama 是一个用于在本地或云端运行开源大模型的工具，覆盖下载安装、命令行交互、模型管理和 REST API。支持 macOS、Windows、Linux 的脚本安装与 Docker 官方镜像，提供 Python、JavaScript 官方库；可配合 Claude Code、Codex、Copilot CLI 等编码集成运行，并通过 OpenClaw 接入多平台消息渠道作为 AI 助手。后端基于 llama.cpp 项目。",
+  "highlights": [
+   "提供 REST API 与 Python/JavaScript 官方库（pip/npm 安装）",
+   "支持 macOS/Windows/Linux 脚本安装与官方 Docker 镜像",
+   "支持编码集成（Claude Code、Codex、Copilot CLI 等）与 OpenClaw 助手接入",
+   "模型后端基于 llama.cpp 项目"
+  ],
+  "use_cases": [
+   "在本地或云端下载并运行开源大模型",
+   "通过 REST API 或 SDK 将模型接入自己的应用",
+   "将模型接入 Claude Code、Copilot CLI 等编码工具",
+   "搭建多平台消息渠道的 AI 助手"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "本地LLM运行",
+   "推理服务",
+   "模型管理",
+   "REST API"
+  ],
+  "domain": "LLM 基础设施/推理运行时",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: # Ollama",
+   "L7: Start building with open models. Access the latest releases locally or in the cloud with complete privacy.",
+   "L86: Ollama has a REST API for running and managing models."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     5,
+     14
+    ],
+    "quotes": [
+     "# Ollama",
+     "curl -fsSL https://ollama.com/install.sh | sh"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     52,
+     59,
+     62
+    ],
+    "note": "作为可接入的编码集成提及",
+    "quotes": [
+     "You'll be prompted to run a model or connect Ollama to your existing agents or applications such as `Claude Code`, `Open",
+     "ollama launch claude",
+     "Supported integrations include Claude Code, Codex, Copilot CLI, DeepSeek Harness, Droid, and OpenCode."
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     62
+    ],
+    "note": "编码集成列表中提及 DeepSeek Harness",
+    "quotes": [
+     "Supported integrations include Claude Code, Codex, Copilot CLI, DeepSeek Harness, Droid, and OpenCode."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     100
+    ],
+    "note": "官方 Python 库安装",
+    "quotes": [
+     "pip install ollama"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     113
+    ],
+    "note": "官方 JavaScript 库安装",
+    "quotes": [
+     "npm i ollama"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     334
+    ],
+    "note": "社区包管理器列表",
+    "quotes": [
+     "- Homebrew"
+    ]
+   },
+   {
+    "term": "helm",
+    "rel": "mention",
+    "lines": [
+     336
+    ],
+    "note": "社区部署方式列表",
+    "quotes": [
+     "- Helm Chart"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     52,
+     62,
+     198,
+     201
+    ],
+    "note": "可接入的集成与社区列表提及",
+    "quotes": [
+     "You'll be prompted to run a model or connect Ollama to your existing agents or applications such as `Claude Code`, `Open",
+     "Supported integrations include Claude Code, Codex, Copilot CLI, DeepSeek Harness, Droid, and OpenCode.",
+     "- Copilot for Obsidian - AI assistant for Obsidian",
+     "- Ollama Copilot - Use Ollama as GitHub Copilot"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     52,
+     59,
+     62
+    ],
+    "note": "可接入的编码集成，非替代/竞品",
+    "quotes": [
+     "You'll be prompted to run a model or connect Ollama to your existing agents or applications such as `Claude Code`, `Open",
+     "ollama launch claude",
+     "Supported integrations include Claude Code, Codex, Copilot CLI, DeepSeek Harness, Droid, and OpenCode."
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     145,
+     147,
+     153,
+     174
+    ],
+    "note": "社区客户端描述中提及",
+    "quotes": [
+     "- LibreChat - Enhanced ChatGPT clone with multi-provider support",
+     "- NextChat - Cross-platform ChatGPT UI (docs)",
+     "- Chatbot UI - ChatGPT-style web interface",
+     "- macai - macOS client for Ollama and ChatGPT"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     148
+    ],
+    "note": "社区项目自称其开源替代",
+    "quotes": [
+     "- Perplexica - AI-powered search engine, open-source Perplexity alternative"
+    ]
+   },
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     162
+    ],
+    "note": "社区集成列表提及",
+    "quotes": [
+     "- Dify.AI - LLM app development platform"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     197
+    ],
+    "note": "社区项目自称其开源替代",
+    "quotes": [
+     "- Void - Open source AI code editor, Cursor alternative"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     216,
+     217,
+     219,
+     223,
+     225
+    ],
+    "note": "社区库列表中多个 LangChain 变体",
+    "quotes": [
+     "- LangChain4j - Java LangChain (example)",
+     "- LangChainGo - Go LangChain (example)",
+     "- LangChain and LangChain.js with example",
+     "- LangChainRust - Rust LangChain (example)",
+     "- Elixir LangChain - Elixir LangChain"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,102 @@
+{
+ "fn": "zoicware/RemoveWindowsAI",
+ "sha": "a300077808fa",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 Windows 11 用户移除 Copilot、Recall 等 AI 组件的 PowerShell 脚本",
+  "review": "一个 PowerShell 脚本，用于移除/禁用 Windows 11 中的 AI 组件：禁用 Copilot、Recall、语音访问、Office/Photos/画图/记事本等应用内的 AI 功能，删除 Appx 与 CBS 中的 AI 包，并通过自定义 Windows Update 包阻止 AI 包重装；支持安装经典版应用替代，提供 UI 启动、命令行参数、备份/还原模式。要求 Windows PowerShell 5.1（PowerShell 7 不支持），管理员权限运行，部分杀毒软件可能误报。",
+  "highlights": [
+   "禁用 Copilot、Recall、Voice Access、Defender AI 等多项系统 AI 组件",
+   "删除含 Nonremovable 标记的 AI Appx 包与 CBS 隐藏包，并用自定义更新包阻止重装",
+   "支持 UI 启动与非交互式命令行参数、备份/还原模式",
+   "可安装 Notepad/Paint/截图工具/照片查看器的经典版本"
+  ],
+  "use_cases": [
+   "在 Windows 11 上移除 Copilot 和 Recall 等预装 AI 功能",
+   "Windows 更新后清理新安装的 AI 组件（含定时检查任务）",
+   "用经典版应用替换内置 AI 化应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "系统优化",
+   "隐私",
+   "debloat",
+   "PowerShell 脚本",
+   "Windows 11"
+  ],
+  "domain": "系统工具/隐私",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: In Windows 11 22H2 Microsoft began adding AI features like Copilot and Recall. Since then, additional AI driven componen",
+   "L65:  > Running the script with PowerShell 7 is no longer supported and it WILL cause issues, to avoid this ensure you are ru",
+   "L70:  & ([scriptblock]::Create((irm \"https://raw.githubusercontent.com/zoicware/RemoveWindowsAI/main/RemoveWindowsAi.ps1\")))"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "none",
+    "lines": [
+     9,
+     19,
+     20
+    ],
+    "note": "误命中：指 Windows 系统内置 Copilot（含 Gaming Copilot、Office 内 Copilot），非 GitHub Copilot",
+    "quotes": [
+     " - Disable Copilot",
+     " - Disable Gaming Copilot",
+     " - Disable Copilot in All Office Apps"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

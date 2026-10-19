@@ -1,0 +1,102 @@
+{
+ "fn": "qdrant/qdrant",
+ "sha": "de584bc74517",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI 应用的向量相似度搜索引擎与向量数据库",
+  "review": "以 Rust 编写的向量数据库服务，提供 REST 与 gRPC API 存储、搜索和管理带 payload 的向量点。支持稠密/稀疏/多向量检索、payload 过滤、混合搜索（RRF/DBSF 融合）、量化与磁盘存储、分片与复制的分布式部署。官方提供 Docker 部署方式与 Go/Rust/JS/Python/.NET/Java 客户端，另有面向边缘设备的 Qdrant Edge 版本和托管云服务（含免费层）。",
+  "highlights": [
+   "稠密、稀疏与多向量搜索，支持 ColBERT 类 late interaction 模型",
+   "payload 过滤与混合搜索（RRF/DBSF 融合策略）",
+   "分布式部署：分片、复制、零停机扩缩容",
+   "GPU 加速索引（NVIDIA/AMD），SIMD 硬件加速"
+  ],
+  "use_cases": [
+   "为语义搜索应用搭建向量检索后端",
+   "构建以图搜图的视觉发现功能",
+   "电商平台的多标签商品分类检索",
+   "为 RAG 类应用提供推荐与匹配服务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "向量数据库",
+   "相似度搜索",
+   "混合检索",
+   "语义搜索"
+  ],
+  "domain": "数据库/向量检索",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "semantic-search",
+   "vector-database"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: **Qdrant** (read: _quadrant_) is a vector similarity search engine and vector database.",
+   "L28: Qdrant provides a collection of ready-to-use agent skills that bring Qdrant's vector search capabilities directly into y",
+   "L115: Qdrant supports dense vectors for semantic similarity, sparse vectors for full-text search, and multivector search for o"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     32,
+     35
+    ],
+    "quotes": [
+     "To experience the full power of Qdrant locally, run the container with this command:",
+     "docker run -p 6333:6333 qdrant/qdrant"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

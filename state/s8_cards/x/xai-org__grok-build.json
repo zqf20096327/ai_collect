@@ -1,0 +1,126 @@
+{
+ "fn": "xai-org/grok-build",
+ "sha": "f7b222f16da0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的终端 AI 编码 Agent（全屏 TUI）",
+  "review": "SpaceXAI 的终端 AI 编码 Agent，以 Rust 编写、全屏 TUI 形式运行，能理解代码库、编辑文件、执行 shell 命令、搜索网络并管理长时任务；支持交互、无头脚本/CI 模式，以及通过 Agent Client Protocol (ACP) 嵌入编辑器。预编译二进制覆盖 macOS/Linux/Windows，也可从源码构建（Windows 构建为 best-effort）；首次启动需浏览器认证，支持 MCP 服务器、skills、插件、hooks 与沙箱。",
+  "highlights": [
+   "全屏 TUI，支持鼠标交互",
+   "交互、无头（脚本/CI）与 ACP 编辑器嵌入三种运行方式",
+   "支持 MCP 服务器、skills、插件、hooks、沙箱",
+   "提供 macOS/Linux/Windows 预编译二进制"
+  ],
+  "use_cases": [
+   "在终端里让 AI 读写代码库并执行命令",
+   "在 CI 中以无头模式运行编码任务",
+   "通过 ACP 将 Agent 集成到编辑器"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "CLI/TUI",
+   "编码Agent",
+   "开发者工具"
+  ],
+  "domain": "开发者工具/编码 Agent",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "xai"
+  ],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: **Grok Build** is SpaceXAI's terminal-based AI coding agent. It runs as a",
+   "L23: This repository contains the Rust source for the `grok` CLI/TUI and its agent",
+   "L31: Prebuilt binaries are published for macOS, Linux, and Windows:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     5,
+     21,
+     23
+    ],
+    "quotes": [
+     "**Grok Build** is SpaceXAI's terminal-based AI coding agent. It runs as a",
+     "**Learn more about Grok Build at x.ai/cli**",
+     "This repository contains the Rust source for the `grok` CLI/TUI and its agent"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "cargo",
+    "rel": "support",
+    "lines": [
+     53,
+     64,
+     65,
+     66
+    ],
+    "quotes": [
+     "  cargo install dotslash",
+     "cargo run -p xai-grok-pager-bin              # build + launch the TUI",
+     "cargo build -p xai-grok-pager-bin --release  # release binary: target/release/xai-grok-pager",
+     "cargo check -p xai-grok-pager-bin            # fast validation"
+    ]
+   },
+   {
+    "term": "go",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

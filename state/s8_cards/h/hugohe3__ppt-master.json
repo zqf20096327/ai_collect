@@ -1,0 +1,219 @@
+{
+ "fn": "hugohe3/ppt-master",
+ "sha": "cdd5be3c7c33",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI agent 用户的工具：从文档或主题生成本地可编辑的原生 PPT",
+  "review": "一个以 skill/工作流形式交付的开源项目：用户在具备 agent 能力的 AI 工具（IDE 插件、CLI 等）中给出文档或主题，工作流在本地运行并导出可编辑的 .pptx，包含原生形状与连接符、带数据的图表与表格、切换与动画、基于演讲者备注的旁白音频，并支持自有 .pptx 模板。需自行安装 Python 3.10+ 并依赖依赖文件安装包；文档另说明旧格式需可选 Pandoc。模型质量由所用 LLM 决定，推荐大上下文窗口模型并搭配 AI 图像生成。",
+  "highlights": [
+   "生成本地可编辑 .pptx：原生形状、母版/版式继承、带数据图表与表格",
+   "支持从参考中提炼品牌/风格/版式模板，填充既有 .pptx 并保留设计",
+   "为成品幻灯片添加原生切换、动画与旁白音频",
+   "流程在本地机器运行，除模型通信外数据不离开本机"
+  ],
+  "use_cases": [
+   "把 PDF/DOCX 等资料转成可继续编辑的 PPT 初稿",
+   "用公司自有模板批量生成汇报文稿",
+   "为讲稿自动生成旁白与动画效果"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "L47 Live Demo",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "PPT生成",
+   "AI agent 工作流",
+   "办公自动化",
+   "pptx"
+  ],
+  "domain": "办公/文档自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供中文版 README（L12 English | 中文）",
+   "赞助商包含 Kimi、APIKEY.FAN、RunAPI 等中文平台"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L69: In form, it's a workflow (a \"skill\") that runs inside any agent-capable AI tool: tell it in chat — \"make a deck from thi",
+   "L77: - **No platform lock-in** — any agent-capable AI IDE can drive it; Claude, GPT, Gemini, Kimi, and other models all work",
+   "L83: > `harness + model = agent` — PPT Master only owns the workflow; the model sets the ceiling. Recommended: **Kimi K3 (or "
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     33,
+     77,
+     83,
+     161
+    ],
+    "quotes": [
+     " Thanks to PackyCode for sponsoring this project! PackyCode is a reliable and efficient API relay service provider, offe",
+     "- **No platform lock-in** — any agent-capable AI IDE can drive it; Claude, GPT, Gemini, Kimi, and other models all work",
+     "> `harness + model = agent` — PPT Master only owns the workflow; the model sets the ceiling. Recommended: **Kimi K3 (or ",
+     "> **Author's pick: Claude Code** — the environment this project is developed and tested on most thoroughly, as the CLI o"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     39
+    ],
+    "quotes": [
+     " Thanks to RunAPI for sponsoring this project! RunAPI is an efficient and stable API platform — a single API Key gives y"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     123
+    ],
+    "quotes": [
+     "**All you need to install is Python 3.10+.** Everything else comes with one line — `pip install -r requirements.txt` — a"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     137,
+     149
+    ],
+    "quotes": [
+     "brew install python",
+     "brew install pandoc"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     123
+    ],
+    "quotes": [
+     "**All you need to install is Python 3.10+.** Everything else comes with one line — `pip install -r requirements.txt` — a"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     18,
+     26,
+     77,
+     83
+    ],
+    "quotes": [
+     "This project is kept free and open source with the support of Kimi, PackyCode, APIKEY.FAN, RunAPI, APIMart and other spo",
+     "Thanks to Kimi for sponsoring this project! Kimi K3 is the world's first open 3T-class model, featuring native vision an",
+     "- **No platform lock-in** — any agent-capable AI IDE can drive it; Claude, GPT, Gemini, Kimi, and other models all work",
+     "> `harness + model = agent` — PPT Master only owns the workflow; the model sets the ceiling. Recommended: **Kimi K3 (or "
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     161,
+     166,
+     167
+    ],
+    "quotes": [
+     "> **Author's pick: Claude Code** — the environment this project is developed and tested on most thoroughly, as the CLI o",
+     "|**IDE plugin / extension**|Claude Code (VS Code / JetBrains extension), GitHub Copilot, Cline, etc.|Installed inside ho",
+     "|**CLI agent**|Claude Code CLI, Codex CLI, Gemini CLI, etc.|Runs in the terminal; suits scripting, remote, or server use"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     165
+    ],
+    "quotes": [
+     "|**IDE-native agent**|• VS Code architecture (VS Code itself, plus forks & derivatives): Cursor, Trae, Codebuddy IDE, Wi"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     165
+    ],
+    "quotes": [
+     "|**IDE-native agent**|• VS Code architecture (VS Code itself, plus forks & derivatives): Cursor, Trae, Codebuddy IDE, Wi"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     166
+    ],
+    "quotes": [
+     "|**IDE plugin / extension**|Claude Code (VS Code / JetBrains extension), GitHub Copilot, Cline, etc.|Installed inside ho"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,193 @@
+{
+ "fn": "deepseek-ai/awesome-deepseek-integration",
+ "sha": "35018b0812f0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "将 DeepSeek API 接入常用软件的项目清单",
+  "review": "由 deepseek-ai 组织维护的聚合清单，收录将 DeepSeek API 集成到各类软件的项目条目，按应用、客户端库等类别组织。条目涵盖桌面/移动端聊天客户端、翻译与 OCR 工具、笔记与知识库软件、浏览器、RPA 客服、Zotero 插件，以及 PHP/Go/Swift 等 API 客户端库和 Laravel 封装。提供英语、简体中文、繁体中文、日语、西班牙语多个语言版本。清单本身不含安装步骤，各条目链接至各自仓库。",
+  "highlights": [
+   "收录数十个接入 DeepSeek API 的应用与工具条目",
+   "包含 PHP、Go、Swift 语言的 DeepSeek API 客户端库条目",
+   "提供英语、简体中文、繁体中文、日语、西班牙语版本"
+  ],
+  "use_cases": [
+   "查找支持接入 DeepSeek API 的桌面或移动端客户端",
+   "为自己的技术栈寻找 DeepSeek API 的客户端库",
+   "浏览 DeepSeek 生态中已集成的软件列表"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome清单",
+   "LLM集成",
+   "生态目录"
+  ],
+  "domain": "LLM 生态/资源聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "deepseek-ai 组织维护",
+   "提供简体中文/繁体中文版本",
+   "收录钉钉、思源笔记、go-stock 等国内软件"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: # Awesome DeepSeek Integrations Awesome",
+   "L5: Integrate the DeepSeek API into popular softwares. Access DeepSeek Open Platform to get an API key.",
+   "L11: ## Table of Contents"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     3,
+     5
+    ],
+    "quotes": [
+     "# Awesome DeepSeek Integrations Awesome",
+     "Integrate the DeepSeek API into popular softwares. Access DeepSeek Open Platform to get an API key."
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     42,
+     43
+    ],
+    "quotes": [
+     " OpenRouter",
+     " OpenRouter provides a unified API that gives you access to hundreds of AI models through a single endpoint, while autom"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "mention",
+    "lines": [
+     60
+    ],
+    "note": "SwiftChat 条目中提及支持的模型提供方之一",
+    "quotes": [
+     " SwiftChat is a lightning-fast, cross-platform AI chat application built with React Native. It delivers native performan"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     60,
+     144
+    ],
+    "quotes": [
+     " SwiftChat is a lightning-fast, cross-platform AI chat application built with React Native. It delivers native performan",
+     " Batch generate subtitles for videos, with the ability to translate subtitles into other languages. This is a client-sid"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     285
+    ],
+    "quotes": [
+     " Chatgpt-on-Wechat(CoW) is a flexible chatbot framework that supports seamless integration of multiple LLMs, including D"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "cargo",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     91,
+     92
+    ],
+    "note": "ChatGPT-Next-Web 条目名称与描述，非竞品对比",
+    "quotes": [
+     " ChatGPT-Next-Web",
+     " ChatGPT Next Web is a cross-platform ChatGPT web UI, with GPT3, GPT4 & Gemini Pro support."
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     162
+    ],
+    "quotes": [
+     " Icon Nice Prompt Nice Prompt Organize, share and use your prompts in your code editor, with Cursor and VSCode。"
+    ]
+   },
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     205,
+     206
+    ],
+    "note": "清单收录条目，非替代/竞品关系",
+    "quotes": [
+     " Dify",
+     " Dify is an LLM application development platform that supports DeepSeek models for creating assistants, workflows, text "
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

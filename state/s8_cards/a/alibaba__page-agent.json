@@ -1,0 +1,116 @@
+{
+ "fn": "alibaba/page-agent",
+ "sha": "5e66ae8202d1",
+ "source": "readme",
+ "identity": {
+  "one_liner": "网页内嵌 JS GUI agent：让任意网页支持自然语言控制",
+  "review": "以页内 JavaScript 形式提供 GUI agent，通过文本化 DOM 操作执行任务，不依赖浏览器扩展、Python 或无头浏览器，也不使用截图或多模态模型；一行 script 标签或 npm 安装即可集成到任意网页。支持接入大多数主流模型（含本地部署模型），可选 Chrome 扩展支持跨页面任务，并提供 Beta 版 MCP Server 供外部 agent 客户端控制浏览器。基于 browser-use 的 DOM 处理组件与 prompt，定位为客户端网页增强而非服务端自动化。MIT 协议。",
+  "highlights": [
+   "页内 JavaScript 集成，无需扩展/Python/无头浏览器",
+   "基于文本 DOM 操作，无需截图与多模态 LLM",
+   "支持主流模型及本地部署模型",
+   "提供 Chrome 扩展（多页任务）与 MCP Server (Beta)"
+  ],
+  "use_cases": [
+   "在 SaaS 产品中内置 AI copilot 而不重写后端",
+   "把 ERP/CRM 中多步骤表单操作变成一句话指令",
+   "让 Web 应用通过自然语言（含语音）无障碍使用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "浏览器自动化",
+   "GUI agent",
+   "网页集成",
+   "MCP"
+  ],
+  "domain": "浏览器自动化/前端 AI 集成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "browser-automation",
+   "gui-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "alibaba 组织仓库",
+   "README 提供中文版本"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14: The GUI Agent Living in Your Webpage. One script gives any web page its own AI agent.",
+   "L28:  - Just in-page javascript. Everything happens in your web page.",
+   "L94: `PageAgent` is designed for **client-side web enhancement**, not server-side automation."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     61,
+     64
+    ],
+    "quotes": [
+     "### NPM Installation",
+     "npm install page-agent"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "none",
+    "lines": [
+     38
+    ],
+    "note": "误命中：L38 的 copilot 指为自家 SaaS 产品内置的 AI 助手概念，非 GitHub Copilot",
+    "quotes": [
+     "- **SaaS AI Copilot** — Ship an AI copilot in your product in lines of code. No backend rewrite."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

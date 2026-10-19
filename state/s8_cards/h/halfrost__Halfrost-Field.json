@@ -1,0 +1,101 @@
+{
+ "fn": "halfrost/Halfrost-Field",
+ "sha": "48cc8a8b92f2",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开发者阅读开源源码与协议的技术文章集",
+  "review": "个人技术笔记仓库，记录作者阅读开源项目源码后的分析与心得，内容按 LLM、Go、机器学习、JavaScript、网络协议等主题以目录表形式组织，每条对应具体项目版本与系列文章。受众为希望深入理解框架源码与底层协议的开发者。仓库持续更新，支持中英双语，接受 PR/issue 勘误，文章以 Creative Commons BY 4.0 许可转载。",
+  "highlights": [
+   "LLM 专题收录 vLLM v1 源码系列解析（调度器、KV Cache、进程架构等）",
+   "覆盖 Go 内部实现、Google S2 空间索引、TLS 1.3/HTTP2/QUIC 等 RFC 级协议文章",
+   "中英双语内容，接受社区 PR 与 issue 勘误"
+  ],
+  "use_cases": [
+   "系统学习 vLLM 源码与推理引擎架构",
+   "查阅 HTTP/2、TLS 1.3、QUIC 等协议的中文详解",
+   "参考 Go 语言切片、interface、并发原语等内部实现分析"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "技术博客",
+   "源码解析",
+   "网络协议",
+   "LLM推理",
+   "系统设计"
+  ],
+  "domain": "开发者教育/技术内容",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "作者 halfrost 为中文开发者，含微信公众号入口",
+   "README 提供中英双语"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: People often say that reading the source code of open-source frameworks can significantly improve one’s skills, so I hav",
+   "L15: # 🔥 LLM"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     19
+    ],
+    "note": "作为源码解析对象的文章主题，非接入的服务提供方",
+    "quotes": [
+     "|vLLM|v1 @ 6cf7b26bd|vLLM Source Walkthrough: From `generate()` to the First Token Entrypoints: `LLM`, CLI, and the Open"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

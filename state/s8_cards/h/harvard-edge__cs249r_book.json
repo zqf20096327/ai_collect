@@ -1,0 +1,100 @@
+{
+ "fn": "harvard-edge/cs249r_book",
+ "sha": "ba86974dc11b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Harvard CS249r 的 ML 系统工程四卷本开放教材与配套课程资源",
+  "review": "哈佛 CS249r 课程的开源教材仓库，提供四卷 Machine Learning Systems 教材：基础、分布式扩展、Agentic 系统、物理 AI（后两卷在开发中）。除阅读材料外配套 TinyTorch（从零构建 ML 框架的 20 个模块）、交互式 Labs、MLSys·im 基础设施模拟器、硬件实验套件（Arduino/树莓派等边缘设备部署）与 StaffML 面试题库，并为教师提供 16 周教学大纲与讲义。硬拷贝将由 MIT Press 出版。支持英中日韩多语言。",
+  "highlights": [
+   "四卷本教材覆盖单机推理到分布式扩展、agent 编排与机器人物理系统",
+   "TinyTorch 提供从零构建 ML 框架的 20 个渐进模块",
+   "MLSys·im 模拟器可计算内存瓶颈、网络饱和与调度上限",
+   "硬件套件支持在 Arduino、Seeed、Grove、树莓派上部署 ML"
+  ],
+  "use_cases": [
+   "自学机器学习系统设计与工程化部署",
+   "高校开设 ML Systems 课程并使用配套教学资源",
+   "准备 ML 系统方向岗位面试（StaffML 题库）",
+   "在边缘设备上做受资源约束的 ML 实验"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": "https://mlsysbook.ai",
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    31,
+    82,
+    84,
+    222,
+    230
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教材/课程",
+   "ML Systems",
+   "边缘AI",
+   "Agentic AI",
+   "教育"
+  ],
+  "domain": "AI 教育/课程教材",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L79:  Four-volume MIT Press textbook series on Machine Learning Systems Architecture:",
+   "L100:  Deploy ML to Arduino, Seeed, Grove, and Raspberry Pi devices. Real memory limits, real power budgets, real latency.",
+   "L121:  The AI Engineering Blueprint: two 16-week syllabi, pedagogy guide, assessment rubrics, and a TA handbook."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

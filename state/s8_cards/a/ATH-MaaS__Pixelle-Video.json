@@ -1,0 +1,189 @@
+{
+ "fn": "ATH-MaaS/Pixelle-Video",
+ "sha": "4b08a88a3d8e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "输入主题即自动生成配图、配音、字幕短视频的引擎",
+  "review": "以 Web UI（Streamlit）运行的短视频自动生成流水线：LLM 撰写文案，按句分镜后通过 ComfyUI/RunningHub 工作流或直连 API 生成图像/视频片段，TTS 合成解说（支持参考音频克隆音色），叠加 BGM 与 HTML 模板后合成成片。扩展模块含数字人口播、图生视频、动作迁移。Windows 提供整合包，macOS/Linux 需自装 uv 与 ffmpeg 从源码运行；LLM 与媒体模型均需配置 API Key 或本地服务。",
+  "highlights": [
+   "输入主题即可完成文案→配图→语音→合成视频的全流程",
+   "支持 ComfyUI/RunningHub 工作流与 DashScope、OpenAI、Seedance、Kling 等直连 API 两种媒体生成路径",
+   "TTS 支持 Edge-TTS、Index-TTS 及参考音频声音克隆",
+   "数字人口播、图生视频、动作迁移等扩展模块"
+  ],
+  "use_cases": [
+   "输入一个主题批量产出竖屏/横屏短视频",
+   "用自有文案与素材直接生成配图解说视频",
+   "本地 Ollama 加 ComfyUI 组成零 API 费用的生成方案"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AIGC",
+   "短视频生成",
+   "ComfyUI",
+   "TTS",
+   "Web应用"
+  ],
+  "domain": "内容创作/AIGC 视频",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "image-generation",
+   "tts"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "通义千问/DashScope/可灵等国内服务适配",
+   "微信群社区",
+   "Windows 一键整合包"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L15: 只需输入一个 **主题**，Pixelle-Video 就能自动完成：",
+   "L55: - ✅ **原子能力灵活组合** - 支持 ComfyUI / RunningHub 工作流，也支持直连 API 模型，可按需替换图像、视频、TTS、VLM 等能力",
+   "L151: ### 从源码安装（适合 macOS / Linux 用户或需要自定义的用户）"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     54,
+     220
+    ],
+    "note": "作为可选 LLM 预设列出",
+    "quotes": [
+     "- ✅ **多种 AI 模型** - 支持 GPT、通义千问、DeepSeek、Ollama 等",
+     "- 通过下拉菜单选择预设模型（通义千问、GPT-4o、DeepSeek 等）"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     54,
+     365
+    ],
+    "note": "作为可选本地 LLM 列出",
+    "quotes": [
+     "- ✅ **多种 AI 模型** - 支持 GPT、通义千问、DeepSeek、Ollama 等",
+     "- **完全免费方案**: LLM 使用 Ollama（本地运行）+ ComfyUI 本地部署 = 0 元"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     151,
+     186,
+     194
+    ],
+    "quotes": [
+     "### 从源码安装（适合 macOS / Linux 用户或需要自定义的用户）",
+     "git clone https://github.com/AIDC-AI/Pixelle-Video.git",
+     "uv run streamlit run web/app.py"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     168
+    ],
+    "note": "ffmpeg 依赖的安装方式，非本产品安装途径",
+    "quotes": [
+     "brew install ffmpeg"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "48G 显存",
+    "rel": "mention",
+    "lines": [
+     33
+    ],
+    "note": "RunningHub 云端机器的显存规格，非本产品自身硬件要求",
+    "quotes": [
+     "- ✅ **2026-01-06**: 新增 RunningHub 48G 显存机器调用支持"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     119,
+     220,
+     366
+    ],
+    "note": "可接入的 LLM 供应商，非替代/竞品对象",
+    "quotes": [
+     " 🧬 知识科普类 - Qwen生图",
+     "- 通过下拉菜单选择预设模型（通义千问、GPT-4o、DeepSeek 等）",
+     "- **推荐方案**: LLM 使用通义千问（成本极低，性价比高）+ ComfyUI 本地部署"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     407
+    ],
+    "note": "系列工作中的 ComfyUI-Copilot 论文，非本产品关系对象",
+    "quotes": [
+     "|Anim-Director result|**[ACL 2025] ComfyUI-Copilot: An Intelligent Assistant for Automated Workflow Development** *Zhenr"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

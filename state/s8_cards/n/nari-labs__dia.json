@@ -1,0 +1,134 @@
+{
+ "fn": "nari-labs/dia",
+ "sha": "9aa5a2a449cd",
+ "source": "readme",
+ "identity": {
+  "one_liner": "单次生成超真实对话的 1.6B 文本转语音模型",
+  "review": "Nari Labs 开源的 1.6B 参数 TTS 模型，从文本一次生成对话语音，支持 [S1]/[S2] 说话人标签、笑声咳嗽等非语言标记，以及基于音频提示的语音克隆与情感语调控制。权重托管在 Hugging Face，可通过 Transformers 库或本仓库推理代码运行；目前仅支持英文，仅支持 GPU 推理（pytorch 2.0+/CUDA 12.6），Apache 2.0 许可，面向研究与教育用途。bfloat16 下 VRAM 约 4.4GB。",
+  "highlights": [
+   "[S1]/[S2] 标签一次生成多说话人对话",
+   "语音克隆：上传 5-10 秒音频加转写作为提示",
+   "支持 (laughs)、(coughs) 等 21 种非语言标记",
+   "已接入 Hugging Face Transformers（DiaForConditionalGeneration）"
+  ],
+  "use_cases": [
+   "从剧本文本直接生成双人对话播客或配音素材",
+   "通过音频提示克隆音色并控制情感语调",
+   "TTS 语音生成研究与实验"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": "https://huggingface.co/spaces（ZeroGPU Space，L10/L24）",
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    26
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "TTS",
+   "语音克隆",
+   "对话生成",
+   "开源模型权重"
+  ],
+  "domain": "语音生成/AI 模型",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tts"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: Dia is a 1.6B parameter text to speech model created by Nari Labs.",
+   "L18: Dia **directly generates highly realistic dialogue from a transcript**. You can condition the output on audio, enabling ",
+   "L142: Dia has been tested on only GPUs (pytorch 2.0+, CUDA 12.6). CPU support is to be added soon."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     53,
+     55,
+     81
+    ],
+    "quotes": [
+     "pip install git+https://github.com/huggingface/transformers.git",
+     "uv pip install git+https://github.com/huggingface/transformers.git",
+     "pip install git+https://github.com/nari-labs/dia.git"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     "git clone https://github.com/nari-labs/dia.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     9,
+     10,
+     16,
+     53,
+     55
+    ],
+    "note": "模型权重托管与 Transformers 集成平台，非替代/竞品",
+    "quotes": [
+     "Model on HuggingFace",
+     "Space on HuggingFace",
+     "**UPDATE 🚀(11/19)**: Dia2 is released on Github and HuggingFace link!",
+     "pip install git+https://github.com/huggingface/transformers.git",
+     "uv pip install git+https://github.com/huggingface/transformers.git"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

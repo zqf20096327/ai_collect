@@ -1,0 +1,101 @@
+{
+ "fn": "bharathgs/Awesome-pytorch-list",
+ "sha": "b0cd9ed67615",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 PyTorch 用户整理的 GitHub 相关资源清单",
+  "review": "按类别组织的 PyTorch 相关 GitHub 项目清单，收录模型实现、辅助库与教程等内容。清单分为 PyTorch 相关库、NLP 与语音处理、计算机视觉、概率/生成模型库、其他库等章节，每条目为一行链接与简介。内容以引用外部仓库为主，README 本身不含安装或运行说明。",
+  "highlights": [
+   "收录 NLP 与语音处理类 PyTorch 项目 44 条",
+   "收录计算机视觉类项目 37 条",
+   "收录概率/生成模型库 10 条",
+   "按领域分章节组织的目录结构"
+  ],
+  "use_cases": [
+   "查找某个 NLP 或 CV 任务的 PyTorch 实现",
+   "为深度学习项目挑选可复用的辅助库",
+   "浏览 PyTorch 生态中的语音、生成模型等工具"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome-list",
+   "PyTorch",
+   "深度学习",
+   "资源清单"
+  ],
+  "domain": "深度学习/资源聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: Awesome-Pytorch-list",
+   "L7: ## Pytorch & related libraries",
+   "L12: ### NLP & Speech Processing:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     22,
+     53
+    ],
+    "note": "清单中收录的条目（neuralcoref、transformers），非替代/竞品关系",
+    "quotes": [
+     "9. neuralcoref: State-of-the-art coreference resolution based on neural nets and spaCy huggingface.co/coref",
+     "40. transformers: huggingface Transformers: State-of-the-art Natural Language Processing for TensorFlow 2.0 and PyTorch."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,172 @@
+{
+ "fn": "jackwener/OpenCLI",
+ "sha": "1077897fe034",
+ "source": "readme",
+ "identity": {
+  "one_liner": "把任意网站变成 CLI 命令、供 AI agent 操作登录态浏览器的工具",
+  "review": "OpenCLI 是面向 AI agent 的通用浏览器自动化 CLI，同时自称 agent-browser 的一款替代工具。它通过 Browser Bridge 扩展与本地守护进程连接用户已登录的 Chrome/Chromium，无需站点适配器即可导航、点击、填表、提取与截图；内置 Bilibili、知乎、Reddit、HackerNews 等站点适配器提供确定性命令。所有命令默认输出 JSON 并配退出码约定，便于 agent 消费。安装方式包括 macOS/Windows 桌面应用 OpenCLIApp 和 npm 全局安装（需 Node.js ≥ 20.18.1），并通过 npx skills 向 Claude Code、Cursor 等 agent 安装四个技能。",
+  "highlights": [
+   "内置 Bilibili、知乎、小红书、Reddit 等站点适配器，提供确定性 CLI 命令",
+   "命令默认 JSON 输出（ok/data/error 结构）并配非零退出码约定",
+   "四个可安装技能：opencli-browser、adapter-author、autofix、usage",
+   "支持多 Chrome profile 别名管理与 --session 页面会话路由"
+  ],
+  "use_cases": [
+   "让 AI agent 借用我的登录态浏览器抓取页面或填写表单",
+   "为无 API 的网站编写可复用的命令行适配器",
+   "在 CI/服务器环境用 npm 安装 CLI 做确定性网页自动化"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "浏览器自动化",
+   "CLI工具",
+   "AI agent 技能",
+   "网页抓取"
+  ],
+  "domain": "开发者工具/浏览器自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "browser-automation",
+   "web-scraping"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "内置 Bilibili、知乎、小红书、微博适配器",
+   "提供中文文档入口"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: OpenCLI is a **general-purpose browser automation CLI for AI agents** and an **agent-browser alternative**. Navigate, in",
+   "L17: - **Let AI Agents operate any website** — install the `opencli-browser` skill in your AI agent (Claude Code, Cursor, etc",
+   "L60: npm install -g @jackwener/opencli"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     17,
+     148
+    ],
+    "note": "通过 Claude Code 间接涉及，README 未直接提及 anthropic 接入",
+    "quotes": [
+     "- **Let AI Agents operate any website** — install the `opencli-browser` skill in your AI agent (Claude Code, Cursor, etc",
+     "OpenCLI's browser commands are designed to be used by AI Agents — not run manually. Install skills into your AI agent (C"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     55,
+     60,
+     153,
+     159
+    ],
+    "quotes": [
+     "**Option B — npm global install (CLI-only / CI / servers):**",
+     "npm install -g @jackwener/opencli",
+     "npx skills add jackwener/opencli",
+     "npx skills add jackwener/opencli --skill opencli-adapter-author"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "mention",
+    "lines": [
+     71
+    ],
+    "note": "GitHub Releases 下载的是浏览器扩展 zip，非本 CLI 的二进制安装途径",
+    "quotes": [
+     "1. Download the latest `opencli-extension-v{version}.zip` from the GitHub Releases page."
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     17,
+     148
+    ],
+    "note": "技能可安装到的宿主 agent，非替代/竞品对象",
+    "quotes": [
+     "- **Let AI Agents operate any website** — install the `opencli-browser` skill in your AI agent (Claude Code, Cursor, etc",
+     "OpenCLI's browser commands are designed to be used by AI Agents — not run manually. Install skills into your AI agent (C"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     17,
+     148
+    ],
+    "note": "技能可安装到的宿主 agent",
+    "quotes": [
+     "- **Let AI Agents operate any website** — install the `opencli-browser` skill in your AI agent (Claude Code, Cursor, etc",
+     "OpenCLI's browser commands are designed to be used by AI Agents — not run manually. Install skills into your AI agent (C"
+    ]
+   },
+   {
+    "term": "Midjourney",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,100 @@
+{
+ "fn": "github/spec-kit",
+ "sha": "ddfcabf56d8c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 AI 编码代理提供结构化流程与模板的工具包",
+  "review": "开源工具包，为 AI 编码代理提供结构化流程、可复用模板与文档化产物。内置规格驱动开发（SDD）流程，附带可选的 bug 修复与想法评估扩展，并提供扩展、预设、工作流、捆绑包、目录等组合机制用于定制或自建流程。以 CLI 形式安装，依赖 Python 3.11+ 与 uv，在代理聊天中以 /speckit-* 技能形式调用。MIT 许可。",
+  "highlights": [
+   "内置 SDD 流程：specify → plan → tasks → implement → converge",
+   "扩展、预设、工作流、捆绑包等组合机制可定制或自建流程",
+   "bug 修复与想法评估作为可选扩展按需安装",
+   "支持本地源与自托管目录，可离线或在防火墙后使用"
+  ],
+  "use_cases": [
+   "用规格驱动方式从需求到实现开发功能",
+   "按 assess→fix→test 流程让代理修复并验证 bug",
+   "写代码前评估一个想法是否值得投入",
+   "为团队定制专属开发流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "开发流程",
+   "AI编码代理",
+   "规格驱动开发",
+   "工具包"
+  ],
+  "domain": "软件工程/开发工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L15: Spec Kit is an open source toolkit that gives AI coding agents structured",
+   "L63: You need **Python 3.11+**, **uv**,",
+   "L84: below. Invoke each `/speckit-*` **skill in your agent's chat**, one at a time,"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     69,
+     73
+    ],
+    "note": "示例中作为集成的编码代理，非竞品对象",
+    "quotes": [
+     "specify init my-project --integration copilot",
+     "The examples use **GitHub Copilot's default skills mode**. Replace `copilot` with"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,150 @@
+{
+ "fn": "JCodesMore/ai-website-cloner-template",
+ "sha": "e37c2d12ba2a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI 编码代理的模板：一条命令把网站复刻为 Next.js 应用",
+  "review": "一个 Next.js 模板项目，核心是一个可移植的 Agent Skill（/clone-website）：用户给 AI 编码代理一个 URL，代理按 Map→Observe→Build→Compare 四步将目标网站复刻为可编辑的 Next.js 应用，产出路由映射、运行说明与对比截图。要求 Node.js 24+ 与具备浏览器访问能力的 AI 编码代理；Framer 页面与动效站点有专门的检查指引。README 明确声明不用于钓鱼、冒充或违反目标站点服务条款的场景。",
+  "highlights": [
+   "/clone-website 技能按四步流程复刻网站为 Next.js 应用",
+   "同一技能文件供 Codex、Cursor、OpenCode 直接读取，Claude Code 经命令桥接使用",
+   "复刻产出含路由映射、运行说明、对比截图与差距清单",
+   "对 Framer 页面与动效站点提供专门检查指引"
+  ],
+  "use_cases": [
+   "把自有的 WordPress/Webflow/Squarespace 站点迁移到 Next.js 代码库",
+   "源码丢失但站点仍在线时找回可用的现代格式代码",
+   "通过真实站点代码学习其布局、动画与响应式实现"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "YouTube demo 链接（L19/L21 指向）",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "网站复刻",
+   "AI编码代理",
+   "Next.js模板",
+   "逆向工程"
+  ],
+  "domain": "开发者工具/AI 辅助开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: Give your AI coding agent a URL and watch it recreate the website as a clean Next.js app.",
+   "L57: |Claude Code|**Recommended** — Opus 5.5|",
+   "L125: The project keeps one portable Agent Skill at `.agents/skills/clone-website/`. Codex, Cursor, and OpenCode read it direc"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     7,
+     57
+    ],
+    "note": "提及 Claude Code 搭配 Opus 模型，非接入其 API",
+    "quotes": [
+     "**Best results with Claude Code + Opus 5.5. Also supports Codex, Cursor, and OpenCode.**",
+     "|Claude Code|**Recommended** — Opus 5.5|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     119,
+     120
+    ],
+    "note": "提供 docker compose 运行方式",
+    "quotes": [
+     "docker compose up app --build # build and run the app",
+     "docker compose up dev --build # run the app in dev mode on port 3001"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     7,
+     27,
+     45,
+     57,
+     125
+    ],
+    "note": "受支持的编码代理之一，非替代/竞品对象",
+    "quotes": [
+     "**Best results with Claude Code + Opus 5.5. Also supports Codex, Cursor, and OpenCode.**",
+     "**Recommended: ask your agent.** Paste this into Codex, Claude Code, or your coding agent:",
+     "Open the project in your agent with browser access enabled. In Claude Code or Cursor, run:",
+     "|Claude Code|**Recommended** — Opus 5.5|",
+     "The project keeps one portable Agent Skill at `.agents/skills/clone-website/`. Codex, Cursor, and OpenCode read it direc"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     7,
+     45,
+     60,
+     125
+    ],
+    "note": "受支持的编码代理之一",
+    "quotes": [
+     "**Best results with Claude Code + Opus 5.5. Also supports Codex, Cursor, and OpenCode.**",
+     "Open the project in your agent with browser access enabled. In Claude Code or Cursor, run:",
+     "|Cursor|Supported|",
+     "The project keeps one portable Agent Skill at `.agents/skills/clone-website/`. Codex, Cursor, and OpenCode read it direc"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

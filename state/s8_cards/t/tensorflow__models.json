@@ -1,0 +1,124 @@
+{
+ "fn": "tensorflow/models",
+ "sha": "7b9872d74f8a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "TensorFlow 用户的 SOTA 模型与建模方案实现仓库",
+  "review": "TensorFlow Model Garden 仓库，包含四部分：official（官方维护、基于 TF2 高层 API 的 SOTA 模型示例实现）、research（研究者维护的 TF1/TF2 研究模型）、community（社区模型仓库清单）与 orbit（自定义训练循环库，集成 tf.distribute，支持 CPU/GPU/TPU）。面向用 TensorFlow 做研究与产品开发的用户，提供训练日志（TensorBoard.dev），可通过 pip 包或克隆源码安装。",
+  "highlights": [
+   "official/research/community/orbit 四类模型集合",
+   "orbit 训练循环库支持 CPU、GPU 与 TPU",
+   "提供 tf-models-official 稳定版与 tf-models-nightly 每日构建包",
+   "部分模型提供 TensorBoard.dev 训练日志"
+  ],
+  "use_cases": [
+   "查找 TensorFlow 2 官方维护的 SOTA 模型实现",
+   "为研究复现模型训练并参考官方建模实践",
+   "基于 orbit 库编写自定义分布式训练循环"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "模型库",
+   "深度学习",
+   "TensorFlow",
+   "研究复现"
+  ],
+  "domain": "机器学习/模型实现",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: implementations of state-of-the-art (SOTA) models and modeling solutions for",
+   "L9: TensorFlow users can take full advantage of TensorFlow for their research and",
+   "L21: |orbit|• A flexible and lightweight library that users can easily use or fork when writing customized training loop code"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     2,
+     34,
+     47,
+     79,
+     86
+    ],
+    "quotes": [
+     "tf-models-official PyPI",
+     "pip3 install tf-models-official",
+     "pip3 install tf-models-nightly",
+     "pip3 install --user -r models/official/requirements.txt",
+     "pip3 install tensorflow-text-nightly"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     55
+    ],
+    "quotes": [
+     "git clone https://github.com/tensorflow/models.git"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     69
+    ],
+    "quotes": [
+     "If you are using a Colab notebook, please set the Python path with os.environ."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

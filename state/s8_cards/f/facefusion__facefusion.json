@@ -1,0 +1,83 @@
+{
+ "fn": "facefusion/facefusion",
+ "sha": "1aa9c9df5d39",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的人脸换脸与唇形同步操作平台",
+  "review": "以 Python 入口（facefusion.py 命令行）运行的人脸操作平台，提供安装文档与使用文档；源码安装需要终端操作与技术能力，同时提供 Windows 与 macOS 安装器供不熟悉终端的用户使用。README 未展开具体功能细节，仅以主题标签（deepfake、face-swap、lip-sync 等）与描述表明其用途。",
+  "highlights": [
+   "通过 python facefusion.py 命令行运行",
+   "提供 Windows 与 macOS 安装器",
+   "提供安装与深度使用文档"
+  ],
+  "use_cases": [
+   "安装后通过命令行执行人脸相关处理任务",
+   "不想用终端的用户使用 Windows/macOS 安装器起步"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "人脸处理",
+   "face-swap",
+   "lip-sync",
+   "命令行工具"
+  ],
+  "domain": "图像/视频处理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3: > Industry leading face manipulation platform.",
+   "L15: Be aware, the installation needs technical skills and is not recommended for beginners. In case you are not comfortable ",
+   "L22: python facefusion.py [commands] [options]"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

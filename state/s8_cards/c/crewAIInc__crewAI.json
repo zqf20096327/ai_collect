@@ -1,0 +1,171 @@
+{
+ "fn": "crewAIInc/crewAI",
+ "sha": "4c734e241611",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的多 Agent 协作编排 Python 框架",
+  "review": "开源 Python 框架，通过 Crews（基于角色的自主协作 Agent 团队）与 Flows（事件驱动、精细控制的确定性工作流）两种抽象构建多 Agent 自动化。提供 CLI（crewai create/install/run）以 JSON-first 项目结构脚手架化项目，支持工具、记忆、知识、结构化输出、checkpointing 与 MCP/A2A；要求 Python >=3.10 且 <3.14，依赖 uv 管理。另有面向企业的 AMP Suite 商业控制面提供托管部署、可观测性与支持。",
+  "highlights": [
+   "Crews（自主协作）与 Flows（事件驱动控制）双模型组合",
+   "CLI 一键创建项目并按 JSON 定义运行（crewai create/run）",
+   "支持工具、记忆、知识、结构化输出、checkpointing 与 MCP/A2A",
+   "提供 Claude Code/Cursor 等 AI 编码 agent 的官方 skills 安装"
+  ],
+  "use_cases": [
+   "构建多 Agent 角色分工协作的自动化流水线",
+   "需要精细流程控制与状态管理的事件驱动工作流",
+   "将原型级 agent 应用推进到生产级部署",
+   "让 AI 编码助手按官方最佳实践生成 CrewAI 项目"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "多Agent框架",
+   "Agent编排",
+   "工作流自动化",
+   "LLM应用开发"
+  ],
+  "domain": "LLM 基础设施/Agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "multi-agent",
+   "workflow-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L49: > CrewAI is an open-source Python framework with high-level abstractions and low-level APIs for building production-read",
+   "L52: - **CrewAI Crews**: Optimize for autonomy and collaborative intelligence with role-based AI agents.",
+   "L53: - **CrewAI Flows**: Build event-driven automations that combine precise workflow control, single LLM calls, and native s"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     83
+    ],
+    "note": "仅指通过 Claude Code 安装官方 skills，非模型接入说明",
+    "quotes": [
+     "**Claude Code:**"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     37,
+     38,
+     41,
+     194
+    ],
+    "quotes": [
+     " <a href=\"https://pypi.org/project/crewai/\">",
+     " PyPI version",
+     " PyPI downloads",
+     "uv tool install crewai"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     100
+    ],
+    "note": "npx skills 安装编码 agent 技能包，非本框架安装途径",
+    "quotes": [
+     "npx skills add crewaiinc/skills"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     83
+    ],
+    "quotes": [
+     "**Claude Code:**"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     98
+    ],
+    "quotes": [
+     "**Cursor, Codex, Windsurf, and others (skills.sh):**"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     98
+    ],
+    "quotes": [
+     "**Cursor, Codex, Windsurf, and others (skills.sh):**"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    33,
+    60
+   ],
+   "quotes": [
+    " <a href=\"https://opensource.org/licenses/MIT\">",
+    "For organizations that need a commercial control plane around CrewAI, CrewAI AMP Suite adds managed deployment, observab"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,123 @@
+{
+ "fn": "The-Vibe-Company/quivr",
+ "sha": "b4017d418e12",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源内容流搜索引擎：将持续内容转为可搜索与监控",
+  "review": "以 Go 编写的单二进制引擎（api/worker/migrate 命令），将持续输入的内容流持久化摄入并提供词汇、语义与混合检索，支持保存的查询、订阅与告警（关键词、描述式、本地语义三类），告警通过签名 webhook 投递。核心保持通用，连接器、规范化、增强、检索与投递均为插件能力。数据规范存储于 PostgreSQL 与 S3，搜索索引为可重建投影。当前处于评估阶段，API 为 v0，README 明确不建议用于生产。",
+  "highlights": [
+   "持久化与幂等摄入：写入提交确认、幂等键、不可变版本与更正/撤回机制",
+   "词汇、语义与混合检索，每次命中从规范存储回读并重新鉴权",
+   "三类告警插件：布尔关键词、外部分类器描述式、基于本地向量的语义告警",
+   "索引可从持久化工件重建，签名 webhook 投递与重试"
+  ],
+  "use_cases": [
+   "持续跟踪新闻流并按关键词或语义条件触发告警",
+   "为多来源文档构建带权限校验的混合检索服务",
+   "需要更正、撤回与版本历史的合规性内容库"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    12,
+    13
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "搜索引擎",
+   "内容摄入",
+   "告警/监控",
+   "RAG基础设施"
+  ],
+  "domain": "搜索引擎/数据基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: **An open-source engine that turns continuous content streams into search and monitoring.**",
+   "L49: |Lexical and vector search|Weaviate|",
+   "L50: |Embeddings|Local TEI serving pinned `multilingual-e5-small` (384 dimensions)|"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cohere",
+    "rel": "none",
+    "lines": [],
+    "note": "行 393 在窗口外且上下文未展示，无法核实为接入关系，不写为妥",
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     52,
+     56,
+     60
+    ],
+    "quotes": [
+     "|Local runtime|Docker Compose|",
+     "Requirements (Linux x86_64, or macOS on Apple Silicon for `make dev`): Go 1.27.2, Docker with Compose v2, Python 3 with ",
+     "make dev      # start dependencies, run migrations, launch API + worker"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "none",
+    "lines": [],
+    "note": "行 140 可见内容为 change feed，未出现 Cursor；行 216 窗口外无法核实",
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [
+    3
+   ],
+   "quotes": [
+    "License: MIT"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

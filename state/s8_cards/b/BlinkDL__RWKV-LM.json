@@ -1,0 +1,145 @@
+{
+ "fn": "BlinkDL/RWKV-LM",
+ "sha": "748252d1162e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "RWKV 线性 RNN 语言模型的参考实现与训练指南",
+  "review": "RWKV 语言模型架构的主仓库，当前为 RWKV-7 \"Goose\"：一种线性时间、常数空间（无 kv-cache）、无 attention 的 100% RNN 架构，可像 GPT transformer 一样并行训练。仓库提供 RWKV-v7 参考训练实现（train_temp）、CUDA kernel、MiniPile/Pile 训练流程、参数初始化表，以及 demo 代码与推理评测链接；并列出权重（HuggingFace）、GGUF、pip 包、GUI 运行器、服务器等周边生态。训练参考配置最低 1 GPU 7G 显存。",
+  "highlights": [
+   "RWKV-7：线性时间、常数空间、无 kv-cache 的 RNN 架构，可并行训练",
+   "提供 train_temp 参考实现，默认配置 1 GPU 7G 显存即可运行",
+   "提供 CUDA kernel 仓库与推理评测代码（MMLU、MATH500 等）",
+   "README 含 MiniPile/Pile 训练教程与逐参数初始化/权重衰减表"
+  ],
+  "use_cases": [
+   "从零训练或微调 RWKV 系列语言模型",
+   "研究线性注意力/RNN 架构的实现细节",
+   "部署 RWKV 模型推理（桌面/移动/服务器途径）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": "gpu-8g",
+  "install_friction": "high",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://arxiv.org/abs/2404.05892",
+  "demo_url": "https://huggingface.co/spaces/BlinkDL/RWKV-Gradio-1",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语言模型",
+   "模型架构",
+   "训练框架",
+   "深度学习"
+  ],
+  "domain": "AI 模型架构/深度学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # RWKV: Parallelizable RNN with Transformer-level LLM Performance (pronounced as \"RwaKuv\" (rʌkuv in IPA), from 4 major p",
+   "L11: RWKV-7 \"Goose\" is a strong **linear-time** & **constant-space** (no kv-cache) & **attention-free** & 100% RNN architectu",
+   "L45: **Please use https://github.com/BlinkDL/RWKV-LM/tree/main/RWKV-v7/train_temp as RWKV-7 reference implementation**. The d"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "google",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     100,
+     191
+    ],
+    "quotes": [
+     "RWKV pip pkg: https://pypi.org/project/rwkv/",
+     "You can run your model using https://pypi.org/project/rwkv/ (use \"rwkv_vocab_v20230424\" instead of \"20B_tokenizer.json\")"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "7G VRAM",
+    "rel": "support",
+    "lines": [
+     45
+    ],
+    "note": "参考训练实现的默认 GPU 显存要求",
+    "quotes": [
+     "**Please use https://github.com/BlinkDL/RWKV-LM/tree/main/RWKV-v7/train_temp as RWKV-7 reference implementation**. The d"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     29,
+     31,
+     88,
+     90,
+     92
+    ],
+    "note": "权重与 Gradio demo 托管平台，非替代/竞品",
+    "quotes": [
+     "Latest RWKV weights: https://huggingface.co/BlinkDL",
+     "GGUF: https://huggingface.co/collections/shoumenchougou/rwkv7-gxx-gguf and https://huggingface.co/HaloWang/rwkv-weights",
+     "Gradio Demo 1: https://huggingface.co/spaces/BlinkDL/RWKV-Gradio-1",
+     "Gradio Demo 2: https://huggingface.co/spaces/BlinkDL/RWKV-Gradio-2",
+     "Gradio Demo 2: https://huggingface.co/spaces/BlinkDL/RWKV-Gradio-3"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

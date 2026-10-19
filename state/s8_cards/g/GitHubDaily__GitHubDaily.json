@@ -1,0 +1,350 @@
+{
+ "fn": "GitHubDaily/GitHubDaily",
+ "sha": "f550191a1105",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 GitHub 开源项目分享与年度盘点清单",
+  "review": "GitHubDaily 自 2015 年起维护的开源项目分享仓库，累计分享超 10000 个项目，内容涵盖技术资料、开发者工具、编程网站与应用。README 按年份复盘并分类整理，2025 年部分设 AI 工具、后端、前端等目录，每条以表格形式给出项目名与简述；同时引导用户通过公众号、微博、知乎、X 等社交平台获取更新，并可在 issues 推荐或自荐项目。",
+  "highlights": [
+   "累计收录超 10000 个开源项目的分享清单",
+   "按年份（2018–2025）与领域分类整理复盘目录",
+   "通过 issues 接受项目推荐或自荐",
+   "同步运营公众号、微博、知乎、X 多个传播渠道"
+  ],
+  "use_cases": [
+   "想发现新的 AI 与开发者工具类开源项目",
+   "按年份回溯查找以往推荐过的项目",
+   "关注开源社区动态以扩展技术视野"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    17
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome清单",
+   "开源资讯",
+   "AI工具聚合",
+   "开发者资源"
+  ],
+  "domain": "开发者资源/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "media",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "2015 年成立的中文社区 GitHubDaily",
+   "公众号/微博/知乎渠道"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L17: 秉着挖掘开源价值的初衷，GitHubDaily 自 2015 年 10 月 10 日正式成立。",
+   "L21: 目前，GitHubDaily 已累积分享超过 10000 个开源项目，内容包括但不限于 GitHub 上的开源技术资料、开发者工具、编程网站以及成熟应用。",
+   "L36: 下面是对 GitHubDaily 在 2025 年所推荐的项目进行分类整理，方便大家查找以往分享过的内容。"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     47,
+     70,
+     76,
+     86
+    ],
+    "quotes": [
+     "AI-Couplet|一款基于Claude API开发的AI春联生成工具，只需输入关键词即可快速生成上下联和横批，界面简洁且喜庆，完全使用字节跳动AI编程工具Trae实现。",
+     "miniperplx|一款基于AI的开源搜索引擎，集成Claude/Grok AI及多种API，实现天气查询、代码运行、地图导航等功能，提供精简界面以清晰展示查找内容。",
+     "open-canvas|一款支持主流LLM与本地模型的开源AI交互界面，内置记忆功能以记住使用习惯与风格，兼容Claude、Gemini、ChatGPT及Ollama模型。",
+     "claude-code|一款在终端中运行的AI编程助手Claude Code，支持理解和操作本地代码库，能执行基本编码任务、解释代码逻辑、处理Git工作流程、回答架构问题、执行修复测试及代码格式化。"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     63,
+     65,
+     76,
+     77,
+     85
+    ],
+    "quotes": [
+     "Ollama-OCR|一款可离线使用的强大OCR工具，通过搭配Ollama在本地运行，支持LLaVA 7B、Llama 3.2 Vision等多种视觉模型，可输出Markdown、纯文本、JSON等多种文件格式并支持并行处理多个图像。",
+     "ai-renamer|一款基于 Ollama 本地模型的文件批量重命名工具，可智能识别指定目录下文件、图像或视频内容并自动化重命名，支持 Gemma、Llama 等模型及语言、定制等自定义参数。",
+     "open-canvas|一款支持主流LLM与本地模型的开源AI交互界面，内置记忆功能以记住使用习惯与风格，兼容Claude、Gemini、ChatGPT及Ollama模型。",
+     "harbor|一款容器化LLM工具箱，通过简单命令即可安装运行各类LLM后端、API、前端及相关服务，集成Open WebUI、ComfyUI、Ollama、Dify等工具，并支持自动下载模型与自定义配置。",
+     "Awesome-Ollama-Server|一款用于监控和检测Ollama服务的系统，支持批量检测服务、实时显示状态和结果、自动FOFA扫描功能，提供现代化Web可视化界面及中英文多语言支持。"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     69,
+     89,
+     92,
+     95,
+     120
+    ],
+    "quotes": [
+     "browser-use-webui|一款基于Browser Use优化开发的AI智能体浏览器自动化工具，提供简单易用的可视化WebUI操作界面以实现与浏览器交互完成复杂自动化任务，支持Gemini、OpenAI、DeepSeek等更多大语言",
+     "deepchat|一款简洁易用的DeepSeek第三方开源客户端，支持DeepSeek、硅基流动、Ollama等多个模型云服务商及多路聊天并发，具备完整的Markdown渲染与代码高亮显示功能。",
+     "DeepSeek|一款GitHub开源的第三方DeepSeek iOS客户端。集成DeepSeek模型能力，支持实时对话、多轮交互、历史记录管理和自定义提示词，还具备多主题、消息本地存储、实时输入及消息复制功能。",
+     "DeepSeek-RAG-Chatbot|一款开源免费的离线高级RAG对话工具，能从PDF、DOCX和TXT文件中快速准确检索信息，集成DeepSeek、GraphRAG等技术，具备聊天历史记忆和改进的错误处理机制。",
+     "MaxKB|一款开源的AI知识库问答系统，支持上传PDF、Word文档或输入网址一键爬取并自动处理生成问答能力，能精准理解问题并给出完整解答，可接入DeepSeek R1、Llama 3、OpenAI等多种大模型以满足隐私和成本需求。"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     70
+    ],
+    "quotes": [
+     "miniperplx|一款基于AI的开源搜索引擎，集成Claude/Grok AI及多种API，实现天气查询、代码运行、地图导航等功能，提供精简界面以清晰展示查找内容。"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     182
+    ],
+    "note": "窗外行，为所收录项目的部署方式描述",
+    "quotes": [
+     "webvm|一款运行在浏览器中的Linux虚拟机，无需安装软件即可使用完整Debian系统及原生开发工具链和图形环境。基于HTML5/WebAssembly构建，提供Linux ABI兼容、Tailscale网络支持、Dockerfile自"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "1G内存",
+    "rel": "mention",
+    "lines": [
+     146
+    ],
+    "note": "所收录项目 MTranServer 的运行要求，非本仓库要求",
+    "quotes": [
+     "MTranServer|一款超低资源消耗的离线翻译服务器，支持全世界主要语言翻译且质量与Google翻译相当，仅需CPU加1G内存即可运行，无需GPU并提供Docker支持。"
+    ]
+   },
+   {
+    "term": "无需GPU",
+    "rel": "mention",
+    "lines": [
+     146
+    ],
+    "note": "同上",
+    "quotes": [
+     "MTranServer|一款超低资源消耗的离线翻译服务器，支持全世界主要语言翻译且质量与Google翻译相当，仅需CPU加1G内存即可运行，无需GPU并提供Docker支持。"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     64,
+     76
+    ],
+    "quotes": [
+     "khoj|一款助力构建个人第二大脑的AI工具，能结合上传的本地文件与互联网信息提供准确相关回答，支持本地和在线LLM模型如Llama 3、Qwen、ChatGPT。",
+     "open-canvas|一款支持主流LLM与本地模型的开源AI交互界面，内置记忆功能以记住使用习惯与风格，兼容Claude、Gemini、ChatGPT及Ollama模型。"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     64
+    ],
+    "quotes": [
+     "khoj|一款助力构建个人第二大脑的AI工具，能结合上传的本地文件与互联网信息提供准确相关回答，支持本地和在线LLM模型如Llama 3、Qwen、ChatGPT。"
+    ]
+   },
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     77
+    ],
+    "quotes": [
+     "harbor|一款容器化LLM工具箱，通过简单命令即可安装运行各类LLM后端、API、前端及相关服务，集成Open WebUI、ComfyUI、Ollama、Dify等工具，并支持自动下载模型与自定义配置。"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     86
+    ],
+    "quotes": [
+     "claude-code|一款在终端中运行的AI编程助手Claude Code，支持理解和操作本地代码库，能执行基本编码任务、解释代码逻辑、处理Git工作流程、回答架构问题、执行修复测试及代码格式化。"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     104
+    ],
+    "quotes": [
+     "star-vector|一款专注于SVG图像生成的多模态视觉语言模型，支持通过文本或图像生成SVG代码，在图标、Logo、图表生成方面表现出色，提供1B和8B参数两种版本并发布于HuggingFace。"
+    ]
+   },
+   {
+    "term": "Coze",
+    "rel": "mention",
+    "lines": [
+     119
+    ],
+    "quotes": [
+     "Coze-on-Wechat|一款将Coze平台AI机器人快速接入微信的开源工具，支持文本聊天、语音交互及插件功能，提供Web后台管理界面以便配置和管理机器人。"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     140,
+     152
+    ],
+    "quotes": [
+     "composio|一款用于快速构建AI智能体的工具包，集成GitHub、Notion等250余种工具及系统操作、全网搜索功能，支持OpenAI、Claude、LlamaIndex、Langchain等主流AI框架，提供Python和Java",
+     "cognita|一款基于 LangChain 和 LlamaIndex 构建的开源低代码 RAG 框架，提供数据上传、模型管理、联网和提示词模板功能，无需编写代码即可构建、调试和发布 RAG 应用，支持通过 Docker 快速部署及主流大模"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     160
+    ],
+    "quotes": [
+     "mcp-send-email|一个基于 Resend API 的模型上下文协议（MCP）案例，实现 Cursor 或 Claude 撰写邮件后一键发送功能，无需复制粘贴内容，适合 MCP 学习上手。"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     168
+    ],
+    "quotes": [
+     "Kimi-Audio|一款音频基础模型，能同时处理音频理解、生成和对话。基于Kwen 2.5 7B模型构建，实现高质量文本输出与自然语音生成，解决处理音频时来回切换不同工具的痛点。"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     195
+    ],
+    "quotes": [
+     "mcp-scan|一款专为MCP服务器设计的安全扫描开源工具，能自动检测提示词注入、工具中毒和跨域提权攻击等常见安全漏洞，支持扫描Claude、Cursor、Windsurf等多种基于文件的MCP客户端，确保AI工具安全使用。"
+    ]
+   },
+   {
+    "term": "Suno",
+    "rel": "mention",
+    "lines": [
+     248
+    ],
+    "quotes": [
+     "ACE-Step|一款能媲美Suno的开源音乐模型，能在极短时间内生成高质量音乐且比传统AI模型快15倍，通过结合扩散生成模型和轻量级Transformer，训练中利用REPA技术实现语义对齐，使生成的音乐既保持高度连贯性又能精确对齐歌词。"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     252
+    ],
+    "quotes": [
+     "SurfSense|一款集成NotebookLM与Perplexity核心功能的开源智能知识库平台。支持27种文件格式上传构建私人知识库，通过自然语言交互获取引用答案，可连接搜索引擎等外部资源并快速生成播客内容，采用先进RAG技术提升检索精"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     336
+    ],
+    "quotes": [
+     "ComfyUI-Copilot|一款阿里团队开源的ComfyUI AI辅助工具。为解决节点查找和工作流构建问题，提供自然语言节点搜索、智能连接推荐、互动问答、参数探索、提示词优化及模型查询功能，可通过ComfyUI管理器或克隆目录安装。"
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     344
+    ],
+    "quotes": [
+     "opencoder|一款基于Vercel AI SDK构建的Claude Code开源平替版本，支持多种AI模型（OpenAI、Anthropic、Google）灵活选择，具备跨平台特性和高性能UI渲染能力的代码工具。"
+    ]
+   },
+   {
+    "term": "Lovable",
+    "rel": "mention",
+    "lines": [
+     387
+    ],
+    "quotes": [
+     "libra|一款 V0/Lovable 开源的 Libra AI 平替工具，支持用自然语言完成 Web 应用整个生命周期开发，基于 Cloudflare Workers 架构，集成 Claude、OpenAI、Gemini 等多种 AI 模"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

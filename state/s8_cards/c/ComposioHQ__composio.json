@@ -1,0 +1,173 @@
+{
+ "fn": "ComposioHQ/composio",
+ "sha": "7f98b8a67f39",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI Agent 开发者提供 1000+ 工具集成、认证与沙箱的 SDK",
+  "review": "Composio 是一个 SDK monorepo，包含 TypeScript SDK（@composio/core）、Python SDK、CLI 以及多个 provider 适配器。它为 AI Agent 提供 1000+ 预认证工具集、按用户会话、认证、触发器和沙箱；会话默认获得可在运行时发现、认证并执行工具的 meta tools，避免将大量工具定义载入上下文；每个会话也可暴露托管 MCP 端点供 Claude、Cursor 等 MCP 客户端使用。CLI 支持工具搜索、执行、账号连接和 TypeScript 脚本工作流。需要 COMPOSIO_API_KEY。TypeScript SDK 要求 Node 22+，Python SDK 支持 3.10+。",
+  "highlights": [
+   "1000+ 预认证工具集与按用户会话管理",
+   "meta tools 运行时发现/认证/执行，控制上下文占用",
+   "每个会话可开启托管 MCP 端点",
+   "覆盖 OpenAI、Anthropic、LangChain、CrewAI 等的 provider 适配器"
+  ],
+  "use_cases": [
+   "让 Agent 跨多个应用执行操作而无需自行维护集成",
+   "为不同 Agent 框架统一接入工具并管理用户认证",
+   "通过 CLI 在本地为编码 Agent 提供工具面"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent工具集成",
+   "SDK",
+   "MCP",
+   "function-calling"
+  ],
+  "domain": "LLM 基础设施/Agent 工具层",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L20: Composio gives your AI agents 1000+ pre-authenticated toolkits, per-user sessions, authentication, triggers, and a sandb",
+   "L27: - **Provider adapters** for OpenAI Agents, Claude Agent SDK, Vercel AI SDK, LangChain, and more"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     27,
+     85,
+     86
+    ],
+    "quotes": [
+     "- **Provider adapters** for OpenAI Agents, Claude Agent SDK, Vercel AI SDK, LangChain, and more",
+     "|Anthropic|`@composio/anthropic`|`composio-anthropic`|",
+     "|Claude Agent SDK|`@composio/claude-agent-sdk`|`composio-claude-agent-sdk`|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     51
+    ],
+    "quotes": [
+     "pip install composio composio-openai-agents openai-agents"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     36
+    ],
+    "quotes": [
+     "npm install @composio/core @composio/openai-agents @openai/agents"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     27,
+     87
+    ],
+    "note": "被适配的 Agent 框架",
+    "quotes": [
+     "- **Provider adapters** for OpenAI Agents, Claude Agent SDK, Vercel AI SDK, LangChain, and more",
+     "|Vercel AI SDK|`@composio/vercel`|—|"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     27,
+     90,
+     91
+    ],
+    "note": "被适配的 Agent 框架",
+    "quotes": [
+     "- **Provider adapters** for OpenAI Agents, Claude Agent SDK, Vercel AI SDK, LangChain, and more",
+     "|LangChain|`@composio/langchain`|`composio-langchain`|",
+     "|LangGraph|via `@composio/langchain`|`composio-langgraph`|"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     63
+    ],
+    "note": "作为 MCP 客户端提及",
+    "quotes": [
+     "**Prefer MCP?** Every session also exposes a hosted MCP endpoint. Pass `mcp: true` to `composio.create()` and point Clau"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     67
+    ],
+    "note": "编码 Agent 使用场景提及",
+    "quotes": [
+     "The `composio` CLI runs Composio from your shell and gives coding agents like Claude Code a local tool surface."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

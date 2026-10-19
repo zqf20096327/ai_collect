@@ -1,0 +1,180 @@
+{
+ "fn": "esengine/DeepSeek-Reasonix",
+ "sha": "93ca03e3f937",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源终端/桌面编码 Agent：读写代码、跑命令与测试",
+  "review": "Reasonix 是开源 AI 编码助手，程序运行在用户本地，模型由用户自行配置并直接付费。用户用自然语言描述任务，它在指定项目文件夹内读取代码、编辑文件、运行命令与测试，并展示每步操作；支持权限分级、plan 模式与按会话回合的文件回滚（仅覆盖其编辑工具改动的文件）。分发形态包括 Studio 桌面应用、终端 CLI/TUI、浏览器界面与 VS Code 等 ACP 编辑器扩展，四者为同一引擎。2.x 处于活跃开发，1.x 处于维护状态。",
+  "highlights": [
+   "DeepSeek 内置预设，任意 OpenAI 兼容端点经一条配置即可接入",
+   "MCP 服务器提供工具/提示/资源，Extension Protocol 可拦截运行时事件",
+   "CGO_ENABLED=0 单二进制静态分发，一条命令交叉编译六个目标",
+   "编辑工具改动的文件按会话回合可回滚，不触碰 git 历史"
+  ],
+  "use_cases": [
+   "在终端里用自然语言让 Agent 完成改代码、跑测试的任务",
+   "通过 VS Code 扩展在编辑器内使用带审批的编码助手",
+   "接入自有 OpenAI 兼容模型服务做本地编码代理"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    96,
+    104
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "编码Agent",
+   "CLI工具",
+   "桌面应用",
+   "LLM基础设施",
+   "插件系统"
+  ],
+  "domain": "开发者工具/AI 编码",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "双语 README（简体中文）",
+   "QQ 群 1093562660",
+   "抖音账号 做游戏的小鱼"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L37:  An open-source coding agent for your terminal, desktop, browser and editor.",
+   "L54: Reasonix is an open-source AI coding assistant. The program runs on your computer; the AI model is a service you configu",
+   "L113: - **Multi-model & composable.** DeepSeek ships as a preset; any"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     56,
+     113
+    ],
+    "quotes": [
+     "You pick the model: a DeepSeek preset is built in, any OpenAI-compatible service is one config entry, and you pay the mo",
+     "- **Multi-model & composable.** DeepSeek ships as a preset; any"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     50
+    ],
+    "note": "赞助商路由服务提及 Claude，非本产品接入 Anthropic",
+    "quotes": [
+     " Right Code Thanks to Right Code for sponsoring this project! Right Code reliably provides routing services for models s"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     68,
+     147
+    ],
+    "quotes": [
+     "1. Download and install the desktop app, Reasonix Studio, from the releases page.",
+     "The same release also carries the 2.x `reasonix` CLI as archives for"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     91,
+     156
+    ],
+    "quotes": [
+     "|**Reasonix 1.x**|`main-v2`|Maintenance / stable|`npm i -g reasonix` · desktop download|",
+     "npm i -g reasonix                  # any OS; pulls the prebuilt native binary"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     157
+    ],
+    "quotes": [
+     "brew install esengine/reasonix/reasonix   # macOS"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     179,
+     190
+    ],
+    "quotes": [
+     "git clone https://github.com/esengine/DeepSeek-Reasonix.git",
+     "make build      # -> bin/reasonix(.exe)"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     50
+    ],
+    "note": "赞助商描述中提及，非替代/竞品表述",
+    "quotes": [
+     " Right Code Thanks to Right Code for sponsoring this project! Right Code reliably provides routing services for models s"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,137 @@
+{
+ "fn": "google/langextract",
+ "sha": "a9ab4dadc2b1",
+ "source": "readme",
+ "identity": {
+  "one_liner": "用 LLM 从非结构化文本提取结构化信息并溯源的 Python 库",
+  "review": "LangExtract 是一个 Python 库：按用户自定义指令和 few-shot 示例，用 LLM 从临床笔记、报告等非结构化文本中提取结构化信息。核心机制包括：分块与并行处理长文档、多次抽取提高召回、将每个抽取值锚定回原文精确字符区间，并可生成自包含的交互式 HTML 可视化文件。模型侧支持 Gemini 系列、OpenAI（可选依赖）、经内置 Ollama 接口的本地模型，并提供插件系统接入自定义 provider。云模型需配置 API key；本地模型无需 key。",
+  "highlights": [
+   "抽取值精确锚定到源文本字符区间，支持可视化高亮核验",
+   "分块+并行+多次抽取策略处理长文档",
+   "内置 Ollama 支持本地推理，无需 API key",
+   "轻量插件系统注册自定义模型 provider"
+  ],
+  "use_cases": [
+   "从临床笔记或报告中抽取结构化字段并保留原文出处",
+   "整本小说级长文档的批量实体抽取",
+   "无 API key 环境下用本地模型做信息抽取",
+   "生成可视化 HTML 供人工审阅大量抽取结果"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "L21-L22 指向浏览器内 live demo",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "信息抽取",
+   "结构化输出",
+   "NLP",
+   "LLM基础设施"
+  ],
+  "domain": "NLP/信息抽取",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L17: LangExtract is a Python library that uses LLMs to extract structured information from unstructured text documents based ",
+   "L30: 5. **Flexible LLM Support:** Supports your preferred models, from cloud-based LLMs like the Google Gemini family to loca"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     153,
+     266,
+     267
+    ],
+    "quotes": [
+     "using local LLMs, LangExtract offers built-in support for Ollama and can be",
+     "## Using Local LLMs with Ollama",
+     "LangExtract supports local inference using Ollama, allowing you to run models without API keys:"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     115,
+     118
+    ],
+    "quotes": [
+     "### From PyPI",
+     "pip install langextract"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     136
+    ],
+    "quotes": [
+     "git clone https://github.com/google/langextract.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     145,
+     146
+    ],
+    "quotes": [
+     "docker build -t langextract .",
+     "docker run --rm -e LANGEXTRACT_API_KEY=\"your-api-key\" langextract python your_script.py"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

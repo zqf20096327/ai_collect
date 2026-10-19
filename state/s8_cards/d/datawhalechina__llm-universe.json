@@ -1,0 +1,137 @@
+{
+ "fn": "datawhalechina/llm-universe",
+ "sha": "6c887dcee88b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向小白的中文大模型应用开发教程：RAG 知识库助手",
+  "review": "Datawhale 出品的中文开源教程，以个人知识库助手项目为主线，讲解大模型应用开发流程：调用大模型 API、搭建向量知识库、用 LangChain 构建检索问答链、Streamlit 部署、评估与优化，并规划进阶 RAG 技巧与开源应用解读两部分内容。面向具备基础 Python 能力、无人工智能与算法基础的开发者。对百度文心、讯飞星火、智谱 GLM 等 API 做了统一封装。教程不需要 GPU，提供阿里云服务器学生免费领取及本地环境搭建指南。",
+  "highlights": [
+   "基于个人知识库助手项目的实践式课程，含 API 调用、向量库、RAG 问答链、部署与评估全流程",
+   "对 GPT、百度文心、讯飞星火、智谱 GLM 等国内外主要 LLM API 统一封装，支持一键调用",
+   "无需 GPU 环境，提供阿里云服务器学生免费领取与本地环境搭建指南",
+   "内容大纲含进阶 RAG 技巧（分块优化、混合检索、微调向量模型等）与开源应用案例解读"
+  ],
+  "use_cases": [
+   "零基础入门大模型应用开发，搭一个 RAG 知识库问答 Demo",
+   "学习统一封装国内外多家大模型 API 的调用方式",
+   "了解进阶 RAG 的检索优化与评估方法"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教程/课程",
+   "RAG",
+   "LangChain",
+   "知识库问答",
+   "LLM开发入门"
+  ],
+  "domain": "LLM 教育学习/RAG",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "document-qa",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "media",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "Datawhale 出品",
+   "阿里云服务器学生免费领取渠道"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: 本项目是一个面向小白开发者的大模型应用开发教程，旨在基于阿里云服务器，结合个人知识库助手项目，通过一个课程完成大模型开发的重点入门，主要内容包括：",
+   "L47: 所有具备基础 Python 能力，想要掌握 LLM 应用开发技能的开发者。",
+   "L63: 3. 兼具统一性与拓展性。本项目对 GPT、百度文心、讯飞星火、智谱GLM 等国内外主要 LLM API 进行了统一封装，支持一键调用不同的 LLM，帮助开发者将更多的精力放在学习应用与模型本身的优化上，而不需要花时间在繁琐的调用细节上；同"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [
+   {
+    "term": "不需要 GPU",
+    "rel": "mention",
+    "lines": [
+     51
+    ],
+    "note": "课程学习环境的说明，非产品自身硬件要求",
+    "quotes": [
+     "考虑到环境搭建问题，本项目提供了阿里云服务器学生免费领取方式，学生读者可以免费领取阿里云服务器，并通过阿里云服务器完成本课程的学习；本项目同时也提供了个人电脑及非阿里云服务器的环境搭建指南；本项目对本地硬件基本没有要求，不需要 GPU 环境"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     15,
+     16,
+     18,
+     82,
+     101
+    ],
+    "note": "教学中使用的框架，非替代/竞品对象",
+    "quotes": [
+     "1. **大模型简介**，何为大模型、大模型特点是什么、LangChain 是什么，如何开发一个 LLM 应用，针对小白开发者的简单介绍；",
+     "2. **如何调用大模型 API**，本节介绍了国内外知名大模型产品 API 的多种调用方式，包括调用原生 API、封装为 LangChain LLM、封装为 Fastapi 等调用方式，同时将包括百度文心、讯飞星火、智谱AI等多种大模型 ",
+     "4. **构建 RAG 应用**，包括将 LLM 接入到 LangChain 构建检索问答链，使用 Streamlit 进行应用部署",
+     " 3. [x] 什么是 LangChain",
+     " 1. [x] 将 LLM 接入 LangChain"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     90
+    ],
+    "note": "课程中示例的 API 之一",
+    "quotes": [
+     " - ChatGPT"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,169 @@
+{
+ "fn": "morluto/rea",
+ "sha": "05ecfe9c2cfd",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 agent 接入逆向工程工具的 MCP 服务器，从应用行为到原生二进制",
+  "review": "REA 以 MCP 服务器形式将 agent 连接到逆向工程工具集，可检视原生二进制、JavaScript/Electron 应用、.NET 程序集、Android APK、网站、网络抓包等 20 类目标；返回结论附带证据与局限，分析在本地运行。原生深度分析需调用已有的 Hopper、Ghidra 或 IDA 安装；静态 JavaScript/.NET 检视无需原生引擎。通过 `npx rea-agents setup` 向 agent 注册并安装工作流说明，也提供 CLI（`rea`）在终端直接使用。要求 Node.js 22.19+/24.11+/26+ 与 npm。",
+  "highlights": [
+   "单一 MCP 服务器覆盖原生二进制、JS/Electron、.NET、APK、固件、抓包等约 20 类分析目标",
+   "支持 Claude Code、Codex、Cursor、Gemini CLI 等多种 agent，其他客户端可手动注册 MCP",
+   "原生分析可复用已有 Hopper/Ghidra/IDA 安装，也可配合 objdump、Rizin、JADX、pwntools 等",
+   "结果附带证据与局限说明，分析在本地运行"
+  ],
+  "use_cases": [
+   "想了解某应用功能如何实现，让 agent 检视无源码的应用并给出证据",
+   "分析 APK、固件或二进制的结构、符号与反编译结果",
+   "从 Electron 应用目录或 ASAR 提取模块、导入与 IPC 边界",
+   "在终端用 CLI 命令做快照与脚本化分析"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "逆向工程",
+   "MCP服务器",
+   "二进制分析",
+   "CLI工具",
+   "agent工具"
+  ],
+  "domain": "开发者工具/逆向工程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文等多语言版本"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6: ### One MCP for reverse engineering across binaries, applications, and runtime behavior.",
+   "L41: REA connects your agent to tools for inspecting native binaries, JavaScript and Electron apps, .NET assemblies, and webs",
+   "L43: Setup registers REA with your agent and installs matching workflow instructions. Native analysis can use an existing Hop",
+   "L66: Setup supports Claude Code, Codex, Cursor, Gemini CLI, Grok Build and"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "none",
+    "lines": [
+     66
+    ],
+    "note": "L66 提到的是 Claude Code（agent 产品），非 Anthropic 模型接入",
+    "quotes": [
+     "Setup supports Claude Code, Codex, Cursor, Gemini CLI, Grok Build and"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "none",
+    "lines": [
+     66
+    ],
+    "note": "L66 提到的是 Grok Build（agent 产品），非 xAI 模型接入",
+    "quotes": [
+     "Setup supports Claude Code, Codex, Cursor, Gemini CLI, Grok Build and"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     23,
+     59,
+     94,
+     122
+    ],
+    "note": "npx rea-agents setup / npm install --global rea-agents 为本产品安装途径",
+    "quotes": [
+     "<code>npx rea-agents setup</code>",
+     "npx rea-agents setup",
+     "npm install --global rea-agents",
+     "npx rea-agents@latest setup"
+    ]
+   },
+   {
+    "term": "go",
+    "rel": "none",
+    "lines": [
+     149
+    ],
+    "note": "L149 说明分析 Go 二进制无需安装 Go，与安装本产品无关",
+    "quotes": [
+     "|Go binaries|Embedded compiler version, modules, replacements and build settings|Built-in static ELF/PE/thin Mach-O insp"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     66,
+     230
+    ],
+    "note": "被支持的 agent 客户端，非替代/竞品对象",
+    "quotes": [
+     "Setup supports Claude Code, Codex, Cursor, Gemini CLI, Grok Build and",
+     "Any agent that supports local MCP servers. Setup configures the"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     66
+    ],
+    "note": "被支持的 agent 客户端，非替代/竞品对象",
+    "quotes": [
+     "Setup supports Claude Code, Codex, Cursor, Gemini CLI, Grok Build and"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,144 @@
+{
+ "fn": "pathwaycom/serviette",
+ "sha": "49f034648be0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向企业和开发者的零代码文档问答 RAG 服务器，答案随文档实时更新",
+  "review": "基于 Pathway Live Data Framework 的 RAG 服务器：指向一个文档目录，在单个 YAML 文件中选择向量数据库与 embedder，运行两条命令即获得带来源引用的聊天界面与 REST API。索引器与服务器为独立进程，仅通过向量数据库耦合；文档的增、改、删在数秒内反映到答案，无需重新上传或重建索引。默认使用内嵌 DuckDB 零配置启动，支持本地免费 embedder。运行需要免费的 Pathway license key；目前一次只回答一个问题，未内置对话记忆、用户账号与托管服务。",
+  "highlights": [
+   "8 种向量数据库后端，通过 Pathway 原生连接器写入 upsert/delete",
+   "文档编辑、新增、删除数秒内同步到答案（实时增量索引）",
+   "多源接入：本地文件、Google Drive、S3/MinIO、SharePoint、FTP/SFTP/WebDAV/ZIP",
+   "文本、Office、PDF、扫描图片开箱即用，可配置音频与视频解析"
+  ],
+  "use_cases": [
+   "给组织文档搭一个带来源引用、随文档自动更新的问答助手",
+   "不写代码，用一份 YAML 配置就能跑起的 RAG 服务",
+   "需要索引和检索能力保持解耦、分别扩缩容的部署场景"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "文档问答",
+   "向量数据库",
+   "实时索引",
+   "no-code"
+  ],
+  "domain": "LLM 基础设施/RAG",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "bedrock"
+  ],
+  "scenario_tags_v2": [
+   "document-qa",
+   "rag",
+   "vector-database"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: **A no-code, always up-to-date RAG server for any vector database — built on",
+   "L65: **How mature it is.** serviette is a thin layer over the",
+   "L126: - **Live & incremental.** Built on Pathway: additions, edits and deletions"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     140
+    ],
+    "note": "Bedrock 是五类 embedder 家族之一",
+    "quotes": [
+     " LiteLLM, SentenceTransformers, Gemini, Bedrock) work identically on the"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     148
+    ],
+    "note": "仅以 Claude 风格形容聊天页面外观，非接入 Anthropic API",
+    "quotes": [
+     " ChatGPT/Claude-style chat page on `/` next to the versioned API"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     7,
+     28,
+     34,
+     96
+    ],
+    "quotes": [
+     " PyPI version",
+     "pip install serviette",
+     "**Use pip 23.1 or newer** (`python -m pip install -U pip` first): older pip lacks",
+     "pip install \"serviette[local]\" --extra-index-url https://download.pytorch.org/whl/cpu"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     148
+    ],
+    "note": "仅描述聊天页面风格，非替代/竞品声明",
+    "quotes": [
+     " ChatGPT/Claude-style chat page on `/` next to the versioned API"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

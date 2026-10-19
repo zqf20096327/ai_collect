@@ -1,0 +1,189 @@
+{
+ "fn": "wanshuiyin/Auto-claude-code-research-in-sleep",
+ "sha": "9ccdb46e5f5a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 ML 研究者提供跨模型审查循环的 Markdown 技能集",
+  "review": "ARIS 是一套纯 Markdown 的技能/工作流方法，用于自主 ML 研究：由执行模型驱动、独立模型（默认 Codex MCP）做跨模型审查，覆盖想法发现、实验自动化与审查循环。定位为方法论而非平台，可安装到 Claude Code、Codex CLI、Cursor、OpenClaw 等 agent 环境，也提供独立 CLI（ARIS-Code）与各平台插件发行，含 82-83 个技能；README 说明 codex-cli 0.154 移除 mcp-server 后改用 codex exec 桥接，替代模型组合无需 Claude 或 OpenAI API。",
+  "highlights": [
+   "跨模型审查循环：执行者驱动，独立模型（默认 Codex MCP）审查",
+   "纯 Markdown 技能形式，82-83 个技能，无框架依赖",
+   "提供独立 CLI（ARIS-Code）及 Claude Code / Codex CLI / DeepSeek Harness 插件",
+   "支持 ModelScope 托管模型的替代模型组合，无需 Claude/OpenAI API"
+  ],
+  "use_cases": [
+   "让 agent 在夜间自主推进 ML 研究实验与审查循环",
+   "在 Claude Code / Codex CLI / Cursor 等环境中安装研究工作流技能",
+   "为想法发现与实验自动化配置跨模型审查门控"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://huggingface.co/papers/2605.03042",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "科研自动化",
+   "LLM技能",
+   "跨模型审查",
+   "CLI工具"
+  ],
+  "domain": "科研/LLM 工具链",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "秋招中文表述（L19）",
+   "ARIS-Code 独立安装版中文标题（L27）"
+  ]
+ },
+ "trust": {
+  "confidence": "low",
+  "evidence": [
+   "L9: 🌱 *ARIS is a methodology, not a platform. What matters is the research workflow — take it wherever you go.*",
+   "L11: 💡 *Use ARIS as a skill-based workflow in Claude Code / Codex CLI / Cursor / Trae / Antigravity / GitHub Copilot CLI / Op",
+   "L13: 📦 *Those are the skills installed directly. Want it in one command? ARIS also ships as a standalone CLI and as plugins:*"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     11,
+     27
+    ],
+    "note": "Anthropic 渠道提及，非专门适配声明",
+    "quotes": [
+     "💡 *Use ARIS as a skill-based workflow in Claude Code / Codex CLI / Cursor / Trae / Antigravity / GitHub Copilot CLI / Op",
+     "🔥 **ARIS-Code CLI — 独立安装版** · English | ⬇️ Download · Downloads — **v0.4.28**: `ARIS_REASONING_EFFORT` works on the Anth"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     3
+    ],
+    "quotes": [
+     " <a href=\"https://huggingface.co/papers/2605.03042\">"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     11
+    ],
+    "note": "被支持的宿主环境之一，非替代/竞品",
+    "quotes": [
+     "💡 *Use ARIS as a skill-based workflow in Claude Code / Codex CLI / Cursor / Trae / Antigravity / GitHub Copilot CLI / Op"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     11,
+     13
+    ],
+    "note": "技能安装的宿主环境，非替代/竞品",
+    "quotes": [
+     "💡 *Use ARIS as a skill-based workflow in Claude Code / Codex CLI / Cursor / Trae / Antigravity / GitHub Copilot CLI / Op",
+     "📦 *Those are the skills installed directly. Want it in one command? ARIS also ships as a standalone CLI and as plugins:*"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     11
+    ],
+    "note": "可用的宿主环境，非替代/竞品",
+    "quotes": [
+     "💡 *Use ARIS as a skill-based workflow in Claude Code / Codex CLI / Cursor / Trae / Antigravity / GitHub Copilot CLI / Op"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "Kimi",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "通义千问",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "豆包",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "Windsurf",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

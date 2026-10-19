@@ -1,0 +1,100 @@
+{
+ "fn": "wdndev/llm_interview_note",
+ "sha": "1152e8dc8e4c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "大模型算法工程师的知识整理与面试题笔记",
+  "review": "以个人笔记形式整理大语言模型相关知识及面试题，内容参考网络资源汇编，答案为作者自行撰写并欢迎修正，提供在线阅读链接，另附微信公众号作为更新渠道。仓库同时推荐作者的其他动手实践项目（tiny-llm-zh、tiny-rag、tiny-mcp、llama3-from-scratch-zh）及 AI 工程师八股等学习资源。适合准备大模型方向岗位面试的读者阅读。",
+  "highlights": [
+   "覆盖 LLM 算法（应用）工程师相关知识及面试题",
+   "提供在线阅读链接",
+   "附带 tiny-llm-zh、tiny-rag、tiny-mcp 等配套实践项目",
+   "llama3-from-scratch-zh 可在 16G 内存本地笔记本运行"
+  ],
+  "use_cases": [
+   "准备大模型算法/应用工程师岗位面试",
+   "系统梳理 LLM 相关概念知识点",
+   "通过配套小项目动手学习预训练、微调、RAG、MCP"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "面试题",
+   "学习笔记",
+   "大语言模型",
+   "知识整理"
+  ],
+  "domain": "AI 教育/知识整理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "微信公众号更新渠道"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: # LLMs 相关知识及面试题",
+   "L5: 本仓库为大模型面试相关概念，由本人参考网络资源整理，欢迎阅读，如果对你有用，麻烦点一下 `🌟 star`，谢谢！",
+   "L21: 在线阅读链接：LLMs Interview Note"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [
+   {
+    "term": "16G内存",
+    "rel": "mention",
+    "lines": [
+     13
+    ],
+    "note": "配套实践项目的本地运行环境描述，非本仓库自身硬件要求",
+    "quotes": [
+     "- llama3-from-scratch-zh : 从零实现 llama3, 可加载 meta 官方权重，可在本地笔记本（16G内存）调试运行"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

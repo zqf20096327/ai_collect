@@ -1,0 +1,105 @@
+{
+ "fn": "bytedance/UI-TARS-desktop",
+ "sha": "f6fd363370f2",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开发者的多模态 GUI Agent 栈：用自然语言操作电脑与浏览器",
+  "review": "包含两个子项目：Agent TARS 是通用多模态 AI Agent 栈，提供 CLI 与 Web UI，通过多模态 LLM 与 MCP 工具集成，在终端、计算机、浏览器中执行类人任务流程；UI-TARS Desktop 是基于 UI-TARS 模型的桌面应用，提供本地/远程计算机与浏览器操作器，支持截图视觉识别、精确鼠标键盘控制，声称处理全在本地完成。面向使用自然语言驱动 GUI 自动化的开发者与用户，Apache 2.0 协议开源。",
+  "highlights": [
+   "Agent TARS CLI 支持 headful Web UI 与 headless 服务器两种执行模式",
+   "混合浏览器 Agent：GUI Agent、DOM 或混合策略控制浏览器",
+   "内核基于 MCP 构建，支持挂载 MCP Server 连接真实工具",
+   "UI-TARS Desktop 支持本地与远程计算机/浏览器操作器，跨平台（Windows/macOS/Browser）"
+  ],
+  "use_cases": [
+   "用自然语言让 Agent 代为完成订机票、订酒店等浏览器操作任务",
+   "通过 GUI 自动化操作本地桌面应用（如修改 VS Code 设置）",
+   "挂载 MCP Server 扩展 Agent 可调用的真实世界工具"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "arXiv:2501.12326",
+  "demo_url": "https://agent-tars.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "GUI Agent",
+   "MCP",
+   "桌面自动化",
+   "浏览器自动化",
+   "多模态"
+  ],
+  "domain": "AI Agent / GUI 自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "browser-automation",
+   "gui-automation",
+   "multimodal"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "字节跳动（bytedance）仓库",
+   "提供简体中文文档",
+   "飞书交流群"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7:  TARS \\* is a Multimodal AI Agent stack, currently shipping two projects: Agent TARS and UI-TARS-desktop:",
+   "L16:  Agent TARS is a general multimodal AI Agent stack, it brings the power of GUI Agent and Vision into your terminal, comp",
+   "L21:  UI-TARS Desktop is a desktop application that provides a native GUI Agent based on the UI-TARS model."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     86
+    ],
+    "quotes": [
+     "npx @agent-tars/cli@latest"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,104 @@
+{
+ "fn": "nltk/nltk",
+ "sha": "74bf2ded4b25",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 NLP 研究与开发的 Python 模块、数据集与教程套件",
+  "review": "NLTK 是一套开源 Python 模块、数据集与教程，支持自然语言处理的研究与开发。要求 Python 3.10 至 3.14。文档托管于 nltk.org，贡献指南与引用条目（NLTK 书，O'Reilly 2009）在 README 中给出。源码采用 Apache 2.0 许可，文档采用 CC BY-NC-ND 3.0，语料库按各自 README 条款以非商业用途再分发。",
+  "highlights": [
+   "提供 Python 模块、数据集与教程的组合",
+   "要求 Python 3.10–3.14",
+   "源码 Apache 2.0，文档 CC BY-NC-ND 3.0，语料库可再分发"
+  ],
+  "use_cases": [
+   "开展自然语言处理的科研与教学",
+   "在 Python 项目中调用 NLP 模块与数据集"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "dual",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "NLP",
+   "自然语言处理",
+   "机器学习",
+   "Python库"
+  ],
+  "domain": "自然语言处理/科研工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: NLTK -- the Natural Language Toolkit -- is a suite of open source Python",
+   "L6: modules, data sets, and tutorials supporting research and development in Natural",
+   "L7: Language Processing. NLTK requires Python version from 3.10 up to the latest 3.14."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     2
+    ],
+    "quotes": [
+     "PyPI"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    32,
+    33,
+    34,
+    35
+   ],
+   "quotes": [
+    "- NLTK source code is distributed under the Apache 2.0 License.",
+    "- NLTK documentation is distributed under the Creative Commons",
+    " Attribution-Noncommercial-No Derivative Works 3.0 United States license.",
+    "- NLTK corpora are provided under the terms given in the README file for each"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

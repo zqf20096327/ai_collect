@@ -1,0 +1,124 @@
+{
+ "fn": "huggingface/diffusers",
+ "sha": "45d7760fb734",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为开发者提供 PyTorch 扩散模型的推理与训练工具库",
+  "review": "Hugging Face 维护的 PyTorch 扩散模型库，覆盖图像、音频与分子 3D 结构的生成任务。核心由三部分组成：数行代码即可运行的推理 pipeline、可互换的噪声调度器、可组合搭建自定义系统的预训练模型模块。README 提供 pip/conda 安装方式、文本生成图像的快速上手示例，并列出文本生成图像、图生图、修复、超分辨率等任务对应的 pipeline 与 Hub 上的 30,000+ 检查点入口。设计取向为可用性与可定制性，并提示贡献者参考 .ai/ 目录的 AI agent 约定。",
+  "highlights": [
+   "提供数行代码完成推理的 diffusion pipeline 与 30,000+ 预训练检查点加载",
+   "噪声调度器可互换，预训练模型可作为组件组合搭建自定义扩散系统",
+   "覆盖文本生成图像、图生图、修复、超分辨率等任务及对应 pipeline 清单",
+   "提供面向 AI agent 的贡献约定（.ai/ 目录、claude plugin 安装）"
+  ],
+  "use_cases": [
+   "用几行代码加载预训练扩散模型生成图像",
+   "训练自己的扩散模型或搭建自定义端到端生成系统",
+   "按任务查找 Stable Diffusion、ControlNet、DDPM 等模型与 pipeline"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "扩散模型",
+   "图像生成",
+   "深度学习库",
+   "PyTorch"
+  ],
+  "domain": "AI 生成/深度学习工具库",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: 🤗 Diffusers is the go-to library for state-of-the-art pretrained diffusion models for generating images, audio, and even",
+   "L11: - State-of-the-art diffusion pipelines that can be run in inference with just a few lines of code.",
+   "L74: If you are using an AI agent, please point it at the project conventions in `.ai/` first (install them as a plugin with "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     74
+    ],
+    "note": "贡献流程中提及以 claude plugin/skill 形式使用 AI agent，非模型接入",
+    "quotes": [
+     "If you are using an AI agent, please point it at the project conventions in `.ai/` first (install them as a plugin with "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     17,
+     24
+    ],
+    "quotes": [
+     "We recommend installing 🤗 Diffusers in a virtual environment from PyPI or Conda. For more details about installing PyTor",
+     "pip install --upgrade diffusers[torch]"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     39
+    ],
+    "note": "本库为 Hugging Face 官方项目，README 提及 Hub 浏览检查点",
+    "quotes": [
+     "Generating outputs is super easy with 🤗 Diffusers. To generate an image from text, use the `from_pretrained` method to l"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

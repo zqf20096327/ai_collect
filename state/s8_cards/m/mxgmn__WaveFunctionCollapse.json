@@ -1,0 +1,87 @@
+{
+ "fn": "mxgmn/WaveFunctionCollapse",
+ "sha": "eb2a3f59ea37",
+ "source": "readme",
+ "identity": {
+  "one_liner": "从单个示例图生成局部相似位图与瓦片地图的程序",
+  "review": "用 C# 编写的控制台程序，读取输入位图并统计 NxN 图案，通过观察-传播循环生成与输入局部相似的位图或瓦片地图；仅依赖标准库，通过 .NET Core 以 dotnet run 构建，输出写入 output 文件夹，参数经 samples.xml 配置。可用的另一种途径包括 Windows 官方 release、itch.io 图形版与浏览器运行。README 记录该算法已被移植到十余种语言与 Unity/Unreal/Godot 等引擎，并被多款游戏用于生成关卡；同时说明算法可能陷入矛盾而无法继续（判定问题为 NP-hard）。",
+  "highlights": [
+   "以观察-传播循环生成与输入局部相似的位图，输出只含输入中出现过的 NxN 图案",
+   "支持瓦片模型：以瓦片列表与邻接数据初始化，含瓦片对称性系统以缩短邻接枚举",
+   "支持约束条件，可与人工创建或其他生成算法组合使用",
+   "支持更高维度（体素模型）与时间维"
+  ],
+  "use_cases": [
+   "根据一张示例像素图生成风格一致的位图纹理",
+   "为游戏生成瓦片地图关卡",
+   "在人工开始的关卡上用算法自动补全",
+   "生成 3D 体素模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://youtu.be/DOQTr2Xmlz0",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "程序化生成",
+   "纹理合成",
+   "瓦片地图",
+   "游戏开发",
+   "C#"
+  ],
+  "domain": "程序化生成/游戏开发算法",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L2: This program generates bitmaps that are locally similar to the input bitmap.",
+   "L14: WFC initializes output bitmap in a completely unobserved state, where each pixel value is in superposition of colors of ",
+   "L68: 1. Read the input bitmap and count NxN patterns."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,124 @@
+{
+ "fn": "e2b-dev/awesome-ai-sdks",
+ "sha": "6952110bc790",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 AI agent 开发的 SDK/框架/工具策展清单",
+  "review": "由 e2b 团队维护的 awesome 清单，收录用于创建、监控、调试和部署自主 AI agent 的 SDK、框架、库与工具数据库。条目按项目组织并附简介与链接，收录 E2B、AgentOps、Chidori、Fixie、Helicone、LangChain、Langfuse、LangSmith、Steamship、Vercel AI SDK 等约 12 个项目。清单自述按维护者最佳认知整理、并不全面，新增条目通过 pull request 提交。",
+  "highlights": [
+   "收录 agent 创建/监控/调试/部署类 SDK 与框架的数据库式清单",
+   "条目附简介与官网/GitHub/Discord 等链接",
+   "由 e2b 团队维护，开放 PR 补充"
+  ],
+  "use_cases": [
+   "为构建 AI agent 挑选框架或 SDK 时查找候选",
+   "了解 agent 开发生态中的监控/可观测性工具",
+   "发现 agent 运行时与托管平台项目"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome清单",
+   "AI agent",
+   "开发工具索引",
+   "知识聚合"
+  ],
+  "domain": "AI agent 开发/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: Welcome to our list of AI agents SDKs. A database of SDKs, frameworks, libraries, and tools for creating, monitoring, de",
+   "L21: This list is made by the team behind e2b. E2b is building an operation system of AI agents - that is, a set of tools, en"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     40
+    ],
+    "quotes": [
+     " - ChatGPT Pluhin"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     78,
+     79
+    ],
+    "quotes": [
+     "## Langchain",
+     "LangChain is a framework designed to simplify the creation of applications using large language models."
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     117
+    ],
+    "quotes": [
+     "## Vercel AI SDK"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,118 @@
+{
+ "fn": "langchain-ai/langgraph",
+ "sha": "0df5a937a2b4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向构建有状态长期运行 agent 的低层编排框架",
+  "review": "LangGraph 是由 LangChain Inc 构建的 Python 库，用于构建、管理和部署长期运行的有状态 agent 与工作流。提供持久化执行（失败后自动从断点恢复）、人在回路（检查和修改执行状态）、短期与长期记忆、通过 LangSmith 调试追踪，以及面向生产环境的部署基础设施。可独立使用，也可与 LangChain 产品线配合使用；另提供 JS/TS 版本及更高层的 Deep Agents 包。",
+  "highlights": [
+   "持久化执行：agent 可跨故障运行并在断点处自动恢复",
+   "人在回路：执行过程中可检查与修改 agent 状态",
+   "短期工作记忆与跨会话长期记忆支持",
+   "pip install -U langgraph 即可安装，另有 LangGraph.js 版本"
+  ],
+  "use_cases": [
+   "构建需要长期运行、可从故障中恢复的 agent 工作流",
+   "在 agent 执行中加入人工审批与状态修改",
+   "为团队部署可扩展的有状态 agent 系统"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent框架",
+   "LLM编排",
+   "有状态工作流",
+   "人在回路"
+  ],
+  "domain": "LLM 基础设施/Agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7:  Low-level orchestration framework for building stateful agents.",
+   "L14: Trusted by companies shaping the future of agents – including Klarna, Replit, Elastic, and more – LangGraph is a low-lev",
+   "L68: LangGraph is inspired by Pregel and Apache Beam. The public interface draws inspiration from NetworkX. LangGraph is buil"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     9,
+     10,
+     17
+    ],
+    "quotes": [
+     " PyPI - License",
+     " PyPI - Downloads",
+     "pip install -U langgraph"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     40,
+     45,
+     68
+    ],
+    "note": "同一公司生态内配合使用的库，README 未表述为替代或竞品关系",
+    "quotes": [
+     "While LangGraph can be used standalone, it also integrates seamlessly with any LangChain product, giving developers a fu",
+     "- LangChain – Provides integrations and composable components to streamline LLM application development.",
+     "LangGraph is inspired by Pregel and Apache Beam. The public interface draws inspiration from NetworkX. LangGraph is buil"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

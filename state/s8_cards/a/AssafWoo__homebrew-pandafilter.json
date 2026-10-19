@@ -1,0 +1,272 @@
+{
+ "fn": "AssafWoo/homebrew-pandafilter",
+ "sha": "7d8dd6db2e35",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI 编码 agent 的上下文过滤层：压缩命令输出、降低 token 消耗",
+  "review": "运行在本机命令与 AI 编码 agent 之间的 CLI 工具：拦截 pip/cargo/git 等命令输出，经 BERT（all-MiniLM-L6-v2，首次运行从 HuggingFace 下载约 90MB）驱动的 59 个 handler 过滤、去重和语义压缩，只保留错误、警告与结果；v1.3.0 增加按内容类型分派策略的自适应路由、文件重读改为 diff/结构摘要、以及 Claude Code 上下文 compaction 后的会话摘要保留。通过 panda init 自动接入 Claude Code、Cursor、Gemini CLI、Codex、Windsurf、Cline、VS Code Copilot、OpenClaw 共 8 种 agent，MIT 许可，完全本地运行。",
+  "highlights": [
+   "59 个 handler（70+ 命令别名）过滤常见构建/测试/CLI 命令输出，README 基准表称总 token 节省 82%",
+   "BERT（all-MiniLM-L6-v2）语义压缩与未知命令的 embedding 相似度路由",
+   "一次命令（panda init --agent all）自动接入 8 种 AI 编码 agent",
+   "panda gain / doctor / focus / index 等 CLI 子命令统计节省与诊断安装"
+  ],
+  "use_cases": [
+   "降低 Claude Code/Cursor 等 AI 编码 agent 的上下文 token 消耗",
+   "让 agent 看到干净的命令输出摘要而非冗长日志",
+   "跨 compaction 保留编辑文件、错误特征等会话关键信息"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI编码代理",
+   "上下文管理",
+   "CLI工具",
+   "token成本优化",
+   "本地运行"
+  ],
+  "domain": "开发者工具/AI 编码",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-memory"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5:  The context intelligence layer for AI coding agents.",
+   "L56: Auto-detects Claude Code, Cursor, Gemini CLI, Codex, Windsurf, Cline, OpenClaw, and VS Code Copilot. Skips anything that",
+   "L67: ### 1. Intelligent Compression"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker",
+    "npm",
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     19,
+     56
+    ],
+    "note": "Claude Code 作为被接入的 agent 出现，非官方 SDK 接入",
+    "quotes": [
+     " Claude Code",
+     "Auto-detects Claude Code, Cursor, Gemini CLI, Codex, Windsurf, Cline, OpenClaw, and VS Code Copilot. Skips anything that"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     359
+    ],
+    "note": "窗外行提及，非本地运行时接入",
+    "quotes": [
+     "ccr-sdk/    Conversation compression — tiered compressor, deduplicator, Ollama"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     38,
+     39,
+     45
+    ],
+    "note": "brew tap+install 及 curl 安装脚本为本产品安装途径",
+    "quotes": [
+     "brew tap AssafWoo/pandafilter",
+     "brew install pandafilter",
+     "curl -fsSL https://raw.githubusercontent.com/AssafWoo/homebrew-pandafilter/main/install.sh | bash"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     68,
+     87,
+     115
+    ],
+    "note": "仅为被过滤的命令示例，非本产品安装方式",
+    "quotes": [
+     "Raw command output is filtered, deduplicated, and semantically compressed by a BERT-powered pipeline that understands wh",
+     "When your AI agent runs a command — `pip install`, `cargo build`, `npm install` — PandaFilter intercepts the output and ",
+     "|`npm install`|648|25|**−96%**|"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     68,
+     87,
+     103
+    ],
+    "note": "仅为被过滤的命令示例",
+    "quotes": [
+     "Raw command output is filtered, deduplicated, and semantically compressed by a BERT-powered pipeline that understands wh",
+     "When your AI agent runs a command — `pip install`, `cargo build`, `npm install` — PandaFilter intercepts the output and ",
+     "|`pip install`|1,787|9|**−99%**|"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     106,
+     249
+    ],
+    "note": "基准表与 handler 中的命令语境",
+    "quotes": [
+     "|`docker build`|1,801|24|**−99%**|",
+     "|**docker**|`docker`|`logs`: ANSI strip + BERT. `ps`/`images`: formatted tables + total size. `build`: errors + final im"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "none",
+    "lines": [],
+    "note": "L119 git clone 为命令示例",
+    "quotes": []
+   },
+   {
+    "term": "helm",
+    "rel": "mention",
+    "lines": [
+     134,
+     248
+    ],
+    "note": "被过滤的命令，非安装途径",
+    "quotes": [
+     "|`helm install`|224|54|−76%|",
+     "|**helm**|`helm`|`list`: compact table. `status`/`diff`/`template`: structured.|"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     19,
+     56,
+     83
+    ],
+    "note": "被接入支持的 agent，非替代/竞品",
+    "quotes": [
+     " Claude Code",
+     "Auto-detects Claude Code, Cursor, Gemini CLI, Codex, Windsurf, Cline, OpenClaw, and VS Code Copilot. Skips anything that",
+     "Requires Claude Code and is installed automatically with `panda init`."
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     21,
+     56,
+     60
+    ],
+    "note": "被接入支持的 agent",
+    "quotes": [
+     " Cursor",
+     "Auto-detects Claude Code, Cursor, Gemini CLI, Codex, Windsurf, Cline, OpenClaw, and VS Code Copilot. Skips anything that",
+     "panda init --agent cursor           # Cursor"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     23,
+     56
+    ],
+    "note": "被接入支持的 agent",
+    "quotes": [
+     " Windsurf",
+     "Auto-detects Claude Code, Cursor, Gemini CLI, Codex, Windsurf, Cline, OpenClaw, and VS Code Copilot. Skips anything that"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     31,
+     56
+    ],
+    "note": "VS Code Copilot 为被接入支持的 agent",
+    "quotes": [
+     " VS Code Copilot",
+     "Auto-detects Claude Code, Cursor, Gemini CLI, Codex, Windsurf, Cline, OpenClaw, and VS Code Copilot. Skips anything that"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     48
+    ],
+    "note": "BERT 模型下载来源",
+    "quotes": [
+     "> **First run:** PandaFilter downloads the BERT model (~90 MB, `all-MiniLM-L6-v2`) from HuggingFace and caches it at `~/"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

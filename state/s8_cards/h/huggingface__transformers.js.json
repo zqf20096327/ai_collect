@@ -1,0 +1,131 @@
+{
+ "fn": "huggingface/transformers.js",
+ "sha": "fa5958956746",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Web 开发者在浏览器中运行 Transformer 预训练模型的 JS 库",
+  "review": "Transformers.js 是 Hugging Face transformers Python 库在 JavaScript 上的功能等价实现，通过 ONNX Runtime 在浏览器内运行预训练模型，无需服务器。API 与 Python 版一致，提供 pipeline 接口；任务覆盖 NLP、计算机视觉、音频与多模态共数十种。模型默认通过 WASM 在 CPU 上运行，可设置 device: 'webgpu' 切换到 GPU；在浏览器等资源受限环境中可通过 dtype 选项选择 fp32/fp16/q8/q4 量化以降低带宽。经 NPM 安装，也可通过 CDN 直接引入。",
+  "highlights": [
+   "基于 ONNX Runtime 在浏览器运行预训练模型，无需服务器",
+   "支持 NLP、视觉、音频、多模态等多类任务（含任务/架构支持清单）",
+   "默认 WASM/CPU 运行，可配置 WebGPU",
+   "支持 fp32/fp16/q8/q4 量化以适配资源受限环境"
+  ],
+  "use_cases": [
+   "在网页中做文本分类、问答、翻译等 NLP 推理",
+   "浏览器端图像分类、目标检测与背景移除",
+   "网页内语音识别与文字转语音",
+   "将已有 PyTorch 模型经 Optimum 转为 ONNX 后在 Web 上运行"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "浏览器推理",
+   "WebML",
+   "JavaScript",
+   "ONNX",
+   "Transformer模型"
+  ],
+  "domain": "机器学习/Web 端推理框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: Run 🤗 Transformers directly in your browser, with no need for a server!",
+   "L13: Transformers.js is designed to be functionally equivalent to Hugging Face's transformers python library, meaning you can",
+   "L19: Transformers.js uses ONNX Runtime to run models in the browser. The best part about it, is that you can easily convert y"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cohere",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "deepseek",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     25,
+     27,
+     33
+    ],
+    "quotes": [
+     "To install via NPM, run:",
+     "npm i @huggingface/transformers",
+     "    import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.1';"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     13,
+     91,
+     116
+    ],
+    "note": "所属生态与模型托管平台，非替代/竞品对象",
+    "quotes": [
+     "Transformers.js is designed to be functionally equivalent to Hugging Face's transformers python library, meaning you can",
+     "Ready to dive in? Explore our wide variety of demo applications and templates here. You can also launch your own project",
+     "To find compatible models on the Hub, select the \"transformers.js\" library tag in the filter menu (or visit this link). "
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

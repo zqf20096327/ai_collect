@@ -1,0 +1,152 @@
+{
+ "fn": "Fincept-Corporation/FinceptTerminal",
+ "sha": "84203647465b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源 C++ 金融研究终端：面向投资者/研究者的市场分析与 AI 自动化",
+  "review": "原生 C++20/Qt6 桌面金融终端，嵌入 Python 3.11 分析，单一二进制。开源版（AGPL-3.0）提供 DCF、投资组合优化、VaR/Sharpe 等分析模块，37 个交易/经济/地缘 agent（自带 LLM key），100+ 数据连接器（FRED、IMF、Polygon 等），纸面交易引擎与 16 家券商集成，可视化节点编辑器与 MCP 工具。另有闭源 Enterprise 版按月付费，团队日常开发在 Enterprise，本仓库每月发布一次。",
+  "highlights": [
+   "37 个 trader/economic/geopolitics agents，支持 OpenAI、Anthropic、Gemini、Groq、DeepSeek、OpenRouter、Ollama 等 key",
+   "100+ 数据连接器（FRED、IMF、World Bank、Polygon、AkShare 等）",
+   "16 家券商集成与纸面交易引擎",
+   "原生 C++20/Qt6，单二进制，无 Electron/Node.js"
+  ],
+  "use_cases": [
+   "学生与学术研究者做股票基本面与量化分析学习",
+   "通过自带 LLM key 运行金融研究 agent",
+   "连接个人 API key 获取市场与宏观数据",
+   "用纸面交易引擎模拟加密与股票交易策略"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "dual",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "金融终端",
+   "投资研究",
+   "AI agents",
+   "算法交易",
+   "桌面应用"
+  ],
+  "domain": "金融/投资研究",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "groq",
+   "openrouter",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "quant-finance"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L65: **Fincept Terminal** is a native C++20 desktop terminal for financial research — Qt6 UI, embedded Python 3.11 analytics,",
+   "L119: - **Analytics** — DCF, portfolio optimisation, VaR/Sharpe, derivatives pricing, fixed income, alternatives, plus an 18-m",
+   "L120: - **AI** — 37 trader/investor, economic and geopolitics agents; bring your own key (OpenAI, Anthropic, Gemini, Groq, Dee"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     120
+    ],
+    "quotes": [
+     "- **AI** — 37 trader/investor, economic and geopolitics agents; bring your own key (OpenAI, Anthropic, Gemini, Groq, Dee"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "compat",
+    "lines": [
+     120
+    ],
+    "quotes": [
+     "- **AI** — 37 trader/investor, economic and geopolitics agents; bring your own key (OpenAI, Anthropic, Gemini, Groq, Dee"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "compat",
+    "lines": [
+     120
+    ],
+    "quotes": [
+     "- **AI** — 37 trader/investor, economic and geopolitics agents; bring your own key (OpenAI, Anthropic, Gemini, Groq, Dee"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     120
+    ],
+    "quotes": [
+     "- **AI** — 37 trader/investor, economic and geopolitics agents; bring your own key (OpenAI, Anthropic, Gemini, Groq, Dee"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     113
+    ],
+    "quotes": [
+     "**Build from source** — Linux/macOS: `git clone … && ./setup.sh`. Windows and manual builds, the pinned toolchain (**CMa"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    75,
+    95
+   ],
+   "quotes": [
+    "|**Licence**|AGPL-3.0 — strong copyleft|Proprietary — no copyleft to manage|",
+    "Monthly billing, no annual lock-in, no seat minimum — **$180–$540 per user per year**, against roughly $27,000 for a Blo"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

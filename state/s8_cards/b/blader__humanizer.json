@@ -1,0 +1,162 @@
+{
+ "fn": "blader/humanizer",
+ "sha": "276617d2c31e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 agent 用户的 AI 痕迹改写技能：按 Wikipedia 标准去除 AI 写作特征",
+  "review": "以 skill 形式运行的文本改写工具：基于 Wikipedia「Signs of AI writing」归纳的 26 种 AI 写作模式（分六类，含弱特征需共现才判定），逐条标注后重写，输出初稿、对残留人工痕迹的批评与终稿。可通过写作样本做声音匹配，改写文件时只改散文内容，保留代码、数据、frontmatter 与链接。要求事实细节必须来自原文或作者，缺失时询问而非编造。支持 Claude Code 插件、Codex、Claude.ai/Desktop 及 Skills CLI 覆盖的其他 agent。明确不以免过 AI 检测器为目标。",
+  "highlights": [
+   "基于 Wikipedia「Signs of AI writing」的 26 种 AI 写作模式检测与改写",
+   "提供写作样本可做声音匹配（节奏、用词、标点）",
+   "改写文件时仅改散文，保留代码、数据、frontmatter、链接",
+   "事实细节不编造，缺失时向作者询问"
+  ],
+  "use_cases": [
+   "把 AI 起草的公告、博客改得更像人写的",
+   "在 Claude Code/Codex 等工具中以 /humanizer 直接调用",
+   "按自己的写作风格样本定制改写口吻",
+   "清理文档中的 AI 套话与格式化痕迹"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent-skills",
+   "文本改写",
+   "AI写作",
+   "提示工程"
+  ],
+  "domain": "内容创作/写作辅助",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "prompt-engineering",
+   "ai-writing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: Humanizer makes AI-written text sound like a person wrote it, without changing what it says. It is built on Wikipedia's ",
+   "L29: Humanizer checks for 26 patterns in all.",
+   "L104: Humanizer marks every tell it finds, strongest first. It drafts a rewrite without treating the original structure as fix"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     7,
+     35,
+     42,
+     50
+    ],
+    "note": "通过 Claude Code/Claude.ai/Claude Desktop 安装使用，无 API/模型接入声明",
+    "quotes": [
+     "Humanizer makes AI-written text sound like a person wrote it, without changing what it says. It is built on Wikipedia's ",
+     "### Claude Code",
+     "The plugin answers to `/humanizer:humanizer`. It needs Claude Code 2.1.142 or newer; on older versions, use `npx skills ",
+     "### Claude.ai and Claude Desktop"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     42,
+     47,
+     57
+    ],
+    "note": "npx skills add 为多种 agent 的安装途径",
+    "quotes": [
+     "The plugin answers to `/humanizer:humanizer`. It needs Claude Code 2.1.142 or newer; on older versions, use `npx skills ",
+     "npx skills add blader/humanizer --global --agent codex",
+     "npx skills add blader/humanizer --global --agent '*'"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     7,
+     35,
+     42
+    ],
+    "note": "支持安装本技能的工具，非替代/竞品",
+    "quotes": [
+     "Humanizer makes AI-written text sound like a person wrote it, without changing what it says. It is built on Wikipedia's ",
+     "### Claude Code",
+     "The plugin answers to `/humanizer:humanizer`. It needs Claude Code 2.1.142 or newer; on older versions, use `npx skills "
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     60
+    ],
+    "note": "Skills CLI 可安装的目标 agent",
+    "quotes": [
+     "This installs Humanizer for every agent the Skills CLI supports, including Gemini CLI, GitHub Copilot, and Windsurf. Lea"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     60
+    ],
+    "note": "Skills CLI 可安装的目标 agent",
+    "quotes": [
+     "This installs Humanizer for every agent the Skills CLI supports, including Gemini CLI, GitHub Copilot, and Windsurf. Lea"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

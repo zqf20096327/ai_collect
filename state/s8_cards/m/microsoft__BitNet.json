@@ -1,0 +1,136 @@
+{
+ "fn": "microsoft/BitNet",
+ "sha": "daad01d1a92a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "1-bit 大模型的官方 CPU/GPU 推理框架",
+  "review": "bitnet.cpp 是 1-bit LLM（如 BitNet b1.58）的官方推理框架，提供 I2_S/TL1/TL2 等优化内核，支持在 x86 与 ARM CPU 及 GPU 上运行，并附 CPU/GPU 推理基准脚本与 .safetensors 转 gguf 的转换脚本。官方在 Hugging Face 发布 BitNet-b1.58-2B-4T 与两个 embedding 模型，社区模型列表含 Llama3-8B-1.58、Falcon3/Falcon-E 家族。构建需 python>=3.10、cmake>=3.22、clang>=18，Windows 需 Visual Studio 2022，从源码克隆编译后经 setup_env.py 下载/量化模型运行。",
+  "highlights": [
+   "提供 I2_S、TL1、TL2 三种内核，按模型与 CPU 架构列出支持矩阵",
+   "支持对话模式（-cnv）与线程数、上下文、温度等推理参数",
+   "提供端到端基准脚本与 dummy 模型生成脚本用于本机测试",
+   "支持从 .safetensors 检查点转换为 gguf 模型"
+  ],
+  "use_cases": [
+   "在本地 CPU 上运行 1-bit/ternary 模型做文本生成",
+   "对 BitNet 类模型做推理性能基准测试",
+   "将 safetensors 检查点转换为 gguf 并量化推理",
+   "在资源受限设备上部署小型 embedding 模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "README L6/L28 链接 Technical Report",
+  "demo_url": "README L7/L46 在线 demo 链接",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "模型推理",
+   "1-bit LLM",
+   "CPU推理",
+   "量化",
+   "边缘部署"
+  ],
+  "domain": "AI 基础设施/模型推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine",
+   "model-quantization"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L44: bitnet.cpp is the official inference framework for 1-bit LLMs (e.g., BitNet b1.58). It offers a suite of optimized kerne",
+   "L204: ## Installation",
+   "L221: ### Build from source"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "llama.cpp",
+    "rel": "none",
+    "lines": [],
+    "note": "候选行号为代码示例，README 未提及 llama.cpp",
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     221,
+     228
+    ],
+    "quotes": [
+     "### Build from source",
+     "git clone --recursive https://github.com/microsoft/BitNet.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     237
+    ],
+    "note": "pip 安装依赖 requirements.txt，非包本身发布",
+    "quotes": [
+     "pip install -r requirements.txt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     242,
+     340
+    ],
+    "note": "模型下载来源，非替代/竞品",
+    "quotes": [
+     "huggingface-cli download microsoft/BitNet-b1.58-2B-4T-gguf --local-dir models/BitNet-b1.58-2B-4T",
+     "huggingface-cli download microsoft/bitnet-b1.58-2B-4T-bf16 --local-dir ./models/bitnet-b1.58-2B-4T-bf16"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

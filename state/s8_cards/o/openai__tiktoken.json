@@ -1,0 +1,101 @@
+{
+ "fn": "openai/tiktoken",
+ "sha": "211949a9eaa0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 OpenAI 模型的快速 BPE 分词器库",
+  "review": "tiktoken 是一个 BPE 分词 Python 库，提供编码/解码文本、按 OpenAI 模型名获取对应 tokeniser（如 gpt-4o）等 API，API 文档位于 tiktoken/core.py。文本可逆无损转换、支持任意文本、token 序列可压缩原文。附带 educational 子模块用于可视化 BPE 过程，并通过 tiktoken_ext 插件机制支持注册自定义 Encoding。从 PyPI 安装，示例代码在 OpenAI Cookbook。",
+  "highlights": [
+   "提供 encoding_for_model 按模型名获取对应分词器",
+   "BPE 编码可逆无损、支持任意文本并压缩 token 序列",
+   "educational 子模块可视化 BPE 训练过程",
+   "tiktoken_ext 插件机制注册自定义编码"
+  ],
+  "use_cases": [
+   "计算文本在 OpenAI 模型下的 token 数",
+   "在 token 与原始文本之间互相转换",
+   "学习和可视化 BPE 分词原理",
+   "注册自定义编码以扩展分词支持"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "分词器",
+   "token计算",
+   "LLM工具",
+   "Python库"
+  ],
+  "domain": "LLM 基础设施/分词工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: tiktoken is a fast BPE tokeniser for use with",
+   "L12: enc = tiktoken.encoding_for_model(\"gpt-4o\")",
+   "L15: The open source version of `tiktoken` can be installed from PyPI:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     15,
+     17,
+     100
+    ],
+    "quotes": [
+     "The open source version of `tiktoken` can be installed from PyPI:",
+     "pip install tiktoken",
+     "Then simply `pip install ./my_tiktoken_extension` and you should be able to use your"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

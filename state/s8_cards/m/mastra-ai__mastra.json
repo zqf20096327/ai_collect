@@ -1,0 +1,112 @@
+{
+ "fn": "mastra-ai/mastra",
+ "sha": "7dddec294672",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 TypeScript AI 应用与 Agent 框架",
+  "review": "Mastra 提供基于 TypeScript 的框架，用于构建 AI 应用与 Agent，覆盖从原型到生产部署的环节。关键机制包括：统一接口接入 40+ 模型提供商的模型路由、基于图的 workflow 引擎（.then/.branch/.parallel）、human-in-the-loop 暂停恢复（依赖存储保存执行状态）、上下文与记忆管理、MCP server 编写，以及内置 evals 与可观测性。可嵌入 React/Next.js/Node.js 应用或作为独立服务部署。仓库采用 Apache-2.0 与企业许可的双许可模式，`ee/` 目录代码生产使用需企业许可。",
+  "highlights": [
+   "模型路由：单一标准接口接入 40+ 提供商（OpenAI、Anthropic、Gemini 等）",
+   "图式 workflow 引擎与 human-in-the-loop 暂停/恢复机制",
+   "MCP server 编写：以标准协议暴露 agents、tools 与资源",
+   "内置 evals 与可观测性支持生产迭代"
+  ],
+  "use_cases": [
+   "用 TypeScript 从零搭建 AI Agent 应用并接入多家模型",
+   "把 Agent 与 workflow 打包进现有 React/Next.js/Node.js 项目",
+   "需要人工审批环节的多步骤自动化流程",
+   "为 Agent 添加评测与可观测性以持续调优"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent框架",
+   "TypeScript",
+   "workflow编排",
+   "MCP",
+   "模型路由"
+  ],
+  "domain": "LLM 基础设施/Agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "model-gateway"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: Mastra is a framework for building AI-powered applications and agents with a modern TypeScript stack.",
+   "L21: - **Model routing**: Connect to 40+ providers through one standard interface. Use models from OpenAI, Anthropic, Gemini,",
+   "L33: - **MCP servers**: Author Model Context Protocol servers, exposing agents, tools, and other structured resources via the"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    72,
+    74,
+    75,
+    77
+   ],
+   "quotes": [
+    "This repository uses a dual-license model:",
+    "- **Apache License 2.0**: The core framework and the vast majority of this codebase is open source under Apache-2.0.",
+    "- **Mastra Enterprise License**: Code in any directory named `ee/` (e.g., `packages/core/src/auth/ee/`) is source-availa",
+    "See LICENSE.md for the full license mapping and ee/LICENSE for the enterprise license terms."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     31
+    ],
+    "note": "可集成的 UI 库，非替代/竞品对象",
+    "quotes": [
+     "- **Integrations**: Bundle agents and workflows into existing React, Next.js, or Node.js apps, or ship them as standalon"
+    ]
+   }
+  ]
+ }
+}

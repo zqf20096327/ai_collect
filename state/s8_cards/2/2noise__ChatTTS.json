@@ -1,0 +1,158 @@
+{
+ "fn": "2noise/ChatTTS",
+ "sha": "69a1405e7424",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向对话场景的文本转语音生成模型，支持中英文",
+  "review": "ChatTTS 是面向 LLM 助手等对话场景的文本转语音模型，支持中英文输入。模型用 100,000+ 小时中英文音频训练，开源版本为无 SFT 的 40,000 小时预训练版，发布于 HuggingFace。支持多说话人、细粒度韵律控制（笑声、停顿、插入语），可控制 token 级标签 [laugh]、[uv_break]、[lbreak]。代码采用 AGPLv3+ 许可，模型采用 CC BY-NC 4.0 许可，仅限学术用途，禁止商用。训练中添加高频噪声并压缩音质以限制滥用。",
+  "highlights": [
+   "面向对话任务优化的 TTS，支持多说话人交互",
+   "细粒度韵律控制：笑声、停顿、插入语",
+   "40,000 小时中英文预训练模型",
+   "提供 WebUI 与命令行两种推理入口"
+  ],
+  "use_cases": [
+   "为 LLM 助手生成对话语音",
+   "学术研究中的语音合成实验",
+   "生成带笑声与停顿控制的中英文语音"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "TTS",
+   "语音合成",
+   "对话系统",
+   "LLM语音"
+  ],
+  "domain": "语音合成/AI 模型",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "tts"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "QQ 群作为主要中文社区渠道",
+   "提供简体中文 README",
+   "Bilibili 视频介绍"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L23: ChatTTS is a text-to-speech model designed specifically for dialogue scenarios such as LLM assistant.",
+   "L41: - The main model is trained with Chinese and English audio data of 100,000+ hours.",
+   "L94: #### Optional: Install vLLM (Linux only)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     94,
+     96
+    ],
+    "quotes": [
+     "#### Optional: Install vLLM (Linux only)",
+     "pip install safetensors vllm==0.2.7 torchaudio"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     142,
+     144
+    ],
+    "quotes": [
+     "1. Install the stable version from PyPI",
+     "pip install ChatTTS"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     10
+    ],
+    "quotes": [
+     "Open In Colab"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     77
+    ],
+    "quotes": [
+     "git clone https://github.com/2noise/ChatTTS"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     9,
+     42
+    ],
+    "quotes": [
+     "Huggingface",
+     "- The open-source version on **HuggingFace** is a 40,000 hours pre-trained model without SFT."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    49,
+    53
+   ],
+   "quotes": [
+    "The code is published under `AGPLv3+` license.",
+    "The model is published under `CC BY-NC 4.0` license. It is intended for educational and research use, and should not be "
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

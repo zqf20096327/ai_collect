@@ -1,0 +1,126 @@
+{
+ "fn": "axisvela/AXISRobo-PAMP",
+ "sha": "6493c1c12b29",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向企业架构师的 EA 治理平台：评审、组合与决策管理",
+  "review": "模块化企业架构管理平台，覆盖 EA 评审工作流、应用组合管理（BCM/CMDB）、ADD 架构决策与设计、PACT 关注点目录、视角/制品映射与报告。实现 AVDM 决策链：问卷→关注点→视角→制品，含单信号与组合激活规则、风险评分。技术栈为 Next.js 16 + FastAPI (Python 3.12) + PostgreSQL 14+（pamp 模式 100 表），95+ 端点均经 RBAC 门控并记录审计日志。AI 功能为评审中的 AI 架构检查（接入 LLM API）与 AI 项目自评估（AT0-AT8×L0-L4 矩阵、49 项清单）。本地需 Node.js 22、Python 3.12、PostgreSQL 14+，源码运行。",
+  "highlights": [
+   "AVDM 决策链：问卷→关注点→视角→制品，支持单信号与组合激活规则",
+   "AI 项目自评估：AT0-AT8 采用层级 × L0-L4 治理成熟度矩阵，11 节 49 项清单",
+   "95+ API 端点全部 RBAC 门控，追加式审计日志",
+   "可插拔架构：认证（本地 JWT/Keycloak/Dev）、存储（S3/数据库）均经接口抽象"
+  ],
+  "use_cases": [
+   "组织内运行架构评审流程并跟踪会议、行动项与风险",
+   "用问卷驱动架构视角选择与制品推荐",
+   "对 AI 项目做治理成熟度自评估",
+   "维护业务能力映射与应用组合"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": "https://doi.org/10.36227/techrxiv.176948759.92525674/v1",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "企业架构(EA)",
+   "架构治理",
+   "评审工作流",
+   "AI治理评估"
+  ],
+  "domain": "企业架构管理/IT 治理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "docs/design.md 详细设计文档为中文(L224)"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L124: |**EA Review**|Architecture review workflow, meetings, actions, AI architecture checks, AVDM questionnaire|",
+   "L139:                                          → LLM API (AI architecture review)"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     29
+    ],
+    "quotes": [
+     "git clone <repo-url>"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     37
+    ],
+    "note": "docker 用于启动 PostgreSQL 数据库容器，非本产品安装方式",
+    "quotes": [
+     "docker run -d --name axisarch-pg \\"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    14,
+    90
+   ],
+   "note": "多处标注 (EE) 企业版功能（Keycloak SSO/OIDC），暗示存在企业版",
+   "quotes": [
+    "|Auth|Pluggable: OSS local (JWT + bcrypt), Keycloak SSO (EE), Dev mode. RBAC (3 roles, 24 resources)|",
+    "|**OIDC (EE)**|`oidc`|Keycloak SSO with JWT validation|"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

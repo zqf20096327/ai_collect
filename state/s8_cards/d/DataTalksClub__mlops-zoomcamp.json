@@ -1,0 +1,89 @@
+{
+ "fn": "DataTalksClub/mlops-zoomcamp",
+ "sha": "669d4b42ed28",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向数据从业者的 9 周免费 MLOps 课程",
+  "review": "DataTalks.Club 出品的免费 9 周 MLOps 课程，内容覆盖实验跟踪（MLflow）、工作流编排、模型部署（Flask、AWS Kinesis/Lambda）、监控（Evidently、Grafana、Prometheus）及 CI/CD、Terraform 等最佳实践，以模块化课程、作业与期末项目组成。提供直播批次与自学两种形式，2026 年暂无直播批次，材料全部开放自学。面向有 Python、Docker 与一年以上编程经验的数据科学家、ML 工程师和软件工程师。",
+  "highlights": [
+   "9 个模块覆盖从实验跟踪到监控的 MLOps 全流程",
+   "完成期末项目与互评可获得结业证书",
+   "课程视频、材料、作业全部免费开放",
+   "Slack 社区支持提问与学习打卡"
+  ],
+  "use_cases": [
+   "系统学习将机器学习模型部署到生产环境的方法",
+   "按模块自学 MLflow、编排、部署与监控工具链",
+   "通过期末项目搭建可放入作品集的端到端 MLOps 流水线"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "MLOps",
+   "在线课程",
+   "模型部署",
+   "模型监控"
+  ],
+  "domain": "机器学习工程/教育",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine",
+   "mlops"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "media",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L28: MLOps (machine learning operations) is a must-know skill for many data professionals. This free 9-week course teaches th",
+   "L32: This course is for data scientists, ML engineers, and software engineers who want to learn how to put machine learning m"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    60
+   ]
+  }
+ }
+}

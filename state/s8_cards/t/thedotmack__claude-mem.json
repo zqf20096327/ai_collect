@@ -1,0 +1,191 @@
+{
+ "fn": "thedotmack/claude-mem",
+ "sha": "a845d6084b77",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 AI 编码 Agent 提供跨会话持久记忆的压缩与注入系统",
+  "review": "以 Claude Code 为主要目标的上下文记忆压缩系统：通过生命周期钩子自动捕获会话中的工具使用观察，生成语义摘要存入 SQLite 与 Chroma 向量库，并在后续会话启动时注入相关上下文。提供 4 个 MCP 搜索工具与三层渐进式检索流程以控制 token 消耗，经 npx 安装器或插件市场接入 Claude Code、OpenCode、T3 Code、OpenClaw 等宿主。安装时需登录或显式指定 provider，免费试用结束后回落到 Anthropic 计划。",
+  "highlights": [
+   "生命周期钩子自动捕获会话观察并生成语义摘要",
+   "SQLite + FTS5 与 Chroma 混合检索（语义+关键词）",
+   "4 个 MCP 搜索工具，三层渐进式检索节省 token",
+   "多宿主支持：Claude Code、OpenCode、T3 Code、OpenClaw、Antigravity 等"
+  ],
+  "use_cases": [
+   "让编码 Agent 在新会话中延续之前的项目上下文",
+   "用自然语言检索项目历史操作记录",
+   "在团队共享记忆空间中协作与交接任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent记忆",
+   "上下文工程",
+   "编码助手",
+   "Claude Code插件",
+   "MCP"
+  ],
+  "domain": "LLM 基础设施/Agent 记忆",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-memory"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供简体中文等多语言 README（L13）",
+   "支持 code--zh 中文观察模式（L320）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L46:  Persistent memory compression system built for Claude Code.",
+   "L103:  Claude-Mem seamlessly preserves context across sessions by automatically capturing tool usage observations, generating ",
+   "L235: 1. **Lifecycle Hooks** - SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop, SessionEnd. Each is one shell-fr"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     123,
+     281
+    ],
+    "note": "提及 Anthropic 计划与 Claude Code 要求，非专门 provider 接入",
+    "quotes": [
+     "The installer sets everything up first, then asks you to sign in to claude-mem in your browser (email magic link — no ca",
+     "- **Claude Code**: Latest version with plugin support"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     107,
+     110,
+     115
+    ],
+    "note": "Grok Bot 为宿主 IDE，非模型 provider 接入",
+    "quotes": [
+     "Install claude-mem for Grok Bot:",
+     "npx claude-mem install --ide grok-bot",
+     "**Awareness push pilot (LFG + Orifice):** needle observations (`decision`, `bugfix`, `security_alert`, `sensitive`) are "
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     123
+    ],
+    "note": "作为可选记忆 provider 的 key 被提及",
+    "quotes": [
+     "The installer sets everything up first, then asks you to sign in to claude-mem in your browser (email magic link — no ca"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     155,
+     162
+    ],
+    "note": "DeepSeek Harness 为宿主插件，非模型接入",
+    "quotes": [
+     "Or install the native Pi extension or DeepSeek Harness plugin:",
+     "Pi and DeepSeek Harness use the worker runtime. See native harness setup for capture, recall, and troubleshooting."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     110,
+     120,
+     130,
+     138,
+     146
+    ],
+    "note": "npx claude-mem install 为主要安装途径；npm install -g 仅装 SDK（L174）",
+    "quotes": [
+     "npx claude-mem install --ide grok-bot",
+     "npx claude-mem install",
+     "npx claude-mem install --ide opencode",
+     "npx claude-mem install --ide t3code",
+     "npx claude-mem install --ide antigravity"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     46,
+     164,
+     172
+    ],
+    "note": "主要宿主环境，非替代/竞品",
+    "quotes": [
+     " Persistent memory compression system built for Claude Code.",
+     "Or install from the plugin marketplace inside Claude Code:",
+     "Restart Claude Code. Context from previous sessions will automatically appear in new sessions."
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     113
+    ],
+    "note": "声明安装本插件不会安装 Cursor",
+    "quotes": [
+     "Grok Bot has no host hooks, so we watch the chat log files. Default is CMEM Pro, the hosted memory. Local observer is op"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

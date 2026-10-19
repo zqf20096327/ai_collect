@@ -1,0 +1,166 @@
+{
+ "fn": "citrolabs/ego-lite",
+ "sha": "3626d6140986",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让 AI agent 与用户共享同一浏览器的自动化浏览器",
+  "review": "ego lite 是一款为 AI agent 设计的浏览器：agent 在浏览器内的隔离 Space 中执行自动化任务，用户可同时继续使用自己的标签页，并可通过迁移 Chrome 数据让 agent 继承已有登录、Cookie 与扩展。agent 经 `ego-browser` 技能连接层（支持 Claude Code、Codex、Cursor 等命令行 agent），以页面内 JavaScript 工具（snapshot、fill、click、navigate 等）驱动浏览器。当前仅支持 macOS（Apple Silicon/Intel），Windows 封测、Linux 在路线图中；MIT 许可，仓库内容与浏览器本体分发分离。",
+  "highlights": [
+   "每个 agent 拥有隔离 Space，多任务并行且不占用用户标签页",
+   "ego-browser 技能将浏览器暴露为页面内 JavaScript 工具集",
+   "首次启动可迁移 Chrome 数据（登录、Cookie、扩展、书签）",
+   "提供 npx skills add 安装 ego-browser 技能"
+  ],
+  "use_cases": [
+   "让 Claude Code/Codex 在我保持浏览的同时并行执行网页操作",
+   "让 agent 复用我已登录的账号状态完成自动化任务",
+   "多个 agent 同时抓取或处理多个站点而不互相冲突"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/ffe7954b-58ee-411e-b35d-ec30c58a08bc",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "浏览器自动化",
+   "AI agent",
+   "技能",
+   "桌面应用"
+  ],
+  "domain": "浏览器/agent 基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "ChatGPT",
+   "Perplexity"
+  ],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "browser-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文等多语言版本"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L24: ego (lite) is a browser where you and your AI agents work in parallel. Your agents run their browser tasks in their own ",
+   "L89: |**Any agent can drive it through `ego-browser`**|`ego-browser` is the connection layer between any agent CLI (Claude Co",
+   "L96: |Capability|ego lite|Browser-Use|agent-browser (Vercel)|ChatGPT Atlas|Perplexity Comet|"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     87,
+     89
+    ],
+    "note": "Claude Code 作为可驱动本浏览器的 agent 被提及，非专门适配通道",
+    "quotes": [
+     "|**Your agents multitask in Spaces, parallel workspaces inside the same browser**|Each Space gets its own AI agent or it",
+     "|**Any agent can drive it through `ego-browser`**|`ego-browser` is the connection layer between any agent CLI (Claude Co"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     52
+    ],
+    "quotes": [
+     "npx skills add citrolabs/ego-lite"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     87,
+     89
+    ],
+    "quotes": [
+     "|**Your agents multitask in Spaces, parallel workspaces inside the same browser**|Each Space gets its own AI agent or it",
+     "|**Any agent can drive it through `ego-browser`**|`ego-browser` is the connection layer between any agent CLI (Claude Co"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     89
+    ],
+    "quotes": [
+     "|**Any agent can drive it through `ego-browser`**|`ego-browser` is the connection layer between any agent CLI (Claude Co"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "competitor",
+    "lines": [
+     96,
+     109
+    ],
+    "note": "ChatGPT Atlas 在对比表中作为竞品",
+    "quotes": [
+     "|Capability|ego lite|Browser-Use|agent-browser (Vercel)|ChatGPT Atlas|Perplexity Comet|",
+     "Two other categories try to solve the same problem. Browser automation frameworks like Browser-Use and Vercel's agent-br"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "competitor",
+    "lines": [
+     96,
+     109
+    ],
+    "note": "Perplexity Comet 在对比表中作为竞品",
+    "quotes": [
+     "|Capability|ego lite|Browser-Use|agent-browser (Vercel)|ChatGPT Atlas|Perplexity Comet|",
+     "Two other categories try to solve the same problem. Browser automation frameworks like Browser-Use and Vercel's agent-br"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

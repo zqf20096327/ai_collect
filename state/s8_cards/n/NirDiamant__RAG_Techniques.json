@@ -1,0 +1,129 @@
+{
+ "fn": "NirDiamant/RAG_Techniques",
+ "sha": "8440fd2a673e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 RAG 开发者与研究者提供 42+ 可运行 notebook 的技术合集",
+  "review": "以 notebook 教程形式展示检索增强生成（RAG）的各类技术，共 42+ 个可运行示例，按基础、查询增强、上下文丰富、高级检索、迭代技术、评估、可解释性、高级架构等类别组织，每个技术附文档说明、实现指引与参考文献。部分技术提供 LangChain 与 LlamaIndex 两个版本的 notebook 及可运行脚本。仓库同时包含作者的课程、书籍、Newsletter 与 YouTube 内容推广，以及赞助商展示。",
+  "highlights": [
+   "42+ 个可运行 RAG 技术 notebook，覆盖基础到高级架构",
+   "每项技术附详细文档与实现指引",
+   "部分技术提供 LangChain 与 LlamaIndex 双版本",
+   "涵盖 Graph RAG、Self-RAG、CRAG、RAPTOR 等架构"
+  ],
+  "use_cases": [
+   "系统学习 RAG 各类检索与分块技术",
+   "为 RAG 项目寻找具体技术的可运行实现参考",
+   "了解 RAG 评估与可解释性工具的用法"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "教程/notebook",
+   "LLM基础设施",
+   "信息检索"
+  ],
+  "domain": "LLM 基础设施/RAG",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L4: A community-driven hub of **42+ runnable notebooks** covering RAG techniques from foundational to cutting-edge - the int",
+   "L109: Retrieval-Augmented Generation (RAG) is revolutionizing the way we combine information retrieval with generative AI. Thi",
+   "L149: > **Recently added:** MemoRAG (memory-augmented retrieval), End-to-End RAG Evaluation, Open-RAG-Eval, JSON RAG. **42 not"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     595,
+     598
+    ],
+    "note": "窗外行，notebook 中配合本地 Ollama 使用",
+    "quotes": [
+     " - **NetworkX + Ollama**:",
+     " A privacy-first Graph RAG implementation running entirely locally with Ollama. Uses NetworkX for multi-hop graph traver"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     629
+    ],
+    "note": "窗外行，克隆仓库运行 notebook 的方式",
+    "quotes": [
+     "   git clone https://github.com/NirDiamant/RAG_Techniques.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     178,
+     195
+    ],
+    "note": "被使用的框架，非替代/竞品对象",
+    "quotes": [
+     "|26|Advanced Architecture 🏗️|Graph RAG with LangChain||",
+     " - **LangChain**:"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

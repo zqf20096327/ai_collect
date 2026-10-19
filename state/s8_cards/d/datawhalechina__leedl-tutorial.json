@@ -1,0 +1,115 @@
+{
+ "fn": "datawhalechina/leedl-tutorial",
+ "sha": "dfdaccda263a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向中文读者的李宏毅深度学习课程整理教程（PDF 书籍）",
+  "review": "Datawhale 组织维护的开源中文教程，内容整理自李宏毅《机器学习》（2021 年春）课程并补充推导与扩展章节，覆盖深度学习基础、CNN/RNN/Transformer、GAN、BERT/GPT-3、扩散模型、强化学习、网络压缩、元学习与 ChatGPT 原理等主题，每章由不同贡献者署名编写。提供 Releases 页 PDF 下载与百度网盘国内地址，纸质版由人民邮电出版社出版，附勘误表页面和 Homework 文件夹配套代码。采用 CC BY-NC-SA 4.0 许可。",
+  "highlights": [
+   "PDF 全书经 Releases 与百度网盘提供下载",
+   "章节覆盖 GAN、BERT、扩散模型、强化学习、元学习、ChatGPT 等 17 个主题",
+   "提供 Homework 文件夹配套代码与在线勘误表",
+   "纸质版由人民邮电出版社出版，中英双 BibTeX 引用条目"
+  ],
+  "use_cases": [
+   "想通过中文讲解入门深度学习理论",
+   "配合李宏毅公开课视频阅读公式推导",
+   "查阅 GAN、扩散模型、ChatGPT 原理等专题的学习材料"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "深度学习教程",
+   "中文学习资料",
+   "开源书籍",
+   "课程笔记"
+  ],
+  "domain": "教育/深度学习知识整理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "Datawhale 开源组织维护",
+   "人民邮电出版社出版中文书籍"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: # 李宏毅深度学习教程LeeDL-Tutorial（苹果书）",
+   "L43: * **引言** @王琦",
+   "L94: ## 配套代码",
+   "L133: 知识共享许可协议 本作品采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     89,
+     90,
+     91,
+     92
+    ],
+    "note": "作为教程章节主题介绍其原理，非竞品/替代关系",
+    "quotes": [
+     "* **ChatGPT** @杨毅远",
+     " * [x] 对于ChatGPT的误解",
+     " * [x] ChatGPT背后的关键技术——预训练",
+     " * [x] ChatGPT带来的研究问题"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [
+    133
+   ],
+   "note": "单一 CC BY-NC-SA 4.0 许可，非双重许可",
+   "quotes": [
+    "知识共享许可协议 本作品采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可。"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

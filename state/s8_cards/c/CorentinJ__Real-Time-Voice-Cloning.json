@@ -1,0 +1,92 @@
+{
+ "fn": "CorentinJ/Real-Time-Voice-Cloning",
+ "sha": "c0d9784c267b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "5 秒音频克隆声音、实时生成任意语音的工具箱",
+  "review": "基于 SV2TTS 三阶段深度学习框架的声音克隆实现：从几秒音频提取声纹的数字表示，再以该表示为参考，由任意文本合成语音，配套的 toolbox 可实时运行。作者硕士论文成果，实现了 SV2TTS、GE2E、Tacotron、WaveRNN 四篇论文。支持 Windows 与 Linux，依赖 ffmpeg 读音频，用 uv 管理 Python 环境，预训练模型自动下载，可选用 LibriSpeech 等数据集。README 提示项目已随深度学习进展显旧，推荐关注更新的开源替代。",
+  "highlights": [
+   "SV2TTS 三阶段框架：声纹表示→文本合成，vocoder 实时运行",
+   "实现 4 篇论文（SV2TTS/GE2E/Tacotron/WaveRNN）",
+   "预训练模型自动下载，也可从 Hugging Face 手动获取",
+   "uv 自动创建虚拟环境，支持 NVIDIA GPU 与 CPU 两种运行方式"
+  ],
+  "use_cases": [
+   "用几秒录音克隆音色并合成任意文本语音",
+   "作为语音合成论文实现的实验与研究平台",
+   "用 toolbox 录制或准备自己的音频数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://arxiv.org/pdf/1806.04558.pdf",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音克隆",
+   "TTS",
+   "深度学习",
+   "研究工具"
+  ],
+  "domain": "语音合成/深度学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tts"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: This repository is an implementation of [Transfer Learning from Speaker Verification to",
+   "L6: SV2TTS is a deep learning framework in three stages. In the first stage, one creates a digital representation of a voice",
+   "L30: Both Windows and Linux are supported."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    23,
+    25,
+    26
+   ]
+  },
+  "audit_dep": null
+ }
+}

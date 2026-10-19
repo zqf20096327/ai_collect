@@ -1,0 +1,263 @@
+{
+ "fn": "TauricResearch/TradingAgents",
+ "sha": "3d1cf6b1a659",
+ "source": "readme",
+ "identity": {
+  "one_liner": "多智能体 LLM 金融交易研究框架：模拟交易公司角色分工",
+  "review": "以真实交易公司组织方式组织 LLM 智能体：分析师团队（基本面/情绪/新闻/技术四类）、多空研究员辩论、交易员决策、风控与组合经理审批，最终在模拟交易所执行。支持多 LLM 提供商、CLI 交互与无终端参数化运行、回测、LangGraph checkpoint 续跑、HTML 报告导出。README 明确声明仅供研究用途，不构成投资建议；运行受所选模型、温度、数据质量等因素影响。",
+  "highlights": [
+   "分析师/研究员/交易员/风控/组合经理的多智能体协作与辩论机制",
+   "多 LLM 提供商：OpenAI、Gemini、Claude、Bedrock、Ollama 及任意 OpenAI 兼容端点",
+   "可用 ChatGPT Plus/Pro 订阅计划运行，无需单独 API key",
+   "CLI 支持 ticker/date 等参数免交互运行与 HTML 单页报告输出"
+  ],
+  "use_cases": [
+   "对特定股票在指定日期运行多智能体分析并生成报告",
+   "用回测网格按 ticker 与日期验证策略表现",
+   "通过 Ollama/vLLM 等本地模型端点运行分析流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "金融交易",
+   "多智能体",
+   "LLM框架",
+   "回测"
+  ],
+  "domain": "金融/交易研究",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "bedrock",
+   "groq",
+   "ollama",
+   "deepseek",
+   "xai",
+   "azure",
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "multi-agent",
+   "quant-finance"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L51: TradingAgents is a multi-agent trading framework that mirrors the dynamics of real-world trading firms. By deploying spe",
+   "L53: > TradingAgents framework is designed for research purposes. Trading performance may vary based on many factors, includi",
+   "L121: TradingAgents supports multiple LLM providers. Set the API key for your chosen provider:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     126
+    ],
+    "quotes": [
+     "export ANTHROPIC_API_KEY=...       # Anthropic (Claude)"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     34,
+     134
+    ],
+    "quotes": [
+     "- [2026-07] **TradingAgents v0.3.1** released with correctness and stability fixes: Alpha Vantage look-ahead filtering, ",
+     "For AWS Bedrock, install the extra with `pip install \".[bedrock]\"`, set `llm_provider: \"bedrock\"`, configure AWS credent"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     35
+    ],
+    "quotes": [
+     "- [2026-06] **TradingAgents v0.3.0** released with a verified data-access contract, an expanded provider registry (NVIDI"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     36,
+     114,
+     136
+    ],
+    "quotes": [
+     "- [2026-05] **TradingAgents v0.2.5** released with the grounded Sentiment Analyst, GPT-5.5 etc. model coverage, Qwen/GLM",
+     "For local models with Ollama:",
+     "For local models, configure Ollama with `llm_provider: \"ollama\"`. The default endpoint is `http://localhost:11434/v1`; s"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     37
+    ],
+    "quotes": [
+     "- [2026-04] **TradingAgents v0.2.4** released with structured-output agents (Research Manager, Trader, Portfolio Manager"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     40
+    ],
+    "quotes": [
+     "- [2026-02] **TradingAgents v0.2.0** released with multi-provider LLM support (GPT-5.x, Gemini 3.x, Claude 4.x, Grok 4.x"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     130
+    ],
+    "quotes": [
+     "For Azure OpenAI, copy `.env.enterprise.example` to `.env.enterprise` and fill in your credentials."
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     138
+    ],
+    "quotes": [
+     "For any other OpenAI-compatible server (vLLM, LM Studio, llama.cpp, or a custom relay), use `llm_provider: \"openai_compa"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     140
+    ],
+    "quotes": [
+     "With `TYPESAFE_API_KEY` set, the Sentiment Analyst screens StockTwits and Reddit posts with TypeSafe's Jev before readin"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     81
+    ],
+    "quotes": [
+     "git clone https://github.com/TauricResearch/TradingAgents.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     97,
+     99
+    ],
+    "quotes": [
+     "Install the package and its dependencies (`uv pip install .` with uv):",
+     "pip install ."
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     107
+    ],
+    "quotes": [
+     "docker compose run --rm tradingagents"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     23,
+     132
+    ],
+    "note": "作为订阅运行通道，非替代/竞品对象",
+    "quotes": [
+     "- [2026-10] **TradingAgents v0.7.0** released with runs on your own ChatGPT Plus or Pro plan, backtests scored from the ",
+     "To run on your ChatGPT Plus or Pro plan instead of an API key, choose \"Subscription\" in the CLI's provider menu, or set "
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     35
+    ],
+    "note": "支持列表中提及的模型",
+    "quotes": [
+     "- [2026-06] **TradingAgents v0.3.0** released with a verified data-access contract, an expanded provider registry (NVIDI"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     36
+    ],
+    "quotes": [
+     "- [2026-05] **TradingAgents v0.2.5** released with the grounded Sentiment Analyst, GPT-5.5 etc. model coverage, Qwen/GLM"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

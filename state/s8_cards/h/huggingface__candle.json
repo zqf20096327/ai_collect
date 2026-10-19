@@ -1,0 +1,180 @@
+{
+ "fn": "huggingface/candle",
+ "sha": "b5c5ed7324b3",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 Rust 开发者的极简机器学习框架，支持 GPU 与浏览器推理",
+  "review": "用 Rust 实现的机器学习框架，提供 Tensor 定义、CPU/CUDA/WASM 后端、模型训练与量化加载（safetensors、npz、ggml、PyTorch 文件）。内置大量模型示例，覆盖文本生成、语音识别、图像分割、文生图等任务；部分演示可编译为 WASM 在浏览器中运行。设计目标为 serverless 推理与去除生产环境中的 Python 依赖，输出轻量二进制。以 cargo crate 分发，含 core、nn、datasets、transformers 等子模块。",
+  "highlights": [
+   "CPU（可选 MKL/Accelerate）、CUDA（NCCL 多卡）与 WASM 三类后端",
+   "加载 safetensors/npz/ggml/PyTorch 文件格式，支持 llama.cpp 量化类型",
+   "内置 LLM、文生图、语音、视觉等大量模型示例，浏览器端 WASM 演示",
+   "语法对齐 PyTorch 的 cheatsheet，含 ONNX 评估子模块 candle-onnx"
+  ],
+  "use_cases": [
+   "在 Rust 生产环境中部署不依赖 Python 的模型推理",
+   "把 whisper、LLaMA2 等模型编译为 WASM 在浏览器运行",
+   "在 serverless/CPU 环境部署轻量推理二进制"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://huggingface.co/spaces/radames/candle-segment-anything-wasm",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "ML框架",
+   "Rust",
+   "模型推理",
+   "WASM"
+  ],
+  "domain": "机器学习框架/基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "llama.cpp"
+  ],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L8: Candle is a minimalist ML framework for Rust with a focus on performance (including GPU support)",
+   "L183: - Simple syntax, looks and feels like PyTorch.",
+   "L269: Candle's core goal is to *make serverless inference possible*. Full machine learning frameworks like PyTorch"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "llama.cpp",
+    "rel": "compat",
+    "lines": [
+     84,
+     85,
+     235
+    ],
+    "note": "采用 llama.cpp 量化技术/量化类型，非推理后端接入",
+    "quotes": [
+     " the LLaMA model using the same quantization techniques as",
+     " llama.cpp.",
+     "- Quantization support using the llama.cpp quantized types."
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     167,
+     177
+    ],
+    "note": "外部项目 candle-vllm/vllm.rs 的名称，非 vLLM 本体接入",
+    "quotes": [
+     "- `candle-vllm`: Efficient platform for inference and",
+     "- `vllm.rs`: A minimalist vLLM implementation in Rust based on Candle."
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "none",
+    "lines": [
+     70,
+     198
+    ],
+    "note": "误命中：为受支持的模型名称，非模型提供商服务",
+    "quotes": [
+     "- Mistral7b-v0.1: a 7b general LLM with",
+     " - Mistral 7b v0.1."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     340,
+     342
+    ],
+    "note": "窗外行，README 中的 docker 相关内容",
+    "quotes": [
+     "#### Docker build",
+     "When building CUDA kernels inside a Dockerfile, nvidia-smi cannot be used to auto-detect compute capability."
+    ]
+   },
+   {
+    "term": "cargo",
+    "rel": "support",
+    "lines": [
+     378,
+     379
+    ],
+    "note": "窗外行，本产品以 cargo crate 安装；可见范围内 L30/L129 亦以 cargo run 运行",
+    "quotes": [
+     "-L native=$env:USERPROFILE\\.cargo\\registry\\src\\index.crates.io-6f17d22bba15001f\\windows_x86_64_msvc-0.42.2\\lib `",
+     "-L native=$env:USERPROFILE\\.cargo\\registry\\src\\index.crates.io-6f17d22bba15001f\\windows_x86_64_msvc-0.48.5\\lib"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     15,
+     331,
+     335,
+     336
+    ],
+    "note": "维护方为 Hugging Face，生态关联（safetensors、tokenizers），非竞品对比",
+    "quotes": [
+     "Anything](https://huggingface.co/spaces/radames/candle-segment-anything-wasm).",
+     "Error: request error: https://huggingface.co/meta-llama/Llama-2-7b-hf/resolve/main/tokenizer.json: status code 401",
+     "this, you have to register on the huggingface-hub, accept the [LLaMA-v2 model",
+     "conditions](https://huggingface.co/meta-llama/Llama-2-7b-hf), and set up your"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

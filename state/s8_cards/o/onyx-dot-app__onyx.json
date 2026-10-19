@@ -1,0 +1,144 @@
+{
+ "fn": "onyx-dot-app/onyx",
+ "sha": "89f5bc7524ca",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给团队接入内部知识的企业 AI 聊天与 RAG 平台",
+  "review": "Onyx 是面向团队与企业的知识/上下文平台：连接 50+ 应用索引数据（含权限元数据），提供检索增强问答、深度研究、自定义 Agent、联网搜索、沙箱代码执行、语音交互等功能。支持自托管与气隙部署，数据索引与处理在自身环境内完成；提供 Web、桌面端、Slack/Discord 机器人、MCP server、Chrome 扩展与嵌入式组件多种访问方式。采用 CE（MIT）+ EE 双版本模式，标准版与轻量版两种部署形态。",
+  "highlights": [
+   "连接 50+ 应用构建组织知识索引",
+   "Agentic RAG 与多步深度研究流程",
+   "支持自托管/气隙部署，模型与嵌入可本地运行",
+   "MCP server 方式向外部 AI 客户端提供组织上下文"
+  ],
+  "use_cases": [
+   "给团队搭一个带权限控制的内部知识问答",
+   "部署在 Slack/Discord 里回答组织相关问题",
+   "自托管 RAG 平台对接本地或商用 LLM"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": "https://www.onyx.app/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "企业搜索",
+   "知识库问答",
+   "AI Agent",
+   "自托管"
+  ],
+  "domain": "企业知识管理/LLM 平台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama",
+   "vllm",
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "document-qa",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L22: **Onyx** is the knowledge/context layer for your team and AI agents.",
+   "L24: Onyx connects to your application to index and surface knowledge from 50+ applications while protecting your data sovere",
+   "L57: Onyx supports all major LLM providers, both self-hosted (like Ollama, LiteLLM, vLLM, etc.) and proprietary (like Anthrop"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     57
+    ],
+    "quotes": [
+     "Onyx supports all major LLM providers, both self-hosted (like Ollama, LiteLLM, vLLM, etc.) and proprietary (like Anthrop"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     57
+    ],
+    "quotes": [
+     "Onyx supports all major LLM providers, both self-hosted (like Ollama, LiteLLM, vLLM, etc.) and proprietary (like Anthrop"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     57
+    ],
+    "quotes": [
+     "Onyx supports all major LLM providers, both self-hosted (like Ollama, LiteLLM, vLLM, etc.) and proprietary (like Anthrop"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     77
+    ],
+    "note": "可作为客户端接入 Onyx，非替代/竞品",
+    "quotes": [
+     "- **MCP server** - Point Claude Code, Open Code, Codex, or any MCP client at Onyx. Your AI agents get company context wi"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    117,
+    119,
+    120
+   ],
+   "quotes": [
+    "There are two editions of Onyx:",
+    "- Onyx Community Edition (CE) is available freely under the MIT license and covers all of the core features for RAG, AI ",
+    "- Onyx Enterprise Edition (EE) includes extra features that are primarily useful for larger organizations."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

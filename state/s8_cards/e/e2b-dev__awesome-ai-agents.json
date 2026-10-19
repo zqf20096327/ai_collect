@@ -1,0 +1,131 @@
+{
+ "fn": "e2b-dev/awesome-ai-agents",
+ "sha": "f1d53983b45a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为开发者和研究者收录开源与闭源 AI 智能体项目的清单",
+  "review": "由 E2B 维护的 AI 自主智能体目录，将条目分为开源项目与闭源项目/公司两部分，每条记录名称、一句话简介、类别（如通用、多智能体、编码、HR 等）与相关链接（文档、论文、GitHub、Discord 等）。收录 Adala、AutoGen、AutoGPT、BabyAGI、Aider 等项目，并按字母序组织。清单自我声明不保证全面，提供 Web 版按类别与用例过滤，社区可通过 PR 或表单提交新条目。",
+  "highlights": [
+   "条目分开源项目与闭源项目/公司两部分组织",
+   "每个条目含类别、描述与文档/论文/GitHub 等链接",
+   "提供 Web 版界面按类别与用例过滤",
+   "通过 PR 或表单接受社区提交并要求按字母序排列"
+  ],
+  "use_cases": [
+   "查找适合自己需求的自主智能体开源项目",
+   "调研多智能体框架和编码类智能体的生态现状",
+   "按类别（通用/编码/HR/生产力等）筛选智能体产品"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome清单",
+   "AI智能体",
+   "目录/导航",
+   "多智能体"
+  ],
+  "domain": "AI 生态/知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L17: Welcome to our list of AI agents.",
+   "L18: We structured the list into two parts:",
+   "L19: - Open source projects",
+   "L20: - Closed-source projects and companies"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm",
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     89
+    ],
+    "note": "AgentForge 描述中提及支持 Anthropic Claude 模型，非本清单自身接入",
+    "quotes": [
+     "- Supports multiple LLM models including OpenAI, Anthropic's Claude, and local Oobabooga, allowing flexibility in runnin"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     278,
+     350
+    ],
+    "note": "条目描述中提及 LangChain 工具/框架",
+    "quotes": [
+     "- \"A lot like BabyAGI combined with LangChain tools\"",
+     "- Medium: Creating a (mostly) Autonomous HR Assistant with ChatGPT and LangChain’s Agents and Tools"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     350
+    ],
+    "note": "条目外链标题中提及 ChatGPT",
+    "quotes": [
+     "- Medium: Creating a (mostly) Autonomous HR Assistant with ChatGPT and LangChain’s Agents and Tools"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

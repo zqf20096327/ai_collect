@@ -1,0 +1,154 @@
+{
+ "fn": "AgriciDaniel/claude-seo",
+ "sha": "4fac21db7744",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 Claude Code 用户的 SEO 审计技能插件",
+  "review": "面向 Claude Code 的开源 SEO 分析插件：26 个子技能与 19 个专项 agent 并行运行，覆盖技术 SEO、E-E-A-T 内容质量、Schema.org 标记、GEO/AI 搜索优化、本地 SEO、电商与国际 SEO，以及 Google API 与 PDF/Excel 报告。审计输出带优先级与可证伪性检查的行动计划。通过 Claude Code 插件市场安装，setup 步骤创建隔离 Python 环境并安装 Playwright Chromium；另提供 9 个可选扩展命令。",
+  "highlights": [
+   "26 个子技能、19 个专项 agent 并行执行整站审计",
+   "34 个 /seo 命令，含 /seo agentic（Lighthouse Agentic Browsing、llms.txt、WebMCP）",
+   "4 层凭证体系从零 key 起步接入 Google SEO API（PageSpeed、CrUX、GSC、GA4、Keyword Planner）",
+   "MIT 开源，另有面向会员的社区私有镜像版本"
+  ],
+  "use_cases": [
+   "SEO 代理机构对多个客户站点做周期性自动化审计",
+   "SaaS/电商企业内部 SEO 负责人在汇报前做二次核查",
+   "自由 SEO 顾问用 15 分钟审计向客户展示基线评分"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "SEO",
+   "Claude Code 技能",
+   "网站审计",
+   "AI搜索优化"
+  ],
+  "domain": "数字营销/SEO 工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: **Claude SEO is an open-source SEO analysis plugin for Claude Code.** It runs 26 sub-skills and 19 specialist agents in ",
+   "L103: 34 user-invocable `/seo` commands across the orchestrator, its sub-skills, and 9 MCP extensions. Full reference in docs/"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     1,
+     3,
+     5
+    ],
+    "quotes": [
+     "Claude SEO cover: a Claude Code command palette with /seo audit, schema, geo, content, and backlinks commands over a dar",
+     "# Claude SEO: SEO Skill for Claude Code",
+     "**Claude SEO is an open-source SEO analysis plugin for Claude Code.** It runs 26 sub-skills and 19 specialist agents in "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     68,
+     69,
+     84,
+     85
+    ],
+    "quotes": [
+     "git clone --depth 1 https://github.com/AgriciDaniel/claude-seo.git",
+     "bash claude-seo/install.sh",
+     "git clone --depth 1 https://github.com/AgriciDaniel/claude-seo.git",
+     "powershell -ExecutionPolicy Bypass -File claude-seo\\install.ps1"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     3,
+     5,
+     8
+    ],
+    "note": "宿主平台，本产品为其插件",
+    "quotes": [
+     "# Claude SEO: SEO Skill for Claude Code",
+     "**Claude SEO is an open-source SEO analysis plugin for Claude Code.** It runs 26 sub-skills and 19 specialist agents in ",
+     "Claude Code Skill"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     133
+    ],
+    "note": "/seo seranking 监测对象之一，非竞品对比",
+    "quotes": [
+     "|`/seo seranking [command]`|AI Share-of-Voice across ChatGPT, Gemini, Perplexity, AI Overviews, AI Mode (extension)|"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     133
+    ],
+    "note": "AI Share-of-Voice 监测对象之一",
+    "quotes": [
+     "|`/seo seranking [command]`|AI Share-of-Voice across ChatGPT, Gemini, Perplexity, AI Overviews, AI Mode (extension)|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

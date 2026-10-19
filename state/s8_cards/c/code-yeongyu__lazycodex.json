@@ -1,0 +1,111 @@
+{
+ "fn": "code-yeongyu/lazycodex",
+ "sha": "fed27d2dc22f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向复杂代码库的 Codex agent harness 发行包",
+  "review": "LazyCodex 将 OmO（oh-my-openagent）打包为 Codex 平台的 agent harness 分发层，以 npx 一行命令安装，也可经 Codex 插件市场安装。提供项目记忆（$init-deep 生成层级 AGENTS.md）、规划（$ulw-plan 写计划文件）、执行（$start-work 按清单执行）与验证完成（$ulw-loop 循环至 Oracle 验证，上限 500 次迭代）等命令；附带技能库、子 agent 角色、hooks 与按任务类别的多模型路由（GPT-5.2/5.3-Codex/5.4-mini 等）。核心引擎以 submodule 形式引入，MIT 许可，由 Sisyphus Labs 维护。",
+  "highlights": [
+   "$init-deep 生成层级化 AGENTS.md 项目记忆",
+   "$ulw-loop 循环执行直至 Oracle 验证完成（上限 500 次迭代）",
+   "多模型路由按任务类别选择 GPT 模型",
+   "安装 explorer/librarian/plan 等可选子 agent 角色到 ~/.codex/agents/"
+  ],
+  "use_cases": [
+   "在 Codex 中为大型仓库建立项目记忆与导航地标",
+   "先规划再执行的开发流程（$ulw-plan → $start-work）",
+   "开放任务持续迭代到有证据的验证完成"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    47
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent harness",
+   "Codex插件",
+   "开发工具",
+   "编码agent",
+   "多模型路由"
+  ],
+  "domain": "开发者工具/AI 编码 agent",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5:  The one and only agent harness for complex codebases.",
+   "L178: **LazyCodex** packages OmO (oh-my-openagent) as the Codex agent harness for complex codebases.",
+   "L241: LazyCodex is a thin distribution layer. The core engine is oh-my-openagent (OmO), included as a submodule under `src/`."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     35,
+     38,
+     44
+    ],
+    "quotes": [
+     "One line. No global install, no `npm i -g`. Always use `npx`:",
+     "npx lazycodex-ai install",
+     "npx lazycodex-ai install --no-tui --codex-autonomous"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

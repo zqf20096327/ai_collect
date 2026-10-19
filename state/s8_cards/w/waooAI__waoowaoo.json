@@ -1,0 +1,112 @@
+{
+ "fn": "waooAI/waoowaoo",
+ "sha": "3338314217fc",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给创作者的可控 AI 影像生产画布工作区",
+  "review": "自托管的图像与视频创作工作区：右侧 Assistant 协助开发创意简报并生成资产，画布上上传参考素材、整理文件并检查生成结果。支持首帧、首尾帧、参考图等生成模式（可用性随所选模型而定），可对既有结果迭代新版本并保留原版。预览版通过 OpenRouter 接入模型（GPT Image 2、Nano Banana、Seedance、MiniMax H3 系列），调用费用由用户自己的 OpenRouter 账户承担；预览版不含音乐与配音控制。推荐以预构建 Docker 镜像分发部署。",
+  "highlights": [
+   "画布式工作区：上传参考、整理文件、检视生成的图像与视频",
+   "模型感知的宽高比、时长、分辨率与参考角色配置",
+   "首帧/首尾帧/参考图生成模式，结果可迭代出新版本并保留原件",
+   "提供编码助手自动安装脚本与预构建 Docker 镜像两种部署路径"
+  ],
+  "use_cases": [
+   "从简报到成片素材，在画布上管理 AI 图像与视频生成流程",
+   "用参考图或首尾帧控制生成结果的可控视频创作",
+   "本地自托管部署一个私有媒体存储的 AI 创作环境"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "创作者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    10
+   ],
+   "note": "自述为 Preview release，存在 bug 与粗糙之处"
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "视频生成",
+   "图像生成",
+   "创作画布",
+   "AI影视制作",
+   "自托管"
+  ],
+  "domain": "内容创作/影视视频",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "openrouter"
+  ],
+  "scenario_tags_v2": [
+   "image-generation",
+   "video-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文版本",
+   "提供微信社区入口"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5:  An AI creative workspace for images and videos: develop ideas with the right-hand Assistant, upload references, and org",
+   "L22: This preview exposes **OpenRouter** configuration. Available models include GPT Image 2, Nano Banana variants, Seedance ",
+   "L43: After launching, open your profile’s **API configuration** and add your OpenRouter API key. Provider calls are paid thro"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     22,
+     43
+    ],
+    "note": "预览版暴露 OpenRouter 配置，调用经用户自有账户付费",
+    "quotes": [
+     "This preview exposes **OpenRouter** configuration. Available models include GPT Image 2, Nano Banana variants, Seedance ",
+     "After launching, open your profile’s **API configuration** and add your OpenRouter API key. Provider calls are paid thro"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "note": "v0.5.0-beta.1 起统一为 Elastic License 2.0（source-available，非 OSI 开源），非双许可",
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,159 @@
+{
+ "fn": "memvid/memvid",
+ "sha": "3c5dc68b229b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 AI Agent 提供单文件、免数据库的持久记忆层",
+  "review": "Memvid 将数据、嵌入、检索结构与元数据打包为单个 .mv2 文件，作为 AI Agent 的可移植记忆层，无需运行 RAG 流水线或服务器式向量数据库。核心机制是把记忆组织为不可变的 Smart Frame 序列（借鉴视频编码思路），支持追加写入、按时间线回溯与分支、崩溃安全。提供 CLI、Node.js、Python、Rust SDK；检索支持 BM25 全文、本地 ONNX 向量嵌入（BGE/Nomic/GTE）与 OpenAI 云端嵌入，需 Rust 1.85+。README 中含 LoCoMo 等基准数据，此处不作评价。",
+  "highlights": [
+   "数据、嵌入与索引打包为单个 .mv2 文件，无 sidecar 文件",
+   "Smart Frame 追加式设计：支持时间线回溯、分支与查询过去状态",
+   "本地 ONNX 嵌入（BGE/Nomic/GTE）与 OpenAI API 嵌入可选",
+   "提供 npm、pip、cargo 多语言 SDK 与 CLI"
+  ],
+  "use_cases": [
+   "给长时间运行的 AI Agent 添加持久记忆",
+   "构建离线优先、可携带的知识库",
+   "需要审计与回放记忆状态的 Agent 工作流"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/memvid/memvid",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent记忆",
+   "RAG替代",
+   "向量检索",
+   "知识库"
+  ],
+  "domain": "LLM 基础设施/Agent 记忆",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-memory",
+   "knowledge-base",
+   "vector-database"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6:  Memvid is a single-file memory layer for AI agents with instant retrieval and long-term memory.",
+   "L38: Memvid is a portable AI memory system that packages your data, embeddings, search structure, and metadata into a single ",
+   "L42: The result is a model-agnostic, infrastructure-free memory layer that gives AI agents persistent, long-term memory they "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "cargo",
+    "rel": "support",
+    "lines": [
+     17,
+     103,
+     115
+    ],
+    "quotes": [
+     " Crates.io",
+     "|**Rust**|`cargo add memvid-core`|Crates.io|",
+     "memvid-core = \"2.0\""
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     100,
+     101
+    ],
+    "quotes": [
+     "|**CLI**|`npm install -g memvid-cli`|npm|",
+     "|**Node.js SDK**|`npm install @memvid/sdk`|npm|"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     102
+    ],
+    "quotes": [
+     "|**Python SDK**|`pip install memvid-sdk`|PyPI|"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     153,
+     154,
+     161
+    ],
+    "quotes": [
+     "```bash",
+     "git clone https://github.com/memvid/memvid.git",
+     "cargo build"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     295,
+     297,
+     303,
+     305,
+     311
+    ],
+    "quotes": [
+     "curl -L 'https://huggingface.co/BAAI/bge-base-en-v1.5/resolve/main/onnx/model.onnx' \\",
+     "curl -L 'https://huggingface.co/BAAI/bge-base-en-v1.5/resolve/main/tokenizer.json' \\",
+     "curl -L 'https://huggingface.co/nomic-ai/nomic-embed-text-v1.5/resolve/main/onnx/model.onnx' \\",
+     "curl -L 'https://huggingface.co/nomic-ai/nomic-embed-text-v1.5/resolve/main/tokenizer.json' \\",
+     "curl -L 'https://huggingface.co/thenlper/gte-large/resolve/main/onnx/model.onnx' \\"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

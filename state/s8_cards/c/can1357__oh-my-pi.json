@@ -1,0 +1,271 @@
+{
+ "fn": "can1357/oh-my-pi",
+ "sha": "e1a795ae93b0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 IDE 级编码 agent CLI，60+ 模型接入",
+  "review": "Stencil Labs 维护的 Pi 分叉，以 CLI/TUI 形式提供编码 agent：内置 31 个工具、14 个 LSP 操作、28 个 DAP 调试操作，Rust 核心约 8 万行。支持 60+ 模型提供方，接入 lldb/dlv/debugpy 等调试器，提供子代理 fan-out（隔离 worktree、schema 校验返回）、reviewer 模型逐轮监督、流中规则注入、/collab 会话共享、按内容哈希的编辑（hashline）与基于 git 的原子提交拆分。安装覆盖 curl 脚本、Homebrew、Bun、Nix、Windows PowerShell、mise。PR 接受采用 vouch 机制（当前暂停试用中）。",
+  "highlights": [
+   "60+ 模型提供方、31 内置工具、14 LSP 操作、28 DAP 操作",
+   "持久 Python/Bun 执行内核可回调 agent 工具",
+   "子代理在隔离 worktree 并行，返回 schema 校验结果",
+   "通过 ACP 在 Zed 中驱动同一 agent，无需插件"
+  ],
+  "use_cases": [
+   "在终端用所选模型驱动具备 IDE 能力（LSP/调试器）的编码 agent",
+   "把任务拆给多个子代理并行完成并汇总结果",
+   "与同事共享 agent 会话进行结对或观摩",
+   "让 agent 生成原子化 git 提交序列"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "编码agent",
+   "CLI工具",
+   "LSP",
+   "调试",
+   "多模型接入"
+  ],
+  "domain": "开发者工具/编码 agent",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-gateway",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3:  A coding agent with the IDE wired in.",
+   "L19: **60+** providers · **31** built-in tools · **14** lsp ops · **28** dap ops · **~80k** lines of Rust core.",
+   "L15:  Built by Stencil Labs · Fork of Pi by @mariozechner"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     101,
+     103
+    ],
+    "quotes": [
+     "|Grok Code Fast 1|6.7% → 68.3%|Tenfold lift the moment the edit format stops eating the model alive.|",
+     "|Grok 4 Fast|−61% tokens|Output collapses once the retry loop on bad diffs disappears.|"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     326
+    ],
+    "quotes": [
+     "Anthropic `oauth` · OpenAI · OpenAI Codex `oauth` · Google Gemini · Google Vertex · Google Antigravity `oauth` · xAI · S"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     326
+    ],
+    "quotes": [
+     "Anthropic `oauth` · OpenAI · OpenAI Codex `oauth` · Google Gemini · Google Vertex · Google Antigravity `oauth` · xAI · S"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     326,
+     362
+    ],
+    "quotes": [
+     "Anthropic `oauth` · OpenAI · OpenAI Codex `oauth` · Google Gemini · Google Vertex · Google Antigravity `oauth` · xAI · S",
+     "- **Custom providers** — Declare anything that speaks `openai-completions`, `openai-responses`, `openai-codex-responses`"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "mention",
+    "lines": [
+     326
+    ],
+    "quotes": [
+     "Anthropic `oauth` · OpenAI · OpenAI Codex `oauth` · Google Gemini · Google Vertex · Google Antigravity `oauth` · xAI · S"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "mention",
+    "lines": [
+     326,
+     362
+    ],
+    "quotes": [
+     "Anthropic `oauth` · OpenAI · OpenAI Codex `oauth` · Google Gemini · Google Vertex · Google Antigravity `oauth` · xAI · S",
+     "- **Custom providers** — Declare anything that speaks `openai-completions`, `openai-responses`, `openai-codex-responses`"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     338
+    ],
+    "quotes": [
+     "Ollama `local` · Ollama Cloud · LM Studio `local` · llama.cpp `local` · vLLM `local` · LiteLLM"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     338
+    ],
+    "quotes": [
+     "Ollama `local` · Ollama Cloud · LM Studio `local` · llama.cpp `local` · vLLM `local` · LiteLLM"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     540
+    ],
+    "quotes": [
+     "On first run omp inherits whatever is already on disk: rules, skills, and MCP servers from `.claude`, `.cursor`, `.winds"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     39,
+     42
+    ],
+    "quotes": [
+     "**Homebrew**",
+     "brew install can1357/tap/omp"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "cargo",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     177
+    ],
+    "quotes": [
+     "omp TUI: web_search returns 10 ranked Perplexity sources for inference-time compute scaling, the agent picks an arxiv pa"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     209
+    ],
+    "quotes": [
+     "Every other agent ships an importer and expects you to convert. omp reads the eight formats already on disk in their nat"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     209
+    ],
+    "quotes": [
+     "Every other agent ships an importer and expects you to convert. omp reads the eight formats already on disk in their nat"
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "通义千问",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "Kimi",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "Windsurf",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

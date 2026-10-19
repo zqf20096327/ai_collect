@@ -1,0 +1,86 @@
+{
+ "fn": "google-deepmind/deepmind-research",
+ "sha": "8edf2b605775",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为科研人员提供 DeepMind 论文的配套开源代码与环境",
+  "review": "DeepMind 官方研究仓库，收录其发表论文的实现与示例代码，并开放研究环境、数据集和代码，供更广泛的研究社区在其工作基础上开展研究。仓库以目录形式组织约 60 个论文项目，覆盖强化学习、图网络、生成模型、语言模型、因果推理、蛋白质结构预测（AlphaFold CASP13）等方向。README 未提供统一安装说明，各项目需进入对应目录查看；页面声明这不是 Google 官方产品。",
+  "highlights": [
+   "收录约 60 个 DeepMind 论文的实现与示例代码",
+   "开放 DeepMind Lab、StarCraft II 等研究环境与数据集",
+   "覆盖强化学习、图网络、生成模型、AlphaFold 等多方向"
+  ],
+  "use_cases": [
+   "复现或基于 DeepMind 论文实现开展研究",
+   "使用与 DeepMind 相同的环境做强化学习实验",
+   "查找图网络、无监督表示学习等方向的参考实现"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://deepmind.com/research/publications/",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "研究代码",
+   "深度学习",
+   "强化学习",
+   "论文复现"
+  ],
+  "domain": "科研/机器学习研究",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "reinforcement-learning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: This repository contains implementations and illustrative code to accompany",
+   "L9: enable the broader research community to engage with our work and build upon it,",
+   "L25: ## Projects"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

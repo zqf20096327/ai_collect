@@ -1,0 +1,181 @@
+{
+ "fn": "trycua/cua",
+ "sha": "4b8978a2bc24",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI agent 提供可操作的完整桌面环境与自动化工具",
+  "review": "Cua 是一套面向 computer-use agent 的基础设施：Cua Spaces 提供运行于自有 Mac/机器/云账号上的 macOS 与 Linux 桌面 Space，支持应用 Teleport 与人机多人协作；Cua Driver 提供 CLI/MCP/多语言 SDK 驱动 macOS、Windows、Linux 原生应用与浏览器；Lume 基于 Virtualization.Framework 在 Apple Silicon 上管理本地 VM；另含 CUA-S1 小型决策模型（研究发布，权重在 Hugging Face）与 Cua Bench 任务评测框架。主体 MIT 许可，Spaces 与部分 Bench 为 FSL-1.1-MIT。",
+  "highlights": [
+   "Cua Driver 支持 macOS/Windows/Linux 桌面自动化，经 CLI、MCP 或类型化 SDK 接入",
+   "Lume 用 Apple Virtualization.Framework 在 Apple Silicon 上管理 macOS/Linux VM",
+   "SDK 覆盖 Python/TypeScript/Swift/Kotlin，含 gVisor 容器沙箱与 cua-spacesd 守护进程",
+   "Cua Bench 可构建任务、评测 agent 并导出训练轨迹"
+  ],
+  "use_cases": [
+   "让 agent 在隔离虚拟桌面中操作图形界面完成任务",
+   "为 computer-use agent 构建评测任务并导出轨迹用于训练",
+   "在自有 Mac 或云主机上托管供 agent 使用的桌面环境"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/a2ccc86b-10d0-48c0-bee6-7ae652ba1c59",
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    153
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "computer-use",
+   "桌面自动化",
+   "agent评测",
+   "虚拟机/沙箱",
+   "MCP"
+  ],
+  "domain": "AI Agent 基础设施/computer-use",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "gui-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7:  Give AI agents computers they can use. Cua Spaces gives your agents full desktops on your Mac and on machines you own. ",
+   "L69: Give your agent tools to inspect and operate native desktop apps and browsers on macOS, Windows, and Linux. Connect thro",
+   "L141: - **SDK:** the same API in Python (`pip install cua`), TypeScript (`@trycua/cua`), Swift (`Cua`) and Kotlin (generated b"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     87,
+     123
+    ],
+    "note": "Claude Code 等作为可集成 agent 的提及",
+    "quotes": [
+     "Using Claude Code, Codex, Cursor, OpenClaw, or another agent? Find your integration. Source documentation and architectu",
+     "In a terminal the script shows a short checklist: the `cua` CLI, the Cua Spaces app (default on macOS), the cua-driver M"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     58,
+     61,
+     74,
+     80,
+     100,
+     114
+    ],
+    "note": "curl 安装脚本与 .dmg/.pkg 安装包",
+    "quotes": [
+     "curl -fsSL https://cua.ai/install.sh | sh",
+     "On macOS the installer selects the Cua Spaces app by default and adds the `cua` CLI. You can also download the signed `.",
+     "/bin/bash -c \"$(curl -fsSL https://cua.ai/driver/install.sh)\"",
+     "irm https://cua.ai/driver/install.ps1 | iex",
+     "/bin/bash -c \"$(curl -fsSL https://cua.ai/lume/install.sh)\"",
+     "curl -fsSL https://cua.ai/install.sh | sh"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     141,
+     166,
+     180
+    ],
+    "quotes": [
+     "- **SDK:** the same API in Python (`pip install cua`), TypeScript (`@trycua/cua`), Swift (`Cua`) and Kotlin (generated b",
+     "uv tool install 'cua-bench[browser]'",
+     "|cua (Python)|The cua SDK for Python (`pip install cua`)|"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     87,
+     123
+    ],
+    "note": "作为可集成的 AI coding agent 提及",
+    "quotes": [
+     "Using Claude Code, Codex, Cursor, OpenClaw, or another agent? Find your integration. Source documentation and architectu",
+     "In a terminal the script shows a short checklist: the `cua` CLI, the Cua Spaces app (default on macOS), the cua-driver M"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     87,
+     123
+    ],
+    "note": "作为可集成的 AI coding agent 提及",
+    "quotes": [
+     "Using Claude Code, Codex, Cursor, OpenClaw, or another agent? Find your integration. Source documentation and architectu",
+     "In a terminal the script shows a short checklist: the `cua` CLI, the Cua Spaces app (default on macOS), the cua-driver M"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    228,
+    229,
+    230
+   ],
+   "quotes": [
+    "Everything outside Cua Spaces and Cua Driver Bench is MIT-licensed (LICENSE): the cua SDK and its Python, TypeScript, Sw",
+    "Cua Spaces is source-available under FSL-1.1-MIT: the Spaces apps, cua-spacesd, the Cua Keyvault, teleport, Cua Volume (",
+    "Cua Driver Bench (`benchmarks/cua-driver-bench`) is under the same FSL-1.1-MIT; versions published before 11 Oct 2026 (#"
+   ]
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    193,
+    197,
+    198,
+    200,
+    201
+   ]
+  }
+ }
+}

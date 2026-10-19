@@ -1,0 +1,349 @@
+{
+ "fn": "BerriAI/litellm",
+ "sha": "f559f3c7c57f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "统一的 LLM 网关：一份接口调用 100+ 模型供应商",
+  "review": "提供 Python SDK 与可自部署的 AI Gateway（Proxy Server）两种使用方式，用 OpenAI 格式统一调用 100+ LLM 供应商。支持 /chat/completions、/responses、/embeddings、/images、/audio、/batches、/rerank、/messages 等端点，以及 A2A 代理调用、MCP 服务器接入。网关侧提供虚拟密钥、花费跟踪、guardrails、负载均衡与管理后台；SDK 侧提供带重试/回退的 Router 与可观测性回调。核心为 Rust 实现，附 Python SDK。",
+  "highlights": [
+   "Python SDK 与 AI Gateway（Proxy Server）两种形态，OpenAI 格式调用 100+ 供应商",
+   "A2A Agent 网关与 MCP 网关：将 MCP 服务器接入 /chat/completions",
+   "虚拟密钥、多租户花费跟踪、guardrails、负载均衡与管理后台",
+   "Router 支持跨部署的重试/回退与应用级负载均衡"
+  ],
+  "use_cases": [
+   "为团队搭建集中式 LLM 网关，统一密钥与费用管理",
+   "在 Python 项目中用统一接口切换多个模型供应商",
+   "把 MCP 服务器和 A2A Agent 暴露为统一网关端点",
+   "在 Azure/OpenAI 等多部署间做重试与回退"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM网关",
+   "模型路由",
+   "MCP",
+   "A2A",
+   "成本跟踪"
+  ],
+  "domain": "LLM 基础设施/模型网关",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "bedrock",
+   "anthropic",
+   "cohere",
+   "deepseek",
+   "google",
+   "groq",
+   "vllm",
+   "ollama",
+   "openrouter",
+   "together"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L40: LiteLLM is an open source AI Gateway that gives you a single, unified interface to call 100+ LLM providers — OpenAI, Ant",
+   "L42: Use it as a **Python SDK** for direct library integration, or deploy the **AI Gateway (Proxy Server)** as a centralized ",
+   "L53: - **Production-ready gateway** — virtual keys, spend tracking, guardrails, load balancing, and an admin dashboard out of"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     40,
+     216
+    ],
+    "quotes": [
+     "LiteLLM is an open source AI Gateway that gives you a single, unified interface to call 100+ LLM providers — OpenAI, Ant",
+     "|AWS - Bedrock (`bedrock`)|✅|✅|✅|✅||||||✅|"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     211,
+     212
+    ],
+    "quotes": [
+     "|Anthropic (`anthropic`)|✅|✅|✅||||||✅||",
+     "|Anthropic Text (`anthropic_text`)|✅|✅|✅||||||✅||"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "support",
+    "lines": [
+     228,
+     229
+    ],
+    "quotes": [
+     "|Cohere (`cohere`)|✅|✅|✅|✅||||||✅|",
+     "|Cohere Chat (`cohere_chat`)|✅|✅|✅||||||||"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     240
+    ],
+    "quotes": [
+     "|Deepseek (`deepseek`)|✅|✅|✅||||||||"
+    ]
+   },
+   {
+    "term": "google",
+    "rel": "support",
+    "lines": [
+     251,
+     252,
+     253
+    ],
+    "quotes": [
+     "|Google - PaLM|✅|✅|✅||||||||",
+     "|Google - Vertex AI (`vertex_ai`)|✅|✅|✅|✅|✅||||||",
+     "|Google AI Studio - Gemini (`gemini`)|✅|✅|✅||||||||"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     255
+    ],
+    "quotes": [
+     "|Groq AI (`groq`)|✅|✅|✅||||||||"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     257,
+     310
+    ],
+    "quotes": [
+     "|Hosted VLLM (`hosted_vllm`)|✅|✅|✅||||||||",
+     "|VLLM (`vllm`)|✅|✅|✅||||||||"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     281,
+     282
+    ],
+    "quotes": [
+     "|Ollama (`ollama`)|✅|✅|✅|✅|||||||",
+     "|Ollama Chat (`ollama_chat`)|✅|✅|✅||||||||"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     286
+    ],
+    "quotes": [
+     "|OpenRouter (`openrouter`)|✅|✅|✅||||||||"
+    ]
+   },
+   {
+    "term": "together",
+    "rel": "support",
+    "lines": [
+     304
+    ],
+    "quotes": [
+     "|Together AI (`together_ai`)|✅|✅|✅||||||||"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     14,
+     75,
+     88
+    ],
+    "quotes": [
+     " <a href=\"https://pypi.org/project/litellm/\" target=\"_blank\">",
+     "uv add litellm",
+     "python -m pip install dist/core/litellm_core-*.whl"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     352
+    ],
+    "quotes": [
+     "git clone https://github.com/BerriAI/litellm.git"
+    ]
+   },
+   {
+    "term": "helm",
+    "rel": "support",
+    "lines": [
+     418
+    ],
+    "quotes": [
+     "- The same `proxy_config` surface as the Helm chart — pass YAML as a typed map"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     339,
+     425
+    ],
+    "quotes": [
+     "**Stable Release:** Use docker images with the `-stable` tag. These have undergone 12 hour load tests, before being publ",
+     "2. Run dependent services `docker-compose up db prometheus`"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     173
+    ],
+    "note": "MCP 使用示例场景，非替代/竞品",
+    "quotes": [
+     "### Use with Cursor IDE"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     186,
+     197
+    ],
+    "note": "可经 SDK 运行的 agent CLI",
+    "quotes": [
+     " Agents - Run Claude Code, Codex, OpenCode or Deep Agents on any model (Python SDK)",
+     "Set `LITELLM_PROXY_API_BASE` and `LITELLM_PROXY_API_KEY` and every model call the agent makes goes through your AI Gatew"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     123,
+     197
+    ],
+    "quotes": [
+     "**Supported Providers** - LangGraph, Vertex AI Agent Engine, Azure AI Foundry, Bedrock AgentCore, Pydantic AI",
+     "Set `LITELLM_PROXY_API_BASE` and `LITELLM_PROXY_API_KEY` and every model call the agent makes goes through your AI Gatew"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     249
+    ],
+    "note": "供应商列表条目",
+    "quotes": [
+     "|GitHub Copilot (`github_copilot`)|✅|✅|✅|✅|||||||"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     258
+    ],
+    "quotes": [
+     "|Huggingface (`huggingface`)|✅|✅|✅|✅||||||✅|"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     288
+    ],
+    "quotes": [
+     "|Perplexity AI (`perplexity`)|✅|✅|✅||||||||"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     292,
+     293
+    ],
+    "note": "供应商列表条目",
+    "quotes": [
+     "|Qianwen AI Platform (`qwen_ai_platform`)|✅|✅|✅|✅|✅|||||✅|",
+     "|QwenCloud (`qwencloud`)|✅|✅|✅|✅|✅|||||✅|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [
+    464,
+    468
+   ],
+   "quotes": [
+    "Get an Enterprise License",
+    "- ✅ **Features under the LiteLLM Commercial License:**"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

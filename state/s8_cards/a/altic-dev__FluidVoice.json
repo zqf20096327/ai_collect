@@ -1,0 +1,147 @@
+{
+ "fn": "altic-dev/FluidVoice",
+ "sha": "e4be70947a49",
+ "source": "readme",
+ "identity": {
+  "one_liner": "macOS 开源语音听写应用：本地语音转文字与本地 AI 增强",
+  "review": "面向 macOS 用户的语音听写（voice-to-text）应用，Swift 编写，通过全局热键触发语音输入，将转录文本直接插入任意应用的文本框。支持多种语音模型：Nemotron Speech、Parakeet 系列、Cohere Transcribe、Apple Speech 与 Whisper（部分模型兼容 Intel Mac）。提供 Command Mode 语音控制 Mac、Write Mode 改写文本、实时转录预览等功能。AI 增强可选本地 Fluid Intelligence 模型（闭源私有运行时）或 OpenAI/Groq 等云端提供商，默认本地优先、数据不出机。",
+  "highlights": [
+   "8 种语音模型可选，Apple Speech 零下载、Whisper 兼容 Intel Mac",
+   "本地 AI 增强（Fluid Intelligence）：智能格式化、上下文大小写与后处理，数据不离开设备",
+   "Command Mode 语音控制 Mac；Write Mode 在任意应用内听写或改写文本",
+   "可选接入 OpenAI/Groq/自定义云端 AI 增强，密钥存于 macOS Keychain"
+  ],
+  "use_cases": [
+   "在任意应用中用语音听写并直接插入文本",
+   "用语音启动应用、运行快捷指令与自动化工作流",
+   "选择本地模型与本地 AI 增强，保证语音数据不离开设备"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音听写",
+   "STT",
+   "桌面应用",
+   "本地优先/隐私",
+   "macOS"
+  ],
+  "domain": "语音输入/桌面工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "groq"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: Open source voice-to-text dictation app for macOS with on-device AI enhancement.",
+   "L39: - **Fluid Intelligence** — fully local AI model for on-device dictation enhancement. No cloud, no API keys, no data leav",
+   "L84: - **Fluid Intelligence** — on-device AI enhancement for smart formatting, context-aware capitalization, and post-process"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     88,
+     114
+    ],
+    "note": "Cohere Transcribe 作为可选语音识别模型之一，非接入的 LLM 提供商",
+    "quotes": [
+     "- **Multiple Speech Models** — Nemotron Speech 3.5, Parakeet Flash, Parakeet TDT v3 & v2, Cohere Transcribe, Apple Speec",
+     "|Cohere Transcribe|High-accuracy multilingual dictation|14 languages|~1.4 GB|Apple Silicon|"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     89,
+     154
+    ],
+    "note": "可选云端 AI 增强提供商，填入 API key 即用",
+    "quotes": [
+     "- **AI Enhancement** — optional post-processing via OpenAI, Groq, custom providers, or local Fluid Intelligence for clea",
+     "6. **(Optional) Bring your own AI provider** — add an OpenAI, Groq, or custom provider API key for cloud-based enhanceme"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     13,
+     142
+    ],
+    "quotes": [
+     "**Install with Homebrew:** `brew install --cask fluidvoice`",
+     "   brew install --cask fluidvoice"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     173,
+     183
+    ],
+    "quotes": [
+     "git clone https://github.com/altic-dev/FluidVoice.git",
+     "./build.sh"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "note": "App 为 GPLv3；Fluid Intelligence 是独立闭源运行时，README 未声明双许可，但构成 open core 情形",
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,138 @@
+{
+ "fn": "microsoft/semantic-kernel",
+ "sha": "4f0e02add554",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为开发者提供构建 AI 智能体与多智能体系统的 SDK",
+  "review": "Semantic Kernel 是一个模型无关的 SDK，提供 Python、.NET、Java 三语言包，用于构建、编排和部署 AI agent 与多智能体系统。关键机制包括：插件/工具扩展（原生函数、prompt 模板、OpenAPI、MCP）、多智能体编排、向量数据库集成、多模态输入处理与本地部署支持。README 顶部声明该项目已由 Microsoft Agent Framework 接替，MAF 1.0 已发布并提供迁移指南。",
+  "highlights": [
+   "模型无关 SDK，内置接入 OpenAI、Azure OpenAI、Hugging Face、NVidia 等",
+   "提供 Python / .NET / Java 三语言包",
+   "插件扩展支持原生函数、prompt 模板、OpenAPI、MCP",
+   "支持 Ollama、LMStudio、ONNX 本地运行"
+  ],
+  "use_cases": [
+   "在应用中接入 LLM 构建聊天助手",
+   "编排多个协作 agent 处理复杂工作流",
+   "通过插件/工具扩展让 agent 调用自有能力",
+   "企业环境中构建可观测、安全的 agent 系统"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM SDK",
+   "AI Agent",
+   "多智能体编排",
+   "开发者框架"
+  ],
+  "domain": "LLM 基础设施/Agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "azure",
+   "ollama"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L17: Semantic Kernel is a model-agnostic SDK that empowers developers to build, orchestrate, and deploy AI agents and multi-a",
+   "L4: > Semantic Kernel is now Microsoft Agent Framework! Microsoft Agent Framework (MAF) is the enterprise‑ready successor to"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     28,
+     42,
+     78,
+     118,
+     138
+    ],
+    "quotes": [
+     "- **Model Flexibility**: Connect to any LLM with built-in support for OpenAI, Azure OpenAI, Hugging Face, NVidia and mor",
+     "**Azure OpenAI:**",
+     "from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion",
+     "from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion, OpenAIChatCompletion",
+     "- **Model Availability**: Verify your Azure OpenAI deployment or OpenAI model access"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     34
+    ],
+    "quotes": [
+     "- **Local Deployment**: Run with Ollama, LMStudio, or ONNX"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     55
+    ],
+    "quotes": [
+     "pip install semantic-kernel"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "ramework 1.0 g",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    4,
+    6
+   ]
+  }
+ }
+}

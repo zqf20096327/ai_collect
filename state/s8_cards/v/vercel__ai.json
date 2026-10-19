@@ -1,0 +1,161 @@
+{
+ "fn": "vercel/ai",
+ "sha": "37452bf5f630",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 TypeScript 开发者的统一接口 AI 应用与 Agent 构建工具包",
+  "review": "Vercel 出品的 provider-agnostic TypeScript 工具库，用于构建 AI 应用与 Agent。核心机制：统一 Provider API 接入 OpenAI、Anthropic、Google 等模型提供方，默认经 Vercel AI Gateway 访问各提供方，也可安装各家的 @ai-sdk/* 包直连。提供 generateText 文本生成、基于 zod 的结构化输出、ToolLoopAgent 工具循环 Agent，以及框架无关的 UI hooks（Next.js/React/Svelte/Vue）用于构建聊天与生成式界面。要求 Node.js 22+，通过 npm 安装，并为 Claude Code、Cursor 等 coding agent 提供 skill 安装命令。",
+  "highlights": [
+   "统一 Provider API 接入 OpenAI、Anthropic、Google 等模型提供方",
+   "默认经 Vercel AI Gateway 访问各主要提供方，传模型字符串即可调用",
+   "ToolLoopAgent 构建工具循环 Agent，zod 定义结构化输出",
+   "框架无关 UI hooks 支持 Next.js/React/Svelte/Vue 的聊天与生成式界面"
+  ],
+  "use_cases": [
+   "在 Next.js/React 等前端框架里构建聊天机器人与生成式 UI",
+   "用统一接口在多个模型提供方之间切换调用",
+   "构建带工具调用的 Agent 应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM工具库",
+   "AI应用开发",
+   "Agent框架",
+   "前端集成",
+   "TypeScript"
+  ],
+  "domain": "LLM 基础设施/开发工具库",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: The AI SDK is a provider-agnostic TypeScript toolkit designed to help you build AI-powered applications and agents using",
+   "L27: The AI SDK provides a unified API to interact with model providers like OpenAI, Anthropic, Google, and more.",
+   "L29: By default, the AI SDK uses the Vercel AI Gateway to give you access to all major providers out of the box. Just pass a "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     27,
+     41,
+     45,
+     48
+    ],
+    "note": "提供 @ai-sdk/anthropic 官方接入包与示例",
+    "quotes": [
+     "The AI SDK provides a unified API to interact with model providers like OpenAI, Anthropic, Google, and more.",
+     "npm install @ai-sdk/openai @ai-sdk/anthropic @ai-sdk/google",
+     "import { anthropic } from '@ai-sdk/anthropic';",
+     "  model: anthropic('claude-opus-5-5'), // or openai('gpt-6-astra'), google('gemini-3.8-flash'), etc."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     11,
+     14,
+     41,
+     91
+    ],
+    "quotes": [
+     "You will need Node.js 22+ and npm (or another package manager) installed on your local development machine.",
+     "npm install ai",
+     "npm install @ai-sdk/openai @ai-sdk/anthropic @ai-sdk/google",
+     "npm install @ai-sdk/react"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     29,
+     61
+    ],
+    "note": "本产品自称/默认网关，非竞品",
+    "quotes": [
+     "By default, the AI SDK uses the Vercel AI Gateway to give you access to all major providers out of the box. Just pass a ",
+     "  model: 'openai/gpt-6-astra', // use Vercel AI Gateway"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     19
+    ],
+    "note": "推荐安装 skill 的 coding agent，非竞品",
+    "quotes": [
+     "If you use coding agents such as Claude Code or Cursor, we highly recommend adding the AI SDK skill to your repository:"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     19
+    ],
+    "note": "同上",
+    "quotes": [
+     "If you use coding agents such as Claude Code or Cursor, we highly recommend adding the AI SDK skill to your repository:"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

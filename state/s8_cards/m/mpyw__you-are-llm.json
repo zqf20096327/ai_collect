@@ -1,0 +1,91 @@
+{
+ "fn": "mpyw/you-are-llm",
+ "sha": "3f7736aa521b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "扮演 LLM 一侧的打字练习器：逐字打出编程会话助手内容",
+  "review": "一个网页打字训练应用：用户扮演编程会话中的助手侧，逐块逐字打出日文假名读音、代码与 shell 命令，无自动补全。内置 614 个会话，覆盖 10 种编程语言与日/英两种自然语言，按 Easy 到 Expert+ 五档难度分级；难度由脚本按 Shift 键占比与符号形状数计算。输入引擎同时保持多种罗马字拼写（如 shi/si/ci），支持 Tab 缩进、连击统计、S-D 评级与分享功能。基于 React/TypeScript 7 构建，通过 GitHub Pages 部署；AZIK 布局尚未实现。",
+  "highlights": [
+   "614 个会话覆盖 10 种编程语言与日/英双语，五档难度",
+   "输入引擎同时保持多种罗马字拼写并按按键收敛",
+   "难度由脚本按 Shift 占比与符号形状数自动测量",
+   "Web Audio 合成音效，支持 prefers-reduced-motion"
+  ],
+  "use_cases": [
+   "以打字方式练习日语假名输入（IME 场景）",
+   "练习多种编程语言的符号输入与准确率",
+   "按难度过滤并分享打字会话成绩"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "打字练习",
+   "日语输入",
+   "编程练习",
+   "网页游戏",
+   "IME"
+  ],
+  "domain": "打字训练/教育工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5: **You type the LLM's side of a coding session. No completion. No shortcuts.**",
+   "L28: Pick a session, then type the assistant blocks one at a time. Every block is one run of the engine."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

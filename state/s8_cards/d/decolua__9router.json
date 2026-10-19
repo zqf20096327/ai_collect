@@ -1,0 +1,333 @@
+{
+ "fn": "decolua/9router",
+ "sha": "44ab217afe50",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 AI 编码 CLI 工具聚合 40+ 模型提供商的本地路由网关",
+  "review": "本地运行的 AI 模型路由网关：将 Claude Code、Codex、Cursor、Cline 等 CLI 编码工具统一接入 40+ 提供商与 100+ 模型，暴露 OpenAI 兼容端点（localhost:20128/v1）。核心机制包括 RTK 令牌压缩（对 git diff/grep 等工具输出做无损压缩）、订阅→低价→免费的三级自动回退、多账号轮询、配额实时追踪与 OAuth 令牌自动刷新。通过 npm 全局安装或源码/Docker 运行，提供 Web Dashboard 管理。",
+  "highlights": [
+   "RTK 工具输出压缩，声明节省 20-40% 输入令牌",
+   "订阅→低价→免费的三级自动回退路由",
+   "OpenAI/Claude/Gemini/Cursor/Kiro/Vertex 间格式转换",
+   "自托管 STT/TTS/Embedding 提供商接入与 baseUrl 配置"
+  ],
+  "use_cases": [
+   "让 Claude Code/Cursor 等 CLI 工具使用免费或低价模型端点",
+   "订阅配额用尽时自动切换到备用模型不停工",
+   "多个提供商账号间做轮询负载分摊",
+   "本地 whisper.cpp/vLLM 等自托管语音与嵌入服务统一接入"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI网关",
+   "编码工具",
+   "模型路由",
+   "令牌优化"
+  ],
+  "domain": "LLM 基础设施/网关路由",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "xai",
+   "deepseek",
+   "openrouter",
+   "groq",
+   "together",
+   "cohere",
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L7:  **Connect All AI Code Tools (Claude Code, Cursor, Antigravity, Copilot, Codex, Gemini, OpenCode, Cline, OpenClaw...) to",
+   "L53: npm install -g 9router",
+   "L387: |🎯 **Smart 3-Tier Fallback**|Auto-route: Subscription → Cheap → Free|Never stop coding, zero downtime|"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     298
+    ],
+    "quotes": [
+     " Anthropic"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     310
+    ],
+    "quotes": [
+     " xAI"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     304
+    ],
+    "quotes": [
+     " DeepSeek"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     283
+    ],
+    "quotes": [
+     " OpenRouter"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     307
+    ],
+    "quotes": [
+     " Groq"
+    ]
+   },
+   {
+    "term": "together",
+    "rel": "support",
+    "lines": [
+     320
+    ],
+    "quotes": [
+     " Together AI"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "support",
+    "lines": [
+     328
+    ],
+    "quotes": [
+     " Cohere"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     343,
+     350
+    ],
+    "note": "自托管嵌入服务器的典型选项之一",
+    "quotes": [
+     "vLLM, Infinity, text-embeddings-inference, or anything else that speaks the OpenAI",
+     "|**Self-hosted Embedding**|`/v1/embeddings`|llama-server, vLLM, Infinity|"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     53,
+     80
+    ],
+    "quotes": [
+     "npm install -g 9router",
+     "npm install"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     76
+    ],
+    "quotes": [
+     "This repository package is private (`9router-app`), so source/Docker execution is the expected local development path."
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     76,
+     80
+    ],
+    "quotes": [
+     "This repository package is private (`9router-app`), so source/Docker execution is the expected local development path.",
+     "npm install"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [
+   {
+    "term": "RAM 16GB",
+    "rel": "mention",
+    "lines": [
+     155,
+     158
+    ],
+    "note": "视频标题中 VPS 部署场景描述，非产品自身硬件要求",
+    "quotes": [
+     " Cara Deploy 9Router di Hugging Face GRATIS Non-Stop! | Alternatif VPS RAM 16GB",
+     " Cara Deploy 9Router di Hugging Face GRATIS Non-Stop! | Alternatif VPS RAM 16GB by Krisswuh"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     7,
+     215
+    ],
+    "note": "被接入的 CLI 工具，非替代/竞品表述",
+    "quotes": [
+     " **Connect All AI Code Tools (Claude Code, Cursor, Antigravity, Copilot, Codex, Gemini, OpenCode, Cline, OpenClaw...) to",
+     " Copilot"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     7,
+     43,
+     66,
+     185
+    ],
+    "quotes": [
+     " **Connect All AI Code Tools (Claude Code, Cursor, Antigravity, Copilot, Codex, Gemini, OpenCode, Cline, OpenClaw...) to",
+     "│  Your CLI   │  (Claude Code, Codex, OpenClaw, Cursor, Cline...)",
+     "Claude Code/Codex/OpenClaw/Cursor/Cline Settings:",
+     " Claude Code"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     7,
+     43,
+     197
+    ],
+    "quotes": [
+     " **Connect All AI Code Tools (Claude Code, Cursor, Antigravity, Copilot, Codex, Gemini, OpenCode, Cline, OpenClaw...) to",
+     "│  Your CLI   │  (Claude Code, Codex, OpenClaw, Cursor, Cline...)",
+     " Cursor"
+    ]
+   },
+   {
+    "term": "Devin",
+    "rel": "mention",
+    "lines": [
+     230
+    ],
+    "quotes": [
+     " Devin CLI"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     236,
+     275
+    ],
+    "note": "Qwen Code CLI 工具及其已停用免费层",
+    "quotes": [
+     " Qwen Code",
+     "> **Note:** iFlow, Qwen Code and Gemini CLI free tiers were discontinued in 2026. Use Kiro / OpenCode Free / Vertex inst"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     289
+    ],
+    "quotes": [
+     " Kimi"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     316
+    ],
+    "quotes": [
+     " Perplexity"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

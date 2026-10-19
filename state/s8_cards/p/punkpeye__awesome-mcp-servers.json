@@ -1,0 +1,216 @@
+{
+ "fn": "punkpeye/awesome-mcp-servers",
+ "sha": "80e209da7348",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 AI 应用开发者的 MCP 服务器精选清单",
+  "review": "一份收录 Model Context Protocol (MCP) 服务器的精选清单（awesome list 形式）。MCP 是开放协议，使 AI 模型通过标准化服务器实现与本地及远程资源的交互；清单聚焦可通过 GitHub 仓库自行安装运行的实现，条目按聚合器、浏览器自动化、数据库、文件系统等数十个类别组织，并用图例标注实现语言（Python/TypeScript/Go/Rust 等）、官方实现标识、本地/云范围与操作系统支持。另提供客户端清单、教程链接与网页版同步目录。",
+  "highlights": [
+   "按数十个类别组织 MCP 服务器条目（L72-125）",
+   "图例标注实现语言、官方实现、本地/云范围与操作系统（L42-60）",
+   "提供网页版目录并与仓库同步（L70）",
+   "附客户端清单与教程入口（L26, L34-35）"
+  ],
+  "use_cases": [
+   "为 AI 应用查找接入数据库、文件系统或第三方 API 的 MCP 服务器",
+   "按实现语言或操作系统筛选合适的 MCP 服务器",
+   "浏览 MCP 生态中各类别服务器的收录情况"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "MCP",
+   "awesome清单",
+   "AI工具聚合",
+   "LLM生态"
+  ],
+  "domain": "AI 生态/资源聚合目录",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L16: A curated list of awesome Model Context Protocol (MCP) servers.",
+   "L22: MCP is an open protocol that enables AI models to securely interact with local and remote resources through standardized",
+   "L30: This list is for servers with a GitHub repo you install and run yourself. Looking for a hosted server you just connect t"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     169,
+     171,
+     172
+    ],
+    "quotes": [
+     "- askbudi/roundtable 📇 ☁️ 🏠 🍎 🪟 🐧 - Meta-MCP server that unifies AI coding assistants (Codex, Claude Code, Cursor, Gemin",
+     "- avotsai/avots-mcp avotsai/avots-mcp MCP server 📇 ☁️ - Multi-model AI media generation (image, video, audio, face swap,",
+     "- blockrunai/blockrun-mcp 📇 ☁️ 🍎 🪟 🐧 - Access AI models such as GPT-5, Claude, Gemini, Grok and DeepSeek, paid per use v"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     167,
+     171,
+     172
+    ],
+    "quotes": [
+     "- arikusi/deepseek-mcp-server deepseek-mcp-server MCP server 📇 ☁️ 🍎 🪟 🐧 - DeepSeek AI chat and reasoning with multi-turn",
+     "- avotsai/avots-mcp avotsai/avots-mcp MCP server 📇 ☁️ - Multi-model AI media generation (image, video, audio, face swap,",
+     "- blockrunai/blockrun-mcp 📇 ☁️ 🍎 🪟 🐧 - Access AI models such as GPT-5, Claude, Gemini, Grok and DeepSeek, paid per use v"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     172
+    ],
+    "quotes": [
+     "- blockrunai/blockrun-mcp 📇 ☁️ 🍎 🪟 🐧 - Access AI models such as GPT-5, Claude, Gemini, Grok and DeepSeek, paid per use v"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     195
+    ],
+    "quotes": [
+     "- jaspertvdm/mcp-server-ollama-bridge 🐍 🏠 - Bridge to a local Ollama server for running Llama, Mistral, Qwen and other l"
+    ]
+   },
+   {
+    "term": "openai",
+    "rel": "mention",
+    "lines": [
+     159,
+     171
+    ],
+    "quotes": [
+     "- Work90210/APIFold Work90210/APIFold MCP server 📇 ☁️ - Turn any REST API into a hosted MCP server, with ready-made publ",
+     "- avotsai/avots-mcp avotsai/avots-mcp MCP server 📇 ☁️ - Multi-model AI media generation (image, video, audio, face swap,"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     418
+    ],
+    "quotes": [
+     "- swebsy/MCP swebsy/MCP MCP server 🎖️ 📇 🏠 🍎 🪟 🐧 - Build and edit real websites from the coding agent you already pay for"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     169
+    ],
+    "quotes": [
+     "- askbudi/roundtable 📇 ☁️ 🏠 🍎 🪟 🐧 - Meta-MCP server that unifies AI coding assistants (Codex, Claude Code, Cursor, Gemin"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     169
+    ],
+    "quotes": [
+     "- askbudi/roundtable 📇 ☁️ 🏠 🍎 🪟 🐧 - Meta-MCP server that unifies AI coding assistants (Codex, Claude Code, Cursor, Gemin"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     176
+    ],
+    "quotes": [
+     "- Continuum-AI-Corp/orcarouter-mcp-server Continuum-AI-Corp/orcarouter-mcp-server MCP server 📇 ☁️ 🏠 🍎 🪟 🐧 - Browse LLMs "
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     230,
+     248
+    ],
+    "quotes": [
+     "- sonnyflylock/voxie-ai-directory-mcp 📇 ☁️ - AI phone number directory: query Voxie AI personas and third-party AI servi",
+     "- ikoskela/wisepanel-mcp ikoskela/wisepanel-mcp MCP server 📇 ☁️ 🍎 🪟 🐧 - Multi-agent deliberation across ChatGPT, Claude,"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     248
+    ],
+    "quotes": [
+     "- ikoskela/wisepanel-mcp ikoskela/wisepanel-mcp MCP server 📇 ☁️ 🍎 🪟 🐧 - Multi-agent deliberation across ChatGPT, Claude,"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

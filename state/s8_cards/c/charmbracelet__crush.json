@@ -1,0 +1,248 @@
+{
+ "fn": "charmbracelet/crush",
+ "sha": "9b69c06bc2bb",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的终端 AI 编程 Agent，接入自选 LLM 进行代码工作",
+  "review": "一个运行在终端中的 agentic coding 工具（TUI），将用户的工具、代码与工作流接入所选 LLM。关键机制：支持通过 OpenAI 或 Anthropic 兼容 API 接入多种模型，会话中途切换 LLM 并保留上下文；每个项目可维护多个会话；利用 LSP 获取额外上下文；通过 MCP（stdio/http/sse）扩展能力。配置采用 Bash 风格的 crushrc，支持项目级与全局级；旧 JSON 配置仍支持但已标记废弃。提供 brew、winget、scoop、Nix、apt、yum、二进制包与 go install 等多种安装方式。",
+  "highlights": [
+   "多模型接入：OpenAI/Anthropic 兼容 API，会话内切换模型保留上下文",
+   "利用 LSP 为决策提供额外代码上下文",
+   "支持 MCP 三种传输方式（stdio/http/sse）及 OAuth 授权",
+   "crushrc（Bash 风格）配置，内置自配置技能，跨平台一致"
+  ],
+  "use_cases": [
+   "在终端中用自选 LLM 进行 agentic 编程",
+   "同一项目维护多个独立工作会话与上下文",
+   "通过 MCP 与 LSP 扩展 Agent 的工具与代码理解能力"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "终端工具",
+   "AI编程",
+   "agentic coding",
+   "LLM工具"
+  ],
+  "domain": "开发者工具/AI 编程",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "openrouter",
+   "groq",
+   "anthropic",
+   "bedrock",
+   "azure",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7:  Your new coding bestie, now available in your favourite terminal. Your tools, your code, and your workflows, wired into",
+   "L14: - **Multi-Model:** choose from a wide range of LLMs or add your own via OpenAI- or Anthropic-compatible APIs",
+   "L17: - **LSP-Enhanced:** Crush uses LSPs for additional context, just like you do"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     128,
+     145
+    ],
+    "quotes": [
+     "Gemini, OpenRouter and so on. Press ctrl+l to open the model picker,",
+     "|`OPENROUTER_API_KEY`|OpenRouter|"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     149
+    ],
+    "quotes": [
+     "|`GROQ_API_KEY`|Groq|"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     14,
+     136,
+     154,
+     155,
+     156
+    ],
+    "quotes": [
+     "- **Multi-Model:** choose from a wide range of LLMs or add your own via OpenAI- or Anthropic-compatible APIs",
+     "|`ANTHROPIC_API_KEY`|Anthropic|",
+     "|`AWS_ACCESS_KEY_ID`|Amazon Bedrock (Claude)|",
+     "|`AWS_SECRET_ACCESS_KEY`|Amazon Bedrock (Claude)|",
+     "|`AWS_REGION`|Amazon Bedrock (Claude)|"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     154,
+     155,
+     156,
+     157,
+     158
+    ],
+    "quotes": [
+     "|`AWS_ACCESS_KEY_ID`|Amazon Bedrock (Claude)|",
+     "|`AWS_SECRET_ACCESS_KEY`|Amazon Bedrock (Claude)|",
+     "|`AWS_REGION`|Amazon Bedrock (Claude)|",
+     "|`AWS_PROFILE`|Amazon Bedrock (Custom Profile)|",
+     "|`AWS_BEARER_TOKEN_BEDROCK`|Amazon Bedrock|"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     159,
+     160,
+     161
+    ],
+    "quotes": [
+     "|`AZURE_OPENAI_API_ENDPOINT`|Azure OpenAI models|",
+     "|`AZURE_OPENAI_API_KEY`|Azure OpenAI models (optional when using Entra ID)|",
+     "|`AZURE_OPENAI_API_VERSION`|Azure OpenAI models|"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     165,
+     193,
+     194
+    ],
+    "quotes": [
+     "Local Models. For more info see",
+     "# Add Ollama.",
+     "provider add ollama --type ollama --base-url \"http://localhost:11434/v1\""
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     635,
+     636,
+     639,
+     640,
+     641
+    ],
+    "quotes": [
+     "Here’s an example configuration for Deepseek, which uses an OpenAI-compatible",
+     "API. Don't forget to set `DEEPSEEK_API_KEY` in your environment.",
+     "provider add deepseek --type openai-compat \\",
+     "  --base-url \"https://api.deepseek.com/v1\" \\",
+     "  --api-key \"$DEEPSEEK_API_KEY\""
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     27,
+     28
+    ],
+    "quotes": [
+     "# Homebrew",
+     "brew install charmbracelet/tap/crush"
+    ]
+   },
+   {
+    "term": "go",
+    "rel": "support",
+    "lines": [
+     97,
+     106
+    ],
+    "quotes": [
+     "go install github.com/charmbracelet/crush@latest",
+     "go install -tags sqlite3_dotlk github.com/charmbracelet/crush@latest"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     526
+    ],
+    "quotes": [
+     "git clone https://github.com/anthropics/skills.git _temp"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     512
+    ],
+    "quotes": [
+     "- `.cursor/skills`"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    213,
+    214
+   ]
+  }
+ }
+}

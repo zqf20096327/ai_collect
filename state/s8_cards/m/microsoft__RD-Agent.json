@@ -1,0 +1,190 @@
+{
+ "fn": "microsoft/RD-Agent",
+ "sha": "19db531830fc",
+ "source": "readme",
+ "identity": {
+  "one_liner": "微软自动化研发流程的 Agent：自动化模型与数据研发迭代",
+  "review": "微软开源的研发自动化框架，将 R&D 过程拆解为提出想法（R）与实现（D）两类组件，应用于量化交易因子/模型演化、数据挖掘、论文/财报读取并实现模型、Kaggle 竞赛特征工程、LLM 微调等场景。后端默认通过 LiteLLM 接入多家模型提供商，仅支持 Linux，多数场景依赖 Docker，通过 PyPI 安装或源码开发安装，提供 `rdagent health_check` 健康检查与 Web UI。",
+  "highlights": [
+   "R（提出想法）+D（实现）双组件框架，覆盖量化、数据科学、医疗等多个场景命令",
+   "默认 LiteLLM 后端接入多家 LLM 提供商，提供 OpenAI/Azure OpenAI/DeepSeek 配置示例",
+   "在 MLE-bench（75 个 Kaggle 竞赛数据集）上提交运行结果并公开详细 runs",
+   "提供 `rdagent server_ui` Web 前端用于实时交互与 trace 查看"
+  ],
+  "use_cases": [
+   "自动化量化交易中因子与模型的联合迭代演化",
+   "读取论文/财报并自动实现模型结构或构建数据集",
+   "参加 Kaggle 竞赛时自动做特征工程与模型调优",
+   "对领域模型做基准驱动的自主 LLM 微调"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://arxiv.org/",
+  "demo_url": "https://rdagent.azurewebsites.net/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "研发自动化",
+   "AI Agent",
+   "量化交易",
+   "数据科学",
+   "Kaggle"
+  ],
+  "domain": "研发自动化/数据科学",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "azure"
+  ],
+  "scenario_tags_v2": [
+   "data-analysis",
+   "quant-finance"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L97: R&D-Agent aims to automate the most critical and valuable aspects of the industrial R&D process, and we begin with focus",
+   "L98: Methodologically, we have identified a framework with two key components: 'R' for proposing new ideas and 'D' for implem",
+   "L119: ### RD-Agent currently only supports Linux."
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     171,
+     207,
+     209,
+     212,
+     213
+    ],
+    "quotes": [
+     " > **🔥 Attention**: We now provide experimental support for **DeepSeek** models! You can use DeepSeek's official API for",
+     " *Configuration Example: `DeepSeek` Setup :*",
+     " >Since many users encounter configuration errors when setting up DeepSeek. Here's a complete working example for DeepSe",
+     "  # CHAT MODEL: Using DeepSeek Official API",
+     "  CHAT_MODEL=deepseek/deepseek-chat"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     186,
+     188,
+     222
+    ],
+    "quotes": [
+     " *Configuration Example: `Azure OpenAI` Setup :*",
+     " > Before using this configuration, please confirm in advance that your `Azure OpenAI API key` supports `embedded models",
+     " You can also use a deprecated backend if you only use `OpenAI API` or `Azure OpenAI` directly. For this deprecated sett"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     140,
+     142
+    ],
+    "quotes": [
+     "- You can directly install the R&D-Agent package from PyPI:",
+     "  pip install rdagent"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     123,
+     124,
+     125
+    ],
+    "quotes": [
+     "### 🐳 Docker installation.",
+     "Users must ensure Docker is installed before attempting most scenarios. Please refer to the official 🐳Docker page for in",
+     "Ensure the current user can run Docker commands **without using sudo**. You can verify this by executing `docker run hel"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     148,
+     150
+    ],
+    "quotes": [
+     "  git clone https://github.com/microsoft/RD-Agent",
+     "  make dev"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "通义千问",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    222
+   ]
+  }
+ }
+}

@@ -1,0 +1,176 @@
+{
+ "fn": "ItzCrazyKns/Vane",
+ "sha": "a35e63bfb4d7",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管的 AI 答问搜索引擎，本地运行并带引用来源",
+  "review": "Vane 是一个注重隐私的 AI 答问引擎，可完全运行在用户自己的硬件上。它通过 SearxNG 聚合多个搜索引擎结果（支持网页、讨论、学术论文来源），接入本地 LLM（Ollama、OpenAI 兼容服务器、Lemonade）或云服务商（OpenAI、Claude、Groq、Gemini），生成带引用来源的回答。功能包括文件上传问答（PDF/文本/图片）、图片与视频搜索、域名限定搜索、天气/股价等小组件、搜索历史本地保存，并提供 API 供开发者集成。Docker 镜像内置 SearxNG，也支持 npm 从源码运行。",
+  "highlights": [
+   "基于 SearxNG 的网页/讨论/学术搜索，回答带引用来源",
+   "支持本地 LLM（Ollama）与多家云服务商，可混合搭配模型",
+   "文件上传问答：PDF、文本、图片",
+   "提供 API 与浏览器搜索引擎快捷方式接入"
+  ],
+  "use_cases": [
+   "在自有硬件上自托管一个带引用来源的问答搜索引擎",
+   "用本地 LLM 保持搜索查询隐私",
+   "将搜索引擎集成到自己的应用中",
+   "把浏览器搜索栏切换为自托管 AI 搜索"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI搜索引擎",
+   "RAG",
+   "自托管",
+   "本地LLM"
+  ],
+  "domain": "AI 搜索/信息检索",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "groq",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: Vane is a **privacy-focused AI answering engine** that runs entirely on your own hardware. It combines knowledge from th",
+   "L19: 🤖 **Support for all major AI providers** - Use local LLMs through Ollama or connect to OpenAI, Anthropic Claude, Google ",
+   "L27: 🔍 **Web search powered by SearxNG** - Access multiple search engines while keeping your identity private. Support for Ta"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     11,
+     19
+    ],
+    "quotes": [
+     "Vane is a **privacy-focused AI answering engine** that runs entirely on your own hardware. It combines knowledge from th",
+     "🤖 **Support for all major AI providers** - Use local LLMs through Ollama or connect to OpenAI, Anthropic Claude, Google "
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     11,
+     19
+    ],
+    "quotes": [
+     "Vane is a **privacy-focused AI answering engine** that runs entirely on your own hardware. It combines knowledge from th",
+     "🤖 **Support for all major AI providers** - Use local LLMs through Ollama or connect to OpenAI, Anthropic Claude, Google "
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     11,
+     19,
+     144,
+     146,
+     148
+    ],
+    "quotes": [
+     "Vane is a **privacy-focused AI answering engine** that runs entirely on your own hardware. It combines knowledge from th",
+     "🤖 **Support for all major AI providers** - Use local LLMs through Ollama or connect to OpenAI, Anthropic Claude, Google ",
+     "#### Ollama Connection Errors",
+     "If you're encountering an Ollama connection error, it is likely due to the backend being unable to connect to Ollama's A",
+     "1. **Check your Ollama API URL:** Ensure that the API URL is correctly set in the settings menu."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     47,
+     54,
+     66,
+     92,
+     93
+    ],
+    "quotes": [
+     "There are mainly 2 ways of installing Vane - With Docker, Without Docker. Using Docker is highly recommended.",
+     "docker run -d -p 3000:3000 -v vane-data:/home/vane/data --name vane itzcrazykns1337/vane:latest",
+     "docker run -d -p 3000:3000 -e SEARXNG_API_URL=http://your-searxng-url:8080 -v vane-data:/home/vane/data --name vane itzc",
+     "   docker build -t vane .",
+     "   docker run -d -p 3000:3000 -v vane-data:/home/vane/data --name vane vane"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     78,
+     84
+    ],
+    "quotes": [
+     "If you prefer to build from source or need more control:",
+     "   git clone https://github.com/ItzCrazyKns/Vane.git"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     113
+    ],
+    "quotes": [
+     "   npm i"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

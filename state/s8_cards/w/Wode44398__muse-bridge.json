@@ -1,0 +1,178 @@
+{
+ "fn": "Wode44398/muse-bridge",
+ "sha": "672c03a8095e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "在 Muse VM 上一键部署 Claude Code 与多模型 agent 工作台",
+  "review": "面向 Muse agent VM 用户的部署与访问层：向 Muse 发送一条消息即可下载 release、完成安装并注册自愈 watchdog，之后在浏览器（手机或电脑）中使用 Claude Code 写代码、管理文件与运行命令；亦可安装 dimensio——一个多模型 agent 工作台，支持 Anthropic、OpenAI、Gemini、DeepSeek、Kimi、智谱 GLM、Qwen、小米 MiMo 及任意 OpenAI 兼容端点，每家各配一个 API key，可随时切换模型。限制：运行于 Muse VM 而非生产服务器，agent 无浏览器工具；也提供通用 Debian/Ubuntu systemd 安装脚本。",
+  "highlights": [
+   "一条消息完成部署，无需接触终端",
+   "dimensio 支持 8 家模型厂商及任意 OpenAI 兼容端点，模型随时切换",
+   "watchdog 在 VM 重启后 60 秒内恢复服务，更新失败自动回滚",
+   "提供 Android WebView 应用与多用户邀请码机制"
+  ],
+  "use_cases": [
+   "在手机或电脑浏览器里使用完整的 Claude Code",
+   "在一个工作台里切换多家模型厂商对话并各用其自带搜索",
+   "通过邀请码让朋友共用部署、按人分配可用 agent"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "自托管",
+   "agent工作台",
+   "多模型接入",
+   "部署工具"
+  ],
+  "domain": "AI 应用部署/agent 工作台",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "双语 README（含简体中文）",
+   "安装指南 MUSE.md 以中文编写",
+   "内置智谱 GLM / Qwen / Kimi / 小米 MiMo 等中文厂商接入"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: **One-message deployment of Claude Code on your Muse agent VM.** Once it's installed, open a URL in any browser, on your",
+   "L17: - **dimensio, a multi-model workspace.** One API key per provider, switch models at any time, or add any OpenAI-compatib"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     5,
+     16,
+     65
+    ],
+    "note": "Claude Code 基于官方 Claude Agent SDK，dimensio 支持 ANTHROPIC_API_KEY",
+    "quotes": [
+     "**One-message deployment of Claude Code on your Muse agent VM.** Once it's installed, open a URL in any browser, on your",
+     "- **Full Claude Code.** Powered by the official Claude Agent SDK: tool use, subagents, workflows, context compaction and",
+     "|Anthropic (Claude)|`ANTHROPIC_API_KEY`|✓ built-in|"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     5,
+     66
+    ],
+    "note": "dimensio 通过 DEEPSEEK_API_KEY 接入",
+    "quotes": [
+     "**One-message deployment of Claude Code on your Muse agent VM.** Once it's installed, open a URL in any browser, on your",
+     "|DeepSeek|`DEEPSEEK_API_KEY`|✓ built-in|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     114,
+     115
+    ],
+    "note": "git clone + install.sh，通用 Linux 安装路径",
+    "quotes": [
+     "git clone https://github.com/Wode44398/muse-bridge.git /opt/muse-bridge && cd /opt/muse-bridge",
+     "sudo bash scripts/server/install.sh --agents claude,dimensio"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     5,
+     16
+    ],
+    "note": "被部署与承载的对象，非替代或竞品",
+    "quotes": [
+     "**One-message deployment of Claude Code on your Muse agent VM.** Once it's installed, open a URL in any browser, on your",
+     "- **Full Claude Code.** Powered by the official Claude Agent SDK: tool use, subagents, workflows, context compaction and"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     70
+    ],
+    "note": "dimensio 支持的模型厂商之一",
+    "quotes": [
+     "|Qwen|`QWEN_API_KEY`|✓ built-in|"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     68
+    ],
+    "note": "dimensio 支持的模型厂商之一",
+    "quotes": [
+     "|Kimi (Kimi for Coding subscription, starts with `sk-kimi-`)|`KIMI_API_KEY`|✓ built-in|"
+    ]
+   }
+  ]
+ }
+}

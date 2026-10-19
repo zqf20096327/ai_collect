@@ -1,0 +1,184 @@
+{
+ "fn": "Comfy-Org/ComfyUI",
+ "sha": "1d9c36b3c039",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给视觉创作者的节点式扩散模型 GUI 与本地推理后端",
+  "review": "以节点图组织图像、视频、音频、3D 与文本生成工作流的桌面/后端程序：支持加载 checkpoints、VAE、LoRA、ControlNet 等模型文件，工作流可存为 JSON，提供本地 API 与 App Mode 供集成到生产流水线。核心可完全离线运行（--offline 禁用付费 API 节点），通过异步权重流式在最低约 4GB 显存 + 8GB 内存的消费级硬件上运行大模型。Windows/macOS 提供桌面安装包与便携版，Linux 手动安装。",
+  "highlights": [
+   "节点图界面构建无代码的可复用生成工作流",
+   "原生支持 SD/Flux/Qwen/Wan/Hunyuan 等多类开源模型",
+   "异步权重流式与 VRAM/RAM 管理，支持量化模型",
+   "全平台覆盖：桌面应用、Windows 便携版、comfy-cli、手动安装"
+  ],
+  "use_cases": [
+   "在本地消费级 GPU 上生成与编辑图像、视频、音频",
+   "把工作流通过 API 集成到生产流水线",
+   "完全离线环境下运行扩散模型推理",
+   "加载与共享基于 JSON 的生成工作流"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": "gpu-8g",
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图像生成",
+   "节点式工作流",
+   "扩散模型",
+   "桌面应用"
+  ],
+  "domain": "AIGC/内容生成工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L16: ComfyUI is the AI creation engine for visual professionals who demand control over every model, every parameter, and eve",
+   "L45: - A visual node graph for building and reusing image, video, audio, 3D, and text workflows without code.",
+   "L123: # Installing"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     163,
+     187,
+     191,
+     215
+    ],
+    "quotes": [
+     "pip install comfy-cli",
+     "```pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm7.2```",
+     "```pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/rocm7.2```",
+     "pip install --index-url https://stable.repo.amd.com/rocm/whl-next/ \"torch[device-all]==2.13.0+rocm10.0.0\" \"torchvision[d"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     177
+    ],
+    "quotes": [
+     "Git clone this repo."
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "4GB vram",
+    "rel": "support",
+    "lines": [
+     19
+    ],
+    "quotes": [
+     "- Can run even the biggest open source models on as low as 4GB vram + 8GB ram relatively quickly (saturating your GPU co"
+    ]
+   },
+   {
+    "term": "CPU only",
+    "rel": "mention",
+    "lines": [
+     135
+    ],
+    "note": "Windows 便携版的运行场景描述",
+    "quotes": [
+     "There is a portable standalone build for Windows that should work for running on Nvidia GPUs or for running on your CPU "
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Stable Diffusion",
+    "rel": "mention",
+    "lines": [
+     49
+    ],
+    "note": "被支持的模型，非替代/竞品",
+    "quotes": [
+     " - Image generation: Stable Diffusion 1.5, SDXL, SD3.5, Flux.1, Flux.2, Qwen Image, Z-Image, Hunyuan Image 2.1, HiDream,"
+    ]
+   },
+   {
+    "term": "文心一言",
+    "rel": "mention",
+    "lines": [
+     49
+    ],
+    "note": "命中 Ernie Image 模型列表，非百度文心一言产品对比",
+    "quotes": [
+     " - Image generation: Stable Diffusion 1.5, SDXL, SD3.5, Flux.1, Flux.2, Qwen Image, Z-Image, Hunyuan Image 2.1, HiDream,"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     49,
+     50
+    ],
+    "note": "命中 Qwen Image/Edit 模型支持列表",
+    "quotes": [
+     " - Image generation: Stable Diffusion 1.5, SDXL, SD3.5, Flux.1, Flux.2, Qwen Image, Z-Image, Hunyuan Image 2.1, HiDream,",
+     " - Image editing: Flux Kontext, Flux.2 Klein, Qwen Image Edit, HiDream E1.1 and O1, OmniGen2, Boogu, JoyImage Edit, Mage"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "none",
+    "lines": [
+     101
+    ],
+    "note": "误命中：快捷键表中的鼠标指针语境，非 Cursor 编辑器",
+    "quotes": [
+     "|`Space`|Move the canvas around when held and moving the cursor|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,112 @@
+{
+ "fn": "gitleaks/gitleaks",
+ "sha": "2417b306be18",
+ "source": "readme",
+ "identity": {
+  "one_liner": "扫描 git 仓库、目录与 stdin 中的密码/API 密钥等秘密的工具",
+  "review": "Go 编写的命令行工具，通过正则规则检测 git 仓库、目录文件和 stdin 输入中的硬编码秘密。提供 git/dir/stdin 三种扫描模式，支持自定义 TOML 检测规则、基线忽略旧发现、gitleaks:allow 与 .gitleaksignore 忽略机制，支持编码文本解码（percent/hex/base64）与递归归档扫描，输出 json/csv/junit/sarif 及模板自定义报告。可安装为 pre-commit 钩子或 GitHub Action。v8.19.0 起废弃 detect/protect 命令；维护者声明不再合并新功能，后续仅发布安全补丁。",
+  "highlights": [
+   "git/dir/stdin 三种扫描模式，基于正则规则引擎检测秘密",
+   "TOML 自定义规则，v8.28.0 引入带邻近约束的复合规则",
+   "基线报告忽略旧发现，支持 gitleaks:allow 与 .gitleaksignore",
+   "内置 json/csv/junit/sarif 报告格式及 Go 模板自定义"
+  ],
+  "use_cases": [
+   "在 CI 中扫描仓库历史与目录里的泄漏密钥",
+   "配置 pre-commit 钩子在提交前拦截秘密",
+   "对 zip/tar 归档与编码文本做递归解码检测"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    12
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "安全扫描",
+   "秘密检测",
+   "CI/CD",
+   "CLI工具",
+   "devsecops"
+  ],
+  "domain": "安全/DevSecOps",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L21: Gitleaks is a tool for **detecting** secrets like passwords, API keys, and tokens in git repos, files, and whatever else",
+   "L32: Gitleaks can be installed using Homebrew, Docker, or Go. Gitleaks is also available in binary form for many popular plat",
+   "L90: There are three scanning modes: `git`, `dir`, and `stdin`."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     38
+    ],
+    "quotes": [
+     "brew install gitleaks"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     32
+    ],
+    "quotes": [
+     "Gitleaks can be installed using Homebrew, Docker, or Go. Gitleaks is also available in binary form for many popular plat"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    86,
+    87
+   ]
+  }
+ }
+}

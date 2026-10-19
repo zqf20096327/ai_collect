@@ -1,0 +1,143 @@
+{
+ "fn": "promptfoo/promptfoo",
+ "sha": "0916e5a9f9d0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为开发者提供 LLM 应用评估与红队扫描的 CLI/库",
+  "review": "promptfoo 是一个用于评估与红队测试 LLM 应用的 CLI 和库：支持对 prompt、agent 与 RAG 做自动化评估，进行漏洞扫描与红队测试，并排比较多个模型，在 CI/CD 中自动执行检查，通过代码扫描审查 PR 中的 LLM 安全与合规问题。评估可 100% 本地运行，配置采用声明式 YAML 式写法，附 Web 查看器展示评估矩阵与安全报告。安装途径覆盖 npm、brew、pip，也可用 npx 免安装运行。README 声明该项目现为 OpenAI 旗下，仍以 MIT 许可开源。",
+  "highlights": [
+   "自动化评估 prompt、agent 与 RAG 应用",
+   "红队测试与 LLM 漏洞扫描并生成安全报告",
+   "并排比较 OpenAI、Anthropic、Azure、Bedrock、Ollama 等模型",
+   "CI/CD 集成与 PR 代码扫描审查"
+  ],
+  "use_cases": [
+   "发布前对 prompt 与 agent 做回归评估",
+   "对 LLM 应用做红队测试找出漏洞",
+   "在 CI/CD 流水线中自动执行 LLM 检查",
+   "团队共享评估结果并并排比较模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM评估",
+   "红队测试",
+   "CI/CD",
+   "安全扫描"
+  ],
+  "domain": "LLM 基础设施/评估与安全",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "bedrock",
+   "ollama"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9:  <code>promptfoo</code> is a CLI and library for evaluating and red-teaming LLM-based apps. Stop using trial-and-error..",
+   "L46: - **Test your prompts and models** with automated evaluations",
+   "L48: - **Compare models** side-by-side (OpenAI, Anthropic, Azure, Bedrock, Ollama, and more)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "bedrock",
+    "rel": "compat",
+    "lines": [
+     48
+    ],
+    "quotes": [
+     "- **Compare models** side-by-side (OpenAI, Anthropic, Azure, Bedrock, Ollama, and more)"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     48
+    ],
+    "quotes": [
+     "- **Compare models** side-by-side (OpenAI, Anthropic, Azure, Bedrock, Ollama, and more)"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     22,
+     26
+    ],
+    "quotes": [
+     "npm install -g promptfoo",
+     "Also available via `brew install promptfoo` and `pip install promptfoo`. Or use `npx promptfoo@latest` to run any comman"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     26
+    ],
+    "quotes": [
+     "Also available via `brew install promptfoo` and `pip install promptfoo`. Or use `npx promptfoo@latest` to run any comman"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     26
+    ],
+    "quotes": [
+     "Also available via `brew install promptfoo` and `pip install promptfoo`. Or use `npx promptfoo@latest` to run any comman"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

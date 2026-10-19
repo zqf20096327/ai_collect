@@ -1,0 +1,98 @@
+{
+ "fn": "labmlai/annotated_deep_learning_paper_implementations",
+ "sha": "b04e3a86ec21",
+ "source": "readme",
+ "identity": {
+  "one_liner": "深度学习论文的 PyTorch 实现与旁注教程合集（60+）",
+  "review": "以 PyTorch 实现神经网络及相关算法的论文复现合集，配套讲解文档，官网以旁注格式并排呈现代码与笔记。覆盖 Transformer 各变体、LoRA、扩散模型（DDPM/DDIM/Stable Diffusion）、GAN 系列、强化学习（PPO/DQN）、图神经网络、优化器、归一化层、蒸馏与采样技术等。仓库持续维护、几乎每周新增实现；通过 pip 安装 labml-nn 包使用。面向学习与理解算法的读者。",
+  "highlights": [
+   "60+ 篇深度学习论文的 PyTorch 实现并配讲解笔记",
+   "覆盖 Transformer 变体、LoRA、扩散模型、GAN、RL、GNN、优化器等类别",
+   "官网以旁注格式并排渲染代码与说明",
+   "pip 安装 labml-nn 即可使用"
+  ],
+  "use_cases": [
+   "对照旁注笔记理解 Transformer/扩散模型等论文算法",
+   "复用优化器、归一化层等组件的实现代码",
+   "系统学习强化学习与 GAN 的实现细节"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "论文复现",
+   "深度学习教程",
+   "PyTorch",
+   "学习资源"
+  ],
+  "domain": "科研/深度学习教育",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: This is a collection of simple PyTorch implementations of",
+   "L10: renders these as side-by-side formatted notes.",
+   "L146: ### Installation"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     149
+    ],
+    "quotes": [
+     "pip install labml-nn"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

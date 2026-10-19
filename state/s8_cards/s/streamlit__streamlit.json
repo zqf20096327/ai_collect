@@ -1,0 +1,100 @@
+{
+ "fn": "streamlit/streamlit",
+ "sha": "c3e0fad52d2d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让开发者用 Python 脚本快速构建和分享数据应用",
+  "review": "Streamlit 将 Python 脚本转换为交互式 Web 应用的框架：提供输入组件、数据框、图表、布局与多页面应用等元素，编辑脚本后应用即时更新。应用可通过 Streamlit Community Cloud 平台免费部署、管理和分享。通过 pip 安装，社区可通过 Streamlit Components 扩展功能；目前 README 注明已暂停接受维护者团队之外的 pull request。",
+  "highlights": [
+   "将 Python 脚本转换为交互式 Web 应用（仪表盘、报告、聊天应用）",
+   "实时编辑：脚本修改后应用即时更新",
+   "Community Cloud 平台免费部署、管理和分享应用",
+   "支持通过 Streamlit Components 扩展能力"
+  ],
+  "use_cases": [
+   "快速搭建数据仪表盘和可视化报告",
+   "创建 LLM 与聊天机器人应用界面",
+   "构建科研或金融领域的交互式数据应用",
+   "在 Community Cloud 上部署分享数据应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://streamlit.io/gallery",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据应用",
+   "数据可视化",
+   "Python Web 框架",
+   "低代码"
+  ],
+  "domain": "开发者工具/数据应用",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "data-analysis",
+   "workflow-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: Streamlit lets you transform Python scripts into interactive web apps in minutes, instead of weeks. Build dashboards, ge",
+   "L92: - 🤖 LLMs & chatbot apps",
+   "L103: Deploy, manage and share your apps for free using our Community Cloud! Sign-up here."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     23
+    ],
+    "quotes": [
+     "$ pip install streamlit"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

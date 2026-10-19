@@ -1,0 +1,165 @@
+{
+ "fn": "hesreallyhim/awesome-claude-code",
+ "sha": "6ad9bd553bda",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 Claude Code 用户的精选资源清单",
+  "review": "以 awesome list 形式收录 Claude Code 相关资源的仓库：分类组织入门指南、Anthropic 官方文档与工具、技能（skills）、插件、hooks、状态栏与开发工具等条目，每条附维护者、创建时间、最近提交、许可证与 star 数等元信息。本次迭代优先收录上一版未包含的新资源，旧资源暂存于 README_ALTERNATIVES 目录并将陆续迁回。附带 Claude Code Ticker 展示 GitHub 上的相关项目。声明与 Anthropic 无隶属关系。",
+  "highlights": [
+   "分类收录 Claude Code 指南、官方资源、技能、插件等条目",
+   "收录 Anthropic 官方仓库（Agent Skills、GitHub Action、Best Practices 等）",
+   "条目附 created/last-commit/license/stars 元信息",
+   "旧版资源保留于 README_ALTERNATIVES 目录"
+  ],
+  "use_cases": [
+   "入门 Claude Code 时按分类查找学习资料与官方文档",
+   "为 Claude Code 寻找可安装的技能、插件与开发工具",
+   "跟踪 GitHub 上新出现的 Claude Code 相关项目"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome-list",
+   "Claude Code",
+   "agent技能",
+   "资源聚合"
+  ],
+  "domain": "开发者工具/AI 编程资源聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "coding-agent",
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5: _A hand-picked collection of the finest of resources for the most awesome of agents, Claude Code, the undisputed champio",
+   "L49: - Agent Skills by Anthropic - Anthropic's official repository for Agent Skills — the SKILL.md format, a skill template, "
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     5,
+     47,
+     49,
+     58
+    ],
+    "quotes": [
+     "_A hand-picked collection of the finest of resources for the most awesome of agents, Claude Code, the undisputed champio",
+     "## From Anthropic",
+     "- Agent Skills by Anthropic - Anthropic's official repository for Agent Skills — the SKILL.md format, a skill template, ",
+     "- Claude Code GitHub Action by Anthropic - The official GitHub Action for running Claude Code in CI: mention @claude in "
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "none",
+    "lines": [],
+    "note": "可见范围内未出现，误命中",
+    "quotes": []
+   },
+   {
+    "term": "ollama",
+    "rel": "none",
+    "lines": [],
+    "note": "可见范围内未出现",
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "none",
+    "lines": [],
+    "note": "可见范围内未出现",
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     1,
+     5,
+     9,
+     23
+    ],
+    "note": "清单的收录主题本身，非替代/竞品对象",
+    "quotes": [
+     "Awesome Claude Code",
+     "_A hand-picked collection of the finest of resources for the most awesome of agents, Claude Code, the undisputed champio",
+     "## The Claude Code Ticker - A Sample of Claude Code Projects Around GitHub",
+     "- andrej-karpathy-skills by multica-ai - A drop-in CLAUDE.md distilling four behavioral guidelines for LLM-assisted codi"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "none",
+    "lines": [],
+    "note": "可见范围内未出现",
+    "quotes": []
+   },
+   {
+    "term": "Cursor",
+    "rel": "none",
+    "lines": [],
+    "note": "可见范围内未出现",
+    "quotes": []
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

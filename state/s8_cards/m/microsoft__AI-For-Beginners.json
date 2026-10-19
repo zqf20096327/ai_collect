@@ -1,0 +1,153 @@
+{
+ "fn": "microsoft/AI-For-Beginners",
+ "sha": "b1bc6ba59b03",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 AI 初学者的 12 周 24 课系统课程",
+  "review": "微软出品的 12 周、24 课时人工智能入门课程，内容含符号 AI（知识表示与推理）、神经网络与深度学习、计算机视觉、自然语言处理、遗传算法、多智能体系统与 AI 伦理等模块，每课提供 Jupyter Notebook、测验和实验，代码以 PyTorch 与 TensorFlow 双框架呈现。仓库含 50+ 语言自动翻译、本地/ Codespace 运行指引与可本地部署的测验应用，课程明确不覆盖经典机器学习、业务 AI 与云平台实操等主题。",
+  "highlights": [
+   "24 课时覆盖符号 AI 到 LLM 的完整路径",
+   "每课含可执行 Jupyter Notebook，支持 PyTorch/TensorFlow/Keras 双框架",
+   "50+ 语言翻译由 GitHub Action 自动维护",
+   "附测验应用（可本地运行或部署至 Azure）与实验 Lab"
+  ],
+  "use_cases": [
+   "系统自学人工智能与深度学习基础知识",
+   "教师获取现成的 AI 课程大纲与实验材料",
+   "通过 Notebook 上手 PyTorch 或 TensorFlow"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/microsoft/AI-For-Beginners",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI课程",
+   "深度学习",
+   "计算机视觉",
+   "NLP",
+   "教学"
+  ],
+  "domain": "教育/AI 学习资源",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L21: Explore the world of **Artificial Intelligence** (AI) with our 12-week, 24-lesson curriculum! It includes practical less",
+   "L64: * Different approaches to Artificial Intelligence, including the \"good old\" symbolic approach with **Knowledge Represent",
+   "L124: * Executable Jupyter Notebooks, which are often specific to the framework (**PyTorch** or **TensorFlow**). The executabl"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "azure",
+    "rel": "mention",
+    "lines": [
+     75,
+     80,
+     162
+    ],
+    "note": "仅作为推荐学习路径与部署提及，非接入的模型提供方",
+    "quotes": [
+     "* Practical AI applications built using **Cognitive Services**. For this, we recommend that you start with modules Micro",
+     "For a gentle introduction to _AI in the Cloud_ topics you may consider taking the Get started with artificial intelligen",
+     "> **A note about quizzes**: All quizzes are contained in the Quiz-app folder in etc\\quiz-app, or Online Here They are li"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     35,
+     150
+    ],
+    "note": "git clone 本地获取/运行",
+    "quotes": [
+     "> git clone --filter=blob:none --sparse https://github.com/microsoft/AI-For-Beginners.git",
+     "Clone the Repository: `git clone https://github.com/microsoft/AI-For-Beginners.git`"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     180,
+     181,
+     182,
+     183
+    ],
+    "note": "同一团队的其他课程，非替代/竞品",
+    "quotes": [
+     "### LangChain",
+     "LangChain4j for Beginners",
+     "LangChain.js for Beginners",
+     "LangChain for Beginners"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     206,
+     207,
+     208,
+     209
+    ],
+    "note": "同一团队的其他课程系列，仅提及",
+    "quotes": [
+     "### Copilot Series",
+     "Copilot for AI Paired Programming",
+     "Copilot for C#/.NET",
+     "Copilot Adventure"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

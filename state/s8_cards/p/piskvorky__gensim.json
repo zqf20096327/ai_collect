@@ -1,0 +1,100 @@
+{
+ "fn": "piskvorky/gensim",
+ "sha": "bbdfe0f27f35",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 NLP/IR 社区的 Python 主题建模与相似度检索库",
+  "review": "Gensim 是处理大规模语料的 Python 库，提供主题建模、文档索引与相似度检索。算法对语料规模内存无关，可流式处理超出 RAM 的输入；提供 LSA、LDA、RP、HDP、word2vec 等算法的多核实现，并支持在集群上分布式运行 LSA/LDA。通过依赖 NumPy 调用底层 BLAS 库（如 MKL、ATLAS、OpenBLAS）获得性能。目前处于稳定维护模式，不接受新特性，仅接受 bug 与文档修复；4.0.0 起不再支持 Python 2.7。",
+  "highlights": [
+   "内存无关的流式处理，可处理大于 RAM 的语料",
+   "LSA/LDA/RP/HDP/word2vec 等算法的多核实现",
+   "支持在计算机集群上分布式运行 LSA 与 LDA",
+   "提供文档与 Jupyter Notebook 教程"
+  ],
+  "use_cases": [
+   "对大规模文本语料做主题建模",
+   "构建文档相似度检索与文档去重",
+   "训练 word2vec 等词向量用于下游 NLP 任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "http://is.muni.cz/publication/884893/en",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "主题建模",
+   "NLP",
+   "信息检索",
+   "词向量"
+  ],
+  "domain": "自然语言处理/机器学习",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: Gensim is a Python library for *topic modelling*, *document indexing*",
+   "L12: *natural language processing* (NLP) and *information retrieval* (IR)",
+   "L17: ## ⚠️ Gensim is in stable maintenance mode: we are not accepting new features, but bug and documentation fixes are still"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     55,
+     64
+    ],
+    "quotes": [
+     "    pip install --upgrade gensim",
+     "    pip install ."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    17
+   ]
+  }
+ }
+}

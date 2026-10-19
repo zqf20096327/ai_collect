@@ -1,0 +1,86 @@
+{
+ "fn": "tensorflow/tfjs",
+ "sha": "822ad4ac8464",
+ "source": "readme",
+ "identity": {
+  "one_liner": "在浏览器与 Node.js 中训练和部署机器学习模型的 JS 库",
+  "review": "TensorFlow.js 是硬件加速的 JavaScript 库，支持在浏览器和 Node.js 中训练与部署机器学习模型。仓库组合多个包：Core（底层计算）、Layers（类似 Keras 的高层 API）、Data（数据加载）、Converter（导入 TensorFlow SavedModel）、Vis（浏览器内可视化）、AutoML（加载 AutoML Edge 模型）。后端覆盖 CPU、WebGL、WASM、WebGPU、Node.js 与 React Native。安装方式为 script 标签或 npm/yarn，并支持从 TensorFlow SavedModel 与 Keras 迁移预训练模型。",
+  "highlights": [
+   "浏览器内训练与部署模型，支持 WebGL/WASM/WebGPU/CPU 多后端",
+   "提供模型转换器导入 TensorFlow SavedModel 与 Keras 模型",
+   "Layers API 实现类似 Keras 的高层功能，可按需单独导入包",
+   "预训练模型通过 NPM 上的 models 仓库提供"
+  ],
+  "use_cases": [
+   "在网页中训练或运行机器学习模型而无需服务器端推理",
+   "将已有 TensorFlow/Keras 模型迁移到浏览器运行",
+   "在 Node.js 环境用同一 API 执行原生 TensorFlow",
+   "用浏览器连接的传感器数据在客户端重训练模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "机器学习",
+   "浏览器端推理",
+   "深度学习",
+   "JavaScript库"
+  ],
+  "domain": "机器学习框架/前端 ML",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: TensorFlow.js is an open-source hardware-accelerated JavaScript library for",
+   "L44: Backends/Platforms:",
+   "L78: There are two main ways to get TensorFlow.js in your JavaScript project:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

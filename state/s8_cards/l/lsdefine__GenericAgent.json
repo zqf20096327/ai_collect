@@ -1,0 +1,175 @@
+{
+ "fn": "lsdefine/GenericAgent",
+ "sha": "fb426637e9ed",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自进化 Agent 框架：从约3K行种子代码生长个人技能树",
+  "review": "以约3K行种子代码、9个原子工具和约100行 Agent Loop 构成的自主 Agent 框架，赋予 LLM 对本地计算机的系统级控制，覆盖浏览器、终端、文件系统、键鼠输入、屏幕视觉与 ADB 移动设备。每次完成新任务会把执行路径固化为可复用 Skill，形成个人技能树；配套 L0-L4 分层记忆系统与 TUI/Streamlit/IM 多种前端。需配置 LLM API key，Python 限定 3.11/3.12。预置 SOP 以中文撰写，核心依赖刻意精简。",
+  "highlights": [
+   "任务执行路径自动固化为可复用 Skill，形成个人技能树",
+   "9 个原子工具 + 约100行核心 Agent Loop（agent_loop.py）",
+   "L0-L4 分层记忆系统沉淀经验与 SOP",
+   "支持 Telegram/Discord/Lark 等 IM 前端接入"
+  ],
+  "use_cases": [
+   "让 Agent 代为操作浏览器与本地软件完成日常任务",
+   "通过对话让 Agent 自动安装依赖并固化重复工作流",
+   "用 ADB 驱动手机完成查账、发消息等操作"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://github.com/JinyiHan99/GA-Technical-Report",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "自主Agent",
+   "桌面自动化",
+   "浏览器自动化",
+   "记忆系统",
+   "技能自进化"
+  ],
+  "domain": "AI Agent 框架/自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "Claude Code"
+  ],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "browser-automation",
+   "gui-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "预置 SOP 以中文撰写（L179）",
+   "支持微信/QQ/企业微信/钉钉 IM 前端（L162）",
+   "支付宝/微信示例（L71-72）"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L23: **GenericAgent** is a minimal, self-evolving autonomous agent framework. Its core is just **~3K lines of code**. Through",
+   "L39: |🧬 **Self-Evolving**|Automatically crystallizes each task into a Skill. Capabilities grow with every use, forming your p"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     42,
+     257
+    ],
+    "note": "作为支持的模型之一被提及（Claude）",
+    "quotes": [
+     "|🔌 **High Compatibility**|Supports Claude / Gemini / Kimi / MiniMax and other major models. Cross-platform.|",
+     "|Feature|**GenericAgent**|OpenClaw|Claude Code|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     90,
+     93
+    ],
+    "quotes": [
+     "#### Method 1 — Clone & install *(recommended)*",
+     "git clone https://github.com/lsdefine/GenericAgent.git && cd GenericAgent"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     260
+    ],
+    "note": "对比表中提及 pip install 部署方式",
+    "quotes": [
+     "|**Deployment**|`pip install` + API Key|Multi-service orchestration|CLI + subscription|"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     42
+    ],
+    "note": "支持的模型之一，非竞品对比对象",
+    "quotes": [
+     "|🔌 **High Compatibility**|Supports Claude / Gemini / Kimi / MiniMax and other major models. Cross-platform.|"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     98,
+     277
+    ],
+    "note": "L98 说明不使用；L277 为评测研究语境",
+    "quotes": [
+     "Dependencies are deliberately tiered: the agent core needs only `requests`, plus four lightweight packages (`beautifulso",
+     "|4|**Self-Evolution Capability**|Can the agent distill experience into reusable SOPs and code, without intervention?|9-r"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "competitor",
+    "lines": [
+     257,
+     262,
+     263
+    ],
+    "quotes": [
+     "|Feature|**GenericAgent**|OpenClaw|Claude Code|",
+     "|**OS Control**|Mouse/kbd, vision, ADB|Multi-agent delegation|File + terminal|",
+     "|**Self-Evolution**|Autonomous skill growth|Plugin ecosystem|Stateless between sessions|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

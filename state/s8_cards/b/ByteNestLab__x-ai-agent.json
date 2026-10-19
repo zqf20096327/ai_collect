@@ -1,0 +1,120 @@
+{
+ "fn": "ByteNestLab/x-ai-agent",
+ "sha": "8978f81a7c11",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源 X/Twitter AI Agent 框架：内容生成、回复、排程与分析",
+  "review": "TypeScript 库，供开发者、创作者与营销团队构建自己的 X（Twitter）AI Agent：目标→AI 推理→行动方案→人工批准→执行→分析的循环。提供推文生成/改写、AI 回复建议、带时区与重试的排程模型、互动规划器、互动率分析与 SafetyGuard 安全层（垃圾语言检测、每日限额）。关键限制：AIProvider 接口当前仅 MockAIProvider 可运行，OpenAI/Gemini/Claude 为占位适配器，官方 X API 与浏览器自动化均未实现，排程为内存态 MVP。",
+  "highlights": [
+   "AI 推文生成与 6 种风格改写引擎",
+   "SafetyGuard 检测垃圾语言、近似重复与每日限额",
+   "默认人工批准的互动工作流（createEngagementWorkflow）",
+   "生成/执行分离设计，LLM、排程、X 客户端、存储层均可替换"
+  ],
+  "use_cases": [
+   "构建需人工审核的 X 内容自动化工作流",
+   "本地生成推文草稿与回复建议（无需 API key）",
+   "为创作者或营销团队搭建 X 运营分析反馈闭环"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    145
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "X/Twitter自动化",
+   "AI Agent框架",
+   "内容生成",
+   "社交媒体运营",
+   "TypeScript库"
+  ],
+  "domain": "社交媒体自动化/AI Agent",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Open-source X/Twitter AI Agent framework for content generation, intelligent replies, scheduling, engagement workflows, ",
+   "L164: An application that turns a goal into reviewed AI suggestions and measurable actions on X. This repository provides the "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     32,
+     176
+    ],
+    "note": "ClaudeProvider 仅是会抛出异常的占位适配器，未内置 SDK 集成",
+    "quotes": [
+     "- Adapter interfaces for OpenAI, Gemini, Claude, the official X API, and future browser automation.",
+     "Gemini and Claude adapter placeholders are included. Wire a reviewed client behind `AIProvider` before production use."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     57,
+     75
+    ],
+    "quotes": [
+     "npm install",
+     "npm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

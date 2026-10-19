@@ -1,0 +1,197 @@
+{
+ "fn": "lllyasviel/Fooocus",
+ "sha": "131802c0a303",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向普通用户的离线文生图软件：专注提示词即可出图",
+  "review": "基于 Gradio 与 Stable Diffusion XL 架构的图像生成软件，离线、开源、免费。安装即用：从下载到生成首图点击少于 3 次，最低 4GB Nvidia 显存即可运行。内置离线 GPT-2 提示词处理引擎与采样优化，支持文生图、放大、变体、内绘/外绘、图像提示与 FaceSwap；提供 Windows 安装包、Colab、Anaconda/venv/系统 Python 及 AMD GPU（beta）多种运行途径。项目目前处于仅修复 bug 的 LTS 状态。",
+  "highlights": [
+   "基于 SDXL 架构，内置离线 GPT-2 提示词处理引擎",
+   "最低 4GB Nvidia VRAM + 8GB RAM 即可运行",
+   "支持内绘/外绘、放大/变体、图像提示、FaceSwap",
+   "提供 Windows 一键包、Colab 与多种 Linux 安装途径"
+  ],
+  "use_cases": [
+   "低配置本地电脑上离线生成图像",
+   "不需要参数调优、只写提示词就出图",
+   "在 Colab 免费额度上运行文生图"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": "gpu-8g",
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "文生图",
+   "Stable Diffusion",
+   "图像生成",
+   "桌面应用"
+  ],
+  "domain": "AI 图像生成",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "Midjourney"
+  ],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5: Fooocus is an image generating software (based on Gradio ).",
+   "L7: Fooocus presents a rethinking of image generator designs. The software is offline, open source, and free, while at the s",
+   "L13: The Fooocus project, built entirely on the **Stable Diffusion XL** architecture, is now in a state of limited long-term "
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     103,
+     107,
+     109,
+     111
+    ],
+    "quotes": [
+     "### Colab",
+     "| Colab | Info",
+     "Open In Colab | Fooocus Official",
+     "In Colab, you can modify the last line to `!python entry_with_update.py --share --always-high-vram` or `!python entry_wi"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     125,
+     147,
+     169
+    ],
+    "quotes": [
+     " git clone https://github.com/lllyasviel/Fooocus.git",
+     " git clone https://github.com/lllyasviel/Fooocus.git",
+     " git clone https://github.com/lllyasviel/Fooocus.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     129,
+     151,
+     171
+    ],
+    "note": "pip 安装依赖文件，属源码安装步骤之一",
+    "quotes": [
+     " pip install -r requirements_versions.txt",
+     " pip install -r requirements_versions.txt",
+     " pip3 install -r requirements_versions.txt"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "GPU memory requirement is 4GB",
+    "rel": "support",
+    "lines": [
+     7
+    ],
+    "quotes": [
+     "Fooocus presents a rethinking of image generator designs. The software is offline, open source, and free, while at the s"
+    ]
+   },
+   {
+    "term": "4GB VRAM",
+    "rel": "support",
+    "lines": [
+     89
+    ],
+    "quotes": [
+     "Note that the minimal requirement is **4GB Nvidia GPU memory (4GB VRAM)** and **8GB system memory (8GB RAM)**. This requ"
+    ]
+   },
+   {
+    "term": "8GB RAM",
+    "rel": "support",
+    "lines": [
+     89
+    ],
+    "quotes": [
+     "Note that the minimal requirement is **4GB Nvidia GPU memory (4GB VRAM)** and **8GB system memory (8GB RAM)**. This requ"
+    ]
+   },
+   {
+    "term": "6GB VRAM",
+    "rel": "support",
+    "lines": [
+     83
+    ],
+    "note": "实测机型配置",
+    "quotes": [
+     "Below is a test on a relatively low-end laptop with **16GB System RAM** and **6GB VRAM** (Nvidia 3060 laptop). The speed"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Midjourney",
+    "rel": "competitor",
+    "lines": [
+     7,
+     23,
+     25
+    ],
+    "note": "README 以 Midjourney 示例做功能对照表",
+    "quotes": [
+     "Fooocus presents a rethinking of image generator designs. The software is offline, open source, and free, while at the s",
+     "Below is a quick list using Midjourney's examples:",
+     "|Midjourney|Fooocus|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

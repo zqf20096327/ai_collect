@@ -1,0 +1,99 @@
+{
+ "fn": "NousResearch/hermes-agent",
+ "sha": "4ab412d23539",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自学习循环的个人 AI Agent，可在多终端与消息平台运行",
+  "review": "Nous Research 开发的命令行 Agent：运行时通过内建学习循环创建与改进技能、维护长期记忆与用户模型，并支持跨会话检索历史对话。提供完整 TUI 终端界面与消息网关（Telegram、Discord、Slack、WhatsApp、Signal、Email），内置 cron 调度、子 Agent 并行、七种终端后端（local/Docker/SSH/Singularity/Modal/Daytona/Vercel Sandbox），并面向训练用途提供轨迹批量生成与压缩。安装脚本覆盖 Linux/macOS/WSL2、原生 Windows 与 Android/Termux。",
+  "highlights": [
+   "内建学习循环：技能自动创建、使用中改进、Agent 主动持久化记忆",
+   "单一网关进程接入 Telegram/Discord/Slack/WhatsApp/Signal/CLI 六个入口",
+   "七种终端后端，含 Modal/Daytona 的无服务器持久化",
+   "从 OpenClaw 一键迁移设置、记忆、技能与 API key"
+  ],
+  "use_cases": [
+   "在云 VPS 上挂一个长期运行的助手，从 Telegram 随时对话",
+   "用自然语言配置每日报告、夜间备份等定时任务",
+   "为工具调用模型训练批量生成执行轨迹"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI助手/Agent",
+   "CLI工具",
+   "消息网关",
+   "技能学习",
+   "自动化"
+  ],
+  "domain": "LLM 基础设施/Agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L15: **The self-improving AI agent built by Nous Research.** It's the only agent with a built-in learning loop — it creates s",
+   "L21:  A closed learning loop Agent-curated memory with periodic nudges. Autonomous skill creation after complex tasks. Skills",
+   "L24:  Runs anywhere, not just your laptop Seven terminal backends — local, Docker, SSH, Singularity, Modal, Daytona, and Verc"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     17,
+     176
+    ],
+    "quotes": [
+     "Use any model you want — Nous Portal, OpenRouter, OpenAI, your own endpoint, and many others. Switch with `hermes model`",
+     "- **API keys** — allowlisted secrets (Telegram, OpenRouter, OpenAI, Anthropic, ElevenLabs)"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

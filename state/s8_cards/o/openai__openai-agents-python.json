@@ -1,0 +1,104 @@
+{
+ "fn": "openai/openai-agents-python",
+ "sha": "ce34fe593ba4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的多 Agent 工作流 Python 框架",
+  "review": "OpenAI 官方发布的 Python SDK，用于构建多 Agent 工作流。核心概念包括 Agent（配置指令/工具/护栏/交接）、沙箱 Agent（容器内长时任务）、实时 Agent（WebSocket 语音）、语音管线、Agent 即工具与交接、MCP 等工具接入、输入输出护栏、人工介入机制、会话历史管理与内置 tracing。Provider 无关：支持 OpenAI Responses 与 Chat Completions API 及 100+ 其他 LLM。需 Python 3.10+，通过 pip/uv 安装，运行示例需设置 OPENAI_API_KEY。",
+  "highlights": [
+   "多 Agent 工作流核心原语：handoffs、guardrails、sessions、tracing",
+   "支持文本、沙箱、实时语音、语音管线四种 Agent 运行方式",
+   "provider-agnostic：支持 OpenAI API 及 100+ 其他 LLM",
+   "沙箱客户端：macOS/Linux 用本地沙箱，Windows 支持 Docker 沙箱"
+  ],
+  "use_cases": [
+   "用 Python 编排多 Agent 协作与任务交接的工作流",
+   "构建带语音输入输出的实时对话 Agent",
+   "在容器沙箱中运行需要操作文件与命令的长时任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "多Agent框架",
+   "Agent编排",
+   "语音Agent",
+   "Python SDK"
+  ],
+  "domain": "LLM 基础设施/Agent 框架",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "voice-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: The OpenAI Agents SDK is a lightweight yet powerful framework for building multi-agent workflows. It is provider-agnosti",
+   "L27: To get started, set up your Python environment (Python 3.10 or newer required), and then install OpenAI Agents SDK packa"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     34,
+     37,
+     45,
+     48
+    ],
+    "quotes": [
+     "pip install openai-agents",
+     "For voice support, install with the optional `voice` group: `pip install 'openai-agents[voice]'`. For Redis session supp",
+     "uv add openai-agents",
+     "For voice support, install with the optional `voice` group: `uv add 'openai-agents[voice]'`. For Redis session support, "
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

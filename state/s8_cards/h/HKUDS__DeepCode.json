@@ -1,0 +1,221 @@
+{
+ "fn": "HKUDS/DeepCode",
+ "sha": "ab8f8da4edc4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "多客户端编程 Agent：把论文与自然语言转成代码",
+  "review": "HKUDS 出品的多 Agent 编程系统，围绕一个共享的本地后台服务提供 TUI、Desktop 与 Web 三种客户端，三者共享项目、会话历史、模型配置、Skills、权限与自动化。会话支持历史保留、上下文窗口上限与 /compact 压缩，后台服务自动迁移端口并支持跨客户端续接任务。安全机制包括命令沙箱、凭据隔离与可选的出站主机限制。支持语音听写、MCP 服务器管理与中文界面，Windows/macOS/Linux 均可运行。",
+  "highlights": [
+   "TUI/Desktop/Web 三客户端共享同一本地服务与会话状态",
+   "命令沙箱隔离模型密钥与 SSH 私钥，可选出站主机限制",
+   "会话上下文窗口上限（/context）与 /compact 压缩机制",
+   "MCP 服务器管理、语音听写、Paper2Code 功能"
+  ],
+  "use_cases": [
+   "从研究论文或自然语言描述生成可运行代码",
+   "在终端、桌面与浏览器间续接同一个编程任务",
+   "需要沙箱隔离与命令审查的本地 Agent 编码环境"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://youtu.be/PRgmP8pOI08",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agentic-coding",
+   "编程Agent",
+   "多Agent协作",
+   "桌面应用"
+  ],
+  "domain": "开发工具/Agentic Coding",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "bedrock",
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "HKUDS（香港大学数据智能实验室）",
+   "提供 README_ZH.md 中文文档",
+   "Desktop/Web 中文界面"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L41: DeepCode provides TUI, Desktop, and Web clients over one shared local service.",
+   "L55: *🎯 **Watch our complete introduction** - See how DeepCode transforms research papers and natural language into productio",
+   "L187: - **Choose your interface.** Run `deepcode` for the TUI, `deepcode desktop`"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     162,
+     167
+    ],
+    "note": "Amazon Bedrock 加入 provider 模板",
+    "quotes": [
+     "**2026-09-28 · DeepCode v2.3.0: voice dictation, Opper and Bedrock, Desktop polish, and opt-in hardening**",
+     "- **More providers and models.** Opper and Amazon Bedrock join the provider"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     168
+    ],
+    "note": "DeepSeek V4 模型有专属上下文与定价配置",
+    "quotes": [
+     " templates, and DeepSeek V4 gets its own 1M context window and pricing."
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     330
+    ],
+    "note": "窗外行，具体语境不可见",
+    "quotes": [
+     " declared entries, near a thousand rows on OpenRouter) in one filterable"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     389
+    ],
+    "note": "窗外行，与 Claude Code 相关段落",
+    "quotes": [
+     "- **Delegate to Codex or Claude Code as a subagent.** `spawn_agent` gains"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     527
+    ],
+    "note": "窗外行，与多 provider 列表同段",
+    "quotes": [
+     " resolved from the model catalog, so Claude, GPT-5, Kimi, Qwen and Grok all"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     713
+    ],
+    "note": "窗外行，与 provider/模型列表同段",
+    "quotes": [
+     "Anthropic, DeepSeek, Gemini, an OpenAI-compatible gateway, Ollama, vLLM, or"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     713
+    ],
+    "note": "窗外行，同上",
+    "quotes": [
+     "Anthropic, DeepSeek, Gemini, an OpenAI-compatible gateway, Ollama, vLLM, or"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     835
+    ],
+    "note": "窗外行，安装文档段落",
+    "quotes": [
+     "git clone https://github.com/HKUDS/DeepCode.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     389
+    ],
+    "note": "窗外行，README 中提及的同类工具，未明示替代或竞品关系",
+    "quotes": [
+     "- **Delegate to Codex or Claude Code as a subagent.** `spawn_agent` gains"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     527
+    ],
+    "note": "窗外行，provider/模型相关段落",
+    "quotes": [
+     " resolved from the model catalog, so Claude, GPT-5, Kimi, Qwen and Grok all"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     527
+    ],
+    "note": "窗外行，同上",
+    "quotes": [
+     " resolved from the model catalog, so Claude, GPT-5, Kimi, Qwen and Grok all"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

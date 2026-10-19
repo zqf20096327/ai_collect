@@ -1,0 +1,87 @@
+{
+ "fn": "alphacep/vosk-api",
+ "sha": "60f14d2e8370",
+ "source": "readme",
+ "identity": {
+  "one_liner": "离线语音识别工具包：面向 20+ 语言的开发者 API",
+  "review": "Vosk 是一个离线开源语音识别工具包，支持 20 多种语言和方言的语音识别。模型体积小（50 MB），提供连续大词汇量转写、流式 API 零延迟响应、可重配置词汇表与说话人识别。为 Python、Java、Node.js、C#、C++、Rust、Go 等语言提供绑定，可从树莓派、Android 手机扩展到大型集群，安装文档位于官网。",
+  "highlights": [
+   "支持 20+ 语言的离线语音识别",
+   "小体积模型（50 MB）支持流式 API 与说话人识别",
+   "多语言绑定：Python、Java、Node.js、C#、C++、Rust、Go",
+   "可运行于树莓派/Android 至大型集群"
+  ],
+  "use_cases": [
+   "为聊天机器人或智能家居设备接入离线语音识别",
+   "为视频自动生成字幕",
+   "讲座与访谈的离线转写"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音识别",
+   "离线ASR",
+   "嵌入式",
+   "隐私"
+  ],
+  "domain": "语音识别/开发工具库",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "asr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Vosk is an offline open source speech recognition toolkit. It enables",
+   "L14: Speech recognition bindings implemented for various programming languages",
+   "L21: Vosk scales from small devices like Raspberry Pi or Android smartphone to"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

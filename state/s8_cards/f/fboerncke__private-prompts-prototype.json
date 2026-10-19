@@ -1,0 +1,157 @@
+{
+ "fn": "fboerncke/private-prompts-prototype",
+ "sha": "41fa30f9c52f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地桌面端 AI 提示词管理器：发送前自动假名化敏感数据",
+  "review": "面向注重隐私的个人用户的桌面应用（Windows/Linux/macOS 提供预构建安装包），核心功能是集中管理、编辑、打标签 AI 提示词，并在发送给外部 AI 服务前将用户定义的敏感信息（如姓名、邮箱）自动替换为占位符，收到回复后再自动还原。可选集成外部 AI 服务（当前仅 OpenAI）。附带全局历史与撤销、多语言、JSON 导入导出、明暗主题。限制：配置以未加密 JSON 明文存储；假名化不保证绝对匿名，上下文线索仍可能再识别；浏览器/扩展形态不建议生产使用。",
+  "highlights": [
+   "提示词发送前按用户规则自动假名化（敏感信息替换为占位符），回复后自动还原",
+   "数据仅存本地，刻意设计为桌面应用，不计划开发网页版",
+   "预构建二进制支持 Windows/Linux/macOS，含多语言与 JSON 导入导出",
+   "内置冲突检测机制处理替换规则与原文的冲突"
+  ],
+  "use_cases": [
+   "用 AI 写简历、求职信等含个人信息的文本时避免泄露隐私",
+   "集中管理和复用自己的提示词库",
+   "对外部 AI 服务发送提示词前对敏感数据做假名化保护"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "提示词管理",
+   "隐私保护",
+   "假名化",
+   "桌面应用",
+   "个人数据主权"
+  ],
+  "domain": "AI 隐私工具/提示词管理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3: **Private Prompts** is an application designed to manage your AI prompts securely and locally on your device, ensuring y",
+   "L25:  Define what you consider sensitive data. The app can automatically mask confidential information before sending it to a",
+   "L121:  - **Mark Sensitive Data**: Highlights confidential information in your prompt for further processing."
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     152
+    ],
+    "note": "窗外行：仅作为潜在未来支持的服务商列举",
+    "quotes": [
+     "2. **Tagging System**: Tags are an incredibly powerful tool for organizing prompts. When working with different projects"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     382,
+     398
+    ],
+    "quotes": [
+     "**Precreated binaries** can be downloaded for multiple platforms (Windows/Linux/macOS). Navigate to privateprompts.org f",
+     "  chmod u+x PrivatePrompts-Beta-002.AppImage"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     480
+    ],
+    "quotes": [
+     "   git clone https://github.com/fboerncke/private-prompts-monorepo.git"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     486,
+     535
+    ],
+    "note": "窗外行：Web/扩展形态的构建方式，README 声明不建议生产使用",
+    "quotes": [
+     "    npm install",
+     " Before you start any of the above targets make sure to run `npm install` in the project root to make sure that librarie"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     152,
+     572
+    ],
+    "quotes": [
+     "2. **Tagging System**: Tags are an incredibly powerful tool for organizing prompts. When working with different projects",
+     "If you can use ChatGPT or similar AI tools, you will have no trouble using Private Prompts. The interface is designed to"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

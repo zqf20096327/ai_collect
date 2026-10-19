@@ -1,0 +1,181 @@
+{
+ "fn": "ahmedkhaleel2004/gitdiagram",
+ "sha": "ed38dbfe3906",
+ "source": "readme",
+ "identity": {
+  "one_liner": "把 GitHub 仓库转成交互式架构图与一分钟讲解视频",
+  "review": "将公开或私有 GitHub 仓库转换为可交互的架构图：点击组件可跳转到对应文件或目录，支持导出 PNG 或复制 Mermaid 源码；私有仓库通过 GitHub token 访问。近期新增生成约一分钟解说视频的功能（制作新视频处于 early access）。对外提供远程 MCP 服务器（无需 key），供 Claude、Cursor、VS Code、ChatGPT 等 agent 客户端读取仓库架构说明与 Mermaid 源码。本地运行需 Bun、Cloudflare R2、Upstash Redis 及 OpenAI 或 OpenRouter API key。",
+  "highlights": [
+   "AI 生成交互式架构图，点击组件跳转源码，可导出 PNG/Mermaid",
+   "远程 MCP 服务器（gitdiagram.com/mcp，无需 key）供 AI agent 调用",
+   "生成约一分钟解说视频，支持 MP4 横竖屏下载与内嵌字幕",
+   "支持通过 GitHub token 访问私有仓库"
+  ],
+  "use_cases": [
+   "快速了解陌生开源仓库的架构与组件连接",
+   "让 AI agent/Claude 读取项目结构后再做代码分析",
+   "为代码评审或文档生成架构图与讲解视频"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    24
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "代码可视化",
+   "架构图",
+   "MCP",
+   "开发者工具"
+  ],
+  "domain": "开发者工具/代码可视化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "openrouter"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Visualize any codebase: turn any public or private GitHub repository into an interactive architecture diagram, or watch ",
+   "L36: GitDiagram is a remote MCP server at `https://gitdiagram.com/mcp` (no key or sign-in). Agents can read a public reposito",
+   "L54: Requires Bun, Cloudflare R2, Upstash Redis, and an OpenAI or OpenRouter API key. See the setup guide for prerequisites a"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     38,
+     71,
+     75
+    ],
+    "note": "Claude 客户端接入支持；视频脚本使用 Claude，需 ANTHROPIC_API_KEY",
+    "quotes": [
+     "Add to Claude",
+     "Explainer videos are off by default. To turn them on, set `VIDEO_EXPLAINER_ENABLED=1`, `NEXT_PUBLIC_VIDEO_EXPLAINER=1`, ",
+     "Built with Next.js, React, TypeScript, Tailwind CSS, and Mermaid. Videos use Claude or GPT for the script and scenes and"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     54,
+     71,
+     75
+    ],
+    "note": "API key 为本地运行要求；视频语音经 OpenRouter 提供",
+    "quotes": [
+     "Requires Bun, Cloudflare R2, Upstash Redis, and an OpenAI or OpenRouter API key. See the setup guide for prerequisites a",
+     "Explainer videos are off by default. To turn them on, set `VIDEO_EXPLAINER_ENABLED=1`, `NEXT_PUBLIC_VIDEO_EXPLAINER=1`, ",
+     "Built with Next.js, React, TypeScript, Tailwind CSS, and Mermaid. Videos use Claude or GPT for the script and scenes and"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     57,
+     59,
+     66
+    ],
+    "quotes": [
+     "git clone https://github.com/ahmedkhaleel2004/gitdiagram.git",
+     "bun install",
+     "bun run dev"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     39
+    ],
+    "note": "可安装 MCP 的客户端",
+    "quotes": [
+     "Install in Cursor"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     44
+    ],
+    "note": "提供插件的宿主环境",
+    "quotes": [
+     "# Claude Code: the plugin adds the MCP server and a /gitdiagram skill"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     50
+    ],
+    "note": "可添加 MCP 服务器的客户端",
+    "quotes": [
+     "In other clients (ChatGPT, Windsurf, Zed, LM Studio, Goose and more), add a remote MCP server with the URL `https://gitd"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     50
+    ],
+    "note": "可添加 MCP 服务器的客户端",
+    "quotes": [
+     "In other clients (ChatGPT, Windsurf, Zed, LM Studio, Goose and more), add a remote MCP server with the URL `https://gitd"
+    ]
+   }
+  ]
+ }
+}

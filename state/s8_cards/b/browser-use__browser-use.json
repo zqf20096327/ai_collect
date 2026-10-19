@@ -1,0 +1,155 @@
+{
+ "fn": "browser-use/browser-use",
+ "sha": "3e35ea856eab",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 AI agent 的开源浏览器自动化 Python 库",
+  "review": "提供 Python 库、CLI 和全托管云三条使用路径：库可嵌入应用运行浏览器 agent，支持本地或云浏览器、自定义工具与结构化输出；CLI 让现有 agent 获得浏览器控制能力；云服务提供带隐身、住宅代理与 CAPTCHA 处理的托管浏览器及托管 agent API。库本身 MIT 协议免费，模型推理与云浏览器按用量另计；CAPTCHA 处理效果依赖具体站点。",
+  "highlights": [
+   "Python 库内嵌 Agent 运行时，支持本地/云浏览器与自定义 Tools 注册",
+   "为 Claude 提供 31 个浏览器动作的工具集集成，可经 CDP 控制远程浏览器",
+   "ChatBrowserUse 网关可调用 Claude/GPT/Gemini 等模型，也可用 Ollama 本地模型",
+   "云浏览器按 $0.02/小时计费，支持 Docker/CI/serverless 场景"
+  ],
+  "use_cases": [
+   "让 AI agent 自动完成网页预订、查询等操作",
+   "在自有 Python 应用中嵌入可配置模型的浏览器 agent",
+   "给 Claude Code 等编码 agent 增加浏览器控制能力",
+   "在无 Chrome 的服务器/CI 环境用云浏览器跑自动化"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "浏览器自动化",
+   "AI Agent",
+   "网页操作",
+   "MCP/工具集成"
+  ],
+  "domain": "AI Agent/浏览器自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "browser-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L41:  Three ways to use Browser Use: the hosted V4 agent, the Browser Use CLI, or the open source Python library. All three d",
+   "L160: - **Python Library:** Run the open source agent in your own application, with custom tools, structured output, and your ",
+   "L202: The Python library is free and MIT-licensed. Model inference and hosted browsers are separate: API providers, including "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     124,
+     126,
+     131,
+     133
+    ],
+    "note": "提供 Claude 浏览器工具集官方集成，基于 Anthropic SDK",
+    "quotes": [
+     "Maintained by Browser Use. Compatible with Claude.",
+     "Use Claude's browser toolset with Browser Use as the driver. Browser Use",
+     " Claude uses Browser Use browser actions and Bash through the Anthropic SDK. The browser can be local or remote; Bash ru",
+     "Requires an Anthropic SDK version that includes `anthropic.tools.browser`."
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     202
+    ],
+    "note": "FAQ 提及可用 Ollama 本地模型",
+    "quotes": [
+     "The Python library is free and MIT-licensed. Model inference and hosted browsers are separate: API providers, including "
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     74
+    ],
+    "quotes": [
+     "uv add browser-use"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     59,
+     159
+    ],
+    "note": "可接入本产品的既有 agent，非替代/竞品对象",
+    "quotes": [
+     "Paste this prompt into Claude Code, Codex, Hermes, OpenClaw, or your favorite agent.",
+     "- **CLI:** Give an existing agent (Claude Code, Codex, Hermes, OpenClaw, Pi, Cursor, etc.) browser access. You can use i"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     159
+    ],
+    "note": "同上",
+    "quotes": [
+     "- **CLI:** Give an existing agent (Claude Code, Codex, Hermes, OpenClaw, Pi, Cursor, etc.) browser access. You can use i"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

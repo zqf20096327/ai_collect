@@ -1,0 +1,209 @@
+{
+ "fn": "zai-org/Open-AutoGLM",
+ "sha": "4fde4bf97301",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于视觉语言模型控制手机完成任务的 Phone Agent 框架",
+  "review": "由智谱开源的 Phone Agent 框架，通过 ADB/HDC 控制安卓或鸿蒙设备，以视觉语言模型感知屏幕截图、规划并执行点击、滑动、输入等操作，响应用户的自然语言指令。支持命令行与 Python API 两种调用方式，内置敏感操作确认与人工接管机制，提供远程 WiFi 调试。模型可用智谱 BigModel、ModelScope 等第三方 API，或通过 vLLM/SGLang 自行部署（本地部署建议 24GB+ 显存 GPU）。面向研究与学习用途。",
+  "highlights": [
+   "通过 ADB/HDC 控制安卓与鸿蒙设备，以截图+视觉模型循环执行操作",
+   "支持 50+ 款 Android 中文应用与 60+ 款鸿蒙原生应用",
+   "提供 vLLM/SGLang 本地部署与智谱 BigModel、ModelScope API 两种模型接入方式",
+   "内置敏感操作确认、人工接管回调与远程 ADB/HDC 调试"
+  ],
+  "use_cases": [
+   "用自然语言让 AI 代为操作手机完成搜索、下单等任务",
+   "研究与开发手机端 GUI Agent 的二次开发",
+   "通过 Midscene.js 实现 iOS/Android 上的自动化流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "README 中提供 AutoGLM 论文 BibTeX 引用（L592-597）",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "手机自动化",
+   "GUI Agent",
+   "多模态模型",
+   "设备控制"
+  ],
+  "domain": "AI Agent/手机自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm",
+   "local-weights"
+  ],
+  "scenario_tags_v2": [
+   "gui-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "智谱 AI（zai-org）维护",
+   "针对中文手机应用优化"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L24: Phone Agent 是一个基于 AutoGLM 构建的手机端智能助理框架，它能够以多模态方式理解手机屏幕内容，并通过自动化操作帮助用户完成任务。系统通过",
+   "L610: - **原理**：截图 → 视觉模型理解界面 → 输出点击坐标 → ADB 执行操作 → 循环",
+   "L642:  - 需要 NVIDIA GPU(建议 24GB+ 显存)"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     15,
+     601
+    ],
+    "note": "仅作为自动化部署工具 Claude Code 的语境提及",
+    "quotes": [
+     "你可以使用Claude Code，配置 GLM Coding Plan 后，输入以下提示词，快速部署本项目。",
+     "> **本章节专为 AI 助手(如 Claude Code)设计，用于自动化部署 Open-AutoGLM。**"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     207,
+     210,
+     221,
+     223,
+     226
+    ],
+    "note": "官方提供的模型部署推理引擎之一，含启动参数",
+    "quotes": [
+     "对于 vLLM，除了使用pip 安装，你也可以使用官方docker:",
+     "> docker pull vllm/vllm-openai:v0.12.0",
+     "1. 在对应容器或者实体机中(非容器安装)下载模型，通过 SGlang / vLLM 启动，得到 OpenAI 格式服务。这里提供一个 vLLM部署方案，请严格遵循我们提供的启动参数:",
+     "- vLLM:",
+     "python3 -m vllm.entrypoints.openai.api_server \\"
+    ]
+   },
+   {
+    "term": "local-weights",
+    "rel": "support",
+    "lines": [
+     189,
+     641,
+     644
+    ],
+    "note": "支持自行下载模型（约 20GB）本地部署",
+    "quotes": [
+     "#### 选项 B: 自行部署模型",
+     "- **选项 B：本地部署模型(高配置要求)**",
+     " - 需要下载约 20GB 的模型文件"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     122,
+     123,
+     518
+    ],
+    "quotes": [
+     "pip install -r requirements.txt",
+     "pip install -e .",
+     "pip install -e \".[dev]\""
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     198,
+     210
+    ],
+    "note": "用于推理引擎（SGLang/vLLM）的官方镜像，非本产品安装途径",
+    "quotes": [
+     "> docker pull lmsysorg/sglang:v0.5.6.post1",
+     "> docker pull vllm/vllm-openai:v0.12.0"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     654
+    ],
+    "note": "ADB 依赖工具的安装方式",
+    "quotes": [
+     "brew install android-platform-tools"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     668
+    ],
+    "quotes": [
+     "git clone https://github.com/zai-org/Open-AutoGLM.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     15,
+     601
+    ],
+    "note": "README 提供面向 Claude Code 的自动化部署提示词，非替代/竞品关系",
+    "quotes": [
+     "你可以使用Claude Code，配置 GLM Coding Plan 后，输入以下提示词，快速部署本项目。",
+     "> **本章节专为 AI 助手(如 Claude Code)设计，用于自动化部署 Open-AutoGLM。**"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

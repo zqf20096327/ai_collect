@@ -1,0 +1,102 @@
+{
+ "fn": "binhnguyennus/awesome-scalability",
+ "sha": "e8cb6d2c67cb",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向工程师的大规模系统可扩展性架构文章阅读清单",
+  "review": "以阅读清单形式组织大型分布式系统的架构模式与实践案例，内容分为原理、可扩展性、缓存、分布式锁、调度、监控告警、安全、消息流等多个主题章节；条目多为 Netflix、Uber、Google、LinkedIn 等公司工程博客与知名工程师文章链接。README 按场景组织入口（系统变慢、系统宕机、系统设计面试、团队建设），并接受社区通过 pull request 提交和移除失效链接。纯文档型仓库，无代码与安装步骤。",
+  "highlights": [
+   "按原理/可扩展性/缓存/调度/监控/安全等主题组织的文章目录",
+   "收录多家科技公司的实战架构案例研究",
+   "面向系统变慢、宕机、面试、组队四类场景的导航入口",
+   "社区协作维护，接受 PR 更新失效链接"
+  ],
+  "use_cases": [
+   "准备系统设计面试前查阅真实架构图解",
+   "设计分布式系统时查找对应主题的实践参考",
+   "排查扩展性与性能问题时检索相关公司案例",
+   "学习混沌工程、一致性哈希等基础原理文章"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "架构阅读清单",
+   "分布式系统",
+   "awesome-list",
+   "系统设计面试"
+  ],
+  "domain": "软件架构/分布式系统知识聚合",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "low",
+  "evidence": [
+   "L3: An updated and organized reading list for illustrating the patterns of scalable, reliable, and performant large-scale sy",
+   "L23: ## Content",
+   "L86: ## Scalability"
+  ],
+  "xcheck": {
+   "depre_hint": "提名有弃坑声明而模型未确认"
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     747
+    ],
+    "note": "窗外行，仅提及，非替代/竞品关系",
+    "quotes": [
+     "\t* Genie: Gen AI On-Call Copilot at Uber"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

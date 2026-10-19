@@ -1,0 +1,90 @@
+{
+ "fn": "nndl/nndl",
+ "sha": "9254d1b18794",
+ "source": "readme",
+ "identity": {
+  "one_liner": "深度学习教材读者：获取邱锡鹏《神经网络与深度学习》电子书与勘误",
+  "review": "该仓库是邱锡鹏《神经网络与深度学习》第二版与通识版的资料入口：提供两本书的开放电子稿 PDF 下载、16 章目录与勘误渠道，勘误通过 GitHub Issues 提交并注明版本与页码。第二版（蒲公英书）面向专业课程与研究入门，需线性代数、微积分与概率论基础，配套 PyTorch 实践；通识版面向非专业读者与高校通识课。第一版资料归档在 legacy 目录与 nndl-v1 分支，LaTeX 源码不在公开仓库中。",
+  "highlights": [
+   "提供第二版与通识版开放电子稿 PDF，内容随修订更新",
+   "第二版 16 章加 5 个数学基础附录，含注意力机制与 Transformer、图神经网络、大语言模型等章节",
+   "通识版 16 章，覆盖大模型、智能体、多模态、具身智能与 AI 安全",
+   "第一版资料归档于 legacy/nndl-v1 目录与 nndl-v1 分支，含各章 PDF 与教学幻灯片"
+  ],
+  "use_cases": [
+   "系统学习神经网络与深度学习的理论与数学推导",
+   "高校通识课或跨学科读者建立对 AI 的直觉理解",
+   "向作者反馈教材勘误或提交改进建议"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教材/电子书",
+   "深度学习",
+   "机器学习",
+   "大语言模型",
+   "中文资源"
+  ],
+  "domain": "教育/机器学习教材",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "作者邱锡鹏（复旦大学）",
+   "第二版通称蒲公英书为国内常用教材"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: 邱锡鹏著 · **第二版与通识版的电子书、目录和勘误入口**",
+   "L15:  从机器学习基础出发，系统讲解神经网络、优化、Transformer、图神经网络、强化学习、生成模型与大语言模型。",
+   "L23:  用故事、案例和生活类比解释神经网络与深度学习，并延伸到大语言模型、智能体、多模态、科学智能、具身智能、AI 安全与未来。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-18",
+  "softened": null,
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}
