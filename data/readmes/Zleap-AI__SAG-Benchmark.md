@@ -1,670 +1,470 @@
 <p align="center">
-  <img src="assets/logo.svg" alt="Zleap AI" width="220" />
+  <img src="sag2/assets/logo.svg" alt="Zleap AI" width="180" />
 </p>
 
-# SAG Benchmark
+<h1 align="center">SAG2</h1>
 
-> Companion benchmark reproduction repository for the SAG paper. This repository is for reproducing the paper benchmark scores with the quick-start commands. General users, please see the [SAG project](https://github.com/Zleap-AI/SAG).
+<p align="center">
+  <strong>English</strong> · <a href="README-CN.md">简体中文</a>
+</p>
 
-English | [中文](README-CN.md)
+<p align="center">
+  <a href="https://arxiv.org/abs/2610.22588"><img alt="Paper: arXiv:2610.22588" src="https://img.shields.io/badge/paper-arXiv%3A2610.22588-18181b" /></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-18181b" /></a>
+</p>
 
-**Paper:** [https://arxiv.org/abs/2606.15971](https://arxiv.org/abs/2606.15971)
+<p align="center"><strong>Embedding-free multi-hop evidence retrieval.</strong></p>
 
-https://github.com/user-attachments/assets/ac805e3c-ab52-4857-bef6-2865f3831b2f
+<p align="center">
+  The companion benchmark repository for the SAG2 paper. SQLite FTS5, BM25 and JEV connect source evidence at query time, with no model calls for indexing.
+</p>
 
+<p align="center"><strong>Question → Passages → Terms → New passages</strong></p>
+
+<p align="center">
+  <a href="https://github.com/Zleap-AI/SAG-Wiki">SAG2 application: SAG-Wiki</a> · <a href="sag/README.md">Original SAG reproduction</a>
+</p>
+
+https://github.com/user-attachments/assets/bcdf9dbf-7535-41d6-bd22-bde0ea824525
+
+**Contents**
+
+- **SAG2**
+  - [Benchmark Score Reproduction](#benchmark-score-reproduction)
+  - [Method Figures](#method-figures)
+  - [Quick Start](#quick-start)
+  - [Datasets](#datasets)
+  - [Retrieval Configuration](#retrieval-configuration)
+  - [Outputs and Resume](#outputs-and-resume)
+  - [Common Scripts](#common-scripts)
+- **Extensions**
+  - [Agentic SAG2](#agentic-sag2)
+  - [Local Reranking](#local-reranking)
+  - [Run External Methods](#run-external-methods)
+- **Code and Reproduction**
+  - [Repository Layout](#repository-layout)
+  - [Reproduction Notes and Ablations](#reproduction-notes-and-ablations)
+  - [Indexing and Cost](#indexing-and-cost)
+  - [Indexes and Evaluation Settings](#indexes-and-evaluation-settings)
+  - [Offline Verification](#offline-verification)
 
 ## Benchmark Score Reproduction
 
-This repository contains upload, retrieval, and evaluation scripts for SAG on HotpotQA, 2WikiMultiHopQA, and MuSiQue. The current quick-start workflow reproduces the SAG, BM25, and bge-large-en-v1.5 vector retrieval results, and supports the Triple indexing ablation through the atomic upload/search path.
+SAG2 was evaluated on **1,000 questions each** from MuSiQue, 2WikiMultiHopQA and HotpotQA. R@10 is **86.62%, 97.43% and 99.00%**, respectively. EnterpriseRAG-Bench covers **511,962 source documents**, with document R@10 of **81.10%** over 470 labeled questions.
 
-Default paper setup:
+The paper's main table is below; see the [evaluation settings](#indexes-and-evaluation-settings) for its configuration. Values are percentages; bold denotes the column maximum. R@k is the mean fraction of labeled evidence recovered in the first k deduplicated results; AE@k is the fraction of questions with all evidence recovered. **R@k reports evidence recall.**
 
-| Item | Value |
-|------|------|
-| Embedding | `bge-large-en-v1.5` |
-| LLM | `qwen3.6-flash` |
-| Main paper metrics | Recall@5 / F1 |
-| Main scripts | `scripts/run_upload.py`, `scripts/run_search_benchmark.py`, `scripts/run_qa_benchmark.py` |
+<table>
+  <thead>
+    <tr><th rowspan="2">Method</th><th colspan="4">MuSiQue</th><th colspan="4">2WikiMultiHopQA</th><th colspan="4">HotpotQA</th></tr>
+    <tr><th>R@1</th><th>R@2</th><th>R@5</th><th>R@10</th><th>R@1</th><th>R@2</th><th>R@5</th><th>R@10</th><th>R@1</th><th>R@2</th><th>R@5</th><th>R@10</th></tr>
+  </thead>
+  <tbody>
+    <tr><th colspan="13">Lexical and dense retrieval</th></tr>
+    <tr><td>BM25</td><td align="right">28.53</td><td align="right">37.32</td><td align="right">47.47</td><td align="right">54.41</td><td align="right">40.10</td><td align="right">57.93</td><td align="right">67.05</td><td align="right">71.50</td><td align="right">39.75</td><td align="right">57.95</td><td align="right">74.40</td><td align="right">86.90</td></tr>
+    <tr><td>Contriever</td><td align="right">24.50</td><td align="right">33.54</td><td align="right">45.32</td><td align="right">53.58</td><td align="right">34.40</td><td align="right">48.60</td><td align="right">59.25</td><td align="right">65.20</td><td align="right">39.30</td><td align="right">57.45</td><td align="right">74.85</td><td align="right">82.75</td></tr>
+    <tr><th colspan="13">Large embedding models</th></tr>
+    <tr><td>BGE-Large-EN-v1.5</td><td align="right">29.42</td><td align="right">41.68</td><td align="right">56.32</td><td align="right">64.08</td><td align="right">41.48</td><td align="right">62.28</td><td align="right">69.83</td><td align="right">73.75</td><td align="right">45.45</td><td align="right">76.20</td><td align="right">89.20</td><td align="right">93.35</td></tr>
+    <tr><td>GTE-Qwen2-7B</td><td align="right">35.19</td><td align="right">48.06</td><td align="right">61.92</td><td align="right">70.80</td><td align="right">43.45</td><td align="right">65.58</td><td align="right">74.18</td><td align="right">78.63</td><td align="right">46.40</td><td align="right">73.95</td><td align="right">88.45</td><td align="right">93.55</td></tr>
+    <tr><td>GritLM-7B</td><td align="right">34.86</td><td align="right">50.70</td><td align="right">66.22</td><td align="right">75.19</td><td align="right">41.85</td><td align="right">66.23</td><td align="right">75.62</td><td align="right">79.40</td><td align="right">46.40</td><td align="right">81.15</td><td align="right">93.40</td><td align="right">97.20</td></tr>
+    <tr><td>NV-Embed-v2</td><td align="right">34.02</td><td align="right">51.08</td><td align="right">68.84</td><td align="right">77.27</td><td align="right">43.23</td><td align="right">68.93</td><td align="right">77.00</td><td align="right">80.75</td><td align="right">46.90</td><td align="right">85.55</td><td align="right">95.25</td><td align="right">97.70</td></tr>
+    <tr><th colspan="13">Structure-enhanced retrieval</th></tr>
+    <tr><td>HippoRAG 2</td><td align="right">30.65</td><td align="right">49.52</td><td align="right">65.13</td><td align="right">73.76</td><td align="right">42.38</td><td align="right">76.55</td><td align="right">90.35</td><td align="right">93.40</td><td align="right">44.40</td><td align="right">78.35</td><td align="right">94.35</td><td align="right">97.15</td></tr>
+    <tr><td>SAG (Ours)</td><td align="right"><strong>36.82</strong></td><td align="right"><strong>63.62</strong></td><td align="right">80.36</td><td align="right">83.37</td><td align="right"><strong>43.81</strong></td><td align="right">83.93</td><td align="right">93.34</td><td align="right">93.57</td><td align="right">47.80</td><td align="right">91.55</td><td align="right">96.50</td><td align="right">97.70</td></tr>
+    <tr><td><strong>SAG2 (Ours)</strong></td><td align="right">34.30</td><td align="right">62.18</td><td align="right"><strong>80.68</strong></td><td align="right"><strong>86.62</strong></td><td align="right">43.55</td><td align="right"><strong>85.50</strong></td><td align="right"><strong>97.35</strong></td><td align="right"><strong>97.43</strong></td><td align="right"><strong>48.30</strong></td><td align="right"><strong>93.60</strong></td><td align="right"><strong>98.45</strong></td><td align="right"><strong>99.00</strong></td></tr>
+  </tbody>
+</table>
 
-Main results:
+BM25 uses the paper's fixed lexical reference; cited baselines and provenance are in [main table data](sag2/results/paper/main-results.json). These are fixed development subsets; MuSiQue has 518 two-hop, 316 three-hop and 166 four-hop questions and was used for method development. Enterprise results are shown below. [Ablations](#reproduction-notes-and-ablations) and Agentic results are reported in later sections.
 
-<p align="center">
-  <img src="assets/main-result.png" alt="SAG main benchmark results" width="760" />
-</p>
+EnterpriseRAG-Bench contains 511,962 source documents. The table reports document R@10 (%) on 470 labeled questions.
 
-Experiments on HotpotQA, 2WikiMultiHopQA, and MuSiQue show that SAG achieves the best retrieval and end-to-end QA performance on every benchmark.
+| Question type | n | BM25 | Vector | Bash Agent† | **SAG2 (Ours)** |
+| --- | --- | --- | --- | --- | --- |
+| Basic retrieval | 175 | 77.7 | 48.6 | 61.7 | **86.86** |
+| Semantic retrieval | 125 | 43.2 | 24.8 | 29.6 | **58.40** |
+| Within-document reasoning | 40 | 90.0 | 57.5 | 75.0 | **100.00** |
+| Project-related | 40 | 65.5 | 49.2 | 43.2 | **83.58** |
+| Constrained | 30 | 85.0 | 83.3 | 78.3 | **96.67** |
+| Conflicting information | 20 | 82.5 | 55.0 | 72.5 | **92.50** |
+| Completeness | 20 | 46.5 | 33.4 | 59.0 | **76.24** |
+| Miscellaneous | 20 | 90.0 | 75.0 | 100.0 | **100.00** |
+| Overall | 470 | 68.4 | 46.0 | 55.8 | **81.10** |
 
-- Across the three datasets, SAG averages **90.07%/72.96%** in Recall@5 and F1, outperforming the strongest baseline for each metric by **6.79/4.33** percentage points, respectively.
-- On the most challenging MuSiQue dataset, SAG outperforms the strongest baseline for each metric by **11.52/7.01** percentage points in Recall@5 and F1, respectively.
-
-> **Note:** The current CLI supports reproducing SAG2, BM25, and the bge-large-en-v1.5 vector retrieval results. Atomic indexing/search is available for the Triple indexing ablation.
+Enterprise baselines are cited from the [dataset paper](https://arxiv.org/abs/2605.05253). Bash Agent has variable output size; other methods in this table return ten documents, so computation and output budgets differ.
 
 ## Method Figures
 
-<p align="center">
-  <img src="assets/paper-rag-comparison.png" alt="Naive RAG, GraphRAG and SAG comparison" width="760" />
-</p>
+![SAG2 indexing and retrieval](sag2/assets/sag2-workflow.png)
 
-SAG organizes text into lightweight `chunk -> event`, `chunk -> entities`, and `event <-> entities` indexes. It does not maintain a heavy global knowledge graph; it uses the event/entity index for SQL, vector search, full-text search, and multi-hop expansion.
+1. **Index source text.** Tokenize titles and text into SQLite FTS5; retain source identity, headings and term statistics. No embeddings or offline semantic extraction are required.
+2. **Retrieve passages from the question.** BM25 returns up to 100 candidates. JEV `noul` scores whether each passage supplies necessary evidence for the original question and available context.
+3. **Select terms from passages.** Up to 10 expansion seeds contribute up to 20 terms, using frequency, rarity, query context and JEV scores.
+4. **Retrieve more evidence.** Search each term, interleave and deduplicate results, retain earlier evidence and score again. The default adds two expansion rounds.
+5. **Return sources.** Locally diversify the top ten results without another model request.
 
-<p align="center">
-  <img src="assets/paper-sag-architecture.png" alt="SAG architecture" width="760" />
-</p>
+JSON corpus text is treated as plain text by default; a supplied `path` selects Markdown or code parsing by its file extension. No generated annotations are added to source text. Gold answers and evidence labels are used only for evaluation. The algorithm, prompts and query optimizations are in [scripts/sag2.py](sag2/scripts/sag2.py). The original event/entity approach is documented in [sag/](sag/README.md).
 
 ## Quick Start
 
-### 1. Install Dependencies
+Run the following commands from **SAG-Benchmark/sag2/**. Original SAG readers should instead follow [sag/README.md](sag/README.md), which has its own environment and dependencies.
 
-Requirements:
+### 1. Install
 
-- Python 3.11+
-- `uv`
-- Docker Compose
-- Available LLM and embedding endpoints; a rerank endpoint is only needed for the final-selection reranker ablation
+Requirements: Python **3.11+**, [uv](https://docs.astral.sh/uv/getting-started/installation/) and a C compiler. The SQLite scoring extension compiles on first use: Xcode Command Line Tools on macOS, GCC or Clang on Linux, or MSVC Build Tools on Windows. Default SAG2 needs no Docker, MySQL, Elasticsearch or GPU. Shell examples use Bash (Linux, macOS or WSL); in PowerShell, use Copy-Item for the configuration copy. Paper-control scripts currently require a Unix-like environment.
 
 ```bash
-uv sync
-cp .env.example .env
+git clone https://github.com/Zleap-AI/SAG-Benchmark.git
+cd SAG-Benchmark/sag2
+uv sync --frozen
 ```
 
-Activate the virtual environment when you want to run Python commands directly:
+For an existing checkout, run `cd sag2` from the repository root. Run subsequent SAG2 commands here, using `sag2/.venv/`.
+
+### 2. Configure JEV
+
+Create the configuration once, preserving an existing file:
 
 ```bash
-source .venv/bin/activate
+test -f .env || cp .env.example .env
 ```
 
-On Windows PowerShell:
+Set these values in the current directory’s `.env` (repository path: `sag2/.env`):
 
-```powershell
-.\.venv\Scripts\Activate.ps1
+```dotenv
+OPENROUTER_API_KEY=your_api_key
+JEV_BASE_URL=https://openrouter.ai/api/alpha/decisions
+JEV_MODEL=typesafe/jev-1.13
 ```
 
-Edit `.env` and fill in the storage backend, LLM, and embedding settings. Standard SAG reproduction only needs these three groups of settings. Add the rerank settings only when running the final-selection reranker ablation described below.
+The default answer type is `noul`. The historical paper run returned `typesafe/jev-1.13-20260917`; provider versions may change, so record the actual returned model. Keys are read from environment variables or `--env-file`, never passed as command-line arguments.
 
-At minimum, check these `.env` values before running upload or search:
-
-```env
-STORAGE_PROFILE=mysql_es
-
-LLM_API_KEY=sk-...
-LLM_BASE_URL=https://...
-LLM_MODEL=qwen3.6-flash
-LLM_LANGUAGE=en
-
-EMBEDDING_API_KEY=...
-EMBEDDING_BASE_URL=http://...
-EMBEDDING_MODEL_NAME=text-embedding-bge-large-en-v1.5
-EMBEDDING_DIMENSIONS=1024
-```
-
-Only add the following settings for the final-selection reranker ablation:
-
-```env
-RERANK_BASE_URL=http://...
-RERANK_MODEL_NAME=Qwen/Qwen3-Reranker-8B
-RERANK_ENDPOINT=/rerank
-```
-
-Then fill the storage connection used by your profile:
-
-```env
-# mysql_es
-MYSQL_HOST=localhost
-MYSQL_PORT=3306
-MYSQL_USER=sag2
-MYSQL_PASSWORD=sag2_pass
-MYSQL_DATABASE=sag2
-
-# oceanbase_es / oceanbase_full
-OCEANBASE_HOST=localhost
-OCEANBASE_PORT=2881
-OCEANBASE_USER=sag2@sag2
-OCEANBASE_PASSWORD=sag2_pass
-OCEANBASE_DATABASE=sag2
-
-# mysql_es / oceanbase_es
-ES_HOST=localhost
-ES_PORT=9200
-ES_SCHEME=http
-```
-
-Storage is selected through `STORAGE_PROFILE`. The application code uses one storage facade, so upload and search callers do not need to know whether vectors are stored in Elasticsearch or OceanBase.
-
-| Profile | SQL database | Vector/search backend | Notes |
-|------|------|------|------|
-| `mysql_es` | MySQL | Elasticsearch | Default paper-compatible local setup |
-| `oceanbase_es` | OceanBase | Elasticsearch | Uses OceanBase for structured tables, keeps ES for vector search |
-| `oceanbase_full` | OceanBase | OceanBase | Stores vectors in OceanBase table columns and searches through OceanBase vector indexes |
-
-`DATABASE_BACKEND` and `VECTOR_BACKEND` are advanced overrides. Leave them empty unless you need to bypass the profile mapping.
-
-### 2. Start Local Services
-
-All local services are managed by `docker-compose.yml`.
-
-| Service | Container | Default port | Notes |
-|------|--------|----------|------|
-| MySQL | `sag2_mysql` | `3306` | Default user `sag2` |
-| Elasticsearch | `new_sag_elasticsearch` | `9200` | Security disabled |
-| OceanBase | `oceanbase-ce` | `2881` | Optional backend for `oceanbase_es` / `oceanbase_full` |
-| MLflow | `sag2_mlflow` | `5000` | Optional experiment tracking |
-
-Ports can be overridden in `.env` with `MYSQL_PORT`, `ES_PORT`, and `MLFLOW_PORT`. OceanBase is exposed on `2881` for SQL client traffic.
-
-Choose one startup path for the selected `STORAGE_PROFILE`. Do not run all of them.
-
-#### 2.1 `mysql_es`
+### 3. Prepare Data and Indexes
 
 ```bash
-docker compose up -d mysql elasticsearch
-docker compose ps
+# Download missing pinned data and index all three datasets; no model requests
+uv run python scripts/run_sag2_benchmark.py --download --index-only
 ```
 
-#### 2.2 `oceanbase_es`
+An index with the same corpus and chunking configuration is reused. The terminal prints source count, chunk count and question count; the suite summary reports `indexed`. Indexes default to `.cache/sag2/`. Add `--dataset musique` to prepare only one dataset.
+
+### 4. Run Ten Questions First
 
 ```bash
-docker compose up -d oceanbase elasticsearch
-docker compose ps
+uv run python scripts/run_sag2_benchmark.py \
+  --dataset musique --limit 10 --concurrency 20 \
+  --output-dir output/sag2/musique-smoke
 ```
 
-For `oceanbase_es`, wait until the OceanBase container log shows that tenant DDL is ready and `init.sql` has completed before running project initialization:
+`--limit` changes the question count, not the corpus size. This step uses the Jev API. The terminal prints recall metrics; per-question results are in `output/sag2/musique-smoke/musique/details.jsonl`, with `metrics.json` in the same directory.
 
-```text
-==> sag2 tenant ready.
-==> Waiting for sag2 tenant DDL...
-==> sag2 tenant DDL ready.
-==> init.sql executed.
-==> All done.
-```
-
-#### 2.3 `oceanbase_full`
+### 5. Run the Full Benchmarks
 
 ```bash
-docker compose up -d oceanbase
-docker compose ps
+# 1,000 questions per dataset
+uv run python scripts/run_sag2_benchmark.py --datasets all --concurrency 20
+
+# Or choose specific datasets
+uv run python scripts/run_sag2_benchmark.py \
+  --datasets hotpotqa 2wikimultihopqa --concurrency 20
 ```
 
-For `oceanbase_full`, also wait until the OceanBase container log shows that tenant DDL is ready and `init.sql` has completed:
-
-```text
-==> sag2 tenant ready.
-==> Waiting for sag2 tenant DDL...
-==> sag2 tenant DDL ready.
-==> init.sql executed.
-==> All done.
-```
-
-Optional MLflow tracking can be started separately:
-
-```bash
-docker compose up -d mlflow
-```
-
-### 3. Initialize Database and Indexes
-
-Choose one initialization path for the selected `STORAGE_PROFILE`. Do not run all of them.
-
-#### 3.1 `mysql_es`
-
-```bash
-uv run python scripts/init_database.py --fix-grants
-uv run python scripts/init_elasticsearch.py
-```
-
-#### 3.2 `oceanbase_es`
-
-```bash
-uv run python scripts/init_database.py
-uv run python scripts/init_elasticsearch.py
-```
-
-#### 3.3 `oceanbase_full`
-
-```bash
-uv run python scripts/init_database.py
-```
-
-`scripts/init_database.py` reads `STORAGE_PROFILE` and initializes the active SQL backend:
-
-- `mysql_es`: creates the normal MySQL structured tables.
-- `oceanbase_es`: creates the normal OceanBase structured tables and adds OceanBase-only compatibility columns such as `source_event.entities`.
-- `oceanbase_full`: does everything from `oceanbase_es`, then idempotently adds OceanBase vector columns and vector indexes for chunks, events, entities, and event-entity relations.
-
-Run `scripts/init_elasticsearch.py` only when the active vector backend is Elasticsearch (`mysql_es` or `oceanbase_es`). It is not required for `oceanbase_full`. The `--fix-grants` option is only for local MySQL permission repair; do not use it for OceanBase profiles.
-
-**How `init_elasticsearch.py` resolves the embedding dimension**
-
-By default the script probes the configured embedding model directly to determine the actual vector dimension, then creates four physical indices with a dimension suffix (`source_chunks_4096`, `event_vectors_4096`, etc.). The result is cached in `.cache/embedding_dims.json` so subsequent runs skip the network call.
-
-```bash
-# Standard usage — auto-probes the embedding model from .env
-uv run python scripts/init_elasticsearch.py
-
-# Force a fresh probe, ignoring the cache
-uv run python scripts/init_elasticsearch.py --refresh-dim
-
-# Skip the probe entirely and use a known dimension
-uv run python scripts/init_elasticsearch.py --dim 4096
-```
-
-The script is idempotent: if an index already exists with a matching dimension it is skipped; if it exists with a mismatched dimension the script fails fast with a clear error rather than silently leaving a broken index. The legacy 1024-dimension indices (`source_chunks`, etc., without a suffix) are preserved untouched when `ES_INDEX_LEGACY_UNSUFFIXED=true` in `.env`.
-
-`run_upload.py` verifies that the required indices exist and have the correct dimension before writing any data. If the indices are missing or were auto-created by Elasticsearch with the wrong mapping, the upload exits immediately with an actionable error message.
-
-### 4. Upload Datasets
-
-Before uploading, prepare the dataset files:
-
-- `test_hotpotqa` and `sample` are included in the repository.
-- For `hotpotqa`, `musique`, `2wikimultihopqa`, or `narrativeqa`, download the
-  corresponding `*.json` and `*_corpus.json` files from the
-  [HippoRAG 2 data release](https://huggingface.co/datasets/osunlp/HippoRAG_2/tree/main)
-  and place them in `dataset/`. See [dataset/README.md](dataset/README.md) for
-  the complete file layout, provenance, licenses, and citation requirements.
-
-`run_upload.py` first converts `dataset/<dataset>.json` into a Markdown corpus, then writes structured rows and vectors through the configured storage facade. With `mysql_es`, data goes to MySQL plus Elasticsearch. With `oceanbase_full`, structured data and vectors are written into OceanBase. After upload, it generates:
-
-```text
-pipeline/evaluation/source/SAG/<LLM_MODEL>/<dataset>/<timestamp>/source_info.json
-```
-
-The file contains the `source_config_id` used by benchmark runs.
-
-```bash
-uv run python scripts/run_upload.py --dataset hotpotqa
-uv run python scripts/run_upload.py --dataset 2wikimultihopqa
-uv run python scripts/run_upload.py --dataset musique
-```
-
-For a quick smoke test, use the smaller datasets first:
-
-```bash
-uv run python scripts/run_upload.py --dataset test_hotpotqa
-uv run python scripts/run_upload.py --dataset sample
-```
-
-To reproduce the **triplet (atomic event)** mode — where each event contains exactly 2 entities (subject-relation-object) — add `--atomic` when uploading:
-
-```bash
-uv run python scripts/run_upload.py --dataset sample --atomic
-```
-
-Upload has three supported modes:
-
-| Mode | Command | Behavior |
-|------|---------|----------|
-| Compact (default) | `uv run python scripts/run_upload.py --dataset musique` | Uses the compact extraction prompt and creates merged events. No extra flag is required. |
-| Atomic | `uv run python scripts/run_upload.py --dataset musique --atomic` | Uses the atomic-event template; each event is constrained to a subject-relation-object pair. |
-| No extraction (Vector-only) | `uv run python scripts/run_upload.py --dataset musique --no-extraction` | Loads and indexes the corpus without event/entity extraction; use this when you only want the pure embedding `vector` search path. |
-
-Choose one mode per upload. The default compact mode is the recommended path for SAG2 and for experiments that compare SAG2 with vector or BM25. Use `--no-extraction` only for a vector-only run when SAG is not part of the experiment; SAG2 requires extracted events, so do not use `--no-extraction` if you plan to run SAG2 as well.
-
-
-### 5. Run Search
-
-#### 5.1 Minimal Command
-
-```bash
-uv run python scripts/run_search_benchmark.py \
-  --dataset-name musique \
-  --strategy sag2
-```
-
-The omitted options use their built-in defaults: `top-k=10`, `k-values=1,2,5,10`, `max-concurrency=10`, and `bench-size=5`. These defaults are the paper configuration, so this single command is the paper's SAG2 retrieval reproduction path. Replace `musique` with `hotpotqa` or `2wikimultihopqa` for the other main datasets.
-
-#### 5.2 Common Parameter Overrides
-
-Append these to the 5.1 command as needed:
-
-```bash
-# Adjust concurrency (default 10)
---max-concurrency 20
-
-# Run only the first N questions (unlimited by default)
---limit 10
-
-# Pin a specific uploaded source (by default the latest upload is picked; the ID comes from the source_info.json generated in Step 4)
---source-config-id <source_config_id>
-```
-
-See [docs/search.md](docs/search.md) for the full argument reference.
-
-#### 5.3 Other Strategies and Variants
-
-The commands below list only parameters that differ from the defaults; everything else matches 5.1.
-
-##### SAG2 Scope (Event Candidate Pool)
-
-Enable the candidate pool and set its size `k_pool` with `--sag2-event-top-k`. This variant is recorded as a separate search configuration at the same experiment level as the vector and atomic baselines:
-
-```bash
-uv run python scripts/run_search_benchmark.py \
-  --dataset-name musique \
-  --strategy sag2 \
-  --sag2-scope \
-  --sag2-event-top-k 500
-```
-
-##### Atomic (Triple indexing)
-
-Upload in atomic mode first, then search with the atomic strategy:
-
-```bash
-uv run python scripts/run_upload.py --dataset musique --atomic
-uv run python scripts/run_search_benchmark.py \
-  --dataset-name musique \
-  --strategy atomic
-```
-
-##### BM25
-
-Elasticsearch BM25 keyword-search baseline, no extra options:
-
-```bash
-uv run python scripts/run_search_benchmark.py \
-  --dataset-name musique \
-  --strategy bm25
-```
-
-##### Vector
-
-Pure vector retrieval runs directly after the default Compact upload:
-
-```bash
-uv run python scripts/run_search_benchmark.py \
-  --dataset-name musique \
-  --strategy vector
-```
-
-If the experiment compares Vector with SAG2, upload with the default Compact mode instead so the same source contains the events required by SAG2. When Vector is the sole method being run, you may upload with `--no-extraction` to skip event extraction, but that source can no longer run SAG2 and would need a re-upload; see [docs/search.md](docs/search.md) for the trade-off.
-
-#### 5.4 Tool Integrations
-
-Enable MLflow experiment tracking:
-
-```bash
-uv run python scripts/run_search_benchmark.py \
-  --dataset-name musique \
-  --strategy sag2 \
-  --use-mlflow \
-  --mlflow-url http://localhost:5000 \
-  --mlflow-experiment sag-benchmark
-```
-
-#### Output
-
-Default output directory:
-
-```text
-output/<dataset>/<strategy>/<timestamp>/
-```
-
-Main output files:
-
-| File | Description |
-|------|------|
-| `search_results.json` | Per-question retrieval results |
-| `benchmark_results.json` | Recall, Precision, F1, and summary metrics |
-| `run.log` | Run log |
-
-### 6. Run QA on Retrieval Results
-
-`run_qa_benchmark.py` consumes the `search_results.json` produced by a retrieval run, asks the configured LLM to answer each question using the retrieved passages, and writes EM/F1 results to a new `qa_<timestamp>/` directory next to the input file.
-
-```bash
-uv run python scripts/run_qa_benchmark.py \
-  --dataset-name musique \
-  --input output/musique/sag2/YOUR_SEARCH_RUN_ID/search_results.json \
-  --qa-top-k 5
-```
-
-`--qa-top-k` controls how many retrieved passages are placed in each QA prompt. The main output is `qa_results.json`; use `--output-dir` to choose a different output directory, or `--max-concurrency` and `--limit` to control runtime and scope.
-
-### 7. Run External Methods
-
-The external baselines are independent integrations. Their setup, indexing, retrieval, QA, output layout, and method-specific options are documented in their own READMEs. Run the commands from the relevant project directory and use the repository-root .env as described there.
-
-| Method | Usage guide |
-|---|---|
-| Microsoft GraphRAG | [external/graphrag/README.md](external/graphrag/README.md) |
-| HippoRAG 2 | [external/hipporag2/README.md](external/hipporag2/README.md) |
-| HyperGraphRAG | [external/hypergraphrag/README.md](external/hypergraphrag/README.md) |
-| Hyper-RAG | [external/hyperrag/README.md](external/hyperrag/README.md) |
-| LightRAG | [external/lightrag/README.md](external/lightrag/README.md) |
-
-See [external/README.md](external/README.md) for the integrated-method overview. After a method has produced its native results, use the Judge workflow below to convert and evaluate them in the unified artifact layout.
-
-### 8. Run LLM Judge
-
-run_llm_judge.py converts a method's latest native output into the shared prediction format and evaluates generation, retrieval, and optionally indexing metrics. At the end of each run it prints every requested metric value and its valid-sample count.
-
-Run the complete convert + generation + retrieval flow:
-
-```bash
-uv run --frozen --env-file .env python scripts/run_llm_judge.py \
-  --project hypergraphrag \
-  --dataset musique
-```
-
-See [docs/judge.md](docs/judge.md) for the full subcommand reference, argument table, metric routing, and output layout.
-
-To run evaluation separately, convert the native output first, then select the metrics needed. The `evaluate` subcommand runs generation and/or retrieval evaluation in a single Judge run; metrics are routed to the correct phase by name:
-
-```bash
-uv run --frozen --env-file .env python scripts/run_llm_judge.py convert \
-  --project hypergraphrag \
-  --datasets musique
-
-uv run --frozen --env-file .env python scripts/run_llm_judge.py evaluate \
-  --project hypergraphrag \
-  --dataset musique \
-  --metrics context_relevancy,evidence_recall
-```
-
-For core SAG, use `--project sag`. It is fixed to the `sag2` strategy and automatically selects the latest **complete** run in `output/<dataset>/sag2/<run_id>/`: a run must contain both `search_results.json` and `qa_*/qa_results.json`. Run the QA benchmark first, then run:
-
-```bash
-uv run --frozen --env-file .env python scripts/run_llm_judge.py \
-  --project sag \
-  --dataset musique
-```
-
-Generation metrics are answer_correctness, coverage_score, qa_em, qa_f1, and rouge_score; retrieval metrics are context_relevancy and evidence_recall. `--metrics` accepts any mix of these across both phases and routes each metric to its phase automatically; when omitted, all generation and retrieval metrics run by default (evidence_recall is dropped automatically for datasets without evidence capability). Adding the `indexing` token to `--metrics` runs graph indexing metrics in the same Judge run (requires `--framework` and `--base-path`); without it, indexing is skipped by default.
-
-The `indexing` subcommand also exists on its own to backfill graph indexing metrics into an existing Judge run without re-running generation or retrieval. HyperGraphRAG graphs are graphml; the supported `--framework` values are listed in [docs/judge.md](docs/judge.md):
-
-```bash
-uv run --frozen --env-file .env python scripts/run_llm_judge.py indexing \
-  --project hypergraphrag \
-  --dataset musique \
-  --framework graphml \
-  --base-path /path/to/graph/output \
-  --resume-run-id YOUR_JUDGE_RUN_ID
-```
-
-#### Recover failed Judge samples
-
-Each result file records per-sample status, error type, and error message in its `detailed` field. First correct the underlying cause (for example, an API endpoint or model configuration issue), then resume the same Judge run with `--retry-failed`. Successful samples and already valid metric results are retained; only previously failed samples are requested again.
-
-```bash
-# Retry failed samples only (retrieval metrics are selected by name).
-# Use the Judge run ID printed by the original command.
-uv run --frozen --env-file .env python scripts/run_llm_judge.py evaluate \
-  --project hypergraphrag \
-  --dataset musique \
-  --metrics context_relevancy,evidence_recall \
-  --resume-run-id YOUR_JUDGE_RUN_ID \
-  --retry-failed
-```
-
-Use `evaluate` instead of the retired `generation`/`retrieval` subcommands (generation-only, retrieval-only, and indexing selections are all expressed via `--metrics`). `--retry-failed` requires `--resume-run-id` and cannot be combined with `--force` or `--force-metrics`; `--top-k` caps the number of evaluated rows, it is not the retrieval k. Resume is intentionally unavailable in the no-subcommand auto mode. See [docs/judge.md](docs/judge.md) for the full argument constraints.
-
-`--top-k` is a limit on the first N prediction rows evaluated; it does **not** change the retrieval result k. `--context-top-k` controls how many already-saved contexts each Judge metric sees. Both are part of the resume contract: retry with the same values used by the original run. To change either value, create a new Judge run rather than combining the change with `--retry-failed`.
-
-### 9. Reproduce SAG Ablation Results
-
-The following experiments correspond to Table 6 of the paper. Run them on MuSiQue with the same dataset, source configuration, embedding model, and `top-k` values, changing only the indicated component.
-
-#### Default SAG
-
-Use the default Compact upload and the `sag2` search strategy. The default final selection is `llm_rank`.
-
-```bash
-uv run python scripts/run_upload.py --dataset musique
-uv run python scripts/run_search_benchmark.py \
-  --dataset-name musique \
-  --strategy sag2 \
-  --top-k 10 \
-  --k-values "1,2,5,10"
-```
-
-#### Indexing with Triple indexing
-
-Upload with the atomic prompt and select the `atomic` search strategy:
-
-```bash
-uv run python scripts/run_upload.py --dataset musique --atomic
-uv run python scripts/run_search_benchmark.py \
-  --dataset-name musique \
-  --strategy atomic \
-  --top-k 10 \
-  --k-values "1,2,5,10"
-```
-
-#### Expansion without expansion (`L=0`)
-
-In `pipeline/modules/search/config.py`, temporarily change the SAG2 expansion switch from:
-
-```python
-enabled: bool = Field(default=True, description="是否启用扩展")
-```
-
-to:
-
-```python
-enabled: bool = Field(default=False, description="是否启用扩展")
-```
-
-Then upload with the default Compact mode and run `--strategy sag2`. Restore `default=True` after the ablation so normal SAG2 runs keep one-hop expansion.
-
-#### Final selection with Qwen3-Reranker-8B
-
-In `pipeline/modules/search/config.py`, temporarily change `SAG2RerankConfig.strategy` from the default LLM selection:
-
-```python
-strategy: Literal["rerank", "llm_rank", "rrf"] = Field(
-    default="llm_rank", description="排序策略"
-)
-```
-
-to:
-
-```python
-strategy: Literal["rerank", "llm_rank", "rrf"] = Field(
-    default="rerank", description="排序策略"
-)
-```
-
-Configure `RERANK_BASE_URL`, `RERANK_MODEL_NAME=Qwen/Qwen3-Reranker-8B`, and `RERANK_ENDPOINT` in `.env`, then run the default Compact upload and `--strategy sag2`. Restore `default="llm_rank"` after the experiment.
-
-#### Paper Ablation Results on MuSiQue
-
-| Stage | Configuration | R@1 | R@2 | R@5 | R@10 |
-|------|------|------:|------:|------:|------:|
-| Default SAG (Ours) | Default configuration | **36.82** | **63.62** | **80.36** | **83.37** |
-| Indexing | Triple indexing | 35.66 | 61.83 | 77.61 | 81.54 |
-| Expansion | w/o Expansion (`L=0`) | 35.70 | 57.75 | 69.41 | 74.76 |
-| Final selection | Qwen3-Reranker-8B | 32.12 | 48.97 | 67.11 | 76.51 |
-
-The default row uses hyperedge indexing, one-hop expansion (`L=1`), and Qwen3.6-Flash final selection. Keep all non-ablated settings fixed when comparing rows.
+Add `--output-dir output/sag2/my-run` for an explicit destination; it must not already exist for a new run. Check dependencies, data and the small run before starting full evaluation.
 
 ## Datasets
 
-| Name | Description |
-|------|------|
-| `hotpotqa` | HotpotQA multi-hop QA |
-| `2wikimultihopqa` | 2WikiMultiHopQA |
-| `musique` | MuSiQue multi-hop QA |
-| `test_hotpotqa` | Small HotpotQA test set |
-| `sample` | Tiny sample set for pipeline debugging |
+| Dataset argument | Questions | Source passages / documents | Evaluation unit |
+|---|---:|---:|---|
+| `musique` | 1,000 | 11,656 | Supporting passage |
+| `2wikimultihopqa` | 1,000 | 6,119 | Supporting passage |
+| `hotpotqa` | 1,000 | 9,811 | Supporting passage |
+| EnterpriseRAG-Bench, separate entry point | 470 labeled | 511,962 | Source document |
 
-Dataset files are under `dataset/`. The repository ships only `sample` and
-`test_hotpotqa`; download the full benchmarks (`hotpotqa`, `musique`,
-`2wikimultihopqa`, `narrativeqa`) from the
-[HippoRAG 2 data release](https://huggingface.co/datasets/osunlp/HippoRAG_2/tree/main)
-and place them in `dataset/` — see [dataset/README.md](dataset/README.md) for
-provenance and license notes.
+The three multi-hop datasets come from HippoRAG 2 at revision `5ec05b38deecc3318bb432c69865959c56058990`. `--datasets all` means the first three rows. Enterprise uses the separate entry point below. See [dataset/README.md](sag2/dataset/README.md) for format and license information.
 
-## Retrieval Strategies
+### EnterpriseRAG-Bench
 
-| Strategy | Description |
-|------|------|
-| `sag2` | SAG2 graph recall, expansion, and LLM reranking |
-| `sag2` + `--sag2-scope` | SAG2 event-candidate-pool variant; `--sag2-event-top-k` sets `k_pool` |
-| `atomic` | Entity-first atomic retrieval with step-by-step hop expansion |
-| `vector` | Pure vector retrieval baseline |
-| `bm25` | Elasticsearch BM25 keyword retrieval baseline |
+Prepare the official directory with `documents/`, `questions.jsonl` and `download_manifest.json`. **Check for an existing matching index before building another one.**
 
-See [docs/search.md](docs/search.md) for full arguments.
+```bash
+# Only for the first build of a current-format index; preserve older indexes
+uv run python scripts/build_enterprise_index.py \
+  --dataset-dir ../../datasets/EnterpriseRAG-Bench \
+  --index-path .cache/sag2/enterprise.sqlite \
+  --output-dir output/enterprise/index
+
+# Reuse that index and evaluate all 470 labeled questions
+uv run python scripts/run_enterprise.py \
+  --dataset-dir ../../datasets/EnterpriseRAG-Bench \
+  --index-summary output/enterprise/index/summary.json \
+  --output-dir output/enterprise/evaluation --concurrency 20
+```
+
+The evaluator opens the index read-only and writes `progress.json`, `summary.json`, per-question `qst_*.json` files and `requests/`. Repeating the same command reuses saved results; use a new output directory when changing models, data or settings. A schema4 index cannot be passed directly to the current schema5 reader. Keep the old file and use its matching compatibility implementation; changing a version marker does not convert an index.
+
+## Retrieval Configuration
+
+| Argument | Default | Purpose |
+|---|---|---|
+| `--mode` | `sag2` | `sag2`, `agentic` or `local` |
+| `--dataset` / `--datasets` | `all` | One or more multi-hop datasets |
+| `--dataset-dir` | `dataset/` | Dataset files; defaults to `sag2/dataset/` |
+| `--limit` / `--offset` | All / `0` | Question range; corpus stays complete |
+| `--concurrency` | `20` | Concurrent questions |
+| `--index-workers` | `8` | Index-building processes, separate from query concurrency |
+| `--candidate-k` | `100` | Lexical candidates per round |
+| `--seed-k` | `10` | Expansion seeds per round |
+| `--expansions` / `--max-hops` | `2` for SAG2; `1` for Agentic | Additional rounds after the initial retrieval; 0, 1 or 2 |
+| `--expansion-term-limit` | `20` | Expansion terms per round |
+| `--top-k` / `--k-list` | `10` / `1 2 5 10` | Output size and evaluation cutoffs |
+| `--chunk-chars` | `2200` | Chunk target in UTF-16 units |
+| `--cache-dir` | `.cache/sag2` | SQLite index directory |
+| `--output-dir` | Timestamped directory | Destination for a new run |
+| `--resume` | Unset | Continue an existing run with its original settings |
+| `--env-file` | `sag2/.env` (repository path) | Configuration file; `SAG_ENV_FILE` can override the default |
+
+```bash
+# One expansion round, still using 100 candidates and 10 seeds
+uv run python scripts/run_sag2_benchmark.py \
+  --dataset musique --limit 10 --expansions 1 --candidate-k 100 --seed-k 10
+
+uv run python scripts/run_sag2_benchmark.py --help
+```
+
+Changing models, chunking or retrieval parameters changes the experiment. Match the model version, corpus, questions, chunking policy and metric units when comparing with published scores.
+
+## Outputs and Resume
+
+The following paths are relative to `SAG-Benchmark/sag2/`. Default output layout:
+
+```text
+output/sag2/<timestamp>/
+├── summary.json
+└── <dataset>/
+    ├── config.json
+    ├── details.jsonl
+    ├── metrics.json
+    ├── search_results.json
+    ├── bm25_results.json
+    └── requests/          # Agentic / local reranking modes
+```
+
+| File | Content and completion checks |
+|---|---|
+| `summary.json` | Final per-dataset summary; index-only runs report `indexed` |
+| `config.json` | Model, settings, data and code hashes |
+| `details.jsonl` | One completed question per line, with retrieval, metrics and usage |
+| `metrics.json` | Final dataset metrics, all-evidence recall and usage |
+| `search_results.json` | Final retrieved source text per question, for QA or analysis |
+| `bm25_results.json` | Initial BM25 results for the same questions |
+| `requests/` | Agentic and local request/response records for recovery |
+
+```bash
+# Reuse the original datasets, range, model and settings
+uv run python scripts/run_sag2_benchmark.py \
+  --dataset musique --limit 10 --concurrency 20 \
+  --resume output/sag2/musique-smoke
+```
+
+Plain SAG2 resumes completed questions. Agentic and local modes also reuse successful identical requests. Plain SAG2 does not persist each Jev request separately for recovery, so an interrupted question may send its requests again. Keep different model/configuration runs in separate output directories.
 
 ## Common Scripts
 
-### Search Only
+| Script | Purpose |
+|---|---|
+| `scripts/run_sag2_benchmark.py` | Multi-hop indexing, SAG2, Agentic and local evaluation |
+| `scripts/build_enterprise_index.py` | Full Enterprise index construction |
+| `scripts/run_enterprise.py` | Enterprise evaluation over an existing read-only index |
+| `scripts/run_paper_controls.py` | MuSiQue paper controls, including model calls |
+| `scripts/verify_paper_results.py` | Offline verification of retained paper records |
+| `scripts/verify_agentic_results.py` | Verify 3,000 retained best Agentic results |
+| `scripts/verify_rerank_results.py` | Verify retained reranking results |
+| `scripts/search_local.py` | Query a custom JSON corpus with local reranking |
 
-```bash
-uv run python scripts/run_search.py \
-  --dataset-name test_hotpotqa \
-  --strategy sag2 \
-  --output-dir output/manual-search
+The current SAG2 entry points return evidence. The original SAG upload, answer-generation and LLM Judge workflows are preserved separately in [sag/](sag/README.md).
+
+## Agentic SAG2
+
+**Optional extension.** An LLM retains the original question and retrieval history, calls SAG2 as a tool, decides when to search or stop, and ranks the final ten passages. It adds no generated text at index time.
+
+Best historical results over 1,000 questions per dataset are below. MuSiQue reaches **92.20% R@5**, a gain of 11.53 percentage points over a single SAG2 run using unrounded values, and **95.39% R@10**. R@5 is 99.88% on 2WikiMultiHopQA and 99.30% on HotpotQA.
+
+<table>
+  <thead>
+    <tr><th rowspan="2">Method</th><th colspan="4">MuSiQue</th><th colspan="4">2WikiMultiHopQA</th><th colspan="4">HotpotQA</th></tr>
+    <tr><th>R@1</th><th>R@2</th><th>R@5</th><th>R@10</th><th>R@1</th><th>R@2</th><th>R@5</th><th>R@10</th><th>R@1</th><th>R@2</th><th>R@5</th><th>R@10</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>SAG2</td><td align="right">34.30</td><td align="right">62.18</td><td align="right">80.68</td><td align="right">86.62</td><td align="right">43.55</td><td align="right">85.50</td><td align="right">97.35</td><td align="right">97.43</td><td align="right">48.30</td><td align="right">93.60</td><td align="right">98.45</td><td align="right">99.00</td></tr>
+    <tr><td><strong>Agentic SAG2</strong></td><td align="right"><strong>38.21</strong></td><td align="right"><strong>71.99</strong></td><td align="right"><strong>92.20</strong></td><td align="right"><strong>95.39</strong></td><td align="right"><strong>44.08</strong></td><td align="right"><strong>88.00</strong></td><td align="right"><strong>99.88</strong></td><td align="right"><strong>99.88</strong></td><td align="right"><strong>49.10</strong></td><td align="right"><strong>96.45</strong></td><td align="right"><strong>99.30</strong></td><td align="right"><strong>99.65</strong></td></tr>
+  </tbody>
+</table>
+
+Evaluation settings: `gpt-6.1-sol`, `high` reasoning, one expansion per SAG2 call, at most three tool calls per question, 20 passages returned per call and 10 final passages. The general API entry point requires no Codex account or CLI. Historical scores came from native MCP runs.
+
+```dotenv
+LLM_API_KEY=your_llm_key
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_MODEL=gpt-6.1-sol
+LLM_API=responses
+LLM_REASONING_EFFORT=high
 ```
 
-### Evaluate Existing Results
+```bash
+uv run python scripts/run_sag2_benchmark.py --mode agentic \
+  --dataset musique --limit 10 --expansions 1 --max-tool-calls 3 --return-k 20
+```
+
+Configure `--llm-model`, `--llm-base-url`, `--llm-api responses|chat`, `--llm-api-key-env` and `--reasoning-effort`. The provider must support the selected tool-calling format. See the [Agentic guide](sag2/docs/agentic.md) and [best results](sag2/results/agentic/README.md) for configuration, tokens and costs.
+
+## Local Reranking
+
+**Optional extension.** Replace each Jev scoring round with a local model while keeping BM25, term expansion and final diversity ordering. After preparing weights and data, queries can run offline.
+
+The following results were evaluated through 302 APIs, with 1,000 questions per dataset:
+
+<table>
+  <thead>
+    <tr><th rowspan="2">Method</th><th colspan="4">MuSiQue</th><th colspan="4">2WikiMultiHopQA</th><th colspan="4">HotpotQA</th></tr>
+    <tr><th>R@1</th><th>R@2</th><th>R@5</th><th>R@10</th><th>R@1</th><th>R@2</th><th>R@5</th><th>R@10</th><th>R@1</th><th>R@2</th><th>R@5</th><th>R@10</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>BM25</td><td align="right">28.71</td><td align="right">37.50</td><td align="right">47.66</td><td align="right">54.50</td><td align="right">40.25</td><td align="right">58.18</td><td align="right">67.08</td><td align="right">71.58</td><td align="right">39.75</td><td align="right">58.05</td><td align="right">74.45</td><td align="right">86.95</td></tr>
+    <tr><td>SAG2 + Jev（paired control）</td><td align="right">34.24</td><td align="right">62.34</td><td align="right">80.59</td><td align="right">86.61</td><td align="right">43.55</td><td align="right">85.50</td><td align="right">97.35</td><td align="right">97.43</td><td align="right">48.30</td><td align="right">93.60</td><td align="right">98.45</td><td align="right">99.00</td></tr>
+    <tr><td>SAG2 + Jina（two expansions）</td><td align="right">31.03</td><td align="right">50.38</td><td align="right">65.61</td><td align="right">72.13</td><td align="right">43.10</td><td align="right">70.15</td><td align="right">80.80</td><td align="right">86.95</td><td align="right">46.75</td><td align="right">85.55</td><td align="right">94.35</td><td align="right">97.00</td></tr>
+  </tbody>
+</table>
+
+<details>
+<summary>MuSiQue model and pipeline ablations</summary>
+
+| MuSiQue ablation | R@1 | R@2 | R@5 | R@10 | AE@10 |
+|---|---:|---:|---:|---:|---:|
+| BM25 | 28.71 | 37.50 | 47.66 | 54.50 | 17.50 |
+| BM25＋Qwen single scoring round | 31.66 | 45.44 | 60.17 | 66.88 | 32.50 |
+| BM25＋Jina single scoring round | 35.01 | 52.18 | 63.04 | 67.43 | 34.70 |
+| SAG2＋Qwen two expansions | 22.64 | 34.75 | 55.55 | 71.61 | 44.60 |
+| SAG2＋Qwen 0.6B two expansions | 25.67 | 40.81 | 62.54 | 74.18 | 48.40 |
+| SAG2＋Jina two expansions | 31.03 | 50.38 | 65.61 | 72.13 | 43.80 |
+| SAG2＋Jev baseline | 34.24 | 62.34 | 80.59 | 86.61 | 69.00 |
+
+Single-round runs use the original query and standard relevance instructions. Two-expansion runs use SAG2 evidence instructions, context and final DPP, so these comparisons change both pipeline and prompts. `qwen3-rerank` and Qwen 0.6B are distinct models.
+</details>
 
 ```bash
-uv run python scripts/run_benchmark.py \
-  --results output/<dataset>/<strategy>/<timestamp>/search_results.json \
-  --dataset musique
+# Prepare dependencies and pinned weights while online
+uv sync --frozen --group local
+uv run --group local hf download Qwen/Qwen3-Reranker-0.6B \
+  --revision e61197ed45024b0ed8a2d74b80b4d909f1255473 --local-dir models/qwen3-reranker-0.6b
+
+# Run ten questions offline once data and weights are ready
+uv run --offline --group local python scripts/run_sag2_benchmark.py \
+  --mode local --reranker qwen --model-path models/qwen3-reranker-0.6b \
+  --dataset musique --limit 10 --expansions 2 --concurrency 20
 ```
+
+Available backends include Qwen Transformers, Jina Transformers and Jina MLX on Apple Silicon. Qwen weights use Apache-2.0; Jina uses CC BY-NC 4.0 and requires additional permission for commercial use. See the [local reranking guide](sag2/docs/local-rerank.md) for custom corpora, memory, batch sizes and full ablations.
+
+## Run External Methods
+
+Five external methods live under `sag/external/`. Each has an independent environment and reads `sag/.env`. See the [external-method guide](sag/external/README.md) for full steps, outputs and shared Judge evaluation.
+
+| Method | Reproduction guide |
+|---|---|
+| Microsoft GraphRAG | [graphrag](sag/external/graphrag/README.md) |
+| HippoRAG 2 | [hipporag2](sag/external/hipporag2/README.md) |
+| HyperGraphRAG | [hypergraphrag](sag/external/hypergraphrag/README.md) |
+| Hyper-RAG | [hyperrag](sag/external/hyperrag/README.md) |
+| LightRAG | [lightrag](sag/external/lightrag/README.md) |
+
+For HippoRAG 2, first copy `sag/.env.example` to `sag/.env` and configure the LLM and embedding endpoints; preserve an existing configuration. Run from the **SAG-Benchmark repository root**, reusing the MuSiQue files downloaded above:
+
+```bash
+cd sag/external/hipporag2
+uv sync --frozen
+uv run --frozen --env-file ../../.env python reproduce/Step_0_load_dataset.py \
+  --data_name musique --dataset-root ../../../sag2/dataset
+uv run --frozen --env-file ../../.env python reproduce/Step_1_build_index.py --data_name musique
+uv run --frozen --env-file ../../.env python reproduce/Step_3_response.py --data_name musique
+```
+
+The stages are data preparation, indexing, then retrieval and QA; the last two use model endpoints. GraphRAG separates retrieval and QA, while Hyper-RAG also requires Hypergraph-DB. Follow each method's guide for its parameters and data paths; run shared Judge evaluation from `sag/`.
 
 ## Repository Layout
 
 ```text
 SAG-Benchmark/
-├── assets/                         # README figures and logo
-├── dataset/                        # Evaluation datasets
-├── pipeline/
-│   ├── core/                       # Config, AI clients, storage layer
-│   ├── db/                         # SQLAlchemy ORM
-│   ├── evaluation/
-│   │   ├── metrics/                # Recall and related metrics
-│   │   └── utils/                  # Data loading, MLflow, token tracking
-│   ├── modules/
-│   │   ├── extract/                # Event/entity extraction
-│   │   ├── load/                   # Document loading and chunking
-│   │   └── search/                 # Retrieval strategies
-│   ├── storage/                    # Storage facade and backend providers
-│   └── utils/
-├── scripts/
-│   ├── init_database.py
-│   ├── init_oceanbase_vectors.py
-│   ├── init_elasticsearch.py
-│   ├── run_upload.py
-│   ├── run_search_benchmark.py
-│   ├── run_qa_benchmark.py
-│   ├── run_search.py
-│   └── run_benchmark.py
-├── docs/
-├── docker-compose.yml
-├── .env.example
-├── README.md
-└── README-CN.md
+├── README.md / README-CN.md   # SAG2 introduction, results and reproduction / SAG2介绍、成绩与复现
+├── sag/                      # Original SAG / 原SAG
+│   ├── README.md / README-CN.md
+│   ├── pipeline/ / scripts/ / prompts/
+│   ├── external/             # GraphRAG, HippoRAG 2, HyperGraphRAG, Hyper-RAG, LightRAG
+│   └── pyproject.toml / uv.lock / docker-compose.yml
+└── sag2/                     # SAG2 and its optional extensions
+    ├── README.md / README-CN.md
+    ├── pyproject.toml / uv.lock / .env.example
+    ├── scripts/
+    │   ├── run_sag2_benchmark.py
+    │   ├── sag2.py / agentic_sag2.py / local_reranker.py
+    │   └── build_enterprise_index.py / run_enterprise.py
+    ├── prompts/ / docs/ / dataset/ / results/ / tests/ / assets/
+    ├── .cache/sag2/          # SQLite indexes / SQLite索引（运行时生成）
+    └── output/              # Evaluation results / 评测结果（运行时生成）
 ```
 
-## Reproduction Notes
+Each method has separate `.env`, `.venv`, `dataset/` and `output/` paths. Run SAG2 from `sag2/` and original SAG from `sag/`. Original SAG uses `--strategy sag` and the `SAGGraphSearcher` event/entity graph implementation; SQLite SAG2 is implemented separately in `sag2/`.
 
-- Results depend on the actual LLM, embedding, and rerank services configured in `.env`; changing models, embedding dimensions, or rerank settings can change the metrics.
-- Storage behavior depends on `STORAGE_PROFILE`. Keep the same profile for initialization, upload, and search unless you intentionally migrate data.
-- OceanBase vector search uses `COSINE` distance and returns an ES-compatible `_score` computed from the returned cosine distance. Approximate ANN search uses OceanBase `APPROX LIMIT ... PARAMETERS (ef_search=...)`.
-- When `--source-config-id` is omitted, `run_search_benchmark.py` looks up the latest uploaded source based on `LLM_MODEL` in `.env`.
-- Full dataset upload and benchmark runs call external model services. Check quota, concurrency, and timeout settings before running.
-- Stop local services with `docker compose down`. To delete local database volumes, use `docker compose down -v`; this removes uploaded data.
+## Reproduction Notes and Ablations
+
+### Indexing and Cost
+
+| MuSiQue index and cost | Paper record |
+|---|---:|
+| Source passages / indexed units | 11,656 / 11,656 |
+| Index construction | 2.36 seconds |
+| SQLite file | 25.87 MiB |
+| Offline model calls / cost | 0 / USD 0 |
+| Model cost / 100 questions | USD 0.433769 |
+| Model cost / 1,000 questions | USD 4.326379 |
+
+Construction time is the median of three builds on Apple M4 Pro, 64 GiB, eight processes. It includes tokenization, index writes, statistics and query initialization; it excludes imports, corpus loading and validation, and does not clear the OS file cache. Costs come from historical responses and exclude compute rental and answer generation. See [paper data](sag2/results/paper/).
+
+<details>
+<summary>Full MuSiQue controlled experiments, 1,000 questions each</summary>
+
+| Method | R@1 | R@2 | R@5 | R@10 | AE@5 | AE@10 |
+| --- | --- | --- | --- | --- | --- | --- |
+| BM25 | 28.53 | 37.32 | 47.47 | 54.41 | 12.20 | 17.40 |
+| BM25+JEV (H=0) | 31.13 | 46.79 | 60.78 | 67.93 | 26.60 | 36.00 |
+| SAG2 (Ours), H=1 | 34.35 | 61.44 | 77.89 | 83.36 | 54.60 | 63.10 |
+| SAG2 (Ours), H=2 | 34.30 | 62.18 | 80.68 | 86.62 | 59.00 | 69.50 |
+| BM25+JEV，matched budget | 30.64 | 46.58 | 61.57 | 69.82 | 29.10 | 39.60 |
+| SAG2 (Ours)，without context | 31.20 | 48.04 | 66.32 | 76.25 | 37.20 | 52.20 |
+| Lexical expansion, final JEV only | 31.23 | 45.43 | 57.17 | 61.34 | 25.50 | 29.60 |
+| RM3 | 21.79 | 28.50 | 39.69 | 47.83 | 9.80 | 15.70 |
+| RM3+final JEV | 30.88 | 45.76 | 60.19 | 66.93 | 29.80 | 37.20 |
+| GAR-BM25 | 28.71 | 37.50 | 47.66 | 54.50 | 12.10 | 17.50 |
+| GAR-BM25+final JEV | 30.91 | 48.61 | 64.63 | 73.11 | 34.70 | 46.10 |
+
+H counts expansion rounds after initial retrieval; H0/H1/H2 come from the same run. The matched-budget control matches passage judgments, not tokens or cost. [Control data](sag2/results/paper/controlled-study.json) · [Analysis](sag2/results/paper/controlled-analysis.json)
+</details>
+
+### Indexes and Evaluation Settings
+
+Current chunking follows SAG-Desktop: a target of 2,200 UTF-16 units, complete sentences, heading paths and roughly 80 characters of whole-sentence overlap within a heading. Indexes store source ranges and no LLM annotations. Query optimizations include scoring-statistics caching, bounded candidate selection, parallel expansion and persisted corpus statistics.
+
+The index signature includes schema and chunking policy. Matching configurations reuse indexes; changing chunking changes candidate boundaries and scores. Older Enterprise formats require their matching reader; do not overwrite an old index to handle compatibility.
+
+### Offline Verification
+
+Run these commands from **SAG-Benchmark/sag2/**.
+
+```bash
+uv run python scripts/verify_paper_results.py
+uv run python scripts/verify_agentic_results.py
+uv run python scripts/verify_rerank_results.py
+uv run pytest -q
+uv run ruff check scripts tests
+```
+
+HTTP 499 retries continue within the current request; temporary failures such as 500 and timeouts have bounded retries. See each mode's guide and implementation. Check the host, endpoint, concurrency and output directory before running.

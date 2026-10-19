@@ -60,16 +60,16 @@ Start the server:
 wallfacer run                    # execs your chosen harness CLI directly as a host process
 ```
 
-A browser window opens automatically. Add your Claude credential (OAuth token via `claude setup-token`, or API key from [console.anthropic.com](https://console.anthropic.com/)) in **Settings**. See [Getting Started](docs/guide/getting-started.md) for the full walkthrough.
+A browser window opens automatically and asks for the project folder; each workspace is one folder. Add your Claude credential (OAuth token via `claude setup-token`, or API key from [console.anthropic.com](https://console.anthropic.com/)) in **Settings**. See [Getting Started](docs/guide/getting-started.md) for the full walkthrough.
 
-Other commands: `wallfacer status` (print or watch board state), `wallfacer spec` (validate or scaffold specs), and `wallfacer auth` (cloud sign-in). Run `wallfacer <command> -help` for flags.
+Other commands: `wallfacer status` (print or watch board state) and `wallfacer spec` (validate or scaffold specs). Run `wallfacer <command> -help` for flags.
 
 ## How It Works
 
 1. **Explore.** Describe what you want to build in chat. Wallfacer helps you shape the idea.
 2. **Specify.** The idea becomes a structured spec. Iterate on it until the design is right.
 3. **Execute.** Specs break into tasks on a board. Agents implement, test, and commit in isolated git worktrees.
-4. **Ship.** Reviewed changes merge automatically. Auto-commit, auto-push, and auto-build when you're ready.
+4. **Ship.** Marking reviewed work done rebases it onto the default branch and merges it.
 
 ```mermaid
 flowchart LR
@@ -92,17 +92,16 @@ graph LR
     Task --> Code[Code<br/>surgical edits]
 ```
 
-Move left for more freedom and lower commitment; move right for more precision and higher commitment. Agents operate at every level, and autonomy dials up or down independently at each one. Specs move through a seven-state lifecycle (`vague` to `drafted` to `validated` to `testing` to `complete`, with `stale` and `archived` off to the side), and the planning chat exposes slash commands like `/create`, `/validate`, `/break-down`, and `/dispatch` to drive them.
+Move left for more freedom and lower commitment; move right for more precision and higher commitment. Agents operate at every level. Specs move through a seven-state lifecycle (`vague` to `drafted` to `validated` to `testing` to `complete`, with `stale` and `archived` off to the side), and the planning chat exposes slash commands like `/create`, `/validate`, `/break-down`, and `/dispatch` to drive them.
 
-Read more: [Concepts](docs/guide/concepts.md), [Plan](docs/guide/plan.md), and [Chat](docs/guide/chat.md).
+Read more: [Concepts](docs/guide/concepts.md) and [Plan](docs/guide/plan.md).
 
 ## How execution is structured
 
 Wallfacer runs every task through one built-in pipeline:
 
-- **Tasks** run implementation turns in their own git worktree, then a test, then a commit message, title, and oversight summary. A task's instructions come from the repository's instruction files (AGENTS.md, CLAUDE.md) and its prompt.
+- **Tasks** run implementation turns in their own git worktree, then a commit message and an oversight summary. A task's title is the first line of its prompt. A task's instructions come from the repository's instruction files (AGENTS.md, CLAUDE.md) and its prompt.
 - **Agent roles** carry the pipeline: impl, test, commit-msg, title, and oversight. Each runs on the task's harness (Claude, Codex, Cursor, OpenCode, or Pi), and a per-role setting can route one role to a different harness.
-- **Routines** spawn ordinary tasks on a schedule. A scheduled routine running an ordinary prompt covers recurring idea generation.
 
 Task prompts are refined in place from Plan mode.
 
@@ -112,7 +111,7 @@ Read more: [Concepts](docs/guide/concepts.md) and [Configuration](docs/guide/con
 
 ### Task board: managed execution
 
-The board (shown above) coordinates many agent tasks at once. Drag cards across the lifecycle, batch-create with dependency wiring, refine prompts before execution, and let autoimplement promote backlog items as capacity opens. Each task runs as a host process in its own git worktree.
+The board (shown above) coordinates many agent tasks at once. Drag cards across the lifecycle, refine prompts before execution, and start tasks up to the parallel limit. Each task runs as a host process in its own git worktree.
 
 ### Plan mode: structured design
 
@@ -122,32 +121,28 @@ Design before you build (shown above). The three-pane plan view gives you an exp
 
 ![Oversight summary, event timeline, and diff](./assets/oversight1.png)
 
-Inspect what happened, when, and why before you accept any automated output. Every task produces a structured event timeline, a diff against the default branch, and an AI-generated oversight summary.
+Inspect what happened, when, and why before you accept any agent output. Every task produces a structured event timeline, a diff against the default branch, and an AI-generated oversight summary.
 
 ### Cost and usage visibility
 
-![Usage and cost breakdown](./assets/usage.png)
-
-Track token usage and cost by task, activity, and turn, so operations stay measurable as automation scales. The per-activity breakdown (implementation, testing, refinement, oversight) shows exactly where budget goes.
+Each task records token usage and cost per turn and per activity (implementation, testing, oversight), shown in its detail view, so you can see where budget goes.
 
 ## Capability Stack
 
 - **Chat.** Planning chat with slash commands and file-explorer context, conversational drift away from or back into specs.
 - **Spec.** Seven-state lifecycle, dependency DAG, recursive progress tracking, impact analysis, atomic dispatch and undo.
-- **Task.** Host-process execution, per-task git worktrees, autoimplement, auto-test, auto-submit, auto-retry, circuit breakers, cost and token budgets, oversight summaries.
-- **Code.** File explorer with editor, integrated terminal, live logs and diff review, per-turn usage and timeline, native per-repo AGENTS.md/CLAUDE.md discovery.
+- **Task.** Host-process execution, per-task git worktrees, cost and token budgets, oversight summaries.
+- **Code.** File explorer with editor, live logs and diff review, per-turn usage and timeline, native per-repo AGENTS.md/CLAUDE.md discovery.
 
 ## Roadmap
 
-Development is organized into three parallel tracks with shared foundations. See [`specs/README.md`](specs/README.md) for the full dependency graph and spec index.
+Wallfacer is a local tool: a task board on one machine over the coding-agent CLIs installed there. The current program is a cleanup that keeps that shape and removes what it no longer needs ([`specs/shared/pure-local.md`](specs/shared/pure-local.md)). See [`specs/README.md`](specs/README.md) for the full spec index.
 
-**Foundations** (complete): Execution backend interface, storage backend interface, file explorer, host terminal, multi-workspace groups, Windows support.
+**Foundations** (complete): Execution backend interface, storage backend interface, file explorer, workspace switching, Windows support.
 
-**Local Product**: Developer workflow. Spec coordination (document model, planning UX, drift detection), routine tasks (scheduled spawns), file and image attachments, host mounts, oversight risk scoring, visual verification, live serve.
+**Local Product**: Developer workflow. Spec coordination (document model, planning UX, drift detection) is complete. Designed and unbuilt: file and image attachments on task prompts, host path references, scoped slash commands, a terminal UI, internal consolidation, and task revert.
 
-**Cloud Platform**: Two axes over the Latere platform. Axis A, the coordination plane (signed-in local instances connect over one outbound connection for presence, spec comments, and metadata projection; local stays the source of truth). Axis B, demand-gated remote execution: a task chosen to run remotely runs as a hosted agent session on the platform, and its repository travels by git.
-
-**Shared Design**: Cross-track specs. Authentication, agent abstraction, native sandboxes (Linux, macOS, Windows), overlay snapshots.
+**Shared Design** (complete): Agent and harness abstraction, host execution, the agent-session vocabulary, the visual identity and the console redesign.
 
 ## Documentation
 
@@ -157,28 +152,23 @@ Development is organized into three parallel tracks with shared foundations. See
 
 | Guide | Topics |
 |-------|--------|
-| [Getting Started](docs/guide/getting-started.md) | Installation, credentials, sign-in, first task |
+| [Getting Started](docs/guide/getting-started.md) | Installation, credentials, first task |
 | [Concepts](docs/guide/concepts.md) | Mental model: workspaces, tasks, specs, agents, autonomy |
 
 **Use Wallfacer**
 
 | Guide | Topics |
 |-------|--------|
-| [Board](docs/guide/board.md) | Task board, lifecycle, dependencies, search, task detail |
-| [Chat](docs/guide/chat.md) | Chat sessions, slash commands, @mentions |
+| [Board](docs/guide/board.md) | Task board, lifecycle, search, task detail |
 | [Plan](docs/guide/plan.md) | Spec mode, lifecycle states, dispatch, planning chat |
-| [Routines](docs/guide/routines.md) | Scheduled cards that spawn tasks on an interval |
-| [Whiteboard](docs/guide/whiteboard.md) | Free-form drawing canvas per workspace |
 
 **Operate**
 
 | Guide | Topics |
 |-------|--------|
-| [Automation](docs/guide/automation.md) | Autoimplement, auto-test, auto-submit, auto-retry, circuit breakers |
-| [Oversight](docs/guide/oversight.md) | Oversight summaries, timelines, logs, diff review, analytics |
-| [Mission Control](docs/guide/mission-control.md) | Unified spec and task graph, acting on the pipeline |
+| [Oversight](docs/guide/oversight.md) | Oversight summaries, timelines, logs, diff review, usage |
 | [Workspaces](docs/guide/workspaces.md) | Workspace management, git integration, branches |
-| [Configuration](docs/guide/configuration.md) | Settings, env vars, harnesses, CLI, shortcuts |
+| [Configuration](docs/guide/configuration.md) | Settings, env vars, harnesses, CLI |
 
 **Build On (Internals)** is the deep reference for how the system works. Start at **[Technical Internals](docs/internals/internals.md)**.
 
@@ -186,13 +176,10 @@ Development is organized into three parallel tracks with shared foundations. See
 |-----------|--------|
 | [Architecture](docs/internals/architecture.md) | System design, package map, handler organization, end-to-end walkthrough |
 | [Data & Storage](docs/internals/data-and-storage.md) | Data models, persistence, event sourcing, spec document model |
-| [Task Lifecycle](docs/internals/task-lifecycle.md) | State machine, turn loop, dependencies, failure categorization |
+| [Task Lifecycle](docs/internals/task-lifecycle.md) | State machine, turn loop, failure categorization |
 | [Git Operations](docs/internals/git-worktrees.md) | Worktree lifecycle, commit pipeline, branch management |
-| [API & Transport](docs/internals/api-and-transport.md) | HTTP route reference, SSE, WebSocket terminal, middleware |
-| [Auth & Identity](docs/internals/auth-and-identity.md) | OIDC, device sign-in, principal context, cloud mode |
-| [Service Identity](docs/internals/service-identity.md) | Wallfacer's slice of the latere.ai family identity shape: the sandbox-proxy inbound audience, per-route scopes, fail-closed validator |
-| [Automation](docs/internals/automation.md) | Background watchers, autoimplement, review, circuit breakers, routines |
-| [Agent Graph Runtime](docs/internals/agent-graph-runtime.md) | Embedded topos runtime, the native in-process harness, live traces |
+| [API & Transport](docs/internals/api-and-transport.md) | HTTP route reference, SSE, middleware |
+| [Background Work](docs/internals/background-work.md) | Goroutine model, startup recovery, worktree maintenance, oversight generation |
 | [Plan Mode](docs/internals/plan-mode.md) | Spec tree, agent sessions, slash commands, dispatch, undo |
 | [Workspaces & Config](docs/internals/workspaces-and-config.md) | Workspace manager, harness routing, templates, env config |
 | [Development Setup](docs/internals/development.md) | Building, testing, make targets, release workflow |
@@ -209,8 +196,8 @@ Wallfacer is pre-1.0 and released from `main` as tagged versions. The HTTP API
 (documented in [API & Transport](docs/internals/api-and-transport.md)), the
 on-disk layout under `~/.wallfacer/`, and the `WALLFACER_*` environment
 variables can still change between releases. Per-release changes are recorded
-in [docs/releases/](docs/releases/). The command surface is `wallfacer run`,
-`status`, `spec`, `auth`, `web`, and `doctor`. Every Go package lives under
+in [CHANGELOG.md](CHANGELOG.md). The command surface is `wallfacer run`,
+`status`, `spec`, and `doctor`. Every Go package lives under
 `internal/`, so this repository exposes no importable public Go API.
 
 ## License

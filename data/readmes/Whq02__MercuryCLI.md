@@ -7,7 +7,7 @@ Website: [mercury-cli.ai](https://mercury-cli.ai) · Repository: [github.com/Whq
 An agent reads and edits files, runs shell commands, steps through tests and debuggers, and checks the results. You choose the model provider, the model, and what the agent is allowed to do:
 
 - **Multi-session Concourse and isolated worktrees:** run multiple sessions side by side on the Session Concourse (`/concourse`), and delegate parallel work to cross-provider crewmates (`Crewmate`) in isolated `git worktree` checkouts with project file leases so parallel agents do not overwrite each other.
-- **13 model providers and `/localsetup`:** keep all 13 providers signed in at once (OpenAI, Anthropic, Google Gemini, DeepSeek, Moonshot/Kimi, Z.AI/GLM, OpenRouter, Hugging Face, xAI/Grok, Meta/Muse, Mistral, Nous Portal, OpenCode Zen), switch providers and models mid-chat, or run `/localsetup` for one-command local model setup with Ollama alongside LM Studio, vLLM and llama.cpp.
+- **20 model providers and `/localsetup`:** keep all 20 providers signed in at once (OpenAI, Anthropic, Google Gemini, DeepSeek, Moonshot/Kimi, Z.AI/GLM, OpenRouter, Hugging Face, xAI/Grok, Meta/Muse, Mistral, Nous Portal, OpenCode Zen, Qwen, MiniMax, Together AI, Cohere, Groq, Cerebras, Fireworks AI), switch providers and models mid-chat, or run `/localsetup` for one-command local model setup with Ollama alongside LM Studio, vLLM and llama.cpp.
 - **Mneme hybrid RAG project memory:** combines an on-device 118 MB BGE semantic embedding model (`bge-base-en-v1.5`) with BM25 word ranking and citation tracking, verbatim pinned rules, branch-aware startup context, write-time contradiction checks, session handoff notes, and the `/memory page` browser graph.
 - **Compiler, AST and DAP debugging tools:** wires in LSP code intelligence and previewed refactors (`LspRead`, `LspRename`, `LspMoveSymbol`, `LspMoveFile`, `LspCodeAction`, `LspFormat`), 23-language tree-sitter AST structural search and rewrites (`AstSearch`, `AstEdit`), a built-in Debug Adapter Protocol (`Debug`) debugger (`debugpy`, `js-debug`, `lldb`, `gdb`, `dlv`) that failing Python, Node, Go and Rust tests step straight into, and persistent Python and JavaScript `Eval` cells.
 - **Keyless `WebSearch` and markdown `WebFetch`:** searches through provider-native search, Brave or Tavily keys, official APIs (Stack Exchange, npm, PyPI, crates.io, GitHub, Hacker News, Wikipedia), SearXNG and keyless DuckDuckGo, and fetches public documentation as clean markdown within a 38,000-character call budget.
@@ -135,9 +135,8 @@ check an archive manually.
 
 ### Platform notes
 
-On Linux arm64, follow the installer’s instruction to
-[build from source](#build-from-source). On Windows arm64, use the x64 archive
-under emulation. Mercury has no native archive for either arm64 platform.
+Release archives exist for every platform listed above. Any other machine
+builds from source.
 
 Intel Mac archives are available from 1.0.0-beta.3. They are cross-packaged on
 an Apple silicon runner and tested at startup under Rosetta before
@@ -169,21 +168,23 @@ is missing, the launcher reports an error.
 
 ### Windows shells
 
-Git for Windows supplies `bash.exe`, which the Bash tool uses when available.
-Release archives also include Mercury's bash-compatible shell engine. It is
-used automatically on Windows when `bash.exe` is missing.
+Release archives include Mercury's bash-compatible shell engine (`brush`),
+and on Windows it serves the Bash tool by default: it finds a `.cmd` or
+`.bat` program such as `npm` by its bare name through PATHEXT, passes `%VAR%`
+and `^` to a batch file unchanged, runs a program named by a relative path
+after `cd`, and keeps shell state between calls. Git for Windows' `bash.exe`
+is not required; when it is installed, `MERCURY_SHELL_ENGINE=system` or
+`system` in `/config` under Shell engine runs the Bash tool on `bash.exe`
+alone.
 
-Read the health check's `shell` row to see which shell is active and why. It shows
-Git Bash when `bash.exe` is available, or the bundled engine when it is
-missing. The bundled engine requires `cmd /c npm …` to run a `.cmd` shim
-such as `npm`; running the shim directly fails. After `cd`, give the engine
-an absolute path to the program you want to run.
+Read the health check's `shell` row to see which shell is active and why: the
+bundled engine (the Windows default, or armed by the pin or the setting), or
+Git Bash when the engine was turned off or its pack is absent.
 
-Set `MERCURY_SHELL_ENGINE=brush`, or choose `brush` in `/config` under Shell
-engine, to use the bundled Rust shell engine (`brush`, optional on macOS and
-Linux where the system shell is the default) for Bash tool calls with
-persistent shell state even when `bash.exe` is available.
-`MERCURY_SHELL_ENGINE=system` uses only the system `bash.exe`.
+On macOS and Linux the system shell is the default; set
+`MERCURY_SHELL_ENGINE=brush`, or choose `brush` in `/config` under Shell
+engine, to run the Bash tool on the bundled engine there too, with persistent
+shell state.
 
 A source build without the engine pack or Git for Windows still starts, but
 the Bash tool is unavailable. The PowerShell tool remains available, and the
@@ -233,12 +234,14 @@ component. Running `bun install` alone produces a build without those packs.
 
 To build voice support, run `setup` with Rust installed. That builds
 `native/voice`. Add cmake to build `native/whisper` as well. With Rust
-installed, `setup` also builds the local embedding addon (`native/embed`,
+installed, `setup` also builds the desktop driver addon (`native/desktop`) that
+the `Computer` tool runs through. With Rust installed,
+`setup` also builds the local embedding addon (`native/embed`,
 `bun run scripts/vendor/build-embed.ts`) and fetches the 118 MB BGE model
 (`bun run scripts/vendor/fetch-embed-models.ts --default`); without cargo the
 pack is skipped, setup says so, and Mneme memory lookup runs word match only.
-Every release archive carries the embedding pack (macOS Apple silicon and
-Intel, Linux x86-64, Windows x86-64); on Linux and Windows the maths runs a
+Every release archive carries the embedding pack built for its platform;
+on Linux and Windows the maths runs a
 vectorised kernel, so a Recall by meaning takes about a tenth of a second (a
 few hundredths on macOS, which uses Accelerate). If a native build
 lacks its tools, setup skips it and the health check reports the missing
@@ -397,8 +400,7 @@ Use `/logins` to connect a provider. It opens the same sign-in catalogue used
 during setup. `/accounts` manages connected provider slots afterwards.
 
 - **OpenAI:** ChatGPT subscription or API key.
-- **Claude:** subscription account.
-- **Anthropic usage-based billing:** Console sign-in or API key.
+- **Anthropic:** Claude subscription, Console sign-in or API key.
 - **OpenRouter:** catalogue access through OAuth or an API key; model requests deny data collection and require every parameter from the start. `/config → OpenRouter routing policy` sets fallback and zero-data-retention choices; choose open to relax the policy and leave routing to OpenRouter.
 - **Google Gemini:** Sign in with Google, an API key, or your own OAuth client. Sign in with Google runs Gemini on the quota of the plan the Google account holds (a free account, Google AI Pro or Google AI Ultra) through Google's own Antigravity client: the prompt, the tool schemas and the tool results go to Google's Code Assist endpoint under that client and the signed-in account, and `/model` lists the roster Google serves the account. An API key or your own OAuth client bills a Cloud project instead.
 - **Hugging Face:** device-code sign-in or Hub token.
@@ -506,7 +508,10 @@ The output row types, by their `type` field:
 - `outcome`: the turn's result, described below.
 - `close`: the note left for the next session at close: `state` (`stored`,
   `skipped` or `none`), `note_chars`, and the `usage` of the model calls that
-  wrote it, so a reader summing every row's usage reaches the outcome's.
+  wrote it, so a reader summing every row's usage reaches the outcome's. With
+  the prompt given as an argument the note is asked inside the last turn and
+  `close` precedes that turn's `outcome`; with `--input rows` it follows the
+  last `outcome` once stdin closes.
 - `wait`: a wait on the model: `state` (`first_byte`, `retry`, `silence`,
   `loading` or `done`) with the figures that state carries, such as
   `since_ms`, `attempt` and `of`, `delay_ms`, `reason` and `http_status`.
@@ -658,9 +663,10 @@ with `id: null`, so number requests from 1.
 
 `queue/add` takes the same prompt, shell or note object as the row input
 above. Output arrives in `row` notifications. `session/facts` reads the
-session's state; `session/set_model`, `session/set_effort` and
-`session/set_mode` change its choices. A change held until the turn ends
-answers with `at: "turn_end"`, then `session/applied` announces it.
+session's state; `session/set_mode` changes the permission mode at once;
+`session/set_model` and `session/set_effort` change the model and the effort,
+and a change made while a turn runs is held until the turn ends: it answers
+with `at: "turn_end"`, then `session/applied` announces it.
 `turn/interrupt` stops a turn; close stdin to end the session.
 
 Permission asks arrive as `permission/request`, with `kind: "tool"` or
@@ -706,6 +712,11 @@ Available commands include:
 - **`mercury daemon run|status|stop|restart`**: run, inspect, stop or restart
   the background daemon. Its session seats are `mercury runner` children; the
   daemon sends their prompts and hosts their permission asks.
+- **`mercury sessions list`** (also a bare `mercury sessions`): list this
+  project's saved sessions, newest first: the id, when it was last written,
+  its size, `live` when the daemon hosts it now, and its title or first
+  prompt; `--all` reads every project, `--limit <n>` bounds the list. The id
+  is what `mercury --resume <id>` reopens and `sessions delete` removes.
 - **`mercury sessions delete <id>`**: delete one saved session on purpose —
   its transcript and the records kept beside it (receipts, resume snapshot) —
   after a question; `--yes` skips the question for scripts. A session the
@@ -721,7 +732,8 @@ Available commands include:
   server that is already installed.
 - **`mercury acp`**: serve an editor over the Agent Client Protocol, with a
   runner child for each session. `mercury bridge install` installs the
-  VS Code extension; `mercury bridge status` checks it.
+  VS Code extension; `mercury bridge status` checks it;
+  `mercury bridge uninstall` removes it.
 - **`mercury godot run|check|capture|frames|profile|tour|jobs|cancel|result`**:
   manage engine jobs for the Godot project in the current directory. Mercury
   runs suites on its own headless workers from a frozen project copy. The
@@ -741,8 +753,8 @@ Available commands include:
 - **Mneme hybrid RAG project memory.** Mneme is on by default, keeping each
   project's facts in plain markdown topic pages (`Retain`, `Recall`, `Reflect`,
   `Correct`). Recall fuses an on-device 118 MB BGE semantic embedding model
-  (`bge-base-en-v1.5` `q8_0`, MIT, bundled in every release archive for macOS
-  Apple silicon and Intel, Linux x86-64 and Windows x86-64; see [Optional
+  (`bge-base-en-v1.5` `q8_0`, MIT, bundled in every release archive,
+  built for its platform; see [Optional
   components](#optional-components)) with stemmed BM25 word
   ranking, recency weighting and citation tracking via reciprocal rank fusion
   (`k = 60`). Pinned rules (`pin: true`) load verbatim on the pinned shelf and
@@ -764,7 +776,8 @@ Available commands include:
   build plus 7 in the grammar pack); persistent Python (`python3`) and
   JavaScript (Node ES module) code cells (`Eval`); and a Debug Adapter Protocol
   debugger (`Debug`) driving `debugpy`, `js-debug`, `lldb`, `gdb`, `dlv`,
-  `netcoredbg`, `rdbg` and Godot. The `Test` tool's `debug` operation steps a
+  `netcoredbg`, `rdbg`, the Dart SDK's debug adapter, `kotlin-debug-adapter`,
+  the elixir-ls debug adapter and Godot. The `Test` tool's `debug` operation steps a
   failing Python (`pytest`, `unittest`), JavaScript/TypeScript (`node-test`,
   `vitest`, `jest`), Go (`go test`) or Rust (`cargo test`) test straight into
   a `Debug` session. See

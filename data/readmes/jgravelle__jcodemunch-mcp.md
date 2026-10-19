@@ -158,10 +158,10 @@ That's the highlight reel. The complete tour of 90+ tools, the MUNCH compact wir
 <!-- WHATSNEW:START -->
 #### What's new
 
+- **[v1.108.381](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.381)** (2026-10-19) — one repository's index can no longer replace or stand in for another's
+- **[v1.108.380](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.380)** (2026-10-19) — compacting a session no longer waits on a large index's landmarks
+- **[v1.108.379](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.379)** (2026-10-19) — a spawned agent no longer waits minutes for its jCodeMunch briefing
 - **[v1.108.378](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.378)** (2026-10-18) — install-pack's licence lookup writes no config file
-- **[v1.108.377](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.377)** (2026-10-18) — a text search earns no savings credit
-- **[v1.108.376](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.376)** (2026-10-17) — install-pack honours every savings opt-out
-- **[v1.108.375](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.375)** (2026-10-17) — a typo can no longer switch off a protective setting
 <!-- WHATSNEW:END -->
 
 ---

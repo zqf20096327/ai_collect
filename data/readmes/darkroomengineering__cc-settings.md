@@ -105,16 +105,16 @@ Most days are some path through these steps:
 
 | Step | Say something like | Or pin | What you get back |
 |---|---|---|---|
-| Understand | "how does checkout work here?" | `/explore` | A read-only map with file and line citations |
+| Understand | "how does checkout work here?" | the `explore` agent | A read-only map with file and line citations |
 | Fix | "the login redirect loops on Safari" | `/fix` | The named cause, a reproduction, the smallest fix, and the tests that prove it |
 | Build | "add a stats dashboard to the admin page" | `/build` | A GO/NO-GO check, a plan, the implementation, tests, and a review |
-| Check | "review my changes" | `/review` | Findings on the current diff by severity, with no edits |
+| Check | "review my changes" | `/dr-review` | Findings on the current diff by severity, with no edits |
 | Prove | "is this review-ready?" | `/proof-of-work` | The project's real typecheck, tests, lint, and a screenshot for UI work |
 | Ship | "ship it" | `/ship` | A pushed branch, a PR in the house format, and CI watched until it settles |
 | Pause | "done for today" | `/handoff` | Saved state; "continue where we left off" resumes it in a new session |
 
-Claude Code also has a built-in `/review`. When you want the cc-settings one, say "run the
-cc-settings local pre-commit review" or pick it from the skill picker.
+Claude Code's built-in `/code-review` reviews a diff without the Darkroom checklist. `/dr-review`
+applies it.
 
 Big tasks split themselves. Work that spans several files, a long chain of tool calls, or
 security-sensitive code gets handed to focused agents (explore, implement, test, review, security)
@@ -152,7 +152,7 @@ Small habits make the biggest difference in how well sessions go:
 2. **One task per session.** Run `/clear` between unrelated tasks. Long, mixed sessions get slower,
    cost more, and lose track of details.
 3. **Save before you stop or risk something.** `/handoff` at the end of a day or a long session;
-   `/checkpoint` before a risky refactor or migration, so you can roll back.
+   commit before a risky refactor or migration (or use the built-in `/rewind`), so you can roll back.
 4. **Raise effort only for hard turns.** The default is tuned for everyday work. Use `/effort high`
    or `/effort xhigh` for hard debugging, audits, or migrations, or add `ultrathink` to a single
    message.
@@ -221,21 +221,21 @@ on every machine. The same request behaves differently once it is installed:
 - **Standards.** [AGENTS.md](./AGENTS.md) holds the coding standards and guardrails every tool
   reads; Claude Code gets its copy as [CLAUDE-FULL.md](./CLAUDE-FULL.md), installed as `~/.claude/CLAUDE.md`. Twelve topic rules (TypeScript,
   React, performance, accessibility, security, git, motion, style) load only for the files they
-  cover, and six stack profiles (Next.js, React Router, React Native, Tauri, WebGL, orchestration)
-  add the specifics of each starter.
-- **26 skills.** Named workflows selected from ordinary language or pinned with `/name` in Claude
+  cover, and six stack profiles (Next.js, React Router, React Native, Tauri, WebGL, durable agents)
+  add the specifics of each stack.
+- **24 skills.** Named workflows selected from ordinary language or pinned with `/name` in Claude
   and `$name` in Codex: fix, build, review, ship, audit, poke-holes, handoff, and the
   rest. The [skill guide](./docs/skills.md) lists what each one changes and when it asks.
-- **10 role agents.** Planner, explorer, implementer, tester, reviewer, security reviewer,
-  scaffolder, deslopper, orchestrator, and a cross-model verifier. Big work is divided instead of
+- **9 role agents.** Planner, explorer, implementer, tester, reviewer, security reviewer,
+  deslopper, orchestrator, and a cross-model verifier. Big work is divided instead of
   held in one conversation, and each role runs on the model tier its job needs.
-- **36 hooks on 18 lifecycle events.** Small programs that run around tool calls, commits, pushes,
-  compaction, and session start or end. They block destructive commands, require proof before a
-  PR, remind about docs before an install, nudge when unreviewed agent output piles up, and inject
+- **22 hooks on 16 lifecycle events.** Small programs that run around tool calls, compaction, and
+  session start or end. They block destructive commands and git hook skips, remind about docs
+  before an install, nudge when unreviewed agent output piles up, and inject
   context the model would otherwise never see. Claude gets the full set; Codex gets the compatible
   plugin subset and asks you to review it once through `/hooks`.
-- **Model routing.** Effort pinned to medium, subagents on Sonnet, planning and decisions on the
-  session model, bulk or mechanical work and one cross-model review per PR or direct push routed to Codex when
+- **Model routing.** Effort pinned to medium, read-only subagents on Sonnet, planning, decisions and
+  code-editing agents on the session model, bulk or mechanical work and one cross-model review per PR or direct push routed to Codex when
   the bridge is installed. The statusline shows the usage limits that drive that routing.
 - **Connected tools.** In Claude, four MCP servers: Context7 for current library docs, a TypeScript
   code map for call graphs and blast radius, Figma, and Chrome DevTools for screenshots and

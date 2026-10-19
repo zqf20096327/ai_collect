@@ -14,13 +14,17 @@ Packages are organized by author under `plugins/<github-username>/<plugin-id>/`.
 
 ## Pursuing Human in the Loop, Toward Agent OS
 
-**Delivery between AI and knowledge workers should not be one-shot.** Code delivery between a coding agent and a programmer is not completed in one pass. Yet many AI products try to deliver a lawyer's, analyst's, or operator's work as a single final answer. Serious work moves from draft to final through human–AI collaboration and repeated refinement; that loop is still too fragmented. Human–AI collaboration is still at a very early stage.
+We believe the Agent is evolving into the next-generation operating system (OS). In this paradigm shift, plugins are no longer mere feature extensions: plugins are software, and plugins are apps (MiniApps).
 
-Programmers write in an IDE; lawyers, analysts, and operators write in their own professional environments. Real work, like software development, advances continuously and gets refined until it is stable and ready to deliver. An AI that writes once and walks away is irresponsible in serious work, because **the goal is not text generation, but delivery.**
+At the same time, real productivity in every industry remains rooted in highly specialized work environments. A conversational interface (Chat UI) alone cannot replace the precise control and rich views of professional tools. Professional workflows of the future should not ask users to leave their workbench to accommodate AI. Instead, professional environments and AI should evolve in deep symbiosis, with AI internalized as a foundational, atomic capability available on demand—like power and water, compute, and storage. By building professional-grade MiniApps that grow on top of the Agent OS, we aim to connect the specialized interfaces of vertical domains with the AI-native compute beneath them, and to reshape how every industry works.
 
 > *Self-drive Route Planner case: an Agent-assisted weekend trip around Shanghai, with the final itinerary and synchronized route workspace visible together.* This case shows the kind of professional workspace a MiniApp can provide: the Agent conversation and complete itinerary are on the left, while the route summary, interactive map, and editable trip workspace are on the right.
 
 ![Self-drive Route Planner case study showing Agent collaboration and the MiniApp workspace](plugins/hanzijie/self-drive-route-planner/docs/case-study.png)
+
+> *CadQuery Viewer case: one prompt asks the Agent to design a 3D-printable MiniMax octopus figure, and the model takes shape live beside the conversation.* The Agent looks up the official mascot for reference, writes a parametric CadQuery script, runs and fixes it, and pushes each build to the Viewer on the right. You can orbit, switch views, and section the model at any point, then get print settings and a table of tunable parameters—pick what to change and let the Agent rebuild.
+
+![CadQuery Viewer case study: the Agent designs a MiniMax octopus figure while the model previews live in the Viewer](plugins/hanzijie/cq-viewer/docs/case-study.gif)
 
 **MiniApp's product stance: keep people involved in collaboration and decisions (Human-in-the-Loop).**
 
@@ -37,8 +41,6 @@ We want users to be able to:
 In the way of working we envision, a lawyer would not submit an AI-written pleading directly to a court; an analyst would not make an investment decision directly from an AI-generated opinion; and an operator would not launch an AI-generated campaign unchanged.
 
 Instead, they would ask AI to research background, organize material, prepare a first draft, improve the expression, and find omissions—then return to their professional workspace to **review, edit, confirm, and let AI continue.**
-
-MiniApps enforce this boundary in the product: when content from a MiniApp page is handed to the Agent, it first enters the user's input box. The user can edit and confirm it before sending. AI never presses the Send button on the user's behalf.
 
 ## Architecture
 
@@ -59,6 +61,7 @@ The MiniMax Code Agent communicates through the host MCP client. Business reques
 
 | MiniApp | What it does | Author |
 | --- | --- | --- |
+| [AI Office](plugins/cristinamadureira353-svg/ai-office/) | Manage five model-powered employees in a pixel office: client tasks, chats, breaks, meetings and quota-aware offline states; uses your own API keys | [最爱双皮奶](https://github.com/cristinamadureira353-svg) |
 | [Token Usage Board](plugins/amszuidas/mcode-token-usage-board/) | Explore local Token usage by date, model, and session, including input, output, and cache usage | [amszuidas](https://github.com/amszuidas) |
 | [Token Usage Board](plugins/yanhy2000/mcode-usage-monitor/) | Watch local Token usage, output speed, and cache hit rate in near real time; filter by time range, model, and session | [yanhy2000](https://github.com/yanhy2000) |
 | [Model Manager](plugins/ocoomber/openrouter-model-manager/) | Browse, search, and enable/disable models in your `~/.minimax/config.yaml` with instant save, bulk actions, one-click undo, and automatic backups | [ocoomber](https://github.com/ocoomber) |
@@ -69,6 +72,9 @@ The MiniMax Code Agent communicates through the host MCP client. Business reques
 | [Session Trajectory](plugins/avatasia/mmc-trajectory/) | Browse a conversation's model trajectory: messages, reasoning, tool calls and results, Token usage, and per-turn timing | [avatasia](https://github.com/avatasia) |
 | [CadQuery Viewer](plugins/hanzijie/cq-viewer/) | View STL / STEP models from your project (STEP keeps assembly part names, colours, and real CAD edges), watch models pushed from CadQuery scripts, and mark positions on the model to send to the conversation in one click; MCP tools let the AI add model folders and open models, and a CadQuery parametric-design skill is bundled | [HanZijie](https://github.com/HanZijie) · [flowful-ai](https://github.com/flowful-ai) |
 | [MiniMax Bot](plugins/minimax-ai/minimax-bot/) | **Official plugin** that turns MiniMax Code into an always-on team of Bots: a Chief Bot builds the team, group chats hand work between members with `@` mentions, and every Bot has its own memory, scheduled tasks, and usage stats. Requires MiniMax Code 3.1.2 or later | [MiniMax-AI](https://github.com/MiniMax-AI) |
+| [心屿 / Xinyu Island](plugins/yujiachen-y/xinyu-daily/) | A cozy daily-mood island that plays like an indie game: an inspiration card shaped by your answers, mood stickers, a joy jar, a decision slot machine, a Book of Answers, and 20 hidden secrets guarded by a grumpy crab. Optionally, Xiaoyu writes you a daily letter and chats with you using your model. Requires MiniMax Code 3.1.2 or later | [yujiachen-y](https://github.com/yujiachen-y) |
+| [MoMo Collab](plugins/amszuidas/momo-collab/) | A project steward that turns stray thoughts, screenshots, and links into ideas, writes clear ideas up as tasks, runs each task in its own Agent session with a full handoff, checks the result against your done criteria, and tracks everything on a board. Requires MiniMax Code 3.1.2 or later | [amszuidas](https://github.com/amszuidas) |
+| [Anatomy Gallery](plugins/zch0227/anatomy-gallery/) | A gallery for interactive isometric figures made with the anatomy skill: hang them in rooms you organize, view light and dark editions full screen, keep every version, and have an Agent create or edit figures from the gallery with a per-run process log. The anatomy skill is bundled. Requires MiniMax Code 3.1.2 or later | [zch0227](https://github.com/zch0227) |
 
 <details>
 <summary>Preview: Token Usage Board</summary>

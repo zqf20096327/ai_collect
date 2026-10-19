@@ -66,7 +66,7 @@ claude plugin install kicad
 
 Download `kicad-<version>.mcpb` from the [latest release][latest] and install it
 from Settings, then Extensions. Claude Desktop fetches Python and the package
-itself; you need KiCad installed, plus Java for `autoroute_pcb`.
+itself; you need KiCad installed, plus Java 25 or newer for `autoroute_pcb`.
 
 Desktop does not run from your project directory, so fill in the schematic,
 board, and export paths it asks for. Leave the `kicad-cli` field blank unless
@@ -80,8 +80,9 @@ KiCad is installed somewhere unusual. The design skills are Claude Code only.
 pip install mcp-server-kicad
 ```
 
-Then point your MCP client at the unified server and set `cwd` to a KiCad
-project directory so paths resolve themselves:
+Then point your MCP client at the unified server, and name your schematic,
+board, and export folder in `env` by absolute path, so tools find them without
+being told on every call:
 
 ```json
 {
@@ -89,14 +90,21 @@ project directory so paths resolve themselves:
     "kicad": {
       "command": "uvx",
       "args": ["--from", "mcp-server-kicad", "mcp-server-kicad"],
-      "cwd": "/path/to/your/kicad/project"
+      "env": {
+        "KICAD_SCH_PATH": "/path/to/project/project.kicad_sch",
+        "KICAD_PCB_PATH": "/path/to/project/project.kicad_pcb",
+        "KICAD_OUTPUT_DIR": "/path/to/project"
+      }
     }
   }
 }
 ```
 
-That single entry registers all 109 tools. Prefer to split them across five
-smaller servers? See [Configuration](#configuration).
+That single entry registers all 109 tools. A client that starts the server in
+your project's folder can leave `env` out: the server then takes the paths from
+the single `.kicad_pro` there (see [How paths resolve](#how-paths-resolve)).
+Prefer to split the tools across five smaller servers? See
+[Configuration](#configuration).
 
 ## What you get
 
@@ -146,32 +154,31 @@ surface:
   "mcpServers": {
     "kicad-schematic": {
       "command": "uvx",
-      "args": ["--from", "mcp-server-kicad", "mcp-server-kicad-schematic"],
-      "cwd": "/path/to/your/kicad/project"
+      "args": ["--from", "mcp-server-kicad", "mcp-server-kicad-schematic"]
     },
     "kicad-pcb": {
       "command": "uvx",
-      "args": ["--from", "mcp-server-kicad", "mcp-server-kicad-pcb"],
-      "cwd": "/path/to/your/kicad/project"
+      "args": ["--from", "mcp-server-kicad", "mcp-server-kicad-pcb"]
     },
     "kicad-symbol": {
       "command": "uvx",
-      "args": ["--from", "mcp-server-kicad", "mcp-server-kicad-symbol"],
-      "cwd": "/path/to/your/kicad/project"
+      "args": ["--from", "mcp-server-kicad", "mcp-server-kicad-symbol"]
     },
     "kicad-footprint": {
       "command": "uvx",
-      "args": ["--from", "mcp-server-kicad", "mcp-server-kicad-footprint"],
-      "cwd": "/path/to/your/kicad/project"
+      "args": ["--from", "mcp-server-kicad", "mcp-server-kicad-footprint"]
     },
     "kicad-project": {
       "command": "uvx",
-      "args": ["--from", "mcp-server-kicad", "mcp-server-kicad-project"],
-      "cwd": "/path/to/your/kicad/project"
+      "args": ["--from", "mcp-server-kicad", "mcp-server-kicad-project"]
     }
   }
 }
 ```
+
+Give each entry the `env` block from [Everything else](#everything-else), with
+`KICAD_SYM_LIB` or `KICAD_FP_LIB` for the library servers, unless your client
+starts them in the project's folder.
 
 Each is also runnable directly:
 
@@ -205,13 +212,37 @@ Highest priority wins:
   - `kicad-cli`: ERC, DRC, exports, jobsets, `get_version`, the library
     upgrades and `update_pcb_from_schematic`
   - `pcbnew` Python bindings: `fill_zones` and `autoroute_pcb` (which also
-    needs Java)
+    needs Java 25 or newer; see [The Freerouting download](#the-freerouting-download))
   - KiCad's stock libraries: placing a stock symbol or footprint
 
   Every other tool parses files directly and needs no KiCad.
 
 CI covers Linux (KiCad 9 and 10), macOS and Windows (KiCad 10), and Python
 3.11 to 3.14.
+
+### The Freerouting download
+
+`autoroute_pcb` runs [Freerouting](https://github.com/freerouting/freerouting).
+Unless `FREEROUTING_JAR` names a jar, its first call downloads Freerouting 2.5.0,
+`freerouting-2.5.0.jar` (65 MB, needs Java 25 or newer), from
+<https://github.com/freerouting/freerouting/releases/download/v2.5.0/freerouting-2.5.0.jar>
+and caches it as `~/.local/share/mcp-server-kicad/freerouting-2.5.0.jar`
+(`%USERPROFILE%\.local\share\mcp-server-kicad\` on Windows). Its SHA-256 is
+checked against the value pinned in this package before the download is saved
+and every time the cached copy is used. A download that does not match is not
+saved; a cached copy that does not match is not run, and is downloaded again.
+
+Freerouting is run with `--gui.enabled=false` and
+`--usage_and_diagnostic_data.disable_analytics=true`, the settings its
+documentation gives for running headless and for not sending usage data, so it
+opens no window and its analytics stay off. When it starts, Freerouting still
+asks GitHub for its newest release; it has no setting to turn that off.
+
+To skip the download, set `FREEROUTING_JAR` to the absolute path of a Freerouting
+jar you trust. That jar is used as given, with no hash check. A relative path, or
+one that names no file, is ignored and the download goes ahead. Earlier releases
+cached an unpinned `freerouting.jar` in the same folder; it is no longer read and
+can be deleted.
 
 ### Finding your KiCad install
 
@@ -286,7 +317,7 @@ app through Controlled folder access.
 | `get_symbol_pins` | Get pin info for a symbol in the schematic's `lib_symbols` |
 | `get_pin_positions` | Get absolute pin positions for a placed component, accounting for rotation and mirror |
 | `get_net_connections` | Get all connections for a named net (multi-hop BFS wire tracing) |
-| `list_unconnected_pins` | List unconnected pins from ERC data |
+| `list_unconnected_pins` | List the pins ERC reports as not connected, positions in millimetres; a sub-sheet gets its own, from its project's root |
 
 **Write**
 
@@ -321,7 +352,7 @@ app through Controlled folder access.
 
 | Tool | Description |
 |------|-------------|
-| `run_erc` | Run Electrical Rules Check, with `project_path` support for hierarchies |
+| `run_erc` | Run Electrical Rules Check, positions in millimetres; a sub-sheet is checked from its project's root and gets its own violations, with `project_path` to name the project; a run that makes no report raises and leaves `output_dir` as it was |
 | `export_schematic` | Export schematic to PDF, SVG, or DXF |
 | `export_netlist` | Export the schematic netlist |
 | `export_bom` | Export a Bill of Materials as CSV |
@@ -377,7 +408,7 @@ app through Controlled folder access.
 | `export_pcb` | Export board layers to PDF, SVG, or DXF |
 | `export_gerbers` | Export Gerber files, all layers or a specific list |
 | `export_3d` | Export a 3D model (STEP/STL/GLB) or render the 3D view to PNG |
-| `export_positions` | Export a component position file for pick and place |
+| `export_positions` | Export a pick-and-place position file as CSV, in millimetres |
 | `export_ipc2581` | Export in IPC-2581 format for manufacturing data exchange |
 
 </details>
@@ -389,7 +420,7 @@ app through Controlled folder access.
 
 | Tool | Description |
 |------|-------------|
-| `create_project` | Create a KiCad 9 project (`.kicad_pro`, `.kicad_prl`, `.kicad_sch`) |
+| `create_project` | Create a KiCad 9 project (`.kicad_pro` and the root `.kicad_sch`; no `.kicad_prl`) |
 | `create_schematic` | Create a blank schematic file |
 | `create_symbol_library` | Create a blank symbol library file |
 | `create_sym_lib_table` | Create a `sym-lib-table` file |
@@ -398,20 +429,20 @@ app through Controlled folder access.
 
 | Tool | Description |
 |------|-------------|
-| `add_hierarchical_sheet` | Add a hierarchical sheet with matching labels in the child |
+| `add_hierarchical_sheet` | Add a hierarchical sheet with matching labels in the child, all checked before anything is written |
 | `remove_hierarchical_sheet` | Remove a hierarchical sheet block from a parent |
-| `modify_hierarchical_sheet` | Modify sheet name, file, width, or height |
+| `modify_hierarchical_sheet` | Modify sheet name, file, width, or height; a resize keeps pins on their edges and moves the wires on them |
 | `move_hierarchical_sheet` | Move a sheet block to a new position, pins included |
-| `add_sheet_pin` | Add a pin to an existing hierarchical sheet block |
+| `add_sheet_pin` | Add a pin to the left or right edge of a sheet block, at the first free slot |
 | `remove_sheet_pin` | Remove a pin from a hierarchical sheet block |
-| `duplicate_sheet` | Duplicate a sheet, copying the child file with new UUIDs |
-| `reorder_sheet_pages` | Reorder sheets by specifying the desired UUID order |
+| `duplicate_sheet` | Duplicate a sheet: a copy of the block and of the child file, with the lowest free page and parts numbered apart from the originals; a sheet with sub-sheets of its own is refused |
+| `reorder_sheet_pages` | Put sheets in the page order given by rewriting their page numbers, the order KiCad lists them in; call it on the root schematic |
 
 **Hierarchy inspection**
 
 | Tool | Description |
 |------|-------------|
-| `is_root_schematic` | Check whether a schematic is the root or a sub-sheet |
+| `is_root_schematic` | Check whether a schematic is its project's root or one of its sheets, including a sheet in a folder below the project's; a file no sheet uses is a root |
 | `list_hierarchy` | List the full sheet hierarchy tree from root |
 | `get_sheet_info` | Get sheet details with pin and label matching status |
 | `validate_hierarchy` | Check every sheet for orphaned labels and pins, direction mismatches, duplicate refs, junctions and bus entry ends left inside wires, and no-connect flags and wire ends left off the pins of mirrored, rotated parts, with the call that repairs each where a tool can |
@@ -430,8 +461,8 @@ app through Controlled folder access.
 |------|-------------|
 | `annotate_schematic` | Auto-assign reference designators, respecting hierarchy |
 | `export_hierarchical_netlist` | Export a netlist with hierarchy info (requires `kicad-cli`) |
-| `flatten_hierarchy` | Flatten a hierarchical schematic into a single sheet |
-| `run_jobset` | Run a KiCad jobset file |
+| `flatten_hierarchy` | Flatten a hierarchical schematic into a new single-sheet file whose netlist is the hierarchy's; refuses, writing nothing, where it could not keep it (bus names across sheets, for one) |
+| `run_jobset` | Run a KiCad jobset against the project beside it; an error when nothing ran or a job failed |
 | `get_version` | Get KiCad version information |
 
 </details>
@@ -466,7 +497,7 @@ Drive the servers by hand with the
 [MCP Inspector](https://github.com/modelcontextprotocol/inspector):
 
 ```bash
-npx @modelcontextprotocol/inspector uvx --from mcp-server-kicad mcp-server-kicad
+npx -y @modelcontextprotocol/inspector uvx --from mcp-server-kicad mcp-server-kicad
 ```
 
 ## Contributing

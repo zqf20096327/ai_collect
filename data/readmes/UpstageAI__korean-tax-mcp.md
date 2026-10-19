@@ -88,6 +88,7 @@ claude mcp add korean-tax -- uvx korean-tax-mcp
 | | `execution_standards` | 세법집행기준 항목·쪽·링크 |
 | | `casebook_search` | 2025 세법해석 사례집(96건) |
 | 그 해 기준·검증 | `research_issue` | 세목별 기준일의 조문·통칙·해석 묶음, 현행 대비 변경 |
+| | `timing_rules` | 시기 규칙표 — 납세의무 성립·손익 귀속·소득별 수입시기·부가 공급시기 |
 | | `verify_citations` | 초안 속 문서번호·조문이 실제로 있는지 |
 | 대조·판정 | `verify_statement` | 한 문장을 원문과 글자 대조 |
 | | `judge_options` | 보기 여러 개를 조문과 한 번에 대조 |
@@ -121,6 +122,10 @@ claude mcp add korean-tax -- uvx korean-tax-mcp
 - 해석·판례는 회신·선고 당시 법 기준입니다. 적용 연도 조문(`law_article`의 `as_of`)과 대조하세요.
 - 국세법령정보시스템 공개 조회를 1일 캐시, 0.5초 간격으로 사용합니다. 집행기준은 항목·쪽·링크까지만 제공합니다.
 - 일반 법령 전반은 [korean-law-mcp](https://github.com/chrisryugj/korean-law-mcp)와 함께 쓰면 좋습니다.
+
+## 평가 방법
+
+Solar Pro 4가 이 MCP 서버들을 도구로 써서 세법 객관식 문항을 푸는 종합 평가는 `eval/` 폴더를 참고한다. 도구 하나하나의 정확도는 `bench/`에서 측정한다.
 
 ## 출처 · 라이선스
 

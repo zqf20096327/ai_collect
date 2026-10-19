@@ -9,7 +9,7 @@
 
 A curated collection of [Claude Code](https://claude.ai/claude-code) skills organized by job role. Each skill is a packaged workflow grounded in a proven book or methodology - Claude invokes it automatically, or you trigger it with a `/skill-name` command.
 
-**165 skills across 19 roles.** PM, QA, Engineer, Designer, DevOps, Leadership, Program Delivery, Customer Success, Recruiter, Consultant, Sales, Marketing, Founder, Data Engineer, Data Scientist, Security, Researcher, Accountant, and Business Analyst, plus shared skills installed with every role.
+**166 skills across 19 roles.** PM, QA, Engineer, Designer, DevOps, Leadership, Program Delivery, Customer Success, Recruiter, Consultant, Sales, Marketing, Founder, Data Engineer, Data Scientist, Security, Researcher, Accountant, and Business Analyst, plus shared skills installed with every role.
 
 ## Install as a plugin
 
@@ -274,7 +274,7 @@ bash scripts/install.sh --role pm --project
 | Skill | What it does | Grounded in |
 |-------|-------------|-------------|
 | `eda-report` | Run structured exploratory analysis and report quality findings with recommended treatments | Practical Statistics for Data Scientists - Bruce, Bruce & Gedeck |
-| `experiment-design` | Design A/B and hypothesis tests with pre-committed sample sizes and stopping rules | The Art of Statistics - Spiegelhalter |
+| `ab-test-design` | Design A/B and hypothesis tests with pre-committed sample sizes and stopping rules | The Art of Statistics - Spiegelhalter |
 | `feature-engineering` | Design features from raw data with encoding, transformations, and leakage prevention | Feature Engineering for Machine Learning - Zheng & Casari |
 | `model-card` | Document a model with performance, subgroup analysis, failure modes, and monitoring plan | Interpretable Machine Learning - Molnar + Model Cards - Mitchell et al. |
 | `data-story` | Communicate insights to non-technical stakeholders, conclusion first | Storytelling with Data - Knaflic |
@@ -331,6 +331,7 @@ bash scripts/install.sh --role pm --project
 | `md-to-confluence` | Push markdown to Confluence with image upload, TOC, wide tables, auto-numbering, date macros, and 9 post-push quality checks |
 | `draft-email` | Draft professional HTML emails (MoM, status, decisions) and save as provider drafts (Zoho reference impl) |
 | `youtube-transcript` | Fetch transcripts and captions from YouTube videos |
+| `better-way` | Challenge a stated approach and propose a clearly better one, with one pick, before building |
 | `teach-me` | Teach a topic, video, article, PR or spec in three stages with restatement, quizzes and a running checklist doc until understanding is proven |
 
 ## Update Skills

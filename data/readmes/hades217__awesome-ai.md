@@ -58,7 +58,7 @@ Contributions welcome — open a PR or [start a discussion](https://github.com/h
 15. [🎤 Events & Conferences](#-events--conferences)
 16. [💼 AI Jobs](#-ai-jobs)
 17. [🌐 AI Communities by City](#-ai-communities-by-city)
-18. [🌍 AI Scene by Country](#-ai-scene-by-country) — USA, China, Australia, Malaysia, Singapore
+18. [🌍 AI Scene by Country](#-ai-scene-by-country) — USA, China, Australia, Malaysia, Singapore, UK
 19. [🤖 Robotics & Embodied AI](#-robotics--embodied-ai)
 20. [Contributing](#contributing)
 
@@ -149,6 +149,10 @@ Contributions welcome — open a PR or [start a discussion](https://github.com/h
 * [**Bedrock AgentCore**](https://aws.amazon.com/bedrock/agentcore/) 🆕 — AWS managed agent runtime.
 * [**Letta (formerly MemGPT)**](https://github.com/letta-ai/letta) (22k ⭐) — agents with persistent memory.
 * [**Inspect AI (UK AISI)**](https://inspect.aisi.org.uk/) — agent eval framework from UK AI Safety Institute.
+
+### Reusable AI Skills
+
+* [JR Academy AI Skill Marketplace](https://jracademy.ai/ai-skills) — downloadable skills for job hunting and content creation; access varies by skill.
 
 ### Model Context Protocol (MCP) 🔥
 
@@ -337,9 +341,8 @@ Contributions welcome — open a PR or [start a discussion](https://github.com/h
 * [Maven AI Engineering Cohorts](https://maven.com/topics/artificial-intelligence) — cohort-based courses by industry experts.
 * [Zero to Mastery — AI/ML Career Path](https://zerotomastery.io/career-paths/) — online ML bootcamp.
 * [General Assembly Data Science Immersive](https://generalassemb.ly/) — full-time bootcamp, multiple cities.
-* [JR Academy AI Engineer Bootcamp](https://jiangren.com.au/curriculum/ai-engineer-bootcamp) — project-based 6-month bootcamp covering MCP, RAG, agents, deployment.
-* [JR Academy Vibe Coding](https://jiangren.com.au/learn/vibe-coding) — modern AI-augmented development with Cursor / Claude Code.
-* [JR Academy Web Full-Stack Bootcamp](https://jiangren.com.au/program-course/web-code-bootcamp-or-learn-to-code-1) — Next.js / NestJS / AWS project bootcamp.
+* [JR Academy AI Engineer Bootcamp](https://jracademy.ai/program-course/ai-engineer-bootcamp) — project-based AI engineering training covering RAG, agents and deployment.
+* [JR Academy AI Engineering Full-Stack Project Bootcamp](https://jracademy.ai/program-course/web-code-bootcamp-or-learn-to-code-1) — full-stack AI engineering project training.
 * [Recurse Center](https://www.recurse.com/) — self-directed programmer retreat (NYC).
 
 ### AI Engineer Specialization (Free Learning Hubs)
@@ -351,8 +354,9 @@ Contributions welcome — open a PR or [start a discussion](https://github.com/h
 * [Generative AI Handbook (Will Brown)](https://genai-handbook.github.io/) — practical handbook.
 * [Build LLM-Powered Apps (Hamel Husain)](https://hamel.dev/) — practical writing on LLM eval and ops.
 * [Deep Learning AI — AI Engineering Specialization](https://www.deeplearning.ai/courses/) — Andrew Ng's structured paths.
-* [JR Academy AI Engineer Hub](https://jiangren.com.au/learn/ai-engineer) — free chapter-based learning path: MCP, RAG, agents, deployment, with hands-on labs.
-* [JR Academy Prompt Master Hub](https://jiangren.com.au/learn/prompt-master) — free prompt engineering chapter-based hub.
+* [JR Academy AI Engineer Hub](https://jracademy.ai/learn/ai-engineer) — free chapter-based learning path: MCP, RAG, agents, deployment, with hands-on labs.
+* [JR Academy Prompt Master Hub](https://jracademy.ai/learn/prompt-master) — free prompt engineering chapter-based hub.
+* [JR Academy Vibe Coding](https://jracademy.ai/learn/vibe-coding) — modern AI-augmented development with Cursor / Claude Code.
 * [Awesome AI Engineer (community list)](https://github.com/dair-ai/Mathematics-for-ML) — math foundations.
 
 ### Specialized Topics
@@ -360,6 +364,20 @@ Contributions welcome — open a PR or [start a discussion](https://github.com/h
 * [Reinforcement Learning Course](https://www.davidsilver.uk/teaching/) — *David Silver / DeepMind*.
 * [CS285: Deep RL](http://rail.eecs.berkeley.edu/deeprlcourse/) — *UC Berkeley*.
 * [Artificial Intelligence for Robotics](https://www.udacity.com/course/artificial-intelligence-for-robotics--cs373) — *Sebastian Thrun*.
+
+### Interactive Engineering Labs
+
+* [JR Academy AI Engineer Lab](https://jracademy.ai/learn/ai-engineer/lab) — interactive tasks for LLM APIs, RAG, agents, evaluation, fine-tuning and deployment.
+* [JR Academy System Design Lab](https://jracademy.ai/system-design-lab/) — interactive system architecture learning and simulations.
+
+### Prompt Engineering Practice
+
+* [JR Academy Prompt Lab](https://jracademy.ai/learn/prompt-lab) — task-based prompt engineering exercises in the Study Center; sign-in may be required.
+* [JR Academy Prompt Templates](https://jracademy.ai/tools/prompt-templates) — templates for product, engineering and growth tasks; full templates require registration.
+
+### Learning Roadmaps
+
+* [JR Academy Roadmaps](https://jracademy.ai/roadmaps) — structured learning paths for frontend, backend, data and DevOps.
 
 ### Free Aggregators
 
@@ -405,6 +423,16 @@ Contributions welcome — open a PR or [start a discussion](https://github.com/h
 * [**Direct Preference Optimization (2023)**](https://arxiv.org/abs/2305.18290) — DPO; simpler RLHF replacement.
 * [**Mixtral of Experts (2024)**](https://arxiv.org/abs/2401.04088) — practical MoE that opened the era of efficient large models.
 * [**DeepSeek-R1 (2025)**](https://arxiv.org/abs/2501.12948) 🇨🇳 — pure-RL reasoning training breakthrough.
+
+### Online Handbooks, Ebooks & Cheatsheets
+
+* [JR Academy System Design Handbook](https://jracademy.ai/job-interview/system-design-handbook) — system design learning paths, architecture cases and interview preparation.
+* [JR Academy Ebooks](https://jracademy.ai/ebooks) — AI, engineering and career books for online reading and PDF download.
+* [JR Academy Cheatsheets](https://jracademy.ai/study-center?tab=learn&mode=cheatsheet) — technical quick-reference sheets in the Study Center.
+
+### Startup & Pitch Guides
+
+* [JR Academy AI Circle Wiki](https://jracademy.ai/ai-circle/wiki/) — guides to customer evidence, pitches, decks, metrics and fundraising preparation.
 
 ### Blogs — Top Signal
 
@@ -585,9 +613,27 @@ Contributions welcome — open a PR or [start a discussion](https://github.com/h
 ### Education
 
 * [Khan Academy Khanmigo](https://www.khanmigo.ai/) ⭐ — AI tutor for students.
+
+#### University Study Assistants
+
+* [UniMate AI](https://unimateai.com/) — university course tutoring; [study workspace](https://unimateai.com/study), [Chrome extension](https://unimateai.com/install). These endpoints returned HTTP 502 on 2026-10-19.
+
+#### IT Certification Preparation
+
+* [JR Academy Cert Master](https://jracademy.ai/tools/cert-master) — AI-assisted IT certification study, screenshot explanations and practice review.
+* [JR Academy Certification Hub](https://jracademy.ai/certifications) — IT certification guides, question banks and mock-exam entry points.
+
+#### Kids & School Learning
+
 * [CodeKidz](https://codekidz.ai) — AI-powered programming learning for kids.
+* [Airbotix](https://airbotix.ai/) — AI coding classes and creative tools for children to build stories, games and software.
+* [Airbotix Hangar](https://airbotix.ai/products/hangar) — parent-guided AI coding desktop app for ages 12+; [Mac download](https://airbotix.ai/download).
+* [Airbotix Study](https://airbotix.ai/products/study) — Years 6–12 subject organisation and AI-guided study; early access.
+* [Airbotix Project Demos](https://airbotix.ai/try) — browser story and coding demos to try before enrolling.
 
 ### Career & Resume
+
+#### Resumes & Job Search
 
 * [Teal](https://www.tealhq.com/) — AI resume builder + job tracker.
 * [Rezi](https://www.rezi.ai/) — AI resume builder optimized for ATS.
@@ -596,6 +642,21 @@ Contributions welcome — open a PR or [start a discussion](https://github.com/h
 * [Kickresume](https://www.kickresume.com/) — AI resume and cover letter builder.
 * [JobPin AI](https://jobpin.ai/) — AI resume editing, ATS optimization, and job matching.
 * [Final Round AI](https://www.finalroundai.com/) — AI interview copilot.
+* [JR Academy Job Hunter Desktop](https://jracademy.ai/tools/job-hunter) — desktop workspace for experience records, job analysis, tailored resumes and PDF export.
+
+#### Career Planning
+
+* [JR Academy CareerOS](https://jracademy.ai/careeros) — career planning and project-evidence desktop app; pilot in preparation.
+* [JR Academy Mentor Hub](https://jracademy.ai/study-center?tab=mentor-hub) — mentor discovery in the Study Center; sign-in may be required.
+
+#### Interview Preparation
+
+* [JR Academy Interview Center](https://jracademy.ai/job-interview) — interview questions and AI mock-interview entry points.
+* [JR Academy AI Engineer Readiness Assessment](https://jracademy.ai/readiness-assessment) — AI engineering interview-readiness self-assessment.
+
+### Deals & Student Benefits
+
+* [JR Academy AU Deals](https://deals.jracademy.ai/) — Australian deals, free resources and student benefits; check each offer's eligibility.
 
 ---
 
@@ -646,6 +707,7 @@ Contributions welcome — open a PR or [start a discussion](https://github.com/h
 * [**Hugging Face Events**](https://huggingface.co/events) — community events.
 * [**Build Club Sydney**](https://www.buildclub.ai/) 🇦🇺 — AU AI builders.
 * [**AI Talks**](https://aietalks.com/) — searchable summaries of AI Engineer talks by topic and event.
+* [JR Academy AI Circle](https://jracademy.ai/ai-circle/) — city-based AI community events and registration.
 
 ---
 
@@ -665,6 +727,8 @@ Contributions welcome — open a PR or [start a discussion](https://github.com/h
 
 ## 🌐 AI Communities by City
 
+* [Awesome AI Communities](https://github.com/hades217/awesome-ai-communities) — bilingual directory of AI meetups and builder communities by country and city, with sources and coming-soon labels.
+
 * [San Francisco AI Meetup](http://www.meetup.com/superintelligencemeetup/) — SF community.
 * [New York AI](http://newyork.ai/) — NYC community.
 * [Seattle AI](http://seattle.city.ai/) — Seattle community.
@@ -672,7 +736,7 @@ Contributions welcome — open a PR or [start a discussion](https://github.com/h
 * [Amsterdam AI](http://amsterdam.ai/) — Amsterdam community.
 * [Hong Kong AI](http://hkg.ai/) — HK community.
 
-For Sydney, Melbourne, Beijing, Shanghai, Singapore, KL — see [🌍 AI Scene by Country](#-ai-scene-by-country).
+For JR Academy AI Circle city pages in Australia, Singapore, Malaysia, China, the USA and the UK, see [🌍 AI Scene by Country](#-ai-scene-by-country).
 
 ---
 
@@ -699,6 +763,13 @@ For Sydney, Melbourne, Beijing, Shanghai, Singapore, KL — see [🌍 AI Scene b
 **Hiring & Comp**
 * [levels.fyi](https://www.levels.fyi/) — comp data for US tech roles.
 * [Built In](https://builtin.com/jobs) — US tech jobs by city.
+
+**Communities**
+
+* [JR Academy Los Angeles AI Circle](https://jracademy.ai/ai-circle/city/los-angeles/) — coming soon; city community page.
+* [JR Academy New York AI Circle](https://jracademy.ai/ai-circle/city/new-york/) — coming soon; city community page.
+* [JR Academy Seattle AI Circle](https://jracademy.ai/ai-circle/city/seattle/) — coming soon; city community page.
+* [JR Academy San Francisco AI Circle](https://jracademy.ai/ai-circle/city/san-francisco/) — coming soon; city community page.
 
 ### 🇨🇳 China
 
@@ -730,6 +801,10 @@ For Sydney, Melbourne, Beijing, Shanghai, Singapore, KL — see [🌍 AI Scene b
 * [PaperWeekly](https://www.paperweekly.site/) — 论文阅读社区.
 * [Datawhale](https://www.datawhale.cn/) — 开源 AI 学习社区.
 
+**Communities**
+
+* [JR Academy Chengdu AI Circle](https://jracademy.ai/ai-circle/city/chengdu/) — local AI community events and registration.
+
 ### 🇦🇺 Australia
 
 **Universities & Education**
@@ -737,7 +812,7 @@ For Sydney, Melbourne, Beijing, Shanghai, Singapore, KL — see [🌍 AI Scene b
 * [UNSW AI Institute](https://www.ai.unsw.edu.au/) — research-led AI education.
 * [University of Melbourne — AI](https://study.unimelb.edu.au/find/courses/major/artificial-intelligence/) — academic programs.
 * [Monash University — Data Science & AI](https://www.monash.edu/it/study) — academic programs.
-* [JR Academy](https://jiangren.com.au) — project-based AI engineering bootcamp; global cohorts with HQ in Australia.
+* [JR Academy](https://jracademy.ai) — project-based AI engineering bootcamp; global cohorts with HQ in Australia.
 
 **Hiring**
 * [Atlassian Careers](https://www.atlassian.com/company/careers) — Sydney-based, hiring AI engineers.
@@ -745,7 +820,7 @@ For Sydney, Melbourne, Beijing, Shanghai, Singapore, KL — see [🌍 AI Scene b
 * [Australian Government Digital Transformation Agency](https://www.dta.gov.au/) — public sector AI.
 * [Build Club AI](https://www.buildclub.ai/) — Sydney AI builders community + jobs.
 * [JobPin AI](https://jobpin.ai/) — AI-powered resume editing, ATS optimization, and job matching.
-* [JR Academy Career Coaching](https://jiangren.com.au/career-coaching) — AI Engineer career coaching and placement.
+* [JR Academy Career Coaching](https://jracademy.ai/career-coaching) — AI Engineer career coaching and placement.
 
 **Visa Pathways for AI Engineers**
 * **482 TSS** — employer-sponsored temporary skilled visa.
@@ -764,6 +839,12 @@ For Sydney, Melbourne, Beijing, Shanghai, Singapore, KL — see [🌍 AI Scene b
 * [Relevance AI](https://relevanceai.com/) — Sydney; agent platform.
 
 **Meetups & Communities**
+
+* [JR Academy Sydney AI Circle](https://jracademy.ai/ai-circle/city/sydney/) — local AI community events and registration.
+* [JR Academy Melbourne AI Circle](https://jracademy.ai/ai-circle/city/melbourne/) — local AI community events and registration.
+* [JR Academy Brisbane AI Circle](https://jracademy.ai/ai-circle/city/brisbane/) — local AI community events and registration.
+* [JR Academy Perth AI Circle](https://jracademy.ai/ai-circle/city/perth/) — local AI community events and registration.
+* [JR Academy Adelaide AI Circle](https://jracademy.ai/ai-circle/city/adelaide/) — local AI community events and registration.
 * [Build Club Sydney](https://www.buildclub.ai/) — community of AI builders.
 * [Chinese AI Association (Sydney)](https://chineseai.org.au/) — AU 华人 AI 社区.
 * [AI Sydney Meetup](https://www.meetup.com/topics/artificial-intelligence/au/sydney/) — regular events.
@@ -786,6 +867,8 @@ For Sydney, Melbourne, Beijing, Shanghai, Singapore, KL — see [🌍 AI Scene b
 * [Hiredly](https://www.hiredly.com/) — Malaysia tech jobs platform.
 
 **Communities**
+
+* [JR Academy Kuala Lumpur AI Circle](https://jracademy.ai/ai-circle/city/kuala-lumpur/) — local AI community events and registration.
 * [AI Malaysia Meetup](https://www.meetup.com/topics/artificial-intelligence/my/) — local meetups.
 * [Google Developer Groups KL](https://gdg.community.dev/gdg-cloud-kuala-lumpur/) — including AI/ML events.
 * [PyData KL](https://www.meetup.com/PyData-KL/) — Python + data community.
@@ -807,6 +890,16 @@ For Sydney, Melbourne, Beijing, Shanghai, Singapore, KL — see [🌍 AI Scene b
 * [Grab AI Center](https://grab.careers/) — Singapore HQ.
 * [GovTech Singapore](https://www.tech.gov.sg/careers/) — public-sector AI.
 * [Tech in Asia Jobs](https://www.techinasia.com/jobs) — SEA tech jobs.
+
+**Communities**
+
+* [JR Academy Singapore AI Circle](https://jracademy.ai/ai-circle/city/singapore/) — local AI community events and registration.
+
+### 🇬🇧 United Kingdom
+
+**Communities**
+
+* [JR Academy London AI Circle](https://jracademy.ai/ai-circle/city/london/) — coming soon; city community page.
 
 > Adding a country? Open a PR. Helpful info: top universities, AI companies, hiring resources, communities, and (if relevant) visa pathways.
 
@@ -835,7 +928,7 @@ For Sydney, Melbourne, Beijing, Shanghai, Singapore, KL — see [🌍 AI Scene b
 
 ## Contributing
 
-Open a pull request or email **hello@jiangren.com.au**.
+Open a pull request or email **hello@jracademy.ai**.
 
 **Quick rules**:
 * Add resources still active and useful (we periodically prune dead links).
@@ -851,4 +944,4 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for full guidelines and [CODE_OF_CONDUC
 
 [![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)
 
-To the extent possible under law, [JR Academy](https://jiangren.com.au) has waived all copyright and related or neighboring rights to this work.
+To the extent possible under law, [JR Academy](https://jracademy.ai) has waived all copyright and related or neighboring rights to this work.

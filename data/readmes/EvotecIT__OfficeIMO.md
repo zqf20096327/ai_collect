@@ -1,5 +1,7 @@
 # OfficeIMO — Office and document libraries for .NET
 
+**PowerShell:** [PSWriteOffice](PowerShell/PSWriteOffice/README.MD) is maintained in this repository. Use [OfficeIMO issues](https://github.com/EvotecIT/OfficeIMO/issues) for engine and module problems, feature requests, and contributions.
+
 [![CI](https://github.com/EvotecIT/OfficeIMO/actions/workflows/dotnet-tests.yml/badge.svg?branch=master)](https://github.com/EvotecIT/OfficeIMO/actions/workflows/dotnet-tests.yml)
 [![codecov](https://codecov.io/gh/EvotecIT/OfficeIMO/branch/master/graph/badge.svg)](https://codecov.io/gh/EvotecIT/OfficeIMO)
 [![license](https://img.shields.io/github/license/EvotecIT/OfficeIMO.svg)](LICENSE)
@@ -18,7 +20,7 @@ For existing Windows x64 applications that import through ODBC, [OfficeIMO.Odbc]
 
 Upgrading an existing application? The [OfficeIMO migration guide](MIGRATION.md) covers package, API, and behavior changes across every format. Release history and downloadable artifacts are published through [GitHub Releases](https://github.com/EvotecIT/OfficeIMO/releases).
 
-If OfficeIMO saves you time, please consider supporting the work through [GitHub Sponsors](https://github.com/sponsors/PrzemyslawKlys) or [PayPal](https://paypal.me/PrzemyslawKlys). PowerShell users should start with [PSWriteOffice](https://github.com/EvotecIT/PSWriteOffice).
+If OfficeIMO saves you time, please consider supporting the work through [GitHub Sponsors](https://github.com/sponsors/PrzemyslawKlys) or [PayPal](https://paypal.me/PrzemyslawKlys). PowerShell users should start with [PSWriteOffice](https://github.com/EvotecIT/OfficeIMO/tree/master/PowerShell/PSWriteOffice).
 
 ## Sponsors
 
@@ -459,11 +461,12 @@ _Dependency footprint:_ OfficeIMO Markdown, Markdown.Html, and HTML plus `System
 
 - [x] Canonical `HtmlConversionDocument` with DOM, base-URI, media, resource, and URL-policy ownership
 - [x] CSS-aware layout scene shared by PNG, JPEG, TIFF, SVG, WebP, PDF, and Office adapters
+- [x] HTML-to-PDF generation and PDF-backed paged images with shared fonts and margin boxes
 - [x] Direct PNG, JPEG, TIFF, SVG, and lossless WebP output with structured diagnostics and bounded local/remote resource loading
 - [x] Bounded CSS math, deterministic media preferences, caller stylesheets, paged running strings, shared CSS/SVG color parsing, WOFF 1, and Unicode-range-aware font selection
 - [x] Stable HTML contracts reused by Office, Markdown, Reader, PDF, and optional cross-format bridges
 
-_Dependency footprint:_ `OfficeIMO.Core`, AngleSharp, and AngleSharp.Css. Email, RTF, MHTML, and PDF are not part of the base HTML restore graph.
+_Dependency footprint:_ first-party Core, Html.Core, Html.AngleSharp and Pdf, plus AngleSharp and AngleSharp.Css. Email, RTF and MHTML remain separate adapters.
 
 #### [OfficeIMO.Html.Rtf](OfficeIMO.Html.Rtf/README.md)
 
@@ -575,7 +578,7 @@ _Dependency footprint:_ only `OfficeIMO.Core`; external schemas are identified b
 
 _Dependency footprint:_ BCL compatibility packages only; no third-party CSV parser.
 
-#### [OfficeIMO.Browser](OfficeIMO.Browser/README.md)
+#### [OfficeIMO.JavaScript.Assets](OfficeIMO.JavaScript.Assets/README.md)
 
 - [x] Value-only tabular XLSX and CSV exports from synchronous or asynchronous JavaScript row iterables
 - [x] Current-view projection, multiple sheets, column styles, date formats, frozen headers and autofilters
@@ -583,7 +586,7 @@ _Dependency footprint:_ BCL compatibility packages only; no third-party CSV pars
 - [x] CSV formula protection with shared .NET/JavaScript byte vectors
 - [x] [Strict TypeScript library](OfficeIMO.JavaScript/README.md) under `@evotecit/officeimo`, compiled ES modules and generated declarations
 - [x] Public core, ZIP, XML, OPC, XLSX and CSV subpaths, reusable style registry, custom column writers and package parts
-- [x] Embedded .NET assets with content-hashed names and a [single-file/bundle example](OfficeIMO.Browser.Examples/README.md)
+- [x] Embedded .NET assets with content-hashed names and a [single-file/bundle example](OfficeIMO.JavaScript.Examples/README.md)
 
 _Dependency footprint:_ no JavaScript or third-party .NET runtime dependencies.
 
@@ -904,9 +907,10 @@ _Dependency footprint:_ OfficeIMO OneNote.Markdown, Markdown.Pdf, PDF, and Drawi
 
 #### [OfficeIMO.Html.Pdf](OfficeIMO.Html.Pdf/README.md)
 
-- [x] Direct HTML-to-PDF plus shared PNG, JPEG, TIFF, SVG, and WebP rendering from `HtmlConversionDocument`
-- [x] CSS-aware page layout, media queries, local/remote resource policy, font fallback, links, tables, images, and vector content
 - [x] PDF-to-HTML logical projection and result-bearing diagnostics
+- [x] Positioned review HTML with explicit font, image and page-appearance limits
+
+HTML-to-PDF and PDF-backed page images are included in [OfficeIMO.Html](OfficeIMO.Html/README.md).
 
 _Dependency footprint:_ only OfficeIMO HTML, PDF, and Drawing packages; no browser process or native HTML renderer.
 
@@ -1508,15 +1512,4 @@ using OfficeIMO.Pdf;
 
 PdfDocument source = PdfDocument.Load("packet.pdf");
 PdfDocumentReadResult firstPage = source.Read(new PdfReadOptions {
-    PageSelection = PdfPageSelection.Parse("1")
-});
-string firstPageText = string.Join('\n', firstPage.Pages[0].TextBlocks.Select(block => block.Text));
-source.Pages.Extract("1-3").Save("packet-summary.pdf");
-
-PdfDocument.Load("packet.pdf")
-    .MergeWith("appendix.pdf")
-    .Pages.Delete("2")
-    .Stamp.Text("Reviewed")
-    .Save("packet-final.pdf");
-
-PdfAnal
+    PageSelection = PdfPage

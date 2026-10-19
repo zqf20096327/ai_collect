@@ -47,6 +47,7 @@ projects keep their own repositories, listed in
 | [Options models for fixed income](fixed-income-options-models/) | Callable and puttable bonds on a Black-Derman-Toy tree, a Tsiveriotis-Fernandes convertible, the MBS prepayment option, Merton on Boeing and four other names, and Hull-White fitted on T-bills since 1990 | FRED + SEC filings + Yahoo |
 | [Yield curves, US and Brazil](yield-curve-us-brazil/) | FRED and Tesouro Direto, with a Nelson Siegel Svensson fit | FRED + BCB + Tesouro |
 | [Trading integration](trading-integration/) | Connect a strategy to Alpaca or IBKR paper, TradingAgents, TradingView MCP and Lean | free paper accounts |
+| [Quant and options tools](quant-options-tools/) | OpenBB data, a TradingView MCP screen, QuantLib pricing, a TradingAgents signal and a vectorbt sweep of 4,851 backtests, joined in one loop that sends the order to IBKR paper | OpenBB providers + free paper account |
 
 ## Quickstart
 

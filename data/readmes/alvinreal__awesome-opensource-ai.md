@@ -328,6 +328,7 @@ Good entries should have a clear reason to exist. They should help people build,
 - [Bifrost](https://github.com/maximhq/bifrost) - LLM gateway with a unified OpenAI-compatible API across providers, routing, load balancing, fallbacks, guardrails, and observability. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/maximhq/bifrost?style=social)
 - [freelm](https://github.com/shihabshahrier/freelm) - Python and TypeScript client library, with an optional local OpenAI-compatible server, that pools the free tiers of Gemini, Groq, OpenRouter, Cloudflare Workers AI and other providers with key rotation and failover. MIT licensed. ![GitHub stars](https://img.shields.io/github/stars/shihabshahrier/freelm?style=social)
 - [fitcheck](https://github.com/SIDDARTHAREDDY8/fitcheck) - Zero-dependency Python CLI that plans LLM VRAM before you serve: real per-token KV-cache math, FITS/TIGHT/OOM verdicts, max safe context, and paste-ready vLLM/llama.cpp flags. MIT licensed. ![GitHub stars](https://img.shields.io/github/stars/SIDDARTHAREDDY8/fitcheck?style=social)
+- [Weave Router](https://github.com/weave-os/router) - Self-hostable drop-in proxy for the Anthropic Messages, OpenAI Chat Completions and Gemini APIs that picks a model for each request with an on-box embedder; supports BYOK and OTLP traces and works with Claude Code, Codex, opencode and pi. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/weave-os/router?style=social)
 
 #### Additional Inference Engines
 
@@ -406,6 +407,7 @@ Good entries should have a clear reason to exist. They should help people build,
 - [Embabel](https://github.com/embabel/embabel-agent) - Agent framework for the JVM written in Kotlin with dynamic goal-oriented planning and Spring Boot integration. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/embabel/embabel-agent?style=social)
 - [Ouroboros](https://github.com/razzant/ouroboros) - Self-hosted general-purpose agent with durable identity and memory, specialist subagent coordination, and reviewed changes to its own implementation. MIT licensed. ![GitHub stars](https://img.shields.io/github/stars/razzant/ouroboros?style=social)
 - [OpenAmer](https://github.com/openamer/openamer) - Open-source Windows-native agent that runs its cognition in-process (five native tools: think, learn, remember, trigger, heartbeat) and operates the real desktop locally — filesystem, terminal, GUI and browser over the Chrome DevTools Protocol. A single 10-subsystem heartbeat replaces 84 cron entries, and an A2A mesh routes work peer-to-peer between instances. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/openamer/openamer?style=social)
+- [CUGA](https://github.com/cuga-project/cuga-agent) - IBM Research generalist agent harness built on LangGraph that runs tasks over APIs (OpenAPI, MCP, LangChain tools) and the web, with configurable policies and human-in-the-loop tool approval. ![GitHub stars](https://img.shields.io/github/stars/cuga-project/cuga-agent?style=social)
 
 #### Multi-Agent Orchestration
 
@@ -460,6 +462,7 @@ Good entries should have a clear reason to exist. They should help people build,
 - [5dive](https://github.com/5dive-ai/5dive) - Self-hosted CLI that runs a team of AI agents on one Linux server, each its own Linux user running Claude Code, Codex or another official agent CLI as a systemd service, sharing an org chart and a backlog. MIT licensed. ![GitHub stars](https://img.shields.io/github/stars/5dive-ai/5dive?style=social)
 - [subagent-tuner](https://github.com/Kruhlikau/subagent-tuner) - Claude Code mod that sets the model and reasoning effort of each subagent by asking the user, by task-kind recommendation, or from a saved default. ![GitHub stars](https://img.shields.io/github/stars/Kruhlikau/subagent-tuner?style=social)
 - [apowerb](https://github.com/apowerb/apowerb) - Platform to build, run and govern multi-agent systems on ADK, with RAG, Text-to-SQL, MCP tools, token quotas and per-session audit. Apache 2.0 licensed, self-hosted with Docker Compose or Helm. ![GitHub stars](https://img.shields.io/github/stars/apowerb/apowerb?style=social)
+- [Frink](https://github.com/benord-labs/frink) - Fine-tuned automation for everyone: visual workflows where AI coding agents (Claude Code, Codex, OpenCode, GitHub Copilot, Cursor) act on your tickets, errors and schedules, and ask before they change anything. MIT licensed. ![GitHub stars](https://img.shields.io/github/stars/benord-labs/frink?style=social)
 
 #### Agent Protocols & Standards
 
@@ -468,11 +471,4 @@ Good entries should have a clear reason to exist. They should help people build,
 - [Agent Substrate](https://github.com/agent-substrate/substrate) - Kubernetes-native execution runtime for high-density, stateful AI-agent sandboxes with actor lifecycle management, suspend/resume, and workload routing. Apache-2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/agent-substrate/substrate?style=social)
 - [DESIGN.md (Google)](https://github.com/google-labs-code/design.md) - A format specification for describing visual identity to coding agents, combining YAML tokens and markdown prose to give agents a structured understanding of design systems. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/google-labs-code/design.md?style=social)
 - [Agent Skills](https://github.com/agentskills/agentskills) - Standardized specification and document format for bundling and progressively loading AI agent capabilities, instructions, scripts, and resources. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/agentskills/agentskills?style=social)
-- [FastMCP](https://github.com/PrefectHQ/fastmcp) - A Python framework for building Model Context Protocol (MCP) servers and clients with automatic schema generation and validation. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/PrefectHQ/fastmcp?style=social)
-
-#### Agent Context, Memory & Knowledge
-
-- [OpenViking](https://github.com/volcengine/OpenViking) - Open-source context database for AI agents that unifies agent memory, knowledge RAG, and skills as a virtual filesystem. AGPL 3.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/volcengine/OpenViking?style=social)
-- [LWC (Local Wiki CLI)](https://github.com/JanYork/llm-wiki-cli) - Local-first, source-grounded project memory for coding agents with bounded MCP retrieval, citations and provenance, atomic changesets, and optional document and code knowledge graphs. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/JanYork/llm-wiki-cli?style=social)
-- [Obsidian Agent Skills](https://github.com/kepano/obsidian-skills) - Agent skills and open-format tooling for Obsidian vaults, Markdown, Bases, and JSON Canvas compatible with Claude Code, Codex, and OpenCode. MIT licensed. ![GitHub stars](https://img.shields.io/github/stars/kepano/obsidian-skills?style=social)
-- [claude-obsidian](https://github.com/Agri
+- [FastMCP](https://github.com/PrefectHQ/fastmcp) - A Python framework for building Model Context Protocol (MCP) servers and clients with automatic schema generation and validation. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/git

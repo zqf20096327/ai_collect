@@ -106,6 +106,7 @@
 - [Pinrail](https://github.com/forgeplane/pinrail) - Open-source desktop app where Claude Code, Codex, Cursor, and other coding agents ask for a review before they act, show it in a view made for its content, and get back structured decisions.
 - [Wardlume](https://wardlume.github.io) - Locks your Mac's keyboard, mouse, and trackpad while Claude Code, Codex, Cursor or Gemini CLI keep running in view, so you can step away without anyone typing into the session. Unlocks with Touch ID or Apple Watch; free for personal use, sandboxed with no network access.
 - [Appto](https://appto.store) - Mac app that takes an iPhone app from idea to the App Store on your own Claude Code or Codex plan. It checks the niche on live App Store data, writes native SwiftUI, makes store screenshots and text in every language and fills in App Store Connect after you confirm. Paid; free demo in the app, macOS on Apple silicon and Intel.
+- [Frink](https://frink.dev) - Fine-tuned automation for everyone: visual workflows where AI coding agents act on your tickets, errors and schedules, and ask before they change anything. Works with Claude Code, Codex, OpenCode, GitHub Copilot and Cursor. Local and open source (MIT), on macOS and Linux. [Source](https://github.com/benord-labs/frink)
 
 ## Plugins and Extensions
 
@@ -171,6 +172,8 @@
 - [Pethost](https://pethost.dev) - Puts what you build with an agent online: `pethost deploy` in a folder, or one sentence to Claude Code or Codex over MCP, and it runs with HTTPS, GitHub deploys, backups and logs.
 - [SpaceApp](https://github.com/oll4com/spaceapp) - Self-hosted web workspace that runs OpenCode, Codex, Claude Code, Gemini CLI and other coding CLIs side by side in persistent rooms, with MCP servers and managed browser panes. Installs with `npx --yes run-spaceapp@latest install` on Docker (Linux, macOS, Windows 11). Source-available (BSL 1.1).
 - [Sqwakie](https://sqwakie.si/) - Team channel for Claude Code and Codex agents across machines: agents post, ask and reply to each other from the CLI or as MCP tools, every machine serves a live Mission Control dashboard, and kanban project boards have cards that agents can start, review and finish. Installs with `curl -fsSL https://sqwakie.si/install.sh | sh` (macOS on Apple Silicon, Linux x64 or arm64). Free for up to 2 people; source-available (FSL-1.1-ALv2).
+- [agent-chain-doctor](https://github.com/elfovo/agent-chain-doctor) - Read-only shell script that checks launchd, cron and systemd state and logs for the ways a scheduled Claude Code agent chain stops silently, plus a missed-run alarm.
+- [ratchet](https://github.com/krishansubudhi/ratchet) - Code-size budget for a repo that only goes down: `ratchet check` refuses changes that push source or test line counts past a ceiling, as a Claude Code Stop hook, git pre-commit hook or GitHub Action, and only a logged `ratchet grant` raises it. Python, Apache-2.0.
 
 ## Security & Pre-Deploy Checks
 
@@ -193,6 +196,7 @@ AI-generated apps often ship with exposed secrets, open databases, or missing se
 - [VibeLocked](https://vibelocked.com/) - Free in-browser scanner that finds exposed OpenAI, Stripe, Supabase service role, AWS, and GitHub keys in a public GitHub repo, plus plain-language security guides and checklists for Supabase RLS, Firebase rules, Stripe webhooks, and AI API routes.
 - [SealMyApp](https://sealmyapp.com/) - Read-only security scan for apps built with Lovable, Bolt, Cursor, Replit and v0 that only runs after you verify you own the app (DNS record or file). Checks for Supabase tables readable without login, open Firebase rules, secret keys in the JS bundle and exposed `.env`/`.git` files. Free scan and free tools (key checker, Supabase RLS audit SQL); paid tiers add builder-specific fix prompts with a verified re-scan and daily monitoring.
 - [nextjs-supabase-stripe-security-checker](https://github.com/edtrackai/nextjs-supabase-stripe-security-checker) - MIT-licensed local CLI and GitHub Action (`npx github:edtrackai/nextjs-supabase-stripe-security-checker .`) with 24 checks for Next.js + Supabase + Stripe apps: leaked or service-role keys in client code, missing RLS and grants, and unverified Stripe webhooks. No account, nothing uploaded.
+- [FixLoop Scan](https://fixloop.dev/scan) - Free scan of a deployed app's public surface: HTTPS, security headers, keys leaked in the HTML and same-origin JavaScript, robots.txt and sitemap. Read-only, no login, no signup.
 
 ## Documentation for AI Coding
 

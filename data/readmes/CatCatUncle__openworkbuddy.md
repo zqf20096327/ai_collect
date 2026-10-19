@@ -77,6 +77,8 @@ npm start
 
 </details>
 
+HTML 内嵌预览使用隔离的临时存储（`localStorage`、`sessionStorage` 各最多 64 MiB，关闭后清除）。需要让网页保存业务数据时，点预览上方的「本地部署并打开」；它会启动仅本机可访问的服务并打开当前网页，数据可跨页面刷新保留。此时使用浏览器原生存储配额，具体上限因浏览器而异；重要数据仍应使用网页自己的导出/备份功能。
+
 ## 你说一句，它交给你
 
 | 你说一句 | 它交给你 |
@@ -246,30 +248,24 @@ openworkbuddy engines use claude-code # 换执行引擎：跑在你已经付过�
 
 ## 它是怎么搭的
 
-```mermaid
-flowchart TB
- subgraph Entry["你的设备"]
- Desktop["桌面端 / Web"]
- CLI["openworkbuddy CLI"]
- IM["飞书 / 微信等远程入口"]
- end
+<p align="center">
+ <img src="docs/images/architecture.svg" width="1120" alt="OpenWorkBuddy 技术架构：桌面端、CLI 和 IM 通过各自宿主进入 Agent Runtime，由 Runtime 协调模型、安全审批、工具、项目上下文、成果交付与执行追踪">
+</p>
 
- Entry --> Runtime["OpenWorkBuddy 本地运行时\n会话 · 权限 · 项目 · API"]
- Runtime --> Agent["Agent 编排\n规划 · 工具调用 · 文件验收"]
- Agent <--> Models["模型路由\n云端 LLM / Ollama / Claude Code / Codex"]
- Agent <--> Capabilities["能力层\nMarkdown Skills · 专家 · MCP · Plugins"]
- Agent <--> Workspace["本机工作区\n文件 · 素材 · 项目上下文 · 记忆"]
- Agent --> Canvas["可执行无限画布\n剧本 · 角色 · 镜头 · 素材 · 时间线"]
- Agent --> Trace["本地 Trace\n模型 · 工具 · 耗时 · Token · 输入输出"]
- Trace -. 可选 .-> Langfuse["Langfuse"]
-```
-
-这张图也是读代码的路线：从 `server.js` 进去，再看 `src/agent/agent.js` 怎么编排模型和工具。细节 → [实现细节](docs/实现细节.md)，代码怎么分层 → [代码架构](docs/代码架构.md)
+入口分别在 `server.js`、`cli.js`、`src/im/`；Agent 在 `src/agent/agent.js`，工具在 `src/agent/tools.js` 与 `src/tools/`。会话、配置和用量记在本机 `data/`，任务文件写入项目工作区。代码分层 → [代码架构](docs/代码架构.md)；任务流程 → [实现细节](docs/实现细节.md)
 
 ## 最新动态
 
+- **10-20** 源码更新先检查 Git 状态；有本地改动或分叉时保留原目录，避免更新时覆盖会话和成果
+- **10-19** 技术架构图按实际调用关系重画，改用可缩放 SVG，保证节点文字完整显示
+- **10-19** 任务可改名并显示日期；Goal 模式单轮 100 步后检查未完成项并有限续跑；沙箱拒绝会说明无法后台审批
+- **10-19** 网页内嵌预览临时存储上限增至 64 MiB；关闭预览后清除
 - **10-19** 网页预览默认铺满右侧面板，交互画布按真实视口运行；需要查看整页时可手动切换适配
 - **10-17** CLI 默认简洁显示，过程与用量按需查看；修复空插话、旧文件重复列出和补充要求丢失，支持直接打开本会话成果
+
+<details>
+<summary>更早动态（10-16 及之前）</summary>
+
 - **10-16** 修复网页预览中小游戏和按钮点不动的问题；支持独立临时存储，保留应用数据隔离
 - **10-16** OAuth 第二期：HTTP 连接器在服务商页面授权，令牌自动刷新，可移除本机授权
 - **10-16** 预览支持圈选批注，文件改动能逐块回退、撤销，并按行提出修改要求
@@ -296,7 +292,9 @@ flowchart TB
 - **10-10** 成员、审计员和分公司账号也能建多个项目：一个项目一个文件夹，都在自己的工作目录里，以前的成果在「默认项目」
 - **10-10** 画布卡片能拖线连到另一张卡，连不上的标红说原因；点「+」接一张已连好的新卡，标题和提示词能直接在卡上改
 
-更早的看 **[变更记录](CHANGELOG.md)**。
+</details>
+
+完整历史见 **[变更记录](CHANGELOG.md)**。
 
 ## ⚠️ 这个 agent 手里有 shell
 

@@ -1,4 +1,4 @@
-[![DOI](https://joss.theoj.org/papers/10.21105/joss.01361/status.svg)](https://doi.org/10.21105/joss.01361)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.11015/status.svg)](https://doi.org/10.21105/joss.11015)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.595853.svg)](https://doi.org/10.5281/zenodo.595853)
 [![Documentation Status](https://readthedocs.org/projects/smact/badge/?version=latest)](https://smact.readthedocs.org/en/latest/?badge=latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -10,7 +10,7 @@
 ![dependencies](https://img.shields.io/librariesio/release/pypi/smact)
 [![CI Status](https://github.com/WMD-group/SMACT/actions/workflows/ci.yml/badge.svg)](https://github.com/WMD-group/SMACT/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/WMD-group/SMACT/branch/master/graph/badge.svg?token=UtgVxjoYNP)](https://codecov.io/gh/WMD-group/SMACT)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/smact) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/WMD-group/SMACT)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/smact) [![Ask DeepWiki](https://img.shields.io/badge/DeepWiki-Ask-blue)](https://deepwiki.com/WMD-group/SMACT)
 
 # SMACT
 
@@ -267,6 +267,28 @@ Or to run the full CI pipeline (pre-commit hooks and tests):
 ```bash
 make ci-local
 ```
+
+## Citing SMACT
+
+If you use SMACT in your work, please cite:
+
+K. O. Mastej et al., "SMACT v4: Enhanced Screening and Prediction Tools for Computational Materials Design", *J. Open Source Softw.* **11**, 11015 (2026). https://doi.org/10.21105/joss.11015
+
+```bibtex
+@article{Mastej2026,
+  doi = {10.21105/joss.11015},
+  url = {https://doi.org/10.21105/joss.11015},
+  year = {2026},
+  publisher = {The Open Journal},
+  volume = {11},
+  number = {126},
+  pages = {11015},
+  author = {Mastej, Kinga O. and Onwuli, Anthony and Moriarty, Alexander and Davies, Daniel W. and Nduma, Ryan and Butler, Keith T. and Lee, Jiwoo and Negishi, Masahiro and Detrattanawichai, Panyalak and Ganose, Alex M. and Park, Hyunsoo and Goodall, Rhys E. A. and Li, Tianshu and Walsh, Aron},
+  title = {SMACT v4: Enhanced Screening and Prediction Tools for Computational Materials Design},
+  journal = {Journal of Open Source Software}
+}
+```
+Further reading on the methods behind SMACT:
 
 ## References
 

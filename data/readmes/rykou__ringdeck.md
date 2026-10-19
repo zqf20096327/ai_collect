@@ -10,7 +10,7 @@ Radial rings of macros, text snippets and shortcuts for Windows. Hold a shortcut
 [![RingDeck 0.3.4: rings that branch into a tree, slices that wait before they run, web requests and ring icons](docs/demo.gif)](docs/demo.mp4)
 
 - Any number of rings, each on its own global shortcut (keyboard or mouse button).
-- Slices paste text, play keystroke macros, open apps, files and links, or open another ring.
+- Slices paste text, play recorded macros (keys, clicks, mouse moves, scrolling), open apps, files and links, run flows of linked actions, or open another ring.
 - Editor with live preview; settings in `%APPDATA%\RingDeck\config.json`.
 
 ## Use
@@ -31,6 +31,42 @@ that ring. Rings come in five styles (Settings → Ring style, or per ring): Cla
 Placeholders in pasted and typed text: `{date}`, `{time}`, `{datetime}`, `{clipboard}`, with optional formats such as
 `{date:yyyy-MM-dd}`. Type `{{` for a literal brace.
 
+## Macros
+
+A slice set to **Macro / workflow** plays a list of steps, top to bottom: key presses, key down and key up,
+clicks, mouse moves, scrolling, typed or pasted text, opening apps and links, focusing a window, screenshots (to the
+clipboard, or of an area you drag out when it runs), asking your AI, and web requests.
+Each pause is a **Wait** row in milliseconds.
+
+- **⏺ Record**: press F9, do the thing in any window, press F9 again. Mouse movement, clicks, scrolling and keys
+  are recorded with the real time between them; while recording, only a small red circle shows in the bottom
+  left corner (click it to stop). Esc cancels.
+- **Mouse move** steps follow the recorded path; a speed slider plays it up to 3 times faster.
+- **Show key down and key up separately** (off by default) splits each press into its down and up rows.
+- **Pop out** opens the steps in their own window, where you can drag them into order, clear them all, or remove
+  or set all the waits at once.
+
+Esc stops a running macro, and any key or button it still holds is let go.
+
+## Flows
+
+A slice set to **Flow** opens a canvas where actions are cards linked by wires, from **Start**:
+
+- Pick cards from the palette (Open, Recorded steps, Type text, Key press, Click, Screenshot, Screenshot area, Ask AI,
+  Send to web and more);
+  drag from a card's right dot onto another card to link them. Select a card to edit its steps on the right.
+- A card with several links out starts those branches **at the same time**; a card with several links in waits for
+  all of them. At least one branch must end at a **Stop**; others may simply end.
+- Cards that use the keyboard, mouse or clipboard take turns, so branches never type over each other.
+- For example: open the browser, take a screenshot, then at once play recorded steps in one branch and send the
+  screenshot to Discord or Teams in another.
+
+- **Ask AI** sends the clipboard picture and/or text to one of your AI connections with your question; the answer
+  replaces what's on the clipboard, for the next cards to paste or send (`{clipboard}`). For example: Screenshot area →
+  Ask AI "Read the error and suggest a fix" → Send to Teams.
+
+A failing card stops the whole flow and the notification names it; Esc stops a running flow.
+
 ## AI chat slices
 
 A slice can open a chat with any AI model you set up: OpenAI-compatible services (OpenAI, Ollama, LM Studio,
@@ -43,6 +79,10 @@ OpenRouter, Groq and others), Anthropic, Google Gemini, or any HTTP API through 
    "Translate to English".
 3. Select some text anywhere, open the ring and pick the slice. The chat opens with your text, the reply streams in,
    and **Ctrl+Enter** pastes it back over your selection.
+
+To ask about a picture, tick **Also send the picture on the clipboard** on the slice: take a screenshot (Win+Shift+S),
+open the ring and pick the slice, and the AI reads it along with your text. The model must read images (GPT-4o,
+Claude, Gemini and others).
 
 Make as many slices as you like, each on its own connection and instruction. Keys are encrypted for your Windows
 account and are never included when you export rings.
@@ -69,6 +109,8 @@ never included when you export rings, since anyone with a webhook URL can post t
 - Windows blocks input to programs running as administrator; RingDeck shows a notification instead.
 - Emoji used as icons are drawn in one colour.
 - Exported rings do not include image icons.
+- Mouse moves and clicks in macros go to fixed places on the screen: if a window moves, record those steps again.
+  Some games ignore input sent this way.
 - The MSI on GitHub is not code-signed, so SmartScreen warns on first run. The Microsoft Store version is
   signed by Microsoft and installs without a warning.
 
@@ -84,7 +126,8 @@ Needs a .NET 10 SDK and the WiX 3.14 binaries; see the header of `build.sh` for 
 
 RingDeck does not send information to other computers, except when you choose a slice that does:
 
-- **AI chat slices** send the text of that chat to the AI service you set up for that slice, and nowhere else.
+- **AI chat slices and Ask AI steps** send the text of that chat (and the clipboard picture, if you ticked that or the
+  step reads it) to the AI service you set up for it, and nowhere else.
 - **Web request slices** send the message you wrote (and the clipboard picture, if you ticked that) to the web service
   or address you set up for that slice, and nowhere else.
 

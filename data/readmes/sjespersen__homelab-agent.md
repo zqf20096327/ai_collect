@@ -197,8 +197,8 @@ agent) gets a lot. Read this before you put anything valuable on the box.
   photos must be PNG, JPEG or WebP (checked by their first bytes, 25 MB at most) and are stored
   under names the Studio makes up; it serves renders only by those names, so a request can't
   reach other files.
-- The USB wake Pi (`extras/usb-wake`) answers `/api/wake` without a login to anyone on the
-  LAN; it can only wake the box or tap Shift, not type anything else.
+- The wake relay Pi (`extras/wake-relay`) answers `/api/wake` without a login to anyone on the
+  LAN; all it can do is send the magic packet to the box.
 - Hermes pushes to GitHub with per-repo deploy keys, not your account.
 - The Mac's backup key can only read the backup folder (`rrsync -ro`).
 - Backups are encrypted with restic.
@@ -265,7 +265,9 @@ SwarmUI is built the same way, and installs ComfyUI and Python packages at runti
 every ComfyUI custom node or SwarmUI extension you add runs code with access to its container
 (your images and the models disk). The Studio adds two community node packs
 (`stacks/ai/studio/comfy-nodes.txt`): pinned to a commit, read before pinning (no network
-calls, subprocesses or installs at runtime), put in place by `before-up.sh`.
+calls, subprocesses or installs at runtime), put in place by `before-up.sh`. It also fetches
+MiniMax's H3 prompt guide, a text file that goes into Qwen's prompt: pinned to a commit and
+checked against its SHA-256, so a changed file is refused rather than fed to the model.
 *Reduce it:* update monthly; read the release notes for Hermes, n8n, Strata and SwarmUI before
 committing new pins or tags, and the diff before moving a node pack's pin; install only custom
 nodes and extensions from well-known authors.
@@ -295,8 +297,8 @@ every boot); keep the box somewhere it won't walk off.
   published; only Open WebUI reaches it.
 - The local AI key can also suspend, restart or shut down the box (the Local AI page's power buttons).
   A root service runs those three actions and nothing else.
-- With `WAKE_TARGETS` set, Hermes can wake those devices (and only those: the MACs come from
-  the config). A prompt injection could wake them too; it can't do more than that through this.
+- With `WAKE_TARGETS` set, Hermes can wake those devices (and only those: the MACs and wake URLs
+  come from the config). A prompt injection could wake them too; it can't do more than that through this.
 - With `WAKE_ON_LAN_IFACE` set, anything on the LAN can wake the box with a magic packet. That's
   harmless by itself, but a box woken that way is up with all its services.
 - The LED switch (ai module, `AI_LEDS=yes`) runs a root service whenever
@@ -381,7 +383,10 @@ Revoke access any time by deleting the deploy key on GitHub.
 Set `WAKE_TARGETS="gpubox=aa:bb:cc:dd:ee:ff"` (name=MAC, space-separated) and run `./deploy.sh`.
 Hermes gets a `wake-device` skill: it writes a name to `/opt/data/wake/request`, and a small
 user service on the host (`hermes-wake.path`, no root) sends the Wake-on-LAN packet, since
-broadcasts from Hermes' container don't leave its Docker network. Ask it on Telegram or WhatsApp
+broadcasts from Hermes' container don't leave its Docker network. A device that wakes some other
+way can have a URL instead of a MAC (`laptop=http://buddy.local/api/wake`): the host POSTs to it,
+e.g. a Pi cabled to a Wi-Fi-only box's Ethernet port (`extras/wake-relay`), or an ESP32-S3
+plugged in as a USB keyboard. Ask it on Telegram or WhatsApp
 to "wake the gpubox". The other computer has to allow Wake-on-LAN (see `extras/wake-on-lan`).
 
 ## Extras
@@ -392,8 +397,8 @@ to "wake the gpubox". The other computer has to allow Wake-on-LAN (see `extras/w
   See its README.
 - `extras/wake-on-lan/`: wakes the box over the network from suspend or off (`WAKE_ON_LAN_*`).
   See its README.
-- `extras/usb-wake/`: wakes the box from suspend with a Pi Zero plugged in as a USB keyboard,
-  also on Wi-Fi (`USB_WAKE_*`). See its README.
+- `extras/wake-relay/`: wakes the box while it's on Wi-Fi, through a Pi cabled to its Ethernet
+  port (`WAKE_RELAY_*`). See its README.
 
 ## Not covered
 

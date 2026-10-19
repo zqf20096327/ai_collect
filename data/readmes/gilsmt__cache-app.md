@@ -1,16 +1,16 @@
 # Cache App
 
-<a href="https://www.cachd.app" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/cachd.app-000000?logo=vercel&logoColor=white" alt="cachd.app"></a>
+<a href="https://www.cachd.app" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Cache-cachd.app-3B3B3B?labelColor=1A1A1A" alt="cachd.app"></a>
 <a href="https://docs.cachd.app" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Docs-Read-E6E6E6?labelColor=C3C3C3&color=E6E6E6" alt="Documentation"></a>
 <a href="https://github.com/gilsmt/cache-app/releases" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/github/v/release/gilsmt/cache-app" alt="Release"></a>
 
 Collect, organize, and rediscover everything you've saved across platforms.
 
-[![Cache App Preview](app/opengraph-image.png)](https://www.cachd.app)
-
 ## Why Cache
 
-Bookmarking is broken. When you hit "save" on a tweet, a video, or a post, you are making a deliberate decision that _this is worth remembering_. But that intent is immediately lost. It vanishes into a list you never revisit, scattered across a dozen platforms with no connection to your actual workflow or goals. The feeds are designed to keep you scrolling, not to help you resurface what you need, when you need it. Existing tools treat the "save" action as an afterthought, a dead end rather than a starting point.
+Bookmarking is broken. When you hit "save" on a tweet, a video, or a post, you are making a deliberate decision that _this is worth remembering_. But that intent is immediately lost. It vanishes into a list you never revisit, scattered across a dozen platforms with no connection to your actual workflow or goals.
+
+The feeds are designed to keep you scrolling, not to help you resurface what you need, when you need it. Existing tools treat the "save" action as an afterthought, a dead end rather than a starting point.
 
 Cache exists because that signal is too valuable to waste. It treats the act of saving as a first-class event and builds the entire experience around turning that intent into action. It does not replace your platforms; it respects the intent behind why you use them and gives it a destination.
 
@@ -18,12 +18,12 @@ Cache exists because that signal is too valuable to waste. It treats the act of 
 
 ## What [Cache](https://www.cachd.app) does for you
 
-- Integrate Cache into your day-to-day by bringing bookmarks from browsers, Instagram, TikTok, YouTube, X, GitHub, Pinterest, Google Photos, MCP, and more into one place. Unlike other tools that cap saves, Cache has no limit.
-- Smart collections use AI to rank saved items by relevance and adapt to your preferences over time.
+- Integrate Cache into your day-to-day by bringing bookmarks from browsers, Instagram, TikTok, YouTube, X, GitHub, Pinterest, and more into one place. Unlike other tools that cap saves, Cache has no limit.
+- Smart Collections uses AI to rank saved items by relevance and adapt to your preferences over time.
 - See a 1-line summary for each collection that updates as you add items, then expand it for more detail.
-- See an instant overview of your library metrics.
-- Just ask the Cache AI agent and search across all your saved content.
-- Create custom agents for daily digests, summaries, weekly reminders, and more.
+- Get an instant overview of your library metrics.
+- Simply ask the Cache AI agent and search across all your saved content.
+- Create custom automations for daily digests, summaries, weekly reminders, and more.
 - Write notes alongside your bookmarks.
 - Share a live view of any collection with anyone, even if they do not use Cache.
 - Capture and sync saved content from anywhere on the web with the browser extension.
@@ -34,11 +34,11 @@ The Cache App is still evolving, and its features and workflows will continue to
 
 ## Quickstart
 
-### Cloud-hosted: [www.cachd.app](https://www.cachd.app)
+### Cloud-hosted: [cachd.app](https://www.cachd.app)
 
 <a href="https://www.cachd.app" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Open-cachd.app-3B3B3B?labelColor=1A1A1A" alt="Open cachd.app"></a>
 
-### Self hosting
+### Self-hosted:
 
 You can self-host the Cache App for total control over your data and design. Cache has zero telemetry by default.
 

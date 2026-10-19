@@ -210,8 +210,11 @@ that does it. Daily backups and signed updates that roll back on failure come wi
   page changes. [Routines](./apps/docs/content/features/routines.md)
 - **Standing orders.** Say once "always tell me if a flight changes". Conch looks now
   and then, for free until something is new. [Check-ins](./apps/docs/content/features/check-ins.md)
+- **Nothing lost while it's off.** A tiny relay on a free Cloudflare account or a Pi keeps
+  texts, Teams messages and webhooks, locked for your computer alone, until Conch is back.
+  [The always-on relay](./apps/docs/content/care/relay.md)
 - **A browser you can watch** and take over. It signs in from your passwords without seeing
-  one. A real terminal is a keystroke away.
+  one, and each task gets a browser of its own. A real terminal is a keystroke away.
   [Browser](./apps/docs/content/features/browser.md) ·
   [Passwords](./apps/docs/content/features/passwords.md) ·
   [Terminal](./apps/docs/content/features/terminal.md)
@@ -233,10 +236,12 @@ that does it. Daily backups and signed updates that roll back on failure come wi
   menu bar, and an installable app on your phone over a private address.
   [On your phone](./apps/docs/content/start/phone.md)
 - **Your chat apps.** Telegram, Discord, Slack, WhatsApp, Signal, iMessage, email,
-  Teams, Matrix and more, with the same commands.
+  Teams, Matrix and more, with the same commands. Call your assistant's SMS number
+  hands-free, or let it ring you when an OK waits.
   [Chat apps](./apps/docs/content/channels)
 - **A server of your own.** One line installs it at `conch.yourname.com` with its own
   certificate. [On a server](./apps/docs/content/start/server.md)
+- **Requested Gmail sends in Auto** are checked against your request after resolving the account and recipients; reading a page does not automatically add a second approval.
 - **Four permission modes,** the same on every provider: Read only, Ask first, Auto
   and Full trust. [Modes](./apps/docs/content/reference/modes.md)
 - **Careful after reading.** Once a chat has read a web page or an email, anything

@@ -14,6 +14,17 @@ getstream skills
 
 With no arguments, `getstream skills` installs the default set - the `stream` router (which includes the CLI layer), `stream-builder`, and `stream-docs`. The web pack (`stream-react`) and platform packs (`stream-swift`, `stream-android`, `stream-react-native`, `stream-flutter`, `stream-unity`, `stream-unreal`), and `stream-feeds-migration` install on demand via `getstream skills <name>` the first time a task needs them. To set up a project at the same time (auth, org/app selection, credentials), run `getstream init` instead.
 
+### As a plugin
+
+The skills also ship as a plugin for Claude Code and Cursor, together with the Stream MCP server (`https://mcp.getstream.io/mcp`), which signs in with your Stream account and lets the agent list your apps and call the Stream API on them. In Claude Code:
+
+```
+/plugin marketplace add GetStream/agent-skills
+/plugin install stream@getstream
+```
+
+Then run `/mcp` to sign in to the `stream` server. The plugin also brings the `getstream` CLI: its launcher uses an installed CLI, or fetches one into `~/.stream/bin` the first time a skill runs it.
+
 Use `/stream` for generic routing, or invoke a skill directly with `/stream-react`, `/stream-builder`, `/stream-docs`, `/stream-swift`, `/stream-android`, `/stream-react-native`, `/stream-flutter`, `/stream-unity`, `/stream-feeds-migration`, or `/stream-unreal`. Step-by-step instructions are in the [installation guide](https://getstream.io/agent-skills/docs/installation/).
 
 ## Skills
@@ -43,6 +54,7 @@ The skills are plain markdown. Installation and on-demand skill fetching run thr
 | Step | Trigger | What it does | Source |
 |---|---|---|---|
 | `getstream skills <name>` | Agent, on demand (or you) | Fetches a skill's markdown into your skills directory via the `getstream` CLI. | GitHub (`GetStream/agent-skills`) |
+| Plugin `getstream` launcher | First `getstream` command, when the CLI is not installed | Downloads the CLI from Stream's release manifest into `~/.stream/bin`, verifying its checksum; an installed CLI is used instead when there is one. | getstream.io (`/cli/latest.json`) |
 | Frontend skill installs (builder only) | Agent asks first, then runs | Installs three third-party skill packs for UI scaffolding - see below. | GitHub (listed) |
 
 ### Frontend skills (builder only)
@@ -94,7 +106,7 @@ The `/stream` router classifies intent, runs `getstream` CLI commands itself (qu
 | Build or integrate a Flutter app | `stream-flutter` + its `builder.md`, `sdk.md`, and `references/*.md` |
 | Build or integrate a Unity Engine project | `stream-unity` (docs orchestrator: `docs-map.md` + `setup.md` + `ui.md` + `platforms.md`) |
 | Build or integrate an Unreal Engine project | `stream-unreal` (docs orchestrator: `docs-map.md` + `setup.md` + `widgets.md` + `platforms.md`) |
-| Build or review a Feeds v2 -> v3 sync mapping | `stream-feeds-migration` (`SKILL.md` + `references/mapping-keys.md` + `scripts/fetch_sample.py`) |
+| Build or review a Feeds v2 -> v3 sync mapping, and plan the code port | `stream-feeds-migration` (`SKILL.md` + `references/mapping-keys.md` + `references/code-inventory.md` + `references/porting-plan.md` + `scripts/fetch_sample.py` + `scripts/scan_v2_calls.py`) |
 
 > **Routing precedence:** when user input contains a platform signal (e.g. `react native`, `expo`, `stream video rn`, `swift`, `ios`, `flutter`, `unity`, `unreal`), the matching platform peer wins over the web `stream-react` rows. The web pack is the default only when no platform signal is present; `stream-builder` runs only when the user names it explicitly.
 
@@ -156,9 +168,12 @@ Cross-cutting rules (secrets, login screen, strict mode, package manager, base U
   - [`ui.md`](skills/stream-unity/ui.md) - building the UI yourself: the `ParticipantView` track-binding contract, self-preview, mobile orientation, visibility-driven subscriptions, and the Chat list / composer / typing patterns
   - [`platforms.md`](skills/stream-unity/platforms.md) - per-target player settings, IL2CPP and managed stripping, the Newtonsoft and WebRTC conflicts, Android/iOS/desktop/WebGL, and what push does and does not do
 - [`skills/stream-feeds-migration/`](skills/stream-feeds-migration/) - **Feeds v2 -> v3 migration sub-skill**
-  - [`SKILL.md`](skills/stream-feeds-migration/SKILL.md) - the workflow: credentials into the environment, sample the v2 app, analyze, emit the `mapping` object, and state what the sample could not prove
+  - [`SKILL.md`](skills/stream-feeds-migration/SKILL.md) - the workflow: credentials into the environment, sample the v2 app, read its v2 integration code when available, analyze, emit the `mapping` object, and state what the sample (and code) could not prove
   - [`references/mapping-keys.md`](skills/stream-feeds-migration/references/mapping-keys.md) - the full key catalogue with defaults, id-precedence and rename resolution rules, and a worked v2-shape -> mapping-key example for each common case
   - [`scripts/fetch_sample.py`](skills/stream-feeds-migration/scripts/fetch_sample.py) - stdlib-only sampler; reads credentials from the environment and writes `v3sync-sample.json`
+  - [`references/code-inventory.md`](skills/stream-feeds-migration/references/code-inventory.md) - reading the app's v2 integration code: finding write paths, building the inventory, and cross-checking it against the sample
+  - [`references/porting-plan.md`](skills/stream-feeds-migration/references/porting-plan.md) - planning the move of the app's code from v2 to v3: the switch-over order, a v2 -> v3 row per path, and the rules for porting when the user asks
+  - [`scripts/scan_v2_calls.py`](skills/stream-feeds-migration/scripts/scan_v2_calls.py) - stdlib-only, read-only scanner that lists every v2 write call site in a repository (JS, Python, Ruby, PHP, Go, Java, .NET, REST), with secrets redacted
 - [`skills/stream-unreal/`](skills/stream-unreal/) - **Unreal Engine sub-skill** (docs orchestrator; Chat only)
   - [`SKILL.md`](skills/stream-unreal/SKILL.md) - entrypoint: engine-version / feature-support / C++-vs-Blueprint gates, the `.md` docs convention plus the per-page Unreal-coverage caveat, and the source-of-truth ladder
   - [`RULES.md`](skills/stream-unreal/RULES.md) - Unreal non-negotiable rules + the pitfalls that fail silently (the `ApiKey`-before-`BeginPlay` trap, `TWeakObjectPtr` callbacks, client on the HUD, module deps)

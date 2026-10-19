@@ -137,6 +137,8 @@ distiller = DaggerDistiller(student, teacher,
     optimizer = optimizer
 )
 
+distiller.pretrain(128, epochs = 4)   # teacher-rollout behavior-cloning warmup
+
 for cycle in range(cycles):
     stats = distiller.step(collect_steps = 128, epochs = 2)
 ```
@@ -440,5 +442,15 @@ Pass `return_loss_breakdown = True` for the loss components - `LossBreakdown(los
     author  = {Jesse Farebrother and Matteo Pirotta and Andrea Tirinzoni and Marc G. Bellemare and Alessandro Lazaric and Ahmed Touati},
     journal = {arXiv preprint arXiv:2602.19634},
     year    = {2026}
+}
+```
+
+```bibtex
+@article{kaddour2026target,
+    title   = {Target Policy Optimization},
+    author  = {Jean Kaddour},
+    journal = {arXiv preprint arXiv:2604.06159},
+    year    = {2026},
+    url     = {https://arxiv.org/abs/2604.06159}
 }
 ```

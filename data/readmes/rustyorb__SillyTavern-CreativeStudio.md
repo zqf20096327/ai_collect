@@ -4,20 +4,30 @@
 
 <br />
 
-### *You bring one line, or nothing at all. It writes the whole roleplay.*
+### *Start with a character. Build the world around them.*
 
-A SillyTavern extension that generates a **complete, linked roleplay**: the premise, the character card,
-openings, a lorebook that actually fires, a prompt preset, formatting regex, Quick Reply buttons and image prompts.
-Then it critiques its own work and fixes it. You steer; the AI writes.
+**Fixed in 1.2.1:** choose one avatar directly from your saved pictures, with clear selection, separate buttons,
+and the chosen portrait carried into card exports. Expression previews no longer layer a portrait behind a saved expression.
+**Also in 1.2:** remix two imported characters into one original character, lock details such as average age,
+set editable word minimums per field, and generate dialogue with varied speech, action and narration.
+**[Start here: the short guide](docs/QUICKSTART.md).** Advanced tools remain available when you need them.
+
+<sub>Feature screenshots show earlier releases. Follow the <a href="#-start-here">current navigation guide</a> below.</sub>
+
+A SillyTavern extension for importing, writing and improving characters, with optional AI help.
+Start with a character and its openings, add a world, or choose **Complete toolkit** to generate a linked roleplay:
+the premise, card, openings, lorebook, writing preset, formatting regex, Quick Replies and image prompts.
+You choose how much to build and what to change.
 
 <br />
 
 [![SillyTavern 1.19+](https://img.shields.io/badge/SillyTavern-1.19%2B-e7b46a?style=for-the-badge&labelColor=1b1612)](https://github.com/SillyTavern/SillyTavern)
 [![No build step](https://img.shields.io/badge/install-paste%20one%20URL-5fe0cc?style=for-the-badge&labelColor=1b1612)](#-install-in-thirty-seconds)
-[![Tests](https://img.shields.io/badge/tests-137%20passing-58b56b?style=for-the-badge&labelColor=1b1612)](#-for-tinkerers)
+[![Tests](https://img.shields.io/badge/tests-220%20passing-58b56b?style=for-the-badge&labelColor=1b1612)](#-for-tinkerers)
 [![License AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-d6be96?style=for-the-badge&labelColor=1b1612)](LICENSE)
 
 **[Install](#-install-in-thirty-seconds)** &nbsp;·&nbsp;
+**[Start here](#-start-here)** &nbsp;·&nbsp;
 **[How it works](#-how-it-works)** &nbsp;·&nbsp;
 **[Tour](#-the-tour)** &nbsp;·&nbsp;
 **[Which AI?](#-which-ai-does-it-use)** &nbsp;·&nbsp;
@@ -35,19 +45,20 @@ Writing a good SillyTavern roleplay is a lot of work: a card with a voice, a fir
 scene, alternate openings, a lorebook with keys that trigger, a preset that keeps the model in line, regex to
 tidy the output, a few Quick Reply buttons… Most people have one good idea and none of the patience.
 
-**Creative Studio does all of it.** Type a sentence, or press **Surprise me**, and watch it build:
+**Creative Studio can build the whole toolkit.** Open **Home → Generate with AI**, choose **Complete toolkit**,
+then type a sentence or press **Surprise me**. Prefer a smaller start? **Character & openings** is the default.
 
 <div align="center">
   <img src="docs/assets/timelapse.gif" alt="Timelapse: pressing Surprise me with an empty idea box; ten steps tick from premise to self-critique while a real model writes the roleplay" width="92%" />
   <br />
-  <sub><i>A real run with an empty idea box: DeepSeek V3.1 through OpenRouter came up with</i> The Glitch That Gnaws <i>(a scavenger, a paranoid engineer, a city run by a failing AI) in 2 min 20 s. Sped up; nothing staged. The screenshots below are the same project.</i></sub>
+  <sub><i>A real run recorded before the 0.3 redesign: DeepSeek V3.1 through OpenRouter came up with</i> The Glitch That Gnaws <i>(a scavenger, a paranoid engineer, a city run by a failing AI) in 2 min 20 s. Sped up; nothing staged. Timing depends on the model and selected steps.</i></sub>
 </div>
 
 <br />
 
 Every piece lands as a real, editable artifact, already linked together: the lorebook to the character, the
-preset to the story, the Quick Replies to the card. When you like it, one click sends everything into SillyTavern.
-The studio shows the plan first and backs up anything it would overwrite.
+preset to the story, the Quick Replies to the card. When you like it, **Home → Use in SillyTavern…** opens a plan
+you review before applying. The studio backs up items it would overwrite.
 
 <div align="center"><img src="docs/assets/divider.svg" width="520" alt="" /></div>
 
@@ -65,13 +76,14 @@ You need **SillyTavern 1.19.0 or newer**. No server plugin, no build step, no `n
 3. Pick *Install just for me* or *for all users*. SillyTavern downloads it and reloads.
 4. Open it with the **feather** in SillyTavern's top bar (next to the Extensions icon), press **Ctrl + Shift + S**, or type `/studio`.
 
-That's it. It uses the AI connection you already have set up (see [Which AI?](#-which-ai-does-it-use)).
+Importing, manual editing and exporting work without an AI connection. For generation, use your existing
+SillyTavern connection or choose one in **AI setup** (see [Which AI?](#-which-ai-does-it-use)).
 
 > **Updating:** Extensions → *Manage extensions* → Creative Studio → **Update**.
 > **Removing:** the same menu → **Delete**. Your projects stay in your SillyTavern user files.
 
 <details>
-<summary><b>Manual install (no internet on the SillyTavern machine, or you like git)</b></summary>
+<summary><b>Manual install with git</b></summary>
 
 <br />
 
@@ -85,6 +97,50 @@ Use `public/scripts/extensions/third-party/` instead to install it for every use
 
 <div align="center"><img src="docs/assets/divider.svg" width="520" alt="" /></div>
 
+## ✦ Start here
+
+Home gives you four starting points: **Import a card**, **From SillyTavern**, **Write a character**, and
+**Generate with AI**. For a first character, fill in **Write**, **Openings**, and **Voice**. Add pictures and world
+details when you need them, then use **Export & use** to download a card or send it to SillyTavern.
+
+| I want to… | Go here |
+|---|---|
+| Import a PNG, CHARX or JSON card | **Home → Import a card**, or drop the file into the studio |
+| Improve a character already in SillyTavern | **Home → From SillyTavern**, or the feather in ST's character panel |
+| Generate from an idea | **Home → Generate with AI**; choose **Character & openings**, **Character & world**, or **Complete toolkit** |
+| Create someone new from two existing characters | **Characters → Remix two characters**; choose two imported cards, set optional locks and word minimums, then **Generate new character** |
+| Write or revise a field with AI | **Ask AI** beside the field; enter your direction, check which earlier fields to include, and choose **Add to it**, **Rewrite**, or **3 takes** |
+| Set an accent or speech quirk | **Voice → Voice direction — highest priority**. This steers AI-written dialogue and openings ahead of other voice/style clues. |
+| Check or adjust a remix's length | Open the new character → **Remix · word counts**. Actual counts update as you edit; short fields are marked **Below minimum**. |
+| Upload a portrait or generate pictures | Open a character → **Pictures**. Write a **Picture prompt** (or use **Help write prompt**) and press **Generate picture**. **Upload portrait…** adds an existing image. |
+| Make expression sprites | **Pictures → Expressions — same character, different moods**. Check the reference portrait, choose a face adapter, then **Generate one expression** before making a set. Needs ComfyUI and adapter models. |
+| Set up an image generator | **AI setup → Images**; select ComfyUI or SillyTavern Image Generation |
+| Browse or clean up project images | **Pictures → Project picture library** shows every character's images; normal **Pictures** stays with the character you are working on |
+| Edit a lorebook | **World** |
+| Edit presets, regex or STscript | **Advanced tools → Writing presets**, **Text cleanup** (regex), or **Quick Replies** (includes STscript) |
+| Edit the studio's AI instructions | **Advanced tools → AI instructions** |
+| Try a character before exporting | **Try a conversation**; select a character and connection, then **Start conversation** |
+
+**Help** is searchable and can take you to the relevant screen. **Find** / **Ctrl+K** jumps to items and actions.
+On small screens, **Project items** opens the sidebar. The character editor's **Advanced** button reveals prompt
+overrides, metadata, extension data and compatibility checks.
+
+### Delete an item and undo it
+
+In Advanced tools, **Delete** appears beside items in the project sidebar and workshop lists. **Delete set**
+removes a whole Quick Reply set; **Delete button** removes one reply. **Delete preset** removes the preset and its
+saved versions; custom prompts and regex have their own Delete controls. The confirmation names the item and
+explains what is included. Built-in prompt slots can be disabled with their checkbox instead of deleted.
+
+These actions remove the **project copy**; they do not delete installed SillyTavern items. Choose **Undo** in the
+notification to restore the deletion. The top-bar **Undo** remains available after the notification closes.
+Undo history is for the current open project session; snapshots and project bundles preserve project data for
+longer-term recovery. They still reference media files stored in SillyTavern: back up those files separately too.
+
+For a short walkthrough, see **[the quick-start guide](docs/QUICKSTART.md)**.
+
+<div align="center"><img src="docs/assets/divider.svg" width="520" alt="" /></div>
+
 ## ✦ How it works
 
 <div align="center">
@@ -93,7 +149,12 @@ Use `public/scripts/extensions/third-party/` instead to install it for every use
 
 <br />
 
-Ten steps, each one a structured AI call whose output becomes a real SillyTavern artifact:
+The generator starts with **Character & openings**. **Character & world** adds a lorebook and image prompts;
+**Complete toolkit** includes the full sequence below. **Customize tone & steps** lets you adjust the selection.
+Your draft idea and chosen scope are saved when you leave the page.
+
+The full sequence has ten writing stages plus an optional portrait stage. Stages may make additional calls for
+retries or repair:
 
 | Step | What the AI writes | Where it ends up |
 |---|---|---|
@@ -107,7 +168,7 @@ Ten steps, each one a structured AI call whose output becomes a real SillyTavern
 | **Quick Replies** | Story tools as STscript buttons, checked by SillyTavern's own parser | Quick Reply set linked to the character |
 | **Images** | Avatar, full-body and scene prompts | Ready for ST's Image Generation, or any image tool |
 | **Polish** | A strict self-critique; concrete fixes get applied | Revised fields + notes you can read (on a character you wrote yourself, the fixes wait for your OK) |
-| **Portrait** *(with ComfyUI)* | Paints the avatar from the image prompts | The character's avatar, plus a gallery |
+| **Portrait** *(with an image generator configured)* | Paints the avatar from the image prompts | The character's avatar, plus a gallery |
 
 **It is built to finish.** If the model skips part of an answer, the step asks again for exactly what is missing.
 If a provider hangs, the call times out and the step retries once. (On SillyTavern's main connection, where a request
@@ -115,21 +176,23 @@ can't be cancelled, it stops and waits for you to press **Retry** instead.) If s
 that depend on it wait, and **Resume** picks up where it stopped. Every change a run makes is one **Ctrl+Z** away,
 and **Discard** removes everything it made.
 
-### Hands-free or Review: you choose
+### Choose how AI edits land
 
-| | **Hands-free** (default) | **Review** |
+| | **AI edits directly** (default) | **Review AI edits** |
 |---|---|---|
-| AI output | Lands in your project immediately | Waits as a proposal in the inspector |
+| Field edits and other proposal-based AI actions | Land in your project immediately | Wait as proposals in the inspector |
 | You | Read, play, undo anything with Ctrl+Z | Accept, revise or reject each change, with a diff |
 | Good for | "Just make me something good" | Polishing a card you care about |
 
-Toggle it any time with the **Hands-free / Review** pill in the top bar. Either way, every AI change is logged with
-the model, the prompt and the time it was made.
+Toggle the mode with **AI edits directly / Review AI edits** in the top bar. **3 takes** always offers a choice.
+The multi-step generator writes its selected stages into the project in either mode; it takes a snapshot before
+starting and supports Undo and Discard. When **Build the rest for me** develops an existing character, its final
+polish offers fixes for review instead of replacing your writing. AI changes record their model and prompt history.
 
 ### Steer it when you feel like it
 
-Every text field (card fields and lorebook entries) has the same **AI** box. Say what you want in plain words, or
-don't, and pick what happens to the text that's already there:
+Supported card fields and lorebook entry content have an **Ask AI** button. Open it, say what you want in plain
+words, and pick what happens to the text that's already there:
 
 <div align="center">
   <img src="docs/assets/shots/steer.webp" alt="Seraphina's description with the AI box open: a direction typed in (her fear of deep water, and why), and the buttons Add to it, Rewrite, 3 takes, More detail, Tighter and Punchier" width="100%" />
@@ -140,14 +203,26 @@ don't, and pick what happens to the text that's already there:
 | **Add to it** | Stays word for word. The AI writes only the new part, in the field's own format (W++ brackets, dialogue, prose), as a new paragraph, a new line or the end of the last sentence |
 | **Rewrite** | Replaced by a new version that follows your direction. Ctrl+Z brings the old one back |
 | **3 takes** | Three different versions side by side; keep the one you like |
-| **More detail · Tighter · Punchier** | One click, no typing |
+| **More detail · Tighter · Punchier** | Adds the quick direction to anything you typed |
 
-An empty field gets **Write it** instead, written from everything else on the card.
+An empty field gets **Write it** instead. **Use earlier fields** shows checkboxes, all on by default, in card
+authoring order: Name → Description → Personality → Scenario → First message → Example dialogue → Creator notes
+→ System prompt → Post-history instructions → Alternate greetings. Personality can use Name and Description;
+Scenario can use those plus Personality. Only checked earlier fields are sent, in full, alongside your direction
+and the field's current text. Later fields are excluded. Choices are remembered per character and per target field;
+they also apply to **3 takes** and quick directions. Empty fields remain selectable for when you fill them in.
+
+On **Voice**, **Voice direction — highest priority** holds accents, speech quirks and dialogue rules, such as
+“clipped London accent; end questions with ‘yeah?’; keep slang light.” It overrides conflicting voice/style
+directions in the checked fields or the ordinary edit instruction while keeping other character facts intact.
+It applies to example dialogue, first messages, alternate openings and dialogue drafted by **Build the rest for me**.
+Both **Structured** and **Raw text** expose the same AI controls. Context choices and voice direction are Studio
+preferences; the generated card text exports normally without adding nonstandard fields to the V2/V3 card.
 
 ### Your instructions, your rating
 
-Everything the studio tells the model is on one page, **AI instructions**: click the content pill in the top bar (or
-the plug, or `Ctrl` `K` → *AI instructions*). Read any instruction, rewrite it, put it back with **Reset**. Your
+The studio's editable writing instructions are on **Advanced tools → AI instructions** (also available through
+**Find** / `Ctrl` `K`). Read an instruction, rewrite it, or put it back with **Reset**. Your
 versions are kept in SillyTavern's extension settings and used in every project.
 
 <div align="center">
@@ -166,7 +241,7 @@ critique judges craft, not morality. One line is fixed and always added: *"Anyon
 adult."*
 
 > The model still has its own rules. If a cloud model refuses something your project allows, try another one (the
-> plug lets you pick a separate model for writing), or a local model.
+> **AI setup** lets you pick a separate model for writing), or a local model.
 
 <div align="center"><img src="docs/assets/divider.svg" width="520" alt="" /></div>
 
@@ -208,20 +283,48 @@ A taste of the first message:
 
 <br />
 
-Connect a **ComfyUI** (plug icon → **Images** → ComfyUI → your address → **Connect**) and the studio paints as well as writes.
+Connect **ComfyUI** through **AI setup → Images → ComfyUI → your address → Connect**, then choose a checkpoint.
+Open a character, then **Pictures**. The main navigation and the character's Pictures tab open the same workspace,
+locked to the character you last opened. Its name stays visible, and its prompt draft follows it across pages.
+Choose **Picture type**, write a **Picture prompt**, and press **Generate picture**. **Help write prompt** is an
+optional writing step beside the same prompt box; it does not generate an image. **Image settings** opens the
+image generator settings directly. If no generator is configured, the Generate button remains visible with setup guidance.
+
+The character's **current portrait** appears at the top of Pictures automatically. An existing card image is reused;
+if an older import lost its portrait link, Studio can recover the PNG from SillyTavern using its saved source or a
+unique match of the original name, description and first message. It never chooses by name alone or replaces a
+portrait you already selected. Deliberately deleted portraits stay deleted.
+
+At the top of Pictures, **Choose avatar** shows your saved pictures. Click the image you want: exactly one is marked
+**Current avatar**. **Upload portrait…** selects a new image from your computer. Previous portraits remain available,
+and Undo restores the previous choice. The selected image is used for PNG and CHARX exports, including cards with an older imported icon.
+The **Expressions** section shows the exact portrait used as the face reference. Existing expressions keep their images
+until you regenerate them; their preview is separate from the avatar and never puts the avatar behind an expression. Start with
+**Generate one expression**, inspect it, then generate the missing moods. **Delete picture** and
+**Delete expression** are directly below each image, with confirmation and Undo. **Delete character** removes
+the whole character instead.
+The first generated portrait becomes the avatar if the character has none. Further pictures appear in that character's
+gallery. **Project picture library** is the separate view of all project images, including unused files.
 **You never touch a workflow:** the studio builds them in code.
 
 - **Portraits, full body and scenes.** The AI writes the prompts in the style your checkpoint wants: score tags for
   Pony, booru tags for Illustrious, plain sentences for realistic SDXL. Fast DMD2/Lightning checkpoints get fast
   sampling, and a second 1.5× pass sharpens portraits.
-- **Expression sprites that keep one face.** 8 core moods or all 28 of SillyTavern's. Every sprite starts from the
-  same portrait, so hair, face and outfit stay put. Backgrounds are cut out when ComfyUI has *ComfyUI Essentials*
-  (InSPyReNet keeps long hair intact).
-- **Or from the picture your character already has.** Bring a character in and its sprites are made *from its
-  avatar*. With a FLUX Kontext model on your ComfyUI, each mood is an edit of that very picture, so an anime avatar
-  stays anime and nothing but the face changes. Without one, only the face is repainted (Impact Pack's
-  FaceDetailer), or else the whole picture, gently. With Kontext, the portrait, full-body and scene pictures are
-  made from the avatar too, in its art style.
+- **Expressions with a face reference.** One test mood, 8 core moods or all 28 of SillyTavern's. The selected
+  portrait conditions both the starting image and the sampling model. **IP-Adapter Plus Face** is the default
+  for illustrated/anime faces; **FaceID Plus v2** is available for photographic faces. Identity and expression
+  strength still vary with the portrait and checkpoint, so inspect one result first. The studio stops on adapter
+  failure instead of silently generating an unconditioned person. Background removal is optional. If its node
+  fails during generation, Studio retries once with the background kept and the same portrait, adapter and seed,
+  then keeps backgrounds for the rest of that run and reports the change. GPU out-of-memory errors stop without
+  retrying that failure; free GPU memory before trying again. You can also turn off **Transparent expression sprites**
+  in **Image settings**.
+- **Adapter setup.** Install [ComfyUI IPAdapter Plus](https://github.com/cubiq/ComfyUI_IPAdapter_plus), a compatible
+  SDXL/SD1.5 checkpoint, the matching Plus Face or FaceID adapter, and CLIP Vision. FaceID also requires InsightFace
+  and its matching LoRA. Custom text-to-image workflows do not replace the expression adapter workflow.
+  Old expression sets are marked for regeneration when their reference or method differs from the current choice.
+- **Other pictures from the avatar.** When FLUX Kontext is available, new portraits, full-body pictures and scenes
+  can use the avatar as a reference edit. Without it, those ordinary picture requests use their written prompts.
 - **Straight into SillyTavern.** *Install in SillyTavern* fills Character Expressions, and CHARX exports carry
   the sprites as V3 emotion assets.
 - **Your own workflow, if you like.** Export it from ComfyUI with *Export (API)*, then choose *Use my own…*. The prompts, size,
@@ -231,7 +334,7 @@ Connect a **ComfyUI** (plug icon → **Images** → ComfyUI → your address →
 <div align="center">
   <img src="docs/assets/moods.webp" alt="SillyTavern's default character Seraphina: her original anime avatar, animated so that only her face changes through her moods, beside twelve expression sprites made from it (joy, amusement, pride, relief, embarrassment, surprise, fear, nervousness, sadness, grief, anger, disgust) in exactly the same art style, and below them a full-body picture and an empty forest scene, both made from the same avatar" width="100%" />
   <br />
-  <sub><i>Real output: ST's own Seraphina brought in with one click, then all 28 moods and new pictures made from her avatar by FLUX Kontext (Nunchaku FP4) through the studio, about 40 s each. On the left her avatar runs through the moods: watch everything but her face stay put.</i></sub>
+  <sub><i>Historical output from the earlier FLUX Kontext expression workflow: ST's Seraphina, about 40 s per mood. The current expression controls use the face-reference adapters described above.</i></sub>
 </div>
 
 <br />
@@ -252,15 +355,17 @@ reach works. Prefer SillyTavern's Image Generation extension? Pick it instead. S
 <br />
 
 Your SillyTavern library is the other way in. Click the **feather** in SillyTavern's character panel (next to
-Export), or **Start from one of my characters…** on the studio's Project page.
+Export), or choose **Home → From SillyTavern**.
 
 - **Everything comes along.** The card and its avatar, the lorebook the character is linked to, and its expression
   sprites (from its Character Expressions folder, even one you have overridden).
-- **Improve it.** *Critique & fix* reviews the card and repairs what is weak. Every field has *Rewrite* and *3 takes*.
+- **Improve it.** In **Write**, expand **Build more or review this character with AI** for *Critique & fix*.
+  Use **Ask AI** beside a writing field for *Add to it*, *Rewrite* or *3 takes*.
 - **Or add what it lacks.** *Build the rest for me* says up front what it will add (openings, a lorebook, a preset,
   regex, Quick Replies, image prompts, a portrait) and never overwrites what is already there.
-- **SillyTavern changes only when you say so.** *Apply to SillyTavern* shows a field-by-field diff first and keeps a
-  backup of what it replaces. Click the feather again later and you land back in the same project.
+- **Apply when ready.** In **Export & use**, *Review & apply to SillyTavern…* shows a field-by-field diff for a
+  linked character and backs up what it replaces. *Create as new SillyTavern character* creates a separate card.
+  Click the feather again later and you land back in the same project.
 
 Characters the studio sends to SillyTavern arrive already linked to their lorebook, so nothing needs wiring up by hand.
 
@@ -271,15 +376,20 @@ Characters the studio sends to SillyTavern arrive already linked to their lorebo
 It is a full workbench, not just a generator. Everything the AI makes stays editable by hand, and every
 workshop has its own **AI buttons** for when you only want one piece.
 
+> **About the visuals:** the feature screenshots and generated-image demonstrations in this README were captured before
+> the 0.3 redesign. Their layouts and some labels differ from the current app. Follow the
+> [current navigation above](#-start-here) and the captions here to find each feature. Recorded generation times
+> are examples from those earlier runs, not benchmarks for the current release.
+
 <table>
 <tr>
 <td width="50%" valign="top">
 <img src="docs/assets/shots/generate.webp" alt="Project view with the Generate a complete roleplay panel and a finished run" />
-<b>Generate</b>: one idea (or none), optional dials for genre, tone, rating and POV, pick the steps, watch it build.
+<b>Home → Generate with AI</b>: choose a scope, enter an idea (or none), and optionally customize tone and steps.
 </td>
 <td width="50%" valign="top">
 <img src="docs/assets/shots/character.webp" alt="Character editor with the concept panel and card fields" />
-<b>Characters</b>: V3 card editing with an AI box on every field (<i>Add to it</i>, <i>Rewrite</i>, three takes, <i>Write it</i> when empty), <i>Build the rest for me</i> and <i>Critique &amp; fix</i>.
+<b>Characters</b>: Write, Openings, Voice, Pictures, World and Export &amp; use. <i>Ask AI</i> opens writing controls; <i>Build the rest for me</i> and <i>Critique &amp; fix</i> are in Write's expandable AI section.
 </td>
 </tr>
 <tr>
@@ -289,43 +399,43 @@ workshop has its own **AI buttons** for when you only want one piece.
 </td>
 <td valign="top">
 <img src="docs/assets/shots/activation.webp" alt="Lorebook activation preview showing which entries fire and why" />
-<b>Lore</b>: type a test chat and see which entries fire, what beat them, and exactly what reaches the model.
+<b>World</b>: edit lorebooks, then type a test chat to see which entries fire, what beat them, and exactly what reaches the model.
 </td>
 </tr>
 <tr>
 <td valign="top">
 <img src="docs/assets/shots/preset.webp" alt="Chat Completion preset in the Prompt Manager editor" />
-<b>Presets</b>: a full Prompt Manager editor, an assembled-prompt preview, a live dry run of ST's real prompt, and generation from goals (or from the project, if you leave the goals empty).
+<b>Advanced tools → Writing presets</b>: a full Prompt Manager editor, an assembled-prompt preview, a live dry run of ST's real prompt, and generation from goals (or from the project, if you leave the goals empty).
 </td>
 <td valign="top">
 <img src="docs/assets/shots/regex.webp" alt="Regex Lab with a character-scoped script" />
-<b>Regex Lab</b>: one-click recipes, a stage-by-stage preview in a sandboxed worker, and lint for the classic traps.
+<b>Advanced tools → Text cleanup</b>: the Regex lab, with recipes, a stage-by-stage preview in a sandboxed worker, and checks for common mistakes.
 </td>
 </tr>
 <tr>
 <td valign="top">
 <img src="docs/assets/shots/quick-replies.webp" alt="Quick Reply set editor with generated buttons" />
-<b>Quick Replies</b>: story-tool recipes, SillyTavern's own parser checks every script, and side effects are listed before anything runs.
+<b>Advanced tools → Quick Replies</b>: the STscript editor, story-tool recipes, SillyTavern's own parser, and a review of side effects before a test run.
 </td>
 <td valign="top">
 <img src="docs/assets/shots/compatibility.webp" alt="Compatibility table comparing V3 spec validity with SillyTavern support" />
-<b>Compatibility</b>: "valid in the V3 spec" is not "used by SillyTavern". Every card shows the difference.
+<b>Character → Advanced → Compatibility</b>: see which valid V3 fields SillyTavern actually uses.
 </td>
 </tr>
 <tr>
 <td valign="top">
 <img src="docs/assets/shots/stage.webp" alt="Images tab: the character's transparent joy sprite standing inside the painted workshop scene, above the prompts" />
-<b>The stage</b>: the painted scene becomes the set and the character stands in it. Click a mood to swap the face. Below it, the AI writes the prompts and <i>Paint all</i> fills the gallery.
+<b>Character → Pictures</b>: the earlier screenshot shows the stage. The current page starts with the character's current portrait, followed by an editable prompt and <i>Generate picture</i>; the stage is inside <i>Expression sprites</i>.
 </td>
 <td valign="top">
 <img src="docs/assets/shots/sprites.webp" alt="Eight expression sprites on a transparency checkerboard with Paint missing, New face and Install in SillyTavern" />
-<b>Expression sprites</b>: one face, eight (or 28) moods, transparent, one click into SillyTavern's Character Expressions.
+<b>Character → Pictures → Expression sprites</b>: eight (or 28) moods, with background removal when supported, and an <i>Install in SillyTavern</i> action.
 </td>
 </tr>
 <tr>
 <td valign="top">
 <img src="docs/assets/shots/ai-setup.webp" alt="AI for creation panel with the provider list and OpenRouter's model list" />
-<b>AI for creation</b>: add OpenRouter, OpenAI, Claude, Gemini, DeepSeek, Mistral, Groq, xAI, LM Studio or Ollama. Keys live in SillyTavern's vault.
+<b>AI setup</b>: choose a writing connection, add a provider, and configure Images. Keys live in SillyTavern's vault.
 </td>
 <td valign="top">
 <img src="docs/assets/shots/palette.webp" alt="Command palette searching for lore" />
@@ -341,13 +451,14 @@ workshop has its own **AI buttons** for when you only want one piece.
 
 | Area | What you can do |
 |---|---|
-| **Project** | Generate a complete roleplay; premise and notes; health (every validator in one list); relationships & dependencies; **Publish bundle** (ST-native files + manifest + README + re-importable project); **Apply to SillyTavern** (reviewed plan, snapshot and per-item backups) |
-| **Characters** | *Just build it for me* from a premise; distinct concepts to pick from; *Build the rest for me* (fills only what is empty, never duplicates); an AI box on every field (*Add to it* keeps what you wrote, *Rewrite*, three takes, *Write it* when empty); greetings with different openings; *Critique & fix*; full V3 editing (nickname, group-only greetings, multilingual notes, source, dates, assets, extensions); embedded lorebook ⇄ project lorebook; spec validation vs the **ST 1.19 support matrix**; import PNG/CHARX/JSON (V1/V2/V3) from a button, the tree's + menu, the project menu, Ctrl+K or by dropping the file; a view for every picture (who uses it, remove it everywhere; unused ones marked and cleared in one go); export ST-style PNG, spec-V3 PNG, CHARX and JSON; bring in from SillyTavern with its lorebook and sprites (feather in ST's character panel), apply back with a diff and a backup, or create in SillyTavern already linked to its lorebook, with fidelity read-back |
-| **Lore** | *Build the world* (linked to the character automatically); the same AI box on entry content (it knows the book's other entries and the characters it serves); every 1.19 entry control; lint; **activation preview** that explains why each entry fires, what beat it, and what reaches the model; extraction from text or the current chat; contradiction and gap audit; key suggestions |
-| **Prompts & Presets** | Generate a preset from goals or from the project; Chat Completion Prompt Manager editor (order, enable, roles, relative/in-chat depth, triggers, forbid overrides, divider markers used by large community presets); samplers and formatting; assembled-prompt preview with token counts from ST's tokenizer; **live dry run**; AI critique; versions and compare; Text Completion instruct/context/system-prompt/reasoning templates rendered by **SillyTavern's own functions**; connection profiles shown as *selections*, separate from preset contents |
-| **Regex Lab** | One-click recipes; global, preset-scoped and character-scoped scripts in engine order; **stage preview** (saved text, display, prompt, edit, World Info, reasoning) with fixtures, in a worker with a timeout; lint; order-sensitivity detection; hands-free mode adds only scripts that pass their own tests |
-| **Quick Replies & STscript** | Story-tool recipes; every v2 option; source editor + readable outline; syntax check with **SillyTavern's real parser**; argument checks from the live command registry; effects and dependency panel; command reference; reviewed test run; live install through Quick Reply's own importer |
-| **Playtest** | Sandbox runs built from project artifacts through any connection profile; AI-played user turns; *Invent 3* test scenarios; the exact prompt of each reply; capture of the live ST chat with its active configuration; ratings, notes and side-by-side comparison. Every run records model, profile, preset hash, card hash, activated lore and regex |
+| **Home** | Import, bring in, write or generate a character; choose generation scope; review project checks and links. **Project details & notes → Download project bundle…** exports ST-native files plus a re-importable project. **Use in SillyTavern…** opens the application plan; supported updates record live backups. |
+| **Characters** | Write, Openings, Voice, Pictures, World and Export & use; a basics checklist; **Ask AI** for additive edits, rewrites or three takes; **Build the rest for me** and **Critique & fix**. Advanced tabs retain the full V3 fields, embedded lore, metadata, assets, extensions and compatibility checks. Import PNG/CHARX/JSON; upload a portrait; export PNG, CHARX or JSON; create or update a SillyTavern character with linked lore. |
+| **World** | Build linked lorebooks; steer entry content with **Ask AI**; entry controls, checks and **activation preview**; extraction from text or chat; contradiction and gap audit; trigger-word suggestions. |
+| **Advanced tools → Writing presets** | Generate a preset from goals or from the project; Chat Completion Prompt Manager editor (order, enable, roles, relative/in-chat depth, triggers, forbid overrides, divider markers used by large community presets); samplers and formatting; assembled-prompt preview with token counts from ST's tokenizer; **live dry run**; AI critique; versions and compare; Text Completion instruct/context/system-prompt/reasoning templates rendered by **SillyTavern's own functions**; connection profiles shown as *selections*, separate from preset contents |
+| **Advanced tools → Text cleanup** | One-click recipes; global, preset-scoped and character-scoped scripts in engine order; **stage preview** (saved text, display, prompt, edit, World Info, reasoning) with fixtures, in a worker with a timeout; lint; order-sensitivity detection; direct-edit mode adds only scripts that pass their own tests |
+| **Advanced tools → Quick Replies / STscript** | Story-tool recipes; every v2 option; source editor + readable outline; syntax check with **SillyTavern's real parser**; argument checks from the live command registry; effects and dependency panel; command reference; reviewed test run; live install through Quick Reply's own importer |
+| **Try a conversation** | Sandbox runs built from project artifacts through any connection profile; AI-played user turns; *Invent 3* test scenarios; the exact prompt of each reply; capture of the live ST chat with its active configuration; ratings, notes and side-by-side comparison. Every run records model, profile, preset hash, card hash, activated lore and regex |
+| **Pictures** | Follows the working character. Edit a saved prompt, optionally ask AI to draft it, then **Generate picture**. Upload a portrait, browse that character's gallery, or expand **Expression sprites**. **Project picture library** searches all project images, filters expressions or unused pictures, and offers usage details and removal with Undo. |
 | **Inspector** | Pending proposals, provenance history, snapshots, live-SillyTavern backups with restore |
 
 </details>
@@ -356,36 +467,42 @@ workshop has its own **AI buttons** for when you only want one piece.
 
 ## ✦ Which AI does it use?
 
-**Whatever SillyTavern is already connected to.** There is no separate key and no separate setup. If SillyTavern
+**Whatever SillyTavern is already connected to.** If SillyTavern
 can chat, the studio can create.
 
 - **Best results:** a **Chat Completion** connection (OpenRouter, OpenAI, Claude, DeepSeek, Google, Mistral, or a
   local server through *Custom (OpenAI-compatible)*). The studio sends a JSON schema, which most providers honour,
   and it parses and repairs the answer either way.
 - **Text Completion** works too. The studio asks for JSON by instruction and repairs what comes back.
-- **Want a different model for writing than for playing?** Click the **plug** in the top bar (or
+- **Want a different model for writing than for playing?** Click **AI setup** in the top bar (or
   *＋ Add a provider…* in any *Creation model* menu). Pick OpenRouter, OpenAI, Claude, Google AI Studio, DeepSeek,
   Mistral, Groq, xAI, **LM Studio**, **Ollama** or any OpenAI-compatible server. Paste a key, or reuse one already
   stored in SillyTavern, then load the provider's real model list, pick one and save. A **Test** button checks the
   round trip. Your chat connection stays untouched.
 - **Local models:** they work. Bigger instruct models with solid JSON do much better, and on CPU a full run takes a while.
 
-> 🔒 **Your keys stay in SillyTavern's vault.** A key you add here goes straight into SillyTavern's own secret store
-> (the same place as every other key, and never into extension settings or the browser). The studio saves a normal
-> *Connection Manager* profile that refers to the key by id, and SillyTavern's active key for your chat is left as it
-> was. The studio never reads a key back, and exports strip secrets.
+> 🔒 **Keys entered through the provider form go to SillyTavern's vault.** The studio stores a normal
+> *Connection Manager* profile referring to that key by id, rather than copying the key into the project.
+> SillyTavern's active chat key is preserved. Project bundles can contain imported connection-profile fields,
+> including custom URLs: do not put credentials in URLs, and inspect those fields before sharing a bundle.
 
-**Verified end to end:** DeepSeek V3.1 via OpenRouter (full roleplay in about five minutes), and a local qwen3 8B
-through Ollama (slow on CPU, but complete).
+**Earlier end-to-end runs:** DeepSeek V3.1 via OpenRouter (full roleplay in about five minutes), and a local qwen3 8B
+through Ollama (slow on CPU, but complete). The 0.3 usability checks did not make paid model or image-generation
+requests; see [verification details](docs/STATUS.md).
 
 <div align="center"><img src="docs/assets/divider.svg" width="520" alt="" /></div>
 
 ## ✦ Safe by design
 
-- **Projects first.** The studio works on its own copies. Nothing is written to SillyTavern until you press
-  **Apply**, and you see the plan first.
-- **Backups.** Everything Apply would overwrite in SillyTavern is backed up and can be restored from the inspector.
-- **Undo everything.** Ctrl+Z / Ctrl+Y across the whole project, plus snapshots before every generation.
+- **Projects first.** Editing a project does not update installed SillyTavern characters or tools. Applying a
+  project, creating or updating a character, and installing sprites or scripts are explicit actions.
+- **Backups.** Supported live updates record a backup that can be restored from the inspector. Expression-sprite
+  installation and Quick Reply installation through Home's application plan do not save the previous files or set;
+  back up existing expressions and Quick Reply sets before replacing them through those paths.
+- **Undo project edits.** Use **Undo** in the top bar, or Ctrl+Z / Ctrl+Y outside text fields. Advanced-item
+  deletion also offers Undo in its notification. Undo history resets when loading a project; snapshots provide
+  longer-term recovery. Undo does not reverse an install or update in SillyTavern; restore a live backup where one
+  was recorded, or your own backup for the installation exceptions above.
 - **Scripts never run on their own.** Quick Replies are added, not executed. Test runs are explicit and list
   their side effects first. Regex previews run in a sandboxed worker with a timeout.
 - **Provenance.** Every AI change records the model, the prompt and when it was made.
@@ -396,9 +513,27 @@ through Ollama (slow on CPU, but complete).
 ## ✦ FAQ
 
 <details>
+<summary><b>Where did STscript, image generation and expressions go?</b></summary>
+<br />
+They are still included. <b>Advanced tools → Quick Replies</b> opens the Quick Reply and STscript workshop.
+For pictures and expressions, open a character and choose <b>Pictures</b>. The main <b>Pictures</b> button follows
+that same character. Write a prompt and press <b>Generate picture</b>; use the <b>Expressions</b> steps for moods.
+<b>Image settings</b> opens the generator configuration. <b>Project picture library</b> shows all project images.
+</details>
+
+<details>
+<summary><b>How do I delete a preset, script or Quick Reply?</b></summary>
+<br />
+Use <b>Delete</b> beside its name in the project sidebar or workshop list. The editor also labels the scope:
+<b>Delete set</b> removes a whole set, while <b>Delete button</b> removes one reply. Confirm the named item, then use
+<b>Undo</b> if needed. Deleting the project copy does not remove an installed SillyTavern item.
+</details>
+
+<details>
 <summary><b>I have zero ideas. Does it still work?</b></summary>
 <br />
-That's the point. Leave the idea box empty and press <b>Surprise me</b>. The optional dials (genre, tone, rating,
+Open <b>Home → Generate with AI</b>, choose what to create, leave the idea box empty and press <b>Surprise me</b>.
+The optional dials under <b>Customize tone &amp; steps</b> (genre, tone, rating,
 point of view, card type) nudge it without asking you to write anything.
 </details>
 
@@ -406,27 +541,31 @@ point of view, card type) nudge it without asking you to write anything.
 <summary><b>It keeps toning my story down. Can I change what it tells the AI?</b></summary>
 <br />
 Yes. Set the project's content level with the pill in the top bar (<i>Mature themes</i> is the default, <i>Adult</i>
-allows explicit content), and open <b>AI instructions</b> to read or rewrite anything the studio tells the model. Your
+allows explicit content), and open <b>Advanced tools → AI instructions</b> to read or rewrite the editable writing instructions. Your
 versions apply to every project; <b>Reset</b> brings the studio's own back. A cloud model can still refuse on its own
-account; if one does, pick another for writing with the plug.
+account; if one does, pick another writing connection in <b>AI setup</b>.
 </details>
 
 <details>
 <summary><b>Will it mess with my existing characters, presets or lorebooks?</b></summary>
 <br />
-No. Pulling something from SillyTavern makes a copy in the project. Changes go back only through
-<b>Apply to SillyTavern</b>, which shows a diff and keeps a backup of what it replaces.
+Pulling something from SillyTavern makes a project copy. Editing or deleting that copy leaves the installed item
+alone. Use <b>Home → Use in SillyTavern…</b> to review a project application plan, or a character's
+<b>Export &amp; use → Review &amp; apply to SillyTavern…</b> to inspect its changes. Workshops also have explicit
+save/install actions. Supported updates record live backups; expression installation and Quick Reply installation
+through the project plan require your own backup of existing items before replacement.
 </details>
 
 <details>
 <summary><b>Can I use it on a character I already have?</b></summary>
 <br />
-Yes. Click the feather in SillyTavern's character panel (or <i>Start from one of my characters…</i> in the studio). Its
-lorebook and sprites come along. Then press <b>Critique &amp; fix</b> to improve it, or <b>Build the rest for me</b> to add
-what is missing: empty fields, openings, a lorebook, a preset and so on. What you wrote stays untouched.
+Yes. Click the feather in SillyTavern's character panel, or <b>Home → From SillyTavern</b>. Its lorebook and sprites
+come along. In the character's <b>Write</b> tab, expand <b>Build more or review this character with AI</b>.
+<b>Critique &amp; fix</b> revises the card or proposes changes according to your AI edit mode.
+<b>Build the rest for me</b> fills missing pieces and offers final polish for review, keeping your existing writing.
 
-A card file works too (PNG, CHARX or JSON): drop it anywhere on the studio, or use <b>Import card…</b>. You'll find it
-on the Characters page, under the <b>+</b> next to <i>Characters &amp; scenarios</i>, in the project menu at the top
+A card file works too (PNG, CHARX or JSON): use <b>Home → Import a card</b> or drop it into the studio.
+<b>Import card…</b> is also on Characters, under the <b>+</b> next to <i>Characters &amp; scenarios</i>, in the project menu at the top
 left and in Ctrl+K. Opened an empty character by mistake? It offers <b>Import card…</b> right at the top, and the card
 takes its place.
 </details>
@@ -434,9 +573,12 @@ takes its place.
 <details>
 <summary><b>How do I get rid of pictures I don't need?</b></summary>
 <br />
-Click a picture under <b>Media</b>: you see it, which characters use it and how, and <b>Remove from project</b> clears
-it everywhere at once. Pictures no character uses are marked <i>unused</i>, and the broom on <b>Media</b> removes them
-all. Removing a character takes the pictures only it used. Ctrl+Z brings any of it back.
+Use <b>Delete picture</b> directly under a gallery image, or <b>Delete expression</b> under a mood. The named
+confirmation explains shared uses; deletion clears the picture's project references. <b>Delete character</b>
+removes the whole character instead. <b>Pictures → Project picture library</b> also has direct delete buttons,
+and opening an image shows which characters use it. The <b>Unused</b> filter finds pictures no character uses;
+<b>Remove unused</b> offers to clear them together. Removing a character also removes pictures only it used.
+Use the top-bar <b>Undo</b> to restore a removal.
 </details>
 
 <details>
@@ -467,8 +609,12 @@ About a dozen: one per step, plus the occasional retry or repair. With a fast cl
 <summary><b>Where are my projects stored?</b></summary>
 <br />
 In your SillyTavern user files (<code>data/&lt;user&gt;/user/files/cstudio-*.json</code>), saved automatically, with media
-next to them. They follow you across browsers on the same SillyTavern. <b>Project → Publish bundle</b> makes a portable
-zip, and <b>Open file…</b> opens one (give it a character card and it imports the character instead).
+next to them. They follow you across browsers on the same SillyTavern. Under <b>Home → Project details &amp; notes</b>,
+<b>Download project bundle…</b> exports project data and ST-native files; <b>Open project or bundle…</b> imports one.
+The bundle is not a complete portable media backup: the project JSON retains media URLs, and not every gallery
+image or expression is embedded or remapped. Back up the SillyTavern media files too when moving installations.
+Individual PNG cards embed their avatar, and CHARX exports can carry their packaged assets. Autosave saves your
+Studio project; it does not apply its changes to your SillyTavern chat.
 </details>
 
 <details>
@@ -479,7 +625,7 @@ zip, and <b>Open file…</b> opens one (give it a character card and it imports 
 |---|---|
 | `Ctrl` `Shift` `S` | Open / close the studio |
 | `Ctrl` `K` | Command palette: jump to any workshop or artifact |
-| `Alt` `1`…`7` | Switch workshop |
+| `Alt` `1`…`8` | Switch workshop (8 opens Pictures) |
 | `Alt` `I` | Toggle the inspector |
 | `Ctrl` `Z` / `Ctrl` `Y` | Undo / redo (outside text fields) |
 | `Ctrl` `S` | Save now |
@@ -497,10 +643,11 @@ Plain ES modules, no build step. The UI is Preact + htm, and zip handling is ffl
 npm test
 ```
 
-137 unit tests cover card formats (PNG chunks, V1/V2/V3, CHARX), the lorebook engine, the regex engine, presets,
+201 unit tests cover card formats (PNG chunks, V1/V2/V3, CHARX), the lorebook engine, the regex engine, presets,
 STscript and Quick Reply analysis, bundles, playtests, the AI instructions and content levels, the AI gateway (routes, lenient JSON, repair, timeouts) and the
-generation pipeline. A live suite runs inside a SillyTavern tab against the real server (it creates and then removes
-`CSTEST_*` items):
+generation pipeline, workflow guidance, draft persistence, and deletion/Undo behavior. A live suite runs inside a
+SillyTavern tab against its server and creates then removes `CSTEST_*` items. Run it on a separate local test
+instance; this project's development checks use `http://127.0.0.1:8123/`:
 
 ```js
 const m = await import('/scripts/extensions/third-party/SillyTavern-CreativeStudio/tests/live/live-integration.js');

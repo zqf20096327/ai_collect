@@ -22,6 +22,7 @@
   <a href="#what-you-can-run">Node types</a> ·
   <a href="#everyday-operations">Commands</a> ·
   <a href="#verified-releases">Release verification</a> ·
+  <a href="#credentials-and-control">1Password &amp; credentials</a> ·
   <a href="#documentation-and-community">Documentation</a>
 </p>
 
@@ -67,28 +68,40 @@ selected deployment playbook.
 
 | For | You need |
 | --- | --- |
-| **Installing SLV** | Python 3.9 or later and Git |
+| **Installing SLV** | Python 3.9 or later, Git, and curl for the bootstrap download |
 | **Deploying nodes** | ansible-core 2.15 or later, SSH access to the target, and the privileges required by the selected playbook |
 | **Key, vote-account, and BLS operations** | Solana CLI where the selected workflow requires it |
 
 The verified installer does not install system dependencies. Existing SLV users
-should read the [migration instructions](docs/secure-delivery.md#initial-installation)
+should read [updating an older or locally built SLV](#updating-an-older-or-locally-built-slv)
 before replacing an installation.
 
 ### 2. Install from a reviewed bootstrap
 
-Follow the [secure delivery guide](docs/secure-delivery.md) to select a reviewed
-bootstrap and an eligible immutable release. Replace `<reviewed-commit>` below
-with the exact reviewed commit; the placeholder is deliberately not runnable.
+This bootstrap comes from the reviewed source of
+[v2026.10.19.0750](https://github.com/ValidatorsDAO/slv/releases/tag/v2026.10.19.0750).
+It discovers the **latest eligible immutable release** when run; it does not pin
+your installed CLI to that bootstrap version. The block saves the script in a
+private temporary directory and checks its fixed SHA-256 before execution.
+See [secure delivery](docs/secure-delivery.md) for the verification model.
 
 ```sh
-# Download the bootstrap from that exact commit.
-curl --fail --location --remote-name \
-  https://raw.githubusercontent.com/ValidatorsDAO/slv/<reviewed-commit>/sh/install
-
-# Inspect the downloaded script before running it.
-less ./install
-sh ./install
+(
+  set -eu
+  umask 077
+  slv_bootstrap_dir="$(mktemp -d)"
+  cd "$slv_bootstrap_dir"
+  curl --fail --location --output install \
+    https://raw.githubusercontent.com/ValidatorsDAO/slv/c351b90306ec6e0cce01aa04725f7eaf5374f65b/sh/install
+  python3 - <<'PY'
+import hashlib
+from pathlib import Path
+expected = 'acc17d48c986a7dfcdc0afa2603da139da9e30d1af1766fd279d53152cf55282'
+if hashlib.sha256(Path('install').read_bytes()).hexdigest() != expected:
+    raise SystemExit('Installer checksum mismatch; stopping.')
+PY
+  sh ./install
+)
 ```
 
 After installation, follow the printed PATH instructions and check the CLI:
@@ -98,6 +111,23 @@ slv --version
 slv --help
 ```
 
+### Updating an older or locally built SLV
+
+Older or custom builds may fail in `slv upgrade` with a missing `engine.py`, an
+unsupported local version label, or a legacy-bootstrap migration message. Use
+the [one-time recovery installer](docs/secure-delivery.md#recover-an-older-or-local-installation)
+to replace the existing executable explicitly. Start by checking its location:
+
+```sh
+command -v slv
+slv --version
+```
+
+The recovery guide includes a complete, checksum-checked command for
+`/usr/local/bin/slv` and explains how to select another target. Run it as your
+normal user; a protected binary location requires administrator authentication
+only for the final replacement. Afterwards, use `slv upgrade` for normal updates.
+
 ### 3. Choose your workflow
 
 **Direct CLI** — start an interactive validator setup:
@@ -106,7 +136,22 @@ slv --help
 slv validator init
 ```
 
-For RPC setup, use `slv rpc init` instead.
+Validator init now saves a generated identity directly to 1Password and verifies
+it by reading it back. Run it in your own terminal with the 1Password app/CLI
+available. It stores only public metadata and an `op://` reference in inventory;
+it creates no normal plaintext identity or vote-key file. New configurations use
+`no_voting: true`: deploy starts the server's unstaked identity for synchronization,
+not the identity stored in the vault. It creates no vote account, requests no
+airdrop and sends no transaction. Existing vote-account metadata is optional.
+
+Sync-only startup uses the matching packaged templates without overwriting
+custom templates used by older hosts. An unspecified shred-version pin is omitted
+for entrypoint discovery; the network's expected genesis hash is still checked.
+Normal promotion, switching and BLS signing refuse these bootstrap/1Password
+entries until a separate supported activation workflow is available. Do not
+remove the flag or export a private key as a workaround.
+
+For RPC setup, use `slv rpc init` instead; its key workflow is unchanged.
 
 Setup can change the target server: it may create a user and offer system tuning
 or a reboot. Review each prompt, the chosen network, inventory, client version,
@@ -197,6 +242,9 @@ check fails or cannot run.
 updates the management tool, its versioned templates, and its skills. Validator
 and RPC client software is managed through the node commands.
 
+For an older build whose updater cannot start, follow the
+[one-time recovery procedure](docs/secure-delivery.md#recover-an-older-or-local-installation).
+
 Streaming and benchmark commands such as `slv check grpc`, `slv check shreds`,
 and `slv check geyserbench` need separate helper binaries. The verified SLV
 installer does not install those optional tools.
@@ -239,11 +287,24 @@ migration commands read `~/.slv/keys/<identity_account>.json` on the management
 machine and pass it through stdin. Older node-side copies are not automatically
 removed. RPC deployment still uses a copied identity keypair file.
 
-SLV has no built-in 1Password credential provider or `op://` reference resolver.
-The optional validator `identity_ref` field stores metadata only; SLV does not
-resolve it.
+`slv v keys:gen`, `keys:import`, `keys:check` and `keys:try` keep a validator
+identity key in 1Password and read it by reference,
+`op://<vault id>/<item id>/keypair`, through the 1Password CLI (`op`), signed in
+with the 1Password app or, for testnet and devnet, with a service account token
+file named in `~/.slv/keyless.yml`, which also names the vault of each network.
+`keys:import` writes the reference to the `identity_ref` field of the inventory
+entry. Validator init also writes a verified reference. The legacy identity
+activation, migration and BLS-signing paths refuse `no_voting` or 1Password-backed
+entries; they do not resolve the reference. Deployment does not read the vault
+key and starts the server with its own unstaked identity. `slv v hosts:pin` pins the SSH host key
+of a node in `~/.slv/known_hosts`.
 Using 1Password or an SSH agent does not eliminate SLV's other on-disk credentials.
 Keep secret values out of AI conversations, source control, and command examples.
+
+The [1Password and credential guide](docs/credentials-and-1password.md) covers
+the `keys:` and `hosts:pin` commands, human-account CLI authentication, an
+external SSH-agent setup, the credentials SLV still stores locally, and the
+limits of `identity_ref` and `op run`.
 
 <details>
 <summary><strong>AI tool approvals and credential boundaries</strong></summary>
@@ -309,7 +370,7 @@ Release binaries require the source-build and notice inputs described in
 
 ## Documentation and community
 
-- **Learn:** [SLV documentation](https://slv.dev/) · [Secure installation and upgrades](docs/secure-delivery.md) · [Source rebuilds](docs/rebuilding-releases.md)
+- **Learn:** [SLV documentation](https://slv.dev/) · [Secure installation and upgrades](docs/secure-delivery.md) · [1Password and credentials](docs/credentials-and-1password.md) · [Source rebuilds](docs/rebuilding-releases.md)
 - **Discuss:** [Validators DAO Discord](https://discord.gg/C7ZQSrCkYR) · [SLV on X](https://twitter.com/slvSOLANA)
 - **Contribute:** [Issues](https://github.com/ValidatorsDAO/slv/issues) and pull requests are welcome. Follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 - **Report a vulnerability:** Use the private reporting path in [SECURITY.md](SECURITY.md).

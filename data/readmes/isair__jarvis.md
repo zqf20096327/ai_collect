@@ -74,6 +74,7 @@ For an experimental 27B alternative, see the [Bonsai 2 local setup guide](docs/B
 - **Connect your own tools.** MCP servers add browser automation, smart-home controls and other integrations.
 - **Dictate into other apps.** Hold a hotkey, speak, then release to paste locally transcribed text. See the [platform limitations](#known-limitations) first.
 - **Type when you need to.** The companion chat shares your voice conversation and memory. Text replies are silent, and you can rewind a sent message to regenerate from that point.
+- **Queue work locally.** Submit prompts from the Task Centre, follow their results and cancel requests.
 
 ### Bring Jarvis into the discussion
 
@@ -211,6 +212,8 @@ Enable **Settings → Features → Low Power Mode**. It skips LLM startup warmup
 
 <details>
 <summary><strong>Run from source</strong></summary>
+
+Source installations require Python 3.11 or later.
 
 ```bash
 git clone https://github.com/isair/jarvis.git

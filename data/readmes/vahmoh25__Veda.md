@@ -34,7 +34,7 @@ and the applications.
   <tr>
     <td width="33%" valign="top"><b>A microkernel in Rust</b><br>Capabilities, SMP, and services in user space that restart by themselves. Applications get Rust's standard library.</td>
     <td width="33%" valign="top"><b>Linux's drivers, contained</b><br>Linux drives the hardware in a VM on Veda's own hypervisor, held in by the IOMMU and restarted if it crashes.</td>
-    <td width="33%" valign="top"><b>A complete desktop</b><br>A compositing window system, a lock screen, OpenGL ES 3.0, GCC in the Terminal, WPA3 Wi-Fi and a firewall that asks first.</td>
+    <td width="33%" valign="top"><b>A complete desktop</b><br>A compositing window system, a lock screen, a web browser on WebKit, OpenGL ES 3.0, GCC in the Terminal, WPA3 Wi-Fi and a firewall that asks first.</td>
   </tr>
 </table>
 
@@ -45,27 +45,27 @@ and the applications.
     <td colspan="2"><p align="center"><b>Desktop</b></p><img src="documentation/images/desktop.png" alt="The Veda desktop, with the agent's window open and listening"></td>
   </tr>
   <tr>
+    <td width="50%"><p align="center"><b>Browser</b></p><img src="documentation/images/browser.png" alt="The Browser showing Veda's website, www.vedaos.org: the ring glowing over a starry sky, the name and what Veda is"></td>
     <td width="50%"><p align="center"><b>Text Editor</b></p><img src="documentation/images/editor.png" alt="The Text Editor showing a Rust program with syntax highlighting"></td>
-    <td width="50%"><p align="center"><b>Photos</b></p><img src="documentation/images/photos.png" alt="Photos showing a library of eight pictures"></td>
   </tr>
   <tr>
+    <td><p align="center"><b>Photos</b></p><img src="documentation/images/photos.png" alt="Photos showing a library of eight pictures"></td>
     <td><p align="center"><b>Music</b></p><img src="documentation/images/music.png" alt="Music playing a song, with cover art and a spectrum visualiser"></td>
+  </tr>
+  <tr>
     <td><p align="center"><b>Files</b></p><img src="documentation/images/files.png" alt="Files showing pictures as thumbnails, with the Trash in its sidebar"></td>
-  </tr>
-  <tr>
     <td><p align="center"><b>Videos</b></p><img src="documentation/images/videos.png" alt="Videos playing an aurora timelapse, a picture from further on above its seek bar"></td>
+  </tr>
+  <tr>
     <td><p align="center"><b>Settings</b></p><img src="documentation/images/agent-settings.png" alt="Settings on the agent's page: its Deepgram key, its name, voice and speaking rate, and its language model"></td>
-  </tr>
-  <tr>
     <td><p align="center"><b>Paint</b></p><img src="documentation/images/paint.png" alt="Paint with a synthwave sunset open, white stars drawn in its sky and Hello, Veda! written over it"></td>
+  </tr>
+  <tr>
     <td><p align="center"><b>Calculator</b></p><img src="documentation/images/calculator.png" alt="The Calculator in Scientific mode showing the golden ratio"></td>
-  </tr>
-  <tr>
     <td><p align="center"><b>Terminal</b></p><img src="documentation/images/gcc.png" alt="The Terminal, where GCC names an undeclared variable in a C program"></td>
-    <td><p align="center"><b>Interceptor</b></p><img src="documentation/images/interceptor.png" alt="Interceptor: a chase at sunset on a road through the trees of the hills"></td>
   </tr>
   <tr>
-    <td><p align="center"><b>Lock screen</b></p><img src="documentation/images/lock.png" alt="The lock screen: the time and the date large over the wallpaper, and how to unlock"></td>
+    <td><p align="center"><b>Interceptor</b></p><img src="documentation/images/interceptor.png" alt="Interceptor: a chase at sunset on a road through the trees of the hills"></td>
     <td><p align="center"><b>Unlocking</b></p><img src="documentation/images/lock-password.png" alt="The lock screen asking for the password over the wallpaper blurred: the user's picture in Veda's ring, the password half typed"></td>
   </tr>
 </table>
@@ -94,6 +94,7 @@ Then build Veda and boot it:
 cargo automation doctor      # check the tools
 cargo automation toolchain   # once, about half an hour: GCC, musl and Rust for Veda
 cargo automation linux       # once: the driver VM's Linux and Mesa
+cargo automation web         # once, an hour or more (optional): WebKit, for the browser
 cargo automation run         # build Veda and boot it in QEMU
 ```
 
@@ -169,7 +170,7 @@ covers the rest.
 | **Network** | IPv4 and IPv6, TLS 1.3, WPA3 Wi-Fi, and a firewall in stealth mode by default |
 
 Where a proven library exists, Veda uses it: smoltcp, rustls, RustCrypto,
-FFmpeg, dav1d, glam and [more](documentation/DEPENDENCIES.md).
+FFmpeg, dav1d, glam, WPE WebKit and [more](documentation/DEPENDENCIES.md).
 
 ## Testing
 
@@ -191,6 +192,7 @@ a stand-in for Deepgram, so they are offline, deterministic and free.
 | [Architecture](documentation/ARCHITECTURE.md) | How the system fits together |
 | [The driver VM](documentation/DRIVERVM.md) | The hypervisor, the IOMMU and Linux's drivers |
 | [Networking](documentation/NETWORKING.md) | The network and Wi-Fi services, the firewall and TLS |
+| [The web browser](documentation/BROWSER.md) | The browser, WebKit's port to Veda, and how pages are drawn |
 | [C on Veda](documentation/C.md) and [Rust on Veda](documentation/RUST.md) | Programs, the POSIX layer and the toolchains |
 | [Developing](documentation/DEVELOPING.md) | Commands, the system image and writing applications |
 | [Libraries](documentation/DEPENDENCIES.md) | What Veda builds on, and what it keeps of its own |
@@ -206,6 +208,7 @@ reviewed.
 
 Veda is free software under the
 [GNU General Public License, version 3](LICENSE). Copyright © 2026 Vahid
-Mohammadi. Its fonts, firmware, toolchains, video decoders and the crates
-it patches keep their own licences; see
-[Licensing](documentation/LICENSING.md).
+Mohammadi. Its other parts (its fonts, firmware, toolchains, video
+decoder, web engine and the crates its programs are built with) keep their
+own licences, whose texts the system carries in `/system/licences` and
+About Veda shows; see [Licensing](documentation/LICENSING.md).

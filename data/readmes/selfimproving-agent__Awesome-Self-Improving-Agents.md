@@ -341,6 +341,7 @@ depending on **which component is improved** during learning and adaptation.
   | 2026 | GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning | ICLR | [paper](https://arxiv.org/abs/2507.19457) | [code](https://github.com/gepa-ai/gepa) |
   | 2026 | From a Prompt to Repertoires: Evolving Functional REpertoires Enable LLM Continual Learning | arXiv | [paper](https://arxiv.org/abs/2610.11373) | N/A |
   | 2026 | FORGE: Self-Evolving Agent Memory With No Weight Updates via Population Broadcast | CAIS | [paper](https://arxiv.org/abs/2605.16233) | N/A |
+  | 2026 | Recursive Harness Distillation across Agents for Robot Manipulation | arXiv | [paper](https://arxiv.org/abs/2609.33378) | N/A |
 
   </details>
 

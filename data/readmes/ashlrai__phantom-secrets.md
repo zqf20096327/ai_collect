@@ -29,6 +29,8 @@ Phantom replaces project secrets with scoped `phm_` placeholders. Applications u
 
 ---
 
+![phantom init swaps the real keys in .env for phm_ tokens; phantom list shows the vault without values](docs/assets/phantom-secrets-demo.gif)
+
 ## Install
 
 ```bash
@@ -399,6 +401,20 @@ only. phm.dev does not accept it yet, because the hosted team key route takes
 `ml-kem` crates are unaudited, and X-Wing is pre-1.0. Do not rely on it for
 production secrets.
 
+### Proxy upstream TLS key exchange
+
+The proxy's HTTPS client uses the aws-lc-rs provider and offers the hybrid
+X25519MLKEM768 group first, then X25519, secp256r1 and secp384r1. A hybrid key
+exchange is used only if the upstream server supports it. A hermetic test confirms that a local
+server accepting only X25519MLKEM768 negotiates it with the proxy, and that a
+server sharing no group with the proxy fails the handshake. Which group a given
+provider negotiates is not tested. To see the groups this build offers, read
+from the proxy's own TLS config:
+
+```bash
+phantom doctor --pq
+```
+
 After a hosted deployment is commissioned and accepted, its read-only team
 dashboard is designed to show team memberships and member lists.
 
@@ -492,7 +508,7 @@ fails closed before vendor execution. No single-provider exception exists.
 - **Encrypted vault** -- macOS Keychain, Linux keyutils by default, or Windows Credential Manager, with a ChaCha20-Poly1305 encrypted-file fallback for CI and headless environments. Linux keyutils entries do not survive a reboot; a headed Linux project can run `phantom vault migrate-linux` from a trusted terminal to copy and verify its vault in persistent Secret Service before switching. Phantom does not claim Secure Enclave hardware binding. Argon2id uses m=64 MiB, t=3, p=1.
 - **Phantom tokens** -- 256-bit CSPRNG `phm_` placeholders in `.env`, rotatable on demand
 - **Authenticated proxy sessions** -- each proxy run generates a fresh `PHANTOM_PROXY_TOKEN`; CLI-generated SDK URLs include it for compatibility, and header-aware clients can opt into `x-phantom-proxy-token` with `PHANTOM_PROXY_HEADER_AUTH_ONLY=1`
-- **Route-owned credential injection** -- Client headers and bodies never resolve `phm_` tokens. After authenticating and matching an exact built-in route, the proxy injects that route's configured vault secret only into its fixed authentication header; a missing mapping fails before any upstream call. Request bodies are still collected under a hard byte cap before forwarding.
+- **Route-owned credential injection** -- Client headers and bodies never resolve `phm_` tokens. After authenticating and matching an exact built-in route, the proxy injects that route's configured vault secret only into its fixed authentication header; a missing mapping fails before any upstream call. Request bodies are still collected under a hard byte cap before forwarding. Custom routes: `phantom start` serves custom routes from `.phantom.toml`; `phantom exec` refuses them and runs only Phantom's exact built-in routes. The reason: `phantom start` is run by a person on project config they have reviewed. `phantom exec` launches an agent, and anything in the repository, `.phantom.toml` included, may have been written by that agent or by an untrusted change, so accepting custom routes there would widen the attack surface.
 - **Full SSE/streaming support** -- Response streaming preserved end-to-end for OpenAI, Anthropic, and other streaming APIs
 - **Smart detection** -- Heuristic engine distinguishes secrets (`*_KEY`, `*_TOKEN`, `sk-*`, `ghp_*`) from config (`NODE_ENV`, `PORT`)
 - **Platform sync** -- Push/pull secrets to Vercel and Railway
@@ -707,6 +723,10 @@ written scope.
 - [Support](SUPPORT.md)
 - [Governance](GOVERNANCE.md)
 - [Citation](CITATION.cff)
+
+## Part of the Ashlr ecosystem
+
+Phantom Secrets is one of the open-source tools from [Ashlr](https://ashlr.ai), a forward-deployed engineering company. Its siblings: [Lexicon](https://github.com/ashlrai/lexicon), [Locus](https://github.com/ashlrai/locus), [Ashlr Stack](https://github.com/ashlrai/ashlr-stack), [Ashlr Markdown](https://github.com/ashlrai/ashlr-md), [Ashlr plugin](https://github.com/ashlrai/ashlr-plugin).
 
 ## Contributing
 

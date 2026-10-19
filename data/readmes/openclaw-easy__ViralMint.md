@@ -219,7 +219,7 @@ Every key can be set in `.env` *or* per-user inside the app under **Settings** �
 |:----|:---------|:------|:-----|
 | AI chat, scripting, analysis | **Anthropic** · **OpenAI** · **OpenRouter** · any **OpenAI-compatible** server | [console.anthropic.com](https://console.anthropic.com) · [platform.openai.com](https://platform.openai.com/api-keys) · [openrouter.ai/keys](https://openrouter.ai/keys) · your server's base URL — Settings → AI Provider | Pay-per-use (free on a local server) |
 | YouTube scouting · comments · My Channels | YouTube Data API v3 | [console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials) — Settings → Service API Keys | Free 10K units/day |
-| Stock footage | Pexels | [pexels.com/api](https://www.pexels.com/api/) | Free |
+| Stock footage | **Pexels** or **Pixabay** — set either key | [pexels.com/api](https://www.pexels.com/api/) · [pixabay.com/api/docs](https://pixabay.com/api/docs/) | Free |
 | Premium voiceover (optional) | OpenAI TTS | [platform.openai.com](https://platform.openai.com/api-keys) | Pay-per-use |
 | TikTok / Douyin scouting | **TikHub API** (recommended) | [tikhub.io](https://tikhub.io) | Free tier |
 | Telegram / Discord / Slack | Bot tokens | Settings → Messaging | Free |
@@ -236,7 +236,7 @@ Every key can be set in `.env` *or* per-user inside the app under **Settings** �
                      │            React 18 + MUI 7 SPA                │
                      │       (served by FastAPI in production)        │
                      │  Chat · Scout · Channels · Library             │
-                     │  Stock Video · Clip Studio · Motion Graphics   │
+                     │  Smart Video · Clip Studio · Motion Graphics   │
                      │  Tools · Messaging · Settings                  │
                      └─────────────────┬──────────────────────────────┘
                                        │  HTTP + WebSocket
@@ -348,7 +348,7 @@ ViralMint/
 │
 ├── frontend/
 │   └── src/
-│       ├── pages/                  # Chat · Scout · Channels · Library · Stock Video ·
+│       ├── pages/                  # Chat · Scout · Channels · Library · Smart Video ·
 │       │                           #   Clip Studio · Motion Graphics · Tools · Messaging · MCP
 │       ├── components/             # Reusable UI (chat, settings, videos, …)
 │       ├── hooks/                  # WebSocket, settings, jobs, source video

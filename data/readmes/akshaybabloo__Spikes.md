@@ -6,10 +6,11 @@
 
 Spike encoders for Spiking Neural Network.
 
-This package consists of two types of spike encoders for spatio-temporal data:
+This package consists of three types of spike encoders for spatio-temporal data:
 
 1. Threshold Based Representation (TBR) encoder
 2. Bens Spiker Algorithm (BSA) encoder
+3. Step Forward (SF) encoder
 
 <!-- TOC -->
 
@@ -25,12 +26,18 @@ This package consists of two types of spike encoders for spatio-temporal data:
 
 The data given to the encoders are spatio-temporal. Each sample is one `csv` file. In each file, every column is a feature and the rows are time points.
 
-For example each file given in the [Data](https://github.com/akshaybabloo/Spikes/tree/master/Data) folder had 128 rows and 14 columns, 14 columns are the features and 128 columns are the data points.
+For example, each file in [tests/test-data](https://github.com/akshaybabloo/Spikes/tree/master/tests/test-data) is one second of EEG from the [PhysioNet EEG Motor Movement/Imagery Dataset](https://physionet.org/content/eegmmidb/1.0.0/): 160 rows (time points at 160 Hz) and 14 columns (EEG channels). See its [README](tests/test-data/README.md) for details and citation.
 
 ## Instillation
 
 ```
 pip install pyspikes
+```
+
+BSA and Step Forward run faster with [Numba](https://numba.pydata.org/) installed. The spikes are the same either way:
+
+```
+pip install pyspikes[numba]
 ```
 
 ## Example
@@ -39,13 +46,16 @@ pip install pyspikes
 from spikes import encoder
 from spikes.utility import ReadCSV
 
-data = ReadCSV('Data').get_samples()['samples']
+data = ReadCSV("tests/test-data").get_samples()["samples"]
 
 bsa = encoder.BSA(data)
 print(bsa.get_spikes())
 
 tbr = encoder.TBR(data)
 print(tbr.get_spikes())
+
+sf = encoder.StepForward(data)
+print(sf.get_spikes())
 ```
 
 ## Contribution

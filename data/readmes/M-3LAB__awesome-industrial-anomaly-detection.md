@@ -27,7 +27,7 @@ ASBench: Image Anomalies Synthesis Benchmark for Anomaly Detection [[paper]](htt
 
 A Survey on Industrial Anomalies Synthesis [[paper]](https://arxiv.org/abs/2502.16412)[[github]](https://github.com/M-3LAB/awesome-anomaly-synthesis)
 
-🔥🔥🔥 3D Anomaly Detection: A Survey [[paper]](https://www.researchgate.net/publication/398334588_3D_Anomaly_Detection_A_Survey?_tp=eyJjb250ZXh0Ijp7InBhZ2UiOiJzcG90bGlnaHQiLCJwcmV2aW91c1BhZ2UiOiJwcm9maWxlIiwicG9zaXRpb24iOiJwYWdlQ29udGVudCJ9fQ) [[github]](https://github.com/M-3LAB/awesome-3d-anomaly-detection)
+🔥🔥🔥 3D Anomaly Detection: Approaches, Benchmark, Challenges, and Prospects for Intelligent Manufacturing [[paper]](https://www.researchsquare.com/article/rs-11314110/v1) [[github]](https://github.com/M-3LAB/awesome-3d-anomaly-detection)
 
 ---
 ## Table of Contents
@@ -697,4 +697,5 @@ Recent developments in industrial anomaly detection have reshaped method categor
  + SPot-the-Difference Self-supervised Pre-training for Anomaly Detection and Segmentation [[ECCV 2022]](https://arxiv.org/pdf/2207.14315.pdf)
  + Diversity-Measurable Anomaly Detection [[CVPR 2023]](https://arxiv.org/abs/2303.05047)
  + Self-supervised Context Learning for Visual Inspection of Industrial Defects [[2023]](https://arxiv.org/abs/2311.06504)[[code]](https://github.com/wangpeng000/VisualInspection)
- + SelFormaly: Towards Task-Agnostic Unified Anomaly Dete
+ + SelFormaly: Towards Task-Agnostic Unified Anomaly Detection[[2023]](https://arxiv.org/abs/2307.12540)
+ + REB: Reducing Biases in Representation for Industrial Anomaly Detection [[2023]](

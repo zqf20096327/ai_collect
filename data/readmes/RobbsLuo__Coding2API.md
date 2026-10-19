@@ -60,7 +60,7 @@ docker compose exec coding2api python scripts/create_user.py admin --role admin
 
 ```bash
 docker compose pull
-# 或指定版本：docker pull ghcr.io/robbsluo/coding2api:v0.8.0
+# 或指定版本：docker pull ghcr.io/robbsluo/coding2api:v0.8.1
 ```
 
 推送新版本：打 tag `v*` 推到 main 即触发 publish workflow（`.github/workflows/publish.yml`），同时打 `<tag>` 与 `:latest` 到 GHCR；也可在 Actions 页面手动触发。
@@ -216,6 +216,8 @@ Playground 请求表单可选填 `temperature` / `max_tokens` / `reasoning_effor
 
 **能力差异**：聊天、模型列表、额度探测、token 刷新、**活跃上报**全部启用；**每日签到、成长中心未启用**——签到是**渠道侧就没有这个活动**（`checkin-activity-status` 回 `active: false`），成长中心则**无法验证**（国际站把整个 `/v2/activity/*` 前缀挂在网关认证插件后，连不存在的子路径也返回 401 而非 404），而其含抽奖 / 连登兑换 / 盲盒等**不可逆**动作，不盲跑。管理台的「签到」「成长中心」按钮对该渠道不显示。活跃上报端点 `/v2/report` 与成长中心不是同一路径，实测国际站可用，故照常启用。
 
+**模型列表按套餐探活**：上游 `/v3/config` 返回全量模型，免费号也会看到 `gpt-5.5` / `gpt-5.6-luna` 等调用时才回 `400 / 11158` 的模型。国际站列表会用当前刷新凭证逐个发一次最小请求（拿到状态行即断开），只保留真正可用的模型；`11158`（套餐不允许）与 `11102`（无此模型）剔除，`429`、5xx、超时等不确定结果**保留模型**。结论按账号缓存 6 小时，避免按 5 分钟的列表 TTL 重复探测。
+
 **同名模型不带渠道后缀**：两站共有的模型在 `/v1/models` 里是**一条**、同时挂两个渠道；`-x` / `-sg` 这类**真实存在的不同上游模型**仍各占一条。
 
 **节流**：`CODEBUDDY_INTL_CHAT_MIN_INTERVAL` 默认 5s，**独立节流器**，与国内站互不排队，可热更。
@@ -300,11 +302,11 @@ claude
 
 ### 池健康检查
 
-`GET /health` 只回 `{"status":"ok"}`（进程存活，适合容器存活探针）；`GET /healthz` 额外给出凭证池计数，**并在 `ready == 0` 时回 HTTP 503**（就绪探针）——那是「进程活着但没有可用凭证」的状态，对话请求必然 503，负载均衡/外部监控应据此摘流量。计数在两种状态下都返回，监控可读到「为什么不可用」。两个端点都不鉴权。
+`GET /health` 只回 `{"status":"ok"}`（进程存活，适合容器存活探针）；`GET /healthz` 额外给出凭证池计数，**并在 `ready == 0` 时回 HTTP 503**（就绪探针）——那是「进程活着但没有可用凭证」的状态，对话请求必然 503，负载均衡/外部监控应据此摘流量。计数在两种状态下都返回，监控可读到「为什么不可用」。两个端点都不鉴权。**两者同时接受 `HEAD`**（`curl -I` / 多数监控默认发 HEAD）：FastAPI 的 `APIRoute` 不像 Starlette 那样自动给 GET 补 HEAD，只注册 GET 时探针会一直吃 405，表现为「服务正常但监控永远红灯」。
 
 ```json
 {
-  "status": "ok", "service": "coding2api", "version": "0.8.0",
+  "status": "ok", "service": "coding2api", "version": "0.8.1",
   "credentials": {"total": 5, "ready": 4, "cooling": 1, "paused": 0, "disabled": 0}
 }
 ```
@@ -412,7 +414,7 @@ claude
 
 模型表除进程内 TTL 缓存（300s）外，每次拉取成功还写快照到 `DATA_DIR/model_catalog.json` 并在**启动时同步读回**：重启那一刻「模型 → 渠道」归属表就已就绪，扁平名请求不会在预热（zen 免费模型探活要十几秒）跑完前扇出打错渠道。快照存未过滤原始表，损坏 / 超 7 天只丢缓存、不影响启动。另有 `MODEL_CATALOG_MINUTES` 后台任务兜底刷新。
 
-Playground 与 `GET /v1/models` 走 **stale-while-revalidate**：有缓存立刻回旧列表，TTL 到期的渠道丢后台异步刷新；只有某渠道**一条缓存都没有**时才同步等一次。代价是列表最多滞后一个 TTL。
+Playground 与 `GET /v1/models` 走 **stale-while-revalidate**：有缓存立刻回旧列表，TTL 到期的渠道丢后台异步刷新；只有某渠道**一条缓存都没有**时才同步等一次。代价是列表最多滞后一个 TTL。拉取**连续失败**时重试间隔按 2^(n-1)×TTL 退避（封顶 2 小时，成功一次即恢复），日志只在首次失败打 WARNING、其后降 INFO——上游长期不可用（如 zen 免费层按出口 IP 拦截）时不会每 5 分钟重探十几秒再刷一条同样的告警。
 
 ### 管理台「模型列表」页
 
@@ -423,6 +425,8 @@ OpenRouter 收录数百条，其中多数本服务没接。每行带 `available`
 **疑似下线视图**：同页可切到「疑似下线」筛选——`GET /api/models/availability`（operator）把最近 N 天（默认 7、可调 1–30）`usage_events` 里 `error_type` 为 `upstream_blocked` / `invalid_request` 的失败按 `(渠道, 模型)` 聚合，给出失败次数、最近失败时刻与「是否已在黑名单」。行内「加入黑名单」把该模型**追加**到现行 `model_blocklist`（读现值再写，不覆盖既有项；已命中的行按钮置灰），写入走既有设置接口并落审计 `settings.update`，下一次 `/v1/models` 即生效。这个视图本身**只读聚合**（真发请求的那部分见下节「主动探活与人工接管」）。
 
 「能力分」列头可点排序，按**综合智能指数**（智）排；无分数的行排末尾（不冒充 0 分）。只给这一个分项排序入口——表头一列对应一个入口，三项各排会把表头挤成一排按钮。
+
+**浮动别名取同族最新快照的分**：OpenRouter 对同一个模型会同时挂**浮动别名**（`deepseek/deepseek-v4.1-flash`）与**带日期快照**（`deepseek/deepseek-v4.1-flash-1017`），并用 `canonical_slug` 声明同属一次发布。上游会把浮动别名钉在旧快照上、并对同一快照只发布一个评测变体（2026-10-19 实测：浮动别名标 `Non-reasoning` 24.7，`-1017` 标 `Max` 39.5）——分数看着「掉」了 15 分，其实只是换了变体。本项目转发时推理默认开着（渠道 `default_effort` 多为 `high`），与 Max 变体同口径，故按 `canonical_slug` 的日期取同族最新快照的分；显式带日期戳的 id（`deepseek-v4-pro-0813`）仍用自己的分。`source_model` 一律指向真正提供分数的上游 id。家族只从**带 `-YYYYMMDD` 的 canonical** 派生：`mistralai/mistral-large`（Feb '24）与 `mistralai/mistral-large-2512`（Mistral Large 3）削完日期同基却是两个模型，不互相借分。
 
 ### 主动探活与人工接管
 
@@ -600,7 +604,7 @@ python3 scripts/restore_db.py data/backups/coding2api-20261014-030000.sqlite3 --
 | `USERS_FILE` | `secrets/users.txt` | **仅引导期**：老式用户文件路径，启动时一次性导入 SQLite（幂等）。账号唯一源是 `users` 表 |
 | `PUBLIC_BASE_URL` | `http://127.0.0.1:8000` | 浏览器可达地址；TRAE 登录回调（`+/authorize`）依赖它，scheme 为 https 时额外下发 HSTS。**不决定会话 Cookie 的 `Secure`**——那按请求实际协议动态判定（`X-Forwarded-Proto` 优先，无该头则看 Host），同一实例 LAN(http) 与隧道(https) 双入口才能都登录 |
 | `DATA_DIR` | `./data` | SQLite 与运行数据目录 |
-| `DEFAULT_MODEL` | `glm-5.2` | 模型为空/`auto` 时的默认 |
+| `DEFAULT_MODEL` | `deepseek-v4.1-flash` | 模型为空/`auto` 时的默认 |
 | `QUOTA_PROBE_MINUTES` | `60` | 额度探测周期（下限 1 分钟） |
 | `REFRESH_INTERVAL_MINUTES` | `30` | token 预刷新轮询周期（下限 5 分钟）；短寿命渠道的预刷新窗口封顶必须**宽于**它 |
 | `MODEL_CATALOG_MINUTES` | `30` | 渠道模型列表兜底刷新周期（下限 5 分钟） |
@@ -635,7 +639,7 @@ python3 scripts/restore_db.py data/backups/coding2api-20261014-030000.sqlite3 --
 | `QUOTA_EXPIRY_WINDOW_SECONDS` | `129600` | 主到期排序窗口：把距到期 ≤ 该秒数的积分加总，多的账号先用；CodeBuddy 与 TRAE 都按包独立到期、都参与；`≤0` 关闭整套到期排序 |
 | `QUOTA_EXPIRY_SECONDARY_WINDOW_SECONDS` | `604800` | 次到期排序窗口：主窗口打平时才比较；`≤0` 关闭该级 |
 | `CONVERSATION_STICKY_SECONDS` | `3600` | 会话粘性 TTL：优先级 **请求体显式会话标识**（`conversation_id` / `prompt_cache_key`，`metadata` 优先）> **请求头会话标识**（`x-session-id` / `x-opencode-session` / `x-session-affinity` / `conversation-id`）> **消息前缀指纹**兜底；手动 pin 优先于全部。头与指纹值都掺 `username` 再哈希，两用户同值不串号；头必须过字符白名单（`[A-Za-z0-9._:-]`，≤128），非法则丢弃退回兜底。带 `user_id` 时不派生前缀兜底键（头照常生效）；`≤0` 关闭 |
-| `MODEL_BLOCKLIST` | `custom_model_*,*sub*agent*,summary,browser_use_*,file_search_agent,default,hunyuan-image-*,hy4-preview-x,qwen3.8-flash,glyph-cluster` | 模型列表黑名单（fnmatch，仅影响列表展示）；按**归一后的对外写法**匹配（原代号、归一键、展示名、展示名归一键四种任一命中即滤） |
+| `MODEL_BLOCKLIST` | `custom_model_*,*sub*agent*,summary,browser_use_*,file_search_agent,default,seed-code-pro-*,sagitta,aquila,glm-4.*,glm-5,glm-5-turbo,glm-5.0*,glm-5.1,glm-5v-*,kimi-k2.5,kimi-k2.6,kimi-k2-thinking,minimax-m2.5,deepseek-v3-*,hunyuan-*,hy3*,deepseek-v4-*,qwen3.7-*,auto,nemotron-3-*,glm-5.2*,nemotron-3*,lfm2*,north-mini-code,openrouter-models-router,fast,balanced,deep,primary,hy4-preview,inkling-small,minimax-m2.7,kimi-k2.*,minimax-m3,gpt-5.4,gpt-5.5,laguna*,qwen3-vl-235b,seed-2.1*,xing4.0-29b-a4,glyph-cluster,qwen3.8-flash,seed-evolving` | 模型列表黑名单（fnmatch，仅影响列表展示）；按**归一后的对外写法**匹配（原代号、归一键、展示名、展示名归一键四种任一命中即滤） |
 | `MODEL_FALLBACK_GROUPS` | `""` | 跨渠道 fallback 兼容组：格式 `组名=成员1,成员2;组名2=成员3`；成员可带 `@渠道`。请求任一成员时该成员置首、组内其余依次回退；主渠道全不可用才回退，**仅在本次尝试尚未产出任何响应帧前**切换。留空 = 不启用 |
 | `ALLOWED_HOSTS` | 空 | Host 白名单，防 DNS rebinding |
 | `ALLOW_TEST_HOST` | `false` | 额外放行 FastAPI TestClient 的默认 Host `testserver`。**仅测试用**，生产保持 `false` |
@@ -683,7 +687,7 @@ python3 scripts/restore_db.py data/backups/coding2api-20261014-030000.sqlite3 --
 | `MODEL_ALIASES` | `""` | 自定义模型别名：`对外名=模型@渠道;对外名2=模型`，`@渠道` 省略则自动选。列表与请求解析用同一份；与真实 id / 自动别名撞车、目标不存在、渠道不持有该模型时该段跳过并记 ERROR。留空 = 不启用。可热更 |
 | `MAX_INFLIGHT_PER_CREDENTIAL` | `0` | 单账号在途请求上限（跨渠道全局）：并发占满的号不再参与选号；`0` = 不限。租约请求结束释放，另有 600s TTL 兜底漏释放 |
 | `METRICS_ENABLED` | `true` | 是否暴露 `GET /metrics`（Prometheus text 格式，**不鉴权**，与 `/healthz` 同口径）；`false` 关闭（返回 404）。可热更 |
-| `REQUEST_LOG_ENABLED` | `true` | 请求级结构化日志（logfmt）：每个业务请求（`/api/*`、`/v1/*`、`/authorize`）一行 `event=request request_id=… method=… route=… status=… duration_ms=…`。路由用模板（`/api/credentials/{credential_id}`）不用实际 ID；**不写 query string、请求体、用户名**，靠 `request_id` 关联 `usage_events`。5xx 记 WARNING、其余 INFO；静态资源与探针不记。`false` 回到只有 uvicorn 裸 access log。可热更 |
+| `REQUEST_LOG_ENABLED` | `true` | 请求级结构化日志（logfmt）：每个业务请求（`/api/*`、`/v1/*`、`/authorize`）一行 `event=request request_id=… method=… route=… status=… duration_ms=…`。路由用模板（`/api/credentials/{credential_id}`）不用实际 ID；**不写 query string、请求体、用户名**，靠 `request_id` 关联 `usage_events`。5xx 记 WARNING、其余 INFO；静态资源与探针不记（uvicorn 自带 access log 已关闭）。`false` 关闭请求级日志。可热更 |
 | `FORCE_DISABLE_THINKING` | `false` | 出站剥离思考内容：开启后响应里不再有 `reasoning_content` / Anthropic `thinking` 块 / Responses reasoning item，**只过滤响应、不改请求体**（上游仍照常思考）。三个出口、流式与非流式一致生效。可热更 |
 | `REASONING_EFFORT_MAP` | `""` | 出站 `reasoning_effort` 档位映射：格式 `渠道=from:to,from:to;*=from:to`（渠道取 `KNOWN_PROVIDERS`，`*` 兜底）；目标写 `none` = 删除该键、走渠道默认。只改写客户端**显式**给的档位，渠道自身 `setdefault` 补的默认档不受影响。留空 = 原样透传。可热更 |
 | `ANTHROPIC_THINKING_EFFORTS` | `""` | Anthropic 入站 `thinking.budget_tokens` → 上游 `reasoning_effort`：格式 `预算:档位,预算:档位,disabled:档位`（`disabled` 匹配 `thinking.type=="disabled"`；其余取「阈值 ≤ budget_tokens 中最大的那一档」，低于最小阈值不映射）。留空 = 完全不映射（`thinking` 照旧忽略）。可热更 |
@@ -842,8 +846,9 @@ event=request request_id=9f2c… method=POST route=/v1/chat/completions status=2
 - **不写 query string、请求体、响应体、请求头、用户名**。query 里可能被客户端塞 token；身份靠 `request_id` 去 `usage_events.request_id` 关联（那里已有 `username` 列），日志系统保留更久、权限更宽，能少放就少放。
 - `request_id` 与响应头 `X-Request-ID` 同值，可双向对照。
 - **级别**：`5xx` 记 WARNING（服务端自己的问题，值得抓），`4xx` 与成功记 INFO（否则 401 探测、拼错路径会把告警日志淹没）。
-- **不记**静态资源（`assets/*.js`）与探针（`/health`、`/healthz`、`/metrics`）——它们由 uvicorn access log 覆盖，重复记录只会把业务行挤出视野。
-- 开关 `REQUEST_LOG_ENABLED`（默认 `true`，可热更），关掉后回到只有 uvicorn 的裸 access log。
+- **不记**静态资源（`assets/*.js`）与探针（`/health`、`/healthz`、`/metrics`）：探针已有 `/healthz` 计数与 metrics 覆盖，静态资源量级大且无排障价值，记下来只会把业务行挤出视野。
+- **uvicorn 自带 access log 已关闭**（`run()` 传 `access_log=False`）：它没有时间戳、没有 request_id、带完整 query string，与上面这层完全重复，只是把同样的请求再写满另一个轮转文件。排查探针/静态资源请用 `/healthz` 计数与 metrics。
+- 开关 `REQUEST_LOG_ENABLED`（默认 `true`，可热更），关掉后不再有请求级日志。
 
 > 容器里的 `data/dumps/`（诊断开关 `DUMP_REQUEST_BODIES=true` 写入）不在 docker 日志体系内，由应用自行保持最多 200 份。
 

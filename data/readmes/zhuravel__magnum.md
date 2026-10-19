@@ -209,10 +209,11 @@ conventions, permission prompts are answered No, hooks a checkout brings are dec
 GitHub tokens are stripped from review worktrees. [Under the hood](#under-the-hood) has the details.
 
 **How noisy is it?** The judge posts only what it can reproduce, ranks findings by who can reach them (P0
-to P3), and offers at most three simplifications, marked optional. Every candidate it rejects is recorded
-with a reason, so `magnum stats` shows per reviewer how many findings were raised, posted and rejected,
-and why. The optional [retro](#learning-from-other-reviewers) measures the other side: what human
-reviewers caught that Magnum missed.
+to P3), and offers at most five simplifications by default (`max_simplifications`), marked optional.
+Every candidate it rejects is recorded with a reason, so `magnum stats` shows per reviewer how many
+findings were raised, posted and rejected, and why. The optional
+[retro](#learning-from-other-reviewers) measures the other side: what human reviewers caught that Magnum
+missed.
 
 **Why herdr panes and not headless runs?** So you can see what an agent is doing, take it over or answer
 it when it is stuck, and so its session lives on: a re-review continues the conversation that wrote the
@@ -685,16 +686,35 @@ apply again if it is still at the cap. `magnum status` says so on its codex line
 11:20: the caps wait for Codex's next reading`; `overruled_at` in the JSON), and a round's wait names the
 command (`magnum resume --tool codex` lifts the pause).
 
-Once every agent of a reviewed PR has been idle for `[daemon] park_idle_after` (default `"2h"`, `"0"`
-never) its sessions are parked to free memory; the next round resumes them. The same goes for a PR whose
-review or re-review waits behind `magnum pause`, a drain, the daily cap, or anything else that ends more than
-`park_idle_after` from now. Pinned PRs and PRs you typed into within `human_cooldown` keep their agents.
+An idle agent is parked to free memory once it has idled for `[daemon] park_idle_after` (default `"15m"`,
+`"0"` never); the next round resumes its conversation, which costs a Claude role a few seconds. Its idle time
+counts from its own last turn or from the end of the PR's last round, fix job or whiteboard job, whichever is
+later, so a reviewer that waited while the judge worked is not parked during the round or right after it,
+and a fix cycle or a whiteboard that starts after the round finds the agents where they were. The judge
+waits `[pipeline] judge_fresh_after` (`"90m"`) instead when that is longer: within it the next round reuses
+the live judge rather than launch Codex again, and after it the judge would start fresh anyway (see below);
+with `judge_fresh_after = "0"` it parks at `park_idle_after` like the others. So 15 minutes after a round
+the reviewers park alone, their panes closed and the workspace kept, and `pr.parked` names their roles, each
+with the threshold it idled past, with `"partial": true`, and says which agent stays until when; at
+`judge_fresh_after` the PR's park takes the judge, the `codex-review` shell and the workspace. Only an agent
+whose conversation can be resumed (herdr reported its session id) parks early: one without waits for the
+PR's park. An early park ends as the PR's park does: the agent is quit until its pane is an idle shell, its
+pane is closed and only then is the session parked, a pane that runs something by then being left for a
+later close; each session's park records `pr.session_park_begin`, then `pr.session_parked` or
+`pr.session_park_failed`. This
+covers a reviewed PR, an ineligible one (a draft, a mute or a skip after its review), and a PR whose review
+or re-review waits behind `magnum pause`, a drain, the daily cap, or anything else that ends more than
+`park_idle_after` from now. A PR that needs attention keeps its agents, since its pane shows what went
+wrong, and so do pinned or held slots and PRs you typed into within `human_cooldown`; nothing parks while a
+round, a fix job or a whiteboard job holds the PR, or while one of its agents works or is blocked.
 The fixer's session is parked with the others; the next fix job resumes its conversation. A park closes the
 panes it parked (see below), and a resume starts the conversation in a new pane; `o` and `magnum open` open
 what is live, so a role whose pane is gone focuses a live agent pane of the PR, the judge's first. A park that
 fails, for example because an agent does not quit on ctrl+c, is not tried on every tick. The next try waits
 twice as long as the last wait: two ticks after the first failure, then four, eight and so on, up to 12
-hours. A new round of the PR or a change in its sessions starts the wait over. The first failure of each
+hours. A new round of the PR or a change in its sessions starts the wait over, and so does the PR's park
+after an early park failed, so a reviewer that will not quit does not hold the judge's park. An early park
+never uses the hard mode: an agent that ignores its ctrl+c waits for the PR's park. The first failure of each
 cause records a `pr.park_failed` warning with the cause's class (`quit_timeout`, `busy`, `herdr` or
 `error`) and the wait. Later failures of the same cause record nothing, and a park that works records
 `pr.parked` as usual. A park that cannot quit one agent still quits the PR's others and reports the
@@ -750,6 +770,23 @@ line of a `pr.launch_cleared`, of a prompt herdr refused because the agent was g
 in `pr.panes_closed`), the daemon records an `agents.shared_failure` warning naming the PRs, the roles, the
 line and a CLI change of the day, with one toast ("2 PRs' codex-judge launches end the same way"), once per
 line a day. Nothing is paused and no version is pinned: you decide, and mise owns the versions.
+
+The machine's memory is measured, not acted on. At most once a minute the health check starts a sample of
+the kernel's memory pressure level (`sysctl -n kern.memorystatus_vm_pressure_level`: 1 normal, 2 warn, 4
+critical) and the swap (`sysctl -n vm.swapusage`) on a goroutine of its own, each command with a 3-second
+timeout, so one that fails keeps the other's reading; the tick never waits for it, and the next tick's check
+records the finished sample in the registry (`machine.memory`: the level, the swap used and its total in
+bytes, when it was read and, for a part it could not read, why). Each change of the level is a
+`machine.memory_pressure` event: the first known level since a start is info, a return to normal is info,
+warn a warning and critical an error. A run of critical pressure, which lasts until a normal sample, toasts
+once ("magnum: memory pressure critical", with the swap and how many of magnum's agents are live), and never
+twice within an hour, so a level that flaps does not toast again. A command that fails (Linux has neither
+value) leaves its part unknown, with one warning per value and kind of failure (a non-zero exit, a timeout,
+a failed start, an answer that does not parse) since the daemon started, and no sysctl at `/usr/sbin/sysctl`
+stops the sampling until the daemon restarts; an unknown sample is never a return to normal. `magnum status`
+shows the sample on its `memory:` line and `magnum doctor` reads the level and the swap at once (a WARN at
+critical). Nothing waits on memory pressure yet: the samples tell how often it is critical, which a hold on
+it would need to know.
 
 The judge is the exception to resuming. Codex's prompt cache lasts about an hour and a half, so a judge
 resumed later re-reads its whole conversation uncached on its first turn (25 of 39 resumed judge turns did,
@@ -985,7 +1022,10 @@ check posts, at most an hour); `keep_approvals = true` on the `[[repo]]` (or the
 what the repository puts at risk, as in the example above: the judge's prompts carry it as `stakes` in
 their `<magnum>` block and the claude-review prompts in one sentence, and the judge sizes each finding's
 harm against it, never against a stakes block in the checkout, which is PR content; codex-review gets
-none. Unset, nothing renders. `prepare` (such as `["bin/rails db:test:prepare"]`) and
+none. Unset, nothing renders. `max_simplifications` on the `[[repo]]` (0 to 10) is how many
+simplifications the judge posts at most on the repository's PRs, the most substantial first; 0 or unset
+keeps `[pipeline] max_simplifications` (1 to 10, default 5), and a pooled repository may set it too.
+`prepare` (such as `["bin/rails db:test:prepare"]`) and
 `ready` (probes, exit 0 = ready) on a `[[pool]]` or `[[repo]]` run in the checkout before the
 reviewers, as `zsh -lc` with the slot's env and within `ready_timeout` (5m) together, followed by a
 check that the login shell runs the Ruby the checkout pins; a failure never stops the round, it tells
@@ -1178,58 +1218,4 @@ rereview = "claude-rereview.md"    # new commits since its last report: the delt
 restart = "claude-restart.md"      # a push cut its review short; the round restarted on the new head
 effort = "high"
 rereview_effort = "medium"         # re-reviews of new commits: fewer, surer findings on the delta
-runs = "always"                    # always | first | manual | never
-output = "claude-review.md"        # the report the judge receives
-
-[[role]]
-name = "codex-review"
-kind = "shell"
-tool = "codex"                     # codex's login check, pauses and health patterns apply
-effort = "high"                    # -c model_reasoning_effort=high, never your global Codex effort
-command = "{{.DBLockCommand}} codex review{{if .Model}} -c model={{.Model}}{{end}}{{if .Effort}} -c model_reasoning_effort={{.Effort}}{{end}}{{range .MCPOff}} {{.}}{{end}} --base {{if .BaseSHA}}{{.BaseSHA}}{{else}}{{.BaseRef}}{{end}}"   # takes its turn on the slot's databases; no MCP servers; the merge base
-capture = "stdout"
-
-[[role]]
-name = "claude-simplify"
-kind = "claude"
-prompt = "claude-simplify.md"      # read-only: four angles in parallel subagents, every qualifying proposal, ranked
-runs = "first"                     # first review of a PR, then on request (`magnum review --role claude-simplify`, or `--simplify`)
-rerun_min_lines = 150              # ...and again once 150 code lines changed since its last run (0 = never)
-output = "claude-simplify.md"      # the proposals; no `after`, so it runs alongside the reviewers
-
-[[role]]
-name = "codex-judge"
-kind = "codex"
-judge = true
-skill = "{{repo}}/skills/magnum-review/SKILL.md"
-prompt = "judge-initial.md"
-rereview = "judge-rereview.md"
-effort = "xhigh"
-rereview_effort = "high"           # re-reviews of new commits; the first review stays at xhigh
-max_subagents = 2                  # subagents open at once (0 = none)
-max_session_rounds = 6             # rounds one session serves on a PR, then a fresh one (0 = no limit)
-timeout = "90m"
-```
-
-A role's `timeout` bounds each of its turns (40m, a judge's 90m). `[daemon] reviewer_timeout` and
-`judge_timeout` are only the timeouts of a role that sets none: a role's own wins, and the seven built-in roles
-set theirs, so they change only a role you add without one, and `magnum config` (and doctor) warns when they
-change nothing. To give a built-in role another, set `timeout` in a `[[role]]` block of its name.
-
-Non-judge roles run in parallel unless `after = [...]` orders them; the judge runs last and gets every
-other role's report. The judge's own full pass needs no report, so by default it starts with the
-reviewers: `[pipeline] judge_own_pass = "parallel"` (a `[[watch]]` may set its own) prompts the judge
-with `judge-own-pass.md` in the first stage, and it reads the code, runs its checks and writes its proven
-findings to `judge-own.md` in the report directory, posting nothing; once every reviewer and that pass
-ended, whichever comes last, its usual prompt names `phase: candidates` and that file, and it judges the
-reports against it, posts and updates the notes. Over 54 rounds a first review took 32 minutes at the
-median (51 at p90), the reviewers 17 and then the judge 15 one after the other; overlapping the own pass
-leaves about the longer of the two plus 5 to 8 minutes of judging and posting, some 9 minutes off the
-median at about the same usage. The own pass is a run of its own (kind `own_pass`, `round.own_pass`
-events, `codex-judge own pass` on the board's card, in `magnum stats` and `own_pass` in `tui --json`;
-the state cell reads `reviewers+judge` while both work), bounded by the judge's `timeout`; a push cuts
-it short and the restart prompts it again on the new head, naming the head it moved from, and a pass
-that left no file only makes the candidates prompt ask for it. Crash recovery counts it with the
-reviewers (a daemon restart during it starts the round again), and a usage limit there pauses the round
-at the candidates prompt, whose turn the paused round then continues. A judge alone (a delta check, a re-review of the same head, a continued
-turn, a round whose reviewers were all dropped) gets one prompt, and `judge_own_pass = "after"` keeps o
+runs = "always"             

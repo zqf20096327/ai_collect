@@ -67,7 +67,6 @@ Free, open source, MIT. Learn on the website, with a coding agent, or by running
 
 <p align="center">
   <a href="https://serpapi.com/ai-engineering-from-scratch"><picture><source media="(min-width: 768px)" srcset="assets/sponsors/serpapi-banner-compact.png" width="48%"><img src="assets/sponsors/serpapi-banner-compact.png" alt="SerpApi. Web Search API for your AI apps. Available in Markdown and JSON for any integration." width="440"></picture></a>
-  <a href="https://nitrostack.ai/referral/aiengineeringfromscratch"><picture><source media="(min-width: 768px)" srcset="assets/sponsors/nitrostack-banner-equal.png" width="48%"><img src="assets/sponsors/nitrostack-banner-equal.png" alt="NitroStack. Build and deploy your MCP app in 10 minutes. Get your product into ChatGPT and Claude marketplaces with free cloud deployment." width="440"></picture></a>
 </p>
 
 <p align="center">
@@ -1173,4 +1172,23 @@ Associate Foundations, Developer Foundations, Architect Foundations, and Archite
 Professional. Each route combines blueprint-mapped lessons, runnable labs, a
 diagnostic, capstone work, and a full-length original practice exam.
 
-Use the [AI-nati
+Use the [AI-native GitHub onboarding guide](certifications/claude/GETTING_STARTED.md)
+with Claude Code, Codex, ChatGPT, Cursor, or another agent. Run
+`claude-certification` in Codex, `/claude-certification` in Claude Code, or ask
+another host to use `claude-certification`. It chooses a track, creates a
+persistent route in `CLAUDE-CERTIFICATION.md`, teaches one step at a time, runs
+the real labs, and gives artifact-based feedback. The same curriculum remains
+available on the [certification website](https://aiengineeringfromscratch.com/certifications.html).
+
+The academy is independent study material based on public exam objectives. It is not
+affiliated with Anthropic, does not reproduce live exam questions, and cannot guarantee
+a passing score.
+
+</details>
+
+<details>
+<summary>Prepare for MCP Associate (MCPA)</summary>
+
+The [MCPA Certification Curriculum](certifications/mcpa/README.md) is a free,
+open-source preparation program for the Model Context Protocol Associate exam from the
+Agentic AI Foundation, delivered through Linux Foundation Training. Its 34 lessons tea

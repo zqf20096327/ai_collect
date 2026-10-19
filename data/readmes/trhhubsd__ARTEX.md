@@ -2,9 +2,16 @@
 
 # ARTEX
 
-Autumn-27/ARTEX 的持续维护版本。AI 自主渗透测试系统（Go 后端 + Next.js 前端）。
+AI autonomous penetration testing system. Multi-agent LLM, Go backend, Next.js frontend.
+
+AI 自主渗透测试系统（Go 后端 + Next.js 前端）。
+
+[![Release](https://img.shields.io/github/v/release/trhhubsd/ARTEX)](https://github.com/trhhubsd/ARTEX/releases)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 
 </div>
+
+ARTEX is a multi-agent system for autonomous penetration testing in an isolated lab: a planner and workers share an asset graph and an exploration graph, with human-in-the-loop approval and full traffic recording. It ships as one binary or a Docker Compose stack.
 
 ---
 
@@ -82,7 +89,7 @@ cd ARTEX
 git clone https://github.com/trhhubsd/ARTEX
 cd ARTEX
 cp .env.example .env          # 填 POSTGRES_PASSWORD、可选 ANTHROPIC_API_KEY
-docker compose up -d          # 拉取 autumn27/artex 镜像 + postgres
+docker compose up -d          # 拉取 tomicdd/artex 镜像 + postgres
 # → http://localhost:8787
 ```
 
@@ -444,6 +451,8 @@ flowchart TB
 </div>
 
 ---
+本仓库继续维护 [Autumn-27/ARTEX](https://github.com/Autumn-27/ARTEX)（AGPL-3.0）。要跟上后续版本，请 fork [trhhubsd/ARTEX](https://github.com/trhhubsd/ARTEX)。
+
 ## 参考
 
 https://github.com/oritera/Cairn

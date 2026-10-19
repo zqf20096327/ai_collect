@@ -8,7 +8,7 @@ The private AI that lives on your computer and does real work, not just chat.
   <img width="960" alt="Skales dashboard in the Skales X light theme with the Desert background" src="docs/readme/hero-dashboard-desert.jpg" />
 </p>
  <p>
-    <a href="https://github.com/skalesapp/skales/releases/latest"><img src="https://img.shields.io/badge/version-12.9.50-10b981?style=flat-square" alt="Version 12.9.50" /></a>
+    <a href="https://github.com/skalesapp/skales/releases/latest"><img src="https://img.shields.io/badge/version-12.9.55-10b981?style=flat-square" alt="Version 12.9.55" /></a>
     <a href="https://skales.app/licence"><img src="https://img.shields.io/badge/licence-proprietary-10b981?style=flat-square" alt="Licence" /></a>
     <a href="https://skales.app"><img src="https://img.shields.io/badge/Windows_+_macOS_+_Linux_+_Android_+_iOS-10b981?style=flat-square&logo=windows&logoColor=white" alt="Platform" /></a>
     <a href="https://github.com/skalesapp/skales/stargazers"><img src="https://img.shields.io/github/stars/skalesapp/skales?style=flat-square&color=10b981" alt="Stars" /></a>
@@ -341,7 +341,7 @@ No vendor lock-in. Bring your own key, or run locally for free.
 
 | Local (free) | Cloud |
 |---|---|
-| **Ollama** (cloud or your own machine) | Anthropic, OpenAI, Google AI (Gemini) |
+| **Ollama** (cloud or your own machine) | Anthropic, OpenAI, Google AI (Gemini), Azure OpenAI, Google Vertex AI |
 | **LM Studio**, **KoboldCpp**, **Unsloth Desktop** | OpenRouter (free models), Groq, DeepSeek |
 | **Skales Local** (ships with the app) | Mistral, xAI, Cerebras, Moonshot, GLM, Qwen |
 | vLLM, or any custom endpoint | and more, 15+ in all |
@@ -357,6 +357,7 @@ No vendor lock-in. Bring your own key, or run locally for free.
 | **CMS** | WordPress (pages, posts, media, WooCommerce, SEO, Elementor) |
 | **Calendars** | Google Calendar, Apple Calendar (CalDAV), Outlook |
 | **Productivity** | Notion, Todoist, Google Drive, Google Docs, GitHub |
+| **Web search** | Built-in search with fallbacks, or your own private SearXNG |
 | **Home and media** | Home Assistant, Spotify |
 | **Email** | Gmail / IMAP with attachments |
 | **Messaging** | Telegram, Discord, WhatsApp, Slack, Signal |

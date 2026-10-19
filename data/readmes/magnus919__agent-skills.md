@@ -43,6 +43,10 @@ Design and operate an organization's AI governance system: governance principles
 
 Decide whether an AI-enabled workflow should be adopted, scaled, constrained, redesigned, or retired by connecting workflow outcomes, worker or user effects, quality guardrails, full operating cost, telemetry, uncertainty, and accountable governance. Routes detailed financial, statistical, analytics, evaluation, runtime, governance, and launch work to the owning specialist skills.
 
+### [amazon-memo](amazon-memo/SKILL.md)
+
+Choose, draft, and revise Amazon-style narrative decision memos, PR/FAQs, and shorter briefs. Includes evidence-led reasoning, practical human-readability revision, reading meetings, and adaptations that respect independent written cultures.
+
 ### [analog-occultism](analog-occultism/SKILL.md)
 
 Create subject-neutral images and videos in an analog occultism / industrial CRT noir aesthetic: near-monochrome archival technical atmosphere, severe low-key lighting, tactile signal degradation, industrial geometry, and quiet unresolved tension. Not for colorful cyberpunk, glossy advertising, conventional horror, or clean digital renders.

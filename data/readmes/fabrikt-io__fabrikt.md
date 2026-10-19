@@ -74,7 +74,7 @@ The library currently has support for generating:
   * **Micronaut** HTTP annotated controller interfaces
   * **Ktor server** routes and controller interfaces
 
-Client generators offer opt-in HTTP Bearer and OAuth2 access-token helpers through `--http-client-opts OPENAPI_BEARER_AUTHENTICATION` and `OPENAPI_OAUTH2_AUTHENTICATION`. See [Client authentication](CLIENT_AUTHENTICATION.md) for token providers, operation scopes, security alternatives and examples.
+Client generators offer opt-in header API-key, HTTP Bearer and OAuth2 helpers through `--http-client-opts OPENAPI_API_KEY_AUTHENTICATION`, `OPENAPI_BEARER_AUTHENTICATION` and `OPENAPI_OAUTH2_AUTHENTICATION`. See [Client authentication](CLIENT_AUTHENTICATION.md) for credential providers, operation scopes, security alternatives and examples.
 
 ## Examples
 
@@ -191,7 +191,7 @@ Latest version of the plugin: [![Gradle Plugin Portal Version](https://img.shiel
 ```kotlin
 plugins {
     // find latest version: https://github.com/acanda/fabrikt-gradle-plugin/releases
-    id("ch.acanda.gradle.fabrikt") version "1.43.0"
+    id("ch.acanda.gradle.fabrikt") version "1.44.0"
 }
 
 fabrikt {
@@ -249,6 +249,26 @@ Use a supported `oneOf` schema when a concrete polymorphic Kotlin model is neede
 
 Enable `--http-model-opts SHARED_COMPOSITION_CONTRACTS` to generate shared interfaces for compatible models that explicitly include a named object through `allOf`. See [Shared composition contracts](SHARED_COMPOSITION_CONTRACTS.md) for examples and current scope.
 
+## Multipart clients
+
+For `OK_HTTP`, `OPEN_FEIGN` and `SPRING_HTTP_INTERFACE`, `multipart/form-data` JSON object and array parts are sent as `application/json`, including when this is inferred from the schema rather than explicitly declared in `encoding`. Optional null parts are omitted; binary arrays are sent as repeated parts with the original property name. JSON parts do not receive a filename. Unsupported JSON-part encodings, such as `application/xml`, produce a warning and fall back to JSON; this does not add XML serialization or general support for multipart `encoding` options.
+
+### OkHttp
+
+JSON parts use the client instance's configured Jackson mapper. File arguments use the generated `RequestBodyWithFilename`, retaining the caller's body, content type and filename.
+
+### OpenFeign
+
+Multipart methods use native Feign `@Param` bindings and require the generated `FeignMultipartEncoder`. Register it on the Feign builder with your existing encoder and JSON serializer, for example `FeignMultipartEncoder(JacksonEncoder(mapper), mapper::writeValueAsBytes)` for Jackson 2. For Jackson 3, pass your Jackson 3 serializer and the encoder you use for ordinary requests. The multipart encoder delegates ordinary requests unchanged and serializes immutable Kotlin JSON models directly; a plain form encoder is insufficient. It buffers each multipart request in memory and requires no dependency beyond Feign core and the caller's existing JSON serializer.
+
+JSON arguments retain their generated model types. File arguments use `FeignMultipartFile(bytes, filename, contentType)`; binary arrays use `List<FeignMultipartFile>`. This changes the signatures of previously unsupported multipart methods. The generated interfaces use Feign's native contract; adding `@FeignClient` does not switch those bindings to Spring Cloud's contract.
+
+### Spring HTTP Interface
+
+Parts use `@RequestPart` with their original names and requiredness. Wrap JSON arguments in the generated `JsonPart(model)` or `JsonPart(listOfModels)`, which fixes their content type to JSON and preserves an array as one JSON part. File arguments use Spring's `Resource`, with a filename supplied by the resource; binary arrays use `List<Resource>`. These replace the previously unbound multipart parameters and therefore change their Kotlin signatures.
+
+Configure a multipart-capable message converter, such as `AllEncompassingFormHttpMessageConverter`, with the selected Jackson generation's JSON part converter. A standalone JSON converter cannot serialize the complete multipart request. For a `ByteArrayResource`, override `getFilename()` to supply the upload filename. The synchronous `RestClient` adapter is supported; reactive adapter behavior must be verified separately.
+
 ## Configuration Options
 
 This section documents the available CLI parameters for controlling what gets generated. This documentation is generated using: `./gradlew printCodeGenUsage`
@@ -263,6 +283,11 @@ Usage: <main class> [options]
 |   `--auth`                              | Authorization header(s) sent when fetching a remote --api-file, --api-fragment, or remote `$ref`. Repeatable, format 'Name: value'. Value may contain `${ENV_VAR}` placeholders, name an env var, or contain !cmd (at start or after whitespace) to run a shell command and substitute its trimmed stdout (e.g. --auth "Authorization: Bearer !generate-fresh-auth-token"). |
 | * `--base-package`                      | The base package which all code will be generated under. |
 |   `--custom-type-mapping`               | Map an OpenAPI type and format to a Kotlin type. Use type:format=KotlinFqcn and optionally add ;kotlinx=SerializerFqcn for kotlinx.serialization. |
+|   `--dependencies-generation-mode`      | Configure generation of file containing dependencies of the generated source code. Default: NONE |
+|                                         | CHOOSE ONE OF: |
+|                                         |   `NONE` - No extra (dependencies) file is generated. |
+|                                         |   `GRADLE_NOTATION` - Dependencies file is generated with gradle notation (expected to be placed inside dependencies {} block in build.gradle(.kts) |
+|                                         |   `MAVEN_NOTATION` - Dependencies file is generated with maven notation (expected to be placed inside <dependencies></dependencies> tags in pom.xml) |
 |   `--external-ref-resolution`           | Specify to which degree referenced schemas from external files are included in model generation. Default: TARGETED |
 |                                         | CHOOSE ONE OF: |
 |                                         |   `TARGETED` - Generate models only for directly referenced schemas in external API files. |
@@ -276,6 +301,7 @@ Usage: <main class> [options]
 |                                         |   `OKHTTP_NON_NULL_RESPONSE_PAYLOADS` - This option makes ApiResponse.data non-null. Responses declared with a body must return one: a missing body, or one that deserializes to null, throws ApiException. An operation that declares both a body response and an empty success response (e.g. 200 and 204) throws on the empty success. Binary responses return an empty ByteArray for an empty body (only for OkHttp clients) |
 |                                         |   `RESPONSE_MEDIA_TYPE_FUNCTIONS` - This option adds, for each operation whose success responses declare a different JSON schema per media type, one function per media type. The function always sends that media type as the Accept header and returns that schema's type instead of JsonNode. Its name is the operation's function name plus the media subtype, e.g. getItemsVndCustomJson for application/vnd.custom+json (only for OkHttp, OpenFeign and Spring HTTP Interface clients) |
 |                                         |   `DYNAMIC_BASE_URL` - This option makes ApiConfiguration.basePath empty, allowing you to set the base URL at runtime (only for Ktor clients) |
+|                                         |   `OPENAPI_API_KEY_AUTHENTICATION` - Adds header API-key helpers and complete security alternatives with enabled Bearer and OAuth2 schemes |
 |                                         |   `OPENAPI_BEARER_AUTHENTICATION` - Adds operation-specific Bearer token helpers for OpenAPI HTTP Bearer security schemes |
 |                                         |   `OPENAPI_OAUTH2_AUTHENTICATION` - Adds operation-specific OAuth2 access-token helpers that pass required scopes to a caller-provided token provider |
 |   `--http-client-target`                | Optionally select the target client that you want to be generated. Defaults to OK_HTTP |
@@ -372,11 +398,6 @@ Usage: <main class> [options]
 |                                         |   `JAVAX_VALIDATION` - Use `javax.validation` annotations in generated model classes |
 |                                         |   `JAKARTA_VALIDATION` - Use `jakarta.validation` annotations in generated model classes (default) |
 |                                         |   `NO_VALIDATION` - Use no validation annotations in generated model classes |
-|   `dependencies-generation-mode`        | Configure generation of file containing dependencies of the generated source code. Default: NONE   |
-|                                         | CHOOSE ONE OF: |
-|                                         | `NONE` - Default, no extra dependencies file generated |
-|                                         | `GRADLE_NOTATION` - Dependencies file is generated with gradle notation (expected to be placed inside dependencies {} block in build.gradle(.kts) |
-|                                         | `MAVEN_NOTATION` - Dependencies file is generated with maven notation (expected to be placed inside <dependencies></dependencies> tags in pom.xml) |
 
 
 ## Original Motivation

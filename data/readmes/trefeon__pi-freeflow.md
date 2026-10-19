@@ -1,14 +1,14 @@
 # pi-freeflow
 
-> 36 free models with up to 1M context. No API keys to manage. Add your own relays to spread requests across more IPs.
+> 35 free models with up to 1M context. No API keys to manage. Add your own relays to spread requests across more IPs.
 
 Thin by design: a model list, a relay proxy, and a log. The host (`pi-ai`) handles thinking, normalization, and provider behavior.
 
 [![npm version](https://img.shields.io/npm/v/pi-freeflow?style=flat-square&color=00E5FF)](https://www.npmjs.com/package/pi-freeflow)
 [![npm downloads](https://img.shields.io/npm/dm/pi-freeflow?style=flat-square)](https://www.npmjs.com/package/pi-freeflow)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Pi](https://img.shields.io/badge/Powered%20by-Pi-7c3aed?style=flat-square)](https://github.com/badlogic/pi-ai)
-[![Oh My Pi](https://img.shields.io/badge/Compatible-OMP-black?style=flat-square)](https://github.com/coder/oh-my-pi)
+[![Pi](https://img.shields.io/badge/Powered%20by-Pi-7c3aed?style=flat-square)](https://github.com/earendil-works/pi)
+[![Oh My Pi](https://img.shields.io/badge/Compatible-OMP-black?style=flat-square)](https://github.com/can1357/oh-my-pi)
 
 ---
 
@@ -16,11 +16,11 @@ Thin by design: a model list, a relay proxy, and a log. The host (`pi-ai`) handl
 
 | Feature | What it does | Cost |
 | :--- | :--- | :--- |
-| **36 free models** | 13 from OpenCode Zen, 13 from KiloCode Gateway, 2 from Cline, 8 from OVHcloud AI Endpoints, context windows up to 1M. Full list below. | **$0** |
+| **35 free models** | 12 from OpenCode Zen, 13 from KiloCode Gateway, 2 from Cline, 8 from OVHcloud AI Endpoints, context windows up to 1M. Full list below. | **$0** |
 | **Relay pool** | Route requests through your own relays: a self-hosted egress pool (many egress IPs on one small host) or Cloudflare Workers / Deno Deploy / Vercel Edge workers. Traffic spreads across the pool, or stays on one sticky relay. A relay that rate-limits, times out, or drops the connection cools down while healthy ones take its traffic. | **$0** beyond your host or platforms' free tiers |
 | **Automatic fallback** | When every relay is cooling down, requests go direct to upstream instead of failing. | **$0** |
 | **Short model names** | Most models have a slash-free, colon-free alias, plus an optional `:effort` suffix for thinking depth. You type `freeflow/<name>`; the two Cline models have no alias and must be typed in full. | **$0** |
-| **Shared local proxy** | One daemon on `127.0.0.1:28180` serves every session on the machine, so parallel subagents reuse it instead of opening their own connections. | **$0** |
+| **Shared local proxy** | One daemon on `127.0.0.1:28180` serves every session on the machine, so parallel subagents reuse it instead of opening their own connections. Loopback-only and token-gated: hosts send the token automatically, external tools read `~/.pi/agent/token`. | **$0** |
 | **Logs you can read** | `~/.pi/agent/pi-freeflow.log`, rotated at 10MB. Tail it with `/freeflow logs`. | **$0** |
 
 ---
@@ -48,12 +48,12 @@ pi install npm:pi-freeflow
 **OMP, interactive:**
 ```bash
 omp
-/model → freeflow → muse-spark-1.2-contributor-free (1M) → max
+/model → freeflow → deepseek-v4.1-flash-free (1M) → max
 ```
 
 **OMP, one shot:**
 ```bash
-omp -p --model freeflow/muse-spark-1.2-contributor-free "build me a SaaS"
+omp -p --model freeflow/deepseek-v4.1-flash-free "build me a SaaS"
 omp -p --model freeflow/space-bunny:high "solve this bug"   # alias + thinking level
 ```
 
@@ -183,6 +183,7 @@ The same command set works identically in OMP and Pi:
 
 ```bash
 /freeflow status                  # View active relay, pool status, and candidates
+/freeflow hide|show               # Hide or restore the status-bar widget (also `widget hide`/`widget show`)
 /freeflow list                    # List all relays with real-time health badges
 /freeflow use <url|index|label>   # Switch active relay
 /freeflow url <url>               # Set the active relay URL directly
@@ -190,12 +191,16 @@ The same command set works identically in OMP and Pi:
 /freeflow label <index|url> <name># Assign a friendly label to a relay
 /freeflow remove <index|url|label># Remove a relay from the pool
 /freeflow test <index|url|label>  # Probe a relay for reachability and latency
-/freeflow on|off|auto|spread     # Relay mode (auto = enabled for freeflow, spread = rotate pool)
+/freeflow on|off|auto|sticky|spread  # Relay mode (auto/sticky = sticky primary, spread = rotate pool)
 /freeflow deploy <platform>       # Guided relay deploy: vercel|cloudflare|deno, token in-memory, auto-adds
 /freeflow logs [lines]            # Inspect recent proxy logs
 /freeflow trace [req-id]          # Tail logs filtered by request correlation ID
 /freeflow refresh                 # Reload the model catalog from live upstreams
+/freeflow reload models           # Alias of refresh
 /freeflow update                  # Check for and install a package update
+/freeflow autoupdate [on|off]     # View or toggle automatic background updates
+/freeflow install-startup         # Install the login-startup hook so the daemon comes up with your session
+/freeflow uninstall-startup       # Remove the login-startup hook
 /freeflow debug on | off          # Toggle full HTTP lifecycle debug logging
 /freeflow kill                    # Stop the shared proxy daemon now (restarts on next use)
 /freeflow cline login               # Sign in through the browser, save to the per-user pool
@@ -208,32 +213,31 @@ The same command set works identically in OMP and Pi:
 
 ---
 
-### 36 models, one command
+### 35 models, one command
 
 ```bash
 /model → freeflow → pick
 ```
 
-Every model specification is reconciled against [models.dev](https://models.dev/), [OpenRouter](https://openrouter.ai/), and OMP's built-in catalog, configured with the highest verified context, output ceiling, and reasoning capabilities across twin models.
-#### OpenCode Zen (13 models), Responses and Chat API
+Every model specification is reconciled against [models.dev](https://models.dev/), [OpenRouter](https://openrouter.ai/), and OMP's built-in catalog on 2026-10-20, and a free and a non-free variant of the same model share one spec — the highest published context window, output ceiling, and input modalities across its twins. Three lane limits stay authoritative over that reconciliation: cat-jam's probe-measured 256K context window, OVH's advertised context windows, and the 384K window its only provider actually serves for Dots3-Note.
+#### OpenCode Zen (12 models), Chat Completions API
 
 Good defaults for long coding sessions and agentic work.
 
 | Model ID | Creator / Lab | Context | Max Output | Thinking | Vision |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `cat-jam-free` | Cat Jam | **256K** (262.144) | **131K** (131.072) | `low … max` | ❌ |
-| `muse-spark-1.2-contributor-free` | Meta Superintelligence Labs | **1M** (1.048.576) | **131K** (131.072) | `minimal … xhigh` | ✅ |
 | `mimo-v2.6-flash-free` | Xiaomi MiMo | **1M** (1.048.576) | **131K** (131.072) | `minimal … xhigh`\* | ✅ |
 | `nemotron-3.5-lightning-free` | NVIDIA | **1M** (1.000.000) | **262K** (262.144) | `minimal … xhigh` | ❌ |
-| `nemotron-3.5-super-vl-free` | NVIDIA | **1M** (1.000.000) | **131K** (131.072) | `minimal … xhigh` | ✅ |
-| `nemotron-3-ultra-free` | NVIDIA | **1M** (1.000.000) | **128K** (128.000) | `minimal … xhigh` | ❌ |
+| `nemotron-3.5-super-vl-free` | NVIDIA | **1M** (1.048.576) | **235K** (235.929) | `minimal … xhigh` | ✅ |
+| `nemotron-3-ultra-free` | NVIDIA | **1M** (1.048.576) | **182K** (182.520) | `minimal … xhigh` | ❌ |
 | `big-pickle` | Big Pickle | **200K** (200.000) | **32K** (32.000) | `high / max` | ❌ |
 | `space-bunny-free` | Stealth preview (lab undisclosed) | **1M** (1.048.576) | **512K** (524.288) | `low … max` | ✅ |
-| `longcat-2.5-preview-free` | Meituan LongCat | **1M** (1.000.000) | **131K** (131.072) | `minimal … max` | ✅ |
-| `glm-5.3-flash-free` | Zhipu AI | **1M** (1.000.000) | **32K** (32.000) | `minimal … max` | ✅ |
+| `longcat-2.5-preview-free` | Meituan LongCat | **1M** (1.048.576) | **131K** (131.072) | `minimal … max` | ✅ |
+| `glm-5.3-flash-free` | Zhipu AI | **1M** (1.048.576) | **131K** (131.072) | `minimal … max` | ✅ |
 | `beam-free` | Reflection AI | **1M** (1.048.576) | **131K** (131.072) | `low … max` | ❌ |
 | `exo-free` | Undisclosed | **1M** (1.048.576) | **131K** (131.072) | `high` | ✅ |
-| `deepseek-v4.1-flash-free` | DeepSeek | **1M** (1.000.000) | **384K** (384.000) | `minimal … max` | ✅ |
+| `deepseek-v4.1-flash-free` | DeepSeek | **1M** (1.048.576) | **393K** (393.216) | `minimal … max` | ✅ |
 
 #### KiloCode Gateway (13 models), OpenRouter compatible
 
@@ -241,15 +245,15 @@ Keyless access. Short aliases work for every row (the full ID is in parentheses)
 
 | Model ID | Creator / Lab | Context | Max Output | Thinking | Vision |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `dots-3-note-preview` (`dots-studio/...:free`) | Dots Studio | **512K** (512.000) | **512K** (512.000) | `minimal…xhigh`\* | ✅ |
-| `nemotron-3-nano-omni` (`nvidia/...:free`) | NVIDIA | **256K** (256.000) | **131K** (131.072) | `minimal…xhigh`\* | ✅ |
-| `nemotron-3-ultra-550b` (`nvidia/...:free`) | NVIDIA | **1M** (1.000.000) | **128K** (128.000) | `minimal…xhigh`\* | ❌ |
+| `dots-3-note-preview` (`dots-studio/...:free`) | Dots Studio | **384K** (393.216) | **256K** (262.144) | `minimal…xhigh`\* | ✅ |
+| `nemotron-3-nano-omni` (`nvidia/...:free`) | NVIDIA | **262K** (262.144) | **65K** (65.536) | `minimal…xhigh`\* | ✅ |
+| `nemotron-3-ultra-550b` (`nvidia/...:free`) | NVIDIA | **1M** (1.048.576) | **182K** (182.520) | `minimal…xhigh`\* | ❌ |
 | `nvidia/nemotron-3.5-lightning:free` | NVIDIA | **1M** (1.000.000) | **262K** (262.144) | `minimal…xhigh`\* | ❌ |
 | `nemotron-3-super` (`nvidia/...:free`) | NVIDIA | **262K** (262.144) | **262K** (262.144) | `minimal…xhigh`\* | ❌ |
 | `north-mini-code` (`cohere/...:free`) | Cohere | **256K** (256.000) | **64K** (64.000) | `minimal…xhigh`\* | ❌ |
-| `laguna-s-2.1:free` (`poolside/...:free`) | Poolside | **262K** (262.144) | **32K** (32.768) | `minimal…xhigh`\* | ❌ |
+| `laguna-s-2.1:free` (`poolside/...:free`) | Poolside | **1M** (1.048.576) | **131K** (131.072) | `minimal…xhigh`\* | ❌ |
 | `laguna-xs-2.1:free` (`poolside/...:free`) | Poolside | **262K** (262.144) | **32K** (32.768) | `minimal…xhigh`\* | ❌ |
-| `lfm-2.5` (`liquid/lfm-2.5-2.6b:free`) | Liquid AI | **65K** (65.536) | **32K** (32.768) | `minimal…xhigh`\* | ❌ |
+| `lfm-2.5` (`liquid/lfm-2.5-2.6b:free`) | Liquid AI | **128K** (128.000) | **32K** (32.768) | `minimal…xhigh`\* | ❌ |
 | `kilo-auto` (`kilo-auto/free`) | Kilo Gateway Auto | **256K** (256.000) | **10K** (10.000) | `minimal…xhigh`\* | ❌ |
 | `openrouter` (`openrouter/free`) | OpenRouter Free | **200K** (200.000) | **65K** (65.536) | `minimal…xhigh`\* | ✅ |
 | `glyph-cluster` (`stealth/glyph-cluster`) | Stealth preview (lab undisclosed) | **256K** (256.000) | **256K** (256.000) | `minimal…xhigh`\* | ❌ |
@@ -278,14 +282,14 @@ All eight talk the normal chat API. Hosts that prefer the responses API work too
 
 | Model ID | Creator / Lab | Context | Max Output | Thinking | Vision |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `gpt-oss-120b` (`ovh-free/gpt-oss-120b`) | OpenAI | **128K** (131.072) | **32K** (32.768) | `low/high` | ❌ |
-| `gpt-oss-20b` (`ovh-free/gpt-oss-20b`) | OpenAI | **128K** (131.072) | **32K** (32.768) | `low/high` | ❌ |
-| `qwen3.5-397b` (`ovh-free/Qwen3.5-397B-A17B`) | Alibaba Qwen | **256K** (262.144) | **64K** (65.536) | `low/high` | ✅ |
-| `qwen3.5-9b` (`ovh-free/Qwen3.5-9B`) | Alibaba Qwen | **256K** (262.144) | **64K** (65.536) | `low/high` | ✅ |
-| `qwen3.6-27b` (`ovh-free/Qwen3.6-27B`) | Alibaba Qwen | **256K** (262.144) | **64K** (65.536) | `low/high` | ✅ |
-| `qwen3.8-27b` (`ovh-free/Qwen3.8-27B`) | Alibaba Qwen | **256K** (262.144) | **32K** (32.768) | `low/high` | ✅ |
-| `mistral-small-3.2` (`ovh-free/Mistral-Small-3.2-24B-Instruct-2506`) | Mistral AI | **128K** (131.072) | **16K** (16.384) | ❌ | ✅ |
-| `llama-3.3-70b` (`ovh-free/Meta-Llama-3_3-70B-Instruct`) | Meta | **128K** (131.072) | **16K** (16.384) | ❌ | ❌ |
+| `gpt-oss-120b` (`ovh-free/gpt-oss-120b`) | OpenAI | **128K** (131.072) | **131K** (131.072) | `low/high` | ❌ |
+| `gpt-oss-20b` (`ovh-free/gpt-oss-20b`) | OpenAI | **128K** (131.072) | **131K** (131.072) | `low/high` | ❌ |
+| `qwen3.5-397b` (`ovh-free/Qwen3.5-397B-A17B`) | Alibaba Qwen | **256K** (262.144) | **128K** (131.072) | `low/high` | ✅ |
+| `qwen3.5-9b` (`ovh-free/Qwen3.5-9B`) | Alibaba Qwen | **256K** (262.144) | **128K** (131.072) | `low/high` | ✅ |
+| `qwen3.6-27b` (`ovh-free/Qwen3.6-27B`) | Alibaba Qwen | **256K** (262.144) | **128K** (131.072) | `low/high` | ✅ |
+| `qwen3.8-27b` (`ovh-free/Qwen3.8-27B`) | Alibaba Qwen | **256K** (262.144) | **128K** (131.072) | `low/high` | ✅ |
+| `mistral-small-3.2` (`ovh-free/Mistral-Small-3.2-24B-Instruct-2506`) | Mistral AI | **128K** (131.072) | **32K** (32.768) | ❌ | ✅ |
+| `llama-3.3-70b` (`ovh-free/Meta-Llama-3_3-70B-Instruct`) | Meta | **128K** (131.072) | **32K** (32.768) | ❌ | ❌ |
 
 ---
 
@@ -305,14 +309,14 @@ cat ~/.pi/agent/pi-freeflow.log | tail -n 50
 
 This package stays thin. It ships three things: a model catalog, a relay proxy, and a log. There is no build step and one runtime dependency (`undici`). Thinking and prompt normalization stay with the host (`pi-ai`).
 
-About 45k lines including tests: `src/` is roughly 17.7k across 27 files, and the 82 test files add roughly 27k more. The full suite (sandboxed, network-mocked) and typecheck pass before every release. See CHANGELOG.md.
+About 52k lines including tests: `src/` is roughly 19.4k across 30 files, and the 90 test files add roughly 32.4k more. The full suite (sandboxed, network-mocked) and typecheck pass before every release. See CHANGELOG.md.
 
 ---
 
 ### FAQ
 
 **Do I need API keys?**
-No. OpenCode and Kilo free models are both keyless: the proxy sends no `Authorization` header at all, and a placeholder credential is rejected rather than merely unused — `Bearer kilo-free` answers `401 INVALID_TOKEN`, while sending nothing answers 200 for every free catalog model. You never paste a key. Cline free models need a browser login instead: `/freeflow cline login` saves it to a per-user pool on your machine. OVHcloud AI Endpoints models need no account and no key at all.
+No. OpenCode and Kilo free models need no key of your own. The proxy strips the placeholder credential the host provider registers with — forwarding it upstream gets a `401` (for Kilo, `Bearer kilo-free` answers `401 INVALID_TOKEN`) — so your key, if any, never leaves the machine. For OpenCode Zen it then adds the fixed `Authorization: Bearer public` the current `/inference/v1` gateway requires; the Kilo and OVHcloud lanes go out with no `Authorization` header at all. You never paste a key. Cline free models need a browser login instead: `/freeflow cline login` saves it to a per-user pool on your machine. OVHcloud AI Endpoints models need no account and no key at all.
 
 **What if all relays hit rate limits?**
 The proxy tries direct upstream. If that is also rate-limited, the host shows the limit. That number is the shared upstream cap; without relays you would hit the same wall sooner.
@@ -378,7 +382,7 @@ pnpm smoke       # verifies extensions/index.ts loads without crashing
 #### Project structure
 
 ```
-├── models.ts                # 36-model catalog definitions
+├── models.ts                # 35-model catalog definitions
 ├── index.ts                 # extension entry, lifecycle hooks
 ├── catalog.ts               # model catalog cache (24h disk)
 ├── proxy.ts                 # local proxy server (127.0.0.1:28180)

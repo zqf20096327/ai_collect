@@ -25,11 +25,11 @@
 </p>
 
 <p>
-  <img src="https://img.shields.io/badge/Version-v2.1.0-2563eb?style=flat-square" alt="Current product version v2.1.0" />
+  <img src="https://img.shields.io/badge/Version-v2.2.0-2563eb?style=flat-square" alt="Current product version v2.2.0" />
   <img src="https://img.shields.io/badge/Frontend-React%20%2B%20Next.js-61dafb?style=flat-square" alt="React and Next.js" />
   <img src="https://img.shields.io/badge/API-Fastify%20%2B%20Zod-111827?style=flat-square" alt="Fastify and Zod" />
   <img src="https://img.shields.io/badge/UML-PlantUML-f59e0b?style=flat-square" alt="PlantUML" />
-  <img src="https://img.shields.io/badge/Runtime-Node.js%2022.19.0%2B-339933?style=flat-square" alt="Node.js 22.19.0+" />
+  <img src="https://img.shields.io/badge/Runtime-Node.js%2022-339933?style=flat-square" alt="Node.js 22" />
 </p>
 
 > Trace your designs, guide your revisions. Review models, tests and specifications against the same requirements, follow change impacts and organize design sources you can explain in reviews and your defense.
@@ -54,7 +54,7 @@ Source links and coverage counts help locate content to inspect. Open the models
 
 - **Analysis and design**: requirement rules, feasibility analysis, UML models and system designs.
 - **Testing and presentation**: test cases, coverage matrices, traceability matrices and task records for checking your work.
-- **Engineering documents**: feasibility reports, requirements specifications and software design descriptions, with version management and DOCX downloads; online editing requires OnlyOffice.
+- **Engineering documents**: feasibility reports, requirements specifications and software design descriptions, with version management and DOCX downloads; preview DOCX in the browser and edit downloaded files in your Word-compatible editor.
 - **Implementation inputs**: saved designs and acceptance criteria for a compatible Coding Agent to use when implementing and testing in an external repository.
 
 Review generated content, organize documents according to your school's requirements and verify the running system. Engineering specifications can support a project report; they are not a complete graduation thesis. Real-client compatibility and generated-code acceptance for Coding Agents remain pending; see the [integration guide](docs/integrations/coding-agent-mcp.md).
@@ -63,21 +63,32 @@ Review generated content, organize documents according to your school's requirem
 
 SoftJL Community is a self-hosted AI software engineering workspace, distributed as an independent source snapshot with a fresh Git history.
 
+## What changed in v2.2.0
+
+This release improves source mapping completion and keeps generated results synchronized:
+
+- Complete missing source mappings with bounded requests for the missing elements, preserving accepted models and mappings. Complete mappings need no extra call.
+- Publish cumulative requirement previews and successive feasibility results without a reload, while protecting later manual edits.
+- Show the element mapping rate for the full scoped matrix, consistently across search, pagination and analysis views.
+- Explain supported text and image attachment formats beside the requirement input.
+- Simplify project collaboration to member invitations and private/public visibility; remove organizations, courses, classes, teams and their fields, permissions and quotas.
+
+This release uses the current `current_platform_schema_v2` installation baseline.
+
+## Generation workflow
+
+The generation workflow focuses on shorter waits and fewer repeated model inputs.
+
+- **Scoped context**: send task dependencies and the selected use case with its include/extend relationships; retain business constraints and complete target models.
+- **Focused repair**: correct diagnosed fields with version-checked patches; reserve regeneration for the affected artifact when localization is insufficient.
+- **Independent progress**: run independent design branches concurrently and retry failed model instances while retaining successful results.
+- **Two project modes**: start a conversational Standard project or use the complete Professional workflow. Both are available with your own provider; mode names do not indicate pricing tiers.
+- **Visible consumption**: task history reports provider-supplied token usage, including repairs and failed calls; unknown usage stays unknown.
+- **Built-in document preview**: preview DOCX without a separate document server.
+
+The [release notes](release-notes.md) include a reproducible synthetic input comparison. Actual end-to-end duration and total tokens vary with project size, model, provider latency and repairs; the fixture results are not production savings.
+
 ## Core Capabilities
-
-### What's new in v2.1.0
-
-This release brings the current SoftJL modeling workflows to Community while retaining self-hosting, BYOK and the edition boundaries below.
-
-- **Two project workflows**: new projects default to Standard, a persistent conversation for course and capstone modeling. Professional keeps the full requirements, feasibility, design, traceability, tests and document workflow. Existing projects remain Professional; a project's mode cannot be changed after creation. These modes are unrelated to billing.
-- **A project modeling assistant**: clarify requirements, choose the model types to generate, follow streaming replies and tool progress, and revise or regenerate a specific diagram. Saved conversations, project memory, context compaction, stop and resume preserve completed work.
-- **Eight Standard diagram types**: functional structure, use cases, business flow, architecture, conceptual E-R, design classes, sequences and database table relationships. Generate tests, requirements specifications and software design descriptions when needed; DOCX files use the existing document library and optional OnlyOffice editor.
-- **Shared modeling controls**: text/Markdown attachments, images for confirmed vision-capable models, capability-based reasoning controls and actual provider token usage. A cached public model catalog supplies capacity and capability references without receiving provider credentials or project content.
-- **More reliable Professional generation**: versioned requirement rule snapshots, stable identities, guarded workspace updates, improved progress and failure details, and protection against late results overwriting newer edits. Diagram navigation, editing and generation controls are shared across workflows.
-- **Runtime security update**: migrate the project agent to the maintained Pi SDK 1.3.0 namespace and require Node.js 22.19.0 or newer. Credentials and model metadata stay in memory for each session; host extensions and personal credential files are not loaded.
-- **Community upgrades retained**: optional PostgreSQL and OnlyOffice, direct project entry, private application metadata, explicit MCP grants and patched dependency versions. Billing, website-managed models, operations administration and the hosted marketing site remain excluded.
-
-See [community maintenance and upgrade notes](docs/development/community-edition.md) and the [v2.1.0 release](https://github.com/guolola/SoftJL/releases/tag/v2.1.0) for details. Real provider tool calling and OnlyOffice editing require validation with your own services.
 
 ### Community and Hosted Comparison
 
@@ -85,8 +96,7 @@ See [community maintenance and upgrade notes](docs/development/community-edition
 
 | Capability | Community | Hosted | Scope and requirements |
 | --- | :---: | :---: | --- |
-| 💬 Standard and Professional project modes | ✅ | ✅ | Standard conversation and eight diagram types; Professional full engineering workflow; existing projects remain Professional |
-| 📝 Requirement rules and snapshots | ✅ | ✅ | Extraction, manual editing, versioned rule snapshots and acceptance sources; generated content still requires human review |
+| 📝 Requirement rules and confirmation | ✅ | ✅ | Extraction, quality review, revision, human confirmation and acceptance criteria |
 | 🧭 Feasibility: system context | ✅ | ✅ | System boundaries, external actors and interactions |
 | 🧭 Feasibility: business/system flow | ✅ | ✅ | Business processes and system workflows |
 | 🧭 Feasibility: implementation options | ✅ | ✅ | Candidate solutions, costs, benefits and risks |
@@ -96,7 +106,7 @@ See [community maintenance and upgrade notes](docs/development/community-edition
 | 📄 Feasibility report | ✅ | ✅ | Generation, versions and DOCX downloads |
 | 📄 Requirements specification | ✅ | ✅ | Generation, versions and DOCX downloads |
 | 📄 Software design description | ✅ | ✅ | Generation, versions and DOCX downloads |
-| ✏️ Online document editing | ✅ | ✅ | Requires OnlyOffice; configure it for Community, or use the available editing entry in Hosted |
+| 👁️ Built-in DOCX preview and download | ✅ | ✅ | Preview generated documents in the browser; edit downloaded files with a Word-compatible editor |
 | 🎨 Diagram editing and export | ✅ | ✅ | PlantUML editing and SVG export |
 | 🔗 Source traceability and change impact | ✅ | ✅ | Artifact sources, dependencies and version changes |
 | 👥 Projects and members | ✅ | ✅ | Authentication, project membership and role permissions |
@@ -115,13 +125,31 @@ After the initial installation and build, use `npm run dev:mcp` for local MCP ac
 
 Platform billing, payments, credit management, and the operations administration backend are excluded. Read-only MCP access is optional, with explicit project grants and the shared connection page. Authentication, project permissions, provider credential protection and generation scheduling remain available. Hosted availability depends on the current deployment, account permissions and service configuration.
 
-Standard and Professional are workflow choices available in Community. The three feasibility analyses, full requirement/design coverage and feasibility report belong to Professional. Standard provides conversation-based diagrams, tests and two engineering specifications without Professional dependency and freshness checks. MCP reads saved artifacts according to the project's mode and authorization scope.
-
 Use an independent database. This distribution is not a downgrade path for an existing full-edition database. Generated models and documents require review, and tests must be executed against your actual system.
 
 ## Interface Preview
 
 The community edition opens the project list directly, with sign-in required. See the capability table for the current community scope.
+
+The following modeling screenshots show the current community UI with local example data in Chinese.
+
+### Quick Modeling (Standard)
+
+Describe requirements in chat, review tool activity and open saved models from the sidebar.
+
+![Quick Modeling — conversation and saved model navigation](docs/images/readme-quick-modeling.jpg)
+
+The design class example contains 20 classes, 4 interfaces, 2 enumerations and 21 relationships. Inspect their attributes, methods and associations in the model workspace.
+
+![Quick Modeling — design class diagram with controllers, services, repositories and domain objects](docs/images/readme-quick-modeling-diagram.jpg)
+
+### Engineering Modeling (Professional)
+
+Follow the requirements, feasibility, modeling, testing and documentation workflow, with model elements and traceability available in the workspace.
+
+The reservation sequence example connects 6 participants through 19 messages and 3 conditional fragments, covering successful reservations, occupied seats and duplicate bookings.
+
+![Engineering Modeling — reservation sequence diagram with validation and exception branches](docs/images/readme-engineering-modeling.jpg)
 
 ### Project dashboard
 
@@ -129,7 +157,7 @@ The community edition opens the project list directly, with sign-in required. Se
 
 ## Quick Start
 
-Install Node.js 22.19.0+, npm 10, Java 21 and Graphviz. Docker is optional for the core in-memory experience, and is used by the PostgreSQL and OnlyOffice helpers. The first renderer setup may download PDF CJK fonts.
+Install Node.js 22.19+, npm 10, Java 21 and Graphviz. Docker is optional for the core in-memory experience, and is used by the PostgreSQL helper. The first renderer setup may download PDF CJK fonts.
 
 ### 1. Install and start core services
 
@@ -152,7 +180,7 @@ With Docker running, use `npm run dev:postgres` for a dedicated development Post
 
 For an existing PostgreSQL server, copy [.env.example](.env.example) to `.env`, configure `DATABASE_URL` and a generated `UML_PROVIDER_CONFIG_SECRET`, then run `npm run dev`. The root command loads this file. Keep the encryption secret stable and private; changing it prevents decryption of saved provider credentials.
 
-Core services support document generation and downloads. For online editing, start Docker and run `npm run dev:full`; the helper checks OnlyOffice on port 8080 and creates or starts its container when needed. The initial image download requires network access. See [production configuration](docs/deployment/production-environment.md) for external services and deployment settings.
+Core services include document generation, built-in DOCX preview and downloads. No document server is required. Edit downloaded files in your Word-compatible editor. See [production configuration](docs/deployment/production-environment.md) for deployment settings.
 
 ### 3. Configure a model provider
 
@@ -172,6 +200,10 @@ Add your provider in account model settings, test the connection and select a mo
 ## Common Commands
 
 The root `npm run dev` builds shared packages automatically; use `npm run build:packages` before individual application commands and tests. Other npm scripts include build, test:contracts, test:api, test:web, test:render, typecheck:web and audit:docs. CI is included; the original production deployment workflow is excluded.
+
+## Release and upgrades
+
+Current version: **v2.2.0**. See [release notes and setup requirements](release-notes.md). New installations initialize an empty database with `current_platform_schema_v2`; databases already using this baseline can continue to be used. Historical community migration chains and model formats are no longer supported; the application rejects obsolete schemas instead of upgrading them. New projects explicitly select Standard or Professional mode.
 
 ## Online Access
 

@@ -94,6 +94,21 @@ Two more keys sit beside the slot files, each generated locally on first use and
 
 **Breaking change (v2):** earlier versions derived the peer ID from the SHA-256 fingerprint of the peer's self-signed X.509 certificate rather than its raw public key. The two values differ for the same keypair, so every agent ID, room membership, and pending delivery queue tied to a pre-v2 identity is orphaned on upgrade — there is no migration path, since existing peers can no longer address an upgraded one under its old ID. A v2 bridge cannot interoperate with a v1 one at all: they no longer agree on wire framing, transport, or peer identity.
 
+### Data directory
+
+Set `AGENT_COMMS_DATA_DIR` before starting a bridge or an `account` command to keep its persistent mesh data in a separate directory. Unset or blank keeps `~/.agent-comms`. The directory holds device, account and machine keys, identity locks, room and group tokens, gateway trust, connection codes, names, room-notice logs and the account grant ledger.
+
+Environment and explicit directories must be absolute paths. Relative paths, literal `~` paths and empty explicit directories are rejected with an error naming `AGENT_COMMS_DATA_DIR`; they are never resolved against the working directory.
+
+Library callers can set `dataDir` on `IdentitySlot`, which is also used by the identity loaders and lock helpers:
+
+```ts
+const slot = { harness: "my-bridge", cwd: process.cwd(), dataDir: config.dataDir };
+const { store, tool } = await createBridgeMesh(slot);
+```
+
+An explicit `dataDir` wins over the environment and the existing `slot.dir` override. Without `dataDir`, `slot.dir` keeps its existing scope: device-slot files, trust and petnames; account and machine keys use the environment directory or the home-directory default. Bridges using the same data directory share the account and machine keys, while each harness/cwd keeps its own device key. Separate directories create separate identities; existing data is not copied or migrated. This is storage isolation: mesh ports, discovery and the hub are configured separately.
+
 ## Install
 
 ### pi
@@ -410,6 +425,22 @@ When an agent's status changes (active / idle / busy / offline), all rooms it be
 - Re-registration (offline → active)
 - Graceful shutdown
 - Stale agent cleanup (the elected coordinator's PID probe)
+
+## Durable room sends from the library
+
+Library callers can opt a room message into the sender's local room-notice log:
+
+```ts
+import type { SendRoomMessageOptions } from "agent-comms";
+
+const options: SendRoomMessageOptions = { durable: true };
+await store.sendRoomMessage(roomId, senderId, "Keep this message", options);
+```
+
+`MeshStore` records a signed room-notice in the sender's own log only when `durable` is `true`.
+This only writes the notice locally: nothing currently announces or fetches these room-notice
+entries. Automatic offline catch-up still needs a catch-up policy and bridge wiring.
+`FileStore` ignores the option because it already persists every message.
 
 ## Delivery status and read receipts
 

@@ -42,7 +42,7 @@
 <div align="center">
   <strong>⭐ If you find this catalog helpful, please consider giving it a star! ⭐</strong>
   <br><br>
-  <i>Last updated: October 14, 2026 | Next goal: 500 stars 🎯</i>
+  <i>Last updated: October 19, 2026 | Next goal: 500 stars 🎯</i>
   <br><br>
   <i>🤖 Thanks to Claude Sonnet 4 for write .sh files! </i>
 </div>
@@ -109,7 +109,7 @@ Welcome to the most comprehensive AI tools catalog! This repository contains **5
 ### 📊 Quick Stats
 - **Total Tools**: 500+
 - **Categories**: 40+
-- **Last Updated**: October 14, 2026
+- **Last Updated**: October 19, 2026
 - **Contributors**: Open for PRs!
 - **Next Goal**: ⭐️ 500 stars
 
@@ -166,6 +166,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[NightCafe](https://nightcafe.studio)** 🔄 - Community-focused platform
 - **[Playground AI](https://playgroundai.com)** 🔄 - Creative AI with fine-tuning
 - **[Tensor Art](https://tensor.art)** 🔄 - Community-driven AI art platform
+- **[Visual Maker AI](https://visualmakerai.com)** 🆕🔄 - Workspace for AI images, image-to-video and script-to-scene films
 
 #### 🆕 Specialized Tools
 - **[ArtImageHub](https://artimagehub.com/old-photo-restoration)** 🔄 - AI old photo restoration that fixes scratches, fading and water damage
@@ -351,6 +352,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Frase](https://frase.io)** 🔄 - SEO-optimized content writing
 - **[WritingMate](https://writingmate.ai)** 🔄 - AI writing companion
 - **[Neural Newsletters](https://neuralnewsletters.com)** 🔄 - Newsletter generation
+- **[AltoRank](https://altorank.co)** 🔄 - Open-source SEO content software: keyword research and sourced article drafts
 
 #### 🔧 Development & Technical Writing  
 - **[Text Generation Web UI](https://github.com/oobabooga/text-generation-webui)** 🆓 - Local text generation interface
@@ -437,6 +439,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - Parse
 - Context
 - [BuyWhere](https://buywhere.ai) - Real-time Singapore e-commerce pricing API and MCP server for AI agents
+- **[Latchkey](https://latchkey.dev)** 💰 - Self-healing GitHub Actions runners with AI diagnosis
 
 
 
@@ -761,6 +764,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - [Ai chatbot builder](http://Wizy.chat)
 - [Ai resume builder](http://Kickresume.com)
 - [ResumeAI](https://withresumeai.com/)
+- **[CareJobs.Now](https://carejobs.now)** 🆓 - AI job search matching US healthcare workers to open hospital jobs
 
 ## Landing Page Generator
 - [aipage.dev](https://www.aipage.dev)
@@ -825,6 +829,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[SocialEcho](https://www.socialecho.net)** 🔄 - AI workspace for publishing, engagement and analytics across 11 social platforms
 - **[LogNorm](https://lognorm.com)** 🔄 - Hosted MCP server that sends your SEO/GEO backlog to Claude Code, Codex and Cursor
 - **[Kamply](https://kamplyapp.com)** 💰 - Mac marketing crew that builds posts, reels, ads and decks with Claude Code or Codex
+- **[Pulse](https://pulsecorp.co)** 💰 - AI-moderated market research platform that runs customer interviews at scale
 
 ## AI Productivity
 > AI tools to enhance personal and professional productivity
@@ -847,6 +852,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[IFTTT](https://ifttt.com)** 🔄 - Simple automation platform
 - **[Microsoft Power Automate](https://powerautomate.microsoft.com)** 🔄 - Business process automation
 - **[n8n](https://n8n.io)** 🆓 - Open source workflow automation
+- **[Aident Loadout](https://aident.ai)** 🔄 - Remote MCP server connecting Claude Code, Codex and Cursor to your apps
 
 ## AI's for SQL
 - Airops

@@ -87,10 +87,54 @@ the hosted site does not expose a trustworthy immutable page history through the
 tracked surfaces. SDK and skill history can include earlier dates when Git tags,
 releases, or commit history provide them. Unknown history stays unknown.
 
+API field claims use explicit canonical reference declarations, not examples or
+link metadata. Endpoint declarations preserve the reference's explicit HTTP
+fence while excluding inactive containers. Unsupported attribute syntax or an
+unknown question-type declaration leaves the affected claim unknown with a warning
+rather than verifying a partial
+list. Conflicting requiredness does not erase independently known request field
+names. Response key correlation is an explicitly reviewed repository interpretation,
+not automatic prose extraction: it applies only to the complete reviewed Response
+body section SHA-256, including examples. An unreviewed context stays unknown even
+when familiar affirmative fragments remain. Properties record the reviewed and
+observed section hashes, method, interpretation label, and bounded verbatim evidence.
+Declarations exceeding the 240-character evidence bound leave affected claims
+unknown rather than clipping away their proof. A required model's example alias
+is not a default, and correcting local assumptions is not an upstream history event.
+If canonical source bytes also changed during that migration, the API baseline
+records the first verified snapshot without inferring historical API behavior;
+documentation source events independently record the changed bytes.
+Loss or recovery of API verification emits `verification_changed`, not a contract
+modification; retained earlier citations have an explicit `historical` role.
+Verified-to-verified fact changes still emit `modified`.
+
 Practice statuses are `recommended`, `discouraged`, `anti_pattern`,
 `deprecated`, or `unknown`. A practice disappearing from one page is not marked
 deprecated automatically: removal requires explicit evidence, so a failed or
 partial source fetch cannot erase a recommendation.
+
+Practice recommendations require two independent checks: complete literal claim
+bundles from one permitted source, and a manual review of that source's complete
+context. [`practice_reviews.py`](src/jev_docs/practice_reviews.py) records only
+source URLs, hashes, and explicit per-practice `supported`, `non_conflicting`, or
+`rejected` review verdicts. No new context or rule/source pair is approved by default.
+Any fetched unreviewed or conflicting context leaves the practice `unknown`, even
+if another source still supports it. This deliberately favors false negatives over
+an expanding, incomplete natural-language rejection-keyword list.
+
+The review signature preserves the complete source, including markup, quotations,
+and examples; it normalizes line endings, trailing whitespace, and runs of blank
+lines only. Code examples are excluded separately when checking literal supporting
+passages. A changed context requires an evidence-backed review before a
+recommendation can resume. Review-only transitions are `verification_changed`, not
+upstream guidance introductions or deprecations.
+Current recommended evidence and recorded source observations must match the
+source IDs and SHA-256 hashes retained in `state/sources.json`. Historical
+evidence for unknown practices is exempt from this current-artifact check;
+missing optional sources need not appear in the observation map.
+The first stricter-policy observation is a tracking-only baseline only when
+every allowed source for that rule is provably unchanged, including previously
+neutral sources. Changed or unknown source revisions remain ordinary transitions.
 
 ## Automation
 
@@ -152,9 +196,44 @@ just check-strict
 ```
 
 `just sync` performs the public-source observation and generation. `just
-check` validates generated JSON and provenance. `just check-strict` additionally
-requires event IDs to be unique across all history, each `changes/` report to be
-the rendering of its `events/` file, and `BEST_PRACTICES.md` to match its state.
+check` validates generated JSON, provenance, stored canonical fingerprints, and
+agreement between coverage, family manifests, and `state/sources.json`. Coverage
+schema 2 requires the complete generated state, both guides, and both manifests;
+schema 1 remains readable for migration. Missing or unsupported coverage versions
+fail before source collection; neither can select legacy compatibility.
+Semantic state snapshots require their
+stored fingerprints; only the source inventory and coverage files are exempt.
+Present family manifests must match the complete source inventory even when their
+artifact lists are empty; empty discovery cannot claim complete coverage.
+Source envelopes also require the recognized inventory schema, official family
+URLs, and unchanged aggregate scope/licensing notice; exemption from fingerprints
+does not permit relabeling the evidence.
+Source locations must match official identities: TypeSafe HTTPS documentation,
+the named GitHub repository/API endpoint, commit-addressed raw files, or the
+specific PyPI/npm package. Candidate records retain these same requirements.
+Hosted pages, registry responses, and GitHub API observations cannot claim a Git
+commit/release tag; commit-only skill observations cannot acquire a release tag.
+Tagged raw files must agree with retained SDK/evaluation release tag/commit
+bindings. Held candidates record observed tag bindings without publishing SDK
+claims. Legacy held candidates remain explicitly unverified until recollection.
+The raw skill artifact and GitHub commit observation must match the retained skill
+snapshot's hash, immutable URL, and commit; deleting either observation fails validation.
+SDK head observation hashes bind to `main_commit`, never the published release's
+`source_commit`; held candidate hashes retain their existing protected freshness references.
+SDK/evaluation snapshot citations must match retained source IDs, hashes, and fetch
+URLs, including legacy untagged SDK configurations; URL shape alone is insufficient.
+Fingerprint validation excludes top-level observation timestamps and freshness-only
+observation/change footers. Legacy family-manifest observation timestamps may differ
+without rewriting old records; all semantic source metadata must agree. Corrupt
+persisted JSON is reported by
+relative filename without exposing its contents or local machine path.
+Persisted and upstream JSON allow at most 64 nested containers, independent of the
+Python runtime; brackets inside strings do not count toward this bound.
+Coverage retains requested navigation identities even when a page redirects to a
+different same-origin HTTPS path; manifests retain the resolved fetch location.
+`just check-strict` additionally requires event IDs to be unique across all
+history, each `changes/` report to be the rendering of its `events/` file, and
+`BEST_PRACTICES.md` to match its state.
 
 If interrupted promotion leaves `.jev-docs-pending/`, validation fails explicitly.
 Rerun `just sync` to recover the original batch; do not delete the pending journal.

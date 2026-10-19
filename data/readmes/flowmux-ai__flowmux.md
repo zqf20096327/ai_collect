@@ -9,9 +9,9 @@
 [![Test](https://img.shields.io/github/actions/workflow/status/flowmux-ai/flowmux/test.yml?branch=main&label=test)](https://github.com/flowmux-ai/flowmux/actions/workflows/test.yml)
 [![Latest release](https://img.shields.io/github/v/release/flowmux-ai/flowmux)](https://github.com/flowmux-ai/flowmux/releases/latest)
 
-[Website](https://flowmux.org/) · [Releases](https://github.com/flowmux-ai/flowmux/releases/latest) · [Documentation](#documentation)
+[Website](https://flowmux.org/) · [Releases](https://github.com/flowmux-ai/flowmux/releases/latest) · [Documentation](#documentation) · [Youtube](https://www.youtube.com/@flowmux)
 
-<a href="https://flowmux.org/assets/flowmux-intro.mp4"><img src="resources/screenshot/flowmux-intro-preview.jpg" alt="Watch the flowmux introduction video" width="100%" /></a>
+<a href="https://www.youtube.com/watch?v=9o_WNinRjGY"><img src="resources/screenshot/flowmux-intro-preview.jpg" alt="Watch the flowmux introduction video" width="100%" /></a>
 
 [▶ Watch the introduction video](https://www.youtube.com/watch?v=9o_WNinRjGY)
 
@@ -169,14 +169,15 @@ panel → **New SSH Workspace**, or run `flowmux ssh connect user@host`.
 
 ## Build from source
 
-From a repository checkout:
+From a repository checkout on macOS or Ubuntu 24.04+:
 
 ```sh
 ./install.sh
 ```
 
-See the [setup guide](docs/setup.md#build-from-source) for prerequisites,
-development commands, and macOS development builds.
+The script detects the OS and runs the matching source installer. See the
+[setup guide](docs/setup.md#build-from-source) for prerequisites and platform
+options.
 
 ## Verify & repair
 

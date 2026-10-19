@@ -138,8 +138,9 @@ the link clickable -- see
 the chart, and a ready-to-paste DocInsight `<remarks>` reference. Full reference,
 one page per question: **[Diagrams and Charts](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Diagrams-and-Charts)**.
 
-The three charts below are drag-lint's own code, produced by the chart pipeline
-(`New-DiagramArtifact.ps1`) against a copy of its self-index at v1.17.0-alpha.
+The three charts below are drag-lint's own code, produced by the engine's
+`drag-lint ask` verb against a copy of its self-index at v1.17.0-alpha. (The PowerShell
+emitters under `charts\src` remain in the repository only as an internal parity reference.)
 
 ### change-impact -- one function feeds closure, parse and lint
 
@@ -150,8 +151,8 @@ depth 3. **15 routines** reach it: `pp-profile` and the index-profile resolver
 directly, then the project closure (`BuildProjectFileScope`), `index`, `lint`,
 `lint-all`, `reconcile-project` and `document` for a project. This is why reading
 the platform PropertyGroups in that one function moved the extractor version.
-Produced by `Emit-ChangeImpact.ps1 -Target DRagLint.Preprocess.Profile.ProfileFromDproj -Depth 3 -Cap 16`
-(the question's emitter, with every row shown).
+Produced by `drag-lint ask change-impact --target DRagLint.Preprocess.Profile.ProfileFromDproj --depth 3 --cap 16`
+(with every row shown).
 
 ### deps -- where the linter sits in the layering
 
@@ -161,7 +162,7 @@ Question `deps`, target `DRagLint.Lint.Linter`. **6 units use it** (the CLI and
 its program file, two LSP units, the MCP server, one lint unit); **it uses 9**
 (core, parser, diagnostics, tree-sitter and three lint units). Boxes are `src\`
 folders; a dashed edge is an implementation-section `uses`. Produced by
-`New-DiagramArtifact.ps1 -Question deps -Target DRagLint.Lint.Linter`. The
+`drag-lint ask deps --target DRagLint.Lint.Linter`. The
 whole-project `architecture` question on the same index draws 129 units in 23
 zones with 598 internal edges -- correct, and too dense for a page, which is why
 the one-unit view is shown here.
@@ -175,7 +176,7 @@ Question `butterfly`, target
 **2 callers** (the store's enum-value and call-target resolve passes) and
 **14 callee rows** (scope checks, the identical-copy collapse, the symbol-store
 lookups). Produced by
-`New-DiagramArtifact.ps1 -Question butterfly -Target DRagLint.Index.CallResolver.TCallResolver.ResolveEnumValueRead -Depth 2`.
+`drag-lint ask butterfly --target DRagLint.Index.CallResolver.TCallResolver.ResolveEnumValueRead --depth 2`.
 
 ---
 
@@ -394,6 +395,8 @@ managed:
 0). If a folder still shows as `MISSING`, the component didn't register that path
 on the IDE search paths; add it under **Tools -> Options -> Language -> Delphi ->
 Library** (Library or Browsing path) for the right platform, then rebuild again.
+A root listed as `EXCLUDED BY CONFIG` (JSON `excludedRoots`) is pruned by the
+section's `exclude` globs (e.g. `"Win64"`) and is not counted as drift.
 
 Notes:
 
@@ -569,7 +572,7 @@ the components) while a component the converted `.dfm` still streams needs it, R
 when only `.pas` code needs it (the dangling references are named; the compile errors
 are the intended signal), and kept when no `--db` knows it; presence is scope-alias aware
 (`#unuse DBTables` matches `Bde.DBTables`, `#use DB` is satisfied by `Data.DB`); a name
-the conversion introduces into the `.pas` gets its unit added (none since 1.27.0: a cast link no longer writes a `.pas` site, one `cast-not-applied` per site instead); a `#link X <- X : StripDB` value cast (shipped castlib, `value strip-db`) drops a trailing `.db` from the string in the `.dfm` and in single-literal `.pas` assignments ending the statement on their line, reporting every other site (a `with` block included) (capability `value_cast_strip_db`); every run lists what the `.pas` still uses that the map does not cover in `pas_uses[]` (status `mapped` / `cast-refused` / `not-rewritten` / `same-name` / `unmapped` / `global-dangling`, capability `pas_uses`; since 1.28.2 the From class is resolved through the unit's uses scope and each row carries `resolution` `resolved` / `ambiguous` (with `candidates[]`, nothing picked) / `class-not-found` / `member-not-found` / `kind-unknown`, capability `pas_uses_resolution`),
+the conversion introduces into the `.pas` gets its unit added (none since 1.27.0: a cast link no longer writes a `.pas` site, one `cast-not-applied` per site instead); a `#link X <- X : StripDB` value cast (shipped castlib, `value strip-db`) drops a trailing `.db` from the string in the `.dfm` and in single-literal `.pas` assignments ending the statement on their line, reporting every other site (a `with` block included) (capability `value_cast_strip_db`); inside a `#convert` block `#migrate Old -> New` renames a member (method, event, property) at every bound `.pas` access site and `#migrate Old -> DL_NONE` wraps it, `inst.Old` -> `DL_NONE(inst.Old)`, a deliberate break that does not compile until converted by hand (items[] `migrate-applied` / `deliberate-break` / `migrate-check`, capability `migrate_members`, C18 slice 1); every run lists what the `.pas` still uses that the map does not cover in `pas_uses[]` (status `mapped` / `cast-refused` / `not-rewritten` / `same-name` / `unmapped` / `global-dangling`, capability `pas_uses`; since 1.28.2 the From class is resolved through the unit's uses scope and each row carries `resolution` `resolved` / `ambiguous` (with `candidates[]`, nothing picked) / `class-not-found` / `member-not-found` / `kind-unknown`, capability `pas_uses_resolution`),
 and a name two units declare is reported (`uses_unresolved`), never picked -- unless the
 book's `#use` (or a uses entry of the unit) names one of them: a To type's unit is then
 added to the INTERFACE uses when its retyped field is declared there, or moved there. After
@@ -769,7 +772,7 @@ be written and writes nothing. This verb replaces `Register-DragLintProtocol.ps1
 | [Linting](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#linting) | 21 (+ 190 rules, 23 fixable) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#linting) |
 | [Documentation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#documentation) | 10 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#documentation) |
 | [Refactoring and code generation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#refactoring-and-code-generation) | 15 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#refactoring-and-code-generation) |
-| [Component conversion](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#component-conversion) | 10 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#component-conversion) |
+| [Component conversion](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#component-conversion) | 12 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#component-conversion) |
 | [Graphs and reports](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#graphs-and-reports) | 19 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#graphs-and-reports) |
 | [Diagrams and charts](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#diagrams-and-charts) | 6 (+ 26 questions) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#diagrams-and-charts) |
 | [Compiler integration](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#compiler-integration) | 12 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#compiler-integration) |
@@ -885,8 +888,8 @@ Win64 build.
 | `query hints` | List stored compiler hints/warnings | `--name <code>`, `--rule <severity>` |
 | [`usages`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/usages) `--name <n>` | Grouped usage report (backs the IDE Symbol Search dialog) | `--width narrow\|wide\|very-wide`, `--depth N` |
 | [`outline`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/outline) `--file <f.pas>` | Unit outline (backs the IDE Structure form) | `--format text\|json` |
-| [`compare`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/compare) `--old <report\|csv\|bundle> [--command "<id> ..."]` / `--in <U.pas> --line <L>` | Rerun a saved report's question and show before / delta / after (exit 0 same, 1 differs, 2 setup, 3 stale index) | `--new <f>` (two saved outputs), `--question <id> --target <T>`, `--update-doc`, `--old-db`, `--auto`, `--save`, `--snapshot-dir <dir>`, `--show`, `--format text\|json\|html`, `--open` |
-| [`ask`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/ask) `<question> --target <T> [--project <P.dproj>\|--in <U.pas>\|--db <idx>]` | Ask one report question (the 26 chart questions) and print the answer: the DocInsight remarks block the Reports menu copies, or the plain answer. Ported questions answer in-process, the rest through `charts\src\Ask-Report.ps1` (exit 0 answered, 1 refused, 2 setup, 3 stale index) | `--to <B>`, `--server-db`, `--sql-db`, `--counterpart-db`, `--depth N`, `--cap N`, `--surface-cap N`, `--control <C>`, `--mode write\|read\|both`, `--max-rows N`, `--out-root <dir>`, `--pairs-file <f>`, `--allow-stale`, `--plain`, `--open`, `--resolve-only` |
+| [`compare`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/compare) `--old <report\|csv\|bundle> [--command "<id> ..."]` / `--in <U.pas> --line <L>` | Rerun a saved report's question and show before / delta / after (exit 0 same, 1 differs, 2 setup, 3 stale index) | `--new <f>` (two saved outputs), `--question <id> --target <T>`, `--update-doc`, `--old-db`, `--db <f>`, `--auto`, `--save`, `--snapshot-dir <dir>`, `--show`, `--format text\|json\|html`, `--open` |
+| [`ask`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/ask) `<question> --target <T> [--project <P.dproj>\|--in <U.pas>\|--db <idx>]` | Ask one report question (the 26 chart questions) and print the answer: the DocInsight remarks block the Reports menu copies, or the plain answer. All 26 questions answer in-process in the engine (exit 0 answered, 1 refused, 2 setup, 3 stale index) | `--to <B>`, `--server-db`, `--sql-db`, `--counterpart-db`, `--depth N`, `--cap N`, `--surface-cap N`, `--control <C>`, `--mode write\|read\|both`, `--max-rows N`, `--out-root <dir>`, `--pairs-file <f>`, `--allow-stale`, `--plain`, `--open`, `--resolve-only` |
 | `hover --qname <q>` | Hover card for a symbol | `--format plain\|md\|json` |
 | `typeat <file>:<line>:<col>` | Resolve the type of the expression at a cursor position | `--format text\|json` |
 | [`find-unit`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/find-unit) `--name <X> --in <file>` | Find which unit declares `X`, to add to `uses` | `--apply` |
@@ -916,7 +919,7 @@ enabled by default, 23 with an auto-fix.**
 | `lint --project <dproj>` | One project-scoped rule (e.g. `unit-not-in-dpr`). A plain `lint-all --db <db>` now evaluates that rule too, inferring the project file from the manifest section that owns the DB -- passing `--project` additionally *scopes* the report, which inference deliberately does not | `--rule` |
 | [`lint-project`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/lint-project) `--db <db>` | Project-wide structural rules -- god-class, circular-uses, layering-violation, unused-public-symbol, and more | `--rule <id>`, `--layers <f.json>` |
 | `lint-all --db <db>` | Full project report. Since the per-file verb gained the store-backed project rules, what `lint-all` *uniquely* adds is narrower than it used to be: cross-file duplicate code, `interface-reference-cycle`, exception-class enrichment, and doc-drift/missing-doc across the whole project (`review-marker-unused` and `review-marker-malformed` moved to the per-file verb too, 2026-09-03) | `--project <.dproj>` (report only that project's compile closure), `--rule <id>` (report only that rule, and run only the checkers that can emit it; an OFF-by-default rule named here is opted in for the run, as with `lint`), `--output <file>`, `--json`, `--quiet` (no per-file progress lines on stderr), `--lint-third-party`, `--no-preprocess` (lint the raw bytes, including branches the compiler never sees -- the default now resolves conditionals the same way the indexer does) |
-| `lint-all --fix [--apply]` | **Autofix every fixable finding across the whole project.** Dry run without `--apply` -- this is what "Fix all in project" runs; it can rewrite many files at once | |
+| `lint-all --fix [--apply]` | **Autofix every fixable finding across the whole project.** Dry run without `--apply` -- this is what "Fix all in project" runs; it can rewrite many files at once. `lint-all` refuses `--file`/`--in` (exit 2) -- for one unit use `lint <file> --db <db> --fix` | |
 | `lint-tree --unit <B.pas> --db <db>` | **Does an interface edit to `B.pas` reach any dependent?** Fingerprints the interface and diffs it against an edit-episode baseline, then reports the dependents whose references no longer resolve. Answers what `lint-all` cannot: removing an interface symbol dependents still use produces ZERO `lint-all` findings (measured 2026-09-10) -- the count actually goes DOWN. Exit 0 whether or not anything was found; 2 means it could not run. | `--write-baseline <f.json>` captures the OLD side once per edit episode, `--baseline <f.json>` diffs against it, `--buffer <f>` reads an UNSAVED buffer, `--compile` also compiles the dependents in a shadow dir, `--with-rules`, `--project`, `--platform`, `--format json` / `text` |
 | `exceptions-sync --db <db> [--apply] [--json]` | **Materialise the project's derived exception classes.** Harvests every bare `raise Exception.Create('literal')` in the project and declares ONE class per **distinct** message inside a `drag-lint:auto` managed block in the exceptions unit, creating that unit if it does not exist. Dry run without `--apply`. Opt in with an `"exceptions"` block in `drag-lint-lint.json` -- an empty one is enough. **The same-line `//` comment after each declaration is the KEY**, which is what lets you rename a mediocre generated class and keep its binding; edit the comment instead and the next run adds a second class for the old message. It is a verb rather than a `--fix` because its input is project-wide and its output is one file | `--config <lint.json>`, `--apply`, `--json` (one document on stdout, prose to stderr); config keys `unit` (default `uExceptionDefinitions`) and `root` (ancestor, default `Exception`) |
 | `lint <f> --db <db> --fix --fix-rule raise-bare-exception [--apply]` | The **call-site** half, and a genuine fix-it: rewrites `raise Exception.Create('msg')` to the class `exceptions-sync` generated for that message and adds the exceptions unit to `uses`. Reads the name **out of the generated unit** rather than re-deriving it, so a rename survives; needs `exceptions-sync --apply` to have run and the index refreshed. **Skips any file that tests the class exactly** (`ClassType = Exception`, `ClassNameIs('Exception')`) -- narrowing a raise would break that test -- and names the file it skipped | Reachable as an IDE code action, which `exceptions-sync` deliberately is not |
@@ -967,7 +970,7 @@ before writing. Details: [Multi-Project-Rename](https://github.com/Alexl-git/Del
 
 | Command | What it does | Notable flags |
 |---|---|---|
-| `rename --kind symbol --name <q> --to <new> --db <db>` | Cross-unit rename (declaration + every reference) | `--apply`, `--no-backup`, `--json` |
+| `rename --kind symbol --name <q> --to <new> --db <db>` | Cross-unit rename (declaration + every reference). Refuses (exit 2, naming the file) when the old name is used in an indexed `.inc` include: refs inside `{$I}` text are not indexed until extractor 1.22 | `--apply`, `--no-backup`, `--json` |
 | `rename --kind param --file <f> --line <L> --col <C> --to <new>` | Routine-local rename (parameter/variable) | `--apply` |
 | `find-unit --name <X> --in <file> --apply` | Add the declaring unit to `uses` | |
 | [`safe-delete`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/safe-delete) `--name <q> --db <db>` | Delete a symbol iff it has zero references | `--apply`, `--json` |
@@ -975,7 +978,7 @@ before writing. Details: [Multi-Project-Rename](https://github.com/Alexl-git/Del
 | [`create-enum-helper`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/create-enum-helper) `--qname <TEnum>` | Generate a Byte-family record helper for an enum | `--methods <csv>`, `--tostring rtti\|case` |
 | `uses-audit <unit.pas> --db <db>` | Propose interface->implementation moves + unused units | `--format text\|json` |
 | `uses-fix <unit.pas> --project <dproj> --db <db>` | Compiler-verified `uses` cleanup; `--only <Unit>` also decides a library (RTL/VCL) unit: remove, else move to implementation | `--apply`, `--remove-unused`, `--format json\|text`, `--only <unit,...>` |
-| `format <file>` | Format a `.pas` file with the YADF formatter. **Rewrites the file in place.** Refuses a YADF older than 1.0.6.6 (exit 4, nothing written) and restores the file if formatting changed what the unit *declares* (exit 5) | `--yadf-path`, `--dry-run`, `--diff` |
+| `format <file>` | Format a `.pas` file with the YADF formatter. **Rewrites the file in place.** Refuses a YADF older than 1.0.6.6 (exit 4, nothing written) and restores the file if formatting changed what the unit *declares* (exit 5). A YADF *decline* (its exit 3: content guard refused, file unchanged) is not a failure: exit 0 with a `Declined:` line | `--yadf-path`, `--dry-run`, `--diff` |
 
 **Formatting is safe for your suppressions.** drag-lint drives **YADF** for the
 current unit or the whole active project straight from the IDE menu, and neither
@@ -1160,6 +1163,4 @@ documented subset that never reaches them.
 | Rule id | Severity | Description |
 |---------|----------|-------------|
 | `global-only-uses-edge` | info | A global variable is the ONLY link from one unit to another -- relocating it (or injecting it, when it is interface-typed) deletes the `uses` edge |
-| `uses-global-census` | info | How many of a used unit's globals and consts this unit actually draws, **against how many that unit declares** -- 7 of 9 is a unit that travels with you, 7 of 206 is one you are dragging in for almost nothing. Acknowledge a travels-together pair with `// dl:unit <unit> accepted` |
-| `duplicate-global-decl` | warning | The same name declared at interface level in two or more units -- const, var, type, record, class, interface, enum or routine -- so which one compiles depends on `uses` order. **Library tier** (2026-09-16): a project global that also exists in a library unit the declaring file USES (interface or implementation `uses`) is reported too -- masking an RTL name is almost always a naming error; 2+ project units AND the library is the stronger 3-declaration message. No autofix on purpose: only you know which one is meant |
-| `with-hides-outer-symbol` | warning | A bare name inside a `with` body binds to the with-target while an outer scope declares the same name -- the compiler never w
+| `uses-global-census` | info | How many of a used unit's globals and consts this unit actually draws, **against how many th

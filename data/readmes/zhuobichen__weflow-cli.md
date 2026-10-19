@@ -118,6 +118,12 @@ npm install -g weflow-cli
 weflow-cli check
 ```
 
+> Windows 上如果这条报 **「无法加载文件 …\npm\weflow-cli.ps1，未进行数字签名」**，拦住它的是
+> PowerShell 的执行策略，不是包本身。两条路，任选：
+>
+> - 马上能用：换成 `weflow-cli.cmd check`（`.cmd` 那份包装不走 PowerShell 策略）；
+> - 一次性解决：`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`，然后重开终端。
+
 安装标准 Windows 4.x 工作流所需的 Python 依赖：
 
 ```powershell
@@ -133,6 +139,10 @@ python -m pip install -r requirements.txt
 ```powershell
 weflow-cli init
 ```
+
+> **数据目录不在默认位置时，请同时用 `--path` 指定。** 关掉微信之后，自动发现只剩下
+> "`文档\xwechat_files` 这类默认位置"这一条路；微信"存储位置"改到别的盘的用户会直接看到
+> 「未检测到微信数据目录」。
 
 微信“存储位置”、账号目录和其 `db_storage` 目录都可以直接指定：
 

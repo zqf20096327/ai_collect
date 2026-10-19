@@ -4,33 +4,7 @@
 
 可以用本地 ComfyUI、SD WebUI / Forge，也可以接 NovelAI、OpenAI Images、Gemini 等在线服务。人物资料、画风、提示词规则和图片记录在同一个面板里管理，适合给长篇角色扮演和故事配图。
 
-## 2.6.1 更新
-
-合并社区 PR #15（作者 1756047386）：适配 DSH 0.2.x / DeepSeek Harness 0.2.1（Tavern 3.0）。
-
-- **兼容范围放宽**：插件清单声明的 DSH 兼容范围从 `>=0.1.0-rc.8 <0.2.0` 扩到 `>=0.1.0-rc.8 <0.3.0`，同时覆盖 DSH 0.1.5 与 0.2.x（含 DeepSeek Harness 0.2.1-rc.2 / Tavern 3.0）。核对依据：本插件调用的 14 个 Tavern 接口（`attach` / `update` / `remove` / `list` / `getTurn` / `readTurnData` / `saveTurnData` / `promptSection` / `onTurnSettled` / `onGameRemoved` / `onTimelineChanged` / `getCardContext` / `backgroundModel` / `apiVersion`）在 Tavern 3.0 中全部保留，3.0 相对 2.7 是**纯新增**（例如 `versionSignal`）。
-- **安装脚本适配新版桌面**：官方桌面 0.2.x 把 CLI 放到 `<安装目录>\resources\runtime\cli\bin\dsh.cmd`，数据目录里不再有可直接运行的 `bin.js`。安装脚本现在按「环境变量 `DSH_DESKTOP_APP_EXECUTABLE` → 注册表卸载项 → 常见安装位置」找回安装目录，并**保留旧版 asar `bin.js` 与 PATH 两条回退路径**，旧安装不受影响。
-- **pnpm 缺失兜底**：新版桌面自带 pnpm 但不再写进用户 PATH，而注册 Profile 依赖必须有 `pnpm` 命令；找不到时用运行时里的 pnpm 建一个临时 shim，装完即清理。
-- 安装测试同步：CLI 入口改为多候选路径，一个都找不到时跳过依赖真实宿主的用例，而不是直接失败。
-
-## 2.6.0 更新
-
-- **受 PR 启发的额外改进**：
-  1. `injectDefinitions` 的按名字注入改用**完整词**判断（中文按子串、拉丁词加词边界），修掉短别名命中更长名字的问题（`Li` 命中 `Lina` → 外貌/服装注错人）；
-  2. 服装归属人匹配从 `includes` 收紧为**前缀/全等**，避免去掉空格标点后短名吃到长名；
-  3. traits 的 `face` / `bodySFW` / `faceBack` / `negative` 等字段也过滤 `none` / `n/a` / `无` 占位值（原先只有服装过滤，traits 会把这些词写进提示词）。
-合并社区 PR #14（作者 dearacknowl），并补上它自己标明的已知边界。
-
-- **服装匹配**：先查通用服装库再查人物自带服装；明确指定服装时按名字选，不再被常穿设置挡住；过滤 `none` / `n/a` / `null` / `无` 这类占位值。
-- **跨轮当前穿着**：在角色视觉历史与楼层快照里保存 `current.outfit`，与永久外貌分开；补全顺序为「明确指定 → 当前穿着 → 常穿 → 第一套」，库里的服装名会展开成具体描述。
-- **自然语言模式的人物绑定**：外貌和衣服带人物主语，减少多人特征串用；已展开的人物不重复注入，同一角色的多个形态不会一起注入。
-- **规划角色清单精简**：多于 6 套服装时只列名字、完整描述常穿那套；相同形态的服装表去重；正文提到角色时同时给出其其他形态。
-- **人物宏别名匹配**：优先精确匹配 id、名字与全部非空别名，修复空别名、短名字和形态误命中；无精确匹配时才用受限前后缀匹配，仍有歧义时保留原名。
-- **可选诊断日志**（默认关闭）：summary 只记哈希与长度，full 才记正文与提示词；只跟踪一次，有保留数量/大小/期限限制，并对密钥形状字段脱敏；日志异常不影响出图。诊断配置与目录已加入 `.gitignore`。
-- **内置世界书**：更新规则 04，新增规则 09（多人画面与人物称呼）、10（同一角色的多个形态）。只影响新用户首次生成的默认世界书；已有个人世界书需自行导入新规则。
-- **本次额外修复（PR 标明的已知边界）**：`injectDefinitions` 的按名字注入原先用 `source.includes(key)`，导致短名别名会命中更长的名字（`Li` 命中 `Lina`），把外貌/服装注入给错的人。现在改为按完整词判断（中文按子串，拉丁词加词边界），并补了 11 项真实数据验收。
-
-
+## 插件的长处
 
 - **图片跟着正文走。** 配图可以插在对应句子后面，并与这版正文绑定。切换回复版本时，显示的是对应版本的图，方便重写和回看剧情。
 - **少画没有必要的图。** 智能选图允许规划模型跳过没有独立画面的回合。想给某轮补图时，手动生图仍然可用。
@@ -296,7 +270,7 @@ node $dshCli plugin --profile tavern add "link:$env:USERPROFILE/.dsh/profile-dat
 
 | 文件或目录 | 内容 |
 |---|---|
-| `config.json` | 渠道、鉴权、模型和插件设置 |
+| `config.json` | 渠道、模型和插件设置（API Key 和鉴权密码存在 DSH 凭据服务里，见[凭据存储](docs/release-and-platform.md#凭据存储)） |
 | `definitions.json` | 人物、服装、场景和物件资料 |
 | `worldbook.json` | 自己维护的配图规则 |
 | `jobs-store.json`、`plans-store.json` | 图片作业与规划记录 |

@@ -1,18 +1,32 @@
 # Hermes PRD Workbench
 
 [![Source release checks](https://github.com/YuxForge/hermes-prd-workbench/actions/workflows/check.yml/badge.svg)](https://github.com/YuxForge/hermes-prd-workbench/actions/workflows/check.yml)
+[![Pages Showcase](https://github.com/YuxForge/hermes-prd-workbench/actions/workflows/pages.yml/badge.svg)](https://yuxforge.github.io/hermes-prd-workbench/)
 [![Release](https://img.shields.io/github/v/release/YuxForge/hermes-prd-workbench?include_prereleases)](https://github.com/YuxForge/hermes-prd-workbench/releases)
 [![License](https://img.shields.io/github/license/YuxForge/hermes-prd-workbench)](LICENSE)
 
-**Turn raw requirements into reviewable PRDs, technical specifications, test cases, estimates, and interactive prototypes with Hermes Agent.**
+> **Turn messy requirement notes into reviewable, traceable PRDs, interactive prototypes, test plans, and technical specifications.**
+> Upload source material, expose conflicting business rules, preserve human decisions, and generate downstream engineering drafts with Hermes Agent.
+
+[Live Showcase (No registration)](https://yuxforge.github.io/hermes-prd-workbench/) · [Watch 60-Second Walkthrough](docs/examples/procurement/walkthrough.mp4) · [Download Deliverables Package](docs/examples/procurement/deliverables.zip) · [Read Case Study](docs/examples/procurement/README.md)
+
+`Self-hosted` · `Immutable Agent Results` · `Separate Working Draft` · `Sandboxed HTML Preview` · `Real Synthetic Execution`
 
 [中文说明](README.zh-CN.md) · [Quick start](#quick-start) · [Documentation](docs/README.md) · [Roadmap](https://github.com/YuxForge/hermes-prd-workbench/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap) · [Discussions](https://github.com/YuxForge/hermes-prd-workbench/discussions) · [Security](SECURITY.md)
 
-![Hermes PRD Workbench demo](docs/assets/hermes-prd-workbench-demo.gif)
+[![Procurement approval case: explore interactive demo](docs/examples/procurement/overview.jpg)](https://yuxforge.github.io/hermes-prd-workbench/)
 
 Hermes PRD Workbench is an Apache-2.0 self-hosted workspace for product and engineering teams. Upload source material once, preserve the original Agent result, refine a separate working draft, and continue from the same context into reviews and downstream deliverables.
 
 Version **0.4.0-beta.2** is a fresh-install preview for a single instance on a local or trusted network. It has been validated on macOS arm64 and Windows 11 WSL2 with Docker Desktop Linux containers. Linux amd64 and native Windows deployments have not yet been declared supported.
+
+## A concrete example: resolve a purchasing-rule conflict
+
+One meeting note says manager approval is enough up to CNY 5,000; a follow-up says anything below CNY 10,000 needs no finance review. **A CNY 8,600 workstation takes a different approval route depending on which note a developer follows.**
+
+In this fully synthetic case, a real Hermes review identified eight blocking questions. A maintainer then recorded explicit fictional business decisions, generated a four-module PRD, and saved a separate working draft before producing a clickable prototype and engineering handoff drafts. The package includes the review and decisions, PRD files, HTML Demo, test-case XLSX, technical specification, and an assumption-based effort-estimate XLSX.
+
+Read the [input materials, results, remaining questions, and verification record](docs/examples/procurement/README.md). The recording is an edited replay of real browser interactions; 60 seconds is the video length, not model generation time. All materials are synthetic, model outputs need human review, and the static prototype is not a production procurement system. The walkthrough and generated business documents are in Chinese.
 
 ## What it produces
 

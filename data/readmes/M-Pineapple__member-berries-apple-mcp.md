@@ -26,7 +26,7 @@ A fun macOS MCP that makes your assistant feel like a helpful friend who actuall
 
 Not affiliated with South Park or Comedy Central. Just a wink, a berry cluster, and a local memory file.
 
-**v2.1.3** · [MCP](https://modelcontextprotocol.io) · MIT · Bun · data stays on your Mac
+**v2.1.4** · [MCP](https://modelcontextprotocol.io) · MIT · Bun · data stays on your Mac
 
 ---
 
@@ -163,7 +163,7 @@ If this saves you time, a [star](https://github.com/M-Pineapple/member-berries-a
 
 ## License
 
-MIT. See [LICENSE](./LICENSE). Fork lineage: [apple-mcp](https://github.com/dhravya/apple-mcp).
+MIT. See [LICENSE](./LICENSE). Fork lineage: [apple-mcp](https://github.com/dhravya/apple-mcp); its copyright notice is kept in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).
 
 Member Berries is an independent project. The name pays homage to South Park’s Member Berries; no affiliation or endorsement is implied.
 

@@ -35,34 +35,38 @@
 Turn a task into a reviewed pull request through a workflow you control. Choose the agents and
 models, define what must pass, and decide where rejected work goes for repair.
 
-Start with the built-in `software-change` graph: implementation → independent review → repair →
-optional delivery. Or design your own topology. Add security reviewers, test agents, and parallel checks,
-then save the workflow as a profile and reuse it.
+For example, give a security reviewer the job of checking that users cannot access another account’s
+data. A rejection sends its findings back to the worker for repair, followed by another review. Save
+that workflow as a profile and reuse it.
 
-The agent that writes the code cannot approve its own work. The engine enforces the graph's review
-gates and retry limits. Think of it as CI for coding agents, starting before the code is written.
-zeroshot runs Claude Code, Codex, or Copilot as the worker and reviewers, with a separate harness
-and provider available for each agent.
+[Build your own review loop](docs/guides/review-loop.md), or start from the built-in
+`software-change` graph and adapt it.
+
+The engine enforces the graph’s review gates and retry limits. Think of it as CI for coding agents,
+starting before the code is written. Each agent can use its own model and harness: Pi, Claude Code,
+Codex or Copilot.
+
+[Experiment: a small model with a review loop](https://theopenengine.com/blog/review-loop/).
 
 The CLI is free and MIT licensed. Run locally, [self-host](#self-hosted-run-the-docker-target), or
 use [zeroshot Cloud](https://cloud.zeroshot.sh/docs).
 
 <div align="center">
-  <picture>
-    <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/zeroshot-workflow.svg">
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/zeroshot-demo-dark.gif">
-    <img src="docs/assets/zeroshot-demo.gif" alt="Animated zeroshot workflow: implementation, parallel acceptance and code review, repair, and optional Git delivery" width="960">
-  </picture>
+  <a href="https://zeroshot.sh/#topology">
+    <picture>
+      <source media="(prefers-reduced-motion: reduce) and (max-width: 640px)" srcset="docs/assets/product-graph-feature-mobile.png">
+      <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/product-graph-feature-wide.png">
+      <source media="(max-width: 640px)" srcset="docs/assets/product-graph-feature-mobile.gif">
+      <img src="docs/assets/product-graph-feature-wide.gif" alt="Example custom graph: a worker, parallel acceptance and code review plus a bugfinder, UI review, adversarial end-to-end testing, and delivery. Rejections return to the worker for repair." width="640">
+    </picture>
+  </a>
   <br>
-  <em>Workflow illustration: both reviews run again after a repair. Git delivery is optional.</em><br>
-  <a href="docs/assets/zeroshot-workflow.svg">Static diagram</a>
+  <em>Example custom workflow from the product page. <a href="https://zeroshot.sh/#topology">Explore the interactive graphs.</a></em>
 </div>
 
 We want to explore how much task decomposition and validation loops can narrow the gap between
 open models and closed frontier systems. The graph, review rules, and repair paths are open for
 anyone to inspect, change, and test on real work.
-
-**[▶ Video: a single agent vs. zeroshot](https://x.com/eivindmeyer_cv/status/2106898797771288828)** (scripted)
 
 Questions, ideas, or a run worth showing? Join the [zeroshot community on Discord](https://theopenengine.com/discord).
 
@@ -76,15 +80,24 @@ Prefer Cloud? [Cloud setup →](https://cloud.zeroshot.sh/docs)
 npm install -g @the-open-engine-company/zeroshot
 ```
 
+Paste this into Claude Code or Codex in your repo:
+
+```text
+Use the zeroshot skill to set up a local run for a small issue in this repo.
+Work on a fresh branch and stop if there are uncommitted changes.
+Show me the task and workflow before starting.
+Once I approve, run it, monitor progress, and summarize the result.
+```
+
 The installer requires Node.js 18 or newer and installs a verified native binary for Linux
 x64/arm64, macOS x64/arm64, or Windows x64. It also installs one zeroshot skill for Codex, GitHub
-Copilot, and Claude Code at user scope.
+Copilot, Pi, and Claude Code at user scope.
 
-For local execution, install and sign in to Codex, Claude Code, or GitHub Copilot. Local runs can
+For local execution, install and sign in to Codex, Claude Code, GitHub Copilot, or Pi. Local runs can
 reuse the harness's existing login, including subscription-backed sessions. See the
 [installation guide](docs/getting-started/install.md) for harness prerequisites.
 
-#### Run your first task
+#### Run directly from the CLI
 
 This example uses Codex and keeps delivery local. **The worker edits the selected folder**;
 Git is optional. Add `--cwd FOLDER` to select another folder; input files stay relative to the invoking folder.
@@ -135,48 +148,18 @@ For other harnesses and providers, see [Runtimes and connections](docs/concepts/
 Connect GitHub and bring your own model API keys.
 [Cloud setup guide →](https://cloud.zeroshot.sh/docs)
 
-## What the built-in workflow does
-
-1. A worker implements the task.
-2. Acceptance and code reviewers check the result independently, in parallel.
-3. Rejected work goes to one repair worker with both reviews' feedback, then through both reviews
-   again.
-4. With delivery enabled, accepted work proceeds through the configured Git and CI steps.
-5. Delivery conflicts return through repair and review.
-
-The graph defines the sequence, parallel steps, retry paths, and exit conditions before execution
-starts. Runs are bounded, and events are recorded in a durable SQLite ledger. A passing run means
-its configured checks accepted the work; coverage depends on the requirements, reviewers, tests,
-and environment you provide.
-
-## Auto-research
-
-The built-in `auto-research` template runs ten iterations by default; set a positive
-`options.iterations` value in the run input to choose another count. Three scouts propose
-directions, then a planner chooses an experiment and either the current candidate or a restorable
-archived candidate as its starting point. Independent judges check the evidence and method, while
-the progress judge decides whether the result should replace the current candidate under the task
-charter. A valid result can go into the archive without replacing it. An auditor checks the ledger,
-archive, and workspace before the next iteration.
-
-Inspect the graph with `zeroshot template show auto-research`.
-
 ## Bring your own graph topology
 
 Choose each agent's model and instructions, which steps run in parallel, and when to retry.
-Example topology, adding stages after the review loop:
+This example routes changes to auth, payments, or migrations through a blast-radius map and security
+review before acceptance and code review. Other changes go straight to review.
 
-```text
-Implementation
-      ↓
-Code review + acceptance review
-      ↓
-Bugfinder: adversarial tests
-      ↓
-E2E tests
-      ↓
-Delivery
-```
+<a href="https://zeroshot.sh/#topology">
+<picture>
+  <source media="(max-width: 640px)" srcset="docs/assets/product-graph-danger-mobile.png">
+  <img src="docs/assets/product-graph-danger-wide.png" alt="Example custom graph: a risk check routes auth, payments, or migration changes through blast-radius mapping and security review. All changes then pass acceptance and code review; rejection returns to the worker for repair." width="640">
+</picture>
+</a>
 
 The software-change review loop, auto-research graph, and delivery are built in. You define other
 stages, their tools, services and credentials, and where failures go for repair.
@@ -187,7 +170,9 @@ Inspect the built-in graph as a starting point:
 zeroshot template show software-change
 ```
 
-See the [graph contract](docs/reference/cluster/graph.md) for custom graph authoring and
+Start with [Build a review loop](docs/guides/review-loop.md), a complete example with two independent
+reviewers and a repair loop. Adapt the reviewers’ instructions to your project. See the
+[graph contract](docs/reference/cluster/graph.md) for supported graph structures and
 [Prepare a runtime environment](docs/guides/runtime-environments.md) for dependency and service setup.
 
 ## Save and reuse a profile
@@ -201,7 +186,12 @@ Each step can use its own model. Pass `--runtime-config` with one binding per no
   "provider": "anthropic",
   "size": "medium",
   "nodes": {
-    "worker": { "kind": "agent", "model": "WORKER_MODEL_ID", "effort": "high", "sessionScope": "node_instance" },
+    "worker": {
+      "kind": "agent",
+      "model": "WORKER_MODEL_ID",
+      "effort": "high",
+      "sessionScope": "node_instance"
+    },
     "acceptance": { "kind": "agent", "model": "REVIEW_MODEL_ID", "effort": "high" },
     "code": { "kind": "agent", "model": "REVIEW_MODEL_ID", "effort": "max" }
   }
@@ -227,7 +217,34 @@ zeroshot run \
 ```
 
 The CLI and UI share the same local profiles. See
-[UI setup](docs/getting-started/install.md#open-the-workspace-ui).
+[UI setup](docs/getting-started/install.md#open-the-workspace-ui). For shared team configurations,
+see [organization profiles](https://cloud.zeroshot.sh/docs/connections-and-profiles).
+
+## What the built-in workflow does
+
+1. A worker implements the task.
+2. Acceptance and code reviewers check the result independently, in parallel.
+3. Rejected work returns to the same worker with both reviews' feedback, then through both reviews
+   again.
+4. With delivery enabled, accepted work proceeds through the configured Git and CI steps.
+5. Delivery conflicts return through repair and review.
+
+The graph defines the sequence, parallel steps, retry paths, and exit conditions before execution
+starts. Runs are bounded, and events are recorded in a durable SQLite ledger. A passing run means
+its configured checks accepted the work; coverage depends on the requirements, reviewers, tests,
+and environment you provide.
+
+## Auto-research
+
+The built-in `auto-research` template runs ten iterations by default; set a positive
+`options.iterations` value in the run input to choose another count. Three scouts propose
+directions, then a planner chooses an experiment and either the current candidate or a restorable
+archived candidate as its starting point. Independent judges check the evidence and method, while
+the progress judge decides whether the result should replace the current candidate under the task
+charter. A valid result can go into the archive without replacing it. An auditor checks the ledger,
+archive, and workspace before the next iteration.
+
+Inspect the graph with `zeroshot template show auto-research`.
 
 ## Choose delivery and execution
 
@@ -244,13 +261,14 @@ PR and ship runs address visible pull request review feedback by default; pass `
 ignore it.
 
 Push needs a committed Git checkout and an HTTPS or SSH remote. PR and ship additionally need a
-forge adapter; GitHub is maintained today. Docker and cloud runs require an exact Git source.
+forge adapter; GitHub is maintained today. Local GitHub PR and ship runs also need the GitHub CLI
+(`gh`) on `PATH`. Docker and cloud runs require an exact Git source.
 See [targets and source credentials](docs/concepts/targets.md) for setup.
 
 ### Self-hosted: run the Docker target
 
 Keep execution and durable state on infrastructure you control. The target image includes the native
-engine plus pinned Codex, Claude, and GitHub Copilot harness CLIs.
+engine plus pinned Codex, Claude, GitHub Copilot, and Pi harness CLIs.
 
 ```bash
 docker run --detach --restart unless-stopped --name zeroshot-target \

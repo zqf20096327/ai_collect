@@ -37,7 +37,7 @@ Members receive the latest unlock codes from the community. Codes are **only** s
 <br/>
 
 <a href="https://zyraxonai.lovable.app"><img alt="Website" src="https://img.shields.io/badge/Website-00D4FF?style=flat-square&logo=googlechrome&logoColor=001018" /></a>
-<a href="https://github.com/onelpawarai-X/ZYRAXON-AI/releases"><img alt="Release" src="https://img.shields.io/badge/Release-v19.0.6-00D4FF?style=flat-square&logo=github&logoColor=001018" /></a>
+<a href="https://github.com/onelpawarai-X/ZYRAXON-AI/releases"><img alt="Release" src="https://img.shields.io/badge/Release-v19.0.7-00D4FF?style=flat-square&logo=github&logoColor=001018" /></a>
 <a href="https://github.com/onelpawarai-X/ZYRAXON-AI/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/onelpawarai-X/ZYRAXON-AI/total?style=flat-square&logo=github&logoColor=001018&color=00D4FF" /></a>
 <a href="https://github.com/onelpawarai-X/ZYRAXON-AI/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/onelpawarai-X/ZYRAXON-AI?style=flat-square&logo=github&logoColor=001018&color=00D4FF" /></a>
 <a href="https://github.com/onelpawarai-X/ZYRAXON-AI/blob/main/CONTRIBUTING.md"><img alt="Contributing" src="https://img.shields.io/badge/PRs_welcome-yes-00D4FF?style=flat-square" /></a>

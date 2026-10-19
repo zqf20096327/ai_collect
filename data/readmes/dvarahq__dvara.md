@@ -116,6 +116,12 @@ docker exec dvara cat /tmp/audit.log | jq -c '[.eventType, .payload.reason // .p
 ["GATEWAY_RESPONSE",200]
 ```
 
+Check that no line was changed or removed. The command uses the container's `DVARA_AUDIT_HMAC_SECRET`, exits 0 when the chain is intact and 1 when a line was changed, and names the first bad line:
+
+```bash
+docker exec dvara java -jar /app/app.jar --verify-audit /tmp/audit.log
+```
+
 **6. Use a real provider.** Swap the provider and route, and pass the key with `-e OPENAI_API_KEY=sk-...`:
 
 ```yaml
@@ -165,10 +171,10 @@ ChatGLM (Zhipu), Cohere, Groq, Qwen and Ollama, plus a mock provider for tests a
 | Provider | Streaming | Vision | Tool calls | Structured outputs | Batch |
 |---|:-:|:-:|:-:|:-:|:-:|
 | OpenAI, Azure OpenAI | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Anthropic, Gemini, Bedrock, Grok, Ollama | ✅ | ✅ | ✅ | ✅ | — |
-| Mistral | ✅ | — | ✅ | ✅ | — |
+| Anthropic, Gemini, Bedrock, Grok, Mistral, Ollama | ✅ | ✅ | ✅ | ✅ | — |
+| Cohere, Groq | ✅ | ✅ | ✅ | — | — |
 | DeepSeek, Moonshot, ChatGLM | ✅ | — | ✅ | — | — |
-| Cohere, Groq, Qwen | ✅ | — | — | — | — |
+| Qwen | ✅ | — | — | — | — |
 
 ## Use it as a library
 

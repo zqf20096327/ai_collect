@@ -201,11 +201,12 @@ Get the a pre-build compressed images & SBOMs, opening this URL 👉 [https://pu
     - If you want to use your image or an already configured image (Recommanded), Select **Custom** at the very bottom of the list and select the image.
     - Otherwise select RPI OS without desktop :	
         - In raspberry Pi OS (Other) -> Raspberry PI OS Lite (64-bit) to select last Debian (Trixie factory delivery)
-        - Or 👉 [here](https://www.raspberrypi.com/software/operating-systems/) to get also the SBOM or 👉 [here](https://downloads.raspberrypi.org/raspios_lite_arm64/images/) to select an old LTS RPI OS image
+        - Or 👉 [Raspberry Pi OS](https://www.raspberrypi.com/software/operating-systems/) to get also the SBOM or 👉 [Raspberry Pi OS Legacy](https://downloads.raspberrypi.org/raspios_lite_arm64/images/) to select an old LTS RPI OS image
     - Or RPI OS with desktop :
         - Last Debian Trixie 64 bits
         - Or 👉 [here](https://www.raspberrypi.com/software/operating-systems/) to get also the SBOM or 👉 [here](https://downloads.raspberrypi.org/raspios_full_arm64/images/) to select an old LTS RPI OS image
-    - Or in Other general-purpose OS -> Ubuntu to select an Ubuntu desktop or server Image
+    - Or in Other general-purpose OS -> Ubuntu to select an Ubuntu desktop or server Image or here 👉 [Ubuntu](https://ubuntu.com/download/raspberry-pi)
+    - You can also get the latest "testing" or "sid" Debian image generated with [Debian Cloud Image](https://raspi.debian.net/)
 - Choose :
     - **mmcblk0** for eMMC (recommanded for the OS)
     - **nvme0n1** for the main NVMe SSD storage (you must change the boot order if you choose this drive)
@@ -2551,6 +2552,4 @@ sudo rpi-clone nvme0n1
 In chapter 3, we looked at how to modify an existing Debian image to adapt it for the Xplorer CM5, in chapter 5 how to clone an image.
 [rpi-image-gen](https://github.com/raspberrypi/rpi-image-gen) is one possible method you can use in your CI/CD pipeline to automatically create ready to run images with your application already installed.  
 **rpi-image-gen** is a tool for creating custom images for Raspberry Pi based devices. It runs best on a Raspberry Pi 5 Host / Xplorer CM5 / Debian VM / CM5 Programming JIG running up-to-date 64-bit Raspberry Pi OS or Debian (We’ve had some issues with Ubuntu). 
-**rpi-image-gen** create images compatible with **Secure Boot Provisioning** and the [Raspberry PI Compute Module 5 Programming JIG](https://www.raspberrypi.com/documentation/accessories/cm5-programming-jig.html) .
-
-You can find the more documentation [here](https://raspberrypi.github.io/rpi-image-gen/
+**rpi-image-gen** create images compatible with **Secure Boot Provisioning** and the

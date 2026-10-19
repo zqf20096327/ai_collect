@@ -36,6 +36,7 @@ Welcome to the **AISources**! This project serves as a central hub for a wide ra
 | [CodeWhisperer](https://aws.amazon.com/codewhisperer/) | Function: AI-powered code suggestion tool by AWS. Advantage: Ideal for developers working on cloud-native applications with seamless AWS service integration.                                                          |
 | [PolyCoder](https://github.com/VHellendoorn/Code-LMs) | Function: Open-source AI model trained on diverse programming languages. Advantage: Provides transparency and flexibility for developers wanting alternatives to proprietary models.                                   |
 | [DeepCode](https://www.deepcode.ai/)                  | Function: AI code review tool that finds bugs and optimizes performance. Advantage: Focuses on improving code quality and collaboration efficiency in teams.                                                           |
+| [Agent QA](https://github.com/vostride/agent-qa)      | Function: Authors and runs natural-language web and mobile regression tests. Advantage: Its CLI, MCP server, persistent test memory, and reviewable evidence help teams maintain application flows as interfaces change. Source-available under FSL-1.1-ALv2. |
 
 
 #### 2 [↑](#-content) Cybersecurity  
@@ -62,8 +63,10 @@ Welcome to the **AISources**! This project serves as a central hub for a wide ra
 | [Writesonic](https://writesonic.com/)            | Function: AI copywriting and text generation for social media, blogs, and ads. Advantage: Offers both long-form and short-form content generation.                                |
 | [Descript](https://www.descript.com/)            | Function: AI-powered video and audio editing tool. Advantage: Simplifies editing workflows with transcription, text-based video editing, and overdub capabilities.               |
 | [Pictory](https://pictory.ai/)                   | Function: Converts text-based content into engaging videos. Advantage: Automates video creation, perfect for content marketers and educators.                                     |
+| [videos.social](https://videos.social/?utm_source=aisources&utm_medium=directory&utm_campaign=listing-wave-d) | Function: Turns blogs, PDFs, and prompts into editable faceless videos. Advantage: 1 free render to start; packs from $10; 1 credit = 1 render. |
 | [Runway ML](https://runwayml.com/)               | Function: AI for creative projects, including video editing, image generation, and background removal. Advantage: Accessible for artists and creators with minimal tech skills.   |
 | [CreatorSkills](https://creatorskills.co)        | Function: Marketplace of downloadable AI skills for content creators covering YouTube scripting, sponsorship analysis, and audience growth. Advantage: Works with Claude and ChatGPT to give creators ready-made, expert-crafted prompts. |
+| [WarmQuant](https://warmquant.com/) | Function: AI English drafting from notes or text with writing angles and author and reader personas. Advantage: Users can edit and save generated drafts for later revision. |
 
 
 #### 4 [↑](#-content) Data Analysis  
@@ -76,6 +79,7 @@ Welcome to the **AISources**! This project serves as a central hub for a wide ra
 | [BigML](https://bigml.com/)                    | Function: Cloud-based machine learning for business applications. Advantage: Provides easy-to-use tools for building and deploying predictive models.                        |
 | [Tableau AI](https://www.tableau.com/)         | Function: Enhances Tableau’s visualization platform with AI for data analysis and prediction. Advantage: Seamlessly integrates with existing Tableau workflows.              |
 | [MonkeyLearn](https://monkeylearn.com/)        | Function: Text analysis and data visualization using AI. Advantage: Ideal for sentiment analysis, keyword extraction, and custom data classification.                        |
+| [Pulse](https://pulsecorp.co)                  | Function: AI-moderated market research platform where an AI moderator runs customer interviews. Advantage: Interviews run by voice, video, text chat, phone call and WhatsApp without a human moderator. |
 
 
 #### 5 [↑](#-content) Design  
@@ -112,5 +116,4 @@ Welcome to the **AISources**! This project serves as a central hub for a wide ra
 | [Zapier AI](https://zapier.com/)               | Function: Workflow automation with AI to connect apps and streamline processes. Advantage: Saves time by automating repetitive tasks across various platforms.       |
 | [Motion](https://www.usemotion.com/)           | Function: AI-powered scheduling and task management tool. Advantage: Automatically prioritizes tasks and meetings based on your goals and deadlines.                |
 | [Superhuman](https://superhuman.com/)          | Function: AI-enhanced email client for faster communication. Advantage: Focused on productivity and email organization.                                             |
-
 

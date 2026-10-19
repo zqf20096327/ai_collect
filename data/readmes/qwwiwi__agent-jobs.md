@@ -33,8 +33,8 @@ That is what a job avoids:
 - **Notifications and result turns re-read the full parent.** A job costs the parent one short line when it finishes, and one read of the report.
 - **A foreground subagent keeps the parent's turn open.** The session cannot talk or decide until it returns. A job returns an id at once and the session stays free.
 - **A job is its own process with hard limits.** Subagents can be scoped too (turn limits, tool allowlists, MCP servers). What a job adds is the combination: a separate `claude -p` process with its own full context, its own git worktree, a USD budget (`--max-budget-usd`) and a wall-clock timeout enforced by the daemon, survival across a restart of the parent, and a fixed report contract.
-- **A job outlives the session.** Subagents die with their session; a job runs in its own process group and survives a session or daemon restart. Resuming an interrupted job from its saved patches is planned (Wave B).
-- **Load can be spread.** Subagents draw on the usage window at the same moment as their parent. Jobs queue (at most two run per agent) and, with schedules (planned, Wave B), can run when the window is quiet.
+- **A job outlives the session.** Subagents die with their session; a job runs in its own process group and survives a session or daemon restart. An interrupted Claude job can be resumed (`job_resume`, Wave E2): it continues its saved session while the session transcript is still on disk, otherwise it starts a fresh session with the previous attempt as context. Codex jobs cannot be resumed.
+- **Load can be spread.** Subagents draw on the usage window at the same moment as their parent. Jobs queue (at most `max_running` run per agent, default two) and, with schedules (Wave B), can run when the window is quiet.
 - **A job is a full session.** A subagent starts with only its prompt and is often routed to a cheaper model. A job is a full top-level Claude Code run with its own model choice and the full tool set, inside the limits above.
 
 We do not publish an "N× cheaper" or "N× faster" figure yet, because we have not measured one per task. The benchmark below is how we will.
@@ -43,15 +43,17 @@ We do not publish an "N× cheaper" or "N× faster" figure yet, because we have n
 
 **Method.** The same task is run three ways: as a foreground subagent, as a background subagent, and as a job.
 
-- **Tokens:** sum `cache_read + input + output` from the parent session's JSONL plus the subagent sidechain, against the job's own JSONL (`stream.jsonl`) plus the parent's tokens for the job-done line and the report read.
+- **Tokens:** report `input`, `cache_creation`, `cache_read` and `output` (the usage fields `input_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`, `output_tokens`) separately, and their sum. Sources: the parent session's JSONL plus the subagent sidechain, against the job's own JSONL (`stream.jsonl`) plus the parent's tokens for the job-done line and the report read.
+- **Priced total (primary comparison):** the four fields times the list price of the model that ran them, each at its own rate (they are billed differently), in $ per run. For subscription runs it is an equivalent cost, not money spent.
+- **Acceptance:** the same acceptance check for all three modes; a run counts only if the task's check passes, so cost is compared on equal results.
 - **Wall time:** from start to a usable result.
 - **Parent busy:** minutes during which the parent session could not take another request.
 
-| Run | Task | Tokens (cache_read + input + output) | Wall time | Parent busy (min) | Notes |
-|---|---|---|---|---|---|
-| Foreground subagent | | | | | |
-| Background subagent | | | | | |
-| Job | | | | | |
+| Run | Task | Input | Cache creation | Cache read | Output | Token sum | Priced total ($) | Acceptance passed | Wall time | Parent busy (min) | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Foreground subagent | | | | | | | | | | | |
+| Background subagent | | | | | | | | | | | |
+| Job | | | | | | | | | | | |
 
 Results will be filled in here when the runs are done.
 
@@ -63,7 +65,7 @@ Results will be filled in here when the runs are done.
 
 <p align="center"><img src="docs/images/swarm.png" alt="The main session hands work to many jobs and gets a check mark back from each" width="100%"></p>
 
-One main session, many workers. The session writes a brief for a stranger (a job has no conversation context), starts a job and goes back to talking. Each job works alone in its own folder and comes back with a report. The picture is illustrative: jobs wait in a queue, and at most two run at a time per agent.
+One main session, many workers. The session writes a brief for a stranger (a job has no conversation context), starts a job and goes back to talking. Each job works alone in its own folder and comes back with a report. The picture is illustrative: jobs wait in a queue, and at most `max_running` (default two) run at a time per agent.
 
 ### Components
 
@@ -74,15 +76,15 @@ One main session, many workers. The session writes a brief for a stranger (a job
 - **Queue** is one SQLite table per agent. A tick claims a job with a random launch token before spawning anything, and only that tick can finish it, so a job is never launched twice.
 - **Job** is `agent-jobs run-wrapper` running `claude -p` in its own process group, with a scrubbed git environment, in a git worktree detached at the base commit (or an empty directory).
 - **Job folder** keeps the brief, settings, event stream, report and, after cleanup, the patches.
-- **Schedules (cron)** are built, unreleased (Wave B): the daemon checks them every minute and types a due prompt into the main session or starts a job.
-- **Checks (dead-man's switch)** are built, unreleased (Wave B): work that stays silent while healthy leaves a mark; the daemon alerts the main session once when an expected time passes without one.
+- **Schedules (cron)** are built, released in 0.4.0 (Wave B): the daemon checks them every minute and types a due prompt into the main session or starts a job.
+- **Checks (dead-man's switch)** are built, released in 0.4.0 (Wave B): work that stays silent while healthy leaves a mark; the daemon alerts the main session once when an expected time passes without one.
 
 ### Lifecycle
 
 <p align="center"><img src="docs/images/lifecycle.png" alt="job_start, queued, running, report, job-done line, job_result, review and push, cleanup" width="100%"></p>
 
 1. **Start.** The session starts a job with a title, kind, brief, repo, model and limits. The call validates everything, inserts a `queued` row and returns the id. Nothing runs yet.
-2. **Queued.** On the next tick, if fewer than two jobs are running for this agent, the daemon claims it.
+2. **Queued.** On the next tick, if fewer than `max_running` (default two) jobs are running for this agent, the daemon claims it.
 3. **Running.** The daemon prepares the folder (brief with memory notes, settings, worktree) and launches the wrapper detached, in its own session. The wrapper runs `claude -p` and writes `exit_code` last.
 4. **Report.** The job's final message is saved as `report.md`. Exit code 0 with a report is `succeeded`; a non-zero exit, a turn or budget stop, or no report is `failed`; past the timeout the process group gets SIGTERM, then SIGKILL after 10 s, and the job is `timeout`. `cancelled` comes only from an explicit cancel.
 5. **Job-done line.** The session receives one line via `tmux send-keys`:
@@ -116,9 +118,9 @@ Use amend while a job waits, stop and resume when a running job needs new facts 
 | Turns (`--max-turns`) | 80 | 200 |
 | Budget (`--max-budget-usd`) | $10 | $50 |
 | Time (`--timeout-minutes`) | 45 min | 180 min |
-| Running per agent | 2 | |
+| Running per agent (`max_running`) | 2 | 8 |
 
-A request above a ceiling is **rejected, never clamped**, so a job never stops for a reason its author could not see. Zero or omitted means the default; negative values are rejected.
+A request above a ceiling is **rejected, never clamped**, so a job never stops for a reason its author could not see. Zero or omitted means the default; negative values are rejected. Exception: `max_running` (a config.json key) takes the default only when the key is absent; an explicit 0, `null` or any value outside 1..8 is a config error.
 
 **Model.** Pass `--model`, or a `--complexity` (`light` / `normal` / `hard`) that maps to a model by kind:
 
@@ -319,7 +321,7 @@ In every tick the daemon judges each enabled check's expected times whose grace 
 |---|---|
 | `notify_owner` | ask for the owner's attention: `text` (one line, ≤ 300 characters, control characters refused, `[jobs:` inside it defanged), optional `urgency` (normal \| high). agent-jobs sends nothing to a messenger itself: one line `[jobs:notify-owner] …` (with `job <id>:` from a job) is typed into the notify target like the job-done line, and the agent's session relays it over its own channel. A job: at most 3, at most one a minute (through the daemon); the agent: at most 20 an hour. Every admitted call is stored; a refused one (invalid text or urgency, over a limit) is an error and stores nothing. An undelivered one (no target, tmux refused or not done within 10 s) is an error and shows in `agent-jobs status` and `system_doctor`. CLI: `agent-jobs notify-owner --agent A --text T [--urgency high]` |
 
-**Owner waits** (built, unreleased): a job started at the owner's request is marked (`job_start` with `owner_waits: true`, `agent-jobs start --owner-waits`). Its job-done line ends with `· owner waits`. When the job has finished, it is recorded as «owner reply pending» for the agent *before* its line is typed into the session, so the session never sees the line without the record. A Stop hook in the orchestrator session, `agent-jobs hook stop --agent A`, then blocks the end of a turn (`{"decision":"block","reason":"…"}`) until the session has written to the owner and called `owner_replied`; it blocks at most once per turn (with `stop_hook_active` it always allows, so it never loops) and fails open (any error, and any incomplete hook input, allows the stop).
+**Owner waits** (built, released in 0.4.0): a job started at the owner's request is marked (`job_start` with `owner_waits: true`, `agent-jobs start --owner-waits`). Its job-done line ends with `· owner waits`. When the job has finished, it is recorded as «owner reply pending» for the agent *before* its line is typed into the session, so the session never sees the line without the record. A Stop hook in the orchestrator session, `agent-jobs hook stop --agent A`, then blocks the end of a turn (`{"decision":"block","reason":"…"}`) until the session has written to the owner and called `owner_replied`; it blocks at most once per turn (with `stop_hook_active` it always allows, so it never loops) and fails open (any error, and any incomplete hook input, allows the stop).
 
 The hook holds **only the orchestrator session**: `agent-jobs hook bind --agent A`, run from that session's SessionStart hook, records its `session_id`. A bind is accepted only when all hold: (a) it runs in the tmux pane of `notify_tmux_target` (`$TMUX_PANE` equals the pane tmux resolves the target to); (b) the hook input's `cwd` is inside `orchestrator_dir` (config); (c) it is not inside a job. With no `notify_tmux_target` or no `orchestrator_dir` configured every bind is refused, and the Stop hook then never blocks. Replacing a binding obeys the same checks: a new session, `/clear` or a resume in the same pane and directory rebinds, while another project's session with the same hooks, or a process elsewhere, cannot take it over; a refused bind keeps the old binding. A process the orchestrator itself starts in that pane and directory (its own subagent) is inside the orchestrator's trust domain and is not defended against. The Stop hook blocks only when its input's `session_id` equals the bound one; with no session bound, or in any other session that has the hook configured, it allows.
 
@@ -356,13 +358,13 @@ Register both hooks in the orchestrator's Claude Code settings (the `settings.js
 | Team | `send_message`, `inbox` | none | built (shared brain) |
 | System | `system_doctor`, `system_logs`, `activity_report` | none | built |
 | Files | `trash_move`, `trash_restore` | none | built |
-| Schedules | `schedule_add`, `schedule_list`, `schedule_set`, `schedule_remove` | none | built, unreleased (Wave B) |
-| Own goals | `intention_add`, `intention_list`, `intention_set` | none | built, unreleased (Wave B) |
-| Owner | `notify_owner` | `notify_owner` | built, unreleased (Wave B) |
-| Checks | `check_add`, `check_list`, `check_set`, `check_remove`, `check_mark` | `check_mark` | built, unreleased (Wave B) |
-| Owner | `owner_replied` («owner waits» Stop hook) | none | built, unreleased (Wave D) |
-| Heartbeat | `heartbeat_get` (a stored decision) | none | built, unreleased (Wave D) |
-| Skills | `skill_list` (catalog, content search) | the selected skills, linked into the worktree | built, unreleased (Wave E7, job-side part) |
+| Schedules | `schedule_add`, `schedule_list`, `schedule_set`, `schedule_remove` | none | built, released in 0.4.0 (Wave B) |
+| Own goals | `intention_add`, `intention_list`, `intention_set` | none | built, released in 0.4.0 (Wave B) |
+| Owner | `notify_owner` | `notify_owner` | built, released in 0.4.0 (Wave B) |
+| Checks | `check_add`, `check_list`, `check_set`, `check_remove`, `check_mark` | `check_mark` | built, released in 0.4.0 (Wave B) |
+| Owner | `owner_replied` («owner waits» Stop hook) | none | built, released in 0.4.0 (Wave D) |
+| Heartbeat | `heartbeat_get` (a stored decision) | none | built, released in 0.4.0 (Wave D) |
+| Skills | `skill_list` (catalog, content search) | the selected skills, linked into the worktree | built, released in 0.4.0 (Wave E7, job-side part) |
 | Code | code-graph index (separate server) | read and index | research, Wave C |
 
 ---
@@ -374,7 +376,7 @@ Requires Go 1.27, git, the `claude` CLI (tested with 2.1.301 on macOS and 2.1.30
 **Build and check**
 
 ```bash
-go build -ldflags "-X main.version=v0.3.0" -o ~/.local/bin/agent-jobs ./cmd/agent-jobs
+go build -ldflags "-X main.version=v0.4.0" -o ~/.local/bin/agent-jobs ./cmd/agent-jobs
 git config core.hooksPath .githooks   # once per clone: pre-push runs scripts/check.sh
 scripts/check.sh                       # gofmt, go vet, go test
 ```
@@ -416,6 +418,7 @@ Optional `~/.agent-jobs/my-agent/config.json`:
 - `idle_after_result_seconds`: grace of the idle-after-result rule (default 180). A job whose claude printed its final `result`, then stays silent this long with no live child but the job MCP server, is ended and judged by that result instead of waiting for the timeout (Linux). `-1` turns the rule off.
 - `owner_names`: names that must never appear in a job's commit.
 - `git_name` / `git_email`: the job's git identity; a job cannot override it.
+- `max_running`: how many jobs of this agent run at once (1..8, default 2 when absent); the rest wait in the queue. A value outside 1..8, `null` or a non-integer is refused at config load, never clamped. The daemon reads config.json at start, so a changed `max_running` takes effect after a daemon restart. `/v1/health` (`max_running`) is served by the daemon and shows the cap it enforces. `system_doctor` (`queue.configured_max_running`) shows what the MCP server loaded at its own start, and `agent-jobs status --agent A` (no id, `configured max_running`) what the file says now: after a change either can differ from the daemon's cap until that process restarts.
 - `daily_hour`: local hour (0..23, default 4) after which the daemon runs `prune` and `doctor procs` (report only) once a day; `daily_off: true` turns that off. `agent-jobs status --agent A` (no id) shows the last run.
 - `log_archive_dir`: absolute path of the log archive (default `<state>/archive`); `log_archive_days`: how long archived months are kept (default 365, 0 = forever).
 - `keep_raw_reports`: keep the unredacted report as `report.raw.md` (0600) next to the redacted `report.md` (default false).
@@ -470,7 +473,7 @@ systemctl --user restart agent-jobs@my-agent           # the daemon starts the A
 curl -s --unix-socket ~/.agent-jobs/my-agent/http-api.sock -H "Authorization: Bearer $(cat ~/.agent-jobs/my-agent/http-api.token)" http://localhost/v1/health
 ```
 
-- `GET /v1/health`: version, start time, uptime, running and queued counts. `GET /v1/jobs?status=S&limit=N`: newest jobs first (default 20, max 200; same view as `agent-jobs list --json`). `GET /v1/jobs/{id}`: one job; `?report=1` adds `report.md`, capped at 64 KB (`report_truncated`). `GET /v1/stats?since=D&by=kind|model|skill`: the `job_stats` summary. `GET /v1/stats` covers the last 30 days without `since`; a `since` older than 365 days is 400; at most 200 groups and skills (`groups_truncated`, `skills_truncated`). `GET /v1/schedules?limit=N&cursor=C`: schedules with their next firing, oldest first, pages of 100 by default (max 500); `next_cursor` is the `cursor` of the next page. `GET /v1/skills?since=D&repo=R&limit=N`: the skills rating for a frontend, per skill: status, `stale`, delivered, used, success rate, last used, median cost and `by_repo` (repository folder -> used, success rate), sorted by used count; 30 days by default (max 365), 100 skills by default (max 500); names and numbers only.
+- `GET /v1/health`: version, start time, uptime, running and queued counts, `max_running`. `GET /v1/jobs?status=S&limit=N`: newest jobs first (default 20, max 200; same view as `agent-jobs list --json`). `GET /v1/jobs/{id}`: one job; `?report=1` adds `report.md`, capped at 64 KB (`report_truncated`). `GET /v1/stats?since=D&by=kind|model|skill`: the `job_stats` summary. `GET /v1/stats` covers the last 30 days without `since`; a `since` older than 365 days is 400; at most 200 groups and skills (`groups_truncated`, `skills_truncated`). `GET /v1/schedules?limit=N&cursor=C`: schedules with their next firing, oldest first, pages of 100 by default (max 500); `next_cursor` is the `cursor` of the next page. `GET /v1/skills?since=D&repo=R&limit=N`: the skills rating for a frontend, per skill: status, `stale`, delivered, used, success rate, last used, median cost and `by_repo` (repository folder -> used, success rate), sorted by used count; 30 days by default (max 365), 100 skills by default (max 500); names and numbers only.
 - On a TCP listener the `Host` header must be `localhost` or a loopback IP literal (`127.x.x.x`, `[::1]`), without a port or with the listener's, else 421 (no name is resolved: a DNS-rebound page cannot reach the API); a unix socket is exempt.
 - Every endpoint needs the token, health included (401 without it or with a wrong one; the scheme `Bearer` is case-insensitive; constant-time compare; the file is read per request, so a rotation takes effect at once, and a token file readable by group or others fails closed). Any method but GET is 405; no endpoint changes state. No CORS headers.
 - Never returned: briefs, schedule prompts or titles derived from them (a job schedule without a title is called `schedule <id>`, and so are the jobs it fires; an older schedule or job whose title starts with `schedule: ` is shown that way too), session ids, env, config, the job dir or the repository path (only the repository's folder name), error texts. A job's error is `error_code` + `error_message`, a schedule's last error `last_error_code` + `last_error_message`, the code one of `launch_failed`, `timeout`, `cancelled`, `guard_refused`, `codex_config_refused`, `delivery_failed`, `processes_survived`, `run_failed`, `unknown` with a fixed message; the text itself is in `agent-jobs status <id>` and the daemon log. Every string field is cut at 200 bytes. `report.md` is read only through the state dir: `jobs`, the job dir and the report are opened without following a symlink, and a report that is not a regular file of the agent user with one link is not read (`report_error`). Only this agent's jobs.
@@ -536,6 +539,25 @@ agent-jobs version                      # also --version
 - [docs/DECISIONS.md](docs/DECISIONS.md): owner decisions that shape scope
 - [docs/PLAN.md](docs/PLAN.md): roadmap
 - [CHANGELOG.md](CHANGELOG.md)
+
+## Release checklist
+
+Before a tag, replay the install and a test job from a fresh clone of the release commit:
+
+```bash
+scripts/acceptance-clean-clone.sh [REF]          # default HEAD of this checkout, cloned from origin
+scripts/acceptance-clean-clone.sh --from . REF    # clone this checkout instead (unpushed commits)
+scripts/acceptance-clean-clone.sh --real-model sonnet   # the test job on a real model (1 turn, 0.2 USD)
+```
+
+1. Clones the repository into a fresh temp dir and checks out REF (never prompting: git and ssh run in batch mode, so use an ssh agent or a credential helper); builds the binary there as `install-linux.sh` does.
+2. Runs `scripts/check.sh` in the clone (gofmt, go vet, `go test -count=1 ./...`); `--no-tests` skips it.
+3. Installs as a new user would: `scripts/install-linux.sh --instance accept-<random> --skills-dir <temp>/home/.claude/skills` with HOME, `AGENT_JOBS_HOME` and `systemctl` pointing into the temp dir (on macOS: `agent-jobs init`), with `config.json` pinning `cgroup_scope` off and the read-only HTTP API on. The installed binary must be byte-identical to the build and run; the later steps use it.
+4. Starts `agent-jobs daemon` for that agent in the foreground (no systemd; stopped on exit); `status`, `doctor procs`, `list` and `GET /v1/health` must pass (curl is required).
+5. Runs one job in a scratch git repository and waits for it: by default a stub stands in for `claude` (`AGENT_JOBS_CLAUDE_BIN`, no model, no cost); its status must be `succeeded`, `report.md` must exist and `agent-jobs result` must show the report (with `--real-model`, carrying the marker the brief asks for).
+6. Prints PASS / FAIL with the exit code per step. On success the temp dir is removed (`--keep` keeps it); on failure it is kept and its path printed.
+
+The caller's checkout, state dir, daemon, units, tmux, skills and config are never touched; only the Go caches are shared. Inherited `GIT_*` overrides (`GIT_DIR`, `GIT_WORK_TREE`, `GIT_INDEX_FILE`, …) are dropped before the first git command; from the build on, HOME is the temp dir's and the caller's `AGENT_JOBS_*`, `XDG_*_HOME` and `CLAUDE_CONFIG_DIR` are gone. Each step, the daemon and each teardown command run under a supervisor in a process group of their own (the script signals no PID or group; the supervisor signals only its own group); on failure or INT/TERM the active step is stopped, the sandbox's queued and running jobs are cancelled (each `list`/`cancel` with a 10 s deadline: a stuck one fails the run, the daemon is still stopped) and the daemon is stopped, and a repeated signal does not cut that short. With `--real-model` only the daemon gets the caller's HOME and `CLAUDE_CONFIG_DIR` back, so `claude` finds its login; that claude writes its session data there (`~/.claude/projects`, or `$CLAUDE_CONFIG_DIR`), which is expected. Inside a job the binary refuses control commands, so the script refuses to run there unless `--inside-job`, which builds with the test hooks and is not a release acceptance. `ACCEPTANCE_CLEAN_CLONE=1 go test -run TestAcceptanceScriptRun .` runs it (without the test suite) as a Go test.
 
 ## Versioning
 

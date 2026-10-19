@@ -67,6 +67,7 @@ CI 就会重建一次，这个链接永远指向最新那份，GitHub 上标着 
 | --- | --- |
 | **传输** | 串口（全参数组合）、TCP/UDP 客户端与服务器、HEX/文本双模式、行尾处理、编码切换、会话日志与回放、ANSI 终端渲染、快捷发送 |
 | **调试辅助** | 命令表速查（标准 Linux 命令）、批量文本处理、计算器（含 32 位控制板 / IEEE754 / 文件校验） |
+| **监听** | **本机 USB**：USBPcap 原始传输（控制 / 批量 / 中断，HEX + ASCII，只看控制传输、保存）+ 设备列表 / 端口 / 描述符 / 热插拔；**网络**：tshark 实时抓包（源/目的/协议/长度/信息）。两路都支持自动滚动 / 清空 / 保存 |
 | **固件** | `.fw` 升级包解析与校验、**串口在线升级（YMODEM）**、**网口在线升级（服务通道）**、从 HTTP 服务器拉取版本清单 |
 | **烧录** | 调用外部烧录器（OpenOCD / J-Link / STM32CubeProgrammer）完成烧录、擦除、校验、复位 |
 | **环境配置** | 驱动 / 工具链的一键检测与安装（CH34x · FTDI · J-Link+JFlash · arm-none-eabi-gcc · OpenOCD · PulseView(sigrok) · RT-Thread Env · ST-Link · Zadig）：只读扫描本机（PATH / 注册表 / pnputil / 各盘常见目录）、内置安装包优先、winget / git 一键装、首次运行检查必需驱动 |
@@ -264,13 +265,29 @@ CI 就会重建一次，这个链接永远指向最新那份，GitHub 上标着 
 右栏按解码器列出它要的参数（通道 / 波特率 / 模式…），加协议就是"下拉里选一个 + 点 ＋"；
 **存盘**导出 CSV（time + 各通道）或 VCD（PulseView / DSView / GTKWave 能打开）。
 
-> 真机采集（fx2lafw / DSLogic 这类 USB 逻辑分析仪）**这一版还没接驱动**，能用的来源是上面这些；
-> 接驱动时只要把采到的 samples 换进去，查看 / 解码 / 导出这条链路不用动。
+> **真机采集**：逻辑分析仪页新增了「真机」那一行 —— 设备 / 采样率 / 点数 / 通道 / 采集。
+> 后端走 **sigrok-cli**（`-O binary` 的原始采样直接进现有波形管线），所以 fx2lafw（老款 Saleae Logic、
+> 各种 FX2 板）、saleae-logic16、DSLogic 这些 sigrok 认得设备都能直接用；页面上的设备、通道和采样率
+> 都是从设备自己报上来的（`--scan` / `--show`），不是写死的。采样率受设备限制（这台老 Saleae Logic
+> 报的是 20 kHz–48 MHz，但 8 通道实测 24 MHz 才稳定），采到的点数会跟请求的比对，不够会明确提示。
+> 采不到时会把 sigrok 的原始错误带回来（典型：`LIBUSB_ERROR_ACCESS` = 设备被占用，重启一下这个 USB
+> 设备/重新插拔即可）。sigrok-cli 可以在「环境配置 → sigrok-cli（逻辑分析仪的采集后端）」一键装。
+> **梦源 DSLogic**：同一套链路（sigrok 的 `dreamsourcelab-dslogic` 驱动，支持 Basic / Plus / Pro / U2 / U3）。
+> 引擎要 FX2 固件 + FPGA 位流，在「环境配置 → DSLogic（梦源）固件」一键装（从 DSView 官方仓库下载、
+> MD5 校验、复制到 sigrok-cli 的 `share\sigrok-firmware`）。16 通道按 libsigrok 的 `unitsize=2` 解析，
+> 界面最多 16 路。
+>
+> **精度口径**：采样时钟是设备自己的晶振（FX2 典型 ±30~50 ppm），KDock **只做原样转发** —— 不重采样、
+> 不加时间戳、不做任何"修正"，所以时间轴精度就是设备规格本身；我们不标定设备，只做功能自测
+> （采到的点数、已知信号能不能解出来）。
+>
+> 采集口径 / 各驱动的 unitsize / 已验证设备 / 解码器状态 / 回归清单：见
+> [docs/09-逻辑分析仪-准确性与解码自测.md](docs/09-逻辑分析仪-准确性与解码自测.md)。
 
 同一套能力也挂在 **Agent** 上：
 `la_decoders`（看支持哪些协议、每种协议要配哪些参数、有哪些示例场景）/ `la_state`（读状态）/
 `la_read`（读解出来的字节 + 字段判定 + 每路测量）/ `la_config`（改配置：采样率、整份替换解码器列表、
-通道显隐、选中哪一路、视图窗口、光标）/ `la_capture`（载入示例场景，或 source=device 明确报"驱动还没接"）/
+通道显隐、选中哪一路、视图窗口、光标）/ `la_capture`（载入示例场景，或 source=device 用真机采一段：可给 device / rate / samples / channels）/
 `la_save`（存 CSV / VCD）。**采到的数据本身 agent 改不了** —— 只能改配置或重新采集；
 跟传输页那套一个形状：读类不审批，写配置 / 采集 / 存盘要审批。
 
@@ -421,14 +438,26 @@ A：设置 → 通用里可以切换中英文，切换是即时生效的。
 
 本项目以 **Apache License 2.0** 开源，见 [LICENSE](LICENSE)；第三方组件与借鉴项目的声明见 [NOTICE](NOTICE)。
 
-特别感谢（设计/交互参考过的开源项目）：
+实际使用、且上游仓库带有 LICENSE 文件的开源项目：
 
-- [MICU-OmniProbe](https://github.com/zuoliangyu/MICU-OmniProbe)（README 声明 MIT）：
-  实时图表的实现思路与配色方案参考了它；
-- [opencode](https://github.com/anomalyco/opencode)：Agent 的交互形态参考了它 ——
-  上下文成分/花费面板、技能与 MCP 的组织方式、"边跑边补充方向"这些都受益于它；
-- [CC Switch](https://github.com/farion1231/cc-switch)：供应商 profile 列表与技能管理的组织方式参考了它；
+- [DSView](https://github.com/DreamSourceLab/DSView) — GPL-3.0；解码器文件为 GPL-2.0+，独立运行
+- [PulseView / sigrok](https://github.com/sigrokproject/pulseview) — GPL-3.0 / GPL-2.0+，外部采集与解码程序
+- [USBPcap](https://github.com/desowin/usbpcap) — GPLv2 / BSD-2-Clause，外部抓包组件
+- [Microsoft Calculator](https://github.com/microsoft/calculator) — MIT
+- [opencode](https://github.com/anomalyco/opencode) — MIT
+- [CC Switch](https://github.com/farion1231/cc-switch) — MIT
+- [OxideSerial](https://github.com/Z1R343L-D77/OxideSerial) — MIT
+- [ModelDNA](https://github.com/RadicalNotion/modeldna-cli) — Apache-2.0
+- [Model Provenance Kit](https://github.com/cisco-ai-defense/model-provenance-kit) — Apache-2.0
+- [scrcpy](https://github.com/Genymobile/scrcpy) — Apache-2.0，外部投屏程序
+- [Android Platform Tools](https://developer.android.com/tools/releases/platform-tools) — Apache-2.0，外部 adb
+- [Codex](https://github.com/openai/codex) — Apache-2.0
 - [Tauri](https://github.com/tauri-apps/tauri)、[uPlot](https://github.com/leeoniya/uPlot)、
-  [RustCrypto](https://github.com/RustCrypto) 等开源项目提供的坚实基础。
+  [RustCrypto](https://github.com/RustCrypto) 等直接依赖，完整许可见 [NOTICE](NOTICE)
+
+其他外部程序（Wireshark/tshark、FFmpeg、PuTTY、Zadig、Tftpd64、OpenSSH、RT-Thread Env）按各自许可使用。
+
+GPL 组件均以独立文件或外部程序使用；KDock 不链接、不打包其代码，也不销售或再许可第三方代码。
+DSView 解码器复制后仍按 GPL-2.0+ 提供。
 
 欢迎 issue / PR。

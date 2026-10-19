@@ -4,9 +4,9 @@
 
 # LokalBot
 
-**Find what you said or saw on your Mac.**
+**Your personal context engine.**
 
-Private meeting notes, workday recall, dictation, and autocomplete—with AI that runs on your Mac.<br />
+Private meeting notes, workday recall, dictation, and autocomplete—with AI that runs on your computer.<br />
 Your AI agents can search it too, from Claude Code, Codex, or any MCP client.<br />
 Free and open source. No account. Nothing joins your calls.
 
@@ -49,7 +49,7 @@ Record microphone and meeting-app audio without a bot joining. Get local transcr
 
 ### Find something you saw
 
-One search across your meeting transcripts and, if you turn it on, what you saw on screen. Search by keyword or by meaning, then open the matching passage or screen moment instead of hunting through apps.
+One search across your meeting transcripts and, if you turn it on, what you saw on screen. Search by keyword or by meaning, then open the matching passage or screen moment instead of hunting through apps. The same window (**⌃⇧ Space** once you turn on the shortcut in **Settings → General**) also runs app commands such as **Record now** or **Start dictation** from whatever app you're in.
 
 <div align="center"><a href="Assets/screenshots/quick-recall.png"><img src="Assets/screenshots/quick-recall.png" alt="Quick Recall finding a delivery checklist seen in Pages and three meetings where captions came up" width="560" /></a></div>
 
@@ -86,6 +86,10 @@ Today brings your day digest and open meeting actions together. Timeline groups 
 ### Talk instead of typing
 
 Turn on Dictation in **Settings → Dictation**, then hold **⌥ Space** (or a shortcut you choose there), speak, and release to insert text at your cursor in any app. Transcription runs on your Mac.
+
+### Rewrite what you selected
+
+Turn on selection actions in **Settings → General**, select text in any app, and press **⌃⇧ W**. Fix the grammar, make it shorter, translate it, summarize it, or type your own instruction, then replace the selection or copy the result. **Draft a reply with my memory** also searches your meetings, so the reply can use what was actually agreed, and lists the meetings it used. It runs on your Think model, which stays on your Mac unless you chose and approved a server.
 
 ### And more
 

@@ -6,14 +6,6 @@
   <img src="docs/screenshots/main-light.png" width="820" alt="Codex Harness Desktop 主界面" />
 </p>
 
-## 🆕 最新更新 v0.0.38
-
-- **免费模型网关**：设置页一键下载并启动内置免费模型网关，注册后直接当供应商选模型（第三方开源侧车，MIT）
-- **本地 HTML/CSS → MP4**：网页动画一键导出 MP4，零 ffmpeg 依赖，模型可直接调用
-- **图片分层引擎 + 图像工坊**：图片分层渲染/合成/调整，会话内直接修图、生成、看图层
-- **委派链路全面打通**：子任务工具注册、进度汇报、结算一体；专家团协作更顺
-- **输入框动态状态灯**：最多亮一盏、多了轮流展示，窄窗口自适应隐藏
-- **界面细节一批**：独立弹窗不再黑一下、壁纸星空更密更有层次、顶栏图标按窗口宽度自适应
 
 ## ☁️ Codex Harness Cloud（云版）
 
@@ -232,7 +224,7 @@ npm run verify   # = npm run check（离线预检）+ npm run e2e（拉起应用
 | 渠道 | 地址 |
 |---|---|
 | 🐛 GitHub Issues | [提交 Bug / 建议](../../issues) |
-| 💬 官网反馈页 | [www.jvszzp.ltd/feedback.html](https://www.jvszzp.ltd/feedback.html) |
+| 💬 官网反馈页 | [dl.ppz123.asia/feedback.html](https://dl.ppz123.asia/feedback.html) |
 | 📦 下载与更新 | [GitHub Releases](../../releases)（唯一更新源） |
 
 ## ⚠️ 免责声明

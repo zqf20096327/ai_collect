@@ -465,7 +465,7 @@ Learn more → [Skills guide](docs/skills.md)
 
 ### Packs
 
-A pack is a git repo with a `gridctl-pack.yaml` manifest: a versioned selection of skills, agents, rule fragments, gateway wiring, and an optional stack. `pack add` imports that selection, then `pack apply` starts a carried stack and projects the selected resources, with secret values supplied on the host. Skills and agents may also come from git repositories the manifest names. Rules and the stack still come from the pack repository. Starting the carried stack is CLI-only; REST and the web UI project resources but do not start or stop the daemon.
+A pack is a git repo with a `gridctl-pack.yaml` manifest: a versioned selection of skills, agents, rule fragments, gateway wiring, and an optional stack. A booster extends another pack's stack with a fragment, and `gridctl pack lock` writes `gridctl-pack.lock.yaml` so source commits stay pinned. `pack add` imports that selection, then `pack apply` starts a carried stack and projects the selected resources, with secret values supplied on the host. Skills and agents may also come from git repositories the manifest names. Rules and the stack still come from the pack repository. Starting, replacing, and reloading the carried stack are CLI-only; REST and the web UI project resources but do not start, stop, or reload the daemon, and they do not write the pack lock.
 
 ```bash
 gridctl pack add <git-repo>               # Clone, scan, and import the manifest's selection
@@ -492,6 +492,7 @@ Learn more → [Packs guide](docs/packs.md)
 | [`github-mcp.yaml`](examples/platforms/github-mcp.yaml) | GitHub MCP server integration |
 | [`registry-basic.yaml`](examples/registry/registry-basic.yaml) | Skills registry with a single server |
 | [`var-basic.yaml`](examples/secrets-vault/var-basic.yaml) | Reference variable-store secrets with `${var:KEY}` syntax |
+| [`providers.yaml`](examples/secrets-vault/providers.yaml) | External `exec` and `onepassword` providers with `${secret:}` references |
 | [`per-client-scoping.yaml`](examples/access-control/per-client-scoping.yaml) | Restrict which servers and tools each linked client may touch |
 | [`read-only-secrets.yaml`](examples/access-control/read-only-secrets.yaml) | Per-tool `policy:` block; substitute a real Vault image before calling tools |
 | [`declarative-link/stack.yaml`](examples/declarative-link/stack.yaml) | Auto-link LLM clients on apply with a `link:` block |
@@ -502,6 +503,7 @@ Learn more → [Packs guide](docs/packs.md)
 | [`otlp-jaeger.yaml`](examples/tracing/otlp-jaeger.yaml) | Export traces to Jaeger via OTLP |
 | [`runs/stack.yaml`](examples/runs/stack.yaml) | Included in v1.0.0-rc.2: opt-in metadata-only persisted dispatch records |
 | [`portable-pack/`](examples/portable-pack) | Team pack: skills, agents, wiring, a local-process stack, and a commented external source example from one manifest |
+| [`booster-pack/`](examples/booster-pack) | Fragment pack that composes one local-process server onto the `network-eng` pack |
 
 ## 📖 Documentation
 

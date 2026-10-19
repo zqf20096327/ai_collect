@@ -115,7 +115,7 @@ def model() -> Llm:
     if os.environ.get("ANTHROPIC_API_KEY"):
         from void_agent.providers.anthropic import AnthropicLlm
 
-        return AnthropicLlm("claude-sonnet-5")
+        return AnthropicLlm("claude-sonnet-5-5")
     from void_agent.providers.openai_responses import OpenAiResponsesLlm
 
     return OpenAiResponsesLlm("gpt-6-luna")
@@ -146,7 +146,7 @@ endpoint compatible with its API.
 | --- | --- | --- | --- |
 | `OpenAiResponsesLlm` — OpenAI on its Responses API, stateless | `openai` | `OpenAiResponsesLlm("gpt-6-luna", extra={"reasoning": {"effort": "high"}})` | `OPENAI_API_KEY`; `OPENAI_BASE_URL` for another host |
 | `OpenAiLlm` — any Chat Completions-compatible endpoint | `openai` | `OpenAiLlm("qwen3:8b")` | `OPENAI_API_KEY`; `OPENAI_BASE_URL` for another host, e.g. Ollama at `http://localhost:11434/v1` with any key |
-| `AnthropicLlm` — Anthropic and any Messages-compatible endpoint | `anthropic` | `AnthropicLlm("claude-sonnet-5")` | `ANTHROPIC_API_KEY`; `ANTHROPIC_BASE_URL` for another host |
+| `AnthropicLlm` — Anthropic and any Messages-compatible endpoint | `anthropic` | `AnthropicLlm("claude-sonnet-5-5")` | `ANTHROPIC_API_KEY`; `ANTHROPIC_BASE_URL` for another host |
 
 For OpenAI itself, `OpenAiResponsesLlm`; `OpenAiLlm` is for a server that
 speaks only Chat Completions (Ollama and its kin). `extra` is merged into
@@ -280,7 +280,9 @@ make cli-build              # dist/void, this checkout's ripgrep inside; FETCH=1
 
 On first start it asks for a provider and a key — or reads
 `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` or `OLLAMA_MODEL` from the
-environment. `/model` lists the Anthropic and OpenAI models, then whatever
+environment. With an Anthropic key and nothing chosen yet, it starts on
+Claude Haiku 5.5 at high effort; what `/model` chooses is saved and kept.
+`/model` lists the Anthropic and OpenAI models, then whatever
 a local Ollama has installed; ← and → set how hard the model under the
 cursor reasons, along the levels it takes. Sessions and the config live
 under `~/.void`; `VOID_HOME` moves them.

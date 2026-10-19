@@ -4,7 +4,7 @@
 
 </div>
 
-# Clips Kitty: the free, open-source Opus Clip alternative that runs on your own PC
+# Clips Kitty: the free, open-source Opus Clip alternative for chatting, gaming and sports, on your own PC
 
 <a href="https://apps.microsoft.com/detail/9NB6XT7DSQZZ">
   <picture>
@@ -20,6 +20,8 @@
 [![Open source](https://img.shields.io/badge/open%20source-yes-brightgreen)](https://github.com/ColinGPT9/clips-studio)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 [![Docker](https://img.shields.io/badge/docker-compose%20up-2496ED?logo=docker&logoColor=white)](docs/DOCKER.md)
+
+<a href="https://youtu.be/g1dMqrq-YaI"><img src="https://github.com/user-attachments/assets/2a1bdd85-723e-46d6-b74b-00579c71b6a7" alt="Clips Kitty turning an NBA broadcast into a 9:16 clip that follows the ball" width="100%"></a>
 
 ### Star and share Clips Kitty ⭐ Goal: 125
 

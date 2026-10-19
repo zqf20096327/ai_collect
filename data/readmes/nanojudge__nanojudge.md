@@ -2,7 +2,7 @@
 
 NanoJudge quantifies the relative strengths of arbitrary items under a criterion you define, using LLMs as judges. Provide the criterion (e.g., "Which is healthier?") and your item list of any length (e.g., "Eggs", "Butter", "Spinach", ...), and get a ranking with confidence intervals.
 
-Instead of overwhelming an LLM with one massive prompt, NanoJudge breaks the task down into a series of small lineup judgements. Operating like an intelligent matchmaking league, it adaptively places similarly strong items into lineups as results come in, efficiently producing an accurate leaderboard. The resulting edges are combined using Bradley-Terry statistics into a transparent ranking.
+Instead of overwhelming an LLM with one massive prompt, NanoJudge breaks the task down into a large number of small prompts. Operating like an intelligent matchmaking league, it adaptively pits similarly strong items against each other as results come in, efficiently producing an accurate leaderboard. The resulting comparisons are combined using Bradley-Terry statistics into a transparent ranking.
 
 Works with any OpenAI-compatible API endpoint.
 
@@ -231,6 +231,7 @@ Per-judge settings (in `[[judge]]` blocks):
 | `verdict_temperature` | No | Softens (> 1) or sharpens (< 1) this judge's verdicts before scoring. Also settable top-level (default: 3.0 with deliberation, 1.0 without) |
 | `chat_template_kwargs` | No | Extra options passed to the model's chat template, e.g. `{ enable_thinking = false }` |
 | `provider` | For OpenRouter | Pins the OpenRouter provider that serves the judge, e.g. `{ only = ["xiaomi"], allow_fallbacks = false }` |
+| `request_timeout_secs` | No | Seconds before a request is abandoned and retried, > 0 (e.g. `300` or `2.5`). No default, because a reasonable limit depends heavily on the prompt, the model and the hardware it runs on. Unset waits indefinitely |
 
 ## Related work
 

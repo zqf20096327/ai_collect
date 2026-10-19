@@ -5,7 +5,7 @@
 [![Checks](https://github.com/AbdelStark/awesome-typesafe-jev/actions/workflows/checks.yml/badge.svg)](https://github.com/AbdelStark/awesome-typesafe-jev/actions/workflows/checks.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-143-9de3bc.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-146-9de3bc.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <p class="hero-claim"><strong>Jev gives your software a typed judgment. Your code stays in charge.</strong></p>

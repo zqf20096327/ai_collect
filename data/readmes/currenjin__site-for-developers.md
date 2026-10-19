@@ -256,6 +256,7 @@
     - [OrcaReplay <sub>EN, F, O</sub>](https://github.com/Continuum-AI-Corp/OrcaReplay) - 코딩 에이전트와 모델 제공자 사이의 HTTP 호출을 기록하고 저장된 실행을 재생하는 CLI
     - [agent-manager <sub>EN, F, O</sub>](https://agent-manager.dev) - 설치된 코딩 에이전트 CLI를 tmux 세션으로 관리하는 터미널 UI. 세션 상태, 선택적 Git 워크트리와 diff 리뷰 지원
     - [DSH Studio <sub>EN, F, O</sub>](https://github.com/Moresyl/dsh-studio) - DeepSeek Harness를 설치·실행·감독하는 데스크톱 앱. 로컬 앱 실행과 모델의 로컬/오프라인 실행은 다르며 모델 제공자 비용은 별도 확인
+    - [Frink <sub>EN, F, O</sub>](https://frink.dev) - AI 코딩 에이전트를 시각적 워크플로우로 실행하는 데스크톱 앱. 티켓·오류·일정에 따라 에이전트가 작업하고 변경 전에 먼저 확인을 요청하며, Claude Code, Codex, OpenCode, GitHub Copilot, Cursor와 함께 사용. MIT 라이선스, macOS·Linux 로컬 실행. 모델 제공자 비용은 별도
 
 - <span id="document">문서 📃</span>
 
@@ -671,6 +672,7 @@
     - [IT Tools](https://it-tools.tech) - 개발할 때 유용한 Crypto, Converter, Parser 기능이 있는 웹사이트
     - [HexEd.it](https://hexed.it/) - 브라우저 기반의 Hex Editor
     - [Let's Encrypt](https://letsencrypt.org/ko/) - 무료 SSL/TLS 인증서 발급 사이트
+    - [Online Mini Tools <sub>EN</sub>](https://onlineminitools.com) - 개발자를 위한 2,300여 개의 무료 브라우저 도구 모음. JSON·XML 포맷터, 인코더, 검증 도구, CSS·색상 생성기, 변환기, 계산기를 제공하며 대부분 브라우저에서 로컬로 실행되고 계정이 필요하지 않습니다.
 
 ---
 

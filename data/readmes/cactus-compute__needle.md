@@ -83,11 +83,11 @@ One engine holds both models: `needle_load` reads whichever one a `.cact` carrie
 
 The benchmarks against Whisper and Moonshine, the architecture and the interactive demo are at [cactuscompute.com/whistle](https://cactuscompute.com/whistle); the weights and every platform engine are on [Hugging Face](https://huggingface.co/Cactus-Compute/whistle).
 
-Whistle fine-tunes locally: LoRA adapters on the attention projections, base frozen, merged at export, 4-bit. Each JSONL line is `{"audio": "clip.wav", "text": "...", "language": "pt"}`; a language code outside the seven adds that language, and `--tokens` takes a file of words or characters to add to the vocabulary, one per line.
+Whistle fine-tunes locally: LoRA adapters on the attention projections, base frozen, merged at export, 4-bit. It takes training, validation and test JSONL files, each line `{"audio": "clip.wav", "text": "...", "language": "pt"}`; a language code outside the seven adds that language, and `--tokens` takes a file of words or characters to add to the vocabulary, one per line.
 
 ```sh
 pip install "cactus-needle[train]"
-needle whistle finetune clips.jsonl --tokens tokens.txt --out adapter.safetensors
+needle whistle finetune train.jsonl validation.jsonl test.jsonl --tokens tokens.txt --out adapter.safetensors
 needle whistle build --lora adapter.safetensors --out tuned.cact
 ```
 
@@ -97,6 +97,8 @@ needle whistle build --lora adapter.safetensors --out tuned.cact
 - [Leveraging Needle's confidence](https://cactuscompute.com/blog/needle-confidence): what the score measures, what the engine withholds, and routing on act, confirm or refuse.
 - [Structured JSON extraction with Needle](https://cactuscompute.com/blog/structured-extraction-with-needle): the record as the only tool, typed results, classification with enums.
 - [Fine-tuning Needle](https://cactuscompute.com/blog/finetuning-needle): the data format, the commands, reading the loss, sizing the dataset.
+- [Fine-tuning Whistle](https://cactuscompute.com/blog/finetuning-whistle): the data format, new characters, the commands, how much data a new language needs.
+- [Getting the most out of Whistle](https://cactuscompute.com/blog/whistle-best-practices): input, word timestamps, live transcription, language, keywords, depth, Whistle with Needle.
 - [Needle Python docs](https://cactuscompute.com/blog/needle-python-docs): the API, the response shape, the behaviour contract, system facts, tool retrieval, offline devices, environments, the CLI.
 - [What devices are supported on Needle](https://cactuscompute.com/blog/needle-supported-devices): every platform folder, the CLI runner, the C API, the browser, WASI, air-gapped setup.
 - [The .cact format](https://cactuscompute.com/blog/cact-format): the file the engine maps and reads in place, Cactus Quants at 2.125 bits per weight, and how to parse it yourself.

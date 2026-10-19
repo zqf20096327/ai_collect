@@ -3,7 +3,7 @@
 
   # Shimmy — Local Inference, OpenAI-Compatible
 
-  ### 🔒 The 5MB alternative to Ollama — 100% Rust, zero dependencies 🚀
+  ### 🔒 Local GPU inference — one binary, 100% Rust 🚀
 
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Security](https://img.shields.io/badge/Security-Audited-green)](https://github.com/Michael-A-Kuykendall/shimmy/security)
@@ -29,7 +29,7 @@ Shimmy is independently maintained and free forever. [Sponsorship](https://githu
 
 Shimmy is a **single-binary** OpenAI-compatible inference server for GGUF models. Point your existing AI tools at Shimmy and they just work — locally, privately, and free.
 
-**Shimmy is the server. Airframe is the engine.** Under the hood, Shimmy runs on [**Airframe**](https://github.com/Michael-A-Kuykendall/airframe) (v0.4.0), a pure-Rust WebGPU (WGSL) transformer engine. No C++ toolchain, no Python runtime, no backend flags. 26 models certified across 12 families. Version history: [CHANGELOG](CHANGELOG.md) · [Airframe CHANGELOG](https://github.com/Michael-A-Kuykendall/airframe/blob/main/CHANGELOG.md).
+**Shimmy is the server. Airframe is the engine.** Under the hood, Shimmy runs on [**Airframe**](https://github.com/Michael-A-Kuykendall/airframe) (v0.4.4), a pure-Rust WebGPU (WGSL) transformer engine. No C++ toolchain, no Python runtime, no backend flags. 26 models certified across 12 families. Version history: [CHANGELOG](CHANGELOG.md) · [Airframe CHANGELOG](https://github.com/Michael-A-Kuykendall/airframe/blob/main/CHANGELOG.md).
 
 **Why this matters:**
 - No Python runtime or C++ toolchain — Rust only, top to bottom
@@ -87,8 +87,13 @@ Shimmy is a **single-binary** OpenAI-compatible inference server for GGUF models
 
 ## Quick Start
 
+Local loopback access needs no key. Network binds require `SHIMMY_API_KEY`;
+browser clients must also be listed in `SHIMMY_ALLOWED_ORIGINS`.
+See the [network-access instructions](docs/quickstart.md#network-access-and-api-keys).
+
+
 ```bash
-cargo install shimmy
+cargo install shimmy --locked
 shimmy serve --model-path /absolute/path/to/model.gguf --bind 127.0.0.1:11435
 ```
 
@@ -136,10 +141,10 @@ Shimmy maintains high code quality through comprehensive testing:
 
 ```bash
 # Full test suite (default features = GPU engine)
-cargo test --features airframe,huggingface
+cargo test --release --locked
 
 # Quick CPU-only tests (no GPU required)
-cargo test --lib --no-default-features --features huggingface -- --test-threads=1
+cargo test --release --locked --no-default-features --features fast
 ```
 
 See [docs/ppt-invariant-testing.md](docs/ppt-invariant-testing.md) for technical details.

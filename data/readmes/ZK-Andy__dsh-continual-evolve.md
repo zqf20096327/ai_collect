@@ -14,7 +14,7 @@
 
 <p align="center">
   <a href="https://awesome-dsh-plugin.com"><img src="https://awesome-dsh-plugin.com/badge.svg" alt="awesome DSH plugin"></a>
-  <img src="https://img.shields.io/badge/tests-700%20passing-brightgreen" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-996%20passing-brightgreen" alt="Tests">
   <img src="https://img.shields.io/badge/coverage_statements-97%25-brightgreen" alt="Coverage statements">
   <img src="https://img.shields.io/badge/coverage_branches-92%25-green" alt="Coverage branches">
   <img src="https://img.shields.io/badge/coverage_functions-99%25-brightgreen" alt="Coverage functions">
@@ -22,14 +22,14 @@
 
 <p align="center">中文 | <a href="README.en.md">English</a></p>
 
-全部记忆、技能与提示词补充住在一个中央 SQLite 库里（`~/.dsh/evolve/memory.db`，按工作区路径行分区）。会话开局注入它的索引，而插件的代码是字面意义的**唯一写者**——每条模型提案都要在一个事务内过机械门禁才会落盘。这里没有任何安全属性依赖模型自觉。
+全部记忆与技能住在一个中央 SQLite 库里（`~/.dsh/evolve/memory.db`，按工作区路径行分区）。会话开局注入它的索引，而插件的代码是字面意义的**唯一写者**——每条模型提案都要在一个事务内过机械门禁才会落盘。这里没有任何安全属性依赖模型自觉。
 
 ## 亮点
 
 - **一个库，一个写者**——全部状态住一个 SQLite 文件；只有插件代码能写它。
-- **开局注入索引**——本工作区的钩子作为单个 prompt section 注入，会话内冻结，feedback > user > reference 排序。
+- **开局注入索引**——本工作区的钩子作为单个 prompt section 注入，会话内冻结，按 User Profile / Project Meta / Project Memory / Feedback Memory 四组排列。
 - **预算超了降级，不丢条**——CJK 感知的 token 预算（默认 6000）：完整钩子行 → 只留 id 行 → 「其余 N 条」计数行。
-- **两个工具**——`evolve_write` 落记忆、技能与提示词补充；`evolve_read` 按 id 取正文、按关键词检索（trigram FTS，CJK 感知）。
+- **两个工具**——`evolve_write` 落记忆与技能；`evolve_read` 按 id 取正文、按关键词检索（trigram FTS，CJK 感知）。
 - **提案制提取**——按会话隔离的轮级自动化：无空闲计时器、便宜预检门、duplicate/no-change 预筛，每次跳过都记账。
 - **内容质量自进化环**——自有提示词、预算与账本；判词为改写／隔离／归档／仅建议；删除永不自动；默认试运行。
 - **记忆分层**——L0 跟人走，L1 跟项目走，L2 不进库；L0 只能经两次独立判定 + 30 天实习进入。
@@ -73,13 +73,13 @@ dsh plugin add ZK-Andy/dsh-continual-evolve
 
 ### 开局注入
 
-- 只注册一个 system-prompt section（`order 400`）：本工作区的索引，只含钩子（id、标题、描述截 20 字、可选「不适用」）；类型不逐行标注，由块内 feedback > user > reference 排序承担。外加库路径与两段指南，并列按 id 稳定。
+- 只注册一个 system-prompt section（`order 400`）：本工作区的索引，只含钩子（id、标题、描述截 20 字、可选「不适用」）；类型不逐行标注，由块内四组分组承担（组内行序 feedback > user > reference）。外加库路径与两段指南，并列按 id 稳定。
 - 每会话只算一次并逐字节复用——prompt cache 持续命中；空 store 零 token。
 - 预算按 token 计，CJK 感知（中文 1.5 token/字，其余 4 字符/token）。装不下分三档降级：完整钩子行 → 只留 `- [id]` 行 → `（其余 N 条未展开…）` 计数行。被裁掉的记忆仍能靠 `evolve_read` 捞回。
 
 ### 唯一写路径
 
-- `evolve_write(kind, …)` 承接 `create` / `update` / `delete`（`kind = memory | skill | prompt`），技能另有 `move-to-global`。
+- `evolve_write(kind, …)` 承接 `create` / `update` / `delete`（`kind = memory | skill`），技能另有 `move-to-global`。
 - 门禁在一个事务内完成：id 规范、type 枚举、feedback 的 **Why:**/**How to apply:** 契约、secret 筛查、64KB 正文上限、可选 `corrects` 纠错链、可选 `notWhen` 不适用条件。
 - `evolve_read(kind, …)` 按 id 取正文、按关键词检索：先按词组取 AND（trigram FTS，兜底 LIKE），再退 OR，中文片段按 3 字窗口展开。
 - 按 id 取到的每份正文计一次查阅——这是存在心跳，不是有用证明。长期零查阅是删除候选，但剪枝始终人工。
@@ -119,7 +119,7 @@ dsh plugin add ZK-Andy/dsh-continual-evolve
 
 - 挂在官方插件管理的本 bundle 页面；老宿主自动降级为无卡片。
 - 上面的卡片：全局 `review.*`——显式保存；`enabled` 需重启，其余下一轮生效。
-- 下面的卡片：只读投影——运行代/盘面代、近 7 天注入转化率、工作区下拉（= 库内分区）、搜索、相对更新时间、点击展开正文预览（5 MiB 上限）、巡检异常、技能区（全局行打标记，项目遮蔽全局）与查阅次数。
+- 下面的卡片：只读投影——运行代/盘面代、近 7 天注入转化率、工作区下拉（= 库内分区）、搜索、相对更新时间、点击展开正文预览（5 MiB 上限）、巡检异常、已归档区（只读折叠：原因 + 合并去向，无操作按钮）、技能区（全局行打标记，项目遮蔽全局）与查阅次数。
 
 类型沿 ZCode 分类法：`user`（画像与环境事实）、`feedback`（被纠正/确认的做法——正文必带 **Why:** 与 **How to apply:**）、`reference`（资源指针）。`notWhen` 是可选的「不适用条件」，随钩子渲染成「（不适用：…）」——只做提示，不参与检索过滤。提取边界：只收跟人与环境走的知识；决策与取舍天然属于仓库，走仓库的 ADR 路线。旧版 markdown 记忆库（`<workspace>/.evolve/memory/*.md`）首次接触时无损导入，原目录改名为 `memory-imported-<date>/` 保留——不删不丢。
 
@@ -157,7 +157,7 @@ dsh plugin add ZK-Andy/dsh-continual-evolve
 
 ```bash
 pnpm install && pnpm build   # 装依赖 + 干净构建 -> lib/
-pnpm test                    # vitest（700 个测试）
+pnpm test                    # vitest（996 个测试）
 pnpm test:coverage           # v8 覆盖率，CI 门禁 91/83
 pnpm lint                    # oxlint src test client scripts
 pnpm check:docs              # ADR 格式、文档预算、链接、治理、交接
@@ -167,11 +167,11 @@ pnpm eval:recall             # 离线检索基线（fixture 上的 hit@1 / MRR�
 
 | 路径 | 内容 |
 |---|---|
-| `src/` | 71 个模块：注册、存储、`data/` 后端、`services/` 应用服务、`surfaces/` 表现层、`pages/memory-card/` |
+| `src/` | 85 个模块：注册、存储、`data/` 后端、`services/` 应用服务、`surfaces/` 表现层、`pages/memory-card/` |
 | `client/` | 手写客户端 bundle（记忆卡 + 评审设置卡） |
 | `locale/` | 双语显示名与描述（zh/en） |
 | `scripts/` | 门禁（ADR/文档/分层/预算/产物）+ `eval:recall` |
-| `test/` | vitest 套件，55 个文件 |
+| `test/` | vitest 套件，84 个文件 |
 | `docs/` | `design.md`（设计）· `FAQ.md`（踩坑记录） |
 | `.agents/` | AI 协作层（AGENTS.md、技能、ADR） |
 

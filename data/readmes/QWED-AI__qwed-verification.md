@@ -101,27 +101,32 @@ qwed test     # runs the built-in engine tests
 
 ```text
 Math:
-  [ok] 2+2=4                  -> VALID
-  [ok] 2+2=5                  -> BLOCKED
-  [ok] 997*998*999            -> 994010994 (verified)
+  [ok] 2+2=4                  -> VERIFIED | ADMIT
+  [ok] 2+2=5                  -> VERIFIED (false) | DENY
+  [ok] 997*998*999            -> VERIFIED (994010994) | ADMIT
 
 Logic:
-  [ok] x>5 AND x<3            -> UNVERIFIABLE (contradiction)
-  [ok] x>3 AND x<10           -> VERIFIED {x=4}
-  [ok] approval=1 AND approval=0 -> UNVERIFIABLE (contradiction)
+  [ok] x>5 AND x<3            -> UNVERIFIABLE (contradiction) | DENY
+  [ok] x>3 AND x<10           -> VERIFIED (x=4) | ADMIT
+  [ok] approval=1 AND approval=0 -> UNVERIFIABLE (contradiction) | DENY
 
 SQL:
-  [ok] Valid SELECT           -> SAFE
-  [ok] OR 1=1 injection       -> BLOCKED
-  [ok] DROP TABLE stacked     -> BLOCKED
+  [ok] Valid SELECT           -> VERIFIED (safe) | ADMIT
+  [ok] OR 1=1 injection       -> VERIFIED (unsafe) | DENY
+  [ok] DROP TABLE stacked     -> VERIFIED (unsafe) | DENY
 
 Code:
-  [ok] Safe function          -> SAFE
-  [ok] eval(input)            -> BLOCKED (CRITICAL)
-  [ok] curl | bash            -> BLOCKED (CRITICAL)
+  [ok] Safe function          -> VERIFIED (safe) | ADMIT
+  [ok] eval(input)            -> VERIFIED (unsafe, critical) | DENY
+  [ok] curl | bash            -> VERIFIED (unsafe, critical) | DENY
 
-12/12 tests passed. All engines operational.
+12/12 tests passed. All engines ready.
 ```
+
+Each line shows the verdict and the admission decision. `VERIFIED` means the
+engine decided the claim; it does not mean the claim is true or safe. A claim
+proven false or unsafe is `VERIFIED` with admission `DENY`. `[ok]` means the
+engine returned the expected result.
 
 ## Use it
 
@@ -174,7 +179,9 @@ QWED has 13 engines and 9 policy guards. What an engine may claim depends on its
 | SQL | SQLGlot | Query structure, destructive statements, injection patterns, schema |
 | Code | Python AST and rules | Dangerous calls and patterns in generated code |
 | Schema | JSON Schema | Structure of JSON output |
-| Symbolic | CrossHair (`qwed[symbolic]`) | Searches for counterexamples; returns `UNVERIFIABLE` or `BLOCKED`, not proofs |
+| Symbolic | CrossHair, in the Docker sandbox | Searches for counterexamples; returns `UNVERIFIABLE` or `BLOCKED`, not proofs |
+
+CrossHair imports, and so executes, the code it analyses, so the Symbolic engine runs it only inside the Docker sandbox, with no network, a read-only filesystem and an unprivileged user. Build the image with `docker build -t qwed-crosshair-sandbox:0.0.101 docker/crosshair-sandbox` (or set `QWED_CROSSHAIR_IMAGE`); without Docker or the image, the engine returns `BLOCKED` and never runs the code on the host.
 
 The Stats engine executes statistical code in a sandbox and returns `UNVERIFIABLE`: running code successfully is not treated as verification ([#298](https://github.com/QWED-AI/qwed-verification/issues/298)). SecureCodeExecutor runs code; it does not verify it.
 

@@ -66,15 +66,32 @@ because it is not code-signed yet; see [installation and safety notes](#install)
 **Choose one channel:** Store and installer builds keep separate settings, chats and keys.
 [Scoop, portable ZIP and CLI](#install) · [Update guide](docs/UPDATING.md)
 
-## Aetox Mobile 0.3.2 — Android
+## Aetox Mobile — Android and iPhone
+
+A phone chat for the Aetox on your PC: chats, models, files and the agent stay on **Windows**, the phone is the screen. Pick the model and thinking level, attach photos or files, answer approvals, and open delivered files. **Talk to it:** dictate into the box, or hold a voice conversation that is answered aloud sentence by sentence, using the speech engine and voice set in Aetox on Windows. Answers stream in as they are written, with each tool step shown; every chat on the PC is there, grouped by project; files the agent hands over open full screen (documents, images, video, pages and slides). It wears the same themes as the desktop app. Provider keys never leave the PC.
+
+Both phones need Aetox for Windows **1.9.28 or later** (it includes **Aetox Link**) and Tailscale with HTTPS on the PC and the phone. Windows and Aetox must stay running. Start on the PC: **Settings › Mobile**, wait for the three Tailscale checks to turn green, press **Let my phone connect**, and a pairing QR appears.
+
+### Android — app 0.3.2
 
 [**Download the Android APK**](https://github.com/Mikedev115/Aetox-Harness/releases/download/mobile-v0.3.2/Aetox-Mobile-Android-Test.apk) · [Release notes and setup requirements](https://github.com/Mikedev115/Aetox-Harness/releases/tag/mobile-v0.3.2)
 
-A phone chat for the Aetox on your PC: chats, models, files and the agent stay on **Windows**, the phone is the screen. Pick the model and thinking level, attach photos or files, answer approvals, and open delivered files. **Talk to it:** dictate into the box, or hold a voice conversation that is answered aloud sentence by sentence, using the speech engine and voice set in Aetox on Windows. Answers stream in as they are written, with each tool step shown; every chat on the PC is there, grouped by project; files the agent hands over open full screen (documents, images, video, pages and slides). The app tells you when the PC carries a newer version and updates in one tap. It wears the same themes as the desktop app. Android 10 or later; provider keys never leave the PC.
+1. Install Tailscale on the phone and sign in to the same account as the PC.
+2. Download the APK above and open it. Android asks once to allow installs from your browser.
+3. Open Aetox Mobile and scan the QR on the PC, then press **Allow** on the PC.
 
-> **Preview, test-signed, not from the Play Store.** You need Aetox for Windows **1.9.28 or later** (it includes **Aetox Link**) and trusted Tailscale HTTPS. Windows and Aetox must stay running. Voice, camera and installation have not yet been checked on a physical phone.
+The app tells you when the PC carries a newer version (**Settings › Connection › App version**) and updates in one tap. Android 10 or later.
 
-**iPhone:** a removable full-screen Web Clip is supported, **not a native IPA**. Its profile is generated for your Windows HTTPS address; personal profiles are not published as universal public installers.
+### iPhone — web app, no App Store
+
+There is no IPA. The iPhone runs the same screen as a full-screen web app with its own icon.
+
+1. Install Tailscale from the App Store and sign in to the same account as the PC.
+2. Point the Camera at the QR on the PC. Safari opens your PC's address; press **Allow** on the PC.
+3. In the web app open **Settings › Install › Download iPhone Web Clip**, then iPhone **Settings › Profile Downloaded › Install**. The Aetox icon lands on the home screen.
+   Or skip the profile: Safari **Share › Add to Home Screen**.
+
+The profile only adds this one web app (no VPN, MDM or certificate) and can be removed in **Settings › General › VPN & Device Management**. It is made for your PC's address, so it is not published as a public installer. Updates arrive with Aetox for Windows; reload when the app says an update is ready.
 
 ## What will you get done?
 
@@ -135,8 +152,8 @@ Hand a whole job to a team from Assistant or Code. Follow the head and specialis
 > but real work needs a model: an account or key you already have, or a local model. Your chosen cloud provider's
 > pricing applies when you connect your own account. Local-first does not mean
 > cloud requests stay on your machine: cloud models receive the requests you send them.
-> **Source-available, not open source:** this repository's source stops at v1.7.0; current releases still ship here
-> as binaries. [Read more](#source-licence-and-who-makes-it).
+> **Free to use, not open source:** Aetox is a one-person hobby project, and new releases ship as binaries to
+> protect that work. The source up to v1.7.0 stays readable here. [Why, and what you can still do](#source-licence-and-who-makes-it).
 
 **Jump to:** [Workspaces](#one-harness-two-workspaces) · [System over model](#system-over-model) ·
 [Assistant](#the-assistant-door) · [Code](#the-code-door) · [Teams](#teams-from-assistant-and-code) · [Models](#which-models-it-works-with) ·
@@ -957,7 +974,39 @@ mistake turns an agent into a chat box.
 
 </details>
 
-## Status — v1.10.0
+## Status — v1.10.5
+
+[Version 1.10.5](docs/release-notes/v1.10.5.md), 19 October 2026, brings:
+
+- **A Listen button on the plan, and a tidier deliverables list**: the plan in the deliverables tab reads itself aloud a heading at a time, with a line saying which part is playing. Deliverable rows say what each file is and when it arrived instead of the session folder name, and the list folds to four rows. The "opened a new chat at …" line now stays in the turn that made it instead of following the chat to its last message.
+
+### Previously — v1.10.4
+
+[Version 1.10.4](docs/release-notes/v1.10.4.md), 19 October 2026, brings:
+
+- **The Microsoft Store update can go through again**: since 1.9.11 the Store package asked Windows for a permission Microsoft grants only to partner games, so every Store update sat in certification and Store users stayed on 1.9.10. The package no longer asks for it, and the "open folder" buttons find a Store install's folders on their own. The skill install window also scrolls again: a repository with 169 skills used to be cut off, install button included.
+
+### Previously — v1.10.3
+
+[Version 1.10.3](docs/release-notes/v1.10.3.md), 19 October 2026, brings:
+
+- **The external engine's menus keep your pick and show logos**: in a coding session on a CLI engine (OpenCode and the like), the provider filter went back to "All providers" every time the menu closed, and neither providers nor models had logos. Your pick now stays, each provider and each model wears its maker's mark, and the engine form's path field no longer shows a broken focus glow.
+
+### Previously — v1.10.2
+
+[Version 1.10.2](docs/release-notes/v1.10.2.md), 19 October 2026, brings:
+
+- **The phone app finds its update again**: v1.10.1 carried Aetox Mobile 0.3.2 without the file that names its version, so every phone read "Up to date" and never offered it. This build carries both, and the release script now stops if either is missing.
+
+### Previously — v1.10.1
+
+[Version 1.10.1](docs/release-notes/v1.10.1.md), 19 October 2026, brings:
+
+- **A cutting room with real effects**: 14 sound effects, 12 colour looks, masks, green screen and blend modes, speed ramps and reverse, several voices reading a script onto the timeline, and a render that shows its progress and can be stopped. What plays in the room is what the render writes.
+- **An assistant that follows up**: it knows what you still have open when a chat starts, asks what a job needs to know about you once, sets reminders that come back in the chat (or to your paired bot when you are away), and closes a task only when you say it is done.
+- **One slip under every answer, and decks with real photos**: whatever the agent made, opened, ran or sent sits in one block with a View button, on the PC and on the phone; slides pick licensed photos from a sheet the agent can see and save them beside the deck with their credit.
+
+### Previously — v1.10.0
 
 [Version 1.10.0](docs/release-notes/v1.10.0.md), 18 October 2026, brings:
 
@@ -1085,6 +1134,12 @@ Architecture notes, decision records and design standards are not in this reposi
 **Source.** The source in this repository stops at v1.7.0 (15 September 2026) and can be read and audited under
 the [LICENSE](LICENSE). Later releases ship here as binaries: installers, the portable zip, the Linux engine,
 checksums and release notes. Their source is not published.
+
+**Why the source closed.** Aetox is a one-person project, built as a hobby. The architecture is my own design, and
+every skill is tested against paid model APIs out of my own pocket. When AI can turn someone else's system into
+"your own" in an afternoon, publishing the source of every new release would mean giving that work away. So the
+app stays free to use, the extensions you build on it stay yours, and the source up to v1.7.0 stays here to read
+and audit.
 
 **Licence.** Aetox is free to use and is not open source. From v1.3.0 it is under a [proprietary licence](LICENSE):
 install it on as many machines as you like, use it for commercial work, and read and audit the source published in

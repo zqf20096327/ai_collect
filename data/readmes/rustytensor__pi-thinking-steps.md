@@ -1,0 +1,442 @@
+# Pi Thinking Steps
+
+<div align="center">
+  <img src="./assets/readme-hero.svg" alt="Pi Thinking Steps hero graphic showing collapsed, summary, and expanded terminal views" width="1100" />
+</div>
+
+<p align="center">
+  <strong>Faithful, terminal-native thinking visualization for Pi.</strong><br />
+  Turn raw provider reasoning into a clean, structured TUI view without changing what it means.
+</p>
+<p align="center">
+  <a href="https://github.com/crustyhacker/pi-thinking-steps/releases/tag/v1.0.17"><img alt="release" src="https://img.shields.io/badge/release-v1.0.17-4f46e5" /></a>
+  <a href="https://www.npmjs.com/package/pi-thinking-steps"><img alt="npm version" src="https://img.shields.io/npm/v/pi-thinking-steps" /></a>
+  <a href="./LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-16a34a" /></a>
+  <img alt="typescript" src="https://img.shields.io/badge/TypeScript-strict-3178c6" />
+  <img alt="ui" src="https://img.shields.io/badge/UI-terminal--native-f59e0b" />
+</p>
+
+---
+
+## Why this exists
+
+Pi already exposes provider thinking, but raw reasoning streams are hard to scan in a real terminal. Pi Thinking Steps keeps the source text faithful while making it dramatically easier to follow:
+
+- less visual noise while a model is still thinking
+- more structure when you want the reasoning flow at a glance
+- cleaner full-detail rendering when you need to inspect the exact text
+- no invented reasoning, synthetic logic, or browser-style chrome
+
+The goal is simple: **preserve meaning, improve readability, and stay native to Pi's TUI.**
+
+---
+
+## Visual tour
+
+<div align="center">
+  <img src="./assets/modes-overview.svg" alt="Overview of the collapsed, summary, and expanded thinking modes" width="1100" />
+</div>
+
+---
+
+## What you get
+
+- **Three focused modes** — `collapsed`, `summary`, `expanded`
+- **Always-visible thinking panels** — honest waiting or missing-content indicators when the provider supplies no thinking text
+- **Session-linked review files** — export the current branch or all branches in JSON, Markdown, or both
+- **In-Pi review browser** — navigate recorded prompts, responses, and available thinking without another model turn
+- **Opt-in automatic snapshots** — session-specific consent, content controls, and bounded retention; off by default
+- **Terminal-first rendering** — width-aware, ANSI-safe, and live-update friendly
+- **Faithful parsing** — deterministic step derivation and restrained summarization
+- **Markdown-aware output** — headings, bullets, ordered lists, code spans, and emphasis render cleanly
+- **Scoped persistence** — session, project, and global defaults with predictable restore precedence
+- **Patch safety** — isolated, reversible, reference-counted runtime patching
+- **Regression coverage** — parser, renderer, lifecycle, compatibility, and metadata checks
+
+---
+
+## The three modes
+
+| Mode | Best for | Behavior |
+|---|---|---|
+| `collapsed` | Live active thinking | Shows a width-aware compact preview of the highest-signal active step; it may wrap in narrow terminals |
+| `summary` | Flow at a glance | Shows a chronological top-N set of salient summaries, preserving active, failure, success, and decision context when space is limited |
+| `expanded` | Deep inspection | Shows the full step text in a cleaner, structured terminal layout |
+
+### `collapsed`
+Use it when you want the smallest possible thinking footprint while the model is still working.
+
+### `summary`
+Use it when you want to understand the reasoning path quickly without reading the full transcript.
+
+### `expanded`
+Use it when you want the whole text, but formatted for a terminal instead of dumped as a raw stream.
+
+---
+
+## Control surface
+
+| Action | Control |
+|---|---|
+| Cycle thinking view | `Alt+T` |
+| Choose a mode interactively | `/thinking-steps` |
+| Set session mode | `/thinking-steps collapsed` / `summary` / `expanded` |
+| Save a project default | `/thinking-steps project <mode>` |
+| Save a global default | `/thinking-steps global <mode>` |
+| Clear a project default | `/thinking-steps project clear` |
+| Clear a global default | `/thinking-steps global clear` |
+| Export the session thinking tree | `/thinking-steps export json` / `export markdown` / `export both` (all branches by default) |
+| Export only the current branch | `/thinking-steps export both branch` |
+| Browse prompts, responses, and thinking | `/thinking-steps review` (current branch) / `review all` |
+| Inspect or disable autosaving | `/thinking-steps autosave status` / `autosave off` |
+| Enable autosaving with confirmation | `/thinking-steps autosave on` (JSON, current branch, keep 10, thinking only) |
+
+---
+
+## Persistence and restore precedence
+
+Mode restoration follows this order:
+
+1. session history
+2. project default from `.pi/thinking-steps.json`
+3. global default from `~/.pi/agent/state/thinking-steps.json`
+4. built-in default `summary`
+
+Use plain `/thinking-steps <mode>` when the choice should stay local to the current session. Use `project` or `global` when you want future sessions to inherit that choice automatically.
+
+---
+
+## Example output
+
+### Summary
+
+```text
+┆ Thinking Steps · Summary
+├─ ◫ Inspect the current renderer implementation.
+├─ ↔ Compare how visibility toggling works.
+└─ ✓ Verify the refresh path after mode changes.
+```
+
+### Expanded
+
+```text
+┆ Thinking Steps · Expanded
+├─ ◫ Inspect the current renderer implementation.
+│  Inspect the current renderer implementation.
+├─ ↔ Compare how visibility toggling works.
+│  Compare how visibility toggling works.
+└─ ✓ Verify the refresh path after mode changes.
+   Verify the refresh path after mode changes.
+```
+
+### Collapsed
+
+```text
+│ Thinking ✓ Verify the refresh path after mode changes. ·
+```
+
+---
+
+## Rendering behavior
+
+Pi Thinking Steps is built to improve readability **without changing meaning**.
+
+### Always-visible panel
+
+Every assistant message rendered by a compatible terminal session has a thinking panel in all three modes, including text-only and tool-only responses. Before thinking text arrives it says **Waiting for thinking content**; when a response finishes without any, it says **No thinking content supplied**. Provider-redacted blocks remain marked as hidden. These are availability indicators, not generated reasoning. The extension cannot force a provider to expose thinking or recover hidden content.
+
+### Manual session exports
+
+Run `/thinking-steps export json`, `/thinking-steps export markdown`, or `/thinking-steps export both` while the session is idle. Existing commands retain their all-branches default. Append `branch` for only the current leaf's ancestry, or `all` explicitly: `/thinking-steps export both branch`. Automatic saving is off unless separately enabled below. Exports require a persistent session; in-memory sessions receive a clear warning instead.
+
+Each export creates a new private directory beside the session file (`<session-file>.thinking-steps-<unique suffix>`), with `thinking-steps.json`, `thinking-steps.md`, or both. Directories use owner-only permissions and files use mode `0600` on POSIX systems. Repeated exports create independent snapshots rather than overwriting files. Failed writes remove the incomplete export; errors are reported.
+
+A durable `thinking-steps.export` custom entry attaches file references to the session without adding the export to model context or triggering another turn. The transcript displays local file links when this extension is loaded, including after restarting. File links remain local: moving/deleting a session or export does not move/repair those absolute paths. If the session changes while saving, files are kept and their paths reported, but they are not attached to a different session or branch.
+
+**Privacy and scope:** `all` includes all recorded branches in the current session file, including abandoned branches; `branch` includes only the current leaf and its ancestors, preserving original IDs and structural links. Both retain original historical content before later context edits. They are archival snapshots, not reconstructions of the current model context. Separate forked session files are not followed. Treat exports as sensitive conversation data and review them before sharing.
+
+JSON schema version `1` stores session/leaf IDs and a flat tree of entries linked by their original `id` and `parentId`. User text, assistant response text, available thinking blocks, and every derived step are included independently of the selected display mode. Provider signatures, redacted block payloads, image bytes, tool arguments/results, system prompts, and custom-entry payloads are excluded; structural entries retain only metadata to keep branch links intact. Markdown provides a linked tree plus prompt, response, thinking-block, and detailed-step sections. Deep trees cap visual indentation but retain exact parent links. Text is fenced to prevent Markdown/HTML injection, and terminal controls are shown as escapes in Markdown; JSON preserves the supplied text.
+
+The schema's `scope` is `current-branch` or `all-recorded-branches`; `content` is `conversation` or `thinking-only`. Earlier version-1 exports without `content` contain conversation text. Manual exports include conversation text; automatic exports can omit it.
+
+### In-Pi review browser
+
+Run `/thinking-steps review` for the current branch or `/thinking-steps review all` for every recorded branch. Select a prompt, then a response, to inspect the original text, provider-supplied thinking blocks, and derived steps. Alternate responses are associated through their actual ancestry, not adjacent transcript positions. The viewer is read-only and captures a snapshot when opened; it neither edits the session nor sends content to a model or service.
+
+Use arrow keys, Page Up/Down, and Home/End to scroll. Escape returns to the response list, then the prompt list, then Pi. Press **v** for verbatim source, **s** for derived steps, or **a** for the complete review. Terminal control characters are displayed as escapes; missing and provider-hidden thinking are clearly marked. The browser requires the interactive TUI. Other modes can use manual exports.
+
+### Verbatim source, search, and comparison
+
+```text
+/thinking-steps verbatim [branch|all]
+/thinking-steps search [branch|all] [literal text]
+/thinking-steps compare
+```
+
+`verbatim` opens the review browser directly on provider-supplied thinking rather than derived steps. It preserves recorded whitespace, blank lines, punctuation, and Markdown markers without summarizing or formatting them. Unsafe terminal characters (including tabs, carriage returns, escape sequences, and bidi overrides) appear as visible Unicode escapes; extremely narrow terminals also escape glyphs too wide to fit. Soft wrapping is presentation only. Use JSON exports for the underlying recorded strings. This does not add a fourth live display mode or reveal hidden/redacted reasoning.
+
+`search` defaults to the current branch; `all` includes abandoned branches recorded in this session file. Omit the text to get an input dialog. Search is literal, Unicode-aware, and case-insensitive—not a regular expression or a shell command, so quotes are literal too. The first 200 occurrences are listed with entry ID, source field/block, line, and context. Select one to jump to its source line; Escape returns to results. Narrow the query when results are capped. Only prompt text, response text, and available source thinking are searched, not derived summaries, signatures, tool payloads, or redacted content. To search for the word `all` itself, use `search branch all`.
+
+`compare` offers responses on different recorded branches under the same prompt. Sequential assistant continuations on one branch are not treated as alternatives. It displays response text and verbatim thinking in two columns, stacking them below 60 terminal columns. No semantic diff is invented, and separate fork files are not followed.
+
+All three tools are read-only TUI snapshots: they do not call a model, modify the session, change its branch, or enable autosaving.
+
+### Manage saved exports
+
+```text
+/thinking-steps exports
+```
+
+The manager lists this session's recorded export attachments across all branches. Status is **available**, **partial**, **missing**, or **unsafe** (not eligible for deletion, with a diagnostic). Missing links may have expired through retention, been deleted, or been moved; the manager does not guess which or scan the filesystem for unlinked snapshots. Inspect paths without changing anything, or select one snapshot for permanent deletion from an idle session and confirm its exact files.
+
+Deletion accepts only recognized snapshot directories beside this session file, validates automatic ownership markers, rejects unexpected files and symbolic links, and rechecks the selection after confirmation. It removes known regular files and their empty directory, never recursively deletes a directory, and never changes session history, other snapshots, or autosave settings. Existing links then show as missing; there is no undo. File changes or I/O failures stop deletion with an actionable diagnostic, including any files already removed. Avoid external modification of snapshot directories while managing them; local filesystem checks are not a security boundary against a hostile process with the same account's permissions.
+
+### Compatibility diagnostics
+
+```text
+/thinking-steps diagnostics
+```
+
+Reports the extension version captured at module load, the public running-Pi version and locations, display/mode settings, this session's patch lifecycle status, shared patch reference count, and current-branch thinking availability. The latest recorded assistant response is distinguished from a still-running response that may not yet have been persisted. It includes no prompt, response, or thinking text and changes nothing. Local paths and provider/model identifiers are included, so review the report before sharing it. Updating files on disk does not prove that already-loaded code changed; restart or reload before comparing versions. Availability counts cannot establish what hidden reasoning a provider might have withheld.
+
+### Opt-in automatic exports
+
+Autosaving starts **off**. Enable it from an idle, persistent TUI session and accept the storage/retention confirmation:
+
+```text
+/thinking-steps autosave on
+/thinking-steps autosave on both branch 10 thinking
+/thinking-steps autosave on json all 5 conversation
+/thinking-steps autosave status
+/thinking-steps autosave off
+```
+
+The optional positional arguments are format (`json`, `markdown`, `both`), scope (`branch`, `all`), number of snapshots to keep (`1`–`50`), and content (`thinking`, `conversation`). Defaults are `json branch 10 thinking`. Thinking-only snapshots omit user prompt and assistant response text, but thinking itself can quote sensitive conversation content; this is **not secret detection or anonymization**. The same signature, redacted-payload, image, tool, system-prompt, and custom-payload exclusions apply to every export. Nothing is uploaded.
+
+Settings are saved as non-model custom entries for this session ID, apply across its branches, and survive reopening. New and separately forked sessions start off. Each completed TUI agent run saves available recorded content; aborted/error responses are skipped. This is an `agent_end` snapshot, not a guarantee that Pi will not retry or continue afterward. Autosaving does not run in RPC, JSON, or print mode and does not trigger another turn.
+
+Automatic snapshots live beside the session file in `<session-file>.thinking-steps-auto-<unique suffix>` directories with an ownership marker. After a successful save and attachment, retention keeps the selected number of owned automatic snapshots. Manual exports and other sessions are never pruned. Unknown files, symbolic links, malformed markers, or I/O failures stop cleanup and produce a warning rather than deleting unrecognized data. A failed cleanup can temporarily exceed the retention limit. Old session attachment links are marked as subject to retention and can point to already-pruned files. Disabling autosaving preserves existing snapshots. File permissions remain owner-only on POSIX; this is local storage, not encryption.
+
+### Parsing and step derivation
+
+The parser uses deterministic rules to keep step boundaries believable and stable. Examples:
+
+- standalone markdown headings stay attached to the body they introduce
+- list items split into separate steps when that improves scanability
+- blank-line continuation paragraphs stay attached to the correct list item
+- standalone concluding prose after a list stays separate from the final list item
+- provider-hidden reasoning remains clearly marked as hidden
+
+### Display formatting
+
+The renderer normalizes markdown-like content for terminal display:
+
+- headings render as headings instead of leaking raw `#` markers
+- unordered list items render with clean bullets
+- ordered and lettered list markers are preserved
+- backticks render as code-styled inline text
+- emphasis markers render cleanly instead of leaking raw `*...*` / `_..._`
+- raw control sequences from model output are stripped before rendering
+
+### Terminal-first constraints
+
+This extension is designed for a real terminal, not a browser UI. That means:
+
+- width-aware wrapping matters
+- ANSI-safe rendering matters
+- over-decoration is intentionally avoided in the live TUI
+- the output should remain readable in narrow layouts
+
+---
+
+## Technical approach
+
+Pi currently exposes only a minimal public hook for built-in thinking rendering: `setHiddenThinkingLabel`.
+
+To deliver a full three-mode thinking view, Pi Thinking Steps patches Pi's internal `AssistantMessageComponent` at runtime and replaces the default visible thinking rendering path with a custom renderer.
+
+That patch layer is:
+
+- **isolated** — patching lives in `internal-patch.ts`
+- **reversible** — cleanup restores original methods
+- **reference-counted** — multiple retain/release paths are handled safely
+- **guarded** — compatibility checks fail loudly when Pi internals drift
+- **tested** — integration and regression coverage protects the patch lifecycle
+
+---
+
+## Compatibility contract
+
+This extension intentionally depends on Pi's current internal TUI implementation.
+
+The patch is validated against the unbundled Pi `0.99.2` development host and the bundled Pi `1.0.0` CLI.
+
+`AssistantMessageComponent` is imported from the host's public `@earendil-works/pi-coding-agent` API, so the patch targets the class that Pi actually renders. A deep import of `dist/modes/interactive/components/assistant-message.js` can return a separate, unused class in bundled Pi installations. Terminal sessions supply their active `ctx.ui.theme` rather than using a separate theme instance.
+
+The remaining internal module dependencies are:
+
+- `dist/modes/interactive/components/markdown-transform.js` for native assistant-text transforms
+- `dist/modes/interactive/theme/theme.js` only for direct patch callers that do not supply a UI theme
+
+These internal helpers are resolved from the running Pi host via its public `getPackageDir()` API, rather than from a separate extension-local Pi installation. The patch preserves native response padding, assistant-text Markdown transforms, streaming state, terminal message markers, and truncation/error notices. It is installed only in terminal (`tui`) sessions; RPC, JSON, and print sessions retain their native rendering.
+
+That means:
+
+- upstream Pi internal changes can break the patch layer
+- Pi upgrades should be treated as deliberate compatibility work
+- the pinned Pi package versions and `package-lock.json` matter
+- `npm test` is part of the maintenance contract, not an optional extra
+- if patch install fails during `session_start`, the current session stays on Pi's native thinking renderer and live mode switching is disabled for that degraded session
+- project/global default saves and clears remain available during a degraded session, but they apply only to future compatible sessions
+- retained patch releases are scope-owned; cleanup runs on matching `session_shutdown`, failed final cleanup is retained for retry on a later matching same-scope shutdown, this package does not register a generic extension-unload hook, and missed shutdowns are not recovered by unrelated cwd shutdowns
+- assistant message ownership is recorded from lifecycle events so patched rendering can keep a message on its original scope even if another scope becomes current later
+- one registered extension instance still has a single active lifecycle scope for session-level events; Pi should not interleave new unowned sessions through one handler set without a new `session_start`/message ownership path
+
+Pi packages are host-provided peer dependencies, with exact `0.99.2` development pins in `package.json`. Compatibility-sensitive upgrades must update `package-lock.json` in the same change. Node.js `22.19.0` or later is required by the current Pi packages.
+
+---
+
+## Quick start
+
+### Install from npm
+
+With Pi installed, add the published extension:
+
+```bash
+pi install npm:pi-thinking-steps
+```
+
+Restart Pi, then use `Alt+T` to cycle views or `/thinking-steps` to choose one. After a response finishes, run `/thinking-steps export both` to save a session-linked review. Exports include all recorded branches and may contain sensitive conversation data; see [Manual session exports](#manual-session-exports).
+
+Find the package on [npm](https://www.npmjs.com/package/pi-thinking-steps) and release notes on [GitHub](https://github.com/crustyhacker/pi-thinking-steps/releases).
+
+### Try a local checkout
+
+From the repository root, using Pi `0.99.2` or `1.0.0`:
+
+```bash
+pi -e ./index.ts
+```
+
+If the npm package is already configured, test the checkout in isolation to avoid loading both copies:
+
+```bash
+pi --no-extensions -e ./index.ts
+```
+
+This disables other automatically loaded and built-in extensions for that invocation; it does not change your saved settings. Editing the checkout does not update an installed npm copy.
+
+The package entry point is already configured in `package.json`:
+
+```json
+"pi": {
+  "extensions": ["./index.ts"]
+}
+```
+
+---
+
+## Development
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the full validation suite:
+
+```bash
+npm test
+```
+
+Typecheck only:
+
+```bash
+npm run build
+```
+Additional validation gates (run sequentially):
+
+```bash
+node --import tsx test/repository.test.ts
+npm run test:package
+npm run test:host
+PI_TEST_HOST_PACKAGE=/absolute/path/to/pi-coding-agent npm run test:host
+```
+
+`test:package` packs into a temporary directory, extracts the actual tarball, installs its declared development dependencies, and runs `npm test` without repository-only files. It requires npm registry access and `tar`; it never publishes. Repository lockfile integrity is checked separately; ignored agent instructions and archived workflow prompts are not prerequisites for packaged tests.
+
+`test:host` uses the selected host's real extension loader, selecting its bundle when present. It checks public-renderer identity, deep-copy isolation, mode switching, Alt+T, missing/streaming states, padding, review/search/comparison, managed export deletion, diagnostics, autosaving, and cleanup. The CI workflow serially exercises Node `22.19.0`/`24` with Pi `0.99.2`/`1.0.0`, without changing the development pins. CI jobs run these gates after `npm test`; a local pass does not imply the remote workflow has run.
+
+---
+
+## Published package contents
+
+The package ships:
+
+- `README.md`
+- `CHANGELOG.md`
+- `LICENSE`
+- the extension TypeScript sources
+- `tsconfig.json`
+- the published validation tests under `test/`
+- the README SVG assets under `assets/`
+- standalone package and host validation scripts under `scripts/`
+
+That keeps the GitHub README, packaged validation surface, and published package presentation aligned.
+
+---
+
+## Project structure
+
+- `index.ts` — extension entry point, commands, shortcut, lifecycle hooks
+- `internal-patch.ts` — Pi runtime patching and cleanup
+- `parse.ts` — thinking-step splitting, summaries, role inference, mode parsing
+- `persistence.ts` — project/global mode preference storage
+- `render.ts` — collapsed, summary, and expanded terminal rendering
+- `export.ts` — scoped snapshots, JSON/Markdown serialization, private export files
+- `review.ts` — read-only prompt/response/thinking browser and safe verbatim viewer
+- `inspection.ts` — literal recorded-text search and alternate-branch comparison
+- `archives.ts` — session-linked export inspection and confirmed selective deletion
+- `diagnostics.ts` — loaded versions, patch state, and recorded availability reports
+- `autosave.ts` — session opt-in settings, automatic snapshots, conservative retention
+- `state.ts` — shared mode, active-thinking state, patch lifecycle state
+- `types.ts` — shared contracts
+- `test/thinking-steps.test.ts` — unit and integration coverage
+- `test/export.test.ts` — manual export, attachment, privacy, and always-visible panel coverage
+- `test/summarizer-challenger.test.ts` — focused summarizer-regression coverage
+- `test/review-autosave.test.ts` — branch scope, browser, consent, privacy, and retention regressions
+- `test/inspection.test.ts` — verbatim fidelity, search/comparison, safe deletion, and diagnostics
+- `test/repository.test.ts` — repository-only lockfile integrity
+- `.github/workflows/ci.yml` — compatibility and extracted-package gates
+
+---
+
+## Design principles
+
+1. **Readable over flashy**
+   - The goal is clarity, not decoration.
+
+2. **Faithful over clever**
+   - The renderer should not invent meaning the source text does not support.
+
+3. **Terminal-native over web-like**
+   - The output should feel right in a terminal first.
+
+4. **Small surface area**
+   - Parsing, rendering, state, and patching stay deliberately separated.
+
+5. **Strict validation**
+   - Changes should be backed by tests, especially around patch lifecycle and compatibility.
+
+---
+
+## Versioning
+
+For the canonical package version, see [`package.json`](./package.json). For release points, use the repository tags.
+
+---
+
+## License
+
+This project is released under the [MIT License](./LICENSE).

@@ -415,6 +415,13 @@ request, or automatically when the assistant keeps failing at something.
   are announced when they finish, need approval or have a question, even if
   you hung up. Ask "which model is working on it?" any time. Follow them from
   a terminal with `omarchy-ai-task`.
+- **Lighter background helpers.** A web search or a single job on a website
+  can go to a background worker instead (`delegate`): the assistant keeps
+  talking with you while it runs. Up to three run at once, one at a time
+  on the browser; ask about one, give it a new brief or cancel it the same
+  way as a task. Each reports its result once, and what it read from the
+  web is treated as untrusted content. File jobs still go to the Task
+  Runtime.
 
 ### 2. Working alongside you: terminals, machines and coding agents
 
@@ -505,6 +512,16 @@ About 90 typed tools plus Omarchy's full command set:
   watches, scheduled desktop goals, background commands, and "assistant"
   jobs that need the assistant's reasoning later. They run on a heartbeat between
   conversations.
+- **If the computer was asleep** at a job's time, its catch-up policy,
+  chosen when it is scheduled and read back to you, decides: `skip`
+  (reported as missed; the default for anything that changes something) or
+  `run_once_late` (done once, said to be late; the default for reminders
+  and reads). Missed runs are never all replayed.
+- **Event triggers** (`schedule_task` with `on`) start a reminder, action or
+  command when a file changes, a new email matches a Gmail search, a
+  process exits, a device comes online (ping or a check command) or a
+  calendar event is about to start. Each event fires once, bursts are
+  debounced, and optional quiet hours hold or drop events.
 - **Watches** follow one of your terminals, one of the assistant's, a file or a
   command. Jev judges when your condition is true ("the build finished",
   "Claude is waiting for my approval", "tests failed") and quotes the real
@@ -564,6 +581,36 @@ About 90 typed tools plus Omarchy's full command set:
   always keep talking; quick actions just say "done"; it ends on "bye" in
   any language. It double-checks what it heard when speech recognition
   garbles Hebrew into another language.
+- **Acknowledged at once, answered once.** A request that will take a while
+  (a task, a browser action, MyApi or Gmail, anything expected to take more
+  than 5 s) is acknowledged within about a second and a half, unless it
+  already said something for it: in your own words when a standing rule
+  quotes them (for example "acknowledge with an assertive 'Right away!'",
+  rendered once in your voice's language), otherwise "On it, one moment."
+  One acknowledgement per request. A background result it has not spoken a
+  few seconds after it came back is told to you once.
+- **Same rules everywhere** (`execution/dispatch.py`). Desktop voice, the
+  typed chat, the phone (voice or text, Gemini or OpenAI), the speaker and
+  the turn-based Gateway mode offer the same tools, including the ones you
+  added, and run every call through the same checks: approvals, untrusted
+  content, verified keyboard focus, one action per request.
+  `tests/test_parity.py` lists the few differences that are on purpose.
+- **One place for everything it tells you** (`core/outbox.py`). Results,
+  questions, approvals and alerts go to the surface you are on: said in an
+  open conversation (desktop, phone call, typed chat, speaker) and nowhere
+  else; a phone push when you are away from the desk or on the phone page;
+  a desktop notification when you are at it. Urgent ones reach both the
+  desktop and the phone. Each result is delivered once, even across a
+  restart (`STATE_DIR/outbox.json`), and stays in the inbox until a
+  conversation has told you.
+- **Files it makes for you** (`core/outputs.py`). Reports, screenshots and
+  CSVs a task produces go to `$XDG_DATA_HOME/omarchy-ai/outputs/<task_id>/`
+  (normally `~/.local/share/omarchy-ai/outputs/`), are listed in the task
+  record, and are handed over once when the task ends: into the chat it
+  started in (a known type up to 20 MB as an attachment, anything else as
+  a link to its desktop path), opened or shown in the file manager when
+  you are at the desk, and named in a sentence by voice, never read out.
+  The heartbeat removes them after 14 days, oldest first past 1 GB.
 - **Escalation.** When something keeps failing, or it tells you it can't,
   the job goes to the Task Runtime with your words and everything that
   failed, instead of being dropped.
@@ -574,6 +621,15 @@ About 90 typed tools plus Omarchy's full command set:
   says the connection dropped and asks you to repeat. If that reconnect
   fails too, voice moves to the next model and the message names the
   reason. Quota and auth errors do not reconnect.
+- **Long conversations.** Each conversation keeps a rolling summary
+  (`core/summarize.py`): what you asked for, what was decided, what is still
+  open, the people, files, windows and devices involved, and anything
+  waiting for your approval, read from the task records each time. It is
+  refreshed in the background by the Gateway text model, or by rules when
+  the Gateway is unavailable. A new, reopened or reconnected session gets
+  the instructions, your saved memory, the summary, then the last turns
+  verbatim, so a long talk stays answerable and costs fewer tokens. Text
+  from emails, pages and files stays fenced as untrusted inside it.
 - **Prompt v2 (opt-in).** `prompt_version: v2` in
   `~/.config/omarchy-ai/config.yaml` (or `OMARCHY_PROMPT_VERSION=v2` in the
   service environment) uses a shorter system prompt

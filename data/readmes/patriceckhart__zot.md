@@ -791,6 +791,8 @@ Reasoning levels (`--reasoning off|minimum|low|medium|high|xhigh|max`, also conf
 
 Claude Opus 5.5 is available through Anthropic (`--provider anthropic --model claude-opus-5-5`) and GitHub Copilot (`--provider github-copilot --model claude-opus-5.5`, subject to account availability). Both entries support a 1,000,000-token context window and up to 128,000 output tokens. Adaptive thinking is always on, with `low`, `medium`, `high`, `xhigh`, and `max` effort levels. The default, `off`, and `minimum` requests use `low` instead. The reasoning selector omits unsupported levels. Catalog prices per million tokens are $4 input, $20 output, $0.20 cache reads, and $5 cache writes. Copilot billing remains governed by your plan.
 
+Copilot's dollar display is an API-equivalent estimate, not a GitHub invoice or remaining quota. Its built-in token prices are sourced from the `github-copilot` catalog at [models.dev](https://models.dev/api.json), including cache prices and supported long-context tiers. Prices are bundled with zot, not fetched automatically at runtime. Sonnet 5 uses $2 input, $10 output, $0.20 cache reads, and $2.50 cache writes per million tokens. Previously recorded session costs are not recalculated when catalog prices change.
+
 Claude Sonnet 5.5 is available through Anthropic (`--provider anthropic --model claude-sonnet-5-5`). It supports a 1,000,000-token context window and up to 128,000 output tokens. Adaptive thinking is always on with the same `low` through `max` effort levels as Opus 5.5, and `off` or `minimum` requests use `low`. Temperature is not sent. Catalog prices per million tokens are $2 input, $10 output, $0.20 cache reads, and $2.50 cache writes.
 
 On Amazon Bedrock, Claude Sonnet 5.5 (`anthropic.claude-sonnet-5-5`) has `us.`, `eu.`, and `global.` inference profiles. Claude Haiku 5.5 (`anthropic.claude-haiku-5-5`) also has `au.` and `jp.` profiles. Bare IDs are selection aliases, not in-region Converse endpoints. Zot automatically selects US profiles in US commercial and Canadian regions, EU profiles in European regions, and Haiku's AU/JP profiles in Sydney/Melbourne and Tokyo/Osaka respectively. In other regions, select an explicit supported inference profile. Zot does not automatically fall back to `global.`, which permits worldwide routing. Both models support a 1,000,000-token context window and up to 128,000 output tokens. Sonnet 5.5 follows the same always-on adaptive thinking rules as above. Haiku 5.5 uses adaptive thinking with `low` through `max` effort, and `off` disables thinking. Catalog prices per million tokens are $2 input, $10 output, $0.10 cache reads, and $2.50 cache writes for Sonnet 5.5. For Haiku 5.5 they are $0.10 input, $0.50 output, $0.01 cache reads, and $0.125 cache writes. Bedrock Opus 5.5 is priced at $4 input, $20 output, $0.20 cache reads, and $5 cache writes. Cache-write prices reflect zot's default 5-minute cache checkpoints, not the higher-priced 1-hour option. Profile availability remains subject to AWS region and account access.
@@ -1172,18 +1174,4 @@ Either way, theme colors still drive the rendering (the header uses your accent/
 
 ### Tool arg width
 
-The header line for a tool call shows the tool name plus a one-line summary of its primary argument — a `path`, a `command`, or a query. That summary is truncated to 60 cells by default (`web_answer What is the best architecture to implement resilience wit...`). On a wide terminal that can clip long queries more than you'd like, so set the `ZOT_TOOL_ARG_WIDTH` env var to raise (or lower) the limit:
-
-```sh
-ZOT_TOOL_ARG_WIDTH=120 zot   # allow up to 120 cells before truncating
-```
-
-| Value | Effect |
-|---|---|
-| unset (default) | Truncate the arg summary at 60 cells. |
-| integer in `[20, 500]` | Truncate at that many cells instead. |
-| anything else | Ignored; falls back to the 60-cell default. |
-
-## Compact input
-
-By default a message you send re
+The header line for a tool call shows the tool name plus a one-line summary of its primary argument — a `path`, a `command`, or a query. That summary is truncated to 60 cells by default (`web_answer What is the best architecture to im

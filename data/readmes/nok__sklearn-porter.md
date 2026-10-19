@@ -5,7 +5,7 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/sklearn-porter.svg)](https://pypi.org/project/sklearn-porter/)
 [![License](https://img.shields.io/pypi/l/sklearn-porter.svg?color=blue)](https://github.com/nok/sklearn-porter/blob/main/LICENSE)
 
-Transpile trained [scikit-learn](https://github.com/scikit-learn/scikit-learn) estimators to **C**, **Go**, **Java**, **JavaScript**, **PHP** and **Ruby**.
+Transpile trained [scikit-learn](https://github.com/scikit-learn/scikit-learn) estimators to **C**, **C#**, **Go**, **Java**, **JavaScript**, **PHP** and **Ruby**.
 
 Use the generated code to make predictions where Python isn't available or is too heavy, e.g. on embedded systems, in web browsers or in existing applications. The ported estimators make the same predictions as the original scikit-learn estimators.
 
@@ -42,6 +42,7 @@ Python 3.11 or newer and scikit-learn 1.8 or newer are required.
 - [ensemble.RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)
 - [ensemble.ExtraTreesClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.ExtraTreesClassifier.html)
 - [ensemble.AdaBoostClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html)
+- [ensemble.GradientBoostingClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html)
 - [neighbors.KNeighborsClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)
 - [naive_bayes.BernoulliNB](https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.BernoulliNB.html)
 - [naive_bayes.GaussianNB](https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html)
@@ -54,15 +55,20 @@ Python 3.11 or newer and scikit-learn 1.8 or newer are required.
 - [tree.DecisionTreeRegressor](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html)
 - [ensemble.RandomForestRegressor](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html)
 - [ensemble.ExtraTreesRegressor](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.ExtraTreesRegressor.html)
+- [ensemble.GradientBoostingRegressor](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html)
 - [linear_model.LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html)
 - [linear_model.Ridge](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html)
 - [linear_model.Lasso](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html)
 - [linear_model.ElasticNet](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.ElasticNet.html)
 - [neural_network.MLPRegressor](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html)
 
+#### Outlier detectors
+
+- [ensemble.IsolationForest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html)
+
 ### Languages
 
-The estimators are ported to **C**, **Go**, **Java**, **JavaScript**, **PHP** and **Ruby**.
+The estimators are ported to **C** (`c`), **C#** (`cs`), **Go** (`go`), **Java** (`java`), **JavaScript** (`js`), **PHP** (`php`) and **Ruby** (`ruby`). The keys in parentheses select the language, e.g. `port(clf, language='cs')`.
 
 ### Templates
 
@@ -105,7 +111,7 @@ print(score)
 ```
 <!-- fmt:on -->
 
-Steps 4 and 5 require a compiler or interpreter for the target language (e.g. `node` for JavaScript).
+Steps 4 and 5 require a compiler or interpreter for the target language (e.g. `node` for JavaScript or the .NET SDK for C#).
 
 The [example notebook](https://github.com/nok/sklearn-porter/blob/main/examples/basics/index.pct.ipynb) shows the functional and the object-oriented API step by step.
 
@@ -117,13 +123,13 @@ After installation, the `porter` command is available:
 ```
 porter {show,port,save} [-h] [-v]
 
-porter show [-l {c,go,java,js,php,ruby}] [-h]
+porter show [-l {c,cs,go,java,js,php,ruby}] [-h]
 
-porter port <estimator> [-l {c,go,java,js,php,ruby}]
+porter port <estimator> [-l {c,cs,go,java,js,php,ruby}]
                         [-t {attached,combined,exported}]
                         [--skip-warnings] [-h]
 
-porter save <estimator> [-l {c,go,java,js,php,ruby}]
+porter save <estimator> [-l {c,cs,go,java,js,php,ruby}]
                         [-t {attached,combined,exported}]
                         [--directory DIRECTORY]
                         [--skip-warnings] [-h]
@@ -155,7 +161,7 @@ porter port estimator.joblib -l js -t attached | npx terser --compress -o estima
 Read these pages before you use a ported estimator in production:
 
 - [Estimator Notes](https://github.com/nok/sklearn-porter/blob/main/docs/estimator-notes.md): the labels of the classes, multilabel and multi-output classification and the parameters of single estimators which can't be ported or which can lead to different predictions.
-- [Limitations](https://github.com/nok/sklearn-porter/blob/main/docs/limitations.md): pipelines, the types of the labels, the size of Java methods, sparse data and Windows.
+- [Limitations](https://github.com/nok/sklearn-porter/blob/main/docs/limitations.md): pipelines, the types of the labels, the size of Java methods, the requirements of C#, sparse data and Windows.
 
 
 ## Contributing
@@ -171,7 +177,7 @@ If you use sklearn-porter in your work, please cite it. You can use this BibTeX 
 @misc{sklearn_porter,
   author = {Darius Morawiec},
   title = {sklearn-porter},
-  note = {Transpile trained scikit-learn estimators to C, Go, Java, JavaScript, PHP and Ruby},
+  note = {Transpile trained scikit-learn estimators to C, C#, Go, Java, JavaScript, PHP and Ruby},
   url = {https://github.com/nok/sklearn-porter}
 }
 ```

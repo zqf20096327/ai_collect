@@ -61,6 +61,10 @@ Describe the software and the outcome you want in ordinary language. The compani
 
 If the original has awkward behavior, say which compatibility matters and what you want improved—for example, “Keep exports readable by my existing tools, but make failed saves clear.” The companion separates observed behavior from intended changes, checks affected dependencies, and keeps unresolved or deferred work visible. See the [worked quirk decisions](evals/quirk-decisions.md).
 
+Screenshots, recordings and incomplete descriptions can also provide a starting point. The companion separates visible states and demonstrated transitions from assumptions, asks about gaps that change the result, and keeps visual similarity distinct from working behavior. See the [bounded visual-evidence example](evals/visual-evidence/README.md); supplied images do not require a whole-app rebuild or imply access to its server.
+
+For selected interfaces, the companion also separates keyboard operation, focus, labels, errors and status feedback from visual fidelity. The [accessibility worked slice](evals/interface-accessibility/README.md) demonstrates a small intentional improvement with live keyboard evidence and explicit unrun screen-reader checks.
+
 **Understand and plan a future reconstruction.** Expect evidence-backed behavior and workflow requirements, known unknowns, and a staged roadmap before implementation:
 
 ```text
@@ -112,6 +116,8 @@ The agent must report missing tools or evidence instead of claiming live analysi
 
 > Pick up from this checkpoint. Keep the same scope, retain the passing evidence that still applies, and work on the next unfinished part.
 
+To change an existing reconstruction, describe the outcome and what must stay compatible, for example: “Let me mark an entry done; keep my title listing and old files.” The companion checks current code and custom work, selects affected/shared regression checks and proportional recovery before editing. See [safe-change guidance](skills/rea-reconstruction-companion/references/safe-changes.md) and the [bounded worked change](evals/safe-changes/README.md). Planning a change alone does not request implementation.
+
 Select the checkpoint or its path and identify any changed target or goal. The agent should read that record and the sources needed for the next step, check evidence applicability, and preserve historical results. Resuming a specification does not authorize building it. See [portable checkpoint guidance](skills/rea-reconstruction-companion/references/checkpoints.md) and the [worked resume example](evals/resume/WALKTHROUGH.md).
 
 For a small question, expect a compact evidence-linked answer or contract with limits and a useful next action. A feature build adds implementation and acceptance results; it need not produce a whole-app blueprint. If a consequential target or outcome is unclear, expect one focused clarification. Host activation and instruction following vary: explicit invocation can help select the skill, but examples and installation do not guarantee every host/model will interpret every phrasing correctly.
@@ -123,6 +129,12 @@ still pending. Client observations do not recover server internals, and a local
 demo cannot verify remote compatibility. The [runnable synthetic example](evals/unavailable-backend/README.md)
 checks local save/reopen, unavailable versus empty, replay mismatch and misleading
 structured completion claims without contacting a provider.
+
+Runnable results should include proportionate prerequisites, setup/run/stop,
+a principal walkthrough, data locations and safe reset/recovery steps exercised
+outside the checkout. The [standalone Pocket Tasks walkthrough](evals/reference/reconstruction/RUN.md)
+demonstrates this with existing Node and PowerShell; it is a same-agent fresh-folder
+check, not a clean OS or independent beginner test. See [handoff guidance](skills/rea-reconstruction-companion/references/runnable-handoffs.md).
 
 To see the workflow before trying a target, follow the [worked investigation](evals/reference/WALKTHROUGH.md), [reconstruction](evals/reference/reconstruction/README.md), or [resume](evals/resume/WALKTHROUGH.md) for your goal. These disclose answers and prior source exposure; they are teaching material, not prerequisites or evidence of a fresh agent trial. The [first-use review](evals/first-use.md) separates manual intent scenarios from executable checks.
 

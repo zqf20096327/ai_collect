@@ -16,8 +16,9 @@ charge of what goes out.
 - Claude Code, which comes with a paid Claude plan. On your own computer an Anthropic API
   key works instead and you pay only for what you use, often cheaper if you search now and
   then, but the scheduled brief and cloud chats need a plan.
-  - Another agent tool (Codex, Gemini CLI, Cursor)? The core works in any agent that can
-    read files and run commands; [AGENTS.md](AGENTS.md) covers the Claude Code parts.
+  - Another agent tool (ChatGPT Codex, Google's Gemini CLI, the Cursor editor)? The core
+    works in any agent that can read files and run commands; [AGENTS.md](AGENTS.md) covers
+    the Claude Code parts.
 - About fifteen minutes. No coding.
 
 ## Get started
@@ -29,8 +30,10 @@ charge of what goes out.
    and give it access to your new copy only.
 3. Open [claude.ai/code](https://claude.ai/code), choose your copy, and say **"set me up"**.
 
-Claude asks you plain questions about yourself and does the rest. [START_HERE.md](START_HERE.md)
-has the full walk-through, and the steps for running it on your own computer instead.
+Claude asks you plain questions about yourself and does the rest. If you have a computer,
+**two chats work best**: one on your computer for everything you do, networking included,
+and your brief in the cloud, which follows up for you even when your computer is off.
+[START_HERE.md](START_HERE.md) walks you through both.
 
 ## What you can say to it
 
@@ -38,15 +41,15 @@ has the full walk-through, and the steps for running it on your own computer ins
 |---|---|
 | "Find me jobs" | A scored shortlist with links, then a question: which ones? |
 | A job posting, pasted or linked | A resume and cover letter written for that job, checked |
-| "Who should I talk to at Acme?" | People worth contacting there, and a first note to send |
+| "Who should I talk to at Acme?" | People worth contacting there, found from any chat, ranked with the evidence for each, and a first note to send. Nothing is sent: you send it |
 | "What do I owe?" | Replies and follow-ups that are due |
 | "Prep me for my interview at Acme" | Likely questions, your best answers and questions to ask |
 | "They replied" or "I got an interview" | The record updated, and what to do next |
 | "Check my email" | Interview invites, offers and rejections from Gmail, recorded once you say yes |
 | "Make me a dashboard" | One page showing every application and how far it got |
 
-It also says what to learn next, copies your pipeline into Notion, reads your LinkedIn job
-alerts and takes your own resume template. Gmail and Notion are connected once, at
+It also says what to learn next, reads your LinkedIn job alerts and takes your own resume
+template. Gmail is connected once, at
 [claude.ai/customize/connectors](https://claude.ai/customize/connectors).
 
 ## Why it works differently

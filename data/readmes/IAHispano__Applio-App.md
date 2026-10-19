@@ -2,7 +2,7 @@
 
 Voice conversion, realtime voice changing, speech synthesis, and model training in one desktop app.
 
-[Download](https://github.com/IAHispano/Applio-App/releases) · [Documentation](https://docs.applio.org) · [Discord](https://discord.gg/wY7gmqTyEV) · [Support](https://ko-fi.com/iahispano) · [Patreon](https://www.patreon.com/iahispano)
+[Download](https://github.com/IAHispano/Applio-App/releases) · [Documentation](https://docs.applio.org) · [Your data & privacy](YOUR_DATA.md) · [Discord](https://discord.gg/wY7gmqTyEV) · [Support](https://ko-fi.com/iahispano) · [Patreon](https://www.patreon.com/iahispano)
 
 ## Install
 
@@ -20,8 +20,8 @@ pnpm install
 pnpm desktop:dev
 ```
 
-Use `pnpm dev` for the browser UI, `pnpm typecheck` to check types, and
-`pnpm format:check` to check formatting.
+Use `pnpm dev` for the browser UI, `pnpm check` for regression checks,
+`pnpm typecheck` to check types, and `pnpm format:check` to check formatting.
 
 Build installers with `pnpm build:win`, `pnpm build:mac`, or `pnpm build:linux`
 on the corresponding platform.

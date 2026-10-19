@@ -882,14 +882,16 @@ The helpers do not hide `builder.compile(checkpointer=...)` and do not reimpleme
 
 #### Run lock semantics
 
-When using `AzureTableThreadStore` with Platform-compatible runs, each graph execution acquires an **atomic run lock** (ETag compare-and-swap) on the thread before invoking the graph. On completion — success or failure — the lock is released via a best-effort merge update.
+When using `AzureTableThreadStore` with Platform-compatible runs, each graph execution acquires an **atomic run lock** (ETag compare-and-swap) on the thread before invoking the graph. On completion — success or failure — the lock is released with owner-token fencing plus its own ETag compare-and-swap.
 
 | Operation | Concurrency | Mechanism |
 | --- | --- | --- |
 | Lock acquisition (`try_acquire_run_lock`) | Atomic — exactly one caller wins | ETag CAS |
-| Lock release (`release_run_lock`) | Best-effort — no ETag | Merge update |
+| Lock release (`release_run_lock`) | Atomic — owner-fenced, ETag CAS | Owner-token check + merge update with ETag CAS |
 
-**What can go wrong:** If a Function host instance is terminated during graph execution (scale-in, deployment, crash), the thread remains in `busy` status indefinitely because the release never fires.
+**Owner fencing and CAS loss:** If an optional `owner_token` is supplied and no longer matches the thread's current `lock_token` (e.g. `reset_stale_locks()` already reclaimed it, or a newer run re-acquired it), the release is a no-op — the current entity is returned unchanged and a warning is logged. Likewise, if the ETag CAS itself is lost to a concurrent write between the owner check and the merge, the release is rejected and the current entity is returned instead of overwriting that concurrent change. In both cases the thread may remain `busy` — this is deliberate: a stale caller must never undo a newer owner's state.
+
+**What can still go wrong:** Owner fencing and CAS protect against *concurrent* writers, not against a writer that never arrives. If a Function host instance is terminated during graph execution (scale-in, deployment, crash), **no** release call is ever made — there is no owner-token or CAS check to lose, because `release_run_lock` is simply never invoked — so the thread remains in `busy` status indefinitely.
 
 **Recovery:** Use `reset_stale_locks()` from a periodic Timer Trigger to reclaim orphaned locks:
 
@@ -915,6 +917,7 @@ The `thread_lock` parameter accepts any object satisfying the [`ThreadLock`](src
 
 ```python
 import azure.functions as func
+from azure.core.exceptions import ResourceExistsError
 from azure.storage.blob import ContainerClient
 
 from azure_functions_langgraph import LangGraphApp
@@ -923,7 +926,17 @@ from azure_functions_langgraph.locks import AzureBlobLeaseThreadLock
 container = ContainerClient.from_connection_string(
     "DefaultEndpointsProtocol=https;AccountName=...", "langgraph-locks"
 )
-container.create_container()  # idempotent — safe on cold start
+try:
+    container.create_container()
+except ResourceExistsError:
+    # Expected on every cold start after the first: create_container() is a
+    # create operation, not an idempotent get-or-create -- the Azure Storage
+    # SDK raises when the container already exists. In production, provision
+    # "langgraph-locks" once via your deployment infrastructure (Bicep/ARM/
+    # Terraform) instead of relying on app-startup creation; this try/except
+    # only keeps the sample runnable standalone. Any other storage error
+    # (e.g. a permissions failure) is intentionally left to propagate.
+    pass
 
 app = LangGraphApp(
     auth_level=func.AuthLevel.FUNCTION,

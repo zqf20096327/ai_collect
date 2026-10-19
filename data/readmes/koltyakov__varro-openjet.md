@@ -63,6 +63,8 @@ Wide editor and window chats have a light/dark toggle in the upper-right gutter.
 
 To add context, drop files or directories into the composer, or choose **Add to Varro Context** from the editor or Project view. The current-document chip toggles automatic context and remembers your choice per project. Switching to a chat tab keeps the last source editor as context, including unsaved edits.
 
+In **Settings > Tools > Varro > Chat**, disable **Automatically attach the active file or editor selection** to hide that chip and omit automatic file context, including from queued messages. Manually attached files and database context are unaffected. **Include IDE problems in chat context** controls both automatic diagnostics and explicit Problems attachments. Existing Problems opt-outs are preserved.
+
 Pasting 10 or more lines that match the current selection in a saved workspace file creates a line-range attachment. Shorter pastes and unsaved selections stay as text. Plain-text pastes of 10 or more lines matching an open terminal's available output become terminal attachments; terminal engines that do not expose their output leave the paste as text.
 
 History images load small previews near the viewport. OpenJet generates these in Kotlin with JVM image codecs, applies EXIF orientation, and preserves transparency. PNG, JPEG, GIF and WebP inputs produce PNG previews up to 384 pixels and 256 KiB. AVIF and unsupported or damaged images keep a placeholder. Opening a preview or editing a message fetches the original. The shared thumbnail cache is memory-only and expires after five minutes.
@@ -173,6 +175,11 @@ The speaking icon tracks Varro's toggles, not Handy's global shortcut or actual 
 Quota badges show remaining allowances and reset times when the provider exposes them. The Kotlin adapters support Anthropic/Claude Code, OpenAI Codex, GitHub Copilot, OpenRouter, Gemini, Antigravity, Ollama Cloud, OpenCode Go, Z.ai, MiniMax, Kimi, and xAI. They use existing credentials and the IDE's HTTP proxy and certificate settings. No Node.js helper is required.
 
 The Codex quota popup also shows the remaining credit balance when the usage endpoint provides it, even without active quota windows.
+
+Attach-only OpenCode V2 connections can show OpenAI subscription limits using the
+server's active Codex OAuth account. They never substitute the IDE's local account.
+ChatGPT token sharing cannot read usage limits or reset credits; use Codex browser
+login for those values. Other attached providers and V1 remain unsupported.
 
 When a poll fails, Varro may show the last successful snapshot for up to 15 minutes. Quota caches are project-local. Antigravity needs a detected local language-server port or the `ANTIGRAVITY_BASE_URL` and `ANTIGRAVITY_CSRF_TOKEN` environment variables, with a loopback IP address in the URL.
 

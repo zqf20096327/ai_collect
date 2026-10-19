@@ -36,39 +36,46 @@ This repository contains the following skills:
   npx skills add hankunpeng/skills --skill antigravity-cli-statusline
   ```
 
-### 5. Gemini Web Client (`gemini-cli`)
-* **Description**: Generates images and text via reverse-engineered Gemini Web API. Suitable for AI Pro and higher tier subscription users. Supports text generation, image generation from prompts, reference images for vision input, and multi-turn conversations.
-* **Installation**:
-  ```bash
-  npx skills add hankunpeng/skills --skill gemini-cli
-  ```
-
-### 6. Chinese Copywriting Linter (`chinese-copywriting-linter`)
+### 5. Chinese Copywriting Linter (`chinese-copywriting-linter`)
 * **Description**: Lint and automatically format Chinese copywriting and typesetting in Markdown documents according to the Chinese Copywriting Guidelines.
 * **Installation**:
   ```bash
   npx skills add hankunpeng/skills --skill chinese-copywriting-linter
   ```
 
-### 7. LlamaParse Document Parsing (`llama-parse`)
+### 6. LlamaParse Document Parsing (`llama-parse`)
 * **Description**: Parses complex PDFs, Word documents (docx), PowerPoint presentations (pptx), Excel sheets (xlsx), and images into clean Markdown or structured JSON using the LlamaParse API. Preserves layouts and extracts tables accurately.
 * **Installation**:
   ```bash
   npx skills add hankunpeng/skills --skill llama-parse
   ```
 
-### 8. Semantic Version Recommender (`semver-recommender`)
+### 7. Semantic Version Recommender (`semver-recommender`)
 * **Description**: Intelligently analyze code changes, API contract diffs, and commit history to recommend the next Semantic Version (SemVer MAJOR, MINOR, or PATCH) with concrete rationales and breaking change detection.
 * **Installation**:
   ```bash
   npx skills add hankunpeng/skills --skill semver-recommender
   ```
 
-### 9. Explain Like I'm 5 (`eli5`)
+### 8. Explain Like I'm 5 (`eli5`)
 * **Description**: Explain complex topics in simple, intuitive terms using bilingual English and Chinese (line-by-line format) and visual HTML artifacts.
 * **Installation**:
   ```bash
   npx skills add hankunpeng/skills --skill eli5
+  ```
+
+### 9. URL to Markdown (`url-to-markdown`)
+* **Description**: Fetch any URL and convert it to clean Markdown or structured JSON using Chrome CDP with site-specific adapters (X/Twitter, YouTube transcripts, Hacker News threads, and generic web pages via Defuddle), supporting interactive login/CAPTCHA wait modes and local media downloading.
+* **Installation**:
+  ```bash
+  npx skills add hankunpeng/skills --skill url-to-markdown
+  ```
+
+### 10. Playwright Use System Chrome (`playwright-use-chrome`)
+* **Description**: Configure and enforce Playwright to directly use the system's installed Google Chrome browser instead of downloading bulky bundled Chromium/WebKit/Firefox binaries (~1.5GB to 2GB). Provides configuration templates for TypeScript, JavaScript, Python, and CLI test runners.
+* **Installation**:
+  ```bash
+  npx skills add hankunpeng/skills --skill playwright-use-chrome
   ```
 
 

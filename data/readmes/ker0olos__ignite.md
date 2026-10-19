@@ -48,17 +48,30 @@ once. Made for macOS; and others.
   images.
 - Claude and ChatGPT through your Claude Code and Codex sign-ins, so you use
   the plans you already pay for. API keys work too.
-- Commands run in a sandbox: they write only inside the project, can't read
-  your credentials, and may only read from websites. risky asks first, or turn on full access and nothing asks.
+- Commands run in an OS sandbox ([below](#sandbox)): they write only inside
+  the project, can't read your credentials, and may only read from websites.
+  Risky ones ask first, or turn on full access and nothing asks.
 - ⌘K searches every conversation, file and project, and ⌘P jumps straight
   to a file.
 - Skills and MCP servers import from Claude Code, Codex, Cursor and Claude
   Desktop in one click.
-- With [cmem](https://cmem.ai), agents remember what they learned about a
-  project.
+- Agents remember what earlier conversations did and learned in a folder,
+  and can import what Claude Code and others recorded with
+  [cmem](https://cmem.ai).
 - Code shows in any theme from VS Code, VSCodium, Cursor or Windsurf.
 - Use it from your phone on the same Wi-Fi:
   Settings → Remote, then scan the QR code.
+
+## Sandbox
+
+In Auto mode, shell commands run without asking inside the OS sandbox
+([sandbox-runtime](https://github.com/anthropics/sandbox-runtime): Seatbelt
+on macOS, bubblewrap on Linux; on Windows every command asks unless you turn
+on its alpha sandbox).  
+In Sandbox mode, the agent writes only in the project, its scratchpad and
+package caches, It can't read credentials, and has can only read from selected online sites.  
+A blocked command asks before running outside (Risky commands, edits outside the project, MCP changes, commits and
+pushes ask).
 
 ## Install
 

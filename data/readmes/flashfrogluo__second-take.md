@@ -6,7 +6,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/flashfrogluo/second-take?style=flat&logo=github)](https://github.com/flashfrogluo/second-take)
 [![License](https://img.shields.io/github/license/flashfrogluo/second-take?style=flat)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.7.1-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/github/v/release/flashfrogluo/second-take?style=flat&label=version)](CHANGELOG.md)
 [![Agent-Skill](https://img.shields.io/badge/Agent--Skill-agentskills.io-111111?logo=openai)](https://agentskills.io)
 [![Last commit](https://img.shields.io/github/last-commit/flashfrogluo/second-take?style=flat)](https://github.com/flashfrogluo/second-take/commits/main)
 [![CI](https://github.com/flashfrogluo/second-take/actions/workflows/ci.yml/badge.svg)](https://github.com/flashfrogluo/second-take/actions/workflows/ci.yml)
@@ -39,7 +39,7 @@ npx skills add flashfrogluo/second-take
 
 > **分享给别人时直接给链接**，不要让对方去搜：搜 `second-take` 会撞上同名子串（scrump / thumbnail 之类）与排序劣势，`second take` 带空格又会落到语义检索按安装量排序。直链见下方 GitHub 与 skills.sh 两处。
 
-支持 Claude Code、Codex、Cursor、Gemini CLI、GitHub Copilot、Windsurf、Cline、Zed、Goose、OpenCode 等几十种 agent。
+支持范围以 `skills` CLI 的当前版本为准——清单随版本变化，安装时会列出你的版本支持哪些。
 
 上面没列到的运行时也能用。本 skill 就是一份 Markdown，只要对方读 `SKILL.md` 就行。WorkBuddy 和 DeepSeek Harness 就属于这种：它们不走 skills CLI，而是各自读自己的 skills 目录，路径见下表。
 
@@ -103,7 +103,7 @@ npx skills add flashfrogluo/second-take
 > 这套方法把整套质检流程“封装”成了电影制作：你不必记 AI 专业的术语，只要认得下面的影视说法，就能点名要它做哪一步。
 > **可以点名的就是下面这张表**。
 
-![Second Take 五模式流程图：输入 → 分类诊断 → 重拍 → 贴回原 AI → 原 AI 执行 → 用户判断，不满意走补拍 / 定剪再回流；满意则输出，可选调色 / 包装](docs/assets/workflow-zh.png)
+![Second Take 五模式流程图：输入 → 分类诊断 → 重拍 → 贴回原 AI → 原 AI 执行 → 用户判断，不满意走补拍 / 定剪再回流；满意则输出，可选调色 / 包装](docs/assets/workflow-zh.svg)
 
 | 模式 / 交付物 | 什么时候用 | 做法 | 点名时说 |
 |---|---|---|---|
@@ -157,9 +157,21 @@ npx skills add flashfrogluo/second-take
 
 一条命令装到你的 agent——安装时会让你从目标列表里选。**支持范围以 `skills` CLI 的当前版本为准**（清单随版本变化，安装时会列出你的版本支持哪些）。
 
+**Claude Code 用户也可以走插件市场**：
+
+```bash
+/plugin marketplace add https://github.com/flashfrogluo/second-take.git
+/plugin install second-take@second-take
+```
+
+> 两点说明：用 **HTTPS URL** 而不是 `owner/repo` 简写（简写在部分机器上走 SSH，没配 key 会失败）；若你已用 `npx skills add` 装过同名 skill，**那一份优先于插件版本**，想用插件版请先移除旧副本（指向别处的符号链接，删链接即可）。
+
+
 > **搜索时写连字符 `second-take`。** skills.sh 的检索分两种：写 `second-take` 走精确匹配；写成带空格的 `second take` 会切到语义检索，返回按安装量排序的热门 skill，本工具排在几十名开外。
 
 **手动装：各平台把 skill 放在哪**
+
+> 下表只是**常见 agent 的目录约定示例**，各家路径会随版本调整；以你安装的版本实际行为为准。
 
 | Agent | 项目级 | 用户级 |
 |---|---|---|

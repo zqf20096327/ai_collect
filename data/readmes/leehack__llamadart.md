@@ -21,6 +21,9 @@ explicit GPU requests throw, while automatic selection with a Vulkan
 preference falls back to CPU with a warning. See the
 [device limitations](https://llamadart.leehack.com/docs/platforms/support-matrix#known-limitations).
 
+
+Choose [direct llamadart, Genkit, or Flutter Edge AI](https://llamadart.leehack.com/docs/next/integrations/choosing-an-api) for your application. Genkit remains a [separate package](https://github.com/leehack/llamadart/tree/main/packages/genkit_llamadart); the Flutter Edge AI connector is an upstream source integration.
+
 ## Start Here
 
 | Need | Link |
@@ -30,6 +33,7 @@ preference falls back to CPU with a warning. See the
 | Build chat history | [First chat session](https://llamadart.leehack.com/docs/getting-started/first-chat-session) |
 | Check runtime support | [Platform & backend matrix](https://llamadart.leehack.com/docs/platforms/support-matrix) |
 | Read API reference | [pub.dev API docs](https://pub.dev/documentation/llamadart/latest/) |
+| Upgrade from 0.14.x | [0.15 migration guide](MIGRATION.md#014x-to-0150-upgrade-guide) |
 | Try the Flutter demo | [Hosted chat app](https://leehack-llamadart.static.hf.space) |
 | Generate images on device (Preview) | [Image generation](https://llamadart.leehack.com/docs/guides/image-generation) |
 
@@ -187,8 +191,8 @@ experimental and may change, and the runtime is opt-in.
 - **Flutter iOS/macOS apps** should add the
   `llamadart_stable_diffusion_flutter` companion (see [Install](#install)),
   which links the runtime through Swift Package Manager and selects it without
-  the entry above. Pair companion `0.15.0` with core `0.15.x`, `0.14.0` with core
-  `0.14.x`, `0.13.0` with core
+  the entry above. Use companion `0.15.2` with core `>=0.15.2 <0.16.0`
+  for SD `v0.2.0-4`. Pair `0.14.0` with core `0.14.x`, `0.13.0` with core
   `0.13.x`, `0.0.3` with core `0.12.2`, `0.12.1` and `0.12.0`, and `0.0.2`
   with core `0.11.1` and `0.11.0`.
   Without it, `all` leaves the image runtime out of a Flutter iOS/macOS app
@@ -269,7 +273,7 @@ For Dart or Flutter apps:
 
 ```yaml
 dependencies:
-  llamadart: ^0.15.1
+  llamadart: ^0.15.3
 ```
 
 Flutter iOS/macOS apps that should link Apple XCFrameworks through Swift
@@ -297,13 +301,15 @@ overrides fail the build; resolve the matching companion and rerun
 
 ```yaml
 dependencies:
-  llamadart: ^0.15.1
+  llamadart: ^0.15.3
   llamadart_llama_cpp_flutter: ^0.15.1 # GGUF / llama.cpp
   llamadart_litert_lm_flutter: ^0.15.1 # Apple .litertlm / LiteRT-LM targets
-  llamadart_stable_diffusion_flutter: ^0.15.1 # Apple image generation, opt-in
+  llamadart_stable_diffusion_flutter: ^0.15.2 # Apple image generation, opt-in
 ```
 
-Pair `llamadart_stable_diffusion_flutter` `0.15.0` with core `0.15.x`, `0.14.0` with core `0.14.x`,
+Use `llamadart_stable_diffusion_flutter` `0.15.2` with core `>=0.15.2 <0.16.0`.
+Locked `0.15.0`/`0.15.1` SD companions keep their older runtime and work with core
+`0.15.2` with an upgrade warning. Pair `0.14.0` with core `0.14.x`,
 `0.13.0` with core `0.13.x`, and
 `0.0.3` with core `0.12.2`, `0.12.1` and `0.12.0`. Keep
 `0.0.2` with core `0.11.1` and `0.11.0`, and `0.0.1` with core `0.10.0`;
@@ -436,7 +442,7 @@ Current default runtime pins:
 | --- | --- |
 | Native llama.cpp / GGUF | `leehack/llamadart-native@v0.7.0-1` |
 | Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.18.0-2` |
-| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.65` |
+| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.66` |
 | Web LiteRT-LM / `.litertlm` | `@litert-lm/core@0.18.0` |
 
 Native overrides accept stable `vMAJOR.MINOR.PATCH` releases and preserve
@@ -505,9 +511,15 @@ number bounds, other formats and length/item bounds above 2000 are rejected.
 Trivial `uniqueItems: false`, `minProperties: 0` and integer `multipleOf: 1`
 assertions are accepted. Array bounds work without `items`, and unused definitions,
 annotations and unknown vocabulary remain accepted. Nonempty annotation-only untyped schemas
-accept any JSON value. See [0.14 migration](MIGRATION.md) for the breaking changes.
+accept any JSON value. See [0.14 migration](MIGRATION.md#013x---0140-llamacpp-v070-abi-qwen3-overrides-and-load-callbacks)
+for the breaking changes.
 
 ## Examples
+
+Run the Flutter chat app from a
+[repository checkout](https://github.com/leehack/llamadart/tree/main/example/chat_app).
+It and its private validation harness are excluded together from the core pub
+archive; the smaller console examples remain packaged.
 
 - [Basic Dart CLI](https://github.com/leehack/llamadart/tree/main/example/basic_app)
 - [Flutter chat app](https://github.com/leehack/llamadart/tree/main/example/chat_app)

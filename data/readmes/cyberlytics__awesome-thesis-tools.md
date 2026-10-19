@@ -813,7 +813,7 @@ siehe Schwesterseite [awesome-6GL » Generative KI-Werkzeuge](https://github.com
 	- Desktop-Klon: [Craft App Suite](https://getartcraft.com/apps) insbesondere **[SoundCraft](https://getartcraft.com/apps/soundcraft)** ([github](https://github.com/storytold/soundcraft))
 	- Cloud: **[Audiotool](https://www.audiotool.com/)**
 - Adobe **After Effects**
-	- Desktop: **[Natron](https://natronGitHub.GitHub.io/)** \[**choco install natron.install**\] + **[Blender](https://www.blender.org/)** \[**choco install blender**\]
+	- Desktop: Maxon **[Autograph](https://www.maxon.net/autograph)**, Canva **[Cavalry](https://cavalry.studio/)** sowie die Open-Source-Kombination **[Natron](https://natronGitHub.GitHub.io/)** \[**choco install natron.install**\] + **[Blender](https://www.blender.org/)** \[**choco install blender**\]
 	- Desktop-Klon: [Craft App Suite](https://getartcraft.com/apps) insbesondere **[EffectCraft](https://getartcraft.com/apps/effectcraft)** ([github](https://github.com/storytold/effectcraft))
 - Adobe **Captivate** (Screencast)
 	- Desktop: **[OBS](https://obsproject.com/)** \[**choco install obs-studio**\] | **[TechSmith Capture](https://www.techsmith.com/learn/tutorials/capture-desktop/capture-app/)** (formerly Jing) \[**choco install capture**\] | **[Screencast-O-Matic](https://screencast-o-matic.com/)** | **[screenrec](https://screenrec.com/)**
@@ -887,5 +887,4 @@ siehe Schwesterseite [awesome-6GL » Generative KI-Werkzeuge](https://github.com
 - **Zoom** bzw. Microsoft **Teams** (Video-Konferenz)
 	- Web/Self-Hosted: **[BigBlueButton](https://docs.bigbluebutton.org/greenlight/gl-install.html)** \[via Container\] | **[Jitsi](https://jitsi.org/)** \[**choco install jitsi**\] (für kleine Gruppen) ggf. in Kombination mit einer [rocket.chat](https://www.rocket.chat/)-Integration | **[NextCloud Talk](https://nextcloud.com/talk/)** | **[WorkAdventure](https://github.com/thecodingmachine/workadventure)**
 	- Cloud: **[Discord](https://discord.com/)** | **[Jitsi Meet](https://meet.jit.si/)** (für kleine Gruppen) | [**gather**.town](https://www.gather.town/) | [Google **Meet**](https://apps.google.com/meet/) (max. 60 Minuten) | **[HyHyve](https://www.hyhyve.com/pricing/)**
-	- (Ergänzungsempfehlung: Für einen hochwertigen virtuellen Hintergrund ohne Greenscreen empfehle ich das kostenpflichtige [XSplit VCam](https://www.xsplit.com/vcam))
-	- (Zusatzhinweis: Slack-Alternativen (s. unten) – wie bspw. [Flock](https://www.flock.com/features/communication/video-cal
+	- (Ergänzungsempfehlung: Für einen hochwertigen virtuellen Hintergrund ohne Greenscreen empfehle ich das kostenpflichtige [XSplit VCam](https://www.xsplit

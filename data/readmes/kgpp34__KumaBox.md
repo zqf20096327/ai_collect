@@ -122,6 +122,33 @@ sudo kumabox snapshot rm base
 sudo kumabox image remove ghcr.io/kgpp34/kumabox/ubuntu:24.04
 ```
 
+`stop` requests ACPI guest shutdown and waits up to 30 seconds by default.
+Use `stop my-vm --timeout 10` to set that window in seconds, or
+`stop my-vm --force` to skip it. `--timeout 0` uses `sandbox.stop_timeout`
+(also configurable through `KUMABOX_SANDBOX_STOP_TIMEOUT`, e.g. `10s`).
+If the guest ignores ACPI or exceeds its window, the runtime force-terminates
+the owned VMM with TERM, then KILL after `vmm.cloud_hypervisor.stop_grace`.
+Guest power-event handling must be ready for a normal shutdown; agent readiness
+alone does not prove that. Cancelling stop retains a retryable state rather than
+escalating after cancellation; retry with `stop --force` if necessary.
+Writable root and managed data disks survive stop/start without a snapshot.
+Force termination can lose guest writes that have not reached disk. Restore,
+hibernate, HTTP deletion and E2B kill/expiry cleanup explicitly skip the guest
+shutdown window; they do not incur a new 30-second wait.
+
+Both `clone` and `restore` accept `--restore-mode auto|copy|ondemand|mmap`.
+Automatic selection uses mmap when the monitor and captured memory support it,
+otherwise eager copy. On-demand paging is opt-in to avoid first-touch tail
+latency under the runtime CPU ceiling. Explicit lazy modes require a compatible
+monitor and plain private memory, and are checked before stopping a restore target.
+During restore, the VMM loads memory without the guest CPU ceiling; the normal
+ceiling is applied before the guest resumes.
+
+Directories supplied with `--from-dir` must be immutable: do not overwrite their
+files while they are in use. Same-filesystem clones share immutable memory files
+by hard link while keeping writable disks and configuration private. A
+cross-filesystem transfer copies the memory instead.
+
 `clone` returns after the VM resumes. Run `net SANDBOX --configure` to apply
 the clone's hostname and allocated NIC settings in the guest, or use
 `clone --wait-network` to include that step before the command returns. The
@@ -192,6 +219,40 @@ explicitly. These records are in guest memory, not a durable host task database.
 Graceful agent shutdown terminates its commands; a restart clears the table. If a
 spawn response is lost, list commands before retrying: the command may already
 be running. SDK and HTTP process-management endpoints are not included yet.
+
+### Forward a guest service
+
+`forward` connects a host loopback TCP port to `127.0.0.1` inside a running
+sandbox through vsock. It works with `--nics 0` as well as networked guests.
+For example, with Python installed in the guest:
+
+```bash
+sudo kumabox exec --detach my-vm -- python3 -m http.server 8000 --bind 127.0.0.1
+sudo kumabox forward my-vm 8080:8000
+# In another host terminal:
+curl http://127.0.0.1:8080/
+```
+
+HTTP, WebSocket and other TCP protocols pass through unchanged, including TCP
+half-close. TCP writes stalled for 30 seconds close the connection; otherwise
+idle connections have no timeout. Ctrl-C closes the listener and its active connections, leaving the
+guest service running. A stopped VM closes active streams; the listener stays
+available for the same sandbox ID after restart. Removing and recreating a
+sandbox under the same name does not redirect an existing forward to the new VM.
+
+Use `0:8000 --json` to allocate a free local port and print its address, or
+`--address ::1` for an IPv6 host loopback listener. Listening is restricted to
+loopback IPs, with at most 64 simultaneous connections per command. The initial
+message confirms the host listener; guest-service connection errors are reported
+on stderr per connection. The image must contain the updated agent. Existing
+images need rebuilding or updating; replacing only the host binary is insufficient.
+
+On a Linux/KVM test host, an image containing Python 3 and the matching agent
+can run the HTTP, WebSocket, concurrency, half-close and cleanup checks with:
+
+```bash
+sudo python3 tests/e2e/port_forward.py --image my-updated-image --commit AGENT_BUILD_ID
+```
 
 ### Guest files
 
@@ -330,24 +391,22 @@ await sandbox.stop()
 await sandbox.kill()
 ```
 
-An **experimental E2B protocol adapter** also accepts control-plane create,
-connect, inspect, kill and snapshot calls (including creating a sandbox from a
-saved snapshot), plus foreground `commands.run` over envd's
-Connect JSON process stream. Point `E2B_API_URL` and `E2B_SANDBOX_URL` at the
-same tunneled API URL and set `E2B_API_KEY` to the server token. An E2B
-`templateID` is interpreted as a local KumaBox image reference; import an image
-with alias `base` for E2B's default `Sandbox.create()`. The adapter currently
-rejects TTL, metadata, environment setup, custom network policy, MCP, IAM,
-volume mounts, PTY, stdin and background process options. E2B filesystem,
-filesystem-only snapshots and pause/resume are not implemented yet, so this is **not full E2B SDK
-compatibility**.
+An **experimental E2B protocol adapter** also accepts create, connect, inspect,
+list, kill and snapshot calls, foreground commands, regular-file read/write,
+metadata, environment defaults, TTL and pause/resume. Point `E2B_API_URL` and
+`E2B_SANDBOX_URL` at the same tunneled API URL and set `E2B_API_KEY` to the server
+token. An E2B `templateID` refers to a local image or saved snapshot; import an
+image with alias `base` for the default `Sandbox.create()`. This is **not full
+E2B SDK compatibility**: native CLI process management and forwarding are not
+exposed through that adapter. See the [adapter's supported calls and limits](api/e2b/README.md)
+for the tested protocol versions and remaining gaps.
 
 ## Core commands
 
 | Area | Commands |
 | --- | --- |
 | VM lifecycle | `run`, `create`, `start`, `stop`, `rm`, `ps`, `inspect` |
-| Guest access | `exec`, `console`, `logs`, `reseed`, `process ls/kill/logs/attach` |
+| Guest access | `exec`, `console`, `logs`, `forward`, `reseed`, `process ls/kill/logs/attach` |
 | Guest files | `file ls/stat/read/write/mkdir/rm/mv` |
 | Images | `image pull`, `image import`, `image inspect`, `image ls`, `image verify`, `image remove` |
 | Snapshots | `snapshot save`, `snapshot ls`, `snapshot inspect`, `snapshot export`, `snapshot import`, `snapshot rm`, `restore`, `clone`, `hibernate` |

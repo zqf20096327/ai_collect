@@ -621,6 +621,49 @@ Let's get started: [Design a Real-Time Voice AI Agent](https://outcomeschool.com
 
 ---
 
+## What is turn-taking in a voice AI agent?
+
+In this blog, we will learn about turn-taking in a voice AI agent, how the agent decides when the user has finished speaking, when it is its turn to talk, and what to do when the user starts speaking again while the agent is talking. We will also see why silence alone is not enough, how semantic turn detection reads the meaning of the words, how barge-in and backchannels are handled, and how half-duplex agents differ from full-duplex agents.
+
+We will cover the following:
+
+- What is turn-taking?
+- How humans take turns
+- How a voice AI agent works
+- Why turn-taking is hard for a machine
+- The two jobs of turn-taking
+- Approach 1: Wait for silence
+- Approach 2: Understand the meaning
+- Handling interruptions
+- Not every sound is a new turn
+- Half-duplex vs full-duplex agents
+- A complete walkthrough
+
+Let's get started: [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent)
+
+---
+
+## What is barge-in in a voice AI agent?
+
+In this blog, we will learn about barge-in in a voice AI agent, what happens when the user starts speaking while the agent is still talking, and how the agent stops so it can listen. We will also see why the agent can hear its own voice and how echo cancellation fixes it, how the agent tells a real interruption apart from "uh-huh", a cough, or background noise, what it does after a barge-in, and why it must remember only the part of the reply the user actually heard.
+
+We will cover the following:
+
+- What is barge-in?
+- Where the word barge-in comes from
+- How a voice AI agent speaks and listens
+- Problem 1: The agent hears itself
+- Problem 2: Not every sound is an interruption
+- How the agent detects barge-in
+- What the agent does after barge-in
+- Remembering what the user actually heard
+- Why barge-in must be fast
+- A complete walkthrough
+
+Let's get started: [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent)
+
+---
+
 ## More blogs and videos coming soon!
 
 ### License

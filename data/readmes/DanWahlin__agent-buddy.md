@@ -97,7 +97,7 @@ flowchart LR
 
 | Item | Details |
 | --- | --- |
-| Device | **Waveshare ESP32-S3-Touch-AMOLED-1.75-B or 1.75-C** from [Amazon](https://www.amazon.com/dp/B0FBWDL117) or [Waveshare](https://www.waveshare.com/esp32-s3-touch-amoled-1.75.htm?sku=31262). Other ESP32 displays need their own board target; see [Boards](docs/development.md#boards). |
+| Device | **Waveshare ESP32-S3-Touch-AMOLED-1.75-B or 1.75-C** from [Amazon](https://www.amazon.com/dp/B0FBWDL117) or [Waveshare](https://www.waveshare.com/esp32-s3-touch-amoled-1.75.htm?sku=31262). The **Waveshare ESP32-S3-Touch-LCD-1.54** also works, built from source with `BOARD=waveshare-lcd-154` ([Build from source](docs/build-from-source.md)); release bundles and the desktop app's firmware install are for the AMOLED-1.75 only. The app doesn't offer them to an LCD-1.54 that runs its own firmware, but it can't tell which board a blank or unresponsive device is, so don't install them on an LCD-1.54. Other ESP32 displays need their own board target; see [Boards](docs/development.md#boards). |
 | Cable | A USB data cable (charge-only cables won't work) |
 | Computer | macOS, Linux, or Windows (x64 or Arm64). On Windows, the desktop app runs the companion service natively, and agents in [WSL 2](#windows-wsl-2) use it too. |
 | Python | [3.10 or newer](https://www.python.org/downloads/), for flashing. The `python3` that comes with macOS is too old. |
@@ -174,7 +174,8 @@ device ([details](#run-the-desktop-app)).
 **Without the desktop app** (to change the code, or on Windows in WSL 2):
 
 1. Put the firmware on the device with `flash.py` from the release's
-   `agent-buddy-v<version>-firmware.zip` asset. This needs
+   `agent-buddy-v<version>-firmware.zip` asset (for the Waveshare
+   ESP32-S3-Touch-LCD-1.54, `agent-buddy-v<version>-waveshare-lcd-154-firmware.zip`). This needs
    Python 3.10 or newer. Extract it, connect the device over USB, and run this
    in the extracted folder:
 
@@ -228,7 +229,10 @@ the firmware yourself, see [Build from source](docs/build-from-source.md).
    `brew install python`, then open a new terminal and check again.
 
 2. From [Releases](https://github.com/DanWahlin/agent-buddy/releases/latest),
-   download `agent-buddy-v<version>-firmware.zip` and extract it.
+   download `agent-buddy-v<version>-firmware.zip` and extract it. For the
+   Waveshare ESP32-S3-Touch-LCD-1.54, download
+   `agent-buddy-v<version>-waveshare-lcd-154-firmware.zip` instead. Never flash
+   one board's firmware to a different board.
 3. Open a terminal in the extracted folder (it contains `flash.py`) and install
    the flashing tool:
 
@@ -760,7 +764,8 @@ characters show up on the settings page on their own.
 the desktop app, update the app first. When the device runs other firmware than
 the app's release, the **Device** tab shows a dot and **Device firmware** shows
 **Update available**. Connect the device over USB and click **Update to v<version>**.
-The button installs the firmware release that matches the companion service's version.
+The button installs the firmware release that matches the companion service's version, for the board the device reports.
+For a device that does not answer, choose its board first; firmware for a different board can stop the device.
 **USB release install or recovery** is only for a new device or one that does not answer. Without the desktop app, follow [Step 1](#step-1-flash-the-firmware)
 with the new release's `agent-buddy-v<version>-firmware.zip`. Both
 ways keep the device's Wi-Fi settings and write the Copilot character. When the
@@ -804,6 +809,11 @@ Run these from the repository folder.
 
 <details>
 <summary><strong>"No device is connected"</strong></summary>
+
+In Settings, open the **Device** tab and select **Detect device**. It looks for the
+device right away and says what is wrong: no device on USB, the USB port in use by
+another program, a device that doesn't answer (it needs firmware), or Wi-Fi mode
+ignoring USB. Then:
 
 1. Make sure the cable carries data and is plugged in. Close any serial monitor or
    `flash.py` run that's still using the port.
@@ -1004,7 +1014,7 @@ On Windows, agents in [WSL 2](#windows-wsl-2) use the same service.
   | OS | File | First run |
   | --- | --- | --- |
   | macOS | `agent-companion-desktop-<version>-macos-universal.dmg` | Drag **Agent Companion** to Applications, then run `sudo xattr -rd com.apple.quarantine "/Applications/Agent Companion.app"` once and open it from Applications. |
-  | Windows | `agent-companion-desktop-<version>-windows-x64-setup.exe`, or `-windows-arm64-setup.exe` for an Arm PC | Choose **Keep** if the browser warns, then **More info > Run anyway**. |
+  | Windows | `agent-companion-desktop-<version>-windows-x64-setup.exe`, or `-windows-arm64-setup.exe` for an Arm PC | Signed by Dan Wahlin. If Windows still warns, choose **Keep**, then **More info > Run anyway**. |
   | Linux | `agent-companion-desktop-<version>-linux-x86_64.AppImage` or `agent-companion-desktop-<version>-linux-amd64.deb` | AppImage: `chmod +x` it, then run it. If it asks for FUSE, install `fuse2` (Arch, Omarchy) or `libfuse2` (Ubuntu). `.deb`: `sudo apt install ./agent-companion-desktop-<version>-linux-amd64.deb`. |
 
   The running app appears in the macOS Dock or the taskbar on Windows and
@@ -1172,6 +1182,20 @@ packages into `build/characters/openclaw.acpk`. The intermediate PNG renders sta
 local and are ignored by git.
 
 </details>
+
+### Publish a release
+
+Releases are made on GitHub, so you don't need anything installed locally on
+macOS, Linux, or Windows. After the changes are merged to `main`:
+
+1. Open **Actions**, choose **Release**, and select **Run workflow** on `main`.
+2. Enter the next version without a `v` (for example `0.14.17`). Check
+   **Only check that the release can be made** first for a dry run.
+
+The workflow updates `VERSION` and `CHANGELOG.md` (with `git-cliff`), commits
+them as you, tags `vX.Y.Z`, and starts **Build and Release**, which publishes
+the firmware, character packs, and desktop apps once every job passes. See
+[Tagging and publishing releases](docs/releases.md).
 
 ### More documentation
 

@@ -20,16 +20,19 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-7c3aed?style=flat" alt="license"></a>
+  <a href="https://www.npmjs.com/package/indesign-nutria-mcp"><img src="https://img.shields.io/npm/v/indesign-nutria-mcp?style=flat" alt="npm"></a>
   <a href="#"><img src="https://img.shields.io/badge/tools-197-7c3aed?style=flat" alt="tools"></a>
-  <a href="#"><img src="https://img.shields.io/badge/tests-1052-22c55e?style=flat" alt="tests"></a>
+  <a href="#"><img src="https://img.shields.io/badge/tests-1123-22c55e?style=flat" alt="tests"></a>
   <a href="https://github.com/nutriandrea/adobe-indesign-mcp/actions/workflows/ci.yml/badge.svg"><img src="https://github.com/nutriandrea/adobe-indesign-mcp/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-%3E%3D18-339933?style=flat&logo=node.js" alt="node"></a>
   <a href="https://www.adobe.com/products/indesign.html"><img src="https://img.shields.io/badge/InDesign-2022%2B-007396?style=flat&logo=adobe" alt="indesign"></a>
 </p>
 
-> **Not published to npm.** This server drives a local desktop application, so
-> install it from the repository — see [Quick Start](#-quick-start-30-seconds).
-> Until a release exists, the npm badge would only send you to a 404.
+> **Published to npm** as
+> [`indesign-nutria-mcp`](https://www.npmjs.com/package/indesign-nutria-mcp).
+> Your agent starts it with `npx -y indesign-nutria-mcp` — see
+> [Quick Start](#-quick-start-30-seconds). InDesign still runs on your machine:
+> the server reaches it over a local bridge, and nothing leaves the box.
 
 ---
 
@@ -244,62 +247,71 @@ adding a text frame, reading it back, and closing.
 
 ## ⚡ Quick Start (30 seconds)
 
-```bash
-git clone https://github.com/nutriandrea/adobe-indesign-mcp
-cd adobe-indesign-mcp
-npm install
-npm run build
-node dist/index.js
-```
-
-> There is no `npm install -g indesign-nutria-mcp` — the package is not
-> published, and installing it that way would fail. Clone and build.
+Two halves: the **server** your agent runs — one line from npm, no clone and no
+build — and the **bridge** that reaches InDesign on this machine.
 
 ### 1️⃣ Connect InDesign
 
-You need one of the two InDesign bridges. Pick by platform:
+The server listens on `127.0.0.1:8120`; something still has to drive InDesign.
+Pick by platform:
 
 **macOS — with the UXP panel** (also emits change events)
 1. Open **UXP Developer Tool**
-2. Load the `plugin/` directory
+2. Load the `plugin/` directory — it ships in this repository, so clone it once:
+   `git clone https://github.com/nutriandrea/adobe-indesign-mcp` (no build step)
 3. Open the **MCP Bridge** panel — it connects on its own
 
 **macOS — without the panel**
 ```bash
-./start-bridge.sh          # launches InDesign, then the JXA proxy
+git clone https://github.com/nutriandrea/adobe-indesign-mcp
+cd adobe-indesign-mcp
+npm install            # gives the proxy its `ws` dependency; nothing to build
+./start-bridge.sh      # launches InDesign, then the JXA proxy
 ```
 
-**Windows — without the panel**
-```bash
-COM_BRIDGE_ENABLED=true node dist/index.js
-```
+**Windows — no bridge process.** The COM bridge drives InDesign in-process, so
+Windows needs neither the clone nor a second process; it is enabled by the env
+var in the config you use in step 2 (see
+[`examples/claude-desktop.windows.json`](examples/claude-desktop.windows.json)).
 See [WINDOWS.md](WINDOWS.md) for the details and caveats.
 
 ### 2️⃣ Connect your AI agent
 
-**OpenCode:**
-```json
-{
-  "mcpServers": {
-    "indesign": {
-      "command": "node",
-      "args": ["dist/index.js", "opencode-indesign.json"]
-    }
-  }
-}
-```
+Both hosts start the same published package — nothing to clone, nothing to
+build.
 
 **Claude Desktop:**
 ```json
 {
   "mcpServers": {
     "indesign": {
-      "command": "node",
-      "args": ["/path/to/indesign-nutria-mcp/dist/index.js"]
+      "command": "npx",
+      "args": ["-y", "indesign-nutria-mcp"]
     }
   }
 }
 ```
+
+**OpenCode** (project `opencode.json`, or the same block in
+`~/.config/opencode/opencode.json`):
+```json
+{
+  "mcp": {
+    "servers": {
+      "indesign": {
+        "type": "local",
+        "command": ["npx", "-y", "indesign-nutria-mcp"]
+      }
+    }
+  }
+}
+```
+On OpenCode the servers live under `mcp.servers`, not `mcpServers`, and the
+command is an array — that is [the documented V2 shape](https://opencode.ai/v2/docs/mcp-servers).
+
+Ready-made files for Claude Desktop, Cursor and Claude Code — including the
+Windows COM variant — are in [`examples/`](examples/README.md). Each one is
+copy-paste.
 
 ### 3️⃣ Start creating
 
@@ -323,7 +335,93 @@ Every message is a single-line JSON-RPC object terminated by `\n`; there is no f
 
 ---
 
-## 🆕 What's New in v1.4.2
+## 🆕 What's New in v1.6.0
+
+### Fixed
+
+| ⚠️ | Read this before you script |
+|---|---|
+| **The layout skill named tools that do not exist** | `skills/indesign/indesign-mcp-layout/SKILL.md` advertised an `mcp_indesign_*` prefix the registry never used, and pointed connectivity checks at `health_check` and `list_ai_skills` — neither is registered by any handler. A skill is instruction, so naming a tool that does not resolve sends a model into a second failure on top of the one it was recovering from. |
+
+| Change | What it means for you |
+|--------|----------------------|
+| **The skill names real tools now** | It points at the bare tool names the registry actually exposes, and documents the read-only resources (`mcp://bridge/status` and friends), which never touch InDesign and cost no round-trip. |
+| **Skills are guarded like the instructions are** | `tests/unit/skillGuidance.test.ts` walks every `SKILL.md` under `skills/` and `marketplace/` and fails on a tool name the registry does not know — and on a skill whose frontmatter `name` disagrees with its folder. Regression-proven against the bug above. |
+| **Marketplace counts are checked too** | `verify:tool-counts` now reads the markdown under `marketplace/`, so the number quoted to a buyer is checked alongside the README, `llms.txt` and the package description. |
+
+### Added
+
+| Change | What it means for you |
+|--------|----------------------|
+| **Client configs** | `examples/` holds copy-paste configs for Claude Desktop (macOS, and the Windows COM variant), Cursor and Claude Code, plus `examples/README.md`. |
+| **Registry and bundle metadata** | `server.json` — generated from `package.json` and gated by `verify:server-json` — and `mcpb/manifest.json`, so the MCP Registry and an MCP Bundle can be published from the same release. |
+| **Release automation** | `release.yml` takes a tag through `verify` and `verify:pack`, publishes to npm with provenance, builds the `.mcpb` and attaches it to the GitHub Release with the CHANGELOG notes. `publish-mcp-registry.yml` chains off the release, so the registry never advertises a version npm does not have. `validate-release-tag.sh` refuses a tag that disagrees with `package.json` or has no CHANGELOG section. |
+| **A packaged companion skill** | `marketplace/agensi/` prepares the skill for a third-party marketplace, with `npm run build:agensi` asserting the archive shape the reviewer requires — one top-level folder, `SKILL.md` at its root, text files only. Like `mcpb/`, it does not ship to npm. |
+
+<details>
+<summary>v1.5.0</summary>
+
+### For AI agents
+
+| ⚠️ | Read this before you script |
+|---|---|
+| **Pass `document_id` — don't trust the front tab** | Every tool takes an optional `document_id`: a document name (as `document_listOpen` reports it) or a 0-based index. With more than one document open the front tab is **not** reliably the intended target, and a call that lands on the wrong document edits the wrong file. Call `document_getState`, then pass `document_id` on everything that follows. |
+
+| Change | What it means for you |
+|--------|----------------------|
+| **`document_id` on every tool** | 197 tools, one extra optional parameter. Omit it and a tool acts on the front document — exactly the previous behaviour, so nothing you already send changes. |
+| **A target that is not open fails loudly** | `document_id 'Gone.indd' is not open. Open documents: A.indd, B.indd`, classified `document_not_found` and suggesting `document_listOpen`. Previously the script silently edited whichever document happened to be frontmost. |
+| **One shared resolver** | `app.activeDocument` was written inline in **197 places across 32 handlers**; `__resolveDocument()` is now injected with every script and every document-scoped handler resolves through it, so the target holds for the whole call — even if the front tab changes mid-script. |
+| **Safe by construction** | `document_id` reaches InDesign as a JSON string literal and is matched by name, so it is never executable. It is bound per call in `AsyncLocalStorage`, so a call that awaits before dispatching cannot be hijacked by a concurrent one. |
+
+### Changed
+
+| Change | What it means for you |
+|--------|----------------------|
+| **The "pin the document" advice is now executable** | The connect-time contract used to tell the host to *ask which document was meant*. It now names `document_id` and how to pass it, and the shipped `indesign-mcp-layout` skill points at it too. |
+
+</details>
+
+<details>
+<summary>v1.4.3</summary>
+
+### For AI agents
+
+| ⚠️ | Read this before you script |
+|---|---|
+| **Failures now tell you how to recover** | A failing call returns a JSON envelope `{ ok: false, code, message, suggested_next_tool?, suggested_args? }` instead of prose. Branch on `code`, and call `suggested_next_tool` when it is present rather than guessing. |
+| **State before action** | `document_getState` returns the front document's geometry, its index, every open document, the active layer and the selection count in one round-trip. Call it before mutating instead of assembling that state from four separate calls. |
+| **A recipe is one call, not a chain** | `recipe_flowTextStory` places a text file and flows it across pages; `recipe_exportPreset` applies a named PDF preset and exports. Measured live, the flow cost **1 call / 215 bytes** against **6 calls / 786 bytes** for the nearest atomic chain — which cannot place the text at all. |
+
+| Change | What it means for you |
+|--------|----------------------|
+| **Structured error envelopes** | Sixteen failure classes, each with a `suggested_next_tool` checked against the live registry (a bad frame index suggests `document_getInfo`; a timeout suggests `document_listOpen`). ExtendScript errors carry `line`, `file` and `stack`. |
+| **A workflow contract on connect** | The server advertises roughly 680 tokens of `instructions` — bridge bootstrap, state-before-action, the `document_close` save trap, the error-envelope shape and undo grouping. |
+| **`document_getState`** | One round-trip replaces the `document_getInfo` + `document_listOpen` + layer + selection sequence. |
+| **`preview_document` takes `documentIndex`** | Render any open document, not only the front one. Exports are capped at 4 MB and re-rendered once at a fitting resolution before failing with `output_too_large`. |
+| **Two new recipes** | `recipe_flowTextStory` and `recipe_exportPreset`, bringing the catalog to 197. |
+| **Opt-in success envelope** | `RESPONSE_ENVELOPE_SUCCESS` (or `responseEnvelope.success`) wraps successful results as `{ ok: true, ... }`, so a single key covers success and failure. **Off by default**, because it changes the response shape. |
+| **A smaller, correct package** | A `files` allowlist replaces the `.npmignore` denylist: **1.6 MB unpacked**, down from 4.4 MB — and the `bridge-proxy.mjs` that the macOS launcher execs is now actually shipped. |
+
+### Changed
+
+| Change | What it means for you |
+|--------|----------------------|
+| **Error responses are JSON text** | The failure message is preserved verbatim inside the envelope; `isError: true` is unchanged. |
+| **`document_close` defaults `saveOptions` to `"no"`** | `"ask"` raised a modal save dialog that blocked until the bridge timed out and could leave InDesign wedged; `"no"` cannot prompt. Call `document_save` first when you want the work kept. |
+
+### Fixed
+
+| Fix | What it means |
+|-----|---------------|
+| **Every call after `undo_beginGroup` failed** | `wrapExtendScript` set `app.scriptPreferences.undoMode`, a property InDesign does not have. Undo groups now run through `app.doScript(..., UndoModes.ENTIRE_SCRIPT)`. |
+| **`undo`, `redo` and `undo_history` threw on every call** | They read `document.undoable` / `document.redoable`, which are not part of the DOM. |
+| **The server reported itself as v1.0.0** | Four releases after v1.0.0 it advertised the old literal on `initialize`. `SERVER_VERSION` is now the single source of truth, and two gates keep it honest. |
+
+</details>
+
+<details>
+<summary>v1.4.2</summary>
 
 ### For AI agents
 
@@ -340,6 +438,8 @@ Every message is a single-line JSON-RPC object terminated by `\n`; there is no f
 | **The panel connects itself** | The MCP Bridge panel connects on open, so there is no Connect click to miss. |
 | **InDesign 2026 anchoring** | Creating an anchored object no longer depends on `move()`, which 2026 rejects for insertion-point targets. |
 | **The shipped config starts everywhere** | It declared the wrong MCP transport and would have aborted startup on macOS and Linux had it enabled the Windows COM bridge. Both are now covered by a test. |
+
+</details>
 
 <details>
 <summary>v1.4.0</summary>
@@ -364,6 +464,8 @@ Every message is a single-line JSON-RPC object terminated by `\n`; there is no f
 | **One escaping path** | All handlers share a single battle-tested ExtendScript string escaper. |
 | **Hardened path validation** | File-path checks now use true containment (no prefix-collision escapes). |
 | **Honest status** | `getStatus().connected` reflects actual plugin connectivity, and CI enforces coverage gates. |
+
+</details>
 
 <details>
 <summary>What's New in v1.1.0</summary>
@@ -430,11 +532,16 @@ Two ways to run on Windows: the standard UXP plugin flow (identical to macOS) or
 │   ├── types/           # TypeScript definitions
 │   └── utils/           # Config, logger, security, JSON polyfill
 ├── plugin/              # UXP panel (index.html, index.js, manifest.json)
+├── examples/            # Copy-paste client configs (Claude Desktop, Cursor, Claude Code)
+├── mcpb/                # MCP Bundle manifest (npm run build:mcpb packs the archive)
+├── server.json          # MCP Registry manifest (generated from package.json)
+├── llms.txt             # llms.txt index for agents and directories
 ├── bridge-proxy.mjs     # Plugin-free macOS proxy (JXA/osascript)
 ├── jxa-driver.js        # Runs one ExtendScript inside InDesign
 ├── start-bridge.sh      # Launches InDesign + the proxy
 ├── skills/              # Agent-facing skills shipped with the server
-├── tests/               # 1052 tests (vitest)
+├── marketplace/         # Store listings that package a skill for third-party channels
+├── tests/               # 1123 tests (vitest)
 ├── .opencode/skills/    # 10 AI agent skills
 ├── docs/                # Documentation and fork audits
 ├── media/               # Social preview, hero images
@@ -457,7 +564,7 @@ Two ways to run on Windows: the standard UXP plugin flow (identical to macOS) or
 ## 🧪 Development
 
 ```bash
-npm test            # Run 1052 tests
+npm test            # Run 1123 tests
 npm run test:watch  # Watch mode
 npm run build       # TypeScript compile
 npm run lint        # ESLint
@@ -493,6 +600,20 @@ npm run smoke:recipes   # the live gate for the two recipes
 reported, calls `undo` **once** to confirm the whole flow is a single undo step,
 then exercises both preset paths of `recipe_exportPreset`. Same rules as above —
 needs a desktop app, exits 0 with a SKIP notice when InDesign is closed.
+
+```bash
+npm run smoke:target    # the live gate for document_id
+```
+
+`smoke:target` opens **two** documents and proves the thing `document_id` is for:
+a call that names the non-front document edits *that* document and leaves the
+front one alone. It then checks index targeting, that omitting `document_id`
+still acts on the front document (the additive guarantee), that an unopened
+target arrives as a `document_not_found` envelope suggesting `document_listOpen`,
+and that a hostile `document_id` is inert rather than executed. It closes only
+the documents it created, never saves, and leaves every pre-existing document
+untouched. Same rules as above — needs a desktop app, exits 0 with a SKIP notice
+when InDesign is closed.
 
 ---
 
@@ -568,7 +689,7 @@ preference.
   app name was hardcoded to "Adobe InDesign 2024", so every other version
   failed. The same work also moved the connection handshake out of
   `app.doScript`, where it was being parsed as ExtendScript. Adopted and
-  extended — see [What's New](#-whats-new-in-v142).
+  extended — see [What's New in v1.4.2](CHANGELOG.md#142---2026-09-27).
 
 - **[@ijeetu](https://github.com/ijeetu)** — two fixes, both easy to miss and
   both real. The MCP Bridge panel now connects on open instead of waiting for

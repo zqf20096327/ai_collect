@@ -3,7 +3,7 @@
 ![GitHub stars](https://img.shields.io/github/stars/AdilShamim8/ML-Roadmap-and-Notes?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/AdilShamim8/ML-Roadmap-and-Notes?style=social)
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![Last Updated](https://img.shields.io/badge/last%20updated-April%202026-brightgreen)
+![Last Updated](https://img.shields.io/badge/last%20updated-October%202026-brightgreen)
 
 
 
@@ -25,8 +25,8 @@
 - [Level 3: Learn Practical Concepts](#3-learn-practical-concepts)
 - [Level 4: Diving into different domains](#4-diving-into-different-domains)
 - [Level 5: Pushing it with Projects](#5-pushing-it-with-projects)
-- [Level 6: Senior / Expert-Level ML Engineering (🆕 April 2026)](#6-senior--expert-level-ml-engineering--april-2026)
-- [Level 7: Emerging & Frontier Topics (🆕 April 2026)](#7-emerging--frontier-topics--april-2026)
+- [Level 6: Senior / Expert-Level ML Engineering](#6-senior--expert-level-ml-engineering)
+- [Level 7: Emerging & Frontier Topics](#7-emerging--frontier-topics)
 
 ## Learning Journey Overview
 
@@ -55,7 +55,7 @@ This roadmap is organized into seven progressive levels:
 
 1. **Basics of Python** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/1.%20Testing%20the%20waters/1.%20Learn%20Python/1.%20Basics%20of%20Python)   
 2. **OOP in Python** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/1.%20Testing%20the%20waters/1.%20Learn%20Python/2.%20OOP%20in%20Python)   
-3. **Advanced Topics** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/1.%20Testing%20the%20waters/1.%20Learn%20Python/3.%20Advance%20Topics)   
+3. **Advanced Topics** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/1.%20Testing%20the%20waters/1.%20Learn%20Python/3.%20Advanced%20Topics)   
 4. **Practice Problems** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/blob/main/1.%20Testing%20the%20waters/1.%20Learn%20Python/Exercise.ipynb)  
 </details>
 
@@ -130,7 +130,7 @@ This roadmap is organized into seven progressive levels:
 <summary>Click to expand Mathematics resources</summary>
 
 - **Roadmap**: [Mathematics for Machine Learning](https://docs.google.com/spreadsheets/d/10spJMs0Zmv5cugfFjJVc4MudyOVjl_16Ef5z54oxqnM/edit?gid=0#gid=0)
-- **Book**: [Essential Math for Data Science](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/blob/main/Top%20Resources/Essential%20Math%20for%20Data%20Science%20(Thomas%20Nield)%20(Z-Library).pdf)
+- **Book**: [Essential Math for Data Science](https://www.oreilly.com/library/view/essential-math-for/9781098102920/) (Thomas Nield, O'Reilly)
 - **Book**: [Mathematics for Machine Learning](https://github.com/mml-book/mml-book.github.io)
 </details>
 
@@ -195,10 +195,10 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 | Gradient Boosting | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/2.%20Gaining%20Conceptual%20depth/6.%20Machine%20Learning%20Algorithms/Gradient%20Boosting) |
 | XGBoost | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/2.%20Gaining%20Conceptual%20depth/6.%20Machine%20Learning%20Algorithms/XGBoost) |
 | PCA | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/2.%20Gaining%20Conceptual%20depth/6.%20Machine%20Learning%20Algorithms/PCA) |
-| K-Means Clustering | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/2.%20Gaining%20Conceptual%20depth/6.%20Machine%20Learning%20Algorithms/K_Means) |
+| K-Means Clustering | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/2.%20Gaining%20Conceptual%20depth/6.%20Machine%20Learning%20Algorithms/K-Means%20Clustering) |
 | Hierarchical Clustering | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/2.%20Gaining%20Conceptual%20depth/6.%20Machine%20Learning%20Algorithms/Hierarchical%20Clustering) |
 | DBSCAN | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/2.%20Gaining%20Conceptual%20depth/6.%20Machine%20Learning%20Algorithms/DBSCAN%20Clustering) |
-| T-sne | Coming Soon |
+| t-SNE | [Demo in the All-Models reference](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/blob/main/2.%20Gaining%20Conceptual%20depth/6.%20Machine%20Learning%20Algorithms/Machine%20Learning%20All%20Models.md) |
 </details>
 
 ### Machine Learning Metrics  
@@ -207,6 +207,14 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 <summary>Click to expand ML Metrics resources</summary>
 
 - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/2.%20Gaining%20Conceptual%20depth/7.%20Machine%20Learning%20Metrics) 
+</details>
+
+### Bias-Variance Tradeoff
+
+<details>
+<summary>Click to expand Bias-Variance resources</summary>
+
+- [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/2.%20Gaining%20Conceptual%20depth/8.%20Bias-Variance%20Tradeoff)
 </details>
 
 ### Regularization  
@@ -228,22 +236,22 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 <details>
 <summary>Click to expand Data Acquisition resources</summary>
 
-1. **Data Acquisition** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/1.%20Data%20Acquisition/Data%20Acquistion)
+1. **Data Acquisition** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/1.%20Data%20Acquisition)
 </details>
 
-### Working with missing values 
+### Working with Missing Values
 
 <details>
 <summary>Click to expand Missing Values resources</summary>
 
 | Technique | Notes Link |
 |-----------|------------|
-| Complete Case Analysis | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/2.%20Working%20with%20missing%20values/1.%20Complete%20Case%20Analysis) |
-| Handling missing numerical data | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/2.%20Working%20with%20missing%20values/2.%20Handling%20missing%20numerical%20data) |
-| Handling missing categorical data | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/2.%20Working%20with%20missing%20values/3.%20Handling%20missing%20categorical%20data) |
-| Missing indicator | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/2.%20Working%20with%20missing%20values/4.%20Missing%20indicator) |
-| KNN Imputer | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/2.%20Working%20with%20missing%20values/5.%20KNN%20Imputer) |
-| MICE | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/2.%20Working%20with%20missing%20values/6.%20MICE) |
+| Complete Case Analysis | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/2.%20Working%20with%20Missing%20Values/1.%20Complete%20Case%20Analysis) |
+| Handling missing numerical data | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/2.%20Working%20with%20Missing%20Values/2.%20Handling%20missing%20numerical%20data) |
+| Handling missing categorical data | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/2.%20Working%20with%20Missing%20Values/3.%20Handling%20missing%20categorical%20data) |
+| Missing indicator | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/2.%20Working%20with%20Missing%20Values/4.%20Missing%20indicator) |
+| KNN Imputer | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/2.%20Working%20with%20Missing%20Values/5.%20KNN%20Imputer) |
+| MICE | [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/2.%20Working%20with%20Missing%20Values/6.%20MICE) |
 
 **Practice Resources**: [Kaggle Notebooks and Practice Datasets](https://docs.google.com/document/d/1_9Y6kxNc6QTym2Y2JGEBbnCUbE1qZWLVzVXlT2eX_FQ/edit?usp=sharing)
 </details>
@@ -283,12 +291,12 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 2. **Sklearn Pipelines** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/6.%20Working%20with%20Pipelines/2.%20Sklearn%20Pipelines)
 </details>
 
-### Handing Time and Date
+### Handling Time and Date
 
 <details>
 <summary>Click to expand Time and Date resources</summary>
 
-1. **Working with time and date data** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/7.%20Handing%20Time%20and%20Date%20data/1.%20Working%20with%20time%20and%20date%20data)
+1. **Working with Time and Date Data** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/7.%20Handling%20Time%20and%20Date%20Data)
 </details>
 
 ### Working with Outliers
@@ -296,7 +304,7 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 <details>
 <summary>Click to expand Outliers resources</summary>
 
-1. **Working with Outliers** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/8.%20Working%20with%20Outliers/Working%20with%20Outliers)
+1. **Working with Outliers** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/8.%20Working%20with%20Outliers)
 </details>
 
 ### Feature Construction 
@@ -304,7 +312,7 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 <details>
 <summary>Click to expand Feature Construction resources</summary>
 
-1. **Feature Construction** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/9.%20Feature%20Construction/1.%20Feature%20Construction)
+1. **Feature Construction** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/9.%20Feature%20Construction)
 </details>
 
 ### Feature Selection 
@@ -312,7 +320,7 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 <details>
 <summary>Click to expand Feature Selection resources</summary>
 
-1. **Feature selection** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/10.%20Feature%20Selection/Feature%20Selection)
+1. **Feature Selection** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/10.%20Feature%20Selection)
 </details>
 
 ### Cross Validation 
@@ -320,7 +328,7 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 <details>
 <summary>Click to expand Cross Validation resources</summary>
 
-1. **Cross-validation** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/11.%20Cross%20Validation/Cross%20Validation)
+1. **Cross Validation** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/11.%20Cross%20Validation)
 </details>
 
 ### Modelling - Stacking and Blending 
@@ -344,12 +352,12 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 3. **Hyperparameter Tuning** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/13.%20Model%20Tuning/Hyperparameter%20Tuning)
 </details>
 
-### Working with imbalanced data 
+### Working with Imbalanced Data
 
 <details>
 <summary>Click to expand Imbalanced Data resources</summary>
 
-1. **How to handle imbalanced data** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/14.%20Working%20with%20imbalanced%20data/Handling%20imbalanced%20dataset)
+1. **Working with Imbalanced Data** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/14.%20Working%20with%20Imbalanced%20Data)
 </details>
 
 ### Handling Multicollinearity
@@ -357,7 +365,7 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 <details>
 <summary>Click to expand Multicollinearity resources</summary>
 
-1. **Handling Multicollinearity** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/15.%20Handling%20Multicollinearity/Handling%20Multicollinearity)
+1. **Handling Multicollinearity** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/15.%20Handling%20Multicollinearity)
 </details>
 
 ### Data Leakage
@@ -365,7 +373,7 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 <details>
 <summary>Click to expand Data Leakage resources</summary>
 
-1. **Data Leakage** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/16.%20Data%20Leakage/Data%20Leakage)
+1. **Data Leakage** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/16.%20Data%20Leakage)
 </details>
 
 ### Serving your model
@@ -373,15 +381,9 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 <details>
 <summary>Click to expand Model Serving resources</summary>
 
-> Coming Soon:
-> - Pickling your model
-> - Flask
-> - Streamlit
-> - Deploy model on Heroku
-> - Deploy model on AWS
-> - Deploy model to GCP
-> - Deploy model to Azure
-> - ML model to Android App
+1. **Model Serving** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/17.%20Model%20Serving)
+
+> Covers model serialization (joblib, pickle, ONNX), REST APIs with FastAPI, quick demos with Streamlit and Gradio, and deployment targets from local Docker to AWS, GCP, Azure, and Hugging Face Spaces.
 </details>
 
 ### Working with Large Datasets 
@@ -389,7 +391,7 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 <details>
 <summary>Click to expand Large Datasets resources</summary>
 
-1. **Working with Large Datasets** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/18.%20Working%20with%20Large%20Datasets/Working%20with%20Large%20Datasets)
+1. **Working with Large Datasets** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/3.%20Learn%20Practical%20Concepts/18.%20Working%20with%20Large%20Datasets)
 </details>
 
 ---
@@ -420,10 +422,9 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 <details>
 <summary>Click to expand Association Rule Learning resources</summary>
 
-> Coming Soon:
-> - Association Rule Mining(Apriori Algorithm)
-> - Eclat Algorithm
-> - Market Basket Analysis
+1. **Association Rule Learning** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/4.%20Diving%20into%20different%20domains/Association%20Rule%20Learning)
+
+> Support, confidence, and lift; the Apriori property; Eclat and FP-Growth — with a full market-basket mining walkthrough on 7,501 real supermarket transactions using mlxtend.
 </details>
 
 ### Anomaly Detection
@@ -431,9 +432,9 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 <details>
 <summary>Click to expand Anomaly Detection resources</summary>
 
-> Coming Soon:
-> - Anomaly Detection Lecture from Microsoft Research
-> - Novelty Detection Lecture
+1. **Anomaly Detection** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/4.%20Diving%20into%20different%20domains/Anomaly%20Detection)
+
+> Outlier vs anomaly vs novelty detection; Isolation Forest, LOF, One-Class SVM, and Elliptic Envelope — compared in a controlled experiment with injected anomalies, plus production notes on contamination, drift, and alert volume.
 </details>
 
 ### NLP 
@@ -442,12 +443,21 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 <summary>Click to expand NLP resources</summary>
 
 1. **NLP-Introduction** - [View Notebook](https://www.kaggle.com/code/adilshamim8/nlp-introduction)
-2. **NLP NOTES** - (Coming Soon)
+2. **NLP Notes** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/4.%20Diving%20into%20different%20domains/Natural%20Language%20Processing)
 3. **Email Spam Classifier Project** - [View Project](https://github.com/AdilShamim8/Email-Spam-Classifier)
+
+> The notes cover the full staircase — preprocessing, Bag-of-Words, TF-IDF, Word2Vec embeddings — executed on the real 5,574-message UCI SMS Spam Collection, with a 2026 guide on when classic NLP still beats LLMs.
 </details>
 
 ### Time Series
-> Coming Soon
+
+<details>
+<summary>Click to expand Time Series resources</summary>
+
+1. **Time Series Analysis and Forecasting** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/4.%20Diving%20into%20different%20domains/Time%20Series)
+
+> Covers trend/seasonality decomposition, stationarity and the ADF test, ACF/PACF, seasonal-naive and Holt-Winters baselines, ARIMA/SARIMA, walk-forward validation, and modern alternatives — with a full airline-passengers forecasting walkthrough.
+</details>
 
 ### Computer Vision
 
@@ -458,14 +468,35 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 2. **Cat vs Dog Classification Project** - [View Project](https://github.com/AdilShamim8/Cat_Vs_Dog_Image_Classification_Project)
 </details>
 
-### Fundamentals of Neural Network
-> Coming Soon
+### Fundamentals of Neural Networks
+
+<details>
+<summary>Click to expand Neural Network resources</summary>
+
+1. **Fundamentals of Neural Networks** - [View Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/4.%20Diving%20into%20different%20domains/Fundamentals%20of%20Neural%20Networks)
+
+> Neurons and MLPs, activation functions, backpropagation, a NumPy implementation from scratch, and the same network in PyTorch (executed on PyTorch 2.14). This is the prerequisite for Level 7 (Transformers, LLMs).
+</details>
 
 ---
 
 ## 5. Pushing it with Projects
 
 > The objective of this level is to sharpen the knowledge that you have accumulated in the previous 4 levels
+
+### End-to-End ML Projects (Capstones)
+
+<details>
+<summary>Click to expand the capstone project</summary>
+
+1. **End-to-End ML Project: Titanic Survival Prediction** - [View Project](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/5.%20Pushing%20it%20with%20Projects/End-to-End%20ML%20Project)
+
+> One complete project, run the professional way: problem framing → EDA → feature engineering → leak-free pipelines → model comparison → tuning → holdout evaluation → persistence and serving. Every stage maps back to Levels 1–4, and the real dataset ships with the notebook so it runs offline.
+
+2. **End-to-End Regression Project: California Housing Prices** - [View Project](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/tree/main/5.%20Pushing%20it%20with%20Projects/End-to-End%20Regression%20Project)
+
+> The regression capstone: a log-transformed target, measured feature engineering, five model families compared under one protocol, dollar-metric holdout reporting (RMSE $46,985 vs a $117,312 naive baseline), and an error analysis that finds exactly where the money is lost — the $500k price cap costs 2.6× the average error on luxury blocks. Dataset ships with the notebook; runs fully offline.
+</details>
 
 ### Project Collections
 
@@ -478,7 +509,7 @@ Machine Learning — All Models [Link](https://github.com/AdilShamim8/ML-Roadmap
 
 ---
 
-## 6. Senior / Expert-Level ML Engineering 🆕 (April 2026)
+## 6. Senior / Expert-Level ML Engineering
 
 > The high-value MLE in 2026 is an MLOps expert who can deploy and monitor models at scale, not just an algorithm tuner. This level covers the production engineering, infrastructure, and system-design skills that separate senior ML engineers from juniors.
 
@@ -564,8 +595,10 @@ Fluency in one major cloud provider (AWS, Azure, or GCP) is now expected for mos
 | Provider | Key ML Services |
 |----------|----------------|
 | **AWS** | SageMaker, Bedrock, S3, EC2, Lambda, Step Functions |
-| **GCP** | AWS is the market leader, but GCP often has the most intuitive and modern MLOps tools (like Vertex AI). Vertex AI, BigQuery ML, Cloud Run |
-| **Azure** | Azure ML, Azure OpenAI Service, Cognitive Services |
+| **GCP** | Vertex AI, BigQuery ML, Cloud Run, Vertex AI Feature Store |
+| **Azure** | Azure ML, Azure OpenAI Service, Azure AI Services |
+
+> AWS is the overall market leader, but GCP is often praised for having the most intuitive and modern MLOps tooling (Vertex AI), while Azure is the natural fit for Microsoft-centric enterprises. Pick the one that matches your target employers — not all three.
 
 </details>
 
@@ -649,7 +682,7 @@ The ability to frame business problems as machine-learning challenges is a criti
 
 ---
 
-## 7. Emerging & Frontier Topics 🆕 (April 2026)
+## 7. Emerging & Frontier Topics
 
 > The future of ML goes hand in hand with GenAI, LLMs, and AutoML enabling more autonomous model creation and intelligent systems. This level covers the most in-demand emerging skills for ML engineers in 2026.
 
@@ -683,10 +716,10 @@ The new reality with LLMs is fundamentally different. In 2026, production AI sys
 | Topic | What to Learn |
 |-------|--------------|
 | **LLM Fundamentals** | Tokenization, attention mechanisms, scaling laws, pretraining vs. fine-tuning |
-| **Working with LLM APIs** | OpenAI, Anthropic (Claude), Google (Gemini), open-source (Llama, Mistral, DeepSeek) |
+| **Working with LLM APIs** | OpenAI (GPT-5.x/6), Anthropic (Claude Opus/Sonnet 5.5), Google (Gemini 3/4), and open-weight models (Llama 4, gpt-oss, Muse Spark Open, Mistral, Qwen, DeepSeek) |
 | **Prompt Engineering** | Zero-shot, few-shot, and chain-of-thought prompting techniques to achieve consistent and controlled outputs. |
 | **Fine-Tuning** | With smaller, more efficient models becoming more common, fine-tuning is quickly turning into a core skill for AI engineers. LoRA, QLoRA, PEFT, using `trl` and Hugging Face |
-| **Model Selection** | Take a base model (Llama 3.3 8B is the 2026 choice), curate instruction-response pairs, run LoRA fine-tuning. Evaluate open-source vs. frontier models for your use case |
+| **Model Selection** | Pick an open-weights base appropriate to your hardware: Llama 4 Scout (fits a single GPU), OpenAI's gpt-oss-20b/120b, or Meta's Muse Spark Open (released October 2026, the most capable US open-weights model to date). Curate instruction-response pairs, run LoRA fine-tuning, and evaluate open-weight vs. frontier models for your use case |
 | **Quantization & Optimization** | GPTQ, AWQ, GGUF, INT8/FP16, vLLM for high-throughput serving |
 
 </details>
@@ -723,7 +756,7 @@ AI agents powered by large language models and other agentic architectures have 
 | Topic | What to Learn |
 |-------|--------------|
 | **Agent Fundamentals** | Take your RAG pipeline and give the model tools: web search, document retrieval, a calculator, a code executor. Implement the ReAct loop manually. |
-| **Agent Frameworks** | Teams starting new agent projects in 2026 are choosing LangGraph, CrewAI, or PydanticAI. Also: OpenAI Agents SDK, n8n |
+| **Agent Frameworks** | Teams starting new agent projects in 2026 are choosing LangGraph, CrewAI, or PydanticAI. Also: OpenAI Agents SDK, Microsoft Agent Framework (the unified successor to AutoGen and Semantic Kernel), n8n |
 | **Model Context Protocol (MCP)** | MCP has become the de facto standard for connecting AI agents to external systems. |
 | **Multi-Agent Systems** | Orchestration of multiple specialized agents, handoffs, shared state |
 | **Tool Use & Function Calling** | Define tools, parse LLM function calls, handle errors gracefully |
@@ -746,6 +779,7 @@ Many production stacks in 2026 use LlamaIndex as the knowledge/retrieval layer a
 | **LangGraph** | Stateful, graph-based agent workflows | [LangGraph Docs](https://langchain-ai.github.io/langgraph/) |
 | **CrewAI** | Multi-agent orchestration | [crewai.io](https://www.crewai.io/) |
 | **PydanticAI** | Type-safe agent building | [pydantic.dev/pydantic-ai](https://ai.pydantic.dev/) |
+| **Microsoft Agent Framework** | Unified successor to AutoGen + Semantic Kernel for multi-agent orchestration | [github.com/microsoft/agent-framework](https://github.com/microsoft/agent-framework) |
 | **OpenAI Agents SDK** | Official OpenAI agent tooling | [OpenAI Docs](https://platform.openai.com/docs/) |
 | **Hugging Face Transformers** | Model hub, fine-tuning, inference | [huggingface.co](https://huggingface.co/) |
 
@@ -784,7 +818,7 @@ Industry and regulatory trends indicate that explainable and ethical AI capabili
 |-------|--------------|
 | **Model Interpretability** | SHAP, LIME, Attention Visualization, Feature Importance |
 | **Bias Detection & Mitigation** | Building fair, transparent ML systems requires understanding data privacy regulations, implementing bias mitigation strategies, and ensuring responsible AI content generation. Fairlearn, AIF360 |
-| **AI Governance & Compliance** | Compliance frameworks like Europe's AI Act forced organizations to rethink how they managed governance and accountability in their AI systems. EU AI Act, NIST AI RMF |
+| **AI Governance & Compliance** | The EU AI Act is now in force in stages: prohibited practices since Feb 2025, GPAI model obligations since Aug 2025, and transparency obligations since Aug 2026; high-risk system obligations arrive Dec 2027. Also NIST AI RMF. |
 | **Model Cards & Documentation** | Standardized model documentation for transparency |
 | **Red Teaming for LLMs** | Adversarial testing of LLM systems for safety |
 
@@ -799,9 +833,9 @@ In 2026, MLOps is no longer just about CI/CD for models — it now encompasses c
 
 | Topic | What to Learn |
 |-------|--------------|
-| **Text Generation** | GPT-4, Claude, Gemini, Llama, Mistral — API usage and self-hosting |
+| **Text Generation** | GPT-6/GPT-5.x, Claude 5.5, Gemini 4, Llama 4, Mistral — API usage and self-hosting |
 | **Image Generation** | Stable Diffusion, DALL-E, Midjourney APIs |
-| **Multimodal Models** | GPT-4V, Gemini multimodal, LLaVA — combining text, image, audio |
+| **Multimodal Models** | Frontier multimodal APIs (GPT-6, Gemini 4, Claude 5.5) plus open models (Llama 4, LLaVA, Qwen-VL) — combining text, image, audio |
 | **Audio/Speech** | Whisper (speech-to-text), TTS models, audio embeddings |
 | **Code Generation** | GitHub Copilot integration, code LLMs, AI-assisted development |
 
@@ -818,11 +852,14 @@ The average salary for a Senior Machine Learning Engineer is $212,689 per year i
 
 | Certification | Provider | Notes |
 |--------------|----------|-------|
-| **AWS Machine Learning — Specialty** | AWS | AWS's ML Specialty exam is being retired in March 2026, so plan accordingly. Look for the new AWS AI/ML certifications replacing it. |
-| **AWS Certified AI Practitioner** | AWS | New 2026 entry-level AI certification |
+| **AWS Certified Generative AI Developer – Professional** | AWS | Production GenAI on SageMaker + Bedrock; the successor to the retired ML Specialty line |
+| **AWS Certified Machine Learning Engineer – Associate** | AWS | Hands-on ML build, train, and deploy on AWS |
+| **AWS Certified AI Practitioner** | AWS | Foundational AI certification, no prerequisites |
 | **Google Cloud Professional ML Engineer** | GCP | Strong focus on Vertex AI |
 | **Azure AI Engineer Associate** | Microsoft | Azure ML + Azure OpenAI |
 | **TensorFlow Developer Certificate** | Google | Proves hands-on TF proficiency |
+
+> Note: The AWS Certified Machine Learning – Specialty exam was **retired on March 31, 2026**. If you already earned it, it remains on your AWS transcript for three years. New candidates should target the **Generative AI Developer – Professional** or **Machine Learning Engineer – Associate** instead.
 
 #### Interview Preparation for Senior Roles
 
@@ -839,12 +876,29 @@ Key interview focus areas in 2026:
 
 ---
 
-## Summary: What Changed in the April 2026 Update
+## Top Resources
+
+<details>
+<summary>Click to expand Top Resources</summary>
+
+1. **Top Resources to Learn Machine Learning (2025 Edition)** - [View the Full Guide](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/blob/main/Top%20Resources/README.md)
+2. **AI/ML Cheat Sheet** - [View PDF](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/blob/main/Top%20Resources/AI_ML%20Cheat%20Sheet.pdf)
+3. **Top Resources to Learn Machine Learning in 2025 (PDF)** - [View PDF](https://github.com/AdilShamim8/ML-Roadmap-and-Notes/blob/main/Top%20Resources/Top%20Resources%20to%20Learn%20Machine%20Learning%20in%202025.pdf)
+
+> A curated companion guide: the top 10 courses, YouTube playlists, websites, books, and podcasts with a structured learning path — compiled October 2025.
+</details>
+
+---
+
+## Summary: What Changed in the 2026 Updates
 
 | Section | What Was Added | Why |
 |---------|---------------|-----|
-| **Level 6** | MLOps, Containerization, Cloud, Model Serving, System Design, Data Engineering, Business Skills | In 2026, MLOps is no longer optional. It is the foundation that enables scalable, secure, compliant, and business-ready AI systems. |
-| **Level 7** | Deep Learning, LLMs, RAG, AI Agents, LLMOps, XAI, Generative AI, Certifications | In 2026, companies expect engineers to build production-ready AI systems that combine large language models with RAG pipelines, vector databases, agent frameworks, fine-tuning, and scalable backends. |
+| **Level 6** (April 2026) | MLOps, Containerization, Cloud, Model Serving, System Design, Data Engineering, Business Skills | In 2026, MLOps is no longer optional. It is the foundation that enables scalable, secure, compliant, and business-ready AI systems. |
+| **Level 7** (April 2026) | Deep Learning, LLMs, RAG, AI Agents, LLMOps, XAI, Generative AI, Certifications | In 2026, companies expect engineers to build production-ready AI systems that combine large language models with RAG pipelines, vector databases, agent frameworks, fine-tuning, and scalable backends. |
+| **October 2026 Refresh** | Corrected the cloud platform table, updated frontier & open-weight model references (GPT-6, Claude 5.5, Gemini 4, Llama 4, gpt-oss, Muse Spark Open), refreshed AWS certification guidance after the ML Specialty retirement (March 2026), added Microsoft Agent Framework, and tightened the EU AI Act timeline | Keeps the roadmap accurate as the 2026 AI ecosystem moves. |
+| **Structure Pass (October 2026)** | Flattened 11 redundant Level 3 nestings; fixed folder typos ("Data Acquistion", "Handing Time and Date", "Advance Topics") and stray-space filenames; unified folder/file naming to Title Case; linked the Top Resources folder into the README; closed every Level 4 "Coming Soon" gap (Association Rules, Anomaly Detection, NLP); added the Level 5 end-to-end capstone project | Expert-level repo hygiene: a consistent, typo-free, fully navigable structure — every move a git rename, so file history is preserved. |
+| **Depth Pass (October 2026)** | Converted the 5 raw-HTML notes (Linear Algebra, Calculus, AdaBoost, Decision Tree, Logistic Regression) to native Jupyter cells with executed code and removed-API fixes (`base_estimator`→`estimator`, `multi_class` removed); restructured 45 single-cell text walls into properly sectioned notebooks (wording verbatim); rebuilt Data Leakage, Cross Validation, and ML Metrics as executed-notebooks where every claim is a measured result (target leakage: 15 AUC points of illusion; feature-selection leak: 12 points; accuracy paradox: a real model ties a do-nothing baseline at 0.99; ROC-AUC 0.76 vs PR-AUC 0.05 on 1% positives); added the second Level 5 capstone — End-to-End Regression Project (California Housing, RMSE $46,985 vs $117,312 naive, error analysis by segment, offline dataset shipped) | A learning resource earns trust the same way a production system does: every number is an actual executed output, every code example runs, and every failure mode is demonstrated, not just described. |
 
 > As AI becomes more capable, human skills become your competitive advantage. The code you write is important, but the problem you solve is vital. In 2026, the best ML Engineers will actually be Product Engineers who use AI.
 

@@ -14,7 +14,7 @@
   <a href="https://github.com/bimwright/rvt-mcp/actions/workflows/build.yml"><img src="https://github.com/bimwright/rvt-mcp/actions/workflows/build.yml/badge.svg" alt="build" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="license" /></a>
   <a href="#supported-revit-versions"><img src="https://img.shields.io/badge/Revit-2022--2027-186BFF" alt="Revit 2022-2027" /></a>
-  <a href="#tools"><img src="https://img.shields.io/badge/MCP-233%20tools-6C47FF" alt="MCP tools" /></a>
+  <a href="#tools"><img src="https://img.shields.io/badge/MCP-237%20tools-6C47FF" alt="MCP tools" /></a>
   <a href="https://github.com/bimwright/rvt-mcp/releases/latest"><img src="https://img.shields.io/github/v/release/bimwright/rvt-mcp" alt="latest release" /></a>
   <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/changelog-version%20history-informational" alt="changelog" /></a>
 </p>
@@ -36,6 +36,8 @@ Agents get a **typed tool surface** for common Revit work, a C# escape hatch for
 ---
 
 ## Install
+
+**v1.2.0:** [Setup and Claude Desktop MCPB](https://github.com/bimwright/rvt-mcp/releases/tag/v1.2.0) · [NuGet (server only)](https://www.nuget.org/packages/RvtMcp.Server/1.2.0) · [MCP Registry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.bimwright%2Frvt-mcp/versions/1.2.0). See the [validation record and remaining coverage](docs/testing/2026-10-18-v1.2.0-validation.md).
 
 **Let an AI agent install it for your target client.** Use an agent that can run PowerShell and edit local files on this Windows machine (Claude Code, Codex, Cursor, …), not a chat session without local tools. The agent installing it can be different from the client where you will use Revit tools. It follows [AGENTS.md](AGENTS.md), previews changes and asks before applying them; you may still need to approve a UI step or restart an app.
 
@@ -86,21 +88,23 @@ Community videos of rvt-mcp at work. Install steps shown in a video can be older
 
 ## Tools
 
+Counts below match the **v1.2.0 release**; later development builds can expose a different catalog.
+
 | Mode | Tools | Notes |
 |------|------:|-------|
-| Fresh install | **233** | `install.ps1` seeds `"toolsets": ["all"]` in `rvtmcp.config.json` |
-| Bare `rvt-mcp.exe` | **46** | `query` + `create` + `view` + `meta` |
-| `--toolsets all` | **233** | Full catalog |
-| `all` + adaptive bake | **236** | Adds 3 suggestion-lifecycle tools |
+| Fresh install | **237** | `install.ps1` seeds `"toolsets": ["all"]` in `rvtmcp.config.json` |
+| Bare `rvt-mcp.exe` | **50** | `query` + `create` + `view` + `meta` |
+| `--toolsets all` | **237** | Full catalog |
+| `all` + adaptive bake | **240** | Adds 3 suggestion-lifecycle tools |
 
-Counts exclude your personal baked tools. The installer writes the seeded default only when `rvtmcp.config.json` doesn't already set `toolsets` — your own list survives upgrades, and removing the key (or setting your own CSV) returns a bare server to the 46-tool surface. Read-only filters individual tools by `ReadOnly=true`, including reads inside mixed toolsets. Tools that can write files are excluded even when their default output is inline.
+Counts exclude your personal baked tools. The installer writes the seeded default only when `rvtmcp.config.json` doesn't already set `toolsets` — your own list survives upgrades, and removing the key (or setting your own CSV) returns a bare server to the 50-tool surface. Read-only filters individual tools by `ReadOnly=true`, including reads inside mixed toolsets. Tools that can write files are excluded even when their default output is inline.
 
 | Toolset | What it covers |
 |---------|----------------|
 | `query` | View, selection, filters, stats, parameters, relationships, worksets, groups/assemblies |
 | `create` | Grids, levels, rooms, line/point/surface-based elements, groups |
 | `view` | Create views, sheets layout helpers, capture image, crop/scale |
-| `meta` | Batch execute (max 20), multi-Revit targets, recent models, project info, purge unused (MVP), message, send_code |
+| `meta` | Batch execute (max 20), multi-Revit targets, recent models, project info, purge unused (MVP), message, send_code, local failure records and operation status |
 | `lint` | View naming patterns, firm-profile detect, warnings summary |
 | `schedule` | List/create schedules, fields, formulas, data |
 | `families` | Load/unload, types, instances, audit, export `.rfa` (project-side) |
@@ -121,11 +125,19 @@ Counts exclude your personal baked tools. The installer writes the seeded defaul
 | `workflows` | Composite clash/audit/sheet/takeoff-style flows |
 | `structural` | Columns, beams, foundations, rebar, loads, … |
 
+### Session health
+
+At session start, select the intended Revit instance if needed, then call `revit_health()`. It stays offline by default and works with `--read-only` and no open model. `revit_health(check_updates=true)` explicitly compares the loaded gateway and add-in against one official stable release; missing evidence remains `unknown`. Follow `update_guidance`; only `prepare_update` with `bundle_update_proposal_allowed=true` permits an update proposal. Health never installs, closes models or restarts processes. It can reply while Revit is modal. Document fields are the last UI observation, dated by `document_observed_utc`, and do not confirm the current document or readiness for writes. After reconnect, compare fresh `initialize.serverInfo` and the health tool runtime metadata/schema/annotations in `tools/list` with `client_verification`; the server cannot observe client cache refresh.
+
+### Argument errors
+
+A call missing a required parameter does not run. It returns `INVALID_ARGUMENT` with `invalid_arguments` (`missing`, `unknown` with `did_you_mean`, `received`, `expected`). Parameter names are case-sensitive, and some tools use snake_case while others use camelCase: follow `did_you_mean`. A key that is not a parameter does not stop the call. It is ignored, and the result lists it under `_ignored_arguments`. A value that cannot be converted still returns `An error occurred invoking '<tool>'.`, with the exact cause in the server's stderr.
+
 ### send_code, ToolBaker, ribbon and languages
 
 - **`revit_send_code_to_revit`** (on by default) compiles and runs a C# body inside Revit when no typed tool fits; `--read-only` or `--disable-send-code` removes it. See [docs/send-code.md](docs/send-code.md), and [docs/stairs-workflow.md](docs/stairs-workflow.md) for stairs.
 - **ToolBaker:** `revit_list_baked_tools` / `revit_run_baked_tool` need `--toolsets toolbaker`. Adaptive bake (`--enable-adaptive-bake`, off by default) suggests tools from repeated calls; nothing is added until you accept one. Bake compiles inside Revit — no Visual Studio needed. See [docs/bake.md](docs/bake.md).
-- **Ribbon:** start or stop the connection, open **History** to search and re-run past calls, and switch completion **Toasts** (on by default).
+- **Ribbon:** start or stop the connection, open **History** to search past calls and review **Issues**, and switch completion **Toasts** (on by default).
 - **UI languages:** the add-in UI comes in 15 languages and follows Revit's UI language; change it with the **Language** button in the ribbon slide-out — it opens **Settings → General → Language** (`BIMWRIGHT_UI_LANGUAGE` still wins). Tool names and payloads stay English. See [docs/localization.md](docs/localization.md).
 
 ### Why activity toasts exist
@@ -163,6 +175,8 @@ If a prompt's toolsets aren't enabled, it answers with the exact `--toolsets` li
 
 ## Configuration
 
+**v1.2.0:** MCP warnings now default to rollback; unresolved issues block writes for that model. Review decisions in **History → Issues**. The new `revit_get_failure_records` and `revit_get_operation_status` tools read local state even while Revit is modal. Do not retry a pending or unknown operation. See [controlled failures and acceptance limits](docs/controlled-failures.md).
+
 Since v1.0.0 the server reports `_changes` and local per-model `_history`. History defaults on independently of call logs; use `--disable-change-history` to disable recording. The `meta` tools `revit_record_change`, `revit_get_change_records` and `revit_resolve_history_identity` attach reasons to explicit call IDs, query stored changes and record the owner's history choice after a copy or Save As. See [change tracking](docs/change-tracking.md) for privacy, limits and recovery.
 
 `revit_survey_change_impact` is a tool in `query`: a bounded, read-only survey of ten relationship groups, including with send-code disabled. `scopeThreshold` is required for each request; view/schedule iteration is opt-in through `maxViews > 0`. Partial results remain explicit and parameter observations are not trusted history snapshots. See [change-impact survey](docs/change-survey.md).
@@ -184,6 +198,7 @@ Precedence, high wins: **CLI → env (`BIMWRIGHT_*`) →** `%LOCALAPPDATA%\Bimwr
 | Transport cap | `--max-response-bytes` | `BIMWRIGHT_MAX_RESPONSE_BYTES` | `maxResponseBytes` |
 | Spill retention (default 36 h) | `--spill-retention-hours <n>` | `BIMWRIGHT_SPILL_RETENTION_HOURS` | `spillRetentionHours` |
 | LAN bind (plugin) | — | `BIMWRIGHT_ALLOW_LAN_BIND=1` | `allowLanBind` |
+| Remember MCP On/Off at startup (plugin; default on) | ribbon **MCP: ON / OFF** | `BIMWRIGHT_AUTO_START_TRANSPORT=0/1` | `autoStartTransport` |
 | ToolBaker surface | `--enable-toolbaker` / `--disable-toolbaker` | `BIMWRIGHT_ENABLE_TOOLBAKER` | `enableToolbaker` |
 | Adaptive bake | `--enable-adaptive-bake` / `--disable-adaptive-bake` | `BIMWRIGHT_ENABLE_ADAPTIVE_BAKE=1` | `enableAdaptiveBake` |
 | Cache send_code bodies (bake clusters) | `--cache-send-code-bodies` / `--no-…` | `BIMWRIGHT_CACHE_SEND_CODE_BODIES=1` | `cacheSendCodeBodies` |
@@ -196,6 +211,10 @@ Precedence, high wins: **CLI → env (`BIMWRIGHT_*`) →** `%LOCALAPPDATA%\Bimwr
 | UI language (add-in) | ribbon **Language** | `BIMWRIGHT_UI_LANGUAGE` | `uiLanguage` |
 
 After changing server flags, restart the MCP connection so the client picks up the new tool list.
+
+The MCP ribbon toggle saves its last successful On/Off state as `autoStartTransport` in the same config file. Revit uses that value on its next launch; closing Revit or stopping transport programmatically does not overwrite it. The file is shared by Revit versions and instances for the same Windows user, so the last saved toggle determines startup for future instances without changing instances already running. An unset value defaults to On. `BIMWRIGHT_AUTO_START_TRANSPORT`, when set in the **Revit process** environment, overrides the saved value at startup; the ribbon still saves the user's choice, but the environment override continues to win on later launches. A save failure is reported and the toggle applies only to the current session.
+
+If another third-party MCP add-in is detected for that Revit version, rvt-mcp starts **Off**, even when the saved state or environment requests On. Autodesk's official Revit MCP is exempt. This startup override preserves the saved preference. Clicking the ribbon toggle to start manually shows a localized modal notice with the number of third-party MCP add-ins, including rvt-mcp; acknowledging it allows startup. Detection reads `.addin` manifests and compatible bundle registrations, recognizing MCP names/classes/assembly names and deduplicating registrations. MCP implementations hidden behind generic loader metadata may not be recognized.
 
 ---
 
@@ -245,6 +264,7 @@ MCP annotations describe each tool's document/file effects. Transient selection,
       "mcp__rvt-mcp__revit_get_element_geometry",
       "mcp__rvt-mcp__revit_get_element_parameters",
       "mcp__rvt-mcp__revit_get_element_relationships",
+      "mcp__rvt-mcp__revit_get_failure_records",
       "mcp__rvt-mcp__revit_get_family_instances",
       "mcp__rvt-mcp__revit_get_group_members",
       "mcp__rvt-mcp__revit_get_link_coordinate_system",
@@ -253,6 +273,7 @@ MCP annotations describe each tool's document/file effects. Transient selection,
       "mcp__rvt-mcp__revit_get_material_quantities",
       "mcp__rvt-mcp__revit_get_mep_element_connectors",
       "mcp__rvt-mcp__revit_get_model_warnings_summary",
+      "mcp__rvt-mcp__revit_get_operation_status",
       "mcp__rvt-mcp__revit_get_panel_schedule",
       "mcp__rvt-mcp__revit_get_print_settings",
       "mcp__rvt-mcp__revit_get_project_coordinate_system",
@@ -269,6 +290,7 @@ MCP annotations describe each tool's document/file effects. Transient selection,
       "mcp__rvt-mcp__revit_get_type_parameters",
       "mcp__rvt-mcp__revit_get_view_visibility",
       "mcp__rvt-mcp__revit_get_viewport_geometry",
+      "mcp__rvt-mcp__revit_health",
       "mcp__rvt-mcp__revit_list_areas",
       "mcp__rvt-mcp__revit_list_assemblies",
       "mcp__rvt-mcp__revit_list_available_targets",
@@ -298,6 +320,7 @@ MCP annotations describe each tool's document/file effects. Transient selection,
       "mcp__rvt-mcp__revit_list_view_templates",
       "mcp__rvt-mcp__revit_list_worksets",
       "mcp__rvt-mcp__revit_load_selection",
+      "mcp__rvt-mcp__revit_lookup_message",
       "mcp__rvt-mcp__revit_measure_distance_between_elements",
       "mcp__rvt-mcp__revit_project_point_onto_face",
       "mcp__rvt-mcp__revit_raycast_from_point",
@@ -317,6 +340,10 @@ MCP annotations describe each tool's document/file effects. Transient selection,
 
 send_code defaults **on**, independently of ToolBaker; call-log defaults **off**. CLI overrides environment variables, which override JSON. Authenticated server settings override plugin settings for that request only. Call-log off suppresses the server journal, plugin `mcp-calls.jsonl` and send-code body journal; in-memory History remains available. Body journaling needs both call-log on and its separate TTL opt-in. ToolBaker `usage.jsonl` is separate and follows adaptive-bake settings.
 
+Diagnostics from the gateway and Revit add-ins share `%LOCALAPPDATA%\Bimwright\rvt-mcp\rvt-mcp.log`: 10 MiB plus one 10 MiB backup. Entries include UTC date, process ID and Revit year; repeated messages are summarized. Logging uses a bounded background queue, so a locked file or slow disk can drop diagnostics without blocking Revit. Known legacy `revit-mcp.log`, `debug.log` and `baked/compile-refs.log` files retain only a 64 KiB tail; they are no longer copied during runtime data migration.
+
+Call logs, daily journals, send-code journals, usage and bake audit records each retain at most **30 days / 100 MiB per group**. New files rotate before an append exceeds 5 MiB and at UTC day rollover; startup maintenance and subsequent writes remove the oldest generated archives when needed. Usage analysis still covers at most 21 days and 5,000 recent records. Send-code body TTL remains an additional, shorter limit. Maintenance recognizes only generated log names and does not follow linked files or folders; models, configuration and databases are outside its scope.
+
 The response guard defaults **on**: UTF-8 warnings at 65536 bytes, strong warnings above 262144, a 716800-byte budget and a 1048576-byte transport cap. JSON escaping and MCP content/metadata are measured at the server. Oversized reads return `RESPONSE_TOO_LARGE` with narrowing guidance; completed writes return a compact summary. Arbitrary code output spills to a local file with `mutation_applied: null`; inspect the file instead of rerunning the command. A spill file is kept 36 hours by default (`--spill-retention-hours`, 1-8760; an invalid value uses 36) and no file-count cap deletes a younger file. Turning the guard off leaves the transport cap active. Byte limits must be integers >=1024, ordered `warn <= strong <= budget <= max`; adjust lower thresholds when lowering the budget.
 
 ## Supported Revit versions
@@ -333,16 +360,18 @@ Full Revit desktop only; Revit Viewer is not a supported target. CI builds all s
 
 ## Multiple Revit instances
 
-The server binds to exactly one Revit instance — including when several instances of the same year run at once. It binds implicitly on the first call or explicitly through `--target` / `BIMWRIGHT_TARGET` / `revit_switch_target`. Selectors: `auto`, a 4-digit year (`2024`), `pid:<n>` or `id:revit-<year>-<pid>`; legacy R-codes like `R24` are rejected.
+The server binds to exactly one Revit instance — including when several instances of the same year run at once. A query can bind automatically only when exactly one instance matches. Multiple matches return `AMBIGUOUS_TARGET`; model/file writes require a selected target and model writes also require a verified document. Selectors: `auto`, a 4-digit year (`2024`), `pid:<n>` or `id:revit-<year>-<pid>`; legacy R-codes like `R24` are rejected.
 
-When more than one instance runs — especially several of the same year — do not guess the target:
+When more than one instance runs — especially several of the same year — do not guess the target. In writable sessions:
 
 1. Call `revit_list_available_targets`: every live instance is listed with `target_id`, `pid`, `host_year`, `window_title` and `source`.
 2. Pick the instance by `pid` and/or `window_title`.
-3. Pin it with `revit_switch_target("pid:<n>")` — any selector form works, `pid:` is unambiguous.
-4. `revit_get_current_target` shows the active binding, its generation and the proposed `next_target_id`.
+3. Select the process with `revit_switch_target(version="pid:<n>", verify=false)`, query its active view/document, then confirm with `revit_switch_target(version="pid:<n>", verify=true, expectedDocumentId="<document_id>")`. Copy the identity from the query's `_target` stamp; omitting `expectedDocumentId` confirms the document reported by the verify probe. `auto`/year selectors are accepted only with one matching instance.
+4. `revit_get_current_target` shows the binding, generation, `selection_confirmed`, `confirmed_document_id` and `confirmation_required`. Successful host responses carry `_target` with the actual PID, year and document identity, including after response compaction.
 
-Target error codes and how to react. Every code except `TARGET_INTERRUPTED` means the command was **not** sent:
+Leaving a live selected instance requires `rebind=true`. Every accepted switch advances the generation so earlier calls cannot adopt a later confirmation. Failed verification restores the previous live binding if no newer switch intervened. A closed/reopened document, another project or Edit Family has a different document identity; the add-in checks the expected identity on the Revit UI thread before executing each write. Reading a different document never changes the write pin. Review and confirm that document before writing. `open_model` establishes a document: select the process with `verify=false`, open the model, then verify it. It cannot run inside `batch_execute`.
+
+Target error codes and recovery in writable sessions. Read-only sessions use the startup/restart route below. Every code except `TARGET_INTERRUPTED` means the command was **not** sent:
 
 | Code | Meaning | Agent action |
 |---|---|---|
@@ -351,13 +380,19 @@ Target error codes and how to react. Every code except `TARGET_INTERRUPTED` mean
 | `TARGET_BUSY` | The endpoint exists but did not complete the handshake within 5 s — usually another agent or gateway holds its single connection, or Revit is blocked | Retry later; do not run two gateways on one instance |
 | `TARGET_LOST` | The explicitly pinned (`pid:`/`id:`) instance exited | Check `candidates`, confirm with the user, then `revit_switch_target` |
 | `TARGET_CHANGED` | The implicitly bound instance exited and exactly one replacement exists (or the binding changed between call arrival and send). The command was **not** sent; every call returns this until confirmed | Check the proposed instance (`window_title`), confirm with `revit_switch_target`, then repeat the call |
-| `AMBIGUOUS_TARGET` | The implicitly bound instance exited and two or more instances match | List, pick by `pid`/`window_title`, `revit_switch_target("pid:<n>")` |
+| `AMBIGUOUS_TARGET` | First selection or a switch matches multiple instances | List, pick by `pid`/`window_title`, then use `pid:`/`id:` |
+| `TARGET_UNCONFIRMED` | The selected target/document has not been confirmed for writes | Verify the intended PID and document with `revit_switch_target` |
+| `TARGET_REBIND_REQUIRED` | A live selected target would be replaced | Review the binding, then switch with `rebind=true` if intended |
 | `TARGET_INTERRUPTED` | The command was sent but the connection closed before a response (`sent:true`, `outcome:unknown`) | Inspect the model state before repeating any write |
 | `INVALID_TARGET_SELECTOR` | Malformed selector or R-code | Use `auto`, a year, `pid:<n>` or `id:<target_id>` |
 
-**After a Revit restart — even with a single Revit open** — the next call returns `TARGET_CHANGED` and the server waits for one `revit_switch_target` call before it sends anything. This is deliberate: the restarted Revit can have a different model open, so the server never rebinds to it silently. The payload names the proposed instance; confirm it and repeat the call.
+**After a Revit restart — even with a single Revit open** — a writable session returns `TARGET_CHANGED` and waits for one `revit_switch_target` call before sending anything. The restarted Revit can have a different model open; review the proposed instance, confirm it and repeat the call.
 
-`revit_switch_target` is annotated non-read-only because it changes session routing, but it stays available under `--read-only` so the binding can always be recovered.
+**Read-only sessions:** call `revit_list_available_targets`, choose `--target pid:<n>` at gateway startup and restart the gateway whenever the target changes. `revit_switch_target` is unavailable; the target errors above provide startup/restart guidance instead of recommending that tool.
+
+`revit_switch_target` changes session routing and is excluded from `--read-only`, matching its non-read-only annotation. Read-only mode exposes 98 tools with all toolsets. Select the intended process using `--read-only --target pid:<n>` at gateway startup; to change it, restart the gateway with the new selector. `revit_list_available_targets` and `revit_get_current_target` remain available for inspection.
+
+`DOCUMENT_UNCONFIRMED` and `DOCUMENT_CHANGED` are add-in refusals: the request reached Revit but the model operation did not start. Check the reported `_target`, then confirm the intended document. Gateway and add-ins must both support `document_target_v1`; update them together. An add-in connected to an older gateway returns `PAIRING_REQUIRED` instead: update the server, because that gateway cannot confirm a document.
 
 ---
 
@@ -380,6 +415,7 @@ More: [SECURITY.md](SECURITY.md), [docs/bake.md](docs/bake.md).
 | [docs/install.md](docs/install.md) | Installer details, upgrade, uninstall, developer and NuGet installs |
 | [docs/mcp-client-wiring.md](docs/mcp-client-wiring.md) | Per-client MCP wiring |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Processes, transport, DTO rules |
+| [docs/controlled-failures.md](docs/controlled-failures.md) | Warning rollback, model gates, Issues decisions and pending-operation recovery |
 | [docs/send-code.md](docs/send-code.md) | send_code source forms and failure handling |
 | [docs/bake.md](docs/bake.md) | Adaptive bake and body privacy |
 | [docs/localization.md](docs/localization.md) | UI languages, overrides, hot reload |
@@ -416,6 +452,10 @@ See [how the gateway names are chosen](https://github.com/bimwright/.github/blob
 - [**bim-wiki**](https://github.com/bimwright/bim-wiki) — Vietnamese-first BIM knowledge base
 
 ---
+
+## Validation
+
+See the [tool descriptor benchmark](docs/benchmarks/2026-10-18-tool-descriptors.md) and [v1.2.0 validation record](docs/testing/2026-10-18-v1.2.0-validation.md). They distinguish affected regression results, earlier native evidence and pending release coverage; descriptor bytes do not measure model tokens or native performance.
 
 ## License
 

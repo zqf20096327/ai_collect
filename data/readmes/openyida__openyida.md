@@ -95,6 +95,22 @@ Local terminals and AI tools share the same policy. Managed cloud Agent runtimes
 
 If Codex is already installed, OpenYida also imports a local Codex plugin during postinstall. Restart Codex after installation, then type `@宜搭` or `@openyida` in the composer to attach the OpenYida context.
 
+<details>
+<summary>Optional: install DingTalk Workspace CLI (dws)</summary>
+
+For DingTalk A2UI authoring, validation or messaging, install the official [DingTalk Workspace CLI](https://github.com/DingTalk-Real-AI/dingtalk-workspace-cli#installation) separately:
+
+```bash
+npm install -g dingtalk-workspace-cli
+dws version
+```
+
+Alternatively, `openyida dws install` displays official instructions for your platform without running an installer. Once installed, `openyida dws <command> [args]` forwards arguments to your system's dws.
+
+OpenYida does not bundle or automatically install dws. Dws manages its own version, updates and login. Use `dws auth login` for DingTalk business access and verify the target organization and account. Native YiDA cool-card creation, reads and editor links work without dws; updating a chat card through dws does not save a YiDA template. See the official instructions for other installation methods and check the installed command's `--help` before use.
+
+</details>
+
 ### 2. Check Your Environment
 
 Run this from the AI coding workspace where you want OpenYida to operate:
@@ -447,6 +463,9 @@ Your AI prepares the summary from observed evidence and selected reproduction sc
 
 | Command | Description |
 |---------|-------------|
+| `openyida app-settings <appType> [--section theme\|basic\|data-card\|cool-card] [--json]` | Read theme, frontend/backend, native data card and cool card management links |
+| `openyida cool-card <list\|templates\|create\|get> <appType> [cardPageCode] [--type im\|onebox] [--name <title>] [--page <n>] [--size <n>] [--search <text>] [--out <file>] [--json]` | Create and read native YiDA cool cards (interactive and pinned) |
+| `openyida data-card <list\|create\|get\|save\|publish\|probe\|release-get\|release-save\|release-check\|release-test\|refs> <appType> [cardCode] [--name <title>] [--description <text>] [--schema <file>\|--config <file>] [--expected-hash <hash>] [--backup <file>] [--out <file>] [--published\|--version <version>] [--page <n>] [--size <n>] [--search <text>] [--allow-send] [--json]` | Create, configure, publish and distribute native YiDA data cards |
 | `openyida app-entry get <appType> [--json]` | Read frontend and management runtime entries |
 | `openyida app-entry set <appType> [--frontend <url>\|--frontend-page <formUuid>] [--management <url>\|--management-page <formUuid>] [--clear-frontend] [--clear-management] [--json]` | Register application entries with partial update and readback |
 | `openyida app-list [--type managed\|created] [--page N] [--size N]` | Page through apps I manage or created |
@@ -490,6 +509,8 @@ Your AI prepares the summary from observed evidence and selected reproduction sc
 | `openyida create-form add-option <appType> <formUuid> <fieldLabel> <option1> [option2] ...` | Update a form page |
 | `openyida list-forms <appType> [--keyword <text>]` | List forms/pages in an app |
 | `openyida aggregate-table <list\|create-empty\|inspect\|preview\|save\|publish\|status> <appType> ...` | Manage aggregate tables (virtualView) |
+| `openyida form-view <list\|inspect\|save\|create\|order> <appType> <formUuid> [viewUuid] [--config <file>] [--name <title>] [--with-config] [--expected-hash <hash>] [--backup <file>] [--replace] [--json]` | Native form views: list, inspect and configure columns, widths, frozen columns and filters |
+| `openyida custom-button <list\|inspect\|options\|create\|update\|delete> <appType> <formUuid> [buttonUuid] [--config <file>] [--expected-hash <hash>] [--backup <file>] [--yes] [--json]` | Native custom buttons: inspect and configure form edits, automation flows and page links |
 | `openyida get-schema <appType> <formUuid\|--all> [--summary-json\|--field-map-json\|--analysis-json]` | Get one form Schema or all form Schemas |
 | `openyida check-prd-completeness <prd.md> --app-type <appType> [--build-manifest <file>] [--json]` | Check resources, frontend menu hiding and application theme delivery |
 | `openyida check-design <design.md> [--prd <prd.md>] [--base-dir <dir>] [--json]` | Validate design documents, theme tokens and PRD handoff |
@@ -507,7 +528,7 @@ Your AI prepares the summary from observed evidence and selected reproduction sc
 | Command | Description |
 |---------|-------------|
 | `openyida data <query\|get\|create\|update> <resource> ... \| delete form <appType> <formUuid> --inst-id <id> --expect-form-name <name> --expect-form-type receipt --confirm [--json]` | Unified data management (form/process/task/subform) |
-| `openyida task-center <type> [options]` | Global task center (todo/processed/cc etc.) |
+| `openyida task-center <todo\|created\|done\|cc\|proxy\|capabilities\|scaffold\|options\|inspect\|count> [--spec <file.json> --output <file.canvas.jsx>] [options]` | Global task center (todo/processed/cc etc.) |
 | `openyida basic-info <overview\|commodity\|grant\|capacity\|quota\|abs-path\|dataflow\|i18n\|domain>` | Query organization basic info, capacity, quotas, and domain settings |
 | `openyida read-dingtalk-doc <docUrl> [--output <file>] [--json]` | Fetch Markdown content from a DingTalk document |
 | `openyida read-dingtalk-tingji <taskUuid> [--json]` | Fetch DingTalk Tingji details by task UUID |
@@ -544,6 +565,7 @@ Your AI prepares the summary from observed evidence and selected reproduction sc
 | `openyida create-report <appType> "<name>" ... [--json] [--open\|--no-open]` | Create a Yida report |
 | `openyida append-chart <appType> <reportId> ... [--json] [--open\|--no-open]` | Append chart to existing report |
 | `openyida report inspect <appType> <reportId> --json` | Inspect report runtime bindings (read-only) |
+| `openyida report configure <appType> <reportId> <cid> --hide-zero-values <true\|false> [--hide-zero-categories <true\|false>] [--hide-zero-legends <true\|false>] [--dry-run] [--json]` | Configure dynamic zero-value hiding on a native bar chart (explicit opt-in) |
 
 ### Connectors
 
@@ -597,7 +619,13 @@ Your AI prepares the summary from observed evidence and selected reproduction sc
 | `openyida sample [--list] [<skill> <name>] [--output <file-or-directory>] [--var KEY=VALUE ...] [--design-file <design.md>] [--style-id <themeId\|free-creative>] [--theme-ids <id,...>] [--pop-art-context <explicit-request\|showcase>]` | Output code samples/templates |
 | `openyida doctor [--fix]` | Environment diagnostics & auto-fix |
 | `openyida db-seq-fix [--fix]` | Detect and repair PostgreSQL sequence drift |
-| `openyida formula evaluate <formula\|file> [--schema file]` | Static-check Yida formula syntax and field refs |
+| `openyida formula evaluate <formula\|file> [--schema file] [--contract field-value\|validation-rule\|business-action\|node-expression] [--context form\|validation\|automation\|business] [--target-type NumberField] [--metadata file] [--strict] [--json]` | Static-check Yida formula syntax and field refs |
+| `openyida formula check <formula\|file> [--schema file] [--contract field-value\|validation-rule\|business-action\|node-expression] [--context form\|validation\|automation\|business] [--target-type NumberField] [--metadata file] [--strict] [--json]` | Check formula syntax, fields, arguments and types |
+| `openyida formula contracts [--json]` | Show formula formats and checker coverage |
+| `openyida formula functions <appType> [--name IF] [--context form\|validation\|automation\|business] [--output file] [--json]` | Read Yida formula functions and signatures |
+| `openyida formula types <appType> [--component NumberField] [--json]` | Query formula component value types |
+| `openyida formula inspect <appType> <formUuid> [--field fieldId] [--json]` | Inspect configured form field formulas |
+| `openyida formula test <appType> <formUuid> [formula\|file] [--data-file file \| --cases file] [--field fieldId] [--timezone-offset minutes] [--context form\|validation] [--binding platform\|numeric-literals] [--expect JSON] [--json]` | Evaluate a non-writing formula in Yida and compare its result |
 | `openyida update` | Check and update to latest version |
 | `openyida export-conversation [options]` | Export AI conversation records |
 | `openyida feedback <report\|setup\|url\|dismiss\|status> [options]` | Prepare local issue reports, configure feedback forms and reminders |
@@ -610,6 +638,20 @@ Your AI prepares the summary from observed evidence and selected reproduction sc
 | `openyida cdn-refresh [options]` | Refresh CDN cache |
 
 <!-- OPENYIDA_COMMANDS_END -->
+
+### Personal tasks and process progress
+
+Query application tasks with `openyida data query tasks <appType> --type todo --normalized`; `created`, `done`, and `cc` select the other personal task lists. Use `openyida task-center capabilities --json` for supported filters and the page configuration example.
+
+The default `app-v1` transport preserves the existing queries. Select `--transport app-query` for additional server filters while keeping the query fixed to the target application: `--originators '["USER_ID"]'` accepts one originator, `--process-codes '["PROCESS_CODE"]'` selects processes, and date bounds use Unix milliseconds. Available fields vary by task kind; unsupported fields fail before a request. `openyida task-center options <appType> --type originators|processes|forms --keyword TEXT --json` returns readable lookup options. The CLI never silently falls back to an unfiltered query.
+
+After explicitly choosing a custom task page, run `openyida task-center scaffold --spec <file.json> --output <new-file.canvas.jsx>`. The configuration requires the choice record and the application's existing design file. Generated pages follow the application theme, read the current visitor's tasks, and open native pages for processing. `embedded` mode provides the same task section for an existing workbench. Compile and publish the page using the usual commands.
+
+Page configurations can explicitly set `transport: "app-query"` and per-kind initial filters, for example `filters: { "todo": { "originators": ["USER_ID"] } }`. Generated pages include the same `filterSchema`, `normalizeFilters`, task loader, and option lookup helpers as the CLI.
+
+Use `task-center count <appType> --type todo --transport app-query --filters-json '{"keyword":"purchase"}' --json` for a one-record query with a matching server total; an unknown total remains `null`. `task-center inspect <appType> --process-inst-id <id> [--form-uuid <id>] [--history] [--task-id <id>] --json` reads an authorized linked process and optional operation history. Personal task outcomes, selected-task outcomes and final process results remain separate. Read commands do not create custom pages or require a custom-page choice.
+
+Scaffolds select only the needed task kinds, `fields` and `filterFields`; the default is a single todo list. `view: "progress", mode: "embedded"` provides a progress component for an existing business page, using its real linked `processInstanceId`. History and task-row expansion are opt-in. See the [workflow capability reference](yida-skills/skills/yida-canvas-data-binding/references/workflow-capabilities.md) for configuration and integration examples.
 
 ### CLI Notes
 

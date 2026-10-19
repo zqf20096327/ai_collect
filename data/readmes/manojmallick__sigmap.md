@@ -31,6 +31,7 @@
 ```bash
 npx sigmap
 npx sigmap ask "Where is auth handled?"
+npx sigmap verify answer.md      # flags files, imports and symbols an AI answer made up
 ```
 
 Zero config. Zero dependencies. Under 10 seconds.
@@ -62,7 +63,8 @@ That map is exactly what agentic grep is worst at: reproducible, auditable conte
 **Proof it pays off** (full benchmark below):
 <!--SM:whyMetrics-->
 - **80.4% hit@5** — right file in top 5 results (retrieval corpus, 18 repos)
-- **92.8% vs 40.0% single-shot grep baseline** — 2.32× measured lift on the honest corpus (125 tasks / 19 repos)
+- **92.8% vs 39.2% single-shot grep baseline** — 2.37× measured lift on the honest corpus (125 tasks / 19 repos)
+- **63.3% hit@5 on repositories we do not control** — the third-party corpus: 81 of 128 questions over 25 repos, 95% interval 54.7–71.1%, labelled by two language-model annotators before SigMap ran on them. The stricter number to read beside the honest corpus above, which includes this repository
 - **95.7% smaller than the full repository** — the generated map vs every source file, averaged across 21 real repos. A map-size measurement, not a per-call cost saving: an agent's context footprint is not the whole repo
 - **61.9% task-success proxy** — modeled from retrieval tiers, not measured LLM sessions
 - **1.58 prompts per task** — down from 2.84 (44.4% fewer retries, modeled)
@@ -76,7 +78,7 @@ That map is exactly what agentic grep is worst at: reproducible, auditable conte
 
 ## 🔒 `sigmap verify` — the grounding flagship
 
-The one thing no agentic-grep loop, and no competitor, gives you: **prove an AI answer is anchored to real signatures and line numbers before you trust it.** Deterministic, offline, no LLM — SigMap indexes your repo *plus the libraries actually installed here* and flags every fabricated file, import, imported name, symbol, test, or npm script.
+The one thing an agentic-grep loop cannot give you: **prove an AI answer is anchored to real signatures and line numbers before you trust it.** Deterministic, offline, no LLM — SigMap indexes your repo *plus the libraries actually installed here* and flags every fabricated file, import, imported name, symbol, test, or npm script.
 
 ```bash
 sigmap verify answer.md                 # ✓ grounded, or a line-by-line list of fabrications
@@ -88,9 +90,13 @@ sigmap verify answer.md --report        # standalone red/amber/green HTML report
 [sigmap] ✗ answer.md — 2 issues found
   fake-file: 1  fake-test-file: 0  fake-import: 0  fake-import-name: 0  fake-symbol: 1  fake-npm-script: 0
 
-  L12  [Fake file]    src/auth/session-store.js does not exist
-  L27  [Fake symbol]  authorize() — did you mean authenticate()?
+  L2  [Fake file]  File not found on disk: src/auth/session-store.js
+         ↳ Did you mean `sig-index-store.js` in src/retrieval/sig-index-store.js?
+  L2  [Fake symbol]  Symbol not found in repo index: authorize()
+         ↳ Did you mean `summarize()` in src/deps/sbom.js?
 ```
+
+<sub>Real output of `sigmap verify` on a two-line `answer.md` that names a file and a function this repository does not have; the "Did you mean" targets depend on the repository.</sub>
 
 `verify` is the flagship; `verify-ai-output` remains as the full command name. Pair it with `sigmap verify-plan` (check a plan before execution) and the `verify_suggestion` MCP tool (verify AI code against repo + private + installed-library symbols mid-session).
 
@@ -125,11 +131,12 @@ Ask → Rank → Context → Validate → Judge → Learn
 
 <!--SM:benchmarkBlock-->
 ```
-Benchmark : sigmap-v8.79-main (21 repositories, including R language)
-Date      : 2026-10-17
+Benchmark : sigmap-v8.80-main (21 repositories, including R language)
+Date      : 2026-10-18
 
 Hit@5          : 80.4%   (retrieval corpus, 18 repos)
-Honest vs grep : 92.8% vs 40.0% grep baseline — 2.32× lift (125 tasks / 19 repos)
+Honest vs grep : 92.8% vs 39.2% grep baseline — 2.37× lift (125 tasks / 19 repos)
+Third-party    : 63.3% hit@5 (81 of 128 questions / 25 repos, 95% interval 54.7–71.1%)
 Map vs repo    : 95.7% smaller   (generated map vs all source files, 21 repos — not a per-call cost saving)
 Prompt reduction : 44.4% (2.84 → 1.58 prompts per task, modeled)
 Task success   : 61.9%   (proxy — modeled from retrieval tiers)
@@ -226,7 +233,7 @@ Use SigMap with open-source tools and fully self-hosted setups:
 | **JetBrains** | [Marketplace](https://plugins.jetbrains.com/plugin/31109-sigmap--ai-context-engine/) | [github.com/manojmallick/sigmap-jetbrains](https://github.com/manojmallick/sigmap-jetbrains) | IntelliJ IDEA, WebStorm, PyCharm, GoLand — tool window + actions |
 | **Neovim** | lazy.nvim / packer / vim-plug | [github.com/manojmallick/sigmap.nvim](https://github.com/manojmallick/sigmap.nvim) | `:SigMap`, `:SigMapQuery` float window, statusline widget |
 
-**MCP server** — 22 on-demand tools for Claude Code and Cursor:
+**MCP server** — 22 on-demand tools for Claude Code, Codex CLI, OpenCode, Cursor, and other supported clients:
 
 ```bash
 sigmap --mcp
@@ -274,12 +281,15 @@ SigMap treats coding agents as **consumers, not competitors**: it hands them a d
 | Agent | One-time setup | How it consumes SigMap |
 |---|---|---|
 | **Claude Code** | `sigmap mcp install claude` | 22 MCP tools by default (`search_signatures`, `get_lines`, `get_diff_context`, `squeeze_output`…), or the seven of the `core` profile |
+| **OpenCode** | `sigmap mcp install opencode` | Uses OpenCode's local MCP config |
 | **Cursor** | `sigmap mcp install cursor` | MCP tools, plus the `cursor` adapter writes `.cursorrules` |
 | **Cline** | `sigmap mcp install cursor` | Reads `.cursorrules`; same MCP server |
 | **Continue** | `sigmap mcp install vscode` | MCP tools inside the Continue extension |
 | **Aider** | `sigmap --adapter openai` | Reads `.github/openai-context.md` before a session |
 | **OpenHands** | `sigmap evidence "<task>"` | Consumes `.context/evidence-pack.json` directly |
 | **Codex CLI** | `sigmap mcp install codex` | MCP tools, plus the `codex` adapter writes `AGENTS.md` |
+
+Claude Code uses `.mcp.json`, Codex CLI uses `~/.codex/config.toml`, and OpenCode uses `opencode.json`. When those host CLIs are installed, `mcp install` verifies the entry with each host's `mcp list` command.
 
 ```bash
 # Pattern 1 — give the agent live, on-demand access (MCP)

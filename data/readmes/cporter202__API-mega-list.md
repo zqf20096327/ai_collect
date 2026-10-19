@@ -35,15 +35,17 @@
 
 ---
 
-### Sponsored: KamdenAI
+### Sponsored: AI Playbook
 
-**Morning execution signals for traders who want a focused plan before the open.**
-
-KamdenAI gives members a structured morning workflow: 9:15 AM research, 9:28 AM locked field, 9:30 AM confirmed buys, 10:05 AM results, and Developer API webhooks for sending signal events into your own tools.
-
-<a href="https://kamdenai.com/" target="_blank"><img src="./assets/kamdenai-promo.png" alt="KamdenAI morning execution signal system" style="max-width: 100%; height: auto; border-radius: 12px;"></a>
-
-<a href="https://kamdenai.com/" target="_blank"><img src="https://img.shields.io/badge/Visit-KamdenAI.com-00d6a3?style=for-the-badge" alt="Visit KamdenAI.com"></a>
+<p align="center">
+  <a href="https://aiwithchris.com" target="_blank" rel="noopener">
+    <img src=".github/assets/ai-toolkit-banner.png" alt="Hey, I'm Chris — Work Smarter, Create Faster, Earn More With AI. Join my AI Playbook at aiwithchris.com, $10/month" width="100%">
+  </a>
+</p>
+<p align="center">
+  <a href="https://aiwithchris.com"><strong>🚀 Join my AI Playbook — aiwithchris.com</strong></a><br>
+  $10/month · 3,600+ prompts · agent workflows · repo breakdowns · money ideas
+</p>
 
 </div>
 
@@ -458,4 +460,5 @@ This collection contains **11,860 ready-to-use APIs** that you can integrate dir
 | [LinkedIn Profile Lookup](https://apify.com/agentx/linkedin-profile-lookup?fpr=p2hrc6) | Look up any public LinkedIn profile by URL and get back the structured person record: name, headline, about, location, follower and connection counts, full work-experience and education history,... |
 | [LinkedIn Profile Scraper with Email (No Cookies)](https://apify.com/futurizerush/linkedin-profile-scraper?fpr=p2hrc6) | Extract structured data from public LinkedIn profile URLs — name, headline, work history, education, follower counts, websites. When the person has published their own email or phone openly in their... |
 | [LinkedIn Profile Search Scraper](https://apify.com/akash9078/linkedin-profile-search-scraper?fpr=p2hrc6) | Find and extract publicly available LinkedIn profile data from Google search results. This Actor searches Google for LinkedIn profiles using targeted queries and returns profile URLs, names, job... |
-| [LLM Visibility Monitor: AI Search Brand Audit](https://apify.com/constructive_calm/llm-visibility-monitor?fpr=p2hrc6) | Audit how your brand appears across ChatGPT-style answers, Claude, Gemini (including the Google AI Overview signal), Perp
+| [LLM Visibility Monitor: AI Search Brand Audit](https://apify.com/constructive_calm/llm-visibility-monitor?fpr=p2hrc6) | Audit how your brand appears across ChatGPT-style answers, Claude, Gemini (including the Google AI Overview signal), Perplexity, and Grok. Track mentions, citations, share of voice, sentiment, and... |
+| [Local Lead Generation Agent](https://apify.com/apify/local-lead-generation-agent?f

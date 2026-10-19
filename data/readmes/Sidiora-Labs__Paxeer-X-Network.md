@@ -89,7 +89,7 @@ make paxeer-ci
 | `cmd/` | Kernel daemons and tools (`layerxd`, `layerxctl`, `layerx-guarantor`, genesis, verify) |
 | `agent/` | Rust agent interface, SDK, daemon, MCP server, encoding, cryptography, and proof verification |
 | `human/` | Human control plane, typed intent compiler, KMS, explorer index, and the web and wallet applications |
-| `platform/` | Developer platform, hosted services, middleware, SDKs, emulator, CLI, and release tooling |
+| `services/platform/` | Developer platform, hosted services, middleware, SDKs, emulator, CLI, and release tooling |
 | `programs/` | Programs runtime, registry, interpreter, sandbox, market, and program SDKs for the LayerX kernel |
 | `interop/` | Agent-commerce and cross-network interoperability surfaces, including the bridge relayer |
 | `contracts/` | Solidity contracts on the Paxeer X chain for custody, checkpoints, guarantor bonding, claims, disputes, and exits |
@@ -97,7 +97,7 @@ make paxeer-ci
 | `explorer/` | Block explorer, a Blockscout fork kept apart from the rest of the monorepo |
 | `go.mod`, `chain.mk`, `daemon/`, `node/`, `modules/`, `consensus/`, `sdk/`, `rpc/`, `precompiles/`, `storage/`, `wasm/`, `docker/` | Paxeer X chain node (`paxd`), EVM/RPC compatibility, storage engines, modules, precompiles, and subsystem-local builds |
 | `spec/` | Normative KVX specification, generated design, requirements, and task graph |
-| `tests/`, `fuzz/` | Native, contract, replay, invariant, fault, and fuzz suites |
+| `tests/`, `tests/fuzz/` | Native, contract, replay, invariant, fault, and fuzz suites |
 | `migrations/` | SQL for kernel genesis import sections, rebuildable projections, and the history index |
 | `docs/` | Wiki, documentation site sources, monorepo notes, and qualification documentation |
 
@@ -119,15 +119,15 @@ make paxeer-ci
 
 | Language | Path |
 | --- | --- |
-| Rust | `agent/crates/layerx-sdk` |
-| Python | `agent/sdk/python` |
-| TypeScript | `agent/sdk/typescript` |
-| Go | `platform/sdk/go` |
-| JVM | `platform/sdk/jvm` |
-| .NET | `platform/sdk/dotnet` |
-| Swift | `platform/sdk/swift` |
+| Rust | `services/agent/crates/layerx-sdk` |
+| Python | `services/agent/sdk/python` |
+| TypeScript | `services/agent/sdk/typescript` |
+| Go | `sdk/platform/go` |
+| JVM | `sdk/platform/jvm` |
+| .NET | `sdk/platform/dotnet` |
+| Swift | `sdk/platform/swift` |
 
-`layerx-agentd` is `agent/crates/layerx-agentd`. The MCP server is `agent/crates/layerx-mcp`. The developer CLI in `platform/cli` installs those transports with `layerx install mcp` and `layerx install a2a`.
+`layerx-agentd` is `services/agent/crates/layerx-agentd`. The MCP server is `services/agent/crates/layerx-mcp`. The developer CLI in `tools/platform/cli` installs those transports with `layerx install mcp` and `layerx install a2a`.
 
 ## Architecture
 

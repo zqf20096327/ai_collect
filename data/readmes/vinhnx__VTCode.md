@@ -16,7 +16,7 @@ Plan, build, and review with hosted or local models, sandboxed tools, and resuma
 [![Agent Client Protocol](https://img.shields.io/badge/Agent_Client_Protocol-383B73?style=flat-square&logo=zedindustries&logoColor=white)](./docs/guides/zed-acp.md)
 [![Model Context Protocol](https://img.shields.io/badge/Model_Context_Protocol-A63333?style=flat-square&logo=modelcontextprotocol&logoColor=white)](./docs/guides/mcp-integration.md)
 [![Agent Plugins](https://img.shields.io/badge/Agent_Plugins-5865F2?style=flat-square)](./docs/guides/agent-plugins.md)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/vinhnx/VTCode)
+<a href="https://deepwiki.com/vinhnx/vtcode"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 
 <!-- markdownlint-disable-next-line MD013 -->
 <img src="./resources/gif/vtcode.gif" alt="VT Code demo: plan, then review changes in the terminal" width="76%" />
@@ -59,18 +59,14 @@ Plan, build, and review with hosted or local models, sandboxed tools, and resuma
 Use the interactive TUI or `vtcode exec` to explore a codebase, plan and review changes, and run tools. Choose a
 model and permission level; VT Code manages context, tool calls, and execution policy.
 
-<!-- markdownlint-disable MD013 -->
-
-| At a glance | What you get |
-| --- | --- |
-| **Planning** | [Plan read-only](./docs/guides/planning-workflow.md), then review turn diffs. |
-| **Safety** | [Auditable command policy](./docs/security/SECURITY_MODEL.md) and sandboxing. |
+| At a glance      | What you get                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| **Planning**     | [Plan read-only](./docs/guides/planning-workflow.md), then review turn diffs.        |
+| **Safety**       | [Auditable command policy](./docs/security/SECURITY_MODEL.md) and sandboxing.        |
 | **Self-correct** | [HOVER loop](./docs/development/hypothesis-revision-validation.md) on tool mismatch. |
-| **Long runs** | [Headless exec](./docs/user-guide/exec-mode.md) with compaction and resumption. |
-| **Integrations** | [MCP](./docs/guides/mcp-integration.md), Skills, plugins, and editor bridges. |
-| **Models** | [Hosted or local providers](./docs/README.md#provider-index) per task. |
-
-<!-- markdownlint-enable MD013 -->
+| **Long runs**    | [Headless exec](./docs/user-guide/exec-mode.md) with compaction and resumption.      |
+| **Integrations** | [MCP](./docs/guides/mcp-integration.md), Skills, plugins, and editor bridges.        |
+| **Models**       | [Hosted or local providers](./docs/README.md#provider-index) per task.               |
 
 ```mermaid
 flowchart LR
@@ -121,7 +117,6 @@ prerequisites, other install methods, and optional search tools.
 
 On Windows, install with PowerShell:
 
-<!-- markdownlint-disable-next-line MD013 -->
 ```powershell
 irm https://raw.githubusercontent.com/vinhnx/VTCode/main/scripts/install.ps1 | iex
 ```
@@ -233,36 +228,36 @@ Use `vtcode continue --session-id <id>` to fork an earlier session.
 
 Enable these only when you need them; none are required for the quick start.
 
-<!-- markdownlint-disable MD013 MD060 -->
+<!-- markdownlint-disable MD060 -->
 
-| Integration                                   | What it gives you                                                                                                                                                                                            |
-| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [MCP](./docs/guides/mcp-integration.md)       | Connect external tools and data sources.                                                                                                                                                                     |
-| [Agent Skills](./docs/skills/SKILLS_GUIDE.md) | Load reusable prompt packages on demand.                                                                                                                                                                     |
-| [VT Code Companion (experimental)](./docs/user-guide/vtcode-companion.md) | Select a compatible VT Code binary and workspace with `vtcode companion setup`, then install the GitHub marketplace in a local Codex or ChatGPT Desktop host. ChatGPT Local Work and implementation remain experimental. |
-| [Plugins](./docs/guides/agent-plugins.md)     | Extend the agent with plugin manifests.                                                                                                                                                                      |
-| [ACP with Zed](./docs/guides/zed-acp.md)      | Drive VT Code from the Zed editor.                                                                                                                                                                           |
-| [WebMCP](./docs/user-guide/webmcp.md)         | Pair the TUI with an authenticated browser editor via `/webmcp pair <origin>`; the hosted app ([site](https://vtcode.vinhnx.chatgpt.site/), [mirror](https://vinhnx.github.io/VTCode/)) connects through this bridge. See the [deployment reference](./docs/reference/webmcp.md). |
-| [Memcode MCP](./docs/guides/memcode-mcp.md)   | Carry context between tasks; see the [design write-up](https://memcode.in/blogs/vt-code-memory-across-threads).                                                                                              |
+| Integration                                                               | What it gives you                                                                                                                                                                                                                                                                 |
+| ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [MCP](./docs/guides/mcp-integration.md)                                   | Connect external tools and data sources.                                                                                                                                                                                                                                          |
+| [Agent Skills](./docs/skills/SKILLS_GUIDE.md)                             | Load reusable prompt packages on demand.                                                                                                                                                                                                                                          |
+| [VT Code Companion (experimental)](./docs/user-guide/vtcode-companion.md) | Drive VT Code from a local Codex or ChatGPT Desktop host via `vtcode companion setup`.                                                                                                                                                                                            |
+| [Plugins](./docs/guides/agent-plugins.md)                                 | Extend the agent with plugin manifests.                                                                                                                                                                                                                                           |
+| [ACP with Zed](./docs/guides/zed-acp.md)                                  | Drive VT Code from the Zed editor.                                                                                                                                                                                                                                                |
+| [WebMCP](./docs/user-guide/webmcp.md)                                     | Pair the TUI with an authenticated browser editor via `/webmcp pair <origin>`; the hosted app ([site](https://vtcode.vinhnx.chatgpt.site/), [mirror](https://vinhnx.github.io/VTCode/)) connects through this bridge. See the [deployment reference](./docs/reference/webmcp.md). |
+| [Memcode MCP](./docs/guides/memcode-mcp.md)                               | Carry context between tasks; see the [design write-up](https://memcode.in/blogs/vt-code-memory-across-threads).                                                                                                                                                                   |
 
-<!-- markdownlint-enable MD013 -->
+<!-- markdownlint-enable MD060 -->
 
 ## Documentation
 
 Guides grouped by task. The full catalog lives in the [documentation index](./docs/INDEX.md), the
 [docs overview](./docs/README.md), and the [Wiki](https://github.com/vinhnx/VTCode/wiki):
 
-<!-- markdownlint-disable MD013 MD060 -->
+<!-- markdownlint-disable MD060 -->
 
-| Goal                 | Guides                                                                                                                                                                                                                                                                          |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Get started          | [Installation](./docs/installation/README.md) · [Getting started](./docs/user-guide/getting-started.md) · [Providers](./docs/providers/PROVIDER_GUIDES.md) · [OAuth login](./docs/guides/oauth-authentication.md) · [FAQ](./docs/FAQ.md) · [Compatibility](./docs/COMPATIBILITY.md) |
-| Work in the TUI      | [TUI](./docs/user-guide/interactive-mode.md) · [Command reference](./docs/user-guide/commands.md) · [Planning](./docs/guides/planning-workflow.md) · [Turn diffs](./docs/development/diff-preview.md) · [Configuration](./docs/config/CONFIG_FIELD_REFERENCE.md) · [Safety](./docs/security/SECURITY_MODEL.md) |
-| Automate             | [Exec mode](./docs/user-guide/exec-mode.md) · [Full automation](./docs/guides/full-automation.md) · [Decisions probe](./docs/guides/decisions-probe.md) · [Scheduled tasks](./docs/user-guide/scheduled-tasks.md) · [Hooks](./docs/guides/hooks-guide.md) |
-| Extend and integrate | [Skills](./docs/skills/SKILLS_GUIDE.md) · [Plugins](./docs/guides/agent-plugins.md) · [MCP](./docs/guides/mcp-integration.md) · [Editors (ACP)](./docs/guides/zed-acp.md) · [WebMCP](./docs/user-guide/webmcp.md) · [Memcode](./docs/guides/memcode-mcp.md) |
+| Goal                 | Guides                                                                                                                                                                                                                                                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Get started          | [Installation](./docs/installation/README.md) · [Getting started](./docs/user-guide/getting-started.md) · [Providers](./docs/providers/PROVIDER_GUIDES.md) · [OAuth login](./docs/guides/oauth-authentication.md) · [FAQ](./docs/FAQ.md) · [Compatibility](./docs/COMPATIBILITY.md)                                                              |
+| Work in the TUI      | [TUI](./docs/user-guide/interactive-mode.md) · [Command reference](./docs/user-guide/commands.md) · [Planning](./docs/guides/planning-workflow.md) · [Turn diffs](./docs/development/diff-preview.md) · [Configuration](./docs/config/CONFIG_FIELD_REFERENCE.md) · [Safety](./docs/security/SECURITY_MODEL.md)                                   |
+| Automate             | [Exec mode](./docs/user-guide/exec-mode.md) · [Full automation](./docs/guides/full-automation.md) · [Decisions probe](./docs/guides/decisions-probe.md) · [Scheduled tasks](./docs/user-guide/scheduled-tasks.md) · [Hooks](./docs/guides/hooks-guide.md)                                                                                        |
+| Extend and integrate | [Skills](./docs/skills/SKILLS_GUIDE.md) · [Plugins](./docs/guides/agent-plugins.md) · [MCP](./docs/guides/mcp-integration.md) · [Editors (ACP)](./docs/guides/zed-acp.md) · [WebMCP](./docs/user-guide/webmcp.md) · [Memcode](./docs/guides/memcode-mcp.md)                                                                                      |
 | Develop and evaluate | [Development](./docs/development/README.md) · [Testing](./docs/development/testing.md) · [Evals](./docs/guides/eval.md) · [Architecture](./docs/ARCHITECTURE.md) · [HOVER](./docs/development/hypothesis-revision-validation.md) · [Protocols](./docs/protocols/OPEN_RESPONSES.md) · [Loop engineering](./docs/project/PLAN-loop-engineering.md) |
 
-<!-- markdownlint-enable MD013 -->
+<!-- markdownlint-enable MD060 -->
 
 ## Development
 
@@ -323,7 +318,7 @@ Thanks to everyone who builds, tests, and improves VT Code. For partnerships, re
 `vinhnguyen2308 [at] gmail [dot] com`; bugs and feature requests belong in
 [GitHub Issues](https://github.com/vinhnx/VTCode/issues).
 
-<details open>
+<details>
 <summary>View all contributors</summary>
 
 <!-- CONTRIBUTORS:START -->
@@ -357,6 +352,7 @@ Thanks to everyone who builds, tests, and improves VT Code. For partnerships, re
 <a href="https://github.com/S2thend"><img src="https://avatars.githubusercontent.com/u/81468081?v=4&s=60" width="40" height="40" alt="@S2thend" title="@S2thend Contributor (2 commits) - checkpoint rewind/redo (#771)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
 <a href="https://github.com/uiYzzi"><img src="https://avatars.githubusercontent.com/u/40852301?v=4&s=60" width="40" height="40" alt="@uiYzzi" title="@uiYzzi Contributor (1 commit)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
 <a href="https://github.com/TuanLe-bk18"><img src="https://avatars.githubusercontent.com/u/222461688?v=4&s=60" width="40" height="40" alt="@TuanLe-bk18" title="@TuanLe-bk18 Contributor (1 commit)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
+<a href="https://github.com/shouryamaanjain"><img src="https://avatars.githubusercontent.com/u/72159602?v=4&s=60" width="40" height="40" alt="@shouryamaanjain" title="@shouryamaanjain Contributor (1 commit)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
 <a href="https://github.com/Sanjays2402"><img src="https://avatars.githubusercontent.com/u/51058514?v=4&s=60" width="40" height="40" alt="@Sanjays2402" title="@Sanjays2402 Contributor (1 commit)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
 <a href="https://github.com/rs545837"><img src="https://avatars.githubusercontent.com/u/114828377?v=4&s=60" width="40" height="40" alt="@rs545837" title="@rs545837 Contributor (1 commit) - optional Sem code discovery docs (#783)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
 <a href="https://github.com/RobertBorg"><img src="https://avatars.githubusercontent.com/u/1288566?v=4&s=60" width="40" height="40" alt="@RobertBorg" title="@RobertBorg Contributor (1 commit)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;

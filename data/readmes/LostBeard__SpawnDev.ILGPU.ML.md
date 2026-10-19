@@ -4,7 +4,25 @@
 
 [**Live Demo**](https://lostbeard.github.io/SpawnDev.ILGPU.ML/) — interactive GPU demos: **text & image to 3D**, classification, style transfer, depth estimation, object detection, pose estimation, text generation, background removal, zero-shot CLIP, and more — running on your GPU in your browser, no server. ([Which are verified vs WIP →](Docs/DEMO_AND_MODEL_STATUS.md))
 
-> **New in 5.3.11: [Text & Image to 3D in your browser](https://lostbeard.github.io/SpawnDev.ILGPU.ML/text-to-3d).** Type a prompt or drop a photo and get a textured PBR 3D model (GLB) built entirely on your own GPU over WebGPU: SD Turbo draws the object, RMBG-1.4 cuts it out, and [TRELLIS.2](https://github.com/microsoft/TRELLIS.2) (Microsoft, MIT, 4B parameters) generates the mesh and textures. To our knowledge this is the first fully client-side TRELLIS.2 on the web — no server, no upload. About 2-3 minutes on a desktop GPU once the weights are cached (~10 GB, opt-in). [How it works →](Docs/trellis2.md)
+> **New in 5.3.22: [FLUX 3 Image Klein 5.6B](https://lostbeard.github.io/SpawnDev.ILGPU.ML/generate) in your browser, four days after its release.** Text to image and edits of up to 10 reference pictures on the Image Generation page (the same page now takes reference pictures for FLUX.2 klein too), with an optional local language model that writes the full scene caption FLUX 3 is trained on. Checked against the reference code; the weights are Black Forest Labs' (FLUX Kommunity License, non-commercial), the code is MIT. Also: region and shape editing of generated 3D assets, scenes from a sentence, a CLIP picture check, Q4_1 GGUF kernels. [How it works →](Docs/flux3.md)
+>
+> **5.3.20: text to character on your desktop GPU.** `AssetGenerator` and two examples, a command-line tool and a WPF app ([Examples/07.AssetGen.Console](Examples/07.AssetGen.Console), [Examples/08.AssetGen.Wpf](Examples/08.AssetGen.Wpf)): a prompt becomes a textured, rigged, animated 3D character on CUDA or OpenCL (about 80 s on an RTX 4070 with the models cached). FLUX.2 klein also gains an 8-bit near-lossless option and 768/1024 px pictures, and rigging gains a bridge cleanup that removes the hand-to-hip slivers. [Docs/assetgen.md](Docs/assetgen.md)
+>
+> **5.3.19:** repeat FLUX.2 draws of a prompt take ~8 s instead of ~75 s in the browser (the transformer stays loaded, the prompt embeddings are cached); animated characters get an **arm clearance** setting so arms and armour stop passing through the torso.
+>
+> **New in 5.3.18: [FLUX.2 klein 4B](https://lostbeard.github.io/SpawnDev.ILGPU.ML/text-to-3d) draws the picture for text to 3D.** Black Forest Labs' step-distilled 4B text-to-image model (Apache-2.0) re-implemented on ILGPU (Qwen3-4B text encoder, 3.9B flow transformer, VAE; 4-bit weights, 4.4 GB, 2.6 GB on the GPU at a time) replaces SD Turbo's 2023 look: full-body characters with real hands and armour. New in the demo: draw 4 or 8 pictures of one prompt (the extra ones cost ~7 s each) and pick the one to build in 3D. Every stage gated against diffusers. [How it works →](Docs/flux2.md)
+>
+> **5.3.17 (fix):** drawing with SD Turbo no longer loses the WebGPU device on stable Chrome 145-151 ("A valid external Instance reference no longer exists"); see the [changelog](CHANGELOG.md).
+>
+> **New in 5.3.16: [Make it move](https://lostbeard.github.io/SpawnDev.ILGPU.ML/image-to-3d).** A rigged character can now play 22 preset moves (walk, run, wave, dance, kicks, ...) from NVIDIA Kimodo: `HumanoidRetargeter` finds the body of any generated humanoid by the shape of its bone tree and retargets Kimodo's clips onto it, `AnimatedGlb` writes them as glTF animations. The Image-to-3D demo has an **Animate** button, a move picker and **Download animated .glb**. Matches the reference retargeting script to 4e-8. [How it works →](Docs/rigging.md)
+>
+> ![A knight drawn by FLUX.2 klein at 1024 px, built by TRELLIS.2, rigged by SkinTokens and animated with Kimodo moves, all in the browser](SpawnDev.ILGPU.ML.Demo/wwwroot/screenshots/2026-10-19_TextTo3D-Rig-Animate-Knight-FLUX2-1024.gif)
+>
+> *A prompt becomes a 3D character that is rigged and dances, entirely on your GPU in your browser: FLUX.2 klein -> TRELLIS.2 -> SkinTokens -> Kimodo clips.*
+>
+> **5.3.15: [Rig this model](https://lostbeard.github.io/SpawnDev.ILGPU.ML/image-to-3d).** A generated character gets a skeleton and learned skin weights on your GPU: `SkinTokensRigger` (VAST AI's SkinTokens, MIT, re-implemented on ILGPU) turns a GLB into a rigged GLB in ~6 s on CUDA, and the Image-to-3D demo has a **Rig this model** button (1.15 GB, cached in your browser). Checked against the real PyTorch model: 295 of 296 generated tokens identical, skin weights to 5.7e-5. [How it works →](Docs/rigging.md)
+>
+> **5.3.11: [Text & Image to 3D in your browser](https://lostbeard.github.io/SpawnDev.ILGPU.ML/text-to-3d).** Type a prompt or drop a photo and get a textured PBR 3D model (GLB) built entirely on your own GPU over WebGPU: SD Turbo draws the object, RMBG-1.4 cuts it out, and [TRELLIS.2](https://github.com/microsoft/TRELLIS.2) (Microsoft, MIT, 4B parameters) generates the mesh and textures. To our knowledge this is the first fully client-side TRELLIS.2 on the web — no server, no upload. About 2-3 minutes on a desktop GPU once the weights are cached (~10 GB, opt-in). [How it works →](Docs/trellis2.md)
 >
 > ![Text to 3D in the browser — "a wooden treasure chest with iron bands"](SpawnDev.ILGPU.ML.Demo/wwwroot/screenshots/2026-10-17-16-55_TextTo3D-Chest.jpg)
 
@@ -22,7 +40,7 @@ SpawnDev.ILGPU.ML implements neural network inference AND training as native GPU
 
 - **System One decision heads** *(5.2.22+; Snake factory removed from package in 5.2.23)* — typed choice / score / noul over a float state vector (Jev/Laya-inspired category, not a weight port). Tiny GPU MLP via `TrainableModel`, legal-action masks, FP32 weight export/import. Classic Snake at `/snake` is a **demo** (dims/teacher in `Demo.Shared`, not NuGet). [**Docs/system-one.md**](Docs/system-one.md)
 - **Demos** - **VERIFIED end-to-end** demos (most matched numerically against ONNX Runtime: classification, style, depth, pose, CLIP, background-removal, super-res, text-gen, embeddings, sentiment, inspector, benchmark, speech-to-text, text-to-speech (Kokoro + ZipVoice voice cloning), System One Snake, SD-Turbo image-gen, **and text & image to 3D (TRELLIS.2)**), plus a few PARTIAL/WIP (see status doc for the exact list). On-device LLM chat lives at `/ai-chat`.
-- **16 inference pipelines** — Classification, StyleTransfer, SuperResolution, DepthEstimation, ObjectDetection, PoseEstimation, FaceDetection, TextClassification, ZeroShotClassification (CLIP), BackgroundRemoval, SpeechRecognition (Whisper), TextGeneration, FeatureExtraction, Diffusion (DDPM), TextToSpeech (SpeechT5), plus TRELLIS.2 image/text to 3D (`Trellis2ImageTo3D`, `Trellis2TextTo3D`)
+- **16 inference pipelines** — Classification, StyleTransfer, SuperResolution, DepthEstimation, ObjectDetection, PoseEstimation, FaceDetection, TextClassification, ZeroShotClassification (CLIP), BackgroundRemoval, SpeechRecognition (Whisper), TextGeneration, FeatureExtraction, Diffusion (DDPM), TextToSpeech (SpeechT5), plus TRELLIS.2 image/text to 3D (`Trellis2ImageTo3D`, `Trellis2TextTo3D`), plus auto-rigging (`SkinTokensRigger`, `UniRigRigger`)
 - **GPU training engine** — Draw custom gestures, train a CNN classifier in real-time on your GPU, test instantly. Softmax-CE MLP training powers System One heads. Backpropagation, gradient descent, Adam optimizer — all in C# GPU kernels. No server, no Python.
 - **NLP transformers in the browser** — DistilBERT sentiment analysis, Whisper speech-to-text, text generation — all on WebGPU. No server, no upload, no cloud.
 - **Local GGUF LLM inference + Ollama-compatible server** *(new in preview.5)* — run quantized LLMs (Qwen, Gemma, Llama) fully on your GPU with KV-cache decode; the Example 06 server is a drop-in Ollama replacement (OpenAI, Ollama, and Anthropic-Messages APIs) that works with the Claude CLI. ~51 tok/s decode on qwen2.5-coder:7b Q4_K_M (RTX 4070) via dp4a int8 GEMV + warp-cooperative register/flash attention (CUDA + WebGPU).
@@ -35,6 +53,8 @@ SpawnDev.ILGPU.ML implements neural network inference AND training as native GPU
 - **Zero-copy GPU pipeline** — Data enters the GPU at preprocessing and stays until the pixel hits the canvas. CanvasRendererFactory for GPU→canvas rendering without CPU readback.
 - **Streaming weight loader** — Large models (GPT-2 652MB) load one tensor at a time. Minimal CPU peak memory. FP16 on GPU supported.
 - **122+ numpy-verified operator tests** — every operator validated against known-correct reference data, CPU reference comparison minimum bar
+- **Humanoid animation (Kimodo moves)** *(5.3.16)* — `HumanoidMapper` / `HumanoidRetargeter` / `AnimatedGlb` (`SpawnDev.ILGPU.ML.Animation`) play NVIDIA Kimodo motion clips on a SkinTokens-rigged humanoid: the rig is matched to Kimodo's 77-joint SOMA skeleton by the shape of its bone tree, clips are retargeted in world space with rest alignment and hip scaling, and the result is glTF animations on the rigged GLB. [**Docs/rigging.md**](Docs/rigging.md)
+- **Auto-rigging (SkinTokens, UniRig)** *(5.3.15)* — `SkinTokensRigger.RigGlbAsync(glb)` gives a generated character a skeleton and **learned** skin weights in one pass (Michelangelo shape encoder, a Qwen3-style decoder that writes the bones and 4 FSQ skin tokens per bone, a skin VAE decoded at 54,000 surface samples), as a rigged GLB with textures untouched. 5.8 s warm on an RTX 4070; in the browser on WebGPU. Gated against the real PyTorch model (295/296 tokens identical, skin 5.7e-5). `UniRigRigger` is the smaller skeleton + skinning-prior alternative. [**Docs/rigging.md**](Docs/rigging.md)
 - **Text & image to 3D (TRELLIS.2)** *(5.3.11)* — a prompt or a photo becomes a textured PBR GLB: `Trellis2ImageTo3D` / `Trellis2TextTo3D` run the full TRELLIS.2-4B pipeline (DINOv3 features, three 1.3B flow transformers, sparse VAE decoders, dual-grid mesh, UV atlas, GPU texture bake). ~40 s on CUDA (tensor cores), and in the browser on WebGPU (~2-3 min cached) — to our knowledge the first fully client-side TRELLIS.2 on the web. [**Docs/trellis2.md**](Docs/trellis2.md). (TripoSR / LGM single-image 3D remain planned.)
 - **Model Inspector** — drop any model file (ONNX, TFLite, GGUF, SafeTensors, and more) for instant architecture analysis and compatibility check. No other browser ML library has this.
 - **P2P Model Delivery + Shared Compute** — OPTIONAL, via the separate `SpawnDev.ILGPU.ML.WebTorrent` package: [SpawnDev.WebTorrent](https://github.com/LostBeard/SpawnDev.WebTorrent) decentralized model delivery over BitTorrent. The core library delivers models over plain HTTP through the hub and does NOT depend on WebTorrent; `HubModelStream` implements the same `IModelSource`, so P2P is a one-line swap. BEP 46 DHT mutable items enable AI agents to share state (KV cache, model weights, coordination) across devices via the DHT — no central server. Ed25519 signing (RFC 8032). Foundation for `AcceleratorType.P2P` distributed compute.
@@ -293,6 +313,8 @@ Style models: mosaic, candy, rain princess, udnie, pointilism.
 | **DistilGPT-2** | Text generation | 314 MB | **Working** — streaming weight loader |
 | **Whisper Tiny** | Speech-to-text | 231 MB | **Working** - microphone to text, verified on all six backends (`Pipeline_Whisper_TranscribesKnownSpeech`) |
 | **SD-Turbo** | Image generation | ~2.5 GB (FP16) | ONE step, 512x512 from text prompts |
+| **FLUX.2 klein 4B** | Image generation (`Flux2Pipeline`) | 4.4 GB (4-bit) | 4 steps, 512x512, Qwen3-4B + 3.9B DiT + VAE; Apache-2.0; [Docs/flux2.md](Docs/flux2.md) |
+| **FLUX 3 Image Klein 5.6B** | Image generation and editing with up to 10 reference pictures (`Flux3Pipeline`) | 5.7 GB (4-bit) | 16 steps, 512 px verified (larger sizes in progress), Qwen3-VL text tower + 5.6B flow-map DiT + VAE; weights under the FLUX Kommunity License (non-commercial); [Docs/flux3.md](Docs/flux3.md) |
 | **CLIP ViT-B/32** | Vision-language embeddings | 606 MB | Zero-shot classification from any text |
 | **SpeechT5** | Text-to-speech | 643 MB | Neural voice synthesis |
 | **DDPM MNIST** | Image generation (lightweight) | 1 MB | Diffusion pipeline proof-of-concept |
@@ -405,7 +427,10 @@ Registered op-types live in `OperatorRegistry.BuiltinOpTypes` (live count on the
 | **SpeechRecognitionPipeline** | Audio samples | Transcribed text (Whisper encoder+decoder) |
 | **AsyncDepthPipeline** | RGBA frames | Real-time depth with fast/slow path blending |
 | **Trellis2ImageTo3D** | RGBA image (alpha = foreground) | Textured PBR GLB (TRELLIS.2-4B, 512 or 1024 pipeline) |
-| **Trellis2TextTo3D** | Prompt text | Textured PBR GLB (SD Turbo → cut-out → TRELLIS.2) |
+| **Trellis2TextTo3D** | Prompt text | Textured PBR GLB (FLUX.2 klein or SD Turbo → cut-out → TRELLIS.2) |
+| **SkinTokensRigger** | Character GLB | The same GLB rigged: skeleton + learned skin weights (SkinTokens / TokenRig, 1.15 GB bf16) |
+| **HumanoidRetargeter** + **AnimatedGlb** | Rigged humanoid GLB + Kimodo SOMA clips | The same GLB with the moves as glTF animations (`MotionClip.FromNpz`) |
+| **UniRigRigger** | Character GLB | The same GLB rigged: UniRig skeleton + geodesic voxel skinning prior |
 
 ## Demo App
 
@@ -453,7 +478,7 @@ The demo is a Blazor WebAssembly app showcasing what's possible when GPU inferen
 
 | Demo | What It Does |
 |------|-------------|
-| **Text & Image to 3D (TRELLIS.2)** | `/text-to-3d` and `/image-to-3d`: a prompt (SD Turbo draws it) or a photo, cut out with RMBG-1.4, turned into a textured PBR GLB by TRELLIS.2-4B on your GPU. Live stage timings, rotating 3D preview, GLB download. ~10 GB of weights, opt-in, cached in browser storage. |
+| **Text & Image to 3D (TRELLIS.2)** | `/text-to-3d` and `/image-to-3d`: a prompt (SD Turbo draws it) or a photo, cut out with RMBG-1.4, turned into a textured PBR GLB by TRELLIS.2-4B on your GPU. Live stage timings, rotating 3D preview, GLB download, **Rig this model** (SkinTokens: skeleton + learned skin weights, +1.15 GB, Download rigged .glb) and **Animate** (22 Kimodo moves, in-place toggle, Download animated .glb). ~10 GB of weights, opt-in, cached in browser storage. |
 | **Image Generation** | SD-Turbo text→image on your GPU (single-step, ~2.5 GB opt-in download). Same `ImageGenerationPipeline` as SpawnDev.AI. |
 | **Image to 3D (TripoSR)** | Planned. The TripoSR reconstruction path is not wired; use Text & Image to 3D (TRELLIS.2) for working image-to-3D. |
 | **Image to Gaussian Splats (LGM)** | Planned — single image → splats → [SpawnScene](https://github.com/LostBeard/SpawnScene). Not a working demo page yet. |

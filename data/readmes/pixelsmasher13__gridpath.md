@@ -30,16 +30,17 @@ Both lanes got every edit right. The difference is time, tokens, and seeing the
 diff before it's saved. Full runs, including the ones we lose, are in the
 [evals repo](https://github.com/pixelsmasher13/gridpath-evals).
 
-It comes as two front doors on the same engine:
+It comes as three front doors on the same engine:
 
-| | **MCP server** — `npx gridpath mcp` | **Desktop app** |
-|---|---|---|
-| The agent | Yours: Claude Code, Cursor, Codex, any MCP host | GridPath's own, in the app |
-| You review | In a local browser tab the agent links you to | In the app's diff panel |
-| Install | One line, Node only | Download for Mac / Windows |
-| Where | [`packages/gridpath`](packages/gridpath) · [gridpath.dev/mcp](https://gridpath.dev/mcp) | [Releases](https://github.com/pixelsmasher13/gridpath/releases/latest) · [gridpath.dev](https://gridpath.dev) |
+| | **In your web app** — `npm install gridpath` | **MCP server** — `npx gridpath mcp` | **Desktop app** |
+|---|---|---|---|
+| What it is | An embeddable spreadsheet for your product: opens your users' `.xlsx`, saves it back intact | Tools for the coding agent you already use | A desktop editor with its own agent |
+| The agent | Yours: your model and key, on your server | Yours: Claude Code, Cursor, Codex, any MCP host | GridPath's own, in the app |
+| You review | Highlighted in the grid; accept or reject | In a local browser tab the agent links you to | In the app's diff panel |
+| Install | `npm install gridpath` (React peer) | One line, Node only | Download for Mac / Windows |
+| Where | [`packages/gridpath`](packages/gridpath#in-your-web-app) · [live demo](https://gridpath.dev/demo) · [gridpath.dev/embed](https://gridpath.dev/embed) | [`packages/gridpath`](packages/gridpath#in-your-coding-agent-mcp) · [gridpath.dev/mcp](https://gridpath.dev/mcp) | [Download](https://gridpath.dev/#download) · [gridpath.dev](https://gridpath.dev) |
 
-Source-available under the [FSL-1.1-Apache-2.0](LICENSE); each release becomes Apache 2.0 after two years.
+The engine, the in-place saver and the `gridpath` package (web spreadsheet and MCP server) are open source under [Apache-2.0](LICENSE). The desktop app is source-available under the FSL-1.1-Apache-2.0 ([details](#license)).
 
 ## MCP server
 
@@ -63,7 +64,7 @@ workbooks side by side, each with its own agent; other files attachable as
 read-only references. Your file never leaves your machine, and it works with
 the Claude or ChatGPT subscription you already pay for.
 
-**[Download GridPath](https://github.com/pixelsmasher13/gridpath/releases/latest)**
+**[Download GridPath](https://gridpath.dev/#download)**
 
 ### What the app does
 
@@ -93,15 +94,22 @@ the Claude or ChatGPT subscription you already pay for.
 
 Under active development. Editing existing workbooks — the case above — is the strongest path and the one under continuous benchmark. Building large multi-sheet models from scratch works but is improving; the [benchmark repo](https://github.com/pixelsmasher13/gridpath-evals) publishes those results too, including the ones we lose.
 
-## Source availability and license
+## License
 
-Source-available under the [Functional Source License, Version 1.1, with Apache 2.0 Future License](LICENSE) (FSL-1.1-Apache-2.0):
+**Open source (Apache-2.0, [LICENSE](LICENSE)):** the calculation engine and
+in-place saver (`crates/`, the IronCalc fork in `vendor/ironcalc`), the
+`gridpath` package (`packages/gridpath`, `packages/grid`: the web
+spreadsheet, the agent tools, the MCP server), the examples and the evals.
+Use them in anything, commercial or not, including closed-source products.
 
-- **You can** read, fork, modify, run and redistribute the source for any non-competing use, including commercially.
-- **You can't** ship it, or a substantially similar fork, as a paid product competing with GridPath.
-- **In two years** every release re-licenses to Apache 2.0, no restrictions.
+**Source-available (FSL-1.1-Apache-2.0):** the desktop app (`src/`,
+`src-tauri/`) and the hosted services (`proxy-server/`, `billing-portal/`,
+`cloudflare-proxy/`, `marketing/`), each with its own LICENSE file. You can
+read, modify and run them for any use except a competing product; each
+release becomes Apache-2.0 two years after it ships.
 
-If you want to use GridPath in a way the FSL doesn't permit, get in touch.
+"GridPath" and the logo are trademarks ([TRADEMARKS.md](TRADEMARKS.md)).
+Releases of the `gridpath` npm package before 0.2.0 were FSL-1.1-Apache-2.0.
 
 ## Build from source
 

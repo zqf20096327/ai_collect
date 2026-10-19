@@ -198,6 +198,10 @@ sequenceDiagram
 
 Looking for Windows? Check out [coide-main](https://github.com/yexi-fun/coide-main) by [@yexi-fun](https://github.com/yexi-fun) — a Windows-adapted fork of coide with full Windows compatibility.
 
+## Who built this
+
+Built by [Victor Velázquez](https://victorvelazquez.dev) — COO at [MagmaLabs](https://www.magmalabs.io) and author of [*The Agentic Engineer*](https://leanpub.com/theagenticengineer).
+
 ---
 
 See [CONTRIBUTING](CONTRIBUTING.md) · [SECURITY](SECURITY.md) · [LICENSE](LICENSE) (MIT)

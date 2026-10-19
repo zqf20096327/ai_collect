@@ -1,11 +1,27 @@
 <!-- current-entrypoints -->
+# Find your Alpha. Build your SUCCESSOR Ω.
+
+**MONTREAL.AI FLAGSHIP · Computer Use · Level 3 strategy development · Level 4 problem reframing**
+
+Find a valuable opportunity in software, research or mathematics. Use Computer Use to investigate real public
+material and produce a concrete work product. Develop competing strategies, combine what works, and challenge
+problem formulations that unnecessarily limit the outcome. Keep the attempts, evidence and lessons in one project.
+
+**[Start the flagship →](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/alpha/)** ·
+**[Démarrer le parcours phare →](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/alpha/?lang=fr)**
+
+Planning and the catalog example are free in your browser. Computer execution uses a separately configured
+native model and isolated runner. [What works now and how to begin](docs/agent/SUCCESSOR_ALPHA.md).
+
 ## Choose your next step
 
 **[Open the guided website →](https://montrealai.github.io/AGI-Alpha-Agent-v0/)** · **[Commencer en français →](https://montrealai.github.io/AGI-Alpha-Agent-v0/?lang=fr)**
 
 | Your goal | Start here |
-| Find your Alpha and retain one project through Jobs / Fleet | [Discovery](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/discover/) → [Guided project history](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/mission/#guided-journey) |
 | --- | --- |
+| Investigate a valuable digital-work opportunity, software bottleneck, research question or mathematical problem | [Find your Alpha. Build your SUCCESSOR Ω.](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/alpha/) · [Guide](docs/agent/SUCCESSOR_ALPHA.md#computer-use-level-3-and-level-4) |
+| Inspect a maintained local engineering example | [Catalog reconciliation example](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/alpha/#catalog-example) · [Scope and reproduction](docs/agent/SUCCESSOR_ALPHA.md) |
+| Find your Alpha and retain one project through Jobs / Fleet | [Discovery](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/discover/) → [Guided project history](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/mission/#guided-journey) |
 | Explore a free example with no account or installation | [Guided first plan](https://montrealai.github.io/AGI-Alpha-Agent-v0/start/) |
 | Create useful files and retain a personal SUCCESSOR Ω | [Five work families](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/work/) |
 | Prepare, protect and continue a project | [Nova-Seed Studio](https://montrealai.github.io/AGI-Alpha-Agent-v0/ascension/mainnet/) |
@@ -16,13 +32,33 @@
 Browser preparation is free. Execution, participant review and settlement require their own configuration and approval. AGIJobManager settles in USDC; the Alpha / Jobs v0 contracts use $AGIALPHA. Source versions and published downloads can differ: use the evidence and instructions supplied with your chosen release.
 
 **New Ethereum Mainnet deployment, October 18, 2026:** [five contract addresses and verified graph](docs/agent/CURRENT_MAINNET_DEPLOYMENT.md). Publication records the deployment; operating approval remains separate.
+These five current records are separate from the older 29-address ecosystem snapshots below.
+Existing wallet profiles retain their pinned historical addresses; publication does not migrate them.
 
 <!-- /current-entrypoints -->
 
-> **Current maintenance scope · 1.34.0.** [Start here](docs/agent/START_HERE.md) ·
-> [Release notes](docs/agent/RELEASE_NOTES_1.34.0.md) · [Release evidence and supported scope](docs/agent/RELEASE_READINESS.md).
-> This candidate adds inspectable Jobs adapters, bounded browser work and supplied-input demo journeys. Use matching published assets
+> **[Find a valuable opportunity. Invent a better approach. Build what matters. →](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/alpha/)**
+> Start with a real software improvement, an evidence-based research question or a rigorous mathematical
+> investigation. Produce a source-grounded artifact, design tests for competing approaches, and consider
+> whether a different formulation creates more value. Code proposals need execution; mathematical claims
+> need proof review. The configured browser runner retains observed work for your review.
+> [English / Français guide and reproduction](docs/agent/SUCCESSOR_ALPHA.md).
+
+> **Current release scope · 1.35.0.** [Start here](docs/agent/START_HERE.md) ·
+> [Release notes](docs/agent/RELEASE_NOTES_1.35.0.md) · [Release evidence and supported scope](docs/agent/RELEASE_READINESS.md).
+> Version 1.35.0 adds Computer Use mission preparation and project-bound strategy attempts to the existing flagship.
+> Version 1.34.0 and its deployment/publication evidence remain unchanged. Use matching published assets
 > from [Releases](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases); a source label alone is not publication.
+
+> **Find your Alpha. Build your SUCCESSOR Ω. · Computer Use expansion.**
+> Define a useful outcome, prepare screenshot-and-keyboard/mouse work, and retain its results in the same project.
+> **Level 3:** discover, test, combine and improve strategies. **Level 4:** challenge an unnecessary restriction
+> and test a different problem formulation while preserving the required outcome and acceptance criteria.
+> Browser preparation makes no model call. Execution uses the separately configured native model and isolated
+> Chromium runner; imports retain historical observations and your review, with no inherited authority.
+> The exact release manifest and acceptance evidence identify delivery. This addition is absent from v1.34.0;
+> live-model task qualification and independent review remain separate from software publication.
+> [English / Français journey and current limits](docs/agent/SUCCESSOR_ALPHA.md#computer-use-level-3-and-level-4).
 
 ## Current Cross-Industry supplied-input journey
 
@@ -79,7 +115,7 @@ to committed jobs in its own market. A connected AGI Jobs workflow requires expl
 
 [`0xA61a3B3a130a9c20768EEBF97E21515A6046a1fA`](https://etherscan.io/address/0xA61a3B3a130a9c20768EEBF97E21515A6046a1fA#code)
 
-**[Explore the visual connection guide and all 29 deployed addresses][ecosystem-page]** ·
+**[Explore the visual connection guide and its 29-instance historical inventory][ecosystem-page]** ·
 [Français][ecosystem-fr] · [Practical workflow and operating boundaries](docs/agent/AGI_JOBS_ECOSYSTEM.md) ·
 [AGI Jobs companion guide][jobs-ecosystem]
 
@@ -112,14 +148,14 @@ production or open live intake. Check the [Alpha deployment guide](docs/agent/MA
 > Follow the [warning and verification guide](docs/agent/MAINNET_DEPLOYMENT.md#understand-a-contract-warning)
 > to distinguish source compilation, explorer verification and the immutable October 11 deployment.
 
-> **Ethereum mainnet deployment recorded.** Five contracts and the completed on-chain ownership handoff are recorded.
+> **Historical Ethereum mainnet deployment · 11 October 2026.** Five contracts and the completed on-chain ownership handoff are recorded.
 > Etherscan source verification and Ledger custody are operator-reported; the public archive does not include the
 > Etherscan API transcript. [Addresses, owner guide and read-only verification](docs/agent/MAINNET_DEPLOYMENT.md).
 > The deployed contracts predate the current settlement fixes; resolve that difference before admissions or funding.
 
 > **SUCCESSOR Ω — 1.24.1.** Build and examine a bounded mission capability, retain useful knowledge and require every successor to earn new proof and permission. [Bilingual mission workspace](docs/successor/index.html) · [Quickstart and operator guide](docs/agent/SUCCESSOR.md) · [Architecture and boundaries](docs/agent/SUCCESSOR_ARCHITECTURE.md) · [Release notes and acceptance requirements](docs/agent/RELEASE_NOTES_1.24.1.md). Local rehearsal is not independent qualification or production authority. Existing missions, research and flowcharts remain available.
 
-**Choose a current launch path:** [browser mission](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/),
+**Choose a current launch path:** [useful Alpha flagship](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/alpha/), [existing browser laboratory](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/),
 [minimal native installation](docs/agent/START_HERE.md), [operator recovery and upgrades](docs/agent/OPERATIONS.md),
 or [Hardhat deployment and migration guide](tests/contracts/README.md). The
 [repository guide](docs/agent/REPOSITORY_GUIDE.md) explains which dependencies each path needs.
@@ -1950,100 +1986,4 @@ to display the forecast results directly in the console.
 ## 7 · Deployment Recipes 🍳
 The repository bundles a lightweight `edge_runner.py` helper for running
 Alpha‑Factory on air‑gapped or resource‑constrained devices. The script
-forwards to `alpha_factory_v1.edge_runner` and exposes additional flags
-like `--cycle`, `--loglevel` and `--version`.
-It prints the same warning as the main CLI before launching.
-
-Build the demo containers locally:
-
-```bash
-cp .env.sample .env  # fill in NEO4J_PASSWORD, API_TOKEN and optional PINNER_TOKEN
-chmod 600 alpha_factory_v1/.env
-cd infrastructure
-docker build -t alpha-demo .
-docker compose up -d
-# Dashboard available at <http://localhost:8080>
-```
-
-The Compose stack restricts the agents worker using Docker resource limits. The
-`agents` service runs with `mem_limit: 8g`, `pids_limit: 512` and
-`network_mode: none` to prevent outbound traffic.
-
-The Helm chart under `infrastructure/helm-chart` mirrors this Compose
-setup:
-
-```bash
-helm upgrade --install alpha-demo ./infrastructure/helm-chart \
-  --values ./infrastructure/helm-chart/values.yaml \
-  --set env.RUN_MODE=web
-# Enable persistent storage for the audit ledger
-#   --set persistence.enabled=true --set persistence.size=5Gi
-# → browse to <http://localhost:8080>
-```
-
-`values.example.yaml` demonstrates typical overrides such as API tokens, service ports and replica counts.
-
-The Helm charts ship with placeholders like `NEO4J_PASSWORD` and
-`adminPassword` set to `REPLACE_ME`. Replace these with strong secrets
-in `values.yaml` or via `--set` before deploying.
-
-Terraform scripts in `infrastructure/terraform` provide GCP and AWS
-examples. Update the placeholder image and networking variables,
-then initialise and apply:
-
-```bash
-cd infrastructure/terraform
-terraform init
-terraform apply
-```
-
-| Target | Command | Notes |
-|--------|---------|-------|
-| **Docker Compose** | `docker compose up -d` | Web UI on `localhost:8080` |
-| **Helm (K8s)** | `helm install af helm/alpha-factory` | `--set env.RUN_MODE=web` |
-| **AWS Fargate** | `./infra/deploy_fargate.sh` | set `container_image` & `subnets` |
-| **IoT Edge** | `python edge_runner.py --agents manufacturing,energy` | Jetson Nano |
-<a name="71-deploying-securely"></a>
-### 🚀 Deploying securely
-See the [documentation](https://montrealai.github.io/AGI-Alpha-Agent-v0/) for TLS setup, API tokens and Vault usage. Mount secrets
-via Docker or Kubernetes and never commit them.
-
-
----
-
-<a name="8-governance--compliance"></a>
-## 8 · Governance & Compliance ⚖️
-
-* **MCP envelopes** (SHA‑256, ISO‑8601, policy hash)  
-* **Red‑Team Suite** fuzzes prompts & actions  
-* **Attestations** — W3C Verifiable Credentials at every Actuator call
-
----
-
-<a name="9-observability"></a>
-## 9 · Observability 🔭
-
-| Signal | Sink | Example |
-|--------|------|---------|
-| Metrics | Prometheus | `alpha_pnl_realised_usd` |
-| Traces | OpenTelemetry | `trace_id` |
-| Dashboards | Grafana | `alpha-factory/trade-lifecycle.json` |
-
-Prometheus scrapes metrics from the API server at `/metrics`.
-
-By default traces and metrics print to ``stdout``. To export to a collector such
-as **Jaeger**, set ``OTEL_EXPORTER_OTLP_ENDPOINT`` and start Jaeger locally:
-
-```bash
-docker run -p 16686:16686 -p 4317:4317 jaegertracing/all-in-one
-```
-
-Set ``OTEL_ENDPOINT`` to enable anonymous dashboard telemetry. Users are
-prompted for consent before any metrics are sent.
-
-### Telemetry Queue
-Anonymous usage metrics are buffered in the browser under the
-`telemetryQueue` key in `localStorage`. Each record includes:
-
-- `ts` – the timestamp when the entry was recorded.
-- `session` – a deterministic SHA‑256 hash identifying the session
+forwa

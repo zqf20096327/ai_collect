@@ -9,11 +9,8 @@ https://github.com/user-attachments/assets/d5407fc3-be1f-4b1d-8f88-afb7468ec917
   <a href="https://www.npmjs.com/package/browsentic"><img src="https://img.shields.io/npm/v/browsentic?logo=npm" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/browsentic"><img src="https://img.shields.io/npm/dm/browsentic?logo=npm" alt="npm downloads"></a>
   <a href="https://github.com/imshaikot/browsentic/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/imshaikot/browsentic/ci.yml?branch=main&label=CI&logo=githubactions&logoColor=white" alt="CI"></a>
-  <a href="https://nodejs.org"><img src="https://img.shields.io/node/v/browsentic?logo=nodedotjs&logoColor=white" alt="node"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/npm/l/browsentic" alt="license"></a>
 </p>
 <p>
-  <a href="docs/guide/install.md"><img src="https://img.shields.io/badge/manifest-V3-4285F4?logo=googlechrome&logoColor=white" alt="Manifest V3"></a>
   <a href="https://github.com/imshaikot/browsentic/releases/latest"><img src="https://img.shields.io/github/actions/workflow/status/imshaikot/browsentic/release.yml?label=macOS%20build&logo=apple" alt="macOS build"></a>
   <a href="https://github.com/imshaikot/browsentic/releases/latest"><img src="https://img.shields.io/github/actions/workflow/status/imshaikot/browsentic/release.yml?label=Windows%20build&logo=data:image/svg%2Bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMy40IDkuOCAydjkuNUgwek0xMSAxLjggMjQgMHYxMS41SDExek0wIDEyLjVoOS44VjIyTDAgMjAuNnpNMTEgMTIuNWgxM1YyNGwtMTMtMS44eiIvPjwvc3ZnPg==" alt="Windows build"></a>
   <a href="https://github.com/imshaikot/browsentic/releases/latest"><img src="https://img.shields.io/github/actions/workflow/status/imshaikot/browsentic/release.yml?label=Firefox%20build&logo=firefoxbrowser&logoColor=white" alt="Firefox build"></a>
@@ -34,14 +31,14 @@ Also an optional [MCP server](docs/guide/mcp-clients.md), so any MCP client can 
 </p>
 <p>
   <strong>Runs on</strong><br>
-  <a href="https://claude.com/claude-code"><img src="https://browsentic.com/icons/claude.svg" width="40" height="40" alt="Claude Code" title="Claude Code"></a>&emsp;
-  <a href="https://developers.openai.com/codex/cli"><picture><source media="(prefers-color-scheme: dark)" srcset="https://browsentic.com/icons/openai-dark.svg"><img src="https://browsentic.com/icons/openai.svg" width="40" height="40" alt="Codex" title="Codex"></picture></a>&emsp;
-  <a href="https://antigravity.google/docs/cli/install"><img src="https://browsentic.com/icons/antigravity.svg" width="40" height="40" alt="Antigravity" title="Antigravity"></a>&emsp;
-  <a href="https://github.com/mistralai/mistral-vibe"><img src="https://browsentic.com/icons/mistral.svg" width="40" height="40" alt="Mistral Vibe (beta)" title="Mistral Vibe (beta)"></a>&emsp;
-  <a href="https://docs.x.ai/build/overview"><picture><source media="(prefers-color-scheme: dark)" srcset="https://browsentic.com/icons/xai-dark.svg"><img src="https://browsentic.com/icons/xai.svg" width="40" height="40" alt="Grok Build (beta)" title="Grok Build (beta)"></picture></a>&emsp;
-  <a href="https://cursor.com/docs/cli/overview"><picture><source media="(prefers-color-scheme: dark)" srcset="https://browsentic.com/icons/cursor-dark.svg"><img src="https://browsentic.com/icons/cursor.svg" width="40" height="40" alt="Cursor CLI (beta)" title="Cursor CLI (beta)"></picture></a>&emsp;
-  <a href="https://qwenlm.github.io/qwen-code-docs/en/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://browsentic.com/icons/qwen-dark.svg"><img src="https://browsentic.com/icons/qwen.svg" width="40" height="40" alt="Qwen Code (beta)" title="Qwen Code (beta)"></picture></a>&emsp;
-  <a href="https://opencode.ai/docs/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://browsentic.com/icons/opencode-dark.svg"><img src="https://browsentic.com/icons/opencode.svg" width="40" height="40" alt="OpenCode (beta)" title="OpenCode (beta)"></picture></a>
+  <a href="https://claude.com/claude-code"><img src="docs/assets/agents/claude.svg" width="40" height="40" alt="Claude Code" title="Claude Code"></a>&emsp;
+  <a href="https://developers.openai.com/codex/cli"><img src="docs/assets/agents/codex.svg" width="40" height="40" alt="Codex" title="Codex"></a>&emsp;
+  <a href="https://antigravity.google/docs/cli/install"><img src="docs/assets/agents/antigravity.svg" width="40" height="40" alt="Antigravity" title="Antigravity"></a>&emsp;
+  <a href="https://github.com/mistralai/mistral-vibe"><img src="docs/assets/agents/mistral.svg" width="40" height="40" alt="Mistral Vibe (beta)" title="Mistral Vibe (beta)"></a>&emsp;
+  <a href="https://docs.x.ai/build/overview"><img src="docs/assets/agents/grok.svg" width="40" height="40" alt="Grok Build (beta)" title="Grok Build (beta)"></a>&emsp;
+  <a href="https://cursor.com/docs/cli/overview"><img src="docs/assets/agents/cursor.svg" width="40" height="40" alt="Cursor CLI (beta)" title="Cursor CLI (beta)"></a>&emsp;
+  <a href="https://qwenlm.github.io/qwen-code-docs/en/"><img src="docs/assets/agents/qwen.svg" width="40" height="40" alt="Qwen Code (beta)" title="Qwen Code (beta)"></a>&emsp;
+  <a href="https://opencode.ai/docs/"><img src="docs/assets/agents/opencode.svg" width="40" height="40" alt="OpenCode (beta)" title="OpenCode (beta)"></a>
 </p>
 
 </div>
@@ -68,7 +65,7 @@ irm https://browsentic.com/install.ps1 | iex
 npx browsentic@latest setup
 ```
 
-Setup asks which browser you use and opens Browsentic's store page in it (the apps do the same from their Overview tab). Press **Add to Chrome** (**Add** in Firefox; Edge first asks you to allow extensions from other stores), then click Browsentic in the toolbar and enter the code setup shows. From then on the extension updates itself from its store.
+Setup asks which browser you use and opens Browsentic's store page in it (the apps do the same from their Overview tab). Press **Add to Chrome** (**Add** in Firefox; Edge first asks you to allow extensions from other stores), and the extension connects to Browsentic Bridge by itself; if it asks for a code, enter the one setup shows. From then on it updates itself from its store.
 
 The extension is on the Chrome Web Store for Chrome, Brave, Arc, Vivaldi and Opera, on Edge Add-ons for Edge, and Firefox gets an add-on signed by Mozilla:
 
@@ -78,7 +75,7 @@ The extension is on the Chrome Web Store for Chrome, Brave, Arc, Vivaldi and Ope
   <a href="https://browsentic.com/download/firefox"><img src="https://img.shields.io/badge/Signed%20add--on%20for-Firefox-FF7139?style=for-the-badge&logo=firefoxbrowser&logoColor=white" alt="Signed add-on for Firefox"></a>
 </p>
 
-If you added the extension from a store first, run the same line and enter the code it shows.
+If you added the extension from a store first, run the same line, and the two connect as soon as the Bridge is in place.
 
 The side panel runs on an agent CLI you are signed in to: [Claude Code](https://claude.com/claude-code), [Codex](https://developers.openai.com/codex/cli) or [another supported one](docs/guide/agents.md). It uses the one you already have, so there is no API key, no account and no extra subscription.
 

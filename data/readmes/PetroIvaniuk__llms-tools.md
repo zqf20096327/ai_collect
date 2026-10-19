@@ -252,6 +252,7 @@ AWS|[Titan](https://aws.amazon.com/bedrock/amazon-models/titan/)|[Nova](https://
 - [Game Arena](https://www.kaggle.com/game-arena) - a new benchmarking platform where AI models and agents compete head-to-head in a variety of strategic games to help chart new frontiers for trustworthy AI evaluation, by Kaggle
 - [OpenRouter](https://openrouter.ai/rankings) - a unified interface for LLMs
 - [MathArena](https://matharena.ai/) - a platform for evaluation of LLMs on the latest math competitions and olympiads
+- [SenseBench](https://sense-bench.com) - a leaderboard for English word sense disambiguation: models pick the correct WordNet sense for a word in context, scored on a lexicographer-reviewed 4,861-item dataset with every run re-verified from stored raw API responses, by Glite
 - [EU AI Act Compliance Leaderboard](https://huggingface.co/spaces/latticeflow/compl-ai-board) - the high-level regulatory requirements of the EU AI Act as concrete technical requirements
 - [AgentBoard](https://hkust-nlp.github.io/agentboard/) - a benchmark designed for multi-turn LLM agents, complemented by an analytical evaluation board for detailed model assessment beyond final success rates
 - [LLM Hallucination Index](https://www.rungalileo.io/hallucinationindex) - A Ranking & Evaluation Framework For LLM Hallucinations
@@ -269,6 +270,9 @@ AWS|[Titan](https://aws.amazon.com/bedrock/amazon-models/titan/)|[Nova](https://
 - [Open Medical-LLM Leaderboard](https://huggingface.co/blog/leaderboard-medicalllm) - aims to track, rank and evaluate the performance of LLMs on medical question answering tasks
 - [TheFastest.AI](https://thefastest.ai/) - site that provides reliable measurements for the performance of popular models
 - [GAIA Leaderboard](https://huggingface.co/spaces/gaia-benchmark/leaderboard) - evaluating next-generation LLMs (LLMs with augmented capabilities due to added tooling, efficient prompting, access to search, etc)
+- [InferenceBench](https://inferencebench.io) - compare LLM inference cost, GPU economics, and performance across models, GPUs, and cloud providers, with ROI, break-even, and scaling analysis
+
+- [LLM Versus](https://llmversus.vercel.app) — Side-by-side AI model comparisons with API pricing, benchmarks and buying guides.
 
 ### Libraries
 - [aisuite](https://github.com/andrewyng/aisuite) ![GitHub Repo stars](https://img.shields.io/github/stars/andrewyng/aisuite?style=plastic) - simple, unified interface to multiple Generative AI providers, by Andrew Ng Team
@@ -323,6 +327,7 @@ AWS|[Titan](https://aws.amazon.com/bedrock/amazon-models/titan/)|[Nova](https://
 - [Agent2Agent (A2A)](https://github.com/google/A2A) - an open protocol enabling communication and interoperability between opaque agentic applications, by Google
 - [Agentic Document Extraction](https://landing.ai/agentic-document-extraction) - Intelligent Document Understanding with Visual Context, by LandingAI
 - [rowboat](https://github.com/rowboatlabs/rowboat) - AI-powered multi-agent builder, powered by OpenAI's Agents SDK
+- [LLMGraph](https://llmgraph.ai) - a visual no-code builder for LLM workflows; build RAG chatbots and AI agents on a drag-and-drop canvas and deploy each workflow as a REST API with an embeddable chat widget
 - [UI-TARS-1.5](https://seed-tars.com/1.5/) - an open-source multimodal agent built upon a powerful vision-language model. It is capable of effectively performing diverse tasks within virtual worlds
 - [Browser-Use](https://github.com/browser-use/browser-use) - enable AI to control your browser
 - [OpenHands](https://github.com/All-Hands-AI/OpenHands) - a platform for software development agents powered by AI
@@ -339,6 +344,8 @@ AWS|[Titan](https://aws.amazon.com/bedrock/amazon-models/titan/)|[Nova](https://
 - [JARVIS-1](https://craftjarvis-jarvis1.github.io/) - Open-world Multi-task Agents with Memory-Augmented Multimodal Language Models, generate sophisticated plans, and perform embodied control, within the open-world Minecraft universe
 - [AppAgent](https://github.com/mnotgod96/AppAgent) - Multimodal Agents as Smartphone Users, an LLM-based multimodal agent framework designed to operate smartphone app
 - [Kiln AI](https://kiln.tech) - a free desktop app that provides tools for building AI products such as evals, RAG systems, agents, fine-tuning, synthetic data, and more, all without coding
+- [Agent QA](https://github.com/vostride/agent-qa) - A source-available, self-improving QA agent for natural-language web and mobile tests with persistent test memory, CLI, MCP, and Agent Skills.
+- [OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay) - records an agent's exchange with its model provider and replays it from the trace, so the provider is never called again; a replay can fork at a recorded checkpoint onto a different model, leaving the model as the only variable
 
 ## Code & Math
 ||Code|Math|
@@ -510,6 +517,7 @@ AWS|[Titan](https://aws.amazon.com/bedrock/amazon-models/titan/)|[Nova](https://
 - [DiffusionLight](https://diffusionlight.github.io/) - a simple yet effective technique to estimate lighting in a single input image
 - [Magnific](https://magnific.ai/) - the image Upscaler & Enhancer
 - [wasitai](https://wasitai.com/) - check if an image was generated by a machine
+- [PixelSniff](https://pixelsniff.com/) - a free AI image detector that checks whether a photo was AI-generated or a deepfake, returning a single AI likelihood score with no sign-up required
 - [Textify](https://textify.storia.ai/) - a tool for replacing the gibberish in AI-generated images with your desired text
 - [Interpolating between Images with Diffusion Models](https://clintonjwang.github.io/interpolation) - a method for zero-shot controllable interpolation using latent diffusion models
 - [AnyDoor: Zero-shot Object-level Image Customization](https://damo-vilab.github.io/AnyDoor-Page/) - a diffusion-based image generator with the power to move target objects to new scenes at user-specified locations in a harmonious way
@@ -570,10 +578,10 @@ AWS|[Titan](https://aws.amazon.com/bedrock/amazon-models/titan/)|[Nova](https://
 - [Mochi 1](https://www.genmo.ai/play) - an open-source model for generating high-quality videos from text prompts, by genmo
 - [Haiper](https://haiper.ai/) - simplifies video creation with text-to-video, image-to-video, and video enhancement options
 - [Hailuo AI](https://hailuoai.video/) - Image-to-Video
+- [MaxVideoAI](https://maxvideoai.com/pay-as-you-go-ai-video-generator) - paid, pay-as-you-go workspace for text-to-video, image-to-video, and model comparison with pricing shown before generation
 - [Pyramid Flow](https://pyramid-flow.github.io/) - a training-efficient Autoregressive Video Generation model based on Flow Matching
 - [Videolulu](https://videolulu.com/) - create engaging content in popular formats for TikTok, Instagram, and YouTube
 - [GoVidify](https://govidify.ai) - an AI-powered tool that turns your written content into short-form videos for TikTok, YouTube, and Instagram
-- [hotshot](https://hotshot.co/release) - a large-scale diffusion transformer model that serves as the foundation for our upcoming consumer product
 - [ClipAnything](https://www.opus.pro/clipanything) - the first-ever multimodal AI clipping that lets you clip any moment from any video using visual, audio, and sentiment cues, by Opus
 - [Flow Studio](https://flowgpt.com/) - uses AI to transform your text prompts into visually captivating short films and videos
 - [LivePortrait](https://liveportrait.github.io/) - Efficient Portrait Animation with Stitching and Retargeting Control
@@ -595,16 +603,8 @@ AWS|[Titan](https://aws.amazon.com/bedrock/amazon-models/titan/)|[Nova](https://
 - [I2VGen-XL](https://i2vgen-xl.github.io/) - High-Quality Image-to-Video Synthesis via Cascaded Diffusion Models
 - [StreamDiffusion](https://github.com/cumulo-autumn/StreamDiffusion) - an innovative diffusion pipeline designed for real-time interactive generation
 - [WALT - Window Attention Latent Transformer](https://walt-video-diffusion.github.io/) - a transformer-based method for latent video diffusion models (LVDMs)
-- [Hotshot](https://hotshot.co/) - GIF generator
+- [Hotshot-XL](https://github.com/hotshotco/Hotshot-XL) - open-source text-to-GIF model designed to work alongside Stable Diffusion XL
 - [UnscreenPro](https://unscreen.pro/) - remove video background
 - [Video Background Remover](https://videobackgroundremover.io/) - AI-powered video background remover
 - [Motrica](https://www.motorica.ai/) - technologies and tools for advanced character animation
-- [CoDeF](https://qiuyu96.github.io/CoDeF/) - Content Deformation Fields for Temporally Consistent Video Processing
-- [MagicEdit](https://magic-edit.github.io/) - supports various editing applications, including video stylization, local editing, video-MagicMix and video outpainting
-- [To Infinity and Beyond](https://fablestudio.github.io/showrunner-agents/) - an approach to generating high-quality episodic content for IP's (Intellectual Property) using LLMs, custom state-of-the art diffusion models and our multi-agent simulation for contextualization, story progression and behavioral control
-- [PlazmaPunk](https://www.plazmapunk.com/) - create your own music video with the power of AI
-- Video-LLaMA, [Code](https://github.com/DAMO-NLP-SG/Video-LLaMA), [Demo: HF](https://huggingface.co/spaces/DAMO-NLP-SG/Video-LLaMA) - a multi-model LLM that achieves video-grounded conversations between humans and computers by connecting language decoder with off-the-shelf unimodal pre-trained models
-- [AnimateDiff prompt travel](https://github.com/s9roll7/animatediff-cli-prompt-travel) - AnimateDiff with prompt travel + ControlNet + IP-Adapter
-- [AnimateDiff](https://animatediff.github.io/), [Code](https://github.com/guoyww/AnimateDiff) - Animate Your Personalized Text-to-Image Diffusion Models without Specific Tuning
-- [Animate-A-Story](https://videocrafter.github.io/Animate-A-Story/) - a video storytelling approach which can synthesize high-quality, structure-controlled, and character-controlled videos
-- [Zeroscope](https://huggingface.co/spaces/fffiloni/zeros
+- [CoDeF](https://qiuyu96.gi

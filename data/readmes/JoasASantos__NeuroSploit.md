@@ -1,4 +1,4 @@
-<h1 align="center">🧠 NeuroSploit v4.3.1</h1>
+<h1 align="center">🧠 NeuroSploit v4.4.0</h1>
 
 <p align="center">
   <a href="https://github.com/JoasASantos/NeuroSploit/stargazers"><img src="https://img.shields.io/github/stars/JoasASantos/NeuroSploit?style=for-the-badge&logo=github&color=8b5cf6" alt="Stars"></a>
@@ -7,11 +7,16 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-4.3.1-blue?style=flat-square">
+  <img src="https://img.shields.io/badge/Version-4.4.0-blue?style=flat-square">
   <img src="https://img.shields.io/badge/Harness-Rust%20%7C%20tokio-e6b673?style=flat-square">
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square">
   <img src="https://img.shields.io/badge/MD%20Agents-486-red?style=flat-square">
   <img src="https://img.shields.io/badge/Modes-Black%20%7C%20White%20%7C%20Grey%20%7C%20Host%20%7C%20AI%20%7C%20Mobile%20%7C%20Container-9cf?style=flat-square">
+</p>
+
+<p align="center">
+  <a href="https://neurosploitai.github.io/"><img src="https://img.shields.io/badge/Website-neurosploitai.github.io-8b5cf6?style=for-the-badge&logo=githubpages&logoColor=white" alt="Website"></a>
+  <a href="https://neurosploitai.github.io/docs.html"><img src="https://img.shields.io/badge/Docs-Tutorial%20%26%20Guide-22d3ee?style=for-the-badge&logo=readthedocs&logoColor=white" alt="Docs"></a>
 </p>
 
 <p align="center"><b>Autonomous, multi-model penetration-testing harness — Rust, CLI-first.</b><br>
@@ -55,6 +60,7 @@ It won't invent findings: **every claim needs a receipt** (raw tool output or a
 is adjudicated by a **second model** before it reaches the report.
 
 > ⭐ Useful? **Star the repo.**
+> 🌐 Website & live docs: **[neurosploitai.github.io](https://neurosploitai.github.io/)** · **[Tutorial & Guide](https://neurosploitai.github.io/docs.html)**
 > 📖 Deep dive: **[TUTORIAL.md](TUTORIAL.md)** · changelog: **[RELEASE.md](RELEASE.md)** · honest comparison: **[BENCHMARK.md](BENCHMARK.md)**
 
 ## Install
@@ -123,6 +129,13 @@ No subscription? Use an **API key** for any provider instead — see [TUTORIAL.m
 - **Secrets never leak the report** — credentials the agents observe become
   `$SECRET_n` in every human-facing report; raw values stay in the run's vault for
   re-testing only.
+- **Execution resilience** — classified error handling (7 error types), exponential
+  backoff (5 retries, 2s–90s), crash-state salvage (partial findings survive agent
+  failure), agent lifecycle nudge (3 retries with simplified prompts), progressive
+  budget warnings (70/85/95%), and run snapshot/resume so interrupted engagements
+  pick up where they left off.
+- **LLM-powered dedup** — deterministic fast-path for exact matches, plus a
+  semantic LLM judge for findings with different wording but the same root cause.
 - **486 markdown agents** across web, code (SAST), AI, infra/AD/cloud, chains and
   recon — each a self-contained playbook you can read, edit or add to.
 - **Run via API key or subscription**, 19 providers, including local & CPU-only

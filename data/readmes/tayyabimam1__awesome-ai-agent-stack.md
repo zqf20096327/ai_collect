@@ -297,6 +297,7 @@
 - [agentsmd/agents.md](https://github.com/agentsmd/agents.md) - Open standard for AGENTS.md agent instructions.
 - [agentclientprotocol/agent-client-protocol](https://github.com/agentclientprotocol/agent-client-protocol) - Protocol connecting editors to coding agents.
 - [unstablebuild/rune](https://github.com/unstablebuild/rune) - the development environment for pros.
+- [wangmiaozero/pi-harness](https://github.com/wangmiaozero/pi-harness) - Superset of the Pi coding agent with a visual workspace, run controls and agent teams.
 
 ## Skills, Plugins & Context Engineering
 
@@ -544,6 +545,8 @@
 - [ranxianglei/billion-context](https://github.com/ranxianglei/billion-context) - A context-compression plugin for small context windows (a 100K context is enough), token savings (5x fewer tokens), and month-long single se.
 - [JCodesMore/ai-website-cloner-template](https://github.com/JCodesMore/ai-website-cloner-template) - Clone any website with one command using AI coding agents.
 - [first-fluke/oh-my-agent](https://github.com/first-fluke/oh-my-agent) - A specialist team for the coding agent you already use: 12 roles, 21 workflows and 33 skills that plan, build in parallel, review and debug.
+- [Appllama/appllama-skills](https://github.com/Appllama/appllama-skills) - Agent skills for building mobile apps, checked in simulators.
+- [soumatheusgomes/vibe-coding-toolkit](https://github.com/soumatheusgomes/vibe-coding-toolkit) - Docs, prompts and templates for coding with Claude Code and Codex subagents.
 
 ## Agent Frameworks & Orchestration
 
@@ -759,6 +762,9 @@
 - [4thfever/cultivation-world-simulator](https://github.com/4thfever/cultivation-world-simulator) - 基于 AI Agent 工作流的修仙世界模拟器，旨在还原智能、开放的仙侠世界。| An open-source Cultivation World Simulator using Agentic Workflow to create a dynamic, emerging Xia.
 - [hyperspaceai/agi](https://github.com/hyperspaceai/agi) - The first distributed AGI system. Thousands of autonomous AI agents collaboratively train models, share experiments via P2P gossip, and push.
 - [google/agentmesh](https://github.com/google/agentmesh) - Google's open framework for building multi-agent systems with mesh-style orchestration.
+- [google-research/harness2](https://github.com/google-research/harness2) - Framework that optimizes the prompts, tools, memory and orchestration around a model.
+- [open-gitagent/opengap](https://github.com/open-gitagent/opengap) - Git-native standard for portable AI agent definitions that export to major frameworks.
+- [Ryder-Sun/Meldwork](https://github.com/Ryder-Sun/Meldwork) - Local-first desktop app that orchestrates Codex, Claude Code, Gemini CLI and other agents.
 
 ## Memory & Persistent Context
 
@@ -880,16 +886,4 @@
 - [surrealdb/surrealdb](https://github.com/surrealdb/surrealdb) - Multi-model cloud database in Rust.
 - [redis/redis](https://github.com/redis/redis) - In-memory data store for cache and state.
 - [valkey-io/valkey](https://github.com/valkey-io/valkey) - Open-source Redis fork for in-memory data.
-- [dragonflydb/dragonfly](https://github.com/dragonflydb/dragonfly) - Drop-in Redis replacement built for scale.
-- [etcd-io/etcd](https://github.com/etcd-io/etcd) - Distributed key-value store for configuration.
-- [apache/zookeeper](https://github.com/apache/zookeeper) - Coordination service for distributed systems.
-- [spacejam/sled](https://github.com/spacejam/sled) - Embedded database in Rust.
-- [skytable/skytable](https://github.com/skytable/skytable) - NoSQL database with a focus on simplicity.
-- [tikv/tikv](https://github.com/tikv/tikv) - Distributed transactional key-value database.
-- [vitessio/vitess](https://github.com/vitessio/vitess) - Database clustering for horizontal MySQL scaling.
-- [cockroachdb/cockroach](https://github.com/cockroachdb/cockroach) - Distributed SQL database that scales.
-- [apache/cassandra](https://github.com/apache/cassandra) - Distributed NoSQL wide-column store.
-
-## RAG & Retrieval
-
-*Vector databases, search engines, embeddings and the frameworks that ground answers i
+- [dragonflydb/dragonfly](https://github.com/dragonflydb/dragonfly) 

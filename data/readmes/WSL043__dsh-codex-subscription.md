@@ -18,7 +18,7 @@
 [![MIT](https://img.shields.io/badge/license-MIT-111111.svg)](LICENSE)
 [![Star](https://img.shields.io/github/stars/WSL043/dsh-codex-subscription?style=flat&logo=github&label=Star)](https://github.com/WSL043/dsh-codex-subscription/stargazers)
 
-[安装](#安装) · [核心功能](#核心功能) · [手机远程控制](#手机远程控制beta) · [草图作画实测](#草图作画实测) · [全部功能](#全部功能) · [使用指南](docs/GUIDE.zh-CN.md) · [常见问题](#常见问题)
+[安装](#安装) · [核心功能](#核心功能) · [手机远程控制](#手机远程控制beta) · [草图画板](#草图画板beta) · [全部功能](#全部功能) · [使用指南](docs/GUIDE.zh-CN.md) · [常见问题](#常见问题)
 
 </div>
 
@@ -42,7 +42,7 @@
 2. 在 **包名或地址** 输入框中粘贴下面的包名（已带版本号）：
 
    ```text
-   dsh-codex-subscription@3.1.0
+   dsh-codex-subscription@3.1.2
    ```
 
 3. 点击 **安装**，等待安装完成；按页面提示操作，需要重启时先保存工作。
@@ -54,7 +54,7 @@
 <summary>终端安装（已能运行 dsh 命令）</summary>
 
 ```sh
-dsh plugin --profile web add dsh-codex-subscription@3.1.0
+dsh plugin --profile web add dsh-codex-subscription@3.1.2
 ```
 
 安装完成后按提示重启 DSH，再到 **设置 → Codex 订阅** 登录。插件页面和终端均由 DSH 管理安装。
@@ -67,7 +67,7 @@ dsh plugin --profile web add dsh-codex-subscription@3.1.0
 先在 Web 中完成登录并选择一次 Codex 模型，再把同一个插件安装到 Headless profile：
 
 ```sh
-dsh plugin --profile headless add dsh-codex-subscription@3.1.0
+dsh plugin --profile headless add dsh-codex-subscription@3.1.2
 dsh --profile headless "只回复：ok"
 ```
 
@@ -83,7 +83,12 @@ dsh --profile headless "只回复：ok"
 
 短周期和每周额度、重置时间、额外 Credits 与重置卡都在设置里；输入框旁可以常驻显示剩余额度，低于阈值会提醒。
 
+<details>
+<summary>查看截图</summary>
+
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/ui-quota-zh-dark.png"><img src="docs/assets/ui-quota-zh-light.png" width="560" alt="额度卡片：每周额度与重置时间，下方可展开使用概览和额度去向"></picture></p>
+
+</details>
 
 <details>
 <summary>使用概览与额度去向：累计用量、连续天数、每日热力图，以及每周额度花在哪</summary>
@@ -95,7 +100,12 @@ dsh --profile headless "只回复：ok"
 
 选模型、调推理档位、切换速度档位，同时查看剩余额度，无需为每次请求打开设置。
 
+<details>
+<summary>查看截图</summary>
+
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/ui-composer-zh-dark.png"><img src="docs/assets/ui-composer-zh-light.png" width="760" alt="输入框：权限、草图、剩余额度、闪电标识的 Fast 模式和模型选择"></picture></p>
+
+</details>
 
 ### 手机远程控制（Beta）
 
@@ -109,19 +119,34 @@ dsh --profile headless "只回复：ok"
 - DSH 工作区对应手机上的项目；可以从手机分叉对话，看用量额度、累计用量和上下文用量；DSH 带有 `/compact` 时（0.2.0-rc.2 起）还能从手机压缩上下文；
 - 模型报错会显示在手机上；设置里能看到已配对的手机，随时移除。
 
-默认关闭：**设置 → Codex 订阅 → 与其他模型 → 手机远程控制**。电脑需要保持开机、联网并打开 DSH。本功能基于 Codex Remote Control 协议实现第三方主机兼容，使用 OpenAI 的远程连接服务。Codex 的远程控制能力已有官方实现，但 DSH 作为第三方主机的接入方式尚不属于官方明确承诺支持的范围，后续服务更新可能影响兼容性，所以标为 Beta。功能默认关闭，你可以自行开启、管理已配对设备或随时停用。该功能不代表获得 OpenAI 官方认证或背书。
+默认关闭：**设置 → Codex 订阅 → 手机与更多 → 手机远程控制**。电脑需要保持开机、联网并打开 DSH。本功能基于 Codex Remote Control 协议实现第三方主机兼容，使用 OpenAI 的远程连接服务。Codex 的远程控制能力已有官方实现，但 DSH 作为第三方主机的接入方式尚不属于官方明确承诺支持的范围，后续服务更新可能影响兼容性，所以标为 Beta。功能默认关闭，你可以自行开启、管理已配对设备或随时停用。该功能不代表获得 OpenAI 官方认证或背书。
+
+<details>
+<summary>查看截图</summary>
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/ui-remote-zh-dark.png"><img src="docs/assets/ui-remote-zh-light.png" width="560" alt="设置里的手机远程控制：开关、配对二维码和手动码、已配对的手机"></picture></p>
+
+</details>
 
 ### 图片与草图
 
 用订阅生成图片，在图上圈出区域写备注继续修改，或者打开草图画板自己画、让 Agent 画，再以草图为参考生成成品。画板支持渐变、模糊、混合模式和形状裁剪；Agent 照着参考图画时能并排对比、看差异热图、量颜色和位置、撤销重来，画完还能一笔一笔回放并录成视频。
 
+<details>
+<summary>查看截图</summary>
+
 <p align="center"><img src="docs/assets/annotate-zh.webp" width="900" alt="图片预览：在烟囱上方圈出区域并写下备注，再带着备注继续编辑"></p>
+
+</details>
+
+<details>
+<summary>查看截图</summary>
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/ui-replay-zh-dark.webp"><img src="docs/assets/ui-replay-zh-light.webp" width="640" alt="草图画板的回放：按落笔顺序重放整幅画，可调速、拖动进度，并录成视频"></picture></p>
 
-实测见 [草图作画实测](#草图作画实测)，开关在 **设置 → Codex 订阅 → 图片与草图**。
+</details>
+
+草图画板见 [草图画板](#草图画板beta)，开关在 **设置 → Codex 订阅 → 创作**。
 
 ### ChatGPT 连接器
 
@@ -129,9 +154,14 @@ dsh --profile headless "只回复：ok"
 
 ### 订阅功能要不要给 DeepSeek 等其他模型用，由你定
 
-联网搜索来源、ChatGPT 连接器、审查模型、子任务、语音和手机远程控制都在 **设置 → Codex 订阅 → 与其他模型** 一页里。页首一个总开关：关闭后，用 DeepSeek 等非 Codex 模型对话时不再使用订阅的联网搜索（改用 DSH 搜索）、图片生成和 ChatGPT 连接器，Codex 订阅模型不受影响。默认开启。
+联网搜索来源、ChatGPT 连接器和官方 Codex 子任务在 **设置 → Codex 订阅 → 联网与工具**，页首一个总开关：关闭后，用 DeepSeek 等非 Codex 模型对话时不再使用订阅的联网搜索（改用 DSH 搜索）、图片生成和 ChatGPT 连接器，Codex 订阅模型不受影响。默认开启。
 
-<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/ui-interop-zh-dark.webp"><img src="docs/assets/ui-interop-zh-light.webp" width="640" alt="与其他模型设置页：总开关，以及搜索来源、ChatGPT 连接器、审查模型、子任务、语音和手机远程控制"></picture></p>
+<details>
+<summary>查看截图</summary>
+
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/ui-interop-zh-dark.webp"><img src="docs/assets/ui-interop-zh-light.webp" width="640" alt="联网与工具设置页"></picture></p>
+
+</details>
 
 [详细用法、限制与可选组件 →](docs/GUIDE.zh-CN.md)
 
@@ -147,15 +177,15 @@ dsh --profile headless "只回复：ok"
 | --- | --- | --- |
 | **订阅登录** | 直接登录 ChatGPT，使用 Codex 订阅模型，无需 API Key | 普通聊天无需 Codex CLI |
 | **模型目录同步** | 自动读取账号可用模型与推理档位，支持手动刷新；目录标注退役的模型会在模型名称旁显示退役日期，不会自动切换你的选择 | 新型号以账号目录开放情况为准；模型只来自账号目录，未登录或读取失败时不显示任何模型，也不使用内置列表 |
-| **模型列表** | 在“模型与运行”中逐个显示或隐藏输入框中的模型；模型选择器沿用 DSH 官方的模型标识（如新模型徽章） | 仅影响列表显示；已选模型和请求不受影响 |
-| **默认模型** | 在“模型与运行 → 模型”里选择每次新建会话默认使用的模型 | 写入 DSH 的默认模型设置，与在对话里切换模型是同一处；未设置时跟随 DSH 默认 |
+| **模型列表** | 在“模型”页中逐个显示或隐藏输入框中的模型；模型选择器沿用 DSH 官方的模型标识（如新模型徽章） | 仅影响列表显示；已选模型和请求不受影响 |
+| **默认模型** | 在“模型”页里选择每次新建会话默认使用的模型 | 写入 DSH 的默认模型设置，与在对话里切换模型是同一处；未设置时跟随 DSH 默认 |
 | **推理等级** | 在输入框选择模型支持的推理档位 | 档位随模型变化 |
 | **速度档位** | 在支持的模型上切换标准 / Fast；账号目录提供时还有 Ultrafast（Beta），输入框显示闪电标识 | 默认标准；Fast 和 Ultrafast 会增加用量消耗，Ultrafast 目前仅 Pro 500 |
 | **输出详略** | 选择简短、适中或详细的回答偏好 | 默认跟随模型 |
 | **输入图片精度** | 为发送给聊天模型的图片选择低、高、原图或自动精度 | 影响输入 token 用量；默认自动 |
 | **订阅联网搜索** | 使用 Codex 搜索，或选择 DSH 搜索 | 可选自动、DSH、Codex 来源；在搜索发生时分流，不改写 DSH 自己的搜索设置，所以官方设置页的开关保持你设的样子；DeepSeek 账号路线和填了 API Key 的路线（新版 Search API / 旧版）都兼容；一方未登录或没有 Key 时自动改用另一方 |
-| **其他模型总开关** | 一键让 DeepSeek 等非 Codex 模型的对话不再使用订阅的联网搜索、图片生成和 ChatGPT 连接器 | 设置 → Codex 订阅 → 与其他模型；默认开启，Codex 订阅模型不受影响；手机远程控制和语音由你主动开启或发起，不受它影响 |
-| **搜索范围** | 选择实时 / 缓存搜索、关闭搜索，或限定域名 | 在“与其他模型”中设置，就在搜索来源旁边 |
+| **其他模型总开关** | 一键让 DeepSeek 等非 Codex 模型的对话不再使用订阅的联网搜索、图片生成和 ChatGPT 连接器 | 设置 → Codex 订阅 → 联网与工具；默认开启，Codex 订阅模型不受影响；手机远程控制和语音由你主动开启或发起，不受它影响 |
+| **搜索范围** | 选择实时 / 缓存搜索、关闭搜索，或限定域名 | 在“联网与工具”的搜索来源下 |
 | **流无响应超时** | 设置连续没有收到流式数据时中断请求的时长 | 默认 10 分钟；不是整体回答时限 |
 | **上下文预算** | 按模型使用标准、扩展或自定义上下文预算 | 受模型目录上限约束 |
 | **GPT-Reserve** | 在账号开放时选择备用模型入口 | 实验性；不承诺独立备用额度 |
@@ -168,7 +198,7 @@ dsh --profile headless "只回复：ok"
 
 | 功能 | 你可以做什么 | 使用方式 / 条件 |
 | --- | --- | --- |
-| **多账号管理** | 添加、切换、移除账号，或退出全部账号 | 设置 → 账号与额度 |
+| **多账号管理** | 添加、切换、移除账号，或退出全部账号 | 设置 → Codex 订阅 → 开始 |
 | **额度详情** | 查看短周期 / 每周额度、重置时间及独立额度分组 | 仅展示服务端返回的窗口与分组 |
 | **额度去向** | 在额度卡片里按周查看额度花在哪：按模型、入口、来源和触发方式拆分 | 来自官方用量报告，近似值，有一两天延迟；账号没有该报告时不显示 |
 | **使用概览** | 在额度卡片里查看累计 token、单日最高、连续使用天数、最常用推理档，以及最近半年的每日用量热力图 | 来自官方使用统计；账号没有该统计时不显示 |
@@ -210,7 +240,7 @@ dsh --profile headless "只回复：ok"
 
 | 功能 | 你可以做什么 | 使用方式 / 条件 |
 | --- | --- | --- |
-| **手机远程控制** | 在 ChatGPT 手机 App 的 Codex 里直接指挥电脑上的 DSH：新建、续聊、归档对话，切换模型和权限，回答审批和提问，DeepSeek 等任意 DSH 模型都能用 | Beta；默认关闭，设置 → Codex 订阅 → 与其他模型 → 手机远程控制，扫码或输入手动码配对 |
+| **手机远程控制** | 在 ChatGPT 手机 App 的 Codex 里直接指挥电脑上的 DSH：新建、续聊、归档对话，切换模型和权限，回答审批和提问，DeepSeek 等任意 DSH 模型都能用 | Beta；默认关闭，设置 → Codex 订阅 → 手机与更多 → 手机远程控制，扫码或输入手动码配对 |
 | **Codex 独立子任务** | 复用订阅登录和工作区权限执行独立任务，可指定允许的模型与推理档位 | Beta，可选，多数人用不到：默认用 DSH 自己的子智能体（同样能用订阅模型）；想让子任务由官方 Codex Agent 执行时，才安装可选组件（约 377 MB，Windows），并在“插件 → 子智能体”开启模型选择。用独立数据目录和订阅登录，不读你电脑上的 Codex 登录 |
 | **子任务组件管理** | 在设置里安装、停用或卸载官方 Codex 子任务组件 | 由支持的 DSH 宿主管理，无需额外登录 |
 | **云端上下文压缩** | 使用 Codex 云端压缩继续长对话，同时保留 DSH 历史与原生压缩 | Beta / 实验性；默认关闭，开启的请求使用 SSE |
@@ -239,11 +269,11 @@ dsh --profile headless "只回复：ok"
 
 | 设置页 | 在这里做什么 |
 | --- | --- |
-| **账号与额度** | 登录与切换账号、查看重置时间、设置额度显示和提醒 |
-| **模型与运行** | 模型列表与默认模型、上下文预算、输入图片精度、连接方式、云端压缩 |
-| **与其他模型** | 总开关，以及搜索来源、ChatGPT 连接器、审查模型、独立子任务、语音和手机远程控制 |
-| **图片与草图** | 分别开启图片生成、画板和 Agent 绘图 |
-| **维护** | 生成支持诊断、管理本地额度预测缓存 |
+| **开始** | 登录与切换账号、各功能开关一览、订阅额度、额度显示和提醒 |
+| **模型** | 默认模型与模型列表、回答风格；折叠的“高级”里有上下文长度、重试、连接方式、云端压缩、审查模型 |
+| **联网与工具** | 其他模型能否用订阅功能的总开关，搜索来源、ChatGPT 连接器、官方 Codex 子任务 |
+| **创作** | 图片生成、编辑、输入框 @生图、图片查看器，草图画板和 Agent 绘图 |
+| **手机与更多** | 手机远程控制、语音对话、本机缓存、支持诊断 |
 
 **模型感知上下文**跟随账号模型目录，刷新不会覆盖未保存的草稿。额度分组以服务端实际返回为准，包括 Spark 等独立额度。
 
@@ -253,42 +283,9 @@ dsh --profile headless "只回复：ok"
 
 [查看完整使用指南 →](docs/GUIDE.zh-CN.md)
 
-## 草图作画实测
+## 草图画板（Beta）
 
-草图画板和 Agent 绘图为 **Beta**，默认关闭，在“图片与草图”中按需开启。手动画图点输入框的草图按钮；让 Agent 画发送 `@sketch` 加要求。有参考图时 Agent 可以并排对比、看差异热图、局部放大、量颜色和边缘位置、撤销重画；画完可以点画板里的“回放”，把过程一笔一笔重放并录成视频。这些工具只测量和展示，不替模型画。
-
-下面两个例子都是**只在画板上画、没有调用生图**，每个都跑一次，不代表稳定水平。“误差”是画作与参考图逐像素颜色差的平均值（越小越接近，0 为一致）。
-
-**《DeepSeek 娘》· 照着参考图临摹**
-
-<table>
-<tr><th width="33%">参考图</th><th width="33%">之前：旧工具里的最好成绩</th><th width="33%">现在：新工具</th></tr>
-<tr><td><img src="docs/assets/sketch-niang-reference.webp" alt="DeepSeek 娘表情包参考图" width="240"></td><td><img src="docs/assets/sketch-niang-astra-compare.webp" alt="旧工具画的 DeepSeek 娘" width="240"><br><sub>GPT-6-Astra Medium · 20 分 57 秒 · 686 笔<br>误差 8.8%</sub></td><td><img src="docs/assets/sketch-niang-astra-new.webp" alt="新工具画的 DeepSeek 娘" width="240"><br><sub>GPT-6-Astra Medium · 8 分 11 秒 · 481 笔<br>误差 9.3%</sub></td></tr>
-</table>
-
-数字上两者接近，新版用时不到一半；双手叉腰的姿势和围裙上的小鲸鱼更准，发丝和蕾丝的细腻程度仍不及原图。
-
-**《初音未来》· 竖图，照着参考图临摹**
-
-<table>
-<tr><th width="50%">之前：叠图对照和网格</th><th width="50%">现在：新工具</th></tr>
-<tr><td><img src="docs/assets/sketch-miku-sol-before.webp" alt="旧工具画的初音未来" width="330"><br><sub>GPT-6.1-Sol Xhigh · 误差 6.7%</sub></td><td><img src="docs/assets/sketch-miku-sol-new.webp" alt="新工具画的初音未来" width="330"><br><sub>GPT-6.1-Sol Xhigh · 21 分钟 · 685 笔 · 误差 5.2%</sub></td></tr>
-</table>
-
-误差降了约四分之一，肩上的“01”、袖屏、腿部的系带细节补全了。读了模型的完整操作记录，剩下的误差主要是大块头发、皮肤和腿部的明暗色调，而不是边缘位置；前 3 分钟的四次整层 SVG 就把误差从 18% 压到 6.5%，之后 17 分钟的细化只降了 1.3 个百分点。实验过程、记录里发现的问题和改进见 [绘图实验记录](docs/sketch-drawing-experiments.md)。
-
-<details>
-<summary>展开完整提示词</summary>
-
-```text
-@sketch 用 1:1 方形画板，尽可能忠实地临摹我附上的这张参考图（一张 Q 版二次元表情包）。画面：白色底；Q 版二头身的蓝发鲸鱼娘跪坐在画面右侧偏中，蓝色渐变长发披肩（发根深蓝、发梢浅蓝），头顶一根呆毛，戴白色蕾丝女仆头饰和蓝色蝴蝶结，头两侧是深蓝色带白色内里的鲸鱼耳鳍，蓝色大眼睛带高光，猫嘴嘟嘴的“ω”表情，脸颊泛红，双手叉腰；穿深蓝色女仆装，白色蕾丝围裙（围裙上有一只蓝色小鲸鱼图案），黑色领结，袖口和裙摆有白色蕾丝褶边；身后露出一条深蓝色的鲸鱼尾巴。左上方是白色对话气泡（黑色描边，尖角指向她），气泡里用黑色粗体写“你这吃白饭的蓝色大肥鱼。”；左侧从画面外伸进来一只黑袖子的手，食指指向她；她的左下方用蓝色描边字写“没吃饱喵！”；她脚边的地上放着一只空的白瓷饭碗，碗内壁印着一只蓝色小鲸鱼。请分层绘制：白色背景、头发与鲸鱼耳鳍与尾巴、身体与服装、脸部五官、饭碗、手臂与对话气泡文字，保留原生可编辑笔画，并特别注意角色比例、头发的渐变与发丝走向、蕾丝褶边和脸部表情的细节。这次只在草图画布上画，不要调用任何生图或图片编辑工具；画完后检查一遍与参考图的差异并修正，最后保存并完成。
-```
-
-```text
-用画板（codex_sketch）按这张参考图画初音未来，竖图，尽量百分之百还原：构图、比例、姿势、颜色、细节都要一致。
-```
-
-</details>
+草图画板和 Agent 绘图为 **Beta**，默认关闭，在“创作”页按需开启。手动画图点输入框的草图按钮；让 Agent 画发送 `@sketch` 加要求。
 
 <details>
 <summary>查看图片与草图设置</summary>
@@ -311,7 +308,7 @@ DSH 实机设置截图，随浅色 / 深色主题切换。
 <summary>终端方式</summary>
 
 ```sh
-dsh plugin --profile web update dsh-codex-subscription@3.1.0
+dsh plugin --profile web update dsh-codex-subscription@3.1.2
 ```
 
 仅在需要卸载时运行：
@@ -357,7 +354,7 @@ dsh plugin --profile web remove dsh-codex-subscription
 <details>
 <summary>需要装 Codex 命令行才能用吗？</summary>
 
-普通订阅聊天不需要。只有想用 **Codex 独立子任务** 时，才在“设置 → Codex 订阅 → 与其他模型”里点“安装组件”，停用和卸载也在同一处。其余实验选项按需开启。[可选组件、存储清理与完整说明 →](docs/GUIDE.zh-CN.md)
+普通订阅聊天不需要。只有想用 **Codex 独立子任务** 时，才在“设置 → Codex 订阅 → 联网与工具”里点“安装组件”，停用和卸载也在同一处。其余实验选项按需开启。[可选组件、存储清理与完整说明 →](docs/GUIDE.zh-CN.md)
 
 </details>
 
@@ -379,5 +376,12 @@ DSH 插件交流可前往 [DeepSeek Harness Discussions](https://github.com/deep
 敏感问题请先阅读 [SECURITY.md](SECURITY.md)。
 
 如果这个项目对你有帮助，[点一下 Star](https://github.com/WSL043/dsh-codex-subscription/stargazers) 可以让更多 DSH 用户发现它。
+
+<a href="https://star-history.com/#WSL043/dsh-codex-subscription&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=WSL043/dsh-codex-subscription&type=Date&theme=dark" />
+    <img alt="Star 趋势" src="https://api.star-history.com/svg?repos=WSL043/dsh-codex-subscription&type=Date" />
+  </picture>
+</a>
 
 [MIT](LICENSE)

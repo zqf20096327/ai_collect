@@ -62,7 +62,7 @@ wirken run
 Pin the installer before piping. The committed `install.sh` has this SHA-256:
 
 ```
-73e678196ea073608e902c8ab11a01ede07e0d37fddccaa20c43fa5d62bd52f5
+085faf0359384403e4e80d1e75734b84cec7ce92182d9012c7879f9bc681fb70
 ```
 
 ```bash
@@ -83,7 +83,7 @@ routes messages to the agent, and serves a WebChat UI at
 `http://localhost:18790`:
 
 ```
-  wirken v2.2.0
+  wirken v2.3.0
   ──────
 
   Provider: ollama/llama3.2
@@ -254,6 +254,7 @@ compromise impossible. The honest edges:
 [Configuration](docs/configuration.md) ·
 [Channels](docs/channels.md) ·
 [Troubleshooting](docs/troubleshooting.md) ·
+[Updating](docs/update.md) ·
 [Windows](docs/windows.md)
 
 **Security**

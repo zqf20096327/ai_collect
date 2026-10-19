@@ -69,7 +69,7 @@ pnpm update -g @hostinger/mcp
 
 This package installs the following MCP server commands:
 
-- `hostinger-api-mcp` — unified server over every operation (421 total)
+- `hostinger-api-mcp` — unified server over every operation (403 total)
 - `hostinger-agency-hosting-mcp` — 42 operations for agency-hosting
 - `hostinger-agent-readiness-mcp` — 3 operations for agent-readiness
 - `hostinger-billing-mcp` — 9 operations for billing
@@ -77,7 +77,7 @@ This package installs the following MCP server commands:
 - `hostinger-domains-mcp` — 42 operations for domains
 - `hostinger-ecommerce-mcp` — 29 operations for ecommerce
 - `hostinger-horizons-mcp` — 6 operations for horizons
-- `hostinger-hosting-mcp` — 81 operations for hosting
+- `hostinger-hosting-mcp` — 66 operations for hosting
 - `hostinger-mail-mcp` — 38 operations for mail
 - `hostinger-reach-mcp` — 56 operations for reach
 - `hostinger-vps-mcp` — 67 operations for vps
@@ -229,7 +229,9 @@ Every server exposes three tools:
 
 ## Operations
 
-The operations reachable through `execute`, by binary:
+The operations `search` offers, by binary:
+
+Operations that newer tools replace are hidden from `search`, and not documented, in every binary that also offers the replacing tool. They keep working through `execute` until they are removed.
 
 ### `hostinger-agency-hosting-mcp`
 
@@ -1812,51 +1814,16 @@ interface in the provided website URL.
 
 ### `hostinger-hosting-mcp`
 
-#### hosting_import-wordpress-website
+#### hosting_deploy
 
-Import a WordPress website from an archive file to a hosting server. This tool uploads a website archive (zip, tar, tar.gz, etc.) and a database dump (.sql file) to deploy a complete WordPress website. The archive will be extracted on the server automatically. Note: This process may take a while for larger sites. After upload completion, files are being extracted and the site will be available in a few minutes. Upload credentials are generated and used internally — do not call a separate upload-url endpoint or upload the files yourself, this tool does it end-to-end. The username will be automatically resolved from the domain.
-
-- **Method**: `custom`
-- **Path**: `custom`
-
-#### hosting_deploy-wordpress-plugin
-
-Deploy a WordPress plugin from a directory to a hosting server. This tool uploads all plugin files and triggers plugin deployment. Upload credentials are generated and used internally — do not call a separate upload-url endpoint or upload the files yourself, this tool does it end-to-end.
+Deploy, publish or upload a website to Hostinger web hosting (Shared, Cloud): static HTML, PHP, a nodejs (Node.js) app, a whole WordPress site, or a WordPress plugin or theme, from a local directory, an archive or a GitHub or GitLab repository. It detects what the project is and does the upload, build and Git setup itself: do not call upload or build operations, and do not archive the directory yourself. WARNING: it overwrites the website's contents and cannot be undone; confirm the domain with the user before deploying to a site that already has content. A Node.js build runs on the server: this returns a buildUuid at once, then call hosting_get-deployment until the build state is completed or failed. Static, PHP, plugin and theme deploys are done when this returns; a WordPress site import only starts, and its files are extracted a few minutes later. From Git, pass type (static or nodejs) unless the site already runs a Node.js app or you pass Node.js settings; a static or PHP site deploys the branch now and again on every push; a Node.js site builds the branch now and on every later push, with the settings stored for the site (when none are stored, pass appType and nodeVersion from the project's engines, plus outputDirectory and buildScript if the app has a build step). Git needs GitHub or GitLab connected once in hPanel.
 
 - **Method**: `custom`
 - **Path**: `custom`
 
-#### hosting_deploy-wordpress-theme
+#### hosting_get-deployment
 
-Deploy a WordPress theme from a directory to a hosting server. This tool uploads all theme files and triggers theme deployment. The uploaded theme can optionally be activated after deployment. Upload credentials are generated and used internally — do not call a separate upload-url endpoint or upload the files yourself, this tool does it end-to-end.
-
-- **Method**: `custom`
-- **Path**: `custom`
-
-#### hosting_deploy-js-application
-
-Deploy a JavaScript application from an archive file to a hosting server. IMPORTANT: the archive must ONLY contain application source files, not the build output, skip node_modules directory; also exclude all files matched by .gitignore if the ignore file exists. The build process will be triggered automatically on the server after the archive is uploaded. Upload credentials are generated and used internally — do not call a separate upload-url endpoint or upload the archive yourself, this tool does it end-to-end. After deployment, use the hosting_list-js-deployments tool to check deployment status and track build progress.
-
-- **Method**: `custom`
-- **Path**: `custom`
-
-#### hosting_deploy-static-website
-
-Deploy a static website from an archive file to a hosting server. IMPORTANT: This tool only works for static websites with no build process. The archive must contain pre-built static files (HTML, CSS, JavaScript, images, etc.) ready to be served. If the website has a package.json file or requires a build command, use hosting_deploy-js-application instead. The tool uploads the archive to the website's file browser over TUS and triggers deployment; the archive is extracted and deployed directly without any build steps. Upload credentials are generated and used internally — do not call a separate upload-url endpoint or upload the archive yourself, this tool does it end-to-end. The username will be automatically resolved from the domain.
-
-- **Method**: `custom`
-- **Path**: `custom`
-
-#### hosting_list-js-deployments
-
-List javascript application deployments for checking their status. Use this tool when customer asks for the status of the deployment. This tool retrieves a paginated list of Node.js application deployments for a domain with optional filtering by deployment states.
-
-- **Method**: `custom`
-- **Path**: `custom`
-
-#### hosting_show-js-deployment-logs
-
-Retrieve logs for a specified JavaScript application deployment for debugging purposes in case of failure.
+Check deployment status, build status, build logs and why a build failed (failure analysis) for a website's nodejs (Node.js) deployment: the state of its latest build (or of buildUuid), the end of the build log, the failure analysis when the build failed, and the build settings and Git auto-deployment settings stored for the site. Use it after hosting_deploy starts a Node.js build, and to find out why a deployment failed. Poll until the build state is completed or failed, with growing pauses. The log comes back in full; pass fromLine (the lines count from the previous call) to read only new output. A website without Node.js builds returns build: null with an explanation, because static, PHP, plugin and theme deploys are complete when hosting_deploy returns, and a WordPress site import is ready a few minutes after it starts.
 
 - **Method**: `custom`
 - **Path**: `custom`
@@ -1866,7 +1833,8 @@ Retrieve logs for a specified JavaScript application deployment for debugging pu
 Permanently clears all server-side cache for the website at once. Use it when content was
 updated and needs to be visible immediately, or after making major changes.
 
-Also purges the Hostinger CDN cache when CDN is enabled on the website. For a WordPress
+Also purges the Hostinger CDN cache when CDN is enabled on the website. To purge only the CDN
+cache and leave the server cache untouched, use `Purge CDN cache`. For a WordPress
 installation living in a subdirectory, pass the directory query parameter to clear its cache.
 
 - **Method**: `DELETE`
@@ -1893,6 +1861,61 @@ Does nothing if caching is already in the requested state.
 
 - **Method**: `PATCH`
 - **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cache/toggle`
+
+#### hosting_cdn_disable
+
+Turns off the Hostinger CDN for the website domain. Once DNS propagation completes, the
+website content is served directly from the origin server. Repeating the call is safe; when
+CDN is already disabled, it applies the DNS change again.
+
+Returns 422 for platform-managed domains (for example `*.hostingersite.com` and
+`*.app-preview.com`), where CDN cannot be disabled, even when CDN is already off. Also returns
+422 while the account is being moved to another server (retry after the move finishes), or
+when the CDN provider rejects the change. Returns 404 when the domain is not a website on the
+account.
+
+- **Method**: `POST`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cdn/disable`
+
+#### hosting_cdn_enable
+
+Turns on the Hostinger CDN for the website domain, which speeds up page loads and reduces the
+load on the server. Works for the main domain, parked domains and subdomains of the account.
+
+Enabling changes the domain's DNS records and usually takes a few seconds. After that, DNS
+propagation can take a few more minutes before visitors are served through the CDN.
+
+Repeating the call is safe, for example after a timeout. When CDN is already enabled, it
+applies the DNS change again and refreshes the CDN SSL certificate.
+
+Returns 422 when the account is disabled, while the account is being moved to another
+server (retry after the move finishes), or when the CDN provider rejects the change.
+Returns 404 when the domain is not a website on the account.
+
+- **Method**: `POST`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cdn/enable`
+
+#### hosting_cdn_purge-cache
+
+Purges the website's content from the Hostinger CDN edge cache only. The origin server cache
+is not touched; to clear both, use `Clear website cache`.
+
+Returns 422 when CDN is not enabled on the website. Returns 404 when the domain is not a
+website on the account.
+
+- **Method**: `DELETE`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cdn/purge`
+
+#### hosting_cdn_status
+
+Returns whether the Hostinger CDN is enabled for the website domain. Works for the main
+domain, parked domains and subdomains of the account.
+
+The domain must be the exact website name as listed on the account, without a `www.` prefix.
+Returns 404 when the domain is not a website on the account.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cdn/status`
 
 #### hosting_cron-jobs_list
 
@@ -2135,53 +2158,6 @@ Skip this verification when using Hostinger's free subdomains (*.hostingersite.c
 - **Method**: `POST`
 - **Path**: `/api/hosting/v1/domains/verify-ownership`
 
-#### hosting_files_generate-upload-url
-
-Generate a file browser upload URL with authentication credentials
-for uploading files directly to a website's file storage.
-
-While the website is still being set up (`status: running` on the list website setups
-endpoint) this endpoint returns 409 with a `Retry-After` header: wait that many
-seconds and retry, or poll the website setups until the status is `completed`.
-
-Returns `url`, `auth_key` and `rest_auth_key`. Use these to upload a file to the
-website's `public_html` directory via the TUS resumable upload protocol (TUS 1.0.0).
-Send `X-Auth: {auth_key}` and `X-Auth-Rest: {rest_auth_key}` headers on every request
-below.
-
-1. Create the upload: `POST` to `{url}/{relative_file_path}?override=true` with headers
-   `upload-length: {file size in bytes}` and `upload-offset: 0`. Expect `201 Created`.
-2. Upload the file: send the file bytes to the same location (any TUS 1.0.0 client, or
-   `PATCH` requests with an `upload-offset` header tracking progress) until complete.
-
-`relative_file_path` is the destination path inside `public_html`, e.g. `app.zip`.
-
-Instead of a TUS client, plain `curl` also works:
-```
-FILE=app.zip
-SIZE=$(stat -f%z "$FILE")   # stat -c%s on Linux
-
-curl -i -X POST "{url}/${FILE}?override=true" \
-  -H "X-Auth: {auth_key}" \
-  -H "X-Auth-Rest: {rest_auth_key}" \
-  -H "Tus-Resumable: 1.0.0" \
-  -H "Upload-Length: ${SIZE}" \
-  -H "Upload-Offset: 0"
-# -> 201 Created
-
-curl -i -X PATCH "{url}/${FILE}?override=true" \
-  -H "X-Auth: {auth_key}" \
-  -H "X-Auth-Rest: {rest_auth_key}" \
-  -H "Tus-Resumable: 1.0.0" \
-  -H "Content-Type: application/offset+octet-stream" \
-  -H "Upload-Offset: 0" \
-  --data-binary "@${FILE}"
-# -> 204 No Content, Upload-Offset response header equals SIZE when done
-```
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/files/upload-urls`
-
 #### hosting_files_list-website-and-directories
 
 List files and directories under a website's document root.
@@ -2202,35 +2178,6 @@ containing secrets (e.g. credential files) — none of these are returned by thi
 - **Method**: `GET`
 - **Path**: `/api/hosting/v1/accounts/{username}/domains/{domain}/files/content`
 
-#### hosting_git_auto-deployment-settings
-
-Returns the Git auto-deployment settings of the website: which repository and branch deploy
-into which directory, and whether pushes trigger a deployment. `is_enabled` false keeps the
-repository link but ignores pushes.
-
-When the website has no auto-deployment configured every field is null. Save settings with
-`Update Git auto-deployment settings`.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/git/auto-deployments/settings`
-
-#### hosting_git_update-auto-deployment-settings
-
-Creates or replaces the Git auto-deployment settings of the website: repository, branch, the
-directory under the document root to deploy into, and `is_enabled`. Send the full set;
-`is_enabled` defaults to true and `directory` to the document root. `installation_uuid` must
-be an installation from `List Git installations` that belongs to the same customer as the
-website.
-
-For PHP and static websites, saving with `is_enabled` true deploys the branch right away and
-every later push to that branch deploys again. For Node.js and Website Builder websites saving
-does not clone anything. On a Node.js website start the first deploy with
-`Start Node.js build` using `source_type` `git`; pushes then trigger new builds with the build
-settings stored for the website.
-
-- **Method**: `PUT`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/git/auto-deployments/settings`
-
 #### hosting_git_delete-auto-deployment-settings
 
 Removes the Git auto-deployment settings of the website. Files already deployed stay on the
@@ -2239,39 +2186,6 @@ configured.
 
 - **Method**: `DELETE`
 - **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/git/auto-deployments/settings`
-
-#### hosting_git_list-installations
-
-Lists the Git provider accounts the customer has connected. Only installations with status
-`active` are returned unless the `status` filter says otherwise.
-
-An empty list means the customer has no active installation. Check `status=suspended` and
-`status=pending` as well. If there is none at all, a Git provider (GitHub or GitLab) has to be
-connected once in hPanel (Websites, Manage, Advanced, Git; or Add Website, Node.js Web App,
-Import Git Repository); this endpoint then lists the new installation.
-
-Use `uuid` as the path parameter of `List Git installation repositories`, and as
-`installation_uuid` in `Start Node.js build` with `source_type` `git` and in
-`Update Git auto-deployment settings`.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/git/installations`
-
-#### hosting_git_list-installation-repositories
-
-Lists the repositories the Git installation can access, read live from the provider. Works
-for github and gitlab installations. Use an active installation: a suspended or pending one
-is still queried and the call fails with whatever the provider answers. The list is cut at
-the first 500 repositories in the order the provider returns them; when the account has
-more, name the repository directly instead of searching this list.
-
-`owner`, `name` and a branch (`default_branch` or another one) go into `source_options` of
-`Start Node.js build` or into `Update Git auto-deployment settings`. Returns 404 when the
-installation does not belong to the customer. Limited to 10 calls per minute per API client
-(429 above that).
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/git/installations/{uuid}/repositories`
 
 #### hosting_git_deploy-website-repository
 
@@ -2334,84 +2248,6 @@ to it.
 - **Method**: `POST`
 - **Path**: `/api/hosting/v1/headless/agent-reports`
 
-#### hosting_nodejs_list-builds
-
-Retrieve a paginated list of Node.js build processes for a specific website.
-
-Each build represents a single run of the Node.js build pipeline. Use the `states`
-query parameter to filter results by build state (pending, running, completed, failed).
-Use the `uuid` from a build to poll its output via the `Get Node.js Build Logs` endpoint.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds`
-
-#### hosting_nodejs_start-build
-
-Start a Node.js build process using files already present on the website's file storage.
-
-WARNING: on success this overwrites the website's existing contents and cannot be
-undone — verify this is intended before calling this endpoint.
-
-With `source_type` `archive`, `source_options.archive_path` must point to an existing
-archive file on the server (relative to the website document root). Use the
-`Generate Upload URL` endpoint to obtain credentials and upload the archive first. To
-auto-detect build settings from an archive before starting, first call the
-`Get Node.js Build Settings from Archive` endpoint.
-
-With `source_type` `git`, `source_options` carries `owner`, `repository`, `branch` and
-`installation_uuid`. Take the installation from `List Git installations` and the owner and
-repository from `List Git installation repositories`; the branch is cloned at its current
-head. The installation must belong to the same customer as the website.
-
-The returned build `uuid` can be used to poll progress and retrieve logs via
-the `Get Node.js Build Logs` endpoint.
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds`
-
-#### hosting_nodejs_build-settings
-
-Returns the build settings stored for the website: framework (`app_type`), Node.js version,
-root and output directory, build script, entry file and package manager. Stored settings
-drive Git auto-deployment builds. A build started through the API uses the values sent in
-that request and saves them here only when no settings exist yet.
-
-Returns 404 until the first build or the first settings update stores them. Use this after
-a failed build to check whether the framework or the entry file were detected wrong, then
-fix them with the `Update Node.js build settings` endpoint.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds/settings`
-
-#### hosting_nodejs_update-build-settings
-
-Replaces the build settings stored for the website. Send the full set: `node_version` is
-required and every nullable field you omit is stored as null. Creates the settings when
-none exist yet.
-
-This does not start a build. Stored settings drive Git auto-deployment builds; a build
-started through the API uses the values sent in that request, so to rebuild with corrected
-settings call `Start Node.js build` with the same values. Typical fixes: a wrong `app_type`
-after auto-detection, or a missing `entry_file` for express, fastify, nest, nuxt and hono
-apps.
-
-- **Method**: `PUT`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds/settings`
-
-#### hosting_nodejs_build-settings-from-archive
-
-Auto-detect Node.js build settings from a package.json inside an archive already on the server.
-
-Use this before calling `Start Node.js Build` to preview what settings will be used,
-or to let the user review and override values (framework, node version, root directory,
-output directory, build script) before committing to a build.
-
-The archive must already be present on the website's file storage. Use the
-`Generate Upload URL` endpoint to obtain credentials and upload the archive first.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds/settings/from-archive`
-
 #### hosting_nodejs_list-environment-variables
 
 Lists the Node.js environment variables currently set for the website. Values are always
@@ -2445,41 +2281,6 @@ values taken from the project `.env` file or the user prompt.
 
 - **Method**: `PUT`
 - **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds/settings/env`
-
-#### hosting_nodejs_analyse-failed-build
-
-Returns an AI analysis of why a build failed and how to fix it, based on the build logs,
-the project file list and package.json. Only builds in the `failed` state can be analysed;
-any other state returns 422. When no analysis could be produced both `analysis` and
-`solution` are null, in which case read `Get NodeJS build logs` instead.
-
-Each call runs the analysis again, so call it once per failed build and keep the result.
-Limited to 5 calls per minute per API client (429 above that).
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds/{uuid}/analysis`
-
-#### hosting_nodejs_build
-
-Returns one build by UUID: its state (`pending`, `running`, `completed`, `failed`), the
-options it ran with and timestamps. Poll this while a build is pending or running. When it
-is failed, read `Get NodeJS build logs` and `Analyse failed Node.js build` for the cause.
-Returns 404 when the UUID does not belong to a build of this website.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds/{uuid}`
-
-#### hosting_nodejs_build-logs
-
-Retrieve logs from a specific Node.js build process.
-
-To stream live output while a build is running, poll this endpoint repeatedly
-while the build state is `running`, passing the previously returned `lines` count
-as `from_line` to fetch only new output since the last call.
-Log content may contain ANSI escape sequences (color codes).
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds/{uuid}/logs`
 
 #### hosting_nodejs_runtime-logs
 
@@ -2540,4 +2341,206 @@ or closed.
 
 Data comes from periodic dependency scans, so it may lag behind the latest deployment.
 An empty list means the most recent scan found no vulnerabilities; it does not
-guarantee the current deployment is vulnerability-free. Available on Busin
+guarantee the current deployment is vulnerability-free. Available on Business and
+Cloud Hosting plans.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/vulnerabilities`
+
+#### hosting_nodejs_patch-vulnerabilities
+
+Patches the selected Node.js vulnerabilities by updating the affected package versions
+in `package.json` and opening a GitHub pull request in the connected repository. The
+customer reviews and merges the pull request; merging triggers the automatic deployment.
+
+Auto-fix is only available for websites deployed from a connected GitHub repository.
+Websites deployed from an archive have no auto-fix path and return a 404. The Hostinger
+GitHub App needs write access to the repository; without it the request fails with a
+403 explaining the missing permission.
+
+Only vulnerabilities with `is_patchable` set to `true` can be patched. Non-patchable
+IDs in the selection are skipped; the pull request covers the patchable subset, listed
+in `patched_vulnerability_ids`. Selections without any patchable vulnerability are
+rejected with a 422. Only one patch pull request can be open at a time per website;
+close or merge it before patching again. Available on Business and Cloud Hosting plans.
+
+- **Method**: `POST`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/vulnerabilities/patch`
+
+#### hosting_websites_list-setups
+
+Returns the website setups started in the last 24 hours for the hosting accounts
+accessible to the authenticated client, newest first. Narrow the list with the
+`order_id`, `subscription_id` or `domain` filters.
+
+Meant for polling right after creating a website or starting a website setup: the
+website shows up in the websites list before its server-side setup has finished, and
+while the setup is `running` endpoints that operate on that website may respond with
+`404` or `409`. Poll this endpoint with the `domain` filter every 10 to 15 seconds and
+wait for `status: completed` before uploading files, deploying or creating databases.
+`failed` means the setup stopped before finishing or has not reported progress for
+over an hour. Setups older than 24 hours are not listed.
+
+`type` is the website type the setup was started with (`wordpress`, `headless_empty`,
+`headless_wordpress`, `headless_ecommerce`, `headless_pocketbase`), or `null` for an empty
+website.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/onboardings`
+
+#### hosting_websites_start-setup
+
+Starts a website setup on a Web or Cloud hosting order and returns the created setup
+right away; the website itself is provisioned asynchronously. Poll the list website
+setups endpoint (`hosting_websites_list-setups`) with the `domain` filter every 10 to 15
+seconds and wait for `status: completed` before uploading files, deploying or creating
+databases.
+
+Omit `type` for an empty website. `type: wordpress` installs WordPress in the website
+root with the admin user, email and password from `wordpress`, the domain as the site
+title, and `en_US` when `wordpress.language` is omitted. The headless types
+(`headless_empty`, `headless_wordpress`, `headless_ecommerce`, `headless_pocketbase`)
+create a headless website; `headless_wordpress` additionally installs WordPress into the
+`cms` directory of the website root with generated credentials. `headless_empty` installs
+nothing: WordPress can be added later through
+`POST /api/hosting/v1/accounts/{username}/wordpress/installations`
+(`wordpress_installations_install`) with `type: headless`.
+
+Omit `domain` to set the website up on a generated temporary free subdomain. To know the
+free subdomain before the call, so a timed-out call can be looked up and retried on the
+same domain, generate one through `POST /api/hosting/v1/domains/free-subdomains`
+(`hosting_domains_generate-free-subdomain`) and send it as `domain`. It is accepted for
+24 hours, only from the client that generated it.
+
+When the order has no hosting account yet, the setup creates one first, in the datacenter
+given by `datacenter_code` or the order's default datacenter when it is omitted.
+Returns 404 when the order does not exist or is not accessible to the authenticated
+client, and 409 with a `Retry-After` header while a setup for the same domain is still
+running.
+
+- **Method**: `POST`
+- **Path**: `/api/hosting/v1/orders/{order_id}/onboardings`
+
+#### hosting_orders_list
+
+Retrieve a paginated list of orders accessible to the authenticated client.
+
+Only Web and Cloud hosting orders are listed. Agency Plan orders are listed by
+`GET /api/agency-hosting/v1/orders`.
+
+This endpoint returns orders of your hosting accounts as well as orders
+of other client hosting accounts that have shared access with you.
+
+Use the available query parameters to filter results by order statuses
+or specific order IDs for more targeted results.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/orders`
+
+#### hosting_php_reset-extensions
+
+Resets all PHP extensions of the website to their default state.
+
+Use it to recover from extension conflicts or restore the original configuration.
+
+- **Method**: `PATCH`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/php/extensions/reset`
+
+#### hosting_php_get
+
+Returns the full PHP configuration for the website: current version, available versions
+(supported and unsupported), enabled/disabled extensions, options with their current value,
+default, type and the plan limit (`max`), and conflicting extension groups.
+
+Use it to check the current PHP setup before updating the version, extensions or options.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/php/details`
+
+#### hosting_php_info
+
+Returns the full phpinfo page (HTML) for the website.
+
+Use it to debug PHP issues or inspect the complete PHP environment of the website.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/php/php-info`
+
+#### hosting_php_update-extensions
+
+Enables or disables PHP extensions (modules) for the website.
+
+Use the Get PHP details endpoint to check the current extension states before changing them.
+
+- **Method**: `PATCH`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/php/extensions`
+
+#### hosting_php_update-options
+
+Updates PHP options for the website (e.g. `memory_limit`, `max_execution_time`, `upload_max_filesize`).
+Only provide the options you want to change, inside the `options` object.
+
+Values above the account plan limit are silently capped to that limit, so the request can succeed
+with a smaller applied value. Call the Get PHP details endpoint afterwards to read the applied value.
+
+- **Method**: `PATCH`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/php/options`
+
+#### hosting_php_update-version
+
+Changes the PHP version of the website.
+
+Use the Get PHP details endpoint to see the versions available for the website.
+
+- **Method**: `PATCH`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/php/version`
+
+#### hosting_redirects_list-website
+
+Returns a paginated list of redirects configured for the selected website.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/redirects`
+
+#### hosting_redirects_create-website
+
+Creates a redirect from a URL on the selected website to another URL or IP address.
+
+- **Method**: `POST`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/redirects`
+
+#### hosting_redirects_delete-website
+
+Permanently deletes the redirect identified by its source URL.
+
+Pass the `from` value exactly as returned by the list redirects endpoint.
+
+- **Method**: `DELETE`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/redirects`
+
+#### hosting_ssl_install
+
+Requests a lifetime SSL certificate for the website. The installation runs in the background;
+`Get SSL status` reports `active` or `failed` when it ends. An `active` lifetime certificate
+does not block the request: a new installation is requested, which is how a certificate is
+reinstalled.
+
+Returns 422 for free subdomains (their certificate is managed by the platform), while an
+installation is `installing` or `waiting_for_retry`, when the website's certificate was
+revoked (it cannot be reissued), and when an uploaded custom certificate is installed; that
+one has to be uninstalled first.
+
+- **Method**: `POST`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/ssl/setup`
+
+#### hosting_ssl_status
+
+Returns the SSL state of the website: the certificate `status` and `provider`, whether the
+certificate is a lifetime one managed by the platform, whether HTTP requests are redirected to
+HTTPS, when the certificate stops being valid and the last installation error.
+
+`installing` and `waiting_for_retry` mean an installation is in progress. `failed` means the
+last installation gave up, or the website was not updated for 60 minutes while `installing`;
+`last_error` holds the reason when it is a known message, otherwise it is null. `expired`
+means the assigned certificate's validity has ended. `not_installed` means no certificate is
+a

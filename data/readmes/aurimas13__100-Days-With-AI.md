@@ -2,7 +2,7 @@
 
 # 100 Days With AI 🤖
 
-### One source a day. One honest note. For 100 days.
+### One source a day. One honest note. For 100 days. 
 
 A public learning log of modern Artificial Intelligence - transformers, LLMs,
 agentic AI, RAG, fine-tuning, evals, MLOps and the rest of it.
@@ -204,4 +204,4 @@ for the shape of the progress table.
 *Each day gets a section here: what the source is, 1–5 takeaways, why
 it matters, and what I learned or tried.*
 
-### Day 1 - "2025–2035 Is the Decade of Agents" (Andrej Karpathy, X, 2025-
+### Day 1 - "2025–2035 Is the Decade of Agents" (Andrej Karpathy, X, 2025

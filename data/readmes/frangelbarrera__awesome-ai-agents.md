@@ -203,6 +203,7 @@ Tracing, monitoring, and debugging agent executions in production.
 | **Helicone** | Open-source proxy layer logging LLM requests with caching, rate limiting, and cost analytics dashboards. | TypeScript | API-based | Web UI | [Link](https://github.com/Helicone/helicone) |
 | **Braintrust** | Evaluation framework for scoring agent outputs against golden datasets with automatic regression detection. | TypeScript | API-based | Web UI | [Link](https://github.com/braintrustdata/braintrust-sdk) |
 | **antiburn** | Local desktop app that checks coding agent sessions for common causes of token burn: sessions too deep, overpowered subagents, broken caching, and unused MCP servers, skills, and tools. Supports Claude Code, Codex, Cursor, Copilot, Pi, and more. | Rust/Tauri | N/A | App | [Link](https://github.com/antiburn/antiburn) |
+| **OrcaReplay** | Local record-and-replay proxy for agent runs: captures provider traffic (prompts, tool calls, responses) into a trace and replays the run from it without calling the provider again, for deterministic debugging and regression diffs. | TypeScript/Node | Hybrid | CLI | [Link](https://github.com/Continuum-AI-Corp/OrcaReplay) |
 
 ---
 
@@ -233,6 +234,7 @@ Context architecture, design manuals, and additional directories.
 | **Awesome AI Agents** | Massive E2B directory with 100+ extra repositories. | Markdown | N/A | Document | [Link](https://github.com/e2b-dev/awesome-ai-agents) |
 | **Awesome Agents (Kyrolabs)** | Extensive compilation of autonomy tools. | Markdown | N/A | Document | [Link](https://github.com/kyrolabs/awesome-agents) |
 | **Awesome AI Agents 2026** | List of emerging repositories and trends. | Markdown | N/A | Document | [Link](https://github.com/caramaschiHG/awesome-ai-agents-2026) |
+| **Awesome AI Agents (ianwieds)** | Categorized list of agent frameworks, coding and browser agents, voice, sandboxes and research. | Markdown | N/A | Document | [Link](https://github.com/ianwieds/awesome-ai-agents) |
 
 ---
 

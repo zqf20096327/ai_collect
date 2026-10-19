@@ -40,6 +40,7 @@
 - [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT) - 🔓 A powerful platform that allows you to create, deploy, and manage continuous AI agents that automate complex workflows.
 - [OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay) - 🔓 Records the traffic between an AI agent and its model provider, then replays it without calling the provider to reproduce a run.
 - [SandBase](https://sandbase.ai/) - Open-source CLI and local MCP bridge for discovering and running 2,000+ AI models through one API.
+- [Solaris Dev Shop](https://github.com/Shaisolaris/solaris-dev-shop) - 🔓 Routes one task to a specialist skill and returns one assignment or a genuine escalation. Free and MIT-licensed.
 - [Tale](https://tale.dev/) - Open-source project workspace where teams delegate tasks to AI agents in persistent sandboxes and review their reports and deliverables together.
 - [Taskade](https://taskade.com) - AI-native workspace platform to build apps, deploy autonomous AI agents, and automate workflows with 100+ integrations - from one prompt.
 
@@ -166,6 +167,7 @@
 - [OpusClip](https://www.opus.pro/) - Turns long videos into shorts and publishes them to all social platforms in one click.
 - [SEELE TV](https://seele.tv/) - Cinematic AI video studio with scene consistency and shot-level camera control.
 - [shortshort](https://www.shortshort.io/) - Turns one long talk, podcast or webinar into vertical 9:16 shorts, with a speaker-tracking crop and word-level captions.
+- [Wedding AI](https://weddingai.studio) - AI wedding invitation video maker that turns templates, names, and photos into an HD MP4.
 
 ## 🎤 Voice Generation
 - [CharaVox](https://charavox.com) - AI voice generation platform with character voices, voice cloning, and studio-quality TTS in 6 languages (en/zh/ja/ko/es/pt). Powered by VoxCPM.
@@ -196,5 +198,5 @@ To suggest a tool or report a broken link, please [open an issue](https://github
   <b>❤️ Thanks to everyone who has helped build this list!</b>
 </p>
 <p align="center">
-  <a href="https://github.com/sajadh76/awesome-AI-tools/graphs/contributors"><img src="https://contrib.rocks/image?repo=sajadh76/awesome-AI-tools&max=100&columns=10" alt="Contributors"></a>
+  <a href="https://github.com/sajadh76/awesome-AI-tools/graphs/contributors"><img src="https://contrib.rocks/image?repo=sajadh76/awesome-AI-tools&max=100&columns=12" alt="Contributors"></a>
 </p>

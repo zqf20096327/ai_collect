@@ -6,14 +6,14 @@
 
 **OppLens** is a modern, full-stack platform designed to connect developers through tech events. It goes beyond simple CRUD, offering an intelligent, personalized, and highly interactive experience for discovering, hosting, and managing developer meetups and hackathons. It leverages a robust microservices architecture for data aggregation and machine learning-powered recommendations.
 
-## 🚀 Engineering Impact & Scale
+##  Engineering Impact & Scale
 
 *   **Async ETL & Reverse-Engineering**: Engineered a fault-tolerant Python/FastAPI scraping pipeline utilizing **Playwright** and reverse-engineered JSON APIs to ingest **5,000+ opportunities** across 5 platforms.
 *   **Deduplication Engine**: Utilized composite-key hashing to eliminate **~95% of redundant database writes** (~1,000+ duplicate payloads/week), reducing database bloat and ensuring pristine training data for downstream ML models.
 *   **NLP Recommendation Engine**: Developed a hybrid recommendation engine (TF-IDF + Cosine Similarity). Offloaded semantic matching to **MongoDB Atlas Vector Search (HNSW indexes)**, reducing query complexity from **O(N) to O(log N)** for **<50ms** personalized feed generation.
 *   **Distributed Caching (Redis)**: Optimized API read throughput by implementing a Redis caching layer with targeted invalidation policies, dropping p95 ML inference response times from **400ms to <80ms**.
 
-## 🧠 System Architecture
+##  System Architecture
 
 ```mermaid
 graph TD

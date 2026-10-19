@@ -8,7 +8,7 @@
 # Mangaba AI
 
 [![PyPI version](https://img.shields.io/pypi/v/mangaba.svg)](https://pypi.org/project/mangaba/)
-[![Python](https://img.shields.io/pypi/pyversions/mangaba.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://github.com/Mangaba-ai/mangaba_ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Mangaba-ai/mangaba_ai/actions/workflows/ci.yml)
 
@@ -89,8 +89,11 @@ pip install "mangaba[providers]"     # todos os provedores + tiktoken
 pip install "mangaba[all]"
 
 # Desenvolvimento
-pip install "mangaba[dev]"
+git clone https://github.com/Mangaba-ai/mangaba_ai.git && cd mangaba_ai
+pip install -e ".[dev]"
 ```
+
+Requer Python 3.10 ou mais novo.
 
 ## Quick Start
 

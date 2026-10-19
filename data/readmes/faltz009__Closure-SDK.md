@@ -1,208 +1,98 @@
-# A Geometric Computer
+# Closure SDK
 
-![Gray Game — Edge regime](gray-game.png)
+Compare two ordered streams of records and find what is missing, what moved,
+and where, using the geometry of rotations.
 
-A complete cognitive architecture on one manifold: S³, the unit 3-sphere.
-Every brain state is a unit quaternion. Every update is a Hamilton product.
-One arithmetic operation. Five layers. Turing-complete.
+![Two compositions of the same records, unrolled from the three-sphere and compared mark by mark](assets/closure-records.webp)
 
-**Paper:** [A Geometric Computer](closure_ea/docs/GeometricComputer.pdf) · [Zenodo](https://zenodo.org/records/19578024)
-**Zeroth Law:** [Sequence Integrity](zeroth_law_full-1.pdf) · [Zenodo](https://zenodo.org/records/19140055)
-
----
-
-## What this is
-
-The brain runs a single loop: ingest a carrier, compare the current state against
-what the genome predicts, measure the geodesic distance σ. When σ crosses π/4 —
-the BKT phase boundary on S³, the Hopf equator — the brain closes: writes to the
-genome, updates the hierarchy, corrects its prediction. Learning is repeated closure.
-Convergence is a fixed-point theorem.
-
-Five layers build upward from S³:
-
-```
-substrate → memory → execution → brain → learning
+```bash
+cargo install --git https://github.com/faltz009/Closure-SDK
+closure identity source.jsonl target.jsonl
 ```
 
-Each layer uses only the layer beneath it. The same Hamilton product that encodes a
-unit quaternion rotation also runs a Minsky machine, reads the genome, and integrates
-the perceptual field. There is no other arithmetic.
+`closure identity` lists every missing and moved record with its position in
+both files and its payload, writes a JSON report, and exits with status 2 when
+the files differ. Use it to reconcile pipeline outputs, exports and replicas.
 
----
+## How it works
+
+Every record becomes a rotation, a unit quaternion on the three-sphere S³, and
+a stream is the product of its records in order: one point of 32 bytes,
+whatever the stream's length. A copy of the same records in the same order
+lands on the same point. Quaternions keep order (ab ≠ ba), grouping
+((ab)c = a(bc)) and size (|ab| = |a||b|), so a change of size ε anywhere in a
+stream moves the result by exactly ε, at every position.
+
+When two streams differ, a binary search on their running products finds
+where they part, and a two-pointer walk (Gilgamesh) names every incident from
+there in one linear pass: **missing** when a record is on one side only,
+**moved** when it is on both sides in different places. The two kinds are
+different directions on the sphere: a missing record g leaves a gap g − 1 with
+a real part, and a record a moved past a block M leaves aM − Ma, whose real
+part is zero.
+
+For live streams, Enkidu holds each unmatched record's slot open for one cycle
+of a shared counter. A slot that closes empty is missing, and a counterpart
+that arrives later turns it into a move.
 
 ## Benchmarks
 
-Closure against the standard tools for the same jobs:
+One million JSON records with 10 dropped, 10 inserted, 10 moved and 10
+changed, every report scored against the known answer, on an Intel i5-10400F.
 
-```
-find the 1 corrupted record in a million      ~1.8× faster than a Merkle tree
-find all 50 corrupted records in 100,000        50× faster than a Merkle tree
-Closure DNA queries, vs SQLite with indexes    7–10× faster
-Closure DNA integrity check, vs SQLite     ~19,000× faster
-```
+| Method | 1 thread | 12 threads | Exact |
+|---|---:|---:|:-:|
+| **Closure**, unhashed | **144 ms** | **74 ms** | **yes** |
+| **Closure**, SHA-256 | 854 ms | 174 ms | **yes** |
+| Myers diff in Rust (`similar`) | 192 ms | — | no: a move is a deletion plus an insertion |
+| GNU diff 3.12 (files) | 325 ms | — | no: a move is a deletion plus an insertion |
+| Hash-map count | 194 ms | — | no: moves are invisible |
 
-[Full benchmarks →](BENCHMARKS.md)
+Closure is exact in all 120 measured runs. The method and every number are in
+[benches/README.md](benches/README.md).
 
----
+## The CLI
 
-## Experiments
-
-**[Run in the browser →](https://faltz009.github.io/Closure-SDK/experiments.html)**
-Conway's GoL on S³ and the Gray Game (three interference modes) running live in JS — no install required.
-
-Terminal visualizers (require true-color support):
-
-```bash
-cargo run --example gol_live --release           # Conway's GoL on S³, pattern selector
-cargo run --example gray_game_live --release     # Gray Game: spectrum / resonance / edge
-```
-
-| # | experiment | subject |
-|---|---|---|
-| 1 | `exp_arithmetic` | Exact modular arithmetic on S³ for Z/nZ orbits |
-| 2 | `exp_bkt_phase_transition` | BKT phase boundary at σ = π/4 |
-| 3 | `exp_riemann_zeros` | Riemann zeros as local minima in the carrier field |
-| 4 | `exp_associative_memory` | Associative recall by σ-radius |
-| 5 | `exp_turing` | Turing completeness via 2-counter Minsky machine |
-| 6 | `exp_fractran` | FRACTRAN: Turing-complete prime-native computation |
-| 7 | `exp_prime_resonance` | Riemann zeros as prime eigenstates on S³ |
-| 8 | `exp_collatz` | Collatz sequence: orbit convergence on the carrier lattice |
-| 9 | `exp_fiber_memory` | Fiber memory: axis and angle as independent address channels |
-| — | `exp_su2_gates` | SU(2) gate dictionary and single-qubit completeness |
-| — | `exp_neuromodulated_learning` | Arousal and coherence modulation of the learning regime |
-
----
-
-## Architecture
-
-```
-SUBSTRATE
-├── sphere      Hamilton product · inverse · sigma · slerp · IDENTITY
-├── embed       bytes → carrier on S³ (hashing optional)
-├── verify      A?=A · σ · VerificationEvent · Hopf decomposition
-└── hopf        S³ → S² × S¹ · factorized addressing · AddressMode
-
-MEMORY
-├── buffer      Transient input window (EMBED writes, ZREAD reads)
-├── genome      DNA · Epigenetic · Category · nearest-neighbor reads · BKT control
-└── field       zread · resonate · coalition accumulation · cos(σ) falloff
-
-EXECUTION
-├── carrier     VerificationCell · EulerPlane · TwistSheet · CouplingState
-├── execution   MinskyMachine · FractranMachine · OrbitRuntime
-└── zeta        Zeta functions over the carrier lattice
-
-BRAIN
-├── hierarchy   Recursive closure detection · genome emission
-├── localization O(log n) minimal closure interval search
-├── consolidation Merge · prune · reorganize epigenetic · DNA is permanent
-├── neuromodulation arousal_tone · coherence_tone (observational, session-ephemeral)
-└── three_cell  ThreeCell::ingest → buffer → ZREAD → RESONATE → VERIFY
-                → Cell A composition → closure → Cell C integration → genome
-
-LEARNING
-└── teach       (input, target) pairs · σ-gap error · geometric convergence
-```
-
----
-
-## Running
-
-```bash
-cargo run --example exp_arithmetic --release
-cargo run --example exp_fiber_memory --release
-cargo run --example gol_live --release
-cargo run --example gray_game_live --release
-
-cargo test --release     # 55 tests, all passing
-```
-
----
-
-## What you get
-
-```
-Identity maintenance      A?=A at any scale. One comparison.
-                          σ = 0 at perfect coherence.
-                          σ = π/4 at the Hopf equator — the closure threshold.
-
-Two incident types        Missing record (W axis breaks) or reorder (RGB axes break).
-                          Algebraic inverses. There is no third type.
-
-Carrier channels          R = salience (X) — the [Total, Unknown] commutator.
-                          G = total    (Y) — the full field; the prior.
-                          B = unknown  (Z) — what has not been integrated.
-                          Known = G − B. Yellow = learned. Blue = novel.
-
-Factorized addressing     Axis queries find semantic type (S²).
-                          Angle queries find cyclic position (S¹).
-                          Full queries find the exact carrier (S³).
-
-Field resonance           ZREAD reads the genome by proximity, not exact match.
-                          Query strength falls as cos(σ), cuts off at σ = π/3.
-
-Genome persistence        DNA layer bootstraps from orbit seeds. Permanent.
-                          Epigenetic layer learns from ingest. Consolidates.
-
-Turing completeness       2-counter Minsky machine and FRACTRAN on the carrier substrate.
-
-BrainState serialization  Full state serializes to JSON. Exact round-trip.
-```
-
----
-
-## Enkidu-Alive
-
-An agent with two drives: hunger σ(state, food) and cold σ(state, shelter).
-Both are geodesic distances on S³. When both are zero the agent is at IDENTITY —
-the algebraic identity element is homeostasis. One comparison per tick. No reward
-function. No learned policy. The geometry produces the gradient.
-
-**[Try it live →](https://faltz009.github.io/Closure-SDK/enkidu.html)**
-
----
-
-## The SDK
-
-The same Hamilton product applied to data integrity. Any ordered byte sequence
-composes on S³; if the sequence is intact the product closes; if not, the gap tells
-you exactly what broke and where. Built on the same Rust core.
-
-```bash
-pip install closure-sdk
-```
-
-[Full SDK documentation](README-old.md) · [CLI documentation](CLOSURE_CLI.md)
-
----
-
-## What's in this repo
-
-| Path | What it is |
+| Command | What it does |
 |---|---|
-| `closure_ea/` | The Geometric Computer — Rust crate. [Paper](closure_ea/docs/GeometricComputer.pdf) |
-| `docs/` | Site + live experiments — [experiments.html](https://faltz009.github.io/Closure-SDK/experiments.html) |
-| `closure_sdk/` | `pip install closure-sdk` — data integrity SDK |
-| `closure_dna/` | `pip install closure-dna` — geometric database |
-| `closure_cli/` | CLI surface |
-| `rust/` | Shared Rust core |
+| `closure identity a b` | Reconciles two complete files: JSONL, CSV or text |
+| `closure observer a b` | Watches two live streams and diagnoses them when their summaries part |
+| `closure seeker a b` | Classifies every record of two live streams as it arrives |
 
----
+Inputs can be files, named pipes or `-` for stdin. Details are in
+[CLOSURE_CLI.md](CLOSURE_CLI.md).
+
+## The library
+
+```rust
+use closure_sdk::{gilgamesh, Seer};
+
+// Detect: one constant-size summary per stream.
+let (mut a, mut b) = (Seer::new(), Seer::new());
+a.ingest_many(&source);
+b.ingest_many(&target);
+if !a.compare(&b).coherent {
+    // Diagnose: every incident, with positions and payload.
+    for incident in gilgamesh(&source, &target) {
+        println!("{} {:?} → {:?}", incident.kind, incident.source_index, incident.target_index);
+    }
+}
+```
+
+Records are hashed onto the sphere with SHA-256; points you already have
+(rotations, phases, musical intervals) compose as they are. The full
+reference and the theory are in [CLOSURE_SDK.md](CLOSURE_SDK.md), and runnable
+examples are in `examples/`.
 
 ## Tests
 
 ```bash
-cargo test --release --manifest-path closure_ea/Cargo.toml   # 55 tests
-pytest closure_sdk/tests -q
-pytest closure_dna/tests -q
+cargo test --release --locked
 ```
-
----
 
 ## Support
 
-Independent research, done on personal time, released for free.
+Independent research, done on personal time and released for free.
 
 | Method | Address |
 |---|---|

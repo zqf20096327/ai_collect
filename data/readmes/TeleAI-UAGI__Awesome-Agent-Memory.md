@@ -91,7 +91,7 @@
         <li><a href="#-reinforcement-learning--continual-learning">🧭 Reinforcement Learning & Continual Learning</a></li>
         <li><a href="#-context-engineering--harness-engineering">🧩 Context Engineering & Harness Engineering</a></li>
     </ul>
-    <li><a href="#-papers---memory-in-cognitive-science">🔬 Papers - Memory in Cognitive Science</a></li>
+    <li><a href="#-papers---memory-in-cognitive-science-and-neural-science">🔬 Papers - Memory in Cognitive Science and Neural Science</a></li>
     <li><a href="#-memory-security--defense">🔒 Memory Security & Defense</a></li>
     <li><a href="#-articles">📰 Articles</a></li>
     <li><a href="#-workshops">👥 Workshops</a></li>
@@ -1632,4 +1632,4 @@ _Projects that are inactive or whose claims have been disputed by third parties.
 
 - [Titans: Learning to Memorize at Test Time](https://arxiv.org/abs/2501.00663)
 
-- [Memory<sup>3</sup>: Language Modeling with Explicit Memory](https://arxiv.org/abs/2407.
+- [Memory<sup>3</sup>: Language Modeling with Explic

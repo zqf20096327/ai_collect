@@ -20,6 +20,40 @@ measured in real agentic coding sessions, not a synthetic benchmark.
 | **Prefill** | **~1,460 tokens/s** over a real 461k-token conversation |
 | **Agent tasks** | **19 / 19** on terminal-bench-mini's core suite |
 
+Speed by release as the context grows:
+![v0.1.0](https://img.shields.io/badge/v0.1.0-6f42c1)
+![v0.2.0](https://img.shields.io/badge/v0.2.0-9b87e8)
+![v0.3.0](https://img.shields.io/badge/v0.3.0-1abc9c)
+![v0.4.0](https://img.shields.io/badge/v0.4.0-3fe8d0)
+
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"xyChart": {"backgroundColor": "#0b0f14", "titleColor": "#e6edf3", "xAxisLabelColor": "#c9d1d9", "yAxisLabelColor": "#c9d1d9", "xAxisTitleColor": "#c9d1d9", "yAxisTitleColor": "#c9d1d9", "xAxisLineColor": "#3b4552", "yAxisLineColor": "#3b4552", "xAxisTickColor": "#3b4552", "yAxisTickColor": "#3b4552", "plotColorPalette": "#6f42c1, #9b87e8, #1abc9c, #3fe8d0"}}}}%%
+xychart-beta
+    title "Prefill (tokens/s)"
+    x-axis ["32k", "120k", "250k", "350k", "481k"]
+    y-axis "tokens/s" 1400 --> 1750
+    line [1547, 1494]
+    line [1602, 1555]
+    line [1638, 1583]
+    line [1693, 1630, 1570, 1533, 1484]
+```
+
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"xyChart": {"backgroundColor": "#0b0f14", "titleColor": "#e6edf3", "xAxisLabelColor": "#c9d1d9", "yAxisLabelColor": "#c9d1d9", "xAxisTitleColor": "#c9d1d9", "yAxisTitleColor": "#c9d1d9", "xAxisLineColor": "#3b4552", "yAxisLineColor": "#3b4552", "xAxisTickColor": "#3b4552", "yAxisTickColor": "#3b4552", "plotColorPalette": "#6f42c1, #9b87e8, #1abc9c, #3fe8d0"}}}}%%
+xychart-beta
+    title "Decode (tokens/s)"
+    x-axis ["32k", "120k", "250k", "350k", "481k"]
+    y-axis "tokens/s" 45 --> 65
+    line [54.8, 53.7]
+    line [57.6, 57.0]
+    line [59.0, 56.7]
+    line [57.7, 58.7, 56.4, 55.7, 52.8]
+```
+
+Each release measured the same way: one request at a time through the server, a fresh prompt at each length. Releases
+before v0.4.0 were measured at 32k and 120k only; v0.4.0's 481k point is from a separate single run. The axes start
+near the data so the differences are visible.
+
 > [!TIP]
 > **Curious how a mini PC runs a 180B-parameter model this fast?** No background needed:
 > [How strixite got fast](docs/how-it-got-fast.md) explains it in five simple ideas - smaller handwriting, guessing
@@ -44,10 +78,11 @@ reference derived from the model's spec.
 - **Images** - PNG, JPEG, WebP, GIF, BMP and TGA in chat requests, from a separate ~0.9 GB file in the weights repo
   ([images](docs/images.md))
 - **Multi-token prediction** - the model's own draft head, up to 7 tokens checked per step
-- **Thinking that ends** - reasoning is capped (2,048 tokens unless a request sets its own budget), so the model
-  answers instead of thinking in circles
+- **Thinking that ends** - a request can cap its reasoning with its own budget, and a nudge steps in when the
+  model's thinking goes in circles ([thinking](docs/server.md#thinking))
 - **Prompt cache in RAM and on disk** - long agent conversations resume instead of being re-read every turn
-- **512k context** with YaRN, and attention that stays fast at depth
+- **512k context** with YaRN, an 8-bit KV cache (about half the memory of 16-bit), and attention that stays fast at
+  depth
 
 ## Quick start
 

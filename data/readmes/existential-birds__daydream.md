@@ -824,7 +824,7 @@ Structure additionally reviews their full union.
 
 ### Review budgets
 
-The review model pipeline defaults to 45 minutes for modest diffs, including
+The review model pipeline defaults to 75 minutes for modest diffs, including
 queueing and retries, with the last five minutes reserved for synthesis. Diffs
 over 1,000, 5,000, and 10,000 lines (or 64, 256, and 512 KiB) receive 2×, 4×,
 and 6× review time and per-role tool-call allowances respectively. The 4× and
@@ -848,17 +848,22 @@ The nonstructural role cap coarsens the largest packed stacks by repeatedly merg
 combined diff-byte weight (leftmost on ties). Final shard names are contiguous and frontiers are recomputed. File/byte
 targets are soft under the cap; files stay indivisible, each stack retains at least one role, and whole-change Structure
 is outside the cap. More groups increase aggregate model opportunity: the captured 81-file Python workload grows from
-one to eight groups, 288 to 2,304 maximum starts, and 48 to 384 nominal role-minutes. Shared pipeline time, queueing and
+one to eight groups, 288 to 2,304 maximum starts, and 240 to 1,920 nominal role-minutes. Shared pipeline time, queueing and
 concurrency still limit execution; these are neither billing estimates nor guarantees of cold review completion.
 
 See [overloaded-stack activation evidence](docs/overloaded-stack-sharding.md) for
 exact frozen plans, repeated live quality/latency comparisons, aggregate allowances
 and measurement limitations.
 
-Each staged per-stack reviewer, including Structure, has a base investigation allowance of 480 seconds and 48
+Model-driven pre-scan specialists have a 900-second investigation allowance,
+120 seconds for finalization, and 16 tool calls. Exploration shares the pipeline
+deadline; the default leaves room for this mapping work and the staged reviewers'
+40-minute base investigation allowance before synthesis.
+
+Each staged per-stack reviewer, including Structure, has a base investigation allowance of 2,400 seconds and 48
 observed tool starts shared across its stages and retries. Set `pipeline.reviewer_investigation_budget_s` in the
 review-profile TOML to a non-negative integer to change investigation time independently of the whole-review
-`pipeline.review_wall_budget_s`. Omission keeps 480 seconds; zero dispatches no investigation and records incomplete
+`pipeline.review_wall_budget_s`. Omission keeps 2,400 seconds; zero dispatches no investigation and records incomplete
 coverage. The workload multiplier above applies exactly once to this base investigation allowance and the unchanged
 48-start base allowance, including with an explicit profile. The resulting reviewer deadline remains clamped by
 invocation limits and the shared pipeline deadline, including its synthesis reserve. An explicit profile's
@@ -874,6 +879,28 @@ separate inline allowance for shared bytes and their wrappers. Oversized files s
 continuations with old/new ranges and exact fragment offsets; every required part must succeed for its file to be
 complete. Required assignments take priority over separately bounded context.
 
+Assignment `source_refs` bind the frozen diff digest, part digest, side-specific revision and original path.
+`source_summary` describes the actual old/new lines and partial line byte boundaries supplied by that part;
+continuation `old_start/count` and `new_start/count` remain full-hunk totals. `fragment_offset` and reference
+fragment offsets are UTF-8 byte offsets within the original diff hunk body, never source line numbers.
+Each submitted target decision retains at most four typed `evidence_refs` (8 KiB of UTF-8 JSON), with a source range
+or exact fragment, an asserted basis (`supplied_diff`, `source_inspection`, `executed_check`) and role
+(`assigned`, `supporting`). Reviewed decisions need useful assigned attribution; supporting context cannot replace it.
+Broader supporting source references are checked against the frozen revision and bounded to 64 KiB of source.
+All references validate before a stage commits; invalid references preserve prior admissions and leave work incomplete.
+Optional `supporting_files` relevance metadata remains independent and cannot veto valid primary decisions.
+
+Per-target decisions and attribution survive file folding and terminal persistence. Host retention is bounded to
+512 decisions and 256 KiB per reviewer scope, separately from the unchanged 64 KiB/128-item semantic handoff.
+Reasons are redacted before admission. All scopes share a 256 KiB attribution allowance measured in the exact
+nested, pretty UTF-8 findings encoding, leaving headroom within the unchanged 1 MiB findings artifact cap.
+This allowance bounds attribution's additional bytes; findings and other existing fields retain their own limits.
+Overflow rejects the stage atomically and retains prior admitted decisions and findings with incomplete coverage. Retained identities are not an exhaustive read ledger. A valid reference proves
+correspondence/existence only, not understanding, semantic review coverage, source reads or executable verification.
+
+The [historical paired comparison](docs/measurements/source-attribution.md) observed lower aggregate runner time
+with unchanged observed quality on three small cases. Its results describe that experiment, not a guaranteed speedup.
+
 Each stage gets a fresh prompt. Structure reviews whole-change interactions using a compact inventory, bounded diff
 parts and supporting documentation; discovery candidates marked `open` or `unresolved` receive one finite triage round.
 A candidate still `unresolved` after triage keeps coverage incomplete. Static prompt budget values are dispatch-time
@@ -884,14 +911,18 @@ assignments and submission capacity for known pending triage. Future-stage reser
 current invocation's allocation; the reviewer need not subtract them again.
 The host stops before dispatch if the current stage's minimum input-read and submission needs cannot fit. Reservations
 do not guarantee model completion: observed tool starts can arrive after execution, and a stage that spends its own
-allowance without submitting remains incomplete. Before each bounded native Pi model request, one refreshed note
-shows the backend attempt's remaining tool calls, including final submission. Each individual call counts, including
-failed tools, parallel batch members and structured submissions. The native counter starts anew for each transport
-retry against its effective allowance; cumulative host accounting remains unchanged. Use the refreshed count rather
-than recounting history. Keep one call for `structured_output`, continue concrete unresolved assigned checks while
-tool/time capacity permits, and submit when those checks settle; unused capacity is expected. With only one call left,
-submit truthful incomplete decisions for unfinished work. At zero, there is no submission capacity. This guidance
-preserves ordinary tool access, host enforcement and recorded provider proposals. One fresh full-stage retry
+allowance without submitting remains incomplete. Native Pi emits no recurring budget messages. At most one concise
+final-submission warning per native attempt appears as a system instruction when exactly one call remains, with the
+assigned objective and identities when available. Each individual call counts, including failed tools, invalid
+submissions, parallel batch members and structured submissions. Warning state starts anew for each transport retry
+against its reduced effective allowance; cumulative host accounting remains unchanged. Keep one call for
+`structured_output`, continue concrete unresolved assigned checks while tool/time capacity permits, and submit when
+those checks settle; unused capacity is expected. With only one call left, submit truthful incomplete decisions for
+unfinished work. A parallel batch may leave zero or negative capacity directly; no warning implies available
+submission capacity then, and host exhaustion enforcement does not wait for a warning. Host instructions never add
+synthetic user turns or require polling. The bounded missing-submission recovery remains a separate system
+instruction. This guidance preserves ordinary tool access, host enforcement and recorded provider proposals.
+One fresh full-stage retry
 is permitted after a normally completed text-mode
 invocation fails strict schema validation and passes the domain rejection guard; only safe validator metadata
 carries over, never rejected output. Syntax, envelope, ambiguity and native-output failures are terminal. Other
@@ -919,12 +950,20 @@ Optional Structure projections and their navigation catalogs share the remaining
 (512 files and 8 MiB) after required/shared context. Catalogs list admitted pointers only; partial status and
 omitted-part counts describe unavailable supporting context without aborting the interaction review.
 
+The displayed Structure diff is an inventory. Read its supporting catalog and the
+listed exact paths for frozen before/after patch context, including with file-only
+tools when Git execution is unavailable. The bounded catalog pointer and guidance
+persist through supported native compaction. Patch context does not imply complete
+old source-file availability; ordinary source-first investigation remains optional.
+Host-rendered request sizes are recorded separately for each backend attempt; see
+[the measurement boundary and accounting rules](docs/observability.md#host-rendered-request-sizes).
+
 Valid decisions can rely on supplied diff/context without source reads; ordinary file/Git tools remain available,
 recorded and charged, but do not authenticate claims or establish completion. Findings and typed coverage are
 snapshot-bound and atomically published. `complete` requires success or explicit host no-op for every planned scope and
 required phase; it does not guarantee exhaustive defect discovery. The
 [stage contract](docs/extensions.md#stage-aware-review-builders-api-8) specifies identity/capture checks, triage state,
-backend transports and native output rules. Stage contract 11 invalidates older cached reviews; extension API 8 requires
+backend transports and native output rules. Stage contract 12 invalidates older cached reviews; extension API 8 requires
 staged builders.
 
 Carried closed decisions are attributed reviewer judgments, not independent host
@@ -951,7 +990,7 @@ backend errors and malformed merge responses retain their failure behavior.
 
 The findings artifact carries optional `review_warnings`. Update both the analyze
 and posting jobs to the same Daydream revision. Leave CI headroom beyond the
-model deadline for setup, host processing, and artifact publication; a 60-minute
+model deadline for setup, host processing, and artifact publication; a 90-minute
 job with the default model budget leaves 15 minutes for those operations. An
 external job cancellation cannot use the graceful budget-exhaustion path.
 For diagnosis, capture `--trajectory PATH` and `--dump-artifacts DIRECTORY`.
@@ -1241,6 +1280,12 @@ reuse additionally requires the typed coverage proofs described below.
 Analysis is `complete` only with positive completion or host no-op evidence for every planned reviewer and required phase. Valid work with unfinished coverage is `incomplete`; unusable analysis or an invalid findings projection is `failed`. Findings count, warning absence, CLI success and archive status cannot establish completeness. `pipeline_state` covers review finalization independently of later fixes or publication.
 
 Coverage records run identity, exact stack/shard outcomes, captured head, diff merge base and diff key, plus initial PR base tip when available. Backend/authentication, missing/malformed output, evidence and policy failures remain typed; model-turn, host wall/tool and pipeline budgets have distinct reasons.
+
+Current staged scope outcomes also retain bounded typed `target_decisions` and their `evidence_refs`, including
+original per-part identity after file folding. Older terminal artifacts remain readable without this optional field;
+current cache reuse and runtime resume require it for admitted work. Complete admitted decisions are model assertions,
+distinct from semantic fidelity and executed verification. Source-attribution failures remain distinct from contradictions
+about closed candidates in attempt diagnostics.
 
 GitHub review comments start with `Actionable comments posted: N`, followed by any incomplete-review warnings and a linked reviewed commit. Additional findings appear before diagrams, followed by one `Run details` dropdown containing a copyable run UUID, model, timing, usage, cost and phase breakdown. Detailed analysis, source rationale and verification evidence remain in local reports and run artifacts rather than the GitHub comment.
 

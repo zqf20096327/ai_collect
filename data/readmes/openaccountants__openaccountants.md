@@ -9,9 +9,9 @@ This library includes accountant-reviewed skills and source-cited drafts. Check 
 [![GitHub stars](https://img.shields.io/github/stars/openaccountants/openaccountants?style=social)](https://github.com/openaccountants/openaccountants/stargazers)
 
 <!-- oa-stats:start -->
-**1,903 AI skills** across **229 jurisdictions** · **33 accountant-reviewed** · **38 named accountants** · **20,132 questions answered** through connected AIs
+**1,903 AI skills** across **228 jurisdictions** · **33 accountant-reviewed** · **38 named accountants** · **20,380 questions answered** through connected AIs
 
-<sub>Live from openaccountants.com — updated 2026-10-18 by the nightly sync.</sub>
+<sub>Live from openaccountants.com — updated 2026-10-19 by the nightly sync.</sub>
 <!-- oa-stats:end -->
 
 ---

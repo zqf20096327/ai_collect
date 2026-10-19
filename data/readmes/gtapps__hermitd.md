@@ -2,7 +2,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
   <a href="https://code.claude.com/docs/en/plugins"><img src="https://img.shields.io/badge/Claude%20Code-plugin-orange.svg" alt="Claude Code Plugin" /></a>
-  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.16-green.svg" alt="Version 1.4.16" /></a>
+  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.17-green.svg" alt="Version 1.4.17" /></a>
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gtapps/hermitd/_gh_traffic_stats/.github/badges/clones.json" alt="Downloads" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" />
   <a href="https://discord.gg/54sJqAxhUh"><img src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white" alt="Join" /></a>
@@ -20,9 +20,7 @@ Run it on your Claude subscription and extend it with your own MCP servers, skil
 
 **It's Claude Code.** hermitd is a plugin for the official Claude Code CLI, which runs as Anthropic ships it. New Claude models, features, and fixes work as soon as Claude Code supports them.
 
-<p align="center">
-  <video src="https://github.com/user-attachments/assets/84012a4d-4ca1-475e-b82d-1db45634a5e3" title="hermitd" width="720" controls muted></video>
-</p>
+https://github.com/user-attachments/assets/84012a4d-4ca1-475e-b82d-1db45634a5e3
 
 <a id="quick-start"></a>
 

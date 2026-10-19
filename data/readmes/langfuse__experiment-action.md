@@ -70,7 +70,7 @@ jobs:
       # tag-moved attacks). The `# v<version>` comment is what humans
       # read; the SHA is what GitHub resolves. This line is auto-bumped
       # by `.github/workflows/release-bump-readme.yml` on every release.
-      - uses: langfuse/experiment-action@76731c8b04fc7f962af689207690d414a0ee4de7 # v1.0.11
+      - uses: langfuse/experiment-action@c7c4efe432e37d4e3693a018de469233c0018de4 # v1.0.12
         with:
           langfuse_public_key: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
           langfuse_secret_key: ${{ secrets.LANGFUSE_SECRET_KEY }}
@@ -99,7 +99,7 @@ drop `actions/setup-node`, TS-only projects can drop `actions/setup-python`.
 | `should_fail_on_script_error`  | no       | `true`                       | Fail CI when an experiment script crashes or raises a non-regression error.                                                                                                               |
 | `should_comment_on_pr`         | no       | `true`                       | Post the result as a PR comment.                                                                                                                                                          |
 | `python_sdk_version`           | no       | `4.6.0`                      | Python SDK version to install via `pip` (for `.py` experiments).                                                                                                                          |
-| `js_sdk_version`               | no       | `5.3.0`                      | JS SDK version (`@langfuse/client`) to install via `npm` (for `.ts`/`.js`/`.mjs`/`.cjs` experiments).                                                                                     |
+| `js_sdk_version`               | no       | `5.3.0`                      | JS SDK version (`@langfuse/client`, `@langfuse/tracing`, `@langfuse/otel`) to install via `npm` (for `.ts`/`.js`/`.mjs`/`.cjs` experiments).                                              |
 | `should_skip_sdk_installation` | no       | `false`                      | Skip automatic SDK installation and use the ambient Python/Node environment.                                                                                                              |
 | `github_token`                 | no       |                              | Token used to post the PR comment. Pass `${{ github.token }}` and grant `pull-requests: write` (and `actions: read` for job-level "View run" links + telling parallel matrix legs apart). |
 
@@ -180,7 +180,7 @@ CI job fails depending on `should_fail_on_regression` /
 ### Consuming the result in later steps
 
 ```yaml
-- uses: langfuse/experiment-action@76731c8b04fc7f962af689207690d414a0ee4de7 # v1.0.11
+- uses: langfuse/experiment-action@c7c4efe432e37d4e3693a018de469233c0018de4 # v1.0.12
   id: experiment
   with: # ...
 
@@ -245,7 +245,7 @@ you'd rather honour than reinstall against the action's default SDK versions.
 
 - run: pip install -r requirements.txt # must include `langfuse`
 
-- uses: langfuse/experiment-action@76731c8b04fc7f962af689207690d414a0ee4de7 # v1.0.11
+- uses: langfuse/experiment-action@c7c4efe432e37d4e3693a018de469233c0018de4 # v1.0.12
   with:
     experiment_path: experiments/
     should_skip_sdk_installation: "true"
@@ -270,7 +270,7 @@ The action needs `@langfuse/client`, `@langfuse/tracing`, `@langfuse/otel`,
 
 - run: npm ci # or `pnpm install --frozen-lockfile`, `yarn install --frozen-lockfile`
 
-- uses: langfuse/experiment-action@76731c8b04fc7f962af689207690d414a0ee4de7 # v1.0.11
+- uses: langfuse/experiment-action@c7c4efe432e37d4e3693a018de469233c0018de4 # v1.0.12
   with:
     experiment_path: experiments/
     should_skip_sdk_installation: "true"
@@ -288,7 +288,7 @@ Set them as env vars on the action step — the experiment subprocess
 inherits the parent process's environment.
 
 ```yaml
-- uses: langfuse/experiment-action@76731c8b04fc7f962af689207690d414a0ee4de7 # v1.0.11
+- uses: langfuse/experiment-action@c7c4efe432e37d4e3693a018de469233c0018de4 # v1.0.12
   env:
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

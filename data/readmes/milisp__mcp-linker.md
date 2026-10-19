@@ -61,6 +61,21 @@ yay -S mcp-linker-bin
 3. **Click "Add"** to install to your selected client
 4. **Done!** Start using new AI capabilities immediately
 
+### CLI
+
+`mcpl` does the same from the terminal, with no app needed: `npm install -g mcpl`,
+or `npx mcpl` to try it. Binaries are on the [`mcpl-v*` releases](https://github.com/milisp/mcp-linker/releases).
+
+```bash
+# Add one server to Claude Code, Codex and Cursor at once
+mcpl add fs -c claude-code -c codex -c cursor -- npx -y @modelcontextprotocol/server-filesystem ~/work
+
+mcpl ls                                  # every client on this machine
+mcpl sync --from claude-code --to codex  # copy servers between clients (license)
+```
+
+See [docs/cli.md](docs/cli.md) for every command.
+
 ## Screenshots
 
 | Local Sync between projects | Server Discovery | Manage |
@@ -69,6 +84,10 @@ yay -S mcp-linker-bin
 
 ## What's MCP?
 Model Context Protocol is like USB-C for AI — a standard way to connect AI models to different data sources and tools.
+
+## 🤝 Add your MCP server
+
+Built an MCP server, or run one for your product? **Submit it to the directory.** Any working, safe server is welcome, however new it is. Open a pull request that adds one JSON file: see [how to add a server](./registry/README.md#adding-a-server) and the [listing criteria](./CONTRIBUTING.md#listing-an-mcp-server).
 
 ## 🧭 Related Projects
 

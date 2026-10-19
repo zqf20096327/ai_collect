@@ -33,7 +33,7 @@ scene representations.
 
 ## What Sketchi Does
 
-- Creates hosted flowcharts, mindmaps, sequence diagrams, and timelines from natural-language prompts.
+- Creates hosted flowcharts, mindmaps, sequence diagrams, timelines, state machines, Gantt charts, ER diagrams, UML class diagrams, org charts, and bar, line, and pie charts from natural-language prompts.
 - Produces validated, editable Excalidraw scenes instead of opaque images.
 - Exposes Code Mode through MCP and versioned HTTP artifact endpoints.
 - Keeps layout, bindings, wrapping, and scene conversion deterministic in code.
@@ -68,8 +68,8 @@ Explicit `--type` and file `--dest` values preset their wizard questions;
 interactive generation remains PNG-only, so other formats and `--dest -` also
 require `--prompt`.
 Without `--type`, the model selects a supported native type. Explicit flowchart,
-mindmap, sequence, or timeline selection is authoritative; ER, architecture, swimlane, and
-state-machine requests fail clearly instead of being coerced.
+mindmap, sequence, timeline, chart, state-machine, gantt, er, class, or org-chart selection is authoritative; architecture and
+swimlane requests fail clearly instead of being coerced.
 The default file is `<generated-id>.png` in the current directory. Use
 `--format excalidraw` or `--format scene` for another artifact, and `--dest`
 to choose its path or stream bytes with `--dest -`.
@@ -149,7 +149,7 @@ model candidate → typed diagram IR → deterministic scene → Excalidraw arti
 | `packages/svg-excalidraw`     | Native SVG-to-Excalidraw conversion and library serialization   |
 
 The first high-reliability target is decision-heavy flowchart generation.
-`flowchart`, `mindmap`, `sequence`, and `timeline` are explicit diagram families; unsupported families do
+`flowchart`, `mindmap`, `sequence`, `timeline`, `chart`, `state-machine`, `gantt`, `er`, `class`, and `org-chart` are explicit diagram families; unsupported families do
 not silently fall back to a generic template. See the full
 [architecture guide](docs/architecture.md) and the
 [MCP-first generation boundary](docs/mcp-first-generation.md).
@@ -323,3 +323,15 @@ build configuration; see the
 MIT. See [LICENSE](LICENSE).
 
 Native timelines: use `buildTimeline` (Code Mode) or `generate --type timeline` (CLI). Supply events with unique IDs, labels, and ISO dates at the source's precision (year, month, day, or instant with Z or offset) or explicit numeric order; optional `end` (phase), `kind: "milestone"`, `lane`, `today`, and concise descriptions are preserved. Dates and order cannot be mixed. The renderer spaces events by elapsed time, humanizes dates, and wraps long chronologies. No dependency scheduling.
+
+Native charts: use `buildChart` (Code Mode) or `generate --type chart` (CLI). Supply `kind` (`bar`, `line`, or `pie`), `categories`, and `series: [{ name, values }]` with one value per category; optional `unit`, `categoryAxisTitle`, `valueAxisTitle`, `stacked` and `orientation` (bars), and `donut` (pies). The renderer draws nice-tick axes from zero for bars, value and percentage labels, a legend for several series, and leader lines for thin pie slices. Never supply coordinates.
+
+Native state machines: use `buildStateMachine` (Code Mode) or `generate --type state-machine` (CLI). Supply `initial`, states with unique ids and labels (`kind: "final"` for an end, `"choice"` for a guarded branch; states naming a `parent` form a composite with its own `initial`), and transitions with `source`, `target` and optional `event`, `guard` and `action`, drawn as `event [guard] / action`. Self-loops and transitions into or out of a composite are supported; composites do not nest.
+
+Native Gantt charts: use `buildGantt` (Code Mode) or `generate --type gantt` (CLI). Supply tasks with unique ids, labels, a `start` day (`YYYY-MM-DD`) and either `end` (last day, inclusive) or `duration` (calendar days); `milestone: true` draws a diamond. Optional `dependsOn` (finish-to-start predecessor ids), `phase` on every task (`phases` sets their order), `progress` (percent) and `today`. The renderer draws a to-scale date axis with day, week, month, quarter or year ticks, one row per task under phase headers, a date column, and dependency arrows routed clear of every bar and label. Never supply coordinates.
+
+Native ER diagrams: use `buildErDiagram` (Code Mode) or `generate --type er` (CLI). Supply entities with unique ids (no dots) and fields written `"name type markers"` (`"id uuid PK"`, `"customer_id uuid FK"`, `"email text UK"`, `"note text?"` for nullable), and relationships whose `from` and `to` name `entity.field` or an entity, each end with a cardinality (`one`, `zero-or-one`, `many`, `one-or-many` or `zero-or-many`) and an optional label. The renderer draws each entity as a table and each relationship as an orthogonal line between the rows it joins, with crow's-foot ends; it owns every coordinate.
+
+Native class diagrams: use `buildClassDiagram` (Code Mode) or `generate --type class` (CLI). Supply classes with unique ids (no colons or spaces), an optional `kind` (`abstract`, `interface` or `enum`) and members written as UML does (`"- radius: double"`, `"+ area(): double {abstract}"`), and relationships with a `kind`: `inheritance` or `realization` (`from` extends or implements `to`), `composition` or `aggregation` (`from` is the whole), `association` (`navigable: true` adds an arrow) or `dependency` (`from` uses `to`). Associations, compositions and aggregations take multiplicities and roles at each end. The renderer draws three-compartment boxes with superclasses above their subclasses and each relationship's UML head; it owns every coordinate.
+
+Native org charts: use `buildOrgChart` (Code Mode) or `generate --type org-chart` (CLI). Supply people with unique ids (no colons), a `name`, an optional `title` and `department`, and `manager`: the id of the person they report to (only the top person has none; `forest: true` allows several). `assistant: true` places an assistant beside their manager, `avatar: true` draws an initials placeholder, `dottedLines: [{ report, manager, label? }]` adds dotted-line or matrix reports (a stated scope or reason, such as "for clinical systems", goes in `label`), and `groupByDepartment: true` draws each department below the top as a labeled region. The renderer draws a card per person top-down, a bus line from each manager to their reports, long lists of reports stacked in one or two columns, and dotted lines dashed with a head at the second manager and their label beside them; it owns every coordinate.

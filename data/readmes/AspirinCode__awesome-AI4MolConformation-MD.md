@@ -1532,4 +1532,6 @@ Bilbrey, J.A., Firoz, J.S., Lee, MS. et al..
 
 * **DeePMD-kit v3: A Multiple-Backend Framework for Machine Learning Potentials** [2025]  
 Zeng, Jinzhe, Duo Zhang, Anyang Peng, Xiangyu Zhang, Sensen He, Yan Wang, Xinzijian Liu et al.  
-[J. Chem. Theory Comput. (2025)](https://arxiv.org/abs/2502.19161) | [arXiv:250
+[J. Chem. Theory Comput. (2025)](https://arxiv.org/abs/2502.19161) | [arXiv:2502.19161 (2025)](https://arxiv.org/abs/2502.19161) | [code](https://github.com/njzjz/benchmark-dpv3)  
+
+* **Multi-fidelity learning for interatomic p

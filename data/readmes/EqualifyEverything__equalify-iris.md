@@ -123,11 +123,21 @@ Check it's alive, and which build it is:
 
 ```bash
 curl http://localhost:8080/v1/health
-# {"status":"ok","service":"equalify-iris","version":"1.2.0"}
+# {"status":"ok","service":"equalify-iris","version":"1.3.0"}
 ```
 
 Or just open the **accessible browser app** at `http://localhost:8080/` for a no-API walkthrough — no
 sign-in, no token (upload page images → convert → view the accessible HTML).
+
+## Command line interface (CLI)
+
+Convert a PDF or image directly to accessible HTML using your `config.yaml` settings without running the HTTP daemon:
+
+```bash
+npm run convert -- document.pdf -o output.html
+```
+
+Options include `-i, --input`, `-o, --output`, and `-c, --config`. Run `npm run convert -- --help` for usage details.
 
 ## Configuration
 

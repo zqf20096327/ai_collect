@@ -22,7 +22,7 @@ Any IMAP mailbox, Gmail and Microsoft 365 / Exchange\*.
 [ohmail.app](https://ohmail.app)
 
 [![build](https://github.com/trafficflowhq/ohmail/actions/workflows/build.yml/badge.svg)](https://github.com/trafficflowhq/ohmail/actions/workflows/build.yml)
-[![latest release](https://img.shields.io/badge/download-v0.27.2-a3461c)](https://github.com/trafficflowhq/ohmail/releases/latest)
+[![latest release](https://img.shields.io/badge/download-v0.27.4-a3461c)](https://github.com/trafficflowhq/ohmail/releases/latest)
 [![licence: AGPL-3.0](https://img.shields.io/badge/licence-AGPL--3.0-a3461c)](LICENSE)
 [![macOS 15+](https://img.shields.io/badge/macOS-15%2B-111111)](#macos)
 [![Windows 10+](https://img.shields.io/badge/Windows-10%2B-111111)](#windows)
@@ -66,9 +66,11 @@ mail arrives. Nothing applies itself unless you ask: a pattern you have
 confirmed often enough graduates and files itself from then on, spam included;
 or switch on "Act on confident suggestions for me" and a sender whose suggestion
 is confident is filed for you — never someone you have written to — with the
-rule listed for you to undo. Every move is recorded and reversible. A one-time
-code inside a message is stripped before any model sees it, and automatic
-routing leaves that mail alone entirely.
+rule listed for you to undo. A screen-out or spam verdict about a message your
+provider did not confirm files only that message, writes no rule, and lists it
+under Filed automatically to put back. Every move is recorded and reversible. A
+one-time code inside a message is stripped before any model sees it, and
+automatic routing leaves that mail alone entirely.
 
 Configure nothing and the Screener still holds first contact, rules still file
 mail, and search still works — the suggestion and the draft are not

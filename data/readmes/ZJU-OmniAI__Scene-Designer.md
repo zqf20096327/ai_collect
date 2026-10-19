@@ -1,10 +1,17 @@
 <div align="center">
   <h1><img src="https://zju-omniai.github.io/Scene-Designer/assets/images/title.png" alt="Scene-Designer bear logo" height="64" align="absmiddle">&nbsp; Scene-Designer</h1>
   <p><strong>Learning Design Intelligence for Agentic 3D Scene Generation</strong></p>
+  <p>
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/zhu-xi-quote-dark.svg">
+      <img src="docs/assets/zhu-xi-quote.svg" width="720" alt="知之愈明，则行之愈笃；行之愈笃，则知之益明 — 朱熹《朱子语类》">
+    </picture>
+  </p>
   <p>Xuanyu Liu*, Hongyan Feng*, Miao Pan, Sunlai Chen, Lizhou Liang, Bing Sun, Wenqi Zhang, Xuhong Zhang</p>
   <p>Zhejiang University · Universal Identification Technology (Hangzhou) Co., Ltd.</p>
   <p><strong>OmniAI Group of ZJU ACES Lab</strong><br><sub>* Equal contribution</sub></p>
   <p>
+    <a href="https://arxiv.org/abs/2610.23121"><img src="https://img.shields.io/badge/arXiv-2610.23121-B31B1B?style=for-the-badge&amp;logo=arxiv&amp;logoColor=white" alt="Paper on arXiv"></a>
     <a href="https://zju-omniai.github.io/Scene-Designer/"><img src="https://img.shields.io/badge/-Project_Page-0F5354?style=for-the-badge&amp;logo=googlechrome&amp;logoColor=white" alt="Project page"></a>
     <a href="https://huggingface.co/XuanyuLiu/Scene-Builder-Qwen3-VL-8B-Instruct"><img src="https://img.shields.io/badge/HF-Model-FFD21E?style=for-the-badge&amp;logo=huggingface&amp;labelColor=3A3B45" alt="Scene-Builder model"></a>
     <a href="https://huggingface.co/datasets/XuanyuLiu/Scene-OTC-Bench"><img src="https://img.shields.io/badge/HF-Dataset-FFD21E?style=for-the-badge&amp;logo=huggingface&amp;labelColor=3A3B45" alt="Scene-OTC-Bench dataset"></a>
@@ -13,12 +20,15 @@
   <p><a href="requirements.txt"><img src="https://img.shields.io/badge/Python-3.11-3776AB?logo=python&amp;logoColor=white" alt="Python 3.11"></a></p>
 </div>
 
+## 🎬 Introduction Video
+
 <p align="center">
   <a href="https://zju-omniai.github.io/Scene-Designer/#overview-video">
-    <img src="https://zju-omniai.github.io/Scene-Designer/assets/images/overview-poster.jpg" width="90%" alt="Watch the English Scene-Designer introduction">
+    <img src="https://zju-omniai.github.io/Scene-Designer/assets/images/overview-poster.jpg?v=20261019-title-ava" width="90%" alt="Play the Scene-Designer introduction video">
   </a>
 </p>
-<p align="center"><a href="https://zju-omniai.github.io/Scene-Designer/#overview-video">▶ Watch the English introduction</a> · <a href="https://zju-omniai.github.io/Scene-Designer/#demo">Explore scene demos</a></p>
+
+[Open video directly](https://zju-omniai.github.io/Scene-Designer/assets/videos/scene-designer-overview-en.mp4?v=20261019-title-ava) · [Watch on the project page](https://zju-omniai.github.io/Scene-Designer/#overview-video)
 
 ## 📖 Overview
 
@@ -58,7 +68,7 @@ Global length and object-completeness rewards support efficient, complete scene 
 
 | Resource | Description | Access |
 | :--- | :--- | :---: |
-| **Scene-Builder-Qwen3-VL-8B-Instruct** | Full v7 SFT checkpoint, initialized from Qwen3-VL-8B-Instruct | [🤗 Model](https://huggingface.co/XuanyuLiu/Scene-Builder-Qwen3-VL-8B-Instruct) |
+| **Scene-Builder-Qwen3-VL-8B-Instruct** | Full SFT checkpoint, initialized from Qwen3-VL-8B-Instruct | [🤗 Model](https://huggingface.co/XuanyuLiu/Scene-Builder-Qwen3-VL-8B-Instruct) |
 | **Scene-OTC-Bench** | 94 two-scene comparisons and 55 four-scene ranking questions | [🤗 Dataset](https://huggingface.co/datasets/XuanyuLiu/Scene-OTC-Bench) |
 
 The published weights are the **Scene-Builder SFT stage**, before Scene-GRPO. Scene-OTC-Bench is held out for evaluation; do not mix it into training.
@@ -155,14 +165,14 @@ SceneSmith remains an external dependency; its license notice is retained in [in
 ## 📝 Citation
 
 ```bibtex
-@misc{liu2026scenedesigner,
-  title  = {Scene-Designer: Learning Design Intelligence
-            for Agentic 3D Scene Generation},
-  author = {Xuanyu Liu and Hongyan Feng and Miao Pan
-            and Sunlai Chen and Lizhou Liang and Bing Sun
-            and Wenqi Zhang and Xuhong Zhang},
-  year   = {2026},
-  note   = {Research manuscript}
+@misc{liu2026scenedesignerlearningdesignintelligence,
+      title={Scene-Designer: Learning Design Intelligence for Agentic 3D Scene Generation},
+      author={Xuanyu Liu and Hongyan Feng and Miao Pan and Sunlai Chen and Lizhou Liang and Bing Sun and Wenqi Zhang and Xuhong Zhang},
+      year={2026},
+      eprint={2610.23121},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2610.23121},
 }
 ```
 

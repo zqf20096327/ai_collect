@@ -140,6 +140,7 @@ AI-powered coding agents that help write, review, and maintain infrastructure co
 
 AI tools specifically designed for Kubernetes cluster management, troubleshooting, and operations.
 
+- [Devproof AI](https://github.com/devproof/devproofai) - Kubernetes-native platform for managed AI agent sessions that run as isolated pods, with an operator for self-hosted model serving and rule-based request routing.
 - [Glasskube](https://github.com/glasskube/glasskube) - Open-source Kubernetes package manager with AI-assisted package discovery and dependency resolution.
 - [Headlamp](https://github.com/headlamp-k8s/headlamp) - Extensible Kubernetes web UI with plugin architecture that supports AI-powered cluster visualization and management.
 - [K8sGPT](https://github.com/k8sgpt-ai/k8sgpt) - AI-powered Kubernetes troubleshooting and diagnostics, a CNCF Sandbox project that scans clusters for issues and explains them in plain English.
@@ -473,6 +474,7 @@ AI tools that enhance continuous integration and delivery pipelines.
 - [GitLab Duo](https://about.gitlab.com/gitlab-duo/) - AI across the GitLab DevSecOps platform with code suggestions, root cause analysis, vulnerability resolution, and CI/CD pipeline generation.
 - [Harness AIDA](https://www.harness.io/products/aida) - AI Development Assistant for intelligent pipeline creation, failure analysis, and deployment optimization.
 - [Mergify](https://mergify.com/) - AI-powered merge queue and PR automation with intelligent batch merging and conflict resolution.
+- [Orbi](https://github.com/orbi-build/orbi) - Self-hosted coding agent that ships labelled GitHub issues as reviewed, merged pull requests and tagged releases, and also works ops tickets.
 - [PR-Agent](https://github.com/qodo-ai/pr-agent) - AI-powered pull request analysis that auto-describes, reviews, improves, and generates tests for GitHub, GitLab, and Bitbucket.
 - [Tekton](https://github.com/tektoncd/pipeline) - Cloud-native CI/CD building blocks for Kubernetes providing the foundation for AI-orchestrated build and deploy pipelines.
 - [Trunk](https://trunk.io/) - Developer experience platform with AI-powered code quality checks, merge queues, and flaky test management.
@@ -484,6 +486,7 @@ AI tools that enhance continuous integration and delivery pipelines.
 - [Momentic](https://momentic.ai/) - AI-native automated testing platform (YC) that writes, runs, and maintains end-to-end tests for CI/CD pipelines with self-healing capabilities.
 - [Stably AI](https://www.stably.ai/) - AI testing platform (YC, Vercel Ventures) that auto-writes, runs, and maintains diff-aware end-to-end tests directly in CI with automatic selector healing.
 - [testRigor](https://testrigor.com/) - AI-driven codeless testing platform that integrates into CI/CD pipelines with natural language test creation and intelligent test maintenance.
+- [Endtest](https://endtest.io/) - Agentic AI test automation platform for web and mobile apps, with autonomous test generation, CI/CD integrations, cloud test execution, and AI-powered failure analysis.
 - [Testsigma](https://github.com/testsigmahq/testsigma) - Open-source agentic AI test automation platform with self-healing tests, natural language test creation, and CI/CD integration.
 - [CodeRabbit](https://www.coderabbit.ai/) - AI code review tool that posts PR walkthroughs and inline suggestions across GitHub, GitLab, Azure DevOps, and Bitbucket, integrating 40+ linters and scanners.
 - [Greptile](https://www.greptile.com/) - AI code review platform that builds a graph index of the codebase and uses agent swarms to catch multi-file bugs and security risks on pull requests.
@@ -620,12 +623,4 @@ AI tools for container image security, software supply chain, and build verifica
 - [Syft](https://github.com/anchore/syft) - Open-source SBOM generator for container images and filesystems supporting multiple output formats.
 - [Wolfi](https://github.com/wolfi-dev/os) - Community Linux distribution designed for building minimal container images with automated CVE patching.
 - [HiddenLayer](https://hiddenlayer.com/) - AI model security platform whose Model Scanner inspects 35+ model formats for malicious code, backdoors, and tampering, generating AIBOMs for supply chain risk.
-- [Prisma AIRS Model Security](https://www.paloaltonetworks.com/ai-security/prisma-airs) - ML model security scanning, formerly Protect AI Guardian and now part of Palo Alto Networks, that inspects model files for deserialization attacks, backdoors, and malicious code before deployment.
-- [Kusari](https://www.kusari.dev/) - AI-powered software supply chain security platform with Kusari Inspector for autonomous PR review and AutoFix for generating remediation pull requests.
-
-## AI for Chaos Engineering and Reliability
-
-AI tools for chaos engineering, resilience testing, and reliability validation.
-
-- [Chaos Mesh](https://github.com/chaos-mesh/chaos-mesh) - CNCF incubating cloud-native chaos engineering platform for Kubernetes with fault injection and workflow orchestration.
-- [Gre
+- [Prisma AIRS Model Security](https://www.paloaltonetworks.com/ai-security/prisma-airs) - ML model security scanning, formerly Protect AI Guardian and now part of Palo Alto Networks, that inspects model files fo

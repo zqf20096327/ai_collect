@@ -60,7 +60,7 @@ Abridged output from the bundled `ColorMixer.SelectionLab` sample:
 The desktop app's **MCP Usage** page records calls locally and separates guided
 refusals from suspected defects:
 
-[![AICB MCP Usage statistics showing calls, sessions, latency and the most-used tools](https://raw.githubusercontent.com/gregordadera/aicb-roslyn-mcp/main/docs/assets/aicb-mcp-usage.png)](https://www.dadera.de/en/aicb-mcp.html)
+![AICB MCP Usage statistics showing calls, sessions, latency and the most-used tools](https://raw.githubusercontent.com/gregordadera/aicb-roslyn-mcp/main/docs/assets/aicb-mcp-usage.png)
 
 That answer comes from the Roslyn symbol graph, not a substring search. AICB
 distinguishes overloads, follows interface and override relationships, understands
@@ -119,7 +119,7 @@ distinguish source-derived facts, author-provided meaning and inferred hints. Th
 [AI annotation reference](https://github.com/gregordadera/aicb-roslyn-mcp/blob/main/docs/manual/general/03-core-concepts.md#39-the-ai-annotation)
 documents the supported forms and fields.
 
-[![AIContextBuilder desktop app with a loaded solution](https://raw.githubusercontent.com/gregordadera/aicb-roslyn-mcp/main/docs/assets/aicb-main-light.png)](https://www.dadera.de/en/aicb-gui.html)
+![AIContextBuilder desktop app with a loaded solution](https://raw.githubusercontent.com/gregordadera/aicb-roslyn-mcp/main/docs/assets/aicb-main-light.png)
 
 ## How analysis and memory work
 
@@ -256,7 +256,7 @@ These tools form a broader capability map rather than a flat search catalog:
 The desktop app turns code-quality, security, design and architecture findings
 into an actionable review queue:
 
-[![AICB Insights page with prioritized code-quality, security, design and architecture findings](https://raw.githubusercontent.com/gregordadera/aicb-roslyn-mcp/main/docs/assets/aicb-gui-insights.png)](https://www.dadera.de/en/aicb-gui.html)
+![AICB Insights page with prioritized code-quality, security, design and architecture findings](https://raw.githubusercontent.com/gregordadera/aicb-roslyn-mcp/main/docs/assets/aicb-gui-insights.png)
 
 AICB is most useful for non-trivial C#/.NET solutions and semantic questions that
 plain text search cannot answer reliably. It analyzes C#; selected XAML/AXAML
@@ -365,7 +365,7 @@ A **Quality Profile** controls which insight producers run and the thresholds th
 use, such as method length, cyclomatic complexity and class size. It does not by
 itself define finding severity or the CLI quality gate.
 
-[![AICB Quality Profiles editor with producer switches and thresholds](https://raw.githubusercontent.com/gregordadera/aicb-roslyn-mcp/main/docs/manual/general/img/gui-settings-quality-profiles.png)](https://github.com/gregordadera/aicb-roslyn-mcp/blob/main/docs/manual/general/08-insights-the-code-quality-catalog.md#85-quality-profiles)
+![AICB Quality Profiles editor with producer switches and thresholds](https://raw.githubusercontent.com/gregordadera/aicb-roslyn-mcp/main/docs/manual/general/img/gui-settings-quality-profiles.png)
 
 Each solution also has three independent analysis axes:
 
@@ -380,7 +380,7 @@ solution. The Settings pages are the library editors; the Workspace pickers choo
 which library entry applies to this particular solution. A per-solution choice wins
 over the global default.
 
-[![AICB Workspace showing Layer Profile, Exclude Namespaces and Test Profile side by side](https://raw.githubusercontent.com/gregordadera/aicb-roslyn-mcp/main/docs/manual/general/img/aicb-gui-profiles.png)](https://github.com/gregordadera/aicb-roslyn-mcp/blob/main/docs/manual/general/07-profiles-master-data-and-solution-configuration.md#the-three-axes-in-workspace)
+![AICB Workspace showing Layer Profile, Exclude Namespaces and Test Profile side by side](https://raw.githubusercontent.com/gregordadera/aicb-roslyn-mcp/main/docs/manual/general/img/aicb-gui-profiles.png)
 
 #### Initialize the three axes
 
@@ -437,7 +437,7 @@ Detail Presets, Markdown Profiles, Expansion Strategies, Compression Rules,
 Pipeline Profiles and Quality Profiles are reusable building blocks referenced by
 a context template; a run template selects that context template.
 
-[![AICB Context Templates editor with prompt, detail-level and export configuration](https://raw.githubusercontent.com/gregordadera/aicb-roslyn-mcp/main/docs/manual/general/img/gui-templates.png)](https://github.com/gregordadera/aicb-roslyn-mcp/blob/main/docs/manual/desktop-app/09-mcp-profiles-mcp-usage-and-templates.md#93-templates)
+![AICB Context Templates editor with prompt, detail-level and export configuration](https://raw.githubusercontent.com/gregordadera/aicb-roslyn-mcp/main/docs/manual/general/img/gui-templates.png)
 
 ### Product direction, not a release commitment
 

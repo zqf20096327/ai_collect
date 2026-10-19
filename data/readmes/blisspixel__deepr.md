@@ -2,8 +2,8 @@
 
 [![CI](https://github.com/blisspixel/deepr/actions/workflows/ci.yml/badge.svg)](https://github.com/blisspixel/deepr/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/version-2.50.37-blue)](https://github.com/blisspixel/deepr/releases/tag/v2.50.37)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Version](https://img.shields.io/badge/version-2.50.41-blue)](https://github.com/blisspixel/deepr/releases/tag/v2.50.41)
 
 **Persistent domain experts built from bounded, auditable research.**
 
@@ -210,9 +210,9 @@ curl -fsSL https://raw.githubusercontent.com/blisspixel/deepr/main/scripts/insta
 ```
 
 Installers use the latest verified GitHub Release wheel and preserve an existing
-uv or pipx installation. Fresh installs prefer uv with managed CPython 3.13;
-pipx requires an explicitly selected stable CPython 3.12, 3.13 or 3.14. Install
-uv or pipx first using its official instructions. The scripts do not bootstrap
+uv or pipx installation. Fresh installs prefer uv with managed CPython 3.15.0;
+pipx requires an explicitly selected stable CPython 3.11, 3.12, 3.13, 3.14 or 3.15.
+Install uv or pipx first using its official instructions. The scripts do not bootstrap
 pip into a user site or system Python, and refuse conflicting managed copies.
 Repair, `deepr upgrade`, and uninstall keep the same tool manager. PyPI
 publication is not enabled.
@@ -305,6 +305,33 @@ eras and published Agent Plugins `1.0.0`. See the
 for tested behavior and the distinction from draft standards and host certification.
 
 ## Direction
+
+v2.50.41 makes evidence loss visible at both prompt boundaries. Brief
+synthesis now chooses findings one lens at a time instead of dropping whole
+lenses at its cap, and records what it was shown. Consult keeps each position
+with the evidence it cites and names missing support per position. A new `$0`
+correction-survival diagnostic traces frozen correction cases stage by stage.
+No execution, spend or write authority is widened. See
+[the changelog](docs/CHANGELOG.md#25041---2026-10-19).
+
+v2.50.40 keeps concurrent expert writes from overwriting one another's
+beliefs, reports progress and cancellation during long local consult, absorb
+and sync runs, sizes local KV fit from each model's attention metadata, and
+lets a requested consult length outrank the default cap (improved, not
+resolved). No execution, spend or write authority is widened. See
+[the changelog](docs/CHANGELOG.md#25040---2026-10-18).
+
+v2.50.39 repairs terminal hierarchy, startup motion and 60-column output, and
+adds an optional companion for recorded workflow states. Hide it with root
+`--no-companion` or `deepr config set cli.companion off`. Production dashboard
+themes and fonts comply with the existing CSP; CI captures twelve routes in
+both themes against isolated `$0` synthetic state. See the
+[interface validation](docs/validation/dashboard-themes-2026-10-18.md).
+
+v2.50.38 supports maintained CPython 3.11 through 3.15, with 3.15 as the
+development and managed-install default. CI covers all five minors, native
+Windows/macOS installation and the three locked container builds. Node uses
+24.22.0 LTS. See the [runtime decision](docs/design/maintained-runtime-support.md).
 
 v2.50.37 adds explicit local embedding roles and profile/dimension compatibility
 checks. A frozen published-label comparison leaves defaults unchanged; all

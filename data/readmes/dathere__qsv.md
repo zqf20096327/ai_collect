@@ -114,7 +114,7 @@
 🧠: expensive operations are memoized with available inter-session Redis/Disk caching for fetch commands.  
 🗄️: [Extended input support](#extended-input-support).  
 🗃️: [Limited Extended input support](#limited-extended-input-support).  
-🐻‍❄️: command powered/accelerated by [![polars 0.55.1 at py-2.0.0:2742ad3](https://img.shields.io/badge/polars-0.55.1:py--2.0.0:2742ad3-blue?logo=polars)](https://github.com/pola-rs/polars/releases/tag/py-2.0.0) vectorized query engine.  
+🐻‍❄️: command powered/accelerated by [![polars 0.55.1 at py-2.0.0:b951cd7](https://img.shields.io/badge/polars-0.55.1:py--2.0.0:b951cd7-blue?logo=polars)](https://github.com/pola-rs/polars/releases/tag/py-2.0.0) vectorized query engine.  
 🤖: command uses Natural Language Processing or Generative AI.  
 🏎️: multithreaded and/or faster when an index (📇) is available.  
 🚀: multithreaded even without an index.  
@@ -136,6 +136,9 @@
 
 > [!TIP]
 > To install the qsv MCP Server and/or the qsv Claude Cowork plugin, see the [Getting Started guide](.claude/skills/docs/guides/START_HERE.md).
+
+> [!TIP]
+> To run qsv from Python, use **[qsv-client](https://github.com/dathere/qsv-client)** (`pip install qsv-client`). It stops qsv and every process qsv started on a timeout, raises typed exceptions instead of making you parse stderr, and reports the installed binary's version, features and commands. It has sync and asyncio clients and no runtime dependencies. qsv itself is not bundled: install qsv 25.0.0 or later using one of the options below.
 
 ### Option 0: qsv pro
 
@@ -525,7 +528,7 @@ Luau will also serve as the backbone of a whole library of **qsv recipes** - reu
  as command line interfaces go :shrug:. Its commands have numerous options but have sensible defaults. The usage text is written for a data analyst audience, not developers; and there are numerous examples in the usage text, with the tests doubling as examples as well. With [qsv pro](https://qsvpro.dathere.com), it has much expanded functionality while being easier to use with its Graphical User Interface.
 * **As Secure as Possible** - qsv is designed to be secure. It has no external runtime dependencies, is [written](https://aws.amazon.com/blogs/opensource/why-aws-loves-rust-and-how-wed-like-to-help/) [in](https://msrc.microsoft.com/blog/2019/07/why-rust-for-safe-systems-programming/) [Rust](https://opensource.googleblog.com/2023/06/rust-fact-vs-fiction-5-insights-from-googles-rust-journey-2022.html), and its codebase is automatically audited for security vulnerabilities with automated [DevSkim](https://github.com/microsoft/DevSkim#devskim), ["cargo audit"](https://rustsec.org) and [Codacy](https://app.codacy.com/gh/dathere/qsv/dashboard) Github Actions workflows.  
 It uses the latest stable Rust version, with an aggressive MSRV policy and the latest version of all its dependencies.
-It has an extensive test suite with ~6,500 tests, including several [property tests](https://medium.com/criteo-engineering/introduction-to-property-based-testing-f5236229d237) which [randomly generate](https://github.com/BurntSushi/quickcheck#quickcheck) parameters for oft-used commands.   
+It has an extensive test suite with ~6,550 tests, including several [property tests](https://medium.com/criteo-engineering/introduction-to-property-based-testing-f5236229d237) which [randomly generate](https://github.com/BurntSushi/quickcheck#quickcheck) parameters for oft-used commands.   
 Its prebuilt binary archives are [zipsigned](https://github.com/Kijewski/zipsign#zipsign), so you can [verify their integrity](#manually-verifying-the-integrity-of-the-prebuilt-binaries-zip-archives). Its self-update mechanism automatically verifies the integrity of the prebuilt binaries archive before applying an update.
 See [Security](SECURITY.md) for more info.
 * **As Easy to Contribute to as Possible** - qsv is designed to be easy to contribute to, with a focus on maintainability. It's modular architecture allows the easy addition of self-contained commands gated by feature flags, the source code is heavily commented, the usage text is embedded, and there are helper functions that make it easy to create additional commands and supporting tests. See [Features](docs/FEATURES.md) and [Contributing](CONTRIBUTING.md) for more info.
@@ -538,7 +541,7 @@ It can process well-formed CSVs in _any_ language so long as its UTF-8 encoded. 
 Finally, though the default Geonames index of the `geocode` command is English-only, the index can be rebuilt with the `geocode index-update` subcommand with the `--languages` option to return place names in multiple languages ([with support for 254 languages](http://download.geonames.org/export/dump/alternatenames/)).
 
 ## Testing
-qsv has 6,486 tests: 5,749 for the qsv binaries (4,445 integration in the [tests](https://github.com/dathere/qsv/tree/master/tests) directory + 1,304 unit across `src/` modules), plus 737 for the MCP server & Cowork plugin (in [`.claude/skills/tests`](https://github.com/dathere/qsv/tree/master/.claude/skills/tests)).
+qsv has 6,560 tests: 5,823 for the qsv binaries (4,516 integration in the [tests](https://github.com/dathere/qsv/tree/master/tests) directory + 1,307 unit across `src/` modules), plus 737 for the MCP server & Cowork plugin (in [`.claude/skills/tests`](https://github.com/dathere/qsv/tree/master/.claude/skills/tests)).
 Most commands have their own test suite in a separate file with the convention `test_<COMMAND>.rs`.
 Apart from preventing regressions, the tests also serve as good illustrative examples, and are often linked from the usage text of each corresponding command.
 

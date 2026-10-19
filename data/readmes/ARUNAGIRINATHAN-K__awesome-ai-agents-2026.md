@@ -492,6 +492,7 @@ Curated list of vertical agent solutions for finance, healthcare, legal, manufac
 
 ## Learning Resources
 
+- [Agent Cookbook](https://agentcookbook.dev) `🔬` `[Browser]` `[Guide]` - Collects 75 real AI agent setups, 20 that people made money with, each with source, prompt, and steps.
 - [AgentBench: Evaluating LLMs as Agents](https://arxiv.org/abs/2309.07864) `🌱` `[Python]` `[Benchmark]` - The benchmark paper for evaluating LLMs as agents across diverse environments.
 - [AI Agents in LangGraph](https://www.deeplearning.ai/courses/ai-agents-in-langgraph) `🚀` `[Python]` `[Multi-Agent]` - Short course on building production agents with LangGraph by Andrew Ng's platform.
 - [AI Engineering by Chip Huyen](https://www.oreilly.com/library/view/ai-engineering/9781098166298/) `🌱` `[Python]` `[IDE]` - Comprehensive guide on AI systems design and deployment covering agent architecture patterns.
@@ -800,5 +801,4 @@ Open-weight LLMs optimized for agentic tasks including tool use, planning, multi
 - [InternLM 3](https://github.com/InternLM/InternLM) `🌱` `[Python]` `[Local]` - Shanghai AI Lab model with strong long-context reasoning capabilities for complex agent tasks.
 - [Llama 4](https://github.com/meta-llama/llama-models) `🚀` `[Python]` `[Local]` - Meta's flagship open model family with Scout and Maverick variants and strong tool use capabilities.
 - [Mistral Large 2](https://mistral.ai/research/) `🌱` `[Python]` `[Multi-Agent]` - European open model at 123B parameters with strong function calling for agent workflows.
-- [Phi-4](https://huggingface.co/microsoft/phi-4) `🚀` `[Python]` `[Microsoft]` - Microsoft's compact 14B parameter model delivering strong reasoning for on-device and edge agent deployments.
-- [Qwen 3](https://github.com/QwenLM/Qwe
+- [Phi-4](https://huggingface.co/microsoft/phi-4) `🚀` 

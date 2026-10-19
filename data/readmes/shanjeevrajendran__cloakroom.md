@@ -48,25 +48,47 @@ expect rough edges.
 
 ## Get started
 
-Inside Claude Code:
+You need Claude Code, installed and signed in. Then:
 
-```
-/plugin marketplace add shanjeevrajendran/cloakroom
-/plugin install cloakroom@cloakroom
-```
+1. **Open a terminal.** Mac: press Cmd+Space, type "Terminal", press Enter. Windows: open Start, type
+   "PowerShell", press Enter. Linux: press Ctrl+Alt+T. Type `claude` and press Enter.
+2. **Add Cloakroom.** Inside Claude Code, type these two lines, one at a time. If it asks where to install, pick the
+   option for all your projects (user scope).
 
-That's it. Restart Claude Code and Cloakroom sets itself up: keys, card numbers and ID numbers are covered within
-seconds; names and addresses a few minutes later, once the detection model has downloaded (about 1 GB on a Mac, up
-to about 4 GB elsewhere). It needs uv, pipx or Python 3.10 or newer. Tested from clean installs on macOS, Windows
-and Ubuntu. Progress: `~/.cloakroom/bootstrap.log`; details in
-[Setup](https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-SETUP.md).
+   ```
+   /plugin marketplace add shanjeevrajendran/cloakroom
+   /plugin install cloakroom@cloakroom
+   ```
 
-Then, in a terminal:
+3. **Restart Claude Code.** Type `/exit`, then `claude` again. Cloakroom now installs itself. Keys and card numbers
+   are covered in about a minute; names and addresses a few minutes later, once the detection model has downloaded
+   (about 1 GB on a Mac, up to about 4 GB elsewhere). Claude's tool calls are held back until then.
+4. **Check it.** Open a new terminal window and run:
 
-```bash
-cloakroom doctor       # checks Python, the key store, the model and the service
-cloakroom dashboard    # opens your alerts in the browser
-```
+   ```bash
+   cloakroom doctor       # every line should say ok
+   cloakroom dashboard    # opens your alerts in the browser
+   ```
+
+What you need first:
+
+- **Windows, Mac and Linux:** nothing. When neither uv nor pipx is there, Cloakroom fetches uv (a pinned version,
+  checked against its SHA-256 before it runs), and uv brings its own Python. That needs `curl` or `wget`, which
+  macOS and most Linux systems have. If a Linux machine has neither, Cloakroom tells you the steps:
+  `sudo apt install curl` (Ubuntu/Debian) or `sudo dnf install curl` (Fedora/RHEL), then restart Claude Code.
+- **Intel Mac:** rules-only protection (keys, cards, IDs). PyTorch and ONNX Runtime publish no Intel Mac builds, so
+  the detection model for names and addresses can't run there.
+
+If something looks wrong:
+
+- **`cloakroom` not found:** open a new terminal. The program lives in `~/.local/bin` (on Windows,
+  `%USERPROFILE%\.local\bin`); the installer adds that folder to your shell profile (`~/.zshenv` for zsh,
+  `~/.bashrc` and `~/.profile` or `~/.bash_profile` for bash) or, on Windows, to your user PATH.
+- **Still setting up, or it failed:** progress, and numbered steps when something needs you, are written to
+  `~/.cloakroom/bootstrap.log`. More in
+  [Setup](https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-SETUP.md).
+
+Tested from clean installs on macOS, Windows and Ubuntu.
 
 Prefer to install by hand: `uv tool install "cloakroom[model,torch,ocr]"` (Python 3.10+; the part in brackets adds
 the detection model and OCR), then add the plugin as above.

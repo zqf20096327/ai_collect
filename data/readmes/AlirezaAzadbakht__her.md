@@ -16,7 +16,10 @@ One conversation for the life of the app. You talk; she remembers, organizes, an
 ![JDK](https://img.shields.io/badge/JDK-17-orange?logo=openjdk&logoColor=white)
 ![LLM](https://img.shields.io/badge/LLM-OpenAI--compatible-412991?logo=openai&logoColor=white)
 
-[**Site**](https://alirezaazadbakht.github.io/her/) ·
+<sub>Download from stores</sub><br/>
+<a href="https://cafebazaar.ir/app/com.her"><img src="docs/images/bazaar-en.png" alt="Get it on Cafe Bazaar" height="36"/></a>
+
+[**Site**](https://her-project.ir/) ·
 [**Download**](https://github.com/AlirezaAzadbakht/her/releases/latest) ·
 [**Changelog**](CHANGELOG.md) ·
 [**Wiki**](wiki/Home.md) ·
@@ -63,7 +66,7 @@ Core principles:
 | 📅 **Calendar** | Creates and reads events via the system calendar or Google Calendar |
 | ⏰ **Reminders & alarms** | "Remind me at 6", "next time I see Reza", "only if I haven't sent it", or "wake me up at 7". Reminders ring on time without the network; alarms go to your clock app |
 | 🔔 **Follow-ups & briefings** | Hourly and nightly background passes plus a morning briefing, respecting quiet hours on your clock |
-| 💗 **Emotional understanding** | Builds mixed feelings and a sense of usefulness from evidence, reuses how to support you, and reflects quietly; her orb can mix two feelings |
+| 💗 **Emotional understanding** | Assesses her contribution and uncertainty, remembers ongoing experiences, learns scoped support lessons from feedback, and keeps her internal feelings separate from the tone you need; her orb can mix two feelings |
 | 🌐 **Persian & RTL** | Persian replies read right to left; understands Persian times and Jalali dates |
 | 📴 **Offline queue** | Messages sent without a connection are processed in one batch later |
 | ☁️ **Multi-device sync** | Every record syncs through a Google Drive `appDataFolder` change log |
@@ -75,14 +78,14 @@ Core principles:
 
 ### Install
 
-Grab the signed APK from the [latest release](https://github.com/AlirezaAzadbakht/her/releases/latest) and install it on an Android 10+ device.
+Get Her on [Cafe Bazaar](https://cafebazaar.ir/app/com.her), or grab the signed APK from the [latest release](https://github.com/AlirezaAzadbakht/her/releases/latest), and install it on an Android 10+ device.
 
 ### First run
 
 1. Open the app. Give your name, then hers.
 2. Enter an OpenAI-compatible **Base URL**, **API key**, and **Model**.
 3. Continue. She greets you by those names once the connection works.
-4. *Optional:* grant calendar permission, add a Google OAuth client ID for Drive/Calendar, enable web search.
+4. *Optional:* grant calendar permission, tap Connect Google for Drive/Calendar, enable web search.
 5. *Optional:* Settings → Advanced → Experimental to hide the Memory SQL navigator (shown by default).
 
 ## Build from source
@@ -144,7 +147,7 @@ The model only **proposes** tool calls. The app validates schemas and enforces c
 
 ## Google integrations
 
-Drive sync and direct Google Calendar access need an OAuth client ID from your Google Cloud project. Enter it in Settings. Each device configures API and Google credentials independently.
+Drive sync and direct Google Calendar access use Settings → Connect Google. Each device configures its API credentials independently. Developers register Android OAuth clients once in Google Cloud; see [Local development](wiki/Local-development.md).
 
 ## CI & release
 

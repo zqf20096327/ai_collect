@@ -3,7 +3,7 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--18-blue)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--19-blue)
 ![Total Papers](https://img.shields.io/badge/Papers-1414-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
@@ -24,16 +24,16 @@ All 1414 papers remain in this README. For full-text search, filters, and sortin
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 220 | 2026-10-15 | [View papers](#category-perception-sensor-fusion) |
-| Prediction & World Models | 104 | 2026-10-15 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 97 | 2026-10-15 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 55 | 2026-10-13 | [View papers](#category-control-vehicle-dynamics) |
+| Perception & Sensor Fusion | 218 | 2026-10-15 | [View papers](#category-perception-sensor-fusion) |
+| Prediction & World Models | 107 | 2026-10-16 | [View papers](#category-prediction-world-models) |
+| Planning & Decision-Making | 95 | 2026-10-15 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 56 | 2026-10-15 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 54 | 2026-10-10 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 156 | 2026-10-14 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 232 | 2026-10-14 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 161 | 2026-10-15 | [View papers](#category-systems-deployment-connectivity) |
-| Human Factors & Policy | 31 | 2026-10-12 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 304 | 2026-10-15 | [View papers](#category-cross-cutting-other) |
+| End-to-End & VLA | 156 | 2026-10-16 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 230 | 2026-10-15 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 161 | 2026-10-16 | [View papers](#category-systems-deployment-connectivity) |
+| Human Factors & Policy | 32 | 2026-10-15 | [View papers](#category-human-factors-policy) |
+| Cross-cutting / Other | 305 | 2026-10-16 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,25 +45,25 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 107 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 186 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Dataset | 106 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Simulation | 187 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 38 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 117 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
-| VLA | 90 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
-| World Model | 113 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
+| Cooperative / V2X | 116 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| VLA | 89 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
+| World Model | 114 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
 | Reinforcement Learning | 140 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 27 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 118 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Explainability | 116 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 18 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 220 papers
+## Perception & Sensor Fusion · 218 papers
 
 <a id="paper-2610-21207"></a>
 
@@ -129,7 +129,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-16012"></a>
 
-### Adversarial Robustness of Camera-Radar Sensor Fusion for Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+### Adversarial Robustness of Camera-Radar Sensor Fusion for Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Ce Zhou, Yubo Wu, Khang Nguyen, Liyang Xiao, Thomas Hou, et al.<br>
 **Published:** 2026-10-11<br>
@@ -140,7 +140,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-15745"></a>
 
-### SpikeOcc: Towards Resilient Multimodal 3D Occupancy Perception via Spiking Experts ![New](https://img.shields.io/badge/New-red)
+### SpikeOcc: Towards Resilient Multimodal 3D Occupancy Perception via Spiking Experts ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Yiding Sun, Zijie Xu, Hongqiang Lin, Jiajun Cao, Dongxu Zhang, et al.<br>
 **Published:** 2026-10-11<br>
@@ -150,7 +150,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-15604"></a>
 
-### Squeeze-Aware-YOLO: Early Channel Recalibration and Multi-Scale Fusion for Real-Time Traffic Sign Detection ![New](https://img.shields.io/badge/New-red)
+### Squeeze-Aware-YOLO: Early Channel Recalibration and Multi-Scale Fusion for Real-Time Traffic Sign Detection ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Mizbaul Haque Maruf, Syed Samin Sadaf, Syed Tamzid Bakht, Md. Hasanul Kabir, Sabbir Ahmed<br>
 **Published:** 2026-10-11<br>
@@ -161,7 +161,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-15522"></a>
 
-### GNFormer: Gaussian Neural Field Transformer for Efficient Camera-based Occupancy Prediction ![New](https://img.shields.io/badge/New-red)
+### GNFormer: Gaussian Neural Field Transformer for Efficient Camera-based Occupancy Prediction ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Guangcheng Chen, Li He, Hong Zhang<br>
 **Published:** 2026-10-11<br>
@@ -402,7 +402,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-22716"></a>
 
-### ZIL: Zero-shot Image-to-LiDAR Registration ![Recent](https://img.shields.io/badge/Recent-orange)
+### ZIL: Zero-shot Image-to-LiDAR Registration ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Zijun Li, Xiaotian Sun, Xuelun Shen, Yao Dai, Sheng Ao, et al.<br>
 **Published:** 2026-09-18<br>
@@ -412,7 +412,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-22060"></a>
 
-### Traffic Sign Recognition for Autonomous Driving Using Branched YOLOv2 and Geometric Features ![Recent](https://img.shields.io/badge/Recent-orange)
+### Traffic Sign Recognition for Autonomous Driving Using Branched YOLOv2 and Geometric Features ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Arefeh Rezaei<br>
 **Published:** 2026-09-18<br>
@@ -953,7 +953,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 ### CorrelationFlow: A Training-Free Geometric Approach for LiDAR Scene Flow Estimation ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
-**Authors:** Minh-Quan Dao, Yancong Lin, Julie Stephany Berrio Perez, Holger Caesar<br>
+**Authors:** Minh-Quan Dao, Yancong Lin, Shiming Wang, Julie Stephany Berrio Perez, Holger Caesar<br>
 **Published:** 2026-07-31<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2607.29237) | [PDF](https://arxiv.org/pdf/2607.29237.pdf) | [↑ BackToTop](#browse-by-topic)
 
@@ -1100,7 +1100,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-17813"></a>
 
-### A2RL V\textsubscript{max}: The A2RL autonomous racing dataset for long-range, high-speed perception and multi-vehicle interaction ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### A2RL V\textsubscript{max}: The A2RL autonomous racing dataset for long-range, high-speed perception and multi-vehicle interaction
 
 **Authors:** Marvin Klemp, Dominic Ebner, Cornelius Schröder, Davide Malvezzi, László Turányi, et al.<br>
 **Published:** 2026-07-20<br>
@@ -1675,4 +1675,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 ### Instance-Level Post Hoc Uncertainty Quantification in Object Detection
 
-**Authors:** Ch
+**Authors:** Chongzh

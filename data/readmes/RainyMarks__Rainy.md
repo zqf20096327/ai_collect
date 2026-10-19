@@ -14,7 +14,7 @@
 
 English | [中文](README.zh.md)
 
-[**Download for Windows (174 MB)**](https://github.com/RainyMarks/Rainy/releases/latest) · [What's new](#whats-new) · [Quick start](#run) · [SSH remote development](#ssh) · [Connect a model](#connect-a-model) · [Build from source](#run-from-source)
+[**Download for Windows (177 MB)**](https://github.com/RainyMarks/Rainy/releases/latest) · [What's new](#whats-new) · [Quick start](#run) · [SSH remote development](#ssh) · [Connect a model](#connect-a-model) · [Build from source](#run-from-source)
 
 </div>
 
@@ -26,7 +26,8 @@ Rainy puts an AI agent, previews of Word, Excel, PowerPoint and PDF, a real edit
 
 | | |
 |---|---|
-| **An agent you stay in control of** | The assistant reads, searches and edits project files, runs commands, searches the web and reads pages through DeepSeek, and remembers the project across chats. Each chat runs read-only, asks before commands (the default), or runs fully automatically. Every file it changes is listed for review in the editor, where you keep or undo each change; GBK and UTF-16 files keep their encoding. Add skills in `.rainy/skills` and MCP servers in Settings. |
+| **An agent you stay in control of** | The assistant reads, searches and edits project files, runs commands, searches the web and reads pages through DeepSeek, and remembers the project across chats. Each chat runs read-only, asks before commands (the default), or runs fully automatically. Every file it changes is listed for review in the editor, where you keep or undo each change; GBK and UTF-16 files keep their encoding. Add skills in `.rainy/skills` and MCP servers in Settings; one click there adds computer use through the open-source [Windows-MCP](https://github.com/CursorTouch/Windows-MCP), so the assistant can read windows and click, type and open apps for you, and in the default Ask mode each action asks first. |
+| **An agent that checks its own work** | A development server or watcher keeps running in the background while the assistant goes on working, and it reads that output when it needs to. It opens the application it just changed in a preview window on this machine, reads the page, its console errors and its failed requests, clicks and types in it, and reports what it saw. A long search goes to a sub-agent that reads and searches on its own and answers with one report, so the conversation keeps its room. |
 | **Remote development over SSH** | Pick a host from `~/.ssh/config` or add `user@host`, and Rainy runs its backend on the server: the agent, terminals, run and debug, and language services work on the server's files, while the interface stays here. It uses the OpenSSH client built into Windows, so your keys, agent and ProxyJump settings just work. |
 | **See the whole project** | The project map draws a project's parts and the imports between them, or every file as a block sized by its lines. It names the stack, explains each part with AI on request, and highlights the files the agent is reading or changing. |
 | **A real editor and debugger** | AI suggestions as you type (Tab accepts) and Ctrl+K to rewrite a selection, reviewed line by line before you keep it. Search and replace across the project, a command palette, and Git with AI-written commit messages. CodeMirror 6 with completion, hover, go to definition, rename, diagnostics, diffs and recovery of unsaved work. Run and debug Python, JavaScript/TypeScript and C/C++; run PHP. |
@@ -61,6 +62,15 @@ Rainy puts an AI agent, previews of Word, Excel, PowerPoint and PDF, a real edit
 ![Ctrl+K adding an empty-key check to a function, with the new lines in green](assets/ai-edit.png)
 
 <a id="whats-new"></a>
+## What's new in 3.8
+
+Lighter: smaller downloads, less CPU while idle and while a reply streams.
+
+- **The WSL / SSH runtime base shrinks from about 277 MB to about 53 MB**: it is packed with xz and leaves out what the Host never reads (Node.js headers, a second copy of Ruff, the debugger's sources and other platforms' binaries). The offline Ubuntu 26.04 development packages (about 165 MB) are downloaded only when you prepare the development tools, and the download is deleted once they are installed. This update downloads the new base once.
+- **Less work while idle**: the rain behind empty views draws at most about 60 frames a second (24 while the window is in the background) at a lower canvas resolution, about a third of the idle CPU it used on high-refresh displays; the running spinner turns on the GPU instead of being repainted every frame.
+- **Smoother long replies**: while a reply streams, only the turn that grows renders again and only its last Markdown block is parsed again; the Host sends the page only the new text, with the whole reply every 2 seconds, so far less goes over an SSH tunnel.
+- **Faster start**: Settings and code highlighting load on first use, cutting the startup script from 1010 KB to 790 KB; math ships WOFF2 fonts only.
+
 ## What's new in 3.6
 
 Updates no longer set up the environment again, and Rainy is lighter.
@@ -172,10 +182,10 @@ git clone https://github.com/RainyMarks/Rainy.git
 cd Rainy
 pnpm install --frozen-lockfile
 node scripts/bootstrap-release-inputs.mjs --manifest toolpacks/build-inputs.v1.json
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/package.ps1 -Distribution Ubuntu -ComponentSource release/offline-3.6.1/environment-components
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/package.ps1 -Distribution Ubuntu -ComponentSource release/offline-3.8.0/environment-components
 ```
 
-Replace `Ubuntu` only when your WSL build distribution has another name, and `3.6.1` with the version in `package.json`. [Validation](docs/validation.md) records the build, installation and runtime checks completed for each release.
+Replace `Ubuntu` only when your WSL build distribution has another name, and `3.8.0` with the version in `package.json`. [Validation](docs/validation.md) records the build, installation and runtime checks completed for each release.
 
 For development, `pnpm run dev` builds the app and starts a Host without Electron, then prints a URL you can open in a browser; `pnpm run start` runs Electron on the built files.
 

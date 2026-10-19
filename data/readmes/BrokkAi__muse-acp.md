@@ -18,6 +18,11 @@ authentication, and approval flow.
 The adapter is one small Rust binary with no runtime dependencies. It supports
 ACP v1 and v2, and installs on macOS, Linux, and Windows.
 
+Client implementers should start with the
+[ACP extension contract](docs/acp-extensions.md). It lists every negotiated
+Muse method, `_meta` shape, capability, fallback, and the ACP standard fields
+used where they exist.
+
 > `muse-acp` is an independent community project. Muse Code and Muse Spark are
 > products of Meta Platforms, Inc. This project is not affiliated with,
 > endorsed by, or supported by Meta.
@@ -285,6 +290,16 @@ to your editor. Your saved Muse settings, editor launcher, and session data are
 left untouched, and the temporary view is removed when the host exits. Other
 permission profiles are passed through unchanged.
 
+On Muse 1.4.8+, an ACP `session/load` or `session/resume` request can select a
+launch profile with
+`{"_meta":{"muse":{"permissionProfile":"<profile-id>"}}}`. The adapter
+forwards it to the host's resume step; omitting it restores retained authority
+only. The id must already be admitted by the host's permission-profile
+catalog; the request selects a profile and never creates one. The value must
+be a non-empty string, and malformed metadata fails locally with invalid
+params before the host is called. Unknown or unavailable ids keep the host's
+typed `commandRejected` refusal. `session/fork` never carries the member.
+
 The view links the rest of your configuration instead of copying it, so
 credentials are never copied. Files Muse creates while it runs, such as the
 credential from your first login or your first workspace trust, are written
@@ -315,12 +330,21 @@ error the editor shows if Muse then refuses the profile says why.
   reported.
 - **Turns** — streamed text and tool updates, queued concurrent prompts,
   cancellation with a terminal event, and exact-turn steering over the
-  `_session/steering` extension (ACP v1 and v2).
+  `_session/steering` extension (ACP v1 and v2). A declined retract keeps the
+  prompt and turn targetable until Muse's interrupt terminal arrives; accepted
+  or legacy retracts settle the prompt as cancelled immediately.
 - **Approvals** — Muse approval requests surfaced as
   `session/request_permission`, with a deny-safe fallback that explains
   failed or unusable editor replies in the transcript, plus optional
   [Auto-review](#auto-review-keep-the-boundary-lose-the-busywork) for
-  workspace-local file access.
+  workspace-local file access. On Muse 1.4.9+ an approval held by Muse's
+  native reviewer appears in reversible
+  `session_info_update._meta.muse.approvalReviewing` metadata, never as a
+  permission request. Each row carries `sourceSessionId`, `approvalId`,
+  `title`, and `kind`; the value becomes `null` when no native reviews remain.
+  The hint clears when the host releases the approval, resolves it, or ends
+  the owning turn. Clients that ignore `_meta` see no change and still receive
+  the ordinary permission request after release.
 - **MCP servers** — stdio and HTTP MCP servers attached by the editor load
   into the Muse session on Muse 1.3.0 and newer; see
   [Client-provided MCP servers](#client-provided-mcp-servers).
@@ -347,8 +371,10 @@ error the editor shows if Muse then refuses the profile says why.
   at the last effort the way it already starts at the last model. Picking
   `Muse default` forgets the remembered tier.
 - **Skills** — Muse's skill catalog drives ACP `available_commands_update`.
-  Slash prompts such as `/plan` use native skill turn parts; `/compact` invokes
-  Muse's native compaction.
+  Each skill command carries the skill's name as `_meta.muse.title`: the name
+  the skill declares in `SKILL.md` (`metadata.display-name`, Muse 1.4.8+), or
+  Muse's display name when it declares none. Slash prompts such as `/plan`
+  use native skill turn parts; `/compact` invokes Muse's native compaction.
 - **Goals** — `/goal <objective>` sets the session goal, `/goal edit
   <objective>` replaces it, and `/goal pause`, `/goal resume`, `/goal clear`
   manage it, mapping onto the host `goal/*` methods. When a command starts a
@@ -358,8 +384,13 @@ error the editor shows if Muse then refuses the profile says why.
   through `session/goalChanged` display metadata.
 - **Session names** — `/rename <name>` renames the session through the host's
   `session/rename`; the new title arrives through `session/nameChanged` as an
-  ACP `session_info_update`. The adapter requests the host's `sessionRename`
-  capability at startup. Muse 1.4.8 added it to the grantable registry; a host
+  ACP `session_info_update`. When the host proves how the name was set
+  (Muse 1.4.7+), the update's `_meta.muse.nameOrigin` says `automatic` or
+  `custom`; unknown provenance is omitted, never guessed. When Muse retains a
+  generated short title (1.4.8+), the same update carries it as
+  `_meta.muse.generatedName`; it is always the host's value and is never
+  inferred from the canonical name. The adapter
+  requests the host's `sessionRename` capability at startup. Muse 1.4.8 added it to the grantable registry; a host
   that withholds the grant is answered with the typed `capabilityRequired`
   refusal, while hosts that predate the entry keep serving `session/rename`
   without it.
@@ -393,19 +424,36 @@ error the editor shows if Muse then refuses the profile says why.
   <name>` (or `/plugin install <path> [scope]`) plus `/plugin marketplace
   add|remove|update` drive the host's install and marketplace writes. Change
   notices are diagnostics; clients re-read the extension instead of a cache.
-- **Computer use** — with the client's opt-in and the host's
-  `computerUseSetup` grant, the `_session/computerUse` extension reads the
-  session's setup state and the computer-use settings (built-in blocks on
-  request), and `/cua [status]`, `/cua on`, `/cua set
+- **Computer use** — with the client's `_meta.muse.computerUse` opt-in, the
+  adapter requests both the per-session `computerUseSetup` and host-wide
+  `computerUseHostSetup` grants. `/cua host` reads the host's setup state and
+  its Screen Recording, Accessibility, and Input Monitoring grants;
+  `/cua host check` asks the host to inspect those grants without prompting
+  or opening System Settings. Input Monitoring is reported separately because
+  basic computer use can be ready without it, while some actions still need
+  it. These are ordinary prompt commands, so clients do not need the
+  `_session/computerUse` extension to use them. With the per-session grant,
+  `/cua [status]`, `/cua on`, `/cua set
   computerControl|screenshots ask|alwaysAllow`, and `/cua block|unblock
-  <bundleId>` drive setup and the settings patch. A gate that is off answers
-  the typed `computerUseUnavailable`, never a generic failure.
+  <bundleId>` drive the session setup and settings patch. Muse 1.4.8 adds
+  effective per-app rows with their last-asked and lock facts; `/cua apps`
+  requests the installed/running picker source, and `/cua app <bundleId>
+  ask|alwaysAllow|blocked [...]` patches one or more apps atomically. The
+  extension returns structured session setup plus settings, can request
+  `installedApps`, and includes built-in blocks on request.
+  A withheld grant or disabled gate fails closed with a typed refusal; a busy
+  host check keeps the host's `commandRejected` `runtime_busy` data.
 - **Content** — text, inline and local-file images, `resource_link` text
   expansion, and embedded context. A `resource_link` (or embedded blob) whose
   media type is `video/mp4` or `video/quicktime` is uploaded to the session's
   video store through Muse's chunked `media/upload` and submitted as a `video`
   turn part; the receipt is threaded into the turn. Audio is rejected, because
   Muse's input type is closed to `text`, `image`, `skill`, and `video`.
+- **Context compaction** — `/compact` drives Muse's native compaction. ACP v2
+  receives standard `compaction_update`; ACP v1 receives it only after
+  advertising `clientCapabilities.session.compaction`. Older v1 clients get a
+  think-kind tool card fallback. Host token and outcome provenance rides
+  `_meta.muse.contextCompaction`, and no retained summary is invented.
 - **Cut-off replies** — when the provider stream dies mid-reply and Muse
   commits the partial text (`Item.cutOff`, Muse 1.4.7+), that agent message
   is marked once with `_meta.muse.cutOff: true` and the host `itemId`, so an
@@ -414,7 +462,7 @@ error the editor shows if Muse then refuses the profile says why.
   or replayed reply carries it on its own text update. The mark is sent only
   when the host sets the flag, and never cleared.
 - **Usage** — context occupancy as `usage_update`, cumulative session totals,
-  subscription observations under `_meta.museSubscriptionUsage`, and a
+  subscription observations under `_meta.muse.subscriptionUsage`, and a
   session cost that on Muse 1.4.2+ is Muse's own figure (with its partial
   flag) and otherwise is a client-local list-price estimate explicitly
   labeled as not a billing figure.
@@ -424,6 +472,13 @@ error the editor shows if Muse then refuses the profile says why.
   editor gets `session_info_update._meta.muse.foregroundCompleted` (`turnId`,
   `blockingAgents`) and an in-progress `Background checks: <agents>` card.
   Both clear before the prompt result.
+- **Model retries** — when a provider backs off and Muse 1.4.8+ schedules a
+  retry of the model attempt (`turn/modelRetryScheduled`), the prompt stays
+  open and the editor gets `session_info_update._meta.muse.modelRetry`
+  (`turnId`, `attempt`, `nextAttempt`, `maxAttempts`, `retryDelayMs`, plus the
+  failing `errorKind`, `system`, and `httpStatus` when the host sends them),
+  so it can show "retrying in Ss, attempt N/M". The hint clears with
+  `modelRetry: null` before the prompt result.
 - **Feedback** — `/feedback [bug|bad|good|other] <note>` sends feedback about
   Muse through the host's `feedback/submit` when Muse grants the capability.
   With form elicitation, one form collects the classification, the note, and
@@ -431,10 +486,20 @@ error the editor shows if Muse then refuses the profile says why.
   both defaulting off.
 - **Tasks and subagents** — backgrounded shell commands, workflows, and native
   subagents surfaced through negotiated ACP extensions where the client
-  advertises support, with synthesized tool cards otherwise. On Muse 1.4.6+
-  a resume or re-attach asks the host for its authoritative background-task
-  inventory (`task/list`), so work the replayed history did not carry still
-  appears with a stoppable row.
+  advertises support, with synthesized tool cards otherwise. Actual tool calls
+  carry Muse's programmatic `Item.tool` as standard ACP `ToolCall.name`. On Muse 1.4.9+
+  a tool card's title uses the host's `Item.displayLabel`: active wording while
+  running, done wording after success, and neutral wording for failure or
+  cancellation; older or unlabeled calls retain the synthesized `tool: detail`
+  title. On Muse 1.4.6+ a resume or re-attach asks the host for its
+  authoritative background-task inventory (`task/list`), so work the replayed
+  history did not carry still appears with a stoppable row.
+- **Monitor feeds** — Muse 1.4.8+ `monitorFeed` observations render in one
+  stable tool card per monitor. The card title uses the monitor's sanitized
+  arm-time description, streamed text replaces the card content as events
+  arrive, and completion settles the card. `_meta.muse.monitorId` links it to
+  the monitor tool call, and host-truncated text is marked in
+  `_meta.muse.truncated`.
 - **File changes** — per-turn workspace file-change reports from the host's
   native file tools when the client negotiates the AIR extension.
 - **Stored output** — bounded tool output with head and tail retained, plus
@@ -458,8 +523,10 @@ only when the client opts in too, with the documented fallback otherwise:
 - `_session/sideChat` — opt-in creation of a side chat from a loaded session.
 - `_session/plugins` — opt-in reads of the session's installed plugin rows.
 - `_session/computerUse` — opt-in reads of the session's computer-use setup
-  and settings; the host's `computerUseSetup` capability is requested only
-  for clients that opt in.
+  and settings, including effective app choices and the optional installed-app
+  picker source. The host's `computerUseSetup` and `computerUseHostSetup`
+  capabilities are requested only for clients that opt in; the standard
+  `/cua host` and `/cua host check` commands do not require extension support.
 - `_session/userShell` — shell commands outside any turn; needs editor
   opt-in, AIR `asyncTasks`, and a host grant all together.
 - `_session/async_task/stop` — stop one background task; `session/cancel`
@@ -469,9 +536,18 @@ only when the client opts in too, with the documented fallback otherwise:
   subagent sessions, async-task observation and stops, model and reasoning
   recommendations.
 
-The [MSP event compatibility matrix](docs/event-compatibility.md) records the
-ACP mapping or intentional disposition of every notification in the pinned
-schema. [ROADMAP.md](ROADMAP.md) tracks compatibility, reliability, and release
+An ACP client opts into these Muse capabilities by adding the listed names to
+its initialize metadata. For computer use, ACP v2 clients send
+`"capabilities":{"_meta":{"muse":{"capabilities":["computerUse"]}}}` and ACP
+v1 clients put the same `_meta` object under `clientCapabilities`; the older
+boolean form `"computerUse":true` is also accepted. The adapter requests both
+Muse computer-use grants only after receiving that opt-in.
+
+The [ACP extension contract](docs/acp-extensions.md) is the complete
+client-facing method and metadata reference. The
+[MSP event compatibility matrix](docs/event-compatibility.md) records the ACP
+mapping or intentional disposition of every notification in the pinned schema.
+[ROADMAP.md](ROADMAP.md) tracks compatibility, reliability, and release
 priorities.
 
 ### Client-provided MCP servers
@@ -515,27 +591,29 @@ commands, arguments, URLs, environment values, or headers.
 
 ## How it compares
 
-Several independent projects bridge Muse Code to ACP. They broadly split into
+Several independent projects bridge Muse Code to ACP. Most fall into one of
 two designs: adapters that speak Muse's native session protocol over a
 long-lived `muse serve`, and bridges that wrap the one-shot `muse exec --json`
 event stream. The table below reflects each project's public documentation and
-package metadata as of October 2026; check the projects themselves for
+package metadata as of mid-October 2026; check the projects themselves for
 current behavior.
 
 | Adapter | Language / runtime | Muse transport | Install | Editor targets | License |
 | --- | --- | --- | --- | --- | --- |
 | **muse-acp** (this project) | Rust; single native binary, no runtime | MSP over one long-lived `muse serve` | npm `@brokkai/muse-acp`, release installers, `cargo install` | Zed, JetBrains, any stdio ACP client | Apache-2.0 |
-| [bex-co/muse-code-acp](https://github.com/bex-co/muse-code-acp) | TypeScript; Node.js 22+ | Muse SDK over `muse serve`, with a legacy `muse exec --json` backend | npm `@bex-co/muse-code-acp` | Zed, VS Code, other ACP clients | Apache-2.0 |
+| [bex-co/muse-code-acp](https://github.com/bex-co/muse-code-acp) | TypeScript; Node.js 22+ | Muse SDK over `muse serve`, with a legacy `muse exec --json` backend (`MUSE_CODE_ACP_BACKEND=exec`) | npm `@bex-co/muse-code-acp` | Zed, VS Code, other ACP clients | Apache-2.0 |
+| [RandyNorthrup/muse-spark-code](https://github.com/RandyNorthrup/muse-spark-code) | TypeScript; Node.js 22+ | Muse SDK over `muse serve` on a Muse subscription, or its own agent loop on a Meta Model API key | npm `muse-spark-code-acp`, VS Code Marketplace extension | VS Code-based editors (extension); Zed, JetBrains, Neovim, Emacs (ACP) | MIT |
+| [1broseidon/muse-acp](https://github.com/1broseidon/muse-acp) | Rust | MSP over `muse serve` | `cargo install --git` | Zed, Hotline, any ACP client | Apache-2.0 |
 | [sanjay3290/muse-acp](https://github.com/sanjay3290/muse-acp) | TypeScript; Node.js 20+ | MSP over `muse serve` | npm `muse-acp` | ACP clients (Zed example) | Apache-2.0 |
 | [julianubico/muse-code-acp-bridge](https://github.com/julianubico/muse-code-acp-bridge) | JavaScript; Node.js 22.13+ | `muse exec --json` JSONL | from source (documented npm name not currently published) | acpx custom agents | MIT |
 | [einklover/muse-acp-server](https://github.com/einklover/muse-acp-server) | TypeScript; Node.js 22+ | `muse exec --json`, with model traffic proxied through OpenCode credentials | from source | Paseo | MIT |
 | [jannotix/muse-acp-agent](https://github.com/jannotix/muse-acp-agent) | TypeScript | Uses Muse Code models as the reasoning core | from source | ACP clients | Apache-2.0 |
 
 Relative adoption, from the npm registry's last-30-day download counts
-(2026-09-08 through 2026-10-07), was about 3.6k for `@bex-co/muse-code-acp`,
-1.4k for `@brokkai/muse-acp`, and 140 for `muse-acp`. Download counts include
-CI and mirrors, so treat them as an order-of-magnitude signal, not a usage
-measurement.
+(2026-09-19 through 2026-10-18), was about 4.0k for `@bex-co/muse-code-acp`,
+2.5k for `muse-spark-code-acp`, 2.2k for `@brokkai/muse-acp`, and 160 for
+`muse-acp`. Download counts include CI and mirrors, so treat them as an
+order-of-magnitude signal, not a usage measurement.
 
 The headless `muse exec --json` design is a good fit for one-shot automation and
 scripted workflows. This adapter chooses MSP so a single editor session keeps
@@ -667,6 +745,18 @@ muse-acp --support    # redacted support bundle, safe to paste into a report
 compatibility table, and reports whether the configured Muse CLI can be invoked
 (`cli-ready` or `cli-unready`). It exits `0` even when Muse is not installed, so
 you can collect output on a machine that is still being set up.
+
+At startup the adapter logs whether the host can enforce its sandbox, as
+reported by Muse 1.4.7+ on `initialize`:
+`host-sandbox server=<host> availability=available|unavailable|unknown
+reason=<reason>|none`. `unknown` means the host did not say (Muse before 1.4.7)
+or sent a value the adapter does not recognize. A reason appears only when the
+host reports `unavailable` and names one (`userNamespacesDenied` or
+`bubblewrapUnavailable`); the adapter never infers it. An `unavailable` host
+also logs a warning, but nothing is blocked. `--support` runs one
+`initialize` handshake with `muse serve` to report the same facts as
+`support-host-sandbox`, and `--selftest`, which never starts `muse serve`,
+reports them as `unknown`.
 
 Set `MUSE_LOG=debug` for per-method protocol tracing. Tracing records method
 names and outcomes, not payloads.

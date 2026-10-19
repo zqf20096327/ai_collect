@@ -175,7 +175,7 @@ preloop agents discover
 
 Console: `http://localhost:3000`. The CLI stores the instance URL in `~/.preloop/config.yaml`. Without `--url` or `PRELOOP_URL`, it defaults to `https://preloop.ai`. `preloop auth logout` revokes this machine's login and clears it; `preloop auth logout --all` also revokes every other CLI and console session; `preloop auth sessions list` and `revoke <id>` manage individual CLI logins. Command list: [CLI authentication](cli/README.md#authentication).
 
-Public TLS, SMTP (approvals, invites, password resets), upgrades, and Kubernetes: [Install the OSS stack](https://docs.preloop.ai/self-hosting/installation/), [TLS](https://docs.preloop.ai/self-hosting/tls/), [Upgrading](https://docs.preloop.ai/upgrade/). Helm chart: [`helm/preloop`](helm/preloop) ([private cluster](helm/preloop/README.md#private-cluster)). Docker Compose and Helm are the supported install surfaces; this repository does not ship Terraform modules.
+Public TLS, SMTP (approvals, invites, password resets), upgrades, and Kubernetes: [Install the OSS stack](https://docs.preloop.ai/self-hosting/installation/), [TLS](https://docs.preloop.ai/self-hosting/tls/), [Upgrading](https://docs.preloop.ai/upgrade/). Helm schema-upgrade budgets and recovery: [schema migrations](docs/operations/schema-migrations.md). Helm chart: [`helm/preloop`](helm/preloop) ([private cluster](helm/preloop/README.md#private-cluster)). Docker Compose and Helm are the supported install surfaces; this repository does not ship Terraform modules.
 
 What stays stable across those upgrades, and how a breaking change is announced, is the [compatibility policy](docs/compatibility.md).
 
@@ -219,10 +219,13 @@ Unqualified **Preloop** is this repository (Apache 2.0, self-hosted). **Preloop 
 
 Cloud is managed hosting. Cloud and Enterprise include support plans. Cloud billing owners can compare the available usage from the previous three completed months in Account settings before requesting a plan-change quote. Missing history is labeled explicitly; a change requires confirmation of its price, limits and effective date. Cloud plan limits do not apply to the open-source self-hosted edition.
 
-Governance itself is open source: every model provider, flows, private runners, session search, operator notes, single-approver workflows and budgets scoped to the account, a flow, an API key or a managed agent all ship in this repository. What is commercial is the organizational layer on top of them: more than one approver, quorum, escalations, budgets scoped to a user or a team, budget notification routing, and users, teams and RBAC on one account. Cloud usage allowances and hosted credits are a separate thing from governance budgets.
+Governance itself is open source: every model provider, flows, private runners, session search, operator notes, the audit trail for Preloop-observed activity with collection, query API and console, single-approver workflows and budgets scoped to the account, a flow, an API key or a managed agent all ship in this repository. What is commercial is the organizational layer on top of them: more than one approver, quorum, escalations, budgets scoped to a user or a team, budget notification routing, and users, teams and RBAC on one account. Cloud usage allowances and hosted credits are a separate thing from governance budgets.
+
+For durable audit delivery, enable the default-off `PRELOOP_AUDIT_OUTBOX_ENABLED` flag after applying migrations. The [audit outbox operator guide](docs/operations/audit-outbox.md) covers delivery limits, parked failures and bounded account-scoped replay.
 
 | Feature | Open Source | Cloud / Enterprise |
 |---|:---:|:---:|
+| Audit collection, query API, and console | Yes | Yes |
 | Users, teams, and RBAC on one account | No | Yes |
 | Budgets scoped to a user or a team, budget notification routing | No | Yes |
 | Multi-approver routing, quorum, escalations | No | Yes |

@@ -169,6 +169,8 @@ This command gives you an option to also remove obsolete skills.
 - **Security and identity**
   - [**API Gateway Backend Security and Rate Limiting**](./skills/cloud/api-gateway-backend-security-and-rate-limiting)
   - [**Compliance Environment Assessor Skill**](./skills/cloud/assuredworkloads-environment-assessor)
+  - [**Custom Resource Authoring & Synthesis Skill (`assuredworkloads-frameworks-author`)**](./skills/cloud/assuredworkloads-frameworks-author)
+  - [**Data Boundary Framework Navigator (`assuredworkloads-frameworks-navigator`)**](./skills/cloud/assuredworkloads-frameworks-navigator)
   - [**DPoP Adoption & Identity Security Architecture**](./skills/identity/dpop-adoption)
   - [**GKE Platform Security**](./skills/cloud/gke-platform-security)
   - [**GKE Workload Identity Federation Troubleshooting Skill**](./skills/cloud/gke-workload-identity)

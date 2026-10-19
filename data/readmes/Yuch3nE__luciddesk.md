@@ -12,7 +12,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 [![Build CI](https://github.com/Yuch3nE/luciddesk/actions/workflows/build.yml/badge.svg)](https://github.com/Yuch3nE/luciddesk/actions/workflows/build.yml)
-[![版本](https://img.shields.io/badge/version-0.20.5-087EA4?style=flat-square)](CHANGELOG.md)
+[![版本](https://img.shields.io/badge/version-0.21.2-087EA4?style=flat-square)](CHANGELOG.md)
 [![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?style=flat-square)](#系统与兼容性)
 [![架构](https://img.shields.io/badge/arch-x64-475569?style=flat-square)](docs/portable.md)
 
@@ -59,7 +59,11 @@ LucidDesk 是使用 Rust 开发的 Windows 桌面整理工具。把零散图标�
 
 普通面板右键菜单可切换“自动排列图标”和“对齐到网格”：关闭自动排列后允许保留空位，关闭网格对齐后可以自由放置图标；增删内容时保留其他图标的位置。排序只执行一次，再次选择同一排序字段切换升降序。“设置 → 面板布局 → 图标排列”可调整默认选项（仅影响新建面板）。Agent 也能通过 CLI 与配套 Skill 调整排列模式、定位图标并预览改动。
 
-未收纳的图标继续由原生 Explorer 桌面管理。关闭“显示桌面图标”不会单独阻止连接；连接仍取决于实际窗口和 Shell 接口状态。0.20.5 改善了连接诊断与逐项恢复，具体变更见[更新记录](CHANGELOG.md)。
+未收纳的图标继续由原生 Explorer 桌面管理。关闭“显示桌面图标”不会单独阻止连接；连接仍取决于实际窗口和 Shell 接口状态。0.21.2 改善了连接诊断与逐项恢复，具体变更见[更新记录](CHANGELOG.md)。
+
+0.21.2 默认安装包和 ZIP 不包含插件，开发中的插件列表暂不显示设置入口。可选插件的构建和配置归属见[插件指南](docs/development/plugins.md)。
+
+软件更新时，同一路径的已收纳快捷方式在消失后 5 分钟内重建，可恢复原分组和位置。仅在当前桌面会话内保留，不写数据库、不跨重启恢复。0.19.1～0.20.4 正式版可直接升级；安装版沿用原安装格式与范围，便携版保留 `data`。升级前建议备份。
 
 **面板不会搬动你的文件。** 将图标拖入面板只改变桌面上的收纳方式；拖回桌面即可移出，关闭面板也不会删除原文件。文件菜单中的删除、重命名和剪切，以及文件夹面板中的拖入、粘贴，会操作真实文件。
 
@@ -182,6 +186,10 @@ EXE 与 DLL 必须来自同次构建。安装版卸载时默认勾选“保留�
 ## 💬 常见问题
 
 **桌面面板无法连接怎么办？** 在“设置 → 关于”查看连接状态并尝试重新连接。程序会保留面板配置并自动重试；文件夹与搜索面板仍可独立使用。
+
+**重启 Explorer 后出现断线提示？** Explorer 退出时桌面连接会中断，恢复后程序会自动尝试重连。弹窗记录的是断线时的状态，不会随恢复更新；关闭提示后，可在“设置 → 关于”或通过 `luciddesk-cli status --json` 查看当前状态。CLI 的 `desktop_connected=true` 表示已连接，`desktop_sync_status=applied` 表示分组同步完成。若持续失败，请保留诊断日志中的错误信息。
+
+当前源码已修复返回桌面时的过滤请求循环等待，以及消息回调返回后已完成握手被误判超时的问题，并改进预览与右键菜单互斥、设置下拉和控件交互。尚未发布的变更见[更新记录](CHANGELOG.md#未发布)。
 
 **如何反馈问题？** 请提供复现步骤、预期与实际表现，以及“设置 → 关于 → 复制诊断”中的信息。显示异常时，附上截图、屏幕缩放比例和所选材质，便于定位。
 

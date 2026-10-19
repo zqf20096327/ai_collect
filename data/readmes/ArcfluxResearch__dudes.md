@@ -16,8 +16,9 @@ you see there is what the daemon knows.
 
 Dudes is an early preview (pre-alpha), and commands and configuration keys can still change between
 releases. Prebuilt releases for macOS and Linux on x86_64 and arm64 install with one command, as
-shown below. Windows can build the binaries but has no prebuilt release or installer. The full first run has been rehearsed only on macOS on Apple silicon. See
-[Platforms and known limits](docs/platforms-and-limits.md).
+shown below. Windows can build the binaries but has no prebuilt release or installer.
+[Platforms and known limits](docs/platforms-and-limits.md) says which platforms have had a full
+first-run rehearsal.
 
 ## Install
 
@@ -65,16 +66,21 @@ dudes floor open
 hire a first agent. Paste the link into any browser; `dudes floor open` prints a new one later. On a remote
 machine, forward the link's port over SSH first, because the link is a loopback address. To hire an agent
 yourself and give it
-a goal, use the id that `dudes hire` prints:
+a goal, use the id that `dudes hire` prints. Give a second agent a folder of its own: Dudes cannot check
+another agent's engine settings for a ticket, so in a repository two agents share it holds tickets in Needs
+you for review.
 
 ```sh
+mkdir -p ~/dudes-hello
 dudes hire --name Cody --role "docs writer" --department docs --provider claude \
-  --cwd /absolute/path/to/repo
+  --cwd ~/dudes-hello
 dudes goal --agent <agent id> --text "Create hello.txt that contains the word hello." \
   --hop-cap 2 --check-id hello --check-label "hello.txt exists" -- /bin/test -f hello.txt
 ```
 
-The agent takes turns until `/bin/test -f hello.txt` passes. `dudes agents` lists every agent and
+Use `--provider codex` or `--provider pi` instead if that is the CLI you have signed in.
+That folder is not an enrolled project, so `dudes hire` warns that Cody can't take tickets; the goal
+does not need one. The agent takes turns until `/bin/test -f hello.txt` passes. `dudes agents` lists every agent and
 its status, `dudes stop` stops the daemon and `dudes start` starts it again.
 [Get started](docs/getting-started.md) is the full walk-through.
 

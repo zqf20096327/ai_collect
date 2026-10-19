@@ -82,6 +82,7 @@ Provider priority for `/search/google` is now `google` first, then `google_serpb
 |---|---|---|
 | Wikipedia | `wikipedia` | MediaWiki API |
 | Wikidata | `wikidata` | Wikidata API |
+| DBpedia | `dbpedia` | DBpedia Lookup API (linked-data entities extracted from Wikipedia: entity label, abstract, ontology types, inbound-link reference count and category memberships, linking to the DBpedia resource page), no key required |
 | Wikiquote | `wikiquote` | MediaWiki API |
 | Wikisource | `wikisource` | MediaWiki API, no key required |
 | Wikibooks | `wikibooks` | MediaWiki API, no key required |
@@ -127,6 +128,7 @@ Provider priority for `/search/google` is now `google` first, then `google_serpb
 |---|---|---|
 | iNaturalist | `inaturalist` | Observations REST API, no key required |
 | GBIF | `gbif` | GBIF species backbone REST API, no key required |
+| Catalogue of Life | `col` | Catalogue of Life / ChecklistBank name-usage search API (the global index of the world's known species by scientific or common name: matched taxon, authorship, rank, nomenclatural status, full ancestor classification from kingdom to genus, taxonomic group and vernacular names), no key required |
 
 ### Natural Hazards And Seismology
 
@@ -211,6 +213,7 @@ Provider priority for `/search/google` is now `google` first, then `google_serpb
 | ORCID | `orcid` | ORCID public API (researcher profiles), no key required |
 | ROR | `ror` | Research Organization Registry API (universities, institutes, labs), no key required |
 | UniProt | `uniprot` | UniProt REST API (protein knowledgebase), no key required |
+| PRIDE Archive | `pride` | EMBL-EBI PRIDE Archive search API (mass-spectrometry proteomics datasets: project accession such as `PXD039769`, title, description, organisms, instruments, principal investigators and affiliations, experiment and quantification methods and download counts), no key required |
 | MyGene.info | `mygene` | BioThings MyGene.info gene annotation API (gene symbols, names, organism, chromosome, aliases), no key required |
 | NCBI Gene | `ncbi_gene` | NCBI Gene E-utilities API (genes across all sequenced organisms, free-text search by symbol, name, disease, chromosome or organism: NCBI Gene id, official symbol, description, source organism, chromosome, map location and aliases), no key required |
 | MyVariant.info | `myvariant` | BioThings MyVariant.info variant annotation API (dbSNP rsID, gene, protein/coding change, ClinVar significance and conditions, CADD score), no key required |
@@ -638,6 +641,26 @@ curl "http://localhost:8000/providers?tag=code&tag=packages&tag_match=all"
 
 Simple health check endpoint. Returns service status, version, provider count, and the current provider name list.
 
+### `GET /health/providers`
+
+Actively probe providers with a single, minimal live search request each. Unlike `GET /health` (which only lists what is loaded) and the configuration-level `provider_health` MCP tool (which only checks whether a provider *could* run, e.g. an API key is present), this endpoint proves the upstream API is reachable.
+
+```bash
+curl "http://localhost:8000/health/providers?tag=academic&limit=5&timeout=5"
+```
+
+Query parameters:
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `providers` | all | Repeatable provider name filter |
+| `tag` | all | Repeatable tag filter (combine with `tag_match=all` to require every tag) |
+| `q` | `test` | Probe query sent to each provider |
+| `timeout` | `5` | Per-provider timeout in seconds (max 30) |
+| `limit` | `10` | Maximum number of providers to contact (max 50); the rest are listed under `skipped` |
+
+Probes run concurrently. Each entry in `providers` reports `name`, `status` (`ok`, `error`, `timeout`, or `unavailable`), `available`, `latency_ms`, `result_count`, `error`, `description`, and `tags`. The top level reports `status` (`ok` when nothing failed, otherwise `degraded`), `total`, `probed`, `ok_count`, `failed_count`, `unavailable_count`, and `skipped`.
+
 ### `GET /cache/stats`
 
 Inspect the shared in-memory search result cache (used by the orchestrator to avoid re-hitting external providers for identical requests within the TTL window).
@@ -765,6 +788,7 @@ The public package is organized around these modules:
 - `orchestrator.py`: concurrent search execution across providers and result assembly
 - `merge.py`: URL canonicalization and cross-engine result deduplication
 - `ranking.py`: optional consensus/relevance result re-ranking (opt-in via `RANK_RESULTS`)
+- `health.py`: active provider probes (minimal live search per provider, used by `/health/providers`)
 - `server.py`: FastAPI application and Uvicorn server entrypoint
 - `broker.py`: MCP server exposing search tools over stdio
 - `api/routes.py`: HTTP endpoint handlers (search, suggest, health, providers catalog)

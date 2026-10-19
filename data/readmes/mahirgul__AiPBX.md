@@ -29,6 +29,7 @@
   <a href="#quick-install">Quick Install</a> •
   <a href="#updating">Updating</a> •
   <a href="#features">Features</a> •
+  <a href="#-global-privacy--telecom-compliance-privacy">Privacy & GDPR/KVKK</a> •
   <a href="docs/README.md">Documentation</a> •
   <a href="#architecture">Architecture</a> •
   <a href="CHANGELOG.md">Changelog</a> •
@@ -175,10 +176,11 @@ files) so they survive updates. See [INSTALL.md](INSTALL.md) for details.
   <img src="docs/img/app_login.jpg" width="18%" alt="Setup">
 </p>
 
-### 🤖 AI
+### 🤖 AI & Dialplan Assistant
 - **Cloud TTS** — turn text into speech with Google (API key or service account), Amazon Polly, Azure AI
   Speech, ElevenLabs or OpenAI; listen, download the MP3 or save it as an announcement in one click.
   Credentials are stored encrypted; usage is tracked per character
+- **Dialplan Editor (`/assistant`) & Echo Reporter** — plain-language PBX change planner with dry-run preview before apply, safety validation, audit trail and one-click undo (`pbx_ai_changes`), plus the Echo diagnostic box backed by an opt-in local HEPv3 SIP signaling capture daemon (`aipbx-signaling` → `pbx_signaling_events`)
 
 ### 💼 Microsoft Teams Integration
 - **Direct Routing** over SIP-TLS 5061 with SRTP
@@ -190,7 +192,17 @@ files) so they survive updates. See [INSTALL.md](INSTALL.md) for details.
 - **Stateless REST API (`/api/v1/*`) & OpenAPI 3.1** — 100+ endpoints covering extensions, trunks, inbound/outbound routes, queues, ring groups, IVRs, time conditions, conferences, dial permissions, call center, CDRs, recordings, voicemails, faxes, phones, sounds, AI, chat, system settings, and sync
 - **Scoped Bearer API Keys (`apbx_...`)** — per-token granular scopes (`extensions:read`, `calls:write`, `system:read`, …), IPv4/IPv6 CIDR allowlists, and per-minute sliding-window rate limits (`/api-keys`)
 - **Outbound Webhooks (`/webhooks`)** — real-time event subscriptions (`call.started`, `call.answered`, `call.ended`, `voicemail.received`, `fax.received`, `sync.applied`, …) with `X-AiPBX-Signature` (`HMAC-SHA256`), exponential retry worker (`aipbx-webhook-worker`), and DNS-pinned SSRF protection
-- **First-Class Plugin System (`/plugins`)** — zero-bloat modular integrations (`ms-teams`, `ldap-directory`, `crm-webhook`, `homer-hep`, `ai-voicemail`, `ai-assistant`), custom `.zip` plugin uploader, encrypted secret storage, and **Safe Mode** circuit breaker (auto-disables any plugin after 5 consecutive runtime errors)
+- **First-Class Plugin System (`/plugins`)** — zero-bloat modular integrations (`google-auth`, `ms-teams`, `web-widgets`, `ai-cloud`, `ai-tts`, `ai-apps`, `ai-models`, `ai-voicemail`, `ai-assistant`, `signaling-capture`), custom `.zip` plugin uploader, encrypted secret storage, and **Safe Mode** circuit breaker (auto-disables any plugin after 5 consecutive runtime errors)
+
+### 🛡️ Global Privacy & Telecom Compliance (`/privacy`)
+- **100% Opt-In by Default (`Off / Custom`)** — zero rules enforced unless explicitly enabled by an administrator under **Security → GDPR & Data Privacy** (**KVKK ve Veri Gizliliği** in Turkish); see [docs/privacy.md](docs/privacy.md)
+- **One-Click Regulatory Presets** — instant templates for **KVKK (Turkey Law No. 6698 & BTK)**, **EU / UK GDPR**, **US CCPA / Two-Party & FCC (47 CFR § 64.1200)**, **HIPAA (Healthcare PHI)**, **PCI-DSS v4.0**, and **LGPD / PIPEDA / POPIA / PDPA**
+- **Inbound Pre-Call Disclosure & Consent** — play a custom disclosure prompt (`notice`), allow DTMF **Opt-Out** (`Press 9 for unrecorded call` → sets `__PRIVACY_NO_RECORD=1` across DID routes, Queues & Ring Groups and tags `CDR(accountcode)=PRIVACY_OPTOUT`), or enforce **Explicit Consent Opt-In** (`Press 1 to allow recording`)
+- **FCC Periodic Recording Beep** — configurable `MixMonitor(...,B(15))` periodic beep interval (5–60 seconds) during recorded calls
+- **PCI-DSS & Live AGI/AI PII Redaction** — automatic Luhn-validated payment card (13–19 digits), CVV, and National ID (`REDACTED-CARD` / `REDACTED-ID`) masking on live AGI/AI transcripts and voicemail transcriptions before storage or external LLM calls
+- **Automated Nightly Retention Purge (`privacy_purge.php`)** — independent retention windows (in days) for call recordings, voicemails + transcripts, faxes, chat messages, and dual-DB CDRs (`asteriskcdr` + `cdrs` anonymized as `REDACTED` so call volume statistics remain intact)
+- **Subject Access Request (SAR) & Right to Erasure** — search any phone number or extension across dual CDR tables, recordings, voicemails, faxes, and SIP signaling events; download a portable **SAR JSON Data Package** (`PRIVACY_SAR_EXPORT`) or execute irreversible **Right to Erasure** (`PRIVACY_ERASURE`) with an immutable Audit Log certificate
+- **Cross-Border Cloud AI Lock** — single toggle that blocks all outbound Cloud AI / STT / LLM calls (`CloudAiService::configured() === false`) so audio and transcripts never leave the local PBX server
 
 ### 🔐 Authentication & Security
 - **Two-factor authentication (TOTP)** with offline QR codes and single-use recovery codes — enforced
@@ -206,14 +218,15 @@ files) so they survive updates. See [INSTALL.md](INSTALL.md) for details.
 - **Certificates page** — one certificate for portal, TURNS and SIP-TLS: Let's Encrypt (tested on
   staging first, renewed automatically), upload PEM or PFX/P12, or self-signed; problems that silently
   break WebRTC (self-signed, wrong name, missing chain) are flagged
-- **Nightly backups** — database and configuration (`aipbx-backup`, 14 days, optional off-server copy)
+- **Nightly backups** — database, configuration, and uploaded plugins (`aipbx-backup`, 14 days, optional off-server copy)
 - **Firewall and fail2ban management** from the portal through a single, argument-validated root
   helper (`aipbx-priv`) — the portal never runs arbitrary commands as root
 - **Hardening** — CSRF tokens, security headers, sandboxed uploaded files, Asterisk HTTP on loopback,
   Apache kept in Ubuntu's systemd sandbox with only the paths the portal needs opened
 
-### 🌍 Multi-language
-- 23 interface languages including Turkish 🇹🇷 and English 🇬🇧 (4,693 keys per language, 100% parity checked in CI)
+### 🌍 Multi-language & Mobile-Ready Portal
+- **23 interface languages** including Turkish 🇹🇷 and English 🇬🇧 (5,000+ keys per language, 100% parity checked in CI)
+- **Universal Live Filtering & Pagination** across all multi-record tables (extensions, trunks, routes, system users, audit log, call reports) and responsive mobile drawer/table layout
 
 ---
 
@@ -233,11 +246,11 @@ AiPBX/
 ├── web/                    # PHP MVC portal & REST API v1
 │   ├── src/
 │   │   ├── core/           # Router, PluginManager, ApiRequestContext, ResourceNormalizer
-│   │   ├── controllers/    # Page controllers + ApiV1Controller
-│   │   ├── services/       # Business logic + ApiTokenService + WebhookService
+│   │   ├── controllers/    # Page controllers + ApiV1Controller (+ api/ sub-handlers)
+│   │   ├── services/       # Business logic, PrivacyService, DialplanService, ApiTokenService, WebhookService
 │   │   ├── repositories/   # Database repositories
 │   │   └── sync/           # Asterisk configuration generators
-│   ├── templates/          # Layouts + views (including /api-keys, /webhooks, /plugins)
+│   ├── templates/          # Layouts + views (including /privacy, /api-keys, /webhooks, /plugins)
 │   ├── api/                # Portal JSON endpoints + /api/v1/* rewrite
 │   ├── openapi.json        # OpenAPI 3.1 specification
 │   ├── lang/               # 23 interface languages (100% key parity)

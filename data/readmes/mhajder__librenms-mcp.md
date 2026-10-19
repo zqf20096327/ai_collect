@@ -1,0 +1,626 @@
+# LibreNMS MCP Server
+
+<!-- mcp-name: io.github.mhajder/librenms-mcp -->
+
+LibreNMS MCP Server is a Python-based Model Context Protocol (MCP) server designed to provide advanced, programmable access to LibreNMS network monitoring data and management features. It exposes a modern API for querying, automating, and integrating LibreNMS resources such as devices, ports, alerts, inventory, locations, logs, and more. The server supports both read and write operations, robust security features, and is suitable for integration with automation tools, dashboards, and custom network management workflows.
+
+## Features
+
+### Core Features
+
+- Query LibreNMS devices, ports, inventory, locations, logs, and alerts with flexible filtering
+- Retrieve network topology, device status, and performance metrics
+- Access and analyze alert history, event logs, and system health
+- Monitor interface statistics, port status, and traffic data
+- Track endpoints and connected devices by MAC or IP address
+- Retrieve and manage device groups, port groups, and poller groups
+- Get detailed information about network services and routing
+
+### Management Operations
+
+- Create, update, and delete devices, ports, and groups (if enabled)
+- Manage alert rules, notifications, and device metadata
+- Configure read-only mode to restrict all write operations for safe monitoring
+- Support for bulk operations on devices and ports
+
+### Advanced Capabilities
+
+- Rate limiting and API security features
+- Real-time network monitoring and health tracking
+- Comprehensive logging and audit trails
+- SSL/TLS support and configurable timeouts
+- Optional tool-search transform for large tool catalogs
+- Extensible with custom middlewares and utilities
+
+## Installation
+
+### Prerequisites
+
+- Python 3.11 to 3.15
+- Access to a LibreNMS
+- Valid LibreNMS token with appropriate permissions
+
+### Quick Install from PyPI
+
+The easiest way to get started is to install from PyPI:
+
+```sh
+# Using UV (recommended)
+uvx librenms-mcp
+
+# Or using pip
+pip install librenms-mcp
+```
+
+Remember to configure the environment variables for your LibreNMS instance before running the server:
+
+```sh
+# Create environment configuration
+export LIBRENMS_URL=https://domain.tld:8443
+export LIBRENMS_TOKEN=your-librenms-token
+```
+
+For more details, visit: https://pypi.org/project/librenms-mcp/
+
+### Install from Source
+
+1. Clone the repository:
+
+```sh
+git clone https://github.com/mhajder/librenms-mcp.git
+cd librenms-mcp
+```
+
+2. Install dependencies:
+
+```sh
+# Using UV (recommended)
+uv sync
+
+# Or using pip
+pip install -e .
+```
+
+3. Configure environment variables:
+
+```sh
+cp .env.example .env
+# Edit .env with your LibreNMS url and token
+```
+
+4. Run the server:
+
+```sh
+# Using UV (recommended)
+uv run librenms-mcp
+
+# Or using the installed command directly
+librenms-mcp
+```
+
+### Using Docker
+
+A Docker image is available on GitHub Packages for easy deployment. It runs the
+HTTP Streamable transport on port 8000 (`/mcp`).
+
+```sh
+docker pull ghcr.io/mhajder/librenms-mcp:latest
+```
+
+#### Open WebUI
+
+Open WebUI 0.6.31 and later connect to the image directly; the separate MCPO
+image (`ghcr.io/mhajder/librenms-mcpo`) is no longer published. In Open WebUI,
+go to **Admin Settings > Integrations > External Tool Servers**, add a connection
+of type **MCP (Streamable HTTP)** with the URL `http://<host>:8000/mcp`, and set
+Bearer authentication to your `MCP_HTTP_BEARER_TOKEN`.
+
+### Development Setup
+
+For development with additional tools:
+
+```sh
+# Clone and install with development dependencies
+git clone https://github.com/mhajder/librenms-mcp.git
+cd librenms-mcp
+uv sync --group dev
+
+# Run tests
+uv run pytest
+
+# Run with coverage
+uv run pytest --cov=src/
+
+# Run linting and formatting
+uv run ruff check .
+uv run ruff format .
+
+# Run type checking
+uv run ty check .
+
+# Setup pre-commit hooks
+uv run prek install
+```
+
+## Configuration
+
+### Environment Variables
+
+Boolean settings accept `true`/`false`, `1`/`0`, `yes`/`no` and `on`/`off`
+(case-insensitive). Any other value stops the server at startup, so a typo
+cannot silently turn read-only mode or TLS verification off. The exception is
+`SENTRY_SEND_DEFAULT_PII` and `SENTRY_ENABLE_LOGS`: when `SENTRY_DSN` is set, an
+invalid value there logs an error and leaves Sentry off, and the server keeps
+running.
+
+```env
+# LibreNMS Connection Details
+LIBRENMS_URL=https://domain.tld:8443
+LIBRENMS_TOKEN=your-librenms-token
+
+# SSL Configuration
+LIBRENMS_VERIFY_SSL=true
+LIBRENMS_TIMEOUT=30
+
+# Read-Only Mode
+# Set READ_ONLY_MODE true to disable all write operations (put, post, delete)
+READ_ONLY_MODE=false
+
+# Disabled Tags
+# Comma-separated list of tags to disable tools for (empty by default)
+# Example: DISABLED_TAGS=alert,alert-rules,alert-templates,bills
+DISABLED_TAGS=
+
+# Logging Configuration
+LOG_LEVEL=INFO
+
+# Rate Limiting (requests per minute)
+# Set RATE_LIMIT_ENABLED true to enable rate limiting
+RATE_LIMIT_ENABLED=false
+RATE_LIMIT_MAX_REQUESTS=100
+RATE_LIMIT_WINDOW_MINUTES=1
+
+# Tool Search Transform (Optional)
+# Set TOOL_SEARCH_ENABLED true to replace full tool listings with search_tools + call_tool
+TOOL_SEARCH_ENABLED=false
+# Search strategy: bm25 (natural language) or regex (pattern match)
+TOOL_SEARCH_STRATEGY=bm25
+# Maximum number of tools returned by search_tools
+TOOL_SEARCH_MAX_RESULTS=5
+
+# Sentry Error Tracking (Optional)
+# Set SENTRY_DSN to enable error tracking and performance monitoring
+# SENTRY_DSN=https://your-key@o12345.ingest.us.sentry.io/6789
+# Optional Sentry configuration
+# SENTRY_TRACES_SAMPLE_RATE=1.0
+# SENTRY_SEND_DEFAULT_PII=false
+# SENTRY_ENVIRONMENT=production
+# SENTRY_RELEASE=1.2.3
+# SENTRY_PROFILE_SESSION_SAMPLE_RATE=1.0
+# SENTRY_PROFILE_LIFECYCLE=trace
+# SENTRY_ENABLE_LOGS=true
+
+# MCP Transport Configuration
+# Transport type: 'stdio' (default), 'sse' (Server-Sent Events), or 'http' (HTTP Streamable).
+# 'streamable-http' is accepted as an alias for 'http'. Any other value stops the server at startup.
+MCP_TRANSPORT=stdio
+
+# HTTP Transport Settings (used when MCP_TRANSPORT=sse or MCP_TRANSPORT=http)
+# Host to bind the HTTP server (default: 127.0.0.1)
+# MCP_HTTP_HOST=127.0.0.1
+# Port to bind the HTTP server (default: 8000)
+# MCP_HTTP_PORT=8000
+# Optional bearer token for authentication (leave empty for no auth)
+# MCP_HTTP_BEARER_TOKEN=
+```
+
+## Available Tools
+
+### Device & Inventory Tools
+
+- `devices_list`: List all devices (with optional filters)
+- `device_get`: Get details for a specific device
+- `device_add`: Add a new device
+- `device_update`: Update device metadata
+- `device_delete`: Remove a device
+- `device_ports`: List all ports for a device
+- `device_ports_get`: Get details for a specific port on a device
+- `device_fdb`: List the forwarding database (learned MACs) for a device
+- `device_nac`: List network access control (802.1X / MAB) sessions on a device
+- `device_availability`: Get device availability
+- `device_outages`: Get device outages
+- `device_set_maintenance`: Set device maintenance mode
+- `device_discover`: Discover or add a device using provided credentials
+- `device_rename`: Rename an existing device
+- `device_maintenance_status`: Get the maintenance status for a device
+- `device_vlans`: List VLANs for a device
+- `device_links`: List links for a device
+- `device_eventlog_add`: Add an event log entry for a device
+- `inventory_device`: Get inventory for a device
+- `inventory_device_flat`: Get flat inventory for a device
+- `devicegroups_list`: List device groups
+- `devicegroup_add`: Add a device group
+- `devicegroup_update`: Update a device group
+- `devicegroup_delete`: Delete a device group
+- `devicegroup_devices`: List devices in a device group
+- `devicegroup_set_maintenance`: Set maintenance for a device group
+- `devicegroup_add_devices`: Add devices to a device group
+- `devicegroup_remove_devices`: Remove devices from a device group
+- `locations_list`: List all locations
+- `location_add`: Add a location
+- `location_edit`: Edit a location
+- `location_delete`: Delete a location
+- `location_get`: Get details for a location
+- `location_set_maintenance`: Set maintenance for a location
+
+### Port & Port Group Tools
+
+- `ports_list`: List all ports (with optional filters)
+- `ports_search`: Search ports (general search)
+- `ports_search_field`: Search ports by a specific field
+- `ports_search_mac`: Search ports by MAC address
+- `port_get`: Get details for a specific port
+- `port_fdb`: List MAC addresses learned on a port
+- `port_ip_info`: Get IP address information for a port
+- `port_transceiver`: Get transceiver information for a port
+- `port_description_get`: Get a port description
+- `port_description_update`: Update a port description
+- `port_groups_list`: List port groups
+- `port_group_add`: Add a port group
+- `port_group_list_ports`: List ports in a port group
+- `port_group_assign`: Assign ports to a port group
+- `port_group_remove`: Remove ports from a port group
+
+### Port Security Tools
+
+- `port_security_list`: List port security configuration across all devices
+- `port_security_device`: Get port security configuration for a device
+- `port_security_port`: Get port security configuration for a single port
+
+### Graph Tools
+
+Graphs are returned as MCP images. The tools ask LibreNMS for PNG, which MCP
+clients such as Claude can display (SVG, LibreNMS's default `webui.graph_type`,
+often is not). A LibreNMS release that ignores the request renders in its
+`webui.graph_type` format instead; the MIME type is taken from the response.
+
+- `device_graphs_list`: List the graph types available for a device
+- `device_graph`: Render a device-level graph (e.g. `device_icmp_perf`)
+- `port_graph`: Render a per-port graph by interface name (`bits`, `upkts`, `nupkts`, `errors`, `etherlike`; the LibreNMS names such as `port_bits` are accepted too)
+- `port_group_graph`: Render a traffic graph for one or more ports by port ID
+
+Interface names containing a slash (`Te2/7`) are sent percent-encoded, and some
+reverse proxies reject or decode the encoded slash. When that happens,
+`port_graph` (for `bits`) and `device_ports_get` retry by port ID instead, so
+they still work behind such a proxy. Authentication errors are never retried,
+and LibreNMS's own "not found" answers are reported as is for names without a
+slash (a name with a slash is always retried, since a decoding proxy can turn it
+into a LibreNMS "not found" for the wrong path).
+
+Other tools that put a slash-bearing value in the path (`ports_search`,
+`ports_search_field`, `oxidized_config_search` with a prefix such as
+`0.0.0.0/0`, location names) have no such fallback. If LibreNMS sits
+behind Apache, allow encoded slashes so every tool works:
+
+```apache
+AllowEncodedSlashes NoDecode
+```
+
+A 400 or 404 for a path with an encoded slash that did not come from LibreNMS includes
+this hint in the tool's error message.
+
+### Alerting & Logging Tools
+
+- `alerts_get`: List current and historical alerts
+- `alert_get_by_id`: Get details for a specific alert
+- `alert_acknowledge`: Acknowledge an alert
+- `alert_unmute`: Unmute an alert
+- `alert_rules_list`: List alert rules
+- `alert_rule_get`: Get details for a specific alert rule
+- `alert_rule_add`: Add an alert rule
+- `alert_rule_edit`: Edit an alert rule
+- `alert_rule_delete`: Delete an alert rule
+- `alert_templates_list`: List all alert templates
+- `alert_template_get`: Get a specific alert template
+- `alert_template_create`: Create a new alert template
+- `alert_template_edit`: Edit an alert template
+- `logs_eventlog`: Get event log for a device, or for all devices when no hostname is given
+- `logs_syslog`: Get syslog for a device, or for all devices when no hostname is given
+- `logs_alertlog`: Get alert log for a device, or for all devices when no hostname is given
+- `logs_authlog`: Get the server-wide authentication log
+- `logs_syslogsink`: Add a syslog sink
+
+### Billing Tools
+
+- `bills_list`: List bills
+- `bill_get`: Get details for a bill
+- `bill_graph`: Render a bill graph as an image
+- `bill_graph_data`: Get bill graph data
+- `bill_history`: Get bill history
+- `bill_history_graph`: Render a bill history graph as an image
+- `bill_history_graph_data`: Get bill history graph data
+- `bill_create_or_update`: Create or update a bill
+- `bill_delete`: Delete a bill
+
+### Oxidized Tools
+
+- `oxidized_list`: List devices tracked by Oxidized for config backup
+- `oxidized_config_get`: Get the stored configuration for a specific device
+- `oxidized_config_search`: Search all stored device configurations for a string
+
+### Network & Monitoring Tools
+
+- `arp_search`: Search ARP entries
+- `poller_group_get`: Get poller group(s)
+- `routing_ip_addresses`: List all IP addresses from LibreNMS.
+- `services_list`: List all services from LibreNMS.
+- `services_for_device`: Get services for a device from LibreNMS.
+- `service_add`: Add a service to LibreNMS
+- `service_edit`: Edit an existing service
+- `service_delete`: Delete a service
+- `bgp_sessions`: List BGP sessions
+- `bgp_session_get`: Get details for a specific BGP session
+- `bgp_session_edit`: Edit a BGP session
+- `fdb_lookup`: Lookup forwarding database (FDB) entries
+- `nac_list`: List network access control (802.1X / MAB) sessions across all devices
+- `ospf_list`: List OSPF instances
+- `ospf_ports`: List OSPF ports
+- `vrf_list`: List VRFs
+- `ping`: Ping the LibreNMS system
+- `health_list`: List health sensors
+- `health_by_type`: List health sensors by type
+- `health_sensor_get`: Get details for a health sensor
+- `sensors_list`: List sensors
+- `switching_vlans`: List all VLANs from LibreNMS.
+- `switching_links`: List all links from LibreNMS.
+- `system_info`: Get system info from LibreNMS.
+
+- Flexible filtering and search for all major resources (devices, ports, alerts, logs, inventory, etc.)
+
+## Pagination & Limit Support
+
+To prevent overloading LLM contexts when querying large LibreNMS production instances, all list, search, and log tools support pagination.
+
+### Key Features
+- **Sensible Defaults**: All list tools default to returning **100 results per page**.
+- **Unified Parameters**:
+  - `limit`: The maximum number of results to return (defaults to `100`, minimum `1`).
+  - `offset` (or `start` for log tools): The number of results to skip.
+- **Pagination Metadata**: Every paginated response includes metadata fields:
+  - `limit`: The active limit.
+  - `offset` (or `start`): The active offset.
+  - `count`: The number of items returned in the current page.
+  - `total`: The total number of items available (for log tools, this is provided if returned by the LibreNMS API).
+
+## Error Responses
+
+Every tool that returns JSON reports a failure in LibreNMS's own error shape,
+whether the error came from LibreNMS, from a check in this server, or from an
+exception such as a timeout:
+
+```json
+{"status": "error", "message": "Device typo does not exist"}
+```
+
+Check `status == "error"`. Up to 1.11.3, exceptions were returned as
+`{"error": "..."}`; clients that looked for an `error` key need updating.
+
+## Security & Safety Features
+
+### Read-Only Mode
+
+The server supports a read-only mode that disables all write operations for safe monitoring:
+
+```env
+READ_ONLY_MODE=true
+```
+
+### Tag-Based Tool Filtering
+
+You can disable specific categories of tools by setting disabled tags:
+
+```env
+DISABLED_TAGS=alert,alert-rules,alert-templates,bills
+```
+
+A tool is hidden when any of its tags is disabled, and some tools carry more
+than one category tag: for example, `port_graph` is tagged `graphs` and `ports`,
+and `ospf_list` is tagged `routing` and `ospf`, so `DISABLED_TAGS=ports` also
+hides `port_graph`. Alerting is split into three tags: `alert` (current alerts:
+list, acknowledge, unmute), `alert-rules` and `alert-templates`; disable all
+three to hide every alerting tool.
+
+Besides the categories, `read-only` marks the tools that stay available in
+read-only mode. The `admin` and `global-read` tags follow the permission groups
+older LibreNMS releases used for their API routes (`can:admin`,
+`can:global-read`). Current LibreNMS checks permissions per object instead, so
+treat these two as broad categories rather than an exact match of what your
+LibreNMS user may do.
+
+### Tool Search for Large Toolsets
+
+FastMCP tool search can reduce prompt size for servers with many tools.
+When enabled, `list_tools` returns two synthetic tools:
+
+- `search_tools`: Finds matching tools and returns their full schemas
+- `call_tool`: Executes any discovered tool by name
+
+Enable it with:
+
+```env
+TOOL_SEARCH_ENABLED=true
+TOOL_SEARCH_STRATEGY=bm25    # bm25 or regex
+TOOL_SEARCH_MAX_RESULTS=5    # optional, default is 5
+```
+
+`bm25` supports natural language queries, while `regex` uses a regex `pattern` input for deterministic matching.
+
+Tool search respects existing visibility controls (read-only mode and disabled tags).
+
+### Rate Limiting
+
+The server supports rate limiting to control API usage and prevent abuse. If enabled, requests are limited per client using a sliding window algorithm.
+
+Enable rate limiting by setting the following environment variables in your `.env` file:
+
+```env
+RATE_LIMIT_ENABLED=true
+RATE_LIMIT_MAX_REQUESTS=100   # Maximum requests allowed per window
+RATE_LIMIT_WINDOW_MINUTES=1   # Window size in minutes
+```
+
+If `RATE_LIMIT_ENABLED` is set to `true`, the server will apply rate limiting middleware. Adjust `RATE_LIMIT_MAX_REQUESTS` and `RATE_LIMIT_WINDOW_MINUTES` as needed for your environment.
+
+### Sentry Error Tracking & Monitoring (Optional)
+
+The server optionally supports **Sentry** for error tracking, performance monitoring, and debugging. Sentry integration is completely optional and only initialized if configured.
+
+#### Installation
+
+To enable Sentry monitoring, install the optional dependency:
+
+```sh
+# Using UV (recommended)
+uv sync --extra sentry
+```
+
+#### Configuration
+
+Enable Sentry by setting the `SENTRY_DSN` environment variable in your `.env` file:
+
+```env
+# Required: Sentry DSN for your project
+SENTRY_DSN=https://your-key@o12345.ingest.us.sentry.io/6789
+
+# Optional: Performance monitoring sample rate (0.0-1.0, default: 1.0)
+SENTRY_TRACES_SAMPLE_RATE=1.0
+
+# Optional: Include personally identifiable information (default: false).
+# When true, tool inputs and outputs (device configs, SNMP credentials) are sent to Sentry.
+SENTRY_SEND_DEFAULT_PII=false
+
+# Optional: Environment name (e.g., "production", "staging")
+SENTRY_ENVIRONMENT=production
+
+# Optional: Release version (auto-detected from package if not set)
+SENTRY_RELEASE=1.2.2
+
+# Optional: Profiling - continuous profiling sample rate (0.0-1.0, default: 1.0)
+SENTRY_PROFILE_SESSION_SAMPLE_RATE=1.0
+
+# Optional: Profiling - lifecycle mode for profiling (default: "trace")
+# Options: "all", "continuation", "trace"
+SENTRY_PROFILE_LIFECYCLE=trace
+
+# Optional: Enable log capture as breadcrumbs and events (default: true)
+SENTRY_ENABLE_LOGS=true
+```
+
+#### Features
+
+When enabled, Sentry automatically captures:
+
+- **Exceptions & Errors**: All unhandled exceptions with full context
+- **Performance Metrics**: Request/response times and traces
+- **MCP Integration**: Detailed MCP server activity and interactions
+- **Logs & Breadcrumbs**: Application logs and event trails for debugging
+- **Context Data**: Environment, client info, and request parameters
+
+#### Getting a Sentry DSN
+
+1. Create a free account at [sentry.io](https://sentry.io)
+2. Create a new Python project
+3. Copy your DSN from the project settings
+4. Set it in your `.env` file
+
+#### Disabling Sentry
+
+Sentry is completely optional. If you don't set `SENTRY_DSN`, the server will run normally without any Sentry integration, and no monitoring data will be collected.
+
+### SSL/TLS Configuration
+
+The server supports SSL certificate verification and custom timeout settings:
+
+```env
+LIBRENMS_VERIFY_SSL=true    # Enable SSL certificate verification
+LIBRENMS_TIMEOUT=30         # Connection timeout in seconds
+```
+
+### Transport Configuration
+
+The server supports multiple transport mechanisms for the MCP protocol. `MCP_TRANSPORT` is case-insensitive, `streamable-http` is accepted as an alias for `http`, and any other value stops the server at startup with an error rather than silently falling back to STDIO:
+
+#### STDIO Transport (Default)
+
+The default transport uses standard input/output for communication. This is ideal for local usage and integration with tools that communicate via stdin/stdout:
+
+```env
+MCP_TRANSPORT=stdio
+```
+
+#### HTTP SSE Transport (Server-Sent Events)
+
+For network-based deployments, you can use HTTP with Server-Sent Events. This allows the MCP server to be accessed over HTTP with real-time streaming:
+
+```env
+MCP_TRANSPORT=sse
+MCP_HTTP_HOST=127.0.0.1        # Localhost
+MCP_HTTP_PORT=8000           # Port to listen on
+MCP_HTTP_BEARER_TOKEN=your-secret-token  # Optional authentication token
+```
+
+When using SSE transport with a bearer token, clients must include the token in their requests:
+
+```bash
+curl -H "Authorization: Bearer your-secret-token" http://localhost:8000/sse
+```
+
+#### HTTP Streamable Transport
+
+The HTTP Streamable transport provides HTTP-based communication with request/response streaming. This is ideal for web integrations and tools that need HTTP endpoints:
+
+```env
+MCP_TRANSPORT=http
+MCP_HTTP_HOST=127.0.0.1        # Localhost
+MCP_HTTP_PORT=8000           # Port to listen on
+MCP_HTTP_BEARER_TOKEN=your-secret-token  # Optional authentication token
+```
+
+When using streamable transport with a bearer token:
+
+```sh
+curl -H "Authorization: Bearer your-secret-token" \
+     -H "Accept: application/json, text/event-stream" \
+     -H "Content-Type: application/json" \
+     -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' \
+     http://localhost:8000/mcp
+```
+
+**Note**: The HTTP transport requires proper JSON-RPC formatting with `jsonrpc` and `id` fields. The server may also require session initialization for some operations.
+
+#### Health Endpoint
+
+Both HTTP transports (`sse` and `http`) serve `GET /health`, which answers `200 ok`
+when the server is handling requests. It needs no bearer token and does not
+contact LibreNMS, so a LibreNMS outage does not mark the MCP server unhealthy.
+The Docker image's `HEALTHCHECK` uses it:
+
+```sh
+curl http://localhost:8000/health
+```
+
+For more information on FastMCP transports, see the [FastMCP documentation](https://gofastmcp.com/deployment/running-server#transport-protocols).
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests and ensure code quality (`uv run pytest && uv run ruff check .`)
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+## License
+
+MIT License - see LICENSE file for details.

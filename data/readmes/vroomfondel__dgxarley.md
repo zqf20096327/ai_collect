@@ -152,39 +152,41 @@ via the primary gateway.
 
 ## Ansible Roles
 
-| Role          | Target Hosts | Description                                                                                                                                                                                                                                                                |
-|---------------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `common`      | all          | Base packages, SSH hardening, Fail2ban, Postfix relay, iptables/ipset, Netplan + OVS, Avahi, sysstat, smartd, locale                                                                                                                                                       |
-| `dgx_prepare` | dgxsparks    | QSFP netplan (4x ConnectX-7, MTU 9000), ulimits (memlock=unlimited), NVIDIA CDI, cpupower idle disable, kernel tuning (net buffers, vm.overcommit), boot console UX (Plymouth removal, GRUB countdown, `nvidia-drm.modeset=1` with forced 1920x1080 via CVT, tty1 noclear) |
-| `k3sserver`   | k3sserver    | K3s install (server on master, agent on sparks), kubeconfig merge to control node, HAProxy, Traefik, CoreDNS, rsyslog, NFS (optional)                                                                                                                                      |
-| `k8s_dgx`     | k3smaster    | K8s workloads: Multus, NVIDIA device plugin, SGLang (distributed), Ollama, Open WebUI, SearXNG, docling-serve                                                                                                                                                              |
-| `k8s_infra`   | k3smaster    | K8s infrastructure: cert-manager, ESO/Kyverno, Keel, Tang, NFD, Sealed Secrets, PostgreSQL, Redis, Prometheus/Grafana/Alertmanager, Loki, Uptime Kuma                                                                                                                      |
-| `clevis`      | k3smaster    | LUKS auto-unlock via Tang/NBDE                                                                                                                                                                                                                                             |
-| `nut`         | k3smaster    | NUT UPS monitoring (dual Green Cell UPS, `blazer_usb` driver, netserver mode)                                                                                                                                                                                              |
+| Role            | Target Hosts | Description                                                                                                                                                                                                                                                                |
+| --------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `common`        | all          | Base packages, SSH hardening, Fail2ban, Postfix relay, iptables/ipset, Netplan + OVS, Avahi, sysstat, smartd, locale                                                                                                                                                       |
+| `dgx_prepare`   | dgxsparks    | QSFP netplan (4x ConnectX-7, MTU 9000), ulimits (memlock=unlimited), NVIDIA CDI, cpupower idle disable, kernel tuning (net buffers, vm.overcommit), boot console UX (Plymouth removal, GRUB countdown, `nvidia-drm.modeset=1` with forced 1920x1080 via CVT, tty1 noclear) |
+| `k3sserver`     | k3sserver    | K3s install (server on master, agent on sparks), kubeconfig merge to control node, HAProxy, Traefik, CoreDNS, rsyslog, NFS (optional)                                                                                                                                      |
+| `k8s_dgx`       | k3smaster    | K8s workloads: Multus, NVIDIA device plugin, SGLang (distributed), Ollama, Open WebUI, SearXNG, docling-serve                                                                                                                                                              |
+| `k8s_infra`     | k3smaster    | K8s infrastructure: cert-manager, ESO/Kyverno, Keel, NFD, Sealed Secrets, PostgreSQL, Redis, Prometheus/Grafana/Alertmanager, Loki, Uptime Kuma                                                                                                                            |
+| `clevis`        | k3smaster    | LUKS auto-unlock via Tang/NBDE                                                                                                                                                                                                                                             |
+| `nut`           | k3smaster    | NUT UPS monitoring (dual Green Cell UPS, `blazer_usb` driver, netserver mode)                                                                                                                                                                                              |
+| `tang`          | k3smaster    | Tang NBDE server for clevis (podman Quadlet `tang.service`, host network, port 9090; keys generated by tangd on the tang server itself, gated by `providestang`)                                                                                                           |
+| `ops_wireguard` | all (opt-in) | Outbound WireGuard tunnel from the box to the Ops hub (`wg-quick`, key generated on the box, forward/NAT in the common firewall); gated by `ops_wireguard_enabled`                                                                                                         |
 
 ## K8s Infrastructure (`k8s_infra` role)
 
 Cluster-level services deployed via `k8s_infra.yml` (runs locally, applies manifests via `kubernetes.core.k8s`).
 All persistent data uses hostPath volumes under `/var/lib/k8s-data/` on k3smaster (no NFS, no Ceph) — exception: Seafile's content-addressed file storage lives under `/mnt/nfs/seafile-data` (NFS-safe blobs), only its MariaDB datadir is local under `/var/lib/k8s-data/seafile-mariadb`.
 
-| Component              | Namespace                 | Description                                                                                                                                            |
-|------------------------|---------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
-| cert-manager           | cert-manager              | TLS certificates via Let's Encrypt (DNS-01 / RFC2136)                                                                                                  |
-| ESO + Kyverno          | external-secrets, kyverno | External Secrets Operator with namespace-based secret isolation via Kyverno policies                                                                   |
-| Keel                   | keel                      | Automated container image updates (webhook to external cluster)                                                                                        |
-| Tang                   | tang                      | NBDE key server for Clevis LUKS auto-unlock                                                                                                            |
-| Sealed Secrets         | kube-system               | Encrypted secrets for GitOps                                                                                                                           |
-| NFD                    | node-feature-discovery    | Auto-labels nodes with hardware capabilities                                                                                                           |
-| Smarter Device Manager | smarter-device-manager    | Exposes `/dev` devices as K8s extended resources                                                                                                       |
-| PostgreSQL             | postgresql                | Single instance (openwebui + openwebui_vectors DBs with pgvector)                                                                                      |
-| Redis                  | redis                     | Key-value store                                                                                                                                        |
-| Seafile (CE)           | seafile                   | Self-hosted file sync (server + MariaDB + Memcached). `/shared` on NFS, MariaDB datadir local. Used as backing store for Hermes per-user `/workspace`. |
-| Prometheus             | monitoring                | Metrics collection (scrapes kubelets, cAdvisor, CoreDNS, Traefik, KSM, node-exporter)                                                                  |
-| Grafana                | monitoring                | Dashboards (local auth, auto-provisioned Kubernetes dashboards from dotdc)                                                                             |
-| Alertmanager           | monitoring                | Alert routing (email + Gotify bridge via external cluster)                                                                                             |
-| Loki + Fluent Bit      | loki                      | Log aggregation (filesystem backend, DaemonSet log collector; `fluentbit_enabled` / `promtail_enabled` gate them independently, promtail EOL since 2026-03-02)              |
-| NUT Exporter           | monitoring                | Prometheus exporter for NUT UPS metrics (`druggeri/nut_exporter:3.3.0`, per-UPS scrape jobs)                                                           |
-| Uptime Kuma            | uptimekuma                | Uptime monitoring                                                                                                                                      |
+| Component              | Namespace                 | Description                                                                                                                                                    |
+|------------------------|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| cert-manager           | cert-manager              | TLS certificates via Let's Encrypt (DNS-01 / RFC2136)                                                                                                          |
+| ESO + Kyverno          | external-secrets, kyverno | External Secrets Operator with namespace-based secret isolation via Kyverno policies                                                                           |
+| Keel                   | keel                      | Automated container image updates (webhook to external cluster)                                                                                                |
+| Tang                   | tang                      | NBDE key server for Clevis LUKS auto-unlock                                                                                                                    |
+| Sealed Secrets         | kube-system               | Encrypted secrets for GitOps                                                                                                                                   |
+| NFD                    | node-feature-discovery    | Auto-labels nodes with hardware capabilities                                                                                                                   |
+| Smarter Device Manager | smarter-device-manager    | Exposes `/dev` devices as K8s extended resources                                                                                                               |
+| PostgreSQL             | postgresql                | Single instance (openwebui + openwebui_vectors DBs with pgvector)                                                                                              |
+| Redis                  | redis                     | Key-value store                                                                                                                                                |
+| Seafile (CE)           | seafile                   | Self-hosted file sync (server + MariaDB + Memcached). `/shared` on NFS, MariaDB datadir local. Used as backing store for Hermes per-user `/workspace`.         |
+| Prometheus             | monitoring                | Metrics collection (scrapes kubelets, cAdvisor, CoreDNS, Traefik, KSM, node-exporter)                                                                          |
+| Grafana                | monitoring                | Dashboards (local auth, auto-provisioned Kubernetes dashboards from dotdc)                                                                                     |
+| Alertmanager           | monitoring                | Alert routing (email + Gotify bridge via external cluster)                                                                                                     |
+| Loki + Fluent Bit      | loki                      | Log aggregation (filesystem backend, DaemonSet log collector; `fluentbit_enabled` / `promtail_enabled` gate them independently, promtail EOL since 2026-03-02) |
+| NUT Exporter           | monitoring                | Prometheus exporter for NUT UPS metrics (`druggeri/nut_exporter:3.3.0`, per-UPS scrape jobs)                                                                   |
+| Uptime Kuma            | uptimekuma                | Uptime monitoring                                                                                                                                              |
 
 FQDNs follow the pattern `<service>.<domain-suffix>` (configured via `dns_external_domain_suffix` in vault).
 
@@ -386,6 +388,7 @@ ansible-playbook site.yml --tags k3sinstall
 ansible-playbook dgx.yml --tags qsfp
 ansible-playbook common.yml --tags iptables
 ansible-playbook k3sserver.yml --tags kubeconfig
+ansible-playbook k3sserver.yml --tags k9s
 ansible-playbook k8s_infra.yml --tags promstack
 ansible-playbook k8s_infra.yml --tags postgresql
 

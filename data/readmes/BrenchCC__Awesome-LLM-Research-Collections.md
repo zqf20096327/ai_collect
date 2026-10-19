@@ -223,6 +223,13 @@
 
 ## Inference
 
+- **Thinking Inertia: LLMs Keep Thinking When Told Not To** (2026.10) \
+  **Description**: This paper evaluates no-thinking behavior by separating visible pre-answer text from final answers and measuring answer-only compliance, question relevance, and explicit inference. Across six LLMs and six prompting interventions, explicit inference persists under no-thinking controls, becoming more prevalent as answer spaces open and exposing a compliance–accuracy trade-off on open-ended tasks. \
+  <a href="https://arxiv.org/abs/2610.11765"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://thinking-inertia.github.io/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
+  <a href="https://github.com/thinking-inertia/code"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
+  <a href="https://huggingface.co/datasets/thinking-inertia/llm-nothinking-trajectories"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
+
 - **LLMRouter: Unified Infrastructure for Developing, Evaluating, and Deploying LLM Routers** (2026.08) \
   **Description**: LLMRouter formulates LLM routing as a sequential decision process spanning single-turn, multi-turn, and personalized settings, and provides modular infrastructure with an automated pipeline for joint quality-cost evaluation. Its xRouteBench benchmark covers five routing scenarios, while experiments across more than 16 representative routers show that learned routers achieve a 14.6% relative improvement over the strongest fixed-model baseline. \
   <a href="https://arxiv.org/abs/2608.06867"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -796,6 +803,12 @@
   <a href="https://mimo.xiaomi.com/rl/mimo-v26/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
   <a href="https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Distill-Qwen-9B"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
 
+- **Agent-Reflex: Teaching Language Agents to Act Reflectively** (2026.10) \
+  **Description**: Agent-Reflex trains tool-using agents to reflect proactively and recover from noisy tool feedback and user corrections by mining reusable reflection skills and converting them into reflective supervised fine-tuning data. Its On-Policy Reflective Policy Optimization combines agentic RL under noisy interactions with reflection-guided on-policy distillation, improving long-horizon tool use and robustness to noise. \
+  <a href="https://arxiv.org/abs/2610.17953"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://github.com/RUC-NLPIR/Agent-Reflex"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
+  <a href="https://huggingface.co/collections/dongguanting/agent-reflex"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
+
 - **SafeEvolve: Harness-Policy Co-Evolution from Agent Experience for Safety Alignment** (2026.09) \
   **Description**: SafeEvolve uses safety evidence from on-policy agent trajectories to co-evolve runtime safety prompts, hierarchical skills, and the policy. It combines bounded, auditable harness updates with harness-use SFT and harness-augmented RL using verifier-decomposed rewards, improving the balance between safety and task utility during multi-step interactions. \
   <a href="https://arxiv.org/abs/2609.02786"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -825,15 +838,4 @@
   <a href="https://envharness.com/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
   <a href="https://github.com/google-research/envharness"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
 
-- **Skill Self-Play: Pushing the Frontier of LLM Capability with Co-Evolving Skills** (2026.07) \
-  **Description**: This paper introduces Skill Self-Play, a reinforcement learning framework in which a proposer, solver, and dynamic skill controller co-evolve through skill-conditioned task generation, frontier exploration, and feedback-driven skill-library updates. It combines reliable skill-specific verification with open-ended task diversity to improve tool use and reasoning across diverse LLM backbones. \
-  <a href="https://arxiv.org/abs/2607.22529"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://github.com/Qwen-Applications/skill-self-play"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-
-- **OpenForgeRL: Train Harness-native Agents in Any Environment** (2026.07) \
-  **Description**: OpenForgeRL is an open-source framework for end-to-end reinforcement learning of agents inside the stateful, multi-process inference harnesses and environments used at deployment. A lightweight recording proxy converts harness model calls into data for standard RL stacks, while a Kubernetes orchestrator isolates and scales rollouts across tool-use and multimodal GUI environments. \
-  <a href="https://arxiv.org/abs/2607.21557"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://github.com/MSR-Orchard/OpenForge-RL"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-
-- **OPID: On-Policy Skill Distillation for Agentic Reinforcement Learning** (2026.06) \
-  **Description**: This paper proposes OPID, which extracts hierarchical episode- and step-level skills from completed on-policy trajectories and converts their effect into token-level self-distillation advantages alongside the outcome advantage. Its critical-first routing supplies dense, distribution-matched hindsight supervision, improving agent performance, sample efficiency, and robustness on embodied
+- **Skill Self-Play: Pushing the Frontier of LLM Capability with Co-Evolvin

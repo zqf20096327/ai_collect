@@ -6,11 +6,15 @@
 
 <h1>🚀 Awesome AI4AI</h1>
 
+<h3>🔄 Updated weekly — until humanity achieves AI4AI.</h3>
+
+<p><strong>Follow the journey: <a href="https://github.com/KaiWU5/Awesome-AI4AI">Star ⭐</a> · <a href="https://github.com/KaiWU5/Awesome-AI4AI/subscription">Watch 👀 for weekly updates</a> · <a href="#weekly-news">Read this week's picks →</a></strong></p>
+
 <p><strong><em>AI4AI Survey: From Long-Horizon Agents to Recursive Self-Improvement</em></strong><br>
 <sub>Definitions, Reliable Horizons, and Open Problems · 23 authors · 7 institutions</sub></p>
 
 <p>
-  Weekly news featuring top AI-for-AI papers, releases, and blogs. <strong>Stay tuned 🔥</strong>
+  Top AI-for-AI papers, releases, and blogs — curated every week. <strong>Stay tuned 🔥</strong>
 </p>
 
 <p>

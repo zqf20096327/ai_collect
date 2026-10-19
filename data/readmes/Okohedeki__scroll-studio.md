@@ -69,6 +69,9 @@ tiktoken (`cl100k_base`) on the files in this repo; other tokenizers differ by r
 
 ### New in 1.3
 
+- **Direction boards** (`studio directions`): how a design studio pitches. One brief in, several complete art directions
+  out, side by side on one page, so you pick a direction in minutes before committing to a build. Pick one and it is
+  written into `site.yaml`. ([Direction boards](#direction-boards-pitch-it-before-you-build-it))
 - **Colour that follows the camera** (`reveal:` on a film section): render the film once in full colour; the page shows
   it black and white (or dimmed, blurred, tinted) and brings colour into tracked regions as you scroll.
   ([Colour that follows the camera](#colour-that-follows-the-camera-reveal))
@@ -145,6 +148,8 @@ Every example is a `site.yaml` in [`examples/`](examples/) and rebuilds with `st
 | [Hollis House](examples/hollis-house/site.yaml) | Real estate | `splat` | A walk through a scanned house, room by room |
 | [Pelorus](examples/pelorus/site.yaml) | Research | `chart` (bar) | The renewables share of electricity, every figure read from Our World in Data |
 | [Halcyon](examples/halcyon/site.yaml) | Software | blocks | One product page as twenty-one experiences (`studio looks`) |
+| [Harbourlight](examples/little-harbour/site.yaml) | Port software | `diorama` | A tiny harbour, tilt-shift and live in the page: scroll orbits it, dives to a lighthouse, a windmill, a crane, a customs house, a market stall, and lifts out again. No video, nothing to render |
+| [Halo Coffee](examples/film-cuts/site.yaml) | Coffee | `transition:` | A page edited like a film: a logo becomes the sun becomes a cup (designed match cuts), a whip pan, an iris, a carried figure, a wipe, a dissolve and a hard cut (needs ComfyUI to build; `studio cuts --strip` shows each cut) |
 
 ## Quick start
 
@@ -220,6 +225,86 @@ model: colour stops, glows, stars and grain, enough for colour cards, dusk skies
         stars: 120
     title: Your words stay <em>on your phone.</em>
 ```
+
+## Direction boards: pitch it before you build it
+
+A studio does not start with the build. It shows the client three or six different ideas of what the site could be, side
+by side, and the client points at one. `studio directions` does that from the site's own spec:
+
+```bash
+studio directions my-site                      # six directions: board.html + board.png in my-site/directions/
+studio directions my-site --n 4 --seed 7       # another seed, another set
+studio directions my-site --brief "calmer, more editorial, for people who travel slowly"
+studio directions my-site --serve              # the boards in the browser, a Pick button on each
+studio directions my-site --pick c             # write direction C into site.yaml (a minimal diff; backup kept)
+studio directions my-site --undo               # put the file back as it was before the last pick
+studio directions my-site --reroll d           # another idea in place of one direction
+studio storyboard my-site                      # now every image redraws in the picked direction's imagery
+```
+
+Each **direction** is a complete art direction, not a colourway: a **concept** line; a **palette**; a **type pairing**
+(Google Fonts the engine loads and self-hosts); one of the engine's **styles** (the experience: what scrolling does, how
+sections hand over; or the default editorial layout); an **imagery treatment**, which is how every generated image and film
+prompt is phrased (medium, light, lens, mood, colour in words) so the whole page looks like one shoot; **motion notes**
+(page, camera, type) and the pace; and the **voice** that suits it. Its board shows the hero and two or three key sections
+as storyboard stills (Z-Image Turbo, the same generator and seeds in every direction, so what differs is the direction),
+set in that direction's palette and type, with the palette, faces, style and imagery written out under them. The page is
+`directions/board.html` (open it, or `--serve` it like the storyboard editor), and `directions/board.png` is the same page
+as one contact sheet.
+
+**They differ in kind.** The set is built from schools of design (a naturalist's plate book, the Swiss grid, golden-hour
+film photography, neon noir, drafting-table blueprint, a risograph zine, a picture book, soft clay, silver noir, art deco,
+cut paper, a travel poster, a Dutch still life, Y2K chrome, an arcade, a terminal, a quiet product studio, reportage,
+wabi-sabi, an old atlas, cel animation, Memphis pop), picked greedily so each next one fits the subject and is far from
+those already chosen. A distance measure (kind of picture, experience, colour, type, what the pictures are made of) then
+checks every pair; a pair closer than 0.5 is one idea twice, and the weaker of the two is replaced. The board header shows
+the closest pair, how many kinds and experiences the set spans, and what was regenerated. Directions are listed from closest
+to today's site to a different site.
+
+**There is no text model, so the writer is deterministic.** The engine has no local language model (ComfyUI's `models/LLM`
+holds Florence-2, a captioner, and Gemma is only LTX's text encoder), so ideas are not generated: they are composed from a
+curated, combinable vocabulary (`engine/directions/vocab.py`: schools, palettes, type pairings, imagery treatments,
+photographers' lighting such as Rembrandt, Vermeer window light or Penn's north light, and which engine styles give each
+school the right experience), chosen to fit the subject and mood words found in the site's copy and the brief, and combined
+by a seed. The same brief and seed give the same boards. Add a school by adding data; tests check every palette's contrast,
+that every font loads and every style exists. Nothing is sent anywhere and there are no API keys.
+
+The optional **`directions:`** block in the spec is the brief and the constraints:
+
+```yaml
+directions:
+  brief: "Quiet and handmade, never precious; a working studio, not a gallery."
+  count: 6
+  seed: 4
+  moods: [handmade, warm, calm]            # also read from the brief: calm, warm, bold, playful, technical, raw, nostalgic ...
+  keep: [colors]                           # parts of today's look every direction keeps: style, colors, fonts, imagery
+  styles:   { avoid: [pixel-art, ascii-art] }              # or only: [none, halftone, sand]; none = the default layout
+  fonts:    { avoid: [Press Start 2P] }                    # or only: [Fraunces, Karla ...]
+  palettes: { avoid: [pink], brand: ["#c2612a"] }          # brand colours become every direction's accent
+  stills: 4                                # stills per board: the hero, then key sections
+```
+
+**A pick** writes the direction into `site.yaml` and nothing else: `theme` (style, mode, colours, fonts, display weight and
+emphasis, radius), `imagery` and `scroll.speed`. Only what differs from what the site already resolves to is written, comments
+and layout stay, the old file is kept in `directions/backups/`, and an edit that would make the spec invalid is refused.
+**Copy is never touched** (a direction has a voice note, but the writer cannot write copy, so there is nothing to apply).
+
+`imagery:` is a spec field on its own, so you can write it by hand:
+
+```yaml
+imagery:
+  medium: 35mm film photograph, Kodak Portra 400, fine grain
+  light: low golden-hour sun, long soft shadows
+  lens: 35mm, eye level, shallow depth of field
+  mood: unhurried, sun-warmed, quietly luxurious
+  palette: honey, terracotta and sea blue
+```
+
+It is added to every prompt the engine sends to the image and video models (a `generate:` image, a beat's frame and clip, a
+take's keyframes and segments), and with `restyle` on (the default) the phrases it replaces in the original prompts
+(`photorealistic`, `shot on a medium format camera`, `golden hour`) are dropped first. Unset, nothing is added and no cache
+key changes. Example: [Kiln & Kettle](examples/kiln-and-kettle/site.yaml). MCP tools: `directions`, `direction_reroll`,
+`direction_pick`, `direction_undo`.
 
 ## Storyboard first
 
@@ -358,6 +443,12 @@ as a departures board, a comic, a terminal session, a game level or an anime ope
 | `pinscreen` | A lamp-lit wall of pins; each picture rolls into the next in a wave |
 | `sand` | A backlit sand table; a hand sweeps the grains into each scene |
 | `zoetrope` | The page is one wheel of cards: spin it, land on one, open it to read |
+| `stop-motion` | Scroll fires the shutter: felt and clay sets step on twos, dead still between exposures |
+| `paper-cut-out` | Paper sheets swing off brass brads; hinged pieces sway, a jointed paper arm points |
+| `scratch-film` | Scroll pulls a hand-scratched strip of film through the gate, frame by frame |
+| `smears` | Spider-Verse timing: on twos, smear frames and multiples, impact frames between sheets |
+| `paint-on-glass` | One living oil painting on lit glass, repainted stroke by stroke as you scroll; a finger smears it |
+| `multiplane` | Painted glass plates at real depth; the camera trucks down through them with focus pulls |
 
 ```bash
 studio looks examples/halcyon            # dist/looks/<style>/ for every style, plus a gallery at dist/looks/
@@ -889,6 +980,119 @@ progress numbers:
 
 For an edit, start each line with `+`, `-` or a space, like a diff (use `|2` so YAML keeps the leading markers).
 `tree` lists more paths to scatter around the route so it reads as a whole project.
+
+### Miniature worlds (`diorama`)
+
+A `diorama` scene is a tilt-shift model of a tiny world (a harbour town, a market town, a desk, a factory floor, a studio)
+drawn live in the page. The world is described once, and the engine lays it out in a couple of seconds on the CPU: ground,
+water, roads, scenery, the places and their signs, and a camera plan. Scrolling orbits the camera round the whole thing,
+dives to the place where a step's content sits, lifts back out and travels to the next. Shallow depth of field blurs the
+near and far edges like a macro lens on a model, a high soft sun throws soft shadows, and the pointer turns the view.
+Nothing is generated or rendered: no GPU job, no video, a few hundred KB of data. Phones get a wider lens and a lower pixel
+budget, reduced motion gets one still view per place, and without WebGL the page shows a flat map of the world.
+
+```yaml
+  - id: harbour
+    type: diorama
+    world: { kind: harbour, seed: 7 }          # harbour, town, desk, factory or studio
+    camera: { orbit: ccw }
+    look: { sun: golden, tilt_shift: 1.0 }
+    places:
+      - { name: Lighthouse, kind: lighthouse }
+      - { name: Container yard, kind: crane, where: yard }          # a compass point, a spot, or [x, z]
+    steps:                                     # an intro (the world whole), then one step per place, in order
+      - { intro: true, title: "A whole <em>port</em> in your hand." }
+      - { title: "See every ship.", body: "..." }
+      - { title: "Every box, where it is.", body: "..." }
+```
+
+`studio diorama <project> [--strip]` says what was laid out (places, camera azimuths, the map in `diorama/<id>-map.jpg`) and,
+with `--strip`, photographs the built site at every place and between places; the MCP tool `diorama_layout` does the same.
+Fields, the worlds' vocabularies, how it is built, what was measured instead (a generated photo, 2.5D, image-to-3D, splats)
+and its limits are in [docs/miniature.md](docs/miniature.md). The showcase is `examples/little-harbour`.
+
+### Edited like a film (`transition:`)
+
+Sections normally follow one another and the page just scrolls from one into the next. Give a section a `transition:` and
+the join gets the editing language of film instead, driven by scroll. The picture above is held on screen at its last
+frame, the one below is held at its first, and for a stretch of scroll (`length`, in screens) the two cut into each other:
+
+```yaml
+sections:
+  - type: film
+    id: dusk
+    transition: { type: match, shape: the sun, becomes: the rim of a cup }   # the sun becomes a coffee cup
+    ...
+  - type: parallax
+    id: morning
+    transition: whip                       # a bare name is enough: a fast directional blur-pan into the next
+    ...
+  - type: product
+    transition: { type: carry }            # this section's heading travels into the next section's heading
+```
+
+| `type` | what it does | options |
+|---|---|---|
+| `cut` | an instant cut at a scroll position, a beat of hold either side, a slow push on each so the beat is alive | `at` (where it lands, 0.5) |
+| `dissolve` | a held cross-dissolve | |
+| `wipe` | the next picture revealed along a line | `direction` (left, right, up, down), `angle`, `soft` |
+| `iris` | a circle opens from a point, or closes on this picture (`closing`) | `origin` [x, y], `soft`, `closing` |
+| `whip` | both pictures slide along `direction`, motion-blurred by how fast they move | `direction`, `blur` |
+| `match` | the end of this section and the start of the next share a shape: each side scales and moves until the two shapes coincide, and the picture swaps on the shape | `shape`, `becomes`, `zoom`, `blend`, `at` |
+| `carry` | an element travels from its place here to its place in the next section (FLIP), the pictures cutting underneath (`via`) | `carry: {from, to, via}` (CSS selectors; the headings by default) |
+
+`length` is the stretch of scroll the cut takes (defaults from 0.8 screens for a cut to 1.5 for a match or carry) and
+`hold` the share of it held still at each end. Everything keeps today's behaviour unless a section sets `transition`.
+
+It works across section types because the layers it plays on are the sections' own pinned wrappers: a film, frames,
+parallax, a block, a product render, a chart. A tall section is held by its last screen, so its own content scrolls first.
+Scrolling is never intercepted (the stretch is plain scroll distance; anchor links and `?p=` jumps land after it), pages
+without scripts and visitors who ask for reduced motion get the plain flow (a clean cut), and phones get the same cuts at
+their own size (the whip's blur is lighter). `layout: stack` already hands over by sliding a panel, so transitions are
+ignored there. The default look and the styles that keep the ordinary page flow take them; styles that run the whole page
+as one object of their own play their own hand-overs and drop the cuts, with a note (`cuts: false` in their style.yaml).
+
+**Match cuts, found or designed.** The shapes are found on the last picture of this section and the first of the next:
+
+```yaml
+transition:
+  type: match
+  shape: the round logo                        # a prompt: Florence-2 finds it, SAM 2.1 cuts it out (engine/region.py)
+  becomes: { selector: ".ss-phone__screen" }   # or a page element, measured in the browser: any block, a phone screen
+  zoom: 3                                      # the most each side may be scaled to bring the shapes to one size
+```
+
+`shape` and `becomes` each take a prompt, a `box` ([x0, y0, x1, y1] of the picture) or a `selector`; `becomes` defaults to
+the same prompt as `shape`. Name neither and the engine looks for the best pair itself, without a model: circles and
+rectangles (flat regions, outlined frames and screens, Hough circles) on each picture, paired by outline, size and place. That
+is for graphic pictures (a logo, a sun, a frame); on a photograph name the shapes, and when nothing pairs convincingly the
+cut dissolves rather than match on nothing. The shapes are stored in each picture's own coordinates and the page maps
+them to the screen the way the section fits that picture, so one analysis serves every window shape; where a shape is
+cropped out of view (a phone) the cut softens into a dissolve. Each side only ever zooms in, about a point that stays on
+screen, so the picture always covers the screen. Cached in `.build/_cuts/` by the two pictures and the prompts.
+
+Or design the match instead of hoping for it: an image can be made to match another section's last frame.
+
+```yaml
+  - type: hero
+    id: sun
+    image:
+      match:
+        section: mark                      # the section whose last frame to match (it is built first)
+        shape: the white ring
+        becomes: a huge glowing orange sun disc
+        prompt: a calm dark sea at dusk, the enormous sun low over the horizon in the middle of the frame
+        how: edit                          # edit: Qwen-Image-Edit redraws that frame; hint: Z-Image + the shape's place in the prompt
+```
+
+`how: edit` redraws the other frame (the shape stays where it is at its size; everything else is the new scene), `how: hint`
+generates the picture from `prompt` with the shape's place and size, found on the other frame, written into it. Both are
+ordinary cached images (an edit of an unchanged frame is never redone).
+
+`studio cuts <project> [--strip] [--only 0,2] [--mobile] [--reduced-motion]` lists the cuts of the built site and the shapes
+each match found, and with `--strip` writes a frame strip around every cut (`.build/cuts/cut_<n>.jpg`: the page before,
+through the stretch of scroll, after; headless Chrome) to look at. The MCP tool `cuts` does the same. The showcase spec is
+`examples/film-cuts`.
 
 ## Launch trailers
 

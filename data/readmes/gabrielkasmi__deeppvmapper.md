@@ -3,26 +3,24 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![HF Models](https://img.shields.io/badge/🤗%20Models-bdappv--models-orange)](https://huggingface.co/gabrielkasmi/bdappv-models)
 [![HF Dataset](https://img.shields.io/badge/🤗%20Dataset-bdappv-orange)](https://huggingface.co/datasets/gabrielkasmi/bdappv)
-[![HF Space](https://img.shields.io/badge/🤗%20Space-Interactive%20demo-orange)](https://huggingface.co/spaces/gabrielkasmi/deeppvmapper)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19188878.svg)](https://doi.org/10.5281/zenodo.19188878)
+[![gabrielkasmi/deeppvmapper MCP server](https://glama.ai/mcp/servers/gabrielkasmi/deeppvmapper/badges/score.svg)](https://glama.ai/mcp/servers/gabrielkasmi/deeppvmapper)
 
 Large-scale rooftop PV detection pipeline for France. Classifies IGN aerial tiles with InceptionV3, segments positive patches with FCN/DeepLab, and extracts panel characteristics (surface, tilt, azimuth, installed capacity) via [pypvroof](https://pypi.org/project/pypvroof/).
 
-**[🗺️ Explore the map and results →](https://gabrielkasmi.github.io/deeppvmapper)**  
-**[🎮 Try the interactive demo →](https://huggingface.co/spaces/gabrielkasmi/deeppvmapper)**
-
+**[🗺️ Official project page](https://deeppvmapper.fr)**  
 Work carried out by [Gabriel Kasmi](https://gabrielkasmi.github.io) as part of his PhD at Mines Paris-PSL (2020–2024).
-
-![DeepPVMapper — detected rooftop PV installations](assets/map.webp)
 
 ---
 
 ## MCP Server
 
+[![DeepPVMapper MCP server](https://glama.ai/mcp/servers/gabrielkasmi/deeppvmapper/badges/card.svg)](https://glama.ai/mcp/servers/gabrielkasmi/deeppvmapper)
+
 DeepPVMapper's detection registry is also exposed as a public **MCP (Model Context Protocol) server** over Streamable HTTP, so any MCP-compatible client (Claude, etc.) can query the 1.14M+ rooftop-solar detections directly via natural language: search detections, aggregate installed capacity by department, explore an area, track yearly deployment, and check data-quality signals.
 
 - **Live endpoint:** `https://zelhliylrlktnasircwp.supabase.co/functions/v1/mcp/mcp`
-- **Server source:** [`supabase/functions/mcp`](https://github.com/gabrielkasmi/deeppvmapper/tree/gh-pages/supabase/functions/mcp) (`gh-pages` branch)
+- **Server source:** [`supabase/functions/mcp`](https://github.com/gabrielkasmi/deeppvmapper/tree/main/supabase/functions/mcp)
 - **Registry listing:** [registry.modelcontextprotocol.io](https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.gabrielkasmi/deeppvmapper) — `io.github.gabrielkasmi/deeppvmapper`
 
 No install required — add the endpoint as a custom connector in any MCP client.

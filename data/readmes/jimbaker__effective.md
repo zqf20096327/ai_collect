@@ -9,7 +9,7 @@ the same generator is recorded in a test, replayed from that recording, or run d
 crashed worker resumes by replaying the steps it already took.
 
 The prompts are **t-strings**. A prompt is a `t"..."` whose interpolations are typed channels:
-inputs render in, and outputs declare the schema the response must parse into. A `Gated` output runs a
+inputs render in, and outputs declare the schema the response is parsed into. A `Gated` output runs a
 check over the response, which is a guardrail on the data boundary.
 
 ## An agent loop is a state machine
@@ -174,6 +174,41 @@ The two engines run one conformance suite through the same handler ([`tests/_con
 the durable tests crash a run at every op and resume it. Testing a workflow needs neither: two
 in-memory handlers serve canned results and replay a recording ([`wiki/concepts/testing.md`](wiki/concepts/testing.md)).
 
+## The handler is the semantics
+
+The op set is the syntax of a small language, and a handler is its transition relation: each op
+steps the run by an answer from the tape when the tape holds the op's name, and from the world
+otherwise. Record, replay and the two durable engines are four refinements of that one relation,
+and for workflows whose rows have distinct ids they are meant to agree on the ledger a run leaves,
+up to the order in which concurrent branches commit. [`wiki/concepts/semantics.md`](wiki/concepts/semantics.md) states the rules and grades each
+law: proved in Lean, model-checked in Quint, tested, or open.
+
+## Context, evals and telemetry
+
+Each place a workflow meets a model is a named, typed seam that a deployment can tune and meter:
+
+| seam | what it is | read |
+|---|---|---|
+| prompts | a `t"..."` whose interpolations are the context's regions: inputs render in, outputs parse back | [`wiki/concepts/context.md`](wiki/concepts/context.md) |
+| cache order | the stable prefix first, the volatile part last; within a role, `render` refuses the other order | [`wiki/concepts/context.md`](wiki/concepts/context.md) |
+| skills | a catalog in the cached prefix, a disclosed body in the volatile tail, activated once above a fan-out | [`wiki/concepts/context.md`](wiki/concepts/context.md) |
+| code and files | code a model writes runs as an effect in a sandbox; the coder's shell runs in a container | [`wiki/concepts/context.md`](wiki/concepts/context.md) |
+| evals | judgments, `improve` over a Pareto frontier, and a recorded run scored again, replayed, or forked at one decision | [`wiki/concepts/evals.md`](wiki/concepts/evals.md) |
+| keys and projections | every op's name composed by one grammar; views folded from the append-only ledger | [`wiki/concepts/tapes.md`](wiki/concepts/tapes.md), [`wiki/concepts/graph.md`](wiki/concepts/graph.md) |
+| telemetry | OTLP spans under the OpenTelemetry GenAI conventions, each placed span carrying the key that joins it to the run | [`wiki/concepts/tapes.md`](wiki/concepts/tapes.md) |
+
+## Building with a coding agent
+
+Effective is for building repeatable agentic workflows with a highly capable coding agent such as
+Claude Code, often from a one-off: a task the agent has done once, whose session telemetry shows
+the steps to make repeatable. The agent writes the workflow and its tests; a workflow that performs no I/O runs offline against canned answers, and every seam has a
+backend that runs in the agent's own sandbox (SQLite for the engine, Monty for sandboxed code), so
+the agent checks its own work with no container, no key and no spend. The person decides what the workflow may do: which calls
+need approval, what a run may spend, and what an answer must satisfy. Each of those is a value in
+the code, and a recording or a fork shows the person what the workflow does.
+[`docs/co-development.md`](docs/co-development.md) walks through the three stages, from a first version to a deployment, and
+the check that closes each.
+
 ## What's in the box
 
 All under `src/effective/` unless noted.
@@ -182,20 +217,28 @@ All under `src/effective/` unless noted.
 |---|---|
 | the op set and the authoring API: `step`, `ask_llm`, `call_tool`, `await_event`, `await_until`, `sleep_until`, `append_ledger` | `ops.py`, `domain.py`, `api.py` |
 | typed prompt channels: `render`, `Gated`, `Repair`, cache and role directives, skill disclosure | `channels.py`, `skills.py` |
-| identity: every op key composed from a t-string by one injective grammar | `keys/` |
+| identity: every op key composed from a t-string by one injective grammar, and numbered where it repeats, so two positions in a run never share one | `keys/` |
 | concurrency: `gather`, `race`, `quorum` | `api.py`, `choice.py` |
-| combinators: `recurse`, `route`, `descend`, and sandboxed code as an effect (`run_code`, on Pydantic Monty) | `combinators.py`, `code.py`, `monty.py` |
+| combinators: `recurse`, `route`, `descend`, `fixpoint` and `mutual` (loops in constant stack), `respawn` (a long loop as a chain of tasks), `hoisted` (a skill activated once above a fan-out), and sandboxed code as an effect (`run_code`, on Pydantic Monty) | `combinators.py`, `code.py`, `monty.py` |
 | judgments: `judge` and `select` ask typed questions from a t-string | `judgment.py`, `api.py` |
 | layers: retry, permission, budgets and telemetry as generator middleware, and `govern` to compose them | `layers.py`, `govern.py` |
-| the ReAct agent loop, with interrupts, steering and in-flight cancellation | `react.py`, `interrupts.py`, `steering.py`, `cancel.py` |
+| the ReAct agent loop, with a typed answer repaired inside the loop, interrupts, steering and in-flight cancellation | `react.py`, `interrupts.py`, `steering.py`, `cancel.py` |
 | child tasks, and a parent that hears how its child ended | `spawning.py` |
 | permission: a fail-closed cascade of rules and a human | `permission.py`, `parked.py` |
 | cost: metered model calls, spend caps that survive a crash, a cache | `cost.py`, `budget.py`, `spend.py`, `cache.py` |
 | telemetry: OTLP/JSON spans under the OpenTelemetry GenAI conventions, joined to the run by key | `telemetry.py` |
-| counterfactuals: fork a recorded run at an op, change one result, replay the rest | `fork.py`, `counterfactual.py` |
+| counterfactuals: fork a recorded run at an op, change one result, run the rest live | `fork.py`, `counterfactual.py` |
 | optimization: `improve` (reflective prompt evolution) over a Pareto frontier of cost, quality and latency | `improve.py`, `pareto.py`, and the benches in `src/agent/` |
 | the read side: a run as a graph, cards, a dashboard, a terminal viewer | `graphview.py`, `cards/`, `dashboard.py`, `runview.py`, `src/tui/` |
 | interpreters for ops: OpenAI, the `claude -p` and `codex exec` CLIs, a judge service, a shell, the web | `interpreters/` |
+
+## Not yet in the box
+
+| missing | where it stands |
+|---|---|
+| memory between runs | a run's record is durable and forkable, and nothing carries what one run learned into the next; open is whether recall is a recorded op or a layer that fills the prompt, and how a write to memory is authorized |
+| MCP servers as tools | an MCP tool would reach the loop through an interpreter for `CallTool`, under the permission cascade, with its result recorded; not built, and the coding example does not implement them |
+| a deployment from zero | a walkthrough from a fresh managed Postgres to a running worker is not written |
 
 ## Examples
 
@@ -208,7 +251,68 @@ All under `src/effective/` unless noted.
 | `uv run python examples/smol_durable.py` | the same house agent, durable and interruptible, with a judge guarding the door ([`examples/smol_door.py`](examples/smol_door.py)) | nothing: offline without keys; `OPENAI_API_KEY` and `JEV_API_KEY` for a real model and judge |
 | `uv run python -m examples.coder <dir> "<task>"` | a small coding agent whose test suite decides when the work is done ([`src/examples/coder/README.md`](src/examples/coder/README.md)) | `OPENAI_API_KEY`, Podman |
 | `uv run python -m examples.deep_research "<question>" cell="..."` | a frontier search over web leads, stopped when two hosts agree on every cell ([`src/examples/deep_research/README.md`](src/examples/deep_research/README.md)) | `BRAVE_SEARCH_API_KEY`, `JEV_API_KEY`, the `claude` CLI |
+| `uv run python -m examples.agent_firm sla-cap` | an accounts-receivable firm: a payment short of its invoice is explained, critiqued against the contract, approved by an approver other than its proposer, and settled by saga through an ERP port ([`wiki/concepts/agent-firm.md`](wiki/concepts/agent-firm.md)) | nothing; `--odoo` settles on Odoo Community, after `just odoo-up` |
 | `just tui-demo`, `just dashboard` | the terminal viewer and the run dashboard over a demo run | the `tui` extra for the viewer |
+
+## The agent firm
+
+A firm exists, Coase argued in 1937, because some coordination costs less by authority than by
+negotiating each exchange: work that repeats, and commitments someone must answer for. Agents
+doing a firm's work face the same trade, so an agent firm gives them an organization: roles that
+decide, approvals that bind, and a record that outlives any one run.
+
+`src/examples/agent_firm/` is an accounts-receivable function run by agents under controls a
+finance team uses: every action has an owner, an approval where policy requires one, and a record
+that survives a crash. A payment that matches its invoice is applied with nobody asked. A payment
+short of its invoice is an exception, and goes through these stages:
+
+| stage | what happens |
+|---|---|
+| admit | the run's inputs are fixed in its spawn params: the case, the round of the books, the snapshot of the firm's rules |
+| observe | `reconcile` holds each case to the firm's invariants |
+| explain | a model proposes a credit through a `Gated` channel: within the shortfall, citing the case's documents |
+| engage | an outside critic reviews the proposal against the contract |
+| authorize | a `govern` policy parks the claim until an approver the host names, other than its proposer, approves it; the ruling names the digest of the terms, which carry the digest of the settlement's plan, and a changed plan is refused |
+| act | a `saga` posts the memo and applies it and the payment through an ERP port, unwinding on a rejection |
+| settle the books | `firm`, a `fixpoint`, repeats the stages over every open case until two passes agree, and reports what stays open and why |
+
+`uv run python -m examples.agent_firm sla-cap` runs one case through the first six stages, and
+`--odoo` settles it on Odoo Community after `just odoo-up`; `tests/test_agent_firm_fixpoint.py`
+runs the firm over the books. The decisions are [ADR-0027](docs/adr/0027-the-firm-settles-to-a-fixpoint.md) (the fixpoint) and
+[ADR-0028](docs/adr/0028-an-approval-binds-its-effect.md) (what an approval binds); the controls and the tests that hold each one are in
+[`wiki/concepts/agent-firm.md`](wiki/concepts/agent-firm.md).
+
+The settlement is a saga. Each posting carries its undo, and a rejected step unwinds the steps that
+landed, latest first, so the memo is unapplied before it is reversed and no posted entry is
+deleted. A rejected reversal fails the run with that reversal named; the entries it did not reach
+stay posted, and the run assigns them to no one. Otherwise the run ends one of three ways: completed, compensated (and resolved again in the next round), or unlanded (a
+reminder that ran out of attempts, continued on the next pass).
+
+```mermaid
+flowchart TD
+    observe["observe: the payment is $3,000 short"] --> explain["explain: a model proposes a credit"]
+    explain --> critique["critique: the contract caps the credit at $1,000"]
+    critique --> gate{"approval: someone other than the proposer,<br/>bound to the terms and the plan"}
+    gate -- denied --> open["the case stays open"]
+    gate -- approved --> memo["post the $1,000 credit memo"]
+    memo --> pay["apply the $97,000 payment"]
+    pay --> apply["apply the memo"]
+    apply --> notify["notify the customer"]
+    notify --> remind["remind the customer of the $2,000 owed"]
+    remind --> completed(["completed"])
+    remind -- out of attempts --> unlanded(["unlanded: continued next pass"])
+    notify -- rejected --> u1["unapply the memo"]
+    u1 --> u2["unapply the payment"]
+    u2 --> u3["reverse the memo"]
+    u3 --> compensated(["compensated: resolved in the next round"])
+```
+
+The command scripts the critic's review and the controller's approval, so it needs no keys, and it
+runs the completed path; the compensated and unlanded endings run in
+`tests/test_agent_firm_saga.py`. The $2,000 still owed stays a receivable, and the reminder asks the
+customer to pay it. The general ledger the firm settles against in testing is Odoo Community,
+digest-pinned under Podman: `just odoo-up`, then `just odoo-test` with `just pgt-up`. Without it,
+a scripted Odoo answers the same calls in memory.
 
 ## Learn more
 
@@ -216,8 +320,11 @@ All under `src/effective/` unless noted.
 |---|---|
 | [`docs/intro.md`](docs/intro.md) | the model in ten minutes: generator, handler, tape, layers, combinators |
 | [`docs/first-workflow.md`](docs/first-workflow.md) | the first workflow, line by line |
-| [`wiki/concepts/testing.md`](wiki/concepts/testing.md) | testing a workflow: canned results, replay as the determinism oracle, crash at every op |
+| [`wiki/concepts/testing.md`](wiki/concepts/testing.md) | testing a workflow, and how the substrate is verified: crash at every op, two engines, schedules, models and proofs |
 | [`docs/effective-101.md`](docs/effective-101.md) | the concepts in depth: the op set, the combinator algebra, the temporal shapes |
+| [`wiki/concepts/semantics.md`](wiki/concepts/semantics.md) | the handler as the transition relation, and how each law is known |
+| [`wiki/concepts/rosetta.md`](wiki/concepts/rosetta.md) | DSPy, Pydantic AI and LangGraph, term by term, with a DSPy module ported |
+| [`docs/co-development.md`](docs/co-development.md) | building a workflow with a coding agent, stage by stage |
 | `wiki/index.md` | one concept a page, and the index of architecture decisions |
 | [`wiki/references.md`](wiki/references.md) | the work Effective builds on: Recursive Language Models, GEPA, ReAct, Absurd, tdom and more |
 
@@ -227,7 +334,7 @@ All under `src/effective/` unless noted.
 |---|---|
 | [uv](https://docs.astral.sh/uv/) and git | everything; uv installs the pinned Python 3.14 (`.python-version`) |
 | [just](https://github.com/casey/just) | the recipes; `just` alone lists them |
-| rootless [Podman](https://podman.io/) | the durable lane (a digest-pinned Postgres), the coder's sandbox, rendering diagrams, the sandboxed formal checks |
+| rootless [Podman](https://podman.io/) | the durable lane (a digest-pinned Postgres), Odoo Community for the AR firm, the coder's sandbox, rendering diagrams, the sandboxed formal checks |
 | [elan](https://github.com/leanprover/elan) (Lean), node and npm, a JDK 17+ | the formal gates only (`just formal-setup`, `just formal`) |
 
 | extra | for |
@@ -235,6 +342,8 @@ All under `src/effective/` unless noted.
 | `tui` | the terminal viewer (textual, rich) |
 | `judge` | the Jev judge interpreter |
 | `bridge` | the arrivals bridge (redis) |
+| `coding` | the lint and the coding machine's tools (ast-grep) |
+| `binary` | psycopg with its own libpq, for a machine without one |
 
 ## Contributing
 
@@ -242,11 +351,15 @@ All under `src/effective/` unless noted.
 just check        # the gate: lint, ty, the docs and key checks, the suite
 just pgt-up       # the test Postgres under Podman, for the durable lane
 just formal       # Lean proofs and the Quint typecheck
+just odoo-up      # Odoo Community under Podman; with `pgt-up`, `just odoo-test` runs the AR firm against it
 ```
+
+How the substrate is verified, from crash sweeps to the formal models, is on the testing page
+([`wiki/concepts/testing.md`](wiki/concepts/testing.md)).
 
 Run `just check` from a git clone: its docs gate reads `git ls-files`. Without a test Postgres, it
 skips the Postgres-backed tests and runs everything else.
-`CLAUDE.md` is the contributor guide, for people and coding agents alike: the layout, every
+`AGENTS.md` is the contributor guide, for people and coding agents alike: the layout, every
 recipe, the invariants and the code-prose rules.
 
 ## License

@@ -10,9 +10,9 @@ text and screenshots anywhere on screen, and types what you dictate into any
 app. Speech recognition and translation run on macOS's built-in frameworks
 or on local models — no cloud service is required.
 
-**Current version: 0.9.0 — internal test build.**
+**Current version: 0.10.0 — internal test build.**
 
-### [⬇ Download OmniVoice 0.9.0 (.dmg)](https://github.com/hdcola/OmniVoice/releases/download/v0.9.0/OmniVoice-0.9.0.dmg)
+### [⬇ Download OmniVoice 0.10.0 (.dmg)](https://github.com/hdcola/OmniVoice/releases/download/v0.10.0/OmniVoice-0.10.0.dmg)
 
 Or install with [Homebrew](https://brew.sh):
 
@@ -115,11 +115,15 @@ memory use next to your Mac's memory.
 
 ### App
 
-Menu-bar start/stop with a pulsing recording indicator, launch at login,
+A menu bar popover with the transcription status (live mic level, elapsed
+time, missing permissions), start/stop, the language pair, audio source,
+Quick Translate and the three latest transcripts; a pulsing recording
+indicator in the menu bar; a global Start/Stop Transcription shortcut (⌥R,
+changeable in Settings → General → Shortcuts); launch at login,
 Dock icon only while Settings or the wizard is open, system notifications
 when a download finishes, a re-runnable first-run guide, and a
 what's-new window after updates. Settings has six tabs (⌘1–⌘6): General, Speech
-Recognition, Voice Input, Quick Translate, Model Library, About.
+Recognition, Dictation, Quick Translate, Model Library, About.
 
 ## Requirements
 

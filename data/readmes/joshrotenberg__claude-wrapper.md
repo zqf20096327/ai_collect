@@ -111,7 +111,8 @@ let claude = Claude::builder()
 - `timeout_secs()` / `timeout()` -- command timeout (no default)
 - `retry()` -- default `RetryPolicy` applied to every command
 - `process_group()` -- isolate each child in its own Unix process group (enabled by default)
-- `kill_grace()` -- optional SIGTERM grace before SIGKILL on awaited shutdown paths
+- `kill_grace()` -- optional grace before SIGKILL on awaited shutdown paths
+- `termination_signal()` -- SIGTERM (default) or opt-in SIGINT during that grace
 - `output_limit()` -- byte ceiling on captured stdout and stderr (no default)
 
 `Claude` also exposes:
@@ -129,6 +130,33 @@ owned process group and reaps the direct child before returning
 Dropping an ordinary execute future still triggers immediate process-group
 cleanup, but a destructor cannot wait for reaping. Use the cancellable methods
 when the caller needs terminal settlement before it records a run as stopped.
+
+To let the CLI cancel its detached tools before escalation, opt into SIGINT
+and a short grace period:
+
+```rust
+use claude_wrapper::{Claude, TerminationSignal};
+use std::time::Duration;
+
+let claude = Claude::builder()
+    .termination_signal(TerminationSignal::Interrupt)
+    .kill_grace(Duration::from_secs(2))
+    .build()?;
+```
+
+Awaited shutdown drains and discards output with bounded buffers during the
+full grace, then sends SIGKILL to the owned group and reaps the direct child.
+Cancellation and timeout keep their original error even if the CLI exits
+successfully during cleanup. This also applies to blocking timeouts, streaming,
+and duplex shutdown overruns; `DuplexSession::interrupt()` remains a protocol
+request, separate from process termination.
+
+The defaults are unchanged: no grace means immediate SIGKILL. The soft signal
+and grace apply only to owned Unix process groups. With `process_group(false)`
+or on other platforms, shutdown kills only the direct child. Dropping a future
+always uses immediate hard cleanup. Descendants that leave the owned group
+require cooperative cleanup by the CLI; the wrapper cannot guarantee their
+termination.
 
 ### Bounded output capture
 
@@ -223,6 +251,27 @@ Full coverage of `claude -p`. The common options:
 | `input_format()` / `include_partial_messages()` | `--input-format` / `--include-partial-messages` | Input/streaming shape |
 | `settings()` / `fallback_model()` / `add_dir()` / `file()` | various | Misc per-turn knobs |
 | `retry()` | (client-side) | Per-command retry override |
+| `extra_arg()` / `extra_args()` | raw CLI arguments | Unvalidated options for this query |
+
+Use `extra_arg` / `extra_args` for provider options that need to pass through
+unchanged. Each value is one argument, including values containing spaces;
+the wrapper does not invoke a shell. Repeated calls append in order, after
+generated options and before `--` and the prompt. With `prompt_via_stdin(true)`,
+they are the final arguments and the prompt is still sent through stdin.
+
+```rust
+let cmd = QueryCommand::new("summarize the project")
+    .model("sonnet")
+    .extra_args(["--plugin-dir", "/path with spaces/plugins"])
+    .extra_arg("--brief")
+    .prompt_via_stdin(true);
+```
+
+Passthrough arguments are not validated, including conflicts with typed
+options. The Claude CLI determines how duplicate or unsupported flags behave.
+Frontends that depend on a specific input or output format should reject
+conflicting passthrough options themselves. Use `ClaudeBuilder::arg` when an
+argument should apply to every command instead.
 
 Raw session flags (prefer `Session` for multi-turn):
 
@@ -287,7 +336,7 @@ short-lived and conversation continuity is the main thing you need
 | Mid-turn interrupt | yes (`interrupt()`) | no (only `child.kill()` via SIGKILL) |
 | Mid-turn permission prompts | yes (`PermissionHandler`) | no |
 | Broadcast event subscribers | yes (`subscribe()`) | no (per-turn streaming via `stream_query`) |
-| Built-in cost / history tracking | no (TurnResult is per-turn) | yes (`total_cost_usd`, `history`, `BudgetTracker`) |
+| Built-in cost / history tracking | via `Conversation` (`TurnResult` reports the session's running total) | yes (`total_cost_usd`, `history`, `BudgetTracker`) |
 | Right for | long-running hosts | short-lived processes |
 
 ### `DuplexSession` (recommended for long-running hosts)
@@ -531,6 +580,20 @@ Retry wraps every `QueryCommand::execute` and `execute_sync` (other
 commands don't retry). A per-command override is available via
 `QueryCommand::retry(policy)`.
 
+## Execution diagnostics
+
+Normal execution tracing is intended to report operation, argument counts, byte
+counts, timing and outcome metadata. Prompts, argument values, native identifiers,
+paths, configuration values, process output and rendered errors belong in
+caller-controlled command previews, result/error values or explicit native logs.
+The wrapper does not install a subscriber. Hosts choose their subscriber and
+correlation spans; enabling wrapper tracing must not opt them into content logs.
+
+This contract covers execution, streaming, retries and resident sessions. Read-side
+filesystem-inspection modules have separate diagnostics that can include paths and
+parse errors; filter those targets when inspecting private local state.
+
+
 ## Error handling
 
 ```rust
@@ -563,6 +626,13 @@ let output = RawCommand::new("custom-subcommand")
     .execute(&claude)
     .await?;
 ```
+
+## Compatible headless options
+
+`QueryCommand` and `DuplexOptions` expose `forward_subagent_text()` for nested
+stream-json messages, and `allow_dangerously_skip_permissions()` to make bypass
+mode available without enabling it. Both flags are checked at the existing CLI
+floor and maximum. Neither is enabled by default; the floor remains 2.1.220.
 
 ## Cargo features
 
@@ -616,6 +686,23 @@ cargo test --test fake_claude_sync \
 # Integration tests against a real `claude` binary (requires auth)
 cargo test --test integration -- --ignored
 ```
+
+## Native permission checks
+
+Resident permission handlers run when the CLI asks for approval. Auto-approved
+actions can skip the callback; configure an explicit ask rule in `settings()`
+for actions that must reach it. Denial and deferred denial are tested with
+real Claude 2.1.220 and 2.1.303. These cases keep the resident transport open
+and require no injected SDK hook configuration.
+
+Run the focused authenticated checks with:
+
+```sh
+cargo test --test integration duplex_native_permission -- --ignored
+```
+
+Set `CLAUDE_INTEGRATION_BIN` to test a specific installed CLI. The tests request
+a benign Bash file write, always deny it and verify that no file was created.
 
 ## License
 

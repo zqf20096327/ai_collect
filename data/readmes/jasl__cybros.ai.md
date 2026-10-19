@@ -70,6 +70,8 @@ The documentation site's source is under [`guides/`](guides/index.md).
 | [`nexus/`](nexus/README.md) | The Rails kernel, model gateway and administration UI | `bin/setup`, `bin/dev`; `bin/ci` for the full local pipeline |
 | [`agents/rho/`](agents/rho/rho/README.md) | rho: the daemon and CLI, the runner, the browser page, Telegram, ACP, MCP, browser tools, code mode | `bundle exec rake` in each gem |
 | [`sdks/ruby/`](sdks/ruby/README.md) | `cybros_agent`, the Ruby SDK and agent framework | `bundle exec rake` |
+| [`sdks/typescript/`](sdks/typescript/README.md) | `@cybros/agent`, the TypeScript and JavaScript server SDK | `pnpm install --frozen-lockfile`, `pnpm run check` |
+| [`sdks/rust/`](sdks/rust/README.md) | `cybros-agent`, the async Rust SDK | `bin/ci` |
 | [`cmctl/`](cmctl/README.md) | The human operator CLI for Nexus settings | `bundle exec rake` |
 | [`install/`](install/README.md) | The host installer, Docker images and the combined stack | |
 | [`e2e/`](e2e/README.md) | Cross-project journeys and evaluation tooling | `bundle exec rake` |

@@ -31,6 +31,22 @@ key (see *Voice messages* below).
   `pip install` for it to work, which means far fewer “it doesn’t run on my machine” moments.
 - **Works behind NAT** — long polling, so no port‑forwarding or domain needed.
 
+### Optional monitoring
+
+If [Agents Monitoring](https://github.com/petrludwig-collab/AgentsMonitoring)
+0.3.2+ is installed, `setup` and `connect` automatically register each bridge after
+its process starts. Each config has an independent daemon/health row and restart
+command; repeated registration updates the same entry. The registration preserves
+the Python interpreter, `PYTHONPATH` and state directory without copying bot tokens
+or changing Agents Monitoring's config directly. Existing stopped/enabled settings
+in the monitor are preserved. Its keepalive must be enabled for automatic recovery.
+
+Without the monitor, setup prints one informational sentence and continues normally.
+An old/unreachable monitor produces a warning; upgrade it and run `agentsmon add`
+to register an existing bridge. The bridge itself keeps running. Newly created
+sessions require an explicit provider choice and confirmation; missing CLIs never
+silently select another provider.
+
 ---
 
 ## Quick start
@@ -64,6 +80,21 @@ curl -fsSL https://raw.githubusercontent.com/petrludwig-collab/Agent2Telegram/ma
 Codex needs no extra setup — its rollout log records turn boundaries. For Claude Code the wizard
 also registers the end-of-turn **Stop hook** automatically.
 
+Manual Claude attach configurations are covered too: `run` checks and registers the Stop
+hook in the active user settings (`CLAUDE_CONFIG_DIR/settings.json`, or
+`~/.claude/settings.json`). Registration is atomic and idempotent, preserves other settings,
+and recognises custom Python hooks that write this bridge's `turn_end` marker using a
+literal path. Invalid/unreadable settings and disabled hooks produce a warning and are
+left untouched. Project/managed policy overrides and dynamically computed custom hook
+paths still need manual inspection.
+
+`doctor --config /path/to/config.json` reports a missing hook. To repair it without starting
+a second bridge, use `python3 -m agent2telegram claude-hook --config /path/to/config.json`,
+then **resume the same Claude session** to load it. Registration never restarts your agent.
+Until the bridge observes a Stop marker, 90 seconds without transcript activity suppresses
+busy acknowledgements and typing. This only changes the indicator: the reply window and
+cross-chat ownership guard stay in place, so a late answer retains its original destination.
+
 You get the same live UX both ways: progress messages kept, a one-line italic status bubble for
 tool calls that trails at the bottom and clears at the end, and a `typing…` indicator that stays
 lit for the whole turn.
@@ -85,10 +116,36 @@ each turn-end to the right bridge. Your existing bots are left untouched. Name i
 
 ```bash
 python3 -m agent2telegram update             # git pull + restart every running bridge on the new code
+python3 -m agent2telegram update --no-restart # code only; restart with your existing supervisor
 ```
 
 Pulls the latest code into `~/.agent2telegram-src` and restarts each running bridge, preserving
 its own `--config` — no re-setup, no re-entering tokens.
+The restart plan is checked **before** pulling changes. Linux restarts preserve each process's
+original environment. On macOS, a bridge owned by the `com.agent2telegram.bridge` launchd
+service restarts through `launchctl kickstart -k gui/<uid>/com.agent2telegram.bridge` (the PID
+must match). A standalone bridge can also restart from an absolute `--config` path when the
+file contains its token and explicit `state_dir`; unrelated bot overrides are not inherited.
+
+When the original environment cannot be recovered (for example an older, environment-only
+configuration on macOS), the source update succeeds with a **WARNING** and exit code 0.
+That bridge stays running on its previous code. The warning identifies its PID and prints
+a shell-quoted start command requiring the original config/state paths. Restart it with its
+original supervisor, or stop the standalone bridge and use that command in its original
+environment. Never guess a default state path: it can replay messages. For custom supervisors,
+prefer `--no-restart`. Agent/tmux sessions are never restarted.
+
+After a successful pull, missing bot usernames in saved configurations are backfilled with
+Telegram `getMe` before restart, including with `--no-restart`; existing usernames are kept.
+Local source changes or failed restart preflight stop the update before pulling. A failed pull
+preserves the checkout; a failed restart after a successful update is reported as an error.
+
+Source-archive installations update by re-running `install.sh`. Older installations without
+an archive marker are recognised at the standard `~/.agent2telegram-src` location; the old
+source is kept in a neighbouring `.backup.*` directory, including local files. Config and
+state are outside that source tree and remain unchanged. Review/remove old backups yourself.
+For unattended installation, use `bash install.sh --no-setup`; `--no-pip` installs only the
+stdlib launcher. A source clone is installed from its current checkout; pull updates explicitly.
 
 ---
 
@@ -168,9 +225,10 @@ One line — the exact mirror of the install one‑liner:
 curl -fsSL https://raw.githubusercontent.com/petrludwig-collab/Agent2Telegram/main/uninstall.sh | bash
 ```
 
-That stops any running bridge and removes **everything**: the config (token included), state,
-the source clone, the launcher, the Claude Code Stop hook, and the pip package — no leftovers,
-no manual steps. (If you prefer, the equivalent from a clone is `python3 -m agent2telegram
+Stop any custom keepalive/supervisor first. This stops the current user's bridges and removes
+the default config (token included), state, installed source, shell launcher, Claude Stop hook,
+and pip package. Agent tmux sessions, other users, custom source/state paths and archive backups
+are left untouched. (If you prefer, the equivalent from a clone is `python3 -m agent2telegram
 uninstall`; add `--yes` to skip the confirmation prompt.)
 
 ---
@@ -240,7 +298,9 @@ Other group messages are silently ignored, including receipt acknowledgments. Pr
 are unchanged. The default is `false`; the authorized-user allowlist is always enforced.
 
 In attach mode, optional `"inbound_sender_label": true` adds sender/chat context immediately
-after `origin_prefix`: `[Od: Alex · DM]` or `[Od: Alex · skupina "Team"]`.
+after `origin_prefix`: `[From: Alex · DM]` or `[From: Alex · group "Team"]`.
+The default language is English. With explicit `language: "cs"`, the original Czech
+`[Od: ...]` prefix is preserved, including reactions, voice notes, and attachments.
 Names come from the current Telegram sender, including voice messages, attachments and reactions;
 reply quotes do not replace the sender. Display names (64 characters) and group titles (80)
 are sanitized to one line without brackets, quotes or control characters.
@@ -257,6 +317,11 @@ overrides the text with a literal single line, maximum 200 characters.
 The default is off. A host-state marker enforces a 30-second cooldown across process restarts,
 including failed/uncertain sends. The notice is not retried in a background loop; an uncertain
 Telegram acknowledgement can mean no visible notice. Keep a distinct state directory for each bot.
+
+New `setup`/`connect` configurations store an absolute `state_dir`; `connect` gives each named
+bridge its own directory. For existing configurations, the old shared default remains unchanged
+unless you explicitly set `state_dir` or `AGENT2TELEGRAM_STATE` (the environment wins). Preserve
+the existing directory and offset when upgrading; do not choose a new empty path for a live bot.
 
 Background progress (attach mode, Claude Code): `"background_progress": true` shows work that
 runs outside a Telegram turn. Running sub-agents (Claude Code writes them to

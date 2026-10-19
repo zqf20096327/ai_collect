@@ -152,6 +152,17 @@ You can also point to a specific config file:
 open-terminal run --config /path/to/my-config.toml
 ```
 
+### Memory management
+
+File and command-output responses stream from disk, uploads are copied in chunks,
+and generated ZIP/PDF files are removed after sending or cancellation. Log rotation
+keeps the original newest-half behavior without loading the entire log into memory.
+Search listings and ranking use temporary disk storage while preserving full matches.
+
+Process, terminal, notebook, and document-worker cleanup releases readers, file
+handles, and child processes on completion, cancellation, or server shutdown.
+The existing command-log retention and notebook idle timeout still apply.
+
 ### File Browser Root
 
 Open Terminal reports file-browser root metadata from `GET /files/cwd` so clients can hide parent navigation above a friendly starting point.

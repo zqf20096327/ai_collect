@@ -2,10 +2,10 @@
   <img src="assets/logo.svg" alt="opencode-power-pack" width="100%" />
 </p>
 
-<h1 align="center">OpenCode Power Pack for Claude Code, Codex, OpenCode + Pi</h1>
+<h1 align="center">OpenCode Power Pack for Claude Code, Codex, OpenCode 1 + 2, and Pi</h1>
 
 <p align="center">
-  <i>Fifty-five portable workflows for Claude Code, Codex, OpenCode, and Pi.<br/>
+  <i>Fifty-five portable workflows for Claude Code, Codex, OpenCode 1 and 2, and Pi.<br/>
   Code review, security audit, feature development, frontend design, project memory, and authoring tools.</i>
 </p>
 
@@ -17,13 +17,15 @@
   <a href="https://github.com/hashgraph-online/hol-guard"><img alt="HOL Guard scanner" src="https://img.shields.io/badge/HOL%20Guard-scanned-00a67e?style=flat-square"></a>
   <img alt="Skills: 55" src="https://img.shields.io/badge/skills-55-FFD60A?style=flat-square&labelColor=0B0F14">
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude_Code-plugin-0B0F14?style=flat-square&labelColor=FFD60A">
-  <img alt="OpenCode 1.18.7+" src="https://img.shields.io/badge/opencode-1.18.7%2B-0B0F14?style=flat-square&labelColor=FFD60A">
+  <img alt="OpenCode 1.18.7+ / 2.x" src="https://img.shields.io/badge/opencode-1.18.7%2B%20%2F%202.x-0B0F14?style=flat-square&labelColor=FFD60A">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-0B0F14?style=flat-square&labelColor=FFD60A">
   <img alt="Pi package" src="https://img.shields.io/badge/Pi-package-0B0F14?style=flat-square&labelColor=FFD60A">
 </p>
 
 <p align="center">
   <a href="#installation"><b>Install</b></a> ·
+  <a href="https://skills.waybarrios.com/docs/"><b>Documentation</b></a> ·
+  <a href="#opencode-2-and-humanizer"><b>OpenCode 2</b></a> ·
   <a href="#selective-install-with-npm"><b>Select Skills</b></a> ·
   <a href="#claude-code-quick-install"><b>Claude Code</b></a> ·
   <a href="#codex-quick-install"><b>Codex Quick Install</b></a> ·
@@ -35,7 +37,25 @@
   <a href="#acknowledgments"><b>Credits</b></a>
 </p>
 
-## New in v0.5.0: Lightweight Native Sandboxes
+## OpenCode 2 and humanizer
+
+The current `main` branch supports OpenCode 2 and keeps OpenCode 1.18.7 support. Both hosts load all 55 skills and the three feature-development specialists. Smoke tests cover OpenCode 1.18.7, 2.0.14, and 2.0.32, including effective read-only permissions on V2.
+
+Install the current plugin in OpenCode 2:
+
+```bash
+opencode plugin add "opencode-power-pack@git+https://github.com/waybarrios/opencode-power-pack.git"
+```
+
+The new `humanizer` skill rewrites English and Spanish copy in a direct, natural voice. It keeps facts, names, numbers, and code intact. The `authoring` profile now includes `humanizer`, `mcp-builder`, `paper-summarizer`, and `skill-creator`.
+
+Invoke it with `$humanizer` in Codex, `/humanizer` in OpenCode, or `/opencode-power-pack:humanizer` in Claude Code.
+
+**Use the Git installation for these additions.** The published npm package and tag `v0.5.0` still contain 54 skills and the V1-only plugin. They do not include `humanizer` or the OpenCode 2 plugin port. The npm selective installer can still copy its released skills into `.agents/skills` for OpenCode 2.
+
+For host commands, update steps, and the current catalog, see the [documentation](https://skills.waybarrios.com/docs/) and [skill reference](https://skills.waybarrios.com/docs/skills/). The [OpenCode compatibility guide](docs/opencode-compatibility.md) covers source selection and V2 permissions.
+
+## Native sandboxes in v0.5.0
 
 OpenCode Power Pack now includes an opt-in, fail-closed sandbox runner for safer command execution from **Codex, OpenCode, Claude Code, and Pi**. It gives all four agents one portable capability contract with four least-privilege profiles, while using native Seatbelt isolation on macOS and Bubblewrap on Linux.
 
@@ -160,10 +180,19 @@ Maintainers publish the mirror with the `Publish GitHub Package` workflow. Relea
 | `frontend` | Frontend implementation and anti-generic design critique |
 | `security` | Security review, threat modeling, static analysis, validation, and reporting |
 | `huggingface` | Model discovery, local inference, training, evaluation, Spaces, and AWS deployment |
-| `authoring` | Skill and MCP authoring plus technical-paper summarization |
+| `authoring` | Skills, MCP servers, technical-paper summaries, and natural copy editing on `main` |
 | `project-memory` | Audit and maintain durable project guidance |
 
 Profiles automatically include required companion skills and can be combined with individual skill names. The default destination is `~/.agents/skills`; `--project` finds the current Git root and installs into its `.agents/skills` directory. Existing directories are skipped unless `--force` is provided, and replacements are staged with rollback plus per-skill locking. Every copied skill retains its provenance, third-party notices, and license texts. Use `--dry-run` to preview or `--all` to install the complete catalog.
+
+The commands above use the published npm catalog. To selectively install `humanizer` or the four-skill `authoring` profile from current source:
+
+```bash
+npx --package=git+https://github.com/waybarrios/opencode-power-pack.git opencode-power-pack install humanizer --dry-run
+npx --package=git+https://github.com/waybarrios/opencode-power-pack.git opencode-power-pack install humanizer
+```
+
+Use `install --profile authoring` instead of `install humanizer` for all four authoring skills. These commands install into `~/.agents/skills`. For a project-local install, run the same command from the target repository with `--project`.
 
 The npm installer and the full Claude Code/Codex/OpenCode plugins are alternative activation paths. Claude Code users should prefer the namespaced plugin because the selective installer currently targets the portable `.agents/skills` location used by Codex, OpenCode, and Pi. If a full plugin is already active, selectively copying the same skills does not reduce that plugin's loaded catalog.
 
@@ -261,7 +290,7 @@ It complements [obra/superpowers](https://github.com/obra/superpowers), which pr
 | Review | `fp-check` | Systematically verify a suspected security bug to a TRUE/FALSE POSITIVE verdict |
 | Review | `vuln-report` | Draft a single-vulnerability disclosure report in GitHub advisory style |
 | Review | `agentic-actions-auditor` | Audit GitHub Actions workflows for prompt-injection risk in AI agent integrations |
-| Review | `security-threat-model` | Repository-grounded threat modeling — trust boundaries, assets, abuse paths |
+| Review | `security-threat-model` | Model threats using repository evidence, trust boundaries, assets, and abuse paths |
 | Review | `differential-review` | Security-focused differential review of a diff/PR with blast-radius analysis |
 | Review | `variant-analysis` | Find similar vulnerabilities/bugs across a codebase from one initial pattern |
 | Review | `sarif-parsing` | Parse, filter, dedupe, and convert SARIF output from CodeQL/Semgrep/other scanners |
@@ -281,30 +310,30 @@ It complements [obra/superpowers](https://github.com/obra/superpowers), which pr
 | Authoring | `humanizer` | Rewrite AI-generated copy in ES/EN into direct, natural prose without inventing facts |
 | Authoring | `mcp-builder` | Design and build MCP servers in TypeScript or Python |
 | Authoring | `skill-creator` | Create, test, and improve reusable `SKILL.md` workflows |
-| Hugging Face | `hf-cli` | Core `hf` CLI usage — auth, cache, repos, jobs, papers, Spaces, and more |
+| Hugging Face | `hf-cli` | Use the `hf` CLI for auth, cache, repos, jobs, papers, and Spaces |
 | Hugging Face | `hf-mem` | Estimate memory needed to load Safetensors/GGUF weights for inference |
 | Hugging Face | `huggingface-best` | Find and compare the best model for a task via official benchmark leaderboards |
-| Hugging Face | `huggingface-datasets` | Dataset Viewer API workflows — metadata, pagination, search, filters |
+| Hugging Face | `huggingface-datasets` | Dataset Viewer API workflows for metadata, pagination, search, and filters |
 | Hugging Face | `huggingface-papers` | Look up and analyze Hugging Face / arXiv paper pages via the papers API |
 | Hugging Face | `huggingface-paper-publisher` | Publish and manage research papers on the Hub, including research-article templates |
 | Hugging Face | `huggingface-tool-builder` | Build reusable scripts/tools around the Hugging Face API |
 | Hugging Face | `huggingface-local-models` | Select and run GGUF models locally with llama.cpp (CPU/Metal/CUDA/ROCm) |
-| Hugging Face — Training | `huggingface-llm-trainer` | Fine-tune LLMs (TRL: SFT/DPO/GRPO, or Unsloth) on Hugging Face Jobs |
-| Hugging Face — Training | `huggingface-vision-trainer` | Fine-tune object detection, image classification, and SAM/SAM2 segmentation models |
-| Hugging Face — Training | `train-sentence-transformers` | Train bi-encoder/cross-encoder/sparse embedding models |
-| Hugging Face — Training | `trl-training` | TRL CLI training — SFT, DPO, GRPO, KTO, RLOO, reward modeling |
-| Hugging Face — Training | `huggingface-community-evals` | Run local evaluations with inspect-ai / lighteval |
-| Hugging Face — Training | `huggingface-trackio` | Track and visualize ML training experiments with Trackio |
-| Hugging Face — Spaces | `huggingface-spaces` | Build, deploy, and debug Gradio/Docker/static Spaces |
-| Hugging Face — Spaces | `huggingface-gradio` | Build Gradio web UIs and demos in Python |
-| Hugging Face — Spaces | `huggingface-lora-space-builder` | Build and publish a Gradio Space demo for a user-provided LoRA |
-| Hugging Face — Spaces | `huggingface-zerogpu` | Write/debug ZeroGPU-constrained Gradio Space code |
-| Hugging Face — Cloud | `hf-cloud-aws-context-discovery` | Discover the user's local AWS context before any AWS work |
-| Hugging Face — Cloud | `hf-cloud-python-env-setup` | Set up an isolated Python env for SageMaker/AWS work |
-| Hugging Face — Cloud | `hf-cloud-sagemaker-deployment-planner` | Entry point for planning a SageMaker model deployment |
-| Hugging Face — Cloud | `hf-cloud-sagemaker-iam-preflight` | Ensure a usable SageMaker execution role exists before deploying |
-| Hugging Face — Cloud | `hf-cloud-serving-image-selection` | Pick the right SageMaker serving container image |
-| Hugging Face — Cloud | `hf-cloud-sagemaker-production-defaults` | Create a SageMaker endpoint with autoscaling, alarms, and tagging by default |
+| Hugging Face training | `huggingface-llm-trainer` | Fine-tune LLMs (TRL: SFT/DPO/GRPO, or Unsloth) on Hugging Face Jobs |
+| Hugging Face training | `huggingface-vision-trainer` | Fine-tune object detection, image classification, and SAM/SAM2 segmentation models |
+| Hugging Face training | `train-sentence-transformers` | Train bi-encoder/cross-encoder/sparse embedding models |
+| Hugging Face training | `trl-training` | Train with the TRL CLI using SFT, DPO, GRPO, KTO, RLOO, and reward modeling |
+| Hugging Face training | `huggingface-community-evals` | Run local evaluations with inspect-ai / lighteval |
+| Hugging Face training | `huggingface-trackio` | Track and visualize ML training experiments with Trackio |
+| Hugging Face Spaces | `huggingface-spaces` | Build, deploy, and debug Gradio/Docker/static Spaces |
+| Hugging Face Spaces | `huggingface-gradio` | Build Gradio web UIs and demos in Python |
+| Hugging Face Spaces | `huggingface-lora-space-builder` | Build and publish a Gradio Space demo for a user-provided LoRA |
+| Hugging Face Spaces | `huggingface-zerogpu` | Write/debug ZeroGPU-constrained Gradio Space code |
+| Hugging Face cloud | `hf-cloud-aws-context-discovery` | Discover the user's local AWS context before any AWS work |
+| Hugging Face cloud | `hf-cloud-python-env-setup` | Set up an isolated Python env for SageMaker/AWS work |
+| Hugging Face cloud | `hf-cloud-sagemaker-deployment-planner` | Entry point for planning a SageMaker model deployment |
+| Hugging Face cloud | `hf-cloud-sagemaker-iam-preflight` | Ensure a usable SageMaker execution role exists before deploying |
+| Hugging Face cloud | `hf-cloud-serving-image-selection` | Pick the right SageMaker serving container image |
+| Hugging Face cloud | `hf-cloud-sagemaker-production-defaults` | Create a SageMaker endpoint with autoscaling, alarms, and tagging by default |
 | JavaScript | `transformers-js` | Run Hugging Face models directly in JS/TS (browser or Node/Bun/Deno) |
 | Project memory | `agents-md-improver` | Audit project rules and propose targeted improvements |
 | Project memory | `agents-md-revise` | Capture durable session learnings in project rules |
@@ -329,7 +358,7 @@ They are complementary rather than duplicate workflows. Codex shows distinct use
 - Node.js 20.11.0 or newer, including npm/npx, for [selective installation](#selective-install-with-npm) and the sandbox runner
 - One supported host:
   - A current Claude Code installation with plugin support: <https://code.claude.com/docs/en/plugins>
-  - OpenCode 1.18.7 or newer: <https://opencode.ai>
+  - OpenCode 1.18.7 or newer, including OpenCode 2: <https://opencode.ai>
   - A current Codex CLI or Codex desktop environment with plugin support: <https://developers.openai.com/codex/>
   - A current Pi coding agent installation: <https://pi.dev/>
 
@@ -360,26 +389,36 @@ For a smaller personal or repository-specific set, use the [selective npm instal
 
 ### OpenCode From GitHub
 
+On OpenCode 2:
+
+```bash
+opencode plugin add "opencode-power-pack@git+https://github.com/waybarrios/opencode-power-pack.git"
+```
+
+On OpenCode 1:
+
 ```bash
 opencode plugin --global "opencode-power-pack@git+https://github.com/waybarrios/opencode-power-pack.git"
 ```
 
-Restart OpenCode after installation. OpenCode discovers each skill and creates its same-named slash command automatically.
+Restart OpenCode after installation. One plugin adapts to the host version: OpenCode 2 registers all fifty-five skills and the three specialist agents through the V2 plugin API, and OpenCode 1 keeps the original `config.skills.paths` and `config.agent` hook. Either way the skills are invocable by name and the three roles are registered as read-only subagents.
 
-To pin a published release, append its tag:
+The compatibility smoke tests cover OpenCode **1.18.7, 2.0.14, and 2.0.32**. The `SKILL.md` format stays the same across these hosts.
+
+To pin a release, append its tag to the same spec. Choose a release that includes the V2 port when using OpenCode 2; `v0.5.0` predates it:
 
 ```bash
-opencode plugin --global "opencode-power-pack@git+https://github.com/waybarrios/opencode-power-pack.git#<tag>"
+opencode plugin add "opencode-power-pack@git+https://github.com/waybarrios/opencode-power-pack.git#<tag>"
 ```
 
 ### OpenCode From A Local Clone
 
 ```bash
 git clone https://github.com/waybarrios/opencode-power-pack.git ~/code/opencode-power-pack
-opencode plugin --global "opencode-power-pack@git+file:///home/you/code/opencode-power-pack"
+opencode plugin add "opencode-power-pack@git+file:///home/you/code/opencode-power-pack"
 ```
 
-Use an absolute `file://` URL adjusted for your operating system. The target directory must be a Git repository.
+Use an absolute `file://` URL adjusted for your operating system. The target directory must be a Git repository. On OpenCode 1, replace `plugin add` with `plugin --global` as shown above.
 
 ### Pi From GitHub
 
@@ -402,6 +441,18 @@ claude plugin validate . --strict
 After marketplace installation, run `/plugin` and confirm that `opencode-power-pack` is enabled. Invoke `/opencode-power-pack:code-review` for a first test.
 
 ### Verify OpenCode
+
+Restart OpenCode, then check the registered skills and specialist agents.
+
+On OpenCode 2:
+
+```bash
+opencode debug agents
+```
+
+The output should include `code-explorer`, `code-architect`, and `code-reviewer` as `subagent` entries. OpenCode 2 enforces their read-only restrictions when evaluating permission requests, so the agent listing can show the host's base permissions. In the TUI, the slash catalog should list `/code-review`, `/feature-dev`, `/frontend-design`, and the other bundled skills.
+
+On OpenCode 1:
 
 ```bash
 opencode debug skill
@@ -452,13 +503,19 @@ For Pi:
 pi update git:github.com/waybarrios/opencode-power-pack
 ```
 
-For an OpenCode GitHub installation:
+For an OpenCode GitHub installation on OpenCode 2:
 
 ```bash
-opencode plugin --global --force "opencode-power-pack@git+https://github.com/waybarrios/opencode-power-pack.git"
+opencode plugin update "opencode-power-pack@git+https://github.com/waybarrios/opencode-power-pack.git"
 ```
 
-Restart OpenCode after the command finishes. For a pinned installation, update the tag first. Local-clone users should run `git pull` in the clone and reinstall with the same `git+file://` spec.
+On OpenCode 1, reinstall with the same spec:
+
+```bash
+opencode plugin --global "opencode-power-pack@git+https://github.com/waybarrios/opencode-power-pack.git"
+```
+
+Restart OpenCode after the command finishes. Pass the exact configured package specification, including any pinned tag. Local-clone users should run `git pull` in the clone, then update using their original `opencode-power-pack@git+file://...` specification on OpenCode 2, or reinstall it on OpenCode 1.
 
 ## Uninstalling
 
@@ -480,7 +537,13 @@ For Pi:
 pi remove git:github.com/waybarrios/opencode-power-pack
 ```
 
-For OpenCode, remove the `opencode-power-pack@...` entry from the `plugin` array in the config where it was installed, then restart OpenCode. There are no command symlinks or copied command files to remove.
+For OpenCode 2, remove the plugin from the global configuration:
+
+```bash
+opencode plugin remove "opencode-power-pack@git+https://github.com/waybarrios/opencode-power-pack.git"
+```
+
+Use your exact configured package specification if it differs from this example. Alternatively, delete the `opencode-power-pack@...` entry from the `plugins` array in the config where it was installed, then restart OpenCode. On OpenCode 1, delete the entry from the `plugin` array instead. There are no command symlinks or copied command files to remove.
 
 ## Troubleshooting
 
@@ -491,15 +554,15 @@ For OpenCode, remove the `opencode-power-pack@...` entry from the `plugin` array
 | Codex cannot find the marketplace | Marketplace snapshot is missing or stale | Run `codex plugin marketplace add waybarrios/opencode-power-pack --ref main`, or upgrade the existing marketplace |
 | Codex installed the plugin but skills do not appear | The current session predates installation | Start a new Codex session and inspect `/plugins` |
 | Pi does not show the skills | Package is absent, disabled, or the session predates installation | Run `pi list`, inspect `pi config`, and start a new Pi session |
-| Skills or commands do not appear | OpenCode is older than 1.18.7 | Upgrade OpenCode, restart, and run `opencode debug skill` |
-| Skills are missing from debug output | Plugin installation failed or its config entry is absent | Re-run `opencode plugin --global --force <module-spec>` and inspect the reported error |
-| Specialist agents are missing | Stale plugin checkout | Force reinstall, restart, and run `opencode debug agent code-explorer` |
+| Skills or commands do not appear | OpenCode is older than 1.18.7 | Upgrade OpenCode, restart, and check the slash catalog or run `opencode debug skill` |
+| Skills are missing from the catalog | Plugin installation failed or its `plugins` entry is absent | Reinstall with `opencode plugin add <module-spec>` (OpenCode 2) or `opencode plugin --global <module-spec>` (OpenCode 1) and inspect the reported error |
+| Specialist agents are missing | Stale plugin checkout | Update the plugin, restart, and run `opencode debug agents` (OpenCode 2) or `opencode debug agent code-explorer` (OpenCode 1) |
 | Installation reports a Git error | Invalid URL, network failure, or inaccessible repository | Validate the source with `git ls-remote <url>` |
 | A workflow is rushed or incomplete | The backing model skipped multi-stage instructions | Use a stronger model and inspect whether required subagent tools are available |
 
 ## Invocation
 
-Claude Code exposes plugin skills as `/opencode-power-pack:<skill>`, Codex uses `$` mentions, OpenCode 1.18.7+ exposes same-named slash commands, and Pi loads workflows from the installed skills package:
+Claude Code exposes plugin skills as `/opencode-power-pack:<skill>`, Codex uses `$` mentions, OpenCode exposes the bundled skills by name (`/` catalog on OpenCode 2, same-named slash commands on OpenCode 1), and Pi loads workflows from the installed skills package:
 
 ```text
 /code-review
@@ -560,10 +623,15 @@ opencode-power-pack
 |   +-- runs opt-in commands in the pinned native sandbox backend
 |
 +-- .opencode/plugins/opencode-power-pack.js
-|   +-- registers skills/ in config.skills.paths
+|   +-- OpenCode 1: registers config.skills.paths and config.agent
+|   +-- OpenCode 2: registers skills and agents through the V2 transforms
 |   +-- registers code-explorer as a read-only subagent
 |   +-- registers code-architect as a read-only subagent
 |   +-- registers code-reviewer with read-only Git commands
+|
++-- .opencode/lib/agent-config.js
+|   +-- derives skill and subagent definitions from the SKILL.md frontmatter
+|   +-- builds the OpenCode 1 permission maps and OpenCode 2 rulesets
 |
 +-- skills/<name>/SKILL.md
 |   +-- shared Codex/OpenCode workflow
@@ -574,9 +642,11 @@ opencode-power-pack
     +-- repository, commit, path, blob, date, and adaptation type
 ```
 
-Each `SKILL.md` is the single source for its workflow. Claude Code loads the directory through its plugin namespace. The OpenCode plugin derives specialist-agent prompts from those files at startup. Codex loads the same skills from its plugin and follows `feature-dev`'s specialist assignments with its native subagent workflow; installing a skill does not itself create a named custom agent.
+Each `SKILL.md` is the single source for its workflow. Claude Code loads the directory through its plugin namespace. The OpenCode plugin adapts to the host version and derives specialist-agent prompts from those files at startup. Codex loads the same skills from its plugin and follows `feature-dev`'s specialist assignments with its native subagent workflow; installing a skill does not itself create a named custom agent.
 
-The packaged agents deny edits, external network access, and nested tasks. `code-reviewer` additionally allows a narrow set of read-only Git commands.
+The packaged agents deny edits, external network access, and nested subagents. `code-reviewer` additionally allows a narrow set of read-only Git commands.
+
+On OpenCode 2, permission evaluation enforces these restrictions even when global rules allow broader access. User-configured agents with their own system prompt or a primary mode replace the bundled role and keep the host's permissions. Explicit user denials and approval prompts still apply to bundled agents.
 
 ## Scope And Non-Goals
 

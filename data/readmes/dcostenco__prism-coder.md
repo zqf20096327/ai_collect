@@ -235,6 +235,18 @@ or by re-enabling after each run.
 <details>
 <summary>Release history (optional)</summary>
 
+## What's New in v20.22.2
+
+**Why it matters:** an agent that followed `session_task_route`'s advice was
+refused on explicit oMLX before anything ran.
+
+- **A complexity hint no longer refuses explicit oMLX.** `session_task_route`
+  recommends a `task_complexity` for every code task. That hint picks Ollama's
+  starting tier, but on explicit oMLX it lowered the model ceiling, so a call
+  that passed the recommended arguments was refused with `omlx_model_ceiling`.
+  Now only an explicit `model_ceiling` below the top tier, or a plan below it,
+  refuses. Thinking on oMLX stays with the server's settings.
+
 ## What's New in v20.22.1
 
 **Why it matters:** on explicit oMLX, a long prompt could keep the device busy
@@ -1814,15 +1826,4 @@ prism_infer({
 Measured on 20.21.14 through the real handler, on the local 9b with cloud off:
 - Every benign follow-up that reached the local 9b with its conversation
   attached was answered correctly. Without the conversation, most answers were
-  invented.
-- The on-device screen still refuses too many benign follow-ups: 11 of 26 in
-  our tests. Each refusal names its reason. Cutting these false refusals is
-  the current work.
-- Every reserved multi-turn probe was refused before any generation (11 of 11).
-</details>
-
-| Mode | Think | Model | Use case |
-|------|-------|-------|----------|
-| `route` | Off (fast) — except a tier that reasons better, e.g. 9B | 9B default | MCP tool routing |
-| `chat` | Per tier: on for 9B, off for 4B/2B | 27B preferred | Conversation, reasoning |
-| `code` | Per tier: on for 9B, off for 4B/2B | 27B preferred | Code gen
+  inve

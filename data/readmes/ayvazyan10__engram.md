@@ -41,7 +41,7 @@ Most AI tools forget everything the moment a session ends. Engram solves this by
 | **7-Step Recall Pipeline** | Embed → Vector search → Graph expand → Score → Rank → Truncate → Log |
 | **Memory Decay & GC** | Ebbinghaus forgetting curve, auto-archive stale memories, episodic→semantic consolidation |
 | **Memory Reflection** | AI-driven insight engine — the AI connected over MCP reasons over your memories to surface patterns, knowledge gaps, trends, and contradictions. Engram runs no LLM of its own — no API keys, no external calls. |
-| **Dashboard v2** | Multi-view dashboard: 3D neural graph, Timeline, Analytics (charts + heatmaps), Reflections panel |
+| **Atlas dashboard** | Map, Recall, Review, Timeline, Insights and Settings; light/dark and ⌘K command palette |
 | **Optional Namespaces** | Disabled by default; enable filtering or strict isolation per project/agent |
 | **Contradiction Detection** | Auto-detect conflicting memories, 5 resolution strategies (keep_newest/oldest/important/both/manual) |
 | **Embedding Upgradability** | Swap embedding models, store model ID alongside vectors, batch re-embedding pipeline |
@@ -96,7 +96,7 @@ CLI            ──direct───────→ ┘
 
 | Integration | Method | How |
 |---|---|---|
-| **Claude Code** | MCP (21 native tools) | `store_memory`, `recall_context`, `request_reflection`, … |
+| **Claude Code** | MCP (24 native tools) | `store_memory`, `recall_context`, `request_reflection`, … |
 | **Claude Desktop** | 1-click Desktop Extension | [Smithery](https://smithery.ai/skills/ayvazyan10/engram) or `.mcpb` from releases |
 | **Ollama** | Transparent HTTP proxy | Point client at `:11435` instead of `:11434` |
 | **Any app** | Direct REST API | `POST /api/recall` + `POST /api/memory` |
@@ -108,18 +108,19 @@ CLI            ──direct───────→ ┘
 
 ### One-command install
 
+For Claude Code, choose the [recommended plugin](docs/INTEGRATIONS.md#claude-code-plugin-recommended) OR `engram setup` for MCP and hooks, never both.
+
 ```bash
-# Install the CLI globally
+# Memory for your AI client — npx-based MCP config, no clone/build
+npx -y @engram-ai-memory/cli setup --npx
+
+# Optional: REST API + Atlas dashboard on :4901 (the wizard clones and builds the server)
 npm i -g @engram-ai-memory/cli
-
-# Run the setup wizard — clones, builds, configures everything
 engram setup
-
-# Start the server (API + 3D dashboard on :4901)
 engram start
 ```
 
-That's it. Open http://localhost:4901 for the dashboard, `/docs` for Swagger UI.
+The first command is all an MCP client needs. With the server running, open http://localhost:4901 for the dashboard, `/docs` for Swagger UI.
 
 ### CLI commands
 
@@ -262,9 +263,10 @@ reads its own file — check its documentation and paste the same block there.
   "mcpServers": {
     "engram": {
       "command": "npx",
-      "args": ["-y", "@engram-ai-memory/mcp@latest"],
+      "args": ["-y", "-p", "@engram-ai-memory/mcp@latest", "engram-mcp"],
       "env": {
-        "ENGRAM_DB_PATH": "~/.engram/engram.db"
+        "ENGRAM_DB_PATH": "~/.engram/engram.db",
+        "ENGRAM_SOURCE": "claude-code"
       }
     }
   }
@@ -280,16 +282,17 @@ If you installed via `engram setup`, you can point to the local build instead:
   "mcpServers": {
     "engram": {
       "command": "node",
-      "args": ["~/.engram/repo/packages/mcp/dist/server.js"],
+      "args": ["/home/you/.engram/repo/packages/mcp/dist/server.js"],
       "env": {
-        "ENGRAM_DB_PATH": "~/.engram/engram.db"
+        "ENGRAM_DB_PATH": "~/.engram/engram.db",
+        "ENGRAM_SOURCE": "claude-code"
       }
     }
   }
 }
 ```
 
-Restart your AI client. **21 tools** are now available:
+Restart your AI client. **24 tools** are now available:
 
 | Category | Tools |
 |---|---|
@@ -298,6 +301,7 @@ Restart your AI client. **21 tools** are now available:
 | **Lifecycle** | `decay_sweep`, `decay_policy`, `re_embed` |
 | **Contradictions** | `check_contradictions`, `resolve_contradiction` |
 | **Reflection** | `request_reflection`, `store_reflection`, `get_reflections` |
+| **Distillation** | `get_distill_tasks`, `complete_distill` |
 | **Tags** | `list_tags`, `tag_memory` |
 | **Webhooks** | `webhook_subscribe`, `webhook_list` |
 | **Plugins** | `plugin_list` |
@@ -335,6 +339,8 @@ Add to `~/.claude/settings.json`:
 
 Every session now auto-stores a summary to engram — the brain grows without manual effort.
 
+Stored sessions are tagged `pending-distill`. The AI connected to Engram calls `get_distill_tasks`, extracts durable facts itself (Engram runs no LLM and needs no API key), and calls `complete_distill`, which stores the facts and then archives the raw session. SessionStart reminds the AI when sessions are waiting to be distilled.
+
 ---
 
 ## Claude Desktop Extension (1-click install)
@@ -351,7 +357,7 @@ Go to [smithery.ai/skills/ayvazyan10/engram](https://smithery.ai/skills/ayvazyan
 
 Download `engram-mcp.mcpb` from [GitHub Releases](https://github.com/ayvazyan10/engram/releases/latest) and open it in Claude Desktop (File → Open Extension). The bundle auto-installs `@engram-ai-memory/mcp` to `~/.engram/mcp/` on first launch — no setup required.
 
-> **How the bootstrap works:** on first run the `.mcpb` bundle installs `@engram-ai-memory/mcp@<version>` via npm into `~/.engram/mcp/`. A marker file prevents re-installation on subsequent launches. All 21 MCP tools are then available in Claude Desktop.
+> **How the bootstrap works:** on first run the `.mcpb` bundle installs `@engram-ai-memory/mcp@<version>` via npm into `~/.engram/mcp/`. A marker file prevents re-installation on subsequent launches. All 24 MCP tools are then available in Claude Desktop.
 
 ---
 
@@ -360,10 +366,10 @@ Download `engram-mcp.mcpb` from [GitHub Releases](https://github.com/ayvazyan10/
 | Package | Description | npm |
 |---|---|---|
 | `@engram-ai-memory/core` | The Brain — memory engine, embeddings, graph, retrieval, decay, reflection | [![npm](https://img.shields.io/npm/v/@engram-ai-memory/core?color=6366f1)](https://npmjs.com/package/@engram-ai-memory/core) |
-| `@engram-ai-memory/mcp` | MCP Server — 21 tools for Claude Code and MCP-compatible clients | [![npm](https://img.shields.io/npm/v/@engram-ai-memory/mcp?color=6366f1)](https://npmjs.com/package/@engram-ai-memory/mcp) |
+| `@engram-ai-memory/mcp` | MCP Server — 24 tools for Claude Code and MCP-compatible clients | [![npm](https://img.shields.io/npm/v/@engram-ai-memory/mcp?color=6366f1)](https://npmjs.com/package/@engram-ai-memory/mcp) |
 | `@engram-ai-memory/cli` | CLI — store, search, recall, reflections, stats, export, import from the terminal | [![npm](https://img.shields.io/npm/v/@engram-ai-memory/cli?color=6366f1)](https://npmjs.com/package/@engram-ai-memory/cli) |
 | `@engram-ai-memory/server` | Fastify REST API + Socket.io WebSocket (53 endpoints) | — |
-| `@engram-ai-memory/web` | Multi-view dashboard — 3D neural graph, Timeline, Analytics, Reflections | — |
+| `@engram-ai-memory/web` | Atlas dashboard — Map, Recall, Review, Timeline, Insights, Settings | — |
 | `@engram-ai-memory/vis` | Force-directed layout + animation helpers | [![npm](https://img.shields.io/npm/v/@engram-ai-memory/vis?color=6366f1)](https://npmjs.com/package/@engram-ai-memory/vis) |
 | `@engram-ai-memory/adapter-ollama` | Transparent Ollama memory proxy (:11435) | — |
 
@@ -376,9 +382,9 @@ Download `engram-mcp.mcpb` from [GitHub Releases](https://github.com/ayvazyan10/
 | `PORT` | `4901` | API server port |
 | `HOST` | `127.0.0.1` | Bind address — **loopback only by default** |
 | `ENGRAM_SOURCE` | `mcp-client` | Client identifier (e.g. `claude-code`, `cursor`, `windsurf`) |
-| `ENGRAM_DB_PATH` | `./engram.db` | SQLite database path |
-| `ENGRAM_NAMESPACE_MODE` | `none` | Namespace behavior: `none`, `filter`, or `isolated` |
-| `ENGRAM_NAMESPACE` | *(none)* | Namespace value used when mode is `filter` or `isolated` |
+| `ENGRAM_DB_PATH` | `~/.engram/engram.db` | SQLite database path. Blank means the default; `~` and `~/x` are expanded |
+| `ENGRAM_NAMESPACE_MODE` | `project` | Namespace behavior: `project`, `none`, `filter`, or `isolated` |
+| `ENGRAM_NAMESPACE` | *(none)* | Namespace value used when mode is `filter` or `isolated`; overrides `project` detection |
 | `ENGRAM_INDEX_PATH` | `{dbPath}.index` | Persistent vector index path |
 | `ENGRAM_EMBEDDING_MODEL` | `Xenova/all-MiniLM-L6-v2` | Override embedding model |
 | `ENGRAM_DECAY_INTERVAL` | `3600000` | Auto-decay sweep interval (ms) |
@@ -388,7 +394,6 @@ Download `engram-mcp.mcpb` from [GitHub Releases](https://github.com/ayvazyan10/
 | `ENGRAM_ALLOWED_HOSTS` | *(empty)* | Hostnames allowed in the `Host` header on `/api/*` (DNS-rebinding defense). IP literals and `localhost` always pass; anything reached by name — a reverse proxy, a Docker service name — must be listed. `*` disables the check. |
 | `ENGRAM_RATE_LIMIT_MAX` | `1000` | Requests per window in the `global` tier. Also `ENGRAM_RATE_LIMIT_HEAVY_MAX` (300), `ENGRAM_RATE_LIMIT_WHOLE_STORE_MAX` (30), `ENGRAM_RATE_LIMIT_WINDOW_MS` (60000), `ENGRAM_RATE_LIMIT_DISABLED`. |
 | `ENGRAM_CSP` | *(built-in policy)* | Override the Content-Security-Policy sent on every response, or `off` to send none. |
-| `ENGRAM_BATCH_CONCURRENCY` | `16` | Parallel embeds inside `POST /api/memory/batch`. |
 | `ENGRAM_WEBHOOK_ALLOW_PRIVATE` | `false` | Allow webhook delivery to loopback/private addresses. Denied by default to prevent SSRF; set `true` if your webhook consumers are on localhost or a private network. |
 | `ENGRAM_SYNC_URL` | *(none)* | PostgreSQL connection string for multi-device sync. Unset = sync disabled. See [Cloud Sync](docs/CLOUD-SYNC.md). |
 | `ENGRAM_SYNC_MODE` | `auto` | Sync behavior: `auto` (background sync on interval + debounce), `manual` (explicit only), `off`. |
@@ -400,7 +405,7 @@ Download `engram-mcp.mcpb` from [GitHub Releases](https://github.com/ayvazyan10/
 | `ENGRAM_MAX_BODY_BYTES` | `10485760` | Ceiling on a proxied request body; over it the proxy answers `413`. |
 | `ENGRAM_TOOL_RETRY` | `true` | Auto-retry failed tool calls once with an instruction (proxy) |
 
-Namespaces are disabled by default. Set `ENGRAM_NAMESPACE_MODE=filter` for optional scoping, or `isolated` together with `ENGRAM_NAMESPACE` for a fixed boundary that rejects overrides and cross-namespace queries. Existing configurations that already contain `ENGRAM_NAMESPACE` continue in `filter` mode automatically.
+`project` is the default: inside a git repository the MCP server and hooks scope to the absolute git top-level path and read that project's memories plus global ones; outside a repository they use the shared pool. `filter` scopes to `ENGRAM_NAMESPACE`, and `isolated` together with `ENGRAM_NAMESPACE` is a fixed boundary that rejects overrides and cross-namespace queries. The REST server and dashboard always run as `none` and see every project. Existing memories have a NULL namespace and stay global.
 
 This is a summary. [docs/CONFIGURATION.md](docs/CONFIGURATION.md) has the full list, including everything under [Security](docs/CONFIGURATION.md#security). Note that `engram start` derives the server's environment from `~/.engram/config.json`, so shell variables it manages are overridden — see the [CLI section](docs/CONFIGURATION.md#cli-packagescli).
 
@@ -411,7 +416,7 @@ This is a summary. [docs/CONFIGURATION.md](docs/CONFIGURATION.md) has the full l
 | Service | Port | Purpose |
 |---|---|---|
 | Engram API | **4901** | REST + WebSocket + Swagger UI |
-| Dashboard | **4901** | 3D visualization (served from API server) |
+| Dashboard | **4901** | Atlas dashboard (served from API server) |
 | Dashboard (Docker) | **4902** | Standalone dashboard container, optional |
 | Ollama Proxy | **11435** | Memory injection proxy → Ollama |
 
@@ -427,11 +432,15 @@ All ports are in the 49xx range to avoid conflicts with common dev services (300
 # Load demo memories with knowledge graph connections
 cd packages/core && npx tsx scripts/demo.ts
 
-# Open the 3D visualization
+# Open the Atlas dashboard
 # → http://localhost:4901
 ```
 
-**Dashboard views:** 3D (Cosmos · Neural Net · Clusters) · Timeline · Analytics · Reflections
+**Atlas views:** Map · Recall · Review · Timeline · Insights · Settings
+
+Explore memories on a map with named regions, Meaning / Faults / Time lenses and search pins. Its switcher adds four lazily loaded views at `#/?view=sky|landscape|river|pulse`: **Sky**, a WebGL night sky arranged by meaning and age; **Landscape**, retention terrain with a Now / +7 / +30 / +90-day decay preview; **River**, braided history by region with brush-to-zoom and region following; and **Pulse**, a read-only recall explanation showing ranks, graph pulls, token budget and exclusions. Recall draws the numbered route of what your AI would be told alongside the exact context. Review contradictions, near-duplicates, fading-but-important memories and possible secrets, with Redact for detected secrets. Open any memory to inspect or edit it; archive and memory-sheet contradiction actions offer a six-second Undo. Timeline groups memories by day, Insights holds Numbers and Reflections, and Settings shows connection steps and health. Welcome guides the first connection.
+
+Use light or dark mode (or follow the system), open commands with **⌘K / Ctrl+K**, and keep the same project scope as you move between memory views. The layout adapts to phones, with keyboard navigation and an accessible list alongside the map.
 
 ---
 
@@ -445,7 +454,7 @@ cd packages/core && npx tsx scripts/demo.ts
 | Cold startup (1k memories) | ~1.2s | Full DB scan + index build |
 | Cached startup (1k memories) | ~45ms | Persisted index (27x faster) |
 | Storage per memory | ~1.3 KB | FP16 compressed (2x reduction) |
-| Dashboard | > 30 FPS | InstancedMesh + postprocessing |
+| Dashboard JS budgets | ≤ 200 KB initial / ≤ 125 KB lazy Insights / ≤ 220 KB lazy 3D views (gzip) | Charts load with Insights; three.js loads with Sky / Landscape; `check:bundle` enforces limits |
 
 Embeddings run **locally** using ONNX Runtime WASM — no OpenAI API, no cost, no data leaving your machine.
 

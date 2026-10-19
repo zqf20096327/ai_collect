@@ -16,7 +16,7 @@
   <img src="https://img.shields.io/badge/kotlin-2.2-7F52FF?logo=kotlin" alt="Kotlin">
   <img src="https://img.shields.io/badge/UI-SwiftUI%20%2F%20Compose-purple" alt="UI">
   <img src="https://img.shields.io/badge/privacy-local--first-brightgreen" alt="Local-first privacy">
-  <img src="https://img.shields.io/badge/languages-iOS%2018%20%2F%20Android%2018-blue" alt="iOS 18 languages / Android 18 languages">
+  <img src="https://img.shields.io/badge/languages-iOS%2019%20%2F%20Android%2019-blue" alt="iOS 19 languages / Android 19 languages">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
   <a href="#credits"><img src="docs/assets/code-reviews.svg" alt="Code reviews by Qodo and Greptile"></a>
   <a href="https://www.bestpractices.dev/projects/14553"><img src="https://www.bestpractices.dev/projects/14553/badge" alt="OpenSSF Best Practices Passing"></a>
@@ -99,20 +99,20 @@ Fud AI is a Udyam-registered micro enterprise in India, operating as a sole prop
 - **Health Connect** — Android sync for nutrition, weight, body fat, and calculated workout calories, with permission reconciliation and backfill support; Energy Burn Goals can use recent energy data for calorie targets; optional read-only import of workouts other apps (Garmin Connect, Coros, Strava, Samsung Health, Fitbit, …) share with Health Connect into Workouts and Progress
 - **Local-only fasting records** — fasting sessions are intentionally not written to Apple Health or Health Connect; eligible OS backup/device transfer may still include them according to device settings
 - **Restore after a reinstall** — on a fresh install or new phone, food, weight, body-fat, and calculated workout-burn records previously written by Fud AI can restore from Apple Health / Health Connect; local workout plans and set details require an OS backup/device transfer
-- **Optional iCloud / Google Drive Backup** — off until you turn it on in Settings → Data Management; iPhone uses iCloud, Android uses Google Drive after sign-in at that toggle only; restore keeps original Health IDs so samples are not duplicated
+- **Optional iCloud / Google Drive Backup** — off until you turn it on in Settings → Data Management; iPhone uses iCloud, Android uses Google Drive after sign-in at that toggle, or when a returning user taps Restore on the Welcome back screen during setup; restore keeps original Health IDs so samples are not duplicated
 - **Apple Watch** — watchOS app and complications show calories, macros, and compact water progress when water tracking is enabled
 - **Widgets** — iOS offers Fud AI in Small, Medium, and Large, small Protein, and a separate small/Lock Screen Water widget; Android offers Calorie, Protein, Today, and Water Glance widgets that update from local snapshots
 - **Share the App** — native iOS share sheet from About → forwards App Store URL plus a personalized message and `fud-ai.app` link; message body localized into all 18 iOS languages
 - **Update check** — About shows the installed app version, opens the App Store / Play Store when a newer version is available, and shows a tab dot for pending updates
 - **Theme color** — iOS and Android Settings let users change the app accent, with matching home screen / launcher icons
-- **Languages** — iOS and Android support 18 languages: Arabic, Azerbaijani, Czech, Dutch, English, French, German, Hindi, Italian, Japanese, Korean, Polish, Portuguese (Brazil), Romanian, Russian, Simplified Chinese, Spanish, Ukrainian. The app auto-selects by the phone's Language setting.
+- **Languages** — iOS and Android support 19 languages: Arabic, Azerbaijani, Czech, Dutch, English, French, German, Hindi, Italian, Japanese, Korean, Polish, Portuguese (Brazil), Romanian, Russian, Simplified Chinese, Spanish, Turkish, Ukrainian. The app auto-selects by the phone's Language setting.
 - **Meal reminders** — customizable breakfast, lunch, dinner notifications
 - **Dark mode** — system, light, or dark
 - **Metric & imperial** units
 
 ## AI Providers
 
-Pick any of the **13 LLM providers** for food analysis, meal what-if suggestions, optional nutrient-goal estimation, and Coach chat. Free Gemini keys are available at [aistudio.google.com/apikey](https://aistudio.google.com/apikey). Requests go directly from your device to the provider you configure. For text, voice-transcribed, and Siri food descriptions on supported iPhones, Apple Intelligence can run on-device only as the last fallback after BYOK provider/fallback attempts fail.
+Pick any of the **16 LLM providers** for food analysis, meal what-if suggestions, optional nutrient-goal estimation, and Coach chat. Free Gemini keys are available at [aistudio.google.com/apikey](https://aistudio.google.com/apikey). Requests go directly from your device to the provider you configure. For text, voice-transcribed, and Siri food descriptions on supported iPhones, Apple Intelligence can run on-device only as the last fallback after BYOK provider/fallback attempts fail.
 
 | Provider | Format | Highlight | Needs API Key |
 |----------|--------|-----------|:---:|
@@ -127,6 +127,9 @@ Pick any of the **13 LLM providers** for food analysis, meal what-if suggestions
 | Fireworks AI | OpenAI-compatible | Qwen 3.7 Plus, MiniMax M3, Kimi K2.6 | Yes |
 | DeepInfra | OpenAI-compatible | Gemma 4 / 3 vision models | Yes |
 | Mistral | OpenAI-compatible | Mistral Small / Medium, Ministral 14B | Yes |
+| DeepSeek | OpenAI-compatible | DeepSeek V4 Flash / Pro (text only) | Yes |
+| Alibaba Qwen | OpenAI-compatible | Qwen 3.7 Plus / 3.8 Max / 3-VL Plus; also Qwen live voice | Yes |
+| Cerebras | OpenAI-compatible | gpt-oss-120b, Gemma 4 (text only) | Yes |
 | Ollama | OpenAI-compatible (local) | Qwen 3 VL, Gemma 4, Llama 3.2 Vision, LLaVA, Moondream | No |
 | Custom (OpenAI-compatible) | OpenAI-compatible | You set base URL + free-form model name | Optional |
 
@@ -174,69 +177,76 @@ For the Coach chat, every turn builds a slim system prompt from your live profil
 
 ## Screenshots
 
-An eight-screen walkthrough of the current app flow — from the dashboard and grouped logging menu through review, progress, Coach, and Workouts.
+Nine screens from the current app, from Home and Live Voice to Coach, Workouts and your own AI keys. They are captured on a simulator with demo data by [`scripts/screenshots/capture-ios.sh`](scripts/screenshots/capture-ios.sh).
 
 <table>
   <tr>
     <td align="center" width="33%">
-      <img src="web/assets/screenshots/home.png" width="230" alt="Home dashboard">
+      <img src="web/assets/screenshots/home.webp" width="230" alt="Home dashboard with calorie ring, macro and water pillars, and the day's diary">
       <br><br>
       <b>01 · Home · Dashboard</b>
       <br>
-      <sub>Daily calorie ring, selected Home nutrient cards, and today's logged meals grouped by meal type. Week strip at the top for date navigation.</sub>
+      <sub>Calorie ring, macro and water pillars, and one diary for meals, water and fasts. The orb next to + starts Live Voice.</sub>
     </td>
     <td align="center" width="33%">
-      <img src="web/assets/screenshots/logging.png" width="230" alt="Grouped food logging options menu">
+      <img src="web/assets/screenshots/live-voice.webp" width="230" alt="Live Voice conversation logging breakfast with an Undo card">
       <br><br>
-      <b>02 · Log · Options</b>
+      <b>02 · Live Voice · Talk to Log</b>
       <br>
-      <sub>Tap + for Photo &amp; Scan, Describe Meal, Reuse Meal, and optional Water groups. Camera and Photos accept up to 10 images plus an optional note.</sub>
+      <sub>Talk to log meals, scan food and barcodes, and ask about your progress, with an Undo for every change. Runs on Plus or Pro, or your own Gemini, OpenAI, xAI or Qwen key.</sub>
     </td>
     <td align="center" width="33%">
-      <img src="web/assets/screenshots/snap.png" width="230" alt="Snap food capture">
+      <img src="web/assets/screenshots/food.webp" width="230" alt="Food entry with its photo, serving and nutrition">
       <br><br>
-      <b>03 · Snap · Capture</b>
+      <b>03 · Food · Edit</b>
       <br>
-      <sub>Point and shoot. The image is sent to your chosen AI provider; nutrition estimates come back within a few seconds.</sub>
+      <sub>Every entry keeps its photo, serving and full nutrition. Change any value and the day's totals update.</sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="33%">
-      <img src="web/assets/screenshots/review.png" width="230" alt="Review food entry">
+      <img src="web/assets/screenshots/nutrition.webp" width="230" alt="Nutrition details with macros, water and micronutrients">
       <br><br>
-      <b>04 · Review · Edit</b>
+      <b>04 · Nutrition · Details</b>
       <br>
-      <sub>Review the AI's guess, unlock nutrition if values need correction, adjust the serving size (everything recalculates live), preview "What if?" impact, and pick a meal type before logging.</sub>
+      <sub>Today's macros against your goals, water, and detailed nutrients from sugar and fiber to vitamins and minerals.</sub>
     </td>
     <td align="center" width="33%">
-      <img src="web/assets/screenshots/meals.png" width="230" alt="Meals log">
+      <img src="web/assets/screenshots/progress.webp" width="230" alt="Progress tab with the weekly recap and weight chart">
       <br><br>
-      <b>05 · Meals · Log</b>
+      <b>05 · Progress · Weekly Recap</b>
       <br>
-      <sub>The day's entries grouped by breakfast / lunch / dinner / snack. Swipe to delete, tap to edit any entry.</sub>
+      <sub>Days logged, calories and protein on target, and weight change for the week, above weight and body-fat charts from 1 week to all time.</sub>
     </td>
     <td align="center" width="33%">
-      <img src="web/assets/screenshots/coach.png" width="230" alt="AI Coach chat">
+      <img src="web/assets/screenshots/coach.webp" width="230" alt="AI Coach chat answering from the user's data">
       <br><br>
       <b>06 · Coach · AI Chat</b>
       <br>
-      <sub>Multi-turn conversation with full context of your profile, weight history, food log, and forecast. Ask "what should I eat?" or "expected weight in 30 days?".</sub>
+      <sub>Coach reads your profile, logs and trends through tool calls, so answers use your real numbers.</sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="33%">
-      <img src="web/assets/screenshots/progress.png" width="230" alt="Progress charts">
+      <img src="web/assets/screenshots/workouts.webp" width="230" alt="Workout log with sets and reps for today's lifts">
       <br><br>
-      <b>07 · Progress · Charts</b>
+      <b>07 · Workouts · Log</b>
       <br>
-      <sub>Weight trend with goal line, calorie history (intake vs. goal), and macro averages. Time ranges span 1 week to all time.</sub>
+      <sub>Log sets and reps from 877 exercises with photos, routines and a rest timer, and estimate the calorie burn.</sub>
     </td>
     <td align="center" width="33%">
-      <img src="web/assets/screenshots/workouts.png" width="230" alt="Workout exercise library">
+      <img src="web/assets/screenshots/ai-providers.webp" width="230" alt="AI provider settings with Gemini and the on-device Gemma model">
       <br><br>
-      <b>08 · Workouts · Library</b>
+      <b>08 · AI Providers · Your Keys</b>
       <br>
-      <sub>Browse 877 exercises with photos, filterable by primary/secondary muscle and equipment, with search, sort, and per-exercise detail pages.</sub>
+      <sub>Pick any of 16 LLM providers with your own key, or download Gemma 4 to run on device, with separate text and fallback providers.</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="web/assets/screenshots/voice-settings.webp" width="230" alt="Voice Assistant settings with provider, plans and capture options">
+      <br><br>
+      <b>09 · Voice Assistant · Settings</b>
+      <br>
+      <sub>Choose the Live Voice provider, reply language, automatic photo capture, and whether to confirm before anything is saved.</sub>
     </td>
   </tr>
 </table>

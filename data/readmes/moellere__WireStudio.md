@@ -99,7 +99,9 @@ Arduino and an external-component path that emits ESPHome YAML
 referencing `lorawan-for-esphome`) and a set of things actually
 verified against upstream tools. The YAML, schematic, PCB, and
 enclosure paths are gated in CI, and **every library component and
-board is exercised by a bundled example** that passes those gates. This section is honest about which is which, ordered
+board is exercised by a bundled example** that passes those gates. The
+unit and golden tests a row cites run on every PR too
+([tests](.github/workflows/tests.yml)). This section is honest about which is which, ordered
 by how much it matters that it works.
 
 Tiers, in priority order:
@@ -119,14 +121,15 @@ Tiers, in priority order:
 | **Works (hardware-validated)** | LoRaWAN external-component path | emit ESPHome YAML referencing `lorawan-for-esphome`, provision keys into `secrets.yaml`, build through fleet | validated end-to-end on a Heltec WiFi LoRa 32 V4 (SX1262 + external PA): joined, uplinked and decoded against live ChirpStack. Payloads over 11 bytes need the data rate asserted per uplink — US915 DR0 caps at 11 and ADR drives to DR0 on a strong link. No automated live-device gate |
 | **Works (hardware-validated)** | Remote workbench | flash a board on a bench slot, and run the whole LoRaWAN bring-up (flash → register → key push → verify) headlessly | wire format verified against a reference bench; flashing and LoRaWAN bring-up exercised repeatedly on a live Pi bench with an ESP32-S3. Transport tests in `tests/test_workbench.py` use wire-level fakes; no automated live-bench gate |
 | **Verified** | Tasmota target | emit a Tasmota device template (`/tasmota/template`) mapping solved pins to Tasmota GPIO function ids | function ids + per-chip layouts sourced from `tasmota_template.h`; unit tests pin the Sonoff S31 template convention for the smart-plug example |
+| **Verified** | WLED target | emit WLED's `cfg.json` (`/wled/cfg`): LED outputs, buttons, the IR receiver, the relay and the bus pins, the runtime tier a stock release image reads at boot; sensors are usermods, compiled into the pinned release through a generated `platformio_override.ini` (`/wled/compile`, streamed) with their settings in `cfg.json`'s `um` section | keys and type codes sourced from `wled00/const.h` and `cfg.cpp`; goldens pin four examples in `tests/test_wled.py`; the usermod example builds against WLED v0.15.2 on every PR that touches the target and nightly ([gate](.github/workflows/wled-firmware.yml)) |
 | **Works (lighter checks)** | Meshtastic flashing + config | proxy the official release factory image (`/meshtastic/firmware`) for the radio boards, flash it via the unified WebSerial dialog, then push region, modem preset, owner and primary channel as protobufs over the same port | endpoint tests with mocked upstream; board-to-variant map checked against `meshtastic/firmware` variants; config push tested against a fake device; no live-flash gate |
 | **Works (lighter checks)** | MicroPython flashing + main.py | proxy the official release image for the board's chip (`/micropython/firmware`; every library board maps to a generic port image, ESP8266 included), flash via the unified dialog, generate `main.py` from the design over the `machine` API (`/micropython/code`) and push it through the raw REPL over the same serial port | endpoint tests with a captured download page; every board's starter and every example's main.py parse as Python; the raw-REPL push is tested against a fake board; the micropython.org page format could not be fetched from the build session, so the first live flash validates it; no live-flash gate |
-| **Works (lighter checks)** | Component authoring | write a component YAML in the studio or through `component_create`; the same gate as `component_check` (schema, subcircuit nets, template render, KiCad symbols / pins / footprint) before it lands in the user library | gate tests in `tests/test_library_check.py`; KiCad resolution runs only where the toolchain is present; a user component is not compiled through `esphome config` in CI |
-| **Works (lighter checks)** | ESPHome dashboard compile | push the rendered YAML to a running ESPHome dashboard (`/esphome/push`), start a compile there, stream the log and serve the firmware, with the same job shapes as the fleet path | client + route tests against a fake dashboard in `tests/test_esphome_dashboard.py` that mirrors `esphome dashboard` 2026.6.5, open and password-protected, after the client was run against both live; no live dashboard in CI |
+| **Verified** | Component authoring | write a component YAML in the studio or through `component_create`; the same gate as `component_check` (schema, subcircuit nets, template render, KiCad symbols / pins / footprint) before it lands in the user library | a user-authored component goes through the gate and its synthetic design through upstream `esphome config`, every PR ([gate](.github/workflows/esphome-config.yml)); the gate rejects every file in a corpus of bad components for the named reason (`tests/test_component_corpus.py`); KiCad resolution runs only where the toolchain is present |
+| **Verified** | ESPHome dashboard compile | push the rendered YAML to a running ESPHome dashboard (`/esphome/push`), start a compile there, stream the log and serve the firmware, with the same job shapes as the fleet path | nightly, against a live `esphome dashboard` 2026.6.5 open and password-protected: push, compile over the websocket, fetch the image, with the client's wire assumptions asserted ([dashboard](.github/workflows/esphome-compile.yml)); client + route tests against a fake of the same in `tests/test_esphome_dashboard.py` |
 | **Works (lighter checks)** | CircuitPython flashing | proxy the official release image (`/circuitpython/firmware`) for ESP32/S3/C3/C6 boards, flash via the unified dialog, serve a generated starter `code.py` (`/circuitpython/code`) | endpoint tests with mocked upstream; every board-id mapping verified against downloads.circuitpython.org; generated starters parse as valid Python; no live-flash gate |
-| **Works (lighter checks)** | MCP server | 53 tools over the Model Context Protocol: 31 design / library / inventory / fab, plus 22 that reach hardware — workbench flash and boot verification, LoRaWAN compile / provision / activation, fleet and dashboard push + build status, and job polling for the long ones | tool / auth / resource tests in `tests/test_mcp_*.py`; the hardware tools drive the real clients against wire-level fakes, and were exercised against a live bench, ChirpStack and fleet during bring-up. Not run against a live MCP client in CI |
+| **Works (lighter checks)** | MCP server | 53 tools over the Model Context Protocol: 31 design / library / inventory / fab, plus 22 that reach hardware — workbench flash and boot verification, LoRaWAN compile / provision / activation, fleet and dashboard push + build status, and job polling for the long ones | the `mcp` package's own client connects to the mounted server over Streamable HTTP with the bearer token, lists the tools, drives a design from `create_design` to `render` and reads a resource, every PR (`tests/test_mcp_client.py`); tool / auth / resource tests in `tests/test_mcp_*.py`; the hardware tools drive the real clients against wire-level fakes, and were exercised against a live bench, ChirpStack and fleet during bring-up |
 | **Experimental** | Thingiverse search relay | rank community models for a board | smoke-tested; depends on a third-party search API that ranks unevenly |
-| **Experimental** | Agent (Claude tool-using) | natural-language design driving | works in practice; tool surface is small; no auto-eval against task list yet |
+| **Experimental** | Agent (Claude tool-using) | natural-language design driving | scored nightly against the 28-task list in `wirestudio/agent/eval_tasks.yaml`: the design it hands back passes `esphome config`, carries the asked-for change, and the turn stayed within its tool-call budget ([gate](.github/workflows/agent-eval.yml)); every task's reference solution passes the same scorer on every PR (`tests/test_agent_eval.py`). Stays Experimental until the gate holds a pass count |
 | **Verified** | PCB autorouting | Freerouting roundtrip — board → Specctra DSN → routed → SES import; SSE route endpoint, `route_pcb` MCP/agent tool, web-UI Route button, `?route=true` fab exports, `-pcb` image variant | representative examples route with zero unconnected items and pass routed DRC ([gate](.github/workflows/pcb-route.yml)) |
 
 The **Verified** tier is the bar the project is asking to be judged
@@ -139,7 +142,10 @@ deltas, and [`START.md`](START.md) for the longer-form design notes.
 
 Tested against ESPHome **`==2026.6.5`** (pinned in
 `.github/workflows/esphome-config.yml` + bumped deliberately). When
-that pin moves, this line moves with it.
+that pin moves, this line moves with it. The releases around the pin
+that every example also validates on, and the component behind any
+failure elsewhere, are in [`docs/esphome-support.md`](docs/esphome-support.md),
+built from the weekly `esphome-matrix` sweep.
 
 ## Quickstart
 
@@ -164,7 +170,10 @@ pip install wirestudio                       # from PyPI
 python -m wirestudio.generate wirestudio/examples/garage-motion.json
 ```
 
-Prints rendered YAML and the ASCII wiring block to stdout.
+Prints rendered YAML and the ASCII wiring block to stdout. A
+`design.json` from an older release is migrated on load everywhere
+the studio reads one; `python -m wirestudio.migrate --write
+design.json` rewrites the file itself, and `--check` makes a gate of it.
 
 ### HTTP API
 
@@ -222,4 +231,7 @@ abstraction).
 
 ## License
 
-MIT. See [`LICENSE`](LICENSE).
+MIT. See [`LICENSE`](LICENSE). Third-party data in the tree, the
+libraries the generated firmware names, the web bundle's packages and
+what the images fetch are recorded with their licences in
+[`LICENSES.md`](LICENSES.md).

@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3142** |
+| 📝 Total Prompts | **3148** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-10-18** |
+| 🔄 Last Updated | **2026-10-19** |
 
 ---
 
@@ -189,11 +189,90 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
-### Eagle Fishing POV Video Sequence
+### Angel Wings Light Expansion
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A detailed video prompt describing an eagle swooping down to grab a fish from crystal clear water, transitioning from POV to overhead pull-away shots.
+> A detailed visual prompt describing an angel expanding light through her wings and flying to the third heaven.
+
+#### 📝 Prompt
+
+```
+A angel taking her wings covering herself until her light expands through the wings and penetrates her whole body , she flies into the third heaven
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2112002366715187200/img/CuVKtDon9KGFWG1V.jpg" width="600" alt="Angel Wings Light Expansion">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12744)**
+
+**Author:** [Sas](https://x.com/SaSHeaven26) | **Source:** [Link](https://x.com/SaSHeaven26/status/2112002389104349278) | **Published:** Oct 19, 2026
+
+---
+### Elon Musk Driving Tesla NYC Video
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A simple prompt for generating a funny video featuring Elon Musk driving Teslas through New York City streets using Grok Imagine.
+
+#### 📝 Prompt
+
+```
+Funny video. Elon Musk and I are driving Teslas through the streets of New York.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2111927231232524288/img/ACatCxO4jnjOwOtt.jpg" width="600" alt="Elon Musk Driving Tesla NYC Video">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12743)**
+
+**Author:** [Jarosław Justka](https://x.com/jaras70berlin) | **Source:** [Link](https://x.com/jaras70berlin/status/2111927270948450616) | **Published:** Oct 18, 2026
+
+---
+### Claudia Anime Style Tesla Roadster
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video generation prompt transforming a real person into anime style within a Tesla Roadster scene using Grok Imagine.
+
+#### 📝 Prompt
+
+```
+CLAUDIA × SI — WHITE TESLA ROADSTER 🤍🚀
+Real → anime in one take @imagine 
+
+@anabology I tried to adapt Claudia into an anime style with @bot
+```
+
+<img src="https://pbs.twimg.com/media/HU6OwhcWoAAHtHn.jpg" width="600" alt="Claudia Anime Style Tesla Roadster">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12746)**
+
+**Author:** [Dima Nurm](https://x.com/NURM_Dima) | **Source:** [Link](https://x.com/NURM_Dima/status/2111782488544539049) | **Published:** Oct 18, 2026
+
+---
+### Knightsquirrel vs Robots Mech
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> Video prompt continuing the Knightsquirrel story fighting robots with a Bass Mech.
+
+#### 📝 Prompt
+
+```
+Extend Knightsquirrel continued to fight the robots of Treble with his Bass Mech
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2111702540928577536/img/vx0G6jhxWBnxh2nZ.jpg" width="600" alt="Knightsquirrel vs Robots Mech">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12747)**
+
+**Author:** [Michael Erikson](https://x.com/erikson_michael) | **Source:** [Link](https://x.com/erikson_michael/status/2111702741881921889) | **Published:** Oct 18, 2026
+
+---
+### Eagle Fishing Cinematic Shot
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed cinematic prompt describing an eagle swooping down to grab a fish from clear water, transitioning from POV to overhead shot.
 
 #### 📝 Prompt
 
@@ -201,11 +280,37 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 Eagle swoops down into crystal clear water grabbing a fish keeping the pov then going to an over head pull away shot fading into the clouds
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2111635732368355328/img/3sQclpWkqyUIYhBC.jpg" width="600" alt="Eagle Fishing POV Video Sequence">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2111635732368355328/img/3sQclpWkqyUIYhBC.jpg" width="600" alt="Eagle Fishing Cinematic Shot">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12699)**
 
 **Author:** [Louie Dog](https://x.com/sumwearoutthere) | **Source:** [Link](https://x.com/sumwearoutthere/status/2111635762487648641) | **Published:** Oct 18, 2026
+
+---
+### VHS Lake Monster Found Footage
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed multi-shot video prompt simulating 1990s camcorder footage of a lake monster attacking a family, complete with VHS artifacts and specific camera movements.
+
+#### 📝 Prompt
+
+```
+1990s camcorder found footage, VHS tape artifacts, tracking lines, chromatic aberration, auto-focus hunting, overexposed highlights, shaky amateur handheld camera, a date timestamp burned into the corner. Color grade: washed out gray-green, faded skin tones, blown out pale sky.
+A colossal dark lake creature with a ridged back and a long neck, mostly seen in silhouette through fog. A family on a wooden dock with a canoe at a northern lake.
+SHOT 1 (0 to 3s): Wide handheld shot matching the reference image, the camera zooms in clumsily as the creature's back breaks the surface far out on the lake, water rolling off in sheets.
+SHOT 2 (3 to 6s): Handheld medium shot, the camera whips toward the family on the dock, a child pointing, a father pulling the canoe out of the water, the image glitching with tracking lines.
+SHOT 3 (6 to 9s): Wide shot, auto-focus hunting, the long neck rises out of the fog, impossibly tall, a wave rolling toward the dock.
+SHOT 4 (9 to 12s): Running handheld shot, the camera bouncing as the operator flees up the wooden stairs, the lake visible in flashes behind, the wave slamming into the dock.
+SHOT 5 (12 to 15s): Static shot, the camera dropped on the grass and tilted sideways, the creature's silhouette slowly sinking back into the fog, then the tape glitches to blue screen.
+Loons calling, tape hiss, wind on the microphone, a deep foghorn-like call from the lake, a child shouting, panicked breathing, wood cracking, a final VHS tracking screech into silence.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2111585229756391424/img/1K0p3KhB2LfWMhMl.jpg" width="600" alt="VHS Lake Monster Found Footage">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12748)**
+
+**Author:** [Alexandra Aisling](https://x.com/AllaAisling) | **Source:** [Link](https://x.com/AllaAisling/status/2111621281754005784) | **Published:** Oct 18, 2026
 
 ---
 ### Couple photo t-shirt mockup video
@@ -225,6 +330,25 @@ Transform this into a high-quality realistic product mockup of a stylish black c
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12706)**
 
 **Author:** [Maggie Juang 🦢](https://x.com/maggiejuang1) | **Source:** [Link](https://x.com/maggiejuang1/status/2111597167521534410) | **Published:** Oct 17, 2026
+
+---
+### Underwater Roadster Text Scene
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A cinematic video prompt featuring a black screen with text, transitioning to an underwater scene of a black hull on the seabed with a low hum.
+
+#### 📝 Prompt
+
+```
+Black screen. Text: “Elon’s Roadster flies. Ours doesn’t ask.” Underwater — black hull on the seabed. Low hum....
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2111593551935225856/img/CbwZYpH9Pyj368Sw.jpg" width="600" alt="Underwater Roadster Text Scene">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12745)**
+
+**Author:** [Puchamamax](https://x.com/aaoomaxi) | **Source:** [Link](https://x.com/aaoomaxi/status/2111593612438126991) | **Published:** Oct 17, 2026
 
 ---
 ### Italian Restaurant Scene Prompt
@@ -2039,111 +2163,4 @@ Include some sections where both dancers perform different dance moves at the sa
 
 DUO DANCE RULE:
 This is a duo dance, but they must not be perfectly synchronized all the time.
-They move in the same overall rhythm, but with slight timing offsets, alternating accents, and different body actions.
-
-FINISH:
-The two of them strike a zombie pose, and the shot zooms in to a close-up of their eyes glowing red as they stare into the camera.
-
-APPEARANCE LOCK — ABSOLUTE PRIORITY:
-Preserve both dancers' original faces, natural skin tones, hairstyles, and makeup exactly as shown in the initial frame. No zombie makeup, horror makeup, corpse makeup, pale or gray skin, darkened eye sockets, facial discoloration, or grotesque facial effects. No blood, fake blood, bleeding, wounds, scars, bruises, or visible injuries. Express the zombie character exclusively through stiff body movements, unnatural head tilts, dragging steps, sharp shoulder hits, and eerie facial expressions. Do not alter either dancer's appearance throughout the video.
-
-CAMERA:
-Fixed frontal camera only. No camera movement, no pan, no tilt, no dolly.
-Use only fast beat-synced optical zoom-ins, snap zoom-outs, and brief punch-in close-up framing to create speed and impact while keeping the camera position fixed. Keep the same background at all times.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2109605227141980160/img/fuYzaUPkPABjaSOE.jpg" width="600" alt="Zombie Duo Dance Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12446)**
-
-**Author:** [SPLASH GIRLS@AI Image](https://x.com/splash_GL) | **Source:** [Link](https://x.com/splash_GL/status/2109615069470556358) | **Published:** Oct 12, 2026
-
----
-### Moon Roller Coaster POV
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A cinematic first-person perspective video prompt of a roller coaster ride starting on the surface of the Moon.
-
-#### 📝 Prompt
-
-```
-Cinematic POV: An exhilarating firs person roller coaster ride begins on the desolate surface of the Moon, suspended above the infinite darkness of space. The camera slowly approaches the edge of an impossibly steep track before plunging into a brea...
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2109587925340131328/img/uyDrinJwjJgcnZZy.jpg" width="600" alt="Moon Roller Coaster POV">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12518)**
-
-**Author:** [BMX](https://x.com/bmx_ai13) | **Source:** [Link](https://x.com/bmx_ai13/status/2109587970412212342) | **Published:** Oct 12, 2026
-
----
-### Cowgirl Cowboy Beach Race Silhouette Video Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A cinematic video prompt for Grok Imagine depicting cowgirls and cowboys racing on a beach with sunrise-colored hoof flashes.
-
-#### 📝 Prompt
-
-```
-In dark silhouette cowgirl and cowboy race beside each other on ocean beach fire the color of a brilliant sunrise flashes from the horses hooves when each hoof lands on the sand
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2109544031252529153/img/syXmP_gxWX9mJQt4.jpg" width="600" alt="Cowgirl Cowboy Beach Race Silhouette Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12378)**
-
-**Author:** [Lindy Hawkinson](https://x.com/HawkinsonLindy) | **Source:** [Link](https://x.com/HawkinsonLindy/status/2109544110919164271) | **Published:** Oct 12, 2026
-
----
-### Realistic Selfie Video Generation
-
-![中文](https://img.shields.io/badge/lang-中文-red)
-
-> A detailed prompt for generating a 12-second vertical realistic selfie video featuring emotional expressions, specific clothing, and accessories based on reference images.
-
-#### 📝 Prompt
-
-```
-[Task]
-
-Generate a 12-second, 9:16 vertical realistic smartphone selfie video. Replicate the lying-on-bed composition, action sequence, mixed crying-and-laughing expressions, and rhythm from the reference video 'Angry Until Stomach Hurts', replacing the original character with a specified adult female.
-
-[Reference Division and Character Locking]
-
-Lock the face to the female portrait in reference image @0ba07db1-974c-467d-80dc-d9dffddac0ba, including facial proportions and long black hair; do not inherit the male appearance from the original video.
-
-Lock clothing and body proportions to reference image @8149c66e-9a91-4b88-bf26-d0a764075ccf, ensuring clothes are fully worn.
-
-Lock glasses to silver decorative glasses in reference image @d80c71c5-d330-4baf-8ecf-8b793ee0fee8: thin silver metal wireframes, open curved lower rims, transparent nose pads, small bow-tie metal coils near the bridge, and one hanging flower charm on each side. Temples rest normally on ears, eyes clearly visible. Glasses must be worn throughout, not changing into thick-rimmed glasses or display stands.
-
-The original video only locks performance, selfie angle, actions, and rhythm.
-
-Do not inherit the falling shot from the previous nine-grid.
-
-[Scene and Filming]
-
-She lies supine on white bedding, head on a white pillow, long hair naturally spread out.
-
-Left hand holds the phone off-screen; front camera is approx. 40cm above the face, shooting downwards capturing face, shoulders, and upper body. Face occupies the main subject area.
-
-Right hand may reach the bottom edge of the frame to press the abdomen.
-
-One continuous take throughout; camera shakes slightly only due to holding hand, breathing, and shoulder tremors. Natural bedroom lighting, standard smartphone native quality, realistic skin texture, no beauty filters.
-
-[Strict Timing and Performance]
-
-0–2.8s:
-
-Opens immediately in a state of angry crying/laughing. Brows furrowed tightly, eyes squeezed shut, mouth corners pulled horizontally, intermittently emitting "Hahaha... Ah... Haha".
-
-Laughter carries grievance and anger; shoulders tremble lightly, head moves slightly on the pillow.
-
-Silver flower charms sway gently with head movement; nose pads and temples remain fitted to the face.
-
-2.8–5.8s:
-
-She stops to inhale, barely opens eyes to look at the screen, brows still furrowed, mouth corners turned down, speaking with anger and grievance:
-
-"Fam
+They move in the same overall rhythm, but with slight timing offsets, alternating accents, and different body actio

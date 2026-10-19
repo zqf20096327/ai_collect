@@ -24,13 +24,9 @@
 </p>
 
 <p align="center">
-  <a href="https://varianttech.net/demo"><img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/cta2_demo.png" width="140" alt="Demo"></a>
-  <br>
-  <a href="#getting-started"><img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/cta2_download.png" width="149" alt="Download"></a>
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="#faq"><img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/cta2_faq.png" width="101" alt="FAQ"></a>
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://varianttech.net/benchmark"><img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/cta2_benchmarks.png" width="149" alt="Benchmarks"></a>
+  <a href="https://varianttech.net/demo"><img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/cta5_instant_demo.png" width="160" alt="Instant Demo"></a>
+  &nbsp;&nbsp;
+  <a href="https://varianttech.net/about"><img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/cta5_website.png" width="114" alt="Website"></a>
 </p>
 
 <img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/divider_gold.png" width="100%" alt="">
@@ -39,16 +35,16 @@
 
 ### <u>Contents</u>
 
-[What is Benzi](#what-is-benzi) — how it works in one paragraph
-<br>[Live demos](#live-demos) — StallionSwipe, or any repo you paste
-<br>[Language support](#language-support) — ten languages, and where the depth is uneven
-<br>[Getting started](#getting-started) — the Benzi agent (VS Code or headless), or the compiler over MCP
-<br>[SWE-bench Verified](#swe-bench-verified) — 412/500 (82.4%) for $12.96
-<br>[How it works](#how-it-works) — compile, query, edit, verify
-<br>[Tools](#tools) — 16 of the 35+ the index makes possible
-<br>[What the index actually changes](#what-the-index-actually-changes) — lines read vs three other harnesses
-<br>[Features](#features) — six states, runtime tracer, live call graph, memory, markup engine
-<br>[FAQ & comparisons](#faq) — privacy, pricing, limits, and how Benzi compares
+— [What is Benzi](#what-is-benzi) —
+<br>— [Live demos](#live-demos) —
+<br>— [Language support](#language-support) —
+<br>— [Getting started](#getting-started) —
+<br>— [SWE-bench Verified](#swe-bench-verified) —
+<br>— [How it works](#how-it-works) —
+<br>— [Toolset](#toolset) —
+<br>— [Features](#features) —
+<br>— [Benzi vs CC, DSH, OC](#what-the-index-actually-changes) —
+<br>— [FAQ and Benzi's map vs LSP/SCIP indexers](#faq) —
 
 </div>
 
@@ -58,7 +54,7 @@
 
 Most AI coding agents grep and glob raw source code into AI model's context window and hope the model finds what matters. Benzi parses every file first — a real compiler, built on tree-sitter — into a precise, queryable map. Every symbol, every call edge, every reference, every class in its inheritance chain. One pass, done.
 
-Every file parsed, imports resolved, class ancestry built, every identifier traced to its definition — before a single question is answered. Call flow and data flow join at every call site, so a bad value traces to its origin in one tool call. Claude Code greps; Cursor embeds; Aider maps signatures; Benzi resolves — in O(1). Ten languages so far, plus a markup engine for HTML, CSS, and DOM-JS — see [Language support](#language-support).
+Every file parsed, imports resolved, class ancestry built, every identifier traced to its definition — before a single question is answered. Call flow and data flow join at every call site, so a bad value traces to its origin in one tool call. Claude Code greps; Cursor embeds; Aider maps signatures; Benzi resolves — in O(1). Ten languages so far, plus a markup engine for HTML, CSS, and DOM-JS — see [Language support](#language-support). Benzi is free to use during beta.
 
 You can try pasting this repo's link to Benzi in the [live demo](https://varianttech.net/demo) too!
 
@@ -200,9 +196,9 @@ Full technical report: [swebench-october/SWE_BENCH_REPORT.md](swebench-october/S
 
 <img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/divider_gold.png" width="100%" alt="">
 
-### <u>Tools</u>
+### <u>Toolset</u>
 
-A sample of 16 of Benzi's 35+ tools — what falls out of actually resolving the code, from the index itself to the gates on every write.
+16 of Benzi's 35+ tools. Full tool list [here](https://varianttech.net/temp/benzi_tools_list.txt).
 
 <div align="center">
 
@@ -229,9 +225,22 @@ A sample of 16 of Benzi's 35+ tools — what falls out of actually resolving the
 
 <img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/divider_gold.png" width="100%" alt="">
 
+### <u>Features</u>
+
+- **Six states, never a guess** — every call site and every file carries one: **resolved** (proven in-repo edge), **external** (into a library, with the import evidence), **candidate** (ambiguous — the bounded set of possible targets, kept in full), **unresolved** (seen but not settled, carrying *why*), **observed** (confirmed by an actual run), **unindexed** (never parsed, with the reason). One rule throughout: whatever static analysis can't settle is flagged as unsettled rather than guessed — and running the program is what settles it.
+- **Runtime tracer** — hooks every call during execution and overlays the observations back onto the static map.
+- **Reasoning you can click** — the same map that drives the tools drives a live call graph beside the chat; when the agent names a function, that node lights up.
+- **Persistent memory** — durable per-repo facts survive restarts; conventions learned once aren't re-derived every session.
+- **Dual-engine: code + markup** — a separate index for HTML/CSS/DOM-JS with cascade resolution and selector specificity, including frontend embedded inside Python strings.
+- **Model-agnostic** — Anthropic, OpenAI, or any compatible API; the agent can escalate itself to a larger model mid-task when a problem outgrows the one running it.
+
+<img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/divider_gold.png" width="100%" alt="">
+
 ### <u>What the index actually changes</u>
 
 Same 24 bugs, one run each, four harness/model combinations. **Lines read** counts only what came back from file-read calls — grep and shell output are search, not reading, so this is the one figure that means the same thing in every harness.
+
+More detail, per-bug breakdowns, and full methodology: [varianttech.net/benchmark](https://varianttech.net/benchmark).
 
 <div align="center">
 
@@ -263,19 +272,6 @@ Wall-clock time tracks close across all four — reading less doesn't make Benzi
 </p>
 
 Benzi on DeepSeek costs about a cent a bug; Claude Code climbs to $0.18 a step as bugs get harder — roughly 18x.
-
-More detail, per-bug breakdowns, and full methodology: [varianttech.net/benchmark](https://varianttech.net/benchmark).
-
-<img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/divider_gold.png" width="100%" alt="">
-
-### <u>Features</u>
-
-- **Six states, never a guess** — every call site and every file carries one: **resolved** (proven in-repo edge), **external** (into a library, with the import evidence), **candidate** (ambiguous — the bounded set of possible targets, kept in full), **unresolved** (seen but not settled, carrying *why*), **observed** (confirmed by an actual run), **unindexed** (never parsed, with the reason). One rule throughout: whatever static analysis can't settle is flagged as unsettled rather than guessed — and running the program is what settles it.
-- **Runtime tracer** — hooks every call during execution and overlays the observations back onto the static map.
-- **Reasoning you can click** — the same map that drives the tools drives a live call graph beside the chat; when the agent names a function, that node lights up.
-- **Persistent memory** — durable per-repo facts survive restarts; conventions learned once aren't re-derived every session.
-- **Dual-engine: code + markup** — a separate index for HTML/CSS/DOM-JS with cascade resolution and selector specificity, including frontend embedded inside Python strings.
-- **Model-agnostic** — Anthropic, OpenAI, or any compatible API; the agent can escalate itself to a larger model mid-task when a problem outgrows the one running it.
 
 <img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/divider_gold.png" width="100%" alt="">
 

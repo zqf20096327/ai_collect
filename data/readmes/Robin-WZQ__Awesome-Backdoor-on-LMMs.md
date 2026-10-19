@@ -208,6 +208,8 @@ Multimodal Models: A Survey</strong></p>
 | 2026.04 | A Patch-based Cross-view Regularized Framework for Backdoor Defense in Multimodal Large Language Models | arXiv | [link](https://arxiv.org/pdf/2604.04488) | - |
 | 2026.04 | Meta-Research on Backdoors: Dataset and Threat Model Shifts in Multimodal Backdoor Attacks | arXiv | [link](https://www.preprints.org/frontend/manuscript/e479c748fb4a67ec823add139acb1909/download_pub) | - |
 | 2026.08 | Not All Tokens Are Equal: Region-Aware Consistency Repair of Backdoors in MLLMs | arXiv | [link](https://arxiv.org/abs/2608.24354) | - |
+| 2026.10 | Detecting Chain-of-Thought Hijacking in Backdoored Multimodal Large Reasoning Models | arXiv | [link](https://arxiv.org/abs/2610.16598) | - |
+| 2026.10 | Beyond Static Cues: Unified Dynamic Detection of MLLM Backdoors via Dual-Flow Trajectory Analysis | ACM MM'26 | [link](https://arxiv.org/abs/2610.20319) | [code](https://github.com/kaoru0822-kitauji/EVO_Detect) |
 
 ### VLM-based Embodied AI
 

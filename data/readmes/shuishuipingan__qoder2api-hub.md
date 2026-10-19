@@ -1,7 +1,7 @@
 # Qoder2API-Hub — 国际版、国内版多账号网关中枢
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Release-v1.5.2-2496ED?style=flat-square" alt="Version 1.3.7">
+  <img src="https://img.shields.io/badge/Release-v1.5.5-2496ED?style=flat-square" alt="Version 1.3.7">
   <img src="https://img.shields.io/badge/Python-3.9+-blue.svg?style=flat-square" alt="Python">
   <img src="https://img.shields.io/badge/API-OpenAI_Compatible-412991?style=flat-square" alt="OpenAI API">
   <img src="https://img.shields.io/badge/Dual_Realm-CN_&_Intl-0DBD8B?style=flat-square" alt="Dual Realm">
@@ -493,6 +493,45 @@ python _verify_models.py --base http://127.0.0.1:8790
 ## 七、版本与更新日志 (Changelog)
 
 完整说明见 [Releases](https://github.com/shuishuipingan/qoder2api-hub/releases)。
+
+### v1.5.5
+
+**🐛 问题修复**
+
+- **Anthropic 入口把动态 system 抬进缓存前缀，命中率 92% → 14.7%**（#55）：`system_prompt_of` 会把 `messages` 里的 system 合并进最前面的 system，而客户端（Claude Desktop/Code）恰恰把**每轮都变**的内容放在那里（当前时间、工具清单、skills、context 用量）。合并后前缀逐轮不同，上游缓存从第 0 字节就失配。
+  现在默认 **inline**：`messages` 内 system **就地降级成一条 user**（内容不丢、位置不变），顶层 system 保持字节稳定；旧行为保留为 `QD_ANTHROPIC_MSG_SYSTEM=merge`，另有 `drop`。
+- **指纹看不出来源**（#55）：`usage.jsonl` 新增 `sys_src`（`top` / `top+inline` / `top+msg` / `none`）与 `n_msg_system`，下次这类问题不必翻代码。
+- **智能体一键配置根本发不出请求**（#53，PR #54 by WCX0221）：`/settings` 只回掩码、从不回明文 `key`，而下拉用 `k.key` 做 option value → 所有 option 值都是空串 → 点「一键配置」只弹「请先选择 API Key」。现在 option value 用 key **id**，点击时经 `/settings/reveal?id=` 取一次明文（与设置页复制 Key 同一路径）。
+
+**⚙️ 行为变更**
+
+- **DeepSeek 进入结构化工具历史白名单**（#49 后续）：报告者在真实长会话（Anthropic 入口、1,283 次工具调用）验证 **0 降级**，同环境开启前基线 0.30%。结构化直传后模型看不到 `LEAK_MARKER` 文本格式，从根上消除复述。`_tool_ids_ok` 守卫仍在（id 不齐备自动回退文本化），INTL 仍不在 auto 范围。
+
+**验证**：全量 **40 suites / 1392 checks / 0 failed**（新增 `_test_issue55_system_prefix.py` 17 条 + PR 自带 `_test_agents_panel.js` 20 条）。
+
+### v1.5.4
+
+**🐛 问题修复**
+
+- **信封层排队（10605 / RESOURCE_LIMIT）没有等待**（#51 后续）：上游会先以 HTTP 200 建流、再在 SSE 信封里投递 `403 {isQueued:true, retryAfterSeconds:30, subCode:RESOURCE_LIMIT}`。v1.5.3 之前只在 **HTTP 层**做了排队等待，信封层仍按普通 403 冷却换号，换不到就把 403 直接丢给客户端（表现为 `request error: status=403 … 10605`）。
+  现在信封层同样识别排队：`should_retry_envelope` 对排队信号允许比瞬时重试更多轮（最多 `QUEUE_MAX_ROUNDS`），重开前按 `retryAfterSeconds+1` 等待；非流式聚合循环也留出了排队轮次；普通 403 的重试轮次**不变**。
+- **排队失败给可读文案**：10605 / RESOURCE_LIMIT 不再是一段嵌套 JSON，而是「上游排队中…已按 retryAfterSeconds 等待并重试，仍拿不到可用资源，请稍后重试」。
+
+**验证**：全量 **38 suites / 1353 checks / 0 failed**（新增 8 条：嵌套 detail 解析、信封排队识别、重试轮次、等待时长、普通 403 不变、已吐字节不重开、文案映射、聚合轮次）。
+
+### v1.5.3
+
+**🐛 问题修复**
+
+- **DeepSeek 原生 DSML 在 chat / Anthropic 流式里完全没有回读**（#51）：此前只有 Responses 路径有 DSML 解析，模型直接吐 `<|DSML|invoke name=...>` 时整段协议漏成正文（截图三例：闭标签+数组、完整 DSML 块、marker+杂字+数组）。现在流式出口新增一层 DSML 缓冲：遇到 DSML 就压住到流末统一解析，成功则补发散文 + `tool_calls` + `finish=tool_calls`；解析不出则原样透传并记 WARN。非流式 chat 侧也补了同样的回退。三种形态在 1/8/64/整段分帧下都能恢复、零泄漏。
+- **闭标签/杂字形态的解析容错**：允许 `</|DSML|...>` 前导闭标签、允许 marker 后跟杂字（如 `">`) 再进数组、允许数组开头的 `[` 丢失（取首个 `{` 到末个 `}` 重新成组）；严格校验（name 非空且命中声明、arguments 合法）一律保留。
+- **连接被拒绝只显示裸异常**（#52）：`<urlopen error [WinError 10061] ...>` 现在翻成可操作中文——点名目标地址、并给出三步排查（服务/端口、环境变量代理是否还在跑、地址是否写错）；10060 超时与 10054 重置同样处理。
+
+**✨ 新增功能**
+
+- **关掉窗口不再停服 + `stop-qoder-proxy.bat`**（#50）：`start-qoder-proxy.bat` 改为 `Start-Process` 分离启动（隐藏窗口、日志落 `qoder-proxy.log`），关掉启动窗口服务继续跑；新增 `stop-qoder-proxy.bat` 按 `qoder-proxy.pid` **精确停止**（先校验目标进程命令行含 `qoder_proxy.py`，绝不误杀其它 python）。服务端新增 `--pid-file`，启动写 PID、退出自动删除。
+
+**验证**：全量 **38 suites / 1345 checks / 0 failed**（新增 `tests/_test_issue50_51_52.py` 25 条）。
 
 ### v1.5.2
 

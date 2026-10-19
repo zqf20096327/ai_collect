@@ -480,6 +480,32 @@ The built-in voices you can pick follow the keys you hold:
   on *Use my own keys*, and the ones `setup_elevenlabs`/`setup_60db` imported with the
   service key while it is off. Neither set is offered with the wrong key behind it.
 
+**My voices** lets each user record or upload their own voice sample and create a
+private ElevenLabs clone. Apply the `0029_custom_voices` migration before using it.
+The active ElevenLabs account needs voice-cloning access and a free voice slot.
+Samples must contain 10 seconds to 2 minutes of readable audio, up to 20 MB; clear
+speech lasting 1–2 minutes is recommended. FFmpeg validates and normalizes the
+sample, then the backend sends it to ElevenLabs. Temporary sample files are
+deleted after processing; no recording is added to public media storage.
+
+Users must explicitly confirm that the sample is their own voice and consent to
+cloning. Each user can keep three clones, including voices awaiting provider
+verification. Creation is limited to five attempts per hour, and previews/status
+checks share a limit of twenty requests per hour per user. Generated previews
+are recorded in Usage. These limits are independent of provider subscription
+limits and the existing narration usage tracking.
+
+Clones stay private even when created with the shared service key. Ready voices
+appear in existing video/avatar voice selectors. Voices awaiting verification
+stay in My voices but cannot generate audio; complete verification in ElevenLabs
+(through the administrator for service-account voices), then use **Check status**.
+Each clone is tied to its original key and service/personal key mode. Switching
+modes or rotating the key hides it from selectors; restore the original key/mode
+to preview, generate, or delete it. A fingerprint identifies the key without
+storing another copy of it. Voice imports do not publish or remove app-created
+clones. **Delete** removes the provider voice first, then its local entry; provider
+failures retain the entry for retry. Already-generated video audio is retained.
+
 The OpenAI voices the fixtures ship are shared with everyone, because `alloy` and the
 rest are built-in names that work with any OpenAI key — unlike an ElevenLabs voice,
 which is minted inside one account.
@@ -604,7 +630,7 @@ The preview follows saved scene order, durations, pauses and transition settings
 Without an intro, the first scene fades in only when the video's default transition is **Fade**;
 **Cut** and **Cross dissolve** start directly.
 Narration and retained clip audio play together; pauses hold the final frame in
-silence. Captions appear when subtitles are enabled, using the same estimated phrase
+silence. Captions appear when subtitles are enabled, using the same caption
 cues as rendering and SRT export. Portrait, landscape and square framing use the
 selected output format. Playback waits for buffering and pauses when you leave the tab.
 Closing the preview stops all media and returns you to editing. Use the close button,
@@ -694,11 +720,32 @@ a pause also clears cached avatar output so the next render uses the updated tim
 ### Subtitles and SRT export
 
 Enable **Subtitles** in video settings to include narration captions in the next
-render. Dialogue is split at sentence boundaries and into short phrases, wrapped
-into one or two lines. Phrase timing is estimated from text length and the recorded
-narration duration; voice providers currently do not return word timestamps.
+render. With subtitles enabled and an OpenAI key available, generated narration is
+transcribed with Whisper word timestamps. These timestamps are saved per audio
+file and shared by preview, rendered captions and SRT export. TikTok captions
+highlight each spoken word; Classic captions use measured phrase boundaries.
+Pauses between phrases stay clear. Regenerating narration refreshes the timestamps;
+existing narration is aligned on its next render. Transcription usage appears in
+Usage. If transcription fails or no OpenAI key is configured, captions fall back
+to timing estimated from text length and narration duration.
 Captions stay out of added pauses and ending holds, and scenes without recorded
 narration have no captions.
+
+In **Settings → Caption style**, choose Classic, TikTok, or **Custom**. Custom
+styles save their name, font, size, colors, outline, placement, casing, word
+highlights, and phrase length with the video. Preview and export consume the same
+resolved definition. Custom sizes are percentages of the shorter frame dimension.
+Developers can add built-in styles in `utils/captions/styles.py`; grouping and
+ASS rendering use the definition rather than branching on its preset name.
+
+Use **Captions** in a scene header to correct individual words and adjust their
+start and end times while listening to the source voice. Caption edits leave the
+script and voice audio unchanged. Times refer to the original audio, before trims
+and delays; the full preview and export apply those edits automatically. Remove
+all words and save to hide captions for that scene. Saving preserves corrections
+across renders, while replacing narration starts fresh for the new audio. Older
+scenes without measured timestamps offer estimated times you can edit. Enable
+**Subtitles** in video settings to show captions, then render again after saving.
 
 Choose **Download SRT** in the editor sidebar to download a UTF-8 subtitle file for
 the current edit. It uses the same phrase cues as rendered captions, follows scene
@@ -707,6 +754,28 @@ subtitle timeline. SRT export works even when on-screen subtitles are turned off
 but requires recorded narration and waits until processing finishes. The download
 belongs to the current edit; render again after changing scenes or timing to match
 it to your finished video.
+
+### Captioning an uploaded video
+
+Open **Captions** in the navigation to create a separate caption project from an
+MP4, MOV, WebM, or M4V video (up to 100 MB and 15 minutes, with spoken audio).
+Choose **Generate captions** to transcribe its audio in the background using the
+configured OpenAI key. This workspace uses Whisper's measured
+[word timestamps](https://developers.openai.com/api/docs/guides/speech-to-text),
+rather than estimating timing from the text. Transcription usage is recorded in
+seconds on the Usage page.
+
+Review the video, correct individual words, and adjust their start/end times.
+Click a word number to seek to it; **Add word** inserts a word at the playhead,
+between neighboring words when there is space. Choose TikTok word highlights or
+Classic subtitles, then customize the font, text size, colors, and placement.
+Save edits, download an SRT, or export a captioned MP4 with the original framing
+and sound. Editing captions invalidates a previous export until rendered again.
+Caption projects are saved separately and are available only in their owner's
+project list. Failed processing can be retried without uploading the video again.
+
+This feature requires the caption-project migration and an updated Celery worker
+alongside the backend and frontend updates.
 
 ### Saving and rendering
 
@@ -947,3 +1016,19 @@ captions. Fonts and text spacing can differ slightly between browser and export.
 The controls are available for both AI and manual projects and do not call AI
 providers. Apply migration `0029_scene_overlays` before running this version, and
 restart the API and Celery workers after updating.
+
+### Video covers and reusable media
+
+- Open an exported video and choose **Cover**. Scrub the video and choose **Use
+  current frame**, or enter a timestamp. Add a title, font, color, placement, and
+  background, then preview and save a PNG. Saved covers appear in **My videos**
+  and can be downloaded from the cover creator.
+- **My assets → Media library** stores images, video clips, and audio. Search by
+  name or tag, filter by type, and edit tags. Files are limited to 100 MB and
+  audio/video to 15 minutes.
+- Reuse media through **Choose from media library** in scene upload/visual tools
+  and **From library** in background music. **Use media** in the library can also
+  add a scene or soundtrack to an existing project. Project media is copied, so
+  removing a library item does not remove copies already used in videos.
+- Apply database migrations before using these features:
+  `python manage.py migrate` (includes migration `0034_media_library_and_covers`).

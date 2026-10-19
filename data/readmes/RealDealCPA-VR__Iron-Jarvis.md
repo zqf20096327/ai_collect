@@ -91,7 +91,7 @@ Iron Jarvis is a desktop app that turns AI models into a working system: **a cha
 
 1. **Download** `Iron-Jarvis-Setup-<version>.exe` from the **[latest release](https://github.com/RealDealCPA-VR/Iron-Jarvis/releases/latest)**. Ignore the `.blockmap` and `latest.yml` files; the updater uses those.
 2. **Install.** The app isn't code-signed yet ([why](docs/SIGNING.md)), so SmartScreen shows *"Windows protected your PC"*. Click **More info → Run anyway**.
-3. **Connect a model.** The app opens on chat. If you're signed in to the `claude` or `codex` CLI, or Ollama is running, the composer offers that model with one tap. It never picks one for you. You can also paste an API key (Anthropic, OpenAI, xAI, OpenRouter), point it at a local Ollama / vLLM / LM Studio / OpenAI-compatible server, or connect Gemini with your own Google OAuth app under **Settings → Connections**. Until you choose a model, a **Simulated mode** strip reminds you that replies come from the offline demo.
+3. **Connect a model.** The app opens on chat. If you're signed in to Claude Code or Codex, or Ollama is running on this PC with a model downloaded, the empty chat offers it as one press (for example **Use Ollama (on this PC) for answers**, which also connects Ollama). It never picks one for you. Signed out of Claude Code or Codex? **Sign in** on the chat's door or on **Settings → Connections → Connections** opens a sign-in window inside the app. You can also paste an API key (Anthropic, OpenAI, xAI, OpenRouter, or a Gemini key from Google AI Studio), or point it at a local Ollama / vLLM / LM Studio / OpenAI-compatible server under **Settings → Connections** (Gemini can also log in with your own Google OAuth app). Until you choose a model, a **Simulated mode** strip reminds you that replies come from the offline demo.
 
 Iron Jarvis inherits your subscription through the logged-in CLI. It never performs an account login itself and never sees that credential.
 
@@ -100,7 +100,7 @@ Iron Jarvis inherits your subscription through the logged-in CLI. It never perfo
 - **Updates install themselves.** New versions download in the background and install when you click **Restart to update**.
 - **Your data lives in `%APPDATA%\Iron Jarvis`** and survives updates and reinstalls.
 
-**If something looks wrong:** *"Daemon offline"* only appears after two missed polls. If it stays, quit from the tray and relaunch (or tray → **Restart Iron Jarvis**), then go to **Settings → Maintenance → Copy diagnostics / Open logs folder** to see why. `ironjarvis doctor`, `repair`, `rollback`, `reset-config` and `backup`/`restore` are one-command recoveries that work even when the daemon won't start.
+**If something looks wrong:** *"Iron Jarvis isn't responding"* only appears after two missed polls, and your chats and files are saved while it shows. When it comes back you see *"Iron Jarvis is back."* for a few seconds, and anything a restart stopped waits in the bell with **Continue**. If it stays, quit from the tray and relaunch (or tray → **Restart Iron Jarvis**), then go to **Settings → Maintenance → Copy diagnostics / Open logs folder** to see why. `ironjarvis doctor`, `repair`, `rollback`, `reset-config` and `backup`/`restore` are one-command recoveries that work even when the background service won't start.
 
 ### 💻 From source (macOS / Linux / Windows)
 

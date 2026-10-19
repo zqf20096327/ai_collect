@@ -1,0 +1,609 @@
+# Ghostfolio MCP Server
+
+<!-- mcp-name: io.github.mhajder/ghostfolio-mcp -->
+
+Ghostfolio MCP Server is a Python-based Model Context Protocol (MCP) server designed to provide advanced, programmable access to Ghostfolio portfolio management and financial data. It exposes a modern API for querying, analyzing, and managing your investment portfolio through Ghostfolio's comprehensive features. The server supports both read and write operations, robust security features, and is suitable for integration with automation tools, financial dashboards, and custom portfolio management applications.
+
+## Features
+
+### Core Features
+
+- Query portfolio performance, holdings, and positions with flexible time ranges
+- Retrieve comprehensive investment data including dividends, returns, and allocations
+- Access detailed market data, asset profiles, and historical price information
+- Monitor portfolio metrics, benchmarks, and performance comparisons
+- Track orders, transactions, and account balances across multiple accounts
+- Search and lookup financial symbols, stocks, ETFs, and other assets
+- Get user information, settings, and account details
+
+### Management Operations
+
+- Create and manage investment accounts with different currencies and platforms
+- Create, delete, and manage individual transactions and activities
+- Import transactions and historical data from other platforms
+- Configure read-only mode to restrict all write operations for safe monitoring
+- Support for bulk transaction imports and portfolio data management
+- Monitor system health and platform availability
+
+### Advanced Capabilities
+
+- Rate limiting and API security features
+- Real-time portfolio monitoring and performance tracking
+- Comprehensive logging and audit trails
+- SSL/TLS support and configurable timeouts
+- Extensible with custom middlewares and tag-based tool filtering
+- Optional tool-search transform for large tool catalogs
+- Bearer token or OIDC/OAuth authentication for HTTP transports
+
+## Installation
+
+### Prerequisites
+
+- Python 3.11 to 3.15
+- Access to a Ghostfolio instance
+- Valid Ghostfolio API token
+
+### Quick Install from PyPI
+
+The easiest way to get started is to install from PyPI:
+
+```sh
+# Using UV (recommended)
+uvx ghostfolio-mcp
+
+# Or using pip
+pip install ghostfolio-mcp
+```
+
+Remember to configure the environment variables for your Ghostfolio instance before running the server:
+
+```sh
+# Create environment configuration
+export GHOSTFOLIO_URL=https://domain.tld:3333
+export GHOSTFOLIO_TOKEN=your-ghostfolio-token
+```
+
+For more details, visit: https://pypi.org/project/ghostfolio-mcp/
+
+### Install from Source
+
+1. Clone the repository:
+
+```sh
+git clone https://github.com/mhajder/ghostfolio-mcp.git
+cd ghostfolio-mcp
+```
+
+2. Install dependencies:
+
+```sh
+# Using UV (recommended)
+uv sync
+
+# Or using pip
+pip install -e .
+```
+
+3. Configure environment variables:
+
+```sh
+cp .env.example .env
+# Edit .env with your Ghostfolio URL and token
+```
+
+4. Run the server:
+
+```sh
+# Using UV (recommended)
+uv run ghostfolio-mcp
+
+# Or using the installed command directly
+ghostfolio-mcp
+```
+
+### Development Setup
+
+For development with additional tools:
+
+```sh
+# Clone and install with development dependencies
+git clone https://github.com/mhajder/ghostfolio-mcp.git
+cd ghostfolio-mcp
+uv sync --group dev
+
+# Run tests
+uv run pytest
+
+# Run with coverage
+uv run pytest --cov=src/
+
+# Run linting and formatting
+uv run ruff check .
+uv run ruff format .
+
+# Run type checking
+uv run ty check .
+
+# Setup prek hooks
+uv run prek install
+```
+
+## Configuration
+
+### Environment Variables
+
+A blank or whitespace-only value counts as unset and uses the default.
+Boolean settings accept `true/false`, `1/0`, `yes/no` and `on/off` (any case).
+Any other value stops the server at startup, so a typo cannot silently turn
+read-only mode or TLS verification off.
+
+```env
+# Ghostfolio Connection Details
+GHOSTFOLIO_URL=https://domain.tld:3333
+GHOSTFOLIO_TOKEN=your-ghostfolio-token
+
+# SSL Configuration
+GHOSTFOLIO_VERIFY_SSL=true
+GHOSTFOLIO_TIMEOUT=30
+
+# Read-Only Mode
+# Set READ_ONLY_MODE true to disable all write operations (put, post, delete)
+READ_ONLY_MODE=false
+
+# Disabled Tags
+# Comma-separated list of tags to disable tools for (empty by default)
+# Example: GHOSTFOLIO_DISABLED_TAGS=portfolio,symbol
+GHOSTFOLIO_DISABLED_TAGS=
+
+# Logging Configuration
+LOG_LEVEL=INFO
+
+# Rate Limiting (requests per minute)
+# Set RATE_LIMIT_ENABLED true to enable rate limiting
+RATE_LIMIT_ENABLED=false
+RATE_LIMIT_MAX_REQUESTS=60
+RATE_LIMIT_WINDOW_MINUTES=1
+
+# Tool Search Transform (Optional)
+# Set TOOL_SEARCH_ENABLED true to replace full tool listings with search_tools + call_tool
+TOOL_SEARCH_ENABLED=false
+# Search strategy: bm25 (natural language) or regex (pattern match)
+TOOL_SEARCH_STRATEGY=bm25
+# Maximum number of tools returned by search_tools
+TOOL_SEARCH_MAX_RESULTS=5
+
+# Sentry Error Tracking (Optional)
+# Set SENTRY_DSN to enable error tracking and performance monitoring
+# SENTRY_DSN=https://your-key@o12345.ingest.us.sentry.io/6789
+# Optional Sentry configuration
+# SENTRY_TRACES_SAMPLE_RATE=1.0
+# SENTRY_SEND_DEFAULT_PII=false
+# SENTRY_ENVIRONMENT=production
+# SENTRY_RELEASE=1.2.3
+# SENTRY_PROFILE_SESSION_SAMPLE_RATE=1.0
+# SENTRY_PROFILE_LIFECYCLE=trace
+# SENTRY_ENABLE_LOGS=true
+
+# MCP Transport Configuration
+# Transport type: 'stdio' (default), 'sse' (Server-Sent Events), or 'http' (HTTP Streamable)
+# 'streamable-http' is accepted as an alias for 'http'. Any other value stops
+# the server at startup.
+MCP_TRANSPORT=stdio
+
+# HTTP Transport Settings (used when MCP_TRANSPORT=sse or MCP_TRANSPORT=http)
+# Host to bind the HTTP server (default: 127.0.0.1)
+# MCP_HTTP_HOST=127.0.0.1
+# Port to bind the HTTP server (default: 8000)
+# MCP_HTTP_PORT=8000
+# Optional bearer token for authentication (leave empty for no auth)
+# MCP_HTTP_BEARER_TOKEN=
+
+# OIDC / OAuth Authentication (optional, for remote hosting)
+# Set all four to enable; takes precedence over MCP_HTTP_BEARER_TOKEN
+# OIDC_CONFIG_URL=https://id.example.com/.well-known/openid-configuration
+# OIDC_CLIENT_ID=
+# OIDC_CLIENT_SECRET=
+# OIDC_BASE_URL=https://ghostfolio-mcp.example.com
+# Optional OIDC settings
+# OIDC_REDIRECT_PATH=/auth/callback
+# OIDC_REQUIRED_SCOPES=
+# OIDC_ALLOWED_REDIRECT_URIS=
+# OIDC_VERIFY_ID_TOKEN=false
+# OIDC_FORWARD_RESOURCE=false
+```
+
+### Sentry Error Tracking & Monitoring (Optional)
+
+The server optionally supports **Sentry** for error tracking, performance monitoring, and debugging. Sentry integration is completely optional and only initialized if configured.
+
+#### Installation
+
+To enable Sentry monitoring, install the optional dependency:
+
+```sh
+# Using UV (recommended)
+uv sync --extra sentry
+```
+
+#### Configuration
+
+Enable Sentry by setting the `SENTRY_DSN` environment variable in your `.env` file:
+
+```env
+# Required: Sentry DSN for your project
+SENTRY_DSN=https://your-key@o12345.ingest.us.sentry.io/6789
+
+# Optional: Performance monitoring sample rate (0.0-1.0, default: 1.0)
+SENTRY_TRACES_SAMPLE_RATE=1.0
+
+# Optional: Include personally identifiable information (default: false).
+# When true, tool inputs and outputs (portfolio data) are sent to Sentry.
+SENTRY_SEND_DEFAULT_PII=false
+
+# Optional: Environment name (e.g., "production", "staging")
+SENTRY_ENVIRONMENT=production
+
+# Optional: Release version (auto-detected from package if not set)
+SENTRY_RELEASE=1.2.2
+
+# Optional: Profiling - continuous profiling sample rate (0.0-1.0, default: 1.0)
+SENTRY_PROFILE_SESSION_SAMPLE_RATE=1.0
+
+# Optional: Profiling - lifecycle mode for profiling (default: "trace")
+# Options: "all", "continuation", "trace"
+SENTRY_PROFILE_LIFECYCLE=trace
+
+# Optional: Enable log capture as breadcrumbs and events (default: true)
+SENTRY_ENABLE_LOGS=true
+```
+
+#### Features
+
+When enabled, Sentry automatically captures:
+
+- **Exceptions & Errors**: All unhandled exceptions with full context
+- **Performance Metrics**: Request/response times and traces
+- **MCP Integration**: Detailed MCP server activity and interactions
+- **Logs & Breadcrumbs**: Application logs and event trails for debugging
+- **Context Data**: Environment, client info, and request parameters
+
+#### Getting a Sentry DSN
+
+1. Create a free account at [sentry.io](https://sentry.io)
+2. Create a new Python project
+3. Copy your DSN from the project settings
+4. Set it in your `.env` file
+
+#### Disabling Sentry
+
+Sentry is completely optional. If you don't set `SENTRY_DSN`, the server will run normally without any Sentry integration, and no monitoring data will be collected.
+
+## Available Tools
+
+### Account Management Tools
+
+- `get_accounts`: Get all accounts in your portfolio including account types and balances
+- `get_account_balances`: Get account balances for a specific account
+- `create_account`: Create a new account in your portfolio
+- `delete_account`: Delete an existing account from your portfolio (destructive operation)
+- `get_account_details`: Get details for a specific account
+- `update_account`: Update settings or details of an existing account
+- `transfer_account_balance`: Transfer cash balances between two accounts
+- `create_account_balance`: Set an account's balance for a specific date in its balance history (defaults to today)
+- `delete_account_balance`: Delete a single entry from an account's balance history
+
+### Portfolio & Transaction Management Tools
+
+- `get_portfolio_performance`: Get portfolio performance data including returns, benchmarks, and performance metrics
+- `get_portfolio_holdings`: Get portfolio holdings and positions including allocations and asset breakdowns
+- `get_portfolio_details`: Get comprehensive portfolio details including accounts, positions, and summary
+- `get_position`: Get position details for a specific symbol from a data source
+- `get_investments`: Get investment data grouped by time period showing cash flows and contributions
+- `get_dividends`: Get dividend data grouped by time period showing dividend payments and yield
+- `get_orders`: Get all activities/orders from your portfolio, optionally filtered by account
+- `create_activity`: Create a single new transaction/activity in your portfolio (BUY, SELL, DIVIDEND, INTEREST, FEE, etc.), optionally with tags
+- `update_activity`: Update an existing activity/transaction, including its tags; fields you don't pass keep their current values
+- `delete_activity`: Delete a single activity/transaction by its ID (destructive operation)
+
+### Benchmark Tools
+
+- `get_benchmarks`: Get all configured benchmarks
+- `get_benchmark_performance`: Compare portfolio performance against a benchmark symbol starting from a specific date
+
+### Watchlist Tools
+
+- `get_watchlist`: Get all items in the user's watchlist
+- `add_to_watchlist`: Add a symbol to the user's watchlist
+- `remove_from_watchlist`: Remove a symbol from the user's watchlist
+
+### Exchange Rate Tools
+
+- `get_exchange_rate`: Get the exchange rate for a given currency symbol on a specific date
+
+### Data Export Tools
+
+- `export_portfolio`: Export portfolio activities/transactions data as JSON
+
+### Market Data & Symbol Tools
+
+- `get_market_data_for_asset`: Get market data for a specific asset
+- `add_market_data_points`: Add one or more market data points for an asset (typically a `MANUAL` data source — Ghostfolio rejects writes for auto-fetched sources)
+- `get_symbol_data`: Get symbol data for a specific asset from a data source
+- `get_historical_data`: Get historical data for a specific symbol on a specific date
+- `lookup_symbols`: Search for symbols using a query string
+- `get_asset_profile`: Get asset profile information for a specific symbol
+- `upsert_asset_profile`: Create-or-update an asset profile, including optional `countries` and `sectors` allocations (idempotent; tolerates Ghostfolio's HTTP 500 on the create step and relies on the subsequent PATCH as the source of truth)
+- `delete_asset_profile`: Delete an asset profile (destructive operation; may delete associated activities and market data depending on backend rules)
+
+### Data Import Tools
+
+- `import_transactions`: Import transactions into your portfolio (bulk import operation)
+- `get_dividends_for_import`: Fetch historical dividend data formatted for import for a specific symbol
+
+### System & Platform Tools
+
+- `get_health`: Get system health status of the Ghostfolio backend service
+- `get_platforms`: Get list of available platforms (brokers, exchanges, etc.) for account tracking
+
+### User Management Tools
+
+- `get_user_info`: Get user information and settings
+
+## Security & Safety Features
+
+### Read-Only Mode
+
+The server supports a read-only mode that disables all write operations for safe monitoring:
+
+```env
+READ_ONLY_MODE=true
+```
+
+When enabled, this mode prevents any modifications to your portfolio data while still allowing full read access to all information.
+
+### Tag-Based Tool Filtering
+
+You can disable specific categories of tools by setting disabled tags:
+
+```env
+GHOSTFOLIO_DISABLED_TAGS=portfolio,symbol,import
+```
+
+Available tags include:
+- `account` - Account management tools (create, delete, update, get accounts)
+- `portfolio` - Portfolio analysis and performance tools
+- `symbol` - Symbol lookup and data tools
+- `import` - Data import tools
+- `asset` - Asset profile tools
+- `user` - User information tools
+- `system` - System health and platform information tools
+- `activities` - Activity/transaction management tools (create, update, delete activities)
+- `watchlist` - Watchlist management tools
+- `exchange-rate` - Currency exchange rate tools
+- `export` - Data export tools
+- `benchmark` - Benchmark tools
+
+### Rate Limiting
+
+The server supports rate limiting to control API usage and prevent abuse. If enabled, requests are limited per client using a sliding window algorithm.
+
+Enable rate limiting by setting the following environment variables in your `.env` file:
+
+```env
+RATE_LIMIT_ENABLED=true
+RATE_LIMIT_MAX_REQUESTS=60    # Maximum requests allowed per window
+RATE_LIMIT_WINDOW_MINUTES=1   # Window size in minutes
+```
+
+If `RATE_LIMIT_ENABLED` is set to `true`, the server will apply rate limiting middleware. Adjust `RATE_LIMIT_MAX_REQUESTS` and `RATE_LIMIT_WINDOW_MINUTES` as needed for your environment. While rate limiting is on, both must be at least 1; while it is off, they are not read.
+
+### Tool Search for Large Toolsets
+
+FastMCP tool search can reduce prompt size for servers with many tools.
+When enabled, `list_tools` returns two synthetic tools:
+
+- `search_tools`: Finds matching tools and returns their full schemas
+- `call_tool`: Executes any discovered tool by name
+
+Enable it with:
+
+```env
+TOOL_SEARCH_ENABLED=true
+TOOL_SEARCH_STRATEGY=bm25      # bm25 or regex
+TOOL_SEARCH_MAX_RESULTS=8      # optional, default is 5
+```
+
+`bm25` supports natural language queries, while `regex` uses a regex
+`pattern` input for deterministic matching. While tool search is on, any other
+strategy, or a `TOOL_SEARCH_MAX_RESULTS` below 1, stops the server at startup;
+while it is off, these settings are not read.
+
+Tool search respects existing visibility controls (read-only mode and
+disabled tags).
+
+### SSL/TLS Configuration
+
+The server supports SSL certificate verification and custom timeout settings:
+
+```env
+GHOSTFOLIO_VERIFY_SSL=true    # Enable SSL certificate verification
+GHOSTFOLIO_TIMEOUT=30         # Connection timeout in seconds
+```
+
+### Transport Configuration
+
+The server supports multiple transport protocols for different deployment scenarios:
+
+#### STDIO Transport (Default)
+
+The default transport uses standard input/output for communication. This is ideal for local usage and integration with tools that communicate via stdin/stdout:
+
+```env
+MCP_TRANSPORT=stdio
+```
+
+#### HTTP SSE Transport (Server-Sent Events)
+
+For network-based deployments, you can use HTTP with Server-Sent Events. This allows the MCP server to be accessed over HTTP with real-time streaming:
+
+```env
+MCP_TRANSPORT=sse
+MCP_HTTP_HOST=127.0.0.1        # Localhost
+MCP_HTTP_PORT=8000           # Port to listen on
+MCP_HTTP_BEARER_TOKEN=your-secret-token  # Optional authentication token
+```
+
+When using SSE transport with a bearer token, clients must include the token in their requests:
+
+```bash
+curl -H "Authorization: Bearer your-secret-token" http://localhost:8000/sse
+```
+
+#### HTTP Streamable Transport
+
+The HTTP Streamable transport provides HTTP-based communication with request/response streaming. This is ideal for web integrations and tools that need HTTP endpoints:
+
+```env
+MCP_TRANSPORT=http
+MCP_HTTP_HOST=127.0.0.1        # Localhost
+MCP_HTTP_PORT=8000           # Port to listen on
+MCP_HTTP_BEARER_TOKEN=your-secret-token  # Optional authentication token
+```
+
+When using streamable transport with a bearer token:
+
+```sh
+curl -H "Authorization: Bearer your-secret-token" \
+     -H "Accept: application/json, text/event-stream" \
+     -H "Content-Type: application/json" \
+     -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' \
+     http://localhost:8000/mcp
+```
+
+**Note**: The HTTP transport requires proper JSON-RPC formatting with `jsonrpc` and `id` fields. The server may also require session initialization for some operations.
+
+#### Health Endpoint
+
+Both HTTP transports (`sse` and `http`) serve `GET /health`, which answers `200 ok`
+when the server is handling requests. It needs no bearer token or OIDC login and
+does not contact Ghostfolio, so a Ghostfolio outage does not mark the MCP server
+unhealthy. The Docker image's `HEALTHCHECK` uses it:
+
+```sh
+curl http://localhost:8000/health
+```
+
+### OIDC / OAuth Authentication (Optional)
+
+A static bearer token is enough for machine-to-machine clients, but many MCP clients can only authenticate over OAuth with Dynamic Client Registration. For those, the server can act as an OAuth interface in front of an existing OIDC identity provider (Authentik, Keycloak, PocketID, Auth0, Entra ID, ...) using FastMCP's `OIDCProxy`. Clients register and authenticate against this server; the server brokers the flow upstream. No Ghostfolio credential ever reaches the client.
+
+This applies to the `sse` and `http` transports only.
+
+#### Registering the client
+
+Create a **confidential** client (client ID + secret) on your identity provider with the redirect URI set to `OIDC_BASE_URL` + `OIDC_REDIRECT_PATH`, for example `https://ghostfolio-mcp.example.com/auth/callback`.
+
+#### Configuration
+
+```env
+MCP_TRANSPORT=http
+MCP_HTTP_HOST=0.0.0.0
+MCP_HTTP_PORT=8000
+
+# All four are required to enable OIDC
+OIDC_CONFIG_URL=https://id.example.com/.well-known/openid-configuration
+OIDC_CLIENT_ID=your-client-id
+OIDC_CLIENT_SECRET=your-client-secret
+# Public URL where this server is reachable, used to build its OAuth endpoints.
+# Must be HTTPS (except on localhost), as required for an OAuth issuer.
+OIDC_BASE_URL=https://ghostfolio-mcp.example.com
+```
+
+OIDC is entirely optional. Leaving these unset keeps the existing behaviour, and a partially configured setup is ignored with a warning rather than half-enabled. When OIDC is configured it takes precedence over `MCP_HTTP_BEARER_TOKEN`.
+
+Optional settings:
+
+```env
+# Callback path registered on the identity provider (default: /auth/callback)
+OIDC_REDIRECT_PATH=/auth/callback
+
+# Comma-separated scopes required on presented tokens
+OIDC_REQUIRED_SCOPES=openid,profile
+
+# Comma-separated allowed client redirect URI patterns (wildcards accepted)
+OIDC_ALLOWED_REDIRECT_URIS=https://example.com/*
+
+# Verify the id_token instead of the access token (default: false)
+OIDC_VERIFY_ID_TOKEN=false
+
+# Forward the RFC 8707 'resource' indicator upstream (default: false)
+OIDC_FORWARD_RESOURCE=false
+```
+
+`OIDC_ALLOWED_REDIRECT_URIS` restricts which clients may complete the flow. Leaving it unset accepts any redirect URI a client registers, so set it to the hosts you expect, for example `https://example.com/*`.
+
+Set `OIDC_VERIFY_ID_TOKEN=true` if your identity provider issues opaque (non-JWT) access tokens; the `id_token` is then verified instead.
+
+`OIDC_FORWARD_RESOURCE` is off by default because identity providers that do not implement RFC 8707 resource indicators reject the authorization request with `invalid_request`, which breaks login immediately after consent. Turn it on only if your provider supports resource indicators. Token audience binding is unaffected either way.
+
+#### Persisting OAuth state
+
+Client registrations and encrypted tokens are stored on disk, under FastMCP's data directory. If that directory is not persistent, every restart forces all clients to register and authenticate again. The Docker image sets `FASTMCP_HOME=/data`, so mount a volume there:
+
+```sh
+docker run -v ghostfolio-mcp-data:/data --env-file .env ghcr.io/mhajder/ghostfolio-mcp:latest
+```
+
+#### Running behind a reverse proxy
+
+`OIDC_BASE_URL` must be the externally reachable HTTPS URL, and the proxy must forward the `Host` header unchanged, otherwise the OAuth metadata this server advertises will point at the wrong host.
+
+## Data Sources
+
+Ghostfolio supports multiple data sources for market data and symbols:
+
+- **YAHOO** - Yahoo Finance data source
+- **COINGECKO** - CoinGecko for cryptocurrency data
+- **MANUAL** - Manually entered data
+- And other configured data sources in your Ghostfolio instance
+
+When using tools that require a data source parameter, specify the appropriate source for your asset type.
+
+## Using Docker
+
+A Docker image is available on GitHub Packages for easy deployment. It runs the
+HTTP Streamable transport on port 8000 (`/mcp`).
+
+```sh
+docker pull ghcr.io/mhajder/ghostfolio-mcp:latest
+```
+
+When [OIDC authentication](#oidc--oauth-authentication-optional) is enabled, mount a volume on `/data` so OAuth client registrations survive container recreation.
+
+### Open WebUI
+
+Open WebUI 0.6.31 and later connect to the image directly; the separate MCPO
+image (`ghcr.io/mhajder/ghostfolio-mcpo`) is no longer published. In Open WebUI,
+go to **Admin Settings > Integrations > External Tool Servers**, add a connection
+of type **MCP (Streamable HTTP)** with the URL `http://<host>:8000/mcp`, and set
+Bearer authentication to your `MCP_HTTP_BEARER_TOKEN`.
+
+If [OIDC authentication](#oidc--oauth-authentication-optional) is enabled, it
+takes precedence and the bearer token is not accepted. Use the URL
+`OIDC_BASE_URL` + `/mcp` and choose **OAuth 2.1** authentication instead; Open
+WebUI registers itself as a client, so if you set `OIDC_ALLOWED_REDIRECT_URIS`,
+include your Open WebUI URL in it.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests and ensure code quality (`uv run pytest && uv run ruff check .`)
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+## License
+
+GNU Affero General Public License - see LICENSE file for details.

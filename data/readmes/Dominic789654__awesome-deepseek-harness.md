@@ -93,6 +93,7 @@ Before installing, confirm the target repo carries the **`#dsh`** GitHub topic s
 _Highlights personally recommended by **Tianyi Cui** ([@tianyi](https://x.com/tianyi)), DeepSeek Harness team lead, in his **【DSH 社区插件推荐】** series on X. Newest first; each entry links the original post. Kept in sync with [README.zh-CN.md](./README.zh-CN.md)._
 
 - [oh-my-dsh/dsh-plugin-upgrade-skill](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill) — Upgrade skills for DSH plugin authors: 195 versioned upgrade cards (0.1.0-rc.8 → 0.2.0-rc.1) and 11 skills that list breaking changes, patch the plugin, test and publish — so Claude Code / Codex / Gemini can migrate an old plugin to a new DSH release, scored by a 63-task public benchmark.  `⭐287` · Team pick 2026-10-05 · [post](https://x.com/tianyi/status/2107030904233460208)
+- [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) — Context insight and management suite: a context dashboard, browser, sidebar and `context` command that show what the model's window is made of — composition vs. window size, per-request history, compression and injection events, per-message token stats, and multi-agent views.  `⭐2304` · Team pick 2026-09-30 · [post](https://x.com/tianyi/status/2105256532657267119)
 
 ### 🔍 Plugin Directories (team pick #3 · 2026-09-28)
 
@@ -339,6 +340,11 @@ _DSH's core composition mechanism: a **profile** stacks bundle patch layers, the
 - [dingminhua/dsh-connect-qoder](https://github.com/dingminhua/dsh-connect-qoder) — Connect Qoder (Lingma CN / international) models to DeepSeek Harness through their PATs, with a multi-account pool, daily check-in, automatic failover, and a read-only credits overview.
 - [doitian/dsh-provider-aliyun](https://github.com/doitian/dsh-provider-aliyun) — Aliyun DashScope (Bailian) model provider preset for DeepSeek Harness: adds an OpenAI-compatible aliyun route with a starter Qwen catalog to the llm-pi-ai adapter.
 - [sevenhsu7/dsh-cowork-mode](https://github.com/sevenhsu7/dsh-cowork-mode) — Paper mode agent preset for DeepSeek Harness: a non-coding work contract with one `AI-Cooperate/` archive, `YYMMDD-project-name` file naming, git-aware local ignore, auto-cleaned system-temp scratch (7 days) and 📑 session badges.
+- [yjh051108/fengcha-2.0](https://github.com/yjh051108/fengcha-2.0) — Fengcha 2.0 reasoning-register presets: two agent presets (Fengcha Standard / Fengcha PTC) inject formal constraints at the head and tail of the runtime-context snapshot so reasoning unfolds in the first-person plural; presented as a hard instruction constraint, with no claimed capability gain (Apache-2.0).
+- [drscrewdriver/dsh-preset-doctor](https://github.com/drscrewdriver/dsh-preset-doctor) — Preset doctor: scans Agent preset declarations that broke after a DSH upgrade, auto-migrates the mechanically fixable ones (with .bak backup, atomic writes, idempotent) and reports the rest with file, line and reason.
+- [kol-mm/dsh-config-migrate](https://github.com/kol-mm/dsh-config-migrate) — DeepSeek Harness config migration plugin: one-click export/import of DSH_HOME settings, credentials, profiles and external plugins. Cross-platform (Windows/macOS/Linux).
+- [SuangXX/dsh-zh-cot-fidelity](https://github.com/SuangXX/dsh-zh-cot-fidelity) — Global system-prompt plugin: Chinese chain-of-thought, content fidelity and anti-formulaic writing; rules are editable and take effect immediately.
+- [YOGEMOW/DSH-Cyrene](https://github.com/YOGEMOW/DSH-Cyrene) — Cyrene persona preset for DeepSeek Harness: a chat mode and a work mode (fork of Cyrene-xl/DSH-Cyrene), with a bundled world book, forms of address, three forms and style levels, plus an entry point to Eternal Page Memory.
 
 ## Harnesses & Runtimes
 
@@ -549,15 +555,4 @@ _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime
 - [Toukaiteio/dsh-effort-tweak](https://github.com/Toukaiteio/dsh-effort-tweak) — Adjusts model reasoning effort on the fly.
 - [csiroqa/dsh-backup-sync](https://github.com/csiroqa/dsh-backup-sync) — Snapshot backup and WebDAV sync for DSH workspaces.
 - [having5548/dsh-backup](https://github.com/having5548/dsh-backup) — Backup & restore plugin for DeepSeek Harness: workspace, full conversations (byte-exact), attachments, settings and dsh-mnemon memory data in one zip.
-- [csiroqa/dsh-schedule](https://github.com/csiroqa/dsh-schedule) — Cron-style scheduled tasks with status monitoring.
-- [Karuisawa-Mrs/dsh-plugins](https://github.com/Karuisawa-Mrs/dsh-plugins) — Community plugin collection for DSH.
-- [BlockRunAI/dsh-clawrouter](https://github.com/BlockRunAI/dsh-clawrouter) — A second brain for your DeepSeek Harness agent — strong-model review before risky tool calls, plus 70 models from one wallet.
-- [gordonlu/dsh-context-lens](https://github.com/gordonlu/dsh-context-lens) — Request Context Profiler for DeepSeek Harness — see what changed between model requests, and how cache reuse changed with it.
-- [green-dalii/dsh-shift-router](https://github.com/green-dalii/dsh-shift-router) — Two-tier model router for DeepSeek Harness — LLM-Judge routing, multi-model fallback chains, exponential-backoff failover, and task-level orchestration.
-- [KeepLost/harniverse](https://github.com/KeepLost/harniverse) — General pluggable coding-agent harness built on DeepSeek Harness, tuned to the author's personal workflow.
-- [MonshinYu/dsh-bun-compat-patch](https://github.com/MonshinYu/dsh-bun-compat-patch) — Node-API compatibility layer for running DeepSeek Harness on Bun 1.3.14.
-- [rugose-learnedprofession58/pi-dsh](https://github.com/rugose-learnedprofession58/pi-dsh) — Crash-consistent coding-agent runtime manager: durable session history, causal undo/redo, session replay, and approval-gated self-extension.
-- [MayBeTheWorld/dsh-inherit](https://github.com/MayBeTheWorld/dsh-inherit) — Imports MCP servers and Skills from Claude Code / Cursor / Codex / cc-switch into DeepSeek Harness (Settings → General → import agent settings).
-- [unStone/dsh-xray-plugin](https://github.com/unStone/dsh-xray-plugin) — Ask what a DeepSeek Harness plugin can actually do, from inside your agent; companion to dsh-xray.
-- [morlay/session-persistence-rdb](https://github.com/morlay/session-persistence-rdb) — Relational-database persistence layer for DSH sessions.
-- [rainforest888
+- [csiroqa/dsh-schedule](https://github.com/csiroqa/dsh-schedule) — Cron-style scheduled tasks with status 

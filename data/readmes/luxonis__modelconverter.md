@@ -366,7 +366,8 @@ If omitted or null, it defaults to the archive basename (without its archive ext
 unpacked directory name, model stem for a flat config, or explicit `stages` keys joined by dashes.
 
 NN Archives are named `<name>.<platform>.tar.xz`; `--to native` creates no
-archive. Both modes use the default output subfolder
+archive. Each NN Archive includes the output folder's `config.yaml` and
+`buildinfo.json` at its root. Both modes use the default output subfolder
 `<sanitized_name>_to_<platform>_<YYYY_MM_DD_HH_MM_SS>` (UTC).
 `--output-dir` overrides this directory independently of `name`, under
 `output/` when using Docker. An existing destination is replaced only if
@@ -530,6 +531,10 @@ The `rvc4.quantization_mode` CLI option allows you to choose between different p
 
 > [!IMPORTANT]
 > When `rvc4.quantization_mode` is set to anything other than `CUSTOM`, the default settings for that mode will override any custom settings provided in the configuration file or via command-line arguments (via the `rvc4.snpe_onnx_to_dlc_args`, `rvc4.snpe_dlc_quant_args`, or `rvc4.snpe_dlc_graph_prepare_args` options).
+
+An ONNX NN Archive can include quantization overrides as root-level `encodings.json` or as AIMET's `<model-stem>.encodings` sidecar next to the ONNX file. If both files are present, ModelConverter uses the root-level `encodings.json` and logs a warning. For RVC4 conversion, an explicit `rvc4.encodings` setting or `--quantization_overrides` in `rvc4.snpe_onnx_to_dlc_args` takes precedence over archive files. Setting `rvc4.encodings` to `None` disables loading encodings from the archive.
+
+For modes other than `FP16_STANDARD`, RVC4 NN Archives generated with quantization overrides include the exact file passed to SNPE as root-level `encodings.json`.
 
 #### Handling Large ONNX Files (Exceeding 2GB)
 
