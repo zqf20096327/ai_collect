@@ -16,3 +16,6 @@ state/enrich_cache_shards/*.tmp
 # 快照归档打包暂存目录
 _archive_tmp/
 state/logs/
+
+# 公开仓本地构建产物(评审用,正式发布走独立仓库)
+ai-repo-atlas/
