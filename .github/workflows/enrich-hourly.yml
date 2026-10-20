@@ -1,0 +1,75 @@
+name: enrich-hourly
+
+# 临时冲刺:每小时一个 s7 小时窗(断点接力,未到期零调用),剩余 ~2.5 万 tail 仓
+# 每窗 ~3400 仓(75 调用/分钟 × 45 分钟),约 8 个小时窗收完全部到期目标。
+# 富集全部完成后删除本文件(或注释掉 schedule)即可停。
+on:
+  schedule:
+    - cron: "0 0-12,14-23 * * *"   # 每小时整点;避开 13 点(UTC)=北京 21 点 collect 夜窗起点,防同刻双跑
+  workflow_dispatch: {}             # 手动可触发
+
+permissions:
+  contents: write
+
+concurrency:
+  group: enrich-hourly
+  cancel-in-progress: false         # timeout 55min < 间隔 60min,本不会重叠;防挂死兜底
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      PROXY: ""
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 45 分钟自限时 + 0 跨窗等待:配额触保即优雅退出,接力交给下一小时窗
+      # (整点起跑对齐 GITHUB_TOKEN 整点重置,每窗都是满额配额小时)
+      - name: s7 富集(小时窗,断点接力)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          python s7_enrich.py --tier all
+          --max-calls 5000 --max-minutes 45 --wait-windows 0 --workers 6
+
+      - name: commit & push
+        if: always()   # 配额触保/超时退出也保住本窗断点
+        run: |
+          git config user.name "ai-collect-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "本窗无变化,跳过提交"
+          else
+            git commit -m "enrich: $(date -u +%F) 小时窗接力(剩余到期见日志)"
+            for i in 1 2 3 4 5; do
+              git fetch origin main
+              if ! git rebase --autostash origin/main; then
+                # 撞车分流:富集台账/侧车按 fn/dim_ts 并集合并,两窗数据都保
+                # (与 collect.yml 同款修复,10-16 事故教训:严禁整文件取本窗)
+                git diff --name-only --diff-filter=U -z | while IFS= read -r -d '' p; do
+                  case "$p" in
+                    state/enrich_cache_shards/*.json|state/enrich_state.json)
+                      python tools/merge_state_json.py --path "$p" --tie theirs \
+                        || git checkout --theirs -- "$p" ;;
+                    *)
+                      git checkout --theirs -- "$p" ;;
+                  esac
+                done
+                git diff --name-only --diff-filter=U -z | xargs -0 -r git add
+                GIT_EDITOR=true git rebase --continue
+              fi
+              git push origin HEAD:main && { echo "已推送"; exit 0; }
+              echo "推送撞车,40s 后重试($i/5)"; sleep 40
+            done
+            echo "推送 5 次未成,断点已在本窗提交,下一小时窗重试" >&2
+            exit 1
+          fi
