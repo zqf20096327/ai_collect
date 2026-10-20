@@ -34,11 +34,12 @@ import requests
 
 from lib_rm_clean import clean_readme, number_lines, visible_line_limit
 from lib_nominate import scan_lines, detect_form
+import lib_store
 from lib_store import load_pool, atomic_write_json
 import lib_card_store as cstore
 
 ROOT = Path(__file__).resolve().parent
-READMES = ROOT / "data" / "readmes"
+READMES = lib_store.READMES      # 只读输入跟 lib_store 的 FACTORY_ROOT 走
 CACHE = ROOT / "state" / "s8_cache.json"
 ISTATE = ROOT / "state" / "s8_state.json"
 LOGDIR = ROOT / "state" / "logs"

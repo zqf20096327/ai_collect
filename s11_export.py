@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import time
 from collections import Counter
@@ -25,8 +26,12 @@ import lib_card_store as cstore
 import lib_tag_vocab as tv
 
 ROOT = Path(__file__).resolve().parent
-POOL_DIR = ROOT / "data" / "live"
-DEMO = ROOT / "demo_public_repo"
+# 只读输入(池/信号/星数点)可指向工厂仓检出;卡片状态永远读本地 ROOT
+FACTORY = (Path(os.environ["FACTORY_ROOT"]).resolve()
+           if os.environ.get("FACTORY_ROOT") else ROOT)
+POOL_DIR = FACTORY / "data" / "live"
+DEMO = next((p for p in (ROOT / "demo_public_repo", FACTORY / "demo_public_repo")
+             if p.is_dir()), ROOT / "demo_public_repo")
 
 M = "README 正文与徽章扫描"
 AI_ROLE_NOTE = {
@@ -68,13 +73,13 @@ def load_pool_meta() -> dict[str, dict]:
 
 def load_signals() -> tuple[dict, dict, dict, dict, dict]:
     def _items(name):
-        p = ROOT / "state" / f"{name}.json"
+        p = FACTORY / "state" / f"{name}.json"
         d = json.loads(p.read_text(encoding="utf-8"))
         return d.get("items", {})
 
     vel = _items("p0_velocity")
     vel_meta = {k: v for k, v in json.loads(
-        (ROOT / "state" / "p0_velocity.json").read_text(encoding="utf-8")).items()
+        (FACTORY / "state" / "p0_velocity.json").read_text(encoding="utf-8")).items()
         if k != "items"}
     return _items("p0_maintenance"), vel, vel_meta, _items("p0_downloads"), _items("p0_platform")
 
@@ -191,22 +196,27 @@ def fmt_stars(n) -> str:
 
 # ---------------------------------------------------------------- 星数曲线
 def load_star_series(max_points: int = 30) -> dict[str, list[tuple[str, int]]]:
-    """data/stars/points_*.ndjson -> {fn: [(日, stars), ...]}，日升序，截尾 max_points。"""
-    series: dict[str, list[tuple[str, int]]] = {}
-    for fp in sorted((ROOT / "data" / "stars").glob("points_*.ndjson")):
-        day = fp.stem.replace("points_", "")
-        d6 = f"{day[:4]}-{day[4:6]}-{day[6:]}" if len(day) == 8 else day
-        for ln in fp.read_text(encoding="utf-8").splitlines():
-            try:
-                r = json.loads(ln)
-            except json.JSONDecodeError:
-                continue
-            fn, st = r.get("full_name"), r.get("stars")
-            if fn and isinstance(st, int):
-                series.setdefault(fn, []).append((d6, st))
-    for fn in series:
-        series[fn] = series[fn][-max_points:]
-    return series
+    """星数曲线点:合并工厂仓与本地两处 points_*.ndjson(云端本地=本仓 data/stars)。
+
+    -> {fn: [(日, stars), ...]}，日升序去重，截尾 max_points。
+    """
+    series: dict[str, dict[str, int]] = {}
+    for stars_dir in (FACTORY / "data" / "stars", ROOT / "data" / "stars"):
+        if not stars_dir.is_dir():
+            continue
+        for fp in sorted(stars_dir.glob("points_*.ndjson")):
+            day = fp.stem.replace("points_", "")
+            d6 = f"{day[:4]}-{day[4:6]}-{day[6:]}" if len(day) == 8 else day
+            for ln in fp.read_text(encoding="utf-8").splitlines():
+                try:
+                    r = json.loads(ln)
+                except json.JSONDecodeError:
+                    continue
+                fn, st = r.get("full_name"), r.get("stars")
+                if fn and isinstance(st, int):
+                    series.setdefault(fn, {})[d6] = st
+    out = {fn: sorted(pts.items())[-max_points:] for fn, pts in series.items()}
+    return out
 
 
 def curve_block(fn: str, series: dict[str, list[tuple[str, int]]]) -> str:
@@ -402,9 +412,13 @@ def main():
         p = out / "data" / "cards" / letter / (r["fn"].replace("/", "__") + ".md")
         p.write_text(build_md(r, series), encoding="utf-8", newline="\n")
 
-    # schema / vocab / 派生视图 / 周报
-    shutil.copy(DEMO / "data" / "schema" / "card.schema.json",
-                out / "data" / "schema" / "card.schema.json")
+    # schema / vocab / 派生视图 / 周报（模板缺失时降级:atlas 等部署位无 demo 目录）
+    schema_src = DEMO / "data" / "schema" / "card.schema.json"
+    schema_dst = out / "data" / "schema" / "card.schema.json"
+    if schema_src.is_file():
+        shutil.copy(schema_src, schema_dst)
+    elif not schema_dst.exists():
+        raise SystemExit("schema 缺失且无模板可复制")
     v = tv.load_vocab()
     vocab_pub = {"vocab_ver": v["vocab_ver"], "rules": v["rules"],
                  "groups": v["groups"],
@@ -428,12 +442,55 @@ def main():
     n_dl = sum(1 for r in rows if r["signals"].get("downloads"))
     docs = render_docs(n, n_sig, n_tag, n_dl, len(alts))
     for name, text in docs.items():
-        (out / name).write_text(text, encoding="utf-8", newline="\n")
+        if text is None:
+            continue
+        p = out / name
+        if p.exists() and name in ("README.md", "DATASET.md", "CHANGELOG.md", "LICENSE"):
+            continue          # 门面文档只写一次(首次生成),此后人工版本化维护
+        p.write_text(text, encoding="utf-8", newline="\n")
+    (out / "PROGRESS.md").write_text(
+        build_progress(rows, n_sig, n_tag, n_dl), encoding="utf-8", newline="\n")
 
     print(f"导出 {n} 行 -> {out}")
     print(f"信号覆盖: maintenance {n_sig} / velocity {n_sig} / downloads {n_dl}")
     print(f"场景标签卡 {n_tag};替代映射产品 {len(alts)} 个(≥2 仓)")
     print(f"体积: catalog {((out / 'data' / 'catalog.jsonl').stat().st_size // 1024)} KB")
+
+
+def build_progress(rows: list[dict], n_sig: int, n_tag: int, n_dl: int) -> str:
+    """PROGRESS.md:每次导出刷新的进度看板(全池基数来自工厂仓 README 数)。"""
+    try:
+        total = sum(1 for _ in (FACTORY / "data" / "readmes").glob("*.md"))
+    except OSError:
+        total = 0
+    done = len(rows)
+    pct = round(done * 100 / total, 1) if total else 0
+    remain = max(total - done, 0)
+    eta = f"{remain / 600 / 24:.1f}" if remain else "0"
+    tagc = Counter(t for r in rows for t in r["links"].get("scenario_tags") or [])
+    top = "、".join(f"{t} ×{c}" for t, c in tagc.most_common(8))
+    return f"""# 进度看板
+
+> 每小时自动生成流水线刷新。卡片自动生成、自动发布到本仓。
+
+| 指标 | 值 |
+|---|---|
+| 已生成卡片 | **{done:,}** / 全池 {total:,}（{pct}%） |
+| 预计剩余 | ~{eta} 天（600 卡/小时节奏） |
+| 带场景标签 | {n_tag:,} |
+| 带维护信号 / 下载信号 | {n_sig} / {n_dl} |
+| 最近刷新 | {time.strftime('%F %T')} |
+
+## 场景标签 Top 8
+
+{top or '（暂无）'}
+
+## 引擎
+
+解读 s8（六道闸+行号证据，双跑一致率 98.5%）· 打标 s10（受控词表 47 标签）·
+导出 s11（schema 校验）· 曲线 s12（每日点）。输入只读自工厂仓
+[zqf20096327/ai_collect](https://github.com/zqf20096327/ai_collect)。
+"""
 
 
 def render_docs(n, n_sig, n_tag, n_dl, n_alts) -> dict[str, str]:
@@ -529,18 +586,22 @@ Usage: 查询示例——找"可商用、能本地部署"的 AI 项目,读 catal
 - 派生视图:`data/views/alternatives.jsonl`({n_alts} 个产品)。
 - 格式说明:meta 不含 forks/open_issues(DATASET_PLAN §1);velocity 不含 domain_rank(域口径切换为词表组名,待 s9 月更重算)。
 """
-    dataset = (DEMO / "DATASET.md").read_text(encoding="utf-8")
-    dataset = dataset.replace(
-        "`owner_type / stars / forks / language / license / topics / archived / created_at / pushed_at / homepage / html_url`",
-        "`owner_type / stars / language / license / topics / archived / created_at / pushed_at / homepage / html_url`"
-        "(forks/open_issues 不上主表,无展示位)")
-    dataset += """
+    dataset_tmpl = DEMO / "DATASET.md"
+    if dataset_tmpl.is_file():
+        dataset = dataset_tmpl.read_text(encoding="utf-8")
+        dataset = dataset.replace(
+            "`owner_type / stars / forks / language / license / topics / archived / created_at / pushed_at / homepage / html_url`",
+            "`owner_type / stars / language / license / topics / archived / created_at / pushed_at / homepage / html_url`"
+            "(forks/open_issues 不上主表,无展示位)")
+        dataset += """
 ## links(关联组)— 场景标签
 
 `scenario_tags` 为受控词表中文规范名(47 标签/10 组),词表机器可读版见 `data/vocab.json`;
 打标与查询解析共用同一张表(双向契约)。仓库无场景语义(基础设施/学科库)时为空数组。
 `domain` 由主标签的组名派生。
 """
+    else:
+        dataset = None            # 云端部署无模板;write-once 会保留既有 DATASET.md
     return {"README.md": readme, "llms.txt": llms,
             "CHANGELOG.md": changelog, "DATASET.md": dataset}
 

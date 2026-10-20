@@ -11,11 +11,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-POOL_DIR = ROOT / "data" / "live"
+# 只读输入(池)可指向工厂仓检出;输出点文件永远写本地 data/stars
+POOL_DIR = ((Path(os.environ["FACTORY_ROOT"]) / "data" / "live")
+            if os.environ.get("FACTORY_ROOT")
+            else ROOT / "data" / "live")
 OUT_DIR = ROOT / "data" / "stars"
 
 

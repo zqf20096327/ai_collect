@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import random
 import time
 from collections import Counter
@@ -24,7 +25,10 @@ import lib_tag_vocab as tv
 from s8_interpret import AIClient, extract_json
 
 ROOT = Path(__file__).resolve().parent
-POOL_DIR = ROOT / "data" / "live"
+# 只读输入(池 topics)可指向工厂仓检出;不设则本地默认
+POOL_DIR = ((Path(os.environ["FACTORY_ROOT"]) / "data" / "live")
+            if os.environ.get("FACTORY_ROOT")
+            else ROOT / "data" / "live")
 BACKFILL_REPORT = ROOT / "state" / "s10_backfill_report.json"
 SAMPLE_OUT = ROOT / "state" / "s10_sample_tags.json"
 RETAG_OUT = ROOT / "state" / "s10_retag_run.json"

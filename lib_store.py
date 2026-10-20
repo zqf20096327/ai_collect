@@ -17,7 +17,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-DATA = ROOT / "data"
+# FACTORY_ROOT:云端部署时把只读输入(池/README/事件/星数点)指到工厂仓检出目录;
+# 不设则一切如常(本地默认)。state 永远在本地 ROOT。
+FACTORY = Path(os.environ["FACTORY_ROOT"]).resolve() \
+    if os.environ.get("FACTORY_ROOT") else ROOT
+DATA = FACTORY / "data"
 LIVE = DATA / "live"
 EVENTS = DATA / "events"
 STARS = DATA / "stars"
@@ -26,8 +30,9 @@ SNAP_LATEST = DATA / "snapshot_latest"
 READMES = DATA / "readmes"
 STATE = ROOT / "state"
 
-for _d in (LIVE, EVENTS, STARS, PARTS, READMES, STATE):
-    _d.mkdir(parents=True, exist_ok=True)
+if FACTORY == ROOT:                       # 本地模式维持自动建目录
+    for _d in (LIVE, EVENTS, STARS, PARTS, READMES, STATE):
+        _d.mkdir(parents=True, exist_ok=True)
 
 import config  # noqa: E402
 
