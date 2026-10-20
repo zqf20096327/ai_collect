@@ -1412,5 +1412,81 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "mominullptr/FIFA-World-Cup-2026-Dataset": {
+  "rel_ver": "v1.0-final",
+  "rel_pub": "2026-07-25",
+  "rel_days": 87,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 54,
+   "HTML": 24,
+   "CSS": 11,
+   "JavaScript": 11
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "24601/opencode-zellij-namer": {
+  "rel_ver": "v1.1.3",
+  "rel_pub": "2025-12-20",
+  "rel_days": 304,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "clidey/deptrust": {
+  "rel_ver": "v0.14.0",
+  "rel_pub": "2026-07-28",
+  "rel_days": 84,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Go": 84,
+   "JavaScript": 11,
+   "Shell": 4,
+   "Nix": 1,
+   "Go Template": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

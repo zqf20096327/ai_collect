@@ -1612,5 +1612,86 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "MAz-Codes/Fragmenta": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-08-17",
+  "rel_days": 64,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 64,
+   "Python": 35,
+   "Shell": 0,
+   "HTML": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "apple-aiml-research/ml-symphony": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2023-08-09",
+  "rel_days": 1168,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Svelte": 26,
+   "Python": 24,
+   "JavaScript": 21,
+   "TypeScript": 16,
+   "Jupyter Notebook": 13
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "netresearch/claude-code-marketplace": {
+  "rel_ver": "v1.13.0",
+  "rel_pub": "2026-04-22",
+  "rel_days": 181,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "JavaScript": 47,
+   "Nunjucks": 23,
+   "CSS": 18,
+   "Python": 8,
+   "Shell": 4
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

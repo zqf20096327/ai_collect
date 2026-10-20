@@ -1549,5 +1549,108 @@
    "contrib": "20261019",
    "lang": "20261019"
   }
+ },
+ "henrikekblad/codelight": {
+  "rel_ver": "v1.8.4",
+  "rel_pub": "2026-10-12",
+  "rel_days": 8,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 55,
+   "Kotlin": 19,
+   "C++": 9,
+   "JavaScript": 5,
+   "QML": 5
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "yuna0x0/hackmd-mcp": {
+  "rel_ver": "v1.5.7",
+  "rel_pub": "2025-11-28",
+  "rel_days": 326,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2025-09-15",
+  "sec_ids": [
+   "GHSA-g5cg-6c7v-mmpw(CVE-2025-59155,medium)"
+  ],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 60,
+   "JavaScript": 32,
+   "Dockerfile": 8
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "BiuboWAF/Biubo": {
+  "rel_ver": "v1.0.0-alpha",
+  "rel_pub": "2026-04-05",
+  "rel_days": 198,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 56,
+   "Python": 44,
+   "PowerShell": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "xcena-dev/maru": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 77,
+   "C++": 18,
+   "Cuda": 4,
+   "C": 0,
+   "CMake": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }
