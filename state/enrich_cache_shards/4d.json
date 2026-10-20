@@ -1578,5 +1578,50 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "feuersteiner/contextrie": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "TypeScript": 59,
+   "Python": 41
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "eggai-tech/EggAI": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "Python": 98,
+   "Jinja": 2,
+   "Makefile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

@@ -1528,5 +1528,65 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "AI-Atlaas/AI-Atlaas": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {},
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "tjx666/vscode-classic-experience": {
+  "rel_ver": "v7.0.0",
+  "rel_pub": "2025-11-02",
+  "rel_days": 352,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "ventas319/microsoft-ai-livestream-slidevault": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

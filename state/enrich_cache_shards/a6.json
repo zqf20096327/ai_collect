@@ -1696,5 +1696,103 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "kimimgo/awesome-ai-cae": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 72,
+   "Shell": 25,
+   "HTML": 2
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "framerslab/safeos": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "CSS": 2,
+   "JavaScript": 0,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Bredrumb/TomoriBot": {
+  "rel_ver": "v0.8.0.666",
+  "rel_pub": "2026-10-11",
+  "rel_days": 9,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 97,
+   "PLpgSQL": 2,
+   "Python": 0,
+   "Astro": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "BoumedineBillal/esp32-p4-jit": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2025-12-25",
+  "rel_days": 299,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Assembly": 27,
+   "Jupyter Notebook": 24,
+   "C++": 24,
+   "C": 21,
+   "Python": 4
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

@@ -1360,5 +1360,29 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "patterns-ai-core/weaviate-ruby": {
+  "rel_ver": "0.9.2",
+  "rel_pub": "2024-10-01",
+  "rel_days": 749,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Ruby": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

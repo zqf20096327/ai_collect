@@ -1776,5 +1776,76 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "shootthesound/lora-the-explorer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Batchfile": 2
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "KeloYuan/Niki-AI": {
+  "rel_ver": "4.1.1",
+  "rel_pub": "2026-05-09",
+  "rel_days": 164,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 48,
+   "TypeScript": 39,
+   "CSS": 13
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "eabnelson/pronto": {
+  "rel_ver": "v0.5.1",
+  "rel_pub": "2026-10-03",
+  "rel_days": 17,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 81,
+   "Swift": 17,
+   "HTML": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

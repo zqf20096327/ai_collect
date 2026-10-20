@@ -1861,5 +1861,59 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "gilad-rubin/hypster": {
+  "rel_ver": "v0.9.1",
+  "rel_pub": "2026-07-16",
+  "rel_days": 96,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 66,
+   "JavaScript": 27,
+   "TypeScript": 4,
+   "CSS": 2,
+   "Jupyter Notebook": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "pathpy/pathpyG": {
+  "rel_ver": "v0.2.0-alpha",
+  "rel_pub": "2025-10-02",
+  "rel_days": 383,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "Python": 96,
+   "JavaScript": 4,
+   "TeX": 0,
+   "Dockerfile": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

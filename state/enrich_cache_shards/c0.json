@@ -1237,8 +1237,11 @@
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261020"
+  },
+  "commit_90d": 116,
+  "commit_7d": 41
  },
  "CONSTELLATION-ENGINE/constellation-engine": {
   "rel_ver": "v1.0.5",
@@ -1350,6 +1353,30 @@
   "lang": {
    "Go": 100,
    "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Camil-H/cli-agent-lint": {
+  "rel_ver": "v0.3.5",
+  "rel_pub": "2026-05-08",
+  "rel_days": 165,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 99,
+   "Shell": 1
   },
   "enriched_at": "20261020",
   "dim_ts": {

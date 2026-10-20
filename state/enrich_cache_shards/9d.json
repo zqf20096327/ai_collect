@@ -1083,13 +1083,16 @@
    "JavaScript": 99,
    "Shell": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261020",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261020"
+  },
+  "commit_90d": 433,
+  "commit_7d": 129
  },
  "lavinal712/AutoencoderKL": {
   "rel_ver": null,
@@ -1362,6 +1365,73 @@
    "Shell": 0,
    "JavaScript": 0,
    "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "ShiQu1218/MemeTalk": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "NiaExperience/PearlOS": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-06-25",
+  "rel_days": 117,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 50,
+   "Python": 26,
+   "Rich Text Format": 12,
+   "HTML": 4,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "kyegomez/Griffin": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 87,
+   "Shell": 13
   },
   "enriched_at": "20261020",
   "dim_ts": {

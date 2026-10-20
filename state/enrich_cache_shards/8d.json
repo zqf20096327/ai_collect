@@ -1755,5 +1755,129 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "MalganisWu/red-bean-qing-tuan": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "JavaScript": 8,
+   "Shell": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "SuperCowPowers/workbench": {
+  "rel_ver": "v0.8.498",
+  "rel_pub": "2026-10-12",
+  "rel_days": 8,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 97,
+   "CSS": 1,
+   "JavaScript": 1,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "DavidCarliez/cover": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-10-08",
+  "rel_days": 12,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 91,
+   "JavaScript": 8,
+   "Shell": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Saganaki22/ComfyUI-Hyperflow": {
+  "rel_ver": "v1.3.2",
+  "rel_pub": "2026-10-14",
+  "rel_days": 6,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "mohammed97ashraf/LLM_Agri_Bot": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-06-21",
+  "rel_days": 121,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 58,
+   "CSS": 17,
+   "JavaScript": 13,
+   "HTML": 12,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

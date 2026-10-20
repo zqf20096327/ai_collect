@@ -1453,13 +1453,16 @@
    "TypeScript": 0,
    "Python": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261020",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261020"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "Xquik-dev/tweetclaw": {
   "rel_ver": "v1.7.1",
@@ -1840,6 +1843,149 @@
    "Python": 99,
    "Shell": 0,
    "Makefile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "ykyritsis/ChatGPT-code-preview": {
+  "commit_90d": 6,
+  "commit_7d": 6,
+  "rel_ver": "v1.3",
+  "rel_pub": "2024-07-02",
+  "rel_days": 840,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 59,
+   "CSS": 41
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "commit": "20261020",
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "TIGER-AI-Lab/Vamba": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 2
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "commit": "20261020",
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "samuelcardillo/glm-5.3-flash-2x-rtx-pro-6000-blackwell": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 80,
+   "Shell": 16,
+   "Jinja": 4,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "classifiedstudentkabir/Sign-Language-Interpreter": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 54,
+   "HTML": 26,
+   "CSS": 20
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "coko7/latuicon": {
+  "rel_ver": "v0.1.7",
+  "rel_pub": "2026-09-22",
+  "rel_days": 28,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Rust": 95,
+   "Nix": 5,
+   "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "gxCaesar/open-research-skills": {
+  "rel_ver": "v1.0.11",
+  "rel_pub": "2026-09-10",
+  "rel_days": 40,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 100,
+   "Shell": 0,
+   "TeX": 0
   },
   "enriched_at": "20261020",
   "dim_ts": {

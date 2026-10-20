@@ -1529,5 +1529,105 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "mkultraware/accuretta": {
+  "rel_ver": "v.0.9.4",
+  "rel_pub": "2026-10-19",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 52,
+   "JavaScript": 28,
+   "CSS": 15,
+   "HTML": 5,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "theletterf/impersonaid": {
+  "rel_ver": "0.3.0",
+  "rel_pub": "2025-11-12",
+  "rel_days": 342,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 87,
+   "EJS": 11,
+   "CSS": 3
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "kiharalab/DiffModeler": {
+  "rel_ver": "v2.3",
+  "rel_pub": "2024-11-24",
+  "rel_days": 695,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 47,
+   "Perl": 22,
+   "C": 20,
+   "C++": 9,
+   "Raku": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "e3ntity/nanograd": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 85,
+   "HTML": 12,
+   "Python": 3
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

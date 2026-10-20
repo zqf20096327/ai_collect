@@ -1472,5 +1472,32 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "marcuspat/turbo-flow": {
+  "commit_90d": 284,
+  "commit_7d": 69,
+  "rel_ver": "v5.2.0",
+  "rel_pub": "2026-10-07",
+  "rel_days": 13,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Shell": 72,
+   "Python": 28
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "commit": "20261020",
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

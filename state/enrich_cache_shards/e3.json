@@ -1376,5 +1376,31 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "Sallyn0225/eidolon-sc": {
+  "commit_90d": 1145,
+  "commit_7d": 335,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 54,
+   "TypeScript": 33,
+   "JavaScript": 11,
+   "Shell": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "commit": "20261020",
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

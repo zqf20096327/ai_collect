@@ -1921,5 +1921,101 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "vinhnx/vtchat": {
+  "rel_ver": "v3.16.14",
+  "rel_pub": "2025-12-07",
+  "rel_days": 317,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "TypeScript": 80,
+   "HTML": 10,
+   "CSS": 7,
+   "JavaScript": 3,
+   "Shell": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "TseringYuu/anyviz": {
+  "rel_ver": "v1.0.3",
+  "rel_pub": "2026-08-06",
+  "rel_days": 75,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 66,
+   "Shell": 15,
+   "PowerShell": 14,
+   "JavaScript": 5
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "MacPaw/ai-sdk-typescript": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-09-21",
+  "rel_days": 29,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "arjunprabhulal/mcp-gemini-search": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

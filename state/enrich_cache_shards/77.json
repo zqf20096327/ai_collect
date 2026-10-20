@@ -1536,5 +1536,76 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "yonseicasl/NPUsim": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2024-02-29",
+  "rel_days": 964,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C++": 99,
+   "Shell": 1,
+   "Makefile": 0,
+   "C": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "PerryLink/dsh-doublecheck": {
+  "rel_ver": "v0.9.29",
+  "rel_pub": "2026-10-19",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 65,
+   "JavaScript": 35
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "code0-tech/codezero": {
+  "rel_ver": "0.0.0-canary-2885595538-72f0dc618abbcf0b503501260443e44fcbcf7be1",
+  "rel_pub": "2026-09-26",
+  "rel_days": 24,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {},
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

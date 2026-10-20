@@ -1625,13 +1625,16 @@
    "Shell": 6,
    "HTML": 2
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261020",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261020"
+  },
+  "commit_90d": 147,
+  "commit_7d": 55
  },
  "omnichar/ComfyUI-Omnichar": {
   "rel_ver": "v0.1.1",
@@ -2025,6 +2028,92 @@
   "lang": {
    "Python": 100,
    "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "bentoml/BentoOCR": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "CrayLabs/SmartRedis": {
+  "rel_ver": "v0.6.1",
+  "rel_pub": "2024-09-27",
+  "rel_days": 753,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "C++": 62,
+   "Python": 13,
+   "Fortran": 10,
+   "C": 9,
+   "Pascal": 2
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "DLS5-Omics/CellNavi": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 79,
+   "Jupyter Notebook": 20,
+   "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "angelmariserg-glitch/diffusion-forge-lab": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "HTML": 100
   },
   "enriched_at": "20261020",
   "dim_ts": {

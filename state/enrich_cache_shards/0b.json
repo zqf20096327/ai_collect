@@ -1931,5 +1931,55 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "JasonSloan/DeepFusion": {
+  "rel_ver": "v111",
+  "rel_pub": "2024-11-18",
+  "rel_days": 701,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 68,
+   "Python": 20,
+   "C": 8,
+   "Jupyter Notebook": 2,
+   "Makefile": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "democra-ai/HuggingClaw": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 43,
+   "Python": 41,
+   "JavaScript": 12,
+   "Shell": 2,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

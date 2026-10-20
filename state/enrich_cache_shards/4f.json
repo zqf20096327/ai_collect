@@ -1498,13 +1498,16 @@
    "C": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261020",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261020"
+  },
+  "commit_90d": 73,
+  "commit_7d": 8
  },
  "FurkanOM/tf-faster-rcnn": {
   "rel_ver": null,
@@ -1921,6 +1924,30 @@
    "JavaScript": 0,
    "Python": 0,
    "CSS": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "matlab/matlab-ai-agent-sdk": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "MATLAB": 100,
+   "HTML": 0
   },
   "enriched_at": "20261020",
   "dim_ts": {

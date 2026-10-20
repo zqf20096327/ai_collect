@@ -1634,5 +1634,78 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "Teddy9710/smartpages": {
+  "rel_ver": "v1.4.1",
+  "rel_pub": "2026-10-20",
+  "rel_days": 0,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 80,
+   "CSS": 8,
+   "HTML": 6,
+   "Python": 3,
+   "PLpgSQL": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "thousandflowers/skillreaper": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-08-30",
+  "rel_days": 51,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Go": 98,
+   "JavaScript": 1,
+   "Makefile": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Anil-matcha/open-character-ai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 98,
+   "CSS": 1,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

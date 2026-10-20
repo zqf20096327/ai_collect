@@ -1556,5 +1556,55 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "Q-shuang-dot/ai-coding-welfare": {
+  "rel_ver": "data-20261019-2221",
+  "rel_pub": "2026-10-19",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 93,
+   "HTML": 4,
+   "Shell": 1,
+   "PowerShell": 1,
+   "Python": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "google/ARC-GEN": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-01-19",
+  "rel_days": 274,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

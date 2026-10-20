@@ -1607,5 +1607,106 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "NVIDIA-NeMo/nemo-helix": {
+  "commit_90d": 1842,
+  "commit_7d": 242,
+  "rel_ver": "0.7.3",
+  "rel_pub": "2026-10-16",
+  "rel_days": 4,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 60,
+  "lang": {
+   "Python": 76,
+   "TypeScript": 21,
+   "Shell": 1,
+   "Go": 0,
+   "Open Policy Agent": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "commit": "20261020",
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "CreativeMindstorms/AI-LEGO-PixelArt-Robot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "e0ipso/strikethroo": {
+  "rel_ver": "v4.2.0",
+  "rel_pub": "2026-10-14",
+  "rel_days": 6,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-10-02",
+  "sec_ids": [
+   "GHSA-9q6p-3rc8-6x5j(-,high)"
+  ],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 95,
+   "Handlebars": 3,
+   "JavaScript": 2,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Itz-Agasta/OpenDiagram": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 96,
+   "CSS": 1,
+   "Rust": 1,
+   "HCL": 1,
+   "Just": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

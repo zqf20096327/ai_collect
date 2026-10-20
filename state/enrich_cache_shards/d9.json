@@ -1465,8 +1465,11 @@
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261020"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "pytholic/Machine-Learning-Curriculum": {
   "rel_ver": null,
@@ -1541,6 +1544,105 @@
   "contrib_n": 1,
   "lang": {
    "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "time-series-machine-learning/tsml-eval": {
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-09-04",
+  "rel_days": 46,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "Python": 53,
+   "Jupyter Notebook": 45,
+   "Shell": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "anwerj/youtube-uploader-mcp": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-09-20",
+  "rel_days": 30,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 89,
+   "Shell": 6,
+   "PowerShell": 4,
+   "Makefile": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "zakariaf/Flutter-Skills": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-09-17",
+  "rel_days": 33,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Dart": 69,
+   "Shell": 30,
+   "Python": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "summved/log-generator": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "Shell": 3,
+   "JavaScript": 0,
+   "Dockerfile": 0
   },
   "enriched_at": "20261020",
   "dim_ts": {

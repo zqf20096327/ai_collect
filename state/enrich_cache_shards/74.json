@@ -1882,5 +1882,82 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "rse/ase": {
+  "rel_ver": "2.0.3",
+  "rel_pub": "2026-10-19",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 80,
+   "Astro": 13,
+   "Vue": 3,
+   "Stylus": 3,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "fctr-id/okta-ai-agent": {
+  "rel_ver": "v3.2.0-beta",
+  "rel_pub": "2026-09-22",
+  "rel_days": 28,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "critical",
+  "sec_last": "2026-09-23",
+  "sec_ids": [
+   "GHSA-3mph-p3h5-wmjm(-,critical)",
+   "GHSA-r9q7-6784-7rc6(CVE-2026-63378,high)",
+   "GHSA-536w-42p8-3qv9(CVE-2026-63377,critical)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 85,
+   "Vue": 10,
+   "JavaScript": 5,
+   "PowerShell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "martinguirado95-ux/untangling-ml-complexity": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

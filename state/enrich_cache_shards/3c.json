@@ -1427,13 +1427,16 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261020",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261020"
+  },
+  "commit_90d": 56,
+  "commit_7d": 6
  },
  "JosefAlbers/vl-jepa": {
   "rel_ver": null,
@@ -1808,6 +1811,83 @@
    "Rust": 99,
    "Nix": 1,
    "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Xwh630/ai-agent-handbook": {
+  "rel_ver": "v1.4.1",
+  "rel_pub": "2026-10-18",
+  "rel_days": 2,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "jvalegre/robert": {
+  "rel_ver": "2.1.0",
+  "rel_pub": "2025-11-21",
+  "rel_days": 333,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 100,
+   "Inno Setup": 0,
+   "Shell": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Vrooli/Vrooli": {
+  "rel_ver": "v3.2.0",
+  "rel_pub": "2026-04-10",
+  "rel_days": 193,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Go": 44,
+   "TypeScript": 35,
+   "Shell": 13,
+   "JavaScript": 3,
+   "HTML": 2
   },
   "enriched_at": "20261020",
   "dim_ts": {

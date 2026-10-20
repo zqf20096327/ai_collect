@@ -1736,5 +1736,86 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "ydflow/Trail": {
+  "rel_ver": "v0.4.0-beta.2",
+  "rel_pub": "2026-10-16",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 92,
+   "JavaScript": 5,
+   "CSS": 3,
+   "Python": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "simwai/perplexity-ai-export": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-03-15",
+  "rel_days": 219,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 73,
+   "JavaScript": 15,
+   "PowerShell": 12,
+   "TeX": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "echoo19/hearth": {
+  "rel_ver": "v1.11.0",
+  "rel_pub": "2026-10-05",
+  "rel_days": 15,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 91,
+   "JavaScript": 4,
+   "CSS": 4,
+   "Lua": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

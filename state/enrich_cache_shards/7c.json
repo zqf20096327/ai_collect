@@ -1798,8 +1798,11 @@
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261020"
+  },
+  "commit_90d": 6,
+  "commit_7d": 0
  },
  "imbutus/ComfyUI-MiniMaxDirector": {
   "rel_ver": "v0.17.12",

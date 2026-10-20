@@ -1588,5 +1588,130 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "prayangshuuu/hummingbird": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 46,
+   "Makefile": 42,
+   "CMake": 10,
+   "Shell": 1,
+   "Cuda": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "BushANQ/DRX-Operator": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 88,
+   "TypeScript": 10,
+   "CSS": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "pgEdge/pgedge-rag-server": {
+  "rel_ver": "v2.0.0-test2",
+  "rel_pub": "2026-10-12",
+  "rel_days": 8,
+  "rel_n90": 5,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "high",
+  "sec_last": "2026-09-03",
+  "sec_ids": [
+   "GHSA-w437-9mwm-j6vq(-,medium)",
+   "GHSA-68g8-gh8f-7rhg(-,medium)",
+   "GHSA-5qg5-rgp6-j5m5(-,high)"
+  ],
+  "contrib_n": 9,
+  "lang": {
+   "Go": 97,
+   "Shell": 3,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "xbrxr03/clawos": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 72,
+   "TypeScript": 15,
+   "HTML": 4,
+   "Shell": 3,
+   "CSS": 3
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Saganaki22/GNM-Studio": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-07-22",
+  "rel_days": 90,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 57,
+   "TypeScript": 35,
+   "CSS": 4,
+   "Python": 3,
+   "Rust": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

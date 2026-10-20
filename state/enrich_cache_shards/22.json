@@ -2034,5 +2034,79 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "AimeBox/aime-box": {
+  "rel_ver": "v0.1.8",
+  "rel_pub": "2025-06-08",
+  "rel_days": 499,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1,
+   "CSS": 0,
+   "EJS": 0,
+   "NSIS": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "yuchanns/copilot-openai-api": {
+  "rel_ver": "v0.1.11",
+  "rel_pub": "2026-03-23",
+  "rel_days": 211,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 94,
+   "Dockerfile": 6
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "QwenLM/qwen-code-docs": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "MDX": 88,
+   "Java": 6,
+   "TypeScript": 5,
+   "JavaScript": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

@@ -1372,5 +1372,28 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "deepanwadhwa/samosa-chat": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 48,
+   "C": 25,
+   "C++": 7,
+   "Shell": 6,
+   "HTML": 6
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

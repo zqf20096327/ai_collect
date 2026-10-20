@@ -1371,13 +1371,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261020",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261020"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "LSTM-Kirigaya/slidev-mcp": {
   "rel_ver": null,
@@ -1596,6 +1599,107 @@
    "Astro": 1,
    "CSS": 1,
    "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "xieyuschen/gopls-mcp": {
+  "rel_ver": "v1.0.8",
+  "rel_pub": "2026-10-15",
+  "rel_days": 5,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 405,
+  "lang": {
+   "Go": 98,
+   "JavaScript": 1,
+   "Astro": 0,
+   "CSS": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "seqeralabs/rewrites.bio": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-05-29",
+  "rel_days": 144,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Astro": 91,
+   "JavaScript": 6,
+   "CSS": 2,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "lab-cosmo/flashmd": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-09-23",
+  "rel_days": 27,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "ofershap/real-browser-mcp": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 8,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 56,
+   "TypeScript": 41,
+   "HTML": 3
   },
   "enriched_at": "20261020",
   "dim_ts": {

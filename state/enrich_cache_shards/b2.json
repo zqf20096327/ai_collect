@@ -1570,5 +1570,82 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "mlr-org/mlr3tuning": {
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-09-02",
+  "rel_days": 48,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "R": 100,
+   "Shell": 0,
+   "Rez": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "yashab-cyber/hackbot": {
+  "rel_ver": "v1.2.5",
+  "rel_pub": "2026-09-22",
+  "rel_days": 28,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 84,
+   "HTML": 13,
+   "CSS": 1,
+   "Shell": 1,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "managedcode/MCAF": {
+  "rel_ver": "v1.3.70",
+  "rel_pub": "2026-10-11",
+  "rel_days": 9,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "CSS": 44,
+   "HTML": 33,
+   "Shell": 24
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

@@ -1451,8 +1451,11 @@
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261020"
+  },
+  "commit_90d": 3586,
+  "commit_7d": 203
  },
  "haoaaa-111/taoketong": {
   "rel_ver": null,
@@ -1631,6 +1634,143 @@
    "Astro": 1,
    "CSS": 1,
    "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "sahaya-savari/sahaya-savari-blog": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 50,
+   "MDX": 42,
+   "JavaScript": 5,
+   "CSS": 3,
+   "HTML": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "bassrehab/ISO8583-Simulator": {
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-09-28",
+  "rel_days": 22,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 68,
+   "Jupyter Notebook": 30,
+   "Cython": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "juniorrojas/ff-net": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "microsoft/m365-agent-templates": {
+  "rel_ver": "latest",
+  "rel_pub": "2026-05-07",
+  "rel_days": 166,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {},
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "leemysw/agent-kit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 57,
+   "TypeScript": 41,
+   "CSS": 1,
+   "Makefile": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "fulvian/engraft-ngram": {
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-09-21",
+  "rel_days": 29,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "TeX": 4,
+   "Shell": 1
   },
   "enriched_at": "20261020",
   "dim_ts": {

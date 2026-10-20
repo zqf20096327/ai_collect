@@ -1646,5 +1646,76 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "kalininalab/DataSAIL": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-08-28",
+  "rel_days": 53,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 98,
+   "Go Template": 1,
+   "Smarty": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "pedrol2b/react-native-vision-camera-mlkit": {
+  "rel_ver": "v2.0.1",
+  "rel_pub": "2026-08-20",
+  "rel_days": 61,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 55,
+   "Swift": 20,
+   "Kotlin": 17,
+   "JavaScript": 4,
+   "Ruby": 3
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "InterfazeAI/postgres-llm": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PLpgSQL": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

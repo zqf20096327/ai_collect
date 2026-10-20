@@ -1533,5 +1533,55 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "boykopovar/Grok3API": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-06-24",
+  "rel_days": 118,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "grayhatdevelopers/vidxp": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-08-17",
+  "rel_days": 64,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Python": 76,
+   "Rust": 12,
+   "TypeScript": 8,
+   "JavaScript": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

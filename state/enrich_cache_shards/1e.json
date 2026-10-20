@@ -1288,13 +1288,16 @@
    "JavaScript": 2,
    "Batchfile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261020",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261020"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "XiangyunHuang/data-analysis-in-action": {
   "rel_ver": null,
@@ -1624,6 +1627,49 @@
   "contrib_n": 3,
   "lang": {
    "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "themains/rdomains": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "R": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "hazcod/claudleak": {
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-02-25",
+  "rel_days": 237,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 99,
+   "Makefile": 1
   },
   "enriched_at": "20261020",
   "dim_ts": {

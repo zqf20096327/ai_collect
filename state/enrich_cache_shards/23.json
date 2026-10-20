@@ -1391,5 +1391,102 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "xiaodou-official/xiaodou-open-platform": {
+  "commit_90d": 8,
+  "commit_7d": 8,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "commit": "20261020",
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Mattbusel/tokio-prompt-orchestrator": {
+  "rel_ver": "v1.4.2",
+  "rel_pub": "2026-09-25",
+  "rel_days": 25,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 95,
+   "HTML": 2,
+   "Python": 1,
+   "Shell": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "hypen-lang/hypen": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 32,
+   "TypeScript": 30,
+   "Swift": 13,
+   "Kotlin": 13,
+   "Go": 5
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "jango-blockchained/advanced-homeassistant-mcp": {
+  "rel_ver": "v1.7.3",
+  "rel_pub": "2026-06-14",
+  "rel_days": 128,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "JavaScript": 49,
+   "TypeScript": 44,
+   "MDX": 4,
+   "Astro": 2,
+   "Python": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

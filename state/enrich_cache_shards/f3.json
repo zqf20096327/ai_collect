@@ -1651,5 +1651,55 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "Jellman86/YetAnother-WhosAtMyFeeder": {
+  "rel_ver": "v2.22.0",
+  "rel_pub": "2026-10-11",
+  "rel_days": 9,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 64,
+   "Svelte": 19,
+   "TypeScript": 17,
+   "JavaScript": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "suryanshsk/Python-Voice-Assistant-Suryanshsk": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 62,
+  "lang": {
+   "Jupyter Notebook": 87,
+   "Python": 11,
+   "HTML": 1,
+   "CSS": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

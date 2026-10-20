@@ -1338,13 +1338,16 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261020",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261020"
+  },
+  "commit_90d": 25,
+  "commit_7d": 0
  },
  "kkakkkka/MambaTalk": {
   "rel_ver": null,
@@ -1738,6 +1741,56 @@
   "lang": {
    "Python": 88,
    "HTML": 12
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "wavever/CCLimitPing": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-10-10",
+  "rel_days": 10,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "gptme/gptme-agent-template": {
+  "rel_ver": "v0.4",
+  "rel_pub": "2026-01-23",
+  "rel_days": 270,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Shell": 62,
+   "Python": 35,
+   "Makefile": 1,
+   "Dockerfile": 1
   },
   "enriched_at": "20261020",
   "dim_ts": {

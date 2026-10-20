@@ -1588,5 +1588,57 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "ast-outline/ast-outline": {
+  "rel_ver": "v1.9.0",
+  "rel_pub": "2026-07-28",
+  "rel_days": 84,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100,
+   "PowerShell": 0,
+   "Shell": 0,
+   "C#": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Able-labs-xyz/Boba-CLI": {
+  "rel_ver": "v0.3.3",
+  "rel_pub": "2026-02-10",
+  "rel_days": 252,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 98,
+   "Shell": 1,
+   "JavaScript": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

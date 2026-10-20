@@ -1871,5 +1871,57 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "sagirimo/BioDSH": {
+  "rel_ver": "desktop-tauri-v0.3.0",
+  "rel_pub": "2026-09-16",
+  "rel_days": 34,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 43,
+   "TypeScript": 27,
+   "Rust": 18,
+   "JavaScript": 8,
+   "HTML": 2
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "calico88x/DGX-Model-Manager": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-08-11",
+  "rel_days": 70,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 79,
+   "HTML": 14,
+   "Shell": 7
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

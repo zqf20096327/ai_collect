@@ -1768,5 +1768,51 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "AI4CharityPL/kancelaria-lex": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 86,
+   "HTML": 11,
+   "PowerShell": 2,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "oracle-samples/oracle-aidp-samples": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 23,
+  "lang": {
+   "Python": 76,
+   "JavaScript": 14,
+   "Jupyter Notebook": 9,
+   "PLSQL": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

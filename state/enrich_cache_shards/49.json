@@ -2209,5 +2209,105 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "pacphi/agentic-kit": {
+  "rel_ver": "v4.0.0-alpha.61",
+  "rel_pub": "2026-10-02",
+  "rel_days": 18,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "JavaScript": 100,
+   "Python": 0,
+   "PowerShell": 0,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "murongg/ai-accounts-hub": {
+  "rel_ver": "v0.3.27",
+  "rel_pub": "2026-05-11",
+  "rel_days": 162,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 68,
+   "TypeScript": 22,
+   "Swift": 6,
+   "JavaScript": 2,
+   "Objective-C": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Nuclear-Marmalade/dataforge": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 94,
+   "HTML": 6,
+   "CSS": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "VapiAI/mcp-server": {
+  "rel_ver": "v0.0.11",
+  "rel_pub": "2026-08-14",
+  "rel_days": 67,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "TypeScript": 86,
+   "JavaScript": 14,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

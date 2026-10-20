@@ -1463,5 +1463,57 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "ilien-dev/quiron": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-09-25",
+  "rel_days": 25,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 75,
+   "Shell": 16,
+   "HTML": 9
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "buildwithtrace/trace-public": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-03-07",
+  "rel_days": 227,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 300,
+  "lang": {
+   "C++": 64,
+   "C": 33,
+   "Python": 1,
+   "CMake": 1,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }
