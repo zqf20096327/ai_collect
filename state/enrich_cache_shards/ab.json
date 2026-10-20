@@ -1858,5 +1858,29 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "google-deepmind/disentangled_rnns": {
+  "rel_ver": "v0.1.8",
+  "rel_pub": "2026-10-15",
+  "rel_days": 5,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Python": 90,
+   "Jupyter Notebook": 10
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

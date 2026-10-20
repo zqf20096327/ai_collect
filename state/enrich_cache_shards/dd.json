@@ -1920,5 +1920,36 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "royerlab/napari-mcp": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-03-25",
+  "rel_days": 209,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "cool-japan/voirs": {
+  "rel_ver": "v0.1.0-rc.1",
+  "rel_pub": "2026-03-26",
+  "rel_days": 208,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false
  }
 }

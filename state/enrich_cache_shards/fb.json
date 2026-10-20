@@ -1586,5 +1586,55 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "juanmanueldaza/linkedin2md": {
+  "rel_ver": "v0.7.2",
+  "rel_pub": "2026-08-12",
+  "rel_days": 69,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "SemiAnalysisAI/InferenceX-app": {
+  "rel_ver": "inferencex-skills-v1.2.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 0,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "TypeScript": 83,
+   "MDX": 11,
+   "JavaScript": 5,
+   "Python": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

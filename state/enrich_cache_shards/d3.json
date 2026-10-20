@@ -1879,5 +1879,54 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "milvus-io/milvus-proto": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 48,
+  "lang": {
+   "Go": 44,
+   "Shell": 36,
+   "Makefile": 11,
+   "CMake": 8
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "flashvenom/quickfire": {
+  "rel_ver": "v1.0.1-alpha",
+  "rel_pub": "2025-01-26",
+  "rel_days": 632,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 43,
+   "C#": 38,
+   "CSS": 11,
+   "Rich Text Format": 4,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

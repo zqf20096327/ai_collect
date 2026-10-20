@@ -1493,5 +1493,58 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "EastStarAI/sanad-agent": {
+  "rel_ver": "v1.0.17",
+  "rel_pub": "2026-10-15",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Dart": 96,
+   "Python": 1,
+   "JavaScript": 1,
+   "Shell": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "sergey-homenko/llm_cost_tracker": {
+  "rel_ver": "v0.15.0",
+  "rel_pub": "2026-10-10",
+  "rel_days": 10,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Ruby": 95,
+   "HTML": 3,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

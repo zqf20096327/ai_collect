@@ -1840,5 +1840,54 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "mj-will/nessai": {
+  "rel_ver": "v0.15.2",
+  "rel_pub": "2026-02-20",
+  "rel_days": 242,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Cysharp/AIApiTracer": {
+  "rel_ver": "0.5.2",
+  "rel_pub": "2025-07-17",
+  "rel_days": 460,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C#": 78,
+   "HTML": 20,
+   "CSS": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

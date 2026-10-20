@@ -2277,5 +2277,40 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "phuetz/code-buddy": {
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-09-17",
+  "rel_days": 33,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "TypeScript": 92,
+   "Python": 3,
+   "CSS": 1,
+   "JavaScript": 1,
+   "Makefile": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "baidu-maps/jsapi-skills": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-03-16",
+  "rel_days": 218,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false
  }
 }

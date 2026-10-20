@@ -1488,5 +1488,26 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "KarelZe/anki-decks": {
+  "rel_ver": "v0.0.5a",
+  "rel_pub": "2022-10-22",
+  "rel_days": 1459,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {},
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }
