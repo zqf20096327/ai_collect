@@ -1,24 +1,24 @@
 {
  "fn": "punkpeye/awesome-mcp-servers",
- "sha": "80e209da7348",
+ "sha": "c850a8aa139e",
  "source": "readme",
  "identity": {
-  "one_liner": "面向 AI 应用开发者的 MCP 服务器精选清单",
-  "review": "一份收录 Model Context Protocol (MCP) 服务器的精选清单（awesome list 形式）。MCP 是开放协议，使 AI 模型通过标准化服务器实现与本地及远程资源的交互；清单聚焦可通过 GitHub 仓库自行安装运行的实现，条目按聚合器、浏览器自动化、数据库、文件系统等数十个类别组织，并用图例标注实现语言（Python/TypeScript/Go/Rust 等）、官方实现标识、本地/云范围与操作系统支持。另提供客户端清单、教程链接与网页版同步目录。",
+  "one_liner": "MCP 服务器策展清单：收录可自托管的服务器实现",
+  "review": "punkpeye 维护的 Model Context Protocol (MCP) 服务器策展清单，收录带 GitHub 仓库、需用户自行安装运行的服务器实现，另有配套的远程服务器清单。条目按 50 余个类别组织（聚合器、数据库、浏览器自动化、生物信息、编码代理等），并用图例标注官方实现、编程语言、云/本地范围与操作系统。清单附教程、社区入口，并有与仓库同步的 web 目录。README 提供多语言版本（含简体/繁体中文）。",
   "highlights": [
-   "按数十个类别组织 MCP 服务器条目（L72-125）",
-   "图例标注实现语言、官方实现、本地/云范围与操作系统（L42-60）",
-   "提供网页版目录并与仓库同步（L70）",
-   "附客户端清单与教程入口（L26, L34-35）"
+   "按 50+ 类别组织的 MCP 服务器条目",
+   "图例标注官方实现、语言、云/本地、操作系统",
+   "配套远程服务器清单与同步的 web 目录",
+   "含教程与社区入口（Discord/Subreddit）"
   ],
   "use_cases": [
-   "为 AI 应用查找接入数据库、文件系统或第三方 API 的 MCP 服务器",
-   "按实现语言或操作系统筛选合适的 MCP 服务器",
-   "浏览 MCP 生态中各类别服务器的收录情况"
+   "为 MCP 客户端查找可自托管的服务器实现",
+   "按类别浏览 MCP 生态覆盖的工具与数据源",
+   "查找 MCP 入门教程与客户端清单"
   ]
  },
  "filters": {
-  "ai_role": "ai-ecosystem",
+  "ai_role": "ai-knowledge",
   "license_risk": "permissive",
   "deploy": "library",
   "model_dep": null,
@@ -39,8 +39,8 @@
   "scenario_tags": [
    "MCP",
    "awesome清单",
-   "AI工具聚合",
-   "LLM生态"
+   "AI工具生态",
+   "协议/标准"
   ],
   "domain": "学习与行业",
   "alternative_to": [],
@@ -52,25 +52,29 @@
  },
  "intel": {
   "maintainer_type": "individual",
-  "zh_origin": false,
-  "zh_origin_signals": []
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "多语言 README 含简体/繁体中文",
+   "收录中文 LLM 价格数据集服务器（szp2005/llm-prices-cn）"
+  ]
  },
  "trust": {
-  "confidence": "mid",
+  "confidence": "high",
   "evidence": [
    "L16: A curated list of awesome Model Context Protocol (MCP) servers.",
-   "L22: MCP is an open protocol that enables AI models to securely interact with local and remote resources through standardized",
-   "L30: This list is for servers with a GitHub repo you install and run yourself. Looking for a hosted server you just connect t"
+   "L22: MCP is an open protocol that enables AI models to securely interact with local and remote resources through standardized"
   ],
-  "xcheck": {
-   "install_missing": [
-    "npm"
-   ]
-  },
+  "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -79,36 +83,35 @@
     "term": "anthropic",
     "rel": "mention",
     "lines": [
-     169,
-     171,
+     170,
      172
     ],
+    "note": "条目描述中提及 Claude 客户端/模型",
     "quotes": [
      "- askbudi/roundtable 📇 ☁️ 🏠 🍎 🪟 🐧 - Meta-MCP server that unifies AI coding assistants (Codex, Claude Code, Cursor, Gemin",
-     "- avotsai/avots-mcp avotsai/avots-mcp MCP server 📇 ☁️ - Multi-model AI media generation (image, video, audio, face swap,",
-     "- blockrunai/blockrun-mcp 📇 ☁️ 🍎 🪟 🐧 - Access AI models such as GPT-5, Claude, Gemini, Grok and DeepSeek, paid per use v"
+     "- avotsai/avots-mcp avotsai/avots-mcp MCP server 📇 ☁️ - Multi-model AI media generation (image, video, audio, face swap,"
     ]
    },
    {
     "term": "deepseek",
     "rel": "mention",
     "lines": [
-     167,
-     171,
+     168,
      172
     ],
+    "note": "收录 DeepSeek 相关 MCP 服务器条目",
     "quotes": [
      "- arikusi/deepseek-mcp-server deepseek-mcp-server MCP server 📇 ☁️ 🍎 🪟 🐧 - DeepSeek AI chat and reasoning with multi-turn",
-     "- avotsai/avots-mcp avotsai/avots-mcp MCP server 📇 ☁️ - Multi-model AI media generation (image, video, audio, face swap,",
-     "- blockrunai/blockrun-mcp 📇 ☁️ 🍎 🪟 🐧 - Access AI models such as GPT-5, Claude, Gemini, Grok and DeepSeek, paid per use v"
+     "- avotsai/avots-mcp avotsai/avots-mcp MCP server 📇 ☁️ - Multi-model AI media generation (image, video, audio, face swap,"
     ]
    },
    {
     "term": "xai",
     "rel": "mention",
     "lines": [
-     172
+     173
     ],
+    "note": "窗外清单条目中提及",
     "quotes": [
      "- blockrunai/blockrun-mcp 📇 ☁️ 🍎 🪟 🐧 - Access AI models such as GPT-5, Claude, Gemini, Grok and DeepSeek, paid per use v"
     ]
@@ -117,8 +120,9 @@
     "term": "ollama",
     "rel": "mention",
     "lines": [
-     195
+     196
     ],
+    "note": "窗外条目中提及",
     "quotes": [
      "- jaspertvdm/mcp-server-ollama-bridge 🐍 🏠 - Bridge to a local Ollama server for running Llama, Mistral, Qwen and other l"
     ]
@@ -127,9 +131,10 @@
     "term": "openai",
     "rel": "mention",
     "lines": [
-     159,
-     171
+     160,
+     172
     ],
+    "note": "条目描述中列举 OpenAI 相关内容",
     "quotes": [
      "- Work90210/APIFold Work90210/APIFold MCP server 📇 ☁️ - Turn any REST API into a hosted MCP server, with ready-made publ",
      "- avotsai/avots-mcp avotsai/avots-mcp MCP server 📇 ☁️ - Multi-model AI media generation (image, video, audio, face swap,"
@@ -139,23 +144,34 @@
   "install": [
    {
     "term": "npm",
-    "rel": "mention",
+    "rel": "support",
     "lines": [
-     418
+     427
     ],
+    "note": "窗外 README 给出的本清单相关 npm 安装命令",
     "quotes": [
      "- swebsy/MCP swebsy/MCP MCP server 🎖️ 📇 🏠 🍎 🪟 🐧 - Build and edit real websites from the coding agent you already pay for"
     ]
    }
   ],
   "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
   "products": [
    {
     "term": "Claude Code",
     "rel": "mention",
     "lines": [
-     169
+     170
     ],
+    "note": "条目中列举其作为被统一接口管理的编码助手",
     "quotes": [
      "- askbudi/roundtable 📇 ☁️ 🏠 🍎 🪟 🐧 - Meta-MCP server that unifies AI coding assistants (Codex, Claude Code, Cursor, Gemin"
     ]
@@ -164,8 +180,9 @@
     "term": "Cursor",
     "rel": "mention",
     "lines": [
-     169
+     170
     ],
+    "note": "条目中列举的编码助手之一",
     "quotes": [
      "- askbudi/roundtable 📇 ☁️ 🏠 🍎 🪟 🐧 - Meta-MCP server that unifies AI coding assistants (Codex, Claude Code, Cursor, Gemin"
     ]
@@ -174,19 +191,23 @@
     "term": "通义千问",
     "rel": "mention",
     "lines": [
-     176
+     177,
+     196
     ],
+    "note": "窗外条目中提及",
     "quotes": [
-     "- Continuum-AI-Corp/orcarouter-mcp-server Continuum-AI-Corp/orcarouter-mcp-server MCP server 📇 ☁️ 🏠 🍎 🪟 🐧 - Browse LLMs "
+     "- Continuum-AI-Corp/orcarouter-mcp-server Continuum-AI-Corp/orcarouter-mcp-server MCP server 📇 ☁️ 🏠 🍎 🪟 🐧 - Browse LLMs ",
+     "- jaspertvdm/mcp-server-ollama-bridge 🐍 🏠 - Bridge to a local Ollama server for running Llama, Mistral, Qwen and other l"
     ]
    },
    {
     "term": "ChatGPT",
     "rel": "mention",
     "lines": [
-     230,
-     248
+     231,
+     249
     ],
+    "note": "窗外条目中提及",
     "quotes": [
      "- sonnyflylock/voxie-ai-directory-mcp 📇 ☁️ - AI phone number directory: query Voxie AI personas and third-party AI servi",
      "- ikoskela/wisepanel-mcp ikoskela/wisepanel-mcp MCP server 📇 ☁️ 🍎 🪟 🐧 - Multi-agent deliberation across ChatGPT, Claude,"
@@ -196,21 +217,13 @@
     "term": "Perplexity",
     "rel": "mention",
     "lines": [
-     248
+     249
     ],
+    "note": "窗外条目中提及",
     "quotes": [
      "- ikoskela/wisepanel-mcp ikoskela/wisepanel-mcp MCP server 📇 ☁️ 🍎 🪟 🐧 - Multi-agent deliberation across ChatGPT, Claude,"
     ]
    }
-  ],
-  "dual_license": {
-   "flag": false,
-   "lines": [],
-   "quotes": []
-  },
-  "deprecation": {
-   "flag": false,
-   "lines": []
-  }
+  ]
  }
 }

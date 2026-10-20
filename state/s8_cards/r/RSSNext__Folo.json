@@ -1,0 +1,107 @@
+{
+ "fn": "RSSNext/Folo",
+ "sha": "02aceb9115e0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源 AI RSS 阅读器，聚合订阅源并提供摘要问答",
+  "review": "面向普通读者的跨平台 RSS 阅读器：订阅博客、新闻、通讯、播客、视频频道与社交信息流，聚合成统一时间线，并在多设备间同步。AI 功能包括对文章/订阅源提问、时间线每日摘要、AI 翻译与文章摘要、定时生成日报周报的 AI 任务，可选模型或自带 API key，并支持连接 MCP 服务。另含 OPML 导入导出、RSSHub 路由订阅、文本转语音与第三方工具集成。提供 Web/iOS/Android/macOS/Windows/Linux 客户端，AGPL-3.0 许可。",
+  "highlights": [
+   "跨平台客户端（Web/iOS/Android/macOS/Windows/Linux）与多设备同步",
+   "AI 问答、时间线摘要与多语言翻译（英/中/日/法）",
+   "AI Tasks 定时生成日报/周报并投递到聊天或邮件",
+   "支持 RSSHub 路由、OPML 导入导出与 Obsidian/Readwise 等集成"
+  ],
+  "use_cases": [
+   "把博客、新闻、播客、社媒订阅集中到一个时间线阅读",
+   "让 AI 生成每日摘要或翻译外文文章",
+   "用自然语言向订阅内容提问"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    17
+   ],
+   "note": "声明 under active development"
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RSS阅读器",
+   "信息聚合",
+   "AI摘要/翻译",
+   "桌面/移动应用"
+  ],
+  "domain": "知识与检索",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "document-qa"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: Folo is an open-source AI RSS reader that brings everything you follow into one calm timeline, then helps you read it. F",
+   "L56: Ask about an article, a feed, a folder or everything you follow. Pick your AI model or bring your own API key, and conne"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     33
+    ],
+    "note": "社区维护的 Homebrew cask，非官方安装途径",
+    "quotes": [
+     "- If you are using macOS with Homebrew, you can install the cask folo that is maintained by realSunyz."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

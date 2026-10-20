@@ -1,20 +1,22 @@
 {
  "fn": "esengine/DeepSeek-Reasonix",
- "sha": "93ca03e3f937",
+ "sha": "6f60d59e011c",
  "source": "readme",
  "identity": {
-  "one_liner": "开源终端/桌面编码 Agent：读写代码、跑命令与测试",
-  "review": "Reasonix 是开源 AI 编码助手，程序运行在用户本地，模型由用户自行配置并直接付费。用户用自然语言描述任务，它在指定项目文件夹内读取代码、编辑文件、运行命令与测试，并展示每步操作；支持权限分级、plan 模式与按会话回合的文件回滚（仅覆盖其编辑工具改动的文件）。分发形态包括 Studio 桌面应用、终端 CLI/TUI、浏览器界面与 VS Code 等 ACP 编辑器扩展，四者为同一引擎。2.x 处于活跃开发，1.x 处于维护状态。",
+  "one_liner": "开源终端/桌面/编辑器 AI 编码代理，模型自选",
+  "review": "Reasonix 是开源 AI 编码代理，以桌面应用（Studio）、终端 TUI/CLI、本地 Web 界面和 VS Code/ACP 编辑器扩展四种形态运行同一本地引擎。它读取项目代码、编辑文件、运行命令与测试，支持逐次授权或限定范围内自主工作，被编辑工具改动的文件可按对话轮回退。模型需自行配置：内置 DeepSeek 预设，任何 OpenAI 兼容服务写入配置即可。配置驱动（reasonix.toml），支持 MCP 插件、双模型（执行+规划）组合，发布 CGO_ENABLED=0 单二进制。存在 2.x（活跃开发）与 1.x（维护/稳定）两条版本线。",
   "highlights": [
-   "DeepSeek 内置预设，任意 OpenAI 兼容端点经一条配置即可接入",
-   "MCP 服务器提供工具/提示/资源，Extension Protocol 可拦截运行时事件",
-   "CGO_ENABLED=0 单二进制静态分发，一条命令交叉编译六个目标",
-   "编辑工具改动的文件按会话回合可回滚，不触碰 git 历史"
+   "桌面/终端/浏览器/编辑器四种形态共用同一本地引擎",
+   "权限分级与计划模式，编辑过的文件可按对话轮回退",
+   "内置 DeepSeek 预设，任意 OpenAI 兼容端点一条配置接入",
+   "MCP 插件、Extension Protocol v1 边车与双模型（executor+planner）组合",
+   "CGO_ENABLED=0 静态单二进制，一条命令交叉编译六个目标"
   ],
   "use_cases": [
-   "在终端里用自然语言让 Agent 完成改代码、跑测试的任务",
-   "通过 VS Code 扩展在编辑器内使用带审批的编码助手",
-   "接入自有 OpenAI 兼容模型服务做本地编码代理"
+   "在终端或桌面用自然语言驱动代码修改、运行测试",
+   "在 VS Code 或支持 ACP 的编辑器内作为 AI 编码助手连接",
+   "通过 DeepSeek Harness 以 ACP 子代理方式派发任务",
+   "自选模型服务商的本地编码代理工作流"
   ]
  },
  "filters": {
@@ -33,18 +35,18 @@
   "self_declared_early": {
    "flag": true,
    "lines": [
-    96,
-    104
+    106,
+    107
    ]
   }
  },
  "links": {
   "scenario_tags": [
-   "编码Agent",
-   "CLI工具",
+   "编码代理",
+   "CLI/TUI",
    "桌面应用",
-   "LLM基础设施",
-   "插件系统"
+   "编辑器集成",
+   "MCP插件"
   ],
   "domain": "编码与开发",
   "alternative_to": [],
@@ -60,9 +62,10 @@
   "maintainer_type": "individual",
   "zh_origin": true,
   "zh_origin_signals": [
-   "双语 README（简体中文）",
-   "QQ 群 1093562660",
-   "抖音账号 做游戏的小鱼"
+   "简体中文 README 语言切换",
+   "QQ 官方群 1093562660",
+   "抖音账号（做游戏的小鱼）",
+   "AtomGit stars 徽章"
   ]
  },
  "trust": {
@@ -70,13 +73,19 @@
   "evidence": [
    "L37:  An open-source coding agent for your terminal, desktop, browser and editor.",
    "L54: Reasonix is an open-source AI coding assistant. The program runs on your computer; the AI model is a service you configu",
-   "L113: - **Multi-model & composable.** DeepSeek ships as a preset; any"
+   "L56: You pick the model: a DeepSeek preset is built in, any OpenAI-compatible service is one config entry, and you pay the mo"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -86,8 +95,9 @@
     "rel": "support",
     "lines": [
      56,
-     113
+     123
     ],
+    "note": "内置 DeepSeek 预设",
     "quotes": [
      "You pick the model: a DeepSeek preset is built in, any OpenAI-compatible service is one config entry, and you pay the mo",
      "- **Multi-model & composable.** DeepSeek ships as a preset; any"
@@ -99,7 +109,7 @@
     "lines": [
      50
     ],
-    "note": "赞助商路由服务提及 Claude，非本产品接入 Anthropic",
+    "note": "赞助商路由服务提及 Claude 系模型，非本产品接入声明",
     "quotes": [
      " Right Code Thanks to Right Code for sponsoring this project! Right Code reliably provides routing services for models s"
     ]
@@ -111,19 +121,21 @@
     "rel": "support",
     "lines": [
      68,
-     147
+     143,
+     150
     ],
     "quotes": [
      "1. Download and install the desktop app, Reasonix Studio, from the releases page.",
-     "The same release also carries the 2.x `reasonix` CLI as archives for"
+     "Download the package for your platform from the latest",
+     "|macOS|`.dmg` or `.zip`|Apple Silicon (`arm64`) / Intel (`amd64`)|"
     ]
    },
    {
     "term": "npm",
     "rel": "support",
     "lines": [
-     91,
-     156
+     101,
+     166
     ],
     "quotes": [
      "|**Reasonix 1.x**|`main-v2`|Maintenance / stable|`npm i -g reasonix` · desktop download|",
@@ -134,9 +146,12 @@
     "term": "brew",
     "rel": "support",
     "lines": [
-     157
+     162,
+     167
     ],
+    "note": "1.x CLI 的 macOS 安装途径",
     "quotes": [
+     "The 1.x CLI installs through npm on any supported platform, or Homebrew on",
      "brew install esengine/reasonix/reasonix   # macOS"
     ]
    },
@@ -144,10 +159,12 @@
     "term": "source",
     "rel": "support",
     "lines": [
-     179,
-     190
+     184,
+     189,
+     200
     ],
     "quotes": [
+     "### Build from source",
      "git clone https://github.com/esengine/DeepSeek-Reasonix.git",
      "make build      # -> bin/reasonix(.exe)"
     ]
@@ -161,7 +178,7 @@
     "lines": [
      50
     ],
-    "note": "赞助商描述中提及，非替代/竞品表述",
+    "note": "赞助商提供的路由服务对象，仅提及",
     "quotes": [
      " Right Code Thanks to Right Code for sponsoring this project! Right Code reliably provides routing services for models s"
     ]

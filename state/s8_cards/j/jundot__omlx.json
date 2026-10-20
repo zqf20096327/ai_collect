@@ -1,21 +1,20 @@
 {
  "fn": "jundot/omlx",
- "sha": "c37b5072e34f",
+ "sha": "36fcb2a35408",
  "source": "readme",
  "identity": {
-  "one_liner": "macOS 菜单栏管理的 Apple Silicon 本地 LLM 推理服务器",
-  "review": "面向 Apple Silicon 的本地 LLM 推理服务器，通过 macOS 菜单栏应用或 CLI 管理服务；核心机制包括块式 KV 缓存的内存热层与 SSD 冷层两级缓存（跨请求、可跨重启复用）、基于 mlx-lm BatchGenerator 的连续批处理、多模型共存时的 LRU 逐出/固定/TTL 管理。提供 OpenAI 与 Anthropic 兼容 API、管理仪表盘 Web UI、HuggingFace 模型下载与一键基准测试。要求 macOS 15+、Python 3.11–3.13、Apple Silicon 芯片。",
+  "one_liner": "Apple Silicon 本地 LLM 推理服务器，菜单栏管理，含 SSD 分层 KV 缓存",
+  "review": "面向 Mac 用户的本地推理服务器：基于 MLX 支持文本 LLM、VLM、OCR、embedding 与 reranker 的多模型同服务器加载，提供连续批处理、块式分层 KV 缓存（热层 RAM + 冷层 SSD，重启后可复用）、LRU 逐出与模型固定等机制。API 兼容 OpenAI 与 Anthropic 端点，任何 OpenAI 兼容客户端可连 localhost:8000/v1。以原生 Swift 菜单栏应用管理，另有 Homebrew 与源码安装方式；要求 macOS 15+ 与 Apple Silicon（M1-M5），部分模型需完整 Xcode 编译原生自定义 kernel。实验性功能支持多台 Mac 分布式推理。",
   "highlights": [
-   "KV 缓存热(RAM)+冷(SSD)两级分层，前缀匹配可跨请求与重启复用",
-   "同一服务器加载 LLM、VLM、OCR、embedding、reranker，支持 LRU 逐出/固定/TTL",
-   "OpenAI 与 Anthropic API 兼容端点，内置管理仪表盘与聊天 UI",
-   "实验性多 Mac 流水线推理（Ring/Thunderbolt RDMA）"
+   "分层 KV 缓存：热层 RAM + 冷层 SSD（safetensors 格式），重启后前缀可复用",
+   "OpenAI/Anthropic API 兼容端点，含 chat/completions/embeddings/rerank/tokenize",
+   "多模型同服务器服务：LRU 逐出、模型固定、每模型 TTL 与内存上限（默认系统 RAM - 8GB）",
+   "原生 Swift/SwiftUI 菜单栏应用管理服务器，支持 OpenClaw/Codex/Copilot 等一键集成"
   ],
   "use_cases": [
-   "在 Mac 上通过菜单栏启停并监控本地 LLM 服务",
-   "为 Claude Code、OpenCode 等工具提供本地 OpenAI 兼容后端",
-   "用 SSD 缓存复用前缀，降低长上下文编码工具场景的重复计算",
-   "在多台内存不等的 Mac 间切分一个大模型做分布式推理"
+   "在 Mac 上本地运行 LLM/VLM 供 Claude Code、Codex 等编码工具调用",
+   "多模型同时服务并按内存自动管理加载与卸载",
+   "长上下文对话中跨请求复用 KV 缓存以降低重复计算"
   ]
  },
  "filters": {
@@ -25,24 +24,27 @@
   "model_dep": null,
   "hardware": null,
   "install_friction": "medium",
-  "maturity": null
+  "maturity": "idea"
  },
  "eval": {
   "target_user": "开发者",
   "paper_url": null,
   "demo_url": null,
   "self_declared_early": {
-   "flag": false,
-   "lines": []
+   "flag": true,
+   "lines": [
+    122
+   ],
+   "note": "实验性多 Mac 分布式推理"
   }
  },
  "links": {
   "scenario_tags": [
    "本地推理",
-   "推理服务器",
-   "Apple Silicon",
-   "菜单栏应用",
-   "OpenAI兼容API"
+   "Apple Silicon/MLX",
+   "macOS菜单栏应用",
+   "OpenAI兼容API",
+   "KV缓存"
   ],
   "domain": "训练与推理",
   "alternative_to": [],
@@ -56,15 +58,16 @@
  },
  "intel": {
   "maintainer_type": "individual",
-  "zh_origin": false,
-  "zh_origin_signals": []
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文版本（L21）"
+  ]
  },
  "trust": {
   "confidence": "mid",
   "evidence": [
    "L4:  LLM inference, optimized for your Mac Continuous batching and tiered KV caching, managed directly from your menu bar.",
-   "L56: Requires macOS 15.0+ (Sequoia), Python 3.11–3.13, and Apple Silicon (M1/M2/M3/M4/M5).",
-   "L114: Supports text LLMs, vision-language models (VLM), OCR models, embeddings, and rerankers on Apple Silicon."
+   "L93: The server discovers LLMs, VLMs, embedding models, and rerankers from subdirectories automatically. Any OpenAI-compatibl"
   ],
   "xcheck": {
    "install_missing": [
@@ -73,8 +76,14 @@
   },
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -83,10 +92,10 @@
     "term": "anthropic",
     "rel": "compat",
     "lines": [
-     212,
-     218
+     214,
+     220
     ],
-    "note": "提供 Anthropic Messages API 兼容端点，非接入 Anthropic 云服务",
+    "note": "提供 /v1/messages Anthropic Messages API 兼容端点",
     "quotes": [
      "Drop-in replacement for OpenAI and Anthropic APIs. Supports streaming usage stats (`stream_options.include_usage`), llam",
      "|`POST /v1/messages`|Anthropic Messages API|"
@@ -96,12 +105,12 @@
     "term": "deepseek",
     "rel": "mention",
     "lines": [
-     138,
-     192
+     79,
+     194
     ],
-    "note": "DeepSeek-OCR 模型自动检测与 DeepSeek Harness 集成，非 DeepSeek 云服务接入",
+    "note": "DeepSeek Harness 作为可集成客户端之一被提及；DeepSeek-OCR 为支持的模型类型",
     "quotes": [
-     "Run VLMs with the same continuous batching and tiered KV cache stack as text LLMs. Supports multi-image chat, base64/URL",
+     "Launch oMLX from your Applications folder. The Welcome screen guides you through three steps - model directory, server s",
      "Set up OpenClaw, OpenCode, Codex, Hermes Agent, Copilot, Pi, Mistral Vibe, and DeepSeek Harness directly from the admin "
     ]
    },
@@ -110,9 +119,9 @@
     "rel": "mention",
     "lines": [
      142,
-     223
+     225
     ],
-    "note": "缓存设计受 vLLM 启发、tokenizer API 兼容 vLLM，非 vLLM 引擎",
+    "note": "KV 管理设计受其启发，并提供 vLLM 兼容 tokenizer API",
     "quotes": [
      "Block-based KV cache management inspired by vLLM, with prefix sharing and Copy-on-Write. The cache operates across two t",
      "|`POST /tokenize`, `POST /detokenize`|vLLM-compatible tokenizer API (also under `/v1`)|"
@@ -135,24 +144,24 @@
     "term": "brew",
     "rel": "support",
     "lines": [
-     37,
-     41,
-     42
+     39,
+     40
     ],
     "quotes": [
-     "### Homebrew",
-     "brew install jundot/omlx/omlx --with-custom-kernel   # With native custom kernels (needs full Xcode)",
-     "# No full Xcode? brew install jundot/omlx/omlx installs without the kernels"
+     "```bash",
+     "brew tap jundot/omlx https://github.com/jundot/omlx"
     ]
    },
    {
     "term": "source",
     "rel": "support",
     "lines": [
+     48,
      49,
      51
     ],
     "quotes": [
+     "```bash",
      "git clone https://github.com/jundot/omlx.git",
      "make install                # Editable install with the web UI and native custom kernels"
     ]
@@ -163,7 +172,7 @@
     "lines": [
      67
     ],
-    "note": "pip install -e 为跳过内核的源码安装方式",
+    "note": "pip install -e . 会跳过原生 kernel，非推荐安装途径",
     "quotes": [
      "> `pip install -e .` also skips them. `make kernels` rebuilds only the kernels"
     ]
@@ -172,11 +181,11 @@
   "hardware": [
    {
     "term": "RAM - 8GB",
-    "rel": "support",
+    "rel": "mention",
     "lines": [
-     165
+     167
     ],
-    "note": "产品自身进程内存上限默认为系统内存减 8GB",
+    "note": "进程内存上限默认值为系统 RAM - 8GB，为服务器自身可配置行为",
     "quotes": [
      "- **Process memory enforcement**: Total memory limit (default: system RAM - 8GB) prevents system-wide OOM."
     ]
@@ -188,10 +197,10 @@
     "rel": "mention",
     "lines": [
      29,
-     153,
-     155
+     155,
+     157
     ],
-    "note": "针对 Claude Code 的上下文/超时优化，非替代关系",
+    "note": "作为可配合使用的客户端，含针对其的优化",
     "quotes": [
      "> *oMLX persists KV cache across a hot in-memory tier and cold SSD tier - even when context changes mid-conversation, al",
      "### Claude Code Optimization",
@@ -203,9 +212,9 @@
     "rel": "mention",
     "lines": [
      79,
-     192
+     194
     ],
-    "note": "可接入本服务器的集成对象",
+    "note": "作为可集成客户端被提及",
     "quotes": [
      "Launch oMLX from your Applications folder. The Welcome screen guides you through three steps - model directory, server s",
      "Set up OpenClaw, OpenCode, Codex, Hermes Agent, Copilot, Pi, Mistral Vibe, and DeepSeek Harness directly from the admin "
@@ -215,33 +224,11 @@
     "term": "Hugging Face",
     "rel": "mention",
     "lines": [
-     186
+     188
     ],
-    "note": "模型下载来源",
+    "note": "从 HuggingFace 下载 MLX 模型",
     "quotes": [
      "Search and download MLX models from HuggingFace directly in the admin dashboard. Browse model cards, check file sizes, a"
-    ]
-   },
-   {
-    "term": "通义千问",
-    "rel": "mention",
-    "lines": [
-     233
-    ],
-    "note": "README 提及 Qwen 系列模型的工具调用格式",
-    "quotes": [
-     "|Llama, Qwen, DeepSeek, etc.|JSON `<tool_call>`|"
-    ]
-   },
-   {
-    "term": "Kimi",
-    "rel": "none",
-    "lines": [
-     240
-    ],
-    "note": "窗口外行，工具调用模型清单上下文，未见替代/竞品关系",
-    "quotes": [
-     "|Kimi K2|`<\\|tool_calls_section_begin\\|>`|"
     ]
    }
   ],

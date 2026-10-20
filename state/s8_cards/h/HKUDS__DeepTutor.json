@@ -1,35 +1,35 @@
 {
  "fn": "HKUDS/DeepTutor",
- "sha": "708ea46f9d4b",
+ "sha": "5078b303835d",
  "source": "readme",
  "identity": {
-  "one_liner": "面向学习者的多智能体个性化辅导系统",
-  "review": "由 HKUDS 维护的开源 AI 辅导系统，围绕知识库（RAG）、多智能体循环与三层记忆构建，提供 Chat、Guided Learning、Deep Research、Book 生成、Visualize、练习题等功能面；支持接入自建 Partners（可连接本地 Claude Code / Codex）、通过 15 个 IM 渠道通信、以 Docker Compose 或源码部署，并区分单用户与多用户（含管理员账户）部署形态。提供 CLI（deeptutor start / skill install）与在线文档站点。",
+  "one_liner": "面向学习者的终身个性化 AI 辅导应用（RAG+多智能体）",
+  "review": "DeepTutor 是一个自托管的个性化学习辅导系统：用户导入文档/书籍/视频构建知识库，通过聊天、引导式学习、深度研究、测验与掌握路径等功能获得 AI 辅导。机制上基于 LlamaIndex/LightRAG/GraphRAG/PageIndex 等检索引擎、三层记忆（L1/L2/L3）与单一智能体循环架构，支持多种云厂商 API 与本地运行时（如 Ollama、Lemonade），可接入本地 Claude Code/Codex，提供 CLI 工具、Docker 部署与多用户隔离部署。技术栈为 Python 3.11+ 与 Next.js 16，由 HKUDS 维护并附 arXiv 论文。",
   "highlights": [
-   "知识中心支持 GraphRAG / LightRAG / PageIndex / 关联知识库 / Obsidian",
-   "三层记忆（L1/L2/L3）与单智能体循环驱动的学习功能面",
-   "可通过 15 个 IM 渠道接入 Partners 机器人",
-   "提供 CLI：deeptutor start、deeptutor skill install、deeptutor doctor"
+   "知识库 RAG：LlamaIndex/LightRAG/GraphRAG/PageIndex 多检索引擎与引用溯源",
+   "三层记忆（L1/L2/L3）与单一智能体循环驱动的辅导/深度研究/测验能力",
+   "多渠道接入：多家云 API 提供商、Ollama 本地运行时、本地 Claude Code/Codex、MCP 工具",
+   "提供 CLI（deeptutor skill install / doctor / start）、Docker Compose 与多用户隔离部署"
   ],
   "use_cases": [
-   "搭建带个人知识库的 AI 辅导环境进行日常学习",
-   "把辅导机器人接入微信等 IM 渠道随时提问",
-   "对上传文档做问答、出题与深度研究报告"
+   "把课程讲义、书籍、视频整理成知识库并长期提问学习",
+   "通过引导式学习路径与测验检验掌握程度",
+   "用深度研究模式对文档集合产出调研报告"
   ]
  },
  "filters": {
   "ai_role": "ai-native",
   "license_risk": "permissive",
   "deploy": "self-host",
-  "model_dep": null,
+  "model_dep": "local-ok",
   "hardware": null,
   "install_friction": "low",
-  "maturity": null
+  "maturity": "research"
  },
  "eval": {
   "target_user": "消费者",
-  "paper_url": null,
-  "demo_url": "https://deeptutor.info/",
+  "paper_url": "https://arxiv.org",
+  "demo_url": "https://deeptutor.info",
   "self_declared_early": {
    "flag": false,
    "lines": []
@@ -37,36 +37,42 @@
  },
  "links": {
   "scenario_tags": [
-   "AI辅导",
-   "RAG",
+   "AI辅导/教育",
+   "RAG知识库",
    "多智能体",
-   "知识库",
-   "教育"
+   "自托管Web应用",
+   "个人学习助手"
   ],
-  "domain": "Agent 开发",
+  "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
-  "ecosystem_compat": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "deepseek",
+   "xai",
+   "ollama"
+  ],
   "scenario_tags_v2": [
-   "multi-agent",
    "rag",
-   "document-qa"
+   "document-qa",
+   "research-tools"
   ]
  },
  "intel": {
   "maintainer_type": "university",
   "zh_origin": true,
   "zh_origin_signals": [
+   "简体中文 README",
    "WeChat/Feishu 社区渠道",
-   "接入豆包/智谱/Kimi/通义等国内模型服务"
+   "接入豆包/智谱/千帆/阿里云 IQS 等国内搜索与模型服务"
   ]
  },
  "trust": {
   "confidence": "low",
   "evidence": [
    "L3: # DeepTutor: Lifelong Personalized Tutoring",
-   "L137: > **[2026.5.22]** v1.4.0 — GA cut of v1.4: Auto Mode, three-layer Memory, agentic Deep Research / Solve / Question, Llam",
-   "L23: Python 3.11+"
+   "L139: > **[2026.5.22]** v1.4.0 — GA cut of v1.4: Auto Mode, three-layer Memory, agentic Deep Research / Solve / Question, Llam",
+   "L141: > **[2026.5.21]** v1.4.0-beta — Three-layer Memory workbench (L1/L2/L3), every chat capability rebuilt on a single agent"
   ],
   "xcheck": {
    "install_missing": [
@@ -75,31 +81,44 @@
   },
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
   "providers": [
    {
     "term": "anthropic",
-    "rel": "mention",
+    "rel": "support",
     "lines": [
-     229,
-     238
+     125
     ],
-    "note": "窗口外行号，属模型接入相关内容",
     "quotes": [
-     "- **Subagents and Partners** — from Chat, consult a live agent harness (Claude Code, Codex, Grok CLI, Antigravity, Kimi,",
-     "Copy this prompt into your terminal-capable AI agent (such as Codex or Claude Code):"
+     "> **[2026.6.18]** v1.4.7 — Connect your local **Claude Code / Codex** and consult it live mid-turn, **My Agents** gradua"
     ]
    },
    {
     "term": "deepseek",
-    "rel": "mention",
+    "rel": "support",
     "lines": [
-     229,
-     632
+     231
+    ],
+    "quotes": [
+     "- **Subagents and Partners** — from Chat, consult a live agent harness (Claude Code, Codex, Grok CLI, Antigravity, Kimi,"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     231,
+     634
     ],
     "quotes": [
      "- **Subagents and Partners** — from Chat, consult a live agent harness (Claude Code, Codex, Grok CLI, Antigravity, Kimi,",
@@ -107,27 +126,27 @@
     ]
    },
    {
-    "term": "xai",
-    "rel": "mention",
-    "lines": [
-     229,
-     634
-    ],
-    "quotes": [
-     "- **Subagents and Partners** — from Chat, consult a live agent harness (Claude Code, Codex, Grok CLI, Antigravity, Kimi,",
-     "**Connect Grok CLI.** Install xAI's Grok CLI on the machine running the DeepTutor"
-    ]
-   },
-   {
     "term": "ollama",
-    "rel": "mention",
+    "rel": "compat",
     "lines": [
-     424,
-     438
+     426,
+     440
     ],
     "quotes": [
      " Connecting to Ollama / LM Studio / llama.cpp / vLLM / Lemonade on the host",
      "- Ollama LLM: `http://host.docker.internal:11434/v1`"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     185,
+     426
+    ],
+    "quotes": [
+     "> **[2026.4.13]** v1.0.3 — Question Notebook with bookmarks & categories, Mermaid in Visualize, embedding mismatch detec",
+     " Connecting to Ollama / LM Studio / llama.cpp / vLLM / Lemonade on the host"
     ]
    }
   ],
@@ -136,22 +155,20 @@
     "term": "pypi",
     "rel": "support",
     "lines": [
-     209,
-     274,
-     302
+     211,
+     276
     ],
     "quotes": [
-     "> ✨ **v1.6.14 is live.** `pip install -U deeptutor` picks up the latest stable release.",
-     "`<runtime-home>/data/user/workspace`. Local PyPI, CLI, and source installs can",
-     " Option 1 — Install From PyPI · full local Web app + CLI, no clone required"
+     "> ✨ **v1.6.15 is live.** `pip install -U deeptutor` picks up the latest stable release.",
+     "`<runtime-home>/data/user/workspace`. Local PyPI, CLI, and source installs can"
     ]
    },
    {
     "term": "docker",
     "rel": "support",
     "lines": [
-     256,
-     298
+     258,
+     300
     ],
     "quotes": [
      "docker run --rm --name deeptutor \\",
@@ -162,7 +179,7 @@
     "term": "source",
     "rel": "support",
     "lines": [
-     324
+     326
     ],
     "quotes": [
      "git clone https://github.com/HKUDS/DeepTutor.git"
@@ -172,64 +189,67 @@
     "term": "npm",
     "rel": "mention",
     "lines": [
-     351
+     353,
+     901
     ],
-    "note": "窗口外行号，语境不明",
     "quotes": [
-     "**Changing frontend dependencies:** run `npm install --legacy-peer-deps` to refresh `web/package-lock.json`, then commit"
+     "**Changing frontend dependencies:** run `npm install --legacy-peer-deps` to refresh `web/package-lock.json`, then commit",
+     "EduHub is also a standalone, ClawHub-compatible registry, so agents that aren't DeepTutor (Claude Code, Codex, …) can us"
     ]
    }
   ],
   "hardware": [],
   "products": [
    {
-    "term": "豆包",
-    "rel": "mention",
-    "lines": [
-     81
-    ],
-    "note": "作为网页搜索供应商接入",
-    "quotes": [
-     "> **[2026.8.13]** v1.5.12 — Web search rebuilt with six new providers (**Doubao**, **Bocha**, **Zhipu**, **Firecrawl**, "
-    ]
-   },
-   {
     "term": "ChatGPT",
     "rel": "mention",
     "lines": [
-     95
+     97
     ],
-    "note": "经 OpenAI Codex OAuth 使用 ChatGPT 订阅登录",
+    "note": "以 ChatGPT 套餐通过 OpenAI Codex OAuth 登录",
     "quotes": [
      "> **[2026.7.26]** v1.5.5 — Sign in with your ChatGPT plan via **OpenAI Codex** OAuth, an **Eden AI** provider, knowledge"
-    ]
-   },
-   {
-    "term": "Kimi",
-    "rel": "mention",
-    "lines": [
-     99
-    ],
-    "quotes": [
-     "> **[2026.7.24]** v1.5.3 — Themeable code blocks, four more coding CLIs in My Agents (Gemini, Kimi, opencode, MiMo), an "
     ]
    },
    {
     "term": "Claude Code",
     "rel": "mention",
     "lines": [
-     123
+     125
     ],
-    "note": "可连接本地 Claude Code 供咨询，非竞品关系",
+    "note": "可接入本地 Claude Code 供对话咨询，非替代关系",
     "quotes": [
      "> **[2026.6.18]** v1.4.7 — Connect your local **Claude Code / Codex** and consult it live mid-turn, **My Agents** gradua"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     101,
+     231
+    ],
+    "quotes": [
+     "> **[2026.7.24]** v1.5.3 — Themeable code blocks, four more coding CLIs in My Agents (Gemini, Kimi, opencode, MiMo), an ",
+     "- **Subagents and Partners** — from Chat, consult a live agent harness (Claude Code, Codex, Grok CLI, Antigravity, Kimi,"
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     83
+    ],
+    "note": "作为搜索提供商接入",
+    "quotes": [
+     "> **[2026.8.13]** v1.5.12 — Web search rebuilt with six new providers (**Doubao**, **Bocha**, **Zhipu**, **Firecrawl**, "
     ]
    },
    {
     "term": "通义千问",
     "rel": "mention",
     "lines": [
-     183
+     185
     ],
     "quotes": [
      "> **[2026.4.13]** v1.0.3 — Question Notebook with bookmarks & categories, Mermaid in Visualize, embedding mismatch detec"
@@ -239,9 +259,8 @@
     "term": "LangChain",
     "rel": "mention",
     "lines": [
-     822
+     824
     ],
-    "note": "窗口外行号，语境不明",
     "quotes": [
      "The repo ships a root `SKILL.md` — a compact handover doc for the CLI. Ask your agent to read it explicitly; its Agent S"
     ]
@@ -250,10 +269,12 @@
     "term": "GitHub Copilot",
     "rel": "mention",
     "lines": [
-     847
+     849,
+     851
     ],
     "quotes": [
-     "|`deeptutor provider login <provider>`|Provider auth (`openai-codex` OAuth login; `github-copilot` GitHub device login; "
+     "|`deeptutor provider login <provider>`|Provider auth (`openai-codex` OAuth login; `github-copilot` GitHub device login; ",
+     "GitHub Copilot credentials belong to the signed-in DeepTutor owner and live only at"
     ]
    }
   ],

@@ -1,27 +1,27 @@
 {
  "fn": "VectifyAI/PageIndex",
- "sha": "93086187c45a",
+ "sha": "358819603324",
  "source": "readme",
  "identity": {
-  "one_liner": "面向长专业文档 RAG 的树状索引检索引擎，无需向量库",
-  "review": "PageIndex 用层次化树索引替代向量索引：索引阶段从文档版式提取树结构并由基础模型摘要精炼，检索阶段由 LLM 在树上推理式搜索定位相关章节，不需要向量数据库与分块。以 pip 包提供 SDK，支持本地模式（本地索引/检索/对话，用自有 LLM key）与 PageIndex Cloud（托管解析、OCR、存储）两种形态；提供 OpenAI Agents SDK、Claude Agent SDK 集成路径。开源版仅处理文本型 PDF；扫描件与图像文档需走云服务。",
+  "one_liner": "无向量库、基于 LLM 推理的树状索引 RAG 引擎",
+  "review": "以文档层级树索引替代向量索引的 RAG 引擎：先为每份 PDF 生成树状索引（索引模型仅做摘要精炼），再由 LLM 在树上多步推理完成检索，检索结果可溯源到具体引用。本地模式通过 pip 安装 SDK，使用自有 LLM key 完成 indexing/retrieve/chat；亦可切换到云端 API key，云端另提供 OCR、图像理解与托管存储。README 给出索引成本（约每页 $0.001）、查询成本对比与 FinanceBench 评测数据。面向处理金融报告、法律文件、技术手册等长文档的开发者，本地方案限文本型 PDF、不含 OCR。",
   "highlights": [
-   "树状索引 + LLM 推理检索，无向量库、无分块",
-   "SDK 本地模式：本机索引/检索/对话，用自有 LLM key",
-   "可接入 OpenAI Agents SDK / Claude Agent SDK 等 agent 框架",
-   "本地索引成本与耗时的基准数据（约 $0.001/页，9–1,098 页文档 13 秒–4.5 分钟）"
+   "树状索引 + LLM 推理检索，无需向量库与分块",
+   "SDK 本地模式：索引/检索/对话全在本机，使用自有 LLM key",
+   "可通过 Claude Code 订阅调用 Claude 模型，无需 API key",
+   "同一客户端可切换 PageIndex Cloud（OCR、图像理解、托管存储）"
   ],
   "use_cases": [
-   "对财报、法律文件、技术手册等长 PDF 做问答检索",
-   "把文档检索工具接入自己的 agent 框架",
-   "本地用自有模型 key 建立可溯源的文档索引"
+   "对金融/法律等长文档做可溯源的问答检索",
+   "在本地用自己的模型 key 搭建无向量库的 RAG 流程",
+   "将 PageIndex 工具接入 OpenAI Agents SDK / Claude Agent SDK 等自有 agent"
   ]
  },
  "filters": {
   "ai_role": "ai-native",
   "license_risk": "permissive",
   "deploy": "library",
-  "model_dep": null,
+  "model_dep": "locked-api",
   "hardware": null,
   "install_friction": "low",
   "maturity": null
@@ -29,7 +29,7 @@
  "eval": {
   "target_user": "开发者",
   "paper_url": null,
-  "demo_url": null,
+  "demo_url": "https://vectify.ai/pageindex",
   "self_declared_early": {
    "flag": false,
    "lines": []
@@ -39,15 +39,18 @@
   "scenario_tags": [
    "RAG",
    "文档检索",
-   "agent工具",
-   "PDF问答"
+   "LLM推理",
+   "SDK/工具库"
   ],
   "domain": "知识与检索",
   "alternative_to": [],
   "competitors_mentioned": [],
-  "ecosystem_compat": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
   "scenario_tags_v2": [
-   "rag"
+   "rag",
+   "document-qa"
   ]
  },
  "intel": {
@@ -58,28 +61,33 @@
  "trust": {
   "confidence": "high",
   "evidence": [
-   "L7: # PageIndex: Vectorless, Reasoning-based RAG",
-   "L30: 1. **Index**: generate a **tree-structure index** for each document",
-   "L76: Drop PageIndex tools into the OpenAI Agents SDK, the Claude Agent SDK, or any other framework."
+   "L28: Inspired by AlphaGo, **PageIndex** replaces the vector index with a **hierarchical tree index** and lets an LLM **reason",
+   "L39: <blockquote>PageIndex is a vectorless , reasoning-based RAG engine that mirrors how humans read , delivering traceable ,"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
   "providers": [
    {
     "term": "anthropic",
-    "rel": "mention",
+    "rel": "support",
     "lines": [
-     76
+     70
     ],
-    "note": "Claude Agent SDK 集成途径，非专门适配的模型提供方",
+    "note": "pip install pageindex[claude] 专属通道，经 Claude Code 用订阅调用 Claude 模型",
     "quotes": [
-     "Drop PageIndex tools into the OpenAI Agents SDK, the Claude Agent SDK, or any other framework."
+     "**Have a Claude subscription?** PageIndex can use your subscription to call Claude models through Claude Code: usage is "
     ]
    }
   ],
@@ -89,24 +97,39 @@
     "rel": "support",
     "lines": [
      19,
-     55
+     55,
+     70
     ],
     "quotes": [
      "- [Aug '26] 🔥 **PageIndex SDK**: `pip install -U pageindex` now ships **local mode**: index, retrieve, and chat entirely",
-     "pip install -U pageindex"
+     "pip install -U pageindex",
+     "**Have a Claude subscription?** PageIndex can use your subscription to call Claude models through Claude Code: usage is "
     ]
    }
   ],
   "hardware": [],
-  "products": [],
   "dual_license": {
    "flag": false,
    "lines": [],
+   "note": "开源版与 Cloud 服务并存，但未声明双许可条款",
    "quotes": []
   },
   "deprecation": {
    "flag": false,
    "lines": []
-  }
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     70
+    ],
+    "note": "作为调用 Claude 模型的通道被使用，非替代/竞品",
+    "quotes": [
+     "**Have a Claude subscription?** PageIndex can use your subscription to call Claude models through Claude Code: usage is "
+    ]
+   }
+  ]
  }
 }

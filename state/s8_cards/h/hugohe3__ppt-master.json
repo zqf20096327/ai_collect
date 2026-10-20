@@ -1,35 +1,35 @@
 {
  "fn": "hugohe3/ppt-master",
- "sha": "cdd5be3c7c33",
+ "sha": "072da1e21449",
  "source": "readme",
  "identity": {
-  "one_liner": "给 AI agent 用户的工具：从文档或主题生成本地可编辑的原生 PPT",
-  "review": "一个以 skill/工作流形式交付的开源项目：用户在具备 agent 能力的 AI 工具（IDE 插件、CLI 等）中给出文档或主题，工作流在本地运行并导出可编辑的 .pptx，包含原生形状与连接符、带数据的图表与表格、切换与动画、基于演讲者备注的旁白音频，并支持自有 .pptx 模板。需自行安装 Python 3.10+ 并依赖依赖文件安装包；文档另说明旧格式需可选 Pandoc。模型质量由所用 LLM 决定，推荐大上下文窗口模型并搭配 AI 图像生成。",
+  "one_liner": "在 AI agent 工具内运行的本地工作流：从文档/主题生成原生 PPTX",
+  "review": "由个人开发者（财务从业者 Hugo He）维护的 Python 工作流（skill）：用户在任意具备 agent 能力的 AI 工具（Claude Code、Cursor 等）的对话中下达指令，工作流在本机运行，读取 PDF/DOCX/网页等材料后生成可继续编辑的原生 .pptx——包含幻灯片母版、原生形状与连接符、数据支撑的图表表格、切换动画与备注语音旁白，支持从参考文档提炼品牌/版式模板并填充既有 .pptx。全程仅 Python 3.10+ 与依赖安装，数据留在本地，模型与平台不锁定。作者声明上限取决于所选模型，推荐大上下文模型并配 AI 生图。",
   "highlights": [
-   "生成本地可编辑 .pptx：原生形状、母版/版式继承、带数据图表与表格",
-   "支持从参考中提炼品牌/风格/版式模板，填充既有 .pptx 并保留设计",
-   "为成品幻灯片添加原生切换、动画与旁白音频",
-   "流程在本地机器运行，除模型通信外数据不离开本机"
+   "生成原生 PowerPoint 对象（形状、母版、数据图表），非扁平图片",
+   "支持自有 .pptx 模板填充与品牌/版式模板提炼",
+   "本地运行，除模型通信外数据不出机器",
+   "可在任意具备 agent 能力的 AI 工具中驱动"
   ],
   "use_cases": [
-   "把 PDF/DOCX 等资料转成可继续编辑的 PPT 初稿",
-   "用公司自有模板批量生成汇报文稿",
-   "为讲稿自动生成旁白与动画效果"
+   "把论文、报告等文档快速转成可继续编辑的原生 PPT",
+   "在公司的品牌模板上生成保持设计风格的新演示",
+   "为已完成的演示添加原生动画、切换与语音旁白"
   ]
  },
  "filters": {
   "ai_role": "ai-native",
   "license_risk": "permissive",
   "deploy": "desktop",
-  "model_dep": null,
+  "model_dep": "locked-api",
   "hardware": null,
   "install_friction": "low",
   "maturity": null
  },
  "eval": {
-  "target_user": "开发者",
+  "target_user": "消费者",
   "paper_url": null,
-  "demo_url": "L47 Live Demo",
+  "demo_url": null,
   "self_declared_early": {
    "flag": false,
    "lines": []
@@ -37,56 +37,64 @@
  },
  "links": {
   "scenario_tags": [
-   "PPT生成",
-   "AI agent 工作流",
+   "AI生成PPT",
    "办公自动化",
-   "pptx"
+   "agent工作流",
+   "文档转换"
   ],
-  "domain": "办公/文档自动化",
+  "domain": "办公/文档生成",
   "alternative_to": [],
   "competitors_mentioned": [],
-  "ecosystem_compat": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
   "scenario_tags_v2": []
  },
  "intel": {
   "maintainer_type": "individual",
   "zh_origin": true,
   "zh_origin_signals": [
-   "提供中文版 README（L12 English | 中文）",
-   "赞助商包含 Kimi、APIKEY.FAN、RunAPI 等中文平台"
+   "中英双语 README",
+   "中国电信品牌模板示例",
+   "赞助商中文站与 ¥ 优惠活动"
   ]
  },
  "trust": {
   "confidence": "mid",
   "evidence": [
-   "L69: In form, it's a workflow (a \"skill\") that runs inside any agent-capable AI tool: tell it in chat — \"make a deck from thi",
-   "L77: - **No platform lock-in** — any agent-capable AI IDE can drive it; Claude, GPT, Gemini, Kimi, and other models all work",
-   "L83: > `harness + model = agent` — PPT Master only owns the workflow; the model sets the ceiling. Recommended: **Kimi K3 (or "
+   "L1: # PPT Master — AI generates native PowerPoint from any document",
+   "L66: In form, it's a workflow (a \"skill\") that runs inside any agent-capable AI tool: tell it in chat — \"make a deck from thi",
+   "L73: - **Data stays local** — apart from AI model communication, the entire pipeline runs on your machine"
   ],
   "xcheck": {
    "install_missing": [
-    "npm"
+    "npm",
+    "pypi"
    ]
   },
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
   "providers": [
    {
     "term": "anthropic",
-    "rel": "mention",
+    "rel": "support",
     "lines": [
-     33,
-     77,
-     83,
-     161
+     74,
+     80,
+     158
     ],
     "quotes": [
-     " Thanks to PackyCode for sponsoring this project! PackyCode is a reliable and efficient API relay service provider, offe",
      "- **No platform lock-in** — any agent-capable AI IDE can drive it; Claude, GPT, Gemini, Kimi, and other models all work",
      "> `harness + model = agent` — PPT Master only owns the workflow; the model sets the ceiling. Recommended: **Kimi K3 (or ",
      "> **Author's pick: Claude Code** — the environment this project is developed and tested on most thoroughly, as the CLI o"
@@ -104,18 +112,23 @@
    },
    {
     "term": "xai",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
+    "rel": "mention",
+    "lines": [
+     39
+    ],
+    "quotes": [
+     " Thanks to RunAPI for sponsoring this project! RunAPI is an efficient and stable API platform — a single API Key gives y"
+    ]
    }
   ],
   "install": [
    {
     "term": "pypi",
-    "rel": "support",
+    "rel": "mention",
     "lines": [
-     123
+     120
     ],
+    "note": "pip install -r requirements.txt 安装依赖，非本产品发布包",
     "quotes": [
      "**All you need to install is Python 3.10+.** Everything else comes with one line — `pip install -r requirements.txt` — a"
     ]
@@ -124,9 +137,10 @@
     "term": "brew",
     "rel": "mention",
     "lines": [
-     137,
-     149
+     134,
+     146
     ],
+    "note": "Python 与可选 Pandoc 的安装途径",
     "quotes": [
      "brew install python",
      "brew install pandoc"
@@ -136,39 +150,50 @@
     "term": "source",
     "rel": "support",
     "lines": [
-     123
+     174,
+     177
     ],
     "quotes": [
-     "**All you need to install is Python 3.10+.** Everything else comes with one line — `pip install -r requirements.txt` — a"
+     "**Option A — Git clone** (recommended; requires Git installed): the preferred path, since a clone can pull the latest ve",
+     "git clone https://github.com/hugohe3/ppt-master.git"
     ]
    }
   ],
   "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
   "products": [
    {
     "term": "Kimi",
     "rel": "mention",
     "lines": [
      18,
-     26,
-     77,
-     83
+     24,
+     74
     ],
+    "note": "赞助商，其模型可用于驱动本流程",
     "quotes": [
-     "This project is kept free and open source with the support of Kimi, PackyCode, APIKEY.FAN, RunAPI, APIMart and other spo",
-     "Thanks to Kimi for sponsoring this project! Kimi K3 is the world's first open 3T-class model, featuring native vision an",
-     "- **No platform lock-in** — any agent-capable AI IDE can drive it; Claude, GPT, Gemini, Kimi, and other models all work",
-     "> `harness + model = agent` — PPT Master only owns the workflow; the model sets the ceiling. Recommended: **Kimi K3 (or "
+     "This project is kept free and open source with the support of Kimi, PackyCode, APIKEY.FAN, RunAPI and other sponsors.",
+     " Kimi",
+     "- **No platform lock-in** — any agent-capable AI IDE can drive it; Claude, GPT, Gemini, Kimi, and other models all work"
     ]
    },
    {
     "term": "Claude Code",
     "rel": "mention",
     "lines": [
-     161,
-     166,
-     167
+     158,
+     163,
+     164
     ],
+    "note": "作者推荐的运行宿主，非替代/竞品对象",
     "quotes": [
      "> **Author's pick: Claude Code** — the environment this project is developed and tested on most thoroughly, as the CLI o",
      "|**IDE plugin / extension**|Claude Code (VS Code / JetBrains extension), GitHub Copilot, Cline, etc.|Installed inside ho",
@@ -179,7 +204,7 @@
     "term": "Cursor",
     "rel": "mention",
     "lines": [
-     165
+     162
     ],
     "quotes": [
      "|**IDE-native agent**|• VS Code architecture (VS Code itself, plus forks & derivatives): Cursor, Trae, Codebuddy IDE, Wi"
@@ -189,7 +214,7 @@
     "term": "Windsurf",
     "rel": "mention",
     "lines": [
-     165
+     162
     ],
     "quotes": [
      "|**IDE-native agent**|• VS Code architecture (VS Code itself, plus forks & derivatives): Cursor, Trae, Codebuddy IDE, Wi"
@@ -199,21 +224,12 @@
     "term": "GitHub Copilot",
     "rel": "mention",
     "lines": [
-     166
+     163
     ],
     "quotes": [
      "|**IDE plugin / extension**|Claude Code (VS Code / JetBrains extension), GitHub Copilot, Cline, etc.|Installed inside ho"
     ]
    }
-  ],
-  "dual_license": {
-   "flag": false,
-   "lines": [],
-   "quotes": []
-  },
-  "deprecation": {
-   "flag": false,
-   "lines": []
-  }
+  ]
  }
 }

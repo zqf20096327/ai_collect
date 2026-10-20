@@ -1,24 +1,24 @@
 {
  "fn": "tt-a1i/archify",
- "sha": "a4bb8c2672f0",
+ "sha": "58c5c89cf3c1",
  "source": "readme",
  "identity": {
-  "one_liner": "面向 coding agent 的交互式架构图生成 skill",
-  "review": "Archify 是一个可安装到 AI 编码代理的 skill：用户用自然语言描述想法、计划或让代理读取仓库，生成可交互的独立 HTML 图（架构、时序、数据流、ERD 等 10 种类型），支持主题切换、路径追踪、PNG/分享卡导出。输出为单文件 HTML，查看者无需安装 Archify。通过 npx skills 安装，支持 Claude Code、Codex CLI、Cursor、OpenCode，社区另有 DSH 插件接入；更新检查为可关闭的可选网络请求。",
+  "one_liner": "给编码 Agent 的交互式图表生成技能，将描述或代码库转为可交互 HTML",
+  "review": "以 agent skill 形式分发的可视化工具：安装后由 Claude Code、Codex、Cursor、OpenCode 等编码代理调用，将一句话描述、计划或代码仓库分析结果生成为自包含的交互式 HTML 架构图/流程图，支持主题切换、PNG/WebP 导出与路径分享卡；亦可生成带引用来源的'explainer'单页问答。仓库源码追踪固定到 commit。产物为独立 HTML，查看无需安装 Archify。通过 npx skills 安装，含更新检查（可禁用）。",
   "highlights": [
-   "支持 10 种图类型（架构、工作流、时序、数据流、ERD 等）",
-   "输出自包含 HTML，查看无需安装本工具",
-   "支持读取仓库生成带来源依据的架构图",
-   "通过 npx skills 一条命令安装，支持 4 种 agent"
+   "将描述或代码库转为可交互 HTML 图（explainer/架构图/流程图）",
+   "源码引用固定到 commit，声明配编号来源",
+   "产物为自包含 HTML，查看端无需安装",
+   "兼容 Claude Code、Codex、Cursor、OpenCode，npx skills 一键安装"
   ],
   "use_cases": [
-   "让 agent 读取仓库生成带来源链接的架构图",
-   "把旅行计划或学习地图做成可交互 HTML 页面",
-   "在对话中迭代调整图表（加节点、高亮路径）"
+   "让编码代理读我的仓库并生成可探索的架构图",
+   "把一句话描述变成可分享的交互式流程图/学习地图",
+   "生成结论先行的单页技术问答（含引用与验证图表）"
   ]
  },
  "filters": {
-  "ai_role": "ai-native",
+  "ai_role": "ai-ecosystem",
   "license_risk": "permissive",
   "deploy": "library",
   "model_dep": null,
@@ -37,12 +37,13 @@
  },
  "links": {
   "scenario_tags": [
-   "agent-skills",
-   "图表生成",
-   "开发者工具",
-   "架构可视化"
+   "agent技能",
+   "架构图/可视化",
+   "diagrams-as-code",
+   "开发工具",
+   "Claude生态"
   ],
-  "domain": "开发者工具/图表生成",
+  "domain": "开发工具/可视化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
@@ -52,24 +53,29 @@
   "maintainer_type": "individual",
   "zh_origin": true,
   "zh_origin_signals": [
-   "README 提供简体中文渠道",
+   "简体中文 README 版本",
    "微信/QQ 群",
-   "量子位报道",
-   "上海 CityWalk 社区案例"
+   "中文示例与 QbitAI 报道"
   ]
  },
  "trust": {
   "confidence": "high",
   "evidence": [
-   "L9:  Start with an idea, a question, or a plan. Describe it to your AI agent, and Archify turns it into an interactive HTML ",
    "L26:  Works with Claude Code, Codex, Cursor, and OpenCode",
+   "L45: Works with Cursor, Claude Code, Codex CLI, and OpenCode. See installation options below for additional integrations.",
    "L48: npx skills add tt-a1i/archify -g"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -78,24 +84,24 @@
     "term": "anthropic",
     "rel": "mention",
     "lines": [
-     74,
-     77,
-     80
+     26,
+     45,
+     92
     ],
-    "note": "仅在赞助商与产品提及语境出现 Claude，非专门适配通道",
+    "note": "作为 Claude Code 所属厂商在兼容语境与赞助商文案中出现",
     "quotes": [
-     " Thank you to OpenLux for sponsoring this project! OpenLux is an all-in-one AI platform for businesses, bringing togethe",
-     " Access leading AI models through PackyCode with one API endpoint and one API key. Enjoy automatic failover and dedicate",
-     " Thank you to AICodeMirror for sponsoring Archify! AICodeMirror provides API relay services for Claude, Codex, and Gemin"
+     " Works with Claude Code, Codex, Cursor, and OpenCode",
+     "Works with Cursor, Claude Code, Codex CLI, and OpenCode. See installation options below for additional integrations.",
+     " Thank you to OpenLux for sponsoring this project! OpenLux is an all-in-one AI platform for businesses, bringing togethe"
     ]
    },
    {
     "term": "deepseek",
     "rel": "mention",
     "lines": [
-     83
+     101
     ],
-    "note": "赞助商列举的模型之一",
+    "note": "赞助商服务列出的模型之一，非本产品接入",
     "quotes": [
      " Thank you to Infistar.cc for sponsoring Archify! One API key covers text, image, and video creation with GPT, Claude, G"
     ]
@@ -107,12 +113,10 @@
     "rel": "support",
     "lines": [
      48,
-     171,
-     179,
-     185
+     197,
+     203
     ],
     "quotes": [
-     "npx skills add tt-a1i/archify -g",
      "npx skills add tt-a1i/archify -g",
      "npx -y skills add tt-a1i/archify --skill archify --agent cursor --global --copy --yes",
      "npx skills use tt-a1i/archify@archify --agent codex"
@@ -135,13 +139,12 @@
     "rel": "mention",
     "lines": [
      26,
-     45,
-     190
+     45
     ],
+    "note": "被适配的 agent 宿主，非替代/竞品",
     "quotes": [
      " Works with Claude Code, Codex, Cursor, and OpenCode",
-     "Works with Cursor, Claude Code, Codex CLI, and OpenCode. See installation options below for additional integrations.",
-     "The agent switcher covers `cursor`, `codex`, `claude-code`, and `opencode`."
+     "Works with Cursor, Claude Code, Codex CLI, and OpenCode. See installation options below for additional integrations."
     ]
    },
    {
@@ -149,23 +152,23 @@
     "rel": "mention",
     "lines": [
      26,
-     45,
-     176
+     45
     ],
     "quotes": [
      " Works with Claude Code, Codex, Cursor, and OpenCode",
-     "Works with Cursor, Claude Code, Codex CLI, and OpenCode. See installation options below for additional integrations.",
-     "For an explicit, non-interactive Cursor install:"
+     "Works with Cursor, Claude Code, Codex CLI, and OpenCode. See installation options below for additional integrations."
     ]
    },
    {
     "term": "Kimi",
     "rel": "mention",
     "lines": [
-     68
+     35,
+     86
     ],
-    "note": "插件商店合作渠道，非替代/竞品",
+    "note": "合作/赞助语境，Kimi Work 插件商店上架 Archify",
     "quotes": [
+     " ❤️ Partners & sponsors: Kimi Work · Supercode · OpenLux",
      "**Archify × Kimi Work.** Find Archify in the Kimi Work plugin store as **Interactive Architecture Diagram**. Describe yo"
     ]
    },
@@ -173,9 +176,9 @@
     "term": "通义千问",
     "rel": "mention",
     "lines": [
-     83
+     101
     ],
-    "note": "赞助商列举的模型之一",
+    "note": "赞助商 API 服务列出的模型",
     "quotes": [
      " Thank you to Infistar.cc for sponsoring Archify! One API key covers text, image, and video creation with GPT, Claude, G"
     ]

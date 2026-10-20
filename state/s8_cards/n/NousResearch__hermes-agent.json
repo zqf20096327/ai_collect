@@ -1,27 +1,28 @@
 {
  "fn": "NousResearch/hermes-agent",
- "sha": "4ab412d23539",
+ "sha": "35d630817f6c",
  "source": "readme",
  "identity": {
-  "one_liner": "自学习循环的个人 AI Agent，可在多终端与消息平台运行",
-  "review": "Nous Research 开发的命令行 Agent：运行时通过内建学习循环创建与改进技能、维护长期记忆与用户模型，并支持跨会话检索历史对话。提供完整 TUI 终端界面与消息网关（Telegram、Discord、Slack、WhatsApp、Signal、Email），内置 cron 调度、子 Agent 并行、七种终端后端（local/Docker/SSH/Singularity/Modal/Daytona/Vercel Sandbox），并面向训练用途提供轨迹批量生成与压缩。安装脚本覆盖 Linux/macOS/WSL2、原生 Windows 与 Android/Termux。",
+  "one_liner": "自我改进的开源 AI agent，跨 CLI 与消息平台长期陪伴用户",
+  "review": "Nous Research 开发的终端与消息平台 AI agent：内置学习循环，从经验自动创建技能并在使用中改进，持久化记忆与跨会话用户建模（Honcho）。可从 Telegram、Discord、Slack、WhatsApp、Signal、Email 及 CLI 多入口对话，由单一 gateway 进程支撑。支持自选模型供应商（Nous Portal、OpenRouter、OpenAI、自有端点等），`hermes model` 切换。内置 cron 定时任务、子 agent 并行、七种终端后端（本地/Docker/SSH/Modal 等）。提供 Linux/macOS/WSL2 与 Windows 原生一键安装脚本，MIT 许可。",
   "highlights": [
-   "内建学习循环：技能自动创建、使用中改进、Agent 主动持久化记忆",
-   "单一网关进程接入 Telegram/Discord/Slack/WhatsApp/Signal/CLI 六个入口",
-   "七种终端后端，含 Modal/Daytona 的无服务器持久化",
-   "从 OpenClaw 一键迁移设置、记忆、技能与 API key"
+   "内置学习循环：经验生成技能、使用中自我改进、跨会话记忆",
+   "Telegram/Discord/Slack/WhatsApp/Signal/Email/CLI 多入口统一 gateway",
+   "多模型供应商切换（Nous Portal、OpenRouter、OpenAI、自有端点），无锁定",
+   "七种终端后端，含 Modal/Daytona 等 serverless 持久化环境"
   ],
   "use_cases": [
-   "在云 VPS 上挂一个长期运行的助手，从 Telegram 随时对话",
-   "用自然语言配置每日报告、夜间备份等定时任务",
-   "为工具调用模型训练批量生成执行轨迹"
+   "通过 Telegram 等消息平台与运行在云端 VM 的 agent 持续对话",
+   "让 agent 在复杂任务后自动沉淀可复用技能",
+   "用自然语言设置定时报告、备份等无人值守自动化",
+   "从 OpenClaw 迁移设置、记忆与技能"
   ]
  },
  "filters": {
   "ai_role": "ai-native",
   "license_risk": "permissive",
   "deploy": "desktop",
-  "model_dep": null,
+  "model_dep": "locked-api",
   "hardware": null,
   "install_friction": "medium",
   "maturity": null
@@ -37,18 +38,19 @@
  },
  "links": {
   "scenario_tags": [
-   "AI助手/Agent",
-   "CLI工具",
-   "消息网关",
-   "技能学习",
-   "自动化"
+   "AI Agent",
+   "个人助理",
+   "多平台消息",
+   "自我改进/记忆",
+   "CLI 工具"
   ],
-  "domain": "Agent 开发",
+  "domain": "对话与助手",
   "alternative_to": [],
   "competitors_mentioned": [],
-  "ecosystem_compat": [],
+  "ecosystem_compat": [
+   "openrouter"
+  ],
   "scenario_tags_v2": [
-   "agent-memory",
    "ai-assistant"
   ]
  },
@@ -61,21 +63,27 @@
   "confidence": "high",
   "evidence": [
    "L15: **The self-improving AI agent built by Nous Research.** It's the only agent with a built-in learning loop — it creates s",
-   "L21:  A closed learning loop Agent-curated memory with periodic nudges. Autonomous skill creation after complex tasks. Skills",
-   "L24:  Runs anywhere, not just your laptop Seven terminal backends — local, Docker, SSH, Singularity, Modal, Daytona, and Verc"
+   "L17: Use any model you want — Nous Portal, OpenRouter, OpenAI, your own endpoint, and many others. Switch with `hermes model`",
+   "L20:  Lives where you do Telegram, Discord, Slack, WhatsApp, Signal, and CLI — all from a single gateway process. Voice memo "
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
   "providers": [
    {
     "term": "openrouter",
-    "rel": "mention",
+    "rel": "support",
     "lines": [
      17,
      176
@@ -86,7 +94,21 @@
     ]
    }
   ],
-  "install": [],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     64,
+     66
+    ],
+    "note": "安装脚本分发的二进制（uv.exe 等），非系统包管理器",
+    "quotes": [
+     "#### Windows Defender or antivirus flags `uv.exe` as malware",
+     "If your antivirus (Bitdefender, Windows Defender, etc.) quarantines `uv.exe` from the Hermes `bin` folder (`%LOCALAPPDAT"
+    ]
+   }
+  ],
   "hardware": [],
   "products": [],
   "dual_license": {

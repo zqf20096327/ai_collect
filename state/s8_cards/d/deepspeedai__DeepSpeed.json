@@ -1,20 +1,20 @@
 {
  "fn": "deepspeedai/DeepSpeed",
- "sha": "0b10b97597a6",
+ "sha": "5b0929de9c8c",
  "source": "readme",
  "identity": {
-  "one_liner": "面向大模型训练与推理的分布式优化库",
-  "review": "DeepSpeed 是一个深度学习优化库，提供分布式训练与推理能力，核心机制包括 ZeRO、ZeRO-Infinity、3D 并行、Ulysses 序列并行、DeepSpeed-MoE 等。支持 NVIDIA（Pascal 至 Hopper）、AMD MI100/MI200，并有华为昇腾 NPU、Intel Gaudi 2/Xeon/XPU、Tecorigin SDAA 等社区贡献的硬件适配。通过 pip 安装，C++/CUDA 扩展默认以 JIT 方式在运行时构建；Windows 支持部分训练与推理功能。曾用于训练 MT-530B、BLOOM 等大模型。",
+  "one_liner": "大规模深度学习分布式训练与推理优化库",
+  "review": "微软开源的深度学习优化库，提供 ZeRO、ZeRO-Infinity、3D 并行、Ulysses 序列并行、MoE 等系统技术，用于训练与推理千亿至万亿参数模型；已集成 Transformers、Accelerate、Lightning 等框架。通过 pip 安装，默认以 JIT 方式编译 C++/CUDA 扩展，需先装 PyTorch 与 CUDA/ROCm 编译器；支持 NVIDIA/AMD GPU 及 Ascend NPU、Gaudi、XPU 等多种加速器，Windows 上部分功能不可用（如 AIO、GDS）。",
   "highlights": [
-   "ZeRO/ZeRO-Infinity、3D 并行、Ulysses 序列并行、DeepSpeed-MoE 等系统机制",
-   "多硬件后端：NVIDIA/AMD/CPU/Gaudi2/XPU/昇腾 NPU/SDAA",
-   "与 Transformers、Accelerate、Lightning、MosaicML、Determined、MMEngine 等框架集成",
-   "pip 安装 + torch JIT 编译扩展，ds_report 校验环境"
+   "ZeRO/ZeRO-Infinity/3D 并行等分布式训练技术",
+   "与 Transformers、Accelerate、Lightning 等框架集成",
+   "pip 安装，扩展默认 JIT 编译，提供 ds_report 环境诊断",
+   "支持 NVIDIA/AMD GPU 及 Ascend、Gaudi、XPU 等多种加速器"
   ],
   "use_cases": [
-   "训练数百亿到万亿参数规模的大模型",
-   "分布式训练/推理的显存与通信优化",
-   "在 AMD、昇腾、Gaudi 等多类加速器上运行训练任务"
+   "训练千亿级参数的大规模语言模型",
+   "在有限显存下做大模型训练与推理优化",
+   "在 PyTorch 生态中使用 DeepSpeed 加速分布式训练"
   ]
  },
  "filters": {
@@ -37,10 +37,10 @@
  },
  "links": {
   "scenario_tags": [
-   "深度学习训练",
    "分布式训练",
-   "模型推理优化",
-   "大模型"
+   "大模型训练",
+   "深度学习优化",
+   "并行计算"
   ],
   "domain": "训练与推理",
   "alternative_to": [],
@@ -56,23 +56,27 @@
   "maintainer_type": "company",
   "zh_origin": true,
   "zh_origin_signals": [
-   "README 提供简体中文版本(L11)",
-   "中文知乎频道(L8)"
+   "提供简体中文 README 版本",
+   "Chinese Zhihu 官方账号"
   ]
  },
  "trust": {
   "confidence": "high",
   "evidence": [
-   "L52: # Extreme Speed and Scale for DL Training",
    "L54: ***DeepSpeed enabled the world's most powerful language models (at the time of this writing) such as MT-530B and BLOOM**",
-   "L100: # Installation",
-   "L110: ## Requirements"
+   "L80: |Transformers with DeepSpeed|"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -82,18 +86,12 @@
     "term": "pypi",
     "rel": "support",
     "lines": [
-     102,
-     129,
-     130,
-     133,
-     144
+     2,
+     134
     ],
     "quotes": [
-     "The quickest way to get started with DeepSpeed is via pip, this will install",
-     "## PyPI",
-     "We regularly push releases to PyPI and encourage users to install from there in most cases.",
-     "pip install deepspeed",
-     "of JIT compiling) or install pre-compiled ops via PyPI please see our [advanced"
+     "PyPI version",
+     "pip install deepspeed"
     ]
    }
   ],
@@ -103,6 +101,7 @@
     "term": "ChatGPT",
     "rel": "none",
     "lines": [],
+    "note": "窗外行非对比/竞品语境",
     "quotes": []
    }
   ],

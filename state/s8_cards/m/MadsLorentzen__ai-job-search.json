@@ -1,21 +1,21 @@
 {
  "fn": "MadsLorentzen/ai-job-search",
- "sha": "5924e36ffdef",
+ "sha": "d9ed9f67d873",
  "source": "readme",
  "identity": {
-  "one_liner": "求职者本地运行的 AI 求职申请框架：评估职位、定制简历与面试准备",
-  "review": "基于 Claude Code CLI 构建的求职申请工作流框架，以命令形式组织：/setup 建立个人档案，/scrape 抓取职位并按匹配度排序，/apply 运行 drafter-reviewer 流程生成 LaTeX 简历与求职信。支持 /interview 面试准备、/rank 批量评分、/outcome 记录进展、/notion-sync 与 /gmail-sync 集成等 13 个命令。核心流程与国家无关，职位门户搜索技能默认面向丹麦市场，可通过 /add-portal 替换为本地招聘网站。要求 Claude Pro/Max 订阅或 Anthropic API 额度，fork 后档案数据会写入受跟踪文件，README 建议使用私有仓库。",
+  "one_liner": "基于 Claude Code 的本地求职申请框架：评估岗位、定制简历、写求职信",
+  "review": "在用户本机运行的 AI 求职申请工作流，构建于 Claude Code CLI 之上：/setup 建立个人档案，/scrape 抓取并按匹配度排序职位（内置丹麦求职门户，可自行替换），/apply 对岗位做匹配评估、起草 LaTeX 简历与求职信并经第二个 agent 审查修订，另有 /interview 面试准备、/outcome 结果跟踪等十余个命令。核心工作流与语言/国家无关，门户搜索技能面向丹麦市场。需 Claude Pro/Max/Team 订阅或 Anthropic API 额度，外加 Python 3.10+、Bun、LaTeX 发行版。以 fork/克隆仓库方式使用，作者声明与 Anthropic 无关。",
   "highlights": [
-   "/apply 的 drafter-reviewer 双 agent 流程：起草、评审、修订并强制 PDF 编译",
-   "/add-portal 为任意招聘网站生成搜索技能，核心流程与国家/语言无关",
-   "13 个命令覆盖评估、投递、面试准备、结果跟踪与学习计划",
-   "职位描述按不可信输入处理，遵循指令级防护并提示人工复核"
+   "/apply 起草-审查工作流：评估匹配、生成简历与求职信并二次修订",
+   "招聘贴文按不可信输入处理，先过确定性完整性检查（隐藏文本/隐藏链接等）",
+   "内置丹麦求职门户抓取技能，/add-portal 可为本地市场生成新门户技能",
+   "/interview、/rank、/html-report 等十余个扩展命令覆盖面试准备与申请漏斗管理"
   ],
   "use_cases": [
-   "批量抓取招聘网站职位并按个人档案评分排序",
-   "针对具体职位自动生成定制简历和求职信",
-   "面试前生成阶段化准备材料并模拟面试",
-   "用本地招聘网站替换默认丹麦门户，适配本国市场"
+   "批量抓取招聘门户并按与个人档案的匹配度排序",
+   "针对单个岗位自动定制简历和求职信",
+   "面试前基于已投材料生成针对性准备包",
+   "跟踪申请状态并生成求职漏斗看板"
   ]
  },
  "filters": {
@@ -39,20 +39,20 @@
  "links": {
   "scenario_tags": [
    "求职",
-   "CV/简历",
-   "面试准备",
+   "AI工作流",
    "Claude Code",
-   "LaTeX"
+   "简历/求职信生成",
+   "个人自动化"
   ],
-  "domain": "Agent 开发",
+  "domain": "效率与自动化",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "workflow-automation",
-   "agent-framework"
+   "web-scraping",
+   "ai-writing"
   ]
  },
  "intel": {
@@ -74,8 +74,14 @@
   },
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -87,7 +93,7 @@
      11,
      47
     ],
-    "note": "依赖 Claude Code 订阅或 Anthropic API 额度作为运行前提；README 声明为独立项目、与 Anthropic 无关联",
+    "note": "需 Anthropic API 额度或 Claude 订阅，工作流构建于其工具链",
     "quotes": [
      "An AI-powered job application framework built on Claude Code. Fork it, fill in your profile, and let Claude evaluate job",
      "- Claude Code (CLI). Claude Code has no free tier: you need a Claude Pro/Max/Team subscription or Anthropic API credits "
@@ -101,7 +107,7 @@
     "lines": [
      51
     ],
-    "note": "pip install pypdf 为可选依赖的安装方式，非本产品安装途径",
+    "note": "可选 pip install pypdf 用于 ATS 检查",
     "quotes": [
      "- Optional: `pip install pypdf` for `/apply`'s ATS parseability check (BSD; no Poppler required). Poppler `pdftotext` re"
     ]
@@ -112,34 +118,13 @@
     "lines": [
      51
     ],
-    "note": "brew install poppler 为回退依赖的安装方式，非本产品安装途径",
+    "note": "Poppler 回退方案的安装方式，非本产品安装途径",
     "quotes": [
      "- Optional: `pip install pypdf` for `/apply`'s ATS parseability check (BSD; no Poppler required). Poppler `pdftotext` re"
     ]
    }
   ],
   "hardware": [],
-  "products": [
-   {
-    "term": "Claude Code",
-    "rel": "mention",
-    "lines": [
-     11,
-     13,
-     34,
-     47,
-     87
-    ],
-    "note": "本框架构建其上的工具链，非替代/竞品对象",
-    "quotes": [
-     "An AI-powered job application framework built on Claude Code. Fork it, fill in your profile, and let Claude evaluate job",
-     "> Note: This is an independent open-source project and is not affiliated with, endorsed by, sponsored by, or maintained ",
-     "A structured workflow that turns Claude Code into a full-stack job application assistant. The core workflow (self-profil",
-     "- Claude Code (CLI). Claude Code has no free tier: you need a Claude Pro/Max/Team subscription or Anthropic API credits ",
-     "# Then inside Claude Code:"
-    ]
-   }
-  ],
   "dual_license": {
    "flag": false,
    "lines": [],
@@ -148,6 +133,21 @@
   "deprecation": {
    "flag": false,
    "lines": []
-  }
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     11,
+     47
+    ],
+    "note": "工作流所构建的工具链，非替代或竞品对象",
+    "quotes": [
+     "An AI-powered job application framework built on Claude Code. Fork it, fill in your profile, and let Claude evaluate job",
+     "- Claude Code (CLI). Claude Code has no free tier: you need a Claude Pro/Max/Team subscription or Anthropic API credits "
+    ]
+   }
+  ]
  }
 }

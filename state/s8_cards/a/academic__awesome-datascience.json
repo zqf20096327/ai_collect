@@ -1,20 +1,19 @@
 {
  "fn": "academic/awesome-datascience",
- "sha": "b28c68508bf1",
+ "sha": "8a72432a6535",
  "source": "readme",
  "identity": {
-  "one_liner": "数据科学学习与资源导航的聚合清单，面向入门到实战者",
-  "review": "开源的数据科学知识清单：回答\"什么是数据科学、应该学什么\"，收录专家文章链接、编程语言与工具库介绍（Python/R、Pandas、NumPy、Scikit-Learn、Seaborn），给出初学者五步路线图，并包含 Agents 框架/工具、科研知识检索等分类的资源条目。提供 brew 安装的 academic CLI，欢迎社区贡献。面向数据科学学习者与从业者。",
+  "one_liner": "数据科学学习与资源策展清单（awesome list）",
+  "review": "开源数据科学资源聚合仓库：回答\"什么是数据科学、如何入门\"，收录定义性文章链接、Python/R 起步指南、入门路线图（先 Python 与核心库，再练 Kaggle 项目，后学 ML），并按类别收录工具清单，包括 Agents 章节（agent 框架、工具、研究检索与工作流类条目）。面向数据科学学习者与从业者，通过贡献指南接受社区增补。",
   "highlights": [
-   "数据科学入门路线图（Python→核心库→项目→数学→ML）",
-   "收录专家视角的数据科学定义与职业发展链接",
-   "Agents 分类列出可用于数据科学工作流的框架与工具",
-   "Research & Knowledge Retrieval 分类收录 arXiv/PubMed 检索等工具条目"
+   "收录数据科学定义、入门文章与免费课程等链接资源",
+   "提供从 Python 基础到深度学习的入门路线图",
+   "Agents 章节收录 agent 框架、工具、研究检索类条目"
   ],
   "use_cases": [
-   "寻找数据科学的学习路径与入门资料",
-   "查找可用于数据分析工作流的 agent 工具与框架",
-   "查找科研文献检索与 RAG 相关工具条目"
+   "按路线图自学数据科学入门",
+   "查找数据科学相关工具与 agent 框架",
+   "了解数据科学领域的课程与文章资源"
   ]
  },
  "filters": {
@@ -27,7 +26,7 @@
   "maturity": null
  },
  "eval": {
-  "target_user": "科研",
+  "target_user": "开发者",
   "paper_url": null,
   "demo_url": null,
   "self_declared_early": {
@@ -39,9 +38,9 @@
   "scenario_tags": [
    "awesome-list",
    "数据科学",
-   "学习资源",
+   "学习路线",
    "机器学习",
-   "导航清单"
+   "资源清单"
   ],
   "domain": "学习与行业",
   "alternative_to": [],
@@ -52,7 +51,7 @@
   ]
  },
  "intel": {
-  "maintainer_type": "team",
+  "maintainer_type": "media",
   "zh_origin": false,
   "zh_origin_signals": []
  },
@@ -60,7 +59,7 @@
   "confidence": "mid",
   "evidence": [
    "L7: **An open-source Data Science repository to learn and apply concepts toward solving real- world problems.**",
-   "L60: ## Agents"
+   "L9: This is a shortcut path to start studying **Data Science**. Just follow the steps to answer the questions, \"What is Data"
   ],
   "xcheck": {
    "install_missing": [
@@ -69,8 +68,14 @@
   },
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -81,32 +86,21 @@
     "lines": [
      73
     ],
-    "note": "收录的 CAJAL 条目中提及，非本仓库接入",
+    "note": "收录条目 CAJAL 声称经 Ollama 本地运行，非本清单自身接入",
     "quotes": [
      "- CAJAL - Local AI agent for generating publication-ready scientific papers with real arXiv citations, IMRaD structure, "
-    ]
-   },
-   {
-    "term": "anthropic",
-    "rel": "mention",
-    "lines": [
-     626
-    ],
-    "note": "窗外：收录条目中提及",
-    "quotes": [
-     "|dna-claude-analysis|Personal genome analysis toolkit with Python scripts analyzing raw DNA data across 17 categories (h"
     ]
    }
   ],
   "install": [
    {
     "term": "brew",
-    "rel": "support",
+    "rel": "mention",
     "lines": [
      14,
      15
     ],
-    "note": "academic CLI 的安装方式",
+    "note": "$ academic 段落的 brew 命令，安装对象与清单内容的关系未说明",
     "quotes": [
      "$ brew tap academic/tap",
      "$ brew install academic"
@@ -116,15 +110,28 @@
     "term": "pypi",
     "rel": "mention",
     "lines": [
-     72
+     45
     ],
-    "note": "DeepAlpha 条目提及 PyPI，非本产品安装途径",
+    "note": "介绍 pip/conda 安装 Python 包的通用说明，非本产品安装",
     "quotes": [
-     "- DeepAlpha - AI crypto trading framework using LightGBM + XGBoost ensemble with 72 ML features. 70.9% walk-forward vali"
+     "Python is by far the most popular language in science, due in no small part to the ease at which it can be used and the "
     ]
    }
   ],
   "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     73
+    ],
+    "note": "收录条目中提及的平台托管信息",
+    "quotes": [
+     "- CAJAL - Local AI agent for generating publication-ready scientific papers with real arXiv citations, IMRaD structure, "
+    ]
+   }
+  ],
   "dual_license": {
    "flag": false,
    "lines": [],
@@ -133,19 +140,6 @@
   "deprecation": {
    "flag": false,
    "lines": []
-  },
-  "products": [
-   {
-    "term": "Hugging Face",
-    "rel": "mention",
-    "lines": [
-     73
-    ],
-    "note": "CAJAL 条目提及",
-    "quotes": [
-     "- CAJAL - Local AI agent for generating publication-ready scientific papers with real arXiv citations, IMRaD structure, "
-    ]
-   }
-  ]
+  }
  }
 }

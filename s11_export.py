@@ -171,7 +171,55 @@ def fmt_stars(n) -> str:
     return f"{n:,}" if isinstance(n, int) else "—"
 
 
-def build_md(row: dict) -> str:
+# ---------------------------------------------------------------- 星数曲线
+def load_star_series(max_points: int = 30) -> dict[str, list[tuple[str, int]]]:
+    """data/stars/points_*.ndjson -> {fn: [(日, stars), ...]}，日升序，截尾 max_points。"""
+    series: dict[str, list[tuple[str, int]]] = {}
+    for fp in sorted((ROOT / "data" / "stars").glob("points_*.ndjson")):
+        day = fp.stem.replace("points_", "")
+        d6 = f"{day[:4]}-{day[4:6]}-{day[6:]}" if len(day) == 8 else day
+        for ln in fp.read_text(encoding="utf-8").splitlines():
+            try:
+                r = json.loads(ln)
+            except json.JSONDecodeError:
+                continue
+            fn, st = r.get("full_name"), r.get("stars")
+            if fn and isinstance(st, int):
+                series.setdefault(fn, []).append((d6, st))
+    for fn in series:
+        series[fn] = series[fn][-max_points:]
+    return series
+
+
+def curve_block(fn: str, series: dict[str, list[tuple[str, int]]]) -> str:
+    """星数曲线：mermaid xychart（GitHub 原生渲染）+ 纯文本兜底行。"""
+    pts = series.get(fn) or []
+    pts = [(d, s) for d, s in pts]
+    if len(pts) < 2:
+        return ""
+    # 压缩中间平台段（值不变的连续日只留两端），但始终保留最新日期——
+    # 即使尾段持平也如实画出（含同池快照产生的平线）
+    dedup = [pts[0]]
+    for d, s in pts[1:-1]:
+        if s != dedup[-1][1]:
+            dedup.append((d, s))
+    dedup.append(pts[-1])
+    if len(dedup) < 2:
+        return ""                      # 只有同一值,无线可画
+    labels = ", ".join(f'"{d}"' for d, _ in dedup)
+    vals = ", ".join(str(s) for _, s in dedup)
+    lo, hi = min(s for _, s in dedup), max(s for _, s in dedup)
+    pad = max((hi - lo) // 10, 1)
+    net = dedup[-1][1] - dedup[0][1]
+    return (f"\n## 星数曲线\n\n```mermaid\nxychart-beta\n"
+            f'    title "{fn} 星数(近 {len(dedup)} 点)"\n'
+            f"    x-axis [{labels}]\n"
+            f'    y-axis "stars" {max(lo - pad, 0)} --> {hi + pad}\n'
+            f"    line [{vals}]\n```\n"
+            f"\n{dedup[0][0]} {dedup[0][1]:,} → {dedup[-1][0]} {dedup[-1][1]:,}（{net:+,}）\n")
+
+
+def build_md(row: dict, series: dict | None = None) -> str:
     m, f, s = row["meta"], row["filters"], row["signals"]
     ident = row["identity"]
     bits = [f"⭐ {fmt_stars(m.get('stars'))}"]
@@ -239,6 +287,8 @@ def build_md(row: dict) -> str:
     if ev:
         L.append("\n## 证据(README 行号)\n")
         L.extend(f"> {e[:120]}" for e in ev[:6])
+    if series is not None:
+        L.append(curve_block(row["fn"], series))
     t = row["trust"]
     L.append("\n---")
     L.append(f"*卡片 v{t.get('ver')} · prompt {t.get('prompt_ver')} · 生成 {row.get('card_at')}"
@@ -320,13 +370,14 @@ def main():
         (out / "data" / "cards" / g).mkdir(exist_ok=True)
 
     # 主表 + 人读卡
+    series = load_star_series()
     with (out / "data" / "catalog.jsonl").open("w", encoding="utf-8", newline="\n") as fh:
         for r in rows:
             fh.write(json.dumps(r, ensure_ascii=False) + "\n")
     for r in rows:
         letter = (r["fn"].split("/")[0][0] or "0").lower()
         p = out / "data" / "cards" / letter / (r["fn"].replace("/", "__") + ".md")
-        p.write_text(build_md(r), encoding="utf-8", newline="\n")
+        p.write_text(build_md(r, series), encoding="utf-8", newline="\n")
 
     # schema / vocab / 派生视图 / 周报
     shutil.copy(DEMO / "data" / "schema" / "card.schema.json",

@@ -1,20 +1,20 @@
 {
  "fn": "shanraisshan/claude-code-best-practice",
- "sha": "2693d5e7caa7",
+ "sha": "4d4d95d48cfe",
  "source": "readme",
  "identity": {
-  "one_liner": "Claude Code 最佳实践与工作流编目，面向使用 Claude Code 的开发者",
-  "review": "该仓库整理 Claude Code 的功能清单与使用实践：涵盖 Subagents、Commands、Skills、Hooks、MCP Servers、Memory、Checkpointing 等特性的位置与用法；收录 Command→Agent→Skill 的编排工作流示例；汇总 12 套社区开发工作流、跨模型协作（Plugin/MCP/Router 三种机制）、技能与子代理合集，以及 83 条来自 Boris Cherny、Thariq 等来源的提示与技巧。面向使用 Claude Code 的开发者与工程团队。内容以编目与链接为主，非可安装的软件工具。",
+  "one_liner": "Claude Code 最佳实践与工作流策展仓库（含命令/技能/子代理参考）",
+  "review": "面向 Claude Code 使用者的知识策展仓库：汇总 Subagents、Commands、Skills、Hooks、MCP Servers、Memory 等功能机制的参考实现与官方文档链接，演示 Command→Agent→Skill 的编排工作流，并按星标整理 10 余个社区开发工作流方法论、跨模型（Codex/Gemini/DeepSeek/本地模型）协作的三种机制（Plugin/MCP/Router）、技能与子代理集合清单，以及 83 条来自 Boris Cherny 等使用者的提示技巧。内容以链接与表格索引为主，仓库本身不提供可安装的软件。",
   "highlights": [
-   "Claude Code 全特性清单（Subagents/Skills/Hooks/MCP/Memory 等）及文件位置",
-   "Command → Agent → Skill 编排工作流实现",
-   "12 套社区工作流与跨模型协作机制（Plugin/MCP/Router）编目",
-   "83 条提示、规划、上下文与会话管理技巧"
+   "Claude Code 各功能机制（Agents/Commands/Skills/Hooks/MCP 等）的参考实现索引",
+   "Command→Agent→Skill 编排工作流演示（weather-orchestrator）",
+   "跨模型工作流机制整理：Plugin / MCP / Router 三种途径",
+   "83 条提示技巧与 10+ 社区开发工作流方法论清单"
   ],
   "use_cases": [
-   "为团队制定 Claude Code 使用规范",
-   "查找适配自己流程的社区工作流",
-   "排查上下文管理与会话使用问题"
+   "系统学习 Claude Code 的功能配置与最佳实践",
+   "为团队挑选 agent 开发工作流方法论（如 TDD、spec 驱动流程）",
+   "查找 Claude Code 的技能集合、子代理定义与跨模型协作方案"
   ]
  },
  "filters": {
@@ -37,10 +37,11 @@
  },
  "links": {
   "scenario_tags": [
-   "最佳实践清单",
    "Claude Code",
-   "AI 编程工作流",
-   "知识聚合"
+   "最佳实践/教程",
+   "agent工作流",
+   "知识清单",
+   "开发效率"
   ],
   "domain": "学习与行业",
   "alternative_to": [],
@@ -58,15 +59,21 @@
  "trust": {
   "confidence": "high",
   "evidence": [
-   "L1: # claude-code-best-practice",
-   "L20: ## 🧠 CONCEPTS",
-   "L98: All major workflows converge on the same architectural pattern: **Research → Plan → Execute → Review → Ship**"
+   "L22: |Feature|Location|Description|",
+   "L100: |Name|★|Workflow||||",
+   "L176: ## 💡 TIPS AND TRICKS (83)"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -75,11 +82,14 @@
     "term": "anthropic",
     "rel": "mention",
     "lines": [
-     1,
+     14,
+     122,
      123
     ],
+    "note": "文档对象 Claude Code 的所属公司，非本产品接入",
     "quotes": [
-     "# claude-code-best-practice",
+     " Boris Cherny on Claude Code",
+     "- Boris Cherny (Creator of Claude Code) Workflow — 13 Tips · 10 Tips · 12 Tips · 2 Tips · 15 Tips · 6 Tips Boris",
      "- Thariq (Anthropic) Workflow — Skills · Session Management Thariq"
     ]
    },
@@ -124,6 +134,7 @@
      139,
      142
     ],
+    "note": "仅作为跨模型 Router/MCP 方案列举的提供商",
     "quotes": [
      "|musistudio/claude-code-router|34k|Router|OpenRouter, DeepSeek, Ollama, Gemini, Kimi, Qwen, Groq, +more|Routes Claude Co",
      "|BeehiveInnovations/pal-mcp-server|12k|MCP|Gemini, OpenAI, Azure, Grok, Ollama, OpenRouter (50+ models)|Multi-model MCP "
@@ -135,6 +146,7 @@
     "lines": [
      142
     ],
+    "note": "L142 的 Grok 属 xAI 模型，出现在多模型 MCP 服务器列举中",
     "quotes": [
      "|BeehiveInnovations/pal-mcp-server|12k|MCP|Gemini, OpenAI, Azure, Grok, Ollama, OpenRouter (50+ models)|Multi-model MCP "
     ]
@@ -148,14 +160,12 @@
     "rel": "mention",
     "lines": [
      4,
-     39,
-     58
+     14
     ],
-    "note": "编目主题本身，非替代/竞品对象",
+    "note": "本仓库的文档对象，非替代/竞品",
     "quotes": [
      "updated with Claude Code GitHub Stars",
-     "|**Best Practices**||Prompt Engineering · Extend Claude Code|",
-     "|**Claude Code Web** beta|`claude.ai/code`|Routines|"
+     " Boris Cherny on Claude Code"
     ]
    },
    {
@@ -165,6 +175,7 @@
      129,
      139
     ],
+    "note": "跨模型工作流中列举的其他模型",
     "quotes": [
      "Use Claude Code together with other models — Codex, Gemini, GPT, Kimi, DeepSeek, local — via three mechanisms:",
      "|musistudio/claude-code-router|34k|Router|OpenRouter, DeepSeek, Ollama, Gemini, Kimi, Qwen, Groq, +more|Routes Claude Co"
@@ -176,7 +187,7 @@
     "lines": [
      139
     ],
-    "note": "以 Qwen 名义出现在 Router 桥接列表",
+    "note": "Router 方案列举的兼容提供商",
     "quotes": [
      "|musistudio/claude-code-router|34k|Router|OpenRouter, DeepSeek, Ollama, Gemini, Kimi, Qwen, Groq, +more|Routes Claude Co"
     ]
@@ -187,6 +198,7 @@
     "lines": [
      328
     ],
+    "note": "窗外行，仅在对比语境中提及",
     "quotes": [
      "|iTerm/Ghostty/tmux terminals instead of IDE (VS Code/Cursor)|Boris|"
     ]

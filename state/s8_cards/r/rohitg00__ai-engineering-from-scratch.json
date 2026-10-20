@@ -1,21 +1,21 @@
 {
  "fn": "rohitg00/ai-engineering-from-scratch",
- "sha": "04419059ebe5",
+ "sha": "9c37ca382e4d",
  "source": "readme",
  "identity": {
-  "one_liner": "面向开发者的 AI 工程免费开源课程（542 课/20 阶段）",
-  "review": "以 MIT 许可发布的 AI 工程课程仓库，含 542 节课、20 个阶段，覆盖模型内部机制、检索管线与 agent 运行时，使用 Python、TypeScript、Rust、Julia。提供三种学习方式：网站阅读、编码 agent 当导师（通过 npx 安装 Agent Skills，支持 Codex、Claude Code 等宿主）、本地克隆运行代码。含 3 个带本地评分器的分阶段项目与十题定位测验生成个性化学习计划。",
+  "one_liner": "AI 工程课程：542 课时的模型、RAG 与 agent 动手教程",
+  "review": "MIT 许可的开源课程仓库，含 542 课时、20 阶段，覆盖数学基础、模型内部实现、检索流水线、agent 运行时、MCP 与 Agent Skills 等，代码含 Python/TypeScript/Rust/Julia。提供三种学习方式：网站直接阅读、通过 npx 安装技能包让 Codex/Claude Code 等编码 agent 充当导师（含摸底测验与个性化计划）、或 git clone 后本地运行课时代码。附三个带参考实现与本地评分器的分阶段项目（检索评测、agent trace 调试、工具调用防火墙）。",
   "highlights": [
-   "542 节课、20 个阶段，提供 23 种语言翻译",
-   "3 个分阶段项目（检索评估、trace 调试、工具调用防火墙）带本地评分器与参考实现",
-   "AI 导师模式：npx skills add 安装后由 Codex/Claude Code 等宿主调用学习技能",
-   "十题定位测验映射起点阶段并生成个性化学习计划"
+   "542 课时、20 阶段，覆盖模型内部、检索与 agent 运行时",
+   "npx skills 安装后由编码 agent 担任导师（摸底测验、逐课教学、阶段测验）",
+   "三个分阶段项目：Python/TypeScript/Rust 各一，附本地评分器",
+   "多语言 README 与网站学习路径，无需 clone 即可学习"
   ],
   "use_cases": [
-   "系统学习模型内部、RAG 检索与 agent 运行时的实现原理",
-   "让 Claude Code/Codex 充当课程导师逐课教学并出题",
-   "只学 MCP 或 Agent Skills 时走 17 课/5 课的聚焦路线",
-   "克隆仓库后本地运行课程代码并留存学习证据"
+   "系统学习 AI 工程：从数学基础到 agent 与 MCP",
+   "用 Claude Code/Codex 等编码 agent 作为交互式导师",
+   "通过检索评测、trace 调试等实操项目积累作品证据",
+   "备考 CCAO/CCDV/CCAR 等 Claude 与 MCPA 认证"
   ]
  },
  "filters": {
@@ -30,7 +30,7 @@
  "eval": {
   "target_user": "开发者",
   "paper_url": null,
-  "demo_url": null,
+  "demo_url": "https://aiengineeringfromscratch.com",
   "self_declared_early": {
    "flag": false,
    "lines": []
@@ -40,9 +40,9 @@
   "scenario_tags": [
    "课程/教程",
    "AI工程",
-   "MCP",
-   "Agent Skills",
-   "编码agent导师"
+   "agent开发",
+   "RAG",
+   "MCP"
   ],
   "domain": "学习与行业",
   "alternative_to": [],
@@ -54,21 +54,28 @@
  },
  "intel": {
   "maintainer_type": "individual",
-  "zh_origin": false,
-  "zh_origin_signals": []
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供简体中文/繁体中文 README 翻译"
+  ]
  },
  "trust": {
   "confidence": "high",
   "evidence": [
-   "L3: Implement model internals, retrieval pipelines, and agent runtimes. Test them, inspect failures, and keep the code and e",
-   "L149: If Node.js, `npx`, and a skill-capable coding agent are already installed, your coding agent can become your tutor. A re",
-   "L152: npx skills add rohitg00/ai-engineering-from-scratch"
+   "L9: > 542 lessons. 20 phases. Python, TypeScript, Rust, Julia.",
+   "L12:  542 lessons"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -77,10 +84,14 @@
     "term": "anthropic",
     "rel": "mention",
     "lines": [
+     176,
+     184,
      216
     ],
-    "note": "提及 Claude 认证导师课程，非模型接入适配",
+    "note": "Claude Code 作为承载导师技能的宿主之一被列举，非本产品专门适配某一模型提供商",
     "quotes": [
+     "|Claude Code|`/start-learning`|`/learn-mcp`|`/learn-agent-skills`|`/check-understanding 13`|",
+     "`learn` and `course-guide`; in Claude Code, use `/learn` and `/course-guide`;",
      "|`claude-certification`|Certification tutor. Chooses CCAO-F, CCDV-F, CCAR-F, or CCAR-P; teaches each lesson; runs labs; "
     ]
    }
@@ -90,12 +101,10 @@
     "term": "npm",
     "rel": "support",
     "lines": [
-     151,
      152,
      163
     ],
     "quotes": [
-     "```bash",
      "npx skills add rohitg00/ai-engineering-from-scratch",
      "npx --version"
     ]
@@ -104,14 +113,10 @@
     "term": "source",
     "rel": "support",
     "lines": [
-     223,
-     224,
-     225
+     224
     ],
     "quotes": [
-     "```bash",
-     "git clone https://github.com/rohitg00/ai-engineering-from-scratch.git",
-     "cd ai-engineering-from-scratch"
+     "git clone https://github.com/rohitg00/ai-engineering-from-scratch.git"
     ]
    }
   ],
@@ -122,16 +127,12 @@
     "rel": "mention",
     "lines": [
      155,
-     176,
-     184,
-     219
+     176
     ],
-    "note": "可承载课程的宿主 agent，非替代/竞品",
+    "note": "作为可安装导师技能的宿主 agent 被列举",
     "quotes": [
      "Choose the host and scope when the installer asks. Use `start-learning` in Codex, `/start-learning` in Claude Code, or a",
-     "|Claude Code|`/start-learning`|`/learn-mcp`|`/learn-agent-skills`|`/check-understanding 13`|",
-     "`learn` and `course-guide`; in Claude Code, use `/learn` and `/course-guide`;",
-     "|`check-understanding <phase>`|Per-phase quiz, eight questions, with feedback and specific lessons to review. Use the Co"
+     "|Claude Code|`/start-learning`|`/learn-mcp`|`/learn-agent-skills`|`/check-understanding 13`|"
     ]
    },
    {
@@ -140,7 +141,7 @@
     "lines": [
      168
     ],
-    "note": "列出的 skills 目录宿主之一",
+    "note": "作为技能安装目标目录之一出现",
     "quotes": [
      "`.claude/skills/`, `.cursor/skills/`, `.codex/skills/`, or another supported"
     ]

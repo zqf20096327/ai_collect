@@ -1,20 +1,21 @@
 {
  "fn": "codewhale-hq/Codewhale",
- "sha": "890b8b777266",
+ "sha": "0c86a5b67a84",
  "source": "readme",
  "identity": {
-  "one_liner": "开源 Rust 编码 agent 引擎与终端客户端，任意模型可选",
-  "review": "Codewhale 提供本地运行的 Rust agent 引擎与终端客户端：读取项目、编辑文件、执行命令并自查工作，模型由用户自选（40+ 内置 provider 路由，含本地运行时）。核心机制包括 Plan/Work/Operate 三种模式、Ask/Auto-Review/Full Access 三种审批姿态、/undo 与 /restore 工作区恢复、/receipts 会话操作清单，以及 OS 沙箱（macOS Seatbelt、Linux bubblewrap）。安装覆盖 curl 脚本、winget、npm、cargo、Docker、Nix 等多条路线。",
+  "one_liner": "开源 Rust 终端编码 agent，支持 40+ 模型提供商",
+  "review": "用 Rust 编写的终端编码 agent 及共享同一引擎的 CLI/网页/HTTP API 形态：接收任务后读取仓库、编辑文件、运行命令直至完成。内置 40+ 提供商（默认 DeepSeek，兼容 OpenAI 端点及 Ollama/vLLM/SGLang 本地模型）。提供 Plan/Work/Operate 三种模式与 Ask/Auto-Review/Full Access 三级权限，OS 沙箱隔离，`/receipts` 记录文件变更、命令与调用，`/undo` 回滚。支持 MCP、插件、子 agent 与工作流；MIT 许可，无需账号。",
   "highlights": [
-   "40+ 内置 provider 路由，支持 OpenAI 兼容端点与 Ollama/vLLM/SGLang 本地模型",
-   "Plan/Work/Operate 模式与审批姿态、/receipts 全量操作回执",
-   "子 agent 委派与受监督 agent 团队（含 pre-spend check）",
-   "MCP 服务器、skills、plugins、hooks 扩展，并加载 Claude Code 插件"
+   "内置 40+ 提供商，默认 DeepSeek，支持 Ollama/vLLM/SGLang 本地模型",
+   "Plan/Work/Operate 模式与 Ask/Auto-Review/Full Access 权限分级",
+   "`/receipts` 记录全部变更与调用，`/undo`/`/restore` 回滚",
+   "exec/web/app-server/ACP 多运行形态共享同一引擎"
   ],
   "use_cases": [
-   "在终端里用自选模型执行修测试、改代码等编码任务",
-   "脚本或 CI 中以 headless 方式运行编码 agent",
-   "本地模型场景下做审批可控的代码修改与 PR 评审"
+   "在终端里让 AI 修复测试、编辑代码并解释改动",
+   "在 CI 或脚本中以 `codewhale exec` 自动执行单次任务",
+   "对 GitHub PR 运行顾问式审查",
+   "通过 MCP 服务器与插件扩展 agent 能力"
   ]
  },
  "filters": {
@@ -24,114 +25,127 @@
   "model_dep": "local-ok",
   "hardware": null,
   "install_friction": "low",
-  "maturity": null
+  "maturity": "idea"
  },
  "eval": {
   "target_user": "开发者",
   "paper_url": null,
   "demo_url": null,
   "self_declared_early": {
-   "flag": false,
-   "lines": []
+   "flag": true,
+   "lines": [
+    133,
+    178
+   ]
   }
  },
  "links": {
   "scenario_tags": [
    "编码agent",
-   "终端工具",
-   "多模型",
+   "终端CLI",
+   "多模型/多提供商",
    "MCP",
    "本地优先"
   ],
-  "domain": "Agent 开发",
+  "domain": "编码与开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
-   "ollama",
    "deepseek",
+   "ollama",
    "openrouter",
    "vllm",
    "anthropic"
   ],
   "scenario_tags_v2": [
-   "coding-agent",
-   "multi-agent"
+   "coding-agent"
   ]
  },
  "intel": {
   "maintainer_type": "team",
-  "zh_origin": true,
-  "zh_origin_signals": [
-   "README 提供简体中文/繁体中文翻译版本 (L16)"
-  ]
+  "zh_origin": false,
+  "zh_origin_signals": []
  },
  "trust": {
   "confidence": "high",
   "evidence": [
-   "L3: **The open-source coding agent that works with any model.**",
-   "L95: - **Any model, no lock-in.** Over 40 built-in provider routes — Anthropic,",
-   "L77: Every client drives the same local Codewhale Engine, so"
+   "L5: Give Codewhale a task and it reads the repository, edits files, and runs",
+   "L123: More than 40 providers are built in, including Anthropic, OpenAI, DeepSeek,"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
   "providers": [
    {
-    "term": "ollama",
-    "rel": "support",
-    "lines": [
-     59,
-     97
-    ],
-    "quotes": [
-     " pick a local runtime. If Ollama is already running with a chat model,",
-     " any OpenAI-compatible endpoint and local models through Ollama, vLLM, or"
-    ]
-   },
-   {
     "term": "deepseek",
     "rel": "support",
     "lines": [
-     96
+     7,
+     60,
+     123
     ],
+    "note": "默认提供商，默认模型 deepseek-flash",
     "quotes": [
-     " DeepSeek, Google, Mistral, Moonshot, OpenAI, OpenRouter, xAI and more — plus"
+     "than 40 built-in providers, DeepSeek V4.1 Flash by default, and with models running on",
+     " choose a model. DeepSeek is the default provider. With no key, pick a local",
+     "More than 40 providers are built in, including Anthropic, OpenAI, DeepSeek,"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     61,
+     125
+    ],
+    "note": "本地运行时，未配置提供商时自动使用",
+    "quotes": [
+     " runtime instead. If no provider is configured and Ollama is already serving",
+     "works, and so do local models through Ollama, vLLM, or SGLang. The default is"
     ]
    },
    {
     "term": "openrouter",
     "rel": "support",
     "lines": [
-     96
+     124
     ],
+    "note": "内置提供商之一",
     "quotes": [
-     " DeepSeek, Google, Mistral, Moonshot, OpenAI, OpenRouter, xAI and more — plus"
+     "Google, Mistral, Moonshot, OpenRouter, and xAI. Any OpenAI-compatible endpoint"
     ]
    },
    {
     "term": "vllm",
-    "rel": "support",
+    "rel": "compat",
     "lines": [
-     97
+     125
     ],
+    "note": "作为本地模型运行方式之一",
     "quotes": [
-     " any OpenAI-compatible endpoint and local models through Ollama, vLLM, or"
+     "works, and so do local models through Ollama, vLLM, or SGLang. The default is"
     ]
    },
    {
     "term": "anthropic",
     "rel": "support",
     "lines": [
-     96
+     123
     ],
-    "note": "L95-96 列为内置 provider 路由",
+    "note": "内置提供商之一",
     "quotes": [
-     " DeepSeek, Google, Mistral, Moonshot, OpenAI, OpenRouter, xAI and more — plus"
+     "More than 40 providers are built in, including Anthropic, OpenAI, DeepSeek,"
     ]
    }
   ],
@@ -140,17 +154,17 @@
     "term": "cargo",
     "rel": "support",
     "lines": [
-     40
+     45
     ],
     "quotes": [
-     "cargo install codewhale-cli --locked  # build from crates.io"
+     "cargo install codewhale-cli --locked  # crates.io; can trail GitHub Releases"
     ]
    },
    {
     "term": "npm",
     "rel": "support",
     "lines": [
-     39
+     44
     ],
     "quotes": [
      "npm install -g codewhale            # wraps the same release binaries"
@@ -166,25 +180,74 @@
     "term": "brew",
     "rel": "mention",
     "lines": [
-     43
+     49
     ],
-    "note": "仅提及 Homebrew on Linux 在安装指南中覆盖",
+    "note": "安装指南中列出的可选途径",
     "quotes": [
-     "Docker, Nix, Homebrew on Linux, Android/Termux, manual downloads with checksum"
+     "Homebrew on Linux, Android/Termux (preview), and manual downloads are in the"
     ]
    }
   ],
   "hardware": [],
   "products": [
    {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     132,
+     133
+    ],
+    "note": "可用 ChatGPT 订阅替代 API key（实验性）",
+    "quotes": [
+     "what it cost and how long it took. `codewhale auth chatgpt` lets you use a",
+     "ChatGPT plan instead of an API key (experimental). See"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     162,
+     164
+    ],
+    "note": "可导入其指令文件",
+    "quotes": [
+     "`.github/copilot-instructions.md`, load only when you opt in with",
+     "`\"windsurf\"`, `\"copilot\"`, `\"all\"`) in your config; see"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     163
+    ],
+    "note": "可导入 .cursorrules",
+    "quotes": [
+     "`project_instruction_imports = [\"claude\"]` (or `\"cursor\"`, `\"cline\"`,"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     164
+    ],
+    "quotes": [
+     "`\"windsurf\"`, `\"copilot\"`, `\"all\"`) in your config; see"
+    ]
+   },
+   {
     "term": "Claude Code",
     "rel": "mention",
     "lines": [
-     111
+     168,
+     169
     ],
-    "note": "可加载其插件，非替代/竞品表述",
+    "note": "提供设置导入与插件兼容，非替代声明",
     "quotes": [
-     " Claude Code plugins."
+     "`/import-claude` prepares an import of your Claude Code settings and MCP",
+     "servers for you to review. `/plugin install` accepts Claude Code plugins"
     ]
    }
   ],

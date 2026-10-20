@@ -1,20 +1,20 @@
 {
  "fn": "koala73/worldmonitor",
- "sha": "12a88a191788",
+ "sha": "f242488965fc",
  "source": "readme",
  "identity": {
-  "one_liner": "面向研究者与分析师的实时全球情报仪表盘",
-  "review": "以 TypeScript 构建的实时全球情报仪表盘，将新闻聚合、地缘政治监测与基础设施追踪整合到统一态势感知界面。提供 3D 地球与 WebGL 平面地图双引擎、31 个 Tier-1 国家的国家不稳定指数（CII v8）、金融雷达、跨流信号关联，并可用 Ollama 本地运行 AI 功能而无需 API key。支持 Web、桌面端（Tauri 2）及六个站点变体，面向 OSINT、地缘政治分析等用途的用户。",
+  "one_liner": "实时全球情报仪表盘：新闻聚合、地缘政治与基础设施监控",
+  "review": "以 TypeScript 编写的实时全球态势感知仪表盘，聚合新闻、金融、能源、气候、航空、网络、军事等多源数据，提供 3D 地球与 WebGL 平面图双地图引擎、国家不稳定指数（CII）、跨流信号关联，并由 AI 将新闻源合成为简报。交付形态包括 Web 应用、Tauri 桌面应用（Windows/macOS/Linux）、npm 终端仪表盘与 CLI、Python/Ruby/Go SDK 及 MCP 服务器。支持用 Ollama 本地运行 AI 功能，无需 API key。许可为 AGPL-3.0-only。",
   "highlights": [
-   "跨军事、经济、灾害与升级信号的跨流关联",
-   "31 个 Tier-1 国家的实时 CII v8 评分与 24 小时变化",
-   "通过 Ollama 本地运行 AI，无需 API key",
-   "提供 MCP server、REST API、CLI 与 Python/Ruby/Go SDK"
+   "多形态交付：Web、Tauri 桌面应用、终端仪表盘、CLI、三种语言 SDK 与 MCP 服务器",
+   "3D 地球（globe.gl）与 WebGL 平面图（deck.gl）双地图引擎",
+   "31 个 Tier-1 国家的国家不稳定指数（CII v11）实时评分",
+   "支持 Ollama 本地运行 AI，无需 API key"
   ],
   "use_cases": [
-   "跟踪全球地缘政治事件并生成 AI 简报",
-   "在一个界面中监测金融、能源与灾害信号",
-   "通过 MCP/SDK 将情报数据接入 agent 与脚本"
+   "在一个界面里持续跟踪全球新闻、地缘政治与基础设施动态",
+   "通过终端仪表盘在 shell 中查看地图、新闻、市场与冲突信号",
+   "用 MCP/REST/SDK 把全球情报数据接入 agent 与脚本"
   ]
  },
  "filters": {
@@ -27,7 +27,7 @@
   "maturity": null
  },
  "eval": {
-  "target_user": "开发者",
+  "target_user": "消费者",
   "paper_url": null,
   "demo_url": "https://worldmonitor.app",
   "self_declared_early": {
@@ -38,50 +38,57 @@
  "links": {
   "scenario_tags": [
    "OSINT",
-   "地缘政治监测",
-   "情报仪表盘",
+   "情报监控",
    "新闻聚合",
+   "仪表盘",
    "MCP"
   ],
-  "domain": "效率与自动化",
+  "domain": "情报/态势监控",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
    "ollama",
    "openrouter"
   ],
-  "scenario_tags_v2": [
-   "web-scraping"
-  ]
+  "scenario_tags_v2": []
  },
  "intel": {
   "maintainer_type": "individual",
-  "zh_origin": false,
-  "zh_origin_signals": []
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文语言切换"
+  ]
  },
  "trust": {
-  "confidence": "high",
+  "confidence": "mid",
   "evidence": [
-   "L41: - **Curated news feeds** across global and regional categories, AI-synthesized into briefs",
-   "L47: - **Local AI** — run everything with Ollama, no API keys required",
-   "L107: - **MCP server** — `https://worldmonitor.app/mcp` (Streamable HTTP). Public `tools/list`; `tools/call` authenticates wit"
+   "L5: **Real-time global intelligence dashboard** — AI-powered news aggregation, geopolitical monitoring, and infrastructure t",
+   "L56: - **Curated news feeds** across global and regional categories, AI-synthesized into briefs",
+   "L62: - **Local AI** — run everything with Ollama, no API keys required"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
   "providers": [
    {
     "term": "ollama",
-    "rel": "support",
+    "rel": "compat",
     "lines": [
-     47,
-     96
+     62,
+     112
     ],
+    "note": "可选本地 AI 后端，无 API key 即可运行",
     "quotes": [
      "- **Local AI** — run everything with Ollama, no API keys required",
      "|**AI/ML**|Ollama / OpenRouter, Transformers.js (browser-side)|"
@@ -91,8 +98,9 @@
     "term": "openrouter",
     "rel": "compat",
     "lines": [
-     96
+     112
     ],
+    "note": "列为 AI/ML 技术栈中的可选接入",
     "quotes": [
      "|**AI/ML**|Ollama / OpenRouter, Transformers.js (browser-side)|"
     ]
@@ -104,13 +112,15 @@
     "rel": "support",
     "lines": [
      22,
-     70,
-     114
+     23,
+     46,
+     86
     ],
     "quotes": [
      " npm i worldmonitor&nbsp;",
-     "npm install",
-     "  npm install -g worldmonitor     # or install the `worldmonitor` (alias `wm`) command"
+     " Terminal dashboard: npx worldmonitor&nbsp;",
+     "|**CLI**|`npm install -g worldmonitor`|Command-Line Client|",
+     "npm install"
     ]
    },
    {
@@ -119,6 +129,7 @@
     "lines": [
      24
     ],
+    "note": "Python SDK worldmonitor-sdk",
     "quotes": [
      " pip install worldmonitor-sdk&nbsp;"
     ]
@@ -127,7 +138,7 @@
     "term": "source",
     "rel": "support",
     "lines": [
-     68
+     84
     ],
     "quotes": [
      "git clone https://github.com/koala73/worldmonitor.git"
@@ -135,7 +146,6 @@
    }
   ],
   "hardware": [],
-  "products": [],
   "dual_license": {
    "flag": false,
    "lines": [],
@@ -144,6 +154,7 @@
   "deprecation": {
    "flag": false,
    "lines": []
-  }
+  },
+  "products": []
  }
 }

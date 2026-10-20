@@ -1,26 +1,27 @@
 {
  "fn": "xtekky/gpt4free",
- "sha": "220069f772b1",
+ "sha": "e61f21748cbc",
  "source": "readme",
  "identity": {
-  "one_liner": "给开发者的多提供方 LLM 聚合接入库，附 GUI 与 OpenAI 兼容 API",
-  "review": "社区项目，聚合多个可访问的提供方适配器，统一提供 Python 同步/异步客户端、浏览器 JS 客户端、本地 Web GUI，以及 FastAPI 实现的 OpenAI 兼容 REST API（Interference API）。支持图像/音频/视频媒体生成、本地推理后端接入，并内置 MCP 服务器（web_search/web_scrape/image_generation 三个工具，可接入 Claude Desktop）。部分提供方依赖 Chrome/Chromium 浏览器自动化或 cookies/HAR 凭据；Python 3.10+，提供 pip、Docker（full/slim）与 Windows exe 安装方式。",
+  "one_liner": "聚合多家 LLM 提供商的接入层：统一 API、GUI 与客户端",
+  "review": "社区项目 g4f 聚合多个可访问的模型提供商（OpenAI 兼容端点、Gemini、MetaAI、Pollinations 媒体生成及本地推理后端），对外提供 OpenAI 兼容的 FastAPI Interference API、可选本地 Web GUI、Python/JS 客户端、CLI，以及供 AI 助手调用的 MCP 服务器（web 搜索、抓取、图像生成工具）。支持 Docker 全量与 slim 镜像部署（x86_64/arm64），部分提供商需要 Chrome/Chromium、API key 或 cookies/HAR 文件，遵循 GPL v3 许可。",
   "highlights": [
-   "Python/JS 客户端、本地 GUI 与 OpenAI 兼容 REST API 多形态接入",
-   "多提供方适配器，含媒体生成与本地推理后端",
-   "内置 MCP 服务器（stdio/HTTP 两种模式）暴露 web_search、web_scrape、image_generation",
-   "支持 x86_64 与 arm64 的 Docker full/slim 镜像"
+   "多提供商适配器：LLM、媒体生成与本地推理后端",
+   "FastAPI 实现的 OpenAI 兼容 Interference API 与可选 Web GUI",
+   "Python 同步/异步客户端与浏览器 JS 客户端",
+   "MCP 服务器（stdio/HTTP 模式）提供 web_search/web_scrape/image_generation 工具"
   ],
   "use_cases": [
-   "用统一客户端切换多个 LLM 提供方",
-   "本地跑一个 OpenAI 兼容 API 供现有工具链调用",
-   "给 AI 助手配置 MCP 工具做搜索、抓取与图像生成"
+   "用统一接口调用多个 LLM 与媒体生成提供商",
+   "为现有 OpenAI 兼容工作流提供统一入口端点",
+   "让 Claude 等 AI 助手通过 MCP 获得网页搜索与图像生成能力",
+   "在 Docker 中自托管 API 与 GUI 并做提供商登录管理"
   ]
  },
  "filters": {
   "ai_role": "ai-ecosystem",
   "license_risk": "viral",
-  "deploy": "desktop",
+  "deploy": "self-host",
   "model_dep": null,
   "hardware": null,
   "install_friction": "low",
@@ -37,11 +38,11 @@
  },
  "links": {
   "scenario_tags": [
-   "LLM聚合",
-   "提供方适配",
-   "OpenAI兼容API",
-   "媒体生成",
-   "MCP服务器"
+   "LLM 网关",
+   "多提供商聚合",
+   "OpenAI 兼容 API",
+   "MCP",
+   "自托管"
   ],
   "domain": "Agent 开发",
   "alternative_to": [],
@@ -52,7 +53,7 @@
   ]
  },
  "intel": {
-  "maintainer_type": "team",
+  "maintainer_type": "individual",
   "zh_origin": false,
   "zh_origin_signals": []
  },
@@ -61,13 +62,19 @@
   "evidence": [
    "L17: GPT4Free (g4f) is a community-driven project that aggregates multiple accessible providers and interfaces to make workin",
    "L27: - FastAPI-based OpenAI-compatible API (Interference API).",
-   "L251: - GPT4Free integrates many providers including (but not limited to) OpenAI-compatible endpoints, PerplexityLabs, Gemini,"
+   "L296: ## Inference API (OpenAI‑compatible)"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -76,15 +83,13 @@
     "term": "anthropic",
     "rel": "mention",
     "lines": [
-     150,
-     174,
-     176
+     173,
+     197
     ],
-    "note": "以 Claude 桌面客户端配置示例出现，未列为接入提供方",
+    "note": "Claude 作为 MCP 服务器可接入的 AI 助手被提及，非专门适配的模型提供商",
     "quotes": [
      "GPT4Free now includes a Model Context Protocol (MCP) server that allows AI assistants like Claude to access web search, ",
-     "**Configuring with Claude Desktop:**",
-     "Add to your `claude_desktop_config.json`:"
+     "**Configuring with Claude Desktop:**"
     ]
    }
   ],
@@ -93,8 +98,8 @@
     "term": "pypi",
     "rel": "support",
     "lines": [
-     102,
-     104
+     125,
+     127
     ],
     "quotes": [
      "Install from PyPI (recommended):",
@@ -105,34 +110,26 @@
     "term": "docker",
     "rel": "support",
     "lines": [
-     60,
-     64
+     63,
+     65,
+     73
     ],
     "quotes": [
+     "3. Pull image:",
      "   docker pull hlohaus789/g4f",
-     "   docker run -p 8080:8080 -p 7900:7900 \\"
-    ]
-   },
-   {
-    "term": "binary",
-    "rel": "support",
-    "lines": [
-     90,
-     92
-    ],
-    "quotes": [
-     "1. Download the release artifact `g4f.exe.zip` from:",
-     "2. Unzip and run `g4f.exe`."
+     "     hlohaus789/g4f:latest"
     ]
    },
    {
     "term": "source",
     "rel": "support",
     "lines": [
-     112,
-     115
+     133,
+     135,
+     138
     ],
     "quotes": [
+     "Install from source:",
      "git clone https://github.com/xtekky/gpt4free.git",
      "pip install -e ."
     ]
@@ -144,22 +141,11 @@
     "term": "LangChain",
     "rel": "mention",
     "lines": [
-     284
+     307
     ],
-    "note": "集成文档中提及",
+    "note": "集成文档中提及，非替代/竞品关系",
     "quotes": [
      "- Integrations (LangChain, PydanticAI): docs/pydantic_ai.md"
-    ]
-   },
-   {
-    "term": "ChatGPT",
-    "rel": "mention",
-    "lines": [
-     309
-    ],
-    "note": "致谢来源仓库名，非竞品对比",
-    "quotes": [
-     " - `har_file.py` — input from xqdoo00o/ChatGPT-to-API"
     ]
    }
   ],

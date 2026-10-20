@@ -1,27 +1,26 @@
 {
  "fn": "github/spec-kit",
- "sha": "ddfcabf56d8c",
+ "sha": "6ac2b5412b02",
  "source": "readme",
  "identity": {
-  "one_liner": "为 AI 编码代理提供结构化流程与模板的工具包",
-  "review": "开源工具包，为 AI 编码代理提供结构化流程、可复用模板与文档化产物。内置规格驱动开发（SDD）流程，附带可选的 bug 修复与想法评估扩展，并提供扩展、预设、工作流、捆绑包、目录等组合机制用于定制或自建流程。以 CLI 形式安装，依赖 Python 3.11+ 与 uv，在代理聊天中以 /speckit-* 技能形式调用。MIT 许可。",
+  "one_liner": "给 AI 编码 agent 提供结构化流程与模板的工具包",
+  "review": "开源工具包，为 AI 编码 agent 提供结构化流程、可复用模板与产出文档。内置 Spec-Driven Development（constitution → specify → plan → tasks → implement → converge），另提供可选扩展：bug 修复（assess/fix/test，产出 verified/partial/failed 结论）与想法评估（五步流程，产出 go/clarify/kill 决策）。通过 Integration 机制连接或切换编码 agent，支持扩展、preset、workflow、bundle 与社区/私有目录。使用需 Python 3.11+ 与 uv，以 specify-cli 安装，在 Linux/macOS/Windows 运行。",
   "highlights": [
    "内置 SDD 流程：specify → plan → tasks → implement → converge",
-   "扩展、预设、工作流、捆绑包等组合机制可定制或自建流程",
-   "bug 修复与想法评估作为可选扩展按需安装",
-   "支持本地源与自托管目录，可离线或在防火墙后使用"
+   "可选扩展：bug 修复与证据驱动的想法评估",
+   "扩展/preset/workflow/bundle 与社区目录的组件化机制",
+   "通过 Integration 连接或切换不同 AI 编码 agent"
   ],
   "use_cases": [
-   "用规格驱动方式从需求到实现开发功能",
-   "按 assess→fix→test 流程让代理修复并验证 bug",
-   "写代码前评估一个想法是否值得投入",
-   "为团队定制专属开发流程"
+   "在写代码前先让 agent 生成规范、计划与任务清单",
+   "结构化地诊断、修复并验证 bug",
+   "评估一个想法是否值得投入，留下 go/kill 决策记录"
   ]
  },
  "filters": {
   "ai_role": "ai-ecosystem",
   "license_risk": "permissive",
-  "deploy": null,
+  "deploy": "library",
   "model_dep": null,
   "hardware": null,
   "install_friction": "low",
@@ -38,49 +37,75 @@
  },
  "links": {
   "scenario_tags": [
-   "开发流程",
-   "AI编码代理",
-   "规格驱动开发",
-   "工具包"
+   "Spec-Driven Development",
+   "AI编码agent",
+   "开发流程工具",
+   "提示工程/方法论"
   ],
-  "domain": "软件工程/开发工具",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "agent-framework",
+   "prompt-engineering"
+  ]
  },
  "intel": {
   "maintainer_type": "company",
-  "zh_origin": false,
-  "zh_origin_signals": []
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文翻译（L11）"
+  ]
  },
  "trust": {
-  "confidence": "high",
+  "confidence": "mid",
   "evidence": [
    "L15: Spec Kit is an open source toolkit that gives AI coding agents structured",
-   "L63: You need **Python 3.11+**, **uv**,",
-   "L84: below. Invoke each `/speckit-*` **skill in your agent's chat**, one at a time,"
+   "L65: and a supported AI coding agent on Linux, macOS, or Windows."
   ],
-  "xcheck": null,
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
   "providers": [],
-  "install": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     76
+    ],
+    "note": "版本比较来源，非安装命令本身",
+    "quotes": [
+     "latest version on PyPI, and if it's older,"
+    ]
+   }
+  ],
   "hardware": [],
   "products": [
    {
     "term": "GitHub Copilot",
     "rel": "mention",
     "lines": [
-     69,
-     73
+     70,
+     79
     ],
-    "note": "示例中作为集成的编码代理，非竞品对象",
+    "note": "示例中的 integration 目标，非替代/竞品",
     "quotes": [
      "specify init my-project --integration copilot",
      "The examples use **GitHub Copilot's default skills mode**. Replace `copilot` with"

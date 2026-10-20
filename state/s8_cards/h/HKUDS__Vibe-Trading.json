@@ -1,21 +1,20 @@
 {
  "fn": "HKUDS/Vibe-Trading",
- "sha": "e309c4739710",
+ "sha": "b639df1e44a8",
  "source": "readme",
  "identity": {
-  "one_liner": "个人量化交易 Agent：回测、实盘与研究一站式",
-  "review": "由 HKUDS 开发的个人交易 Agent，以 Python 包（vibe-trading-ai）分发，通过 FastAPI 后端与 React 前端提供 Web 界面。功能覆盖策略回测（Sortino、Monte Carlo、walk-forward 等指标）、实盘运行调度（决策会话、每日用量预算）、研究工作流（因子计算、SEC 文件、证据溯源 grounding gate）以及多渠道接入（Email、Slack、Discord、飞书、WeChat、WebSocket）。支持 18 家券商连接器与多市场数据（A 股、美港股、加密货币等），v0.1.16 起数字需经工具证据校验。",
+  "one_liner": "个人交易 AI Agent：一句话驱动投研、回测与实盘交易",
+  "review": "HKUDS 出品的个人量化交易代理，以单条命令为用户提供综合交易能力：覆盖因子研究、回测（含 Monte Carlo、风险指标）、模拟与实盘 runner、多券商/数据源读取（Futu、KIS、Robinhood、Eastmoney、Stooq、Binance 等）、组合导入与定期报告（Email PDF 可选 AES-256 加密）。技术栈为 Python/FastAPI/React，支持 MCP 工具接入 agent，模型端点可自定义，具备凭证脱敏与 grounding 校验机制。以 pip 包安装。",
   "highlights": [
-   "回测引擎输出 Sortino、turnover、Monte Carlo p 值等结构化指标并以 CSV 佐证",
-   "grounding gate 按数字角色（observed/derived/proposed/cited/count）校验模型输出与工具证据一致性",
-   "18 家券商连接器（含 KIS、Upbit、Toss Securities、Scalable Capital 等）与多市场数据源",
-   "Email/Slack/Discord/飞书/WeChat/WebSocket 等多渠道接入及定时报告（PDF 支持 AES-256 加密）"
+   "研究、回测与实盘 runner 一体的交易 agent",
+   "支持 MCP 与自定义模型端点接入",
+   "多市场/多券商数据读取与组合导入",
+   "定期报告支持 Email PDF（可选 AES-256 加密）"
   ],
   "use_cases": [
-   "用自然语言让 Agent 跑策略回测并出具带证据的报告",
-   "接入券商做实盘运行并设置每日模型用量预算",
-   "对 A 股/美港股/加密资产做因子研究与组合分析",
-   "通过飞书/Slack 等接收定时交易与研究报告"
+   "用对话让 agent 完成投研、回测与下单",
+   "跨市场（A 股/港美股/加密）组合管理与定期报告",
+   "为自有 agent 通过 MCP 接入交易能力"
   ]
  },
  "filters": {
@@ -39,15 +38,18 @@
  "links": {
   "scenario_tags": [
    "量化交易",
+   "AI Agent",
    "回测",
-   "多Agent",
-   "券商连接",
-   "金融研究"
+   "金融科技",
+   "MCP"
   ],
   "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
-  "ecosystem_compat": [],
+  "ecosystem_compat": [
+   "openrouter",
+   "anthropic"
+  ],
   "scenario_tags_v2": [
    "quant-finance"
   ]
@@ -56,33 +58,95 @@
   "maintainer_type": "university",
   "zh_origin": true,
   "zh_origin_signals": [
-   "HKUDS（香港大学数据科学实验室）",
-   "飞书/微信社区支持"
+   "多语言 README 含中文",
+   "A 股/北向/南向数据与京市路由等中国市场支持",
+   "飞书/微信渠道集成"
   ]
  },
  "trust": {
   "confidence": "mid",
   "evidence": [
    "L5:  Vibe-Trading: Your Personal Trading Agent",
-   "L33:  pip install vibe-trading-ai",
-   "L79: - **2026-09-29** 🚀 **v0.1.16 released** (Release notes, `pip install -U vibe-trading-ai`): 492 commits and 116 merged pu"
+   "L7:  One Command to Empower Your Agent with Comprehensive Trading Capabilities",
+   "L29:  API / MCP &nbsp;&middot;&nbsp;"
   ],
-  "xcheck": {
-   "install_missing": [
-    "pypi"
-   ]
-  },
+  "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
-  "providers": [],
-  "install": [],
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "compat",
+    "lines": [
+     85,
+     99
+    ],
+    "note": "窗外行：作为可选模型接入通道出现",
+    "quotes": [
+     "- **2026-09-27** 🛠️ **Verifiable run cards and safer research**: Run cards now show hashed backtest execution records an",
+     "- **2026-09-21** 🔌 **IM channels configured from the Web UI, and 24 alphas that emitted a value computed from a missing "
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     128
+    ],
+    "note": "窗外行：模型接入相关提及",
+    "quotes": [
+     "- **2026-09-04** 🩺 **Every Claude 5 run failed on the first request, and a halted position was marked back to what you p"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     14,
+     33
+    ],
+    "quotes": [
+     " PyPI",
+     " pip install vibe-trading-ai"
+    ]
+   }
+  ],
   "hardware": [],
-  "products": [],
+  "products": [
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     83
+    ],
+    "quotes": [
+     "- **2026-09-28** 🛠️ **Source health and connector transparency**: scheduled public-source canaries report outages and da"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     105
+    ],
+    "quotes": [
+     "- **2026-09-18** ✂️ **A redacted answer that lost its row numbers, and one starved order counted as twenty-six**: when t"
+    ]
+   }
+  ],
   "dual_license": {
    "flag": false,
    "lines": [],

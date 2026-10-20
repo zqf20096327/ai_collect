@@ -1,48 +1,51 @@
 {
  "fn": "debpalash/VoiceStudio",
- "sha": "435f07bd08ac",
+ "sha": "49da35d42ba1",
  "source": "readme",
  "identity": {
-  "one_liner": "本地运行的开源语音工作台：克隆、配音、转写与有声书制作",
-  "review": "基于 Electron 的桌面语音工作台，默认引擎为 k2-fsa/OmniVoice，支持语音克隆、语音设计、视频配音、听写、转写与有声书批量制作，覆盖 646 种语言。本地工作流在用户硬件上运行，按 GPU/CPU 提供不同加速方式（CUDA、Metal、CPU），并可安装管理本地语音模型；提供本地 API 与 MCP 接入供 agent 调用，支持配方与监视文件夹。Tauri 桌面壳已移除，Electron 为唯一桌面应用与 Web UI。",
+  "one_liner": "本地优先的开源语音工作站：克隆、配音、转写、有声书",
+  "review": "Electron 桌面应用，聚合语音克隆、语音设计、视频配音、听写、转写与有声书创作等功能，宣称支持 646 种语言。默认引擎为 k2-fpa/OmniVoice（原文 k2-fsa），可切换其他引擎并管理本地语音模型。本地工作流在用户硬件上运行，远程服务为可选；提供本地 API 与 MCP 供 agent 接入。分发方式含一键安装脚本（macOS/Linux/Windows）与 Releases 安装包（.dmg/.exe/.AppImage/.deb），也可从源码运行（Node.js 22+/Bun/Rust）。AGPL-3.0 许可。",
   "highlights": [
-   "语音克隆、语音设计、视频配音、听写、转写、有声书制作，支持 646 种语言",
-   "CUDA / Metal (MPS) / CPU 三类硬件加速路径，无独显也可用（较慢）",
-   "本地 API 与 MCP 接口，支持 agent 集成与监视文件夹等自动化",
-   "一键安装脚本覆盖 macOS/Linux/Windows，也可从源码运行"
+   "语音克隆、语音设计、视频配音、转写、听写与有声书创作集成于一个桌面应用",
+   "本地优先：工作流在本机硬件运行，远程服务可选",
+   "提供本地 API 与 MCP 接入 agent，可复用配方与监视文件夹",
+   "默认引擎 k2-fsa/OmniVoice，支持安装管理多个本地语音模型"
   ],
   "use_cases": [
-   "克隆自己的声音并生成语音或有声书",
-   "给视频做带时间轴的本地配音",
-   "在没有云端服务依赖的环境下做语音转写与听写",
-   "让编码 agent 按文档在本机安装并验证语音工具链"
+   "用参考录音克隆声音并生成配音或旁白",
+   "为视频生成带时间轴的多语言配音",
+   "在无 GPU 或 Apple Silicon 设备上本地完成转写与听写"
   ]
  },
  "filters": {
-  "ai_role": "ai-enhanced",
+  "ai_role": "ai-native",
   "license_risk": "dual",
   "deploy": "desktop",
   "model_dep": null,
-  "hardware": "cpu-ok",
+  "hardware": null,
   "install_friction": "medium",
-  "maturity": null
+  "maturity": "idea"
  },
  "eval": {
   "target_user": "消费者",
   "paper_url": null,
   "demo_url": null,
   "self_declared_early": {
-   "flag": false,
-   "lines": []
+   "flag": true,
+   "lines": [
+    75,
+    117
+   ],
+   "note": "Windows on ARM 标注 Experimental；手机伴侣应用为 preview"
   }
  },
  "links": {
   "scenario_tags": [
    "语音克隆",
-   "文字转语音",
+   "TTS/STT",
    "视频配音",
-   "语音转写",
-   "本地推理"
+   "本地优先",
+   "桌面应用"
   ],
   "domain": "内容生成",
   "alternative_to": [],
@@ -57,21 +60,31 @@
   "maintainer_type": "individual",
   "zh_origin": true,
   "zh_origin_signals": [
-   "README 提供简体中文与日文文档入口 (L13-L14)"
+   "README 提供简体中文版本链接"
   ]
  },
  "trust": {
-  "confidence": "high",
+  "confidence": "mid",
   "evidence": [
-   "L30: Start with **VoiceStudio** (default, powered by k2-fsa/OmniVoice), or choose another engine. Features & engine catalog.",
-   "L72: |NVIDIA GPU (Windows / Linux)|CUDA acceleration|",
-   "L108: > **Electron is the only desktop app and web UI.** Version 0.5.3 was the final Tauri release. Existing Tauri users must "
+   "L6:  Open-source voice cloning, voice design, video dubbing, dictation, transcription & audiobook creation in 646 languages.",
+   "L27: |Clone a voice or design your own|Dub videos with timed speech|Local API & MCP for agents|",
+   "L30: Start with **VoiceStudio** (default, powered by k2-fsa/OmniVoice), or choose another engine. Features & engine catalog."
   ],
-  "xcheck": null,
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -82,7 +95,7 @@
     "lines": [
      82
     ],
-    "note": "仅作为可粘贴安装提示的 coding agent 举例之一",
+    "note": "安装提示中列举 Claude Code 等 agent 工具，非接入 Anthropic API",
     "quotes": [
      "Paste into your coding agent (Claude Code, Codex, Cursor, …):"
     ]
@@ -93,24 +106,20 @@
     "term": "binary",
     "rel": "support",
     "lines": [
-     53,
-     59,
      66
     ],
     "quotes": [
-     "# Latest Electron release",
-     "On Windows, run `irm https://voicestudio.sh/install | iex` in PowerShell.",
      "Or download from Releases (macOS `.dmg`, Windows `.exe`, Linux `.AppImage` or `.deb`) and follow your platform guide:"
     ]
    },
    {
     "term": "npm",
-    "rel": "support",
+    "rel": "mention",
     "lines": [
      91,
-     119
+     120
     ],
-    "note": "npx skills add 作为 agent skills 安装途径",
+    "note": "npx skills add 为 agent 技能安装，非本产品主体安装途径",
     "quotes": [
      "can also run `npx skills add debpalash/VoiceStudio`.",
      "Agent skills: `npx skills add debpalash/VoiceStudio` — choose **voicestudio** for audio workflows or **voicestudio-maint"
@@ -120,34 +129,14 @@
     "term": "source",
     "rel": "support",
     "lines": [
-     96,
-     98,
-     99,
-     100
+     96
     ],
     "quotes": [
-     "git clone https://github.com/debpalash/VoiceStudio.git",
-     "bun install",
-     "bun run setup:api  # prepare Python dependencies before starting Electron",
-     "bun run dev"
+     "git clone https://github.com/debpalash/VoiceStudio.git"
     ]
    }
   ],
-  "hardware": [
-   {
-    "term": "CPU only",
-    "rel": "support",
-    "lines": [
-     74,
-     75
-    ],
-    "note": "硬件支持表列明无独显时 CPU 可用、Windows on ARM 仅 CPU 实验性",
-    "quotes": [
-     "|No dedicated GPU (Intel/AMD integrated graphics, older PCs)|Fully usable on the CPU, slower; setup installs the small C",
-     "|Windows on ARM (Snapdragon X etc.)|**Experimental**, validation pending: native ARM64 app, x64 Python backend under emu"
-    ]
-   }
-  ],
+  "hardware": [],
   "products": [
    {
     "term": "Claude Code",
@@ -155,6 +144,7 @@
     "lines": [
      82
     ],
+    "note": "安装提示粘贴对象，非竞品",
     "quotes": [
      "Paste into your coding agent (Claude Code, Codex, Cursor, …):"
     ]
@@ -165,6 +155,7 @@
     "lines": [
      82
     ],
+    "note": "安装提示粘贴对象，非竞品",
     "quotes": [
      "Paste into your coding agent (Claude Code, Codex, Cursor, …):"
     ]
@@ -173,9 +164,9 @@
   "dual_license": {
    "flag": true,
    "lines": [
-    124
+    125
    ],
-   "note": "应用为 AGPL-3.0，付费应用许可与模型权重/声音等权利分离",
+   "note": "提及 paid app licence 与 AGPL 应用许可并存",
    "quotes": [
     "AGPL-3.0 covers the application, including commercial use under its conditions. Model weights, tokenizers, voices and ge"
    ]
@@ -185,7 +176,7 @@
    "lines": [
     108
    ],
-   "note": "Tauri 桌面壳已弃用并移除，0.5.3 为最终 Tauri 版本"
+   "note": "Tauri 版本已停止，0.5.3 为最终 Tauri 发布，遗留入口已移除"
   }
  }
 }

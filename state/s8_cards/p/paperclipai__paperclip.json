@@ -1,21 +1,21 @@
 {
  "fn": "paperclipai/paperclip",
- "sha": "a4e05af0e979",
+ "sha": "ad138a24fb9e",
  "source": "readme",
  "identity": {
-  "one_liner": "给团队的 AI 代理编排控制台：目标、预算、治理一体化",
-  "review": "一个 Node.js 服务器加 React UI，用于编排一组 AI 代理执行业务工作：用户定义目标、按角色组建代理团队（org chart）、审批与运行任务，并在仪表板中跟踪工作与成本。核心机制包括心跳唤醒、原子任务领取与执行锁、预算阈值与硬停、审批门与配置回滚、技能注入与定时例程。可接入多种代理运行时（Claude Code、Codex、Cursor、Gemini CLI 等），支持多组织隔离与模板导出导入。面向需要协调多个代理并控制成本与权限的团队。",
+  "one_liner": "开源的团队级 AI agent 编排与治理平台",
+  "review": "Node.js 服务端 + React UI 的控制平面，用于组织和管理多个 AI agent 团队：接入自带 agent（OpenClaw、Claude Code、Codex、Cursor、Gemini CLI 等），分配任务与目标，通过心跳队列驱动执行，并提供任务线程、组织架构与权限、审批与治理门禁、成本与预算控制、定时例程、技能工作室及多组织隔离等能力。面向希望让多个 agent 长期自主运行并同时保留审计与人工介入的团队。",
   "highlights": [
-   "跨运行时接入任意代理：能接收心跳即可入编（适配器/HTTP/自定义进程扩展）",
-   "组织级治理：审批门、权限边界、配置版本化与回滚",
-   "预算与成本控制：按公司/代理/项目维度跟踪花费、阈值告警、硬停",
-   "任务系统：原子任务领取、阻塞依赖、会话持久化、定时例程（cron/webhook/API 触发）"
+   "跨运行时接入任意可接收心跳的 agent，统一组织架构管理",
+   "心跳执行队列：任务唤醒、预算检查、密钥注入、技能加载与受限恢复",
+   "公司/agent/项目多级预算、阈值告警与硬停机制",
+   "审批门禁、配置版本化回滚与组织边界隔离"
   ],
   "use_cases": [
-   "把多个编码/办公代理组编成一个有角色和汇报线的虚拟团队",
-   "给代理团队设预算并自动在超限时暂停工作",
-   "用定时例程代替手动触发重复性代理任务",
-   "从手机或仪表板审批、审计 24/7 自主运行的代理工作"
+   "把多个编码或业务 agent 编成团队，围绕一个业务目标分工协作",
+   "追踪 20 个并发 agent 终端的工作状态与开销",
+   "为周期性任务（客服、报告等）设置定时例程并自动派发给 agent",
+   "对 agent 的操作设置审批与权限边界，保留完整审计记录"
   ]
  },
  "filters": {
@@ -25,30 +25,36 @@
   "model_dep": null,
   "hardware": null,
   "install_friction": "low",
-  "maturity": null
+  "maturity": "idea"
  },
  "eval": {
-  "target_user": "企业",
+  "target_user": "开发者",
   "paper_url": null,
   "demo_url": null,
   "self_declared_early": {
-   "flag": false,
-   "lines": []
+   "flag": true,
+   "lines": [
+    126
+   ]
   }
  },
  "links": {
   "scenario_tags": [
    "agent编排",
-   "AI治理",
-   "成本控制",
-   "多代理协作"
+   "多agent协作",
+   "AI治理/成本控制",
+   "任务管理",
+   "控制平面"
   ],
   "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
-  "ecosystem_compat": [],
+  "ecosystem_compat": [
+   "openrouter"
+  ],
   "scenario_tags_v2": [
-   "multi-agent"
+   "multi-agent",
+   "agent-framework"
   ]
  },
  "intel": {
@@ -59,15 +65,21 @@
  "trust": {
   "confidence": "high",
   "evidence": [
-   "L23: Open-source orchestration for teams of AI agents.",
    "L27: Paperclip is a Node.js server and React UI that orchestrates a team of AI agents to run a business. Bring your own agent",
-   "L77: |**Agentic OS** — The infrastructure that makes the work run.|IT & platform|Cross-provider runtime: any model, any agent"
+   "L54: Custom processes, HTTP endpoints, and external adapter packages extend the roster. See the adapter overview for setup an",
+   "L156: Paperclip is a full control plane, not a wrapper. Before you build any of this yourself, know that it already exists:"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -77,18 +89,12 @@
     "rel": "mention",
     "lines": [
      41,
-     59,
-     60,
-     132,
-     137
+     59
     ],
-    "note": "以 Claude Code/Claude 代理运行时形式出现，非模型供应商接入声明",
+    "note": "Claude Code 作为被管理的 agent 出现，非专门接入 Anthropic API",
     "quotes": [
      " Claude Code Claude Code",
-     "- ✅ You **coordinate many different agents** (OpenClaw, Codex, Claude, Cursor) toward a common goal",
-     "- ✅ You have **20 simultaneous Claude Code terminals** open and lose track of what everyone is doing",
-     "|❌ You have 20 Claude Code tabs open and can't track which one does what. On reboot you lose everything.|✅ Tasks are tic",
-     "|❌ You have an idea, you have to find your repo, fire up Claude Code, keep a tab open, and babysit it.|✅ Add a task in P"
+     "- ✅ You **coordinate many different agents** (OpenClaw, Codex, Claude, Cursor) toward a common goal"
     ]
    },
    {
@@ -97,19 +103,19 @@
     "lines": [
      49
     ],
-    "note": "Grok Build 作为可用代理运行时列出",
+    "note": "Grok Build 作为可接入 agent 被列举",
     "quotes": [
      " Grok Build Grok Build"
     ]
    },
    {
     "term": "openrouter",
-    "rel": "mention",
+    "rel": "compat",
     "lines": [
      229,
      231
     ],
-    "note": "窗外候选行，README 架构/运行时语境",
+    "note": "窗外安装/运行章节提及",
     "quotes": [
      "OPENROUTER_API_KEY=... npx paperclipai test-drive \\",
      "  --model openrouter/anthropic/claude-sonnet-4.5"
@@ -123,14 +129,12 @@
     "lines": [
      215,
      227,
-     228,
-     229
+     228
     ],
     "quotes": [
      "npx paperclipai@latest onboard --yes",
      "ANTHROPIC_API_KEY=... npx paperclipai test-drive",
-     "OPENAI_API_KEY=... npx paperclipai test-drive --harness codex",
-     "OPENROUTER_API_KEY=... npx paperclipai test-drive \\"
+     "OPENAI_API_KEY=... npx paperclipai test-drive --harness codex"
     ]
    },
    {
@@ -151,17 +155,11 @@
     "rel": "mention",
     "lines": [
      41,
-     60,
-     132,
-     137,
      169
     ],
-    "note": "被编排的代理运行时，非替代/竞品对象",
+    "note": "被接入管理的 agent 运行时",
     "quotes": [
      " Claude Code Claude Code",
-     "- ✅ You have **20 simultaneous Claude Code terminals** open and lose track of what everyone is doing",
-     "|❌ You have 20 Claude Code tabs open and can't track which one does what. On reboot you lose everything.|✅ Tasks are tic",
-     "|❌ You have an idea, you have to find your repo, fire up Claude Code, keep a tab open, and babysit it.|✅ Add a task in P",
      "**Org Chart & Agents** — Agents have roles, titles, reporting lines, permissions, and budgets. Adapter examples match th"
     ]
    },
@@ -170,12 +168,11 @@
     "rel": "mention",
     "lines": [
      43,
-     59,
      169
     ],
+    "note": "被接入管理的 agent 运行时",
     "quotes": [
      " Cursor and Cursor Cloud Cursor + Cloud",
-     "- ✅ You **coordinate many different agents** (OpenClaw, Codex, Claude, Cursor) toward a common goal",
      "**Org Chart & Agents** — Agents have roles, titles, reporting lines, permissions, and budgets. Adapter examples match th"
     ]
    },
@@ -185,6 +182,7 @@
     "lines": [
      50
     ],
+    "note": "Kimi Code 作为可接入 agent 被列举",
     "quotes": [
      " Kimi Code Kimi Code"
     ]

@@ -1,0 +1,168 @@
+{
+ "fn": "run-llama/llama_index",
+ "sha": "88ce08edabec",
+ "source": "readme",
+ "identity": {
+  "one_liner": "构建 LLM/Agent 应用的开源数据框架（RAG 工具集）",
+  "review": "LlamaIndex 是一个帮助开发者构建 LLM 应用与 agentic 应用的开源数据框架：提供数据连接器（APIs、PDFs、docs、SQL 等）接入私有数据，以索引/图结构组织数据，并给出检索/查询接口，使 LLM 能基于私有数据生成知识增强输出。采用核心包加 300+ 集成插件的架构，可搭配任意 LLM、嵌入模型与向量库。高层 API 可 5 行代码完成数据摄取与查询，底层 API 支持定制各模块。维护方公司当前主要重心已转向 LlamaParse 平台。",
+  "highlights": [
+   "数据连接器摄取 APIs/PDFs/docs/SQL 等多种数据源",
+   "索引/图结构组织数据，提供检索与知识增强查询接口",
+   "300+ 集成包，可搭配自选 LLM、嵌入与向量库提供商",
+   "核心包内置 nltk 与 tiktoken 缓存，适应受限磁盘环境"
+  ],
+  "use_cases": [
+   "把企业私有文档接入 LLM 做 RAG 问答",
+   "用 Ollama 或 HuggingFace 模型本地构建向量索引与查询",
+   "定制数据连接器、检索器、查询引擎等模块构建应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG",
+   "Agent框架",
+   "LLM应用构建",
+   "数据摄取/索引"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "rag",
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L82: That's where **LlamaIndex** comes in. LlamaIndex is a \"data framework\" to help you build LLM apps. It provides the follo",
+   "L84: - Offers **data connectors** to ingest your existing data sources and data formats (APIs, PDFs, docs, SQL, etc.).",
+   "L86: - Provides an **advanced retrieval/query interface over your data**: Feed in any LLM input prompt, get back retrieved co"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     112,
+     127,
+     132
+    ],
+    "note": "作为可选 LLM 后端的集成包与示例",
+    "quotes": [
+     "pip install llama-index-llms-ollama",
+     "To build a simple vector store index using non-OpenAI LLMs, e.g. LLMs hosted through Ollama:",
+     "from llama_index.llms.ollama import Ollama"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     3,
+     110,
+     111,
+     112,
+     113
+    ],
+    "quotes": [
+     "PyPI - Downloads",
+     "pip install llama-index-core",
+     "pip install llama-index-llms-openai",
+     "pip install llama-index-llms-ollama",
+     "pip install llama-index-embeddings-huggingface"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [],
+   "note": "L15 称 OSS 框架仍可用但公司重心转向 LlamaParse，未声明弃用"
+  },
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     87
+    ],
+    "note": "作为可对接的外部应用框架被列举",
+    "quotes": [
+     "- Allows easy integrations with your outer application framework (e.g. with LangChain, Flask, Docker, ChatGPT, or anythi"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     87
+    ],
+    "note": "作为可配合集成的外部框架被列举",
+    "quotes": [
+     "- Allows easy integrations with your outer application framework (e.g. with LangChain, Flask, Docker, ChatGPT, or anythi"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     113,
+     131
+    ],
+    "note": "作为嵌入模型集成包被使用",
+    "quotes": [
+     "pip install llama-index-embeddings-huggingface",
+     "from llama_index.embeddings.huggingface import HuggingFaceEmbedding"
+    ]
+   }
+  ]
+ }
+}

@@ -1,48 +1,50 @@
 {
  "fn": "meilisearch/meilisearch",
- "sha": "61bb05221049",
+ "sha": "25bf1ffe0c7b",
  "source": "readme",
  "identity": {
-  "one_liner": "为网站与应用提供 AI 混合搜索的搜索引擎 API",
-  "review": "开源搜索引擎，提供 RESTful API 与多语言 SDK，供应用与网站集成搜索功能。核心机制包括语义与全文结合的混合搜索、输入即搜（50 毫秒内返回）、容错、过滤与分面、地理搜索、多语言支持（含中文/日文优化）与多租户。支持自然语言对话式搜索并生成基于检索结果的 AI 回答，可与 LangChain 及 MCP 配合。分社区版（MIT）与企业版（商业许可/BSL 1.1，生产环境需商业协议），官方提供 Cloud 托管服务，并默认收集可关闭的匿名遥测数据。",
+  "one_liner": "面向应用与网站的开源搜索引擎，提供全文/语义/混合搜索 API",
+  "review": "开源搜索引擎（MIT，Community Edition），以 RESTful API 提供全文、语义与混合搜索，支持容错、过滤分面、地理搜索、多租户、排序与同义词。AI 相关能力包括基于索引数据的对话式搜索（AI 生成回答）、原生 MCP 服务器（/mcp，实验性）、LangChain 向量存储集成。运行方式包括托管云服务与自托管（Docker、二进制、Homebrew、APT）；另有需商业协议的 Enterprise Edition（分片等）。由法国公司 Meili 开发。",
   "highlights": [
-   "混合搜索：语义搜索与全文搜索结合",
-   "对话式搜索：基于检索结果生成 AI 回答",
-   "支持地理搜索、分面过滤、同义词与多租户",
-   "开箱支持 LangChain 与 Model Context Protocol"
+   "全文/语义/混合搜索，支持容错与 50 毫秒内搜索即输即显",
+   "原生 MCP 服务器（实验性）与 LangChain 向量存储集成",
+   "对话式搜索：基于索引数据生成自然语言回答",
+   "优化支持中文、日文等多种语言的分词"
   ],
   "use_cases": [
-   "给电商网站加带过滤分面的商品搜索",
-   "为媒体平台做语义混合搜索找影片",
-   "让用户用自然语言提问并获得基于站内内容的回答",
-   "多租户 SaaS 中的联系人/客户搜索"
+   "为网站或应用接入带容错的站内搜索",
+   "电商场景做多租户、分面过滤搜索",
+   "作为 RAG / AI agent 的检索后端（MCP、LangChain）",
+   "为 LLM 与编码代理提供文档（llms.txt）"
   ]
  },
  "filters": {
   "ai_role": "ai-enhanced",
-  "license_risk": "dual",
+  "license_risk": "none",
   "deploy": "desktop",
   "model_dep": null,
   "hardware": null,
   "install_friction": "low",
-  "maturity": null
+  "maturity": "idea"
  },
  "eval": {
   "target_user": "开发者",
   "paper_url": null,
   "demo_url": null,
   "self_declared_early": {
-   "flag": false,
-   "lines": []
+   "flag": true,
+   "lines": [
+    130
+   ]
   }
  },
  "links": {
   "scenario_tags": [
    "搜索引擎",
-   "全文检索",
-   "混合搜索",
-   "RAG",
-   "API服务"
+   "混合检索",
+   "RAG后端",
+   "MCP",
+   "数据库"
   ],
   "domain": "知识与检索",
   "alternative_to": [],
@@ -54,46 +56,71 @@
  },
  "intel": {
   "maintainer_type": "company",
-  "zh_origin": true,
-  "zh_origin_signals": [
-   "对中文语言的优化支持（L52）"
-  ]
+  "zh_origin": false,
+  "zh_origin_signals": []
  },
  "trust": {
   "confidence": "high",
   "evidence": [
-   "L45: - **Hybrid search:** Combine the best of both semantic & full-text search to get the most relevant results",
-   "L57: - **Conversational search:** let users ask questions in natural language and get AI-generated answers grounded in your s",
-   "L62: - **AI-ready:** works out of the box with LangChain and the Model Context Protocol (MCP)"
+   "L22: Meilisearch is a search engine for fast, relevant full-text, semantic, and hybrid search. The easiest way to get started",
+   "L87: - **Hybrid search:** Combine the best of both semantic & full-text search to get the most relevant results",
+   "L99: - **Conversational search:** let users ask questions in natural language and get AI-generated answers grounded in your s"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
   "providers": [],
   "install": [
    {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     50
+    ],
+    "quotes": [
+     "docker run -it --rm \\"
+    ]
+   },
+   {
     "term": "binary",
     "rel": "support",
     "lines": [
-     150
+     58,
+     224
     ],
-    "note": "发布页提供二进制文件",
     "quotes": [
+     "curl -L https://install.meilisearch.com | sh",
      "Meilisearch releases and their associated binaries are available on the project's releases page."
     ]
    },
    {
-    "term": "cargo",
-    "rel": "none",
+    "term": "brew",
+    "rel": "support",
     "lines": [
-     154
+     105
     ],
-    "note": "README 明确本仓库 crates 未发布到 crates.io，非安装途径",
+    "quotes": [
+     "- **Easy to deploy and maintain:** start in minutes on Meilisearch Cloud with no servers to manage, or self-host a singl"
+    ]
+   },
+   {
+    "term": "cargo",
+    "rel": "mention",
+    "lines": [
+     228
+    ],
+    "note": "仓库内 crates 未发布到 crates.io",
     "quotes": [
      "Differently from the binaries, crates in this repository are not currently available on crates.io and do not follow SemV"
     ]
@@ -105,25 +132,20 @@
     "term": "LangChain",
     "rel": "mention",
     "lines": [
-     62
+     165
     ],
-    "note": "声称为可配合的集成框架，非替代/竞品",
     "quotes": [
-     "- **AI-ready:** works out of the box with LangChain and the Model Context Protocol (MCP)"
+     "Yes. Meilisearch supports hybrid and semantic search, conversational search, a native MCP server, and LangChain. See AI "
     ]
    }
   ],
   "dual_license": {
    "flag": true,
    "lines": [
-    95,
-    99,
-    109,
-    110
+    183,
+    184
    ],
    "quotes": [
-    "Meilisearch is available in two editions:",
-    "- Fully open source under the MIT license",
     "- Governed by a commercial license or the Business Source License 1.1",
     "- Not allowed in production without a commercial agreement with Meilisearch."
    ]

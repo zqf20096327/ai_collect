@@ -1,28 +1,27 @@
 {
  "fn": "jnMetaCode/agency-agents-zh",
- "sha": "5c98b35252ee",
+ "sha": "c260fab05ab0",
  "source": "readme",
  "identity": {
-  "one_liner": "面向 AI 编程工具用户的即插即用专家角色库（含中国市场化原创智能体）",
-  "review": "agency-agents 的中文社区版，收录 301 个 AI 专家角色定义，覆盖经营、工程、设计、营销、金融等 20 个部门，每个智能体含身份定义、工作流程与交付物。在英文上游翻译（235 个）之外新增 66 个中国市场原创智能体（小红书/抖音/微信/飞书/钉钉运营、Qt 上位机、机械设计等）。支持 20 种 AI 编程工具，通过脚本一键安装或手动复制到对应目录；配套 agency-orchestrator 编排器支持多智能体按 DAG 协作，另有桌面客户端与在线浏览页。MIT 协议。",
+  "one_liner": "328 个即插即用 AI 专家角色库，覆盖 22 个部门、支持 20 种工具",
+  "review": "AI 智能体角色定义的中文策展仓库：收录 328 个专家角色（261 个上游英文版翻译 + 67 个中国市场原创，如小红书/抖音/微信/飞书/钉钉运营、Qt 上位机、机械设计等），每个角色含独立人设、工作流程与交付物定义。提供 install.sh/convert.sh 脚本一键安装到 Claude Code、Copilot 等 20 种 AI 编程工具，可手动复制或作为提示词参考；配套编排器 agency-orchestrator（npm 安装）可按 DAG 让多专家协作，另有桌面客户端与在线浏览站点。",
   "highlights": [
-   "301 个智能体角色，含 66 个中国市场原创（⭐ 标记）",
-   "支持 20 种 AI 编程工具，install.sh 一键安装，其他工具经 convert.sh 转换格式",
-   "OpenClaw 集成：拆分为 SOUL.md/AGENTS.md/IDENTITY.md 三文件",
-   "配套 agency-orchestrator 编排器：DAG 并行、断点续跑、npm 全局安装"
+   "328 个角色定义，按工程/设计/营销等 22 个部门组织",
+   "67 个中国市场原创智能体（小红书/抖音/企微/飞书/钉钉等）",
+   "install.sh 自动检测并一键安装到 20 种 AI 编程工具",
+   "配套 agency-orchestrator 编排器，一句话让多专家按 DAG 协作"
   ],
   "use_cases": [
-   "把小红书/抖音等运营专家角色装进 Claude Code 或 Cursor 做内容策划",
-   "用编排器让 CEO/CTO/CMO 等多个角色从不同视角过同一议题",
-   "复制工程部角色提示词作为安全审查、RAG 管线等任务的参考模板",
-   "在 OpenClaw 网关中挂载角色实现多智能体协作"
+   "给我的 AI 编程工具装一批现成的专家角色，用自然语言激活",
+   "国内平台运营与垂直领域（工业上位机、机械设计等）找对应专家",
+   "通过编排器把多位专家组进同一工作流过同一个议题"
   ]
  },
  "filters": {
-  "ai_role": "ai-ecosystem",
+  "ai_role": "ai-knowledge",
   "license_risk": "permissive",
   "deploy": "library",
-  "model_dep": "locked-api",
+  "model_dep": null,
   "hardware": null,
   "install_friction": "medium",
   "maturity": null
@@ -38,73 +37,73 @@
  },
  "links": {
   "scenario_tags": [
-   "AI角色库",
-   "agent-definitions",
-   "提示词模板",
-   "AI编程工具",
-   "中国市场运营"
+   "提示词/角色库",
+   "多智能体协作",
+   "中文本地化",
+   "AI编程工具配置"
   ],
   "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
-  "ecosystem_compat": [
-   "anthropic"
-  ],
+  "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "prompt-engineering",
-   "multi-agent"
+   "multi-agent",
+   "prompt-engineering"
   ]
  },
  "intel": {
-  "maintainer_type": "team",
+  "maintainer_type": "individual",
   "zh_origin": true,
   "zh_origin_signals": [
-   "全中文 README",
-   "66 个中国市场原创智能体（小红书/抖音/微信/飞书/钉钉等）",
-   "赞助商为国内模型聚合平台"
+   "简体中文 README（社区中文版）",
+   "67 个中国市场原创智能体（小红书/抖音/微信/飞书/钉钉/百度SEO等）",
+   "国内赞助商（胜算云/UCloud 星图）与 QQ 联系方式",
+   "配套中文免费课程"
   ]
  },
  "trust": {
   "confidence": "high",
   "evidence": [
-   "L5: > **301 个即插即用的 AI 专家角色** — 覆盖公司经营（CEO/CTO/CMO/COO/CPO/CFO）、工程、设计、营销、产品、游戏、安全、GIS、金融等 20 个部门。不是通用提示词模板，每个智能体都有独立的人设、专业流程和",
-   "L7: agency-agents 的中文社区版。在已有上游翻译的基础上，新增了 66 个中国市场原创智能体（小红书、抖音、微信、B站、飞书、钉钉等平台运营，以及跨境电商、政务ToG、医疗合规、Qt 工业上位机、机械设计、畜禽养殖档案核对等垂直领域",
-   "L91: npm install -g agency-orchestrator"
+   "L5: > **328 个即插即用的 AI 专家角色** — 覆盖公司经营（CEO/CTO/CMO/COO/CPO/CFO）、工程、设计、营销、产品、游戏、安全、GIS、金融等 22 个部门。不是通用提示词模板，每个智能体都有独立的人设、专业流程和",
+   "L110: 一套**开箱即用的 AI 角色库**。每个智能体都有明确的身份定义、关键规则、工作流程和交付物，安装到你的 AI 编程工具后用自然语言激活。",
+   "L122: ./scripts/install.sh"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
   "providers": [
    {
     "term": "anthropic",
-    "rel": "support",
+    "rel": "mention",
     "lines": [
      5,
-     18,
-     127
+     33
     ],
-    "note": "Claude Code 为直接支持的首选安装目标之一",
+    "note": "Claude Code/Claude 模型作为支持工具与赞助商聚合对象被提及，非专门接入",
     "quotes": [
-     "> **301 个即插即用的 AI 专家角色** — 覆盖公司经营（CEO/CTO/CMO/COO/CPO/CFO）、工程、设计、营销、产品、游戏、安全、GIS、金融等 20 个部门。不是通用提示词模板，每个智能体都有独立的人设、专业流程和",
-     "> 🧠 **新：让 Claude Code / Codex / Cursor / Gemini CLI 不再失忆** → engram：一条 `npx @jnmetacode/engram install`，自动记住每次会话问过什么、改了哪",
-     "> Claude Code 和 GitHub Copilot 可直接安装；其他工具需先运行 `./scripts/convert.sh` 转换格式。"
+     "> **328 个即插即用的 AI 专家角色** — 覆盖公司经营（CEO/CTO/CMO/COO/CPO/CFO）、工程、设计、营销、产品、游戏、安全、GIS、金融等 22 个部门。不是通用提示词模板，每个智能体都有独立的人设、专业流程和",
+     " APINEBULA — 企业级 AI 聚合平台，聚合 Claude / GPT / Gemini 满血模型，一个接口接入全球顶尖大模型，价格低至 1 折起"
     ]
    },
    {
     "term": "deepseek",
     "rel": "mention",
     "lines": [
-     26,
      84
     ],
-    "note": "课程主题与赞助商文案中提及，非接入关系",
+    "note": "赞助商平台聚合的模型之一",
     "quotes": [
-     "> 📖 **官方配套课程** → AI 专家团队实战（35 节，免费）：手把手把这仓 301 位专家用成一支团队——单兵点名、自动组队、一人公司全流程，桌面端零代码教学。另有 从零学会 AI 编程（182 节）＋ 从零构建 AI 智能体（4",
      "感谢 星图 AstraFlow 赞助本项目！星图 AstraFlow 由 UCloud 上市公司出品，聚合 MiniMax-H3、Seedance-2.5 等主流视频生成模型，文案生成与视频生成一个平台全搞定，无需多端注册、多处对接。支持 "
     ]
    },
@@ -112,13 +111,11 @@
     "term": "xai",
     "rel": "mention",
     "lines": [
-     49,
-     52
+     49
     ],
-    "note": "赞助商文案中提及 Grok，非接入关系",
+    "note": "Grok 作为赞助商聚合模型被提及",
     "quotes": [
-     " LanoX AI — 全球模型接入服务，聚合 GPT / Claude / Gemini / Qwen / Grok 及多模态模型，顶级模型低至官方价 1 折起",
-     "感谢 LanoX AI 赞助了本项目！LanoX AI 为开发者、团队与企业提供稳定、高性价比的全球模型接入服务，覆盖 GPT、Claude、Gemini、Qwen、Grok 等主流模型，以及 Seedance 2.0、GPT Image、"
+     " LanoX AI — 全球模型接入服务，聚合 GPT / Claude / Gemini / Qwen / Grok 及多模态模型，顶级模型低至官方价 1 折起"
     ]
    }
   ],
@@ -129,7 +126,7 @@
     "lines": [
      91
     ],
-    "note": "配套编排器 agency-orchestrator 的 npm 全局安装途径",
+    "note": "npm install -g agency-orchestrator，配套编排器的安装方式；仓库本体经脚本/手动复制安装",
     "quotes": [
      "npm install -g agency-orchestrator"
     ]
@@ -142,14 +139,12 @@
     "rel": "mention",
     "lines": [
      5,
-     127,
-     143
+     127
     ],
-    "note": "被支持的工具，非替代/竞品对象",
+    "note": "支持安装的目标工具",
     "quotes": [
-     "> **301 个即插即用的 AI 专家角色** — 覆盖公司经营（CEO/CTO/CMO/COO/CPO/CFO）、工程、设计、营销、产品、游戏、安全、GIS、金融等 20 个部门。不是通用提示词模板，每个智能体都有独立的人设、专业流程和",
-     "> Claude Code 和 GitHub Copilot 可直接安装；其他工具需先运行 `./scripts/convert.sh` 转换格式。",
-     "# Claude Code / GitHub Copilot（直接复制即可）"
+     "> **328 个即插即用的 AI 专家角色** — 覆盖公司经营（CEO/CTO/CMO/COO/CPO/CFO）、工程、设计、营销、产品、游戏、安全、GIS、金融等 22 个部门。不是通用提示词模板，每个智能体都有独立的人设、专业流程和",
+     "> Claude Code 和 GitHub Copilot 可直接安装；其他工具需先运行 `./scripts/convert.sh` 转换格式。"
     ]
    },
    {
@@ -157,53 +152,47 @@
     "rel": "mention",
     "lines": [
      5,
-     18,
-     127
+     127,
+     143
     ],
-    "note": "被支持的工具",
+    "note": "支持安装的目标工具",
     "quotes": [
-     "> **301 个即插即用的 AI 专家角色** — 覆盖公司经营（CEO/CTO/CMO/COO/CPO/CFO）、工程、设计、营销、产品、游戏、安全、GIS、金融等 20 个部门。不是通用提示词模板，每个智能体都有独立的人设、专业流程和",
-     "> 🧠 **新：让 Claude Code / Codex / Cursor / Gemini CLI 不再失忆** → engram：一条 `npx @jnmetacode/engram install`，自动记住每次会话问过什么、改了哪",
-     "> Claude Code 和 GitHub Copilot 可直接安装；其他工具需先运行 `./scripts/convert.sh` 转换格式。"
+     "> **328 个即插即用的 AI 专家角色** — 覆盖公司经营（CEO/CTO/CMO/COO/CPO/CFO）、工程、设计、营销、产品、游戏、安全、GIS、金融等 22 个部门。不是通用提示词模板，每个智能体都有独立的人设、专业流程和",
+     "> Claude Code 和 GitHub Copilot 可直接安装；其他工具需先运行 `./scripts/convert.sh` 转换格式。",
+     "# Claude Code / GitHub Copilot（直接复制即可）"
     ]
    },
    {
     "term": "Cursor",
     "rel": "mention",
     "lines": [
-     5,
-     18
+     5
     ],
-    "note": "被支持的工具",
+    "note": "支持安装的目标工具",
     "quotes": [
-     "> **301 个即插即用的 AI 专家角色** — 覆盖公司经营（CEO/CTO/CMO/COO/CPO/CFO）、工程、设计、营销、产品、游戏、安全、GIS、金融等 20 个部门。不是通用提示词模板，每个智能体都有独立的人设、专业流程和",
-     "> 🧠 **新：让 Claude Code / Codex / Cursor / Gemini CLI 不再失忆** → engram：一条 `npx @jnmetacode/engram install`，自动记住每次会话问过什么、改了哪"
+     "> **328 个即插即用的 AI 专家角色** — 覆盖公司经营（CEO/CTO/CMO/COO/CPO/CFO）、工程、设计、营销、产品、游戏、安全、GIS、金融等 22 个部门。不是通用提示词模板，每个智能体都有独立的人设、专业流程和"
     ]
    },
    {
     "term": "通义千问",
     "rel": "mention",
     "lines": [
-     49,
-     84
+     49
     ],
-    "note": "赞助商文案中提及 Qwen",
+    "note": "赞助商平台聚合模型之一",
     "quotes": [
-     " LanoX AI — 全球模型接入服务，聚合 GPT / Claude / Gemini / Qwen / Grok 及多模态模型，顶级模型低至官方价 1 折起",
-     "感谢 星图 AstraFlow 赞助本项目！星图 AstraFlow 由 UCloud 上市公司出品，聚合 MiniMax-H3、Seedance-2.5 等主流视频生成模型，文案生成与视频生成一个平台全搞定，无需多端注册、多处对接。支持 "
+     " LanoX AI — 全球模型接入服务，聚合 GPT / Claude / Gemini / Qwen / Grok 及多模态模型，顶级模型低至官方价 1 折起"
     ]
    },
    {
     "term": "ChatGPT",
     "rel": "mention",
     "lines": [
-     55,
-     58
+     55
     ],
-    "note": "赞助商文案中提及",
+    "note": "赞助商平台聚合模型之一",
     "quotes": [
-     " 胜算云 — 面向 AI 原生团队的模型 API 聚合平台，汇集 Claude / ChatGPT / Gemini 等海内外大模型，提供企业级定制网关",
-     "感谢胜算云对本项目的赞助！胜算云是面向 AI 原生团队的模型 API 聚合平台，汇集 Claude、ChatGPT、Gemini 等海内外大语言模型及多媒体模型，支持统一接入与按量调用。平台坚持合规 API 服务，杜绝逆向工程和资源稀释。此"
+     " 胜算云 — 面向 AI 原生团队的模型 API 聚合平台，汇集 Claude / ChatGPT / Gemini 等海内外大模型，提供企业级定制网关"
     ]
    },
    {
@@ -212,7 +201,7 @@
     "lines": [
      84
     ],
-    "note": "赞助商文案中提及",
+    "note": "赞助商平台聚合模型之一",
     "quotes": [
      "感谢 星图 AstraFlow 赞助本项目！星图 AstraFlow 由 UCloud 上市公司出品，聚合 MiniMax-H3、Seedance-2.5 等主流视频生成模型，文案生成与视频生成一个平台全搞定，无需多端注册、多处对接。支持 "
     ]
@@ -221,7 +210,7 @@
     "term": "Midjourney",
     "rel": "mention",
     "lines": [
-     243
+     264
     ],
     "note": "图像提示词工程师角色的适用工具",
     "quotes": [
@@ -232,9 +221,9 @@
     "term": "Windsurf",
     "rel": "mention",
     "lines": [
-     588
+     716
     ],
-    "note": "(窗外)被支持的工具列表",
+    "note": "支持安装的目标工具之一",
     "quotes": [
      "|**Windsurf**|`.windsurfrules`|项目级，需转换|"
     ]

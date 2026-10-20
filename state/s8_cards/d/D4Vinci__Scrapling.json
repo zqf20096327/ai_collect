@@ -1,25 +1,25 @@
 {
  "fn": "D4Vinci/Scrapling",
- "sha": "70e901421465",
+ "sha": "0f408fa65b11",
  "source": "readme",
  "identity": {
-  "one_liner": "自适应网页抓取框架：从单次请求到全站爬取",
-  "review": "Python 网页抓取框架，提供三类能力：Spider 爬虫框架（并发爬取、多会话、断点续爬、AutoThrottle 自适应限速、robots.txt 遵循、内置 JSON/JSONL/CSV/XML 导出）；抓取器体系（Fetcher 支持 TLS 指纹伪装，DynamicFetcher 基于 Playwright，StealthyFetcher 处理 Cloudflare Turnstile 等反爬）；自适应解析（页面结构变更后通过相似度算法重新定位元素）。提供 CLI、MCP 接口、Docker 镜像与 AI Agent Skill。面向爬虫开发者与常规数据采集用户。",
+  "one_liner": "Python 网页抓取框架：从单次请求到全站爬取一体化",
+  "review": "面向开发者的 Python 网页抓取库，整合快速 HTTP 请求、Playwright 隐身浏览器、解析与并发爬虫：支持 CSS/XPath/正则选择器、元素智能重定位、Cloudflare Turnstile 处理、代理轮换、会话管理、暂停恢复、AutoThrottle 与 JSON/JSONL/CSV/XML 导出，并提供 Scrapy 风格的 Spider 模板。可通过 Python、CLI、交互式 shell 或 MCP server/Agent Skill 供 AI agent 调用浏览与抽取数据，可输出 Markdown。以 pip 包与 Docker 镜像分发。",
   "highlights": [
-   "解析器学习页面变更，自动重新定位元素（adaptive=True）",
-   "StealthyFetcher 开箱处理 Cloudflare Turnstile，DynamicFetcher 基于 Playwright",
-   "Spider 框架支持并发、断点续爬、AutoThrottle 与流式输出",
-   "提供 MCP 服务、CLI 与 AI Agent Skill 入口"
+   "Scrapy 风格 Spider API：并发、暂停恢复、AutoThrottle、流式输出",
+   "StealthyFetcher 隐身浏览器、TLS 指纹伪装与 Cloudflare Turnstile 处理",
+   "MCP server 与 Agent Skill，供 AI agent 浏览和抽取数据",
+   "代理轮换、域名/广告屏蔽、后台 API 捕获、多格式导出"
   ],
   "use_cases": [
-   "采集结构会频繁改版网站的数据且选择器不失效",
-   "绕过 Cloudflare 等反爬机制抓取动态页面",
-   "大规模并发爬取并支持中断后恢复",
-   "通过 MCP 让 AI agent 调用抓取能力"
+   "抓取动态网页并把整站内容收集为干净的 Markdown",
+   "构建并发爬虫并导出为 JSON/CSV 等格式",
+   "让 AI agent 通过 MCP 调用抓取与数据抽取能力",
+   "绕过反爬机制采集数据（含代理轮换与会话管理）"
   ]
  },
  "filters": {
-  "ai_role": "ai-ecosystem",
+  "ai_role": "ai-enhanced",
   "license_risk": "permissive",
   "deploy": "self-host",
   "model_dep": null,
@@ -40,9 +40,9 @@
   "scenario_tags": [
    "网页抓取",
    "爬虫框架",
-   "反反爬",
    "MCP",
-   "数据采集"
+   "数据抽取",
+   "自动化"
   ],
   "domain": "效率与自动化",
   "alternative_to": [],
@@ -56,21 +56,26 @@
   "maintainer_type": "individual",
   "zh_origin": true,
   "zh_origin_signals": [
-   "简体中文版自述文件"
+   "提供简体中文版自述文件（多语言之一）"
   ]
  },
  "trust": {
   "confidence": "high",
   "evidence": [
-   "L55: Scrapling is an adaptive Web Scraping framework that handles everything from a single request to a full-scale crawl.",
-   "L57: Its parser learns from website changes and automatically relocates your elements when pages update. Its fetchers bypass ",
-   "L183: ### AI Features"
+   "L56: Scrapling is a Python Web Scraping framework that brings fast HTTP requests, stealth browsers, powerful parsing, and con",
+   "L60: Use it from Python, the terminal, or your AI agent through its MCP server and Agent Skill. From extracting a few fields "
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -79,10 +84,13 @@
     "term": "anthropic",
     "rel": "mention",
     "lines": [
-     109
+     123,
+     198
     ],
+    "note": "赞助商 TikHub 广告中提及 Claude 折扣模型，非本产品接入适配",
     "quotes": [
-     " TikHub.io provides 900+ stable APIs across 16+ platforms including TikTok, X, YouTube & Instagram, with 40M+ datasets. "
+     " TikHub.io provides 900+ stable APIs across 16+ platforms including TikTok, X, YouTube & Instagram, with 40M+ datasets. ",
+     "- 🤖 **MCP Server**: Let AI chatbots and agents (Claude/Cursor/etc) scrape through Scrapling with HTTP requests, browser "
     ]
    }
   ],
@@ -91,12 +99,14 @@
     "term": "pypi",
     "rel": "support",
     "lines": [
-     23,
-     27,
-     40
+     24,
+     25,
+     28,
+     41
     ],
     "quotes": [
      " <a href=\"https://badge.fury.io/py/Scrapling\" alt=\"PyPI version\">",
+     " PyPI version</a>",
      " PyPI package downloads",
      " <a href=\"https://pypi.org/project/scrapling/\" alt=\"Supported Python versions\">"
     ]
@@ -105,14 +115,30 @@
     "term": "docker",
     "rel": "support",
     "lines": [
-     26
+     27,
+     404,
+     408
     ],
     "quotes": [
-     " Docker Pulls</a>"
+     " Docker Pulls</a>",
+     "docker pull pyd4vinci/scrapling",
+     "docker pull ghcr.io/d4vinci/scrapling:latest"
     ]
    }
   ],
   "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     198
+    ],
+    "quotes": [
+     "- 🤖 **MCP Server**: Let AI chatbots and agents (Claude/Cursor/etc) scrape through Scrapling with HTTP requests, browser "
+    ]
+   }
+  ],
   "dual_license": {
    "flag": false,
    "lines": [],
@@ -121,18 +147,6 @@
   "deprecation": {
    "flag": false,
    "lines": []
-  },
-  "products": [
-   {
-    "term": "Cursor",
-    "rel": "mention",
-    "lines": [
-     184
-    ],
-    "quotes": [
-     "- 🤖 **MCP Server**: Let AI chatbots and agents (Claude/Cursor/etc) scrape through Scrapling with one-shot or session-bas"
-    ]
-   }
-  ]
+  }
  }
 }

@@ -270,8 +270,9 @@ def cmd_tag(args) -> dict:
     if args.force:
         targets = fns                                    # 全量重打（覆盖 v2）
     elif args.missing:
-        targets = [fn for fn in fns                     # 增量：只补缺 v2 的卡
-                   if not (cards[fn].get("links") or {}).get("scenario_tags_v2")]
+        # 只补"从未打过 v2"的卡;v2=[] 是有理由的合法空,不重打
+        targets = [fn for fn in fns
+                   if "scenario_tags_v2" not in (cards[fn].get("links") or {})]
     else:
         rng = random.Random(args.seed)
         targets = rng.sample(fns, min(max(args.sample, 1), len(fns)))

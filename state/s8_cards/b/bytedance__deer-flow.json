@@ -1,53 +1,55 @@
 {
  "fn": "bytedance/deer-flow",
- "sha": "921f4d5ae80e",
+ "sha": "31e95b02ff83",
  "source": "readme",
  "identity": {
-  "one_liner": "面向开发者的长时程 SuperAgent 编排框架：研究、编码与创作",
-  "review": "DeerFlow 是字节跳动开源的 super agent harness，通过编排子代理、记忆、沙箱与可扩展技能来处理耗时数分钟到数小时的任务。安装提供 make setup 交互式向导，引导选择 LLM 提供商、可选网络搜索及沙箱/bash/文件写入等安全偏好，生成 config.yaml 与 .env；另有面向编码代理的一句话引导安装说明。README 详述多种搜索/抓取后端（Brave、Tavily、DuckDuckGo、Serper、InfoQuest、Jina 等）对畸形响应的结构化错误处理，并提供 make doctor 自检与 make support-bundle 问题诊断包。v2.0 为完全重写，v1.x 分支继续维护原 Deep Research 框架。",
+  "one_liner": "面向长时程任务的 SuperAgent 编排框架：研究、编码与创作",
+  "review": "DeerFlow 2.0 是字节跳动开源的 SuperAgent 编排框架（harness），通过子代理、记忆、沙箱、技能扩展与消息网关组织任务，可处理耗时数分钟到数小时的深研究、编码与内容生成任务。面向希望搭建多代理工作流的开发者，基于 Python 与 Node.js。安装路径为克隆仓库后运行 make setup 交互式向导选择 LLM 提供商、搜索与沙箱配置，支持 Docker 部署与 make doctor 自检；需注意 2.0 为完全重写，与 1.x 分支不共享代码。",
   "highlights": [
-   "编排子代理、记忆与沙箱的长时程任务 harness",
-   "make setup 交互式向导配置 LLM 提供商与安全偏好",
-   "多种网络搜索与抓取后端的结构化错误处理",
-   "make doctor 自检与 support-bundle 问题诊断流程"
+   "编排子代理、记忆、沙箱与可扩展技能的长时程任务处理",
+   "make setup 交互式向导生成 config.yaml 与 .env",
+   "支持 Brave/Tavily/SearXNG/DuckDuckGo/InfoQuest 等多种搜索与抓取后端",
+   "自带抓取后端网络隔离检查与 make doctor 诊断"
   ],
   "use_cases": [
-   "搭建能自主完成研究、编码与内容创作的长时程代理",
-   "为代理任务配置沙箱、bash 访问与文件写入等安全选项",
-   "接入多种网络搜索/抓取后端做深度调研"
+   "搭建执行深度研究的多代理工作流",
+   "让 agent 在沙箱中完成编码类长时任务",
+   "为已有 LLM 接入可扩展的技能与子代理体系"
   ]
  },
  "filters": {
-  "ai_role": "ai-native",
+  "ai_role": "ai-ecosystem",
   "license_risk": "permissive",
   "deploy": "desktop",
-  "model_dep": null,
+  "model_dep": "locked-api",
   "hardware": null,
   "install_friction": "low",
-  "maturity": "idea"
+  "maturity": null
  },
  "eval": {
   "target_user": "开发者",
   "paper_url": null,
   "demo_url": null,
   "self_declared_early": {
-   "flag": true,
-   "lines": [
-    10
-   ]
+   "flag": false,
+   "lines": []
   }
  },
  "links": {
   "scenario_tags": [
-   "agent框架",
-   "deep-research",
-   "编排/harness",
-   "LLM基础设施"
+   "Agent框架",
+   "DeepResearch",
+   "多代理编排",
+   "LLM基础设施",
+   "自动化工作流"
   ],
   "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
-  "ecosystem_compat": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "anthropic"
+  ],
   "scenario_tags_v2": [
    "agent-framework",
    "multi-agent"
@@ -57,9 +59,9 @@
   "maintainer_type": "company",
   "zh_origin": true,
   "zh_origin_signals": [
-   "字节跳动（bytedance）维护",
-   "提供中文 README",
-   "面向中国大陆开发者的指引"
+   "多语言 README 含中文",
+   "火山引擎豆包模型推荐与大陆开发者专属指引（L32/L34）",
+   "维护方为字节跳动"
   ]
  },
  "trust": {
@@ -67,43 +69,76 @@
   "evidence": [
    "L12: DeerFlow (**D**eep **E**xploration and **E**fficient **R**esearch **Flow**) is an open-source **super agent harness** th",
    "L17: > **DeerFlow 2.0 is a ground-up rewrite.** It shares no code with v1. If you're looking for the original Deep Research f",
-   "L103:  This launches an interactive wizard that guides you through choosing an LLM provider, optional web search, and executio"
+   "L100:    make setup"
   ],
   "xcheck": {
    "install_missing": [
-    "docker",
     "npm",
     "pypi"
    ]
   },
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
   "providers": [
    {
     "term": "deepseek",
-    "rel": "mention",
+    "rel": "support",
     "lines": [
      32
     ],
-    "note": "推荐用于运行 DeerFlow 的模型之一",
     "quotes": [
      "- We strongly recommend using Doubao-Seed-2.0-Code, DeepSeek v3.2 and Kimi 2.5 to run DeerFlow"
     ]
    },
    {
     "term": "anthropic",
-    "rel": "mention",
+    "rel": "support",
     "lines": [
      75
     ],
-    "note": "提及 Claude 适配器的重试行为",
     "quotes": [
      "Enabling it disables exposed SDK retries and the Claude and Codex adapters'"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     261
+    ],
+    "quotes": [
+     " Models whose provider contract differs from DeerFlow's generic thinking/effort assumptions can declare a per-model mapp"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     263
+    ],
+    "quotes": [
+     " For vLLM 0.19.0, use `deerflow.models.vllm_provider:VllmChatModel`. For Qwen-style reasoning models, DeerFlow toggles r"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     171
+    ],
+    "quotes": [
+     " > **Advanced / manual configuration**: If you prefer to edit `config.yaml` directly, run `make config` instead to copy "
     ]
    }
   ],
@@ -119,41 +154,73 @@
      "   git clone https://github.com/bytedance/deer-flow.git",
      "   make setup"
     ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     336,
+     60
+    ],
+    "quotes": [
+     "This selects backend dotenv input only: shell launchers, Docker Compose and the",
+     "That prompt is intended for coding agents. It tells the agent to clone the repo if needed, choose Docker when available,"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     289
+    ],
+    "quotes": [
+     " - ACP agent entries are separate from model providers — if you configure `acp_agents.codex`, point it at a Codex ACP ad"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     373
+    ],
+    "quotes": [
+     "Docker builds use the upstream `uv` registry by default. The gateway image installs with `uv sync --locked`, and `uv.loc"
+    ]
+   },
+   {
+    "term": "helm",
+    "rel": "mention",
+    "lines": [
+     468
+    ],
+    "quotes": [
+     "> The Gateway still owns active run tasks in process, so production defaults to a single Gateway worker (`GATEWAY_WORKER"
+    ]
    }
   ],
-  "hardware": [],
-  "dual_license": {
-   "flag": false,
-   "lines": [],
-   "quotes": []
-  },
-  "deprecation": {
-   "flag": false,
-   "lines": [
-    17
-   ]
-  },
+  "hardware": [
+   {
+    "term": "RAM, 20 GB",
+    "rel": "mention",
+    "lines": [
+     349
+    ],
+    "quotes": [
+     "|Local evaluation / `make dev`|4 vCPU, 8 GB RAM, 20 GB free SSD|8 vCPU, 16 GB RAM|Good for one developer or one light se"
+    ]
+   },
+   {
+    "term": "16 GB RAM",
+    "rel": "mention",
+    "lines": [
+     351
+    ],
+    "quotes": [
+     "|Long-running server / `make up`|8 vCPU, 16 GB RAM, 40 GB free SSD|16 vCPU, 32 GB RAM|Preferred for shared use, multi-ag"
+    ]
+   }
+  ],
   "products": [
-   {
-    "term": "Kimi",
-    "rel": "mention",
-    "lines": [
-     32
-    ],
-    "quotes": [
-     "- We strongly recommend using Doubao-Seed-2.0-Code, DeepSeek v3.2 and Kimi 2.5 to run DeerFlow"
-    ]
-   },
-   {
-    "term": "豆包",
-    "rel": "mention",
-    "lines": [
-     32
-    ],
-    "quotes": [
-     "- We strongly recommend using Doubao-Seed-2.0-Code, DeepSeek v3.2 and Kimi 2.5 to run DeerFlow"
-    ]
-   },
    {
     "term": "Claude Code",
     "rel": "mention",
@@ -183,7 +250,56 @@
     "quotes": [
      "If you use Claude Code, Codex, Cursor, Windsurf, or another coding agent, you can hand it the setup instructions in one "
     ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     32
+    ],
+    "quotes": [
+     "- We strongly recommend using Doubao-Seed-2.0-Code, DeepSeek v3.2 and Kimi 2.5 to run DeerFlow"
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     32
+    ],
+    "quotes": [
+     "- We strongly recommend using Doubao-Seed-2.0-Code, DeepSeek v3.2 and Kimi 2.5 to run DeerFlow"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     179
+    ],
+    "quotes": [
+     " backend presets for OpenAI, Anthropic, DeepSeek, Alibaba Cloud Bailian/Qwen,"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     249
+    ],
+    "quotes": [
+     " OpenRouter and similar OpenAI-compatible gateways should be configured with `langchain_openai:ChatOpenAI` plus `base_ur"
+    ]
    }
-  ]
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
  }
 }

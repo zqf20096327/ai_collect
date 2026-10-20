@@ -1,24 +1,24 @@
 {
  "fn": "bmad-code-org/BMAD-METHOD",
- "sha": "3d072264ac81",
+ "sha": "d6444b1e05ae",
  "source": "readme",
  "identity": {
-  "one_liner": "面向开发者的敏捷 AI 驱动开发工作流方法与技能集",
-  "review": "一套以敏捷方式组织 AI 驱动开发（AiDD）的方法论，以 agent 技能与工作流形式安装到 AI 编码工具中：从澄清、规划到构建验证的交付闭环，把产品/架构决策显式化并作为上下文延续，按变更规模选择规划深度，覆盖新项目与既有代码库。稳定版 v6.12 经 npm 安装；V7 为预览 alpha，通过 skills CLI 安装，并提供 Claude Code 与 Codex 插件市场通道，运行需 uv 与 Python 脚本支持。",
+  "one_liner": "面向 AI 编码工具的敏捷 AI 驱动开发方法论与技能集",
+  "review": "BMad Method 是一套 Agile AI 驱动开发（AiDD）方法论：以技能、工作流和多 agent 形式安装到 AI 编码工具中，将想法或变更请求经 Clarify、Plan、Build、Learn 循环转化为可用软件，并强调决策显式化与上下文持续承载。提供稳定版 v6.12（npm 安装器）与 V7 预览 alpha（skills CLI 或 Claude Code/Codex 插件市场）两条路线，均需 uv 与 Python 脚本，V7 需支持 skills 的编码工具且会有破坏性变更。另有测试架构、游戏开发等官方模块生态。",
   "highlights": [
-   "澄清→规划→构建验证的交付闭环，按变更规模调整规划深度",
-   "以 skills/工作流形式接入 AI 编码工具，提供 bmad-build/bmad-help 等技能入口",
-   "官方模块生态：Test Architect、Game Dev Studio、Loop 等 6 个模块",
-   "v6.12 稳定版与 V7 预览双通道，支持 npx skills 安装与更新"
+   "双发布线：稳定版 v6.12（npm 安装）与 V7 预览 alpha（skills CLI/插件市场）",
+   "Clarify/Plan/Build/Learn 交付循环，流程按变更规模自适应",
+   "多 agent 角色分工（产品/架构/UX/开发/测试）与持久化上下文",
+   "6 个官方生态模块（Builder、Test Architect、Game Dev Studio 等）"
   ],
   "use_cases": [
-   "在 AI 编码工具中为功能变更建立显式规划与上下文延续流程",
-   "接手既有代码库时先建立经核验的项目上下文再开发",
-   "为团队提供产品、架构、UX、测试等多视角 agent 协作工作流"
+   "在 AI 编码工具中用结构化流程把想法落地为软件",
+   "给接手的既有代码库建立已验证的上下文",
+   "小团队按敏捷方式管理 AI 参与的软件交付"
   ]
  },
  "filters": {
-  "ai_role": "ai-native",
+  "ai_role": "ai-ecosystem",
   "license_risk": "permissive",
   "deploy": "library",
   "model_dep": null,
@@ -34,22 +34,25 @@
    "flag": true,
    "lines": [
     17,
-    29
+    29,
+    31
    ]
   }
  },
  "links": {
   "scenario_tags": [
-   "AI驱动开发",
+   "AI辅助开发",
    "敏捷方法论",
-   "agent技能",
-   "开发工作流"
+   "规格驱动开发",
+   "agent工作流",
+   "提示工程/上下文工程"
   ],
-  "domain": "编码与开发",
+  "domain": "Agent 开发",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
+   "multi-agent",
    "coding-agent"
   ]
  },
@@ -62,15 +65,22 @@
   "confidence": "high",
   "evidence": [
    "L7: **Agile Ai Driven Development — turn an idea or change request into working software without giving up the thinking.**",
-   "L31: Expect breaking changes between updates. You need an AI coding tool that supports skills."
+   "L24: npx bmad-method install",
+   "L56: Open your coding tool in the project and ask the `bmad` skill to run"
   ],
   "xcheck": {
    "license_from_readme": "MIT"
   },
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": "42"
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -81,7 +91,7 @@
     "lines": [
      41
     ],
-    "note": "Claude Code 插件市场安装途径的语境中出现，未明确提及 Anthropic 模型接入",
+    "note": "Claude Code 为其支持安装的编码工具之一，非专门适配声明",
     "quotes": [
      "**Claude Code plugin** — add the marketplace inside Claude Code:"
     ]
@@ -95,14 +105,12 @@
      17,
      24,
      36,
-     39,
      60
     ],
     "quotes": [
      "BMad ships on two lines. The stable release is **v6.12**, installed by the npm installer and frozen aside from bug fixes",
      "npx bmad-method install",
-     "npx skills add bmad-code-org/BMAD-METHOD",
-     "Select the skills and coding tool you want. Include `bmad` for setup and help, and the module record for each module you",
+     "npx skills add bmad-code-org/BMAD-METHOD --skill '*'",
      "Ask for `bmad status` to check versions and see what to run next. Ask for `bmad setup` to install updates: it runs `npx "
     ]
    }
@@ -115,7 +123,7 @@
     "lines": [
      41
     ],
-    "note": "支持的接入工具之一，非替代/竞品对象",
+    "note": "BMad 作为技能/插件安装到 Claude Code 中，非替代关系",
     "quotes": [
      "**Claude Code plugin** — add the marketplace inside Claude Code:"
     ]
