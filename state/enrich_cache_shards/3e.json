@@ -1913,5 +1913,104 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "jedarden/duck-e": {
+  "rel_ver": "v0.2.89",
+  "rel_pub": "2026-03-29",
+  "rel_days": 205,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 81,
+   "JavaScript": 8,
+   "HTML": 7,
+   "TypeScript": 4,
+   "Makefile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "cool-japan/numrs": {
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-08-29",
+  "rel_days": 52,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 99,
+   "Python": 1,
+   "Shell": 0,
+   "WGSL": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "janbjorge/rekal": {
+  "rel_ver": "v3.4.0",
+  "rel_pub": "2026-08-26",
+  "rel_days": 55,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "IBM/watsonx-developer-hub": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "Python": 83,
+   "JavaScript": 10,
+   "SCSS": 4,
+   "Shell": 3,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

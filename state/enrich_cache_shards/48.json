@@ -1400,5 +1400,54 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "Open-Quant/openquant": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 39,
+   "Rust": 38,
+   "Python": 20,
+   "TypeScript": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "machinelearningZH/simply-simplify-language": {
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-10-02",
+  "rel_days": 18,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 97,
+   "Dockerfile": 1,
+   "Makefile": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

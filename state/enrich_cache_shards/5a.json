@@ -1627,5 +1627,159 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "zhou343-de/easyup-platform": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 42,
+   "JavaScript": 26,
+   "CSS": 18,
+   "Shell": 9,
+   "HTML": 6
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "flutterclaw/flutterclaw": {
+  "rel_ver": "v1.0.19",
+  "rel_pub": "2026-06-13",
+  "rel_days": 129,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Dart": 84,
+   "C": 5,
+   "HTML": 3,
+   "Kotlin": 3,
+   "Python": 2
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "TelivityAI/careerops": {
+  "rel_ver": "v1.2.1",
+  "rel_pub": "2026-07-29",
+  "rel_days": 83,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 17,
+  "lang": {
+   "JavaScript": 69,
+   "PLpgSQL": 15,
+   "Python": 7,
+   "TypeScript": 7,
+   "Jupyter Notebook": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "MiaoMint/vision-flow": {
+  "rel_ver": "v0.0.5",
+  "rel_pub": "2026-01-17",
+  "rel_days": 276,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 73,
+   "Go": 19,
+   "NSIS": 3,
+   "JavaScript": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "afx-team/hebb-mind": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 83,
+   "JavaScript": 12,
+   "CSS": 2,
+   "TypeScript": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "sema-lisp/sema": {
+  "rel_ver": "v1.37.0",
+  "rel_pub": "2026-10-09",
+  "rel_days": 11,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Rust": 79,
+   "TypeScript": 9,
+   "Vue": 4,
+   "JavaScript": 3,
+   "Scheme": 3
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

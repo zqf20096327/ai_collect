@@ -1882,5 +1882,85 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "xflops/flame": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-06-04",
+  "rel_days": 138,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Rust": 71,
+   "Python": 26,
+   "Shell": 2,
+   "Makefile": 0,
+   "Go Template": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Qredence/fleet-rlm": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Python": 99,
+   "TypeScript": 0,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Kestrel-Foundry/KestrelAI": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2025-11-26",
+  "rel_days": 328,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 87,
+   "TypeScript": 11,
+   "CSS": 1,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

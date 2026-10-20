@@ -1384,5 +1384,53 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "timoncool/Bulka": {
+  "rel_ver": "desktop-v0.3.0",
+  "rel_pub": "2026-10-11",
+  "rel_days": 9,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 86,
+  "lang": {
+   "JavaScript": 63,
+   "MDX": 25,
+   "TypeScript": 7,
+   "Csound": 2,
+   "Astro": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "ra1nyxin/immersive-vibration-response-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 72,
+   "C": 27,
+   "CMake": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

@@ -1623,5 +1623,54 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "KimangKhenng/Traffic-SImulation-and-Visualization": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 99,
+   "C": 0,
+   "CMake": 0,
+   "QMake": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "IAA-AITF/Actuarial-AI-Case-Studies": {
+  "rel_ver": "eaj-v1.0",
+  "rel_pub": "2026-06-24",
+  "rel_days": 118,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "HTML": 55,
+   "Jupyter Notebook": 44,
+   "Python": 0,
+   "R": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

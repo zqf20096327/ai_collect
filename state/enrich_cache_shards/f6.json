@@ -2107,5 +2107,80 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "selab-gatech/autoresttest": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "HTML": 53,
+   "Java": 42,
+   "Python": 3,
+   "JavaScript": 1,
+   "Jupyter Notebook": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Mateusz-Dera/ROCm-AI-Installer": {
+  "rel_ver": "17.1",
+  "rel_pub": "2026-10-09",
+  "rel_days": 11,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Shell": 52,
+   "Python": 47,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Chat2AnyLLM/code-agent-manager": {
+  "rel_ver": "1.5.0",
+  "rel_pub": "2026-06-21",
+  "rel_days": 121,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Go": 72,
+   "TypeScript": 14,
+   "HTML": 8,
+   "Shell": 4,
+   "CSS": 2
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

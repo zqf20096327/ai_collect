@@ -1470,5 +1470,49 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "genlab-1c/prism": {
+  "rel_ver": "v1.10.0",
+  "rel_pub": "2026-09-19",
+  "rel_days": 31,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 54,
+   "JavaScript": 27,
+   "1C Enterprise": 14,
+   "CSS": 4,
+   "Astro": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "jalberty2018/awesome-comfyui": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {},
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

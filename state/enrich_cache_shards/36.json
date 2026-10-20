@@ -1753,5 +1753,55 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "rawsun007/claude-notch": {
+  "rel_ver": "v0.42.1",
+  "rel_pub": "2026-10-15",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Swift": 83,
+   "HTML": 6,
+   "Shell": 6,
+   "Python": 4,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "anmolksachan/LLMInjector": {
+  "rel_ver": "LLM_Injector_v4.0",
+  "rel_pub": "2026-03-11",
+  "rel_days": 223,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

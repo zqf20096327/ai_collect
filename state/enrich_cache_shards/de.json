@@ -1936,5 +1936,59 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "lgarciamarrero92/ha-nilm": {
+  "rel_ver": "nilm-1.1.11-trainer-1.0.5",
+  "rel_pub": "2026-10-11",
+  "rel_days": 9,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 52,
+   "Python": 41,
+   "JavaScript": 6,
+   "CSS": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "Xmax-AI/XmaxSDK-Flutter": {
+  "rel_ver": "1.0.2",
+  "rel_pub": "2026-09-14",
+  "rel_days": 36,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Dart": 98,
+   "Java": 1,
+   "Swift": 1,
+   "Ruby": 0,
+   "Kotlin": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

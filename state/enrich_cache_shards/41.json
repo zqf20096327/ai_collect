@@ -1718,5 +1718,71 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
- }
+ },
+ "ApmeM/BrainAI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C#": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "netresearch/git-workflow-skill": {
+  "rel_ver": "v1.35.1",
+  "rel_pub": "2026-10-07",
+  "rel_days": 13,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": "high",
+  "sec_last": "2026-10-07",
+  "sec_ids": [
+   "GHSA-97gm-4r73-mm3q(-,high)",
+   "GHSA-9qmv-jv2m-vmhj(-,medium)"
+  ],
+  "contrib_n": 7,
+  "lang": {
+   "Shell": 81,
+   "Python": 19
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "l1997i/Rapid_Seg": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "gemron/Termexo": {}
 }

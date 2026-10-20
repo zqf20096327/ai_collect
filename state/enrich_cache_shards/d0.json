@@ -1403,5 +1403,55 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "PolinniZhong/dsh-knit": {
+  "rel_ver": "v0.24.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "vikshana/vikshana-graft-app": {
+  "rel_ver": "graft-v0.6.9",
+  "rel_pub": "2026-10-16",
+  "rel_days": 4,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 95,
+   "Go": 2,
+   "Shell": 2,
+   "JavaScript": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

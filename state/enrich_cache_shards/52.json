@@ -1823,5 +1823,32 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "tara-vision/taracode": {
+  "rel_ver": "v3.3.2",
+  "rel_pub": "2026-10-17",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 99,
+   "Shell": 1,
+   "Makefile": 0,
+   "HCL": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

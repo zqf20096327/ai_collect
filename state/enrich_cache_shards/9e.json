@@ -1606,5 +1606,52 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "frefrik/comfyui-flux": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 75,
+   "Dockerfile": 25
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "cyberia-to/cyber": {
+  "rel_ver": "73k",
+  "rel_pub": "2021-11-05",
+  "rel_days": 1810,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Nushell": 56,
+   "Python": 23,
+   "Rust": 13,
+   "CSS": 7,
+   "Shell": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }

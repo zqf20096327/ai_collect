@@ -1594,5 +1594,84 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "JeffWang0325/Image-Identification-for-Self-Driving-Cars": {
+  "rel_ver": "v2.0.2",
+  "rel_pub": "2021-09-17",
+  "rel_days": 1859,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 131,
+  "lang": {
+   "Python": 99,
+   "Shell": 1,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "fabricio3g/FlaxeoUI": {
+  "rel_ver": "v0.7.8",
+  "rel_pub": "2026-08-21",
+  "rel_days": 60,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Vue": 55,
+   "TypeScript": 42,
+   "CSS": 1,
+   "JavaScript": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
+ },
+ "BaseInfinity/claude-sdlc-harness": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-09-27",
+  "rel_days": 23,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Shell": 92,
+   "Python": 5,
+   "JavaScript": 2,
+   "Go": 0,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261020",
+  "dim_ts": {
+   "release": "20261020",
+   "security": "20261020",
+   "contrib": "20261020",
+   "lang": "20261020"
+  }
  }
 }
