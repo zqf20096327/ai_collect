@@ -1,0 +1,79 @@
+name: cardgen (s8 全量卡片)
+# 目标:42k 仓库卡片全量生成。每小时批跑、断点续传(sha 索引)、显式路径提交。
+# 触发只在默认分支生效;运行与推送都在 main。GLM 配额耗尽由 AIClient 内置等待消化,
+# 软墙钟 AI_WALL_MIN 保证到点收尾、进度必被提交(不做满 55 分钟防 job 超时丢进度)。
+on:
+  workflow_dispatch:
+    inputs:
+      trial:
+        description: "本批卡片数(默认 600)"
+        default: "600"
+      concurrency:
+        description: "并发(默认 10)"
+        default: "10"
+  schedule:
+    - cron: "10 * * * *"   # 每小时第 10 分
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cardgen
+  cancel-in-progress: false   # 同时刻仅一个实例,后到的排队
+
+jobs:
+  gen:
+    if: github.repository == 'zqf20096327/ai_collect'   # 防 fork 误烧 key
+    runs-on: ubuntu-latest
+    timeout-minutes: 56
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests jsonschema
+      - name: 写 .env(密钥来自 repo secrets)
+        run: |
+          {
+            echo "AI_BASE_URL=${{ secrets.AI_BASE_URL }}"
+            echo "AI_API_KEY=${{ secrets.AI_API_KEY }}"
+            echo "AI_MODEL=${{ secrets.AI_MODEL }}"
+            echo "AI_THINKING=${{ secrets.AI_THINKING }}"
+            echo "AI_MAX_TOKENS=${{ secrets.AI_MAX_TOKENS }}"
+          } > .env
+      - name: s8 批跑(解读)
+        env:
+          AI_WALL_MIN: "45"
+        run: |
+          python s8_interpret.py \
+            --trial "${{ github.event.inputs.trial || '600' }}" \
+            --concurrency "${{ github.event.inputs.concurrency || '10' }}"
+      - name: s10 新卡打标
+        env:
+          AI_WALL_MIN: "8"
+        run: python s10_tags.py tag --missing --concurrency 6
+      - name: commit & push
+        if: always()   # 解读半途收尾也保住已产卡片
+        run: |
+          git config user.name "ai-collect-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add state/s8_cards state/s8_state.json state/s8_sha_index.json state/s10_retag_run.json
+          if git diff --cached --quiet; then
+            echo "本批无变化(可能已全部完成或全部拒收)"
+          else
+            N=$(git diff --cached --numstat -- state/s8_cards | wc -l)
+            git commit -m "cardgen: $(date -u +%F_%H:%M) 批 +${N} 卡(s8 放量)"
+            for i in 1 2 3 4 5; do
+              git fetch origin main
+              if ! git rebase --autostash origin/main; then
+                git diff --name-only --diff-filter=U -z | xargs -0 -r git checkout --theirs --
+                git diff --name-only --diff-filter=U -z | xargs -0 -r git add
+                GIT_EDITOR=true git rebase --continue
+              fi
+              git push origin HEAD:main && { echo "已推送 +${N} 卡"; exit 0; }
+              echo "推送撞车,40s 后重试($i/5)"; sleep 40
+            done
+            echo "::warning::推送 5 次未成功,本批状态丢失(sha 断点下次自动重做)"
+          fi

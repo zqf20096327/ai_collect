@@ -229,6 +229,9 @@ def fetch_maint_one(fn):
                 if d is not None and d <= 365]
     last_rel = min(rel_days) if rel_days else None
     per_year = len(rel_days)
+    # 资产累计下载:同一响应免费捎带(附件自带 download_count,累计口径)
+    asset_dl = sum(a.get("download_count") or 0
+                   for r in rels for a in (r.get("assets") or []))
     link = h.get("Link") or ""
     m = re.search(r'[?&]page=(\d+)>; rel="last"', link)
     contributors = min(int(m.group(1)), 500) if m else len(contrib)
@@ -241,7 +244,8 @@ def fetch_maint_one(fn):
     med = closed[len(closed) // 2] if len(closed) >= 5 else None
     return {"last_release_days": last_rel, "releases_per_year": per_year,
             "contributors": contributors, "issue_close_days_med": med,
-            "issue_sample": len(closed)}
+            "issue_sample": len(closed),
+            "asset_downloads_total": asset_dl, "releases_counted": len(rels)}
 
 
 def maint_enum(facts, pool_rec):
@@ -256,6 +260,21 @@ def maint_enum(facts, pool_rec):
     if pushed > 90:
         return "maintenance"
     return "active"
+
+
+def _merge_gh_dl(state_items: dict, fn: str, total: int, counted: int,
+                today: str) -> None:
+    """把 release 资产累计下载写进 p0_downloads 的 fn:github 条目(保留上次值供月差分)。"""
+    key = f"{fn}:github"
+    old = state_items.get(key) or {}
+    prev_total, prev_at = old.get("downloads_total"), old.get("fetched_at")
+    if prev_at == today:                    # 同日重跑不覆盖 prev
+        prev_total, prev_at = old.get("prev_total"), old.get("prev_at")
+    state_items[key] = {"package": "release-assets", "ecosystem": "github",
+                        "downloads_total": total, "releases_counted": counted,
+                        "prev_total": prev_total, "prev_at": prev_at,
+                        "fetched_at": today,
+                        "fetched_at_iso": datetime.now(timezone.utc).isoformat()}
 
 
 def cmd_maintenance(cards, limit=None, force=False):
@@ -275,6 +294,8 @@ def cmd_maintenance(cards, limit=None, force=False):
         todo = todo[:limit]
     print(f"maintenance: 待取 {len(todo)}"
           f"(缓存新鲜 {len(cards) - len(todo)})")
+    dl_path = STATE / "p0_downloads.json"
+    dl_state = load_json(dl_path, {"items": {}})
     done = err = 0
     t0 = time.time()
     for i, fn in enumerate(todo):
@@ -298,16 +319,75 @@ def cmd_maintenance(cards, limit=None, force=False):
                                   "fetched_at": today,
                                   "fetched_at_iso": datetime.now(
                                       timezone.utc).isoformat()}
+            # 同响应捎带:资产累计下载合入 p0_downloads(fn:github)
+            _merge_gh_dl(dl_state["items"], fn,
+                         facts["asset_downloads_total"],
+                         facts["releases_counted"], today)
             done += 1
         if (i + 1) % CHUNK_SAVE == 0:
             st.atomic_write_json(path, state)
+            st.atomic_write_json(dl_path, dl_state)
             print(f"  ... {i + 1}/{len(todo)} ({time.time() - t0:.0f}s,"
                   f"err {err})", flush=True)
     st.atomic_write_json(path, state)
+    st.atomic_write_json(dl_path, dl_state)
     dist = {}
     for v in state["items"].values():
         dist[v.get("status") or "null"] = dist.get(v.get("status") or "null", 0) + 1
     print(f"maintenance: 新取 {done},失败 {err},分布 {dist}")
+
+
+def cmd_dl_github(cards, limit=None, force=False):
+    """一次性回填:每仓调一次 /releases 抽资产累计下载(fn:github 条目)。
+
+    之后由 cmd_maintenance 月更捎带刷新,无需单独再跑。
+    """
+    path = STATE / "p0_downloads.json"
+    state = load_json(path, {"items": {}})
+    today = st.utc_day()
+    todo = []
+    for fn in cards:
+        it = state["items"].get(f"{fn}:github")
+        fresh = it and not force and (
+            it.get("fetched_at") == today or
+            _fresh_within(it.get("fetched_at_iso"), MAINT_FRESH_DAYS))
+        if not fresh:
+            todo.append(fn)
+    if limit:
+        todo = todo[:limit]
+    print(f"dl-github: 待取 {len(todo)}(缓存新鲜 {len(cards) - len(todo)})")
+    ok = err = has_assets = 0
+    t0 = time.time()
+    for i, fn in enumerate(todo):
+        try:
+            gh.CORE_PACE.slot()
+            _, rels = gh.api_get(f"/repos/{fn}/releases", {"per_page": 100})
+        except (gh.BudgetOut, gh.CoreReserveOut, gh.QuotaPatienceOut):
+            print("  [budget] 预算到,收尾(进度已落盘)")
+            break
+        except Exception as e:                      # noqa: BLE001 单仓失败不挡批
+            err += 1
+            print(f"  {fn}: {str(e)[:80]}")
+            continue
+        total = sum(a.get("download_count") or 0
+                    for r in rels for a in (r.get("assets") or []))
+        if total:
+            has_assets += 1
+        _merge_gh_dl(state["items"], fn, total, len(rels), today)
+        ok += 1
+        if (i + 1) % CHUNK_SAVE == 0:
+            st.atomic_write_json(path, state)
+            print(f"  ... {i + 1}/{len(todo)} ({time.time() - t0:.0f}s,"
+                  f"有资产 {has_assets},err {err})", flush=True)
+    st.atomic_write_json(path, state)
+    print(f"dl-github: 成功 {ok},其中带资产下载 {has_assets},失败 {err}")
+    top = sorted((v for v in state["items"].values()
+                  if v.get("ecosystem") == "github"
+                  and v.get("downloads_total")),
+                 key=lambda v: -v["downloads_total"])[:5]
+    for v in top:
+        print(f"  github/{v['package']}: 累计 {v['downloads_total']:,}"
+              f"({v['releases_counted']} releases)")
 
 
 # ---------------- 包下载量(PyPI/npm 免费 API,月更) ----------------
@@ -506,6 +586,12 @@ def main():
         cmd_platform(cards, args.limit)
     if "downloads" in only:
         cmd_downloads(cards, args.limit, args.force)
+    if "dl-github" in only:
+        gh.set_budget(gh.Budget(max_minutes=55, reserve_remaining=300))
+        try:
+            cmd_dl_github(cards, args.limit, args.force)
+        except (gh.BudgetOut, gh.CoreReserveOut, gh.QuotaPatienceOut) as e:
+            print(f"[budget] {e}(进度已落盘,重跑续取)")
     if "maintenance" in only:
         gh.set_budget(gh.Budget(max_minutes=55, reserve_remaining=300))
         try:

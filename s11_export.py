@@ -97,13 +97,31 @@ def velocity_row(v: dict | None, window_days: int) -> dict | None:
 
 
 def downloads_row(dls: dict, fn: str) -> dict | None:
-    cands = [(k, v) for k, v in dls.items() if k.rsplit(":", 1)[0] == fn]
-    if not cands:
-        return None
-    _, best = max(cands, key=lambda kv: (kv[1].get("downloads_month") is not None,
-                                         kv[1].get("downloads_month") or 0))
-    return {k: best.get(k) for k in
-            ("downloads_month", "package", "ecosystem", "fetched_at")}
+    """优先 pypi/npm 月度;无则 GitHub Release 资产累计(下次月更后带月差分)。"""
+    cands = [v for k, v in dls.items() if k.rsplit(":", 1)[0] == fn]
+    monthly = [v for v in cands if isinstance(v.get("downloads_month"), int)]
+    if monthly:
+        best = max(monthly, key=lambda v: v["downloads_month"])
+        return {k: best.get(k) for k in
+                ("downloads_month", "package", "ecosystem", "fetched_at")}
+    ghv = [v for v in cands
+           if v.get("ecosystem") == "github" and v.get("downloads_total")]
+    if ghv:
+        v = ghv[0]
+        row = {"downloads_month": None,
+               "downloads_total": v.get("downloads_total"),
+               "releases_counted": v.get("releases_counted"),
+               "package": "release-assets", "ecosystem": "github",
+               "fetched_at": v.get("fetched_at")}
+        prev, prev_at = v.get("prev_total"), v.get("prev_at")
+        if isinstance(prev, int) and prev_at and prev_at != v.get("fetched_at"):
+            row["downloads_month_est"] = max(v["downloads_total"] - prev, 0)
+        return row
+    if cands:                       # 只有 not_found 占位也如实返回
+        best = cands[0]
+        return {k: best.get(k) for k in
+                ("downloads_month", "package", "ecosystem", "fetched_at")}
+    return None
 
 
 def maturity_out(val):
@@ -265,7 +283,12 @@ def build_md(row: dict, series: dict | None = None) -> str:
             L.append(f"- 涨星:近 {ve.get('window_days')} 天 **{'+' if (ve.get('net_window') or 0) >= 0 else ''}{ve.get('net_window'):,}**"
                      f"(自 {ve.get('window_from')} 起算)" if ve.get("net_window") is not None else "")
         dl = s.get("downloads") or {}
-        if dl.get("package"):
+        if dl.get("ecosystem") == "github" and dl.get("downloads_total") is not None:
+            cnt = f"累计 {dl['downloads_total']:,}"
+            if dl.get("downloads_month_est") is not None:
+                cnt += f"(近月约 +{dl['downloads_month_est']:,})"
+            L.append(f"- 下载:GitHub Release 附件 {cnt}({dl.get('releases_counted')} 个 release)")
+        elif dl.get("package"):
             cnt = f"月下载 {dl['downloads_month']:,}" if isinstance(dl.get("downloads_month"), int) else "月下载无数据"
             L.append(f"- 安装:{dl.get('ecosystem')} 包 `{dl.get('package')}` {cnt}")
         pl = s.get("platform") or {}

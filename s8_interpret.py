@@ -926,7 +926,10 @@ def run(args):
                   f"（窗外 {sum(1 for l in ctx['cand_lines'] if l not in ctx['visible'])}）, "
                   f"prompt {len(prompt)} 字, form={ctx['form']}")
         return
-    ai = AIClient()
+    # 软墙钟(云端批跑用):AI_WALL_MIN 分钟后不再容忍长等待,快速收尾保住已产卡片
+    wall = os.environ.get("AI_WALL_MIN", "")
+    ai = AIClient(deadline=time.time() + int(wall) * 60
+                  if wall.isdigit() else None)
     results = []
     t0 = time.time()
     with ThreadPoolExecutor(max_workers=args.concurrency) as ex:
