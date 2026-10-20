@@ -74,7 +74,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
           python s7_enrich.py --tier all
-          --max-calls 5000 --max-minutes 100 --wait-windows 8
+          --max-calls 5000 --max-minutes 100 --wait-windows 8 --workers 6
 
       # README_SKIP=true 时整步跳过(本地回填期间暂停远端采集,防两边重复;
       # 回填推完用 API 把变量改回 false 或删掉即恢复,无需改代码)
