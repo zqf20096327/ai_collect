@@ -1,0 +1,92 @@
+{
+ "fn": "NVIDIA/cutlass",
+ "sha": "0eca95758390",
+ "source": "readme",
+ "identity": {
+  "one_liner": "CUDA C++ 模板与 Python DSL 库：构建高性能 GEMM 等线性代数内核",
+  "review": "NVIDIA 维护的高性能矩阵乘（GEMM）及相关计算的实现集合：以 CUDA C++ 模板抽象提供分层分解与数据移动组件，覆盖 FP64/FP32/TF32/FP16/BF16/FP8/FP4、块缩放与窄整数等数据类型，支持 Volta 到 Blackwell 及 Rubin（SM107）架构。CUTLASS 4 起加入 CuTe DSL——用 Python 编写 CUDA 内核的接口，含 Operator API、原语库与 IKET 性能分析工具。面向内核开发者、科研与性能工程人员，用于深度学习框架底层内核构建；CuTe DSL 处于公开 beta 阶段。",
+  "highlights": [
+   "CUDA C++ 模板抽象覆盖多种精度数据类型与多代 NVIDIA 架构",
+   "CuTe DSL：基于 Python 编写 CUDA 内核，无需 C++ 深度 expertise",
+   "Operator API 暴露独立内核并支持性能预估排序",
+   "4.8 加入初步 Rubin（SM107）支持与大量 Blackwell/Ampere 示例"
+  ],
+  "use_cases": [
+   "为深度学习框架或自定义应用编写高性能 GEMM/卷积内核",
+   "用 Python 快速原型化 CUDA 内核设计并投入生产",
+   "针对特定架构与数据类型调优矩阵乘性能"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "high",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    40
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "GPU内核开发",
+   "线性代数",
+   "CUDA",
+   "深度学习基础设施"
+  ],
+  "domain": "GPU 计算/深度学习基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L8: CUTLASS is a collection of abstractions for implementing high-performance matrix-matrix multiplication (GEMM)",
+   "L28: To this rich ecosystem of C++ based kernel programming abstractions, CUTLASS 4 adds CUTLASS DSLs. These are Python nativ"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

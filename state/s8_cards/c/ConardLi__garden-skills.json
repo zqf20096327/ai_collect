@@ -1,0 +1,168 @@
+{
+ "fn": "ConardLi/garden-skills",
+ "sha": "27d6246b2ff2",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 AI 编程 agent 的生产级技能集合（6 个 SKILL）",
+  "review": "由 ConardLi 维护的 Agent Skills 策展仓库，提供 6 个面向 Claude Code、Cursor、Codex 等 AI 编程 agent 的 SKILL.md 技能：web-video-presentation（文章转 16:9 网页演示、23 个内置主题、可插拔 TTS）、web-design-engineer（设计系统声明与 25 个风格配方）、gpt-image-2（18 类 79 个图像生成提示模板，支持本地/委派/纯提示三种运行模式）、kb-retriever（本地知识库分层检索，含 PDF/Excel 处理规则）、beautiful-article（多源转排版文章，10 种文章类型）、motion-showreel（动效短视频）。各技能以 .zip 形式分发下载，MIT 许可，附中英日三语文档。",
+  "highlights": [
+   "6 个覆盖演示、设计、图像生成、检索、编辑排版、动效视频的 SKILL 技能",
+   "兼容 Claude Code / Cursor / Codex 等 AI 编程 agent",
+   "每个技能附带 README、SKILL.md 与 .zip 版本化下载"
+  ],
+  "use_cases": [
+   "为我的 AI 编程 agent 安装网页设计或排版技能",
+   "把文章或脚本转成可录屏的网页演示",
+   "让 agent 从本地知识目录带出处地回答问题"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent 技能",
+   "SKILL.md",
+   "AI 编程工具",
+   "内容创作",
+   "本地知识检索"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation",
+   "ai-writing",
+   "document-qa"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文文档（English · 中文文档 · 日本語）",
+   "维护者为中文社区开发者 ConardLi"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L3: **A curated collection of production-ready Agent Skills for Claude Code, Cursor, Codex, and other AI coding agents.**",
+   "L67: Links: README · SKILL.md · Download v1.2.2 .zip"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker",
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     3
+    ],
+    "note": "通过 Claude Code 兼容间接关联，非专门接入适配",
+    "quotes": [
+     "**A curated collection of production-ready Agent Skills for Claude Code, Cursor, Codex, and other AI coding agents.**"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     67,
+     106,
+     177,
+     196,
+     228
+    ],
+    "note": "各技能提供版本化 .zip 下载",
+    "quotes": [
+     "Links: README · SKILL.md · Download v1.2.2 .zip",
+     "Links: README · SKILL.md · Website · Demo · Download v1.3.0 .zip",
+     "Links: README · SKILL.md · Website · Download v1.0.4 .zip",
+     "Links: README · SKILL.md · Download v1.0.1 .zip",
+     "Links: README · SKILL.md · Download v0.1.0 .zip"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     263
+    ],
+    "note": "窗外行涉及 npm，具体安装语境不可见",
+    "quotes": [
+     "|A|`skills` CLI (`npx skills add`)|Any agent, one-line install, pick & choose skills|✅ via tag URL|"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     3
+    ],
+    "note": "技能的宿主 agent 之一，非替代对象",
+    "quotes": [
+     "**A curated collection of production-ready Agent Skills for Claude Code, Cursor, Codex, and other AI coding agents.**"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     3
+    ],
+    "note": "技能的宿主 agent 之一，非替代对象",
+    "quotes": [
+     "**A curated collection of production-ready Agent Skills for Claude Code, Cursor, Codex, and other AI coding agents.**"
+    ]
+   }
+  ]
+ }
+}

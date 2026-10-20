@@ -1,0 +1,177 @@
+{
+ "fn": "google/artemis",
+ "sha": "d5f3a7288483",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让 AI 助手与测试套件用自然语言驱动真机 Android 自动化",
+  "review": "Google 的 Android 自动化框架：将自然语言指令转化为跨应用 UI 操作，通过无障碍层级、OCR 与视觉模型定位元素，以 Flash（快反应式）与 Pro（探索/稳定性测试）两种模式执行，并采集 Logcat、截图与结构化结果。原生提供 MCP 服务器，可将真机接入 Antigravity、Claude Code、Windsurf 等 AI IDE；另有 Web 控制台、CLI 与零依赖 Python SDK。在 Google Research 的 AndroidWorld 基准上报告 99%+ 完成率。要求 Python 3.12+ 与连接的 Android 设备/模拟器。",
+  "highlights": [
+   "自然语言驱动的跨应用 Android 自动化（Flash 每步约 3–5 秒）",
+   "原生 MCP 服务器接入 Antigravity / Claude Code / Windsurf 等 AI IDE",
+   "Web 控制台、CLI、Python SDK（Pydantic 结构化输出）三种使用方式",
+   "AndroidWorld 基准 100+ 多步任务报告 99%+ 完成率"
+  ],
+  "use_cases": [
+   "让 AI 编程助手在 IDE 中直接操作真机执行测试与诊断",
+   "用自然语言派发 Android UI 自动化测试任务并回放执行过程",
+   "将 Android 自动化接入 pytest 或 CI/CD 流水线"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Android 自动化",
+   "UI 测试",
+   "MCP",
+   "AI Agent 工具",
+   "移动端测试"
+  ],
+  "domain": "效率与自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "gui-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供中文文档入口（L6）"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L27: * **IDE Diagnostics**: **Model Context Protocol (MCP)** integration lets **Antigravity, Claude Code, and Windsurf** driv",
+   "L170: * **MCP Server**: Connects **Antigravity, Claude Code, Windsurf**, and other MCP clients to real devices for bug reprodu",
+   "L172: * **Python SDK**: Integrates as a standard Python library into existing automated testing frameworks (e.g., pytest) or C"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     122,
+     136,
+     144
+    ],
+    "note": "为 Claude Code / Claude Desktop 提供专属 MCP 配置与规则安装命令",
+    "quotes": [
+     "* **Claude Desktop** (`claude_desktop_config.json`):",
+     "* **Claude Code**: Run `artemis mcp --install claude` to install the rules to `~/.claude/rules/artemis.md` (install to e",
+     "In Codex, Antigravity, or Claude Code, simply prompt:"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     62,
+     72
+    ],
+    "quotes": [
+     "git clone https://github.com/google/artemis.git && cd artemis",
+     "git clone https://github.com/google/artemis.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     27,
+     144
+    ],
+    "note": "作为 MCP 客户端被接入，非替代/竞品",
+    "quotes": [
+     "* **IDE Diagnostics**: **Model Context Protocol (MCP)** integration lets **Antigravity, Claude Code, and Windsurf** driv",
+     "In Codex, Antigravity, or Claude Code, simply prompt:"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     27,
+     170
+    ],
+    "note": "被支持的 MCP 客户端",
+    "quotes": [
+     "* **IDE Diagnostics**: **Model Context Protocol (MCP)** integration lets **Antigravity, Claude Code, and Windsurf** driv",
+     "* **MCP Server**: Connects **Antigravity, Claude Code, Windsurf**, and other MCP clients to real devices for bug reprodu"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     56,
+     137
+    ],
+    "note": "被支持的 IDE 之一",
+    "quotes": [
+     "- **Mount Global MCP Server & AI Agent Rules**: Prompt to automatically install global MCP configurations and the **Arte",
+     "* **Cursor**: Copy the contents into `.cursorrules` or create a rule file at `.cursor/rules/artemis.mdc`."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

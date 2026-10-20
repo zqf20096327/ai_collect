@@ -1,0 +1,199 @@
+{
+ "fn": "NVIDIA/garak",
+ "sha": "04e5123cbc84",
+ "source": "readme",
+ "identity": {
+  "one_liner": "LLM 漏洞扫描器：探测幻觉、越狱、注入等安全弱点",
+  "review": "NVIDIA 维护的命令行 LLM 红队评测工具，类比 nmap/Metasploit：以静态、动态与自适应 probe 探测模型在幻觉、数据泄露、提示注入、毒性生成、越狱等方面的失败方式，并用配套 detector 输出各 probe 的失败率。支持 Hugging Face、OpenAI、Replicate、Cohere、Groq、NIM、AWS Bedrock、gguf/llama.cpp 及任意 REST 端点作为被测生成器。结果打印到终端并记录于 jsonl 日志，附基础分析脚本。",
+  "highlights": [
+   "数十种 probe：DAN、编码注入、GCG 对抗后缀、训练数据重放、包幻觉等",
+   "支持多种生成器目标：Hugging Face / OpenAI / Bedrock / gguf / REST 等",
+   "结果以失败率与 jsonl 日志输出，附 analyse_log.py 分析脚本"
+  ],
+  "use_cases": [
+   "模型上线前进行安全红队评测",
+   "对比不同模型对提示注入、越狱攻击的抵抗力",
+   "扫描自部署模型（Hugging Face/gguf/NIM）的安全弱点"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM安全",
+   "红队/渗透测试",
+   "评测",
+   "漏洞扫描",
+   "CLI工具"
+  ],
+  "domain": "评测与运维",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "bedrock",
+   "llama.cpp",
+   "cohere",
+   "groq"
+  ],
+  "scenario_tags_v2": [
+   "model-evaluation",
+   "cybersecurity"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: `garak` checks if an LLM can be made to fail in a way we don't want. `garak` probes for hallucination, data leakage, pro",
+   "L91: `garak` needs to know what model to scan, and by default, it'll try all the probes it knows on that model, using the vul"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     205,
+     207,
+     209
+    ],
+    "quotes": [
+     "### AWS Bedrock",
+     "* `--target_type bedrock`",
+     "* set the `BEDROCK_API_KEY` environment variable to your AWS Bedrock API key; see https://docs.aws.amazon.com/bedrock/la"
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "compat",
+    "lines": [
+     42
+    ],
+    "note": "gguf 模型经 llama.cpp 加载作为被测目标",
+    "quotes": [
+     "* gguf models like llama.cpp version >= 1046"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "support",
+    "lines": [
+     172,
+     174
+    ],
+    "quotes": [
+     "* `--target_type cohere`",
+     "* set the `COHERE_API_KEY` environment variable to your Cohere API key, e.g. \"aBcDeFgHiJ123456789\"; see https://dashboar"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     178,
+     180
+    ],
+    "quotes": [
+     "* `--target_type groq`",
+     "* set the `GROQ_API_KEY` environment variable to your Groq API key, see https://console.groq.com/docs/quickstart for det"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     208,
+     212
+    ],
+    "note": "Bedrock 上可测的模型家族之一，非直接接入",
+    "quotes": [
+     "* `--target_name` - the Bedrock model ID or alias, e.g. `anthropic.claude-3-sonnet-20240229-v1:0` or `claude-3-sonnet`",
+     "Supported model families include Anthropic Claude, Meta Llama, Amazon Titan, AI21 Labs, Cohere, and Mistral AI models. T"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     51,
+     54
+    ],
+    "quotes": [
+     "Just grab it from PyPI and you should be good to go:",
+     "python -m pip install -U garak"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     95,
+     137
+    ],
+    "note": "作为被测模型来源，非替代/竞品",
+    "quotes": [
+     "To specify a generator, use the `--target_type` and, optionally, the `--target_name` options. Model type specifies a mod",
+     "* `--target_type huggingface` (for transformers models to run locally)"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     123
+    ],
+    "note": "结果展示中的被测对象",
+    "quotes": [
+     "And the same results for ChatGPT:"
+    ]
+   }
+  ]
+ }
+}

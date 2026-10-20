@@ -1,0 +1,232 @@
+{
+ "fn": "CursorTouch/Windows-MCP",
+ "sha": "387c74aeab53",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让 AI agent 通过 MCP 操控 Windows 桌面的 MCP 服务器",
+  "review": "以 MCP 服务器形式连接 LLM 与 Windows 操作系统，向 Claude Desktop、Perplexity Desktop、Gemini CLI、Qwen Code、Codex CLI、Claude Code 等客户端提供键盘/鼠标模拟、窗口与 UI 元素交互、应用控制、UI 状态捕获等工具，并含面向网页内容的 DOM 模式（支持 Chrome/Edge/Firefox）。不依赖视觉模型，任意 LLM 均可使用；动作间典型延迟 0.2-0.5 秒。要求 Windows 10/11 与 Python 3.14+，通过 PyPI/uvx 安装，支持 stdio/SSE/streamable-http 三种传输，远程访问可启用鉴权、IP 白名单与 TLS。",
+  "highlights": [
+   "提供键盘鼠标、窗口控制与 UI 状态捕获等 UI 自动化工具集",
+   "DOM 模式过滤浏览器 UI，支持 Chrome/Edge/Firefox 网页自动化",
+   "不依赖视觉模型或微调模型，任意 LLM 可用",
+   "支持 stdio/SSE/streamable-http 传输，远程访问可配置鉴权、IP 白名单与 TLS"
+  ],
+  "use_cases": [
+   "让 Claude Desktop 等客户端直接操作本机 Windows 应用与文件",
+   "用自然语言驱动桌面 UI 自动化或 QA 测试",
+   "在 WSL 内的 Claude Code 通过桥接调用 Windows 侧 UI 自动化"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/d0e7ed1d-6189-4de6-838a-5ef8e1cad54e",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "MCP",
+   "桌面自动化",
+   "computer use",
+   "Windows",
+   "agent工具"
+  ],
+  "domain": "效率与自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "gui-automation",
+   "browser-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L22: **Windows-MCP** is a lightweight, open-source project that enables seamless integration between AI agents and the Window",
+   "L343: Windows-MCP runs directly on your Windows machine and exposes its tools to the connected MCP client."
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     27,
+     101,
+     103,
+     115
+    ],
+    "note": "提供 Claude Desktop/Claude Code 的专门接入配置说明",
+    "quotes": [
+     "- Windows-MCP reached `2M+ Users` in Claude Desktop Extensiosn.",
+     " Install in Claude Desktop",
+     " 1. Install Claude Desktop.",
+     " Add this to your `claude_desktop_config.json`:"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     29,
+     83,
+     111,
+     113
+    ],
+    "quotes": [
+     "- Windows-MCP is now available on PyPI (thus supports `uvx windows-mcp`)",
+     "uvx windows-mcp serve",
+     " **Option A: Install from PyPI (Recommended)**",
+     " Use `uvx` to run the latest version directly from PyPI."
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     123,
+     127
+    ],
+    "quotes": [
+     " **Option B: Install from Source**",
+     "  git clone https://github.com/CursorTouch/Windows-MCP.git"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     106,
+     214,
+     234,
+     253,
+     285
+    ],
+    "note": "均为外部客户端（mcpb/Gemini CLI/Qwen Code/Codex/Claude Code）的安装命令",
+    "quotes": [
+     "npm install -g @anthropic-ai/mcpb",
+     "npm install -g @google/gemini-cli",
+     "npm install -g @qwen-code/qwen-code@latest",
+     "npm install -g @openai/codex",
+     "npm install -g @anthropic-ai/claude-code"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "mention",
+    "lines": [
+     148,
+     318
+    ],
+    "note": "指 uvx.exe 可执行文件路径，非本产品二进制分发",
+    "quotes": [
+     " You must manually edit the configuration file. Note that Electron apps in the MSIX sandbox do not inherit the system `P",
+     "  claude mcp add --transport stdio windows-mcp -- C:\\Users\\<user>\\.local\\bin\\uvx.exe windows-mcp serve"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     181,
+     184
+    ],
+    "note": "被接入的 MCP 客户端",
+    "quotes": [
+     " Install in Perplexity Desktop",
+     " 2. Open Perplexity Desktop and go to `Settings -> Connectors -> Add Connector -> Advanced`."
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     230,
+     236
+    ],
+    "note": "Qwen Code 作为被接入的 MCP 客户端",
+    "quotes": [
+     " Install in Qwen Code",
+     " 2. Open `%USERPROFILE%/.qwen/settings.json`."
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     280,
+     282,
+     321
+    ],
+    "note": "被接入的 MCP 客户端",
+    "quotes": [
+     " Install in Claude Code",
+     " 1. Install Claude Code:",
+     " To verify the server is registered, run `claude mcp list`. Inside Claude Code, use `/mcp` to check server status."
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     373
+    ],
+    "note": "作为 MCP 客户端被列举",
+    "quotes": [
+     "|`stdio` (default)|`serve --transport stdio`|Direct connection from MCP clients like Claude Desktop, Cursor, etc.|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

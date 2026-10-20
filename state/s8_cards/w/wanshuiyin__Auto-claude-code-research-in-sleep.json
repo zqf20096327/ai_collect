@@ -1,33 +1,33 @@
 {
  "fn": "wanshuiyin/Auto-claude-code-research-in-sleep",
- "sha": "9ccdb46e5f5a",
+ "sha": "242808e684c4",
  "source": "readme",
  "identity": {
-  "one_liner": "给 ML 研究者提供跨模型审查循环的 Markdown 技能集",
-  "review": "ARIS 是一套纯 Markdown 的技能/工作流方法，用于自主 ML 研究：由执行模型驱动、独立模型（默认 Codex MCP）做跨模型审查，覆盖想法发现、实验自动化与审查循环。定位为方法论而非平台，可安装到 Claude Code、Codex CLI、Cursor、OpenClaw 等 agent 环境，也提供独立 CLI（ARIS-Code）与各平台插件发行，含 82-83 个技能；README 说明 codex-cli 0.154 移除 mcp-server 后改用 codex exec 桥接，替代模型组合无需 Claude 或 OpenAI API。",
+  "one_liner": "面向 LLM agent 的自主 ML 研究技能集：交叉评审、想法发现、实验自动化",
+  "review": "ARIS 是一套 Markdown 技能包，定义自动化机器学习研究的工作流：执行模型驱动研究，独立模型（默认 Codex MCP）负责评审，形成跨模型评审循环；包含 82 个技能，覆盖想法发现与实验自动化。可装入 Claude Code、Codex CLI、Cursor、OpenClaw 等任意 LLM agent 框架，无需绑定特定平台；另有 ARIS-Code CLI 独立安装版与各框架插件。codex-cli 0.154 移除 codex mcp-server 后改用自带 codex exec 桥接。",
   "highlights": [
-   "跨模型审查循环：执行者驱动，独立模型（默认 Codex MCP）审查",
-   "纯 Markdown 技能形式，82-83 个技能，无框架依赖",
-   "提供独立 CLI（ARIS-Code）及 Claude Code / Codex CLI / DeepSeek Harness 插件",
-   "支持 ModelScope 托管模型的替代模型组合，无需 Claude/OpenAI API"
+   "执行模型驱动、独立模型评审的跨模型评审循环",
+   "82 个 Markdown 技能，无框架绑定，兼容多种 LLM agent CLI",
+   "提供 ARIS-Code CLI 独立版与 Claude Code / Codex 等插件",
+   "codex exec 桥接替代被移除的 codex mcp-server 入口"
   ],
   "use_cases": [
-   "让 agent 在夜间自主推进 ML 研究实验与审查循环",
-   "在 Claude Code / Codex CLI / Cursor 等环境中安装研究工作流技能",
-   "为想法发现与实验自动化配置跨模型审查门控"
+   "让 Claude Code / Codex 等 agent 在无人值守下跑 ML 研究循环",
+   "用独立评审模型把关 agent 产出的想法与实验代码",
+   "以技能形式为任意 agent 框架加装研究工作流"
   ]
  },
  "filters": {
-  "ai_role": "ai-native",
+  "ai_role": "ai-ecosystem",
   "license_risk": "permissive",
   "deploy": "desktop",
-  "model_dep": null,
+  "model_dep": "local-ok",
   "hardware": null,
   "install_friction": "low",
   "maturity": "research"
  },
  "eval": {
-  "target_user": "科研",
+  "target_user": "开发者",
   "paper_url": "https://huggingface.co/papers/2605.03042",
   "demo_url": null,
   "self_declared_early": {
@@ -37,15 +37,18 @@
  },
  "links": {
   "scenario_tags": [
-   "科研自动化",
-   "LLM技能",
-   "跨模型审查",
-   "CLI工具"
+   "AI科研自动化",
+   "agent技能",
+   "跨模型评审",
+   "Claude Code生态",
+   "LLM工作流"
   ],
   "domain": "学习与行业",
   "alternative_to": [],
   "competitors_mentioned": [],
-  "ecosystem_compat": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
   "scenario_tags_v2": [
    "research-tools"
   ]
@@ -54,8 +57,9 @@
   "maintainer_type": "individual",
   "zh_origin": true,
   "zh_origin_signals": [
-   "秋招中文表述（L19）",
-   "ARIS-Code 独立安装版中文标题（L27）"
+   "README 含中文段落（L19、L27）",
+   "中文社区署名贡献者（L33）",
+   "VALSE 2026 报告"
   ]
  },
  "trust": {
@@ -72,8 +76,14 @@
   },
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -83,46 +93,89 @@
     "rel": "mention",
     "lines": [
      11,
-     27
+     13
     ],
-    "note": "Anthropic 渠道提及，非专门适配声明",
+    "note": "作为执行模型通道之一被列举",
     "quotes": [
      "💡 *Use ARIS as a skill-based workflow in Claude Code / Codex CLI / Cursor / Trae / Antigravity / GitHub Copilot CLI / Op",
-     "🔥 **ARIS-Code CLI — 独立安装版** · English | ⬇️ Download · Downloads — **v0.4.28**: `ARIS_REASONING_EFFORT` works on the Anth"
+     "📦 *Those are the skills installed directly. Want it in one command? ARIS also ships as a standalone CLI and as plugins:*"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     11,
+     13
+    ],
+    "note": "DeepSeek Harness 作为可运行框架被列举",
+    "quotes": [
+     "💡 *Use ARIS as a skill-based workflow in Claude Code / Codex CLI / Cursor / Trae / Antigravity / GitHub Copilot CLI / Op",
+     "📦 *Those are the skills installed directly. Want it in one command? ARIS also ships as a standalone CLI and as plugins:*"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "mention",
+    "lines": [
+     91
+    ],
+    "quotes": [
+     "> **v0.4.3** (2026-04-17) — **Third-party Anthropic-compat proxy support** (Bedrock etc.) | Skip beta flags that proxies"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     95,
+     99
+    ],
+    "note": "窗外行：本地运行时相关配合用法",
+    "quotes": [
+     "> **v0.4.1** (2026-04-15) — **Plan mode** (`/plan`) | Cooperative Ctrl+C interrupt | Auto-retry (429/5xx/network) | **Re",
+     "> **v0.3.9** (2026-04-11) — Proxy/custom base URL (CCSwitch) | Local models (LM Studio/Ollama) | Windows (experimental)"
     ]
    }
   ],
   "install": [
    {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     13,
+     49
+    ],
+    "note": "ARIS-Code CLI 提供下载安装版",
+    "quotes": [
+     "📦 *Those are the skills installed directly. Want it in one command? ARIS also ships as a standalone CLI and as plugins:*",
+     "> **v0.4.22** (2026-07-12) — **the skills-resync + GPT-6-Astra release**. **📦 Bundle resync** (pin 7e3ab67 → 7182624, 93"
+    ]
+   },
+   {
     "term": "npm",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
+    "rel": "mention",
+    "lines": [
+     261
+    ],
+    "note": "窗外行：插件/组件相关 npm 安装",
+    "quotes": [
+     "- **2026-05-02** — NEW 💎🧿 **Model & MCP routing updates**. (a) `/gemini-search` default bumped to `gemini-3-pro-preview`"
+    ]
    }
   ],
   "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [],
+   "note": "codex-cli 上游接口移除已有桥接方案，非本项目废弃"
+  },
   "products": [
-   {
-    "term": "Hugging Face",
-    "rel": "mention",
-    "lines": [
-     3
-    ],
-    "quotes": [
-     " <a href=\"https://huggingface.co/papers/2605.03042\">"
-    ]
-   },
-   {
-    "term": "GitHub Copilot",
-    "rel": "mention",
-    "lines": [
-     11
-    ],
-    "note": "被支持的宿主环境之一，非替代/竞品",
-    "quotes": [
-     "💡 *Use ARIS as a skill-based workflow in Claude Code / Codex CLI / Cursor / Trae / Antigravity / GitHub Copilot CLI / Op"
-    ]
-   },
    {
     "term": "Claude Code",
     "rel": "mention",
@@ -130,7 +183,7 @@
      11,
      13
     ],
-    "note": "技能安装的宿主环境，非替代/竞品",
+    "note": "技能的宿主框架之一",
     "quotes": [
      "💡 *Use ARIS as a skill-based workflow in Claude Code / Codex CLI / Cursor / Trae / Antigravity / GitHub Copilot CLI / Op",
      "📦 *Those are the skills installed directly. Want it in one command? ARIS also ships as a standalone CLI and as plugins:*"
@@ -142,50 +195,33 @@
     "lines": [
      11
     ],
-    "note": "可用的宿主环境，非替代/竞品",
+    "note": "可运行框架之一",
     "quotes": [
      "💡 *Use ARIS as a skill-based workflow in Claude Code / Codex CLI / Cursor / Trae / Antigravity / GitHub Copilot CLI / Op"
     ]
    },
    {
-    "term": "ChatGPT",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     11
+    ],
+    "note": "可运行框架之一",
+    "quotes": [
+     "💡 *Use ARIS as a skill-based workflow in Claude Code / Codex CLI / Cursor / Trae / Antigravity / GitHub Copilot CLI / Op"
+    ]
    },
    {
-    "term": "Kimi",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
-   },
-   {
-    "term": "通义千问",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
-   },
-   {
-    "term": "豆包",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
-   },
-   {
-    "term": "Windsurf",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     3
+    ],
+    "note": "论文托管平台，非产品对比",
+    "quotes": [
+     " <a href=\"https://huggingface.co/papers/2605.03042\">"
+    ]
    }
-  ],
-  "dual_license": {
-   "flag": false,
-   "lines": [],
-   "quotes": []
-  },
-  "deprecation": {
-   "flag": false,
-   "lines": []
-  }
+  ]
  }
 }

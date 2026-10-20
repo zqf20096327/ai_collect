@@ -1,0 +1,180 @@
+{
+ "fn": "RunanywhereAI/runanywhere-sdks",
+ "sha": "e8961e49ea6b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "跨平台本地 AI SDK 套件：一套 C++ 核心跑 LLM/语音/视觉/RAG",
+  "review": "RunAnywhere 提供覆盖 Swift/Kotlin/Flutter/React Native/Web/Electron/Python/CLI 的八个 SDK，均基于单一 C++ 核心（runanywhere-commons，纯 C ABI）。能力注册表按设备将调用路由到 QHexRT（骁龙 Hexagon NPU）、MLX（Apple 芯片）、llama.cpp、sherpa+ONNX 或 Core ML。功能包括 LLM 对话、结构化输出、工具调用、VLM、STT/TTS/语音管线、嵌入、本地 RAG 与扩散图像生成，另有 wally CLI 提供 OpenAI 兼容服务。各 SDK 成熟度不一（Stable 到 Alpha/Preview），Connect 局域网共享无 TLS/配对。",
+  "highlights": [
+   "八个 SDK 共享一套语义 API 与单一 C++ 核心",
+   "能力注册表按设备路由到 NPU/MLX/llama.cpp/ONNX/Core ML 引擎",
+   "覆盖 LLM、VLM、STT/TTS、嵌入、RAG、扩散图像生成等模态",
+   "wally CLI 可启动 OpenAI 兼容本地服务（:8080）"
+  ],
+  "use_cases": [
+   "在移动 App 中集成离线 LLM 对话与语音管线",
+   "构建本地 RAG 问答与嵌入检索应用",
+   "用同一套代码在 iOS/Android/桌面/浏览器部署端侧 AI"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    244,
+    245,
+    246,
+    247,
+    248
+   ],
+   "note": "多个 SDK 标注 Beta/Preview/Alpha"
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "端侧AI",
+   "本地推理",
+   "多平台SDK",
+   "移动端LLM",
+   "语音AI"
+  ],
+  "domain": "知识与检索",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "llama.cpp"
+  ],
+  "scenario_tags_v2": [
+   "inference-engine",
+   "rag",
+   "multimodal"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14:  RunAnywhere architecture: eight SDKs over one C++ core, a capability registry that routes to QHexRT, MLX, llama.cpp, sh",
+   "L16:  Eight SDKs, one C++ core. A capability registry routes every call to the best engine on the device,",
+   "L303: Every SDK is a thin binding over `runanywhere-commons`, a single C++ core behind a pure C ABI. Engines plug into a capab"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     25
+    ],
+    "note": "作为支持的模型家族被列举",
+    "quotes": [
+     "- **LLM chat**: Llama, Qwen, Gemma, Phi, LFM, SmolLM, DeepSeek, and more, with token streaming, multi-turn history, and "
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "compat",
+    "lines": [
+     37,
+     309
+    ],
+    "note": "作为可路由的推理引擎集成",
+    "quotes": [
+     "Your code rarely picks hardware. Engines register what they can run, and the highest-priority engine that fits the devic",
+     "|**llama.cpp**|LLM, VLM|Everywhere: Metal on Apple, CUDA opt-in on Windows/Linux, WebGPU + WASM in the browser, CPU with"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     62,
+     207
+    ],
+    "quotes": [
+     "pip install runanywhere",
+     "pip install runanywhere==0.20.11"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     156,
+     174
+    ],
+    "quotes": [
+     "npm install @runanywhere/core@0.20.11 @runanywhere/llamacpp@0.20.11",
+     "npm install @runanywhere/web@0.20.11 @runanywhere/web-llamacpp@0.20.11"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     191,
+     247
+    ],
+    "note": "Electron SDK 从源码构建",
+    "quotes": [
+     "Install: build from source (Windows x64 preview), see the SDK README for steps.",
+     "|**Electron**|Windows x64 desktop|Preview|Build from source|SDK README|"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     25
+    ],
+    "note": "Qwen 作为可运行的模型家族被列举",
+    "quotes": [
+     "- **LLM chat**: Llama, Qwen, Gemma, Phi, LFM, SmolLM, DeepSeek, and more, with token streaming, multi-turn history, and "
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

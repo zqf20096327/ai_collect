@@ -1,0 +1,185 @@
+{
+ "fn": "apify/apify-mcp-server",
+ "sha": "86d7bc1f3ccc",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让 AI agent 通过 MCP 调用 Apify 爬虫/数据提取工具的服务器",
+  "review": "Apify 官方维护的 Model Context Protocol 服务器，将 Apify Store 中数千个爬虫、数据提取与自动化 Actor 暴露为 AI agent 可调用的工具，覆盖社交媒体、搜索引擎、地图、电商等网站数据提取。提供托管端点 mcp.apify.com（OAuth/Bearer Token 接入）与本地 stdio 运行（npx）两种方式；加载 Actor 的输入 schema 动态生成 MCP 工具，另提供 Actor 搜索、运行管理、存储访问、定时任务等辅助工具，并支持 AGI/x402/Skyfire 三种 agentic 支付方式。兼容 Claude Desktop、ChatGPT、Cursor、VS Code 等 MCP 客户端。",
+  "highlights": [
+   "数千个 Apify Actor 可作为 MCP 工具被 AI agent 调用",
+   "托管端点（OAuth）与本地 stdio 两种接入方式",
+   "动态工具发现：按 Actor 输入 schema 自动生成 MCP 工具",
+   "支持 AGI/x402/Skyfire 三种 agent 支付方式"
+  ],
+  "use_cases": [
+   "让 Claude/ChatGPT 等 AI 助手抓取社交媒体、地图、搜索引擎数据",
+   "为 AI agent 提供网页抓取与内容提取能力",
+   "通过 agent 支付按次运行 Actor 而无需 Apify 账号"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "MCP服务器",
+   "网页抓取",
+   "agent工具",
+   "数据提取",
+   "AI基础设施"
+  ],
+  "domain": "效率与自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "web-scraping"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L33: The Apify MCP Server allows an AI assistant to use any Apify Actor as a tool to perform a specific task.",
+   "L182: Any Apify Actor can be used as a tool.",
+   "L184: The MCP server loads an Actor's input schema and creates a corresponding MCP tool."
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     24,
+     42
+    ],
+    "note": "Claude 系客户端作为兼容/测试的 MCP 客户端被列举，非专门接入适配对象",
+    "quotes": [
+     "Apify MCP Server is compatible with `Claude Code, Claude.ai, Cursor, VS Code` and any client that adheres to the Model C",
+     "**Video tutorial: Integrate 8,000+ Apify Actors and Agents with Claude**"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     54,
+     55
+    ],
+    "quotes": [
+     "- Set the MCP client server command to `npx @apify/actors-mcp-server` and the `APIFY_TOKEN` environment variable to your",
+     "- See `npx @apify/actors-mcp-server --help` for more options."
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     96
+    ],
+    "note": "mcpc 客户端的安装方式，非本产品安装途径",
+    "quotes": [
+     "- **Direct x402** pays with USDC on Base per request and does not require a separate platform account. It is fully suppo"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     521
+    ],
+    "note": "窗外行，Docker 相关内容在开发/部署语境出现",
+    "quotes": [
+     "The Apify MCP Server is also available on Docker Hub, registered via the mcp-registry repository. The entry in `servers/"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    20
+   ],
+   "note": "Legacy SSE 传输端点已被移除，要求迁移到 Streamable HTTP"
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     24,
+     222
+    ],
+    "quotes": [
+     "Apify MCP Server is compatible with `Claude Code, Claude.ai, Cursor, VS Code` and any client that adheres to the Model C",
+     "- ✅¹ — served by default, but only when telemetry is enabled and the client is not withheld: Anthropic surfaces (Claude."
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     24,
+     75
+    ],
+    "quotes": [
+     "Apify MCP Server is compatible with `Claude Code, Claude.ai, Cursor, VS Code` and any client that adheres to the Model C",
+     "- Cursor"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     73
+    ],
+    "quotes": [
+     "- ChatGPT"
+    ]
+   }
+  ]
+ }
+}

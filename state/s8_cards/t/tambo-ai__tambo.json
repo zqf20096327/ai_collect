@@ -1,0 +1,126 @@
+{
+ "fn": "tambo-ai/tambo",
+ "sha": "93820502c846",
+ "source": "readme",
+ "identity": {
+  "one_liner": "React 生成式 UI 工具包：让 agent 选择并流式渲染组件",
+  "review": "面向 React 开发者的开源生成式 UI 全栈方案：开发者用 Zod schema 注册组件，LLM 将其作为工具调用，Tambo 处理 props 流式传输、会话状态管理与 agent 执行循环；自带后端，可选 Tambo Cloud 托管或经 Docker 自托管。支持 OpenAI/Anthropic/Gemini/Mistral 等自带 API key 的提供商，兼容 MCP 协议（工具/提示/elicitation/sampling）与浏览器端本地工具，可与 LangChain、Mastra 搭配但非必需。注意：Tambo Cloud 将于 2026-10-31 停止服务，新注册已关闭，自托管路径保留。",
+  "highlights": [
+   "Zod schema 注册组件，agent 自动选择并流式渲染 props",
+   "完整 MCP 协议支持（tools/prompts/elicitations/sampling）",
+   "可持久化的可交互组件（购物车、任务板等）",
+   "自带后端可 Docker 自托管，SDK 与后端为 MIT/Apache-2.0"
+  ],
+  "use_cases": [
+   "为聊天应用加入按用户意图动态生成的 UI 组件",
+   "构建由 agent 驱动并可交互操作的分析看板或任务板",
+   "通过 MCP 接入 Linear、Slack、数据库等外部系统"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "生成式UI",
+   "React SDK",
+   "agent界面",
+   "LLM基础设施",
+   "MCP"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "Vercel AI SDK"
+  ],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7:  The open-source generative UI toolkit for React. Connect your components—Tambo handles streaming, state management, and",
+   "L36: Tambo is a fullstack solution for adding generative UI to your app. You get a React SDK plus a backend that handles conv",
+   "L38: **1. Agent included** — Tambo runs the LLM conversation loop for you. Bring your own API key (OpenAI, Anthropic, Gemini,"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     38
+    ],
+    "note": "可搭配的 agent 框架，非必需",
+    "quotes": [
+     "**1. Agent included** — Tambo runs the LLM conversation loop for you. Bring your own API key (OpenAI, Anthropic, Gemini,"
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "competitor",
+    "lines": [
+     181,
+     184,
+     189
+    ],
+    "quotes": [
+     "|Feature|Tambo|Vercel AI SDK|CopilotKit|Assistant UI|",
+     "|**MCP integration**|Built-in|Experimental (v4.2+)|Recently added|Requires AI SDK v5|",
+     "|**Best for**|Full app UI control|Streaming and tool abstractions|Multi-agent workflows|Chat interfaces|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "note": "MIT 与 Apache-2.0 按工作区划分，非双许可商业模式",
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    1,
+    54
+   ]
+  }
+ }
+}

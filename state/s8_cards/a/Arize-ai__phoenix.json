@@ -1,0 +1,284 @@
+{
+ "fn": "Arize-ai/phoenix",
+ "sha": "4885975081de",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 LLM 应用的开源可观测性与评测平台",
+  "review": "Arize 维护的开源 AI 可观测性平台：基于 OpenTelemetry/OpenInference 对 LLM 应用做运行时追踪，提供 LLM 评测（响应与检索 evals）、版本化数据集、实验跟踪、Prompt 管理与 Playground，内置 AI 工程 agent PXI 和远程 MCP Server。厂商与语言无关，支持 OpenAI、Anthropic、Bedrock、Ollama 等多种 LLM 提供方及 LangChain、LlamaIndex 等框架的插桩集成。pip/conda 安装即可本地运行，另有 Docker/Helm 部署路径；托管版为商业产品 Arize AX。",
+  "highlights": [
+   "OpenTelemetry/OpenInference 基础的 LLM 应用追踪",
+   "LLM 评测（RAG 相关性、回答相关性等）与版本化数据集、实验跟踪",
+   "Prompt 版本管理与 Playground（调优、模型对比、回放）",
+   "内置 PXI agent 与远程 MCP Server，可接 Claude Code、Cursor 等客户端"
+  ],
+  "use_cases": [
+   "追踪和调试 LLM 应用的运行时调用链",
+   "对 RAG / Agent 应用做评测与实验对比",
+   "团队系统化管理 Prompt 变更与数据集"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    127
+   ],
+   "note": "phoenix-evals TS 版标注 alpha"
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM可观测性",
+   "评测/tracing",
+   "LLMOps",
+   "Prompt工程",
+   "agent监控"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "openrouter",
+   "bedrock",
+   "cohere",
+   "together",
+   "ollama",
+   "groq"
+  ],
+  "scenario_tags_v2": [
+   "llm-observability",
+   "model-evaluation",
+   "prompt-engineering"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L42: Arize Phoenix is Arize's open-source AI observability platform designed for experimentation, evaluation, and troubleshoo",
+   "L44: - **_Tracing_** - Trace your LLM application's runtime using OpenTelemetry-based instrumentation.",
+   "L55: Phoenix is vendor and language agnostic with out-of-the-box support for popular frameworks (OpenAI Agents SDK, Claude Ag"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     55,
+     160
+    ],
+    "note": "官方 OpenInference 插桩包，README 明确列为支持 provider",
+    "quotes": [
+     "Phoenix is vendor and language agnostic with out-of-the-box support for popular frameworks (OpenAI Agents SDK, Claude Ag",
+     "||Anthropic|`openinference-instrumentation-anthropic`|PyPI Version|"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     55,
+     156
+    ],
+    "quotes": [
+     "Phoenix is vendor and language agnostic with out-of-the-box support for popular frameworks (OpenAI Agents SDK, Claude Ag",
+     "||OpenRouter|`openinference-instrumentation-openai`|PyPI Version|"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     55,
+     142
+    ],
+    "quotes": [
+     "Phoenix is vendor and language agnostic with out-of-the-box support for popular frameworks (OpenAI Agents SDK, Claude Ag",
+     "||AWS Bedrock|`openinference-instrumentation-bedrock`|PyPI Version|"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "support",
+    "lines": [
+     146
+    ],
+    "quotes": [
+     "||Cohere|`openinference-instrumentation-cohere`|PyPI Version|"
+    ]
+   },
+   {
+    "term": "together",
+    "rel": "support",
+    "lines": [
+     147
+    ],
+    "quotes": [
+     "||Together AI|`openinference-instrumentation-together`|PyPI Version|"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     148
+    ],
+    "note": "openinference-instrumentation-ollama 插桩支持",
+    "quotes": [
+     "||Ollama|`openinference-instrumentation-ollama`|PyPI Version|"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "support",
+    "lines": [
+     158
+    ],
+    "quotes": [
+     "||Groq|`openinference-instrumentation-groq`|PyPI Version|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     22,
+     69
+    ],
+    "quotes": [
+     " <a target=\"_blank\" href=\"https://pypi.org/project/arize-phoenix/\">",
+     "pip install arize-phoenix"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     84
+    ],
+    "quotes": [
+     "npx @arizeai/phoenix-cli setup"
+    ]
+   },
+   {
+    "term": "helm",
+    "rel": "support",
+    "lines": [
+     92
+    ],
+    "quotes": [
+     "Phoenix container images are available via Docker Hub and can be deployed using Docker or Kubernetes via the Helm chart."
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     94
+    ],
+    "quotes": [
+     "For Docker Compose, Kubernetes/Helm, and other deployment options, see the self-hosting documentation."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     51,
+     81
+    ],
+    "quotes": [
+     "- **_Remote MCP Server_** - Connect Claude Code, Cursor, and other MCP clients directly to your Phoenix instance's `/mcp",
+     "The fastest way to send traces is to let your coding agent (Claude Code, Codex, Cursor, and others) instrument your app."
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     51,
+     81
+    ],
+    "quotes": [
+     "- **_Remote MCP Server_** - Connect Claude Code, Cursor, and other MCP clients directly to your Phoenix instance's `/mcp",
+     "The fastest way to send traces is to let your coding agent (Claude Code, Codex, Cursor, and others) instrument your app."
+    ]
+   },
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     55,
+     193
+    ],
+    "note": "被插桩的框架",
+    "quotes": [
+     "Phoenix is vendor and language agnostic with out-of-the-box support for popular frameworks (OpenAI Agents SDK, Claude Ag",
+     "||Vercel AI SDK|`@arizeai/openinference-vercel`|NPM Version|"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     143,
+     191
+    ],
+    "note": "被插桩/集成的框架",
+    "quotes": [
+     "||LangChain|`openinference-instrumentation-langchain`|PyPI Version|",
+     "||LangChain.js|`@arizeai/openinference-instrumentation-langchain`|NPM Version|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "note": "开源自托管与商业托管版 Arize AX 并存，但未声明本产品双许可",
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    128
+   ],
+   "note": "phoenix-mcp 独立包处于维护模式，被远程 MCP server 取代"
+  }
+ }
+}

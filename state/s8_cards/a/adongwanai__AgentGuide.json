@@ -1,0 +1,203 @@
+{
+ "fn": "adongwanai/AgentGuide",
+ "sha": "3755427e639d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向求职的 AI Agent 开发与算法学习指南知识库",
+  "review": "个人维护的开源知识库，对标 JavaGuide 定位为 AI Agent 学习指南。内容围绕 Agent 开发与求职组织：Agent Loop、Harness、Context Engineering、Tools/MCP/Skills、RAG/GraphRAG、Post-training（SFT/DPO/GRPO）等主题，覆盖算法岗与开发岗两条学习路线（分别 10-15 周与 8-12 周），并提供 1500+ 面试题库、8 阶段学习产出表、项目落地 5 步法与简历表达方法。以引用外部资源与系统化路径整合为主，不提供可安装运行的软件，内容通过文档站点与仓库阅读。",
+  "highlights": [
+   "算法岗/开发岗双学习路线与 6 步求职路径",
+   "1500+ 面试题库与面试深水区专题",
+   "8 阶段学习产出表与项目落地 5 步法",
+   "覆盖 Harness、RAG、Post-training、Eval 等 Agent 技术栈主题"
+  ],
+  "use_cases": [
+   "系统学习 AI Agent 开发并准备求职",
+   "区分算法岗与开发岗并选择方向",
+   "查找面试题与简历项目表达方法"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://adongwanai.github.io/AgentGuide",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "学习路线",
+   "面试题库",
+   "Agent开发",
+   "RAG",
+   "求职"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "对标 JavaGuide",
+   "国内招聘平台（Boss/猎聘）语境",
+   "Datawhale 社区项目收录"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L22: > **📌 本项目定位：资源整合 + 系统化路径 + 实战导向**",
+   "L76: > **AI Agent 工程、研究与求职的开源知识库**"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     313,
+     318
+    ],
+    "note": "引用 Anthropic 官方 Agent 设计文章与 Claude Code 相关资源，非接入",
+    "quotes": [
+     "|**Learn Claude Code**|从零构建迷你Claude Code，12节渐进式，覆盖工具调用/子Agent/上下文压缩/多Agent协作|GitHub|",
+     "|**Vibe Coding 教程**|从零掌握AI协作编程，Cursor/Claude Code实操指南，Vibe Coding面试攻略|链接|"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     526
+    ],
+    "quotes": [
+     "- 推理服务部署（vLLM、TGI、Triton）"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     826
+    ],
+    "quotes": [
+     "📖 DeepSeek 系列完整深度笔记 🆕"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     101
+    ],
+    "note": "技术栈覆盖范围列举",
+    "quotes": [
+     " - Dify、n8n、Flowise"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     303,
+     318
+    ],
+    "note": "教程语境提及的 AI 编程工具",
+    "quotes": [
+     "- **AI工具人人都有，判断力才是壁垒。** 会用Cursor写代码不算竞争力。当AI给你一个错误的Agent设计，你能30秒内发现并说清楚为什么错——这才是L5和L3的分水岭。",
+     "|**Vibe Coding 教程**|从零掌握AI协作编程，Cursor/Claude Code实操指南，Vibe Coding面试攻略|链接|"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     305,
+     378
+    ],
+    "note": "面试与学习语境提及的框架",
+    "quotes": [
+     "- **拿结果说话。** 不是\"我学过LangChain\"，是\"我用LangGraph做了一个有300个真实用户的工具\"。",
+     "面试不只问“会不会 LangChain”，更会追问你有没有真正写过能跑的 Agent："
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     313,
+     348
+    ],
+    "note": "作为学习样本与资源列举",
+    "quotes": [
+     "|**Learn Claude Code**|从零构建迷你Claude Code，12节渐进式，覆盖工具调用/子Agent/上下文压缩/多Agent协作|GitHub|",
+     "|1|**Claude Code / Codex-style Coding Agents**|真实代码库、shell、文件编辑、测试、权限、上下文压缩，是理解 Agent 工程的最佳样本|"
+    ]
+   },
+   {
+    "term": "Coze",
+    "rel": "mention",
+    "lines": [
+     766
+    ],
+    "quotes": [
+     "|模块5：低代码平台快速验证|LangChain、Dify、Coze、n8n工具使用||"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     828
+    ],
+    "quotes": [
+     "📖 Qwen 系列深度学习笔记 🆕"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

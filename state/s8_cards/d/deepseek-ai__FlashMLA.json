@@ -1,0 +1,143 @@
+{
+ "fn": "deepseek-ai/FlashMLA",
+ "sha": "2002539abc5e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "DeepSeek 的高性能注意力算子库，支撑模型在 GPU/NPU 上推理",
+  "review": "DeepSeek 维护的优化注意力 kernel 库，用于 DeepSeek-V4.1 模型在 NVIDIA GPU 与华为昇腾 NPU 上的推理。提供 token 级稀疏注意力 prefill/decoding 算子（FP8/FP4 KV cache）、融合 Q-norm/Q-RoPE/attention/O-RoPE/FP8 cast 的融合 kernel，以及稠密注意力的 prefill 与反向传播算子。最新版本移除了 Hopper 架构与前代模型支持并更改 KV cache 格式，与旧版不兼容。源码编译安装，要求 SM100/SM103 GPU（CUDA 13.1+）或昇腾 950 NPU（CANN 9.2+）。",
+  "highlights": [
+   "token 级稀疏注意力 prefill/decoding 算子（FP8/FP4 KV cache）",
+   "融合 Q-norm、Q-RoPE、attention、O-RoPE 与 FP8 cast 的融合 kernel",
+   "同时支持 NVIDIA SM100/SM103 GPU 与华为昇腾 950 NPU",
+   "稠密注意力 MHA 的 prefill 与反向传播 kernel"
+  ],
+  "use_cases": [
+   "为 DeepSeek-V4.1 推理提供注意力 kernel",
+   "在昇腾 NPU 上运行稀疏注意力计算",
+   "基准测试与对比注意力算子性能"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "注意力算子",
+   "推理加速",
+   "GPU kernel",
+   "国产硬件（昇腾）"
+  ],
+  "domain": "训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "DeepSeek（中国公司）官方仓库",
+   "README 含中文段落",
+   "支持华为昇腾 NPU"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: FlashMLA is DeepSeek's library of optimized attention kernels, powering inference of the DeepSeek-V4.1 model on NVIDIA G",
+   "L9: FlashMLA 是 DeepSeek 的高性能注意力算子库，支撑着 DeepSeek-V4.1 模型在 NVIDIA GPU 与华为昇腾 NPU 上的推理。该仓库支持 prefill 与使用了 FP8 或 FP4 格式的 KV 缓存的 d"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     3,
+     7,
+     9
+    ],
+    "quotes": [
+     "> Breaking change notice (2026.09.30): In the 2026.09.30 release, we removed support for the Hopper architecture and for",
+     "FlashMLA is DeepSeek's library of optimized attention kernels, powering inference of the DeepSeek-V4.1 model on NVIDIA G",
+     "FlashMLA 是 DeepSeek 的高性能注意力算子库，支撑着 DeepSeek-V4.1 模型在 NVIDIA GPU 与华为昇腾 NPU 上的推理。该仓库支持 prefill 与使用了 FP8 或 FP4 格式的 KV 缓存的 d"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     95,
+     96,
+     97
+    ],
+    "quotes": [
+     "git clone https://github.com/deepseek-ai/FlashMLA.git flash-mla",
+     "cd flash-mla",
+     "git submodule update --init --recursive"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     98
+    ],
+    "note": "从源码目录 pip install 编译安装",
+    "quotes": [
+     "pip install -v . --no-build-isolation"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    3,
+    21
+   ],
+   "note": "breaking change：移除 Hopper 与前代模型支持，但项目仍在持续发布，非项目弃用"
+  }
+ }
+}

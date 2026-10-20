@@ -1,0 +1,154 @@
+{
+ "fn": "ultralytics/yolov3",
+ "sha": "40fc9547f7e0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发者的 YOLOv3 目标检测 PyTorch 实现（训练/推理/导出）",
+  "review": "Ultralytics 维护的 YOLOv3、YOLOv3-SPP、YOLOv3-tiny 三个检测模型的 PyTorch 实现：将检测作为单次回归问题，一次前向直接输出边界框与类别概率。提供训练（COCO，可多 GPU）、验证、推理（支持摄像头/图片/视频等来源）与多格式导出（TorchScript、ONNX、OpenVINO、TensorRT、CoreML、PaddlePaddle），模型与数据集首次使用时自动下载，架构以 YAML 声明式定义。AGPL-3.0 许可，商业用途需另购 Enterprise License。",
+  "highlights": [
+   "YOLOv3 / YOLOv3-SPP / YOLOv3-tiny 三个模型变体，COCO 预训练权重自动下载",
+   "支持训练、验证、推理与多格式导出（ONNX/TensorRT/CoreML 等）",
+   "架构以 models/*.yaml 声明式定义，可不经编写 Python 修改结构",
+   "支持 PyTorch Hub 加载、多 GPU 训练与 TTA/模型集成等技巧"
+  ],
+  "use_cases": [
+   "在自有数据集上训练目标检测模型",
+   "对图片、视频或摄像头流做实时目标检测推理",
+   "将模型导出为 ONNX/TensorRT 等格式部署到边缘设备"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "目标检测",
+   "计算机视觉",
+   "模型训练",
+   "边缘部署",
+   "PyTorch"
+  ],
+  "domain": "感知与多模态",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "object-detection",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L14: Ultralytics YOLOv3 is a PyTorch implementation of the YOLOv3 (You Only Look Once, version 3) real-time object detection ",
+   "L16: This repository packages the three classic YOLOv3 detection models — **YOLOv3**, **YOLOv3-SPP**, and **YOLOv3-tiny** — w",
+   "L84: Validate accuracy with `python val.py --weights yolov3.pt --data coco.yaml`, and export to other formats (TorchScript, O"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cpu-infer",
+    "rel": "mention",
+    "lines": [
+     84,
+     113
+    ],
+    "note": "导出格式提及与 YOLOv3-tiny 面向 CPU/边缘设备的说明，非专门接入",
+    "quotes": [
+     "Validate accuracy with `python val.py --weights yolov3.pt --data coco.yaml`, and export to other formats (TorchScript, O",
+     "- **YOLOv3-tiny** — a compact backbone with detection at two scales, optimized for CPU and edge devices where speed matt"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     46
+    ],
+    "quotes": [
+     "git clone https://github.com/ultralytics/yolov3"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     7,
+     159
+    ],
+    "quotes": [
+     " Docker Pulls",
+     " <a href=\"https://docs.ultralytics.com/guides/docker-quickstart\">"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     12,
+     153,
+     154
+    ],
+    "quotes": [
+     " Open In Colab",
+     " <a href=\"https://docs.ultralytics.com/integrations/google-colab\">",
+     " Open In Colab</a>"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    20,
+    178,
+    179
+   ],
+   "quotes": [
+    "For commercial use, request an Enterprise License at Ultralytics Licensing.",
+    "- **AGPL-3.0 License**: An OSI-approved open-source license ideal for research and collaboration. See the LICENSE file f",
+    "- **Enterprise License**: For commercial use, this license allows integration of Ultralytics software and models into co"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

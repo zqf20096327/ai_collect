@@ -1,0 +1,134 @@
+{
+ "fn": "tmc/langchaingo",
+ "sha": "f7fa52d19b92",
+ "source": "readme",
+ "identity": {
+  "one_liner": "LangChain 的 Go 语言实现，用 Go 构建 LLM 应用",
+  "review": "LangChain 的 Go 语言移植实现，面向 Go 开发者提供以可组合方式构建 LLM 应用的框架能力。README 未展开具体模块清单，提供文档站点、go.dev API 参考、examples 目录示例与 Dev Containers 开发环境入口，并链接多篇使用文章（Gemini、Ollama、ChatGPT 克隆等主题）。本体为框架库而非终端应用，用户基于它编写 Go 程序接入各类模型。",
+  "highlights": [
+   "LangChain 框架的 Go 语言实现",
+   "以可组合（composability）方式构建 LLM 应用",
+   "提供 examples 目录示例与文档站点/API 参考",
+   "支持 Dev Containers 开发环境"
+  ],
+  "use_cases": [
+   "用 Go 编写 LLM 驱动的应用程序",
+   "参考示例学习链式调用与模型接入",
+   "在已有 Go 技术栈中引入 LangChain 风格的 LLM 抽象"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM框架",
+   "Go/Golang",
+   "agent开发",
+   "LLM应用构建"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "rag"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: ⚡ Building applications with LLMs through composability, with Go! ⚡",
+   "L14: This is the Go language implementation of LangChain."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     44
+    ],
+    "note": "社区文章主题，非专门适配声明",
+    "quotes": [
+     "- Using Ollama with LangChainGo - Nov 2023"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     1,
+     3,
+     14
+    ],
+    "note": "本产品为其 Go 实现，非替代/竞品关系",
+    "quotes": [
+     "> 🎉 **Join our new official Discord community!** Connect with other LangChain Go developers, get help and contribute: Jo",
+     "# 🦜️🔗 LangChain Go",
+     "This is the Go language implementation of LangChain."
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     45,
+     46
+    ],
+    "note": "文章标题中提及",
+    "quotes": [
+     "- Creating a simple ChatGPT clone with Go - Aug 2023",
+     "- Creating a ChatGPT Clone that Runs on Your Laptop with Go - Aug 2023"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

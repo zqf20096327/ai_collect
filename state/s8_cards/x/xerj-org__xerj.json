@@ -1,0 +1,144 @@
+{
+ "fn": "xerj-org/xerj",
+ "sha": "94f1bf85600e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地 AI 搜索引擎：一条命令索引任意文件夹供 agent 检索",
+  "review": "Rust 编写的本地搜索引擎，以单一静态二进制分发。`xerj autoindex` 自动嗅探文件类型并为代码（经 tree-sitter 提取符号与行号）、CSV、PDF、SQLite、日志、Unity 资产等建立可查询索引，无需编写 schema。对外暴露 Elasticsearch API，现有客户端与仪表盘可直接使用，支持向量与混合检索，并提供 `/_memory` 命名空间作为 agent 长期记忆。主要面向编程 agent 的 reference coding 用例：索引相近开源仓库后按段落检索以替代逐文件读取。默认 `--insecure` 模式仅适用于单用户开发机，关闭 TLS 与认证后任意可访问端口者均为超级用户。",
+  "highlights": [
+   "一条命令 autoindex 多种文件格式为类型化索引，无需 schema",
+   "兼容 Elasticsearch API，现有客户端可直接连接 localhost:9200",
+   "tree-sitter 提取代码符号与行号，检索返回 file:line",
+   "`/_memory/{namespace}` 提供 agent 长期记忆，按语义召回"
+  ],
+  "use_cases": [
+   "让编程 agent 检索相似开源仓库的实现方式再写代码",
+   "对代码库做问答与 RAG，直接取到带 file:line 的段落",
+   "索引日志与混合格式数据做事件分析或安全审计"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://xerj.org/xerj-biz-demo.mp4",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "本地搜索引擎",
+   "agent基础设施",
+   "代码检索",
+   "RAG",
+   "agent记忆"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "semantic-search",
+   "rag",
+   "agent-memory"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L27: XERJ is a community-trusted local AI search that indexes any folder automatically, so your",
+   "L109: awkward CSVs into typed, queryable indices for search, RAG, security audits and agent",
+   "L189: and arm64. You can also build from source. It speaks the Elasticsearch"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     50,
+     89
+    ],
+    "quotes": [
+     "xerj init                                        # wire XERJ into Claude Code/Cursor (MCP + skill), one command",
+     "16 runs per arm, real `claude -p` token counts):"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     189
+    ],
+    "note": "可选的从源码构建，非默认安装途径",
+    "quotes": [
+     "and arm64. You can also build from source. It speaks the Elasticsearch"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     50
+    ],
+    "note": "通过 MCP 接入的对象，非替代/竞品",
+    "quotes": [
+     "xerj init                                        # wire XERJ into Claude Code/Cursor (MCP + skill), one command"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     50
+    ],
+    "note": "通过 MCP 接入的对象，非替代/竞品",
+    "quotes": [
+     "xerj init                                        # wire XERJ into Claude Code/Cursor (MCP + skill), one command"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

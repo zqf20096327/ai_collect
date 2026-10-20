@@ -1,21 +1,21 @@
 {
  "fn": "T8RIN/ImageToolbox",
- "sha": "b3ee42154229",
+ "sha": "7c979772c297",
  "source": "readme",
  "identity": {
-  "one_liner": "Android 用户的开源高级图像编辑工具，覆盖裁剪到 OCR 多种处理",
-  "review": "基于 Kotlin 与 Jetpack Compose 构建的 Android 图像编辑应用，提供裁剪、滤镜、EXIF 编辑、背景擦除、OCR 与批量处理等功能，支持 500 多种滤镜的链式叠加。分发上提供 FOSS 与 Market 两个版本：FOSS 版使用 ONNX、OpenCV、Zxing 等开源实现且不含 Google 依赖与分析组件，Market 版改用 MlKit 并包含分析组件。安装途径包括 GitHub Releases、Google Play、F-Droid 与 Obtainium 的 APK，也可克隆仓库用 Gradle 构建。",
+  "one_liner": "Android 图像编辑应用：裁剪、500+滤镜、EXIF、抠图、OCR",
+  "review": "基于 Kotlin/Jetpack Compose 的 Android 图像编辑工具，覆盖裁剪、绘图、EXIF 编辑、批量处理、500+ 种滤镜链（模糊、抖动、色调映射、像素化、取证分析等）。AI 相关功能包括自动背景擦除、文档扫描与 OCR。提供 FOSS 与 Market 双发行渠道：F-Droid 版使用 ZXing/ONNX/OpenCV 等开源组件，Google Play 版使用 MlKit 并含分析组件。安装方式为 Google Play/F-Droid/Releases APK，或 Gradle 源码构建。",
   "highlights": [
-   "500+ 滤镜链式叠加处理与批量处理",
-   "自动背景移除：FOSS 版用 ONNX，Market 版用 MlKit",
-   "EXIF 数据编辑与 OCR",
-   "FOSS 版不含 Google 依赖与分析组件，含 OpenCV 文档扫描"
+   "500+ 种滤镜与滤镜链、批量处理",
+   "自动背景擦除（FOSS 版用 ONNX，Market 版用 MlKit）",
+   "EXIF 编辑、QR 扫描、文档扫描、图像取证分析（ELA/复制移动检测）",
+   "多渠道发布：Google Play/F-Droid/GitHub Releases/Obtainium"
   ],
   "use_cases": [
-   "在 Android 手机上批量裁剪、加滤镜、处理照片",
-   "擦除图片背景或扫描文档",
-   "查看和编辑图片的 EXIF 元数据",
-   "从 F-Droid 安装无 Google 依赖的纯开源版本"
+   "手机上批量编辑与压缩图片",
+   "去除图片背景或扫描文档、识别文字",
+   "编辑或清除照片 EXIF 元数据",
+   "对图片应用艺术滤镜与风格化效果"
   ]
  },
  "filters": {
@@ -39,10 +39,10 @@
  "links": {
   "scenario_tags": [
    "图像编辑",
-   "Android应用",
-   "滤镜",
-   "背景移除",
-   "F-Droid"
+   "Android 应用",
+   "抠图/背景移除",
+   "OCR",
+   "滤镜"
   ],
   "domain": "感知与多模态",
   "alternative_to": [],
@@ -55,23 +55,27 @@
  },
  "intel": {
   "maintainer_type": "individual",
-  "zh_origin": true,
-  "zh_origin_signals": [
-   "HelloGitHub 收录标识"
-  ]
+  "zh_origin": false,
+  "zh_origin_signals": []
  },
  "trust": {
   "confidence": "high",
   "evidence": [
    "L42: ImageToolbox is a versatile image editing tool designed for efficient photo manipulation. It allows",
    "L43: users to crop, apply filters, edit EXIF data, erase backgrounds, and even enhance images with AI.",
-   "L89: # ⚔️ FOSS vs MARKET"
+   "L94: |Auto Background Remover|ONNX|MlKit|"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -81,16 +85,12 @@
     "term": "source",
     "rel": "support",
     "lines": [
-     79,
      81,
-     85,
-     87
+     85
     ],
     "quotes": [
-     "1. Clone the repository:",
      "   git clone https://github.com/yourusername/ImageToolbox.git",
-     " bash ./gradlew build",
-     " bash ./gradlew run"
+     " bash ./gradlew build"
     ]
    }
   ],
@@ -98,8 +98,13 @@
   "products": [],
   "dual_license": {
    "flag": false,
-   "lines": [],
-   "quotes": []
+   "lines": [
+    91
+   ],
+   "note": "FOSS vs Market 表为两个发行渠道的功能差异，未声明双许可",
+   "quotes": [
+    "|**Feature**|**FOSS**|**Market**|"
+   ]
   },
   "deprecation": {
    "flag": false,

@@ -1,0 +1,89 @@
+{
+ "fn": "humanlayer/humanlayer",
+ "sha": "e2706b73b86d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "HumanLayer 的公开 issues 仓库，主体代码已弃用",
+  "review": "humanlayer 的 public issues 仓库，README 声明此处代码基本已全部弃用，并引导用户访问 https://humanlayer.com 尝试重建版本。仓库本身不提供可安装或运行的功能说明，无安装命令、无功能描述、无使用文档；从仓库主题标签可见原项目与 AI coding agents、human-in-the-loop 审批相关。",
+  "highlights": [
+   "README 明确声明此处代码已弃用",
+   "指向 humanlayer.com 的重建版本",
+   "仓库用途为公开 issues 跟踪"
+  ],
+  "use_cases": [
+   "查阅 humanlayer 历史项目的 issue 记录",
+   "通过链接跳转至 humanlayer.com 了解重建版本"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://humanlayer.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI编码代理",
+   "human-in-the-loop",
+   "已弃用仓库"
+  ],
+  "domain": "AI 代理工具/开发基础设施",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "low",
+  "evidence": [
+   "L1: ## HumanLayer",
+   "L3: public issues repo for humanlayer - the code here is pretty much all deprecated - you can try the rebuild of humanlayer "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    3
+   ]
+  }
+ }
+}

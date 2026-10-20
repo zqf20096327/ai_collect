@@ -1,0 +1,130 @@
+{
+ "fn": "oramasearch/orama",
+ "sha": "b5cd064e4abd",
+ "source": "readme",
+ "identity": {
+  "one_liner": "在浏览器/服务器/边缘运行的轻量全文+向量+混合搜索引擎库",
+  "review": "TypeScript 编写的嵌入式搜索引擎库，体积小于 2kb，支持全文搜索、向量搜索、混合搜索、BM25、30 种语言的词干化与分词、地理搜索、分面过滤与插件系统。向量搜索需在搜索时提供文本嵌入，可通过官方 plugin-embeddings 插件配合 TensorFlowJS 后端生成嵌入，或经 Secure Proxy 插件调用 OpenAI 嵌入模型。自 v3.0.0 起支持基于 OpenAI API 构建类 ChatGPT 的聊天会话体验。通过 npm 安装，也可经浏览器 module 或 Deno CDN 引入。",
+  "highlights": [
+   "全文/向量/混合三种搜索模式，支持 BM25 与拼写容错",
+   "10 种数据类型含 geopoint 与 vector[<size>]",
+   "官方插件覆盖嵌入生成、OpenAI Secure Proxy、数据持久化等",
+   "可在浏览器、Node、Deno 与边缘网络运行"
+  ],
+  "use_cases": [
+   "为网站或应用内嵌全文与向量混合搜索",
+   "配合嵌入插件构建本地向量检索",
+   "基于 OpenAI API 搭建类 ChatGPT 的搜索问答体验"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "搜索引擎",
+   "向量检索",
+   "RAG基础设施",
+   "嵌入式数据库",
+   "JavaScript/TypeScript"
+  ],
+  "domain": "知识与检索",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "vector-database"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L78: # Vector and Hybrid Search Support",
+   "L102: # RAG and Chat Experiences with Orama",
+   "L104: Since `v3.0.0`, Orama allows you to create your own ChatGPT/Perplexity/SearchGPT-like experience. You will need to call "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     26,
+     29
+    ],
+    "quotes": [
+     "You can install Orama using `npm`, `yarn`, `pnpm`, `bun`:",
+     "npm i @orama/orama"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     104
+    ],
+    "note": "用于描述可构建的类 ChatGPT 体验",
+    "quotes": [
+     "Since `v3.0.0`, Orama allows you to create your own ChatGPT/Perplexity/SearchGPT-like experience. You will need to call "
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     104
+    ],
+    "note": "用于描述可构建的类 Perplexity 体验",
+    "quotes": [
+     "Since `v3.0.0`, Orama allows you to create your own ChatGPT/Perplexity/SearchGPT-like experience. You will need to call "
+    ]
+   }
+  ]
+ }
+}

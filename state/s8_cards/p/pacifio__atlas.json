@@ -1,0 +1,156 @@
+{
+ "fn": "pacifio/atlas",
+ "sha": "a7f651e48fef",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向编码代理的源码控制桌面应用：追踪并查询各代理的改动",
+  "review": "基于 Tauri 的桌面应用，定位为编码代理的源码控制工具。可并排运行 Claude Code、Codex、Atlas 原生代理及 ACP 注册表中的代理（Cursor、OpenCode、Kilo Code 等），共享同一代码库与共享记忆。核心机制是 checkpoint：提交自动关联到产生它的会话（提示词、工具调用、推理），链接可在 rebase/amend 后存活；会话记录写入本地 .atlas/sessions.db，密钥写入前被擦除。默认完全本地运行，无需账号。支持平台为 macOS 13+ 与 Windows 10+（x64），Linux 从源码构建但未经测试。除代理功能外还内置编辑器、git 图、终端、markdown 知识库、论文检索与浏览器。",
+  "highlights": [
+   "checkpoint 机制：提交自动关联产生它的代理会话（提示词/工具调用/推理），rebase/amend 后链接存活",
+   "并排运行 Claude Code、Codex、原生代理及 ACP 注册表代理，共享记忆与上下文",
+   "本地优先：会话记录、嵌入检索均在本机，密钥写入前擦除，无需账号即可工作",
+   "内置编辑器、git 提交图、终端、markdown 知识库、arXiv/Semantic Scholar 检索与浏览器"
+  ],
+  "use_cases": [
+   "同时使用多个编码代理时统一追踪谁改了什么以及为什么",
+   "事后查询某次提交对应的会话上下文与推理过程",
+   "跨代理延续任务上下文，避免换代理后从零开始"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI编码代理",
+   "版本控制/Git",
+   "代理记忆/上下文管理",
+   "桌面IDE",
+   "可观测性"
+  ],
+  "domain": "开发者工具/AI 编码代理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L24: Atlas is source control for coding agents. Every agent run produces checkpoints: commits are linked back to the session ",
+   "L26: Run Claude Code, Codex, Atlas's own agent, or anything from the ACP registry side by side against the same codebase, wit",
+   "L71: Claude Code and Codex run as external subprocesses over ACP, the most-used, most-tested path. Atlas Agent, the native ag"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     26,
+     71
+    ],
+    "note": "Claude Code 作为外部子进程经 ACP 运行，需自装 claude CLI",
+    "quotes": [
+     "Run Claude Code, Codex, Atlas's own agent, or anything from the ACP registry side by side against the same codebase, wit",
+     "Claude Code and Codex run as external subprocesses over ACP, the most-used, most-tested path. Atlas Agent, the native ag"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     37
+    ],
+    "quotes": [
+     "Grab the latest build from tryatlas.cc or the releases page — a `.dmg` for macOS (Apple Silicon or Intel), an `.msi` for"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     161,
+     164
+    ],
+    "quotes": [
+     "git clone https://github.com/pacifio/atlas",
+     "bun run dev:app"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     26,
+     71
+    ],
+    "note": "被接入运行的代理，非替代/竞品对象",
+    "quotes": [
+     "Run Claude Code, Codex, Atlas's own agent, or anything from the ACP registry side by side against the same codebase, wit",
+     "Claude Code and Codex run as external subprocesses over ACP, the most-used, most-tested path. Atlas Agent, the native ag"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     73
+    ],
+    "note": "ACP 注册表中可拉起的代理",
+    "quotes": [
+     "Beyond those, Atlas can spawn any agent in the ACP registry (Cursor, OpenCode, Kilo Code, and more), pulling in each one"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

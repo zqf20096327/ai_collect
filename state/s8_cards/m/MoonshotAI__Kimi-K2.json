@@ -1,0 +1,162 @@
+{
+ "fn": "MoonshotAI/Kimi-K2",
+ "sha": "5570ba5a0b29",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Moonshot AI 的开源 1T 参数 MoE 大语言模型（激活 32B）",
+  "review": "Kimi K2 是月之暗面团队发布的混合专家（MoE）大语言模型系列，总参数 1T、激活参数 32B、上下文 128K，使用 MuonClip 优化器在 15.5T tokens 上预训练，面向工具调用、推理与自主问题求解等 agentic 能力设计。提供 Base 与 Instruct 两个变体，权重以 block-fp8 格式发布在 Hugging Face，代码与权重均采用 Modified MIT 许可。可通过 Moonshot 平台的 OpenAI/Anthropic 兼容 API 访问，或经 vLLM、SGLang、KTransformers、TensorRT-LLM 等推理引擎本地部署，README 附 chat 与 tool calling 调用示例。",
+  "highlights": [
+   "1T 总参数 MoE 架构，激活 32B，上下文长度 128K",
+   "提供 Base（可微调）与 Instruct（通用对话/agent）两个变体",
+   "支持 OpenAI 兼容 chat 接口与原生工具调用管线",
+   "权重 block-fp8 格式发布，支持 vLLM/SGLang/KTransformers/TensorRT-LLM 部署"
+  ],
+  "use_cases": [
+   "搭建本地大模型推理服务并接入工具调用",
+   "作为基座模型做微调或定制训练",
+   "通过 API 使用 agentic 编码与推理能力"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "大语言模型",
+   "MoE",
+   "agentic/工具调用",
+   "开源权重",
+   "本地部署"
+  ],
+  "domain": "大模型/自然语言处理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "Moonshot AI（月之暗面）团队开发",
+   "联系邮箱为 moonshot.cn 域名",
+   "中文基准（C-Eval/CSimpleQA）评测"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L18: Kimi K2 is a state-of-the-art mixture-of-experts (MoE) language model with 32 billion activated parameters and 1 trillio",
+   "L26: - **Kimi-K2-Base**: The foundation model, a strong start for researchers and builders who want full control for fine-tun",
+   "L27: - **Kimi-K2-Instruct**: The post-trained model, best for drop-in, general-purpose chat and agentic experiences. It is a "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     539,
+     544
+    ],
+    "note": "官方推荐的本地推理引擎之一，附部署示例",
+    "quotes": [
+     "* vLLM",
+     "Deployment examples for vLLM and SGLang can be found in the Model Deployment Guide."
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     58,
+     409
+    ],
+    "note": "评测表中的对比模型 DeepSeek-V3",
+    "quotes": [
+     " DeepSeek-V3-0324",
+     " Deepseek-V3-Base"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     60,
+     61
+    ],
+    "note": "评测表中对比模型 Claude；另 API 为 Anthropic 兼容（窗外 L531）",
+    "quotes": [
+     " Claude Sonnet 4 (w/o extended thinking)",
+     " Claude Opus 4 (w/o extended thinking)"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     1,
+     18
+    ],
+    "quotes": [
+     "Kimi K2: Open Agentic Intelligence",
+     "Kimi K2 is a state-of-the-art mixture-of-experts (MoE) language model with 32 billion activated parameters and 1 trillio"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     535
+    ],
+    "note": "权重托管平台",
+    "quotes": [
+     "Our model checkpoints are stored in block-fp8 format, you can find it on Huggingface."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

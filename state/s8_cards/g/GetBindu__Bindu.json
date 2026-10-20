@@ -1,0 +1,163 @@
+{
+ "fn": "GetBindu/Bindu",
+ "sha": "665e1eb3735f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI agent 的身份、通信与支付基础设施层",
+  "review": "面向 AI agent 开发者的基础设施框架：用 bindufy() 包装用户已有的 agent 处理器，为其提供加密身份（DID/Ed25519 签名）、A2A JSON-RPC 通信、三层默认安全（mTLS、Hydra OAuth2、DID 签名）、x402 USDC 支付（EVM 链）、任务调度与网关编排。框架无关，支持 Agno、LangChain、CrewAI 等多种框架，提供 Python/TypeScript/Kotlin SDK（共享 gRPC 核心）。需要 Python 3.12+ 与 uv，运行示例需 LLM provider API key；任务与消息存储使用 Postgres，调度依赖 Redis。",
+  "highlights": [
+   "bindufy() 一次包装即为 agent 提供 DID 身份、A2A 协议与支付能力",
+   "三层默认安全：mTLS + Hydra OAuth2 + Ed25519 DID 签名",
+   "x402 支付：agent 可在执行前要求 USDC 付款，预配置 5 条 EVM 链",
+   "Python/TypeScript/Kotlin SDK 共享同一 gRPC 核心与 DID 体系"
+  ],
+  "use_cases": [
+   "让自建 agent 获得可验证身份并与其他 agent 通过 A2A 通信",
+   "为 agent 按请求收费（USDC/x402）",
+   "多 agent 群协作与网关编排（含价格与 SLA 协商）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://www.youtube.com/watch?v=qppafMuw_KI",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent基础设施",
+   "A2A协议",
+   "DID身份",
+   "x402支付",
+   "多agent编排"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "multi-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L29:  The identity, communication, and payments layer for AI agents.",
+   "L39: Bindu is all of that plumbing, behind one function call. You wrap your handler with `bindufy()`, and a few seconds later",
+   "L171: ## Supported frameworks"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     59,
+     182
+    ],
+    "note": "示例运行与模型接入的可选 provider，非专门适配",
+    "quotes": [
+     "To run the examples you'll need an API key for at least one LLM provider — `OPENROUTER_API_KEY`, `OPENAI_API_KEY`, or `M",
+     "If your model provider speaks the OpenAI or Anthropic API, it works — OpenRouter, OpenAI, MiniMax, and the rest."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     6,
+     48
+    ],
+    "quotes": [
+     " PyPI version",
+     "uv add bindu"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     54
+    ],
+    "quotes": [
+     "git clone https://github.com/getbindu/Bindu.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "none",
+    "lines": [
+     139
+    ],
+    "note": "L139 语境为 cloud deploy 无需 Dockerfile，非 Docker 安装方式",
+    "quotes": [
+     "|**Cloud deploy**|`bindu deploy agent.py --runtime=boxd` ships your script to a microVM and prints the HTTPS URL. No Doc"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     39,
+     177,
+     178
+    ],
+    "note": "作为被支持的 agent 框架列举，非替代/竞品",
+    "quotes": [
+     "Bindu is all of that plumbing, behind one function call. You wrap your handler with `bindufy()`, and a few seconds later",
+     "|**Python**|AG2, Agno, CrewAI, Hermes Agent, LangChain, LangGraph, Notte|",
+     "|**TypeScript**|OpenAI SDK, LangChain.js|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,106 @@
+{
+ "fn": "sktime/sktime",
+ "sha": "d8d9ed80855f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Python 时间序列机器学习统一框架：预测/分类/聚类/检测",
+  "review": "面向时间序列任务的 Python 机器学习库，为预测、时间序列分类、回归、聚类、异常/变点检测等任务提供统一接口。包含专用时间序列算法与 scikit-learn 兼容的组合建模工具（流水线、集成、调参、任务归约），可把一个任务的算法应用到另一任务。提供对 statsmodels、tsfresh、PyOD、fbprophet 等库的接口。通过 pip/conda 安装，支持按学习任务选择依赖集；部分模块（对齐、分布模拟）标注为 experimental。",
+  "highlights": [
+   "统一接口覆盖预测、分类、聚类、异常/变点检测等任务",
+   "scikit-learn 兼容的流水线、集成、调参与任务归约工具",
+   "对 statsmodels/tsfresh/PyOD/fbprophet 等库的互操作接口",
+   "按学习任务（forecasting/classification 等）可选依赖集安装"
+  ],
+  "use_cases": [
+   "构建与调优时间序列预测模型",
+   "做时间序列分类或异常/变点检测",
+   "把 scikit-learn 回归器用于预测任务",
+   "跨库组合时间序列算法做基准评估"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "developer",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "时间序列",
+   "机器学习库",
+   "预测/forecasting",
+   "异常检测"
+  ],
+  "domain": "机器学习/时间序列分析",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: sktime is a library for time series analysis in Python. It provides a unified interface for multiple time series learnin",
+   "L47: Our objective is to enhance the interoperability and usability of the time series analysis ecosystem in its entirety. sk"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     15,
+     77,
+     83
+    ],
+    "quotes": [
+     "|**Code**|!pypi !conda !python-versions !black|",
+     "pip install sktime",
+     "pip install sktime[all_extras]"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

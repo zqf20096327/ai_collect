@@ -1,0 +1,134 @@
+{
+ "fn": "anthropics/claude-code-action",
+ "sha": "f680b0481c76",
+ "source": "readme",
+ "identity": {
+  "one_liner": "在 GitHub PR/Issue 中调用 Claude Code 的通用 Action",
+  "review": "由 Anthropic 维护的 GitHub Action：在 PR 与 Issue 场景中调用 Claude Code 回答代码问题、审查 PR 变更并实现代码修改，支持通过 @claude 提及、Issue 指派或显式 prompt 触发，并能基于上下文自动选择执行模式。认证支持 Anthropic 直连 API（API key 或工作负载身份联合）、Amazon Bedrock、Google Vertex AI 与 Microsoft Foundry。Action 完全运行在用户自己的 GitHub runner 上，可通过 /install-github-app 命令快速安装，另附迁移指南与多种自动化方案示例。",
+  "highlights": [
+   "根据工作流上下文自动选择执行模式（提及/指派/显式 prompt）",
+   "支持 Anthropic 直连 API、Bedrock、Vertex AI、Microsoft Foundry 多种认证方式",
+   "提供结构化 JSON 输出并转为 GitHub Action outputs",
+   "完全运行在用户自有 GitHub runner 上"
+  ],
+  "use_cases": [
+   "让 Claude 在 PR 评论中回答代码问题或实现修改",
+   "自动化的 PR 代码审查与检查清单执行",
+   "Issue 自动分类打标与定时仓库维护任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "GitHub Action",
+   "代码审查",
+   "CI/CD 自动化",
+   "Claude 生态"
+  ],
+  "domain": "编码与开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "bedrock"
+  ],
+  "scenario_tags_v2": [
+   "code-review",
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: A general-purpose Claude Code action for GitHub PRs and issues that can answer questions and implement code changes. Thi",
+   "L17: - 🏃 **Runs on Your Infrastructure**: The action executes entirely on your own GitHub runner (Anthropic API calls go to y"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     5,
+     26
+    ],
+    "quotes": [
+     "A general-purpose Claude Code action for GitHub PRs and issues that can answer questions and implement code changes. Thi",
+     "The easiest way to set up this action is through Claude Code in the terminal. Just open `claude` and run `/install-githu"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     5,
+     33
+    ],
+    "quotes": [
+     "A general-purpose Claude Code action for GitHub PRs and issues that can answer questions and implement code changes. Thi",
+     "- This quickstart method is only available for direct Anthropic API users. For AWS Bedrock, Google Vertex AI, or Microso"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     3,
+     18
+    ],
+    "quotes": [
+     "# Claude Code Action",
+     "- ⚙️ **Simplified Configuration**: Unified `prompt` and `claude_args` inputs provide clean, powerful configuration align"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,162 @@
+{
+ "fn": "ritchieng/the-incredible-pytorch",
+ "sha": "e32e341d38bf",
+ "source": "readme",
+ "identity": {
+  "one_liner": "PyTorch 生态策展清单：教程、论文、项目与社区资源汇总",
+  "review": "由个人维护的 PyTorch 相关资源 curated list，收录教程、官方示例、LLM 项目（Llama、Mixtral、Qwen 等）、Agentic AI 框架、AI 安全工具、表格学习、可视化、目标检测、架构搜索与优化算法等类目，通过表格目录组织，以 pull request 方式接受贡献。本体是资源索引而非可安装运行的软件，无安装命令与硬件要求。",
+  "highlights": [
+   "按教程/LLM/Agent/AI 安全/目标检测等 20+ 类目组织资源",
+   "覆盖 LLM 训练、微调、量化与推理引擎条目",
+   "以 pull request 方式开放社区贡献"
+  ],
+  "use_cases": [
+   "查找 PyTorch 各领域教程与入门资料",
+   "发现 LLM 微调、量化、Agent 框架等工具条目",
+   "了解 PyTorch 生态相关论文与项目分布"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome清单",
+   "PyTorch",
+   "深度学习",
+   "资源导航"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list",
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L1: This is a curated list of tutorials, projects, libraries, videos, papers, books and anything related to the incredible P",
+   "L3: # Table Of Contents"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     41
+    ],
+    "note": "作为条目列出，非本产品接入",
+    "quotes": [
+     " - VLLM, high-throughput and memory-efficient inference and serving engine for LLMs"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "mention",
+    "lines": [
+     44
+    ],
+    "note": "Mistral 7B 模型条目",
+    "quotes": [
+     " - Mistral 7B"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     55
+    ],
+    "note": "OLM 架构预设提及 DeepSeek-V3",
+    "quotes": [
+     " - OpenLanguageModel (OLM), PyTorch-native library for building and training transformer language models out of readable"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     67,
+     102
+    ],
+    "quotes": [
+     " - Langchain, building applications with LLMs through composability",
+     " - LangChain Agents, building agents with LangChain"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     49,
+     55
+    ],
+    "note": "Qwen 模型与架构预设条目",
+    "quotes": [
+     " - Qwen, Alibaba Cloud's large language model",
+     " - OpenLanguageModel (OLM), PyTorch-native library for building and training transformer language models out of readable"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     73
+    ],
+    "quotes": [
+     " - Huggingface PEFT, State-of-the-art Parameter-Efficient Fine-Tuning"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

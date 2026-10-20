@@ -1,0 +1,233 @@
+{
+ "fn": "OpenWhispr/openwhispr",
+ "sha": "72ed0d06550a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "跨平台语音听写桌面应用：本地/云端转文字与笔记",
+  "review": "面向桌面用户的开源语音转文字听写应用，支持 macOS/Windows/Linux。按全局热键说话即可在任意应用中粘贴文字，提供听写翻译、AI 语音助手、会议转录（说话人分离与声纹识别）、笔记与语义搜索、音频/视频导入转写等功能。可选择本地模型（Whisper、NVIDIA Parakeet，经 Metal/CUDA/Vulkan 加速，音频不出设备）或 BYOK 云端处理；企业功能含 SSO/SCIM 与集中管理 Bedrock/Azure OpenAI 访问。Electron 应用，提供安装包与源码运行两种途径；Intel Mac 不支持实时说话人识别。",
+  "highlights": [
+   "本地离线转录（Whisper/Parakeet，Metal/CUDA/Vulkan 加速），无遥测无数据收集",
+   "会议自动检测（Zoom/Teams/FaceTime）与设备端说话人分离/声纹识别",
+   "AI 语音助手可接入 GPT-5、Claude、Gemini、Groq、OpenRouter 或本地模型",
+   "提供公共 API 与 MCP server，可编程管理笔记与转写"
+  ],
+  "use_cases": [
+   "在任意应用中按热键语音听写并自动粘贴",
+   "本地离线转录会议并区分说话人",
+   "用语音向 AI 助手下指令并就地编辑选中文本",
+   "导入音频/视频文件或 YouTube 链接批量转写"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音听写",
+   "会议转录",
+   "AI助手",
+   "笔记",
+   "桌面应用"
+  ],
+  "domain": "对话与助手",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "asr",
+   "ai-assistant",
+   "knowledge-base",
+   "semantic-search"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L20: OpenWhispr turns your voice into text, notes, and actions from your desktop. Press a hotkey, speak, and your words appea",
+   "L41: - **Voice dictation** — global hotkey to dictate into any app with automatic pasting"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     43
+    ],
+    "note": "AI 助手可对接的模型之一（Claude）",
+    "quotes": [
+     "- **AI agent** — talk to GPT-5, Claude, Gemini, Groq, Tinfoil, OpenRouter, or local models with a named voice assistant"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     43
+    ],
+    "quotes": [
+     "- **AI agent** — talk to GPT-5, Claude, Gemini, Groq, Tinfoil, OpenRouter, or local models with a named voice assistant"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     43
+    ],
+    "quotes": [
+     "- **AI agent** — talk to GPT-5, Claude, Gemini, Groq, Tinfoil, OpenRouter, or local models with a named voice assistant"
+    ]
+   },
+   {
+    "term": "azure",
+    "rel": "mention",
+    "lines": [
+     51
+    ],
+    "note": "企业集中管理 Azure OpenAI 访问",
+    "quotes": [
+     "- **Enterprise controls** — enforce organization policy, company SSO and SCIM, and centrally managed Amazon Bedrock or A"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "mention",
+    "lines": [
+     51
+    ],
+    "quotes": [
+     "- **Enterprise controls** — enforce organization policy, company SSO and SCIM, and centrally managed Amazon Bedrock or A"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     20
+    ],
+    "note": "Cohere Transcribe 为可选云端转录模型",
+    "quotes": [
+     "OpenWhispr turns your voice into text, notes, and actions from your desktop. Press a hotkey, speak, and your words appea"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     26,
+     27,
+     28,
+     29
+    ],
+    "quotes": [
+     "|macOS (Apple Silicon)|`.dmg`|",
+     "|macOS (Intel) \\*|`.dmg`|",
+     "|Windows|`.exe`|",
+     "|Linux|`.AppImage` / `.deb` / `.rpm` / `.tar.gz`|"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     33,
+     36
+    ],
+    "quotes": [
+     "On macOS or x86_64 Linux, you can also install the community-maintained Homebrew cask:",
+     "brew install --cask openwhispr"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     57
+    ],
+    "quotes": [
+     "git clone https://github.com/OpenWhispr/openwhispr.git"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     59
+    ],
+    "note": "源码运行流程中的依赖安装步骤",
+    "quotes": [
+     "npm install"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "none",
+    "lines": [
+     20,
+     44
+    ],
+    "note": "误命中：text cursor 指文本插入光标",
+    "quotes": [
+     "OpenWhispr turns your voice into text, notes, and actions from your desktop. Press a hotkey, speak, and your words appea",
+     "- **Voice Assistant hotkey** — dedicated hotkey that sends what you say straight to your AI assistant as a command, no w"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [
+    92
+   ],
+   "quotes": [
+    "MIT — free for personal and commercial use."
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,205 @@
+{
+ "fn": "Thysrael/Horizon",
+ "sha": "5bdbc6cffe92",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI 驱动的个人新闻雷达：多源聚合并生成中英日报",
+  "review": "面向个人读者的新闻聚合与分析工具：从 RSS、Hacker News、Reddit、Telegram、X、GitHub、金融新闻等十类来源抓取内容，经 profile 定义评分规则筛选、去重，再用 LLM 生成摘要、背景与社区讨论，产出中英双语日报。简报可发布到 GitHub Pages，或经邮件、Webhook（飞书/钉钉/Slack/Discord）、微信推送。支持多模型提供商（含本地 Ollama），提供交互式配置向导、CLI 与 MCP Server，可本地 uv 安装或 Docker 部署，包尚未发布 PyPI。",
+  "highlights": [
+   "十类来源聚合（RSS/HN/Reddit/Telegram/X/GitHub/OpenBB 等）",
+   "profile 驱动的评分、去重与差异化内容处理",
+   "中英双语简报，发布到 Pages 或邮件/Webhook/微信推送",
+   "多提供商支持（OpenAI/Gemini/Claude/DeepSeek/Ollama 等）与 MCP Server"
+  ],
+  "use_cases": [
+   "每天自动收到按自己口味筛选的中英科技新闻简报",
+   "让不同类型内容（新闻/技术长文/创作素材）各有侧重地被总结",
+   "把日报发布成 GitHub Pages 站点或推送到飞书、微信"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "L28",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "新闻聚合",
+   "日报生成",
+   "信息过滤",
+   "LLM应用",
+   "MCP"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "deepseek",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "ai-writing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中英双语 README",
+   "微信/QQ 社群渠道",
+   "致谢 LINUX.DO/HelloGitHub"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L26: 📡 Your own AI-powered news radar. Generates daily briefings in English & Chinese. | 构建你专属的 AI 新闻雷达",
+   "L62: - **🧩 Give Every Read the Right Treatment** — Choose summaries, context, solutions, or takeaways with Markdown prompts a",
+   "L251: For delivery setup, see the Configuration Guide. To run pipeline stages from an AI assistant, use the **MCP Server**: to"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     17
+    ],
+    "quotes": [
+     "Claude"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     20
+    ],
+    "quotes": [
+     "DeepSeek"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     24
+    ],
+    "quotes": [
+     "Ollama"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     259
+    ],
+    "note": "赞助商介绍中提及 Grok，非本产品接入声明",
+    "quotes": [
+     "|Modelflare|Thanks to Modelflare for sponsoring this project! Modelflare: Full strength, stable, nothing watered down. G"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     96
+    ],
+    "quotes": [
+     "git clone https://github.com/Thysrael/Horizon.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     123,
+     209
+    ],
+    "quotes": [
+     "docker compose build --build-arg EXTRAS=openbb horizon",
+     "docker compose run --rm horizon [OPTIONS]"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     282
+    ],
+    "note": "计划发布，尚未提供 pip install",
+    "quotes": [
+     "- Publish the package to PyPI for `pip install`"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     21
+    ],
+    "note": "以 provider 徽章形式出现的模型接入选项",
+    "quotes": [
+     "Doubao"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     260
+    ],
+    "note": "赞助商服务描述中提及",
+    "quotes": [
+     "|Compshare / 优云智算|Compshare currently supports Horizon. Compshare is UCloud's AI cloud platform, offering cost-effective"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

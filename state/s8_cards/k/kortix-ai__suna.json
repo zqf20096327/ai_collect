@@ -1,21 +1,21 @@
 {
  "fn": "kortix-ai/suna",
- "sha": "9c53f8382dea",
+ "sha": "856e39a0489e",
  "source": "readme",
  "identity": {
-  "one_liner": "开源自托管 AI 操作系统：团队用 Agent 交付并审批实际工作",
-  "review": "以 git 仓库承载整个组织的 Agent 配置：agents、skills、记忆与连接器均以文件形式版本化。每个会话在独立云沙箱分支上运行，产出的变更经人工批准的 change request 合入 main。支持 Slack/Microsoft Teams 接入、cron/webhook 触发、每工具的 Allow/Ask/Block 审批门、3,000+ 应用连接器、SAML SSO 与审计日志。通过 Docker Compose 自托管，或使用 Kortix Cloud 托管服务；模型可自选提供商并使用自己的 API key。",
+  "one_liner": "开源 AI 操作系统：自托管运行企业 AI agent 团队",
+  "review": "Kortix 以『AI 操作系统』定位为企业提供 agent 工作平台：agent、技能、记忆、连接器与触发器以文件形式存放于一个 git 仓库，版本化并评审。每个会话在独立的云沙箱（自有分支）中运行 OpenCode agent，产出通过 change request 由人审批合并。支持 Slack/Microsoft Teams 渠道、cron/webhook 触发器、3,000+ 应用连接（含 MCP/OpenAPI/GraphQL），任意模型供应商自带 key。自托管免费（Docker Compose），另提供托管云；不支持纯固定流程图编排。",
   "highlights": [
-   "公司配置全部为 git 仓库内文件，可版本化、diff 与审计",
-   "每会话独立隔离沙箱，变更默认拒绝合并、需人工审批 change request",
-   "3,000+ 应用连接器加 MCP/OpenAPI/GraphQL/HTTP，凭据服务端代理",
-   "cron 与签名 webhook 自动触发会话"
+   "agent/技能/记忆/连接器集中于一个 git 仓库，版本化可评审",
+   "每会话独立云沙箱，产出经 change request 人工审批合并",
+   "3,000+ 应用连接，支持 MCP/OpenAPI/GraphQL/raw HTTP",
+   "SAML 2.0 SSO、SCIM 2.0、审计日志与按资源权限"
   ],
   "use_cases": [
-   "团队自托管替代方案运行有审批门的 AI Agent",
-   "在 Slack/Teams 里 @机器人 分派任务并在线程内收取成果",
-   "用 Agent 定时替代 Zapier 式自动化流程",
-   "后台云端编码 Agent 修 bug 并提 PR 待人审"
+   "为团队部署自托管的 AI agent 工作平台替代 SaaS 方案",
+   "在 Slack/Teams 中让 agent 处理工单、起草回复并等待审批",
+   "用 cron/webhook 触发自动化 agent 任务替代固定流程编排",
+   "后台编码 agent 在云端沙箱修复 bug 并提交变更请求"
   ]
  },
  "filters": {
@@ -38,21 +38,23 @@
  },
  "links": {
   "scenario_tags": [
-   "AI操作系统",
-   "Agent平台",
+   "AI agent 平台",
    "自托管",
-   "企业协作",
-   "工作流自动化"
+   "企业自动化",
+   "AI OS",
+   "沙箱执行"
   ],
-  "domain": "效率与自动化",
-  "alternative_to": [],
-  "competitors_mentioned": [
+  "domain": "Agent 开发",
+  "alternative_to": [
    "ChatGPT"
   ],
+  "competitors_mentioned": [],
   "ecosystem_compat": [],
   "scenario_tags_v2": [
-   "workflow-automation",
-   "coding-agent"
+   "multi-agent",
+   "agent-framework",
+   "coding-agent",
+   "workflow-automation"
   ]
  },
  "intel": {
@@ -63,15 +65,21 @@
  "trust": {
   "confidence": "high",
   "evidence": [
-   "L5: **The open-source AI Operating System**",
    "L22: **Kortix is the one you own.** It's an open-source **AI Operating System**: your agents, the",
-   "L24: diffable, and shared by the whole company. The agents work on real **cloud computers** — an"
+   "L25: isolated sandbox per session, on its own branch — and land what they produce through a **change",
+   "L114: Kortix is the leading open-source alternative to Claude Cowork and ChatGPT Work. Your team uses it"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -80,22 +88,22 @@
     "term": "anthropic",
     "rel": "mention",
     "lines": [
-     46,
-     49
+     7,
+     47
     ],
-    "note": "对比表中作为竞品绑定的模型提供商提及，README 声明任意提供商可用",
+    "note": "仅出现在与 Claude Cowork 的对比语境，非 Kortix 自身接入声明",
     "quotes": [
-     "||Claude Cowork|ChatGPT Work|**Kortix**|",
-     "|**Models**|Anthropic only|GPT-5.6 only|**Any provider, your own API keys**|"
+     "**The leading open-source alternative to Claude Cowork and ChatGPT Work.**",
+     "||Claude Cowork|ChatGPT Work|**Kortix**|"
     ]
    },
    {
     "term": "bedrock",
     "rel": "mention",
     "lines": [
-     50
+     51
     ],
-    "note": "对比表中提及 Claude Cowork 可部署于 Bedrock，非本项目接入",
+    "note": "指 Claude Cowork 可运行于 Bedrock，非本产品接入",
     "quotes": [
      "|**Where it runs**|Anthropic's cloud, or Bedrock / Google Cloud / Microsoft Foundry — no self-host|OpenAI's cloud, no se"
     ]
@@ -106,18 +114,44 @@
     "term": "docker",
     "rel": "support",
     "lines": [
-     120,
-     211,
-     215
+     121,
+     221
     ],
     "quotes": [
      "kortix self-host start      # your own box: one Docker Compose stack",
-     "network. Start a production-style local instance from Docker images, then switch the CLI between",
-     "kortix self-host start"
+     "GitHub access, and Pipedream connectors — ports, local URLs, keys and Docker Compose defaults are"
     ]
    }
   ],
   "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "alternative",
+    "lines": [
+     7,
+     32,
+     114
+    ],
+    "note": "自称 ChatGPT Work 的开源替代",
+    "quotes": [
+     "**The leading open-source alternative to Claude Cowork and ChatGPT Work.**",
+     "- ✅ You want an **open-source, self-hosted alternative to Claude Cowork or ChatGPT Work** for your whole team → details",
+     "Kortix is the leading open-source alternative to Claude Cowork and ChatGPT Work. Your team uses it"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     63
+    ],
+    "note": "Paperclip 条目中列举的 agent，非本产品关系",
+    "quotes": [
+     "|**Paperclip** (agent orchestration)|You already run agents such as Claude Code or Codex and want an org chart, budgets "
+    ]
+   }
+  ],
   "dual_license": {
    "flag": false,
    "lines": [],
@@ -126,33 +160,6 @@
   "deprecation": {
    "flag": false,
    "lines": []
-  },
-  "products": [
-   {
-    "term": "ChatGPT",
-    "rel": "competitor",
-    "lines": [
-     7,
-     46,
-     113
-    ],
-    "quotes": [
-     "**The leading open-source alternative to Claude Cowork and ChatGPT Work.**",
-     "||Claude Cowork|ChatGPT Work|**Kortix**|",
-     "Kortix is the leading open-source alternative to Claude Cowork and ChatGPT Work. Your team uses it"
-    ]
-   },
-   {
-    "term": "Claude Code",
-    "rel": "mention",
-    "lines": [
-     62
-    ],
-    "note": "作为 Paperclip 场景中被编排的 Agent 举例提及",
-    "quotes": [
-     "|**Paperclip** (agent orchestration)|You already run agents such as Claude Code or Codex and want an org chart, budgets "
-    ]
-   }
-  ]
+  }
  }
 }

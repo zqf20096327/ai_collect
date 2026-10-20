@@ -1,20 +1,20 @@
 {
  "fn": "steipete/CodexBar",
- "sha": "efe917a8dbeb",
+ "sha": "890976b21c7b",
  "source": "readme",
  "identity": {
-  "one_liner": "给 AI 编码用户在菜单栏显示各家服务商用量与额度",
-  "review": "一个 macOS 14+ 菜单栏应用（另有 Qt 6 Linux 桌面版与 CLI），聚合 106 个 AI 编码服务商的用量数据：会话/周/月窗口余量、重置倒计时、余额与支出、服务状态徽标。不要求单独登录，复用用户已有的 OAuth、设备流、API key、浏览器 Cookie 或本地文件会话读取用量；每服务商一个图标或合并模式，配置存于 ~/.config/codexbar/config.json，可用 CLI 脚本化管理。通过 Homebrew、AUR 或 GitHub Releases 分发。",
+  "one_liner": "macOS 菜单栏/Linux 桌面应用：集中显示 106 个 AI 编程服务的用量与限额",
+  "review": "面向使用多家 AI 编程服务的开发者：在 macOS 14+ 菜单栏（或 Qt 6 Linux 桌面应用/Omarchy 部件）中常驻显示各服务的会话、周/月用量窗口与重置倒计时，支持信用余额、花费面板、提供商状态轮询与事故徽标。认证复用已有会话（OAuth、API key、浏览器 cookie、本地文件），不存储密码。macOS 经 Homebrew cask 或 GitHub Releases 安装，Linux 需 glibc 2.39+、Qt 6.4+ 与另行安装的 CLI。",
   "highlights": [
-   "聚合 106 个 AI 编码服务商的额度/用量/余额数据",
-   "复用已有会话读取数据，不存储密码",
-   "会话、周、月窗口的重置倒计时与服务状态徽标",
-   "macOS 菜单栏、Linux 桌面（Wayland/X11）与 CLI 三种形态"
+   "106 个提供商的限额/用量窗口与重置倒计时",
+   "复用已有会话认证（OAuth/API key/浏览器 cookie/本地文件），不存密码",
+   "Admin API 花费面板、信用余额与提供商状态轮询",
+   "macOS（Homebrew cask）与 Linux 桌面（x86_64/ARM64，含 musl 静态包）双平台"
   ],
   "use_cases": [
-   "在长任务前确认各家订阅的用量窗口何时重置",
-   "统一查看多个 AI 编码订阅的余额与支出",
-   "监控服务商故障状态并在菜单栏获得提示"
+   "同时订阅多个 AI 编程服务，想在菜单栏一眼看到各家剩余额度",
+   "长任务前确认限额窗口与重置时间",
+   "通过 CLI 脚本批量配置提供商与 API key"
   ]
  },
  "filters": {
@@ -37,12 +37,12 @@
  },
  "links": {
   "scenario_tags": [
-   "用量监控",
+   "AI 用量监控",
    "菜单栏工具",
    "开发者工具",
-   "多服务商聚合"
+   "桌面应用"
   ],
-  "domain": "评测与运维",
+  "domain": "AI 编程服务监控/开发者工具",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
@@ -55,9 +55,7 @@
    "bedrock",
    "groq"
   ],
-  "scenario_tags_v2": [
-   "llm-observability"
-  ]
+  "scenario_tags_v2": []
  },
  "intel": {
   "maintainer_type": "individual",
@@ -69,13 +67,19 @@
   "evidence": [
    "L13: CodexBar — every AI coding limit in your menu bar. 106 providers.",
    "L15: Tiny macOS 14+ menu bar app that keeps **AI coding-provider limits visible** and shows when each window resets. See the ",
-   "L26: - **Privacy-first.** Reuses existing provider sessions — OAuth, device flow, API keys, browser cookies, local files — so"
+   "L23: - **Plan around resets.** Per-provider session, weekly, and monthly windows with countdowns to the next reset — stop gue"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -84,12 +88,12 @@
     "term": "xai",
     "rel": "support",
     "lines": [
-     148,
-     163
+     80,
+     148
     ],
     "quotes": [
-     "- Grok — Grok CLI billing RPC plus grok.com browser-session fallback.",
-     "- xAI — Management API key + team ID for prepaid credit balance and daily platform spend."
+     "codexbar config enable --provider grok",
+     "- Grok — Grok CLI billing RPC plus grok.com browser-session fallback."
     ]
    },
    {
@@ -107,11 +111,13 @@
     "rel": "support",
     "lines": [
      98,
-     119
+     119,
+     147
     ],
     "quotes": [
      "- Claude — OAuth API, browser cookies, or CLI PTY fallback; session and weekly usage where available.",
-     "- Vertex AI — Google Cloud gcloud OAuth with token cost tracking from local Claude logs."
+     "- Vertex AI — Google Cloud gcloud OAuth with token cost tracking from local Claude logs.",
+     "- AWS Bedrock — AWS access keys or a named AWS profile (SSO/assume-role via the AWS CLI) for Cost Explorer spend, monthl"
     ]
    },
    {
@@ -170,23 +176,23 @@
     "term": "brew",
     "rel": "support",
     "lines": [
-     8,
-     32,
      35,
      57
     ],
     "quotes": [
-     "Homebrew",
-     "Requires macOS 14+ (Sonoma). Download from GitHub Releases, or install with Homebrew:",
      "brew install --cask codexbar",
      "brew install steipete/tap/codexbar"
     ]
    },
    {
     "term": "source",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
+    "rel": "mention",
+    "lines": [
+     268
+    ],
+    "quotes": [
+     "## Build from source"
+    ]
    }
   ],
   "hardware": [],
@@ -287,9 +293,13 @@
    },
    {
     "term": "ChatGPT",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
+    "rel": "mention",
+    "lines": [
+     314
+    ],
+    "quotes": [
+     "- AI Monitor — ESP32 desk display (Cheap Yellow Display) plus a macOS companion app that shows Claude, ChatGPT, Gemini, "
+    ]
    }
   ],
   "dual_license": {

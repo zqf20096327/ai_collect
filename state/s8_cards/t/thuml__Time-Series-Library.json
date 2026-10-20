@@ -1,0 +1,148 @@
+{
+ "fn": "thuml/Time-Series-Library",
+ "sha": "c99998376618",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向深度学习研究者的时间序列分析模型库与基准",
+  "review": "清华大学 THUML 实验室维护的开源时间序列库：提供统一代码库，覆盖五类主流任务——长短期预测、插补、异常检测与分类，收录 TimeXer、TimesNet、iTransformer、TimeMixer 等数十个模型实现，并维护各任务前三名排行榜；支持开发自有模型、零样本预测脚本评估大时间序列模型。通过 pip 或源码安装，社区贡献了 Docker 部署。2026 年 4 月公告：维护者带宽有限，不再积极新增功能，基准部分被建议替换为更新基准，但基线实现保持正确。",
+  "highlights": [
+   "覆盖预测/插补/异常检测/分类五类任务",
+   "收录 TimeXer、TimesNet、iTransformer 等数十个模型实现",
+   "维护分任务、分回看长度的模型排行榜",
+   "提供零样本预测脚本用于评估大时间序列模型"
+  ],
+  "use_cases": [
+   "我要做时间序列预测模型的实验对比",
+   "我想在同一代码框架下开发自己的时间序列模型",
+   "我需要可复现的基线实现做异常检测或插补任务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://arxiv.org/abs/2210.02186",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "时间序列",
+   "深度学习基准",
+   "科研工具库",
+   "预测/异常检测"
+  ],
+  "domain": "评测与运维",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-evaluation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供中文文档 README_zh.md",
+   "维护方为清华大学实验室（thuml）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L2: TSLib is an open-source library for deep learning researchers, especially for deep time series analysis.",
+   "L6: We provide a neat code base to evaluate advanced deep time series models or develop your model, which covers five mainst"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     119,
+     121,
+     135,
+     140
+    ],
+    "quotes": [
+     "   pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cu121",
+     "   pip install -r requirements.txt",
+     "   pip install https://github.com/state-spaces/mamba/releases/download/v2.2.6.post3/mamba_ssm-2.2.6.post3+cu12torch2.5cx",
+     "   pip install uni2ts --no-deps"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     102
+    ],
+    "quotes": [
+     "   git clone https://github.com/thuml/Time-Series-Library.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     146
+    ],
+    "note": "README 引用的社区贡献 docker 部署",
+    "quotes": [
+     "docker compose -f 'Time-Series-Library/docker-compose.yml' up -d --build"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     97
+    ],
+    "note": "README 中提及，非替代/竞品关系",
+    "quotes": [
+     "You can obtain the well-preprocessed datasets from [[Google Drive]](https://drive.google.com/drive/folders/13Cg1KYOlzM5C"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    8
+   ],
+   "note": "2026.04 公告不再积极新增功能，并建议寻求更新的基准"
+  }
+ }
+}

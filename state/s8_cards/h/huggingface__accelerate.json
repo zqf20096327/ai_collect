@@ -1,0 +1,143 @@
+{
+ "fn": "huggingface/accelerate",
+ "sha": "182ecf6db47b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让原生 PyTorch 训练脚本在任意设备/分布式配置上运行的轻量封装库",
+  "review": "面向喜欢自己编写训练循环、但不愿维护多 GPU/TPU/混合精度样板代码的 PyTorch 用户提供：Accelerate 以单个 Accelerator 类抽象设备放置与分布式相关样板代码，在标准训练脚本中加入数行即可运行于单/多 CPU、单/多 GPU、TPU 及 fp8/fp16/bf16 混合精度环境。提供 accelerate config/launch CLI、notebook_launcher，支持 DeepSpeed、FSDP、Megatron-LM（均标注实验性）。要求 Python 3.8+、PyTorch 1.10.0+，pip 安装。",
+  "highlights": [
+   "Accelerator 单类 API，训练脚本仅需少量改动即可跨 CPU/GPU/TPU 运行",
+   "支持 fp8/fp16/bf16 混合精度",
+   "DeepSpeed / FSDP / Megatron-LM 集成（实验性）",
+   "提供 accelerate config 与 accelerate launch CLI 及 notebook_launcher"
+  ],
+  "use_cases": [
+   "让本地调试与分布式训练用同一份代码",
+   "在多 GPU 或 TPU 环境启动自己的 PyTorch 训练脚本",
+   "在 Colab/Kaggle notebook 中启动分布式训练"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": "cpu-ok",
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    101,
+    165
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "分布式训练",
+   "PyTorch",
+   "训练加速",
+   "混合精度",
+   "HuggingFace 生态"
+  ],
+  "domain": "训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: 🤗 Accelerate was created for PyTorch users who like to write the training loop of PyTorch models but are reluctant to wr",
+   "L117: You should use 🤗 Accelerate when you want to easily run your training scripts in a distributed environment without havin"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     151
+    ],
+    "quotes": [
+     "pip install accelerate"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     105,
+     113
+    ],
+    "note": "notebook_launcher 适用的运行环境，非安装途径",
+    "quotes": [
+     "🤗 Accelerate also provides a `notebook_launcher` function you can use in a notebook to launch a distributed training. Th",
+     "An example can be found in this notebook. Open In Colab"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU only",
+    "rel": "support",
+    "lines": [
+     156
+    ],
+    "note": "支持的计算后端之一，非硬件要求",
+    "quotes": [
+     "- CPU only"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     177
+    ],
+    "quotes": [
+     "  howpublished = {\\url{https://github.com/huggingface/accelerate}},"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

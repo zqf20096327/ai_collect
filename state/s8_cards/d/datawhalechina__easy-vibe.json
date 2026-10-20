@@ -1,52 +1,48 @@
 {
  "fn": "datawhalechina/easy-vibe",
- "sha": "2c067bc6cdae",
+ "sha": "604ad1f5bb26",
  "source": "readme",
  "identity": {
-  "one_liner": "面向 AI 原生产品构建者的 vibe coding 入门教程",
-  "review": "Datawhale 出品的多语言（10 种）在线教程，教零基础学习者通过对话式 AI 编程把想法做成产品。内容分三个阶段：产品原型（需求验证、原型搭建、接入 AI 能力）、全栈开发（前端、Git、Supabase、API、部署、Stripe 计费）、进阶（Claude Code、MCP、Skills、Agent Teams、跨平台项目），另附 9 大知识领域的附录知识库与交互式演示组件。面向初学者、产品经理、创始人及各级开发者，提供学习路径导航与 Vibe Stories 用户案例。",
+  "one_liner": "面向零基础学习者的 Vibe Coding 产品实战教程",
+  "review": "Datawhale 维护的 AI 编程（Vibe Coding）开源教程：从想法验证、AI 工具上手、产品原型，到全栈开发、部署计费与 Claude Code/MCP/Agent 高级工作流，分阶段提供路线图与讲解，并附 9 大知识领域、80+ 交互主题的附录知识库。教程内容支持 10 种语言，覆盖完全新手、产品经理/创始人、学生与各阶段开发者；提供在线阅读与交互式演示（Prompt 实验、RAG 流程等），学习者可通过 PR 提交自己的作品案例。",
   "highlights": [
-   "三阶段路径：产品原型→全栈交付→Claude Code 进阶工作流",
-   "10 种语言完整覆盖教程内容",
-   "提供 llms.txt 供 OpenClaw、Claude、Cursor、Trae 等 AI agent 读取仓库结构",
-   "附录含 9 大知识领域、80+ 交互式主题与用户研究方法（Double Diamond、JTBD、The Mom Test）"
+   "分阶段学习路径：原型→全栈→Claude Code/Agent 高级工作流",
+   "附录知识库覆盖 9 大领域、80+ 交互主题",
+   "10 种语言全覆盖的教程内容",
+   "提供交互式演示（Prompt 实验、RAG 数据流、终端概念可视化）"
   ],
   "use_cases": [
-   "零基础用 AI 对话做出第一个可演示的产品原型",
-   "把想法推进到带登录、计费的全栈 SaaS 应用",
-   "学习 Claude Code、MCP、Agent Teams 等进阶 AI 协作工作流",
-   "产品经理快速验证想法并搭建 MVP"
+   "零基础第一次用 AI 做出自己的产品原型",
+   "产品经理/创始人低成本验证想法并搭 MVP",
+   "开发者学习 Claude Code、MCP 与 Agent 工作流",
+   "遇到概念阻塞时查阅基础知识库"
   ]
  },
  "filters": {
-  "ai_role": "ai-ecosystem",
+  "ai_role": "ai-knowledge",
   "license_risk": "none",
   "deploy": "library",
   "model_dep": null,
   "hardware": null,
   "install_friction": "low",
-  "maturity": "idea"
+  "maturity": null
  },
  "eval": {
   "target_user": "开发者",
   "paper_url": null,
   "demo_url": null,
   "self_declared_early": {
-   "flag": true,
-   "lines": [
-    5,
-    6
-   ],
-   "note": "自称 The first course for AI-native product builders / 从零开始学 AI 编程"
+   "flag": false,
+   "lines": []
   }
  },
  "links": {
   "scenario_tags": [
-   "教程/课程",
-   "vibe coding",
+   "教程",
+   "Vibe Coding",
+   "AI编程",
    "产品原型",
-   "全栈开发",
-   "AI编程工具"
+   "全栈开发"
   ],
   "domain": "学习与行业",
   "alternative_to": [],
@@ -57,20 +53,20 @@
   ]
  },
  "intel": {
-  "maintainer_type": "media",
+  "maintainer_type": "team",
   "zh_origin": true,
   "zh_origin_signals": [
-   "datawhalechina 组织",
-   "中英双语 README",
-   "微信登录/小程序相关内容"
+   "Datawhale（国内开源学习社区）维护",
+   "简体中文为原始语言并提供多语言翻译",
+   "微信登录/小程序等国内生态内容（L88、L109）"
   ]
  },
  "trust": {
   "confidence": "mid",
   "evidence": [
-   "L5:  Learn AI coding from zero by shipping real products.",
-   "L90: - **[2026-08-12]** 📘 **Stage 1 has been restructured and polished**: The beginner path now starts with real problems and",
-   "L140: ### AI-Native: I want advanced Claude Code and agent workflows"
+   "L3:  A hands-on Vibe Coding guide chosen by tens of thousands of learners.",
+   "L82: ## Table of Contents",
+   "L133: ## Your Learning Paths"
   ],
   "xcheck": {
    "install_missing": [
@@ -79,8 +75,14 @@
   },
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -89,29 +91,31 @@
     "term": "anthropic",
     "rel": "mention",
     "lines": [
-     99,
-     100,
-     140,
-     142,
+     115,
+     116,
+     156,
      158
     ],
-    "note": "教程内容覆盖 Claude Code 工作流，非产品自身接入该 provider",
+    "note": "教程内容涉及 Claude/Claude Code，非专门接入适配",
     "quotes": [
      "- **[2026-03-02]** 🦞 **OpenClaw and AI Agent friendly support**: Added `llms.txt` so OpenClaw, Claude, Cursor, Trae, and",
      "- **[2026-03-01]** The Advanced Development section has been comprehensively upgraded with deep guides for Claude Code, ",
      "### AI-Native: I want advanced Claude Code and agent workflows",
-     "**What you will learn**: Claude Code, MCP, Skills, Agent Teams, long-running tasks, Spec Coding, and cross-platform app ",
-     "- If you want advanced Claude Code workflows or cross-platform projects, go to Stage 3"
+     "**What you will learn**: Claude Code, MCP, Skills, Agent Teams, long-running tasks, Spec Coding, and cross-platform app "
     ]
    }
   ],
   "install": [
    {
     "term": "npm",
-    "rel": "none",
-    "lines": [],
-    "note": "可见范围内未出现 npm 安装途径",
-    "quotes": []
+    "rel": "mention",
+    "lines": [
+     352
+    ],
+    "note": "未在可见范围确认用途，可能为站点构建依赖，非教程本体安装",
+    "quotes": [
+     "1. `npm install`"
+    ]
    }
   ],
   "hardware": [],
@@ -120,9 +124,9 @@
     "term": "Cursor",
     "rel": "mention",
     "lines": [
-     99
+     115
     ],
-    "note": "作为可读取仓库的 AI 工具被提及",
+    "note": "作为可理解仓库结构的 AI agent 之一被列举",
     "quotes": [
      "- **[2026-03-02]** 🦞 **OpenClaw and AI Agent friendly support**: Added `llms.txt` so OpenClaw, Claude, Cursor, Trae, and"
     ]
@@ -131,12 +135,12 @@
     "term": "Claude Code",
     "rel": "mention",
     "lines": [
-     100,
-     140,
-     142,
-     158
+     116,
+     156,
+     158,
+     174
     ],
-    "note": "进阶教程的教学对象，非替代/竞品对象",
+    "note": "作为教学内容对象，非替代/竞品关系",
     "quotes": [
      "- **[2026-03-01]** The Advanced Development section has been comprehensively upgraded with deep guides for Claude Code, ",
      "### AI-Native: I want advanced Claude Code and agent workflows",
@@ -146,10 +150,15 @@
    },
    {
     "term": "Dify",
-    "rel": "none",
-    "lines": [],
-    "note": "可见范围内未出现",
-    "quotes": []
+    "rel": "mention",
+    "lines": [
+     260,
+     270
+    ],
+    "quotes": [
+     "|Custom Dify Agent Platform|",
+     "|AI 1: Dify Basics & Knowledge Base Integration|Learn to build AI applications with Dify and integrate private knowledge"
+    ]
    }
   ],
   "dual_license": {

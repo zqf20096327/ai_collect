@@ -1,0 +1,223 @@
+{
+ "fn": "yizhiyanhua-ai/fireworks-tech-graph",
+ "sha": "c34748116ba5",
+ "source": "readme",
+ "identity": {
+  "one_liner": "从自然语言生成技术图表的 Agent 技能（SVG/PNG/GIF/HTML）",
+  "review": "一个同时适配 Codex 与 Claude Code 的 Agent Skill：把英文或中文的自然语言描述转为经几何校验的 SVG 图表，并导出高分辨率 PNG、SVG 转 GIF 动画与离线交互 HTML。提供 12 种视觉风格（11 种生成器风格 + 1 种 AI 创作）、14 种图表类型（含全部 UML）与 RAG/Multi-Agent 等 AI 领域图式；渲染前执行工程语义契约、几何与 SVG 校验，默认最多两轮视觉修正。通过 npx skills CLI 或 git clone 安装到技能目录运行。",
+  "highlights": [
+   "自然语言→几何校验 SVG + 1920px PNG + 语义 GIF 动画",
+   "12 种视觉风格、14 种图表类型（含全部 UML）",
+   "C4/部署/事件流/可靠性四类工程语义契约，渲染前 fail closed",
+   "有界验证回路：确定性检查 + 视觉复核，最多两轮修正"
+  ],
+  "use_cases": [
+   "用一句话生成系统架构或 UML 图，不手工画图",
+   "在 Codex 或 Claude Code 里为技术文档产出配图",
+   "生成 RAG、Multi-Agent、Tool Call 等 AI 架构示意与动图"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "Agent Skill",
+   "图表生成",
+   "UML",
+   "开发者工具",
+   "SVG"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "image-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中英双语 README（L1）",
+   "支持中文描述输入（L7）",
+   "中文描述换行支持（L19）"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L30: `fireworks-tech-graph` is one Agent Skill that works unchanged in **Codex and Claude Code**. It turns natural language d",
+   "L33: User: \"Generate a Mem0 memory architecture diagram, dark style\""
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     12,
+     30,
+     189
+    ],
+    "note": "作为 Claude Code Skill 官方适配运行",
+    "quotes": [
+     "Claude Code Skill",
+     "`fireworks-tech-graph` is one Agent Skill that works unchanged in **Codex and Claude Code**. It turns natural language d",
+     "  --agent codex claude-code -g -y --copy"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     566
+    ],
+    "quotes": [
+     "**AI/ML:** OpenAI, Anthropic/Claude, Google Gemini, Meta LLaMA, Mistral, Cohere, Groq, Hugging Face"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     566
+    ],
+    "quotes": [
+     "**AI/ML:** OpenAI, Anthropic/Claude, Google Gemini, Meta LLaMA, Mistral, Cohere, Groq, Hugging Face"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     187
+    ],
+    "quotes": [
+     "npx -y skills@1.5.17 add \\"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     198
+    ],
+    "quotes": [
+     "git clone https://github.com/yizhiyanhua-ai/fireworks-tech-graph.git ~/.agents/skills/fireworks-tech-graph"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     275
+    ],
+    "note": "可选 Python 依赖安装，非本产品安装途径",
+    "quotes": [
+     "python3 -m pip install cairosvg"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     12,
+     30,
+     192
+    ],
+    "note": "宿主运行时，非替代/竞品对象",
+    "quotes": [
+     "Claude Code Skill",
+     "`fireworks-tech-graph` is one Agent Skill that works unchanged in **Codex and Claude Code**. It turns natural language d",
+     "This creates complete copies at `~/.agents/skills/fireworks-tech-graph` for Codex and `~/.claude/skills/fireworks-tech-g"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     264
+    ],
+    "quotes": [
+     "|9|`review-trace`|review rail + moving review cursor|"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     395
+    ],
+    "quotes": [
+     "Draw the ChatGPT Plugin call sequence diagram"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     568
+    ],
+    "quotes": [
+     "**AI Frameworks:** Mem0, LangChain, LlamaIndex, LangGraph, CrewAI, AutoGen, DSPy, Haystack"
+    ]
+   }
+  ]
+ }
+}

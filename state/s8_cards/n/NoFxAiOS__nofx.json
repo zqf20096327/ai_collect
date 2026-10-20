@@ -1,0 +1,124 @@
+{
+ "fn": "NoFxAiOS/nofx",
+ "sha": "46b8c9fea851",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管 AI 交易系统：人审下单与连续策略执行",
+  "review": "运行在用户本机的开源交易系统（AGPL-3.0，Go/Node.js 构建，Docker Compose 部署，浏览器访问）。提供两种模式：Frontier 让用户与 AI 协作制定入场计划（市价/限价/加权阶梯/TWAP），在图表上比较后人工批准下单；Autopilot 配置模型、交易所账户与策略后连续运行并自动下单。通过 Claw402 接入模型，费用以 Base 链 USDC 结算；支持 Binance、Hyperliquid、OKX、Bitget 等交易所。模型不接收钱包私钥或交易所凭证；交易资金与 AI 费用钱包分离。",
+  "highlights": [
+   "Frontier 模式：AI 生成四种入场计划，用户审查后显式批准执行",
+   "Autopilot 模式：配置模型与策略后连续运行，Dashboard 展示持仓与决策历史",
+   "通过 Claw402 访问多个模型，费用以 Base 链 USDC 结算",
+   "交易所凭证本地加密存储，模型提示中不包含私钥与凭证"
+  ],
+  "use_cases": [
+   "在图表上与 AI 协作比较入场方案并人工批准下单",
+   "配置策略后让 Autopilot 连续执行交易",
+   "在同一界面管理多个交易所账户的持仓与订单"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/3310f495-14c5-4586-a1cc-3d32e44aa505",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "量化交易",
+   "AI Agent",
+   "加密货币",
+   "自托管",
+   "金融终端"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "quant-finance"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文语言版本"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L20: NOFX is an open-source trading system you run on your own machine. Use **Frontier** to work through a trade with AI, com",
+   "L143: Frontier and Autopilot reuse models configured in NOFX. Claw402 provides access to multiple models with usage settled in"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     28,
+     31,
+     86,
+     87
+    ],
+    "quotes": [
+     "Install and start Docker with Compose, then run:",
+     "curl -fsSL https://raw.githubusercontent.com/NoFxAiOS/nofx/main/install.sh | bash",
+     "docker compose pull",
+     "docker compose up -d"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     101,
+     103
+    ],
+    "quotes": [
+     "git clone --recurse-submodules https://github.com/NoFxAiOS/nofx.git",
+     "./start.sh start --build"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

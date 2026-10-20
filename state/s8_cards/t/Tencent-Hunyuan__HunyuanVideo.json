@@ -1,0 +1,197 @@
+{
+ "fn": "Tencent-Hunyuan/HunyuanVideo",
+ "sha": "542fa9d71f95",
+ "source": "readme",
+ "identity": {
+  "one_liner": "腾讯开源的 13B 参数文生视频基础模型及推理代码",
+  "review": "提供视频生成基础模型的 PyTorch 模型定义、预训练权重与推理/采样代码，含 13B 参数的 Diffusion Transformer 架构（双流到单流混合设计）、Causal 3D VAE 压缩、MLLM 文本编码器与提示词重写模型（Normal/Master 两种模式）。面向视频生成研究者与开发者，支持多 GPU 序列并行推理、FP8 权重、Gradio Web Demo 与 Diffusers 集成。运行要求 NVIDIA CUDA GPU，720p/129f 生成需约 60GB 显存，推荐 80GB，测试系统为 Linux。衍生模型包括 I2V、Avatar、Custom 与 1.5 版本。",
+  "highlights": [
+   "13B 参数开源视频生成模型，提供推理代码与权重",
+   "双流到单流 Diffusion Transformer 架构与 Causal 3D VAE",
+   "FP8 量化权重与多 GPU 序列并行推理（xDiT）",
+   "提供 Docker 镜像、Gradio Web Demo 与 Diffusers/ComfyUI 集成"
+  ],
+  "use_cases": [
+   "研究者本地运行或复现视频生成模型",
+   "基于权重微调或开发视频生成应用",
+   "通过 ComfyUI/Diffusers 生态进行视频生成工作流"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": "gpu-24g",
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "视频生成",
+   "扩散模型",
+   "文本到视频",
+   "生成式模型研究"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "Runway"
+  ],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "video-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "腾讯（Tencent-Hunyuan）组织维护",
+   "README 提供「中文阅读」入口",
+   "微信社群"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L17: This repo contains PyTorch model definitions, pre-trained weights and inference/sampling code for our paper exploring Hu",
+   "L75: We present HunyuanVideo, a novel open-source video foundation model that exhibits performance in video generation that i"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "llama.cpp",
+    "rel": "mention",
+    "lines": [
+     45
+    ],
+    "note": "GGUF 量化格式与 llama.cpp 生态相关联的社区 HunyuanVideo-gguf 版本被列入社区贡献",
+    "quotes": [
+     "- HunyuanVideo-gguf (GGUF Version and Quantization): HunyuanVideo-gguf by city96"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     149
+    ],
+    "quotes": [
+     "git clone https://github.com/Tencent-Hunyuan/HunyuanVideo"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     170
+    ],
+    "note": "nvidia-cublas-cu12 为可选问题修复的依赖安装，非主安装途径",
+    "quotes": [
+     "pip install nvidia-cublas-cu12==12.4.5.8"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     179,
+     180
+    ],
+    "quotes": [
+     "docker pull hunyuanvideo/hunyuanvideo:cuda_12",
+     "docker run -itd --gpus all --init --net=host --uts=host --ipc=host --name hunyuanvideo --security-opt=seccomp=unconfined"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "GPU memory required is 60GB",
+    "rel": "support",
+    "lines": [
+     141
+    ],
+    "quotes": [
+     " * **Minimum**: The minimum GPU memory required is 60GB for 720px1280px129f and 45G for 544px960px129f."
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Runway",
+    "rel": "competitor",
+    "lines": [
+     77
+    ],
+    "note": "论文摘要中与 Runway Gen-3 等闭源模型对比评测",
+    "quotes": [
+     "We conducted extensive experiments and implemented a series of targeted designs to ensure high visual quality, motion di"
+    ]
+   },
+   {
+    "term": "Stable Diffusion",
+    "rel": "mention",
+    "lines": [
+     234,
+     317
+    ],
+    "note": "窗外行号，文中提及",
+    "quotes": [
+     "It has successfully provided low-latency parallel inference solutions for a variety of DiTs models, including mochi-1, C",
+     "We would like to thank the contributors to the SD3, FLUX, Llama, LLaVA, Xtuner, diffusers and HuggingFace repositories, "
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     289,
+     317
+    ],
+    "note": "窗外行号，模型托管平台相关提及",
+    "quotes": [
+     "Using HunyuanVideo with FP8 quantized weights, which saves about 10GB of GPU memory. You can download the weights and we",
+     "We would like to thank the contributors to the SD3, FLUX, Llama, LLaVA, Xtuner, diffusers and HuggingFace repositories, "
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

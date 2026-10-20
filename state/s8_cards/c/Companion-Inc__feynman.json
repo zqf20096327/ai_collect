@@ -1,0 +1,105 @@
+{
+ "fn": "Companion-Inc/feynman",
+ "sha": "ba055209bda9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源 AI 科研 agent CLI：文献综述、深度研究与论文审查",
+  "review": "命令行形态的 AI 研究 agent：通过 /deepresearch、/lit、/review、/audit、/replicate 等 10 种工作流执行计划式调研、文献综述、论文批评、声明-代码审计、复现计划与草稿生成，结果写入 outputs/ 与 papers/，部分工作流附带来源溯源文件。检索源覆盖 arXiv、Semantic Scholar、OpenAlex、PubMed、bioRxiv、Hugging Face 等十余种并可读取本地 PDF。安装提供 curl/PowerShell 脚本与 npm 包，运行前需 feynman setup 登录模型提供商，含 PostHog 遥测（可关闭）。",
+  "highlights": [
+   "10 种研究工作流（deepresearch/lit/review/audit/replicate 等）",
+   "检索 alphaXiv、Semantic Scholar、OpenAlex、arXiv、PubMed 等 10+ 来源并读本地 PDF",
+   "四 agent 架构：researcher、verifier、reviewer、writer",
+   "/lit、/deepresearch、/recipe 输出来源溯源文件"
+  ],
+  "use_cases": [
+   "我对一个新课题做带引用核查的深度调研",
+   "我让 AI 批评我的论文草稿并给出修改计划",
+   "我让 AI 对比论文声明与其公开代码是否一致"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": "https://feynman.is",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "科研工具",
+   "AI agent",
+   "文献综述",
+   "CLI",
+   "arXiv"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "research-tools"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5:  The open source AI research agent.",
+   "L40: feynman deepresearch \"mechanistic interpretability\"",
+   "L45: |`/deepresearch <topic>`|Planned investigation with parallel researchers and citation checks|"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     25
+    ],
+    "quotes": [
+     "Or with npm and Node.js 22.22 or newer: `npm install -g @companion-ai/feynman`."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

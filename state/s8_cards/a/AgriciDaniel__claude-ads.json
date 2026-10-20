@@ -1,0 +1,187 @@
+{
+ "fn": "AgriciDaniel/claude-ads",
+ "sha": "ec17ed7ad508",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向广告运营者的 Claude Code 审计技能：跨 12 个广告平台出具证据化审计",
+  "review": "开源的 Claude Code 技能（skill），面向代理公司、顾问与内部营销团队。用户提交广告账户导出数据（CSV/JSON、截图或摘要），技能通过 /ads 命令集生成基于证据的账户审计、投放计划、素材简报与监控报告，覆盖 Google、Meta、YouTube 等 12 个广告平台。核心机制：所有检查结果为 pass/fail/unknown/not_applicable 四态、默认只读不改账户、输出带版本号的 JSON 报告、账户变更需通过 mutation gate 并留审批与回滚记录。项目自声明为 development candidate，未达到发布就绪状态；除 Claude Code 外的其他运行时（Codex/Gemini 等）标注为 EXPERIMENTAL。",
+  "highlights": [
+   "覆盖 12 个广告平台的审计/计划/创建/监控/实验命令集",
+   "pass/fail/unknown/not_applicable 四态检查，缺失数据标记为 unknown 而非猜测",
+   "默认只读；账户变更需能力门控、diff、审批上限、幂等键与回滚窗口",
+   "输出带版本的 JSON run bundle，可渲染为 Markdown/HTML/PDF"
+  ],
+  "use_cases": [
+   "导入广告账户数据后跑 /ads audit 获取逐项证据的审计报告",
+   "代理或营销团队决定各渠道预算与投放计划",
+   "持续监控投放节奏、追踪、素材疲劳与政策合规"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    199
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent技能",
+   "广告营销",
+   "审计",
+   "Claude Code插件",
+   "营销自动化"
+  ],
+  "domain": "广告营销/运营工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5: Claude Ads is a free, open source skill for Claude Code. Give it your ad account data and it tells you what is working, ",
+   "L19: 1. Install (see Installation): `/plugin marketplace add agricidaniel/claude-ads`, then `/plugin install claude-ads@ai-ma",
+   "L83: Claude Code is the canonical runtime. Codex, Gemini, Cursor, Windsurf, Goose,"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     5,
+     83
+    ],
+    "note": "Claude Code（Anthropic 产品）为声明的规范运行时",
+    "quotes": [
+     "Claude Ads is a free, open source skill for Claude Code. Give it your ad account data and it tells you what is working, ",
+     "Claude Code is the canonical runtime. Codex, Gemini, Cursor, Windsurf, Goose,"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     117,
+     119
+    ],
+    "quotes": [
+     "git clone https://github.com/AgriciDaniel/claude-ads.git",
+     "bash install.sh --source=local"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     293,
+     294
+    ],
+    "note": "窗外命中，未在可见安装路径中展示",
+    "quotes": [
+     ".venv/bin/python -m pip install --no-deps -e .",
+     ".venv/bin/python -m pip install --require-hashes --only-binary=:all: -r requirements.lock"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     5,
+     83
+    ],
+    "note": "作为运行时宿主被提及，非替代/竞品",
+    "quotes": [
+     "Claude Ads is a free, open source skill for Claude Code. Give it your ad account data and it tells you what is working, ",
+     "Claude Code is the canonical runtime. Codex, Gemini, Cursor, Windsurf, Goose,"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     83,
+     130
+    ],
+    "note": "可选安装目标之一",
+    "quotes": [
+     "Claude Code is the canonical runtime. Codex, Gemini, Cursor, Windsurf, Goose,",
+     "> **EXPERIMENTAL:** Only Claude Code is verified. The Codex, Gemini, Cursor,"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     83,
+     131
+    ],
+    "note": "可选安装目标之一",
+    "quotes": [
+     "Claude Code is the canonical runtime. Codex, Gemini, Cursor, Windsurf, Goose,",
+     "> Windsurf, and Goose targets install the same skill artifacts under each host's"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    14,
+    270
+   ],
+   "note": "MIT 公开发行 + 私有开发/社区仓库，Pro 会员经社区镜像获得早期访问",
+   "quotes": [
+    "> AI Marketing Hub Pro members",
+    "The MIT public distribution and private development/community repository have"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

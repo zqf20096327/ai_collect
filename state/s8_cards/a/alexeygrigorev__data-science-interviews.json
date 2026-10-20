@@ -1,0 +1,93 @@
+{
+ "fn": "alexeygrigorev/data-science-interviews",
+ "sha": "c36275b0ba0f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "数据科学面试问答社区合集：分类问题与社区答案",
+  "review": "收录数据科学面试问题及社区给出的答案的知识库仓库。问题按类别组织为理论题（线性模型、树、神经网络等，theory.md）、技术题（SQL、Python、编码，technical.md），并在 contrib 文件夹收录社区贡献的题目（如概率题）。答案由社区通过 PR 提供、改进与纠错，另维护 awesome.md 汇总其他面试资源，内容按 CC BY 4.0 许可发布，贡献者名单单独记录。",
+  "highlights": [
+   "理论题覆盖线性模型、树、神经网络等主题",
+   "技术题覆盖 SQL、Python 与编码",
+   "社区通过 PR 提交答案、改进与纠错",
+   "awesome.md 汇总其他面试问题与资源"
+  ],
+  "use_cases": [
+   "准备数据科学岗位面试，按主题刷题看答案",
+   "查找理论与技术类常见面试题参考",
+   "贡献自己的答案或补充面试题"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "面试题库",
+   "数据科学",
+   "机器学习",
+   "知识合集"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L8: Data science interview questions - with answers",
+   "L22: * Theoretical questions: theory.md (linear models, trees, neural networks and others)",
+   "L23: * Technical questions: technical.md (SQL, Python, coding)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

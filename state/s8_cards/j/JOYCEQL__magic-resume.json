@@ -1,0 +1,188 @@
+{
+ "fn": "JOYCEQL/magic-resume",
+ "sha": "5f5b4dbf7e9b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "在线 AI 辅助简历编辑器，支持实时预览与多格式导出",
+  "review": "基于 TanStack Start、TypeScript 与 Framer Motion 构建的在线简历编辑器：实时预览、自定义主题、暗色模式、自动保存与本地存储，支持导出 PDF 及导入 PDF/Markdown，AI 部分为辅助写作，可配置 DeepSeek、Qwen、Doubao 等模型（直连），其他模型（OpenAI/Gemini/Anthropic）经 Cloudflare Workers 或代理接入。部署方式含 pnpm 源码运行与 Docker Compose；源码 Apache 2.0 附加非商业使用限制。",
+  "highlights": [
+   "AI 辅助写作，支持 DeepSeek/Qwen/Doubao 直连与自定义模型",
+   "实时预览、自定义主题、暗色模式、自动保存",
+   "导出 PDF，导入 PDF/Markdown，自动一页排版",
+   "提供 Docker Compose 部署"
+  ],
+  "use_cases": [
+   "在线编辑并导出个人简历",
+   "用 AI 辅助润色简历内容",
+   "自部署一套简历编辑服务供个人使用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "简历编辑",
+   "AI辅助写作",
+   "Web应用",
+   "自部署工具"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "ai-writing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "简体中文 README",
+   "DeepSeek/豆包等国内模型直连",
+   "作者提供 163 邮箱联系方式"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L11: Magic Resume is a modern online resume editor that makes creating professional resumes simple and enjoyable. Built with ",
+   "L107: - [x] AI-assisted writing"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     77,
+     112
+    ],
+    "note": "作为可配置的 AI 模型之一，直连使用",
+    "quotes": [
+     "DeepSeek, Qwen, and Doubao continue to use a direct connection.",
+     "- [x] Custom model"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     45,
+     52,
+     58
+    ],
+    "quotes": [
+     "git clone git@github.com:JOYCEQL/magic-resume.git",
+     "pnpm install",
+     "pnpm dev"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     52
+    ],
+    "note": "pnpm install 为依赖安装命令，非发布包安装",
+    "quotes": [
+     "pnpm install"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     81,
+     83,
+     88
+    ],
+    "quotes": [
+     "### Docker Compose",
+     "1. Ensure you have Docker and Docker Compose installed",
+     "docker compose up -d"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     77
+    ],
+    "note": "作为可配置的 AI 模型之一被列举",
+    "quotes": [
+     "DeepSeek, Qwen, and Doubao continue to use a direct connection."
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     77
+    ],
+    "note": "作为可配置的 AI 模型之一被列举",
+    "quotes": [
+     "DeepSeek, Qwen, and Doubao continue to use a direct connection."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    98,
+    100,
+    101
+   ],
+   "note": "Apache 2.0 附加非商业使用限制条款",
+   "quotes": [
+    "The source code of this project is released under the **Apache 2.0** license with an additional **non-commercial use res",
+    "- **Free for Personal Use**: Free to use purely for personal, non-commercial purposes (e.g., personal learning, creating",
+    "- **Commercial Use Prohibited**: The project may not be used for any commercial purpose, including providing it as a pai"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

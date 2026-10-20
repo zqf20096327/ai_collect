@@ -1,0 +1,134 @@
+{
+ "fn": "openai/openai-node",
+ "sha": "0aa6c3426dd1",
+ "source": "readme",
+ "identity": {
+  "one_liner": "OpenAI API 官方 TypeScript/JavaScript SDK，供开发者调用 OpenAI 模型服务",
+  "review": "由 OpenAI 官方维护的 TypeScript/JavaScript 库，从 OpenAPI 规范自动生成，提供对 OpenAI REST API 的访问：Responses API 与 Chat Completions 文本生成、图像分析、流式 SSE 响应、文件上传、Webhook 验签、自动重试与超时控制、自动分页、Realtime WebSocket 多模态会话，以及 Workload Identity 认证（Kubernetes/Azure/GCP/X.509）。面向在 Node.js/Deno 环境中接入 OpenAI 及 Azure OpenAI、Amazon Bedrock 的开发者，通过 npm 安装。",
+  "highlights": [
+   "支持 Responses API 与 Chat Completions 文本生成、流式 SSE 响应",
+   "Workload Identity 认证：Kubernetes/Azure/GCP 短时令牌与 X.509 客户端证书",
+   "内置 Webhook 签名验证、自动重试（默认 2 次指数退避）、自动分页",
+   "Realtime API WebSocket 连接，支持文本/音频输入输出与函数调用"
+  ],
+  "use_cases": [
+   "在 Node.js/TypeScript 项目中调用 OpenAI 模型生成文本",
+   "构建低延迟多模态实时会话应用",
+   "在云托管环境（Kubernetes/Azure/GCP）中免 API key 认证接入 OpenAI"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "SDK/客户端库",
+   "LLM API 接入",
+   "TypeScript/Node.js",
+   "API 客户端"
+  ],
+  "domain": "LLM 基础设施/API SDK",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "azure",
+   "bedrock"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: This library provides convenient access to the OpenAI REST API from TypeScript or JavaScript.",
+   "L7: It is generated from our OpenAPI specification."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "azure",
+    "rel": "support",
+    "lines": [
+     316,
+     318
+    ],
+    "note": "提供 AzureOpenAI 类专门适配 Azure OpenAI",
+    "quotes": [
+     "## Microsoft Azure OpenAI",
+     "To use this library with Azure OpenAI, use the `AzureOpenAI`"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "support",
+    "lines": [
+     334,
+     336,
+     340
+    ],
+    "note": "提供 bedrock provider 适配 Amazon Bedrock 的 OpenAI 兼容 API",
+    "quotes": [
+     "## Amazon Bedrock",
+     "To use this library with Amazon Bedrock's OpenAI-compatible API, configure the standard `OpenAI` client with the Bedrock",
+     "import { bedrock } from 'openai/providers/bedrock/aws';"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     14
+    ],
+    "note": "npm install openai；L352 为 Bedrock 可选 peer 依赖安装",
+    "quotes": [
+     "npm install openai"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

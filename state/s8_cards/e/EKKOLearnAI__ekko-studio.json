@@ -1,0 +1,282 @@
+{
+ "fn": "EKKOLearnAI/ekko-studio",
+ "sha": "e7139526354f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地优先的多 Agent 聊天、编程与可视化工作流 AI 工作台",
+  "review": "Ekko Studio 是 local-first 的 AI 工作区，提供桌面应用（Windows/macOS/Linux）、npm CLI 包与 Docker 镜像三种分发形式。核心功能：多 Agent 对话（单聊/群聊）、可视化工作流（Vue Flow 画布、审批门、条件路由）、Agent Manager 管理 14 种编程 Agent 集成（Claude Code、Codex、Cursor 等）、平台频道接入（Telegram/Discord/飞书/钉钉/QQ/微信等 10 个）、定时任务、看板、文件浏览器与用量分析。内置 Ekko Agent，桌面与 Docker 版捆绑 Hermes 运行时；会话数据存本地 SQLite。曾用名 Hermes Studio / Hermes Web UI。",
+  "highlights": [
+   "14 种编程 Agent 集成，含安装/更新/配置管理（Agent Manager）",
+   "可视化工作流画布：条件路由、审批门、执行快照回放",
+   "10 个平台频道统一配置（Telegram/Discord/Slack/飞书/钉钉/QQ/微信等）",
+   "桌面应用（Windows/macOS/Linux）、npm CLI 与 Docker 三种分发形式"
+  ],
+  "use_cases": [
+   "在一个界面里统一使用和切换多个编程 Agent 与对话 Agent",
+   "搭建多 Agent 群聊与可视化自动化工作流",
+   "将 Agent 接入 Telegram/Discord/微信等平台频道"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "多Agent工作台",
+   "编程Agent",
+   "可视化工作流",
+   "桌面应用",
+   "local-first"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "workflow-automation",
+   "coding-agent",
+   "chatbot"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供中文版链接",
+   "支持飞书/钉钉/QQ/微信/企业微信等国内平台"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L4:  A local-first AI workspace for multi-agent chat, coding, and visual workflows.",
+   "L6:  Hermes Agent, Ekko Agent, and 14 coding-agent integrations, including Claude Code and Codex.",
+   "L49: |Multi-agent runtime|Connects the agents listed below with streaming responses, tool traces, generated-file previews, pe"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     6,
+     63,
+     146
+    ],
+    "note": "Claude/Claude Code 作为集成对象与 OAuth 提供方被提及",
+    "quotes": [
+     " Hermes Agent, Ekko Agent, and 14 coding-agent integrations, including Claude Code and Codex.",
+     "|Claude Code, Codex, Pi, Grok, OpenCode, DeepSeek Harness (DSH)|Studio-scoped or native global configuration; installati",
+     "- OAuth/device flows for OpenAI Codex, Nous Portal, xAI, Claude, and GitHub Copilot"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     63,
+     186
+    ],
+    "note": "DeepSeek Harness (DSH) 作为被管理的编程 Agent 集成",
+    "quotes": [
+     "|Claude Code, Codex, Pi, Grok, OpenCode, DeepSeek Harness (DSH)|Studio-scoped or native global configuration; installati",
+     "#### DeepSeek Harness (DSH)"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     146
+    ],
+    "note": "OAuth 设备流支持的提供方之一",
+    "quotes": [
+     "- OAuth/device flows for OpenAI Codex, Nous Portal, xAI, Claude, and GitHub Copilot"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     276
+    ],
+    "quotes": [
+     "- STT adapters: Browser, OpenAI-compatible, Doubao, Groq, Mistral, xAI, ElevenLabs, and DeepInfra."
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     429,
+     430,
+     431
+    ],
+    "quotes": [
+     "|`HERMES_OPENROUTER_APP_REFERER`|`https://ekkostudio.xyz`|OpenRouter attribution referer sent by bridge runs.|",
+     "|`HERMES_OPENROUTER_APP_TITLE`|`Ekko Studio`|OpenRouter attribution title sent by bridge runs.|",
+     "|`HERMES_OPENROUTER_APP_CATEGORIES`|`cli-agent,personal-agent`|OpenRouter attribution categories sent by bridge runs.|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     13,
+     54
+    ],
+    "quotes": [
+     " <code>npm install -g ekko-studio && ekko-studio-web start</code>",
+     "|Distribution|Ships as a desktop app for Windows/macOS/Linux, an npm CLI package, and a Docker image.|"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     54,
+     354,
+     360
+    ],
+    "quotes": [
+     "|Distribution|Ships as a desktop app for Windows/macOS/Linux, an npm CLI package, and a Docker image.|",
+     "### Docker Compose",
+     "WEBUI_IMAGE=ekkoye8888/hermes-web-ui docker compose up -d"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   },
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     482
+    ],
+    "quotes": [
+     "git clone https://github.com/EKKOLearnAI/ekko-studio.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     6,
+     63
+    ],
+    "note": "被集成管理的编程 Agent，非替代关系",
+    "quotes": [
+     " Hermes Agent, Ekko Agent, and 14 coding-agent integrations, including Claude Code and Codex.",
+     "|Claude Code, Codex, Pi, Grok, OpenCode, DeepSeek Harness (DSH)|Studio-scoped or native global configuration; installati"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     64,
+     146
+    ],
+    "quotes": [
+     "|Qwen Code, Kimi Code, CodeBuddy, GitHub Copilot CLI, ZCode|Studio-scoped or native global configuration. ZCode requires",
+     "- OAuth/device flows for OpenAI Codex, Nous Portal, xAI, Claude, and GitHub Copilot"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     64
+    ],
+    "note": "Qwen Code 作为集成对象",
+    "quotes": [
+     "|Qwen Code, Kimi Code, CodeBuddy, GitHub Copilot CLI, ZCode|Studio-scoped or native global configuration. ZCode requires"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     64
+    ],
+    "note": "Kimi Code 作为集成对象",
+    "quotes": [
+     "|Qwen Code, Kimi Code, CodeBuddy, GitHub Copilot CLI, ZCode|Studio-scoped or native global configuration. ZCode requires"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     65
+    ],
+    "note": "被集成的编程 Agent",
+    "quotes": [
+     "|Cursor, Qoder, Antigravity|Cursor and Qoder use native global configuration. Antigravity supports scoped and global lau"
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     275,
+     276
+    ],
+    "quotes": [
+     "- TTS adapters: Edge, OpenAI-compatible, MiMo, Doubao, ElevenLabs, Gemini, xAI, Mistral, MiniMax, and DeepInfra.",
+     "- STT adapters: Browser, OpenAI-compatible, Doubao, Groq, Mistral, xAI, ElevenLabs, and DeepInfra."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

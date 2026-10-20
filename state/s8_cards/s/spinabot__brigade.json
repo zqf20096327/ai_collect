@@ -1,0 +1,241 @@
+{
+ "fn": "spinabot/brigade",
+ "sha": "1d6d598d0d1b",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管的个人 AI agent 团队运行时：多 agent 共享长期记忆",
+  "review": "Brigade 是一个自托管的 AI agent 生态系统：用户通过终端 TUI、WhatsApp/Telegram/Slack/Discord/iMessage 等渠道与一支按组织架构协作的 agent 团队对话。核心机制包括共享长期记忆引擎 Tideline（文件存储、BM25+向量混合召回、来源隔离）、子 agent 派生、技能系统（内置 56 个技能）、cron 调度、经 Composio 提供 1000+ 应用连接器，以及 MCP 支持。模型可接入 Anthropic/OpenAI/Gemini/本地 Ollama 等，密钥与数据留在本机，默认文件系统存储，可选自托管 Convex 后端。单一 Node 二进制，安装脚本或 npm 全局安装，可运行于树莓派或服务器。",
+  "highlights": [
+   "多 agent 按组织架构（org chart）协作，共享 Tideline 长期记忆（BM25+向量混合召回、来源隔离与衰减）",
+   "终端 TUI 与 WhatsApp/Telegram/Slack/Discord/iMessage/BlueBubbles 多渠道接入同一网关",
+   "经 Composio 提供 1,000+ 应用连接器（Gmail/Slack/GitHub/Notion 等）与 MCP 内存服务器",
+   "支持 Anthropic/OpenAI/Gemini/OpenRouter/本地 Ollama 等模型，可对话中途切换"
+  ],
+  "use_cases": [
+   "在自己机器上运行一支可从聊天软件随时召唤的私人 AI agent 团队",
+   "让多个 agent 分工协作处理文档读写、定时任务和应用操作",
+   "不依赖 SaaS、密钥与数据全部留在本机地使用多个模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent运行时",
+   "多agent协作",
+   "个人AI助手",
+   "自托管",
+   "长期记忆"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "ollama",
+   "openrouter"
+  ],
+  "scenario_tags_v2": [
+   "multi-agent",
+   "agent-memory"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L34: **Brigade is your personal intelligence, built on enterprise-grade tech**: a crew of",
+   "L35: AI agents on a real org chart that share one long-term memory, Tideline, so what one",
+   "L55: Start it and you get a fast chat TUI. Keep going and you get isolated agents with"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     73,
+     124
+    ],
+    "quotes": [
+     "|🔌 **Bring any model**|Anthropic, OpenAI, Gemini, OpenRouter, OrcaRouter, Token Market, Groq, Cerebras, xAI, DeepSeek, M",
+     "(filesystem or self-hosted Convex), **(1) pick a provider** (Anthropic, OpenAI, Gemini,"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     43,
+     73,
+     125
+    ],
+    "quotes": [
+     "Claude, GPT, Gemini, Llama, or a local Ollama. Privileged actions wait for your",
+     "|🔌 **Bring any model**|Anthropic, OpenAI, Gemini, OpenRouter, OrcaRouter, Token Market, Groq, Cerebras, xAI, DeepSeek, M",
+     "OpenRouter, OrcaRouter, Token Market, Ollama, and more), **(2) connect it** (paste an API key, **sign in with a"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     73,
+     125
+    ],
+    "quotes": [
+     "|🔌 **Bring any model**|Anthropic, OpenAI, Gemini, OpenRouter, OrcaRouter, Token Market, Groq, Cerebras, xAI, DeepSeek, M",
+     "OpenRouter, OrcaRouter, Token Market, Ollama, and more), **(2) connect it** (paste an API key, **sign in with a"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     73
+    ],
+    "quotes": [
+     "|🔌 **Bring any model**|Anthropic, OpenAI, Gemini, OpenRouter, OrcaRouter, Token Market, Groq, Cerebras, xAI, DeepSeek, M"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     73
+    ],
+    "quotes": [
+     "|🔌 **Bring any model**|Anthropic, OpenAI, Gemini, OpenRouter, OrcaRouter, Token Market, Groq, Cerebras, xAI, DeepSeek, M"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     698
+    ],
+    "note": "窗外行，出现在兼容端点列举语境",
+    "quotes": [
+     "OpenAI-compatible endpoints (Together, Fireworks, vLLM, LM Studio, on-prem gateways"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     103
+    ],
+    "quotes": [
+     "npm i -g @spinabot/brigade"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     882
+    ],
+    "note": "窗外行，源码方式安装途径",
+    "quotes": [
+     "git clone https://github.com/spinabot/brigade.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     10,
+     126
+    ],
+    "note": "支持用 ChatGPT 订阅登录，非替代/竞品表述",
+    "quotes": [
+     " 🔑 No API key? No problem. Sign in with your Claude , ChatGPT , or",
+     "Claude/ChatGPT/Copilot subscription**, reuse your Claude Code or Codex CLI login, or"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     11,
+     126
+    ],
+    "note": "可复用其登录",
+    "quotes": [
+     " Copilot subscription — or, if you're already signed into the Claude Code or",
+     "Claude/ChatGPT/Copilot subscription**, reuse your Claude Code or Codex CLI login, or"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     11,
+     126
+    ],
+    "note": "支持用 Copilot 订阅登录",
+    "quotes": [
+     " Copilot subscription — or, if you're already signed into the Claude Code or",
+     "Claude/ChatGPT/Copilot subscription**, reuse your Claude Code or Codex CLI login, or"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     721
+    ],
+    "quotes": [
+     "Brave, Exa, Perplexity, Firecrawl, SearXNG (keyed) and DuckDuckGo, Wikipedia, Hacker"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

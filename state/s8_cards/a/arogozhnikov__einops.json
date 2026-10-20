@@ -1,0 +1,106 @@
+{
+ "fn": "arogozhnikov/einops",
+ "sha": "a64cbc05f09a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "跨深度学习框架的张量操作库，用爱因斯坦式记号重排张量",
+  "review": "面向深度学习开发者的 Python 张量操作库：提供 rearrange/reduce/repeat、pack/unpack、einsum 与 EinMix 层，用统一记号在 numpy、pytorch、tensorflow、jax、cupy 等框架间以一致语义操作张量，并为各框架提供对应网络层。支持 torch.compile 与 Python array API 标准（含 MLX、dask 等）。pip 安装，要求 Python 3.10+；有 ICLR 2022 论文。",
+  "highlights": [
+   "rearrange/reduce/repeat 三核心操作覆盖堆叠、变形、转置、池化等",
+   "pack/unpack 可逆打包多个不同维度的张量",
+   "同一代码在 numpy/pytorch/tf/jax/cupy 等框架行为一致",
+   "为 pytorch/tensorflow/flax/paddle 等提供对应网络层，支持 torch.compile"
+  ],
+  "use_cases": [
+   "在 PyTorch/JAX 等框架中用统一记号重排、降维张量，减少 shape 错误",
+   "让同一段张量操作代码在多个框架间复用",
+   "实现 MLP Mixer 等需要 EinMix 通用线性层的结构"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "张量操作",
+   "深度学习工具库",
+   "多框架兼容",
+   "科学计算"
+  ],
+  "domain": "深度学习/科学计算库",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: Flexible and powerful tensor operations for readable and reliable code.",
+   "L10: Supports numpy, pytorch, jax, mlx and others.",
+   "L239: ## Supported frameworks"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     5,
+     49,
+     52
+    ],
+    "quotes": [
+     "PyPI version",
+     "pip install einops",
+     "(`uv pip install einops` works as well)"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

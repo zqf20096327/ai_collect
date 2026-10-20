@@ -1,0 +1,145 @@
+{
+ "fn": "yzhao062/pyod",
+ "sha": "ee4d7209ecfb",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的多模态异常检测 Python 库，60+ 检测器统一 API",
+  "review": "Python 异常/离群检测库，覆盖表格、时间序列、图、文本、图像、音频六类数据，提供 61 个检测器与统一 API（经典 fit/predict 不变）。V3 增加 ADEngine 生命周期编排层（自动选择、比较、评估检测器）与 agentic 层：为 Claude Code/Codex 提供 od-expert 技能，为 MCP 兼容 LLM 暴露 10 个无状态工具（检索器查询、规划、检测执行）。基于 SUOD 并行训练与 numba JIT 加速。以 pip 包形式安装，支持 conda 与源码安装。",
+  "highlights": [
+   "61 个检测器覆盖表格/时序/图/文本/图像/音频，统一 API",
+   "ADEngine 单次调用完成从原始数据到可解释异常结果的编排",
+   "od-expert 技能接入 Claude Code/Codex，MCP 服务器暴露 10 个工具",
+   "基准支撑的检测器路由（ADBench、TSB-AD、BOND、NLP-ADBench）"
+  ],
+  "use_cases": [
+   "在表格/时序/图等数据上直接做离群点检测与评分",
+   "让 PyOD 自动选择并比较合适检测器，无需手工调参",
+   "通过自然语言对话让 AI agent 驱动完整检测流程",
+   "欺诈检测、工业监控等场景的异常评分"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2412.12154",
+  "demo_url": "https://htmlpreview.github.io/?https://github.com/yzhao062/pyod/blob/development/examples/agentic_demo.html",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "异常检测",
+   "机器学习库",
+   "多模态",
+   "Agent/MCP",
+   "数据科学"
+  ],
+  "domain": "机器学习/异常检测",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L67: Multi-Modal 61 detectors across **tabular, time series, graph, text, image, and audio** data, one API",
+   "L111:  from pyod.models.iforest import IForest"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     60,
+     86,
+     87
+    ],
+    "note": "提供 Claude Code 专属 od-expert 技能安装路径",
+    "quotes": [
+     " **PyOD is agent-ready.** Claude Code and Codex can use the ``od-expert`` skill to drive ADEngine investigations, while ",
+     " # 1. Claude Code / Codex — enables the od-expert skill",
+     " pyod install skill # Claude Code: user-global (~/.claude/skills/)"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     80
+    ],
+    "quotes": [
+     " pip install pyod"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     60,
+     86
+    ],
+    "note": "被接入的 agent 宿主，非替代/竞品",
+    "quotes": [
+     " **PyOD is agent-ready.** Claude Code and Codex can use the ``od-expert`` skill to drive ADEngine investigations, while ",
+     " # 1. Claude Code / Codex — enables the od-expert skill"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     674
+    ],
+    "quotes": [
+     "Encoding HuggingFaceEncoder Encode text or images via HuggingFace transformers (BERT, DINOv2, CLIP)"
+    ]
+   }
+  ]
+ }
+}

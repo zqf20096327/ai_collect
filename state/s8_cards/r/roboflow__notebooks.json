@@ -1,0 +1,119 @@
+{
+ "fn": "roboflow/notebooks",
+ "sha": "bac2d8a3a609",
+ "source": "readme",
+ "identity": {
+  "one_liner": "计算机视觉模型教程笔记本合集（88+ 本）",
+  "review": "Roboflow 维护的计算机视觉教程笔记本集合：61 本模型教程覆盖 RF-DETR、YOLO 系列、SAM/SAM2/SAM3、PaliGemma、Florence-2、Qwen-VL、Grounding DINO、CLIP 等模型的推理与微调；另含 4 本目标跟踪教程（ByteTrack/SORT/OC-SORT 等）和 23 本技能笔记本（自动标注、车辆测速、图像检索等）。每本笔记本可在 Colab、Kaggle、SageMaker Studio Lab 打开，多数附论文与 GitHub 链接；也提供本地运行说明（git clone + venv）。",
+  "highlights": [
+   "61 本模型教程，覆盖检测/分割/分类/姿态/OCR/数据抽取等任务",
+   "每本笔记本支持 Colab / Kaggle / SageMaker Studio Lab 一键打开",
+   "附跟踪教程与自动标注、零标注训练等技能笔记本",
+   "条目关联论文 arXiv、GitHub 仓库与配套视频"
+  ],
+  "use_cases": [
+   "学习和试用最新的计算机视觉模型（如 SAM 3、RF-DETR）",
+   "在自有数据集上微调检测/分割/分类模型",
+   "跟随笔记本完成自动数据标注与模型评测"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教程/笔记本",
+   "计算机视觉",
+   "目标检测",
+   "图像分割",
+   "模型微调"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L54: This repository offers a growing collection of computer vision tutorials. Learn to use SOTA models like YOLOv11, SAM 2, ",
+   "L56: ## 🚀 model tutorials (61 notebooks)",
+   "L127: ## 🛠️ computer vision skills (23 notebooks)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     183
+    ],
+    "note": "git clone 本地运行说明",
+    "quotes": [
+     "git clone git@github.com:roboflow-ai/notebooks.git"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     57,
+     59
+    ],
+    "note": "笔记本的运行环境入口，非本产品安装命令",
+    "quotes": [
+     "|**notebook**|**open in colab / kaggle / sagemaker studio lab**|**complementary materials**|**repository / paper**|",
+     "|RF-DETR Keypoint Detection and Fine-Tuning|Colab Kaggle||GitHub|"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

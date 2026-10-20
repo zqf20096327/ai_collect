@@ -1,0 +1,192 @@
+{
+ "fn": "calesthio/Crucix",
+ "sha": "701a81d9ff48",
+ "source": "readme",
+ "identity": {
+  "one_liner": "本地自托管的 OSINT 情报聚合终端：27 个公开数据源一张仪表盘",
+  "review": "自托管的个人情报终端：每 15 分钟并行抓取 27 个公开情报源（卫星火灾、航班、辐射、冲突、制裁、经济指标、行情、社媒情绪等），交叉关联后渲染到带 3D 地球的 Jarvis 风格仪表盘，并通过 SSE 推送增量变化。支持 Telegram/Discord 双向机器人命令与多级告警。LLM 为可选层：接入 8 家提供商可生成交易观点与智能分级告警，未配置时回退到规则引擎。面向研究者、记者、交易员与 OSINT 分析者，本地运行 Node.js 22+ 或 Docker，AGPL v3。",
+  "highlights": [
+   "27 个公开情报源并行抓取，每 15 分钟自动刷新",
+   "3D WebGL 地球与平面地图两种视图，9 类标记",
+   "Telegram/Discord 双向机器人（/brief、/sweep 等命令）与 FLASH/PRIORITY/ROUTINE 多级告警",
+   "可选接入 8 家 LLM 提供商，未配置时回退规则引擎"
+  ],
+  "use_cases": [
+   "在一块仪表盘上跟踪全球实时事件与市场数据",
+   "通过手机 Telegram/Discord 接收情报简报与突发告警",
+   "本地零云端聚合开源情报数据做研究分析"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "viral",
+  "deploy": "desktop",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://www.crucix.live/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "OSINT",
+   "情报聚合",
+   "数据可视化仪表盘",
+   "自托管",
+   "Telegram/Discord 机器人"
+  ],
+  "domain": "效率与自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "xai",
+   "openrouter"
+  ],
+  "scenario_tags_v2": [
+   "web-scraping",
+   "research-tools"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L36: Crucix pulls satellite fire detection, flight tracking, radiation monitoring, satellite constellation tracking, economic",
+   "L38: Hook it up to an LLM and it becomes a **two-way intelligence assistant** — pushing multi-tier alerts to Telegram and Dis",
+   "L167: ### Optional LLM Layer"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     171,
+     206
+    ],
+    "quotes": [
+     "- Providers: Anthropic Claude, OpenAI, Google Gemini, OpenRouter (Unified API), OpenAI Codex (ChatGPT subscription), Min",
+     "|`anthropic`|`LLM_API_KEY`|claude-sonnet-4-6|"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "support",
+    "lines": [
+     171,
+     213
+    ],
+    "quotes": [
+     "- Providers: Anthropic Claude, OpenAI, Google Gemini, OpenRouter (Unified API), OpenAI Codex (ChatGPT subscription), Min",
+     "|`grok`|`LLM_API_KEY`|grok-4-latest|"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     171,
+     209
+    ],
+    "quotes": [
+     "- Providers: Anthropic Claude, OpenAI, Google Gemini, OpenRouter (Unified API), OpenAI Codex (ChatGPT subscription), Min",
+     "|`openrouter`|`LLM_API_KEY`|openrouter/auto|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     63
+    ],
+    "quotes": [
+     "git clone https://github.com/calesthio/Crucix.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     84
+    ],
+    "quotes": [
+     "docker compose up -d"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     165
+    ],
+    "note": "可选依赖 discord.js 与 Codex 登录使用 npm/npx，非本产品安装途径",
+    "quotes": [
+     "**Optional dependency:** The full bot requires `discord.js`. Install it with `npm install discord.js`. If it's not insta"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     171,
+     215
+    ],
+    "note": "Codex 提供商用 ChatGPT 订阅认证，非替代/竞品关系",
+    "quotes": [
+     "- Providers: Anthropic Claude, OpenAI, Google Gemini, OpenRouter (Unified API), OpenAI Codex (ChatGPT subscription), Min",
+     "For Codex, run `npx @openai/codex login` to authenticate via your ChatGPT subscription."
+    ]
+   }
+  ]
+ }
+}

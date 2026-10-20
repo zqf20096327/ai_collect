@@ -1,0 +1,165 @@
+{
+ "fn": "pycaret/pycaret",
+ "sha": "c18e757e6f4a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自托管开源 AutoML 平台：训练、注册、部署模型一体化",
+  "review": "PyCaret 4.0 提供三部分：基于 sklearn-1.7 的 AutoML 引擎库（PyPI 发布为 pycaret）、FastAPI 控制平面（工作区、项目、实验、运行、模型注册、部署、监控、漂移、血缘、定时任务、LLM 顾问 copilot），以及 React + Vite 的 Web UI。用户通过 docker compose 一键本地部署，完成数据集上传→训练约 12 种算法→排行榜选优→注册→部署→API 预测的完整流程。当前形态为双容器单机部署（SQLite 存储），架构计划通过 Protocol 抽象拆分到云后端。4.0 线为进行中，3.x 已冻结在 3.4.0。",
+  "highlights": [
+   "sklearn-1.7 AutoML 引擎 + FastAPI 控制平面 + React Web UI 三合一",
+   "docker compose 一键本地部署，约 10 分钟完成训练→注册→部署→预测闭环",
+   "支持分类/回归/聚类/异常检测/时间序列任务，单次运行训练约 12 种算法",
+   "可选接入 Anthropic/OpenAI API 启用数据集顾问与实验设计 copilot"
+  ],
+  "use_cases": [
+   "在本地快速完成端到端的 AutoML 实验与模型对比",
+   "把训练好的模型注册并部署为预测 API 端点",
+   "小团队自托管机器学习平台，通过 Web UI 点选配置"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    17
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AutoML",
+   "MLOps",
+   "自托管平台",
+   "模型部署",
+   "机器学习"
+  ],
+  "domain": "训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "mlops"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L27: - **Engine** — sklearn-1.7-based AutoML library (`pycaret` on PyPI).",
+   "L28: - **Control plane** — FastAPI backend with workspaces, projects, experiments, runs, model registry, deployments, approva",
+   "L108: 5. **Run an experiment** — inside the project → New experiment → pick your dataset, pick the task type (classification /"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     30,
+     43,
+     45
+    ],
+    "quotes": [
+     "- **One-command local install** — `docker compose up` and the whole thing is running locally on `http://localhost:3020`.",
+     "git clone https://github.com/pycaret/pycaret.git",
+     "docker compose up --build"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     43,
+     119
+    ],
+    "quotes": [
+     "git clone https://github.com/pycaret/pycaret.git",
+     "```bash"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     27
+    ],
+    "quotes": [
+     "- **Engine** — sklearn-1.7-based AutoML library (`pycaret` on PyPI)."
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     48
+    ],
+    "note": "构建期前端依赖安装，非独立安装途径",
+    "quotes": [
+     "First build takes ~5 min (Python deps + npm install + Vite build). Subsequent starts are < 30 sec."
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "RAM to ≥6 GB",
+    "rel": "mention",
+    "lines": [
+     80
+    ],
+    "note": "Docker Desktop 构建卡住时的排查建议，非产品自身硬件要求",
+    "quotes": [
+     "|Build hangs at `pip install` for >10 min|Slow network on first build, or Docker Desktop is RAM-starved|Open Docker Desk"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    163
+   ],
+   "quotes": [
+    "PyCaret 4.0 is dual-licensed:"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [],
+   "note": "3.x 冻结但项目本身在 4.0 线继续开发"
+  }
+ }
+}

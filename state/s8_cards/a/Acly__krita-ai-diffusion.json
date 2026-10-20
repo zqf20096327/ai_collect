@@ -1,0 +1,106 @@
+{
+ "fn": "Acly/krita-ai-diffusion",
+ "sha": "6e160e489eb7",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Krita 绘画软件的 AI 图像生成插件",
+  "review": "在 Krita 图像绘画与编辑工作流内使用生成式 AI 的插件：支持基于选区的生成式填充/扩展（Inpainting）、实时 Live Painting、图像放大至 4k/8k+，兼容 Flux 2、Z-Image、Stable Diffusion 1.5/XL/Illustrious 等模型，并提供 ControlNet（线稿/姿态/深度等）、IP-Adapter、分层区域文本描述等控制方式。后端使用 ComfyUI，可本地运行（需较强 GPU，建议 NVIDIA 6GB+ VRAM，也支持 AMD ROCm、Intel XPU、Apple Silicon MPS 与 CPU），也可连接远程服务器或使用云端生成。以 ZIP 插件包形式经 Krita 脚本导入安装，要求 Krita 5.2.0+。",
+  "highlights": [
+   "基于选区的 Inpainting/Outpaint 与分层区域文本控制",
+   "支持 Flux 2、Stable Diffusion 1.5/XL/Illustrious 等扩散模型",
+   "ControlNet 与 IP-Adapter 提供线稿、姿态、深度、参考图等控制",
+   "后端为 ComfyUI，可全自动本地安装或连接自定义/远程服务器"
+  ],
+  "use_cases": [
+   "在 Krita 中对选区做生成式填充、扩展或物体增删",
+   "绘画过程中实时由 AI 解析画布获得即时反馈",
+   "用线稿、姿态、深度图等控制生成结果并迭代细化"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": "gpu-8g",
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图像生成",
+   "Krita插件",
+   "绘画工作流",
+   "Stable Diffusion",
+   "本地推理"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: This is a plugin to use generative AI in image painting and editing workflows",
+   "L26: * **Inpainting**: Use selections for generative fill, expand, to add or remove objects",
+   "L118: * Image generation: Stable Diffusion, Flux"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [
+   {
+    "term": "6 GB VRAM",
+    "rel": "support",
+    "lines": [
+     51
+    ],
+    "note": "本地运行建议 NVIDIA 显卡至少 6GB VRAM",
+    "quotes": [
+     "To run locally a powerful graphics card with at least 6 GB VRAM (NVIDIA) is"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

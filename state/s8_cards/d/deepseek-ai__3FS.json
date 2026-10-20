@@ -1,0 +1,147 @@
+{
+ "fn": "deepseek-ai/3FS",
+ "sha": "c154512305e9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 AI 训练/推理工作负载的高性能分布式文件系统",
+  "review": "由 DeepSeek 开源的高性能分布式文件系统，利用现代 SSD 与 RDMA 网络为分布式应用提供共享存储层。采用分解式架构聚合数千 SSD 与数百存储节点的吞吐，以 CRAQ 链式复制实现强一致性，元数据服务依托事务型 KV 存储（如 FoundationDB）。支持数据准备、随机访问 Dataloader、高吞吐并行 checkpoint 及替代 DRAM 缓存的 KVCache。需从源码编译部署，依赖 libfuse、FoundationDB 与 Rust 工具链，并提供 Docker 构建镜像。",
+  "highlights": [
+   "CRAQ 链式复制实现强一致性",
+   "180 节点集群压测聚合读吞吐约 6.6 TiB/s",
+   "KVCache 提供高吞吐、大容量的推理缓存方案",
+   "提供 fio for USRBIO 基准测试引擎与 GraySort 评测结果（3.66 TiB/min）"
+  ],
+  "use_cases": [
+   "大规模训练中随机访问数据集，免预取与打乱",
+   "高吞吐并行保存训练 checkpoint",
+   "以 SSD 缓存替代 DRAM 方案存放 LLM 推理 KVCache"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "分布式存储",
+   "AI基础设施",
+   "RDMA/高性能网络",
+   "训练/推理加速"
+  ],
+  "domain": "训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "mlops"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "DeepSeek 维护",
+   "提供 TencentOS/OpenCloudOS 构建镜像"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6: The Fire-Flyer File System (3FS) is a high-performance distributed file system designed to address the challenges of AI ",
+   "L16:  - **Checkpointing** Supports high-throughput parallel checkpointing for large-scale training.",
+   "L17:  - **KVCache for Inference** Provides a cost-effective alternative to DRAM-based caching, offering high throughput and s"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     54,
+     110
+    ],
+    "note": "仓库所有者为 deepseek-ai，非外部模型服务商接入",
+    "quotes": [
+     "\tgit clone https://github.com/deepseek-ai/3fs",
+     "Please visit https://github.com/deepseek-ai/3fs/issues to report issues."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     54,
+     60
+    ],
+    "quotes": [
+     "\tgit clone https://github.com/deepseek-ai/3fs",
+     "cd 3fs"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     101,
+     102
+    ],
+    "quotes": [
+     "- For TencentOS-4: `docker pull docker.io/tencentos/tencentos4-deepseek3fs-build:latest`",
+     "- For OpenCloudOS-9: `docker pull docker.io/opencloudos/opencloudos9-deepseek3fs-build:latest`"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "RAM, and 1×200 Gb",
+    "rel": "mention",
+    "lines": [
+     40
+    ],
+    "note": "GraySort 测试集群计算节点配置，非本产品部署硬性要求",
+    "quotes": [
+     "The test cluster comprised 25 storage nodes (2 NUMA domains/node, 1 storage service/NUMA, 2×400Gbps NICs/node) and 50 co"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

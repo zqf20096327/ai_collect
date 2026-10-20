@@ -1,0 +1,195 @@
+{
+ "fn": "mrexodia/ida-pro-mcp",
+ "sha": "4ad54eed115c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "连接 IDA Pro 与 LLM 的 MCP 服务器，辅助逆向分析",
+  "review": "通过 Model Context Protocol 将 IDA Pro 的反编译、反汇编、交叉引用、类型/结构操作、内存读取等能力暴露给 MCP 客户端（Claude Code、Codex、Cursor 等 20 余种），使语言模型能在逆向工程中查询与修改 IDB。提供 GUI 插件方式与基于 idalib 的无头模式：supervisor 管理持久化的数据库 worker 进程，支持多会话、SSE/stdio 传输。前置要求 Python 3.11+、IDA Pro 8.3+（IDA Free 不支持）。README 顶部声明推荐改用 Hex-Rays 官方 MCP Server，GUI 插件路径将逐步弃用。",
+  "highlights": [
+   "以 MCP 工具形式暴露反编译/反汇编/交叉引用/打补丁等 IDA 操作",
+   "idalib 无头模式：持久化 worker 进程、多数据库会话管理与热采纳",
+   "支持 SSE 与 stdio 传输，兼容 20 余种 MCP 客户端",
+   "提供 MCP Resources 只读浏览 IDB 元数据、段、类型与结构"
+  ],
+  "use_cases": [
+   "让 Claude Code/Codex 等 AI 客户端直接查询和注释 IDA 中的二进制",
+   "无头环境下批量分析多个二进制文件",
+   "在逆向工作流中用自然语言驱动反编译与补丁操作"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/6ebeaa92-a9db-43fa-b756-eececce2aca0",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "逆向工程",
+   "MCP服务器",
+   "IDA插件",
+   "AI Agent工具"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "cybersecurity"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L8: Simple MCP Server to allow vibe reversing in IDA Pro.",
+   "L19: - Supported MCP Client (pick one you like)",
+   "L155: After installing `idalib` you can also run a headless MCP server. You can start with an initial binary:"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     22,
+     23,
+     57
+    ],
+    "note": "Claude / Claude Code 作为受支持的 MCP 客户端列举，非专门适配的模型接入",
+    "quotes": [
+     " - Claude",
+     " - Claude Code",
+     "## Installation (Claude Code)"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     97,
+     98
+    ],
+    "quotes": [
+     "pip uninstall ida-pro-mcp",
+     "pip install https://github.com/mrexodia/ida-pro-mcp/archive/refs/heads/main.zip"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    92
+   ],
+   "note": "GUI 插件安装路径声明将弃用并推荐 idalib-mcp，但整体项目仍提供替代路径；README 顶部同时推荐 Hex-Rays 官方 MCP Server"
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     23,
+     57
+    ],
+    "quotes": [
+     " - Claude Code",
+     "## Installation (Claude Code)"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     26
+    ],
+    "quotes": [
+     " - Copilot CLI"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     28
+    ],
+    "quotes": [
+     " - Cursor"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     35
+    ],
+    "note": "Qwen Coder 作为 MCP 客户端列举",
+    "quotes": [
+     " - Qwen Coder"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     41
+    ],
+    "quotes": [
+     " - Windsurf"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     43,
+     77
+    ],
+    "quotes": [
+     " - Kimi Code",
+     "## Installation (Kimi Code)"
+    ]
+   }
+  ]
+ }
+}

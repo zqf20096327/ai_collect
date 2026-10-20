@@ -1,0 +1,153 @@
+{
+ "fn": "ShishirPatil/gorilla",
+ "sha": "25fb3eccacf2",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让 LLM 输出正确 API 调用的模型与评测基准项目",
+  "review": "UC Berkeley 团维护的 LLM 工具调用项目集合：核心是 Gorilla 与 OpenFunctions 系列微调模型，给定自然语言请求生成语义与语法正确的 API 调用；仓库含推理代码、APIBench 数据集（1,600+ API）与评测代码。外围项目包括 Berkeley Function Calling Leaderboard（函数调用评测榜，V1-V4）、GoEx 动作执行运行时（事后验证/撤销）、RAFT 域内 RAG 微调方案、Gorilla CLI 与社区维护的 API Zoo 数据集。Apache 2.0 许可，可通过 pip 安装 CLI、克隆源码本地推理或 Colab 体验。",
+  "highlights": [
+   "OpenFunctions 模型提供 OpenAI 兼容端点，支持多语言与并行函数调用",
+   "BFCL 函数调用评测榜含多轮/多步/成本/延迟等维度",
+   "GoEx 为 LLM 生成的动作提供事后验证、撤销与损害隔离",
+   "API Zoo 社区维护的 API 文档数据集，支持检索增强训练"
+  ],
+  "use_cases": [
+   "用开源模型替代商业 API 实现函数调用",
+   "在 BFCL 上评测不同模型的工具调用能力",
+   "为领域任务用 RAFT 配方微调模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2305.15334",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "函数调用",
+   "工具调用/Agent",
+   "评测基准",
+   "LLM模型"
+  ],
+  "domain": "评测与运维",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-evaluation",
+   "fine-tuning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L33: **Gorilla enables LLMs to use tools by invoking APIs. Given a natural language query, Gorilla comes up with the semantic",
+   "L42: |Gorilla OpenFunctions-V2|🤖 Model|Drop-in alternative for function calling, supporting multiple complex data types and p"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "bedrock",
+    "rel": "none",
+    "lines": [],
+    "note": "候选词在 README 可见范围内未出现，窗口外候选行亦无 AWS Bedrock 接入证据",
+    "quotes": []
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     64
+    ],
+    "note": "pip install gorilla-cli",
+    "quotes": [
+     "pip install gorilla-cli"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     71,
+     72
+    ],
+    "note": "git clone 本地运行推理",
+    "quotes": [
+     "git clone https://github.com/ShishirPatil/gorilla.git",
+     "cd gorilla/inference"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     54,
+     56
+    ],
+    "note": "演示体验途径而非本产品安装方式",
+    "quotes": [
+     "- 🚀 Gorilla Colab Demo: Try the base Gorilla model",
+     "- 🔥 OpenFunctions Colab Demo: Try the latest OpenFunctions model"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     44,
+     106
+    ],
+    "note": "FAQ 说明 Gorilla 可作为 LangChain agent 的模型集成，非替代/竞品关系",
+    "quotes": [
+     "|Agent Arena|📊 Evaluation 🏆 Leaderboard|Compare LLM agents across models, tools, and frameworks • Head-to-head agent com",
+     "Langchain, is a versatile developer tool. Its \"agents\" can efficiently swap in any LLM, Gorilla included, making it a hi"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

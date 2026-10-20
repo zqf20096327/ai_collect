@@ -1,25 +1,24 @@
 {
  "fn": "iii-hq/iii",
- "sha": "05bf06d64888",
+ "sha": "4c72230aaac6",
  "source": "readme",
  "identity": {
-  "one_liner": "为后端开发者提供统一实时组合、扩展与观测服务的引擎",
-  "review": "iii 是一个以 Rust 引擎为核心的后端服务运行时，将队列、cron、HTTP、状态、可观测性、agent 与沙箱统一到一个实时系统面。一切能力映射为三个原语：Worker（注册到引擎的进程）、Trigger（触发函数运行的事件）与 Function（带稳定标识的工作单元）。各 worker 加入实时目录后互相可发现、可调用；agent 使用与开发者相同的目录与函数调用接口，可在运行时添加 worker。提供 Node.js/Python/Rust/Go SDK、开发者 Console 与可安装到第三方 harness 的 agent skills。",
+  "one_liner": "实时组合与观测后端服务的共享运行时引擎",
+  "review": "iii 是一个用 Rust 编写的引擎与共享运行时，将后端服务抽象为三个原语：Workers（注册到引擎的进程，支持 TypeScript/Python/Rust/Go SDK）、Triggers（HTTP、cron、队列、状态变更等触发方式）和 Functions（带稳定标识的工作单元）。通过 worker-compose.yaml 或运行时命令组合服务，所有 worker 进入实时目录并可互相调用，agent 可用与开发者相同的接口发现、调用和扩展能力。附带 Agent Skills（可安装到第三方 harness）、开发者控制台与 Docker 镜像。",
   "highlights": [
-   "Worker/Trigger/Function 三原语统一队列、cron、HTTP、状态与可观测性",
-   "实时目录：worker 注册后其他 worker 可立即发现并调用",
-   "agent 与开发者共用同一函数目录，可运行时添加 worker 并追踪",
-   "提供 Node.js、Python、Rust、Go 四语言 SDK 与开发者 Console"
+   "Workers/Triggers/Functions 三原语统一队列、cron、HTTP、状态与观测",
+   "运行时动态添加 worker，agent 用同一目录与调用接口扩展系统",
+   "Node.js/Python/Rust/Go 四语言 SDK",
+   "提供开发者控制台与可装到第三方 harness 的 Agent Skills"
   ],
   "use_cases": [
-   "用一份 worker-compose.yaml 统一声明项目中的队列、定时任务与服务",
-   "让 agent 在运行中发现并调用后端已有函数能力",
-   "通过 Console 检查 workers、traces、日志与实时状态",
-   "为第三方 agent harness 安装 iii 的技能包"
+   "用统一运行时替代多种后端集成工具",
+   "让 agent 在运行中发现并调用系统能力、按需添加 worker",
+   "通过控制台查看 worker、触发器、队列与调用链路"
   ]
  },
  "filters": {
-  "ai_role": "ai-enhanced",
+  "ai_role": "ai-ecosystem",
   "license_risk": "none",
   "deploy": "self-host",
   "model_dep": null,
@@ -38,11 +37,10 @@
  },
  "links": {
   "scenario_tags": [
-   "后端框架",
+   "后端运行时",
    "服务编排",
-   "Agent基础设施",
    "可观测性",
-   "开发者工具"
+   "agent基础设施"
   ],
   "domain": "效率与自动化",
   "alternative_to": [],
@@ -58,33 +56,48 @@
   "zh_origin_signals": []
  },
  "trust": {
-  "confidence": "high",
+  "confidence": "mid",
   "evidence": [
-   "L47: That is the agent story too: when a task needs a capability the system does not have, an agent can",
-   "L87: Platform teams publish workers. Application teams register functions and declare triggers. Agents",
-   "L55: **Workers** are processes that register with the iii engine and then register triggers and"
+   "L30: iii is the easiest way to compose, observe, discover, extend, and react (CODER) to every service in",
+   "L47: That is the agent story too: when a task needs a capability the system does not have, an agent can"
   ],
-  "xcheck": null,
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
   "providers": [],
   "install": [
    {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     116
+    ],
+    "quotes": [
+     "|Node.js|`iii-sdk`|`pnpm add iii-sdk` or `npm install iii-sdk`|"
+    ]
+   },
+   {
     "term": "pypi",
     "rel": "support",
     "lines": [
-     9,
-     17,
      117
     ],
     "quotes": [
-     " PyPI",
-     " PyPI downloads",
      "|Python|`iii-sdk`|`pip install iii-sdk`|"
     ]
    },
@@ -92,42 +105,21 @@
     "term": "cargo",
     "rel": "support",
     "lines": [
-     10,
      118
     ],
     "quotes": [
-     " Crates.io",
      "|Rust|`iii-sdk`|Add to `Cargo.toml`|"
     ]
    },
    {
     "term": "docker",
-    "rel": "support",
+    "rel": "mention",
     "lines": [
-     7
+     15
     ],
+    "note": "Docker 徽章，正文未见本产品镜像运行命令",
     "quotes": [
-     " Docker"
-    ]
-   },
-   {
-    "term": "npm",
-    "rel": "support",
-    "lines": [
-     8,
-     116,
-     128,
-     138,
-     139,
-     140
-    ],
-    "quotes": [
-     " npm",
-     "|Node.js|`iii-sdk`|`pnpm add iii-sdk` or `npm install iii-sdk`|",
-     "npx skills add iii-hq/iii/skills",
-     "npx skills add iii-hq/workers --list        # list available worker skills",
-     "npx skills add iii-hq/workers --skill database # one worker",
-     "npx skills add iii-hq/workers --all         # every worker skill"
+     " Docker pulls"
     ]
    }
   ],

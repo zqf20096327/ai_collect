@@ -1,0 +1,124 @@
+{
+ "fn": "OpenMined/PySyft",
+ "sha": "bf362f99aa6d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "远程数据科学库：数据不出所有者机器即可提交计算",
+  "review": "OpenMined 维护的隐私保护远程数据科学框架（v2）：数据科学家在模拟数据上开发分析代码，以任务形式提交给数据所有者，在沙箱化 Python 虚拟环境中对私有数据执行，仅返回经批准的结果。数据通过 Google Drive/Microsoft 365 等组织已有云存储传输，无需新建基础设施，支持离线优先同步与点对点显式授权。以 Python 包（syft/syft-rds/syft-bg 等）经 pip 安装，本地使用需配置 Google Cloud OAuth，Python 3.10+。",
+  "highlights": [
+   "私有数据不离开数据所有者机器，仅共享批准的结果",
+   "基于 Google Drive 等文件型传输层，可扩展至任意传输",
+   "任务在沙箱化 Python 虚拟环境中隔离执行",
+   "模拟/私有数据分离：用 mock 数据探索后提交真实任务"
+  ],
+  "use_cases": [
+   "在无法直接拷贝的私有数据上做分析并取回结果",
+   "在 enclave 中做双盲 LLM 评测（私有模型 × 私有基准）",
+   "对私有 LLM 用户日志提交分析任务获取批准结果"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "隐私计算",
+   "联邦/远程数据科学",
+   "数据治理",
+   "AI评测",
+   "Python库"
+  ],
+  "domain": "评测与运维",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-evaluation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L13: PySyft lets data scientists submit computations which are run by data owners on private data — all through cloud storage",
+   "L32: - **Privacy-preserving** — Private data never leaves the data owner's machine; only approved results are shared",
+   "L105: Built by OpenMined — building open-source technology for privacy-preserving data science and AI."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     9,
+     47,
+     49,
+     98
+    ],
+    "quotes": [
+     "PyPI",
+     "uv pip install \"syft>=0.10.0\" \"syft-rds>=0.6.0\"",
+     "uv pip install \"syft>=0.10.0\" \"syft-rds>=0.6.0\" \"syft-bg>=0.3.12\"",
+     "uv pip install -e ."
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     41,
+     58
+    ],
+    "note": "快速上手假设在 Google Colab 运行，非安装途径",
+    "quotes": [
+     "**Before you start:** this quick start assumes Google Colab, where login is a browser pop-up and works out of the box. O",
+     "# Colab: login is a browser pop-up, nothing to set up"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

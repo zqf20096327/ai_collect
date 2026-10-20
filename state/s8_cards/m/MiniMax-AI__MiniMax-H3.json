@@ -1,0 +1,203 @@
+{
+ "fn": "MiniMax-AI/MiniMax-H3",
+ "sha": "482fa713d68f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "全模态音视频生成系统 H3 的开源权重与技能包",
+  "review": "MiniMax 发布的通用全模态生成系统 H3 开源仓库：H3-Base（33B 参数 H3-Omni-Transformer）基于文本/图像/视频/音频输入生成带原生立体声的 4–15 秒视频，默认短边 768 像素、24 FPS。文本编码器复用 Qwen3-VL-32B 前层。H3-Context-IR 预处理系统与 H3-Regenerate-2K（2K 再生成模块）未随本次开源，仅提供 API 与教程。仓库另附 9 个 agent 技能（1 个可移植的提示词技能 + 8 个 MiniMax Hub 专用视频生成技能），可经 npx skills 安装。提供在线 API 与 App 入口。",
+  "highlights": [
+   "文本/图像/视频/音频多模态输入，生成带原生立体声的视频（最长 15 秒）",
+   "开源 H3-Base 完整权重（33B，含可缓存的 AdaLN 分支），支持微调",
+   "H3-Regenerate-2K 通过上下文再生成本体输出 2K 分辨率结果（模块未开源，提供 API）",
+   "9 个 agent 技能，其中 h3-prompt-writing 为纯 Markdown 可移植技能"
+  ],
+  "use_cases": [
+   "本地部署或微调 H3-Base 做音视频生成",
+   "通过 MiniMax API/App 直接调用 H3 生成视频",
+   "在 Claude Code/Cursor 等 agent 环境中使用 H3 提示词编写技能"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://hailuoai.video",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "视频生成",
+   "多模态大模型",
+   "模型开源",
+   "音视频同步生成",
+   "agent技能"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "video-generation",
+   "multimodal",
+   "fine-tuning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "MiniMax 中国公司",
+   "提供 CN 平台入口 platform.minimaxi.com / hailuoai.com",
+   "多语言 README 含简体中文"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L55: MiniMax H3 is a general-purpose, omni-modal generative system. It supports unified understanding of multimodal contexts ",
+   "L78: - H3-Context-IR: As inputs become increasingly complex, we build a dedicated system to deeply understand and refine the ",
+   "L140: - For scalability and generalization, we adopt a relatively simple Transformer block design\\. H3\\-Omni\\-Transformer is a"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     31
+    ],
+    "note": "h3-prompt-writing 技能声明兼容 Claude Code / Claude Agent SDK，非专门接入",
+    "quotes": [
+     "**Agent compatibility:** `h3-prompt-writing` is a plain Markdown + reference-file skill with no external API calls, so i"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     191,
+     204
+    ],
+    "quotes": [
+     "# Original checkpoint, both task families (SGLang, vLLM):",
+     "- vLLM \\- see vllm recipes"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     26
+    ],
+    "note": "npx skills 安装仓库内置技能",
+    "quotes": [
+     "npx skills add https://github.com/MiniMax-AI/MiniMax-H3 --skill h3-prompt-writing"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     31
+    ],
+    "note": "技能兼容的 agent 框架",
+    "quotes": [
+     "**Agent compatibility:** `h3-prompt-writing` is a plain Markdown + reference-file skill with no external API calls, so i"
+    ]
+   },
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     31
+    ],
+    "quotes": [
+     "**Agent compatibility:** `h3-prompt-writing` is a plain Markdown + reference-file skill with no external API calls, so i"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     31
+    ],
+    "quotes": [
+     "**Agent compatibility:** `h3-prompt-writing` is a plain Markdown + reference-file skill with no external API calls, so i"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     31
+    ],
+    "quotes": [
+     "**Agent compatibility:** `h3-prompt-writing` is a plain Markdown + reference-file skill with no external API calls, so i"
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     31
+    ],
+    "quotes": [
+     "**Agent compatibility:** `h3-prompt-writing` is a plain Markdown + reference-file skill with no external API calls, so i"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     7,
+     387
+    ],
+    "note": "模型托管渠道链接",
+    "quotes": [
+     " Hugging Face",
+     "Prompting guidance documents from the HuggingFace release are not copied into this repository to keep the markdown layou"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

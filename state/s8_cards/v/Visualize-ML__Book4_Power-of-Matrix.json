@@ -1,0 +1,93 @@
+{
+ "fn": "Visualize-ML/Book4_Power-of-Matrix",
+ "sha": "e09410b99c8d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "《矩阵力量》开源数学教材：线性代数到机器学习",
+  "review": "鸢尾花书系列的开源数学书籍《矩阵力量》，内容从线性代数（矩阵加减乘除、矩阵分解）延伸到机器学习相关数学基础。README 仅提供本书及系列其他分册（《统计至简》《数学要素》）的购书五折入口链接，声明开源资源永久有效，并设有纠错赠书机制。仓库以书籍章节与配套笔记本形式组织，面向自学者与机器学习学习者提供数学基础材料。",
+  "highlights": [
+   "开源数学书籍，覆盖线性代数与矩阵分解",
+   "鸢尾花书系列：从加减乘除到机器学习",
+   "纠错赠书的社区协作机制"
+  ],
+  "use_cases": [
+   "系统学习机器学习所需的线性代数与矩阵知识",
+   "配合鸢尾花书系列自学数学基础"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "开源教材",
+   "线性代数",
+   "数学基础",
+   "机器学习前置知识"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "知乎专栏链接（zhuanlan.zhihu.com）",
+   "中文书名《矩阵力量》"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L10: 看个人情况，开源资源，永久有效哈。"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

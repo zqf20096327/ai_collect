@@ -1,0 +1,227 @@
+{
+ "fn": "Tiiny-AI/PowerInfer",
+ "sha": "6ef44555fc3f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "消费级单 GPU 上的本地 LLM 高速推理引擎",
+  "review": "面向个人电脑本地部署的 CPU/GPU 混合 LLM 推理引擎，核心机制是利用神经元激活的幂律分布：高频激活的 hot 神经元预加载到 GPU，cold 神经元在 CPU 计算，配合自适应预测器与神经元感知稀疏算子降低显存需求。支持 Linux/Windows（x86-64 AVX2，可配 NVIDIA/AMD GPU）与 macOS（仅 CPU，优化有限）。通过 CMake 从源码构建，模型以 PowerInfer GGUF 格式从 Hugging Face 获取或用 convert.py 转换；兼容 ReLU 稀疏模型族（ReluLLaMA/ProSparse/Bamboo/Falcon）。限制：macOS 未优化，稠密模式支持有限。",
+  "highlights": [
+   "基于激活局部性的 GPU-CPU 混合推理，hot/cold 神经元分层放置",
+   "支持 NVIDIA(CUDA)/AMD(ROCm)/纯 CPU 三种构建路径",
+   "PowerInfer GGUF 格式模型转换（convert.py）与稠密 GGUF 转换（convert-dense.py）",
+   "兼容 ReLU 稀疏模型：ReluLLaMA-2、ProSparse、Bamboo-7B、Falcon-40B 等"
+  ],
+  "use_cases": [
+   "在单张消费级显卡的 PC 上本地运行 40B 级 LLM",
+   "显存受限时用 --vram-budget 限制 GPU 显存做混合推理",
+   "将 ReLU 稀疏化模型权重转换为 PowerInfer GGUF 并推理"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/SJTU-IPADS/PowerInfer/assets/34213478/fe441a42-5fce-448d-a3e5-ea4abb43ba23",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM推理引擎",
+   "本地部署",
+   "稀疏激活",
+   "CPU/GPU混合计算",
+   "GGUF"
+  ],
+  "domain": "训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "llama.cpp"
+  ],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "university",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "演示资源路径含 SJTU-IPADS（上海交大）",
+   "与中国计算机学会 CCF TCARCH 合办优化竞赛"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L42: We introduce PowerInfer, a high-speed Large Language Model (LLM) inference engine on a personal computer (PC)",
+   "L48: PowerInfer exploits such an insight to design a GPU-CPU hybrid inference engine:"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "llama.cpp",
+    "rel": "compat",
+    "lines": [
+     70,
+     200
+    ],
+    "note": "examples/ 用法兼容、支持加载 llama.cpp 模型权重，但无性能收益",
+    "quotes": [
+     "- **Backward Compatibility**: While distinct from llama.cpp, you can make use of most of `examples/` the same way as lla",
+     "Please note that the generated dense GGUF models might not work properly with llama.cpp, as we have altered activation f"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "mention",
+    "lines": [
+     16
+    ],
+    "note": "TurboSparse 稀疏化的源模型为 Mistral/Mixtral",
+    "quotes": [
+     "- [2024/6/11] We are thrilled to present Turbo Sparse, our TurboSparse models for fast inference. With just $0.1M, we sp"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     109,
+     120,
+     121
+    ],
+    "quotes": [
+     "git clone https://github.com/Tiiny-AI/PowerInfer",
+     "cmake -S . -B build -DLLAMA_CUBLAS=ON",
+     "cmake --build build --config Release"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     111
+    ],
+    "note": "requirements.txt 为转换/卸载脚本的 Python 依赖，非本产品发布包",
+    "quotes": [
+     "pip install -r requirements.txt # install Python helpers' dependencies"
+    ]
+   },
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     208,
+     215
+    ],
+    "note": "Windows 构建产物的运行示例",
+    "quotes": [
+     "# For Windows: .\\build\\bin\\Release\\main.exe -m .\\ReluFalcon-40B-PowerInfer-GGUF\\falcon-40b-relu.q4.powerinfer.gguf -n 12",
+     "# For Windows: .\\build\\bin\\Release\\main.exe -m .\\ReluLLaMA-7B-PowerInfer-GGUF\\llama-7b-relu.powerinfer.gguf -n 128 -t 8 "
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU only",
+    "rel": "mention",
+    "lines": [
+     83
+    ],
+    "note": "macOS 平台仅 CPU 的适配说明",
+    "quotes": [
+     "- Apple M Chips (CPU only) on **macOS**. (As we do not optimize for Mac, the performance improvement is not significant "
+    ]
+   },
+   {
+    "term": "CPU-only",
+    "rel": "mention",
+    "lines": [
+     204
+    ],
+    "note": "推理模式的选项描述，非硬件要求声明",
+    "quotes": [
+     "For CPU-only and CPU-GPU hybrid inference with all available VRAM, you can use the following instructions to run PowerIn"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     156,
+     159
+    ],
+    "note": "模型权重下载渠道",
+    "quotes": [
+     "We recommend using `huggingface-cli` to download the whole model repo. For example, the following command will download ",
+     "huggingface-cli download --resume-download --local-dir ReluLLaMA-7B --local-dir-use-symlinks False PowerInfer/ReluLLaMA-"
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     230,
+     235,
+     285
+    ],
+    "quotes": [
+     "## Serving, Perplexity Evaluation, and more applications",
+     "- Perplexity Evaluation",
+     "- [x] Release perplexity evaluation code"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     269
+    ],
+    "quotes": [
+     "2. Does PowerInfer support mistral, original llama, Qwen, ...?"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

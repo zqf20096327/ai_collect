@@ -1,0 +1,105 @@
+{
+ "fn": "oceanbase/oceanbase",
+ "sha": "8bfb8f2463fe",
+ "source": "readme",
+ "identity": {
+  "one_liner": "蚂蚁集团开发的分布式关系型数据库（HTAP，兼容 MySQL）",
+  "review": "由蚂蚁集团开发的分布式关系型数据库，基于通用服务器集群与 Paxos 协议构建，提供高可用与线性扩展，不依赖特定硬件架构。特性包括单集群 1,500 节点/PB 级数据扩展、HTAP 实时分析、RPO=0/RTO<8s 持续可用、MySQL 兼容迁移。安装途径覆盖 Linux all-in-one 脚本、Docker 镜像（dockerhub/quay.io/ghcr.io）、Kubernetes ob-operator 及源码编译；Apache 2.0 许可，已服务金融、电信、零售等 2000 余家客户。",
+  "highlights": [
+   "Paxos 协议分布式架构，RPO=0、RTO<8s",
+   "单集群支持 1,500 节点、PB 数据、万亿行记录",
+   "HTAP 实时分析，无需额外成本",
+   "MySQL 兼容，支持从 MySQL 迁移"
+  ],
+  "use_cases": [
+   "需要高可用与线性扩展的金融级交易业务",
+   "在同一集群内同时承载事务与实时分析（HTAP）",
+   "从 MySQL 平滑迁移到分布式数据库"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "分布式数据库",
+   "HTAP",
+   "MySQL兼容",
+   "数据库"
+  ],
+  "domain": "数据库/基础软件",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "蚂蚁集团开发",
+   "中文文档链接",
+   "安装包托管于阿里云上海 OSS"
+  ]
+ },
+ "trust": {
+  "confidence": "low",
+  "evidence": [
+   "L33: **OceanBase Database** is a distributed relational database. It is developed entirely by Ant Group. The OceanBase Databa",
+   "L37: - **Transparent Scalability**: 1,500 nodes, PB data and a trillion rows of records in one cluster."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     73
+    ],
+    "quotes": [
+     "    docker run -p 2881:2881 --name oceanbase-ce -e MODE=mini -d oceanbase/oceanbase-ce"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

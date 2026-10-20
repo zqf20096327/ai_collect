@@ -1,0 +1,97 @@
+{
+ "fn": "datawhalechina/all-in-rag",
+ "sha": "bb1300d8cba4",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的 RAG 技术全栈教程与实战项目",
+  "review": "由 Datawhale 组织维护的 RAG（检索增强生成）技术教程仓库：内容覆盖 RAG 基础概念、数据处理全流程、向量与多模态嵌入、索引构建（含 Milvus 实践）、混合检索、Text2SQL、生成集成与系统评估，以及基于知识图谱的 RAG 与两个实战项目章节。仓库含 docs 教程文档与 code 代码示例目录，提供在线阅读地址，另设 Extra-chapter 接受社区投稿（Neo4j 应用、Jina v5-omni 多模态实践等）。第十章项目二标注为规划中。前置要求为 Python 基础、Docker 简单使用与 Linux 命令行能力。",
+  "highlights": [
+   "从数据准备到评估优化的 RAG 全流程章节体系",
+   "包含 Milvus 多模态检索与知识图谱 RAG 实战项目",
+   "多模态支持：图文多模态嵌入与检索",
+   "Extra-chapter 社区投稿机制（Neo4j、Jina v5-omni 等）"
+  ],
+  "use_cases": [
+   "系统学习 RAG 技术从理论到工程化实践",
+   "跟着实战项目构建智能问答与知识检索系统",
+   "查阅多模态检索与 Graph RAG 的实现参考"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://datawhalechina.github.io/all-in-rag/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RAG教程",
+   "知识库问答",
+   "向量检索",
+   "多模态",
+   "教程/实践指南"
+  ],
+  "domain": "知识与检索",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "rag",
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文 README 与 Datawhale 中文社区维护",
+   "Datawhale 公众号二维码关注"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L32: 本项目是一个面向大模型应用开发者的RAG（检索增强生成）技术全栈教程，旨在通过体系化的学习路径和动手实践项目，帮助开发者掌握基于大语言模型的RAG应用开发技能，构建生产级的智能问答和知识检索系统。",
+   "L36: 1. **RAG技术基础**：深入浅出地介绍RAG的核心概念、技术原理和应用场景"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

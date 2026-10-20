@@ -1,0 +1,145 @@
+{
+ "fn": "VoltAgent/voltagent",
+ "sha": "9b488ee3bb36",
+ "source": "readme",
+ "identity": {
+  "one_liner": "TypeScript AI Agent 开发框架，含可观测性控制台平台",
+  "review": "由两部分组成：开源 TypeScript 框架（@voltagent/core）与 VoltOps 控制台（云端或自托管）。框架提供 Agent 定义、工作流引擎、supervisor 多智能体协调、工具注册与 MCP 接入、记忆适配器、RAG、语音、Guardrails 与评测能力，支持切换 OpenAI/Anthropic/Google 等模型提供商；VoltOps 控制台提供执行追踪、日志、Prompt 构建、部署与监控。通过 npm create voltagent-app 脚手架创建项目，附带 Airtable、Slack、WhatsApp 等示例。MIT 许可。",
+  "highlights": [
+   "声明式工作流引擎与 supervisor/子智能体协调",
+   "MCP 客户端接入与 Zod 类型工具注册",
+   "跨提供商模型切换（OpenAI/Anthropic/Google 等，改配置即可）",
+   "VoltOps 控制台提供可观测性、追踪、部署与评测（云端/自托管）"
+  ],
+  "use_cases": [
+   "用 TypeScript 构建带记忆与工具的多智能体系统",
+   "通过控制台监控与调试生产环境中的 agent 执行",
+   "搭建 RAG、语音、Guardrails 等能力的对话或自动化应用"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://voltagent.dev/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI Agent 框架",
+   "多智能体",
+   "工作流",
+   "LLM可观测性",
+   "MCP"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework",
+   "multi-agent",
+   "rag",
+   "llm-observability"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文翻译"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L23: VoltAgent is an end-to-end AI Agent Engineering Platform that consists of two main parts:",
+   "L25: - **Open-Source TypeScript Framework** – Memory, RAG, Guardrails, Tools, MCP, Voice, Workflow, and more.",
+   "L32: With the open-source framework, you can build intelligent agents with memory, tools, and multi-step workflows while conn"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     38
+    ],
+    "note": "列为可切换的模型提供商之一",
+    "quotes": [
+     "- **LLM Compatibility**: Swap between OpenAI, Anthropic, Google, or other providers by changing config, not rewriting ag"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     49
+    ],
+    "note": "可通过 MCP 文档服务器访问 VoltAgent 文档的 AI 编码助手，非替代/竞品",
+    "quotes": [
+     "You can use the MCP server `@voltagent/mcp-docs-server` to teach your LLM how to use VoltAgent for AI-powered coding ass"
+    ]
+   },
+   {
+    "term": "Windsurf",
+    "rel": "mention",
+    "lines": [
+     49
+    ],
+    "note": "同上",
+    "quotes": [
+     "You can use the MCP server `@voltagent/mcp-docs-server` to teach your LLM how to use VoltAgent for AI-powered coding ass"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     140
+    ],
+    "note": "示例中通过 MCP 将 VoltAgent agent 接入 ChatGPT Apps",
+    "quotes": [
+     "- **ChatGPT App With VoltAgent** - Deploy VoltAgent over MCP and connect to ChatGPT Apps."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

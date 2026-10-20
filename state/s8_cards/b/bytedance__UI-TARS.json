@@ -1,0 +1,162 @@
+{
+ "fn": "bytedance/UI-TARS",
+ "sha": "8c9115577db7",
+ "source": "readme",
+ "identity": {
+  "one_liner": "字节跳动的开源 GUI 自动操作多模态 agent 模型",
+  "review": "UI-TARS 是基于视觉-语言模型的多模态 agent，通过截图理解与推理执行桌面、移动端 GUI 任务及游戏操作。模型经强化学习训练，可在行动前生成 Thought 推理；提供 COMPUTER_USE/MOBILE_USE/GROUNDING 三种提示模板。使用流程为：经 Hugging Face endpoint 部署模型推理，再用 pip 安装 ui-tars 包做预测后处理，把模型输出解析为 pyautogui 代码。开源 UI-TARS-1.5-7B，完整版仅限研究合作申请。README 声明局限性：需要大量计算资源、可能产生幻觉、存在被滥用于绕过验证码的风险。另有桌面版仓库 UI-TARS-desktop 与网页自动化项目 Midscene.js 关联。",
+  "highlights": [
+   "支持桌面（Windows/Linux/macOS）、移动端与 Android 模拟器的 GUI 操作模板",
+   "Thought 推理机制：行动前先推理（强化学习训练）",
+   "pip 安装的 ui-tars 包将模型输出解析为 pyautogui 可执行代码",
+   "开源 UI-TARS-1.5-7B 模型，更强版本按研究合作方式提供"
+  ],
+  "use_cases": [
+   "研究者复现在 OSWorld、Android World 等基准上的 GUI agent 结果",
+   "开发者部署模型并用后处理脚本在本机执行 GUI 自动化",
+   "基于 UI-TARS-desktop 在本地设备上运行桌面自动化 agent"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "arXiv:2501.12326",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    143
+   ],
+   "note": "early research access"
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "GUI agent",
+   "多模态模型",
+   "计算机操作自动化",
+   "具身智能/游戏"
+  ],
+  "domain": "效率与自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "gui-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "字节跳动（bytedance）官方仓库",
+   "提及国内平台豆包"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L17: UI-TARS-1.5, an open-source multimodal agent built upon a powerful vision-language model. It is capable of effectively p",
+   "L65: - Supports common desktop operations: mouse clicks (single, double, right), drag actions, keyboard shortcuts, text input",
+   "L50: response = \"Thought: Click the button\\nAction: click(start_box='(100,200)')\""
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     88,
+     97,
+     107
+    ],
+    "note": "Claude 3.7 仅作为基准对比对象出现",
+    "quotes": [
+     "|Benchmark type|Benchmark|UI-TARS-1.5|OpenAI CUA|Claude 3.7|Previous SOTA|",
+     "|Benchmark|UI-TARS-1.5|OpenAI CUA|Claude 3.7|Previous SOTA|",
+     "|Claude 3.7|43.05|0.00|41.60|0.00|0.00|30.76|2.31|82.00|6.26|42.86|0.00|13.77|28.00|52.18|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     42,
+     44
+    ],
+    "quotes": [
+     "pip install ui-tars",
+     "uv pip install ui-tars"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     8
+    ],
+    "note": "Qwen 2.5vl 为模型基础架构来源，非替代/竞品",
+    "quotes": [
+     "**❗Notes**: Since Qwen 2.5vl based models ultilizes absolute coordinates to ground objects, please kindly refer to our i"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     36
+    ],
+    "note": "模型经 Hugging Face endpoint 部署，另托管模型权重",
+    "quotes": [
+     "This includes instructions for model deployment using huggingface endpoint, and running your first prediction."
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     145
+    ],
+    "note": "展望中提及的平台，非竞品",
+    "quotes": [
+     "Looking ahead, we envision UI-TARS evolving into increasingly sophisticated agentic experiences capable of performing re"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,119 @@
+{
+ "fn": "alirezadir/AIMLInterviews",
+ "sha": "356a04d12194",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI/ML 技术面试准备指南：题解、系统设计与 MCP 辅导服务器",
+  "review": "面向大厂（尤其 FAANG）AI/ML 工程师、Applied Scientist、Tech Lead 等岗位求职者的面试准备知识库：按 DSA 编码、ML 编码、ML 广度（经典 ML、GenAI、Agentic AI）、系统设计、行为与领导力面试组织内容，并附 GenAI 学习资源与 Agentic AI 系统资料。内容基于作者本人 2020 年获 5 个 offer、2025 年再获 Amazon/Apple offer 的准备笔记。另提供 aimlinterviews-mcp 服务器，可将 MCP 兼容的 AI 助手变为面试教练（渐进提示、学习计划、答案点评）；作者还提供 1:1 付费辅导服务。",
+  "highlights": [
+   "按 5 个面试模块组织的知识库（DSA/ML 编码/广度/系统设计/行为面）",
+   "aimlinterviews-mcp：把 MCP 兼容 AI 助手变为面试教练，npx 一条命令安装",
+   "覆盖 GenAI、Agentic AI、多模态等 2026 更新内容",
+   "附 GenAI 学习资源与 Agentic AI 系统资料"
+  ],
+  "use_cases": [
+   "准备 FAANG 等大厂 AI/ML 技术面试的系统化复习",
+   "把 Claude/Codex 等助手配置成 AI 面试教练做渐进式练习",
+   "了解 AI/ML 面试各模块的常见考察结构"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://aimlinterviews.io",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "面试准备",
+   "知识清单",
+   "GenAI/Agentic AI",
+   "MCP",
+   "学习资源"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L19: This repo aims to serve as a guide to prepare for **AI and ML Technical interviews** for relevant roles at big tech comp",
+   "L23: The following components are the most commonly used interview modules for technical ML roles at different companies. We "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     41
+    ],
+    "note": "claude mcp add 为 MCP 客户端配置示例，非专门适配",
+    "quotes": [
+     "claude mcp add aimlinterviews -- npx -y aimlinterviews-mcp"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     41,
+     43
+    ],
+    "note": "npx -y aimlinterviews-mcp 安装 MCP 服务器",
+    "quotes": [
+     "claude mcp add aimlinterviews -- npx -y aimlinterviews-mcp",
+     "codex mcp add aimlinterviews -- npx -y aimlinterviews-mcp"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

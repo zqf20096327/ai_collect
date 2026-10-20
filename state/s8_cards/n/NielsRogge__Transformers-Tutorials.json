@@ -1,0 +1,133 @@
+{
+ "fn": "NielsRogge/Transformers-Tutorials",
+ "sha": "ed47a4f4ec04",
+ "source": "readme",
+ "identity": {
+  "one_liner": "HuggingFace Transformers 各类模型微调与推理示例笔记本合集",
+  "review": "作者基于 Transformers 库制作的 Jupyter/Colab 演示合集，全部以 PyTorch 实现，覆盖 40 余种 Transformer 架构（BERT、GPT-2、DETR、LayoutLM 系列、SAM、TrOCR、ViT 等），每条演示对应一篇论文并可一键在 Google Colab 打开。内容以两类操作为主：在标准数据集上微调模型，以及执行推理并配合 Gradio 做演示；另附 PyTorch Dataset/DataLoader 数据预处理说明。作者自述为向库中添加其中多个算法的主要贡献者。",
+  "highlights": [
+   "覆盖 40 余种 Transformer 架构的微调与推理笔记本",
+   "每条演示对应论文链接并可直接在 Colab 打开",
+   "全部演示以 PyTorch 实现，部分用 Trainer/PyTorch Lightning/Accelerate",
+   "附自定义 Dataset 与 DataLoader 的数据预处理示例"
+  ],
+  "use_cases": [
+   "学习某类 Transformer 模型如何微调或推理",
+   "为自己的数据集做图像分类、目标检测或文档理解时找参考代码",
+   "通过 Colab 免本地环境快速跑通演示"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "教程/示例集合",
+   "笔记本",
+   "计算机视觉",
+   "NLP",
+   "模型微调"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "fine-tuning",
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L5: This repository contains demos I made with the Transformers library by 🤗 HuggingFace. Currently, all of them are impleme",
+   "L11: Currently, it contains the following demos:",
+   "L13:  - performing inference with `ASTForAudioClassification` to classify audio. Open In Colab"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "support",
+    "lines": [
+     13,
+     15,
+     16,
+     18,
+     20
+    ],
+    "note": "各演示笔记本均提供 Open In Colab 入口",
+    "quotes": [
+     " - performing inference with `ASTForAudioClassification` to classify audio. Open In Colab",
+     " - fine-tuning `BertForTokenClassification` on a named entity recognition (NER) dataset. Open In Colab",
+     " - fine-tuning `BertForSequenceClassification` for multi-label text classification. Open In Colab_for_multi_label_text_c",
+     " - understanding `BeitForMaskedImageModeling` Open In Colab",
+     " - fine-tuning `CanineForSequenceClassification` on IMDb Open In Colab.ipynb)"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     5,
+     7
+    ],
+    "note": "演示所基于的库，非替代/竞品关系",
+    "quotes": [
+     "This repository contains demos I made with the Transformers library by 🤗 HuggingFace. Currently, all of them are impleme",
+     "NOTE: if you are not familiar with HuggingFace and/or Transformers, I highly recommend to check out our free course, whi"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

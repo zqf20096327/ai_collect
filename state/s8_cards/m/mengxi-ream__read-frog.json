@@ -1,0 +1,176 @@
+{
+ "fn": "mengxi-ream/read-frog",
+ "sha": "a5c06b4aafd9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源 AI 语言学习浏览器扩展：网页/字幕翻译+FSRS 闪词卡",
+  "review": "浏览器扩展，面向各水平语言学习者：整页双语/纯译文翻译、划词翻译与讲解、TTS 朗读、上下文感知翻译，可翻译 YouTube/X/Netflix 字幕（无字幕 YouTube 可 AI 转录，属 Pro/Ultra 付费功能）。生词、释义、笔记存入 Notebase 并生成闪词卡，按间隔重复调度复习。支持 20+ AI 供应商（OpenAI/DeepSeek/Claude/Gemini/Ollama 等）及 Google/微软/DeepLX 免费翻译通道。以 GPLv3+商业双许可发布，含 Pro/Ultra 分层。",
+  "highlights": [
+   "双语/纯译文两种整页翻译模式，切换时自动重译",
+   "Notebase 生词收藏与 FSRS 间隔重复闪词卡复习",
+   "20+ AI 供应商接入（Vercel AI SDK），另含免费翻译通道",
+   "自定义 AI Action：自定 prompt 与结构化输出字段"
+  ],
+  "use_cases": [
+   "阅读外文网页时双语对照并顺手收藏生词",
+   "看 YouTube/Netflix 时显示双语字幕并查询字幕生词",
+   "用间隔重复闪词卡复习阅读中积累的词汇"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "dual",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/c000c3e7-40af-4621-8a7f-72a685732c31",
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    48
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "浏览器扩展",
+   "语言学习",
+   "翻译",
+   "闪词卡/间隔重复",
+   "TTS"
+  ],
+  "domain": "语言学习/翻译工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "deepseek",
+   "groq",
+   "xai",
+   "ollama"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文官方 README",
+   "中国镜像下载渠道",
+   "项目名含中文（陪读蛙）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: An AI language-learning extension for browsers, and an open-source alternative to Immersive Translate.",
+   "L11: Translate web pages, the sentences you select, and subtitles on YouTube, X, and Netflix. Then save the words you meet an",
+   "L128: Connect to 20+ AI providers through Vercel AI SDK: OpenAI, DeepSeek, Anthropic Claude, Google Gemini, xAI Grok, Groq, Mi"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     128
+    ],
+    "quotes": [
+     "Connect to 20+ AI providers through Vercel AI SDK: OpenAI, DeepSeek, Anthropic Claude, Google Gemini, xAI Grok, Groq, Mi"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     128
+    ],
+    "quotes": [
+     "Connect to 20+ AI providers through Vercel AI SDK: OpenAI, DeepSeek, Anthropic Claude, Google Gemini, xAI Grok, Groq, Mi"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "compat",
+    "lines": [
+     128
+    ],
+    "quotes": [
+     "Connect to 20+ AI providers through Vercel AI SDK: OpenAI, DeepSeek, Anthropic Claude, Google Gemini, xAI Grok, Groq, Mi"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "compat",
+    "lines": [
+     128
+    ],
+    "quotes": [
+     "Connect to 20+ AI providers through Vercel AI SDK: OpenAI, DeepSeek, Anthropic Claude, Google Gemini, xAI Grok, Groq, Mi"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     128
+    ],
+    "note": "用户可配置接入的 20+ 供应商之一，含自定义端点",
+    "quotes": [
+     "Connect to 20+ AI providers through Vercel AI SDK: OpenAI, DeepSeek, Anthropic Claude, Google Gemini, xAI Grok, Groq, Mi"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Vercel AI SDK",
+    "rel": "mention",
+    "lines": [
+     128
+    ],
+    "note": "被用于接入供应商的 SDK，非替代/竞品对象",
+    "quotes": [
+     "Connect to 20+ AI providers through Vercel AI SDK: OpenAI, DeepSeek, Anthropic Claude, Google Gemini, xAI Grok, Groq, Mi"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    150,
+    162,
+    164
+   ],
+   "quotes": [
+    "ReadFrog is dual-licensed under GPLv3 and a commercial license.",
+    "## 📜 Commercial License Grant",
+    "Tabbit **Meituan Tabbit Browser Team**: Free license (at no cost) for closed-source commercial use, limited to v1.21.3 a"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

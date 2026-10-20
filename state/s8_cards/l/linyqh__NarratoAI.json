@@ -1,0 +1,162 @@
+{
+ "fn": "linyqh/NarratoAI",
+ "sha": "30f5fd7906df",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向内容创作者的 AI 影视解说与自动化剪辑工具",
+  "review": "基于 LLM 的一站式自动化影视解说工具：读取视频后由大模型生成解说文案，结合自动化剪辑、TTS 配音、语音克隆与字幕生成输出成品视频，支持短剧解说、短剧混剪、Fun-ASR 一键转录、剪映草稿导出与可选 AI 配乐。提供 Windows/macOS 整合包、Docker 与源码三种部署方式，浏览器访问本地界面操作；需配置 LLM API Key（支持 DeepSeek、Qwen2-VL 等及 OpenAI 兼容接口）。项目基于 MoneyPrinter/MoneyPrinterTurbo 重构而来，另有云端托管版。",
+  "highlights": [
+   "LLM 文案撰写 + 自动剪辑 + 配音 + 字幕一站式流程",
+   "支持语音克隆（IndexTTS-1.5/2、OmniVoice）与多种 TTS 引擎",
+   "短剧解说、短剧混剪、Fun-ASR 一键转录、剪映草稿导出",
+   "Windows/macOS 整合包、Docker、源码三种部署方式"
+  ],
+  "use_cases": [
+   "给影视剧或短剧批量生成解说视频",
+   "用语音克隆和 TTS 为视频自动配音配字幕",
+   "本地部署后通过浏览器完成解说视频剪辑全流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "视频剪辑",
+   "影视解说",
+   "TTS/语音克隆",
+   "内容创作自动化",
+   "桌面/Web应用"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "ai-writing",
+   "tts",
+   "video-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "中文开源社群与抖音/公众号运营",
+   "火山引擎/硅基流动国内赞助商",
+   ".cn 云端版入口"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L6: NarratoAI 是一款自动化影视解说工具，基于 LLM 实现文案撰写、自动化视频剪辑、配音和字幕生成的一站式流程，助力高效内容创作。支持本地部署开源版及 云端托管版。",
+   "L91: - [x] 支持 TwelveLabs Pegasus 作为可选的视频理解后端（原生理解整段画面以挑选高光、生成解说；可选启用，设置 `vision_llm_provider = \"twelvelabs\"`）"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     71
+    ],
+    "note": "支持 DeepSeek R1/V3 模型进行短剧混剪；L20 为赞助商广告中的列举",
+    "quotes": [
+     "- 2025.03.06 发布新版本 0.5.2，支持 DeepSeek R1 和 DeepSeek V3 模型进行短剧混剪"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     135,
+     142
+    ],
+    "quotes": [
+     "git clone https://github.com/linyqh/NarratoAI.git",
+     "git clone https://github.com/linyqh/NarratoAI.git"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "内存 8G",
+    "rel": "support",
+    "lines": [
+     149
+    ],
+    "note": "配置要求中列出的最低内存",
+    "quotes": [
+     "- 建议最低 CPU 4核或以上，内存 8G 或以上，显卡非必须"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     20
+    ],
+    "note": "赞助商套餐中列举的模型，非竞品/替代关系",
+    "quotes": [
+     "感谢字节火山引擎赞助本项目！ 火山方舟 Agent/Coding Plan 国模套餐首购 9.9，支持 GLM‑5.3、Kimi‑K3、DeepSeek、MiniMax、Doubao等，注册免费领2500w Token，统一 API，适配编"
+    ]
+   },
+   {
+    "term": "豆包",
+    "rel": "mention",
+    "lines": [
+     20
+    ],
+    "note": "赞助商套餐中列举的模型；另 L61 豆包语音 TTS 为支持的 TTS 引擎",
+    "quotes": [
+     "感谢字节火山引擎赞助本项目！ 火山方舟 Agent/Coding Plan 国模套餐首购 9.9，支持 GLM‑5.3、Kimi‑K3、DeepSeek、MiniMax、Doubao等，注册免费领2500w Token，统一 API，适配编"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

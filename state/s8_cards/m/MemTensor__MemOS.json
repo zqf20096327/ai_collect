@@ -1,0 +1,153 @@
+{
+ "fn": "MemTensor/MemOS",
+ "sha": "bafbb1eb25c2",
+ "source": "readme",
+ "identity": {
+  "one_liner": "为 LLM 与 AI Agent 提供长期记忆的内存操作系统",
+  "review": "面向 LLM 应用与 AI agent 的记忆管理系统：统一记忆的存储/检索/编辑 API，以图结构组织、支持文本/图像/工具轨迹/人设等多模态记忆，多个知识库以可组合的记忆立方体管理，异步调度器支持高并发。提供四种接入方式：托管 Cloud API、Docker/uvicorn 自托管（依赖 Neo4j 与 Qdrant）、OpenClaw/DeepSeek Harness 云插件、以及基于 SQLite 的本地插件（FTS5+向量混合检索）。本地插件需 Node.js 与已安装的目标 agent。",
+  "highlights": [
+   "统一记忆 API：图结构、可检查可编辑的记忆管理",
+   "多模态记忆与多知识库（memory cubes）隔离/共享管理",
+   "自托管依赖 Neo4j + Qdrant，本地插件用 SQLite（FTS5+向量混合检索）",
+   "为 OpenClaw / Hermes / DeepSeek Harness 提供官方云与本地插件"
+  ],
+  "use_cases": [
+   "给 AI 助手加上跨会话的长期记忆",
+   "客服系统回忆历史工单与用户记录",
+   "多 agent 协作中共享或隔离记忆",
+   "在本地设备上为 DeepSeek Harness / OpenClaw / Hermes 保留全部记忆数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org（README 标注 ArXiv，具体链接见仓库）",
+  "demo_url": "https://memos.openmem.net/",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "长期记忆",
+   "Agent基础设施",
+   "记忆管理",
+   "RAG/检索",
+   "自托管服务"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek"
+  ],
+  "scenario_tags_v2": [
+   "agent-memory"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中英双语 README",
+   "微信群二维码",
+   "论文作者列表含多位中文学者/机构"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L28: **MemOS** is a Memory Operating System for LLMs and AI agents that unifies **store / retrieve / manage** for long-term m",
+   "L32: - **Unified Memory API**: A single API to add, retrieve, edit, and delete memory—structured as a graph, inspectable and ",
+   "L157: MemOS gives OpenClaw, Hermes, and DeepSeek Harness a shared local memory core; the managed ***MemOS Cloud Plugin*** is a"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "support",
+    "lines": [
+     20,
+     41,
+     190
+    ],
+    "quotes": [
+     "> **New: Connect MemOS to DeepSeek Harness (`dsh`)**",
+     " MemOS now brings persistent memory to **DeepSeek Harness** through both local and cloud plugins. DSH can automatically ",
+     "   npx @deepseek-ai/dsh plugin --profile web add @memtensor/memos-cloud-dsh-plugin@latest"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     90,
+     190
+    ],
+    "quotes": [
+     "|Setup|Get an API key|docker compose up|openclaw plugins install|npm install + agent-specific setup|",
+     "   npx @deepseek-ai/dsh plugin --profile web add @memtensor/memos-cloud-dsh-plugin@latest"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     90,
+     128
+    ],
+    "quotes": [
+     "|Setup|Get an API key|docker compose up|openclaw plugins install|npm install + agent-specific setup|",
+     "docker compose up                    # starts MemOS API + Neo4j + Qdrant"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     124,
+     136
+    ],
+    "quotes": [
+     "git clone https://github.com/MemTensor/MemOS.git",
+     "git clone https://github.com/MemTensor/MemOS.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

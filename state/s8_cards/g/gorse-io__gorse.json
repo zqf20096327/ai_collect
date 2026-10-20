@@ -1,0 +1,115 @@
+{
+ "fn": "gorse-io/gorse",
+ "sha": "d7b1929fe327",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Go 编写的开源推荐系统引擎：导入数据自动训练模型生成推荐",
+  "review": "用 Go 编写的通用开源推荐系统引擎，面向需要快速接入推荐能力的在线服务开发者。导入物品、用户与交互数据后，系统自动训练模型并为每个用户生成推荐。支持多来源推荐（最新、用户间、物品间、协同过滤）、经 embedding 支持多模态内容、经典推荐器与 reranker/Decision API。提供 GUI 仪表盘与 RESTful API；采用单节点训练、分布式预测架构，master 节点训练模型，server 节点提供实时推荐，worker 节点做离线推荐。数据可存储于 MySQL/MongoDB/Postgres，中间结果可缓存于 Redis。",
+  "highlights": [
+   "导入数据后自动训练模型并生成个性化推荐",
+   "多模态内容（文本/图像/视频）经 embedding 支持",
+   "提供 GUI 仪表盘：推荐流水线编辑、系统监控、数据管理",
+   "单节点训练 + 分布式预测架构（master/server/worker 节点）"
+  ],
+  "use_cases": [
+   "为在线服务快速搭建个性化推荐能力",
+   "管理推荐流水线并监控推荐系统运行状态",
+   "通过 RESTful API 获取实时推荐结果"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "推荐系统",
+   "协同过滤",
+   "机器学习",
+   "多模态embedding"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "recommender-system"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: Gorse is an AI powered open-source recommender system written in Go. Gorse aims to be a universal open-source recommende",
+   "L13: - **AI-powered:** Support classical recommenders, reranker APIs, and Decision APIs."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "none",
+    "lines": [
+     32
+    ],
+    "note": "仅作为示例数据中的 GitHub 仓库条目 ID（ollama:ollama）出现，非接入/适配关系",
+    "quotes": [
+     "    { \\\"FeedbackType\\\": \\\"star\\\", \\\"UserId\\\": \\\"bob\\\", \\\"ItemId\\\": \\\"ollama:ollama\\\", \\\"Value\\\": 1.0, \\\"Timestamp\\\": \\\"2"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     22
+    ],
+    "quotes": [
+     "docker run -p 8088:8088 zhenghaoz/gorse-in-one --playground"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

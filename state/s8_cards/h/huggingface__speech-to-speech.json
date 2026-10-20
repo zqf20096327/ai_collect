@@ -1,21 +1,20 @@
 {
  "fn": "huggingface/speech-to-speech",
- "sha": "257fc72c751d",
+ "sha": "9a68c6bbbeb7",
  "source": "readme",
  "identity": {
-  "one_liner": "用开源模型在本机搭建低延迟语音对话 agent 的框架",
-  "review": "以可插拔级联管道（Silero VAD → Parakeet TDT → Qwen3.5-4B → Qwen3-TTS）在本地运行语音对话，无 API key、无云端依赖；服务端实现 OpenAI Realtime 协议（WebSocket/WebRTC），为 OpenAI Realtime API 构建的应用可指向本机服务器。各阶段提供多种可替换后端，经 CLI 标志选择，支持工具调用、流式说话人分离与可视化口型输出；并作为 Reachy Mini 机器人的对话后端运行。",
+  "one_liner": "全本地开源语音 agent 服务：一条命令起对话，免 API key",
+  "review": "Hugging Face 维护的低延迟语音 agent 服务：默认流水线为 Silero VAD → Parakeet TDT → Qwen3.5-4B → Qwen3-TTS，各阶段后端均可通过 CLI 替换，含大量 STT/LLM/TTS 备选。模型全部本地运行，首次运行后可离线工作；服务器通过 WebSocket/WebRTC 说 OpenAI Realtime 协议，使为 OpenAI Realtime API 构建的应用可指向自托管机器。该流水线已在数千台 Reachy Mini 机器人上作为对话后端运行。限制：Linux 默认 Qwen3-TTS wheel 面向 CUDA 12.8 与 Ubuntu 24.04；Windows 不在兼容矩阵内；Python 需 3.11–3.14。",
   "highlights": [
-   "四级级联管道（VAD/STT/LLM/TTS），每级均有多个可互换后端",
-   "服务端实现 OpenAI Realtime 协议，兼容 OpenAI Realtime 客户端与 Agents SDK、LiveKit Agents",
-   "默认本地模型，首次下载后可完全离线运行",
-   "提供工具调用扩展与可选 viseme/说话人分离组件"
+   "默认四段流水线（VAD/STT/LLM/TTS）各阶段后端可互换",
+   "全本地运行，无 API key、无云服务，首次运行后离线可用",
+   "服务器说 OpenAI Realtime 协议（WebSocket/WebRTC），兼容 OpenAI Realtime 客户端与 LiveKit Agents",
+   "支持 YAML 配置 API、语音到音素（viseme）提取、说话人分离、本地工具调用"
   ],
   "use_cases": [
-   "在自有硬件上搭建本地语音助手",
-   "把 OpenAI Realtime 客户端切换到自托管服务器",
-   "为机器人等设备提供对话后端",
-   "按平台选择本地 STT/LLM/TTS 组合做语音应用原型"
+   "在本机一条命令启动可对话的语音助手，不依赖云服务",
+   "把为 OpenAI Realtime API 构建的应用/设备端点切到自托管服务器",
+   "为机器人或 avatar 客户端提供带口型时序的实时语音对话后端"
   ]
  },
  "filters": {
@@ -33,21 +32,27 @@
   "demo_url": null,
   "self_declared_early": {
    "flag": false,
-   "lines": []
+   "lines": [],
+   "note": "仅 vLLM 转录后端标注 experimental（L189）"
   }
  },
  "links": {
   "scenario_tags": [
-   "语音Agent",
-   "语音对话",
+   "语音agent",
+   "实时语音对话",
    "本地推理",
-   "实时语音"
+   "OpenAI Realtime 协议",
+   "STT/TTS 流水线"
   ],
   "domain": "对话与助手",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
-   "vllm"
+   "vllm",
+   "llama.cpp",
+   "openrouter",
+   "groq",
+   "deepseek"
   ],
   "scenario_tags_v2": [
    "voice-agent"
@@ -59,63 +64,91 @@
   "zh_origin_signals": []
  },
  "trust": {
-  "confidence": "high",
+  "confidence": "mid",
   "evidence": [
    "L11: A low-latency voice agent built from open models that **runs entirely on your computer**. One command starts a conversat",
    "L13: The default pipeline is **Silero VAD → Parakeet TDT → Qwen3.5-4B → Qwen3-TTS**, and every stage is swappable. The server",
-   "L76: Every stage has multiple interchangeable backends, selected via CLI flags. The code is designed for easy modification, w"
+   "L92: 3. **Language Model (LLM)**: generates the response, streaming text and tool calls."
   ],
-  "xcheck": null,
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
   "providers": [
    {
     "term": "vllm",
-    "rel": "support",
+    "rel": "compat",
     "lines": [
-     170,
-     192,
-     195
+     189,
+     215
     ],
+    "note": "内置 vLLM Realtime 转录后端（实验性）及 vLLM 服务器的客户端用法",
     "quotes": [
      "|STT|vLLM Realtime transcription (experimental)|local or remote vLLM server|built-in|",
-     "For client-only TTS serving with vLLM-Omni or another compatible server, see",
      "For client-only speech recognition with vLLM, OpenAI's hosted Transcription API,"
     ]
    },
    {
     "term": "llama.cpp",
-    "rel": "mention",
+    "rel": "compat",
     "lines": [
-     321
+     61,
+     341,
+     356
     ],
-    "note": "窗外行：提及可用的 LLM 后端之一",
+    "note": "可替换的本地 LLM 后端之一",
     "quotes": [
-     "    -hf ggml-org/gemma-4-E4B-it-GGUF:Q4_0 \\"
+     "Speech recognition and synthesis run locally too. After the first run, everything works offline. To use another model, a",
+     "    -hf ggml-org/gemma-4-E4B-it-GGUF:Q4_0 \\",
+     "The Q4_0 weights are about 4.6 GB. The example uses one 8k context and disables reasoning for faster replies; `--no-mmpr"
     ]
    },
    {
     "term": "openrouter",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
+    "rel": "compat",
+    "lines": [
+     382
+    ],
+    "note": "窗外：作为可选托管 LLM 后端示例",
+    "quotes": [
+     "|OpenRouter|`https://openrouter.ai/api/v1`|`$OPENROUTER_API_KEY`|"
+    ]
    },
    {
     "term": "groq",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
+    "rel": "compat",
+    "lines": [
+     401
+    ],
+    "note": "窗外：作为可选托管 LLM 后端示例",
+    "quotes": [
+     "# HF Inference Providers: GPT-oss-20B via Groq"
+    ]
    },
    {
     "term": "deepseek",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
+    "rel": "compat",
+    "lines": [
+     740
+    ],
+    "note": "窗外：作为可选 LLM 后端示例",
+    "quotes": [
+     "--llm_backend responses-api --model_name deepseek-chat --responses_api_base_url https://api.deepseek.com"
+    ]
    }
   ],
   "install": [
@@ -123,10 +156,12 @@
     "term": "pypi",
     "rel": "support",
     "lines": [
+     7,
      26,
-     84
+     103
     ],
     "quotes": [
+     "PyPI",
      "pip install speech-to-speech",
      "`pip install speech-to-speech` (see the Quickstart) includes everything the default pipeline needs:"
     ]
@@ -135,8 +170,8 @@
     "term": "source",
     "rel": "support",
     "lines": [
-     143,
-     145
+     162,
+     164
     ],
     "quotes": [
      "git clone https://github.com/huggingface/speech-to-speech.git",
@@ -145,55 +180,73 @@
    },
    {
     "term": "docker",
-    "rel": "support",
+    "rel": "mention",
     "lines": [
-     248
+     268,
+     752
     ],
+    "note": "窗外：文档中的部署方式",
     "quotes": [
-     "docker compose up"
+     "docker compose up",
+     "`src/speech_to_speech/evals/big_bench_audio/Dockerfile.eval` builds an image for"
     ]
    },
    {
     "term": "brew",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
+    "rel": "mention",
+    "lines": [
+     333
+    ],
+    "note": "窗外：依赖安装相关",
+    "quotes": [
+     "Serve the LLM with llama.cpp and connect speech-to-speech through its local Responses API. This works on **Apple Silicon"
+    ]
    }
   ],
   "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     95,
+     136,
+     162
+    ],
+    "note": "维护方及模型/代码来源，非替代或竞品",
+    "quotes": [
+     "Every stage has multiple interchangeable backends, selected via CLI flags. The code is designed for easy modification, w",
+     "  -f https://huggingface.co/datasets/andito/qwentts-cpp-python-wheels/tree/main/whl/cu130",
+     "git clone https://github.com/huggingface/speech-to-speech.git"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     13,
+     326,
+     417
+    ],
+    "note": "Qwen 系列模型作为默认/可选后端被使用",
+    "quotes": [
+     "The default pipeline is **Silero VAD → Parakeet TDT → Qwen3.5-4B → Qwen3-TTS**, and every stage is swappable. The server",
+     "speech-to-speech local --model_name Qwen/Qwen3.5-9B                 # Linux / Windows",
+     "# vLLM serving a Qwen model with tool calling"
+    ]
+   }
+  ],
   "dual_license": {
    "flag": false,
    "lines": [],
    "quotes": []
   },
   "deprecation": {
-   "flag": true,
+   "flag": false,
    "lines": [
-    134,
-    226
-   ]
-  },
-  "products": [
-   {
-    "term": "Hugging Face",
-    "rel": "mention",
-    "lines": [
-     76,
-     112,
-     117
-    ],
-    "quotes": [
-     "Every stage has multiple interchangeable backends, selected via CLI flags. The code is designed for easy modification, w",
-     "On Linux, the Qwen3-TTS GGML backend comes from `faster-qwen3-tts[ggml]`. Its default `qwentts-cpp-python` wheel on PyPI",
-     "  -f https://huggingface.co/datasets/andito/qwentts-cpp-python-wheels/tree/main/whl/cu130"
-    ]
-   },
-   {
-    "term": "通义千问",
-    "rel": "none",
-    "lines": [],
-    "quotes": []
-   }
-  ]
+    153
+   ],
+   "note": "仅部分旧组件（如 MeloTTS）归档，本产品未弃用"
+  }
  }
 }

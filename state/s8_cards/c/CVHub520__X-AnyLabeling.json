@@ -1,0 +1,121 @@
+{
+ "fn": "CVHub520/X-AnyLabeling",
+ "sha": "7fb220472558",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI 辅助数据标注桌面应用：文本/图像/视频/点云/多模态",
+  "review": "跨平台（Windows/Linux/macOS）桌面数据标注应用，支持文本、图像、视频、点云与多模态数据的标注，覆盖分类、检测、分割、姿态估计、跟踪、OCR、文档解析等任务。内置 20 余类模型（YOLO 系列、SAM 系列、Grounding DINO、PP-OCR 等）实现 AI 辅助标注、自动标注与批量数据集预测，支持 ONNX Runtime、TensorRT、OpenCV DNN、vLLM、SGLang 等推理引擎的本地与远程推理，可导入导出 COCO/VOC/YOLO/DOTA 等多种格式。提供 X-AnyLabeling-Server 作为远程推理后端。GPLv3 许可。",
+  "highlights": [
+   "内置 20 余类任务的模型库（YOLO 系列、SAM 1/2/3、Grounding DINO、PP-OCR 等）",
+   "支持本地与远程推理（ONNX Runtime、TensorRT、OpenCV DNN、vLLM、SGLang）",
+   "覆盖图像、视频、点云、文本、多模态数据与 3D 点云标注",
+   "COCO/VOC/YOLO/DOTA/MOT 等多格式导入导出"
+  ],
+  "use_cases": [
+   "用预训练模型自动标注目标检测/分割数据集",
+   "标注 3D 点云的检测与分割数据",
+   "通过 VLM（Qwen3-VL、Gemini 等）做图像问答与文档解析标注"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据标注",
+   "计算机视觉",
+   "自动标注",
+   "桌面应用",
+   "点云标注"
+  ],
+  "domain": "计算机视觉/数据标注",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "简体中文 README",
+   "cv_hub@163.com 联系邮箱"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L25: **X-AnyLabeling** is a lightweight, efficient, and unified cross-platform desktop application for AI-assisted annotation",
+   "L32: * Integrates a wide range of state-of-the-art deep learning models for AI-assisted annotation, automated labeling, and b",
+   "L33: * Supports both local and remote inference through engines and serving frameworks such as `ONNX Runtime`, `TensorRT`, `O"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     33
+    ],
+    "note": "作为可选的推理服务引擎之一",
+    "quotes": [
+     "* Supports both local and remote inference through engines and serving frameworks such as `ONNX Runtime`, `TensorRT`, `O"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     59
+    ],
+    "note": "模型库中列出的 VLM 之一，非对比/替代关系",
+    "quotes": [
+     "|👁️ Vision Language Models|Qwen3-VL, Gemini, ChatGPT, GLM|"
+    ]
+   }
+  ]
+ }
+}

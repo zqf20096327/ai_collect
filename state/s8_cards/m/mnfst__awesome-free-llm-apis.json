@@ -1,0 +1,190 @@
+{
+ "fn": "mnfst/awesome-free-llm-apis",
+ "sha": "eea92be95133",
+ "source": "readme",
+ "identity": {
+  "one_liner": "永久免费 LLM API 清单：按提供商列出可用模型与限额",
+  "review": "由 Manifest（manifest.build）维护的 awesome 清单，收录提供永久免费层级的 LLM API：按官方模型提供商（Cohere、Google Gemini、Mistral、Z AI 等）与第三方推理平台（Cloudflare Workers AI、Groq、Hugging Face、OpenRouter、Ollama Cloud、NVIDIA NIM 等）分组。每个条目给出 Base URL、免费额度条件、速率限制及模型表格（上下文长度、最大输出、模态）。README 声明所有端点默认兼容 OpenAI SDK，各链接指向提供商的 API key 页面，并在文内推广 Manifest 平台本身。清单不含本产品自身的安装步骤。",
+  "highlights": [
+   "覆盖官方提供商与第三方推理平台两类共十余个免费 API 来源",
+   "每个条目列出 Base URL、免费条件、速率限制与模型参数表",
+   "声明所有端点默认 OpenAI SDK 兼容",
+   "各条目附脚注引至提供商 API key 页面"
+  ],
+  "use_cases": [
+   "为个人项目或 agent 原型寻找零成本的 LLM API",
+   "比较各免费 API 的速率限制与上下文长度后选型",
+   "查找无需信用卡即可申请的 API key 渠道"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome清单",
+   "LLM API",
+   "免费资源",
+   "API路由/网关",
+   "模型服务目录"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9:  LLM APIs with permanent free tiers for text inference.",
+   "L27: APIs run by the companies that train or fine-tune the models themselves."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     42,
+     46
+    ],
+    "quotes": [
+     "### Cohere 🇨🇦",
+     "Base URL: `https://api.cohere.com/v2`"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     128,
+     195
+    ],
+    "quotes": [
+     "|`@cf/deepseek-ai/deepseek-r1-distill-qwen-32b`|80K|Shared w/ context|Text (reasoning)|10K neurons/day (shared)|",
+     "|DeepSeek-V4-Flash-0731|400K|—|Text (reasoning)|60 RPM, 250 req/hr (free token)|"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "mention",
+    "lines": [
+     131,
+     135
+    ],
+    "quotes": [
+     "### Groq 🇺🇸",
+     "Base URL: `https://api.groq.com/openai/v1`"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     244,
+     248
+    ],
+    "quotes": [
+     "### OpenRouter 🇺🇸",
+     "Base URL: `https://openrouter.ai/api/v1`"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     225,
+     227
+    ],
+    "note": "清单收录 Ollama Cloud 免费层，非本地运行时接入",
+    "quotes": [
+     "### Ollama Cloud 🇺🇸",
+     "Free tier with usage limits. 16 cloud model families from the Ollama library. OpenAI SDK-compatible via https://ollama.c"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     141,
+     181,
+     205
+    ],
+    "quotes": [
+     "|`qwen/qwen3.8-27b`|131K|16K|Text|30 RPM, 1,000 RPD|",
+     "|`qwen/qwen3.8-27b:free`|262K|235K|Multimodal|200 req/hr|",
+     "|`Qwen/Qwen3.5-35B-A3B`|256K|—|Text|2,000 RPD total; <=500 RPD/model (dynamic)|"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     147
+    ],
+    "quotes": [
+     "Base URL: `https://router.huggingface.co/v1`"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     236
+    ],
+    "quotes": [
+     "|kimi-k3|1M|Model-dependent|Text|Session/weekly limits (unpublished)|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

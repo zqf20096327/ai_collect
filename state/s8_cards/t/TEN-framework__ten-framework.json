@@ -1,0 +1,139 @@
+{
+ "fn": "TEN-framework/ten-framework",
+ "sha": "9225df78625f",
+ "source": "readme",
+ "identity": {
+  "one_liner": "构建实时多模态对话语音 AI agent 的开源框架",
+  "review": "TEN 是用于实时多模态对话 AI 的开源框架，面向构建语音/视频 agent 的开发者。提供扩展机制（STT/LLM/TTS/VAD/轮次检测等）与 TMAN Designer 可视化编辑器；附带多个 Agent 示例：语音助手、涂鸦画板、说话人分离、口型同步虚拟形象、SIP 电话、转写工具及 ESP32-S3 硬件集成。本地运行依赖 Docker 与 Node.js v18，需配置 Agora、OpenAI、Deepgram、ElevenLabs 的密钥；最低要求 2 核 CPU、4GB 内存。支持 Docker 镜像发布及 Vercel/Netlify 前端分体部署。许可以为 Apache 2.0 附加限制条款。",
+  "highlights": [
+   "实时多模态对话框架，含 STT/LLM/TTS 扩展与 TMAN Designer 可视化编辑",
+   "多类 Agent 示例：语音助手、说话人分离、口型同步形象、SIP 电话、转写",
+   "支持 ESP32-S3 Korvo V3 开发板运行 agent 示例",
+   "Docker Compose 开发容器与 Docker 镜像发布，支持 Vercel/Netlify 前端分体部署"
+  ],
+  "use_cases": [
+   "开发低延迟实时语音助手并接入 RTC/WebSocket",
+   "构建带说话人分离或口型同步虚拟形象的对话应用",
+   "将语音 agent 部署到 ESP32 等嵌入式硬件",
+   "自托管 agent 服务并分体部署前后端"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "none",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音AI",
+   "实时对话",
+   "agent框架",
+   "多模态",
+   "RTC"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "提供简体中文 README 操作指南"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L47: TEN is an open-source framework for real-time multimodal conversational AI.",
+   "L62:  Multi-Purpose Voice Assistant — This low-latency, high-quality real-time assistant supports both RTC and [WebSocket][we"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     131,
+     158,
+     246,
+     252
+    ],
+    "quotes": [
+     "|**Installation**|• [Docker][docker] / [Docker Compose][docker-compose] • [Node.js (LTS) v18][nodejs]|",
+     "docker compose up -d",
+     "docker build -f agents/examples/<example-name>/Dockerfile -t example-app .",
+     "docker run --rm -it --env-file .env -p 3000:3000 example-app"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     264
+    ],
+    "note": "前端 pnpm/bun 安装为部署可选步骤",
+    "quotes": [
+     "2. Deploy only the frontend to Vercel or Netlify. Point the project root to `ai_agents/agents/examples/<example>/fronten"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "RAM >= 4 GB",
+    "rel": "support",
+    "lines": [
+     132
+    ],
+    "quotes": [
+     "|**Minimum System Requirements**|• CPU >= 2 cores • RAM >= 4 GB|"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

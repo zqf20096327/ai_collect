@@ -1,0 +1,190 @@
+{
+ "fn": "xorbitsai/inference",
+ "sha": "5ff1b6eac5c8",
+ "source": "readme",
+ "identity": {
+  "one_liner": "统一推理平台：一行命令部署语言/语音/多模态模型",
+  "review": "Xinference（Xorbits Inference）是面向研究人员、开发者与数据科学家的模型服务库，支持以单条命令部署和提供语言、语音识别与多模态模型的推理服务。支持多推理引擎（vLLM、llama.cpp 系 Xllamacpp、GGML、TensorRT）、分布式部署与异构 GPU/CPU 利用，对外提供 OpenAI 兼容 RESTful API（含 Function Calling）、RPC、CLI 与 WebUI。另设商业版 Xinference Enterprise 与 Xinference Cloud 托管部署。",
+  "highlights": [
+   "单条命令部署语言/语音/多模态模型，内置模型库持续更新",
+   "多推理引擎支持（vLLM、Xllamacpp、GGML、TensorRT）与多节点分布式部署",
+   "OpenAI 兼容 RESTful API（含 Function Calling）、RPC、CLI、WebUI 多种接口",
+   "与 LangChain、LlamaIndex、Dify 等第三方库集成"
+  ],
+  "use_cases": [
+   "在自有服务器或笔记本上自托管开源大模型并提供 API",
+   "企业级模型推理部署（含集群与异构硬件）",
+   "让现有 OpenAI API 应用切换到自托管模型（一行代码替换）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "模型推理服务",
+   "LLM部署",
+   "MLOps",
+   "自托管",
+   "推理API"
+  ],
+  "domain": "训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "多语言 README 含简体/繁体中文"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L29: Xorbits Inference(Xinference) is a powerful and versatile library designed to serve language,",
+   "L78: with your models, supporting OpenAI compatible RESTful API (including Function Calling API), RPC, CLI"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     44,
+     91
+    ],
+    "note": "作为可选推理引擎被增强与集成",
+    "quotes": [
+     "- VLLM enhancement: Shared KV cache across multiple replicas: #2732",
+     "|vLLM Integrations|✅|✅|✅|✅|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     9,
+     129
+    ],
+    "quotes": [
+     "PyPI Latest Release",
+     "pip install xinference"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     12,
+     154
+    ],
+    "quotes": [
+     "Docker Pulls",
+     "docker run --name xinference -d -p 9997:9997 -e XINFERENCE_HOME=/data -v </on/your/host>:/data --gpus all xprobe/xinfere"
+    ]
+   },
+   {
+    "term": "helm",
+    "rel": "support",
+    "lines": [
+     163
+    ],
+    "quotes": [
+     "helm repo add xinference https://xorbitsai.github.io/xinference-helm-charts"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     51
+    ],
+    "note": "内置支持 Qwen-Image-2.1 模型，非竞品关系",
+    "quotes": [
+     "- Built-in support for Qwen-Image-2.1: #5571"
+    ]
+   },
+   {
+    "term": "Dify",
+    "rel": "mention",
+    "lines": [
+     60,
+     85
+    ],
+    "note": "被集成的 LLMOps 平台",
+    "quotes": [
+     "- Dify: an LLMOps platform that enables developers (and even non-developers) to quickly build useful applications based ",
+     "with popular third-party libraries including LangChain, LlamaIndex, Dify, and Chatbox."
+    ]
+   },
+   {
+    "term": "LangChain",
+    "rel": "mention",
+    "lines": [
+     85
+    ],
+    "note": "被集成的第三方库",
+    "quotes": [
+     "with popular third-party libraries including LangChain, LlamaIndex, Dify, and Chatbox."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    5,
+    107,
+    108
+   ],
+   "quotes": [
+    " Xinference Enterprise ·",
+    "- **Xinference for enterprise / organizations **",
+    "**Xinference Enterprise** is the commercial edition for teams running models in production. Deploy it in your own cloud "
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

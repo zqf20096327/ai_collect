@@ -1,0 +1,114 @@
+{
+ "fn": "data-privacy-stack/presidio",
+ "sha": "09dc6b91d877",
+ "source": "readme",
+ "identity": {
+  "one_liner": "文本与图像中敏感数据（PII）的检测、脱敏与匿名化 SDK",
+  "review": "开源的 PII 数据保护与去标识化框架，提供识别（Analyzer）与匿名化（Anonymizer）模块，可识别文本中的信用卡号、姓名、位置、社保号、比特币钱包等实体；识别器基于命名实体识别、正则、规则逻辑与校验和，支持多语言与自定义，可连接外部 PII 检测模型。另有图像脱敏模块（含 DICOM 医学图像）与结构化数据处理组件。可通过 Python/PySpark、Docker 或 Kubernetes 使用。README 声明自动检测不保证找出全部敏感信息，需配合其他系统。",
+  "highlights": [
+   "基于 NER、正则、规则与校验和的预置/自定义 PII 识别器",
+   "图像脱敏模块，支持标准图像与 DICOM 医学图像",
+   "Python/PySpark、Docker、Kubernetes 多种运行方式",
+   "Analyzer / Anonymizer / Image-Redactor / Structured 四个组件"
+  ],
+  "use_cases": [
+   "对客服记录、文档等文本做 PII 检测与脱敏后再交付或分析",
+   "对含隐私信息的图片（含医疗影像）做遮盖处理",
+   "在 PySpark 或 Kubernetes 环境中部署自动化去标识化流程"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "PII检测",
+   "数据脱敏",
+   "匿名化",
+   "guardrails",
+   "数据合规"
+  ],
+  "domain": "感知与多模态",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L20: Presidio _(Origin from Latin praesidium ‘protection, garrison’)_ helps to ensure sensitive data is properly managed and ",
+   "L42: 1. **Predefined** or **custom PII recognizers** leveraging _Named Entity Recognition_, _regular expressions_, _rule base"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     9,
+     14,
+     15,
+     16,
+     17,
+     52
+    ],
+    "quotes": [
+     "PyPI pyversions",
+     "|Presidio Analyzer|Pypi Downloads|Coverage|",
+     "|Presidio Anonymizer|Pypi Downloads|Coverage|",
+     "|Presidio Image-Redactor|Pypi Downloads|Coverage|",
+     "|Presidio Structured|Pypi Downloads|Coverage|",
+     "1. Using pip"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

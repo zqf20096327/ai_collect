@@ -1,0 +1,150 @@
+{
+ "fn": "EmbraceAGI/awesome-chatgpt-zh",
+ "sha": "e5f6c2968fae",
+ "source": "readme",
+ "identity": {
+  "one_liner": "中文用户的 ChatGPT 与前沿 AI 资源精选清单",
+  "review": "面向中文用户的 ChatGPT 及大模型资源聚合项目：收录免费/付费 ChatGPT 使用途径、Prompt 工程指南、应用开发指南、生产力工具，并持续跟进 GPT-5、Claude、DeepSeek、MCP、Claude Skills、编程智能体、浏览器自动化、RAG 等主题。组织形式为分类目录加资源链接，附微信公众号与 Telegram 交流群，通过 GitLab 镜像方便国内访问。内容为文档清单，无安装运行需求。",
+  "highlights": [
+   "覆盖 Prompt 工程、应用开发、大模型技术文章等主题的中文资源目录",
+   "收录 DeepSeek 生态、Claude Skills、MCP、编程智能体等专题指南",
+   "提供 GitLab 国内镜像与微信/Telegram 交流社区"
+  ],
+  "use_cases": [
+   "查找 ChatGPT 的中文使用途径与高效对话方法",
+   "按主题检索 MCP、Claude Skills、编程智能体等前沿 AI 资源",
+   "了解面向中文用户的大模型应用开发资料"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome清单",
+   "ChatGPT",
+   "Prompt工程",
+   "LLM资源导航"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "微信公众号与 Telegram 中文交流群",
+   "GitLab 国内镜像",
+   "国内访问友好定位"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: ChatGPT 中文指南项目旨在帮助中文用户了解和使用 ChatGPT 及前沿 AI 技术。我们收集了各种免费和付费的 ChatGPT 资源、高效使用中文与大模型交流的方法、应用开发的相关资源，以及基于大模型能力的生产力工具。项目持续跟进 ",
+   "L15: ## 什么是 ChatGPT ?"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     11,
+     26
+    ],
+    "quotes": [
+     "ChatGPT 中文指南项目旨在帮助中文用户了解和使用 ChatGPT 及前沿 AI 技术。我们收集了各种免费和付费的 ChatGPT 资源、高效使用中文与大模型交流的方法、应用开发的相关资源，以及基于大模型能力的生产力工具。项目持续跟进 ",
+     "汇集 OpenAI、Anthropic（Claude）、Google / DeepMind、DeepSeek 的经典技术文章与论文，以及 Andrej Karpathy 的博客、开源教学项目与讲座。"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     11,
+     31,
+     33
+    ],
+    "quotes": [
+     "ChatGPT 中文指南项目旨在帮助中文用户了解和使用 ChatGPT 及前沿 AI 技术。我们收集了各种免费和付费的 ChatGPT 资源、高效使用中文与大模型交流的方法、应用开发的相关资源，以及基于大模型能力的生产力工具。项目持续跟进 ",
+     "## DeepSeek 生态指南",
+     "DeepSeek 已从\"模型提供方\"演进为覆盖模型、API、编程智能体、Agent 框架与开源基础设施的完整生态：2026 年 DeepSeek-V4（Pro / Flash，1M 上下文，开放权重）正式 GA，官方 Agent 框架 de"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     1,
+     15,
+     17
+    ],
+    "quotes": [
+     "# 🤖 ChatGPT 中文指南 🤖",
+     "## 什么是 ChatGPT ?",
+     "以下是 ChatGPT 为大家做的自我介绍："
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     33,
+     45
+    ],
+    "quotes": [
+     "DeepSeek 已从\"模型提供方\"演进为覆盖模型、API、编程智能体、Agent 框架与开源基础设施的完整生态：2026 年 DeepSeek-V4（Pro / Flash，1M 上下文，开放权重）正式 GA，官方 Agent 框架 de",
+     "以 Claude Code、OpenAI Codex 为代表的编程智能体能自主读写代码库、运行命令与提交 PR。本节汇总主流终端/IDE 编码 Agent、自主软件工程 Agent、评测基准与学习资源。"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

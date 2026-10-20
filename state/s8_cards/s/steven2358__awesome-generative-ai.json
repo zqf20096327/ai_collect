@@ -1,0 +1,270 @@
+{
+ "fn": "steven2358/awesome-generative-ai",
+ "sha": "8d15bb05f5e2",
+ "source": "readme",
+ "identity": {
+  "one_liner": "生成式 AI 项目与服务策展清单，覆盖文本、图像等多领域",
+  "review": "由 steven2358 维护的生成式 AI 策展清单：按文本、图像、音频、视频等类别组织条目，文本部分细分为模型、聊天机器人、自定义界面、搜索引擎、写作助手、ChatGPT 扩展、生产力、会议助手、学术工具等子类；另设推荐阅读与行业里程碑（OpenAI API、DALL·E 2、ChatGPT、GPT-4 等）板块。条目以开源项目与商业服务并列收录，开源项标注 #opensource 标签，通过 PR 接受社区贡献。",
+  "highlights": [
+   "按类别与子类组织的生成式 AI 项目/服务条目",
+   "开源条目统一标注 #opensource 标签",
+   "附行业里程碑时间线与推荐阅读文章",
+   "社区通过 PR 与 issue 贡献条目"
+  ],
+  "use_cases": [
+   "查找生成式 AI 各领域的可用工具与模型",
+   "了解生成式 AI 行业的关键事件与演进时间线",
+   "为项目选型时浏览同类开源替代品"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "viral",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "awesome清单",
+   "生成式AI",
+   "工具目录",
+   "LLM",
+   "知识聚合"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: > A curated list of modern Generative Artificial Intelligence projects and services.",
+   "L9: ## Contents",
+   "L32: ## Text"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     41
+    ],
+    "quotes": [
+     "- Claude - Talk to Claude, an AI assistant from Anthropic."
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     44
+    ],
+    "quotes": [
+     "- Grok - An LLM by xAI with open source and open weights. #opensource"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     46,
+     57
+    ],
+    "quotes": [
+     "- DeepSeek - A series of open-source LLMs by DeepSeek AI. #opensource",
+     "- DeepSeek - A chatbot interface powered by DeepSeek's open-source language models. #opensource"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "mention",
+    "lines": [
+     190
+    ],
+    "quotes": [
+     "- Jupyter AI - An open-source, configurable AI assistant in Jupyter Notebook and JupyterLab that supports 100+ LLMs, inc"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "mention",
+    "lines": [
+     160
+    ],
+    "quotes": [
+     "- OpenRouter LLM Rankings - Language models ranked and analyzed by usage across apps."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     454
+    ],
+    "note": "窗外行，被收录项目的运行环境",
+    "quotes": [
+     "- Tools and Resources for AI Art - A large list of Google Colab notebooks for generative AI, by @pharmapsychotic."
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "4 GB of RAM",
+    "rel": "mention",
+    "lines": [
+     183
+    ],
+    "note": "窗外行，被收录项目的配置要求，非本清单自身硬件要求",
+    "quotes": [
+     "- TurboPilot - A self-hosted copilot clone which uses the library behind llama.cpp to run the 6 billion parameter Salesf"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     25,
+     53
+    ],
+    "quotes": [
+     "- ChatGPT - Announcement of ChatGPT, a conversational model trained to answer follow-up questions, admit mistakes, chall",
+     "- ChatGPT - ChatGPT by OpenAI is a large language model that interacts in a conversational way."
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     22,
+     54
+    ],
+    "quotes": [
+     "- GitHub Copilot - Announcement of Copilot, a new AI pair programmer that helps you write better code. GitHub blog, June",
+     "- Copilot - An everyday AI companion by Microsoft."
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     45,
+     60
+    ],
+    "quotes": [
+     "- Qwen - A series of LLMs independently developed by Alibaba Cloud. #opensource",
+     "- Qwen - Qwen chatbot with image generation, document processing, web search integration, video understanding, etc."
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     48,
+     62
+    ],
+    "quotes": [
+     "- Kimi K2 - A series of open-source MoE language models by Moonshot AI for agentic tasks. #opensource",
+     "- Kimi - An AI assistant by Moonshot AI with chat, deep research, coding, and multi-agent capabilities."
+    ]
+   },
+   {
+    "term": "Perplexity",
+    "rel": "mention",
+    "lines": [
+     72
+    ],
+    "quotes": [
+     "- Perplexity AI - AI powered search tools."
+    ]
+   },
+   {
+    "term": "Jasper",
+    "rel": "mention",
+    "lines": [
+     85
+    ],
+    "quotes": [
+     "- Jasper - Create content faster with artificial intelligence."
+    ]
+   },
+   {
+    "term": "Midjourney",
+    "rel": "mention",
+    "lines": [
+     300
+    ],
+    "quotes": [
+     "- Midjourney - Midjourney is an independent research lab exploring new mediums of thought and expanding the imaginative "
+    ]
+   },
+   {
+    "term": "DALL-E",
+    "rel": "mention",
+    "lines": [
+     324
+    ],
+    "quotes": [
+     "- Bing Image Creator - DALLE·3 based text-to-image generator with safety features."
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     39
+    ],
+    "quotes": [
+     "- Bloom - BLOOM by Hugging Face is a model similar to GPT-3 that has been trained on 46 different languages and 13 progr"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

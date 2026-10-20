@@ -1,0 +1,132 @@
+{
+ "fn": "anthropics/claude-for-legal",
+ "sha": "dd21fc77e637",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向法律工作流的 Claude 插件套件：agents、技能与连接器",
+  "review": "Anthropic 维护的法律工作流插件套件，覆盖商事、隐私、产品、公司、雇佣、诉讼、监管、AI 治理、IP 及法学院教学场景。内容含按执业领域划分的插件（每个以冷启动访谈学习团队 playbook）、托管 agent cookbook、面向 Slack/Ironclad/iManage 等系统的 MCP 连接器，以及 60 余个具名 agent（如供应商协议审阅、DSAR 响应、权利要求对照表生成）。可通过 Claude Cowork/Claude Code 插件或 Claude Managed Agents API 两种方式部署。所有输出定位为供律师复核的草稿，内置引用溯源、特权保守默认与发送前门控等护栏。",
+  "highlights": [
+   "覆盖 9 个执业领域的 60 余个具名 agent，单个命令即可运行",
+   "同一来源两种部署：Claude Cowork/Claude Code 插件或 Managed Agents API",
+   "冷启动访谈学习团队 playbook，技能读取 CLAUDE.md 实务画像",
+   "MCP 连接器覆盖 Slack/Google Drive 与 Ironclad/DocuSign/iManage/Everlaw 等法律系统"
+  ],
+  "use_cases": [
+   "用 vendor 审阅与 NDA 分诊 agent 处理商事合同流程",
+   "在法定时限内起草 DSAR 回复与隐私影响评估",
+   "监控法院 docket、监管动态与合同续约截止日期",
+   "生成权利要求对照表与取证准备提纲供律师复核"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "locked-api",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": "https://github.com/user-attachments/assets/51394f0a-5277-4fe2-b81c-5c5e9ac876b5",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "法律科技",
+   "agent插件",
+   "Legal AI",
+   "合规/隐私",
+   "Claude生态"
+  ],
+  "domain": "法律/合规",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L3: Reference agents, skills, and data connectors for the legal workflows we see most — in-house commercial, privacy, produc",
+   "L7: Everything here is available **two ways from one source**: install it as a Claude Cowork or Claude Code plugin, or deplo"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     7,
+     10,
+     11
+    ],
+    "note": "官方仓库，通过 Claude Cowork / Claude Managed Agents API 运行",
+    "quotes": [
+     "Everything here is available **two ways from one source**: install it as a Claude Cowork or Claude Code plugin, or deplo",
+     "- Install Claude Desktop",
+     "- Get access to Claude Cowork"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "none",
+    "lines": [
+     308
+    ],
+    "quotes": [
+     "For IT admins deploying the add-in against your own cloud (Vertex AI, Bedrock, or an internal gateway) rather than Anthr"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     7
+    ],
+    "note": "作为可装载本套件的宿主之一被提及",
+    "quotes": [
+     "Everything here is available **two ways from one source**: install it as a Claude Cowork or Claude Code plugin, or deplo"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,19 +1,19 @@
 {
  "fn": "dair-ai/AI-Papers-of-the-Week",
- "sha": "3578e578d1ee",
+ "sha": "22166d2af36e",
  "source": "readme",
  "identity": {
-  "one_liner": "面向 ML 从业者的每周 AI 论文精选清单",
-  "review": "DAIR.AI 维护的每周 AI 论文精选仓库：按周汇总当周值得关注的 AI/ML 论文链接，列表自 2023 年 1 月起持续更新至 2026 年，按年份分组归档；另有 newsletter 订阅渠道将每周清单发送至邮箱，并通过 Twitter 与 Discord 进行发布和社区交流。仓库本身为索引型内容，不包含安装或运行步骤。",
+  "one_liner": "DAIR.AI 维护的每周顶会 AI 论文周报清单",
+  "review": "由 DAIR.AI 维护的仓库，按周列出年度 Top AI Papers of the Week 系列，覆盖 2023 年 1 月至 2026 年 10 月的每周条目，每条对应一份周度论文精选。仓库同时提供邮件订阅入口与 Twitter、Discord 社区链接。内容为纯清单，不含代码、安装或运行方式，面向跟踪 AI 论文动态的读者。",
   "highlights": [
-   "按周归档的 AI 论文清单（2023 年至今，按年份分组）",
-   "提供 newsletter 邮件订阅渠道",
-   "配套 Twitter 与 Discord 发布/交流渠道"
+   "按周组织的 AI 论文精选条目，覆盖 2023-2026 年",
+   "提供每周论文列表的邮件订阅渠道",
+   "附带 Twitter 与 Discord 社区入口"
   ],
   "use_cases": [
-   "每周追踪 AI/ML 领域新论文",
-   "按时间线回溯某段时间的代表性论文",
-   "通过邮件订阅定期获取论文列表"
+   "每周跟踪 AI 领域论文动态",
+   "回溯查找某一周的论文精选列表",
+   "通过邮件订阅获取每周论文推送"
   ]
  },
  "filters": {
@@ -36,9 +36,9 @@
  },
  "links": {
   "scenario_tags": [
-   "论文推荐",
+   "论文清单",
    "AI资讯",
-   "newsletter",
+   "周报/追踪",
    "知识聚合"
   ],
   "domain": "学习与行业",
@@ -57,15 +57,20 @@
  "trust": {
   "confidence": "high",
   "evidence": [
-   "L3: Subscribe to our newsletter to get a weekly list of top AI papers in your inbox.",
    "L5: At DAIR.AI we ❤️ reading AI papers so we've created this repo to highlight the top AI papers of every week.",
-   "L7: Here is the weekly series:"
+   "L10: - Top AI Papers of the Week (October 12 - October 18)"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {

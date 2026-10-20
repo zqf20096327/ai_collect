@@ -1,0 +1,136 @@
+{
+ "fn": "speechbrain/speechbrain",
+ "sha": "f390df6c1d83",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向对话式 AI 的 PyTorch 语音/文本工具包",
+  "review": "基于 PyTorch 的开源工具包，用于构建语音与文本处理系统：提供 200 余个训练配方（覆盖 40+ 数据集、20 类任务，含语音识别、说话人识别、语音分离/增强、TTS、语言建模、EEG 等）、100 余个 HuggingFace 托管的预训练模型及其推理接口。支持 Whisper/Wav2Vec2/Llama2 等预训练模型的微调，提供 YAML 超参管理、Brain 类训练编排、多 GPU 分布式训练、动态批处理与混合精度。面向科研与工业研发，被多所院校用于教学。Apache-2.0 许可。",
+  "highlights": [
+   "200+ 训练配方覆盖 40+ 数据集、20 类语音/文本任务",
+   "100+ HuggingFace 预训练模型，三行代码即可转录语音",
+   "支持单机/多机多 GPU 训练、混合精度与动态批处理",
+   "支持 Whisper/Wav2Vec2/WavLM/Hubert/GPT2/Llama2 微调"
+  ],
+  "use_cases": [
+   "复现或改进语音识别、说话人识别等任务的基线模型",
+   "用预训练模型快速做语音转录/说话人验证的原型",
+   "作为课程教学材料学习对话式 AI 技术"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://arxiv.org/abs/2406.04986",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音处理",
+   "ASR",
+   "模型训练框架",
+   "预训练模型微调",
+   "科研工具"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "asr",
+   "tts",
+   "fine-tuning",
+   "research-tools"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: - SpeechBrain is an **open-source** PyTorch toolkit that accelerates **Conversational AI** development, i.e., the techno",
+   "L26: ## 📚 Training Recipes",
+   "L137: - SpeechBrain is a versatile framework designed for implementing a wide range of technologies within the field of Conver"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     73,
+     75,
+     78
+    ],
+    "quotes": [
+     "### Install via PyPI",
+     "1. Install SpeechBrain using PyPI:",
+     "    pip install speechbrain"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     93
+    ],
+    "quotes": [
+     "    git clone https://github.com/speechbrain/speechbrain.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     5,
+     44
+    ],
+    "note": "作为模型托管与集成平台被提及，非替代/竞品",
+    "quotes": [
+     "|📘 Tutorials|🌐 Website|📚 Documentation|🤝 Contributing|🤗 HuggingFace|▶️ YouTube|🐦 X|",
+     "- Access over 100 pretrained models hosted on HuggingFace."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

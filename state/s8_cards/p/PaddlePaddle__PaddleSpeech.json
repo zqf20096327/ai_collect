@@ -1,0 +1,151 @@
+{
+ "fn": "PaddlePaddle/PaddleSpeech",
+ "sha": "7f08eeb2a496",
+ "source": "readme",
+ "identity": {
+  "one_liner": "飞桨平台的语音工具包：ASR/TTS/声纹/翻译/标点等全栈语音任务",
+  "review": "PaddleSpeech 是基于 PaddlePaddle 深度学习平台的开源语音工具包，覆盖语音识别（含流式 ASR 与标点恢复）、语音合成（含规则式中文文本前端、流式 TTS）、语音翻译（英译中）、说话人验证、关键词检出、音频分类、声音克隆与歌声合成等任务。提供 CLI、Python API 与 Server/流式 Server 三种使用方式，包含训练、推理、测试与部署模块。依赖 paddlepaddle 框架，推荐 Linux（python>=3.8，gcc>=4.8.5），也支持 Windows 与 Mac OSX。",
+  "highlights": [
+   "流式 ASR 与流式 TTS 系统，含标点恢复与时间戳",
+   "规则式中文文本前端：文本正则化与 G2P（多音字、变调）",
+   "覆盖声纹提取、音频分类、语音翻译、关键词检出、声音克隆等任务",
+   "提供 CLI、Python API 与 Server（含流式）三种使用方式"
+  ],
+  "use_cases": [
+   "用命令行或 Python API 做中英文语音识别与合成",
+   "部署流式语音识别/合成服务供业务系统调用",
+   "恢复 ASR 输出文本的标点，或做说话人声纹验证"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音识别",
+   "语音合成",
+   "语音工具箱",
+   "深度学习",
+   "中文语音处理"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "asr",
+   "tts"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "百度飞桨（PaddlePaddle）平台",
+   "百度 pypi 镜像源安装",
+   "AI Studio 课程与 demo"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: **PaddleSpeech** is an open-source toolkit on PaddlePaddle platform for a variety of critical tasks in speech and audio,",
+   "L92:  - 🛎️ *Implementation of critical audio tasks*: this toolkit contains audio functions like Automatic Speech Recognition,"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     166,
+     169,
+     171
+    ],
+    "quotes": [
+     "There are two quick installation methods for PaddleSpeech, one is pip installation, and the other is source code compila",
+     "```shell",
+     "pip install paddlespeech"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     166,
+     174,
+     177
+    ],
+    "quotes": [
+     "There are two quick installation methods for PaddleSpeech, one is pip installation, and the other is source code compila",
+     "### source code compilation",
+     "git clone https://github.com/PaddlePaddle/PaddleSpeech.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     239
+    ],
+    "note": "Huggingface Spaces TTS Demo 体验入口，非替代/竞品",
+    "quotes": [
+     "- You can experience in Huggingface Spaces TTS Demo"
+    ]
+   },
+   {
+    "term": "文心一言",
+    "rel": "mention",
+    "lines": [
+     124,
+     127
+    ],
+    "quotes": [
+     "- 🔥 2022.09.26: Add Voice Cloning, TTS finetune, and ERNIE-SAT in PaddleSpeech Web Demo.",
+     "- 🔥 2022.08.22: Add ERNIE-SAT models: ERNIE-SAT-vctk、ERNIE-SAT-aishell3、ERNIE-SAT-zh_en."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

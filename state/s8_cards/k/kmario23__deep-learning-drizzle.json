@@ -1,0 +1,92 @@
+{
+ "fn": "kmario23/deep-learning-drizzle",
+ "sha": "74ea380ffdf0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "深度学习/机器学习公开课程与讲座视频的策展清单",
+  "review": "按主题分类汇总各高校与机构深度学习课程的链接清单：每个条目包含课程名、授课教师与院校、课程主页、讲座视频（多为 YouTube 链接，部分提供 Academic Torrent）及年份。可见部分覆盖 Deep Neural Networks 与 Machine Learning Fundamentals 板块，收录 81 门深度学习相关课程，涉及 Stanford、MIT、CMU、NYU、DeepMind 等来源，年份跨度 2012-2022。仓库本身不含代码或模型，仅为只读的课程资源索引，无需安装。",
+  "highlights": [
+   "按主题板块组织的课程清单，条目含院校/教师/主页/视频/年份字段",
+   "可见部分收录 81 门深度学习课程（2012-2022）",
+   "部分课程提供 Academic Torrent 或独立 Lecture-Videos 链接"
+  ],
+  "use_cases": [
+   "按院校或年份查找深度学习入门与进阶课程",
+   "为自学路线收集视频讲座与配套课程主页",
+   "比较不同机构同类课程的开设情况"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "课程清单",
+   "深度学习",
+   "视频讲座",
+   "学习路线"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials",
+   "curated-list"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: ## :tada: Deep Learning (Deep Neural Networks) :confetti_ball: :balloon:",
+   "L108: ### :cupid: Machine Learning Fundamentals :cyclone: :boom:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,130 @@
+{
+ "fn": "open-mmlab/Amphion",
+ "sha": "bb3b072050f8",
+ "source": "readme",
+ "identity": {
+  "one_liner": "音频/音乐/语音生成工具包，面向科研与工程的复现平台",
+  "review": "open-mmlab 维护的开源工具包，支持 TTS、歌声合成、语音/歌声转换、口音转换、文本转音频等生成任务，实现 FastSpeech2、VITS、VALL-E、MaskGCT、Vevo 系列等模型架构，并包含多种神经声码器（HiFi-GAN、BigVGAN 等）、客观评测指标（FAD、MCD、PESQ 等）、数据集预处理与可视化工具 SingVisio。附带 Emilia 数据集与 Emilia-Pipe 预处理管线。提供源码安装与 Docker 镜像两种方式，面向研究人员与工程师。",
+  "highlights": [
+   "覆盖 TTS/VC/AC/SVC/SVS/TTA 六类生成任务，含数十种模型架构实现",
+   "提供 FAD、MCD、PESQ、STOI 等客观评测指标计算",
+   "包含多种神经声码器实现与 Multi-Scale CQT 判别器",
+   "Emilia 数据集（101k/200k+ 小时）与 Emilia-Pipe 预处理管线"
+  ],
+  "use_cases": [
+   "复现和训练语音合成、语音转换等生成模型",
+   "对比评测音频生成结果的客观指标",
+   "为语音生成研究构建大规模训练数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语音合成",
+   "音频生成",
+   "TTS",
+   "科研工具包",
+   "歌声转换"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tts",
+   "research-tools"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: **Amphion (/æmˈfaɪən/) is a toolkit for Audio, Music, and Speech Generation.** Its purpose is to support reproducible re",
+   "L9: **The North-Star objective of Amphion is to offer a platform for studying the conversion of any inputs into audio.** Amp"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     122
+    ],
+    "quotes": [
+     "git clone https://github.com/open-mmlab/Amphion.git"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     137,
+     138
+    ],
+    "quotes": [
+     "docker pull realamphion/amphion",
+     "docker run --runtime=nvidia --gpus all -it -v .:/app realamphion/amphion"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     24,
+     65
+    ],
+    "note": "相关模型（DualCodec 等）的 Colab 演示，非本工具包安装途径",
+    "quotes": [
+     "- **2025/05/26**: We release ***DualCodec***, a low-frame-rate (12.5Hz or 25Hz), semantically-enhanced (with SSL feature",
+     "- DualCodec, a low-frame-rate (12.5Hz or 25Hz), semantically-enhanced (with SSL feature) Neural Audio Codec designed to "
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

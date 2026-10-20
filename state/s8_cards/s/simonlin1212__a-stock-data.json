@@ -1,0 +1,146 @@
+{
+ "fn": "simonlin1212/a-stock-data",
+ "sha": "e148a37955a0",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给 AI 编程助手的 A 股全栈数据 Skill：87 端点免 Key",
+  "review": "一个自包含的 SKILL.md 文件（结构化 Markdown + 内嵌 Python），把 34 个数据源的 A 股及相关市场数据封装成 AI 编程助手可直接调用的工具集，覆盖 15 层、87 个端点：行情 K 线、逐笔、研报、资金面、新闻、财务、公告、打板、ETF 期权、宏观利率、期货、事件驱动、可转债等。除 iwencai 外全部数据源无需 API Key；附主源→备胎降级策略，按封 IP 风险排定来源优先级。安装方式为拷贝 SKILL.md 到 Claude Code 技能目录，兼容 Codex/OpenClaw 等支持上下文注入的助手。",
+  "highlights": [
+   "15 层 · 87 个端点 · 34 个数据源，除 iwencai 外零鉴权",
+   "兼容 Claude Code / Codex / OpenClaw 等支持上下文注入的助手",
+   "主源被封时按「备用源速查」降级，来源按封 IP 风险分级",
+   "内置单票估值、批量对比、主题研报、新标的调研 4 套流程"
+  ],
+  "use_cases": [
+   "让 AI 助手直接拉取个股估值、K 线、资金流向与龙虎榜数据",
+   "做 A 股个股或行业调研时自动汇总研报、公告与财务数据",
+   "查询宏观利率、期货持仓、可转债等市场数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "A股数据",
+   "AI agent 技能",
+   "金融数据接口",
+   "量化研究",
+   "Claude 技能"
+  ],
+  "domain": "效率与自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic"
+  ],
+  "scenario_tags_v2": [
+   "quant-finance",
+   "web-scraping"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "A股/沪深北交易所数据源",
+   "财联社/华尔街见闻/央视网等中文信源"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L27: 一个自包含的 Skill 文件，把分散在 34 个数据源里的 A 股及相关市场原始数据整合成 AI 编程助手直接能用的工具集。你不用再背腾讯 K 线的分段参数、通达信盘后包的二进制格式、东财的 PDF Referer 头、iwencai 的",
+   "L29: > 兼容 Claude Code · Codex · OpenClaw · WorkBuddy · Muse · Grok Bot",
+   "L31: > Skill 文件本质是结构化 Markdown + 内嵌 Python，任何支持上下文注入的 AI 编程助手都能用。"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     29,
+     80,
+     85
+    ],
+    "note": "以 Claude Code Skill 形式接入 Anthropic 助手",
+    "quotes": [
+     "> 兼容 Claude Code · Codex · OpenClaw · WorkBuddy · Muse · Grok Bot",
+     "mkdir -p ~/.claude/skills/a-stock-data",
+     "启动 Claude Code，说一句「帮我看看 688017 的估值」，自动激活。"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     29
+    ],
+    "note": "列为兼容的助手之一（Grok Bot）",
+    "quotes": [
+     "> 兼容 Claude Code · Codex · OpenClaw · WorkBuddy · Muse · Grok Bot"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     29,
+     85
+    ],
+    "note": "运行载体，非替代/竞品对象",
+    "quotes": [
+     "> 兼容 Claude Code · Codex · OpenClaw · WorkBuddy · Muse · Grok Bot",
+     "启动 Claude Code，说一句「帮我看看 688017 的估值」，自动激活。"
+    ]
+   }
+  ]
+ }
+}

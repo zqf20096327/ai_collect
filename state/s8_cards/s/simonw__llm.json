@@ -1,0 +1,207 @@
+{
+ "fn": "simonw/llm",
+ "sha": "2ba553862d06",
+ "source": "readme",
+ "identity": {
+  "one_liner": "命令行调用各类大模型的 CLI 工具与 Python 库",
+  "review": "LLM 是一个用于与大型语言模型交互的 CLI 工具和 Python 库，支持 OpenAI、Claude、Gemini、Qwen、DeepSeek 等数十种模型，可通过远程 API 或本机安装的模型运行。功能包括命令行执行 prompt、交互式聊天、将 prompt 与响应存入 SQLite、生成并存储 embeddings、从文本和图像提取结构化内容、为模型提供工具执行能力。安装方式为 pip/Homebrew/pipx/uv，通过插件机制扩展模型接入（如 llm-gemini、llm-ollama）。",
+  "highlights": [
+   "命令行运行 prompt 与交互式聊天",
+   "prompt 与响应存储于 SQLite，支持 embeddings 存取",
+   "从文本和图像提取结构化内容（LLM schemas）",
+   "插件机制接入远程 API 与本地模型（Ollama 等）"
+  ],
+  "use_cases": [
+   "在终端直接调用各家大模型跑 prompt 或聊天",
+   "把 prompt/响应和嵌入记录进 SQLite 便于后续检索",
+   "用 schema 从非结构化文本和图像中抽取数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM",
+   "CLI 工具",
+   "模型接入客户端",
+   "提示词工程"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "model-gateway"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: A CLI tool and Python library for interacting with **OpenAI**, **Anthropic’s Claude**, **Google’s Gemini**, **Qwen**, **",
+   "L15: With LLM you can:",
+   "L26: First, install LLM using `pip` or Homebrew or `pipx` or `uv`:"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "support",
+    "lines": [
+     11,
+     70,
+     72,
+     73,
+     74,
+     75,
+     76
+    ],
+    "note": "官方插件 llm-gemini 同节列出通过插件运行 Anthropic prompt；L11 明确支持 Claude",
+    "quotes": [
+     "A CLI tool and Python library for interacting with **OpenAI**, **Anthropic’s Claude**, **Google’s Gemini**, **Qwen**, **",
+     "Run prompts against Gemini or Anthropic with their respective plugins:",
+     "```bash",
+     "llm install llm-gemini",
+     "llm keys set gemini",
+     "# Paste Gemini API key here",
+     "…（6 行代码略）"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     11
+    ],
+    "note": "仅在支持模型列表中列举",
+    "quotes": [
+     "A CLI tool and Python library for interacting with **OpenAI**, **Anthropic’s Claude**, **Google’s Gemini**, **Qwen**, **"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     79,
+     83,
+     86
+    ],
+    "note": "通过 llm-ollama 插件配合本地 Ollama 使用",
+    "quotes": [
+     "You can also install a plugin to access models that can run on your local device. If you use Ollama:",
+     "llm install llm-ollama",
+     "ollama pull llama3.2:latest"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     4,
+     29
+    ],
+    "quotes": [
+     "PyPI",
+     "pip install llm"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     9,
+     32,
+     35
+    ],
+    "quotes": [
+     "Homebrew",
+     "Or with Homebrew (see warning note):",
+     "brew install llm"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     11
+    ],
+    "note": "L11 的 Qwen 即通义千问，仅列举为支持的模型",
+    "quotes": [
+     "A CLI tool and Python library for interacting with **OpenAI**, **Anthropic’s Claude**, **Google’s Gemini**, **Qwen**, **"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     11
+    ],
+    "note": "仅列举为支持的模型",
+    "quotes": [
+     "A CLI tool and Python library for interacting with **OpenAI**, **Anthropic’s Claude**, **Google’s Gemini**, **Qwen**, **"
+    ]
+   },
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     117
+    ],
+    "note": "博客文章标题中提及，非替代/竞品关系",
+    "quotes": [
+     "- 18th May 2023: llm, ttok and strip-tags—CLI tools for working with ChatGPT and other LLMs"
+    ]
+   }
+  ]
+ }
+}

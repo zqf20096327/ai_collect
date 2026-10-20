@@ -1,0 +1,103 @@
+{
+ "fn": "autogluon/autogluon",
+ "sha": "7446a94f39fa",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向表格/多模态/时序数据的自动机器学习框架",
+  "review": "AutoGluon 提供 AutoML 能力：对表格、时序、多模态数据自动训练与调优模型，通过 TabularPredictor、TimeSeriesPredictor、MultiModalPredictor 三个入口，用少量代码（如 3 行）完成训练与预测，并自动搜索模型组合与集成。支持 Python 3.10-3.13，可在 Linux/macOS/Windows 安装，GPU、Conda 与可选依赖另行说明。由 AWS 团队维护，配套云部署方案（Docker 容器、SageMaker Autopilot 等），有多篇论文与教程。",
+  "highlights": [
+   "表格/时序/多模态三类任务的 Predictor API",
+   "自动搜索并组合多个模型（含基础模型）",
+   "提供官方 Docker 容器与云部署选项（SageMaker/DLC）",
+   "Apache 2.0 许可，pip 一行安装"
+  ],
+  "use_cases": [
+   "我在 CSV 表格数据上快速训练并得到预测结果",
+   "我用它做概率式时间序列预测",
+   "我在含文本/图像的混合表格数据上自动建模"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AutoML",
+   "表格预测",
+   "时序预测",
+   "多模态",
+   "集成学习"
+  ],
+  "domain": "机器学习/AutoML",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L15: AutoGluon automates machine learning on data such as tables and time series, helping you achieve strong predictive perfo",
+   "L36: from autogluon.tabular import TabularPredictor",
+   "L38: predictions = predictor.predict(\"test.csv\")"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     26
+    ],
+    "quotes": [
+     "pip install autogluon"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

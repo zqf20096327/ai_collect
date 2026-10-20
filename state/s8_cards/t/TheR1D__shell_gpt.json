@@ -1,0 +1,122 @@
+{
+ "fn": "TheR1D/shell_gpt",
+ "sha": "f4e8bcd4acad",
+ "source": "readme",
+ "identity": {
+  "one_liner": "命令行 AI 助手：生成 shell 命令、代码与问答",
+  "review": "面向终端用户的 CLI 工具 sgpt，通过 LLM 在命令行中生成 shell 命令、代码片段与文本回答，支持 stdin/管道输入，可用于生成 git 提交信息、分析日志、摘要文档。默认调用 OpenAI API 与 GPT-4，需 API key（付费）；也可配合 Ollama 等本地后端，但 README 声明未对本地模型优化、可能不符预期。提供 shell 集成热键、会话缓存（chat/REPL 模式）与 OpenAI function calling 扩展机制。pip 安装，支持 Linux/macOS/Windows 及主流 Shell。",
+  "highlights": [
+   "--shell/--code 模式生成并交互执行 shell 命令与纯代码",
+   "chat 会话与 REPL 模式，会话可保存与回看",
+   "Bash/Zsh shell 集成，热键调用并编辑建议命令",
+   "基于 OpenAI function calling 的自定义函数执行机制"
+  ],
+  "use_cases": [
+   "在终端快速生成并执行 shell 命令，免去查语法",
+   "基于 git diff 生成提交信息、分析日志找错误",
+   "通过会话模式迭代改进生成的代码"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "CLI工具",
+   "LLM客户端",
+   "终端效率",
+   "代码/命令生成"
+  ],
+  "domain": "编码与开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "ai-assistant",
+   "code-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L2: A command-line productivity tool powered by AI large language models (LLM). This command-line tool offers streamlined ge",
+   "L20: sgpt \"What is the fibonacci sequence\""
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     13
+    ],
+    "note": "可选本地后端，README 提示未对本地模型优化",
+    "quotes": [
+     "> Alternatively, you can run open-source models locally for free. This requires setting up your own LLM backend, such as"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     8
+    ],
+    "quotes": [
+     "pip install shell-gpt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

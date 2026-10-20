@@ -1,0 +1,106 @@
+{
+ "fn": "fivetran/great_expectations",
+ "sha": "35498754af37",
+ "source": "readme",
+ "identity": {
+  "one_liner": "数据团队的 Python 数据质量验证与剖析库",
+  "review": "GX Core 是用 Python 编写的开源数据质量框架：核心概念为 Expectations——对数据表达的可扩展单元测试，供数据团队以统一语言定义验证规则；每次验证结果可自动生成文档，用于团队协作与沉淀组织内数据知识。支持 Python 3.10–3.14，3.15 及以上可通过设置 GX_PYTHON_EXPERIMENTAL 环境变量启用实验性支持；官方建议部署在虚拟环境中，经 pip 安装后通过创建 Data Context 使用。README 未描述 AI/模型相关功能，本体为数据工程测试工具。",
+  "highlights": [
+   "Expectations 形式的数据单元测试，可表达、可扩展",
+   "验证结果自动生成文档",
+   "支持 Python 3.10–3.14（3.15+ 实验性开关）",
+   "提供数据源与集成兼容性参考文档"
+  ],
+  "use_cases": [
+   "为数据管道定义并运行数据质量验证",
+   "数据团队以共同语言协作维护数据测试",
+   "为每次验证生成文档以留存数据知识"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据质量",
+   "数据工程",
+   "数据测试",
+   "EDA",
+   "数据剖析"
+  ],
+  "domain": "数据工程/数据质量",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "low",
+  "evidence": [
+   "L16: Its powerful technical tools start with Expectations: expressive and extensible unit tests for your data. Expectations f",
+   "L22: GX Core supports Python `3.10` through `3.14`."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     2,
+     3,
+     34
+    ],
+    "quotes": [
+     "PyPI",
+     "PyPI Downloads",
+     "\tpip install great_expectations"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

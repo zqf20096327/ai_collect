@@ -1,0 +1,192 @@
+{
+ "fn": "datalab-to/chandra",
+ "sha": "8256acf4be0e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "OCR 模型：将图像/PDF 转为保留版面的 Markdown/HTML/JSON",
+  "review": "Datalab 开发的文档智能 OCR 模型 Chandra 2，将图像和 PDF 转换为结构化的 HTML/Markdown/JSON 并保留布局信息，支持 90+ 语言、手写体、表格、数学公式与表单（含复选框）重建，可提取图像与图表并生成题注。提供两种推理模式：本地 HuggingFace 加载与远程 vLLM 服务，安装后通过 CLI、Streamlit 应用（chandra_app）或 vLLM 启动器（chandra_vllm，Docker 容器）使用。代码 Apache 2.0，模型权重采用修改版 OpenRAIL-M 许可，商业自托管需另行授权。",
+  "highlights": [
+   "图像/PDF 转 Markdown/HTML/JSON，保留完整布局信息",
+   "支持 90+ 语言、手写体、表格、数学公式与表单复选框重建",
+   "两种推理模式：本地 HuggingFace 与远程 vLLM 服务",
+   "CLI 支持 PDF 页码范围、并行 worker、批量大小等选项"
+  ],
+  "use_cases": [
+   "把扫描文档或 PDF 转成可用的 Markdown/HTML 结构化文本",
+   "批量处理含表格、数学、多栏版面的文档",
+   "识别手写笔记与表单并保留勾选框等结构"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://www.datalab.to/playground",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "OCR",
+   "文档智能",
+   "文档解析",
+   "多语言识别",
+   "PDF转Markdown"
+  ],
+  "domain": "知识与检索",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "ocr",
+   "document-parsing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L19: Chandra OCR 2 is a state of the art OCR model that converts images and PDFs into structured HTML/Markdown/JSON while pre",
+   "L39: - Convert documents to markdown, html, or json with detailed layout information",
+   "L45: - Two inference modes: local (HuggingFace) and remote (vLLM server)"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     45,
+     54,
+     93,
+     117,
+     118
+    ],
+    "note": "可选推理后端，CLI 默认 method 为 vllm",
+    "quotes": [
+     "- Two inference modes: local (HuggingFace) and remote (vLLM server)",
+     "# With vLLM (recommended, lightweight install)",
+     "# Base install (for vLLM backend)",
+     "# Single file, with vllm server (see below for how to launch vllm)",
+     "chandra input.pdf ./output --method vllm"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     192
+    ],
+    "note": "基准测试表中列出的对比模型 Deepseek OCR",
+    "quotes": [
+     "|Deepseek OCR|75.2|72.3|79.7|33.3|**96.1**|66.7|80.1|99.7|75.4 ± 1.0|Own benchmarks|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     52,
+     93,
+     94
+    ],
+    "quotes": [
+     "pip install chandra-ocr",
+     "# Base install (for vLLM backend)",
+     "pip install chandra-ocr"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     104,
+     105,
+     106
+    ],
+    "quotes": [
+     "git clone https://github.com/datalab-to/chandra.git",
+     "cd chandra",
+     "uv sync"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     45,
+     99,
+     266
+    ],
+    "note": "本地模型加载方式与致谢项目",
+    "quotes": [
+     "- Two inference modes: local (HuggingFace) and remote (vLLM server)",
+     "If you're using the HuggingFace method, we also recommend installing flash attention for better performance.",
+     "- Huggingface Transformers"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     195,
+     269
+    ],
+    "note": "基准表中的 Qwen 3 VL 8B 与致谢 Qwen 3.5",
+    "quotes": [
+     "|Qwen 3 VL 8B|70.2|75.1|45.6|37.5|89.1|62.1|43.0|94.3|64.6 ± 1.1|Own benchmarks|",
+     "- Qwen 3.5"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    29,
+    178
+   ],
+   "quotes": [
+    "Commercial self-hosting requires a license — see Commercial usage. For on-prem licensing, contact us.",
+    "This code is Apache 2.0, and our model weights use a modified OpenRAIL-M license (free for research, personal use, and s"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

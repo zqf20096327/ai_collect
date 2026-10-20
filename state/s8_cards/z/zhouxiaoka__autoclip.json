@@ -1,0 +1,239 @@
+{
+ "fn": "zhouxiaoka/autoclip",
+ "sha": "fa3b2f1be090",
+ "source": "readme",
+ "identity": {
+  "one_liner": "AI 视频剪辑桌面工具：贴链接把长视频自动剪成多平台短视频",
+  "review": "开源桌面应用（另有 Docker/Web 与 CLI/MCP 形态）：粘贴链接后按平台（抖音、小红书、TikTok、Reels、Shorts、B 站、YouTube）的画幅与时长要求自动生成至多 10 条片段，每条附封面、标题、简介与 ZIP 发布包。剪辑、取景与渲染在本机完成；分析模型可选云端 API（OpenAI 兼容、自填 Key）或 Ollama/LM Studio 本地模型，字幕可用作者字幕、本地 Whisper/SenseVoice 或云端转写。软件免费 MIT，云端模型按量计费。个人维护。",
+  "highlights": [
+   "按平台规则自动选段，每条片段附封面、文案与 ZIP 发布包",
+   "剪辑与渲染在本地完成，分析模型可选云端或 Ollama/LM Studio 本地",
+   "字幕支持作者字幕、本地 Whisper/SenseVoice 与云端转写",
+   "提供桌面版、Docker/Web、CLI 与 MCP 三种使用形态"
+  ],
+  "use_cases": [
+   "把播客、访谈、课程长视频剪成多平台短视频",
+   "批量处理视频素材或通过 Agent/CLI 自动化出片",
+   "无字幕素材自动转写并生成字幕与发布文案"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "desktop",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI视频剪辑",
+   "内容再利用",
+   "短视频分发",
+   "桌面应用",
+   "MCP"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "image-video-processing",
+   "asr",
+   "ai-writing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "适配抖音/小红书/B站等国内平台",
+   "赞助商支持人民币结算"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L7: 开源，在你的电脑上剪辑与渲染。贴一个链接，选好平台，生成 视频、封面和发布文案 ，",
+   "L120: 选好平台，按平台的画幅与时长要求自动生成。每个平台按评分自动生成至多 10 条合格片段，其余列为备选，点「生成这条」再制作。每条都带封面、标题、简介、话题和 ZIP 发布包。",
+   "L128: 剪辑、取景与渲染在本机完成。分析模型自选，字幕可用作者字幕、本地 Whisper / SenseVoice 或已配置的云端转写。CLI / MCP 与桌面共用同一条一键出片链路。"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "npm"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     161,
+     237,
+     267
+    ],
+    "quotes": [
+     "2. **配置模型**：在设置里选择服务商、填写 API Key，选择可用的分析模型，测试连接并保存；本地模型先在 Ollama / LM Studio 启动服务并加载模型。",
+     "|Ollama|默认地址 `http://localhost:11434/v1`；先拉取并启动本地模型，再选择服务实际提供的模型，无需 API Key。|",
+     "软件免费、MIT 开源。云端分析、转写与 AI 生图按所选服务商计费，需自己的凭据；自动设计封面默认不调用付费生图。Ollama / LM Studio 本地分析不需要云端 Key，但需相应硬件。直接投稿还需自己的 B 站或 Upload-"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     249,
+     259
+    ],
+    "note": "赞助商 API 聚合平台列举的模型，非官方接入",
+    "quotes": [
+     " 感谢 88API Token聚合平台 赞助 AutoClip！聚合 GPT、Claude、Gemini、Grok、DeepSeek、Kimi、GLM 等语言与编程模型，适合字幕分析、高光筛选与标题生成。",
+     " 🧩 多模型选择 ：合作方提供 Claude、GPT、Gemini、DeepSeek 等系列模型，可选择支持兼容接口的型号，对比字幕分析与高光筛选效果。"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     249,
+     259
+    ],
+    "quotes": [
+     " 感谢 88API Token聚合平台 赞助 AutoClip！聚合 GPT、Claude、Gemini、Grok、DeepSeek、Kimi、GLM 等语言与编程模型，适合字幕分析、高光筛选与标题生成。",
+     " 🧩 多模型选择 ：合作方提供 Claude、GPT、Gemini、DeepSeek 等系列模型，可选择支持兼容接口的型号，对比字幕分析与高光筛选效果。"
+    ]
+   },
+   {
+    "term": "xai",
+    "rel": "mention",
+    "lines": [
+     249,
+     250
+    ],
+    "quotes": [
+     " 感谢 88API Token聚合平台 赞助 AutoClip！聚合 GPT、Claude、Gemini、Grok、DeepSeek、Kimi、GLM 等语言与编程模型，适合字幕分析、高光筛选与标题生成。",
+     " 🎨 多媒体能力 ：平台提供 GPT-Image、Gemini、Grok 等图片模型，Seedance、Veo、MiniMax Hailuo H3、Kling、Grok 等视频模型，以及 Whisper、TTS 等语音能力；AutoClip"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "binary",
+    "rel": "support",
+    "lines": [
+     160
+    ],
+    "quotes": [
+     "1. **下载安装**：在 Releases 下载。macOS Apple Silicon 选 `.dmg`，Windows 10 / 11 x64 选 `-setup.exe`。安装包自带 Python 和 FFmpeg。"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     172,
+     210
+    ],
+    "quotes": [
+     "git clone https://github.com/zhouxiaoka/autoclip.git",
+     "# 备选：在已克隆的仓库根目录从源码安装"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     176,
+     184
+    ],
+    "quotes": [
+     "docker compose up -d --build",
+     "docker compose run --rm --no-deps --user root --entrypoint sh autoclip -c 'chown -R autoclip:autoclip /app/data /app/log"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     198,
+     214
+    ],
+    "note": "安装本产品 whl/包",
+    "quotes": [
+     "python -m pip install --force-reinstall --no-deps autoclip_mcp-*-py3-none-any.whl",
+     "python -m pip install --no-deps ."
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "mention",
+    "lines": [
+     206
+    ],
+    "note": "npx skills add 安装 Agent skill，非本产品主安装途径",
+    "quotes": [
+     "npx skills add zhouxiaoka/autoclip"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     132
+    ],
+    "note": "费用估算所用模型",
+    "quotes": [
+     "以下是开发期间三条不同素材的实测，不是同一输入的速度对照。费用按当时 qwen-plus 的文字模型用量估算，不含云端语音识别、AI 生图或投稿服务费用；实际账单以所选服务商为准。"
+    ]
+   },
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     249
+    ],
+    "quotes": [
+     " 感谢 88API Token聚合平台 赞助 AutoClip！聚合 GPT、Claude、Gemini、Grok、DeepSeek、Kimi、GLM 等语言与编程模型，适合字幕分析、高光筛选与标题生成。"
+    ]
+   }
+  ]
+ }
+}

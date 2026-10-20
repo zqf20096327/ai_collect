@@ -1,0 +1,110 @@
+{
+ "fn": "Yorko/mlcourse.ai",
+ "sha": "8a29ff9d4c46",
+ "source": "readme",
+ "identity": {
+  "one_liner": "自学模式的开源机器学习课程：讲义、视频与作业",
+  "review": "由 OpenDataScience 社区 Yury Kashnitsky 维护的开放机器学习课程，现为自学模式：按 10 周组织，从 Pandas 到梯度提升，每周给出阅读文章、视频讲座与作业指引；文章有英文、俄文与中文版本，并链接 Kaggle Notebook。提供 10 个演示作业、3 个 Kaggle Inclass 竞赛，另有付费 Bonus Assignments 包（10 个非演示作业与解答，版权归作者，禁止公开分享）。课程主体以 CC BY-NC-SA 4.0 发布，可用 uv 与 Jupyter Book v1 从源码构建站点。",
+  "highlights": [
+   "10 周结构化课程：文章/讲座/作业每周指引",
+   "文章提供英/俄/中三语版本并配套 Kaggle Notebook",
+   "10 个演示作业与 3 个 Kaggle Inclass 竞赛",
+   "可用 uv + Jupyter Book v1 本地构建课程站点"
+  ],
+  "use_cases": [
+   "按周自学机器学习理论与实战",
+   "通过 Kaggle Notebook 在线完成作业练习",
+   "参加配套 Kaggle Inclass 竞赛检验水平"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "机器学习课程",
+   "教程",
+   "Jupyter Notebook",
+   "Kaggle实战"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "文章含中文 Notebook 版本（:cn:）"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L9: mlcourse.ai is an open Machine Learning course by OpenDataScience (ods.ai), led by Yury Kashnitsky (yorko), now Staff Ge",
+   "L36: You are guided through 10 weeks of mlcourse.ai. For each week, from Pandas to Gradient Boosting, instructions are given "
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "mention",
+    "lines": [
+     92
+    ],
+    "note": "pip install uv 为构建课程站的依赖管理工具，非课程安装途径",
+    "quotes": [
+     "1. Install uv for dependency management: `pip install uv`;"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

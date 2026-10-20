@@ -1,0 +1,155 @@
+{
+ "fn": "FareedKhan-dev/train-llm-from-scratch",
+ "sha": "fc2b91b439a9",
+ "source": "readme",
+ "identity": {
+  "one_liner": "从零手写 PyTorch 训练 LLM 的教学仓库：数据到推理全流程",
+  "review": "基于 Attention is All You Need 用纯 PyTorch（不依赖 transformers/trl/peft）从零实现 Transformer 并完成全流程训练的教程型仓库：涵盖 BPE 分词、预训练、SFT、奖励模型、PPO/DPO/GRPO 等后训练算法，另含现代架构（RoPE、RMSNorm、MoE、KV cache）与 Muon/LoRA/SimPO 等技巧的手写实现。支持单 GPU 训练十亿级参数模型，或在笔记本 CPU 上数分钟训练 369K 参数小模型。面向学生、开发者和研究者，通过 git clone + pip editable 安装，各阶段由 JSON 配置驱动。",
+  "highlights": [
+   "纯 PyTorch 手写 Transformer 与 SFT/奖励模型/PPO/DPO/GRPO 全流程",
+   "无 GPU 也可在笔记本 CPU 约 5 分钟训练 369K 参数小模型",
+   "提供现代架构实现（RoPE、RMSNorm、SwiGLU、MoE、KV cache）",
+   "四条数据流：预训练（The Pile）、SFT、偏好对、RL 提示词"
+  ],
+  "use_cases": [
+   "想理解 LLM 从原始文本到对齐模型的完整训练过程",
+   "在没有 GPU 的笔记本上亲手训练一个小型语言模型",
+   "研究者在同一小模型上复现并修改后训练算法"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM训练",
+   "教学教程",
+   "PyTorch",
+   "后训练/RLHF",
+   "从零实现"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "tutorials"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: I implemented a transformer model from scratch using PyTorch, based on the paper Attention is All You Need. You can use ",
+   "L11: This started as a pretraining tutorial. It now goes all the way from raw text to an aligned, reasoning style model, with",
+   "L41: - If you are a **student**, read top to bottom. Every block of code comes after a plain explanation of what it does and "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     328
+    ],
+    "quotes": [
+     "The model above is the 2017 design in its GPT-2 form, and it is the best one to learn from. Every big open model release"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     86,
+     87,
+     88
+    ],
+    "quotes": [
+     "git clone https://github.com/FareedKhan-dev/train-llm-from-scratch.git",
+     "cd train-llm-from-scratch",
+     "pip install -e ."
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     88,
+     91,
+     96
+    ],
+    "quotes": [
+     "pip install -e .",
+     "If you use uv, `uv sync` does the same and also installs the test tools. On a Linux machine without an NVIDIA GPU, insta",
+     "pip install -e \".[train]\"   # datasets + wandb, for downloading data and logging"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     66
+    ],
+    "quotes": [
+     "You do not need a GPU to start: the laptop track trains a small model on a CPU in minutes. For the bigger models you wil"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     328
+    ],
+    "quotes": [
+     "The model above is the 2017 design in its GPT-2 form, and it is the best one to learn from. Every big open model release"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

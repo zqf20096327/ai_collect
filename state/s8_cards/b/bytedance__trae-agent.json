@@ -1,0 +1,140 @@
+{
+ "fn": "bytedance/trae-agent",
+ "sha": "e71c744ecaeb",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向软件工程任务的 LLM CLI agent，支持多模型与轨迹记录",
+  "review": "字节跳动 Trae 团队开源的通用软件工程 CLI agent：接收自然语言指令，通过文件编辑、bash 执行、顺序思考等工具执行编码任务。支持 OpenAI、Anthropic、豆包、Azure、OpenRouter、Ollama、Gemini 等多种 LLM API，配置基于 YAML 与环境变量，可选 MCP 服务接入。特色包括 Lakeview 步骤摘要、执行轨迹记录（用于调试与分析），以及用 Docker 容器隔离运行任务。架构透明模块化，定位为研究 AI agent 结构与消融实验的可扩展平台；项目仍在活跃开发中。",
+  "highlights": [
+   "多 LLM 提供商支持：OpenAI/Anthropic/豆包/Azure/OpenRouter/Ollama/Gemini",
+   "执行轨迹自动记录为 JSON（LLM 交互、工具使用、元数据）",
+   "可在指定 Docker 镜像内隔离运行任务",
+   "MCP 服务可选接入，YAML 配置与命令行/环境变量多级优先级"
+  ],
+  "use_cases": [
+   "用自然语言指令让 agent 完成编码、修 bug、加测试等软件工程任务",
+   "研究人员基于模块化架构做 agent 消融实验与新能力开发",
+   "借助轨迹记录调试和分析 agent 行为"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2507.23370",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    13
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "编码agent",
+   "CLI工具",
+   "软件工程自动化",
+   "LLM应用",
+   "研究友好框架"
+  ],
+  "domain": "编码与开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "openrouter",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "字节跳动维护",
+   "支持豆包（Doubao）作为 LLM 提供商"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: **Trae Agent** is an LLM-based agent for general purpose software engineering tasks. It provides a powerful CLI interfac",
+   "L20: - 🤖 **Multi-LLM Support**: Works with OpenAI, Anthropic, Doubao, Azure, OpenRouter, Ollama and Google Gemini APIs",
+   "L15: **Difference with Other CLI Agents:** Trae Agent offers a transparent, modular architecture that researchers and develop"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "support",
+    "lines": [
+     20,
+     31,
+     69
+    ],
+    "quotes": [
+     "- 🤖 **Multi-LLM Support**: Works with OpenAI, Anthropic, Doubao, Azure, OpenRouter, Ollama and Google Gemini APIs",
+     "- API key for your chosen provider (OpenAI, Anthropic, Google Gemini, OpenRouter, etc.)",
+     "    base_url: https://openrouter.ai/api/v1"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "support",
+    "lines": [
+     20
+    ],
+    "quotes": [
+     "- 🤖 **Multi-LLM Support**: Works with OpenAI, Anthropic, Doubao, Azure, OpenRouter, Ollama and Google Gemini APIs"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     36,
+     38
+    ],
+    "quotes": [
+     "git clone https://github.com/bytedance/trae-agent.git",
+     "uv sync --all-extras"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

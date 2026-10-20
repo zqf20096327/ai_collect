@@ -1,0 +1,196 @@
+{
+ "fn": "Narcooo/inkos",
+ "sha": "418a8aba4564",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向小说/剧本/互动影游创作的 AI Agent 写作系统",
+  "review": "InkOS 是故事创作与多语言翻译的 AI Agent 系统，覆盖长篇小说、短篇、剧本、分镜、互动影游、开放世界与翻译等创作形态，提供 Studio 网页工作台、TUI 与 CLI 三种交互入口。核心机制包括 pi-agent 统一执行 Harness、19 个内置专业 SKILL.md、SQLite FTS5/BM25 本地检索、章节级原子落盘与可恢复任务、剧情多线推演、定性审稿与去 AI 味、文风仿写、EPUB 导出。模型接入通过 provider bank 支持多家服务商与自定义端点，可被 Claude Code/OpenClaw 等 Agent 以 Skill 方式调用。需 Node.js 22.16+，v2.0 为开发版本分支。",
+  "highlights": [
+   "长篇/短篇/剧本/分镜/互动影游/翻译共用一套 pi-agent 生产 Harness",
+   "19 个内置专业 SKILL.md 与 SQLite FTS5/BM25 统一本地检索",
+   "剧情多线推演、定性审稿、去 AI 味、文风仿写、EPUB 导出",
+   "Studio / TUI / CLI / OpenClaw Skill 多入口，provider bank 内置多家模型服务"
+  ],
+  "use_cases": [
+   "用 AI 智能体连载长篇小说并跟踪角色、伏笔与状态",
+   "一键产出含大纲、简介、封面的完整短篇并导出 EPUB",
+   "通过自然语言定义并游玩开放世界或分支互动故事",
+   "把已有小说导入后继续 AI 续写"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    39,
+    79
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI写作",
+   "长篇小说生成",
+   "互动叙事",
+   "Agent工作台",
+   "内容创作/IP"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "openrouter",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "ai-writing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README 为主",
+   "Kimi 开源合作伙伴与赞助",
+   "微信交流群",
+   "内置智谱/百炼/火山/腾讯混元/文心/讯飞星火等国内服务商"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L17: InkOS 是一个面向故事创作与多语言翻译的 AI Agent 系统：长篇连载、独立短篇、剧本剧作、同人番外、仿写续写、互动影游、开放世界和长文翻译，都可以从同一个工作台开始。支持 Studio、TUI、CLI 交互形式，把创意、设定、角色",
+   "L4:  Story Creation AI Agent 面向长短篇小说、剧本剧作、互动影游、IP 内容与多语言翻译的创作智能体系统"
+  ],
+  "xcheck": {
+   "depre_hint": "提名有弃坑声明而模型未确认"
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     32,
+     96
+    ],
+    "note": "支持 Anthropic Messages 协议；Claude Code 作为可调用方出现",
+    "quotes": [
+     "支持 Claude、GPT、Gemini、DeepSeek 等主流模型，按量付费、共用余额，用于 InkOS 写作、审稿与封面生成。",
+     "InkOS 已发布为 OpenClaw Skill，可被任何兼容 Agent（Claude Code、OpenClaw 等）直接调用："
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     43,
+     251
+    ],
+    "note": "provider bank 内置 DeepSeek，本地开发使用 DeepSeek 模型",
+    "quotes": [
+     "本地开发与真实生产验收统一使用 kkaiapi（`https://api.kkaiapi.com/v1`）：文字按 DeepSeek V4 Flash / Pro 分工，封面使用 `gpt-image-2`。在项目 `llm.cover` ",
+     "- **Provider bank 能力表**：内置 Google Gemini、Moonshot、MiniMax、智谱、百炼、DeepSeek、硅基流动、火山、腾讯混元、文心、讯飞星火、OpenRouter、kkaiapi、Ollama、"
+    ]
+   },
+   {
+    "term": "openrouter",
+    "rel": "compat",
+    "lines": [
+     49,
+     251
+    ],
+    "note": "Studio 支持的模型聚合入口之一",
+    "quotes": [
+     "- **模型配置**：Studio 内置多服务配置、模型路由和封面服务配置；支持 kkaiapi / OpenRouter 等全球主流模型聚合入口，以及自定义 OpenAI Chat Completions、OpenAI Responses",
+     "- **Provider bank 能力表**：内置 Google Gemini、Moonshot、MiniMax、智谱、百炼、DeepSeek、硅基流动、火山、腾讯混元、文心、讯飞星火、OpenRouter、kkaiapi、Ollama、"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     251
+    ],
+    "note": "provider bank 内置 Ollama 本地服务",
+    "quotes": [
+     "- **Provider bank 能力表**：内置 Google Gemini、Moonshot、MiniMax、智谱、百炼、DeepSeek、硅基流动、火山、腾讯混元、文心、讯飞星火、OpenRouter、kkaiapi、Ollama、"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     91
+    ],
+    "quotes": [
+     "npm i -g @actalk/inkos"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Kimi",
+    "rel": "mention",
+    "lines": [
+     23,
+     25
+    ],
+    "note": "赞助方与 Moonshot 服务商，非替代/竞品",
+    "quotes": [
+     " Kimi 赞助 InkOS",
+     "感谢 Kimi 赞助本项目！Kimi K3 是 Moonshot AI 迄今能力最强的模型，也是全球首个开源 3T 级模型，拥有原生视觉能力与 100 万 Token 上下文。搭配 InkOS，K3 可以参与长短篇小说、剧本、互动影游与多语"
+    ]
+   },
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     96
+    ],
+    "note": "InkOS 可被其作为 Skill 调用",
+    "quotes": [
+     "InkOS 已发布为 OpenClaw Skill，可被任何兼容 Agent（Claude Code、OpenClaw 等）直接调用："
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [],
+   "note": "L50/L116 的『不再维护』指内部协议收敛，非产品弃用"
+  }
+ }
+}

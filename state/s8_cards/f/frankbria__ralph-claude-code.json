@@ -1,0 +1,188 @@
+{
+ "fn": "frankbria/ralph-claude-code",
+ "sha": "0fac561f313a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "让 Claude Code 持续自主迭代的开发循环驱动器",
+  "review": "以 Bash 脚本库形式实现 Geoffrey Huntley 的 Ralph 技巧：循环调用 Claude Code CLI，使其按项目需求/PRD/GitHub Issue 持续自主开发直至完成。关键机制包括双条件退出门（完成指标 + 显式 EXIT_SIGNAL）、每小时限速（默认 100 次可配）、熔断器与卡死检测、会话延续/过期（默认 24 小时）、Docker/E2B 沙箱执行、tmux 实时监控与 git 备份回滚。通过 git clone + install.sh 全局安装，提供 ralph-setup/enable/import/queue 等 CLI；多 provider 抽象仍在进行中。",
+  "highlights": [
+   "双条件退出门 + 熔断器防止无限循环与 API 滥用",
+   "限速（默认 100 次/小时可配）与三层 5 小时 API 限额检测",
+   "Docker 与 E2B 沙箱隔离执行，支持成本上限（--sandbox-max-cost）",
+   "ralph-enable 向导自动检测项目类型并从 beads/GitHub Issues/PRD 导入任务"
+  ],
+  "use_cases": [
+   "让 Claude Code 在我的项目上按任务清单持续自主迭代",
+   "把 PRD 或 GitHub Issue 转为任务并自动推进",
+   "在沙箱中隔离运行自主开发循环并实时监控进度"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    19
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "AI编码Agent",
+   "自主开发循环",
+   "CLI工具",
+   "开发者工作流",
+   "Claude生态"
+  ],
+  "domain": "编码与开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "coding-agent"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L13: Ralph is an implementation of the Geoffrey Huntley's technique for Claude Code that enables continuous autonomous develo",
+   "L140: - **Autonomous Development Loop** - Continuously executes Claude Code with your project requirements",
+   "L134: - Multi-provider agent abstraction — decoupling Ralph from `claude` so any headless coding CLI (Codex, Gemini, OpenCode,"
+  ],
+  "xcheck": {
+   "install_missing": [
+    "docker",
+    "npm",
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     1,
+     13
+    ],
+    "note": "通过 Claude Code（Anthropic 的 CLI）间接使用，无直接 Anthropic SDK 接入",
+    "quotes": [
+     "# Ralph for Claude Code",
+     "Ralph is an implementation of the Geoffrey Huntley's technique for Claude Code that enables continuous autonomous develo"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     178,
+     180
+    ],
+    "quotes": [
+     "git clone https://github.com/frankbria/ralph-claude-code.git",
+     "./install.sh"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "mention",
+    "lines": [
+     159
+    ],
+    "note": "沙箱执行为可选功能，非本产品安装途径",
+    "quotes": [
+     "- **Docker Sandbox Execution** - Run Claude Code in an isolated container with `--sandbox docker` (resource limits, netw"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     69
+    ],
+    "note": "macOS coreutils 依赖，非本产品安装途径",
+    "quotes": [
+     "- Fixed cross-platform date commands for macOS with Homebrew coreutils"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "4g RAM",
+    "rel": "mention",
+    "lines": [
+     535
+    ],
+    "note": "窗口外行，沙箱资源语境",
+    "quotes": [
+     "ralph --sandbox docker                          # Default image, 4g RAM, 2 CPUs, bridge network"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     13,
+     140
+    ],
+    "note": "被驱动的目标 CLI，非替代/竞品关系",
+    "quotes": [
+     "Ralph is an implementation of the Geoffrey Huntley's technique for Claude Code that enables continuous autonomous develo",
+     "- **Autonomous Development Loop** - Continuously executes Claude Code with your project requirements"
+    ]
+   },
+   {
+    "term": "GitHub Copilot",
+    "rel": "mention",
+    "lines": [
+     134
+    ],
+    "note": "多 provider 抽象规划中列举的未来适配对象",
+    "quotes": [
+     "- Multi-provider agent abstraction — decoupling Ralph from `claude` so any headless coding CLI (Codex, Gemini, OpenCode,"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

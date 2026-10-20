@@ -1,0 +1,140 @@
+{
+ "fn": "bentoml/OpenLLM",
+ "sha": "45e0eed4359d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "把开源 LLM 一条命令跑成 OpenAI 兼容 API 服务",
+  "review": "面向开发者的 LLM 自托管运行工具：通过 pip 安装后，用 openllm serve 命令将 Llama 3.3、Qwen2.5、DeepSeek 等开源模型或自定义模型启动为 OpenAI 兼容 API 端点，内置 Chat UI 与 CLI 对话。以模型仓库目录管理可用模型，支持添加自定义仓库（基于 BentoML 构建 Bento）。不存储模型权重，受限模型需设置 HF_TOKEN。支持经 BentoML、Docker、Kubernetes 与 BentoCloud 部署到云端。",
+  "highlights": [
+   "单命令将开源/自定义 LLM 启动为 OpenAI 兼容 API",
+   "内置 Chat UI（/chat 端点）与 CLI 对话（openllm run）",
+   "模型仓库目录机制，支持添加公共自定义仓库",
+   "openllm deploy 一键部署到 BentoCloud，支持 Docker/Kubernetes"
+  ],
+  "use_cases": [
+   "本地把开源 LLM 跑成 OpenAI 兼容 API 供现有工具调用",
+   "用 LlamaIndex/OpenAI 客户端等框架对接自托管模型",
+   "部署 LLM 到企业云环境（BentoCloud/Kubernetes）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM Serving",
+   "自托管",
+   "OpenAI 兼容 API",
+   "模型部署",
+   "LLM运维"
+  ],
+  "domain": "训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: OpenLLM allows developers to run **any open-source LLMs** (Llama 3.3, Qwen2.5, Phi3 and more) or **custom models** as **",
+   "L208: OpenLLM supports LLM cloud deployment via BentoML, the unified model serving framework, and BentoCloud, an AI inference "
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     33,
+     36
+    ],
+    "quotes": [
+     " deepseek",
+     " <code>openllm serve deepseek:r1-671b</code>"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "mention",
+    "lines": [
+     232
+    ],
+    "note": "致谢中列为生产级 LLM 后端依赖",
+    "quotes": [
+     "- vllm-project/vllm for production level LLM backend"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     18
+    ],
+    "quotes": [
+     "pip install openllm  # or pip3 install openllm"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     233
+    ],
+    "note": "致谢中提及 chatgpt-lite 作为 Web Chat UI 来源，非替代/竞品",
+    "quotes": [
+     "- blrchen/chatgpt-lite for a fancy Web Chat UI"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

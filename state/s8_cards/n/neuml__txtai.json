@@ -1,0 +1,154 @@
+{
+ "fn": "neuml/txtai",
+ "sha": "286747554da8",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Python 全栈 AI 框架：语义搜索、LLM 编排与语言模型工作流",
+  "review": "以嵌入数据库为核心组件（向量索引、图网络与关系数据库的结合）的 Python AI 框架，面向构建 LLM 应用的开发者。提供向量搜索、多模态嵌入、语言模型驱动的管线（提示、问答、转录、翻译、摘要等）、连接管线的 workflow，以及基于 smolagents 构建的自主 agent；支持 RAG、Web 与 MCP API，并有 JavaScript/Java/Rust/Go 绑定。基于 Python 3.11+、Hugging Face Transformers、Sentence Transformers 和 FastAPI 构建，Apache 2.0 许可，可本地运行或容器编排扩展。附带 70+ 示例 notebook。",
+  "highlights": [
+   "嵌入数据库融合稀疏/稠密向量索引、图网络与关系数据库",
+   "agent 基于 smolagents，支持 Hugging Face、llama.cpp、OpenAI/Claude/AWS Bedrock（经 LiteLLM）",
+   "管线覆盖提示、问答、标注、转录、翻译、摘要等任务",
+   "提供 Web 与 MCP API，含 JavaScript/Java/Rust/Go 绑定"
+  ],
+  "use_cases": [
+   "构建语义搜索与问答知识库应用",
+   "搭建 RAG 流水线实现与数据对话",
+   "将多个语言模型任务串联成自动化工作流",
+   "构建连接嵌入库与管线的自主 agent"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "语义搜索/向量检索",
+   "RAG",
+   "LLM编排/Agent",
+   "嵌入数据库",
+   "NLP管线"
+  ],
+  "domain": "效率与自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "anthropic",
+   "bedrock"
+  ],
+  "scenario_tags_v2": [
+   "rag",
+   "semantic-search",
+   "vector-database",
+   "workflow-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L22: txtai is an all-in-one AI framework for semantic search, LLM orchestration and language model workflows.",
+   "L31: Build autonomous agents, retrieval augmented generation (RAG) processes, multi-model workflows and more.",
+   "L39: - 🤖 Agents that intelligently connect embeddings, pipelines, workflows and other agents together to autonomously solve c"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "compat",
+    "lines": [
+     126
+    ],
+    "note": "Claude 经 LiteLLM 接入，非专属通道",
+    "quotes": [
+     "txtai agents are built on top of the smolagents framework. This supports all LLMs txtai supports (Hugging Face, llama.cp"
+    ]
+   },
+   {
+    "term": "bedrock",
+    "rel": "compat",
+    "lines": [
+     126
+    ],
+    "note": "AWS Bedrock 经 LiteLLM 接入",
+    "quotes": [
+     "txtai agents are built on top of the smolagents framework. This supports all LLMs txtai supports (Hugging Face, llama.cp"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     176,
+     179
+    ],
+    "quotes": [
+     "The easiest way to install is via pip and PyPI",
+     "pip install txtai"
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     100,
+     101,
+     102,
+     103
+    ],
+    "note": "示例 notebook 的运行方式",
+    "quotes": [
+     "|Introducing txtai ▶️|Overview of the functionality provided by txtai|Open In Colab|",
+     "|Similarity search with images|Embed images and text into the same space for search|Open In Colab|",
+     "|Build a QA database|Question matching with semantic search|Open In Colab|",
+     "|Semantic Graphs|Explore topics, data connectivity and run network analysis|Open In Colab|"
+    ]
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

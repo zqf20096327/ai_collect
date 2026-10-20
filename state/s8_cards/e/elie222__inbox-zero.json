@@ -1,0 +1,129 @@
+{
+ "fn": "elie222/inbox-zero",
+ "sha": "e84b6a242c50",
+ "source": "readme",
+ "identity": {
+  "one_liner": "开源 AI 邮件助手与邮件客户端，助用户清空收件箱",
+  "review": "包含两部分：后台运行于 Gmail/Outlook 账号的 AI 邮件助手（整理收件箱、按用户语气预写回复、自然语言规则、批量退订/归档、拦截陌生邮件、会议简报、附件自动存储），可通过 Slack/Telegram 对话操作；以及一个 Web/桌面（Electron）邮件客户端。提供托管版与自托管（CLI + Docker + Node.js v24+）两种方式，本地开发模式带各服务模拟器、无需 API key。自称 Fyxer 与 Superhuman 的开源替代。",
+  "highlights": [
+   "AI 助手按用户语气预写回复并用自然语言规则管理收件箱",
+   "支持 Gmail 与 Outlook，可从 Slack/Telegram 对话操作",
+   "批量退订/归档、陌生邮件拦截、会议简报、附件存 Google Drive/OneDrive",
+   "自托管 CLI（Docker + Node.js v24+），本地开发无需 OAuth 或 AI API key"
+  ],
+  "use_cases": [
+   "让 AI 自动整理收件箱并预写符合我语气的回复",
+   "批量退订和归档不再阅读的邮件",
+   "在 Slack/Telegram 里远程管理我的邮箱"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": "https://www.getinboxzero.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "邮件助手",
+   "AI生产力",
+   "自托管应用",
+   "自动化"
+  ],
+  "domain": "对话与助手",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "ai-assistant"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L2:  Inbox Zero - your 24/7 AI email assistant and email app",
+   "L5:  Organizes your inbox, pre-drafts replies, manages your calendar, and organizes attachments. Chat with it from Slack or ",
+   "L26: Inbox Zero has two parts: an AI email assistant that works in the background on your Gmail or Outlook account, and an em"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     82,
+     83,
+     97
+    ],
+    "quotes": [
+     "npx @inbox-zero/cli setup      # One-time setup wizard",
+     "npx @inbox-zero/cli start      # Start containers",
+     "pnpm install"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     95
+    ],
+    "quotes": [
+     "git clone https://github.com/elie222/inbox-zero.git"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     92
+    ],
+    "note": "macOS 上安装 PostgreSQL/Redis 可选原生依赖的方式",
+    "quotes": [
+     "> **Prerequisites**: macOS or Linux (WSL on Windows), Node.js v24, and the pnpm version pinned in `package.json`. Instal"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

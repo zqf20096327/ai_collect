@@ -1,0 +1,184 @@
+{
+ "fn": "PaddlePaddle/PaddleNLP",
+ "sha": "26a967639db6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于飞桨的大语言模型开发套件：训练、压缩、推理全流程",
+  "review": "PaddleNLP 是基于飞桨深度学习框架的大语言模型开发套件，面向需要产业级大模型训练与部署的开发者。提供预训练（4D 并行、Unified Checkpoint 存储）、精调与对齐（SFT、LoRA、DPO 等）、量化压缩（INT8/INT4/FP8）与高性能推理模块；支持 Qwen、Llama、DeepSeek 等 20 余个模型系列，并支持英伟达 GPU、昆仑 XPU、昇腾 NPU 等多硬件切换。通过 pip 安装，依赖 paddlepaddle>=3.0.0rc1 与 Python>=3.8。",
+  "highlights": [
+   "4D 并行预训练与 Unified Checkpoint 断点存储/压缩",
+   "SFT、LoRA、Prefix Tuning、DPO/RLHF 等精调与对齐支持",
+   "INT8/INT4/FP8 量化与高性能并行推理",
+   "支持英伟达 GPU、昆仑 XPU、昇腾 NPU、燧原 GCU、海光 DCU 多硬件"
+  ],
+  "use_cases": [
+   "在自己的数据上对开源大模型做精调与对齐训练",
+   "将大模型量化压缩后进行推理部署",
+   "在国产硬件上训练和运行主流开源模型"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM开发套件",
+   "模型训练/微调",
+   "推理部署",
+   "模型压缩",
+   "多硬件适配"
+  ],
+  "domain": "训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "mistral"
+  ],
+  "scenario_tags_v2": [
+   "model-training",
+   "fine-tuning",
+   "reinforcement-learning",
+   "model-quantization"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "飞桨（百度）生态",
+   "国产芯片（昆仑/昇腾/燧原/海光）支持"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L11: **PaddleNLP**是一款基于飞桨深度学习框架的大语言模型(LLM)开发套件，支持在多种硬件上进行高效的大模型训练、无损压缩以及高性能推理。PaddleNLP 具备**简单易用**和**性能极致**的特点，致力于助力开发者实现高效的大",
+   "L50: 支持英伟达 GPU、昆仑 XPU、昇腾 NPU、燧原 GCU 和海光 DCU 等多个硬件的大模型和自然语言理解模型训练和推理，套件接口支持硬件快速切换，大幅降低硬件切换研发成本。",
+   "L55: 支持纯数据并行策略、分组参数切片的数据并行策略、张量模型并行策略和流水线模型并行策略的4D 高性能训练，Trainer 支持分布式策略配置化，降低复杂分布式组合带来的使用成本；"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     19,
+     21,
+     88,
+     89,
+     90
+    ],
+    "note": "支持 DeepSeek V2/V3/R1 系列模型的训练与推理",
+    "quotes": [
+     "* **2025.03.12 PaddleNLP v3.0 Beta4**：全面支持 DeepSeek V3/R1/R1-Distill, 及 QwQ-32B 等热门思考模型。**DeepSeek V3/R1完整版支持 FP8、INT8、4",
+     "* **2025.02.10 PaddleNLP 现已支持 DeepSeek-R1系列模型，在线使用**：依托全新的 PaddleNLP 3.0套件，DeepSeek-R1系列模型现已全面支持。凭借数据并行、数据分组切分并行、模型并行、流水",
+     "|DeepSeekV2|deepseek-ai/DeepSeek-V2, deepseek-ai/DeepSeek-V2-Chat, deepseek-ai/DeepSeek-V2-Lite, deepseek-ai/DeepSeek-V2",
+     "|DeepSeekV3|deepseek-ai/DeepSeek-V3, deepseek-ai/DeepSeek-V3-Base|",
+     "|DeepSeek-R1|deepseek-ai/DeepSeek-R1, deepseek-ai/DeepSeek-R1-Zero, deepseek-ai/DeepSeek-R1-Distill-Llama-70B, deepseek-"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "compat",
+    "lines": [
+     92,
+     93,
+     116,
+     135
+    ],
+    "note": "支持 Mistral/Mixtral 系列模型",
+    "quotes": [
+     "|Mistral|mistralai/Mistral-7B-Instruct-v0.3, mistralai/Mistral-7B-v0.1|",
+     "|Mixtral|mistralai/Mixtral-8x7B-Instruct-v0.1|",
+     "|Mistral|✅|✅|🚧|✅|✅|✅|🚧|",
+     "|Mistral|✅|✅|✅|🚧|✅|✅|🚧|✅|🚧|"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     169,
+     175
+    ],
+    "quotes": [
+     "pip install --upgrade paddlenlp==3.0.0b4",
+     "pip install --pre --upgrade paddlenlp -f https://www.paddlepaddle.org.cn/whl/paddlenlp.html"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     196
+    ],
+    "quotes": [
+     "git clone https://github.com/PaddlePaddle/PaddleNLP.git && cd PaddleNLP # 如已clone或下载PaddleNLP可跳过"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     17,
+     71,
+     95,
+     96,
+     102
+    ],
+    "note": "作为被支持的 Qwen 系列开源权重，非替代/竞品关系",
+    "quotes": [
+     "* **2025.04.29 PaddleNLP 现已支持 Qwen3 系列模型**: Qwen3 系列模型支持持两种思考模式，预训练约 36 万亿个 token、119 种语言和方言。包括六个 Dense 模型, Qwen3-32B、Qw",
+     "* 模型参数已支持 LLaMA 系列、Baichuan 系列、Bloom 系列、ChatGLM 系列、Gemma 系列、Mistral 系列、OPT 系列和 Qwen 系列，详细列表👉【LLM】模型参数支持列表如下：",
+     "|Qwen|qwen/qwen-7b, qwen/qwen-7b-chat, qwen/qwen-14b, qwen/qwen-14b-chat, qwen/qwen-72b, qwen/qwen-72b-chat,|",
+     "|Qwen1.5|Qwen/Qwen1.5-0.5B, Qwen/Qwen1.5-0.5B-Chat, Qwen/Qwen1.5-1.8B, Qwen/Qwen1.5-1.8B-Chat, Qwen/Qwen1.5-4B, Qwen/Qwe",
+     "|Qwen3|Qwen/Qwen3-0.6B, Qwen/Qwen3-1.7B, Qwen/Qwen3-4B, Qwen/Qwen3-8B, Qwen/Qwen3-14B, Qwen/Qwen3-32B, Qwen/Qwen3-30B-A3"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

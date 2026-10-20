@@ -1,0 +1,136 @@
+{
+ "fn": "mcp-use/mcp-use",
+ "sha": "229616bfd610",
+ "source": "readme",
+ "identity": {
+  "one_liner": "TypeScript 全栈 MCP 框架：构建 MCP 服务器与 MCP Apps",
+  "review": "用于构建、测试与部署 MCP 服务器、ChatGPT 插件与 Claude connectors 的 TypeScript 框架，基于官方 TypeScript SDK v2，提供全类型定义、绑定 React Views 的工具、内置 Inspector 调试、无头 CLI 验证与截图、隧道公网测试及部署流程。通过 npx create-mcp-use-app 脚手架初始化项目。生态包含客户端、agent、inspector、tunnel 等包，另有 Python 版本。由 manufact.com 维护，MIT 许可。",
+  "highlights": [
+   "Zod 类型从工具贯穿到结构化结果与 React View 属性",
+   "内置 Inspector 与无头 CLI 的工具调用与 View 截图验证",
+   "React Views 直接绑定工具，构建 MCP Apps 交互界面",
+   "隧道功能为本地 MCP 服务器生成公网 URL 供测试"
+  ],
+  "use_cases": [
+   "为 ChatGPT/Claude 构建 MCP 服务器与 MCP Apps",
+   "在浏览器中调试并验证 MCP 工具与交互视图",
+   "通过 agent/CLI 工作流脚手架化、调用与部署 MCP 项目"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "MCP",
+   "agent工具开发",
+   "TypeScript框架",
+   "插件开发",
+   "开发工具链"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5:  The TypeScript framework for MCP",
+   "L154: mcp-use builds on the official TypeScript SDK v2 and adds first-class Views, typed tool-to-UI contracts, an optimized st"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     6,
+     131
+    ],
+    "note": "以 Claude connectors/Claude 作为部署与测试目标被提及，非专门接入适配",
+    "quotes": [
+     " Build, test, and ship MCP servers, ChatGPT plugins, Claude connectors",
+     "Start a tunnel from the Inspector UI or run `mcp-use dev --tunnel` to get a public URL for your local MCP server and tes"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     54,
+     136
+    ],
+    "quotes": [
+     "npx -y create-mcp-use-app@latest",
+     "npm install --save-dev @mcp-use/client"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     6,
+     105,
+     131
+    ],
+    "note": "作为 MCP Apps 运行/测试平台被提及，非替代或竞品",
+    "quotes": [
+     " Build, test, and ship MCP servers, ChatGPT plugins, Claude connectors",
+     " Hello World MCP App rendered in a ChatGPT conversation",
+     "Start a tunnel from the Inspector UI or run `mcp-use dev --tunnel` to get a public URL for your local MCP server and tes"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

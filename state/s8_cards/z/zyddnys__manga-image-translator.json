@@ -1,0 +1,210 @@
+{
+ "fn": "zyddnys/manga-image-translator",
+ "sha": "50864ae15c67",
+ "source": "readme",
+ "identity": {
+  "one_liner": "一键翻译漫画/图片内文字的工具：检测、OCR、翻译、修复、排版",
+  "review": "面向漫画及各类图片的文字翻译流水线：文本检测、OCR 识别、机器翻译、原图文字擦除（inpainting）、排版渲染，并支持上色（colorizer）。主要支持日语，另支持简繁中文、英语等 20 余种语言。以 Python 包/Docker 镜像提供，可运行本地批量模式、Web 服务、API 与 WebSocket 模式，模型运行时自动下载到 ./models。README 自述项目仍处于早期开发阶段。另有 Rust 编译版本与在线 demo 站点。",
+  "highlights": [
+   "检测→OCR→翻译→修复→排版的完整图片翻译流水线",
+   "支持日语及简繁中文、英语等 20 余种语言",
+   "提供本地批量、Web、API、WebSocket 四种运行模式",
+   "支持 Docker 镜像（含模型，约 15GB）与 CPU/GPU 运行"
+  ],
+  "use_cases": [
+   "翻译群聊、图站等 unlikely 被专业翻译的漫画/图片",
+   "批量翻译本地图片文件夹并保留排版",
+   "以 API/Web 服务形式集成图片翻译能力"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "viral",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://touhou.ai/imgtrans/",
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    18
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "漫画翻译",
+   "OCR",
+   "图像处理",
+   "机器翻译",
+   "PyTorch"
+  ],
+  "domain": "感知与多模态",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "deepseek",
+   "groq",
+   "mistral",
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "ocr",
+   "image-video-processing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "中文说明文档",
+   "项目为求闻转译志 v2（中文社区项目）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: > One-click translation of text in various images\\",
+   "L15: Supports image repair (text removal) and typesetting.",
+   "L110: Models will be automatically downloaded to the `./models` directory at runtime."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "compat",
+    "lines": [
+     637,
+     1027
+    ],
+    "note": "可选翻译后端之一",
+    "quotes": [
+     " \"deepseek\",",
+     "|`DEEPSEEK_API_KEY`|DeepSeek API Key|`''`||"
+    ]
+   },
+   {
+    "term": "groq",
+    "rel": "compat",
+    "lines": [
+     638,
+     1019
+    ],
+    "note": "可选翻译后端之一",
+    "quotes": [
+     " \"groq\",",
+     "|`GROQ_API_KEY`|Groq API Key|`''`||"
+    ]
+   },
+   {
+    "term": "mistral",
+    "rel": "compat",
+    "lines": [
+     1020
+    ],
+    "note": "可选翻译后端之一",
+    "quotes": [
+     "|`GROQ_MODEL`|Groq Model name|`'mixtral-8x7b-32768'`||"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     1033,
+     1034
+    ],
+    "note": "本地运行时，列为可选翻译通道",
+    "quotes": [
+     "|`CUSTOM_OPENAI_API_KEY`|Custom OpenAI API Key|`ollama`|Not needed for Ollama, but possibly required for other tools|",
+     "|`CUSTOM_OPENAI_API_BASE`|Custom OpenAI API Base URL|`http://localhost:11434/v1`|Use OLLAMA_HOST environment variable to"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     101,
+     108
+    ],
+    "quotes": [
+     "```bash",
+     "Dependencies are pinned to current releases. `websockets` stays on the latest 16.x release because `google-genai` requir"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     126,
+     136,
+     178
+    ],
+    "quotes": [
+     "This project supports Docker, with the image being `zyddnys/manga-image-translator:main`.",
+     "docker run \\",
+     "docker run --env=\"DEEPL_AUTH_KEY=xxx\" -v <targetFolder>:/app/<targetFolder> -v <targetFolder>-translated:/app/<targetFol"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "ChatGPT",
+    "rel": "mention",
+    "lines": [
+     633,
+     947
+    ],
+    "note": "OpenAI/ChatGPT 作为可选翻译后端被提及",
+    "quotes": [
+     " \"chatgpt\",",
+     "|chatgpt|✔️||GPT-6 Luna only; requires `OPENAI_API_KEY`. Aliases: `openai`, `gpt-6-luna`|"
+    ]
+   },
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     964,
+     965
+    ],
+    "note": "模型来源相关提及",
+    "quotes": [
+     "|m2m100_hf||✔️|M2M100 418M via HuggingFace — works on PyTorch (Nvidia CUDA / AMD ROCm)|",
+     "|m2m100_hf_big||✔️|M2M100 1.2B via HuggingFace — works on PyTorch (Nvidia CUDA / AMD ROCm)|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

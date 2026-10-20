@@ -1,0 +1,115 @@
+{
+ "fn": "cleanlab/cleanlab",
+ "sha": "763c9d14b3bc",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向开发者的数据质量与标签错误检测库（data-centric AI）",
+  "review": "Python 库，用用户已有的 ML 模型输出的特征嵌入与预测概率，自动检测数据集中的标签错误、离群点、重复等问题，支持文本、图像、音频、表格数据。核心机制为 confident learning 算法（JAIR 2021 论文），兼容任意模型（PyTorch/TensorFlow/XGBoost/scikit-learn 等）与分类、回归、目标检测、图像分割、多标注者共识、主动学习等任务。运行需 Python 3.10+，支持 Linux/macOS/Windows。",
+  "highlights": [
+   "基于已有模型检测标签错误、离群点、重复等数据问题",
+   "兼容任意数据类型与任意 ML 模型",
+   "confident learning 算法提供可证明的标签噪声估计",
+   "支持多标注者共识与质量评估、主动学习任务"
+  ],
+  "use_cases": [
+   "训练前清洗带噪声标签的数据集",
+   "找出数据集中的标注错误与离群样本",
+   "多标注者数据下推断共识标签与标注者质量",
+   "主动学习场景下建议下一步标注哪些数据"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://jair.org/index.php/jair/article/view/12125",
+  "demo_url": "https://labelerrors.com",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "数据质量",
+   "标签纠错",
+   "data-centric AI",
+   "主动学习",
+   "异常检测"
+  ],
+  "domain": "数据科学/机器学习工具",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L12: Cleanlab’s open-source library helps you **clean** data and **lab**els by automatically detecting issues in a ML dataset",
+   "L44: All features of cleanlab work with **any dataset** and **any model**. Yes, any model: PyTorch, Tensorflow, Keras, JAX, H"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     30
+    ],
+    "quotes": [
+     "- Get started here! Install via `uv`, `pip`, or `conda`."
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     44
+    ],
+    "note": "列举兼容的模型框架之一，非替代/竞品关系",
+    "quotes": [
+     "All features of cleanlab work with **any dataset** and **any model**. Yes, any model: PyTorch, Tensorflow, Keras, JAX, H"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

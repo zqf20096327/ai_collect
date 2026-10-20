@@ -1,0 +1,130 @@
+{
+ "fn": "triton-inference-server/server",
+ "sha": "0d2ae126cdc6",
+ "source": "readme",
+ "identity": {
+  "one_liner": "给开发/运维：部署多框架 AI 模型的开源推理服务软件",
+  "review": "NVIDIA 维护的开源推理服务软件：从模型仓库加载 TensorRT、PyTorch、ONNX、OpenVINO、Python、RAPIDS FIL 等多框架模型，通过 HTTP/REST 与 gRPC（基于 KServe 协议）提供推理服务，支持动态批处理、序列批处理、并发模型执行、模型集成与 BLS 流水线。可在 NVIDIA GPU、x86/ARM CPU、AWS Inferentia 上跨云、数据中心、边缘设备运行，提供 C API 与 Java API 嵌入应用、GPU 利用率等指标，以及 Python/C++ 客户端库。推荐以 Docker 容器方式安装使用，属 NVIDIA AI Enterprise 套件组成部分。",
+  "highlights": [
+   "多深度学习/机器学习框架后端（TensorRT/PyTorch/ONNX/OpenVINO/Python 等）",
+   "动态批处理、并发模型执行与模型集成/BLS 流水线",
+   "HTTP/REST 与 gRPC 推理协议（基于 KServe v2 协议），含 Python/C++ 客户端库",
+   "支持 NVIDIA GPU、x86/ARM CPU、AWS Inferentia，可部署于云/数据中心/边缘"
+  ],
+  "use_cases": [
+   "在生产环境部署和服务多框架训练出的 AI 模型",
+   "通过动态批处理与并发执行提升推理吞吐",
+   "以 Docker/Kubernetes 在云或数据中心搭建推理服务",
+   "在边缘/嵌入式设备上运行推理（C API 进程内链接）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "企业",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "推理服务",
+   "模型部署",
+   "GPU推理",
+   "云原生",
+   "边缘计算"
+  ],
+  "domain": "训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L10: Triton Inference Server is an open source inference serving software that",
+   "L11: streamlines AI inferencing. Triton enables teams to deploy any AI model from"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "cpu-infer",
+    "rel": "mention",
+    "lines": [
+     13,
+     130
+    ],
+    "quotes": [
+     "PyTorch, ONNX, OpenVINO, Python, RAPIDS FIL, and more. Triton",
+     " OpenVINO,"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     66
+    ],
+    "quotes": [
+     "git clone -b r26.09 https://github.com/triton-inference-server/server.git"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "CPU-only",
+    "rel": "mention",
+    "lines": [
+     71
+    ],
+    "note": "快速入门中 CPU-only 系统启动示例的指引语境，非产品自身硬件要求声明",
+    "quotes": [
+     "regarding this example. The quickstart guide also contains an example of how to launch Triton on CPU-only systems. New t"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

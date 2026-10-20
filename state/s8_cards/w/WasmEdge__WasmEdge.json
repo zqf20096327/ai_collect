@@ -1,0 +1,92 @@
+{
+ "fn": "WasmEdge/WasmEdge",
+ "sha": "b34f8597e54e",
+ "source": "readme",
+ "identity": {
+  "one_liner": "轻量 WebAssembly 运行时：在服务器/边缘/设备上沙箱化运行 Wasm 与 GenAI 应用",
+  "review": "CNCF 官方沙箱项目 WasmEdge 提供一个轻量、可扩展的 WebAssembly 运行时，为 Wasm 字节码程序提供执行沙箱，隔离文件系统、socket、环境变量与进程等操作系统资源。可运行 C/C++、Rust、Swift、AssemblyScript、Kotlin 编译的标准 Wasm 程序，也可在沙箱中运行含 ES6/CJS/NPM 模块的 JavaScript。其上构建的 LlamaEdge 框架用于跨 GPU 在服务器、个人电脑与边缘设备上运行 LLM、语音转文本、文生图、TTS 等 GenAI 模型。支持从 CLI、Docker、宿主进程内（Go/Rust/C）或经 Kubernetes、Dapr 编排启动；README 注明当前尚未线程安全。",
+  "highlights": [
+   "为 Wasm 字节码提供执行沙箱，隔离 OS 资源与内存空间",
+   "支持多源语言编译的 Wasm 程序与含 NPM 模块的 JavaScript 沙箱运行",
+   "LlamaEdge 框架基于其跨 GPU 运行 LLM/语音转文本/文生图/TTS 模型",
+   "支持嵌入 Go/Rust/C 宿主进程及 Kubernetes、Dapr、容器工具编排"
+  ],
+  "use_cases": [
+   "在 SaaS、车联网、边缘节点中安全执行第三方插件代码",
+   "通过 LlamaEdge 在本地或边缘设备运行开源 LLM",
+   "以容器或 Kubernetes 编排方式运行 Wasm 微服务"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2010.07115",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "WebAssembly运行时",
+   "边缘计算",
+   "LLM推理",
+   "云原生/沙箱"
+  ],
+  "domain": "训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime. It is the fastest Wasm VM. WasmEdge is ",
+   "L29: The WasmEdge Runtime provides a well-defined execution sandbox for its contained WebAssembly bytecode program. The runti"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

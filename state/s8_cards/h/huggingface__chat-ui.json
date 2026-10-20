@@ -1,0 +1,187 @@
+{
+ "fn": "huggingface/chat-ui",
+ "sha": "d4fd9435ccc8",
+ "source": "readme",
+ "identity": {
+  "one_liner": "驱动 HuggingChat 的开源 LLM 聊天界面（SvelteKit 应用）",
+  "review": "Hugging Face 维护的 SvelteKit 聊天应用，即 HuggingChat 的开源代码库。仅通过 OPENAI_BASE_URL 与 /models 端点接入 OpenAI 兼容 API（llama.cpp server、Ollama、OpenRouter 等均可），旧的按厂商集成（MODELS 专属通道、GGUF 发现等）已移除，旧版保留在 legacy 分支。聊天记录、用户等数据存于 MongoDB 6/7，未配置时回退到内嵌 MongoDB。支持可选的本地启发式 LLM 路由（Omni 别名）、MCP 工具调用，以及实验性的 ML Intern 模式。提供源码运行与捆绑 MongoDB 的 Docker 镜像。",
+  "highlights": [
+   "仅支持 OpenAI 兼容 API，模型从 /models 端点自动发现",
+   "基于本地启发式的 LLM 路由（Omni 虚拟模型，default/multimodal/agentic 三路）",
+   "可调用 MCP 服务器工具并通过 OpenAI function calling 回传结果",
+   "ML Intern 实验模式：在 HF Hub 上复现论文、微调评估模型、部署 Spaces"
+  ],
+  "use_cases": [
+   "自建类似 HuggingChat 的 LLM 对话 Web 应用",
+   "对接本地 llama.cpp/Ollama 或 OpenRouter 等任意 OpenAI 兼容服务",
+   "在聊天中挂载 MCP 工具服务器并调用工具"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://huggingface.co/chat",
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    176
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "LLM聊天界面",
+   "Web应用",
+   "OpenAI兼容API",
+   "MCP工具"
+  ],
+  "domain": "对话与助手",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "openrouter",
+   "ollama",
+   "llama.cpp"
+  ],
+  "scenario_tags_v2": [
+   "chatbot"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L5: A chat interface for LLMs. It is a SvelteKit app and it powers the HuggingChat app on hf.co/chat.",
+   "L23: Chat UI speaks to OpenAI-compatible APIs only. The fastest way to get running is with the Hugging Face Inference Provide",
+   "L16: > Chat UI only supports OpenAI-compatible APIs via `OPENAI_BASE_URL` and the `/models` endpoint. Provider-specific integ"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "openrouter",
+    "rel": "compat",
+    "lines": [
+     16,
+     39
+    ],
+    "note": "OpenAI 兼容服务之一，示例中给出接入配置",
+    "quotes": [
+     "> Chat UI only supports OpenAI-compatible APIs via `OPENAI_BASE_URL` and the `/models` endpoint. Provider-specific integ",
+     "|OpenRouter|`https://openrouter.ai/api/v1`|`OPENAI_API_KEY=sk-or-v1-...`|"
+    ]
+   },
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     16,
+     38
+    ],
+    "note": "通过 OpenAI 兼容桥接可用",
+    "quotes": [
+     "> Chat UI only supports OpenAI-compatible APIs via `OPENAI_BASE_URL` and the `/models` endpoint. Provider-specific integ",
+     "|Ollama (with OpenAI-compatible bridge)|`http://127.0.0.1:11434/v1`|`OPENAI_API_KEY=ollama`|"
+    ]
+   },
+   {
+    "term": "llama.cpp",
+    "rel": "compat",
+    "lines": [
+     16,
+     37
+    ],
+    "note": "llama.cpp --server 作为 OpenAI 兼容后端可用",
+    "quotes": [
+     "> Chat UI only supports OpenAI-compatible APIs via `OPENAI_BASE_URL` and the `/models` endpoint. Provider-specific integ",
+     "|llama.cpp server (`llama.cpp --server --api`)|`http://127.0.0.1:8080/v1`|`OPENAI_API_KEY=sk-local-demo` (any string wor"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     47
+    ],
+    "quotes": [
+     "git clone https://github.com/huggingface/chat-ui"
+    ]
+   },
+   {
+    "term": "npm",
+    "rel": "support",
+    "lines": [
+     49
+    ],
+    "quotes": [
+     "npm install"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     97
+    ],
+    "quotes": [
+     "docker run \\"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     28,
+     36
+    ],
+    "note": "Inference Providers 路由作为接入端点被提及，非替代/竞品关系",
+    "quotes": [
+     "OPENAI_BASE_URL=https://router.huggingface.co/v1",
+     "|Hugging Face Inference Providers router|`https://router.huggingface.co/v1`|`OPENAI_API_KEY=hf_xxx` (or `HF_TOKEN` legac"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    16
+   ],
+   "note": "旧版保留在 legacy 分支，非弃用声明"
+  }
+ }
+}

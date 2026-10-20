@@ -1,0 +1,199 @@
+{
+ "fn": "PaddlePaddle/PaddleFormers",
+ "sha": "eab8639e7e69",
+ "source": "readme",
+ "identity": {
+  "one_liner": "基于飞桨的大模型训练库：LLM/VLM 预训练与后训练",
+  "review": "PaddlePaddle 团队维护的 Transformers 库，为 PaddlePaddle 生态提供与 Hugging Face Transformers 对齐的接口与训练能力，覆盖 100+ 主流 LLM/VLM（DeepSeek-V3/V4、GLM-4.5、Qwen 系列、ERNIE-4.5 等），支持张量/流水线/专家并行的分布式训练与 FP8、自动混合精度等加速策略。训练流程覆盖预训练、CPT/SFT/LoRA/DPO，支持 Function Call、Thinking 能力训练，并提供昆仑芯、天数智芯、沐曦等国产芯片适配。API 设计与 Hugging Face Transformers 保持一致，训练产物以 Safetensors 格式存储，可在 vLLM、SGLang 等框架中部署。限制：GPU 训练依赖 Python≥3.12、CUDA≥13.0 与 PaddleFleet。",
+  "highlights": [
+   "100+ 主流 LLM/VLM 的预训练与后训练（SFT/LoRA/DPO）支持",
+   "张量/流水线/专家并行分布式训练与 FP8、Data Packing、Padding Free 等优化",
+   "API 与 Hugging Face Transformers 保持一致，Safetensors 格式产物可在 vLLM/SGLang 等使用",
+   "昆仑芯 P800、天数天垓150、沐曦 C550 等国产芯片适配"
+  ],
+  "use_cases": [
+   "在 PaddlePaddle 生态中对 DeepSeek、GLM、Qwen 等模型做 SFT/LoRA/DPO 训练",
+   "复用 Hugging Face 风格 API 加载 tokenizer 与模型",
+   "在国产算力平台上完成大模型后训练"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "大模型训练",
+   "LLM框架",
+   "分布式训练",
+   "飞桨生态",
+   "国产芯片"
+  ],
+  "domain": "训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "model-training",
+   "fine-tuning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "百度飞桨生态（baidu/ERNIE 系列）",
+   "百度云容器镜像源",
+   "国产芯片适配（昆仑芯/天数/沐曦/摩尔线程）"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: PaddleFormers 是基于百度深度学习框架 PaddlePaddle 搭建的 Transformers 库，旨在为 PaddlePaddle 生态提供与 Hugging Face Transformers 项目对等的模型接口与功能体",
+   "L25: * **全流程能力支持：** PaddleFormers 实现了从预训练到后训练的全流程训练能力支持，其中后训练支持 CPT / SFT / SFT-LoRA / DPO / DPO-LoRA 等主流能力，帮助用户高效、便捷地完成大模型的迭"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     9,
+     23
+    ],
+    "note": "作为被训练的模型系列出现，非推理接入",
+    "quotes": [
+     "PaddleFormers 是基于百度深度学习框架 PaddlePaddle 搭建的 Transformers 库，旨在为 PaddlePaddle 生态提供与 Hugging Face Transformers 项目对等的模型接口与功能体",
+     "* **丰富的模型支持：** PaddleFormers 实现了对于 100+ 主流的大语言模型和视觉语言模型的训练能力支持，涵盖了 DeepSeek-V3、GLM-4.5系列、Qwen2和 Qwen3系列、Qwen3-VL 等前沿模型。同"
+    ]
+   },
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     25,
+     261
+    ],
+    "note": "训练产物可在 vLLM 部署，文档含部署指南",
+    "quotes": [
+     "* **全流程能力支持：** PaddleFormers 实现了从预训练到后训练的全流程训练能力支持，其中后训练支持 CPT / SFT / SFT-LoRA / DPO / DPO-LoRA 等主流能力，帮助用户高效、便捷地完成大模型的迭",
+     "* 基于 FastDeploy / vLLM 部署模型"
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     41
+    ],
+    "note": "模型列表中的 Cohere 模型，非推理接入",
+    "quotes": [
+     " Cohere"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     160
+    ],
+    "quotes": [
+     "> docker run --gpus all --name paddleformers-work -v $(pwd):/work \\"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     187
+    ],
+    "quotes": [
+     "> git clone https://github.com/PaddlePaddle/PaddleFormers.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     190,
+     201
+    ],
+    "quotes": [
+     "> python -m pip install -e '.[paddlefleet]' --extra-index-url https://www.paddlepaddle.org.cn/packages/nightly/cu126/ --",
+     "> python -m pip install \"paddleformers[paddlefleet]\" --extra-index-url https://www.paddlepaddle.org.cn/packages/stable/c"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "文心一言",
+    "rel": "mention",
+    "lines": [
+     23,
+     54
+    ],
+    "note": "ERNIE-4.5 系列模型，非竞品对比",
+    "quotes": [
+     "* **丰富的模型支持：** PaddleFormers 实现了对于 100+ 主流的大语言模型和视觉语言模型的训练能力支持，涵盖了 DeepSeek-V3、GLM-4.5系列、Qwen2和 Qwen3系列、Qwen3-VL 等前沿模型。同",
+     " baidu/ERNIE-4.5-0.3B-Base-PT、baidu/ERNIE-4.5-0.3B-PT、baidu/ERNIE-4.5-21B-A3B-Base-PT、baidu/ERNIE-4.5-21B-A3B-PT、baidu/E"
+    ]
+   },
+   {
+    "term": "通义千问",
+    "rel": "mention",
+    "lines": [
+     98,
+     102
+    ],
+    "note": "作为支持的模型系列",
+    "quotes": [
+     " Qwen/Qwen2-0.5B、Qwen/Qwen2-0.5B-Instruct、Qwen/Qwen2-1.5B、Qwen/Qwen2-1.5B-Instruct、Qwen/Qwen2-7B、Qwen/Qwen2-7B-Instruct、",
+     " Qwen/Qwen3-0.6B-Base、Qwen/Qwen3-0.6B、Qwen/Qwen3-1.7B-Base、Qwen/Qwen3-1.7B、Qwen/Qwen3-4B-Base、Qwen/Qwen3-4B、Qwen/Qwen3-4"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

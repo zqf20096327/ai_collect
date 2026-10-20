@@ -1,0 +1,180 @@
+{
+ "fn": "OpenRLHF/OpenRLHF",
+ "sha": "28e4068951ce",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 LLM/VLM 的分布式 RLHF 训练框架（Ray + vLLM）",
+  "review": "基于 Ray + vLLM + DeepSpeed 构建的开源 RLHF 训练框架，提供 SFT、DPO、奖励模型训练与 PPO/REINFORCE++/GRPO/RLOO 等多种 RL 算法，支持单轮与多轮 agent 训练模式（统一 token-in-token-out 执行管线）。通过混合引擎调度让模型与 vLLM 引擎共享 GPU，支持 70B+ 参数模型、LoRA/QLoRA、MoE、多节点 SLURM 训练。面向需要大规模对齐训练 LLM/VLM 的研究者和工程师，依赖 GPU 分布式环境（NCCL/CUDA IPC）。",
+  "highlights": [
+   "实现 PPO、REINFORCE++/baseline、GRPO、RLOO、Dr.GRPO、FlashREINFORCE 等 RL 算法",
+   "Ray 分布式调度 + vLLM 生成加速 + DeepSpeed ZeRO-3 训练，混合引擎共享 GPU",
+   "单轮/多轮 agent 训练统一接口，算法与执行模式解耦",
+   "支持 VLM 视觉语言模型 RL、LoRA/QLoRA、MoE、Muon 优化器与多节点训练"
+  ],
+  "use_cases": [
+   "对大模型做 RLHF/RLVR 对齐训练",
+   "训练多轮 agent 或视觉语言模型",
+   "在多 GPU/多节点集群上扩展 RL 训练",
+   "复现 DeepSeek-R1 等训练方案"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "RLHF",
+   "LLM训练框架",
+   "强化学习",
+   "分布式训练",
+   "VLM"
+  ],
+  "domain": "训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "reinforcement-learning",
+   "fine-tuning",
+   "model-training"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "多语言 README 含中文",
+   "引用知乎文章"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L26: OpenRLHF is **the first** high-performance, production-ready open-source RLHF framework that combines **Ray + vLLM distr",
+   "L70: OpenRLHF is **the first RLHF framework** built on Ray + vLLM distributed architecture, orchestrating multiple components",
+   "L133: OpenRLHF implements **PPO, REINFORCE++, REINFORCE++-baseline, GRPO, RLOO** with advanced optimization tricks inspired by"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "support",
+    "lines": [
+     26,
+     81,
+     82
+    ],
+    "note": "核心推理引擎，深度集成",
+    "quotes": [
+     "OpenRLHF is **the first** high-performance, production-ready open-source RLHF framework that combines **Ray + vLLM distr",
+     "**vLLM - High-Performance Inference Engine**",
+     "RLHF training spends **80% of the time on sample generation**. Powered by vLLM with Auto Tensor Parallelism (AutoTP) and"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     61,
+     63
+    ],
+    "note": "作为被复现的训练对象提及",
+    "quotes": [
+     "- [2025/2] LMM-R1 is a fork of OpenRLHF, aimed at providing high-performance RL infrastructure for reproduction of DeepS",
+     "- [2025/1] HKUST reproduced the DeepSeek-R1-Zero and DeepSeek-R1 training on small models using OpenRLHF"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     242,
+     321
+    ],
+    "quotes": [
+     "pip install -e .",
+     "> **Ray Environment Setup**: Let Ray auto-deploy with `--runtime-env-json='{\"setup_commands\": [\"pip install openrlhf[vll"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     232,
+     246
+    ],
+    "quotes": [
+     "docker run --runtime=nvidia -it --rm --shm-size=\"10g\" --cap-add=SYS_ADMIN \\",
+     "> We recommend **vLLM 0.29.0+** for best performance. See Dockerfiles and Nvidia-Docker Install Script."
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "mention",
+    "lines": [
+     240
+    ],
+    "quotes": [
+     "git clone https://github.com/OpenRLHF/OpenRLHF.git"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     85,
+     88
+    ],
+    "note": "被集成的模型接口与生态",
+    "quotes": [
+     "Built on DeepSpeed ZeRO-3, deepcompile, AutoTP, and RingAttention. Enables large model training without heavyweight fram",
+     "Native integration with HuggingFace Transformers for seamless model loading, state management, and fine-tuning of pretra"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

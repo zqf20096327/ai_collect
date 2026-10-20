@@ -1,34 +1,34 @@
 {
  "fn": "carla-simulator/carla",
- "sha": "93c738ec86d1",
+ "sha": "65524ccf7b8b",
  "source": "readme",
  "identity": {
-  "one_liner": "面向自动驾驶研究的开源仿真器",
-  "review": "CARLA 是面向自动驾驶系统开发、训练与验证的开源仿真器，提供开源代码、协议及可自由使用的城市布局、建筑、车辆等数字资产，支持灵活配置传感器组合与环境条件。当前 ue5-dev 分支基于 Unreal Engine 5.5，与 ue4-dev 分支并行维护。Linux/Windows 通过官方 setup 脚本从源码构建，需事先关联 Epic Games 账号以访问 UE5 fork，构建消耗较大磁盘空间与时间；项目有 CoRL'17 论文引用要求与 MIT/CC-BY 双重许可安排。",
+  "one_liner": "开源自动驾驶研究仿真器，支持系统开发、训练与验证",
+  "review": "基于 Unreal Engine 的开源自动驾驶仿真平台，提供开放数字资产（城市布局、建筑、车辆）、可配置的传感器套件与环境条件，配套 Python API、ROS 桥接、排行榜与基准测试等生态仓库。当前 README 对应 UE 5.8 开发分支（ue58-dev），与 UE 4.26 分支并行且差异显著。构建需先获取 CARLA 定制的 Unreal Engine 5.8 fork（需绑定 Epic Games 账号），经 CarlaSetup 脚本与 cmake 编译，或经官网下载页获取打包版本。推荐 32GB 内存与 RTX 3070 级以上显卡，仅支持 Ubuntu 22.04/24.04 或 Windows 11。",
   "highlights": [
-   "开源仿真器附带可自由使用的城市、车辆等数字资产",
-   "支持灵活指定传感器组合与环境条件",
-   "提供 ROS-bridge、Scenario_Runner、自动排行榜等生态仓库",
-   "提供 Python API 与蓝图库，跨 Linux/Windows 平台"
+   "提供城市布局、建筑、车辆等开放数字资产",
+   "支持传感器套组与环境条件的灵活配置",
+   "配套 Python API、ROS-bridge、排行榜与基准工具等生态仓库",
+   "有 CoRL'17 论文可引用"
   ],
   "use_cases": [
-   "搭建自动驾驶感知/规划算法的训练与验证仿真环境",
-   "在仿真中运行模仿学习或强化学习模型",
-   "执行交通场景测试并接入 ROS/AutoWare 栈"
+   "自动驾驶系统（含模仿学习/强化学习模型）的训练与验证",
+   "交通场景执行与自动驾驶排行榜评测",
+   "与 ROS/AutoWare 栈联动的仿真测试"
   ]
  },
  "filters": {
   "ai_role": "ai-ecosystem",
-  "license_risk": "dual",
+  "license_risk": "permissive",
   "deploy": null,
   "model_dep": null,
   "hardware": null,
   "install_friction": "medium",
-  "maturity": "research"
+  "maturity": null
  },
  "eval": {
   "target_user": "科研",
-  "paper_url": "https://proceedings.mlr.press/v78/dosovitskiy17a.html",
+  "paper_url": null,
   "demo_url": null,
   "self_declared_early": {
    "flag": false,
@@ -38,16 +38,18 @@
  "links": {
   "scenario_tags": [
    "自动驾驶",
-   "仿真器",
-   "强化学习",
+   "仿真平台",
+   "强化学习环境",
    "计算机视觉",
-   "科研"
+   "科研工具"
   ],
-  "domain": "自动驾驶研究/仿真",
+  "domain": "评测与运维",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [],
-  "scenario_tags_v2": []
+  "scenario_tags_v2": [
+   "model-evaluation"
+  ]
  },
  "intel": {
   "maintainer_type": "team",
@@ -58,14 +60,20 @@
   "confidence": "high",
   "evidence": [
    "L11: CARLA is an open-source simulator for autonomous driving research. CARLA has been developed from the ground up to suppor",
-   "L19: > This is the development branch `ue5-dev` for the **Unreal Engine 5.5 version of CARLA**. This branch exists in paralle",
-   "L82: In order to build CARLA, you need access to the CARLA fork of Unreal Engine 5.5. In order to access this repository, you"
+   "L12: validation of autonomous driving systems. In addition to open-source code and protocols, CARLA provides open digital ass",
+   "L50: * **Conditional Imitation-Learning**: Training and testing Conditional Imitation Learning models in CARLA"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -75,14 +83,10 @@
     "term": "source",
     "rel": "support",
     "lines": [
-     76,
-     79,
-     90
+     79
     ],
     "quotes": [
-     "Clone this repository locally from GitHub, specifying the *ue5-dev* branch:",
-     "git clone -b ue5-dev https://github.com/carla-simulator/carla.git CarlaUE5",
-     "./CarlaSetup.sh --interactive"
+     "git clone -b ue58-dev https://github.com/carla-simulator/carla.git CarlaUE5"
     ]
    }
   ],
@@ -91,32 +95,19 @@
     "term": "32 Gb RAM",
     "rel": "support",
     "lines": [
-     23,
-     24,
-     25,
-     26,
-     27
+     24
     ],
+    "note": "README 推荐系统配置中的内存要求",
     "quotes": [
-     "* Intel i7 gen 9th - 11th / Intel i9 gen 9th - 11th / AMD Ryzen 7 / AMD Ryzen 9",
-     "* +32 Gb RAM memory",
-     "* NVIDIA RTX 3070/3080/3090 / NVIDIA RTX 4090 / NVIDIA RTX 5090 or better",
-     "* 16 Gb or more VRAM",
-     "* Ubuntu 22.04 or 24.04, or Windows 11"
+     "* +32 Gb RAM memory"
     ]
    }
   ],
   "products": [],
   "dual_license": {
-   "flag": true,
-   "lines": [
-    185,
-    187
-   ],
-   "quotes": [
-    "CARLA specific code is distributed under the MIT License.",
-    "CARLA specific assets are distributed under the CC-BY License."
-   ]
+   "flag": false,
+   "lines": [],
+   "quotes": []
   },
   "deprecation": {
    "flag": false,

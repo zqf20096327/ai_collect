@@ -1,0 +1,137 @@
+{
+ "fn": "helloianneo/ian-xiaohei-illustrations",
+ "sha": "1aa152ed6e5d",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Codex Skill：为中文文章生成小黑怪诞手绘正文配图",
+  "review": "一个安装到 Codex skills 目录的 Skill，指导 AI Agent 为中文文章、博客、Notion 文档等生成正文配图：先读取内容、提炼认知锚点，输出 shot list（每篇 4-8 张），再按 8 种结构类型选择构图、设计低科技物理隐喻，让固定视觉 IP「小黑」承担核心动作，逐张调用图像模型生成 16:9 纯白底手绘 PNG 并保存到 workspace。面向用 Codex 做中文内容生产的写作者；不产出可编辑矢量、PPT 或商业插画，生成后需人工检查中文错字与风格漂移。",
+  "highlights": [
+   "先分析文章认知锚点、输出 shot list 再逐张生图的流程",
+   "固定视觉 IP「小黑」+ 纯白底细线手绘 + 红橙蓝中文批注的风格约束",
+   "8 种结构类型（Workflow、概念隐喻、前后对比等）与生成后 QA checklist",
+   "以 git clone + 复制到 Codex skills 目录方式安装"
+  ],
+  "use_cases": [
+   "给中文博客或方法论文章生成 4-8 张风格统一的配图",
+   "把文章里的抽象判断画成具体隐喻图",
+   "在 Codex 内容生产流程中复用一套个人视觉语言"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "图像生成",
+   "Codex Skill",
+   "中文内容创作",
+   "手绘插画",
+   "agent技能"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "image-generation",
+   "prompt-engineering"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "全中文 README",
+   "面向中文文章配图场景",
+   "作者微信联系方式与国内社群运营"
+  ]
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L9: Ian Xiaohei Illustrations 是一个 Codex Skill，用来指导 AI Agent 为中文文章、帖子、博客、Notion 文档和方法论内容生成正文配图。",
+   "L167: 7. 每张图单独调用图像模型生成",
+   "L39: - 16:9 横版正文配图"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     200,
+     201
+    ],
+    "note": "相关项目提及 Claude Code Skills 合集，非本 Skill 的接入对象",
+    "quotes": [
+     "- Awesome Claude Code Skills — Claude Code Skills / Agents / Plugins 精选合集",
+     "- Obsidian + Claude AI Second Brain — Obsidian + Claude AI 个人知识库搭建指南"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     104,
+     112
+    ],
+    "quotes": [
+     "git clone https://github.com/helloianneo/ian-xiaohei-illustrations.git",
+     "cp -R ./ian-xiaohei-illustrations \"${CODEX_HOME:-$HOME/.codex}/skills/\""
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Claude Code",
+    "rel": "mention",
+    "lines": [
+     200
+    ],
+    "quotes": [
+     "- Awesome Claude Code Skills — Claude Code Skills / Agents / Plugins 精选合集"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

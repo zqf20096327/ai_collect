@@ -1,0 +1,133 @@
+{
+ "fn": "LMCache/LMCache",
+ "sha": "118c3084cf00",
+ "source": "readme",
+ "identity": {
+  "one_liner": "LLM 推理的 KV 缓存管理层：跨引擎持久化存储与复用",
+  "review": "面向 LLM 推理服务的 KV cache 管理层，以独立守护进程方式运行，与推理引擎进程解耦。将 KV cache 从临时状态转为可持久存储、跨引擎复用、可监控的资源：支持分层卸载（GPU→CPU 内存/本地盘/Redis/S3 兼容对象存储/NIXL 等远程后端）、非前缀 KV 复用（CacheBlend）、PD 分离与 NVLink/RDMA/TCP KV 传输、可插拔 KV 变换接口，以降低 TTFT、提升吞吐。厂商中立，兼容多种开源推理引擎与硬件。以 pip 包提供，Apache 2.0 许可。",
+  "highlights": [
+   "引擎无关的独立守护进程部署，缓存不随引擎崩溃丢失",
+   "分层持久化卸载：CPU 内存、本地 SSD、Redis/Valkey、S3 兼容存储、NIXL 等",
+   "非前缀 KV 复用（CacheBlend 选择性重算）",
+   "PD 分离场景经 NVLink/RDMA/TCP 传输 KV cache"
+  ],
+  "use_cases": [
+   "长上下文 agent 与多轮对话推理降低重复 prefill 开销",
+   "跨引擎、跨实例复用已存储的 KV cache",
+   "RAG 等知识增强负载的 KV 缓存管理与观测"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://arxiv.org/abs/2510.09665",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "KV cache",
+   "LLM推理优化",
+   "推理基础设施",
+   "缓存复用"
+  ],
+  "domain": "训练与推理",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "inference-engine"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L44: LMCache is a **KV cache management layer** for LLM inference. It turns KV cache from a temporary state into reusable *AI",
+   "L46: LMCache is **vendor-neutral**. It can be used as a KV cache layer for a range of mainstream open-source serving engines,",
+   "L66: LMCache is becoming an integral layer in the LLM inference *ecosystem*, with *community*-driven integration with serving"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     39
+    ],
+    "note": "vLLM V1 中对多模态模型的 KV 缓存支持，属配套推理引擎",
+    "quotes": [
+     "- [2025/07] LMCache extends its turbo-boost to multimodal models in vLLM V1 (blog)."
+    ]
+   },
+   {
+    "term": "cohere",
+    "rel": "mention",
+    "lines": [
+     33
+    ],
+    "note": "新闻中提及 Cohere 模型服务场景，非接入适配",
+    "quotes": [
+     "- [2025/11] LMCache x CoreWeave accelerate efficient LLM inference for Cohere (blog)."
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     15,
+     16,
+     74
+    ],
+    "quotes": [
+     " PyPI",
+     " PyPI - Downloads",
+     "pip install lmcache"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

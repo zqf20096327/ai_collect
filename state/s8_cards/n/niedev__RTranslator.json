@@ -1,0 +1,151 @@
+{
+ "fn": "niedev/RTranslator",
+ "sha": "bd44e42d142a",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Android 离线实时翻译应用，本地运行语音识别与翻译模型",
+  "review": "面向 Android 用户的免费实时翻译应用，支持三种模式：Conversation（多机蓝牙连接双向同传）、WalkieTalkie（单机双语轮流对话翻译）和文本翻译。语音识别使用 Whisper-Small-244M、翻译使用 NLLB-Distilled-600M，均转为 onnx 格式并部分 int8 量化，配合 OnnxRuntime 在手机本地运行，可离线使用且不收集个人数据。首次启动需下载约 1.2GB 模型，要求手机至少 6GB RAM。3.0 测试版将提供 Bergamot/Madlad/HY-MT 多翻译模型选择并完全开源。",
+  "highlights": [
+   "Conversation/WalkieTalkie/文本三种翻译模式，支持蓝牙耳机与后台运行",
+   "Whisper 与 NLLB 模型转为 onnx 并部分 int8 量化，NLLB 运行内存从 2.5GB 降至 1.3GB",
+   "全离线运行，不收集个人数据（作者声明无服务器）",
+   "3.0 测试版提供 Mozilla Bergamot/Madlad 400 3B/HY-MT 1.5 1.8B 多模型选择"
+  ],
+  "use_cases": [
+   "出国旅行或跨语言日常对话的实时翻译",
+   "街头问路、购物等快速双语交流（单机 WalkieTalkie 模式）",
+   "无网络环境下翻译对话",
+   "普通文本翻译"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "消费者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    179
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "实时翻译",
+   "语音识别",
+   "离线AI",
+   "Android应用",
+   "端侧推理"
+  ],
+  "domain": "感知与多模态",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "asr"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L40: RTranslator uses Meta\\'s NLLB for translation and OpenAi\\'s Whisper for speech recognition, both are (almost) open-sourc",
+   "L15: - The audio captured will be converted into text and sent to the interlocutor's phone."
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     63
+    ],
+    "note": "仅作为 3.0 模型翻译质量对比参照被提及",
+    "quotes": [
+     "- The NLLB translation model has been replaced with the option to choose between: Mozilla Bergamot models, Madlad 400 3B"
+    ]
+   }
+  ],
+  "install": [],
+  "hardware": [
+   {
+    "term": "6GB of RAM",
+    "rel": "support",
+    "lines": [
+     87
+    ],
+    "note": "应用自身运行要求：至少 6GB RAM",
+    "quotes": [
+     "I have optimized the AI models a lot to minimize RAM consumption and execution time, despite this however to be able to "
+    ]
+   },
+   {
+    "term": "0.5 GB of RAM",
+    "rel": "mention",
+    "lines": [
+     151
+    ],
+    "note": "模型内存占用量描述，非设备要求",
+    "quotes": [
+     "**N.B.** RTranslator Whisper model can also consume 0.5 GB of RAM but with an execution time of 2.1s (this mode is used "
+    ]
+   },
+   {
+    "term": "RAM Consumption|2.5 GB",
+    "rel": "mention",
+    "lines": [
+     143
+    ],
+    "quotes": [
+     "|RAM Consumption|2.5 GB|1.3GB &nbsp;&nbsp;(1.9x improvement)|"
+    ]
+   },
+   {
+    "term": "RAM Consumption|1.4 GB",
+    "rel": "mention",
+    "lines": [
+     148
+    ],
+    "quotes": [
+     "|RAM Consumption|1.4 GB|0.9 GB &nbsp;&nbsp;(1.5x improvement)|"
+    ]
+   }
+  ],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

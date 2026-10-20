@@ -1,0 +1,138 @@
+{
+ "fn": "astrid-runtime/astrid",
+ "sha": "26d248e3a4d2",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向 agent 的能力安全 WASM 运行时：沙箱化组合并隔离各组件权限",
+  "review": "Astrid 是以 WebAssembly capsule 为组合单元的用户空间运行时（macOS/Linux），方向是独立操作系统。capsule 在 Wasmtime 沙箱中运行、无环境权限，文件/网络/进程等访问经 ed25519 签名的能力授权在运行时边界检查；内核只做事件总线与 IPC 路由，不含 LLM 句柄。支持 per-principal 隔离（KV、密钥、配额、审计链）、运行中热装载 capsule、内容寻址存储与 macOS FSKit / Linux FUSE 挂载。供构建 agent 系统、工具与自有发行版的开发者使用；不选择模型提供商或 agent 循环，LLM 能力由 distro 中的 capsule 提供。",
+  "highlights": [
+   "capsule 运行于 Wasmtime 沙箱，无 syscall/文件描述符/宿主内存，外部效果均经能力检查",
+   "ed25519 签名能力授权：资源模式限定、绑定 principal、可过期、可全局吊销",
+   "per-principal 隔离的 KV、密钥、home 目录、配额与哈希链接的签名审计链",
+   "运行中的 daemon 上安装/升级/移除 capsule，无需重启"
+  ],
+  "use_cases": [
+   "把不受信任的 agent 代码放进沙箱运行并精确授权其文件与网络访问",
+   "构建由可组合 capsule 构成的 agent 系统或自有发行版",
+   "为不同 agent 身份提供互相隔离的状态与凭据环境"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-ecosystem",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "agent运行时",
+   "能力安全",
+   "WASM沙箱",
+   "微内核",
+   "AI基础设施"
+  ],
+  "domain": "Agent 开发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "agent-framework"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L21: Use it to build agent systems, tools, services, or your own distribution. Astrid",
+   "L69: Agent frameworks put trust in the prompt. Astrid puts it in the runtime. An agent is untrusted code",
+   "L80:  capability ACL. It has no LLM handles, no conversation state, and no tool registry. All"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "cargo",
+    "rel": "support",
+    "lines": [
+     166,
+     169
+    ],
+    "quotes": [
+     "**From crates.io (requires Rust 1.95+):**",
+     "cargo install astrid"
+    ]
+   },
+   {
+    "term": "brew",
+    "rel": "support",
+    "lines": [
+     159,
+     162,
+     163
+    ],
+    "quotes": [
+     "**Homebrew (macOS and Linux):**",
+     "brew tap astrid-runtime/tap",
+     "brew install astrid"
+    ]
+   },
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     175
+    ],
+    "quotes": [
+     "git clone https://github.com/astrid-runtime/astrid"
+    ]
+   },
+   {
+    "term": "go",
+    "rel": "none",
+    "lines": [],
+    "quotes": []
+   }
+  ],
+  "hardware": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "note": "MIT OR Apache-2.0 为 SPDX 双开源许可声明（L7），未声明商业版",
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  },
+  "products": []
+ }
+}

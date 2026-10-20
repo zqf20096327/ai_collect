@@ -1,21 +1,21 @@
 {
  "fn": "modelscope/ms-swift",
- "sha": "d7e868defd77",
+ "sha": "99529d64652f",
  "source": "readme",
  "identity": {
-  "one_liner": "给开发者微调与部署 600+ LLM/400+ MLLM 的训练框架",
-  "review": "ModelScope 社区提供的大模型与多模态大模型微调及部署框架，覆盖预训练、微调、人类对齐训练、推理、评测、量化和部署全流程。集成 Megatron 并行（TP/PP/CP/EP）加速训练，内置 GRPO 系列强化学习算法（GRPO、DAPO、GSPO 等）与 DPO/KTO/SimPO 等偏好学习算法，支持 Embedding/Reranker 训练。通过 vLLM/SGLang/LMDeploy 加速推理，AWQ/GPTQ/BNB/FP8 量化。提供 Web-UI 界面，内置 150+ 数据集，支持自定义数据集一键训练。",
+  "one_liner": "面向开发者的 LLM/MLLM 微调、推理、评测与部署训练框架",
+  "review": "ModelScope 社区提供的大模型与多模态大模型训练部署框架，覆盖预训练、指令微调、人类偏好对齐（DPO/KTO/ORPO 等）、GRPO 系列强化学习及 Embedding/Reranker 训练，支持 600+ 文本模型与 400+ 多模态模型。提供 LoRA/QLoRA 等轻量微调、量化训练、Megatron 并行（TP/PP/CP/EP）、DeepSpeed/FSDP 分布式，并可配合 vLLM/SGLang/LMDeploy 做推理加速部署。含 Web-UI 与 CLI，内置 150+ 数据集；硬件支持 NVIDIA/AMD GPU、昇腾 NPU、Apple MPS 与 CPU。论文被 AAAI 2025 接收。",
   "highlights": [
-   "支持 600+ 纯文本与 400+ 多模态大模型的训练到部署全流程",
-   "内置 GRPO/DAPO/GSPO 等强化学习算法与 DPO/KTO 等偏好学习算法",
-   "支持 LoRA/QLoRA/DoRA 等轻量微调与 Megatron/DeepSpeed/FSDP 分布式训练",
-   "支持量化模型训练，7B 模型仅需 9GB 训练资源"
+   "600+ 文本模型与 400+ 多模态模型的训练到部署全流程支持",
+   "LoRA/QLoRA 等轻量微调与 BNB/GPTQ/AWQ 量化训练（7B 模型最低 9GB 资源）",
+   "GRPO 家族强化学习算法（GRPO/DAPO/GSPO/CISPO 等）与 Megatron 并行策略",
+   "内置 150+ 数据集与 Web-UI，支持 vLLM/SGLang/LMDeploy 推理加速与 EvalScope 评测"
   ],
   "use_cases": [
-   "用 LoRA 或全参数方式微调 Qwen、Llama 等开源模型",
-   "对多模态模型做图文音视频混合数据训练",
-   "用 GRPO 算法对模型做强化学习对齐",
-   "训练后量化导出并用 vLLM 部署推理服务"
+   "在单卡 3090 上用 LoRA 快速微调 Qwen 等开源模型",
+   "多 GPU/多机环境下用 Megatron 并行做 MoE 大模型全参数训练",
+   "用 GRPO 系列算法做模型强化学习训练",
+   "训练后直接量化导出并配合 vLLM 部署推理服务"
   ]
  },
  "filters": {
@@ -25,11 +25,11 @@
   "model_dep": "local-ok",
   "hardware": null,
   "install_friction": "medium",
-  "maturity": "research"
+  "maturity": null
  },
  "eval": {
   "target_user": "开发者",
-  "paper_url": "https://arxiv.org/",
+  "paper_url": null,
   "demo_url": null,
   "self_declared_early": {
    "flag": false,
@@ -38,78 +38,81 @@
  },
  "links": {
   "scenario_tags": [
-   "LLM微调",
+   "模型微调",
+   "RLHF/强化学习训练",
    "多模态训练",
-   "强化学习GRPO",
-   "模型量化部署"
+   "分布式训练",
+   "LLM基础设施"
   ],
   "domain": "训练与推理",
   "alternative_to": [],
   "competitors_mentioned": [],
   "ecosystem_compat": [
-   "deepseek",
    "vllm"
   ],
   "scenario_tags_v2": [
    "fine-tuning",
    "model-training",
    "reinforcement-learning",
-   "model-quantization"
+   "inference-engine"
   ]
  },
  "intel": {
   "maintainer_type": "company",
   "zh_origin": true,
   "zh_origin_signals": [
-   "README 提供中英双语",
-   "ModelScope 社区出品",
-   "支持 Ascend NPU 等国产硬件"
+   "中文 README",
+   "ModelScope（魔搭）社区维护",
+   "支持昇腾 NPU 等国产硬件"
   ]
  },
  "trust": {
   "confidence": "high",
   "evidence": [
    "L23: 🍲 **ms-swift** is a large model and multimodal large model fine-tuning and deployment framework provided by the ModelSco",
-   "L31: - **Hardware Support**: Supports NVIDIA GPUs (A100/H100/RTX series, etc., via CUDA), AMD GPUs (MI300 series, etc., via R",
-   "L90: To install using pip:"
+   "L25: 🍔 In addition, ms-swift integrates the latest training technologies, including Megatron parallelism techniques such as T"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
   "providers": [
    {
-    "term": "deepseek",
-    "rel": "support",
-    "lines": [
-     23,
-     50
-    ],
-    "note": "列出 DeepSeek 系列模型的训练/推理支持",
-    "quotes": [
-     "🍲 **ms-swift** is a large model and multimodal large model fine-tuning and deployment framework provided by the ModelSco",
-     "- 🔥 2026.09.21: Support for DeepSeek-V4.1-Flash: Megatron-SWIFT full-parameter training (SFT and GRPO) plus vLLM inferen"
-    ]
-   },
-   {
     "term": "vllm",
-    "rel": "support",
+    "rel": "compat",
     "lines": [
      25,
      43,
-     45,
-     121
+     122
     ],
-    "note": "作为推理加速引擎支持并列入运行环境依赖",
+    "note": "可选推理加速后端（--infer_backend vllm）与 GRPO 推理引擎",
     "quotes": [
      "🍔 In addition, ms-swift integrates the latest training technologies, including Megatron parallelism techniques such as T",
      "- **Inference Acceleration**: Supports Transformers, vLLM, SGLang, and LmDeploy inference acceleration engines, providin",
-     "- **Model Quantization**: Supports quantization export for AWQ, GPTQ, FP8, and BNB. Exported models support inference ac",
      "|vllm|>=0.5.1|0.11.0/0.23.0|Inference/Deployment|"
+    ]
+   },
+   {
+    "term": "deepseek",
+    "rel": "mention",
+    "lines": [
+     23,
+     51
+    ],
+    "note": "仅作为被支持的模型系列列举",
+    "quotes": [
+     "🍲 **ms-swift** is a large model and multimodal large model fine-tuning and deployment framework provided by the ModelSco",
+     "- 🔥 2026.09.21: Support for DeepSeek-V4.1-Flash: Megatron-SWIFT full-parameter training (SFT and GRPO) plus vLLM inferen"
     ]
    }
   ],
@@ -118,15 +121,11 @@
     "term": "pypi",
     "rel": "support",
     "lines": [
-     90,
-     92,
-     95,
-     96
+     93,
+     97
     ],
     "quotes": [
-     "To install using pip:",
      "pip install ms-swift -U",
-     "pip install uv",
      "uv pip install ms-swift -U --torch-backend=auto"
     ]
    },
@@ -134,11 +133,9 @@
     "term": "source",
     "rel": "support",
     "lines": [
-     99,
-     103
+     104
     ],
     "quotes": [
-     "To install from source:",
      "git clone https://github.com/modelscope/ms-swift.git"
     ]
    }
@@ -150,9 +147,9 @@
     "rel": "mention",
     "lines": [
      23,
-     55
+     56
     ],
-    "note": "列为支持的模型，非替代/竞品对象",
+    "note": "被支持的模型，非竞品",
     "quotes": [
      "🍲 **ms-swift** is a large model and multimodal large model fine-tuning and deployment framework provided by the ModelSco",
      "- 🎁 2026.07.22: Support inference for the moonshotai multimodal model Kimi-K3, including the XTML chat template, thinkin"
@@ -162,8 +159,9 @@
     "term": "Hugging Face",
     "rel": "mention",
     "lines": [
-     146
+     147
     ],
+    "note": "窗外行，仅在生态语境提及",
     "quotes": [
      "- By default, **ModelScope** is used for downloading models and datasets. If you want to use HuggingFace, simply specify"
     ]
@@ -172,8 +170,9 @@
     "term": "通义千问",
     "rel": "mention",
     "lines": [
-     245
+     246
     ],
+    "note": "窗外行，被支持的模型系列",
     "quotes": [
      "    --model Qwen/Qwen3-4B-Instruct-2507 \\"
     ]

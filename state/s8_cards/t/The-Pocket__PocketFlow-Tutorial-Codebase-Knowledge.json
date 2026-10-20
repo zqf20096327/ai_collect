@@ -1,0 +1,170 @@
+{
+ "fn": "The-Pocket/PocketFlow-Tutorial-Codebase-Knowledge",
+ "sha": "18969315ce80",
+ "source": "readme",
+ "identity": {
+  "one_liner": "将 GitHub 代码库转化为新手教程的 AI 教程项目",
+  "review": "Pocket Flow（100 行 LLM 框架）的教程项目：通过 AI agent 爬取 GitHub 仓库或读取本地目录，构建代码知识库，识别核心抽象及其交互，并生成带可视化、面向新手的教程文档。支持通过环境变量配置不同 LLM 提供商（默认 Gemini，可选 Ollama 等），提供 include/exclude 文件过滤、输出语言、抽象数量等参数，并以 git clone + pip 或 Docker 两种方式运行，产出保存至 output 目录。",
+  "highlights": [
+   "爬取 GitHub 仓库或分析本地目录构建代码知识库",
+   "LLM 识别核心抽象并生成多语言教程（默认英语）",
+   "支持文件包含/排除过滤与文件大小上限",
+   "提供 Docker 运行方式，API key 以环境变量传入"
+  ],
+  "use_cases": [
+   "接手陌生代码库时快速生成入门讲解文档",
+   "为自己的开源项目生成面向新手的教程",
+   "用本地 Ollama 模型离线分析代码库"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "self-host",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "代码理解",
+   "教程生成",
+   "LLM应用",
+   "代码库文档"
+  ],
+  "domain": "内容生成",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "ollama"
+  ],
+  "scenario_tags_v2": [
+   "tutorials",
+   "ai-writing"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L7: > *Ever stared at a new codebase written by others feeling completely lost? This tutorial shows you how to build an AI a",
+   "L13: This is a tutorial project of Pocket Flow, a 100-line LLM framework. It crawls GitHub repositories and builds a knowledg"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "ollama",
+    "rel": "compat",
+    "lines": [
+     85
+    ],
+    "note": "可通过 LLM_PROVIDER 环境变量使用本地 Ollama",
+    "quotes": [
+     "4. Set up LLM in `utils/call_llm.py` by providing credentials. To do so, you can put the values in a `.env` file. By def"
+    ]
+   },
+   {
+    "term": "anthropic",
+    "rel": "mention",
+    "lines": [
+     86
+    ],
+    "note": "推荐 Claude 3.7 with thinking 模型",
+    "quotes": [
+     " You can use your own models. We highly recommend the latest models with thinking capabilities (Claude 3.7 with thinking"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     75,
+     77
+    ],
+    "quotes": [
+     "1. Clone this repository",
+     "   git clone https://github.com/The-Pocket/PocketFlow-Tutorial-Codebase-Knowledge"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     80,
+     82
+    ],
+    "note": "pip install -r requirements.txt 安装依赖",
+    "quotes": [
+     "3. Install dependencies:",
+     "   pip install -r requirements.txt"
+    ]
+   },
+   {
+    "term": "docker",
+    "rel": "support",
+    "lines": [
+     116,
+     118,
+     130
+    ],
+    "quotes": [
+     "1. Build the Docker image",
+     "   docker build -t pocketflow-app .",
+     "   docker run -it --rm \\"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "mention",
+    "lines": [
+     150
+    ],
+    "note": "提及 Cursor AI 作为 agent 编码示例，非竞品",
+    "quotes": [
+     "- The secret weapon is Pocket Flow, a 100-line LLM framework that lets Agents (e.g., Cursor AI) build for you"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,0 +1,117 @@
+{
+ "fn": "sapientinc/HRM",
+ "sha": "21b1891784d5",
+ "source": "readme",
+ "identity": {
+  "one_liner": "27M 参数的两层级联循环推理模型官方实现",
+  "review": "Sapient 公司发布的 Hierarchical Reasoning Model（HRM）官方代码库：受人脑多时间尺度层级处理启发的循环架构，包含负责慢速抽象规划的高层模块与负责快速细节计算的低层模块，在单次前向传播中执行序列推理，无需预训练或 CoT 数据。论文称以 27M 参数、1000 训练样本在复杂数独、迷宫寻路及 ARC 基准上取得高准确率。仓库提供训练与评估脚本、已训练检查点（ARC-AGI-2、Sudoku、Maze），依赖 PyTorch、CUDA、FlashAttention，实验跟踪使用 W&B；单卡 RTX 4070 可跑数独 demo（约 10 小时），完整实验假定 8 GPU 环境。",
+  "highlights": [
+   "高层慢规划 + 低层快计算的双循环模块架构，单次前向传播完成推理",
+   "提供 ARC-AGI-2、Sudoku 9x9 Extreme、Maze 30x30 Hard 训练检查点",
+   "小样本训练：1000 样本、27M 参数，无需预训练或 CoT 数据",
+   "W&B 集成的实验跟踪与评估脚本、数据集可视化工具"
+  ],
+  "use_cases": [
+   "我在单张笔记本 GPU 上训练求解极难数独的模型",
+   "我在 8 卡环境复现 ARC-AGI-2 小样本学习实验",
+   "我研究受脑启发的层级推理架构并与 CoT 方法对比"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "科研",
+  "paper_url": "https://arxiv.org/abs/2506.21734",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "推理模型",
+   "神经架构",
+   "小样本学习",
+   "ARC基准",
+   "受脑启发AI"
+  ],
+  "domain": "学习与行业",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "model-training",
+   "research-tools"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L4: Current large language models (LLMs) primarily employ Chain-of-Thought (CoT) techniques, which suffer from brittle task ",
+   "L5: HRM executes sequential reasoning tasks in a single forward pass without explicit supervision of the intermediate proces"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     29
+    ],
+    "note": "源码克隆方式安装 FlashAttention，属环境构建步骤；本仓库经 git clone 获取",
+    "quotes": [
+     "git clone git@github.com:Dao-AILab/flash-attention.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     43
+    ],
+    "note": "pip install -r requirements.txt 安装 Python 依赖",
+    "quotes": [
+     "pip install -r requirements.txt"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

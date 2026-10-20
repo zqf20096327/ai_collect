@@ -1,0 +1,158 @@
+{
+ "fn": "multimodal-art-projection/YuE",
+ "sha": "70c6ad2af591",
+ "source": "readme",
+ "identity": {
+  "one_liner": "歌词+风格生成完整歌曲的音乐模型，支持符号乐谱规划与编辑",
+  "review": "YuE2 是歌词与风格提示驱动的歌曲生成模型：先用 AR–NAR Mixture-of-Transformers 骨干生成可编辑的旋律与和弦乐谱（符号规划），再经 flow matching 生成声学潜变量并由 VAE 解码为 48kHz 立体声音频。同一生成检查点支持三种模式：从歌词创作新歌、基于 SheetSage2 转录的零样本翻唱、以及通过对话编辑乐谱后重新渲染。以 Python API 与示例脚本提供，附带面向 agent 的 yue2-music 技能包。运行需 Linux、Python 3.12、支持 BF16 且显存 24GB 的 NVIDIA GPU。",
+  "highlights": [
+   "符号乐谱规划：生成前可读取、演奏、编辑旋律与和弦",
+   "零样本翻唱与 agentic 乐谱编辑共用同一生成检查点",
+   "分阶段 Python API：plan→generate_semantic→synthesize→decode",
+   "附带 yue2-music agent 技能，支持歌曲与器乐生成"
+  ],
+  "use_cases": [
+   "输入歌词和风格描述生成带人声与伴奏的完整歌曲",
+   "把已有录音转成旋律乐谱并换风格翻唱",
+   "通过编辑 ABC 乐谱的和声、旋律、节奏后重新渲染成曲"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": "gpu-24g",
+  "install_friction": "low",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "arXiv（README 提供 YuE2 论文链接，具体 URL 未在文本中展开）",
+  "demo_url": "NOIZ 托管的在线免费试用（README 提供 Try online 链接）",
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "音乐生成",
+   "歌词到歌曲",
+   "零样本翻唱",
+   "符号乐谱编辑",
+   "基础模型"
+  ],
+  "domain": "AI 音乐生成/音频",
+  "alternative_to": [],
+  "competitors_mentioned": [
+   "Suno"
+  ],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "team",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L42: **YuE2 brings frontier song quality to music generation with an editable composition.** Give it lyrics and a style promp",
+   "L86: One **AR–NAR Mixture-of-Transformers** backbone predicts the score and semantic tokens autoregressively, then generates ",
+   "L92: **Linux · Python 3.12 · NVIDIA GPU with BF16 support and 24 GB VRAM.** YuE2 produces 48 kHz stereo audio without quantiz"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     95
+    ],
+    "quotes": [
+     "git clone https://github.com/multimodal-art-projection/YuE.git"
+    ]
+   },
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     158
+    ],
+    "quotes": [
+     "Use **`skills/yue2-music/` from this repository** or download the **updated skill ZIP**. Install it using your agent's s"
+    ]
+   }
+  ],
+  "hardware": [
+   {
+    "term": "24 GB VRAM",
+    "rel": "support",
+    "lines": [
+     92
+    ],
+    "quotes": [
+     "**Linux · Python 3.12 · NVIDIA GPU with BF16 support and 24 GB VRAM.** YuE2 produces 48 kHz stereo audio without quantiz"
+    ]
+   }
+  ],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     33,
+     36
+    ],
+    "quotes": [
+     " <a href=\"https://web.archive.org/web/20260917003427/https://huggingface.co/models?sort=trending\">",
+     " <a href=\"https://huggingface.co/models?pipeline_tag=text-to-audio&amp;sort=trending\">"
+    ]
+   },
+   {
+    "term": "Suno",
+    "rel": "competitor",
+    "lines": [
+     50,
+     182,
+     184,
+     185,
+     186
+    ],
+    "note": "基准对比中列出的被评测系统，且公开盲听研究与 Suno v5/v6 对比",
+    "quotes": [
+     "- **Frontier quality.** YuE2 is competitive with Suno v5/v6 on WildSongBench. YuE2 (best-of-8) achieves **6.9632 SongBen",
+     "|Suno v5|6.8721|8.1698|**0.5428**|8.10%|",
+     "|Suno v5.5|6.7150|8.1955|0.5089|5.96%|",
+     "|Suno v4.5|6.6995|8.2541|0.5022|**5.80%**|",
+     "|Suno v6|6.5562|8.1296|0.4916|7.58%|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

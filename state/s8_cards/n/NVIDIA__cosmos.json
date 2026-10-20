@@ -1,0 +1,143 @@
+{
+ "fn": "NVIDIA/cosmos",
+ "sha": "bc20668c1122",
+ "source": "readme",
+ "identity": {
+  "one_liner": "面向物理 AI 的开源世界基础模型平台（模型+数据+工具）",
+  "review": "NVIDIA 维护的 Physical AI 开放平台仓库，本体是 Cosmos 3 全模态世界模型家族：同一 Mixture-of-Transformers 架构提供 Reasoner（文本/视觉输入，输出理解、任务规划等文本）与 Generator（输入含动作/声音，输出视频、声音、动作，用于世界模拟、合成数据、策略学习）。提供 64B/16B/4B 三个规模基础模型及多个示例检查点（文生图、图生视频、DROID 机器人策略），通过 Diffusers/vLLM/SGLang/TensorRT-LLM/NIM 等后端运行，附可运行 notebooks 与评测套件。训练/优化工具在 Cosmos Framework，数据整理与评测分属 Curator/Evaluator。生成默认开启 guardrail，长时高分辨率输出可能出现伪影；需先申请 Guardrail 仓库访问权，16B 检查点首次运行下载且扩散步骤计算量大。",
+  "highlights": [
+   "全模态世界模型：Reasoner 做理解/规划，Generator 做模拟/合成数据",
+   "三档规模：64B（H200/B200）、16B（H100）、4B（Jetson 边缘部署）",
+   "示例检查点含 DROID 机器人策略与 17-25x 加速的少步生成变体",
+   "支持 Diffusers/vLLM/vLLM-Omni/SGLang/TensorRT-LLM/NIM 多后端及 OpenAI 兼容 API 服务"
+  ],
+  "use_cases": [
+   "为机器人与自动驾驶生成合成数据与仿真环境",
+   "执行具身任务规划与世界推理（如视觉问答、危险预判）",
+   "在其上做 SFT/LoRA/蒸馏/RL 后训练并评测（配合 Cosmos Framework）"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "none",
+  "deploy": "library",
+  "model_dep": "local-ok",
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "research"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "世界模型",
+   "Physical AI",
+   "机器人",
+   "自动驾驶",
+   "视频生成"
+  ],
+  "domain": "评测与运维",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [
+   "vllm"
+  ],
+  "scenario_tags_v2": [
+   "model-evaluation",
+   "image-generation",
+   "video-generation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L38: NVIDIA Cosmos is an open platform for building physical AI applications — robots, autonomous vehicles, and smart infrast",
+   "L44: |**Reasoner**|text, vision|text|world understanding, grounding, task planning, embodied reasoning|",
+   "L45: |**Generator**|text, vision, sound, action|vision, sound, action|world simulation, future prediction, synthetic data, po"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [
+   {
+    "term": "vllm",
+    "rel": "compat",
+    "lines": [
+     55,
+     126
+    ],
+    "note": "作为可选推理后端之一（含 vLLM-Omni），用于 OpenAI 兼容 API 服务",
+    "quotes": [
+     " Serve an OpenAI-compatible API Serving setup guide — vLLM, vLLM-Omni, or NIM 30 min",
+     "Cosmos 3 runs on Diffusers, Transformers, vLLM, vLLM-Omni, SGLang, TensorRT-LLM, and NIM — pick a backend in the environ"
+    ]
+   }
+  ],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     67,
+     68,
+     69,
+     70
+    ],
+    "quotes": [
+     "uv pip install --torch-backend=auto \\",
+     "  \"diffusers @ git+https://github.com/huggingface/diffusers.git\" \\",
+     "  accelerate av cosmos_guardrail huggingface_hub imageio imageio-ffmpeg \\",
+     "  torch torchvision transformers"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     68,
+     69
+    ],
+    "note": "diffusers 依赖与模型托管的来源，非替代/竞品",
+    "quotes": [
+     "  \"diffusers @ git+https://github.com/huggingface/diffusers.git\" \\",
+     "  accelerate av cosmos_guardrail huggingface_hub imageio imageio-ffmpeg \\"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

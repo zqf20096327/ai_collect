@@ -1,0 +1,123 @@
+{
+ "fn": "onnx/models",
+ "sha": "65400827238c",
+ "source": "readme",
+ "identity": {
+  "one_liner": "ONNX 格式预训练模型集合，供开发者下载使用",
+  "review": "ONNX 官方维护的预训练模型动物园：以 ONNX 开放格式收录图像分类、目标检测与分割、人脸/人体分析、图像处理、语音音频、NLP 等类别的模型，模型文件通过 Git LFS 分发，部分 INT8 量化模型由 Intel Neural Compressor 生成。仓库已发布弃用公告：仅作历史保存，2025 年 7 月 1 日起模型不再提供 LFS 下载，可转至 Hugging Face 上的 onnxmodelzoo 获取原模型。",
+  "highlights": [
+   "收录图像分类、目标检测/分割、人脸/人体分析、语音等多类别预训练模型",
+   "模型文件经 Git LFS 分发，附验证用测试数据与 Python 示例",
+   "INT8 量化模型由 Intel Neural Compressor 生成",
+   "已宣布弃用，模型迁移至 Hugging Face onnxmodelzoo"
+  ],
+  "use_cases": [
+   "查找并下载 ONNX 格式的预训练模型用于推理部署",
+   "在模型发布到 Hugging Face 前获取历史 ONNX 模型存档",
+   "用提供的测试数据验证 ONNX 模型精度"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-knowledge",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "模型动物园",
+   "ONNX",
+   "预训练模型",
+   "计算机视觉",
+   "模型分发"
+  ],
+  "domain": "深度学习/模型分发",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": []
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L9: This repository is a curated collection of pre-trained, state-of-the-art models in the ONNX format. These models are sou",
+   "L15: Currently, we are expanding the ONNX Model Zoo by incorporating additional models from the following categories."
+  ],
+  "xcheck": {
+   "install_missing": [
+    "pypi"
+   ]
+  },
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "source",
+    "rel": "support",
+    "lines": [
+     215
+    ],
+    "note": "通过 git clone 配合 Git LFS 获取模型文件",
+    "quotes": [
+     "### Git Clone (Not Recommended)"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Hugging Face",
+    "rel": "mention",
+    "lines": [
+     1,
+     47
+    ],
+    "note": "弃用公告中指明模型迁移至 Hugging Face；多处提供 Spaces 演示链接",
+    "quotes": [
+     "> **Deprecation Notice**: We sincerely thank the community for participating in the ONNX Model Zoo effort. As the machin",
+     "|Model Class|Reference|Description|Huggingface Spaces|"
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": true,
+   "lines": [
+    1
+   ]
+  }
+ }
+}

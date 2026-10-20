@@ -1,0 +1,122 @@
+{
+ "fn": "roboflow/rf-detr",
+ "sha": "794a1de36408",
+ "source": "readme",
+ "identity": {
+  "one_liner": "实时目标检测/实例分割/关键点检测模型，面向微调部署",
+  "review": "Roboflow 开发的实时 transformer 检测架构，基于 DINOv2 视觉骨干（Atto/Femto/Pico 用 PE-Core-T），在单一 API 中支持目标检测、实例分割与关键点检测（preview），提供 Nano 至 2XLarge 多档模型规模。核心 rfdetr 包与 Apache 指定模型以 Apache 2.0 发布，Plus 组件（rfdetr_plus，含 Atto/Femto/Pico/XL/2XL）以 PML 1.0 许可。README 给出 COCO 与 RF100-VL 基准，并支持通过 Inference 库运行。",
+  "highlights": [
+   "检测、实例分割、关键点检测（preview）单一一致 API",
+   "基于 DINOv2 backbone，模型规模从 Nano 到 2XLarge",
+   "核心包 Apache 2.0，Plus 组件 PML 1.0 分许可",
+   "可通过 Inference 库或 rfdetr 包运行"
+  ],
+  "use_cases": [
+   "在自己的数据集上微调目标检测模型",
+   "需要实例分割或关键点检测的视觉应用",
+   "按延迟预算选择不同规模的检测模型部署"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-native",
+  "license_risk": "permissive",
+  "deploy": "library",
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "low",
+  "maturity": null
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": null,
+  "self_declared_early": {
+   "flag": false,
+   "lines": []
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "计算机视觉",
+   "目标检测",
+   "实例分割",
+   "模型微调"
+  ],
+  "domain": "感知与多模态",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "object-detection",
+   "fine-tuning"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "company",
+  "zh_origin": false,
+  "zh_origin_signals": []
+ },
+ "trust": {
+  "confidence": "high",
+  "evidence": [
+   "L13: RF-DETR is a real-time transformer architecture for object detection, instance segmentation, and keypoint detection (pre",
+   "L15: RF-DETR uses a DINOv2 vision transformer backbone (PE-Core-T for Atto, Femto and Pico) and supports object detection, in"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "pypi",
+    "rel": "support",
+    "lines": [
+     26,
+     34,
+     178
+    ],
+    "quotes": [
+     "pip install rfdetr",
+     "pip install https://github.com/roboflow/rf-detr/archive/refs/heads/develop.zip",
+     "> △ Requires the `rfdetr_plus` extension: `pip install rfdetr[plus]`. See License for details."
+    ]
+   },
+   {
+    "term": "colab",
+    "rel": "mention",
+    "lines": [
+     5
+    ],
+    "quotes": [
+     "arXiv hf space colab roboflow discord"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [],
+  "dual_license": {
+   "flag": true,
+   "lines": [
+    15
+   ],
+   "quotes": [
+    "RF-DETR uses a DINOv2 vision transformer backbone (PE-Core-T for Atto, Femto and Pico) and supports object detection, in"
+   ]
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": []
+  }
+ }
+}

@@ -1,25 +1,24 @@
 {
  "fn": "pipecat-ai/pipecat",
- "sha": "2d5484ab78be",
+ "sha": "b628b36cd136",
  "source": "readme",
  "identity": {
-  "one_liner": "给开发者构建实时语音与多模态 AI 代理的 Python 框架",
-  "review": "Pipecat 是一个用于构建实时语音与多模态对话代理的开源 Python 框架，由 Daily 与社区维护。它编排音频/视频、AI 服务、传输层与对话管道，支持单代理或多代理系统（交接、并行分发、共享总线，可跨进程与机器分布式运行）。传输层支持 WebSockets 与 WebRTC。核心框架默认轻量，第三方 AI 服务依赖通过 extras 按需添加。需要 Python 3.11+，用 uv 安装；提供 CLI 脚手架、客户端 SDK（JS/React/Swift/Kotlin/C++/ESP32）、调试工具与 Pipecat Cloud 部署。",
+  "one_liner": "构建实时语音与多模态 AI 对话代理的 Python 框架",
+  "review": "开源 Python 框架，用于搭建实时语音与多模态对话代理：可编排语音识别、文本转语音、LLM、音视频传输与对话管线，支持单个语音代理或多代理系统（专家交接、并行扇出、共享总线，可跨进程跨机器分布式部署）。集成数十家 AI 服务商，提供 CLI 脚手架（pipecat init）、客户端 SDK（JS/React/Swift/Kotlin 等）与 Pipecat UI 组件库。默认仅含核心框架，第三方服务按 extras 安装；需 Python 3.11+，推荐配合 uv 使用。",
   "highlights": [
-   "语音优先管道：集成语音识别、TTS 与对话处理，支持多模态（语音/视频/图像）",
-   "多代理系统：每个管道即一个代理，支持 handoff、并行 fan-out、sidecar 与分布式部署",
-   "大量可插拔服务：LLM、STT、TTS、传输、视频、VAD 等数十家服务商",
-   "官方多平台客户端 SDK：JavaScript/React/React Native/Swift/Kotlin/C++/ESP32"
+   "语音优先管线：集成 STT、TTS 与对话处理",
+   "多代理编排：交接、并行扇出、sidecar、分布式部署",
+   "服务表覆盖数十家 STT/LLM/TTS/S2S/传输等服务商",
+   "CLI 脚手架可在约一分钟内生成可运行 bot"
   ],
   "use_cases": [
-   "构建语音助手或 AI 陪伴类实时对话应用",
-   "搭建多代理协作系统（交接、并行、共享总线）",
-   "开发客服/客户接待等业务型语音代理",
-   "为语音 AI 应用接入 WebRTC/WebSocket 传输与电话序列化器"
+   "搭建客服或电话语音机器人",
+   "构建多专家协作的多代理语音系统",
+   "做带语音视频输入的多模odal 对话应用"
   ]
  },
  "filters": {
-  "ai_role": "ai-native",
+  "ai_role": "ai-ecosystem",
   "license_risk": "permissive",
   "deploy": "library",
   "model_dep": "local-ok",
@@ -39,10 +38,9 @@
  "links": {
   "scenario_tags": [
    "语音代理",
-   "多模态",
-   "实时AI",
-   "Agent框架",
-   "Python框架"
+   "多代理编排",
+   "实时对话",
+   "框架/SDK"
   ],
   "domain": "Agent 开发",
   "alternative_to": [],
@@ -57,9 +55,10 @@
    "ollama"
   ],
   "scenario_tags_v2": [
-   "agent-framework",
    "voice-agent",
-   "multi-agent"
+   "agent-framework",
+   "multi-agent",
+   "multimodal"
   ]
  },
  "intel": {
@@ -71,14 +70,20 @@
   "confidence": "high",
   "evidence": [
    "L7: **Pipecat** is an open-source Python framework for building real-time voice and multimodal conversational agents. Build ",
-   "L26: - **Multi-Agent Ready**: Each pipeline is an agent. Compose them with handoff, parallel fan-out, sidecar workers, or dis",
-   "L87: |LLMs|Anthropic, AWS, Azure, Baseten, Cerebras, Crusoe, DeepSeek, Fireworks AI, Gemini, Grok, Groq, Inception, Mistral, "
+   "L23: - **Voice-first**: Integrates speech recognition, text-to-speech, and conversation handling",
+   "L26: - **Multi-Agent Ready**: Each pipeline is an agent. Compose them with handoff, parallel fan-out, sidecar workers, or dis"
   ],
   "xcheck": null,
   "ver": 1,
   "prompt_ver": "1.4",
-  "generated_at": "2026-10-18",
+  "generated_at": "2026-10-20",
   "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
   "vocab_ver": "1.0"
  },
  "raw_verdicts": {
@@ -87,14 +92,9 @@
     "term": "anthropic",
     "rel": "support",
     "lines": [
-     48,
-     63,
      87
     ],
-    "note": "LLM 服务列表中提供 Anthropic，且有 Claude Code 插件通道",
     "quotes": [
-     "The Pipecat CLI ships with `pipecat-ai` — install it with `uv tool install \"pipecat-ai[cli]\"`. Run `pipecat init` to sta",
-     "claude plugin marketplace add pipecat-ai/skills",
      "|LLMs|Anthropic, AWS, Azure, Baseten, Cerebras, Crusoe, DeepSeek, Fireworks AI, Gemini, Grok, Groq, Inception, Mistral, "
     ]
    },
@@ -106,7 +106,6 @@
      87,
      88
     ],
-    "note": "STT/LLM/TTS 服务列表中均提供 Groq",
     "quotes": [
      "|Speech-to-Text|AssemblyAI, AWS, Azure, Cartesia, Deepgram, ElevenLabs, Fal Wizper, FunASR, Gladia, Google, Gradium, Gro",
      "|LLMs|Anthropic, AWS, Azure, Baseten, Cerebras, Crusoe, DeepSeek, Fireworks AI, Gemini, Grok, Groq, Inception, Mistral, ",
@@ -119,7 +118,6 @@
     "lines": [
      87
     ],
-    "note": "LLM 服务列表中提供 DeepSeek",
     "quotes": [
      "|LLMs|Anthropic, AWS, Azure, Baseten, Cerebras, Crusoe, DeepSeek, Fireworks AI, Gemini, Grok, Groq, Inception, Mistral, "
     ]
@@ -128,13 +126,12 @@
     "term": "xai",
     "rel": "support",
     "lines": [
-     86,
+     87,
      88,
      89
     ],
-    "note": "STT/TTS/Voice Agent 服务列表中提供 xAI",
     "quotes": [
-     "|Speech-to-Text|AssemblyAI, AWS, Azure, Cartesia, Deepgram, ElevenLabs, Fal Wizper, FunASR, Gladia, Google, Gradium, Gro",
+     "|LLMs|Anthropic, AWS, Azure, Baseten, Cerebras, Crusoe, DeepSeek, Fireworks AI, Gemini, Grok, Groq, Inception, Mistral, ",
      "|Text-to-Speech|Async, AWS, Azure, Bland, Camb AI, Cartesia, Deepgram, ElevenLabs, Fish, Google, Gradium, Groq, Hume, In",
      "|Speech-to-Speech|AWS Nova Sonic, Azure Voice Live, Gemini Multimodal Live, Grok Voice Agent, OpenAI Realtime, Ultravox,"
     ]
@@ -147,7 +144,6 @@
      87,
      88
     ],
-    "note": "STT/LLM/TTS 服务列表中提供 Together",
     "quotes": [
      "|Speech-to-Text|AssemblyAI, AWS, Azure, Cartesia, Deepgram, ElevenLabs, Fal Wizper, FunASR, Gladia, Google, Gradium, Gro",
      "|LLMs|Anthropic, AWS, Azure, Baseten, Cerebras, Crusoe, DeepSeek, Fireworks AI, Gemini, Grok, Groq, Inception, Mistral, ",
@@ -160,7 +156,6 @@
     "lines": [
      87
     ],
-    "note": "LLM 服务列表中提供 OpenRouter",
     "quotes": [
      "|LLMs|Anthropic, AWS, Azure, Baseten, Cerebras, Crusoe, DeepSeek, Fireworks AI, Gemini, Grok, Groq, Inception, Mistral, "
     ]
@@ -171,7 +166,6 @@
     "lines": [
      87
     ],
-    "note": "LLM 服务列表中提供 Ollama",
     "quotes": [
      "|LLMs|Anthropic, AWS, Azure, Baseten, Cerebras, Crusoe, DeepSeek, Fireworks AI, Gemini, Grok, Groq, Inception, Mistral, "
     ]
@@ -182,12 +176,11 @@
     "term": "pypi",
     "rel": "support",
     "lines": [
-     142,
+     3,
      145
     ],
-    "note": "uv/pip 从 PyPI 安装 pipecat-ai",
     "quotes": [
-     "   uv add \"pipecat-ai[option,...]\"",
+     "PyPI Tests codecov Docs Discord Ask DeepWiki",
      "> **Using pip?** You can still use `pip install pipecat-ai` and `pip install \"pipecat-ai[option,...]\"` to get set up."
     ]
    },
@@ -197,7 +190,6 @@
     "lines": [
      166
     ],
-    "note": "git clone 仓库进行开发",
     "quotes": [
      "   git clone https://github.com/pipecat-ai/pipecat.git"
     ]
@@ -219,20 +211,14 @@
     "rel": "mention",
     "lines": [
      48,
-     58,
      60,
-     188,
-     191,
-     192
+     186
     ],
-    "note": "AI 编码助手被用于脚手架与开发工作流，非替代/竞品对象",
+    "note": "AI 编码助手与技能集成对象，非替代/竞品",
     "quotes": [
      "The Pipecat CLI ships with `pipecat-ai` — install it with `uv tool install \"pipecat-ai[cli]\"`. Run `pipecat init` to sta",
-     "### 🤖 Claude Code skills",
      "Use Pipecat Skills with Claude Code to scaffold projects, deploy to Pipecat Cloud, and more. Install the marketplace wit",
-     "Install development workflow skills for contributing to Pipecat with Claude Code:",
-     "claude plugin marketplace add pipecat-ai/pipecat",
-     "claude plugin install pipecat-dev@pipecat-dev-skills"
+     "### Claude Code skills"
     ]
    },
    {
@@ -241,7 +227,7 @@
     "lines": [
      87
     ],
-    "note": "LLM 服务列表中被接入的服务商，非产品替代/竞品关系",
+    "note": "服务表中列出的 LLM 服务之一",
     "quotes": [
      "|LLMs|Anthropic, AWS, Azure, Baseten, Cerebras, Crusoe, DeepSeek, Fireworks AI, Gemini, Grok, Groq, Inception, Mistral, "
     ]
@@ -252,7 +238,7 @@
     "lines": [
      87
     ],
-    "note": "LLM 服务列表中列出 Qwen，非替代/竞品关系",
+    "note": "服务表中列出 Qwen 为支持的 LLM 服务",
     "quotes": [
      "|LLMs|Anthropic, AWS, Azure, Baseten, Cerebras, Crusoe, DeepSeek, Fireworks AI, Gemini, Grok, Groq, Inception, Mistral, "
     ]

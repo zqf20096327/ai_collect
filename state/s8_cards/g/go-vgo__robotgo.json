@@ -1,0 +1,124 @@
+{
+ "fn": "go-vgo/robotgo",
+ "sha": "b93ec927e500",
+ "source": "readme",
+ "identity": {
+  "one_liner": "Go 跨平台桌面自动化库：控制键鼠、读屏、窗口与进程",
+  "review": "Go 语言的原生跨平台 GUI 自动化/RPA 库，提供鼠标键盘控制、屏幕与位图读取、窗口管理、进程与句柄操作、全局事件监听（GoHook）及 OpenCV 示例，支持 macOS/Windows/Linux 的 arm64 与 x86-amd64。默认后端基于 Cgo 需 C 编译器与平台库，另有实验性纯 Go 后端（build tag 选择 win/mac/x11/wayland/libei）。README 标注可用于 AI Computer Use 场景，并提及闭源的 RobotGo-Pro 多语言版本。",
+  "highlights": [
+   "鼠标、键盘、屏幕捕获、位图、窗口与进程控制的跨平台 API",
+   "默认 Cgo 后端与实验性纯 Go 后端（CGO_ENABLED=0 + build tag）双路径",
+   "支持 Wayland（wlroots 协议）与 libei（GNOME/KDE RemoteDesktop portal）",
+   "ADB 绑定：打包 android adb 与 ios wda 的兼容 API"
+  ],
+  "use_cases": [
+   "编写跨平台 GUI 自动化与自动化测试脚本",
+   "为 AI computer-use 类 agent 提供键鼠与屏幕控制能力",
+   "构建 RPA 流程或全局事件监听工具"
+  ]
+ },
+ "filters": {
+  "ai_role": "ai-enhanced",
+  "license_risk": "permissive",
+  "deploy": null,
+  "model_dep": null,
+  "hardware": null,
+  "install_friction": "medium",
+  "maturity": "idea"
+ },
+ "eval": {
+  "target_user": "开发者",
+  "paper_url": null,
+  "demo_url": "https://github.com/vcaesar/codg",
+  "self_declared_early": {
+   "flag": true,
+   "lines": [
+    137
+   ]
+  }
+ },
+ "links": {
+  "scenario_tags": [
+   "桌面自动化",
+   "RPA",
+   "computer-use",
+   "Go库",
+   "自动化测试"
+  ],
+  "domain": "效率与自动化",
+  "alternative_to": [],
+  "competitors_mentioned": [],
+  "ecosystem_compat": [],
+  "scenario_tags_v2": [
+   "gui-automation"
+  ]
+ },
+ "intel": {
+  "maintainer_type": "individual",
+  "zh_origin": true,
+  "zh_origin_signals": [
+   "README 提供简体中文/繁體中文等多语言版本"
+  ]
+ },
+ "trust": {
+  "confidence": "mid",
+  "evidence": [
+   "L15: > Golang Desktop Automation, auto test and AI Computer Use.",
+   "L16: > Control the mouse, keyboard, read the screen, process, Window Handle, image and bitmap and global event listener.",
+   "L20: I build Codg now, Easy code and work AI agent system: auto, asynchronous, concurrency, efficiently and High accuracy"
+  ],
+  "xcheck": null,
+  "ver": 1,
+  "prompt_ver": "1.4",
+  "generated_at": "2026-10-20",
+  "softened": null,
+  "model_harness": {
+   "model": "glm-5.3",
+   "thinking": "off",
+   "max_tokens": 24000,
+   "seed": null
+  },
+  "vocab_ver": "1.0"
+ },
+ "raw_verdicts": {
+  "providers": [],
+  "install": [
+   {
+    "term": "brew",
+    "rel": "mention",
+    "lines": [
+     59
+    ],
+    "note": "安装 Go 依赖，非本产品安装途径",
+    "quotes": [
+     "brew install go"
+    ]
+   }
+  ],
+  "hardware": [],
+  "products": [
+   {
+    "term": "Cursor",
+    "rel": "none",
+    "lines": [
+     180
+    ],
+    "note": "误命中：wayland 语境下的光标位置描述",
+    "quotes": [
+     " RobotGo, not the physical cursor. Clipboard needs `wl-clipboard`."
+    ]
+   }
+  ],
+  "dual_license": {
+   "flag": false,
+   "lines": [],
+   "quotes": []
+  },
+  "deprecation": {
+   "flag": false,
+   "lines": [
+    34
+   ]
+  }
+ }
+}
