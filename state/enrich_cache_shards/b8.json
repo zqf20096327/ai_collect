@@ -2440,5 +2440,81 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "Aloim/PhanOS": {
+  "rel_ver": "v3.7.1",
+  "rel_pub": "2026-09-04",
+  "rel_days": 47,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PowerShell": 87,
+   "Shell": 12,
+   "JavaScript": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "google-marketing-solutions/negative_keyword_cleaner": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 91,
+   "HCL": 5,
+   "CSS": 2,
+   "HTML": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "686f6c61/NaN-Open-WebUI": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-17",
+  "rel_days": 4,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 67,
+   "JavaScript": 26,
+   "C#": 4,
+   "Python": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

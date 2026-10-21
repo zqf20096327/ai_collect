@@ -2501,5 +2501,82 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "aradfarahani/Remote-Sensing": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2025-03-19",
+  "rel_days": 581,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "gabrielkasmi/deeppvmapper": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-06-18",
+  "rel_days": 125,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 46,
+   "TypeScript": 41,
+   "JavaScript": 10,
+   "Shell": 3
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "rsharp-lang/R-sharp": {
+  "rel_ver": "v1.0.0-beta",
+  "rel_pub": "2022-08-03",
+  "rel_days": 1540,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Visual Basic .NET": 78,
+   "R": 19,
+   "HTML": 2,
+   "Roff": 0,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

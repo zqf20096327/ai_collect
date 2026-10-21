@@ -1812,5 +1812,80 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "priya-sundaram-dev/whoosh": {
+  "rel_ver": "v3.54.0",
+  "rel_pub": "2026-09-21",
+  "rel_days": 30,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 77,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "sdpython/onnx-extended": {
+  "rel_ver": "0.5.0",
+  "rel_pub": "2025-12-02",
+  "rel_days": 323,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 67,
+   "C++": 27,
+   "Cuda": 5,
+   "CMake": 1,
+   "Cython": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "0xheycat/isometric-game-skills": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-06-10",
+  "rel_days": 133,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 78,
+   "JavaScript": 22
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

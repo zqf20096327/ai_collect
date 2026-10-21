@@ -2297,5 +2297,82 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "tuo-lei/vibe-replay": {
+  "rel_ver": "v0.2.13",
+  "rel_pub": "2026-10-16",
+  "rel_days": 5,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "TypeScript": 81,
+   "HTML": 16,
+   "Astro": 3,
+   "JavaScript": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Zcode-CE/Zcode-CE": {
+  "rel_ver": "v3.15.1-ce.1",
+  "rel_pub": "2026-10-14",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 95,
+   "JavaScript": 4,
+   "CSS": 0,
+   "Python": 0,
+   "C#": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "gatsby-sec/llm-sec-range": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 57,
+   "HTML": 21,
+   "CSS": 16,
+   "JavaScript": 5,
+   "Shell": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

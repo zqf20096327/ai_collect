@@ -2140,5 +2140,136 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "shali10/hermes-patches": {
+  "rel_ver": "v1.8.0",
+  "rel_pub": "2026-10-11",
+  "rel_days": 10,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 81,
+   "Shell": 19
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "spencerkit/coder-studio": {
+  "rel_ver": "v0.5.15",
+  "rel_pub": "2026-08-27",
+  "rel_days": 55,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 94,
+   "CSS": 5,
+   "JavaScript": 0,
+   "PowerShell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "thangchung/coffeeshop-agent": {
+  "rel_ver": "SNAPSHOT-A2A-CLIENT-SERVER",
+  "rel_pub": "2025-11-08",
+  "rel_days": 347,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 47,
+   "JavaScript": 36,
+   "HTML": 11,
+   "CSS": 7
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "RA-CONSULTING/Aureon-OS": {
+  "rel_ver": "V2.1",
+  "rel_pub": "2026-07-13",
+  "rel_days": 100,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 86,
+   "TypeScript": 7,
+   "HTML": 6,
+   "JavaScript": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "ciaren-labs/Ciaren": {
+  "rel_ver": "0.3.1",
+  "rel_pub": "2026-10-13",
+  "rel_days": 8,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 65,
+   "TypeScript": 34,
+   "JavaScript": 0,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

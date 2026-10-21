@@ -2413,5 +2413,59 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "njraladdin/adk-typescript": {
+  "rel_ver": "v1.0.4",
+  "rel_pub": "2025-10-31",
+  "rel_days": 355,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 1,
+   "HTML": 1,
+   "Shell": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "zerfoo/zerfoo": {
+  "rel_ver": "v1.60.0",
+  "rel_pub": "2026-08-23",
+  "rel_days": 59,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 96,
+   "Cuda": 2,
+   "Python": 1,
+   "Shell": 1,
+   "Assembly": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

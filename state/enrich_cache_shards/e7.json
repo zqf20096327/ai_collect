@@ -2106,5 +2106,59 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "morinim/vita": {
+  "rel_ver": "v3.0.0",
+  "rel_pub": "2024-04-05",
+  "rel_days": 929,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C++": 94,
+   "Python": 5,
+   "MQL5": 1,
+   "C": 0,
+   "CMake": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "ZahinTapadar/BeautifyOllama": {
+  "rel_ver": "main",
+  "rel_pub": "2025-07-02",
+  "rel_days": 476,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 66,
+   "Rust": 22,
+   "Python": 9,
+   "Shell": 2,
+   "CSS": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

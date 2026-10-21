@@ -2200,5 +2200,102 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "OfficialZapret/AI-Trade-Bot": {
+  "rel_ver": "tradebot",
+  "rel_pub": "2026-07-21",
+  "rel_days": 92,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Inupedia/anime-character-image-preprocessing": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-02-27",
+  "rel_days": 236,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "neocortex-link/neocortex-unity-sdk": {
+  "rel_ver": "0.7.3",
+  "rel_pub": "2026-10-07",
+  "rel_days": 14,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 97,
+   "HTML": 2,
+   "JavaScript": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "IvanYangYangXi/artclaw_bridge": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-04-15",
+  "rel_days": 189,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 62,
+   "C++": 23,
+   "TypeScript": 8,
+   "C": 4,
+   "C#": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

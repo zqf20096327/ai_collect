@@ -2000,5 +2000,32 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "Edw590/VISOR---A-Voice-Assistant": {
+  "rel_ver": "v2024_11_10",
+  "rel_pub": "2024-11-10",
+  "rel_days": 710,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Go": 88,
+   "HTML": 12,
+   "CSS": 0,
+   "Batchfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

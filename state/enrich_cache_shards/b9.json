@@ -2245,5 +2245,132 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "colonyops/hive": {
+  "rel_ver": "v0.64.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 8,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Go": 65,
+   "TypeScript": 25,
+   "Vue": 9,
+   "CSS": 0,
+   "Go Template": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "SimaDevelopment/opsiforce": {
+  "rel_ver": "0.2.0",
+  "rel_pub": "2026-09-29",
+  "rel_days": 22,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 78,
+   "MDX": 18,
+   "CSS": 2,
+   "JavaScript": 1,
+   "Go": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "RubixML/Credit": {
+  "rel_ver": "V9",
+  "rel_pub": "2026-10-20",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "PHP": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "stephanj/LSP4J-MCP": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-01-05",
+  "rel_days": 289,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Java": 97,
+   "Dockerfile": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "aadya940/numpyai": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-07-05",
+  "rel_days": 108,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "Batchfile": 2,
+   "Makefile": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

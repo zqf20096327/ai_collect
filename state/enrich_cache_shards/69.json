@@ -1954,5 +1954,59 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "BrunkenClaas/lx": {
+  "rel_ver": "suite-v1.2.0",
+  "rel_pub": "2026-08-14",
+  "rel_days": 68,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 96,
+   "Shell": 2,
+   "PowerShell": 2,
+   "Python": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "tachyonmcp/tachyon": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-10-09",
+  "rel_days": 12,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "Java": 87,
+   "Kotlin": 7,
+   "TypeScript": 4,
+   "Python": 2,
+   "Makefile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

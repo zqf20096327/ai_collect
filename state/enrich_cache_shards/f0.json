@@ -2087,5 +2087,58 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "kengio/databricks-certification-study-guide": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-05-21",
+  "rel_days": 153,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 42,
+   "CSS": 39,
+   "Python": 12,
+   "HTML": 7
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "LotusSerene/scrollwise-ai": {
+  "rel_ver": "Setup",
+  "rel_pub": "2026-01-31",
+  "rel_days": 263,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 54,
+   "Python": 45,
+   "PowerShell": 0,
+   "CSS": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

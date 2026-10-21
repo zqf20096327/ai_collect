@@ -2037,5 +2037,110 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "epicsagas/Velith": {
+  "rel_ver": "v0.7.2",
+  "rel_pub": "2026-09-30",
+  "rel_days": 21,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 64,
+   "Svelte": 22,
+   "Python": 11,
+   "HTML": 2,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Avazbek22/DevProjex": {
+  "rel_ver": "v5.2",
+  "rel_pub": "2026-10-01",
+  "rel_days": 20,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "C#": 96,
+   "PowerShell": 3,
+   "JavaScript": 1,
+   "Tree-sitter Query": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "m2dumpling/pawbot": {
+  "rel_ver": "v0.8.1",
+  "rel_pub": "2026-10-18",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 72,
+   "TypeScript": 27,
+   "CSS": 0,
+   "Shell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "sumeshi/forensia": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Jinja": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

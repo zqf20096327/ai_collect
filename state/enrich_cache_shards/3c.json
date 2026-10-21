@@ -2238,5 +2238,51 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "Azure-Samples/sonic-brief": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 61,
+   "Python": 28,
+   "HCL": 6,
+   "Shell": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "VasanthakumarV/einops": {
+  "rel_ver": "0.3.0-alpha.2",
+  "rel_pub": "2022-06-23",
+  "rel_days": 1581,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

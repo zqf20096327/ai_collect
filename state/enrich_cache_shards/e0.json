@@ -2152,5 +2152,106 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "qingchencloud/openclaw-standalone": {
+  "rel_ver": "v2026.7.1-zh.2",
+  "rel_pub": "2026-07-14",
+  "rel_days": 99,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 49,
+   "PowerShell": 21,
+   "Batchfile": 15,
+   "Inno Setup": 12,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "SAP/mdk-mcp-server": {
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 0,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "JavaScript": 75,
+   "TypeScript": 25
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "mmastrac/diffgemma": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 87,
+   "Metal": 8,
+   "Python": 4,
+   "Cuda": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "kresogalic8/unwatched": {
+  "rel_ver": "v0.18.0",
+  "rel_pub": "2026-09-25",
+  "rel_days": 26,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 89,
+   "CSS": 5,
+   "JavaScript": 2,
+   "PLpgSQL": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

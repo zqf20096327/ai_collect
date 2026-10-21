@@ -1934,5 +1934,56 @@
    "lang": "20261021"
   }
  },
- "VectorInstitute/retrieval-augmented-generation": {}
+ "VectorInstitute/retrieval-augmented-generation": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2025-07-29",
+  "rel_days": 449,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Jupyter Notebook": 96,
+   "Python": 4,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "kdunee/intentguard": {
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-04-30",
+  "rel_days": 174,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 80,
+   "Jupyter Notebook": 19,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ }
 }

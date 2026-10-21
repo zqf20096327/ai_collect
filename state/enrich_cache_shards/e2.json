@@ -2420,5 +2420,55 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "cam1681/CS25_Large_Foundation_model": {
+  "rel_ver": "v1.1",
+  "rel_pub": "2026-09-16",
+  "rel_days": 35,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TeX": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "votal-ai-hq/ai-red-teaming": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-05-31",
+  "rel_days": 143,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "TypeScript": 45,
+   "Python": 45,
+   "HTML": 9,
+   "Shell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

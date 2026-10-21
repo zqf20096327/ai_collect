@@ -1940,5 +1940,36 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
- }
+ },
+ "ymw0407/auth-fetch-mcp": {
+  "rel_ver": "v4.0.0",
+  "rel_pub": "2026-10-02",
+  "rel_days": 19,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 4,
+  "sec_worst": "high",
+  "sec_last": "2026-10-02",
+  "sec_ids": [
+   "GHSA-67hq-w896-f782(-,high)",
+   "GHSA-8252-gw22-5q42(CVE-2026-77625,high)",
+   "GHSA-pvrj-8cg3-j5f8(CVE-2026-49857,high)",
+   "GHSA-hv85-774v-26fg(-,high)"
+  ],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 67,
+   "JavaScript": 33,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "sunxfancy/SSUI": {}
 }

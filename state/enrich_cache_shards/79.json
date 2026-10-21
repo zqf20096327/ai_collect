@@ -2254,5 +2254,32 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "InternScience/SpectrumLab": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2025-08-07",
+  "rel_days": 440,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 90,
+   "Vue": 7,
+   "CSS": 1,
+   "TypeScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }
