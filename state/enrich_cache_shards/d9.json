@@ -1977,5 +1977,44 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "klaus78/Data-Science-Flashcards": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 17,
+  "lang": {
+   "CSS": 54,
+   "HTML": 23,
+   "JavaScript": 19,
+   "Ruby": 5
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Schwi-AI/DiffusionCreamPy": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

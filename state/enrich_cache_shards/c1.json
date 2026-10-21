@@ -2076,5 +2076,55 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "cortesi/misanthropy": {
+  "rel_ver": "v0.0.7",
+  "rel_pub": "2024-08-28",
+  "rel_days": 784,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "xuhan-rgb/zotero-ai-sidebar": {
+  "rel_ver": "v0.8.18",
+  "rel_pub": "2026-10-19",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 89,
+   "CSS": 4,
+   "HTML": 4,
+   "JavaScript": 3,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

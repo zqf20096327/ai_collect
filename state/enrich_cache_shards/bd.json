@@ -1926,5 +1926,76 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "einToast/openai_stt_ha": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2025-08-17",
+  "rel_days": 430,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "youichi-uda/aseprite-mcp-pro": {
+  "rel_ver": "v1.2.2",
+  "rel_pub": "2026-07-20",
+  "rel_days": 93,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Lua": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "artcc/openclient-llm": {
+  "rel_ver": "v1.7.25-build-123-macos",
+  "rel_pub": "2026-10-14",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

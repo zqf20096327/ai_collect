@@ -2274,5 +2274,71 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "microsoft/real-time-intelligence-operations-solution-accelerator": {
+  "rel_ver": "v1.3.5",
+  "rel_pub": "2026-06-22",
+  "rel_days": 121,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 34,
+  "lang": {
+   "Python": 65,
+   "PowerShell": 29,
+   "Jupyter Notebook": 3,
+   "Bicep": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "HazyResearch/hebbian-mlps": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Victor-Kipruto-Rop/mpesa_safaricom-fraud_anomaly_detection": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

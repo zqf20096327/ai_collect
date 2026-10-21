@@ -1497,13 +1497,16 @@
    "CMake": 0,
    "C": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261021"
+  },
+  "commit_90d": 648,
+  "commit_7d": 61
  },
  "xxynet/KiraAI": {
   "rel_ver": "v3.0.2",
@@ -2374,6 +2377,96 @@
    "Dockerfile": 2,
    "Go Template": 1,
    "Makefile": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "cookyman74/llmwiki-harness": {
+  "rel_ver": "v0.11.0",
+  "rel_pub": "2026-09-11",
+  "rel_days": 40,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 73,
+   "Python": 25,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "ccmusic-database/pianos": {
+  "rel_ver": "8-class",
+  "rel_pub": "2023-12-10",
+  "rel_days": 1046,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "DavidZhang73/pytorch-lightning-template": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "tobna/WhatTransformerToFavor": {
+  "rel_ver": "WACV25",
+  "rel_pub": "2025-03-17",
+  "rel_days": 583,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
   },
   "enriched_at": "20261021",
   "dim_ts": {

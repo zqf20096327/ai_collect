@@ -1474,5 +1474,29 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "Saganaki22/ComfyUI-KugelAudio": {
+  "rel_ver": "0.8.6",
+  "rel_pub": "2026-02-10",
+  "rel_days": 253,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

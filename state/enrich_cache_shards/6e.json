@@ -1359,13 +1359,16 @@
    "Shell": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261021"
+  },
+  "commit_90d": 21,
+  "commit_7d": 21
  },
  "dboudreau00/Countersign-RFP-RFI-RFQ-Studio-for-AI-assisted-Workflows": {
   "rel_ver": null,
@@ -1784,6 +1787,66 @@
   "sec_ids": [],
   "contrib_n": 4,
   "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "mp-web3/jarvis-v3": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 71,
+   "HTML": 28,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "shootthesound/comfyui-CleanFreak": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 96,
+   "Python": 4
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "upkarlidder/ai-developer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Jupyter Notebook": 100
+  },
   "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261021",

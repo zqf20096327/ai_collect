@@ -1620,13 +1620,16 @@
    "Python": 4,
    "Swift": 3
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261021"
+  },
+  "commit_90d": 1,
+  "commit_7d": 0
  },
  "astro-informatics/harmonic": {
   "rel_ver": "v1.3.1",
@@ -2505,6 +2508,169 @@
    "HTML": 3,
    "Cuda": 1,
    "C": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "EvannZhongg/Nosis": {
+  "commit_90d": 399,
+  "commit_7d": 52,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 83,
+   "TypeScript": 15,
+   "CSS": 2,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "commit": "20261021",
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "ezpzai/cdx": {
+  "rel_ver": "v1.0.12",
+  "rel_pub": "2026-04-01",
+  "rel_days": 203,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 48,
+   "TypeScript": 44,
+   "CSS": 4,
+   "HTML": 4
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "microsoft/AutoAdapt": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 72,
+   "TypeScript": 27,
+   "Shell": 1,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Zheng-Meng/Tracking-Control": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2023-08-25",
+  "rel_days": 1153,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "MATLAB": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "tinovyatkin/amazon-bedrock-copilot-chat": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 2,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "kennethleungty/kennethleungty": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "GeronimoDiClemente/raven-nest": {
+  "rel_ver": "v1.5.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 5,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 85,
+   "CSS": 11,
+   "PLpgSQL": 2,
+   "JavaScript": 1,
+   "HTML": 1
   },
   "enriched_at": "20261021",
   "dim_ts": {

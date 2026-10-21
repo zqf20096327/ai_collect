@@ -1989,5 +1989,73 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "miaixzo/bus": {
+  "commit_90d": 211,
+  "commit_7d": 7,
+  "rel_ver": "8.8.21",
+  "rel_pub": "2026-10-20",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Java": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "commit": "20261021",
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Panda-995/ai-writing-assistant": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 96,
+   "HTML": 3,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "ReksarGames/RN_AI_cpp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C++": 85,
+   "C": 15,
+   "Cuda": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

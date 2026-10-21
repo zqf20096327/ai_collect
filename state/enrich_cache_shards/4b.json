@@ -1677,5 +1677,78 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "rayliuca/grammared-language": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 94,
+   "Makefile": 3,
+   "Dockerfile": 2,
+   "Jinja": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "doffskiii/claude-server-kit": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-03-24",
+  "rel_days": 211,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 74,
+   "Shell": 26,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Abdelrhman-Ellithy/Ellithium": {
+  "rel_ver": "3.3.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 5,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Java": 99,
+   "XML": 1,
+   "JavaScript": 0,
+   "Gherkin": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

@@ -2290,5 +2290,98 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "copick/copick": {
+  "rel_ver": "copick-v1.31.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "AlexHettle/MeadowPy": {
+  "rel_ver": "v1.2.6",
+  "rel_pub": "2026-07-12",
+  "rel_days": 101,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Batchfile": 0,
+   "PowerShell": 0,
+   "VBScript": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "kyegomez/PROMPTS.md": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Samarth0211/claude-code-cheatsheet": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "langfuse/langfuse-terraform-gcp": {
+  "rel_ver": "1.0.9",
+  "rel_pub": "2026-10-19",
+  "rel_days": 2,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false
  }
 }

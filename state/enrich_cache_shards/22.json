@@ -2027,13 +2027,16 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261021"
+  },
+  "commit_90d": 44,
+  "commit_7d": 12
  },
  "AimeBox/aime-box": {
   "rel_ver": "v0.1.8",
@@ -2513,6 +2516,32 @@
    "Rust": 98,
    "Shell": 1,
    "Makefile": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "ninemindai/agentback": {
+  "rel_ver": "v0.13.0",
+  "rel_pub": "2026-09-30",
+  "rel_days": 21,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 1,
+   "HTML": 1,
+   "CSS": 0
   },
   "enriched_at": "20261021",
   "dim_ts": {

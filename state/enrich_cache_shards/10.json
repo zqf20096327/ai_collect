@@ -1212,13 +1212,16 @@
    "TypeScript": 79,
    "JavaScript": 21
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261021"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "dadwritestech/LlamaForge": {
   "rel_ver": "v0.16.4",
@@ -1239,13 +1242,16 @@
    "HTML": 2,
    "PowerShell": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261021"
+  },
+  "commit_90d": 398,
+  "commit_7d": 24
  },
  "talperetz/browsegraph": {
   "rel_ver": null,
@@ -1961,6 +1967,135 @@
    "Hack": 0,
    "Dockerfile": 0
   },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "PDFMathTranslate/PDFMathReader": {
+  "rel_ver": "v0.1.14",
+  "rel_pub": "2026-10-21",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 79,
+   "Vue": 15,
+   "CSS": 4,
+   "Python": 2,
+   "Swift": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "RubixML/Iris": {
+  "rel_ver": "V5",
+  "rel_pub": "2026-10-08",
+  "rel_days": 13,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "PHP": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "fischerf/aar": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-06-10",
+  "rel_days": 133,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "HTML": 1,
+   "Shell": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "floflo777/claude-rag-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "0xgetz/river-bulk-apikey": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "datawhalechina/easy-pocket": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {},
   "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261021",

@@ -2066,5 +2066,74 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "jentic/jentic-public-apis": {
+  "commit_90d": 2211,
+  "commit_7d": 795,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 32,
+  "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "commit": "20261021",
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Ericonaldo/AgentMonitor": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 93,
+   "CSS": 5,
+   "JavaScript": 1,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Fanfulla/Lupin": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-09-01",
+  "rel_days": 50,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 78,
+   "Rust": 22,
+   "JavaScript": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

@@ -1149,13 +1149,16 @@
    "Shell": 11,
    "CSS": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261021"
+  },
+  "commit_90d": 4,
+  "commit_7d": 0
  },
  "SartajBhuvaji/Brain-Tumor-Classification-Using-Deep-Learning-Algorithms": {
   "rel_ver": null,
@@ -2008,6 +2011,94 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Shikasar7/CicaTavern": {
+  "rel_ver": "v1.8.3",
+  "rel_pub": "2026-10-21",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 90,
+   "CSS": 7,
+   "HTML": 1,
+   "Java": 1,
+   "C++": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "weAAAre/a11y-agents-kit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 72,
+   "Python": 17,
+   "HTML": 9,
+   "JavaScript": 2,
+   "AppleScript": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "openai/openai-developers-for-claude": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Avinashistoocool/Agnostos-v2": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
   "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261021",

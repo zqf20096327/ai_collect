@@ -1298,13 +1298,16 @@
    "Jupyter Notebook": 51,
    "Python": 49
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261021"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "nasa/ExoMiner": {
   "rel_ver": "v2.0.0-arxiv",
@@ -2025,6 +2028,46 @@
    "JavaScript": 22,
    "CSS": 2,
    "HTML": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "yeyiwen2006/a-comprehensive-ai-learning-note": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TeX": 95,
+   "Python": 4,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Hoopoes/FastStart": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
   },
   "enriched_at": "20261021",
   "dim_ts": {

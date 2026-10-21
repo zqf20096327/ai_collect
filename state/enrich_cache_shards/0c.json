@@ -2202,5 +2202,63 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "vinvcn/mattpocock-skills-zh-CN": {
+  "commit_90d": 32,
+  "commit_7d": 1,
+  "rel_ver": "v1.3.1",
+  "rel_pub": "2026-10-08",
+  "rel_days": 13,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 72,
+   "Shell": 28
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "commit": "20261021",
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Kamra-PMS/kamra-pms": {
+  "rel_ver": "v2.6.19",
+  "rel_pub": "2026-10-21",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "high",
+  "sec_last": "2026-10-13",
+  "sec_ids": [
+   "GHSA-hw2r-w68w-6qp5(-,high)",
+   "GHSA-5hcx-h257-qr5j(-,high)",
+   "GHSA-6cr2-jm8f-6jrx(-,high)"
+  ],
+  "contrib_n": 12,
+  "lang": {
+   "Python": 51,
+   "TypeScript": 46,
+   "JavaScript": 3,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

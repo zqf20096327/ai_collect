@@ -1601,13 +1601,16 @@
    "C++": 1,
    "Shell": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261021"
+  },
+  "commit_90d": 51,
+  "commit_7d": 6
  },
  "yifanzhang-pro/AutoMathText": {
   "rel_ver": null,
@@ -2289,6 +2292,76 @@
    "TypeScript": 8,
    "C": 4,
    "C#": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "handbook-academy/engineering-handbook": {
+  "commit_90d": 12,
+  "commit_7d": 12,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 95,
+   "Shell": 5
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "commit": "20261021",
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Core-Bioinformatics/ClustAssess": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-08-29",
+  "rel_days": 53,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "R": 98,
+   "C++": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "KefanZhan/YOLOv8-KD": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "C++": 0,
+   "Shell": 0,
+   "Cuda": 0,
+   "Dockerfile": 0
   },
   "enriched_at": "20261021",
   "dim_ts": {

@@ -2564,5 +2564,57 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "midagedev/bloomery": {
+  "rel_ver": "v0.3.7",
+  "rel_pub": "2026-10-21",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Rust": 81,
+   "Shell": 9,
+   "Python": 8,
+   "C++": 1,
+   "Just": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "shawnduggan/nova": {
+  "rel_ver": "1.8.6",
+  "rel_pub": "2026-09-29",
+  "rel_days": 22,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 92,
+   "CSS": 7,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

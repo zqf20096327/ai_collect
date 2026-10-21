@@ -2232,5 +2232,101 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "StanfordVL/GibsonEnv": {
+  "commit_90d": 2,
+  "commit_7d": 2,
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2018-08-11",
+  "rel_days": 2993,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "C": 46,
+   "Python": 33,
+   "C++": 18,
+   "Cuda": 2,
+   "CMake": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "commit": "20261021",
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "GaiaNet-AI/docs": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 26,
+  "lang": {
+   "HTML": 99,
+   "JavaScript": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "ofershap/cursor-usage-tracker": {
+  "rel_ver": "v1.24.1",
+  "rel_pub": "2026-10-12",
+  "rel_days": 9,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 0,
+   "CSS": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "ChildishGirl/sa-portfolio": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

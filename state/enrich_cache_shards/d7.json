@@ -2076,5 +2076,32 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "wangzhe04/ruyi-workbench-oss": {
+  "rel_ver": "v3.0.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 94,
+   "Python": 4,
+   "CSS": 2,
+   "HTML": 1,
+   "C#": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

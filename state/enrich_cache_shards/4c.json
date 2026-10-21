@@ -2178,5 +2178,106 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "mlr-org/mlr": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.19.1",
+  "rel_pub": "2022-09-30",
+  "rel_days": 1482,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 73,
+  "lang": {
+   "R": 98,
+   "HTML": 2,
+   "C": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "commit": "20261021",
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Nexuist/seeV": {
+  "rel_ver": "v1.5.2",
+  "rel_pub": "2024-05-23",
+  "rel_days": 881,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Kenshin/simpread-karpathy-llm-wiki-compiler": {
+  "rel_ver": "v3.0.0",
+  "rel_pub": "2026-06-12",
+  "rel_days": 131,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 96,
+   "JavaScript": 2,
+   "Shell": 1,
+   "PowerShell": 1,
+   "Python": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "mario-andreschak/mcp-veo2": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 61,
+   "JavaScript": 38,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

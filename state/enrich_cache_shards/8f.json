@@ -2560,5 +2560,32 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "vorojar/AgentClaw": {
+  "rel_ver": "v1.3.14",
+  "rel_pub": "2026-03-14",
+  "rel_days": 221,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 87,
+   "CSS": 7,
+   "Python": 6,
+   "PowerShell": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

@@ -1364,13 +1364,16 @@
    "Shell": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261021"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "deskbtm/nitmgpt": {
   "rel_ver": "v0.0.1-alpha.2",
@@ -2181,6 +2184,105 @@
    "JavaScript": 4,
    "HTML": 0,
    "CSS": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Samffprice/loopcut": {
+  "rel_ver": "v0.2.5",
+  "rel_pub": "2026-10-20",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 220,
+  "lang": {
+   "C++": 74,
+   "Python": 22,
+   "C": 1,
+   "CMake": 1,
+   "GLSL": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "weaviate/IRPAPERS": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 99,
+   "Python": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "chvvkumar/simpleCloudDetect": {
+  "rel_ver": "v0.17",
+  "rel_pub": "2026-10-12",
+  "rel_days": 9,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 72,
+   "HTML": 27,
+   "Dockerfile": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "aaryanporwal/uprighthelper": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-08-24",
+  "rel_days": 58,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 86,
+   "HTML": 9,
+   "CSS": 3,
+   "JavaScript": 1
   },
   "enriched_at": "20261021",
   "dim_ts": {

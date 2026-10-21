@@ -1818,13 +1818,16 @@
    "Lua": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261021"
+  },
+  "commit_90d": 518,
+  "commit_7d": 518
  },
  "samsarone/samsar": {
   "rel_ver": null,
@@ -1998,6 +2001,83 @@
   "lang": {
    "Python": 96,
    "Shell": 4
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "buqi-code/buqi-minimax-h3-multigpu": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-09-28",
+  "rel_days": 23,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Engine-Room-Games/after-effects-mcp": {
+  "rel_ver": "v0.5.1",
+  "rel_pub": "2026-09-15",
+  "rel_days": 36,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 67,
+   "TypeScript": 32,
+   "Shell": 1,
+   "Makefile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "MSKazemi/kubeintellect": {
+  "rel_ver": "v2.6.0",
+  "rel_pub": "2026-10-09",
+  "rel_days": 12,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "Python": 92,
+   "Shell": 3,
+   "Makefile": 2,
+   "CSS": 1,
+   "PLpgSQL": 1
   },
   "enriched_at": "20261021",
   "dim_ts": {

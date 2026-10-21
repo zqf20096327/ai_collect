@@ -1316,13 +1316,16 @@
    "JavaScript": 98,
    "Shell": 2
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261021"
+  },
+  "commit_90d": 100,
+  "commit_7d": 5
  },
  "smallchao/EvoForge": {
   "rel_ver": "0.11.1",
@@ -1879,6 +1882,146 @@
    "TypeScript": 72,
    "HTML": 25,
    "Makefile": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "binary-core-llc/bowerbot": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-10-02",
+  "rel_days": 19,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "openai/sites": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "TypeScript": 95,
+   "JavaScript": 3,
+   "CSS": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "earayu/treadstone": {
+  "rel_ver": "v0.9.3",
+  "rel_pub": "2026-04-14",
+  "rel_days": 190,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 79,
+   "TypeScript": 16,
+   "Hurl": 3,
+   "Shell": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "NVIDIA/ai-cloud-validation": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 5,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "Python": 98,
+   "Shell": 1,
+   "HCL": 1,
+   "Makefile": 0,
+   "Cuda": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "vrunm/Text-Classification-Financial-Phrase-Bank": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Turkish-AI-Community/hsd-agu-egitim": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 92,
+   "TypeScript": 5,
+   "Python": 2,
+   "CSS": 0,
+   "HTML": 0
   },
   "enriched_at": "20261021",
   "dim_ts": {

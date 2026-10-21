@@ -2204,5 +2204,83 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "cuga-project/cuga-agent": {
+  "commit_90d": 135,
+  "commit_7d": 9,
+  "rel_ver": "v0.4.2",
+  "rel_pub": "2026-10-16",
+  "rel_days": 5,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 4,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-13",
+  "sec_ids": [
+   "GHSA-ffh4-qv86-xfxv(-,critical)",
+   "GHSA-q5xm-fr98-g4j5(-,high)",
+   "GHSA-q5m4-94jr-jwrq(-,medium)",
+   "GHSA-55pr-c85h-3p9q(-,high)"
+  ],
+  "contrib_n": 29,
+  "lang": {
+   "Python": 81,
+   "TypeScript": 13,
+   "CSS": 2,
+   "Shell": 2,
+   "Jinja": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "commit": "20261021",
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Ly041021/TIO-Former": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "luwhano/fastapi-langgraph-agent-production-ready-template": {
+  "rel_ver": "2.8.7-alpha.4",
+  "rel_pub": "2025-04-11",
+  "rel_days": 558,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 85,
+   "Shell": 9,
+   "Makefile": 4,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

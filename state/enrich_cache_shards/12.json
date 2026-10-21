@@ -1967,5 +1967,85 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "honwhy/WeChatReaderEnhancer": {
+  "rel_ver": "v2.0.6",
+  "rel_pub": "2025-06-15",
+  "rel_days": 493,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 53,
+   "Vue": 25,
+   "HTML": 12,
+   "CSS": 10,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "EvanZhang008/open-walnut": {
+  "rel_ver": "v0.6.15",
+  "rel_pub": "2026-10-21",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 86,
+   "Swift": 10,
+   "CSS": 2,
+   "JavaScript": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "fingentic/revolut-mcp": {
+  "rel_ver": "v0.1.6",
+  "rel_pub": "2026-06-06",
+  "rel_days": 137,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "Shell": 1,
+   "Dockerfile": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

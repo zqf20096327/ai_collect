@@ -2170,5 +2170,55 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "Stonewuu/agenteam": {
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-10-20",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 72,
+   "TypeScript": 19,
+   "CSS": 4,
+   "JavaScript": 3,
+   "Python": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "gnoparus/bualabs": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Kotlin": 0,
+   "JavaScript": 0,
+   "Java": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

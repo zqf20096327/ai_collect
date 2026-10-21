@@ -1719,5 +1719,53 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "NUS-Program-Verification/AutoRocq": {
+  "rel_ver": "v0.1",
+  "rel_pub": "2026-08-28",
+  "rel_days": 54,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 88,
+   "Rocq Prover": 12,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "KalyanM45/Multi-Agentic-Blog-Generation": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 30,
+   "CSS": 29,
+   "HTML": 22,
+   "JavaScript": 19
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

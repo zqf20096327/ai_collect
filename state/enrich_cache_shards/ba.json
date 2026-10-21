@@ -1947,5 +1947,55 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "motedb/motedb": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 96,
+   "Python": 4,
+   "Shell": 0,
+   "Go": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "heyhank-app/heyhank": {
+  "rel_ver": "heyhank-v0.3.0",
+  "rel_pub": "2026-05-14",
+  "rel_days": 160,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 18,
+  "lang": {
+   "TypeScript": 99,
+   "Shell": 0,
+   "CSS": 0,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

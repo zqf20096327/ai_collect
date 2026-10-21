@@ -2276,5 +2276,56 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "NVIDIA/flare-local-inference": {
+  "commit_90d": 771,
+  "commit_7d": 282,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 61,
+   "Rust": 39,
+   "C": 1,
+   "Jinja": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "commit": "20261021",
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "aaurelions/combicode": {
+  "rel_ver": "v4.1.0",
+  "rel_pub": "2026-10-14",
+  "rel_days": 7,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 90,
+   "Python": 9,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

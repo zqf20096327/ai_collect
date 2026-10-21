@@ -2211,5 +2211,53 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "NVIDIA/cosmos-data-factory": {
+  "rel_ver": "paidf-26.10",
+  "rel_pub": "2026-10-19",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "NotYuSheng/MeetMemo": {
+  "rel_ver": "v2.1.2",
+  "rel_pub": "2026-01-19",
+  "rel_days": 275,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 48,
+   "TypeScript": 46,
+   "CSS": 5,
+   "PLpgSQL": 1,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

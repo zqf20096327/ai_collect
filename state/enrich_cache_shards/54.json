@@ -2592,5 +2592,138 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "nokryong/mobile-codex": {
+  "rel_ver": "v0.2.15",
+  "rel_pub": "2026-10-17",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Java": 45,
+   "JavaScript": 37,
+   "Python": 11,
+   "CSS": 4,
+   "HTML": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "hbofz/NeSLE": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-09-01",
+  "rel_days": 50,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 33,
+   "Cuda": 31,
+   "C++": 28,
+   "Jupyter Notebook": 6,
+   "Shell": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "afjcjsbx/picoclaw": {
+  "rel_ver": "nightly",
+  "rel_pub": "2026-10-21",
+  "rel_days": 0,
+  "rel_n90": 4,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 230,
+  "lang": {
+   "Go": 91,
+   "TypeScript": 9,
+   "Makefile": 0,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "youpele52/bigbud": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 119,
+  "lang": {
+   "TypeScript": 95,
+   "Rust": 3,
+   "JavaScript": 1,
+   "CSS": 0,
+   "Astro": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "msuzen/bristol": {
+  "rel_ver": "v0.2.14",
+  "rel_pub": "2023-04-16",
+  "rel_days": 1284,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 82,
+   "Python": 18,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

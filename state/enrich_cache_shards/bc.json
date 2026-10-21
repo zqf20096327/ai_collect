@@ -2224,5 +2224,54 @@
    "lang": "20261021"
   }
  },
- "wquguru/12factor": {}
+ "wquguru/12factor": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 49,
+   "TypeScript": 48,
+   "Python": 1,
+   "CSS": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "jaykwok/jav-trans": {
+  "rel_ver": "v1.8.2",
+  "rel_pub": "2026-09-29",
+  "rel_days": 22,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 95,
+   "JavaScript": 3,
+   "CSS": 1,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ }
 }

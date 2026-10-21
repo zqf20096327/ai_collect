@@ -1530,13 +1530,16 @@
    "Shell": 2,
    "JavaScript": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261021"
+  },
+  "commit_90d": 202,
+  "commit_7d": 83
  },
  "91zgaoge/StoryMoss": {
   "rel_ver": "v0.73.0",
@@ -2134,6 +2137,50 @@
   "lang": {
    "Python": 100,
    "Jinja": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "IIIDman/ragkit": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-09-25",
+  "rel_days": 26,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "ecogex/ai-label": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "HTML": 72,
+   "CSS": 23,
+   "JavaScript": 4
   },
   "enriched_at": "20261021",
   "dim_ts": {

@@ -1738,13 +1738,16 @@
    "CSS": 22,
    "HTML": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261021"
+  },
+  "commit_90d": 56,
+  "commit_7d": 5
  },
  "AIStoryBuilders/AIStoryBuilders": {
   "rel_ver": "03.50.00",
@@ -2325,6 +2328,25 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Devfusion009/yolov8-multiple-vehicle-detection": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
   "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261021",

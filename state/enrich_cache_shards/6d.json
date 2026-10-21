@@ -2456,5 +2456,32 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "raold/second-brain": {
+  "rel_ver": "v5.0.0",
+  "rel_pub": "2025-08-16",
+  "rel_days": 431,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 71,
+   "HTML": 19,
+   "JavaScript": 3,
+   "Svelte": 3,
+   "CSS": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

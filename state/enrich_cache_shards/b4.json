@@ -1790,5 +1790,105 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "tinyfish-io/tinyfish-web-agent-integrations": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 88,
+   "TypeScript": 6,
+   "JavaScript": 5,
+   "Makefile": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "CacinieP/TeXada-the-Math-Agent": {
+  "rel_ver": "v0.4.2-rc.3",
+  "rel_pub": "2026-10-21",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 83,
+   "JavaScript": 11,
+   "CSS": 2,
+   "HTML": 2,
+   "Rust": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Godot4-Addons/ai_assistant_for_godot": {
+  "rel_ver": "v3.3.0-rc1",
+  "rel_pub": "2026-03-31",
+  "rel_days": 204,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "GDScript": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "pdparchitect/rook": {
+  "rel_ver": "v0.6.1",
+  "rel_pub": "2026-08-24",
+  "rel_days": 58,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 86,
+   "Shell": 6,
+   "Makefile": 4,
+   "Dockerfile": 2,
+   "HTML": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

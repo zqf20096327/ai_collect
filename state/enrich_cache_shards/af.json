@@ -1583,13 +1583,16 @@
    "Shell": 10,
    "NASL": 7
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261021"
+  },
+  "commit_90d": 370,
+  "commit_7d": 69
  },
  "luojiahai/code-by-wire": {
   "rel_ver": "v0.1.49",
@@ -2091,6 +2094,25 @@
    "TypeScript": 3,
    "OCaml": 2,
    "Python": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "FrancescoStabile/omnigent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
   },
   "enriched_at": "20261021",
   "dim_ts": {

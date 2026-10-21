@@ -1294,13 +1294,16 @@
    "Python": 93,
    "Lua": 7
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261021",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261021"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "benediktfesl/Diffusion_channel_est": {
   "rel_ver": "wcl-2024",
@@ -1855,6 +1858,35 @@
    "Swift": 0,
    "Python": 0,
    "PowerShell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "shaharia-lab/agento": {
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-10-17",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-10-17",
+  "sec_ids": [
+   "GHSA-fx38-pmx8-xm6p(-,high)"
+  ],
+  "contrib_n": 7,
+  "lang": {
+   "Rust": 79,
+   "TypeScript": 14,
+   "HTML": 2,
+   "CSS": 2,
+   "Python": 1
   },
   "enriched_at": "20261021",
   "dim_ts": {

@@ -1975,5 +1975,86 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "Atlas-Inf/atlas": {
+  "rel_ver": "b590",
+  "rel_pub": "2026-09-03",
+  "rel_days": 48,
+  "rel_n90": 4,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 28,
+  "lang": {
+   "Rust": 68,
+   "Cuda": 22,
+   "Python": 5,
+   "C++": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "filippostanghellini/DocFinder": {
+  "rel_ver": "v2.3.0",
+  "rel_pub": "2026-10-07",
+  "rel_days": 14,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 75,
+   "HTML": 22,
+   "Shell": 1,
+   "PowerShell": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "monster-echo/CortexTerminal2": {
+  "rel_ver": "worker-v0.5.25",
+  "rel_pub": "2026-10-21",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C#": 36,
+   "JavaScript": 23,
+   "Dart": 21,
+   "TypeScript": 15,
+   "HTML": 3
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }
