@@ -5,15 +5,16 @@ name: enrich-hourly
 # 富集全部完成后删除本文件(或注释掉 schedule)即可停。
 on:
   schedule:
-    - cron: "0 0-12,14-23 * * *"   # 每小时整点;避开 13 点(UTC)=北京 21 点 collect 夜窗起点,防同刻双跑
+    - cron: "0 0-12,14-23 * * *"   # 每小时整点;与 collect 的互斥已由共组 state-writer 保证,cron 不再需要避让
   workflow_dispatch: {}             # 手动可触发
 
 permissions:
   contents: write
 
 concurrency:
-  group: enrich-hourly
-  cancel-in-progress: false         # timeout 55min < 间隔 60min,本不会重叠;防挂死兜底
+  group: state-writer            # 与 collect.yml 共组:写 main 的 workflow 互斥串行
+                                  # (10-20 事故根因:两窗并行写 main,push 对撞)
+  cancel-in-progress: false      # collect 5h 窗内本表多窗被折叠为最新 1 个 pending,冲刺变慢不丢数据
 
 jobs:
   enrich:
@@ -65,11 +66,24 @@ jobs:
                   esac
                 done
                 git diff --name-only --diff-filter=U -z | xargs -0 -r git add
-                GIT_EDITOR=true git rebase --continue
+                # 10-21 事故修复:同 collect.yml——CRLF 幻影脏文件会误杀
+                # rebase --continue,全量暂存兜底;仍败则保底推备份分支
+                git add -A
+                echo "== continue 前诊断:剩余未合并/工作区脏文件 =="
+                git ls-files -u | awk '{print $4}' | sort -u | head -5
+                git diff --name-only | head -5
+                if ! GIT_EDITOR=true git rebase --continue; then
+                  d=$(date -u +%Y%m%d)
+                  git push origin "HEAD:refs/heads/enrich-lost-$d" || true
+                  echo "::error::rebase --continue 失败,本窗提交已保底推至 enrich-lost-$d"
+                  exit 1
+                fi
               fi
               git push origin HEAD:main && { echo "已推送"; exit 0; }
               echo "推送撞车,40s 后重试($i/5)"; sleep 40
             done
-            echo "推送 5 次未成,断点已在本窗提交,下一小时窗重试" >&2
+            d=$(date -u +%Y%m%d)
+            git push origin "HEAD:refs/heads/enrich-lost-$d" || true
+            echo "::warning::推送 5 次未成,本窗提交已保底推至 enrich-lost-$d,下一小时窗续跑" >&2
             exit 1
           fi

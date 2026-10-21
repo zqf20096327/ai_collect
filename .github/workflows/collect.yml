@@ -14,8 +14,10 @@ permissions:
   contents: write           # 采完 commit + push 回仓库
 
 concurrency:
-  group: collect
-  cancel-in-progress: false # 同一时间只跑一个,后到的排队
+  group: state-writer           # 与 enrich-hourly 共组:写 main 的 workflow 互斥串行
+                                 # (10-20 事故:两窗并行写,collect push 前 2.5min 被 hourly 顶掉,
+                                 #  rebase 248 冲突 + CRLF 幻影脏文件压死 continue,整晚数据丢)
+  cancel-in-progress: false # 同一时刻只跑一个,后到的排队(旧的 pending 被新 pending 替换)
 
 jobs:
   collect:
@@ -139,10 +141,25 @@ jobs:
                   esac
                 done
                 git diff --name-only --diff-filter=U -z | xargs -0 -r git add
-                GIT_EDITOR=true git rebase --continue
+                # 10-21 事故修复:rebase 重建 index 后 CRLF 规范化差异会让无关文件
+                # 呈"未暂存改动",rebase --continue 的 has_unstaged_changes 检查
+                # 误报"edit all merge conflicts"并退出 → 全量暂存兜底
+                git add -A
+                echo "== continue 前诊断:剩余未合并/工作区脏文件 =="
+                git ls-files -u | awk '{print $4}' | sort -u | head -5
+                git diff --name-only | head -5
+                if ! GIT_EDITOR=true git rebase --continue; then
+                  # continue 仍失败:整晚成果不陪葬,推备份分支留人工合并
+                  d=$(date -u +%Y%m%d)
+                  git push origin "HEAD:refs/heads/collect-lost-$d" || true
+                  echo "::error::rebase --continue 失败,本窗提交已保底推至 collect-lost-$d"
+                  exit 1
+                fi
               fi
               git push origin HEAD:main && { echo "已推送"; exit 0; }
               echo "推送撞车,40s 后重试($i/5)"; sleep 40
             done
-            echo "::warning::推送 5 次未成功,本窗数据丢失(断点续采次晚重做)"
+            d=$(date -u +%Y%m%d)
+            git push origin "HEAD:refs/heads/collect-lost-$d" || true
+            echo "::warning::推送 5 次未成功,本窗提交已保底推至 collect-lost-$d(断点续采次晚重做)"
           fi
