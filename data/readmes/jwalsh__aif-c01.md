@@ -356,7 +356,8 @@ aws s3 cp 2310.07064.pdf s3://$BUCKET/papers/
 #+END_SRC
 
 #+RESULTS:
-: Completed 53.9 KiB/53.9 KiB (81.3 KiB/s) with 1 file(s) remainingupload: ./2310.07064.pdf to s3://aif-c01-jasonwalsh/papers/2310.07064.pdf
+: Completed 53.9 KiB/53.9 KiB (81.3 KiB/s) with 1 file(s) remaining
+upload: ./2310.07064.pdf to s3://aif-c01-jasonwalsh/papers/2310.07064.pdf
 
 #+BEGIN_SRC shell :var BUCKET=aif-c01-bucket
   aws s3api list-object-versions \
@@ -852,7 +853,8 @@ job.commit()
 #+end_src
 
 #+RESULTS:
-: Completed 2.0 KiB/2.0 KiB (2.5 KiB/s) with 1 file(s) remainingupload: ./glue-script.py to s3://aif-c01-jasonwalsh/scripts/glue-script.py
+: Completed 2.0 KiB/2.0 KiB (2.5 KiB/s) with 1 file(s) remaining
+upload: ./glue-script.py to s3://aif-c01-jasonwalsh/scripts/glue-script.py
 
 # AWS Glue Job creation
 

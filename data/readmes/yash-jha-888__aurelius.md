@@ -212,4 +212,4 @@ python scripts/plot.py logs/run1 logs/run2 --output-dir assets/
 ### v0.5
 - [ ] Tensor library
 - [ ] CUDA backend
-- [ ] Transformer implementation
+- [ ] Transformer implementation

@@ -78,7 +78,9 @@ WasteEasy is an app designed to streamline waste management. Developed during th
 <a href="https://bun.sh/">Bun</a> is a JavaScript runtime, package manager, test runner bundler built from scratch using the Zig programming language. It was designed by Jarred Sumner as a drop-in replacement for Node.js. Bun uses JavaScriptCore as the JavaScript engine, unlike Node.js and Deno, which both use V8.
 
 <a href="https://www.mongodb.com//">MongoDB</a>  is a source-available, cross-platform, document-oriented database program. Classified as a NoSQL database product, MongoDB utilizes JSON-like documents with optional schemas. MongoDB is developed by MongoDB Inc. and current versions are licensed under the Server Side Public License.
-
+
+
+
 <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">GoogleMaps Api key</a>
 
 <a href="https://makersuite.google.com/app/apikey">Gemini Api Key</a> 

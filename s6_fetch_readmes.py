@@ -168,6 +168,9 @@ def process(fn: str, rec: dict, pushed: str):
     truncated = len(body) > config.README_MAX_BYTES
     if truncated:
         text = text[:config.README_MAX_BYTES]
+    # 行尾统一 LF:GitHub 原文常带 \r\n,若原样落盘,.gitattributes(text eol=lf)
+    # 在 git add 时才规范化,制造"工作区 CRLF/blob LF"的幻影脏文件(10-21 推送事故根因之一)
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
     with open(readme_path(fn), "w", encoding="utf-8", newline="") as f:
         f.write(text)
     rec.update({"status": "oversized" if truncated else "done",
