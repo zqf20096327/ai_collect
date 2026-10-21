@@ -2066,5 +2066,79 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "stasstepv/hermes-pwa": {
+  "rel_ver": "v0.1.2-beta",
+  "rel_pub": "2026-06-28",
+  "rel_days": 115,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 78,
+   "CSS": 10,
+   "Python": 7,
+   "JavaScript": 5,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "aws-samples/rag-with-amazon-opensearch-and-sagemaker": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 70,
+   "Jupyter Notebook": 28,
+   "Dockerfile": 1,
+   "Batchfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "arnab2001/git-repo-parser": {
+  "rel_ver": "3.0.0",
+  "rel_pub": "2025-11-09",
+  "rel_days": 346,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 51,
+   "JavaScript": 49
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

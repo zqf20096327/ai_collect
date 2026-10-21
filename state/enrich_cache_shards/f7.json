@@ -2055,5 +2055,49 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "AI-KSK/aiksk-minimax-h3-local-prompt": {
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-08-30",
+  "rel_days": 52,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "jiemianduan/image-to-prompt": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-08-07",
+  "rel_days": 75,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

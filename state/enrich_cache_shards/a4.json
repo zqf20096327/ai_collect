@@ -2403,5 +2403,59 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "metaspartan/cybara": {
+  "rel_ver": "v1.0.2548",
+  "rel_pub": "2026-10-20",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "TypeScript": 89,
+   "Swift": 8,
+   "Rust": 1,
+   "CSS": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "lxsolutions/studio-foundation": {
+  "rel_ver": "godot-4.7.1-webgpu-p0033",
+  "rel_pub": "2026-07-28",
+  "rel_days": 85,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 74,
+   "GDScript": 15,
+   "Rust": 5,
+   "JavaScript": 4,
+   "Just": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

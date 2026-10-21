@@ -2416,5 +2416,54 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "ravin-d-27/PyDeepFlow": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2024-10-23",
+  "rel_days": 728,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 25,
+  "lang": {
+   "Python": 92,
+   "Jupyter Notebook": 8
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "FauvidoTechnologies/pyba": {
+  "rel_ver": "v.0.3.4",
+  "rel_pub": "2026-02-19",
+  "rel_days": 244,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "JavaScript": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

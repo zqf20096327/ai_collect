@@ -2154,5 +2154,31 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "byerlikaya/SmartRAG": {
+  "rel_ver": "v4.0.1-build-289",
+  "rel_pub": "2026-03-09",
+  "rel_days": 226,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 91,
+   "JavaScript": 5,
+   "CSS": 3,
+   "HTML": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

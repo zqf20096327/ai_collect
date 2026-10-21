@@ -2521,5 +2521,52 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "bayesml/BayesML": {
+  "rel_ver": "v0.5.1",
+  "rel_pub": "2026-08-24",
+  "rel_days": 58,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 76,
+   "Jupyter Notebook": 24
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Smart-Shaped/chaM3Leon": {
+  "rel_ver": "2.0.0",
+  "rel_pub": "2025-10-23",
+  "rel_days": 363,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Java": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

@@ -2001,5 +2001,55 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "Yangs-AI/Younger": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 5,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "IronCoreLabs/ironcore-alloy": {
+  "rel_ver": "0.16.1",
+  "rel_pub": "2026-09-24",
+  "rel_days": 27,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Rust": 71,
+   "Python": 13,
+   "Java": 6,
+   "Kotlin": 5,
+   "Jupyter Notebook": 5
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

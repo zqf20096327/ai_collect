@@ -2085,5 +2085,35 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "Oolab-labs/patchwork-os": {
+  "rel_ver": "v1.2.4",
+  "rel_pub": "2026-10-17",
+  "rel_days": 4,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": "high",
+  "sec_last": "2026-10-01",
+  "sec_ids": [
+   "GHSA-5vg2-m59m-6v26(-,high)",
+   "GHSA-888g-53g6-4874(-,medium)"
+  ],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 94,
+   "JavaScript": 2,
+   "CSS": 2,
+   "Kotlin": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

@@ -2192,5 +2192,55 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "moiexpositoalonsolab/Deepbiosphere": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2025-07-29",
+  "rel_days": 449,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 92,
+   "R": 8,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "gymaira1990-jpg/Mnemosyne-OS": {
+  "rel_ver": "v8.0.0",
+  "rel_pub": "2026-09-24",
+  "rel_days": 27,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "Shell": 3,
+   "PLpgSQL": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

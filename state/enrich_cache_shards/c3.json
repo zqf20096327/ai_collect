@@ -2110,5 +2110,84 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
- }
+ },
+ "xiaoyuandev/relay-switch": {
+  "rel_ver": "v2.0.7",
+  "rel_pub": "2026-06-28",
+  "rel_days": 115,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 59,
+   "Go": 30,
+   "JavaScript": 3,
+   "Astro": 3,
+   "Shell": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Pinpe/nino-ai-chat": {
+  "rel_ver": "2.4.1",
+  "rel_pub": "2026-01-11",
+  "rel_days": 283,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 64,
+   "Python": 36
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "abab996/AI_MIDI": {
+  "rel_ver": "v3.1.2",
+  "rel_pub": "2026-09-27",
+  "rel_days": 24,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 30,
+   "TypeScript": 29,
+   "Go": 26,
+   "CSS": 5,
+   "HTML": 5
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "isdaniel/pgtuner_mcp": {}
 }

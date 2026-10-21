@@ -1858,5 +1858,32 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "Onweekendd/ScreenWright": {
+  "rel_ver": "v0.1.3",
+  "rel_pub": "2026-09-15",
+  "rel_days": 36,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 71,
+   "Vue": 23,
+   "JavaScript": 3,
+   "Rust": 1,
+   "SCSS": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }
