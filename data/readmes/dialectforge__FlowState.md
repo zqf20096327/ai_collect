@@ -229,7 +229,7 @@ prompt `flowstate-start`.
 
 ## Why FlowState
 
-Many AI memory tools now put their best features behind subscriptions: [Mem0](https://mem0.ai/pricing) ($19 to $249/mo), [Zep](https://www.getzep.com/pricing) ($125/mo and up), [Supermemory](https://supermemory.ai/pricing) ($19/mo and up). Some have dropped their free or self-hosted options entirely, like Zep's self-hosted edition and Pieces' free tier. FlowState is MIT-licensed, runs on your own machine, and is free with no paid tier.
+Many AI memory tools now put their best features behind subscriptions: [Mem0](https://mem0.ai/pricing) ($19 to $249/mo), [Zep](https://www.getzep.com/pricing) ($125/mo and up), [Supermemory](https://supermemory.ai/pricing) ($19/mo and up). Some have dropped their free or self-hosted options entirely, like Zep's self-hosted edition and Pieces' free tier. FlowState is MIT-licensed and runs on your own machine. Local FlowState is free and MIT forever. An optional paid relay and hosting service is at [flowstatemcp.com](https://flowstatemcp.com); paid plans charge for hosting, never for features.
 
 *Prices as listed on each vendor's pricing page, October 2026.*
 
@@ -301,6 +301,52 @@ answer exactly as before, with one extra line naming the new tool. The full mapp
 Over HTTP, only the owner's LAN token may use `manage_data_git` (or `git`) or attach files
 from your computer, or ask for or approve a delete; per-app keys, per-app tokens and OAuth
 apps are refused.
+
+---
+
+## Optional: reach FlowState from anywhere
+
+Want claude.ai, ChatGPT, Cursor or your phone to reach the FlowState on your own computer?
+The optional relay gives it an address like `https://<handle>.fsmcp.com/mcp`. Traffic is
+encrypted end to end (TLS passthrough), so the relay can't read it, and your data stays on
+your machine. Get a code at [flowstatemcp.com/account](https://flowstatemcp.com/account), then
+run `flowstate relay enroll --code <code>`. The relay is in a 10-spot beta. Step-by-step guide:
+[flowstatemcp.com/setup](https://flowstatemcp.com/setup).
+
+**Local FlowState stays free and MIT-licensed. It needs no account, and it makes no network
+calls.** The relay is off by default. Nothing in it runs until you enroll.
+
+### How the relay works
+
+If you want claude.ai, ChatGPT or Cursor to reach the FlowState on your computer, and you don't
+want to set up your own domain and Cloudflare Tunnel ([docs/REMOTE-ACCESS.md](docs/REMOTE-ACCESS.md)),
+the relay agent connects out to `tunnel.fsmcp.com`, an optional hosted service by
+DialectForge on its own domain, `fsmcp.com`. Your apps then use `https://<handle>.fsmcp.com/mcp`.
+
+The relay can't read your traffic. The TLS key for your address is made on your computer and
+never leaves it. Your computer gets its own Let's Encrypt certificate (the relay only publishes
+the DNS check value), and it ends every encrypted connection itself. The relay just passes the
+encrypted bytes through. Sign-in is the same OAuth + passphrase consent page as above, served by
+your FlowState. A daily Certificate Transparency check warns you loudly if anyone else ever
+gets a certificate for your address.
+
+```bash
+<venv python> -m flowstate remote passphrase              # once, if not set yet
+<venv python> -m flowstate relay enroll --code <one-time code>
+<venv python> -m flowstate relay run                      # keep it running
+<venv python> -m flowstate relay status                   # handle, URL, certificate, tunnel, CT check
+<venv python> -m flowstate relay disable                  # stop (keeps keys); `enable` to turn back on
+<venv python> -m flowstate relay forget                   # delete the device token, keys and certificate
+```
+
+During the beta the relay has room for 10 computers, one per account. If it is full,
+`relay enroll` says so in plain words with your place in line ("The FlowState Relay beta is
+full right now. You're on the waitlist (number N). ...") and saves nothing. Places are first come, first served: when there is room, it is held for the
+oldest code in line for 48 hours. Your code stays valid for 7 days after that, so just run
+the same command again.
+
+The relay uses the Python package `cryptography`, which comes with `mcp` today. The wire
+protocol is in [docs/relay-protocol.md](docs/relay-protocol.md).
 
 ---
 

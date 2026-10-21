@@ -19,17 +19,17 @@ AI-KIT gives your coding agents persistent project memory, expert stack rules, *
 | --- | --- |
 | **Run AI-KIT in a ready-made container.** Includes Python, Git, the CLI, project templates and optional integration resources. No host Python installation needed. | **Install AI-KIT directly in your Python environment.** The `ai-kit-python` package provides the `aikit` command, project templates and optional integration resources. |
 | **Requires:** Docker with Linux containers. Published platform: `linux/amd64`. | **Requires:** Python 3.10+. No mandatory third-party runtime dependencies. |
-| **Download:** `docker pull tigusigalpa/ai-kit:1.4.3` | **Install or update:** `python -m pip install --upgrade ai-kit-python` |
-| **Try the CLI:** `docker run --rm tigusigalpa/ai-kit:1.4.3 --help` | **Try the CLI:** `aikit --help` |
-| [**Open Docker Hub →**](https://hub.docker.com/r/tigusigalpa/ai-kit) · [Project mount and launch examples](#run-ai-kit-with-docker) | [**Open PyPI →**](https://pypi.org/project/ai-kit-python/) · [Virtual environment and setup guide](#packaged-cli-and-pypi-status) |
+| **Download:** `docker pull tigusigalpa/ai-kit:1.4.4` | **Install or update:** `python -m pip install --upgrade ai-kit-python` |
+| **Try the CLI:** `docker run --rm tigusigalpa/ai-kit:1.4.4 --help` | **Try the CLI:** `aikit --help` |
+| [**Open Docker Hub →**](https://hub.docker.com/r/tigusigalpa/ai-kit) · [Project mount and launch examples](#run-ai-kit-with-docker) | [**Open PyPI →**](https://pypi.org/project/ai-kit-python/) · [Windows setup and troubleshooting](#windows-installation-and-troubleshooting) |
 
-Both distributions run the same CLI: preview installation into your project, apply the reviewed changes, then bootstrap your coding agent. **Published release: 1.4.3.**
+Both distributions provide the AI-KIT CLI: preview installation into your project, apply the reviewed changes, then bootstrap your coding agent. **Published Docker image: 1.4.4. Published PyPI package: 1.4.4.** Registry files and a fresh installation from PyPI are verified; [publication record](docs/V1_4_4.md#pypi-publication-status).
 
-**v1.4.4 preparation:** optional [orchestration](#optional-orchestration), native Codex helpers and a budgeted OpenRouter text executor. Package/image builds are local preparation; the published artifacts above remain 1.4.3.
+**[v1.4.4](CHANGELOG.md#v144-2026-10-18):** optional [orchestration](#optional-orchestration), native Codex helper configurations and a budgeted OpenRouter text executor are available in source, [the Python package](https://pypi.org/project/ai-kit-python/1.4.4/) and [the Docker image](https://hub.docker.com/r/tigusigalpa/ai-kit/tags?name=1.4.4).
 
-**[v1.4.3](CHANGELOG.md#v143-2026-10-16)** is published on [PyPI as `ai-kit-python` 1.4.3](https://pypi.org/project/ai-kit-python/1.4.3/). The **GitHub Release → checks → your approval → PyPI** workflow completed successfully; published file hashes and installation from PyPI in a fresh environment were verified. This release adds future release-tag support, fifteen event regression tests and a live PyPI version badge. [Publication verification](docs/V1_4_3.md#pypi-publication-and-read-back). The **Docker Hub image 1.4.3** is also published and verified; [image verification](docs/V1_4_3.md#docker-hub-143). Shared dialogue memory and all optional modules remain available.
+**Publication verified on 2026-10-18:** the **GitHub Release → checks → your approval → PyPI** workflow completed successfully. Both PyPI file hashes match the tested workflow artifacts; installation from PyPI in a clean environment, CLI version and the bundled kit check passed. The Docker registry digest and configuration also match the tested image. [PyPI verification](docs/V1_4_4.md#pypi-publication-status) · [Docker verification](docs/V1_4_4.md#docker-hub-144). Earlier published versions remain intact.
 
-[Features](#features-at-a-glance) · [Shared context](#shared-context-from-two-dialogues) · [Web Design](#web-design) · [Docker CLI](#run-ai-kit-with-docker) · [Security workflows](#security-workflows) · [Context7](#library-documentation-with-context7) · [OpenRouter](#working-with-openrouter) · [Quick start](#install) · [Stacks](#-built-for-your-stack) · [Presets](#presets) · [Update](#update-an-application-project)
+[Features](#features-at-a-glance) · [Shared context](#shared-context-from-two-dialogues) · [Web Design](#web-design) · [Windows guide](#windows-installation-and-troubleshooting) · [Docker CLI](#run-ai-kit-with-docker) · [Security workflows](#security-workflows) · [Context7](#library-documentation-with-context7) · [OpenRouter](#working-with-openrouter) · [Quick start](#install) · [Stacks](#-built-for-your-stack) · [Presets](#presets) · [Update](#update-an-application-project)
 
 ## Features at a glance
 
@@ -213,6 +213,8 @@ Installation stays offline and copies files only. A Strix scan requires a separa
 
 You need Python 3.10 or later; the installer uses only the standard library.
 
+**On Windows:** start with the [PowerShell guide](#windows-installation-and-troubleshooting), including an empty-project walkthrough, PATH repair and common errors.
+
 ~~~sh
 git clone https://github.com/tigusigalpa/ai-kit.git
 cd ai-kit
@@ -242,24 +244,27 @@ Every command also runs through one CLI: `python aikit_cli.py install|doctor|rou
 
 ### Packaged CLI and PyPI status
 
-**AI-KIT 1.4.3 is available on [PyPI](https://pypi.org/project/ai-kit-python/1.4.3/).** Install package `ai-kit-python` and run command `aikit`; Python 3.10+ is required with no mandatory runtime dependencies. The owner-approved GitHub Release workflow published through Trusted Publishing. Both registry files match the tested workflow artifacts; fresh Windows/Python 3.12.14 installation, `aikit --version` and the installed kit check passed. [Publication record](docs/V1_4_3.md#pypi-publication-and-read-back). TestPyPI was not used.
+**AI-KIT 1.4.4 is available on [PyPI](https://pypi.org/project/ai-kit-python/1.4.4/).** Install package `ai-kit-python` and run command `aikit`; Python 3.10+ is required with no mandatory runtime dependencies. The [release workflow](https://github.com/tigusigalpa/ai-kit/actions/runs/39133712478) completed its build and production upload through Trusted Publishing after the owner's approval. Both downloaded registry files match the exact tested workflow artifacts. TestPyPI was not used.
+
+**Installation verified on 2026-10-18:** a clean Windows/Python 3.12.14 environment installed `ai-kit-python==1.4.4` from `https://pypi.org/simple` with the verified wheel hash, dependencies and cache disabled. `aikit --version` returned `aikit 1.4.4`; CLI/orchestration help, orchestration and memory imports, and the installed kit check passed without errors or warnings. The identical downloaded workflow wheel also passed the full offline installation smoke. [Publication and installation record](docs/V1_4_4.md#pypi-publication-status).
 
 Install into a virtual environment:
 
 ~~~powershell
 $cliEnv = Join-Path $env:LOCALAPPDATA 'AI-KIT\venv'
 python -m venv "$cliEnv"
-& "$cliEnv\Scripts\Activate.ps1"
-python -m pip install ai-kit-python
-aikit --version
+& "$cliEnv\Scripts\python.exe" -m pip install ai-kit-python
+& "$cliEnv\Scripts\aikit.exe" --version
 ~~~
+
+These explicit executable paths work without activating the environment or changing PATH. The [Windows guide](#windows-installation-and-troubleshooting) covers both short commands and interpreter-bound launches.
 
 For an isolated CLI, use `pipx install ai-kit-python`. To install a reviewed source checkout instead, run `python -m pip install .` there. Updating uses `pipx upgrade ai-kit-python` or `python -m pip install --upgrade ai-kit-python`; installed application instructions are updated separately through preview/apply.
 
 ~~~powershell
-aikit install "C:\Projects\my-app" --agent codex --mode private
-aikit install "C:\Projects\my-app" --agent codex --mode private --apply --check
-aikit doctor "C:\Projects\my-app"
+& "$cliEnv\Scripts\aikit.exe" install "C:\Projects\my-app" --agent codex --mode private
+& "$cliEnv\Scripts\aikit.exe" install "C:\Projects\my-app" --agent codex --mode private --apply --check
+& "$cliEnv\Scripts\aikit.exe" doctor "C:\Projects\my-app"
 ~~~
 
 Then open that application in your client and run its bootstrap workflow. The CLI bundles templates and optional integration resources, uses no runtime third-party dependencies and preserves local documents/conflicts. [PyPI description](docs/PYPI_DESCRIPTION.md) contains portable publication copy; the [release guide](docs/PYPI.md) covers local builds, archive/privacy checks, TestPyPI, OIDC publisher fields and later publication.
@@ -281,11 +286,224 @@ For a manual run, choose **Run workflow**, select the versioned tag, set `destin
 
 The Release path is included in **v1.4.3 and later tagged source**. Existing `v1.4.2` stays unchanged. The complete [release procedure](docs/PYPI.md#release-to-pypi-with-owner-approval) includes activation, recovery and configuration verification. Each stable release still needs your human approval before PyPI upload.
 
+## Windows: installation and troubleshooting
+
+Use **Windows PowerShell 5.1 or PowerShell 7** with Python **3.10+**. The examples below are PowerShell commands: copy the command itself, without a `PS C:\>` prompt. Run them in your application's folder when a target of `.` is shown.
+
+AI-KIT creates project instructions, memory scaffolding and selected client resources. In an empty project, tell your coding agent which application and stack you want during bootstrap; stack detection needs actual project files. A source checkout of AI-KIT and your application are separate folders.
+
+### Windows quick start: an empty project
+
+**1. Check Python and install the package.** Use the same `python` for installation and execution:
+
+~~~powershell
+python --version
+python -m pip --version
+python -m pip install --upgrade ai-kit-python
+python -m aikit.aikit_cli --version
+~~~
+
+The package is **`ai-kit-python`**, its short executable is **`aikit.exe`**, and its module entry point is **`python -m aikit.aikit_cli`**. The module entry point works even when Windows cannot find `aikit.exe` through PATH. A successful installation can still print a Scripts/PATH warning; see [the error guide](#windows-error-guide).
+
+**2. Choose a project directory and preview.** Change `my-app` to your project name. This example uses a directory owned by your Windows user and also works when its path contains spaces:
+
+~~~powershell
+$projectPath = Join-Path $env:USERPROFILE 'Projects\my-app'
+New-Item -ItemType Directory -Path $projectPath -Force | Out-Null
+Set-Location -LiteralPath $projectPath
+python -m aikit.aikit_cli install . --agent codex --mode private
+~~~
+
+Review the proposed files and detected settings. Preview writes nothing to the project. If you already have a folder, set `$projectPath` to that folder instead. A Git repository can be initialized there separately with `git init` when wanted.
+
+**3. Apply the reviewed plan and check it.** Keep the same agent, sharing mode and optional-module flags:
+
+~~~powershell
+python -m aikit.aikit_cli install . --agent codex --mode private --apply --check
+~~~
+
+`--apply` writes the installation; `--check` runs the project doctor afterward. Existing project documents and local edits follow the normal preservation/conflict rules. Private mode selects local instruction visibility; it does not encrypt files.
+
+**4. Bootstrap in the coding client.** Open this application folder in Codex, then send `$ai-kit-bootstrap` in the **Codex chat**. This is a skill invocation in the client, not a PowerShell command. For Claude Code use `--agent claude` in both installer commands and `/ai-kit-bootstrap` in its chat; repeat `--agent` to configure both clients.
+
+Tell the agent what you are building, the intended stack and your constraints. If the client has not discovered the installed skill, confirm that it opened the target project, and ask it to read the target's `AGENTS.md` and `ai-kit/BOOTSTRAP.md`. Installing files and actual client activation are separate steps.
+
+Optional features stay explicit. For example, add `--with-web-design` to **both** preview and apply when you want the [Web Design module](#web-design). The [orchestration module](#optional-orchestration) has its own configuration and limits.
+
+### Windows isolated CLI: no activation required
+
+For a reusable CLI environment outside your application, use a user-owned folder. This avoids installing into a system Python and avoids the `Activate.ps1` execution-policy problem:
+
+~~~powershell
+$cliEnv = Join-Path $env:LOCALAPPDATA 'AI-KIT\venv'
+python -m venv "$cliEnv"
+& "$cliEnv\Scripts\python.exe" -m pip install --upgrade ai-kit-python
+& "$cliEnv\Scripts\aikit.exe" --version
+~~~
+
+From the application folder, preview and then apply separately:
+
+~~~powershell
+& "$cliEnv\Scripts\aikit.exe" install . --agent codex --mode private
+~~~
+
+~~~powershell
+& "$cliEnv\Scripts\aikit.exe" install . --agent codex --mode private --apply --check
+~~~
+
+The leading `&` executes a quoted path in PowerShell. Keep using this environment's executables for its installs and updates. Python documents that [environment activation is optional](https://docs.python.org/3/library/venv.html#how-venvs-work); using explicit paths is enough. A new PowerShell window needs the `$cliEnv` assignment again, while the environment files remain on disk.
+
+### Why installing the package may not enable the aikit command
+
+There are three separate states:
+
+| State | What it means | How to check |
+| --- | --- | --- |
+| Installed Python package | One particular interpreter can import AI-KIT. | `python -m pip show ai-kit-python` and `python -m aikit.aikit_cli --version` |
+| Saved user PATH | A Scripts directory is persisted for your Windows account. | `[Environment]::GetEnvironmentVariable('Path', 'User')` |
+| Current process PATH | This terminal has a current copy of the directories used to find executables. | `$env:Path` and `Get-Command aikit -ErrorAction SilentlyContinue` |
+
+PowerShell processes inherit their environment from their parent. Saving a user PATH entry does not rewrite the environment of every already-running terminal or editor. A new tab or shell opened by an older Windows Terminal, VS Code or Codex process can still inherit its old PATH. See Microsoft's [environment-variable scope and inheritance documentation](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_environment_variables).
+
+This explains the common sequence: pip reports `Successfully installed`, the Scripts directory is saved in user PATH, but the current terminal still reports `CommandNotFoundException`.
+
+### Fix PATH in the current PowerShell window
+
+The quickest route is to keep using `python -m aikit.aikit_cli`. To make the short command available, import missing saved user-PATH entries into **the same PowerShell window that reports the error**, preserving its existing entries:
+
+~~~powershell
+$savedUserPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+foreach ($entry in ($savedUserPath -split ';')) {
+    if ([string]::IsNullOrWhiteSpace($entry)) { continue }
+    $expandedEntry = [Environment]::ExpandEnvironmentVariables($entry.Trim().Trim('"'))
+    $processEntries = @($env:Path -split ';' | ForEach-Object { $_.Trim().Trim('"').TrimEnd('\') })
+    if ($processEntries -notcontains $expandedEntry.TrimEnd('\')) {
+        $env:Path = $env:Path.TrimEnd(';') + ';' + $expandedEntry
+    }
+}
+Get-Command aikit -CommandType Application
+aikit --version
+~~~
+
+This refresh changes only the current process. If the Scripts directory has not been saved yet, use the permanent setup below. For future sessions, completely exit and reopen the **hosting terminal/editor application**; opening another tab can preserve the old parent environment. Save ongoing work before restarting an editor. A check in a separately refreshed process establishes that process's PATH, not the state of an older interactive window.
+
+### Add the correct Scripts directory to user PATH permanently
+
+Python layouts vary. For example, a Python 3.14 installation may use `%LOCALAPPDATA%\Python\pythoncore-3.14-64\Scripts`; older installations may use a different directory. Discover the location for the interpreter that already runs AI-KIT, rather than copying another user's path. Python exposes these paths through [sysconfig installation schemes](https://docs.python.org/3/library/sysconfig.html#installation-path-functions).
+
+Run this block with a **regular Python installation** where `python -m aikit.aikit_cli --version` already succeeds. For the isolated CLI above, continue using explicit paths or activate that environment; its Scripts directory should not become a permanent global shortcut.
+
+~~~powershell
+& {
+    $ErrorActionPreference = 'Stop'
+    $inVirtualEnv = python -c "import sys; print(sys.prefix != sys.base_prefix)"
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect the selected Python.' }
+    if ($inVirtualEnv -eq 'True') { throw 'Use the virtual environment executable directly.' }
+
+    $scriptDirectories = @(python -c "import sysconfig; print(sysconfig.get_path('scripts')); print(sysconfig.get_path('scripts', 'nt_user'))")
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot locate Python Scripts directories.' }
+    $aikitScriptsPath = $scriptDirectories |
+        Where-Object { Test-Path -LiteralPath (Join-Path $_ 'aikit.exe') -PathType Leaf } |
+        Select-Object -First 1
+    if (-not $aikitScriptsPath) { throw 'Install ai-kit-python with this Python first.' }
+
+    $userPathValue = [Environment]::GetEnvironmentVariable('Path', 'User')
+    $userEntries = @($userPathValue -split ';' | ForEach-Object {
+        [Environment]::ExpandEnvironmentVariables($_.Trim().Trim('"')).TrimEnd('\')
+    })
+    if ($userEntries -notcontains $aikitScriptsPath.TrimEnd('\')) {
+        $updatedUserPath = if ([string]::IsNullOrWhiteSpace($userPathValue)) {
+            $aikitScriptsPath
+        } else {
+            $userPathValue.TrimEnd(';') + ';' + $aikitScriptsPath
+        }
+        [Environment]::SetEnvironmentVariable('Path', $updatedUserPath, 'User')
+    }
+
+    $processEntries = @($env:Path -split ';' | ForEach-Object { $_.Trim().Trim('"').TrimEnd('\') })
+    if ($processEntries -notcontains $aikitScriptsPath.TrimEnd('\')) {
+        $env:Path = $env:Path.TrimEnd(';') + ';' + $aikitScriptsPath
+    }
+    Get-Command aikit -CommandType Application
+    aikit --version
+}
+~~~
+
+The block preserves existing entries, avoids adding the same directory again and writes only the **User** scope. It also updates the current window. The [.NET API](https://learn.microsoft.com/en-us/dotnet/api/system.environment.setenvironmentvariable) documents persistence by scope. Reopen the hosting application before testing future sessions. Never replace saved user PATH with the whole current process PATH: the latter may contain machine, virtual-environment and temporary entries.
+
+For a graphical setup, search Windows for **Edit environment variables for your account**, edit **Path** under user variables, add the discovered Scripts directory as a new entry and save. Preserve the other entries. Avoid using `setx PATH "$env:PATH;..."` as a repair shortcut.
+
+### Windows error guide
+
+| Message or symptom | Cause to check | Resolution |
+| --- | --- | --- |
+| `The term 'aikit' is not recognized` / `CommandNotFoundException` | The current shell cannot find `aikit.exe`. | Use `python -m aikit.aikit_cli`; then check saved versus process PATH and use the refresh/permanent steps above. |
+| `WARNING: The script aikit.exe is installed in ... which is not on PATH` | Pip installed the package, but the launcher directory is absent from that process's PATH. | Follow the exact directory in the warning or discover it with `sysconfig`. A successful module launch verifies the selected interpreter's package. |
+| The user PATH entry exists, but another tab still cannot find `aikit` | A running parent terminal/editor still has its earlier environment. | Refresh the failing window or restart the hosting application completely. |
+| `No module named aikit` | This `python` differs from the interpreter used by pip, or its environment lacks the package. | Bind installation and execution to the same interpreter as shown below. |
+| `python` is not recognized, or Windows opens the Store | No usable Python is selected, or an application alias resolves instead of the intended interpreter. | Follow the official Windows setup guide and inspect `Get-Command python -All`; an existing interpreter can be invoked by its full path with `&`. |
+| `No module named pip` | The selected Python does not have pip. | For an installation that supports it, run `python -m ensurepip --upgrade`, then `python -m pip --version`. |
+| `Activate.ps1 cannot be loaded because running scripts is disabled` | PowerShell execution policy blocks the activation script. | Use the isolated environment's `python.exe` / `aikit.exe` directly. Activation is optional; no policy change is needed for this route. |
+| `Access is denied`, `PermissionError` or `[WinError 5]` | The install destination or project is not writable, or a file is in use. | Use the user-owned isolated CLI and a writable project folder. Stop processes holding affected files before retrying; running the whole setup as administrator is unnecessary for a user-owned setup. |
+| `No matching distribution found for ai-kit-python` | Unsupported Python, incorrect package spelling or an unavailable/configured package index. | Confirm Python 3.10+, the exact `ai-kit-python` name and the intended index. Check connectivity and the public project page. |
+| TLS, certificate, proxy or timeout error during pip installation | Network settings, certificates or registry connectivity. | Check the system clock and approved proxy/CA configuration; use your organization's supported setup. Retrying PATH changes does not fix a failed download. |
+| `Unexpected token` around a quoted executable path | A quoted path was supplied as a string without PowerShell's call operator. | Use `& "C:\path with spaces\Scripts\aikit.exe" --version`. |
+| `Cannot install an application kit inside the reference distribution` | `.` points at the AI-KIT source folder or a child of it. | Switch to the separate application folder and rerun preview. |
+| `Refusing a linked target root` or another linked-path refusal | A selected root/managed path is a symlink or junction. | Use the real application directory and inspect the reported path; preserve existing files and review layout conflicts. |
+| Preview lists conflicts or `--check` reports a problem | Local customizations or an incomplete/incompatible project installation need review. | Review the candidates and run the doctor. Preserve local edits; `--accept-local` is for an explicitly reviewed merge. |
+| `[notice] A new release of pip is available` | An informational pip update notice. | It does not invalidate a successful AI-KIT installation. Update pip separately when appropriate. |
+
+#### Resolve multiple Python installations
+
+Inspect the interpreter and its package together:
+
+~~~powershell
+Get-Command python -All
+python -c "import sys; print(sys.executable)"
+python -m pip --version
+python -m pip show ai-kit-python
+python -m aikit.aikit_cli --version
+~~~
+
+If these refer to the wrong Python, use the intended executable explicitly. Replace the example path with your actual interpreter path:
+
+~~~powershell
+$pythonExe = 'C:\Path\To\Python\python.exe'
+& $pythonExe -m pip install --upgrade ai-kit-python
+& $pythonExe -m aikit.aikit_cli --version
+& $pythonExe -m aikit.aikit_cli install . --agent codex --mode private
+~~~
+
+This binds pip and the CLI to the same runtime. A short `aikit` command can still select another installation earlier in PATH; `Get-Command aikit -All` shows its candidates. See [Python on Windows](https://docs.python.org/3/using/windows.html) for interpreter/alias setup and [pip's invocation guide](https://pip.pypa.io/en/stable/user_guide/#running-pip) for interpreter-bound installation.
+
+#### Check an installed project and update it later
+
+After applying AI-KIT in the application directory:
+
+~~~powershell
+python -m aikit.aikit_cli doctor .
+~~~
+
+Updating the Python package updates the CLI. To update project instructions too, preview and apply against that application separately:
+
+~~~powershell
+python -m pip install --upgrade ai-kit-python
+python -m aikit.aikit_cli install .
+~~~
+
+After reviewing the preview:
+
+~~~powershell
+python -m aikit.aikit_cli install . --apply --check
+~~~
+
+For the isolated CLI, use `& "$cliEnv\Scripts\python.exe" -m pip ...` and `& "$cliEnv\Scripts\aikit.exe" ...` instead. Existing saved agent/module/sharing selections are retained when omitted; pass selection flags only when intentionally changing them. See [project upgrades](#update-an-application-project) for preservation and conflicts.
+
 ## Run AI-KIT with Docker
 
 **Build AI-KIT once, then run its CLI against a mounted application folder.** The image contains Python, Git, the packaged kit and all optional integration resources. Installation and the ordinary offline helpers need no host Python or network access at runtime. Each command exits when it finishes; there is no server to keep running.
 
-This is an alternative way to run the same installer. Open your coding agent in the application afterward and bootstrap normally. The image supplies neither an AI agent nor a model API adapter. Web Design, Context7, Cloudflare security-audit and Strix remain opt-in instruction modules; their external tools and live execution require separate setup.
+This is an alternative way to run the same installer. Open your coding agent in the application afterward and bootstrap normally. Version 1.4.4 also bundles the optional bounded OpenRouter text executor; live execution requires explicit model/key configuration and authorization. Native Codex helpers require a compatible coding client. Web Design, Context7, Cloudflare security-audit and Strix remain opt-in instruction modules; their external tools and live execution require separate setup.
 
 ### Build the local image
 
@@ -316,9 +534,9 @@ The closed `.dockerignore` includes distribution sources and excludes Git, perso
 
 ### Docker Hub image
 
-The ready-to-publish [Docker Hub Overview](docs/DOCKER_HUB_OVERVIEW.md) covers capabilities, release changes and launch examples; maintain it for every image release using the [release checklist](CONTRIBUTING.md#docker-hub-releases).
+The [Docker Hub Overview](docs/DOCKER_HUB_OVERVIEW.md) covers capabilities, release changes and launch examples; maintain it for every image release using the [release checklist](CONTRIBUTING.md#docker-hub-releases).
 
-**Published image:** [tigusigalpa/ai-kit:1.4.3](https://hub.docker.com/r/tigusigalpa/ai-kit/tags?name=1.4.3), for `linux/amd64`. The remote digest and configuration match the tested build; [publication record](docs/V1_4_3.md#docker-hub-143). Download with `docker pull tigusigalpa/ai-kit:1.4.3`. To reuse the local build examples, run `docker tag tigusigalpa/ai-kit:1.4.3 ai-kit:1.4.3` and set `$kitVersion` (PowerShell) or `kit_version` (Bash) to `1.4.3`; alternatively use the full image name. Existing version tags are preserved; no `latest` tag or automated registry push is configured.
+**Published image:** [tigusigalpa/ai-kit:1.4.4](https://hub.docker.com/r/tigusigalpa/ai-kit/tags?name=1.4.4), for `linux/amd64`. The remote digest and configuration match the tested build; [publication record](docs/V1_4_4.md#docker-hub-144). Download with `docker pull tigusigalpa/ai-kit:1.4.4`. To reuse the local build examples, run `docker tag tigusigalpa/ai-kit:1.4.4 ai-kit:1.4.4` and set `$kitVersion` (PowerShell) or `kit_version` (Bash) to `1.4.4`; alternatively use the full image name. Existing version tags are preserved; no `latest` tag or automated registry push is configured.
 
 ### Preview and apply on Windows
 
@@ -1027,187 +1245,4 @@ For example, append this object to the worksheet's `resolutions` array, replacin
 {"key":"ui.framework","choice":"c_REPLACE_WITH_ACTUAL_ID","reason":"Owner selected Tailwind for this interface."}
 ~~~
 
-Marking both different alternatives accepted still leaves a conflict. The input digests in the worksheet must remain unchanged; stale reviews refuse. A chosen claim settles that key and supersedes its alternatives for the handoff. Acceptance records your review, not independent verification by AI-KIT.
-
-Create a new immutable merge from the edited worksheet:
-
-~~~powershell
-$reviewed = python aikit_cli.py memory merge $session --left chatgpt --right openrouter --review $reviewFile --apply | ConvertFrom-Json
-$reviewed
-~~~
-
-The original imports and draft remain available. Review-created merges have their own content-derived ID. No command overwrites your project memory or silently picks the latest snapshot.
-
-### Export to ChatGPT and OpenRouter
-
-~~~powershell
-# Normal export requires every active key to be accepted, chosen or explicitly dropped.
-python aikit_cli.py memory export $session --merge $reviewed.merge_id --apply
-
-# An explicit draft export can carry unresolved alternatives into another review chat.
-python aikit_cli.py memory export $session --merge $draft.merge_id --draft --apply
-~~~
-
-Each normal export creates `exports/MERGE_ID/chatgpt.md` and `openrouter.json`; draft filenames contain `-draft`. Add `--format chatgpt` or `--format openrouter` to write only one. Without `--apply`, inspect the planned filenames and byte counts. Pending keys or conflicts block normal export with exit 2. The explicit draft contains their values and DRAFT status rather than presenting them as decisions.
-
-**ChatGPT:** paste/upload `chatgpt.md` into the intended chat or use it as a source in a Project. Ask the client to use it as reference material alongside the new task. This carries the selected knowledge; it does not recreate native chat history, attachments or account memory. Project sources and instructions are described in [OpenAI Docs](https://learn.chatgpt.com/docs/projects).
-
-**OpenRouter:** `openrouter.json` is a local request fragment with one `user` message containing the same reference document. Your client adds trusted system instructions, a chosen supported model and the current task, then performs any separately authorized API call. Keep the imported material at reference-data authority. The file includes no credentials, model selection, active tools or session configuration. [Messages API format](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion).
-
-The exporter rechecks source hashes and the reviewed result. Its default per-file limit is 128000 bytes; raise `--max-bytes` deliberately if needed. It refuses oversized exports before writing and never silently truncates. Byte counts are not token counts, so check the target model/client's context capacity.
-
-### Privacy, recovery and current limits
-
-Normalized messages, review files and exports can contain private material. The tool does not redact secrets or upload anything. Review exported files before sharing. New POSIX workspace directories/files use 0700/0600; Windows inherits folder ACLs. Current Git/Docker/package policies exclude `ai-kit/.memory/`; imports are never added to metrics or default instruction selection. Ignore rules alone do not control access.
-
-Files are created exclusively. Edited or conflicting existing artifacts are preserved and cause refusal; exact reruns are stable. Interrupted multi-file writes can leave completed or partial artifacts: inspect the session and use a fresh workspace when necessary. There is no automatic overwrite/recovery or synchronization loop. Source files are never modified. [Full contract, schemas and checks](docs/DIALOGUE_MEMORY.md).
-
-## Optional orchestration
-
-**Prepared for v1.4.4.** Use native Codex helpers for explicitly delegated local work and the bounded OpenRouter executor for selected text tasks. Both are optional. Installing the module performs no API calls, creates no credentials, changes no global Codex configuration and launches no agents. The published PyPI/Docker Hub 1.4.3 artifacts do not contain this module; use the prepared 1.4.4 wheel, source checkout or local image until that release is published.
-
-### Enable the module in an existing project
-
-Use a CLI built from this revision. Preview against the same application path and retain the existing client selection:
-
-```powershell
-aikit install "C:\Projects\my-app" --with-orchestration
-aikit install "C:\Projects\my-app" --with-orchestration --apply --check
-```
-
-For a first Codex installation, add `--agent codex` to both commands. Existing selected agents, settings and other enabled modules persist. Orchestration is outside all presets, including strict. Its configuration starts with `enabled: false` and `model: null`; API execution needs separate configuration and `--apply`.
-
-The installer adds:
-
-| File | Ownership and purpose |
-| --- | --- |
-| `ai-kit/ORCHESTRATION.md` | Managed execution, authorization, accounting and recovery rules. |
-| `ai-kit/orchestration.json` | Created once, then preserved as project configuration. |
-| `.codex/agents/aikit_explorer.toml` | Read-only evidence gathering, only when Codex is selected. |
-| `.codex/agents/aikit_worker.toml` | Narrow implementation/mechanical work, only for Codex. |
-| `.codex/agents/aikit_reviewer.toml` | Independent read-only review, only for Codex. |
-| `ai-kit/.orchestration/` | Private runtime state, outputs and exclusive lock; created only when executing. |
-
-Private mode ignores helpers and configuration; team mode can share those instructions while runtime state remains ignored. Ignore rules do not remove previously tracked files. Root private maintainer documents and runtime state remain excluded from packages and Docker builds. Existing helper edits become normal upgrade conflicts; existing `.codex/config.toml` and unrelated helper files are preserved. Deselecting Codex requires normal adapter review/retirement.
-
-### Delegate bounded work to Codex helpers
-
-The native helper model/effort defaults are rendered from AI-KIT's canonical OpenAI catalogue: explorer and worker use the cheap role, reviewer the work role. Verify availability in your actual Codex session and edit/accept local adaptations when needed. These files inherit the parent provider, permissions and tools; they do not connect OpenRouter or change the parent's active model. Start a fresh session if required for discovery. [Official custom-agent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents).
-
-Example task for the main agent:
-
-> Inspect the parser change. Delegate read-only path discovery to aikit_explorer. Give aikit_worker only the identified parser and its regression tests, with exact acceptance criteria. Ask aikit_reviewer to review the resulting diff independently. Do not delegate recursively. Return the actual checks and unresolved risks.
-
-Use the helpers only with explicit task/host authorization. Define file scope and expected evidence before delegation; keep large logs out of the parent thread. A simple task can stay with one agent. Native helpers consume their host's subscription/API limits: the OpenRouter budget below does not govern their spend. End-to-end savings require all planning, helper and review costs, including failed work.
-
-### Configure the OpenRouter executor
-
-Edit `ai-kit/orchestration.json` deliberately. Example configuration, using a placeholder that you must replace with a verified available text-model ID:
-
-```json
-{
-  "schema": 1,
-  "enabled": true,
-  "model": "provider/model-id",
-  "budget_usd": "1.00",
-  "request_reserve_usd": "0.10",
-  "max_requests": 10,
-  "max_input_bytes": 16000,
-  "max_output_tokens": 1024,
-  "timeout_seconds": 60,
-  "max_price": {"prompt": "1", "completion": "3", "request": "0"}
-}
-```
-
-Select an exact model, not an automatic/free router alias. Confirm that the model supports text completions and the requested output limit. Price ceilings are USD per **million** prompt/completion tokens and USD per request. They filter providers; they are not a pre-billing quote. Set the request ceiling to zero to exclude per-request-priced routes. The runner disables model/provider fallbacks and streaming, sends no tools/plugins, and has no recursive agent or automatic retry loop. [Provider price filters](https://openrouter.ai/docs/guides/routing/provider-selection#max-price).
-
-Create a **dedicated OpenRouter key** in the provider dashboard. Give it a positive, non-resetting spending limit no greater than `budget_usd`, include BYOK usage in that limit, and reserve it exclusively for this workflow. The runner verifies these settings using `GET /api/v1/key` before inference. It does not create keys or raise their limits. The key must have at least one request reserve remaining. Configure OPENROUTER_API_KEY through your approved secret manager or process environment; never put its value in a prompt, tracked file, task JSON or command-line argument. The CLI never prints it. [Key and budget limits](https://openrouter.ai/docs/api/reference/limits).
-
-The dollar budget is lifetime accounting for this project's retained ledger, not an automatically resetting daily allowance. Local reservations prevent admitting more work than the remaining recorded budget. An already-sent request can exceed its reserve; server-side key caps provide an additional boundary with the provider's billing semantics. A local timeout does not prove cancellation or zero spend. Keep reserves conservative and input/output limits small.
-
-### Prepare a task and review the outgoing scope
-
-Create a UTF-8 task file inside the application, for example `tasks/classify.json`:
-
-```json
-{
-  "schema": 1,
-  "id": "comments-001",
-  "instruction": "Classify each supplied comment using bug, feature or other. Preserve each original id. Mark uncertain rows needs_review. Return JSON text and do not omit rows.",
-  "input_files": ["data/comments-sample.txt"]
-}
-```
-
-The input list is explicit and project-relative. There is no implicit repository traversal or upload of project rules/history. Review the instruction and every selected file before permitting data to leave the machine. Hidden/credential paths, linked paths, traversal, nonregular files and oversized serialized messages are refused. Filename checks cannot recognize secrets embedded in ordinary text. Only selected text reaches `https://openrouter.ai/api/v1/chat/completions`; model output is treated as untrusted data.
-
-```powershell
-# Preview: no key needed, no writes and no network.
-aikit orchestrate run "C:\Projects\my-app" --task tasks/classify.json
-
-# Execute only after reviewing the selected content and configured budget.
-aikit orchestrate run "C:\Projects\my-app" --task tasks/classify.json --apply
-
-# Read local accounting without network.
-aikit orchestrate status "C:\Projects\my-app"
-```
-
-Preview reports the model, selected paths, serialized message bytes, request/config fingerprint, reserve and output path. An exact completed rerun uses its retained result; changing inputs/configuration while reusing the task ID refuses. Use a new opaque ID for a deliberately new task. A changed/deleted prior output refuses instead of silently rebilling.
-
-### Review results and account for costs
-
-Each completed response is stored under `ai-kit/.orchestration/outputs/<id>.json`; it is never executed or applied to application code. A main agent or human must check coverage, invariants and uncertain cases. Passing transport validation is not semantic correctness.
-
-```powershell
-# Preview an explicit acceptance decision after inspecting the result.
-aikit orchestrate review "C:\Projects\my-app" --task-id comments-001 --outcome accepted
-
-aikit orchestrate review "C:\Projects\my-app" --task-id comments-001 --outcome accepted --apply
-```
-
-Use `rejected` for a reviewed incorrect result. Acceptance binds to the original output hash and requires completed accounting. Status reports requested/served model, generation ID, input/output/cached/reasoning tokens when available, duration, billed USD, review state, incomplete accounting and cost per accepted result. All attempts contribute to spend, including failed and rejected results. Prompt text, input files, raw provider errors and credentials are absent from the accounting ledger; private output files still contain the model's text and need normal access controls. On Windows, filesystem ACLs control access; private modes are not a sandbox.
-
-Observed `usage.cost` is recorded directly; no price-based token estimate is substituted. Missing token/cost fields remain unknown. Native Codex planning/review costs and manual review time remain separate; this ledger alone cannot establish end-to-end savings. The existing benchmark protocol still needs a reviewed worker for a controlled experiment; this text executor does not silently implement `aikit-worker-v1` or feed mixed-model evidence into adaptive learning. [Usage accounting](https://openrouter.ai/docs/cookbook/administration/usage-accounting).
-
-### Failures, concurrency and recovery
-
-- An exclusive project lock serializes applies. A reservation is saved **before** each completion POST; a crash cannot make a potentially billed attempt disappear.
-- Unknown cost, a pending reservation, a timeout or a cost above the reserve blocks further inference. No automatic retry occurs, including after 429/5xx errors. Known charges for malformed/truncated/wrong-model/tool-call responses are retained.
-- If a generation ID is known, preview then apply a billing read-back. This never reruns inference:
-
-```powershell
-aikit orchestrate reconcile "C:\Projects\my-app" --task-id comments-001
-aikit orchestrate reconcile "C:\Projects\my-app" --task-id comments-001 --apply
-```
-
-- Reconciliation uses `GET /api/v1/generation?id=...`, requires the same generation ID and actual `total_cost`, then settles a valid retained result or a failed attempt. Unavailable billing stays unresolved.
-- A timeout without a generation ID needs operator investigation in OpenRouter billing. Preserve the state; do not delete it or replace unknown spend with zero. Automatic recovery for that ambiguous case is intentionally unavailable.
-- A process crash can leave `run.lock`. Confirm its owner stopped before removing that lock only; pending accounting must still be resolved. Never prune a shared Docker builder or delete the project ledger to bypass a budget.
-
-Exit codes: **0** for preview, completed work or a status report; **1** for refusal/configuration/path/network preflight failure; **2** for a failed or uncertain inference result. Status itself remains read-only even when it reports unresolved accounting.
-
-### Python package, Docker and verification boundaries
-
-The prepared 1.4.4 wheel includes the executor, templates, native helper sources and tests, with no new runtime dependencies. Docker must be rebuilt from this revision: use `ai-kit:dev` or `ai-kit:1.4.4` for local verification. Published `tigusigalpa/ai-kit:1.4.3` stays unchanged. Offline preview/status need no network; a future real `run --apply` needs outbound HTTPS and an intentionally supplied key, with a writable project mount. A read-only project mount cannot persist reservations or outputs. No Docker socket or privileged mode is needed.
-
-Code and tests use synthetic inputs and substituted provider responses. Real API calls, native client activation, account availability and measured savings remain separate. [Maintainer verification and limitations](docs/ORCHESTRATION.md).
-
-## Working with OpenRouter
-
-![Working with OpenRouter](https://i.postimg.cc/BnzyCKSS/13-working-with-openrouter.jpg)
-
-**AI-KIT rules can travel with your API requests.** OpenRouter can provide model access while a client or adapter supplies selected AI-KIT instructions, project facts and task material. This makes the kit useful beyond native coding-client configuration.
-
-**Integration status:** The prepared v1.4.4 source adds the explicit [bounded text executor](#optional-orchestration). Instruction selection, dialogue exports, routing recommendations and opt-in measurements remain available. The general coding-agent/tool-loop architecture below is still a proposal; the shipped executor sends only explicitly selected text and never executes model output. Installing AI-KIT configures no API key or paid call.
-
-### What can be reused
-
-| AI-KIT component | Role in an OpenRouter workflow |
-| --- | --- |
-| [Core](template/ai-kit/CORE.md), engineering/security rules and the relevant stack profile | Trusted model instructions: language, authorization, implementation and review expectations |
-| PROJECT_CONTEXT, project.json and decisions/ADRs | Verified project facts and constraints, supplied as reference data |
-| [Context selector](scripts/context.py) | Select required rules/profiles by declared module; report file paths, byte counts, hashes and duplicates |
-| [Router](template/ai-kit/router/POLICY.md) | Recommend a capability/model role; an adapter must resolve an available OpenRouter model and supported controls |
-| [Metrics](template/ai-kit/METRICS.md) | Record agreed measurements from actual execution, including cached input tokens, cost, failures and recovery |
-| Optional security-audit/Strix references | Include relevant guidance only on an explicit request; their execution prerequisites still apply |
-
-OpenRouter cannot discover local AGENTS.md or follow filesystem links in a plain API request. A client must read the selected files and supply their contents. 
+Marking both different alternatives accepted still leaves a conflict. The input digests in the worksheet must remain unchanged; stale reviews refuse. A chosen claim settles that key and supersedes its alternatives for the handoff. Acceptance records your review, not independent verificat

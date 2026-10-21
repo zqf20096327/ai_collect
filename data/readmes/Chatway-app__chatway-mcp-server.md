@@ -71,10 +71,12 @@ automation, knowledge base, and mobile apps for iOS and Android.
 | Cursor | [Install the plugin](#cursor) |
 | GitHub Copilot (VS Code) | [Add the server](#github-copilot-vs-code) |
 | Cline | [Add the server](#cline) |
+| goose | [Add the extension](#goose) |
+| Grok Build | [Install the plugin](#grok-build) |
 
 **Works with any client that supports remote MCP servers with OAuth**
 
-Codex, Grok, Devin, Goose, OpenCode, and others. See the
+Codex, Grok, Devin, OpenCode, and others. See the
 [step-by-step setup guides](https://developers.chatway.app/mcp/guides.mcp_connect_clients)
 for each client.
 
@@ -91,6 +93,66 @@ for each client.
 
 See the [tool reference](https://developers.chatway.app/mcp/guides.mcp_tool_reference) for
 every tool and its parameters.
+
+## Agent Skills: Ready-to-use AI Customer Support Workflows
+
+[![Skills.sh Installs](https://skills.sh/b/Chatway-app/chatway-mcp-server)](https://skills.sh/Chatway-app/chatway-mcp-server)
+
+Make your AI agents more powerful with **Chatway Agent Skills**, ready-to-use workflows that help ChatGPT, Claude, Cursor, Codex, and other compatible AI agents manage customer support through Chatway.
+
+While the [Chatway MCP Server](https://mcp.chatway.app/mcp) gives AI agents access to your customer conversations, contacts, and support tools, **Agent Skills teach them how to use those tools to complete specific customer support tasks.**
+
+### Available Agent Skills
+
+| Skill | What it does |
+|---|---|
+| [**Support Triage**](skills/chatway-support-triage/SKILL.md) | Review unresolved conversations, identify customers waiting for replies, and prioritize urgent support requests. |
+| [**AI Reply Assistant**](skills/chatway-ai-reply-assistant/SKILL.md) | Draft accurate customer support responses using conversation history and your knowledge base. Send replies with your approval. |
+| [**Smart Routing**](skills/chatway-smart-routing/SKILL.md) | Identify conversations requiring human attention, recommend the right agents, and assist with assignments and handoffs. |
+| [**Customer Context**](skills/chatway-customer-context/SKILL.md) | Retrieve customer conversation history, identify previous issues, and summarize important details before responding. |
+| [**Support Insights**](skills/chatway-support-insights/SKILL.md) | Analyze support conversations, identify recurring customer issues, and discover opportunities to improve your knowledge base and support workflows. |
+
+### Install Chatway Agent Skills
+
+Install the skills directly from the official Chatway GitHub repository:
+
+```bash
+npx skills add Chatway-app/chatway-mcp-server
+```
+
+Or install a specific skill:
+
+```bash
+npx skills add Chatway-app/chatway-mcp-server --skill chatway-support-triage
+```
+
+Then connect your AI agent to the Chatway MCP server:
+
+`https://mcp.chatway.app/mcp`
+
+[View Chatway MCP setup guides](https://developers.chatway.app/mcp/guides.mcp_connect_clients)
+
+Agent Skills and MCP connections are separate. Your AI client must support installing or loading Agent Skills, and you must separately authorize the Chatway MCP connection. Skill availability and installation methods vary by client.
+
+### Example Prompts
+
+Once installed, ask your AI agent:
+
+- "Review my unresolved Chatway conversations and prioritize the ones needing attention."
+- "Draft responses for customers waiting for a reply, but don't send them yet."
+- "Find conversations that require human support and recommend who should handle them."
+- "Summarize this customer's previous conversations and outstanding issues."
+- "Analyze this week's support conversations and identify the most common customer problems."
+
+**Why use Chatway Agent Skills?**
+
+- **Save time:** Turn complex customer support workflows into simple natural-language requests.
+- **Get better AI responses:** Help agents follow structured workflows using actual conversation history and knowledge-base content.
+- **Keep humans in control:** Review proposed responses and approve sensitive actions.
+- **Work with your favorite AI agents:** Use compatible Agent Skills clients alongside Chatway MCP.
+- **Start for free:** Chatway MCP is available on all plans, including Free. Some capabilities require a paid plan.
+
+[Explore Chatway Agent Skills](https://github.com/Chatway-app/chatway-mcp-server/tree/main/skills) | [Create a Free Chatway Account](https://go.chatway.app/register)
 
 ## Real-time events with webhooks
 
@@ -258,6 +320,41 @@ Chatway when prompted. Or add this to Cline's MCP settings JSON:
 
 `"type": "streamableHttp"` is required. Without it, Cline uses the legacy SSE transport and the
 connection fails with HTTP `400`.
+
+### goose
+
+**goose Desktop:** open **Extensions → Add custom extension**, enter `Chatway` as the name, choose
+**Streamable HTTP**, paste `https://mcp.chatway.app/mcp` as the endpoint, and click **Add**. A
+browser window opens so you can sign in to Chatway and choose what goose can access.
+
+Or paste this install link into your browser to add it in one step:
+
+```
+goose://extension?type=streamable_http&url=https%3A%2F%2Fmcp.chatway.app%2Fmcp&id=chatway&name=Chatway&description=Manage%20Chatway%20live%20chat%20conversations%2C%20contacts%2C%20and%20knowledge%20base
+```
+
+**goose CLI:** run `goose configure`, choose **Add Extension → Remote Extension (Streamable HTTP)**,
+enter `chatway` as the name and `https://mcp.chatway.app/mcp` as the endpoint. Leave the request
+headers empty: goose opens the Chatway sign-in in your browser the first time it connects.
+
+Then try: "List my 5 most recent unresolved Chatway conversations."
+
+### Grok Build
+
+This repository is a Grok Build plugin: it bundles the Chatway MCP server (`.mcp.json`) and the
+[Agent Skills](#agent-skills-ready-to-use-ai-customer-support-workflows) in `skills/`.
+
+Open `/plugins` in Grok Build, go to the **Marketplace** tab, and install **chatway**. Then open
+`/mcps`, select `chatway`, and press `i` to sign in to Chatway in your browser.
+
+To add only the MCP server:
+
+```bash
+grok mcp add --transport http chatway https://mcp.chatway.app/mcp
+```
+
+Grok opens the Chatway sign-in the first time it uses the server and stores the token in
+`~/.grok/mcp_credentials.json`. Then try: "List my 5 most recent unresolved Chatway conversations."
 
 ### Other clients
 

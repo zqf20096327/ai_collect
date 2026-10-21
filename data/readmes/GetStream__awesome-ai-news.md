@@ -3,7 +3,18 @@
 AI is changing faster than developers can keep up. This repo is a monthly collection of AI news and resources for developers.
 
 ## October 2026
+- [Qwen-Audio-3.1-Realtime](https://x.com/TONGYI_SpeechAI/status/2112815751891751386?s=20): [Paper](https://arxiv.org/abs/2609.25176), Project's [Page](https://qwenaudio.github.io/qwen-audio-3.1-realtime/), Voice Agent Harness on [GitHub](https://github.com/QwenAudio/qwen-audio-agent).
+- [OpenAI acquires Orchestra Bio](https://openai.com/index/openai-to-acquire-orchestra-bio/): A platform that helps biopharma teams coordinate the complex process of drug development.
+- [Meet Underdog Bark 3.0](https://underdog.ai/bark): Bark turns your voice into text on your Mac.
+- [Open-Sourcing Phonon](https://gradium.ai/blog/release-phonon-open-weight): A Suite of Frontier On-Device TTS Models.
+- [Introducing Voxtral 3](https://x.com/MistralAI/status/2112574615318876178?s=20): State-of-the-art Transcribe and Speech models powering Mistral’s new voice agents API. [Blog](https://mistral.ai/news/voxtral-3/) 🧵
+- [Introducing DeepInfer](https://x.com/deepseek_ai/status/2112476496283775135?s=20): DeepSeek's in-house inference framework, now fully [open source](https://github.com/deepseek-ai/DeepInfer)!.
+- [Introducing Eleven Realtime](https://x.com/ElevenLabs/status/2112550782063247521?s=20): ElevenLab's new class of Speech to Speech models.
+- [Introducing Timestral](https://mistral.ai/news/timestral/): Mistral’s first family of time-series foundation models, delivers state-of-the-art probabilistic, multivariate forecasts with just 209M parameters.
 - [Introducing Muse Spark Open](https://research.meta.ai/blog/muse-spark-open): The Most Capable US Open‑Weight Model.
+- [Open-Sourcing 5 Ming-3.0 Models](https://x.com/AntLingAGI/status/2112210824848928942?s=20): Download Ming-3.0 speech family of models on Hugging Face & ModelScope.
+- [Muse Glimmer Tech Report](https://ai.meta.com/research/publications/muse-glimmer-30b-an-on-device-agentic-model/): An On-Device Agentic Model.
+- [Introducing Clairic](https://blog.cloudflare.com/clairic-extraction-model/): Cloudflare's new System One class of extraction models.
 - [Jev Composable Images and Box Type](https://typesafe.ai/blog/jev-1-14): You can send images in a System One request. Jev also supports a box type, a System One question type for finding where something is in an image
 - [Ultramarine 1 Flash](https://www.paperinstruments.com/blog/ultramarine): Scaling Non-Verifiable RL.
 - [Gemini 4 Argon](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/): Built to solve your hardest problems.

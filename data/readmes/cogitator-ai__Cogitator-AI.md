@@ -74,7 +74,7 @@ cd my-agents && npm run dev
 npm run dev:studio     # Cogitator Studio: chat, traces and costs, approvals, workflows, forks
 ```
 
-It prints what the first run needs: `ollama pull` for the local model, or `cp .env.example .env` and the key for a cloud provider.
+It prints what the first run needs: `ollama pull` for the local model, or `cp .env.example .env` and the key for a cloud provider. With Docker running it offers to start the stack's services first (Postgres, Redis, the Ollama container that pulls the model) and waits until they are healthy.
 
 Start from one of 16 presets (agent, personal assistant, memory, Express, Hono or Tetsu API, Next.js chat, messaging bot, RAG, MCP, swarm, workflow, durable workflow, A2A, realtime voice, evals) or pick the stack yourself with flags, from any example of this repository (`--example core/basic-agent`) or from a GitHub template. Every project has a registry of its agents, tests on a mocked model, `AGENTS.md` and the docs bundled for coding agents, and grows later with `npx cogitator add rag`.
 
@@ -194,7 +194,7 @@ Install only what you need. Everything is a separate npm package.
 
 | Package                                                                                      | What it does                                                                                         | Example                                                              |
 | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| [`@cogitator-ai/core`](https://www.npmjs.com/package/@cogitator-ai/core)                     | Agents, tools, LLM backends, streaming, everything you need to start                                 | [16 core examples](./examples/core/)                                 |
+| [`@cogitator-ai/core`](https://www.npmjs.com/package/@cogitator-ai/core)                     | Agents, tools, LLM backends, streaming, everything you need to start                                 | [21 core examples](./examples/core/)                                 |
 | [`@cogitator-ai/memory`](https://www.npmjs.com/package/@cogitator-ai/memory)                 | Your agents remember things. Redis, Postgres, SQLite, MongoDB, Qdrant, in-memory                     | [4 memory examples](./examples/memory/)                              |
 | [`@cogitator-ai/models`](https://www.npmjs.com/package/@cogitator-ai/models)                 | Dynamic model registry with pricing, capabilities, provider metadata                                 | [model registry example](./examples/core/13-model-registry.ts)       |
 | [`@cogitator-ai/swarms`](https://www.npmjs.com/package/@cogitator-ai/swarms)                 | 7 swarm strategies - hierarchy, round-robin, consensus, pipeline, debate, auction, negotiation       | [4 swarm examples](./examples/swarms/)                               |
@@ -202,7 +202,7 @@ Install only what you need. Everything is a separate npm package.
 | [`@cogitator-ai/a2a`](https://www.npmjs.com/package/@cogitator-ai/a2a)                       | Google's Agent-to-Agent protocol - expose agents as services, consume external ones                  | [2 a2a examples](./examples/a2a/)                                    |
 | [`@cogitator-ai/mcp`](https://www.npmjs.com/package/@cogitator-ai/mcp)                       | Connect to any MCP server and use its tools                                                          | [4 mcp examples](./examples/mcp/)                                    |
 | [`@cogitator-ai/sandbox`](https://www.npmjs.com/package/@cogitator-ai/sandbox)               | Run untrusted code in Docker or WASM with resource limits and a native fallback                      | [sandbox example](./examples/infrastructure/05-sandbox-execution.ts) |
-| [`@cogitator-ai/wasm-tools`](https://www.npmjs.com/package/@cogitator-ai/wasm-tools)         | 14 pre-built tools running in WASM sandbox (calc, json, hash, csv, markdown...)                      | [wasm example](./examples/advanced/03-wasm-tools.ts)                 |
+| [`@cogitator-ai/wasm-tools`](https://www.npmjs.com/package/@cogitator-ai/wasm-tools)         | 16 pre-built tools running in WASM sandbox (calc, json, hash, csv, markdown...)                      | [wasm example](./examples/advanced/03-wasm-tools.ts)                 |
 | [`@cogitator-ai/self-modifying`](https://www.npmjs.com/package/@cogitator-ai/self-modifying) | Agents that generate new tools at runtime and evolve their own architecture                          | [self-modifying example](./examples/advanced/01-self-modifying.ts)   |
 | [`@cogitator-ai/neuro-symbolic`](https://www.npmjs.com/package/@cogitator-ai/neuro-symbolic) | Prolog-style logic, constraint solving, knowledge graphs for agents                                  | [neuro-symbolic example](./examples/advanced/02-neuro-symbolic.ts)   |
 | [`@cogitator-ai/rag`](https://www.npmjs.com/package/@cogitator-ai/rag)                       | RAG pipeline - document loaders, chunking, retrieval, reranking                                      | [3 rag examples](./examples/rag/)                                    |
@@ -213,7 +213,7 @@ Install only what you need. Everything is a separate npm package.
 | [`@cogitator-ai/channels`](https://www.npmjs.com/package/@cogitator-ai/channels)             | Personal AI assistant on Telegram, Discord, Slack, WhatsApp, Bluesky, Threads, posts to social feeds | [5 channel examples](./examples/channels/)                           |
 | [`@cogitator-ai/cli`](https://www.npmjs.com/package/@cogitator-ai/cli)                       | `cogitator init` / `add` / `dev` / `mcp` / `doctor` / `eval` / `up` / `deploy` from your terminal    | [CLI workflows](./examples/cli/README.md)                            |
 | [`@cogitator-ai/studio`](https://www.npmjs.com/package/@cogitator-ai/studio)                 | Cogitator Studio: chat with agents, traces and costs, approvals, workflow reruns, forks              | [studio guide](https://cogitator.app/docs/getting-started/studio)    |
-| [`@cogitator-ai/test-utils`](https://www.npmjs.com/package/@cogitator-ai/test-utils)         | Mock LLM backends, fixtures and helpers for testing your agents                                      | [testing docs](https://cogitator.app/docs/testing/test-utils)        |
+| [`@cogitator-ai/test-utils`](https://www.npmjs.com/package/@cogitator-ai/test-utils)         | Mock LLM backends, fixtures, helpers and a conformance kit for LLM backends                          | [testing docs](https://cogitator.app/docs/testing/test-utils)        |
 
 **Server adapters** - mount agents as REST APIs with one line:
 
@@ -241,6 +241,8 @@ All with Swagger docs, SSE streaming, and WebSocket support, built on the shared
 | **Vision & audio**     | Send images, transcribe audio, generate speech                                                         |
 | **Cost-aware routing** | Auto-pick cheap models for easy tasks, expensive for hard ones                                         |
 | **Cost prediction**    | Know how much a run will cost before you execute it                                                    |
+| **Fallback models**    | A failing provider moves the turn to the next model, with circuit breakers, instead of failing the run |
+| **Typed tool deps**    | Hand tools a DB client or the signed-in user per run, type-checked and never shown to the model        |
 
 ### Memory & Knowledge
 
@@ -286,6 +288,7 @@ All with Swagger docs, SSE streaming, and WebSocket support, built on the shared
 | **PII masking**                | Emails, cards, keys and the like never reach the model provider |
 | **Sandboxed execution**        | Docker and WASM isolation for untrusted code                    |
 | **Tool guards**                | Block dangerous commands, validate paths, require approval      |
+| **Run middleware**             | Hooks around every model and tool call, tripwires stop a run    |
 
 ### Advanced
 
@@ -331,7 +334,7 @@ All with Swagger docs, SSE streaming, and WebSocket support, built on the shared
 
 ---
 
-## 77 Runnable Examples
+## 82 Runnable Examples
 
 Every major feature has a working example you can run right now.
 
@@ -339,24 +342,25 @@ Every major feature has a working example you can run right now.
 npx tsx examples/core/01-basic-agent.ts
 ```
 
-| Category                                                    | Count | What you'll learn                                                                                                                                                                                    |
-| ----------------------------------------------------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`core/`](./examples/core/)                                 | 16    | Agents, tools, streaming, caching, tree-of-thought, reflection, optimization, time-travel, cost routing, constitutional AI, prompt injection, causal reasoning, approvals, handoffs, decision models |
-| [`memory/`](./examples/memory/)                             | 4     | In-memory storage, context building, semantic search, knowledge graphs                                                                                                                               |
-| [`swarms/`](./examples/swarms/)                             | 4     | Debate, pipeline, hierarchical coordination, negotiation                                                                                                                                             |
-| [`workflows/`](./examples/workflows/)                       | 3     | DAG workflows, human-in-the-loop, map-reduce                                                                                                                                                         |
-| [`a2a/`](./examples/a2a/)                                   | 2     | A2A server and client                                                                                                                                                                                |
-| [`mcp/`](./examples/mcp/)                                   | 4     | MCP client and server integration, per-user tokens, agents as MCP servers                                                                                                                            |
-| [`rag/`](./examples/rag/)                                   | 3     | Basic retrieval, chunking strategies, agent with RAG                                                                                                                                                 |
-| [`evals/`](./examples/evals/)                               | 3     | Basic evaluation, LLM judge, A/B comparison                                                                                                                                                          |
-| [`voice/`](./examples/voice/)                               | 4     | Voice pipeline, realtime sessions, voice agents                                                                                                                                                      |
-| [`browser/`](./examples/browser/)                           | 4     | Web scraping, form automation, stealth agents, crypto price scraper                                                                                                                                  |
-| [`integrations/`](./examples/integrations/)                 | 10    | Express, Fastify, Hono, Koa, Next.js, OpenAI compat, AI SDK, Tetsu on Bun, Deno, Cloudflare Workers                                                                                                  |
-| [`infrastructure/`](./examples/infrastructure/)             | 5     | Redis, PostgreSQL, job queues, Docker deploy, sandbox execution                                                                                                                                      |
-| [`channels/`](./examples/channels/)                         | 5     | Telegram assistant, multi-channel super-assistant, WebChat bot, social feed publisher, Bluesky and Threads bot                                                                                       |
-| [`device-tools/`](./examples/device-tools/)                 | 6     | Local screenshots, clipboard, notifications, URL opening, shell execution, device skill setup                                                                                                        |
-| [`create-cogitator-app/`](./examples/create-cogitator-app/) | 1     | Programmatic project scaffolding                                                                                                                                                                     |
-| [`advanced/`](./examples/advanced/)                         | 3     | Self-modifying agents, neuro-symbolic reasoning, WASM tools                                                                                                                                          |
+| Category                                                    | Count | What you'll learn                                                                                                                                                                                                                                                                                |
+| ----------------------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`core/`](./examples/core/)                                 | 21    | Agents, tools, streaming, caching, tree-of-thought, reflection, optimization, time-travel, cost routing, constitutional AI, prompt injection, causal reasoning, approvals, handoffs, decision models, provider errors and pricing, the tool contract, fallback models, tool deps, run middleware |
+| [`memory/`](./examples/memory/)                             | 4     | In-memory storage, context building, semantic search, knowledge graphs                                                                                                                                                                                                                           |
+| [`swarms/`](./examples/swarms/)                             | 4     | Debate, pipeline, hierarchical coordination, negotiation                                                                                                                                                                                                                                         |
+| [`workflows/`](./examples/workflows/)                       | 3     | DAG workflows, human-in-the-loop, map-reduce                                                                                                                                                                                                                                                     |
+| [`a2a/`](./examples/a2a/)                                   | 2     | A2A server and client                                                                                                                                                                                                                                                                            |
+| [`mcp/`](./examples/mcp/)                                   | 4     | MCP client and server integration, per-user tokens, agents as MCP servers                                                                                                                                                                                                                        |
+| [`rag/`](./examples/rag/)                                   | 3     | Basic retrieval, chunking strategies, agent with RAG                                                                                                                                                                                                                                             |
+| [`evals/`](./examples/evals/)                               | 3     | Basic evaluation, LLM judge, A/B comparison                                                                                                                                                                                                                                                      |
+| [`voice/`](./examples/voice/)                               | 4     | Voice pipeline, realtime sessions, voice agents                                                                                                                                                                                                                                                  |
+| [`browser/`](./examples/browser/)                           | 4     | Web scraping, form automation, stealth agents, crypto price scraper                                                                                                                                                                                                                              |
+| [`integrations/`](./examples/integrations/)                 | 10    | Express, Fastify, Hono, Koa, Next.js, OpenAI compat, AI SDK, Tetsu on Bun, Deno, Cloudflare Workers                                                                                                                                                                                              |
+| [`infrastructure/`](./examples/infrastructure/)             | 6     | Redis, PostgreSQL, job queues, Docker deploy, sandbox execution                                                                                                                                                                                                                                  |
+| [`channels/`](./channels/)                                  | 5     | Telegram assistant, multi-channel super-assistant, WebChat bot, social feed publisher, Bluesky and Threads bot                                                                                                                                                                                   |
+| [`device-tools/`](./examples/device-tools/)                 | 6     | Local screenshots, clipboard, notifications, URL opening, shell execution, device skill setup                                                                                                                                                                                                    |
+| [`create-cogitator-app/`](./examples/create-cogitator-app/) | 1     | Programmatic project scaffolding                                                                                                                                                                                                                                                                 |
+| [`config/`](./examples/config/)                             | 1     | YAML configuration, environment variable overrides, runtime initialization                                                                                                                                                                                                                       |
+| [`advanced/`](./examples/advanced/)                         | 3     | Self-modifying agents, neuro-symbolic reasoning, WASM tools                                                                                                                                                                                                                                      |
 
 The [`cli/`](./examples/cli/README.md) folder adds step-by-step `cogitator` CLI walkthroughs on top of these.
 
@@ -373,6 +377,16 @@ cd Cogitator-AI && pnpm install && pnpm dev
 ```
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+
+### Contributors
+
+Thanks to everyone who has contributed to Cogitator!
+
+<a href="https://github.com/cogitator-ai/Cogitator-AI/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=cogitator-ai/Cogitator-AI" alt="Contributors" />
+</a>
+
+Want to join them? Pick an issue labeled [good first issue or help wanted](https://github.com/cogitator-ai/Cogitator-AI/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22%2C%22help%20wanted%22).
 
 ---
 
@@ -397,7 +411,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 | [@cogitator-ai/redis](https://www.npmjs.com/package/@cogitator-ai/redis)                   | Redis client (standalone + cluster)                           | [![npm](https://img.shields.io/npm/v/@cogitator-ai/redis.svg)](https://www.npmjs.com/package/@cogitator-ai/redis)                   |
 | [@cogitator-ai/worker](https://www.npmjs.com/package/@cogitator-ai/worker)                 | Distributed job queue (BullMQ)                                | [![npm](https://img.shields.io/npm/v/@cogitator-ai/worker.svg)](https://www.npmjs.com/package/@cogitator-ai/worker)                 |
 | [@cogitator-ai/openai-compat](https://www.npmjs.com/package/@cogitator-ai/openai-compat)   | OpenAI-compatible server: Chat Completions, Responses         | [![npm](https://img.shields.io/npm/v/@cogitator-ai/openai-compat.svg)](https://www.npmjs.com/package/@cogitator-ai/openai-compat)   |
-| [@cogitator-ai/wasm-tools](https://www.npmjs.com/package/@cogitator-ai/wasm-tools)         | WASM-based sandboxed tools (14 built-in)                      | [![npm](https://img.shields.io/npm/v/@cogitator-ai/wasm-tools.svg)](https://www.npmjs.com/package/@cogitator-ai/wasm-tools)         |
+| [@cogitator-ai/wasm-tools](https://www.npmjs.com/package/@cogitator-ai/wasm-tools)         | WASM-based sandboxed tools (16 built-in)                      | [![npm](https://img.shields.io/npm/v/@cogitator-ai/wasm-tools.svg)](https://www.npmjs.com/package/@cogitator-ai/wasm-tools)         |
 | [@cogitator-ai/self-modifying](https://www.npmjs.com/package/@cogitator-ai/self-modifying) | Self-modifying agents with meta-reasoning                     | [![npm](https://img.shields.io/npm/v/@cogitator-ai/self-modifying.svg)](https://www.npmjs.com/package/@cogitator-ai/self-modifying) |
 | [@cogitator-ai/neuro-symbolic](https://www.npmjs.com/package/@cogitator-ai/neuro-symbolic) | Neuro-symbolic reasoning with SAT/SMT                         | [![npm](https://img.shields.io/npm/v/@cogitator-ai/neuro-symbolic.svg)](https://www.npmjs.com/package/@cogitator-ai/neuro-symbolic) |
 | [@cogitator-ai/rag](https://www.npmjs.com/package/@cogitator-ai/rag)                       | RAG pipeline with loaders, chunking, retrieval, reranking     | [![npm](https://img.shields.io/npm/v/@cogitator-ai/rag.svg)](https://www.npmjs.com/package/@cogitator-ai/rag)                       |
@@ -414,7 +428,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 | [@cogitator-ai/deploy](https://www.npmjs.com/package/@cogitator-ai/deploy)                 | Deployment engine (Docker, Fly.io)                            | [![npm](https://img.shields.io/npm/v/@cogitator-ai/deploy.svg)](https://www.npmjs.com/package/@cogitator-ai/deploy)                 |
 | [@cogitator-ai/channels](https://www.npmjs.com/package/@cogitator-ai/channels)             | Messaging channels and social feeds (Bluesky, Threads)        | [![npm](https://img.shields.io/npm/v/@cogitator-ai/channels.svg)](https://www.npmjs.com/package/@cogitator-ai/channels)             |
 | [@cogitator-ai/server-shared](https://www.npmjs.com/package/@cogitator-ai/server-shared)   | Shared protocol, validation, conformance for server adapters  | [![npm](https://img.shields.io/npm/v/@cogitator-ai/server-shared.svg)](https://www.npmjs.com/package/@cogitator-ai/server-shared)   |
-| [@cogitator-ai/test-utils](https://www.npmjs.com/package/@cogitator-ai/test-utils)         | Testing utilities: mock backends, fixtures, helpers           | [![npm](https://img.shields.io/npm/v/@cogitator-ai/test-utils.svg)](https://www.npmjs.com/package/@cogitator-ai/test-utils)         |
+| [@cogitator-ai/test-utils](https://www.npmjs.com/package/@cogitator-ai/test-utils)         | Testing utilities: mocks, fixtures, backend conformance kit   | [![npm](https://img.shields.io/npm/v/@cogitator-ai/test-utils.svg)](https://www.npmjs.com/package/@cogitator-ai/test-utils)         |
 
 Not published to npm: [`packages/dashboard`](./packages/dashboard) (the [cogitator.app](https://cogitator.app) website: landing, docs, cookbook), [`packages/e2e`](./packages/e2e) (end-to-end test suite) and [`packages/gauntlet`](./packages/gauntlet) (integration proving ground that runs every package together on real models).
 

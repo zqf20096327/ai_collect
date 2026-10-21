@@ -27,15 +27,169 @@
 
 ---
 
+## Quick Start
+
+Myrtia installs with [uv](https://docs.astral.sh/uv/): clone, then `uv run myrtia`. uv creates
+the environment, downloads the right Python (3.12 — no need to upgrade your system Python) and
+installs everything — all [19 attacks](#what-you-get), not just the council. The default models
+run locally in [Ollama](https://ollama.com), no API key needed.
+
+Copy-paste the block for your OS into a terminal. It installs uv and Ollama, waits for Ollama
+to start, pulls the demo model, then clones Myrtia and opens it at http://127.0.0.1:8000/.
+
+<details open>
+<summary><b>macOS</b> (needs <a href="https://brew.sh">Homebrew</a>)</summary>
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh && source "$HOME/.local/bin/env"
+brew install ollama && brew services start ollama
+until curl -s http://127.0.0.1:11434 >/dev/null; do sleep 1; done
+ollama pull qwen2.5:3b
+git clone https://github.com/francordel/myrtia.git && cd myrtia
+uv run myrtia
+```
+</details>
+
+<details>
+<summary><b>Linux</b></summary>
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh && source "$HOME/.local/bin/env"
+curl -fsSL https://ollama.com/install.sh | sh
+until curl -s http://127.0.0.1:11434 >/dev/null; do sleep 1; done
+ollama pull qwen2.5:3b
+git clone https://github.com/francordel/myrtia.git && cd myrtia
+uv run myrtia
+```
+</details>
+
+<details>
+<summary><b>Windows · PowerShell</b></summary>
+
+Install uv and Ollama:
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+winget install Ollama.Ollama
+```
+
+Close and reopen PowerShell so `uv` and `ollama` are on your PATH, then:
+
+```powershell
+ollama pull qwen2.5:3b
+git clone https://github.com/francordel/myrtia.git; cd myrtia
+uv run myrtia
+```
+</details>
+
+The first run takes a few minutes: the council plugin pulls in IBM **ARES core**
+(`ares-redteamer`), which brings PyTorch and Transformers. After that, `cd myrtia && uv run
+myrtia` starts in seconds. Options: `uv run myrtia --port 8010 --no-browser`.
+
+### What you get
+
+`uv run myrtia` gives you **19 attacks**, ready to launch. 17 are built into Myrtia; the
+council pair comes from the bundled ARES Council pack, installed by default.
+
+| Kind | Attacks |
+| --- | --- |
+| Multi-agent council (ARES Council pack) | `council`, `council-crescendo` |
+| Multi-agent / adaptive | `graph` (the visual canvas: council, debate, pipeline, mixture-of-agents…), `crescendo`, `tap` (TAP / PAIR) |
+| Templates and priming | `contextual-jailbreak`, `human-jailbreak` |
+| Transforms | `obfuscation`, `encoding`, `payload-splitting` |
+| garak-style probes | `promptinject`, `grandma`, `smuggling`, `phrasing`, `latent-injection`, `dan`, `continuation`, `leakreplay` |
+| Baseline | `direct` |
+
+The garak-style probes are Myrtia's own implementations — they don't need the garak library.
+The full **NVIDIA garak** and **Microsoft PyRIT** libraries are optional packs under
+**Plugins** in the console; their adapters are in progress, so they add no attacks yet. See
+[Attacks](#attacks) for what each one does.
+
+### Where your models run
+
+Myrtia itself is light: it only makes HTTP calls to OpenAI-compatible endpoints. The models
+(council, chairman, judge, target) run in Ollama, vLLM or a hosted API, and each role can
+point at its own endpoint — a local Ollama, or a GPU server elsewhere on your network.
+
+<details open>
+<summary><b>macOS</b></summary>
+
+- **Ollama runs on the Apple-silicon GPU (Metal) automatically** — nothing to configure.
+- **Don't install vLLM on a Mac.** It has no Apple-GPU support upstream and its recent
+  versions don't install on macOS. You don't need it: Ollama covers local models.
+- Rough sizing (unified memory, Q4 models): 16 GB → the demo `qwen2.5:3b` up to ~8B;
+  32 GB → 14B (`qwen3:14b`, `gemma3:12b`); 64 GB+ → 32B (`deepseek-r1:32b`, `qwen2.5:32b`);
+  128 GB → the paper judge `gpt-oss:120b`.
+- For the full [recommended roster](#recommended-models-per-role) on a smaller Mac, run the
+  big models on a Linux GPU box (below) and set that role's endpoint to
+  `http://<gpu-host>:<port>/v1`. Nothing extra to install on the Mac.
+</details>
+
+<details>
+<summary><b>Linux</b></summary>
+
+- **Ollama uses NVIDIA (CUDA) or AMD (ROCm) GPUs automatically**, the CPU otherwise.
+- **vLLM** is the faster option on an NVIDIA GPU server. Install it in its own environment
+  (not Myrtia's) and serve on a port other than Myrtia's 8000:
+  ```bash
+  uv tool install vllm
+  vllm serve Qwen/Qwen3-14B --host 0.0.0.0 --port 8001
+  ```
+  Then set the role's endpoint to `http://<gpu-host>:8001/v1` and the model to
+  `Qwen/Qwen3-14B` — vLLM uses Hugging Face model IDs, not Ollama tags.
+- One Linux GPU box can serve the models for every Mac and Windows laptop on the network.
+</details>
+
+<details>
+<summary><b>Windows</b></summary>
+
+- **Ollama runs natively and uses NVIDIA or AMD GPUs automatically** — the simplest option.
+- **vLLM doesn't run natively on Windows.** Run it inside **WSL2** (Ubuntu) with the Linux
+  steps, or on a remote Linux GPU box, and point the role's endpoint at it.
+</details>
+
+### Using the console
+
+Pick an attack, choose a target (OpenAI-compatible base URL and model), select behaviours
+from the library or type a goal, and launch. The deliberation streams in live and the run
+lands in History. Only runs marked **Security evaluation** feed the Statistics dashboard and
+audit exports by default; the harmless starter goal is a **Smoke test**. Older runs remain
+**Unreviewed** until you classify them in the run detail. Judge scores are automatic signals,
+not confirmed vulnerabilities.
+
+HarmBench goals are included. In **Plugins → Goal datasets**, download JailbreakBench,
+AdvBench or StrongREJECT to add their goals to both run modes. Search and filter by
+dataset and category in Runs. See [goal dataset sources and scope](docs/goal-datasets.md).
+
+<details>
+<summary><b>Without uv</b> (plain pip, Python 3.11+)</summary>
+
+```bash
+cd myrtia/backend
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e . -e vendor/ares-council
+uvicorn myrtia.api.app:app --port 8000
+```
+
+On Windows, activate with `.\.venv\Scripts\Activate.ps1` instead.
+
+macOS ships Python 3.9, which is too old — that's why the steps above use uv.
+`vendor/ares-council` is the CouncilAttack plugin (`council` / `council-crescendo`). It is a
+separate package on purpose: Myrtia's core has no hard dependency on any attack pack, so
+`pip install -e .` alone still runs every other attack.
+</details>
+
+Something not working? See [Troubleshooting](#troubleshooting).
+
 ## Table of Contents
 
+- [Quick Start](#quick-start)
 - [Overview](#overview)
 - [Why Myrtia](#why-myrtia)
 - [Features](#features)
 - [Attacker topologies](#attacker-topologies)
 - [Current Capability Boundaries](#current-capability-boundaries)
 - [Architecture](#architecture)
-- [Quick Start](#quick-start)
 - [Troubleshooting](#troubleshooting)
 - [Attacks](#attacks)
 - [Configuration](#configuration)
@@ -228,7 +382,7 @@ Event types: `run.started`, `goal.started`, `turn.started`, `proposal.created`,
 ```
 backend/   Python, FastAPI + WebSocket
   myrtia/orchestrator   drives a run, streams events
-  myrtia/plugins        attacks (ARES-compatible): council / council-crescendo / direct
+  myrtia/plugins        the 19 attacks (ARES-compatible): council, graph, crescendo, tap, probes…
   myrtia/connectors     OpenAI-compatible target connectors
   myrtia/events         typed event schema + thread-safe bus (the live-view contract)
   myrtia/judges         graded harm judge and scoring
@@ -242,102 +396,18 @@ docs/      architecture and reference maps
 
 See [`docs/architecture.md`](docs/architecture.md) for the full design.
 
-## Quick Start
-
-Requirements: **Python 3.11+**, and — to run the default **local council** — a running
-[Ollama](https://ollama.com) with a small model (no API key needed). You can also point every
-role at any OpenAI-compatible endpoint instead.
-
-**0 · Local models (Ollama)** — needed for the local council, chairman, judge and target:
-
-1. Install Ollama from [ollama.com/download](https://ollama.com/download) (macOS, Windows, Linux)
-   and make sure it is running — on Windows it lives in the system tray; `ollama serve` otherwise.
-2. Pull the demo model:
-   ```bash
-   ollama pull qwen2.5:3b
-   ```
-3. Verify it is up: open **http://127.0.0.1:11434/** (it should say *"Ollama is running"*) or run
-   `ollama list`.
-
-**1 · Create a virtual environment and install** — pick your OS:
-
-<details open>
-<summary><b>macOS / Linux</b> (bash / zsh)</summary>
-
-```bash
-cd backend
-python3 -m venv .venv && source .venv/bin/activate
-pip install -e .
-pip install -e vendor/ares-council        # the CouncilAttack plugin (Apache-2.0)
-```
-</details>
-
-<details>
-<summary><b>Windows · PowerShell</b></summary>
-
-```powershell
-cd backend
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1               # if blocked: Set-ExecutionPolicy -Scope Process RemoteSigned
-pip install -e .
-pip install -e vendor/ares-council         # the CouncilAttack plugin (Apache-2.0)
-```
-</details>
-
-<details>
-<summary><b>Windows · Command Prompt (cmd)</b></summary>
-
-```bat
-cd backend
-py -m venv .venv
-.venv\Scripts\activate.bat
-pip install -e .
-pip install -e vendor/ares-council
-```
-</details>
-
-> The second line installs the **CouncilAttack plugin** (`ares-council`, vendored under
-> `backend/vendor/`). It pulls in **IBM ARES core** (`ares-redteamer`) automatically, since the
-> council runs on top of it. It is a separate install on purpose: Myrtia's core has **no hard
-> dependency on any attack pack**, so plugins are opt-in and the plugin registers itself only
-> when its library is present. It enables the `council` / `council-crescendo` attacks (Myrtia's
-> headline); every other attack runs without it.
-
-**2 · Run the server** (serves the API and the web UI) — all platforms:
-
-```bash
-uvicorn myrtia.api.app:app --port 8000
-```
-
-**3 · Open the console** at **http://127.0.0.1:8000/**
-
-| OS | Command |
-| --- | --- |
-| macOS | `open http://127.0.0.1:8000/` |
-| Linux | `xdg-open http://127.0.0.1:8000/` |
-| Windows | `start http://127.0.0.1:8000/` |
-
-In the UI, pick an attack, choose a target (OpenAI-compatible base URL and model), select
-behaviours from the library or type a goal, and launch. The deliberation streams in live, the
-run lands in History. Only runs marked **Security evaluation** feed the Statistics
-dashboard and audit exports by default; the harmless starter goal is a **Smoke test**.
-Older runs remain **Unreviewed** until you classify them in the run detail. Judge
-scores are automatic signals, not confirmed vulnerabilities.
-
-HarmBench goals are included. In **Plugins → Goal datasets**, download JailbreakBench,
-AdvBench or StrongREJECT to add their goals to both run modes. Search and filter by
-dataset and category in Runs. See [goal dataset sources and scope](docs/goal-datasets.md).
-
 ## Troubleshooting
 
 | Symptom | Cause | Fix |
 | --- | --- | --- |
-| `Connection refused` / `WinError 10061` / `Max retries exceeded` on port **11434** | Ollama isn't running or isn't reachable | Start Ollama (step 0) and confirm **http://127.0.0.1:11434/** says *"Ollama is running"*. If it runs elsewhere, set the base URL in the UI. |
+| `requires a different Python: 3.9.6 not in '>=3.11'` | The venv was made with an old system Python (macOS ships 3.9) | Use `uv run myrtia` from the repo root — uv downloads Python 3.12 itself. With pip, create the venv with Python 3.11+. |
+| `Connection refused` / `WinError 10061` / `Max retries exceeded` on port **11434** | Ollama isn't running or isn't reachable | Start Ollama (`brew services start ollama` on macOS, the tray app on Windows, `ollama serve` otherwise) and confirm **http://127.0.0.1:11434/** says *"Ollama is running"*. If it runs elsewhere, set the base URL in the UI. |
+| `could not connect to ollama server` right after installing | The Ollama service is still starting | Wait a few seconds and re-run `ollama pull qwen2.5:3b`. |
 | `model "…" not found` / `try pulling it first` | The model isn't downloaded | `ollama pull <model>` (e.g. `ollama pull qwen2.5:3b`), then check `ollama list`. |
 | PowerShell: *"running scripts is disabled on this system"* | Script execution policy blocks the venv activation | `Set-ExecutionPolicy -Scope Process RemoteSigned`, then re-run `.\.venv\Scripts\Activate.ps1`. |
 | `401 Unauthorized` / `invalid api key` | Missing or wrong API key for a frontier provider | Set the key for that provider in the UI (per-run), or use a local Ollama endpoint. |
-| `[Errno 48] Address already in use` / port **8000** busy | Another process holds the port | Run on another port: `uvicorn myrtia.api.app:app --port 8010`. |
-| `KeyError: 'council'` / council attacks missing | The `ares-council` plugin (or its **ARES core** dependency `ares-redteamer`) isn't installed | Run `pip install -e vendor/ares-council` — it pulls in `ares-redteamer` automatically. If you installed the pack before ARES core was declared, re-run it, or `pip install ares-redteamer` directly. |
+| `[Errno 48] Address already in use` / port **8000** busy | Another process holds the port (e.g. a vLLM server) | Run on another port: `uv run myrtia --port 8010`. |
+| `KeyError: 'council'` / council attacks missing | The `ares-council` plugin (or its **ARES core** dependency `ares-redteamer`) isn't installed, or was installed from an older checkout | Run `uv sync` from the repo root (with pip: `pip install -e vendor/ares-council` from `backend/`). Check with `uv run python -c 'import ares_council'` — it should print nothing. |
 
 In the console, failed turns now show a short explanation (e.g. *"Can't reach the model
 endpoint"*) with the raw error tucked under **Details**.
@@ -363,11 +433,60 @@ each attack's configuration schema and renders the advanced options automaticall
 
 ## Attacks
 
-| Attack | Description |
-| --- | --- |
-| `council` | N-proposer council, cross-critique, Borda Top-1 vote, chairman synthesis, in-loop graded 0-5 judge. Each turn is a fresh standalone prompt. |
-| `council-crescendo` | The same council pipeline, but the target conversation accumulates across turns, producing a gradual multi-turn escalation. |
-| `direct` | Baseline that sends each behaviour straight to the target, with no judge. |
+Myrtia ships two kinds of attack. Some drive an **attacker-side LLM** (a council, a
+single helper, or an iterative attacker) and so take a model per role; the rest are
+**static** transforms or template libraries that need no attacker model — only the
+shared judge scores the target's reply.
+
+| Attack (`id`) | What it does | Attacker-side LLM |
+| --- | --- | --- |
+| `council` | N-proposer council: propose → cross-critique → Borda Top-1 → chairman synthesis → in-loop graded 0–5 judge. Each turn is a fresh standalone prompt. | council roster + chairman + judge (see below) |
+| `council-crescendo` | The same council pipeline, but the target conversation accumulates across turns — a gradual multi-turn escalation. | council roster + chairman + judge |
+| `graph` | The visual builder's engine: council / chairman / parallel / debate / pipeline / mixture-of-agents / free-form graph. | attacker(s) + optional chairman + judge |
+| `crescendo` | Single **helper** LLM escalates the target conversation turn by turn; a judge scores each turn (multi-turn jailbreak). | helper + judge |
+| `tap` | PAIR / Tree-of-Attacks-with-Pruning: one attacker LLM iteratively proposes and refines standalone prompts; a judge scores 1–10. | attacker + judge *(not in the paper)* |
+| `contextual-jailbreak` | Single-generator contextual priming: a few scaffolded priming shots before the ask. | judge only |
+| `direct` | Baseline — sends each behaviour straight to the target. | none (judge optional) |
+| `human-jailbreak` | Library of known human-written jailbreak templates (DAN-style). | none |
+| `obfuscation` / `encoding` | Encoding / obfuscation transforms of the behaviour. | none |
+| `payload-splitting` | Splits the request into fragments the target reassembles. | none |
+| garak probes: `promptinject`, `grandma`, `smuggling`, `phrasing`, `latent-injection`, `dan`, `continuation`, `leakreplay` | Hosted [garak](https://github.com/NVIDIA/garak) probes. | none |
+
+### Recommended models per role
+
+The **defaults are demo-sized** so a laptop with a 2–3 B model works out of the box.
+When you have the hardware (a 24–80 GB GPU, multi-GPU, or Apple-silicon 64 GB+), use
+the **Recommended** column. **Our paper** is the exact roster from the CouncilAttack /
+ContextualJailbreak experiments — reproduce those numbers by setting these.
+
+| Role | Demo default | Recommended (capable hardware) | Our paper (CouncilAttack) |
+| --- | --- | --- | --- |
+| Council member 1 | `qwen2.5:1.5b` | `qwen3:14b` | `qwen3:14b` |
+| Council member 2 | " | `gemma3:12b` | `gemma3:12b` |
+| Council member 3 | " | `deepseek-r1:32b` | `deepseek-r1:32b` |
+| Chairman | first member | `qwen2.5:32b` | `qwen2.5:32b` |
+| Single attacker / helper (`crescendo`, `graph` single) | `qwen2.5:3b` | `deepseek-r1:32b` | `deepseek-r1:32b` (Crescendo helper) |
+| `tap` attacker | `qwen2.5:3b` | `deepseek-r1:32b` or `qwen2.5:32b` | — (not evaluated) |
+| Judge | `qwen2.5:3b` | `gpt-oss:120b` (lighter: `gpt-oss:20b`) | `gpt-oss:120b` (fixed across every method) |
+| Targets evaluated | — | your model under test | `gpt-oss:120b`, `gpt-oss:20b`, `qwen3:8b`, `llama3.1:70b` |
+
+> **About `deepseek-r1:32b`** — it is **DeepSeek-R1-Distill-Qwen-32B**: Qwen2.5-32B
+> fine-tuned (SFT, no RL) on reasoning traces distilled from the 671 B DeepSeek-R1
+> teacher. Default Ollama quant is Q4_K_M (~19.85 GB). Pull with
+> `ollama pull deepseek-r1:32b`
+> ([model card](https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B)).
+> A heterogeneous council (different families: Qwen, Gemma, a reasoning distill) is
+> deliberate — diverse members surface complementary attack angles.
+
+Set these per role in the attack config, e.g. for `crescendo`:
+
+```jsonc
+{
+  "helper_model": "deepseek-r1:32b",
+  "judge_model": "gpt-oss:120b",
+  "aux_endpoint": "http://127.0.0.1:11434/v1"
+}
+```
 
 ## Extending Myrtia
 

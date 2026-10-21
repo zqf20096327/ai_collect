@@ -51,6 +51,7 @@ console and is covered by an end-to-end test suite.
 | Model catalog & one-click deployment | Register and version models, then deploy with one click from either console or the API; the platform provisions inference workloads through a message queue and a Kubernetes controller, with no hand-written YAML. Version history and rollback are built in. |
 | Inference image management | Register, version, and map engine images across the supported accelerator cards, with node-level pre-pulling to shorten cold starts. |
 | Distributed inference runtime | Platform-level serving scheme: run inference services as plain Deployments (default) or on an **AIBrix**-managed distributed runtime (StormService / RoleSet). The admin console inspects runtime component health and the models registered with the runtime. |
+| vGPU slicing pools | **HAMI**-based GPU sharing: label nodes into slicing pools, define slice templates (memory / core percentages), and co-schedule multiple small inference jobs onto a single physical GPU with binpack or spread placement — pool utilization and per-service slice assignment visible in the admin console. |
 | OpenAI-compatible API | `/v1/chat/completions`, `/v1/completions`, and `/v1/embeddings` served by an Envoy-based gateway; authentication, metering, and routing run in Wasm plugins, so inference traffic never passes through business processes. |
 | External model providers | Register third-party LLM providers (DeepSeek / OpenAI / OpenAI-compatible), verify connectivity with a five-state probe (`ok` / `unauthorized` / `unreachable` / `error` / `unknown`), curate the upstream model list, and publish models into the catalog — write-only API keys encrypted at rest, and tenants consume them through the same metered OpenAI-compatible gateway. |
 | Routing & resilience | Ordered **routing policies** over healthy deployments with bounded same-model failover and retryable-failure categories — no silent model or version substitution. |
@@ -88,6 +89,7 @@ console and is covered by an end-to-end test suite.
 | Observability | Per-model latency / throughput / error-rate / token-throughput dashboards, per-service CPU / memory / GPU resource metrics, and inference service log viewing. |
 | Request tracing | Drill into individual inference requests end-to-end (request → gateway → inference service) with per-phase latency breakdown (TTFT, generation, total) and request-id lookup. |
 | Health & errors | Platform component health and dependency status, plus error analysis (code/rate trends, top causes, and drill-down). |
+| Fault diagnosis & auto-recovery | Detect inference-service, node, and accelerator failures, classify the root cause deterministically, and recover automatically (restart / reschedule) with operator-confirmed drain; every incident is a timeline in the admin console, and tenants see a degraded-status banner on affected services. |
 | Events & automation | Outbound webhooks (deployment, autoscaling, billing, spend-limit, and balance-low events) with signing secrets, retry policy, and a delivery log; plus a notification center with per-user preferences and threshold alerts. |
 | Multi-cluster management | Register and manage inference clusters, view cluster health and workload placement, and route model deployments across clusters. |
 
@@ -124,7 +126,7 @@ flowchart TD
         subgraph cp["Control Plane (standard network)"]
             direction TB
             CGW["Control Gateway (HTTP · grpc-gateway)<br/>/api/v1/* · /api/v1/admin/* · static console"]
-            MQ["Message Queue (Kafka / NATS)"]
+            MQ["Message Queue (Kafka / RabbitMQ)"]
             CTRL["Controller<br/>(K8s resource reconciliation)"]
 
             subgraph grpc["gRPC Server — one Deployment, 24 microservices"]
@@ -214,7 +216,7 @@ flowchart TD
 - Traffic is split by audience: administrators enter through the **Control Gateway** (HTTP, generated from the Protobuf contract by `grpc-gateway`), while agents and SDKs call the **Inference Gateway** (Envoy + Wasm). Both are exposed through the cluster's north-south entry point (Envoy Gateway with TLS termination).
 - The two gateways are deployed as separate workloads, so control plane APIs and inference APIs scale, upgrade, and fail independently.
 - APIs are partitioned by audience: the end-user console and its tenants call `/api/v1/*`, while `/api/v1/admin/*` is reserved for the admin console. A request that carries a session from the wrong surface is rejected before any handler runs.
-- The **gRPC Server's single Deployment hosts all 24 microservices** — `auth`, `tenancy`, `account`, `model`, `image`, `infer`, `runtime`, `routing`, `provider`, `metering`, `billing`, `batch`, `audit`, `webhook`, `notification`, `observability`, `tracing`, `resourcemetrics`, `accelerator`, `cluster`, `optimization`, `prompt`, `evaluation`, and `docs` — which call each other in-process and hand work to the Controller through a **message queue** (Kafka / NATS), decoupling API serving from Kubernetes reconciliation.
+- The **gRPC Server's single Deployment hosts all 24 microservices** — `auth`, `tenancy`, `account`, `model`, `image`, `infer`, `runtime`, `routing`, `provider`, `metering`, `billing`, `batch`, `audit`, `webhook`, `notification`, `observability`, `tracing`, `resourcemetrics`, `accelerator`, `cluster`, `optimization`, `prompt`, `evaluation`, and `docs` — which call each other in-process and hand work to the Controller through a **message queue** (Kafka / RabbitMQ), decoupling API serving from Kubernetes reconciliation.
 - Authentication, metering, and routing run in **Wasm plugins** at the Inference Gateway, so inference traffic never passes through business processes.
 - The Inference Gateway verifies every API Key by **calling the `auth` module over gRPC**, backed by a two-level cache (Wasm-local TTL cache, then Redis); on timeout or `auth` unavailability it fails closed.
 - **Cluster networking**: pods communicate over the cluster CNI network with ClusterIP Services and CoreDNS-based service discovery; north-south traffic enters through an Envoy Gateway with TLS termination; NetworkPolicies isolate the control plane, data plane, and tenant namespaces; and the inference data path can be placed on an optional **RDMA fabric** (RoCE / InfiniBand) while the control plane stays on standard Ethernet.
@@ -227,7 +229,7 @@ See the [Architecture Design](./site/docs/design/architecture.md) for component 
 | Layer | Choice |
 | --- | --- |
 | Backend | Go, gRPC + grpc-gateway, GORM |
-| Data | PostgreSQL, Redis (Valkey-compatible), Kafka / NATS |
+| Data | PostgreSQL, Redis (Valkey-compatible), Kafka / RabbitMQ |
 | Control plane gateway | grpc-gateway — HTTP/JSON and OpenAPI generated from Protobuf |
 | Data plane gateway | Envoy + Wasm |
 | Storage | Longhorn for cluster state; MinIO + JuiceFS for inference weights and images |
@@ -249,7 +251,7 @@ kubectl --namespace taas port-forward svc/taas-server 9091:9091
 # console: http://127.0.0.1:9091/ · /admin
 ```
 
-With no overrides the chart provisions in-cluster PostgreSQL, Redis, and NATS (each switchable to an external instance) and wires their credentials to the control plane. For the full values reference, external-dependency wiring, and the production checklist, see the chart's [README](./deploy/helm/go-taas/README.md) ([Chinese mirror](./deploy/helm/go-taas/README.zh-cn.md)).
+With no overrides the chart provisions in-cluster PostgreSQL, Redis, and RabbitMQ (each switchable to an external instance) and wires their credentials to the control plane. For the full values reference, external-dependency wiring, and the production checklist, see the chart's [README](./deploy/helm/go-taas/README.md) ([Chinese mirror](./deploy/helm/go-taas/README.zh-cn.md)).
 
 ### Prerequisites
 
@@ -342,7 +344,7 @@ kubectl --namespace taas port-forward svc/taas-server 9091:9091
 # console: http://127.0.0.1:9091/
 ```
 
-PostgreSQL, Redis and NATS link to the control plane via configurable
+PostgreSQL, Redis and RabbitMQ link to the control plane via configurable
 strategies (per dependency) — either as chart-managed internal instances, or
 via external services the chart wires the credentials against. Use the secret
 generator, `existingSecret`, or both. Local validation renders and lints the
@@ -414,7 +416,7 @@ feature backlog).
 | Phase 1 (MVP) | ✅ Shipped | Model catalog & one-click deployment, API Key lifecycle, control/inference gateway split, gateway-side auth and metering. |
 | Phase 2 | ✅ Shipped | Price matrix, balance/quota, tiered pricing, async settlement, usage/cost analytics, payments/invoices/auto-recharge, audit logging, RBAC, notifications. |
 | Phase 3 | ✅ Shipped | Accelerator inventory & health, multi-vendor engine and image adaptation, model × engine × card-type compatibility matrix. |
-| Phase 4 | ✅ Shipped | Autoscaling, routing policies, load testing, observability & tracing, webhooks, notification center, prompt library & evaluation, batch inference, multi-cluster management, API docs explorer, data export, distributed inference runtime (AIBrix), external model providers, intelligent model routing, cost optimization, service quota management. |
+| Phase 4 | ✅ Shipped | Autoscaling, routing policies, load testing, observability & tracing, webhooks, notification center, prompt library & evaluation, batch inference, multi-cluster management, API docs explorer, data export, distributed inference runtime (AIBrix), external model providers, intelligent model routing, cost optimization, service quota management, vGPU slicing pools (HAMI), fault diagnosis & auto-recovery. |
 | Next | 🚧 Planned | RDMA networking, community operations (Helm one-click install has shipped via `deploy/helm/go-taas`; community operations remain tracked separately outside the feature backlog). |
 
 ## Contributing

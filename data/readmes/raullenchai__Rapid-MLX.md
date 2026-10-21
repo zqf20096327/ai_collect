@@ -205,7 +205,9 @@ print(client.chat.completions.create(
 rapid-mlx launch claude-code
 ```
 
-With a server running (step 2), this patches Claude Code's local config (`~/.claude/settings.json`) to route at `http://localhost:8000` — no manual env vars, no editing JSON by hand. You get a fully local Claude Code: `$0` per token, nothing leaves your Mac. Swap in `cline` or `continue-dev` for the other IDE clients, or run `rapid-mlx launch list` to see what's detected on this machine.
+This saves a private Claude Code profile, starts a local server if needed, and launches Claude Code without editing `~/.claude/settings.json`. The same command works after a restart. Swap in `codex`, `pi`, or another supported coding agent. For the original config-writing behavior, use `--legacy-config`; `cline` and `continue-dev` keep their existing setup flow.
+
+[Agent setup details](docs/guides/ai-clients.md#coding-agents).
 
 > **Cursor:** Cursor currently routes BYOK requests through its own servers, so its servers cannot reach a Rapid-MLX endpoint on `localhost`. Rapid-MLX therefore does not generate a Cursor localhost config. If you intentionally expose the server through a public HTTPS tunnel, set `RAPID_MLX_API_KEY=your-secret` for both `rapid-mlx serve ...` and `rapid-mlx launch cursor --server-url https://your-public-host`. This is no longer a fully local connection; never expose an unauthenticated server. Rapid-MLX rejects explicit local/private addresses but cannot verify reachability from Cursor's network, whose DNS view may differ from your Mac.
 
@@ -273,17 +275,20 @@ family default shown below.
 | `flux2-klein-4b-bf16` | Explicit full-precision Klein path | Generate + edit | 14.9 GiB | 32 GB | 4 |
 | `hidream-o1-dev` | Complex compositions | Generate | 16.4 GiB | 32 GB | 28 |
 | `sd35-large-4bit` | Stable Diffusion 3.5 | Generate | 15.3 GiB | 32 GB | 28 |
-| `qwen-image` | Text inside images | Generate | 28.9 GiB | 64 GB | 20 |
 | `qwen-image-2.1` | Text-rich images on low-memory Macs | Generate + edit | 8.9 GiB | 8 GB | 40 |
+| `qwen-image` | Same model as `qwen-image-2.1` | Generate + edit | 8.9 GiB | 8 GB | 40 |
 | `qwen-image-2.1-bf16` | Higher-precision Qwen Image 2.1 path | Generate + edit | 30.9 GiB | 32 GB | 40 |
+| `qwen-image-2.1-turbo` | Eight-step distilled Qwen Image 2.1 | Generate | 30.2 GiB | 32 GB | 8 |
 | `qwen-image-edit` | Precise instruction edits and text changes | Edit | 34.9 GiB | 96 GB | 20 |
 <!-- image-model-matrix:end -->
 
 `qwen-image-2.1` uses mflux 0.20 with a native MLX q4 transformer and q4 text
 encoder. `qwen-image-2.1-bf16` preserves the previous 8-bit-on-load transformer
-and bf16 encoder path. Their edit endpoint performs single-image img2img
-conditioning; the separate instruction-edit variant is not yet available
-upstream. See the [family guide](https://github.com/raullenchai/Rapid-MLX/blob/main/docs/models/families/qwen-image-2.1.md) for
+and bf16 encoder path. `qwen-image-2.1-turbo` loads the official distilled
+checkpoint the same way and samples its published eight-step schedule without
+classifier-free guidance; it is text-to-image only. The other two aliases'
+edit endpoint performs single-image img2img conditioning; the separate
+instruction-edit variant is not yet available upstream. See the [family guide](https://github.com/raullenchai/Rapid-MLX/blob/main/docs/models/families/qwen-image-2.1.md) for
 request and memory behavior.
 
 At 1024×1024 with the four-step Klein default, measured warm generation was
@@ -633,7 +638,7 @@ multiplication. The regular `qwen3.8-27b-4bit` alias remains unchanged for M3
 and newer Macs; Rapid does not silently swap checkpoint precision.
 
 → [Full RAM tier map + serve flags per tier](https://rapidmlx.com/docs/hardware-tiers.html)
-→ [Every alias, quant, and family (214 text + 12 image + 10 video + 44 audio aliases, 280 total)](https://rapidmlx.com/docs/aliases.html) · interactive at [models.rapidmlx.com](https://models.rapidmlx.com/)
+→ [Every alias, quant, and family (215 text + 13 image + 10 video + 44 audio aliases, 282 total)](https://rapidmlx.com/docs/aliases.html) · interactive at [models.rapidmlx.com](https://models.rapidmlx.com/)
 
 ---
 

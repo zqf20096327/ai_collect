@@ -38,7 +38,7 @@ Download packages for Windows, macOS, and Linux from the [Releases page](https:/
 - Delegate substantial work to parallel sub-agents with live steps, tool activity, token usage, and inline final summaries
 - Extend Ally with plugins: one zip package adds a full sidebar page, written in plain JS/TS with HTTP, storage, and workspace access declared in the manifest
 - Connect MCP servers through stdio, SSE, or Streamable HTTP using either a form editor or raw JSON
-- Extend workflows with discoverable Skills and durable cross-project memory; built-in skills include `codegraph`, `playwright-cli`, and `anydoc` (Office/PDF to Markdown)
+- Extend workflows with discoverable Skills and durable cross-project memory; built-in skills include `ally-agent` (Ally usage manual), `codegraph`, `playwright-cli`, and `anydoc` (Office/PDF to Markdown)
 - Manage multiple workspaces, chat sessions, todos, and scheduled tasks that persist across restarts, with a built-in workspace explorer and file editor
 - Run short shell commands and tracked background processes with a task-center log viewer; Windows automatically discovers Git Bash and falls back to PowerShell when necessary
 - Fetch web pages and call HTTP APIs with bounded response sizes, timeouts, redirect limits, and per-host rate limits
@@ -57,6 +57,29 @@ Download packages for Windows, macOS, and Linux from the [Releases page](https:/
 4. Start chatting about your project.
 
 macOS: the package is not signed, so drag `Ally.app` into Applications first, then double-click `免签名启动Ally.command` from the DMG once — it clears the quarantine flag and launches Ally.
+
+## Staged tool calls
+
+A model can emit several tool calls in one response, and each call may carry an optional `stage` number. Calls in the same stage run concurrently. Stages are separated by a hard barrier: the next one starts only after every call in the previous stage has settled, including calls still queued behind the concurrency limit. A real failure stops the remaining stages and sends the skip reason back to the model, while writes, installs, and services that already happened are never rolled back. Ordered work like edit, then test, then verify therefore needs stage numbers rather than extra turns.
+
+Stages only order calls; they never carry values. A parameter that depends on an earlier result, such as a file version, still has to come in a later response.
+
+```mermaid
+flowchart LR
+  subgraph S0["stage 0 runs concurrently"]
+    A["read src/app.go"]
+    B["grep TODO"]
+    C["command: git status"]
+  end
+  subgraph S1["stage 1"]
+    D["edit src/app.go"]
+  end
+  subgraph S2["stage 2"]
+    E["command: go test"]
+  end
+  S0 -->|"all calls settled"| S1
+  S1 -->|"all calls settled"| S2
+```
 
 ## Plugin system
 

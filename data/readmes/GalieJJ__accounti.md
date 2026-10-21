@@ -63,25 +63,25 @@ Was gebaut wird, steht im [Bauplan](docs/bauplan.md) — zwölf Bausteine, jeder
 
 | Status | Feature | Beschreibung |
 |--------|---------|-------------|
-| 🟨 | **Belegeingang** | Überwachter Ordner und Upload vorhanden; E-Mail-Weiterleitung, Webhook, Beleg-Connectoren folgen |
+| ✅ | **Belegeingang** | Überwachter Ordner, Upload, IMAP-Postfach (Anhänge, Absender als Hinweis, verarbeitete Nachrichten gemerkt), tokengeschützter Webhook für Fremdsysteme und Messenger-Weiterleitungen, Connectoren für Belegportale (generisch per JSON/HTTP-Konfiguration); Typ- und Größenprüfung am Inhalt, Dublettenschutz über alle Kanäle |
 | ✅ | **Belegerkennung** | PDF-Textebene, OCR mit lokaler Engine (Tesseract), Belegart per Regelwerk + optionalem LLM, Dublettenerkennung, Rechenprobe |
 | ✅ | **Positionssplit** | Eine Rechnung auf mehrere Konten aufteilen; Kreditkartenabrechnung in Einzelumsätze zerlegen |
 | ✅ | **E-Rechnung Eingang** | XRechnung (UBL/CII) und ZUGFeRD/Factur-X ohne OCR übernehmen, fachlich validieren (EN-16931-Regeln, § 14 UStG), `accounti rechnung pruefen` |
-| 🔲 | **E-Rechnung Ausgang** | Rechnungen schreiben und als konforme E-Rechnung versenden |
+| ✅ | **E-Rechnung Ausgang** | Rechnungen schreiben und als XRechnung + ZUGFeRD-PDF (PDF/A-3b) ausstellen: lückenlose Nummernkreise, Steuer aus `steuer/` (Inland, Reverse-Charge, ig. Lieferung, Ausfuhr, OSS), formale Prüfung mit KoSIT und Mustang/veraPDF, Versand per E-Mail mit Protokoll |
 
 **Buchen & Zahlen**
 
 | Status | Feature | Beschreibung |
 |--------|---------|-------------|
 | ✅ | **Bank-Import** | CSV mehrerer Banken, konfigurationsgetriebene Profile mit Auto-Erkennung |
-| 🔲 | **Live-Bankanbindung** | FinTS/HBCI direkt, PSD2-Aggregator optional, Kreditkarten |
-| 🔲 | **Belegabgleich** | Beleg ↔ Kontoumsatz automatisch zusammenführen, bevor kontiert wird |
+| ✅ | **Live-Bankanbindung** | Bankkonten mit verschlüsselten Zugängen, FinTS-Direktabruf (python-fints, eigene Produkt-ID, TAN/App-Freigabe als Zustand oder interaktiv), Datei-Provider, MT940 und CAMT (camt.052/053/054) mit Bankreferenz im Dublettenschutz, Kreditkarten als eigene Konten mit Abgleich der Sammelbelastung, geplanter Lauf `bank lauf`; PSD2 folgt |
+| ✅ | **Belegabgleich** | Quittungen und sonstige Belege ↔ Kontoumsatz (Referenz → exakt → Vorschlag), bevor kontiert wird; `classify` bucht abgeglichene Umsätze aus dem Beleg mit dessen Vorsteuer |
 | ✅ | **KI-Kontierung** | SKR03/SKR04-Zuordnung per Regelwerk + LLM, mit Confidence und Begründung |
 | ✅ | **Buchungssätze** | Soll/Haben mit Steuer, Kostenstelle, Belegnummer |
-| 🔲 | **Kreditoren & Debitoren** | Personenkonten, Stammdaten, USt-IdNr.-Prüfung mit Protokoll |
-| 🔲 | **Offene Posten** | OPOS-Liste, Fälligkeitsstaffel, automatische Zahlungszuordnung, Teilzahlung, Skonto |
-| 🔲 | **Zahlungsverkehr** | Zahlungsvorschlag nach Skontofrist, SEPA-Sammelüberweisung, Freigabe-Workflow |
-| 🔲 | **Mahnwesen** | Mehrstufig, mit Verzugszinsen und Mahngebühren |
+| ✅ | **Kreditoren & Debitoren** | Personenkonten (SKR03/04-Kreise), Stammdaten, Erkennung aus Belegen (IBAN → USt-IdNr. → Name), Neuanlage zur Prüfung, qualifizierte USt-IdNr.-Bestätigung beim BZSt (eVatR-REST-API) mit revisionssicherem Protokoll |
+| ✅ | **Offene Posten** | Beleg → Buchung auf Personenkonto + offener Posten, OPOS-Liste, Fälligkeitsstaffel, Zahlungszuordnung (Referenz → exakt → Vorschlag), Teil- und Sammelzahlung, Skonto mit Vorsteuer-/Umsatzsteuerkorrektur |
+| ✅ | **Zahlungsverkehr** | Zahlungsvorschlag mit Skonto zuerst und Grund je Position, Zahlungslauf mit blockierender Prüfung (IBAN ≠ Stammsatz oder Rechnung stoppt), Freigabe (optional Vier-Augen) und Storno mit Protokoll, SEPA-Sammelüberweisung `pain.001.001.09` (DK GBIC_5) als Datei |
+| ✅ | **Mahnwesen** | Konfigurierbare Stufen, Verzugszinsen nach § 288 BGB mit datiertem Basiszinssatz, 40-€-Pauschale im B2B, Mahnschreiben als PDF/Text/E-Mail, Mahnstufe am offenen Posten |
 | ✅ | **Lernschleife** | Korrekturen werden zu Regeln — das System fragt mit der Zeit seltener |
 
 **Prüfen & Zusammenarbeiten**
@@ -92,7 +92,7 @@ Was gebaut wird, steht im [Bauplan](docs/bauplan.md) — zwölf Bausteine, jeder
 | 🔲 | **Ordnungsmäßigkeit** | § 14 UStG-Pflichtangaben, Rechenprobe, Steuerschlüssel ./. Konto, Adressat |
 | 🔲 | **Belegnachforderung** | Fehlende Belege werden selbstständig angefordert und erinnert |
 | 🔲 | **Unveränderbares Journal** | Hashverkettet, Storno statt Änderung, Verfahrensdokumentation generiert |
-| 🔲 | **Aufgaben & Rückfragen** | Kommentare am Beleg statt E-Mail, Zuständigkeiten, Fristen, Erinnerungen |
+| ✅ | **Aufgaben & Rückfragen** | Aufgaben mit Bezug auf Buchung, Beleg, Umsatz, Kontakt oder Bankkonto; Prüfläufe (unsichere Kontierung, Beleg fehlt, Beleg/Kontakt zur Prüfung, Bankfreigabe) idempotent und mit Selbstabschluss; Zuständigkeit an Person oder Rolle, sonst gemeinsame Liste; Rückfragen am Beleg; gebündelte Tagesübersicht per E-Mail oder Webhook |
 | 🔲 | **Supervisionsansicht** | Web-UI: Beleg links, Vorschlag rechts, Korrektur in einem Schritt |
 
 **Steuer & Abschluss**
@@ -101,20 +101,20 @@ Was gebaut wird, steht im [Bauplan](docs/bauplan.md) — zwölf Bausteine, jeder
 |--------|---------|-------------|
 | ✅ | **Umsatzsteuer** | USt/VSt-Berechnung, Steuerautomatik, Geschäftsvorfall-Bestimmung |
 | ✅ | **OSS-Verfahren** | EU-weite MwSt (27 Länder), Schwellenwertprüfung, Quartalsmeldung |
-| ✅ | **USt-Voranmeldung** | ELSTER-Kennziffern, Zahllast-Berechnung |
-| 🔲 | **Elektronische Übermittlung** | Voranmeldung, Dauerfristverlängerung, Zusammenfassende Meldung — mit Protokoll |
-| 🔲 | **Fristenkalender** | Abgabefristen berechnet, inkl. Wochenend- und Feiertagsverschiebung |
+| ✅ | **USt-Voranmeldung** | Kennziffern nach Vordruck 2026 aus den Buchungen (Steuerschlüssel + Automatikkonten), volle Euro wie ELSTER, Plausibilisierung (ohne Steuerschlüssel, unbestätigte USt-IdNr., Verprobung, Vormonatsvergleich), Freigabe durch den Menschen |
+| 🟨 | **Elektronische Übermittlung** | ELSTER-Datensatz UStVA/Dauerfristverlängerung, Testmodus ohne Abgabe, ERiC-Anbindung über ctypes (mit eigener Hersteller-ID und Zertifikat), unveränderbares Protokoll, Zahllast als offener Posten beim Finanzamt; Zusammenfassende Meldung als Portaldatei |
+| ✅ | **Fristenkalender** | UStVA, Dauerfristverlängerung, Sondervorauszahlung, ZM, OSS — verschoben nach § 108 Abs. 3 AO mit Feiertagen des Bundeslands |
 | ✅ | **BWA** | Betriebswirtschaftliche Auswertung nach DATEV-Schema |
-| 🔲 | **Anlagenbuchhaltung** | AfA linear, GWG, Sammelposten, Anlagenspiegel, Abgänge |
-| 🔲 | **Jahresabschluss** | Abgrenzungen, Rückstellungen, Kassenbuch, EÜR oder Bilanz mit GuV, Saldovortrag |
+| ✅ | **Anlagenbuchhaltung** | Anlagegüter mit AfA linear (monatsgenau), degressiv (2020–2022, 2024, 07/2025–2027 mit Wechsel zur linearen AfA), GWG, Sammelposten, digitale Wirtschaftsgüter, E-Fahrzeuge — Grenzbeträge mit Gültigkeitszeitraum, AfA-Tabelle, AfA-Lauf je Monat oder Jahr, Abgang mit Ergebnis, Anlagenspiegel |
+| 🟨 | **Jahresabschluss** | Kassenbuch ohne negativen Bestand, Bank-Saldenabstimmung als Abschlusssperre, Abschlussprüfungen, Summen- und Saldenliste, ARAP/PRAP-Vorschläge mit Auflösung, Einnahmenüberschussrechnung nach Anlage EÜR 2025/2026, Saldovortrag mit Jahressperre; Bilanz/GuV, Rückstellungen und Übermittlung folgen |
 
 **Anbinden & Übergeben**
 
 | Status | Feature | Beschreibung |
 |--------|---------|-------------|
 | ✅ | **DATEV-Buchungsstapel** | ASCII-konformer EXTF-Export, gegen echte Dateien geprüft |
-| 🔲 | **DATEV vollständig** | Debitoren/Kreditoren-Stammdaten, Belegbilder, Kontoauszüge |
-| 🔲 | **Marktplätze & ERP** | JTL-Wawi, Amazon (DE/FR/IT/ES/NL/UK/SE/PL), eBay, Shopify, PayPal — mit Bestimmungsland |
+| ✅ | **DATEV vollständig** | Debitoren/Kreditoren (EXTF, Golden-Test), Belegpaket mit `document.xml` und Buchungsstapel mit Beleglink — Belege hängen beim Empfänger am Buchungssatz —, Kontoauszüge lückenlos nummeriert als MT940 mit Saldenverlauf |
+| 🟨 | **Marktplätze & ERP** | Amazon (Abrechnungsbericht V2), eBay, Shopify, PayPal (als eigenes Konto) — Erlöse, Gebühren, Erstattungen, Einbehalte einzeln gebucht, Summenprobe, Auszahlungsabgleich, Bestimmungsland → OSS; JTL-Wawi folgt |
 | 🔲 | **Prüfungsdaten** | Datenüberlassung für die Betriebsprüfung |
 | 🔲 | **REST-API** | Belege einliefern, Buchungen und OPOS abfragen, Läufe anstoßen |
 | 🔲 | **Mehrere Gesellschaften** | Eigene Firmen mit eigenem Wirtschaftsjahr und Kontenrahmen |
@@ -133,6 +133,10 @@ Legende: ✅ vorhanden · 🟨 teilweise · 🔲 geplant
 - Python 3.11+
 - PostgreSQL 15+
 - Ein LLM-Zugang (Anthropic API, OpenAI, oder lokales Modell via Ollama)
+- Optional für die formale Prüfung von E-Rechnungen: Java 21 und die Prüfwerkzeuge KoSIT
+  (XRechnung) und Mustang/veraPDF (ZUGFeRD, PDF/A-3) — `scripts/pruefwerkzeuge_installieren.sh`,
+  feste Versionen mit Prüfsumme. Ohne sie stellt `accounti rechnung ausstellen` nur mit
+  ausdrücklichem `--ohne-formale-pruefung` aus.
 - Optional für gescannte Belege und Fotos: Tesseract mit deutschen Sprachdaten
   (`apt install tesseract-ocr tesseract-ocr-deu`). Ohne Tesseract landen Scans mit Hinweis in der Prüfung.
 
@@ -171,6 +175,302 @@ accounti bwa --period 2026-04
 # DATEV-Export
 accounti export datev --period 2026-04 --berater 23426 --mandant 40005
 ```
+
+### Belege und E-Rechnungen
+
+```bash
+# Belege aus dem Watch-Ordner holen und lesen (PDF, Scan, XRechnung, ZUGFeRD)
+accounti belege abholen --kanal ordner --ordner ./eingang/belege
+accounti belege liste --status pruefung
+
+# Belege aus dem Postfach holen (Abschnitt belegkanaele.email; Passwort per ${VAR} oder Tresor)
+accounti kanaele zugang email rechnungen         # Passwort verschlüsselt ablegen (ACCOUNTI_SCHLUESSEL)
+accounti belege abholen --kanal email            # alle Postfächer, oder --quelle rechnungen
+accounti kanaele nachrichten --kanal email       # verarbeitete Nachrichten mit Absender
+
+# Webhook für Fremdsysteme und Messenger-Weiterleitungen (n8n, Make, Zapier, curl)
+accounti kanaele webhook token n8n               # Token wird nur jetzt angezeigt
+accounti kanaele webhook starten                 # 127.0.0.1:8410 — TLS über einen Reverse-Proxy
+curl -H "Authorization: Bearer $TOKEN" -F datei=@rechnung.pdf -F absender="Telegram Erika" \
+  http://127.0.0.1:8410/belege
+
+# Belegportal über seine API (Abschnitt belegkanaele.connectoren)
+accounti kanaele connectoren                     # Typen und Prüfung der Konfiguration
+accounti kanaele zugang connector getmyinvoices  # API-Schlüssel verschlüsselt ablegen
+accounti belege abholen --kanal connector
+
+# Eingehende E-Rechnung prüfen, ohne zu importieren — fachlich und mit dem KoSIT-Prüftool
+accounti rechnung pruefen ./eingang/rechnung.xml --kosit
+
+# Ausgangsrechnung schreiben und als XRechnung ausstellen (Firmendaten: config/accounti.yaml)
+scripts/pruefwerkzeuge_installieren.sh
+accounti rechnung neu --name "Kunde GmbH" --plz 10115 --ort Berlin \
+  --ust-id DE123456789 --email rechnung@kunde.example
+accounti rechnung position <ID> --text "Beratung" --preis 120 --menge 8 --einheit HUR --leistung
+accounti rechnung zeigen <ID>
+accounti rechnung ausstellen <ID>     # Nummer, XRechnung + ZUGFeRD-PDF, Prüfung → rechnungen/
+accounti rechnung senden RE-2026-0001 # per E-Mail (Abschnitt 'versand'), mit Versandprotokoll
+```
+
+### Offene Posten
+
+```bash
+# Erfasste Rechnungen auf Kreditor/Debitor buchen und offene Posten anlegen
+accounti opos verbuchen
+accounti kontakte liste --status pruefung     # automatisch angelegte Lieferanten prüfen
+accounti kontakte bestaetigen 70000
+accounti kontakte bearbeiten 70000 --sachkonto 4930 --zahlungsziel 30
+accounti opos liste --richtung eingang --faellig
+accounti opos staffel
+
+# Bankzahlungen den Posten zuordnen — vor 'classify', damit nichts doppelt gebucht wird
+accounti import bank ./umsaetze.csv
+accounti opos zuordnen                         # Eindeutiges wird sofort ausgeglichen
+accounti opos vorschlaege                      # Sammel-, Teil-, Skontozahlungen ohne Referenz
+accounti opos bestaetigen <ID>                 # oder: accounti opos ablehnen <ID>
+accounti bank abgleich                         # Quittungen & Co. ↔ Umsätze
+accounti bank vorschlaege                      # mehrdeutig, Rundung, Trinkgeld
+accounti bank bestaetigen <ID>                 # oder: accounti bank ablehnen <ID>
+accounti classify                              # kontiert aus dem Beleg, sonst Regelwerk/LLM
+accounti bank offen                            # Umsätze ohne Beleg, Belege ohne Umsatz
+```
+
+### Zahlungsverkehr
+
+```bash
+accounti zahlung vorschlag --stichtag 2026-10-21      # Skonto zuerst, Grund je Position
+accounti zahlung anlegen --stichtag 2026-10-21        # Entwurf = Lauf 1
+accounti zahlung entfernen 1 3                         # Position 3 nicht zahlen (nur im Entwurf)
+accounti zahlung pruefen 1                             # blockierend: IBAN, Betrag, Sperre, Dubletten
+accounti zahlung freigeben 1                           # mit zahlung.vier_augen: zweite Person (eigene Anmeldung)
+accounti zahlung sepa 1 --datei ueberweisung.xml      # pain.001.001.09 → im Onlinebanking hochladen
+accounti opos zuordnen                                 # Kontoumsätze gleichen die Posten aus
+accounti zahlung abgleichen                            # Lauf → ausgeführt
+accounti zahlung stornieren 1 --grund "doppelt"       # freigegebene Läufe: nur Storno, mit Protokoll
+accounti zahlung sperre 70003 --grund "Reklamation"   # Kreditor vom Zahlungsverkehr ausnehmen
+```
+
+Weicht die IBAN der Rechnung vom Stammsatz ab, stoppt der Lauf — so funktionieren gefälschte
+Rechnungen. Überweisungen gehen nur an Empfänger im EWR (für die Schweiz oder das Vereinigte
+Königreich verlangt SEPA den BIC). Mit `zahlung.vier_augen` gibt frei, wer am Rechner angemeldet
+ist — das ist so stark wie diese Anmeldung, nicht mehr. Nach einem Rückruf beim Lieferanten auf bekanntem Weg: Stammsatz ändern
+(`accounti kontakte bearbeiten 70003 --iban …`) oder mit `accounti zahlung iban-klaeren 1 2
+--grund "…"` festhalten, dass an die Stammsatz-IBAN gezahlt wird.
+
+### Mahnwesen
+
+```bash
+accounti mahnwesen lauf --stichtag 2026-10-21          # Mahnentwürfe mit Zinsen, Pauschale, Gebühren
+accounti mahnwesen zeigen 7                            # Mahnschreiben als Text
+accounti mahnwesen versenden 7 --pdf mahnung-7.pdf     # oder --text, --email; Mahnstufe am Posten +1
+accounti mahnwesen versenden 8 --text m.txt --am 2026-10-20   # Brief ging gestern zur Post
+accounti mahnwesen kunde 10001 --unternehmer           # B2B: 9 Prozentpunkte + 40 € Pauschale
+accounti mahnwesen sperre 10002 --grund "Ratenzahlung" # Kunde vom Mahnlauf ausnehmen
+accounti mahnwesen basiszins                           # Basiszinssätze mit Gültigkeitszeitraum
+accounti mahnwesen historie 10001                      # versendete Mahnungen eines Kunden
+```
+
+### Bankkonten und geplanter Lauf
+
+```bash
+accounti bank schluessel                       # Schlüssel für verschlüsselte Bankzugänge
+export ACCOUNTI_SCHLUESSEL=…                   # gehört in die Umgebung, nicht ins Projekt
+accounti bank verbinde --provider datei --iban DE12… --bezeichnung "Giro" \
+  --sachkonto 1200 --feld ordner=./eingang/kontoauszuege
+accounti bank konten                           # Konten, Abrufstand, Zustand
+accounti bank abrufen                          # neue Umsätze aller Konten, ohne Dubletten
+accounti bank lauf                             # abrufen → zuordnen → abgleichen → kontieren (Cron)
+```
+
+Auch `accounti import bank` überspringt jetzt Umsätze, die schon da sind; mit `--konto IBAN`
+landen sie beim eingerichteten Konto und dessen Sachkonto.
+
+### FinTS und Kreditkarten
+
+FinTS ist ein Zusatzpaket: `pip install "accounti[fints]"` (bzw. `pip install -e ".[fints]"` im
+Quellordner).
+
+FinTS braucht eine **Produkt-ID**, die jede Installation selbst bei der Deutschen Kreditwirtschaft
+registriert (https://www.fints.org/de/hersteller/produktregistrierung, 10–15 Werktage). Sie gehört
+in die Umgebung oder in `config/accounti.yaml`, nie ins Repo.
+
+```bash
+export ACCOUNTI_FINTS_PRODUKT_ID=…             # oder bank.fints.produkt_id
+accounti fints einrichten --iban DE12… --bezeichnung "Giro Sparkasse" \
+  --blz 12345678 --server https://fints.example-bank.de/fints30
+                                               # Benutzerkennung, PIN, TAN-Verfahren, erste Freigabe
+accounti bank abrufen                          # danach ohne Eingabe (Cron); verlangt die Bank
+                                               # wieder eine Freigabe, steht das Konto auf
+                                               # freigabe_noetig:
+accounti fints freigeben                       # TAN eingeben oder in der App bestätigen
+accounti fints zugang --konto DE12…            # neue PIN: der Cron versucht es nach einer
+                                               # Ablehnung nicht weiter (Sperrgefahr)
+accounti fints format --konto DE12… camt       # Format nur ausdrücklich wechseln
+
+accounti import bank auszug.sta                # MT940 und CAMT werden am Inhalt erkannt
+accounti import bank camt053.xml --konto DE12…
+
+accounti kreditkarte einrichten --kennung VISA1234 --bezeichnung "Visa Firma" \
+  --sachkonto 1730 --girokonto DE12… --endziffern 1234
+                                               # eigenes Sachkonto der Karte (SKR03 1730 /
+                                               # SKR04 3610 „Kreditkartenabrechnung“, mit der
+                                               # Steuerberatung abstimmen), keine Kartennummer
+accounti kreditkarte einrichten --konto AMEX01 --girokonto DE12… --abrechnungstag 20
+                                               # Karte mit Abruf (z.B. Datei-Provider): Ausgleich
+                                               # über Geldtransit 1360/1460
+accounti belege import abrechnung-maerz.pdf    # PDF-Abrechnung wird in Umsätze zerlegt …
+accounti kreditkarte uebernehmen <BELEG-ID>    # … und landet am Kartenkonto
+accounti kreditkarte abgleich                  # Sammelbelastung ./. Summe der Einzelumsätze
+accounti kreditkarte liste                     # Karten, Abrechnungen, Befunde
+accounti kreditkarte loesen <ABRECHNUNG>       # falsche vorläufige Zuordnung lösen
+accounti kreditkarte loesen <ABRECHNUNG> --belastung <UMSATZ>
+                                               # „mehrdeutig“: diese Belastung gehört nicht
+                                               # zu dieser Abrechnung
+```
+
+Stimmt die Sammelbelastung auf dem Girokonto nicht centgenau mit der Summe der Einzelumsätze
+überein, bucht accounti sie zur Prüfung und nennt die Differenz als Befund — es gibt keinen
+Rundungsposten. Diese Zuordnung bleibt vorläufig: Kommt später die centgenaue Belastung, löst
+accounti sie selbst. Passen mehrere Belastungen ungefähr (etwa eine Jahresgebühr und die
+Abrechnung), ordnet accounti nichts zu und meldet „mehrdeutig“ mit dem Befehl, der eine davon
+abtrennt. `accounti bank lauf` erledigt den Kartenabgleich vor dem Kontieren und
+nennt sein Ergebnis; ist genau eine Karte mit PDF-Abrechnung eingerichtet, übernimmt er erfasste
+Abrechnungen auch von selbst — nicht aber Abrechnungen, deren Sammelbelastung schon anders
+gebucht ist (sonst stünde der Aufwand doppelt da). Die Einzelumsätze kontiert `classify` gegen
+das Sachkonto der Karte.
+
+### USt-IdNr.-Prüfung
+
+Steuerfreie innergemeinschaftliche Lieferungen und Reverse Charge gibt es nur mit einer
+**qualifizierten Bestätigung des BZSt** (§ 18e UStG). accounti fragt über die eVatR-REST-API an
+und hält jede Abfrage mit der Rohantwort in einem Protokoll fest, das nur wachsen kann
+(Hash-Kette, unter SQLite zusätzlich per Trigger gesperrt).
+
+```bash
+accounti kontakte pruefe-ustid 10001          # qualifiziert: Name, Straße, PLZ, Ort
+accounti kontakte pruefe-ustid 10001 --einfach
+accounti kontakte ustid-protokoll             # Protokoll + Prüfung auf Unverändertheit
+accounti kontakte ustid-protokoll ATU12345678 --csv ustid.csv
+```
+
+`accounti rechnung ausstellen` fragt bei Kategorie K oder AE selbst an, wenn keine
+Bestätigung aus den letzten 30 Tagen vorliegt (`ustid_pruefung.max_alter_tage`). Ist die
+Nummer ungültig oder stimmen Name/Ort nicht, wird die Rechnung nicht ausgestellt, und
+`opos verbuchen` legt solche Erlöse zur Prüfung vor.
+
+### Umsatzsteuer-Voranmeldung und ELSTER
+
+```bash
+accounti ustva --period 2026-08                 # Kennziffern (Vordruck 2026) + Plausibilisierung
+accounti ustva pruefen --period 2026-08         # nur die Befunde; Fehler sperren die Freigabe
+accounti ustva freigeben --period 2026-08 --von "Erika Muster"
+accounti ustva uebermitteln --period 2026-08 --test --ausgabe ustva.xml   # prüfen, nichts geht raus
+accounti ustva uebermitteln --period 2026-08    # abgeben (ERiC), Protokoll, Zahllast als offener Posten
+accounti ustva dauerfrist --jahr 2027           # Dauerfristverlängerung + Sondervorauszahlung (1/11)
+accounti zm --period 2026-Q3 --csv zm.csv       # Zusammenfassende Meldung für den Portal-Import
+accounti fristen --jahr 2026 --bundesland BY    # Fristenkalender mit Wochenend- und Feiertagsverschiebung
+accounti elster pin                             # Zertifikats-PIN verschlüsselt ablegen
+accounti elster protokoll                       # Übermittlungsprotokoll + Prüfung auf Unverändertheit
+accounti elster zahllast                        # fehlende Zahllast-Buchungen zu Abgaben nachholen
+```
+
+Abgegeben wird nur, was ein Mensch freigegeben hat — die Freigabe hängt an den Formularwerten;
+ändern sich danach Buchungen, passt sie nicht mehr, und ein neuer Fehler-Befund sperrt die Abgabe
+auch mit Freigabe. Der erste Lauf eines Betriebs ist immer der Testmodus: Ohne erfolgreichen
+Prüflauf über ERiC wird nur geprüft, erst der nächste Aufruf gibt ab. Ohne ERiC (Registrierung beim
+Bayerischen Landesamt für Steuern, eigene Hersteller-ID, Zertifikat) bleibt der Testmodus: Der
+Datensatz wird erzeugt und geprüft, aber nicht abgegeben; die Attrappe (`elster.uebermittler:
+attrappe`) prüft und testet nur, sie gibt nie ab.
+
+### Marktplätze und DATEV-Übergabe
+
+```bash
+accounti marktplatz import amazon ./abrechnung.txt --laender ./ust_transaktionen.csv
+accounti marktplatz import paypal ./aktivitaeten.csv     # PayPal ist ein eigenes Konto (1210)
+accounti marktplatz import shopify ./auszahlung.csv --laender ./bestellungen.csv
+accounti marktplatz liste                                # Status und Befunde je Abrechnung
+accounti marktplatz abgleichen                           # Auszahlungen ↔ Bankumsätze
+accounti marktplatz oss --quartal 2026-Q3                # OSS-Quartalsmeldung
+
+accounti datev stammdaten --ausgabe ./export             # Debitoren/Kreditoren
+accounti datev belege --period 2026-08 --ausgabe ./export/belege-08.zip
+accounti datev kontoauszuege --period 2026-08 --anfangssaldo 1.234,56   # erstes Mal
+accounti datev kontoauszuege --period 2026-09 --kontrollsaldo 2.345,67
+```
+
+Jede Abrechnung wird als Beleg archiviert und Bestandteil für Bestandteil gegen ein
+Verrechnungskonto gebucht; die Auszahlung ist nur der Abgleichspunkt gegen die Bank. Stimmt die
+Summe der Posten nicht mit der Auszahlung, ist das ein Befund — nichts wird geglättet. Ein
+weiterer Bericht zu einer bekannten Abrechnung (Monatsberichte, erneuter Export) bucht nur die
+Posten nach, die noch fehlen; bringt er eine zweite Auszahlungszeile, wird nichts nachgetragen.
+Eine PayPal-Rückzahlung mindert den Erlös nur, wenn ihre Zahlung ein Checkout-Verkauf war.
+Als Länderdatei für Amazon den USt-Transaktionsbericht nehmen: Nur
+er kennt das Abgangsland (FBA-Lager) und die USt-IdNr. des Käufers; mit dem Bestellbericht gehen
+FBA-Verkäufe zur Prüfung, bis `lager_nur_inland` eingestellt ist. Fremdwährung braucht `--kurs`.
+`datev belege` schreibt Belegpaket (für DATEV Belegtransfer, nicht entpacken) und Buchungsstapel
+mit Beleglink; beide zusammen importieren. Kontoauszüge werden beim Erstellen festgeschrieben.
+
+### Anlagen und Jahresabschluss
+
+```bash
+# Anlagegut aus einem Beleg anlegen — Nutzungsdauer aus der AfA-Tabelle, immer änderbar
+accounti anlagen tabelle                       # hinterlegte Nutzungsdauern mit Fundstelle
+accounti anlagen anlegen --beleg RE-4711 --typ notebook
+accounti anlagen anlegen --bezeichnung "Transporter" --datum 2026-09-15 \
+  --kosten 36000 --typ lkw --art degressiv     # 3-fach, höchstens 30 % (07/2025–2027)
+accounti anlagen plan 1                        # AfA-Plan bis zum Ende
+accounti anlagen afa --jahr 2026 --bis-monat 9 # monatlich oder am Jahresende — idempotent
+accounti anlagen freigeben --jahr 2026         # AfA-Vorschläge freigeben
+accounti anlagen abgang 1 --datum 2026-11-30 --erloes 500 --gegenkonto 1200
+accounti anlagen spiegel --jahr 2026 --csv anlagenspiegel.csv
+
+# Kassenbuch — ein Eintrag, der den Bestand negativ machen würde, wird abgelehnt
+accounti kasse anfangsbestand --betrag 300 --datum 2026-01-01
+accounti kasse buchen --betrag -24.90 --text "Porto" --konto 4910
+accounti kasse liste --jahr 2026               # laufende Nummer, Tagessaldo, Bestand
+accounti kasse bestand --gezaehlt 275.10       # Kassensturz
+
+# Jahresabschluss
+accounti abschluss eroeffnung --jahr 2026 --konto 1200 --saldo 5000   # nur im ersten Jahr
+accounti abschluss saldo --konto DE12… --stichtag 2026-12-31 --saldo 12345,67
+accounti abschluss buchen --jahr 2026          # AfA + Abgrenzungsvorschläge
+accounti abschluss abgrenzungen --jahr 2026    # bestaetigen <Nr> | ablehnen <Nr>
+accounti abschluss abgrenzen 3f2a9c1e --von 2026-11-01 --bis 2027-10-31   # Zeitraum nicht im Text
+accounti abschluss pruefen --jahr 2026         # Fehler blockieren den Vortrag
+accounti abschluss susa --jahr 2026
+accounti abschluss euer --jahr 2026            # Anlage EÜR nach Zeilen und Kennzahlen
+accounti abschluss vortrag --jahr 2026 --von "E. Muster"   # EB 01.01.2027, 2026 gesperrt
+accounti abschluss oeffnen --jahr 2026 --grund "Nachbuchung Beleg 4711" --von "E. Muster"
+```
+
+Grenzbeträge (GWG, Sammelposten, degressive Fenster) gelten **ab dem Anschaffungstag** — ein Zugang
+aus 2015 rechnet mit 410 €, einer aus 2026 mit 800 €. Abschlussbuchungen sind immer Vorschläge zur
+Freigabe; gezählt wird in Salden und Auswertungen nur, was freigegeben ist.
+
+### Aufgaben und Rückfragen
+
+Alles, was ein Mensch entscheiden muss, steht an einem Ort. Prüfläufe werten vorhandene Daten
+aus — eine zweite Ausführung verdoppelt nichts, und eine Aufgabe ohne Anlass schließt sich
+selbst als `hinfaellig` (z.B. sobald der fehlende Beleg abgeglichen ist).
+
+```bash
+accounti aufgaben pruefen                      # unsichere Kontierung, Beleg fehlt, Beleg/Kontakt zur Prüfung, Bankfreigabe
+accounti aufgaben liste                        # offene Aufgaben; unzugewiesen = gemeinsame Liste
+accounti aufgaben liste --zustaendig ich       # eigene und die der eigenen Rollen
+accounti aufgaben zeige 42                     # mit Bezugsobjekt und Verlauf
+accounti aufgaben zuweisen 42 --an jan         # oder --rolle buchhaltung, --frei
+accounti aufgaben kommentieren 42 --text "Beim Lieferanten angefragt"
+accounti aufgaben erledigen 42 --text "Kontoführungsgebühr, belegfrei"
+accounti aufgaben rueckfrage 3fa2c1 --text "Wer war beim Essen dabei?" --an erika
+accounti aufgaben objekt beleg 3fa2c1          # Rückfragen, Kommentare, Aufgaben am Beleg
+accounti aufgaben erinnern --vorschau          # Tagesübersicht ansehen, nichts senden
+accounti aufgaben erinnern                     # je Empfänger eine Übersicht (E-Mail über 'versand')
+accounti aufgaben lauf                         # Cron: prüfen + erinnern, z.B. nach 'accounti bank lauf'
+```
+
+Erledigt bleibt erledigt: Wer eine Aufgabe mit Begründung schließt, bekommt sie vom nächsten
+Prüflauf nicht wieder. „Beleg fehlt“ lässt sich nur mit Begründung (`--text`) erledigen. Erinnerungen kommen am Fälligkeitstag, nach drei und nach sieben Tagen
+(einstellbar je Art, die letzte Stufe eskaliert auf Wunsch) — gebündelt, nicht als Einzelmail.
 
 ---
 
@@ -310,7 +610,8 @@ Wo sitzt der Käufer?
         ▼
    ┌─ Inland (DE) ──────────────▶ 19% / 7% USt
    │
-   ├─ EU-Land ─┬─ B2B + USt-ID ─▶ 0% (ig. Lieferung / Reverse Charge)
+   ├─ EU-Land ─┬─ B2B + USt-ID ─▶ 0% (ig. Lieferung / Reverse Charge),
+   │            │                  nur mit qualifizierter BZSt-Bestätigung
    │            │
    │            └─ B2C ──────────▶ OSS: Steuersatz des Bestimmungslands
    │                               (FR 20%, IT 22%, ES 21%, SE 25%...)
@@ -342,7 +643,7 @@ Seit Juli 2021 müssen B2C-Fernverkäufe in andere EU-Länder über €10.000 p.
 - Bucht auf **separate OSS-Erlöskonten** (SKR03: 8320-8339)
 - Erstellt die **Quartalsmeldung** mit Aufschlüsselung nach Land und Steuersatz
 - Kennt die **Abgabefristen** (letzter Tag des Folgemonats)
-- Markiert OSS-Umsätze korrekt als **nicht Teil der USt-Voranmeldung**
+- Meldet OSS-Umsätze in der USt-Voranmeldung **nur als Nettoumsatz in Kz 45** (Anleitung 2026, Zeile 36) — die Steuer läuft über die OSS-Meldung
 
 ### USt-Voranmeldung
 
@@ -410,24 +711,30 @@ kontieren will, braucht nur v0.1.
 - [x] OCR und Belegartklassifikation, Positionssplit
 - [x] Belegarchiv mit Aufbewahrungsfrist
 - [x] E-Rechnung lesen: XRechnung (UBL/CII), ZUGFeRD/Factur-X, mit fachlicher Validierung
-- [ ] E-Rechnung: formale Prüfung gegen XSD/Schematron (KoSIT-Prüftool)
-- [ ] E-Rechnung schreiben und versenden
+- [x] E-Rechnung: formale Prüfung gegen XSD/Schematron (KoSIT-Prüftool)
+- [x] E-Rechnung schreiben: XRechnung mit lückenlosen Nummernkreisen
+- [x] E-Rechnung: ZUGFeRD-PDF (PDF/A-3b) und Versand per E-Mail
 
 ### v0.3 — Personenkonten & Bank *(Bausteine 4, 5)*
-- [ ] Debitoren/Kreditoren-Stammdaten, USt-IdNr.-Prüfung mit Protokoll
-- [ ] Offene Posten, Fälligkeitsstaffel, Zahlungszuordnung, Skonto, Teilzahlung
-- [ ] Live-Bankanbindung: FinTS/HBCI, PSD2 optional, Kreditkarten
-- [ ] Belegabgleich vor der Kontierung, geplanter Abruf
+- [x] Debitoren/Kreditoren-Stammdaten mit Personenkonten und Kontakterkennung
+- [x] USt-IdNr.-Prüfung mit Protokoll
+- [x] Offene Posten aus Belegen, OPOS-Liste, Fälligkeitsstaffel
+- [x] Zahlungszuordnung, Skonto mit Steuerkorrektur, Teil- und Sammelzahlung
+- [x] Live-Bankanbindung: FinTS/HBCI, Kreditkarten (PSD2 optional folgt)
+- [x] FinTS-Provider und Kreditkarten (FinTS braucht eine Produktregistrierung)
+- [x] Belegabgleich vor der Kontierung
+- [x] Bankkonten, Provider-Schnittstelle, Datei-Provider, Dublettenschutz, geplanter Lauf
+- [ ] FinTS-Provider und Kreditkarten (FinTS braucht eine Produktregistrierung)
 
 ### v0.4 — Zahlung & Prüfung *(Bausteine 6, 7)*
-- [ ] Zahlungsvorschlag nach Skontofrist, SEPA-Sammelüberweisung, Freigabe
-- [ ] Mehrstufiges Mahnwesen mit Verzugszinsen
+- [x] Zahlungsvorschlag nach Skontofrist, SEPA-Sammelüberweisung, Freigabe
+- [x] Mehrstufiges Mahnwesen mit Verzugszinsen
 - [ ] Prüfregeln für Vollständigkeit, Richtigkeit, Zeitgerechtheit, Ordnung
 - [ ] Belegnachforderung, unveränderbares Journal, Periodenabschluss
 - [ ] Generierte Verfahrensdokumentation
 
 ### v0.5 — Oberfläche & Betrieb *(Bausteine 8, 10)*
-- [ ] Aufgaben, Rückfragen am Beleg, Zuständigkeiten, Erinnerungen
+- [x] Aufgaben, Rückfragen am Beleg, Zuständigkeiten, Erinnerungen
 - [ ] Web-UI: Supervisions-Queue mit Belegansicht, BWA mit Vorjahresvergleich
 - [ ] Benutzer, Rollen, 2FA, Vier-Augen-Freigabe, DE/EN
 - [ ] Docker-Setup, verschlüsselte Sicherungen, Löschkonzept
@@ -435,14 +742,14 @@ kontieren will, braucht nur v0.1.
 ### v0.6 — Integrationen *(Baustein 11)*
 - [ ] JTL-Wawi, Amazon (DE/FR/IT/ES/NL/UK/SE/PL), eBay, Shopify, PayPal
 - [ ] Bestimmungsland-Erkennung für OSS
-- [ ] DATEV vollständig: Stammdaten, Belegbilder, Kontoauszüge
+- [x] DATEV vollständig: Stammdaten, Belegbilder, Kontoauszüge
 - [ ] REST-API, Prüfungsdatenüberlassung
 - [ ] MT940/CAMT-Import
 
 ### v1.0 — Meldungen & Abschluss *(Bausteine 9, 12)*
 - [ ] Elektronische Übermittlung: Voranmeldung, Dauerfristverlängerung, ZM
-- [ ] Plausibilisierung vor Abgabe, Übermittlungsprotokolle, Fristenkalender
-- [ ] Anlagenbuchhaltung: AfA, GWG, Sammelposten, Anlagenspiegel
+- [x] Plausibilisierung vor Abgabe, Übermittlungsprotokolle, Fristenkalender
+- [x] Anlagenbuchhaltung: AfA, GWG, Sammelposten, Anlagenspiegel
 - [ ] Abgrenzungen, Rückstellungen, Kassenbuch
 - [ ] Jahresabschluss: EÜR oder Bilanz mit GuV, Saldovortrag
 - [ ] Umfassende Dokumentation + Tutorials

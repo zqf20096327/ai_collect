@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://www.npmjs.com/package/@ryuxdsgn/design-intelligence"><img src="https://img.shields.io/badge/version-early__access%20v2.11-1f6feb" alt="Version: early access v2.11"></a>
+  <a href="https://www.npmjs.com/package/@ryuxdsgn/design-intelligence"><img src="https://img.shields.io/badge/version-early__access%20v2.13-1f6feb" alt="Version: early access v2.13"></a>
   <a href="https://github.com/ryuxdsgn/design-intelligence/actions/workflows/ci.yml"><img src="https://github.com/ryuxdsgn/design-intelligence/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea44f" alt="MIT License"></a>
 </p>
@@ -75,13 +75,15 @@ Assumption   [CONFIRM] The fee is charged on top of the amount.
 ## How it works
 
 Say what you are doing, in your own words. RYUX picks the step and reads only the knowledge it needs.
+Behind every capability runs one workflow: understand, frame the problem, explore two or three
+alternatives, evaluate them against the brief (you pick), build and critique, then verify.
 
 | Capability | What it does |
 | --- | --- |
 | **Analyze** | Understands an existing interface: what is there, what is measured, what is inferred |
 | **Design** | Turns context into UX, UI, and motion direction, in Figma, pen.dev, or a mockup |
 | **Build** | Implements the decisions in your stack without inventing rules, data, or API behavior |
-| **Critique** | Finds what to change first, with severity, evidence, and a fix |
+| **Critique** | Finds what to change first, with severity, evidence, and a fix, or runs a heuristic evaluation |
 | **QA** | Checks the build against the design at each width and state |
 
 ```text
@@ -104,9 +106,9 @@ It asks which agents you use, installs RYUX, and offers a short setup that write
 project's direction. Run `npx @ryuxdsgn/design-intelligence setup` any time to change it.
 
 Also available through [skills.sh](https://skills.sh) (`npx skills add ryuxdsgn/design-intelligence`)
-and as a Claude Code plugin (`/plugin marketplace add ryuxdsgn/design-intelligence`, then
-`/plugin install ryux@design-intelligence`). The [guide](GUIDE.md) covers other agents, global
-installs, updates, and the MCP.
+and as a plugin for Claude Code (`/plugin marketplace add ryuxdsgn/design-intelligence`, then
+`/plugin install ryux@design-intelligence`), Codex, GitHub Copilot, VS Code, and Gemini CLI. The
+[guide](GUIDE.md) covers each agent's install, global installs, updates, and the MCP.
 
 ## Benchmarks
 
@@ -198,7 +200,7 @@ vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## Status and license
 
-RYUX 2.11, early access, free. Available now: the skill, the CLI, skills.sh, the Claude Code plugin,
+RYUX 2.13, early access, free. Available now: the skill, the CLI, skills.sh, the Claude Code plugin,
 and the MCP server run locally. Coming: the hosted MCP and a larger reference library.
 
 **MIT**, © 2026 ryux.design (see [LICENSE](./LICENSE)). The code and the RYUX skill are covered by

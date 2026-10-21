@@ -4,329 +4,368 @@
     <img src="./assets/logo.png" alt="sdkm" width="200"/>
   </h1>
 
+  <!-- Badges: community -->
   <p>
     <a href="https://github.com/borenchan/sdkmate/stargazers"><img src="https://img.shields.io/github/stars/borenchan/sdkmate?style=social" alt="Stars"/></a>
     <a href="https://github.com/borenchan/sdkmate/network/members"><img src="https://img.shields.io/github/forks/borenchan/sdkmate?style=social" alt="Forks"/></a>
-    <img src="https://img.shields.io/github/repo-size/borenchan/sdkmate?style=flat-square" alt="Size"/>
+    <a href="https://github.com/borenchan/sdkmate/watchers"><img src="https://img.shields.io/github/watchers/borenchan/sdkmate?style=social" alt="Watchers"/></a>
   </p>
 
+  <!-- Badges: release & build -->
+  <p>
+    <a href="https://github.com/borenchan/sdkmate/releases"><img src="https://img.shields.io/github/v/release/borenchan/sdkmate?style=flat-square&label=release&color=green" alt="Release"/></a>
+    <a href="https://github.com/borenchan/sdkmate/releases"><img src="https://img.shields.io/github/release-date/borenchan/sdkmate?style=flat-square&label=latest" alt="Release Date"/></a>
+    <a href="https://github.com/borenchan/sdkmate/releases"><img src="https://img.shields.io/github/downloads/borenchan/sdkmate/total?style=flat-square&label=downloads&color=brightgreen" alt="Downloads"/></a>
+    <a href="https://github.com/borenchan/sdkmate/actions/workflows/release.yml"><img src="https://img.shields.io/github/actions/workflow/status/borenchan/sdkmate/release.yml?branch=master&style=flat-square&label=CI" alt="CI Status"/></a>
+  </p>
+
+  <!-- Badges: activity -->
+  <p>
+    <a href="https://github.com/borenchan/sdkmate/issues"><img src="https://img.shields.io/github/issues/borenchan/sdkmate?style=flat-square&label=issues" alt="Issues"/></a>
+    <a href="https://github.com/borenchan/sdkmate/pulls"><img src="https://img.shields.io/github/issues-pr/borenchan/sdkmate?style=flat-square&label=prs" alt="Pull Requests"/></a>
+    <a href="https://github.com/borenchan/sdkmate/commits/master"><img src="https://img.shields.io/github/last-commit/borenchan/sdkmate/master?style=flat-square&label=last%20commit" alt="Last Commit"/></a>
+    <a href="https://github.com/borenchan/sdkmate/commits/master"><img src="https://img.shields.io/github/commit-activity/m/borenchan/sdkmate?style=flat-square&label=commits%2Fmonth" alt="Commit Activity"/></a>
+    <img src="https://img.shields.io/github/repo-size/borenchan/sdkmate?style=flat-square&label=repo%20size" alt="Repo Size"/>
+  </p>
+
+  <!-- Badges: tech stack -->
   <p>
     <img src="https://img.shields.io/badge/Rust-1.92.0-orange.svg?style=flat-square&logo=rust&logoColor=white" alt="Rust">
-    <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-blue.svg?style=flat-square" alt="Platform">
+    <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-blue.svg?style=flat-square&logo=linux&logoColor=white" alt="Platform">
     <img src="https://img.shields.io/badge/License-Apache--2.0-green.svg?style=flat-square" alt="License">
   </p>
 
-  <h2>⚡ 专为全栈工程师打造的跨平台 SDK 版本管理器</h2>
+  <h2>⚡ A cross-platform SDK version manager built for full-stack developers</h2>
   <p>
-    <a href="./README-en.md">English</a> ·
-    <strong>中文</strong>
+    <strong>English</strong> ·
+    <a href="./README-zh.md">中文</a>
   </p>
 
+  <!-- Quick links -->
   <p>
-    <a href="#快速开始">快速开始</a> ·
-    <a href="#核心优势">核心优势</a> ·
-    <a href="./docs/usage.md">详细用法</a>
+    <a href="#-quick-start"><img src="https://img.shields.io/badge/🚀_Quick_Start-4c1?style=for-the-badge&labelColor=333" alt="Quick Start"/></a>
+    <a href="#-installation"><img src="https://img.shields.io/badge/📥_Installation-2f81f7?style=for-the-badge&labelColor=333" alt="Installation"/></a>
+    <a href="./docs/usage.md"><img src="https://img.shields.io/badge/📖_Documentation-ff9800?style=for-the-badge&labelColor=333" alt="Documentation"/></a>
+    <a href="./skills/SKILL.md"><img src="https://img.shields.io/badge/🤖_Agent_Skill-a855f7?style=for-the-badge&labelColor=333" alt="Agent Skill"/></a>
+    <a href="https://github.com/borenchan/sdkmate/issues"><img src="https://img.shields.io/badge/🐛_Report_Issue-ea4aaa?style=for-the-badge&labelColor=333" alt="Report Issue"/></a>
   </p>
+
+  <!-- Demo -->
+  <br/>
+
+  <img src="./assets/sdkm-demo.gif" alt="sdkm terminal demo" width="780"/>
+
+  <p><sub>▲ <strong>sdkm</strong> in action: install · fuzzy match · version switch · interactive TUI · project version management</sub></p>
 </div>
 
 ---
 
-## 🎯 一句话简介
+## 🎯 In One Line
 
-> **sdkm（简称：时代楷模👀）** 是一款专为全栈工程师打造的跨平台 SDK 版本管理器，一键安装与切换 Java、Node.js、Python、Maven、Go、uv、bun、claude-code、cmake ... 等 40+ 开发工具，**比 sdkman/nvm/jenv/pyenv 更快、更安全、更省心**。
+> **sdkmate (a.k.a. "Role Model of the Times" 👀)** is a cross-platform SDK version manager built for full-stack developers. Install and switch between Java, Node.js, Python, Maven, Go, uv, bun, claude-code, cmake ... and 40+ dev tools with one command — **faster, safer, and more hassle-free than nvm / jenv / pyenv / sdkman**.
 
 ```bash
-sdkm init && sdkm install java 21   # 初始化 + 安装 Java 21 并自动切换，一行搞定
+sdkm init && sdkm install java 21   # init + install Java 21 and auto-switch. One line, done.
 ```
+
+<details>
+<summary><strong>📑 Table of Contents</strong></summary>
+
+- [✨ Core Advantages](#-core-advantages)
+  - [🔥 Designed for full-stack developers](#-designed-for-full-stack-developers)
+  - [🤖 Let an AI Agent manage your SDKs](#-let-an-ai-agent-manage-your-sdks)
+  - [📊 Comparison with similar tools](#-comparison-with-similar-tools)
+- [📦 Installation](#-installation)
+- [🚀 Quick Start](#-quick-start)
+- [🐚 Multi-scope version switching](#-multi-scope-version-switching)
+- [🎮 Command Reference](#-command-reference)
+- [🧰 Supported SDKs](#-supported-sdks)
+- [🔩 Tech Stack](#-tech-stack)
+- [🔧 Development](#-development)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [⭐ Star History](#-star-history)
+
+</details>
 
 ---
 
+## ✨ Core Advantages
 
-
-## ✨ 核心优势
-
-> **一个工具，替代 nvm + jenv + pyenv + sdkman**——而且更快、更安全、更省心、更跨平台。
+> **One tool to replace nvm + jenv + pyenv + sdkman** — faster, safer, simpler, and more cross-platform.
 
 <div align="center">
   <table>
     <tr>
       <td width="25%" align="center">
-        <h3>🟢 纯绿色 · 轻量</h3>
-        <p>单二进制 · 零运行时依赖 · <strong>~4MB</strong><br>拷到 U 盘即用 · 已有 SDK 放进目录即托管</p>
+        <h3>🟢 Portable · Lightweight</h3>
+        <p>Single binary · zero runtime deps · <strong>~4MB</strong><br>Copy to USB and run — drop existing SDKs in to manage</p>
       </td>
       <td width="25%" align="center">
-        <h3>⚡ 多作用域版本切换</h3>
-        <p>全局 · 项目 · 临时三档<br>进目录自动切 · 离开自动还原</p>
+        <h3>⚡ Multi-scope version switching</h3>
+        <p>Global · project · temp<br>auto-switch on cd · auto-restore on leave</p>
       </td>
       <td width="25%" align="center">
-        <h3>🛡️ 透明可回滚</h3>
-        <p>每步打印 · 任一步失败自动恢复<br>模糊匹配 21→21.x · 相近版本建议</p>
+        <h3>🛡️ Transparent · Rollback-safe</h3>
+        <p>Every step printed · auto-recover on failure<br>Fuzzy match 21→21.x · suggests closest</p>
       </td>
       <td width="25%" align="center">
-        <h3>🤖 AI Agent 友好</h3>
-        <p>自带 skill 文档 · 退出码语义清晰<br>全局生效 + 失败回滚 · 放心调用</p>
+        <h3>🤖 AI Agent Friendly</h3>
+        <p>Bundled skill doc · clear exit codes<br>System-wide + rollback-safe · safe to call</p>
       </td>
     </tr>
   </table>
 </div>
 
+### 🔥 Designed for full-stack developers
 
-### 🔥 专为全栈工程师设计
+Switching between Java, Node.js, Python, Go, Maven and other SDK versions is the norm for full-stack devs — you used to need nvm, jenv, pyenv, sdkman, multiple script tools, each in its own silo. **sdkm does it all with one Rust binary.**
 
-全栈工程师在 Java、Node.js、Python、Go、Maven 等 SDK 版本之间来回切换是常态——以往要同时装 nvm、jenv、pyenv、sdkman 多套脚本工具，各管一摊、互不通气。**sdkm 用一个 Rust 二进制把这件事做完。**
+- **🟢 Portable, green**: single binary, no background service. sdkm's `HOME` is the executable's folder — copy it to a USB stick or another machine, config and installed SDKs come along. Drop existing JDK / Node / Python into the `store/` directory and sdkm discovers and manages them.
+- **⚡ Three scopes, switch on demand**: global (`switch` symlink + config, shell hook rebuilds PATH on every Enter — **takes effect as soon as you press Enter after switching**; on Windows `WM_SETTINGCHANGE` lets open processes notice), project (`use` writes `.sdkm.toml`, shell hook auto-switches on entry, restores on leave), and temp (`use --shell`, current-terminal override) — all three supported by one mechanism, pick as needed.
+- **🛡️ Transparent and rollback-safe**: every step prints what it did and why; `switch` auto-rolls back to the pre-switch state if any step fails; `config` uses atomic write + snapshot rollback — the config file can never be left half-written.
+- **🦀 Rust-driven, type-safe & reliable**: written in Rust — ownership and the type system eliminate whole classes of memory-safety bugs (dangling pointers, buffer overflows, data races) at compile time; compared to unchecked bash scripts, you get a compile-time safety net and won't silently fail on a typo or null. Paired with atomic writes + snapshot rollback, a failed operation never wrecks your environment.
+- **🧩 Extensible, one tool for everything**: Java / Node.js / Python / Maven / Go and more built in; any tool downloadable from a URL can be registered as a custom SDK with one command. Config values are type-validated — bad values error on the spot — **say goodbye to "a version manager for every language".**
+- **🖥️ Native cross-platform + interactive TUI**: Windows / Linux / macOS all first-class, same commands, same experience; `sdkm list <sdk> -r` opens an interactive TUI — arrow keys to browse remote versions, one-key install/switch, super friendly to use, and Windows is supported just as well!
+- **🤖 AI-agent friendly, let AI manage your env**: ships with an [agent skill doc](./skills/SKILL.md) — Claude Code / Codex / openclaw and other agents read it once and can install/switch SDKs for you; CLI exit-code semantics are clear (0 success / 1 failure), commands fit scripts and CI naturally, and failed operations auto-roll back — agents can call it with confidence.
 
-- **🟢 纯绿色，可移植**：单二进制就是全部，不装后台服务。sdkm 的「`HOME`」就是可执行文件所在目录——拷到 U 盘、另一台机器，配置和已装 SDK 一并带走。把已有 JDK / Node / Python 直接放进 `store/` 目录，sdkm 自动发现并托管。
-- **⚡ 三种作用域，按需切换**：全局（`switch` 改符号链接与 config，shell hook 每次回车动态重建 PATH——切换后**按回车即生效**，Windows 下 `WM_SETTINGCHANGE` 广播让已开程序可感知）、项目（`use` 写 `.sdkm.toml`，shell hook 进目录自动切、离开还原）、临时（`use --shell` 当前终端覆盖）三种作用域同时支持，同一套机制按需选用。
-- **🛡️ 透明可回滚，出错不翻车**：每一步操作都逐步打印做了什么、为什么；`switch` 任一步骤失败自动恢复到切换前状态；`config` 采用原子写入 + 快照回滚，配置文件绝不会写到一半损坏。
-- **🦀 Rust 驱动，类型安全更可靠**：由 Rust 编写，所有权与类型系统在编译期消除悬垂指针、缓冲区溢出、数据竞争等整类内存安全问题；相比无类型检查的 bash 脚本，多一层编译期兜底，不易因拼写或空值静默出错。配合原子写入 + 快照回滚，操作失败也不会把环境搞坏。
-- **🧩 可扩展，一个工具管所有**：内置 Java / Node.js / Python / Maven / Go / Any Sdk，任何能从 URL 下载解压的工具都能一行命令注册为自定义 SDK。配置按类型校验，改错当场报错——**告别"为每个语言学一套版本管理器"**。
-- **🖥️ 跨平台原生 + 交互式 TUI**：Windows / Linux / macOS 全平台一等公民，统一命令统一体验；`sdkm list <sdk> -r` 进入交互式 TUI，方向键浏览远程版本、一键安装/切换，操作极其友好，Windows也能支持的很好！
-- **🤖 AI agent 友好，让 AI 替你管环境**：自带 [agent skill 文档](./skills/SKILL.md)，Claude Code / Codex/openclaw 等 agent 读一遍即可替你装/切 SDK；CLI进程退出码语义清晰（0 成功 / 1 失败），CLI命令天然适配脚本与 CI，操作失败自动回滚——agent 放心调用。
+### 🤖 Let an AI Agent manage your SDKs
 
+> It's 2026 — tired of too many CLI flags? Worried about the learning curve? Let an AI agent do it for you.
 
-### 🤖 让AI Agent替你管理 SDK
-> 2026年了，嫌弃cli命令太多不好记？怕有学习成本？那就让Ai Agent来帮忙!
+sdkm ships with a self-contained [agent skill doc](./skills/SKILL.md) — AI coding assistants like Claude Code, Codex read it once and can install/switch SDKs on your machine for you: they call `sdkm install` / `sdkm switch` directly, judge success by exit code, and auto-roll back on failure — no interactive prompts to get stuck on, no shell-function traps.
 
-sdkm 自带一份自包含的 [agent skill 文档](./skills/SKILL.md)——Claude Code、Codex 等 AI 编程助手读一遍就能在你的机器上替你装/切 SDK：它会用 `sdkm install` / `sdkm switch` 直接操作、凭退出码判断成败、失败自动回滚，不卡在交互式提示、不踩 shell 函数的坑。
+**Install the skill — either way works (Claude Code shown as an example):**
 
-**安装 skill，任选一种即可(以Claude Code为例)：**
-
-- **最简单 · 让 agent 自己装**：在 Claude Code 对话里直接说——
+- **Simplest · let the agent install it**: in a Claude Code session, just say —
 
   ```
-  帮我安装一个 skill: https://github.com/borenchan/sdkmate/blob/master/skills/SKILL.md
+  help me install a skill: https://github.com/borenchan/sdkmate/blob/master/skills/SKILL.md
   ```
 
-- **手动复制**：把 `SKILL.md` 放到 `~/.claude/skills/sdkm/SKILL.md`（Windows 为 `%USERPROFILE%\.claude\skills\sdkm\SKILL.md`）即可，全局可用。
+- **Manual copy**: drop `SKILL.md` at `~/.claude/skills/sdkm/SKILL.md` (`%USERPROFILE%\.claude\skills\sdkm\SKILL.md` on Windows) — globally available.
 
-装好后**重启 Claude Code 会话**（让它扫描到新 skill），然后直接对 agent 说人话，它会自动触发 sdkm skill 并执行：
+Once installed, **restart your Claude Code session** (so it picks up the new skill), then just talk to the agent in plain language — it will trigger the sdkm skill and run:
 
 ```
-帮我装个 java 21            → sdkm install java 21
-切到 node 20.11.0          → sdkm switch node 20.11.0
-看看本地装了哪些 python     → sdkm list
+install java 21            → sdkm install java 21
+switch to node 20.11.0     → sdkm switch node 20.11.0
+what python do I have      → sdkm list
 ```
 
+### 📊 Comparison with similar tools
 
-### 📊 与同类工具对比
-
-<div align="center">
-
-| 核心维度 | **sdkm** | **mise** | **sdkman** | **jvms / jenv / nvm / pyenv** |
+| Capability | **sdkm** | **mise** | **sdkman** | **jvms / jenv / nvm / pyenv** |
 | :--- | :---: | :--- | :--- | :--- |
-| **多语言统一管理** | ✅ Java/Node/Python/Maven/Go + 自定义 SDK | ✅ node、python、cmake、terraform 等 [hundreds more](https://github.com/jdx/mise?tab=readme-ov-file#what-does-it-do) | ⚠️ 以 Java/JVM 生态为主 | ❌ 单一语言管理器，一个工具只管一种语言（如 [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#node-version-manager---)、[pyenv](https://github.com/pyenv/pyenv?tab=readme-ov-file#simple-python-version-management)） |
-| **Windows 原生支持** | ✅ **一等公民**：原生注册表 + 广播通知 | ⚠️ **基础支持**：Windows 下只能用 core/vfox 插件，[可用工具有限](https://mise.jdx.dev/windows.html#windows-support) | ❌ 官方只支持 WSL / Git Bash / Cygwin，[安装文档](https://sdkman.io/install) | ⚠️ Windows 需第三方移植版（如 [nvm-windows](https://github.com/coreybutler/nvm-windows)、[pyenv-win](https://github.com/pyenv-win/pyenv-win)） |
-| **已开进程感知切换** | ✅ 全局级切换经 Windows `WM_SETTINGCHANGE` 广播通知已开程序（项目/临时级为 shell 内生效，同其他工具） | ❌ 已开进程不会重新读取 PATH；shims 也不会触发广播 | ❌ 仅当前 Shell 生效，不影响已开进程 | ❌ 仅当前 Shell 生效 |
-| **多作用域切换** | ✅ 全局（符号链接 + 系统 PATH）/ 项目（`.sdkm.toml` + hook）/ 临时（`use --shell`）三档全支持，**SDK 运行时零开销** | ✅ 全局 / 项目（`.mise.toml`）/ shell 三档，默认 shims 中间层[官方说明](https://mise.jdx.dev/installing-mise.html#installation) | ⚠️ `sdk use` 仅当前 Shell；需 `sdk default` 才持久，无项目级 pin[使用指南](https://sdkman.io/usage#sdk-use-command) | ⚠️ `.nvmrc` / `.python-version` 项目级 + Shell；全局靠 default，机制不一 |
-| **路径透明度 (which/IDE)** | ✅ `which java` 直接指向真实 SDK 路径 | ⚠️ shims 下 `which node` 指向 shim；官方承认“打断 `which`”，需 `mise which` 才能看到真实路径，[设计说明](https://mise.jdx.dev/how-i-use-mise.html#shims-vs-path) | ✅ 路径透明 | ✅ 路径透明（但在 Shell 内部） |
-| **模糊版本匹配** | ✅ `21` → 最新 21.x，并给出候选列表建议 | ✅ 支持模糊版本（如 `node = "26"`）及就近匹配 | ❌ 不支持前缀模糊；需要精确版本或手动选择 | ⚠️ 部分工具支持前缀匹配，实现不一 |
-| **单文件可移植 / 绿色** | ✅ 单二进制仅**4MB**， 配置目录，可放在 U 盘或任意路径使用 | ⚠️ **100MB+**,需要 shims 目录（`~/.local/share/mise/shims` 或 `%LOCALAPPDATA%\mise\shims`），[安装说明](https://mise.jdx.dev/installing-mise.html#installation) | ❌ 脚本 + 固定安装路径 | ❌ 脚本 + Shell 钩子，依赖 Shell 环境 |
-| **操作可回滚** | ✅ 快照自动恢复（项目特性） | ⚠️ 依赖外部手段（如自己备份配置） | ❌ 不提供自动回滚机制 | ❌ 不提供自动回滚机制 |
-| **实现语言 / 内存安全** | ⚡ Rust 所有权 + 编译期检查 | ⚡ Rust 所有权 + 编译期检查 | 🐌 Bash / Shell 脚本 | 🐌 Shell / Bash 脚本 |
-| **AI agent / 自动化友好** | ✅ 退出码语义清晰；切换后子进程自动继承新环境；行为可预测 | ⚠️ 需理解 shims / PATH 模式差异；非交互环境需选择 shims 或 `mise exec`，[使用建议](https://mise.jdx.dev/how-i-use-mise.html#shims-vs-path) | ⚠️ Shell 函数，跨进程不自动生效 | ⚠️ 切换仅当前 Shell，跨进程不可见；需额外脚本适配 |
+| **Multi-language in one tool** | ✅ Java/Node/Python/Maven/Go + custom SDKs | ✅ node, python, cmake, terraform and [hundreds more](https://github.com/jdx/mise?tab=readme-ov-file#what-does-it-do) | ⚠️ Java/JVM ecosystem mainly | ❌ single-language manager, one tool per language (e.g. [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#node-version-manager---), [pyenv](https://github.com/pyenv/pyenv?tab=readme-ov-file#simple-python-version-management)) |
+| **Native Windows support** | ✅ **First-class**: native registry + broadcast | ⚠️ **Basic**: Windows relies on core/vfox plugins, [limited tools](https://mise.jdx.dev/windows.html#windows-support) | ❌ officially WSL / Git Bash / Cygwin only, [install docs](https://sdkman.io/install) | ⚠️ third-party ports needed (e.g. [nvm-windows](https://github.com/coreybutler/nvm-windows), [pyenv-win](https://github.com/pyenv-win/pyenv-win)) |
+| **Open processes sense the switch** | ✅ global-scope switch broadcasts `WM_SETTINGCHANGE` on Windows so open apps notice (project/temp scopes are in-shell, like others) | ❌ open processes don't re-read PATH; shims don't broadcast either | ❌ current shell only | ❌ current shell only |
+| **Three switching scopes** | ✅ global (symlink + system PATH) / project (`.sdkm.toml` + hook) / temp (`use --shell`) — **zero runtime overhead for SDKs** | ✅ global / project (`.mise.toml`) / shell, but default shims layer [docs](https://mise.jdx.dev/installing-mise.html#installation) | ⚠️ `sdk use` is shell-only; `sdk default` for persist; no project pin [usage](https://sdkman.io/usage#sdk-use-command) | ⚠️ `.nvmrc` / `.python-version` project + shell; global via default — inconsistent mechanisms |
+| **Path transparency (which/IDE)** | ✅ `which java` points to the real SDK path | ⚠️ with shims `which node` hits the shim; officially admits it "breaks `which`" — `mise which` shows the real path, [design notes](https://mise.jdx.dev/how-i-use-mise.html#shims-vs-path) | ✅ transparent | ✅ transparent (inside the shell) |
+| **Fuzzy version match** | ✅ `21` → latest 21.x, with candidate suggestions | ✅ fuzzy versions (e.g. `node = "26"`) and closest match | ❌ no prefix fuzzy; exact versions only | ⚠️ partial prefix support, varies by tool |
+| **Single-file portability** | ✅ single binary, only **4MB** + config dir — runs from a USB stick or any path | ⚠️ **100MB+**, needs a shims dir (`~/.local/share/mise/shims` or `%LOCALAPPDATA%\mise\shims`), [install docs](https://mise.jdx.dev/installing-mise.html#installation) | ❌ scripts + fixed install path | ❌ scripts + shell hooks, shell-dependent |
+| **Rollback-safe operations** | ✅ snapshot auto-recovery (project feature) | ⚠️ rely on external means (e.g. back up config yourself) | ❌ no auto-rollback | ❌ no auto-rollback |
+| **Language / memory safety** | ⚡ Rust ownership + compile-time checks | ⚡ Rust ownership + compile-time checks | 🐌 Bash / shell scripts | 🐌 Shell / bash scripts |
+| **AI agent / automation friendly** | ✅ clear exit codes; child processes inherit the new env after switching; predictable behavior | ⚠️ must understand shims / PATH mode differences; non-interactive shells need shims or `mise exec`, [usage notes](https://mise.jdx.dev/how-i-use-mise.html#shims-vs-path) | ⚠️ shell function, doesn't cross processes | ⚠️ switch is current-shell only, invisible cross-process; extra scripting needed |
 
-</div>
+> **Honest advice**
 
-> **使用建议**
+1. To be honest, sdkm and mise are nearly the same class of tool — mise's ecosystem and features are more mature today. But sdkm focuses on doing one thing well right now: **fast, transparent, consistent cross-platform version switching**.
 
-1. 诚实来讲,  sdkm 和 mise 几乎是同类工具，目前生态，功能都不如mise成熟。但sdkm当下只专注于做好一件事："**快速、透明、跨平台体验一致的版本切换。**"
-
-2. 另外 如果你已经习惯 mise / sdkman / nvm，并能在现有模式下顺畅工作，完全没必要换工具。
-   sdkm 更适合：‘**全栈工程师  + Windows 原生 + IDE + AI Agent**’ 这一组合场景的用户。”
-
-
-
+2. If you're already comfortable with mise / sdkman / nvm and work smoothly with them, there's no need to switch. sdkm best fits users in the **full-stack dev + native Windows + IDE + AI Agent** combination scenario.
 
 ---
 
+## 📦 Installation
 
-## 📦 安装
+Download the archive for your platform from the [Releases](https://github.com/borenchan/sdkmate/releases) page, extract it anywhere (preserve the `.sdkm/` directory structure), then cd into `.sdkm/` to get started.
 
-### 📥 下载预编译二进制
-
-前往 [Releases](https://github.com/borenchan/sdkmate/releases) 页面下载对应平台的压缩包，解压到任意目录即可（保留 `.sdkm/` 目录结构），进入 `.sdkm/` 目录即可开始使用。
-
-> **⚠️ Windows 用户**：`init`/`switch` 需以管理员权限启动终端运行（写入系统环境变量 `HKEY_LOCAL_MACHINE` + 创建符号链接）。
+> **⚠️ Windows users**: run `init`/`switch` in an administrator terminal (writes system env vars `HKEY_LOCAL_MACHINE` + creates symbolic links).
 
 ---
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 1️⃣ 初始化
+### 1️⃣ Initialize
 
 ```bash
-.sdkm\sdkm.exe init          # windows;首次使用：创建目录结构、注册sdkm到PATH
-.sdkm/sdkm init              # unix;
+.sdkm\sdkm.exe init          # Windows (first run: create dir structure, register PATH)
+.sdkm/sdkm init              # Linux / macOS
 ```
 
-### 2️⃣ 安装或托管已有 SDK
+### 2️⃣ Install or hand existing SDKs to sdkmate
 
 ```bash
-# 从远程安装（支持模糊匹配，自动切换）
-sdkm install java 21              # '21' → 最新 21.x
+# Install from remote (fuzzy match, auto-switch)
+sdkm install java 21              # '21' → latest 21.x
 sdkm install node 20.11.0
 
-# 或把已有 SDK 交给 sdkm 托管（无需重新下载）
-# 放到 <sdkm所在目录>/store/java/21/ 下，sdkm 自动发现
+# Or hand existing SDKs to sdkmate (no re-download)
+# Drop them under <sdkm-dir>/store/java/21/ — sdkm discovers them automatically
 ```
 
-### 3️⃣ 切换版本
+### 3️⃣ Switch versions
 
 ```bash
-sdkm switch java 17        # 切换到本地已安装的 Java 17
-sdkm s node 20.11.0        # 切换到 Node.js 20.11.0
+sdkm switch java 17        # Switch to locally installed Java 17
+sdkm s node 20.11.0        # Switch to Node.js 20.11.0
 ```
 
-### 4️⃣ 交互式浏览
+### 4️⃣ Browse interactively
 
 ```bash
-sdkm list                  # 列出所有已安装 SDK + 当前版本
-sdkm list node -r          # 交互式浏览远程 Node.js 版本，按 i 安装、s 切换
-sdkm current               # 查看所有 SDK 当前激活版本
+sdkm list                  # List all installed SDKs + current versions
+sdkm list node -r          # Interactive remote Node.js picker — i to install, s to switch
+sdkm current               # Show active versions of all SDKs
 ```
 
-📖 **完整命令、参数、配置项与自定义 SDK 详见 [详细用法文档](./docs/usage.md)**。
+📖 **Full commands, args, config options and custom SDKs: see [Detailed Usage](./docs/usage.md)**.
 
 ---
 
-## 🐚 多作用域版本切换
+## 🐚 Multi-scope version switching
 
-sdkm 的版本切换按**作用域**分三种，按优先级从高到低：
+sdkm switches versions across **three scopes**, from highest to lowest priority:
 
-- **临时 · 当前终端**：`sdkm use --shell java 21` 设一个临时环境变量，只影响这个 shell 进程，关掉终端即失效。
-- **项目 · 某个目录（推荐）**：`sdkm use java 21` 在当前目录写 `.sdkm.toml`，由 shell 钩子在进目录时自动切、离开时自动还原——改完按回车即热更新。
-- **全局 · 整个系统**：`sdkm switch java 21` 改符号链接与 `config.toml`，hook 每次回车从 config 动态重建 PATH——**切换后按一下回车即生效**，所有目录都生效。
+- **Temporary · this terminal**: `sdkm use --shell java 21` sets a temp env var, only affects this shell process, gone when the terminal closes.
+- **Project · a directory (recommended)**: `sdkm use java 21` writes `.sdkm.toml` in the current dir; the shell hook auto-switches on entry and auto-restores on leave — edit, press Enter, it applies.
+- **Global · the whole system**: `sdkm switch java 21` modifies the symlink and `config.toml`; the hook rebuilds PATH from config on every Enter — **takes effect as soon as you press Enter**, everywhere.
 
 ```bash
-sdkm switch java 21                      # 全局：整个系统都用 Java 21
-sdkm use java 21                         # 项目：仅当前目录用 Java 21（需先注入 hook）
-eval "$(sdkm use --shell java 21)"       # 临时：仅当前终端（优先级最高，覆盖上面两者）
+sdkm switch java 21                      # Global: Java 21 everywhere
+sdkm use java 21                         # Project: Java 21 only in this dir (needs hook)
+eval "$(sdkm use --shell java 21)"       # Temporary: this terminal only (highest priority, overrides both)
 ```
 
-> 临时级和项目级靠 shell hook 自动生效；未注入 hook 时只有 `switch`（全局）有效。跑 `sdkm init` 自动注入 hook，支持 bash / zsh / fish / PowerShell。
+> Temporary and project scopes take effect via the shell hook; without it, only `switch` (global) works. Run `sdkm init` to auto-inject the hook — bash / zsh / fish / PowerShell supported.
 
-📖 手动注册 hook、重置 profile、hook 生效机制与流程图见 [详细用法](./docs/usage.md)。
+📖 Manual hook registration, profile reset, hook mechanism & flow diagrams: see [Detailed Usage](./docs/usage.md).
 
 ---
 
-## 🎮 命令参考
+## 🎮 Command Reference
 
-| 命令 | 别名 | 说明 | 示例 |
+| Command | Alias | What it does | Example |
 |:---|:---|:---|:---|
-| `sdkm init` | — | 初始化 sdkm | `sdkm init --force` |
-| `sdkm install <SDK> <V>` | `i` | 安装 SDK 版本（模糊匹配，自动切换） | `sdkm i java 21` |
-| `sdkm uninstall <SDK> <V>` | `rm`, `un` | 卸载本地 SDK 版本 | `sdkm rm node 16` |
-| `sdkm list [SDK] [-r]` | `ls`, `l` | 列出/浏览 SDK 版本（含交互式 TUI） | `sdkm ls node -r` |
-| `sdkm switch <SDK> <V>` | `s` | 切换 SDK 版本（全局） | `sdkm s java 21` |
-| `sdkm use <SDK> <V>` | — | 项目级 / 临时级（`--shell`）固定版本 | `sdkm use java 21` |
-| `sdkm current [SDK]` | `c` | 显示当前版本 | `sdkm c java` |
-| `sdkm config` | — | 配置管理 | `sdkm config edit` |
-| `sdkm self update` | `u` | 升级 sdkm 自身（`--check`/`--rollback`） | `sdkm self u --check` |
-| `sdkm self uninstall` | — | 卸载 sdkm（清理环境 + 删 home） | `sdkm self uninstall` |
+| `sdkm init` | — | Initialize sdkmate | `sdkm init --force` |
+| `sdkm install <SDK> <V>` | `i` | Install a version (fuzzy match, auto-switch) | `sdkm i java 21` |
+| `sdkm uninstall <SDK> <V>` | `rm`, `un` | Uninstall a local SDK version | `sdkm rm node 16` |
+| `sdkm list [SDK] [-r]` | `ls`, `l` | List/browse versions (interactive TUI) | `sdkm ls node -r` |
+| `sdkm switch <SDK> <V>` | `s` | Switch to a locally installed version (global) | `sdkm s java 21` |
+| `sdkm use <SDK> <V>` | — | Pin a version for the project / temp session (`--shell`) | `sdkm use java 21` |
+| `sdkm current [SDK]` | `c` | Show the active version | `sdkm c java` |
+| `sdkm env [SHELL]` | — | Emit env-var setup statements (temp switch) | `eval "$(sdkm env bash)"` |
+| `sdkm hook [SHELL]` | — | Emit the shell hook script (auto-switch on cd) | `eval "$(sdkm hook bash)"` |
+| `sdkm config` | — | Configuration management | `sdkm config edit` |
+| `sdkm self update` | `u` | Upgrade sdkmate itself (`--check`/`--rollback`) | `sdkm self u --check` |
+| `sdkm self uninstall` | — | Uninstall sdkmate (cleans env + home dir) | `sdkm self uninstall` |
 
 ---
 
-## 🏗️ 支持的 SDK
+## 🧰 Supported SDKs
 
-| SDK | 支持状态 | 下载源 |
+| SDK | Status | Source |
 |:---|:---:|:---|
-| ☕ **Java (JDK)** | ✅ 已支持 | Adoptium Eclipse Temurin |
-| 🟢 **Node.js** | ✅ 已支持 | nodejs.org |
-| 🐍 **Python** | ✅ 已支持 | astral-sh python-build-standalone |
-| 🧶 **Maven** | ✅ 已支持 | Apache Maven (dlcdn) |
-| 🔵 **Go** | ✅ 已支持 | go.dev |
-| 🚀 **uv / bun / claude-code / cmake / ... 40+ more** | ✅ 已支持 | gh |
-| ⚙️ **自定义 SDK** | ✅ 可无限扩展 | 用户配置（任意 URL） |
+| ☕ **Java (JDK)** | ✅ Supported | Adoptium Eclipse Temurin |
+| 🟢 **Node.js** | ✅ Supported | nodejs.org |
+| 🐍 **Python** | ✅ Supported | astral-sh python-build-standalone |
+| 🧶 **Maven** | ✅ Supported | Apache Maven (dlcdn) |
+| 🔵 **Go** | ✅ Supported | go.dev |
+| 🚀 **uv / bun / claude-code / cmake / fzf / ripgrep / ... 40+ more** | ✅ Supported | GitHub Releases |
+| ⚙️ **Custom SDK** | ✅ Infinitely extensible | User-configured (any URL) |
 
 ---
 
-## 🛠️ 技术栈
+## 🔩 Tech Stack
 
-| 组件 | 技术 | 说明 |
+| Component | Tech | Description |
 |:---|:---|:---|
-| **语言** | Rust 1.92.0 | 性能与安全兼得 |
-| **CLI 解析** | clap | 优雅的命令行参数处理 |
-| **异步运行时** | tokio | 高性能异步 IO |
-| **HTTP 客户端** | reqwest | 跨平台 HTTP 请求 |
-| **终端输出** | crossterm + indicatif | 彩色终端输出 + 进度条 |
-| **配置解析** | toml (serde) | 人性化配置文件格式 |
+| **Language** | Rust 1.92.0 | Performance meets safety |
+| **CLI parsing** | clap | Elegant argument handling |
+| **Async runtime** | tokio | High-performance async IO |
+| **HTTP client** | reqwest | Cross-platform HTTP |
+| **Terminal output** | crossterm + indicatif | Colored output + progress bars |
+| **Config parsing** | toml (serde) | Human-friendly config format |
 
 ---
 
-## 🔧 开发指南
+## 🔧 Development
 
-### 环境要求
+### Requirements
 
-- Rust 1.92.0（edition 2024）
+- Rust 1.92.0 (edition 2024)
 - Cargo
 
-### 本地开发
+### Local development
 
 ```bash
-# 克隆项目
+# Clone the project
 git clone https://github.com/borenchan/sdkmate.git
 cd sdkmate
 
-# 构建项目
+# Build
 cargo build --release
 
-# 运行测试
+# Run tests
 cargo test
 
-# 运行示例
+# Try it out
 ./target/release/sdkm init
 ./target/release/sdkm list
 ./target/release/sdkm switch java 21
 
-# 代码规范检查
-cargo fmt                                              # 格式化代码
-cargo clippy --all-targets --all-features              # 代码检查
+# Code quality check
+cargo fmt                                              # Format code
+cargo clippy --all-targets --all-features              # Lint code
 ```
 
-
 ---
 
-## 🤝 贡献指南
+## 🤝 Contributing
 
-我们欢迎任何形式的贡献！无论是提交 Bug 报告、功能建议，还是直接贡献代码，都非常感谢。
+Contributions of any kind are welcome — bug reports, feature ideas, or code.
 
-### 📋 提交 PR 指南
+### 📋 PR checklist
 
-1. Fork 仓库并创建分支：`git checkout -b feature/your-feature-name`
-2. 编写代码并确保通过所有测试：`cargo test`
-3. 保证代码风格一致（提交前必跑）：
+1. Fork the repo and create a branch: `git checkout -b feature/your-feature-name`
+2. Write code and make sure all tests pass: `cargo test`
+3. Keep the code style consistent (required before committing):
    ```bash
-   cargo fmt                                  # 格式化代码
-   cargo clippy --all-targets --all-features  # 代码检查，零警告为准
+   cargo fmt                                  # Format code
+   cargo clippy --all-targets --all-features  # Lint code, zero warnings
    ```
-4. 提交代码，使用清晰的提交信息：`git commit -m "feat: add xxx"`
-5. 推送分支并创建 Pull Request：`git push origin feature/your-feature-name`
+4. Commit with a clear message: `git commit -m "feat: add xxx"`
+5. Push and open a Pull Request: `git push origin feature/your-feature-name`
 
-### 📖 开发约定
+### 📖 Conventions
 
-| 类型 | 规范 | 示例 |
+| Type | Convention | Example |
 |:---|:---|:---|
-| Commit 消息 | `type: description` | `feat: add switch command` |
-| 类型 | feat / fix / docs / refactor / test / chore | — |
-| 分支命名 | `feature/xxx` / `fix/xxx` / `docs/xxx` | `feature/add-install-command` |
+| Commit message | `type: description` | `feat: add switch command` |
+| Types | feat / fix / docs / refactor / test / chore | — |
+| Branch naming | `feature/xxx` / `fix/xxx` / `docs/xxx` | `feature/add-install-command` |
 
 ---
 
-## 📄 许可证
+## 📄 License
 
-本项目采用 [Apache-2.0](./LICENSE) 许可证开源。
+This project is open-sourced under the [Apache-2.0](./LICENSE) license.
 
 ---
 
 <div align="center">
 
-**如果这个项目对你有帮助，请点个 ⭐ 支持一下！**
+**If this project helps you, please give it a ⭐!**
 
 Made with ❤️ by the sdkm team
 
 </div>
 
+---
+
 ## ⭐ Star History
+
+<div align="center">
 
 <a href="https://star-history.dera.page/#borenchan/sdkmate&type=date">
  <picture>
@@ -335,4 +374,5 @@ Made with ❤️ by the sdkm team
    <img alt="Star History Chart" src="https://star-history.dera.page/svg?repos=borenchan/sdkmate&type=date&legend=top-left" />
  </picture>
 </a>
+
 </div>

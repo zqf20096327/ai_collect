@@ -1,12 +1,18 @@
 <p align="center">
   <a href="https://pi-lang.netlify.app/">
-    <img src="resources/pi_logo.png" alt="Pilang logo" width="500">
+    <img src="resources/_pi_logo.png" alt="Pilang logo" width="500">
   </a>
 </p>
 
 
 <p align="center">
   A compact language for turning data, math, and ideas into visible experiments.
+</p>
+
+<p align="center">
+  <a href="https://github.com/rolandbrake/pilang/releases"><img src="https://img.shields.io/github/v/release/rolandbrake/pilang?display_name=tag&include_prereleases" alt="Latest release"></a>
+  <a href="https://github.com/rolandbrake/pilang/actions/workflows/release.yml"><img src="https://github.com/rolandbrake/pilang/actions/workflows/release.yml/badge.svg" alt="Release workflow"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
 </p>
 
 
@@ -27,51 +33,74 @@ first. It is a C-powered scripting language for numerical work, simulations,
 visual experiments, and small interactive programs.
 
 Tensors, image processing, 2D charts, interactive 3D plots, drawing, and audio
-are available as built-in modules. Pilang runs natively on Windows and can also
-be built for the browser with WebAssembly.
+are available as built-in modules. Pilang runs natively on Windows and Linux,
+with browser builds available through WebAssembly.
 
 ## Install and run
 
-Pilang is ready to download. Get the latest **pre-release** from the
-[Releases page](https://github.com/rolandbrake/pilang/releases), then choose
-the archive for your platform:
+Windows and Linux x64 builds are published on the
+[Releases page](https://github.com/rolandbrake/pilang/releases).
 
-- **Windows x64:** extract the ZIP and run `pilang-windows-x64\pilang.exe`.
-- **Linux x64:** extract the `.tar.gz`, then run `./pilang-linux-x64/pilang`.
-- **macOS:** extract the archive and open `Pilang.app` for Apple Silicon or
-  Intel, as appropriate.
+### Windows x64
 
-Pre-releases contain the newest features and are still being tested. Build
-from source if you want to contribute to Pilang or work on its runtime.
+Download the ZIP, extract it, then open PowerShell in the extracted
+`Pilang-v<version>` folder:
 
-To build Pilang from source, clone the repository and use the short setup path
-for your platform. It installs ready-made SDL libraries; do **not** run
-`make static-deps` for a normal development build.
+```powershell
+.\bin\pilang.exe --version
+.\bin\pilang.exe samples\hello.pi
+```
+
+### Linux x64
+
+Download and extract the `.tar.gz` archive, then run from its `Pilang-v<version>` folder:
+
+```sh
+./bin/pilang --version
+./bin/pilang samples/hello.pi
+```
+
+Each archive contains the runtime, `resources/`, examples, tests, benchmarks,
+and Python test runners. The runtime is statically linked: no SDL DLLs or
+Linux `.so` files are required or included. Pre-releases contain the newest
+features and are still being tested.
+
+Pilang provides checked-in source-build kits for **Windows x64** and
+**Linux x64**.
+It is designed to make `make release` the only build command after the normal
+Windows compiler tools are installed.
 
 ### Windows
 
-In PowerShell, run:
-
-```powershell
-.\tools\setup.ps1 -InstallMSYS2
-```
-
-Then open the **MSYS2 UCRT64** terminal in the repository and run:
+Use a 64-bit MinGW-w64 environment with GCC and GNU Make installed. Then run:
 
 ```sh
 make release
 ./bin/pilang.exe test.pi
 ```
 
-### Linux and macOS
+The static headers and libraries are committed under
+[`deps/windows-x64/`](deps/windows-x64/), so no dependency-download step is needed. The output is `bin/pilang.exe` and has no SDL
+DLL dependency.
 
-From the repository root, run:
+### Linux
+
+Install GCC, GNU Make, and `pkg-config`, then run:
 
 ```sh
-sh tools/setup.sh
 make release
 ./bin/pilang test.pi
 ```
+
+The static kit is committed under [`deps/linux-x64/`](deps/linux-x64/), so the
+output has no SDL or other shared-library dependency.
+
+### macOS community support
+
+macOS builds are not published yet. If you have a Mac and would like to help,
+please test a source build or help create the static dependency kit. Open an
+[issue](https://github.com/rolandbrake/pilang/issues) with your macOS version,
+Apple Silicon or Intel architecture, and any build output.
 
 ### Package a Windows app
 
@@ -83,9 +112,8 @@ cd test\package
 ```
 
 After adding `bin/` to `PATH`, use `pilang pack target:win`. The resulting
-`.exe` includes the Pilang runtime and application. A release runtime is
-self-contained; a runtime built locally with MSYS2 may also need its SDL DLLs
-beside the application. See [`test/package/package.loon`](test/package/package.loon)
+`.exe` includes the Pilang runtime and application, with no SDL DLLs required
+beside it. See [`test/package/package.loon`](test/package/package.loon)
 for a complete manifest example.
 
 ```loon
@@ -402,9 +430,10 @@ See [`benchmark/README.md`](benchmark/README.md) for the included workloads and 
 - `libs/`: Pilang libraries written in `.pi`.
 - `ML/`: numerical and machine-learning experiments written in Pilang.
 - `release/`: local build outputs.
+- `deps/windows-x64/`: checked-in Windows x64 static build dependencies.
 - `benchmark/`: end-to-end interpreter benchmark programs.
 - `docs/`: language documentation and reference material.
-- `tests/`: examples and regression tests grouped by language area.
+- `test/`: examples and regression tests grouped by language area.
 
 ## Documentation
 

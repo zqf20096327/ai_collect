@@ -11,6 +11,8 @@
   <a href="https://sloptotal.com"><img src="https://img.shields.io/badge/live%20demo-sloptotal.com-b5282e" alt="Live demo"></a>
 </p>
 
+<p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ru.md">Русский</a></p>
+
 # SlopTotal
 
 **VirusTotal for AI-generated text.** Paste text, drop in a PDF or Word file, or
@@ -277,6 +279,8 @@ can be overridden with environment variables; see [`.env.example`](.env.example)
 | Standard | 8 GB | 4 cores | None | Default for most laptops |
 | Performance | 16 GB+ | 6+ cores | CUDA optional | Pool replicas, max throughput |
 
+What each engine costs in memory and time, measured on one machine, is in [docs/MODELS.md](docs/MODELS.md).
+
 **High-RAM CPU servers (e.g. 64 GB, no GPU):** you automatically get the `performance` profile. With no CUDA, all inference stays on CPU but you can run more concurrent workers and model pool replicas:
 
 ```bash
@@ -295,6 +299,8 @@ export SLOPTOTAL_POOL_TMR=2
 |---|---|---|
 | `SLOPTOTAL_PROFILE` | auto | `lite`, `standard` or `performance` |
 | `SLOPTOTAL_RETENTION_DAYS` | `30` | Delete reports after N days (`0` keeps them) |
+| `SLOPTOTAL_DIRECT_DAILY_LIMIT` | `0` (no limit) | Calls per client IP per UTC day that start an analysis from outside the first-party origins below; for a public instance |
+| `SLOPTOTAL_FIRST_PARTY_ORIGINS` | sloptotal.com, the extension, localhost | Regex of browser origins allowed by CORS and not counted by the daily limit |
 | `SLOPTOTAL_ALLOW_PRIVATE_URLS` | off | Let URL scans reach private or intranet hosts (blocked by default) |
 | `SLOPTOTAL_DATA_DIR` | project-root `data/` | Directory for stored reports and the database |
 | `SLOPTOTAL_DB_NAME` | `sloptotal.db` | Database filename inside the data directory |

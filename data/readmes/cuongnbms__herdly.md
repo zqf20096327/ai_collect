@@ -48,11 +48,17 @@ pnpm tauri dev      # run the app with hot reload
 pnpm test           # frontend tests (vitest)
 pnpm typecheck
 cd src-tauri
-cargo test          # backend tests
-cargo clippy -- -D warnings
-cargo test -- --ignored --test-threads=1   # integration tests against a real local herdr
+cargo test --workspace          # backend tests
+cargo clippy --workspace -- -D warnings
+cargo test --workspace -- --ignored --test-threads=1   # integration tests against a real local herdr
 pnpm tauri build    # produces src-tauri/target/release/bundle/macos/Herdly.app
 ```
+
+The backend without Tauri is the `herdly-core` crate in `src-tauri/core/` (herdr RPC,
+transcripts, attach, git, files); the app in `src-tauri/src/` is the Tauri layer over it.
+`cargo test --workspace` and `cargo clippy --workspace` in `src-tauri` cover the app, `herdly-core` and `herdly-web`.
+
+Herdly Web (`src-tauri/web/`, `web/`) serves this Machine's Pane list and Chat lens to a phone; see [web/README.md](web/README.md).
 
 To use a local build day to day, `mise run sign:setup` once, then `mise run install:app`. The
 install signs Herdly.app with that local identity: an ad-hoc signed build is a new app to macOS

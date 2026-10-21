@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/hera_logo.png" width="50%" alt="hera-agent-unity">
+<img src="docs/assets/hera_unity_logo.png" width="420" alt="hera-agent-unity logo">
 
 <br>
 
@@ -364,7 +364,7 @@ To pin an existing Connector tag:
 The current released Connector pin is:
 
 ```text
-https://github.com/NotNull92/hera-agent-unity.git?path=AgentConnector#connector-0.1.2
+https://github.com/NotNull92/hera-agent-unity.git?path=AgentConnector#connector-0.2.10
 ```
 
 ### Step 3. Open Unity and check the connection
@@ -654,7 +654,7 @@ npx skills add NotNull92/hera-agent-unity --skill hera-agent-unity --agent codex
 hera-agent-unity doctor --agent-rules --compact >> AGENTS.md
 ```
 
-The compact default guidance is intentionally small. Its reviewed baseline is **2,368 UTF-8 bytes** and contains the important rules for bootstrap, targeting, approvals, safety, and verification. The full guide is available on demand.
+The compact default guidance is intentionally small. Its reviewed baseline is **2,315 UTF-8 bytes** and contains the important rules for bootstrap, targeting, approvals, safety, and verification. The full guide is available on demand.
 
 This repository also ships templates for Cursor, Copilot, AntiGravity, Continue, and other agent environments under [examples/rules](examples/rules).
 
@@ -699,6 +699,11 @@ A long Test Runner job can outlive a normal request window. Hera stores durable 
 
 Version-specific behavior is checked against live Editors rather than assumed from one Unity version.
 
+- Representative Editors follow the Unity series used by the author's game: currently 6000.6, represented by `6000.6.6f1`.
+- Within two weeks of a new series' stable release, add a representative and run the Connector release gate; alpha and beta releases are not tracked. Until the gate passes, mark that series **Checking**.
+- Game crunch takes priority: defer these checks during crunch and leave the series **Checking**.
+- Raise the minimum only when the game moves to a new series or an actual case shows the old series blocking a necessary fix. Announce it one minor release ahead in this README and CHANGELOG, raise it in a Connector minor release, and list the last Connector tag supporting the old series here so users can pin `#connector-X.Y.Z`.
+
 ---
 
 ## One agent surface: the CLI
@@ -722,20 +727,55 @@ typed execution, `exec` when no dedicated command exists.
 
 ---
 
+## What Hera is not
+
+- **Not AI:** the coding agent makes decisions; Hera provides access to the Editor.
+- **Not a game runtime tool:** the Connector is Editor-only (`HeraAgent.asmdef` includes only `Editor`).
+- **No second protocol:** the CLI is the only agent surface; there is no MCP adapter or separate persistent or relay server alongside it.
+- **No real-time channel:** every call is one request and one response; there are no progress streams or push notifications.
+- **No multi-Editor control in one command:** each command targets one Editor; use `--project` to select it when several are open.
+- **Not a sandbox:** `exec` defaults to Full Access; Restricted is one layer of defense.
+
+New features require a reproduced failure. See [Contributing](CONTRIBUTING.md).
+
+---
+
 ## Current release
 
-The source tree contains the **unreleased CLI v0.3.5 / Connector 0.2.7 candidate**. CLI v0.3.4 / Connector 0.2.4 add JUnit/NUnit test artifacts and deterministic test sharding. Connector 0.2.3 reduces request-body I/O delays while retaining main-thread tool execution. It follows the unreleased v0.3.1 catalog rebaseline, v0.3.2 integer/identity fixes, and v0.3.3 atomic batch preflight for non-destructive, Undo-covered edits. None of these candidates has a tag or release.
-
-- CLI / GitHub Release: **v0.3.0** with five native binaries
-- npm: **0.3.0** (`latest`)
-- Unity Connector: **0.2.0**
+- CLI / GitHub Release: **v0.3.20** with five native binaries
+- npm: **0.3.20** (`latest`)
+- Unity Connector: **0.2.10** (pin with `#connector-0.2.10`)
 - License: **Apache-2.0**
 
 The npm publish is chained to the GitHub Release, so `npm install -g hera-agent-unity` and the GitHub binaries stay in step.
 
 The two version numbers are separate on purpose. The CLI and the Unity package can evolve independently while keeping their compatibility contract explicit.
 
-`v0.3.0` is a breaking release: the experimental MCP adapter is gone, so there is no `mcp` command and no `HERA_MCP_*` environment variable. In exchange, a failed request now declares how it can be retried (`retryable`, `state`, `retry_after_ms`) instead of leaving the CLI to guess from a dropped connection, and the heartbeat advertises the catalog schema hash so a matching catalog can be reused without another round-trip. Connector `0.2.0` carries the same contract and requires **Unity 6.6 (`6000.6`)**; its `instance_id` values are 64-bit because 6000.6 removed the int-based EntityId conversions. The live catalog exposes **34 tools / 133 actions**.
+**Upgrading from v0.2.x:** v0.3.8 was the first published 0.3 release, so it also carries the breaking `v0.3.0` changes. The experimental MCP adapter is gone: there is no `mcp` command and no `HERA_MCP_*` environment variable. A failed request now declares how it can be retried (`retryable`, `state`, `retry_after_ms`), and the heartbeat advertises the catalog schema hash so a matching catalog is reused without another round-trip. Connector 0.2.x requires **Unity 6.6 (`6000.6`)**, and its `instance_id` values are 64-bit. The live catalog exposes **34 tools / 133 actions**.
+
+What's new since v0.2.17:
+
+| Version | Change |
+|---|---|
+| v0.3.20 | The guide page adds a decisions chapter (VIII) that collects the settled policies, and its explanations are rewritten in plain language. No CLI behavior or Connector change. |
+| v0.3.19 | Public-product policies: [CONTRIBUTING.md](CONTRIBUTING.md) (what starts work, response targets, compatibility), a one-week security response target, "What Hera is not", and how Hera follows new Unity releases. No CLI behavior or Connector change. |
+| v0.3.18 | The guide page drops the two fixed risks (port-keyed result lookups, blocking-modal detection) and their artwork. No CLI behavior or Connector change. |
+| v0.3.17 | `task status <op_id>` shows whether a command that ended in `OPERATION_OUTCOME_UNKNOWN` actually ran. It reads the local operation record, so it answers immediately even while the Editor is blocked; the timeout message now names this command. No Connector change. |
+| v0.3.16 | The agent guide (`doctor --agent-rules`) adds "one Editor runs one command at a time": a command abandoned by a CLI timeout still runs later, so give each agent its own Editor and re-read the target before resending. No CLI behavior or Connector change. |
+| v0.3.15 | On Windows, a timeout explains custom and nested Editor modals (with the window title), and progress windows that close by themselves are no longer reported as dialogs a person must close. A heartbeat from another live process no longer counts as an Editor restart. No Connector change. |
+| v0.3.14 / 0.2.10 | Async waits and `test --resume` keep finding the original result after a domain reload moves the Editor port; the test-run lock and `test cancel` see runs from any port. Asset import workers no longer start the Connector, so they cannot overwrite the project heartbeat or take ports. Update the Connector to 0.2.10 as well. |
+| v0.3.13 | The guide page becomes "Hera Unity Status": a request-flow map, skill trees that explain each tool, a risk bestiary and embedded artwork. No CLI or Connector behavior change. |
+| v0.3.12 | Adds the standalone Hera guide page (`docs/guide/index.html`); no CLI or Connector behavior change. |
+| v0.3.11 | Decimal/exponent arguments use Unity's argument hash; package jobs wait for a real result port. |
+| v0.3.10 / 0.2.9 | Game Feel UI recipes attach once per element type per Editor session; `manage_components` drops redundant `type`/`enabled` fields; compact agent rules shrink to 2,315 B. |
+| v0.3.9 | During a domain reload the CLI keeps retrying the last valid port instead of dialing port 0. |
+| v0.3.8 / 0.2.8 | Leaner default payloads: `exec` returns Unity Objects as `{name, type, instanceID}` unless `--depth 3`+ is explicit (a Transform drops from 7,178 B to 70 B); `scene hierarchy` omits default `active`/`children`; error envelopes drop duplicate hints and timings. |
+| v0.3.7 | Windows Editor launch also finds versions in the Unity Hub secondary install folder. |
+| v0.3.6 | `list --profiles` and `list --profile <name>` show task-scoped tool sets from the cached catalog. |
+| v0.3.5 | A request stuck behind a native Editor dialog reports `blocked_by_dialog` with the dialog title (Windows). |
+| 0.2.5–0.2.7 | Test shards follow the same selector rules as unsharded runs; `exec` writes a metadata-only journal. |
+| v0.3.4 / 0.2.4 | `test --format junit\|nunit` artifacts and deterministic `--shard-index`/`--shard-count` splitting. |
+| v0.3.1–v0.3.3 | Catalog baseline measures the CLI; 64-bit id fixes; atomic batch preflight for Undo-covered edits. |
 
 For release-by-release engineering detail, read [CHANGELOG.md](CHANGELOG.md) instead of treating the main README as a migration log.
 

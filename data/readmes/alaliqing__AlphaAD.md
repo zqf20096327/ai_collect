@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--19-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1414-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--21-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1419-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1414 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1419 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 218 | 2026-10-15 | [View papers](#category-perception-sensor-fusion) |
-| Prediction & World Models | 107 | 2026-10-16 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 95 | 2026-10-15 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 56 | 2026-10-15 | [View papers](#category-control-vehicle-dynamics) |
-| Mapping & Localization | 54 | 2026-10-10 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 156 | 2026-10-16 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 230 | 2026-10-15 | [View papers](#category-safety-security-verification) |
+| Perception & Sensor Fusion | 221 | 2026-10-20 | [View papers](#category-perception-sensor-fusion) |
+| Prediction & World Models | 107 | 2026-10-19 | [View papers](#category-prediction-world-models) |
+| Planning & Decision-Making | 95 | 2026-10-20 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 57 | 2026-10-17 | [View papers](#category-control-vehicle-dynamics) |
+| Mapping & Localization | 55 | 2026-10-18 | [View papers](#category-mapping-localization) |
+| End-to-End & VLA | 160 | 2026-10-18 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 227 | 2026-10-19 | [View papers](#category-safety-security-verification) |
 | Systems, Deployment & Connectivity | 161 | 2026-10-16 | [View papers](#category-systems-deployment-connectivity) |
-| Human Factors & Policy | 32 | 2026-10-15 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 305 | 2026-10-16 | [View papers](#category-cross-cutting-other) |
+| Human Factors & Policy | 32 | 2026-10-17 | [View papers](#category-human-factors-policy) |
+| Cross-cutting / Other | 304 | 2026-10-19 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,25 +45,79 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 106 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 187 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Dataset | 104 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Simulation | 188 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 38 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
 | Cooperative / V2X | 116 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
-| VLA | 89 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
-| World Model | 114 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 140 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
-| Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
-| Hardware / Real-Time | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
-| Survey | 27 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 116 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
-| Human Interaction | 18 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
+| VLA | 91 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
+| World Model | 115 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
+| Reinforcement Learning | 138 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| Imitation Learning | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
+| Hardware / Real-Time | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
+| Survey | 26 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
+| Explainability | 118 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Human Interaction | 19 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 218 papers
+## Perception & Sensor Fusion · 221 papers
+
+<a id="paper-2610-28508"></a>
+
+### Deep Learning-Based Road Lane Quality Assessment from Egocentric Dashcam Video ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Shaif Chowdhury, Akhila Yeruvasu, Moshiur Rahman Tonmoy, Ayush Goyal, Dunren Che<br>
+**Published:** 2026-10-20<br>
+**Research tags:** Dataset<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.28508) | [PDF](https://arxiv.org/pdf/2610.28508.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Reliable lane markings are important for both human drivers and automated driving systems, but their condition is still commonly assessed through manual inspection. Existing autonomous-driving...
+
+<a id="paper-2610-27617"></a>
+
+### Provisioning Robust and Efficient LiDAR Perception for Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Tingxu Han, Zijie Shen, An Guo, Lyuke Wang, Chunrong Fang, et al.<br>
+**Published:** 2026-10-20<br>
+**Research tags:** Hardware / Real-Time<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.27617) | [PDF](https://arxiv.org/pdf/2610.27617.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** LiDAR-based 3D object detection is a core perception service for autonomous driving, but deployment requires robustness to point-cloud corruption while meeting latency and memory requirements....
+
+<a id="paper-2610-26816"></a>
+
+### Real-Time Radar Semantic and Panoptic Scene Understanding ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Santosh Parit, Julia Hindel, Rohit Mohan, Georgi Pramatarov, Paul Newman, et al.<br>
+**Published:** 2026-10-19<br>
+**Research tags:** Hardware / Real-Time<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.26816) | [PDF](https://arxiv.org/pdf/2610.26816.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Robust scene understanding under varying environmental conditions is essential for safe autonomous driving. While cameras and LiDAR degrade in adverse weather and poor lighting, Frequency-Modulated...
+
+<a id="paper-2610-26090"></a>
+
+### RGB--Event Object Detection Across Operating Frequencies via Reliability-Supervised Routing and Asymmetric-Resolution Fusion ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Peijun Shi, Jiannan Zhao, Xiujin Zhu, Zhenguo Lao, Chee-Onn Chow, et al.<br>
+**Published:** 2026-10-19<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.26090) | [PDF](https://arxiv.org/pdf/2610.26090.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Autonomous vehicles must detect objects faster than a frame camera delivers images. Event cameras record brightness changes with microsecond resolution, so RGB--event detectors can decide between...
+
+<a id="paper-2610-25448"></a>
+
+### UBD-Bench: Benchmarking and Analyzing Unimodal Branch Degradation in Multimodal Perception for Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Ang Liu, Xiang Gu, Ruikai Li, Qiyue Wang, Yizhe Fan, et al.<br>
+**Published:** 2026-10-18<br>
+**Research tags:** Benchmark<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.25448) | [PDF](https://arxiv.org/pdf/2610.25448.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Multimodal perception improves autonomous-driving performance by combining complementary sensor information. However, stronger multimodal predictions do not necessarily imply stronger representations...
 
 <a id="paper-2610-21207"></a>
 
@@ -86,9 +140,20 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 **Abstract:** This paper investigates the use of Behavior Cloning (BC) for autonomous driving from a bird's-eye view (BEV) perspective in simulated urban environments. BC uses supervised learning to mimic expert...
 
+<a id="paper-2610-23990"></a>
+
+### Automatic Cause Determination in Road Scene Understanding Using Qualitative Reasoning and Four-Valued Logic ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Nassim Belmecheri, Arnaud Gotlieb, Nadjib Lazaar, Helge Spieker<br>
+**Published:** 2026-10-14<br>
+**Research tags:** Explainability<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.23990) | [PDF](https://arxiv.org/pdf/2610.23990.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Road scene understanding in automated driving (AD) aims to build a comprehensive analysis of video sequences taken on the road by embedded or fixed cameras (e.g., mounted on vertical road signals)....
+
 <a id="paper-2610-18686"></a>
 
-### RadarGSOcc: Doppler-Aware 3D Semantic Occupancy Prediction Using 4D Radar Tensor with Geometric-Semantic Feature Extraction ![New](https://img.shields.io/badge/New-red)
+### RadarGSOcc: Doppler-Aware 3D Semantic Occupancy Prediction Using 4D Radar Tensor with Geometric-Semantic Feature Extraction ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Christofel Rio Goenawan, Dong-Hee Paek, Seung-Hyun Kong<br>
 **Published:** 2026-10-13<br>
@@ -99,7 +164,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-18741"></a>
 
-### Context-aware Bayesian Fusion for Multimodal Object Detection ![New](https://img.shields.io/badge/New-red)
+### Context-aware Bayesian Fusion for Multimodal Object Detection ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Arunachalam Venkatachalam, Mhafuzul Islam, Marwan Yusuf, David Van Hamme, Ben Stoffelen, et al.<br>
 **Published:** 2026-10-13<br>
@@ -109,7 +174,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-18417"></a>
 
-### Resource-Efficient 3D Shape and Orientation Estimation of Road Users using Roadside RGB Camera and 3D Radar ![New](https://img.shields.io/badge/New-red)
+### Resource-Efficient 3D Shape and Orientation Estimation of Road Users using Roadside RGB Camera and 3D Radar ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Shiva Agrawal, Savankumar Bhanderi, Gordon Elger<br>
 **Published:** 2026-10-13<br>
@@ -119,7 +184,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-16906"></a>
 
-### Mining Cross-Modal Perception Gaps in Autonomous Driving: When Camera and LiDAR Disagree ![New](https://img.shields.io/badge/New-red)
+### Mining Cross-Modal Perception Gaps in Autonomous Driving: When Camera and LiDAR Disagree ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Hongsen Cao, Mona Jaber, Shanxin Yuan, Ahmed Sayed<br>
 **Published:** 2026-10-12<br>
@@ -371,7 +436,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-23541"></a>
 
-### Towards robust multimodal 3D object detection via visual foundation models ![Recent](https://img.shields.io/badge/Recent-orange)
+### Towards robust multimodal 3D object detection via visual foundation models ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Ziying Song, Lin Liu, Hongyu Pan, Shaoqing Xu, Lei Yang, et al.<br>
 **Published:** 2026-09-20<br>
@@ -381,7 +446,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-22857"></a>
 
-### Image Frame Dynamic Object Segmentation and Ego Motion Estimation using Radar Image Fusion ![Recent](https://img.shields.io/badge/Recent-orange)
+### Image Frame Dynamic Object Segmentation and Ego Motion Estimation using Radar Image Fusion ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Astik Srivastava, Suhani Grover, Avinash Sharma, Madhava Krishna<br>
 **Published:** 2026-09-19<br>
@@ -391,7 +456,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-22896"></a>
 
-### Combining Foundation Model Confidence and Monocular Depth for Training-Free Out-of-Distribution Segmentation ![Recent](https://img.shields.io/badge/Recent-orange)
+### Combining Foundation Model Confidence and Monocular Depth for Training-Free Out-of-Distribution Segmentation ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Serin Varghese, Fabian Hüger, Kira Maag<br>
 **Published:** 2026-09-19<br>
@@ -1045,7 +1110,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-20071"></a>
 
-### GaussianSeed: Hierarchical Gaussian Seeding for High-Resolution 3D Occupancy Prediction ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### GaussianSeed: Hierarchical Gaussian Seeding for High-Resolution 3D Occupancy Prediction
 
 **Authors:** Xinzhuo Li, Xianghui Pan, Jiayuan Du, Wei Wei, Liuyi Wang, et al.<br>
 **Published:** 2026-07-22<br>
@@ -1056,7 +1121,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-19911"></a>
 
-### LoRFT: Benchmarking Long-Range Vehicle Trajectory Reconstruction from Fixed Highway Cameras ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### LoRFT: Benchmarking Long-Range Vehicle Trajectory Reconstruction from Fixed Highway Cameras
 
 **Authors:** Yufan Zhu, Kefu Yi, Xueju Zhang, Yunyang Tian, Long Chen, et al.<br>
 **Published:** 2026-07-22<br>
@@ -1067,7 +1132,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-19528"></a>
 
-### D3VL: Understanding Driving Scenes from 3D Time Series Data and Video with Language Models ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### D3VL: Understanding Driving Scenes from 3D Time Series Data and Video with Language Models
 
 **Authors:** Heesang Han, A. Lynn Abbott, Abhijit Sarkar<br>
 **Published:** 2026-07-21<br>
@@ -1078,7 +1143,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-22714"></a>
 
-### Real-Time Semantic Segmentation with Optimized RetinaNet Architectures for Embedded Automotive Systems ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### Real-Time Semantic Segmentation with Optimized RetinaNet Architectures for Embedded Automotive Systems
 
 **Authors:** Sai Sidharth D<br>
 **Published:** 2026-07-21<br>
@@ -1089,7 +1154,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-19146"></a>
 
-### Sarus: Privacy-Preserving Multi-Vendor Perception Fusion via Homomorphic Encryption ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### Sarus: Privacy-Preserving Multi-Vendor Perception Fusion via Homomorphic Encryption
 
 **Authors:** Munawar Hasan, Apostol Vassilev<br>
 **Published:** 2026-07-21<br>
@@ -1504,7 +1569,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Published:** 2026-06-16<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2606.17562) | [PDF](https://arxiv.org/pdf/2606.17562.pdf) | [↑ BackToTop](#browse-by-topic)
 
-**Abstract:** LiDAR sensors are widely deployed in autonomous systems for 3D perception and safety-critical decision-making. We identify a previously unexplored attack surface in which dormant malware embedded in...
+**Abstract:** LiDAR sensors are widely deployed in autonomous systems for safety-critical 3D perception. We identify a previously unexplored attack surface in which dormant malware, embedded in the LiDAR sensing...
 
 <a id="paper-2606-16996"></a>
 
@@ -1606,73 +1671,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Published:** 2026-06-10<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2606.11989) | [PDF](https://arxiv.org/pdf/2606.11989.pdf) | [↑ BackToTop](#browse-by-topic)
 
-**Abstract:** Credible simulated-rainfall conditions are essential for identifying perception-system boundaries and supporting SOTIF-oriented risk assessment in automated driving. However, closed-field tests are...
-
-<a id="paper-2606-09350"></a>
-
-### Taming Perception Jitter: Uncertainty-Aware LiDAR Object Detection for Reliable Motion Classification
-
-**Authors:** Cornelius Schröder, Žygimantas Marcinkus, Markus Lienkamp<br>
-**Published:** 2026-06-08<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.09350) | [PDF](https://arxiv.org/pdf/2606.09350.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Reliable motion classification is critical for autonomous driving, as false dynamic predictions of static objects can cascade into unnecessary planner interventions. Unstable bounding box predictions...
-
-<a id="paper-2606-09273"></a>
-
-### EditSSC: Toward Editable Semantic Occupancy Scenes with Unconditional Diffusion Models
-
-**Authors:** Fatima Balde, Raoul de Charette, Alexandre Boulch<br>
-**Published:** 2026-06-08<br>
-**Research tags:** Synthetic Data<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.09273) | [PDF](https://arxiv.org/pdf/2606.09273.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** 3D semantic scene generation is crucial for autonomous driving applications, yet most methods rely on complex 3D-specific architectures such as triplane encoders and adapted diffusion networks,...
-
-<a id="paper-2606-08680"></a>
-
-### Distortion-Aware PETR for BEV Object Detection with Mixed Pinhole-Fisheye Cameras
-
-**Authors:** Xiangzhong Liu<br>
-**Published:** 2026-06-07<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.08680) | [PDF](https://arxiv.org/pdf/2606.08680.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Fisheye cameras are widely deployed in autonomous driving perception suites for their low cost and full-coverage field of view (FOV), yet their potential remains underleveraged in 3D object...
-
-<a id="paper-2606-05677"></a>
-
-### LongSpace: Exploring Long-Horizon Spatial Memory from Perception to Recall in Video
-
-**Authors:** Shiqiang Lang, Jing Liu, Haoyang He, Peiwen Sun, Yuanteng Chen, et al.<br>
-**Published:** 2026-06-04<br>
-**Research tags:** Benchmark<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.05677) | [PDF](https://arxiv.org/pdf/2606.05677.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Multimodal Large Language Models (MLLMs) have advanced image and video understanding and can increasingly handle longer visual inputs. Long-horizon tasks such as autonomous driving and robotic...
-
-<a id="paper-2606-07657"></a>
-
-### QDS-SNN: Energy-efficient Quantum Deeply-Supervised Spiking Neural Network Algorithm for Traffic Sign Recognition
-
-**Authors:** Zhiguo Qu, Keqi Li, Le Sun, Wenjie Liu, Yimin Yu, et al.<br>
-**Published:** 2026-06-03<br>
-**Research tags:** Simulation<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.07657) | [PDF](https://arxiv.org/pdf/2606.07657.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Traffic sign recognition is crucial for intelligent transportation and autonomous driving, as it can improve driving efficiency and ensure road safety. However, traditional recognition methods are...
-
-<a id="paper-2606-04871"></a>
-
-### Recent Advances and Trends in Learning-based 3D Representations
-
-**Authors:** Adrien Schockaert, Hamid Laga, Hazem Wannous, Vincent Magnier, Guillaume Dufaye, et al.<br>
-**Published:** 2026-06-03<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.04871) | [PDF](https://arxiv.org/pdf/2606.04871.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** The selection of an appropriate 3D representation is a fundamental design decision that dictates the efficiency, quality, and capabilities of modern computer vision and graphics pipelines for tasks...
-
-<a id="paper-2606-04656"></a>
-
-### Instance-Level Post Hoc Uncertainty Quantification in Object Detection
-
-**Authors:** Chongzh
+**Abstract:** Credible simulated-rainfall conditions are essential for identifying perception-system bo

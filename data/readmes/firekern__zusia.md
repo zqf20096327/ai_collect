@@ -17,7 +17,7 @@
 
 **TL;DR**
 
-- 💬 A chat **next to the PDF**, in Zotero's side pane.
+- 💬 A chat **next to the PDF** that reads the **whole paper** and fills Zotero's side pane.
 - ✏️ Answers with **LaTeX**, **drawings** and numbered **theorem boxes**.
 - 🔑 Uses **Claude Code, Codex or Antigravity** with your own login. No API keys.
 - ⏱️ Install in 2 minutes: [jump to Install](#install).
@@ -26,7 +26,7 @@
 
 ## 1. Ask about the paper
 
-> **Open the side pane → Zusia → ask.** Turn on *Drawing* and *LaTeX* for a diagram and real maths.
+> **Open the side pane → Zusia's icon → ask.** The chat takes the whole pane; any other icon in the side nav brings the item details back. Turn on *Drawing* and *LaTeX* for a diagram and real maths.
 >
 > Real recording: Zotero on a Mac, *Attention Is All You Need*, a live answer from Claude. 27 seconds, with the wait sped up.
 
@@ -93,10 +93,18 @@
 
 Updates arrive on their own after that: Zotero checks the release feed.
 
+## What the assistant reads
+
+- 📄 **The paper's full text**, as Zotero extracts it from the PDF (split by page), EPUB or web snapshot. Answers cite pages as *(p. N)*.
+- 🎯 **Where you are.** The page on screen and the passage you selected come first. When a paper is too long to send whole, the text is cut around that page and the assistant is told which pages it has.
+- 🏷️ **Metadata and your annotations**: title, authors, abstract, highlights and comments.
+- 🚫 **No text, no guessing.** For a scanned PDF with no text layer, the assistant says it cannot read the paper instead of answering from the abstract.
+
 ## Privacy
 
-- 🖥️ The assistants run **on your computer** with your own login. No server, no API keys.
-- 📄 They get the paper's **metadata and your annotations**, never the PDF's full text. Plus any image you attach.
+- 🖥️ The assistants run **on your computer** with your own login. Zusia has no server and needs no API keys.
+- 📄 They get the paper's **full text, metadata and your annotations**, plus any image you attach. The CLI sends them to its provider (Anthropic, OpenAI or Google), as it does with anything you type into it.
+- 🔕 To send only the metadata, abstract and annotations, turn off **Settings → Zusia → Chat → *Send the paper's full text***.
 - 📁 Chats, clarifications and images stay in `zusia/` inside Zotero's data folder.
 
 <p align="center"><img src="docs/rule.svg" alt="" width="100%"></p>

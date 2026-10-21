@@ -242,6 +242,8 @@ LLM 核心理论与架构基石，深入解析 Tokenizer 分词机制、Embeddin
 
 - [基础理论与概念导航](06_llm_theory_and_fundamentals/llm_basic_concepts/README.md) - LLM 核心概念的完整学习路径。
 - [Transformer 架构详解](06_llm_theory_and_fundamentals/llm_basic_concepts/transformer/transformer_architecture.md) — 从 RNN 串行瓶颈到自注意力机制，拆解 Attention、FFN、位置编码、LayerNorm 等核心组件，目标是读完能看懂 `modeling_llama.py`。
+- [当记忆成为模型状态：MemT-1.0 的架构、训练与边界](06_llm_theory_and_fundamentals/llm_basic_concepts/memory_native/memt_1_0_memory_native.md) - 记忆原生基础模型：local/hyper memory、GDN-2、34B token 训练与 11 项记忆基准，含源码核对与许可/部署边界。
+- [EdgeRock-4B 拆解：把 KV Cache 变成固定容量记忆](06_llm_theory_and_fundamentals/llm_basic_concepts/memory_native/edgerock-4b-constant-memory.md) - 用 1024 token 局部窗口与 1024 条 RMA 锚点替换 8 层全注意力，历史固定 97.76 MiB/序列；拆 RMA 机制、训练路径、AIME/吞吐数据与口径边界。
 - [Andrej Karpathy ： Deep Dive into LLMs like ChatGPT （B 站视频）](https://www.bilibili.com/video/BV16cNEeXEer) - 深度学习领域权威专家的 LLM 技术解析。
 - [大模型基础组件 - Tokenizer](https://zhuanlan.zhihu.com/p/651430181) - 文本分词与编码的核心技术。
 - [解密大语言模型中的 Tokens](06_llm_theory_and_fundamentals/llm_basic_concepts/token/README.md) - Token 机制的深度解析与实践应用。
@@ -490,6 +492,7 @@ SGLang 以 RadixAttention 前缀缓存和高效调度器著称，涵盖 KV Cache
 - [NVIDIA 模型优化器](09_inference_system/model_optimization/nvidia_model_optimizer.md) - NVIDIA 模型优化工具链详解
 - [图解投机解码](09_inference_system/model_optimization/illustrated-speculative-decoding.md) - Speculative Decoding 的核心思想、系统实现与工程调优要点
 - [一次前向，白赚 4 个 token：DFlash 2 块扩散投机解码技术详解](09_inference_system/model_optimization/dflash-block-diffusion-speculative-decoding.md) - 块扩散式的投机解码架构与实现深度解析
+- [draft 不再重建历史：DLite 的 history-free 投机解码](09_inference_system/model_optimization/dlite-history-free-speculative-decoding.md) - Agent 负载下把历史建模留给 target 的投机解码：2.07–2.74× 加速、两阶段训练与工程边界
 - [vLLM GB200 优化](09_inference_system/vllm/hardware_optimization/gb200_optimization.pptx) - vLLM 在 GB200 硬件上的性能优化策略
 
 ### 9.5 推理优化参考设计
@@ -527,10 +530,11 @@ SGLang 以 RadixAttention 前缀缓存和高效调度器著称，涵盖 KV Cache
 
 ### 9.6 推理成本与容量规划
 
-大模型推理成本的定量分析与容量规划决策，涵盖 API 按量计费与 Coding Plan 包月订阅的定价数据建模，以及基于业务前缀复用率的 KV Cache 各级存储（HBM/DRAM/NVMe）容量推演。
+大模型推理成本的定量分析与容量规划决策，涵盖 API 按量计费、Coding Plan 包月订阅的定价数据建模、DeepSeek 推理集群的单卡生产经济学，以及基于业务前缀复用率的 KV Cache 各级存储（HBM/DRAM/NVMe）容量推演。
 
 - [推理成本分析](09_inference_system/cost_analysis/llm_api_pricing_analysis.md) — 基于 OpenRouter 的多模型成本测算与动态抓取脚本
 - [Coding Plan 订阅对比](09_inference_system/cost_analysis/coding_plan/coding_plan_report.md) — 11 款 AI 编程工具订阅成本与隐藏条款解析
+- [DeepSeek 推理集群单卡经济学](09_inference_system/cost_analysis/deepseek_inference_cluster_unit_economics.md) — 155 万亿 tokens/天、96% 缓存命中、38 美元/卡时：单卡年收入 33 万美元、93–96% 运营利润率，附价格/成本假设与敏感性
 - **[Token Factory：AI 推理的成本革命（图文讲解）](99_misc/token_factory_talk/talk-illustrated.md)** — 对外演讲的 PPT 24 页逐页配图讲解：AI 白菜化与 Token 单位化 → 从「算力房东」到「产品制造商」→ 提升产能的成本革命 → 让 token 更值钱，附国产算力差距的现场互动。配套素材库（可排练提纲 + 产能度量文档 + 12 份参考资料）见 [项目 README](99_misc/token_factory_talk/README.md)
 
   <img src="./99_misc/token_factory_talk/img/cover.jpg" width="600" alt="Token Factory：AI 推理的成本革命 — 演讲封面"/>
@@ -559,6 +563,7 @@ DeepSeek 模型极致性能优化实战，深度解析 vLLM 宽端点 (Wide Endp
 - [vLLM WideEP 架构](09_inference_system/vllm/hardware_optimization/deepseek_blackwell_wide_ep.md) - vLLM 宽端点 (Wide Endpoint) 架构解析
 - [Scaling DeepSeek on Blackwell](09_inference_system/vllm/hardware_optimization/scaling_deepseek_blackwell.pptx) - DeepSeek 在 Blackwell 平台上的扩展性优化
 - [从 MLA 到 CSA + HCA：DeepSeek 注意力架构的进化之路](09_inference_system/vllm/module_analysis/deepseek_attention_evolution_mla_to_csa_hca.md) - 结合 vLLM 推理引擎源码，深度解析 DeepSeek 注意力机制演进
+- [DeepInfer 源码拆解：155 万亿 tokens/天背后的引擎，开源了哪一半](09_inference_system/deepinfer/deepinfer-source-deep-dive.md) - DeepSeek V4.1-Flash 生产推理引擎的源码级拆解：ZOS 异步流水线、DSpark 变长验证、YOCO/SWA 截断与 Wide-EP；引擎核心在仓库里，3FS KV 存储、Entrypoint 前缀匹配、请求级 LB 不在
 
 ---
 

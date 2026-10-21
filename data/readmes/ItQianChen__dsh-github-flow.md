@@ -10,7 +10,7 @@
 
 <p align="center">
   <b>让 DeepSeek Harness Agent 拥有操作 GitHub 的原生手和脚，为人机协作打造沉浸式 GitHub 工作台。</b><br>
-  原生复用宿主机 <code>gh</code> CLI 安全登录凭据，告别 Personal Access Token 泄露；深度打通本地 Git 工作区与云端仓库协作，兼具 <b>18 大领域 Agent 核心工具（104 个 action，覆盖 PR 审查/Issue 任务/Actions 工作流与构建缓存治理/免 clone 读文件/分支规则集策略排障/代码片段 Gist/标签与全局待办大盘/密钥与变量管理/智能体任务会话/社区 Discussions 讨论/Projects v2 看板/云端 Codespaces/运行时遥测与自愈健康度）</b>、<b>人类 Slash 快捷指令</b>、<b>Web UI 全景工作台</b> 与 <b>一键自动跨平台无缝升级</b>。
+  原生复用宿主机 <code>gh</code> CLI 安全登录凭据，告别 Personal Access Token 泄露；深度打通本地 Git 工作区与云端仓库协作，兼具 <b>18 大领域 Agent 核心工具（103 个 action，覆盖 PR 审查/Issue 任务/Actions 工作流与构建缓存治理/免 clone 读文件/分支规则集策略排障/代码片段 Gist/标签与全局待办大盘/密钥与变量管理/智能体任务会话/社区 Discussions 讨论/Projects v2 看板/云端 Codespaces/运行时遥测与自愈健康度）</b>、<b>人类 Slash 快捷指令</b>、<b>Web UI 全景工作台</b> 与 <b>一键自动跨平台无缝升级</b>。
 </p>
 
 <p align="center">
@@ -73,7 +73,7 @@ dsh plugin --profile web add dsh-github-flow
 
 ## 🤖 核心工具集 (Agent Tools)：给 Agent 装上 GitHub 的手和脚
 
-本插件精选聚合为 **18 大领域核心工具（104 个 action）**，官方命令语义化覆盖率高达 **87%（104/120）**，拒绝几十个无用微型工具撑爆 Agent 上下文，原生搭载 **Token 防溢出保护（默认 24KB 智能二分截断）**、**高密度 Markdown 原生渲染（列表输出压缩 70%+ Token）**、**OAuth Scope 缺失单行自愈引导** 与 **零参数 CWD 智能绑定**。
+本插件精选聚合为 **18 大领域核心工具（103 个 action）**，拒绝几十个无用微型工具撑爆 Agent 上下文，原生搭载 **Token 防溢出保护（默认 24KB 智能二分截断）**、**高密度 Markdown 原生渲染（列表输出压缩 70%+ Token）**、**OAuth Scope 缺失单行自愈引导** 与 **零参数 CWD 智能绑定**。
 
 ### 1. `github_pr`：PR 全生命周期管理与自动化代码审查
 > **典型对话指令**：
@@ -90,7 +90,7 @@ dsh plugin --profile web add dsh-github-flow
   * `create`：一键自动创建 PR（支持 draft 草稿模式与 `--dry-run` 预演，支持 `attach_images` 上传本地附件）；
   * `edit`：🆕 编辑 PR 标题、描述与关联元数据，支持附加本地图片；
   * `comment`：🆕 向指定 PR 追加讨论评论与审查意见，支持附加本地图片；
-  * `checkout`：🆕 把 PR 代码检出到本地分支，Agent 可直接在沙箱跑测试验证改动；
+  * `checkout`：🆕 把 PR 代码检出到本地分支，Agent 可直接在本地工作区跑测试验证改动（检出前校验工作区干净度；默认不重置已有同名分支，需要重置须显式传 `force: true` + `confirm: true`）；
   * `status`：🆕 查看当前分支关联 PR 的合并冲突状态（`CLEAN` / `CONFLICT`）；
   * `review`：提交代码审查意见（`APPROVE`, `REQUEST_CHANGES`, `COMMENT`）；
   * `merge`：自动执行合并（支持 `squash` / `merge` / `rebase`，可指定 `delete_branch`；需 `confirm: true` 二次确认）；
@@ -121,7 +121,7 @@ dsh plugin --profile web add dsh-github-flow
   * `pin` / `unpin`：🆕 仓库 Issue 置顶状态管理；
   * `lock` / `unlock`：🆕 锁定讨论区，支持 4 种官方合法理由（`off_topic` / `resolved` / `spam` / `too_heated`）；
   * `status`：🆕 检索指派给当前登录用户的待办议题全景面板；
-  * `view_images`：🆕 下载 Issue 报障截图（正文+评论全量识别并转为本地图片块，Agent 直接"看"截图）；
+  * `view_images`：🆕 下载 Issue 报障截图（正文+评论全量识别并转为本地图片块，Agent 直接"看"截图）；落地目录 `~/.dsh/data/dsh-github-flow/images/`（内容寻址去重），**超 15MB 时按 mtime 自动 LRU 淘汰至 10MB 低水位**，并保护当前批次已写入的文件；测试可用 `DSH_IMAGE_DIR` 重定向该目录；
   * `attach_images`（参数）：🆕 支持本地文件/截图直接作为附件随 Issue 发布（单批上限 50 个文件，需 gh ≥ 2.99）。
 
 ---
@@ -196,7 +196,10 @@ dsh plugin --profile web add dsh-github-flow
 
 ---
 
-### 7. `github_skill`：Agent Skills 生态发现与本地安装
+### 7. `github_skill`：Agent Skills 生态发现与本地安装 🧪 Preview
+
+> 🧪 **Preview 依赖**：底层是 `gh skill`，该命令当前为 public preview（`subject to change without notice`），命令面可能随 gh 升级变更。
+
 > **典型对话指令**：
 > - *"在 GitHub 开源社区检索关于 'markdown' 的 Agent Skills"*
 > - *"预览并安装 'github/awesome-copilot' 仓库里的代码审查 Skill 到当前项目"*
@@ -273,7 +276,7 @@ dsh plugin --profile web add dsh-github-flow
 
 * **支持操作 (`action`)**：
   * `list`：盘点仓库 Actions 缓存占用，自动换算人性化体积（KB/MB/GB），支持 Key 前缀过滤、Git Ref 过滤与按大小/访问时间排序；
-  * `delete`：三态精准清理（按数字 `cache_id` 删除、按 `key` 删除、或通过 `all: true` 全量清空全部缓存；全量清空属批量破坏性操作，强制要求 `confirm: true`，底层注入 `--succeed-on-no-caches` 保证幂等执行）。
+  * `delete`：三态精准清理（按数字 `cache_id` 删除、按 `key` 删除、或通过 `all: true` 全量清空全部缓存；**三种方式均强制要求 `confirm: true`**，全量清空另注入 `--succeed-on-no-caches` 保证幂等执行）。
 
 ---
 
@@ -304,20 +307,26 @@ dsh plugin --profile web add dsh-github-flow
 
 ---
 
-### 15. `github_agent_task`：云端编码智能体任务会话治理
+### 15. `github_agent_task`：云端编码智能体任务会话治理 🧪 Preview
+
+> 🧪 **Preview 依赖**：底层是 `gh agent-task`，该命令当前为 public preview（`subject to change without notice`），命令面可能随 gh 升级变更。
+
 > **典型对话指令**：
 > - *"查阅我名下所有的 GitHub Copilot 智能体任务会话列表"*
 > - *"检视任务 'e2fa49d2' 的执行状态，并抓取详细会话日志"*
 > - *"向云端 Agent 发起新任务：'重构网络通信模块以支持自动重试'，基于 develop 分支"*
 
 * **支持操作 (`action`)**：
-  * `list`：列出当前用户关联的智能体任务（支持 `-L/--limit` 与 `-R/--repo`）；
+  * `list`：列出当前用户关联的智能体任务（支持 `-L/--limit`；`gh agent-task list` 不支持 `-R/--repo`，该参数对本动作无效）；
   * `view`：查看任务详情与会话执行日志（支持 `--log`，强制校验 `task_id` 防交互挂起）；
   * `create`：向云端 Agent 派发新编码/重构任务（支持 `-b/--base` 指定基准分支，`-a/--custom-agent` 指定仓库智能体定义）。
 
 ---
 
-### 16. `github_discussion`：团队技术研讨与开源社区 RFC 闭环
+### 16. `github_discussion`：团队技术研讨与开源社区 RFC 闭环 🧪 Preview
+
+> 🧪 **Preview 依赖**：底层是 `gh discussion`，该命令当前为 public preview（`subject to change without notice`），命令面可能随 gh 升级变更。
+
 > **典型对话指令**：
 > - *"查看当前仓库分类为 'Ideas' 的开放讨论列表"*
 > - *"查看讨论 #101 的正文内容与回复楼层"*
@@ -377,6 +386,8 @@ dsh plugin --profile web add dsh-github-flow
 * **账号全景概览**：实时透视名下所有 GitHub 仓库、默认分支与 Star 状态；
 * **本地工作区联动矩阵**：自动探测本机所有打开的项目，显示当前工作区与远程 GitHub 仓库的关联状态；
 * **三维待办 Issue 矩阵**：智能划分「📥 用户提单（反馈到我名下仓库）」、「🎯 指派待办（分配给我）」与「✍️ 我发起的」，支持一键药丸过滤；
+* **🔀 PR 在线审阅工作台**：点击任意 PR，无需离开 DSH 即可查看作者与分支流向、CI/审查状态、Markdown 描述、评论时间线，以及变动文件列表与高保真 Unified Diff 对比（按文件内存切片，切换文件 0ms）；
+* **📝 Issue 在线查看弹窗**：点击任意 Issue 直接查看完整讨论——正文与评论均为 Markdown 渲染、长内容自动折叠、被 GitHub 折叠的垃圾评论显式标注、标签色块/指派人/里程碑/子议题进度/关联 PR 一目了然，评论时间线按时间顺序完整呈现；
 * **升级提示横幅**：检测到新版本时在顶部优雅滑出，提供一键自动升级与更新日志直达。
 
 <p align="center">
@@ -401,8 +412,8 @@ dsh plugin --profile web add dsh-github-flow
     * 右上角锚定最新发布 Release 徽章（`🏷️ v0.4.0`），悬停查看发布时间与预发布标示，点击直达；
     * **提交详情模态弹窗**：点击任意提交记录行，在右侧栏内局部居中弹出，内置上下滑动区域，完整展示 40 位 SHA、提交者姓名邮箱、日期、多行详细正文说明与文件变更统计（`--stat`），纯本地 0ms 秒开，支持按 `Esc` 或点击遮罩随时关闭；
   * **未提交清单 (`📁 未提交 (N)`)**：展示工作区未提交的文件清单，状态码色彩区分（`??` 新增、`M` 修改、`D` 删除、`R` 重命名）与变更总数；
-  * **拉取请求 (`🔀 PR (N)`)**：展示当前开放 PR，带有三态 CI 门禁（`✅ CI 通过` / `❌ CI 失败` / `⏳ CI 运行中`）、冲突检测、审核判定（`✔ 已批准` / `✋ 需修改` / `👀 待审查`）、Draft 草稿标示与人性化相对时间；
-  * **仓库议题 (`📋 Issues (N)`)**：直接在侧边栏审查待办任务，支持指派者、标签与多维状态药丸；
+  * **拉取请求 (`🔀 PR (N)`)**：展示**全部** PR（含已合并/已关闭，默认「全部」），顶部状态胶囊 `全部 / 🟢 Open / 🟣 Merged / ⚪ Closed` 一键筛选并显示各档计数；带三态 CI 门禁（`✅ CI 通过` / `❌ CI 失败` / `⏳ CI 运行中`）、冲突检测、审核判定（`✔ 已批准` / `✋ 需修改` / `👀 待审查`）、Draft 草稿标示与人性化相对时间；**点击卡片在线唤起 PR 审阅工作台（描述 / 评论 / 文件 Diff）**，右侧 `GitHub ↗` 保留浏览器直达；
+  * **仓库议题 (`📋 Issues (N)`)**：展示**全部** Issue（含已关闭，默认「全部」），顶部状态胶囊 `全部 / 🟢 Open / ⚪ Closed` 一键筛选并显示各档计数；支持指派者、标签与多维状态药丸；**点击卡片在线查看 Issue 详情（Markdown 正文 / 评论时间线 / 标签与里程碑，Esc 关闭）**，右侧 `GitHub ↗` 保留浏览器直达；
   * **构建流水线 (`⚡ Actions (N)`)**：实时关注工作流 CI 状态，展示触发方式（`push`/`定时`/`手动`/`PR`）、相对时间与失败构建的 Agent 自愈诊断指引（嵌入 run_id）；
 * **⚙️ 完整设置入口**：右侧栏提供设置按钮，与主页复用同一设置弹窗（数据同步 / 网络代理 / 更新设置 / 关于 四分区完整可用），无需切回主页调整。
 
@@ -410,7 +421,17 @@ dsh plugin --profile web add dsh-github-flow
   <img src="./docs/images/2.png" alt="右侧栏工作区面板" width="100%" />
 </p>
 
-### 3. 设置中心 (Settings Modal)
+### 3. 使用指南大窗口 (Help & Playbook)
+点击驾驶舱右上角 **`[📖 使用指南]`**（或右侧栏的 ❓ 按钮）打开 920px 宽屏沉浸式手册，按 Esc 或点遮罩即可关闭。共 5 个分类：
+* **🚀 3分钟极速上手**：登录确认 → 绑定仓库 → 向 Agent 下指令的三步闭环，附能力总览（18 工具 / 103 业务动作 / 2 套工作台）；
+* **🤖 Agent 提示词实战**：7 大高频场景（建 PR、CI 排障、待办盘点、Diff 审查、看图定位、批量标签治理、RFC 研讨），每条配「📋 一键复制 Prompt」；
+* **🖥️ 两大界面操作图解**：主面板 4 标签与右侧栏 5 Tab 的逐项说明，以及两个弹窗的通用操作习惯；
+* **🧰 18 大工具速查**：按「日常研发 / 交付配置 / 生态协作 / 兜底元能力」四组列出全部工具与动作，附 `/gh` 指令速查；
+* **🔑 常见自愈排错**：登录、权限 Scope、24h 安全保护期、代理抖动、列表为空、为何需重启 DSH 共 6 条。
+
+> 同一套知识也通过 `github_help` 工具提供给 Agent——两侧口径由 phase33 测试强制对账，代码演进而文档没跟上会直接测试失败。
+
+### 4. 设置中心 (Settings Modal)
 点击全景驾驶舱右上角 **`[⚙️ 设置]`**（或右侧栏的 ⚙️ 按钮）打开分区式设置弹窗，左侧分区导航、右侧内容独立滚动（窄屏自动折叠为横向页签）：
 
 **🔄 数据同步分区**——调优数据拉取节奏与感知灵敏度：
@@ -423,7 +444,7 @@ dsh plugin --profile web add dsh-github-flow
 * **本地缓存可视化管理**：透明查看本地快照体积与保存时间戳，支持一键 `[🗑️ 清空缓存]` 重置。
 
 **🌐 网络代理分区**——让插件全部外联流量走你的代理：
-* **全局生效范围**：设置后驾驶舱、右侧栏面板、9 大 Agent 工具调用与一键升级链路全部经代理访问；未启用时默认使用系统环境代理（`HTTPS_PROXY` 等）或直连；
+* **全局生效范围**：设置后驾驶舱、右侧栏面板、18 大 Agent 工具调用与一键升级链路全部经代理访问；未启用时默认使用系统环境代理（`HTTPS_PROXY` 等）或直连；
 * **协议支持**：`http://` / `https://` / `socks5://` / `socks5h://`（gh 与 npm 链路原生支持 SOCKS5；`socks5h` 会把域名解析也交给代理端，抗 DNS 污染更强；npm 版本探测走 Node fetch 暂不支持 SOCKS，将保持直连并在界面如实标注）；
 * **`[🧪 测试连通性]`**：一键探测经当前代理访问 GitHub API 的延迟；
 * **保存即生效**：写入 `~/.dsh/data/dsh-github-flow/proxy.json` 持久化（DSH 重启自动恢复），无需重启、不重载插件；
@@ -523,6 +544,9 @@ dsh plugin --profile web add dsh-github-flow
     proxyUrl: ''              # 代理地址预置默认值（如 'http://127.0.0.1:7890'；仅未在驾驶舱设置过时生效，界面设置优先）
 ```
 
+> 配置由 Schemastery Schema 校验：类型写错（例如把 `maxOutputChars: '24000'` 写成字符串）会**直接报错**，不再静默回落到默认值。
+> `maxOutputChars` / `defaultTimeoutMs` / `defaultListLimit` 是**热更新字段**——改这几项时 loader 只把新值热提交进运行中的实例，不触发插件整体重载；改动其余字段（含 `checkUpdate`）仍会重载插件。
+
 ---
 
 ## 🔌 生态服务扩展 (Cordis Service)
@@ -531,10 +555,12 @@ dsh plugin --profile web add dsh-github-flow
 
 ```typescript
 import type { Context } from '@deepseek-ai/cordis';
+// 可选但推荐：加载本插件随包发布的声明合并，ctx.github 才有完整类型与自动补全
+import type {} from 'dsh-github-flow/host';
 
 export const inject = ['github'];
 
-export function apply(ctx: Context) {
+export async function apply(ctx: Context) {
   // 直接调用经过安全包装的底层执行引擎
   const auth = await ctx.github.checkAuth();
   const repo = await ctx.github.getRepoMetadata();

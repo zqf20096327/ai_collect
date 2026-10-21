@@ -1,0 +1,415 @@
+<h1>
+  <img src="assets/ompanion.png" alt="ompanion logo" height="24" style="vertical-align: middle;" />
+  ompanion
+</h1>
+
+A GUI client for omp, the oh-my-pi coding agent, on this computer and on remote machines over SSH, jump hosts and Tailscale, with no daemon on the host.
+
+<p>
+  <a href="https://ompanion.app">Website</a> ·
+  <a href="#download">Download</a> ·
+  <a href="#features">Features</a> ·
+  <a href="#building-from-source">Building from Source</a> ·
+  <a href="LICENSE">License</a>
+</p>
+
+<p align="center">
+  <img src="assets/readme-showcase.webp" alt="ompanion on a desktop and a phone" width="900" />
+</p>
+
+## Download
+
+<a href='https://apps.apple.com/app/id6816667970'><img height='60' alt='Download on the App Store' src='./assets/app-store-badge.png'/></a>
+<a href='https://ompanion.app/#google-play'><img height='60' alt='Get it on Google Play' src='./assets/play-store-badge.png'/></a>
+<a href='https://apps.microsoft.com/detail/9P9DVTKZ3SB9'><img height='60' alt='Download from the Microsoft Store' src='./assets/microsoft-badge.png'/></a>
+
+Google Play is in a closed test: [join the testers](https://ompanion.app/#google-play) first.
+
+| Platform | Download |
+| --- | --- |
+| macOS | [DMG](https://github.com/edde746/ompanion/releases/latest/download/ompanion-macos.dmg), signed and notarized |
+| Windows x64 | [zip](https://github.com/edde746/ompanion/releases/latest/download/ompanion-windows-x64.zip) |
+| Linux x64 | [Flatpak](https://github.com/edde746/ompanion/releases/latest/download/ompanion-linux-x64.flatpak): `flatpak install --user ompanion-linux-x64.flatpak`; or the [zip](https://github.com/edde746/ompanion/releases/latest/download/ompanion-linux-x64.zip), which needs GTK 3 and libsecret |
+
+Or build it yourself: [Building from Source](#building-from-source).
+
+## Features
+
+### <img src="assets/readme_icons/chat.svg" height="20" alt="" align="center" /> Chat & transcript
+- Streaming transcript with markdown, LaTeX math, highlighted code, collapsible thinking and images
+- A sent prompt shows in the transcript at once, above a quiet "Waiting for a reply" line that stays from sending until the model's first output, and comes back after a tool finishes until the next output; it counts the seconds once it has waited 3 s, and stays away while a tool runs, the run compacts, retries or is paused, or a dialog waits for an answer
+- Finished turns fold their thinking, tool calls and interim messages under a one-line summary (time, tool calls, files edited) and open on a click
+- Steer the running turn or queue a follow-up; edit or remove queued messages
+- `/` command palette from the session's own command list; a slash command omp does not list is never sent to the model
+- Model and thinking-level pickers, and a context and cost meter
+- `!` shell and `$` Python runs on the machine, streamed into the chat
+- `^` tags a model for delegation, as in omp: a list of the machine's models opens as you type, and the pick becomes a chip with the model's name; omp names it `m1`, `m2`, … for the `task` tool, and the chat shows the tag as a chip
+- Pause and resume every agent of a session; Stop aborts the run and puts queued messages back into the composer
+- Goal mode, guided goal and loop mode as in omp's terminal UI: `/goal`, `/guided-goal` and `/loop` from the palette or the session menu; a goal shows in the composer toolbar with its token usage, a loop with its iterations or time left, each with a menu to pause or resume, set the budget, drop, suspend or turn off; the goal tool card shows the objective, usage and completion report
+- Goals and loops run on the machine: a goal keeps continuing until the model completes it, and a loop keeps repeating its prompt until its limit or condition stops it, with no device attached
+- Attach by pasting, dropping or picking: files copied in Finder or Explorer, screenshots and copied images, and files and folders dropped on the chat (macOS, Windows, Linux) become chips above the text; a paste over 10 lines or 1000 characters becomes a "Pasted text" chip with a preview and "Paste inline", as in omp's terminal UI
+- Attached images go to the model as images; a pasted text chip goes into the message after the typed text, and one over 256 KB into the session's `local://` store as `local://paste-N.md`; files, 100 MB at most each, reach omp as `@` mentions it reads itself (text, images, videos as a contact sheet): on this computer where they are, on another machine uploaded over SSH into the session's `local://` directory with progress, deleted with the session; folders attach on this computer only, as a listing
+- Images the agent reads show in the read card; images a reply names by a path on the machine load on their own, as previews ffmpeg makes on the machine when it has ffmpeg (WebP, or JPEG and PNG), cached in memory and on disk; web images still wait for a tap
+- Copy messages, code and tool output; branch from any of your messages
+
+### <img src="assets/readme_icons/tools.svg" height="20" alt="" align="center" /> Tools & approvals
+- Tool cards for bash, read, edit and write with word-level diffs, eval, todo, task subagents, web search and fetch; other tools show their output and images
+- Tool approvals answered inline
+- The `ask` tool as a form: several questions, option previews, multi-select, your own answer and notes
+- Extension dialogs (select, confirm, input, editor), status lines and toasts
+- Files named in tool cards open in the Files panel at the line; task cards open the subagent in the Agent Hub
+
+### <img src="assets/readme_icons/sessions.svg" height="20" alt="" align="center" /> Sessions & branching
+- Every session on a machine, grouped by project and across omp profiles, marked working, waiting for input or unread; a project stays collapsed across restarts and shows on its row when a session in it waits for input or works
+- Pin sessions from any machine above the machines in the sidebar (right-click or long-press a session, or the chat's menu); pins are kept on this device and show before their machine connects. omp's own `/pin` list is separate
+- Search the listed sessions of every machine by title or project path from the sidebar (Cmd/Ctrl+F)
+- Resume any session on the machine, including ones started in omp's terminal UI
+- On macOS and Linux machines, a session another omp process is writing (omp's terminal UI, `omp -p`, another client) is read, never written: ompanion follows the session file live, refuses to send into it, and names the terminal that holds it when omp left a breadcrumb for one. Take over starts the app's own omp for the file once that process has exited (`docs/contracts/session-writer.md`)
+- Session tree: search, filters, labels, branch into a new session, and navigate with an optional summary
+- Reset the conversation to any message from its menu: your own message goes back into the composer, an assistant reply becomes the point to continue from, and the replies left behind stay in the session tree (the snackbar opens it)
+- Compactions show as dividers with their summary and file lists
+- Several devices on one live session: each sees what the others send, and the first answer to a dialog settles it everywhere
+- New sessions start in a recent project or a folder picked on the machine, optionally with a model
+- Notifications when a session asks a question, finishes or fails, each kind switchable: on desktops while the app runs, for the sessions it has open; on phones as push notifications the machine sends itself, with no device connected, end-to-end encrypted through our relay (off until you turn it on); a tap opens the session
+
+### <img src="assets/readme_icons/machines.svg" height="20" alt="" align="center" /> Machines
+- This computer[^desktop], any SSH host, hosts behind a chain of jump hosts, and Tailscale peers
+- No daemon: the app runs stock omp and uploads a small companion extension for what omp's RPC lacks
+- Sessions run detached on the machine, so a dropped connection, a locked phone or a closed app does not stop the turn; the app reconnects and catches up
+- Key, password, keyboard-interactive, SSH config and agent[^agent] and Tailscale SSH authentication
+- SSH config and agent auth works like the `ssh` command: the agent from `IdentityAgent` or `SSH_AUTH_SOCK`, then the `IdentityFile` keys `~/.ssh/config` sets for the host (or the default `~/.ssh/id_*` keys), with `IdentitiesOnly`; encrypted keys ask for their passphrase and can remember it in secure storage
+- A host that refuses every key names the refused keys and asks for its password or keyboard-interactive answers, like `ssh`; waiting on a prompt never counts toward the connect timeout
+- On desktop, import hosts from `~/.ssh/config`, jump chains included, and peers from `tailscale status`
+- Host-key checks on every hop, honouring `~/.ssh/known_hosts` on desktop
+- On macOS and Linux machines, omp and the commands it runs get the PATH the account's login shell sets (Homebrew, `~/.local/bin`, version managers), over SSH as on this computer, even when the app was started from the Dock
+- Probes each machine and installs omp with a checksum check, or shows the commands to run by hand
+- Generate Ed25519 keys or import OpenSSH and PEM keys; private keys stay in the platform's secure storage
+- Export and import machines; private keys never leave the device
+- Windows hosts[^windows]
+
+### <img src="assets/readme_icons/dock.svg" height="20" alt="" align="center" /> Dock
+- Agent Hub: subagent roster with progress, tokens and cost, each agent's transcript, and steer, kill and revive
+- Todos by phase
+- Session tree
+- Files: browse, create, rename and delete; an editor with find and replace; git status and diffs against HEAD
+- Terminal tabs on the machine, over SSH or locally[^desktop]
+
+### <img src="assets/readme_icons/configuration.svg" height="20" alt="" align="center" /> Configuration
+- Settings from omp's own schema, global or per project, with search and where each value comes from
+- Model roles, global or per project
+- Providers: OAuth login (the callback port is forwarded from remote machines), API keys, logout, and pinning an account to a session
+- MCP servers: add, remove, enable, test, reload, resources, prompts and Smithery search
+- Plugins and marketplaces: install, enable, upgrade and remove
+- Skills: search, install, update and remove
+- Stats from `omp stats`: requests, tokens and cost by model, project and agent, plus overall speed
+
+### <img src="assets/readme_icons/usage.svg" height="20" alt="" align="center" /> Usage
+- Subscription limits from every online machine in one place, one entry per account even when several machines share it
+- Reset times, account priority and reserve, re-login countdowns and disabled credentials
+- Refresh, or ask the providers again (`omp usage invalidate`)
+
+### <img src="assets/readme_icons/platform.svg" height="20" alt="" align="center" /> Platform & design
+- One Flutter codebase for macOS, Windows, Linux, iOS and Android
+- Wide windows show machines, chat and dock side by side; narrow ones show one screen at a time
+- On macOS the app draws the whole window: no title bar, the window buttons sit in the sidebar's header
+- Monochrome, flat design with an OLED-black dark theme and a light theme, or a custom theme with every color picked by you: surfaces, text, accent, status, diffs, syntax highlighting, the terminal's 16 colors
+- Keyboard shortcuts (Cmd on Apple platforms, Ctrl elsewhere)
+- English UI
+
+[^desktop]: Desktop only.
+[^agent]: Desktop only; reads `~/.ssh/config` through the `ssh` command (`ssh -G`). On Windows only identity files work: the OpenSSH agent's named pipe is not supported. Apple's Keychain passphrases (`UseKeychain`) are not read.
+[^windows]: Covered end to end in CI against the Windows runner's own Win32-OpenSSH server, with cmd.exe or PowerShell as the default shell. The app itself running on Windows is implemented but not covered by CI.
+
+## Building from Source
+
+### Prerequisites
+- Flutter SDK 3.47.0+
+- [Bun](https://bun.sh), to build the companion extension
+- omp 18.3.1 or newer on each machine you connect to; the app can install omp 18.10.3 on a machine that lacks it
+  and update omp with `omp update` from the machine's page
+
+### Setup
+
+```bash
+flutter pub get
+scripts/build_companion.sh
+flutter run
+```
+
+<details>
+<summary>The companion bundle</summary>
+
+The app bundles the companion extension it uploads to every machine ([docs/contracts/ompx.md](docs/contracts/ompx.md)). The bundle is a build artifact, so build it before any `flutter build`, `flutter run` or `flutter test`:
+
+```bash
+scripts/build_companion.sh      # companion/dist/ompx.js → assets/companion/ompx.js
+```
+
+Without it `pubspec.yaml` names a missing asset and the build fails; a build that still lacks the file reports every machine as failed with "This build has no companion".
+
+</details>
+
+<details>
+<summary>Dev machine</summary>
+
+Run the app against an isolated omp home and the fake provider, never your real `~/.omp`. It needs the tested omp [release binary](https://github.com/can1357/oh-my-pi/releases) for your platform (the version in `harness/omp-version`, or `$OMP_VERSION`) in `.tools/omp/<version>/`; `scripts/fetch_omp.sh` downloads it there and checks it against the release's `SHA256SUMS.txt`.
+
+```bash
+scripts/fetch_omp.sh darwin-arm64                          # or linux-x64, linux-arm64
+bun harness/fake-provider/server.ts --port 18999 --demo    # keep it running
+harness/dev-machine.sh /tmp/omp-dev-home 18999             # prints HOME=… and OMP=…
+flutter run -d macos --dart-define=OMPANION_LOCAL_HOME=/tmp/omp-dev-home \
+  --dart-define=OMPANION_DATA_DIR=/tmp/ompanion-data --dart-define=OMPANION_SECRET_PREFIX=dev
+```
+
+The three defines are read in `lib/app/dev_overrides.dart`. Start the app without provider API keys in its environment: with a key set, picking a real model makes a paid call. [harness/README.md](harness/README.md), section "Dev machine", covers the demo scenarios and running several instances at once.
+
+</details>
+
+<details>
+<summary>Push notifications</summary>
+
+Phone push needs a Firebase project and the relay ([docs/contracts/push.md](docs/contracts/push.md), [relay/README.md](relay/README.md)). A build without the two config files below has no push; the settings switch says "not configured". Nothing about Firebase runs on a phone until the user turns push on.
+
+1. Firebase console: add a project (Google Analytics is not needed), then an Android app with package `com.edde746.ompanion` and an iOS app with bundle ID `com.edde746.ompanion` and team `G88U5B5783`. Take the values from the downloaded `google-services.json` and `GoogleService-Info.plist`; neither file goes into the repository.
+2. `android/firebase.properties` (a file missing a key fails the Gradle build):
+   ```properties
+   projectId=<project ID>
+   applicationId=<Android app ID, 1:<number>:android:<hex>>
+   apiKey=<API key>
+   senderId=<project number>
+   ```
+3. `ios/Flutter/Firebase.xcconfig`, included optionally by `Debug.xcconfig` and `Release.xcconfig`:
+   ```
+   FIREBASE_GOOGLE_APP_ID = <GOOGLE_APP_ID, 1:<number>:ios:<hex>>
+   FIREBASE_GCM_SENDER_ID = <GCM_SENDER_ID>
+   FIREBASE_API_KEY = <API_KEY>
+   FIREBASE_PROJECT_ID = <PROJECT_ID>
+   ```
+   The values are public client configuration: commit both files.
+4. APNs: developer.apple.com → Keys → `+` with Apple Push Notifications service; upload the `.p8` with its key ID and the team ID in Firebase → Project settings → Cloud Messaging → Apple app configuration. One key covers sandbox and production.
+5. Signing: the first signed iOS build registers `com.edde746.ompanion.NotificationService` and turns on Push Notifications for `com.edde746.ompanion` through Xcode's automatic signing. If it cannot, do both by hand in the developer portal.
+
+</details>
+
+<details>
+<summary>Code generation</summary>
+
+After editing translations in `lib/i18n/en.i18n.json`:
+
+```bash
+dart run slang
+```
+
+After changing the drift tables in `lib/database/`:
+
+```bash
+dart run build_runner build
+```
+
+After a schema change with a new `schemaVersion`, export the schema and regenerate the migration steps and tests:
+
+```bash
+dart run drift_dev make-migrations
+```
+
+After changing the app icon in `assets/ompanion.svg` or `assets/ompanion_glyph.svg` (needs `rsvg-convert` and ImageMagick):
+
+```bash
+scripts/generate_icons.sh
+```
+
+</details>
+
+<details>
+<summary>Local checks</summary>
+
+```bash
+flutter analyze
+flutter test
+(cd packages/omp_core && dart pub get && dart analyze && dart test)
+(cd companion && bun run typecheck && bun test)
+```
+
+In `packages/omp_core`, tests that start omp, need Docker or run this computer's ffmpeg are tagged and skipped by default; `dart test -P integration` runs them. In `companion/`, `bun run test:e2e` runs the tests that start omp. These, and `flutter test`'s `test/sessions/sessions_provider_omp_test.dart`, need this computer's omp in `.tools/`; the Docker tests also need the SSH test machines with the Linux omp for Docker's architecture:
+
+```bash
+scripts/fetch_omp.sh darwin-arm64 linux-arm64       # this Mac and colima; linux-x64 on an x64 Linux host
+harness/sshd/up.sh
+(cd packages/omp_core && dart test -P integration -j 1)
+(cd companion && bun run test:e2e)
+harness/sshd/down.sh
+```
+
+`-j 1` runs one test file at a time: two Docker test files share the target's run directory. [.github/workflows/ci.yml](.github/workflows/ci.yml) runs all of these on Linux for every push and pull request to `main`; [build.yml](.github/workflows/build.yml) builds each platform on demand.
+
+</details>
+
+<details>
+<summary>Transcript benchmark</summary>
+
+The chat transcript has a streaming benchmark, a profile-mode target: a 2,000-item session with a 12 KB reply streamed at 50 updates per second. It prints frame build and raster percentiles and writes them to `build/integration_response_data.json`; results are in [docs/research/ui-libraries.md](docs/research/ui-libraries.md), section "Performance".
+
+```bash
+flutter drive --profile -d macos --driver=integration_test/driver/report_driver.dart \
+  --target=integration_test/transcript_benchmark_test.dart
+```
+
+</details>
+
+<details>
+<summary>Releasing</summary>
+
+A release is one command on a Mac: `uv run scripts/release/deploy.py release --version 1.1.0` (The stores, below). It bumps `pubspec.yaml`, pushes main and runs Actions → Build → Run workflow on main with every platform selected and the release tag set to that version, which can also be done by hand. Before building anything the run checks the branch, the tag (it must equal `pubspec.yaml`'s version and not exist yet), the platforms, and the macOS signing secrets, the update key and the Android signing secrets below. It then attaches `ompanion-android.apk`, `ompanion-ios.ipa`, `ompanion-macos.dmg`, `ompanion-windows-x64.zip`, `ompanion-linux-x64.flatpak`, `ompanion-linux-x64.zip` and `appcast.xml` to a draft release. Publishing the draft creates the tag on the commit that was built, and offers the release to installed Mac apps.
+
+[build.yml](.github/workflows/build.yml), run from Actions → Build → Run workflow, signs the macOS app, notarizes the app and the DMG, and staples the tickets so Gatekeeper accepts the DMG in the artifact named `ompanion-macos-<sha>`. It reads six repository secrets, the same names [Plezy](https://github.com/edde746/plezy) uses:
+
+| Secret | Value |
+|---|---|
+| `MACOS_CERTIFICATE_BASE64` | the Developer ID Application certificate and its private key as a base64 `.p12` |
+| `MACOS_CERTIFICATE_PASSWORD` | the password set when exporting that `.p12` |
+| `KEYCHAIN_PASSWORD` | any password; locks the throwaway keychain the build creates and deletes |
+| `APPLE_ID` | the Apple ID that owns the certificate |
+| `APPLE_APP_SPECIFIC_PASSWORD` | an app-specific password for that Apple ID |
+| `APPLE_TEAM_ID` | the ten-character Team ID of the developer account |
+
+Export the certificate from Keychain Access: *My Certificates* → "Developer ID Application: …" → File → Export Items → `.p12`, with a password. Then:
+
+```bash
+base64 -i cert.p12 | pbcopy      # MACOS_CERTIFICATE_BASE64
+```
+
+The app-specific password comes from [appleid.apple.com](https://appleid.apple.com) → Sign-In and Security → App-Specific Passwords → `+`. Apple shows it once; a lost one is replaced, not recovered. The Team ID is under Membership details at [developer.apple.com/account](https://developer.apple.com/account).
+
+Without all six secrets the macOS job still builds and uploads an unsigned DMG, and the annotation says so; with only some of them it fails and names the missing ones. A fork's runs read the fork's own secrets.
+
+Installed Mac apps update themselves through [Sparkle](https://sparkle-project.org) 2.10.0, a Swift package of the Runner target started in `macos/Runner/AppDelegate.swift`. A release build reads `appcast.xml` from the latest published release (`SUFeedURL` in `macos/Runner/Info.plist`) at launch once a day has passed since its last check, and every day while it runs; "Check for Updates…" in the app menu checks at once. A draft is not the latest release, so a release reaches installed apps when its draft is published. Sparkle shows the release notes (the release's page as [gh-html.edde746.dev](https://gh-html.edde746.dev) renders it), downloads `ompanion-macos.dmg`, and replaces the app only if the DMG's EdDSA signature verifies against `SUPublicEDKey` in `Info.plist` and the new app's code signature is valid. Debug builds never start the updater.
+
+The macOS job signs the stapled DMG with the update key, checks that signature against the built app's `SUPublicEDKey`, and writes `appcast.xml` next to the DMG in `ompanion-macos-<sha>`: one item with the version, the build number Sparkle compares, the minimum macOS version, the release notes link, and the DMG's download URL, size and signature. The key is one more repository secret:
+
+| Secret | Value |
+|---|---|
+| `SPARKLE_PRIVATE_KEY` | the private half of `SUPublicEDKey`: a base64 32-byte Ed25519 seed, the format Sparkle's `generate_keys -x` exports |
+
+Without it the job skips the appcast and warns, and a release does not start. GitHub never shows a secret again, so keep the key in your keychain or password manager as well: it was generated into `~/ompanion-sparkle-private-key.txt` on the maintainer's Mac, so store that file's line there and delete the file. A lost key cannot be replaced for installed apps: a new key means a new `SUPublicEDKey`, which reaches users only through a manual download. To sign by hand, import the key into the login keychain with the tools in the `bin` folder of Sparkle's [release archive](https://github.com/sparkle-project/Sparkle/releases/tag/2.10.0), from a Terminal window on that Mac (the keychain asks for permission in a dialog, so not over SSH):
+
+```bash
+./bin/generate_keys --account ompanion -f ompanion-sparkle-private-key.txt   # prints the public key: it must equal SUPublicEDKey
+./bin/sign_update --account ompanion ompanion-macos.dmg
+```
+
+`--account ompanion` keeps the key apart from another app's key under Sparkle's default account.
+
+The Android job signs the APK and the Play bundle with the upload key when four repository secrets are set, again the same names [Plezy](https://github.com/edde746/plezy) uses:
+
+| Secret | Value |
+|---|---|
+| `ANDROID_KEYSTORE_BASE64` | the upload keystore as base64 |
+| `ANDROID_STORE_PASSWORD` | that keystore's password |
+| `ANDROID_KEY_PASSWORD` | the key's password |
+| `ANDROID_KEY_ALIAS` | the key's alias |
+
+```bash
+keytool -genkeypair -v -keystore upload-keystore.jks -alias ompanion -keyalg RSA -keysize 4096 -validity 10000
+base64 -i upload-keystore.jks | pbcopy      # ANDROID_KEYSTORE_BASE64
+```
+
+Keep the keystore and its passwords: with [Play App Signing](https://support.google.com/googleplay/android-developer/answer/9842756) Google holds the app signing key, and losing the upload key means asking Google to reset it. Locally the same four values live in `android/key.properties` (gitignored, `storeFile` relative to `android/app`). Without all four secrets the job builds a debug-signed APK and bundle and warns; with only some of them it fails and names the missing ones. The job also builds `flutter build appbundle --release --dart-define=OMPANION_CHANNEL=play` and uploads it as `ompanion-android-aab-<sha>`, which no release carries: the release pipeline (The stores, below) uploads that bundle to Google Play.
+
+The Linux job packs the bundle it zips into `ompanion-linux-x64.flatpak` with [linux/build-flatpak.sh](linux/build-flatpak.sh) and the manifest in [linux/flatpak/](linux/flatpak/) (the freedesktop 26.08 runtime from Flathub), installs it, and runs [linux/check-flatpak.sh](linux/check-flatpak.sh) in its sandbox: every library of the app resolves in the runtime, and `flatpak-spawn --host` reaches the host. The Flatpak is the `direct` build: "this computer" starts omp, its commands and the terminal's shell on the host through `flatpak-spawn --host` (the manifest's `org.freedesktop.Flatpak` permission, which lifts the sandbox), and reads the host's files at their own paths (`--filesystem=host`). Locally, on an x64 or arm64 Linux machine with `flatpak` and `flatpak-builder`:
+
+```bash
+flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flutter build linux --release
+linux/build-flatpak.sh                  # build/linux/ompanion-linux-<x64|arm64>.flatpak
+flatpak install --user build/linux/ompanion-linux-x64.flatpak
+linux/check-flatpak.sh
+```
+
+### The stores
+
+[scripts/release/deploy.py](scripts/release/deploy.py), a port of [Plezy](https://github.com/edde746/plezy)'s pipeline, releases to the App Store, Google Play, the Microsoft Store and GitHub from a Mac. It needs [uv](https://docs.astral.sh/uv/), `gh` signed in to GitHub, Flutter, Xcode with the Apple Distribution certificate of an account that can reach `com.edde746.ompanion` (the Runner target signs automatically with team `G88U5B5783`), and Claude Code's `claude` CLI when a store's notes must be written:
+
+```bash
+uv run scripts/release/deploy.py release --version 1.1.0 --dry-run   # print every action, perform none
+uv run scripts/release/deploy.py release --version 1.1.0             # release; asks before publishing
+uv run scripts/release/deploy.py release                             # resume after a failure
+uv run scripts/release/deploy.py status
+python3 scripts/release/test_deploy.py                               # its tests; CI runs them in the App job
+```
+
+The phases run in this order. `--only` and `--skip` pick some; `build/deploy/state.json` records the finished ones, so a failed run resumes where it stopped, and `--fresh` discards it.
+
+| Phase | What it does |
+|---|---|
+| `preflight` | checks the branch (main), uncommitted changes (only the notes files below may have some), the version, the tag, and the tools and `.env` keys of the phases that will run |
+| `changelog` | writes the store notes files (below) |
+| `bump` | sets `pubspec.yaml` to `<version>+<build>`, the build number one above the current one unless `--build-number` is given; commits it with the four notes files as `chore(release): <version>`; pushes main |
+| `farm_start` | runs Actions → Build on main with the release tag |
+| `ios` | `flutter build ipa --release --dart-define=OMPANION_CHANNEL=appstore`, uploaded with `xcrun altool` |
+| `asc` | waits for App Store Connect to process the build, creates the version, sets What's New, attaches the build; with `--submit` it asks whether the review demo server was reset and verified ([store/README.md](store/README.md), App Store step 11), then submits for review; without it the phase stays pending until `release --submit` |
+| `farm_wait` | waits for the run and downloads `ompanion-android-aab-<sha>` and `ompanion-windows-msix-<sha>`, only from a release run: that run does not start without the four Android signing secrets, so its bundle is signed with the upload key |
+| `play` | uploads that bundle through the Play Developer API and releases it on `PLAY_TRACK`, status completed, with the en-US notes |
+| `release` | checks that the draft release holds exactly the seven files above and sets its notes |
+| `msstore` | creates a submission through the Microsoft Store Submission API, replaces its package with that `ompanion-windows.msixbundle`, sets What's new, pins the price to `MSSTORE_PRICE_ID` and checks the price the API stored, commits |
+| `publish` | publishes the draft and marks it latest, after asking |
+
+The release notes are committed files. Write the GitHub notes; a store's file is kept when it is new or changed since the last release tag (the highest one below the version, after fetching tags from GitHub) and fits its limit, and otherwise `changelog` generates it from the GitHub notes with `claude`:
+
+| Notes | File | Limit (characters) |
+|---|---|---|
+| GitHub release (`--notes` names another source) | `store/release-notes/<version>.md` | none |
+| Google Play | `android/fastlane/metadata/android/en-US/changelogs/<build>.txt` | 500 |
+| App Store What's New | `ios/fastlane/metadata/en-US/release_notes.txt` | 4,000 |
+| Microsoft Store What's new | `store/microsoft/release_notes.txt` | 1,500 |
+
+`.env` in the repository root (gitignored) holds the credentials of the pipeline and of the fastlane lanes:
+
+| Key | Value |
+|---|---|
+| `APP_STORE_CONNECT_API_KEY_KEY_ID`, `APP_STORE_CONNECT_API_KEY_ISSUER_ID`, `APP_STORE_CONNECT_API_KEY_KEY_FILEPATH` | an App Store Connect API key: [Users and Access → Integrations → App Store Connect API](https://developer.apple.com/help/app-store-connect/get-started/app-store-connect-api) → Team Keys → `+`, then the key ID, the issuer ID and the downloaded `.p8` |
+| `FASTLANE_USER`, `FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD` | fastlane only: instead of the API key, the Apple ID and an app-specific password for it |
+| `PLAY_JSON_KEY_PATH` | the Play service account's JSON key: [create it](https://developers.google.com/android-publisher/getting_started) in Google Cloud and invite the account in Play Console → Users and permissions |
+| `PLAY_TRACK` | the Play track the pipeline releases on: the closed-testing track's id from Play Console (`alpha` for the default closed track) until production access is granted, then `production`; without it `preflight` stops |
+| `MSSTORE_TENANT_ID`, `MSSTORE_CLIENT_ID`, `MSSTORE_CLIENT_SECRET` | the Azure AD application associated with the Partner Center account ([Submission API prerequisites](https://learn.microsoft.com/en-us/windows/uwp/monetize/create-and-manage-submissions-using-windows-store-services)); the account is Plezy's, so it is the application Plezy's pipeline uses |
+| `MSSTORE_APP_ID` | `9P9DVTKZ3SB9`, ompanion's Store ID |
+| `MSSTORE_PRICE_ID` | `Tier1052`, the Partner Center price tier for US$4.99 ([store/README.md](store/README.md), Later releases) |
+
+The fastlane lanes stay for the whole listing (texts and screenshots) and for uploads by hand:
+
+```bash
+gem install fastlane
+(cd ios && fastlane deploy_appstore)                          # flutter build ipa, metadata and screenshots
+(cd android && fastlane release)                              # internal testing track, draft release
+(cd android && fastlane release track:production release_status:completed)
+```
+
+`ios/fastlane/metadata` and `ios/fastlane/screenshots` are the App Store listing; `android/fastlane/metadata/android` is the Play listing. A new Play app only accepts a draft release, so the Android lane's default uploads to internal testing as a draft that is rolled out in Play Console, and it builds its own bundle, signed only with `android/key.properties` in place. The iOS lane never submits for review: it uploads the build, and the submission happens in App Store Connect with the notes and the demo machine from [store/README.md](store/README.md).
+
+`deploy_appstore` signs like the pipeline's `ios` phase. fastlane rejects screenshots whose pixel size its own list does not know, so `fastlane deploy_appstore skip_screenshots:true` uploads everything else and leaves the screenshots to App Store Connect by hand.
+
+The Microsoft Store package comes from CI: the Windows job runs [windows/build-msix.ps1](windows/build-msix.ps1) on the Release folder it zips and uploads the unsigned `ompanion-windows.msixbundle` as the artifact `ompanion-windows-msix-<sha>`, which no release carries. The pipeline's `msstore` phase submits it; without the pipeline it is uploaded by hand in Partner Center. The Store signs the bundle after certification. Locally, `pwsh windows/build-msix.ps1` packs `build\windows\x64\runner\Release` (and `arm64` when it exists) into `build\windows\msix\` with the Windows SDK's `makeappx` and `makepri`; `-EmitManifestOnly` writes only the manifests, on any system with PowerShell 7. The package identity must match the name reserved in Partner Center: [store/README.md](store/README.md), Microsoft Store.
+
+</details>
+
+## Contributing
+
+See [AGENTS.md](AGENTS.md) for the conventions (writing, code and tests) and [docs/PLAN.md](docs/PLAN.md) for the architecture and its decisions. [docs/parity.md](docs/parity.md) maps every omp feature to the route the app reaches it by.
+
+## License
+
+ompanion is licensed under [GPL-3.0](LICENSE).
+
+No third-party GPL or AGPL code ships in any build: [docs/research/licenses.md](docs/research/licenses.md) records
+the scan of every resolved package.
+
+## Acknowledgments
+
+- Built with [Flutter](https://flutter.dev)
+- Drives [omp (oh-my-pi)](https://github.com/can1357/oh-my-pi)
+- SSH by [dartssh2](https://pub.dev/packages/dartssh2); terminal by [xterm2](https://pub.dev/packages/xterm2) (MIT) and [flutter_pty2](https://pub.dev/packages/flutter_pty2)
+- Markdown by [gpt_markdown](https://pub.dev/packages/gpt_markdown); code viewing, editing and highlighting by [re_editor](https://pub.dev/packages/re_editor) and [re_highlight](https://pub.dev/packages/re_highlight)
+- Storage by [drift](https://pub.dev/packages/drift) and [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage); translations by [slang](https://pub.dev/packages/slang); state by [provider](https://pub.dev/packages/provider); desktop windows by [window_manager](https://pub.dev/packages/window_manager)
+- Notifications by [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications) on desktops and [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging) on phones
+- App icons from [Material Symbols](https://fonts.google.com/icons) through [material_symbols_icons](https://pub.dev/packages/material_symbols_icons) (Apache-2.0)
+- README section icons from [Material Icons](https://github.com/google/material-design-icons) (Apache-2.0)

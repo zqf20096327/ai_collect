@@ -1,0 +1,159 @@
+<p align="center">
+  <img src="./public/logo.webp" width="112" alt="时月东方">
+</p>
+
+<h1 align="center">时月东方</h1>
+
+<p align="center">融合东方术数、西方占卜、传统日历与 AI 解读的现代化 Web 应用</p>
+
+<p align="center">
+  <a href="https://sydf.cc">在线使用</a>
+  ·
+  <a href="https://github.com/Brhiza/sydf/actions/workflows/ci.yml"><img src="https://github.com/Brhiza/sydf/actions/workflows/ci.yml/badge.svg" alt="持续集成"></a>
+  ·
+  <img src="https://img.shields.io/badge/Vue-3.5-42b883?logo=vuedotjs&logoColor=white" alt="Vue 3.5">
+  <img src="https://img.shields.io/badge/TypeScript-5.7-3178c6?logo=typescript&logoColor=white" alt="TypeScript 5.7">
+  <img src="https://img.shields.io/badge/PWA-ready-5a0fc8" alt="PWA ready">
+</p>
+
+时月东方是一款面向普通用户的术数、占卜与 AI 解读应用。项目将传统排盘、东西方占卜、日历与现代交互结合，尽量用直观的页面和现代语言呈现复杂结果，同时保留可供深入查看的专业资料。
+
+> 在线地址：[https://sydf.cc](https://sydf.cc)
+
+## 主要功能
+
+- 问事与占卜：梅花易数、六爻、三山国王灵签、小六壬、金口诀、奇门遁甲、大六壬、太乙神数等。
+- 西方占卜：塔罗牌、雷诺曼与时月神谕，支持多种牌阵和可视化牌面。
+- 命盘与合盘：八字、紫微斗数、西洋星盘、七政四余、八字紫微合参，以及双人综合合盘。
+- 日常工具：今日运势、每日一卦、传统黄历、个人历与居家风水。
+- 姓名与数字：起名、姓名解析、汉字查询、选字与数字能量，支持结果记录、AI 解读和提示词复制。
+- 诸葛神数与孔明神卦：分别提供独立入口，支持取数起卦、签诗解读与本机记录。
+- AI 解读：支持内置 AI、自定义兼容接口、后台解读、历史记录，以及服务不可用时复制提示词到其他 AI。
+- 使用体验：案例管理、真太阳时换算、移动端适配、PWA 安装与离线资源缓存。
+
+## mingyu-core
+
+时月东方与 [`mingyu-core`](https://github.com/Brhiza/mingyu) 是并行维护、相互配合的两个项目。`mingyu-core` 沉淀历法换算、真太阳时、地区资料、排盘、占卜、合盘数据结构与提示词等可复用能力；时月东方负责页面交互、结果呈现、案例与历史管理，以及面向普通用户的内容组织。应用侧发现的算法、数据和接口需求也会反馈到核心库，推动两边一起完善。
+
+项目实际接入的 `mingyu-core` 版本以 `package.json` 和 `pnpm-lock.yaml` 为准。
+
+本项目当前接入的核心能力包括：
+
+- 公历、农历、干支、节气、时辰与真太阳时换算；
+- 八字、紫微斗数、西洋星盘、七政四余等命盘资料；
+- 梅花易数、六爻、灵签、小六壬、金口诀、奇门遁甲、大六壬与太乙神数；
+- 黄历择日、五运六气、皇极经世及多体系合盘；
+- 姓名、汉字、数字与诸葛、孔明占测工具；
+- 供 AI 解读使用的结构化结果、摘要和提示词基础模块。
+
+更多算法、类型定义与调用方式请查看 [`mingyu-core` 仓库](https://github.com/Brhiza/mingyu)。
+
+## 本地运行
+
+需要 Node.js 20 或 22，以及 pnpm 10。克隆仓库并安装依赖：
+
+```bash
+git clone https://github.com/Brhiza/sydf.git
+cd sydf
+pnpm install
+pnpm dev
+```
+
+开发服务器启动后，按照终端显示的本地地址访问即可。
+
+如需在 `pnpm dev` 中使用内置 AI，可在 Windows PowerShell 中复制环境变量示例，再填写自己的兼容接口配置：
+
+```powershell
+Copy-Item .dev.vars.example .env.local
+```
+
+`.env.local` 只用于本机，不应提交到仓库。使用 Wrangler 本地运行时，可将同一份示例复制为 `.dev.vars`。未配置内置 AI 时，排盘和占卜功能仍可使用，也可以复制提示词交给其他在线 AI 解读。
+
+## 检查与构建
+
+```bash
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm preview
+```
+
+生产构建输出到 `dist`。项目已配置 Cloudflare Pages Functions、PWA 与 Android APK 工程。
+
+## Android APK
+
+Android 工程使用 Capacitor，将前端资源打包进应用，并通过线上 `https://sydf.cc` 调用 AI 接口。首次准备安卓工程或网页资源更新后执行：
+
+APK 中的内置 AI 仍通过 `sydf.cc` 服务端调用，以保护平台密钥和执行限流；用户自行配置的第三方 AI 使用 Capacitor 原生网络直接连接提供商，不经过本站后端。网页版本在第三方接口不支持浏览器跨域时仍会回退到服务端转发。
+
+Android 安装包只内置默认“月”主题。其他主题和自定义牌组在首次选择时从 `sydf.cc` 下载，并显示下载进度；资源地址按文件内容哈希固定，应用跨版本更新时会复用未改变的本地缓存，只下载新增或发生变化的文件。网页版仍部署全部主题资源，作为 APK 的下载源。
+
+```bash
+pnpm build:android
+```
+
+随后使用仓库自带的 Gradle Wrapper 构建调试安装包：
+
+```bash
+cd android
+./gradlew assembleDebug
+```
+
+APK 输出到 `android/app/build/outputs/apk/debug/app-debug.apk`。正式发布前需使用独立的发布密钥签名，密钥文件不得提交到仓库。
+
+GitHub Actions 会在相关代码或安卓工程变化时自动编译调试 APK，并在运行记录的 Artifacts 中保留 14 天。若仓库配置了 `ANDROID_KEYSTORE_BASE64`、`ANDROID_KEYSTORE_PASSWORD`、`ANDROID_KEY_ALIAS` 和 `ANDROID_KEY_PASSWORD` 四项 Actions Secrets，同一流程还会生成签名的 Release APK 与 AAB；未配置签名时不会伪造可发布产物。推送 `v1.2.3` 形式的标签时，APK 内版本会与标签保持一致，正式 APK 会同步到 `download.aov.cc`，并保留 GitHub Release 和 R2 备用线路。APK 端仍通过 `sydf.cc` 检查更新，默认使用统一分发，当前线路不可用时再切换到备用线路。
+
+## 部署
+
+Cloudflare Pages 使用以下构建设置：
+
+| 配置项 | 配置值 |
+| --- | --- |
+| 根目录 | `./` |
+| 安装命令 | `pnpm install` |
+| 构建命令 | `pnpm build` |
+| 输出目录 | `dist` |
+| Node.js | 20 或 22 |
+
+### Cloudflare Pages
+
+连接 Git 仓库并填写上述构建设置即可。Cloudflare 会自动识别 `functions/api`，提供 `/api/agent`、`/api/interpret` 和 `/api/models` 三个服务端接口。本地使用 Wrangler 时，将 `.dev.vars.example` 复制为 `.dev.vars` 并填写真实配置。
+
+在「项目设置 → 环境管理」中分别编辑生产和预览环境，加入以下服务端环境变量。变量更新只对之后的新部署生效，修改后需要重新部署：
+
+```text
+AI_BASE_URL=https://api.openai.com/v1
+AI_API_TYPE=chat
+AI_MODEL=gpt-4o-mini
+AI_API_KEY=replace-with-your-key
+APP_TRUSTED_ORIGINS=https://example.com,https://*.example.com
+```
+
+`AI_API_TYPE` 支持 `chat`、`responses` 和 `anthropic`。还可以按接口需要配置 `AI_API_URL`、`AI_MODELS_URL`、`AI_SYSTEM_PROMPT`、`AI_TEMPERATURE`、`AI_MAX_TOKENS`。密钥必须使用服务端变量名，不能添加 `VITE_` 前缀，也不要提交到仓库。
+
+AI 接口默认带有请求大小、同源和频率保护。反向代理回源域名与公开域名不一致时，用 `APP_TRUSTED_ORIGINS` 配置允许的网页来源；多个来源用逗号分隔，`https://*.example.com` 只匹配 HTTPS 子域名且不包含根域名。可用 `AI_REQUESTS_PER_MINUTE` 调整单个来源每分钟的兜底请求数；生产环境建议在 Cloudflare 中绑定名为 `AI_RATE_LIMITER` 的 Rate Limiting 资源，以便在多实例间统一限流。自定义 AI 地址在正式环境仅接受公网 HTTPS，避免密钥通过明文连接或重定向泄露。
+
+## 数据与隐私
+
+案例和历史记录默认保存在当前浏览器。发起 AI 解读时，问题、必要的出生资料和经过筛选的盘面摘要会发送给当前选择的 AI 服务；自定义渠道的请求会由站点服务端转发给所选第三方提供商。API Key 只保存在当前浏览器会话，不写入项目文件。
+
+## 项目结构
+
+```text
+src/              Vue 前端、业务逻辑与设计系统
+functions/api/    Cloudflare Pages Functions 入口
+functions/shared/ AI 接口共用逻辑
+public/           网站直接使用的图标、插图、主题成品与 PWA 静态资源
+vendor/           当前接入的 mingyu-core 本地包
+```
+
+网站使用的占卜主题成品放在 `public/divination-themes/<主题 ID>/`。图片原稿与本地处理工具不提交到
+Git；成品需随代码提交，保证部署后可直接使用。
+
+## 技术栈
+
+- Vue 3、TypeScript 与 Vite；
+- Vitest 与 vue-tsc；
+- Cloudflare Pages Functions；
+- Web App Manifest 与浏览器原生静态资源缓存；
+- mingyu-core、iztro 与 celestine。

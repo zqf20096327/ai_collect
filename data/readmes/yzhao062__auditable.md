@@ -2,334 +2,204 @@
 
 # auditable
 
-**`auditable` is an open-source system of record for AI-agent decisions: it captures what each decision relied on, replays it against live state, and rolls back the committed action when it no longer holds.**
-
-*Your logs show what the agent did. `auditable` shows what it relied on, replays it under live state, and rolls it back when it no longer holds.*
+**A library of auditing methods for AI agents: configuration audits before a run, online monitors while it runs, and failure detection and fault localization after it, with one interface per family.**
 
 [![PyPI](https://img.shields.io/pypi/v/auditable.svg)](https://pypi.org/project/auditable/)
 [![Python](https://img.shields.io/pypi/pyversions/auditable.svg)](https://pypi.org/project/auditable/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/yzhao062/auditable.svg?style=social)](https://github.com/yzhao062/auditable)
+[![CI](https://github.com/yzhao062/auditable/actions/workflows/ci.yml/badge.svg)](https://github.com/yzhao062/auditable/actions/workflows/ci.yml)
 
-[Compare](#auditable-vs-the-tools-you-already-use) · [Flagship Demo](#the-flagship-moment) · [Plug In Your Agent](#plug-in-your-agent) · [Lifecycle](#the-lifecycle) · [Install](#install) · [Docs](https://auditable-ai.readthedocs.io/) · [Roadmap](#roadmap)
-
-![One typed two-layer decision graph at the center, read by three lifecycle attach points: PRE lints a declared plan before deploy, LIVE replays and recovers while the agent runs, and POST ranks a finished run](https://raw.githubusercontent.com/yzhao062/auditable/main/assets/lifecycle.png)
+[Quick Start](#quick-start) · [Methods](#methods) · [Install](#install) · [Reproducing CatchBench](#reproducing-catchbench) · [Adding a Method](#adding-a-method) · [Citation](#citation)
 
 </div>
 
-### auditable vs. the Tools You Already Use
+`auditable` collects methods that audit LLM agents at three points: an agent configuration before it runs (PRE), a run while it streams (LIVE), and a finished run (POST). Methods are grouped into four families, and each family has one interface, in the way PyOD gives outlier detectors one interface. The library holds baselines from the literature (PyOD and PyGOD detectors, GUARDIAN, G-Safeguard, the Who&When LLM-judge protocols, OWASP-style configuration rules) beside the methods introduced with GRADE and CatchBench.
 
-| Capability | **auditable** | Tracing and Observability<br><sub>[LangSmith](#ref-1), [Langfuse](#ref-2), [Phoenix](#ref-3)</sub> | Eval Harnesses<br><sub>[DeepEval](#ref-5), [Ragas](#ref-6), [promptfoo](#ref-7)</sub> | Guardrails<br><sub>[NeMo](#ref-9), [Guardrails AI](#ref-10), [Lakera](#ref-11)</sub> |
-|---|:---:|:---:|:---:|:---:|
-| Captures the dependency state a decision relied on | ✅ | 🟡 | ❌ | ❌ |
-| Re-decides under live state (replay) | ✅ | 🟡 | ❌ | ❌ |
-| Reverses a committed action (rollback) | ✅ | ❌ | ❌ | ❌ |
-| One graph across plan, run, and review | ✅ | 🟡 | ❌ | ❌ |
-| Framework-agnostic, dependency-free core | ✅ | 🟡 | 🟡 | 🟡 |
+[CatchBench](https://github.com/yzhao062/catchbench) is the benchmark for these methods: the tasks, corpora, evaluation protocols, and metrics live there. Every method here that appears on the CatchBench board reproduces its row sample by sample, and the full board reruns byte-identical with those rows computed by this library ([Reproducing CatchBench](#reproducing-catchbench)).
 
-<sub>✅ yes · 🟡 partial · ❌ no, per the named tools' public docs (2026). These categories are complementary to `auditable`, not competitors: tracing captures execution, evals score quality, and guardrails block at runtime. `auditable` is the audit-and-recovery layer that plugs into them. See [References](#references).</sub>
+## Quick Start
 
-**Among the named tools in this documentation-based comparison, `auditable` is the only column with the full set.** What makes it new:
-
-- **A unified graph representation for agentic AI.** Every agent run becomes one typed graph that PRE, LIVE, and POST all read. One representation from plan to live operation to review, instead of three disconnected tools.
-- **Recover, do not just observe.** `auditable` captures the dependency state a decision relied on, replays it under the state that is live now, and reverses the committed action through a compensating rail when it no longer holds. Logging tells you what broke; `auditable` undoes it.
-- **One decision, three spans, judged together.** Data, model, and harness are bound in a single signed, hash-chained record, so a decision is audited as one unit, not three disconnected logs.
-
-### Measured on Public Agent Traces
-
-The graph is not just structure. On the CatchBench SWE-Gym board, **`auditable (size+deps)` scores ROC-AUC 0.804 against 0.663 for `size (flat)`**. Registered paired comparisons with ECOD and GUARDIAN remain unresolved. See [the benchmark detail](docs/post-analysis.md) for the localization results, full method names, and limitations.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/yzhao062/auditable/main/assets/grade-transfer.png" alt="GRADE leave-one-corpus-out transfer ROC-AUC for size-normalized dependency features and run size across six held-out agent corpora" width="70%">
-</p>
-<p align="center"><sub>Leave-one-corpus-out transfer analysis from GRADE (<a href="https://arxiv.org/abs/2606.22741">arXiv:2606.22741</a>), separate from the CatchBench board result above.</sub></p>
-
-Agents act on dependency state that quietly drifts. A budget read minutes ago can fall below the amount already committed; a price pinned at plan time can move before the action lands. The named tracing, eval, and guardrail tools above do not combine dependency capture, live-state replay, and rollback in one layer. `auditable` closes that recovery gap across the lifecycle on one graph: it captures the decision, replays it against live state, and reverses the committed action when it no longer holds.
-
-## The Flagship Moment
-
-One payment, walked through the whole lifecycle in 18 `auditable` calls. The agent approves a $2,083.20 vendor payment against a budget snapshot that covered it. Six days later the live budget has dropped below the amount. `replay` re-decides on the live state, and the gate reverses the committed payment. This is recovery, not a log line.
-
-```bash
-git clone https://github.com/yzhao062/auditable.git
-cd auditable
-python -m pip install ".[graph]"
-python examples/example_end_to_end.py
-```
-
-The run prints a single audit report: a REVIEW verdict, the keystone with its coverage reason, six findings with severity tags and recommended actions, and the LIVE recovery that rolled the payment back. Paste it into a pull request or an issue.
-
-![Audit report page for a payment-approver run. A REVIEW verdict banner sits above a roll-up of zero blocks, one rollback, and five PRE lints. Sections below list the keystone decision with its coverage reason, six numbered findings each carrying a severity tag and a recommended action, and a LIVE recovery tally showing the rolled-back payment record.](https://raw.githubusercontent.com/yzhao062/auditable/main/assets/audit-report-sample.png)
-
-## Plug In Your Agent
-
-`auditable` works with the agent you already run. Wrap a LangGraph `StateGraph` of plain sync or async function nodes over TypedDict state, and every node's reads and writes over the state channels become **observed** dependency edges, matched across the superstep barrier, with no change to your node logic:
+Install from a clone of this repository with `pip install ".[tabular-ad]"` (see [Install](#install)), then:
 
 ```python
-from langgraph.graph import StateGraph
-from auditable import analyze_run
-from auditable.integrations.langgraph import instrument
+from sklearn.metrics import roc_auc_score
 
-builder = instrument(StateGraph(State))          # 1) wrap once, then build / compile / invoke as usual
-...
-graph = builder.compile()
-graph.invoke(initial_state)
-report = analyze_run(builder, adapter=builder)   # 2) the observed dependency graph for that run
-print(report.keystone)                           # the step the rest of the run rests on
+from auditable.datasets import make_traces
+from auditable.methods import get_method
+
+# 100 toy agent runs; each failed run holds one stale read (a step relying on old state)
+traces, y, mistakes = make_traces(n_runs=100, contamination=0.5, random_state=0)
+train, test = slice(0, 50), slice(50, 100)
+
+# Did the run fail? Fit on labelled runs, then score new ones, as with a PyOD detector.
+detector = get_method("run.lr_flatdep")()
+detector.fit(traces[train], y[train])
+scores = detector.decision_function(traces[test])   # one score per run, higher = more likely failed
+print(f"run-level ROC-AUC: {roc_auc_score(y[test], scores):.3f}")
+
+# Which step was the mistake? Rank the steps of each failed run, most suspected first.
+locator = get_method("step.dep_anomaly")()
+failed = [i for i in range(100) if y[i] == 1]
+hits = sum(locator.rank(traces[i])[0] == mistakes[i] for i in failed)
+print(f"mistake ranked first in {hits} of {len(failed)} failed runs")
+
+# Can it be caught live? One causal alarm per arriving step (step t sees steps 0..t only).
+monitor = get_method("online.span_z")()
+alarms = monitor.step_alarm_scores(traces[failed[0]])
+print(f"first alarm peak at step {alarms.argmax()}, mistake at step {mistakes[failed[0]]}")
 ```
 
-```bash
-git clone https://github.com/yzhao062/auditable.git
-cd auditable
-python -m pip install ".[langgraph]"
-python examples/example_langgraph_capture.py     # a real LangGraph run -> observed=100%, keystone named
-```
+Every method is created from its ID with `get_method(id)()`, and the methods of one family share one interface, so trying another detector or locator changes one string. [`examples/example_methods.py`](examples/example_methods.py) adds a configuration audit before the run.
 
-The same wrapped builder also yields **replayable** records, so the LIVE pillar runs on the captured run, not a hand-built dict. `builder.to_records(decisions={"approve": "vendor_payment"})` lowers a marked decision node into a `DecisionRecord` carrying the state it relied on, and `replay(record, live_state=...)` re-decides it under state that is live now and routes a rollback. See [`example_langgraph_live_replay.py`](examples/example_langgraph_live_replay.py): one real LangGraph run, captured, ranked (POST), then replayed and reversed under a drifted budget (LIVE).
+## Methods
 
-Want a real model in the loop? [`example_langgraph_llm_agent.py`](examples/example_langgraph_llm_agent.py) runs the same capture with live LLM nodes against any OpenAI-compatible endpoint (a plain OpenAI key, a gateway, or a local vLLM or Ollama server). The captured edges are identical, because the capture sees the state channels a node read and wrote, not the model call inside it.
+Configuration rules and the step-by-step and binary-search LLM judges run on the core install, graph detectors need the `graph-ad` extra, and every other method needs `tabular-ad`. The tables are generated from the registry: `list_methods(family=...)` returns each method's card, and `method_table(detailed=True)` prints the fit scope, fidelity to the source, extras, and the CatchBench row each method reproduces. The [method contract](docs/methods-contract.md) defines the four interfaces on one page.
 
-Not on LangGraph? A one-line callback captures any LangChain runnable (`auditable.integrations.langchain`), an in-place `instrument` records every tool call at an MCP server boundary (`auditable.integrations.mcp`), and the framework-agnostic `TouchRecorder` captures the same observed edges from any loop (a raw OpenAI or Anthropic agent, your own scheduler) by declaring each step's `reads()` and `writes()`. See [`examples/example_touch_capture.py`](examples/example_touch_capture.py). **Roadmap:** CrewAI and OpenTelemetry.
+### Config: Is the Agent Over-Privileged Before It Runs?
 
-## Examples and Integrations
+`auditor.audit(config)` reads an `AgentConfig` (the declared capabilities and the task text) and returns a finding: `flag` (True, False, or None to abstain), the `excess` capabilities, and the `rules` that fired.
 
-Point `auditable` at a scenario and it builds the same typed graph. Each row links a runnable example; browse them all in [`examples/README.md`](examples/README.md).
-
-| Scenario | Pillar | Builds the graph from | Run |
+<!-- methods:config:start -->
+| Type | Method | Algorithm | Reference |
 |---|---|---|---|
-| Capture a real LangGraph agent | LIVE → POST | a live `StateGraph` run (`instrument`) | [`example_langgraph_capture.py`](examples/example_langgraph_capture.py) |
-| Capture a real LLM agent (live model) | LIVE → POST | a model-driven `StateGraph` run (`instrument` + OpenAI-compatible) | [`example_langgraph_llm_agent.py`](examples/example_langgraph_llm_agent.py) |
-| Capture a real LangChain runnable | LIVE → POST | a callback on any runnable (`LangChainCallbackHandler`) | [`example_langchain_capture.py`](examples/example_langchain_capture.py) |
-| Capture any tool loop by hand | LIVE → POST | declared resource touches (`TouchRecorder`) | [`example_touch_capture.py`](examples/example_touch_capture.py) |
-| Capture MCP tool traffic at the server boundary | LIVE → POST | an instrumented FastMCP server (`instrument`) | [`example_mcp_capture.py`](examples/example_mcp_capture.py) |
-| Capture a LangGraph agent, then replay and reverse it | LIVE → POST | a live `StateGraph` run lowered to replayable records (`instrument` + `to_records`) | [`example_langgraph_live_replay.py`](examples/example_langgraph_live_replay.py) |
-| Lint a declared plan before deploy | PRE | a framework-agnostic plan dict (`declared_plan_v1`) | [`example_pre_lint_plan.py`](examples/example_pre_lint_plan.py) |
-| Recover a payment as the budget drifts | LIVE | a decision captured live (`audit` + `replay`) | [`example_live_replay.py`](examples/example_live_replay.py) |
-| Monitor a run as it streams, name the keystone live | LIVE | a run scored prefix by prefix (`LiveSession`) | [`example_live_monitor.py`](examples/example_live_monitor.py) |
-| Rank a tau-bench run, name the keystone | POST | a tau-bench trajectory (`tau_bench_prior_db_reads_v1`) | [`example_post_rank_run.py`](examples/example_post_rank_run.py) |
-| Walk one payment through every pillar | PRE, LIVE, POST | the full lifecycle (`own_record_v1` for POST) | [`example_end_to_end.py`](examples/example_end_to_end.py) |
+| Rule | `config.flag_risky_perms` | Flag risky permission levels | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `config.owasp_asi_combined` | Combined OWASP and CWE scanner | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `config.owasp_excess_functionality` | Excess functionality | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `config.owasp_excess_permissions` | Excess permission level | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `config.owasp_privilege_escalation` | Unrequested privilege management | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `config.sensitive_access` | Unrequested sensitive access | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `config.unrequested_high_impact` | Unrequested high-impact action | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| LLM judge | `config.llm_needed` | LLM judge, needed capabilities | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+<!-- methods:config:end -->
 
-The first six rows capture a real run; see [Plug In Your Agent](#plug-in-your-agent) for the two-line setup. **Roadmap:** CrewAI and OpenTelemetry.
+### Online: Can the Failure Be Caught While the Run Streams?
 
-## The Lifecycle
+`monitor.step_alarm_scores(trace)` returns one alarm per step, and the alarm at step t reads steps 0 to t only.
 
-`auditable` runs the same detection-and-report pass over one typed decision graph at three points in an agent's life. The graph kernel stays constant; only the pillar changes (when it fires, what it scores).
-
-| Pillar | When It Fires | Public Entry | Focus |
+<!-- methods:online:start -->
+| Type | Method | Algorithm | Reference |
 |---|---|---|---|
-| **PRE** | Before deploy | `analyze_plan` | Read-only structural lints on a declared plan. Names the control-flow chokepoint. Dependency-state risk withheld. |
-| **LIVE** | While running | `audit` + `replay` + `ActionGate` | Capture a decision, re-decide under live state, route a fix (allow, block, review, rollback) through a rail. The sharpest pillar. |
-| **POST** | After a run | `analyze_run` | Rank a finished run by structural blast share and name the keystone for structural triage. |
+| Rule | `online.dep_count_z` | Causal z-score of dependency count | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `online.dep_span` | Mean dependency span (running) | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `online.raw_span` | Raw dependency span | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `online.span_z` | Causal z-score of dependency span | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Baseline | `online.random` | Random alarm scores | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+<!-- methods:online:end -->
+
+### Run: Did the Run Fail?
+
+`detector.fit(traces, y)`, then `detector.decision_function(traces)`: one score per run, higher meaning more likely failed. Unsupervised detectors ignore `y`. Transductive detectors (the PyGOD detectors and GUARDIAN-Lite) fit and score one batch together with `detector.fit_score(traces)`.
+
+<!-- methods:run:start -->
+| Type | Method | Algorithm | Reference |
+|---|---|---|---|
+| Supervised | `run.lr_flat` | Logistic regression on run size (GRADE flat) | [GRADE (Zhao, 2026)](https://arxiv.org/abs/2606.22741) |
+| Supervised | `run.lr_flatdep` | Logistic regression on size and dependency (GRADE flatdep) | [GRADE (Zhao, 2026)](https://arxiv.org/abs/2606.22741) |
+| Supervised | `run.lr_full` | Logistic regression on all raw layers (GRADE full) | [GRADE (Zhao, 2026)](https://arxiv.org/abs/2606.22741) |
+| PyOD detector | `run.pyod_copod` | COPOD on run size | [COPOD (Li et al., 2020)](https://arxiv.org/abs/2009.09463) |
+| PyOD detector | `run.pyod_ecod` | ECOD on run size | [ECOD (Li et al., 2022)](https://arxiv.org/abs/2201.00382) |
+| PyOD detector | `run.pyod_hbos` | HBOS on run size | HBOS (Goldstein and Dengel, 2012) |
+| PyOD detector | `run.pyod_iforest` | Isolation Forest on run size | [Isolation Forest (Liu et al., 2008)](https://doi.org/10.1109/ICDM.2008.17) |
+| PyOD detector | `run.pyod_knn` | KNN distance on run size | KNN outlier score (Ramaswamy et al., 2000) |
+| PyOD detector | `run.pyod_lof` | Local outlier factor on run size | [LOF (Breunig et al., 2000)](https://doi.org/10.1145/335191.335388) |
+| Graph detector | `run.gsafeguard_lite` | G-Safeguard-Lite (supervised graph classifier) | [G-Safeguard (Wang et al., 2025)](https://arxiv.org/abs/2502.11127) |
+| Graph detector | `run.guardian_lite` | GUARDIAN-Lite (attribute-reconstruction autoencoder) | [GUARDIAN (Zhou et al., 2025)](https://arxiv.org/abs/2505.19234) |
+| Graph detector | `run.pygod_anomalydae` | AnomalyDAE dual autoencoder (PyGOD) | AnomalyDAE (Fan et al., 2020) |
+| Graph detector | `run.pygod_conad` | CONAD contrastive graph autoencoder (PyGOD) | CONAD (Xu et al., 2022) |
+| Graph detector | `run.pygod_dominant` | DOMINANT graph autoencoder (PyGOD) | [DOMINANT (Ding et al., 2019)](https://doi.org/10.1137/1.9781611975673.67) |
+| Graph detector | `run.pygod_gaan` | GAAN adversarial detector (PyGOD) | GAAN (Chen et al., 2020) |
+| Baseline | `run.random` | Random run scores | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+<!-- methods:run:end -->
+
+### Step: Which Step Was the Decisive Mistake?
+
+`locator.rank(trace)` orders the steps of a failed run, most suspected first, and `locator.step_scores(trace)` gives their scores. Supervised locators are first fitted with `fit(traces, y)`, where `y` holds the `idx` of each run's mistake. The step-by-step and binary-search LLM judges name one step with `predict_step(trace)`.
+
+<!-- methods:step:start -->
+| Type | Method | Algorithm | Reference |
+|---|---|---|---|
+| Rule | `step.blast` | Blast radius (downstream reach) | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `step.degree` | Dependency degree | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `step.dep_anomaly` | Dependency anomaly (within-run z-score) | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `step.has_dep` | Has a dependency | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `step.max_span` | Maximum dependency span | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Rule | `step.position_early_rule` | Early-position prior | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+| Supervised | `step.exec_rank` | Execution-feature step ranker | [GRADE (Zhao, 2026)](https://arxiv.org/abs/2606.22741) |
+| Supervised | `step.position_supervised` | Early-fault position prior | [GRADE (Zhao, 2026)](https://arxiv.org/abs/2606.22741) |
+| Graph detector | `step.pygod_dominant_sg4` | DOMINANT on the step dependency graph | [DOMINANT (Ding et al., 2019)](https://doi.org/10.1137/1.9781611975673.67) |
+| Graph detector | `step.pygod_dominant_ww8` | DOMINANT on the Who&When step matrix | [DOMINANT (Ding et al., 2019)](https://doi.org/10.1137/1.9781611975673.67) |
+| LLM judge | `step.llm_all_at_once` | LLM judge, all-at-once | [Who&When (Zhang et al., 2025)](https://arxiv.org/abs/2505.00212) |
+| LLM judge | `step.llm_binary_search` | LLM judge, binary-search | [Who&When (Zhang et al., 2025)](https://arxiv.org/abs/2505.00212) |
+| LLM judge | `step.llm_step_by_step` | LLM judge, step-by-step | [Who&When (Zhang et al., 2025)](https://arxiv.org/abs/2505.00212) |
+| Baseline | `step.random` | Random step scores | [CatchBench (2026)](https://arxiv.org/abs/2608.22808) |
+<!-- methods:step:end -->
 
 ## Install
 
-```bash
-pip install auditable
-```
-
-The core is dependency-free and torch-free. Structural-graph analysis (`analyze_plan` for PRE, `analyze_run` for POST) needs the optional graph extra (NetworkX):
+The method library is not on PyPI yet: the current release there (0.2.1) predates it. Until 0.3.0 is released, install from a clone of this repository:
 
 ```bash
-pip install "auditable[graph]"
-pip install "auditable[anomaly]"
+git clone https://github.com/yzhao062/auditable.git
+cd auditable
+pip install .                    # core: the registry and the configuration rules, no third-party dependencies
+pip install ".[tabular-ad]"      # run, step, and online methods on trace features (NumPy, scikit-learn, PyOD, NetworkX)
 ```
 
-The graph extra adds NetworkX. The anomaly extra adds the fitted `DataAuditor` path
-through PyOD; freshness fallback and the LIVE example run on the core install alone.
+The LLM judges take any `prompt -> reply` function as their backend; `OpenAICompatibleBackend` reaches an OpenAI-compatible endpoint with the standard library alone.
 
-Docs: https://auditable-ai.readthedocs.io/
+The graph methods (PyGOD detectors, GUARDIAN-Lite, G-Safeguard-Lite) need torch, PyTorch Geometric, PyGOD, and a sampling backend built for the installed torch, which pip cannot resolve from the extra. Install torch and the matching `pyg-lib` wheel first:
 
-## The Three Pillars, in Detail
-
-<details>
-<summary><b>PRE: lint the plan before deploy</b> (four read-only lints, the chokepoint, a coverage report)</summary>
-
-Point `analyze_plan` at a declared plan (a plain dict, the neutral target a LangGraph, CrewAI, or AutoGen front-end would lower into) and it runs read-only structural lints over the plan graph. Every check is a pure NetworkX query: no value is executed, and every finding is a structural design warning, not a validated failure prediction.
-
-```python
-from auditable.graph.pre import analyze_plan
-from auditable.graph.adapters import declared_plan_v1
-
-plan = {
-    "nodes": [
-        # 0: read a volatile price, but grant scope far beyond what it read.
-        {"idx": 0, "agent": "planner", "kind": "tool_call",
-         "reads": [{"id": "price", "volatile": True}],
-         "scope": ["price", "ledger", "vendor_db"]},
-        # 1: a decision that rests on the unpinned, un-revalidated price.
-        {"idx": 1, "agent": "planner", "kind": "decision",
-         "reads": [{"id": "price", "producer": 0, "volatile": True}],
-         "control_preds": [0]},
-        # 2: a consequential write of 'order', with no prior read of 'order'
-        #    and no re-read of 'price' between the volatile read and the action.
-        {"idx": 2, "agent": "executor", "kind": "tool_call",
-         "reads": [{"id": "price", "producer": 0, "volatile": True}],
-         "writes": ["order"], "control_preds": [1]},
-    ]
-}
-
-report = analyze_plan(plan, adapter=declared_plan_v1)
-print(report)
+```bash
+pip install "torch==2.12.1" --index-url https://download.pytorch.org/whl/cpu
+pip install pyg_lib -f https://data.pyg.org/whl/torch-2.12.1+cpu.html
+pip install ".[graph-ad]"
+python -c "import torch_geometric.typing as t; assert t.WITH_PYG_LIB"
 ```
 
-The four shipping lints, all read-only queries at `severity='warning'`:
+## Traces and Inputs
 
-| Lint | Fires When |
-|---|---|
-| `write_with_no_prior_read` | A node writes a resource that nothing in its backward slice ever read. |
-| `flippable_dependency_annotation` | An unpinned, non-revalidated volatile dependency feeds a decision. This is an annotation; the would-it-flip question needs runtime values and is out of scope at PRE. |
-| `scope_vs_snapshot` | Granted tool scope strictly exceeds the snapshot the node read. |
-| `missing_revalidation_barrier` | A volatile read reaches a consequential action with no intervening re-read. Drift confirmation needs runtime values and is out of scope at PRE. |
+Methods read traces through `auditable.featurize.normalize_trace`, which accepts a list of step dicts, a run dict (`{"steps": ..., "texts": ...}`), a typed NetworkX graph from `auditable.graph.build_graph`, or a `SessionGraph`. Steps carry `idx`, `agent`, `kind` (`"decision"` or `"tool_call"`), and optionally `deps` and `text`; a `SessionGraph` also keeps parallel branches and merges of the execution order. A trace without dependency annotations can be read with `dependency="full_context"`, the assumption that each step relied on every earlier step. A method that needs a field the trace lacks (step text for an LLM judge, for example) raises an error naming it.
 
-The report also names the **execution-topology keystone**: the structural chokepoint of the declared plan, the node that the most other nodes transitively follow in control flow (the argmax of `execution_reach` over the `handoff_to` projection). This is a structural design lint, a separate concept from the POST blast-radius keystone, and it does not predict failure.
+`auditable.featurize` exposes the features the methods compute, so they can be inspected or reused: the GRADE structural layers (`grade_layer`, `grade_layer_matrix`), the Who&When step matrix (`who_when_step_matrix`), the step dependency graph and its statistics (`step_graph`, `span_series`, `run_max_span`), and graph encodings for PyGOD (`to_pyg`).
 
-Alongside the lints, the **Preflight Coverage Report** is a descriptive coverage-readiness view, explicitly not a risk score. It reports the dependency-edge grade mix, the observed fraction, the saturation ratio, the exact no-score reason the runtime scorer would apply, which declared reads, writes, and edges still lack a resource identity, and the declared revalidation barriers per resource.
+## Reproducing CatchBench
 
-Two boundaries, stated plainly. Dependency-state blast-share risk is **withheld** at PRE: the declared dependency layer is declared-only (observed fraction zero), so `analyze_plan` returns `state_b_risk=None` with `state_b_withheld=True` and a reason string, and it raises rather than emit a number if a scored verdict ever came back. A table-stakes OWASP-Agentic and CWE rule floor is **planned**, not shipping.
+[`benchmarks/catchbench_parity`](benchmarks/catchbench_parity) checks the library against CatchBench 0.1.2 and GRADE at commit `3839a57`, the versions the CatchBench board pins. It is a development harness and is not part of the wheel.
 
-See [`examples/example_pre_lint_plan.py`](examples/example_pre_lint_plan.py) and the [PRE rules reference](docs/pre-rules.md).
-
-</details>
-
-<details>
-<summary><b>POST: rank a finished run, find the keystone</b> (`analyze_run` over a recorded trajectory)</summary>
-
-`analyze_run` reads a recorded agent run, builds one decision graph, and ranks every step by how much of the run transitively rests on it. The keystone heads this structural triage order. On a tau-bench airline trajectory, the one reservation read that both later writes depend on is the keystone.
-
-![auditable analyze_run ranks a recorded tau-bench run by structural blast share and names the keystone decision](https://raw.githubusercontent.com/yzhao062/auditable/main/assets/analyze_run.png)
-
-```python
-from auditable import analyze_run
-from auditable.graph.adapters import tau_bench_prior_db_reads_v1
-
-report = analyze_run(run, adapter=tau_bench_prior_db_reads_v1)
-k = report.keystone
-print(k.idx, k.node_attrs["tool"])   # 2  get_reservation_details
+```bash
+export GRADE_DIR=/path/to/grade   # checked out at 3839a57
+export PYTHONHASHSEED=0
+python benchmarks/catchbench_parity/run_parity.py checks                     # per-sample comparisons
+python benchmarks/catchbench_parity/run_parity.py board --out board.txt      # the full board through the library
+python benchmarks/catchbench_parity/run_parity.py board --perturb --out perturbed.txt
+python benchmarks/catchbench_parity/run_parity.py consumption board.txt perturbed.txt
 ```
 
-The score is an uncalibrated triage ranking, not a calibrated probability. In a no-score state (`no_score:single_decision`, `no_score:low_coverage`) the scores are `None`, so a withheld score never reads as zero risk. The corpus write-to-read edges are modeled (a conservative prior-read upper bound, not a causal label); the report carries these caveats in `report.notes`. The trajectory is modeled on [tau-bench](https://github.com/sierra-research/tau-bench) (Sierra Research, MIT). See [`examples/example_post_rank_run.py`](examples/example_post_rank_run.py) and the [POST analysis reference](docs/post-analysis.md).
+The checks compare every migrated method with its CatchBench or GRADE original on the real corpora, sample by sample and bit for bit: per-run scores, per-step scores, out-of-fold predictions, configuration findings, and the features underneath them. The board run replaces CatchBench's method factories with library adapters, so the main tables and every breakdown and robustness table are computed by the library, while the original scoring functions of migrated methods are replaced by functions that raise. Its output must match the board computed before migration byte for byte. The consumption run perturbs every library output and confirms that each migrated row changes and no other row does.
 
-</details>
+## Adding a Method
 
-<details>
-<summary><b>How It Works: the two-layer graph, the signed record, the rail</b> (kernel internals)</summary>
+Subclass the family base class in `auditable.base`, give it a `MethodCard`, and register it with `@register`. The [method contract](docs/methods-contract.md) lists the conventions: input forms, label alignment for supervised step methods, output order, optional dependencies, the tests a method needs, and how to add a parity check when the method reproduces a CatchBench row.
 
-![auditable models one decision as a two-layer graph: an execution layer (control flow, observed from the trace) over a dependency layer (what each step relied on); replay catches a step that rested on a value that has since gone stale](https://raw.githubusercontent.com/yzhao062/auditable/main/assets/twolayer.png)
+## Records and Graph Analysis
 
-*auditable links a run into one graph with two edge layers: execution (control flow, observed from the trace) over dependency (what each step relied on). When a step rested on a value that has since gone stale, like `price`, `replay` catches it. The record itself binds three spans per decision (data, model, harness).*
+The package also contains the modules it was first built around. `audit` and `replay` capture an agent decision with the dependency state it relied on and re-decide it against later state; `analyze_run` ranks the steps of a finished run by structural blast share; `analyze_plan` lints a declared plan; `LiveSession` scores a growing run; and `auditable.integrations` captures observed dependency edges from LangGraph, LangChain, MCP servers, or any loop through `TouchRecorder`. See [`examples/README.md`](examples/README.md) and the [documentation](https://auditable-ai.readthedocs.io/).
 
-The graph kernel has two edge layers, and the distinction is load-bearing. Execution edges (`emits`, `handoff_to`) are observed from the trace. Dependency edges (`depends_on`) are declared, inferred, or observed, and every edge records how it is known: the corpus and plan adapters declare or infer them, while the LangGraph capture path and the `TouchRecorder` read them off a real run as observed channel touches. PRE and POST both run over this same typed graph; `audit()` is the ergonomic capture entry, so you are never asked to build the graph by hand.
+Records are content-addressed and hash-chained, and that property is limited. A signature or digest authenticates only the entries that were submitted, a hash chain exposes a later edit only when its head is anchored with an independent party, and neither reveals an event that was never written. The chain therefore does not establish that a log is complete.
 
-One agent decision crosses three spans, and `auditable` binds all three in a single signed, hash-chained record:
+### Legacy
 
-| Span | What the Record Binds | Current Signal |
-|---|---|---|
-| **Data** | What the agent read and the dependency snapshot it relied on | Snapshot freshness |
-| **Model** | Which model produced the output, and its stated basis | Decision-basis trust flag |
-| **Harness** | The action executed and its cost | A static cost-cap rule, plus the replay verdict |
-
-`replay()` re-derives whether the action still holds under the live dependency state versus the snapshot the agent used, and returns one of four routed verdicts: `ALLOW`, `ROLLBACK` (justified on the snapshot but not on live state, the stale-state case), `BLOCK` (justified on neither), or `HUMAN_REVIEW` (the policy raised `ReplayUndecidable`). A `Policy` is any callable `(state, action) -> (justified, reason)`. The `ActionGate` then executes that verdict through a `Rail`: a post-commit `ROLLBACK` or `BLOCK` calls `rail.compensate(receipt)` to reverse a committed action, rather than printing a recommendation. The shipped `ReferenceLedger` is an in-process reference rail for demos and tests; it is not a production payment rail.
-
-Records are signed and hash-chained: each record carries a `prev_digest` and a content-addressed `record_id`. Two sinks ship today, `MemorySink` (in-process) and `FileSink` (append-only JSONL, durable across process exit, fails closed on a corrupt tail).
-
-Ingestion is source-agnostic through the public `Adapter` protocol. The corpus and plan adapters ship `tau_bench_prior_db_reads_v1` (public-corpus trajectory, POST), `own_record_v1` (auditable's own signed records, POST), and `declared_plan_v1` (a framework-agnostic declared plan dict, PRE). For a real run, the LangGraph capture path (`auditable.integrations.langgraph.instrument`) and the generic `TouchRecorder` produce observed dependency edges with a structured `ResourceRef`, matched superstep-aware and reducer-aware. The declared-plan adapter stays the neutral PRE seam a LangGraph or CrewAI front-end would lower a plan into; it is not a parser for any framework.
-
-See the [architecture reference](docs/architecture.md) for the full kernel, adapters, and sinks.
-
-</details>
-
-<details>
-<summary><b>Using a single layer</b> (standalone auditors as inputs to the record)</summary>
-
-Each span's check is a standalone `Auditor` that runs on its own, with no agent and no chain, and returns a signed `Report`. `DataAuditor` scores snapshot freshness, `ModelAuditor` produces a decision-basis trust flag, and `HarnessAuditor` applies one static cost-cap rule.
-
-```python
-import time
-from auditable import DataAuditor, DependencySnapshot
-
-snapshot = DependencySnapshot(state={"budget_remaining": 1000}, captured_at=time.time() - 7 * 86400)
-report = DataAuditor(max_age_seconds=86400).assess(snapshot)
-print(report.flag, report.score)   # stale 1.0
-```
-
-These standalone auditors are inputs to the record, not the headline. The composition (capture, replay, recovery, and the lifecycle pillars) is the main line; the modules feed it. See [`examples/example_standalone_report.py`](examples/example_standalone_report.py).
-
-</details>
-
-<details>
-<summary><b>Scope, stated honestly</b> (what ships today vs. what is planned)</summary>
-
-**What ships today.** The full signed chain, replay under live state, executed recovery through a rail-neutral gate, two sinks (in-memory and append-only JSONL), the POST `analyze_run` ranking, the PRE `analyze_plan` lints plus preflight coverage report, and real-run capture into observed dependency edges (LangGraph via `instrument`, any loop via `TouchRecorder`).
-
-The fitted data-anomaly path ships as an unpromoted module API, and `LiveSession`
-prefix scoring ships. The release does **not** yet claim benchmark-grade detector
-evidence, a calibrated model-trust score, or calibrated cross-layer risk. The POST
-structural score is an uncalibrated ranking; the compound report is a transparent,
-explicitly uncalibrated debug bundle. Calibrated compound scoring remains on the
-[roadmap](#roadmap).
-
-</details>
-
-## Roadmap
-
-<details>
-<summary>What ships today, and what is next</summary>
-
-<br>
-
-Shipping today: the full capture, replay, and recover chain; PRE plan lints; POST run ranking; `LiveSession` prefix scoring; signed, hash-chained records; two sinks. The fitted PyOD detector over dependency snapshots also ships as an unpromoted module API, with freshness as the fallback; promotion waits for benchmark-grade evidence. Next:
-
-- **One calibrated compound score.** Combine the data, model, and action signals into a single calibrated score, with the model treated as a first-class node in the graph.
-- **Automatic fixes.** Refresh stale data, quarantine bad inputs, fall back to a safer model, or require human sign-off.
-- **Built-in CI checks.** A table-stakes OWASP-Agentic and CWE rule floor for continuous integration.
-- **Integrations (1.0).** LangGraph capture (`instrument`), the LangChain callback, and MCP tool-boundary capture ship now; next are a CrewAI hook, export to OpenTelemetry and LangSmith, downloadable evidence bundles, and a stable public API.
-
-</details>
+`ActionGate`, `ReferenceLedger` (the in-process reference rail), and `DataAuditor` are deprecated as of 0.3 and emit a `DeprecationWarning` when constructed. They remain importable and will be removed in a later release. Tabular anomaly detection on dependency snapshots belongs in [PyOD](https://github.com/yzhao062/pyod).
 
 ## Related Projects
 
-`auditable` is part of a small family of open agent-reliability projects:
-
-- **[awesome-auditable-ai](https://github.com/yzhao062/awesome-auditable-ai)** — a curated reading list on AI agent reliability and auditing.
-- **[GRADE](https://arxiv.org/abs/2606.22741)** — the research behind the typed two-layer graph this library is built on (also in [References](#references)).
-
-## References
-
-<details>
-<summary>Compared tools, benchmarks, and method</summary>
-
-<br>
-
-The capability marks in the table above are per each project's public documentation as of 2026.
-
-**Compared tools**
-
-<a id="ref-1"></a>`[1]` [LangSmith](https://docs.langchain.com/langsmith)<br>
-<a id="ref-2"></a>`[2]` [Langfuse](https://github.com/langfuse/langfuse)<br>
-<a id="ref-3"></a>`[3]` [Arize Phoenix](https://github.com/Arize-ai/phoenix)<br>
-<a id="ref-4"></a>`[4]` [Weights & Biases Weave](https://github.com/wandb/weave)<br>
-<a id="ref-5"></a>`[5]` [DeepEval](https://github.com/confident-ai/deepeval)<br>
-<a id="ref-6"></a>`[6]` [Ragas](https://github.com/explodinggradients/ragas)<br>
-<a id="ref-7"></a>`[7]` [promptfoo](https://github.com/promptfoo/promptfoo)<br>
-<a id="ref-8"></a>`[8]` [OpenAI Evals](https://github.com/openai/evals)<br>
-<a id="ref-9"></a>`[9]` [NeMo Guardrails](https://github.com/NVIDIA-NeMo/Guardrails)<br>
-<a id="ref-10"></a>`[10]` [Guardrails AI](https://github.com/guardrails-ai/guardrails)<br>
-<a id="ref-11"></a>`[11]` [Lakera Guard](https://www.lakera.ai/lakera-guard)
-
-**Benchmarks and datasets**
-
-<a id="ref-12"></a>`[12]` [tau-bench](https://github.com/sierra-research/tau-bench) (arXiv:2406.12045)<br>
-<a id="ref-13"></a>`[13]` [Who&When: Which Agent Causes Task Failures and When?](https://github.com/ag2ai/Agents_Failure_Attribution) (arXiv:2505.00212)
-
-**Method**
-
-<a id="ref-14"></a>`[14]` [GRADE: Graph Representation of LLM Agent Dependency and Execution](https://arxiv.org/abs/2606.22741)
-
-</details>
+- [CatchBench](https://github.com/yzhao062/catchbench): the benchmark for these methods (arXiv:2608.22808).
+- [GRADE](https://arxiv.org/abs/2606.22741): the typed two-layer graph of agent execution and dependency that the structural features read.
+- [awesome-auditable-ai](https://github.com/yzhao062/awesome-auditable-ai): a reading list on AI agent reliability and auditing.
 
 ## Citation
 
-If you use `auditable` in your work, please cite the GRADE paper, the typed two-layer graph model the library is built on:
+If you use `auditable`, please cite the work behind the methods you use (each `MethodCard.cite`) and, for the structural features and the benchmark, GRADE and CatchBench:
 
 ```bibtex
 @article{zhao2026grade,
@@ -338,8 +208,16 @@ If you use `auditable` in your work, please cite the GRADE paper, the typed two-
   journal = {arXiv preprint arXiv:2606.22741},
   year    = {2026}
 }
+
+@misc{zhao2026catchbench,
+  title         = {{CatchBench}: When Can an Agent Failure Be Caught?},
+  author        = {Yue Zhao},
+  year          = {2026},
+  eprint        = {2608.22808},
+  archivePrefix = {arXiv}
+}
 ```
 
 ## License
 
-[Apache-2.0](LICENSE).
+[Apache-2.0](LICENSE). Ported code keeps the notice of its source (GRADE and CatchBench, both MIT License) at the top of each module.

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://vite-doctor.onmax.me/og/doctor-lifeline-bg.png" alt="Vite Doctor" width="100%">
+  <img src="https://vite-doctor.onmax.me/og/readme-banner.png" alt="Vite Doctor: catch framework bugs AI agents miss" width="100%">
 </p>
 
 <h1 align="center"><img src="https://vite-doctor.onmax.me/doctor-icon.png" alt="" width="32" height="32" style="vertical-align: middle;"> Vite Doctor</h1>
@@ -58,6 +58,18 @@ pnpm nuxt doctor
 ```
 
 Use `--framework` only when Doctor cannot identify the framework automatically.
+
+For CI, add a package script and run it before the build. Doctor reads source and config, not build output. Nuxt projects only need `nuxt prepare` first:
+
+```json
+{
+  "scripts": {
+    "check:doctor": "vite-doctor . --max-warnings 0"
+  }
+}
+```
+
+Don't name the script `doctor`. `pnpm doctor` and `npm doctor` run the package manager's built-in health check instead of your script.
 
 Check a migration before changing dependencies:
 

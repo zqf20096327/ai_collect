@@ -11,13 +11,23 @@
 BenchBoard indexes published benchmark results for current AI models. Every score keeps its model release, benchmark variant, evaluation setting, and original source attached. Results from different harnesses or versions remain separate, and the site does not invent a cross-benchmark composite score.
 
 <!-- DATA_SUMMARY_START -->
-<p align="center"><img src="assets/benchboard-stats.svg?v=2" width="100%" alt="182 models and versions, 557 benchmark families, 9,086 public results, 288 primary sources"></p>
-<p align="center"><sub>126 curated releases + 56 comparison-only models · 1,326 separately ranked metric and version views</sub></p>
+<p align="center"><img src="assets/benchboard-stats.svg?v=2" width="100%" alt="184 models and versions, 561 benchmark families, 9,148 public results, 290 primary sources"></p>
+<p align="center"><sub>126 curated releases + 58 comparison-only models · 1,336 separately ranked metric and version views</sub></p>
 <!-- DATA_SUMMARY_END -->
 
 <h2><img src="assets/readme-icon-news.svg" width="28" alt=""> News</h2>
 
 <table>
+  <tr>
+    <td align="center" width="48"><img src="assets/news-release.svg" width="32" alt="Coding evaluation"></td>
+    <td width="132"><strong>2026-10-21</strong><br><sub>CODING EVALUATION</sub></td>
+    <td>Added 20 exact results from OpenAI's <a href="https://openai.com/index/low-resource-programming-languages/">low-resource coding evaluation</a>: MultiLangBench test pass rates and estimated API costs, plus separate COBOL migration accuracy. The four published language examples, 20-language averages, model versions, and reasoning settings remain distinct; unprinted chart cells are outside this audit.</td>
+  </tr>
+  <tr>
+    <td align="center" width="48"><img src="assets/news-audit.svg" width="32" alt="Benchmark audit"></td>
+    <td width="132"><strong>2026-10-20</strong><br><sub>CODING MEMORY BENCHMARK</sub></td>
+    <td>Added 42 headline results from Tencent Hunyuan's <a href="https://github.com/Tencent-Hunyuan/Hy-Memory/blob/fba347ad8d04eefbc51a466fa4cbd7d4e1936109/docs/papers/CMB_A_Coding_Memory_Benchmark_for_Long_Horizon_and_Interleaved_Coding_Agents.pdf">CodeMemoryBench paper</a>: Code resolution and QA on 216 tasks and 750 questions, plus a separate 99-task SWE-ContextBench Lite Related run. Claude Sonnet 5 and DeepSeek V4 Flash use comparison-only paper labels; memory methods and the two resolution rules remain separate.</td>
+  </tr>
   <tr>
     <td align="center" width="48"><img src="assets/news-audit.svg" width="32" alt="Benchmark audit"></td>
     <td width="132"><strong>2026-10-19</strong><br><sub>SURVEY REVIEW BENCHMARK</sub></td>

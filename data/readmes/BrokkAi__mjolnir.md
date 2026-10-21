@@ -2,8 +2,9 @@
 
 **One control plane for all your coding agents.**
 
-Mjolnir (`mj`) runs Claude Code, Codex, Kimi Code, Grok Build, and Muse Code
-sessions side by side, on your laptop, in containers, over SSH, or on EC2, and
+Mjolnir (`mj`) runs Claude Code, Codex, Kimi Code, Grok Build, Muse Code,
+OpenCode, and MiMo Code sessions side by side, on your laptop, in containers,
+over SSH, or on EC2, and
 keeps them running after you close the terminal. You can move a session to
 another account, another harness, or a compatible target without starting over.
 Bare SSH sessions stay on their original host.
@@ -57,7 +58,7 @@ away.
 - **Multi-repo projects.** Bundle several repositories so they provision,
   checkpoint, move, and restore together.
 - **Agent and editor integration.** Drive sessions through `mj new`, `mj prompt`,
-  and `mj wait`, the HTTP API, or `mj acp` for stdio ACP clients.
+  `mj message` and `mj wait`, the HTTP API, or `mj acp` for stdio ACP clients.
 - **Terminal, web, and desktop.** A full terminal dashboard, plus a
   privacy-first web viewer you can reach from your phone over Tailscale, and a
   desktop app. All three share the same live sessions.
@@ -103,6 +104,10 @@ targets in Settings (`ctrl+b s`).
   your existing configuration.
 - `mj go` is a shortcut for later. Each folder remembers its setup, and
   running `mj go` again returns you to that folder's last conversation.
+- `mj simple` is the minimal tmux-friendly mode. It uses the default
+  enabled agent, always starts locally with an isolated checkout, disables
+  automatic review for that session, and uses direct Ctrl-key commands with no
+  prefix, so Ctrl+B stays available to tmux.
 - `mj doctor` checks prerequisites and tells you how to fix anything missing.
 
 The [quickstart](https://mjolnir.brokk.ai/quickstart/) walks through a first

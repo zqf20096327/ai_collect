@@ -68,6 +68,7 @@ Interview Agent 是一个基于大语言模型的 **AI 模拟面试平台**。�
 - 🎛️ 模型选择：模型列表从官方 `GET /models` 动态获取（不硬编码），支持思考开关与推理强度
 - 🔒 安全机制：CORS 白名单、bcrypt 密码哈希、FAISS 索引 SHA-256 完整性校验
 - 📐 上下文管理：tiktoken 精确计数 + 智能裁剪，适配超长上下文模型
+- ⚡ 前缀缓存友好：上下文固定为「prompt → 简历 → JD →（可选 RAG）→ 每轮问答」，同一场面试里前缀逐字节不变，服务端 prefix caching 稳定命中
 - 🖥️ 界面定制：7 套配色预设 + 自定义背景 / 文字色，WCAG 对比度提示
 - 🪟 独立窗口模式：置顶、透明度、捕获排除、全局 F8 热键，只留一个窗口
 - 🐳 多种部署：本地脚本 / Docker Compose / 单容器
@@ -131,7 +132,9 @@ chmod +x start.sh
 #### 方式二：独立窗口模式（Windows）
 
 ```bash
-python desktop.py
+# 推荐：双击 start_app.bat（它转调 start_app.ps1，全程无终端窗口）
+.\start_app.ps1              # 或直接跑 PowerShell 启动器
+python desktop.py            # 也可以绕过启动器，自己带参数跑
 # 或经由 main.py 启动（参数自动转发）
 python main.py --desktop
 python main.py --desktop --no-topmost --width 1366 --height 768
@@ -144,15 +147,30 @@ python main.py --desktop --no-topmost --width 1366 --height 768
 | 后端 | 独立 cmd 窗口 | 桌面进程内 |
 | 前端 | Vite dev（5173，热更新） | 后端托管的 `dist` 构建产物 |
 | 语音微服务 | 各自一个 cmd 窗口 | 桌面进程内，**不弹窗** |
-| 可见窗口 | 4 个控制台 + 1 个浏览器 | **只有 1 个独立窗口** |
+| 可见窗口 | 4 个控制台 + 1 个浏览器 | **只有 1 个独立窗口 + 托盘图标** |
+| 任务栏 | 多个按钮 | 默认不出现图标，由托盘图标代替 |
 
 > 桌面版**默认免登录**（单用户模式，数据归属本机账号 `desktop@local`）。想恢复登录页：`.env` 中设 `AUTH_REQUIRED=true`，或 `start_app.bat --auth-required true`。
 >
 > 桌面版**默认不询问语音开关**，是否启用完全由 `.env` 中的 `VOICE_ENABLED` / `STT_ENABLED` / `TTS_ENABLED` 决定，保持双击即用。
 >
-> **控制台启动后会自动隐藏**，日志写入 `logs/desktop.log`。排查问题用 `start_app.bat --hide-console false` 保留黑窗口。
+> **全程没有终端窗口**：启动器由 PowerShell 以 `-WindowStyle Hidden` 启动，应用用
+> `pythonw.exe` 运行，两者都不分配控制台。日志写入 `logs/start_app.log`（启动器）、
+> `logs/desktop.log`（应用）、`logs/app-stderr.log`（应用的标准错误，含未捕获异常的
+> traceback）。排查问题用 `.\start_app.ps1 -Foreground` 在当前终端里跑，日志直接可见。
 >
-> 独立窗口要求先构建前端：`cd frontend && npm run build`（`start_app.bat` 会在产物缺失或源码更新时自动重新构建）。
+> **托盘图标**（`--tray`，启动器默认开启）：单击图标显示/隐藏窗口，右键菜单提供
+> 显示/隐藏、打开日志、退出。窗口隐藏时应用与服务继续在后台运行。窗口隐藏时任务栏
+> 图标一并移除，避免留下点不开的死按钮；不想要托盘可用 `-NoTray`，想保留任务栏图标
+> 用 `-ShowTaskbar`。
+>
+> **点右上角 X = 收进托盘**（`--close-to-tray`，默认跟随 `--tray`），不会退出程序，
+> 并弹一次气泡提示告知「还在托盘里」。真正退出请用托盘右键菜单的「退出」。
+> 想保留旧的「X 直接退出」行为：`-ExtraArgs --close-to-tray false`。
+> 注意浏览器窗口模式（`--shell browser`）的窗口属于浏览器进程，**无法拦截关闭**，
+> 点 X 仍会退出应用。
+>
+> 独立窗口要求先构建前端：`cd frontend && npm run build`（`start_app.ps1` 会在产物缺失或源码更新时自动重新构建）。
 
 **常用启动参数**
 
@@ -168,13 +186,15 @@ python main.py --desktop --no-topmost --width 1366 --height 768
 | `--opacity N` | `1.0` | 窗口透明度 `0.2`–`1.0`（也可写 `20`–`100` 百分数） |
 | `--zoom N` | `1.0` | 界面缩放 `0.5`–`2.0`（也可写百分数） |
 | `--capture-exclude [BOOL]` | `true` | 从截屏 / 录屏中排除窗口（仅 native 真正生效） |
-| `--hide-taskbar [BOOL]` | `false` | 隐藏任务栏图标 |
+| `--hide-taskbar [BOOL]` | `false` | 隐藏任务栏图标（开 `--tray` 时默认变为 `true`） |
+| `--tray [BOOL]` | `false` | 显示系统托盘图标：单击显隐窗口，右键可退出 |
+| `--close-to-tray [BOOL]` | 跟随 `--tray` | 点 X 收进托盘而不是退出（浏览器模式无法拦截） |
 | `--fullscreen [BOOL]` | `false` | 全屏启动 |
 | `--app PATH` | — | 启动后打开的页面，如 `--app /login` |
 | `--browser PATH` | — | 【browser 模式】指定浏览器可执行文件 |
 | `--user-data-dir PATH` | `~/.interview-agent/desktop-profile` | 【browser 模式】浏览器用户数据目录 |
 | `--debug` | `false` | 【native 模式】开启 WebView 开发者工具 |
-| `--hide-console [BOOL]` | `true` | 启动后隐藏启动器控制台 |
+| `--hide-console [BOOL]` | `true` | 启动后隐藏启动器控制台。**注意**：Windows 11 默认终端（Windows Terminal）下这个开关无效，见下方说明；用 `start_app.ps1` 启动不会有控制台 |
 | `--auth-required [BOOL]` | `false` | 是否要求登录；`true` 恢复登录页 |
 | `--no-console` | `false` | 不输出启动日志 |
 | `--open-timeout SEC` | `90` | 等待服务就绪的最长秒数 |
@@ -283,6 +303,47 @@ docker run -d \
 | `AVAILABLE_MODELS` | `deepseek-v4-pro,deepseek-v4-flash` | **仅兜底**：正常由官方 `GET /models` 动态获取 |
 | `MAX_CONTEXT_TOKENS` | `1000000` | 上下文窗口总预算（token） |
 | `SYSTEM_RESERVED_TOKENS` | `16000` | 为 system 消息预留的 token 数 |
+| `PREFIX_CACHE_MAX_ENTRIES` | `64` | 最多缓存多少场面试的稳定前缀 |
+| `PREFIX_CACHE_MAX_TOKENS` | `200000` | 单条稳定前缀的 token 上限，超过则不缓存 |
+| `PREFIX_CACHE_TTL_SECONDS` | `1800` | 稳定前缀缓存存活时间（秒） |
+
+### 上下文结构（前缀缓存）
+
+每轮发给模型的 messages 顺序固定为：
+
+```
+system:  静态指令 → 经验级别 → 轮次 → 岗位类型 → 题库/补充说明 → 简历 → JD →（时间预算）
+user:    历史提问……（每轮只在尾部追加）
+user:    本轮提问 + 【参考上下文】RAG / 联网搜索 / 编程题   ← 唯一每轮变化的部分
+```
+
+这套顺序是为**服务端前缀缓存（prefix caching）**服务的：DeepSeek 按 token
+前缀匹配 KV，只要前缀逐字节一致就能复用，省下重复的 prefill。因此
+
+- 静态指令排在简历/JD **之前**，跨会话可复用的前缀最长；
+- `system` 在同一场面试里只构建一次并进程内缓存，绝不逐轮重建；
+- RAG 检索结果、联网搜索、编程题等**每轮变化**的内容，一律追加到
+  **最后一条 user 消息的末尾**，绝不放进 `system`（放进去会让它之后的 KV 全部失效）；
+- token 裁剪只作用于对话部分，`system` 原样透传（裁它会让前缀变短、缓存失效）。
+
+> **实测（deepseek-flash，2026-10）**：缓存确实是「从第 0 个 token 起的严格前缀匹配」。
+> 用同一段 nonce 前缀做对照实验——只改尾部时 `cache_hit=128`（命中前半段），
+> 而在前缀**中途**插入一句话则 `cache_hit=0`（整条前缀连同后面全部作废）。
+> 这就是「变化的内容只能放尾部」的实证依据。
+>
+> 真实面试场景下同前缀连发三轮的命中率约 82–85%，未命中的部分正好是本轮新增的问答。
+> 需要复现可跑 `scripts/verify_prefix_cache.py`（只读 `.env` 的 Key，不写业务数据）。
+
+日志里可直接观测命中情况：
+
+```
+Prefix cache HIT | fp=xxxx | 1537 chars / ~1500 tokens      # 进程内前缀复用
+Context: 22 messages, ~1843 tokens (... prefix=cache, fp=xxxx)
+LLM usage | prompt=1504 (cache_hit=1408, cache_miss=96) | cache_hit_rate=93.6%   # 服务端前缀缓存
+```
+
+配置开关见 `PREFIX_CACHE_*`；`prefix=client` 表示前端回传的 system 与后端
+权威前缀一致（这是最理想的情况）。
 
 ### RAG 知识库
 
@@ -505,7 +566,9 @@ docker run -d \
 | 面试 | `POST` | `/interview/report` | 生成报告（支持结构化 QA 逐题评估） |
 | 面试 | `POST` | `/interview/plan` | 面试时长推算（含阶段拆分与动态重规划） |
 
-**SSE 事件格式**：每帧为 `data: {"type": "...", "content": "..."}`，`type` 取值为 `reasoning`（思维链）/ `content`（正文）/ `error`；流结束发送 `data: [DONE]`。
+**SSE 事件格式**：每帧为 `data: {"type": "...", "content": "..."}`，`type` 取值为 `reasoning`（思维链）/ `content`（正文）/ `system_prefix`（稳定前缀，见下）/ `error`；流结束发送 `data: [DONE]`。
+
+`system_prefix` 帧带 `content`（整段 system 文本）与 `fingerprint`，**只在首轮、或后端发现前端手上那份已过期时下发**。前端把它按模式存起来（不进消息列表、不持久化），后续轮次作为 `messages[0]` 原样回传；后端逐字节比对通过就沿用，因而「prompt + 简历 + JD」在整场面试里完全不变。响应头另带 `X-Prefix-Fingerprint`，便于把日志里的 `fp=` 与某场面试对应起来。
 
 ### 岗位 / 题库 / 上传 / 知识库
 
@@ -782,10 +845,35 @@ pre-commit install          # 安装 git hook，之后每次 commit 自动检查
 ### 启动脚本
 
 - `start.bat` / `start.sh` **每次启动都会重装 Python 依赖**，每次都会联网耗时。
-- `start.bat` / `start.sh` 会**交互询问**是否启用语音；`start_app.bat` 则完全从 `.env` 读取，不提问。
+- `start.bat` / `start.sh` 会**交互询问**是否启用语音；`start_app.bat` / `start_app.ps1` 则完全从 `.env` 读取，不提问。
 - 语音相关的安装与设备选择在 `start.bat` 中**只在当前窗口会话内生效，不会写回 `.env`**。想让配置长期生效，请手动写入 `.env`。
 - 脚本只检查「是否安装了 Node」，并未校验版本。由于前端使用 Vite 8，建议使用 **Node 20+**。
 - `start_app.bat` 接受并透传任意参数给 `desktop.py`，例如 `start_app.bat --width 1600 --height 900 --no-topmost`。
+- `start_app.ps1` 是实际干活的启动器，`start_app.bat` 只是转发（因为双击 .bat 一定会先出现一个终端窗口）。常用开关：
+  `-Foreground`（前台运行看日志）、`-SkipDeps`、`-NoBuild`、`-NoTray`、`-ShowTaskbar`。
+- **托盘模式下点窗口右上角 X 不会退出程序**，只会把窗口收进托盘（见上文 `--close-to-tray`）。
+  退出请用托盘图标的右键菜单。这个「关不掉」是刻意设计：避免面试进行中误点 X 丢掉会话。
+- **`start_app.ps1` 必须以 UTF-8 BOM 保存**：Windows PowerShell 5.1 在没有 BOM 时按系统
+  ANSI 代码页读取 `.ps1`，中文会变乱码并破坏引号配对，脚本直接语法报错。（PowerShell 7 不受影响。）
+
+### 为什么双击 .bat 的终端窗口藏不掉
+
+这不是没实现，而是 Windows 11 的终端架构决定的，实测结论：
+
+- 默认终端是 **Windows Terminal** 时，`cmd` 跑在 ConPTY 伪控制台里；
+- 子进程调用 `GetConsoleWindow()` 拿到的是 `conhost.exe` 名下的
+  `PseudoConsoleWindow`（真实类名，可用 `EnumWindows` 验证）；
+- 对它调用 `ShowWindow(SW_HIDE)` 会**返回成功**，`IsWindowVisible` 也变成 `False`，
+  但屏幕上那个真正的终端窗口纹丝不动。
+
+也就是说「应用自己去隐藏启动它的终端」这条路走不通。`start_app.ps1` 改用
+`Start-Process -WindowStyle Hidden`（经由 `STARTUPINFO.wShowWindow` 让系统从一开始就不
+显示窗口）+ `pythonw.exe`（GUI 子系统，不分配控制台），因此**根本不存在**需要隐藏的窗口。
+
+> 另一个相关坑：`pythonw.exe` 下 `sys.stdout` / `sys.stderr` 为空，未捕获异常的
+> traceback 会彻底消失。启动器因此显式把子进程的 stdout/stderr 重定向到
+> `logs/app-stdout.log` 与 `logs/app-stderr.log` —— 既拿到崩溃现场，也避免子进程
+> 继承启动器的句柄、在启动器退出后因句柄失效而静默死掉（这个坑实际踩过）。
 
 ### 排查技巧
 

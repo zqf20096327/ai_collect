@@ -70,6 +70,8 @@ GitLab also ships an [official MCP server](https://docs.gitlab.com/user/model_co
 - stdio goes through `mcp-remote` and needs Node.js 20 or later.
 - Toolsets use the `X-Gitlab-Enabled-Mcp-Server-Toolsets` header. An optional `X-Gitlab-Mcp-Server-Tool-Name-Prefix` header keeps the first 32 characters of a tool-name prefix.
 
+[Full comparison with the official GitLab MCP server →](./docs/comparison/official-gitlab-mcp.md)
+
 Quick start: choose either Personal Access Token or OAuth2 setup below, install `@zereight/mcp-gitlab`, and use `zereight-mcp-gitlab` in your MCP client configuration.
 
 ### Client Setup Guides
@@ -143,7 +145,7 @@ The store path is pinned by your lock file; update it with `nix flake update git
 
 The examples use `zereight-mcp-gitlab`, a less collision-prone alias for the legacy `mcp-gitlab` binary. If your MCP client cannot find it, use the absolute path from `which zereight-mcp-gitlab`.
 
-No global install? Pin `npx` to the previous stable release (the version these docs recommend), for example `npx -y @zereight/mcp-gitlab@2.3.3`. If you always want the newest release, use `npx -y @zereight/mcp-gitlab@latest` instead. The server prints a notice to stderr on startup when a newer version is available (disable with `GITLAB_DISABLE_VERSION_CHECK=true`).
+No global install? Pin `npx` to the previous stable release (the version these docs recommend), for example `npx -y @zereight/mcp-gitlab@2.3.4`. If you always want the newest release, use `npx -y @zereight/mcp-gitlab@latest` instead. To try a fix merged to `main` before the next stable release, use `npx -y @zereight/mcp-gitlab@next`, a pre-release build that is not meant for production. The server prints a notice to stderr on startup when a newer version is available (disable with `GITLAB_DISABLE_VERSION_CHECK=true`).
 
 #### Claude Desktop one-click install (MCP Bundle)
 
@@ -326,7 +328,7 @@ exchanging credentials with GitLab on behalf of the client.
 | Environment Variable          | Required | Description                                                                                                                             |
 | ----------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | `GITLAB_MCP_OAUTH`            | ✅       | Set to `true` to enable                                                                                                                 |
-| `GITLAB_API_URL`              | ✅       | GitLab API base URL                                                                                                                     |
+| `GITLAB_API_URL`              | ✅       | GitLab API base URL. Do not embed credentials (`user:pass@`) in the URL; they are ignored.                                              |
 | `GITLAB_OAUTH_APP_ID`         | ✅       | GitLab OAuth Application ID                                                                                                             |
 | `MCP_SERVER_URL`              | ✅       | Public HTTPS URL of this MCP server                                                                                                     |
 | `STREAMABLE_HTTP`             | ✅       | Must be `true`                                                                                                                          |
@@ -614,7 +616,7 @@ No `headers` field is needed — Claude.ai obtains the token via OAuth automatic
 | `GITLAB_MCP_OAUTH`                          | Yes      | Set to `true` to enable                                                                                                                                                                                             |
 | `GITLAB_OAUTH_APP_ID`                       | Yes      | Client ID of the pre-registered GitLab OAuth application                                                                                                                                                            |
 | `MCP_SERVER_URL`                            | Yes      | Public HTTPS URL of your MCP server; also allowed for `/mcp` Host/Origin checks                                                                                                                                     |
-| `GITLAB_API_URL`                            | Yes      | Your GitLab instance API URL (e.g. `https://gitlab.com/api/v4`)                                                                                                                                                     |
+| `GITLAB_API_URL`                            | Yes      | Your GitLab instance API URL (e.g. `https://gitlab.com/api/v4`). Do not embed credentials (`user:pass@`) in the URL; they are ignored.                                                                              |
 | `STREAMABLE_HTTP`                           | Yes      | Must be `true` (SSE is not supported)                                                                                                                                                                               |
 | `GITLAB_OAUTH_SCOPES`                       | No       | Comma-separated GitLab scopes to request (e.g. `api,read_user`). Defaults to `api` (or `read_api` when the effective permission mode is `readonly`). The pre-registered application must be configured with at least these scopes. |
 | `OAUTH_REGISTER_RATE_LIMIT_PER_HOUR`        | No       | Per-IP rolling limit for Dynamic Client Registration (`POST /register`). Default `20`/hour; range `1`–`1000`. Raise when clients (e.g. multiple IDE windows) hit registration throttling. Not a GitLab API limit. |

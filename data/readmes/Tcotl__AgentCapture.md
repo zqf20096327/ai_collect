@@ -97,11 +97,29 @@ AgentCapture 是一套面向安全值守、红蓝对抗与互联网系统接入�
 2. **功能性诱饵层**：页面以可见的 Developer API 形式暴露结构化数据接口（真实 API 不设浏览器挑战），自动化客户端按 API 文档"正常接入"即完成注册上线——不依赖目标服从任何显式指令，对齐训练无法防御"把用 API 当正常工作"的行为。
 3. **全链路溯源层**：会话蜜标令牌（按会话以 HMAC 派生的追踪令牌）贯穿页面 → API → 注册 → 心跳全链路；SSH 蜜饵凭证内嵌会话水印，支持凭证复用回溯到具体会话。
 
-### 反制上线设计思路
+### 反制上线功能流程
 
-![反制上线设计思路](docs/recruitment-design.png)
+![反制上线功能流程](docs/counter-online-flow.png)
 
-> 术语说明：显式命令式提示注入在实测中被全部主流 Agent 拒绝；平台的反制上线能力来自功能性伪装（API 接入流程），而非提示词服从。
+> 功能流程：Portal 三阶段接入（取内容 → 客户端注册即上线 → 心跳领任务）、双通道任务下发闭环、逐跳门控（总开关 / 限速 / 监听器令牌）与会话蜜标归因链。反制上线能力来自功能性伪装（API 接入流程），而非提示词服从——显式命令式提示注入在实测中被全部主流 Agent 拒绝。
+
+## 与传统蜜罐的对比
+
+> 传统蜜罐定位「被动诱捕」：伪装目标、等待命中、记录分析——发现攻击即终点。AgentCapture 在此之上叠加了**检测后的处置与反制**：威胁不只被记录，还会被阻断、被溯源、甚至被反控。
+
+<table width="100%">
+  <thead><tr><th align="center">维度</th><th align="center">传统蜜罐</th><th align="center">AgentCapture</th></tr></thead>
+  <tbody>
+    <tr><td align="center">定位</td><td align="center">被动诱捕：等攻击者踩中假目标，记录后分析</td><td align="center"><strong>主动反制</strong>：诱捕之外还能反控攻击者——功能性伪装收编 AI Agent 上线</td></tr>
+    <tr><td align="center">检测对象</td><td align="center">以已知漏洞利用、弱口令爆破为主</td><td align="center">覆盖 <strong>AI Agent</strong>：23 种产品级指纹（Claude Code / ChatGPT Codex / Kimi Code 等）+ 行为序列识别</td></tr>
+    <tr><td align="center">攻击者交互</td><td align="center">仿真协议交互，深度有限（SSH 多为 banner 级）</td><td align="center"><strong>高保真交互</strong>：SSH 全命令假文件系统、MySQL 查询捕获、终端式会话回放</td></tr>
+    <tr><td align="center">反制能力</td><td align="center">无——发现即终点，处置依赖外部防火墙/设备联动</td><td align="center"><strong>五档决策真实执行</strong>：挑战 / 隔离 / 阻断内置，无需额外设备</td></tr>
+    <tr><td align="center">攻击者归因</td><td align="center">来源 IP + 时间戳</td><td align="center"><strong>会话蜜标令牌</strong>全链路溯源 + 攻击者画像（指纹 / 凭证 / 自动标签）</td></tr>
+    <tr><td align="center">凭证防线</td><td align="center">仅捕获提交的凭证</td><td align="center"><strong>水印凭证</strong>：泄露可逐条溯源 + 跨面复用触发横向移动高危告警</td></tr>
+    <tr><td align="center">接入成本</td><td align="center">独立部署，与业务割裂</td><td align="center"><strong>无损接入</strong>业务系统：反代挂载 / 前端注入 / 克隆站，回退即删配置</td></tr>
+    <tr><td align="center">数据输出</td><td align="center">各自存储、格式不一</td><td align="center">统一事件流 + <strong>AI-SOC syslog</strong>（RFC5424/3164）+ 开放 API</td></tr>
+  </tbody>
+</table>
 
 ## 界面预览
 
@@ -150,7 +168,9 @@ AgentCapture 是一套面向安全值守、红蓝对抗与互联网系统接入�
 
 ## 系统架构
 
-![AgentCapture 系统架构](docs/architecture.png)
+![AgentCapture 系统架构示意图](docs/architecture-schematic.png)
+
+> 示意图（交互源文件：[docs/architecture-schematic.src.html](docs/architecture-schematic.src.html)）——自上而下：攻击面与采集源（业务 Nginx / Web 蜜罐面 / 协议蜜罐 / 克隆站与 Docker 蜜罐）→ 管理面核心（接入层 · 反制与收编 · 检测与决策 · 数据与运营 · 横切）→ 外部消费（控制台 / 开放 API / 存储 / AI-SOC / 告警 / 节点）；底部为方式一接入、接入自检与收编链路的三条关键调用示意。
 
 组件数据流：
 

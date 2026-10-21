@@ -1,0 +1,174 @@
+# Kurczak 🐣
+
+Minimal Ollama chat UI — no login, no heavy features. Pick a model and chat. Built for coding with markdown and syntax highlighting.
+
+<img width="1128" height="870" alt="image" src="https://github.com/user-attachments/assets/e048c02d-1cbe-47ad-8566-3d793f30a9cd" />
+
+## 🎁 Features
+
+- **File Explorer** — Full project generation system with real-time tracking and tree view (requires capable models)
+- **Project Export** — Download complete generated projects as ZIP archives
+- **Model behavior modes** — General, small-model-friendly coding, and structured Project builder prompts
+- **Optional prompt editor** — Customize any behavior mode per conversation without losing the built-in default
+- **Model switcher** — Lists models from your Ollama instance
+- **Streaming** — Responses appear token-by-token
+- **Streaming continuity** — Switch threads mid-generation without losing progress
+- **Markdown & syntax highlighting** — Code blocks with language tags
+- **Copy button** — Quick code copying from any block
+- **Thinking view** — Collapsible sections for model reasoning
+- **Stop generation** — Abort in-progress responses
+- **Message metadata** — Timestamp, model name, and generation duration
+- **Context estimate** — Visual badge with token count
+- **History** — Disk-based JSON storage for conversations
+- **Config** — Customizable Ollama URL, port, and prompts
+
+## 💾 Download
+
+Clone this repository:
+
+```bash
+git clone https://github.com/c0m4r/kurczak.git
+cd kurczak
+```
+
+or grab .zip or .tar.gz archive at [Releases](https://github.com/c0m4r/kurczak/releases)
+
+## ⚙️ Setup
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Edit `config.json` if needed:
+   - `ollamaUrl`: your Ollama API URL (default `http://localhost:11434`)
+   - `port`: server port (default `1234`)
+   - `defaultModel`: model name to select by default
+   - `defaultSystemPrompt`: pre-filled system prompt (e.g. for coding)
+
+3. Run:
+   ```bash
+   npm start
+   ```
+   Dev with auto-restart: `npm run dev`
+
+4. Run Ollama
+
+```bash
+export OLLAMA_CONTEXT_LENGTH=12288 # 12k context length (default: 4k)
+ollama serve
+```
+
+5. Open `http://localhost:1234`.
+
+## 🐳 Docker
+
+1. Run Ollama
+
+```bash
+ip a s docker0 | grep global | awk '{print $2}' | cut -f1 -d\/
+export OLLAMA_HOST=0.0.0.0 # replace with your docker0 ip
+export OLLAMA_CONTEXT_LENGTH=12288 # 12k context length (default: 4k)
+ollama serve
+```
+
+2. Run Kurczak
+
+```bash
+docker build -t kurczak .
+docker run -d \
+  -p 1234:1234 \
+  -v $(pwd)/data:/app/data \
+  --add-host=host.docker.internal:host-gateway \
+  --name kurczak \
+  kurczak
+```
+
+## 📂 Project layout
+
+```
+kurczak/
+  config.json             # App settings
+  server.js               # Express server & API
+  prompts/                # System prompt templates
+  data/history/           # Conversation storage
+  public/
+    index.html            # UI structure
+    style.css             # UI styling
+    app.js                # Frontend logic & Explorer system
+```
+
+History is saved automatically. No DB or login required.
+
+## 📁 Model behavior and File Explorer
+
+Kurczak provides three behavior modes:
+
+- **General** for questions, writing, and everyday assistance.
+- **Simple coder** for smaller or faster models. Its short prompt produces normal code snippets and does not ask the model to manage project files.
+- **Project builder** for capable coding models. It asks for complete files using Kurczak's structured file protocol and enables the File Explorer workflow.
+
+The prompt editor is optional and separate from the mode selector. Kurczak remembers the selected behavior for new conversations and across browser reloads. Prompt edits apply only to the current conversation, and the selected mode can always be restored to its default prompt.
+
+<img width="1216" height="691" alt="image" src="https://github.com/user-attachments/assets/00f41469-50b2-48d6-9fc0-3d72812415e3" />
+
+> [!IMPORTANT]
+> Project builder requires a model that can reliably follow multi-file formatting instructions. Use Simple coder with smaller models to avoid malformed paths and incomplete projects.
+
+### How it works
+1. Select **Project builder** from Model behavior.
+2. The model emits complete files with safe paths relative to the project root.
+3. Kurczak captures valid file blocks and builds the tree while the response streams.
+4. Select a file to preview, copy, or download it.
+5. Download the complete project as a ZIP archive containing a single project directory.
+
+## 🔒 Security & Intended Usage
+
+> [!WARNING]
+> **No Authentication**: This application does not have any built-in authentication or access control.
+
+It is **intended for local use** or to be hosted on a VPS/Server **strictly behind a firewall, VPN, or reverse proxy with authentication**. Exposing this application directly to the public internet will allow anyone to access your chat history and use your Ollama resources.
+
+## 🔌 API Documentation
+
+Kurczak provides a minimal REST API for interaction with Ollama and history management.
+
+### System & Models
+- `GET /api/config`: Returns the current server configuration and system prompt templates.
+- `GET /api/models`: Proxies to Ollama to list all locally available models.
+- `GET /api/model-info?model=<name>`: Fetches detailed information (like context length) for a specific model.
+
+### Chat & Generation
+- `POST /api/chat`: Proxies chat requests to Ollama with streaming support (NDJSON).
+
+### History Management
+- `GET /api/history`: Lists all saved conversation IDs and titles.
+- `GET /api/history/:id`: Retrieves the full JSON content of a specific conversation.
+- `POST /api/history`: Saves a new conversation or updates an existing one (body: `{id, model, systemPrompt, messages}`).
+- `PUT /api/history/:id`: Updates an existing conversation.
+- `DELETE /api/history/:id`: Deletes a conversation file from disk.
+
+*Note: All file system operations (`/api/config` and `/api/history/*`) are protected by a strict rate limiter (10 requests/minute).*
+
+## 💡 Model switching and context
+
+**Can you switch models in the middle of a conversation?** Yes. Change the model in the sidebar and send the next message; that message (and all previous ones) are sent to the newly selected model.
+
+**Does the next model see the earlier conversation?** Yes. The app sends the conversation history with every request so the model has context. Each message is stored with an optional date and model name so you can see who (which model) said what.
+
+### Avoiding context length limits
+
+Ollama (and the model) have a finite context window (e.g. 4k–128k tokens depending on model and `num_ctx`). Sending the whole conversation every time can hit that limit.
+
+**Is sending the whole conversation the only way?** With Ollama’s stateless API, the only way to give the model “memory” is to send messages in the request. You can reduce how much we send:
+
+- **`maxMessagesInContext`** in `config.json`: set to a positive number (e.g. `20` or `50`). Only the **last N messages** of the current chat are sent to the model (system prompt is always included). The full thread is still stored in history and in the UI; only the API request is trimmed. Use this to avoid exhausting the context window on long chats.
+
+The context badge is an estimate meant for quick feedback. It starts at `~0` for a brand-new thread, and begins counting the system prompt once you’ve sent at least one message in that thread.
+
+**What happens when the model hits the context limit?** Ollama may return an error (e.g. in the response body or as an NDJSON line with `error`). The app:
+
+- On non-OK HTTP: reads the error body from the server and shows it in the chat (so you see Ollama’s message, e.g. context-related).
+- During streaming: if a chunk contains `error`, it is shown as “Error from model: …” and the stream stops.
+
+So you get a visible error in the chat when the backend reports a problem (including context limit). If you see that, try starting a new chat or setting `maxMessagesInContext` so the next request sends fewer messages.

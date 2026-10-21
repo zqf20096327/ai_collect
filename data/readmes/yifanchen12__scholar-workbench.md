@@ -93,17 +93,23 @@ The bundled example is an actual CPU run. **Low loss is not general capability. 
 
 ## Records, limits and backups
 
-Record activity, organizer, award, date and your contribution, then **drop documents/photos into the desktop form to add them immediately**. No path entry or separate attachment confirmation is required. Clicking the drop zone also supports multiple original files. **New evidence saves only original file paths, without copying, uploading or reading file contents.** Save the activity when its fields are complete. Unsaved/in-memory images have no original disk path and must first be saved outside the application.
+Record activity, organizer, award, date and contribution, then **drop documents/photos or paste a clipboard image with Ctrl+V**. The desktop “粘贴照片” button also reads a copied image/screenshot. Select a photo folder once: subsequent photos are saved there immediately with unique names, displayed as thumbnails and opened in enlarged previews. The first clipboard save can prompt for that folder. Canceling an activity or removing its reference leaves these saved files intact. Changing the folder affects future photos. Without a configured folder, existing disk-backed drop behavior remains available. Photos never go to the textbook API.
 
-Browser mode offers a Windows system picker and an expandable manual-path fallback because browser drops expose filenames without real absolute paths. Use the desktop entry for direct drag-and-drop. A pending filename without a complete path cannot be saved; `C:\fakepath` is rejected.
+Activity categories follow the development-quality section of the supplied **AI School 2025-cohort comprehensive evaluation rules for academic year 2025–2026**: ideological growth, academic innovation, physical/mental health, aesthetic education, labor literacy and organizational coordination, plus Other. Record the activity's organizational level and, for academic competitions, an optional S/A+/A/B+/B tier. Filters and CSV/ZIP/full backups preserve these fields; existing records retain legacy categories. The document's recognition period is 2025-08-21 through 2026-09-13 inclusive. Records may span other academic years. **The app organizes evidence and does not calculate or certify evaluation scores.**
+
+**Local OCR in the Windows desktop app** automatically recognizes the first new previewable photo, or starts with “选图识别并填表”. It uses the installed Windows OCR language component, requires no API key, and fills only empty activity fields. Existing input stays intact; uncertain fields remain blank. Review the editable recognition text and form before saving. Browser mode can transfer the current draft, including photo bytes, into the desktop app. See [photo and OCR behavior](docs/LOCAL_OCR.md).
 
 New full backups use the `youyan-workspace-v3` marker to prevent older apps from silently discarding path fields; the current app still imports old v2 backups. Restore with the current version.
 
-In desktop mode, **“导出 CSV 与附件（ZIP）” exports the currently filtered list together with its actual documents/photos and legacy stored attachments**. Choose a ZIP destination; each activity has its own attachment folder, and the UTF-8 CSV lists relative paths inside the archive. Duplicate filenames remain separate. Missing/unreadable files are identified in the CSV, a missing-file report and the completion message. Originals are read only for this explicit export, streamed into the ZIP and left unchanged; canceling or failure preserves existing output. The destination cannot overwrite an input original. Browser mode explicitly offers CSV-only export; native path-based bundling requires desktop mode.
+In desktop mode, **“导出 CSV 与附件（ZIP）” exports the currently filtered list with its actual documents/photos, photo copies and legacy attachments**. Each activity has its own folder and the UTF-8 CSV uses relative paths inside the archive. Duplicate filenames stay separate; missing originals are reported. Export streams originals into the ZIP without changing them. Canceling or failure preserves existing output, and an original cannot be the destination. Browser export remains CSV-only.
 
-Cards display original paths with a copy button. Moving/deleting an original requires updating its reference; deleting a reference/activity never deletes original files. **The full JSON workspace backup remains path-only for new evidence**, so keep original evidence separately or export an evidence ZIP when moving computers. Previously stored attachment copies remain readable, downloadable and backed up until explicitly removed; their original paths cannot be reconstructed from file names. Leave unknown award information blank and consult official credit rules.
+**Full JSON backups include stored photo/legacy copies and path references; path-only originals still need separate protection or an evidence ZIP.** Moving/deleting a referenced original can break its preview. If no copy was stored, reselect the photo to retain a local copy; an unavailable original cannot be recovered from its path. Deleting a reference/activity never deletes originals. Copy metadata uses optional fields within the existing v3 backup format; the current app still imports v2. Unknown award information stays blank and credits follow official rules.
 
-Limits: 50 MiB/1,000 pages per PDF, 30 books, 1,000 activities, 10 evidence references/legacy attachments per activity; the old 20 MiB attachment limit applies only to legacy copies. PDFs plus legacy stored files have a 120 MiB total limit. Imported backups are limited to 256 MiB. Browser quotas may be smaller.
+Limits: 50 MiB/1,000 pages per PDF, 30 books, 1,000 activities and 10 proof items per activity. A stored photo or legacy copy is at most 20 MiB; PDFs and stored copies share a 120 MiB limit. Preview decoding is limited to 40 million pixels. Imported backups are limited to 256 MiB. Browser quotas may be smaller.
+
+Folder saves require desktop mode. Dropped files preserve original bytes; the native paste button encodes clipboard bitmaps as PNG. Normal photo references add no IndexedDB duplicate. Unsupported path previews can still use a saved browser copy. The private folder preference is excluded from workspace backups, while activity references include their saved paths. Folder photos are external originals for backup purposes: protect the folder separately or export the evidence ZIP. Browser mode accepts image paste/drop into its local store; its original-path/folder-writing operations require desktop mode. Ordinary text paste stays unchanged.
+
+The textbook API panel links to [bupt-api campus API references](https://github.com/wzekin/bupt-api) and [BUPTapi-dsh local DSH setup](https://github.com/yifanchen12/BUPTapi-dsh). These are repository references, not automatic Base URL discovery or official LLM service guarantees.
 
 Export before moving devices, clearing site data or substantial editing. Backups are plaintext JSON: **Base64 is not encryption**. Check their source and save the current backup before replacement. Private browsing, site-data deletion and storage failure can cause loss. Concurrent windows have no conflict merge. Legacy experiences/drafts migrate without inventing missing dates, organizers or awards.
 
@@ -118,6 +124,8 @@ node tests/state-integrity.test.cjs
 node tests/backup-size.test.cjs
 node tests/digits.test.cjs
 node tests/metrics.test.cjs
+node tests/record-ocr.test.cjs
+node tests/photo-storage.test.cjs
 python practice/test_math_lab.py
 python scripts/audit-public.py
 ```
@@ -137,9 +145,10 @@ API tests use mocked responses and a placeholder key, with no paid DeepSeek call
 npm install --no-save --package-lock=false playwright
 npx playwright install chromium
 node tests/workspace-v2.test.cjs
+node tests/photo-browser.test.cjs
 ```
 
-Native drop integration uses real disk-backed files, an isolated Electron profile and synthetic migration data: run `npm ci`, install Playwright as above, then `node tests/desktop.test.cjs`. This checks real path extraction, no new proof bytes, record/form transfer and persistence, without accessing the user's profile.
+Native integration uses real disk-backed fixtures, isolated Electron profiles and synthetic data: run `npm ci`, install Playwright as above, then `node tests/desktop.test.cjs` and `node tests/desktop-photos.test.cjs` plus `node tests/desktop-photo-folder.test.cjs` on Windows. These verify path extraction, previews, local OCR when its language component exists, fallback copies, record/form transfer, persistence and ZIP bytes without accessing the user's profile. The ZIP check uses Python; `STUDY_PYTHON_PATH` can select its executable.
 
 `PLAYWRIGHT_PATH` selects a Playwright package, `BROWSER_PATH` a Chromium/Edge executable, and `STUDY_URL` a local address. End-to-end tests use isolated contexts and synthetic evidence; they exercise actual Chinese PDF extraction, course progress, path-only storage, legacy attachment-byte restoration, migration and 24 layouts. Historical v1 UI scripts are not current acceptance tests; see [validation scope](docs/VALIDATION.md).
 

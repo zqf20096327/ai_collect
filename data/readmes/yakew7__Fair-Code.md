@@ -135,13 +135,13 @@ Fair-Code/
 │   │   └── new_explainer.yml
 │   └── workflows/
 │       ├── audits.yml                   # CI: runs all audit scripts on every push/PR
+│       ├── benchmark-diff.yml           # opt-in: reruns the benchmark on a lockfile-bump PR and comments the diff
 │       ├── build-explainers.yml         # rebuilds explainer HTML/JS/OG images, checks they're current
 │       ├── citation.yml                 # validates CITATION.cff
 │       ├── codeowners-access.yml        # weekly: catches a CODEOWNER whose repo access has lapsed
 │       ├── codeql.yml                   # CodeQL static analysis
 │       ├── favicons.yml                 # regenerates favicons from logo.svg, checks they're current
 │       ├── first.interaction.yml        # Greets first-time issue/PR contributors
-│       ├── frozen-files.yml             # no-op (paper freeze lifted) - kept as a required status check
 │       ├── lint.yml                     # em-dash / broken-links / ruff checks
 │       ├── pr-review-ping.yml           # comments @-mentioning CODEOWNERS on every new PR
 │       └── validate-workflow.yml        # YAML-lints every file in this workflows/ folder
@@ -194,7 +194,8 @@ Fair-Code/
 │   ├── mcp_server.py                    #   `faircode-mcp` entry point - 6 MCP tools (SPEC.md section 11)
 │   ├── provenance.py                    #   dataset SHA-256 + resolved-params block for --json/--html exports
 │   ├── _explainers/                     #   generated mirror of explainers/*.md, for the MCP tools
-│   └── _results_frozen/                 #   generated mirror of paper/results-frozen/*.csv, for the MCP tools
+│   ├── _results_frozen/                 #   generated mirror of paper/results-frozen/*.csv, for the MCP tools
+│   └── _results_current/                #   generated mirror of results/*.csv, for get_benchmark_results(source="current")
 ├── tests/
 │   ├── fixtures/                        #   sample datasets for loader/edge-case tests
 │   ├── test_benchmark.py                # end-to-end benchmark harness tests
@@ -208,6 +209,7 @@ Fair-Code/
 │   ├── test_dependency_versions.py      #   requirements-lock.txt pins meet pyproject.toml floors
 │   ├── test_figures.py                  #   results_fairness.csv -> figures/*.png rendering
 │   ├── test_freeze_paper_results.py     #   results/ -> paper/results-frozen/ snapshot script
+│   ├── test_diff_results.py             #   results/ vs snapshot diff script
 │   ├── test_generate_images.py          #   favicon / OG-image generation
 │   ├── test_js_category_keys.py         #   JS/Python dimension-category key parity
 │   ├── test_js_parity_*.py              #   JS profiler engine mirrors the Python one (profile, proxy, held-out, provenance, exports, compare, keywords, CLI command); js_helpers.py is shared
@@ -250,6 +252,7 @@ Fair-Code/
 │   ├── check_generated_files_current.py #   verifies build_explainers.py output is up to date
 │   ├── engine-js.js                     #   Node harness for the JS profiler parity tests
 │   ├── freeze_paper_results.py          #   snapshots results/ -> paper/results-frozen/
+│   ├── diff_results.py                  #   diffs results/ against the paper/results-frozen/ snapshot
 │   ├── generate_favicons.py
 │   ├── generate_og_images.py            #   renders the 1200x630 OG share images
 │   ├── parse-json-js.js
@@ -317,7 +320,28 @@ Fair-Code/
 │   ├── differential-privacy.md
 │   ├── reject-option-classification.md
 │   ├── simpsons-paradox.md
-│   └── subgroup-fairness.md
+│   ├── subgroup-fairness.md
+│   ├── algorithmic-recourse.md
+│   ├── maxmin-fairness.md
+│   ├── distributionally-robust-optimization.md
+│   ├── fairness-in-ranking.md
+│   ├── reweighing.md
+│   ├── group-specific-thresholds.md
+│   ├── permutation-test-fairness-gaps.md
+│   ├── adversarial-debiasing.md
+│   ├── fairness-regularization.md
+│   ├── fair-representation-learning.md
+│   ├── measurement-bias.md
+│   ├── aggregation-bias.md
+│   ├── survivorship-bias.md
+│   ├── disaggregated-evaluation.md
+│   ├── leave-one-group-out-evaluation.md
+│   ├── choosing-a-fairness-metric.md
+│   ├── model-cards.md
+│   ├── datasheets-for-datasets.md
+│   ├── algorithmic-impact-assessment.md
+│   ├── inferring-protected-attributes.md
+│   └── fairness-without-demographics.md
 │
 ├── .pre-commit-config.yaml              # em-dash/broken-links/ruff + build-explainers pre-push hooks
 ├── CHANGELOG.md
@@ -808,10 +832,10 @@ features = [
 
 ## Explainers
 
-62 short, plain-language write-ups of individual fairness concepts, each with runnable detection code. The healthcare-focused ones are called out above in [Healthcare AI Bias Focus](#healthcare-ai-bias-focus).
+82 short, plain-language write-ups of individual fairness concepts, each with runnable detection code. The healthcare-focused ones are called out above in [Healthcare AI Bias Focus](#healthcare-ai-bias-focus).
 
 <details>
-<summary><strong>Show all 62 explainers →</strong></summary>
+<summary><strong>Show all 82 explainers →</strong></summary>
 
 | Explainer | What it covers |
 |-----------|----------------|
@@ -876,6 +900,27 @@ features = [
 | [What Is Reject Option Classification?](explainers/reject-option-classification.md) | A post-processing mitigation that hands the favorable outcome to the disadvantaged group only in the model's least-confident cases |
 | [What Is Simpson's Paradox in Fairness Audits?](explainers/simpsons-paradox.md) | Why a model can look fair pooled across groups while every disaggregated subgroup shows the opposite pattern |
 | [What Is Subgroup Fairness (and Fairness Gerrymandering)?](explainers/subgroup-fairness.md) | Why passing every single-attribute fairness check doesn't rule out a large gap hiding in an unchecked combination of attributes |
+| [What Is Algorithmic Recourse?](explainers/algorithmic-recourse.md) | What an applicant can realistically change to flip a model's decision, and why recourse can cost one group more than another |
+| [What Is Max-Min (Rawlsian) Fairness?](explainers/maxmin-fairness.md) | Judging a model by its worst-off group instead of by parity, and why the two can disagree |
+| [What Is Distributionally Robust Optimization (DRO) for Fairness?](explainers/distributionally-robust-optimization.md) | Training against the worst-case group instead of constraining one parity metric, and what it costs the other groups |
+| [What Is Fairness in Ranking?](explainers/fairness-in-ranking.md) | Why classification metrics cannot see the harm of an ordered list, and how exposure measures it |
+| [What Is Reweighing?](explainers/reweighing.md) | A pre-processing mitigation that weights each (group, label) cell as if group and label were independent |
+| [What Are Group-Specific Thresholds?](explainers/group-specific-thresholds.md) | A post-processing mitigation that keeps the model and moves the score cutoff per group |
+| [What Is a Permutation Test for a Fairness Gap?](explainers/permutation-test-fairness-gaps.md) | Shuffling group labels to tell a real gap from sampling noise, and why the same gap can be significant or not by sample size |
+| [What Is Adversarial Debiasing?](explainers/adversarial-debiasing.md) | Training a predictor against an adversary that tries to read the protected attribute from its output |
+| [What Is a Fairness Regularizer?](explainers/fairness-regularization.md) | Putting a price on the parity gap in the training loss, and why the soft gap is not the gap on decisions |
+| [What Is Fair Representation Learning?](explainers/fair-representation-learning.md) | Removing the directions that predict the group, and why a representation clean to a linear reader can leak to a forest |
+| [What Is Measurement Bias?](explainers/measurement-bias.md) | When a feature or label is recorded worse for one group, creating a gap the true values do not have |
+| [What Is Aggregation Bias?](explainers/aggregation-bias.md) | Why one pooled model can fit every group worse than a model fitted to that group alone |
+| [What Is Survivorship Bias?](explainers/survivorship-bias.md) | How training only on the people who passed an earlier filter shifts base rates and shrinks the gating feature's effect |
+| [What Is Disaggregated Evaluation?](explainers/disaggregated-evaluation.md) | Reporting every metric per group and intersection with an interval, and how fast intervals widen as groups shrink |
+| [What Is Leave-One-Group-Out Evaluation?](explainers/leave-one-group-out-evaluation.md) | Holding out one group at a time to test generalization to people the training data left out |
+| [How Do You Choose a Fairness Metric?](explainers/choosing-a-fairness-metric.md) | A decision path from the harm you worry about to the metric that measures it |
+| [What Is a Model Card?](explainers/model-cards.md) | A short standard disclosure of what a model is for, how it performs for each group, and where it should not be used |
+| [What Is a Datasheet for a Dataset?](explainers/datasheets-for-datasets.md) | The questions about where data came from, answered in writing so an unknown is visible as an unknown |
+| [What Is an Algorithmic Impact Assessment?](explainers/algorithmic-impact-assessment.md) | A structured review of who a decision system affects, with the fairness audit as its measurement section |
+| [How Do You Measure Fairness When the Protected Attribute Is Missing?](explainers/inferring-protected-attributes.md) | Estimating group membership from other fields and what that does to a measured gap |
+| [What Is Fairness Without Demographics?](explainers/fairness-without-demographics.md) | Improving the worst-off groups with no group labels by upweighting the rows the model gets wrong |
 
 </details>
 
@@ -1059,7 +1104,7 @@ from the inputs, so `--json` stays reproducible; `--no-provenance` omits it.
 tools over stdio: `profile_dataset`, `compare_datasets`, and `proxy_hints` wrap the same analysis
 engine the CLI uses, so an MCP-aware agent can profile a file mid-conversation instead of shelling
 out and parsing text; `list_explainers`, `get_explainer`, and `get_benchmark_results` are read-only
-lookups against this repo's own published explainers and frozen benchmark results. Same local-only
+lookups against this repo's own published explainers and benchmark results (the current `results/`, or the earlier reference snapshot with `source="frozen"`). Same local-only
 trust boundary as the CLI - stdio, no network listener, no auth; nothing here is a new capability.
 Point a client at it with:
 
@@ -1094,6 +1139,41 @@ CSV layout in [section 12](faircode/SPEC.md#12-csv-export)):
 | `exact_permutations` / `exact_max_rows` | `compare_datasets`, `proxy_hints` | Shuffle count (at most 1,000,000, default 1000) and row cap (default 20000) for `exact` (CLI `--proxy-exact-permutations` / `--proxy-exact-max-rows`) |
 | `max_categorical_card` / `max_dimension_groups` | `profile_dataset`, `compare_datasets`, `proxy_hints` | Caps on categorical cardinality (default 20) and groups per dimension (default 50) (CLI `--max-categorical-card` / `--max-dimension-groups`) |
 | `renames` | `compare_datasets` | `{"race": "ethnicity"}` compares a renamed dimension as one (CLI `--rename`) |
+| `kind` | `get_benchmark_results` | Result type: `"fairness"` (default) or `"performance"`. Fairness results include protected-attribute metrics; performance results include model-performance metrics. |
+| `source` | `get_benchmark_results` | Results to read: `"frozen"` (default), the earlier reference snapshot in `paper/results-frozen/`, or `"current"`, the live results in `results/`. The returned `source` identifies which set was used. |
+| `audit` | `get_benchmark_results` | Optional case-sensitive exact-match filter for the audit, e.g. `"compas"`. |
+| `model` | `get_benchmark_results` | Optional case-sensitive exact-match filter for the model, e.g. `"logistic_regression"`. |
+| `strategy` | `get_benchmark_results` | Optional case-sensitive exact-match filter for the strategy, e.g. `"baseline"`. |
+| `metric` | `get_benchmark_results` | Optional case-sensitive exact-match filter for the metric. |
+| `protected_attribute` | `get_benchmark_results` | Optional case-sensitive exact-match filter for the protected attribute; applies to fairness results, not performance results. |
+
+`get_benchmark_results` matches filter values exactly and case-sensitively. For example, use `audit="compas"` rather than `audit="COMPAS"`. Omit optional filters to leave those dimensions unfiltered. A filter for a column that does not exist in the selected result type raises an error rather than being ignored.
+
+The tool returns `source`, `results`, `total_matches`, and `truncated`. Results are capped at 200 rows. If `truncated` is `true`, add filters to narrow the query rather than assuming the returned rows represent all matches. If a filter matches no values, `results` is empty and a `notes` entry identifies valid values for that column.
+
+Example arguments for the MCP tool `get_benchmark_results`:
+
+Read the earlier frozen reference snapshot:
+
+```json
+{
+  "source": "frozen",
+  "kind": "fairness",
+  "audit": "compas"
+}
+```
+
+Read the live benchmark results:
+
+```json
+{
+  "source": "current",
+  "kind": "fairness",
+  "audit": "compas"
+}
+```
+
+The returned `source` field identifies which result set answered the query. Use `"frozen"` for the earlier reference snapshot or `"current"` for the live results.
 
 The engine is domain-agnostic - it works on any tabular CSV (health, hiring, lending, justice),
 auto-detecting demographic columns (sex, race, age, geography) by name. Beyond the single-dataset
@@ -1175,6 +1255,8 @@ pip install -r requirements-lock.txt
 
 **For new audits and reruns:** Update `results/` as usual. Do not regenerate `paper/results-frozen/` or move the `v1.0-paper` tag as part of an ordinary audit. Run `scripts/freeze_paper_results.py` only when deliberately creating a new reference snapshot; it replaces the existing frozen snapshot and mirrors its CSV files into `faircode/_results_frozen/`.
 
+To see how far `results/` has moved from that snapshot, run `python3 scripts/diff_results.py`. It joins the two tables per audit, strategy, model, protected attribute and metric and prints the per-row change, flagging rows that moved by more than `--threshold` (default 0.01) or exist on one side only (`--json`, `--all`, `--kind` and `--fail-on-change` are also available; `--audit NAME` limits it to one or more audits and `--summary` prints one line per audit; it only reads).
+
 To deliberately create a new reference snapshot, run:
 
 ```bash
@@ -1211,7 +1293,7 @@ This copies `results/` into a snapshot alongside a `MANIFEST.md` recording the e
 - [ ] LLM bias audit
 
 <details>
-<summary><strong>Show 64 completed items →</strong></summary>
+<summary><strong>Show 85 completed items →</strong></summary>
 
 - [x] COMPAS Criminal Justice Bias
 - [x] AI Fair Recruitment Bias
@@ -1275,6 +1357,27 @@ This copies `results/` into a snapshot alongside a `MANIFEST.md` recording the e
 - [x] Explainer: Why Fairness Through Unawareness Fails
 - [x] Explainer: What Is LIME?
 - [x] Explainer: What Is a Counterfactual Explanation?
+- [x] Explainer: Algorithmic Recourse
+- [x] Explainer: Max-Min (Rawlsian) Fairness
+- [x] Explainer: Distributionally Robust Optimization (DRO) for Fairness
+- [x] Explainer: Fairness in Ranking
+- [x] Explainer: Reweighing
+- [x] Explainer: Group-Specific Thresholds
+- [x] Explainer: Permutation Tests for Fairness Gaps
+- [x] Explainer: Adversarial Debiasing
+- [x] Explainer: Fairness Regularization
+- [x] Explainer: Fair Representation Learning
+- [x] Explainer: Measurement Bias
+- [x] Explainer: Aggregation Bias
+- [x] Explainer: Survivorship Bias
+- [x] Explainer: Disaggregated Evaluation
+- [x] Explainer: Leave-One-Group-Out Evaluation
+- [x] Explainer: Choosing a Fairness Metric
+- [x] Explainer: Model Cards
+- [x] Explainer: Datasheets for Datasets
+- [x] Explainer: Algorithmic Impact Assessments
+- [x] Explainer: Inferring Missing Protected Attributes
+- [x] Explainer: Fairness Without Demographics
 - [x] Fairness audit web dashboard - [Open Dataset Profiler](#open-dataset-profiler)
 - [x] Bias detection utility library (`faircode/` module)
 
@@ -1295,13 +1398,13 @@ The full public roadmap - with phases, completion status, and content schedule -
 | Metric | Count |
 |--------|------:|
 | GitHub Stars | 51 |
-| External Contributors | 52 |
-| Forks | 58 |
+| External Contributors | 53 |
+| Forks | 63 |
 | Watching | 8 |
 | Combined Social Reach (Instagram + LinkedIn) | 30K+ |
 | Countries Reached (Website Visitors) | 20 |
 | Code Audits Published | 7 |
-| Explainers Published | 62 |
+| Explainers Published | 82 |
 
 Tracked weekly in [METRICS.md](METRICS.md).
 

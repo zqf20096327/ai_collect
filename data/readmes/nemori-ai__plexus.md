@@ -198,10 +198,12 @@ against real macOS TCC apps was **not run this round**, see
   allowlist meaningful. File upload is jailed to an owner-named directory.
 - **Workspace** (`workspace`) — one authorized working directory as a path-confined
   filesystem: read (`workspace.{list,read}`) **and** write (`workspace.write` → pends).
-- **Claude Code** (`claudecode`) — headless Claude Code under macOS `sandbox-exec`
-  confinement (`claudecode.run`, `execute` → pends).
-- **Codex** (`codex`) — headless `codex exec` under the same sandbox confinement, a
-  mirror of `claudecode.run` (`codex.run`, `execute` → pends).
+- **Claude Code** (`claudecode`) — headless Claude Code inside Plexus's own kernel jail
+  around one authorized directory (`sandbox-exec` on macOS, `bwrap` on Linux), verified
+  before every launch; the owner may switch it to Host access instead
+  (`claudecode.run`, `execute` → pends).
+- **Codex** (`codex`) — headless `codex exec` under the same jail and the same owner
+  choice, a mirror of `claudecode.run` (`codex.run`, `execute` → pends).
 
 Each source reports its own **health** (agent-facing field + the admin dashboard via
 `GET /admin/api/health`), so an agent — and you — can see when a backing app is
@@ -296,8 +298,8 @@ Plexus carries **two independent version numbers**, and the distinction matters:
 
 | | What it is | How it moves | Who depends on it |
 |---|---|---|---|
-| **Software version** (`PLEXUS_VERSION`, e.g. `0.9.1`) | the **product** release — the gateway, desktop app, sources, UI | **fast** — every feature/fix bumps it | nobody on the wire; it's informational (shown in the admin UI as `running · v0.9.1`) |
-| **Protocol version** (`PLEXUS_PROTOCOL_VERSION`, `0.1.3`) | the **agent-facing wire contract** — the shapes of discover / handshake / grant / invoke | **rarely** — frozen, **additive-only** (a new optional field bumps the patch) | **agents** integrate against *this*, never the software version |
+| **Software version** (`PLEXUS_VERSION`, e.g. `0.10.1`) | the **product** release — the gateway, desktop app, sources, UI | **fast** — every feature/fix bumps it | nobody on the wire; it's informational (shown in the admin UI as `running · v0.10.1`) |
+| **Protocol version** (`PLEXUS_PROTOCOL_VERSION`, `0.1.4`) | the **agent-facing wire contract** — the shapes of discover / handshake / grant / invoke | **rarely** — frozen, **additive-only** (a new optional field bumps the patch) | **agents** integrate against *this*, never the software version |
 
 They are **decoupled by design**: the product can ship `0.6 → 0.7 → 1.0 …` while the
 protocol stays `0.1.x`, because **the wire is stable under a fast-moving app**. An agent
@@ -305,7 +307,7 @@ that integrated at protocol `0.1.0` keeps working across every software release 
 needs to care when the *protocol* version changes (and even then, additively). The admin
 UI surfaces both, distinctly: `running · v<software> · protocol <protocol>`.
 
-> Tags/releases track the **software** version (`v0.9.1`). The protocol version lives
+> Tags/releases track the **software** version (`v0.10.1`). The protocol version lives
 > in code (`@plexus/protocol`) and `.well-known/plexus`, and bumps on its own schedule.
 
 ---

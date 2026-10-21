@@ -1,6 +1,4 @@
-<p align="center"><img src="docs/images/turri-banner.png" alt="turri - the first coding agent with the power of regenerative software, beside a pixel jellyfish: npm install -g @turri-dev/cli"></p>
-
-<h1 align="center">turri<br>the first coding agent with the power of<br>regenerative software<br>&nbsp;</h1>
+<p align="center"><img src="docs/images/turri-banner.gif" alt="turri, beside its mark - the first coding agent with the power of regenerative software: npm install -g @turri-dev/cli - and a pixel jellyfish regenerating, from a polyp on the sea floor"></p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@turri-dev/cli"><img src="https://img.shields.io/npm/v/@turri-dev/cli?label=npm" alt="npm version"></a>
@@ -12,9 +10,11 @@
 
 **turri** is named after *Turritopsis dohrnii*, the immortal jellyfish that regenerates itself from its young form, again and again - as **turri** regenerates the code from the durable intent - see [the name](#the-name).
 
+**turri** has a desktop app too: [turri desktop](https://github.com/turri-oss/turri-desktop).
+
 ## Quick start
 
-**turri** is built on [pi](https://pi.dev), the coding agent, and runs wherever pi runs: macOS, Linux, WSL; native Windows best effort, with Git Bash. You need git, bash and [Node](https://nodejs.org/en/download) 22.19 or newer - a Linux distribution's own `nodejs` package is often older. The agents use this machine's toolchains, fenced by a command check and an audit everywhere, and an OS sandbox where the OS has one - Seatbelt on macOS, bubblewrap on Linux (`apt install bubblewrap`) - see [installation](docs/installation.md#installation).
+**turri** is built on [pi](https://pi.dev), the coding agent, and runs wherever [pi](https://pi.dev) runs: macOS, Linux, WSL; native Windows best effort, with Git Bash. You need git, bash and [Node](https://nodejs.org/en/download) 22.19 or newer - a Linux distribution's own `nodejs` package is often older. The agents use this machine's toolchains, fenced by a command check and an audit everywhere, and an OS sandbox where the OS has one - Seatbelt on macOS, bubblewrap on Linux (`apt install bubblewrap`) - see [installation](docs/installation.md#installation).
 
 ```bash
 npm install -g @turri-dev/cli # puts `turri` on your PATH
@@ -23,7 +23,7 @@ turri doctor              # checks the machine
 
 To follow `main` as it moves, or work on turri itself, run it [from a clone](#from-a-clone) instead.
 
-`doctor` checks for Node 22.19+, bash, the OS sandbox and a model provider for pi; in a project, the toolchains its modules need, what its testing scripts run against this machine, and that each model `config.turri.yaml` names answers with your credentials. It changes nothing without asking: when a check fails - the OS sandbox does not start, say - it says why, and the command for you to run. Run it again whenever something breaks. What each check means: [installation](docs/installation.md).
+`doctor` checks for Node 22.19+, bash, the OS sandbox and a model provider for [pi](https://pi.dev); in a project, the toolchains its modules need, what its testing scripts run against this machine, and that each model `config.turri.yaml` names answers with your credentials. It changes nothing without asking: when a check fails - the OS sandbox does not start, say - it says why, and the command for you to run. Run it again whenever something breaks. What each check means: [installation](docs/installation.md).
 
 Then start it in your project, signed in to your model providers:
 
@@ -49,7 +49,7 @@ turri init-config --vendor anthropic
 
 It then tells you which API key to set - or to type `/login` once **turri** is running instead. **turri** loads the `config.turri.yaml` in the folder you start it from. Below the two models, the file sets every other setting to its default - change any of them in the file, or from the chat with `/turri-config`. Any other model works too: [models](#models).
 
-Once `turri` is running, say: *Let's start a new project: a small API where people can register and sign in.*
+Once `turri` is running, type: `/spawn a small API where people can register and sign in` - or `/brood` for an interview that settles each feature with you first.
 
 No project of your own yet? Build one of [**the examples**](examples/README.md) with turri, step by step.
 
@@ -101,9 +101,7 @@ With **turri** you work on the durable intent. You say what the software must do
 
 ## How it works
 
-<p align="center"><img src="docs/images/turri-screenshot.png" width="900" alt="turri in the terminal: on the left the conversation, where /regenerate plans a project's modules and a coding agent works through one of them; on the right the spec map of that module's ***plain, each functionality marked as regenerated or being worked on"></p>
-
-**turri** captures the durable intent in [\*\*\*plain](https://plainlang.org/), a language for saying what software should do. \*\*\*plain breaks the intent down into functionalities - small units, each a single thing the software does - and **turri** regenerates the code from them piece by piece.
+**turri** captures the durable intent in [\*\*\*plain](https://plainlang.org/docs/), a language for saying what software should do. \*\*\*plain breaks the intent down into functionalities - small units, each a single thing the software does - and **turri** regenerates the code from them piece by piece.
 
 1. **Define.** You say what the software should do; **turri** writes it down as \*\*\*plain.
 2. **Review and refine.** You review \*\*\*plain and change it with **turri** until it says what you mean.
@@ -129,7 +127,7 @@ So the tools speak its language: **`regenerate`** regenerates the code from \*\*
 
 ## Models
 
-`init-config`'s models are only a starting point. **turri** is built on [pi](https://github.com/earendil-works/pi), so any model pi supports works - Anthropic, OpenAI, Google, Amazon Bedrock, OpenRouter, a local one. A model is reached as pi reaches it - `/login`, in `turri` as in `pi`, the provider's API key in the environment (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, ...), or a cloud account - and named as pi names it, `provider/model-id`, with `:high`, `:low` and so on for how hard it thinks. It uses three: the **harness** model you talk to, which writes \*\*\*plain and plans the work - worth a capable one - and the **coding** and **judge** models its agents build and judge with, which can be smaller and cheaper, such as GPT-6 Luna or Gemini 3.1 Flash Lite. `turri --harness-model` and `--coding-model` choose them for a session, and pi's `/model` switches the one you talk to as you go; to keep them for the project, set them with `/turri-config harness-model`, `/turri-config coding-model` and so on - each role's too, as `models.<role>` - or write them in its `config.turri.yaml`:
+`init-config`'s models are only a starting point. **turri** is built on [pi](https://pi.dev), so any model [pi](https://pi.dev) supports works - Anthropic, OpenAI, Google, Amazon Bedrock, OpenRouter, a local one. A model is reached as [pi](https://pi.dev) reaches it - `/login`, in `turri` as in `pi`, the provider's API key in the environment (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, ...), or a cloud account - and named as [pi](https://pi.dev) names it, `provider/model-id`, with `:high`, `:low` and so on for how hard it thinks. It uses three: the **harness** model you talk to, which writes \*\*\*plain and plans the work - worth a capable one - and the **coding** and **judge** models its agents build and judge with, which can be smaller and cheaper, such as GPT-6 Luna or Gemini 3.1 Flash Lite. `turri --harness-model` and `--coding-model` choose them for a session, and [pi](https://pi.dev)'s `/model` switches the one you talk to as you go; to keep them for the project, set them with `/turri-config harness-model`, `/turri-config coding-model` and so on - each role's too, as `models.<role>` - or write them in its `config.turri.yaml`:
 
 ```yaml
 harness-model: anthropic/claude-opus-5-5    # the model you talk to: a capable one
@@ -148,15 +146,15 @@ cd ~/my-project
 turri
 ```
 
-Then talk to it:
+Then start the interview:
 
-> Let's start a new project: a small API where people can register and sign in.
+> /brood a small API where people can register and sign in
 
-It runs the interview skill, asks you about the problem, the stack and the product, writes \*\*\*plain, and builds each functionality as it is written. While it works:
+It asks you about the problem, the stack and the product, writes \*\*\*plain, and builds each functionality as it is written. While it works:
 
 - the **panel** above the input shows every build - its stage, what its agents are doing, its model and cost - and the queue behind it;
 - ask to try it at any time - "let me try it" - and **`release`** puts what is built so far in `dist/<module>` and **`activate`** starts it, installing what it needs - nothing to approve;
-- the **side panel** (`ctrl+h`) takes the screen and opens on **regen** - \*\*\*plain, every item marked planned, working, regenerated, validating, conform or needs you - and `p` turns it to the **pulses** (`/pulses`) - every pulse, running, queued and finished, and what each regenerates; what its agents did is in each pulse's log in `.turri/jobs/`;
+- the **side panel** (`ctrl+h`) takes the screen and opens on **regen** - \*\*\*plain, every item marked planned, working, regenerated, validating, conform or needs you - and `p` turns it to the **pulses** (`/pulses`) - every pulse, running, queued and finished, and what each regenerates; what its agents did is in each pulse's log in `.turri/jobs/`, kept with `--debug` (`debug: true`);
 - **`/halt`** halts a pulse, **`/lineage`** shows every generation of a module, and the **`drift`** tool says what is left to regenerate;
 - **`/btw <question>`** asks turri something on the side - answered at once, even in the middle of a skill's interview (typed as the answer, under "Something else…"), and left out of the conversation;
 - **`/turri-config`** changes any setting of the project's `config.turri.yaml` - the models, review, conformance tests, how many pulses at once - and says when it takes effect: now, at your next message, or at the next pulse. No restart: `/turri-config review false`, or `/turri-config` alone to pick from the list;
@@ -181,7 +179,7 @@ turri regenerate app.plain      # regenerate the code from ***plain: planned int
 turri regenerate app.plain 3    # regenerate functionality 3, changed or not
 ```
 
-More: [using **turri**](docs/using.md); to render \*\*\*plain overnight, see [running unattended](docs/headless.md).
+More: [using **turri**](docs/using.md); to regenerate \*\*\*plain overnight, see [running unattended](docs/headless.md).
 
 ## Documentation
 
@@ -190,11 +188,11 @@ Start at the [documentation index](docs/README.md), or go straight to a page:
 | | |
 | --- | --- |
 | [Installation](docs/installation.md) | doctor, what turri needs of this machine, **turri** and `pi`, environment variables |
-| [Examples](examples/README.md) | projects to build with turri step by step: cognio from an empty folder, guestbook - a backend and a frontend in minutes - a CLI, a backend service with conformance tests, a REST API integration |
+| [Examples](examples/README.md) | projects to build with turri step by step: guestbook - a backend and a frontend in minutes - a CLI, and a backend service with conformance tests |
 | [Using **turri**](docs/using.md) | the conversation, skills, tools, pulses and regen, choosing models, the command line |
 | [The project config](docs/config.md) | `config.turri.yaml` and each stack's `config.turri.<stack>.yaml`: every key, models and their inheritance, conformance, the testing scripts, stacks and choosing one, the old `config.yaml` |
 | [Deploy](docs/deploy.md) | trying what is built: the last commit in `dist/<module>`, started on your machine, nothing installed without asking |
-| [Running unattended](docs/headless.md) | rendering \*\*\*plain overnight or in CI: the command, keeping it running, the results, resuming, rebuilding one functionality |
+| [Running unattended](docs/headless.md) | regenerating \*\*\*plain overnight or in CI: the command, keeping it running, the results, resuming, rebuilding one functionality |
 | [Authoring \*\*\*plain](docs/authoring-plain.md) | what \*\*\*plain is made of, the authoring rules, the skills that write and fix it, checking it |
 | [Regenerating](docs/regenerating.md) | what each build does and in which order: functionalities, modules, regeneration, changes to \*\*\*plain, conformance and acceptance tests, working notes, what the code is built from |
 | [The sandbox](docs/sandbox.md) | what agents can reach, the walls every command passes, time limits, the web tools |

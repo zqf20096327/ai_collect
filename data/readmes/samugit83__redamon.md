@@ -24,7 +24,7 @@
 
 <p align="center">
   <a href="https://github.com/samugit83/redamon/stargazers"><img height="24" src="https://img.shields.io/github/stars/samugit83/redamon?style=flat&color=2E8B57&label=Stars" alt="GitHub Stars"/></a>
-  <img height="24" src="https://img.shields.io/badge/v7.0.4-release-2E8B57?style=flat" alt="Version 7.0.4"/>
+  <img height="24" src="https://img.shields.io/badge/v7.1.0-release-2E8B57?style=flat" alt="Version 7.1.0"/>
   <img height="24" src="https://img.shields.io/badge/WARNING-SECURITY%20TOOL-B22222?style=flat" alt="Security Tool Warning"/>
   <img height="24" src="https://img.shields.io/badge/LICENSE-MIT-4169A1?style=flat" alt="MIT License"/>
   <img height="24" src="https://img.shields.io/badge/AI-AUTONOMOUS%20AGENT-6A5ACD?style=flat&logo=openai&logoColor=white" alt="AI Powered"/>
@@ -528,6 +528,7 @@ Everything runs on a **fan-out / fan-in** architecture: each phase fires as many
 | | **Browser Crawling** | ZAP Ajax Spider | Active | Sequential (post-FFuf), per-seed Docker containers in parallel |
 | | **Parameter Discovery** | Arjun | Active / Passive | Methods parallel (GET/POST/JSON/XML) |
 | | **API Discovery** | Kiterunner | Active | Sequential per wordlist |
+| | **API Specification Import** | OpenAPI / Swagger (declared endpoints, never called) | Active (documents only) | Sequential (after the other sources) |
 | | **Endpoint AI Classifier** | Path + parameter classifier — tags `Endpoint.ai_interface_type` (`llm-chat`, `llm-completion`, `llm-embedding`, `llm-tool-call`, `sse-stream`, `mcp`, `llm-graphql`), `is_ai_rag_ingest`, `Parameter.is_ai_prompt_injectable` against catalogued AI signatures | Passive | Sequential (post-crawl) |
 | **JS Recon** | **JS Secret Detection** | 100 regex patterns + custom uploads | Passive | Parallel per file |
 | | **Key Validation** | 21 service validators (AWS, GitHub, Stripe, etc.) | Active | Rate-limited (1/sec/svc) |
@@ -1043,4 +1044,4 @@ Videos, writeups, and real-world experiences from security professionals using R
 | Who | What | Link |
 |-----|------|------|
 | Nipun Dinudaya | Deployed RedAmon on a company website, identified a critical SQL injection vulnerability that could have caused significant data exposure | [Read on LinkedIn](https://www.linkedin.com/posts/nipun-dinudaya-6159b32bb_redamon-cybersecurity-penetrationtesting-ugcPost-7431233870253166592-aLvb) |
-| Venkata Bhargav CH S | Used RedAmon during an internship at Ascent e-Digit Solutions: hands-on reconnaissance, DNS analysis, and attack surface mapping | [Read on LinkedIn](https://www.linkedin.com/posts/venk
+| Venkata Bhargav CH S | Used RedAmon during an interns

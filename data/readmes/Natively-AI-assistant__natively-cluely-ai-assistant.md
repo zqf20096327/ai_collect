@@ -53,8 +53,8 @@ If you’re looking for a hosted desktop recording API, consider checking out [R
 > **Competitors charge $20–$149/month, store your data on their servers, and one already breached 83,000 users.** Natively costs $0, runs locally, and has never had a data breach. Your keys, your models, your machine.
 
 <p align="center">
-  <a href="https://natively.software">
-    <img src="https://img.shields.io/badge/Visit%20Website-22C55E?style=for-the-badge&logo=vercel&logoColor=white" />
+  <a href="https://heynatively.com">
+    <img src="https://img.shields.io/badge/Visit%20Website-22C55E?style=for-the-badge&logo=cloudflare&logoColor=white" />
   </a>
 </p>
 
@@ -353,7 +353,7 @@ Natively works as a **free, undetectable AI coding interview assistant** for sta
 
 <div align="center">
 
-[![Natively Website](https://img.shields.io/badge/Natively_Website-natively.software-22C55E?style=flat-square&logo=vercel&logoColor=white)](https://natively.software)
+[![Natively Website](https://img.shields.io/badge/Natively_Website-heynatively.com-22C55E?style=flat-square&logo=cloudflare&logoColor=white)](https://heynatively.com)
 [![Telegram Chat](https://img.shields.io/badge/Telegram_Chat-nativelyaichat-229ED9?style=flat-square&logo=telegram&logoColor=white)](https://t.me/nativelyaichat)
 [![LinkedIn Company](https://img.shields.io/badge/LinkedIn_Company-nativley--ai-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/company/nativley-ai)
 
@@ -427,12 +427,6 @@ Under the hood, Natively API connects you to the absolute best models for the op
 ## Natively Pro
 
 While Natively is **free for personal, educational, research, and non-commercial use**, we also offer a **Pro Edition** (available as **Lifetime or Yearly** subscriptions) designed specifically for power users and job seekers. Purchasing a Pro license gives you an edge in the job market, all while directly supporting the continued development of Natively.
-
-### 🪙 Unlock Natively Pro with $NAT Token
-
-We've launched the official **$NAT token** on Printr! Holders who maintain a specific balance of `$NAT` tokens in their connected wallet automatically unlock access to all **Natively Pro** features.
-
-👉 **[Trade $NAT on Printr](https://app.printr.money/trade/0xba1e50273ec14ca52b3fa64a5054c39470c2835392c6ecd06876f5bccd597d7b)**
 
 ### Free vs Pro Feature Comparison
 
@@ -661,7 +655,7 @@ Connect Natively to **any** leading model or local inference engine.
 | **NVIDIA NIM**               | NVIDIA-hosted open models, plus Riva streaming speech.      |
 | **LiteLLM Gateway**          | Route through your own proxy with a built-in model picker.  |
 | **Google Antigravity**       | Sign in with your Google account instead of pasting a key.  |
-| **OpenRouter / Fluxion**     | Hosted gateways to many models.                             |
+| **OpenRouter / Sidrune**     | Hosted gateways to many models.                             |
 | **9Router / AgentRouter**    | More gateways, alongside LiteLLM.                           |
 | **Ollama / LocalAI**         | 100% Offline & Private (No API keys needed).                |
 | **OpenAI-Compatible**        | Connect to _any_ custom endpoint (vLLM, LM Studio, etc.)    |
@@ -784,7 +778,7 @@ This runs: Vite build → TypeScript compile → native module build → electro
 - **Anthropic:** Claude 4.6 series support with corrected max_tokens.
 - **Groq:** Ultra-fast text inference with Qwen 3.8, and screenshot analysis using Llama 4 Scout.
 - **Google Antigravity:** Sign in with your Google account to use Gemini models without an API key.
-- **Gateways:** OpenRouter, Fluxion, 9Router and AgentRouter are supported as providers.
+- **Gateways:** OpenRouter, Sidrune (formerly Fluxion), 9Router and AgentRouter are supported as providers.
 - **Codex:** Uses your `codex login` session, with GPT-6 Astra and GPT-5.6 Sol as built-in models.
 - **Background Model:** A second, faster model for Auto Answer, quick decisions and Fast Response Mode.
 - **Provider fallback:** When your model fails or stalls, Natively retries it, moves to your next provider, and tells you which one answered.
@@ -1032,7 +1026,7 @@ No raw audio, screenshots, or transcripts are stored or transmitted unless expli
 - **Groq** (Qwen 3.8 for text, Llama 4 Scout for OCR)
 - **LiteLLM** (any model behind your own gateway)
 - **Google Antigravity** (sign in with Google)
-- **OpenRouter, Fluxion, 9Router, AgentRouter** (gateways)
+- **OpenRouter, Sidrune, 9Router, AgentRouter** (gateways)
 - **Codex** (GPT-6 Astra, GPT-5.6 Sol)
 
 ### System Requirements
@@ -1106,7 +1100,7 @@ You are not allowed to use this codebase, forks, modified versions, or substanti
 
 Public forks must clearly state that they are based on Natively, originally developed by Natively AI Private Limited.
 
-Commercial license requests: sales@heynatively.com · https://natively.software
+Commercial license requests: sales@heynatively.com · https://heynatively.com
 
 > **Note:** This project is available for sponsorships, ads, or partnerships – perfect for companies in the AI, productivity, or developer tools space.
 

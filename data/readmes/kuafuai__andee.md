@@ -28,7 +28,11 @@
 
 <p align="center">  
   <a href="./README.md"><img alt="README in English" src="https://img.shields.io/badge/English-d9d9d9"></a>  
-  <a href="./README.zh-CN.md"><img alt="Chinese" src="https://img.shields.io/badge/Chinese-d9d9d9"></a>  
+  <a href="./README.zh-CN.md"><img alt="Chinese" src="https://img.shields.io/badge/中文文档-d9d9d9"></a>  
+</p>
+
+<p align="center">
+  <a href="https://trendshift.io/repositories/304932?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-304932" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/304932/daily?language=Kotlin" alt="kuafuai%2Fandee | Trendshift" width="250" height="55"/></a>
 </p>
 
 <h1 align="center">Andee</h1>
@@ -215,6 +219,10 @@ the user is true. And when something is genuinely wrong, the mask comes off.
 **11. Talk, type, or show it a photo.**  
 Tap the ball, or say "Hey Andee" (fully offline wake word). Prefer typing? The typing field takes  
 up to six photos — from the camera or the gallery — with or without words.
+
+Tap the ball or use the wake word, then say "Exit Andee" or "Take a break" to stop the task and close Andee.
+Automatic follow-up listening cannot trigger exit; exit is declined while a meeting is recording.
+The microphone and wake listener stop. Tap the app icon to reopen; Android accessibility reconnection may also restart Andee.
 
 **12. Answers you can keep.**  
 Anything structured — a comparison, a plan, meeting minutes — comes back as a page it writes and  

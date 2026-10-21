@@ -2,9 +2,15 @@
 
 <h1 align="center">研图 · Figure Atlas</h1>
 
-<p align="center">论文图元素材库</p>
+<p align="center">论文配图图元库</p>
 
-从 110 篇经典深度学习论文的插图里，把特征张量、注意力矩阵、卷积核、Token 序列、气象场、点云这些**图元**逐个分离出来。矢量图元保留论文原始路径，可以直接改色、改尺寸，拼进你自己的模型结构图。另附 289 张按原样裁剪的论文原图和 28,102 个开源科研图标。每一项都标明出处论文、页码、作者与许可。
+画模型结构图要用的图元，共 786 个，分三部分：
+
+- **248 个原创图元**：特征图、张量、卷积核、Token、注意力掩码、运算符、雷达回波……按同一套等轴测风格和 8 种配色画好，可编辑 SVG，**CC0 授权**，无需署名。
+- **88 个计算机视觉图元**：用 CC0 / 公有领域照片做出的输入图像、ViT 分块、MAE 掩码、扩散加噪、数据增强、边缘与超像素、分割掩码与抠图、检测框、人体关键点，照片斜置成的图像平面与视频帧堆叠；以及相机视锥、多视角相机、NeRF 射线采样、体素、三维检测框、BEV、3D 高斯等三维视觉示意。全部 CC0。
+- **450 个开源物件与装饰**：等轴测的服务器、数据库、文档、笔记本电脑，3D 的机器人、大脑、卫星、云朵、显微镜、汽车，以及对勾、火焰、雪花、序号、奖杯等标记，还有全连接网络、LeNet / AlexNet 式特征块等网络模块。全部是透明背景的单个元素，不带箭头和文字，可以直接放进模型图充当模块、补充细节或做点缀。来自 [Fluent Emoji 3D](https://github.com/microsoft/fluentui-emoji)、[3dicons](https://3dicons.co/)、[Isoflow](https://github.com/markmanx/isopacks)、[NN-SVG](https://github.com/alexlenail/NN-SVG)，保留原许可（MIT / CC0），详情页给出可直接复制的署名。
+
+另附 289 张按原样裁剪的经典论文原图和 28,102 个开源科研图标。
 
 [在线检索](https://runtimewarning.github.io/research-figure-library/) · [GitHub 仓库](https://github.com/RuntimeWarning/research-figure-library) · [完整来源清单](dist/sources.csv)
 
@@ -14,31 +20,61 @@
 
 | 集合 | 数量 | 说明 |
 | --- | ---: | --- |
-| **论文图元** | **391** | 来自 110 篇论文插图的可复用元素，237 个为可编辑矢量 SVG，其余按论文嵌入位图的原始分辨率导出 |
-| 论文原图 | 289 | 来自 227 篇论文（1997–2025），覆盖 21 个方向；按原样裁剪，不重绘、不改色 |
+| **图元** | **786** | 原创 248（统一等轴测风格，CC0）+ 计算机视觉 88（CC0）+ 开源物件与装饰 450（保留原许可） |
+| 论文原图 | 289 | 来自 216 篇论文（1997–2025），覆盖 21 个方向；按原样裁剪，不重绘、不改色 |
 | 科研图标 | 28,102 | 10 个开源图标集，统一为 20 个中文分类，可按图标集筛选 |
-| **合计** | **28,782** | 每项素材在 `dist/sources.csv` 中列出文件、来源、许可与 SHA-256 |
+| **合计** | **29,177** | 每项素材在 `dist/sources.csv` 中列出文件、来源、许可与 SHA-256 |
 
-### 图元分类
+### 图元
 
-![论文图元](docs/screenshot-elements.jpg)
+![图元](docs/screenshot-elements.jpg)
 
-| 分类 | 数量 | 例子 |
-| --- | ---: | --- |
-| 张量与特征图 | 87 | 三维特征张量、扁平张量、多通道特征堆叠、特征平面、三维体素网格（Earthformer、V-Net、ACmix、SENet） |
-| 气象与地球数据 | 41 | 全球温度场与风场（Pangu-Weather、ClimaX）、三维气象场立方体（FengWu）、雷达回波与降水场（CasCast、PreDiff、LDCast、DGMR）、台风路径 |
-| 卷积核与采样 | 40 | 3×3 卷积核、空洞卷积感受野、可变形采样网格、图像分块、窗口划分 |
-| 图像与点云 | 39 | 彩色深度点云、室内场景点云、体素化模型、CT/MRI 分割、语义分割掩码 |
-| 热图与特征图 | 31 | 自注意力热图（DINO）、有效感受野（SegFormer、WTConv）、光流颜色编码、边缘响应图 |
-| 矩阵与注意力图 | 30 | 全注意力、因果、稀疏、滑动窗口与轴向注意力掩码，相似度矩阵 |
-| Token 与向量 | 26 | Token 序列、权重条、通道向量、多变量 Token（iTransformer、ViLT） |
-| 符号与箭头 | 26 | 加法、乘法、求和、激活等运算符号，弧形、分流、空心箭头 |
-| 网络与图结构 | 20 | 全连接层、注意力连接、扩张因果卷积、图神经网络、嵌入空间 |
-| 曲线与信号 | 19 | 时间序列、GAN 分布曲线、动力学轨迹、频谱三维曲面 |
-| 噪声、频谱与小波 | 17 | 扩散噪声、随机噪声纹理、位置编码相似度、小波子带 |
-| 模块与结构块 | 15 | LSTM 与 GRU 单元、残差块、编码器梯形、U-Net 特征图条 |
+原创图元、计算机视觉图元和收集的物件按内容统一分为 23 类，侧栏还可以按来源筛选：
 
-图元的提取方法：在每篇论文 PDF 中定位架构类插图，把相互连接的矢量路径分组，只取这一组路径重新绘制成独立的 SVG 与透明 PNG（不带文字和相邻图形）；插图中嵌入的位图按原始分辨率导出。候选共 3,300 多个，经逐张目检保留 361 个，加上早期整理的 30 个；过小、模糊、带色标或几乎用不到的都已删除。
+| 分类 | 原创 | 收集 | 内容 |
+| --- | ---: | ---: | --- |
+| 特征图 | 61 | — | 6×6 / 4×4 / 3×3 特征图（普通与高亮）、热力特征图、响应图、下采样与上采样序列 |
+| 张量与通道 | 34 | 11 | 三维张量、扁平张量、多通道堆叠、RGB 三通道、通道拼接、等轴测与 3D 立方体、球体、几何体 |
+| 卷积与采样 | 30 | — | 卷积核、池化、空洞卷积、感受野、图像分块、上采样、深度可分离卷积 |
+| Token 与嵌入 | 31 | — | Token 序列、特征向量、嵌入矩阵、Q / K / V |
+| 注意力与 Transformer | 24 | — | 因果、滑动窗口、稀疏等注意力掩码，注意力热图，相似度矩阵 |
+| 神经元与全连接 | 4 | 7 | 全连接网络（多种层数、按权重着色、竖向）、单个神经元 |
+| 网络结构与模块 | 2 | 8 | 残差单元、LeNet 式特征图堆叠、AlexNet / VGG 式三维特征块 |
+| 图像输入与预处理 | 61 | — | 输入照片、斜置图像平面、视频帧堆叠、图像金字塔、4×4 分块与展开、MAE 掩码、分块序列、扩散加噪、低分辨率 / 模糊输入、Canny 边缘、RGB 通道、频谱、超像素、7 种数据增强 |
+| 检测、分割与关键点 | 20 | — | 分割掩码、分割叠加、透明抠图、单目标与多目标检测框、锚框、类激活热力图、注意力热力图、人体关键点与骨架、关键点热力图、光流编码 |
+| 三维视觉 | 18 | — | 相机视锥、多视角相机、NeRF 射线采样、体素、点云与三维检测框、BEV 栅格、3D 高斯泼溅、三平面、双目三角测量、深度图 |
+| 运算符 | 16 | — | 加、乘、逐元素乘、Sigmoid、ReLU、拼接、求和、Softmax |
+| 图与点云 | 7 | — | 图结构、邻居聚合、点云、嵌入空间聚类 |
+| 时空与气象 | 12 | — | 地球经纬网格、雷达回波图与序列、全球温度场、时空张量 |
+| 信号与噪声 | 16 | — | 时间序列、高斯噪声、逐步加噪、频谱、小波子带 |
+| 数据与文档 | — | 49 | 数据库、文档、文件夹、书籍、图表、剪贴板、数据包、图像文件 |
+| 计算与设备 | — | 48 | 服务器、容器、笔记本与台式电脑、手机、相机、路由器、信号塔、云、麦克风 |
+| 人物与智能体 | — | 34 | 机器人、技术人员、科学家、医护人员、学生、用户、对话气泡、大脑、眼睛 |
+| 科学与医学 | — | 20 | 显微镜、望远镜、试管、培养皿、DNA、微生物、药丸、心脏、肺、X 光片 |
+| 天气与地理 | — | 46 | 地球仪、世界地图、云、雨、雪、雷电、龙卷风、气旋、温度计、山、火山、卫星 |
+| 城市与交通 | — | 43 | 汽车、公交车、货车、飞机、船、火车、红绿灯、高速公路、楼房、工厂、医院 |
+| 动物与植物 | — | 24 | 猫、狗、鸟、鱼、蜜蜂、树、幼苗、稻穗、向日葵 |
+| 标记与符号 | — | 77 | 对勾、叉号、警告、问号、火焰（可训练）、雪花（冻结）、闪光、星星、序号 1–10、加减乘除、奖牌、奖杯、旗帜、图钉 |
+| 通用物件 | — | 83 | 灯泡、齿轮、工具箱、放大镜、锁与钥匙、盾牌、拼图、沙漏、秒表、火箭、天平、魔杖 |
+
+**原创图元**：单色元素提供 8 种配色（蓝、青、橙、紫、绿、珊瑚红、石墨灰、琥珀黄）。SVG 里每个面、每个格子都是独立图形，在 PowerPoint、Illustrator、Inkscape 或 draw.io 中可以直接改色、增删格子、改尺寸。全部由 [`pipeline/elements/generate.py`](pipeline/elements/generate.py) 用同一个正交相机和配色表生成（绘图工具见 [`style.py`](pipeline/elements/style.py)），新增元素也会保持一致的风格。
+
+**计算机视觉图元**（88 个，CC0）：其中 72 个由 13 张 CC0 / 公有领域照片（Wikimedia Commons 与 scikit-image 示例图）用 [`pipeline/elements/vision.py`](pipeline/elements/vision.py) 处理得到：分割用 GrabCut 生成，边缘用 Canny，超像素用 SLIC，检测框与人体关键点为人工标注；其余为同一等轴测风格的三维视觉示意，SVG 可编辑。详情页给出原始照片链接。
+
+![计算机视觉图元：三维视觉](docs/screenshot-vision.jpg)
+
+**收集的物件**：
+
+![收集的物件：标记与符号](docs/screenshot-objects.jpg)
+
+| 来源 | 数量 | 许可 | 内容与格式 |
+| --- | ---: | --- | --- |
+| [Fluent Emoji 3D](https://github.com/microsoft/fluentui-emoji)（Microsoft） | 283 | MIT | 三维渲染的人物、设备、天气、交通、科学物件与标记，透明 PNG（256 px） |
+| [3dicons](https://3dicons.co/)（Vijay Verma） | 118 | CC0 1.0 | 60 种三维物件，各有彩色与白色黏土两种风格，透明 PNG（400 px） |
+| [Isoflow isopacks](https://github.com/markmanx/isopacks)（Mark Mankarious） | 34 | MIT | 等轴测服务器、数据库、文档、电脑、用户、齿轮、几何体等，可编辑 SVG |
+| [NN-SVG](https://github.com/alexlenail/NN-SVG)（Alexander LeNail） | 15 | MIT | 不带标注的全连接网络、LeNet 式与 AlexNet / VGG 式结构，SVG |
+
+只收录能单独放进图里的元素：不带箭头、文字标注，也不是针对某个具体任务画好的整张示意图。每个物件的详情页列出原始文件链接、许可和一段可直接复制的英文署名。
 
 ### 论文原图覆盖的方向
 
@@ -76,7 +112,7 @@
 ## 功能
 
 - **一个搜索框**：搜索中文名、英文名、模型简称、作者、原文图注和标签；`U-Net`、`unet`、`UNet` 都能命中。按 `/` 聚焦搜索框。
-- **分类与筛选**：图元 12 类、论文原图 21 个方向、图标 20 类；可只看矢量图元、完整架构图、可改色图标或科研常用图标。
+- **分类与筛选**：图元 23 类并可按来源筛选，论文原图 21 个方向，图标 20 类；可只看完整架构图、附矢量文件的原图、可改色图标或科研常用图标。
 - **论文原图详情**：原文图注、论文主页、直达原文 PDF 对应页、作者与许可；一键复制 BibTeX 或引用文本；下载 PNG，以及可用时的 SVG / PDF。
 - **图标改色与导出**：单色图标可在网格中统一改色，详情页可选色后下载 SVG、复制 SVG 代码，或导出 256–2048 px 的透明 PNG。
 - **收藏与分享**：收藏保存在当前浏览器；搜索条件写入网址，详情页可用 `#素材编号` 直接分享。
@@ -109,10 +145,12 @@ Windows 可直接双击根目录的 **`启动检索.cmd`**。浏览器打开 <ht
 
 ## 使用须知与许可
 
-本项目自行编写的检索页面、构建脚本与数据整理采用 [MIT](LICENSE) 许可。第三方素材**不在**本项目 MIT 许可范围内：
+本项目自行编写的检索页面、构建脚本与数据整理采用 [MIT](LICENSE) 许可；**原创图元**（`dist/assets/elements/`）与**计算机视觉图元**（`dist/assets/vision/`，所用照片均为 CC0 或公有领域）采用 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/deed.zh-hans)，可自由使用、修改、商用，无需署名。第三方素材**不在**上述许可范围内：
+
+- **收集的物件**（`dist/assets/collected/`）保留原许可：3dicons 为 CC0（无需署名），Fluent Emoji 3D、Isoflow 与 NN-SVG 为 MIT（保留版权声明）。详情页的「复制署名」给出可直接放进致谢的文字，许可原文在 [`dist/licenses/`](dist/licenses/)。
 
 - **图标**保留各自的开源许可，许可原文在 [`dist/licenses/`](dist/licenses/)。Bioicons 中 CC BY 图标须按条目注明作者，作者与许可显示在详情页和 `sources.csv` 中。
-- **论文图元与原图**的版权属于原作者或出版方。每项的许可按论文在 arXiv 上的选择记录：680 项中 553 项为 arXiv 非独占分发许可，61 项为 CC BY 4.0，另有 CC BY-SA、CC BY-NC-SA、CC BY-NC-ND、CC0 及出版方版权等，详情页会标出 NC（非商业）与 ND（禁止改编）等限制。本仓库收录这些图元和原图用于学术检索与介绍；在论文、课件或出版物中使用时，请引用原论文，并按原许可或出版方规定取得授权。
+- **论文原图**的版权属于原作者或出版方。每张图的许可按论文在 arXiv 上的选择记录：289 张中 229 张为 arXiv 非独占分发许可，35 张为 CC BY 4.0，另有 CC BY-SA、CC BY-NC-SA、CC BY-NC-ND、CC0 及出版方版权等，详情页会标出 NC（非商业）与 ND（禁止改编）等限制。本仓库收录这些原图用于学术检索与介绍；在论文、课件或出版物中使用时，请引用原论文，并按原许可或出版方规定取得授权。
 - 如果你是论文作者或权利人，希望调整或移除某张图，请[提交 Issue](https://github.com/RuntimeWarning/research-figure-library/issues)，我们会尽快处理。
 
 详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
@@ -127,12 +165,15 @@ research-figure-library/
 │   ├── sources.csv               # 每项素材的文件、来源、作者、许可与 SHA-256
 │   ├── licenses/                 # 各图标集的许可原文
 │   └── assets/
-│       ├── elements/             # 论文图元 PNG / SVG 与 thumbs/ 缩略图
+│       ├── elements/             # 原创图元 SVG / PNG 与 thumbs/ 缩略图
+│       ├── vision/               # 计算机视觉图元 SVG / PNG / JPG 与 thumbs/ 缩略图
+│       ├── collected/<来源>/      # 收集的物件 SVG / PNG 与 thumbs/ 缩略图
 │       ├── papers/               # 论文原图 PNG / SVG / PDF 与 thumbs/ 缩略图
 │       └── icons/<图标集>/        # 按图标集分目录的 SVG
 ├── pipeline/                     # 素材构建流程（需要 PyMuPDF 等，见 requirements.txt）
 │   ├── papers/                   # 论文清单、下载、裁剪与元数据
-│   ├── elements/                 # 图元候选提取（candidates.py）、人工筛选清单与构建
+│   ├── elements/                 # 原创图元：style.py 绘图工具，generate.py 元素清单与生成，vision.py 计算机视觉图元
+│   ├── collected/                # 收集的物件：picks.py 选取清单，build.py 下载与处理，nnsvg.mjs 生成 NN-SVG 图
 │   ├── icons/                    # 图标下载、清洗、分类、中文名词表
 │   └── catalog.py                # 生成 dist/data.json 与 dist/sources.csv
 ├── scripts/
@@ -149,15 +190,19 @@ pip install -r pipeline/requirements.txt
 python pipeline/papers/fetch.py       # 下载论文 PDF 与元数据（缓存在 .cache/）
 python pipeline/papers/extract.py     # 裁剪 figures.json 中的图，生成 .cache/papers/qa/ 核对图
 python pipeline/papers/catalog.py     # 合并论文原图元数据
-python pipeline/elements/candidates.py  # 从全部论文插图中提取图元候选，生成 .cache/elements/ 核对图
-python pipeline/elements/build.py     # 按 elements.json 的筛选结果生成图元
+python pipeline/elements/generate.py  # 生成全部原创图元（SVG、PNG、缩略图）
+python pipeline/elements/vision.py    # 下载 CC0 照片并生成计算机视觉图元（需要 opencv-python-headless、scikit-image）
 python pipeline/icons/fetch.py        # 下载固定版本的图标源包
 python pipeline/icons/build.py        # 清洗、分类并写入 dist/assets/icons/
+node pipeline/collected/nnsvg.mjs .cache/web/NN-SVG-<提交> .cache/web/nn-svg-out  # 需要 puppeteer-core 与 Chrome
+python pipeline/collected/build.py    # 下载固定版本的 Fluent Emoji 3D、3dicons、Isoflow、NN-SVG 物件
 python pipeline/catalog.py            # 生成 data.json 与 sources.csv
+python pipeline/check_edges.py        # 检查图元是否贴边（贴边通常意味着被裁掉一部分）
 python scripts/validate.py --hashes   # 校验
 ```
 
-- **新增图元**：运行 `candidates.py` 后在核对图中挑选，把候选编号写入 `pipeline/elements/elements.json`（可指定类型与名称），再运行 `build.py`。
+- **新增图元**：在 `generate.py` 的 `build_specs()` 中用 `add(...)` 登记，复用 `style.py` 的 `slab`、`cube`、`extrude`、`disc` 等绘图函数，再运行 `generate.py`。
+- **收集更多物件**：在 `pipeline/collected/picks.py` 中加入条目（Fluent Emoji 按 CLDR 英文名、3dicons 按名称、Isoflow 按文件名），再运行 `build.py`；新来源需在 `SOURCES` 中写明许可、署名与固定提交，且只收录不带箭头和文字的单个元素。
 - **新增论文图**：在 `pipeline/papers/papers.json` 加入 arXiv 编号，在 `figures.json` 加入图号、中文名、分类与说明，依次运行上面的论文步骤，并查看核对图确认裁剪无误。
 - **改进图标中文名**：在 `pipeline/icons/zh_terms.tsv` 增加“英文词 / 中文”对照，可用第三列限定图标集，然后重新运行图标构建。
 - 所有 SVG 在构建时去除脚本、事件属性、外部引用与编辑器元数据；`validate.py` 会再次检查。

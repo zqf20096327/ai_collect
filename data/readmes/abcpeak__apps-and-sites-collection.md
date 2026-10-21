@@ -753,7 +753,8 @@ Enjoy 🤩
 > 图片处理 PS设计排版 Paint 绘图🖌️
 
 - [Photopea](https://www.photopea.com) (Web) ⭐
-- Adobe: [Photoshop](https://www.photoshop.com), [Lightroom](https://www.adobe.com/products/photoshop-lightroom.html) ⭐
+- Adobe: [Photoshop](https://www.photoshop.com), [Lightroom](https://www.adobe.com/products/photoshop-lightroom.html) 
+- ![GitHub Repo stars](https://img.shields.io/github/stars/storytold/photocraft) [PhotoCraft](https://github.com/storytold/photocraft)
 - [NeeView](https://bitbucket.org/neelabo/neeview/wiki/Home) 图像查看器
 - [Kiko Card](https://apps.apple.com/us/app/kiko-card-text-post-carousel/id6463467787) 文字生成图片
 - ![GitHub Repo stars](https://img.shields.io/github/stars/MewPurPur/GodSVG) [GodSVG](https://github.com/MewPurPur/GodSVG) (Windows, Android) 免费开源SVG矢量图形编辑工具，支持在线编辑
@@ -880,6 +881,7 @@ Enjoy 🤩
 ### 🎶Music Player 音乐播放软件
 
 - [Audacious](https://audacious-media-player.org) (Linux, BSD derivatives, macOS and Windows) open source audio player，2025年还在更新
+- ![GitHub Repo stars](https://img.shields.io/github/stars/monochrome-music/desktop-app) [Monochrome](https://github.com/monochrome-music/desktop-app/) (Windows, Android, iOS) 
 - [Elisa（KDE出品）](https://apps.kde.org/elisa) 嵌入到文件中的歌词显示，不支持LRC歌词文件
 - ![GitHub Repo stars](https://img.shields.io/github/stars/DeaDBeeF-Player/deadbeef) [DeaDBeeF Player](https://github.com/DeaDBeeF-Player/deadbeef)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/strawberrymusicplayer/strawberry) [🍓 Strawberry Music Player](https://github.com/strawberrymusicplayer/strawberry) Clementine的升级版、专为无损发烧友设计
@@ -1286,5 +1288,4 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/vnotex/vnote) [Vnote](https://github.com/vnotex/vnote) 比较原生markdown 不支持扩展语法
 - ![GitHub Repo stars](https://img.shields.io/github/stars/overleaf/overleaf) [overleaf](https://github.com/overleaf/overleaf) A web-based collaborative LaTeX editor
 - ![GitHub Repo stars](https://img.shields.io/github/stars/Zettlr/Zettlr) [Zettlr](https://github.com/Zettlr/Zettlr)
-- ![GitHub Repo stars](https://img.shields.io/github/stars/streetwriters/notesnook) [Notesnook](https://github.com/streetwriters/notesnook) ⭐
-- ![GitHub Repo stars](https://img.shields.io/github/stars/obsidianmd/obsidian-releases) [Obsidian](https://obsidian.md) (macOS, iOS, Windows, Android, Linux) 闭源Freeware，官方同步收费。Obsidian LiveSync同步插件。同步手机端使用频率高不建议用obsidian-git 。remotely-save通过Cloudfla
+- ![GitHub Repo stars](https://img.shields.io/github/stars/streetwriters/notesnoo

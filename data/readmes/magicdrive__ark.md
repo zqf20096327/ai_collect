@@ -14,8 +14,8 @@ code it needs to read before editing — and get an answer that states how
 certain it is.
 
 Ark is a single static binary. It analyzes Go, TypeScript, TSX, PHP,
-Terraform, Rust, JavaScript and Python without running any code from the
-repository.
+Terraform, Rust, Java, JavaScript and Python without running any code from
+the repository.
 
 ## Why Ark
 
@@ -243,13 +243,14 @@ highest stage Ark's tests cover:
 |---|---|---|
 | Go | context-quality certified | Package scoping; method calls need a locally written receiver type |
 | TypeScript, TSX | context-quality certified | Relative imports, barrels, typed receivers; no `tsconfig` paths or type inference |
+| Java | context-quality certified | Java's own name lookup — imports, the package, nested and inherited member types, inherited members and overloads by argument count and by primitive versus reference argument types (not between two reference types), typed variables, `this` / `super`; no return or field types followed, no build files |
 | PHP | graph | Namespaces, `use`, inheritance and traits; no framework or autoload semantics |
 | Terraform | graph | Module-scoped addresses, local module outputs; `.tf.json` not read |
 | Rust | graph | Paths within a crate (`crate`/`self`/`super`, `use`, inherent vs trait impls); no method calls on values, other crates of the workspace or macro expansion |
 | HTML | graph | Ids and their references (IDREF attributes, fragments) within a document as the browser builds it, links to documents, stylesheets and scripts by relative path, the declarations of inline styles and scripts, and links to images, fonts and media; no absolute URLs |
 | CSS | graph | `@keyframes`, `@font-face`, `@property`, custom properties and CSS Modules classes with their references within a stylesheet, `@import` by relative path, CSS Modules classes JavaScript and TypeScript imports use, `url()` of images and fonts; no selector matching |
+| Python | graph | Scopes (LEGB), imports and relative imports, package re-exports, `self` / `cls` / `super()`, inheritance; no type inference for locals, star imports or dynamic attributes |
 | JavaScript | references | Declarations, class members, ES modules and CommonJS (TypeScript's extractor), scope-aware; not certified for graph or context quality |
-| Python | references | Top-level functions and classes; methods not extracted |
 
 Graph tools answer for every language, but results above a language's
 certified level are not covered by tests. Details and per-language
@@ -301,7 +302,8 @@ Details and known limitations: [SECURITY.md](SECURITY.md).
 
 - No type inference, return-type propagation or control-flow analysis.
 - Module resolution is not compiler-equivalent: `tsconfig` paths, Composer /
-  PSR-4 autoloading, `package.json` and `Cargo.toml` are not interpreted.
+  PSR-4 autoloading, `package.json`, `Cargo.toml` and Python's `sys.path`
+  configuration are not interpreted.
 - Macros are not expanded (Rust `macro_rules!`, procedural macros, derives).
 - No framework semantics (dependency-injection containers, routing,
   decorators).
@@ -309,7 +311,9 @@ Details and known limitations: [SECURITY.md](SECURITY.md).
   JavaScript file importing a TypeScript file); the only relations between
   languages are by path (an HTML page's stylesheets and scripts, CSS Modules
   classes a JavaScript or TypeScript import uses).
-- Python class methods are not extracted.
+- Python names a star import brings, `getattr` / `setattr`, monkey patching
+  and `importlib` are not resolved; a method call on a local variable's value
+  is not either.
 - A file the parser cannot fully read is analyzed only where it parses; the
   rest is reported by `get_diagnostics`.
 

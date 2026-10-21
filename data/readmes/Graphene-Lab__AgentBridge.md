@@ -12,6 +12,8 @@ To be explicit about what the compatibility is and is not: AgentBridge is OpenAI
 
 It is the first **agentic** **harness** system for next-generation artificial intelligence that introduces significant innovations, raising the bar for all competitors in the industry. The system encapsulates agentic functions in a well-designed sandbox that prevents companies from suffering damage from an AI that is not properly controlled, while at the same time allowing them to entrust real business tasks to the AI, with a very high level of privacy and confidentiality.
 
+AgentBridge stands apart from the harnesses you are familiar with because it is designed to let even people with no technical skills — your grandma, for example — use it without risking damage: file actions are reversible thanks to versioning, the agent is confined to a space bounded by guardrails built in by design, and no code-agent features are provided, precisely to prevent code from being created or executed. It can also be supplied together with our cloud platform, which synchronizes the file area in real time with a private, encrypted cloud located within your own company. In short, it is a product any employer can make available to their employees to support office work and make business processes more efficient. With traditional harnesses, a badly worded prompt could destroy documents, wipe the work drive, or cause other kinds of damage; our focus, by contrast, has been on creating a safe tool for office use.
+
 ![Replace humans in offices](media/agent-bridge-poster.png)
 
 > **Why teams choose this architecture**
@@ -224,6 +226,28 @@ Our **Agentic AI** is designed to be installed on standalone devices, such as mi
   grow — future engines appear in `/ttsengine`. Full details in the
   [Text-to-speech guide](docs/TTS.md).
 
+## Why this project does not trust the cloud
+
+In June 2013 *The Guardian* and *The Washington Post* published documents taken from the US National Security Agency by Edward Snowden, a former contractor. He had left the United States for Hong Kong in May 2013 carrying the material, and what he published showed a global surveillance system that collected communications from the servers of the largest internet companies. The reporting won both newspapers the **2014 Pulitzer Prize for Public Service**: these are not conspiracy theories, they are facts established by journalism that the Pulitzer Prize Board judged worthy of the highest award in the field ([PRISM](https://en.wikipedia.org/wiki/PRISM), [Edward Snowden](https://en.wikipedia.org/wiki/Edward_Snowden)).
+
+The program at the centre of that story is **PRISM** (NSA designation US-984XN), started in 2007, whose legal basis was later consolidated in Section 702 of the FISA Amendments Act of 2008. The leaked presentation lists the companies that joined it, with the year each one did: Microsoft (2007), Yahoo (2008), Google (2009), Facebook — today Meta — (2009), Paltalk (2009), YouTube (2010), AOL (2011), Skype (2011), Apple (2012). What was collected came from the companies' own servers: email, chat (voice and video), stored data and files, VoIP, file transfers, video conferencing and social networking details. In Italy the scandal is known as the **Datagate**.
+
+Section 702 was not a one-off: it was extended in 2012, reauthorized in 2018 and reauthorized again in 2024 ([FISA Amendments Act](https://en.wikipedia.org/wiki/FISA_Amendments_Act_of_2008)). Whatever the state of that statute on any given day, the condition that made the collection possible has not changed — **the data sits on someone else's server**, and the owner of that server can read it, hand it over, or be ordered to hand it over.
+
+For AI assistants this is not hypothetical. Cloud assistants keep the conversation on the provider's servers, and there are already documented cases of those conversations reaching the police: in 2025 a 13-year-old in Florida was arrested after asking ChatGPT how to kill a friend (People, Gizmodo); in August 2026 OpenAI alerted the FBI about a man who had described a murder plot to ChatGPT (USA Today); in October 2026 Anthropic reported a Claude user to the police over a threat (Tom's Hardware). Whether a transcript stays private depends on the provider's policy and on the law of its country — never on the user.
+
+**AgentBridge is built for the opposite condition.** The agent, the tools, the documents and the memory run on your machine: there is no account, no cloud copy of your archive, and no transcript on a server that we — or anyone else — can be asked for. A cloud model is contacted only if you choose one, and the GDPR anonymization layer removes names and identifiers before the request leaves the computer. "Trustless" is meant literally: you do not have to trust a provider's promise, because the data is not there to be collected. Intelligence and industrial espionage both begin with a copy of the data held by someone else; this architecture removes that copy.
+
+## The cost of building context for traditional agentic AI compared with AgentBridge’s innovative approach
+
+Processing large volumes of enterprise data to make them usable by an AI agent is a problem of cost, efficiency, and knowledge quality. Increasingly large context windows do not solve the problem: they allow more information to be processed in a single request, but they do not eliminate the costs of reading, processing, and repeating data. On terabyte-scale corpora, continuously transmitting large amounts of information to models can become economically unsustainable.
+
+The difficulty begins already in the preparation phase: heterogeneous documents must be extracted, cleaned, deduplicated, structured, and indexed. Embeddings, storage, indexing, and knowledge updates require additional computational and infrastructural resources, with massive reliance on GPUs and expensive cloud infrastructures. This is where AgentBridge’s first advantage lies: proprietary algorithms make it possible to quickly and deterministically create, with minimal computational effort and without the use of AI or cloud services, a vector for context retrieval. The same advantage applies to the second phase, retrieval: when the agent needs the correct portion of context, retrieval also takes place deterministically, without additional iterations or calls to generative models.
+
+Traditional retrieval architectures such as RAG reduce the need to transmit the entire corpus with every request, but they introduce selection and relevance problems and force the agent to perform multiple iterations to retrieve the content that will form the context, with a consequent increase in token costs and a decrease in responsiveness due to iteration latency. AgentBridge overcomes this scheme: thanks to a non-RAG retrieval architecture based on a dedicated vector read in streaming, context is extracted deterministically before the prompt reaches the agent, without involving AI computation or LLM models. The agent is therefore relieved of the context retrieval task and receives context that is already prepared.
+
+In this way, AgentBridge solves the problem of building and maintaining a semantically rich, reliable, and up-to-date enterprise context without having to continuously reprocess enormous amounts of data in the cloud, with a sharp reduction in costs and full privacy protection. The sustainability of agentic AI depends not only on the model’s capabilities, but above all on the efficiency of the architecture that prepares, organizes, and makes knowledge available. We have published benchmark tests that honestly demonstrate its effectiveness; however, in line with the “Trustless” principle, we encourage independent researchers to test the performance and validity of our innovations firsthand.
+
 ## Your documents area: the company's brain and memory
 
 Think of the documents area as your company's brain. It is a simple folder on disk — nothing special, just a place where your files already live. Whatever you put in it, the AI can read, remember and use: contracts, invoices, client files, product sheets, emails, spreadsheets, technical drawings... everything. It does not matter how much data you have or how big the files are: the more you store, the smarter your AI becomes, because it answers using *your* real documents, not guesses. You never upload anything into the chat — you just keep working with your normal folders, and the AI reaches into them directly.
@@ -341,6 +365,8 @@ client connects to localhost — is in the **[user manual](docs/MANUAL.md)**.
 
 ## Documentation
 
+> **This README is only the opening presentation.** It gives the idea of the product and its main abilities. The repository carries the complete documentation: architecture, configuration, every command and endpoint, the benchmark method and its results. Read it before judging or evaluating the project — a summary cannot show how the parts fit together, or how the claims were measured.
+
 | Document | Audience / contents |
 |---|---|
 | [User manual](docs/MANUAL.md) | **Start here.** Install, configure the JSON files, use the terminal UI, connect a client |
@@ -361,6 +387,18 @@ the developer guides (`docs-dev/`) stay in the repository only.
 
 `AIOrchestrator` is a .NET library — it cannot run alone. AgentBridge hosts it and exposes
 its chat pipeline as a standard web API. **One process. Your machine. Your agents.**
+
+**Why .NET.** .NET is open source — MIT license, developed in the open at
+[github.com/dotnet/runtime](https://github.com/dotnet/runtime) — and the same code runs on
+Windows, Linux and macOS. It is also a multi-language platform: C#, F#, Visual Basic .NET and
+many other languages compile to the same assembly format (Common Intermediate Language), so a
+tool written in one language loads and runs next to a tool written in another.
+
+To say it plainly: .NET is not — and probably will never be — the main language for deep-learning
+research or for training models. There Python keeps an overwhelming advantage, thanks to
+libraries such as PyTorch and TensorFlow. The picture changes for applied AI and for putting a
+model into production: there .NET has been building a serious and credible ecosystem, and that is
+the part of the work this project covers.
 
 ```mermaid
 flowchart LR
@@ -440,6 +478,28 @@ architecture — every module, the source file behind it and the connections tha
 exist between them (terminal UI, HTTP API, the OfficeManager web office, Telegram and SIP
 bridges, shared session store, plugin loader, update services and the AIOrchestrator
 engine) — is in the [architecture diagram](diagram.md).
+
+# The Story Behind AgentBridge
+
+AgentBridge was created by Andrea Bruno, an AI pioneer whose work spans several areas of artificial intelligence, from machine learning experiments dating back to the 1990s to the development of automated systems operating on the internet.
+
+One example of his early work is an experimental chess engine designed to learn from games rather than relying exclusively on brute-force search ([First AI Implementation](https://github.com/Andrea-Bruno/First-AI-Implementation)). His research also explores the historical development of the ideas and algorithms behind modern large language models ([Who Invented LLM](https://github.com/Andrea-Bruno/who-invented-llm)).
+
+His experience with large-scale online automation was also documented in 2019 by the Italian television programme *Report*, in a story subsequently covered by [Open](https://www.open.online/2019/10/30/report-andrea-bruno-il-grillino-emigrato-in-russia-che-manovrava-migliaia-di-profili/), at a time when today's AI agent ecosystem had not yet become mainstream.
+
+More recently, his work has extended to contributing to other open-source AI agent frameworks, including [Qwen Code](https://github.com/QwenLM/qwen-code/pull/12461) and [Codewhale](https://github.com/codewhale-hq/Codewhale/pull/6604). These contributions address practical aspects of agent execution, concurrency control, and decision-making mechanisms, reflecting an ongoing effort to improve the efficiency and controllability of AI systems.
+
+He is also the author of a different idea of agentic AI, deterministic instead of generative: a technology that does not write code into files, but works at runtime and takes over a large part of what a developer normally does. That project is [UISupportBlazor](https://github.com/Graphene-Lab/UISupportBlazor), and its underlying engine has been merged into AgentBridge to extend what its agents can do.
+
+The focus of AgentBridge is to develop an AI automation framework that combines the flexibility of large language models with deterministic software components, while embracing a *trustless* philosophy. This approach is consistent with other open-source projects in our repository involving cloud technologies, asymmetric cryptography, post-quantum cryptography, and *non-custodial* cryptocurrency wallets.
+
+The underlying principle is simple: users should not have to place unconditional trust in a developer, a service provider, or a black-box AI system when independent verification is technically possible. Digital sovereignty means retaining meaningful control over software, data, models, and computational resources rather than depending entirely on external platforms.
+
+We apply the same philosophy to AgentBridge by publishing benchmarks intended to be reproducible and open to independent scrutiny. The figures presented in this repository reflect our own measurements, but we encourage everyone to run their own tests, inspect the implementation, and challenge our conclusions. Performance depends on hardware, configuration, and workload, and independent verification is the best way to establish what a system can actually deliver.
+
+After all, everyone will tell you that their product is the best in the world. We believe the code, the evidence, and independently reproducible results should speak for themselves.
+
+**Don't trust our claims blindly. Inspect the code, reproduce the benchmarks, and make up your own mind.**
 
 ## Our team
 

@@ -31,6 +31,19 @@
 > [!IMPORTANT]
 > Some links are referral or affiliate links. They may support this project at no extra cost to you, but placement is based on usefulness—not commission.
 
+<!-- APIMESA-FEATURED-START -->
+## ⭐ Featured: APIMesa
+
+<p align="center">
+  <a href="https://apimesa.com" target="_blank" rel="noopener">
+    <img src=".github/assets/apimesa-promo-banner.png" alt="APIMesa — AI, Scraping & Data APIs. 150+ APIs, one API key, live playground at apimesa.com" width="100%">
+  </a>
+</p>
+
+**[APIMesa](https://apimesa.com)** is a pay-per-call API marketplace with 150+ live APIs for AI, scraping, data, SEO, lead generation, media, and developer utilities — one API key, clear per-call credit pricing, and a live playground for every API.
+
+<!-- APIMESA-FEATURED-END -->
+
 ## ✨ Find your tool
 
 | I want to… | Start with |
@@ -90,6 +103,11 @@
 
 <p align="right"><a href="#awesome-ai-tools">Back to top ↑</a></p>
 
+
+**Also available as pay-per-call APIs on APIMesa:**
+
+- **[Background Remover API](https://apimesa.com)** - Remove the background from any image with the open-source rembg (u2net) model, self-hosted on Cloud Run. Returns a transparent PNG.
+- **[Image Upscaler](https://apimesa.com)** - Upscale a still image to twice its original dimensions. Includes a private job status URL. Charged once on success; terminal failures are refunded. Results…
 ## 💰 Monetization & E-commerce
 
 <table>
@@ -155,6 +173,12 @@
 
 <p align="right"><a href="#awesome-ai-tools">Back to top ↑</a></p>
 
+
+**Also available as pay-per-call APIs on APIMesa:**
+
+- **[JSON Schema Validate API](https://apimesa.com)** - Validate JSON data against a lightweight subset of JSON Schema including type, required, properties, arrays, enums, and ranges.
+- **[OpenAPI Validate API](https://apimesa.com)** - Validate core OpenAPI JSON structure and count paths and operations for agent/tool integration checks.
+- **[API Response Shape API](https://apimesa.com)** - Summarize JSON response structure into fields, paths, types, and an inferred schema for agents and docs.
 ## 🔧 Automation & Data
 
 <table>
@@ -198,6 +222,11 @@
 
 <p align="right"><a href="#awesome-ai-tools">Back to top ↑</a></p>
 
+
+**Also available as pay-per-call APIs on APIMesa:**
+
+- **[Structured Extract API (small LLM)](https://apimesa.com)** - Pull structured data out of text using your own JSON schema — structured tasks on a small self-hosted model (Qwen3 1.7B). For heavyweight extraction from web…
+- **[Webpage to PDF API](https://apimesa.com)** - Render any public web page as a PDF — receipts, articles, reports, invoices. Results are cached for 24 hours.
 ## 📈 Trading & Market Intelligence
 
 <table>
@@ -263,6 +292,10 @@
 
 <p align="right"><a href="#awesome-ai-tools">Back to top ↑</a></p>
 
+
+**Also available as pay-per-call APIs on APIMesa:**
+
+- **[Text-to-Speech API](https://apimesa.com)** - Turn up to 200 characters of text into WAV audio with Resemble AI's open-source Chatterbox model running on CPU. Only clone voices you own or have explicit…
 ## 🧭 How tools earn a spot
 
 This collection favors tools that:

@@ -25,6 +25,13 @@
 
 </div>
 
+## IMPORTANT
+> Project Status: Brief Personal Pause
+>
+> I took a short personal break from active development to focus on matters outside the project. This project isn't abandoned, and I plan to return soon to keep building and refining it.
+>
+> Thank you for your patience, support, and continued interest. I’ll resume work soon and share updates as progress continues.
+
 ## Table of Contents
 
 - [Quick Start](#quick-start)
@@ -1333,7 +1340,4 @@ Packaged docs are indexed into the `marm_system` memory namespace on startup and
 | `CONCEPT_INDEX_BATCH_SIZE` | `20` | Memories indexed per batch, capped at 500. Lowering it does not reduce contention; it measured slightly worse |
 | `CONCEPT_INDEX_BATCH_PAUSE_MS` | `250` | Pause between batches while clearing a backlog. Cuts worst-case recall during indexing from ~270ms to ~80ms for about 18% longer drain. `0` disables it |
 | `CONCEPT_INDEX_LEASE_SECONDS` | `300` | How long a claimed indexing task stays owned once nothing is renewing it. Work in progress renews its own lease, so this bounds how long a *killed* process holds tasks, not how long a batch may take. Reclaimed tasks spend no attempt |
-| `CONCEPT_INDEX_MAX_ATTEMPTS` | `3` | Failed attempts before a memory is parked with its error instead of retried |
-
-The extractive fallback uses a stricter rule independent of the clustering threshold:
-only a verbatim, word
+|

@@ -10,6 +10,37 @@
 
 The GIF is an original-speed render of a real local Snake run. Every move calls Laya; the visible cycle safety layer can correct unsafe proposals. The latency figures above are the separate **one-question API benchmark**, not the frame time of the three-question Snake loop. [Watch the 30-second MP4](https://github.com/mizorewww/laya-mlx/blob/main/docs/assets/snake-demo.mp4) · [Snake speed and stability](https://github.com/mizorewww/laya-mlx/blob/main/docs/SNAKE_BENCHMARKS.md).
 
+## 0.5.0: upstream v0.4.12 migration
+
+The current source tree targets upstream `ffc142012af63d015fa19f05f29f9c5ff329a2cc`.
+It now includes `Agent`/`Router.predict_batch`, `predict_long`, `decide`/`decide_batch`,
+hooks (including `OptionStabilityHook`), calibration, evaluation, HTTP/MCP serving,
+and the upstream framework/tool integrations. Release version: 0.5.0. The [qualification record](docs/UPSTREAM_0412_PROGRESS.json) lists correctness,
+performance and installed-package evidence, remaining gates and limitations.
+Historical timings below describe their recorded revisions, not this migration.
+
+MLX keeps its native encoder/decision head, CPU/GPU streams, `dtype`, row `batch_size`,
+`pad_to_multiple`, native `compile=True`, and bounded `cache_prompts=True` controls.
+The logical `predict_batch(batch_size=...)` groups states; the constructor's `batch_size`
+bounds tensor rows (questions) per native forward. Neither caches answers or encoder states.
+The Rust tokenizer and inference path do not require PyTorch or Transformers. Temperature
+optimization is an optional `calibration` extra; JSON calibration loading is inference-only.
+
+Compatibility changes from the earlier selective port follow official behavior:
+`Router()` keeps up to two models by default (`max_loaded=1` restores the former limit),
+registration/unregistration waits for a build already in progress, scalar choice labels are
+accepted, score legends use their rendered strings, and an empty question set reports only
+zero input/output token usage. Invalid requests use the official error types/messages.
+
+Optional extras are `serve`, `mcp`, `structured`, `calibration`, `langchain`, `langgraph`,
+`llamaindex`, `crewai`, and `agno`. Entrypoints are `laya-mlx-router`, `laya-mlx-serve`, `laya-mlx-evals`, and
+`laya-mlx-mcp-server`; the existing `laya-mlx predict/convert` command remains available.
+`mps`, `gpu`, and `metal` select the MLX GPU; `cpu` selects MLX CPU. CUDA/TileLang,
+PyTorch compile controls, ONNX execution and training remain explicit backend boundaries.
+Upstream's standalone HTTP SDK can target the HTTP service; it is a separate package.
+
+See [migration evidence and pending gates](docs/UPSTREAM_0412_PROGRESS.json).
+
 ## Quick start
 
 ```bash
@@ -292,18 +323,19 @@ Language detection now avoids treating all-capital acronyms/address fragments as
 Spanish while preserving emphasis capitals and mixed scripts. French device footers such as
 `Envoyé depuis mon iPhone` are correctly removed. Language detection remains heuristic.
 
-The original sequential architecture checks remain pinned to `573e5b6`; parallel layout checks
-use the actual upstream v0.4.1 implementation pinned at `1adc59f`. CI runs both references. The three published checkpoints were rechecked in FP32/FP16:
+The historical validation below used `573e5b6` for sequential architecture checks and
+`1adc59f` for parallel layout. Current CI uses v0.4.12 for both. At the v0.4.1 migration,
+the three published checkpoints were rechecked in FP32/FP16:
 378/378 argmax agreements, 100 deterministic finite calls per configuration, and zero measured
 active-memory growth ([raw validation report](benchmarks/results/upstream-v041-validation.json)).
-This port does not include the upstream batch/long-document, structured-decisions, hooks,
-HTTP/MCP server, training, or other backend/SDK APIs.
+That published selective port omitted batch/long-document, structured-decisions, hooks and
+HTTP/MCP serving. Version 0.5.0 adds these host interfaces.
 
 ### Selected upstream fixes after v0.3.5
 
 The runtime selectively incorporates input, routing and email fixes from upstream
-`4aa6761` (v0.3.23 source tree). This does not add the upstream batch, long-document,
-hooks or server APIs. Neural architecture parity remains tested against `573e5b6`.
+`4aa6761` (v0.3.23 source tree). That historical sync did not add batch, long-document, hooks or server APIs.
+Current host and sequential reference tests target v0.4.12; the older reports retain their pins.
 
 - Chronological conversation lists keep their newest tokens when the context fills;
   strings and dictionaries keep their beginning. Prefix caching uses the same rule.
@@ -399,3 +431,14 @@ then push a matching `vX.Y.Z` tag. GitHub Actions runs the macOS test suite, val
 version consistency, builds and checks the wheel and source distribution, publishes
 them to PyPI using the repository's `PYPI_API_TOKEN` secret, and creates a GitHub release.
 A failed test or build prevents publishing.
+
+
+The v0.4.12 surface audit preserves all upstream host parameters and root exports.
+Native `backend`/`dtype_for()` introspection identifies MLX; no PyTorch Backend
+object is installed. Runtime `set_backend()` is explicitly unsupported. TileLang
+`accelerate()` returns false on this non-CUDA runtime (or raises with `strict=True`),
+and `deaccelerate()` does not disable native MLX compilation. Use constructor
+controls to choose native execution settings. `Router(local_files_only=True)` now
+reaches the MLX checkpoint cache resolver; Core ML `compute_units` is not an MLX
+Router option. The machine-readable surface audit is in
+`docs/UPSTREAM_0412_API_AUDIT.json`.

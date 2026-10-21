@@ -8,10 +8,18 @@
 
 > 🌐 [English](README_EN.md) · [Deutsch](README.de.md)
 
+<!-- 徽章区：左边看"有多少人在用"，右边看"项目是否健康"。 -->
+[![Downloads](https://img.shields.io/github/downloads/Soodok/Deepseek-Harness-Local-Android/total?style=for-the-badge&label=downloads&color=2563eb)](https://github.com/Soodok/Deepseek-Harness-Local-Android/releases)
+[![Stars](https://img.shields.io/github/stars/Soodok/Deepseek-Harness-Local-Android?style=for-the-badge&color=f59e0b)](https://github.com/Soodok/Deepseek-Harness-Local-Android/stargazers)
+[![Release](https://img.shields.io/github/v/release/Soodok/Deepseek-Harness-Local-Android?style=for-the-badge&color=16a34a)](https://github.com/Soodok/Deepseek-Harness-Local-Android/releases/latest)
+
 [![CI](https://github.com/Soodok/Deepseek-Harness-Local-Android/actions/workflows/android-build.yml/badge.svg)](https://github.com/Soodok/Deepseek-Harness-Local-Android/actions/workflows/android-build.yml)
-![Release](https://img.shields.io/badge/release-v1.4.0-blue)
-![Platform](https://img.shields.io/badge/platform-Android%208.0%2B-green)
+![Platform](https://img.shields.io/badge/Platform-Android%208.0%2B%20~%2016-3ddc84?logo=android&logoColor=white)
+![Engine](https://img.shields.io/badge/engine-dsh%200.2.1--rc.2-4b5563)
+![Runtime](https://img.shields.io/badge/runtime-bionic%20Node.js-5fa04e?logo=nodedotjs&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-brightgreen)
+[![Last commit](https://img.shields.io/github/last-commit/Soodok/Deepseek-Harness-Local-Android?color=64748b)](https://github.com/Soodok/Deepseek-Harness-Local-Android/commits/main)
+[![QQ](https://img.shields.io/badge/QQ%E7%BE%A4-1128769016-12b7f5?logo=tencentqq&logoColor=white)](https://github.com/Soodok/Deepseek-Harness-Local-Android#%E5%8F%8D%E9%A6%88)
 
 [中文](#简介) · [English](README_EN.md)
 
@@ -178,7 +186,7 @@ specialUse 前台服务 + 指数退避监督器扛住系统回收，长任务锁
 
 ## 📦 安装
 
-**下载 Release（推荐）**：前往 [Releases](https://github.com/Soodok/Deepseek-Harness-Local-Android/releases) 下载 APK（手机选 `arm64-v8a`，最新版 **v1.4.0**），允许安装未知来源应用后安装。
+**下载 Release（推荐）**：前往 [Releases](https://github.com/Soodok/Deepseek-Harness-Local-Android/releases) 下载 APK（手机选 `arm64-v8a`，最新版 **v1.4.9**），允许安装未知来源应用后安装。
 
 > 📦 **Release 里有多种包，怎么选**：普通用户下 **`dsh-mobile-*-arm64-v8a.apk`**（正式签名）；
 > 文件名带 **`-debug`** 的是调试签名版，供抓日志调试、或之前就装 debug 渠道的用户继续升级用；
@@ -244,6 +252,19 @@ gradle assembleDebug -Pabi=arm64-v8a
 ## 反馈
 
 遇到问题或功能建议，欢迎提交 [Issue](https://github.com/Soodok/Deepseek-Harness-Local-Android/issues)；崩溃类问题请附上 `logcat` 输出或应用内的引擎日志。
+
+**QQ 交流群：`1128769016`** —— 使用问题、版本动态、插件推荐都可以在群里聊；Bug 仍建议同时提 Issue，方便跟踪不遗漏。
+
+## 🙏 贡献者
+
+这个项目不是一个人做出来的。以下朋友的实际贡献已合入主线，特此致谢：
+
+| 贡献者 | 贡献 |
+|---|---|
+| [@skynit](https://github.com/skynit) | 登录/「开始使用」弹窗渲染错位修复（PR #30）：定位到视口缩放与合成层残留的因果关系，并给出「遮罩下定稿 + 整页重栅格化」方案 |
+| @henryz78 | 引擎重启后永久卡住修复（v1.4.9）：定位到 `stopping` 标志在 `start()` 中漏复位，并进一步发现 `CancellationException` 被吞导致旧监督循环覆盖新循环状态的竞态；因网络原因未能提 PR，以源码包形式提交 |
+
+> 如果你也修好了什么问题，欢迎提 Issue / PR，或者像 @henryz78 一样把改动发到群里——署名一定会保留。
 
 ## 许可证
 

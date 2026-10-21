@@ -35,18 +35,17 @@
 
 ---
 
-### Sponsored: AI Playbook
+### Sponsored: APIMesa
 
 <p align="center">
-  <a href="https://aiwithchris.com" target="_blank" rel="noopener">
-    <img src=".github/assets/ai-toolkit-banner.png" alt="Hey, I'm Chris — Work Smarter, Create Faster, Earn More With AI. Join my AI Playbook at aiwithchris.com, $10/month" width="100%">
+  <a href="https://apimesa.com" target="_blank" rel="noopener">
+    <img src=".github/assets/apimesa-promo-banner.png" alt="APIMesa — AI, Scraping & Data APIs. 150+ APIs, one API key, live playground at apimesa.com" width="100%">
   </a>
 </p>
 <p align="center">
-  <a href="https://aiwithchris.com"><strong>🚀 Join my AI Playbook — aiwithchris.com</strong></a><br>
-  $10/month · 3,600+ prompts · agent workflows · repo breakdowns · money ideas
+  <a href="https://apimesa.com"><strong>🚀 Try APIMesa — apimesa.com</strong></a><br>
+  150+ pay-per-call APIs · AI, scraping & data · one API key · live playground
 </p>
-
 </div>
 
 ---
@@ -461,4 +460,4 @@ This collection contains **11,860 ready-to-use APIs** that you can integrate dir
 | [LinkedIn Profile Scraper with Email (No Cookies)](https://apify.com/futurizerush/linkedin-profile-scraper?fpr=p2hrc6) | Extract structured data from public LinkedIn profile URLs — name, headline, work history, education, follower counts, websites. When the person has published their own email or phone openly in their... |
 | [LinkedIn Profile Search Scraper](https://apify.com/akash9078/linkedin-profile-search-scraper?fpr=p2hrc6) | Find and extract publicly available LinkedIn profile data from Google search results. This Actor searches Google for LinkedIn profiles using targeted queries and returns profile URLs, names, job... |
 | [LLM Visibility Monitor: AI Search Brand Audit](https://apify.com/constructive_calm/llm-visibility-monitor?fpr=p2hrc6) | Audit how your brand appears across ChatGPT-style answers, Claude, Gemini (including the Google AI Overview signal), Perplexity, and Grok. Track mentions, citations, share of voice, sentiment, and... |
-| [Local Lead Generation Agent](https://apify.com/apify/local-lead-generation-agent?f
+| [Local Lead Generation Agent](https://apify.com/apify/local-lead-generation-agent?fpr=p2hrc6) | Find truly local leads by scrapin

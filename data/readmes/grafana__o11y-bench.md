@@ -164,6 +164,25 @@ Run with a custom output location or name:
 mise run bench:job -- --model openai/gpt-5.4-mini --jobs-dir /tmp/o11y-bench-jobs --job-name my-smoke-run
 ```
 
+### Reasoning Effort Levels
+
+`--reasoning-effort` (default `off`) takes `off`, `default`, or a level the provider accepts
+(`low`, `medium`, `high`, ...), passed through as `reasoning_effort`.
+
+- `default` sends nothing: the provider decides (adaptive thinking on Claude 5.x).
+- `off` turns thinking off, using whatever each model accepts:
+
+| Model | `off` sends |
+| --- | --- |
+| Claude Haiku 5.x | `thinking: {"type": "disabled"}` |
+| Claude Sonnet 5.x | `thinking: {"type": "between_tools"}` (no thinking before responding; short between-tool updates may appear as thinking blocks) |
+| OpenAI `gpt-5.4`+, `gpt-6` | `reasoning_effort: "none"` |
+| Claude Opus / Fable 5.x, `gpt-6.1` | fails: these cannot turn thinking off, use `low` or `default` |
+| other models | nothing: they do not think unless asked |
+
+The in-container runner (`agents/agent_runner.py`) declares its own pinned dependencies in its
+script header, and prices tokens from the cost map bundled with the pinned litellm.
+
 ### Job Resume Behavior
 
 `bench:job` resumes by job directory.
@@ -227,6 +246,7 @@ mise run bench:job -- --model anthropic/claude-sonnet-4-6 --task-name query-cpu-
 
 This runs OpenCode with gcx and gcx skills pre-installed in the container, but
 with MCP tools stripped so the agent can only reach Grafana through gcx.
+gcx is pinned to a release in `environment/Dockerfile`, so runs compare the same CLI.
 The container image has `GRAFANA_SERVER` and `GRAFANA_ORG_ID` set so gcx
 connects to the sidecar Grafana automatically.
 

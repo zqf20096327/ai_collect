@@ -130,7 +130,7 @@ Dictée via faster-whisper dans toutes les zones de saisie, et lecture vocale de
 ### 🎨 Génération d'images locale (texte → image)
 
 - **Symétrie multimodale** : l'IA *voit* (vision Ollama) **et** *dessine*. Demandez « *génère une image de…* », « *dessine-moi…* », « *crée un logo…* ».
-- **Installation automatique (zéro config)** : à la première demande sans backend, My_AI télécharge et lance **ComfyUI portable** tout seul (Windows/NVIDIA, Python+CUDA embarqués) + un modèle par défaut — comme l'assistant de premier lancement pour Ollama.
+- **Installation automatique (zéro config)** : à la première demande sans backend, My_AI télécharge et lance **ComfyUI portable** tout seul (Windows : build NVIDIA, AMD ou Intel Arc selon le GPU, sinon sur le CPU ; Python+torch embarqués) + un modèle par défaut — comme l'assistant de premier lancement pour Ollama.
 - **100% local** via un backend **Stable Diffusion** en HTTP : **ComfyUI** (auto-installé), **AUTOMATIC1111 / Forge**, ou **diffusers** (optionnel, tous GPU + CPU), configurable dans `config.yaml` → `image_generation:`.
 
 ### 📝 Génération & modification de documents
@@ -268,25 +268,25 @@ my_ai/
 │   ├── desktop/                         # Fenêtre de l'appli et son serveur local
 │   │   ├── __init__.py
 │   │   ├── _whisper_worker.py           # Transcription isolée (contournement OpenMP macOS)
-│   │   ├── agents.py                    # Page Agents : fils d'exécution, workflows, débat, statistiques
-│   │   ├── api_*.py                     # Routes REST (agents, fichiers, mémoire, prompts, tâches, réglages…)
+│   │   ├── agents.py                    # Page Agents : fils d'exécution, workflows, débat...
+│   │   ├── api_*.py                     # Routes REST
 │   │   ├── devserver.py                 # Serveur Vite du mode développement (--dev)
-│   │   ├── dpi_host.py                  # Fenêtre hôte DPI par écran, repli des visionneuses (Windows)
+│   │   ├── dpi_host.py                  # Fenêtre hôte DPI par écran, repli des visionneuses
 │   │   ├── events.py                    # Protocole d'événements du WebSocket (Pydantic)
 │   │   ├── files.py                     # Fichiers locaux : liens signés, ouverture, Explorateur
 │   │   ├── folders.py                   # Dossiers du projet de la session
-│   │   ├── lifecycle.py                 # Étapes du lancement, moteur, Relay, scheduler, arrêt propre
+│   │   ├── lifecycle.py                 # Étapes du lancement, moteur, Relay, scheduler
 │   │   ├── memory.py                    # Panneau Mémoire (faits/documents/conversations)
 │   │   ├── model_setup.py               # Modèles Ollama et assistant de premier lancement
 │   │   ├── native_viewer.py             # Visionneuses Office dans le volet d'aperçu
-│   │   ├── preview_handler.py           # Visionneuses natives Word/PowerPoint/Excel (IPreviewHandler)
+│   │   ├── preview_handler.py           # Visionneuses natives Word/PowerPoint/Excel
 │   │   ├── previews.py                  # Pages d'aperçu : artifacts HTML/SVG et documents
 │   │   ├── prompts.py                   # Bibliothèque de prompts
 │   │   ├── qr.py                        # QR code du Relay
 │   │   ├── resources.py                 # Moniteur de ressources (CPU/RAM/GPU) de la page Agents
 │   │   ├── routing.py                   # Aides communes aux routes
 │   │   ├── schedule.py                  # Tâches planifiées de la page Agents
-│   │   ├── server.py                    # Serveur FastAPI local (127.0.0.1, jeton) : REST + WebSocket
+│   │   ├── server.py                    # Serveur FastAPI local (127.0.0.1, jeton)
 │   │   ├── settings.py                  # Réglages (config.yaml, commentaires préservés)
 │   │   ├── shell_api.py                 # Fonctions de la fenêtre exposées à la page (dialogues…)
 │   │   ├── voice.py                     # Voix : saisie (Whisper) et lecture (pyttsx3)
@@ -358,7 +358,7 @@ my_ai/
 │   ├── __init__.py
 │   ├── clean_broken_dist_info.py        # Répare un environnement après un pip interrompu
 │   ├── local_tools.py                   # Outils locaux
-│   └── measure_energy.py                # Empreinte énergétique et carbone d'une session (codecarbon)
+│   └── measure_energy.py                # Empreinte énergétique et carbone d'une session
 ├── utils/                               # Utilitaires
 │   ├── __init__.py
 │   ├── citations.py                     # Citations web numérotées cliquables ([n] → url)

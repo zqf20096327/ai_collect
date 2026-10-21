@@ -159,6 +159,25 @@ Use native mode to avoid this issue.
 
 ## Version History
 
+### Version 255.0
+- The Claude Code Chat tab now comes back after restarting Visual Studio even when you had closed the Claude Code panel and kept only the chat open (issue #209).
+
+### Version 254.0
+- GitHub Issues now works with every native agent, not only Claude Code: after Fix with Agent the window shows the agent working and unlocks Commit & Push as soon as it finishes, instead of staying stuck on "Starting the agent…".
+- Codex chat tabs opened with ✚ or from GitHub Issues now receive their prompts instead of silently ignoring them.
+
+### Version 253.0
+- Session History's "Resume Last Session" button now reopens the most recent Claude Code or Devin conversation in the native chat instead of closing the window and starting a fresh chat (issue #208).
+
+### Version 252.0
+- Resuming a long native chat no longer stalls Visual Studio: historical thinking is not replayed (live thinking still streams as before), and only the newest 40 tool calls are replayed as full cards, with older ones kept as one-line summaries.
+
+### Version 251.0
+- Qwen Code questions in the native chat now show the actual question and its choices, with a box for your own answer, instead of an empty window with only Submit and Cancel (issue #203).
+
+### Version 250.0
+- The Claude Code panel and its chat tab now load automatically when Visual Studio starts, even when the panel is behind another tab, so you no longer have to click the panel first (issue #204).
+
 ### Version 249.0
 - Fixed picking another agent in the native chat sometimes doing nothing until a different project was opened.
 
@@ -1000,17 +1019,4 @@ Native mode now in beta phase
 - Added Reasonix (DeepSeek-native coding agent) as a supported AI agent. Install it with `npm i -g reasonix`, then enable it from the agent menu via "Configure Visible Code Agents..." (issue #93).
 
 ### Version 32.0
-- Fixed the agent terminal being flooded with "[Pasted text +N lines]" blocks on startup and on every setting change when "TUI Fullscreen" was enabled — fullscreen rendering now keeps its flicker-free drawing without taking over the mouse, which was the source of the flood (issue #92).
-
-### Version 31.0
-- Added a "TUI Fullscreen" option to the Claude Code model menu to switch the agent between fullscreen (flicker-free) and classic terminal rendering on demand.
-
-### Version 30.0
-- Fixed the agent terminal gradually stopping accepting keyboard input while "On Agent Finish" was enabled with the Command Prompt terminal — the background check that watches for the agent finishing no longer bounces keyboard focus out of the terminal or prompt, so typing keeps landing throughout a turn.
-
-### Version 29.0
-- Fixed right-clicking elsewhere in Visual Studio sometimes failing to show the context menu and instead pasting the clipboard into the agent terminal (issue #90). The extension no longer intercepts the right mouse button at all — paste into the agent through the prompt box (Ctrl+V, then Send), which works the same in every terminal mode.
-- Fixed Visual Studio hanging when an agent finished while the Settings dialog was open with "On Agent Finish" enabled — the finish notification and action now wait until the dialog is closed.
-
-### Version 28.0
-- Fixed keyboard and mouse input dropping out in the agent terminal while the agent was working — typing, arrow keys, and clicks stopped landing for a while and then recovered on their own. Terminal focus no longer merges an unrelated
+- Fixed the agent terminal being flooded with "[Pasted text +N lines]" blocks on startup and on every setting change when "TUI Fullscreen" was en

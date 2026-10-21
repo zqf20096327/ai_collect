@@ -17,7 +17,7 @@
 
 <p align="center">
   <a href="#install">Quickstart</a> &middot;
-  <a href="#whats-new-in-1516">What's new</a> &middot;
+  <a href="#whats-new">What's new</a> &middot;
   <a href="#why-its-different">Why it's different</a> &middot;
   <a href="#the-engine">The engine</a> &middot;
   <a href="#how-it-works">How it works</a> &middot;
@@ -40,8 +40,35 @@
 
 ---
 
-## What's new in 1.5.16
+## What's new
 
+**1.5.23** &mdash; **Windows: finding an element by name no longer matches stray letters.** A lone "C" on another page could match "User code 0", and "Don't Save" could match **Save**. A partial match now has to be a real part of the name you asked for.
+
+**1.5.22** &mdash; **Your turn is as short as possible.** When an agent needs you (a sign-in, a 2FA code), it asks for that one step and does the rest itself. With `done_when` (what shows on screen once you're done), the prompt turns from blue back to amber the moment you finish, with no Resume click.
+
+**1.5.21**
+- **`set_value` never guesses a field.** With no field name or role it used to type into the window's largest text box; it now asks you to name the field.
+- **macOS: no screen-recording permission no longer breaks everything.** Only screenshots and OCR fail, and they say how to fix it; windows, keys and accessibility keep working.
+- **Cleaner page text on Windows** (no placeholder characters), and a security update to a dependency.
+
+**1.5.20**
+- **The on-screen pill no longer blocks the agent's own clicks.** It sits where browsers keep their tabs and address bar; it now steps aside for a moment before every click, drag or scroll, then comes back. Windows, macOS and Linux.
+- **Reading a page no longer highlights it on Linux and macOS either.** `copy_all_text` reads the document through accessibility, as on Windows: exact text, nothing selected, your clipboard untouched.
+- **Your clipboard is put back after typing** (`smart_type` too), and only once the paste has landed, so a slow app can't paste what you had copied.
+- **macOS:** `window focus` focuses the process you asked for, a locked screen says so, sidebar clicks are verified, and a bare modifier key (`shift`) works.
+
+**1.5.19** &mdash; **Typing never pastes your own clipboard.** clawdcursor types by pasting; on Windows a clipboard write could fail silently and the paste then sent whatever *you* had copied. Every paste now checks the clipboard first and types key by key when it doesn't hold the text.
+
+**1.5.18**
+- **"Something else" on the pause prompt.** When the agent pauses for you, the prompt has a third button between Resume and End task: type an answer instead of doing the step &mdash; "use the test account instead", a code, a change of plan &mdash; and press Enter. The agent continues from what you wrote. Windows, macOS and Linux; over MCP `pause_for_user` returns `{status:"replied", reply}`.
+- **Reading a page no longer highlights it (Windows).** `copy_all_text` reads the document the way a screen reader does: exact text, no Ctrl+A, nothing selected, your clipboard untouched.
+- **MCP tool annotations** on every tool, and `window` / `system` now describe every action, its side effects and what it returns.
+
+**1.5.17**
+- **macOS: text outside ASCII is typed and pasted as itself** &mdash; "café 日本語" no longer comes out as "cafa aaa" or "caf√©".
+- **`copy_all_text` never selects an editor or a list** (Ctrl+A there selected a whole document or every email).
+
+**1.5.16**
 - **It pauses for you at a roadblock, then carries on.** A sign-in, a 2FA code, a CAPTCHA, an upgrade page: instead of giving up, the agent pauses. The glow around the screen turns **blue** and an on-screen prompt says what it needs ("Sign in to Outlook, then click Resume"). Click **Resume** and it continues where it left off, or **End task** to stop. Your own agent can do the same over MCP with `system({ action: "pause_for_user", message })`; from a terminal, `clawdcursor resume` (or `--end`).
 - **The glow and banner on every OS.** macOS and Linux now get the same screen-edge glow and banner as Windows: amber while the agent works, blue while it waits for you. Double-click the banner to stop everything.
 - **Blind mode on macOS caught up with Windows.** A native accessibility helper lists windows in 0.3 s (was 11 s) and reads a window's tree in 0.06&ndash;0.2 s. Typing is refused while a system dialog owns the keyboard, and the agent is told when another app's dialog took its keys.

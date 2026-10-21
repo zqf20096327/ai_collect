@@ -152,6 +152,10 @@ Every row is **supported**: tested in CI on each change, bug reports accepted. *
 
 [TestingBot](https://testingbot.com) supports this project with free real-device testing through its open-source program.
 
+This project is tested with BrowserStack.
+The [Percy visual-review scope](docs/BROWSERSTACK.md#percy-scope) is advisory and synthetic-only,
+separate from functional browser tests and release device qualification.
+
 ### Known limits
 
 - **Tailscale TUN mode is required** — Userspace networking hides peer identities behind loopback, so the gateway refuses requests; if `doctor` reports `loopbackTrustSound: false`, switch Tailscale to TUN mode rather than bypassing auth.

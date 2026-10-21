@@ -243,7 +243,6 @@ Good entries should have a clear reason to exist. They should help people build,
 - [OmniParser](https://github.com/microsoft/OmniParser) - Vision-based GUI parsing model and tooling for computer-use agents. ![GitHub stars](https://img.shields.io/github/stars/microsoft/OmniParser?style=social)
 - [MiniCPM-V](https://github.com/OpenBMB/MiniCPM-V) - Compact vision-language model family with edge-focused deployment examples and strong OCR-oriented use cases. ![GitHub stars](https://img.shields.io/github/stars/OpenBMB/MiniCPM-V?style=social)
 - [Eagle](https://github.com/NVlabs/Eagle) - NVIDIA multimodal model codebase with open checkpoints and reusable research materials for vision-language and video-language tasks. ![GitHub stars](https://img.shields.io/github/stars/NVlabs/Eagle?style=social)
-- [Moondream](https://github.com/m87-labs/moondream) - Small vision-language model with practical inference examples for edge and real-time image understanding. ![GitHub stars](https://img.shields.io/github/stars/m87-labs/moondream?style=social)
 - [NVIDIA Cosmos](https://github.com/NVIDIA/cosmos) - Open platform of world models, tokenizers, and post-training tools designed for physical AI, robotics, and autonomous systems. ![GitHub stars](https://img.shields.io/github/stars/NVIDIA/cosmos?style=social)
 
 #### Speech & Audio Model Codebases
@@ -471,4 +470,8 @@ Good entries should have a clear reason to exist. They should help people build,
 - [Agent Substrate](https://github.com/agent-substrate/substrate) - Kubernetes-native execution runtime for high-density, stateful AI-agent sandboxes with actor lifecycle management, suspend/resume, and workload routing. Apache-2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/agent-substrate/substrate?style=social)
 - [DESIGN.md (Google)](https://github.com/google-labs-code/design.md) - A format specification for describing visual identity to coding agents, combining YAML tokens and markdown prose to give agents a structured understanding of design systems. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/google-labs-code/design.md?style=social)
 - [Agent Skills](https://github.com/agentskills/agentskills) - Standardized specification and document format for bundling and progressively loading AI agent capabilities, instructions, scripts, and resources. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/agentskills/agentskills?style=social)
-- [FastMCP](https://github.com/PrefectHQ/fastmcp) - A Python framework for building Model Context Protocol (MCP) servers and clients with automatic schema generation and validation. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/git
+- [FastMCP](https://github.com/PrefectHQ/fastmcp) - A Python framework for building Model Context Protocol (MCP) servers and clients with automatic schema generation and validation. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/PrefectHQ/fastmcp?style=social)
+
+#### Agent Context, Memory & Knowledge
+
+- [OpenViking](https://github.com/volcengine/OpenViking) - Open-source context database for AI agents that unifies agent memory, knowledge RAG, and skills as a vir

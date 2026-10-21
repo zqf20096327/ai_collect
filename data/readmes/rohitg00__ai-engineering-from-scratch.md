@@ -5,6 +5,12 @@
   </picture>
 </p>
 
+<p align="center">
+ <a href="https://www.star-history.com/rohitg00/ai-engineering-from-scratch">
+  <picture><source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=rohitg00/ai-engineering-from-scratch&type=rank&theme=dark" /><source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=rohitg00/ai-engineering-from-scratch&type=rank" /><img alt="Star History Rank" src="https://api.star-history.com/badge?repo=rohitg00/ai-engineering-from-scratch&type=rank" /></picture> <picture><source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=rohitg00/ai-engineering-from-scratch&type=trending&theme=dark" /><source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=rohitg00/ai-engineering-from-scratch&type=trending" /><img alt="GitHub Trending Repository of the Day" src="https://api.star-history.com/badge?repo=rohitg00/ai-engineering-from-scratch&type=trending" /></picture>
+ </a>
+</p>
+
 Implement model internals, retrieval pipelines, and agent runtimes. Test them, inspect failures, and keep the code and evaluation results.
 
 **[Start learning](https://aiengineeringfromscratch.com/lesson?path=phases/00-setup-and-tooling/01-dev-environment)** · **[Choose a path](#learning-routes)** · **[Try a lab](#interactive-lab)** · **[Build a project](#project-challenges)** · **[Browse the curriculum](#contents)**
@@ -1172,23 +1178,4 @@ Associate Foundations, Developer Foundations, Architect Foundations, and Archite
 Professional. Each route combines blueprint-mapped lessons, runnable labs, a
 diagnostic, capstone work, and a full-length original practice exam.
 
-Use the [AI-native GitHub onboarding guide](certifications/claude/GETTING_STARTED.md)
-with Claude Code, Codex, ChatGPT, Cursor, or another agent. Run
-`claude-certification` in Codex, `/claude-certification` in Claude Code, or ask
-another host to use `claude-certification`. It chooses a track, creates a
-persistent route in `CLAUDE-CERTIFICATION.md`, teaches one step at a time, runs
-the real labs, and gives artifact-based feedback. The same curriculum remains
-available on the [certification website](https://aiengineeringfromscratch.com/certifications.html).
-
-The academy is independent study material based on public exam objectives. It is not
-affiliated with Anthropic, does not reproduce live exam questions, and cannot guarantee
-a passing score.
-
-</details>
-
-<details>
-<summary>Prepare for MCP Associate (MCPA)</summary>
-
-The [MCPA Certification Curriculum](certifications/mcpa/README.md) is a free,
-open-source preparation program for the Model Context Protocol Associate exam from the
-Agentic AI Foundation, delivered through Linux Foundation Training. Its 34 lessons tea
+Use the [AI-native GitHub onboarding guide](certifica

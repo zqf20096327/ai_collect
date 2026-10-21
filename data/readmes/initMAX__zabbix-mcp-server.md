@@ -19,7 +19,7 @@
     <a href="https://github.com/initMAX/zabbix-mcp-server/releases"><img alt="Version" src="https://img.shields.io/github/v/release/initMAX/zabbix-mcp-server?color=%231f65f4&label=version"></a>&nbsp;
     <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-AGPL--3.0-blue"></a>&nbsp;
     <img alt="Python" src="https://img.shields.io/badge/python-3.10%2B-blue">&nbsp;
-    <img alt="Tools" src="https://img.shields.io/badge/tools-237-green">&nbsp;
+    <img alt="Tools" src="https://img.shields.io/badge/tools-255-green">&nbsp;
     <img alt="Zabbix" src="https://img.shields.io/badge/zabbix-5.0%E2%80%948.0-red">&nbsp;
     <a href="https://safeskill.dev/scan/initmax-zabbix-mcp-server"><img alt="SafeSkill" src="https://img.shields.io/badge/SafeSkill-100%2F100_Verified%20Safe-brightgreen"></a>&nbsp;
     <a href="https://mcptoplist.com/server/glama%2FinitMAX%2Fzabbix-mcp-server"><img alt="MCP Toplist" src="https://mcptoplist.com/badge/glama%2FinitMAX%2Fzabbix-mcp-server.svg"></a>
@@ -33,7 +33,7 @@
   <b>Overview:</b> <a href="#what-is-this">What is this?</a> · <a href="#features">Features</a><br>
   <b>Install:</b> <a href="#quick-start">Quick Start</a> · <a href="#installation">Installation</a> · <a href="#upgrade">Upgrade</a> · <a href="#first-time-admin-portal-access">First-time admin access</a><br>
   <b>Configure:</b> <a href="#configuration-reference">Reference</a> · <a href="#oauth-21-authorization-server">OAuth 2.1</a> · <a href="#public-url-and-reverse-proxy-deployments">Public URL</a> · <a href="#tls--https">TLS / HTTPS</a> · <a href="#token-budget">Token Budget</a><br>
-  <b>Use:</b> <a href="#client-mcp-wizard-beta">Client Wizard</a> · <a href="#connecting-ai-clients">AI Clients</a> · <a href="#example-prompts">Prompts</a> · <a href="#available-tools">Tools</a> · <a href="#common-parameters-get-methods">Parameters</a> · <a href="#time-zones">Time zones</a> · <a href="#pdf-reports-beta">PDF Reports</a><br>
+  <b>Use:</b> <a href="#client-mcp-wizard-beta">Client Wizard</a> · <a href="#connecting-ai-clients">AI Clients</a> · <a href="#example-prompts">Prompts</a> · <a href="#available-tools">Tools</a> · <a href="#common-parameters-get-methods">Parameters</a> · <a href="#read-it-change-one-thing-write-it-back">Round trip</a> · <a href="#time-zones">Time zones</a> · <a href="#pdf-reports-beta">PDF Reports</a><br>
   <b>Operate:</b> <a href="#installer-cli">Installer CLI</a> · <a href="#update-notifications">Update notifications</a> · <a href="#zabbix-compatibility">Compatibility</a> · <a href="#development">Development</a> · <a href="#related-projects">Related Projects</a> · <a href="#license">License</a>
 </p>
 
@@ -47,7 +47,7 @@ The server runs as a standalone HTTP service. AI clients connect to it over the 
 
 ## Features
 
-- **Complete API coverage** - All 58 Zabbix API groups (223 tools): hosts, problems, triggers, templates, users, dashboards, and more
+- **Complete API coverage** - All 68 Zabbix API groups (241 tools): hosts, problems, triggers, templates, users, dashboards, and more
 - **Extension tools** (14) - **Pre-correlated views**: `host_status_get`, `hostgroup_overview_get`, `infrastructure_summary_get`, `item_history_summary_get`, `problem_active_get` (fold 3-5 raw API calls into one round-trip). Plus `graph_render` (PNG export), `anomaly_detect` (z-score analysis), `capacity_forecast` (linear regression), `item_threshold_search` (filter items by `lastvalue` thresholds), `report_generate` (PDF reports), `action_prepare`/`action_confirm` (two-step write approval), `health_check` (server diagnostics) and `zabbix_raw_api_call` (admin escape hatch for un-wrapped methods).
 - **Admin web portal** - Full web UI on port 9090 for managing tokens, users, servers, templates, settings, and audit log; dark/light mode; point-and-click **Client MCP Wizard (beta)** that generates copy-paste-ready config snippets for 14 AI clients (Claude, Codex, Cursor, Cline, VS Code, JetBrains, Goose, Open WebUI, 5ire, Gemini CLI, n8n, ...)
 - **Multi-token authentication** - Named tokens with scopes, IP restrictions, server binding, expiry; managed via admin portal, CLI (`generate-token`), or config.toml
@@ -332,7 +332,7 @@ api_token = "staging-token"
 read_only = false
 ```
 
-The first server (`production`) is used as the default. One exception: when the MCP token making the call is restricted to exactly one server (`allowed_servers = ["staging"]`), that server is the default for the call - so per-user tokens, each pointing at its own `[zabbix.<user>]` entry, work without the user having to name their server every time. To target a specific instance, just mention it naturally in your prompt:
+The first server (`production`) is used as the default. One exception: when the MCP token making the call is restricted through `allowed_servers`, the default for the call is one of its own servers (the global default if it is among them, else the first listed), so per-user or per-customer tokens, each pointing at its own `[zabbix.<name>]` entry, work without naming the server every time. Such a token also sees only its own servers: the `server` parameter in `tools/list` and the "Unknown Zabbix server" message name nothing else (since v1.41, MSP setups where the instance name is the customer name). To target a specific instance, just mention it naturally in your prompt:
 
 #### Prompt examples
 
@@ -901,26 +901,33 @@ All tools accept an optional `server` parameter to target a specific Zabbix inst
 
 <table>
 <tr><th width="160">Category</th><th width="340">Tool</th><th>Description</th></tr>
-<tr><td rowspan="5"><strong>Monitoring</strong></td><td><code>problem_get</code></td><td>Get active problems and alerts — the primary tool for checking what is wrong right now</td></tr>
+<tr><td rowspan="7"><strong>Monitoring</strong></td><td><code>problem_get</code></td><td>Get active problems and alerts - the primary tool for checking what is wrong right now</td></tr>
 <tr><td><code>event_get</code> / <code>event_acknowledge</code></td><td>Retrieve events and acknowledge, close, or comment on them</td></tr>
 <tr><td><code>history_get</code> / <code>trend_get</code></td><td>Query raw historical metric data or aggregated trends for capacity planning</td></tr>
 <tr><td><code>sla_get</code> / <code>sla_getsli</code></td><td>Manage SLAs and retrieve calculated service availability (SLI) data</td></tr>
+<tr><td><code>service_*</code></td><td>Business services: the service tree, its problem tags, parent / child links and status rules (SLAs attach to it by service tags)</td></tr>
 <tr><td><code>dashboard_*</code> / <code>map_*</code></td><td>Create, update, and manage dashboards and network maps</td></tr>
+<tr><td><code>hostdashboard_get</code></td><td>The dashboards a host inherits from its templates, with pages and widgets resolved for that host (7.0+, not on the API reference pages)</td></tr>
 <tr><td rowspan="6"><strong>Data Collection</strong></td><td><code>host_*</code> / <code>hostgroup_*</code></td><td>Manage monitored hosts, host groups, and their membership</td></tr>
 <tr><td><code>item_*</code> / <code>trigger_*</code> / <code>graph_*</code></td><td>Manage data collection items, trigger expressions, and graphs</td></tr>
 <tr><td><code>template_*</code> / <code>templategroup_*</code></td><td>Manage monitoring templates and template groups</td></tr>
 <tr><td><code>maintenance_*</code></td><td>Schedule and manage maintenance periods to suppress alerts</td></tr>
 <tr><td><code>discoveryrule_*</code> / <code>*prototype_*</code></td><td>Low-level discovery rules and item/trigger/graph prototypes</td></tr>
-<tr><td><code>configuration_export</code> / <code>_import</code></td><td>Export or import full Zabbix configuration (YAML, XML, JSON)</td></tr>
-<tr><td rowspan="3"><strong>Alerts</strong></td><td><code>action_*</code> / <code>mediatype_*</code></td><td>Configure automated alert actions and notification channels (email, Slack, webhook, ...)</td></tr>
+<tr><td><code>configuration_export</code> / <code>_import</code></td><td>Export or import Zabbix configuration objects (YAML, XML, JSON): templates, hosts, groups, maps, images, media types; not a database backup</td></tr>
+<tr><td rowspan="4"><strong>Alerts</strong></td><td><code>action_*</code> / <code>mediatype_*</code></td><td>Configure automated alert actions and notification channels (email, Slack, webhook, ...)</td></tr>
 <tr><td><code>alert_get</code></td><td>Query the history of sent notifications and remote commands</td></tr>
 <tr><td><code>script_execute</code></td><td>Execute global scripts on hosts (SSH, IPMI, custom commands)</td></tr>
+<tr><td><code>ceprule_*</code></td><td>Zabbix 8.0 complex event processing: rules that match problem events, collect them in time / count windows and close, discard, re-tag, re-prioritise or suppress them; <code>ceprule_resettimewindows</code> restarts a rule's windows (not on the API reference pages yet)</td></tr>
 <tr><td rowspan="2"><strong>Users &amp; Access</strong></td><td><code>user_*</code> / <code>usergroup_*</code> / <code>role_*</code></td><td>Manage user accounts, permission groups, and RBAC roles</td></tr>
 <tr><td><code>token_*</code></td><td>Create, list, and manage API tokens for service accounts</td></tr>
 <tr><td rowspan="3"><strong>Administration</strong></td><td><code>proxy_*</code> / <code>proxygroup_*</code></td><td>Manage Zabbix proxies and proxy groups for distributed monitoring</td></tr>
 <tr><td><code>auditlog_get</code></td><td>Query the audit trail of all configuration changes and logins</td></tr>
 <tr><td><code>settings_get</code> / <code>_update</code></td><td>View and modify global Zabbix server settings</td></tr>
-<tr><td rowspan="2"><strong>Generic</strong></td><td><code>zabbix_raw_api_call</code></td><td>Call any Zabbix API method directly by name — use for methods not covered above</td></tr>
+<tr><td rowspan="3"><strong>OpenTelemetry / APM (8.0)</strong></td><td><code>apmtrace_get</code> / <code>apmspan_get</code> / <code>apmlog_get</code> / <code>apmmetric_get</code></td><td>Query the OpenTelemetry (OTel) traces, spans, log records and metric data points a Zabbix 8.0 server ingested through its OTLP receiver (needs the APM database configured on the server)</td></tr>
+<tr><td><code>device_get</code> / <code>device_offboard</code></td><td>List the mobile app installations paired with users and revoke one</td></tr>
+<tr><td><code>serverinfo_get</code></td><td>Last update time of a Zabbix server instance by its UUID (the <code>serverid</code> from <code>settings_get</code>)</td></tr>
+<tr><td rowspan="3"><strong>Generic</strong></td><td><code>zabbix_raw_api_call</code></td><td>Call any Zabbix API method directly by name - use for methods not covered above</td></tr>
+<tr><td><code>apiinfo_version</code></td><td>The API (frontend) version of a Zabbix server</td></tr>
 <tr><td><code>health_check</code></td><td>Verify MCP server status and connectivity to all configured Zabbix servers</td></tr>
 </table>
 
@@ -1002,7 +1009,9 @@ All three paths write to the same `/etc/zabbix-mcp/templates/` directory and are
 
 ## Token Budget
 
-By default the server exposes all 237 tools (223 Zabbix API + 14 extension). Each tool's JSON schema (name, description, 20-40 optional parameters) adds roughly 400-500 tokens to the MCP tool catalog that is sent to the LLM at the start of every session. **With the default "all tools" configuration, the catalog alone costs ~100k tokens before your first prompt even reaches the model.** This is the single largest driver of token usage - far more than compact vs. extended response mode.
+By default the server exposes all 255 tools (241 Zabbix API + 14 extension). Each tool's JSON schema (name, description, 20-40 optional parameters) adds roughly 400-500 tokens to the MCP tool catalog that is sent to the LLM at the start of every session. **With the default "all tools" configuration, the catalog alone costs ~100k tokens before your first prompt even reaches the model.** This is the single largest driver of token usage - far more than compact vs. extended response mode.
+
+**Read-only setups pay for nothing they cannot use.** When every server the caller can reach has `read_only = true` (the default), the 169 write tools are left out of `tools/list` for that caller (since v1.41, [#83](https://github.com/initMAX/zabbix-mcp-server/issues/83)); a read-only token never saw them. `[server].register_write_tools = false` does the same unconditionally at registration time, which also keeps the catalog under a client's tool limit (OpenAI's 128). The call-time checks are unchanged either way.
 
 **Fix:** add a `tools` allowlist in `[server]` to expose only what you need:
 
@@ -1043,9 +1052,17 @@ The same mechanism works per-token via `[tokens.*].scopes` - see [MCP Authentica
 <tr><td><code>extra_params</code></td><td>The method's other native parameters and its <code>selectXxx</code> sub-object selects, merged into the request as-is</td></tr>
 </table>
 
-Every `*_get` tool spells these out for **its own method** in `tools/list`: which properties `output`, `filter` and `search` take, which values `sortfield` accepts, which `selectXxx` and native parameters `extra_params` may carry, each with the Zabbix release that introduced or removed it (`selectHostGroups (6.2+)`, `selectGroups (removed in 7.2)`). A parameter a method does not have is not offered at all (`trend_get` has no `filter`, `search` or `sortfield`; `hanode_get` filters on `name`, `address`, `status` only). The contract behind it, `src/zabbix_mcp/api/get_contracts.json`, comes from the Zabbix API reference pages of 5.0 through 8.0 (`scripts/build_get_contracts.py`) and is checked against live servers of 6.0 through 7.4 with `scripts/audit_get_contracts_live.py`.
+Every `*_get` tool spells these out for **its own method** in `tools/list`: which properties `output`, `filter` and `search` take, which values `sortfield` accepts, which `selectXxx` and native parameters `extra_params` may carry, each with the Zabbix release that introduced or removed it (`selectHostGroups (6.2+)`, `selectGroups (removed in 7.2)`). A parameter a method does not have is not offered at all (`trend_get` has no `filter`, `search` or `sortfield`; `hanode_get` filters on `name`, `address`, `status` only). The contract behind it, `src/zabbix_mcp/api/get_contracts.json`, comes from the Zabbix API reference pages of 5.0 through 8.0 (`scripts/build_get_contracts.py`) and is checked against live servers of 6.0 through 8.0 with `scripts/audit_get_contracts_live.py` (the undocumented properties a server returns, such as `settings.serverid` or an LLD rule's `storage_mode` on 8.0, are added from those observations and dated).
 
 The same contract guards the request: a sort field the method cannot sort by, a `filter` on a text property, an unknown `selectXxx` or `output` property, or a parameter from a newer release than the server runs is refused **before** the call, with the allowed values in the message. Zabbix would reject some of these and silently ignore the rest, which is worse for a model, since it believes it filtered. When Zabbix itself rejects a call, its validation message (`Invalid parameter "/sortfield/1": value must be one of "name", "lastaccess", "status"`) is returned to the model, marked as untrusted text; transport and internal errors stay generic. `zabbix_raw_api_call` is not validated against the contract, so it remains the way to send a parameter the catalog does not know.
+
+## Read it, change one thing, write it back
+
+The natural way for a model to edit an object is to read it with the get tool, change a field and send the whole thing to the update tool. Zabbix returns many properties on read that it refuses on write, one `unexpected parameter` at a time: read-only columns (`templateid`, `flags`, `state`, `error`, `lastclock`, `uuid`), row identifiers inside nested arrays (`operations[].operationid`, `opconditions[].opconditionid`, `tags[].automatic`), the full user objects a `usergroup_get` echoes where `usergroup.update` takes only `userid`, and every sub-object a `selectXxx` produced (`hosts`, `triggers`, `discoveryRule`, `valuemap`). Some refusals do not even name the key (an interface's `available` / `error` / `errors_from` / `disable_until` come back as a bare `Incorrect arguments passed to function`).
+
+The server knows this list because it was measured, not written: `scripts/audit_write_roundtrip_live.py` sends every object of a real Zabbix back through its own `X.update` unchanged and records what each release refuses (after `scripts/roundtrip_fixtures.py` has created an object of every kind with every optional sub-structure filled); `scripts/build_write_contracts.py` keeps the keys that were refused on every plain object that carried them and writes `src/zabbix_mcp/api/write_contracts.json`, with the release that introduced or dropped a refusal where the releases differ. Before every `*_create` / `*_update` call the server drops exactly those keys (`[server].strip_write_params`, default on), so an object copied from the get tool goes through as is. The rules that depend on the object's state stay hand-written and conditional: an action's escalation and recovery fields by event source, a filter's `formula` / `formulaid` only with a custom expression, a regular expression's delimiter only on the delimited type. What a caller could have meant is never dropped: a value the model changed, an explicit empty array, a field an update refuses only because the object is templated or discovered (there Zabbix's own message reaches the model, since that is the information it needs: edit the template instead).
+
+`trigger_get` and `triggerprototype_get` ask Zabbix to expand the expression by default (`expandExpression`), because the raw form `{33806}>{$THRESHOLD}` can neither be read by a model nor sent back through `trigger_update`; pass `expandExpression: false` in `extra_params` for the raw form. `zabbix_raw_api_call` is never touched by any of this.
 
 ## Time zones
 
@@ -1065,8 +1082,9 @@ What the zone is used for:
 
 - **Output** - every epoch field in a result (`clock`, `r_clock`, `lastchange`, `lastclock`, `lastaccess`, `active_since`/`active_till`, `expires_at`, ... full list: `EPOCH_FIELDS` in `src/zabbix_mcp/timezones.py`) gets a `<field>_local` sibling, e.g. `"clock_local": "2026-04-01T09:00:00+01:00"`. The epoch stays; `0` ("never") gets no sibling.
 - **Note** - the `[System: ...]` preamble line of each response carries `Time zone: Europe/London; now 2026-10-14T20:05:11+01:00. Fields ending in _local and date-times sent without a zone use this zone.`, so the model knows the current local time. It stays one line, so a consumer that strips the first line keeps parsing. With `raw_json=true` the preamble is omitted; the `_local` fields stay.
-- **Input** - a date-time sent without a zone (`2026-04-01 08:00:00`, `2026-04-01T08:00`) is read in that zone (before v1.38 it was read as UTC). A value with an offset or `Z`, or a Unix epoch, is taken as is. This applies to every timestamp parameter: `time_from`/`time_till`, `active_since`/`active_till`, `expires_at`, `period_from`/`period_to`, `lastChangeSince`/`lastChangeTill`, nested fields, `extra_params` and `zabbix_raw_api_call`.
+- **Input** - a date-time sent without a zone (`2026-04-01 08:00:00`, `2026-04-01T08:00`) is read in that zone (before v1.38 it was read as UTC). A value with an offset or `Z`, or a Unix epoch, is taken as is. Since v1.41 the frontend's relative syntax works too, evaluated in the same zone: `now`, `now-1h`, `now-7d`, `now/d` (start of today), `now-1d/d` (start of yesterday), `now/w` (Monday 00:00), `now-1M/M`, `now/y`; units `s m h d w M y`. On a range end (`time_till`, `period_to`, `active_till`, `lastChangeTill`) the `/unit` rounding gives the last second of the unit, so `time_from: now/d, time_till: now/d` is the whole of today, as in the frontend. This applies to every timestamp parameter: `time_from`/`time_till`, `active_since`/`active_till`, `expires_at`, `period_from`/`period_to`, `lastChangeSince`/`lastChangeTill`, nested fields, `extra_params` and `zabbix_raw_api_call`.
 - `health_check` reports `timezone` and `now_local` per Zabbix server.
+- **PDF reports** - `report_generate` renders its reports in the resolved zone: the header's period boundaries and the "generated at" stamp name the zone (e.g. `2026-10-01 00:00 Europe/Prague`), and the backup matrix groups runs by local day.
 - **OAuth clients** (claude.ai, ChatGPT connectors) carry the zone of the portal user who consented: the user's `timezone` (Users > Edit, `[admin.users.<name>].timezone`) if set, which ranks first like a token's zone; else the zone the browser reported on the consent page, which ranks below `[zabbix.<name>].timezone` and `[server].timezone` (a hint, not an operator's setting). See `docs/OAUTH.md`.
 - A `<field>_local` value sent back in an update call (editing a `maintenance_get` result into `maintenance_update`) is dropped before the request.
 - The siblings make bulk rows longer: within the same `response_max_chars`, a `history_get` answer carries roughly a third fewer rows than before; raise the budget if a workflow needs the old counts.
@@ -1095,7 +1113,7 @@ All available options with detailed descriptions are in [`config.example.toml`](
 <tr><td><code>log_file</code></td><td>Path to log file (parent directory must exist)</td></tr>
 <tr><td><code>auth_token</code></td><td>Bearer token for HTTP/SSE authentication (supports <code>${ENV_VAR}</code>)</td></tr>
 <tr><td><code>rate_limit</code></td><td>Max Zabbix API calls per minute per client (default: <code>300</code>, set to <code>0</code> to disable)</td></tr>
-<tr><td><code>tools</code></td><td>Filter exposed tools by category or prefix — e.g. <code>["monitoring", "alerts"]</code> (default: all 237 tools)</td></tr>
+<tr><td><code>tools</code></td><td>Filter exposed tools by category or prefix - e.g. <code>["monitoring", "alerts"]</code> (default: all 255 tools)</td></tr>
 <tr><td><code>disabled_tools</code></td><td>Denylist counterpart to <code>tools</code> — exclude specific tool groups or prefixes</td></tr>
 <tr><td><code>tls_cert_file</code> / <code>tls_key_file</code></td><td>Enable native HTTPS — paths to TLS certificate and private key (see <a href="#tls--https">TLS / HTTPS</a> below)</td></tr>
 <tr><td><code>cors_origins</code></td><td>List of allowed CORS origins (default: disabled)</td></tr>
@@ -1103,6 +1121,8 @@ All available options with detailed descriptions are in [`config.example.toml`](
 <tr><td><code>allowed_import_dirs</code></td><td>Directories for <code>source_file</code> imports (default: disabled)</td></tr>
 <tr><td><code>compact_output</code></td><td>Return only key fields from get methods (default: <code>true</code>); set to <code>false</code> to always return all fields</td></tr>
 <tr><td><code>validate_get_params</code></td><td>Refuse a get request the method's contract says Zabbix would reject or silently ignore, with the allowed values in the message (default: <code>true</code>); set to <code>false</code> to forward every request as-is. See <a href="#common-parameters-get-methods">Common Parameters</a></td></tr>
+<tr><td><code>register_write_tools</code></td><td>Register the write tools at all (default: <code>true</code>). <code>false</code> leaves every <code>*_create</code> / <code>*_update</code> / <code>*_delete</code> / mass tool, <code>action_prepare</code> / <code>action_confirm</code> and <code>zabbix_raw_api_call</code> out of the catalog, the set a read-only token never sees. Independent of this switch, a caller whose reachable servers are all <code>read_only</code> does not get the write tools listed (see <a href="#token-budget">Token Budget</a>)</td></tr>
+<tr><td><code>strip_write_params</code></td><td>Drop, before a create / update tool call, the keys the get tool returns but Zabbix refuses on write (read-only properties, nested row identifiers, <code>selectXxx</code> sub-objects), as measured per release (default: <code>true</code>); set to <code>false</code> to send every payload as-is. See <a href="#read-it-change-one-thing-write-it-back">Read it, change one thing, write it back</a></td></tr>
 <tr><td><code>response_max_chars</code></td><td>Maximum characters per tool response before truncation (default: <code>50000</code>, min: <code>5000</code>). Increase for template export workflows: <code>200000</code> for medium templates, <code>500000</code> for large built-in templates. See <a href="#token-budget">Token Budget</a></td></tr>
 <tr><td><code>timezone</code></td><td>Zone for the <code>&lt;field&gt;_local</code> output fields and for date-times sent without a zone - IANA name (<code>Europe/London</code>), <code>UTC</code> or <code>system</code>. Fallback for every Zabbix server; <code>[zabbix.&lt;name&gt;].timezone</code> and <code>[tokens.&lt;id&gt;].timezone</code> override it. Empty (default) = ask Zabbix. See <a href="#time-zones">Time zones</a></td></tr>
 <tr><td rowspan="8"><code>[zabbix.&lt;name&gt;]</code></td><td><code>url</code></td><td>Zabbix frontend URL (must start with <code>http://</code> or <code>https://</code>)</td></tr>
@@ -1279,14 +1299,14 @@ The installer automatically detects the best available Python (>=3.10). If none 
 
 <table>
 <tr><th width="220">Zabbix Version</th><th width="120">Status</th><th>Notes</th></tr>
-<tr><td>8.0</td><td>Experimental</td><td>Not released yet. Works with <code>skip_version_check = true</code>; the five methods 8.0 removes (<code>host.massupdate</code>, <code>hostgroup.massupdate</code>, <code>template.massupdate</code>, <code>templategroup.massupdate</code>, <code>hostinterface.replacehostinterfaces</code>) are refused with the documented replacement; the new 8.0 objects (<code>apm*</code>, <code>device</code>, <code>serverinfo</code>) are reachable through <code>zabbix_raw_api_call</code> until dedicated tools follow the release</td></tr>
+<tr><td>8.0</td><td>Supported (pre-release)</td><td>Verified against 8.0.0rc2. Every 8.0 object has its tool (OpenTelemetry <code>apmtrace_get</code>, <code>apmspan_get</code>, <code>apmlog_get</code>, <code>apmmetric_get</code>, <code>device_get</code>, <code>device_offboard</code>, <code>serverinfo_get</code>, and the undocumented <code>ceprule_*</code> complex event processing, taken from the frontend source); the five methods 8.0 removes (<code>host.massupdate</code>, <code>hostgroup.massupdate</code>, <code>template.massupdate</code>, <code>templategroup.massupdate</code>, <code>hostinterface.replacehostinterfaces</code>) are refused with the documented replacement. The <code>zabbix-utils</code> library (2.0.4) was tested up to 7.4 and refuses a newer frontend; the server connects anyway and logs a warning, <code>skip_version_check</code> is no longer needed for this</td></tr>
 <tr><td>7.0 LTS, 7.2, 7.4</td><td>Fully supported</td><td>All API methods match this version — complete feature coverage</td></tr>
 <tr><td>6.0 LTS, 6.2, 6.4</td><td>Supported</td><td>Everything the release has. Methods that arrived later (e.g. <code>proxygroup.*</code>, <code>mfa.*</code>, <code>connector.*</code> in 7.0; <code>templategroup.*</code>, <code>userdirectory.*</code> in 6.2) are marked in <code>tools/list</code> and refused with the release they need (see below)</td></tr>
 <tr><td>5.4</td><td>Basic, untested</td><td>Has API tokens, so the normal configuration applies. Core monitoring and data collection should work; not in our test matrix</td></tr>
 <tr><td>5.0 LTS, 5.2</td><td>Legacy, best effort</td><td><strong>Out of upstream support, no API tokens.</strong> Reachable only through <code>legacy_auth = true</code> with a username and password - a security risk by design, see <a href="#legacy-auth-zabbix-50-and-52-only">Legacy auth</a>. Not in our test matrix; verified by a community contributor on 5.0.47</td></tr>
 </table>
 
-The server uses the standard Zabbix JSON-RPC API. Since v1.38 it also knows which method exists on which release (`src/zabbix_mcp/api/versions.py`, audited against the 5.0 ... 7.4 and 8.0 API documentation):
+The server uses the standard Zabbix JSON-RPC API. Since v1.38 it also knows which method exists on which release (`src/zabbix_mcp/api/versions.py`, audited against the 5.0 ... 7.4 and 8.0 API documentation, re-checked for v1.41 against the method index of every release; the objects that left in 5.2 ... 7.2 - applications, screens, template screens, the pre-6.0 service dependencies and SLA, `trigger.adddependencies`, `discoveryrule.copy` - are dated too, so a raw call on a newer server gets the replacement instead of `Method not found`):
 
 - A call to a method the server does not have is refused with the reason, before anything reaches Zabbix: `proxygroup.get requires Zabbix 7.0 or later (this server runs 6.0.30)` or `host.massupdate was removed in Zabbix 8.0 (this server runs 8.0.0). Use host.update (per host) instead`. The same applies to `zabbix_raw_api_call`.
 - `tools/list` adds a "Zabbix version note" to every tool that is missing on one of the servers the caller may use, naming the server and the reason, so the model picks the right tool for the right server up front. A tool that exists on none of those servers is left out. Nothing is hidden while a server's version is still unknown (versions are learned in the background at startup).
@@ -1328,7 +1348,8 @@ npx @modelcontextprotocol/inspector zabbix-mcp-server --config config.toml
 
 | Project | Description |
 |---------|-------------|
-| [Zabbix AI Skills](https://github.com/initMAX/zabbix-ai-skills) | 35 ready-to-use AI workflows for Zabbix — maintenance windows, host onboarding, template upgrades, audits, and more |
+| [Zabbix AI Skills](https://github.com/initMAX/zabbix-ai-skills) | 35 ready-to-use AI workflows for Zabbix - maintenance windows, host onboarding, template upgrades, audits, and more |
+| [zabbix-ops skill](https://github.com/manumora/zabbix-mcp-server/tree/main/skills) (community, by manumora) | A Claude skill that teaches an agent how to work this server: which tool to reach for first, the token budget, false-positive triggers, the two-step write protocol, and a full triage runbook |
 
 ## License
 

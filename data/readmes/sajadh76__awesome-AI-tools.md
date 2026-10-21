@@ -1,4 +1,4 @@
-![freepik-export-20241106104055eGpS](https://github.com/user-attachments/assets/693d2162-e578-43e2-af86-69992b8aed17)
+![Awesome AI Tools Banner](assets/awesome-ai-tools.png)
 
 # Awesome AI Tools [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
@@ -95,10 +95,12 @@
 - [Aurcue](https://www.aurcue.com) - AI personal aesthetic assistant that turns one uploaded photo into practical guidance for color analysis, outfits, hairstyles, and glasses.
 - [ClearCrowds](https://www.clearcrowds.com) - AI photo cleanup editor for removing crowds, clutter, glasses glare, text, numbers, and unwanted objects from photos.
 - [DALL·E 2](https://openai.com/index/dall-e-2/) - Create realistic images and art from a description in natural language.
+- [EmptyRoom AI](https://emptyroomai.com) - Virtual staging that furnishes vacant real estate listing photos in any style.
 - [ImageChanger](https://aiimagechanger.app/) - Browser-based AI photo editor with 38 focused workflows for backgrounds, portraits, objects, restoration, and creative transformations.
 - [Leonardo AI](https://leonardo.ai/) - Create production-quality visual assets for your projects with unprecedented quality, speed, and style-consistency.
 - [Midjourney](https://www.midjourney.com/home) - A text-to-image AI where your imagination is the only limit.
 - [Raphael AI](https://raphael.app) - AI design studio for product photos, ad creatives, and brand visuals.
+- [Seedream 5.5](https://seedream5-5.net/) - Generates images from text prompts and edits uploaded photos with written instructions, keeping characters consistent across a series; free credits available.
 - [Stunna](https://stunna-app.com/) - AI photo editor for iPhone and Android with camera-inspired looks and lighting edits; free download with optional paid Pro.
 - [voxelyo](https://voxelyo.com) - AI photo enhancer for Airbnb, Vrbo, and real estate listing photos, with sky replacement and twilight conversion on a flat-rate unlimited subscription.
 
@@ -167,6 +169,7 @@
 - [OpusClip](https://www.opus.pro/) - Turns long videos into shorts and publishes them to all social platforms in one click.
 - [SEELE TV](https://seele.tv/) - Cinematic AI video studio with scene consistency and shot-level camera control.
 - [shortshort](https://www.shortshort.io/) - Turns one long talk, podcast or webinar into vertical 9:16 shorts, with a speaker-tracking crop and word-level captions.
+- [ShortSmash](https://github.com/hydope/shortsmash) - 🔓 Generates vertical shorts from a single prompt: AI script, neural voiceover, verified stock footage, karaoke captions, and one-click publishing to social platforms.
 - [Wedding AI](https://weddingai.studio) - AI wedding invitation video maker that turns templates, names, and photos into an HD MP4.
 
 ## 🎤 Voice Generation

@@ -12,6 +12,7 @@
 [![License](https://img.shields.io/github/license/agentfront/frontmcp.svg?style=flat-square&color=16A34A&labelColor=0b1117)](./LICENSE)
 [![Snyk](https://img.shields.io/badge/snyk-monitored-16A34A?style=flat-square&labelColor=0b1117&logo=snyk&logoColor=white)](https://snyk.io/test/github/agentfront/frontmcp)
 [![Discord](https://img.shields.io/badge/discord-join-16A34A?style=flat-square&labelColor=0b1117&logo=discord&logoColor=white)](https://discord.gg/53AHnJnmwR)
+[![FrontMCP docs MCP connector – tool definition quality and endpoint health on Glama](https://glama.ai/mcp/connectors/dev.frontmcp.mcp/frontmcp/badges/score.svg)](https://glama.ai/mcp/connectors/dev.frontmcp.mcp/frontmcp)
 
 **[frontmcp.dev](https://frontmcp.dev)** &nbsp;&middot;&nbsp; **[Learn][docs-learn]** &nbsp;&middot;&nbsp; **[Reference][docs-reference]** &nbsp;&middot;&nbsp; **[Examples][docs-examples]** &nbsp;&middot;&nbsp; **[Playground][docs-playground]** &nbsp;&middot;&nbsp; **[Blog][docs-blog]**
 
@@ -23,6 +24,8 @@
 </div>
 
 <br>
+
+**FrontMCP is the TypeScript framework for MCP servers.** You write tools, resources and prompts as typed classes with Zod schemas, and FrontMCP serves them over the Model Context Protocol, with dependency injection, authentication, testing, agents and jobs, on Node, Vercel, AWS Lambda and Cloudflare Workers. It serves MCP 2026-07-28, the stateless revision, and the earlier ones. The docs, examples and a browser playground are at [frontmcp.dev](https://frontmcp.dev).
 
 ## Write a tool. Ship a server.
 

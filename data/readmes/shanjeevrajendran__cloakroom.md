@@ -63,6 +63,7 @@ You need Claude Code, installed and signed in. Then:
 3. **Restart Claude Code.** Type `/exit`, then `claude` again. Cloakroom now installs itself. Keys and card numbers
    are covered in about a minute; names and addresses a few minutes later, once the detection model has downloaded
    (about 1 GB on a Mac, up to about 4 GB elsewhere). Claude's tool calls are held back until then.
+   It also updates itself when the plugin updates (an install you made by hand is left alone).
 4. **Check it.** Open a new terminal window and run:
 
    ```bash
@@ -114,6 +115,14 @@ the detection model and OCR), then add the plugin as above.
         ▼
   reply.md on your disk: "Hi Nadia Petrov,"
 ```
+
+- **Secrets don't leave through a command:** a command that would send a known secret off your machine (curl,
+  wget, ssh, scp, rsync, nc, git push with credentials, a literal token in an `Authorization` header) is held, and
+  the message names what it found by placeholder only. If you meant it, type `cr: allow`, then ask Claude to run
+  the same command again: it passes once.
+- **Encoded copies count:** a secret Cloakroom has seen is also caught base64-encoded, URL-encoded or JSON-escaped.
+- **MCP images are read locally:** a screenshot or image returned by an MCP tool is read by local OCR and Claude
+  gets the masked text instead of the picture; without OCR the image is held back, with a one-line reason.
 
 Details: [docs-HOW-IT-WORKS.md](https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-HOW-IT-WORKS.md).
 
@@ -287,6 +296,10 @@ can be blocked but not rewritten, and names alone go through), and Claude Code's
 **What about PDFs, scans and photos?** Cloakroom pulls the text out on your machine and masks it like any file;
 Claude gets the text, never the PDF or the picture. Scanned pages and photos (png, jpg) are read by OCR (reading
 text from an image), running on your CPU with its models inside the package: no download, no cloud, no account.
+Screenshots and images returned by MCP tools (a browser or desktop tool, say) get the same treatment: the picture
+is read by local OCR and Claude gets the masked text in its place. The trade-off: Claude reads the text, it doesn't
+see the picture (layout, colours, charts and anything that isn't text are lost), and OCR can miss or misread small
+or faint text. Without OCR (no `cloakroom[ocr]`, or an Intel Mac) such an image is held back, and Claude is told why.
 A scan it can't read in time, encrypted PDFs, figures in a notebook and other pictures are held back, and Claude is
 told so; to show Claude a picture anyway, attach it to your own prompt. Page and time limits:
 [known limits](https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-LIMITS.md).

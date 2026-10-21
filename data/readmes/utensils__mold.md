@@ -319,13 +319,53 @@ black borders, `lanczos-resize` stretches.
 mold run flux-dev:q4 "a lighthouse at dusk" --image wide.png --fit crop-fill --width 1024 --height 1024
 ```
 
-A sequence of several clips is scripted, not composed in an app:
+For longer videos, enter one prompt and choose **Duration** in the apps. The
+length summary shows the selected model's single-render limit and clip count.
+**Define scenes** optionally gives each scene its own prompt. Library **Extend
+video** adds another prompt and duration, publishing the original plus extension
+as a new movie. The original stays in Library.
+**Use settings** restores the original requested duration, optional scenes, seed,
+recipe controls and retained inputs into an editable draft. On an extended movie,
+it restores the settings for the added footage; use **Extend video** to attach
+that movie as a prefix again. Missing historical settings or required inputs are
+explained before generation.
+
+```bash
+mold --host plato run MODEL "a paper boat drifts along a sunlit stream" --duration 30
+mold --host plato run "the boat passes under a bridge" --extend-library PRINT.mp4 --duration 10
+```
+
+The server renders one bounded clip at a time and publishes one joined MP4 in
+its active `MOLD_HOME` Library. The recipe selects continuous context or blended
+independent clips; independent clips use different seeds. There is no fixed
+overall duration cap. Each clip must still fit the selected host's memory.
+H3 requires an H3-enabled server. `--output` downloads an additional copy onto
+the CLI machine. Keep the printed video UUID and inspect it after a disconnect.
+See the [video guide](https://utensils.io/mold/guide/video#longer-videos).
+
+Failed video generations retain their inputs in the durable queue for safe
+movement to another machine. `mold jobs restart ID --to HOST` starts a separate
+attempt using the destination's current recipe,
+while keeping the original job recoverable. Exact Resume preserves its frozen recipe.
+Web and Tauri Queue expose the same choice as **Start again…**. Updated machines also offer **Delete recovery data…** for failed/interrupted jobs, with a separate confirmation that preserves saved Library videos.
+
+Web and Tauri Queue refresh saved video jobs automatically when a machine reconnects or its connection changes. **Check saved video jobs** also refreshes them on demand. Recovery controls stay unavailable until the original machine and installation are verified.
+
+For advanced frame-level scripts and separate linked parts:
 
 ```bash
 mold chain validate shot.toml
 mold run --script shot.toml --output walk.mp4
 mold jobs list
+# After the previous part completes, keep its model recipe/canvas/fps:
+mold run --script next.toml --continue-from PART1_JOB_ID --host plato --output part2.mp4
 ```
+
+Each part accepts up to 16 stages. Linked parts can continue without an overall
+part-count or duration limit, each as a separate Library MP4. The new part
+snapshots its predecessor's tail and renders only new clips; it never rerenders
+or reencodes prior clips. Its first stage must be smooth with no authored first
+source conflict. Independent-clip families remain independent at the boundary.
 
 A 3-D render can be one shot or a durable workflow. A workflow keeps every
 stage — the picture it starts from, its matted and delighted copies, the
@@ -357,6 +397,14 @@ any referencing library output exists, including in the trash. Matching retained
 input sets from newly completed jobs share storage while keeping per-job
 provenance. Native Mac and
 desktop library copies also retain those sources on supported destinations.
+
+
+Duration and extended-video copies preserve their complete captured recipe,
+retained inputs, and separate provenance/audio archive files. Sync resumes
+interrupted archive transfers and repairs missing assets on existing copies.
+A movie download alone is an output export, not a full Library backup. Missing
+legacy inputs are disclosed; a declared but incomplete video archive is a copy
+failure until repaired.
 
 In the native Mac app, **Use source** is available in the print inspector and source viewer, including right-click menus. Choose a supported input role, or **Choose model…** to select an installed compatible model, recipe and machine without leaving the source. Successful reuse opens Generate; other draft settings are preserved where the selected recipe supports them.
 
@@ -394,12 +442,24 @@ Native Mac local authoring inputs are saved privately alongside the prompt and s
 
 Before importing a source-bearing copy, clients check destination readiness. Windows local destinations currently cannot receive retained inputs, so those copies are refused before creating a local library output. Source-free copies remain supported, and Windows clients can recall retained sources from a supported remote machine.
 Unix storage-only destinations can receive retained-source backups when their gallery and encrypted media store are ready, even with generation workers disabled.
+For advanced frame-level scripts, inspect the paired host's live bounds with
+`mold chain limits MODEL --json --host HOST`. For one prompt and a requested
+length, use **Duration** and its server plan as described in the
+[video guide](https://utensils.io/mold/guide/video#longer-videos).
+
 To install Mold's Agent Skill for supported coding agents,
 run:
 
 ```bash
 mold skill install --detected
 ```
+
+For Oh My Pi (OMP), use `mold skill install omp`. It installs the complete
+bundle under `~/.omp/agent/skills/mold`; `--project` uses `.omp/skills/mold`.
+OMP is also included in `--all`, and `--detected` recognizes `~/.omp`.
+These are OMP's default-profile paths; for an isolated OMP profile, use a
+project installation in the workspace it will run in. Restart OMP to discover
+new skills, then invoke `/skill:mold`.
 
 For Claude Desktop and claude.ai, `mold skill install claude-desktop` writes
 the skill as a ZIP to upload under **Customize > Skills** and adds the local

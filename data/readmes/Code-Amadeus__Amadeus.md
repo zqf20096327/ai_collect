@@ -10,7 +10,7 @@
 <p>
   <a href="https://www.bilibili.com/video/BV1783G6hEYY/"><img src="https://img.shields.io/badge/demo-Bilibili-b94b43?labelColor=191a1d&amp;logo=bilibili&amp;logoColor=e8e2d4" alt="Bilibili demo"/></a>
   <a href="#architecture"><img src="https://img.shields.io/badge/architecture-current-444449?labelColor=191a1d" alt="Current architecture"/></a>
-  <a href="./docs/alpha-0.17.0.md"><img src="https://img.shields.io/badge/version-0.17.0_Alpha-b94b43?labelColor=191a1d" alt="0.17.0 Alpha"/></a>
+  <a href="./docs/alpha-0.17.1.md"><img src="https://img.shields.io/badge/version-0.17.1_Alpha-b94b43?labelColor=191a1d" alt="0.17.1 Alpha"/></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-444449?labelColor=191a1d" alt="AGPL-3.0 license"/></a>
   <br/>
   <a href="#quick-start"><img src="https://img.shields.io/badge/Windows-reference-444449?labelColor=191a1d" alt="Windows — reference platform"/></a>
@@ -51,7 +51,7 @@ the Host owns identity, state, permissions, persistence, and recovery.
 
 > [!IMPORTANT]
 > This repository contains buildable, runnable source. This branch targets
-> **0.17.0 Alpha**, not a packaged desktop release.
+> **0.17.1 Alpha**, not a packaged desktop release.
 > Amadeus first-party code is open-source under the
 > [GNU Affero General Public License v3.0 (AGPL-3.0)](LICENSE).
 > Third-party code and external assets retain their own terms.
@@ -92,6 +92,7 @@ product slice rather than a pixel-exact installation preview.
 | **Character and desktop presentation** | SpriteForge graph state, a KTX2/PixiJS runtime, subtitle, lip-sync, and emotion timing; Chat, Work, and headless startup remain available without a character pack. |
 | **Provider Runtime** | [Pi over native RPC](docs/pi-rpc-provider.md) for daily tasks, Codex App Server / Direct Codex for complex coding, Browser for managed pages, and optional OpenClaw. Claude CLI is a committed future direct Provider. |
 | **Durable Work control plane** | Projects, default Drafts, WorkItems / Attempts, Continue / Retry, restart recovery, permissions, the Artifact Registry, and structured diffs. |
+| **Work and Chat approval choices** | Per-call approval by default; revocable exact-call Pi MCP grants for the current Work, plus an explicit persistent switch to automatically approve permitted Work and Cooperative chat requests. Deny policies and read-only limits still apply; automatic decisions require committed Host permission records before dispatch. [Approval details](docs/mcp_environment.md#pi-tool-approvals). |
 | **Artifacts and AUIP** | A Work Artifact can be previewed, opened, or attached as a bounded AUIP AppSession so Amadeus can interact with it without turning narration into execution authority. |
 | **Unified settings** | Models, Voice, Providers/MCP, vision, character-pack status, and chat appearance are managed in Electron Settings. |
 

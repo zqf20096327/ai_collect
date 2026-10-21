@@ -32,6 +32,7 @@ Specify different Host headers than the URL itself. For some custom hosts, front
 
 ### For detailed usage of OpenAI API, please check:
 - #### [OpenAI API Reference](https://platform.openai.com/docs/api-reference/introduction) (official docs)
+- #### [OpenAI API Repo](https://github.com/openai/openai-openapi) (official repo)
 - #### [RESTful OpenAPI](https://api-ui.aiql.com) (provided by AIQL)
 
 

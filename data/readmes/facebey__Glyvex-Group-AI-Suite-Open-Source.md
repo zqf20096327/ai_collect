@@ -1,0 +1,461 @@
+# Glyvex-AI-Suite
+
+🌐 *Languages / Idiomas:* **English** | [Español](README.es.md)
+
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org/)
+[![Node.js 20](https://img.shields.io/badge/Node.js-20%20LTS-green.svg)](https://nodejs.org/)
+[![CI](https://github.com/facebey/Glyvex-Group-AI-Suite-Open-Source/actions/workflows/ci.yml/badge.svg)](https://github.com/facebey/Glyvex-Group-AI-Suite-Open-Source/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/facebey/Glyvex-Group-AI-Suite-Open-Source?include_prereleases&label=release)](https://github.com/facebey/Glyvex-Group-AI-Suite-Open-Source/releases/latest)
+
+**Glyvex-AI-Suite** is a local application — part of **Glyvex Group** — to
+manage, launch, chat with, and evaluate local LLM models (GGUF/GGML via
+llama-server, Ollama, LM Studio) without relying on any cloud service.
+Everything runs on your own machine: the model inventory, the processes, the
+conversations and the benchmarks stay on your disk.
+
+Optimized for **NVIDIA GPUs (CUDA)**, but that's not a requirement: it runs
+on pure CPU on any modern machine, the GPU only speeds up large models, and
+the Launcher's hardware templates adapt the load to what the machine has.
+Without an NVIDIA GPU, the Monitor and the Launcher degrade gracefully
+(see the Modules section).
+
+**Product site:** [ai-suite.glyvexgroup.com](https://ai-suite.glyvexgroup.com/) — [Glyvex AI Division](https://ai.glyvexgroup.com/)
+
+## Download (Windows)
+
+The easiest way to try it: download the installer from
+[**Releases → latest**](https://github.com/facebey/Glyvex-Group-AI-Suite-Open-Source/releases/latest) (file `Glyvex.AI.Suite_<version>_x64-setup.exe`),
+run it and follow the 6-step wizard shown below. It installs per-user (no
+admin rights needed) and adds a **Glyvex** shortcut to the Start menu. On first
+launch, a setup screen downloads the llama.cpp runtime and, optionally, the
+voice models.
+
+Want to run it from source, or on Linux/macOS? See [Installation](#installation).
+
+## Screenshots
+
+| | |
+|---|---|
+| ![Chat — streaming and live metrics](screenshots/chat.png)<br><sub>Chat: streaming, reasoning and live metrics (t/s, TTFT)</sub> | ![Launcher — model inventory](screenshots/launcher.png)<br><sub>Launcher: model inventory, b11349 runtime ready</sub> |
+| ![Launcher — advanced mode, all panels](screenshots/launcher-avanzado-general.png)<br><sub>Advanced mode: all launch control panels</sub> | ![Launcher — context and acceleration](screenshots/launcher-avanzado-contexto.png)<br><sub>Context up to 64K, GPU acceleration and estimated VRAM</sub> |
+| ![Launcher — MTP, vision and LoRA](screenshots/launcher-avanzado-modulos.png)<br><sub>Speculative MTP, mmproj, LoRA and reasoning</sub> | ![Launcher — model running](screenshots/launcher-online.png)<br><sub>Running: t/s, MTP 70.5%, cache 86.6% and live log</sub> |
+| ![Benchmark — results](screenshots/benchmark.png)<br><sub>Benchmark: run results</sub> | ![Monitor — GPU and vitals](screenshots/monitor.png)<br><sub>Monitor: GPU, CPU and LLM server vitals</sub> |
+| ![Reports — history](screenshots/reports.png)<br><sub>Reports: benchmark history</sub> | ![Config — settings](screenshots/config.png)<br><sub>Config: backends, embedded runtime and model folders</sub> |
+
+### Installer (6 steps)
+
+A classic Windows installer: pick the folder and you're done.
+
+| | |
+|---|---|
+| ![Installer — welcome](screenshots/instalador-1.png)<br><sub>Step 1: installation wizard</sub> | ![Installer — destination folder](screenshots/instalador-2.png)<br><sub>Step 2: pick the destination folder</sub> |
+| ![Installer — confirm installation](screenshots/instalador-3.png)<br><sub>Step 3: confirm installation</sub> | ![Installer — installing](screenshots/instalador-4.png)<br><sub>Step 4: installing components</sub> |
+| ![Installer — finishing](screenshots/instalador-5.png)<br><sub>Step 5: finishing</sub> | ![Installer — completed](screenshots/instalador-6.png)<br><sub>Step 6: installed, ready to run</sub> |
+
+### Windows SmartScreen notice
+
+Since the NSIS installer is unsigned, Windows SmartScreen will show the
+*"Windows protected your PC"* warning. This is expected and safe: click
+**More info** → **Run anyway**.
+
+| | |
+|---|---|
+| ![SmartScreen — Windows warning](screenshots/smartscreen-1.png)<br><sub>Windows shows the SmartScreen warning</sub> | ![SmartScreen — run anyway](screenshots/smartscreen-2.png)<br><sub>More info → Run anyway</sub> |
+
+## Requirements
+
+- **Python 3.11+**
+- **Node.js 20 LTS+** (for the Vite/React frontend)
+- **NVIDIA drivers + CUDA** — *optional*. Without an NVIDIA GPU, the Monitor
+  (M5) shows "NVIDIA GPU not detected" instead of crashing, and the rest of
+  the suite works the same (you can run models 100% on CPU).
+- **Voice (optional)** — speech-to-text uses the native **whisper.cpp**
+  runtime, downloaded on demand from the app (nothing to install). When
+  running from source you can also use `faster-whisper`:
+  `pip install -r requirements-optional.txt`. Text-to-speech works out of the
+  box on Windows (SAPI); the neural voices (Piper, Kokoro) are downloaded from
+  Settings → TTS. See [`docs/speech-to-text.md`](docs/speech-to-text.md) (Spanish).
+- At least one of these inference backends, depending on what you'll use.
+  **On Windows** there's also the [embedded runtime](#inference-runtime-embedded-llamacpp):
+  the suite downloads its own tested build of llama.cpp, so you don't have to
+  install anything separate. Otherwise, [`llama-server`](https://github.com/ggml-org/llama.cpp)
+  (from llama.cpp), [Ollama](https://ollama.com), or [LM Studio](https://lmstudio.ai)
+  running in server mode.
+
+## Platforms
+
+| Platform | Status | Notes |
+|---|---|---|
+| **Windows** | ✅ Primary platform | The current version is optimized for Windows: `start.cmd` (CMD) and `start.ps1` (PowerShell) scripts, embedded llama.cpp runtime and NSIS installer (`-setup.exe`). |
+| **Linux** | 🟡 Beta (x86_64, since v0.8.1-beta) | Signed Tauri AppImage with auto-update, built in CI (`v*` tags); `start.sh` for dev/manual use. |
+| **macOS** | ⏳ In the future | Shares the `start.sh` path; it comes after Linux. |
+
+## Installation
+
+### 1. Backend
+
+```bash
+# From the repository root
+python3 -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### 2. Frontend
+
+```bash
+cd frontend
+npm install
+```
+
+### 3. Development start (2 processes, with hot-reload)
+
+Terminal 1 — backend:
+
+```bash
+cd backend
+uvicorn main:app --reload --port 7981
+```
+
+Terminal 2 — frontend:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Open `http://localhost:5173`.
+
+### 4. All-in-one start (local production)
+
+Linux/macOS:
+
+```bash
+./start.sh
+```
+
+Windows (CMD or PowerShell):
+
+```bat
+start.cmd
+```
+```powershell
+.\start.ps1
+```
+
+They compile the frontend to `frontend/dist` (if it doesn't exist) and start
+`uvicorn` on `127.0.0.1:7981`, serving the compiled SPA from `/`. All three
+scripts honor `GLYVEX_PORT` and `GLYVEX_HOST` (the default bind is
+`127.0.0.1`; exposing it to the network is deliberately opt-in, with
+`GLYVEX_HOST=0.0.0.0`, and requires authentication — see the Security
+section).
+
+### 5. Multiple instances on the same machine
+
+You can run a second instance (e.g. to test changes without touching the real
+data) with the `--env` flag:
+
+```bash
+./start.sh --env testing        # Linux/macOS
+start.cmd --env testing         # Windows CMD
+.\start.ps1 -Env testing        # PowerShell
+```
+
+Each environment is defined in a file under `environments/`:
+
+| | `production.env` | `testing.env` |
+|---|---|---|
+| Backend | `127.0.0.1:7981` | `127.0.0.1:22222` |
+| Dev server (Vite) | `:5173` | `:25173` |
+| Data | `./data` | `./data-testing` |
+
+**To move an instance to a different port, you touch a single file.**
+`vite.config.js` reads the same `environments/<name>.env`, so changing
+`GLYVEX_PORT` and `GLYVEX_DEV_PORT` there aligns the backend, the dev server
+`/api` proxy and the CORS. (Remember to also update `GLYVEX_CORS_ORIGINS`,
+which must list that instance's `GLYVEX_DEV_PORT`.)
+
+Variables that define each environment:
+
+| Variable | Purpose |
+|---|---|
+| `GLYVEX_ENV` | Environment name. Informational: it appears in the startup log. |
+| `GLYVEX_HOST` / `GLYVEX_PORT` | uvicorn bind. |
+| `GLYVEX_DEV_PORT` | Vite dev server port. Not used by the backend. |
+| `GLYVEX_DATA_DIR` | Where the instance's state lives (relative to the repo root, or absolute). |
+| `GLYVEX_CORS_ORIGINS` | Allowed origins, comma-separated. |
+
+All of an instance's state hangs off its `GLYVEX_DATA_DIR`: `config.json`,
+`glyvex.db`, `metrics.db`, `attachments/`, `logs/`, `benchmarks/`. The only
+things shared between instances are the read-only files versioned in the
+repo: the prompt sets (`backend/prompts/`) and the hardware template seed
+(`data/templates/hw_templates.json`).
+
+In development mode, the testing instance's frontend starts with Vite's mode
+system:
+
+```bash
+cd frontend && npm run dev -- --mode testing
+```
+
+With no `GLYVEX_*` variable defined, everything behaves as before:
+`DATA_DIR` is `./data` and the port is 7981.
+
+## Quick start (4 steps)
+
+If it's the first time you open the app with an empty `config.json` (or with
+no file at all, which is generated with the defaults; see
+`data/config.example.json` for the full reference), you'll see an onboarding
+screen with these same steps and live checkmarks.
+
+1. **Configure** — in `/config`, set the `binary_path` of `llama-server`
+   (and/or Ollama/LM Studio) and add at least one directory with your
+   `.gguf`/`.safetensors` models.
+2. **Scan** — on the same screen, click "Scan now". The inventory is
+   saved to `data/models.json` and becomes available in the Launcher.
+3. **Launch** — in `/launcher`, pick a model (Group view groups by folder
+   with its MTP/mmproj variants, or switch to List view), tune the
+   context/GPU parameters if needed, and click **LAUNCH**.
+4. **Chat** — in `/` (Chat), the endpoint of the just-launched model appears
+   automatically in the selector. Type and go — the response arrives in
+   streaming, token by token.
+
+From there you can also run a full benchmark (`/benchmark`) against the
+active model, or watch its HW usage live (`/monitor`).
+
+## Inference runtime (embedded llama.cpp)
+
+On **Windows** the suite can bring its own tested build of
+[llama.cpp](https://github.com/ggml-org/llama.cpp) so you don't have to
+install any inference software: pin **b11349**, flat layout, in two levels:
+
+- **base engine** (~19 MB): runs on any GPU/CPU.
+- **acceleration** (~531 MB for NVIDIA + CUDA 13.4; the AMD/Intel one comes
+  in phase B). It's picked based on the detected GPU family.
+- **CUDA arch** — the acceleration bundle is matched to the GPU's compute
+  capability (queried at runtime), so it fits the card you have: both recent
+  (Turing/Ampere/Ada) and older (Pascal, e.g. GTX 10-series) NVIDIA cards
+  get the correct CUDA build instead of a mismatch.
+
+- **Where it lives:** `<DATA_DIR>/runtime/llama.cpp-b11349/` (exe + DLLs in
+  the same folder, because `llama-server.exe` looks for its DLLs in its own
+  directory). It's not part of the repo: it's downloaded on demand and
+  verified with **sha256**.
+- **How you get it:** it's an explicit act — the **Download runtime** button
+  in onboarding (with the detected GPU and the estimated size) or in
+  `/config` → **Runtime** card. It never downloads by itself.
+- **States:** `missing` → `downloading` (progress via SSE, in 2 stages: base
+  and acceleration) → `ready` (check + pin; it can end up "degraded" if the
+  acceleration didn't install: it runs on CPU, never an error) / `error`
+  (message + Retry) / `unsupported` (other platforms; v1 is Windows-only).
+- **Cascade at launch:** the expert-mode `binary_path` always wins; if not,
+  it uses the managed runtime when it's `ready`; if there's none, the launch
+  is rejected with `runtime_missing` and the UI offers "Download runtime".
+- **Reinstall:** **Reinstall** in Config = reset (deletes the folder) +
+  downloads again. API: `GET /api/runtime/status`,
+  `POST /api/runtime/download` (SSE), `POST /api/runtime/reset`.
+- **v1:** the base engine is offered on all Windows; GPU acceleration is
+  NVIDIA/CUDA today, and AMD/Intel (Vulkan/ROCm) comes in phase B — until
+  then those GPUs run on CPU with a note in the UI. Expert mode
+  (`binary_path`) keeps working the same on any platform.
+
+The Launcher manages the full lifecycle of the process: it starts, monitors
+and stops `llama-server` for you. It does not attach to servers running
+outside the app yet.
+
+## Views
+
+| Route | View | Content |
+|-------|------|---------|
+| `/` | Chat | Streaming, branches (regenerations), attachments, mic (speech-to-text), listen to replies (text-to-speech), reasoning, metrics, export, history |
+| `/launcher` | Launcher | Group/List views, hardware templates, sampling presets, launch/stop, live logs, process vitals strip (t/s, context, queue) |
+| `/benchmark` | Benchmark | Set selection (including your own), cancellable run, WS progress, results |
+| `/monitor` | Monitor | GPU card, core heatmap, 60 s sparklines, **LLM Server** section (live vitals + per-process history of t/s, context and queue), HW history chart with retention, WS connection indicator |
+| `/reports` | Reports | Benchmark history, Recharts charts (t/s per prompt, TTFT vs tokens), comparison, HTML reports |
+| `/config` | Config | Backend, model_dirs, scan, tools, STT, TTS, attachments, templates, themes, monitor (history and retention) |
+
+## Modules
+
+| Module | What it does |
+|--------|--------------|
+| **M0 — Skeleton** | Project base: FastAPI + React + persisted config. |
+| **M1 — Inventory** | Scans your `.gguf` files, extracts family/quantization, reads GGUF metadata, detects embedded modules (MTP/vision), groups by folder. |
+| **M2 — Launcher** | Launches `llama-server`/Ollama/LM Studio with hardware templates, live logs, MTP/draft and clean stop/restart. |
+| **M3 — Chat** | Streaming with separate reasoning, live metrics, branches, attachments, tool calling, speech-to-text (whisper.cpp / faster-whisper / browser) and text-to-speech (Kokoro / Piper / Windows SAPI). |
+| **M4 — Benchmark** | 58 prompts in 6 categories + your own sets, scoring, HTML reports, run comparison. |
+| **M5 — Monitor** | Real-time GPU (with power limit/TDP control)/CPU/RAM + persistent history with configurable retention. |
+| **M6 — Integration** | Status widget in the navbar, toasts, shortcuts, onboarding. |
+| **M7 — Database** | Async SQLite: conversations (tree), benchmarks, templates, sets. |
+| **M8 — LLM server vitals** | t/s, prompt processing, cache, MTP acceptance % from `llama-server`'s `/metrics`. |
+
+Per-module technical detail: [`docs/modules.md`](docs/modules.md) (Spanish) ·
+Launch parameters: [`docs/launcher-params.md`](docs/launcher-params.md)
+(Spanish)
+
+## Voice: speech-to-text and text-to-speech
+
+Everything runs locally; the models are downloaded only when you ask for them.
+
+- **Speech-to-text (chat microphone)** — engine `stt.engine`:
+  - `auto` (default): **whisper.cpp** if its runtime is ready, otherwise
+    `faster-whisper` if installed, otherwise the browser.
+  - `whispercpp`: native `whisper-cli` binary downloaded on first use (the
+    only option inside the packaged app). 100% local.
+  - `whisper`: `faster-whisper` (from source, `requirements-optional.txt`).
+  - `browser`: Web Speech API. **Not local** in Chrome (audio goes to Google)
+    and not available in the Tauri WebView or Firefox.
+- **Text-to-speech ("listen" button on replies)** — engine `tts.engine`:
+  - `auto` (default): **Kokoro** if ready, otherwise **Piper**, otherwise
+    **SAPI**.
+  - `kokoro` / `piper`: local neural voices (onnxruntime), downloaded from
+    Settings → TTS.
+  - `sapi`: the voices that come with Windows, zero downloads.
+  - Generated audio is cached (LRU), so replaying a reply is instant.
+
+Details: [`docs/speech-to-text.md`](docs/speech-to-text.md) (Spanish).
+
+## Keyboard shortcuts (Chat)
+
+| Shortcut | Action |
+|----------|--------|
+| `Enter` | Send message |
+| `Shift+Enter` | New line |
+| `Ctrl+Enter` (or `Cmd+Enter`) | Send message (global alternative) |
+| `Esc` | Cancel the in-progress generation |
+| `Ctrl+L` | Clear the conversation (asks for confirmation) |
+| `Ctrl+E` | Show/hide the export panel |
+
+## Model tools (chat)
+
+The chat exposes two tools to the model, invoked natively via `tool_calls`
+(rounds limited by `tools.max_rounds` in `/config`):
+
+- **Web search** — default provider **DuckDuckGo (ddgs)**: no server, no API
+  key, no Docker. Optional providers: **SearXNG** (local, via HTTP), **Brave**
+  and **Tavily** (API keys via env var `BRAVE_API_KEY`/`TAVILY_API_KEY` or
+  via config).
+- **URL fetch** — configurable character limits, timeout and user-agent,
+  content extraction with trafilatura/readability, and **private hosts
+  blocked by default** (`tools.allow_private_hosts`).
+- `GET /api/chat/tools/status` tells the frontend which providers are active.
+
+## Documentation
+
+> Note: the detailed docs below are currently in **Spanish**.
+
+| Where to go | What you'll find |
+|---|---|
+| [README](README.md) | Full overview: modules (M0–M8), install, usage, security and release. |
+| [`docs/QUICKSTART.md`](docs/QUICKSTART.md) | The shortest path to a running suite: prerequisites, install, startup and first run. |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Codebase map: processes, data flows and where state lives. |
+| [`docs/PRIVACY.md`](docs/PRIVACY.md) | What leaves your machine and what doesn't: 100% local, no outbound telemetry. |
+| [`docs/modules.md`](docs/modules.md) | Per-module technical detail (M0–M8). |
+| [`docs/launcher-params.md`](docs/launcher-params.md) | Reference of the `llama-server` launch parameters the Launcher manages. |
+| [`docs/LAUNCH-FLAGS.md`](docs/LAUNCH-FLAGS.md) · [`docs/LAUNCH-FLAGS.es.md`](docs/LAUNCH-FLAGS.es.md) | Bilingual (EN/ES) guide for every flag: what it does, impact, default and when to change it. The Launcher shows the binary's official help under each control. |
+| [`docs/speech-to-text.md`](docs/speech-to-text.md) | Chat microphone: Web Speech API vs local Whisper, models, security and packaging. |
+| [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md) | Common problems and how to solve them. |
+| [`docs/searxng/README.md`](docs/searxng/README.md) | Web search providers (DuckDuckGo, SearXNG, Brave, Tavily) and `tools.*`. |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to contribute: branches, commits, tests and conventions. |
+
+## Security
+
+- **100% local by design**: conversations, inventory and benchmarks never
+  leave the machine; the only network egress is the web search/fetch of the
+  model tools.
+- **Embedded runtime** — the optional download of the llama.cpp runtime is
+  the only exception to "everything is local": it's **explicit** (you start
+  it), **sha256-verified** against a list of tested versions, and the app
+  never downloads anything on its own. See [PRIVACY](docs/PRIVACY.md).
+- CORS is restricted to whatever you list in `GLYVEX_CORS_ORIGINS` in the
+  active environment (default `http://localhost:5173`). With
+  `allow_credentials=True`, a `*` doesn't work: browsers reject that
+  combination, so origins must be listed one by one.
+- `fetch_url` blocks private hosts by default.
+- `data/config.json` is **not committed** (it's in `.gitignore`); the
+  template is in `data/config.example.json`. API keys (`brave_api_key`,
+  `tavily_api_key`) are read from the environment variables
+  `BRAVE_API_KEY`/`TAVILY_API_KEY` first; if you write them in
+  `config.json` they stay only on your machine.
+- The server listens on `127.0.0.1` by default (local app, no
+  authentication). To expose it to the network you have to do it
+  deliberately: `GLYVEX_HOST=0.0.0.0 ./start.sh` — and in that case, **don't
+  do it without authentication**.
+- The launcher's `log_file` is validated against path traversal (400 if it
+  ends up outside `BASE_DIR`).
+
+## Roadmap
+
+- [x] **M0** — Project skeleton
+- [x] **M1** — Model management (scanner and inventory)
+- [x] **M2** — Model launcher
+- [x] **M3** — Chat interface
+- [x] **M4** — Benchmark suite
+- [x] **M5** — Hardware resources monitor
+- [x] **M6** — Final integration and polish
+- [x] **M7** — SQLite database (conversations, benchmarks, templates, sets)
+- [x] **M8** — LLM server vitals (Prometheus `/metrics`, history in `metrics.db`)
+- [ ] GPU acceleration for AMD/Intel in the embedded runtime (Vulkan/ROCm, phase B — for now it runs on CPU)
+- [x] **Linux x86_64 (beta, since v0.8.1-beta)**: signed AppImage, CI and auto-update — macOS comes in the future
+
+## Tests
+
+Automated test suite (pytest + pytest-asyncio + httpx, ~600 tests, no
+unittest, no requests, no GPU/models/real network — everything mocked: mock
+LLM server uvicorn on `:18080`, fake binaries, in-memory SQLite):
+
+```bash
+# Install test dependencies (tested floors, single source of truth)
+pip install -r requirements-dev.txt
+
+# Run all tests (from the repository root)
+pytest tests/ -v
+
+# A specific module
+pytest tests/test_models.py -v
+
+# With coverage
+pytest tests/ --cov=backend --cov-report=term-missing --cov-report=html
+```
+
+## Versioning
+
+The suite uses [SemVer](https://semver.org/lang/en/). The version lives in
+`backend/main.py` (`APP_VERSION`, exposed on `/api/health` and `/api/info`)
+and is kept in sync with annotated git tags `vX.Y.Z`:
+
+- **MAJOR** — breaking changes in data schemas (`config.json`, `glyvex.db`, `metrics.db`) or the internal API.
+- **MINOR** — new modules/features (M8, tools, backends).
+- **PATCH** — fixes and polish.
+
+To make a release:
+
+```bash
+# 1. Bump the version in backend/main.py (APP_VERSION) and
+#    src-tauri/tauri.conf.json (version), and commit
+# 2. Full suite green
+pytest tests/ -q
+# 3. Build the Windows NSIS installer (it also generates the updater
+#    .sig; TAURI_SIGNING_PRIVATE_KEY comes from .tauri/glyvex.key)
+# 4. Annotated tag + push
+git tag -a vX.Y.Z -m "<release summary>"
+git push origin main vX.Y.Z
+# 5. Sync the open-source distribution and publish the GitHub release
+#    (installer + .sig + latest.json, SHA-256 table in the notes)
+distribution/sync-oss.ps1
+```
+
+Release notes are bilingual: English first, then a `## Español` section, with
+a `> **Language:** [Español](#español)` link at the top (same pattern as this
+README). Asset names in the notes use dots, not spaces (the real GitHub
+filename, e.g. `Glyvex.AI.Suite_0.7.4-beta_x64-setup.exe`).
+
+## License
+
+Apache License 2.0 — see [LICENSE](LICENSE).
+
+Copyright (c) 2026 Glyvex Group
+
+The suite is distributed under **Apache 2.0** for the community. The
+**Enterprise** editions (Glyvex Suite) are separately licensed under a
+commercial agreement with Glyvex Group.

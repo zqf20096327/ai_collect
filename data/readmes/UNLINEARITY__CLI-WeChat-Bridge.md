@@ -1,4 +1,4 @@
-# CLI WeChat Bridge
+# CLI Chat Bridge
 
 <p align="center">
   <strong>简体中文</strong> · <a href="README_EN.md">English</a>
@@ -6,7 +6,7 @@
 
 <p align='center'><img src='docs/images/logo.png' width=90%></p>
 
-<p align="center"><img alt="Typing SVG" src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&duration=4000&pause=500&color=06C763&center=true&vCenter=true&width=660&lines=CLI+WeChat+Bridge+AI+%E7%BB%88%E7%AB%AF%E5%B7%A5%E5%85%B7%E6%A1%A5%E6%8E%A5;%E7%9C%9F%E6%AD%A3%E7%9A%84%E2%80%9C%E7%BB%88%E7%AB%AF-%E8%81%8A%E5%A4%A9%E5%B7%A5%E5%85%B7%E2%80%9D%E5%8E%9F%E7%94%9F%E5%8F%8C%E5%90%91%E4%BA%A4%E4%BA%92"></p>
+<p align="center"><img alt="Typing SVG" src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&duration=4000&pause=500&color=06C763&center=true&vCenter=true&width=660&lines=CLI+Chat+Bridge+AI+%E7%BB%88%E7%AB%AF%E5%B7%A5%E5%85%B7%E6%A1%A5%E6%8E%A5;%E7%9C%9F%E6%AD%A3%E7%9A%84%E2%80%9C%E7%BB%88%E7%AB%AF-%E8%81%8A%E5%A4%A9%E5%B7%A5%E5%85%B7%E2%80%9D%E5%8E%9F%E7%94%9F%E5%8F%8C%E5%90%91%E4%BA%A4%E4%BA%92"></p>
 
 <p align="center">
   <a href="https://unlinearity.github.io/CLI-WeChat-Bridge/"><img alt="Product website" src="https://img.shields.io/badge/Website-Visit-0284c7?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEuNyI%2BPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iOSIvPjxlbGxpcHNlIGN4PSIxMiIgY3k9IjEyIiByeD0iNCIgcnk9IjkiLz48cGF0aCBkPSJNMyAxMmgxOCIvPjwvc3ZnPg%3D%3D&logoColor=white&labelColor=1c1917"></a>
@@ -28,9 +28,10 @@
 
 ## 文档导航
 
-- [Telegram 接入](#33-telegram-接入)：创建机器人、配对操作者、启动 CLI 或附加当前 Codex 会话。
+- [渐进桥接模式](docs/bridge-modes.md)：从一个干净的单桥接开始，按打开的窗口逐级扩展为 L1 多 CLI、L2 同类型多实例或 L3 多目录，附架构图。
+- [Telegram 接入](#33-telegram-接入)：创建机器人、配对操作者、启动 CLI。
 - [问题排查](docs/troubleshooting.md)：上下文 token、网络代理、本地 endpoint、已知限制等常见问题。
-- [Codex 通道连接 skill（实验性）](docs/codex-connection.md)：`$codex-bridge` skill 与 `--attach-current-session`，把当前 Codex 会话（0.162+ 共享 daemon 模式）接入微信、企业微信或 Telegram。
+- [Codex 通道连接 skill（实验性）](docs/codex-connection.md)：在 Codex 会话中调用 `$codex-bridge` skill，把当前 Codex 会话（0.162+ 共享 daemon 模式）接入微信、企业微信或 Telegram。
 - [运行配置](docs/configuration.md)：共享数据目录、界面语言、上传大小限制、调试开关等环境变量。
 - [开发说明](docs/development.md)：源码运行、测试、构建、打包和全局 smoke 验证。
 - [发布说明](docs/releases/README.md)：各版本变更与升级说明。
@@ -50,6 +51,25 @@
 - **微信、企业微信或 Telegram 是远程入口**，用来接入本地会话；
 - 会话一致性、线程状态和审批流仍以**本地会话为中心**。
 
+### 渐进桥接模式
+
+桥接默认是一个干净的单桥接：只开一个 CLI 时，回复不带标签，聊天软件里只出现单 CLI 的命令。之后随你在本机打开的窗口逐级扩展：同一目录再开另一种 CLI 进入 L1 多 CLI，再开同一种 CLI 进入 L2 同类型多实例，在其他目录打开进入 L3 多目录；升级只升不降。每一级的架构图、指令和规则见[渐进桥接模式](docs/bridge-modes.md)，速查表见[第 6 节](#渐进模式)。
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    state "L0 单桥接" as L0
+    state "L1 多 CLI" as L1
+    state "L2 同类型多实例" as L2
+    state "L3 多目录" as L3
+    [*] --> L0: 打开第一个窗口
+    L0 --> L1: 开启目录 + 另一种 CLI
+    L0 --> L2: 开启目录 + 同一种 CLI
+    L0 --> L3: 其他目录
+    L1 --> L3: 其他目录
+    L2 --> L3: 其他目录
+```
+
 ## 二、快速开始
 
 ### 1. 环境要求
@@ -65,13 +85,19 @@
 
 ### 2. 安装与更新
 
-发布版本可以直接从 npm 安装/更新：
+发布版本可以直接从 npm 安装/更新。新用户优先使用更短的 `cli-chat-bridge`（项目即将使用的新名称，从 1.3.0 起同步发布）：
+
+```bash
+npm install -g cli-chat-bridge@latest
+```
+
+也可以安装内容完全相同的 `cli-wechat-bridge`：
 
 ```bash
 npm install -g cli-wechat-bridge@latest
 ```
 
-兼容性说明：旧包名 `@unlinearity/cli-wechat-bridge` 会继续同步发布，已经安装旧包名的用户可以正常升级；新用户优先使用更短的 `cli-wechat-bridge`。
+兼容性说明：旧包名 `@unlinearity/cli-wechat-bridge` 会继续同步发布，已经安装旧包名的用户可以正常升级。三个包提供相同的命令，只安装其中一个即可；要切换包名，请先 `npm uninstall -g` 当前的包，否则 npm 会因 `EEXIST` 中止安装。
 
 <details>
 <summary><b>安装遇到问题？（node-pty 原生模块）</b></summary>
@@ -165,7 +191,7 @@ wechat-setup --qr-mode normal
 
 #### 3.3 Telegram 接入
 
-Telegram 使用官方 [Bot API 长轮询](https://core.telegram.org/bots/api#getupdates)，不需要公网回调地址，本机需能访问 `api.telegram.org`。Telegram 从 `1.2.3` 起提供上述全局命令；源码安装步骤见[开发说明](docs/development.md#源码更新)。
+Telegram 使用官方 [Bot API 长轮询](https://core.telegram.org/bots/api#getupdates)，不需要公网回调地址，本机需能访问 `api.telegram.org`。源码安装步骤见[开发说明](docs/development.md#源码更新)。
 
 1. 在 Telegram 中打开 [@BotFather](https://t.me/BotFather)，发送 `/newbot`，按提示创建机器人并取得 Bot Token（[官方创建说明](https://core.telegram.org/bots/tutorial#obtain-your-bot-token)）。
 2. 在本地终端运行 `telegram-setup`，输入 Bot Token。
@@ -179,14 +205,6 @@ telegram-setup --check  # 检查已配置的 Bot Token 是否有效
 ```
 
 同一个 Bot Token 同时只运行一个 bridge／daemon；重新运行 `telegram-setup` 配对前，先停止正在使用这个机器人的桥接进程。
-
-如果要将 **当前 Codex 会话**接入 Telegram，在该项目目录中使用：
-
-```bash
-telegram-codex --attach-current-session
-```
-
-此方式需要 Codex >= 0.162 的共享 daemon 会话；成功输出 `Attached Codex daemon thread <id>`，不会打开新的可见 CLI。同一目录有多个活会话时可追加 `--codex-thread-id <id>`，详见 [Codex 通道连接说明](docs/codex-connection.md)。
 
 ### 4. 先从微信发一条同步消息（仅微信）
 
@@ -212,11 +230,12 @@ cd D:\work\your-project
 | Pi | `wechat-pi` | `wecom-pi` | `telegram-pi` |
 
 
-没有 daemon 时，四个直接命令按**单个活动工作区切换器**工作：
+直接启动命令在当前终端运行 CLI，并把它接入桥接：
 
-- 同一时间只有一个项目与所选的微信、企业微信或 Telegram 通道对话；
-- 如果检测到可见端仍在运行但 worker 状态异常（如 `stopped` / `error`），会自动重启 bridge 再重新打开可见端；
-- 在其他目录执行会显式切换活动工作区。
+- 没有运行中的 daemon 时，会在后台拉起一个临时 daemon，桥接从 [L0 单桥接](docs/bridge-modes.md#l0-单桥接)开始；所有窗口关闭后临时 daemon 自动退出；
+- 已有 daemon 时直接加入它，并按[渐进桥接模式](docs/bridge-modes.md)升级：同一目录再开另一种 CLI 进入 L1，再开同一种 CLI 进入 L2，在其他目录运行进入 L3；
+
+如果要把**已经在运行的 Codex 会话**接入微信、企业微信或 Telegram（而不是新开一个），在该 Codex 会话中调用 `$codex-bridge` skill 并说明要接入的通道。需要 Codex >= 0.162 的共享 daemon 会话，详见 [Codex 通道连接说明](docs/codex-connection.md)。
 
 ### 6. 常驻 daemon 模式（支持多 CLI 切换）
 
@@ -260,11 +279,23 @@ daemon 启动后，后续切换都可以直接从对应远程通道发起；如�
 
 当前 daemon 行为如下：
 
-- daemon 绑定启动时的工作目录；暂不支持从远程通道切换工作目录；
+- 桥接按打开的窗口渐进升级（见[渐进桥接模式](docs/bridge-modes.md)）：只开一个 CLI 时是干净的单桥接，远程通道里只出现单 CLI 的命令；
+- 一个 daemon 可以同时管理多个工作目录：在另一个目录运行直接启动命令（例如 `wechat-claude`）时，CLI 在该终端中运行，并把该目录加入已运行的 daemon；在远程通道发送 `/cd` 查看目录列表，`/cd <编号>` 或 `/cd <目录名>` 切换；只能切换到本机已打开的目录；
+- 单桥接的输出不带标签；多个 CLI 时输出带 `[codex]` 这类标签；同一个 CLI 开多个窗口时带 `[pi-1]` 这类标签；跨多个目录时带 `[目录名/codex]` 标签；
 - 启动时会自动接管并清理旧的单 bridge 进程、失效 lock 和旧 endpoint；
-- 如果还没有对应 CLI，daemon 会自动打开一个新的可见终端；
-- Codex / Claude / OpenCode / Pi 的重要输出都会带上 `[codex]`、`[claude]`、`[opencode]`、`[pi]` 标签再发回对应远程通道；
+- 如果还没有对应 CLI，daemon 会在当前选中窗口所在的目录自动打开一个新的可见终端；还没有窗口时使用 daemon 的启动目录；
 - 可以在对应远程通道里发送 `/daemon-stop` 停止 daemon。
+
+#### 渐进模式
+
+速查表如下，每一级的架构图、可用指令和升级规则见[渐进桥接模式](docs/bridge-modes.md)。
+
+| 模式 | 什么时候进入 | 远程通道里怎么切换 |
+| --- | --- | --- |
+| L0 单桥接 | 第一个窗口 | 不需要切换 |
+| L1 多 CLI | 在同一目录再打开另一种 CLI（例如先 `wechat-pi`，再 `wechat-opencode`） | `/pi`、`/opencode` 等 |
+| L2 同类型多实例 | 在同一目录再打开同一种 CLI（例如再运行一次 `wechat-pi`），或在单桥接中发送 `/open` | `/1`、`/2`；`/open` 再开一个 |
+| L3 多目录 | 在其他目录打开任意 CLI | `/cd` 切换目录，`/codex` 等切换 CLI，`/1`、`/2` 切换同一 CLI 的多个窗口 |
 
 也可以在启动时指定初始 CLI：
 
@@ -273,7 +304,7 @@ wechat-daemon --adapter codex
 wechat-daemon --adapter claude --profile work
 ```
 
-当同一工作目录已有对应通道的 daemon 在运行时，直接启动命令会自动委托给 daemon：请求 daemon 切到对应 CLI，并在需要时打开可见终端，不会停止 daemon 或关闭其他 CLI。
+当对应通道的 daemon 已在运行时，任意目录中的直接启动命令都会加入它：CLI 在当前终端运行，daemon 按渐进模式登记这个窗口，不会停止 daemon 或关闭其他 CLI。
 
 ## 三、适配器支持情况
 
@@ -337,8 +368,6 @@ OpenCode 模式下，微信、企业微信和 Telegram 侧都支持 `/new` 或 `
 | OpenCode | `wechat-opencode` | `wecom-opencode` | `telegram-opencode` | 启动或复用 OpenCode 可见终端 |
 | Pi | `wechat-pi` | `wecom-pi` | `telegram-pi` | 启动或复用 Pi 原生 TUI |
 
-1.1.5 已移除完成弃用周期的 `wechat-*-start` 别名；请直接使用上表中的入口。公开的 `wechat-bridge*` 命令和 Shell adapter 也已移除，内部 bridge runtime 由直接命令和 daemon 自动管理。
-
 ### 4.2 常驻 daemon
 
 | 参数 | 作用 | 示例 |
@@ -349,7 +378,7 @@ OpenCode 模式下，微信、企业微信和 Telegram 侧都支持 `/new` 或 `
 | `--no-open` | 创建 runtime slot，但不自动打开可见 CLI | `wechat-daemon --no-open` |
 | `--doctor` | 检查 Node.js、CLI、锁、endpoint 和 daemon 状态 | `wechat-daemon --doctor` |
 
-企业微信和 Telegram daemon 使用相同参数，例如 `wecom-daemon --adapter claude --profile work` 或 `telegram-daemon --adapter claude --profile work`。daemon 绑定启动时的工作目录；具体的远程通道控制指令见[下一章](#五微信--企业微信--telegram-侧支持的指令)。
+企业微信和 Telegram daemon 使用相同参数，例如 `wecom-daemon --adapter claude --profile work` 或 `telegram-daemon --adapter claude --profile work`。daemon 的启动目录是它的主目录：还没有窗口时，远程打开的 CLI 在主目录中启动；有窗口后使用当前选中窗口所在的目录。具体的远程通道控制指令见[下一章](#五微信--企业微信--telegram-侧支持的指令)。
 
 ### 4.3 直接启动适配器
 
@@ -366,21 +395,19 @@ OpenCode 模式下，微信、企业微信和 Telegram 侧都支持 `/new` 或 `
 | --- | --- | --- |
 | `--cwd <path>` | 指定 runtime 和可见 CLI 的工作目录 | `wechat-claude --cwd D:\work\my-project` |
 | `--profile <name-or-path>` | 传给内部 runtime | `wechat-claude --profile work` |
-| `--timeout-ms <ms>` | 等待当前目录 endpoint 的最长时间，默认 `15000` | `wechat-codex --timeout-ms 30000` |
+| `--timeout-ms <ms>` | 等待后台 daemon 启动的最长时间，默认 `15000`，实际至少等待 20 秒 | `wechat-codex --timeout-ms 30000` |
 | `--session-start-mode <restore / new>` | 显式选择恢复或新建会话 | `wechat-pi --session-start-mode restore` |
-| `--attach-current-session` | （仅 Codex）把所选的微信、企业微信或 Telegram 通道接入当前目录中运行中的共享 daemon 会话，不打开可见 CLI，需 Codex >= 0.162 | `wechat-codex --attach-current-session` |
-| `--codex-thread-id <id>` | （仅 Codex）附加时显式指定线程，代替按目录自动发现 | `wechat-codex --attach-current-session --codex-thread-id <id>` |
 | `--doctor` | 检查选定适配器和工作区，不启动 CLI | `wechat-claude --doctor` |
 | 其他参数 | 继续透传给可见的底层 CLI | `wechat-codex --model gpt-5.2 --yolo` |
 
-`--yolo` 会传给 Codex，`--dangerously-skip-permissions` 会传给 Claude Code；这些参数只影响本地可见 CLI，不会覆盖内部 runtime、通道凭据或工作区锁。对应的企业微信或 Telegram 入口只需将命令前缀替换为 `wecom-` 或 `telegram-`。
+`--yolo` 会传给 Codex，`--dangerously-skip-permissions` 会传给 Claude Code；这些参数只影响本地可见 CLI，不会覆盖内部 runtime 或通道凭据。对应的企业微信或 Telegram 入口只需将命令前缀替换为 `wecom-` 或 `telegram-`。
 
 ### 4.4 更新
 
 | 操作 | 命令 | 说明 |
 | --- | --- | --- |
 | 检查更新 | `wechat-check-update` / `wecom-check-update` / `telegram-check-update` | 查询 npm 上的最新版本 |
-| 升级 | `npm install -g cli-wechat-bridge@latest` | 升级后重启正在运行的 bridge、daemon 和 companion |
+| 升级 | `npm install -g cli-wechat-bridge@latest` | 升级后重启正在运行的 daemon 和可见 CLI 窗口 |
 
 直接启动命令也支持 `--doctor`，用于检查选定适配器和当前工作区而不启动 CLI。
 
@@ -397,7 +424,10 @@ OpenCode 模式下，微信、企业微信和 Telegram 侧都支持 `/new` 或 `
 | `/claude [prompt]` | daemon | 切换到 Claude Code；可选 prompt 在切换成功后转发 |
 | `/opencode [prompt]` | daemon | 切换到 OpenCode；可选 prompt 在切换成功后转发 |
 | `/pi [prompt]` | daemon | 切换到 Pi；可选 prompt 在切换成功后转发 |
-| `/all <prompt>` | daemon | 将同一段提示词同时下发给全部已启动的 CLI；未启动的列为跳过，任一 CLI 忙碌时整条取消 |
+| `/cd`、`/cd <编号或目录名>` | daemon（多目录模式） | 列出 daemon 管理的工作目录，或切换当前目录；只能切换到本机已打开的目录 |
+| `/all <prompt>` | daemon（多 CLI、同类型多实例、多目录模式） | 将同一段提示词同时下发给当前目录全部已启动的窗口；未启动的 CLI 列为跳过，任一窗口忙碌时整条取消 |
+| `/open` | daemon（单桥接、同类型多实例、多目录模式） | 在当前目录再打开一个当前 CLI 的窗口 |
+| `/1`、`/2` …（可带 prompt） | daemon（同类型多实例、多目录模式） | 切换到当前 CLI 的对应编号窗口；可选 prompt 在切换成功后转发 |
 | `/status` | 直接启动、daemon | 查看 bridge、daemon、适配器和工作区状态 |
 | `/lang`、`/lang zh`、`/lang en` | 直接启动、daemon | 查看或切换中文 / English 桥接提示；立即生效并保存偏好，`/language` 为别名 |
 | `/model`、`/model <编号>` | Codex、Claude Code、OpenCode、Pi | 列出模型并切换当前会话的模型；编号列表 5 分钟内有效 |
@@ -406,33 +436,32 @@ OpenCode 模式下，微信、企业微信和 Telegram 侧都支持 `/new` 或 `
 | `/reset` | 直接启动、daemon | 重建当前本地会话 |
 | `/new`、`/new-session` | OpenCode、Pi | 创建新的 session |
 | `/resume`、`/resume <编号或 ID 前缀>` | Codex、Claude Code、OpenCode、Pi | 列出并恢复当前工作目录的最近 thread/session；列表编号 5 分钟内有效 |
-| `/confirm`、`/yes` | 直接启动、daemon | 有待审批时批准当前权限请求 |
+| `/confirm`、`/yes` | 直接启动、daemon | 有待审批时批准当前权限请求；当前终端没有而其他终端或目录有时，回复带编号的列表 |
+| `/confirm <编号>`、`/deny <编号>` | daemon | 处理列表中对应编号的审批请求 |
 | `/deny`、`/no` | 直接启动、daemon | 有待审批时拒绝当前权限请求 |
+| `/deny <理由>`、`/deny <编号> <理由>` | 直接启动、daemon | 拒绝并把理由交给模型；Codex 不支持随拒绝附带理由，本轮结束后把理由作为下一条消息发送 |
+| `/always` | Codex、Claude Code | 允许当前请求，并在本会话内不再询问同类操作；不修改配置文件。OpenCode 的"总是允许"会写入项目规则，因此不提供 |
+| `/abort` | Codex、Claude Code、OpenCode | 拒绝当前请求并停止本轮任务 |
 | `confirm`、`yes` | 有待审批时 | `/confirm` 的文本别名 |
 | `deny`、`no` | 有待审批时 | `/deny` 的文本别名 |
-| `/answer <key>=<value>` | 有待回答问题时 | 提交 Codex、Claude、OpenCode 的结构化回答 |
+| `/auto`、`/auto on`、`/auto off` | 直接启动、daemon | 查看、开启或关闭自动放行；作用于所有窗口，daemon 重启后恢复默认 |
+| 直接回复、`/answer <回答>` | 有待回答问题时 | 回答 Codex、Claude、OpenCode 的提问，`/answer` 前缀可省略；多题时逐题推送，也可用 `/answer 1=…; 2=…` 一次答完 |
+| `/answer`、`/answer #<编号> <回答>` | daemon | 列出所有待回答的问题，或回答列表中对应编号的问题 |
 | `/daemon-stop` | daemon | 停止当前常驻 daemon |
 | `/pair <code>` | 企业微信、Telegram 配置 | 在 `wecom-setup` 或 `telegram-setup` 提示后完成操作者配对 |
 
 语言切换及启动环境变量的优先级见 [界面语言](docs/configuration.md#界面语言)。
 
-Claude 的 `AskUserQuestion` 会转发题目、选项说明和文字预览。单题可回复 `/answer 1` 或自定义文本；多题可回复 `/answer 1=Yes;2=2;3=1,2;4=1`，多选值以逗号分隔。答案一次提交全部题目。hook 超时或断开连接后，远程问题会清除，并提示在本地终端作答或使用 `/stop`。升级后需重启 daemon 和可见 Claude 窗口。
+- **回答问题**：提问会转发题目、选项说明和文字预览，bridge 不会替你作答或预选。有问题等待时直接回复即可：数字或选项全名选择对应选项，多选用逗号、顿号或空格分隔（如 `1 3`）；"编号 + 文字"（如 `2 先别部署`）选择该项并附说明；其他文字作为你自己的答案，题目不允许自定义时会提示重答。多道题逐题推送（标出 1/3），全部答完一起提交；也可以 `/answer 1=Yes; 2=1,2` 一次答完。Claude 的 hook 超时或断开后，远程问题会清除，需在本地终端作答或使用 `/stop`。
+- **审批**：每次 `/confirm` 或 `/deny` 只处理当前显示的一项，再提示下一项，消息中注明后面还有几项；本地终端已处理的请求会同步移除。哪些请求自动放行见[问题排查](docs/troubleshooting.md#审批与权限请求)，本轮自动放行的操作会在最终回复末尾列出。
+- **模型与计划模式**：Claude Code 的 `/model`、`/plan` 需要可见 CLI 停在空闲的原生提示符，且没有待审批、本地草稿或弹窗；操作期间按本地键盘会取消远程控制。OpenCode 的 `/plan off` 没有历史记录时回到 `build`；Pi 的 `/plan` 由可选扩展定义，桥接不提供。模型列表绑定当前会话、CLI 进程和操作者，切换会话或当前 CLI 后请重新发送 `/model`。
+- **联网放行**：Claude Code 默认放行常规联网请求（`WebFetch(domain:*)`），设置 `CLI_BRIDGE_STRICT_APPROVAL=1` 可关闭，见[运行配置](docs/configuration.md)。
 
-Claude Code 的模型、计划模式控制需要可见 CLI 处于空闲原生提示符，且没有待审批、本地草稿或打开的弹窗。操作会短暂打开原生选择器并等待确认；控制期间操作本地键盘会取消远程控制。Claude Code 使用选择器的 `s`（仅当前会话）切换模型，需要 CLI 支持此选项；`/plan off` 会恢复进入计划模式前的 permission mode，没有记录时恢复 `default`。
-
-OpenCode 的控制不依赖可见 TUI 的输入框、菜单或当前面板。桥接通过 OpenCode server 的会话 API 查询已连接模型、提交模型与 primary agent，并回读 session 确认结果；微信、企业微信和 Telegram 消息直接通过 SDK 提交，同时显式携带已生效的 agent、model 和 variant。OpenCode 的 `/plan` 选择 `plan` primary agent；缺少该 agent 时会提示错误，`/plan off` 没有历史记录时恢复 `build` 或首个非 plan primary agent。
-
-Codex、Claude Code 和 OpenCode 的审批按到达顺序逐项处理：每次 `/confirm` 或 `/deny` 只处理当前显示的一项，再提示下一项；本地终端已处理的请求会同步移除。子代理的权限请求仍由所属父任务接收，审批不会切换当前会话或改变回复目标。升级后请重启已打开的 CLI 窗口，旧 companion 仍可显示状态，但需要重启才能远程审批。
-
-Claude Code 默认在 bridge 生成的启动设置中添加 `WebFetch(domain:*)` 权限规则，允许常规联网请求直接通过；现有拒绝规则和沙箱限制仍生效。设置 `CLI_BRIDGE_STRICT_APPROVAL=1` 可关闭此自动放行；仅有本地网络弹窗、没有 `PermissionRequest` Hook 的请求需要在终端处理。
-
-Pi 的 `/model` 通过已连接原生 TUI extension 读取当前 scoped model 列表；没有 scoped models 时使用 model registry 中可用的模型，并通过 `pi.setModel()` 切换。Pi 的 `/plan` 仍由可选扩展定义，不作为 bridge 的通用控制命令。
-
-模型列表绑定当前会话、CLI 进程和操作者；切换会话或 daemon 活动 CLI 后请重新发送 `/model`。
+各适配器的实现方式见[通信架构](docs/architecture.md)。
 
 ### 「正在输入」状态与回复投递
 
-从微信派发任务后，聊天窗口会显示原生的「对方正在输入…」状态，并以 5 秒心跳保持，直到回复送达、任务失败或 daemon 关闭。typing 凭证按联系人从微信官方配置端点获取并自动刷新，获取失败时整体静默降级，不影响消息收发。
+从微信派发任务后，聊天窗口会显示原生的「对方正在输入…」状态，并以 5 秒心跳保持，直到回复送达、任务失败、CLI 回到空闲或 daemon 关闭；等待你审批或回答问题时暂停显示，处理后恢复。本地终端发起的任务不显示。typing 凭证按联系人从微信官方配置端点获取并自动刷新，获取失败时整体静默降级，不影响消息收发。
 
 微信较长的回复现在作为一条完整消息发出，不再按固定长度拆分，与微信官方机器人客户端的行为一致。若服务器拒收超长消息，既有的重试与待发队列机制仍会记录失败，回复不会无声丢失。
 
@@ -440,7 +469,7 @@ Telegram 任务运行期间也会保持原生的「正在输入」提示，较�
 
 ### daemon IPC（外部程序接入）
 
-`wechat-daemon`、`wecom-daemon` 与 `telegram-daemon` 在本地开放带 token 认证的 IPC 接口，外部程序（网页面板、脚本、自建机器人前端等）可以将文本按与聊天消息完全一致的处理规则下发给任意 CLI，或借用通道发送消息：忙碌时拒绝、有待审批或结构化输入时等待、Codex 本地任务期间自动排队，回复始终发回所属会话，输入被拒绝或失败时自动回滚状态。接口语义见 [docs/development.md](docs/development.md)。Claude 原生菜单名称被终端宽度截断或无法唯一识别时，桥接会提示刷新或扩大终端；OpenCode 只有在 server 回读确认后才报告切换成功。
+`wechat-daemon`、`wecom-daemon` 与 `telegram-daemon` 在本地开放带 token 认证的 IPC 接口，外部程序（网页面板、脚本、自建机器人前端等）可以将文本按与聊天消息完全一致的处理规则下发给任意 CLI，或借用通道发送消息：忙碌时拒绝、有待审批或结构化输入时等待、Codex 本地任务期间自动排队，回复始终发回所属会话，输入被拒绝或失败时自动回滚状态。接口语义见 [docs/development.md](docs/development.md)。
 
 ### 5.2 会话恢复与本地同步
 
@@ -451,7 +480,7 @@ Telegram 任务运行期间也会保持原生的「正在输入」提示，较�
 | OpenCode | 列出当前 cwd 的 session 并恢复选定 session | 本地 picker、`/resume` 或新建 session 后，远程通道跟随新的 session |
 | Pi | 列出当前 cwd 的 session 并恢复选定 session | 本地 session 切换后，远程通道跟随新的 session；Pi turn 完成后发送一次最终回复 |
 
-所有适配器的 `/resume` 都只处理 daemon / bridge 启动目录内的最近 root thread/session，并等待当前任务进入 idle。有任务、审批或待回答问题时请先处理或使用 `/stop`；仍处于 active 状态的 Codex thread，以及仍在运行的 Claude background session，不允许从远程通道接管。OpenCode 和 Pi 的本地 session 切换会使之前的编号列表失效；如果切换发生在远程任务执行期间，bridge 会先中断旧任务。
+所有适配器的 `/resume` 都只处理当前目录（daemon 中为 `/cd` 选中的目录）内的最近 root thread/session，并等待当前任务进入 idle。有任务、审批或待回答问题时请先处理或使用 `/stop`；仍处于 active 状态的 Codex thread，以及仍在运行的 Claude background session，不允许从远程通道接管。OpenCode 和 Pi 的本地 session 切换会使之前的编号列表失效；如果切换发生在远程任务执行期间，bridge 会先中断旧任务。
 
 ### 5.3 daemon 表情绑定
 

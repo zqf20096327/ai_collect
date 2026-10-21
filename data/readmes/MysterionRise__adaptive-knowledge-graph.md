@@ -45,10 +45,13 @@ data stays in a local SQLite file.
 - **Cited answers.** Answers are grounded in retrieved passages with numbered
   citations, source snippets, the expanded concepts and the textbook
   attribution. They can be streamed token by token over server-sent events.
-- **Knowledge graph explorer.** Concepts and the textbook modules that cover
-  them live in Neo4j with `PREREQ`, `RELATED` and `COVERS` relationships. The
-  UI shows them in an interactive Cytoscape.js graph, and the API serves
-  prerequisite chains and learning paths.
+- **Knowledge graph explorer.** Concepts, with glossary definitions and aliases
+  where the book provides them, and the textbook modules that cover them live
+  in Neo4j with `PREREQ` (from glossary definitions), `RELATED`
+  (co-occurrence) and `COVERS` relationships. The UI shows them in an
+  interactive Cytoscape.js graph, and the API serves prerequisite chains and
+  learning paths. The graph is rebuilt by `make seed`, which writes a quality
+  report per build; `GET /api/v1/graph/stats` has the live counts.
 - **Hybrid retrieval.** OpenSearch BM25 and kNN search over
   [BGE-M3](https://huggingface.co/BAAI/bge-m3) embeddings are fused with
   reciprocal rank fusion. A cross-encoder reranker is available as an option.
@@ -89,6 +92,7 @@ flowchart LR
 | [`backend/app/`](backend/app/) | Retrieval (`rag/`), graph access (`kg/`), embeddings, concept extraction and the LLM client (`nlp/`), quizzes and the learner model (`student/`) |
 | [`scripts/`](scripts/) | Ingestion, knowledge-graph build, indexing and evaluation |
 | [`config/subjects.yaml`](config/subjects.yaml) | Subject definitions: books, prompts, indices, theme, attribution |
+| [`data/`](data/) | The normalised OpenStax books (`processed/books_<subject>.jsonl`) and the golden set (`evals/`). The graph itself is not tracked: `make seed` builds it in Neo4j and writes its JSON copy and the quality report `graph_report_<subject>.md` to the ignored `data/processed/build/` |
 | [`infra/compose/`](infra/compose/) | Docker Compose stack for Neo4j, OpenSearch and the optional API containers |
 
 | Layer | Technology |
@@ -326,10 +330,11 @@ prefixed with `NEXT_PUBLIC_` end up in the browser bundle, so read
 [`scripts/evaluate_rag.py`](scripts/evaluate_rag.py) sends each question in the
 golden set ([`data/evals/golden_qa.yaml`](data/evals/golden_qa.yaml): 27 US
 History and 26 Economics cases) to a running API twice, with and without
-knowledge-graph expansion. It reports answer term recall, citation hit rate,
-expected-source MRR, how often questions the book cannot support are refused,
-and latency. The set mixes answerable questions with cross-chapter synthesis,
-ambiguous and conflicting-source questions, unsupported claims and
+knowledge-graph expansion. It reports answer term recall (quote the non-echo
+variant, over the expected terms the question does not already name), citation
+hit rate, expected-source MRR, how often questions the book cannot support are
+refused, and latency. The set mixes answerable questions with cross-chapter
+synthesis, ambiguous and conflicting-source questions, unsupported claims and
 prompt-injection attempts.
 
 ```bash
@@ -343,7 +348,10 @@ when `environment_valid` is `true`: every request returned `200` and KG
 expansion never failed. `make eval-compare BASE=… HEAD=…` compares two
 reports case by case.
 
-<!-- eval table: filled in the release PR (#104) -->
+<!-- eval table: filled in the release PR (#104) with the template and wording
+rule in docs/evals/README.md#reporting-a-comparison: per-arm rates plus
+win/tie/loss and the sign test, term recall is answer_term_recall_non_echo,
+no delta column -->
 
 The metrics are heuristic (keyword and source-title matching). They are meant
 for regression tracking, not as a benchmark; see

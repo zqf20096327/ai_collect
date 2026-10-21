@@ -17,7 +17,7 @@ English | [日本語](./README.ja.md) | [한국어](./README.ko.md) | [繁體中
 
 **Your applications deserve agents.**
 
-Cuttlely is an open-source visual graph editor for building and orchestrating AI agents. Drag agents and tools onto a canvas, wire them into a team, chat with it in minutes, then call it from your app through the API. It runs on infrastructure you control.
+Cuttlely (said like "cuddly") is an open-source visual graph editor for building and orchestrating AI agents. Drag agents and tools onto a canvas, wire them into a team, chat with it in minutes, then call it from your app through the API. It runs on infrastructure you control.
 
 ## Contents
 
@@ -194,10 +194,12 @@ You need Docker and one model key. The steps use OpenAI. Any chat model provider
 
     That pulls `ghcr.io/cuttlely/cuttlely` and opens [http://localhost:43117](http://localhost:43117) when it is ready. [Install with npm](./docs/how-to/docker.md#install-with-npm) has `stop`, `status`, `logs` and `upgrade`.
 
-2. When it is up, the server prints a one-time setup link. Show it with:
+    No Docker? [Build from source](./docs/how-to/from-source.md) with Node 24 (`.nvmrc` pins 24.15.0).
+
+2. When it is up, the server prints a ready block with a one-time setup link and a setup code. Show it with:
 
     ```bash
-    docker compose logs cuttlely | grep "No account yet"
+    docker compose logs cuttlely | grep "Setup code"
     ```
 
     Nothing yet? It is still starting. Run the command again in a few seconds.

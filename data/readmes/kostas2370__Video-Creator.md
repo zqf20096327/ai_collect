@@ -1019,10 +1019,27 @@ restart the API and Celery workers after updating.
 
 ### Video covers and reusable media
 
-- Open an exported video and choose **Cover**. Scrub the video and choose **Use
-  current frame**, or enter a timestamp. Add a title, font, color, placement, and
-  background, then preview and save a PNG. Saved covers appear in **My videos**
-  and can be downloaded from the cover creator.
+- Choose **Cover** in the video editor. **AI thumbnail** creates a separate
+  1280 × 720 image from the current video content. Its style reference is the
+  project's reference image, or an available scene image; otherwise it uses a
+  frame from the main export content, skipping the intro and outro. The prompt
+  asks the AI to preserve the reference's medium, rendering, and palette.
+  Add optional visual direction,
+  then generate or regenerate using your configured OpenAI image model and key.
+  The AI draws the exact cover title into the artwork, choosing typography and
+  placement as part of the design. Leave the title blank for no text; changing
+  the title requires regeneration. Each generation uses image credits and runs
+  as a background job. You can close the dialog, continue editing, and reopen
+  **Cover** to retrieve the draft, including after refreshing the page. Each successful
+  generation is also kept in **My assets → Media library**, including versions you
+  do not choose as the current cover. Preview
+  the lettering before saving. You can also choose **Upload image** (PNG, JPEG, or WebP up to
+  10 MB), or **Video frame** after exporting. Add a title, font, color, placement,
+  and background, then preview and save a PNG. The saved image matches the
+  preview, appears in **My videos**, and can be downloaded from the cover creator.
+  Generated and uploaded covers are available before exporting the video.
+  Restart both the API and Celery worker after updating to register the thumbnail
+  endpoints and background task. Failed generation leaves the saved cover unchanged.
 - **My assets → Media library** stores images, video clips, and audio. Search by
   name or tag, filter by type, and edit tags. Files are limited to 100 MB and
   audio/video to 15 minutes.
@@ -1032,3 +1049,88 @@ restart the API and Celery workers after updating.
   removing a library item does not remove copies already used in videos.
 - Apply database migrations before using these features:
   `python manage.py migrate` (includes migration `0034_media_library_and_covers`).
+
+### Scene assets
+
+Each scene image or video clip is stored once in a **MediaAsset**. A SceneImage
+references that asset and keeps its scene-specific settings; its file URL comes
+from the asset. Generated files are registered at their existing storage paths,
+and uploaded visuals are saved directly in library storage. Reusing library media
+links the same asset to the new scene without copying its file.
+
+Generated AI thumbnail variations are saved as assets as soon as generation
+succeeds. Use **Download** to save an asset locally, or **Use media** to reuse it in
+another scene or as the source of a rendered video cover. References and rendered
+covers remain project files.
+
+Replacing or deleting scenes, or deleting a project, preserves its assets.
+Deleting an asset that is still used by a scene is rejected; remove it from those
+scenes first. Identical uploaded visuals are deduplicated per account.
+
+Run `python manage.py migrate` after updating, with existing media storage mounted.
+Migration `0038_persistent_visual_assets` adds asset links and provenance;
+`0039_backfill_visual_assets` registers existing scene files without copying or
+moving them, including paths whose files are currently missing. It preserves
+existing library metadata when an entry already owns that path and is safe to
+retry. `0040_sceneimage_asset_owns_file` removes the redundant scene file column.
+No additional media storage is needed for the migration. Completed exports,
+generated audio, and temporary previews are not automatically saved as assets.
+
+### Video tags
+
+Choose **Tags** in the video editor toolbar, then **Generate tags** to create
+TikTok hashtags, YouTube keyword phrases, and platform search tags from the
+current title and script. Generated tags are always in English, with TikTok audience
+and niche hashtags and YouTube phrases aimed at relevant viewer searches. Switch
+between TikTok, YouTube, and Library tabs to edit or copy tags. Generation uses the
+configured text model and API key.
+Tags are saved with the video; edit each group and choose **Save changes**, or use
+**Copy** to copy hashtags or comma-separated keywords for posting. Regenerate
+after changing the video content. Library search matches titles and saved tags.
+
+The API exposes `POST /api/videos/{id}/generate_tags/` with `previous_tags`, and
+`PATCH /api/videos/{id}/tags/` with `tags` and `previous_tags`. The `tags` object
+contains `tiktok`, `youtube`, and `search` arrays. Pass the previously retrieved
+object (initially `{}`) as `previous_tags` to avoid overwriting another session.
+The editor accepts up to 20 tags per group and 80 characters per tag. Saving tags
+does not change render state or require rendering again. Apply migrations when
+updating an existing installation.
+
+### Video library
+
+**My videos** provides a thumbnail grid and a compact list view, with search by
+video title or tag and a filter for project status. Both the selected layout and
+filters are preserved in the page URL. Each project shows its creation mode,
+last update, and a clear action to open the editor or watch an available export.
+
+Saved covers take priority for thumbnails. Otherwise, the backend generates and saves a small JPEG once, sampling a random
+frame from the middle 35–75% of the content and excluding known intro/outro
+durations. Later visits reuse that image without loading or seeking the video.
+Drafts use a scene image or a saved frame from their first clip. Thumbnails are
+created only for visible cards that need them, and a successful new export clears
+the old thumbnail so it can be regenerated. Apply migration `0036_video_thumbnail`
+and restart the API and workers when deploying.
+
+
+## Diagnosing failures
+
+API responses include an `X-Request-ID` reference. Unexpected API errors return a
+safe message; server-error notifications include the reference so a user can report
+it. API and worker application logs use one JSON record per line, with UTC timestamps,
+severity and logger names. API error records include the reference, method, view
+name and status. Jobs queued by that request inherit the reference and include
+the Celery task ID and name in their logs, including failures.
+
+Search the API and worker logs for a reported reference:
+
+```sh
+docker compose -f backend/docker-compose.yml logs video_creator celery | rg 'REFERENCE'
+```
+
+`LOG_LEVEL` controls console verbosity (default `INFO`). Error references do not
+require logging successful requests. The added request context omits bodies,
+headers, query strings and task arguments. Exception tracebacks remain server-side; existing
+provider error messages may contain provider details, so restrict access to logs.
+Server startup output and third-party print statements may remain plain text.
+Console output still needs retention/rotation configured by the deployment. This
+change does not add an external error-reporting service or alerting.

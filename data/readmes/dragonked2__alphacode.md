@@ -398,7 +398,7 @@ alphacode model list               # List available models
 alphacode model use <model>        # Select a model
 ```
 
-In the terminal UI, press `Ctrl+T` to open the model and provider selector.
+In the terminal UI, type `/model` to open the model and provider selector.
 
 ### Local models (Ollama, LM Studio, and other OpenAI-compatible servers)
 
@@ -739,10 +739,12 @@ See [`docs/configuration.md`](docs/configuration.md) for the full reference.
 | Shortcut | Action |
 | --- | --- |
 | `F1` | Show shortcut reference |
-| `Ctrl+T` | Open the model and provider selector |
-| `Ctrl+Y` | Open agent activity |
-| `Ctrl+C` | Pause the active response |
+| `Ctrl+T` | Toggle queue mode |
+| `Ctrl+Y` | Accept the suggested fallback model after an error |
+| `Ctrl+C` | Interrupt the current turn (quit when idle) |
 | `Esc` | Close a dialog or go back |
+| `/model` | Open the model and provider picker |
+| `Shift+Tab` | Cycle favorited models |
 
 ## Troubleshooting
 
@@ -1066,4 +1068,3 @@ If AlphaCode saves you time, star the repository, report reproducible bugs, sugg
 <sub>Built with Rust by <a href="https://github.com/dragonked2">Ali Essam</a> · MIT licensed · Open source</sub>
 
 </div>
-</document_content>

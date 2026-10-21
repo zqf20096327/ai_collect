@@ -1,23 +1,50 @@
 # engineering-multi-ai-skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Version: 0.3.1](https://img.shields.io/badge/version-0.3.1-blue.svg)](https://github.com/TianMingKanae/engineering-multi-ai-skills/releases/tag/v0.3.1)
+
+**v0.3.1 — Dispatcher thread-format compatibility, snapshot-checked plan apply and safer preregistration evaluation.** See the [changelog and upgrade notes](CHANGELOG.md). Maintainers: [versioning and release checklist](docs/releases.md).
 
 Practical skills and a file-based workflow for engineering teams using multiple AI agents. Works with software, infrastructure, data pipelines, benchmarks and other engineering tasks. No model, vendor, machine or programming language is required.
 
 ```mermaid
-flowchart LR
-    O["Coordinator (O)"] --> P["Proposer (P)"]
-    P --> I["Implementer (I)"]
-    O -->|Small task| I
-    I --> C["Critic (C)"]
-    C -->|Corrections| I
-    C --> V["Verifier (V)"]
-    V -->|Evidence| O
-    I -.->|Bounded command| W["Worker (W)"]
-    W -.->|Artifacts| I
+flowchart TD
+    H["H: human scope and budget"] --> O["O: coordinator / Git and artifact manifests"]
+    subgraph Providers["Independently tested provider capabilities"]
+        B["Family A: builder O/F"]
+        V["Family B: critic C / blind verifier V"]
+        X["Family C: high-throughput extractor P/A"]
+    end
+    O --> B
+    O --> X
+    B --> R["Freeze decision code, contract and tests in Git"]
+    subgraph Nodes["Physical node capabilities and leases"]
+        N["Entitled network node / offline archive"]
+        W["High-core compute node"]
+        E["Edge worker / released tail units"]
+    end
+    X --> N
+    R --> W
+    R --> E
+    E -.->|Reviewed tail rescue| W
+    W --> D["Hashed binary results"]
+    E --> D
+    D --> G{"Frozen decision evaluator"}
+    G -->|Fail| F["NOT SHOWN: immutable verdict"]
+    G -->|Pass: provisional| V
+    N --> P["DOI identity / exact quote evidence"]
+    P --> V
+    V --> L["Independent CLAIMS gate and ledger"]
+    F --> O
+    L --> O
+    O -->|Scope or budget boundary| H
 ```
 
 Use one agent for ordinary work. Add separate implementers, reviewers or verifiers when independent work will resolve a concrete uncertainty. A skill does not create agents or grant permissions: use delegation and tool access already authorized in your environment.
+
+The diagram shows the optional **governed profile**: human decision gates, event-driven milestones, physical-node affinity and bounded worker repairs. The basic quickstart below uses I as a compatibility alias for F and needs no scheduler.
+
+Models, provider families and node labels are configurable capabilities, not vendor endorsements or proof of independence. The toolkit supplies reference planners and evidence tools; deployment still provides cross-host transport, access controls and a serialized lease/integration authority.
 
 ## 3-Minute Quickstart
 
@@ -80,6 +107,9 @@ For independent review, open a fresh assistant session and say: "Act as C. Read 
 | [critic-review](skills/critic-review/SKILL.md) | Review correctness, failure handling, security, performance and reported evidence. |
 | [worker-task](skills/worker-task/SKILL.md) | Execute a bounded assigned job, capture outputs and report reproducible failures. |
 | [claim-ledger](skills/claim-ledger/SKILL.md) | Keep engineering conclusions tied to evidence, status and limits. |
+| [engineering-governance](skills/engineering-governance/SKILL.md) | Apply H decision gates, milestone review, node migration, fix quotas and blind verification. |
+| [distributed-orchestration](skills/distributed-orchestration/SKILL.md) | Assign heterogeneous capabilities and plan safe capacity-bound tail rescue across nodes. |
+| [literature-provenance](skills/literature-provenance/SKILL.md) | Verify DOI/BibTeX identity, gate venues and locate exact offline evidence. |
 
 `skills/` holds the canonical copies. Copy selected folders into your agent's configured skill directory. For example, to install into a project's Claude skill directory:
 
@@ -97,14 +127,36 @@ Review existing same-named skills before copying. Other hosts can use the same S
 
 | Role | Owns |
 |---|---|
+| H — human principal | Final project scope, resource ceilings and trusted override decisions. |
 | O — coordinator | Scope, ownership, integration and user-facing updates. |
-| P — proposer | Options, research and design rationale, when needed. |
-| I — implementer | Code and focused tests. |
+| F — primary code owner | Production code and focused tests; I is the basic-mode alias. |
+| P — researcher | Sources, options and design rationale on a suitably entitled node. |
 | C — reviewer | Independent review of the patch and evidence. |
-| V — verifier | Independent reproduction of important outcomes. |
+| V — blind verifier | Independent scripts from raw artifacts and a separate specification. |
 | W — worker | Exact assigned commands and artifact collection. |
+| A — auxiliary | Explicit support work without production-code authority by default. |
 
-These are responsibilities, not mandatory sessions. Combine roles when independence is unnecessary. For important decisions, a useful flow is O → P/I → C → V → O; skip stages that add no evidence. Use separate clones or worktrees for concurrent writes and decide who integrates before starting.
+These are responsibilities, not mandatory sessions. Combine roles when independence is unnecessary. In basic mode, O → P/F → C → V → O is one possible flow. In the governed profile, O batches C/V work at Pilot Readout, Pre-Main Launch and CLAIMS Entry; routine jobs do not trigger repeated reviews. Only O/F own production changes, with a narrow recorded W mechanical-fix exception. Use isolated clones/worktrees for concurrent writes; blind V needs a separate minimal artifact packet, not a source-visible worktree.
+
+### Governance patterns and before/after
+
+| Concern | Before | Governed profile |
+|---|---|---|
+| Decision deadlock | Agents debate without a final owner | `owner: H`, blocked branch, trusted human release |
+| Idle model cost | Timed model wakeups and repeated micro-reviews | Completion/scheduler receipts; three batch review gates |
+| Wrong node / migration race | Assume tools and network access; resume twice | Capability preflight, target READY, single-writer lease, STARTED |
+| Role overreach / correlated checks | Unbounded worker repairs and shared solver logic | O/F production ownership, task-level fix quota, blind V packet |
+
+Read the [governance comparison and adoption guide](docs/governance.md) and the [four pattern modules](skills/engineering-governance/SKILL.md). H is the highest project authority within host constraints; a human waiver never changes the evidence. Token savings above 80% are a measurement target, not a demonstrated result of this repository.
+
+### v0.3.0 architecture modules
+
+- [Heterogeneous agents](docs/heterogeneous-agents.md): builder/reviewer/extractor capability contracts, cross-provider isolation and neutral file/Git IPC.
+- [Distributed topology](docs/distributed-topology.md): high-core/network/edge tiers, authorized offline archives, remaining-unit preservation and dynamic tail rescue.
+- [Pre-registration pipeline](docs/preregistration.md): committed evaluator/tests before registered data, protected receipt anchors and one-shot negative-result provenance.
+- [Literature toolchain](skills/literature-provenance/references/toolchain.md): registry-generated BibTeX, title matching, curated venue gates, offline corpus indexing and short exact quotes.
+
+Full waves use available slots when eligible independent work and memory allow. Partial tails, unequal runtimes and integration overhead remain visible; 100% utilization is not guaranteed. Venue reputation is a policy label, not validation of a claim.
 
 ### Example: duplicate webhook delivery
 
@@ -117,7 +169,7 @@ See [workflow.md](docs/workflow.md) for the thread contract and failure handling
 
 ## Optional execution tools
 
-Python 3.10+ and its standard library are sufficient. Tools accept `--root` and never configure credentials, synchronize Git, commit, push or change sandbox settings.
+Python 3.10+ and its standard library cover the core tools, SQLite example and text evidence. Optional HDF5/classic MAT/Parquet/PDF adapters use [requirements-optional.txt](requirements-optional.txt). Tools never configure credentials, synchronize Git, commit, push or change sandbox settings. Their project/path options are documented per command.
 
 ### Preview or dispatch assigned work
 
@@ -133,6 +185,8 @@ python scripts/dispatch.py --root C:\path\to\project --role I --config C:\path\t
 
 Add `--watch --poll-seconds 300` to poll local files. Arrange synchronization separately from an idle clone; never pull files underneath active jobs. `{prompt}` is substituted into one argument without shell evaluation. No CLI flags or model names are assumed. Each thread is dispatched once per successful input fingerprint; failures get at most `max_attempts` total attempts, with no retry in the same poll. A successful runner must append its role entry or hand the thread to another owner. State, logs and a per-role lock live in `.multi-ai/`. Only one dispatcher per role and project may run at once.
 
+For governed jobs, prefer a one-shot call from an authorized scheduler with `--mode milestone --node compute-node`. H cannot be dispatched in either mode. A thread with a `node` field is skipped without a matching `--node`. Milestone Mode requires a matching event receipt; C/V additionally require one of the three milestones and a scheduler receipt. See the [receipt schema and trigger contract](skills/engineering-governance/references/milestone-mode.md). File polling itself makes no idle model calls; these routing checks do not enforce file write ACLs, authenticate H or provide a distributed lease.
+
 ### Run an engineering command
 
 ```powershell
@@ -140,6 +194,15 @@ python scripts/run_task.py --root C:\path\to\project --id unit-tests -- python -
 ```
 
 The command runs without a shell. A log and JSON result under `.multi-ai/runs/` record timestamps, command, exit code and status. Optional `--timeout 600` bounds the direct command. Use your host's background-job facility if detachment is needed. Checkpointing and resumability belong to the command; the wrapper never assumes them or retries automatically.
+
+### Plan a tail batch or freeze a decision
+
+```shell
+python skills/distributed-orchestration/scripts/rebalance.py --state state.json --nodes nodes.json --out plan.json
+python scripts/preregister.py seal --root . --id run-1 --spec examples/preregistration/spec.json
+```
+
+Planning does not launch or migrate a live process. Review the [planner schemas/apply contract](skills/distributed-orchestration/references/scheduling.md) first. Registration requires committed code/tests and an absent registered result; pin the emitted receipt hash through a trusted pre-run approval before launch. The [complete evaluation workflow](docs/preregistration.md) writes a machine verdict ledger and blocks reuse of a consumed registration. These examples do not run experiments or acquire restricted literature automatically.
 
 ## Validation
 
@@ -149,6 +212,8 @@ python -m unittest discover -s tests -v
 ```
 
 Tests use local subprocesses and temporary projects, with no paid model calls or external services.
+
+Optional adapter/PDF tests skip when their dependencies are absent. To exercise all adapters, install requirements-optional.txt into an isolated environment and rerun the same suite. Live DOI access is a separate explicit network operation; regression tests use synthetic registry responses.
 
 ## License
 

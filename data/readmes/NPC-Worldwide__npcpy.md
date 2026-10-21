@@ -1016,7 +1016,7 @@ Works with all major LLM providers through LiteLLM: `ollama`, `openai`, `anthrop
 
 ### MiniMax
 
-Set `MINIMAX_API_KEY` and use `provider="minimax"` with `MiniMax-M3` or `MiniMax-M2.7`. The optional `MINIMAX_API_URL` setting selects the region and compatible protocol; it defaults to the global OpenAI-compatible Base URL.
+Set `MINIMAX_API_KEY` and use `provider="minimax"`. When no model is configured, `MiniMax-M3.1-Flash` is the default; the model list offers it first, followed by `MiniMax-M3`. Explicit saved or custom model IDs remain supported, including legacy IDs. The optional `MINIMAX_API_URL` setting selects the region and compatible protocol; it defaults to the global OpenAI-compatible Base URL.
 
 | Region | OpenAI-compatible Base URL | Anthropic-compatible Base URL |
 | --- | --- | --- |
@@ -1024,6 +1024,8 @@ Set `MINIMAX_API_KEY` and use `provider="minimax"` with `MiniMax-M3` or `MiniMax
 | China | `https://api.minimaxi.com/v1` | `https://api.minimaxi.com/anthropic` |
 
 Use the Anthropic-compatible Base URL exactly as shown. The client appends `/v1/messages` when sending a request.
+
+For Flash, use adaptive thinking (`thinking={"type": "adaptive"}`) and an optional `reasoning_effort` of `low`, `medium`, `high`, `xhigh`, or `max`; Anthropic-compatible requests send this as `output_config.effort`. Flash does not support disabled thinking. M3 retains its existing thinking modes. OpenRouter lists `minimax/minimax-m3.1-flash:free` first and `minimax/minimax-m3` second, using their full gateway IDs.
 
 ### Atlas Cloud
 
@@ -1042,6 +1044,24 @@ Set `API_ROUTE_API_KEY` and use `provider="api-route"` with an exact model ID fr
 from npcpy import get_llm_response
 
 response = get_llm_response("Say hello in one short sentence.", model="gpt-6.1-sol", provider="api-route")
+print(response["response"])
+```
+
+### Cheaper Inference
+
+Set `CHEAPER_INFERENCE_API_KEY` and use `provider="cheaperinference"` with any model ID from the [Cheaper Inference model list](https://cheaperinference.com/markets), for example `gpt-5.4-mini`, `claude-sonnet-5` or `glm-5.3`. Requests go to the OpenAI-compatible Base URL `https://api.cheaperinference.com/v1`; set `CHEAPER_INFERENCE_API_URL` to override it.
+
+```python
+response = get_llm_response("Say hello in one short sentence.", model="gpt-5.4-mini", provider="cheaperinference")
+print(response["response"])
+```
+
+### Opper
+
+Set `OPPER_API_KEY` and use `provider="opper"` with any model ID from the [Opper model catalogue](https://opper.ai/models), for example `claude-sonnet-4-6`, `gpt-5.4-mini` or `gemini-3.8-flash`. These pool names route across the providers serving that model; a `provider/model` ID such as `anthropic/claude-sonnet-4-6` pins one route. Requests go to the OpenAI-compatible Base URL `https://api.opper.ai/v3/compat`; set `OPPER_API_URL` to override it. Keys are created at [platform.opper.ai](https://platform.opper.ai).
+
+```python
+response = get_llm_response("Say hello in one short sentence.", model="claude-sonnet-4-6", provider="opper")
 print(response["response"])
 ```
 

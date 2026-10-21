@@ -106,7 +106,9 @@
 - [Pinrail](https://github.com/forgeplane/pinrail) - Open-source desktop app where Claude Code, Codex, Cursor, and other coding agents ask for a review before they act, show it in a view made for its content, and get back structured decisions.
 - [Wardlume](https://wardlume.github.io) - Locks your Mac's keyboard, mouse, and trackpad while Claude Code, Codex, Cursor or Gemini CLI keep running in view, so you can step away without anyone typing into the session. Unlocks with Touch ID or Apple Watch; free for personal use, sandboxed with no network access.
 - [Appto](https://appto.store) - Mac app that takes an iPhone app from idea to the App Store on your own Claude Code or Codex plan. It checks the niche on live App Store data, writes native SwiftUI, makes store screenshots and text in every language and fills in App Store Connect after you confirm. Paid; free demo in the app, macOS on Apple silicon and Intel.
-- [Frink](https://frink.dev) - Fine-tuned automation for everyone: visual workflows where AI coding agents act on your tickets, errors and schedules, and ask before they change anything. Works with Claude Code, Codex, OpenCode, GitHub Copilot and Cursor. Local and open source (MIT), on macOS and Linux. [Source](https://github.com/benord-labs/frink)
+- [Frink](https://frink.dev) - Desktop-first, open-source (MIT) application for running parallel agents, and multi-step custom workflows triggered by schedules, webhooks or events from tools like Linear and Sentry, across your already-used providers. [Source](https://github.com/benord-labs/frink)
+- [Mudroom](https://github.com/Kernel-Hunter/mudroom) - Open-source (MIT) macOS app that runs Claude Code, Codex, Gemini CLI, opencode or Aider in a Linux VM on a copy of your project, with network access limited to hosts you allow. When the agent is done you review the diff and apply all of it, some files or some hunks, with undo. Also a CLI for Linux and Windows.
+- [VinPUT](https://github.com/lrakar/vinput-oss) - Free, open-source (GPL-3.0) voice keyboard for Windows that types dictated speech into any app, with local Parakeet and Whisper models and F2 to press Enter for voice prompts to AI coding agents.
 
 ## Plugins and Extensions
 
@@ -128,6 +130,11 @@
 - [UI Verify](https://uiverify.ai) - Claude Code plugin, skills and remote MCP server for visual testing: the agent screenshots the Storybook stories, Playwright pages or Vitest tests you already have, sees which ones its edit changed, and each pull request is checked again before merge. 10,000 snapshots a month free, 50,000 for open source.
 - [CurlShot](https://curlshot.com) - Screenshot API with a remote MCP server that lets Claude Code, Cursor and other MCP clients see a web page: the agent gets back a PNG, JPEG, WebP, PDF or a video of the page scrolling, on phone, tablet or desktop presets, with cookie banners and ads hidden first. 100 screenshots a month free, no card; paid plans from $19 a month.
 - [AgentaOS](https://github.com/AgentaOS/agentaos) - Claude Code plugin and remote MCP server that let the agent add payments to the app you just built: products, checkout links and subscriptions, with AgentaOS as the merchant of record handling VAT, sales tax and invoices.
+- [Yap MCP](https://github.com/founden-bot/yap-mcp) - Open-source (MIT) MCP server and CLI for Claude Code, Claude Desktop, Cursor, VS Code, Windsurf and Gemini CLI that transcribes audio files on your computer with NVIDIA Parakeet (25 European languages, no API key, no upload) and searches your local Yap dictation history.
+- [lavela](https://github.com/ym2629/lavela-mcp) - Claude Code plugin and remote MCP server (beta) that deploys a GitHub repo to a live server from chat and checks on it afterwards: status, logs, health, managed Postgres, and a custom domain. Sign in with a lavela account; prepaid balance, no subscription.
+- - [ShipToPaid Lite](https://github.com/shiptopaid/shiptopaid-lite) - Three agent skills for Claude Code, Cursor and Codex that add Polar payments to a vibe-coded Next.js app: checkout tied to the signed-in user, signature-checked payment webhooks that ignore duplicate and late events, and a pre-launch payment checklist marked PASS, FAIL or NOT RUN. Free, MIT.
+- [Off the Wall](https://github.com/toranalytics/off-the-wall) - MIT-licensed hooks plugin for Claude Code and Codex that quotes your own past corrections back to the agent before it answers, reports what you correct most with `otw report`, and has the orchestrator name a model for each subagent call. Free, local.
+- [deed.page](https://github.com/f-o-x11/deed-page-skill) - Agent Skill and remote [MCP server](https://deed.page/mcp) that let Claude Code, Codex, Cursor and other agents publish the HTML or static folder they just built to a permanent public URL with one PUT, no account or claim step.
 
 ## Command Line Tools
 
@@ -174,6 +181,7 @@
 - [Sqwakie](https://sqwakie.si/) - Team channel for Claude Code and Codex agents across machines: agents post, ask and reply to each other from the CLI or as MCP tools, every machine serves a live Mission Control dashboard, and kanban project boards have cards that agents can start, review and finish. Installs with `curl -fsSL https://sqwakie.si/install.sh | sh` (macOS on Apple Silicon, Linux x64 or arm64). Free for up to 2 people; source-available (FSL-1.1-ALv2).
 - [agent-chain-doctor](https://github.com/elfovo/agent-chain-doctor) - Read-only shell script that checks launchd, cron and systemd state and logs for the ways a scheduled Claude Code agent chain stops silently, plus a missed-run alarm.
 - [ratchet](https://github.com/krishansubudhi/ratchet) - Code-size budget for a repo that only goes down: `ratchet check` refuses changes that push source or test line counts past a ceiling, as a Claude Code Stop hook, git pre-commit hook or GitHub Action, and only a logged `ratchet grant` raises it. Python, Apache-2.0.
+- [Praex](https://github.com/ailucius/praex-cli) - Terminal coding agent (MIT, opencode fork) that reads the repo, edits files with approval, and runs commands and tests. Free hosted model or your own API keys; `/rc` Remote Control continues a terminal session from your phone. Linux and macOS.
 
 ## Security & Pre-Deploy Checks
 
@@ -197,6 +205,7 @@ AI-generated apps often ship with exposed secrets, open databases, or missing se
 - [SealMyApp](https://sealmyapp.com/) - Read-only security scan for apps built with Lovable, Bolt, Cursor, Replit and v0 that only runs after you verify you own the app (DNS record or file). Checks for Supabase tables readable without login, open Firebase rules, secret keys in the JS bundle and exposed `.env`/`.git` files. Free scan and free tools (key checker, Supabase RLS audit SQL); paid tiers add builder-specific fix prompts with a verified re-scan and daily monitoring.
 - [nextjs-supabase-stripe-security-checker](https://github.com/edtrackai/nextjs-supabase-stripe-security-checker) - MIT-licensed local CLI and GitHub Action (`npx github:edtrackai/nextjs-supabase-stripe-security-checker .`) with 24 checks for Next.js + Supabase + Stripe apps: leaked or service-role keys in client code, missing RLS and grants, and unverified Stripe webhooks. No account, nothing uploaded.
 - [FixLoop Scan](https://fixloop.dev/scan) - Free scan of a deployed app's public surface: HTTPS, security headers, keys leaked in the HTML and same-origin JavaScript, robots.txt and sitemap. Read-only, no login, no signup.
+- [lavela-preflight](https://github.com/ym2629/lavela-preflight) - Free, MIT-licensed, read-only Claude Code plugin (also installable with `npx skills add`) that reviews a project before you deploy it: keys in code and git history, endpoints reachable without login, server settings that break outside localhost, silent errors, open AI endpoints, and data lost on redeploy. It never edits files or prints secret values.
 
 ## Documentation for AI Coding
 
@@ -236,6 +245,7 @@ AI-generated apps often ship with exposed secrets, open databases, or missing se
 - [VibePicks](https://vibepicks-ruddy.vercel.app) - Free, dated picks for the best AI coding agent, app builder, code reviewer and deploy target per job, with MCP and open-source status.
 - [VibeToolRank](https://vibetoolrank.com/) - Independent hands-on tests of AI coding tools on the same standard tasks, with scores, timings and free-tier limits.
 - [Internal tool blueprints](https://github.com/samclaassen/internal-tool-blueprints) - Free, build-tested Markdown specs for internal tools (CRM, approvals, help desk, time off and more) with phased prompts and click-through acceptance checks for Claude Code, Cursor, Lovable and other builders.
+- [burntop](https://github.com/agusmdev/fullstack-ai-template) - Open-source FastAPI + React 19 + PostgreSQL template for apps that coding agents build. Nested AGENTS.md files and a project-standards skill tell Claude Code, Cursor or Codex how to add features, and `make ci` fails on mock imports, routes no test calls, and pages no Playwright spec opens, so the agent can't fake a green check.
 
 ## News and Social Media
 

@@ -8,7 +8,7 @@
 
 Not just chat — it clicks, fills forms, drags, uploads files, runs terminal commands, and extends via MCP.
 
-[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-Available-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/ai-helper-%E7%BD%91%E9%A1%B5%E6%99%BA%E8%83%BD%E5%8A%A9%E6%89%8B/fnolhphogjkdcmnecpeckhjoeofldiac) [![Microsoft Edge](https://img.shields.io/badge/Microsoft_Edge-Available-0078D7?logo=microsoftedge&logoColor=white)](https://microsoftedge.microsoft.com/addons/detail/ai-helper-%E7%BD%91%E9%A1%B5%E6%99%BA%E8%83%BD%E5%8A%A9%E6%89%8B/kabhmgfbkhpbfhhnokaafhkdbckeipcl) [![Discussions](https://img.shields.io/badge/Discussions-Join-181717?logo=github&logoColor=white)](https://github.com/xiweicheng/ai-helper/discussions) [![License](icons/badges/license-MIT.svg)](./LICENSE) [![Version](icons/badges/version.svg)](./package.json) ![Platform](icons/badges/platform.svg) ![PRs Welcome](icons/badges/prs-welcome.svg) [![中文文档](https://img.shields.io/badge/%E6%96%87%E6%A1%A3-%E4%B8%AD%E6%96%87-blue)](./README.zh-CN.md)
+[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-Available-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/ai-helper-%E7%BD%91%E9%A1%B5%E6%99%BA%E8%83%BD%E5%8A%A9%E6%89%8B/fnolhphogjkdcmnecpeckhjoeofldiac) [![Microsoft Edge](https://img.shields.io/badge/Microsoft_Edge-Available-0078D7?logo=microsoftedge&logoColor=white)](https://microsoftedge.microsoft.com/addons/detail/ai-helper-%E7%BD%91%E9%A1%B5%E6%99%BA%E8%83%BD%E5%8A%A9%E6%89%8B/kabhmgfbkhpbfhhnokaafhkdbckeipcl) [![Discussions](https://img.shields.io/badge/Discussions-Join-181717?logo=github&logoColor=white)](https://github.com/xiweicheng/ai-helper/discussions) [![License](docs/images/badges/license-MIT.svg)](./LICENSE) [![Version](docs/images/badges/version.svg)](./package.json) ![Platform](docs/images/badges/platform.svg) ![PRs Welcome](docs/images/badges/prs-welcome.svg) [![中文文档](https://img.shields.io/badge/%E6%96%87%E6%A1%A3-%E4%B8%AD%E6%96%87-blue)](./README.zh-CN.md)
 
 ### [Install on Chrome Web Store →](https://chromewebstore.google.com/detail/ai-helper-%E7%BD%91%E9%A1%B5%E6%99%BA%E8%83%BD%E5%8A%A9%E6%89%8B/fnolhphogjkdcmnecpeckhjoeofldiac) · [Install on Microsoft Edge →](https://microsoftedge.microsoft.com/addons/detail/ai-helper-%E7%BD%91%E9%A1%B5%E6%99%BA%E8%83%BD%E5%8A%A9%E6%89%8B/kabhmgfbkhpbfhhnokaafhkdbckeipcl)
 
@@ -42,9 +42,11 @@ Chromium users without a store account: see the developer-mode load step in the 
 - **Summarize any open tab (Bilibili / YouTube / PDF / long article) and export to Word or PDF** — type `@`, pick the tab, ask for a summary, click export.
 - **Watch a page on a schedule** — Cron / interval / one-off tasks re-run your prompt against a bound URL and write results into a chosen session.
 - **Let AI touch your local files and terminal** — optional Agent service, with three-tier command safety and a 7-day trash bin as a safety net.
+- **Never miss a generated file** — files the AI produces via scripts (e.g. an exported spreadsheet) now surface in the Artifacts panel, and any file path it mentions in its answer is clickable to locate and highlight it in the sidebar's built-in workspace.
 - **Ask your own documents** — build a local knowledge base from PDF / Word / Excel / PPT / Markdown / HTML / CSV, then get retrieval-augmented answers with clickable citations; multiple bases can be searched together.
 - **Bring any provider, switch in two clicks** — save multiple OpenAI-compatible provider profiles (endpoint / key / model list); pick provider first, then model, right in the chat panel.
 - **Never miss an unfinished task** — desktop notifications when a task completes or fails, when a scheduled task finishes, and when the AI is waiting for your confirmation or clarification; one click jumps back to the side panel.
+- **Light / Dark / Follow-system theme** — a semantic-token redesign across the whole UI, switchable instantly from the sidebar "More" menu and the Options "Appearance" card; a change anywhere syncs every page without a reload.
 
 ## How it compares
 
@@ -65,6 +67,7 @@ Chromium users without a store account: see the developer-mode load step in the 
 ## Why not just use another AI sidebar?
 
 - **Reflection quality assurance.** Preselection → zero-cost tool observation hint → sub-task reflection → post-reflection. Every final answer is scored on 7 dimensions; below-threshold runs get revised or re-executed automatically.
+- **Objective sub-task completion checks.** Sub-tasks from `plan_task` can declare `doneCriteria` acceptance checks verified with real DOM / command evidence (penetrating Shadow DOM and same-origin iframes) instead of trusting the model's self-report; an optional auto-rerun loop drives unmet sub-tasks back through four gates (fully byte-for-byte unchanged when left off).
 - **Tool preselection saves tokens.** 40+ tool definitions would blow up every call. A lightweight API pre-pass narrows them down to the 5–10 that actually matter before the main model runs.
 - **Token-budget management.** Truncation is by token count, not message count, so `tool_calls` / `tool` message pairs never get split apart.
 - **Long-quote auto-compression.** Big page selections are summarized instead of squatting in your context forever.
@@ -95,10 +98,11 @@ Requires Chrome / Edge / Chromium 114+ (Side Panel API).
 
 Everything below the quickstart lives in the full technical reference:
 
-- **English** — architecture, all 31 features, 40+ tools, Agent service, configuration, state management, FAQ → [`docs/en/DOCUMENTATION.md`](docs/en/DOCUMENTATION.md)
-- **中文** — 架构总览、31 项功能、40+ 工具、代理服务、配置说明、状态管理、常见问题 → [`docs/zh/DOCUMENTATION.md`](docs/zh/DOCUMENTATION.md)
+- **English** — architecture, all 34 features, 40+ tools, Agent service, configuration, state management, FAQ → [`docs/en/DOCUMENTATION.md`](docs/en/DOCUMENTATION.md)
+- **中文** — 架构总览、34 项功能、40+ 工具、代理服务、配置说明、状态管理、常见问题 → [`docs/zh/DOCUMENTATION.md`](docs/zh/DOCUMENTATION.md)
 - **Wiki** — installation, features, tools, Agent, configuration → [中文](https://github.com/xiweicheng/ai-helper/wiki) · [English](https://github.com/xiweicheng/ai-helper/wiki/Home-EN)
 - **Website** — <https://xiweicheng.github.io/ai-helper/>
+- **Tech docs site** (Chinese only) — full RepoWiki technical documentation (offline full-text search + sidebar tree navigation) <https://xiweicheng.github.io/ai-helper/wiki/> · maintainers refresh it with `npm run build:docsite` (local preview `npm run preview:docsite`)
 - **Product write-up (中文)** — [`docs/AI-Helper-作品介绍文档.md`](docs/AI-Helper-作品介绍文档.md)
 
 ## Community & contributing

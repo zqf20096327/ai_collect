@@ -113,8 +113,8 @@ chip and notifications work even when the app is closed.
 
 ## Install
 
-**No root needed.** Hermes Mobile runs on an ordinary phone with a locked bootloader. A rooted phone works too; the only
-difference is how Shizuku starts (see [Rooted or not](#rooted-or-not)).
+**No root needed.** Hermes Mobile runs on an ordinary phone with a locked bootloader. A rooted phone works too; the
+differences are how Shizuku starts and, if you like, running Debian with chroot-distro (see [Rooted or not](#rooted-or-not)).
 
 You need an Android phone (arm64, Android 8+) with about 6 GB free, and access to a model, either of:
 
@@ -122,6 +122,9 @@ You need an Android phone (arm64, Android 8+) with about 6 GB free, and access t
   Portal account. You sign in from the app.
 - **An API key:** for example [OpenRouter](https://openrouter.ai/keys) (one key for every model), Anthropic, OpenAI or Gemini
   (has a free tier).
+
+Sort this out before you start: the install ends by asking for it. A subscription needs only your login. An API key is a long
+code you create on the provider's website (sign in, open its *API keys* page, create one and copy it); you pay that provider per use.
 
 These apps get installed. Hermes needs all of them to run and to use your phone:
 
@@ -141,8 +144,10 @@ The install takes 15-40 minutes, mostly waiting.
 
 1. Install **Termux**, **Termux:API** and **Termux:Boot** from F-Droid, and open Termux:Boot once. Install **Shizuku** (Play Store
    or [GitHub](https://github.com/RikkaApps/Shizuku/releases)).
-2. Start Shizuku. Not rooted: open it, tap *Start via Wireless debugging* and follow its steps (you pair it once: Developer options
-   → Wireless debugging → *Pair device with pairing code*, then type the code into Shizuku's notification). Rooted: tap *Start*.
+2. Start Shizuku. Not rooted: first turn on Developer options (Settings → About phone → tap *Build number* 7 times; on Xiaomi
+   it is *OS version*) and connect to Wi-Fi, which Wireless debugging needs. Then open Shizuku, tap *Start via Wireless debugging*
+   and follow its steps (you pair it once: Developer options → Wireless debugging → *Pair device with pairing code*, then type the
+   code into Shizuku's notification). Rooted: tap *Start*.
 3. Open Termux and paste:
 
    ```bash
@@ -153,7 +158,8 @@ The install takes 15-40 minutes, mostly waiting.
    screen on until it prints `HMSETUP DONE`. `HMSETUP TODO` lines just above it say what is still missing: fix it and run
    `bash hm.sh` again (finished parts are skipped).
 4. Download **hermes-mobile.apk** from the [latest release](https://github.com/omarqaterge/hermes-mobile-app/releases/latest), install it
-   and open it.
+   and open it. If Android blocks the install, tap *Settings* in that message and allow your browser to *install unknown apps*
+   (the same applies to F-Droid in step 1).
 5. The app opens on **Connect Hermes to a model**: sign in with your subscription or paste an API key, then pick the model new
    chats use. You can change all of this later in **Settings → Subscriptions & accounts / API keys / Default models**.
 
@@ -200,6 +206,35 @@ Everything is the same except Shizuku, which Android stops whenever the phone re
 
 Until Shizuku runs, Hermes can still do everything except see and touch the screen and other apps; it tells you when it needs
 Shizuku, and the app's **Setup check** shows it too.
+
+**Is it worth rooting a phone for Hermes?** For most people, no. Shizuku already gives Hermes what adb can do: screenshots, taps
+and typing, opening and installing apps, logs and most settings. Root adds:
+
+- **Speed:** Debian can run under chroot-distro (below) instead of proot, which slows down every file and process call. Hermes
+  starts and runs tools faster and uses a bit less battery (not measured on a real phone yet).
+- **No Shizuku restarts:** Shizuku starts itself after a reboot, no Wi-Fi or Wireless debugging needed.
+- **Other apps' private data:** Hermes could read what apps keep to themselves (for example a messenger's database).
+- **System-level control:** firewall rules, stopping any process, protected settings and system files.
+
+What it costs:
+
+- **Risk:** under chroot, Hermes runs as the phone's real root user. A bad command or a malicious web page that tricks the
+  model can read or wipe anything, or break the phone. Without root, the worst it can do is what adb can do.
+- **Apps that refuse rooted phones:** banking apps, Google Wallet and some games check for root.
+- **Rooting itself:** unlocking the bootloader wipes the phone (some makers, like Xiaomi, also make you wait), and system
+  updates get harder.
+
+If your phone is already rooted, chroot-distro is an easy speed-up, with the risk above. Don't root a phone just for Hermes.
+
+**Rooted: Debian with chroot-distro (optional).** By default Debian runs under proot-distro, which needs no root. On a rooted
+phone it can run under [chroot-distro](https://github.com/sabamdarif/chroot-distro) instead, at native speed: put
+`HM_DISTRO=chroot` in front of the install command (`HM_DISTRO=chroot bash hm.sh` in Termux, or
+`HM_DISTRO=chroot bash setup-phone.sh` from a computer) and tap **Grant** when your root manager asks about Termux. The installer
+adds chroot-distro (`pip install chroot-distro`) and Debian 13 (`chroot-distro install --name debian debian:trixie`); a
+chroot-distro container already named `debian` is used as it is. The choice is remembered, so later runs of `bash hm.sh` and the
+app use the same Debian. To get a shell in it yourself, type `~/bin/hermes-debian` in Termux (it works for both).
+Shizuku is still needed for the screen and other apps (rooted: *Start* in Shizuku). Moving an existing proot-distro install
+over is not automatic.
 
 ### After installing
 

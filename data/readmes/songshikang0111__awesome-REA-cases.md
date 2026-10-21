@@ -8,9 +8,9 @@
 
 A curated collection of **reverse-engineering projects, experiments, and ideas**: revive old devices, rebuild apps, preserve games, and understand hidden behavior.
 
-# 579 cases & projects
+# 669 cases & projects
 
-**Latest case update / maintenance:** October 20, 2026, 04:15 · Beijing time (UTC+8). Counts as of this update.
+**Latest case update:** October 21, 2026, 20:34 · **Last maintained:** October 21, 2026, 20:34 · Beijing time (UTC+8). Counts as of this maintenance.
 
 Updates **6× daily** · [Full index](INDEX.en.md) · [Browse categories](#browse-by-category)
 
@@ -22,18 +22,18 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 ## Recent picks
 
-**10 worth reading**, favoring useful implementations and inspectable tests over viral claims. Dated engagement informs the selection, not an automated ranking; dates below are source or author-update dates, not collection dates.
+**10 worth reading**, from device interoperability and game preservation to precise AI edits. Public implementations and inspectable comparisons take priority over unsupported rebuild claims. Dates are source or author-update dates, not collection dates.
 
 1. **[Plustek scanner & ThinkPad camera](cases/en/schaller-opticfilm-thinkpad-linux.md)** · `2026-10-16` — Use Windows reference behavior to improve Linux drivers. Published measurements also disclose low-light and exposure defects. `In progress`
 2. **[Where NIST curve seeds came from](cases/en/nist-ecdsa-origin-claude-report.md)** · `2026-10-16` — Anthropic reports Claude traced public parameters to **lrand48 and timestamps**, publishing code and unresolved questions. **Not an ECDSA break**; not independently recomputed here. `Research report`
 3. **[LG UltraFine: repair the updater, not the firmware](cases/en/lg-ultrafine-codex-updater-patch.md)** · `2026-10-19` — Codex-assisted diagnosis and a **public, exact-build memory patch**; the author reports a scaler update reaching **100% with CRC passing**. Credits an earlier bug report; one Apple Silicon setup, not independently flashed here. `Author-tested patch`
 4. **[Brother: scan straight to your NAS](cases/en/brother-scan-button-claude-rea-server.md)** · `2026-10-18` — Replace the PC button app with a **public Claude/REA-assisted Go service for SMB, FTP, S3 and local storage**, building on prior protocol work. A server is still required; only MFC-L2800DW firmware 1.32 is project-tested. `Public implementation`
 5. **[LeanREA: direct CLI vs MCP](cases/en/leanrea-cli-skill-benchmark.md)** · `2026-10-17` — Trace Notion features, inspect a native lock and identify Go dependencies. The public **36-run comparison** reports lower time and cost, but scores are **74/75 vs 75/75**, not identical accuracy. One model and machine; not independently rerun. `Analysis test`
-6. **[Frontkick vs Rikugan](cases/en/synacktiv-frontkick-rikugan-crebench.md)** · `2026-10-13` — Recover algorithms and keys from AES/ChaCha20 binaries. Synacktiv publishes per-run results, but **unequal library prompts confound the comparison**—not proof that CodeAct beats tool calling. Two tasks only; not independently rerun. `Analysis test`
-7. **[Open Scrantic: Johnny Castaway returns](cases/en/johnny-castaway-rust-rea.md)** · `2026-10-17` — REA and Claude Code help recover a Windows 3.1 screensaver engine in Rust for three platforms. **Public code and successful project CI**; original assets required, known-build limits and deliberate behavior differences remain. `In progress`
-8. **[WayShare: connect your Mac to Hyprland](cases/en/wayshare-apple-remote-desktop-linux.md)** · `2026-10-20` — REA-assisted Apple Remote Desktop research yields a **public Rust implementation with successful project CI**. Claimed 60 fps is unmeasured here; Standard screens and clipboard remain unencrypted. `In progress`
-9. **[sm64-gba: physics before the whole game](cases/en/sm64-gba-claude-bitexact-port.md)** · `2026-10-19` — Claude adapts **human-made n64decomp code** for GBA, with frame-by-frame movement/collision oracles and **successful public project CI**. A limited four-level demo, not a complete game; real hardware untested. `In progress`
-10. **[oma-launcher: Raycast-style search on Omarchy](cases/en/omarchy-raycast-rea-launcher.md)** · `2026-10-20` — **Public launcher code and Raycast research notes** connect REA analysis to app/action search. The author claims a few hours and 40 ms opening; extensions and clipboard history remain planned, not a complete Raycast replacement. `In progress`
+6. **[MagicSwipe: Magic Mouse gestures on iPad](cases/en/magic-mouse-ipad-opus-virtual-hid.md)** · `2026-10-20` — Opus-assisted research connects **private touch callbacks to virtual-HID shortcuts** for Universal Control. Public code; project-reported device testing only. Requires a privileged driver and substitutes shortcuts, not native continuous gestures. `In progress`
+7. **[xbox-boot-re: the original green blob, reconstructed](cases/en/xbox-boot-re-claude-reconstruction.md)** · `2026-10-16` — Human-directed Opus turns one BIOS into a **C core and WebGPU viewer**, with documented xemu comparisons and successful project CI. One modified BIOS, approximate audio synthesis; not a full console emulator or independently rerun here. `In progress`
+8. **[Open Scrantic: Johnny Castaway returns](cases/en/johnny-castaway-rust-rea.md)** · `2026-10-17` — REA and Claude Code help recover a Windows 3.1 screensaver engine in Rust for three platforms. **Public code and successful project CI**; original assets required, known-build limits and deliberate behavior differences remain. `In progress`
+9. **[WayShare: connect your Mac to Hyprland](cases/en/wayshare-apple-remote-desktop-linux.md)** · `2026-10-20` — REA-assisted Apple Remote Desktop research yields a **public Rust implementation with successful project CI**. Claimed 60 fps is unmeasured here; Standard screens and clipboard remain unencrypted. `In progress`
+10. **[sourcepin: click an element, find its source](cases/en/sourcepin-stagewise-rea-file-line.md)** · `2026-10-21` — REA-assisted study of open-source stagewise leads to **file:line mapping before the model call**. Public five-request tests report fewer tool calls, **not faster total turns**; exact mapping is limited to a tested Next.js/React 19 dev setup. Not independently rerun. `In progress`
 
 ## Classic cases
 
@@ -48,10 +48,10 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 | Category | Entries |
 | :--- | ---: |
-| [Games & preservation](categories/en/games.md) | **130** |
-| [Hardware & interoperability](categories/en/hardware.md) | **132** |
-| [Applications & clients](categories/en/apps.md) | **265** |
-| [Algorithms & feature recovery](categories/en/algorithms.md) | **52** |
+| [Games & preservation](categories/en/games.md) | **150** |
+| [Hardware & interoperability](categories/en/hardware.md) | **165** |
+| [Applications & clients](categories/en/apps.md) | **297** |
+| [Algorithms & feature recovery](categories/en/algorithms.md) | **57** |
 
 [**View all cases →**](INDEX.en.md) · [Contribute (中文)](CONTRIBUTING.md) · [Maintenance (中文)](MAINTENANCE.md)
 

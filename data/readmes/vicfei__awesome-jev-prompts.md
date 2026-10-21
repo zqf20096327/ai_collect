@@ -150,6 +150,8 @@ Every entry cites its sources, and sources come in three kinds — read them bef
 
 The question-design approach in this list transfers across System One models. Notable developments:
 
+- **2026-10-21 — a 3-minute from-scratch head ties hosted Jev; a distilled one doesn't.** [minimind-jev](https://github.com/vicfei/minimind-jev) (public) trains a 660K decision head on frozen bge-small-zh over T2Reranking hard negatives — 3 minutes on a laptop RTX 4060, $0 API: nDCG@5 0.488 vs hosted Jev-1.13's 0.546 (paired CI includes 0 at n=100) and significantly above BM25 (+0.075). The instructive negative: distilling a frontier teacher's 4-level judgments — whose own expected-score AUC (0.716) sits in hosted Jev's band — into the same head *drops* it to 0.428, across pure and mixed supervision. When binary gold labels exist for your metric, direct supervision beats teacher soft labels on frozen features. Checkpoint: [cnfeichen/minimind-jev-v0.1](https://huggingface.co/cnfeichen/minimind-jev-v0.1); teacher judgments [released as a dataset](https://huggingface.co/datasets/cnfeichen/t2reranking-4level-judgments). Design impact: for the [RAG relevance](categories/score-patterns.md#relevance-rubric-rag) pattern pair, the choice of *what grades your questions* now has a measured answer — the dataset's own labels, not a teacher rubric.
+
 - **2026-10-12 — the omni-modal race.** The vision wave is now crowded — and name-collided: [OmniJev](https://github.com/tinnel123666888/OmniJev) (omni-modal: images, video, screens, robot scenes; open weights), [shapsider/OmniJev](https://github.com/shapsider/OmniJev) (MuJoCo embodied workbench on a Qwen3.5-9B corrective head — a fourth independent datapoint for our embodied patterns), and [jev-omni.js](https://github.com/ai-ecoverse/jev-omni.js) (decision model in the browser via WebGPU, matching fp32 on DecisionBench) join [OneJev](https://github.com/OmniJev/OneJev) (163★) and [Valen](https://github.com/Liuziyu77/Valen). Three near-identical names, no standard yet — when citing, check which model a name actually means. More suppliers of multimodal typed decisions means more consumers for question design: the patterns in [Embodied & multimodal](categories/embodied-multimodal-patterns.md) apply across all of them.
 
 - **2026-10-12 — first measured Chinese numbers.** [jev-rag-zh-benchmark](https://github.com/vicfei/jev-rag-zh-benchmark): Jev Score nDCG@5 **0.546 vs BM25 0.413** on T2Reranking hard negatives (n=100, single run, pinned `typesafe/jev-1.13-20260917`); Score vs Noul nearly tie for ranking; separation AUC ≈ 0.715. The RAG relevance and Noul thresholds in this list now have a measured Chinese reference point — Status: **measured** source, per the verification policy.
@@ -188,17 +190,17 @@ The pattern library is the drafting layer of a small toolbox — the community s
 <!-- related-lists:start -->
 | List | Focus | Stars |
 |---|---|---:|
-| [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | General list, highest-frequency updates | 2,413 |
-| [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 900+ project catalog with companion site | 979 |
-| [v-modal/awesome-jev-tools](https://github.com/v-modal/awesome-jev-tools) | Tools list with inclusion criteria | 751 |
-| [logicrw/awesome-jev-projects](https://github.com/logicrw/awesome-jev-projects) | Ecosystem radar web app, auto GitHub sync | 688 |
-| [AnotiaWang/awesome-decision-models](https://github.com/AnotiaWang/awesome-decision-models) | Classic minimal list (renamed from awesome-jev), open replicas & benchmarks | 655 |
-| [kydlikebtc/awesome-jev](https://github.com/kydlikebtc/awesome-jev) | Machine-readable catalog by decision pattern | 602 |
-| [AbdelStark/awesome-typesafe-jev](https://github.com/AbdelStark/awesome-typesafe-jev) | Field guide with platform routing & evals | 596 |
-| [cobanov/awesome-jev](https://github.com/cobanov/awesome-jev) | Curated list with dated review notes | 569 |
-| [walidboulanouar/awesome-jev-use-cases](https://github.com/walidboulanouar/awesome-jev-use-cases) | Demos ranked by social metrics, limits & cost | 441 |
-| [yzfly/awesome-jev-zh](https://github.com/yzfly/awesome-jev-zh) | Chinese-language curated list with an independent, skeptical voice | 83 |
-| [Anil-matcha/awesome-jev-by-typesafe](https://github.com/Anil-matcha/awesome-jev-by-typesafe) | Use cases, starter code, design rules | 1 |
+| [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | General list, highest-frequency updates | 2,431 |
+| [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 900+ project catalog with companion site | 981 |
+| [v-modal/awesome-jev-tools](https://github.com/v-modal/awesome-jev-tools) | Tools list with inclusion criteria | 753 |
+| [logicrw/awesome-jev-projects](https://github.com/logicrw/awesome-jev-projects) | Ecosystem radar web app, auto GitHub sync | 693 |
+| [AnotiaWang/awesome-decision-models](https://github.com/AnotiaWang/awesome-decision-models) | Classic minimal list (renamed from awesome-jev), open replicas & benchmarks | 657 |
+| [AbdelStark/awesome-typesafe-jev](https://github.com/AbdelStark/awesome-typesafe-jev) | Field guide with platform routing & evals | 598 |
+| [kydlikebtc/awesome-jev](https://github.com/kydlikebtc/awesome-jev) | Machine-readable catalog by decision pattern | 593 |
+| [cobanov/awesome-jev](https://github.com/cobanov/awesome-jev) | Curated list with dated review notes | 575 |
+| [walidboulanouar/awesome-jev-use-cases](https://github.com/walidboulanouar/awesome-jev-use-cases) | Demos ranked by social metrics, limits & cost | 448 |
+| [yzfly/awesome-jev-zh](https://github.com/yzfly/awesome-jev-zh) | Chinese-language curated list with an independent, skeptical voice | 85 |
+| [Anil-matcha/awesome-jev-by-typesafe](https://github.com/Anil-matcha/awesome-jev-by-typesafe) | Use cases, starter code, design rules | 2 |
 <!-- related-lists:end -->
 
 *Star counts refresh daily via CI.*
@@ -214,5 +216,5 @@ Found a pattern that works, or an anti-pattern that bit you? PRs and issues welc
 **Disclaimer:** this is an independent community resource. It is not affiliated with or endorsed by TypeSafe AI. Facts (pricing, limits, behavior) are cited from public sources and can change — always verify against the [official docs](https://docs.typesafe.ai/).
 
 <!-- last-checked:start -->
-*Last checked: 2026-10-19*
+*Last checked: 2026-10-21*
 <!-- last-checked:end -->

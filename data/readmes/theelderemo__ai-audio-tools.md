@@ -124,6 +124,7 @@
 - [Remover.studio](https://vocalremover.co) ![free](https://img.shields.io/badge/free-1a4731?style=flat-square) - Vocal Remover & Online Karaoke.
 - [MIDI From MP3](https://midifrommp3.com/) ![free](https://img.shields.io/badge/free-1a4731?style=flat-square) - Converts audio recordings to editable MIDI files locally in the browser without an account.
 - [MVSep](https://mvsep.com/) ![free](https://img.shields.io/badge/free-1a4731?style=flat-square) - Free separation of songs with many different algorithms (Demucs, MDX, UVR etc).
+- [Vocal Separator](https://vocalseparator.com/) ![freemium](https://img.shields.io/badge/freemium-4a3500?style=flat-square) - Splits audio into vocal/instrumental or four WAV stems for practice, with an anonymous daily free allowance and optional prepaid minutes.
 - [MuzLab](https://muzlab.co/) ![freemium](https://img.shields.io/badge/freemium-4a3500?style=flat-square) - Remove vocals from songs and split drums, bass and other instruments out of music.
 - [Fadr](https://fadr.com/) ![freemium](https://img.shields.io/badge/freemium-4a3500?style=flat-square) - Remove stems, convert to MIDI, and create high-quality remixes and mashups using AI tools.
 - [Saturalabs](https://www.saturalabs.com/) ![paid](https://img.shields.io/badge/paid-5c1a1a?style=flat-square) - Uses text prompts to separate a voice, instrument, or sound effect in audio or video, producing a target track and the remaining mix.

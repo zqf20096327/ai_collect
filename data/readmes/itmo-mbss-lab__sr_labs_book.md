@@ -1,8 +1,8 @@
-# ITMO Speaker Recognition Course
+# ITMO Speaker Recognition Online Course
 
 **Authors:** Volokhov V., Lavrentyeva G., Novoselov S., Matveev Y., Khmelev N., Zorkina A.
 
-**Description:** the project is related to the development of labs for the ITMO Speaker Recognition Course.
+**Description:** the ITMO Speaker Recognition Online Course is a free educational course covering classical and modern methods of speaker recognition. The course provides video lectures, lecture materials, and practical laboratory assignments.
 
 **Keywords:** voice biometrics, speaker recognition, speaker verification, speaker identification, acoustic features, speech activity detector, machine learning, speaker embedding extractor, deep neural network, decision theory, domain adaptation and calibration.
 
@@ -10,7 +10,9 @@
 
 ![Fugure 1](https://raw.githubusercontent.com/itmo-mbss-lab/sr_labs_book/refs/heads/main/images/voxceleb_dataset.png "VoxCeleb. A large scale audio-visual dataset of human speech")
 
-**Content:** the repository contains materials (now only in russian language) for self-performing seven labs. The titles of the labs are listed below.
+**Content:** the repository contains materials for seven laboratory assignments designed for independent study, as well as links to lecture slides and video recordings. The course materials are currently available only in Russian.
+
+**The laboratory assignments**  are listed below.
 
 - **Lab work 1.** Informative features of speech signals: feature extraction           ([link](https://github.com/itmo-mbss-lab/sr_labs_book/tree/main/lab1)).
 - **Lab work 2.** Voice activity detector training                                     ([link](https://github.com/itmo-mbss-lab/sr_labs_book/tree/main/lab2)).
@@ -24,7 +26,7 @@
 
 **A published version of these labs** (now only in russian language) can be found [here](https://books.ifmo.ru/file/pdf/3087.pdf). Publication date: 05/24/2022. 
 
-**A latest updated version of these labs** (now only in russian language) can be found [here](https://disk.yandex.ru/i/-jFmJ9eXyPNXCw). Publication date: 05/24/2022. 
+**A latest updated version of these labs** (now only in russian language) can be found [here](https://github.com/itmo-mbss-lab/sr_labs_book/blob/main/sr_labs_book.pdf). Publication date: 05/24/2022. 
 
 **Presentations of lectures** on the course are presented below. 
 
@@ -32,7 +34,7 @@
 - **Lecture 2.** Preprocessing of speech signals. Part 1                            ([slides](https://disk.yandex.ru/i/jlT7_SttB5jb4w)).
 - **Lecture 3.** Preprocessing of speech signals. Part 2                            ([slides 1](https://disk.yandex.ru/i/2i9yWRRaMbKf4Q), [slides 2](https://disk.yandex.ru/i/y3IqRtSXyfqxAw)).
 - **Lecture 4.** Classical methods of constructing speaker models                   ([slides](https://disk.yandex.ru/i/lq4pkh-s86BiyQ)).
-- **Lecture 5.** Modern methods of constructing speaker models                      ([slides](https://disk.yandex.ru/i/Wd7xFEQ9m7YeNA)).
+- **Lecture 5.** Modern methods of constructing speaker models                      ([slides](https://disk.yandex.ru/i/H8LGmSGIDLGqgQ)).
 - **Lecture 6.** Comparison of speaker models                                       ([slides](https://disk.yandex.ru/i/6b_HbKwU8uMVHA)).
 - **Lecture 7.** Decision criteria. Quality assessment of biometric systems         ([slides](https://disk.yandex.ru/i/sLp1dxME5pyM6Q)).
 - **Lecture 8.** Domain adaptation. Calibration of voice biometric systems          ([slides](https://disk.yandex.ru/i/pn1zYCXppRBiDw)).

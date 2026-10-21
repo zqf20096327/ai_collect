@@ -26,6 +26,14 @@ This tool is engineered for robust and efficient feature extraction, particularl
 
 See the [wiki](https://github.com/idlab-discover/RustiFlow/wiki) for the different feature sets available.
 
+Bulk durations are exported in milliseconds, including fractional milliseconds.
+Bulk rates are packet bytes per second, measured using integer microsecond timestamps.
+A bulk needs at least four nonzero-length packets; an idle gap greater than exactly
+one second ends it. Packet-byte accounting and direction-switch rules are unchanged.
+A bulk with identical timestamps has an undefined rate exported as zero, following
+the shared rate convention. Positive bulk count with zero total duration identifies
+that fallback; it must not be interpreted as measured zero throughput.
+
 ## Supported Packet/Header Coverage
 
 RustiFlow currently extracts flows from the following protocol/header combinations:
@@ -224,6 +232,11 @@ Use the upstream prebuilt binary. Building current `bpf-linker` releases with
   ```bash
   cargo build
   ```
+- **With flamegraph profiling** (Linux only, pulls in pprof; enables
+  `RUSTIFLOW_PROFILE_FLAMEGRAPH=<file.svg>`):
+  ```bash
+  cargo build --release --features profiling
+  ```
 
 ## Running the Project in dev mode
 
@@ -243,9 +256,10 @@ rustiflow help
 Usage: rustiflow [OPTIONS] <COMMAND>
 
 Commands:
-  realtime  Real-time feature extraction
-  pcap      Feature extraction from a pcap file
-  help      Print this message or the help of the given subcommand(s)
+  realtime      Real-time feature extraction
+  pcap          Feature extraction from a pcap file
+  replay-bench  Benchmark the realtime userspace pipeline with synthetic eBPF events (no capture, no root needed). Prints throughput and CPU time per packet
+  help          Print this message or the help of the given subcommand(s)
 
 Options:
   -c, --config-file <CONFIG_FILE>
@@ -273,7 +287,7 @@ Options:
           [default: 120]
 
       --early-export <EARLY_EXPORT>
-          The print interval for open flows in seconds (optional)
+          Export a cumulative snapshot of each open flow every N seconds after its first packet (optional; must be at least 1 and smaller than the active timeout). Snapshots are triggered by packets and have flow_expire_cause None
 
       --expiration-check-interval <EXPIRATION_CHECK_INTERVAL>
           Interval (in seconds) for checking and expiring flows in the flowtable. This represents how often the flowtable should be scanned to remove inactive flows
@@ -310,6 +324,62 @@ Options:
               Print version
 
 ```
+
+### Early export
+
+`--early-export N` (or `early_export = N` in the configuration file) emits
+periodic snapshots of long-lived flows before their final export:
+
+- Snapshots fall on a fixed per-flow schedule: first packet + N, + 2N, ...
+  The first packet at or after a boundary exports one snapshot, so a flow
+  produces about `duration / N` snapshots rather than one per packet.
+  Boundaries that pass without packets are skipped, and a flow that goes quiet
+  gets no further snapshots until it expires.
+- Each snapshot is cumulative: it covers the flow from its first packet up to
+  and including the triggering packet, with the same columns as a final row.
+- Snapshots are closed like a final export (open bulks and the current active
+  period are counted, TCP close style reflects the FINs seen so far) but keep
+  `flow_expire_cause` `None`. Final rows always carry a real expiration cause.
+- The flow itself stays open; its final row repeats everything in the
+  snapshots.
+- `N` must be at least `1` and smaller than `--active-timeout`. Omit the flag to
+  disable early export.
+
+### Replay benchmark
+
+`replay-bench` measures the realtime userspace pipeline without capturing
+traffic or loading eBPF programs, so it needs no root and no traffic generator.
+It generates synthetic eBPF events in memory, then drains them through the same
+per-source batching, dispatch, shard flow tables and CSV export as `realtime`:
+
+```bash
+cargo build --release
+./target/release/rustiflow -f rustiflow -o csv --export-path /dev/null --threads 12 \
+  replay-bench --packets 50000000 --flows 100000
+```
+
+It prints one result line on stderr:
+
+```text
+Replay: packets=50000000 threads=12 wall_s=3.251 mpps=15.378 cpu_s=43.531 cpu_ns_per_packet=870.6 cpus_busy=13.39
+```
+
+- `mpps` is events per second of wall time, from the first replayed event until
+  the output writer closes. It includes the final export of every open flow, so
+  use far more packets than flows.
+- `cpu_ns_per_packet` is the CPU time of the whole process (all tokio workers)
+  over the same interval, divided by the packet count. Event generation is
+  excluded.
+- Events are spread uniformly at random over `--flows` flows. Even flows are
+  TCP with in-order data segments in both directions, odd flows are UDP, and
+  no flow terminates. All events of a flow go to one of `--sources` sources,
+  which are evenly balanced, unlike real eBPF queue selection.
+- `--virtual-pps` spaces event timestamps, which sets the virtual time seen by
+  timeouts, expiration checks and `--early-export`.
+- The feature set, `--threads`, timeouts, early export, output options and the
+  `RUSTIFLOW_REALTIME_*` and `RUSTIFLOW_PROFILE_*` environment variables apply
+  as for `realtime`. Events take 40 (IPv4) or 72 (IPv6) bytes of memory
+  each.
 
 ## Logging in both development or using the binary
 

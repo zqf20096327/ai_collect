@@ -18,13 +18,9 @@ We believe the Agent is evolving into the next-generation operating system (OS).
 
 At the same time, real productivity in every industry remains rooted in highly specialized work environments. A conversational interface (Chat UI) alone cannot replace the precise control and rich views of professional tools. Professional workflows of the future should not ask users to leave their workbench to accommodate AI. Instead, professional environments and AI should evolve in deep symbiosis, with AI internalized as a foundational, atomic capability available on demand—like power and water, compute, and storage. By building professional-grade MiniApps that grow on top of the Agent OS, we aim to connect the specialized interfaces of vertical domains with the AI-native compute beneath them, and to reshape how every industry works.
 
-> *Self-drive Route Planner case: an Agent-assisted weekend trip around Shanghai, with the final itinerary and synchronized route workspace visible together.* This case shows the kind of professional workspace a MiniApp can provide: the Agent conversation and complete itinerary are on the left, while the route summary, interactive map, and editable trip workspace are on the right.
+> *CadQuery Viewer case: one prompt asks the Agent for a 3D model of the MiniMax octopus, and you point at what to change right on the model.* The Agent looks up the official mascot for reference, writes a parametric CadQuery script, runs and fixes it, and the build appears in the Viewer on the right. To change something, click the spot on the model (here, the mouth), type "make the mouth red", and send it to the conversation—the Agent gets the exact part and coordinates, and the Viewer switches to the new version once it is done.
 
-![Self-drive Route Planner case study showing Agent collaboration and the MiniApp workspace](plugins/hanzijie/self-drive-route-planner/docs/case-study.png)
-
-> *CadQuery Viewer case: one prompt asks the Agent to design a 3D-printable MiniMax octopus figure, and the model takes shape live beside the conversation.* The Agent looks up the official mascot for reference, writes a parametric CadQuery script, runs and fixes it, and pushes each build to the Viewer on the right. You can orbit, switch views, and section the model at any point, then get print settings and a table of tunable parameters—pick what to change and let the Agent rebuild.
-
-![CadQuery Viewer case study: the Agent designs a MiniMax octopus figure while the model previews live in the Viewer](plugins/hanzijie/cq-viewer/docs/case-study.gif)
+![CadQuery Viewer case study: the Agent builds a MiniMax octopus model, then recolours the mouth the user marked on the model](plugins/hanzijie/cq-viewer/docs/case-study.gif)
 
 **MiniApp's product stance: keep people involved in collaboration and decisions (Human-in-the-Loop).**
 
@@ -61,6 +57,8 @@ The MiniMax Code Agent communicates through the host MCP client. Business reques
 
 | MiniApp | What it does | Author |
 | --- | --- | --- |
+| [MiniMax Photo](plugins/webguhui/minimax-photo/) | Layered image editing with an in-app AI assistant, local recovery and programmatic editing tools | [WebGuHui](https://github.com/WebGuHui) |
+| [OpenVideo](plugins/webguhui/openchatcut/) | Local video editing with captions, a host Agent assistant, reviewable timeline edits, and MP4/MP3 export | [WebGuHui](https://github.com/WebGuHui) |
 | [AI Office](plugins/cristinamadureira353-svg/ai-office/) | Manage five model-powered employees in a pixel office: client tasks, chats, breaks, meetings and quota-aware offline states; uses your own API keys | [最爱双皮奶](https://github.com/cristinamadureira353-svg) |
 | [Token Usage Board](plugins/amszuidas/mcode-token-usage-board/) | Explore local Token usage by date, model, and session, including input, output, and cache usage | [amszuidas](https://github.com/amszuidas) |
 | [Token Usage Board](plugins/yanhy2000/mcode-usage-monitor/) | Watch local Token usage, output speed, and cache hit rate in near real time; filter by time range, model, and session | [yanhy2000](https://github.com/yanhy2000) |
@@ -75,6 +73,8 @@ The MiniMax Code Agent communicates through the host MCP client. Business reques
 | [心屿 / Xinyu Island](plugins/yujiachen-y/xinyu-daily/) | A cozy daily-mood island that plays like an indie game: an inspiration card shaped by your answers, mood stickers, a joy jar, a decision slot machine, a Book of Answers, and 20 hidden secrets guarded by a grumpy crab. Optionally, Xiaoyu writes you a daily letter and chats with you using your model. Requires MiniMax Code 3.1.2 or later | [yujiachen-y](https://github.com/yujiachen-y) |
 | [MoMo Collab](plugins/amszuidas/momo-collab/) | A project steward that turns stray thoughts, screenshots, and links into ideas, writes clear ideas up as tasks, runs each task in its own Agent session with a full handoff, checks the result against your done criteria, and tracks everything on a board. Requires MiniMax Code 3.1.2 or later | [amszuidas](https://github.com/amszuidas) |
 | [Anatomy Gallery](plugins/zch0227/anatomy-gallery/) | A gallery for interactive isometric figures made with the anatomy skill: hang them in rooms you organize, view light and dark editions full screen, keep every version, and have an Agent create or edit figures from the gallery with a per-run process log. The anatomy skill is bundled. Requires MiniMax Code 3.1.2 or later | [zch0227](https://github.com/zch0227) |
+| [仓库透视 / Repo X-Ray](plugins/yujiachen-y/repo-xray/) | Understand a codebase from its Git history: a code map you can drill into, hotspots and bug magnets, high-risk files, owners and knowledge loss, commit rhythm and firefighting, and the tech stack. Works with GitHub, GitLab, and local repositories; analysis runs on your machine | [yujiachen-y](https://github.com/yujiachen-y) |
+| [Disk Insight](plugins/zch0227/disk-insight/) | See where disk space went on macOS and Windows with a sunburst space map, find junk files sorted into three safety tiers, large and duplicate files, and how much code repositories and Git worktrees take; ask an Agent about any item, and permanently delete what you select after a confirmation that lists every item. Requires MiniMax Code 3.1.2 or later | [zch0227](https://github.com/zch0227) |
 
 <details>
 <summary>Preview: Token Usage Board</summary>

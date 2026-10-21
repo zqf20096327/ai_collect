@@ -150,7 +150,7 @@ When used in Raycast, you can dynamically replace the arguments for quick iterat
 |--------|-------|
 | 📝 Total Prompts | **1145** |
 | ⭐ Featured | **6** |
-| 🔄 Last Updated | **Friday, October 16, 2026 at 3:16:43 AM UTC** |
+| 🔄 Last Updated | **Wednesday, October 21, 2026 at 4:01:35 AM UTC** |
 
 </div>
 
@@ -1757,4 +1757,38 @@ This prompt generates a polished photorealistic portrait of a young woman in a s
 #### 📝 Prompt
 
 ```
-A photorealistic waist-up portrait of a {argument name="subject" default="young woman"} standing outdoors in bright natural sunlight, framed in a vertical composition. She has long, straight {argument name="hair color" default="dark brown"} hair with a glossy shine, parted slightly off center, falling over both shoulders. She wears a crisp white short-sleeve school uniform shirt with a structured collar, a navy blue striped necktie, and a detailed embroidered crest patch on the left chest pocket featuring a crown and heraldic emblem. Pose her at a slight three-quarter angle with relaxed posture, her head turned subtly to the side for a refined candid fashion-photo feel. Place her in front of vivid {argument name="background setting" default="red shrine architecture"} with rich red pillars and a curved blue roof detail visible in the blurred background, using shallow depth of field and creamy bokeh to keep the subject sharply in focus. The lighting should be clean, high-contrast, and flattering, with bright highlights on the hair 
+A photorealistic waist-up portrait of a {argument name="subject" default="young woman"} standing outdoors in bright natural sunlight, framed in a vertical composition. She has long, straight {argument name="hair color" default="dark brown"} hair with a glossy shine, parted slightly off center, falling over both shoulders. She wears a crisp white short-sleeve school uniform shirt with a structured collar, a navy blue striped necktie, and a detailed embroidered crest patch on the left chest pocket featuring a crown and heraldic emblem. Pose her at a slight three-quarter angle with relaxed posture, her head turned subtly to the side for a refined candid fashion-photo feel. Place her in front of vivid {argument name="background setting" default="red shrine architecture"} with rich red pillars and a curved blue roof detail visible in the blurred background, using shallow depth of field and creamy bokeh to keep the subject sharply in focus. The lighting should be clean, high-contrast, and flattering, with bright highlights on the hair and shirt, realistic fabric folds, natural skin tones, and a polished premium portrait aesthetic reminiscent of Japanese commercial photography.
+```
+
+#### 🖼️ Generated Images
+
+##### Image 1
+
+<div align="center">
+<img src="https://static.atlascloud.ai/prompt/gpt-image2/images/14515_1.jpg" width="600" alt="Photoreal School Uniform Shrine Portrait - Image 1">
+</div>
+
+#### 📌 Details
+
+- **Author:** [AIおじさん](https://x.com/AIojisan1952)
+- **Source:** [Twitter Post](https://x.com/AIojisan1952/status/2046838384887504974#reversed-0)
+- **Published:** April 22, 2026
+- **Languages:** EN
+
+**[👉 Try it now →](https://www.atlascloud.ai/prompts-hub/gpt-image-2-prompt?locale=en-US&id=14515&utm_source=github&utm_campaign=awesome-gpt-image-2-prompts)**
+
+---
+
+### No. 37: Countryball Strait of Hormuz Standoff
+
+![Language-EN](https://img.shields.io/badge/Language-EN-blue)
+![Raycast](https://img.shields.io/badge/🚀-Raycast_Friendly-purple)
+
+#### 📖 Description
+
+A humorous geopolitical meme illustration showing USA and Iran countryballs confronting each other in the narrow Strait of Hormuz, ideal for editorial satire or social media commentary.
+
+#### 📝 Prompt
+
+```
+A detailed satirical countryball meme illustration of the {argument name="waterway name" default="Strait of Hormuz"} as a very narrow sea passage between two steep rocky cliffs, painted in a polished digital cartoon style with dramatic shading and textured stone. In the center foreground, exactly 2 countryballs block each other in the tight channel so that only one can pass. On the left is a USA countryball with angry narrowed eyes, painted with the American flag, wearing a dark navy baseball cap labeled "USA" in large white letters. On the right is an Iran countryball with angry narrowed eyes, painted with the Iranian flag and emblem, wearing a green-and-white headband tied on the side; the headband contains Korean text that reads "저항은 우리의 권리". Above each ball is exactly 1 white speech bubble with thick black outline, for a total of 2 speech bubbles, and both say {argument name="speech text" default="길!"} in large bold Korean lettering, as if neither side will yield. Show the two balls facing each other nose-to-n

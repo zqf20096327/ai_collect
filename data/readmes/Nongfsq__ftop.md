@@ -20,9 +20,10 @@ It shows the current state only: no history graphs, no disk panels.
 
 ## One panel, every size
 
-Drag any edge. ftop picks the layout that fits and the window settles onto it, so
-nothing is ever clipped and no space is left empty. A small window keeps the
-essentials; a large one shows more, not bigger type.
+Drag any edge or corner; the pointer turns into the resize cursor as soon as it is
+near one. ftop picks the layout that fits and the window settles onto it, so nothing is
+ever clipped and no space is left empty. A small window keeps the essentials; a large
+one shows more, not bigger type.
 
 ![The same panel at six sizes](docs/media/sizes.png)
 
@@ -58,13 +59,21 @@ A reading the hardware does not give is shown as unavailable, never as zero.
   CPU, memory, and the helper processes inside the app. In a large window two badges
   switch the ranking between CPU and memory.
 - **Nearly free when you are not looking.** Hidden or fully covered, ftop stops reading
-  everything except the one reading in the menu bar.
+  everything except the readings in the menu bar.
 
 With *Reduce Motion* on in macOS, all of this becomes plain fades.
 
+## Menu bar
+
+The menu bar shows CPU by default, as a glyph and its number. Up to three readings can
+sit there side by side: CPU, memory, GPU, download, upload, or power. Click it to show
+or hide the panel.
+
+<p align="center"><img src="docs/media/menubar.png" width="264" alt="The menu bar with one reading, two, and three: CPU, then memory, then GPU"></p>
+
 ## Settings
 
-Right-click the panel or the menu bar number. One block holds everything: what to
+Right-click the panel or the menu bar item. One block holds everything: what to
 show, how the panel behaves, the colors, and under **More** the few settings that have
 a value.
 
@@ -124,11 +133,12 @@ ftop quit       # close it
 ftop doctor     # which readings are available on this Mac, and why not
 ```
 
-- Drag the panel to move it; drag an edge to resize it.
+- Drag the panel to move it; drag an edge to resize it. Near an edge or a corner the
+  pointer turns into the resize cursor (**Resize** in the settings turns this off).
 - Move the pointer to the top edge for two buttons: pin (keep on top) and hide.
-- The menu bar shows one reading, a glyph and its number: CPU by default, or memory,
-  GPU, download, upload, or power (under **More** in the settings). Click it to show
-  or hide the panel.
+- The menu bar shows one to three readings, each a glyph and its number: CPU by
+  default, and any of memory, GPU, download, upload, or power (under **More** in the
+  settings). Click it to show or hide the panel.
 - Hover over a core, the memory bar, or the GPU for detail; click a process for its card.
 - Right-click for the settings.
 

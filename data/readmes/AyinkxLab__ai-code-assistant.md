@@ -64,6 +64,10 @@ fail-closed, so a fresh install cannot reach a marketplace or the network:
 | Setting | Default | Why it is safe |
 | ------- | ------- | -------------- |
 | `PLUGIN_CATALOG_FILE` | empty | Remote/catalog installation is disabled until an operator points at a vetted catalog. |
+| `PLUGIN_MARKETPLACE_ENABLED` | `1` | Read-only discovery is available, but the shipped catalog is empty. |
+| `PLUGIN_MARKETPLACE_CATALOG` | `plugins/marketplace.json` | Offline catalog file; entries must validate against `plugins/plugin.schema.json`. |
+| `PLUGIN_MARKETPLACE_URL` | empty | Remote marketplace fetching is disabled; when set it must be HTTPS, allowlisted, timeout/size-bounded, and redirect-free. |
+| `PLUGIN_DISCOVERY_DIR` | `plugins` | Read-only directory scanned for manifests by `GET /plugins/discover`; nothing is installed or executed. |
 | `PLUGIN_TRUST_POLICY` | `if-present` | Accepts unsigned local plugins, but always refuses forged or untrusted signatures. Use `required` in production. |
 | `PLUGIN_TRUSTED_KEYS` | `{}` | No publisher is trusted by default; keys are validated at startup. |
 | `PLUGIN_NETWORK_ALLOWLIST` | empty | Every plugin outbound request is denied. Add only the hosts a plugin needs. |
@@ -80,6 +84,30 @@ cache TTL setting yet (caching is tracked in #377). See
 [the plugin guide](docs/plugins.md#configuration-reference) for the full
 reference, including signature and catalog formats.
 
+## Observability and billing
+
+Every LLM-backed path appends a metadata-only row to an append-only usage
+ledger; prompts and completions are never stored. Dashboards, budgets, exports,
+and cost estimates are computed from that ledger. Cost figures are estimates
+from a documented price table, not provider invoices.
+
+| Setting | Default | Purpose |
+| ------- | ------- | ------- |
+| `METRICS_ENABLED` | `1` | Serves protected Prometheus metrics at `/metrics`; `0` returns 404. |
+| `METRICS_TOKEN` | empty | Bearer token for scrapers. Empty falls back to admin-session auth. |
+| `USAGE_RETENTION_DAYS` | `365` | Minimum age before `flask usage purge` may delete ledger rows. |
+| `BUDGET_ENFORCEMENT_ENABLED` | `1` | Refuses LLM calls that would exceed a monthly token/cost budget (fail closed). |
+| `BUDGET_DEFAULT_WARN_THRESHOLD` | `0.8` | Default warning fraction for new budgets. |
+| `BILLING_IMPORT_MAX_BYTES` | `1048576` | Maximum provider billing CSV upload size. |
+| `BILLING_IMPORT_MAX_ROWS` | `5000` | Maximum billing CSV rows. |
+| `CURRENCY_CODE` | `USD` | Currency code shown on every cost figure. |
+| `LLM_MODEL` | empty | Pre-flight estimate model; when set, the price table is used. |
+| `LLM_PRICE_TABLE` | empty | Optional JSON provider/model price overlay; invalid values log and fall back safely. |
+
+See [Observability](docs/observability.md) for the ledger, metrics, dashboards,
+and export contract, and [Billing](docs/billing.md) for the price table,
+budgets, and reconciliation.
+
 ## Documentation
 
 - [Chat feature guide](CONTRIBUTING.md#chat-feature-developer-guide)
@@ -90,6 +118,8 @@ reference, including signature and catalog formats.
 - [Security model](docs/security.md)
 - [Soroban workflow guide](docs/soroban-workflow.md)
 - [Observability design](docs/observability.md)
+- [Billing](docs/billing.md)
+- [Cost precision](docs/cost-precision.md)
 - [Usage and billing data privacy](docs/usage-privacy.md)
 - [Roadmap](https://github.com/AyindxLab/ai-code-assistant/issues)
 

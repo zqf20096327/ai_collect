@@ -47,6 +47,7 @@ We strongly encourage the researchers that want to promote their fantastic work 
 - [CCHub](https://github.com/Moresl/cchub) - A desktop control panel for the Claude Code / Codex / Gemini CLI ecosystem. Manage MCP servers, config profiles, agent skills, CLAUDE.md, hooks, and workflow templates from a single Tauri app (Windows / macOS / Linux).
 - [ChunkTuner](https://github.com/shantanu-deshmukh/chunktuner) - Open-source Python/CLI/MCP tooling to benchmark chunking strategies for RAG and recommend configurations using retrieval metrics (optional RAGAS).
 - [CocoIndex](https://github.com/cocoindex-io/cocoindex) - Open-source ETL framework to build and continuously update RAG indexes (embeddings and knowledge graphs) from your data sources, with incremental processing that recomputes only what changed. Apache-2.0.
+- [LLMSlim](https://github.com/Thanatos9404/llmslim) - Open-source Python library that compresses retrieved documents to a token budget before generation, keeping the passages that answer the query; the default mode runs no model, and it ships compressors for LangChain, LlamaIndex and Haystack. MIT licensed.
 
 ## Workshops and Tutorials
 - [Agent Shadow Brain](https://github.com/theihtisham/agent-shadow-brain) - Self-evolving AI coding intelligence with infinite memory (TurboQuant), genetic algorithm self-evolution, predictive bug detection, PageRank knowledge graphs, swarm intelligence, and adversarial defense.
@@ -119,6 +120,10 @@ Manning Publications - May 2026 [[link](https://www.manning.com/books/building-l
 *Nir Diamant*  
 DiamantAI - 2025 [[link](https://diamant-ai.com/rag-made-simple)]
 
+**Understanding Modern LLM Systems: A Field Guide to RAG, Agents, and Beyond** (Free eBook)  
+*koe*  
+[[link](https://llmknowledge.pages.dev)]
+
 # Papers 
 
 ## Survey and Benchmark 
@@ -142,6 +147,10 @@ EMNLP 2025. [[Paper](https://aclanthology.org/2025.emnlp-main.739/)][[Github](ht
 *Zhengbao Jiang, Frank F. Xu, Luyu Gao, Zhiqing Sun, Qian Liu, Jane Dwivedi-Yu, Yiming Yang, Jamie Callan, Graham Neubig* \
 EMNLP 2023 - May 2023 [[Paper](https://arxiv.org/abs/2305.06983)][[Github](https://github.com/jzbjyb/flare)] \
  -->
+
+**ParamMute: Suppressing Knowledge-Critical FFNs for Faithful Retrieval-Augmented Generation** \
+*Pengcheng Huang, Zhenghao Liu, Yukun Yan, Haiyan Zhao, Xiaoyuan Yi, Hao Chen, Zhiyuan Liu, Maosong Sun, Tong Xiao, Ge Yu, Chenyan Xiong* \
+NeurIPS 2025 - Feb 2025 [[Paper](https://arxiv.org/abs/2502.15543)][[Github](https://github.com/OpenBMB/ParamMute)]
 
 **Improving Retrieval Augmented Language Model with Self-Reasoning** \
 Yuan Xia, Jingbo Zhou, Zhenhui Shi, Jun Chen, Haifeng Huang \  
@@ -222,6 +231,18 @@ AI21 Labs – Jan 2023 [[paper](https://uploads-ssl.webflow.com/60fd4503684b4665
 
 ## RAG Embeddings 
 
+**Correcting Mean Bias in Text Embeddings: A Refined Renormalization with Training-Free Improvements on MMTEB** \
+*Xingyu Ren, Youran Sun, Haoyu Liang* \
+arXiv - Nov 2025 [[Paper](https://arxiv.org/abs/2511.11041)] - Training-free correction for sentence embeddings. It projects each embedding off the shared mean direction and improves 29 of 38 MMTEB models.
+
+**Jailbreaking LLMs' Safeguard with Universal Magic Words for Text Embedding Models** \
+*Haoyu Liang, Youran Sun, Yunfeng Cai, Jun Zhu, Bo Zhang* \
+arXiv - Jan 2025 [[Paper](https://arxiv.org/abs/2501.18280)] - Uses the bias direction of text embeddings to find universal suffixes. The suffixes change embedding similarity and bypass embedding-based safeguards.
+
+**FreeRet: MLLMs as Training-Free Retrievers** \
+*Yuhan Zhu, Xiangyu Zeng, Chenting Wang, Xinhao Li, Chunxu Liu, Yicheng Xu, Ziang Yan, Yi Wang, Limin Wang* \
+ICML 2026 [[Paper](https://arxiv.org/abs/2509.24621)][[Github](https://github.com/MCG-NJU/FreeRet)] - Training-free multimodal embeddings and retrieval with multiple-choice reranking; a retrieval component for multimodal pipelines.
+
 **ReinPool: Reinforcement Learning Pooling Multi-Vector Embeddings for Retrieval System** \
 *Sungguk Cha, DongWook Kim, Mintae Kim, Youngsub Han, Byoung-Ki Jeon, Sangyeob Lee* \
 arXiv - Jan 2026 [[Paper](https://arxiv.org/abs/2601.07125)]
@@ -255,6 +276,7 @@ Simulation of Conversational Intelligence in Chat, EACL 2024 [[Paper](https://ar
 - [Not Human Search](https://nothumansearch.ai) - Search engine and MCP server for discovering AI-native tools. 8,600+ sites indexed with agentic capability scoring. Useful for RAG pipelines that need to discover and integrate AI tools.
 - [Superhighway](https://superhighway.walls.sh) - Web search API for RAG pipelines and AI agents — live web search, news, images, scrape, and one-call deep research (search + read top pages). Pay per call via x402/USDC (no signup) or free API key. MCP-compatible: `npx -y superhighway-mcp`.
 - [Zoom Search](https://github.com/goofrey/zoom-search) - Open-source MCP search and evidence toolkit for RAG pipelines and AI agents, with query rewriting, multi-provider retrieval, cited answers, and quality, latency, and cost evaluation.
+- [RAG World](https://ragworld.org) - Open registry of 69 named RAG technologies, each mapped onto a 28-dimension configuration schema with compatibility constraints, and each carrying a maturity level derived from collected evidence by a deterministic rule. Published as JSON under CC BY 4.0, updated weekly, DOI 10.5281/zenodo.21943978.
 - [Stipple](https://www.stipple.sh) - Hosted MCP document-trust gate for RAG pipelines: forensic authenticity signals on ingested documents (risk bands + per-signal tamper evidence), grounded field extraction (missing values abstain as `not_found` rather than hallucinating), and AI-written-text detection. Filter tampered or synthetic sources before they enter the index. Free anonymous tier; [GitHub](https://github.com/Sketchjar/stipple-mcp).
 
 ## RAG Long-text and Memory
@@ -306,6 +328,10 @@ NeurIPS 2026 - Aug 2026 [[Paper](https://arxiv.org/abs/2608.30468)][[Github](htt
 **Annotation-Free Reinforcement Learning Query Rewriting via Verifiable Search Reward** \
 *Sungguk Cha, DongWook Kim, Taeseung Hahn, Mintae Kim, Youngsub Han, Byoung-Ki Jeon* \
 arXiv - Jul 2025 [[Paper](https://arxiv.org/abs/2507.23242)]
+
+**Enhancing Retrieval and Managing Retrieval: A Four-Module Synergy for Improved Quality and Efficiency in RAG Systems** \
+*Yunxiao Shi, Xing Zi, Zijing Shi, Haimin Zhang, Qiang Wu, Min Xu* \
+ECAI 2024 [[Paper](https://arxiv.org/abs/2407.10670)][[DOI](https://doi.org/10.3233/FAIA240748)][[Github](https://github.com/Ancientshi/ERM4)]
 
 **Learning to Filter Context for Retrieval-Augmented Generation** \
 *Zhiruo Wang, Jun Araki, Zhengbao Jiang, Md Rizwan Parvez, Graham Neubig* \

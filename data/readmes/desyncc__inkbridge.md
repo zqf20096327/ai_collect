@@ -1,0 +1,545 @@
+# 🌲 InkBridge for Obsidian
+
+[![Tests](https://github.com/desyncc/inkbridge/actions/workflows/tests.yml/badge.svg)](https://github.com/desyncc/inkbridge/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)
+
+> **Unofficial fan project.** Not made by, affiliated with, or endorsed by Viwoods. If Viwoods themselves ever wants this taken down, just say so and it will be, no argument.
+
+**InkBridge** syncs your **Viwoods AiPaper** e-ink tablet into your **Obsidian Vault** — notebooks, handwriting OCR, and daily journal entries, all in one pipeline.
+
+It mirrors your tablet's folder hierarchy, pulls down high-res ink scans, transcribes your handwriting with local OCR or AI vision models, and drops the result into a clearly delimited block inside your Obsidian daily notes.
+
+---
+
+## 👀 See it
+
+InkBridge adds to the vault you already have. This demo vault (made-up notes and handwriting, run through the real sync) has a daily note you wrote from your own template, with the handwritten page and its transcription filled in between your sections:
+
+<p align="center"><img src="docs/images/obsidian-daily-note.png" width="820" alt="A daily note in Obsidian: the user's own Landing and Timeline sections, then the handwritten page InkBridge synced, with the vault's folder tree beside it"></p>
+
+Every notebook is also mirrored under `99 - Viwoods/` in the folders you use on the tablet, as a note with the page image, its transcription and some properties:
+
+<p align="center"><img src="docs/images/obsidian-notebook.png" width="820" alt="A mirrored notebook in Obsidian: the handwritten page image above its transcription"></p>
+
+And the dashboard puts the ink beside the extracted text, so you can check a transcription and re-run it:
+
+<p align="center"><img src="docs/images/ocr-studio.png" width="820" alt="The InkBridge dashboard showing a handwritten garden plan beside its transcribed markdown"></p>
+
+*These are generated, not taken from anyone's notebooks. Try it without a tablet: `python contrib/demo/run_demo.py` starts the dashboard against a pretend Viwoods Cloud and a throwaway vault.*
+
+---
+
+## ✨ Features
+
+- **📂 1:1 Directory Mirroring**: Preserves your tablet's exact folder tree (`Paper`, `Journals`, `Meeting`, `Knowledge Base`, etc.) inside your vault under `99 - Viwoods/`. Move or rename a notebook on the tablet and its note follows; delete one and its note, images and daily-note copies are removed (see `remove_deleted_notebooks`). Deletions are applied by full syncs (`sync`, the dashboard's Sync all / Paper), not by a single-folder or journals-only sync.
+- **✍️ Marker-Delimited Daily Journal Sync**: Detects dated notebooks (e.g. `2026-09-02`) or items in your `Journals` folder and updates the matching daily note.
+  - **Uses your Obsidian Daily notes settings.** If the vault's Daily notes core plugin has settings (`.obsidian/daily-notes.json`), InkBridge uses the same folder, date format and template, so notes are found and created exactly where Obsidian puts them. `companion.py status` shows what it detected.
+  - Without them, it looks for `YYYY-MM-DD.md` in `<daily_folder>/<Month>/`, directly in `<daily_folder>/`, or anywhere below it (e.g. a `YYYY/MM/` layout).
+  - A notebook with a date in its name goes to that day. An undated one in your `Journals` folder goes to the day it was created and stays there when you edit it later. Renaming a dated notebook moves its block to the new day and removes it from the old one.
+  - Missing daily notes are left alone by default, so a first sync doesn't create weeks of notes you didn't ask for. Set `create_missing_daily_notes` to `true` to have them created: with Obsidian's settings, at its path and from its template (`{{date}}`, `{{title}}`, `{{time}}`, `{{date:FORMAT}}`, `{{yesterday}}` and `{{tomorrow}}` are filled in; Templater code isn't run); otherwise at `<daily_folder>/<Month>/YYYY-MM-DD.md`.
+  - Targets the heading configured as `daily_heading` (default `# Transcribed text from AiPaper:`), matched on an exact line.
+  - Writes only between `%% viwoods:start %%` and `%% viwoods:end %%`. Everything outside those markers — `## 🌅 Landing`, `## 🗓️ Timeline`, `## ✅ Check-ins`, anything else — is left untouched.
+  - Each notebook gets its own `%% viwoods:note <uuid> %%` sub-block, so several notebooks can feed the same date and each is updated independently.
+  - Markers use Obsidian's native `%% %%` comment syntax: invisible in Reading view, and shown dimmed in the editor, where they mark the part InkBridge owns. Notes written before this change carry old `<!-- -->` markers, which are upgraded in place the next time that note is synced.
+  - A note that has the heading but no markers (written by an older version) is migrated on the next sync: the markers are inserted after the heading and the block ends at the next heading of any level or the next `---`.
+  - Includes both high-resolution page image embeds and transcribed text.
+- **☑️ Viwoods Daily App Sync**: pulls the tablet's separate **Daily** app (its own cloud resource, not part of the Paper/Meeting/... folder tree) — each date's page scan and to-dos land in a `daily-app` sub-block in the same daily note, right alongside any notebook-driven journal content. `daily_app_days_back` controls how far back it looks; runs as part of a full sync or on its own via `companion.py daily` / **Sync Daily App** in the dashboard.
+- **🔍 Multi-Engine OCR Pipeline**:
+  - **Ollama Vision (default)**: local vision LLMs (e.g. `qwen3.5:9b`, `qwen2.5-vl-7b-instruct`) via native `/api/chat`. Zero cloud dependencies.
+  - **Google Gemini Vision**: multimodal cloud transcription via a Google AI Studio API key (`gemini-3.8-flash` by default).
+  - **Local LM Studio**: any OpenAI-compatible vision endpoint.
+  - **Windows Native OCR**: 100% offline via `Windows.Media.Ocr`. **Windows only**, and built for printed text, so expect rough results on handwriting. On Linux/macOS it reports an error and pages wait to be retried until you pick another engine.
+  - **Content-Addressable Cache**: keyed `engine:model:sha256`, so a page is transcribed once per model and switching models re-transcribes rather than serving a stale result.
+- **🏷️ Optional Auto-Tagging**: set `infer_tags` to have the active engine's model read a notebook's combined transcript and suggest Obsidian tags for its frontmatter (`max_inferred_tags` caps how many). Cached the same way transcripts are, so it costs one text call per notebook, not per sync.
+- **☑️ Optional Auto-Tasks**: set `infer_tasks` to have the active engine's model pull action items out of a notebook's transcribed text into a "Viwoods Tasks" callout under the same heading as the transcript (`max_inferred_tasks` caps how many). Same deal as auto-tagging — one extra text call per notebook, cached, and it costs nothing extra per sync.
+- **🌐 Modern Web Dashboard** (local only: listens on `127.0.0.1`, and refuses requests from other websites open in your browser):
+  - Browse your cloud folders and notebooks interactively.
+  - Side-by-side split view comparing high-res handwritten ink with the extracted markdown transcript.
+  - Transcription is on demand: opening a note never blocks on OCR — press **Transcribe Page** for a page you want text for.
+  - Trigger full or journal syncs with real-time progress indicators.
+  - Configure OCR engine, vault paths, sync interval and the page cap from the UI.
+- **⚡ Background Sync**: `companion.py daemon` for a standalone service (with backoff on repeated failures), or set `auto_sync_interval` to have the dashboard sync on a schedule while it runs.
+- **📤 Export**: any note to PDF, standalone HTML or a ZIP bundle, from the CLI or the dashboard.
+
+---
+
+## 🚀 Quick Start
+
+A first run, start to finish.
+
+> **Quickest install:** with [pipx](https://pipx.pypa.io), `pipx install git+https://github.com/desyncc/inkbridge.git` gives you an `inkbridge` command that works from any folder. Everywhere below, read `python companion.py <command>` as `inkbridge <command>`, and skip step 1. Update later with `pipx upgrade inkbridge`, or pin a release with `pipx install git+https://github.com/desyncc/inkbridge.git@v1.1.0`.
+
+Otherwise, after `cd inkbridge` in step 1, every command runs from that folder.
+
+1. **Install InkBridge** (Python 3.10 or newer):
+
+   ```bash
+   git clone https://github.com/desyncc/inkbridge.git
+   cd inkbridge
+   python -m venv .venv
+   ```
+
+   Activate the environment with `source .venv/bin/activate` (Linux/macOS) or `.venv\Scripts\activate` (Windows), then:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Set up handwriting recognition.** The default is [Ollama](https://ollama.com) running a vision model on your own machine. Install Ollama, then download the default model (about 6.6 GB):
+
+   ```bash
+   ollama pull qwen3.5:9b
+   ```
+
+   On a smaller machine, `qwen3.5:4b` (about 3.4 GB) works too; after pulling it, run `python companion.py set-engine ollama --model qwen3.5:4b`. To use Google Gemini in the cloud instead, run `python companion.py set-engine gemini` and paste a [Google AI Studio](https://aistudio.google.com) API key into the dashboard's Settings tab in step 4.
+
+3. **Start the dashboard:**
+
+   ```bash
+   python companion.py serve
+   ```
+
+   It opens at `http://127.0.0.1:8765`.
+
+4. **Sign in to Viwoods and set your vault path.**
+
+   ```bash
+   python companion.py login
+   ```
+
+   It asks for your Viwoods email and password (the password isn't shown, isn't written to any file, and the command never prints your token), then stores a session token in `~/.viwoods/config.json`. If sign-in fails (the sign-in check Viwoods uses can change), use a token from the browser instead: `python companion.py login --token`, then paste the value of `localStorage.getItem('token')` from the browser console on `cloud.viwoods.com` (or the `Access-Token` header of any request in the Network tab).
+
+   Then, in the dashboard's Settings tab, set the **Obsidian Vault Path**: the full path of your vault folder, e.g. `/home/you/Obsidian` or `C:/Users/You/Obsidian`. Sync won't run until this points at a real folder. (The Settings tab can also take a token or a login, if you'd rather do it all there.)
+
+5. **Check that everything works:**
+
+   ```bash
+   python companion.py doctor
+   ```
+
+   It checks your Python and packages, the Viwoods sign-in, the vault, and the OCR engine (that Ollama is running and has its model), and says how to fix anything that isn't right.
+
+   ```bash
+   python companion.py status
+   ```
+
+   It should say `CONNECTED`, list your tablet, and show where your daily notes are. If you use Obsidian's Daily notes core plugin, InkBridge reads its folder, date format and template, so there's nothing to set.
+
+6. **Decide where transcripts go in your daily notes.** InkBridge writes under the heading `# Transcribed text from AiPaper:` (change it with `daily_heading`). Add that heading to your daily-note template where you want the block; a note without it gets the heading added at the end. Daily notes that don't exist yet are skipped, not created, unless you turn on `create_missing_daily_notes`.
+
+7. **Sync.** Preview first, then run it for real (or press **Sync All Notebooks** in the dashboard):
+
+   ```bash
+   python companion.py sync --dry-run
+   python companion.py sync
+   ```
+
+   Your notebooks appear under `99 - Viwoods/` in the vault. The first sync transcribes every page once, so a large library takes a while; later syncs only process what changed. Pages that fail (say Ollama wasn't running) are retried on the next sync.
+
+To keep it syncing, leave the dashboard running with `auto_sync_interval` set, or run `python companion.py daemon` (see [Usage](#-usage--commands)).
+
+---
+
+## ⚙️ Configuration
+
+Everything the app stores lives in a per-user data directory, not in the
+project folder:
+
+| Path | Contents |
+| --- | --- |
+| `~/.viwoods/config.json` | Settings, including your Viwoods token and Gemini key |
+| `~/.viwoods/sync_state.json` | What has been synced, per note |
+| `~/.viwoods/ocr_cache.json` | Transcripts, keyed by engine, model and image hash |
+| `~/.viwoods/cache/` | Downloaded page scans and recordings |
+
+Set `VIWOODS_DATA_DIR` to put them somewhere else:
+
+```bash
+VIWOODS_DATA_DIR=~/Sync/viwoods python companion.py sync
+```
+
+Files from the old layout (`.viwoods_config.json` and friends in the project
+root) are moved into `~/.viwoods` automatically on first run. Setting
+`VIWOODS_DATA_DIR` skips that migration, so an explicit directory always
+starts from whatever is already in it.
+
+The config file is created on first run. Every key it understands, with its
+default:
+
+```json
+{
+  "token": "",
+  "machine_number": "",
+  "machine_model": "web",
+  "device_name": "AiPaper",
+  "api_base_url": "https://api.viwoods.com",
+  "secret_key": "<filled in automatically, see below>",
+
+  "vault_path": "C:\\Users\\You\\Obsidian",
+  "vault_mirror_folder": "99 - Viwoods",
+  "vault_attachments_folder": "99 - Viwoods/Attachments",
+  "daily_folder": "10 - Journals",
+  "daily_heading": "# Transcribed text from AiPaper:",
+  "obsidian_daily_notes": true,
+  "create_missing_daily_notes": false,
+  "day_first": false,
+
+  "ocr_engine": "ollama",
+  "gemini_api_key": "",
+  "gemini_model": "gemini-3.8-flash",
+  "lmstudio_url": "http://localhost:1234/v1",
+  "lmstudio_model": "qwen2.5-vl-7b-instruct",
+  "ollama_url": "http://localhost:11434",
+  "ollama_model": "qwen3.5:9b",
+  "ollama_think": false,
+
+  "infer_tags": false,
+  "max_inferred_tags": 6,
+
+  "infer_tasks": false,
+  "max_inferred_tasks": 10,
+
+  "auto_sync_interval": 0,
+  "download_recordings": true,
+  "remove_deleted_notebooks": true,
+  "max_deletions_per_sync": 10,
+  "notify_url": "",
+  "max_pages_per_notebook": 50,
+  "daily_app_days_back": 30
+}
+```
+
+| Key | Meaning |
+| --- | --- |
+| `token` | Your Viwoods `Access-Token` (JWT). Required. |
+| `machine_number` | Device serial. Filled in automatically from your first registered device. |
+| `machine_model`, `device_name` | Identify this client to the API; leave as-is. |
+| `api_base_url` | Viwoods Cloud API root. |
+| `secret_key` | Salt for the API's MD5 request signature. Fixed and built into the client — same for every user, nothing to fill in. |
+| `vault_path` | Absolute path to your Obsidian vault. Syncs refuse to run until it points at an existing folder. |
+| `vault_mirror_folder` | Folder in the vault holding the 1:1 cloud mirror. |
+| `vault_attachments_folder` | Where page PNGs and recordings are written. |
+| `daily_folder` | Folder containing your daily notes. Not used when Obsidian's Daily notes settings are (see `obsidian_daily_notes`). |
+| `obsidian_daily_notes` | Use the folder, date format and template from the vault's Obsidian Daily notes settings (`.obsidian/daily-notes.json`) when it has them. On for new installs; config files from before this setting existed keep using `daily_folder` until it's switched on. Month and weekday names are English, whatever Obsidian's app language. |
+| `daily_heading` | Heading in a daily note under which the marked block is injected. |
+| `create_missing_daily_notes` | Create the daily note when none exists for that date: where Obsidian's Daily notes settings put it (from its template), or at `<daily_folder>/<Month>/YYYY-MM-DD.md` without them. Off by default: a date with no note is skipped (and listed after the sync) so Obsidian's own daily-note template creates it, and the next sync fills it in. Config files from before this setting existed keep the old behavior (`true`). |
+| `day_first` | How to read a notebook named like `04-05-2026`: `false` (default) is April 5, `true` is 4 May. Names that can only be read one way, like `13-04-2026`, are always read correctly. |
+| `ocr_engine` | `ollama`, `lmstudio`, `gemini` or `windows` (Windows only). |
+| `gemini_api_key`, `gemini_model` | Google AI Studio API key and model. A config still set to the old default `gemini-2.0-flash`, which Google shut down in June 2026, uses `gemini-3.8-flash` instead. |
+| `lmstudio_url`, `lmstudio_model` | OpenAI-compatible vision endpoint and model. |
+| `ollama_url`, `ollama_model` | Ollama endpoint and vision model. |
+| `ollama_think` | Pass `think` to Ollama for reasoning models. |
+| `ollama_keep_alive` | How long Ollama keeps the model in memory after a call, as an Ollama duration (`"30s"`, `"5m"`, `"0"` = unload at once). Empty leaves Ollama's default (5 minutes). |
+| `gpu_busy_limit` | A sync (the daemon, or one started from the dashboard) waits while the GPU's utilisation is at or above this percent, so a background run doesn't compete with a game. `0` never waits. AMD GPUs only (read from sysfs `gpu_busy_percent`); where it can't be read it never blocks. A page you transcribe by hand in the dashboard is not held. |
+| `infer_tags` | Ask the active OCR engine's model to suggest Obsidian tags from a notebook's transcribed text, added to that note's `tags:` frontmatter alongside `viwoods`/`notebook`. One extra text-only call per notebook (skipped if there's no transcript); results are cached per engine/model/content like transcripts are, and cleared by `--force`. Daily journal notes are never touched — only the mirrored notebook file's own frontmatter. |
+| `max_inferred_tags` | Cap on how many tags `infer_tags` adds per notebook. |
+| `infer_tasks` | Ask the active OCR engine's model to pull action items out of a notebook's transcribed text into a "Viwoods Tasks" callout, injected under the same heading as the transcript. One extra text-only call per notebook (skipped if there's no transcript); cached per engine/model/content like transcripts are. An empty result removes the callout instead of leaving an empty one. |
+| `max_inferred_tasks` | Cap on how many tasks `infer_tasks` pulls out per notebook. |
+| `auto_sync_interval` | Minutes between automatic syncs while `serve` is running. `0` disables. |
+| `download_recordings` | Save meeting audio into the attachments folder and link it. |
+| `remove_deleted_notebooks` | Keep the vault a true mirror: a full sync deletes the note, page images, recordings and daily-note copies of any notebook (or folder) you deleted on the tablet, and removes folders that end up empty. Moves and renames are always followed, whatever this is set to. Set `false` to keep deleted notebooks in the vault. Preview with `sync --dry-run`. |
+| `max_deletions_per_sync` | Safety limit for the above. A sync that would delete more than this many notebooks, or more than half of a library of three or more, deletes **nothing**, says so loudly, and waits: run `companion.py sync --confirm-deletions` (or press OK in the dashboard's prompt) to go ahead. It catches a wrong account or a bad response from the cloud. `0` turns the check off. |
+| `notify_url` | Where an unattended sync (the daemon, or the dashboard's auto-sync) sends an alert when it needs you. An [ntfy](https://ntfy.sh) topic URL or a Discord / Slack webhook; empty means no alerts. It's a secret, so keep the topic name unguessable. See [Alerts](#-alerts). |
+| `max_pages_per_notebook` | Cap on pages per notebook (large imported PDF planners). `0` means no cap; when pages are dropped the mirrored note says so. |
+| `daily_app_days_back` | How many days back `companion.py daily` (and the `daily` step of a full sync) pulls from the Viwoods Daily app. |
+
+> **Editing `config.json` by hand**: it must stay valid JSON, so write Windows paths with doubled backslashes (`"C:\\Users\\You\\Obsidian"`) or forward slashes (`"C:/Users/You/Obsidian"`). If the file doesn't parse, InkBridge stops and tells you the line and column; it never overwrites it.
+
+> **These files hold secrets.** `config.json` contains your Viwoods JWT and your Gemini API key; `ocr_cache.json`, `sync_state.json` and `cache/` contain your note contents and page scans. They live outside the repository, and their old project-root names are listed in `.gitignore` — keep them out of version control and out of shared folders.
+
+---
+
+## 💻 Usage & Commands
+
+### Launch Web Dashboard
+```bash
+python companion.py serve          # or: python companion.py gui
+```
+Opens the web companion at `http://127.0.0.1:8765` in your default browser.
+The dashboard can read your vault and holds your token, so it's local only:
+- It listens on `127.0.0.1`, so other machines can't reach it.
+- It only answers requests addressed to `localhost` or `127.0.0.1`, which
+  stops a website from pointing its own domain at your machine to reach it
+  ("DNS rebinding").
+- It refuses requests that change anything (settings, syncs, transcription)
+  when they come from another website's page.
+
+Use `--port` to change the port and `--no-browser` to skip opening a browser.
+
+### Sign In
+```bash
+python companion.py login              # email + password
+python companion.py login --email you@example.com
+python companion.py login --token      # paste a token copied from the browser
+```
+Stores the token InkBridge uses to talk to Viwoods. InkBridge renews it by itself: when Viwoods rejects it, and ahead of time when it's within a month of expiring. If a renewal ever fails, run `login` again (you'll be [alerted](#-alerts) if you've set `notify_url`). The password is only typed at the hidden prompt, never taken as an argument (it would end up in your shell history) and never saved. Under Docker: `docker compose exec -it viwoods python companion.py login`.
+
+### Diagnose Problems
+```bash
+python companion.py doctor
+```
+Checks, in order: Python and its packages, `config.json`, the Viwoods sign-in (and when the token expires), the Obsidian vault (exists, writable, looks like a vault), the OCR engine (Ollama or LM Studio running with the configured model, a Gemini key set, or Windows OCR available), alerts, and how the last sync went. Each problem comes with the command that fixes it, and it exits non-zero if anything is broken. The report contains no token, key or alert address and shows your home folder as `~`, so it's safe to paste into a bug report. Under Docker: `docker compose exec viwoods python companion.py doctor`.
+
+### Check Status & Device Connection
+```bash
+python companion.py status
+```
+Verifies cloud credentials, reports device serial number, and lists cloud categories and item counts.
+
+### Change OCR Engine
+```bash
+# Local Ollama (default)
+python companion.py set-engine ollama --model qwen3.5:9b
+
+# Gemini Vision
+python companion.py set-engine gemini
+
+# Windows Native OCR (Windows only)
+python companion.py set-engine windows
+```
+
+### Sync Daily Journals Only
+```bash
+# Sync last 7 days using the active engine
+python companion.py journals --days 7
+
+# Force re-transcribe existing journals with Ollama
+python companion.py journals --days 7 --force --engine ollama
+```
+Finds your `Journals` folder in Paper and updates the matching daily notes.
+
+### Sync the Daily App Only
+```bash
+# Pull the last 30 days of Daily app pages and to-dos (default: daily_app_days_back)
+python companion.py daily
+
+# Custom window, forced re-transcription
+python companion.py daily --days 60 --force --engine ollama
+```
+Pulls from the Viwoods **Daily** app — a separate cloud resource from your Paper/Meeting/Learning/Knowledge Base/Memo notebooks, with no folder tree of its own. Each date's page scan and to-dos are injected into the matching daily note under a `daily-app` sub-block, alongside (never overwriting) any notebook-driven journal content already there. Included automatically in a full `sync`. Dates with no existing daily note are skipped rather than stubbed unless `create_missing_daily_notes` is on.
+
+### Run Full Sync
+```bash
+python companion.py sync
+```
+Recursively mirrors all cloud categories (`Paper`, `Meeting`, `Learning`, `Knowledge Base`, `Memo`) into `99 - Viwoods/` in your Obsidian vault. Use `--force` to re-download and re-transcribe existing notes.
+
+If a page can't be downloaded or transcribed (say Ollama isn't running), the note is still written with whatever did work, but it isn't marked as synced, so the next sync retries it automatically.
+
+```bash
+python companion.py sync --dry-run
+```
+Lists the notebooks that would be synced, and why, without fetching, transcribing or writing anything.
+
+```bash
+python companion.py sync --confirm-deletions
+```
+Applies deletions that a sync held back as too many (see `max_deletions_per_sync`). Only use it once you've checked the listed notebooks really are gone from your tablet.
+
+### Export a Note
+```bash
+# List everything available to export
+python companion.py export --list
+
+# By title (substring is enough) or by UUID
+python companion.py export "Morning Pages" --format pdf
+python companion.py export "Morning Pages" --format html --output ~/Desktop
+python companion.py export 0d7e25d2-4f39-4122-affa-ea02704a5637 --format zip
+```
+`--format` is `pdf` (default), `html` (standalone, images inlined as base64) or `zip` (markdown plus attachments). `--output`/`-o` picks the directory; the default is `exports/`.
+
+### Run Background Daemon
+```bash
+python companion.py daemon --interval 30
+```
+Checks for new or modified notebooks every 30 minutes. A failed sync is logged and retried with exponential backoff instead of killing the daemon.
+
+To keep it running without a terminal, install it as a systemd user service with
+[`contrib/inkbridge.service`](contrib/inkbridge.service) (the commands are in its header). With
+`gpu_busy_limit` set, a sync waits while a game has the GPU.
+
+---
+
+## 🔔 Alerts
+
+A daemon nobody is watching can stop syncing for weeks without you noticing. Set `notify_url` and InkBridge tells you instead:
+
+```json
+"notify_url": "https://ntfy.sh/pick-a-long-unguessable-topic-name"
+```
+
+Install the [ntfy](https://ntfy.sh) app, subscribe to the same topic, then check it reaches you:
+
+```bash
+python companion.py test-notify
+```
+
+A Discord or Slack webhook URL works too. You get **one** message when something needs you, and one when it's fixed:
+
+| When | Message |
+| --- | --- |
+| Your Viwoods sign-in was rejected and couldn't be renewed | Run `python companion.py login` |
+| The vault folder is missing | The path it looked for |
+| Syncs keep failing (twice in a row) | The error |
+| Deletions were held back by `max_deletions_per_sync` | Run `sync --confirm-deletions` if they're real |
+
+Alerts say what is wrong and never name your notebooks or pages. They are only sent by unattended syncs (`daemon`, or `serve` with `auto_sync_interval`); a sync you run yourself reports to your terminal. `python companion.py status` always shows how the last sync went. After an expired sign-in the daemon checks again every 30 minutes, so running `login` is picked up without restarting it.
+
+---
+
+## 🐳 Running in Docker
+
+For a headless Debian server, a `Dockerfile` and `docker-compose.yml` are
+included alongside the native setup above — nothing about running
+`companion.py` directly (e.g. on your desktop) changes.
+
+### 1. Edit `docker-compose.yml`
+
+Point the vault volume at your real Obsidian vault path on the host:
+
+```yaml
+volumes:
+  - /path/to/your/obsidian/vault:/vault
+```
+
+### 2. Build and start
+
+```bash
+docker compose up -d --build
+```
+
+> **Already running InkBridge in Docker?** After updating, the dashboard is no longer reachable at `http://<your-server-ip>:8765`. Use the SSH tunnel below, or, to keep reaching it over your network, change the port mapping to `"8765:8765"` and set `VIWOODS_ALLOWED_HOSTS` as described below, then run `docker compose up -d --build`. Your config and synced data are unaffected.
+
+The dashboard has no login and holds your Viwoods token and Gemini key, so
+the compose file only publishes it on the server's own loopback address. To
+use it from your desktop, open an SSH tunnel and browse to
+`http://localhost:8765`:
+
+```bash
+ssh -L 8765:localhost:8765 your-server
+```
+
+To reach it over your network instead, change the port mapping in
+`docker-compose.yml` to `"8765:8765"` and set `VIWOODS_ALLOWED_HOSTS` to the
+name or address you'll type in the browser (e.g.
+`VIWOODS_ALLOWED_HOSTS: "my-server.local,192.168.1.20"`); requests addressed
+to any other name are refused. Anyone who can reach that address can then use
+the dashboard, so only do this on a network you trust.
+
+### 3. Configure
+
+Open the dashboard's Settings tab and set:
+- `vault_path` to `/vault` (the mount point from the compose file)
+- `ollama_url` to `http://host.docker.internal:11434` if Ollama runs on the
+  Debian host itself (the compose file already maps that hostname)
+
+Config, sync state, the OCR cache and downloaded page scans live in the
+`viwoods-data` named volume (`VIWOODS_DATA_DIR=/data` inside the container),
+so they survive `docker compose down` / rebuilds.
+
+### Running the daemon instead of the dashboard
+
+```bash
+docker compose run --rm viwoods python companion.py daemon --interval 30
+```
+
+or override `command:` in `docker-compose.yml` to run the daemon as the
+long-lived service instead of the web dashboard.
+
+### CLI commands (export, sync, status, ...)
+
+```bash
+docker compose exec viwoods python companion.py status
+docker compose exec viwoods python companion.py export "Morning Pages" --format pdf
+```
+
+Exported files land in `/app/exports` inside the container; mount a volume
+there too if you want them on the host, e.g. add
+`- ./exports:/app/exports` under `volumes:`.
+
+---
+
+## 📁 Obsidian Vault Organization
+
+When synced, your Obsidian vault receives:
+
+```
+<vault>/
+├── 10 - Journals/
+│   └── September/
+│       └── 2026-09-02.md
+│           ├── ## 🌅 Landing
+│           ├── ## 🗓️ Timeline
+│           ├── # Transcribed text from AiPaper:
+│           │   ├── %% viwoods:start %%              <-- INJECTED BLOCK
+│           │   ├──   %% viwoods:note 0d7e25d2… %%
+│           │   ├──   ![[99 - Viwoods/Attachments/2026-09-02_0d7e25d2_p1.png]]
+│           │   ├──   > NERV GOD'S IN HIS HEAVEN...
+│           │   ├──   %% viwoods:note-end 0d7e25d2… %%
+│           │   └── %% viwoods:end %%
+│           └── ## ✅ Check-ins                      <-- never touched
+│
+└── 99 - Viwoods/                               <-- 1:1 CLOUD MIRROR
+    ├── Attachments/                            <-- page PNGs & recordings
+    │   └── 2026-09-02_0d7e25d2_p1.png
+    ├── Paper/
+    │   ├── Journals/
+    │   │   ├── 2026-09-01.md
+    │   │   └── 2026-09-02.md
+    │   └── Ideas.md
+    └── Meeting/
+        └── TeamSync.md
+```
+
+Attachment names are `<title>_<uuid8>_p<n>.png`; the title is truncated first so the uuid, page number and extension always survive.
+
+---
+
+## 🔒 Privacy & Limits
+
+**What leaves your machine.** InkBridge sends no analytics or telemetry. It talks to exactly these places, and nothing else:
+
+| Where | Why |
+| --- | --- |
+| Viwoods Cloud (`api.viwoods.com`, and the image links it gives you) | Listing and downloading your notebooks. This is the same service your tablet syncs with. |
+| Your OCR engine | **Ollama and LM Studio** run on your machine (or the one you point `ollama_url` / `lmstudio_url` at), so your pages stay local. **Gemini** sends each page image to Google. **Windows OCR** is entirely offline. |
+| Your `notify_url`, if you set one | Alerts. They name causes and counts, never notebooks or page text. |
+
+**What's stored.** Your token and keys live in `~/.viwoods/config.json`, in plain text, readable only by your user. Your password is never stored. See [SECURITY.md](SECURITY.md) for the details, including the dashboard (local only, no login).
+
+**Limits worth knowing.**
+
+- **It's unofficial.** InkBridge uses Viwoods' undocumented cloud API, so an update on their side can break it without warning. `doctor` tells you what's wrong, and an issue is welcome.
+- **Sync is one way, tablet to vault.** Notes under `99 - Viwoods/` are regenerated whenever their notebook changes, so don't write in them; keep your own notes outside that folder. The only thing InkBridge adds to your own notes is the block between its markers in a daily note.
+- **The vault follows the tablet, including deletions.** Delete a notebook on the tablet and its note goes too (with a safety limit, `max_deletions_per_sync`, against mass deletion). Set `remove_deleted_notebooks` to `false` if you'd rather keep them.
+- **Handwriting accuracy depends on the model.** Check transcripts of anything important.
+- **One Viwoods account per install.** Large imported PDFs are capped by `max_pages_per_notebook`.
+
+---
+
+## 🛠️ Architecture & Under the Hood
+
+- **Viwoods API**: Implements the proprietary MD5 request signing protocol (`uri` parameter + alphabetical key sorting + secret salt + MD5 hex) with `Machine-Model: web` authentication. Values are serialized as JSON so booleans and nested objects sign the way the server reads them. Folder listings are paginated until exhausted.
+- **Decompression**: Automatically decodes base64-encoded GZIP payloads (`paperSync/get`) to retrieve vector stroke metadata and CloudFront page render URLs.
+- **Native Windows OCR**: Uses PowerShell WinRT `Windows.Media.Ocr.OcrEngine`, the text recognition built into Windows 10/11, without requiring Tesseract or cloud APIs. It's designed for printed text, so the vision-model engines do much better on handwriting.
+- **Concurrency**: the sync state and OCR cache are written under a cross-process file lock and merged, so a CLI sync and the dashboard can run at the same time without clobbering each other.
+
+---
+
+## 🧪 Tests
+
+```bash
+pip install -e ".[dev]"
+python -m pytest
+```
+
+The suite runs against a temporary `VIWOODS_DATA_DIR` and a fake Viwoods API, so it never touches your real config, vault or account. It covers the sync engine (deletes, moves, renames and the deletion safety limit), daily-note injection, token renewal, alerts, `doctor`, the OCR engines and their failure handling, request signing and paging, and file permissions. A test also checks that the README documents every setting and command.
+
+GitHub Actions runs it on every pull request and every push to `main`, on Linux (Python 3.10 and 3.14) and Windows, along with `ruff` and a check that the package installs into a clean environment.
+
+---
+
+## 🤝 Contributing
+
+Bug reports, fixes and ideas are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md); for a bug, paste the output of `doctor`. Notable changes are listed in [CHANGELOG.md](CHANGELOG.md), security issues go through [SECURITY.md](SECURITY.md), and the project is under the [MIT license](LICENSE).

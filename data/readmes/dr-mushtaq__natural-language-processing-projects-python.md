@@ -431,6 +431,16 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 
 #### Code
 - **[Build LLM on Google Colab from scratch](https://github.com/HayatoHongo/EveryonesLLM)** - FREE
+- **[Build a Large Language Model (From Scratch)](https://www.youtube.com/playlist?list=PLTKMiZHVd_2IIEsoJrWACkIxLRdfMlw11)**-Free
+- **[Hugging Face Fine-tuning Tutorial](https://huggingface.co/docs/transformers/main/en/training)**-Free
+- **[Practical implementation of LoRA and parameter-efficient fine-tuning.](https://huggingface.co/docs/peft/index)**-Free
+- **[Hugging Face TRL: SFTTrainer](https://huggingface.co/docs/trl/sft_trainer)**-Free
+- **[Unsloth Fine-tuning Docs](https://unsloth.ai/docs/get-started/fine-tuning-llms-guide)**-Free
+- **[Axolotl Docs](https://docs.axolotl.ai/)**-Free
+- **[LLaMA Factory](https://github.com/hiyouga/LlamaFactory)**-Free
+- **[Maxime Labonne: LLM Course](https://github.com/mlabonne/llm-course)**-Free
+- **[Brev Fine-Tuning Notebooks](https://github.com/brevdev/launchables)**-Free
+
 
 
 #### Github
@@ -501,9 +511,4 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
  |**🌐1-Gemma**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
   |**✅1-Pre-training large language models**|[1](https://drive.google.com/file/d/1N0MkdihOwhxENog3cChTH6l3Zz5B2hNw/view?usp=drive_link)[-2](https://youtu.be/zN1yGzOBnpg?si=vzgwR4WZsz8T2trR)|[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|[1]
 
-  ### Week 3-[**📚Chapter3:Large Language Models and Training**]()
- | Topic Name/Tutorial | Video | Code|Extra Resources|
- |---|---|---|---|
- |**🌐1-Common Crawl**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|
- |**✅1-FLOPs vs FLOPS**|[1](https://youtu.be/sqf66GBi3pA?si=1aBDSjNWmn5eRUrv)[-2](https://youtu.be/VlA_jt_3Qc4?si=OzJtfs54AIwhuaed) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|
- |**✅1-Computational Challenges of Training LLMs**|[1](https://drive.google.com/file/d/1rKHYcQ4n_ZRaFN1o8i2j8GXeFQ_7D27X/view?usp=sharing)[-2](https://youtu.be
+  ### Week 3-[**📚Chapter3:Lar

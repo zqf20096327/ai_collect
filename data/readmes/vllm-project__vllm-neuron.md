@@ -7,7 +7,7 @@ The vLLM Neuron plugin is the recommended serving solution for large language mo
 ## Installation
 
 ```bash
-git clone -b release-0.24.0.1.1.0 https://github.com/vllm-project/vllm-neuron.git
+git clone -b release-0.29.0.1.2.0 https://github.com/vllm-project/vllm-neuron.git
 cd vllm-neuron
 pip install --extra-index-url=https://pip.repos.neuron.amazonaws.com -e .
 ```
@@ -36,8 +36,10 @@ Models listed below are tested end-to-end on Neuron hardware with correctness va
 |---|---|---|---|---|---|---|
 | Llama 3 | 1B, 8B, 70B | Text | Trn2, Trn3 | ✅ | ✅ | In progress |
 | GPT-OSS | 20B, 120B | Text | Trn2, Trn3 | ✅ | ✅ | In progress |
+| Qwen3 | 32B (Dense) | Text | Trn2, Trn3 | ✅ | ✅ | In progress |
 | Qwen3-VL | 32B (Dense) | Multimodal | Trn2, Trn3 | ✅ | ✅ | In progress |
 | Qwen3-Embedding | 8B | Embedding | Trn2, Trn3 | ✅ | ✅ | In progress |
+| Qwen3-ASR | 1.7B | Audio | Trn2, Trn3 | ✅ | ✅ | In progress |
 
 - **Correctness** — Accuracy validation passing (logit comparison, dataset accuracy validation)
 - **Perf Test** — Performance benchmark tests tracked across releases
@@ -45,7 +47,14 @@ Models listed below are tested end-to-end on Neuron hardware with correctness va
 
 > **Note:** This list includes only the models currently supported in the latest plugin version and does not include models under development or on roadmap.
 
+For dense Qwen3-32B checkpoints, features, and deployment commands, see the
+[model recipe](docs/model-recipes/qwen3-32b.md).
+
 Performance improvements are delivered incrementally with each Neuron release.
+
+### Community Contributions
+
+The [`contrib/`](contrib/) folder hosts community-contributed models. These are maintained by the community and may have limited testing compared to the officially-supported models above. To use one, or to contribute your own model, see [contrib/README.md](contrib/README.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Features
 
@@ -66,7 +75,7 @@ Feature support is at the framework level. See the model cards in [`docs/model-r
 | | Sequence parallelism (SP) | ✅ |
 | | Data parallelism (DP) | ✅ |
 | | Expert parallelism (EP) | ✅ |
-| | Vision encoder parallelism | ✅ |
+| | Encoder parallelism | ✅ |
 | | Pipeline parallelism (PP) | ❌ |
 | | Context parallelism (CP) | ✅ |
 | **Performance** | Paged KV cache | ✅ |
@@ -78,10 +87,11 @@ Feature support is at the framework level. See the model cards in [`docs/model-r
 | | On-device sampling (top-k, top-p, temperature) | ✅ |
 | | KV cache offloading | ❌ |
 | | Disaggregated encoder (EPD) | ✅ |
-| **Compilation** | torch.compile (XLA backend) | ✅ |
-| | torch.compile (native PyTorch) | ❌ |
+| **Compilation** | torch.compile (native PyTorch) | ✅ |
+| | torch.compile (XLA backend) | ✅ |
 | | Compile cache (local/remote) | ✅ |
 | | CPU compilation | ✅ |
+| **Runtime** | Model Runner V2 (dense models) | ✅ |
 | **Speculative Decoding** | EAGLE3 | ✅ |
 | | MTP | ❌ |
 | **Quantization** | BF16 | ✅ |
@@ -91,7 +101,7 @@ Feature support is at the framework level. See the model cards in [`docs/model-r
 | | MXFP8 weights (Trn3) | ✅ |
 | **Multimodal Inputs** | Images + text | ✅ |
 | | Videos + text | ✅ |
-| | Audio | ❌ |
+| | Audio | ✅ |
 | **Observability** | Production metrics (`/metrics` endpoint) | ✅ |
 | | Profiler API | ✅ |
 
@@ -126,7 +136,8 @@ Starting with 0.21.0, the vLLM Neuron plugin version follows the format `<vLLM v
 
 | vLLM-Neuron Plugin | vLLM Version | Neuron SDK | NxD Inference | Instance Support | Status | Documentation |
 |---|---|---|---|---|---|---|
-| 0.24.0.1.1.0 (latest) | 0.24.0 | 2.32 | Not required | Trn2, Trn3 | Beta | [vLLM Neuron docs](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/vllm-neuron/docs/index.html) |
+| 0.29.0.1.2.0 (latest) | 0.29.0 | 2.33 | Not required | Trn2, Trn3 | Beta | [vLLM Neuron docs](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/vllm-neuron/docs/index.html) |
+| 0.24.0.1.1.0 | 0.24.0 | 2.32 | Not required | Trn2, Trn3 | Beta | [vLLM Neuron docs](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/vllm-neuron/docs/index.html) |
 | 0.21.0.1.0.0 | 0.21.0 | 2.31 | Not required | Trn2, Trn3 | Beta | [vLLM Neuron docs](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/vllm-neuron/docs/index.html) |
 | 0.5.3 | 0.16.0 | 2.31 | 0.10.x | Trn1, Trn2, Trn3, Inf2 | Maintenance | [NxDI + vLLM on Neuron docs](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/libraries/nxd-inference/index.html) |
 

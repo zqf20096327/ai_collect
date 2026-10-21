@@ -33,6 +33,7 @@ Konya Gıda ve Tarım Üniversitesi Yazılım Mühendisliği ve Pamukkale Ünive
     - [Deneme](#deneme)
     - [Setup (Copilot CLI)](#setup-copilot-cli)
   - [Ek 3 - Claude Plugin Kullanımı](#ek-3---claude-plugin-kullanımı)
+  - [Ek 4 - Döngü Mühendisliği (Loop Engineering)](#ek-4---döngü-mühendisliği-loop-engineering)
   - [Aman Dikkat](#aman-dikkat)
   - [Ders Geçme Prosedürü](#ders-geçme-prosedürü)
     - [Proje Değerlendirmesi](#proje-değerlendirmesi)
@@ -966,4 +967,4 @@ Yerel bilgisayarda LoRA tekniğine göre çalışmak için yine de NVIDIA tabanl
 - RunPod.ai üzerinde bir hesap oluşturun ve giriş yapın.
 - Kısa süreli bir çalışma için kredi yüklemek gerekecektir. Minimum 10$ civarında bir kredi yüklemesi yeterli olur.
 - Yeni bir **Pod** oluşturmamız gerekiyor. Örneğin denediğimiz tarih itibariyle **RTX 3090** GPU'suna sahip bir pod seçebiliriz. Bu pod, LoRA tabanlı model eğitimi için yeterli olacaktır.
-- Pod için gerekli ayarları yaptıktan sonra **Deploy** etmek gerekir. Böylece elimizde uzaktan bağlanıp üze
+- Pod için 

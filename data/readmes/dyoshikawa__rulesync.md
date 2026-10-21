@@ -105,6 +105,7 @@ The tables below show whether each tool supports a given feature (✅ = supporte
 | Cursor                    |  ✅   |   ✅   | ✅  |    ✅    |    ✅     |   ✅   |  ✅   |     ✅      |   ✅   |
 | deepagents-cli            |  ✅   |        | ✅  |          |    ✅     |   ✅   |  ✅   |     ✅      |        |
 | Factory Droid             |  ✅   |        | ✅  |    ✅    |    ✅     |   ✅   |  ✅   |     ✅      |   ✅   |
+| Firebender                |  ✅   |   ✅   | ✅  |    ✅    |    ✅     |   ✅   |  ✅   |             |        |
 | OpenCode                  |  ✅   |        | ✅  |    ✅    |    ✅     |   ✅   |  ✅   |     ✅      |        |
 | OpenClaw                  |  ✅   |        | ✅  |          |           |        |       |             |        |
 | MiMo Code                 |  ✅   |        | ✅  |    ✅    |    ✅     |   ✅   |  ✅   |     ✅      |        |
@@ -136,6 +137,7 @@ The tables below show whether each tool supports a given feature (✅ = supporte
 | Google Antigravity CLI    |  ✅   |   ✅   | ✅  |    ✅    |    ✅     |   ✅   |  ✅   |     ✅      |        |
 | Google Antigravity plugin |  ✅   |        | ✅  |          |    ✅     |   ✅   |  ✅   |             |        |
 | JetBrains AI Assistant    |  ✅   |   ✅   | ✅  |          |           |   ✅   |       |             |        |
+| Gemini in Android Studio  |       |   ✅   |     |          |           |   ✅   |       |             |        |
 | JetBrains Junie           |  ✅   |   ✅   | ✅  |    ✅    |    ✅     |   ✅   |  ✅   |     ✅      |        |
 | AugmentCode               |  ✅   |   ✅   | ✅  |    ✅    |    ✅     |   ✅   |  ✅   |     ✅      |   ✅   |
 | AugmentCode plugin        |  ✅   |        | ✅  |    ✅    |    ✅     |   ✅   |  ✅   |             |        |
@@ -143,6 +145,7 @@ The tables below show whether each tool supports a given feature (✅ = supporte
 | Devin plugin              |  ✅   |        | ✅  |          |    ✅     |   ✅   |  ✅   |             |        |
 | Warp                      |  ✅   |   ✅   | ✅  |    ✅    |           |   ✅   |       |     ✅      |        |
 | Warp Agent CLI            |       |        | ✅  |          |           |        |       |     ✅      |        |
+| Xum                       |  ✅   |        | ✅  |          |    ✅     |   ✅   |       |             |        |
 | Replit                    |  ✅   |        |     |          |           |   ✅   |       |             |        |
 | Pi Coding Agent           |  ✅   |        | ✅  |    ✅    |           |   ✅   |  ✅   |     ✅      |        |
 | oh-my-pi                  |  ✅   |        | ✅  |    ✅    |    ✅     |   ✅   |  ✅   |     ✅      |        |

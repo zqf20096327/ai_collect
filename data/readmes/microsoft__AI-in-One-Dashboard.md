@@ -8,12 +8,11 @@
 
 <br>
 
-[![Built by Microsoft](https://img.shields.io/badge/Built%20by-Microsoft-0078d4?style=for-the-badge&logo=microsoft&logoColor=white)](https://microsoft.github.io/Analytics-Hub/team/)
-[![Analytics Hub](https://img.shields.io/badge/Analytics%20Hub-11%20Repositories-8661c5?style=for-the-badge&logo=github&logoColor=white)](https://microsoft.github.io/Analytics-Hub/)
-
-**All Reports:** [https://microsoft.github.io/Analytics-Hub/](https://microsoft.github.io/Analytics-Hub/)
+All reports and guides can be found on the [Analytics Hub](https://microsoft.github.io/Analytics-Hub/).
 
 **Cowork Billing:** [https://microsoft.github.io/Analytics-Hub/cowork-billing/](https://microsoft.github.io/Analytics-Hub/cowork-billing/)
+
+**Also see [Analytics Hub for Microsoft Copilot](https://github.com/microsoft/AnalyticsHub-Dashboard):** one installer sets up an app on Microsoft Fabric or Azure that shows Copilot and agent adoption, value, consumption and governance in one place.
 
 <br>
 

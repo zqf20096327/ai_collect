@@ -261,22 +261,26 @@ List of AI-powered command-line tools. See [feature matrix](./FEATURE_MATRIX.md#
 | codex-profiles      | <https://github.com/Ducksss/codex-profiles>     |
 | contexttax          | <https://github.com/henrikdukefoss/contexttax>  |
 | coven               | <https://github.com/OpenCoven/coven>            |
+| Frink               | <https://github.com/benord-labs/frink>          |
 | Helicon             | <https://github.com/HarjjotSinghh/helicon>      |
 | mcp-ai-slop-checker | <https://github.com/parweb/mcp-ai-slop-checker> |
 | nibbl               | <https://github.com/nuromirzak/nibbl>           |
-| orcareplay         | <https://github.com/Continuum-AI-Corp/OrcaReplay> |
+| orcareplay          | <https://github.com/Continuum-AI-Corp/OrcaReplay> |
 | show-your-work      | <https://github.com/iamumeransari/claude-show-your-work> |
 | sillage             | <https://github.com/MarlBurroW/sillage>         |
 | Sqwakie             | <https://sqwakie.si>                            |
 | subagent-tuner      | <https://github.com/Kruhlikau/subagent-tuner>   |
 | toldya              | <https://github.com/singhlabsdev/toldya>        |
+| Yap MCP             | <https://github.com/founden-bot/yap-mcp>        |
+| yylo-benchmark      | <https://github.com/yylo-dev/yylo-benchmark>    |
 
 ---
 
 ## Resources
 
+- <https://github.com/ianwieds/awesome-ai-agents>
 - <https://github.com/inmve/free-ai-coding>
-- <https://whichaiplan.dev> - pricing comparison of AI coding subscriptions, updated weekly
+- <https://whichaiplan.dev>
 
 ---
 

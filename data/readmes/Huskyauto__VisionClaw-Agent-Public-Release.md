@@ -47,9 +47,9 @@ Instead of a single chatbot, you get a full agent workforce. Give it a task. The
 
 **The app runs with just one LLM key and a Postgres database.** Everything else — email, payments, voice, Drive — is optional and appears automatically when you add the key.
 
-**Latest source update — R136.2 (October 14, 2026): Current features, navigation, reliability and repository documentation.** Treasury stock/crypto paper replays, optional AgentID sign-in, Robert personal support, model-route evidence, opt-in capped owner paid fallback, correction-aware conversation recovery, tenant/file hardening and portable builds. Forks need their own credentials, entitlements and feature configuration; source availability is not website publication or universal verification.
+**Latest source update — R137+sec (October 19, 2026): Business pilots, company report packages and evidence-first operations.** Owner-only health/re-scan, release, governance and cost/routing pilots; read-only website readiness; sourced company reports with required audio; private alert logs; receipt-backed delivery checks, outcome-first briefings and video packaging. Private report packages are excluded from generic tenant file access. [Feature/access matrix](docs/platform-update-2026-10-19.md). Forks need their own credentials, entitlements and configuration. Focused live pilot verification is not universal certification; GitHub synchronization is not website publication.
 
-Roughly 320k lines of TypeScript across 1,100+ files. 40+ pages. **427 total registered tools · 386 public documented tools · 68 total skills · 144 active capabilities · 18 personas · 194 declared / 275 live development tables · 41 governance rules · 885 platform indexes · 86 curated AI models · 6 AI providers · 6 deployment targets.** These are an October 8 **development evidence snapshot**, not live production telemetry. Documentation was reconciled October 14 without relabeling historical measurements as fresh telemetry. The public tool index deliberately excludes trusted-persona-only tools. Current release facts: [`docs/release-facts.json`](docs/release-facts.json). Browsable indexes: [`docs/tools.md`](docs/tools.md) · [`docs/personas.md`](docs/personas.md).
+Roughly 320k lines of TypeScript across 1,100+ files. 40+ pages. **428 total registered tools · 386 public documented tools · 68 total skills · 146 active capabilities · 18 personas · 195 declared / 276 live development tables · 41 governance rules · 887 platform indexes · 86 curated AI models · 6 AI providers · 6 deployment targets.** These are an October 19 **development evidence snapshot**, not live production telemetry. The public tool index deliberately excludes trusted-persona-only tools. Current release facts: [`docs/release-facts.json`](docs/release-facts.json). Browsable indexes: [`docs/tools.md`](docs/tools.md) · [`docs/personas.md`](docs/personas.md).
 
 ### October 9–14 source updates
 
@@ -148,7 +148,7 @@ flowchart TB
     P1 --> TOOLS
     P2 --> TOOLS
 
-    subgraph TOOLS["Tool layer — 427 total registered tools"]
+    subgraph TOOLS["Tool layer — 428 total registered tools"]
         direction TB
         T1["File I/O · web · email · LLM · payments · drive"]
         T2["TNR snapshots — irreversible calls are undoable"]
@@ -182,7 +182,7 @@ flowchart TB
     Engineer)        Writer)          Research)              runtime adapter)
         │                │                │                       │
         └──────┬─────────┴────────────────┴───────────────────────┘
-               │  tool dispatch (427 total registered tools)
+               │  tool dispatch (428 total registered tools)
                ▼
    ┌──────────────────────────────────────────────────────────────┐
    │  Tool layer: file I/O · web · email · LLM · payments · drive │
@@ -304,14 +304,14 @@ Real screenshots from the live instance at [agenticcorporation.net](https://agen
 
 ---
 
-## Platform at a Glance — October 8 Development Evidence
+## Platform at a Glance — October 19 Development Evidence
 
-> This is the dated development snapshot, not live production telemetry. Counts agree with [docs/release-facts.json](docs/release-facts.json) and [docs/CURRENT_PLATFORM_TOTALS.md](docs/CURRENT_PLATFORM_TOTALS.md); documentation was reconciled October 14.
+> This is the dated development snapshot, not live production telemetry. Counts agree with [docs/release-facts.json](docs/release-facts.json) and [docs/CURRENT_PLATFORM_TOTALS.md](docs/CURRENT_PLATFORM_TOTALS.md); documentation was reconciled October 19.
 
 | Metric | Count |
 |--------|-------|
 | AI Agents (Personas) | 18 |
-| Tools (total registered) | 427 |
+| Tools (total registered) | 428 |
 | Tools (public documented) | 386 |
 | AI Models in Core Registry | 86 curated |
 | Daily Catalog Discovery | 1000+ models scanned on OpenRouter |
@@ -322,8 +322,8 @@ Real screenshots from the live instance at [agenticcorporation.net](https://agen
 | Skills | 68 total (63 DB-seeded skills + 5 platform agent skills) |
 | Frontend Pages | 40+ |
 | API Endpoints | 300+ |
-| Database Tables | 194 declared / 275 live development |
-| Platform Indexes | 885 (616 non-PK) |
+| Database Tables | 195 declared / 276 live development |
+| Platform Indexes | 887 (617 non-PK) |
 
 ---
 
@@ -347,7 +347,7 @@ Real screenshots from the live instance at [agenticcorporation.net](https://agen
                    │             │              │
                    ▼             ▼              ▼
             ┌─────────────────────────────────────────┐
-            │     427 Total Registered Tools          │
+            │     428 Total Registered Tools          │
             │  Search · Write · Build · Analyze ·     │
             │  Email · Pay · Generate · Research       │
             └──────────────────┬──────────────────────┘
@@ -357,11 +357,11 @@ Real screenshots from the live instance at [agenticcorporation.net](https://agen
         ┌────────────┐   ┌────────────┐   ┌────────────┐
         │ PostgreSQL │   │ Google     │   │ 6 AI       │
         │ + pgvector │   │ Drive      │   │ providers  │
-        │ D194/L275  │   │ storage    │   │ 86 curated │
+        │ D195/L276  │   │ storage    │   │ 86 curated │
         └────────────┘   └────────────┘   └────────────┘
 ```
 
-Database diagram: D = declared tables; L = live development tables. Counts use the October 8 evidence snapshot, not live production telemetry.
+Database diagram: D = declared tables; L = live development tables. Counts use the October 19 evidence snapshot, not live production telemetry.
 
 **Example flow:** You say "Research competitor pricing and build me a comparison spreadsheet."
 1. The **Chat Engine** routes to **Felix** (CEO) who sees this needs research + document production
@@ -542,7 +542,7 @@ client/                       # React frontend
 server/                       # Express backend
   chat-engine.ts              # Core AI conversation engine with streaming
   tools.ts                    # Legacy tool facade + dispatcher (strangler-fig split in progress)
-  tools/                      # 427 total registered tools — per-domain modules (70+ domains) + shared middleware
+  tools/                      # 428 total registered tools — per-domain modules (70+ domains) + shared middleware
     domains/                  # crm, finance, media, legal, knowledge, delivery, governance, ...
     middleware/               # Extracted dispatch middleware (policy, telemetry, tenant seam)
   routes.ts                   # 300+ API endpoints
@@ -820,4 +820,4 @@ Brief one-liners. Full play-by-play in [REVISIONS.md](REVISIONS.md).
 | **R125+137.26 → +137.29-review** | 2026-07-17 | **An external frontier-model code review of this very repo, triaged end-to-end — the owner's email purged from every server runtime path, the changelog becomes data, the mirror gains a DDL schema snapshot + fail-closed stats refresh + tagged releases, an `: any` ratchet gate lands, Kimi-K3 joins as a frontier reserve, and a 72h review closes 3 MEDIUMs with permanent regression pins.** **R125+137.26:** `moonshotai/kimi-k3` (1M context) registered across all 5 model maps as a frontier RESERVE — never in the standing proposer set; a pure gate fires at most one backfill call, only when a main-round frontier proposer fails on the metered path (9/9 gate tests). **R125+137.27:** an external Kimi-K3 review ran against this public mirror; every finding was re-verified on main and the hardcoded owner email was removed from ALL server runtime paths — policy seeding, inbox-quarantine allowlist, ingest identity (new `GMAIL_INGEST_ADDRESS` env, fails closed loudly when unset), and the security.txt contact chain are now env-driven, with fail-closed refusal wherever the address is missing. **R125+137.28:** the mirror build refreshes the authoritative platform-totals doc BEFORE copying (fail-closed if still dirty — the count doc can no longer ship stale) and a ratchet-DOWN-only `: any`/`as any` budget gate (baseline 6,949) runs as weekly-maintenance Pass 14. **R125+137.29:** the 190-entry changelog extracted to data (`updates.json` + a 42-icon map), the mirror emits `docs/schema-snapshot.sql` via pg_dump so forkers can diff DDL between snapshots, and every mirror push is now stamped with a `r125.137.x` tag + GitHub Release. **72h review (2 architect rounds):** 3 MEDIUMs closed fail-closed — an api-v1 conversation-messages query re-anchored on a tenant-scoping JOIN + tenant filter, the tag-release CLI rejects unknown flags before any GitHub call, and the any-budget gate stops safely on an unreadable scan file with the baseline untouched — each pinned by a permanent regression test (suite 144/144). |
 | **R125+137.23 → +137.25-review** | 2026-07-16 | **The platform learns to retire its own dead tools and forge new ones from unmet demand, the tool-router gains a hard cap, the public API speaks the AG-UI protocol, and a 72h review closes 2 MEDIUMs.** **R125+137.23:** a Tool Eviction/Retirement loop — a flag-only classifier with human-in-the-loop approvals (exemptions fail CLOSED via strict parsing, a registry sanity guard, and a ≤10-candidates/run dedupe; 20 candidates queued across the first 2 runs) — plus Tool Forge Phase 2, which turns recorded unmet-capability demand into budget-claimed LLM module proposals (≤1/run, nothing ever auto-lands); both run as weekly heartbeat crons. **R125+137.23-fable:** external-review follow-ups — the admin PIN check consolidated onto the one canonical peppered hasher, curing a boot reconciler that had been silently re-downgrading the stored hash to a public static salt every boot; a static guard test pins the salt literal to its single legitimate home. **R125+137.24:** a verified external-review finding fixed — the tool router could exceed its own `maxTools` budget with no slice-back; a new pure `enforceToolCap()` trims by priority order at both overshoot sites, never trims always-included tools, leaves escape hatches deliberately uncapped, and logs per-turn trim counts + a schema-token estimate (invariant tests in the suite). **R125+137.25:** an AG-UI protocol adapter — `POST /api/v1/agui/run` on the public API v1 surface (Bearer key, chat scope, with a static scope-parity guard test pinning every mounted api-v1 POST to an auth rule) replays a completed chat turn as ordered AG-UI SSE events (RUN_STARTED → TOOL_CALL_* → TEXT_MESSAGE_* → RUN_FINISHED/RUN_ERROR); fail-closed thread parsing, tenant-scoped continuation, keepalives + timeout race + client-disconnect handling. **72h review (2 architect rounds):** 2 MEDIUMs closed — a public checkout error handler was logging raw provider error objects (now message + type/status/requestId only), and the scope-parity guard test was bypassable (rewritten to a structural comment-stripped parse with first-match-wins semantics mirroring the runtime checker). Gates: tsc 0, stale-string preflight CLEAN, seam tests 68/68, suite 143/143, wiring audit CLEAN. |
 | **R125+137.20 → +137.22** | 2026-07-15 | **Six OpenClaw-inspired native features + seeded-fraud judge proof + spec-vs-test authority + a Drive connector-lookup fix + a clean 72h review (indexes 626 → 627).** **R125+137.20:** the Google Drive connector lookup now falls back to the unfiltered connection list when the filtered query returns 0 items, curing broken document uploads, memory backups, and reconnects (verified live). **R125+137.21 (Fable-method borrows):** seeded-fraud completion fixtures in CI prove the deterministic verification layer fails CLOSED against a deliberately gullible LLM judge (a live probe caught 4/4 planted frauds), and a spec-vs-test authority rule in the repo-surgeon forces "cannot fix" on any spec/test conflict — authoritative at the executor and pinned by an adversarial regression test. **R125+137.22 (OpenClaw-inspired, all native):** a tenant-guarded, PII-redacted, race-safe commitments/open-loop miner (unique partial index + ON CONFLICT — indexes 626 → 627); a summary-quality audit with a deterministic fallback wired as a fail-open backstop at the conversation-compaction chokepoint (a failed compaction can no longer silently lose file paths or identifiers); operator-text-as-untrusted wrapping; first-failure-wins health root-cause ordering; a skill code-safety scanner; and a record-only egress telemetry ring buffer. **72h review:** 1 HIGH closed (the summary-quality lib had zero runtime callsites — now wired), 2 MEDIUM closed (two public/tenant routes moved onto centralized Zod validation), 1 FALSE POSITIVE logged (a cross-tenant read already admin-gated at dispatch). Gates: tsc 0, build 0, seam tests green, stale-string preflight CLEAN, architect PASS twice. |
-| **R125+137.14 → +137.19** | 2026-07-14 | **Skill-optimizer evaluation upgrades + two god-file splits + Tool Forge Phase 1 + a clean 72h review — no advertised-count change, all gates green.** **Skill-optimizer:** RULER-style relative group ranking added as a measure-first, NON-blocking third judge lane in the evaluator A/B (one anonymized, seed-shuffled group-ranking call per case; parsing fails CLOSED, runtime fails OPEN, never touches the apply decision; kill switch `SKILL_OPT_RULER=off`); plus prior-collapse detection — an embedding-space near-dupe tracker over prior failed/rejected proposals (fail-OPEN on every path, kill switch `PRIOR_COLLAPSE=off`), wired opt-in into the skill-optimizer and repo-surgeon so a semantic re-proposal of an already-rejected/failed change skips the spend and escalates instead of looping. **God-file splits:** the `server/routes.ts` monolith had its Tier-1 auth/tenants/admin endpoints extracted verbatim (≈7,794 → 7,329 lines, behavior-preserving) alongside a new regression proof that the code-execution sandbox's real control is the VM layer (the keyword blocklist is defense-in-depth only); and tools-layer split slice S34 moved `google_workspace` out of the legacy `tools.ts` switch into a per-domain module with the fail-closed tenant seam preserved ve
+| **R125+137.14 → +137.19** | 2026-07-14 | **Skill-optimizer evaluation upgrades + two god-file splits + Tool Forge Phase 1 + a clean 72h review — no advertised-count change, all gates green.** **Skill-optimizer:** RULER-style relative group ranking added as a measure-first, NON-blocking third judge lane in the evaluator A/B (one anonymized, seed-shuffled group-ranking call per case; parsing fails CLOSED, runtime fails OPEN, never touches the apply decision; kill switch `SKILL_OPT_RULER=off`); plus prior-collapse detection — an embedding-space near-dupe tracker over prior failed/rejected proposals (fail-OPEN on every path, kill switch `PRIOR_COLLAPSE=off`), wired opt-in into the skill-optimizer and repo-surgeon so a semantic re-proposal of an already-rejected/failed change skips the spend and escalates instead of looping. **God-file splits:** the `server/routes.ts` monolith had its Tier-1 auth/tenants/admin endpoints extracted verbatim (≈7,794 → 7,329 lines, behavior-preserving) alongside a new regression proof that the code-execution sandbox's real control is the VM layer (the keyword blocklist is defense-in-depth only); and tools-layer split slice S34 moved `google_workspace` out of the legacy `tools.

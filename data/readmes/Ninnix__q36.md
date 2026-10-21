@@ -135,8 +135,8 @@ and offline tooling. For normal usage, keep reading the next sections.
   how the calibration prompt corpus is generated.
 - [gguf-tools/quality-testing/README.md](gguf-tools/quality-testing/README.md):
   how local GGUFs are scored against OpenRouter continuations.
-- [dir-steering/README.md](dir-steering/README.md): the preserved DS4 vector
-  generation experiment that informed Q36's directional-steering runtime.
+- [dir-steering/README.md](dir-steering/README.md): vector extraction, scale sweeps, and live
+  steering for Qwen models.
 - [tests/test-vectors/README.md](tests/test-vectors/README.md): tracked
   llama.cpp continuation vectors used for regression checks.
 
@@ -246,15 +246,109 @@ inputs; imatrix collection still uses the optional llama.cpp tooling.
 
 `./download_model.sh mtp` fetches the optional speculative decoding support
 GGUF for Qwen 3.6 MoE. It can be used with the `q2-imatrix` and
-`q2-q4-imatrix` main models, but must be enabled explicitly with `--mtp`. The
-MTP block can also be embedded in a 41-block MoE GGUF. Pass the same path to
-`-m` and `--mtp` to use it. With `--mtp` omitted, q36 runs the 40-block trunk
-and excludes block 40 from the resident GPU weight cache. The embedded form
-keeps the shared embedding and output tensors in one copy.
+`q2-q4-imatrix` main models, but must be enabled explicitly with `--mtp`.
+Embedded heads are supported in 41-block MoE GGUFs and in the 65-block
+`Qwen3.8-27B-UD-IQ3_S.gguf`. Use `--mtp` without a filename to select the
+embedded head, or `--mtp FILE` for a separate support GGUF. In `q36`,
+`q36-server`, and `q36-agent`, this enables the tuned BC-250 configuration:
+up to eight tokens, adaptive draft confidence (`--mtp-margin 0`), and
+opportunistic sampling. Explicit depth, margin, and sampling options override
+these defaults regardless of argument order. The embedding and output weights
+remain shared. With `--mtp` omitted, the runtime excludes the extra block from
+the resident GPU weight cache.
 
-The current MTP/speculative decoding path is still experimental: it is
-correctness-gated and currently provides at most a slight speedup, not a
-meaningful generation-speed win.
+For greedy Vulkan generation with the dense embedded head:
+
+```sh
+model=gguf/Qwen3.8-27B-UD-IQ3_S.gguf
+./q36 -m "$model" --mtp \
+  --temp 0 --nothink -p "Write a C function that reverses a linked list."
+```
+
+The verifier uses up to eight tokens per pass. Draft rejection restores the
+accepted recurrent state without replaying target matrices. The MTP cache
+is populated during prefill and corrected from accepted target hidden states.
+Verification shares quantized weights across rows and keeps token selection
+on the GPU. The draft output head uses a small mask of recent target
+alternatives; target verification always scores the full vocabulary.
+
+Dense Vulkan chooses recursive MTP lengths between two and four rows from
+the current draft's confidence. With `--mtp-draft 8`,
+a matching 12–16-token suffix can supply a longer copied tail after MTP
+confirms its first proposal. Positive `--mtp-margin` values use MTP alone.
+The regression tests compare committed tokens and every target logit with
+ordinary decode, including quantized KV, checkpoint restore and verifier
+widths up to eight. MTP also matches a separate ordinary engine with MTP disabled.
+Other recurrent paths use scalar verification to preserve ordinary decode.
+
+Opportunistic sampling is the default with `--mtp` at a positive temperature:
+
+```sh
+./q36 -m "$model" --mtp --temp 1 --seed 42 --nothink \
+  -p "Write a C function that reverses a linked list."
+```
+
+Each block samples its first token with the requested temperature, top-k,
+top-p and min-p, then accepts the draft tail while it matches the target's
+greedy continuation. This deliberately changes the sampling distribution.
+The next block samples again from the last committed target state. Target
+logits, KV updates and rejection rollback use the same verifier as greedy MTP.
+This also works in `q36-agent` and in `q36-server` for non-batched text
+requests with zero presence/frequency penalties; other server requests keep
+ordinary sampling. Use `--no-mtp-opportunistic` to sample every token at
+positive temperature while retaining exact greedy MTP at temperature zero.
+`--mtp-draft 1` disables speculative blocks.
+
+With `--mtp-margin 0`, dense Vulkan drafting uses the MTP head's
+confidence to choose its length. It verifies at least one proposal and
+extends up to four rows while the top-two logit gap is at least 1.0.
+Confirmed history tails can still extend to eight. This avoids wider
+verification of weak prefixes and removes wall-clock timing from
+block-length decisions. Target acceptance still checks every proposed token.
+
+MTP remains experimental. These BC-250 comparisons use the pushed
+`e497fd7` build and the new implementation, 128 output tokens, and Q8_0 K /
+Q4_0 V cache. Each sweep starts at 128 and extends through 2K and 4K.
+
+Greedy generation:
+
+| Context | Story, pushed → new t/s | C source, pushed → new t/s |
+| ---: | ---: | ---: |
+| 128 | 30.22 → 33.06 | 25.80 → 27.77 |
+| 2048 | 32.34 → 34.08 | 30.01 → 30.35 |
+| 3968 | 26.68 → 29.01 | 30.70 → 30.74 |
+| 4096 | 31.96 → 32.45 | 30.57 → 34.52 |
+
+Opportunistic generation at temperature 1, top-k 0, top-p 1 and min-p 0.05
+(all cells are pushed → new t/s):
+
+| Context | Story, seed 1 | Story, seed 42 | C source, seed 1 | C source, seed 42 |
+| ---: | ---: | ---: | ---: | ---: |
+| 128 | 26.91 → 35.56 | 29.26 → 29.33 | 23.36 → 29.01 | 26.57 → 29.02 |
+| 2048 | 30.14 → 31.18 | 26.28 → 28.49 | 31.96 → 36.23 | 29.07 → 36.62 |
+| 3968 | 26.64 → 30.16 | 25.45 → 30.03 | 29.12 → 32.08 | 28.35 → 31.12 |
+| 4096 | 28.69 → 29.86 | 28.94 → 27.07 | 28.28 → 30.87 | 31.23 → 30.20 |
+
+The regressed 2K code/seed-42 case reaches 36.62 t/s,
+with 36.46 t/s in the final repeat. Additional pushed-build controls
+measured 28.97 and 28.72 t/s; the older pre-regression build measured
+30.94 and 31.03 t/s. Fresh 8K story/seed-1 generation changes from
+30.74 to 32.63 t/s.
+
+The largest sampled regression is 6.5% for story, seed 42, context 4096.
+Sampled arms can produce different continuations, so these end-to-end
+comparisons include continuation variation. A general 35 t/s rate or
+attained hardware limit is not established. The paired IQ4 lookup is
+independently 6–17% faster in warmed kernel measurements with identical
+scalar outputs. It adds no tensor or weight buffers.
+
+All greedy/sampled replay, quantized KV, checkpoint restore, scalar fallback,
+MoE regression, separate-engine 8K and fresh 16-thread CPU/Vulkan checks
+through top-64 pass. Every MTP replay has zero target-logit difference.
+Maximum recorded benchmark temperature is 73°C.
+Plain decoding remains the default. Commands, raw controls, rejected probes,
+frozen sources and complete results are in
+[the local benchmark artifacts](tests/test-vectors/local/q38-mtp-20261021-v6/README.md).
 
 ## Speed
 
@@ -416,8 +510,14 @@ Start the agent in the current directory, another project, or one-shot mode:
 ```sh
 ./q36-agent
 ./q36-agent --chdir /path/to/project
+./q36-agent -m gguf/Qwen3.8-27B-UD-IQ3_S.gguf --mtp --chdir /path/to/project
 ./q36-agent --non-interactive -p "Inspect the tests and fix the failure."
 ```
+
+`--mtp` uses the same Vulkan verifier as the CLI and server. The agent streams
+accepted tokens individually and decodes tags, thinking closure, and automatic
+edit-old shortening one token at a time. Tool calls therefore finish before
+the next assistant round, and the transcript stays aligned with the live KV.
 
 Adaptive thinking closure starts after 50000 thinking tokens by default. For
 budgets of at least 8000, its allowed `</think>` rank rises to the top 64 over
@@ -552,9 +652,10 @@ turn extends the previous conversation. Useful commands are `/help`, `/think`,
 the current generation and returns to `q36>`.
 
 Thinking mode is enabled by default. Use `/nothink` or `--nothink` for direct
-answers. `--mtp MTP.gguf --mtp-draft 2` enables the optional MTP speculative
-path for greedy decoding. It uses `--mtp-margin` as a confidence gate and is
-currently an experimental slight-speedup path.
+answers. `--mtp` enables the embedded MTP head with the tuned defaults above;
+`--mtp MTP.gguf` selects a separate support model. Greedy decoding stays exact.
+At positive temperature, opportunistic MTP samples block starts and accepts
+greedy tails; `--no-mtp-opportunistic` restores sampling for every token.
 
 ## Server
 
@@ -1070,16 +1171,16 @@ Then it stores:
 - For each recurrent layer: its `float32` convolution history and recurrent
   state tensors.
 
-Version 1 is a legacy token-only input. Loading it rebuilds runtime state by
-prefilling the saved token sequence; current disk KV writes use version 2 or
+Version 1 stores tokens and rebuilds runtime state by prefilling the saved
+sequence. MTP sessions write this version so loading reconstructs both the
+target state and the shifted MTP history. Other sessions write version 2 or
 3 and persist the complete Qwen full-attention and recurrent state.
 
 The logits are raw IEEE-754 `float32` values from the host `q36_session`
 buffer. They are saved immediately after the checkpoint tokens so a loaded
 snapshot can sample or continue from the exact next-token distribution
 without running one extra decode step. MTP draft logits/state are not
-persisted; after loading a disk checkpoint the draft state is invalidated
-and rebuilt by normal generation.
+persisted; an MTP checkpoint rebuilds both models from its saved tokens.
 
 The tensor payload is q36-specific KV/session state, not a generic
 inference graph dump. It is expected to be portable only across compatible
@@ -1213,8 +1314,9 @@ Q36 can edit attention and FFN outputs with the same projection used by DS4:
 y = y - scale * direction[layer] * dot(direction[layer], y)
 ```
 
-The steering file is a flat `40 x 2048` native-endian `f32` matrix with one
-normalized direction per Qwen layer. Positive scales remove the represented
+The steering file is a flat native-endian `f32` matrix with one normalized
+direction per layer: `64 x 5120` for Qwen3.8/3.6 27B or `40 x 2048` for
+Qwen3.6 35B A3B. Positive scales remove the represented
 direction; negative scales amplify it. FFN steering defaults to `1` when a
 file is supplied without an explicit scale:
 
@@ -1228,6 +1330,20 @@ file is supplied without an explicit scale:
 file, or with both scales set to zero, inference follows the normal path. CPU
 and both GPU runtimes apply the same operation during prefill and decode; Metal
 and Vulkan keep the matrix resident and project activations in place.
+
+In the CLI and agent REPL, `/steer` displays the FFN scale and `/steer F`
+sets it for subsequent tokens, without rebuilding the existing KV cache.
+Load with `--dir-steering-ffn 0` to start with steering disabled and enable it
+later. Scales range from `-100` to `100`; start near `-1` to `1`.
+Each session keeps its own steering strengths; the vector bank is shared.
+The agent steers its decisions and prose, while processing prompt text and
+generating tool calls without steering to preserve exact arguments and file
+contents. CLI and server steering covers both prefill and decode.
+The MTP predictor remains unsteered; its drafts are verified by the steered
+target model.
+
+See [dir-steering/README.md](dir-steering/README.md) to build a vector for
+`gguf/Qwen3.8-27B-UD-IQ3_S.gguf` from the bundled paired prompt sets.
 
 ## Testing And Release QA
 

@@ -1,20 +1,24 @@
 # AI Canvas Tauri — AI 画布、AI短剧与AI资产管理
 
+![AI Canvas Tauri — 从创意、分镜到视频的本地优先创作画布](doc/images/github-social-preview.jpg)
+
+**把创意、角色、分镜和视频放在同一张画布里，连接 ComfyUI、AI Agent 与 MCP 完成创作。**
+
+[![GitHub Stars](https://img.shields.io/github/stars/Tenney95/AI-Canvas-tauri?style=flat&label=Star%20on%20GitHub)](https://github.com/Tenney95/AI-Canvas-tauri/stargazers)
+
+**[在线体验](https://tenney95.github.io/AI-Canvas-tauri/) · [下载桌面版](https://github.com/Tenney95/AI-Canvas-tauri/releases) · [分享作品与交流](https://github.com/Tenney95/AI-Canvas-tauri/discussions)**
+
 > ⭐ **开源计划：** 当本项目的 GitHub Stars 达到 **10,000（10k）** 时，项目自有代码将转用 **[MIT License（MIT 许可证）](https://opensource.org/license/mit)**，允许自由使用、修改、分发和商用，须保留版权声明和许可文本。在此之前，仍以 [LICENSE](LICENSE) 中的当前许可条款为准。
 
 **简体中文** · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md)
-
-<p align="center">
-  <img src="public/icons.svg" alt="AI Canvas Tauri Icon" width="140" height="140" />
-</p>
 
 > 面向 **AI短剧创作、AI资产管理、图像/视频生成与分镜制作** 的本地优先 AI 多模态画布与可视化工作流桌面应用，集成 **ComfyUI、对话 AI Agent 与 MCP**，基于 **Tauri 2 + React 19 + React Flow 12** 构建。
 
 AI Canvas Tauri 将文本、图像、视频、音频、逐帧动画、Markdown、分镜、360° 全景和手绘笔记组织成可连接的画布节点。你可以在同一个项目中编排生成链路、统一管理角色库、人物/场景/道具与本地素材、执行 ComfyUI 工作流、安装 JavaScript 或可信 Python 用户插件，也可以通过对话助手查询或修改画布、生成媒体、派出只读子智能体、读取授权文件并沉淀项目记忆。项目还能拆成剧集与分集，一部 AI短剧的每一集各占一张画布，角色库与素材整部剧共用。
 
-**v0.10.11：** 改善 macOS 媒体与滚轮稳定性，新增画布布局、玻璃材质调整、助手参考图、Skill 压缩包导入和首次画布入口引导，完善视频取回与分集命名。
+**v0.10.13：** 新增引用胶囊双击全屏预览和精确镜头引用，完善视频复刻的角色替换与任务恢复，优化素材加载、分组操作及 ComfyUI 安装表单。
 
-![Version](https://img.shields.io/badge/version-0.10.11-6366f1)
+![Version](https://img.shields.io/badge/version-0.10.13-6366f1)
 ![Tauri](https://img.shields.io/badge/Tauri-2-24c8db)
 ![React](https://img.shields.io/badge/React-19-61dafb)
 ![React Flow](https://img.shields.io/badge/React_Flow-12-ff0072)

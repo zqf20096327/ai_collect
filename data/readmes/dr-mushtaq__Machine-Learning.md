@@ -566,6 +566,7 @@ Please enrolled in the following courses to strengthen knowledge and practical s
 #### Github  
 - **[100 Days of Machine Learning Challenge](https://100daysofml.github.io/Week_07/Lesson_31.html)**
 - **[zero-to-ai](**https://zero-to-ai.dev/14-local-llms/02_open_source_models_overview**)** - FREE
+- **[Machine Learning Concepts](**[https://zero-to-ai.dev/14-local-llms/02_open_source_models_overview](https://inria.github.io/scikit-learn-mooc/)**)** - FREE
 
 
  ## 🗃️ Lessons
@@ -603,4 +604,10 @@ Please enrolled in the following courses to strengthen knowledge and practical s
 |[**🌐4-Precision-Recall-F1-score⭐️**](https://medium.com/@Coursesteach/supervised-learning-with-scikit-learn-part-18-precision-recall-f1-score-8f6a45d0d2fd)|[1](https://www.youtube.com/watch?v=LxgJz3JVFv0&list=PLLTSM0eKjC2fZqeVFWBBBr8KSqnBIPMQD&index=14)[-2](https://drive.google.com/file/d/1n9GHBcBwnRjjklBPT6wTCoy18Coflz5v/view)|[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Machine-Learning/blob/master/Supervised_(Classification)_ML_Model_Training_and_Evulation_.ipynb)||[Doc](https://scikit-learn.org/stable/user_guide.html)|
 | [**🌐3-Other Classification metrics⭐️**](https://medium.com/@Coursesteach/supervised-learning-with-scikit-learn-part-19-other-classification-metrics-9d80467e4fa2)|[1](https://www.youtube.com/watch?v=LpdTtX4WsiM&list=PLLTSM0eKjC2fZqeVFWBBBr8KSqnBIPMQD&index=17)[-2](https://drive.google.com/file/d/1O1T3UbIkXvtI11O4DMi9eV8HwetYQByj/view)| [![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Machine-Learning/blob/master/Supervised_(Classification)_ML_Model_Training_and_Evulation_.ipynb) ||[Doc](https://scikit-learn.org/stable/user_guide.html)|
 | [**🌐6-Understanding Regression Metrics**](https://medium.com/@Coursesteach/supervised-learning-with-scikit-learn-part-19-understanding-regression-metrics-36bb60f2182a)|[1](https://www.youtube.com/watch?v=hZ3f94Nj9Jw)| [![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Machine-Learning/blob/master/Supervised_%28Classification%29_ML_Model_Training_and_Evulation_.ipynb) ||[Doc](https://scikit-learn.org/stable/user_guide.html)|
-| [**🌐7-How to Choose the Right Algorithm**](https://medium.com/@Coursesteach/supervised-learning-with-scikit-learn-part-20-how-to-choose-the-right-algorithm-e5b6fd8112d6)|---| [![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Machine-Learning/blob/master/Supervised_(Classification)_ML_Model_Train
+| [**🌐7-How to Choose the Right Algorithm**](https://medium.com/@Coursesteach/supervised-learning-with-scikit-learn-part-20-how-to-choose-the-right-algorithm-e5b6fd8112d6)|---| [![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Machine-Learning/blob/master/Supervised_(Classification)_ML_Model_Training_and_Evulation_.ipynb) |
+| [**🌐8-How to Improve the Performance of Machine Learning Model**](https://medium.com/@Coursesteach/supervised-learning-with-scikit-learn-part-21-how-to-improve-the-performance-of-machine-learning-e6efa0ae364f)|---| [![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Machine-Learning/blob/master/Supervised_(Classification)_ML_Model_Training_and_Evulation_.ipynb) |
+
+## 📚Chapter:5-**Fine Tuning your model**
+| Topic Name/Tutorial | Video | Code |Extra Learning|
+|---|---|---|---|
+|[**🌐1- Introduction of Hyperparameter Tuning⭐️**](https://medium.com/@Coursesteach/supervised-learning-with-scikit-learn-part-22-introduction-of-hyperparameter-tuning-c191eb595373)|[1](http

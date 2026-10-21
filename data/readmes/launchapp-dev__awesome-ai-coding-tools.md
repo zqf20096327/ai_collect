@@ -112,6 +112,7 @@ Frameworks for running multiple agents, coordinating workflows, or building your
 - [AgentBridge](https://github.com/raysonmeng/agent-bridge) 🟢 🆓 — Local CLI that keeps Claude Code and Codex as live peers in one session for mid-turn review and quota-boundary handoff.
 - [Agentlas OS](https://github.com/agentlas-ai/Agentlas-OS) 🟢 🏠 — Apache-2.0 local-first environment for building portable coding-agent teams and routing them across supported hosts with MCP/A2A and verification gates.
 - [Aura](https://github.com/Naridon-Inc/aura) 🟢 — Open-source VCS layer for reviewing AI-agent code changes with semantic diffs and provenance.
+- [FlowDeck Studio](https://flowdeck.studio/) 💰 - Native macOS workspace that runs Claude Code, Codex and Cursor sessions in parallel on iOS and macOS projects, each in its own Git worktree and simulator so agents can build, run and test the app themselves.
 - [Superagent](https://github.com/pungme/superagent-desktop) 🟢 🏠 — MIT-licensed macOS desktop app that gives Claude Code and Codex a real browser to drive, an iOS Simulator to install and screenshot apps in, and a phone companion app for remote monitoring.
 - [LangGraph](https://github.com/langchain-ai/langgraph) 🟢 — Stateful multi-agent graphs from LangChain.
 - [CrewAI](https://github.com/crewAIInc/crewAI) 🟢 — Role-based multi-agent framework.
@@ -245,6 +246,7 @@ Frontier and open-weight models with strong code performance.
 - [punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers) — MCP servers specifically.
 - [Hannibal046/Awesome-LLM](https://github.com/Hannibal046/Awesome-LLM) — Broader LLM landscape.
 - [Shubhamsaboo/awesome-llm-apps](https://github.com/Shubhamsaboo/awesome-llm-apps) — LLM application examples.
+- [ianwieds/awesome-ai-agents](https://github.com/ianwieds/awesome-ai-agents) — AI agents broadly, with a 115-entry coding agents section.
 
 ---
 

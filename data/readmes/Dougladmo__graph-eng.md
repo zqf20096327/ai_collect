@@ -2,100 +2,74 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="docs/assets/logo-light.svg">
-    <img src="docs/assets/logo-light.svg" width="200" height="200" alt="Logo do graph-eng: quadrado escuro com quatro bolinhas em losango ligadas por linhas retas">
+    <img src="docs/assets/logo-light.svg" width="200" height="200" alt="graph-eng logo: a dark square with four dots in a diamond, joined by straight lines">
   </picture>
 </p>
 
 <h1 align="center">graph-eng</h1>
 
 <p align="center">
-  <em>Tarefa complexa vira um grafo pequeno de agentes: executor barato, revisor forte, e você acompanha — e agora também age — ao vivo.</em>
+  <em>A complex task becomes a small graph of agents: reviewer feedback flows back through the graph, and the run only ends DONE with evidence.</em>
 </p>
 
 <p align="center">
   <a href="https://github.com/Dougladmo/graph-eng/stargazers"><img src="https://img.shields.io/github/stars/Dougladmo/graph-eng?style=flat-square&color=1d1d1f&label=stars" alt="stars"></a>
-  <a href=".claude-plugin/plugin.json"><img src="https://img.shields.io/badge/vers%C3%A3o-0.1.0-0a84ff?style=flat-square&labelColor=1d1d1f" alt="versão 0.1.0"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/licen%C3%A7a-MIT-1d1d1f?style=flat-square" alt="licença MIT"></a>
-  <a href="#instalação"><img src="https://img.shields.io/badge/Claude%20Code-plugin-1d1d1f?style=flat-square" alt="plugin do Claude Code"></a>
-  <a href="#requisitos"><img src="https://img.shields.io/badge/Node-22-1d1d1f?style=flat-square" alt="Node 22"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.0.0-0a84ff?style=flat-square&labelColor=1d1d1f" alt="version 1.0.0"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1d1d1f?style=flat-square" alt="MIT license"></a>
+  <a href="#the-five-commands"><img src="https://img.shields.io/badge/Claude%20Code-plugin-1d1d1f?style=flat-square" alt="Claude Code plugin"></a>
+  <a href="#the-five-commands"><img src="https://img.shields.io/badge/Codex-plugin-1d1d1f?style=flat-square" alt="Codex plugin"></a>
+  <a href="#development"><img src="https://img.shields.io/badge/Node-22-1d1d1f?style=flat-square" alt="Node 22"></a>
+  <a href="#benchmark"><img src="https://img.shields.io/badge/Claude%20benchmark-DONE%2010%2F10-30d158?style=flat-square&labelColor=1d1d1f" alt="real Claude benchmark: DONE with 10/10 external acceptance"></a>
 </p>
 
 <p align="center">
-  <a href="#instalação">Instalação</a> ·
-  <a href="#uso">Uso</a> ·
-  <a href="#painel">Painel</a> ·
-  <a href="#ações-sobre-uma-run">Ações</a> ·
-  <a href="#esforço-e-teto-de-agentes">Esforço e teto</a> ·
-  <a href="#faq">FAQ</a> ·
-  <a href="skills/graph-eng/DESIGN.md">Por que o desenho é este</a>
+  <a href="#installation">Installation</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="#benchmark">Benchmark</a> ·
+  <a href="#the-five-commands">Commands</a> ·
+  <a href="#final-state-in-the-panel">Panel</a> ·
+  <a href="CHANGELOG.md">Changelog</a> ·
+  <a href="skills/grapheng/DESIGN.md">Why the design is this way</a>
 </p>
 
 <p align="center">
-  <strong>executor barato · revisor forte · toda implementação verificada por outro agente · painel ao vivo · 0 dependências</strong><br>
-  <sub>Workers em Sonnet, planner, verificador e critic no modelo da sessão. O design é revisado antes de implementar, e o grafo roda em loop até os critérios de pronto fecharem, dentro de um teto de agentes que você controla.</sub>
+  🌐 <strong>English</strong> · <a href="README.pt-BR.md">Português</a> · <a href="README.es.md">Español</a>
+</p>
+
+<p align="center">
+  <strong>strong role plans and reviews · cheap role executes · real checks per node · DONE only with evidence · live panel</strong><br>
+  <sub>graph-eng plans or runs complex tasks as small graphs, with roles set by the host, trusted checks and per-run evidence. The package keeps the <code>graph-eng</code> identity and finds <code>skills/</code> in a portable location.</sub>
 </p>
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/painel-dark.png">
     <source media="(prefers-color-scheme: light)" srcset="docs/assets/painel-light.png">
-    <img src="docs/assets/painel-light.png" width="860" alt="Painel do graph-eng com uma run fictícia rodando: na lateral, as runs em Fixadas, num grupo, Em andamento, Paradas e Finalizadas recolhida; no centro, o grafo em sete colunas de fase, com nós prontos, rodando, bloqueado, falho e pulado">
+    <img src="docs/assets/painel-light.png" width="860" alt="graph-eng panel with a sample run in progress: the sidebar lists runs under Pinned, a group, In progress, Stalled and a collapsed Finished section; the center shows the graph in phase columns, with done, running, blocked, failed and skipped nodes">
   </picture>
 </p>
 
 ---
 
-## O que é
+## In 30 seconds
 
-`graph-eng` é um plugin do Claude Code que roda uma tarefa complexa como um **grafo pequeno de
-agentes**, com um **esqueleto de fases obrigatório por modo** (implement passa por Design → Revisão do
-design → Implementação → Síntese; architecture não chega a implementar; research/review vão a Plano →
-Pesquisa → Crítica → Síntese):
+> You describe the task. A **strong** model plans and reviews, **cheap** models do the work, and the supervisor runs **real tests** at every step. The run only ends as **DONE** when there is evidence; otherwise it stops with a **readable reason**.
+>
+> The point: complex tasks without paying the strong model's price for every line of work. The expensive model only thinks; the cheap one does the volume. See [why split the models](#benchmark).
 
-```
-PLAN ─▶ PESQUISA ─▶ DESIGN ─▶ REVISÃO DO DESIGN ─▶ [ DAG: work ─▶ gate de checks ─▶ verify ⇄ repair ] ─▶ CRITIC ─┬─ done ──▶ SÍNTESE (polidores + consolidador) ─▶ gate humano
-                                    ▲                                                                            │
-                                    └─────────────────────────── gaps = novos nós ─────────────────────────────┘   (até maxRounds, ou sem gap novo)
-```
+| | |
+| --- | --- |
+| 🧠 **Plans strong** | The host's strong model builds the plan as a graph and reviews every stage. |
+| ⚙️ **Executes cheap** | The host's operational model, cheaper, does the work of each node. |
+| 🧪 **Checks with tests** | `node --test` on each node's files, and the whole suite at the end. |
+| 🔁 **Fixes along the way** | Reviewer feedback flows back through the graph: redo a node, replan, or stop. |
+| 🔒 **No false DONE** | Without passing tests, an approving critic and current evidence, DONE is denied. |
 
-Em dois comandos:
+Current version: **1.0.0** · see the [CHANGELOG](CHANGELOG.md).
 
-```
-/plugin marketplace add Dougladmo/graph-eng
-/plugin install graph-eng@graph-eng
-```
+## Installation
 
-```
-/graph-eng:graph-eng implement "descreva a tarefa aqui"
-```
-
-A **regra é executor barato, revisor forte**: workers em Sonnet; planner, verificador e critic no
-modelo da sessão. Leitura roda em paralelo. Escrita roda em paralelo só quando os nós declaram arquivos
-disjuntos; se os arquivos se sobrepõem, fica em raia única. Toda implementação é verificada por outro
-agente, com uma lente de boas práticas no verify e na crítica; o 2º voto só entra quando o verificador
-fica em dúvida; o design é revisado antes de implementar — reprovado, não implementa. O quanto o grafo
-gasta é o **esforço** (`manual`/`auto`/`low`/`medium`/`high`/`max`) contra um **teto** de agentes
-(padrão de fábrica: `ceiling` 24 e `effort` auto, vale sem nenhuma configuração). A fundamentação de
-cada decisão, com fontes, está em [skills/graph-eng/DESIGN.md](skills/graph-eng/DESIGN.md).
-
-**Quando usar:** feature, refatoração, arquitetura de sistema ou investigação profunda que se beneficia
-de separar quem trabalha de quem confere. **Quando não usar:** tarefa de um passo, ou trabalho muito
-sequencial com muito contexto compartilhado (debugar um fluxo) — faça direto na sessão, ou use
-`economy: 'lean'`.
-
-O workflow **nunca** faz commit, push, deploy nem migration remota. Isso fica no gate humano.
-
-## Requisitos
-
-- Claude Code com **dynamic workflows**. Disponíveis em todos os planos pagos e com acesso pela API. No
-  plano Pro, ligue a linha **Dynamic workflows** em `/config`.
-- `node` no `PATH`. O painel e a config rodam em Node puro, sem `npm install`. Testado no Node 22.
-
-## Instalação
-
-### Numa sessão do Claude Code
-
-Rode os dois comandos, um de cada vez:
+In a Claude Code session, one command at a time:
 
 ```
 /plugin marketplace add Dougladmo/graph-eng
@@ -105,392 +79,233 @@ Rode os dois comandos, um de cada vez:
 /plugin install graph-eng@graph-eng
 ```
 
-O segundo abre os detalhes do graph-eng no painel do `/plugin`. Escolha o escopo — **Install for you**
-vale para todos os seus projetos. Se aparecer `Run /reload-plugins to activate.`, rode `/reload-plugins`.
-
-### Pelo terminal
+From the terminal:
 
 ```bash
 claude plugin marketplace add Dougladmo/graph-eng
 claude plugin install graph-eng@graph-eng
 ```
 
-Instala para o seu usuário. Com `--scope project`, ativa para quem trabalha no repositório. O plugin
-carrega na próxima sessão, ou depois de `/reload-plugins` numa sessão já aberta.
+Requirements: `node` 22 on the `PATH`. The package has no runtime dependencies.
 
-### Conferir
+## The five commands
 
-Digite `/` numa sessão: `/graph-eng:graph-eng` aparece na lista. No terminal, `claude plugin list`
-mostra `graph-eng@graph-eng`.
+The normal path goes top to bottom. Each step reuses the previous one while it is still valid.
 
-### Atualizar
-
-Marketplace de terceiros vem com a atualização automática desligada. Para atualizar, no terminal:
-
-```bash
-claude plugin marketplace update graph-eng
-claude plugin update graph-eng@graph-eng
+```mermaid
+flowchart TD
+  I([init<br/>starts the panel]) -.-> P
+  P[plan<br/>writes the plan] --> Q{any questions?}
+  Q -- yes --> C[clarify<br/>answers the questions] --> T
+  Q -- no --> T[tasks<br/>splits into tasks]
+  T --> M[implemente<br/>runs and tests]
+  M --> R([DONE or BLOCK<br/>with a reason])
 ```
 
-Numa sessão aberta, rode `/reload-plugins` depois. Ou pela interface: `/plugin` → aba **Installed** →
-**Update now** no graph-eng → `/reload-plugins`.
+| Command | What it does | Touches code? |
+| --- | --- | --- |
+| `plan <task>` | Writes the plan. If information is missing, it ends with `needs_clarification`. | ❌ |
+| `clarify` | Answers the plan's pending questions. It never makes up answers. | ❌ |
+| `tasks` | Splits the approved plan into tasks (a dependency graph). | ❌ |
+| `implemente [<task>]` | Runs the tasks, runs the tests and decides DONE or BLOCK. | ✅ |
+| `init` | Starts (or reuses) the local panel and prints the port. | ❌ |
 
-### Desinstalar
-
-```
-/plugin uninstall graph-eng@graph-eng
-```
-
-Pelo terminal: `claude plugin uninstall graph-eng@graph-eng`. Isso remove o plugin, mas não o que ele
-grava fora da pasta dele: `~/.claude/graph-eng/` (config, fila de pedidos, organização da lista) e a
-pasta `.graph-runs/` de cada repositório. Apague à mão se quiser.
-
-## Uso
-
-```
-/graph-eng:graph-eng [--lean|--max] [--effort <manual|auto|low|medium|high|max>] [--ceiling <N>]
-  [--plan-gate] [--spec <arquivo>] [research|architecture|implement|review] <tarefa>
-```
-
-A skill também dispara sozinha quando você pede "grafo", "graph eng" ou "roda em loop até ficar pronto"
-para uma tarefa complexa. Ela faz um scout barato, lê a config efetiva com
-`node "${CLAUDE_PLUGIN_ROOT}/bin/graph-config.mjs" --json`, monta o `context` e chama o workflow
-`graph-eng:graph-eng`. O paper trail de cada run fica em `<repo>/.graph-runs/<runId>/` (plano, artefatos
-por nó, `REPORT.md`), e o `INDEX.md` guarda a memória entre runs.
-
-| Preset     | Modelos                    | Quando                                    |
-| ---------- | --------------------------- | ------------------------------------------ |
-| `lean`     | Sonnet também no design    | tarefa média, custo mínimo                 |
-| `balanced` | Sonnet nos workers          | padrão                                     |
-| `max`      | tudo no modelo da sessão    | tarefa crítica                             |
-
-O teto e a largura não vêm do preset — ver [Esforço e teto de agentes](#esforço-e-teto-de-agentes).
-
-## Painel
-
-A skill sempre sobe o painel web e imprime o id da run (`wf_…`) e o link ao vivo:
-
-```bash
-node "${CLAUDE_PLUGIN_ROOT}/bin/graph-watch.mjs" ui
-# imprime "graph-eng: painel: http://127.0.0.1:<porta>"; abra "<url>/?run=<wf>" para uma run
-```
-
-A skill sobe o painel com `ui --detach`, que solta o servidor num processo próprio: fechar a tarefa, o
-painel ou a sessão do Claude não derruba o localhost. Para subir na mão, use `/graph-eng:painel`; para
-parar, `/graph-eng:painel stop` (ou `graph-watch.mjs ui --stop`). O log do servidor desacoplado fica em
-`~/.claude/graph-eng/painel.log`.
-
-Roda em `127.0.0.1`, com **uma instância por máquina**: se a porta já tem um `graph-watch ui` no ar, o
-comando novo sai na hora reaproveitando ele. A porta padrão é 4477; troque com `--port <N>` ou com a
-variável `GRAPH_ENG_PORT` (a flag vence a variável). Para a skill usar outra porta sempre, fixe no
-`~/.claude/settings.json`:
-
-```json
-{ "env": { "GRAPH_ENG_PORT": "5177" } }
-```
-
-Cada nó do grafo mostra uma bolinha — piscando quando está rodando agora, preenchida quando já rodou
-(vermelha se falhou) e vazia quando ainda não rodou. A lista lateral mostra as runs da máquina,
-organizada como no Claude Code (ver [Lista de runs](#lista-de-runs-fixadas-grupos-arquivadas)), e clicar
-num nó abre o detalhe (prompt, ferramentas recentes, resultado). O painel também **age** sobre a run —
-ver a seção seguinte.
-
-Um nó que não terminou verificado mostra o **motivo**, tirado só dos arquivos da run (journal, veredito
-do verificador, revisão do design) e nunca inventado: `pulado` (revisão do design reprovada, dependência
-sem saída, teto esgotado, ou sem vaga/cortado do plano quando o journal não separa os dois), `falhou`
-(com o destino do reparo), `falhou (check)` (o comando de conferência do nó), `bloqueado` (o worker ou o
-motor sinalizou bloqueio) e `sem reverificação` (reparo sem 2ª verificação). Aparece no `title` e no `aria-label` da
-bolinha (passe o mouse ou navegue por teclado), na gaveta de detalhe do nó, e nas duas saídas em texto do
-`graph-watch` — `events`, na linha de marco final, e `snapshot`, no bloco `motivos:` depois do layout em
-caixas. O favicon do painel usa o mesmo logo do cabeçalho: PNG de 32px e `apple-touch-icon.png` gerados
-uma vez e versionados, porque o Safari não mostra favicon SVG; `/favicon.ico` devolve esse PNG (antes
-respondia 204, sem ícone nenhum).
-
-## Ações sobre uma run
-
-O painel pode retomar uma run parada, parar uma run, refazer um nó (com a opção de arrastar os
-dependentes) e mostrar os artefatos — mas o painel é um processo à parte do Workflow, então ele nunca
-executa a ação direto: ele **pede**, e a sessão do Claude que está ouvindo **executa**. Por isso cada
-ação depende de haver uma sessão ouvindo (ver abaixo); sem ela, sobra o botão **Copiar comando**, que
-funciona sempre.
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/acoes-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="docs/assets/acoes-light.png">
-    <img src="docs/assets/acoes-light.png" width="860" alt="Run parada no painel: Retomar habilitado, Parar desabilitado porque a sessão dona não está ouvindo, e a gaveta de um nó falho com o motivo, o botão Refazer nó e o histórico de verificações e reparos">
-  </picture>
-</p>
-
-### Como o pedido chega até a sessão
-
-1. O painel grava o pedido — `resume`, `stop` ou `rerun-node` — numa fila em arquivo
-   (`~/.claude/graph-eng/requests/`), gravação atômica.
-2. A skill deixa o `graph-watch events` rodando em segundo plano no Monitor
-   (`skills/graph-eng/SKILL.md`, "Ações sobre uma run"); cada linha nova vira um evento para o Claude.
-   `events` também grava o sinal de vida do watcher a cada 10s.
-3. O Claude lê o pedido pela linha do evento, decide o que fazer (ver a tabela abaixo) e grava o estado
-   de volta com `bin/requests.mjs` (`accept`/`done`/`fail`), que o painel mostra em tempo real por SSE.
-
-| Tipo         | Quem atende                                                                 | O que a sessão faz                                                                           |
-| ------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------|
-| `resume`     | a 1ª sessão ouvindo no mesmo projeto (exceto: run parada com a dona ouvindo)   | roda `bin/graph-resume.mjs` para montar `args.resume` e dispara o `Workflow(...)` de retomada   |
-| `rerun-node` | idem                                                                            | mesmo CLI, com `--rerun <id> [--dependents]`                                                    |
-| `stop`       | só a sessão **dona** da run                                                    | `TaskStop(task_id)` da task do Workflow em execução                                             |
-
-`stop` é sempre da sessão dona porque `TaskStop` só alcança task da própria sessão. A exceção de
-`resume`/`rerun-node` para a dona existe porque uma run "parada" pode ser falso positivo (seção
-seguinte) — nesse caso, disparar de outra sessão duplicaria a execução; só a dona sabe parar a antiga
-antes de subir a nova.
-
-Depois do `TERMINADO`, a sessão segue ouvindo por **2 h** (o Monitor é rearmado até 4 vezes sem avisar
-você). Passado isso, ou sem nenhuma sessão nunca tendo ouvido essa run, o painel mostra "nenhuma sessão
-ouvindo" e os botões de ação ficam desabilitados, com o motivo — sobra o **Copiar comando**.
-
-### Copiar comando
-
-Os botões **Copiar para retomar**, **Copiar para refazer `<nó>`** e **Copiar para parar** colocam no
-clipboard o texto exato para colar numa sessão do Claude Code, mesmo sem nenhuma sessão ouvindo. Colar
-faz a retomada certa sem nenhuma pergunta extra — é o mesmo caminho que a sessão ouvinte roda sozinha.
-
-### Motor retomável
-
-`workflows/graph-eng.js` aceita pelos args os nós já prontos (`args.resume.done`, com veredito e
-resultado) e a lista de nós a refazer, com a opção de arrastar os dependentes. Um nó pronto que **não**
-está na lista de refazer não gera agente nenhum: o motor entra com o resultado gravado direto, sem
-chamar `agent()`. Os trilhos, o esforço e o teto continuam valendo, e o teto conta só os agentes que
-ainda vão rodar — um nó pronto nunca é cortado do plano por causa do teto. `bin/graph-resume.mjs` monta
-os args a partir dos artefatos da run (plano + `<nó>.md` de cada nó, com o `journal.jsonl` do último
-Workflow da run como conferência de quem passou de fato) e sabe se a revisão do design já passou por um
-campo explícito, sem inferir por marca implícita.
-
-### Artefatos da run
-
-A gaveta do painel mostra o `REPORT.md`, o plano e a saída de cada nó, lidos de `.graph-runs/<run>/`,
-só em leitura. Todo caminho pedido é conferido contra o diretório da run antes de servir — nenhum
-caminho sai dali.
-
-### Arquivar e apagar
-
-**Arquivar** esconde a run da lista lateral, com um filtro (ícone de filtro no cabeçalho) para mostrar
-as arquivadas. **Apagar** remove só `.graph-runs/<run>/` — nunca os históricos em `~/.claude/projects` —
-e exige digitar o nome da run para confirmar. Dá para apagar uma run de cada vez, ou todas as
-Finalizadas de uma vez (**Apagar finalizadas**, com um dialog listando as runs e uma confirmação
-digitada).
-
-## Lista de runs: fixadas, grupos, arquivadas
-
-A lateral organiza as runs como no Claude Code:
-
-- **Fixar/desafixar** uma run: as fixadas ficam na seção **Fixadas**, no topo.
-- **Grupos**: crie um grupo com nome, renomeie, apague (as runs voltam para a seção do estado delas) e
-  mova uma run para um grupo pelo menu da run ou arrastando.
-- **Ordem das seções**: Fixadas → grupos do usuário → Em andamento → Paradas → Finalizadas (fechada por
-  padrão, com a contagem no cabeçalho — é a seção mais longa e a menos acionável).
-- **Uma run fica num lugar só**: fixada vence grupo, e grupo vence as seções de estado.
-- **Toda seção é um accordion** — abre e fecha pelo cabeçalho, com a seta `⌄` (aberta) ou `›` (fechada),
-  funciona pelo teclado (`aria-expanded`) e o estado fica lembrado no navegador.
-- **Paradas** tem seção própria, entre Em andamento e Finalizadas, em vez de ficar dentro de "Em
-  andamento": o selo antigo de "parada?" tinha falso positivo (ver [Detecção de
-  parada](#detecção-de-parada)), então misturar runs saudáveis com runs mortas escondia as duas. Uma run
-  `planOnly` (só o planner rodou) nunca conta como parada — ou soma no runId da run real, ou conta como
-  terminada.
-- A organização (fixada, grupo, arquivada) é gravada ao lado da config, pela **chave da run**: o
-  `runId`, não o `wf`. Uma run retomada nasce com outro `wf`, e é por isso que ela continua fixada ou no
-  mesmo grupo depois de retomada.
-- **Resumo compacto das bolinhas**: até `X` nós (padrão 10, `STRIP_MAX` em `bin/ui/sidebar.mjs`), a linha
-  da run mostra uma bolinha por nó, igual ao grafo. Acima de `X`, a fileira quebrava em 2-3 linhas e
-  desalinhava a lista, então a linha passa a mostrar um **resumo por
-  estado** — uma bolinha com a contagem de nós com erro, rodando e concluídos, em vez de uma por nó. O
-  texto por extenso (quantos de cada estado) vai no `title` e no `aria-label`, nunca só no visual.
-
-## Detecção de parada
-
-Uma run ou um nó só conta como **parado** se o histórico do agente em execução ficar sem escrita por
-mais de N minutos (padrão 5, configurável em `stallMinutes`) ou se a sessão dona tiver acabado. O painel
-mostra o motivo: "sem atividade há X min", "sessão encerrada" ou "orçamento esgotado". A linha "agora"
-do `graph-watch` também conta os pseudo-agentes `critic` e `synth`, que antes sumiam da run corrente.
-
-## Esforço e teto de agentes
-
-O planner não escolhe o tamanho do grafo à toa: ele dimensiona para um **alvo de agentes**, derivado de
-duas coisas — o **esforço** (`manual`, `auto`, `low`, `medium`, `high`, `max`) e o **teto** (`ceiling`,
-padrão de fábrica **24**, com `effort: 'auto'` — vale assim que o plugin é instalado, sem tocar em
-config nenhuma). A largura do DAG e o número máximo de nós saem do alvo, não o contrário.
-
-```
-alvo = max(piso do modo, round(pct(esforço) × teto))   pct: low 20% · medium 40% · high 70% · max 100%
-```
-
-O piso é **1 agente por fase obrigatória do esqueleto** daquele modo — quem fixa o mínimo que o esqueleto
-por si só já consome, mesmo num teto baixo:
-
-| Modo           | Piso (agentes) | Esqueleto de fases                                                                                  |
-| -------------- | --------------- | -------------------------------------------------------------------------------------------------------|
-| `implement`    | 8               | Plano → Pesquisa → Design → Revisão do design → Implementação → Revisão da implementação → Síntese     |
-| `architecture` | 6               | Plano → Pesquisa → Design → Revisão do design → Crítica → Síntese (sem implementação)                   |
-| `research`     | 4               | Plano → Pesquisa → Crítica → Síntese                                                                     |
-| `review`       | 4               | Plano → Pesquisa → Crítica → Síntese                                                                     |
-
-Com `effort: 'manual'`, a skill pergunta o nível a cada disparo (`AskUserQuestion`). Sem humano para
-responder — por exemplo, quando outro agente chama a skill —, ela usa `auto` e registra no relatório que
-foi o Claude quem decidiu. Com `effort: 'auto'`, o planner escolhe o nível e justifica a escolha, visível
-no plan gate. `maxAgents` é sinônimo de `ceiling`; `economy` (`lean`/`balanced`/`max`) segue existindo,
-mas hoje só escolhe modelo, não teto. Numa **retomada**, um nó já pronto nunca conta contra o teto — só
-os nós que ainda vão gerar agente.
-
-<details>
-<summary>Papéis e quantidades</summary>
-
-| Papel                              | Quantos                                                                    |
-| ----------------------------------- | ----------------------------------------------------------------------------|
-| planner                             | 1                                                                            |
-| worker `research`                   | 1 por nó de pesquisa                                                        |
-| worker `design`                     | 1 por nó de design                                                          |
-| **revisor do design**               | **1** (mais 1 re-revisão por rodada de reparo do design, até `maxRepairs`)  |
-| worker `implement`                  | 1 por nó, em paralelo quando os arquivos são disjuntos                      |
-| verificador (implementação)         | 1 por nó de implementação — **outro agente**, nunca quem escreveu           |
-| 2º voto                             | só se o verificador ficar em dúvida                                         |
-| reparo (design ou implementação)    | ≤ `maxRepairs`; o último sobe de modelo                                     |
-| critic                              | 1 por round                                                                  |
-| **polidor da síntese**              | `ceil(2/3 × nº de nós implement)`, mínimo 1                                 |
-| **consolidador da síntese**         | 1 (sempre, mesmo em research/review, que não têm polidor)                   |
-
-Em research/review, a síntese fica só com o consolidador, porque não há implementação para polir.
-
-</details>
-
-## Config
-
-A config mora em `~/.claude/graph-eng/config.json` (`effort`, `ceiling`, `economy`, `planGate`,
-`maxRounds`, `maxRepairs`, `stallMinutes`), com precedência **flag > arquivo > padrão**. A organização
-da lista (fixadas, grupos, arquivadas) mora ao lado, em `~/.claude/graph-eng/organize.json`, com as
-mesmas travas de escrita. A skill lê a config pela CLI; o painel lê e grava as duas pela API e pelo
-modal:
-
-- **CLI** (só leitura), para a skill ler antes de disparar o workflow (que não acessa disco):
-  ```bash
-  node "${CLAUDE_PLUGIN_ROOT}/bin/graph-config.mjs" --json
-  ```
-  Imprime a config efetiva, a origem de cada campo, a tabela de alvos por nível e o piso do modo.
-- **HTTP**, pelo painel: `GET /api/config` (sempre 200, campo ausente ou inválido volta ao padrão com
-  aviso) e `PUT /api/config` (grava por cima, tmp + rename; qualquer erro de validação volta em
-  `fields.<campo>`, ex.: `"ceiling": "mínimo 8"`). As rotas de ação e de organização (`/api/requests/*`,
-  `/api/org/*`) têm as mesmas travas: `Host`, `Origin` igual a `http://<Host>`, `Content-Type: application/json`,
-  413 acima de 4096 bytes e 400 com o campo que falhou.
-- **Modal de engrenagem** no painel web (botão Configurações, no rodapé da lateral), com seções
-  Agentes/Modelos/Execução/Aparência (o tema também vive aqui agora) e prévia ao vivo do alvo. Um teto
-  abaixo de 8 é recusado no campo, com o aviso `mínimo 8`, e o modal não salva. O piso é fixo porque o
-  arquivo vale para qualquer modo, e 8 é o piso do `implement`, o maior; o piso exato do modo quem
-  aplica é a CLI (`--mode`) e o motor.
-
-## Comandos
-
-| Comando | O que faz |
+| Host | How to call it |
 | --- | --- |
-| `/graph-eng:graph-eng [flags] <modo> <tarefa>` | dispara uma run |
-| `/graph-eng:painel [stop]` | sobe o painel desacoplado da sessão, ou para ele |
-| `graph-watch.mjs ui` | sobe (ou reaproveita) o painel web |
-| `graph-watch.mjs ui --detach` | igual, mas num processo próprio, que sobrevive à sessão |
-| `graph-watch.mjs ui --stop` | para o painel que está no ar |
-| `graph-watch.mjs live --run <wf>` | grafo ao vivo em texto, num terminal à parte |
-| `graph-watch.mjs live --svg` | alias que garante o painel subindo e imprime o link |
-| `graph-watch.mjs snapshot --run <wf> --no-color` | uma foto do estado atual, para colar na conversa |
-| `graph-watch.mjs agent <id> --run <wf> --no-color` | prompt, tool calls recentes e resultado de um nó |
-| `graph-watch.mjs events --run <wf> [flags]` | modo que a skill deixa no Monitor: emite eventos e grava o sinal de vida do watcher |
-| `graph-config.mjs --json` | config efetiva (a skill lê antes de disparar o workflow) |
-| `graph-resume.mjs --run-dir <dir> [--rerun <id>…] [--dependents]` | monta `args.resume` para retomar ou refazer nós, a partir do run dir |
-| `requests.mjs list\|accept\|done\|fail` | CLI da fila de pedidos (a sessão grava o estado de volta) |
+| Claude Code | `/graph-eng:plan <task>`, `/graph-eng:clarify`, `/graph-eng:tasks`, `/graph-eng:implemente [<task>]`, `/graph-eng:init` (or `/graph-eng:grapheng <command>`) |
+| Codex | the `graph-eng:grapheng` skill, with the same five commands. Codex has no global slash command for the plugin |
 
-## FAQ
+Each repository has one plan slot and one tasks slot, the **current feature**: a newly approved `plan` replaces the previous one. If something changed since the previous step, the runner refuses to reuse it and says why (`workspace_changed`, `task_changed`, `tasks_plan_mismatch`, `source_unverified`, among others).
 
-- **Ele faz commit, push ou deploy?** Não. O workflow nunca faz commit, push, deploy nem migration
-  remota; isso fica no gate humano.
-- **Quantos agentes uma run usa?** O alvo é `max(piso do modo, round(pct(esforço) × teto))`, com teto 24
-  e esforço `auto` de fábrica, e piso 8, 6, 4 e 4 por modo. O `REPORT.md` fecha com a contagem por
-  papel. Numa retomada, o teto conta só os agentes que ainda vão rodar.
-- **O painel fica exposto na rede?** Não. Roda em `127.0.0.1`, com uma instância por máquina.
-- **A porta 4477 está ocupada.** Use `--port <N>` ou `GRAPH_ENG_PORT`, ou fixe no
-  `~/.claude/settings.json`.
-- **Sem sessão do Claude aberta, dá para agir sobre uma run?** Não pelos botões — eles ficam
-  desabilitados, com o motivo. Sempre dá para clicar em **Copiar comando** e colar numa sessão nova.
-- **O `.graph-runs/` vai para o meu git?** Não. A skill põe a pasta no `.git/info/exclude`, sem mexer
-  no `.gitignore` versionado.
-- **Quando não vale a pena?** Tarefa de um passo, e trabalho muito sequencial com muito contexto
-  compartilhado — ver [Quando NÃO usar](skills/graph-eng/DESIGN.md#quando-não-usar) no DESIGN.md.
-- **Funciona no plano Pro?** Sim, ligando **Dynamic workflows** em `/config`.
-- **Apareceu `Large workflow`.** É um aviso do Claude Code quando a run agenda mais de 25 agentes ou
-  projeta mais de 1,5 milhão de tokens. Não pausa a run. Para runs menores, baixe o esforço ou o teto.
+## How it works
 
-## Desenvolvimento
+### The whole cycle
 
-Para testar uma mudança local sem publicar:
-
-```bash
-claude --plugin-dir /caminho/para/graph-eng
+```mermaid
+flowchart TD
+  P[🧠 Planner<br/>builds the plan] --> R{🧠 Plan reviewer}
+  R -- asks for changes --> P
+  R -- approves --> W[⚙️ Executors<br/>one per graph node]
+  W --> C[🧪 Supervisor runs the node's tests]
+  C --> V{🔍 Node verifier}
+  V -- FIX_LOCAL --> W
+  V -- approved --> PO[✨ Polish per area]
+  PO --> G[🧪 Final gate<br/>whole suite]
+  G --> K{🧠 Critic}
+  K -- FIX_LOCAL --> W
+  K -- REPLAN, at most 2 --> P
+  K -- BLOCK --> B([⛔ BLOCK with a reason])
+  K -- DONE with evidence --> D([✅ DONE])
 ```
 
-O painel é estilizado com Tailwind CSS v4, só em desenvolvimento: quem instala o plugin recebe o
-`bin/ui/style.css` já gerado e não precisa de `npm install`. Para mexer no visual:
+### Who does what
 
-```bash
-npm install            # só o Tailwind (devDependencies)
-npm run css:watch      # regera bin/ui/style.css a cada mudança em bin/ui/src/style.css, index.html ou app.js
-npm test               # inclui a checagem de que o style.css versionado está em dia com a fonte
+Each role's model is fixed per host (Claude Code or Codex): strong to plan and review, operational to execute. There is no flag to change it.
+
+| Role | Kind | What it does |
+| --- | --- | --- |
+| Planner | 🧠 strong | Builds the plan as a graph, with done criteria (`doneWhen`). |
+| Reviewers (plan and design) | 🧠 strong | Approve, or send it back with the reason. |
+| Critic | 🧠 strong | Checks every done criterion against the evidence and decides. |
+| Executor | ⚙️ cheap | Does one node's work, only in the files granted to it. |
+| Verifier | ⚙️ cheap | Reads what the executor did and the test receipts. |
+| Synth | ⚙️ cheap | Writes the final summary. |
+| Supervisor | 🧪 code | Runs the tests, seals the evidence and denies DONE without proof. It is not a model. |
+
+### The four decisions
+
+Every reviewer answers with one of these, always with evidence:
+
+| Decision | What happens | Limit |
+| --- | --- | --- |
+| 🔧 `FIX_LOCAL` | Redoes only the affected node, with the reviewer's reason in the prompt. | counts against the node's budget |
+| 🗺️ `REPLAN` | Writes a new plan. The user's done criteria stay locked. | at most 2 per run |
+| ⛔ `BLOCK` | Stops and shows the reason (for example `original_plan_criteria_changed`). | — |
+| ✅ `DONE` | Closes the run. Requires passing tests, an approving critic and current evidence. | denied without proof |
+
+### How a node becomes done
+
+```mermaid
+flowchart TD
+  E[⚙️ Executor changes only the granted files] --> D{🧪 Supervisor: did the diff stay<br/>inside the granted files?}
+  D -- no --> X([⛔ BLOCK])
+  D -- yes --> T[🧪 Supervisor runs node --test<br/>for the node's files]
+  T --> V{🔍 Verifier reads the diff<br/>and the test receipts}
+  V -- FIX_LOCAL --> E
+  V -- approves --> S([🔒 Supervisor seals the node's evidence])
 ```
 
-Os tokens do painel viram utilitários (`bg-surface`, `text-fg3`, `border-line`, `text-accent`,
-`font-mono`…) e `dark:` segue o switch de tema. Edite `bin/ui/src/style.css`, nunca o gerado, e versione
-os dois.
+Rules that always apply:
 
-Suba a `version` do `plugin.json` a cada release: ela vem primeiro no cálculo de qual versão o Claude
-Code usa, e um manifesto com a `version` parada mantém todo mundo na cópia em cache até o autor mudar a
-string, por mais commits que entrem depois — por isso o `/plugin marketplace update` não enxerga a
-mudança sem o bump.
+- A node only touches the files the plan granted to it. Any other file blocks it.
+- The whole suite runs once, at the final gate, after all polish.
+- Resuming never gives budget back, and counters never go down.
 
-<details>
-<summary>Estrutura</summary>
+### What changed from 0.1 to 1.0
 
+| | 0.1 | 1.0 |
+| --- | --- | --- |
+| Flow | one-way graph, with a critic at the end | **bidirectional** graph: feedback flows back and changes the plan |
+| End of the run | `PARTIAL` report, without knowing if it finished | **DONE** with evidence, or **BLOCK** with a reason |
+| Tests | free-form command per node | `node --test` selected by the node's files, whole suite at the end |
+| Configuration | effort × agent cap, plus several fine-tuning knobs | only `--effort low\|medium\|max` |
+| Hosts | Claude | Claude and Codex |
+| Panel | view plus an action queue | live view, read only |
+
+## Benchmark
+
+`bin/graph-benchmark.mjs` runs a fixed task in a clean copy of the repository, with real Claude. The grade comes from a set of **external acceptance tests** that the agents never see. Every run is detailed in [docs/validation/graph-eng-2-benchmark.md](docs/validation/graph-eng-2-benchmark.md).
+
+**Run f366:**
+
+| | graph-eng 1.0 |
+| --- | --- |
+| 💵 Cost of the run | **$0.80** |
+| ✅ External tests | **10/10** |
+| 🏁 What the engine said | **DONE** with evidence |
+| 🔒 False DONE | **no** |
+| 📞 Model calls | 21 |
+| 🔤 Tokens (input / output) | 605k / 36k |
+| ⏱️ Engine time | 292 s |
+
+**Where the money goes:**
+
+| Role | Model | Calls | USD |
+| --- | --- | --- | --- |
+| 🧠 critic | strong | 2 | `██████` 0.31 |
+| 🧠 planner | strong | 2 | `████` 0.18 |
+| 🧠 plan reviewer | strong | 2 | `███` 0.17 |
+| 🧠 design reviewer | strong | 1 | `██` 0.10 |
+| ⚙️ executor | operational | 8 | 0.015 |
+| 🔍 verifier | operational | 5 | 0.011 |
+| ⚙️ synth | operational | 1 | 0.005 |
+| **Total** | | **21** | **0.80** |
+
+The strong model accounts for about 95% of the cost. The 14 operational-model calls add up to only 3 cents. Lowering the cost means working on the strong calls (critic, planner and reviewers), and that work is still open.
+
+**Why split the models:**
+
+In this run, each token on the strong model cost about **40×** a token on the operational one. That price gap is what graph-eng uses: the strong model only does the thinking (plan, review, final verdict), and the operational model does the volume of work.
+
+| Same 21 calls, same tokens | USD |
+| --- | --- |
+| ✅ graph-eng 1.0: strong plans and reviews, operational executes (measured) | `████` **0.80** |
+| 🧠 Every call on the strong model (estimate) | `██████████` 1.99 |
+
+Running the executor, verifier and synth calls on the strong model would cost about **2.5× more**. The estimate reprices the tokens each call really used at the strong model's rate. A single agent doing the whole task on its own would not use the same tokens, and that baseline has not been measured yet. Anthropic reported the same pattern in its [multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system): a strong lead agent with lighter subagents beat a single strong agent by 90.2% on its internal research eval.
+
+- 💰 Isolating the host cut the cost from about $88 to under $1 per run: the host stopped leaking about 75k tokens of context per call and now sends about 6.5k.
+- 📈 Across 13 real runs, 1.0 never gave a false DONE. Every BLOCK became a fix with a regression test, until it closed DONE on f366.
+- 🧪 The scenario is still simple. A harder scenario is missing.
+- ⚠️ The real Codex host has not been validated yet.
+
+## Execution details
+
+Effort accepts `low`, `medium` (default) or `max`, in the separate form (`--effort max`); `--effort` overrides the configuration in `plan`, `clarify`, `tasks` and `implemente`. Roles and models are fixed by the trusted Claude or Codex adapter. There are no public flags for models, roles, width or internal limits.
+
+The execution adapter in this release only supports the Node native test runner, in repositories with a readable `package.json` and `scripts.test` set to exactly `node --test`. Vitest, Jest, scripts with extra flags and repositories without that contract produce `BLOCK` for `implemente`; `plan` still works. Each node gets a local selection derived from the `inputs`, `outputs` and `files` the supervisor approved. A known internal mapping runs the affected tests; without a complete mapping, coverage is marked as limited and only the applicable `node --check` runs plus the contract and grant validation. The final gate runs the whole suite with concurrency 2, only after all polish. Checks use `process.execPath`, explicit argv and spawn without a shell. Each run writes its selection and receipts to `.graph-runs/` in the repository.
+
+The runner reports the state and any blocks found during the run. When there is no trusted check mapping, `implemente` stays blocked; do not invent commands to get around it.
+
+## Concurrency in the same repository
+
+While an `implemente` runs in a repository, `plan`, `clarify` and `tasks` may be blocked with `workspace_busy`. That is expected: the workspace lock is the same for reading and writing, and it is only released when the run ends.
+
+## Direct CLI (`bin/graph-run.mjs`)
+
+Calling the runner directly is for debugging. `node bin/graph-run.mjs --host <claude|codex> --args <file.json>` blocks implementation without `nodeCheckPolicy` with `write_audit_unavailable`, without creating a host or runDir, and exits with code 2. Read-only plans (`planOnly`, `research`, `architecture`, `review`) pass without a policy.
+
+Resuming through the direct CLI requires repeating `mode` and `nodeCheckPolicy` in the args. A file with only `{ "runId": "...", "resume": { ... } }` hits the same block, even if the original run had a policy.
+
+## runDir integrity limits
+
+The run writes its state to `.graph-runs/<runId>/` and checks the tree with an integrity guard. That guard has two known limits:
+
+- **A violation does not persist after the process exits.** While the process that detected the change is alive, the run stays blocked with `run_integrity_violation` and does not write a REPORT. When the run is resumed later, the baseline is recomputed from the bytes currently on disk, and the resume accepts whatever is there.
+- **While one host handle runs, another handle's output is not watched.** An agent with write access to the runDir can swap another handle's `.host-*.output.json` without the guard noticing, because the output has no hash. The schema is hashed and checked at cleanup.
+
+A check error that is not a violation, such as an unreadable directory in the inventory, blocks with `integrity_check_failed`, even if the permission comes back before the run ends, and does not write a REPORT.
+
+Cost: the whole-tree check runs per agent and costs O(runDir bytes). With a 1 to 10 MB runDir, each check takes 10 to 25 ms; above 100 MB this cost should be reassessed.
+
+## Workspace lock with a dead owner
+
+Each workspace has a resource lock in the state directory. If the run finds that lock with a dead owner, it does not remove it on its own: execution stops with `workspace_lock_owner_dead`, and the detail includes the file path and the owner's pid. A live pid with a different process identity (a reused pid) counts as a dead owner.
+
+Manual removal: confirm the pid in the detail no longer exists, and only then delete the file shown. A lock with invalid JSON (`workspace_lock_invalid`) or an ambiguous owner (`workspace_lock_ambiguous`) also stays put for inspection and needs the same check before any removal.
+
+## Memory across runs
+
+At the end of each run with no integrity violation and a trusted lease (no heartbeat failure), the supervisor writes approved-design and valid-check records to the repository memory (`~/.claude/graph-eng/memory/<repoId>`, outside the runDir). A memory or record failure becomes a diagnostic in the journal and never changes the run's status.
+
+A later run in the same repository selects those records by node and contract. Each worker only gets records for its own node with the same pre-work contract identity, in a `<memoryContext>` block warning that the content is untrusted data. The records come as JSON with `<` escaped, so a summary cannot close the tag or turn into an instruction. The `memory.selected` event shows up in the journal before the agent.
+
+On resume, the run's pinned selection is reused only after it is checked. The `memory.selected` event is emitted again with `reused: true`, and the panel shows that mark. If the check fails, the run records a `selection_reuse_rejected` diagnostic and makes a new selection.
+
+Limits of this version (v1.0):
+
+- **The planner gets no memory selection.** It has no node or path defined at the start of the run, and selection needs a scope that matches some record.
+- **The critic gets no memory selection.** The branch that selected by path had no record producer with paths; it was removed and is not relaxed. Memory records do not enter the critical review.
+- **Final-phase evidence is left out.** Final check receipts (after polish) have no per-node scope and do not feed memory. Only node-phase receipts go in, scoped by `nodeId + contractIdentity`, and only the worker for the same node and contract receives them.
+- **Contract, failure and version records are out of v1.0.** Those types exist in the record model, but no producer writes them and no role selects them. Nothing is fed without a consumer.
+
+## Final state in the panel
+
+The `run.finished` event is the last one in the journal and carries the terminal status. It is emitted after the REPORT and before the lease is released. A successful planOnly run records `plan_only` (plan finished), not `blocked`.
+
+Known divergence: if releasing the lease or the workspace fails after `run.finished`, the journal keeps the result's status (for example `done`), while the CLI returns `blocked` with `lease_release_failed` or `workspace_release_failed`. The panel only shows the journal status once the lease has been released; with the lease stuck, the status is unknown.
+
+## Development
+
+The package needs no global install. With Node.js and the dev dependencies installed, run the driver and manifest tests:
+
+```sh
+node --test --test-concurrency=2 test/grapheng.test.mjs test/packaging.test.mjs
 ```
-.claude-plugin/
-  plugin.json          manifesto do plugin
-  marketplace.json     o repo também é o marketplace (source "./")
-skills/graph-eng/
-  SKILL.md             triagem, spec, scout, parâmetros, esforço/teto, plan gate, ações sobre uma run, entrega
-  DESIGN.md            decisão → evidência, com fontes
-commands/
-  painel.md            /graph-eng:painel: sobe o painel desacoplado da sessão (ou para, com stop)
-workflows/
-  graph-eng.js         o grafo: plan → esqueleto de fases → DAG → verify/repair → critic → synth → args.resume
-docs/
-  specs/               specs consolidadas (ex.: docs/specs/2026-09-28-acoes-no-painel.md)
-  assets/              logo e prints do README
-bin/
-  graph-watch.mjs      CLI: live, snapshot, agent, events (fila + sinal de vida), ui
-  ui-server.mjs        servidor do painel web (Node puro, 0 deps): config, pedidos, organização, artefatos
-  graph-config.mjs     CLI da config efetiva para a skill: node graph-config.mjs [flags] --json
-  graph-resume.mjs     CLI que monta args.resume a partir do run dir, para retomar/refazer
-  config.mjs           leitura/validação/gravação atômica de ~/.claude/graph-eng/config.json
-  requests.mjs         fila de pedidos painel → sessão e sinal de vida dos watchers
-  organize.mjs         fixadas/grupos/arquivadas/apagar (~/.claude/graph-eng/organize.json)
-  ui/
-    agent-target.mjs   fórmula esforço × teto → alvo (espelho de workflows/graph-eng.js, mesmo teste)
-    config-modal.mjs   modal de engrenagem (Agentes/Modelos/Execução/Aparência)
-    graph-layout.mjs   modelo → layout, puro e testado (coluna "Revisão do design" etc.)
-    sidebar.mjs        lista lateral (fixadas, grupos, accordion) e o menu/drag de cada run
-    actions.mjs        botões de ação e copiar comando
-    confirm.mjs        dialog de confirmação (parar, refazer, apagar, apagar finalizadas)
-    app.js             DOM ao vivo · theme.js (tema) · commands.mjs (texto dos comandos copiáveis)
-    src/style.css      fonte, Tailwind → style.css (gerado, versionado)
-    favicon.svg        ícone do painel (mesmo logo do cabeçalho)
-    favicon-32.png     PNG 32px do favicon (Safari não mostra SVG); também serve /favicon.ico
-    apple-touch-icon.png ícone para adicionar o painel à tela de início (iOS/Safari)
-    fonts/             Geist e Geist Mono, SIL OFL
-```
 
-</details>
+The project uses `node --test`; UI changes may need `npm run css:build`. The historical reasoning behind the design is in [DESIGN.md](skills/grapheng/DESIGN.md).
 
-## Licença
+## License
 
 [MIT](LICENSE)
 
@@ -500,6 +315,6 @@ bin/
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Dougladmo/graph-eng&type=Date&theme=dark">
     <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Dougladmo/graph-eng&type=Date">
-    <img alt="Star History do graph-eng" src="https://api.star-history.com/svg?repos=Dougladmo/graph-eng&type=Date">
+    <img alt="graph-eng Star History" src="https://api.star-history.com/svg?repos=Dougladmo/graph-eng&type=Date">
   </picture>
 </a>

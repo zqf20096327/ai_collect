@@ -73,10 +73,17 @@ evidence; they are not included in the current results.
 
 ## 🌐 The Vision: Virtual Centralization vs. Binary Lock-in
 
-The PKM (Personal Knowledge Management) world is currently forcing users to make a painful choice between **Data Longevity** and **AI Power**.
+PKM (Personal Knowledge Management) tools differ in where knowledge lives,
+how it is structured, and how other tools can use it. Local files and rich
+structure are not mutually exclusive.
 
-* **Vanilla Logseq / Obsidian** is a "Forest" of decentralized Markdown files. It guarantees the Lindy effect (plain-text lasts forever) and perfect Git versioning, but standard AI chunkers treat it like a blender, destroying the outliner hierarchy.
-* **Tana** is a centralized "Tree". It offers incredible semantic power, but traps your brain in a proprietary cloud database.
+* **Logseq OG file graphs and Obsidian** keep Markdown notes locally but use
+  different block, property and reference conventions. Obsidian also provides
+  a note-link graph, structured properties, Search and Bases; it is not simply
+  a folder without structure.
+* **Tana Outliner** provides linked nodes, fields and supertags in a hosted
+  workspace, with documented Markdown and JSON exports. Export availability
+  and fidelity should be evaluated separately from the working storage model.
 * **The new Logseq DB (SQLite)** uses a local database and provides official
   export paths. Its primary working state is not line-diffable Markdown,
   however, and the semantic fidelity of exported Markdown remains a separate
@@ -103,13 +110,23 @@ does not claim that the separate NLTK advisory is fixed for other consumers.
 
 ## ⚖️ The PKM Landscape
 
-| Feature | Vanilla Markdown | **Matryca Parser** | Logseq DB (SQLite) | Tana |
-| :--- | :--- | :--- | :--- | :--- |
-| **Data Format** | Plain-text (.md) | **Plain-text (.md)** | Local SQLite database with official exports | Proprietary Cloud |
-| **Version Control** | Perfect (Git) | **Perfect (Git)** | Database backup/export; no native line-by-line graph diff | None |
-| **Data Structure** | Decentralized Forest | **Virtually Centralized Graph** | Relational Database | Centralized Tree |
-| **AI Readiness** | Low (Linear Chunks) | **High (Topological AST)** | DB-native; external semantic mapping remains tool-specific | High (Proprietary) |
-| **Sovereignty** | 100% Local | **100% Local (Sovereign AI)** | Local database plus official export paths | Cloud-Only |
+This compares workflows, not product rankings: Markdown is a format;
+Obsidian, Logseq DB and Tana are applications; **Matryca Parser is a Python
+library for Logseq Markdown**, not a replacement editor or sync service.
+
+| Dimension | Vanilla Markdown | Obsidian | **Matryca Parser** | Logseq DB | Tana Outliner |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Working data** | Plain-text `.md` files | Local Markdown vault; optional cloud services | **Logseq Markdown source; derived in-memory AST/graph** | DB graph; local SQLite on desktop | Hosted workspace; documented exports |
+| **Structure and links** | Headings, lists and link conventions | Note-link graph; headings/lists; optional `^block-id` anchors | **Typed block hierarchy, UUIDs, parent/left/path relations** | Linked nodes, properties and tags | Outline and node references |
+| **Metadata and queries** | Depend on chosen tools | YAML properties; native Search and Bases | **Page/block properties, reference resolution, graph queries** | Typed properties and DB queries | Fields, supertags and search nodes |
+| **Automation** | External scripts/tools | TypeScript plugins; CLI requires app; Headless services beta | **Python API and CLI without a note-taking app** | Official CLI and scripting | Product-specific commands and integrations |
+| **History and control** | Git/backup configured separately | Local recovery; external Git; optional Sync history | Local source files; no built-in Git/sync or model-locality guarantee | Database backups and export snapshots | Hosted state and export snapshots |
+| **Portability limits** | Syntax/rendering varies by tool | Extensions, Bases and Canvas need compatible tooling | Obsidian-compatible output; no lossless cross-app round trip promised | SQLite/EDN; Markdown export omits data | Markdown/JSON; Markdown ZIP excludes media |
+
+[Full Obsidian comparison and official sources](docs/reference/PKM_OBSIDIAN_COMPARISON.md)
+explain block identity, native versus community features, current CLI/Headless
+scope and export limits. Obsidian-compatible export does **not** establish a
+native Obsidian-vault input contract.
 
 ---
 
@@ -323,13 +340,14 @@ We welcome issues, pull requests, and constructive feedback.
 
 | Resource | Link |
 | :--- | :--- |
-| **Good first issues** | [docs/GOOD_FIRST_ISSUES.md](docs/GOOD_FIRST_ISSUES.md) — starter tasks ([#19](https://github.com/MarcoPorcellato/logseq-matryca-parser/issues/19)–[#52](https://github.com/MarcoPorcellato/logseq-matryca-parser/issues/52)) |
+| **Good first issues** | [Recommended starter pack](docs/GOOD_FIRST_ISSUES.md#recommended-starter-pack) — dated Wave 5/6 selection and preserved earlier IDs; recheck GitHub before claiming |
 | **Contributing** | [CONTRIBUTING.md](CONTRIBUTING.md) — setup, tests, PR workflow |
 | **Cookbook** | [docs/COOKBOOK.md](docs/COOKBOOK.md) — integration recipes (Synapse, graph query, watcher) |
 | **Documentation index** | [docs/README.md](docs/README.md) — active vs historical docs |
 | **Documentation system** | [docs/DOCUMENTATION_SYSTEM.md](docs/DOCUMENTATION_SYSTEM.md) — authority, lifecycle, metadata, and federation |
 | **Roadmap** | [docs/ROADMAP_2026-2027.md](docs/ROADMAP_2026-2027.md) — milestones, dependencies, and evidence gates |
 | **Markdown compatibility evidence** | [Official Logseq corpus report](docs/quality/OFFICIAL_LOGSEQ_MARKDOWN_COMPATIBILITY_2026-10-10.md) — all 313 selected official documents passed raw-content and tree checks; semantic coverage and limits are explained |
+| **Generated assurance and acceptance** | [Current delivery](docs/quality/COMPOSITE_MARKDOWN_ASSURANCE_2026-10-03.md#current-delivery-and-release-status) and [#104 acceptance package](docs/quality/PARSER_ASSURANCE_ACCEPTANCE_2026-10-18.md) — bounded checks, selected depth coverage and explicit acceptance gates |
 | **Support** | [SUPPORT.md](SUPPORT.md) — safe issue routing, support scope, and response boundaries |
 | **Governance** | [GOVERNANCE.md](GOVERNANCE.md) — decisions, maintainer path, and conflict handling |
 | **Agent safety** | [docs/reference/AGENT_ACTION_CONTRACT.md](docs/reference/AGENT_ACTION_CONTRACT.md) — authority, approvals, provenance, and prompt-injection boundary |
@@ -338,20 +356,19 @@ We welcome issues, pull requests, and constructive feedback.
 
 ## 📦 Release history
 
-Latest published release: **[v1.11.0](https://github.com/MarcoPorcellato/logseq-matryca-parser/releases/tag/v1.11.0)**,
-published on 2026-10-02 and available on
-[PyPI](https://pypi.org/project/logseq-matryca-parser/1.11.0/).
+Current source version: **v1.11.1**. The [PyPI project page](https://pypi.org/project/logseq-matryca-parser/) and
+[GitHub Releases](https://github.com/MarcoPorcellato/logseq-matryca-parser/releases) list available distributions.
 Security support follows the [latest-release policy](SECURITY.md).
 
-Development on `main` also includes bounded composite Markdown assurance and
-a scoped multiline scalar-metadata round-trip fix. These changes are
-**unreleased**, not part of the v1.11.0 package; see
-[Unreleased](CHANGELOG.md#unreleased) for their scope and limits.
+The v1.11.1 source includes fenced-code parsing fixes for outline items, eligible
+multiline scalar-metadata round trips, and bounded composite Markdown assurance.
+See the [changelog](CHANGELOG.md) for scope and limits.
 
 Read the complete [release highlights](RELEASE_HIGHLIGHTS.md), the exhaustive
 [changelog](CHANGELOG.md), or the signed artifacts on
 [GitHub Releases](https://github.com/MarcoPorcellato/logseq-matryca-parser/releases).
 
+- **v1.11.1** — Fixes fenced-code parsing in outline items, preserves eligible multiline scalar-metadata round trips, and adds bounded composite Markdown assurance.
 - **v1.11.0** — Adds an experimental, read-only Logseq Org reader with source retention and explicit support limits.
 - **v1.10.0** — Clarifies the LlamaIndex companion boundary and removes the Parser's NLTK dependency chain.
 - **v1.9.0** — Adds the stable in-memory snapshot graph factory, clarifies the Parser-Plumber boundary, and governs the temporary optional-NLTK advisory exception.

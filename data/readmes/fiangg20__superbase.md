@@ -565,3 +565,5 @@ It works wherever your executor can run scripts. Some games detect or block exec
 
 **Is it affiliated with Roblox?**
 No. Superbase is an independent project.
+
+[![M8ven Score](https://m8ven.ai/badge/mcp/fiangg20-superbase-1nmxtn?v=66217098fa518e7a66a609905ea7ba9d)](https://m8ven.ai/mcp/fiangg20-superbase-1nmxtn?s=readme)

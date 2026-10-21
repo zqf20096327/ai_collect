@@ -2,7 +2,7 @@
 
 # Learn AI · Belajar AI
 
-**A free, open course on artificial intelligence: fifteen modules, a 33-question quiz and fifteen languages, in one static website.**
+**A free, open course on artificial intelligence: seventeen modules, a 37-question quiz and fifteen languages, in one static website.**
 
 No sign-up, no tracking, no build step. Open the link and start reading.
 
@@ -35,8 +35,9 @@ It is written for students, career switchers, teachers and anyone who wants to s
 
 | | |
 |---|---|
-| **15 modules** | 330 minutes of reading, from "What is AI?" to robotics, edge AI and AutoML |
-| **33-question quiz** | Shuffled every attempt, with instant feedback and a downloadable result |
+| **Neural network playground** | Train a real network in the browser: drag a neuron's weights, add layers, watch the decision boundary learn a spiral ([try it](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/neural-network-playground/)) |
+| **17 modules** | 380 minutes of reading, from "What is AI?" to AI agents, RAG, robotics and edge AI |
+| **37-question quiz** | Shuffled every attempt, with instant feedback and a downloadable result |
 | **15 languages** | Interface, lessons and quiz, including right-to-left Arabic |
 | **Reading view** | Long-form typography that is comfortable for a 25-minute module |
 | **Progress tracking** | Points, levels, favourites and six achievements |
@@ -44,6 +45,8 @@ It is written for students, career switchers, teachers and anyone who wants to s
 | **Certificate** | A self-issued PDF certificate once every module is complete |
 | **Your data, your device** | Everything is stored in `localStorage`, with JSON export and import |
 | **Light and dark** | Follows your system theme, with a manual toggle |
+
+<p align="center"><a href="https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/neural-network-playground/"><img src="docs/screenshots/playground-demo.gif" alt="The neural network playground training a three-layer network on a spiral: neuron maps, weights and the decision boundary update live" width="900"></a></p>
 
 <table>
 <tr>
@@ -66,21 +69,25 @@ It is written for students, career switchers, teachers and anyone who wants to s
 
 | # | Module | Level | Time |
 |---|--------|-------|------|
-| 01 | What is Artificial Intelligence? | Beginner | 15 min |
-| 02 | Machine Learning Basics | Intermediate | 20 min |
-| 03 | Deep Learning & Neural Networks | Advanced | 25 min |
-| 04 | Natural Language Processing | Intermediate | 18 min |
-| 05 | Computer Vision | Advanced | 22 min |
-| 06 | Basic Prompt Engineering | Beginner | 15 min |
-| 07 | Ethics and Bias in AI | Intermediate | 20 min |
-| 08 | Career Guide in AI | Beginner | 15 min |
-| 09 | Reinforcement Learning | Advanced | 28 min |
-| 10 | Generative AI & Large Language Models | Intermediate | 26 min |
-| 11 | AI in Healthcare | Intermediate | 25 min |
-| 12 | AI for Business & Industry | Intermediate | 24 min |
-| 13 | Robotics & AI | Advanced | 30 min |
-| 14 | Edge AI & IoT | Advanced | 27 min |
-| 15 | AutoML & No-Code AI | Beginner | 20 min |
+| 01 | [What is Artificial Intelligence?](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/what-is-artificial-intelligence/) | Beginner | 15 min |
+| 02 | [Machine Learning Basics](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/machine-learning-basics/) | Intermediate | 20 min |
+| 03 | [Deep Learning & Neural Networks](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/deep-learning-neural-networks/) | Advanced | 25 min |
+| 04 | [Natural Language Processing](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/natural-language-processing/) | Intermediate | 18 min |
+| 05 | [Computer Vision](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/computer-vision/) | Advanced | 22 min |
+| 06 | [Basic Prompt Engineering](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/prompt-engineering-basics/) | Beginner | 15 min |
+| 07 | [Ethics and Bias in AI](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/ai-ethics-and-bias/) | Intermediate | 20 min |
+| 08 | [Career Guide in AI](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/ai-career-guide/) | Beginner | 15 min |
+| 09 | [Reinforcement Learning](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/reinforcement-learning/) | Advanced | 28 min |
+| 10 | [Generative AI & Large Language Models](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/generative-ai-large-language-models/) | Intermediate | 26 min |
+| 11 | [AI in Healthcare](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/ai-in-healthcare/) | Intermediate | 25 min |
+| 12 | [AI for Business & Industry](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/ai-for-business-and-industry/) | Intermediate | 24 min |
+| 13 | [Robotics & AI](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/robotics-and-ai/) | Advanced | 30 min |
+| 14 | [Edge AI & IoT](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/edge-ai-and-iot/) | Advanced | 27 min |
+| 15 | [AutoML & No-Code AI](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/automl-and-no-code-ai/) | Beginner | 20 min |
+| 16 | [AI Agents: Models That Act](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/ai-agents/) | Intermediate | 25 min |
+| 17 | [RAG & LLM Application Evaluation](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/rag-and-llm-evaluation/) | Intermediate | 25 min |
+
+Every module also has its own page in each language, readable without JavaScript: [browse all modules](https://rasidi3112.github.io/learn-artificial-intelligence/learn/en/).
 
 **Languages:** Bahasa Indonesia · English · 中文 · Español · العربية · हिन्दी · Português · Français · Deutsch · 日本語 · 한국어 · Русский · Türkçe · Italiano · Tiếng Việt
 
@@ -109,7 +116,8 @@ To deploy, publish the folder as-is to GitHub Pages or Netlify. `netlify.toml` i
 
 | | |
 |---|---|
-| **Stack** | Vanilla HTML, CSS and JavaScript. No framework, bundler or package.json |
+| **Stack** | Vanilla HTML, CSS and JavaScript. No framework, bundler or runtime dependencies |
+| **Lesson pages** | `scripts/build-pages.mjs` renders one static page per module and language (225 pages), with hreflang, JSON-LD and a sitemap. The output is committed, so hosting needs no build step |
 | **Type** | Fraunces for reading and headlines, Geist for the interface, Geist Mono for metadata |
 | **Storage** | `localStorage` under the key `belajarAI_v2` |
 | **Security** | Strict Content Security Policy, with all user input escaped before rendering |
@@ -123,6 +131,10 @@ To deploy, publish the folder as-is to GitHub Pages or Netlify. `netlify.toml` i
 ├── content-translations.js  Lesson text in 14 languages
 ├── quiz-translations.js     Quiz questions in 14 languages
 ├── i18n-extra.js            Interface strings and translation fixes
+├── lessons-agents-rag.js    Modules 16 and 17 with all translations and quiz questions
+├── learn/                   Generated static page per module and language
+├── scripts/build-pages.mjs  Generator for learn/, sitemap.xml and robots.txt
+├── tests/                   node:test checks for the generated pages
 └── docs/screenshots/        Images used in this README
 ```
 
@@ -133,6 +145,15 @@ Contributions are welcome. These help the most:
 - **Review a translation** in a language you speak natively. Lesson text is in `content-translations.js`, and the quiz is in `quiz-translations.js`.
 - **Add or improve a module.** Accurate, concrete examples beat long ones.
 - **Fix a bug.** Include the steps to reproduce it in your pull request.
+
+If you change lesson text, regenerate the static pages and run the checks (Node 20 or newer, nothing to install):
+
+```bash
+npm run build:pages
+npm test
+```
+
+CI runs `npm test` on every pull request and fails if `learn/` is out of date.
 
 Fork the repo, create a branch, and open a pull request with a short note on what you changed and why.
 

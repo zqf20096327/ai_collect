@@ -14,11 +14,7 @@
 <a href="docs/cost-per-task-methodology.md">Cost Methodology</a>
 </p>
 
-<p align="center">
-<video src="https://github.com/user-attachments/assets/84f60f0f-cd7d-4513-b90b-37a0ffb5feed" controls width="820">
-Your browser cannot play this video inline. <a href="https://github.com/user-attachments/assets/84f60f0f-cd7d-4513-b90b-37a0ffb5feed">Download the swe-router explainer</a>.
-</video>
-</p>
+https://github.com/user-attachments/assets/84f60f0f-cd7d-4513-b90b-37a0ffb5feed
 
 <p align="center"><em>swe-router in about 70 seconds: the right model, handed to the developer for each task, while the platform team benchmarks once and spends less.</em></p>
 
@@ -36,23 +32,25 @@ This repository holds a benchmark harness and a skill that reads what the harnes
 
 A platform team runs the benchmark on a schedule, and every developer's assistant reads the result before each task. See the [ASCII diagram](docs/diagram-ascii.md) for a visual overview.
 
+**Model names in the published results are indicative placeholders, not the models that were run.** That holds for the chart below and for the data shipped with [`swe-router`](vend/swe-router/README.md): closed-source models are named by tier and generation (`closed-frontier-gen5`, `closed-mid-gen6`), open-weight models by parameter count and dense/MoE architecture (`open-moe-743b-a39b`, `open-dense-27b`). Every score, cost and completion count is the measured value — only the names are substituted, and no placeholder is a model you can select. **Run the benchmark in your own repository to get these results under the real model names.**
+
 ## Step 1 — Benchmark, and get a frontier
 
 One command per model. The `/benchmark` skill runs the pre-flight checks, the harness over a dataset, and the judge:
 
 ```
-/benchmark provider=bedrock model=claude-opus-5 dataset=dataset/mcp-gateway-registry-v2.yaml agent=omp
+/benchmark provider=bedrock model=<your-model-id> dataset=dataset/mcp-gateway-registry-v2.yaml agent=omp
 ```
 
 `agent` names the coding agent that drives the task and defaults to `claude`. The same flow runs headless from [`run-e2e-benchmark.sh`](benchmarks/scripts/run-e2e-benchmark.sh) (`--provider bedrock|litellm|vllm --model ... --dataset ... --agent claude|pi|omp|kiro|codex|strands|strands-harness --skill swe2|swe3`). Repeat across your model list, then the generators plot the cost/quality frontier for your repo and model set.
 
-![Cost versus quality for eleven model classes on one repository: the six on the cost/quality frontier plus five that mark out the spread. Model names are abstracted — closed-source models by tier and generation, open-weight models by parameter count and dense or MoE architecture. A dashed frontier connects the models that nothing else beats on both score and cost.](docs/images/cost-quality-abstracted.png)
+![Cost versus quality for twelve model classes on one repository: the six on the cost/quality frontier plus six that mark out the spread. Model names are abstracted — closed-source models by tier and generation, open-weight models by parameter count and dense or MoE architecture. A dashed frontier connects the models that nothing else beats on both score and cost.](docs/images/cost-quality-abstracted.png)
 
-**What the shape tells you, and why you should measure your own.** The frontier is a step function, not a line: most of the quality is reached early and cheaply, and past that point each further point of score costs several times more per task. Where those steps fall depends on your code, your tasks and your hardware — the picture above is one repository and one run per task, so the useful output is the *shape*, not the numbers. Eleven of the nineteen models measured are plotted; the eight left out all sit below the frontier, so none of them changes its shape. Model identities are abstracted to their class deliberately: the class is what tells you the hardware a model needs, and that is the part that transfers. Regenerate it for your own repositories with the chart scripts in [`benchmarks/scripts/`](benchmarks/scripts/). The source for this diagram is [`docs/diagrams/cost-quality-abstracted.html`](docs/diagrams/cost-quality-abstracted.html).
+**What the shape tells you, and why you should measure your own.** The frontier is a step function, not a line: most of the quality is reached early and cheaply, and past that point each further point of score costs several times more per task. Where those steps fall depends on your code, your tasks and your hardware — the picture above is one repository and one run per task, so the useful output is the *shape*, not the numbers. Twelve of the twenty-three models measured are plotted; the eleven left out all sit below the frontier, so none of them changes its shape. Model identities are abstracted to their class deliberately: the class is what tells you the hardware a model needs, and that is the part that transfers — the generations match the names in [`vend/swe-router/models.json`](vend/swe-router/models.json). The source for this diagram is [`docs/diagrams/cost-quality-abstracted.html`](docs/diagrams/cost-quality-abstracted.html); edit the data at the top of its script and re-render it at 1600×1104 with a device scale factor of 2 to get the committed 3200×2208 PNG. For charts straight off your own run metrics, use the plot scripts in [`benchmarks/scripts/`](benchmarks/scripts/).
 
 ## Step 2 — Developers install the skill
 
-Five files copied into a skills directory. The skill imports nothing and needs no build step. Run this from the root of the repository you want it in, and it lands in `.claude/skills/swe-router`:
+Seven files copied into a skills directory. The skill needs `python3` 3.8 or later on PATH, with no packages and no build step; the installer refuses to run without it. Run this from the root of the repository you want it in, and it lands in `.claude/skills/swe-router`:
 
 ```bash
 curl -sL https://raw.githubusercontent.com/aws-samples/sample-agentic-coding-harness-benchmarks/main/vend/swe-router/install.sh | bash
@@ -64,9 +62,9 @@ To install it once for every repository instead, send it to your home directory:
 curl -sL https://raw.githubusercontent.com/aws-samples/sample-agentic-coding-harness-benchmarks/main/vend/swe-router/install.sh | bash -s -- --dir ~/.claude/skills
 ```
 
-Re-run either command to upgrade; your edited `allowed-models.txt` is kept.
+Re-run either command to upgrade; your edited `allowed-models.txt` and `routing-policy.json` are kept.
 
-`swe-router` engages on its own before a substantial task. It sets a quality floor from what happens if the change is wrong, classifies how hard the task is, and takes the cheapest model that clears that floor at that tier. **Edit `allowed-models.txt`.** The skill treats every name in it as a model the developer can select, so listing one your team cannot reach costs them the cheaper option.
+`swe-router` engages on its own before a substantial task. Your assistant's model answers six rubric questions about the task: four set its difficulty bucket (easy, moderate, hard or very hard), and two set the quality a model must reach, from what happens if the change is wrong. The skill then takes the cheapest permitted model whose benchmark score in that bucket clears the bar, skipping any model that failed a benchmark task there. **Edit `allowed-models.txt`.** The skill treats every name in it as a model the developer can select, so listing one your team cannot reach costs them the cheaper option.
 
 Install notes, the file-by-file breakdown and the measured results: **[vend/swe-router/README.md](vend/swe-router/README.md)**.
 
@@ -118,7 +116,7 @@ Where to read more, by topic:
 | [docs/repository-structure.md](docs/repository-structure.md) | What lives where in this repository. |
 | [docs/diagrams/cost-quality-abstracted.html](docs/diagrams/cost-quality-abstracted.html) | Source for the cost/quality diagram above — a self-contained HTML page with the data inline. Edit and re-screenshot to regenerate. |
 | [.claude/skills/setup-machine/SKILL.md](.claude/skills/setup-machine/SKILL.md) | **Start here on a new machine.** What `/setup-machine` inspects and installs, why each component is needed, where the vLLM venv lands on a small root disk, and what it deliberately does not do. |
-| [.claude/skills/swe-router/SKILL.md](.claude/skills/swe-router/SKILL.md) | The `/swe-router` skill: how it sets a quality floor from the consequence of a change being wrong, picks the tier table to read it against, and selects the cheapest model that clears it. Advisory -- it recommends and stops. |
+| [vend/swe-router/SKILL.md](vend/swe-router/SKILL.md) | The `/swe-router` skill: the six rubric questions it answers about a task, how four of them set a difficulty bucket and two set the quality a model must reach, and how it then takes the cheapest permitted model that clears the bar in that bucket. Advisory -- it recommends and stops. |
 | [docs/vision.md](docs/vision.md) | The north star: a cost-aware harness that routes each task (and each phase) to the right model on the frontier -- frontier / workhorse / budget -- switching automatically. |
 | [benchmarks/README.md](benchmarks/README.md) | The benchmark harness landing page: the three hosting paths, how a run works, and how to reproduce the results above. |
 | [benchmarks/docs/harness-reference.md](benchmarks/docs/harness-reference.md) | Full harness reference: config, the `/swe2` flow, context-window/auto-compaction, and the LLM-as-judge scoring. |

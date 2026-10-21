@@ -1,0 +1,137 @@
+<p align="center">
+  <img src="docs/readme/lulu-board-icon.webp" width="160" alt="Lulu Vela" />
+</p>
+
+<h1 align="center">Lulu Vela</h1>
+
+<p align="center"><b>Structured whiteboard. A way to collaborate visually with AI.</b></p>
+
+<p align="center">
+  <a href="https://luluvela.app/">luluvela.app</a>
+  &nbsp;
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License" align="absmiddle"></a>
+</p>
+
+---
+
+One text protocol — the AI agent writes it, Lulu Vela draws it, you work on the canvas; both stay in sync. A local loop.
+
+| Kind | In Lulu Vela | Source ID |
+|---|---|---|
+| Board | structured whiteboard text | BMD (`b_…`) |
+| Flowchart | Mermaid flowchart | same `#z:` / `#b:` |
+
+## Why
+
+Diagrams go stale when only one side can edit them. Lulu Vela keeps one text protocol as the source of truth: the agent writes it, you refine it on the canvas (or in Source), and both stay in sync.
+
+## Quick start
+
+Chat entry is [`/board`](./skill/board/SKILL.md):
+
+```text
+/board
+```
+
+The Drawer opens on a built-in template — the onboarding Vela — so you can see the loop right away:
+
+<p align="center">
+  <a href="./examples/board-onboarding/onboarding.bmd">
+    <img src="./docs/readme/lulu-board.webp" alt="Vela · Onboarding" width="720" />
+  </a>
+</p>
+
+<p align="center"><strong>Onboarding</strong> — AI writes. Lulu Vela draws. You work on the canvas.</p>
+
+**Source** (`<>`) → **History** to browse the built-in templates. New files are stored there too.
+
+## Draw from a prompt
+
+Describe what you want after `/board`:
+
+```text
+/board Draw an Android MVI architecture diagram for me.
+```
+
+The agent authors the source and opens the Drawer. From there you can drag and edit on the canvas, change Source by hand, or ask again — same document, shared with the agent.
+
+A signed-in owner can share a saved cloud Vela from the Share dock. The first audience is All, with View or Edit. Anyone with the `#s:` link can open the current Vela; Edit lets a signed-in visitor change that same row.
+
+<p align="center">
+  <a href="./examples/board-android-mvi/android-mvi-architecture.bmd">
+    <img src="./docs/readme/agent-chat.webp" alt="Vela · Android MVI" width="720" />
+  </a>
+</p>
+
+<p align="center"><strong>Vela · Android MVI</strong> — ask in chat, see it in Drawer, edit on canvas or in Source</p>
+
+## MCP configuration
+
+`/board` works without MCP: the agent opens an unsigned `#z:` link. To create and update the latest cloud Vela for your account, add the hosted MCP and Connect.
+
+```json
+{
+  "mcpServers": {
+    "lulu-board": {
+      "url": "https://mcp.luluvela.app/mcp"
+    }
+  }
+}
+```
+
+In Cursor, open **Settings → Tools & MCP**. Add that URL if `lulu-board` is not listed, then **Connect** and approve sign-in. After the `whoami` tool is listed, `/board` writes `https://preview.luluvela.app/#b:…` instead of `#z:`.
+
+Other MCP clients use the same URL — for Claude Code: `claude mcp add --transport http lulu-board https://mcp.luluvela.app/mcp`. The first call opens a Lulu Vela sign-in and consent page.
+
+## Examples
+
+Click a preview to open the source.
+
+### Board
+
+<table>
+  <tr>
+    <td valign="top" align="center">
+      <a href="./examples/board-llm-architecture/llm-architecture.bmd">
+        <img src="./docs/readme/llm-technical-architecture.webp" alt="Board kind · LLM Architecture" />
+      </a>
+      <p>
+        <strong>LLM Architecture</strong><br />
+        Agent stack from data through training
+      </p>
+    </td>
+  </tr>
+</table>
+
+## Skill
+
+Chat entry is `/board`.
+
+```text
+skill/
+  board/     # SKILL.md, scripts/, templates/
+```
+
+## Develop
+
+```text
+examples/    # README previews (source) → packed into skill/board/templates
+packages/    # board, drawer-app, vela-mcp
+scripts/     # build tooling
+skill/       # /board skill
+tests/
+.cache/web/  # generated public viewer
+```
+
+From the repo root:
+
+```bash
+node scripts/web-build/build.mjs
+# or pack examples alone:
+node scripts/examples-templates-build/build.mjs
+```
+
+## License
+
+- Project: [MIT](./LICENSE)
+- Vendored: [THIRD_PARTY.md](./THIRD_PARTY.md)

@@ -1565,9 +1565,110 @@ clashing ids, past one-offs) and budgets (bad limits, duplicate
 categories, out-of-range alert thresholds), the day-start setting (an
 invalid `LIFE_OS_DAY_START_HOUR` is flagged instead of silently ignored)
 entries dated in the future (a sign of a wrong computer clock or a bad
-import) and persistent entry ids (rows that share an id, journal entries
-linked to a row that no longer exists). Exit status is 0 unless there is an error (or, with `--strict`, a
+import), persistent entry ids (rows that share an id, journal entries
+linked to a row that no longer exists) and the planner stores (a task due
+date, renewal date or birthday that cannot be read, an unknown body metric,
+an unusable savings target, a symptom without a valid severity, shared ids). Exit status is 0 unless there is an error (or, with `--strict`, a
 warning). The same report is available in chat as `run_health_check`.
+
+## Planner: Tasks, Body Metrics, Subscriptions, People & Today's Agenda
+
+Until v1.42.0 Hermes tracked what you already did. Four new stores cover what
+is still ahead of you, and one tool pulls them together. All of it is local,
+per profile, encrypted with the rest of your data when encryption is on, and
+included in backup, restore, export and the doctor.
+
+```
+"add a task: renew passport, due friday, high priority"
+"what's on my plate?"            "I did the passport thing"
+"weight 80.5 today"              "how is my weight trending?"
+"my blood pressure was 120/80"   "set a weight goal of 75 kg"
+"add Netflix, 15 a month, renews on the 20th"
+"I paid Netflix"                 "what do my subscriptions cost per month?"
+"add Ayse, birthday 03-07, keep in touch every 14 days"
+"I called Ayse"                  "who should I catch up with?"
+"what's on my agenda today?"
+```
+
+- **Tasks** (`add_task`, `list_tasks`, `complete_task`, `update_task`,
+  `delete_task`, `get_task_summary`, `clear_done_tasks`): due dates (`today`,
+  `tomorrow`, `in 3 days`, `in 2 weeks`, a weekday name or `YYYY-MM-DD`),
+  priority, tags and repeats (`daily`, `weekdays`, `weekly`, `monthly`).
+  Completing a repeating task moves it to its next due date instead of
+  closing it. A task is found by id or by words from its text; an ambiguous
+  match is reported rather than guessed.
+- **Body metrics** (`log_body_metric`, `get_body_trend`, `set_body_goal`):
+  weight, body fat, waist, hips, resting heart rate, blood pressure (systolic
+  and diastolic), blood glucose, temperature and SpO2, with unit conversion
+  (lb to kg, F to C, mmol/L to mg/dL), plausible-range checks, a weekly rate
+  of change from a least-squares fit, and goals with an estimated arrival
+  date. Readings are backdatable, editable through `edit_log` and fed into the
+  memory journal. This is a log of your own numbers, not medical advice.
+- **Subscriptions** (`add_subscription`, `list_subscriptions`,
+  `update_subscription`, `cancel_subscription`, `resume_subscription`,
+  `delete_subscription`, `get_subscription_summary`, `pay_subscription`):
+  weekly, monthly, quarterly and yearly payments with the monthly equivalent
+  of each, the total, and what renews soon. Dates that have passed roll
+  forward and month ends are clamped (the 31st becomes the 28th). Paying a
+  subscription also logs it as an expense in its category.
+- **People** (`add_person`, `list_people`, `get_person`, `update_person`,
+  `delete_person`, `log_contact`, `get_people_due`): birthdays (`MM-DD` or
+  `YYYY-MM-DD`, Feb 29 falls on Mar 1 in other years), an optional
+  keep-in-touch goal in days, a contact history and who is overdue.
+- **Today's agenda** (`get_today_agenda`): overdue and due tasks, today's
+  reminders, renewals within 3 days, birthdays within 7 days, overdue
+  catch-ups, habit streaks that need a check-in today and budget alerts, in
+  one answer. Empty sections are left out.
+
+The proactive nudges now also mention an overdue task, a renewal within three
+days, a birthday and an overdue catch-up (at most two of these per run), and
+the doctor reports planner entries it cannot act on: an unreadable due date,
+renewal date, birthday or metric, and ids shared by two entries.
+
+## Lists, Savings Goals, Symptoms & Notes
+
+Four more everyday trackers, all local, per profile, encrypted with the rest of
+your data when encryption is on, and covered by backup, restore, export and the
+doctor.
+
+```
+"add milk, eggs and bread to the shopping list"    "I got the milk"
+"start a savings goal: holiday, 2400 by 2027-06-01"  "I put 300 into the holiday fund"
+"headache, 6 out of 10, about 90 minutes, stress"    "how often did I have headaches this month?"
+"note: gift idea for Ayse, a tea set #gifts"         "what notes do I have about gifts?"
+```
+
+- **Lists** (`add_list_items`, `get_list`, `get_lists`, `check_list_item`,
+  `remove_list_items`, `clear_checked_items`, `delete_list`): named checklists
+  for things that are not tasks. The default is `shopping`; any other name
+  (packing, movies, ...) works. Add several items in one go ("milk, eggs,
+  bread"), tick them off while you shop, clear what is ticked afterwards. An
+  item already open on the list is skipped instead of duplicated, and an item is
+  found by id or by words from its text.
+- **Savings goals** (`add_savings_goal`, `contribute_to_savings`, `get_savings`,
+  `update_savings_goal`, `delete_savings_goal`): a target, an optional deadline
+  and starting balance. Add money or take some out (backdated if you like);
+  you see the percentage, what is left, your real pace over the last 90 days
+  (a starting balance does not count), the day that pace gets you there, and
+  with a deadline whether you are on track and how much to put aside per month.
+  A goal whose deadline is within two weeks shows up in the proactive nudges
+  and in today's agenda.
+- **Symptoms** (`log_symptom`, `get_symptom_summary`): headaches, back pain,
+  heartburn and the like with a severity from 1 to 10, an optional duration,
+  suspected triggers and notes. The summary gives the count, average and worst
+  severity, entries per week, days since the last one, the most common
+  triggers, whether it is getting more or less frequent, the worst weekday and,
+  when you log sleep, the average sleep on symptom days against other days.
+  Symptoms join `list_logs`, `edit_log`, `delete_log`, `undo_last_log`,
+  backdating and `log_many`. A personal log, not a diagnosis or medical advice.
+- **Notes** (`add_note`, `list_notes`, `search_notes`, `update_note`,
+  `delete_note`): a quick-capture inbox with tags and pins; search finds notes
+  containing all your words in the text or tags.
+
+The doctor now also reports savings goals with an unusable target or deadline,
+symptom entries it cannot use, list items and notes without text, and ids shared
+by two entries; entries dated in the future are checked for body readings and
+symptoms as well.
 
 ## Local Days, Night Owls & Backdating
 
@@ -1804,6 +1905,46 @@ Not medical or therapeutic advice - a reflection of your own patterns,
 phrased as a nudge, nothing more.
 
 ## What's New
+
+**v1.43.0 - Lists, Savings Goals, Symptoms, Notes**
+- New **lists**: `add_list_items`, `get_list`, `get_lists`, `check_list_item`,
+  `remove_list_items`, `clear_checked_items`, `delete_list` for the shopping
+  list and any other named checklist.
+- New **savings goals**: `add_savings_goal`, `contribute_to_savings`,
+  `get_savings`, `update_savings_goal`, `delete_savings_goal` with progress,
+  real pace, estimated finish day and the monthly amount needed for a deadline.
+- New **symptom tracker**: `log_symptom` and `get_symptom_summary` (severity,
+  duration, triggers, frequency trend, worst weekday, sleep comparison).
+  Symptoms are a tracker like the others: `list_logs`, `edit_log`,
+  `delete_log`, `undo_last_log`, backdating and `log_many` work on them.
+- New **notes**: `add_note`, `list_notes`, `search_notes`, `update_note`,
+  `delete_note` with tags and pins.
+- Savings goals close to their deadline appear in the proactive nudges and in
+  `get_today_agenda`; the doctor checks the four new stores and now also looks
+  for future-dated body readings and symptoms; backup, restore, export and
+  rekey cover the new stores.
+- 354 new tests - suite grew from 2985 to 3339.
+
+**v1.42.0 - Planner: Tasks, Body Metrics, Subscriptions, People, Agenda**
+- New **tasks**: `add_task`, `list_tasks`, `complete_task`, `update_task`,
+  `delete_task`, `get_task_summary`, `clear_done_tasks` with natural due dates,
+  priority, tags and daily/weekdays/weekly/monthly repeats.
+- New **body metrics**: `log_body_metric`, `get_body_trend`, `set_body_goal`
+  for weight, body fat, waist, hips, resting heart rate, blood pressure,
+  glucose, temperature and SpO2, with unit conversion, weekly trend and goal
+  ETA. Body readings join `list_logs`, `edit_log`, `delete_log`, backdating and
+  `log_many`.
+- New **subscriptions**: add, list, update, cancel, resume, delete, summary and
+  `pay_subscription` (logs the expense), with monthly-equivalent totals and
+  month-end-safe renewal dates.
+- New **people**: birthdays, keep-in-touch goals, contact history,
+  `get_people_due`.
+- New **`get_today_agenda`** combining tasks, reminders, renewals, birthdays,
+  overdue catch-ups, streaks at risk and budget alerts.
+- Proactive nudges cover overdue tasks, renewals and people; the doctor gets a
+  planner check; backup, restore, export and rekey cover the four new stores.
+- `clock.py` gains `parse_day` and `add_months`.
+- 407 new tests - suite grew from 2578 to 2985.
 
 **v1.41.0 - Habit Check-ins, Day View, Batch Logging**
 - **Fix:** `update_habit` counted every call as a new day. Checking a habit in
@@ -2128,150 +2269,4 @@ phrased as a nudge, nothing more.
   comparing a 31-day January against February).
 - New **Habit Personal Bests** (`demo/habit_pb.py`,
   `get_habit_pb_progress`): compares every habit's current streak
-  against its own personal best - new best, tied, or days remaining to
-  tie it - a complement to the fixed-milestone countdown in Habit
-  Milestones.
-- Also promotes `analytics._extract_metric` to a public `extract_metric`
-  (backward-compatible, original kept) so `time_of_day.py` could reuse
-  the exact same per-entry metric extraction rather than duplicating
-  the per-type rules.
-- 54 new tests - suite grew from 951 to 1005.
-
-**v1.23.0 - Day-of-Week Insights, Habit Milestones, Goal Deadlines**
-- New **Day-of-Week Insights** (`demo/day_of_week.py`,
-  `get_day_of_week_insights`): buckets logged mood/energy/stress/sleep/
-  hydration/meeting-hours/readiness by weekday and reports which day
-  is best and worst for each metric, purely from data already logged -
-  no new tracking, no network call.
-- New **Habit Milestones** (`demo/habit_milestones.py`,
-  `get_habit_milestones`): counts down every active habit streak to
-  its next round-number milestone (7, 14, 30, 50, 100, 150, 200, 365,
-  500, 1000 days) in one on-demand list, complementing the existing
-  opportunistic near-milestone nudge in `recommendations.py`.
-- New **Goal Deadlines** (`demo/goal_deadlines.py`,
-  `get_goal_deadlines`): `update_goal` now accepts an optional
-  `deadline` (`YYYY-MM-DD`); `get_goal_deadlines` lists every
-  deadline-bearing goal sorted by urgency, overdue ones called out
-  first with how many days overdue.
-- 42 new tests - suite grew from 909 to 951.
-
-**v1.22.0 - Heatmap, Moon Correlation, Sleep Debt, Focus Timer, Markdown Export**
-- New **Contribution Heatmap** (`demo/heatmap.py`, `hermes-life-os-heatmap`):
-  a GitHub-style SVG calendar heatmap of logging activity - pure SVG,
-  no matplotlib, embeddable anywhere.
-- New **Moon Phase Correlation** (`demo/moon.py`, `get_moon_correlation`):
-  correlates lunar phase against tracked metrics via pure local
-  astronomical calculation - zero network calls, unlike weather.py.
-- New **Sleep Debt Calculator** (`demo/sleep_debt.py`, `get_sleep_debt`,
-  `get_suggested_bedtime`): cumulative shortfall against a target sleep
-  duration, plus a bedtime suggestion that pays down debt gradually.
-- New **Focus Timer** (`demo/focus_timer.py`, `hermes-life-os-focus`):
-  a terminal Pomodoro-style countdown that logs itself on completion
-  via the same path a chat-based focus session uses.
-- New **Markdown/Obsidian/Notion Export** (`data_export.py --markdown`):
-  one daily note per day with YAML frontmatter, matching Obsidian's
-  Daily Notes convention and readable by Notion's markdown importer.
-- Also promotes `achievements._consecutive_day_streak` to a public
-  `consecutive_day_streak` (backward-compatible alias kept) so
-  heatmap.py could reuse the exact same streak logic rather than
-  duplicating it.
-- 75 new tests - suite grew from 834 to 909.
-
-**v1.21.0 - PDF Export, Streak Freezes, On This Day, Daily Prompts**
-- **PDF export** for the two biggest reports: `hermes-life-os-review
-  --format pdf` renders a two-page, print-friendly PDF version of the
-  Life Review (Life Score, retrospective, correlations, achievements,
-  habits); `hermes-life-os-wrapped --out card.pdf` picks up PDF
-  automatically from the file extension - no new flags needed.
-- **Streak freezes**: habits now bank one streak freeze every 7 days of
-  an active streak (capped at 3) - `update_habit` with
-  `completed=false, use_freeze=true` spends one to protect a streak
-  through a missed day instead of resetting it to 0.
-- New **On This Day** (`get_on_this_day`): a nostalgia lookup - finds
-  memory entries logged on today's month/day in previous years.
-- New **Daily Prompt** (`get_daily_prompt`, `demo/prompts.py`): a
-  rotating reflection question, deterministic by calendar date - same
-  day always returns the same prompt, changes daily, no state to
-  persist.
-- Also fixes a real Python variable-scoping bug found during testing:
-  a local `from storage import get_all_memory` inside one `dispatch_tool`
-  branch was shadowing the module-level import for the *entire*
-  function, breaking two unrelated tools (`get_correlation_insights`'s
-  semantic-recall path and `compare_periods`) whenever `get_on_this_day`
-  had been added to the same file. Caught by the full test suite before
-  release, not after.
-- 62 new tests - suite grew from 806 to 834.
-
-**v1.20.0 - Life Review Report, Household Leaderboard**
-- New **Life Review** (`demo/life_review.py`, `hermes-life-os-review`):
-  the flagship retrospective report - Life Score trend chart,
-  best/toughest day, a period-over-period comparison, every correlation
-  detected, achievements earned, and habit streaks, all in one
-  self-contained HTML page built for a quarter- or year-long lookback
-  window. Reuses the same chart-rendering approach as the dashboard for
-  visual consistency.
-- New **Leaderboard** (`demo/leaderboard.py`, `join_leaderboard` /
-  `leave_leaderboard` / `get_leaderboard` tools): an opt-in, cross-profile
-  ranking by average Life Score, logging streak, and achievements
-  earned, built on top of the multi-user system. Nobody is included by
-  default; opting out takes effect immediately; only those three
-  numbers are ever shared across profiles.
-- 33 new tests - suite grew from 768 to 805.
-
-**v1.19.0 - Weather Correlation, Quick-Logging Guide**
-- New **Weather Correlation** (`demo/weather.py`, `get_weather_correlation`
-  tool): fetches historical daily weather via Open-Meteo's free, keyless
-  API and correlates temperature/precipitation against tracked metrics
-  using the same Pearson approach as the core correlation engine. The
-  only tracker that makes a network call - entirely on-demand, sends
-  nothing but the place name.
-- New [docs/SHORTCUTS.md](docs/SHORTCUTS.md): a step-by-step guide for
-  building one-tap Apple Shortcuts, Android (Tasker/HTTP Shortcuts), and
-  browser-bookmarklet quick-loggers on top of the existing local REST
-  API - no new app, no subscription.
-- 20 new tests (all HTTP calls mocked - no real network access
-  required to run the suite) - suite grew from 748 to 768.
-
-**v1.18.0 - Reading & Medication Tracking, Recommendations**
-- New trackers: **reading/learning** (`log_reading`,
-  `get_reading_summary` - sessions, minutes, pages; reading minutes
-  feed the correlation engine) and **medication/supplement adherence**
-  (`log_medication`, `get_medication_adherence` - taken/skipped dose
-  logging with an adherence % per medication).
-- New **Recommendations** (`demo/recommendations.py`,
-  `get_recommendations` tool): a fully local, rule-based suggestion
-  engine combining threshold nudges (low sleep, high stress),
-  correlation-derived insights (reusing the existing correlation
-  engine), and near-milestone habit streaks into concrete, traceable
-  suggestions - no LLM or network call involved.
-- 26 new tests - suite grew from 722 to 748.
-
-**v1.17.0 - Spending/Social/Substance Tracking, Life Score, Achievements, Wrapped**
-- New trackers alongside nutrition/sleep/fitness/mental: **spending**
-  (`log_expense`, `get_spending_summary`), **social connection**
-  (`log_social_interaction`, `get_social_summary`), and **substances**
-  (`log_substance`, `get_substance_summary` - caffeine, alcohol, or
-  anything else). Spending and caffeine feed the correlation engine
-  like every other metric.
-- New **Life Score** (`demo/life_score.py`, `get_life_score` tool): a
-  single 0-100 composite blending whatever's logged that day (mood,
-  sleep, hydration, stress, energy, focus) into one at-a-glance
-  wellbeing number, with a transparent `components` breakdown - never a
-  black box, and never penalized for partial data.
-- New **Achievements** (`demo/achievements.py`, `get_achievements`
-  tool): streak badges (7/30/100 days, per-habit and overall) and
-  count-based milestone badges. Fully read-only and recomputed fresh
-  every call - no separate achievements state to fall out of sync with
-  your actual logs.
-- New **Wrapped** (`demo/wrapped.py`, `hermes-life-os-wrapped`): a
-  single shareable PNG summary card (average Life Score, entries
-  logged, best day, badges earned) in the spirit of Spotify Wrapped -
-  entirely local, no network calls.
-- 81 new tests - suite grew from 641 to 722.
-
-**v1.16.0 - Plugin System, Multi-User Accounts, Slack Bot**
-- New plugin system (`demo/plugins.py`): drop a `.py` file into
-  `~/.hermes/life-os/plugins/` defining `TOOLS` + `dispatch()` and
-  Hermes' LLM agent can call it like any built-in tool - no fork, no
-  core code changes. A broken plugin is skipped and reported, never
-  crashes st
+  

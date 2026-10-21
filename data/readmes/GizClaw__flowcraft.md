@@ -33,16 +33,16 @@ the anvil example in `examples/anvil` for a minimal `craft` host application.
   package, update in place with a rollback snapshot, and uninstall with
   the data they own; a remote update source is validated here and fetched
   by the application (`plugin.Installer`).
-- **`driver/*`** — Provider adapters built on `core`: OpenAI (serving the
+- **`driver`** — Provider adapters built on `core`, one module: OpenAI (serving the
   whole OpenAI wire family), Anthropic (the Messages family), ByteDance,
   MiniMax, DashScope (Alibaba Cloud Model Studio's native surfaces: text
   generation, embeddings, speech synthesis, file transcription, and the Wan
   image and video families), and TypeSafe (the System One decision surface).
 - **`backends/*`** — Platform-specific implementations: SQLite checkpoints
-  (`backends/checkpoint`), the long-term memory backend with its eval
-  harness (`backends/memory`), and the encrypted keychain secret store
-  (`backends/secret`); the sandbox backends (`bwrap`, `seatbelt`) live
-  in `core/sandbox`.
+  (`backends/checkpoint`) and the long-term memory backend with its eval
+  harness (`backends/memory`); the sandbox backends (`bwrap`, `seatbelt`)
+  and the encrypted keychain secret store (`core/secret/keychain`) live in
+  `core/`.
 - **`examples/forge`** — A runnable local workspace demo built on the current
   stack: native deploy/inference/memory scenario configs, an interactive TUI,
   scripted tests, and raid × persona simulation.
@@ -115,7 +115,7 @@ by step.
 
 ### Embed FlowCraft in a Go service
 
-Use `core` directly and add `driver/*` or `backends/*` for provider
+Use `core` directly and add `driver` or `backends/*` for provider
 adapters and platform backends.
 Assemble a deployment from `deploy.yaml` with `core/deploy`, run it with
 `core/runtime`, and drive turns through `core/runtime/session`:
@@ -170,7 +170,7 @@ type appCapability struct{}
 func (appCapability) Name() string { return "app" }
 
 func (appCapability) Register(registry *resource.Registry) error {
-    registry.MustRegister(event.NewFactory())
+    resource.MustRegister(registry, event.NewFactory())
     return nil
 }
 ```
@@ -221,7 +221,7 @@ without becoming dependencies of the core.
              ┌─────────────┬─────────────┐
              ▼                           ▼
       ┌─────────────┐             ┌─────────────────┐
-      │ driver/*    │             │ app-registered  │
+      │ driver      │             │ app-registered  │
       │  inference  │             │ memory          │
       │ providers   │             │ implementations │
       │             │             │                 │
@@ -241,7 +241,7 @@ without becoming dependencies of the core.
 `agent.Host`, `agent.Board`) and stay leaves of the core — agent does not
 import graph or tool packages. `core/graph` builds on those contracts and
 returns an `agent.Engine`. Memory contracts live in core, while
-app-registered implementations and adapters (`driver/*`, `backends/*`) stay outside
+app-registered implementations and adapters (`driver`, `backends/*`) stay outside
 the core and depend on it, never the reverse.
 
 `craft` is the optional assembly layer above that picture — it owns the
@@ -268,8 +268,8 @@ primitives, and hands `core/deploy` documents to `core/runtime`:
 | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------- |
 | [`core`](core/)                                       | Agent, graph, tool, model, message, inference, memory, event, telemetry, deploy, runtime | Versioned Go module  |
 | [`craft`](craft/)                                     | Application assembly: craft.yaml, capabilities, plugin host, host primitives, manager     | Versioned Go module  |
-| [`driver`](driver/)                                   | Provider inference adapters                                                              | Versioned Go modules |
-| [`backends`](backends/)                               | SQLite checkpoints, the long-term memory backend, the keychain secret store (sandbox backends live in `core/sandbox`) | Versioned Go modules |
+| [`driver`](driver/)                                   | Provider inference adapters                                                              | Versioned Go module  |
+| [`backends`](backends/)                               | SQLite checkpoints and the long-term memory backend (sandbox and keychain backends live in `core/`) | Versioned Go modules |
 | [`examples/forge`](examples/forge/)                   | Runnable local workspace demo                                                            | Examples             |
 | [`examples/anvil`](examples/anvil/)                   | Minimal `craft` host application (keyed runtimes, plugins, reload)                       | Examples             |
 | [`tools/releasegate`](tools/releasegate/)             | Release automation                                                                       | Tools                |
@@ -289,7 +289,7 @@ primitives, and hands `core/deploy` documents to `core/runtime`:
   across restarts.
 - `Interrupt` / `Wait` semantics that compose cleanly with `context.Context`.
 
-### Unified inference runtime (`core/inference` + `driver/*`)
+### Unified inference runtime (`core/inference` + `driver`)
 
 - One runtime for Generate / Embed / Decision / Transcription (Realtime
   reserved), with exact `ModelRef` addressing and compile-time capability
@@ -421,7 +421,7 @@ Reference material:
 
 ## Status
 
-The active project surface is `core`, `craft`, `driver/*`, `backends/*`, and the
+The active project surface is `core`, `craft`, `driver`, `backends/*`, and the
 forge demo. `core` and `craft` are the two release-managed modules and both
 remain pre-1.0; `craft` is still an unreleased module in the workspace (its
 first tag ships with its first changeset), and the current `craft` surface is
@@ -443,20 +443,12 @@ cd flowcraft
 
 make help          # list every target
 make ci            # vet + test for all in-tree modules
-make conformance   # Go oracle vs Rust port: the corpus must match byte for byte
 make release-check # validate changesets and the pending release plan
 ```
 
 This repository is a Go workspace. Active members are `core`, `craft`,
-`driver/*`, `backends/*`, `examples/forge`, and `examples/anvil`; release
+`driver`, `backends/*`, `examples/forge`, and `examples/anvil`; release
 tooling in `tools/releasegate` builds standalone with `GOWORK=off`.
-
-`rust/` is a second workspace, for the port. It is not part of `make ci`: it
-pins its own toolchain (`rust-toolchain.toml`) and has its own CI lane. What
-keeps it honest is the conformance gate — `tools/conformance-oracle` dumps what
-`core`'s YAML/JSON layer does to a corpus of configuration documents, and the
-port has to reproduce every byte. See
-[`rust/conformance/README.md`](rust/conformance/README.md).
 
 ## Contributing
 
@@ -464,9 +456,8 @@ Issues and pull requests are welcome. Before opening a PR:
 
 1. `make ci` should be green.
 2. `gofmt -l .` should print nothing.
-3. `make conformance` should be green (anything touching `rust/`).
-4. Tests for new features. New behaviour without a test won't merge.
-5. Commit messages follow Conventional Commits (`feat:`, `fix:`, `docs:`,
+3. Tests for new features. New behaviour without a test won't merge.
+4. Commit messages follow Conventional Commits (`feat:`, `fix:`, `docs:`,
    `refactor:`, `test:`, `chore:`).
 
 Library releases are declared explicitly with immutable `.release/*.json`

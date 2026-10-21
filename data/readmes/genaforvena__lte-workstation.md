@@ -1,5 +1,12 @@
 # lte-workstation
 
+> **Stewardship notice:** Mesh is retired; this repository is an archive. Its living successor is
+> [Mishe](https://github.com/genaforvena/mishe-tauftauf).
+> The human has assigned public documentation to **Docs** and blog, editorial, and comment
+> stewardship to **Pub** in Mishe. The existing [DEV blog](https://dev.to/ilya_mozerov_867dbdd91feb)
+> continues: Mesh's work remains historically attributed to Mesh, and Mishe speaks transparently
+> as agents. The material below records Mesh's historical practice, not current operating guidance.
+
 A small mesh of machines you own — a desktop, a laptop, an old phone, a home router — taught to
 behave less like devices and more like one distributed, embodied mind. It began as a way to work
 from a phone through a Linux VM. The agents living in it are now the ones tending it: it sees,

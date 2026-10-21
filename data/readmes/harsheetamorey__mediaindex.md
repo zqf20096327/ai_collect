@@ -5,7 +5,7 @@
 Ask your photo library questions, find what you describe, and remove or replace things in a photo, all on your Mac.
 Nothing is uploaded: no account, no cloud, no telemetry.
 
-**[⬇ Download for Mac (Apple silicon)](https://github.com/harsheetamorey/mediaindex/releases/latest)** · free and open source
+**[⬇ Download for Mac (Apple silicon) or Windows (x64)](https://github.com/harsheetamorey/mediaindex/releases/latest)** · free and open source
 
 ![MediaIndex counting dogs, finding red cars, then removing four benches and replacing them with a table](docs/assets/demo.gif)
 
@@ -27,6 +27,13 @@ It also searches sounds and videos by description, and opens a video at the matc
 4. Click **+ Add folder** and pick a folder of photos. You can search as soon as the first ones are indexed.
 
 Needs an Apple silicon Mac (M1 or later) with macOS 13+. 8 GB of memory works; editing is faster with 16 GB.
+
+**Windows 10/11 (x64):** download `MediaIndex-…-windows-x64.zip`, unzip it anywhere (for example into your Documents), and
+run **MediaIndex\MediaIndex.exe**. It isn't signed, so the first time Windows may say "Windows protected your PC": click
+**More info → Run anyway**. FFmpeg is included; the models download on first launch as on the Mac. It runs on the CPU
+(every core, 140 vision tokens per photo instead of 280), about 2–4 s per photo; slower than an Apple silicon Mac. Your data is in `%LOCALAPPDATA%\MediaIndex` (with a `mediaindex.log`).
+The Windows app is built and start-checked on GitHub's Windows machines but hasn't been tried on many real PCs yet:
+please report problems in [issue #7](https://github.com/harsheetamorey/mediaindex/issues/7).
 For free-form chat and photo descriptions in Ask, also install [Ollama](https://ollama.com) and run `ollama pull gemma4:e2b-it-qat`
 (optional: counting, finding and editing work without it).
 
@@ -43,7 +50,7 @@ For free-form chat and photo descriptions in Ask, also install [Ollama](https://
 > Text→image search: Hit@1 0.90 and nDCG@10 0.92 on 20 human-labelled queries. Counting: 0.96 precision on 300 COCO photos.
 > Removal: the object was gone in 92 of 100 COCO photos. Details in [Evaluation](#evaluation), [`docs/ask.md`](docs/ask.md) and [`docs/edit.md`](docs/edit.md).
 
-## Run from source (macOS on Apple silicon; Linux expected to work but untested)
+## Run from source (macOS on Apple silicon; Windows: see below; Linux expected to work but untested)
 
 Requirements: Python 3.12 with [uv](https://docs.astral.sh/uv/), Node 20+ (to build the UI once), and FFmpeg (`brew install ffmpeg`).
 The first setup downloads about 1.6 GB of model weights. After that, MediaIndex runs offline.
@@ -51,15 +58,38 @@ The first setup downloads about 1.6 GB of model weights. After that, MediaIndex 
 ```bash
 git clone https://github.com/harsheetamorey/mediaindex.git && cd mediaindex
 uv sync                                         # Python deps, pinned in uv.lock
-(cd frontend && npm ci && npm run build)        # UI, served by the backend
-mkdir -p data/samples/smoke                     # put 3+ of your own JPEGs here, then:
-MEDIAINDEX_ALLOW_DOWNLOAD=1 uv run python scripts/model_smoke.py --images data/samples/smoke   # downloads + verifies the model
-MEDIAINDEX_ALLOW_DOWNLOAD=1 uv run python -m mediaindex.detect --download   # object detector for Ask (~170 MB)
+uv run python -m mediaindex setup               # builds the UI, downloads the models once, checks they work
 uv run python -m mediaindex                     # open http://127.0.0.1:8765
 ```
 
-In the app, click **+ Add folder** → **Choose folder…** (or paste a path). Indexing runs in the background with progress, a time
+`setup` checks for FFmpeg, builds the UI if needed, downloads the search model and the Ask object detector (about 1.6 GB),
+and loads the search model once to check it works. Running it again only fills in what is missing. Add `--editing` for the
+photo editing models (about 0.55 GB, plus 2.1 GB of Stable Diffusion after `uv sync --extra create`). For a deeper model
+check on your own photos, `scripts/model_smoke.py` is still there.
+
+In the app, click **+ Add folder** → **Choose folder…** (or paste a path). Thumbnails, dates and places are read first, in
+seconds (60 photos: 1.5 s), so browsing by date and the map work right away. Search indexing then runs in the background with progress, a time
 estimate and cancel. You can search as soon as items are indexed. Tick **Watch for changes** to re-index a folder automatically.
+
+### Windows (run from source)
+The same steps work in **PowerShell** on Windows 10/11 (x64). Install [uv](https://docs.astral.sh/uv/), Node 20+, Git and FFmpeg
+(`winget install Gyan.FFmpeg`, then open a new terminal so `ffmpeg` is on PATH):
+
+```powershell
+git clone https://github.com/harsheetamorey/mediaindex.git; cd mediaindex
+uv sync
+uv run python -m mediaindex setup
+uv run python -m mediaindex                     # open http://127.0.0.1:8765
+```
+
+- **Choose folder…** opens the Windows folder picker. Pasting a path from File Explorer's **Copy as path** works too.
+- `uv sync` installs the CPU build of PyTorch. With an NVIDIA GPU, install a CUDA build of the same torch version
+  (see [pytorch.org](https://pytorch.org/get-started/locally/)). MediaIndex then picks `cuda` on its own; `MEDIAINDEX_DEVICE=cpu`
+  forces the CPU.
+- Finder tags on exported files are a macOS feature and are skipped. To build the Windows app yourself:
+  `powershell -ExecutionPolicy Bypass -File scripts\build_windows_app.ps1`.
+- The unit tests run on Windows in CI. The real models haven't been checked on a Windows PC yet; please report how it goes
+  in [issue #7](https://github.com/harsheetamorey/mediaindex/issues/7).
 
 ### Build the Mac app yourself
 `scripts/build_mac_app.sh` builds `dist-app/MediaIndex.app` and the release zip (Apple silicon, FFmpeg included, model weights
@@ -71,6 +101,12 @@ The **Ask** tab answers questions like "how many dogs do I have?", "show me a ci
 - Counts come from a local object detector (RT-DETR, 80 common object types).
 - Photos are found with EmbeddingGemma.
 - An optional local chat model (Gemma 4 E2B through Ollama) understands free-form questions and describes photos.
+- "Save these as Goa trip" puts an answer's photos into a selection, ready to export.
+- Time and place narrow any question: "beach photos from 2024", "photos from last December", "everything from Goa". Dates
+  and places come from the photos' EXIF and the videos' metadata, and places are named offline from a bundled city list.
+  Search has date and place filters too, and **Browse by date** (under the search box) shows a year's months; pick one to
+  see its photos and videos in order. **Find look-alikes** groups burst shots and copies for review, marks the sharpest of each group ★ keep, and can put the others into a selection to go through (nothing is deleted). **Map of places** shows where
+  photos and videos were taken on an offline world map (Natural Earth outline, no map tiles); click a dot or a country.
 
 Nothing is uploaded. Setup, measured accuracy and limits: [`docs/ask.md`](docs/ask.md).
 
@@ -105,7 +141,7 @@ Results are nearest neighbours by cosine similarity, so the closest items are **
 Scores are hidden by default and are never shown as percentages. Searching several media types at once groups results by type, because similarity
 scales are not comparable across types.
 
-**Supported formats:** JPEG, PNG and WebP images; WAV, FLAC and MP3 audio; MP4 video (H.264 tested). Audio is indexed in 10 s windows (5 s stride).
+**Supported formats:** JPEG, PNG, WebP and HEIC/HEIF (iPhone) images; WAV, FLAC and MP3 audio; MP4 and MOV (iPhone) video (H.264 tested; portrait phone video is turned upright). **Live Photos** (an iPhone photo plus a ≤ 5 s `.MOV` with the same name) are one item: a LIVE badge, and **▶ Live** in the preview plays the clip. Audio is indexed in 10 s windows (5 s stride).
 Video is indexed in 8 s windows (4 s stride) of frames sampled at 1 frame/s plus the window's soundtrack. Timestamps are only as precise as these windows.
 
 **Creator outputs:** persistent ordered selections, a JSON manifest (source paths, hashes, source and licence records, how each item was found),
@@ -123,7 +159,9 @@ with a provenance file ([`docs/clip-export.md`](docs/clip-export.md)).
 | Memory | about 3.5 GB peak physical footprint (model in unified memory) |
 
 Precision follows the model card: bfloat16 on MPS, float32 on CPU, **never float16**. Override with `MEDIAINDEX_DEVICE=cpu|mps` and
-`MEDIAINDEX_PRECISION=float32|bfloat16`. Full numbers: [`docs/evaluation-report.md`](docs/evaluation-report.md).
+`MEDIAINDEX_PRECISION=float32|bfloat16`. On a CPU, photos use 140 vision tokens (the model's default is 280) and every
+core: 2.3–4.6× faster on GitHub's Windows machines with the same search results on the evaluation set (`MEDIAINDEX_IMAGE_TOKENS`,
+`MEDIAINDEX_CPU_THREADS` override). A library indexed the other way is re-indexed by itself when the app starts. Full numbers: [`docs/evaluation-report.md`](docs/evaluation-report.md).
 
 ## Evaluation
 A frozen 50-query image evaluation (20 text, 15 image, 15 image+text) with a local human-labelling page lives in `evaluation/`
@@ -135,19 +173,20 @@ text→audio benchmark, EmbeddingGemma 2 scores well below the specialist LAION-
 ## Troubleshooting
 | Symptom | Fix |
 |---|---|
-| "model could not be loaded" | Run the model-download step once with `MEDIAINDEX_ALLOW_DOWNLOAD=1` (it needs network). |
+| "model could not be loaded" | Run `uv run python -m mediaindex setup` once (it needs network). |
 | "another MediaIndex process is already using …" | Only one server per data directory. Stop the other one. |
 | 503 "model is busy" | A long indexing step holds the model. Retry, or raise `MEDIAINDEX_QUERY_WAIT` (seconds, default 30). |
-| Sounds or videos fail to import | Install FFmpeg 6+ and make sure `ffmpeg` and `ffprobe` are on PATH. Only MP4 video is accepted. |
+| Sounds or videos fail to import | Install FFmpeg 6+ and make sure `ffmpeg` and `ffprobe` are on PATH. Only MP4, MOV and M4V video is accepted. |
 | Search says "different model profile" (409) | The library was indexed with other model settings. Click **Re-scan** to reindex. |
 | Port 8765 in use | `MEDIAINDEX_PORT=8800 uv run python -m mediaindex`. The UI is served from the same port. |
 | Out-of-memory on 8 GB | Close other heavy apps, or run on CPU with `MEDIAINDEX_DEVICE=cpu` (slower). |
 
 ## Known limits
 **Where it runs**
-- **Tested only on macOS 14 with an Apple M1 (8 GB).** Linux, Windows and Intel Macs are untested. The reveal-in-folder
-  command has untested Linux and Windows variants.
-- **The folder chooser and Finder tags are macOS only.** On other systems, paste the folder path.
+- **Tested only on macOS 14 with an Apple M1 (8 GB).** On Windows, the unit tests pass in CI, but the real models and
+  the UI haven't been tried on a Windows PC. Linux and Intel Macs are untested. The reveal-in-folder command has untested
+  Linux and Windows variants.
+- **The folder chooser works on macOS and Windows; Finder tags are macOS only.** On Linux, paste the folder path.
 - **The Mac app is unsigned and not notarized.** On another Mac, open it with right-click → Open.
 
 **Speed**

@@ -66,7 +66,7 @@ Chrono Trace 是一个基于 `PyWebView + Vue 3 + Python` 的 Windows / Linux �
 
 | 平台 | 产物 | 说明 |
 | --- | --- | --- |
-| Windows 10 / 11 | `ChronoTraceSetup-<版本号>.exe` | 安装版；DirectML 单变体，有独立显卡自动启用 GPU 加速，无卡回退 CPU，免 CUDA |
+| Windows 10 / 11 | `ChronoTraceSetup-<版本号>.exe` | 安装版；DirectML 单变体，独显/核显均自动启用 GPU 加速，无卡回退 CPU，免 CUDA |
 | Linux | `chrono-trace-<版本号>-linux.tar.gz` | 便携包，解压即用；glibc ≥ 2.34，密钥捕获另需系统安装 gdb |
 
 前往 [Releases](../../releases) 页面下载最新版本。
@@ -357,13 +357,13 @@ C:\Users\<用户名>\xwechat_files\wxid_xxx\db_storage\
 
 1. 在设置页填写模型接口信息
 2. 选择联系人并启动实时监听
-3. 保持微信主窗口可见
+3. 保持微信已登录（窗口可在后台运行）
 4. 在建议页或悬浮窗查看输出
 
 ## 当前边界
 
 - Windows 全功能；Linux 支持导入/分析/RAG 记忆/实时建议/悬浮窗（X11 跟随，Wayland 固定档位）
-- Linux 实时监听走 `db_watch`（加密库文件直读 + WAL 增量），无需微信窗口可见；Windows 走 `native_uia`（依赖微信主窗口可见，最小化或后台不可见时不保证有效）
+- 实时监听双平台统一走 `db_watch`（加密库文件直读 + WAL 增量解密），无需微信窗口可见，最小化/后台不影响监听（Linux inotify 触发，Windows stat 轮询）
 - Linux 密钥捕获需要 gdb 与 ptrace 权限（`ptrace_scope=0` 或 sudo）；微信更新后首次需重新登录一次以重新捕获
 - 当前以单人聊天为主，不支持多会话并发监听
 - 群聊支持导入、浏览、导出与基础分析（发言统计 + 群日报工作台）；成员关系分析为后续规划，好感度多维评分不做群聊适配（双人语义不可扩展到 N 方）
@@ -466,7 +466,7 @@ release\installer\ChronoTraceSetup-版本号.exe
 
 说明：
 
-- 单一安装包：推理栈为 ONNX Runtime（DirectML），免 CUDA 免 PyTorch——有 N/AMD 显卡自动启用 GPU 加速，无显卡回退 CPU，无需任何运行时下载或配置
+- 单一安装包：推理栈为 ONNX Runtime（DirectML），免 CUDA 免 PyTorch——N/AMD 独显或 Intel/AMD 核显均自动启用 GPU 加速（核显下 DML 会话串行化保证稳定），无卡回退 CPU，无需任何运行时下载或配置
 
 ### Linux 打包与使用
 

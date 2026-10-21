@@ -21,7 +21,7 @@
 
 <p align="center">
   <img alt="Chrome Extension MV3" src="https://img.shields.io/badge/Chrome%20Extension-MV3-2563eb">
-  <img alt="Version 1.4.0" src="https://img.shields.io/badge/version-1.4.0-7c3aed">
+  <img alt="Version 1.4.3" src="https://img.shields.io/badge/version-1.4.3-7c3aed">
   <img alt="License GPL v3" src="https://img.shields.io/badge/license-GPL%20v3-111827">
 </p>
 
@@ -148,13 +148,13 @@ SmartPages can also export machine-readable `.smartpages.json` workflows, replay
 ## Documentation
 
 - [Example documents](docs/examples/README.md)
-- [Quick start](QUICKSTART.md)
+- [Quick start](docs/QUICKSTART.md)
 - [Supabase cloud storage](docs/cloud-storage-supabase.md)
 - [Tencent CloudBase storage for mainland China](docs/cloud-storage-cloudbase.md)
 - [Advanced workflows and Agent Bridge](docs/advanced-workflows.md)
-- [Testing guide](TESTING.md)
-- [Troubleshooting](TROUBLESHOOTING.md)
-- [Code structure](CODE_STRUCTURE.md)
+- [Testing guide](docs/TESTING.md)
+- [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Code structure](docs/CODE_STRUCTURE.md)
 
 ## Development
 
@@ -167,7 +167,7 @@ npm run build       # Generate the loadable dist/ directory
 npm run verify      # Run the full verification pipeline
 ```
 
-Issues and pull requests are welcome. Please read the [Contributor License Agreement](CONTRIBUTING.en.md) before contributing.
+Issues and pull requests are welcome. Please read the [English contributing guide](CONTRIBUTING.md) or the [中文贡献指南](CONTRIBUTING.zh-CN.md) before contributing.
 
 ## License
 

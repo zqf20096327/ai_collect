@@ -8,16 +8,15 @@
 </p>
 
 Serve **nvidia/Qwen3.8-Flash-Next-FP4-Local** from one NVIDIA DGX Spark through an OpenAI-compatible API.
-The server is vLLM, in the container `eugr/spark-vllm-b12x:latest`, with the DGX Spark flags from the
+The server is vLLM, in `eugr/spark-vllm-b12x` pinned by digest (nightly-20261015) with one small layer built
+here (see [Image](#image)), with the DGX Spark flags from the
 [NVIDIA model card](https://huggingface.co/nvidia/Qwen3.8-Flash-Next-FP4-Local): PLE (n-gram) tables on disk,
 `--load-format b12x`, `--quantization modelopt_mixed`, and FP8 KV cache. MTP drafts 3 tokens, not the model
 card's 4: on a Spark it decodes as fast and leaves 4-9% more KV cache (see [Benchmarks](#benchmarks)).
 
-Activations follow the model card by default (`PRECISION=fast`). `PRECISION=quality` is opt-in. It adds a
-second FP4 term for the prefill MoE rounding residual and keeps BF16 activations in the dense NVFP4/MXFP8
-layers. Token by token it tracks a full-precision run about twice as closely, at about 21% less prefill speed.
-Both pass the same quality gate. On the task benchmarks fast matches quality: sixcat 92.1 vs 91.7, tool-eval
-89 vs 90. So the faster setting is the default (see [Precision](#precision)).
+Activations follow the model card. A higher-precision setting (two FP4 terms for the prefill MoE activations,
+BF16 activations in the dense layers) was measured and left out: twice as close to a full-precision run token
+by token, 21% slower prefill, and no gain on the task benchmarks (see [Precision](#precision)).
 
 The checkpoint is about 96 GiB on disk. NVIDIA's model card says a DGX Spark can run it with or without PLE
 offload, and reports 1M tokens of FP8 KV cache with PLE offload. This recipe follows the model card's Spark
@@ -26,8 +25,8 @@ command: `VLLM_PLE_TABLE_MEMORY=disk` and a 262,144-token window.
 `./start.sh` prepares the machine on the first run and starts the server. `./stop.sh` stops it.
 
 > **Status:** tested on one DGX Spark (GB10, 121 GB unified memory). At a 128k prose context: prefill
-> 1,990 t/s, decode 39 t/s, TTFT 66 s (`PRECISION=quality`: 1,515 t/s, 38 t/s, 86 s). 1,365,333 tokens of
-> FP8 KV cache, five full 262k requests at once. sixcat 92.1, tool-eval 89/100. See [Benchmarks](#benchmarks).
+> 2,114 t/s, decode 39 t/s, TTFT 62 s. 1,575,180 tokens of FP8 KV cache: six full 262k requests at once, up to
+> 8 decoded together. sixcat 92.1, tool-eval 89/100. See [Benchmarks](#benchmarks).
 
 ## Quick start
 
@@ -37,7 +36,8 @@ cd Qwen3.8-Flash-Next-FP4-Local-DGX-Spark
 ./start.sh
 ```
 
-The first run pulls the image and downloads the checkpoint into `~/.cache/huggingface` if it is not there yet.
+The first run pulls the pinned base image, builds the recipe image on it, and downloads the checkpoint into
+`~/.cache/huggingface` if it is not there yet.
 Later starts load the weights. `start.sh` waits until `/v1/models` answers, runs a smoke test, prints
 `nvidia/Qwen3.8-Flash-Next-FP4-Local is now LIVE! on port 8000`, and returns you to the shell.
 
@@ -83,7 +83,7 @@ docker logs -f qwen38-flash-next-fp4
 - Docker with the NVIDIA container runtime, and your user in the `docker` group.
 - Disk for a fresh machine: about 96 GiB for the checkpoint under `HF_CACHE` and space for the image under
   Docker's root. `scripts/prepare.sh` checks both (`MIN_FREE_GB` 120 when the snapshot is absent,
-  `IMAGE_FREE_GB` 30 when the image is not local).
+  `IMAGE_FREE_GB` 30 when the base image is not local).
 - Optional: the `hf` CLI on the host. Without it, `prepare.sh` downloads from inside the container.
   A Hugging Face token in `HF_TOKEN` or `~/.cache/huggingface/token` when the Hub requires one.
 
@@ -97,8 +97,8 @@ docker logs -f qwen38-flash-next-fp4
    that lock and then exits without stopping anything.
 3. **Launch.** `docker run` with `--network host`, `--gpus all`, the model-card environment, and `vllm serve`.
 4. **Loading.** Wait until `/v1/models` answers. The container is stopped if `MemAvailable` stays below
-   `MEM_FLOOR_GIB` (8 GiB) for `MEM_FLOOR_GRACE` seconds (30), or falls below `MEM_HARD_FLOOR_GIB` (2 GiB).
-   Every load dips to about 4 GiB for up to 10 seconds while vLLM repacks the loaded weights; the grace
+   `MEM_FLOOR_GIB` (6 GiB) for `MEM_FLOOR_GRACE` seconds (30), or falls below `MEM_HARD_FLOOR_GIB` (2 GiB).
+   Every load dips to about 3-4 GiB for up to 10 seconds while vLLM repacks the loaded weights; the grace
    lets that pass.
 5. **Smoke test**, then the LIVE line.
 
@@ -108,7 +108,8 @@ to `vllm serve` (`./start.sh restart --max-model-len 131072`).
 **`scripts/prepare.sh`:**
 
 1. Preflight: Docker, disk, the memory floor.
-2. `docker pull` of `IMAGE` (`PULL=0` uses a local image and does not pull).
+2. The image: pull `BASE_IMAGE` by digest when it is not local, then build the recipe image from `docker/`
+   when it is not local. Any other `IMAGE` is pulled instead. `PULL=0` never pulls.
 3. The checkpoint, into `HF_CACHE`.
 4. A check that it is `qwen4_exp`, ModelOpt `MIXED_PRECISION`, and that every shard named by the index is present.
 
@@ -126,19 +127,17 @@ Every setting lives in `scripts/config.sh`. Override it from the environment (`P
 | Variable | Default | Meaning |
 | --- | --- | --- |
 | `MODEL_ID` | `nvidia/Qwen3.8-Flash-Next-FP4-Local` | Hugging Face checkpoint |
-| `IMAGE` | `eugr/spark-vllm-b12x:latest` | vLLM container with the B12X kernels |
+| `BASE_IMAGE` | `eugr/spark-vllm-b12x@sha256:03a956544e9f…` | eugr's B12X vLLM build the recipe image is built on (see [Image](#image)) |
+| `IMAGE` | `qwen38-flash-next-fp4:<hash>` | the recipe image built from `docker/`; set another image to serve that one as is |
 | `PORT` / `HOST` | `8000` / `0.0.0.0` | where the API listens |
 | `SERVED_NAME` | the model id | id returned by `/v1/models` |
 | `MAX_MODEL_LEN` | `262144` | prompt + reply window (`--max-model-len`) |
-| `MAX_NUM_SEQS` | `5` | requests decoded together; five full windows fit the default KV pool |
+| `MAX_NUM_SEQS` | `8` | requests decoded together; the default KV pool holds six full windows, all 8 while they average under about 196k tokens |
 | `MAX_NUM_BATCHED_TOKENS` | `4096` | chunked-prefill token cap |
 | `GPU_MEMORY_UTILIZATION` | `0.8` | fraction of GPU memory vLLM may use; sizes the KV pool only when `KV_CACHE_MEMORY_BYTES` is empty |
-| `KV_CACHE_MEMORY_BYTES` | `27000000000` | KV pool in bytes (`--kv-cache-memory-bytes`): 1,365,333 FP8 tokens. Empty uses `GPU_MEMORY_UTILIZATION` |
+| `KV_CACHE_MEMORY_BYTES` | `31150000000` | KV pool in bytes (`--kv-cache-memory-bytes`): 1,575,180 FP8 tokens. Empty uses `GPU_MEMORY_UTILIZATION` |
 | `YARN_FACTOR` | empty | YaRN rope scaling past 262,144 positions; `4` allows a 1,048,576 window |
 | `PROFILE` | empty | opt-in launch profile from `profiles/` (see [Profiles](#profiles)) |
-| `PRECISION` | `fast` | activation precision; `fast` is the model card's, `quality` is closer to full precision (see [Precision](#precision)) |
-| `B12X_W4A16_A4_PREFILL_TERMS` | `1` (`quality`: `2`) | FP4 terms for prefill MoE activations |
-| `VLLM_B12X_DENSE_ACTIVATION_MODE` | `auto` (`quality`: `a16`) | activations of the dense NVFP4/MXFP8 layers |
 | `KV_CACHE_DTYPE` | `fp8` | KV cache dtype |
 | `QUANTIZATION` | `modelopt_mixed` | `--quantization` |
 | `LOAD_FORMAT` | `b12x` | `--load-format` |
@@ -147,25 +146,25 @@ Every setting lives in `scripts/config.sh`. Override it from the environment (`P
 | `DTYPE` | `bfloat16` | model dtype |
 | `VLLM_PLE_TABLE_MEMORY` | `disk` | n-gram table on disk, as on the model card |
 | `B12X_DISK_BACKEND` | `io_uring` | how that table is read |
+| `PLE_QUEUE_DEPTH` | `256` | table reads in flight; `64` is eugr's image as shipped; the recipe image only (see [PLE queue depth](#ple-queue-depth)) |
 | `CUTE_DSL_ARCH` | `sm_121a` | GB10 architecture for the CuTe DSL kernels |
 | `HF_CACHE` | `~/.cache/huggingface` | where the checkpoint is stored |
 | `MEM_NEED_GIB` | `90` | `MemAvailable` `start.sh` asks for before launch |
-| `MEM_FLOOR_GIB` | `8` | stop the load if free memory stays below this for `MEM_FLOOR_GRACE` (30 s) |
+| `MEM_FLOOR_GIB` | `6` | stop the load if free memory stays below this for `MEM_FLOOR_GRACE` (30 s) |
 | `MEM_HARD_FLOOR_GIB` | `2` | stop the load at once below this |
 | `MIN_FREE_GB` | `120` | disk `prepare.sh` asks for when the snapshot is absent |
-| `IMAGE_FREE_GB` | `30` | disk asked for when the image is not local |
+| `IMAGE_FREE_GB` | `30` | disk asked for when the base image is not local |
 | `CONTAINER_NAME` | `qwen38-flash-next-fp4` | docker name |
 | `WAIT_TIMEOUT` | `1800` | seconds to wait for `/v1/models` |
 | `PREPARE` | `auto` | `1` always runs prepare, `0` skips it |
-| `PULL` | `1` | `docker pull` during prepare |
+| `PULL` | `1` | pull the base image (or another `IMAGE`) during prepare when needed |
 | `HF_HUB_OFFLINE` | `1` | serve container; prepare turns it off for the download |
 
 The container also receives the rest of the model-card Spark environment:
 `SAFETENSORS_FAST_GPU=1`, `VLLM_WORKER_MULTIPROC_METHOD=spawn`, `VLLM_SSM_CONV_STATE_LAYOUT=DS`,
 `VLLM_USE_AOT_COMPILE=1`, `VLLM_USE_MEGA_AOT_ARTIFACT=1`, `VLLM_USE_V2_MODEL_RUNNER=1`,
 `B12X_POLICY_MODE=auto`, `VLLM_MXFP8_LM_HEAD=1`, `VLLM_B12X_MOE_FP4_LAYER_MAX_INPUT_SCALE=w13`,
-`VLLM_B12X_MOE_FP4_FORCE_A16=1`, `B12X_W4A16_A4_PREFILL=1`. `B12X_W4A16_A4_PREFILL_TERMS` and
-`VLLM_B12X_DENSE_ACTIVATION_MODE` come from `PRECISION`.
+`VLLM_B12X_MOE_FP4_FORCE_A16=1`, `B12X_W4A16_A4_PREFILL=1`.
 
 `vllm serve` is started with `--enable-prefix-caching`, `--enable-chunked-prefill`,
 `--mamba-cache-mode align`, `--gdn-decode-kernel b12x`, `--linear-backend b12x`, `--moe-backend b12x`,
@@ -182,15 +181,40 @@ read as data, and `.env` and the environment still win over it. The default need
 
 | Profile | Window | KV pool | FP8 KV tokens | Full windows at once | Notes |
 | --- | ---: | --- | ---: | ---: | --- |
-| none | 262,144 | 27 GB | 1,365,333 | 5.2 | the default; cap 5; lowest `MemAvailable` while serving 11.4 GiB |
+| none | 262,144 | 31.15 GB | 1,575,180 | 6.0 | the default; cap 8; lowest `MemAvailable` while serving 6.9 GiB; floor 6 GiB |
 | `kv-max` | 262,144 | 34 GB | 1,719,161 | 6.6 | cap 6; lowest `MemAvailable` while serving 4.4 GiB; floor 4 GiB |
 | `1m` | 1,048,576 | 30 GB | 1,931,132 | 1.8 | test profile: YaRN 4x, floor 4 GiB |
+| `vllm-0.32` | 262,144 | 31.15 GB | 1,751,020 | 6.7 | opt-in: upstream vLLM v0.32.0 plus `vllm-0.32/series`, image built by `vllm-0.32/build.sh` (see below) |
 
-The default pool is pinned at 27 GB, so five full 262,144-token requests decode at once, and the request cap is
-5 to match: every running request has room to reach the full window, and a sixth waits for a free slot. The
-pool used to be sized at 0.8 of memory (1.05-1.10M tokens, 4 full windows, drifting by about 0.7 GiB between
-boots) with a cap of 8. An empty `KV_CACHE_MEMORY_BYTES=` brings that sizing back, and `MAX_NUM_SEQS=8` the old
-cap. Checks on the 27 GB pool, still with the cap of 8:
+`vllm-0.32` serves the same checkpoint on upstream vLLM v0.32.0 instead of eugr's fork: build the image once on
+the Spark with `vllm-0.32/build.sh`, then `PROFILE=vllm-0.32 ./start.sh`. Against the default image, same day:
+prefill 7-19% faster on 0.5k-128k prompts, decode the same (45.2 against 45.6 t/s), 11% more KV in the same
+pool, perplexity equal or lower. tool-eval-bench scored 87-88 on all four runs (default image 89-90) and
+sixcat-eval 90.6 (92.1), the gap being 2 of its 20 tool items; prompts render identically on both, and the
+failing scenarios move with the numerics. It stays opt-in until more runs settle that. Details, patches and
+every measurement: [`vllm-0.32/README.md`](vllm-0.32/README.md).
+
+The default pool is pinned at 31.15 GB: 1,575,180 FP8 tokens, six full 262,144-token requests at once. Up to 8
+requests decode together, and all 8 fit while they average under about 196k tokens each. Past that vLLM pauses
+one request and recomputes it once there is room: slower, never wrong. A ninth request waits for a free slot.
+`KV_CACHE_MEMORY_BYTES=27000000000 MAX_NUM_SEQS=5` brings back the previous default (1,365,333 tokens, cap 5),
+and an empty `KV_CACHE_MEMORY_BYTES=` the older sizing at 0.8 of memory (1.05-1.10M tokens, drifting by about
+0.7 GiB between boots).
+
+Checks on the 31.15 GB pool with the cap of 8:
+
+- Six prompts of 252,700-253,222 tokens, each generating 3,000 tokens, decoded together with no preemption; KV
+  use peaked at 89%. vLLM reads one prompt at a time, so the sixth got its first token after 790 s.
+- Eight 30k-token prompts sent at once: all 8 answered, first tokens after 71 s (median) and 120 s (last).
+- Every token's logprob on the perplexity texts is identical to the 27 GB pool (fresh text 2.2049, all text
+  1.0902): the pool size changes no answer.
+- Lowest `MemAvailable` while serving 6.9 GiB, against about 12 GiB with 27 GB. Once the pool is allocated the
+  loading server sits near 7 GiB, so `MEM_FLOOR_GIB` is 6 (it was 8).
+- The cap of 8 against 5 (on the 27 GB pool): 8 users with 1k prompts get 111 t/s combined against 78 (+43%),
+  and the last first token arrives after 4.4 s instead of 32 s. With 1 or 5 users both caps give the same
+  speed (36 and 84-86 t/s). Each request decodes a bit slower when 8 share the GPU: 16 t/s against 19.
+
+Earlier checks on the 27 GB pool with the cap of 8:
 
 - Five prompts of 246,388-253,222 tokens, each generating 3,000 tokens, decoded together with no preemption.
   vLLM reads one prompt at a time, so the fifth got its first token after 652 s. Lowest `MemAvailable` 12.4 GiB.
@@ -200,7 +224,7 @@ cap. Checks on the 27 GB pool, still with the cap of 8:
   92.2). sixcat sends 4 requests at once, so long answers differ between any two runs; one config swings as
   much as the two differ (tools by 10 points, instruct by 5).
 
-Checks on the cap of 5, same pool:
+Earlier checks on the cap of 5, same 27 GB pool:
 
 - Up to 5 requests nothing changes. With 8 or 16 the extra requests wait for a slot, so total output drops:
   51 t/s against 63 with 8k prompts (-19%), 23 against 25 with 32k prompts (-8%), and the slowest of 16 8k
@@ -218,18 +242,15 @@ the kernels; the cap of 6 has not been booted yet. It costs memory: `MemAvailabl
 `1m` stretches the checkpoint's 262,144 positions 4x with YaRN, which changes every answer, short ones included.
 A needle hidden in 524,288 and in 1,040,000 tokens of text was found 5 times out of 5 at each length.
 tool-eval-bench 2.7.1 scored 89 (default on the same version: 89 and 91), and perplexity on fresh text rose from
-2.205 to 2.248. These `1m` numbers were measured with `PRECISION=fast`, the default. Use it when a window past
+2.205 to 2.248. These `1m` numbers were measured with the default activations. Use it when a window past
 262,144 matters more than the last bit of quality.
 
 ## Precision
 
-`PRECISION=fast` (the default) sets `B12X_W4A16_A4_PREFILL_TERMS=1` and `VLLM_B12X_DENSE_ACTIVATION_MODE=auto`,
-the model card's values. `PRECISION=quality` sets `2` and `a16`. Either variable set directly wins over
-`PRECISION`.
-
-```bash
-PRECISION=quality ./start.sh
-```
+The recipe runs the model card's activations: FP4 prefill activations for the MoE, and the dense NVFP4/MXFP8
+layers in the format the autotuner picks. A `PRECISION=quality` switch used to add a second FP4 term for the
+prefill MoE rounding residual (`B12X_W4A16_A4_PREFILL_TERMS=2`) and BF16 activations in the dense layers
+(`VLLM_B12X_DENSE_ACTIVATION_MODE=a16`). It was removed: closer to full precision, slower, no better at tasks.
 
 Each setting was compared token by token with the most precise run the image allows: BF16 KV cache, BF16
 prefill activations, BF16 dense activations, and a BF16 LM head. The texts are book prose, code, a 96k-token
@@ -238,17 +259,16 @@ difference is 0.024, because its BF16 kernels are not deterministic.
 
 | Setting | Mean \|Δ logprob\| | Top-1 agreement | Repeat runs | Prefill t/s |
 | --- | ---: | ---: | --- | ---: |
-| `fast` (default, model card) | 0.039 | 98.59% | bit-identical | **1,718** |
-| `quality` | **0.020** | **99.23%** | bit-identical | 1,362 |
+| the recipe (model card) | 0.039 | 98.59% | bit-identical | **1,718** |
+| former `quality` | **0.020** | **99.23%** | bit-identical | 1,362 |
 | `B12X_W4A16_A4_PREFILL_TERMS=2` alone | 0.028 | 98.93% | bit-identical | 1,665 |
 | BF16 prefill activations (`B12X_W4A16_A4_PREFILL=0`) | 0.028 | 98.92% | differ | 1,625 |
 | `VLLM_B12X_DENSE_ACTIVATION_MODE=a16` alone | 0.037 | 98.67% | bit-identical | 1,386 |
 | BF16 LM head (`VLLM_MXFP8_LM_HEAD=0`) | 0.039 | 98.63% | bit-identical | decode -6% |
 
-`quality` is about twice as close to the precise run token by token. Measured as a shipping default on the same
-image, that does not carry over to the task benchmarks:
+Served as a default on the same image, the closer token-level match did not carry over to the tasks:
 
-| | `fast` (default) | `quality` |
+| | the recipe | former `quality` |
 | --- | ---: | ---: |
 | tool-eval-bench 2.8.1, 97 scenarios, two runs | 89 · 89 | 91 · 89 |
 | sixcat-eval 0.8.3, 884 items | **92.1** | 91.7 |
@@ -258,14 +278,8 @@ image, that does not carry over to the task benchmarks:
 | Decode, geometric mean, 0.5k-128k | **45.8 t/s** | 44.4 t/s |
 | Prefill, geometric mean | **1,717 t/s** | 1,362 t/s |
 | Time to first token, 128k prose | **65.5 s** | 86.0 s |
-| KV cache, default 27 GB pool | 1,365,333 | 1,365,333 |
 
-What `fast` gives up is about 0.5% perplexity on book prose and code. What it gains is 26% more prefill and
-20 s less wait at 128k, with sixcat a little higher. Pick `quality` when token-level fidelity to full precision
-matters more than prefill time.
-
-On the fresh texts `quality` is token by token closer to the precise run too, but its perplexity there is 1%
-higher than `fast`'s (the precise run: 2.198). On book prose and code it sits at the precise run's level.
+The two FP4/dense variables stay at the image's defaults (1 and `auto`), so the recipe no longer sets them.
 
 Tried and left out:
 
@@ -278,10 +292,54 @@ Tried and left out:
 - **Kernel levers** (`B12X_W4A16_SMALL_M_OCCUPANCY=2`, `VLLM_B12X_BF16_GEMV=1`, `B12X_W4A16_A4_PREFILL_WARPS=16`,
   `--gdn-prefill-backend flashinfer`): within run-to-run noise, slower, less KV, or worse perplexity.
 
+## PLE queue depth
+
+The model's n-gram embedding table (26.9 GiB) stays on NVMe, and every prefill chunk reads its rows with
+io_uring. The image keeps at most 64 reads in flight (a fixed default in FlashInfer's `ple_embedding/_disk.py`),
+and the GPU waits about 120 ms per 4,096-token chunk for them. `PLE_QUEUE_DEPTH=256`, the default, keeps 256
+in flight:
+
+| | Prefill, 8k/16k/32k prompts | Decode |
+| --- | ---: | ---: |
+| `PLE_QUEUE_DEPTH=64`, the image as shipped | 2,307 t/s | 45.0 t/s |
+| `PLE_QUEUE_DEPTH=256` | **2,404 t/s (+4.2%)** | 45.4 t/s |
+
+On llm_context_benchmarks (prose and code at 0.5k, 8k, 32k and 128k, one request at a time), the new defaults
+against the old ones: prefill 1,801 t/s against 1,724 (geometric mean, +4.5%), and 2,114 against 1,992 t/s at a
+128k prose context (+6.1%), so its first token comes after 61.6 s instead of 65.4 s. Decode is unchanged within
+noise (45.7 against 45.0 t/s).
+
+The output is bit-identical: every token's logprob on the perplexity texts (prose, code, fresh 2026 texts and
+a 96k-token book) matches the 64 run exactly. The same rows are read; only how many at once changes.
+
+eugr's image has no setting for it, so the recipe image changes that one default to read `PLE_QUEUE_DEPTH`
+(`docker/ple_queue_depth.py`). The build checks the file against the sha256 the change was written for and
+stops on any other file, then imports it to confirm the default is 256, and 64 with `PLE_QUEUE_DEPTH=64`.
+`PLE_QUEUE_DEPTH=64` serves as eugr ships it.
+
+## Image
+
+`IMAGE` defaults to `qwen38-flash-next-fp4:<hash>`, built by `scripts/prepare.sh` from `docker/Dockerfile`
+on top of `BASE_IMAGE`, `eugr/spark-vllm-b12x@sha256:03a956544e9f…` (nightly-20261015, the image every
+benchmark here ran on). The layer adds only the [PLE queue depth](#ple-queue-depth) setting; vLLM, FlashInfer,
+and the B12X kernels are eugr's build unchanged.
+
+The base is pinned by digest, so eugr's nightly `latest` moving does not change what this recipe serves.
+The tag is a hash of `BASE_IMAGE` and `docker/`: changing either builds a new image on the next start.
+To try a newer eugr nightly, set `BASE_IMAGE` to its digest and compare it against the numbers below:
+
+```bash
+BASE_IMAGE=eugr/spark-vllm-b12x@sha256:<digest> ./start.sh restart
+```
+
+The build stops if that nightly ships a different PLE file. `IMAGE=eugr/spark-vllm-b12x@sha256:<digest>`
+serves a base image as is, at queue depth 64.
+
 ## Benchmarks
 
 Four ways to serve the same model, on the same Spark, back to back. Each runs on its own defaults, with a
-262,144-token window, thinking off and temperature 0.
+262,144-token window, thinking off and temperature 0. `quality` is the former `PRECISION=quality` setting,
+removed since (see [Precision](#precision)).
 
 | Recipe | Engine | Weights | KV cache | Speculative decoding |
 | --- | --- | --- | --- | --- |
@@ -316,8 +374,9 @@ What the numbers say:
 - **hibrid48 and TensorFold are faster.** hibrid48 decodes 19% faster than `fast` (54.3 against 45.8 t/s,
   geometric means) and prefills 13% faster, with MTP up to 7 and Marlin kernels. TensorFold is second (51.6 t/s,
   1,858 t/s) and the fastest of all on short code (67.9 t/s at 0.5k). All four stay above 38 t/s at 128k.
-- **No recipe serves the most requests at every length.** This recipe holds 1,365,333 tokens of FP8 KV in its
-  27 GB default pool with a cap of 5: 5 requests at any length up to the full 262k window. hibrid48 keeps BF16
+- **No recipe serves the most requests at every length.** This recipe ran with its earlier default, 1,365,333
+  tokens of FP8 KV in a 27 GB pool with a cap of 5: 5 requests at any length up to the full 262k window. The
+  default is now 1,575,180 tokens with a cap of 8: 6 full windows, or 8 requests averaging up to 196k. hibrid48 keeps BF16
   KV, 877k tokens, with a cap of 16: the most requests up to 128k, 3 full windows. TensorFold takes all memory
   but 10 GiB, about 1.57M tokens, with a cap of 5: all 5 at full windows. `PROFILE=kv-max` gives this recipe
   the largest pool, 1.72M tokens, and a cap of 6: 6 full windows.
@@ -486,8 +545,11 @@ a second quant of the FP4-Local checkpoint.
 - **Slow first start.** The first load compiles kernels and reads about 96 GiB; later starts are faster.
   Changing `MAX_NUM_SEQS` rebuilds part of the kernel cache on the next start, about 5 minutes. Follow it with
   `docker logs -f qwen38-flash-next-fp4`.
-- **Unknown quantization or load format.** You are not on `eugr/spark-vllm-b12x`; upstream vLLM cannot read this
-  checkpoint's NVFP4 scales yet. Keep the default `IMAGE`.
+- **Unknown quantization or load format.** You are not on `eugr/spark-vllm-b12x` or the recipe image built on
+  it; upstream vLLM cannot read this checkpoint's NVFP4 scales yet. Keep the default `IMAGE`.
+- **`sha256 …, expected …` while building the image.** `BASE_IMAGE` ships a different PLE disk file than the
+  one the queue-depth change was written for. Keep the default `BASE_IMAGE`, or serve that base as is with
+  `IMAGE=<the base image>`.
 
 ## Checks
 
@@ -506,7 +568,9 @@ stop.sh                  stop and remove the container
 scripts/config.sh        settings and build_docker_cmd
 scripts/prepare.sh       pull the image, download the checkpoint
 scripts/test_config.sh   config checks
-profiles/                opt-in launch profiles (kv-max, 1m)
+profiles/                opt-in launch profiles (kv-max, 1m, vllm-0.32)
+vllm-0.32/               upstream vLLM v0.32.0 patch series, build.sh, README
+docker/                  the recipe image: Dockerfile and the PLE queue-depth build step
 docs/                    benchmark charts
 .env.example             commented overrides
 CREDITS.md               what this builds on
@@ -526,8 +590,8 @@ The checkpoint downloaded by `scripts/prepare.sh` is not part of this repository
 - **Qwen Community License 1.0** governs the Qwen3.8-Flash-Next base model.
   https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/LICENSE
 
-The container `eugr/spark-vllm-b12x:latest` is pulled, not built here. Its NVIDIA software and vLLM build stay
-under their own licenses. See `NOTICE`.
+The base image `eugr/spark-vllm-b12x` is pulled, not rebuilt here; `docker/` adds one layer on top of it. Its
+NVIDIA software and vLLM build stay under their own licenses. See `NOTICE`.
 
 ## Credits
 

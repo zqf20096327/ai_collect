@@ -25,7 +25,7 @@
 </p>
 
 <p>
-  <img src="https://img.shields.io/badge/Version-v2.2.0-2563eb?style=flat-square" alt="Current product version v2.2.0" />
+  <img src="https://img.shields.io/badge/Version-v2.2.4-2563eb?style=flat-square" alt="Current product version v2.2.4" />
   <img src="https://img.shields.io/badge/Frontend-React%20%2B%20Next.js-61dafb?style=flat-square" alt="React and Next.js" />
   <img src="https://img.shields.io/badge/API-Fastify%20%2B%20Zod-111827?style=flat-square" alt="Fastify and Zod" />
   <img src="https://img.shields.io/badge/UML-PlantUML-f59e0b?style=flat-square" alt="PlantUML" />
@@ -35,6 +35,65 @@
 > Trace your designs, guide your revisions. Review models, tests and specifications against the same requirements, follow change impacts and organize design sources you can explain in reviews and your defense.
 
 </div>
+
+## Overview
+
+**Turn a system description into UML diagrams, test cases and editable Word specifications.** Follow requirement changes through the linked project materials, then use the designs and tests to prepare your project review or defense.
+
+![Engineering Modeling — English reservation sequence diagram with validation and exception branches](docs/images/readme-sequence-en.jpg)
+
+**A reservation workflow with 6 participants, 19 messages and 3 conditional fragments:** successful booking, an occupied seat and a duplicate reservation. Captured in the English interface using a prepared example project.
+
+SoftJL Community is a self-hosted AI software engineering workspace for capstone and course projects. Bring your own OpenAI-compatible model service. Community is distributed as an independent source snapshot with a fresh Git history.
+
+### Choose a modeling workflow
+
+| Mode | Start here | How you work |
+| --- | --- | --- |
+| **Quick Modeling (Standard)** | You want to discuss requirements and build selected diagrams. | Describe the system in chat, choose from 8 model types and refine saved models through conversation; prepare tests and 2 specifications. |
+| **Engineering Modeling (Professional)** | You need a staged analysis and design workflow. | Confirm requirement rules, complete feasibility analysis, generate requirement and design models, then prepare tests and 3 engineering documents. |
+
+Both modes support your own model service; their names do not indicate pricing tiers.
+
+- **Trace the sources** — inspect links between requirements, models and tests when reviewing coverage or explaining a design.
+- **Follow changes** — use dependencies and update status to locate project materials that need review after a requirement changes.
+- **Keep completed work** — retry failed model instances while retaining successful artifacts; inspect task history and provider-reported usage.
+
+[See the conversation workflow](#quick-modeling-standard) · [Compare all capabilities](#core-capabilities) · [Run locally](#quick-start) · [Read the generation workflow](#generation-workflow)
+
+## Interface Preview
+
+The community edition opens the project list directly, with sign-in required. See the capability table for the current community scope.
+
+The following screenshots show the English interface with English example content. The modeling conversation and diagrams use a prepared library reservation project; dashboard figures are illustrative demo data, not performance measurements.
+
+### Quick Modeling (Standard)
+
+Describe requirements in chat, review tool activity and open saved models from the sidebar.
+
+![Quick Modeling — English conversation, design layers, business rules and saved model navigation](docs/images/readme-quick-modeling-en.jpg)
+
+The design class example contains 20 classes, 4 interfaces, 2 enumerations and 21 relationships. Inspect their attributes, methods and associations in the model workspace.
+
+![Quick Modeling — English design class diagram with controllers, services, repositories and domain objects](docs/images/readme-class-full-en.jpg)
+
+### Engineering Modeling (Professional)
+
+Follow the requirements, feasibility, modeling, testing and documentation workflow, with model elements and traceability available in the workspace.
+
+The reservation sequence example connects 6 participants through 19 messages and 3 conditional fragments, covering successful reservations, occupied seats and duplicate bookings.
+
+[View the complete reservation sequence above](#overview).
+
+### Test scenarios and coverage
+
+The prepared example includes **12 test cases mapped to 9 requirement rules**, covering expired sessions, occupied seats, overlapping bookings, adjacent time slots, notifications and administrative cancellation. Review the mappings and execute the cases against the actual system; a coverage link is not a passed test.
+
+![English test cases with concrete steps, expected results and requirement mappings](docs/images/readme-tests-en.jpg)
+
+### Project dashboard
+
+![English project dashboard with illustrative project and task statistics](docs/images/readme-dashboard-en.jpg)
 
 ## Revise requirements, trace designs, explain your work
 
@@ -58,35 +117,6 @@ Source links and coverage counts help locate content to inspect. Open the models
 - **Implementation inputs**: saved designs and acceptance criteria for a compatible Coding Agent to use when implementing and testing in an external repository.
 
 Review generated content, organize documents according to your school's requirements and verify the running system. Engineering specifications can support a project report; they are not a complete graduation thesis. Real-client compatibility and generated-code acceptance for Coding Agents remain pending; see the [integration guide](docs/integrations/coding-agent-mcp.md).
-
-## Overview
-
-SoftJL Community is a self-hosted AI software engineering workspace, distributed as an independent source snapshot with a fresh Git history.
-
-## What changed in v2.2.0
-
-This release improves source mapping completion and keeps generated results synchronized:
-
-- Complete missing source mappings with bounded requests for the missing elements, preserving accepted models and mappings. Complete mappings need no extra call.
-- Publish cumulative requirement previews and successive feasibility results without a reload, while protecting later manual edits.
-- Show the element mapping rate for the full scoped matrix, consistently across search, pagination and analysis views.
-- Explain supported text and image attachment formats beside the requirement input.
-- Simplify project collaboration to member invitations and private/public visibility; remove organizations, courses, classes, teams and their fields, permissions and quotas.
-
-This release uses the current `current_platform_schema_v2` installation baseline.
-
-## Generation workflow
-
-The generation workflow focuses on shorter waits and fewer repeated model inputs.
-
-- **Scoped context**: send task dependencies and the selected use case with its include/extend relationships; retain business constraints and complete target models.
-- **Focused repair**: correct diagnosed fields with version-checked patches; reserve regeneration for the affected artifact when localization is insufficient.
-- **Independent progress**: run independent design branches concurrently and retry failed model instances while retaining successful results.
-- **Two project modes**: start a conversational Standard project or use the complete Professional workflow. Both are available with your own provider; mode names do not indicate pricing tiers.
-- **Visible consumption**: task history reports provider-supplied token usage, including repairs and failed calls; unknown usage stays unknown.
-- **Built-in document preview**: preview DOCX without a separate document server.
-
-The [release notes](release-notes.md) include a reproducible synthetic input comparison. Actual end-to-end duration and total tokens vary with project size, model, provider latency and repairs; the fixture results are not production savings.
 
 ## Core Capabilities
 
@@ -127,33 +157,22 @@ Platform billing, payments, credit management, and the operations administration
 
 Use an independent database. This distribution is not a downgrade path for an existing full-edition database. Generated models and documents require review, and tests must be executed against your actual system.
 
-## Interface Preview
+## Generation workflow
 
-The community edition opens the project list directly, with sign-in required. See the capability table for the current community scope.
+The generation workflow focuses on shorter waits and fewer repeated model inputs.
 
-The following modeling screenshots show the current community UI with local example data in Chinese.
+- **Scoped context**: send task dependencies and the selected use case with its include/extend relationships; retain business constraints and complete target models.
+- **Task-local model repair**: generation and rendering append feedback to the same retained conversation, share five repairs and publish validated model/mapping/render results together. Implementation plans and document sections retain their scoped patch protocol.
+- **Independent progress**: run independent design branches concurrently and retry failed model instances while retaining successful results.
+- **Two project modes**: start a conversational Standard project or use the complete Professional workflow. Both are available with your own provider; mode names do not indicate pricing tiers.
+- **Visible consumption**: task history reports provider-supplied token usage, including repairs and failed calls; unknown usage stays unknown.
+- **Built-in document preview**: preview DOCX without a separate document server.
 
-### Quick Modeling (Standard)
+The [release notes](release-notes.md) include a reproducible synthetic input comparison. Actual end-to-end duration and total tokens vary with project size, model, provider latency and repairs; the fixture results are not production savings.
 
-Describe requirements in chat, review tool activity and open saved models from the sidebar.
+## Online Access
 
-![Quick Modeling — conversation and saved model navigation](docs/images/readme-quick-modeling.jpg)
-
-The design class example contains 20 classes, 4 interfaces, 2 enumerations and 21 relationships. Inspect their attributes, methods and associations in the model workspace.
-
-![Quick Modeling — design class diagram with controllers, services, repositories and domain objects](docs/images/readme-quick-modeling-diagram.jpg)
-
-### Engineering Modeling (Professional)
-
-Follow the requirements, feasibility, modeling, testing and documentation workflow, with model elements and traceability available in the workspace.
-
-The reservation sequence example connects 6 participants through 19 messages and 3 conditional fragments, covering successful reservations, occupied seats and duplicate bookings.
-
-![Engineering Modeling — reservation sequence diagram with validation and exception branches](docs/images/readme-engineering-modeling.jpg)
-
-### Project dashboard
-
-![Project dashboard](docs/images/readme-dashboard.jpg)
+[SoftJL website](https://jianglisoftware.com) offers the hosted edition, which may have different features. Run this repository locally for the community edition.
 
 ## Quick Start
 
@@ -186,6 +205,20 @@ Core services include document generation, built-in DOCX preview and downloads. 
 
 Add your provider in account model settings, test the connection and select a model. Configure persistence and encryption secrets for deployment, and disable development guest access and legacy plaintext provider settings.
 
+## What changed in v2.2.4
+
+This release improves Quick Modeling scope confirmation, invitations and profile updates:
+
+- Confirm model scope with server-validated option IDs; reject stale questions, invalid selections and attempts to expand the selected diagram types.
+- Explain unsupported Quick Modeling requests and require explicit choices before generating a supported alternative; recommendations and earlier consent cannot bypass confirmation.
+- Search registered invitees by username or display name, with avatars, request debouncing and filtering of existing members, inactive users and yourself.
+- Choose from 12 bundled animated avatars or upload GIFs without losing animation; profile changes update navigation avatars without reloading the project.
+- Filter projects by Standard or Professional mode, while retaining shared-project filtering and the community edition's direct project entry.
+
+This release uses the current `current_platform_schema_v3` installation baseline. Existing v1/v2 databases are rejected; use a clean database. SMTP and emailed invitation links are retired.
+
+Mapping metadata fields `reviewStatus`, `confidence` and the `auto-filled-pending-review` value are retired. Workspaces containing them are rejected by the current contract; recreate affected projects and models. No automatic data conversion is provided.
+
 ## Architecture
 
 | Directory | Responsibility |
@@ -203,11 +236,7 @@ The root `npm run dev` builds shared packages automatically; use `npm run build:
 
 ## Release and upgrades
 
-Current version: **v2.2.0**. See [release notes and setup requirements](release-notes.md). New installations initialize an empty database with `current_platform_schema_v2`; databases already using this baseline can continue to be used. Historical community migration chains and model formats are no longer supported; the application rejects obsolete schemas instead of upgrading them. New projects explicitly select Standard or Professional mode.
-
-## Online Access
-
-[SoftJL website](https://jianglisoftware.com) offers the hosted edition, which may have different features. Run this repository locally for the community edition.
+Current version: **v2.2.4**. See [release notes and setup requirements](release-notes.md), including retired avatar paths and model-selection questions. New installations initialize an empty database with `current_platform_schema_v3`; existing data must meet current contracts. Historical community migration chains and model formats are no longer supported; the application rejects obsolete schemas instead of upgrading them. New projects explicitly select Standard or Professional mode.
 
 ## Documentation
 

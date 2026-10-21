@@ -119,6 +119,7 @@ These rules decide what goes into the code:
 | GPU backends: Metal (zero-copy on unified memory), Vulkan (Adreno/Mali; native kernels for 23 formats on GPU-shared memory) | ✅ |
 | Paged KV cache (F16 / Q8_0 / Q4_0 / Q4_1) laid out per block (windowed blocks keep only their window), with per-channel key scaling, sliding window with attention sinks, grouped-query attention over spans, latent rows for multi-head latent attention, read in the absorbed form or, for long prefills, the expanded one (chosen by a threshold measured once per device) | ✅ |
 | Context kept between turns, recurrent-state snapshots for hybrid models, save/restore to disk | ✅ |
+| Several sequences decoded together: one pass over every sequence's rows, each sequence's own context, adapter and priority, each output what it gives alone | ✅ CPU and Metal backends |
 | Automatic context length from the KV cache's cost; cancellable, resumable chunked prefill | ✅ |
 | Prefix cache across conversations: a content-addressed store of KV chunks (shared prefixes kept once), in RAM and on storage across runs, capped, LRU | ✅ |
 | Segment reuse: marked parts of a prompt (documents, tool results) reused wherever they appear, keys turned to their new positions, a share calibrated per model processed again; attention-only models | ✅ opt-in, lossy |
@@ -559,7 +560,9 @@ available memory or of `memory_budget_mb`.
   * **Batch-aware.** For a multi-token pass (prefill), experts are rearranged into the i8mm layouts on the I/O
     thread as they arrive. Prefill runs in passes of 1,024 tokens, each reading the union of its tokens' experts
     once. Such passes give the experts no LFU credit, so a long prompt does not evict the experts a conversation
-    keeps using.
+    keeps using. A pass of [several sequences](#context-memory-and-serving)' decoding steps, one token each, is
+    decoding: their experts are read in the file's layout and credited as a single sequence's are (served as a
+    prefill, two sequences on Qwen3-30B-A3B decoded at 0.60x the speed of taking turns; as decoding, 0.96x).
   * **Deterministic.** Each token's expert outputs are added in router order, whatever order they arrived in, and a
     repacked expert rounds like one in the file's layout. Results therefore depend neither on I/O timing nor on what
     the cache held: streamed and in-place experts give bit-identical logits (tested).
@@ -848,6 +851,71 @@ each of those as a scheduling problem.
 * **Cancellable, resumable prefill.** `cancel_prefill()` stops a background prefill between blocks, within a fraction
   of a second even inside a 1,024-token pass, and keeps the work done. The next prompt continues from there. A user
   request therefore never waits behind background work.
+* **Several sequences decoded together** (`max_sequences`, `Engine::open_sequence()`). The chat, a request from
+  another app through the local API and a background agent no longer queue behind each other: each one runs on a
+  sequence of its own, with its own context (KV pages as it uses them, recurrent states and snapshots, the text its
+  tokens encode, its LoRA adapter), sharing the weights, the threads, the expert cache and the prefix cache. Calls on
+  different sequences run at once, each on its caller's thread, and their forward passes run together: whichever
+  waiting thread leads takes every sequence's next tokens into one pass
+  (`Transformer::forward_batch()`), whose matmuls go over all of their rows, so each weight is read once for all
+  of them (a mixture of experts reads the union of the experts they choose), while each sequence attends to its own
+  cache at its own positions, continues its own DeltaNet states, applies its own adapter and, with latent attention,
+  attends in the form its pass alone would take. The rest stays on each caller's thread: sampling, grammars,
+  callbacks, stopping.
+  * **Each sequence's output is its own.** A row's matmul gives the same bits whatever rows share its batch, and
+    attention depends on a token's own position only, so on the CPU backend every sequence's logits are the bits
+    it gets alone: greedy output is token for token, sampling draws the same tokens from the same seed. Tested on
+    dense, gated, windowed (Gemma 2/3, Phi-3), hybrid, MoE (in place and streamed), latent (both forms, mixed in one
+    pass) and LoRA models (`tests/test_sequences.cpp`). The GPU kernels compute each row on its own too: on Metal,
+    replies together equal replies alone (`liyab-seq-bench --backend metal`). With the experimental lossy hooks on,
+    sequences take turns instead of sharing passes, so that holds there too.
+  * **Alone, nothing changes.** A call that runs while no other sequence has one runs exactly as a single
+    conversation always has: the same passes, speculative drafts, pacing per token. Alternating runs on the Mac
+    against the engine before sequences (CPU, 8 threads, 128 tokens, medians) decoded at 57.6 and 57.0 tok/s on
+    Qwen3-0.6B BF16 (63.7 and 64.2 with drafts), 26.8 and 26.3 on Llama 3.2 1B, 48.3 and 48.1 on Qwen3.5-0.8B,
+    238.6 and 235.5 on Qwen2.5-0.5B Q8_0 (11 runs each, prefill 180 ms both), the same replies. While several
+    run, their steps are plain (one token each, no drafts): the shared pass is the batch drafts would otherwise
+    fill. Passes of a prompt are cut to `max_batch` tokens while others decode, since a pass's time is what their
+    next token waits for (latent attention keeps its own pass sizes: each pass's form follows from its size).
+  * **What it gains.** `liyab-seq-bench` on the Mac (M4 Pro, 8 threads, 128 tokens per sequence, greedy, medians of
+    3 paired runs): every token generated together over the wall time, against the same generations one after
+    another. Every reply together was its reply alone.
+
+    | Model | 2 sequences | 3 | 4 | Each of 2, alone |
+    |---|---|---|---|---|
+    | Qwen2.5-0.5B Q8_0, CPU | 1.37x | 1.75x | 2.28x | 144 tok/s, 287 |
+    | Qwen2.5-0.5B Q8_0, Metal | 1.90x | | 3.26x | 44.3 tok/s, 46.5 |
+    | Qwen3.5-0.8B BF16 (hybrid), CPU | 1.23x | 1.29x | 1.27x | 23.1 tok/s, 39.2 |
+    | Qwen2.5-0.5B F16, CPU | 1.14x | 1.20x | 1.24x | 38.1 tok/s, 69.9 |
+    | Qwen3-0.6B BF16, CPU | 1.10x | 1.21x | 1.29x | 30.3 tok/s, 55.3 |
+    | Llama 3.2 1B BF16, CPU | 1.11x | 1.18x | 1.18x | 14.3 tok/s, 25.6 |
+    | Qwen3-30B-A3B Q4_K_M, experts streamed (2 GiB cache), CPU | 0.96x | | 1.01x | 7.7 tok/s, 17.9 |
+
+    Quantized weights gain most: their kernels decode a block of weights once for four rows. F16 and BF16 weights
+    are dotted row by row, so a row more costs almost a row's time ([next](#roadmap)). On the GPU a pass's fixed
+    cost dominates and is paid once for all. A MoE whose experts stream from storage reads the union of the
+    experts its sequences choose, and with 8 of 128 per token they have few in common: a shared pass (64 tokens
+    per sequence there) costs about as much as the passes it replaces, a draw. Each sequence decodes slower than alone, since a pass of more
+    rows takes longer: the reason background steps join the user's passes only when that costs little. Drafts or a
+    shared pass: with `lookup_drafts` on new text, the same generations in turns went no faster (Qwen2.5 Q8_0:
+    222 tok/s with drafts, 223 without), and two sequences together gave 1.42x over the turns with drafts; drafts pay on repeated text
+    (`liyab-spec-bench`), so a sequence alone keeps them, and sequences together share plain steps.
+  * **The user first** (`SequencePriority`). Foreground sequences are the user's turn; background ones yield: their
+    passes run when no foreground request waits, a pass of a background prompt is stopped between two blocks when
+    foreground work arrives (its work kept, the pass run again later), and a background decoding step joins a
+    foreground pass only while a pass of one more sequence measured at most 1.25 times as long: on a model in RAM
+    a row more costs little, while a MoE whose experts stream from storage would make the user's step wait for the
+    background step's expert reads. One step in 64 that would be kept out joins anyway, so the estimate follows
+    the expert cache warming up and the device's load (at most 1/64 of the difference on the user's steps). A leader waits for the sequences about to submit (sampling, calling back) for
+    at most half a pass, so a slow callback costs the others little.
+  * **Per sequence.** Cancellation (`Sequence::cancel()`, `cancel_prefill()`), adapters (`set_adapter()`), the
+    prefix cache's restores and set-asides (a context one sequence set aside, any other restores), and the Busy
+    rule: one call at a time per sequence. `embed()`, `rerank()`, `save_state()`, `load_state()` and segment reuse
+    stay on the default sequence; the others' passes wait while they run.
+  * **Memory.** Each sequence keeps its own KV pages, up to `context_length()` positions, and on hybrid models its
+    recurrent states and up to four snapshots, set aside at load from the expert cache's budget for every sequence
+    `max_sequences` allows (62.8 MiB each on the 35B). `max_sequences` is 1 by default: one conversation, the
+    memory plan of before. Not with a draft model, whose cache follows one sequence.
 * **Automatic context length.** With `context_length = 0`, the context is what 256 MiB of KV holds: 4,096 to 32,768
   positions, at most the training context. That is ~24k on Qwen3.6-35B-A3B (only 10 of 40 blocks have a KV cache)
   and 4,096 on a dense 4B. Windowed blocks count for what they keep: their window plus the rollback margin is set
@@ -1095,90 +1163,4 @@ Local memory and retrieval need two more kinds of model next to the generative o
 a text into a vector so similar texts lie close together, and a reranker, which scores how well a document answers a
 query. Decoder models fine-tuned for these jobs (Qwen3-Embedding, Qwen3-Reranker) run on the architectures above with
 the same forward pass; `Engine::embed()` and `Engine::rerank()` (C: `liyab_engine_embed` / `_rerank`) use them, and
-so does the app's [local API](#local-api-one-model-for-every-app-on-the-device) (`/v1/embeddings`, `/v1/rerank`).
-
-* **What a model does is data from its GGUF**, never a per-model branch:
-  * `<arch>.pooling_type` says how the decoder's final hidden states become one vector: the last token's (3,
-    Qwen3-Embedding), the mean of all tokens' (1), or a ranking head over the last token's (4, a reranker).
-    `Engine::pooling()` reports it.
-  * `tokenizer.ggml.add_eos_token` ends every input with the EOS token, as the model's Hugging Face tokenizer
-    appends it (Qwen3-Embedding's `<|endoftext|>`, whose state is the one pooled). A file converted without the flag
-    needs the token's text at the end of each input.
-  * A reranker carries its ranking head (`cls.output.weight`, one row per label of
-    `<arch>.classifier.output_labels`: Qwen3-Reranker's are the rows of "yes" and "no" in its LM head, with an
-    optional `cls.output.bias`) and the prompt of one pair (`tokenizer.chat_template.rerank`, with `{query}` and
-    `{document}`). Some published Qwen3-Reranker GGUFs are plain causal models without either: `RerankOptions`
-    gives the prompt and `labels` (`{"yes", "no"}`), and the pair is scored with the LM head's logits of those
-    tokens, the way the model card does.
-* **How.** `embed()` runs each text through the transformer without the LM head and takes the final hidden state
-  after the output norm, the state the LM head would read: the last token's or the mean of every token's. Vectors are
-  L2-normalized; `dimensions` keeps the first values for models trained for it (Qwen3-Embedding: 32 to 1,024).
-  `rerank()` writes each pair into the prompt and scores the last token's state with the head: the softmax
-  probability of the first label, which for Qwen3-Reranker is P(yes) over {yes, no}, its model card's
-  normalization (a head with one output: its sigmoid). An instruction is part of the text: Qwen3-Embedding queries
-  are `Instruct: {task}\nQuery:{query}`, its documents plain text; Qwen3-Reranker's prompt carries its instruction.
-* **Shared prefixes are computed once.** The inputs of a call run one after another in the context, sorted by
-  their tokens, and each keeps the KV of the prefix it shares with the one before: the queries' instruction, the
-  reranker's system prompt and query. That is 17% of the tokens of the embedding check set below and 47% of the
-  reranking one. The last token always runs. On the CPU backend a row's result does not depend on the pass it is
-  computed in, so a vector or a score is the same bits alone, in any batch and in any order (tested; on Metal, each
-  input of the check sets below gave the same bits alone as in its batch too). Hybrid models start every input over
-  (their recurrent states cannot rewind to any position), and a mean needs every row, so mean pooling shares
-  nothing.
-* **The KV cache of a pooling model is F16** (`EngineConfig::pooling_kv_cache_type`): it holds one input at a time
-  and no conversation, so a quantized cache saves little memory, while its rounding moves every result. With the
-  Q8_0 default of generative models, Qwen3-Embedding-0.6B's vectors kept a cosine of 0.99949 with transformers' and
-  Qwen3-Reranker-0.6B's scores moved by up to 0.0038; with F16, 0.9999997 and 0.00006.
-* **Contract.** An input holds at most `context_length()` tokens, its special tokens included; a longer one is an
-  error naming it, or is cut (`EmbedOptions::truncate`, keeping BOS and EOS) for embeddings. The calls use the
-  engine's context and leave it empty: a conversation in progress is set aside in the prefix cache when one is
-  configured, and restored when its next prompt comes, as when another conversation's prompt replaces it. An
-  engine serves one call at a time (`Busy` while a generation, a prefill or another call runs), and `cancel()`
-  stops a call within a block of the model. The public header has the whole contract.
-
-**Against Hugging Face transformers.** `tools/pooling_reference.py` computes the reference the way the model cards
-do, in float32 (for Qwen3-Embedding it reproduces its card's example scores to 1e-6; sentence-transformers 6.1,
-run in float32, agrees with it to a cosine of 0.9999998 and, through the sigmoid of its CrossEncoder's score, to
-2e-7 on every reranker score), over
-`tests/data/pooling_cases.json`: 39 texts in 18 languages, code and emoji (Instruct-formatted queries, documents,
-an empty text, a chat-formatted text, a 232-token paragraph that changes language four times) and 5 queries with 19
-documents. `liyab-embed` checks that every input encodes to the reference's token ids, then compares. Every
-input gave the reference's ids, and every vector and score was the same bits alone as in its batch:
-
-| GGUF | Backend | Against the reference |
-| :--- | :--- | :--- |
-| Qwen3-Embedding-0.6B F16 (Qwen's), last token | CPU / Metal | cosine ≥ 0.99999965 / 0.99999967 per vector |
-| the same, mean pooling | CPU | cosine ≥ 0.99999964 |
-| the same, not normalized | CPU | relative L2 error ≤ 0.00084 |
-| Qwen3-Reranker-0.6B BF16 (ranking head) | CPU / Metal | scores within 0.000063 |
-| the same, scored with the LM head's "yes" and "no" (`labels`) | CPU | scores within 0.000063 |
-| Qwen3-Embedding-0.6B Q8_0 (Qwen's) | CPU / Metal | cosine mean 0.9972 / 0.9983; ≥ 0.9983 / 0.9994 except the empty text (its EOS alone): 0.92 / 0.95 |
-| Qwen3-Reranker-0.6B Q8_0 (ggml-org) | CPU / Metal | scores within 0.011 / 0.012 |
-
-The 8-bit files lose what their weights lose (and, on the CPU, what 8-bit activations lose), most where a single
-token's state is pooled: use F16 or BF16 files of these small models when the vectors must match the reference.
-
-**Throughput** on an Apple M4 Pro (CPU backend with 10 threads, or Metal), over the same sets: 39 texts of 37
-tokens on average in one `embed()` call, and the 5 queries' 19 pairs of 110 tokens on average, one `rerank()` call
-per query. Medians of 7 runs (`liyab-embed --bench 7`), on a Mac other jobs shared (load average 10–14):
-
-| GGUF | CPU | Metal |
-| :--- | ---: | ---: |
-| Qwen3-Embedding-0.6B Q8_0 | 30.2 texts/s (1,128 tokens/s) | 9.4 texts/s |
-| Qwen3-Embedding-0.6B F16 | 6.6 texts/s | 8.6 texts/s |
-| Qwen3-Reranker-0.6B Q8_0 | 18.4 pairs/s | 6.7 pairs/s |
-| Qwen3-Reranker-0.6B BF16 | 3.5 pairs/s | 3.6 pairs/s |
-
-The CPU's 8-bit kernels lead: Metal submits one command buffer per matrix product, which these small passes
-cannot hide, and F16 / BF16 weights multiply row by row on the CPU (see [Known limitations](#known-limitations)).
-Sharing prefixes skipped 17% of the embedding tokens and 47% of the reranking ones. A single 525-token text ran at
-~380 tokens/s on the Q8_0 file: per token, short inputs are cheaper, since attention grows with the input.
-
----
-
-## LoRA adapters
-
-A LoRA adapter specializes a model (a task, a style, a tool format) with a low-rank update of some of its matrices:
-W' = W + s·B·A, where A has `rank` rows and B `rank` columns, rank 8 to 64 against matrices thousands wide. Liyab
-never merges it into the weights. Each adapted matmul adds the update to the base product:
-
+so does the app's [local API](#local-api-one-model-for-every-app-on-the-device) (`/v1/embeddings`, `/v1/rerank

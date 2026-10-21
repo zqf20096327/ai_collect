@@ -235,6 +235,17 @@ Thank you to all our sponsors for supporting the project's long-term feature dev
 <hr>
 
 <div>
+  <a href="https://88api.ai/register?aff=XcTj">
+    <img src="resources/partners/88api.jpg" alt="88API Token Aggregation Platform" width="180" align="left" hspace="10" vspace="4">
+  </a>
+  <p>
+    Thank you to 88API Token Aggregation Platform for sponsoring this project! A one-stop multi-model API platform operated by a Hong Kong company for developers, creators, and AI application users. Its unified API connects text, image, speech, and video models for AI coding, translation, content creation, voiceovers, image generation, and video generation. Add and switch providers directly in CC Switch, with major international payment methods, invoicing, and stable enterprise services. <a href="https://88api.ai/register?aff=XcTj">Register through the dedicated link to receive bonus credits!</a>
+  </p>
+</div>
+
+<hr>
+
+<div>
   <p>
     <a href="https://www.byteplus.com/en/product/modelark?utm_campaign=hw&utm_content=all-api-hub&utm_medium=devrel_tool_web&utm_source=OWO&utm_term=all-api-hub">
       <img src="resources/partners/volcengine_en.jpg" alt="Dola Seed on BytePlus ModelArk" width="100%">
@@ -268,7 +279,7 @@ Thank you to all our sponsors for supporting the project's long-term feature dev
 No matter which architecture you use, there is a good chance we support it:
 
 - **Account-site compatible architectures**: [New API](https://github.com/QuantumNous/new-api), [Sub2API](https://github.com/Wei-Shaw/sub2api), [One API](https://github.com/songquanpeng/one-api), [one-hub](https://github.com/MartialBE/one-hub), [Veloera](https://github.com/Veloera/Veloera), [VoAPI / VoAPI v2](https://github.com/VoAPI/VoAPI), [DoneHub](https://github.com/deanxv/done-hub), [Super-API](https://github.com/SuperAI-Api/Super-API), APIyi, ModelFlare, v-api, and variants such as Neo-API, RIX_API.
-- **Independent platforms and commercial relays**: [OpenRouter](https://openrouter.ai), [Kimi Open Platform (China / Global)](https://platform.kimi.ai), [AnyRouter](https://anyrouter.top/register?aff=tDKX), [AgentRouter](https://agentrouter.org/register?aff=TUX6), [AIHubMix](https://aihubmix.com/?aff=W3DN), LaoZhang API, Dahl, FoxCode, Xiaoen AI, Cubence, RightCode, Grsai, FreeModel, SharedChat, WONG Public Welfare Site, Krill AI, and more
+- **Independent platforms and commercial relays**: [OpenRouter](https://openrouter.ai), [Kimi Open Platform (China / Global)](https://platform.kimi.ai), [AnyRouter](https://anyrouter.top/register?aff=tDKX), [AgentRouter](https://agentrouter.org/register?aff=TUX6), [AIHubMix](https://aihubmix.com/?aff=W3DN), LaoZhang API, Dahl, FoxCode, Xiaoen AI, Cubence, RightCode, Grsai, FreeModel, SharedChat, WONG Public Welfare Site, Krill AI, EMRank, RelayFor, Daya API, and more
 - **Self-hosted admin backends & AI gateways**: [OmniRoute](https://github.com/diegosouzapw/OmniRoute), [CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI), [New API](https://github.com/QuantumNous/new-api), [Sub2API](https://github.com/Wei-Shaw/sub2api), [Magpie](https://github.com/yetone/magpie), [gpt-load](https://github.com/tbphp/gpt-load), [AxonHub](https://github.com/looplj/axonhub), [Claude Code Hub](https://github.com/ding113/claude-code-hub), [Octopus](https://github.com/bestruirui/octopus), [Veloera](https://github.com/Veloera/Veloera), [DoneHub](https://github.com/deanxv/done-hub), and more, for channel or provider management, with migration and model sync where supported
   - Batch imports can combine same-site keys on Magpie, New API, Octopus, gpt-load, regular API-key AxonHub channels, and CLIProxyAPI OpenAI-compatible resources; the target gateway owns scheduling. Magpie can also append missing keys to existing channels with the same address and protocol, preserving their configuration and model settings.
 - **Client & development tool exports**: CC Switch, Cherry Studio, Claude Code Router, Kilo Code, Roo Code, Kelivo, AI Toolbox, Cursor++, and more, see [Supported Export Tools](https://all-api-hub.qixing1217.top/en/supported-export-tools.html)

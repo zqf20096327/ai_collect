@@ -506,6 +506,13 @@ MIT 仅约束本仓库的源代码，不适用于角色、Live2D 模型与美术
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/ahwhshen">
+                    <img src="https://avatars.githubusercontent.com/u/317654555?v=4" width="48;" alt="ahwhshen"/>
+                    <br />
+                    <sub><b>ahwhshen</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/lucifergzsz414">
                     <img src="https://avatars.githubusercontent.com/u/286201321?v=4" width="48;" alt="lucifergzsz414"/>
                     <br />
@@ -517,13 +524,6 @@ MIT 仅约束本仓库的源代码，不适用于角色、Live2D 模型与美术
                     <img src="https://avatars.githubusercontent.com/u/289515629?v=4" width="48;" alt="liyi3068238601-oss"/>
                     <br />
                     <sub><b>梨衣、</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/ahwhshen">
-                    <img src="https://avatars.githubusercontent.com/u/317654555?v=4" width="48;" alt="ahwhshen"/>
-                    <br />
-                    <sub><b>ahwhshen</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -591,5 +591,15 @@ MIT 仅约束本仓库的源代码，不适用于角色、Live2D 模型与美术
 </table>
 
 ---
+
+## <img src="./docs/image/icons/star.svg" width="20" height="20" alt=""> Star History
+
+<a href="https://www.star-history.com/?repos=playa-cyrene%2Fcyrene-agent&type=date&legend=bottom-right">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=playa-cyrene/cyrene-agent&type=date&theme=dark&legend=bottom-right" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=playa-cyrene/cyrene-agent&type=date&legend=bottom-right" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=playa-cyrene/cyrene-agent&type=date&legend=bottom-right" />
+  </picture>
+</a>
 
 <img src="./docs/image/icons/star.svg" width="18" height="18" alt=""> 如果你喜欢这个项目，欢迎点一个 Star。这会帮助更多喜欢昔涟的人发现它。

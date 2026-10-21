@@ -307,6 +307,9 @@ Create a `config.json` file with the following options:
 - `browser.launchOptions.channel`: Browser channel (`chrome`, `chrome-beta`, `msedge`, etc.)
 - `browser.contextOptions.clientCertificates`: With client certificates, a configured launch proxy is also applied to fresh contexts unless `browser.contextOptions.proxy` explicitly overrides it. Playwright 1.63.0 ignores certificate-interceptor proxy bypass rules, so combining certificates with a nonblank effective `proxy.bypass` is rejected before launch. For a fresh context on a remote browser, configure its proxy explicitly; a proxy inherited only from that browser cannot be inspected. Existing attached contexts retain their current settings.
 - `browser.launchOptions.proxy`: Browser proxy (CLI: `--proxy-server`, `--proxy-bypass`; env: `PLAYWRIGHT_MCP_PROXY_SERVER`, `PLAYWRIGHT_MCP_PROXY_BYPASS`). Credentials in a CLI or environment proxy URL, such as `http://user:password@myproxy:3128`, are moved into `proxy.username` and `proxy.password` so the browser can answer `407 Proxy Authentication Required`; percent-encode reserved characters such as `@`, `:` or `/` in them. A proxy set in the config file keeps its explicit `username` and `password` fields.
+
+  **Authenticated proxy credential leak:** The pinned Playwright 1.63.0 can send proxy credentials as website HTTP authentication after a proxy `407` challenge has been answered and cached, when a website responds with `401`. This affects credentials supplied through `--proxy-server`, `PLAYWRIGHT_MCP_PROXY_SERVER`, `browser.launchOptions.proxy`, and `browser.contextOptions.proxy`. Avoid authenticated proxies until a release containing [the upstream fix](https://github.com/microsoft/playwright/pull/43482) is adopted. Playwright 1.64.1, the latest stable release checked on October 20, 2026, also predates that fix. Startup emits one credential-free warning on stderr per configuration resolution when either configured proxy has credentials, including programmatic `createConnection` usage. The warning does not prevent the leak; unauthenticated proxies are unchanged. Proxies inherited only from an attached browser cannot be inspected or warned about by this server.
+
 - `browser.launchOptions.chromiumSandbox`: Defaults to `false` for downloaded Chromium builds on Linux because they lack the setuid sandbox helper, and `true` otherwise. Remote and VS Code endpoints choose on the remote host. An explicit config or `PLAYWRIGHT_MCP_SANDBOX` value wins; `--no-sandbox` always disables it.
 - `browser.cdpEndpoint`: Attach to an already-running Chromium-family app with CDP enabled
 - `browser.cdpHeaders`: Map of HTTP headers to send with the CDP connect request, e.g. `{ "Authorization": "Bearer <token>" }`, for endpoints that require header-based authentication
@@ -332,6 +335,8 @@ CLI equivalents are also available: `--cdp-launch-command`, `--cdp-launch-args`,
 If CDP attachment times out after the WebSocket connects, an existing tab may be blocking Playwright's browser initialization. On the pinned Playwright 1.63.0, a tab without a renderer — one whose renderer crashed, or one discarded by Chrome's Memory Saver — is never answered, so the attach cannot succeed while that tab exists ([upstream fix, unreleased](https://github.com/microsoft/playwright/pull/42936)); a sleeping or unresponsive tab can stall it too ([upstream report](https://github.com/microsoft/playwright/issues/42730)). `--cdp-endpoint` then fails after `--cdp-timeout`, and `--cdp-launch` by `--cdp-launch-startup-timeout` (each attach attempt also stops at `--cdp-timeout`), with an error that names this cause; `--cdp-launch` stops only the application it launched. For `--cdp-endpoint`, use an explicit positive `--cdp-timeout` to bound the attempt; `0` disables it and the attach can then wait forever. Reload or close the affected tab yourself, or attach to a separate disposable browser. `noDefaults` and `--isolated` do not skip initialization of existing tabs; the server does not close or reload your tabs or bypass Playwright's initialization to work around this. See the [verification notes](https://github.com/JustasMonkev/mcp-accessibility-scanner/blob/main/docs/issue-verification-2026-09.md#cdp-attach-and-numpad-keys-244).
 
 Playwright 1.63 does not support back/forward-cache (BFCache) restoration: an attached browser with BFCache enabled can return unusable references and omit iframe contents after back navigation. This was reproduced with full Chromium, Chrome, and Edge. For a browser you launch yourself, include `--disable-back-forward-cache` before attaching, or use the server's normal browser launch mode, which retains Playwright's default flag. The server does not change an attached browser's flags or replace back navigation with a reload. See the [upstream maintainer's explanation](https://github.com/microsoft/playwright/issues/42777#issuecomment-5739095543), [Playwright's BFCache limitation](https://playwright.dev/docs/navigations#backforward-cache-bfcache), and the [verification and reproduction command](https://github.com/JustasMonkev/mcp-accessibility-scanner/blob/main/docs/issue-verification-2026-09.md#history-references-231).
+
+HTTP listeners accept `Host` headers for loopback aliases, the bound non-wildcard address, and the configured hostname (`--host`, `server.host`, or `PLAYWRIGHT_MCP_HOST`). A named host must resolve to an address on the server to bind; other hostnames remain forbidden. Wildcard binds (`--host 0.0.0.0` or `--host ::`) do not allow arbitrary hostnames or the wildcard address itself: use a loopback hostname or bind a specific hostname/address. Missing or invalid `Host` returns `400`; disallowed hosts return `403`. When present, `Origin` must use HTTP and exactly match the normalized `Host` hostname and port; HTTPS or a different authority returns `403`. These checks also apply with bearer authentication, which still requires a loopback listener.
 
 For remote HTTP access, configure the TLS reverse proxy explicitly. For example, with the MCP server bound using `--host 127.0.0.1 --port 8931` and `PLAYWRIGHT_MCP_AUTH_TOKEN` set:
 
@@ -457,6 +462,8 @@ When the current page exposes a supported WebMCP API, MCP `tools/list` includes 
 To discover or invoke tools in an explicit browser session, put its handle in **request metadata** (`params._meta.browserSessionId`) on both `tools/list` and `tools/call`. This is separate from `params.arguments`: page-defined `browserSessionId` and `_meta` arguments are preserved unchanged. Without routing metadata, discovery and invocation use the default session. Session handles are never enumerated by discovery. Listing holds its session against closure or expiry until discovery completes or the request is cancelled.
 
 Names, descriptions, schemas, results and page errors are untrusted. Every page tool retains conservative action annotations even if the page claims it is read-only. Calls are bounded and cancellable, but a timed-out or cancelled page action may still be running; do not retry it blindly. Stateful connections receive deduplicated list-change notifications for their last listed scope; stateless clients should re-list rather than cache the result.
+
+Native Chromium WebMCP invocation supports the JSON-string contract in Chromium 153 and the object-input contract verified in Chromium 156, including external CDP connections. The bridge selects the contract from the native method's signature before invocation; page-provided JavaScript shims keep JSON-string inputs. An invocation error never triggers an automatic retry.
 
 Stateful proxies buffer catalog changes until pending tool listings return, including changes arriving just as a listing finishes, so refresh notifications follow the returned catalog.
 
@@ -1030,49 +1037,4 @@ commands](docs/browser-upgrade-validation-251.md) before upgrading.
   a top-level URL alone as proof of the scan target. This is separate from the
   crashed-tab attach timeout in #244.
 - **Full-page screenshots on macOS:** bundled Chromium headless shell changed
-  actual fonts and layout after capture. Chrome changed the monospace font but
-  retained the measured geometry. Viewport screenshots did not change either.
-  Keyboard-audit issue screenshots and `scan_page` with
-  `annotateScreenshot: true` also use full-page capture; run them after
-  layout-sensitive checks, or disable those screenshots with
-  `screenshotOnIssue: false` and `annotateScreenshot: false`. The server does
-  not reset fonts or reload pages.
-- **Firefox on macOS:** `browser_press_key` with `Alt+a` inserted `a`; Chromium
-  and WebKit controls did not. The Firefox r1553 roll addressing Option-key and
-  frame-focus behavior is merged but unreleased. Keys remain passed through.
-- **WebKit on macOS 14:** page creation fails with
-  `Unknown setting: PushAPIEnabled` in the frozen r2251 bundle, reproduced on a
-  hosted macOS 14.8.9 arm64 runner. The macOS 26/r2359 control passed. Use a
-  separately validated browser/OS combination if affected, rather than blindly
-  downgrading Playwright.
-
-The WebKit provisional-load event-order race was also reproduced on Linux: a
-cancelled navigation waited for its configured timeout instead of reporting the
-abort promptly. Keep a finite navigation timeout; it bounds the wait but does
-not fix the missed error. Linux Firefox crash cycles showed increased parent
-RSS, but context closure alone does not prove native windows were freed. These
-remain separate upgrade checks. No engine patches, alpha upgrades, or browser
-default changes are applied.
-
-### MCP harnesses
-
-The npm wrappers build first, then the direct harness calls every exposed MCP
-tool with prepared fixtures:
-
-```bash
-npm run test:mcp
-npm run test:mcp:install
-```
-
-The Luna wrapper runs each prompt through Codex `gpt-6-luna` with xhigh
-reasoning. It uses a repo-scoped scanner MCP server, read-only Codex sandbox,
-structured PASS/FAIL evidence, and a per-prompt timeout:
-
-```bash
-npm run test:mcp:luna
-npm run test:mcp:luna -- --only browser_snapshot
-npm run test:mcp:luna -- --skip-optional --limit 1
-```
-
-The prompt suite covers all 34 core/install tools, including session management,
-media emulation, network request details,
+  actual fonts and layout after capture. Chrome chang

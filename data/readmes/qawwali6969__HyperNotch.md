@@ -1,0 +1,262 @@
+<div align="center">
+
+<img src="Resources/AppIcon.png" alt="HyperNotch Icon" width="140" height="140" style="border-radius: 32px; box-shadow: 0 12px 36px rgba(0,0,0,0.45); margin-bottom: 14px;" />
+
+# ⚡️ HyperNotch
+
+**The Ultimate AI & Developer HUD for the MacBook Notch**  
+*Сверхскоростной смарт-вырез для разработчиков, криейторов и вайбкодеров*
+
+<p align="center">
+  <a href="https://github.com/qawwali6969/HyperNotch/releases/latest"><img src="https://img.shields.io/badge/Download-HyperNotch.dmg-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Download HyperNotch DMG"></a>
+  <a href="https://qawwali6969.github.io/HyperNotch/"><img src="https://img.shields.io/badge/Live_Showcase-Interactive_Film-FF2D55?style=for-the-badge&logo=safari&logoColor=white" alt="Live Showcase"></a>
+  <img src="https://img.shields.io/badge/macOS-14.0%2B-black?style=for-the-badge&logo=apple" alt="macOS 14+">
+  <img src="https://img.shields.io/badge/Swift-5.9%2B-orange?style=for-the-badge&logo=swift" alt="Swift">
+  <a href="https://github.com/qawwali6969/HyperNotch/actions"><img src="https://img.shields.io/badge/Security-CodeQL_Verified-green?style=for-the-badge&logo=githubactions&logoColor=white" alt="CodeQL Verified"></a>
+</p>
+
+---
+
+[🇷🇺 **Русская версия**](#-русская-версия) | [🇬🇧 **English Version**](#-english-version)
+
+---
+
+<br/>
+
+<img src="Resources/preview.gif?v=3" alt="HyperNotch Interactive Preview" width="880" style="border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,0.6);" />
+
+<p align="center">
+  <sub>✨ <i>Интерактивная демонстрация смарт-выреза: Shelf • Web Apps • AI Quota • Screen OCR • Dev Tools HUD</i></sub>
+</p>
+
+<br/>
+
+</div>
+
+<a name="-русская-версия"></a>
+## 🇷🇺 Русская версия
+
+> ### 💫 Напутствие начинающим вайбкодерам:
+> **Вайбкодинг - это не просто написание кода, это воплощение чистой мысли и идей в реальность!**  
+> Мы живем в потрясающее время: сегодня вам больше не нужно годами зубрить документацию и шаблонный синтаксис, чтобы создавать полезные, красивые и сложные приложения. Современный искусственный интеллект стал нашим универсальным напарником. Ваши главные суперсилы теперь - это **воображение, вкус, насмотренность и смелость пробовать новое**.  
+> Не бойтесь ошибок, экспериментируйте, ломайте старые рамки и создавайте то, чем сами хотите пользоваться каждый день. Кайфуйте от процесса, ловите вайб и верьте в свои силы - у вас всё обязательно получится! 🚀✨
+
+---
+
+### ⚡️ Ключевые возможности
+
+#### 1. 📂 Smart File Shelf (Умная полка файлов)
+* **Drag & Drop:** Перетаскивайте файлы прямо в область выреза экрана из любой программы или Finder.
+* **Конвертер изображений:** Быстрая конвертация картинок в форматы WebP и PNG в 1 клик.
+* **Data URI / Base64:** Копирование `data:image/...;base64,...` в буфер обмена для использования в CSS, фронтенде и LLM-промптах.
+* **Индикатор токенов на файлах:** Автоматический бейдж объема текста и кода в токенах (`~tok`) прямо на карточках файлов на полке перед отправкой в нейросети.
+* **Интеграция с системой:** Быстрая отправка через нативный AirDrop и открытие файла в Finder.
+
+#### 2. 📋 Developer Clipboard & Quick AI (Буфер обмена с ИИ)
+* **История сниппетов:** Удобная лента скопированного кода и текста с поиском.
+* **Security Filter (Защита ключей):** Автоматическая фильтрация и маскирование паролей, токенов и секретных ключей (`sk-`, `ghp_`, `AIzaSy`, JWT). Ключи никогда не утекают в историю и хранятся исключительно в защищенном хранилище Apple Keychain.
+* **Быстрые действия с ИИ (Quick AI Actions):**
+  * *«Объяснить»* - подробный разбор логики функции или текста ошибки.
+  * *«Саммари»* - моментальная выжимка сути текста.
+  * *«RU ↔ EN»* - мгновенный перевод с автоопределением языка.
+* **Быстрый промпт-бар:** Прямой запрос к моделям ИИ прямо из выпадающей шторки с выводом ответа в модальном окне.
+
+#### 3. 🛠 Dev Tools & Калькулятор токенов (Инструменты разработчика)
+* **Динамический мультипровайдерный калькулятор токенов и стоимости:** Автоматически подтягивает активные провайдеры из вкладки **«Квоты» (AI Quota)** (Z.ai, Google Gemini, DeepSeek, Claude, OpenAI, Grok, OpenRouter, Ollama и кастомные API).
+* **Умное соответствие вашим API:** Количество колонок и цен строго соответствует активным ключам/галочкам (1 API = 1 цена, 2 API = 2 цены и т.д.).
+* **Изолированный выбор моделей:** Внутри каждого провайдера открывается свой выпадающий список со всеми моделями и ценами за 1M токенов (например, в Z.ai — `GLM-4 Plus`, `GLM-4 Flash`, `GLM-4 Air`, в Gemini — `2.0 Flash`, `2.0 Pro`, `1.5 Flash`).
+* **Живое обновление моделей по API (Live Fetch):** Кнопка синхронизации в один клик запрашивает актуальный список доступных моделей напрямую у провайдеров (`/v1/models`, Gemini Models API, OpenRouter API с живыми тарифами).
+* **Сканер локальных портов:** Автоматический мониторинг запущенных dev-серверов (`localhost:3000`, `5173`, `8000`, `8080`, `11434` Ollama) с быстрым переходом в браузер.
+
+#### 4. 📸 Screen OCR & Скриншоты (Локальное распознавание текста)
+* **Захват области экрана (Screen to Text):** Удобная рамка выделения фрагмента экрана с автоматическим скрытием панели нотча, чтобы она не мешала обзору.
+* **Локальный Apple Vision:** Быстрое распознавание текста на русском, английском, китайском и других языках. Работает **100% офлайн, локально на процессоре Apple Silicon**, без отправки картинок на внешние серверы.
+* **Автоматическое копирование:** Текст моментально попадает в буфер обмена и сохраняется в истории.
+
+#### 5. 🎨 Темы оформления: Engineering V2 & Classic
+* **Engineering V2 (По умолчанию):** Глубокий монохромный чёрный фон `#000000`, идеально сливающийся с физическим вырезом MacBook Notch, акценты Living Ice, тонкие границы со световыми градиентами и техническая типографика.
+* **Переключатель тем:** В разделе **Настройки (Settings)** можно в 1 клик переключиться между новой темой Engineering V2 и классической темой Classic Glass.
+
+#### 6. 🎵 Music HUD & Dynamic Waveform (Музыка в вырезе)
+* **Анимированная звуковая волна:** Плавная индикация воспроизведения музыки в компактном вырезе.
+* **Управление треками:** Поддержка Spotify и Apple Music — обложка, название трека, артист и кнопки управления воспроизведением.
+
+#### 7. ⏱ Фокус-таймер и Помодоро
+* Встроенный таймер для работы короткими спринтами (25 мин Помодоро, 15 мин, 5 мин).
+* Индикация оставшегося времени прямо на компактной плашке выреза с мягким ненавязчивым звуковым уведомлением.
+
+#### 8. 📊 AI Quota Tracker & Будильник лимитов
+* Отслеживание лимитов популярных AI-провайдеров с обратным отсчетом до сброса лимита.
+* **Умный будильник:** В 1 клик создает напоминание в Reminders и ставит будильник в приложении «Часы» macOS ровно на время сброса лимита, чтобы не пропустить восстановление квоты.
+
+#### 9. 🌐 Web Tools & Быстрый лаунчер
+* Быстрый запуск закрепленных ссылок на локальные серверы (`localhost:3000`), репозитории GitHub и дашборды с автоподгрузкой фавиконок.
+* Выбор целевого браузера (Safari, Google Chrome, Arc, Brave, Firefox) для каждого сервиса.
+
+#### 10. 🌐 Двуязычный интерфейс (English & Русский)
+* По умолчанию приложение открывается на **английском языке**.
+* В разделе **Настройки (Settings)** можно в 1 клик переключиться на **русский язык** - все вкладки, кнопки, формы и подсказки обновляются мгновенно и реактивно без перезапуска.
+
+---
+
+### 🛠 Сборка и запуск
+
+#### Требования
+* macOS 14.0 (Sonoma) или новее
+* Xcode Command Line Tools (`xcode-select --install`)
+* Swift 5.9+
+
+#### Установка:
+```bash
+# Клонируйте репозиторий
+git clone https://github.com/qawwali6969/HyperNotch.git
+cd HyperNotch
+
+# Соберите и упакуйте .app бандл
+./package.sh
+
+# Запустите приложение
+open build/HyperNotch.app
+```
+
+| Приложение | Версия | Платформа | Архитектура | Статус |
+| :---: | :---: | :---: | :---: | :---: |
+| <img src="Resources/AppIcon.png" width="36" height="36" style="vertical-align: middle; border-radius: 8px;"/> **HyperNotch.app** | **v1.6.0** | macOS 14.0+ | Apple Silicon (M1–M4) & Intel | Production Ready |
+
+При первом запуске разрешите приложению доступ к **Записи экрана** в *Системных настройках → Конфиденциальность и безопасность* (необходимо для работы инструмента OCR и создания скриншотов).
+
+---
+
+### 🔒 Безопасность и защита данных
+
+HyperNotch спроектирован с философией **Zero-Trust** и максимальной приватности данных разработчика:
+
+* 🔐 **Аппаратная защита Apple Keychain & Secure Enclave:**  
+  Ваши API-ключи (OpenAI, Claude, Gemini, Z.ai, сессионные куки) **никогда не сохраняются в открытом виде** в обычных файлах (`UserDefaults`, `.json` или `.plist`). Все секреты шифруются и записываются напрямую в системное хранилище **Apple Keychain**, использующее аппаратную защиту Secure Enclave вашего Mac.
+* 🛡 **Умный фильтр буфера обмена (Clipboard Security Filter):**  
+  HyperNotch автоматически сканирует копируемый текст на наличие чувствительных данных. Если вы копируете приватные SSH-ключи (`BEGIN OPENSSH`), токены GitHub (`ghp_`, `gho_`), ключи нейросетей (`sk-`, `AIzaSy`), токены авторизации JWT или пароли — приложение **мгновенно отфильтровывает их и запрещает сохранение в историю буфера**. Ваши секреты никогда не засветятся на экране при показе выреза коллегам или на стриме.
+* 💻 **100% Локальные вычисления (On-Device Processing):**  
+  Оптическое распознавание текста (OCR) работает на базе встроенного Apple Vision Framework и выполняется локально на Neural Engine чипов Apple Silicon. Ни один ваш скриншот, фрагмент экрана или файл не отправляется на сторонние сервера для обработки.
+* ⚙️ **Прозрачный контроль прав (macOS TCC):**  
+  Доступ к записи экрана и управлению часами строго изолирован нативной системой контроля разрешений macOS (Transparency, Consent, and Control). Приложение имеет постоянную цифровую подпись разработчика.
+* 🚫 **Zero Telemetry (Полное отсутствие трекинга):**  
+  В коде полностью отсутствуют аналитические трекеры, телеметрия или скрытые сетевые запросы. Только то, что нужно вам для работы.
+
+---
+
+<br/>
+
+<a name="-english-version"></a>
+## 🇬🇧 English Version
+
+> ### 💫 A Special Note to Fellow Vibe-Coders:
+> **Vibe-coding is not just about writing code - it's about turning pure thought and creative energy into reality!**  
+> We are privileged to live in an unprecedented era: you no longer need years of rote memorization or boilerplate mastery to ship gorgeous, complex, and delightful software. Modern AI models act as your infinite pair programmers. Today, your greatest superpowers are your **taste, vision, curiosity, and the courage to build**.  
+> Don't be afraid to break things, experiment relentlessly, and create tools you genuinely love using every day. Catch the vibe, embrace the flow, and ship the future! 🚀✨
+
+---
+
+### ⚡️ Features
+
+#### 1. 📂 Smart File Shelf
+* **Drag & Drop:** Drop files directly into the top screen edge/notch area from any macOS app or Finder.
+* **Smart Converter:** Convert images into WebP or PNG with a single click.
+* **Data URI / Base64:** Instant `data:image/...;base64,...` clipboard copying for frontend development and multimodal LLM prompts.
+* **File Token Badge:** Automatic token count estimation (`~tok`) displayed on text and code file cards before sending to LLMs.
+* **System Integrations:** Instant native AirDrop sharing and "Reveal in Finder".
+
+#### 2. 📋 Developer Clipboard & Quick AI
+* **Snippet History:** Clean searchable history of your copied code and text snippets.
+* **Security Filter:** Proactively detects and redacts secrets, tokens, and private keys (`sk-`, `ghp_`, `AIzaSy`, JWT, SSH keys). Any user-provided credentials stay encrypted in Apple Keychain.
+* **Instant AI Actions:**
+  * *Explain* - deep dive into error traces and complex code blocks.
+  * *Summarize* - key takeaways from lengthy texts.
+  * *Translate (RU ↔ EN)* - high-accuracy translation with language auto-detection.
+* **Inline Prompt Bar:** Prompt AI models directly from your notch drawer with instant modal response.
+
+#### 3. 🛠 Dev Tools & Token Calculator
+* **Dynamic Multi-Provider Token & Cost Estimator:** Automatically links with active providers configured in your **AI Quota** tab (Z.ai, Google Gemini, DeepSeek, Claude, OpenAI, Grok, OpenRouter, Ollama, and custom proxies).
+* **Accurate 1:1 API Columns:** Renders price columns strictly matching your enabled providers (1 active API = 1 price column, 2 APIs = 2 columns, etc.).
+* **Provider-Scoped Model Dropdowns:** Each provider features an isolated dropdown containing only its models and official per-1M token rates (e.g. Z.ai lists `GLM-4 Plus`, `GLM-4 Flash`, `GLM-4 Air`, while Gemini lists `2.0 Flash`, `2.0 Pro`, `1.5 Flash`).
+* **Live API Model Discovery (Live Fetch):** 1-click sync button actively queries provider endpoints (`/v1/models`, Gemini Models API, OpenRouter live pricing) to discover custom and newly launched models in real time.
+* **Localhost Port Scanner:** Real-time background detection of active dev servers (`localhost:3000`, `5173`, `8000`, `8080`, `11434` Ollama) with 1-click open in browser.
+
+#### 4. 📸 Screen OCR & Capture
+* **Interactive Area Capture:** High-precision crosshairs with notch auto-collapse to give you unobstructed screen access.
+* **100% Offline Apple Vision OCR:** Fast on-device neural text recognition supporting Russian, English, Chinese, and more. No external servers or API keys required.
+* **Instant Copy:** Recognized text is instantly placed into your clipboard and notch history.
+
+#### 5. 🎨 Design Themes: Engineering V2 & Classic
+* **Engineering V2 (Default):** Deep true OLED black `#000000` background blending invisibly into the hardware MacBook notch, Living Ice cyber highlights, micro-borders, and technical monospaced typography.
+* **Theme Switcher:** Effortlessly switch between Engineering V2 and the legacy Classic Glass theme directly in **Settings**.
+
+#### 6. 🎵 Music HUD & Live Waveform
+* **Animated Waveform:** Smooth playback state wave animation in the compact notch.
+* **Playback Controls:** Seamless Spotify & Apple Music track info, album art, and `[⏮ ⏯ ⏭]` controls.
+
+#### 7. ⏱ Pomodoro & Focus Timer
+* Minimalist focus sprints (25 min Pomodoro, 15 min, 5 min presets).
+* Live timer in the notch with gentle completion chime.
+
+#### 8. 📊 AI Quota & Limits Monitor
+* Real-time monitoring of AI quota reset windows.
+* **Smart Alarm:** One-click integration with macOS Clock & Reminders to set alerts exactly when your quota window resets.
+
+#### 9. 🌐 Developer Web Launcher
+* Quick-launch pinned bookmarks to localhost dev servers (`localhost:3000`), GitHub, cloud consoles, and dashboards with automatic favicon fetching.
+* Per-link browser targeting (Safari, Google Chrome, Arc, Brave, Firefox).
+
+#### 10. 🌐 Dual-Language UI (English & Russian)
+* Defaults to **English** out of the box.
+* Switchable to **Russian** anytime with 1 click in **Settings** - all tabs, widgets, buttons, forms, and tooltips update instantly in real time without restarting.
+
+---
+
+### 🛠 Build & Run
+
+#### Prerequisites
+* macOS 14.0 (Sonoma) or higher
+* Xcode Command Line Tools (`xcode-select --install`)
+* Swift 5.9+
+
+#### Building from source:
+```bash
+# Clone the repository
+git clone https://github.com/qawwali6969/HyperNotch.git
+cd HyperNotch
+
+# Build & Package the .app bundle
+./package.sh
+
+# Run HyperNotch
+open build/HyperNotch.app
+```
+
+| Application | Version | Platform | Architecture | Status |
+| :---: | :---: | :---: | :---: | :---: |
+| <img src="Resources/AppIcon.png" width="36" height="36" style="vertical-align: middle; border-radius: 8px;"/>  **HyperNotch.app** | **v1.6.0** | macOS 14.0+ | Apple Silicon (M1–M4) & Intel | Production Ready |
+
+On first launch, grant **Screen Recording** permission in *System Settings → Privacy & Security* (required for Vision OCR and screen snips).
+
+---
+
+### 🔒 Privacy & Architecture Security
+
+HyperNotch is built from the ground up with a strict **Zero-Trust & Local-First** security architecture:
+
+* 🔐 **Hardware-Backed Apple Keychain & Secure Enclave:**  
+  Your API keys (OpenAI, Claude, Gemini, Z.ai, session tokens) are **never stored as plain text** on disk (`UserDefaults`, `.json`, or `.plist`). All sensitive credentials are encrypted and stored directly in the native **Apple Keychain**, protected by your Mac's hardware Secure Enclave.
+* 🛡 **Proactive Clipboard Security Filter:**  
+  HyperNotch continuously monitors clipboard events to safeguard your credentials. If you copy private SSH keys (`BEGIN OPENSSH`), GitHub PATs (`ghp_`, `gho_`), LLM API keys (`sk-`, `AIzaSy`), JWT authentication tokens, or environment passwords, the app **automatically redacts them and refuses to persist them into clipboard history**. Your secrets won't be exposed on-screen during screen shares or code reviews.
+* 💻 **100% On-Device Neural Processing:**  
+  Optical Character Recognition (OCR) is powered by Apple's native Vision framework running locally on Apple Silicon Neural Engine cores. Not a single pixel, screenshot, or dropped file is transmitted to external servers for processing.
+* ⚙️ **Transparent Permission Model (macOS TCC):**  
+  Screen capture and automation capabilities are strictly sandboxed under macOS Transparency, Consent, and Control (TCC) guidelines and signed with a persistent Apple Developer identity.
+* 🚫 **Zero Telemetry & Tracking:**  
+  There are no analytics frameworks, crash log transmitters, or third-party pings. What happens in your notch stays in your notch.
+
+---
+
+### 📄 License
+
+MIT License © 2026. Made with ❤️ for the global vibe-coding community.

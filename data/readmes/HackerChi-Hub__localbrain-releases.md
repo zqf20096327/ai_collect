@@ -16,12 +16,30 @@
 <!-- recent-features:start -->
 ## 近期新增与改进（最近 5 项）
 
-- **1.9.8** · Mac新增Sushi独立受管环境：设置显式安装与校验，启动模型不更新引擎，不依赖Homebrew。
-- **1.9.8** · Sushi专用包可下载或挂载，按架构、分片及真实加载状态校验；默认32K与常驻，可手动设置精确SSD预算，125B推理未重测。
-- **1.9.8** · Windows 聊天宿主启动修复：发送消息可正常进入模型；异常保留具体诊断，避免只显示第0轮通道关闭。 大工具目录按需加载，避免8K窗口被说明占满；已登记PolyStrata可保存选择，原权限保留。
-- **1.9.7** · Windows 首次安装修复：正常创建独立Python并补齐pip，进度文件短暂占用可恢复，保留既有下载断点。
-- **1.9.6** · Windows RTX 40 系可一键下载 PolyStrata/Q3 并接入：独立运行环境、完整性校验、断点与取消，不改显卡驱动。
+- **2.0.8** · 模型设置保存与登记统一路径校验，普通保存不误停独立引擎；不放宽外部目录授权。
+- **2.0.8** · 新增网页CTF基础入口、任务内登录态及分页证据/截图导出；完整隔离浏览器与模型CTF闭环尚未验收。
+- **2.0.7** · Windows/Linux 2.0.7补齐同源功能与独立更新签名；Linux同时提供Debian和AppImage，各平台特殊引擎不随应用隐式升级。
+- **2.0.7** · 网络安全工作台补齐授权渗透：显式逐目标授权后在隔离沙箱内进行服务识别、注入探测、TLS审计、目录发现与自写PoC，逐次确认、出口锁死授权端口。
+- **2.0.7** · 离线漏洞库下载实时显示速度与进度，完成回执明示缓存复用与文件大小；安全检查报告可原文导出并逐字节校验，本地模型已实测独立完成调查、核对与复测全链路。
 <!-- recent-features:end -->
+
+<!-- windows-performance:start -->
+## Windows 2.0.1：小窗口任务与运行速度
+
+针对本地模型的8K上下文，工具说明按需加载，短片段不反复摘要；压缩检查点附加真实工具回执的短记录，帮助模型识别已完成步骤。普通请求不增加常驻提示，原始记录保留，成果效果仍由用户判断。
+
+2026-10-20，本机RTX 4070 Laptop 8GB显存、32GB内存，PolyStrata运行Qwen3.6-35B-A3B UD Q3_K_M：最近日志常见解码速度约75～90 token/秒，包含思考，不等于屏幕文字速度。以下是只读合成工具任务的单次耗时：
+
+| 场景 | 旧版2.0.0 | 2.0.1（历史样本） |
+| --- | --- | --- |
+| 同轮双工具读取，未压缩 | 8.38秒 | 7.91秒 |
+| 顺序读取，含一次压缩 | 未做同条件对照 | 19.70秒 |
+| 失败后压缩、重试并结束，含两次压缩 | 未做同条件对照 | 31.66秒 |
+
+这不是多轮性能基准；2.0.0也已包含部分优化，不能据此宣称相对未优化版稳定提速6%。压缩本身有耗时，最近一次摘要约5秒；减少重复执行可能节省整项任务时间，但尚未量化。五类真实模型回归及47条引擎测试通过，不代表所有任务都能完成，也不是原12题重测。见[测试方法与限制](PERFORMANCE-2.0.1-WINDOWS.md)。
+
+以上为2026-10-20的历史测试样本；当前安装包与更新清单以上方/下方最新下载区为准。
+<!-- windows-performance:end -->
 
 <!-- evergreen:demos:start -->
 ## ▶ 使用演示
@@ -35,21 +53,45 @@
 视频演示的是拍摄时的版本；安装包与当前功能以本页正式发行信息为准。视频为中文讲解。
 <!-- evergreen:demos:end -->
 
-## 最新下载：Mac / Windows 1.9.8 · Linux 1.9.5
+## 最新下载：Windows 2.0.8 · Mac 2.0.7 · Linux 2.0.8
+
+Mac 2.0.7补齐授权渗透完整线：逐目标显式授权（单地址、最多8个端口、1–60分钟、内网单独确认），隔离沙箱内进行服务识别、注入探测（限只读技术）、TLS审计、目录发现与自写PoC——逐次原生确认、每次全新容器、出口锁死授权端口、破坏性类别一律拒绝。离线漏洞库下载实时显示速度与进度；安全检查报告可原文导出并逐字节校验。本机实测本地模型独立完成虚构商城越权调查、独立凭证核对、修复后复测与报告导出。此前先发布Mac，本次另补Windows/Linux。[安全能力与限制](SECURITY-CAPABILITIES.md) · [2.0.7验收记录](https://github.com/HackerChi-Hub/localbrain/blob/main/docs/RELEASE_2.0.7_MAC_VERIFICATION.md)。
+
+Mac 1.9.9修复下载终态及Sushi启动错误提示，包括状态刷新遮蔽内存原因的问题。最终安装版已验证真实预检拒绝、恢复32K后完整常驻加载与中文响应；同权重常驻／32 GiB精确SSD分别驻留44.20／31.21 GiB。模式手动选择，保存并重启生效，不自动降级。见[最终安装与实测范围](VERIFICATION-1.9.9-MAC.md)。下方1.9.8段落保留其当时验收边界。
+
+
+
+Windows/Linux 2.0.8安装包已构建验收：Windows原生聊天、工具写入与压缩续答通过，已安装且配置哈希不变；Linux Debian与AppImage的资源、包内DSH和WSL2启动检查通过，Debian已安装。Linux未做裸机桌面/GPU验收，安全隔离须本平台反向验证通过。Mac 2.0.7既有资产保留。见[验收与限制](VERIFICATION-2.0.8-WIN-LINUX.md)。下方候选和旧版本段落均为历史状态。
+
+
+2.0.8新增模型设置路径校验修复与网页CTF基础。网页传输6项在Windows/Linux通过，但生产隔离浏览器、原生批准和真实模型CTF完整链路仍未验收；须本平台隔离验证通过才能执行。[机制与限制](SECURITY-WEB-CTF.md)。
 
 | 平台 | 安装包与状态 |
 | --- | --- |
-| Apple Silicon Mac 1.9.8 | [DMG](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v1.9.8/LocalBrain_1.9.8_aarch64.dmg) · 本版已安装，Sushi环境、设置与跨域最小验收完成；125B推理及卸载最后交互见验收边界。严格签名与独立更新签名通过，尚未 Apple 公证 |
-| Windows x64 | [安装程序](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v1.9.8/LocalBrain_1.9.8_x64-setup.exe) · Windows 1.9.8已安装；原生宿主、真实问候、工具往返和聊天界面通过，更新签名通过，非Authenticode |
-| Linux x64 | [Debian](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v1.9.5/LocalBrain_1.9.5_amd64.deb) · Ubuntu 22.04 WSL2 已安装及启动验证；包内原生 DSH 初始化通过，预览支持，未代替裸机桌面验收；无新 AppImage |
+| Apple Silicon Mac 2.0.7 | [DMG](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.0.7/LocalBrain_2.0.7_aarch64.dmg) · 已安装；原生界面回归、报告原文逐字节复核与授权商城完整闭环实测通过。严格签名与独立更新签名通过，尚未 Apple 公证 |
+| Windows x64 | [安装程序](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.0.8/LocalBrain_2.0.8_x64-setup.exe) · 2.0.8已安装；原生聊天、工具及压缩续答通过，更新签名通过，非Authenticode |
+| Linux x64 | [Debian](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.0.8/LocalBrain_2.0.8_amd64.deb) · [AppImage](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.0.8/LocalBrain_2.0.8_amd64.AppImage) · 2.0.8，包内DSH与Ubuntu22.04 WSL2+Xvfb启动核对通过；Debian已安装，预览支持，未代替裸机/GPU验收 |
 
-[1.9.8 Windows发行说明及校验文件](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v1.9.8)。Mac 拖入应用程序；Debian/Ubuntu 执行 `sudo apt install ./LocalBrain_1.9.5_amd64.deb`。旧发行保留。
+[2.0.8 发行说明及校验文件](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.0.8)。Mac 拖入应用程序；Debian/Ubuntu 执行 `sudo apt install ./LocalBrain_2.0.8_amd64.deb`。旧发行保留。
 
-本次更新 **Windows 1.9.8**，修复发“你好”即第0轮“宿主通道关闭”：在原生DSH启动边界处理Windows路径，异常保存具体诊断。最终包真实模型问候、原生工具往返和聊天界面发送均通过；本机已安装，Q3模型完整下载与校验完成。保留1.9.7首次安装修复。见[验收与限制](VERIFICATION-1.9.8.md)。Windows发布时的Mac记录已由下方Sushi更新替代；Linux Debian保留1.9.5、AppImage更新保留1.7.2。
+以下Windows 2.0.1及更早段落保留其发布时的历史状态；当前平台版本以上方下载表为准。
+
+本次更新 **Windows 2.0.1**：压缩检查点附加最近3条程序原始回执短记录，帮助识别已完成操作；普通请求不增加常驻提示。有效压缩后，只有完整输出额度仍可容纳时才越过提前整理目标。真实模型故障注入、明确重做、失败重试、批量调用及最终包聊天/联网回归通过，本机已安装。摘要仍有损。见[验收与限制](VERIFICATION-2.0.1.md)。Mac保留1.9.9，Linux既有包不变。
 
 以下为 1.9.1 的历史验收说明： 本轮上下文整理、技能与记忆的行为、实测与限制见 [1.9.1 验收记录](VERIFICATION-1.9.1.md)。原文与摘要分开保存，恢复不重执行已完成工具；摘要仍有损，可能遗漏事实。历史媒体实测见 [1.8.0 验收记录](VERIFICATION-1.8.0.md)，保留其语音、编辑、音乐和实验视频的问题说明。Windows、Linux Debian 已于 2026-10-17 从同一主分支提交补齐 1.9.1，启用原生工具引擎。Windows 包结构和更新签名通过；Linux 完成 WSL 安装及 20 秒启动检查。完整界面、模型和自动/手动摘要交互尚未在两平台实机验收；Linux 需手动安装 Debian 包，AppImage 自动更新保留 1.7.2。GitHub账户付款或支出限制使远端作业未启动，本地检查不冒充远端CI通过。
 
 Mac 1.9.8 新增可选受管Sushi1.2.4：设置显式安装约71MB独立环境，发现页下载或挂载Qwen3.8 Flash Next 2.6位专用包。默认32K与完整常驻，可手动配置精确SSD预算；不依赖Homebrew，启动不更新引擎、不改系统代理和GPU内存限制。架构、分片和真实加载状态核对后才显示可用。本轮未重下125B权重，不把环境安装及跨域测试当作完整生成、速度或工具生成验收。见[使用说明](SUSHI_RUNTIME.md)与[Mac验收边界](VERIFICATION-1.9.8-MAC-SUSHI.md)。Windows1.9.8原有修复与验收保留，Linux发行不变。
+
+## 安全能力与限制（2.0.7）
+
+- 能做什么：在你显式授权的目标上，本地模型独立完成连接/响应头检查、网页暴露规则检测、服务识别、注入探测、TLS审计、目录发现与自写PoC验证，并导出逐字节可校验的检查报告。
+- 授权约束：逐目标显式授权（单地址、最多8个端口、1–60分钟、内网单独确认）；模型不能建/扩授权，工具执行逐次原生确认，退出应用授权即失效。
+- 破坏力接近零：每任务零路由内部网络，唯一出口是锁定授权端口的代理；容器降权只读无挂载；破坏性类别一律拒绝；改状态脚本二次确认。
+- 不具备：漏洞利用框架、反向shell、提权、内网横向、完整CTF/HTB攻坚；需要VPN隧道的目标不可达；Windows/Linux隔离未实测、同样默认禁用。
+- 法律边界在你：扫描任何不属于自己的系统须先获书面授权。
+
+全文：[安全能力与限制说明](SECURITY-CAPABILITIES.md)
+
 
 <!-- evergreen:screenshots:start -->
 ## 实际界面
@@ -79,7 +121,7 @@ Mac 1.9.8 新增可选受管Sushi1.2.4：设置显式安装约71MB独立环境�
 3. 选择目标和模型检查／直接检查，核对范围并确认。
 4. 环境自动准备，模型以原生批准调用工具并读取证据；维护默认折叠。
 
-只检查自己拥有或明确获授权目标。主机授权绑定实际地址和端口，不扩展至其他目标；主要覆盖TCP、明文HTTP及限定泄露规则，不是无限制漏洞扫描或自动利用平台。项目工作目录限制不等于系统沙箱，镜像审计不等于运行中应用的完整评估。
+只检查自己拥有或明确获授权目标。主机授权绑定实际地址和端口，不扩展至其他目标；覆盖连接与响应头、网页暴露规则、服务识别、注入探测、TLS审计、目录发现与授权自写脚本，不是无限制漏洞扫描或自动利用平台。项目工作目录限制不等于系统沙箱，镜像审计不等于运行中应用的完整评估。
 
 ## 平台与隐私
 
@@ -92,9 +134,10 @@ Mac支持已集成MLX、Metal llama.cpp、Splash与Prism；Windows使用适配ll
 
 | 文件 | 散列 |
 | --- | --- |
-| Mac DMG | `c6a82c9a3c5beef5f0ab8501b3f3d19cbd9106fb532d88488d3f88230906c855` |
-| Windows安装程序 | `af933c87a14c303be70dd6b107a411083ad704e2c452695493e6ee072b475eb0` |
-| Linux Debian包 | `882c7800ba8455379bcb1911bc3456dfca8a22612e4e3193cc046f3f50ac9e33` |
+| Mac DMG | `1d2914d82a9ba251cdff69f77dd86f7d412a6826d12019e08374a049b1706aa8` |
+| Windows安装程序 | `06f8bbb84cf538bfb9e5b5d9ad0623b343a6d09eb14ea94b1b9e7acb29e4f066` |
+| Linux AppImage | `c67b9bbb2255806df557459e14877ddace203052f5b4f94e32b8ee7a2160698e` |
+| Linux Debian包 | `4cfca85b29dc659f04ef2a9813fbf3d5ff055bcaf080525255c4aa62d0c7f0c9` |
 
 本仓提供安装包与说明，不是开发源码目录。专有软件，© HyphenTech · 黑粉科技。
 

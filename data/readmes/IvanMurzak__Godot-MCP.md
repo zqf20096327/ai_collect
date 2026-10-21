@@ -142,7 +142,7 @@ configuration required. The **runtime-errors**, **console** and **reflection** f
 | Family | Tools | What it does |
 | --- | --- | --- |
 | **ping** | `ping` | Lightweight readiness probe — echoes a message back, or returns `pong`. Verifies the end-to-end MCP path (editor → SignalR → tool dispatch). **System tool** — reachable over the server's `/api/system-tools/` HTTP surface, not advertised to AI agents in `tools/list`. |
-| **rql** | `rql-query`, `rql-mutate`, `rql-schema` | Query and change the live editor with RQL: `nodes`, `root`, `selection`, `scenes`, `files`, `classes`, `console`, `editor`, `project`, `settings`, `inputActions`, `autoloads`, `groups` sources; `godot.find` / `godot.group` / `godot.resources` / `godot.resource`; node calls AddChild / InstantiateScene / Duplicate / Reparent / MoveChild / Free / Connect / Disconnect / AddToGroup / RemoveFromGroup; project settings, input map, autoloads, TileSets and Themes; editor calls NewScene / OpenScene / SaveScene / CreateResource / MoveResource / DeleteResource / Reimport. All-or-nothing and undoable. See [docs/rql.md](docs/rql.md) and the `godot-rql` skill. |
+| **rql** | `rql-query`, `rql-mutate`, `rql-schema` | Query and change the live editor with RQL: `nodes`, `root`, `selection`, `scenes`, `files`, `classes`, `console`, `editor`, `project`, `settings`, `inputActions`, `autoloads`, `groups`, `layers` sources; `godot.find` / `godot.group` / `godot.resources` / `godot.resource` / `godot.callable`; node calls AddChild / InstantiateScene / Duplicate / Reparent / MoveChild / Free / Connect / Disconnect / AddToGroup / RemoveFromGroup; project settings, input map, autoloads, layer names, TileSets, Themes, ShaderMaterial parameters and MeshLibraries; editor calls NewScene / OpenScene / SaveScene / CreateResource / MoveResource / DeleteResource / Reimport. All-or-nothing and undoable. See [docs/rql.md](docs/rql.md) and the `godot-rql` skill. |
 | **script** | `script-read`, `script-create`, `script-update`, `script-delete`, `script-attach-to-node`, `script-validate`, `script-execute` | CRUD on C# (`.cs`) and GDScript (`.gd`) files, attaching a script to a node, validating GDScript, and running C# in the editor ([Code-Exec](https://github.com/IvanMurzak/Code-Exec)). |
 | **screenshot** | `screenshot-viewport`, `screenshot-camera`, `screenshot-isolated` | Capture the editor viewport, a specific camera, or an isolated node render, returned as a PNG image the LLM can inspect. |
 | **console** | `console-get-logs`, `console-clear-logs` | In a running game: read and clear the log collector (`GD.Print`/`GD.PushWarning`/`GD.PushError`). In the editor, the RQL `console` source. |
@@ -298,7 +298,7 @@ Add the six `PackageReference`s **and** the extension-catalog `<EmbeddedResource
 ```xml
 <ItemGroup>
   <PackageReference Include="com.IvanMurzak.ReflectorNet" Version="5.4.3" />
-  <PackageReference Include="com.IvanMurzak.McpPlugin"   Version="8.9.0" />
+  <PackageReference Include="com.IvanMurzak.McpPlugin"   Version="8.11.0" />
 </ItemGroup>
 
 <!-- Editor-only: exported games (ExportDebug / ExportRelease) ship no RQL and no Roslyn. -->
@@ -318,7 +318,7 @@ Add the six `PackageReference`s **and** the extension-catalog `<EmbeddedResource
 | Package | Version | Role |
 | --- | --- | --- |
 | [`com.IvanMurzak.ReflectorNet`](https://www.nuget.org/packages/com.IvanMurzak.ReflectorNet) | `5.4.3` | Reflection / serialization core |
-| [`com.IvanMurzak.McpPlugin`](https://www.nuget.org/packages/com.IvanMurzak.McpPlugin) | `8.9.0` | MCP plugin client (transitively pulls `McpPlugin.Common` + `ReflectorNet`; carries the shared `AgentConfig` module) |
+| [`com.IvanMurzak.McpPlugin`](https://www.nuget.org/packages/com.IvanMurzak.McpPlugin) | `8.11.0` | MCP plugin client (transitively pulls `McpPlugin.Common` + `ReflectorNet`; carries the shared `AgentConfig` module) |
 | [`com.IvanMurzak.Rql`](https://www.nuget.org/packages/com.IvanMurzak.Rql) | `0.1.1` | RQL, the editor tools' data layer (licensed separately under PolyForm Shield — see [License](#license)) |
 | [`com.IvanMurzak.CodeExec`](https://www.nuget.org/packages/com.IvanMurzak.CodeExec) | `0.2.1` | Code-Exec runtime behind `script-execute` (PolyForm Shield) |
 | [`com.IvanMurzak.CodeExec.Roslyn`](https://www.nuget.org/packages/com.IvanMurzak.CodeExec.Roslyn) | `0.2.1` | Code-Exec's Roslyn adapter, shipped as source (PolyForm Shield) |
@@ -451,7 +451,11 @@ use the **Local server** row:
 - The binary is cached under your project's `.godot/mcp-server/<rid>/` folder (gitignored) and re-used on
   later launches; it is only re-downloaded when the pinned server version changes (an **exact**
   version match, so the editor plugin and the server it talks to never drift). The server is launched
-  on the port from your **Server URL** (default `http://localhost:8080`), over the `streamableHttp` transport.
+  on the port from your **Server URL** (default `http://localhost:8080`), over the `streamableHttp` transport,
+  with `plugin-timeout=10000` (the connection timeout) and `tool-timeout=300000`. A server built on McpPlugin 8.11.0+
+  sends a tool call to the editor once and lets it run up to 5 minutes (`script-execute` stops a snippet itself after
+  2 minutes). Older servers, including the currently pinned one, ignore `tool-timeout`: they re-send a call every
+  10 s and give up after about 110 s; the addon runs each re-sent call only once.
 
 > **Version pinning & security.** The download URL is derived **solely** from the addon's pinned
 > `ServerVersion` constant and your platform RID — there is no arbitrary-URL binary execution. The addon
@@ -614,6 +618,7 @@ Builder surface (all fluent / chainable):
 | `builder.WithResources(params Type[])` | Register specific `[AiResourceType]` classes. |
 | `builder.WithoutMainThreadDispatcher()` | Skip the automatic main-thread-dispatcher bootstrap (only if you install your own autoload dispatcher). |
 | `builder.WithRuntimeErrorCapture()` | Capture errors raised in the **running game** (GDScript runtime errors, `push_error`/`push_warning`, shader errors via the Godot 4.5+ engine hook; C# unhandled / unobserved-`Task` exceptions with full stack traces) and register the `runtime-errors-*` tool so an agent can poll them. **OFF by default.** See ["Capturing in-game runtime errors"](#capturing-in-game-runtime-errors) below. |
+| `builder.WithScriptExecute()` | Register `script-execute` **in the game**: the agent's C# is compiled with Roslyn and run on the game's main thread. **OFF by default**, needs the csproj opt-in, arbitrary code execution. See ["Running C# in the game"](#running-c-in-the-game) below. |
 | `builder.Build()` | Finalize; returns a **default-OFF** `GodotMcpRuntimeHandle`. |
 | `handle.Connect()` / `handle.Disconnect()` | Open / close the connection. `handle.Dispose()` tears it down on shutdown. |
 
@@ -689,6 +694,42 @@ An MCP client polls the captured errors with the `runtime-errors-get` tool (and 
 > `127.0.0.1`) with `AuthOption = Consts.MCP.Server.AuthOption.token` and a real token — never an
 > unauthenticated public interface in a release build. See [Security](#security-opt-in-only-default-off)
 > and [`docs/runtime-security.md`](docs/runtime-security.md).
+
+## Running C# in the game
+
+`script-execute` normally runs in the editor. A game can offer it too: the agent sends C#, the running game
+compiles it with Roslyn and runs it on its main thread, with the game's own types, autoloads and scene tree
+(`((SceneTree)Engine.GetMainLoop()).Root`). There is no editor there, so no `EditorInterface`.
+
+Godot's export builds leave Roslyn out, so the game's `.csproj` opts in:
+
+```xml
+<PropertyGroup>
+  <GodotMcpCodeExecInGame>true</GodotMcpCodeExecInGame>
+  <DefineConstants>$(DefineConstants);GODOT_MCP_CODE_EXEC_IN_GAME</DefineConstants>
+</PropertyGroup>
+```
+
+(`godot-cli install-plugin` of this release or later writes the Code-Exec / Roslyn `PackageReference`s with a
+`Condition` that honours `GodotMcpCodeExecInGame`; an older one writes them editor-only, and the opted-in export
+then fails to compile until you re-run a current `install-plugin`. RQL is never shipped.) Then register the tool:
+
+```csharp
+_mcp = GodotMcpRuntime.Initialize(builder =>
+{
+    builder.WithConfig(cfg => { /* loopback host + token */ });
+    builder.WithScriptExecute();
+}).Build();
+```
+
+Without the opt-in, `WithScriptExecute()` logs a warning and registers nothing, so the same code builds
+either way. A game started from the editor always has it (and there a `WithToolsFromAssembly` scan of the game
+assembly also brings the addon's editor tools, see [`docs/runtime-security.md`](docs/runtime-security.md)).
+
+> ⚠️ **Security — arbitrary code execution.** Anyone who can call tools on this connection can run any code
+> in the game process. Use it in debug/dev builds only, on a loopback host with a token, and never ship it
+> enabled in a public release build. Desktop CoreCLR builds only: NativeAOT and iOS cannot run code emitted
+> at run time; mobile is untested. See [`docs/runtime-security.md`](docs/runtime-security.md).
 
 ## Sample: a live game-state tool
 
@@ -886,6 +927,9 @@ tools can do, a connected MCP client can drive. Godot-MCP's runtime is built so 
   `runtime-errors-get` and may contain absolute paths, machine/user names, or a secret that appeared in
   an exception — so enable it only on a trusted loopback + token connection (full note under
   [Capturing in-game runtime errors](#capturing-in-game-runtime-errors)).
+- **In-game `script-execute` is arbitrary code execution.** `WithScriptExecute()` is **OFF by default** and
+  needs a csproj opt-in; enable it only in dev builds on a loopback + token connection
+  ([Running C# in the game](#running-c-in-the-game)).
 
 ### Editor-side security notes (accepted posture)
 

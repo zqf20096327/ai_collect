@@ -20,7 +20,7 @@
 
 ### ✨ Highlights
 - 🔌 **Drop-in**: works in `Pipeline`, `GridSearchCV` and `cross_val_score`, passes scikit-learn's own estimator checks, and never modifies the estimator you pass in.
-- 🧾 **Raw DataFrames welcome**: string, category, bool and nullable columns are encoded for you; missing values go straight to base learners that support them (e.g. HistGradientBoosting).
+- 🧾 **Raw DataFrames welcome** (pandas, polars or pyarrow): string, category, bool and nullable columns are encoded for you; missing values go straight to base learners that support them (e.g. HistGradientBoosting).
 - 📈 **More accurate tree models**: in the paper, PDL improves tree-based learners on 99 OpenML datasets (macro-F1). In the [end-to-end suite](#evaluation) that CI runs on every change, it wins 18 of 30 dataset/learner pairs (11 losses) and raises mean macro-F1 from 0.873 to 0.894.
 - 🧪 **Validated on 131 real datasets** ([results](benchmark/real_world/README.md)): raw Kaggle, OpenML, scikit-learn and Zindi data, with no crashes and at most 2.6 GB of memory.
 - 🛡️ **Tested**: Python 3.9–3.14, numpy ≥ 1.23, pandas ≥ 1.5, scikit-learn ≥ 1.2 (Kaggle and Colab stacks included), Linux, Windows and macOS.
@@ -85,7 +85,7 @@ More in [`examples/`](examples/): uncertainty from the per-anchor posteriors (`p
 | `estimator` | `ExtraTreesClassifier(class_weight="balanced")` | Base model trained on pairs. Prefer tree ensembles with `class_weight="balanced"`. It is cloned, never modified. |
 | `max_pairs` | `"auto"` | Training uses all n² pairs up to 100,000 (every pair up to 316 rows, exactly as in the paper), then a uniform random subset; fewer for very wide data so memory stays bounded. `None` uses every pair. |
 | `max_anchors` | `500` | Prediction compares each point with every anchor. Larger training sets use a class-stratified random subset. |
-| `use_prior` | `"auto"` | How similarities become probabilities: the paper's prior-based posterior (`True`) or the normalised mean similarity per class (`False`). `"auto"` picks the prior when a class has fewer than 5 rows. |
+| `use_prior` | `"auto"` | How similarities become probabilities: the paper's prior-based posterior (`True`) or the normalised mean similarity per class (`False`). `"auto"` picks the prior when a class has fewer than 5 rows and the classes are about equally frequent (on imbalanced multiclass data the prior favours large classes). |
 | `class_weight` | `None` | `"balanced"` (or a dict) weights the classes through sample weights. Recommended for imbalanced classes, where PDL otherwise under-predicts the minority class. |
 | `random_state` | `None` | Seeds the subsampling and the base model (if its own `random_state` is unset). |
 

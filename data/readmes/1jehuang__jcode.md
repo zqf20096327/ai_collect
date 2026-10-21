@@ -1,15 +1,13 @@
 <div align="center">
 
+<p>
+<a href="https://trendshift.io/repositories/25042?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-25042" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/25042" alt="1jehuang/jcode | Trendshift" width="250" height="55"></a>
+</p>
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/brand/jcode-mark-inverse.svg">
   <img src="assets/brand/jcode-mark.svg" alt="jcode halftone donut logo" width="160">
 </picture>
-
-<br><br>
-
-<p>
-<a href="https://trendshift.io/repositories/25042?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-25042" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/25042" alt="1jehuang/jcode | Trendshift" width="250" height="55"></a>
-</p>
 
 # jcode
 
@@ -22,8 +20,6 @@
 [![GitHub Stars](https://badgen.net/github/stars/1jehuang/jcode?icon=github)](https://github.com/1jehuang/jcode/stargazers)
 [![GitHub Downloads](https://img.shields.io/github/downloads/1jehuang/jcode/total?style=flat-square)](https://github.com/1jehuang/jcode/releases)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/nBe9vGyK9a)
-
-[Website](https://jcode.sh) · [Docs](https://jcode.sh/docs) · [OpenAI Ultrafast](docs/OPENAI_ULTRAFAST.md) · [SDK](https://jcode.sh/sdk) · [Benchmarks](https://jcode.sh/bench) · [Screenshots](#screenshots) · [Install](#installation) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -61,8 +57,6 @@
 curl -fsSL https://jcode.sh/install | bash
 ```
 
-[Windows installation instructions](https://jcode.sh/docs#install).
-
 <div align="center">
 
 ## Benches
@@ -70,8 +64,6 @@ curl -fsSL https://jcode.sh/install | bash
 </div>
 
 ### RAM per additional session (headless)
-
-Swarm workers run headless, so this is the number that matters when you fan out agents.
 
 | Tool | First session | Each additional session | Comparison (additional) |
 |---|---|---|---|
@@ -81,7 +73,7 @@ Swarm workers run headless, so this is the number that matters when you fan out 
 | **Claude Code** | 272.9 MB | ~169.3 MB | **26.5× more RAM** |
 | **Codex CLI** | 398.6 MB | ~194.1 MB | **30.3× more RAM** |
 
-Each session completes 5 real model turns with tool calls, then total PSS of every process is measured at 1, 5, and 10 concurrent sessions, averaged over two runs. jcode, OpenCode, pi, and Codex CLI used `gpt-5.4`; Claude Code used Claude Sonnet. [Reproduce](scripts/bench_headless_memory.py).
+[Reproduce](scripts/bench_headless_memory.py).
 
 ### Time to first input
 
@@ -99,8 +91,8 @@ Full numbers on [jcode.sh](https://jcode.sh).
 
 <div align="center">
 
-  <a href="https://github.com/1jehuang/jcode/releases/download/readme-assets/jcode-performance-demo.mp4">
-    <img src="https://github.com/1jehuang/jcode/releases/download/readme-assets/jcode-performance-demo.webp" alt="jcode performance demonstration" width="900">
+  <a href="https://github.com/1jehuang/jcode/releases/download/readme-assets/jcode-performance-demo-2026-10.mp4">
+    <img src="https://github.com/1jehuang/jcode/releases/download/readme-assets/jcode-performance-demo-2026-10-30fps.webp" alt="jcode performance demonstration" width="900">
   </a>
 
   <p><em>jcode performance demonstration</em></p>
@@ -111,24 +103,8 @@ Full numbers on [jcode.sh](https://jcode.sh).
 
 Spawn two or more agents in the same repo, and they will automatically be managed by the server to allow native collaboration. When agent A edits a file that agent B has read (code shifting under its feet), the server notifies agent B. Agent B can ignore it if it is not relevant, or it can check the diff to make sure that it doesn't conflict. Each agent has messaging abilities, capable of DMing just one agent, broadcasting to all other agents hosted by the server, or just agents working in that repo. This allows you to spawn multiple sessions in the same repo, and have all conflicts automatically resolved.
 
-<div align="center">
-
-  <a href="https://github.com/1jehuang/jcode/releases/download/readme-assets/swarm-demo.mp4">
-    <img src="https://github.com/1jehuang/jcode/releases/download/readme-assets/jcode-swarm-demonstration.webp" alt="jcode swarm demonstration" width="900">
-  </a>
-
-  <p><em>jcode swarm demonstration</em></p>
-
-</div>
-
 Agents are also able to spawn their own swarms autonomously. They have a swarm tool which allows them to spawn in their own teamates to accomplish tasks in parallel. Doing so turns the main agent into a coordinator and the spawned agents into workers. Groups of agents, their messaging channels, their completion statuses, etc are all automatically managed. This can be done headlessly or headed.
 
-
-## Token optimization
-
-### agentgrep
-
-agentgrep is jcode's grep tool, built for agents. Each match comes back with the file's structure, like its functions and where they sit, so the agent can understand a file without reading all of it. The harness also adaptively trims results based on what the agent has already seen, so it never pays for the same code twice. This saves a lot of context.
 
 ## OAuth and Providers
 
@@ -140,3 +116,9 @@ Jcode is inventing a new form of customizability. One that doesn't limit you to 
 
 
 <!-- Add self-dev demo thumbnail/video and fuller writeup here. -->
+
+## Other
+
+- [Token optimization](docs/HARNESS.md#token-optimization)
+- [KV cache](docs/HARNESS.md#kv-cache)
+- [Hill-climbable measurements](docs/HARNESS.md#hill-climbable-measurements)

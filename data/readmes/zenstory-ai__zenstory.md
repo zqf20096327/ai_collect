@@ -20,7 +20,7 @@
 
 <p align="center">
   <a href="https://github.com/zenstory-ai/zenstory/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/zenstory-ai/zenstory?style=flat-square&color=22D3EE&logo=github&logoColor=white&label=Stars"></a>
-  <img alt="Skills 13" src="https://img.shields.io/badge/Skills-13-081431?style=flat-square">
+  <img alt="Skills 14" src="https://img.shields.io/badge/Skills-14-081431?style=flat-square">
   <a href="https://app.zenstory.ai/"><img alt="app.zenstory.ai" src="https://img.shields.io/website?style=flat-square&url=https%3A%2F%2Fapp.zenstory.ai&label=app.zenstory.ai"></a>
   <a href="./LICENSE"><img alt="License MIT" src="https://img.shields.io/badge/License-MIT-1F6FEB?style=flat-square"></a>
 </p>
@@ -84,13 +84,13 @@ flowchart LR
 
 生成过程中还能在输入框追加指令。正在工作的 Agent 这一轮里看不到它；这一轮做完后，有下一个 Agent 就由下一个接着处理，没有就让当前 Agent 再补一轮按它调整。正在写的内容不会被打断。
 
-### 13 个内置技能
+### 14 个内置技能
 
 | 分类 | 技能 |
 | --- | --- |
-| 写作 | 续写正文 · 场景描写 · 对话生成 · 开头生成 |
-| 情节 | 创建大纲 · 冲突设计 · 钩子设计 · 反转设计 |
-| 文风 | 代入感强化 · 润色修改 · 节奏控制 |
+| 写作 | 续写正文 · 开头生成 · 短篇写作 · 短剧剧本正文生成 |
+| 情节 | 创建大纲 · 钩子设计 · 短剧改编分析 · 短剧故事概要生成 · 短剧分集集纲生成 |
+| 文风 | 润色修改 · 节奏控制 · 去AI味 |
 | 角色 | 创建角色 |
 | 世界观 | 世界观设定 |
 
@@ -124,7 +124,7 @@ flowchart LR
 
 ### 在线版
 
-打开 [app.zenstory.ai](https://app.zenstory.ai) 注册即可；有朋友的邀请码可以填上，没有也能注册。免费版每天 3 条 AI 消息（北京时间 00:00 重置）、最多 3 个项目，各套餐的对比见[定价页](https://app.zenstory.ai/pricing)。
+打开 [app.zenstory.ai](https://app.zenstory.ai) 注册即可，不需要邀请码。免费版每天 3 条 AI 消息（北京时间 00:00 重置）、最多 3 个项目，各套餐的对比见[定价页](https://app.zenstory.ai/pricing)。
 
 新建一个「短篇小说」项目，第一条请求可以先要一份能改的提纲，不急着写正文（示例来自[快速开始](https://zenstory.ai/docs/getting-started/quick-start)）：
 
@@ -161,14 +161,15 @@ docker compose exec -e ZENSTORY_ADMIN_EMAIL=you@example.com \
 
 每个账号（包括管理员）默认都是免费套餐：每天 3 条 AI 消息（北京时间 00:00 重置）、最多 3 个项目。需要更多额度时，先运行 `docker compose exec server python scripts/seed_subscription_plans.py` 创建 Pro 套餐（也会建好免费套餐这一行），再在管理后台「订阅管理」里给账号开通 Pro。
 
-写作 Agent 固定用 DeepSeek 的 `deepseek-flash`（DeepSeek-V4.1-Flash），只需要这一个 Key。其他功能各要各的配置：用上面的快速启动时，后端变量加到 `docker-compose.yml` 里 `server` 的 `environment` 下，`VITE_*` 加到 `web` 下，再运行 `docker compose up -d`；仓库根目录的 `.env` 只给 compose 文件里的 `${…}` 取值（比如 `DEEPSEEK_API_KEY`、`JWT_SECRET_KEY`），不会把别的变量带进容器。换成 `docker-compose.full.yml` 时，变量写进 `apps/server/.env.docker` 和 `apps/web/.env.docker`。
+写作 Agent 默认用 DeepSeek 的 `deepseek-flash`（DeepSeek-V4.1-Flash），只需要这一个 Key（可选的主备模型见下面「能换别的大模型吗？」）。其他功能各要各的配置：用上面的快速启动时，后端变量加到 `docker-compose.yml` 里 `server` 的 `environment` 下，`VITE_*` 加到 `web` 下，再运行 `docker compose up -d`；仓库根目录的 `.env` 只给 compose 文件里的 `${…}` 取值（比如 `DEEPSEEK_API_KEY`、`JWT_SECRET_KEY`），不会把别的变量带进容器。换成 `docker-compose.full.yml` 时，变量写进 `apps/server/.env.docker` 和 `apps/web/.env.docker`。
 
 <details>
 <summary>可选功能需要的配置</summary>
 
 | 功能 | 需要的配置 |
 | --- | --- |
-| 让别人注册 | 默认要邀请码，管理员在「设置 → 邀请」生成；不要邀请码就设 `AUTH_REGISTER_INVITE_CODE_OPTIONAL=true` |
+| 让别人注册 | 默认要邀请码，管理员在后台「邀请系统」生成；不要邀请码就设 `AUTH_REGISTER_INVITE_CODE_OPTIONAL=true` |
+| 积分与邀请（可选，默认关闭） | 前端 `VITE_POINTS_ENABLED=true` 显示积分页和签到，`VITE_REFERRAL_ENABLED=true` 显示「设置 → 邀请」和注册页的可选邀请码；改后重新构建前端 |
 | 邮箱注册的验证码 | `REDIS_URL`、`RESEND_API_KEY`、`RESEND_FROM_EMAIL`；快速启动不带 Redis，要用 `docker-compose.full.yml` |
 | 重启后保持登录 | `JWT_SECRET_KEY`（至少 32 字符；快速启动时可以写进根目录的 `.env`） |
 | 语音输入 | `TENCENT_SECRET_ID`、`TENCENT_SECRET_KEY` |
@@ -315,17 +316,17 @@ Agent 用自己的模型写，ZenStory 负责存稿和整理上下文。`files p
 
 ### 在线版注册要邀请码吗？
 
-不用。打开 app.zenstory.ai 注册即可；有朋友的邀请码可以填上，没有也能注册。已经注册的人在「设置 → 邀请」里点「生成邀请码」，每人最多生成 3 个，每个能用 3 次；分享出来的链接形如 `https://app.zenstory.ai/register?code=XXXX-XXXX`，打开会自动填好。
+不用。打开 app.zenstory.ai 注册即可。在线版目前关闭了邀请和积分，注册页不显示邀请码。
 
 ### 自己部署后，第一个账号怎么建？别人怎么注册？
 
-第一个账号用 `scripts/create_admin.py` 建，命令见[自己部署](#自己部署)，它不需要邀请码，也不用验证邮箱。别人注册默认要邀请码，管理员在「设置 → 邀请」或后台「邀请系统」生成；不要邀请码，就在 `docker-compose.yml` 的 `server.environment` 下加 `AUTH_REGISTER_INVITE_CODE_OPTIONAL: "true"`（本地开发写进 `apps/server/.env`），再 `docker compose up -d`；前端可在 `web.environment` 下再加 `VITE_INVITE_CODE_OPTIONAL: "true"`，让表单一开始就显示「邀请码（可选）」（[#1](https://github.com/zenstory-ai/zenstory/issues/1)）。用邮箱注册的人要收到验证码才能登录，这需要 Redis 和 `RESEND_API_KEY`。
+第一个账号用 `scripts/create_admin.py` 建，命令见[自己部署](#自己部署)，它不需要邀请码，也不用验证邮箱。别人注册默认要邀请码，管理员在后台「邀请系统」生成（前端设 `VITE_REFERRAL_ENABLED=true` 后，「设置 → 邀请」也能生成）；不要邀请码，就在 `docker-compose.yml` 的 `server.environment` 下加 `AUTH_REGISTER_INVITE_CODE_OPTIONAL: "true"`（本地开发写进 `apps/server/.env`），再 `docker compose up -d`；前端可在 `web.environment` 下再加 `VITE_INVITE_CODE_OPTIONAL: "true"`，让表单一开始就按可选处理（邀请关闭时不显示邀请码，开启时显示「邀请码（可选）」）（[#1](https://github.com/zenstory-ai/zenstory/issues/1)）。用邮箱注册的人要收到验证码才能登录，这需要 Redis 和 `RESEND_API_KEY`。
 
 只给几个信得过的人用，也可以再运行 `create_admin.py`，换上对方的邮箱和一个新的 `ZENSTORY_ADMIN_USERNAME`（默认是 `admin`，不能重复）。这样建的都是管理员账号，能进管理后台改提示词、套餐和用户；建好后在后台「用户管理」里编辑这个账号，取消「超级用户」。
 
 ### 能换别的大模型吗？
 
-目前不能在设置里换。模型名 `deepseek-flash` 写在代码里（[`apps/server/agent/core/deepseek_client.py`](apps/server/agent/core/deepseek_client.py)），`DEEPSEEK_BASE_URL` 可以指向别的 OpenAI 兼容地址，但请求里的模型名不变。支持更多模型的需求在 [#13](https://github.com/zenstory-ai/zenstory/issues/13)。
+可以用环境变量在 DeepSeek 和 MiniMax 之间选主用和备用，各自可以指定模型名：`LLM_PRIMARY_PROVIDER` / `LLM_PRIMARY_MODEL`、`LLM_BACKUP_PROVIDER` / `LLM_BACKUP_MODEL`，Key 分别是 `DEEPSEEK_API_KEY`、`MINIMAX_API_KEY`。主用不可用（连不上、超时、限流、5xx、Key 失效）时，这个会话窗口改用备用。完整说明见 [`apps/server/agent/core/llm_providers.py`](apps/server/agent/core/llm_providers.py)；新模型要先在 `apps/server/services/usage/pricing.py` 里加上价格。
 
 ### 能导出 Word，或者直接发布到小说平台吗？
 

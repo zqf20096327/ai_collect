@@ -7,7 +7,7 @@ MiniMax-H3 多段续接的 **latent 桥**（零重编码）—— 一个可独�
 
 | 项 | 值 |
 |---|---|
-| 版本 | **0.6.36** |
+| 版本 | **0.6.37** |
 | 许可 | **MIT**（第三方出处见 [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md)） |
 | 宿主 | **ComfyUI ≥ 0.35.0，且带 MiniMax-H3 支持**（宿主自身为 GPL-3.0，见 §许可与出处） |
 
@@ -29,8 +29,8 @@ anchor 与采样 latent 不同源（会漂）、只能锚第 0 帧。本包直�
 | 层 | 节点 | 说明 |
 |---|---|---|
 | **必备 3** | Latent 存 · 拷贝桥（复合桥）· 裁重叠 | 少一个就不叫续接 |
-| **可选 4** | 后处理 Post · 音频缝 · 连跑 Chain · Latent Upscale | 各自独立；自 **0.6.34** 起**不再默认逐位直通**（Post 的 `settle_auto`、音频缝的 `patch_seconds` 默认开，见下） |
-| **手动接线才用 1** | Latent 读 | 桥自己会从磁盘取源；只在要**显式换源**时才手动接 |
+| **可选 5** | 后处理 Post · 音频缝 · 连跑 Chain · Latent Upscale · Seed from Video | 各自独立、**默认全关 = 逐位直通**（Seed from Video 只在「从已有视频起段」时用） |
+| **手动接线才用 1** | Latent 读 | 桥自己会从磁盘取源；只在**显式换源**时接 |
 
 | 节点 | 作用 |
 |---|---|
@@ -42,6 +42,7 @@ anchor 与采样 latent 不同源（会漂）、只能锚第 0 帧。本包直�
 | 🔗 **H3 Relay · Audio Seam** | **音频域**：把上一段环境声补进本段头部，**长度守恒**（零 A/V 位移）；**0.6.34 起默认开**（`patch_seconds` 1.2，填 `0` = 关） |
 | 🔍 **H3 Relay · Latent Upscale** | **画质域 · latent 层**：拆 AV 打包 latent → 逐块过学习式 3D 放大器 → 回包。**零去噪、时间维一帧不动、音频原样带回**（需可选上游依赖，见 §安装） |
 | 🔗 **H3 Relay · Chain** | 自动连跑控制器：自动推进段号并排队；0.6.7 起还能**换词**（`prompts` 按 `---` 分块）与**拼片**（🧩） |
+| 🔗 **H3 Relay · Seed from Video** | **入口**：把**一段已有视频**编码成第 1 段（种子段）的边车，之后各段照常往外接。自动挡三处坑：时序栅格（5+17k 帧）、画布栅格（16 的倍数）、音画等长（裁尾/补零/静音种子） |
 
 > **三个域别混挂**：时间轴 = `H3RelayTrimAV`（冻结）／画质域 = `H3RelayPost`／音频域 = `H3RelayAudioSeam`。
 >
@@ -79,7 +80,7 @@ git clone https://github.com/ZenHG/ComfyUI-H3-Latent-Relay.git
 包名不允许带 "ComfyUI"。
 
 **装完必须重启 ComfyUI 后端**（ComfyUI-Manager 点 *Restart*；没装就重启 Python 进程）——
-仅刷新浏览器不会加载新节点。节点列表里搜 `🔗 H3 Relay`（7 个）+ `🔍 H3 Relay · Latent Upscale` 即为全部 8 个。
+仅刷新浏览器不会加载新节点。节点列表里搜 `🔗 H3 Relay`（8 个）+ `🔍 H3 Relay · Latent Upscale` + `🧩 H3 Relay · Join AV` + `⏩ H3 Relay · Finite Run` 即为全部 11 个。
 
 **可选：用 🔍 H3 Relay · Latent Upscale 才需要装**（不装不影响其他 7 个节点，用时会报一条写明仓库与权重地址的错）：
 
@@ -112,9 +113,10 @@ git clone https://github.com/LBH-123-AI/Comfyui_Minimax_h3_latent_Upscaler.git  
 ### 5 分钟跑通
 
 > 懒人路线：打开 [`examples/minimal_relay_official.json`](examples/minimal_relay_official.json)（说明见 [`examples/README.md`](examples/README.md)），把 4 个加载器的下拉改成你本机的模型文件。
+> **想从一段已有视频起段**：打开 [`examples/seed_from_video_ui.json`](examples/seed_from_video_ui.json)（23 节点）。
 
 **第 1 段**：① 「段号」填 `0` → ② 在官方出词节点填 prompt → ③ 点 Queue。
-（**什么都不用做**：段号 0 时桥自动直通。别为了"没有上一段"去拔线或旁路——`context_latent` 是必填。）
+（**什么都不用做**：段号 0 时桥自动直通。0.6.37 起 `context_latent` 留空也行——桥自己按 `run_id` 读上一段。）
 
 **第 2 段起**：④ 「段号」改成 `1`（**只改这一个数**）→ ⑤ prompt 换成第 2 段内容（开头接住上一段的动作/机位，别重新起手）→ ⑥ 再点 Queue。
 日志里应看到 `钉住 22 帧` / `裁首 N 帧 = 钉住 22 + 沉降 0` / `起点干净`。
@@ -351,7 +353,7 @@ ComfyUI-H3-Latent-Relay/
 ├── v3/                    # V3 外壳（io.ComfyNode + comfy_entrypoint）；V1 走 NODE_CLASS_MAPPINGS
 ├── exp/history_anchor_v2/ # E1' 时不变历史锚（顶层 import ⇒ 必需；无 _tiha.json 即不生效）
 ├── web/                   # 前端 JS：🧩 拼接按钮、Chain 面板、`run_id` 一处改全组、**节点中英切换按钮**（画布用；脚本用户见 docs/10 §7.4）
-├── examples/              # 两个可直接打开的工作流：最小续接（21 节点）与全流程（47 节点）
+├── examples/              # 三个可直接打开的工作流：最小续接（21）· 全流程（47）· 视频起段（23）
 ├── docs/                  # 深度文档 01–10（原理 / 参数 / 采样链 / 画布 / 排障 / 脚本 / Chain / 测试 / 观测 / 音频）
 ├── tests/                 # 离线自测（零 GPU）：632 项断言 + V3 逐字段 + 词分发纯函数
 ├── tools/                 # 自检 / 取证 / 拼接 CLI / 打包器（含英文文档同步闸 en_sync.py）
@@ -378,7 +380,7 @@ ComfyUI-H3-Latent-Relay/
 | # | 硬纪律 |
 |---|---|
 | 1 | **`run_id` 六处必须一字不差**（落盘 / 桥 / 读上段 latent / 裁重叠 / 音频缝 / 连跑）。**画布上只改一处，同组的其余格会自动跟随**（名字冲突时会拦下连跑并列清单，不猜）；脚本提交 JSON 请把这一格写成同一个变量（见 [`docs/10`](docs/10-audio-seam-and-concat.md) §7.4）。段号顺序跑、**别跳段** |
-| 2 | **第 1 段什么都不用做**：桥会自动直通；`context_latent` 是必填，**别拔线、别旁路** |
+| 2 | **第 1 段什么都不用做**：桥会自动直通；0.6.37 起 `context_latent` 留空也行（桥自取上一段），接了则以接线为准 |
 | 3 | 🔴 **音频必须走裁重叠（或音频缝）的输出**，不能把 `VAEDecodeAudio` 直连落盘节点（否则每缝差 ~0.9 s 且累积） |
 | 4 | **`context_frames` 只认 `5+17k`**（5/22/39/56/73/90/107/124），须小于本段帧数；越界**直接报错不吸附** |
 | 5 | **`mask_mode` 生产档 = `hard`**（钉住区零重绘）；`taper` **不钉住**，仅对照实验用 |
@@ -432,5 +434,5 @@ ComfyUI-H3-Latent-Relay/
 | [`RELEASING.md`](RELEASING.md) | **发布规范（唯一真相源）**：GitHub + Comfy Registry 两个渠道必须成对、一条命令 `tools/release.py`、失败处置、密钥纪律 |
 | [`SECURITY.md`](SECURITY.md) | 密钥 / 依赖 / 网络行为声明 |
 | [`tools/README.md`](tools/README.md) | 20 个脚本的用途与期望值（**15 个自检/取证** + 拼接 CLI + 打包器 + **发布器** + **声库采集器** + **浏览器冒烟门**） |
-| [`examples/README.md`](examples/README.md) | 两份可直接打开的工作流（最小续接 21 节点 / 全流程 47 节点）· 生成器 |
+| [`examples/README.md`](examples/README.md) | 三份可直接打开的工作流（最小续接 21 节点 / 全流程 47 节点 / 视频起段 23 节点）· 生成器 |
 | [`README_EN.md`](README_EN.md) | **英文精简版**（安装 / 接线 / 节点 / 参数 / 排障 / FAQ）—— 深度推导一律外链本文件与 `docs/` |

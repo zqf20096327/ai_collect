@@ -220,6 +220,7 @@ Nine AI-generated posters -- six portrait and three landscape -- produced from t
 
 | Model | Paper | Venue | Website | GitHub |
 |:-:|:-|:-:|:-:|:-:|
+| `ActLim-Bench` | [![arXiv](https://img.shields.io/badge/arXiv-2610.23038-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.23038)<br>Where Research Ideation Begins: Forward-Citation Supervision for Actionable Limitation Generation | arXiv '26 | - | - |
 | `IdeaAnchor` | [![arXiv](https://img.shields.io/badge/arXiv-2610.08781-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.08781)<br>IdeaAnchor: Teaching LLMs to Turn Literature into Research Ideas | arXiv '26 | [Project](https://ziyu.ch/research/ideaanchor) | - |
 | `SGHA` | [![arXiv](https://img.shields.io/badge/arXiv-2608.17501-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.17501)<br>SGHA: Evidence-Grounded Research Problem Discovery with Local Language Models | arXiv '26 | - | - |
 | `MAIL` | [![arXiv](https://img.shields.io/badge/arXiv-2608.28315-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.28315)<br>MAIL: Memory-driven, Adaptive, Incremental, and Literature-grounded Framework for Hypothesis Generation in Chemistry | arXiv '26 | - | - |
@@ -273,7 +274,7 @@ Nine AI-generated posters -- six portrait and three landscape -- produced from t
 | `Rubric Rewards` | [![arXiv](https://img.shields.io/badge/arXiv-2512.23707-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2512.23707)<br>Training AI Co-Scientists Using Rubric Rewards | arXiv '25 | - | - |
 | `DeepInnovator` | [![arXiv](https://img.shields.io/badge/arXiv-2602.18920-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2602.18920)<br>DeepInnovator: Triggering the Innovative Capabilities of LLMs | arXiv '26 | - | [![GitHub](https://img.shields.io/github/stars/HKUDS/DeepInnovator)](https://github.com/HKUDS/DeepInnovator) |
 | `FlowPIE` | [![arXiv](https://img.shields.io/badge/arXiv-2603.29557-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2603.29557)<br>FlowPIE: Test-Time Scientific Idea Evolution with Flow-Guided Literature Exploration | arXiv '26 | - | - |
-| `SoundnessBench` | [![arXiv](https://img.shields.io/badge/arXiv-2605.30329-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2605.30329)<br>SoundnessBench: Can Your AI Scientist Really Tell Good Research Ideas from Bad Ones? | arXiv '26 | - | - |
+| `SoundnessBench` | [![arXiv](https://img.shields.io/badge/arXiv-2605.30329-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2605.30329)<br>SoundnessBench: Can Your AI Scientist Really Tell Good Research Ideas from Bad Ones? | arXiv '26 | [Project](https://hosytuyen.github.io/projects/SoundnessBench/) | [![GitHub](https://img.shields.io/github/stars/hosytuyen/SoundnessBench)](https://github.com/hosytuyen/SoundnessBench) |
 | `LLM-Judge Novelty` | [![arXiv](https://img.shields.io/badge/arXiv-2606.12071-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2606.12071)<br>On the Limits of LLM-as-Judge for Scientific Novelty Assessment | arXiv '26 | - | - |
 | `LigBench` | [![arXiv](https://img.shields.io/badge/arXiv-2608.13136-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.13136)<br>LigBench: A Unified and Human-Aligned Benchmark for LLM-based Research Idea Generation | arXiv '26 | - | - |
 | `Reconstruction` | [![arXiv](https://img.shields.io/badge/arXiv-2608.16645-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.16645)<br>Reconstruction: A Blind Benchmark for Recovering Research Ideas from Pre-Publication Bibliographies | arXiv '26 | - | - |
@@ -314,6 +315,7 @@ Nine AI-generated posters -- six portrait and three landscape -- produced from t
 
 | Model | Paper | Venue | Website | GitHub |
 |:-:|:-|:-:|:-:|:-:|
+| `ReviewPilot` | [![arXiv](https://img.shields.io/badge/arXiv-2610.21042-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.21042)<br>ReviewPilot: A Multi-Agent System for Screening and Data Extraction in Systematic Reviews | arXiv '26 | - | [![GitHub](https://img.shields.io/github/stars/ZhaoqianXue/ReviewPilot)](https://github.com/ZhaoqianXue/ReviewPilot) |
 | `DAS` | [![arXiv](https://img.shields.io/badge/arXiv-2608.18034-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.18034)<br>Deep Academic Survey: Stateful Agentic Closed-Loop Paradigm for Academic Survey Automation | arXiv '26 | - | - |
 | `Tree-of-Concerns` | [![arXiv](https://img.shields.io/badge/arXiv-2608.20777-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.20777)<br>Tree-of-Concerns: Hierarchical Multi-Agent Debate for Unstated-Limitation Extraction in Scientific Critique | EMNLP '26 | - | - |
 ||
@@ -342,6 +344,10 @@ Nine AI-generated posters -- six portrait and three landscape -- produced from t
 
 | Model | Paper | Venue | Website | GitHub |
 |:-:|:-|:-:|:-:|:-:|
+| `MIRA` | [![arXiv](https://img.shields.io/badge/arXiv-2610.25926-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.25926)<br>MIRA: A Multimodal Illustrated Deep Research Agent for Controllable Reports | arXiv '26 | [Project](https://mira-mmdeepresearch.github.io/) | - |
+| `OpenSaC` | [![arXiv](https://img.shields.io/badge/arXiv-2610.25779-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.25779)<br>OpenSaC: A Python Library for Search as Code in Deep Research Agents | arXiv '26 | - | [![GitHub](https://img.shields.io/github/stars/liuqi6777/OpenSaC)](https://github.com/liuqi6777/OpenSaC) |
+| `HybridResearcher` | [![arXiv](https://img.shields.io/badge/arXiv-2610.24899-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.24899)<br>HybridResearcher: Bridging the Structured-Unstructured Boundary for Deep Research Agents | arXiv '26 | - | - |
+| `JevGPT` | [![arXiv](https://img.shields.io/badge/arXiv-2610.18272-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.18272)<br>JevGPT: Thinking Fast and Slow in Autonomous Research | arXiv '26 | [Project](https://sunyasheng.github.io/projects/JevGPT.html) | [![GitHub](https://img.shields.io/github/stars/sunyasheng/JevGPT)](https://github.com/sunyasheng/JevGPT) |
 | `Crase` | [![arXiv](https://img.shields.io/badge/arXiv-2608.24809-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.24809)<br>Structurally-bounded Agentic Graph Exploration for Evidence-Grounded Scholarly DeepSearch | arXiv '26 | - | - |
 | `DeepWeaver` | [![arXiv](https://img.shields.io/badge/arXiv-2608.18988-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.18988)<br>DeepWeaver: Bridging the Evidence Synthesis Gap in Open-Ended Question Answering | arXiv '26 | - | - |
 | `AgentR` | [![arXiv](https://img.shields.io/badge/arXiv-2608.15264-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.15264)<br>AgentR A Stateful and Recovery-Aware Software Architecture for LLM-based Auditable Workflows | arXiv '26 | - | - |
@@ -435,6 +441,8 @@ Nine AI-generated posters -- six portrait and three landscape -- produced from t
 
 | Model | Paper | Venue | Website | GitHub |
 |:-:|:-|:-:|:-:|:-:|
+| `BMD` | [![arXiv](https://img.shields.io/badge/arXiv-2610.25747-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.25747)<br>Bayesian Model Discovery with Language Models: Closing the Loop between Hypotheses and Experiments | arXiv '26 | - | - |
+| `DAGLoop` | [![arXiv](https://img.shields.io/badge/arXiv-2610.25089-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.25089)<br>DAGLoop: Aligning Method Design with Experimental Feedback in Automated AI Research | arXiv '26 | [Project](https://github.com/deng34567/DAGLoop) | - |
 | `ResearchTrails` | [![arXiv](https://img.shields.io/badge/arXiv-2610.07184-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.07184)<br>Learning Scientific Exploration from Human Research Decision Trajectories | arXiv '26 | [Project](https://researchtrails.org) | [Code](https://github.com/xuchengong/ResearchTrails) |
 | `Praxist` | [![arXiv](https://img.shields.io/badge/arXiv-2608.25955-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.25955)<br>Praxist: From Experimental Artifacts to Solution Lineages | arXiv '26 | - | - |
 | `Skill-Based Baselines` | [![arXiv](https://img.shields.io/badge/arXiv-2608.23336-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.23336)<br>Can Coding Agents Build Robust Baselines? A Skill-Based Approach for Automating the Medical Imaging Model-Development Pipeline | MICCAI '26 | - | - |
@@ -469,6 +477,10 @@ Nine AI-generated posters -- six portrait and three landscape -- produced from t
 
 | Model | Paper | Venue | Website | GitHub |
 |:-:|:-|:-:|:-:|:-:|
+| `VibeTraining-Bench` | [![arXiv](https://img.shields.io/badge/arXiv-2610.26342-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.26342)<br>VibeTraining-Bench: Data-Trainer-Harness Co-Design for Iterative System Improvement | arXiv '26 | - | - |
+| `Auto-MD-bench` | [![arXiv](https://img.shields.io/badge/arXiv-2610.25069-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.25069)<br>Auto-MD-bench: Evaluating Autoresearch Agents for Real-World Medical Tasks | arXiv '26 | - | [![GitHub](https://img.shields.io/github/stars/Edwin0080/Auto-MD-bench)](https://github.com/Edwin0080/Auto-MD-bench) |
+| `Author-in-loop Audit` | [![arXiv](https://img.shields.io/badge/arXiv-2610.22465-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.22465)<br>Author-in-the-loop Agentic Reproducibility Auditing for a Machine Learning Conference | arXiv '26 | - | - |
+| `Autonomous Science Bench` | [![arXiv](https://img.shields.io/badge/arXiv-2610.18449-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.18449)<br>Autonomous Science Bench: Evaluating AI Agents for Autonomous Scientific Discovery | arXiv '26 | [Project](https://yibow.me/autonomous-science-bench) | [![GitHub](https://img.shields.io/github/stars/Yibo-Wen/as-bench)](https://github.com/Yibo-Wen/as-bench) |
 | `ST-Bench` | [![arXiv](https://img.shields.io/badge/arXiv-2610.07763-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.07763)<br>ST-Bench: A Spatial-Temporal Benchmark for Multi-Agent System Generation on Scientific Research Tasks | arXiv '26 | - | - |
 | `MMPostTrainBench` | [![arXiv](https://img.shields.io/badge/arXiv-2610.05398-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.05398)<br>MMPostTrainBench: Benchmarking Autonomous Research for Multimodal Post-Training | arXiv '26 | - | [Code](https://github.com/sod1010/MMPostTrainBench) |
 | `Experimental Fidelity` | [![arXiv](https://img.shields.io/badge/arXiv-2608.26753-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.26753)<br>Beyond Execution: Auditing Experimental Fidelity in LLM-Driven Scientific Research | arXiv '26 | - | - |
@@ -657,6 +669,7 @@ Nine AI-generated posters -- six portrait and three landscape -- produced from t
 
 | Model | Paper | Venue | Website | GitHub |
 |:-:|:-|:-:|:-:|:-:|
+| `RoundtableReview` | [![arXiv](https://img.shields.io/badge/arXiv-2610.24050-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.24050)<br>Discuss More, Comment Less: Boosting Automated Research via Multi-Perspective Collaborative Review | arXiv '26 | - | - |
 ||
 | `ChatReviewer` | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo=gitbook)](https://github.com/nishiwen1214/ChatReviewer)<br>ChatReviewer: ChatGPT-based Paper Reviewing and Response Generation | GitHub '23 | - | [![GitHub](https://img.shields.io/github/stars/nishiwen1214/ChatReviewer)](https://github.com/nishiwen1214/ChatReviewer) |
 | `AI-Peer-Review` | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo=gitbook)](https://github.com/poldrack/ai-peer-review)<br>AI-Peer-Review | GitHub '24 | - | [![GitHub](https://img.shields.io/github/stars/poldrack/ai-peer-review)](https://github.com/poldrack/ai-peer-review) |
@@ -704,37 +717,4 @@ Nine AI-generated posters -- six portrait and three landscape -- produced from t
 | `Prompt Injection` | [![arXiv](https://img.shields.io/badge/arXiv-2509.10248-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2509.10248)<br>Prompt Injection Attacks on LLM Generated Reviews of Scientific Publications | arXiv '25 | - | - |
 | `Sahoo etal` | [![arXiv](https://img.shields.io/badge/arXiv-2512.10449-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2512.10449)<br>Sahoo etal | arXiv '25 | - | - |
 | `Zhou etal` | [![arXiv](https://img.shields.io/badge/arXiv-2511.01287-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2511.01287)<br>Zhou etal | arXiv '25 | - | - |
-| `Presentation Gaming` | [![arXiv](https://img.shields.io/badge/arXiv-2606.13044-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2606.13044)<br>No Hidden Prompts Needed! You Can Game AI Peer Review with Presentation-Only Revisions | arXiv '26 | - | - |
-| `LLMs Favor LLMs?` | [![arXiv](https://img.shields.io/badge/arXiv-2601.20920-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2601.20920)<br>Do LLMs Favor LLMs? Quantifying Interaction Effects in Peer Review | arXiv '26 | - | - |
-| `Gaming AI Reviews` | [![arXiv](https://img.shields.io/badge/arXiv-2606.10159-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2606.10159)<br>Gaming AI-Assisted Peer Reviews Poses New Risks to the Scientific Community | arXiv '26 | - | - |
-| `Phantom Refs` | [![arXiv](https://img.shields.io/badge/arXiv-2607.00738-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2607.00738)<br>Phantom References: Hallucinated Citations That Survive Peer Review at Top-Tier Conferences | arXiv '26 | - | - |
-| `Rhetorical Reward-Hacking` | [![arXiv](https://img.shields.io/badge/arXiv-2608.08975-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.08975)<br>How Can Rhetoric Reward-Hack AI Reviewers? Dissecting Rhetorical Sensitivity in AI-Based Peer Review | arXiv '26 | - | - |
-| `SCOPE-Fuzzer` | [![arXiv](https://img.shields.io/badge/arXiv-2609.37097-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2609.37097)<br>Breaking the Illusion of Review Reliability under Static Evaluation: SCOPE Fuzzing for LLM-based Scientific Reviewers | arXiv '26 | - | - |
-||
-
-### Detection & Policy
-
-> In chronological order, from the earliest to the latest.
-
-| Model | Paper | Venue | Website | GitHub |
-|:-:|:-|:-:|:-:|:-:|
-||
-| `AI Detection` | [![arXiv](https://img.shields.io/badge/arXiv-2502.19614-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2502.19614)<br>Is Your Paper Being Reviewed by an LLM? Benchmarking AI Text Detection in Peer Review | arXiv '25 | - | - |
-| `AI Use Rejects` | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo=gitbook)](https://www.nature.com/articles/d41586-026-00893-2)<br>Major Conference Catches Illicit AI Use — and Rejects Hundreds of Papers | Nature '26 | - | - |
-| `Nature AI Survey` | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo=gitbook)](https://www.nature.com/articles/d41586-025-04066-5)<br>More than Half of Researchers Now Use AI for Peer Review | Nature '26 | - | - |
-| `Policy Enforcement` | [![arXiv](https://img.shields.io/badge/arXiv-2603.20450-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2603.20450)<br>Policy Enforcement | arXiv '26 | - | - |
-| `Reviewer Feedback` | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo=gitbook)](https://doi.org/10.1145/3772318.3791431)<br>What Happens When Reviewers Receive AI Feedback in Their Reviews? | CHI '26 | - | - |
-| `AAAI-26 Pilot` | [![arXiv](https://img.shields.io/badge/arXiv-2604.13940-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2604.13940)<br>AI-Assisted Peer Review at Scale: The AAAI-26 AI Review Pilot | arXiv '26 | - | - |
-| `Reviewer AI Policies` | [![arXiv](https://img.shields.io/badge/arXiv-2608.03581-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.03581)<br>AI-Assisted Peer Review Across Research Communities: From Reviewer AI Policies to LLM Review Quality | arXiv '26 | - | - |
-| `ICML LLM Policy Study` | [![arXiv](https://img.shields.io/badge/arXiv-2609.19420-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2609.19420)<br>Use and Effects of LLMs in Peer Review: A Randomized Experiment and Survey at ICML 2026 | arXiv '26 | - | - |
-||
-
-### Review Consistency and Bias Assessment
-
-> In chronological order, from the earliest to the latest.
-
-| Model | Paper | Venue | Website | GitHub |
-|:-:|:-|:-:|:-:|:-:|
-| `VERA-RL` | [![arXiv](https://img.shields.io/badge/arXiv-2608.26596-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.26596)<br>Not Just Reason, Not Just Scan: Reinforcement Learning for Proactive Scientific Error Verification over Academic Paper | EMNLP '26 | - | - |
-||
-| `Review Survey` | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo
+| `Presentation Gaming` | [![arXiv](https://img.shield

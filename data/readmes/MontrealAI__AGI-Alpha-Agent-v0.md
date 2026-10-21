@@ -35,6 +35,12 @@ Browser preparation is free. Execution, participant review and settlement requir
 These five current records are separate from the older 29-address ecosystem snapshots below.
 Existing wallet profiles retain their pinned historical addresses; publication does not migrate them.
 
+**Current contribution policy:** Local pre-commit checks are recommended feedback, not a prerequisite
+for opening a draft or pull request. Disclose failed or unrun checks and their reason; do not claim a pass.
+This current policy supersedes historical local-hook submission prerequisites in the preserved guide below.
+Installed hooks, access restrictions and required hosted merge/release checks are unchanged and not waived.
+See [Contributing](CONTRIBUTING.md#pre-commit-hooks) and [agent guidance](AGENTS.md#pull-requests).
+
 <!-- /current-entrypoints -->
 
 > **[Find a valuable opportunity. Invent a better approach. Build what matters. →](https://montrealai.github.io/AGI-Alpha-Agent-v0/successor/alpha/)**
@@ -44,11 +50,14 @@ Existing wallet profiles retain their pinned historical addresses; publication d
 > need proof review. The configured browser runner retains observed work for your review.
 > [English / Français guide and reproduction](docs/agent/SUCCESSOR_ALPHA.md).
 
-> **Current release scope · 1.35.0.** [Start here](docs/agent/START_HERE.md) ·
-> [Release notes](docs/agent/RELEASE_NOTES_1.35.0.md) · [Release evidence and supported scope](docs/agent/RELEASE_READINESS.md).
-> Version 1.35.0 adds Computer Use mission preparation and project-bound strategy attempts to the existing flagship.
-> Version 1.34.0 and its deployment/publication evidence remain unchanged. Use matching published assets
-> from [Releases](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases); a source label alone is not publication.
+> **Current source candidate · 1.37.0.** [Start here](docs/agent/START_HERE.md) ·
+> [Release notes](docs/agent/RELEASE_NOTES_1.37.0.md) · [Release evidence and supported scope](docs/agent/RELEASE_READINESS.md).
+> Version 1.37.0 adds the capability workspace and bounded Out-Evolve constructor, independent checking,
+> frozen reuse and retained successor histories. These are synthetic software mechanisms, not physical deployment or general invention.
+> Published v1.36.0 and its source-bound artifacts remain unchanged; they do not contain these later additions.
+> Exact-source 1.37.0 release qualification and Jobs/Fleet compatibility remain separate gates.
+> Use matching published assets from [Releases](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases);
+> a source label or feature merge alone is not publication.
 
 > **Find your Alpha. Build your SUCCESSOR Ω. · Computer Use expansion.**
 > Define a useful outcome, prepare screenshot-and-keyboard/mouse work, and retain its results in the same project.
@@ -1965,25 +1974,4 @@ dashboard is reachable without additional tooling.
 
 Once running, Docker Compose marks the services **healthy** when:
 
-- `http://localhost:8000/healthz` returns status `200` for the orchestrator container.
-- `http://localhost:8000/status` exposes agent heartbeats and restart counts.
-  Use `alpha-agi-insight-v1 agents-status` to view the same data from the CLI.
-- `http://localhost:8080/` returns status `200` for the web container.
-
-The dashboard now plots a 3‑D scatter chart of effectiveness vs. risk vs.
-complexity from the final population.
-
-If Streamlit isn't installed or you're running on a headless server, use:
-```bash
-python -m alpha_factory_v1.demos.alpha_agi_insight_v1.src.interface.minimal_ui --text
-```
-to display the forecast results directly in the console.
-
-
----
-
-<a name="7-deployment-recipes"></a>
-## 7 · Deployment Recipes 🍳
-The repository bundles a lightweight `edge_runner.py` helper for running
-Alpha‑Factory on air‑gapped or resource‑constrained devices. The script
-forwa
+- `http://localhost:8000/healthz` returns status `200` for the orchestrat

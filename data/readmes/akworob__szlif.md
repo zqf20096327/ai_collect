@@ -10,7 +10,7 @@ Szlif przepisuje polski tekst modelem Bielik i czyści go z ukrytych znaków. Mo
 
 - **Przepisywanie Bielikiem.** Akapit po akapicie, w jednej, dwóch albo trzech rundach: rytm zdań, słownictwo, przejścia między zdaniami. Akapit kończy się pustym wierszem albo zwykłym Enterem (tak wkleja się tekst z Worda czy Google Docs), a wiersz złamany w środku zdania (np. z PDF) jest łączony z następnym. Nagłówki, pozycje list, cytaty, tabele i akapity krótsze niż 12 słów zostają bez zmian. Model działa lokalnie przez [Ollamę](https://ollama.com).
 - **Style pisania.** Dwie listy na stronie: **czytelność** (normalna, prosta, akademicka, ekspercka) i **cel tekstu** (ogólny, naukowy, biznesowy, e-mail, esej, marketingowy, prawny). Styl to dodatkowe polecenie dla modelu w każdej rundzie. Styl naukowy każe zachować zastrzeżenia, elementy wyliczeń i przypisy, a marketingowy zabrania nowych obietnic i liczb. Strona pamięta wybór. Wpływu każdego stylu na dopisywanie treści nie mierzyliśmy, więc czytaj zmiany tak samo uważnie.
-- **Czyszczenie ukrytych znaków.** Usuwa spacje o zerowej szerokości, znacznik BOM, miękkie dywizy, znaki sterujące kierunkiem tekstu i ukryty tekst ze znaków „tag”. Nietypowe spacje zamienia na zwykłe. Litery z cyrylicy lub greki udające łacińskie zamienia na łacińskie, ale tylko wewnątrz słów, które mają też litery łacińskie. Na życzenie zamienia myślniki na przecinki. Każda zmiana jest widoczna na stronie jako pomarańczowa etykieta. Czyszczenie działa także bez modelu.
+- **Czyszczenie ukrytych znaków.** Usuwa spacje o zerowej szerokości, znacznik BOM, miękkie dywizy, znaki sterujące kierunkiem tekstu i ukryty tekst ze znaków „tag”. Usuwa też selektory wariantu, które nie należą do emoji ani do znaku pisma chińskiego (ukryty w nich tekst pokazuje jak ten ze znaków „tag”), znaki z obszaru prywatnego i inne niewidoczne znaki według list z projektu [watermarks-remover](https://github.com/guillaumemeyer/watermarks-remover). Nietypowe spacje zamienia na zwykłe. Litery z cyrylicy lub greki udające łacińskie zamienia na łacińskie, ale tylko wewnątrz słów, które mają też litery łacińskie. Na życzenie zamienia myślniki na przecinki. Każda zmiana jest widoczna na stronie jako pomarańczowa etykieta. Czyszczenie działa także bez modelu.
 - **Strażnik.** Ostrzega, gdy w wyniku brakuje liczby, jednostki, daty albo godziny z oryginału albo gdy pojawiła się nowa. Ostrzega też, gdy akapit wyraźnie się skrócił (poniżej 70% słów) albo urósł (powyżej 140%, a przy krótkim akapicie o więcej niż 6 słów), gdy zmieniła się liczba akapitów i gdy wynik zaczyna mówić o samym tekście („rytm”, „zdania”). To ostatnie znaczy zwykle, że do tekstu przeciekło polecenie dla modelu. Pilnuje też **pewności twierdzeń**: ostrzega, gdy z akapitu znika osłabienie („może”, „nie zawsze”, „w wielu”, „zwykle”, „prawdopodobnie”) albo dochodzi wzmocnienie („muszą”, „zawsze”, „każdy”, „tylko”, „na pewno”). Na koniec wypisuje **słowa z oryginału, których nie ma w wyniku**, np. pominięty element wyliczenia. To lista do przejrzenia, a nie alarm, bo trafiają na nią też synonimy.
 
 ## Czego Szlif nie robi
@@ -283,6 +283,7 @@ Szlif nie jest narzędziem do omijania detektorów, a w tym teście wcale ich ni
 
 - **Czyszczenie ukrytych znaków usuwa znaki, a nie statystyczny znak wodny.** Niewidoczne znaki bywają używane jako prymitywne oznaczenie tekstu z AI i to je Szlif usuwa.
 - **Statystyczny („matematyczny”) znak wodny** to co innego, np. SynthID-Text. To wzór w doborze słów, wykrywany statystycznie na dłuższym tekście. Przepisanie tekstu innym modelem najpewniej taki wzór osłabia. Nie mierzymy tego i niczego nie obiecujemy, bo detektory dostawców nie są publiczne.
+- **Claude (Anthropic) wplata niewidoczny znak wodny w sam tekst:** modele wprowadzone od 2 sierpnia 2026 od razu, starsze stopniowo. Publicznego wykrywacza nie ma (wykrywanie jest w zamkniętym programie dla wybranych organizacji), a według Anthropic znak osłabiają mocna edycja, parafraza, tłumaczenie, mieszanie z innym tekstem i bardzo krótkie fragmenty.
 - **AI Act, art. 50 ust. 2:** obowiązek oznaczania treści wygenerowanych przez AI w formacie czytelnym maszynowo ciąży na **dostawcy** systemu AI, a nie na użytkowniku.
   - Przepis stosuje się od 2 sierpnia 2026.
   - Systemy wprowadzone na rynek wcześniej mają czas do 2 grudnia 2026, według rozporządzenia (UE) 2026/1744, tzw. Digital Omnibus on AI.
@@ -294,6 +295,7 @@ Szlif nie jest narzędziem do omijania detektorów, a w tym teście wcale ich ni
 Źródła:
 - [Rozporządzenie (UE) 2024/1689 (AI Act)](https://eur-lex.europa.eu/eli/reg/2024/1689/oj)
 - [Rozporządzenie (UE) 2026/1744 (Digital Omnibus on AI)](https://eur-lex.europa.eu/eli/reg/2026/1744/oj)
+- [Anthropic: How Claude marks AI-generated content](https://support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content)
 - [Komisja Europejska: kodeks praktyk dotyczący oznaczania treści z AI](https://digital-strategy.ec.europa.eu/en/news/commission-publishes-code-practice-marking-and-labelling-ai-generated-content)
 
 ## Prywatność
@@ -350,5 +352,6 @@ python3 tests/smoke.py
 
 - **Kod:** licencja [MIT](LICENSE).
 - **[lynote-ai/humanize-text](https://github.com/lynote-ai/humanize-text) (MIT):** stąd pomysł trzech rund przepisywania (rytm, słownictwo, przejścia). Polskie prompty są napisane od nowa. Szczegóły i pełna nota licencyjna są w [NOTICE](NOTICE).
+- **[guillaumemeyer/watermarks-remover](https://github.com/guillaumemeyer/watermarks-remover) (MIT):** stąd listy niewidocznych znaków i wyjątki dla innych pism w czyszczeniu. Kod jest napisany od nowa. Szczegóły i pełna nota licencyjna są w [NOTICE](NOTICE).
 - **[Bielik](https://huggingface.co/speakleash) od SpeakLeash (Apache-2.0):** model pobierasz samodzielnie przez Ollamę. Szlif nie jest związany ze SpeakLeash.
 - **[Ollama](https://ollama.com) (MIT).**

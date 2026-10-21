@@ -80,7 +80,22 @@ python council.py --config examples\smoke.toml --question-file q.md --out runs\s
 Get-Content runs\smoke\final.md
 ```
 
-Edit `examples/smoke.toml` first so it only lists CLIs you have installed. The tests don't need any agent CLI: `python3 -m unittest discover -s tests -v`.
+**First run.** See what your installed CLIs offer, then build your own config by answering a few numbered questions (language, members, effort, reviewers, chair):
+
+```bash
+python3 council.py --list-models
+python3 council.py --setup
+```
+
+`--setup` writes `default.toml` (gitignored) and can test every seat at the end. Inside Claude Code the skill asks the same questions as multiple-choice prompts.
+
+The example configs are **templates**: their model names are the author's fleet. Copy one, replace the specs with models your own accounts can run, and test every seat before a real run:
+
+```bash
+python3 council.py --config my.toml --check
+```
+
+`--check` sends a tiny prompt to each member, reviewer, chair and fallback and prints which ones answered. The tests don't need any agent CLI: `python3 -m unittest discover -s tests -v`.
 
 Output files:
 
@@ -94,6 +109,7 @@ Output files:
 
 Options:
 - `--context-file brief.md` (repeatable) inlines shared background into every prompt.
+- `--file <path|glob>` (repeatable) with optional `--root <dir>` gives members only these files to open, e.g. `--root . --file paper/main.tex --file "results/*.json"`. Each prompt lists the files with their paths. Prefer this to `workspace`, which copies a whole folder.
 - `--no-review` skips stage 2.
 - `--boss none` skips stage 3, for when your own agent will synthesize.
 
@@ -105,9 +121,14 @@ language = "English"          # answers, reviews and synthesis are written in th
 timeout_s = 1800              # hard per-call timeout
 reviewers = ["agy:gemini-4-argon-high", "codex:gpt-6.1-sol@xhigh"]
 boss = "agy:claude-opus-5-5-high"   # or "none"
+boss_fallback = "codex:gpt-6.1-sol@xhigh"  # optional: chair failed -> try this once
+fallback = "codex:gpt-6.1-sol@high"   # optional: any failed member/reviewer tries this once
+retries = 1                  # extra tries per seat on errors or empty answers (not on timeouts)
+workspace = "../my-project"  # optional, see below
 
 [[member]]
 spec = "codex:gpt-6.1-sol@xhigh"
+fallback = "agy:gemini-4-argon-high"   # optional, overrides [council] fallback
 role = "Growth strategist and devil's advocate"   # optional; default: precision/breadth/skeptic lenses
 
 [[member]]
@@ -126,11 +147,14 @@ Model specs have the form `<backend>:<model>[@effort]`:
 
 Example configs: `examples/smoke.toml` (cheap, low effort), `examples/fleet.toml` (five members and three reviewers), `examples/personas.toml` (stakeholder personas). A personal `default.toml` next to `council.py` is used when present, and it is gitignored.
 
+**`workspace`** copies a folder (code, results, a paper) into each member's scratch directory so members can open the files themselves instead of having everything inlined. Every prompt gets the folder's path and a file list, so no member needs to search for files. Codex reads through its read-only sandbox, Claude, Antigravity and OpenCode through their file tools. Claude members run with edit, shell and web tools disallowed, OpenCode members are started with a permission config that denies them, and each member only ever sees a throwaway copy. Tested with Codex, Gemini (agy), GLM and DeepSeek (opencode): all four read the files and quoted them correctly. Large folders slow members down; copy in only what the question needs.
+
 ## Gotchas this tool already handles
 
 - **agy:**
   - It hangs if stdin stays open, so stdin is set to `DEVNULL`.
   - Long prompts passed as argv fail with `Eligibility check failed: UNAVAILABLE (503)`. The prompt is written to a file and agy gets a short pointer to it.
+  - It sometimes returns an empty answer, and its Claude quota runs out quickly. Empty or near-empty answers count as failures and are retried, then the seat's `fallback` is tried.
 - **opencode:**
   - `-f` is an array flag and swallows the message that follows it, so the message is placed before `-f`.
   - OpenCode resolves `{env:VAR}` provider keys at startup, so `NVIDIA_API_KEY` is passed through even though secret-looking env vars are otherwise removed.
@@ -140,7 +164,8 @@ Example configs: `examples/smoke.toml` (cheap, low effort), `examples/fleet.toml
 
 ## Caveats
 
-- **Self-preference.** A reviewer tends to rank the answer its own model wrote higher. Read rankings with that in mind; `mapping-private.json` shows who wrote what.
+- **Self-preference.** A reviewer tends to rank the answer its own model wrote higher, so a reviewer's vote on an answer from the same spec is dropped from `ranking`. The raw ranking is kept in `run.json` as `ranking_with_self_votes`; `mapping-private.json` shows who wrote what.
+- **Time and quota.** A full run takes 5–30 minutes and spends each member's own subscription quota (Codex, Google, Claude). A reasoning-heavy five-member council can use a noticeable share of a daily limit.
 - **Data exposure.** The question and context go to every member's provider. Never put secrets in a council prompt.
 - **Effort settings matter.** The free GLM and DeepSeek members are slower than the others (often 2 minutes or more per call).
 - **When to use it.** Councils pay off on judgment-heavy questions such as strategy, design trade-offs and risk reviews, not on simple lookups or plain code generation.
@@ -163,9 +188,11 @@ Copy-Item -Recurse skill\konsey "$env:USERPROFILE\.claude\skills\"
 
 > **User:** "Run a council on whether we should build our MVP backend on Supabase or a custom Go API."
 
-Claude does four things:
+The first time, Claude has no personal config yet. It checks which CLIs are installed, shows a suggested template, and asks you to pick the members, effort, chair and language. It then saves your choices to `default.toml`, runs `--check`, and tells you which seats work. Later runs reuse that file.
+
+After that, Claude does four things:
 1. Writes the question to a file.
-2. Runs `council.py` with `examples/fleet.toml` in the background.
+2. Runs `council.py` with your `default.toml` in the background.
 3. Reads `final.md` and the reviews.
 4. Reports the chair's decision, the ranking, the main disagreements and the claims to verify.
 

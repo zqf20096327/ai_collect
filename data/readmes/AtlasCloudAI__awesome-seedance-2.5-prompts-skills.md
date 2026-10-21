@@ -176,7 +176,7 @@ Every prompt record keeps its category, source platform, author, source link, in
 | Total Prompts | **150** |
 | Categories | **33** |
 | Preview Videos | **50** |
-| Last Updated | **2026-10-16** |
+| Last Updated | **2026-10-21** |
 
 <a id="featured-prompts"></a>
 
@@ -1224,4 +1224,7 @@ Using the perfume bottle from Image 1 (bottle shape and engraving as per Image 1
 #### Prompt
 
 ```text
-Using the perfume bottle from Image 1 (bottle shape and engraving as per Image 1) as the main subject,
+Using the perfume bottle from Image 1 (bottle shape and engraving as per Image 1) as the main subject, horizontal 16:9, French retro ambiance lighting, generate a 30-second ambiance short film.
+Shot 1: Close-up, perfume bottle @Image 1 stands on a stone windowsill, morning light passes through the bottle refracting light spots, camera slowly pushes in, (string ambiance music starts).
+Shot 2: Medium shot, camera slowly orbits around the bottle body, glass facets reflect flowing warm light.
+Shot 

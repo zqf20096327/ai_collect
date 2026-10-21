@@ -5,7 +5,7 @@
 ## 特点
 
 - **三步写盘防错** —— 预览改动 → 提交审阅 → 确认落盘，随时可退回任意版本。
-- **模块化内核** —— 输入 → 收件箱 → 压缩 → 模型 → 工具，各段可替换。
+- **模块化内核** —— 输入 → 待发送队列插入 → 压缩 → 模型 → 工具，各段可替换。
 - **插件式扩展** —— 替换界面、改上下文、扩展门控与 HTTP 端点。
 - **多会话与协同** —— 多任务互不干扰，多 Agent 协同工作。
 - **目标自动续跑** —— 设定目标，长任务自动跟进至完结。
@@ -25,9 +25,9 @@
 ./start.sh
 ```
 
-脚本自动查找 Python 3.10+，用当前 Python 的 `-m pip` 安装缺失依赖；不需要先在命令行配 key。首次启动会生成 `config.ini` 并自动打开浏览器设置向导。
+脚本自动查找 Python 3.10+，用当前 Python 的 `-m pip` 安装缺失依赖；不需要先在命令行配 key，也不生成配置样例。
 
-启动后访问 <http://127.0.0.1:8765/>；未配置模型时进入 <http://127.0.0.1:8765/setup>。向导保存后立即生效，不需要重启。
+启动后访问 <http://127.0.0.1:8765/>。未配置模型时主页面保留，模型下拉为空；从「设置 → 插件 → 多模型」添加网关后立即生效，不需要重启。
 
 ### 手动启动
 
@@ -38,25 +38,20 @@ python3 -m agent.entry.web --host 127.0.0.1 --port 8765 --open
 
 ## 配置
 
-配置文件为仓库根目录的 `config.ini`，模板是 `config.ini.example`。没有密钥也能启动；首次打开 `/setup` 填写网关和密钥，保存后当前进程立即重建模型 provider，不需要重启。已有 `plugins/multi_model/plugin-config.ini` 时也可以直接使用插件模型。
+配置文件为仓库根目录的 `config.ini`，随仓库入库，只保留非敏感的宿主配置。模型不在此文件配置，全部由 `plugins/multi_model/plugin-config.ini` 和多模型设置页维护；没有模型时服务仍能启动，主页面模型下拉为空。
 
-装载哪些插件由仓库根目录的 `plugins.ini` 决定（节在就进入候选）。开关、名字、描述、图标、版本写在各插件 `plugin-config.ini` 的 `[base]`，自己的键在 `[ext]`，见 [插件](docs/subsystems/plugins.md)。
+装载哪些插件由仓库根目录的 `plugins.ini` 决定（节在就进入候选）。开关写在 `plugins.ini` 的插件节；名字、描述、图标、版本由 `plugin-meta.json` 声明。插件自己的键在 `[config]`，见 [插件](docs/subsystems/plugins.md)。
 
 页面右上角「设置」改的是同一批文件。密钥框留空不覆盖，接口也不回明文。
 
 ```ini
-[model_reasoning]
-api_base_url = https://api.deepseek.com
-api_key      = sk-请替换
-model        = deepseek-flash
-
 [agent]
 reasoning_effort = max       # 全局推理档位：max（深度推理）/ high（标准推理）
 backup_retention_days = 7    # 版本化备份保留天数；0 = 永久保留
 user_rules_file =            # 可选：自定义规则文件（.md / .txt），留空不加规则段
 
 [context]
-summary_token_threshold  = 700000
+summary_token_fallback   = 64000
 summary_output_max_chars = 5000
 full_user_rounds         = 1
 ```
@@ -65,9 +60,12 @@ full_user_rounds         = 1
 
 | 键 | 默认 | 含义 |
 |---|---|---|
-| `summary_token_threshold` | `700000` | 估算 token 超过该值触发压缩 |
+| `summary_token_fallback` | `64000` | 模型没有声明上下文窗口时的回退压缩阈值；仅配置文件 |
 | `summary_output_max_chars` | `5000` | 摘要篇幅上限（字） |
-| `full_user_rounds` | `1` | 近期记忆保留的用户轮数，始终按原文发送 |
+| `full_user_rounds` | `1` | 压缩时保留最近对话轮数，始终按原文发送 |
+
+模型有 `context_window` 时，压缩阈值为该窗口 × 模型自己的 `compression_percent`；
+窗口缺失才使用 `summary_token_fallback`。模型条目见 [多模型](docs/subsystems/multi-model.md)。
 
 末尾 `full_user_rounds` 个用户轮保持原文发送；更早的轮次压缩成摘要。
 
@@ -91,9 +89,10 @@ full_user_rounds         = 1
 | [AI说话](docs/subsystems/ai-speak.md) | `ai_speak` 的文本规范、语音合成、插件事件与播放器 |
 | [会话与协作](docs/subsystems/session.md) | 事实日志、跨进程锁、运行态登记、协作网格 |
 | [壳层](docs/subsystems/shell.md) | HTTP 路由、SSE、界面打包、适配层 |
+| [会话消息队列方案](docs/plan/conversation-queue.md) | 忙时入队、回合结束投递、安全插入、修改恢复与 Agent 来源 |
 | [标准对齐优化方案](docs/plan/standards-alignment.md) | 依赖环、门禁可信度、覆盖率口径、预算与登记表 |
 | [会话历史分页方案](docs/plan/history-paging.md) | 轮次分页、游标、前插与超长报文延迟渲染 |
-| [多模型配置方案](docs/plan/multi-model.md) | 模型目录、Provider 路由、Anthropic 适配、模型插件 |
+| [多模型配置方案](docs/plan/multi-model.md) | 模型目录、Provider 路由、Messages 协议适配、模型插件 |
 | [AI说话方案](docs/plan/ai-speak.md) | `ai_speak` 的文本、切段、SSE 与播放器设计 |
 | [配置](docs/guide/config.md) | 配置项全表、启动参数、环境变量 |
 
@@ -113,7 +112,7 @@ python scripts/ci.py --fast    # 跳过验收
 python scripts/ci.py --list    # 列出检查项
 ```
 
-单元测试（1615 个用例）：
+单元测试（1630 个用例）：
 
 ```bash
 python -m unittest discover -s tests -p "test_*.py" -t tests

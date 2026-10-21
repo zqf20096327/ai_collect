@@ -75,6 +75,16 @@ HyperContext Mode 把两个互补的项目合并成一个上下文操作系统�
 
 第一步只列出真正需要的操作：四项全绿时只剩**重新检查**（会给出检查结果和时间），缺 Node 或缺源码时才出现**下载 Node 24**、**下载项目**、**选择已有源码目录…**；需要补环境时才出现**修复运行环境**。
 
+> **下载失败？** 源码和 Node 的下载都会**依次尝试多个源**（GitHub → ghfast.top → ghproxy.net；nodejs.org → cdn.npmmirror.com → 清华镜像），每次尝试的失败原因都会写进日志，状态角标显示最后一次的真实错误而不是一句「下载失败」。仍然失败时：在**网络代理**里填代理后重试，或点**选择已有源码目录…**直接用本地源码（此时完全跳过下载）。npm 安装失败会自动改用 `registry.npmmirror.com` 重试一次。
+>
+> **下载安装器本身失败？** `releases/latest/download/...` 会跳到 GitHub 的对象存储，部分网络下同样会卡。可改用镜像：`https://ghproxy.net/https://github.com/cv-superding/hypercontext-mode/releases/latest/download/HyperContext-Setup.exe`（实测可用）。
+>
+> **界面看着别扭/按钮点不动？** v0.1.5 修了三个：侧栏不再一直挂着「正在安装…」（结束后显示「就绪」）；**「修复运行环境」不再在该用的时候是灰的**（缺 Node / 缺源码时它才是解药）；状态角标会显示真实错误而不是一句「下载失败」。
+
+> **模式能切吗？** v0.1.7 起，第一步多了一个**「运行模式」开关**：精简（只沙箱层）/ 均衡（默认，沙箱+压缩）/ 全开（再加最小记忆注入与完整 MCP 工具面）。安装时通过 `hctx config set profile <name>` 落盘，重开安装器会在「已安装」卡片上显示当前模式；事后改也是一条命令：`hctx profile lean|balanced|maximum`。
+>
+> **会提示更新吗？** v0.1.7 起，安装器启动时问一次 GitHub 有没有新版本，有就在第一步显示一行「发现新版本 v0.1.7（当前 v0.1.6）」+「打开下载页」。检查失败（网络不通、GitHub 被挡）一律静默，不会让安装器看起来像坏了。
+
 > Qoder / WorkBuddy 的客户端 MCP 配置仍需在客户端里手动添加；安装器会生成对应的 `mcp.json` 并在日志里打印路径。Qoder 的压缩层用 `hctx launch qoder` 启动。
 
 如果你更喜欢手动安装，继续看下面的章节。
@@ -263,30 +273,132 @@ hctx status    # 代理健康度 + 概览
 - **杀进程**：`hctx start` 后对代理进程 `kill -9` → `hctx status` 同时报 `not running` 与 **stale daemon state**；`hctx start --restart` 恢复 healthy。
 - 全部跑在临时 `HYPERCONTEXT_HOME`，不碰正在运行的实例。
 
-### 压缩层：目前测不出收益（负面结果，如实记录）
+### 压缩层：确实会折叠，但不是免费（2026-10-20 修正）
+
+上一版这里写的是“纯透传、零收益”。**那个结论是基准测错了泳道**，旧数据保留如下：
+
+- `tools/bench-compression.mjs` 每轮发 `max_tokens: 64`；代理把 `max_tokens <= 200` 判为 **side request**，走透传、不碰 kernel 状态。所以“无工具 / system 2 B / `requests=0`”是这条泳道的设计行为，不是压缩失败。
+- 只把 `max_tokens` 改成 `1024`，代理就注入 **6 个工具 + 11.4 KB system prompt**，`requests` 从 0 变成 31；但 mock 从不调用 `compress`，所以仍然看不到折叠。
+
+补上“会调用 `compress` 的 mock”后，折叠确实发生：
+
+| 指标 | 结果 |
+|---|---:|
+| 折叠 | `m00001–m00034 → 1 block`，`tokensSaved=23,951` |
+| 线上消息数 | 41 → 9（折叠后首轮），61 → 27（第 30 轮） |
+| 30 轮直连总字节 | 2,757.8 KB |
+| 30 轮代理 baseline | 3,388.3 KB（固定开销 630.4 KB，**20.3 KB/请求**） |
+| 30 轮代理 + 折叠 | 2,479.6 KB |
+| 折叠节省 | 908.7 KB |
+| 相对直连净结果 | **+278.3 KB（省 10.1%）** |
+
+关键边界：
+
+- 固定开销 **20.3 KB/请求**（11.4 KB system prompt + 6 个工具等）。折叠后每轮约省 90.9 KB，**折叠后至少还要跑 ~7 轮**才回本；折叠后马上结束是净亏。
+- 仪表盘的 `netSaved` 是“折叠 token × 后续轮数 − summary”，**没有减去注入开销**，不能直接当净省。
+- 协作式 mock 是上界：真实模型可能不调用 `compress`、折错范围或写更长的摘要。真实客户端长会话的 fold 频率与账单仍未验证；`decompress` 的端到端还原也未在本次 A/B 中调用。
 
 复现：
 
 ```bash
-node tools/bench-compression.mjs --json docs/bench/compression.json
-BENCH_CONTEXT_LIMIT=4000 node tools/bench-compression.mjs --json docs/bench/compression-pressured.json
+node tools/bench-compression-coop.mjs --json docs/bench/compression-coop.json
+# COOP_TURNS=30 COOP_FOLD_TURN=20 COOP_FILLER_REPEAT=120
 ```
 
-做法：用与 `hctx start` 相同的参数拉起**已构建的**代理（`engines/billion-context/dist/index.js`），把 `ACP_UPSTREAM` 指向本地 mock 上游，重放 8 轮逐轮变长的对话，记录代理实际转发给上游的字节。
+完整方法、字节账、回本点和未验证项见 **[docs/VERIFICATION.md](docs/VERIFICATION.md)**。旧的 `bench-compression.mjs` 保留，用来复现 side-request 泳道的行为，不要再用它判断压缩层。
 
-两轮结果完全一致：
+### 自动折叠：不依赖模型配合，也不再交固定的注入税
 
-| 轮次 | 客户端历史 | 代理转发 | 线上消息数 |
-|---:|---:|---:|---:|
-| 1 | 1,777 B | 1,834 B | 3 |
-| 8 | 12,662 B | 12,719 B | 17 |
+协作式压缩有一个前提：**模型必须主动调用 `compress`**。模型不调用，代理就只能每轮白注 20.3 KB 的提示和工具。billion-context 自带的 `externalSummary.autoFold` 可以绕开这个前提：代理自己选范围、调用一个独立的摘要模型，主模型完全不参与。再关掉 `injectTool` / `injectNudge`，注入开销会从 ~18.9 KB/请求降到 ~0.6 KB/请求。
 
-- 注入的工具：**无**；`system` 只有 2 B，也没提压缩。
-- 转发字节 ≈ 客户端字节 + 57 B 信封，**纯透传**。
-- 把声明的模型上限压到 4,000 token（12 KB 历史已接近打满）后，结果不变。
-- 代理自报 `/__bili/overview` 的 `requests` 恒为 **0** —— 它根本没把这些请求记成受管流量。
+同一套 36 对消息、50K 窗口、`autoFoldTargetTokens=8192` 的实测。两组都开 autoFold，只差注入开关：
 
-**结论**：在当前合并配置的默认路径下，我们**没能验证出压缩层的任何收益**。`overview.requests = 0` 指向"请求未被识别为受管客户端流量"（客户端泳道 / 必需请求头 / 模型识别都有可能），而不是"压缩算法无效"。在查清之前：本项目关于"分层压缩省 token"的说法一律按**未验证**处理；上文所有实测数字只覆盖沙箱层（工具输出），不覆盖压缩层。
+| 模式 | 注入 system | 注入 tools | 折叠方式 | 摘要调用 |
+|---|---:|---:|---|---:|
+| autoFold + 注入开 | 12,193 B | 6,684 B | 代理自动，73 → 9 条 | 16 次 / 316 KB 输入 |
+| autoFold + 注入关 | 582 B | 2 B | 代理自动，73 → 9~11 条 | 15~16 次 / ~300 KB 输入 |
+
+结论：**压缩不再依赖模型是否听话，短会话也不再为 20 KB 的提示付费**。代价转移到摘要模型：15~16 次调用、约 300 KB 输入（本次样本），以及相应延迟。用便宜/快的摘要模型、把 `concurrency` 调到 8、把 `autoFoldTargetTokens` 从 8192 提到 40000，通常能把单位成本压下来。
+
+用打包后的代理和 `hctx` 生成的配置又跑了一次端到端：HTTP 200，主上游收到 **11 条**消息（原始 73 条），注入 **system 582 B / tools 2 B**，摘要 **15 次 / 301 KB**。配置链路和折叠链路都通了。
+
+推荐直接用统一配置的 `autofold` 模式（编辑 `~/.hypercontext/config.json`，然后 `hctx start --restart`）：
+
+```json
+{
+  "compression": {
+    "enabled": true,
+    "mode": "autofold",
+    "summary": {
+      "baseUrl": "https://open.bigmodel.cn/api/paas/v4",
+      "api": "openai",
+      "apiKeyEnv": "SUMMARY_API_KEY",
+      "model": "glm-4.9-flash",
+      "autoFoldTargetTokens": 40000,
+      "concurrency": 8
+    }
+  }
+}
+```
+
+`hctx start` 会把这段合并进 `~/.hypercontext/data/compression/config.json`：注册 `hctx-summary` provider、写入 `compress.externalSummary`，并设置 `injectTool=false` / `injectNudge=false`。摘要 key 通过环境变量 `SUMMARY_API_KEY` 提供；`hctx doctor` 会在变量缺失时警告。若摘要服务失败，代理按 upstream 的 fail-open 语义原样转发，不会卡住会话。
+
+> 切回 `compression.mode: "cooperative"` 时，控制面会把受管的 `hctx-summary` provider 移除，并把 `compress.externalSummary.enabled` / `autoFold` 关掉、恢复 `injectTool` / `injectNudge`。如果你自己改过 `externalSummary.targets` 且不再指向 `hctx-summary/*`，控制面不会动它。
+
+### 第二轮：把固定注入税改成按需开关，并给出真实盈亏
+
+上一节解决的是「模型不配合」。这一轮解决的是「就算模型配合，短会话也不该交这笔税」，并把账算清楚。
+
+**冷启动门槛**（`compression.coldStartTokens`，默认 `32_000`）：原始请求小于这个 token 数时，压缩 prompt、工具、nudge、tags-only 提示、absorb/rules **五个面全部关闭**；一旦跨过，**该会话永久打开**（原生 compact 之后也不会中途消失）。它通过托管环境变量 `ACP_INJECT_AFTER_TOKENS` 交给引擎，**没有新增配置文件字段，也没有改 kernel**。
+
+真的 Claude Code 2.1.177 CLI，30 轮：
+
+| 阈值 | 门槛 | 30 轮注入开销 | 折叠节省 | 净 |
+|---|---|---:|---:|---:|
+| `8_000` | 第 1 个请求就打开 | **135,510 token** | 0 | **−135,510** |
+| `32_000`（默认） | 30 轮都没跨过 | **0** | 0 | **0**（对话与直连逐字节一致） |
+
+**真实净计量**（`hctx meter` / `hctx status` / MCP `hc_status`）：
+
+```
+net        = gross saved − re-pay − summary output − summary input − injected overhead
+break-even = ceil(overhead ÷ (gross saved ÷ post-fold requests))
+```
+
+口径全部是实测值：每请求注入开销按「出站 system+tools − 入站 system+tools」逐请求累加；摘要调用次数/输入输出 token/延迟来自真实摘要调用（token 是引擎 tokenizer 的估算，延迟是真实墙钟）；折叠后请求数逐请求计数。线上跑通验证：3 个请求测出 **3,548 token 注入税**、净为负——固定税现在看得见了。配置 `pricing.*` 会多一行金额换算；**没有测过任何 provider 的真实账单**。
+
+**lean MCP 门面**：`hc_*` + `ctx_execute` + `ctx_search` 保留，其余 `ctx_*` 收进一个调度器 `ctx_more`（需要时才展开）。实测 **14 工具 28,502 B → 6 工具 11,330 B（−17,172 B，−60.2%）**，调度器用真实 context-mode 子进程验证可用。
+
+**统一会话身份**：宿主原生 session id 现在把沙箱会话库和压缩层索引对起来，检索自动收窄到这一场对话（`--all-sessions` 退出收窄）。
+
+**真实摘要器**（本地 Ollama + 真引擎 autoFold 链路）：20~25 次调用、输入 87,889~114,264 token、真实延迟 47~236 s、8 条关键事实召回 75%~100%。负结果也记：本地 0.5B 模型在 token 账上是**亏的**（净 −61,496 ~ −100,967 token）——省 26,901 token 的历史要重读十万级 token。
+
+**真实客户端 e2e**：真的 Claude Code CLI 30 轮 `--print/--resume`，**30/30 成功、0 失败**。Codex CLI / Qwen Code 本机未安装，**没有**它们的实测数据。
+
+**第三个真实客户端：OpenCode**，以及「组合后为什么变弱」的答案（`tools/bench-opencode-e2e.mjs`，真的 opencode CLI，12 轮，同一 mock 上游三组对照）：
+
+| 运行方式 | 上游请求 | **宿主压缩次数** | 总请求字节 | 引擎折叠 |
+|---|---:|---:|---:|---|
+| 直连 | 17 | 2 | 1,009,644 B | — |
+| 经代理，协作式（注入开） | 26 | **6** | **1,626,740 B（+61%）** | **0 次** |
+| 经代理，autoFold（注入关） | 16 | **2** | **949,368 B（−6%）** | **1 块，1 次摘要调用** |
+
+OpenCode 自己在超窗前压缩（网线上可见：请求 82 KB → 30 KB）。而我们的**注入算进宿主的上下文预算**：协作式每请求注入约 4.5K token（25 个请求共 113,957），把宿主的压缩次数从 2 次**逼到 6 次**，自己却一次都没折。autoFold（代理自折叠 + 注入关）反过来：每请求只剩 584 B（合计 2,034 token，差 56 倍）、自己折了 1 块、宿主压缩次数回到 2 次、总字节比直连还少 6%。
+
+**对自带压缩的宿主，压缩层必须「赢下这一轮」才有价值**：在宿主压缩之前先折，而且不能靠注入去催模型。为此改了默认档——`compression.inject` 默认 `auto`：**只有配了摘要模型才注入压缩面**（没配时窗口交给宿主，零税）；要强行用协作式折叠就 `hctx config set compression.inject on`。
+
+> ⚠️ **OpenCode v2（桌面应用附带的那个二进制）走不进我们的代理**：它不看 `HTTPS_PROXY`/`https_proxy`/`ALL_PROXY`，也忽略配置里的 provider endpoint（官方把免费档锁在自家客户端：*"OpenCode's free tier can only be used from within OpenCode"*）。实测三条机制全部无效，所以**用 OpenCode v2 + 免费档时，压缩层用不上**——沙箱层 / MCP / 记忆不受影响（它们不碰模型流量）。引擎侧已修好 `bili opencode -- --model ...` 在 v2 上报 `Unrecognized flag: --model` 的问题（v2 把一次性参数挪到了 `opencode run`）。
+
+顺手还修掉一个真 bug——宿主压掉的内容之前搜不到（字节在 CAS 里但消息行被裁了），现在联邦检索会扫「孤儿」内容，**被宿主压掉的历史照样能搜到**。
+
+```bash
+node tools/bench-claude-e2e.mjs --turns 30 --json docs/bench/claude-e2e.json
+node tools/bench-opencode-e2e.mjs --turns 12 --json docs/bench/opencode-e2e.json
+node tools/bench-summary-real.mjs --json docs/bench/summary-real.json
+node tools/bench-mcp-cost.mjs --json docs/bench/mcp-cost.json
+```
+
+完整方法与未验证清单见 **[docs/VERIFICATION.md](docs/VERIFICATION.md) 第 8 节**。
 
 ### C 组的 bug：桌面宿主下沙箱读不到工作区
 
@@ -321,13 +433,17 @@ File access blocked: "E:\...\installer\HyperContextSetup.cs" resolves outside th
 
 ### 已实现
 
-- **统一 MCP 端点**：11 个 `ctx_*` + 3 个 `hc_*`，一次接入两层能力。
+- **统一 MCP 端点**：`hc_*` + `ctx_execute` / `ctx_search` + 一个 `ctx_more` 调度器，一次接入两层能力；lean 门面比 full 少 60.2% 的 schema 字节。
 - **统一联邦搜索**：`hc_search` / `hctx search` 同时检索：
   - 已索引的工具/网页/文件内容（FTS5）
   - 会话事件、决策、错误（SQLite）
   - 压缩摘要与压缩前的原始消息（billion-context `index.db`）
+  - 默认按**当前会话**收窄（两层用同一个宿主 session id），`--all-sessions` 退出收窄。
 - **代理侧联邦搜索**：`search_context` 在统一运行时下也会追加沙箱 FTS5 命中。
 - **统一状态**：`hctx status` / `hc_status` 同时显示沙箱节省、压缩块、代理请求、缓存命中率。
+- **真实净计量**：`hctx meter` 给出 `gross − repay − summary − 注入开销` 的净额和回本点，注入开销与摘要延迟都是实测值。
+- **冷启动门槛**：`compression.coldStartTokens` 让压缩面只在会话真的变大之后才出现，短会话不再交固定注入税。
+- **三档预设**：`hctx profile lean|balanced|maximum` 显式切换层级、记忆注入和 MCP 门面大小。
 - **统一体检**：`hctx doctor` / `hc_doctor` 检查 Node、引擎构建、代理、存储、更新通道和策略冲突。
 - **34 客户端能力矩阵**：native plugin、launcher、MCP、proxy fallback 一目了然；Qoder / WorkBuddy 的国内版与国际版分开管理。
 - **自动 hooks**：Claude Code、Gemini CLI、Qwen Code 已验证全 6 事件安装（安装前备份、可重复安装）。
@@ -341,8 +457,11 @@ File access blocked: "E:\...\installer\HyperContextSetup.cs" resolves outside th
 
 - 自动 hooks 安装首版只开放 **Claude Code / Gemini CLI / Qwen Code**；其余客户端通过统一 MCP + 压缩代理覆盖，不会贸然写配置。
 - Qoder / TRAE / CodeBuddy 走 billion-context 的 launcher（证书 MITM）路径，MCP 工件已生成；Qoder 尚未做真实端到端启动验证。
+- 压缩层已在协作式 mock 下验证折叠与字节收益（30 轮 A/B，净省 10.1%）；真实客户端长会话的 fold 频率、摘要质量和账单仍未验证。
+- `autofold` 模式已用**真实摘要模型**（本地 Ollama）跑通：代理独立折叠、摘要延迟与 token 量实测、事实召回 75%~100%；但**任何 provider 的真实账单都没测过**，本地小模型在 token 账上是亏的。
 - Windows 安装器已覆盖 Codex、Claude、WorkBuddy 国内/国际、Qoder 国内/国际、DeepSeek Harness、Zcode；Qoder/WorkBuddy 的 MCP 需要在客户端里手动接入。
-- 统一 session identity（host session ↔ 沙箱事件 ↔ 压缩会话）仍在路线图中。
+- 真实客户端 e2e 目前只有 **Claude Code**（30 轮、0 失败）；**Codex CLI / Qwen Code 本机未安装**，没有实测数据。
+- 代理路径下客户端每轮会多发一次 sidecar 请求，`--passthrough` 下同样出现，根因未深挖。
 - 代理侧沙箱检索暂未按项目过滤，使用跨项目去重。
 - 本项目尚未发布到 npm；当前以源码仓库方式使用。
 
@@ -648,10 +767,12 @@ hctx search "refresh token"
 hctx search "retry race" --scope sandbox
 hctx search "compression" --scope compression
 hctx search "needle" --all-projects
+hctx search "needle" --session <session-id>
+hctx search "needle" --all-sessions
 hctx search "needle" --json
 ```
 
-默认只搜当前项目；`--all-projects` 放宽到所有项目库。
+默认只搜当前项目；`--all-projects` 放宽到所有项目库。默认还会**按当前会话收窄**：沙箱层和压缩层用的是同一个宿主 session id，`hctx search` 会自动只返回这一场对话的内容；`--all-sessions` 退出收窄，`--session <id>` 指定别的会话。
 
 ### 统计
 
@@ -661,6 +782,37 @@ hctx stats --json
 ```
 
 输出包括沙箱返回/避免字节、估算节省 token、压缩块数、压缩 token、代理请求与缓存命中率。
+
+### 净计量（压缩层真实盈亏）
+
+```bash
+hctx meter
+hctx meter --json
+```
+
+`hctx meter` 报的是**净额**，不是“折叠省了多少”：
+
+```
+net        = gross saved − re-pay − summary output − summary input − injected overhead
+break-even = ceil(overhead ÷ (gross saved ÷ post-fold requests))
+```
+
+- `injected overhead` 是每个请求真实多出来的 system+tools token（实测，不是估算配置）；
+- `summary input/output/calls/latency` 来自真实摘要调用（token 是引擎 tokenizer 的估算，延迟是真实墙钟）；
+- `break-even` 是折叠之后还要跑多少个请求才回本。
+
+没有配置 `pricing.*` 时只报 token；配置后多一行折算金额。**本地没有测过任何 provider 的真实账单**。
+
+### 预设（profile）
+
+```bash
+hctx profile                 # 查看当前预设
+hctx profile lean            # 只用沙箱层 + 完整记忆 + lean MCP
+hctx profile balanced         # 两层都开（有摘要模型则 autofold）+ auto MCP
+hctx profile maximum         # 两层都开 + 最小记忆注入 + full MCP
+```
+
+预设是**显式命令**，加载配置时不会自动改写字段。
 
 ### 客户端启动
 
@@ -684,18 +836,21 @@ hctx launch opencode
 hctx config path                       # 配置文件路径
 hctx config show                       # 当前配置
 hctx config set compression.port 9000
+hctx config set compression.coldStartTokens 48000   # 冷启动门槛
 hctx config set sandbox.routing advisory
 hctx config set sandbox.memoryInjection auto
+hctx config set mcp.toolset lean
+hctx config set profile maximum        # 预设（等同 hctx profile maximum）
 ```
 
 ## 统一 MCP 工具
 
-在 context-mode 的 11 个工具之外，新增：
+在 context-mode 的 `ctx_*` 工具之外，新增：
 
 | 工具 | 作用 |
 |---|---|
 | `hc_search` | 一次检索沙箱索引、会话事件、压缩摘要和原始消息 |
-| `hc_status` | 统一健康、策略、节省、代理账本 |
+| `hc_status` | 统一健康、策略、节省、代理账本、净计量 |
 | `hc_doctor` | 统一诊断 |
 
 `hc_search` 参数：
@@ -705,9 +860,13 @@ hctx config set sandbox.memoryInjection auto
   "query": "refresh token",
   "scope": "all",
   "limit": 10,
-  "all_projects": false
+  "all_projects": false,
+  "session_id": "",
+  "all_sessions": false
 }
 ```
+
+不传 `session_id` 时会自动用**当前项目正在进行的会话**收窄（两层共用同一个宿主 session id）；`all_sessions: true` 退出收窄。
 
 结果会标注：
 
@@ -715,6 +874,23 @@ hctx config set sandbox.memoryInjection auto
 - `[sandbox/session-event]`：会话事件/决策
 - `[compression/compression-summary]`：压缩摘要（带 `ref`，可用于 `decompress`）
 - `[compression/compression-message]`：压缩前原始消息
+
+### 门面大小：full vs lean
+
+context-mode 子进程带 14 个工具，schema + 描述是每个新窗口的固定成本（实测 **28,502 B**）。lean 门面只留 `hc_search` / `hc_status` / `hc_doctor` / `ctx_execute` / `ctx_search`，其余 `ctx_*` 收进一个调度器：
+
+```json
+{ "tool": "ctx_index", "arguments": { "path": "./src" } }
+```
+
+实测 lean 门面 **11,330 B（少 17,172 B，−60.2%）**，隐藏的工具一个也没丢（调度器原样转发）。切换方式：
+
+```bash
+hctx config set mcp.toolset lean     # 持久
+hctx mcp --toolset full               # 仅本次
+```
+
+`auto`（默认）只在 `maximum` 预设下等于 full。
 
 沙箱子进程不可用时，`hc_*` 仍然可用；`ctx_*` 会返回明确的修复提示，不会拖垮整个 MCP。
 
@@ -750,9 +926,20 @@ hctx config set sandbox.memoryInjection auto
     "enabled": true,
     "host": "127.0.0.1",
     "port": 8787,
+    "mode": "cooperative",
+    "coldStartTokens": 32000,
     "autoUpdate": false,
     "advisoryCheck": false,
     "releaseNotesCheck": false
+  },
+  "mcp": { "toolset": "auto" },
+  "pricing": {
+    "currency": "USD",
+    "inputPerMTok": 0,
+    "cachedInputPerMTok": 0,
+    "outputPerMTok": 0,
+    "summaryInputPerMTok": 0,
+    "summaryOutputPerMTok": 0
   },
   "memory": { "retentionDays": 30 },
   "clients": {},
@@ -765,12 +952,18 @@ hctx config set sandbox.memoryInjection auto
 
 | 字段 | 取值 | 说明 |
 |---|---|---|
-| `profile` | `balanced` / `lean` / `maximum` | 预设档位（当前主要用于初始化） |
+| `profile` | `balanced` / `lean` / `maximum` | 预设档位；用 `hctx profile <name>` 显式应用 |
 | `sandbox.enabled` | boolean | 是否启用沙箱层 |
 | `sandbox.routing` | `strict` / `balanced` / `advisory` | 工具路由严格度 |
 | `sandbox.memoryInjection` | `auto` / `full` / `minimal` | 压缩开启时 `auto` = minimal |
 | `compression.enabled` | boolean | 是否启用压缩代理 |
 | `compression.host` / `port` | string / number | 代理监听地址，默认仅 loopback |
+| `compression.mode` | `cooperative` / `autofold` | `cooperative` 由模型调用 `compress`；`autofold` 由代理自动折叠，需配 `compression.summary` |
+| `compression.summary` | object | autoFold 的独立摘要模型：`baseUrl`、`api`、`apiKeyEnv` / `credentialRef`、`model`、`autoFoldTargetTokens`、`concurrency` |
+| `compression.coldStartTokens` | number | **冷启动门槛**：原始请求小于这个 token 数时不注入压缩 prompt/工具/nudge；跨过后该会话永久打开。`0` = 每个请求都注入 |
+| `compression.inject` | `auto` / `on` / `off` | 压缩面是否注入。`auto`=只有**配了摘要模型**才注入（没配时窗口交给宿主，实测注入会让 OpenCode 的宿主压缩从 2 次涨到 6 次、总字节 +61%）；`on`=强制协作式折叠；`off`=永不注入 |
+| `mcp.toolset` | `auto` / `full` / `lean` | MCP 门面大小；`auto` 只在 `maximum` 预设下等于 full |
+| `pricing.*` | number | 净计量的单价（每百万 token）；全 0 时只报 token |
 | `compression.autoUpdate` | boolean | 在统一运行时被忽略，始终关闭 |
 | `update.auto` | boolean | 同上 |
 | `clients.<id>.sandbox` | boolean | 客户端级沙箱开关 |
@@ -792,6 +985,7 @@ hctx config set sandbox.memoryInjection auto
 | `HYPERCONTEXT_ROUTING_MODE` | 覆盖路由模式（hooks 使用） |
 | `HYPERCONTEXT_MEMORY_INJECTION` | 覆盖记忆注入模式 |
 | `CONTEXT_MODE_DIR` | context-mode 存储根（由 hctx 自动设置） |
+| `ACP_INJECT_AFTER_TOKENS` | 冷启动门槛的 token 数（由 `compression.coldStartTokens` 托管下发） |
 | `ACP_AUTO_UPDATE` | billion-context 自更新（hctx 固定为 0） |
 | `BILI_ADVISORY_CHECK` | 安全公告检查（hctx 固定为 0） |
 | `BILI_RELEASE_NOTES_CHECK` | 版本公告检查（hctx 固定为 0） |
@@ -929,7 +1123,9 @@ node tools/bench-scale.mjs         --json docs/bench/scale.json       # 1→150 
 node tools/bench-retrieval.mjs     --json docs/bench/retrieval.json   # 与 ripgrep 头对头
 node tools/bench-identifier-recall.mjs                               # 单个标识符为什么命中/不命中
 node tools/bench-runtime.mjs       --json docs/bench/runtime.json     # 大输出、并发写、杀进程恢复
-node tools/bench-compression.mjs   --json docs/bench/compression.json # 压缩层（当前为负面结果）
+node tools/bench-compression.mjs      --json docs/bench/compression.json      # side-request 泳道复现（旧负面结果）
+node tools/bench-compression-coop.mjs --json docs/bench/compression-coop.json # 协作式压缩 A/B（当前结论）
+node tools/bench-autofold.mjs         --json docs/bench/autofold.json         # autoFold + 关闭注入的端到端
 ```
 
 ## 卸载

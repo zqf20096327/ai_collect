@@ -42,7 +42,8 @@ subscriptions you already have, and every agent works in a herdr pane you can wa
   reviewing, and GitHub calls go through `gh`. Quiet periods, minimum intervals and daily caps keep a
   burst of pushes from burning your subscription, and a model at its limit can hand over to a fallback.
 - **Fixes what it finds.** On a PR you wrote, one key starts a fixer agent that fixes the findings worth
-  fixing, answers the threads and pushes as you. Magnum then reviews the push again, up to a cap of
+  fixing, answers the threads, also those of other reviewers that nobody answered, and pushes as you.
+  Magnum then reviews the push again, up to a cap of
   cycles ([Fixing your own PRs](#fixing-your-own-prs)).
 - **Learns the repository.** The judge keeps notes per repository (how to test it, known pitfalls), and
   an optional daily retro collects what human reviewers caught that Magnum missed.
@@ -55,7 +56,8 @@ subscriptions you already have, and every agent works in a herdr pane you can wa
 ### What the author sees
 
 One review per round: a verdict line first (`Fix 1 problem before merging.`, or `No problems found.
-LGTM :shipit:`), then each finding as an inline comment on the line that must change, like this one:
+LGTM :shipit:`) with the problems it counts listed under it, then each finding as an inline comment on the
+line that must change, like this one:
 
 > **[P2] Old Reject error appears in a new chat**
 >
@@ -222,7 +224,7 @@ first review. herdr also gives Magnum pane titles, toasts and a plugin for its p
 **Can it post as a bot instead of me?** Yes: give it a GitHub App and the App posts, so its approvals and
 change requests do not come from your account. See [Identities](#identities-who-posts).
 
-**Does it run on Linux?** Not yet. [Linux](#linux) lists the four macOS-only spots; a small platform
+**Does it run on Linux?** Not yet. [Linux](#linux) lists the five macOS-only spots; a small platform
 interface around them is the whole job, and contributions are welcome.
 
 ## Configuration
@@ -397,6 +399,90 @@ auto-approval, the retro, notes curation, parking and cleanup go on. The window 
 excludes its end, and crosses midnight when the end comes first (`"22:00-06:00"` covers 22:00 to 05:59); a
 malformed value or an empty window (`"07:00-07:00"`) is refused when the config loads.
 
+### Settings: changing your config from a screen
+
+The settings screen (`magnum settings`) changes a fixed list of settings in `~/.config/magnum/config.toml`
+so you do not have to open an editor:
+
+- **Spend & models:** `[pipeline] spend`, each agent kind's own `[kinds.<name>] spend`, the model, effort
+  and re-review effort of each role in each `[spend.<level>]` table, and each role's base `model` in its
+  `[[role]]` block. A role that two `[[role]]` blocks of your file name is left to a hand edit: the loader
+  merges them, so which one to change is not clear.
+- **Usage caps:** `[usage] codex_soft` and `codex_hard`.
+- **Each `[[watch]]`:** `roles`, `auto_approve`, `auto_approve_authors`, `auto_approve_skip_authors`,
+  `manual_repos`, `include_drafts`, `stakes` and `own_min_rereview_interval`.
+- **Each repository:** its `[[repo]]` block's `stakes`, `max_simplifications`, `auto_approve_authors`,
+  `auto_approve_skip_authors`, `allow_bot_authors` and `required_checks`. A watched repository without a
+  block gets a minimal one.
+- **Schedule:** `quiet_hours`, `push_quiet_period`, `min_rereview_interval` and
+  `own_min_rereview_interval`.
+- **Reviews & agents:** `[pipeline]` `status_comment`, `whiteboard`, `judge_fallback`, `fix_cycles`,
+  `autofix`, `max_simplifications` and `judge_fresh_after`, and `[daemon]` `park_idle_after`,
+  `max_concurrent_reviews` and `max_total_working_codex`.
+
+It never edits identities, `auto_approve_as`, App keys, paths and sockets, commands, args, env, hooks,
+MCP, the sandbox or pools. Those stay hand edits.
+
+A save edits the file in place and never rewrites it:
+
+- **Changed values:** only the value is replaced. The trailing comment stays at its column (a gap that
+  holds a tab is kept as it is), even when several cells of one inline table change, and every other
+  comment, blank line and line ending stays as it was. Each key of an inline table is edited in place
+  inside its braces.
+- **Keys you did not set:** a new key goes after the last key of its table, so above a `[pool.env]`
+  subtable.
+- **New blocks and tables:** a missing `[[repo]]` or `[[role]]` block goes after the last one of its kind.
+  A missing table goes after the last table of its family (`[spend.*]`, `[kinds.*]`); with no family, it
+  goes before the first array of tables.
+- **Back to the default:** the key's line is deleted and its comment stays as a comment line.
+- **Dated notes:** each changed line gets a note such as `# 2026-10-20: was "high"`. On a line that
+  already has a comment, the note goes first, and it takes the place of the "was" note an earlier save left
+  there (a line keeps the newest one; the rest of its comment stays). Notes are on by default and can be
+  turned off.
+
+Before anything is written, the save makes five checks:
+
+- The file must not have changed on disk since the screen read it.
+- The new file must decode with exactly the edited values changed.
+- No line outside the edited keys' lines may change, byte for byte. A failure here, or a file that does not
+  read back, is a bug in the editor and is reported as one; nothing is written.
+- It must pass `magnum config`'s checks: the loader and the prompt render.
+- The settings screen must understand the shape it is editing. A shape it does not, such as a table only
+  dotted keys define, an inline table over several lines, or a multi-line array with comments inside, is
+  refused, and you edit that key by hand.
+
+The file is written atomically and keeps its mode. Saves take a lock file beside the config,
+`~/.config/magnum/.config.toml.lock` (created 0600 and kept), so two screens, or a screen and a script,
+never interleave, whatever `MAGNUM_HOME` each runs with. The hash is checked again right before the
+write. A symlinked config, or one with more than one hard link, is refused rather than replaced with a
+file.
+
+The version a save replaces is kept in `~/.local/share/magnum/config-history/`, one
+`<UTC time>-<sha>.toml` per save, and the last 20 are kept. A restore goes through the same checks (it needs
+no current file that loads: a restore mends one a hand edit broke), and
+the version it replaces is kept too.
+
+The daemon reads the config only when it starts, so a save takes effect after a restart:
+
+- **Restart when idle:** the screen can ask the daemon to restart once nothing is in flight. Before any
+  idle restart (a saved config, a new build, a landed skill version) the daemon checks what it would start
+  on. It loads a changed config file again, and when the binary on disk changed since it started, it runs
+  that binary's own check; a binary that is missing or cannot be read counts as a failure. If the check
+  fails, the daemon does not exit, drops the save's request and says so once (`daemon.config_restart_refused`).
+  A new build or a landed skill version still waits: it checks again when the file or the binary changes,
+  or every 10 minutes. With only the saved config waiting nothing checks again: once the file is fixed,
+  `magnum daemon-restart --when-idle` or a new save restarts on it, as the event says. Right before exiting it checks once more that nothing
+  started meanwhile. When it
+  exits, launchd starts it again. A file reverted by hand to the config the daemon runs needs no restart,
+  and the request is dropped. The events are `daemon.restarted_for_config` and
+  `daemon.config_restart_refused`.
+- **Restart by hand:** a daemon that launchd does not run leaves the restart to you
+  (`magnum daemon-restart --when-idle`).
+- **Restart pending:** the daemon records the hash of the user config it loaded. Until it runs the file on
+  disk, `magnum status` shows `config: ... changed since the daemon started` and how the change will
+  apply. When the daemon refused to restart on the file, it says to fix the file (`magnum config` shows
+  why) instead.
+
 ### Re-reviews
 
 A push whose changes since the last review are only comment lines, whitespace or documentation is not
@@ -512,6 +598,10 @@ next push and a clean re-review approve on their delta again. With the default, 
 the first review approves on its delta. The hold applies to automatic and requested rounds alike (a delta
 check, a recovery, an audit pass, a re-review of the same head) and to your own PRs, whose clean verdict
 is a comment anyway; a full pass, a post-merge review, a reply round, a CI check and a dry run never hold.
+Nor does a re-review in a repository with no approval to hold: where a clean review comments anyway (the
+`no_findings_event` of the identity it posts as, or of its `[[repo]]` block, is `COMMENT`) and Magnum does
+not approve as you (no `auto_approve` for it), the clean re-review posts its comment without the line and
+no full pass follows.
 Auto-approval as you waits for the full pass too. `round.approval_hold` says why a round holds
 (`engine.round_start` carries `approval_hold`), `pr.approval_full_pass` that the full pass follows, whose
 `round.full_pass` names the rule `approval` (`before_approval` in its start event), and the card's last
@@ -639,7 +729,11 @@ pinned: for a `head_drift` or `unpushed_commits` hold it takes the folder's curr
 Magnum expects, so the next release resets the slot, and answers "acknowledged the head_drift hold of slot
 talkable/talkable-integration#867: HEAD 3e8c5b6 is now the checkout magnum expects; the next release resets
 it" (a `dirty_worktree` hold comes back at the next guard while the changes are there). `magnum release`
-never acknowledges a hold: a release must not take a HEAD it did not check out.
+never acknowledges a hold: a release must not take a HEAD it did not check out. A HEAD that is the PR's
+pushed head is no drift, though: when the folder's HEAD is the head the poll last read from GitHub, its tree
+has no changes and none of its commits is missing from the remotes (a person went on in the PR's panes and
+pushed), the guard takes it as the checkout Magnum expects (a `slot.head_recorded` event) and the round goes
+on; any other moved HEAD is held as before.
 
 A round that fails three times on one head (a timeout, an error, a setup failure charged to the PR) parks
 its PR in needs attention. When the cause was Magnum's own (an unknown role, a launch line that broke), the
@@ -686,6 +780,59 @@ apply again if it is still at the cap. `magnum status` says so on its codex line
 11:20: the caps wait for Codex's next reading`; `overruled_at` in the JSON), and a round's wait names the
 command (`magnum resume --tool codex` lifts the pause).
 
+Magnum meters its own GitHub calls. Every GraphQL call tells it the points GitHub charged and the rate
+limit left, every REST call counts as one request against the core budget, and the daemon adds them up
+per identity, per op and per clock hour (the last 24 hours, written to the registry at most once a minute),
+keeping each identity's budget: the lowest reading whose window has not ended, whatever reset each names,
+since one login can show two windows at once. A call GitHub refuses for its rate limit sets the budget to
+0 until the reset the meter knows, or for 5 minutes when it knows none. `magnum status` shows one line per
+identity, the window reaching back to the hour before while the current hour is younger than 30 minutes:
+
+```
+github:   zhuravel 4692/5000, resets 17:13 · since 16:00 1,470 points: round setup 620, settle 300, radar 180, …
+```
+
+The ops say what read GitHub: a round's setup (with its triage, delta check, full pass, rerun and
+post-merge reads named apart), the round itself (the threads file, posting, verification) and its
+settle; the poll's radar, CI, details and confirmations under their own names, a push's since-review
+size and trivial-delta check; a fix job, its reads of the other reviewers (`other reviewers`) and its
+settle; a whiteboard, the retro, auto-approval, the approval follow-up, the status comments and
+`magnum approve`. `magnum status --json` has every hour by op under `github.identities`. The budget is
+the identity's own: on your gh login it is shared by every tool that uses it (agents' `gh` calls
+included), while the ops count only the daemon's calls.
+
+Below `[github] budget_floor` points of an identity's budget (default 500 of 5,000; `0` turns it off;
+at most 5000), no new work that reads GitHub as that identity starts until the budget's reset:
+
+```toml
+[github]
+budget_floor = 500
+```
+
+A round waits (`review · github budget → 17:13` on the board, `waits: github budget: zhuravel at 312
+points until 17:13` on the card and in `magnum status <ref>`) when its watch's poll identity or the
+identity it posts as is below the floor; `magnum review` still forces it, and the forced round waits
+too, its answer ending `waiting: github budget: ...`. A fix job waits: `magnum fix` and an autofix are
+held, as during a drain (`held; the fix of ... starts once the GitHub budget of zhuravel recovers if
+the review on a1b2c3d still stands`), and a fix loop's next cycle waits the same way (`fix.waiting`);
+the tick that finds the budget recovered starts them before any round takes the PR, as long as the
+review still stands (a held autofix also needs autofix still on and no `magnum fix --off`). Below the
+floor a fix reads nothing from GitHub and takes no pin off: the other reviewers' threads and comments are
+read when the held fix starts. A fix whose read of them, made before it starts, GitHub refuses for the rate
+limit is held the same way once the budget shows below the floor. A posted review's whiteboard is
+remembered and made once the identity it reads as recovered (`magnum whiteboard` is refused with the
+budget and its reset), and the retro and a notes curation are queued until then. Auto-approval reads
+nothing from GitHub as such an identity (a PR's reviews as the identity it approves as, a base tip's checks
+as the poll identity), nor while the poll waits for the rate limit, and says so once in the log; a read
+GitHub refuses for its rate limit is made again only after the identity's reset, not on every tick. What runs
+goes on: a running round finishes (its settle and posting reads are the round's), a fix job or a
+whiteboard that started runs to its end, a paused round's continuation finishes its judge turn, and
+the poll keeps its own floor of 50 points, so new pushes and requests are still seen. The first tick
+below the floor writes a `github.budget_low` event and toasts once ("GitHub budget of zhuravel at 312
+points: new rounds wait until 17:13"), `magnum status` lists the hold among its pauses
+(`github:zhuravel: budget floor until 17:13`), and the tick that finds the budget recovered writes
+`github.budget_recovered`.
+
 An idle agent is parked to free memory once it has idled for `[daemon] park_idle_after` (default `"15m"`,
 `"0"` never); the next round resumes its conversation, which costs a Claude role a few seconds. Its idle time
 counts from its own last turn or from the end of the PR's last round, fix job or whiteboard job, whichever is
@@ -698,10 +845,15 @@ the reviewers park alone, their panes closed and the workspace kept, and `pr.par
 with the threshold it idled past, with `"partial": true`, and says which agent stays until when; at
 `judge_fresh_after` the PR's park takes the judge, the `codex-review` shell and the workspace. Only an agent
 whose conversation can be resumed (herdr reported its session id) parks early: one without waits for the
-PR's park. An early park ends as the PR's park does: the agent is quit until its pane is an idle shell, its
-pane is closed and only then is the session parked, a pane that runs something by then being left for a
-later close; each session's park records `pr.session_park_begin`, then `pr.session_parked` or
-`pr.session_park_failed`. This
+PR's park. An early park quits the agent with one ctrl+c and a second later its kind's `exit_keys`
+(Claude: `/exit`). Before each of these keys, herdr must still show the session's own conversation idle in
+that pane, and a read of the screen right before the key must show no dialog and the composer, the one line
+between its two rules, as a bare prompt mark (nothing typed, no placeholder, no draft). Otherwise nothing
+more is sent (a screen that is not bare at the start gets no key at all), the park fails busy and the
+session waits for the PR's park. A kind without `exit_keys` gets two ctrl+c. It ends as the PR's park
+does: once the pane is an idle shell, the pane is closed and only then is the session parked, a pane that
+runs something by then being left for a later close; each session's park records `pr.session_park_begin`,
+then `pr.session_parked` ("quit with its exit keys" when they quit it) or `pr.session_park_failed`. This
 covers a reviewed PR, an ineligible one (a draft, a mute or a skip after its review), and a PR whose review
 or re-review waits behind `magnum pause`, a drain, the daily cap, or anything else that ends more than
 `park_idle_after` from now. A PR that needs attention keeps its agents, since its pane shows what went
@@ -714,10 +866,11 @@ fails, for example because an agent does not quit on ctrl+c, is not tried on eve
 twice as long as the last wait: two ticks after the first failure, then four, eight and so on, up to 12
 hours. A new round of the PR or a change in its sessions starts the wait over, and so does the PR's park
 after an early park failed, so a reviewer that will not quit does not hold the judge's park. An early park
-never uses the hard mode: an agent that ignores its ctrl+c waits for the PR's park. The first failure of each
-cause records a `pr.park_failed` warning with the cause's class (`quit_timeout`, `busy`, `herdr` or
-`error`) and the wait. Later failures of the same cause record nothing, and a park that works records
-`pr.parked` as usual. A park that cannot quit one agent still quits the PR's others and reports the
+never uses the hard mode: an agent that ignores its exit keys too stays live, nothing closed, and waits for
+the PR's park. The first failure of each cause records a `pr.park_failed` warning with the cause's class
+(`quit_timeout`, `busy`, `herdr` or `error`) and the wait. Later failures of the same cause record
+nothing, and a park that works records `pr.parked` as usual. A park that cannot quit one agent still quits
+the PR's others and reports the
 failures together. When the failure was an agent that did not quit (`quit_timeout`), the idle park's next
 try, once the wait has passed, parks in the hard mode described below, and its `pr.parked` event says
 "(hard: an agent did not quit at the plain park)". A failure of another class keeps the plain park, and a
@@ -761,24 +914,32 @@ modification time. The version command runs again only once the binary changes, 
 failed (an error, its 15-second timeout, a context that ended) leaves nothing recorded and is tried again at
 the next health check: one warning per cause since the daemon started, and a `kind.version_unknown` warning
 when three checks in a row failed (the start's read is the first; the reads go on). Another version than the
-one recorded is a `kind.version_changed` warning and one toast ("codex-cli 0.162.1 → 0.163.0 at 11:24"),
-and `magnum status` shows the versions on its `clis:` line, with "(changed at 11:24)" for a day after a
-change. For that day a PR that goes to needs attention because a role of that kind did not start (the
-"failed 3× … start codex-judge" line, a dead launch's line among them) ends its line with "; the codex CLI
-changed at 11:24". When two or more PRs' agents end with the same pane error line within 30 minutes (the
-line of a `pr.launch_cleared`, of a prompt herdr refused because the agent was gone, or of a lost agent's pane
-in `pr.panes_closed`), the daemon records an `agents.shared_failure` warning naming the PRs, the roles, the
-line and a CLI change of the day, with one toast ("2 PRs' codex-judge launches end the same way"), once per
-line a day. Nothing is paused and no version is pinned: you decide, and mise owns the versions.
+one recorded is a `kind.version_changed` event. For a CLI mise pins, one whose tool in `mise ls --current
+--json` (by the kind's name, else the one whose install directory holds the binary) requests the very version
+it resolves to (`codex = "0.162.1"`), the change is unexpected: a warning and one toast ("codex-cli 0.162.1 →
+0.163.0 at 11:24"), both naming the pin ("mise pins it to 0.162.1"). Any other change is routine, such as
+Claude Code updating itself or a tool mise requests as `latest`, `lts` or a prefix: the event is info, with
+no toast, and so is a change when mise cannot answer (mise is asked only when a version changed). Either way
+`magnum status` shows the versions on its `clis:` line, with "(changed at 11:24)" for a day after a change.
+For that day a PR that goes to needs attention because a role of that kind did not start (the "failed 3× …
+start codex-judge" line, a dead launch's line among them) ends its line with "; the codex CLI changed at
+11:24", whether mise pins the CLI or not. When two or more PRs' agents end with the same pane error line
+within 30 minutes (the line of a `pr.launch_cleared`, of a prompt herdr refused because the agent was gone, or
+of a lost agent's pane in `pr.panes_closed`), the daemon records an `agents.shared_failure` warning naming the
+PRs, the roles, the line and a CLI change of the day, pinned or not, with one toast ("2 PRs' codex-judge
+launches end the same way"), once per line a day. Nothing is paused and magnum pins no version: you decide,
+and mise owns the versions.
 
 The machine's memory is measured, not acted on. At most once a minute the health check starts a sample of
 the kernel's memory pressure level (`sysctl -n kern.memorystatus_vm_pressure_level`: 1 normal, 2 warn, 4
 critical) and the swap (`sysctl -n vm.swapusage`) on a goroutine of its own, each command with a 3-second
 timeout, so one that fails keeps the other's reading; the tick never waits for it, and the next tick's check
 records the finished sample in the registry (`machine.memory`: the level, the swap used and its total in
-bytes, when it was read and, for a part it could not read, why). Each change of the level is a
-`machine.memory_pressure` event: the first known level since a start is info, a return to normal is info,
-warn a warning and critical an error. A run of critical pressure, which lasts until a normal sample, toasts
+bytes, when it was read and, for a part it could not read, why). A new level counts once two samples in a
+row read it (the first known level since a start counts at once), so a level that flaps for one sample
+records nothing, and each change of the level that counts is a `machine.memory_pressure` event: the first
+known level since a start is info, a return to normal is info, warn a warning and critical an error. A run
+of critical pressure, which starts at its first critical sample and lasts until a normal sample, toasts
 once ("magnum: memory pressure critical", with the swap and how many of magnum's agents are live), and never
 twice within an hour, so a level that flaps does not toast again. A command that fails (Linux has neither
 value) leaves its part unknown, with one warning per value and kind of failure (a non-zero exit, a timeout,
@@ -1025,6 +1186,9 @@ harm against it, never against a stakes block in the checkout, which is PR conte
 none. Unset, nothing renders. `max_simplifications` on the `[[repo]]` (0 to 10) is how many
 simplifications the judge posts at most on the repository's PRs, the most substantial first; 0 or unset
 keeps `[pipeline] max_simplifications` (1 to 10, default 5), and a pooled repository may set it too.
+`auto_approve_skip_authors` on the `[[repo]]` adds logins to the watch's for that repository, and
+`auto_approve_authors` there replaces the watch's allowlist for it (Approving as you); a pooled
+repository may set both.
 `prepare` (such as `["bin/rails db:test:prepare"]`) and
 `ready` (probes, exit 0 = ready) on a `[[pool]]` or `[[repo]]` run in the checkout before the
 reviewers, as `zsh -lc` with the slot's env and within `ready_timeout` (5m) together, followed by a
@@ -1050,172 +1214,18 @@ base carries the `dirty_schema` flag, and a release that must reload the databas
 `reset_db_on_schema_change = false`, or kept databases that no longer match what was loaded) moves the slot
 to the `dirty_schema` state and runs `reset_db` through `mise exec` within 30 minutes. A reload that fails
 twice in a row makes the slot `broken`, with the reload's error as its last error, and lets its PR go: the
-PR's next round takes another slot (a slot pinned meanwhile keeps its PR, which waits for it).
+PR's next round takes another slot (a slot pinned meanwhile keeps its PR, which waits for it). So does a
+slot whose reload before the reviewers fails in two rounds in a row (counted per slot, until a reload passes
+or a repair): its next release breaks it without reloading, with "<slot> schema reset failed in two rounds:
+<cause>" as its last error, and the second failure toasts once ("slot review4: the schema reset failed in two
+rounds (<cause>); it breaks at its release, then `magnum slots repair review4`"; each failure is a
+`slot.schema_reset_failed` event). The cause is the failed command's last line, which for a rake task is the
+line after "aborted!", not its "(See full trace by running task with --trace)" trailer; the readiness file,
+the `round.readiness` event and the judge's machine lines carry it too.
 `magnum slots repair <slot>` provisions the slot again and puts it back in the pool. A free slot above a pool's `min` is removed once it has been idle for
 `idle_remove_after` (168h when unset or 0; a negative value is refused). A watch's `skip_paths` (path globs where `**` spans
 directories, such as `["docs/**", "**/*.md"]`) skips a PR whose changed files all match, while a forced
 `magnum review` still runs it. A watch's `skip_bot_authors` (default `true`) skips every bot's PR, and its
 `allow_bot_authors` names the bots whose PRs are reviewed all the same, such as `["helper[bot]"]` above for
 an App that writes code for the team, while the dependency bots' PRs stay skipped: GitHub logins, matched as `skip_authors`
-matches them (any case, with or without `[bot]`; none empty or with a space; `helper` or `helper[bot]`, never
-`app/helper`, which the config refuses in this list, in `skip_authors` and in `auto_approve_skip_authors`
-because it would match no author), and a `[[repo]]` block's
-`allow_bot_authors` adds logins for that repository alone. Such a PR is reviewed as a person's would be,
-under every other filter but `skip_departed_authors`, which reads only people's membership (an App's
-`authorAssociation` is `NONE` whatever its installation writes): `skip_authors` wins (a login on both lists is skipped), with
-`skip_bot_authors = false` the list changes nothing, and auto-approval treats it as any PR its watch
-reviews (`auto_approve_skip_authors` keeps it out). Its author is still a bot: its remarks count only in
-Magnum's threads, and nothing in the PR is trusted. The daemon classifies the skipped PRs again when it
-starts, so once it restarts on the new list a bot's PR the poll skipped ("bot author") is queued without a
-push, and one open since the repository's first sync goes back to baseline, as the first sync left it; a
-skipped PR that another rule still skips shows that rule's reason from then on. A
-watch's `skip_cross_repository` (default `true`) skips a PR whose head lives in a fork, and `false` reviews it. A watch's `manual_repos` (names of repositories it covers, without owner
-or pattern, such as `["example"]`) keeps them on the board, in `magnum tui`, the status and the retro,
-but starts no round there on its own: not for a new PR, a push or a review request on GitHub. Their PRs
-read "skipped · manual"; `magnum review`, the board's `r`/`R` and the picker review one. A review request
-on such a repository is still recorded: its `pr.review_requested` event says "manual repository: no round
-starts by itself; `magnum review <owner/repo#N>` runs one", and one toast per request names who asked
-("magnum: talkable/example#12: review requested by alice (manual repository)"). A PR whose base
-branch name has anything but letters, digits, `.`, `_`, `/` and `-` (or `..`, or a leading `-`) is never
-reviewed: the judge prompts put `origin/<base>` into a git command when the merge base is unknown, and git
-allows `$`, `|`, `&` and parentheses in a branch name that anyone who can push may create. The poll makes
-such a PR ineligible ("base branch name has characters magnum does not pass to a shell"), and a round
-forced on it fails at its prompts, which refuse such a base. See the comments in `config.defaults.toml` for
-every key.
-
-#### Approving as you
-
-GitHub does not count a GitHub App's approval toward a branch's required approvals, so a PR Magnum found
-clean still waits for yours. A watch can let Magnum post your own approval on the repositories it names
-(off by default):
-
-```toml
-[[watch]]
-owner = "talkable"
-include = ["talkable"]
-identity = "reviewer-app"
-auto_approve = ["talkable"]        # repository names of the watch, or ["*"]
-auto_approve_as = "me"             # an identity of kind gh: your own account
-# auto_approve_body = "Approved after Magnum's review of {{.Short}}."   # one line; magnum adds its marker
-# auto_approve_skip_authors = ["alice"]   # GitHub logins whose PRs Magnum never approves as you on its own
-```
-
-Magnum approves as `auto_approve_as`, on the head it reviewed, as soon as the round that posted the review
-ends (each tick looks again, for a post to retry or a PR that changed), only when all of these hold:
-
-- its author is not in `auto_approve_skip_authors` (below);
-- its latest verified review is of the PR's current head and leaves nothing to fix before merging: no
-  P0, P1 or P2 finding, still-open earlier ones included, by the priorities the judge's result gives them
-  (P3 findings and simplifications are optional). Only a result written before it gave them leaves the
-  still-open ones to the review's verdict line (`No blocking problems.`, `No problems found…`, `No new
-  problems since…`); a line it does not know is not clean;
-- the review heard every reviewer of its round: none ran and left no report (wrote none, timed out,
-  failed) or was skipped as logged out (the judge then posts `COMMENT`, which an App posts anyway). A
-  round continued after a pause counts only the roles its paused round ran; a round of the judge alone (a
-  delta check, a same-head re-review, a reply round) counts what the round before it went without, since
-  its review builds on that one. Magnum keeps the record of each round's reports, and a review whose round
-  it has no record of (one posted before Magnum kept them) is not approved;
-- the PR is open, not a draft, not muted, not yours, and no round is due or running on it; a dry run or
-  a post-merge review never approves;
-- its watch would review it on its own: a `magnum review` of a PR the watch's filters leave out (a
-  `manual_repos` repository's, a bot's, one with a `skip_labels` label, one whose files all match
-  `skip_paths`, ...) is not approved, however clean, nor is a PR Codex flagged;
-- it changes none of the review agents' instructions or hooks: no `AGENTS.md`, `AGENTS.override.md`,
-  `CLAUDE.md` or `CLAUDE.local.md` at any depth and in any case, nothing under `.claude/` or `.codex/`
-  and no `.mcp.json` (the head's file list, as the poller read it), and no session of the head ran
-  without the PR's project config (they steer the review agents, and their hooks run on every
-  teammate's machine once merged). A PR of more files than GitHub lists (100) is not approved either;
-- its head's checks pass, or it has none: while they fail or still run (the rollup `FAILURE`, `ERROR`,
-  `PENDING` or `EXPECTED`) Magnum waits, and approves once they pass. A check that fails the same way on
-  the base branch's tip (the same workflow and check failed on the tip the poller last read) does not
-  hold it: once the head's other checks finished, a head whose every failing check also fails there is
-  approved, and a `review.auto_approve_ci_base` event says so once per head and review (it names no
-  check). The base tip's checks are read once per tip and ten minutes; a failure Magnum cannot match
-  (another check, another workflow, no known tip, a read that fails) still holds the PR. Where the
-  repository's `[[repo]] required_checks` lists checks, only the checks it names count (matched as the
-  board matches them) and the rollup no longer decides: a failing check outside the list never holds the
-  approval, whose `review.auto_approved` event and the daemon's log name it ("ignored 1 failing check
-  outside required_checks: Terraform scripts / lint"; the posted approval does not), one outside it that
-  still runs is not waited for, and a required one that fails or runs holds the PR as above, the base
-  tip's comparison included. When the head's stored checks cannot say (none read for the head, more than
-  GitHub lists, an entry that names no check on the head) every check counts, as without the key; the
-  list GitHub's rulesets declare does not change the gate;
-- on GitHub (read just before posting) you have not approved that head, have no review in progress, and
-  have not reviewed the PR by hand; a PR with more reviews than Magnum reads (500) is not approved.
-
-When the review, the watch, the agents' files or the checks hold a PR back, the card says why ("magnum does
-not approve it as you: its head's checks fail …"; `auto_approve_refused` in `magnum tui --json`) and a
-`review.auto_approve_refused` event records each reason once. They do not refuse the board's `A` (or
-`magnum approve --as`) on a row that needs you: there you decide by hand.
-
-`auto_approve_skip_authors` keeps some authors' PRs for a person's review, whatever Magnum's review says
-(a colleague whose PRs must get an explicit human approval): GitHub logins, matched as `skip_authors`
-matches them (any case, with or without `[bot]`; none empty or with a space; `app/<name>` is refused). A `[[repo]]` block's
-`auto_approve_skip_authors` adds logins for that repository alone. On such a PR Magnum reviews as
-usual and never posts your approval: the refusal is recorded once per head, whatever round reviewed it
-(`auto_approve_refused` reads "the author is in auto_approve_skip_authors", the card "auto-approval: off
-for this author (auto_approve_skip_authors)", and the row shows no `✔ auto`). The board's `A` still
-approves it as you, since you are the person it waits for, and an approval standing from before the
-author was listed stays (a later review that finds something to fix withdraws it as any other). Nothing
-on GitHub names the author or the list: the PR's status comment reads as on a watch without
-auto-approval.
-
-The body is one line, `Auto-approved: Magnum's review of `<sha7>` found no blocking problems ([review](<url>)).`
-(or `auto_approve_body`, a template of `.Short`, `.SHA`, `.ReviewURL`, `.Repo` and `.Number`), with a hidden
-`<!-- magnum:auto-approval head=<sha7> -->` marker Magnum knows its approvals by. One approval per review:
-a post GitHub refuses (403, 422) is not tried again for that review, another failure is tried again after
-5 minutes (three posts at most), and one whose answer was lost is found on GitHub instead of posted twice.
-
-New commits alone leave the approval standing (the repository decides about stale approvals): the next
-review decides. One that leaves something to fix, on any head, withdraws it (Magnum dismisses it as you:
-"Magnum's review of <sha7> found blocking problems; this automatic approval is withdrawn ([review](<url>))."),
-and a clean one of the PR's head is held to the reviewers, watch, agents' files and checks conditions above
-as a new approval is: one they refuse withdraws it too ("Magnum's review of <sha7> found nothing to fix, but
-it changes the review agents' instructions or hooks (AGENTS.md); this automatic approval is withdrawn
-([review](<url>)).") with the same event and toast, while the head's checks still run Magnum waits, and a
-head it has not reviewed yet changes nothing. A clean review they let through leaves the approval standing
-without a second one, and they decide once per review: checks that fail afterwards do not withdraw it before
-the next review. A clean review after a withdrawal approves again (a head whose checks pass later included).
-A withdrawal GitHub refuses (422) reads the review again: one gone ends there, and one dismissed
-meanwhile counts as that dismissal (below: by you or anyone else it stops auto-approval of the PR, by GitHub
-on a push it does not); one GitHub keeps refusing is tried three times, 5 minutes apart, then ends failed
-with an event and one urgent toast (dismiss it on GitHub). `magnum request-changes` withdraws your standing
-approval first, as you, since GitHub would count it next to the changes request, and auto-approval waits
-until the changes request is recorded. The approval of a PR that was merged or
-closed ends as history (`review.auto_approval_ended`): nothing follows it any more.
-
-Your word wins, for good on that PR: once you review it by hand (an approval, a comment or a changes
-request; one you post with `magnum approve` or `magnum request-changes` counts as yours, but not `magnum
-approve --as` your account, the board's `A` on a row that needs you, which is followed like these
-approvals), or you or anyone
-else dismisses one of these approvals, Magnum stops approving that PR as you, and your changes request shows
-as `✔ lift your ✗` instead. `magnum review` does not change that; `magnum unapprove --resume <ref>` does
-(only what you do from then on counts). GitHub dismissing it as stale on a push does not stop it.
-`magnum unapprove <ref>` (y/N on a terminal) and the board's `D` (y/N) withdraw a standing approval and stop
-it too.
-
-You see every one: a toast per approval ("approved as you: talkable#12001", with the link) and per
-withdrawal, `✔ auto` in the board's STATE and "N auto-approved" in the titles, the card, `magnum tui
---auto-approved`, and "approvals: auto-approved: N today, M standing" in `magnum status`. Each post and
-withdrawal is a row of the registry's `auto_approvals` with begin, ok and fail events
-(`review.auto_approve_begin`, `review.auto_approved`, `review.auto_approve_failed`,
-`review.auto_approval_withdraw_begin`, `review.auto_approval_withdrawn`, `review.auto_approval_withdraw_failed`);
-`magnum approve` and `magnum request-changes` write `review.manual_verdict_begin`, `review.manual_verdict`
-and `review.manual_verdict_failed`.
-
-### Roles and kinds: the review pipeline
-
-The pipeline is data. Each `[[role]]` is a pane: which agent runs it, with which prompt, model,
-effort and credentials, when it runs and how its report is captured. Exactly one role per watch is
-the judge.
-
-```toml
-[[role]]
-name = "claude-review"
-kind = "claude"                    # codex | claude | droid | omp | … | shell
-prompt = "claude-review.md"        # prompts/<file>; embedded defaults when absent
-rereview = "claude-rereview.md"    # new commits since its last report: the delta only
-restart = "claude-restart.md"      # a push cut its review short; the round restarted on the new head
-effort = "high"
-rereview_effort = "medium"         # re-reviews of new commits: fewer, surer findings on the delta
-runs = "always"             
+matches them (any case, with or without `[bot]`; none empty or with a space; `

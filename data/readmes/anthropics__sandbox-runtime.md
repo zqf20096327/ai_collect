@@ -106,7 +106,7 @@ The sandbox uses OS-level primitives to enforce restrictions that apply to the e
 
 - **macOS**: Uses `sandbox-exec` with dynamically generated [Seatbelt profiles](https://reverse.put.as/wp-content/uploads/2011/09/Apple-Sandbox-Guide-v1.0.pdf)
 - **Linux**: Uses [bubblewrap](https://github.com/containers/bubblewrap) for containerization with network namespace isolation
-- **Windows**: Runs the sandboxed process under a dedicated `srt-sandbox` local user account, with a [Windows Filtering Platform](https://learn.microsoft.com/en-us/windows/win32/fwp/windows-filtering-platform-start-page) egress fence keyed on that account's SID and per-session explicit ACEs on the working tree
+- **Windows**: Runs the sandboxed process under a dedicated `srt-sandbox` local user account, with a [Windows Filtering Platform](https://learn.microsoft.com/en-us/windows/win32/fwp/windows-filtering-platform-start-page) egress fence keyed on that account's SID, a write-restricted token, and explicit ACEs on the working tree
 
 ![0d1c612947c798aef48e6ab4beb7e8544da9d41a-4096x2305](https://github.com/user-attachments/assets/76c838a9-19ef-4d0b-90bb-cbe1917b3551)
 
@@ -125,7 +125,7 @@ Both filesystem and network isolation are required for effective sandboxing. Wit
 
 - **macOS**: The Seatbelt profile allows communication only to a specific localhost port. The proxies listen on this port, creating a controlled channel for all network access
 
-- **Windows**: A machine-wide WFP filter set blocks all outbound connections originating from the `srt-sandbox` account except loopback to the proxy port range. The proxies listen inside that range, creating a controlled channel for all network access
+- **Windows**: A machine-wide WFP filter set blocks outbound connections made by processes running as the `srt-sandbox` account except loopback to the proxy port range. The proxies listen inside that range, creating a controlled channel for all network access. The filters do not follow a sandboxed process that puts a different token on a thread before creating a socket, nor traffic that a system service carries on its behalf; see the Windows [Known limitations](#known-limitations)
 
 Both HTTP/HTTPS (via HTTP proxy) and other TCP traffic (via SOCKS5 proxy) are mediated by these proxies, which enforce your domain allowlists and denylists.
 
@@ -459,7 +459,7 @@ Uses an **allow-only pattern** - all network access is denied by default.
   - IPv6 literals must be bracketed, RFC 3986-style: `[::1]`, `[2001:db8::1]:443`. An unbracketed multi-colon entry is rejected as ambiguous (`2001:db8::1:443` is itself a valid address).
 - `network.deniedDomains` - Array of denied domains (checked first, takes precedence over allowedDomains). Same `:port` suffix, and a bare `*` (or `*:22`) is accepted for deny-all.
 - `network.deniedDomainReasons` - Optional map from a `deniedDomains` entry (matched by exact string) to a model-facing reason that appears in the `<sandbox_violations>` line when that entry denies a connection — say what is blocked and the sanctioned alternative (e.g. `{"github.com:22": "SSH pushes to GitHub are blocked; use an https:// remote"}`). Entries without a reason report a generic one. For SSH destinations (port 22), the reason is also delivered in-band: an SSH client tunneled through a no-auth SOCKS ProxyCommand (e.g. BSD `nc -X 5`) receives a pre-key-exchange SSH disconnect whose description is the reason, which OpenSSH prints verbatim — keep such reasons under ~400 ASCII characters, imperative first, since OpenSSH truncates and escapes non-ASCII. A client that does authenticate, as the `GIT_SSH_COMMAND` srt injects does, gets the reason on any port as the status phrase of the `403` that answers its CONNECT, which is what that command, and many an HTTP client, prints. There it is cleaned and cut as in the violation line, and every non-ASCII character becomes `?`, since clients disagree on how to read one in a status line.
-- `network.allowLocalBinding` - Allow binding to local ports (boolean, default: false)
+- `network.allowLocalBinding` - Let sandboxed commands use local ports directly (boolean, default: false). macOS: bind and accept on any local port, and connect to `localhost` on any port. Windows: connect to loopback addresses on any TCP or UDP port; it is part of the machine-wide install, see [Local servers on Windows](#local-servers-on-windows). Linux: ignored — the sandbox has its own network namespace, whose loopback is always usable and is not the host's.
 
 **Resolved-address check.** The allow/deny lists match by _name_, but whoever controls a permitted name's DNS (or any label under a permitted wildcard) controls what it resolves to. So before dialing an allowed **hostname** directly, the proxy resolves it once, drops any address in a denied set, and connects to a surviving address (the address that passed the check is the one dialed — there is no second lookup). If nothing survives, the connection is refused like any other policy denial: HTTP/CONNECT get `403` (`X-Proxy-Error: blocked-by-sandbox-runtime`, the reason in the body and, for a CONNECT, as the status phrase), SOCKS gets "connection not allowed by ruleset", and a `deny network-outbound host:port (resolved to a loopback address)` line — naming the class of address (loopback, link-local, this host's, cloud metadata, deny-listed, listed, …), not the address itself, which only the debug log carries — is recorded in the violation store.
 
@@ -739,7 +739,7 @@ The package includes pre-generated seccomp BPF filters for x86-64 and arm archit
 
 ## Windows (alpha)
 
-Windows support is **alpha**. The sandboxed process runs under a dedicated `srt-sandbox` local user account, isolated from the calling user by native Windows security primitives — a Windows Filtering Platform (WFP) egress fence keyed on the sandbox account's SID, and per-session explicit ACEs that grant or deny that SID access to configured filesystem paths.
+Windows support is **alpha**. The sandboxed process runs under a dedicated `srt-sandbox` local user account, isolated from the calling user by native Windows security primitives — a Windows Filtering Platform (WFP) egress fence keyed on the sandbox account's SID, a write-restricted token, and explicit ACEs that grant or deny the sandbox access to configured filesystem paths.
 
 ### Setup
 
@@ -751,21 +751,37 @@ npx @anthropic-ai/sandbox-runtime windows-install
 
 This provisions the `srt-sandbox` local user account (with a random password stored DPAPI-encrypted in `HKLM\SOFTWARE\sandbox-runtime` — machine-wide, so fleet installs running as SYSTEM work and one user's rotation updates the copy the others read), the `sandbox-runtime-users` local group, and installs a machine-wide WFP filter set keyed on the `srt-sandbox` SID. It is **idempotent** — re-running it rotates the sandbox account's password and reconciles the filter set.
 
+After the elevated step, the install makes **your user profile readable to sandboxed commands, except for credential stores**, as the user who ran it and without elevation; on a large profile this takes minutes the first time. It first prints one line saying so, naming the configuration files that can hold feed tokens and how to skip (`--skip-profile-grant`) or undo it (`srt-win profile forget`). See [Reading your user profile](#reading-your-user-profile) for what is readable, what is excluded, and how to restrict or remove it — and read [Shared machines](#shared-machines) before installing on a computer that more than one person uses. The sandbox works without the grant; its commands then read nothing in your profile.
+
 **No logout is required.** The WFP filters key on the dedicated sandbox account's SID, so your own network, services, and every other principal on the machine are unaffected.
 
 After install, `SandboxManager.initialize()` and the `srt` CLI work as on other platforms. `initialize()` verifies the sandbox account and WFP fence are live, and fails with an actionable error if not.
 
 Programmatic install/uninstall are exported as `installWindowsSandbox()` / `uninstallWindowsSandbox()`.
 
+**Upgrading from an earlier release: run `windows-install` once more** (one UAC prompt). It upgrades the existing install in place; nothing has to be uninstalled first, and this is the only reinstall this release asks for. The install records a setup version, and this release raises it (2 → 3) because it keeps write grants on project directories between sessions (see [the child token and kept grants](#the-child-token-and-kept-write-grants)). Until the install is re-run, `initialize()` and `checkDependencies()` report that the sandbox was set up by a different release and say to re-run the install, and nothing is granted or run. Once it has been re-run, an older release on the same machine refuses to start its sandbox, instead of running commands under a token that the kept grants were not made for. Its message also says to re-run the install; with the older release that is a downgrade, so read the next paragraph first.
+
+**Going back to an earlier release:** run `windows-uninstall` with this release first (or `srt-win acl forget --all` as each user who ran sandboxed sessions), then install the older one. An older release's install does not know about the kept grants and does not remove them, and under its token they would let any sandboxed command write those directories. `srt-win user status` lists the directories that still carry one (`persistent_grants.roots`).
+
 ### Security model
 
 The sandboxed command runs **as the `srt-sandbox` account**, not as the calling user. The bundled `srt-win.exe` helper does a two-hop launch: the broker calls `CreateProcessWithLogonW` to start a runner as `srt-sandbox`, and the runner spawns the target under a restricted token inside a job object. The child inherits the sandbox account's isolated profile (`%USERPROFILE%`, `%TEMP%`, `HKCU`) and a fresh environment overlaid with only the broker's `PATH` and the generated proxy variables.
 
-Running under a distinct user SID structurally closes the surrogate-spawn class of escape (Task Scheduler, `PROC_THREAD_ATTRIBUTE_PARENT_PROCESS` onto a broker-owned process, BITS, out-of-process COM with `RunAs="Interactive User"`): any process the child manages to spawn out-of-band still carries the `srt-sandbox` SID, so it remains subject to the WFP egress fence and has no rights on the calling user's files.
+Running under a distinct user SID structurally closes the surrogate-spawn class of escape (Task Scheduler, `PROC_THREAD_ATTRIBUTE_PARENT_PROCESS` onto a broker-owned process, BITS, out-of-process COM with `RunAs="Interactive User"`): any process the child manages to spawn out-of-band still carries the `srt-sandbox` SID, so the connections it makes itself remain subject to the WFP egress fence and it has no rights on the calling user's files. Traffic a system service carries for such a process is a separate matter (see [Known limitations](#known-limitations)).
 
-**Network isolation** is a two-filter WFP set at `FWPM_LAYER_ALE_AUTH_CONNECT_V4/V6`: a PERMIT for loopback destinations inside the configured proxy port range (default `60080–60089`), and a BLOCK for any connect whose token carries the `srt-sandbox` SID. The sandboxed process reaches the internet only via the JS HTTP/SOCKS5 proxies listening in that range; a process that strips its proxy environment and connects directly is blocked at the kernel.
+**Network isolation** is a set of two WFP filters, optionally three, at each of `FWPM_LAYER_ALE_AUTH_CONNECT_V4/V6`, installed machine-wide:
 
-**Filesystem isolation** is enforced by NTFS discretionary ACLs. The `srt-sandbox` account has no inherent rights on the calling user's files, so at `initialize()` the sandbox writes **additive, inheriting explicit ACEs for the `srt-sandbox` SID only** — it never rewrites or replaces a path's existing security descriptor:
+- a PERMIT for loopback destinations inside the configured proxy port range (default `60080–60089`);
+- optionally, a second PERMIT for loopback destinations on every port but one — absent unless installed with `--allow-loopback` (see [Local servers on Windows](#local-servers-on-windows));
+- a BLOCK for any connect whose token is the `srt-sandbox` account — including an AppContainer process started under that account;
+
+The BLOCK is keyed on the sandbox account alone, so no other process on the machine is restricted. The filtering engine attributes a connect to the token that was in effect when its socket was created; a sandboxed thread that puts another token on itself before creating a socket is therefore not recognised as `srt-sandbox`. Traffic that a system service carries on the process's behalf is not matched by these filters either (see [Known limitations](#known-limitations)).
+
+A connection the sandboxed process makes itself reaches the internet only via the JS HTTP/SOCKS5 proxies listening in that range; a process that strips its proxy environment and connects directly is blocked at the kernel. `initialize()` proves this each session by running connects as the sandbox account — with its own token and under copies of its token with the integrity level lowered, each of the latter on a socket created before the token is assumed and on one created after — and refuses to start if any of them gets out. The connects are made under the token a sandboxed command gets; where that token does not let a lowered copy be assumed, the attempt is reported as not made (the `lowered-integrity-unprobed` residual), not as a failure. The same probe connects while impersonating the anonymous token and under a deny-only copy of its token; those are not fenced, and are reported, not refused (see [Known limitations](#known-limitations)). With loopback open, the connects that must be blocked go to the one loopback port that stays blocked (see [Local servers on Windows](#local-servers-on-windows)), and one more connect, to a loopback listener the library binds for the probe, must succeed.
+
+The fence blocks the identities it can name and lets everything else through, which leaves two gaps for tokens a sandboxed process can put on a thread, beside the traffic that system services carry (see [Known limitations](#known-limitations)).
+
+**Filesystem isolation** is enforced by NTFS discretionary ACLs. The `srt-sandbox` account has no inherent rights on the calling user's files, so at `initialize()` the sandbox writes **additive, inheriting explicit ACEs** — for the sandbox account, and for `allowWrite` roots for the sandbox group and an identifier of the root's own ([below](#the-child-token-and-kept-write-grants)) — and never rewrites or replaces a path's existing security descriptor:
 
 - `filesystem.allowWrite` → an inheriting `MODIFY` ALLOW ACE (`READ|WRITE|EXECUTE|DELETE`, with `FILE_DELETE_CHILD` withheld). The sandboxed process can create, modify, and delete files inside the working tree; withholding `FILE_DELETE_CHILD` from the grant is defense-in-depth for the deny stamps below, not a guard on the tree root.
 - `filesystem.allowRead` → an inheriting `READ|EXECUTE` ALLOW ACE
@@ -774,235 +790,153 @@ Running under a distinct user SID structurally closes the surrogate-spawn class 
 
 The lists rank as on the other platforms. The ACEs set on an object come before the ones it inherits, so an `allowRead` beneath a `denyRead` directory is readable. An `allowWrite` at or beneath a `denyWrite` path grants `READ|EXECUTE` only, and an `allowRead` or `allowWrite` at or beneath a `credentials.files` entry grants nothing. "Beneath" is decided on the paths as they resolve on disk: links, junctions, 8.3 names and letter case make no difference (a UNC path is compared as spelled, whatever its case). A deny that one command brings in its `customConfig` ranks the same way against the session's grants.
 
-`reset()` removes every ACE this session added (refcounted across this user's concurrent hosts via the per-user session DB; a crash-recovery pass on the next `initialize()` cleans up after an unclean exit). Directory targets are supported (the ACEs inherit to the whole subtree). Glob patterns are expanded to concrete paths at `initialize()` time — a matching path that appears later is not covered. A pattern is walked from the literal directory it starts with, a drive root or the root of a share included (`C:\Users*\.ssh\*`, `\\server\share\*.pem`); a `**` right below such a root lists the whole volume. In an entry without `*` or `?`, `[` and `]` are characters of the name. In a pattern they are read as a character class, as on the other platforms, and the pattern is also expanded beneath a folder that has them in its name.
+`reset()` removes the ACEs this session added, except the write grants on `allowWrite` roots and the denies beneath them, which are kept for the next session ([below](#the-child-token-and-kept-write-grants)). What is removed is refcounted across this user's concurrent hosts via the per-user session DB; a crash-recovery pass on the next `initialize()` cleans up after an unclean exit. Directory targets are supported (the ACEs inherit to the whole subtree). Glob patterns are expanded to concrete paths at `initialize()` time — a matching path that appears later is not covered. A pattern is walked from the literal directory it starts with, a drive root or the root of a share included (`C:\Users*\.ssh\*`, `\\server\share\*.pem`); a `**` right below such a root lists the whole volume. In an entry without `*` or `?`, `[` and `]` are characters of the name. In a pattern they are read as a character class, as on the other platforms, and the pattern is also expanded beneath a folder that has them in its name.
 
-### TLS termination on Windows
+### The child token and kept write grants
 
-`network.tlsTerminate` requires the MITM CA to be present in the **sandbox user's** `CurrentUser\Root` certificate store (schannel — the TLS backend used by `System32\curl.exe`, PowerShell `Invoke-WebRequest`, .NET, and default-backend `git` — trusts only the OS store, not environment variables). This is an install-time step, separate from `windows-install`:
+The sandbox account is a member of `BUILTIN\Users`, so an ordinary token for it can write wherever `Users` / `Authenticated Users` hold write access, whatever `filesystem.allowWrite` says: directories created under `C:\`, trees on data drives, `PATH` directories outside `Program Files`. The sandboxed process therefore runs under a **write-restricted token**. Its restricting SIDs are the sandbox account, `Everyone`, `RESTRICTED`, and one identifier per `allowWrite` root of the session, so those group-held write rights do not apply: only the session's `allowWrite` roots, the sandbox account's own profile, and locations writable by `Everyone` are writable. Reads are unaffected by the token.
+
+**What does not work inside the sandbox: Schannel.** Windows does not hand TLS credentials to a restricted token, so a client that uses the operating system's TLS stack cannot complete an HTTPS handshake:
+
+- `System32\curl.exe`
+- PowerShell `Invoke-WebRequest` / `Invoke-RestMethod`
+- .NET `HttpClient`, and with it `dotnet restore` / NuGet
+- `winget`
+- any other tool built on WinHTTP, WinINet or Schannel, including git with `http.sslBackend=schannel` and cargo, whose bundled libcurl uses Schannel on Windows
+
+There is no workaround for these inside the sandbox: run such a tool outside it.
+
+**What keeps working:** clients that bring their own TLS stack — Node, Python, Java, Go programs, msys2 / Git for Windows `curl` built with OpenSSL, and Git for Windows itself, which the sandbox steers to its OpenSSL backend (`http.sslBackend=openssl` in the injected git config). They take their trust roots from the environment variables described under [TLS termination](#tls-termination-on-windows). git on its OpenSSL backend reads a PEM bundle, not the Windows certificate store: a host that does not terminate TLS itself and whose network path needs a root that exists only in the store (a TLS-inspecting corporate proxy, say) must supply it by setting `GIT_SSL_CAINFO` to a PEM bundle that contains it.
+
+**Write grants on `allowWrite` roots are kept between sessions.** Granting a directory means writing an access entry that Windows copies to every file below it, which takes time proportional to the tree — and as long again to take back. So a root is granted the first time it is used; afterwards `initialize()` reads one access list per root, and `reset()` leaves the grant in place.
+
+- A session can write only the roots in its own `allowWrite`. Each kept root is tied to an identifier of its own, which only a session given that root carries in its token, so a session in one project cannot write another project's kept root.
+- **Reads are not separated this way: any sandboxed session can read a kept root**, whether or not the root is in its lists, until the grant is removed. That includes sandboxed sessions started by other users of the same computer: the sandbox account and group are one per machine. They can read a kept root; they cannot write it.
+- `denyRead` / `denyWrite` entries beneath a kept root are kept with it, and are added to but not removed by later sessions.
+- Sandboxed programs cannot change the permissions of files they create under a kept root.
+- The kept grants are removed by `windows-uninstall`, and by `srt-win acl forget <root>` or `srt-win acl forget --all`. `srt-win user status` lists them. For a kept root that can no longer be located (one on a removed drive, say), `srt-win acl forget --all --force` drops its record and reports it.
+
+The library always passes `--write-restricted-token` to `srt-win exec`: there is no setting that runs a sandboxed command under the sandbox account's ordinary token. `srt-win` itself still accepts a call without the flag, and refuses it while a kept grant exists or its absence cannot be established.
+
+`initialize()` verifies the egress fence under the write-restricted token and fails if the probe is not blocked; a passed check is remembered for the rest of the process, until the sandbox account changes (a re-install) or a session asks for the other loopback mode (`network.allowLocalBinding`). If the token cannot be created, or a command fails under it, the failure is reported: nothing retries under another token.
+
+### Reading your user profile
+
+Installing the sandbox makes your user profile readable to sandboxed commands, except for the credential stores listed below — as on macOS and Linux, where reads are open by default. Tools installed under the profile run, and npm, pip, NuGet, Maven, Gradle and git find your configuration, including the sign-in for a private package feed.
+
+The read access is a grant kept on disk. `windows-install` (`installWindowsSandbox()` / `installWindowsSandboxAsync()`) applies it right after the elevated step, without elevation, as the user who ran the install and for that user's profile:
 
 ```typescript
-import { windowsTrustCa } from '@anthropic-ai/sandbox-runtime'
-windowsTrustCa('/path/to/mitm-ca.crt') // or: srt-win user trust-ca <path>
+const r = await installWindowsSandboxAsync({
+  srtWin,
+  profileExclude: ['.myapp'], // extra paths to keep unreadable
+  onProfileGrantProgress: line => console.error(line), // "12/57 top-level item(s) done"
+  profileGrantTimeoutMs: 30 * 60_000, // the default
+})
+// r.profileGrant: { applied: true, userSid, result } | { applied: false, reason }
 ```
 
-`initialize()` compares the session CA's thumbprint against the installed one and fails with an actionable message on mismatch, so a stale install-time CA cannot silently break TLS inside the sandbox.
+- The elevation prompt may be answered by another (administrator) account; the grant is still made by, and for, the user whose process called the install.
+- The grant is applied only when the installing process runs as the person using the session it is in. An install run as another account on someone's desktop (an administrator's elevated prompt, `runas`), as a service account (a machine-wide deployment), or where the session's owner cannot be determined, applies no grant and says why in `profileGrant.reason`. That person then runs the install, or `grantWindowsProfileRead({ srtWin })` (`srt-win profile grant`), as themselves.
+- `onProfileGrantStart` receives one line describing what is about to become readable (`windowsProfileGrantNotice()`), for you to show; `windows-install` prints it.
+- If the grant fails or times out, the install throws `profile_grant_failed`: the account and the filters are installed, the grant is recorded as incomplete, and no session starts on it. Run the install or `grantWindowsProfileRead()` again to finish it. If the grant was not attempted because sandbox sessions or commands are running, or because another profile operation is, the install throws `profile_grant_blocked_by_session` or `profile_operation_in_progress` instead: the account and the filters are installed, nothing was written, and a grant made earlier is still the current one.
+- `skipProfileGrant: true` (`windows-install --skip-profile-grant`) installs without it. The sandbox then works as it does without the grant: sessions run, and nothing in the profile is readable beyond `filesystem.allowRead`.
 
-OpenSSL-backed clients (msys2 `curl`, `git -c http.sslBackend=openssl`, Node, Python, cargo) are covered by the env-var trust layer: the same trust bundle used on macOS/Linux is passed into the sandbox via `NODE_EXTRA_CA_CERTS`, `SSL_CERT_FILE`, `CURL_CA_BUNDLE`, `GIT_SSL_CAINFO`, `CARGO_HTTP_CAINFO`, etc., and the bundle path is added to the session's `allowRead` grant so the sandbox account can open it.
+**The grant being there is the switch.** `initialize()` never writes or refreshes it. With no grant recorded — skipped at install, or removed with `profile forget` — a session runs exactly as it would without this feature, and `SandboxManager.getWindowsProfileRead()` returns `'absent'`. With a current grant it returns `'granted'`. `initialize()` rejects, with `profile_grant_outdated`, only when a grant is recorded that cannot be relied on: its run did not finish, it was made by a release with an older exclusion list (a path excluded since would otherwise stay readable) or for another profile directory, or its record is unreadable or lacks its list of exclusions. Then run `grantWindowsProfileRead()` (or `windows-install`) again, or `forgetWindowsProfileRead()` to go without.
 
-### Windows-specific configuration
+**What it does.** The grant is read + execute for the sandbox group, never write. Starting at the profile directory, each directory is handled in one of two ways:
 
-The cross-platform `filesystem` and `network` blocks apply as described above. Windows-only settings live under `windows`:
+- a directory that could hold an excluded path — the profile directory itself, `AppData`, `AppData\Roaming`, `AppData\Local` and its children, `.config`, `.cargo`, `.gradle`, … — can be listed and passed through, and its children are granted one by one. Its files are readable (in the profile directory itself: only the files named below), each through an entry of its own;
+- every other directory is granted whole, with everything in it.
 
-- `windows.proxyPortRange` — `[low, high]` inclusive port range the JS proxies bind inside. **Must match** the range passed to `windows-install --proxy-port-range` (default `[60080, 60089]`) — the WFP loopback PERMIT only covers that range.
-- `windows.sublayerGuid` — WFP sublayer GUID under which the filters were installed. Omit to use the compile-time default; set only when enterprise tooling installed the filters under a custom sublayer.
-- `windows.srtWin.path` — path to the `srt-win` binary. Omit to resolve the packaged `vendor/srt-win/<arch>/srt-win.exe`. Set when embedding `srt-win`'s CLI into a multicall binary; spawns then pass `--srt-win` as `argv[1]` so the embedder's dispatcher can route to `srt_win::run_from_args`.
+No excluded path ever sits beneath a directory that is granted whole, so an excluded directory or file that is deleted and created again, or replaced by a rename, does not become readable.
 
-### Known limitations
+**What it does not do.**
 
-- **Certificate revocation under schannel.** CryptoAPI's CRL/OCSP fetch goes out via WinHTTP under the caller's token, ignoring the proxy environment, so it is blocked by the WFP egress fence. Tools that use schannel with revocation checking on by default fail with `CRYPT_E_REVOCATION_OFFLINE` (`0x80092013`) unless revocation is disabled per tool: `curl --ssl-no-revoke`, `git -c http.schannelCheckRevoke=false`, `CARGO_HTTP_CHECK_REVOKE=false`. `Invoke-WebRequest`, .NET `HttpClient`, and `gh` do not check revocation by default and are unaffected. A CRL distribution point served from the loopback proxy is planned to remove this workaround.
-- **Per-user tool installs are not reachable.** The sandboxed process runs as `srt-sandbox`, not as you, so tools installed under your profile (nvm/fnm-managed Node, per-user `winget`/Scoop packages, `pip install --user`, `%LOCALAPPDATA%\Programs\…`) resolve on the inherited `PATH` but cannot be opened by the sandbox account. Prefer machine-wide installs (`Program Files`, `choco`/`winget --scope machine`), or add the specific profile paths to `filesystem.allowRead`.
-- **Per-exec `filesystem.allowRead` / `filesystem.allowWrite` overrides are not supported.** Session-level `allowRead`/`allowWrite` (in the config passed to `initialize()`) work as described above; passing them per-command in `wrapWithSandbox`'s `customConfig` throws — grants are applied session-wide via `srt-win acl grant` at `initialize()`, and `srt-win exec` only exposes per-exec denies.
-- **`proxyAuthToken` is visible in the runner's command line.** The proxy environment (including `HTTP_PROXY=http://srt:<token>@127.0.0.1:…`) is passed to the two-hop runner as `--env` arguments on `srt-win exec`'s argv, so the token is readable by any local principal that can open the runner process for `PROCESS_QUERY_LIMITED_INFORMATION`. The token exists so the sandboxed process can authenticate to the loopback proxy, so it is not a secret from the sandbox itself; on a single-user development machine this is generally acceptable, but on a shared host treat the proxy allowlist as reachable by other same-session principals.
-- **DNS resolution via the system resolver is not fenced.** `getaddrinfo()` is serviced by the `Dnscache` service running as `NETWORK SERVICE`, so name resolution succeeds even though the subsequent `connect()` from the sandboxed process is blocked. Tools that do their own UDP/53 (`nslookup`, `dig`) are fenced. This mirrors the macOS behaviour.
+- It grants no write access. Sandboxed commands still write only where `filesystem.allowWrite` says, and the sandboxed process keeps its own `USERPROFILE`, `HOME`, `APPDATA`, `LOCALAPPDATA`, `TEMP` and `TMP` — tools write caches under those.
+- It does not follow links. Junctions, symbolic links and cloud-only (placeholder) directories are skipped and reported, wherever the walk meets one, and nothing is written through one.
+- **New items need a refresh.** Something created later directly in the profile directory, or in another directory whose children are granted one by one, is not readable until `grantWindowsProfileRead()` (or `windows-install`) runs again. Items created inside a directory that was granted whole are readable at once.
+- **It is not per session, and not per user.** Once granted, any sandboxed session on the machine can read your profile, whatever its own configuration says, until the grant is removed — see [Shared machines](#shared-machines).
 
-### Uninstall
+**Cost.** The first run sets an entry on every file under the granted directories and on the excluded ones: expect minutes on a large profile, and no other session of yours can start while it runs. A refresh reads one access list per recorded path and writes only what changed.
 
-```powershell
-npx @anthropic-ai/sandbox-runtime windows-uninstall
-```
+#### Readable files that can contain package-feed tokens
 
-Removes the WFP filter set, the `srt-sandbox` account and its profile, the `sandbox-runtime-users` group, and removes the `HKLM\SOFTWARE\sandbox-runtime` key (credential, marker, CA record) — one UAC prompt. `%ProgramData%\sandbox-runtime` (the CA key material) is left in place; delete it (and `%LOCALAPPDATA%\sandbox-runtime` per user) manually for a full sweep.
+These configuration files are readable by sandboxed commands. That is deliberate — a private feed's sign-in works inside the sandbox — and it means a sandboxed command can read any token stored in them:
 
-## Development
+| File | Read by |
+| --- | --- |
+| `%USERPROFILE%\.npmrc` | npm |
+| `%APPDATA%\pip\pip.ini`, `%USERPROFILE%\pip\pip.ini`, `%USERPROFILE%\.config\pip\pip.conf` | pip |
+| `%APPDATA%\NuGet\NuGet.Config` | NuGet |
+| `%USERPROFILE%\.m2\settings.xml`, `settings-security.xml` | Maven |
+| `%USERPROFILE%\.gradle\gradle.properties` | Gradle |
+| `%USERPROFILE%\.gitconfig`, `%USERPROFILE%\.config\git\config` | git |
 
-```bash
-# Install dependencies
-npm install
+To keep one of them unreadable, list it in `credentials.files` or `filesystem.denyRead` (for your sessions), or exclude it from the grant (for every session — see [Restricting it](#restricting-it)).
 
-# Build the project
-npm run build
+The sandboxed process has its own profile, so a tool does not look in yours by itself. `windowsProfileReadEnv(getWindowsProfileReadStatus({ srtWin }), yourEnv)` returns the variables that point each tool at its file, for the files that exist; the library sets none of them — pass the ones you want with the command's environment:
 
-# Run tests
-npm test
+| Variable | Tool | Notes |
+| --- | --- | --- |
+| `NPM_CONFIG_USERCONFIG` | npm | |
+| `GIT_CONFIG_GLOBAL` | git 2.32+ | replaces both global files; left out when you set it yourself |
+| `PIP_CONFIG_FILE` | pip | read in addition to pip's other files |
+| `MAVEN_ARGS` (`-s … -Dsettings.security=…`) | Maven 3.9+ | older Maven needs `-s` on the command line |
+| `RUSTUP_HOME` | rustup (`cargo`, `rustc`) | a directory: your `RUSTUP_HOME` if you set one, else `%USERPROFILE%\.rustup`; without it rustup's shims find no toolchain |
+| `CARGO_HOME` | cargo | a directory: your `CARGO_HOME` if you set one, else `%USERPROFILE%\.cargo`; read-only — see below |
+| — | NuGet | no variable names the user file: pass `--configfile`, or keep a `NuGet.Config` in or above the project |
+| — | Gradle | no variable names `gradle.properties` (`GRADLE_USER_HOME` would move the caches too): pass properties as `ORG_GRADLE_PROJECT_<name>` or `-P` |
 
-# Type checking
-npm run typecheck
+`RUSTUP_HOME` and `CARGO_HOME` are the two that name a directory rather than a file, and are returned only when the directory exists and the grant reaches it (a location outside your profile is not offered, and neither is the default in its place). With `CARGO_HOME` pointing at your real, read-only directory, cargo builds from what is already cached there (`--offline`) but cannot add to the registry cache or install binaries from inside the sandbox. That is the intended trade: an empty writable cache in the sandbox account's own profile would be no better, since cargo's downloads use the Windows TLS stack, which does not work under the sandbox token. `credentials` and `credentials.toml` in that directory stay unreadable — they are denied on the files themselves, whatever names the directory — so an operation that needs a registry token fails there. `config.toml` in it stays readable, like `.npmrc`: a registry token written there rather than in `credentials.toml` is readable to sandboxed commands.
 
-# Lint code
-npm run lint
+**Stores you have moved.** The exclusion list protects each tool's store where the tool keeps it by default. If your own environment moves one to another place inside your profile, the grant protects what the variable names as well: `CARGO_HOME` (its `credentials` and `credentials.toml`), `GRADLE_USER_HOME` (its `enterprise\keys.properties` and `develocity\keys.properties`), `GNUPGHOME`, `DOCKER_CONFIG`, `AZURE_CONFIG_DIR`, `GH_CONFIG_DIR`, `AWS_SHARED_CREDENTIALS_FILE`, `AWS_CONFIG_FILE`, `NETRC`, and each file in `KUBECONFIG`. They are read from the environment `srt-win profile grant` runs in, recorded with the grant (`env_exclusions` in `srt-win profile status`), and never dropped by a later run — not when the variable changes or goes away, not with `--replace-excludes`: what was protected once stays protected until the grant is forgotten. A variable set after the grant was made takes effect at the next `srt-win profile grant`; until then a moved cargo home is not offered as `CARGO_HOME`, and `srt-win profile status` says so under `env_withheld`. Other variables that move a credential store are not followed; add such a place with `--exclude`.
 
-# Format code
-npm run format
-```
+#### Exclusions
 
-### Building Seccomp Binaries
+There are two kinds.
 
-The BPF filter and `apply-seccomp` loader are compiled from C source in `vendor/seccomp-src/` via `npm run build:seccomp` (Linux only; needs `gcc` and `libseccomp-dev`). CI runs it before tests on each Linux arch, and the release workflow builds both arches and bundles them into the published package.
+**Protected paths** hold credentials, keys or tokens. They are never granted, and they are denied explicitly to the sandbox group (the deny is written before anything is granted; the commonest of these directories are created empty, to carry it, where they do not exist yet). A session cannot grant read access to one, to anything inside one, or to a directory above one — see [Restricting it](#restricting-it). They are:
 
-## Implementation Details
+- **Keys and sign-ins in the profile:** `.ssh`, `.gnupg`, `.aws`, `.azure`, `.kube`, `.docker`, `.terraform.d`, `.wrangler`, `.vercel`, `.netlify`, `.claude`, `.config\gcloud`, `.config\gh`, `.config\configstore`
+- **The same tools' Windows locations:** `%APPDATA%\gcloud`, `GitHub CLI`, `gnupg`, `com.vercel.cli`, `netlify`, `xdg.config`, `terraform.d`, `terraform.rc`; `%LOCALAPPDATA%\heroku`
+- **Token files and directories of further tools:** `%LOCALAPPDATA%\github-copilot`, `.config\github-copilot`, `.config\doctl`, `%APPDATA%\doctl`, `.config\op`, `.config\hub`, `.gem\credentials`, `.pulumi\credentials.json`, `%APPDATA%\postgresql\pgpass.conf`, `.pgpass`, `%APPDATA%\Composer\auth.json`, `.composer\auth.json`, `.fly\config.yml`, `.databrickscfg`, `.boto`, `.s3cfg`, `%APPDATA%\s3cmd.ini`, `.kaggle`, `.snowsql`, `.oci`, `.bluemix`, `.ibmcloud`, `.railway`, `.supabase` (where a tool installs itself beside its token file, as Pulumi and Fly do, only the file is excluded)
+- **Feed sign-in caches:** `%LOCALAPPDATA%\.IdentityService`, `%LOCALAPPDATA%\MicrosoftCredentialProvider`
+- **Credential files:** `.git-credentials`, `.netrc`, `_netrc`, `.pypirc`, `.vault-token`, `.terraformrc`, `.cargo\credentials`, `.cargo\credentials.toml`, `.config\git\credentials`, `.gradle\enterprise\keys.properties`, `.gradle\develocity\keys.properties`
+- **Registry hives:** `NTUSER.DAT*`, `ntuser.ini`, `ntuser.pol`, `%LOCALAPPDATA%\Microsoft\Windows\UsrClass.dat*`
+- **Browsers, mail and password managers:** the `User Data` directories of Chrome, Edge and Brave in every channel, Chromium, Vivaldi and Yandex Browser; Opera's directories; the profile directories of Firefox, SeaMonkey and Thunderbird; `EBWebView` directories under `%LOCALAPPDATA%\<app>` and `%LOCALAPPDATA%\Microsoft\<app>`; 1Password, Bitwarden, KeePass, KeePassXC
+- **Windows' own stores,** under both `%APPDATA%\Microsoft` and `%LOCALAPPDATA%\Microsoft`: `Credentials`, `Protect`, `Vault`, `Crypto`, `SystemCertificates`; and `%LOCALAPPDATA%\Microsoft\IdentityCache`, `TokenBroker`, `OneAuth`, `Windows\INetCookies`, `Windows\INetCache`, `Windows\WebCache`
+- **`%LOCALAPPDATA%\Packages`** (packaged applications' data) and this library's own state directory, `%LOCALAPPDATA%\sandbox-runtime` (its CA key is not in the profile: it is in `%ProgramData%\sandbox-runtime`)
+- every other **file directly in the profile directory** except `.npmrc` and `.gitconfig` (not denied, just not granted)
 
-### Network Isolation Architecture
+**Left ungranted, but not closed:** `%LOCALAPPDATA%\Temp`. Every program you run drops files in the temporary directory, so nothing in it is readable through the grant — a file directly in it is as unreadable as before. But it is not a secret as a whole, and it is where sessions (and this library, for its trust bundle) stage directories of their own: it is not denied, and a session may grant a directory inside it with `filesystem.allowRead` or `allowWrite` as usual. Only a grant of the temporary directory itself, or of a directory above it, is refused, because that would cover everything in it. (The browser caches under `Microsoft\Windows` are protected, not merely ungranted: they hold cookie and history databases and pages fetched with your sign-ins, and nothing stages a session directory in them.)
 
-The sandbox runs HTTP and SOCKS5 proxy servers on the host machine that filter all network requests based on permission rules:
+**Links.** A junction or symbolic link is never granted through or written on. Where an excluded name is itself a link — `.ssh` or `.config` pointing into a `dotfiles` directory, say — the exclusion follows it: the link's target, if it is inside the profile, is excluded in its place (or becomes a directory of which only the right children are excluded), and is recorded with the grant at its real location. Links are resolved from the links themselves, one at a time, and only while they stay on this machine's drives; a link that leads to a network share is reported and not followed.
 
-1. **HTTP/HTTPS Traffic**: An HTTP proxy server intercepts requests and validates them against allowed/denied domains
-2. **Other Network Traffic**: A SOCKS5 proxy handles all other TCP connections (SSH, database connections, etc.)
-3. **Permission Enforcement**: The proxies enforce the `permissions` rules from your configuration
+**Objects you may not change.** A real profile holds directories its user does not own (the Windows Installer cache, for one) and directories locked down so far that their own owner is denied reading. The grant works around them and says what it did — in its result, on the command line, and in `srt-win profile status` / `getWindowsProfileReadStatus()` — and none of them makes it fail or leaves it incomplete:
 
-**Platform-specific proxy communication:**
+- **`notGranted`** — was to be made readable and its access list cannot be written. It stays unreadable to sandboxed commands; where it is a directory whose children are granted one by one, nothing beneath it is granted either.
+- **`selfClosed`** — an exclusion whose deny cannot be written, and whose own access list gives the sandbox account no read: neither on the object itself nor, for a directory, in what it hands down to objects created or already inheriting beneath it. Closed without the deny. This is established for the directory and for what it hands down, not for every object already inside it — one of those may carry an allow of its own, and an excluded store is not walked.
+- **`unverifiable`** — an exclusion whose deny cannot be written and which could not be examined, so nobody established whether the sandbox account is kept out. Each item says why (`cause`: the access list may not be read by you, the sandbox account is not known, the path is not on a local drive, or the look failed) and whether **you** can read its content (`callerReads`). One you can read without being able to see its access list is treated as readable to sandboxed commands — what admits you there is as a rule a group the sandbox account is in too — and is reported with the `unprotected` ones. For the others the warning states what is known (for instance that you cannot read them either) and promises nothing. A session starts either way; `getWindowsProfileReadWarnings()` returns `profile_exclusion_unverifiable` for them.
+- **`staleAllow`** — a path that has left the grant (it was granted by an earlier run and is no longer part of it) and still carries the allow of that run, which could not be removed. It is readable through that entry; the warning is `profile_stale_allow`. It is not on the exclusion list. Nothing else is taken off an object that cannot be written — a deny that is still wanted is never touched.
 
-- **Linux**: Requests are routed via the filesystem over Unix domain sockets (using `socat` for bridging). The network namespace is removed from the bubblewrap container, ensuring all network traffic must go through the proxies.
+**A protected path that is readable through an entry this product wrote** is the one case here that calls for action. It arises when a path carries an allow from an earlier run, is on the exclusion list now — the built-in list grew, or you added an exclusion — and its access list can no longer be written; or when a directory was granted whole, something beneath it became an exclusion, and the directory cannot be rewritten. It is reported among `unprotected` (the `profile_exclusion_unprotected` warning names these first), with `protectedExclusion: true` and `entry` on the item: `explicit` when the entry is on the object itself, `inherited` when it is a copy handed down from a directory above that could not be taken off the object. The session still starts — refusing every session over an object you cannot change would cost the sandbox and close nothing — and no per-command deny can help, since that would have to be written to the same access list. Where the entry is inherited the grant has already rewritten the directory it came from; what is left is the copy on the object. The item's `reason` gives the command that removes it, to be run as the object's owner or from an elevated prompt — `icacls "<path>" /remove:g "*<sandbox group SID>"` for an explicit entry, `icacls "<path>" /inheritance:e` for an inherited copy — followed by `srt-win profile grant` again. A `staleAllow` item carries the same two fields, with `protectedExclusion: false`.
+- **`unprotected`** — an exclusion whose deny cannot be written and whose own access list lets the sandbox account read it. It was readable to that account before the grant, and would be without it: the sandbox account can open any path whose own access list admits it, whatever the directories above say, so leaving its parents ungranted would close nothing. The grant did not open it and cannot close it; its owner or an administrator can. A session on such a grant starts, and `SandboxManager.getWindowsProfileReadWarnings()` returns a `profile_exclusion_unprotected` warning naming the paths — show it.
 
-- **macOS**: The Seatbelt profile allows communication only to specific localhost ports where the proxies listen. All other network access is blocked.
+The last three are what the access lists say when they are read, not what they said when the grant ran: `srt-win profile status` looks at each such exclusion again, so one that has been opened up since is reported as `unprotected` at the next session start, and one that can be denied by now is denied by the next run of the grant.
 
-- **Windows**: A WFP `ALE_AUTH_CONNECT` filter blocks every outbound connect from the `srt-sandbox` account except loopback to the configured proxy port range. The proxies bind inside that range. Environment variables (`HTTP_PROXY`, `HTTPS_PROXY`, `ALL_PROXY`, …) point tools at the proxies, but the WFP filter is the boundary — a process that ignores or unsets them is still fenced.
+A grant reads as incomplete only when a run was cut short.
 
-**git over SSH (macOS/Linux):** `ssh` reads no proxy variable, so srt sets `GIT_SSH_COMMAND` to an `ssh` whose `ProxyCommand` opens an HTTP CONNECT through the proxy and presents its token: `socat` on Linux, and on macOS a `/bin/sh` script around `/usr/bin/nc`, carried in `SRT_SSH_PROXY_COMMAND`, which keeps the token out of the arguments of `ssh` and of what it starts. (On macOS, a `socksProxyPort` or `httpProxyPort` of your own keeps `nc -X 5` to the SOCKS port.) The destination is held to `allowedDomains` / `deniedDomains` like any other: `github.com` admits port 22, `github.com:443` does not. On macOS a refusal is one line on stderr before ssh's own, with the proxy's reason: `sandbox proxy: github.com:22: 403 host is not on the allow list`. On Linux it is up to `socat`: 1.8.1 prints the reason, 1.8.0 nothing. What ssh needs to authenticate is a separate matter: its agent's socket has to be in `allowUnixSockets`, and its keys readable. An `ssh` that git does not start is not covered.
+The list covers known stores. `AppData` holds the data of every application you run, and an application this list does not know is readable until you exclude its directory.
 
-**JVM tools (macOS/Linux):** the JVM ignores `HTTPS_PROXY`/`NO_PROXY` and has no environment variable for proxy credentials — proxy selection comes from the `https.proxyHost` system properties and the credential can only be supplied through `java.net.Authenticator`. So JVM-based tools (Bazel's gRPC remote cache, Gradle, Maven, …) would otherwise dial the target directly and fail, or reach the proxy without its token and get a 407. To close that gap srt injects a small `-javaagent` via `JAVA_TOOL_OPTIONS` (the env var carries only the jar path, the credential stays in `HTTPS_PROXY`). At JVM start the agent sets `http[s].proxyHost`/`Port` and `http.nonProxyHosts` from the proxy env vars, re-enables Basic auth for CONNECT tunnels, and installs an Authenticator for the proxy endpoint. Explicit `-D` proxy properties on the JVM command line still win, and any inherited `JAVA_TOOL_OPTIONS` is preserved (unless it is a denied credential env var). Every JVM prints a `Picked up JAVA_TOOL_OPTIONS: …` line to stderr as a result; a jlink'd runtime built without the `java.instrument` module cannot load agents and will refuse to start under the sandbox — unset `JAVA_TOOL_OPTIONS` in the command for such a tool. The jar ships in the npm package as `vendor/java-proxy-agent/srt-proxy-agent.jar` (source: `vendor/java-proxy-agent-src/`; built by the release workflow, or locally with `npm run build:java-agent` — needs a JDK ≥ 17). If it is not found, `JAVA_TOOL_OPTIONS` is left alone and JVMs behave as before; bundlers can point at their own copy with `javaAgentJarPath`.
+#### When the grant changes
 
-### TLS Termination
+The grant is written, refreshed and removed only while no sandbox session or command of yours is running, so that **a session's view of your profile is fixed from its start to its end**. `grantWindowsProfileRead()` (`srt-win profile grant`), `srt-win profile forget` and uninstall write nothing and fail — `profile_grant_blocked_by_session`, `kept_grants_in_use` — while one is; close the running sessions and run it again. A write root kept from an earlier session that is, lies inside, or lies above an exclusion is forgotten by the grant, and named in its output and result (`forgottenRoots`): its inheriting allow would otherwise reach the excluded store, and a session that asks for such a root is refused anyway. That is the price of a refresh: a new top-level item in your profile becomes readable at the next refresh, and a refresh needs the sessions closed. While a grant or a forget runs (half a minute to many minutes on a large profile), a session or command that tries to start fails with `profile_operation_in_progress` — at once where it asks for the grant's status, after about three seconds where it waits for the lock — rather than waiting it out. Every session counts, whatever it was given: `initialize()` registers it with `srt-win`, and a command wrapped with no session behind it registers itself for as long as it runs (one more acquisition of `srt-win`'s lock per such command). A sandboxed command does not outlive its session: `srt-win exec` watches the process that started it, and if that process ends while the command runs — it is killed, or crashes — the command and everything it started are terminated at once and `srt-win exec` exits **26** (`session_ended` from `parseWindowsSandboxError`). So "no session is running" means no sandboxed process is. The refusals name the processes: `kept_grants_in_use` and `profile_grant_blocked_by_session` say for each whether it is a session or command, holds a session grant or deny, or runs on a kept write root.
 
-With `network.tlsTerminate`, a CONNECT to an allowed host that is not in `excludeDomains` is answered `200`, and the client's first bytes are read. If they are a TLS ClientHello, the TLS is terminated in the SRT process, on the tunnel's own socket: the leaf certificate is minted for the server name read from the ClientHello (for the CONNECT target when there is none, and always with `requireHostMatch`), and the decrypted connection is handed to an HTTP server that never listens. Each request on it goes through `filterRequest` and the credential hooks and is forwarded upstream over a separate, certificate-verified TLS connection. The decrypted traffic, and the credentials injected into it, stay inside the SRT process and leave it only re-encrypted, to that verified upstream. Nothing is opened that another process could connect to: there is no per-tunnel listener and no per-tunnel socket file. A CONNECT whose first bytes are not TLS is tunnelled opaquely, as before (or refused, with `refuseOpaqueTunnels`).
+#### Shared machines
 
-**Runtime requirement.** Handing a decrypted connection to an HTTP server needs an `http.Server` that serves a connection passed to it with `emit('connection')`. Node's does, and Bun's does from 1.4. On an older Bun, `SandboxManager.initialize` with `network.tlsTerminate` set throws before it starts anything, with an error that names the runtime found:
+The sandbox account and the sandbox group exist once per machine, not once per user. The read grant on your profile is a grant to that group. So once ANY user's profile is granted, sandboxed commands started by ANY local user who can use the sandbox can read that profile (minus the exclusions) — not only commands you start. A person at another account on the same computer can read your documents, source trees and the configuration files listed above by running a sandboxed command.
 
-```
-tlsTerminate needs Node, or Bun 1.4 or later (this is Bun 1.3.13)
-```
+On a computer that more than one person has an account on, do not apply the grant: install with `--skip-profile-grant` (`skipProfileGrant: true`), or run `srt-win profile forget` if it is already there. The sandbox works without it.
 
-A program built with `bun build --compile` runs on the Bun that built it, so build it with Bun 1.4 or later. Without `tlsTerminate`, nothing changes on any runtime. Should a tunnel still reach the proxy on such a runtime, it is closed rather than left hanging.
-
-**Limits.** At most `maxTunnels` tunnels (default 256) are terminated at once, and each must finish its handshake within `handshakeTimeoutMs` (default 10 s) of its CONNECT; see [Network Configuration](#network-configuration). Past its handshake, an idle tunnel (no request on it, nothing queued for its client) is closed and its slot freed: 10 s after its ClientHello if no whole request head has come, and 6 s after a response if none has followed, which is 1 s later than the `Keep-Alive: timeout=5` that responses carry; a client that does not answer the close is cut off as long again later. A tunnel whose request is not all in or is held back for an upstream that takes no more of it, or whose client does not take what is queued for it, is closed 300 to 360 s after anything last moved. A client that goes on reading, slowly or in bursts, loses nothing; that it reads shows as the kernel's send buffer frees up, up to a megabyte or two at a time, so one that takes less than about 5 KB/s of a response larger than the kernel's buffers hold counts as one that has stopped. A whole request may wait for its response without limit. Leaf certificates share one key per CA, and the proxy keeps those of the 256 most recently used host names.
-
-**Memory held for slow peers.** A response to a client that is not reading waits once about 1 MiB is queued for that client, or once all tunnels together have 256 MiB queued, on Node and Bun alike. A request body to an upstream that is not reading is held back by the runtime under Node. Under Bun, the proxy does it itself (it pauses a tunnel once 4 MiB of its request body is buffered, or once the shared 256 MiB is used), but that only works on a connection the proxy is handed by its host. The proxy `SandboxManager` runs accepts its own connections, and Bun keeps reading such a tunnel while it is paused. So under Bun an upload to an upstream that has stopped reading is buffered in the SRT process without bound. This is a limitation of the runtime. Use Node where a sandboxed process may upload more than the host can hold.
-
-**Changes a `tlsTerminate` user can observe.** On a supported runtime, compared with the per-tunnel listener:
-
-- The tunnel cap: past `maxTunnels`, a CONNECT is answered `503` (`X-Proxy-Error: too-many-tunnels`), whether or not it would have carried TLS.
-- The handshake deadline: a tunnel that has not finished its TLS handshake within `handshakeTimeoutMs` of its CONNECT is closed.
-- Idle tunnels are closed 6 s after a response, as before, and 10 s after a ClientHello that no request follows (before: about 12 s under Bun, 90 s under Node). An upload is cut once it has not moved for 300 to 360 s, no longer 300 s after it began; so is a response of which the client takes nothing (before: never).
-- The server name passed to `filterRequest` (`sni`) is lower-cased.
-- With `requireHostMatch`, the leaf certificate is always the CONNECT target's, whatever server name the client asks for (a name that does not match gets `421`, as before).
-- A ClientHello whose server name cannot be read as a plain DNS name (letters, digits and inner hyphens in dot-separated labels, with no trailing dot; for example one with an underscore) gets the CONNECT target's leaf certificate instead of one minted for that name. With `requireHostMatch`, its requests are answered `421`.
-- Under Bun, an HTTP/1.1 request without a `Host` header inside a tunnel is answered `400`, as Node's parser already does.
-
-### Filesystem Isolation
-
-Filesystem restrictions are enforced at the OS level:
-
-- **macOS**: Uses `sandbox-exec` with dynamically generated Seatbelt profiles that specify allowed read/write paths
-- **Linux**: Uses `bubblewrap` with bind mounts, marking directories as read-only or read-write based on configuration
-- **Windows**: Writes additive `(OI)(CI)` explicit ACEs for the `srt-sandbox` SID onto the configured paths (ALLOW on `allowRead`/`allowWrite`, DENY on `denyRead`/`denyWrite`), then removes them at `reset()`
-
-**Default filesystem permissions:**
-
-- **Read** (deny-then-allow): Allowed everywhere by default. You can deny broad regions, then re-allow specific paths within them. `allowRead` takes precedence over `denyRead`.
-
-  - Example: `denyRead: ["~/.ssh"]` to block access to SSH keys
-  - Example: `denyRead: ["/Users"], allowRead: ["."]` to block all of `/Users` except the workspace
-  - Empty `denyRead: []` = full read access (nothing denied)
-
-- **Write** (allow-only): Denied everywhere by default. You must explicitly allow paths.
-  - Example: `allowWrite: [".", "/tmp"]` to allow writes to current directory and /tmp
-  - Empty `allowWrite: []` = no write access (nothing allowed)
-  - `denyWrite` creates exceptions within allowed paths (deny takes precedence)
-
-**Precedence is intentionally opposite for reads vs writes:** `allowRead` overrides `denyRead`, while `denyWrite` overrides `allowWrite`. This lets you carve out readable regions within denied areas, and carve out protected regions within writable areas. On Linux and Windows that also holds when the `denyWrite` entry is at or above the `allowWrite` one — `allowWrite: ["/", "/work"]` with `denyWrite: ["/"]` leaves `/work` read-only rather than writable — and with debug logging on (`SRT_DEBUG`) a warning names both paths.
-
-**Writes through links (Linux and macOS):** a write is judged by where it lands, after symbolic links are followed. A link inside an allowed write path that leads out of it gives a command nothing: the write is refused. A link that leads into an allowed write path works like any other name for that place. A hard link is a second name for the file itself: on Linux a file outside the allowed write paths that already has a hard link inside one can be written through it, and a sandboxed command cannot create such a link. On macOS nothing is promised for such a file.
-
-**Read-side rules (Linux):** an entry is matched by the name it is, not by what it points at.
-
-- An `allowRead` entry re-allows the name it names, so a link planted at an allowed path cannot re-open a denied one. One that is itself a symlink is bound back at its own name, from the target it was checked against: the target's own path stays hidden, and the target's contents are reachable only through the name. A `denyRead` entry or a credential mask that overlaps that target — at it, inside it, or covering it — wins over the carve-out, which is then not restored at all: the name is absent inside the sandbox rather than serving what the deny hides. The denied directory the carve-out is being restored into is not such an overlap, nor is anything above it: those are what the carve-out is an exception to. Neither is an entry that denies nothing — one naming a path that is not there, or a file an `allowRead` entry lifts.
-- A `denyRead` of `/` together with an `allowRead` of `/` denies nothing: the root deny is expanded into the root's children, and the allow covers every one of them.
-- A `denyRead` entry naming a FILE is lifted only by an `allowRead` entry naming that same file. An `allowRead` entry that is a symlink to it names the link, so it does not cancel the deny of its target.
-- A `denyRead` entry that cannot be inspected (a parent made unsearchable, a dead network mount) hides the deepest directory above it that can be — never `/`, so when `/` is the only one left the entry mounts nothing and that deny is not enforced (the wrap logs which entry, and why, under `SRT_DEBUG`). Such a stand-in hides more than was written: nothing beneath it is readable, carve-outs named there included, and a carve-out elsewhere that resolves beneath it is not restored either.
-
-**Write denies on paths that do not exist yet (Linux):** bubblewrap can only deny a path by mounting over it, so for a `denyWrite` path that is absent under a writable directory it first creates a mount point there: an empty, read-only file (or an empty directory for a missing intermediate component) that is visible on the host for as long as a sandbox is alive and is removed afterwards. Host tools therefore see such a path as existing while a sandboxed command runs, which matters for paths whose existence is their meaning (a lockfile such as `.git/config.lock` makes `git config` report "could not lock config file"). A process that dies without an exit event (`SIGKILL`, OOM) cannot remove its mount points, and nothing removes them later: they cannot be told from an empty file or directory of your own, or from the mount points of another process's sandbox that is still running. A later command finds a path that exists, binds it read-only like any other, and leaves it on the host until you remove it. Where a file lies above the path (`denyWrite: ["f/x"]`, and `f` is a file), no mount point can be made below it: the file itself is bound read-only, which keeps it there.
-
-- No mount point is made where none can be: in a directory that refuses this user, when the refusal is not this user's to lift (another user's directory it may not write, a read-only file system, an immutable directory). bubblewrap could not create the path there, and would stop every command from starting; the sandboxed command cannot create it either, so the deny holds without a mount. The directories above the path are kept from being moved aside as for any other deny. A directory of your own that only its mode closes keeps its mount point, because the command could open it with `chmod`. Should somebody else lift the refusal while a command runs (the owner, an administrator, a remount), that command can create the path; the next one gets its mount point.
-- On a Windows drive under WSL 2 (`/mnt/c`, a 9p mount) the Windows ACL decides what can be created, and Linux is told nothing of it: every folder looks like yours and writable. The only way to know is to try, so there, and only there, the library makes the mount point itself while it wraps the command, instead of leaving it to bubblewrap when the command runs: the same empty file or directory, at the same path, removed by the same clean-up. It is on the drive from the wrap on, also for a command that is never run, until `cleanupAfterCommand()` or `reset()`. A file deny in a folder that takes subfolders but no files (`C:\`) is covered by an empty directory. If nothing can be made and the folder refuses even to be given the mode it has, no mount point is made, as above.
-
-**Note (Linux, large profiles):** The wrapped string runs as one argument of `sh -c`, which Linux caps at 32 pages (128 KiB with 4 KiB pages). A profile that would not fit, with 4 KiB to spare for a prefix of the caller's own, has its mounts written to an unnamed file (`O_TMPFILE`) that the wrapping process holds open and bubblewrap reads through `--args`. The string then reads `/bin/sh -c '…' srt-args /proc/<wrapping pid>/fd/<n> bwrap … --args 9 …`: still a simple command, which opens the profile on fd 9 and runs bubblewrap. The environment and the command stay on the command line; the file holds mount paths only.
-
-- The profile is never given a name, so nothing can be put in its place between the wrap and the execution — not a command the process sandboxed, not a sandbox another process of the same user started with tmpdir writable, not a rename of a directory above `TMPDIR`. Every sandbox this library starts has its own PID namespace and a fresh `/proc`, so none of them can reach `/proc/<wrapping pid>` either.
-- Not covered: another process of the same user running outside a sandbox can read a pending profile through `/proc`. It can already read the wrapping process's memory, so this gives it nothing new.
-- The string must be run while the process that produced it is alive, and before the runtime cleans up after that command (`cleanupAfterCommand()`), which is when the profile is released.
-- The profile needs a directory that takes an `O_TMPFILE` file — `os.tmpdir()`, else `/dev/shm` — and a readable `/proc/self/fd`. Without them an over-long profile is refused at wrap time with the reason; there is no fallback to a named file. Profiles that fit the command line do not use any of this.
-- bubblewrap parses at most 9000 arguments (about 3000 mounts). A profile past that, or a command too long for one argument by itself, fails at wrap time with an error. The [mandatory deny paths](#mandatory-deny-paths-auto-protected-files) count too, and no list in the configuration holds them: a git repository directly inside a writable working directory takes four mounts (its hooks, its config, and the two directories above them), so some 730 repositories reach the limit by themselves. The error says how many of the arguments are theirs. There are fewer when the command runs from a directory with fewer repositories in it, or when `allowWrite` names fewer of them; a lower `mandatoryDenySearchDepth` leaves the deeper ones unprotected.
-- Every one of these wrap-time refusals is a `LinuxSandboxProfileError`, exported from the package root, with a `LinuxSandboxProfileErrorCode` on `.code` to tell the cases apart; branch on `.code` rather than on the message. They say the configuration expands to a profile this host cannot run, except `command_too_long` and `nul_in_path`, which also fire on what the embedding program passed in. A wrap that threw has already released what it held: do not call `cleanupAfterCommand()` for it, or a sandbox still running loses its mount points.
-
-### Mandatory Deny Paths (Auto-Protected Files)
-
-Certain sensitive files and directories are **always blocked from writes**, even if they fall within an allowed write path. This provides defense-in-depth against sandbox escapes and configuration tampering.
-
-**Always-blocked files:**
-
-- Shell config files: `.bashrc`, `.bash_profile`, `.zshrc`, `.zprofile`, `.profile`
-- Git config files: `.gitconfig`, `.gitmodules`
-- Other sensitive files: `.ripgreprc`, `.mcp.json`
-
-**Always-blocked directories:**
-
-- IDE directories: `.vscode/`, `.idea/`
-- Claude config directories: `.claude/commands/`, `.claude/agents/`
-- Git hooks and config: `.git/hooks/`, `.git/config`. Where the working directory is a worktree or a submodule, its `.git` is a file: on Linux that file is blocked, so it can be read but not changed, moved or removed.
-
-These paths are blocked automatically - you don't need to add them to `denyWrite`. For example, even with `allowWrite: ["."]`, writing to `.bashrc` or `.git/hooks/pre-commit` will fail:
-
-```bash
-$ srt 'echo "malicious" >> .bashrc'
-/bin/bash: .bashrc: Operation not permitted
-
-$ srt 'echo "bad" > .git/hooks/pre-commit'
-/bin/bash: .git/hooks/pre-commit: Operation not permitted
-```
-
-**Note (Linux):** A mandatory deny path that does not exist yet is blocked as well. bubblewrap covers it with a read-only `/dev/null`, or mounts an empty read-only directory at the first missing intermediate component, and those host mount points are removed by `cleanupAfterCommand()` — see "Write denies on paths that do not exist yet (Linux)" above. macOS uses glob patterns, which cover existing and new files alike.
-
-**Pinned directories (Linux):** Every existing ancestor of a protected path (a write-denied path, a read-denied file or directory, a masked credential file) up to the allowed write root covering it is made a mountpoint — "pinned" — and cannot be renamed or removed from inside the sandbox: `mv` or `rmdir` of such a directory (for example a nested repository's parent) fails with `EBUSY` ("Device or resource busy"), and `rm -rf` of a nested repository leaves the pinned directories and the protected files behind (as with `.git/hooks`). A pin is buried under the mounts above it, so it never appears on a lookup path: reads, writes, creation, renames and hard links inside or across a pinned directory are unaffected.
-
-With `allowWrite: ["/"]` the pins reach every ancestor, including any other allowed write root that is one (`mv /work /work.bak` fails with `EBUSY` given `allowWrite: ["/", "/work"]` and a protected path inside `/work`). They stop below the top-level directory, which is bound writable over them, and that directory is the one new filesystem boundary: `mv` or `ln` between two top-level directories — say `/tmp` and `/home` — fails with `EXDEV` ("Invalid cross-device link"), as it does on any host where they are separate filesystems. `mv` falls back to a copy; `ln` and a raw `rename(2)` do not.
-
-A wrap that carries no write restrictions at all — `filesystem.disabled` with credential masks still in force, or a library caller passing no write config while a `denyRead` entry or a mask still seeds a pin — is the same shape: the whole tree is bound writable, so it gets the same pins and the same top-level covers, and the same `EXDEV` boundary applies there too.
-
-**Linux search depth:** On Linux, the sandbox uses `ripgrep` to scan for dangerous files in subdirectories within allowed write paths. By default, it searches up to 3 levels deep for performance: a dangerous file is found down to `a/b/.bashrc`, and a dangerous directory, or the hooks and config of a repository, one level higher up (`a/.vscode`, `a/.claude/commands`, `a/.git/hooks`). Ignore files (`.gitignore`, `.ignore`) do not hide anything from it, and a directory of the user's own that it cannot read is denied whole. A dangerous directory other than a repository's hooks is only seen if it holds a file directly: below the working directory, one that is empty or does not exist yet can be filled. A repository that has no `hooks` directory has an empty file in its place while a command runs, which stops `git init` from being run again there and a hook from being installed. You can configure this with `mandatoryDenySearchDepth`:
-
-```json
-{
-  "mandatoryDenySearchDepth": 5,
-  "filesystem": {
-    "allowWrite": ["."]
-  }
-}
-```
-
-- Default: `3` (searches up to 3 levels deep)
-- Range: `1` to `10`
-- Higher values provide more protection but slower performance
-- Files in CWD (depth 0) are always protected regardless of this setting
-
-### Unix Socket Restrictions (Linux)
-
-On Linux, the sandbox uses **seccomp BPF (Berkeley Packet Filter)** to block Unix domain socket creation at the syscall level. This provides an additional layer of security to prevent processes from creating new Unix domain sockets for local IPC (unless explicitly allowed).
-
-**How it works:**
-
-1. **Baked-in BPF filter**: The package ships a static `apply-seccomp` binary for x64 and arm64 with the seccomp BPF filter compiled in. The filter is architecture-specific but libc-independent, so the binary works with both glibc and musl.
-
-2. **Runtime detection**: The sandbox automatically detects your system's architecture and uses the matching `apply-seccomp` binary.
-
-3. **Syscall filtering**: The BPF filter intercepts the `socket()` syscall and blocks creation of `AF_UNIX` sockets by returning `EPERM`. This prevents sandboxed code from creating new Unix domain sockets.
-
-4. **Two-stage application using apply-seccomp binary**:
-   - Outer bwrap creates the sandbox with filesystem, network, and PID namespace restrictions
-   - Network bridging processes (socat) start inside the sandbox (need Unix sockets), and the wrapper waits until both listen
-   - apply-seccomp creates a nested user+PID+mount namespace and remounts `/proc`
-   - Inside the nested namespace, apply-seccomp acts as PID 1 (non-dumpable init/reaper)
-   - apply-seccomp forks, applies the seccomp filter via `prctl()`, and execs the user command
-   - User command runs with all sandbox restrictions plus Unix socket creation blocking
-
-**PID namespace isolation**: The nested PID namespace ensures the user command cannot see or address any process that runs without the seccomp filter (bwrap's init, the shell wrapper, or the socat helpers). This keeps the seccomp boundary intact regardless of `kernel.yama.ptrace_scope`, since unfiltered helpers are not reachable via `ptrace` or `/proc/N/mem`. The inner PID 1 sets `PR_SET_DUMPABLE=0` so it is not ptraceable either. If nested namespace creation fails, apply-seccomp aborts rather than running without isolation.
-
-**Security limitations**: The filter blocks `socket(AF_UNIX, ...)` and the `io_uring_setup`/`io_uring_enter`/`io_uring_register` syscalls (the latter three because `IORING_OP_SOCKET` on Linux 5.19+ wou
+The same holds for the write grants kept on project roots (see [The child token and kept write grants](#the-child-to

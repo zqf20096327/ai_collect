@@ -361,13 +361,13 @@
   - Asked at: [Meta](#meta-superintelligence-labs-fair-llama)
 - Budget the latency for a real-time voice agent: VAD, ASR, LLM, TTS, network. Where does the time go?
   - Asked at: [Sarvam AI](#sarvam-ai), [ElevenLabs](#elevenlabs)
-  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent)
+  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent) and [How do you build a latency budget for a voice AI agent?](https://outcomeschool.com/blog/voice-agent-latency-budget)
 - Design barge-in / interruption handling for a voice agent.
   - Asked at: [ElevenLabs](#elevenlabs)
   - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent) and [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent)
 - Cascaded ASR+LLM+TTS versus native speech-to-speech: argue both sides.
   - Asked at: [ElevenLabs](#elevenlabs)
-  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent)
+  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent) and [Cascaded vs Speech-to-Speech: How to choose the right voice agent architecture?](https://outcomeschool.com/blog/cascaded-vs-speech-to-speech)
 - How do you evaluate ASR quality beyond WER, and TTS quality when there is no single correct output?
   - Asked at: [ElevenLabs](#elevenlabs)
 - How do you handle code-switching and accents in a production ASR system?
@@ -1035,7 +1035,7 @@
 #### AI System Design
 
 - Design a real-time voice agent for a citizen helpline in Hindi and three regional languages, targeting sub-250 ms perceived latency over a phone line.
-  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent)
+  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent) and [How do you build a latency budget for a voice AI agent?](https://outcomeschool.com/blog/voice-agent-latency-budget)
 
 #### Evaluation and Observability
 
@@ -1349,13 +1349,4 @@
 #### Fine-Tuning, Post-Training and Alignment
 
 - When would you fine-tune instead of using RAG or prompt engineering, and if you do, LoRA or full fine-tuning?
-  - Answer: Explained in this video: [AI Engineering Explained: LLM, RAG, MCP, Agent, Fine-Tuning, Quantization](https://www.youtube.com/watch?v=lnfWvX66FUk) and [How does fine-tuning work?](https://outcomeschool.com/blog/how-does-fine-tuning-work)
-
-#### Evaluation and Observability
-
-- Take a working GenAI agent prototype to production for an enterprise. What's your checklist between demo and launch?
-
-#### Applied and Forward-Deployed Scenarios
-
-- A customer insists on fine-tuning an open model on their support tickets because “we want our own model.” You think RAG solves it. What do you do?
-- An agent you shipped fou
+  - Answer: Explained in this video: [AI Engineering Explained: LLM, RAG, MCP, Agent, Fine-Tuning, Quantization](https://www.youtube.com/watch?v=lnfWvX66FUk) and [How does fine-tuning work?](https://outcomeschool.com/blog/how-does-fine-

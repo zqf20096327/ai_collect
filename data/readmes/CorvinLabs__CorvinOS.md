@@ -10,7 +10,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache_2.0-blue.svg" alt="License: Apache 2.0"/></a>
   <img src="https://img.shields.io/badge/version-2.0.0-f0b429" alt="Version 2.0.0"/>
-  <img src="https://img.shields.io/badge/python-%E2%89%A53.10-3776ab" alt="Python 3.10+"/>
+  <img src="https://img.shields.io/badge/python-%E2%89%A53.11-3776ab" alt="Python 3.11+"/>
   <img src="https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-555" alt="Linux, macOS, Windows"/>
   <img src="https://img.shields.io/badge/GDPR%20%2B%20EU%20AI%20Act-by%20design-3fb950" alt="GDPR and EU AI Act by design"/>
 </p>
@@ -84,10 +84,15 @@ git-ignored — and `~/.config/corvin-voice`) are never touched by an update.
 
 1. Refuses to run outside a CorvinOS clone (no `.corvin_repo` / `pyproject.toml`) — before anything is downloaded.
 2. Bootstraps `uv` (pinned, checksum-verified) and a local Node.js; installs your clone with `uv tool install --editable`, plus the offline voice models.
-3. Installs Claude Code if it is missing.
-4. Builds and starts the console, waits for an HTTP 200 with the app shell **and** a working local login, then opens the browser. If that proof does not come it says why instead of reporting success ([Windows errors](docs/windows-installation-errors.md)).
+3. Installs Claude Code if it is missing. If you are at a terminal it also starts the browser login and waits up to 90 s; a run with no terminal (a log, CI) skips that and tells you to run `claude auth login` later — the chat needs it.
+4. Builds and starts the console, waits for an HTTP 200 with the app shell **and** a working local login (`scripts/verify_install.py`, the same proof `update.sh` runs), then opens the browser. If that proof does not come it says why instead of reporting success ([Windows errors](docs/windows-installation-errors.md)).
 
-Because the install is editable, the code that runs **is** your clone.
+Because the install is editable, the code that runs **is** your clone. Everything the install generates —
+the Node.js runtime, the services' state, the audit chain — lives in ONE place, `.corvin/` inside the clone
+(`CORVIN_HOME`); nothing is written to `~/.corvin`. On Linux, with passwordless `sudo` available, optional
+system tools (`jq`, `espeak-ng`, `poppler-utils`, `pandoc`, `pulseaudio-utils`, `gnupg`) are installed through
+`apt`/`dnf`/`pacman`; without it they are skipped and the exact command is printed — nothing else elevates,
+and nothing ever prompts for a password.
 
 ```bash
 ./install.sh --editable /path/to/CorvinOS   # install another clone
@@ -129,6 +134,13 @@ sh update.sh --no-rollback    # keep the new code even if verification fails
 
 Exit codes: `0` updated · `1` failed, rolled back · `2` rollback failed too · `3` another install/update runs.
 Update never installs: with nothing installed (or a legacy PyPI install) it prints the install steps above.
+
+**The console updates itself.** 60 s after every start it compares your clone with `origin/main`; when the
+clone is behind, it runs this same updater (`corvin-update-<timestamp>` systemd unit on Linux) — so a fresh
+install whose `main` moved on during the install updates itself a minute after the first boot and restarts
+once (open tabs reload). Each remote commit is attempted once; a failed update is rolled back and not retried
+until `main` moves again. Switch it off in Settings → Updates, or with `"auto_update": false` in
+`~/.config/corvin-launcher/config.json`.
 More: [docs/setup/UPGRADE_GUIDE.md](docs/setup/UPGRADE_GUIDE.md)
 
 </details>
@@ -222,7 +234,7 @@ One resolver picks the model for every turn on every surface: conversation → H
 
 <p align="center"><img src="docs/overview/img/token-savings-measured.svg" alt="Measured cost of routed OS turns versus the same tokens on Opus 5.5 and Opus 5" width="100%"/></p>
 
-Measured on the maintainer's install (607 priced turns, 2026-09-24 → 10-04): **$414 actual vs. $629 for the same tokens on Opus 5.5 (−34 %)** and $1,181 on Opus 5 (−65 %). Since three-tier routing went live on 2026-09-28: **−24 %** vs. Opus 5.5. Re-add it yourself from the chain — the page shows how, and what the numbers do *not* say.
+Measured on the maintainer's install (607 priced turns, 2026-09-24 → 10-04): **$414 actual vs. $629 for the same tokens on Opus 5.5 (−34 %)** and $1,181 on Opus 5 (−65 %). Since three-tier routing went live on 2026-09-28, re-printed by `scripts/token_savings_receipt.py` from the chain on 2026-10-21 (967 priced of 1,136 turns): **−24.5 %** vs. Opus 5.5 ($1,241 actual vs. $1,645) and −60.3 % vs. Opus 5 ($3,128). The 2026-10-04 reading of the same window (222 turns, $344 vs. $863, −60 %) was a hand-read table; the script reproduces the fold read-only on any chain — the page shows the command, and what the numbers do *not* say.
 
 <p align="center"><a href="docs/overview/token-savings.md"><strong>→ Token savings, the proof path and how to read the numbers</strong></a></p>
 
@@ -326,7 +338,7 @@ What runs today and what is still on the way — the overview pages give the det
 | ACP layers for workflows, security, data flow | **NOT BUILT** |
 | Chat-team roles, quotas, proposals across 7 messengers | **LIVE** |
 | Multi-user console login / SSO | **NOT BUILT** |
-| A2A pairing + signed envelopes | **LIVE** · remote worker execution **GATED** (off by default) |
+| A2A pairing + signed envelopes | **LIVE, member-only** (a Free install answers *member seat required*) · remote worker execution **GATED** (off by default) |
 | Plugin install / enable / load | **LIVE** · plugin update path **NOT BUILT** |
 | Video producer (Marketplace plugin) | **LIVE** · YouTube upload **NOT BUILT** |
 

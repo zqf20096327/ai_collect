@@ -69,7 +69,7 @@ pnpm update -g @hostinger/mcp
 
 This package installs the following MCP server commands:
 
-- `hostinger-api-mcp` — unified server over every operation (403 total)
+- `hostinger-api-mcp` — unified server over every operation (409 total)
 - `hostinger-agency-hosting-mcp` — 42 operations for agency-hosting
 - `hostinger-agent-readiness-mcp` — 3 operations for agent-readiness
 - `hostinger-billing-mcp` — 9 operations for billing
@@ -79,7 +79,7 @@ This package installs the following MCP server commands:
 - `hostinger-horizons-mcp` — 6 operations for horizons
 - `hostinger-hosting-mcp` — 66 operations for hosting
 - `hostinger-mail-mcp` — 38 operations for mail
-- `hostinger-reach-mcp` — 56 operations for reach
+- `hostinger-reach-mcp` — 62 operations for reach
 - `hostinger-vps-mcp` — 67 operations for vps
 - `hostinger-wordpress-mcp` — 40 operations for wordpress
 
@@ -1816,7 +1816,7 @@ interface in the provided website URL.
 
 #### hosting_deploy
 
-Deploy, publish or upload a website to Hostinger web hosting (Shared, Cloud): static HTML, PHP, a nodejs (Node.js) app, a whole WordPress site, or a WordPress plugin or theme, from a local directory, an archive or a GitHub or GitLab repository. It detects what the project is and does the upload, build and Git setup itself: do not call upload or build operations, and do not archive the directory yourself. WARNING: it overwrites the website's contents and cannot be undone; confirm the domain with the user before deploying to a site that already has content. A Node.js build runs on the server: this returns a buildUuid at once, then call hosting_get-deployment until the build state is completed or failed. Static, PHP, plugin and theme deploys are done when this returns; a WordPress site import only starts, and its files are extracted a few minutes later. From Git, pass type (static or nodejs) unless the site already runs a Node.js app or you pass Node.js settings; a static or PHP site deploys the branch now and again on every push; a Node.js site builds the branch now and on every later push, with the settings stored for the site (when none are stored, pass appType and nodeVersion from the project's engines, plus outputDirectory and buildScript if the app has a build step). Git needs GitHub or GitLab connected once in hPanel.
+Deploy, publish or upload a website to Hostinger web hosting (Shared, Cloud): static HTML, PHP, a nodejs (Node.js) app, a whole WordPress site, or a WordPress plugin or theme, from a local directory, an archive or a GitHub or GitLab repository. It detects what the project is and does the upload, build and Git setup itself: do not call upload or build operations, and do not archive the directory yourself. WARNING: it overwrites the website's contents and cannot be undone; confirm the domain with the user before deploying to a site that already has content. A Node.js build runs on the server: this returns a buildUuid at once, then call hosting_get-deployment until the build state is completed or failed. A plugin or theme goes into the site's WordPress installation, also when WordPress is in a folder of the document root (headless). Static, PHP, plugin and theme deploys are done when this returns; a WordPress site import only starts, and its files are extracted a few minutes later. From Git, pass type (static or nodejs) unless the site already runs a Node.js app or you pass Node.js settings; a static or PHP site deploys the branch now and again on every push; a Node.js site builds the branch now and on every later push, with the settings stored for the site (when none are stored, pass appType and nodeVersion from the project's engines, plus outputDirectory and buildScript if the app has a build step). Git needs GitHub or GitLab connected once in hPanel.
 
 - **Method**: `custom`
 - **Path**: `custom`
@@ -2541,6 +2541,4 @@ HTTPS, when the certificate stops being valid and the last installation error.
 
 `installing` and `waiting_for_retry` mean an installation is in progress. `failed` means the
 last installation gave up, or the website was not updated for 60 minutes while `installing`;
-`last_error` holds the reason when it is a known message, otherwise it is null. `expired`
-means the assigned certificate's validity has ended. `not_installed` means no certificate is
-a
+`last_error` holds the reason when it is a known mess

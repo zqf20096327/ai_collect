@@ -207,6 +207,22 @@ To accept clients from other machines, do one of these:
 If you turn it off or bind to a public address, make sure the server cannot be reached from
 the internet without a password.
 
+### Linux packages
+
+The release page has `.deb` and `.rpm` packages for `amd64` and `arm64`. They
+install the binary, a systemd unit, a `kividb` system user, and a default
+`/etc/kividb/kividb.conf` that listens on loopback only. Installing enables and
+starts the unit, and an upgrade restarts it:
+
+```bash
+sudo apt install ./kividb_amd64.deb     # or: sudo rpm -i kividb.x86_64.rpm
+redis-cli -p 6380 PING
+```
+
+Data (the snapshot, the AOF, `nodes.conf`) lives in `/var/lib/kividb`, and logs
+go to the journal: `journalctl -u kividb`. To accept clients from other
+machines, set a password and change `bind` in `/etc/kividb/kividb.conf`.
+
 ### Docker
 
 Images are published to Docker Hub and the GitHub Container Registry, with
@@ -237,8 +253,8 @@ docker run -p 6380:6380 ghcr.io/kividbio/kividb \
   --loglevel debug
 ```
 
-**With AOF persistence** (mount a volume so data survives restarts; the server runs as user
-`kividb` in `/home/kividb`):
+**With AOF persistence** (mount a volume so data survives restarts; the server runs as UID
+1000 in `/home/kividb`):
 
 ```bash
 docker run -p 6380:6380 \
@@ -250,6 +266,9 @@ With `--aof`, every write is appended to `appendonly.aof` and the file is replay
 startup, so a crash loses at most about the last second of writes (the fsync interval)
 rather than everything since the last snapshot. When an AOF is present it is the source of
 truth and the snapshot is not loaded; see [docs/PERSISTENCE.md](docs/PERSISTENCE.md) for why.
+
+The image is distroless: it has no shell and no `redis-cli`. Connect from another container
+instead, for example `docker run --rm -it --network container:<name> redis redis-cli -p 6380`.
 
 **io_uring in containers:** Docker's default seccomp profile blocks io_uring on recent
 versions, and KiviDB then falls back to Tokio. To allow it on a Linux host, run with

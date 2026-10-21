@@ -4,14 +4,18 @@
 
 ### *for Microsoft Copilot* — one Power BI template for **Copilot credit consumption and cost**
 
-[![Built by Microsoft](https://img.shields.io/badge/BUILT_BY-MICROSOFT-4F73B8?style=for-the-badge&labelColor=1F1F1F)](https://microsoft.com)
-[![Power BI Template](https://img.shields.io/badge/POWER_BI-TEMPLATE-F2C811?style=for-the-badge&logo=powerbi&logoColor=black&labelColor=1F1F1F)](https://powerbi.microsoft.com)
+All reports and guides can be found on the [Analytics Hub](https://microsoft.github.io/Analytics-Hub/).
 
 **What you're consuming · what it costs · where to trim · what next year looks like**
 
 ![Consumption Central](Images/ConsumptionCentral-Preview.gif)
 
 </div>
+
+> **Also see [Analytics Hub for Microsoft Copilot](https://github.com/microsoft/AnalyticsHub-Dashboard):**
+> one installer sets up an app on Microsoft Fabric or Azure that shows Copilot and agent adoption,
+> value, consumption and governance in one place. It includes Consumption Central as its optional
+> *Credit consumption* add-on.
 
 ## Watch first
 

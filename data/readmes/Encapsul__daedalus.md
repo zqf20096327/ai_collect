@@ -80,10 +80,11 @@ framework listed in the third column has a passing end-to-end test in CI.
 
 Evidence, as of this tree:
 
-- **CI smoke** (build, run, HTTP 200): Python standard library, `examples/hello-web`, on the Linux workflow. The macOS and Windows workflows build the same example.
-- **Workspace e2e, when the toolchain exists**: Rust (`daedalus-cli/tests/rust_build.rs`, cargo is on the CI image). Java/Gradle (`java_build.rs`) skips unless `java` and Gradle ≥ 7 are installed. CI does not install them.
-- **Source in `examples/`, not the CI smoke**: `hello-node`, `bottle-web`, `bottle-web-pip`, `hello-zig`, `hello-dart`, `hello-lua`.
+- **CI smoke** (Linux): `examples/hello-web` (stdlib HTTP), `examples/bottle-web` (vendored `site-packages`, HTTP), `examples/field-kit` (adjacent-domain modes on stdout). macOS/Windows smoke `hello-web`.
+- **Workspace e2e, when the toolchain exists**: Rust (`daedalus-cli/tests/rust_build.rs`, cargo is on the CI image). Java/Gradle (`java_build.rs`) skips unless `java` and Gradle ≥ 7 are installed. CI does not install them. Trust/courier chaos lives in `daedalus-cli/tests/chaos_trust.rs`.
+- **Source in `examples/`, not the CI smoke**: `hello-node`, `bottle-web-pip`, `hello-zig`, `hello-dart`, `hello-lua`.
 - **Scaffold**: `examples/offline-health-agri` is a standard-library script plus a `Modelfile`. It does not contain model weights. If Ollama is already running it queries `localhost:11434`. Otherwise it prints the prompt it would have sent.
+- **Local model kit** (weights optional): `examples/local-model-kit` — run `./fetch_weights.sh` to pull Gemma 3 270M IT Q4_K_M (~241 MB GGUF) from Hugging Face into a gitignored `models/` path, then `daedalus build`. Without that file the artifact is not an offline LLM. Host inference smoke needs Ollama ≥0.40.5.
 
 | Runtime | Detection | What the code looks for | Evidence |
 |---------|-----------|-------------------------|----------|
@@ -104,7 +105,7 @@ Evidence, as of this tree:
 | Lua | `*.lua`, `lua` in package.json | OpenResty, Neovim plugins | Example in repo |
 | Hugo | `hugo.toml`, `config.toml` | Static sites | Detection |
 | Ollama | `Modelfile`, `models/*.gguf`, `ollama` in `package.json`, or `DAEDALUS_OLLAMA=1` | `ollama serve` | Detection. Weights are whatever is in the project |
-| Gemma | `Modelfile` with a Gemma `FROM`, or `models/gemma*.gguf` | `ollama run <model-id>` | Detection. The in-repo example has no weights |
+| Gemma | `Modelfile` with a Gemma `FROM`, or `models/gemma*.gguf` | `ollama run <model-id>` | Detection. Clinic has no weights; `local-model-kit` embeds them only after `fetch_weights.sh` |
 | Wasm | `*.wasm` | WASI (wasmtime) | Detection |
 | Binary | ELF/PE executable | Any native binary | Detection |
 
@@ -245,8 +246,8 @@ want before you hand the file to someone else.
   by default. `--skip-sign` opts out. `--key` selects the key.
 - **SHA-256**: the stub checks the payload hash before extraction. Release
   downloads (stub, upgrade, Homebrew, PyPI, `install.sh`) are checked against
-  `checksums.txt`. `scripts/install.sh` is the older installer. It now refuses
-  to install when that check cannot run. Prefer the root `install.sh`.
+  `checksums.txt`. Prefer the root `install.sh`. `scripts/install.sh` only
+  forwards to it.
 - **AES-256-GCM**: optional (`--encrypt`). The decryption material is in the
   file metadata, because the stub has to decrypt. It stops a casual `tar` of
   the payload. It does not hide the app from whoever can run the file.
@@ -313,16 +314,23 @@ See [CODE_STYLE.md](CODE_STYLE.md) for Rust style guidelines and [AGENTS.md](AGE
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feat/my-feature`)
-3. Commit with signed commits (`git commit -S -m "feat: ..."`)
-4. Push and open a pull request
+See [CONTRIBUTING.md](CONTRIBUTING.md). Short version: branch from `main`, keep
+the PR focused, run the verification loop, open against `main`.
+
+Internal agent notes live in [AGENTS.md](AGENTS.md) (`CLAUDE.md` just points
+there). Style detail is in [CODE_STYLE.md](CODE_STYLE.md).
+
+## Security
+
+Report vulnerabilities in private. See [SECURITY.md](SECURITY.md).
 
 ## License
 
-MIT - see [LICENSE](LICENSE) for details.
+MIT - [LICENSE](LICENSE).
 
 ## Community
 
-- [GitHub Issues](https://github.com/Encapsul/daedalus/issues) - report bugs or request features
-- `daedalus feedback --browser` - open the feedback page quickly
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Issues](https://github.com/Encapsul/daedalus/issues)
+- [Discussions](https://github.com/Encapsul/daedalus/discussions)
+- `daedalus feedback --browser`

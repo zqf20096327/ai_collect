@@ -115,6 +115,32 @@ OneBot WebSocket
 
 ## 部署
 
+### Docker
+
+不想安装 systemd、只想跑容器时：
+
+```bash
+# 海外 / GitHub 可达
+docker pull ghcr.io/sakurawwwxh/qq-agent-plus:0.9.4
+# 国内（阿里云 ACR，公开，amd64/arm64）
+docker pull crpi-xejkraqtqkngfp11.cn-guangzhou.personal.cr.aliyuncs.com/wangxinhong/qq-agent-plus:0.9.4
+
+git clone https://github.com/sakurawwwxh/qq-agent-plus.git
+cd qq-agent-plus
+docker compose up -d
+```
+
+`docker compose up -d` 的默认镜像已经按国内网络配置：Agent 走上面的 ACR，协议端走
+`docker.m.daocloud.io` 镜像站。海外用户可在环境变量里换回 GHCR 与官方 Docker Hub 镜像。
+全新 Docker 配置默认是 `active`，加入白名单后会直接回复；想先观察设
+`QQ_AGENT_RUNTIME_MODE=observe`。
+
+体积敏感的场景注意：镜像磁盘约 1.2GB、压缩下载约 310MB，主要是 ffmpeg 及其依赖；
+项目只提供完整版，以保证语音、视频、GIF 与大图降采样和裸机一致。
+
+控制台访问信息在容器的 `/data/console-access.txt` 里（首次启动生成）。
+国内镜像、协议端镜像、从裸机迁移与容器模式限制见 [docs/DOCKER.md](docs/DOCKER.md)。
+
 ### 全栈部署
 
 全新 Linux 机器推荐使用一键安装脚本 `install.sh`：全程零提问，自动安装 Docker（需 sudo）、
@@ -122,14 +148,49 @@ OneBot WebSocket
 （带登录令牌的控制台链接、扫码登录入口、白名单），模型 Key 与群号在网页控制台里填即可。
 SnowLuma 已包含 OneBot，无需另行安装 NapCat 或 Lagrange。
 
-安装与运行都不使用 root：脚本会直接拒绝 root 身份，请以普通用户执行（只在安装 Docker 与
-开启 linger 时按需调用 `sudo`）。
+**root 可以直接执行**。安装器会把机器人降权到一个普通服务用户（默认 `qqagent`），
+不会让机器人进程以 root 运行；如果是从普通用户 `sudo` 执行，则沿用该用户。root 只负责
+装 Docker、把服务用户加入 `docker` 组、开启 linger 和准备目录。装完后 root 用
+`sudo qq-agent-manage logs` 看日志，普通用户仍可直接用 `manage.sh`。
+
+注意：服务用户会被加入 `docker` 组，这是控制台“更新协议端”的前提；`docker` 组在 Linux 上
+等价于宿主 root（可挂载宿主文件系统）。这里降的是应用进程身份，不是完整沙箱。如果你不需要
+控制台更新协议端，可以在部署后把该用户移出 `docker` 组并手工管理 SnowLuma。
+
+开始前建议先确认机器规格：
+
+| 项目 | 建议 |
+| --- | --- |
+| 系统 | Ubuntu 22.04/24.04、Debian 12、Rocky/Alma 9 等带 systemd 的 Linux |
+| CPU | 2 核起；1 核会明显拖慢扫码登录和模型回复 |
+| 内存 | 2GB 起；1GB 很容易在 SnowLuma/Chromium 启动时 OOM |
+| 磁盘 | 10GB 空闲，本机盘；SQLite 不支持 NFS/SMB |
+| 网络 | 能访问 GitHub；Docker 镜像有国内镜像站兜底 |
+| 账号 | root 或带 sudo 的普通用户；一个 QQ 号 |
+| 模型 | OpenAI Chat Completions 兼容的地址、Key、模型名（可装完再配） |
+
+发行版支持分三档：
+
+- **已实测**：Ubuntu 22.04/24.04（当前生产环境）。
+- **预期可用**：Debian 12/13、Ubuntu 26.04、Rocky Linux 9、AlmaLinux 9、Fedora、CentOS Stream、RHEL、Oracle Linux、Amazon Linux、Arch/Manjaro、openSUSE Leap/Tumbleweed、SLES、openEuler、Anolis、麒麟/UOS（按 dnf/yum/zypper/pacman 尝试）。Debian 12 官方仓库只有 Compose v1，需先按 Docker 官方文档配置 apt 仓库才能拿到 Compose v2。
+- **明确不支持**：Alpine（musl）、NixOS、Gentoo、Void、WSL1，以及没有 systemd 的容器环境。
+
+安装前可以先跑只读体检，它会打印发行版、包管理器、systemd、libc 和结论：
+
+```bash
+sh scripts/check-platform.sh
+```
 
 ```bash
 git clone https://github.com/sakurawwwxh/qq-agent-plus.git
 cd qq-agent-plus
+sudo bash install.sh     # root 或 sudo 都可以；服务会自动降权到普通用户
+# 如果当前就是普通用户：
 bash install.sh
 ```
+
+GitHub 克隆慢或不通时，改用 Release 页面下载的源码包（或可信镜像站），解压后进入目录再执行
+上面的命令；`install.sh` 需要完整仓库，不能只下载一个脚本文件。
 
 需要边装边选（部署目录/端口/凭据/模型）时用交互式安装器 `deploy-all.sh`——它与 `install.sh`
 是同一个安装器，只是把问题问出来而不是走默认值：
@@ -146,8 +207,18 @@ bash deploy-all.sh
 
 OneBot HTTP `3000` 与 WebSocket `3001` 默认仅绑定 `127.0.0.1`，不暴露到局域网。安装器不要求填写
 本机 IP，完成后自动检测并打印访问地址。生成的凭据保存于 `/mnt/data/qq-agent/deployment-access.txt`，
-权限为 `0600`。脚本不修改 UFW、firewalld 或云安全组；需要跨主机访问时，仅应向可信局域网或 VPN
-放行上述三个入口，不得将 noVNC 或 OneBot 暴露到公网。
+权限为 `0600`。脚本不修改 UFW、firewalld 或云安全组。
+
+**端口建议**：`3210` 控制台只对你的 IP 或 VPN 放行；`5099` 协议端后台和 `6081` 扫码登录
+建议不要直接开公网，用 SSH 隧道：
+
+```bash
+ssh -L 3210:127.0.0.1:3210 -L 5099:127.0.0.1:5099 -L 6081:127.0.0.1:6081 <用户>@<服务器>
+# 然后打开 http://127.0.0.1:3210
+```
+
+如果你还没有模型 Key：先去一个 OpenAI Chat Completions 兼容的服务商申请，装完在控制台的
+「设置 → 模型 API」里选预设、填 Key、点「测试连通性」即可；也可以先装、之后再配。
 
 交互式安装会询问模型 Base URL、模型名、API Key 与 QQ 白名单（**Key 留空＝跳过**，之后在网页
 控制台「设置 → 模型 API」里配——一键安装默认走的就是这条）。基础设施启动后，打开脚本输出的
@@ -199,7 +270,7 @@ bash deploy-all.sh --help
 
 - Linux，且可用 systemd 用户服务；
 - 以非 root 的普通用户执行（服务注册为该用户的 systemd 用户服务）；
-- `curl`、`tar`、`sha256sum`、`rsync`（缺少合格 Node.js 时自动安装已校验的 Node 22）；
+- `curl`、`tar`、`sha256sum`、`rsync`、`xz`、`git`（缺少合格 Node.js 时自动安装已校验的 Node 22）；
 - 已运行的 OneBot v11 HTTP 与正向 WebSocket 服务；
 - 兼容 OpenAI Chat Completions 的模型服务。
 
@@ -264,8 +335,10 @@ bash deploy.sh \
   --port 3210
 ```
 
-更新不重置运行模式，其余配置也保持不变。`--install-dir` 与 `--data-dir` 必须与现有安装一致：传错
-目录不会报错，而是把服务指向一个新的空数据目录。`--host` 与 `--port` 可以省略——省略时脚本沿用
+更新不重置运行模式，其余配置也保持不变。`--install-dir` 与 `--data-dir` 必须与现有安装一致：
+传错目录会在任何改动前直接拒绝（服务未停、代码未动），不会创建一个新的空数据目录；迁移数据目录
+需要同时给 `--allow-path-change` 和 `QQ_AGENT_ALLOW_PATH_CHANGE=1`，旧数据不会自动复制。
+`--host` 与 `--port` 可以省略——省略时脚本沿用
 `config.json` 中记录的现值并打印一行提示；显式传入时必须与首次安装相同（例如全栈安装用的是
 `0.0.0.0`），否则控制台会从外部失联。当前监听地址可从 `DATA_DIR/console-access.txt` 的 URL 行读到。
 
@@ -303,7 +376,12 @@ bash manage.sh backup /path/to/new-backup-dir
 `manage.sh` 之外的运维工具（只读体检、数据备份、发送与登录监控、进程看门狗、表情名导出、非交互
 部署、SSH 隧道）统一由 `src/ops.js` 提供，仅使用 Node 内置模块：
 
+安装器默认部署到 `/mnt/data/qq-agent`，而 `ops.js` 的旧默认是 `/data/qq-agent`。先导出根目录，
+或者给命令显式传 `--dir` / `--data`，否则体检、备份和定时器会看错目录：
+
 ```bash
+export QQ_AGENT_DIR=/mnt/data/qq-agent
+
 node src/ops.js help                     # 全部子命令
 node src/ops.js audit                    # 服务 + 代码 + 数据体检（只读）
 node src/ops.js audit-host               # 主机体检（只读）
@@ -354,10 +432,19 @@ QQ 未登录不属于“未连接”：此时 WS 连接正常，只是无法获�
 
 控制台默认端口为 `3210`。仅部署 Agent（`deploy.sh`）时默认仅监听 `127.0.0.1`，本机通过 SSH 隧道
 访问即可，无需开放任何公网端口；全栈安装器（`deploy-all.sh`）以 `--host 0.0.0.0` 启动控制台，
-跨主机访问时应仅向可信局域网或 VPN 放行。Windows 用户可直接双击仓库中的
-[`console-tunnel.bat`](console-tunnel.bat)：首次输入一次 `user@host` 并记住，之后自动从服务器读取控制台
-令牌、建立 SSH 隧道并免登录打开浏览器，同时转发 `5099`（SnowLuma WebUI）与 `6081`（QQ 扫码登录）。
-macOS、Linux 或已安装 Node 的机器可使用 `node src/ops.js console --open`，效果相同。
+跨主机访问时应仅向可信局域网或 VPN 放行。推荐从**你自己的电脑**建 SSH 隧道：
+
+```bash
+ssh -N -L 3210:127.0.0.1:3210 -L 5099:127.0.0.1:5099 -L 6081:127.0.0.1:6081 <用户>@<服务器>
+```
+
+本地不需要克隆仓库。也可以只下载一个连接脚本，它会自动从服务器读取令牌、建隧道并免登录打开浏览器：
+
+- Windows：`scp <用户>@<服务器>:<安装根目录>/app/console-tunnel.bat .`，双击运行。
+- macOS/Linux：`scp <用户>@<服务器>:<安装根目录>/app/console-tunnel.sh .`，然后 `bash console-tunnel.sh`。
+- 已安装 Node：`node src/ops.js console --open`，效果相同。
+
+两个脚本都会同时转发 `5099`（SnowLuma WebUI）与 `6081`（QQ 扫码登录），并读取服务器上的登录凭据。
 
 Token 可在「设置 -> 系统 -> 控制台安全」中轮换。控制台一旦可被其他主机访问，令牌即为唯一凭据，只能自己使用。
 
@@ -400,7 +487,8 @@ Token 可在「设置 -> 系统 -> 控制台安全」中轮换。控制台一旦
 「设置 -> 人设」里的人设卡库提供多张内置角色卡（默认小鲸鱼、损友、温柔陪聊、技术宅、猫娘），
 点一张卡就把它的正文填进草稿，点击页尾常驻的“保存设置”后生效。正文按小节展示：招牌特征、
 AI 味黑名单、示例（✓ 可用 / ✗ 禁用）各按自己的形状渲染，每节右上角可以单独“编辑 / 恢复本节”，
-整篇改乱了还能“恢复整张卡”。交流策略可选“原版群友”或“自然可靠”，角色正文与管理员附加规则
+整篇改乱了还能“恢复整张卡”。交流策略可选“原版群友”“自然可靠”或“角色卡优先”
+（角色卡优先只保留安全与工具/记忆机制，语气与节奏完全交给角色正文），角色正文与管理员附加规则
 均可修改，也可以当前草稿为基础用“＋ 新建自定义卡”创建副本。角色卡正文的
 单一来源是 [`roles/`](roles) 目录，一张卡对应一个 markdown 文件，说明见[内置角色卡](docs/PERSONAS.md)。
 
@@ -518,7 +606,7 @@ bash -n deploy.sh && bash -n deploy-all.sh && bash -n manage.sh
 
 CI（GitHub Actions）在每次推送和 PR 上执行语法检查、未定义调用扫描（严格模式）、单元测试、本地回归，
 以及提示词 / 渲染 / 滚动 / 用量端到端回归。
-当前基线上有两条已确认、暂不修的小问题，均不影响主链路，历史记录见[已知问题](docs/KNOWN-ISSUES.md)。
+当前基线上仍有一批已确认、暂不修的问题；数量与状态以[已知问题](docs/KNOWN-ISSUES.md)为准，不要在这里写死条数。
 
 详细说明见 [Linux 运维手册](docs/LINUX.md)，全部文档见[文档索引](docs/README.md)。试验性三模式对话
 引擎见 [Conversation Modes](docs/CONVERSATION_MODES.md)；早期参与者续接方案见

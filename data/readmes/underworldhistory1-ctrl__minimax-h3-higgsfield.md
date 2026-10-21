@@ -2,7 +2,25 @@
 
 **Current release: 2.5.6 · native INT8 acceleration and render recovery**
 
-### Direct the shot. Keep the whole workflow in view.
+### Reference names and native tags
+
+Reference chips show each attached image's `Picture` number and its related `Subject` number. Pictures follow image card order; Subject numbers can differ and follow explicit `subject_definitions` when supplied. For example, `<Subject 1> is the man from @2` automatically links to the actual image named `@2`; the alias does not imply Picture2. Native tags also work in ordinary guided prose, without repeating aliases. Common explicit forms such as `<subject1>` normalize automatically. A conflicting explicit Picture and alias reports the actual mapping instead of silently changing identity.
+
+The **Mention name** on a reference card belongs to that shot. Rename the shared project element separately in **Elements**. Opening the current project keeps the working setup; project links retain the selected page on refresh. Navigation checkpoints the local setup first and avoids rewriting an unchanged server draft. Restoring references loads independent inputs together and reuses recently downloaded originals within a bounded browser cache; failed downloads remain visible and retryable.
+
+Projects remain browsable during generation. **Open** uses a separate tab while rendering or loading, keeping the running tab and its inputs intact; when idle, it opens in the current tab. Ctrl/Cmd-click also opens a separate tab.
+
+### H3 and LTX on one Linux GPU
+
+With the matching LTX `studio_shared_gpu` custom node installed, set `STUDIO_SHARED_GPU_LOCK` to the same absolute lease path in both workers. Set `STUDIO_SHARED_GPU_PEER=http://127.0.0.1:8189` for H3 and `http://127.0.0.1:8188` for LTX, then restart each worker only when idle. The guard reserves the GPU before native queue admission, so waiting H3/Qwen and LTX prompts stay pending and cancellable instead of allocating together. It releases the lease after execution or process exit, checks peer readiness and CUDA memory, and can unload an idle peer's GPU model cache while retaining RAM caches. Without these environment variables the guard is inactive. This coordinates native ComfyUI prompt execution, rather than promising one global FIFO across the two Studio interfaces.
+
+## Reuse a saved take
+
+Click **Reuse** to reload directly into Production using a link to the selected output. The saved prompt, references, adapter strengths and render settings are copied into an independent workspace inside the original project's automatic **Reuse** folder. Reuse of a reused result stays with that same original project, including after renaming it. The library groups these setups under a folder card and an original-project **Reuse (count)** shortcut; searching also finds individual setups. A request retry reopens the same workspace without overwriting subsequent edits. The final URL identifies the restored project and survives refresh. The source take and any backend render remain intact. Missing original files are reported in Production; Reuse does not invent missing inputs or start generation automatically.
+
+**New project** in Production and **Create project** in the library share one creation flow: save the current setup, then start with clean defaults. **Save setup** uses the guarded workspace save, and **Project tools → Export project ZIP** saves the latest setup before downloading. A scene with no shot retains its local editor checkpoint when leaving; explicit Save/Export asks you to create or select a shot first.
+
+## Direct the shot. Keep the whole workflow in view.
 
 **MiniMax H3 video with native audio. Qwen image creation and editing. One browser workspace on your own machine or GPU server.**
 
@@ -40,6 +58,10 @@ Generate at **Native detail · 1344×768** as the recommended upper baseline. La
 | **Create supporting images** | A separate Qwen Image 2.1 workspace for creation and reference-based editing. |
 
 Start with **Original quality**. Try the available render methods and LoRAs when you want a different tradeoff; Studio shows what is installed on your server.
+
+## Optional Turbo v4 EMA
+
+Turbo v4 EMA is available for Original Text/Frames at 4–8 steps (6 initial), using the current upstream loader and adaptive audio/video sampler. References has a separate LightX2V Ref2VA 8-step v1.0 option, tested on this server with a complete video/audio output. Install these explicitly; other adapters and extra passes are unsupported. [Installation and scope](docs/TURBO_V4.md).
 
 ## Models and acceleration
 
@@ -123,3 +145,7 @@ Post a shot, a reference experiment or a setup question in [Discussions](https:/
 [Connected Studio guide](docs/CONNECTED_STUDIO.md) · [Verified behavior](docs/VERIFIED_BEHAVIOR.md) · [Prompt formats](docs/PROMPT_INPUT.md) · [Graph map](docs/GRAPH_MAP.md)
 
 Built on [MiniMax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3) and [ComfyUI](https://github.com/Comfy-Org/ComfyUI). Code: [MIT](LICENSE).
+
+### Optional Qwen Image 2.1 V2 LoRA
+
+Create Image has a separate LoRA selector and strength (0–2, initial 0.8), defaulting to None. The TheseAlpacas V2 option is enabled only when its file is installed. Selection and strength survive refresh and are stored in image settings; the model-only adapter precedes reference caching in edit mode. Install explicitly with `python deploy/download_qwen_loras.py /path/to/ComfyUI`; add `--offline-check` to verify the pinned 79,744,352-byte file and SHA-256 without downloading. The download uses a pinned Hugging Face mirror revision. No LoRA is enabled automatically.

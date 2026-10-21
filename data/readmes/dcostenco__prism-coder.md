@@ -70,9 +70,9 @@ It reads `OMLX_API_KEY` or the local `~/.omlx/settings.json` key, and model/cont
 settings from `~/.omlx/model_settings.json`; `OMLX_MODEL` and a loopback-only
 `OMLX_BASE_URL` can select local configuration. Redirects are refused.
 
-**Requires** an oMLX build with Prism's control routes: the
-[`prism-v0.7.1rc1` branch of dcostenco/omlx](https://github.com/dcostenco/omlx/tree/prism-v0.7.1rc1), upstream oMLX
-0.7.1rc1 plus those routes ([install and settings](https://github.com/dcostenco/omlx/blob/prism-v0.7.1rc1/PRISM.md)). With stock
+**Requires** the [stable Prism integration of oMLX](https://github.com/dcostenco/omlx),
+based on upstream `v0.7.1` with Prism's control routes
+([install and settings](https://github.com/dcostenco/omlx/blob/main/PRISM.md)). With stock
 oMLX every call is refused. Generation runs as an owned
 job through those routes, so a timeout or cancel is reported only once the
 server confirms the request stopped. An unconfirmed stop refuses later calls
@@ -234,6 +234,21 @@ or by re-enabling after each run.
 
 <details>
 <summary>Release history (optional)</summary>
+
+## What's New in v20.22.3
+
+- **Dependency fixes:** Hono 4.13.11 addresses its static-path middleware
+  bypass advisory; Vite 8.2.4 addresses its development editor-launch advisories.
+- **Local resource probes use numeric loopback by default.** The default
+  Ollama endpoint is now `http://127.0.0.1:11434`, so a stalled `localhost`
+  DNS lookup cannot block those probes. Explicit URL overrides are preserved;
+  IPv6-only servers need an explicit URL.
+- **Read-only oMLX inspection accepts release-candidate versions.** Valid
+  `rcN` labels no longer invalidate status. Inspection still reports
+  generation disabled and the provider not qualified; it is not an activation
+  or a generation check.
+- **Stable oMLX setup:** the current setup link uses the Prism integration
+  based on upstream `v0.7.1`. Stock oMLX still lacks the required control routes.
 
 ## What's New in v20.22.2
 
@@ -1809,21 +1824,4 @@ prism_infer({
 // → "n = countActiveUsers(data)"          (local model, $0)
 
 // A turn the on-device screen finds uncertain, alone or in context, is not
-// served locally: it goes to Synalux cloud on a paid plan, or is refused with
-// cloud_fallback: false. The result names the reason (layer1_uncertain) so
-// the host can decide what to do with the thread.
-prism_infer({
-    messages: [
-        { role: "user",      content: "The ticket for this bug is SYN-4471. Acknowledge." },
-        { role: "assistant", content: "Acknowledged." },
-    ],
-    prompt: "Which ticket is this bug filed under?",
-    cloud_fallback: true,
-})
-// → "SYN-4471"                            (Gemini 3.6 Flash; used_cloud: true)
-```
-
-Measured on 20.21.14 through the real handler, on the local 9b with cloud off:
-- Every benign follow-up that reached the local 9b with its conversation
-  attached was answered correctly. Without the conversation, most answers were
-  inve
+// served lo

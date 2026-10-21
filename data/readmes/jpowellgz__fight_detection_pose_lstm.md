@@ -1,9 +1,8 @@
 # Fight Detection using Keypoints, Angles and Bi-LSTM
 <img src="assets/lstm.jpg" alt="">
 
-Fight detection using Open Pose and Bi-LSTM  
-Thesis project with paper on review stages for WEA 2026 and participation in Eureka ENC 2024.
-
+## Paper
+González, J.E.P., Ruiz, M.C., Juárez, P.G., Velázquez, R.G. (2027). Fight Classification in Video Clips Using Image Enhancement, Pose Estimation and Bi-LSTM. In: Figueroa-García, J.C., Cárdenas Rojas, A.A., Trujillo-Lemus, J.P., Moreno-Trujillo, J.F., Mendez-Giraldo, G.A. (eds) Applied Computer Sciences in Engineering. WEA 2026. Communications in Computer and Information Science, vol 3182. Springer, Cham. https://doi.org/10.1007/978-3-032-41324-6_22
 
 ## Abstract  
 Currently, in the area of computer vision, researchers work on the automatic detection of violent,

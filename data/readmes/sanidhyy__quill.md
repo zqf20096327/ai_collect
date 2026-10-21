@@ -284,12 +284,12 @@ Useful resources and dependencies that are used in quill.
 - [@mantine/hooks](https://www.npmjs.com/package/@mantine/hooks): ^9.7.2
 - [@napi-rs/canvas](https://www.npmjs.com/package/@napi-rs/canvas): ^1.0.9
 - [@pinecone-database/pinecone](https://www.npmjs.com/package/@pinecone-database/pinecone): ^5.1.2
-- [@prisma/adapter-neon](https://www.npmjs.com/package/@prisma/adapter-neon): ^7.10.0
+- [@prisma/adapter-neon](https://www.npmjs.com/package/@prisma/adapter-neon): ^7.10.1
 - [@prisma/client](https://www.npmjs.com/package/@prisma/client): ^7.10.0
-- [@radix-ui/react-alert-dialog](https://www.npmjs.com/package/@radix-ui/react-alert-dialog): ^1.1.23
+- [@radix-ui/react-alert-dialog](https://www.npmjs.com/package/@radix-ui/react-alert-dialog): ^1.2.1
 - [@radix-ui/react-avatar](https://www.npmjs.com/package/@radix-ui/react-avatar): ^1.2.6
 - [@radix-ui/react-dialog](https://www.npmjs.com/package/@radix-ui/react-dialog): ^1.1.23
-- [@radix-ui/react-dropdown-menu](https://www.npmjs.com/package/@radix-ui/react-dropdown-menu): ^2.1.25
+- [@radix-ui/react-dropdown-menu](https://www.npmjs.com/package/@radix-ui/react-dropdown-menu): ^2.2.1
 - [@radix-ui/react-label](https://www.npmjs.com/package/@radix-ui/react-label): ^2.1.15
 - [@radix-ui/react-progress](https://www.npmjs.com/package/@radix-ui/react-progress): ^1.1.16
 - [@radix-ui/react-slot](https://www.npmjs.com/package/@radix-ui/react-slot): ^1.3.3
@@ -302,7 +302,7 @@ Useful resources and dependencies that are used in quill.
 - [@trpc/next](https://www.npmjs.com/package/@trpc/next): ^11.18.0
 - [@trpc/react-query](https://www.npmjs.com/package/@trpc/react-query): ^11.18.0
 - [@trpc/server](https://www.npmjs.com/package/@trpc/server): ^11.18.0
-- [@types/node](https://www.npmjs.com/package/@types/node): ^26.6.3
+- [@types/node](https://www.npmjs.com/package/@types/node): ^26.6.5
 - [@types/pg](https://www.npmjs.com/package/@types/pg): ^8.23.1
 - [@types/react](https://www.npmjs.com/package/@types/react): 19.3.0
 - [@types/react-dom](https://www.npmjs.com/package/@types/react-dom): 19.3.0
@@ -334,7 +334,7 @@ Useful resources and dependencies that are used in quill.
 - [server-only](https://www.npmjs.com/package/server-only): ^0.0.1
 - [simplebar-react](https://www.npmjs.com/package/simplebar-react): ^3.3.2
 - [sonner](https://www.npmjs.com/package/sonner): ^2.0.8
-- [stripe](https://www.npmjs.com/package/stripe): ^22.6.2
+- [stripe](https://www.npmjs.com/package/stripe): ^23.0.0
 - [tailwind-merge](https://www.npmjs.com/package/tailwind-merge): ^3.6.0
 - [tailwindcss](https://www.npmjs.com/package/tailwindcss): ^4.3.3
 - [tailwindcss-animate](https://www.npmjs.com/package/tailwindcss-animate): ^1.0.7

@@ -82,13 +82,14 @@ All three models implement Apple's `LanguageModel` protocol, so one `LanguageMod
 > Once a turn is private, the cloud model only ever sees `[Private message withheld]` in its place, across escalations, follow-ups and session rebuilds. Tests check the request it actually receives.
 
 - Scanned documents are private by default, and OCR runs only on Apple's models.
+- Saved chats stay on the iPhone, encrypted while it's locked and left out of backups, and keep their private turns private when reopened.
 - Keys live in the Keychain or a gitignored config, never in the repo or a Release build. Shipped builds use App Attest.
 - gitleaks scans every commit, locally and in CI.
 
 ## Use HybridRouterKit in your app
 
 ```swift
-.package(url: "https://github.com/jaichaudhry/HybridRouter", from: "0.4.0")
+.package(url: "https://github.com/jaichaudhry/HybridRouter", from: "0.6.0")
 ```
 
 ```swift
@@ -103,6 +104,8 @@ print(reply.decision?.reason ?? "", reply.text)   // "Multi-step planning", the 
 ```
 
 Privacy checks are on by default. Rate limits and dropped connections are retried, then fall back to a smaller model. For streaming, your own providers or custom rules, use `send(_:)` or build a `RoutedSession` and `TurnCoordinator` directly.
+
+**Voice input:** `HybridRouterKitVoice` adds on-device speech-to-text. The audio never leaves the phone, and the transcript is routed and privacy-checked like typing.
 
 iOS 27 and macOS 27. `HybridRouterKitTesting` adds fake models, so routing and privacy rules can be unit-tested on a Mac without a device or network.
 

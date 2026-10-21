@@ -53,7 +53,7 @@ Serial VTK XML readers (`.vtu`, `.vtp`, `.vts`, `.vtr`, `.vti`) accept multiple 
 > [Code_Aster](https://code-aster.org) native mesh (`.mail`; `GROUP_MA`/`GROUP_NO` as named regions, Code_Aster's own node order),
 > [CalculiX](http://www.dhondt.de/) results (`.frd`, ASCII or binary written too; every increment is a step, tensors keep the file order, opt-in von Mises and principal values),
 > [HMF](https://loumalouomega.github.io/meshioplusplus/formats/hmf) (`.hmf`, experimental, meshio++-specific),
-> [IGES](https://loumalouomega.github.io/meshioplusplus/formats/iges) (`.igs`, `.iges`, read-only, with the optional OpenCASCADE backend; triangulated, with its NURBS B-rep),
+> [IGES](https://loumalouomega.github.io/meshioplusplus/formats/iges) (`.igs`, `.iges`, read-only, through OpenCASCADE; triangulated, with its NURBS B-rep),
 > [I-deas Universal / UNV](https://www.ceas3.uc.edu/sdrluff/) (`.unv`, `.uff`),
 > [ANSYS Fluent interpolation](https://github.com/victorsndvg/FEconv) (`.ip`),
 > [Kratos/MDPA](https://github.com/KratosMultiphysics/Kratos/wiki/Input-data) (`.mdpa`; tables, geometries, `Mesh` blocks and `Constraints`, including nested sub-model-part geometry/constraint membership, kept in a side channel on every surface; the Kratos IGA geometry beside a deck loaded with it),
@@ -87,7 +87,7 @@ Serial VTK XML readers (`.vtu`, `.vtp`, `.vts`, `.vtr`, `.vti`) accept multiple 
 > [PVD](https://docs.vtk.org/en/latest/vtk_file_formats/vtkxml_file_format.html) (`.pvd`; a time-indexed collection of serial or parallel VTK XML files, read by ParaView),
 > [PVTP](https://docs.vtk.org/en/latest/vtk_file_formats/vtkxml_file_format.html) (`.pvtp`; a parallel index over per-piece `.vtp` files) and
 > [PVTU](https://docs.vtk.org/en/latest/vtk_file_formats/vtkxml_file_format.html) (`.pvtu`; a parallel index over per-piece `.vtu` files, ghost cells and `partition` output included),
-> [STEP](https://en.wikipedia.org/wiki/ISO_10303-21) (a closed surface written as a faceted AP214 solid that CAD tools open; read with the optional OpenCASCADE backend as a triangulation plus its NURBS B-rep) (`.step`, `.stp`),
+> [STEP](https://en.wikipedia.org/wiki/ISO_10303-21) (a closed surface written as an AP214 solid that CAD tools open, one face per plane, cylinder, cone, sphere or torus; read through OpenCASCADE as a triangulation plus its NURBS B-rep) (`.step`, `.stp`),
 > [STL](<https://en.wikipedia.org/wiki/STL_(file_format)>) (`.stl`),
 > [Tecplot](http://paulbourke.net/dataformats/tp/) (`.dat`, `.tec`, and binary `.plt`; FE, ordered, polygonal and polyhedral zones; `.szplt` through a TecIO you supply),
 > [TetGen .node/.ele](https://wias-berlin.de/software/tetgen/fformats.html),
@@ -132,7 +132,7 @@ Install with
 pip install meshioplusplus[all]
 ```
 
-(`[all]` pulls in all optional dependencies. By default, meshio++ only uses numpy.) You can then use the command-line tool
+(`[all]` adds the h5py and netCDF4 runtime extras and the polyscope desktop viewer. By default, meshio++ uses numpy and rich.) The wheels carry the compiled core with OpenCASCADE linked in, so CAD output (`fit_cad`, `to-cad`) and STEP/IGES reading work out of the box. The wheels are licensed `MIT AND (LGPL-2.1-only WITH OCCT-exception-1.0)`, because that kernel is LGPL-2.1 with the OCCT exception; see [`LICENSE-BINARIES.md`](LICENSE-BINARIES.md) and [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). You can then use the command-line tool
 
 <!--pytest-codeblocks:skip-->
 
@@ -169,11 +169,11 @@ meshioplusplus slice      in.vtu out.vtu --normal 0,0,1      # planar cross-sect
 meshioplusplus curvature  in.vtu out.vtu                     # per-vertex mean/Gaussian curvature
 meshioplusplus normals    in.vtu out.vtu --split-angle 30    # point/cell normals, split at creases
 meshioplusplus feature-edges in.stl edges.vtp --angle 45   # sharp/open/non-manifold edges as lines
-meshioplusplus segment    in.stl patches.vtu --curvature-tolerance 1  # smooth patches as regions
+meshioplusplus segment    in.stl patches.vtu --method primitive  # one patch per plane/cylinder/... as regions
 meshioplusplus fit-primitives patches.vtu fits.vtu --json  # plane/sphere/cylinder/cone/torus per patch
-meshioplusplus to-cad part.stl part.step --curvature-tolerance 1 --min-patch-cells 20  # analytic STEP solid (OpenCASCADE builds)
-meshioplusplus convert    in.stl part.step               # a closed skin as a faceted CAD solid
-meshioplusplus convert    part.step part.cad.json        # a CAD model as Kratos IGA geometry (OpenCASCADE builds)
+meshioplusplus to-cad part.stl part.step                 # one STEP face per surface (any build; OpenCASCADE trims and checks)
+meshioplusplus convert    in.stl part.step               # a closed skin as a CAD solid, coplanar facets merged
+meshioplusplus convert    part.step part.cad.json        # a CAD model as Kratos IGA geometry (through OpenCASCADE)
 meshioplusplus hausdorff  a.stl b.stl --max 1e-3             # worst-case distance; nonzero exit above it
 meshioplusplus check      part.vtu -r "scaled_jacobian >= 0.2"  # quality gate: exit 1 on failure, 2 if unchecked
 meshioplusplus regions    in.msh out.msh --union inlet=in_a,in_b --rename "Surface 3=Outlet"  # region algebra
@@ -387,7 +387,7 @@ pairs = meshioplusplus.match_periodic_nodes(mesh, "inlet", "outlet", translate=(
 
 #### Skin to CAD: segment, fit primitives, STEP, CAD faces
 
-The mesh-side half of reverse engineering a triangle skin into a CAD model, with no CAD kernel in the loop, on every surface — Python, C++, C, Fortran, Julia, R, WASM, both CLIs, MCP and the pipeline. **`meshioplusplus.segment(mesh)`** splits a surface into smooth patches by region growing, bounded by its feature edges, with a curvature test that separates a fillet from the planes it is tangent to; the patches come back as `segment:patch` cell data, a patch-adjacency table and one cell region each. **`meshioplusplus.fit_primitives(mesh)`** fits a plane, sphere, cylinder, cone or torus to each patch, deterministically, and keeps the simplest within tolerance — a fit outside it is reported as `none` with its residual, never rounded to a neat primitive. The write-only **`step`** format hands a closed skin to CAD as an AP214 faceted solid (one planar face per facet, shared edges), validated against OpenCASCADE. With the optional OpenCASCADE backend (`-DMESHIOPLUSPLUS_WITH_OCCT=ON`, LGPL-2.1, bring-your-own, never in the wheels), **`meshioplusplus.fit_cad(mesh, path)`** does the CAD half: each fitted patch becomes an analytic face trimmed by its boundary, a rolling-ball fillet (of one radius or a radius varying along it, also between freeform faces) or a helical thread face (straight or rounded, with or without a cylinder beside it) its own face, and any other patch no primitive explains a freeform B-spline face (split first into pieces a plane or an unrolled cylinder parametrises), sewn into a checked solid and written as STEP a CAD tool can edit (or as Kratos CAD JSON), with anything the kernel cannot build demoted to facets, never silently wrong; since v17.2.0 a chamfer, a conic blend, a tapered or variable-pitch thread and a corner where blends meet (a vertex blend) get their own faces too (every surface, WASM through its full artifact; `to-cad` in both CLIs). See [skin to CAD](https://loumalouomega.github.io/meshioplusplus/cad_fit) and [fit CAD](https://loumalouomega.github.io/meshioplusplus/fit_cad).
+The mesh-side half of reverse engineering a triangle skin into a CAD model, with no CAD kernel in the loop, on every surface — Python, C++, C, Fortran, Julia, R, WASM, both CLIs, MCP and the pipeline. **`meshioplusplus.segment(mesh)`** splits a surface into smooth patches by region growing, bounded by its feature edges, with a curvature test that separates a fillet from the planes it is tangent to, or, with `method="primitive"`, one patch per plane, cylinder, cone, sphere or torus its facets lie on; the patches come back as `segment:patch` cell data, a patch-adjacency table and one cell region each. **`meshioplusplus.fit_primitives(mesh)`** fits a plane, sphere, cylinder, cone or torus to each patch, deterministically, and keeps the simplest within tolerance — a fit outside it is reported as `none` with its residual, never rounded to a neat primitive. The **`step`** writer hands a closed skin to CAD as an AP214 B-rep solid with no CAD kernel, validated against OpenCASCADE: each fitted patch one analytic face (plane, cylinder, cone, sphere, torus) bounded by lines and circles, each flat region one planar face with its holes, not one face per triangle (`faces="facet"` keeps that layout). **`meshioplusplus.fit_cad(mesh, path)`** runs the chain on a raw skin and builds the solid: without a CAD kernel through its native backend (the analytic faces above), and with OpenCASCADE (included in the PyPI wheels and the release binaries, on by default from source; LGPL-2.1 with the OCCT exception) doing the whole CAD half: each fitted patch becomes an analytic face trimmed by its boundary, a rolling-ball fillet (of one radius or a radius varying along it, also between freeform faces) or a helical thread face (straight or rounded, with or without a cylinder beside it) its own face, and any other patch no primitive explains a freeform B-spline face (split first into pieces a plane or an unrolled cylinder parametrises), sewn into a checked solid and written as STEP a CAD tool can edit (or as Kratos CAD JSON), with anything the kernel cannot build demoted to facets, never silently wrong; since v17.2.0 a chamfer, a conic blend, a tapered or variable-pitch thread and a corner where blends meet (a vertex blend) get their own faces too (every surface, WASM through its full artifact; `to-cad` in both CLIs). Since v17.11.0 the loop is iterative and tolerance-driven, each stage off by default: **`meshioplusplus.refine_patches(mesh)`** (or `fit_cad(refine_segmentation=True)`) refines a segmentation by variational shape approximation, splitting by seeded RANSAC, merging and absorbing until the patches stop moving; `freeform_general=True` fits a patch the height-field B-spline cannot hold over a conformal disc parametrisation with parameter correction and knot insertion; and `snap_junctions`, `extend_surfaces`, `sew_tolerance` and `face_deviation` tighten the edges and measure each face's two-sided distance to the skin. See [skin to CAD](https://loumalouomega.github.io/meshioplusplus/cad_fit) and [fit CAD](https://loumalouomega.github.io/meshioplusplus/fit_cad).
 
 <!--pytest-codeblocks:skip-->
 
@@ -395,8 +395,9 @@ The mesh-side half of reverse engineering a triangle skin into a CAD model, with
 seg = meshioplusplus.segment(skin, curvature_tolerance=1.0, min_patch_cells=20)
 fit, report = meshioplusplus.fit_primitives(seg, tolerance=2e-3, return_report=True)
 fit.field_data["fit:patch_params"]   # per patch: point, axis, radii, half-angle
-meshioplusplus.write("part.step", skin)                     # faceted solid
-solid = meshioplusplus.fit_cad(fit, "part_cad.step")         # analytic faces (OpenCASCADE)
+meshioplusplus.write("part.step", fit)                      # analytic faces, no CAD kernel
+solid = meshioplusplus.fit_cad(fit, "part_cad.step")         # trimmed and checked (OpenCASCADE)
+meshioplusplus.fit_cad(meshioplusplus.read("bracket.stl"), "bracket.step")  # raw skin, one face per surface
 ```
 
 #### Isogeometric layer: evaluate, refine, sample NURBS models
@@ -755,6 +756,15 @@ report[0]["regions"]                         # the same, independently, per name
 
 Six operations built for the physics-ML surface, each with its own CLI verb, MCP tool, and Python-API and doc page: **`meshioplusplus.compute_curvature`** (per-vertex mean/Gaussian curvature by the angle defect and cotangent Laplace-Beltrami operator — `doc/curvature.md`), **`meshioplusplus.compute_normals`** (point/cell normals with an optional crease split — `doc/normals.md`), **`meshioplusplus.repair`** (fixes a surface's orientation, holes and pinched vertices, the defects `clean` does not touch — `doc/repair.md`), **`meshioplusplus.shrinkwrap`** (projects a mesh's points onto a target surface in one pass — `doc/shrinkwrap.md`), and **`meshioplusplus.sobolev_deform`** (moves points by a raw displacement field filtered through the mesh's own P1 operators — `doc/sobolev_deform.md`). **`meshioplusplus.voxelize`**/**`compute_sdf`** build a regular grid around or over a surface, filled by occupancy or signed distance — `doc/grids.md` and `doc/sdf.md`.
 
+#### Parametric primitives (rectangle, box, disk, spheres, cylinder, reference cells)
+
+Thirteen generators build a shape from parameters, so a test, a notebook or a demo needs no fixture file: `meshioplusplus.rectangle`, `box`, `disk`, `uv_sphere`, `icosa_sphere`, `cylinder`, the planar domains `reference_triangle`, `ngon`, `annulus` (or a sector of one, with a seam pair), `lshape`, `plate_with_hole` and `honeycomb` (a ragged `polygon` block of hexagons), and `reference_cells` (one cell of each type in its reference coordinates). Surfaces come out oriented outward, volumes positive, the boundary as named side regions (`xmin` … `zmax`, `rim`, `side`/`top`/`bottom`, `inner`/`outer`, `hole`), and `order=2` places the mid-edge nodes on the exact geometry, so a quadratic sphere or cylinder is genuinely curved. The same generators are on every surface — C, Fortran, Julia, R, WASM, both CLIs (`meshioplusplus generate box block.vtu --dims 8,8,8 --cell-type tetra`), MCP and the pipeline (`{"Op": "Generate", ...}`, which needs no `Input`). See [parametric primitives](doc/primitives.md).
+
+```python
+block = meshioplusplus.box(dims=(4, 4, 4), cell_type="tetra", order=2)   # tetra10, six side regions
+ball = meshioplusplus.uv_sphere(radius=2.0, nu=24, nv=12, order=2)      # triangle6 on the exact sphere
+```
+
 #### Data operations (rename / average / calc / condition / invariants / summarize)
 
 A second bundle operates on the **data arrays** a mesh carries (`point_data` / `cell_data` / `field_data`) rather than on its geometry, which none of them ever modifies:
@@ -1062,42 +1072,4 @@ Blender ships Python and reads almost no FEA formats. The add-on puts all 43 of 
 
 It is a Blender 4.2+ **extension**, so the meshio++ wheel travels inside the zip — no pip step, no network at install time, nothing to configure. Download `meshioplusplus-<version>-<platform>.zip` from the [latest release](https://github.com/loumalouomega/meshioplusplus/releases) and drag it into a Blender window, or use _Edit / Preferences / Add-ons / Install from Disk_.
 
-Volume meshes arrive as their boundary surface — Blender has no tetrahedron — with each `cell_data` array carried through to the faces of the cell that owned it, so a solid can still be coloured by its material. **Quads and n-gons are kept, not triangulated.** `point_data`, `cell_data` and named regions land as Blender attributes on the right domain.
-
-The same bridge is two public functions, usable from Blender's scripting console: `to_blender(mesh)` and `from_blender(obj)`. See [the Blender docs](https://loumalouomega.github.io/meshioplusplus/blender.html).
-
-</details>
-
-<details>
-<summary><b>ParaView plugin</b> (click to expand)</summary>
-
-### ParaView plugin
-
-<img alt="gmsh paraview" src="https://nschloe.github.io/meshio/gmsh-paraview.png" width="60%">
-*A Gmsh file opened with ParaView.*
-
-If you have downloaded a binary version of ParaView, you may proceed as follows.
-
-- Install meshio++ for the Python major version that ParaView uses (check `pvpython --version`)
-- Open ParaView
-- Find the file `paraview-meshioplusplus-plugin.py` of your meshio++ installation (on Linux: `~/.local/share/paraview-5.9/plugins/`) and load it under _Tools / Manage Plugins / Load New_
-- _Optional:_ Activate _Auto Load_
-
-You can now open all meshio++-supported files in ParaView.
-
-</details>
-
-<details>
-<summary><b>Benchmarks</b> — C++ core vs pure-Python meshio (click to expand)</summary>
-
-### Benchmarks
-
-How much does the C++ core help? The [`benchmark/`](https://github.com/loumalouomega/meshioplusplus/tree/master/benchmark) folder times read/write conversions against the original pure-Python [meshio](https://github.com/nschloe/meshio) on the formats both support (same in-memory mesh, same machine). The headline input is the bundled [`example.msh`](https://github.com/loumalouomega/meshioplusplus/blob/master/example/example.msh) — a real Gmsh bracket (~52k nodes, ~293k cells).
-
-<img alt="meshio vs meshio++ speedup on example.msh" src="https://raw.githubusercontent.com/loumalouomega/meshioplusplus/master/benchmark/plots/benchmark_speedup.svg" width="85%">
-
-meshio++'s biggest wins are the parallel and text paths: **VTU binary+zlib ~16× write** (the zlib blocks run across cores via an OpenMP backend with dynamic scheduling — hybrid P+E-core CPUs load-balance too), **VTU ASCII ~7× write / ~5× read**, and mixed-topology **XDMF read ~10×**. The binary and HDF5 formats that used to be *slower* — VTK/Gmsh binary, UGRID, and MED — are now at or above parity after an optimisation pass (bulk-buffered binary I/O, single-instruction `bswap` endianness conversion, a real parallel backend, an Eigen-backed MED transpose, **zero-copy cell reconstruction** that moves the connectivity buffer straight into the mesh, and uninitialised reader buffers + thread-parallel block copies so nothing is written twice); binary **reads** now match or beat numpy's `fromfile` — Gmsh ~1.7×, single-type VTK ~1.45×, and even mixed-topology VTK ~1.1×. Output stays byte-identical throughout.
-
-The speedup is per-element: text/parallel formats climb out of the small-mesh regime and plateau (large meshes realise the full speedup):
-
-<img alt="speedup vs mesh size" src="https://raw.githubusercontent.com/loumalouomega/meshioplusplus/master/benchmark
+Volume meshes arrive as their boundary surface — Blender has no tetrahedron — with each `cell_data` array carried through to the faces of the cell that owned it, so a solid can still be coloured by its material. **Quads and n-gons are kept, not triangulated.** `point_data`, `cell_

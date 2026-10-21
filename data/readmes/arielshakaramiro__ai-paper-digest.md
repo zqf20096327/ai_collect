@@ -7,17 +7,17 @@ The archive grows into a searchable record of what the field is publishing, plus
 ## Latest digest
 
 <!-- LATEST_DIGEST_START -->
-### 📅 2026-10-19
+### 📅 2026-10-21
 
-1. [SkillBrowser: Selective Skill Exposure for Scalable Skill-Using Agents](https://arxiv.org/abs/2610.23554)
-2. [From Trajectories to Differentiated Skills: Cognitive Differentiation for Self-Improving Agents](https://arxiv.org/abs/2610.23599)
-3. [Darwin-Claw: Environment-Adaptive Experience Consolidation for Recursively Self-Evolving Agents](https://arxiv.org/abs/2610.23574)
-4. [RL-Guided Temporal Localization for Dual-Channel Retrieval in Long-Horizon Agent Memory](https://arxiv.org/abs/2610.23598)
-5. [Enhancing RAG-based Medical VQA with Gated Multimodal Representations](https://arxiv.org/abs/2610.23588)
+1. [Semantic Observability for Autonomous Systems Diagnostics](https://arxiv.org/abs/2610.28611)
+2. [Capable Teacher, Myopic Scorer: Reward-Free Teacher Repair for Agentic On-Policy Distillation](https://arxiv.org/abs/2610.28586)
+3. [Auto-Director: Leveraging Multi-Agent Collaboration for Autonomous Video Editing](https://arxiv.org/abs/2610.28346)
+4. [Context-Aware Prompt Injection Detection via Small Language Models in RAG Pipelines: nokast-secureRAG](https://arxiv.org/abs/2610.28364)
+5. [MAS-Guard: Unified Guardrails from Individual Agents to Multi-Agent LLM Systems](https://arxiv.org/abs/2610.28397)
 
-➡️ 🇬🇧 [Read the full digest](digests/2026/10/2026-10-19.md) · 🇮🇩 [Baca digest lengkap](digests/2026/10/2026-10-19.id.md)
+➡️ 🇬🇧 [Read the full digest](digests/2026/10/2026-10-21.md) · 🇮🇩 [Baca digest lengkap](digests/2026/10/2026-10-21.id.md)
 
-**Stats:** 11 digests · 110 papers archived · last updated 2026-10-19
+**Stats:** 13 digests · 130 papers archived · last updated 2026-10-21
 <!-- LATEST_DIGEST_END -->
 
 ## How it works

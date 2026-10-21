@@ -964,6 +964,7 @@ Table of Contents
 - [miles](http://www.radgametools.com/miles.htm)
 - [criware](http://www.criware.cn/)
 - [artlist](https://artlist.io/)
+- [SFXMint](https://sfxmint.com/) CC0 game and UI sound effects (AI-generated or procedurally synthesized), WAV/MP3 downloads without signup, no-key API and MCP. CC0 游戏/UI 音效库，免注册下载
 - [native-audio](https://assetstore.unity.com/packages/tools/audio/native-audio-107067) unity-plugin
 - [Audio-Manager-for-Unity](https://github.com/microsoft/Audio-Manager-for-Unity) microsoft Audio-Manager-for-Unity
 - https://github.com/IvanMurzak/Unity-AudioLoader
@@ -1207,6 +1208,7 @@ Table of Contents
 - [GrafX2](http://pulkomandy.tk/projects/GrafX2)
 - [GraphicsGale](https://graphicsgale.com/us/)
 #### Normal-Map
+- [Sprite Fusion Sprite Normals](https://github.com/Hugo-Dz/spritefusion-sprite-normals) - Free and open-source tool that generates normal maps from pixel art sprites and animations.
 - [NormalMap AI](https://normalmap.ai/) - Free browser-based normal map and PBR texture generator with local WebGL processing and real-time 3D preview.
 - [cpetry](https://cpetry.github.io/NormalMap-Online/)
 - [crazybump](http://crazybump.com/mac/)  
@@ -1682,4 +1684,21 @@ Table of Contents
 - [PrefabPainter](https://github.com/Roland09/PrefabPainter) github
 - [prefab-brush](https://assetstore.unity.com/packages/tools/utilities/prefab-brush-44846) unity-plugin
 - [landscape-auto-material-64132](https://assetstore.unity.com/packages/tools/terrain/landscape-auto-material-64132)
-- [prefab-painter](https://assetstore.unity.com/packages/tools/painting/pref
+- [prefab-painter](https://assetstore.unity.com/packages/tools/painting/prefab-painter-2-61331) unity-plugin
+- [transform-tools](https://assetstore.unity.com/packages/tools/utilities/transform-tools-177218) unity-plugin
+- [prefab-world-builder](https://assetstore.unity.com/packages/tools/level-design/prefab-world-builder-185406) unity-plugin
+- [grabbit-editor-physics-transforms](https://assetstore.unity.com/packages/tools/utilities/grabbit-editor-physics-transforms-182328) unity-plugin
+- [flexalon-3d-layouts](https://assetstore.unity.com/packages/tools/utilities/flexalon-3d-layouts-230509)
+- [Hey-Area-Object-Spawner](https://github.com/JahnStar/Hey-Area-Object-Spawner)
+- https://github.com/Ogbest/Unity_MapEditor_Terrain 动态渲染Unity地形网格，记录网格是否是玩家的行走范围，然后导出编辑好的网格用于服务器导航、验证使用 https://github.com/frankhjwx/Unity-ShaderCharDisplay
+- https://github.com/Caeden117/ChroMapper -- 地图编辑器 
+- [real-world-terrai](https://assetstore.unity.com/packages/tools/terrain/real-world-terrain-8752) unity-plugin
+- [ntg-unity](https://github.com/hayden-donnelly/ntg-unity)
+- [simple-wall-collider-307337](https://assetstore.unity.com/packages/tools/utilities/simple-wall-collider-307337)
+- [ColliderMeshTool](https://github.com/SinlessDevil/ColliderMeshTool)
+- https://github.com/JohannHotzel/UnityRuntimeTerrain
+#### Procedurally-Generation
+- [real-ivy-2-procedural-ivy-generator](https://assetstore.unity.com/packages/tools/modeling/real-ivy-2-procedural-ivy-generator-181402) unity-plugin
+- [Multi-Terrain-Generator](https://github.com/benjamin-wiemann/Multi-Terrain-Generator)
+- [games.noio.planter](https://github.com/noio/games.noio.planter) The plant simulation from Cloud Gardens as a Unity package for level design.
+- [hedera](https://github.com/radiatoryang/hedera)  paint 3D

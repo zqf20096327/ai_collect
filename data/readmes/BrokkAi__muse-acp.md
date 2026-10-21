@@ -23,6 +23,22 @@ Client implementers should start with the
 Muse method, `_meta` shape, capability, fallback, and the ACP standard fields
 used where they exist.
 
+The workspace also contains a reusable synchronous ACP SDK for both sides of
+the protocol, [`acp-lite`](crates/acp-lite/README.md). Its client side can
+launch any ACP stdio agent, negotiate ACP v1 or v2, stream session updates,
+and route agent requests such as permissions and elicitation through a
+configurable handler. Its agent side answers a client's requests and batches,
+streams notifications, and matches the agent's own requests to the client with
+their answers. It is independent of the adapter binary and of the upstream
+`agent-client-protocol` Rust crate.
+
+Toward Muse, the adapter speaks MSP through
+[`muse-msp-client`](crates/muse-msp-client/README.md), a dependency-free
+synchronous client that launches a configured `muse serve`, performs the
+handshake, correlates requests, routes server requests, and shuts the host
+down within a bounded time. Tools that need Muse sessions without ACP can use
+it directly.
+
 > `muse-acp` is an independent community project. Muse Code and Muse Spark are
 > products of Meta Platforms, Inc. This project is not affiliated with,
 > endorsed by, or supported by Meta.
@@ -57,9 +73,11 @@ flowchart TD
     D -- deny --> F[approval/decide with a rejecting choice + rationale]
 ```
 
-Auto-review is off by default. Select **On** in the **Auto-review**
-selector, next to Approval Mode in clients that render ACP `configOptions`,
-and it applies to that session only. See the
+Auto-review is off by default. Turn on the **Auto-review** toggle (ACP v2,
+or ACP v1 clients that advertise
+`clientCapabilities.session.configOptions.boolean`) or select **On** in the
+**Auto-review** selector (other ACP v1 clients), next to Approval Mode in
+clients that render ACP `configOptions`, and it applies to that session only. See the
 [Auto-review guide](docs/auto-review.md) for the policy, the reviewer's
 inputs, the decision thresholds, and the failure behavior.
 
@@ -237,6 +255,7 @@ variable. See [Auto-review](#auto-review-keep-the-boundary-lose-the-busywork).
 | `MUSE_TOOL_OUTPUT_LIMIT` | `8000` | Editor-facing tool output bound, in characters (minimum 200). |
 | `MUSE_LOG` | `normal` | Set to `debug` for per-method protocol tracing (no payloads). |
 | `MUSE_SHOW_REMINDERS` | off | Set to `1`, `true`, `yes`, or `on` to render each background reminder check as its own transcript card instead of one `Background checks` card. |
+| `MUSE_EDITOR_TOOLS` | on | Set to `0`, `false`, `no`, or `off` to stop giving Muse the [editor tools](#editor-file-access-acp-v1) on ACP v1 clients that advertise `fs` or `terminal`. |
 | `MUSE_ALLOW_UNSCOPED_READS` | off | **Dangerous.** Set to `1`, `true`, `yes`, or `on` to allow local reads outside the approved workspace roots. |
 
 Without `MUSE_COMMAND_TIMEOUT_MS`, admission deadlines are 30 seconds for the
@@ -320,7 +339,14 @@ error the editor shows if Muse then refuses the profile says why.
 ## What's supported
 
 - **Sessions** — new, load, resume, list, close, and fork, with durable Muse
-  session IDs that survive adapter and host restarts. Delete is available on
+  session IDs that survive adapter and host restarts. On Muse 1.4.11+ closing
+  a session also releases it in Muse (`session/leave`), so it stops holding
+  host resources; it stays listed and a resume reloads it. An ACP v2 resume
+  replays history only for `replayFrom: {"type": "start"}`; an omitted or
+  `null` cursor reconnects without replay, and an unsupported or malformed
+  cursor is refused with `-32602` before Muse is asked. Every successful v2
+  resume sends the current `idle`, `running`, or `requires_action` state after
+  any replay and before its response. Delete is available on
   Muse 1.4.1 and 1.4.2 with durable session logs; Muse 1.4.3 no longer
   serves it, so the adapter does not offer it there. Muse deletes only
   sessions it can prove the running host owns, so a session from an earlier
@@ -332,7 +358,12 @@ error the editor shows if Muse then refuses the profile says why.
   cancellation with a terminal event, and exact-turn steering over the
   `_session/steering` extension (ACP v1 and v2). A declined retract keeps the
   prompt and turn targetable until Muse's interrupt terminal arrives; accepted
-  or legacy retracts settle the prompt as cancelled immediately.
+  or legacy retracts settle the prompt as cancelled immediately. On ACP v2
+  every accepted prompt, local commands included, is answered with the
+  inserted user message's `messageId`, and the `user_message` update reuses
+  it. A local command handled from idle reports `running` before its
+  `idle(end_turn)`; a `/feedback` form stopped before the prompt is inserted
+  answers `-32800`.
 - **Approvals** — Muse approval requests surfaced as
   `session/request_permission`, with a deny-safe fallback that explains
   failed or unusable editor replies in the transcript, plus optional
@@ -348,15 +379,31 @@ error the editor shows if Muse then refuses the profile says why.
 - **MCP servers** — stdio and HTTP MCP servers attached by the editor load
   into the Muse session on Muse 1.3.0 and newer; see
   [Client-provided MCP servers](#client-provided-mcp-servers).
+- **Editor file access (ACP v1)** — when an ACP v1 editor advertises
+  `fs.readTextFile` or `fs.writeTextFile`, Muse gets tools that read and
+  write files through the editor (`fs/read_text_file`,
+  `fs/write_text_file`), so the model sees unsaved buffers and the editor
+  tracks its writes; see
+  [Editor file access](#editor-file-access-acp-v1).
+- **Editor terminals (ACP v1)** — when an ACP v1 editor advertises
+  `terminal`, Muse gets a tool that runs a command in an editor terminal
+  (`terminal/create`), shown live on the tool card; see
+  [Editor terminals](#editor-terminals-acp-v1).
 - **Questions** — Muse `userInput/requested` bridged to ACP
   `elicitation/create` forms when the client advertises form support; otherwise
-  the host falls back to auto-cancel. Multi-question prompts are asked one
-  question per form so each confirmed answer is held by the adapter: stopping
-  mid-way (or declining a later question) sends `userInput/interrupt` with the
-  answers already given, which settles the prompt and stops the turn instead
-  of losing them. A question with no confirmed answer stops through the
-  ordinary turn interrupt and is declined through `userInput/cancel` as
-  before.
+  the host falls back to auto-cancel. Each field's `title` is the question's
+  header and the form message is the question text. Options are titled
+  `oneOf`/`anyOf` entries that keep Muse's option `description`, with any
+  option preview under the entry's `_meta.muse.preview`. Option-bearing
+  forms include an **Explain instead** choice and an inline clarification
+  field; choosing it sends `userInput/clarify` instead of a structured
+  answer. Multi-question
+  prompts are asked one question per form so each confirmed answer is held by
+  the adapter: stopping mid-way (or declining a later question) sends
+  `userInput/interrupt` with the answers already given, which settles the
+  prompt and stops the turn instead of losing them. A question with no
+  confirmed answer stops through the ordinary turn interrupt and is declined
+  through `userInput/cancel` as before.
 - **Modes** — Default, Read-only, and Plan, where Muse itself refuses file
   writes and shell commands; see [Read-only and plan modes](#read-only-and-plan-modes).
 - **Configuration** — mode, approval mode, auto-review, model, and reasoning
@@ -501,13 +548,33 @@ error the editor shows if Muse then refuses the profile says why.
   the monitor tool call, and host-truncated text is marked in
   `_meta.muse.truncated`.
 - **File changes** — per-turn workspace file-change reports from the host's
-  native file tools when the client negotiates the AIR extension.
+  native file tools when the client negotiates the AIR extension. Tool cards
+  for Muse's file tools carry standard ACP `locations` (absolute paths from
+  their explicit path arguments), so editors can follow along; shell and
+  other tools never get a guessed location. On ACP v2 a completed edit also
+  carries standard `diff` content (file changes plus `git_patch` text) built
+  from Muse's stored patch; see
+  [the extension contract](docs/acp-extensions.md#commands-messages-and-tool-cards).
+- **Streaming tool output** — on ACP v2, tool output appears in the card as
+  Muse streams it (`tool_call_content_chunk`, within the display budget), and
+  the completed card carries the final bounded output. Shell commands (the
+  `bash` tool and user shells) run in an ACP v2 agent-owned terminal instead:
+  the card references the terminal, which gets the command, streamed output
+  chunks, the bounded final output, and an exit status (a user shell's exit
+  code; a `bash` call records none, so its terminal is only marked exited).
+  ACP v1 keeps text cards.
 - **Stored output** — bounded tool output with head and tail retained, plus
   opt-in `_session/readOutput` access to the host's stored bytes.
 - **Hooks** — `hookRun` items render as hook cards with their event, durable
   outcome, and terminal reason; opt-in `_session/hooks` reads the session's
   installed handler rows (`hook/list`) and labels those cards with each
   handler's origin and enabled switch.
+- **JSON-RPC batches** — ACP v2 batch arrays follow the JSON-RPC 2.0 rules:
+  each entry runs as if sent alone, the answers that are ready leave together
+  as one array, invalid entries get their own `-32600` with `id: null`, an
+  empty array gets a single `-32600`, and a notification-only batch gets no
+  reply. A prompt that waits on its turn is answered alone when it settles.
+  ACP v1 has no batches, so a v1 batch is refused with one `-32600`.
 
 ### Protocol extensions
 
@@ -589,6 +656,77 @@ passes. It needs Muse 1.3.0 or newer: the adapter requests the host's
 The adapter log names forwarded and dropped servers but never prints their
 commands, arguments, URLs, environment values, or headers.
 
+### Editor file access (ACP v1)
+
+An ACP v1 editor can offer the agent its own file system: with
+`clientCapabilities.fs.readTextFile` the agent may ask it for a file's text
+(`fs/read_text_file`), which includes changes the user has not saved, and
+with `fs.writeTextFile` it may hand the editor new text to write
+(`fs/write_text_file`), so open buffers update and the editor tracks the
+change. ACP v2 removed both methods.
+
+Muse runs its own `read_file`, `write_file`, and `edit_file` tools and has no
+way to delegate them, so `muse-acp` gives each session one more MCP server,
+named `editor`, whose tools go through the editor instead. It needs Muse 1.3.0
+or newer (the `sessionMcp` grant).
+
+- **Tools** — `mcp__editor__read_text_file` (`path`, optional `line` and
+  `limit`) with `fs.readTextFile`; `mcp__editor__write_text_file` (`path`,
+  `content`) with `fs.writeTextFile`; and `mcp__editor__edit_text_file`
+  (`path`, `old_string`, `new_string`, optional `replace_all`) with both. Their
+  descriptions ask the model to prefer them to Muse's own file tools; Muse's
+  own tools stay available.
+- **Approvals** — like any MCP tool, every call goes through Muse's approval
+  flow first. "Always allow this MCP tool" keeps a tool from asking again.
+- **Scope** — paths are relative to the session's `cwd` or absolute, and must
+  stay inside the session's roots (`cwd` plus `additionalDirectories`), with
+  symlinks resolved; `MUSE_ALLOW_UNSCOPED_READS` does not widen this. A path
+  outside fails the call without contacting the editor.
+- **Modes** — Read-only and Plan sessions refuse the write and edit tools.
+  Muse's `--disable-write` covers only its own tools, so the adapter enforces
+  this itself.
+- **Tool cards** — cards carry the file as an ACP `location`, and a completed
+  write or edit carries a standard `diff` from the editor's previous text.
+- **Cancel** — `session/cancel` withdraws a waiting editor request with
+  `$/cancel_request` and fails the call.
+- **Transport** — the server listens on `127.0.0.1` on a random port, from
+  the first session that needs it. Each session has its own 256-bit bearer
+  token, sent to Muse in the server's `Authorization` header and never logged.
+  A request with an `Origin` header (any browser) is refused.
+- **Turning it off** — set `MUSE_EDITOR_TOOLS=0`. An editor MCP server of its
+  own named `editor` also takes precedence over the adapter's.
+
+### Editor terminals (ACP v1)
+
+An ACP v1 editor that advertises `clientCapabilities.terminal` runs commands
+for the agent in its own terminals (`terminal/create`,
+`terminal/wait_for_exit`, `terminal/output`, `terminal/kill`,
+`terminal/release`), where the user watches the output. ACP v2 removed these
+methods. Muse's `bash` tool runs inside Muse, so the same `editor` MCP server
+adds `mcp__editor__run_in_terminal` (`command`, optional `cwd` and
+`timeout_seconds`).
+
+- **Running** — the command line runs as `bash -c <command>` (Windows:
+  `powershell.exe -NoProfile -NonInteractive -Command <command>`), in the
+  session's `cwd` or in `cwd`, which must stay inside the session's roots. The
+  editor keeps the last 256 KiB of output. The model gets the output and the
+  exit code or signal; a command that fails still counts as having run.
+- **Tool cards** — the card shows the editor's terminal as soon as it starts
+  (ACP `terminal` content) and keeps it after the command ends, instead of a
+  copy of the output. Its kind is `execute`.
+- **Approvals** — every call goes through Muse's approval flow, and the
+  prompt names the full command (and `cwd`), from the approval's `rawArgs`.
+  Muse 1.4.8 opens the prompt before it sends the arguments; the adapter then
+  retitles the open prompt. The command runs outside Muse's sandbox, in the
+  editor, so "Always allow this MCP tool" lets the model run any command
+  without asking.
+- **Stopping** — `session/cancel` stops a running command: the adapter
+  withdraws its wait with `$/cancel_request`, kills the terminal, and still
+  returns the output so far. A command that outlives `timeout_seconds`
+  (default 120, at most 1800) is killed the same way. Either way the call
+  fails and the terminal is released.
+- **Modes** — Read-only and Plan sessions refuse the tool.
+
 ## How it compares
 
 Several independent projects bridge Muse Code to ACP. Most fall into one of
@@ -602,7 +740,6 @@ current behavior.
 | --- | --- | --- | --- | --- | --- |
 | **muse-acp** (this project) | Rust; single native binary, no runtime | MSP over one long-lived `muse serve` | npm `@brokkai/muse-acp`, release installers, `cargo install` | Zed, JetBrains, any stdio ACP client | Apache-2.0 |
 | [bex-co/muse-code-acp](https://github.com/bex-co/muse-code-acp) | TypeScript; Node.js 22+ | Muse SDK over `muse serve`, with a legacy `muse exec --json` backend (`MUSE_CODE_ACP_BACKEND=exec`) | npm `@bex-co/muse-code-acp` | Zed, VS Code, other ACP clients | Apache-2.0 |
-| [RandyNorthrup/muse-spark-code](https://github.com/RandyNorthrup/muse-spark-code) | TypeScript; Node.js 22+ | Muse SDK over `muse serve` on a Muse subscription, or its own agent loop on a Meta Model API key | npm `muse-spark-code-acp`, VS Code Marketplace extension | VS Code-based editors (extension); Zed, JetBrains, Neovim, Emacs (ACP) | MIT |
 | [1broseidon/muse-acp](https://github.com/1broseidon/muse-acp) | Rust | MSP over `muse serve` | `cargo install --git` | Zed, Hotline, any ACP client | Apache-2.0 |
 | [sanjay3290/muse-acp](https://github.com/sanjay3290/muse-acp) | TypeScript; Node.js 20+ | MSP over `muse serve` | npm `muse-acp` | ACP clients (Zed example) | Apache-2.0 |
 | [julianubico/muse-code-acp-bridge](https://github.com/julianubico/muse-code-acp-bridge) | JavaScript; Node.js 22.13+ | `muse exec --json` JSONL | from source (documented npm name not currently published) | acpx custom agents | MIT |
@@ -611,8 +748,7 @@ current behavior.
 
 Relative adoption, from the npm registry's last-30-day download counts
 (2026-09-19 through 2026-10-18), was about 4.0k for `@bex-co/muse-code-acp`,
-2.5k for `muse-spark-code-acp`, 2.2k for `@brokkai/muse-acp`, and 160 for
-`muse-acp`. Download counts include CI and mirrors, so treat them as an
+2.2k for `@brokkai/muse-acp`, and 160 for `muse-acp`. Download counts include CI and mirrors, so treat them as an
 order-of-magnitude signal, not a usage measurement.
 
 The headless `muse exec --json` design is a good fit for one-shot automation and
@@ -671,7 +807,9 @@ percent-encoded separators, case differences, and symlinks cannot escape the
 approved roots. Only valid UTF-8 text without binary control bytes is expanded,
 up to 256 KiB per resource; malformed `file://` escapes and remote hosts are
 rejected. Setting `MUSE_ALLOW_UNSCOPED_READS` disables this boundary and should
-not be used with untrusted sessions.
+not be used with untrusted sessions. The
+[editor file tools](#editor-file-access-acp-v1) apply the same root check to
+every path and ignore that setting.
 
 ## Authentication and remote environments
 
@@ -687,6 +825,14 @@ adapter's `muse-login` method. It runs `muse-acp login` in a terminal, which
 runs `muse login` with the executable selected by `MUSE_CLI`, so you can
 approve the device code in your browser. You can also run either command
 yourself, then restart the editor agent.
+
+The typed `type: "terminal"` method is advertised only to clients that
+declare terminal auth (`clientCapabilities.auth.terminal: true` on ACP v1,
+`capabilities.auth.terminal: {}` on ACP v2). An ACP v1 client without it still
+gets `muse-login` with the legacy `_meta["terminal-auth"]` command, which is
+how Zed and the ACP Registry check find it. An ACP v2 client without it gets
+no auth method, and its auth-required errors ask you to run `muse login`
+instead of naming a button.
 
 ```sh
 muse-acp login                   # or: npx --yes @brokkai/muse-acp login
@@ -710,13 +856,35 @@ Muse's installer puts `muse` in `~/.local/bin` (`%LOCALAPPDATA%\Programs\muse`
 on Windows, or `MUSE_INSTALL_DIR`), and the adapter looks there when `muse` is
 not on the editor's `PATH`.
 
+Clients that can open a URL elicitation (`elicitation.url`) also get an
+agent-handled method, `muse-device-login`: `auth/login` (v2) or `authenticate`
+(v1) starts Muse's device-code login, the editor opens Muse's sign-in page
+with the code to confirm, and the request succeeds once Muse grants the
+login. Declining the page cancels the login. No credential passes through
+ACP; Muse stores it as `muse login` would.
+
+ACP `auth/logout` (v2) and `logout` (v1, advertised as
+`agentCapabilities.auth.logout`) clear Muse's stored login through Muse's
+`account/logout` and succeed only once `account/read` reports no credential;
+new sessions then fail with `-32000` until you log in again. A
+`META_API_KEY` in the agent's environment cannot be removed from ACP, so
+logout fails and says so instead of pretending. `auth/login` answers
+`-32602`: `muse-login` is a terminal method, which clients run in a terminal
+rather than through `auth/login`.
+
+To clear the login without an ACP client, `muse-acp logout` runs `muse logout`
+in your terminal and reports its exit status, for the same OS user the adapter
+runs as; `npx --yes @brokkai/muse-acp logout` does the same through the npm
+launcher. A `META_API_KEY` in the agent's environment still outranks the stored
+login, so unset it to end that access.
+
 Run the login **where the adapter runs, as the same OS user**. For SSH,
 containers, remote IDE backends, or a different OS account, a login on your
 desktop does not help; log in on the remote host. The adapter never opens a
 browser, never prompts for credentials over ACP stdio, and never copies
 credentials between machines. Its only ACP auth method runs Muse's own login
-in a terminal, and `account/read` never returns key material, so credentials
-stay in the Muse environment.
+in a terminal, and neither `account/read` nor `account/logout` returns key
+material, so credentials stay in the Muse environment.
 
 ## Sandbox advisory for Linux arm64
 
@@ -789,8 +957,8 @@ Before submitting a change:
 
 ```sh
 cargo fmt --check
-cargo clippy --locked --all-targets -- -D warnings
-cargo test --locked
+cargo clippy --locked --workspace --all-targets -- -D warnings
+cargo test --locked --workspace
 cargo run --locked -- --selftest
 node --test npm/test/launcher.test.cjs
 python3 -m unittest discover -s scripts -p 'test_*.py'

@@ -20,7 +20,7 @@
 **同一个 proxy，两个平台，一套模型池：**
 
 - 🇨🇳 **国内 CodeBuddy**（`copilot.tencent.com`）→ GLM-5.3、DeepSeek-V4、Kimi-K3、MiniMax-M3、混元 Hy4 等**国产模型**
-- 🌍 **海外 WorkBuddy AI**（`www.workbuddy.ai`）→ **GPT-5.6-Sol/Terra/Luna、GPT-5.5、GPT-5.4、GPT-5.3-Codex、Gemini-3.5-Flash** 等海外模型，外加 GLM / Kimi / 混元
+- 🌍 **海外 WorkBuddy AI**（`www.workbuddy.ai`）→ **GPT-5.3-Codex** 等海外模型，外加 GLM / Kimi / 混元 / MiniMax / DeepSeek
 
 两个平台使用**完全相同的认证协议**，因此本项目复用同一套代码，启动参数一键切换。
 国内跑不了的 GPT / Gemini 系列，走海外端口即可使用。
@@ -36,7 +36,7 @@
 | **认证 platform** | `VSCode` | `workbuddy-ai` |
 | **Session 文件** | `~/.codebuddy-session.json` | `~/.workbuddy-ai-session.json` |
 | **默认端口** | `8787` | `8788`（自定义） |
-| **模型特点** | 国产模型为主（GLM / DeepSeek / Kimi / MiniMax / 混元） | 含 GPT-5.6 / Gemini 等海外模型 |
+| **模型特点** | 国产模型为主（GLM / DeepSeek / Kimi / MiniMax / MiMo / StepFun / 混元） | GPT-5.3-Codex + StepFun + 与国内共用的国产模型 |
 
 两个平台使用**完全相同的认证协议**（`cli-external-link`，`/v2/plugin/` 前缀），
 因此本项目复用同一套认证与代理逻辑，仅 endpoint / platform / session 不同。
@@ -55,6 +55,9 @@ workbuddy2api/
 │   ├── responses_projection.py      # 消息压缩
 │   ├── projection_metadata.py       # 压缩元数据
 │   ├── anthropic_adapter.py         # Anthropic API 转换
+│   ├── probe_models.py              # 实测探测上游可用模型
+│   ├── clean_logs.py                # 日志清理（默认 dry-run）
+│   ├── install_clean_cron.sh        # 安装 launchd 定时清理
 │   ├── extract_device_token.py      # x-device-token 抓取
 │   └── test_*.py                    # 测试
 ├── pyproject.toml
@@ -193,73 +196,138 @@ model_provider = "codebuddy"
 
 ## 模型列表
 
-### 国内版 CodeBuddy（28 个）
+### 国内版 CodeBuddy（34 个，逐个实测可用）
 
 | 模型 ID | 显示名 | 厂商 |
 |---|---|---|
 | `auto` | Auto | codebuddy |
 | `default` | Default | codebuddy |
+| `fast-model` | Fast | codebuddy |
+| `balanced-model` | Balanced | codebuddy |
+| `deep-model` | Deep | codebuddy |
 | `hy4-preview` | Hy4 preview | tencent |
+| `hy4-preview-f` | Hy4 preview | tencent |
 | `hy3` | Hy3 | tencent |
 | `hy3-x` | Hy3 | tencent |
 | `hunyuan-chat` | Hunyuan-Turbos | tencent |
 | `glm-5.3` | GLM-5.3 | zhipu |
 | `glm-5.3-flash` | GLM-5.3-flash | zhipu |
+| `glm-5.3-flashx` | GLM-5.3-FlashX | zhipu |
 | `glm-5.2` | GLM-5.2 | zhipu |
 | `glm-5.1` | GLM-5.1 | zhipu |
 | `glm-5v-turbo` | GLM-5v-Turbo | zhipu |
 | `kimi-k3` | Kimi-K3 | moonshot |
-| `kimi-k3-1` | Kimi-K3.1（未公开发布） | moonshot |
+| `kimi-k3-1` | Kimi-K3.1 | moonshot |
 | `kimi-k2.8-preview` | Kimi-K2.8-Preview | moonshot |
 | `kimi-k2.7` | Kimi-K2.7-Code | moonshot |
 | `kimi-k2.6` | Kimi-K2.6 | moonshot |
+| `kimi-k2.5` | Kimi-K2.5 | moonshot |
 | `minimax-m3` | MiniMax-M3 | minimax |
+| `minimax-m3.1-flash` | MiniMax-M3.1-Flash | minimax |
 | `minimax-m2.7` | MiniMax-M2.7 | minimax |
+| `mimo-v2.6-pro` | Xiaomi MiMo-V2.6-Pro | xiaomi |
+| `step-5-preview` | Step-5-Preview | stepfun |
 | `space-bunny` | Space-Bunny | tencent |
 | `deepseek-v4-pro` | Deepseek-V4-Pro | deepseek |
 | `deepseek-v4-flash` | Deepseek-V4-Flash | deepseek |
 | `deepseek-v4.1-flash` | Deepseek-V4.1-Flash | deepseek |
-| `codewise-default-model-v2` | Default（补全） | tencent |
-| `codewise-completions` | codewise-completions | tencent |
 | `codewise-rewrite` | codewise-rewrite | tencent |
 | `codewise-jump` | codewise-jump | tencent |
-| `hunyuan-image-alpha` | Hunyuan Image Alpha | tencent |
 | `nes-gf` | nes-gf | tencent |
 
-### 海外版 WorkBuddy AI（21 个）
+> `glm-5.1` 必须携带 `reasoning_effort`（proxy 会自动补 `medium`），
+> 否则上游返回 `code 11150`。它会先输出推理内容，`max_tokens` 过小可能只得到空回复。
+
+### 海外版 WorkBuddy AI（23 个，逐个实测可用）
+
+> 以下为 `personal_free_user` 免费账号实测可用的模型。
+> 免费账号下 GPT-5.6 / GPT-6 / GPT-5.5 / GPT-5.4 / Gemini / Grok / `primary-model`
+> 会被拒（`code 11158 not allowed for user type`）；`deep-model` 等已下线（`code 11102`）。
 
 | 模型 ID | 显示名 | 厂商 |
 |---|---|---|
 | `default-model` | Auto | codebuddy |
 | `fast-model` | Fast | codebuddy |
 | `balanced-model` | Balanced | codebuddy |
-| `primary-model` | Primary | codebuddy |
-| `deep-model` | Deep | codebuddy |
+| `auto` | Auto | codebuddy |
 | `hy4-preview` | Hy4 preview | tencent |
+| `hy4-preview-f` | Hy4 preview | tencent |
 | `hy3` | Hy3 | tencent |
-| `gpt-5.6-sol` | GPT-5.6-Sol | openai |
-| `gpt-5.6-terra` | GPT-5.6-Terra | openai |
-| `gpt-5.6-luna` | GPT-5.6-Luna | openai |
-| `gpt-5.5` | GPT-5.5 | openai |
-| `gpt-5.4` | GPT-5.4 | openai |
 | `gpt-5.3-codex` | GPT-5.3-Codex | openai |
-| `gemini-3.5-flash` | Gemini-3.5-Flash | google |
 | `glm-5.3` | GLM-5.3 | zhipu |
+| `glm-5.3-flash` | GLM-5.3-Flash | zhipu |
 | `glm-5.2` | GLM-5.2 | zhipu |
+| `glm-5.1` | GLM-5.1 | zhipu |
+| `glm-5v-turbo` | GLM-5v-Turbo | zhipu |
 | `kimi-k3` | Kimi-K3 | moonshot |
+| `kimi-k2.8-preview` | Kimi-K2.8-Preview | moonshot |
+| `kimi-k2.7` | Kimi-K2.7-Code | moonshot |
 | `kimi-k2.6` | Kimi-K2.6 | moonshot |
 | `kimi-k2.5` | Kimi-K2.5 | moonshot |
 | `minimax-m3` | MiniMax-M3 | minimax |
+| `minimax-m3.1-flash` | MiniMax-M3.1-Flash | minimax |
+| `space-bunny` | Space-Bunny | tencent |
+| `step-5-preview` | Step-5-Preview | stepfun |
 | `deepseek-v4.1-flash` | Deepseek-V4.1-Flash | deepseek |
 
 > 模型列表会随平台更新变化，以 `GET /v1/models` 的实际返回为准。
 
-### 同步上游模型列表
+#### 海外版 id 带 credits 倍率
 
-`/v1/models` 里的列表是硬编码的。上游发新模型后，可直接拉取云端配置核对：
+海外版 `/v1/models` 实时同步上游 `/v3/config`（缓存 10 分钟，`?refresh=1` 强制刷新），
+返回的 id 会附倍率后缀，方便按成本选模型：
+
+```
+fast-model (x0.34)      balanced-model (x3.31)   primary-model
+deepseek-v4.1-flash (x0.00)                      ← 免费
+step-5-preview (x0.00)                           ← 免费
+gpt-6-sol (x1.33)        gpt-6-astra (x6.67)     gemini-3.8-flash (x0.95)
+```
+
+proxy 转发时会自动把倍率后缀剥回真实 id（`fast-model (x0.34)` → `fast-model`），
+所以客户端把带后缀的 id 原样回传也能正常工作。
+
+> ⚠️ **实时列表会把不可用的模型也列出来**。上游 `/v3/config` 不按账号权限过滤，
+> 免费账号会看到 `gpt-6-*`、`gemini-3.8-flash`、`grok-4.7`、`primary-model` 等，
+> 选中后调用才报 `11158`。上表是实测可用的子集。
+
+### 探测上游可用模型
+
+国内版 `/v1/models` 用硬编码列表，海外版实时同步上游 `/v3/config`。
+用 `probe_models.py` 逐个发真实请求来验证/更新：
 
 ```bash
-# 国内版
+# 先启动 proxy，再探测
+uv run server/probe_models.py                       # 国内版（8787）
+uv run server/probe_models.py --port 8788           # 海外版（8788）
+uv run server/probe_models.py --extra "glm-9.9"     # 追加自定义候选
+uv run server/probe_models.py --from-config         # 顺便从云端配置收集候选
+```
+
+输出会按可用/不可用分组，并标注上游错误码：
+
+| 错误码 | 含义 |
+|---|---|
+| `11102` | `service info not found` —— 模型不存在或已下线 |
+| `11158` | `not allowed for user type` —— 账号权限不足（免费账号用不了 GPT/Gemini） |
+| `11103` | 后端不支持该调用方式（如图像模型走 chat） |
+| `11134` | 上游临时不可用，稍后重试 |
+| `11150` | `reasoning effort` 不支持 —— `glm-5.1` 假失败，proxy 会自动补参数 |
+
+> ⚠️ **`/v3/config?repos=` 的 `models` 不能直接当可用列表**。实测云端会列出已下线的条目
+> （海外版返回 `auto-chat`、`o4-mini`、`enhance-1.0`，调用全部 `11102`），也会漏掉实际可用的
+> 模型（云端配置里没有 GLM / Kimi / DeepSeek）。反之 `gpt-5.6-*` 未出现在云端配置中，
+> 但在付费账号下可用。**唯一可靠方式是实测。**
+
+<details>
+<summary>手动拉取云端配置</summary>
+
+```bash
+# 海外版
+uv run server/workbuddy_ai_client_demo.py --config
+
+# 国内版（注意 User-Agent 必须是 CodeBuddyIDE/<version>，
+# 否则返回 HTTP 400 code 12403 check ua）
 uv run python -c "
 import sys; sys.path.insert(0, 'server')
 from codebuddy_client_demo import CodeBuddyClient
@@ -271,13 +339,9 @@ h = {'User-Agent': 'CodeBuddyIDE/4.10.33259736', 'X-Product': 'SaaS',
 cfg = c._unwrap(c._request('GET', '/v3/config?repos=', headers={**h, **c.auth_headers()}))
 for m in cfg.get('models') or []: print(' ', m.get('id'), '|', m.get('name'))
 "
-
-# 海外版
-uv run server/workbuddy_ai_client_demo.py --config
 ```
 
-> `User-Agent` 必须是 `CodeBuddyIDE/<version>` 形式，否则上游返回
-> `HTTP 400 / code 12403 check ua, get coding copilot version error`。
+</details>
 
 ## 命令行参数
 
@@ -444,6 +508,58 @@ tail -f logs/codebuddy-proxy.jsonl
 # 查看流式事件
 tail -100 logs/codebuddy-proxy.jsonl | jq 'select(.event | startswith("stream"))'
 ```
+
+| 文件 | 内容 | 轮转 |
+|---|---|---|
+| `logs/proxy.log` | 滚动日志（启动信息、诊断） | 按天分片，保留 30 天 |
+| `logs/proxy.log.YYYY-MM-DD` | 历史分片 | 见下方清理脚本 |
+| `logs/codebuddy-proxy.jsonl` | CN 版请求日志（`--log-file` 默认值） | **无轮转** |
+| `logs/proxy-intl.jsonl` | 海外版请求日志 | **无轮转** |
+| `logs/*-start.log` | stdout 重定向 | 无 |
+
+> ⚠️ `.jsonl` 没有轮转，长时间运行会涨到几百 MB，需靠下面的脚本清理。
+>
+> ⚠️ `proxy.log.*` 分片的**文件名日期不可信** —— `TimedRotatingFileHandler`
+> 的 suffix 计算有 off-by-one，可能出现 `proxy.log.2026-10-05` 里装的却是
+> 10-20 的数据。判断新旧一律以 mtime 为准。
+
+### 清理日志
+
+```bash
+uv run server/clean_logs.py                    # 预览（默认，不做任何修改）
+uv run server/clean_logs.py --apply            # 执行
+uv run server/clean_logs.py --retain-days 14   # 保留两周
+uv run server/clean_logs.py --no-rotate        # 只删过期，不动大文件
+```
+
+清理策略：
+
+1. 删除修改时间早于 `--retain-days`（默认 7 天）的 `proxy.log.*` 分片
+2. 删除早于保留期、且未被运行中进程占用的 `*.jsonl`
+3. 对仍在写入但超过 `--max-size-mb`（默认 100MB）的活动 `*.jsonl`，
+   gzip 归档后截断
+
+安全约束：默认 dry-run；**任何正被写入的文件绝不删除**（判据是「被进程占用」
+或「最近 N 分钟改过」，proxy 每次写 jsonl 都会开关文件，所以 lsof 抓不到，
+必须靠 mtime）。
+
+#### 定时清理（macOS launchd）
+
+```bash
+server/install_clean_cron.sh install     # 安装 + 立即触发一次验证
+server/install_clean_cron.sh status      # 查看状态与最近清理日志
+server/install_clean_cron.sh uninstall   # 卸载
+```
+
+默认每天 04:00 执行 `clean_logs.py --apply --retain-days 7 --max-size-mb 100`，
+输出写到 `logs/clean.log`。脚本会按当前项目和用户名动态生成 plist，
+装在 `~/Library/LaunchAgents/`，登录时自动加载。
+
+> 用 launchd 而非 crontab：macOS 上 crontab 需要「完整磁盘访问」权限，且机器休眠会漏跑；
+> `StartCalendarInterval` 漏跑后开机能补一次。
+>
+> 想改频率/保留期就编辑 `server/install_clean_cron.sh` 顶部的 `HOUR` / `MINUTE` /
+> `RETAIN_DAYS` / `MAX_SIZE_MB`，重新 `install` 即可（会先卸载旧的）。
 
 ## 常见问题
 

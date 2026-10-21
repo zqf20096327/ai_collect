@@ -2,11 +2,13 @@
 
 # Bounty Operator
 
-**Find the hole in your report before the triager does.**
+**Make your strongest case before you submit.**
 
-Bounty Operator argues against your bug bounty report before you submit it.
-Give it the draft and the code it cites. It checks every claim against the
-code, the way a triager will, and you get one verdict: `submit`,
+Check your proof, make the impact explicit, and catch missing evidence before the triager has to ask.
+
+Give Bounty Operator the draft and the code it cites. It checks every claim against
+the supplied evidence, confirms supported claims and identifies gaps and
+counterarguments to address. You get one verdict: `submit`,
 `rewrite-then-submit`, `prove-first`, `hold-duplicate` or `drop`. It runs on
 your own model: in the browser, in your coding agent over MCP, or from the
 command line.
@@ -24,11 +26,11 @@ command line.
 - **Every claim tied to file and line.** Findings cite `input-1/src/Vault.sol:142-158`.
   A reference to a file or line you did not supply is flagged. Each review
   downloads as a packet with a SHA-256 manifest of exactly what was reviewed.
-- **The triager's objection first.** Each finding carries its strongest
+- **Counterarguments checked against evidence.** Each finding carries its strongest
   counterargument, whether the source resolves it, and the one missing artifact
   that would settle it.
 - **Your model and your key. Nothing is stored.** OpenRouter, Anthropic, OpenAI,
-  Gemini, xAI, DeepSeek, Mistral, Groq, Infron, OrcaRouter or Bounty Operator with your own key. A hosted review
+  Gemini, xAI, DeepSeek, Mistral, Groq, Novita AI, Nebius Token Factory, Infron, OrcaRouter or Bounty Operator with your own key. A hosted review
   passes your files and your key through bountyoperator.com to that provider.
   Source files, keys and review text are never stored.
 
@@ -38,6 +40,21 @@ command line.
 
 Open [bountyoperator.com](https://bountyoperator.com/) and run the built-in
 example. No account, no API key.
+
+Have a Novita account? [Select Novita AI](https://bountyoperator.com/?provider=novita#workspace)
+and bring your Novita key. It bills model usage separately; Bounty Operator's
+hosted-review account and quota requirements still apply. The
+[Novita setup guide](https://bountyoperator.com/docs/model-selection#novita)
+separates optional affiliate signup from direct key management and discloses
+our commission. Local MCP uses `NOVITA_API_KEY`; remote MCP uses
+`provider: "novita"` with the key in `X-Provider-Key`.
+
+Have a Nebius Token Factory account? [Select Nebius Token Factory](https://bountyoperator.com/?provider=nebius#workspace)
+and bring your Nebius key. It bills model usage separately, and we receive no
+commission; Bounty Operator's hosted-review account and quota requirements
+still apply. See the [Nebius setup guide](https://bountyoperator.com/docs/model-selection#nebius).
+Local MCP uses `NEBIUS_API_KEY`; remote MCP uses `provider: "nebius"` with the
+key in `X-Provider-Key`.
 
 ### Hosted model API
 
@@ -52,7 +69,7 @@ Deployment and payment verification: [hosted API operations](docs/hosted-model-a
 
 ### MCP
 
-Run reviews from Claude Code, Codex, Cursor or any MCP client. The remote
+Run reviews from Claude Code, Codex, Cursor, OpenCode or any MCP client. The remote
 endpoint needs nothing installed.
 
 Claude Code:
@@ -72,6 +89,19 @@ Cursor, in `~/.cursor/mcp.json`:
 ```json
 { "mcpServers": { "bounty-operator": { "url": "https://bountyoperator.com/api/mcp" } } }
 ```
+
+OpenCode v1, merged into the project's `opencode.json`:
+
+```json
+{ "mcp": { "bounty-operator": { "type": "remote", "url": "https://bountyoperator.com/api/mcp", "oauth": false } } }
+```
+
+OpenCode v2 puts the server entry under `mcp.servers` instead of directly under
+`mcp`. Run `opencode --version` before choosing the config, then
+`opencode mcp list` to check the connection. The core workflow uses your agent's
+model and needs no Bounty Operator account. [Versioned configurations and a
+first-review request](https://bountyoperator.com/mcp#install) include local
+setup and optional hosted-review credentials.
 
 The local server reads files by path and keeps review preparation on your
 machine. It needs Node 22 or later:
@@ -104,7 +134,7 @@ each client: [bountyoperator.com/mcp](https://bountyoperator.com/mcp) and
 Python 3.10 or newer. No dependencies.
 
 ```bash
-pip install "git+https://github.com/bountyoperator/bounty-operator@v0.9.18"
+pip install "git+https://github.com/bountyoperator/bounty-operator@v0.9.21"
 bounty-kit agent-pack ./agent-pack.md --target "Example Protocol" --program "Example bounty"
 ```
 
@@ -207,13 +237,13 @@ The gauntlet needs a connection token and a provider key. Set `BOUNTY_OPERATOR_T
 
 The three review skills carry their full method and run on your own model with no account. The hosted stages run on the Bounty Operator server and are not in this repository.
 
-On an Immunefi programme, add Immunefi Studio's own MCP server next to this one. With it connected, the gauntlet and the report challenge find the programme with its `list_programs` tool and, with Instascope access, read the deployed contract's proxy history and live state, and pass what those tools return to the review as files. Create a personal access token at [studio.immunefi.com/agents](https://studio.immunefi.com/agents), then:
+On an Immunefi programme, add Immunefi Studio's official MCP server next to this one. The report challenge and gauntlet resolve the programme with `list_programs`, which returns names and slugs—not scope or rules. They collect the official programme terms separately. With existing Blueprint access, they read the relevant report sections and cited source files for the finding's chain and keep them as evidence, not proof. The gauntlet also reads Instascope's captured state and proxy history when available, preserving stale or missing-data warnings. [The setup guide](https://bountyoperator.com/mcp#immunefi) explains the tools and access limits. If Studio is not already connected, create a personal access token at [studio.immunefi.com/agents](https://studio.immunefi.com/agents), then:
 
 ```bash
 claude mcp add --transport http immunefi-studio https://studio.immunefi.com/api/mcp --header "Authorization: Bearer $IMMUNEFI_STUDIO_TOKEN"
 ```
 
-The token goes from your agent to Immunefi; Bounty Operator never receives it. The gauntlet writes to your Studio workspace only when you say yes.
+Restart your agent and ask “Who am I in Studio?” to check the account through `whoami`. The token goes from your agent to Immunefi; Bounty Operator never receives it. Keep it out of review files. The gauntlet writes to your Studio workspace only when you say yes; neither workflow starts a trial, unlocks a programme or changes a subscription.
 
 ## Paydirt benchmark
 

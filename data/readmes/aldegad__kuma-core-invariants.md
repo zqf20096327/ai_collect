@@ -1,0 +1,100 @@
+**Languages**: English · [한국어](README.ko.md)
+
+<p align="center">
+  <img src="assets/sukuma.png" alt="Sukuma" width="160">
+</p>
+
+<p align="center">
+  <strong>v2.2.0</strong> · Eight fixed invariants for AI-assisted engineering
+</p>
+
+# Alex's Eight Invariants
+
+This must be obeyed.
+
+> A good harness does not worship the model. It observes failure, swaps the adapter, preserves the core's truth.
+>
+> The model changes. The adapter is thrown away. The core remains. That core holds invariants that do not move — not through a model swap, not through a framework rewrite, not through an adapter you ship and throw away.
+>
+> SSoT · SoC/SRP · Consistency · Atomicity · Idempotency · No Silent Fallback · Doc-first & Plan-first · Isolation
+>
+> All eight govern the system and the work of shipping it. They protect structural truth, disciplined work entry, and shared mutable boundaries when two actors move at the same time.
+>
+> This repo is about that core only — the structural failures no adapter can paper over.
+
+## The Eight Invariants
+
+1. `SSoT (Single Source of Truth)` — **A copy is a second truth, and two truths stay two truths no matter which model reads them.**  
+   Every truth the system depends on — data, state, wording, features, tests — must have one canonical owner; everything else links to it. Two concurrent canonical paths are not allowed. A duplicated sentence, feature, or test drifts from its owner, slows every run, and loads the infra. If cache or index state drifts, live truth should repair canonical state instead of creating a second truth. Live text states the current rule; history belongs in version control or a changelog.
+
+2. `SoC / SRP (Separation of Concerns / Single Responsibility)` — **Mixed responsibility survives every refactor until nothing can be changed without breaking something else.**  
+   Code, docs, and tests form one domain taxonomy tree. As in kingdom → phylum → class → order → family → genus → species, every unit has exactly one parent, and a reader descends from the largest domain to the smallest unit without crossing branches. The upper ranks are architecture and domain boundaries (SoC); the lower ranks are module, file, and function (SRP). When one node carries two concerns, split it. Tests sit in the same tree as the code they cover.
+
+3. `Consistency` — **Contradictions don't heal with time. They compound.**  
+   Data, state, and representation should not contradict each other across the system.
+
+4. `Atomicity` — **Half-written state is a second truth no one declared.**  
+   A change should either complete fully or roll back cleanly. Do not expose half-written state.
+
+5. `Idempotency` — **Without idempotency, retries become corruption instead of recovery.**  
+   Repeating the same request should converge on the same result.
+
+6. `No Silent Fallback` — **A silent fallback is the moment the core stops being the core.**  
+   `fallback`, `legacy`, and `shadow path` patterns are not allowed when they silently hide failure or create a second truth. Explicit failover for availability is allowed, but it must be observable and must not change canonical truth.
+
+7. `Doc-first & Plan-first` — **The hour you spend guessing is the minute you refused to read. The week you spend rebuilding is the half-hour you refused to plan.**  
+   Two things come before the work, not after. (a) **Doc-first**: standardized domains (Cloudflare, HTTP encoding, OAuth, browser APIs, AWS/GCP, Kubernetes, build toolchains, etc.) have answers that already live inside one page of official documentation. On a problem in such a domain, the first action is searching the official docs, not dispatching a hypothesis to a worker (or a human). Hypothesis-first work is justified only when the question lives in our own code, our domain rules, or an edge the docs do not cover. (b) **Plan-first**: any non-trivial work goes into a written plan before the first commit. The plan's phases are what trigger doc-first at the right entry points, what give a sequence to recover when something breaks, and what stop ad-hoc fix → commit → deploy spirals. Skipping the plan is justified only on truly trivial one-step work.
+
+8. `Isolation` — **Concurrency is a design surface, not a backend detail.**  
+   Any shared mutable state that can be touched by two actors at once needs an explicit isolation policy. This includes database rows, files, queues, object manifests, caches, in-memory maps, session state, agent runtime state, and UI/server mutation paths. Read-modify-write counters, limit-check-then-insert flows, chained writes, "latest row" hash chains, multi-worker caches, and two agents editing the same truth all need a *named* strategy: atomic operation, single-writer queue, actor/Durable Object, file lock, lease, idempotency key plus unique constraint, `SELECT ... FOR UPDATE`, advisory lock, `SERIALIZABLE` transaction, or an external coordinator. A platform default such as Postgres `READ COMMITTED` is a lower-level mechanism, not the application policy — "the framework handles it" is not a strategy.
+
+## Simplicity
+
+Keep the project and its instructions simple — the eight are held with the least structure that works. Every guard, test, and instruction is something to own, run, and keep consistent, so each one has to earn its place.
+
+- Add a guard or test only when it catches a real failure nothing else catches.
+- Clean up legacy code in the change that touches it.
+- Run only the tests the changed behavior can affect — the branch you changed plus the consumers that depend on it, even on other branches.
+
+## Why these eight
+
+Each invariant names a structural failure the adapter cannot route around — get one wrong and no amount of prompt tuning, retry logic, or model upgrade will save you.
+
+The core/adapter split is also what makes aggressive adapter work safe. You can tune the adapter hard for this month's model precisely because the core underneath does not move. Invert the assumption — let the core drift to accommodate model quirks — and the adapter loses its anchor. The harness starts absorbing problems it was supposed to route around.
+
+Every debate about longevity ("build for next year's model") versus efficiency ("squeeze this month's model dry") dissolves under this split. Longevity lives in the core. Efficiency lives in the adapter. Forcing one layer to do both jobs is how harnesses rot.
+
+## About this repo
+
+`kuma-core-invariants` is a small canonical policy repo for AI-assisted engineering: the invariant text lives in one place, and other repos link to it instead of copying it.
+
+## Repo Layout
+
+- `README.md`: canonical policy text — the only definition
+- `README.ko.md`: Korean translation — derived, pinned to a `README.md` revision by its `source-sha` header
+- `SKILL.md`: agent workflow that defers to `README.md`
+- `checks/`: shallow verification scripts — this repo is not a framework
+- `scripts/`: helper scripts (translation stamping)
+- `.githooks/`: repo-local git hooks (opt-in via `npm run setup`)
+- `examples/AGENTS.md`: drop-in usage example for other repos
+
+## Usage
+
+```bash
+npm run check
+node checks/policy-scan.mjs ../some-repo
+```
+
+`npm run check` validates this repo itself, including the Korean translation's sync state. `policy-scan` is a lightweight heuristic scan for likely invariant violations in another codebase; it is meant to surface review candidates, not replace engineering judgment.
+
+One-time setup to enable the pre-commit hook:
+
+```bash
+npm run setup
+```
+
+When you edit `README.md`, retranslate `README.ko.md`, then run `npm run translate` to restamp its `source-sha`. The pre-commit hook blocks commits where the two are out of sync.
+
+## License
+
+MIT

@@ -51,6 +51,16 @@
 
 ## What's new
 
+- **2.17.0: Skald checks your site** ([changelog](CHANGELOG.md#2170-2026-10-21)). Type the
+  address in Add a site and Skald works out the server, any platform in front, the framework, the
+  host names and the page assets, and suggests the way in. You confirm or change it.
+- **2.16.0: connect a site in a few guided steps** ([changelog](CHANGELOG.md#2160-2026-10-21)).
+  Settings > Connections sends a site's visits to Skald, reads your figures (API) or connects an
+  AI assistant, each as a short dialog with everything filled in and a **Test** at the end. Add a
+  site in five steps you can leave and resume. An install kit with a check script that says what
+  is wrong in plain words, and a private link to share the steps with your developer.
+- **2.15.0: shortened IP addresses and the wording for your privacy notice**
+  ([changelog](CHANGELOG.md#2150-2026-10-20)).
 - **2.14.0: AI answers** ([changelog](CHANGELOG.md#2140-2026-10-18)). What ChatGPT, Perplexity,
   Gemini and Claude answer to your customers' questions, per tracking profile (a place and a
   language): whether they name you, the pages they cite, the competitors they name, and the
@@ -177,7 +187,8 @@ counts, and counted twice.
 ### Works where your site lives
 Your own server's log, or the host's: **Vercel and Netlify log drains**, a **Cloudflare Worker**
 that reports pages served from cache on any plan, CloudFront and Fastly logs, or a small shipper
-from any server. Step by step for Vercel: [docs/VERCEL.md](docs/VERCEL.md).
+from any server. Settings > Connections walks you through each one, with an install kit and a
+**Test connection** button; step by step for Vercel: [docs/VERCEL.md](docs/VERCEL.md).
 
 </td>
 </tr>
@@ -393,6 +404,29 @@ The whole dashboard with 60 days of sample data for a made-up site, in your brow
 the visitor drawer, cities, retention and crawl health, AI answers (made-up answers), Real time with its world map, AI & bots, flags, leads and bookings, the left-out leads and the removed conversions included.
 Nothing to install. Settings, saving and the person search need your own Skald.
 
+### New in 2.17.0: Skald checks your site
+
+<p align="center">
+  <img src="docs/screenshots/site-check.png" alt="Add a site, step 1: example.com typed in, and What Skald found: server nginx on Ubuntu, no platform in front, built with Next.js, host names example.com and www.example.com, page assets /_next/static/, and the suggestion: a Linux server with Docker, the log shipper kit" width="800"><br>
+  <strong>What Skald found.</strong> The server, platform, framework and host names, and the way in it suggests.
+</p>
+
+### New in 2.16.0: connect a site, step by step
+
+<p align="center">
+  <img src="docs/screenshots/connections.png" alt="Settings, Connections: three tasks, send this site's visits to Skald, read your figures (API) and connect an AI assistant (MCP), each with a Set up button; below, your tokens and shared links" width="900"><br>
+  <strong>Connections.</strong> Three tasks, each a short guided dialog with a Test at the end.
+</p>
+
+| | |
+| :---: | :---: |
+| <img src="docs/screenshots/connections-install.png" alt="Send this site's visits to Skald, step 3 of 4, Install: download the install kit (.zip), the copy-and-paste commands to unpack it and run sudo bash install.sh, and Share with your developer" width="440"><br>**Install, filled in.** The kit, the commands, and a private link for your developer. | <img src="docs/screenshots/add-site-wizard.png" alt="Add a site, step 3 of 5, how visits reach Skald: a Linux server with Docker (recommended), the same without Docker, Cloudflare, Vercel or Netlify, or only the script tag" width="440"><br>**Add a site in five steps.** Close it any time; it continues where you left off. |
+
+<p align="center">
+  <img src="docs/screenshots/setup-checklist.png" alt="Overview, Set up this site: logs arriving, visits count as people and countries shown, then the script tag, the lead hook, mail and privacy, each open line with a Set up button" width="900"><br>
+  <strong>Set up this site.</strong> Every open line has a Set up button that walks you through it.
+</p>
+
 ### New in 2.14.0: AI answers
 
 <p align="center">
@@ -445,6 +479,7 @@ Nothing to install. Settings, saving and the person search need your own Skald.
 | <img src="docs/screenshots/mcp-claude.png" alt="Example: adding Skald's MCP server with one command, and the answer of its ai_activity tool" width="460"><br>**MCP in Claude.** Ask about your traffic in plain words. | <img src="docs/screenshots/person-search.png" alt="Person search for the IP address 203.0.113.109: seven visits over 33 days, where it first came from (ChatGPT), its city and device, and every visit as a line of pages, newest first, with the days between them" width="460"><br>**Person search.** One address: every visit kept, across days, and the leads it sent. |
 | <img src="docs/screenshots/person-lead.png" alt="Person search for lead14@example.com: lead #14 as the outcome, the linked IP address, visitor ID and lead, the lead row, the visit that sent its form, its conversions and the pages its visitor ID saw" width="460"><br>**One lead, linked.** Its email, address, visitor ID, form visit and conversions. | <img src="docs/screenshots/leads-left-out.png" alt="Left out of the figures: spam, duplicate and test leads, and a payment marked test, each listed with its row" width="460"><br>**Left out, still listed.** Spam, duplicates and test, never just dropped. |
 | <img src="docs/screenshots/conversions-removed.png" alt="Conversions removed by a lead-database sync, each with when and why, and the pages before it" width="460"><br>**Removed, with when and why.** Cancelled, removed and test conversions. | <img src="docs/screenshots/integrations-status.png" alt="Settings, Integrations: a status line for the hook receiver, the script tag, each hook and the lead database, all OK" width="460"><br>**Integrations status.** Each road: working, or what to fix. |
+| <img src="docs/screenshots/privacy-ip-choice.png" alt="Settings, Data retention, People: keep visitors' IP addresses as Full address, Shortened (last part removed, chosen: 203.0.113.57 is kept as 203.0.113.0) or Don't keep, with what each means and what switching does" width="460"><br>**Shortened addresses.** Full, shortened or none: country and city still work. | <img src="docs/screenshots/privacy-notice.png" alt="Settings, Data retention: the wording for your privacy notice, made from this site's settings: the log sets no cookie, addresses kept shortened for 395 days, names and emails with forms, the script tag keeps no ID and respects Do Not Track and GPC, how to ask for deletion, and a Copy button" width="460"><br>**Privacy-notice wording.** Made from what the site really keeps; copy and paste. |
 | <img src="docs/screenshots/skald-doctor.png" alt="Terminal output of skald doctor: one line per part of the install, OK or OFF; the daily run line says only this week's mail was held back, for a partial day, and that it clears by itself" width="460"><br>**`skald doctor`.** Every part checked; a held-back run names its step. | <img src="docs/screenshots/settings-team.png" alt="Settings: team, roles and invites" width="460"><br>**Team & access.** Roles, invites, two-step sign-in. |
 | <img src="docs/screenshots/integrations.png" alt="Settings: signed Calendly and Stripe hooks with their deliveries, Calendly kept to one event type, and an outgoing webhook to a CRM" width="460"><br>**Integrations.** Signed webhooks from the tools you use. | <img src="docs/screenshots/site-picker.png" alt="Choose a site, after sign-in: a card for example.com and one for shop.example.com, each with its logo, a green Live dot and today's visitors, leads and demos booked, and an Add a site card" width="460"><br>**Choose a site.** Each site's logo and today so far. |
 | <img src="docs/screenshots/site-switcher.png" alt="The site switcher open from the menu's site button: example.com with its logo, a Live dot and a check, shop.example.com with its logo and 56 visitors today, then All sites" width="460"><br>**Site switcher.** Every site with its logo, one click away. | <img src="docs/screenshots/logo-settings.png" alt="Settings, Sites, Logo: the logo at three sizes, found on the site at https://example.com/apple-touch-icon.png, and the three choices: from the site (automatic), upload my own, or a letter on one of four colours" width="460"><br>**Site logo.** From the site, an upload, or a letter on a colour. |
@@ -748,7 +783,12 @@ flowchart LR
   full`), apart from history and behind sign-in, so admins can follow a person across days. An
   install upgraded from before 2.4.0 keeps neither until you turn them on (Settings > Data
   retention > People, or `SKALD_KEEP_IPS=1` / `SKALD_IDENTITY=full`). Your privacy notice must say
-  so first. Off, raw addresses stay only in your own log (14 days), the 6-hour request log (Site > Requests) and
+  so first.
+- **Shortened addresses** (2.15). Keep each visit's IP with its last part removed (203.0.113.57 is
+  kept as 203.0.113.0; IPv6 keeps its first 48 bits): country, city and counts still work, and no
+  exact address is kept (`privacy.keep_ips: short`, `SKALD_KEEP_IPS=short`). Counted twice too.
+- **Wording for your privacy notice** (2.15). Settings > Data retention writes a short text for your
+  privacy page from what the site really keeps, ready to copy. A starting point, not legal advice. Off, raw addresses stay only in your own log (14 days), the 6-hour request log (Site > Requests) and
   today's AI activity.
 - **One true delete.** `skald forget` removes a person's address, visits, conversions, name and
   email everywhere Skald keeps them. Every person search is written to the audit log.
@@ -775,7 +815,7 @@ Skald is **source-available** under the [Elastic License 2.0](LICENSE). You can 
 and self-host it for free, for your own sites or your clients' sites, including at work. The one
 thing you may not do without a commercial licence is offer Skald to others as a hosted or managed
 service. Because of that limit, ELv2 is not an OSI-approved open-source licence, and we do not call it
-one. Questions: [contact us](https://www.spaceo.ca/contact-us/).
+one. Questions: [contact us](https://skaldanalytics.com/contact/?topic=licence).
 
 **Can I use it for my agency's clients?**
 Yes, if you run it for them. Selling access to a hosted Skald that others sign up for is the case that
@@ -795,6 +835,16 @@ Partly. Skald sees each live fetch an assistant makes for a user's question, and
 clicks through, but not the answer the assistant gives. Clicks are a floor, because referrers are
 often stripped. Clicks from Google AI Overviews look like ordinary Google clicks and cannot be told
 apart.
+
+**Does it count visitors who decline or ignore the cookie banner?**
+Yes. Skald counts from your web server's own access log, and the server writes a line for every
+request, whatever the visitor chose on the banner. Skald sets no cookie and stores nothing on the
+visitor's device to count them. The optional script tag is the one part that follows the banner: it
+can wait for consent (`data-consent="required"`), does nothing when Do Not Track or Global Privacy
+Control is on, and keeps no visitor ID unless you turn IDs on. The log holds IP addresses, which are
+personal data in places like the EU: you choose whether Skald keeps them in full, shortened (the last
+part removed) or not at all, and for how long, and Settings > Data retention writes the wording for
+your privacy notice.
 
 **Does Skald keep IP addresses or emails?**
 On a new install, yes: each visit with its IP address and browser (395 days by default), and a
@@ -860,8 +910,7 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) (including the short contributor licence
 ready within one working day. Or join the beta list and we will contact you.
 
 **Want to offer Skald to your own customers as a service?** That needs a commercial licence from
-Space-O Technologies. **[Talk to us](https://www.spaceo.ca/contact-us/)** and say "Skald" in your
-message.
+Space-O Technologies. **[Talk to us](https://skaldanalytics.com/contact/?topic=licence)**.
 
 ## Licence
 
@@ -876,7 +925,7 @@ trademarks of Space-O Technologies; see [NOTICE](NOTICE).
 
 **Rakesh Patel** built Skald.
 
-- CEO, [Space-O Technologies](https://www.spaceo.ca): software development and AI engineering.
+- CEO, Space-O Technologies: software development and AI engineering.
 - CEO, [LabsMedia](https://www.labsmedia.com).
 
 Skald began as a tool for one question on our own website: is AI reading us, and does it send

@@ -462,7 +462,104 @@ skillclaw-evolve-server --engine agent --port 8787 --interval 300 --no-fresh \
 
 Only the server operator needs `openclaw` for `--engine agent`.
 
+### Example: a shared LAN server and two clients
+
+Use one server/NAS directory for shared artifacts, and keep a local proxy and local skills directory on each client. For example:
+
+| Machine | Shared storage path on that machine | Role |
+|---------|-------------------------------------|------|
+| Server | `/srv/skillclaw-share` | Exports the directory via SMB/NFS; runs one evolver for `team-lan` |
+| Alice's computer | `/mnt/skillclaw-share` | Mounts that export; runs Alice's agent and proxy |
+| Bob's computer | `/Volumes/skillclaw-share` | Mounts the same export; runs Bob's agent and proxy |
+
+These paths must refer to **the same mounted storage**, not three unrelated local directories. Mount the export using your OS's SMB/NFS tools before starting SkillClaw, and verify all three machines can read, write, rename, and delete a temporary file there. `sharing.local_root` is a filesystem path, not an HTTP URL. Keep `skills.dir` on each client's local disk, separate from the shared root.
+
+On the server, install the server dependencies above and configure an upstream API key/model that the evolver can call. In a Bash-compatible shell:
+
+```bash
+export OPENAI_BASE_URL="https://your-provider.example/v1"
+export OPENAI_API_KEY="<server-api-key>"
+export EVOLVE_MODEL="<model-id>"
+export EVOLVE_LLM_MAX_TOKENS=8192  # adjust to the model's supported output limit
+mkdir -p ~/skillclaw-team-lan
+cd ~/skillclaw-team-lan
+skillclaw-evolve-server --engine workflow --interval 300 \
+  --storage-backend local --local-root /srv/skillclaw-share --group-id team-lan
+```
+
+Run one evolver per group. The dedicated working directory keeps its history and processed-session state separate from other groups. This example uses periodic processing; omitting `--port` leaves the HTTP trigger server disabled.
+
+On **each client**, install the client, run `skillclaw setup` to choose the local agent and upstream LLM, then configure the mounted share. For Alice:
+
+```bash
+skillclaw config proxy.host 127.0.0.1
+skillclaw config sharing.enabled true
+skillclaw config sharing.backend local
+skillclaw config sharing.skill_backend local
+skillclaw config sharing.session_backend local
+skillclaw config sharing.local_root /mnt/skillclaw-share
+skillclaw config sharing.group_id team-lan
+skillclaw config sharing.user_alias alice
+skillclaw config sharing.auto_pull_on_start true
+skillclaw config sharing.skill_reload_mode poll
+skillclaw config sharing.skill_reload_interval_seconds 30
+skillclaw config evolve.server_url ""
+skillclaw start --daemon
+```
+
+Bob uses the same settings with `sharing.local_root /Volumes/skillclaw-share` and `sharing.user_alias bob`. Each agent connects to its **own** `http://127.0.0.1:30000/v1` proxy. If a proxy was already running, restart it after changing configuration. Client upstream credentials and server upstream credentials are configured separately.
+
+To verify the loop:
+
+1. On one client, back up the local skills directory, then run `skillclaw skills push` to seed the group's skills. On the other, run `skillclaw skills list-remote` and `skillclaw skills pull`. The default full pull mirrors the shared manifest and can remove local-only skills, so seed/review the shared library before enabling it on an existing library.
+2. Use the agent through its local proxy. After session finalization (the default idle timeout is 180 seconds), confirm a session artifact reaches `team-lan/sessions/` in the share. The evolver may consume it on the next cycle.
+3. Inspect server logs and `evolve_history.jsonl` after a processing cycle. Evolution depends on usable evidence and is not guaranteed to create a new skill every cycle. Accepted changes appear under `team-lan/skills/`; each client's poll then pulls them locally.
+
+To synchronize skills without exporting conversation/tool contents, run `skillclaw config sharing.upload_sessions false` and restart the proxy. This disables both periodic and final session uploads, including uploads to a local shared directory. Skill push/pull remains available. Existing shared artifacts, local records, and requests to your inference provider are unaffected. New setup asks explicitly (default: no); existing configurations keep their previous upload behavior until changed.
+
+This setup shares session evidence and generated skills with the group. `group_id` is a namespace, not an access-control boundary; use filesystem/share permissions and separate roots for different trust groups. Automated privacy redaction is not provided by this setup. The default publish mode is `direct`; use the `validated` flow above if clients should review candidates before publication.
+
+For Cloudflare R2, use the **account endpoint**, such as `https://<ACCOUNT_ID>.r2.cloudflarestorage.com`, with `sharing.backend s3`, `sharing.bucket <bucket-name>`, and `sharing.region auto`. Do not append the bucket to `sharing.endpoint`: boto3 sends the bucket separately. SkillClaw rejects that configuration before making a storage request. See the [R2 S3 API documentation](https://developers.cloudflare.com/r2/api/s3/api/).
+
+### Hermes profiles and configuration consent
+
+Hermes configuration changes are disabled by default, including for existing minimal `claw_type: hermes` configurations. Run `skillclaw setup`, select the exact config file, and explicitly allow startup rewrites. Setup uses `HERMES_CONFIG`, then `HERMES_HOME/config.yaml`, then `~/.hermes/config.yaml` as its proposed path and saves the resolved selection in `hermes.config_path`; later environment changes do not redirect that selection. `hermes.configure: false` disables future rewrites.
+
+Setup can optionally import literal `model.base_url`, `model.default`, and `model.api_key` into SkillClaw before changing Hermes. Secret references, OAuth/provider-managed credentials, and an existing SkillClaw proxy endpoint need manual configuration. Review the proposed upstream fields. Default skills follow the selected config’s parent directory; explicitly configured skill paths remain unchanged.
+
+Backups and `skillclaw restore hermes` are scoped to the selected profile. Legacy global backups and backups for another profile are not restored automatically; inspect and copy those manually to the intended file. Repeated startup does not rewrite an already matching config.
+
+### Optional chat upstream fallback
+
+Edit the active `config.yaml` to add up to three ordered OpenAI-compatible chat endpoints (the CLI does not support indexed `fallbacks[0]` assignments):
+
+```yaml
+llm:
+  provider: custom
+  api_base: https://primary.example/v1
+  api_key: <primary-key>
+  model_id: primary-model
+  fallbacks:
+    - api_base: https://backup.example/v1
+      api_key: <separate-backup-key>
+      model_id: backup-model
+```
+
+On a connection failure or HTTP 408/429/500/502/503/504, the proxy tries the next endpoint immediately. Other HTTP errors fail without replaying the request elsewhere; supported temperature/stream compatibility retries remain bounded. Each fallback uses its own key (omitting it means unauthenticated), model, and optional `provider: openrouter`; keys never inherit from the primary. All endpoints must be trusted recipients of the same request content.
+
+The entire operation has six attempts and the existing `SKILLCLAW_LLM_REQUEST_TIMEOUT_S` time budget, including backoff and `Retry-After`. Long final quota windows fail promptly. Native Responses and Bedrock forwarding, and the standalone evolve-server LLM client, do not use this list. Restart the proxy after editing configuration.
+
+### Real-time Chat streaming
+
+OpenAI-compatible `/v1/chat/completions` now forwards `stream: true` incrementally, including separate `reasoning_content` and structured tool-call deltas. The completed turn is recorded once; cancellation or incomplete/error streams close the upstream and do not record a successful turn. Failover is allowed before a successful upstream stream starts, never after emitted output. Errors after HTTP headers are sent appear as an SSE `error` object without `[DONE]`.
+
+Streaming requires structured OpenAI tool calls; textual tool-tag repair is available only for buffered requests. Bedrock and Chat-to-Anthropic/Responses conversion retain their existing behavior. Disable buffering in any reverse proxy in front of SkillClaw.
+
 ## Quick Reference
+
+For one proxy per worktree, set an absolute `SKILLCLAW_HOME` before every CLI invocation (for example, `export SKILLCLAW_HOME="$HOME/.skillclaw-instances/project-main"`). Then run setup and choose a distinct proxy port. A different home isolates config, PID/lock, default log, records/cache, skills, dashboard DB and adapter backups. `SKILLCLAW_CONFIG_FILE` still overrides just the config-file location; explicit data paths remain unchanged.
+
+A new instance home defaults to `claw_type: none`: configure each client/profile manually for its instance port. Agent configuration files themselves are external to the instance home and are not automatically isolated. Use distinct absolute `skills.dir` paths when selecting worktree libraries, and distinct sharing groups/roots or credentials if evolution evidence must stay separate. `group_id` alone is not an access-control boundary. Keep the same home when running `status` or `stop`; changing only the config-file variable does not isolate runtime state.
 
 **Operational model** — Every user has their own `skillclaw` process and `~/.skillclaw/config.yaml`. Each group maps to a `group_id`; one evolve server watches that namespace, turns sessions into skills, and writes them back. Joining a group only requires the correct sharing config on the client side.
 
@@ -486,6 +583,7 @@ skillclaw skills list-remote   # browse shared skills
 **Config reference**
 
 - Client config: `~/.skillclaw/config.yaml` (created by `skillclaw setup`)
+- Evidence age window: set `EVOLVE_EVIDENCE_MAX_AGE_SECONDS` on the evolve server (e.g. `604800` for seven days; default `0` disables filtering). Both engines exclude stale, future, missing or invalid timestamps and retain those objects for review. This uses artifact upload timestamps, not original turn time; it does not expire existing skills or guarantee improvement.
 - Server template: [`evolve_server/evolve_server.env.example`](./evolve_server/evolve_server.env.example) (copy to `.env` to use)
 - Inspect / update config: `skillclaw config show` | `skillclaw config <key> <value>`
 - Repo entry points for contributors: `skillclaw/` (client), `evolve_server/` (backend), `scripts/` (installers)

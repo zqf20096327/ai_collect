@@ -13,6 +13,7 @@ Depends on what you're looking for:
 | Want to... | Open |
 | --- | --- |
 | Run the full XOR network | [`examples/xor_network.py`](examples/xor_network.py) |
+| Check the examples and training results | [Automated checks](#automated-checks) |
 | Understand the XOR architecture | [Lesson 11](notes/11-xor-problem-and-architecture.md) |
 | Follow the complete XOR maths | [Lessons 11 to 16](#xor-network-lessons-11-16) |
 | Start with basic neural networks | [Lesson 01](notes/01-fundamentals.md) |
@@ -61,7 +62,39 @@ Correct predictions: **4/4**
 
 ![XOR loss curve](assets/xor/d11-loss-curve.svg)
 
-All four combinations are part of the training data. This shows the network learned this XOR dataset; it isn't a test on unseen data. I haven't added numerical gradient checking yet.
+All four combinations are part of the training data. This shows the network learned this XOR dataset; it isn't a test on unseen data.
+
+### Verify the backpropagation gradients
+
+To independently check the chain-rule calculations, run:
+
+```bash
+python scripts/check_xor_gradients.py
+```
+
+This compares all 13 analytical gradients against central finite differences on a small, fixed network. It uses nonzero ReLU inputs to avoid comparing derivatives at the ReLU corner. The same check runs automatically in GitHub Actions when the checker or its dependencies change.
+
+## Automated checks
+
+The examples are teaching scripts, so I also keep automated checks to catch accidental regressions. From the repository root, after installing `requirements.txt`:
+
+```bash
+python scripts/check_examples.py
+python scripts/check_xor_training.py
+python scripts/check_xor_gradients.py
+python scripts/check_markdown.py
+```
+
+| Check | What it verifies |
+| --- | --- |
+| [Example smoke tests](scripts/check_examples.py) | Runs all 9 educational Python examples separately, checking for exceptions, failed assertions, and timeouts. |
+| [XOR training regression](scripts/check_xor_training.py) | Repeats the seeded XOR training run; verifies output shapes, finite probabilities, all 4 training labels, and final MSE below 0.01. |
+| [Numerical gradient check](scripts/check_xor_gradients.py) | Compares the analytical backpropagation derivatives with finite differences for all 13 trainable parameters. |
+| [Markdown checks](scripts/check_markdown.py) | Checks documentation code fences, supported math formatting, and local image references. |
+
+GitHub Actions runs these checks automatically when the relevant files change. The [workflow definitions](.github/workflows) are included in the repository.
+
+**Scope:** The XOR check validates a deterministic training run on the four examples used to train the model. It does not measure performance on unseen data.
 
 ## Notes
 
@@ -118,7 +151,21 @@ These match the notes. You can run any one of them from the repo root.
 | [`output_layer_single_step.py`](examples/output_layer_single_step.py) | One output layer backpropagation update |
 | [`xor_network.py`](examples/xor_network.py) | Full XOR training with hidden layer backpropagation |
 
-If you want to work through the scripts in order, start with `neuron.py` and `loss.py`, then move into the NumPy examples. `xor_network.py` is where everything comes together.
+If you're starting from the basics, run these in order:
+
+```bash
+python examples/neuron.py
+python examples/loss.py
+python examples/hidden_layer_numpy.py
+python examples/linear_regression_and_mse.py
+python examples/train_single_neuron.py
+python examples/train_batch_neuron_numpy.py
+python examples/relu_derivative_numpy.py
+python examples/output_layer_single_step.py
+python examples/xor_network.py
+```
+
+Start with a single forward pass and squared error. Then move to NumPy layers, weight updates, and the ReLU derivative. The last two scripts cover an output layer update and full XOR training.
 
 ## Diagrams
 

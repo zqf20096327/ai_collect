@@ -20,7 +20,7 @@ analysis and editing.
 > organizations below the [license thresholds](#license-at-a-glance).
 
 This page is a short tour, not the reference. It names 35 of the 54 tools an agent
-sees by default; the three [manuals](#documentation) run to 35 chapters, about 37
+sees by default; the three [manuals](#documentation) run to 35 chapters, about 38
 times the length of this page.
 
 ## See it answer a code question
@@ -133,22 +133,20 @@ documents the supported forms and fields.
  individual answers or budgeted AI-Builder-MD
 ```
 
-AICB is more than a response cache around Roslyn. During analysis it walks the
-solution's C# documents, records declarations, calls, type references and other
-facts, then consolidates caller and type fan-in, implementations, resolved markup
-references and transitive side-effect classifications. Tools traverse or project
-that warm model for a particular question; context tools select and render a
-task-specific slice. This does **not** mean that every possible answer or runtime
-relationship is precomputed.
+AICB analyzes the solution once and then answers each question from what it
+learned: who calls what, which types use or implement which, what the markup refers
+to and which code reaches outside the program. Follow-up questions therefore come
+back quickly, and the context tools pick and render the part of the code a task
+needs. This does **not** mean that every possible answer or runtime relationship is
+known in advance.
 
-An MCP session belongs to one `aicb mcp` process and pins both the analyzed graph
-and its Roslyn workspace. A second server process builds its own session. The
-desktop app, CLI and MCP server use the same analysis and rendering engine and can
-share configuration and persisted snapshots through the local database, but they
-do not share one live in-memory graph. Within one session, only one refresh runs at
-a time; concurrent callers join it. A source-only edit can take the incremental
-path, replaying changed document text without reloading the workspace. When that
-path is unavailable, or when `force: true` is requested, AICB fully reloads it.
+Each `aicb mcp` process keeps its own live sessions; a second server process
+analyzes on its own. The desktop app, CLI and MCP server give their answers
+from the same engine and can share configuration and saved snapshots through the
+local database, but each keeps its own live analysis. After you edit source files,
+the next refresh usually updates only what changed, without loading the solution
+again; `force: true` loads it completely. Callers that ask for a refresh at the same
+time share one.
 
 ### Live sessions, snapshots and persistent codebase memory
 
@@ -170,10 +168,12 @@ is necessary. See [sessions, recall and staleness](https://github.com/gregordade
 
 ### What the model can and cannot prove
 
-- AICB analyzes statically visible C# and selected XAML/AXAML relationships. Code
+- AICB analyzes statically visible C# (including the C# the Razor generator compiles
+  from `.cshtml` views) and selected Razor, XAML and AXAML relationships. Code
   reached only through reflection, runtime assembly scanning, dynamic configuration
   or an external consumer can remain invisible.
-- DI analysis recognizes statically readable Microsoft-DI-shaped registrations;
+- DI analysis recognizes statically readable Microsoft-DI-shaped registrations and
+  MEF export attributes;
   runtime-produced registrations are disclosed as dynamic or unknown rather than
   invented.
 - XAML binding analysis resolves paths only where the source and data type are safe
@@ -311,15 +311,15 @@ the .NET 10 SDK, installs the published tool, restores the solution and runs
 written:
 
 ```yaml
-- uses: gregordadera/aicb-roslyn-mcp@v0.5.503.1
+- uses: gregordadera/aicb-roslyn-mcp@v0.5.504.1
   with:
-    version: 0.5.503.1
+    version: 0.5.504.1
     solution: App.sln
     output: artifacts/context.md
     fail-on: "critical>0 OR debt>120min"
 ```
 
-The example pins both halves: `@v0.5.503.1` fixes the action, `version` fixes the package it
+The example pins both halves: `@v0.5.504.1` fixes the action, `version` fixes the package it
 installs. Without `version` the action installs the newest published package, and `@main`
 follows every change to the action, so neither belongs in a build you depend on. A release
 tag can in principle be moved; the full commit SHA of that tag is the immutable form. Further
@@ -719,7 +719,7 @@ issues privately as described in [`SECURITY.md`](https://github.com/gregordadera
 ## Documentation
 
 Everything above is the short version. The three manuals below hold the full reference -
-35 chapters, each manual 70,000 to 80,000 words, together about 37 times the length of this
+35 chapters, each manual 70,000 to 83,000 words, together about 38 times the length of this
 README.
 
 - [Getting started](https://github.com/gregordadera/aicb-roslyn-mcp/blob/main/docs/GETTING-STARTED.md) - install, connect and ask the first question

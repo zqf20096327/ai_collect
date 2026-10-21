@@ -6,7 +6,7 @@
 
 <h1 align="center">A.L.I.C.E</h1>
 <p align="center"><b>Autonomous Local Intelligence & Cybernetic Entity</b></p>
-<p align="center"><i>Alice Framework Agi — runs 100% local, zero cloud dependency</i></p>
+<p align="center"><i>Alice Framework Agi — runs fully local, zero cloud dependency</i></p>
 
 <p align="center">
   <code>ANTI-NETRUNNER</code> — Source integrity hashing prevents automated AI scraping and unauthorized code replication. Full source available on request with identity verification.
@@ -42,7 +42,7 @@ ALICE monitors, automates, defends and coordinates everything on a single machin
 ### Core capabilities
 
 - **Local LLM** — Ollama-powered, model loaded in VRAM, zero API keys needed
-- **Chain sync** — continuous background sync with L0 blockchain (chain 31337)
+- **Chain sync** — continuous background sync with L0 blockchain (chain 0)
 - **Self-healing** — auto-recovery from disconnects, crashes, service failures
 - **106-panel dashboard** — React TSX, live metrics via WebSocket, 3 screens
 - **Defense engine** — CYBER ENGINE, firewall, ghost mode, fortress lockdown
@@ -74,7 +74,7 @@ ALICE monitors, automates, defends and coordinates everything on a single machin
 | Dashboard | 106 React TSX panels across 3 screens |
 | AI modules | 36 active (chain sync, defense, monitoring, trading, ...) |
 | MCP server | 36 tools for Claude Code / Cursor |
-| Docker | 7 containers (ALICE-MASTER, ALICE-GENERAL, ALICE-CORE, Ollama, Anvil, PostgreSQL, TOA) |
+| Docker | 7 containers (ALICE-MASTER, ALICE-GENERAL, ALICE-CORE, Ollama, geth, PostgreSQL, TOA) |
 | Tools | 235 automation scripts |
 | Lines of code | 132K |
 | Unit tests | 34 test files (ALICE core) |
@@ -104,8 +104,8 @@ ALICE monitors, automates, defends and coordinates everything on a single machin
                     │               │               │
           ┌────────▼───────┐ ┌─────▼─────┐ ┌──────▼──────┐
           │  THESEED L0    │ │ Dashboard │ │  MCP Server │
-          │  chain 31337   │ │ 106 panels│ │  36 tools   │
-          │  Foundry/Anvil │ │ React TSX │ │  USDC/Base  │
+          │  chain 0   │ │ 106 panels│ │  36 tools   │
+          │  geth PoA      │ │ React TSX │ │  USDC/Base  │
           └────────────────┘ └───────────┘ └─────────────┘
 ```
 
@@ -122,7 +122,7 @@ Starts **3 services** automatically:
 | Service | Description |
 |---|---|
 | **Ollama** | Local LLM (auto-pulls model on first run) |
-| **THESEED Anvil** | L0 blockchain (chain 31337, gasless) |
+| **THESEED geth** | L0 blockchain (chain 0, gasless) |
 | **ALICE Node** | Autonomous agent with LLM + chain sync |
 
 ---

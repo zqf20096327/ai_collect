@@ -149,6 +149,66 @@ Paste a novel, optionally set a **project id** (resume the same `comic_out/<id>/
 
 **The same `web/index.html` is also deployed to GitHub Pages.** The SPA auto-detects whether a backend is present: locally it generates your comic; on the static site it runs in *demo mode* with the identical interface. See `https://phaethix.github.io/inkstone/`.
 
+## Harness A/B
+
+A harness is the editable prompt tree under `core/harness/data/` (system prompt,
+six stage templates, genre packs). The planning-only A/B command compares a
+baseline with a candidate tree without spending image calls:
+
+```bash
+inkstone harness validate --dir path/to/candidate
+inkstone experiment plan \
+  --book examples/showcase/journey-west-ch1/source.txt \
+  --chunk 0 \
+  --candidate base \
+  --candidate path/to/candidate \
+  --out experiments/wuxia-a
+inkstone experiment pick --run experiments/wuxia-a --choice A --why "clearer staging"
+inkstone experiment compose --run experiments/wuxia-a --choice A --out harness/wuxia-a
+inkstone generate examples/scene1.txt --out comic_out/wuxia --harness-dir harness/wuxia-a
+```
+
+The experiment writes an anonymised `candidates/A|B/` packet and a
+`selection.json`. `--candidate` can be repeated; `base` means the builtin tree.
+By default each candidate runs extract + key beats + page plan (no image calls);
+pass `--shared-evidence` for the cheaper page_plan-only probe. `compose` copies
+the picked tree, optionally merging named components from another candidate
+(`--merge-from B --component stage.page_plan`), validates it, and never
+overwrites the builtin tree. `generate --harness-dir` (or
+`INKSTONE_HARNESS_DIR`) runs all six chat stages with that tree; the tree is
+validated before the first billable call and its digest is recorded in the
+review manifest. The image renderer and export keys are unchanged. Set
+`INKSTONE_HARNESS=0` to force the builtin tree and `general` genre and disable
+craft lessons for one release.
+
+The local Web UI has an **A/B** tab for the same experiments: it lists the
+packets under `INKSTONE_EXPERIMENTS_DIR` (default `comic_out/experiments`),
+shows both plans and structure reports with the labels hidden, records your
+pick plus a required `why`, and can compose the picked harness into
+`<experiment>/adopted/` (optionally merging `stage.page_plan` from the other
+candidate). The server fixes that output path; the browser never chooses it.
+
+To refine across several rounds, use sequential recursion:
+
+```bash
+inkstone experiment sequence plan \
+  --book examples/showcase/journey-west-ch1/source.txt \
+  --out experiments/sequence \
+  --candidate path/to/candidate --rounds 2
+inkstone experiment pick --run experiments/sequence/rounds/1 --choice A --why "..."
+inkstone experiment sequence advance --run experiments/sequence
+inkstone experiment sequence status --run experiments/sequence
+```
+
+Each round probes the current checkpoint plus the same candidates; `advance`
+composes the pick into `rounds/<n>/checkpoint` and plans the next round. The
+last advance marks the sequence `done`.
+
+The Web **A/B** tab lists sequences above standalone experiments. Opening one
+shows the current round, the same anonymous plan cards, and an **Advance
+sequence** action after a pick; the APIs are `GET /api/sequences`,
+`GET /api/sequence/<id>`, and `POST /api/sequence/<id>/pick|advance`.
+
 ## Configuration
 
 Inkstone is configured through environment variables (copy `.env.example` → `.env`):
@@ -156,6 +216,7 @@ Inkstone is configured through environment variables (copy `.env.example` → `.
 | Variable | Required | Default | Description |
 |----------|:---:|---|---|
 | `AGNES_API_KEY` | ✅ | — | Free Access tier key; the only thing ordinary users need. |
+| `AGNES_BASE_URL` | | `https://apihub.agnes-ai.com/v1` | Agnes API root ([docs](https://agnes-ai.com/en/docs/agnes-30-flash)). |
 | `AGNES_CHAT_MODEL` | | `agnes-3.0-flash` | Text / tool-calling model ([docs](https://agnes-ai.com/en/docs/agnes-30-flash)). |
 | `AGNES_RATE_LIMIT` | | `20` | Free-tier text + image-1K RPM ceiling (× 0.8 safety factor). |
 | `AGNES_IMAGE_2K_RPM` | | `10` | Free-tier image 2K RPM (max side ≤2048). |
@@ -166,6 +227,12 @@ Inkstone is configured through environment variables (copy `.env.example` → `.
 | `PROVIDER` | | `agnes` | `openai_compat` routes to configured OpenAI-style base URLs. |
 | `OPENAI_COMPAT_*` | | — | Base URL / key / models when `PROVIDER=openai_compat`. |
 | `INKSTONE_L3` | | `0` | Enable the experimental L3 PIL/OpenCV face overlay (`1` to turn on). |
+| `INKSTONE_GENRE` | | `general` | Domain notes for planning: `general` (none) or `wuxia`. The genre layer only adds craft guidance; it cannot override the invariant rules. |
+| `INKSTONE_REVIEW_PACKET` | | `1` | Write a local `review/` evidence packet (effective prompts, source, plans, structure report, decisions). `0` disables it; it is never sent to a model. |
+| `INKSTONE_LESSONS` | | `1` | Inject active craft lessons from `<INKSTONE_DATA_DIR>/library/` into page planning. `0` disables retrieval; approved lessons stay on disk. |
+| `INKSTONE_EXPERIMENTS_DIR` | | `comic_out/experiments` | Root the Web UI **A/B** tab lists. Set it to the parent of the `--out` directories you created. |
+| `INKSTONE_HARNESS_DIR` | | — | Run all chat stages with this harness tree (same layout as `core/harness/data/`). `generate --harness-dir` overrides it. The tree is validated at startup. |
+| `INKSTONE_HARNESS` | | `1` | One-release fallback. `0` forces the builtin tree, ignores the harness dir, forces `general` genre, and disables craft-lesson injection. The review manifest records `harness_fallback: true`. |
 | `INKSTONE_PAGE_SCRIPT` | | `0` | Write legacy PageScript metadata. Off. Not a quality gate. |
 | `INKSTONE_DATA_DIR` | | `~/.inkstone` | Shared quota, budget, and sample-gate files. |
 | `INKSTONE_RENDER_MODE` | | `finished_page` | Default: one finished comic page per image call. Set `panel_compose` to use the legacy storyboard → panel → layout path (recovery when finished pages fail). |

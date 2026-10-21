@@ -18,6 +18,10 @@
 </p>
 
 <p align="center">
+  <a href="https://openchatcut.com/pro"><strong>OpenChatCut Pro</strong></a> · Desktop edition: install it and start cutting
+</p>
+
+<p align="center">
   <a href="#what-is-openchatcut">Introduction</a> ·
   <a href="#product-tour">Product Tour</a> ·
   <a href="#quick-start">Quick Start</a> ·

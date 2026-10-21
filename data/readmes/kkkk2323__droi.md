@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./apps/desktop/resources/icon.svg" width="128" height="128" alt="Droi Logo">
+  <img src="./docs/icon.svg" width="128" height="128" alt="Droi Logo">
 </p>
 
 # Droi
@@ -35,6 +35,7 @@ Droi is a Client of `droid daemon`, the Daemon in the Droid CLI. It shows and dr
 - **Live turns**: watch the reply stream, queue the next message while Droid works (⌘↩ hands it to the running turn), cancel at any time.
 - **Prompts**: allow or deny a tool call and answer Droid's questions. When a Session is open on the Mac and on the phone, both show the prompt and the first answer wins.
 - **Per-Session settings**: model, reasoning effort, autonomy and tool mode (Direct, Both, Script), from the Daemon's own model list.
+- **Magpie models**: with [Magpie](https://usemagpie.ai) running on this computer, its models join the model picker in a tab of their own, with no settings file to edit. Droi reads the gateway's model list and hands it to this computer's Daemon alone; the `droid` CLI keeps its own.
 - **New Sessions**: in a recent Workspace, another folder, or a new folder of its own; paste or drop images into the message.
 - **Around the Session**: slash commands, Skills and MCP Servers, the Workspace's Git changes, and "Open in" Finder or your editor.
 - **Memory**: Droi keeps what Droid learns about you and your Workspaces (conventions, tool quirks, past failures) and gives it back in later Sessions.
@@ -145,7 +146,6 @@ More on the Mac app (its layout, how it matches the Electron app, how to re-reco
 ```
 apps/native/                 the Mac app: Go on MyGo (Host, Gateway, Memory, the window)
 apps/mobile/                 the Phone App (Expo SDK 57, iPhone)
-apps/desktop/                the former Electron app; its package.json carries the release version
 packages/daemon-layer/       the TypeScript daemon layer the Phone App uses
 tests/mobile/                Playwright: the Phone App's web build against the Fake Daemon
 docs/adr/                    architecture decisions

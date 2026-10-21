@@ -2,13 +2,14 @@
 
 # Grantex
 
-### Open-Source AI Agent Authorization and Delegated Access
+### AI Agent Authorization and Delegated Access, with Open-Source SDKs
 
 **What OAuth 2.0 is to humans, Grantex is to agents.**
 
 <br/>
 
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![SDKs: Apache 2.0](https://img.shields.io/badge/SDKs-Apache%202.0-blue.svg)](LICENSING.md)
+[![Platform: Orchestrum Personal Use 1.0](https://img.shields.io/badge/platform-Orchestrum%20Personal%20Use%201.0-orange.svg)](LICENSE)
 [![Spec Version](https://img.shields.io/badge/spec-v1.0--final-green)](https://github.com/mishrasanjeev/grantex/blob/main/SPEC.md)
 [![IETF Draft](https://img.shields.io/badge/IETF-draft--mishra--oauth--agent--grants-blue)](https://datatracker.ietf.org/doc/draft-mishra-oauth-agent-grants/)
 [![OAuth Agent Grants](https://img.shields.io/badge/OAuth_agent_grants-self--tested-3fb950)](https://docs.grantex.dev/guides/oauth-agent-grants)
@@ -50,9 +51,41 @@ or private customer records.
 
 </div>
 
+## Licence
+
+Grantex has two licences. [LICENSING.md](LICENSING.md) lists which directory
+uses which.
+
+| Part | Licence | Use by an organisation |
+|---|---|---|
+| **SDKs and client packages** in [`packages/`](packages/) (TypeScript, Python and Go SDKs, framework integrations, verifiers, MCP, x402 and MPP packages, CLI, Terraform provider and the rest) and the [`examples/`](examples/) | [Apache License 2.0](packages/sdk-ts/LICENSE), open source | Free for any use, including commercial |
+| **The Grantex platform**: the auth service and developer portal (`apps/`), the protocol specification text, documentation and website | [Orchestrum Personal Use License 1.0](LICENSE), source-available, from 21 October 2026 including all updates | Needs prior written permission from Orchestrum Technologies LLP in a signed agreement |
+
+- **Platform, free:** an individual using, copying or changing it for their own
+  personal purposes (learning, personal study, experiments and hobby
+  projects), not acting for, on behalf of or for the benefit of any
+  organisation.
+- **Platform, needs prior written permission from Orchestrum Technologies
+  LLP:** any use by or for an organisation, whether companies, firms, sole
+  proprietors' businesses, charities, schools, universities, research bodies
+  or government, and whether paid or free. That includes evaluation, testing,
+  pilots, internal use, hosting or SaaS, resale, distribution and embedding
+  the platform in another product. Commercial use of the hosted services (the
+  `grantex.dev` APIs) also needs an agreement, even through the open SDKs. See
+  [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md) and write to
+  [sanjeev@orchestrum.in](mailto:sanjeev@orchestrum.in).
+- **Existing users:** releases published before 21 October 2026 remain
+  available under the terms they were released with. Versions and updates of
+  the platform published from that date are not, so an organisation needs
+  written permission to use them.
+- **Names:** "Grantex" and "AgenticOrg" are trademarks of Orchestrum
+  Technologies LLP. Commercial use of the names, logos or brand needs
+  Orchestrum's prior written approval, including with the Apache-licensed SDKs
+  and earlier versions. See [TRADEMARKS.md](TRADEMARKS.md).
+
 ## What is Grantex?
 
-Grantex is an open-source delegated authorization protocol and reference implementation for AI agents. It gives each agent a verifiable identity and scoped, time-limited, revocable authority from a human or organization, with multi-agent delegation, service-side verification, and audit records.
+Grantex is a delegated authorization protocol and reference implementation for AI agents, with open-source SDKs and a source-available server. It gives each agent a verifiable identity and scoped, time-limited, revocable authority from a human or organization, with multi-agent delegation, service-side verification, and audit records.
 
 Grantex complements OAuth 2.0 and MCP: OAuth handles application and user authorization, MCP connects models to tools, and Grantex proves which agent may perform which action for which principal. Use Grantex when an AI agent acts for a person or organization and a relying service must verify exactly what that agent may do.
 
@@ -179,7 +212,7 @@ container images are pinned to immutable digests, and unreviewed npm license
 identifiers fail CI. Run `npm run audit:supply-chain` and
 `npm run audit:python` locally before a release.
 
-Apache-2.0 covers Grantex source, not third-party dependencies. See
+The Grantex licences cover Grantex source, not third-party dependencies. See
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for the current
 Sharp/libvips LGPL and caniuse-lite CC-BY distribution notes, and the
 [supply-chain security guide](docs/guides/supply-chain-security.mdx) for the
@@ -217,7 +250,7 @@ after the scheduled final review.
 
 ## Open Agentic Commerce Protocol (OACP) Authority
 
-Open Agentic Commerce Protocol (OACP) is Grantex's agentic-commerce trust and artifact-authority layer. Grantex governs OACP policy, internal artifact issuance or refusal, verification, and compatibility adapters. AgenticOrg owns buyer and seller AI-agent runtime, merchant self-service onboarding, Shopify connector runtime, future merchant connector setup intent, buyer sessions, channel bridges, OACP cache, and provider-owned capability verification.
+Open Agentic Commerce Protocol (OACP) is Grantex's agentic-commerce trust and artifact-authority layer. Grantex governs OACP policy, signed artifact and mandate issuance or refusal, verification, and compatibility adapters. AgenticOrg owns buyer and seller AI-agent runtime, merchant self-service onboarding, Shopify connector runtime, future merchant connector setup intent, buyer sessions, channel bridges, OACP cache, and provider-owned capability verification.
 
 Merchant systems such as Shopify, future WooCommerce/ERP sources, POS systems, and provider systems remain the source of record. Provider, bank, POS, and payment rails own mandate, payment, and in-store execution. Grantex signs and verifies artifacts; it is not a merchant connector runtime or a toll booth for every buyer and seller message.
 
@@ -225,16 +258,25 @@ Merchant systems such as Shopify, future WooCommerce/ERP sources, POS systems, a
 flowchart LR
   merchant[Shopify, future ERP/WooCommerce, POS, provider systems] --> agentic[AgenticOrg buyer and seller runtime]
   agentic -->|redacted authority request| grantex[Grantex OACP authority]
-  grantex -->|OACP artifacts or blockers| agentic
+  grantex -->|ES256-signed OACP artifacts or blockers| agentic
   agentic --> buyer[Buyer surfaces]
   agentic -->|capability check or handoff| provider[Pine Labs Plural/P3P, bank/POS/provider rails]
 ```
 
 | Area | Current posture |
 | --- | --- |
+| Status (2026-10-20) | Everything in this table is merged to `main` and deployed. In production no OACP issuer key exists yet and `OACP_STATUS_LIST_PUBLIC_ENABLED` is off, so issuance answers `503 oacp_issuer_key_unavailable` and relying parties refuse; the turn-on order is in the [operator runbook](docs/guides/oacp/operator-runbook.mdx). |
 | Grantex C6Z authority route | Implemented at `POST /v1/commerce/oacp/c6z/authority-requests` for allowlisted AgenticOrg tenants. |
-| Artifact families | 11 internal OACP families are issued or refused with source lineage, TTL, freshness, revocation posture, blocked capabilities, non-sensitive evidence refs, and signature metadata. |
-| Protocol adapters | Schema.org, UCP-style, ACP-style, AP2-style, A2A, MCP, and OpenAPI mappings are compatibility mappings derived from OACP artifacts. |
+| Arbiter decision ledger | `POST /v1/commerce/oacp/arbiter-decisions` records every AgenticOrg policy-arbiter decision append-only and countersigns an `allow` with a machine-profile decision grant (`approver_auth: policy_arbiter`); refusals mint nothing, and human decision-grant verifiers refuse the machine profile. |
+| Audit witness | `POST /v1/audit/witness-checkpoints` countersigns AgenticOrg audit chain heads with the platform key (`audit-witness+jwt`); a different hash at a witnessed position is refused as `WITNESS_FORK` and recorded. |
+| Artifact families | The C6Z route issues or refuses 11 OACP families with source lineage, TTL, freshness, revocation posture, blocked capabilities and non-sensitive evidence refs; the revoke and settlement-receipt routes issue `revocation` and `commitment_evidence` artifacts. |
+| Artifact signatures | Each artifact is signed with an ES256 detached JWS (typ `oacp-artifact+jws`) over its RFC 8785 envelope by a DB-backed OACP issuer key (`oacp-...` kid) published in `/.well-known/jwks.json`; keys rotate, retired keys stay published until their artifacts expire, revoked keys are withdrawn. Shared verifier vectors: `spec/examples/oacp/oacp-artifact-jws-v1.json`. |
+| Mandates | Intent, Cart and Payment mandates (`POST /v1/commerce/oacp/mandates/intent\|cart\|payment`, `.../verify`, `.../:jti/revoke`) as ES256 JWTs signed by the OACP issuer key, claims mapped to AP2 v0.2 (`checkout_hash`, `transaction_id`, constraints, `cnf`), each on the OACP Token Status List; issued only within the Commerce Passport cap and an active consent; a `human_present` cart needs a passkey assertion whose challenge is its `checkout_hash` (Grantex extension). See [OACP mandates decision](docs/guides/oacp/mandates-decision.mdx). |
+| Persistence and revocation | Every issue and refusal is stored (`oacp_artifacts`); internal routes read, replay, revoke, suspend and reinstate artifacts. Each artifact is on an OACP Token Status List served at `GET /status/oacp/:list` (behind `OACP_STATUS_LIST_PUBLIC_ENABLED`, default off); revoking issues a signed `revocation` artifact. See [OACP artifact authority](docs/guides/oacp/artifact-authority.mdx). |
+| Protocol adapters | UCP business profile at 2026-04-08 / 2026-08-25 (`dev.ucp.*` only, capabilities backed by issued artifacts; public discovery only for a merchant opt-in with `OACP_PUBLIC_DISCOVERY_ISSUANCE_ENABLED`, default off); ACP `order_create` / `order_update` events for Grantex orders and the delegate-payment allowance from the Commerce Passport cap; UCP identity-linking and Grantex ACP scopes on `@grantex/mcp-auth`; AP2-mapped signed mandates (above); Schema.org, A2A, MCP and OpenAPI compatibility mappings derived from OACP artifacts. |
+| Agent network identity | `@grantex/agent-httpsig` / `grantex-agent-httpsig` sign and verify RFC 9421 agent requests under the Grantex, Visa Trusted Agent Protocol and Web Bot Auth profiles, with TAP body objects and a Grantex consent record object. The registry can serve an HTTP Message Signatures key directory of opted-in agents' keys (`HTTP_SIGNATURE_DIRECTORY_ENABLED`, default off), carry opaque Visa / Mastercard scheme agent ids on agent attestations (`REGISTRY_SCHEME_AGENT_IDS_ENABLED`, default off), and add an operator-mapped KYA tier to the Agent Passport (`AGENT_PASSPORT_KYA_TIER_ENABLED`, default off). See [Agent network identity](docs/guides/oacp/agent-network-identity.mdx). |
+| Settlement evidence | `POST /v1/commerce/oacp/commitment-evidence/settlement-receipts` binds a successful x402 settlement or MPP `Payment-Receipt` to a commitment as a signed `commitment_evidence` artifact (receipt hash, never the payer; recorded as reported, not verified). The artifact schema validates an optional scheme token binding `{scheme, token_ref, agent_id, merchant_scope, limits}` on `mandate_capability` (the C6Z route does not set one yet); Grantex never executes it. |
+| SDK verifiers | `verifyOacpArtifact` / `verifyOacpMandate` in TypeScript, `verify_oacp_artifact` / `verify_oacp_mandate` in Python and `VerifyOacpArtifact` / `VerifyOacpMandate` in Go, against shared vectors in `spec/examples/oacp/`, and the `oacp` conformance suite. Source additions, not yet in a published release. |
 | AgenticOrg runtime | Merchant self-service config, Seller onboarding, Shopify sync, future connector/provider intent capture, cache, buyer Q&A, bridges, and provider capability verification live in AgenticOrg. |
 | Payment/order/POS execution | Outside OACP artifact authority. Provider, POS, and merchant systems must execute and confirm; agents must not invent success. |
 | Historical Commerce V1 docs | Retained for context, but superseded for the AgenticOrg OACP runtime split. |
@@ -422,7 +464,7 @@ grantex agent install --target portable  # writes ./.agents/skills
 
 The bundle installs `use-grantex-cli` for delegated-authorization operations and `integrate-grantex` for service-boundary implementation work. For a different host, use `grantex agent install --dir /path/to/skills`. Prefer `--env`, `--file`, or `--stdin` token inputs and keep final enforcement inside the protected service.
 
-> **35 packages** across TypeScript, Python, and Go. Integrations for **Anthropic SDK, LangChain, OpenAI Agents SDK, Google ADK, Strands Agents SDK, CrewAI, Vercel AI, AutoGen, MCP, Express.js, FastAPI**, and **Terraform**. Use the compatibility matrix for versions, the changelog for release notes, and GitHub Actions for current CI status. Fully self-hostable. Apache 2.0. The new relying-party Python verifier remains private source, not a registry release.
+> **35 packages** across TypeScript, Python, and Go. Integrations for **Anthropic SDK, LangChain, OpenAI Agents SDK, Google ADK, Strands Agents SDK, CrewAI, Vercel AI, AutoGen, MCP, Express.js, FastAPI**, and **Terraform**. Use the compatibility matrix for versions, the changelog for release notes, and GitHub Actions for current CI status. SDKs are Apache-2.0; the self-hostable server is under the Orchestrum Personal Use License 1.0, and any organisation needs written permission (see [Licence](#licence)). The new relying-party Python verifier remains private source, not a registry release.
 
 ---
 
@@ -1114,6 +1156,22 @@ app.use('/api/inference', requireAgentPassport({
 }));
 // req.agentPassport is populated on valid requests
 // 403 with typed error code on invalid requests
+```
+
+### The 402 challenge flow
+
+MPP's HTTP 402 flow is the "Payment" HTTP authentication scheme: `WWW-Authenticate: Payment` on the 402, `Authorization: Payment` on the retry, `Payment-Receipt` on success. (`PAYMENT-REQUIRED` / `PAYMENT-SIGNATURE` / `PAYMENT-RESPONSE` are x402 v2's headers.)
+
+```typescript
+import { requirePayment } from '@grantex/mpp';
+
+app.get('/api/report', requirePayment({
+  secret: process.env.PAYMENT_CHALLENGE_SECRET!,
+  realm: 'api.merchant.example',
+  offers: () => [{ method: 'tempo', intent: 'charge', request: { amount: '1000', currency: 'usd' } }],
+  verifyPayload: async (credential) => verifyWithYourPaymentMethod(credential.payload),
+}), handler);
+// 402 with WWW-Authenticate challenges; on a valid credential, Payment-Receipt and req.payment
 ```
 
 ### Trust Registry
@@ -1953,110 +2011,4 @@ grantex agents update ag_... --redirect-uri https://client.example/grants/callba
 grantex authorize --agent ag_... --principal user@example.com --scopes email:read
 grantex tokens exchange --code <code> --agent-id ag_...
 grantex tokens verify <jwt>
-grantex tokens refresh --refresh-token <token> --agent-id ag_...
-grantex grants delegate --grant-token <jwt> --agent-id ag_child... --scopes email:read
-grantex budgets allocate --grant-id grnt_... --amount 100
-grantex audit list --agent ag_...
-grantex grants revoke grnt_...
-
-# DPDP Act 2023 records (11 subcommands)
-grantex dpdp consent create --grant-id grnt_... --principal-id user@example.com   --notice-id privacy-v1 --processing-expires-at 2027-01-01T00:00:00Z   --purposes '[{"code":"analytics","description":"Usage analytics"}]'
-grantex dpdp consent get <recordId>
-grantex dpdp consent list --principal user@example.com
-grantex dpdp consent withdraw <recordId> --reason "No longer needed"
-# Create a consent notice with the released --notice-version option:
-grantex dpdp notices create --notice-id privacy-v1 --notice-version 1.0 --title "Privacy Notice" --content "We process your data for..." --purposes '[{"code":"analytics","description":"Usage analytics"}]'
-grantex dpdp grievances file --principal-id user@example.com --type unauthorized-processing   --description "Data used beyond the consented purpose"
-grantex dpdp grievances get <grievanceId>
-grantex dpdp erasure user@example.com
-grantex dpdp exports create --type dpdp-audit --date-from 2026-01-01 --date-to 2026-04-01
-grantex dpdp exports get <exportId>
-grantex dpdp principal-records user@example.com
-
-# Machine-readable output for scripts and AI coding assistants
-grantex --json agents list | jq '.[0].agentId'
-```
-
----
-
-## Interactive Playground
-
-Try the full Grantex authorization flow live in your browser — no signup required:
-
-**[grantex.dev/playground](https://grantex.dev/playground)**
-
-Walk through all 7 steps of the protocol: register an agent, authorize, exchange tokens, verify, refresh, revoke, and verify revocation. Uses sandbox mode with your API key.
-
----
-
-## Examples
-
-| Example | Description | Run |
-|---------|-------------|-----|
-| [`quickstart-ts`](examples/quickstart-ts) | Core authorization flow — register, authorize, exchange, verify, audit, revoke | `npm start` |
-| [`quickstart-py`](examples/quickstart-py) | Same flow in Python | `python main.py` |
-| [`nextjs-starter`](examples/nextjs-starter) | **Interactive Next.js app** — full consent UI flow in the browser | `npm run dev` |
-| [`langchain-agent`](examples/langchain-agent) | LangChain agent with scope-enforced tools | `npm start` |
-| [`anthropic-tool-use`](examples/anthropic-tool-use) | Anthropic SDK tool use with scope enforcement | `npm start` |
-| [`vercel-ai-chatbot`](examples/vercel-ai-chatbot) | Vercel AI SDK chatbot with Grantex tools | `npm start` |
-| [`crewai-agent`](examples/crewai-agent) | CrewAI agent with Grantex authorization | `python main.py` |
-| [`openai-agents`](examples/openai-agents) | OpenAI Agents SDK integration | `python main.py` |
-| [`google-adk`](examples/google-adk) | Google ADK agent with Grantex tools | `python main.py` |
-| [`gateway-proxy`](examples/gateway-proxy) | Gateway reverse proxy with YAML config and scope enforcement | `npm start` |
-| [`adapter-google-calendar`](examples/adapter-google-calendar) | GoogleCalendarAdapter with grant token verification | `npm start` |
-| [`multi-agent-delegation`](examples/multi-agent-delegation) | Parent/child delegation with cascade revocation | `npm start` |
-| [`gemma-raspberry-pi`](examples/gemma-raspberry-pi) | Gemma 4 agent on Raspberry Pi with offline auth | `python agent.py` |
-| [`gemma-android-kotlin`](examples/gemma-android-kotlin) | Android Gemma 4 agent with offline verification | Android Studio |
-| [`gemma-ios-swift`](examples/gemma-ios-swift) | iOS Gemma 4 agent with CryptoKit verification | `swift run` |
-| [`quickstart-go`](examples/quickstart-go) | Core authorization lifecycle using the Go SDK | `go run .` |
-| [`multi-agent-email-flow`](examples/multi-agent-email-flow) | Multi-agent email automation with delegation, enforcement, and cascade revocation | `npm start` |
-| [`audit-dashboard`](examples/audit-dashboard) | Audit trail querying, filtering, and hash chain integrity verification | `npm start` |
-| [`token-expiry-refresh`](examples/token-expiry-refresh) | Active-grant refresh rotation, 300-second lost-response recovery, and expired-grant re-authorization | `npm start` |
-| [`x402-agent-demo`](examples/x402-agent-demo) | DPoP-bound agent uses an assigned prepaid wallet through official x402 v2 with durable idempotency | `npm start` |
-| [`x402-weather-api`](examples/x402-weather-api) | Official x402 v2 resource server using Grantex prepaid verify/settle | `npm start` |
-
----
-
-## Architecture
-
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                         YOUR APPLICATION                             │
-│                                                                      │
-│   ┌──────────────┐    ┌──────────────┐    ┌───────────────────────┐ │
-│   │  AI Agent    │    │  Grantex SDK │    │  End User Dashboard   │ │
-│   │  (any model) │◄──►│  (2 lines)   │    │  (view / revoke)      │ │
-│   └──────────────┘    └──────┬───────┘    └───────────────────────┘ │
-└──────────────────────────────┼───────────────────────────────────────┘
-                               │ HTTPS
-                               ▼
-┌──────────────────────────────────────────────────────────────────────┐
-│                         GRANTEX PROTOCOL                             │
-│                                                                      │
-│  ┌─────────────┐  ┌──────────────┐  ┌─────────────┐  ┌──────────┐  │
-│  │  Identity   │  │     Auth     │  │   Consent   │  │  Audit   │  │
-│  │  Service    │  │   Service    │  │     UI      │  │  Chain   │  │
-│  │  (DID/JWKS) │  │ (token i/o)  │  │  (hosted)   │  │ (append) │  │
-│  └─────────────┘  └──────────────┘  └─────────────┘  └──────────┘  │
-└──────────────────────────────────────────────────────────────────────┘
-                               │
-                               ▼
-                ┌──────────────────────────┐
-                │  Any Service / API       │
-                │  Verifies via JWKS       │
-                │  No Grantex dep needed   │
-                └──────────────────────────┘
-```
-
----
-
-## Product Roadmap
-
-The current [product roadmap](ROADMAP.md) prioritizes a 2026.08 production-trust baseline: durable MCP authorization, primary-SDK parity and release safety, revocation-aware enforcement, plan throughput, and production Commerce consent. Repository progress is recorded under [Unreleased](CHANGELOG.md#unreleased); the [release-status guide](https://docs.grantex.dev/release-status), [compatibility matrix](COMPATIBILITY.md), and package-specific documentation remain authoritative for published versions, deployment status, and limitations. The labels below are historical source milestones, not release or production-readiness claims.
-
-| Milestone | Historical scope | Current interpretation |
-|-----------|------------------|------------------------|
-| **v0.1 - Foundation** | Protocol spec, TypeScript and Python SDKs, auth service, consent UI, audit trail, multi-agent delegation, sandbox mode | Historical source milestone |
-| **v0.2 - Integrations** | LangChain, AutoGen, webhooks, Stripe billing, CLI | Historical source milestone; verify package status |
-| **v0.3 - Enterprise** | CrewAI, Vercel AI, compliance exports, policy engine, SCIM/SSO, anomaly detection | Historical source milestone; feature boundaries vary |
-| **v1.0 - Stable Protocol** | Protocol specification v1.0, security material, SOC 2 readiness mapping, individual IETF Internet-Draft | Protocol v1.0 is final; mappings and t
+grantex tokens refresh 

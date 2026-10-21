@@ -8,11 +8,11 @@
 
 # Nyral
 
-> **Project Completed (2026-10-16)** — maintenance mode; no new features planned. A 54-day build retrospective: [END.md](./END.md).
+> **Maintenance mode (2026-10-16)** — security & stability fixes only; no new features planned. A 54-day build retrospective: [END.md](./END.md).
 
-> Self-hosted memory · Bring your own model · Open source · No root
+> Privacy-first · BYO model · Open source · No root · No account
 
-Nyral is an open-source AI agent assistant for Android: LLM chat, long-term local memory, SSH remote operations, web tools, and voice/attachment multimodality in a single app. Data is self-hosted; no root required; no dependency on any third-party server.
+Nyral is an open-source personal agent for Android: LLM chat, long-term local memory, SSH remote operations, web tools, and voice/attachment multimodality in a single app. Data stays on your device by default — no account, no behavioral tracking, no analytics or ad SDKs; model and tools are fully under your control, bring your own API key or self-host an endpoint.
 
 ## Key Features
 
@@ -29,7 +29,7 @@ Nyral is an open-source AI agent assistant for Android: LLM chat, long-term loca
 - Documents (PDF/txt/md/docx/xlsx...): parsed locally, text injected straight into context without burning vision tokens; scanned PDFs auto-rendered to page images for the vision channel
 - Up to 6 attachments per message; in-app fullscreen preview (image zoom / video play / PDF paging / text copy)
 
-**Long-term Memory (self-hosted)**
+**Long-term Memory (on-device)**
 - bge-small ONNX on-device semantic vectors + keyword LIKE dual-path retrieval, SQLite storage
 - Rolling memory: short-term rolling window + single-slot rolling summary (overwritten via `INSERT OR REPLACE id=1`, compressed by auxiliary model) + long-term full text with semantic search
 - Retrieval decision is made per-turn by the auxiliary model over the network (blocks each turn; on failure it silently skips retrieval)
@@ -77,7 +77,7 @@ Nyral is an open-source AI agent assistant for Android: LLM chat, long-term loca
 
 ```bash
 git clone https://github.com/aixtin/nyral.git
-cd nyral/android-agent-app
+# repo root is the project root; no cd needed
 ./gradlew assembleDebug
 # Output: app/build/outputs/apk/debug/app-debug.apk
 ```
@@ -126,8 +126,9 @@ android-agent-app/
 
 ## Data & Privacy
 
-- Conversations, memory, token stats, and SSH config (encrypted storage) stay on-device
-- No telemetry; the only startup external request is the GitHub Release update check (404 ignorable)
+- Conversations, memory, token stats, and SSH config (encrypted storage) stay on-device by default; no account system
+- No behavioral tracking, no analytics/ad SDKs; the only outbound diagnostic is **anonymous crash reporting** (device model, Android version, crash stack, last 30 runtime log lines — never chat content or PII), on by default and one-tap disable in Appearance Settings → Quick Switches
+- The only other startup external request is the GitHub Release update check (404 ignorable)
 - **Note**: chat messages and attachment contents are sent to the model endpoint you configure (OpenAI-compatible); self-host an endpoint for full privacy
 - Permission list and security design (DebugServer protections / dangerous-op gates / data boundaries): see [SECURITY.md](SECURITY.md)
 
@@ -153,12 +154,15 @@ android-agent-app/
 
 ## Changelog
 
-- **[Latest] v2.7.0 (2026-10-16, versionCode 48)**: Project finale — closure essay END.md linked from README finale declaration; Trae fixes (SecurityUi confirmation-bridge leak / mdExecutor thread-pool leak / MCP client concurrency safety); new write_clipboard clipboard tool with tool_detail tool index; final release artifact rebuilt from latest main.
-- **v2.6.0 (2026-10-15, versionCode 47)**: Scheduled-job station MVP — AI creates recurring tasks (timer_task_create): goal analysis, dangerous-tool authorization list with per-item purposes, task-create shell for one-shot approval, silent creation refused; per-task authorization lifecycle tied to task lifecycle; task-level capability pre-authorization (white-listed dangerous tools bypass confirmation during silent runs); X-Nyral-Task-ID request header injection so remote ends can identify task-originated requests; execution-complete system notification (notifyTaskDone); single-shot alarm renewal & stale-alarm reschedule fixes; authorization dialog list rendering fix. Security audit page (AuditActivity) title no longer overlapped by the system status bar (consumed window insets on Android 15+ edge-to-edge).
-- **v2.5.3 (2026-10-10, versionCode 46)**: Chat background bar transparency — title bar / input bar can be set to opaque / translucent / static frosted glass in the chat background settings (message area excluded); frosted glass uses the custom image background and blurs statically; input/title bar corners unified to all-rounded, divider inset 16dp to clear the rounded arcs.
+- **[Latest] v2.8.2 (2026-10-20, versionCode 65)**: Patch release — welcome-card danger-gate buttons: the unselected "auto" mode now uses an opaque Ui.PRIMARY_LIGHT background (same as "strict") instead of a 35% translucent PRIMARY fill that looked black on dark chat backgrounds.
+- **v2.8.1 (2026-10-20, versionCode 64)**: Patch release — memory-table robustness: MemoryDb v12 migration + onOpen idempotent column backfill (src_session_id/src_msg_no) fixing a guaranteed MemoryListActivity crash on old databases; app-wide theme migration from stock Material.Light to Theme.Nyral; back buttons switch from the "‹" glyph to the Lucide arrow icon; unified popup entrance animation fadeScaleShow (fade-in + 0.92→1.0 scale, replaces jelly bounce / ink bloom); page transition animations; MemoryListActivity popup no longer flips under the trigger button.
+- **v2.8.0 (2026-10-20, versionCode 63)**: Opt-in knowledge base (default off) — after each AI discussion, content is asynchronously distilled into chaptered local knowledge books with library / entry / trash / audit UIs; video_frame default multi-frame sampling (0/30%/60%/95%) when timeMs omitted, single-frame timeMs out-of-range now errors with the real video duration (no more fake @14s/@20s labels) and every frame result appends "(video total Xs)"; LocalEngine vision-block rules force per-frame description for multi-frame sampling (no first-frame-only video summaries); empty-argument circuit breaker (workdir empty action / sh_run empty script fail fast with clear errors); thought-panel width decoupled from chat (toggleStatusDrop / wMaxLimit / chatMaxW, dual-mode right-edge fix); ANR watchdog collection; document placeholder page with model-hallucination warning ("don't over-trust AI \u2014 trust yourself"); tool specs emphasize file_export for artifact delivery; supporting UiKit / MainActivity refactor.
+- **v2.7.0 (2026-10-16, versionCode 48)**: Project finale — closure essay END.md linked from README finale declaration; Trae fixes (SecurityUi confirmation-bridge leak / mdExecutor thread-pool leak / MCP client concurrency safety); new write_clipboard clipboard tool with tool_detail tool index; final release artifact rebuilt from latest main.
 
 <details>
-<summary>Older versions (v2.5.2 and earlier, 19 releases)</summary>
+<summary>Older versions (v2.6.0 and earlier, 21 releases)</summary>
+- **v2.6.0 (2026-10-15, versionCode 47)**: Scheduled-job station MVP — AI creates recurring tasks (timer_task_create): goal analysis, dangerous-tool authorization list with per-item purposes, task-create shell for one-shot approval, silent creation refused; per-task authorization lifecycle tied to task lifecycle; task-level capability pre-authorization (white-listed dangerous tools bypass confirmation during silent runs); X-Nyral-Task-ID request header injection so remote ends can identify task-originated requests; execution-complete system notification (notifyTaskDone); single-shot alarm renewal & stale-alarm reschedule fixes; authorization dialog list rendering fix. Security audit page (AuditActivity) title no longer overlapped by the system status bar (consumed window insets on Android 15+ edge-to-edge).
+- **v2.5.3 (2026-10-10, versionCode 46)**: Chat background bar transparency — title bar / input bar can be set to opaque / translucent / static frosted glass in the chat background settings (message area excluded); frosted glass uses the custom image background and blurs statically; input/title bar corners unified to all-rounded, divider inset 16dp to clear the rounded arcs.
 
 - **v2.5.2 (2026-10-08, versionCode 45)**: Gesture interaction overhaul — unified three-panel gesture rules (left drawer: expand by control, close by right-to-left swipe while open; browser panel: toggle by double-tap on right edge; right hamburger panel: expand by control, close by left-to-right swipe); fixed left-drawer swipe-follow lag — DrawerDragController now positions panel/mask/offset immediately once interception is decided (Android gesture interception swallows the triggering MOVE, causing the panel to lag until dx=-200); BrowserSlideController reworked (-96 lines).
 - **v2.5.1 (2026-10-07, versionCode 44)**: Fixed browser scan returning 0 / hanging under screen-off — waitStable double requestAnimationFrame kick-off replaced with setTimeout (background WebView rAF never fires, scan never settles); DebugServer now routes /v1/browser/text (fetchTextSync was implemented but unregistered, returned 404); added WAKE_LOCK permission for screen-off keep-alive.
@@ -184,9 +188,9 @@ android-agent-app/
 
 ## Privacy
 
-Nyral is designed to keep your data local-first. Conversations, memories, attachments and logs are stored on your device. Text embedding runs fully on-device. Model inference, however, runs remotely: both the main chat model and the auxiliary memory-judge/compression model are called over the network via OpenAI-compatible endpoints (a local GGUF inference engine is not yet integrated).
+Nyral is designed privacy-first. Conversations, memories, attachments and logs stay on your device by default. Text embedding runs fully on-device. Model inference, however, runs remotely: both the main chat model and the auxiliary memory-judge/compression model are called over the network via OpenAI-compatible endpoints. On-device inference (e.g., local GGUF engines) is not supported.
 
-For model responses, the App sends your message content to the model service provider configured in Settings (DeepSeek by default; Zhipu GLM, Xiaomi MiMo and custom endpoints are supported). The App does not operate its own cloud service and does not include analytics or advertising SDKs.
+For model responses, the App sends your message content to the model service provider configured in Settings (DeepSeek by default; Zhipu GLM, Xiaomi MiMo and custom endpoints are supported). The App operates no cloud service for chat, requires no account, and includes no analytics, advertising or behavioral-tracking SDKs. The only outbound diagnostic is anonymous crash reporting (on by default, disable anytime — see Data & Privacy above).
 
 See [PRIVACY.md](PRIVACY.md) for details.
 

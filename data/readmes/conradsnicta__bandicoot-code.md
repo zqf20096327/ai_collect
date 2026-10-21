@@ -1,8 +1,8 @@
-Bandicoot: C++ library for linear algebra & scientific computing, providing Armadillo-like API on GPUs 
-
-* **Git repo:**  [gitlab.com/bandicoot-lib/bandicoot-code](http://gitlab.com/bandicoot-lib/bandicoot-code)  
+Bandicoot: C++ library for GPU accelerated linear algebra, providing Armadillo-like API on GPUs 
 
 * **Releases:**  [coot.sourceforge.io/download.html](http://coot.sourceforge.io/download.html)
+
+* **Git repo:**  [gitlab.com/bandicoot-lib/bandicoot-code](http://gitlab.com/bandicoot-lib/bandicoot-code)
 
 * **Bug Reports & Questions:**  [coot.sourceforge.io/faq.html](http://coot.sourceforge.io/faq.html)
 

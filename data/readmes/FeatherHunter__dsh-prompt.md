@@ -36,10 +36,10 @@ npm install -g @deepseek-ai/dsh
 dsh plugin --profile web add dsh-prompt     # 用自启 web 服务（dsh web）
 #     或者
 dsh plugin --profile desktop add dsh-prompt   # 用 DSH Desktop 桌面应用
-# 锁定最新版更稳（当前 0.4.37）：
-dsh plugin --profile web add dsh-prompt@0.4.37 --registry https://registry.npmjs.org
+# 锁定最新版更稳（当前 0.4.38）：
+dsh plugin --profile web add dsh-prompt@0.4.38 --registry https://registry.npmjs.org
 #     或者
-dsh plugin --profile desktop add dsh-prompt@0.4.37 --registry https://registry.npmjs.org
+dsh plugin --profile desktop add dsh-prompt@0.4.38 --registry https://registry.npmjs.org
 ```
 
 <div align="center">
@@ -91,11 +91,13 @@ dsh plugin --profile web remove dsh-prompt   # 卸载
 
 <div align="center">
 
-鼠标移到“⚡Prompt 按钮”，列表自动展开。
+鼠标移到输入框左侧的「Prompt」按钮，列表自动展开——官方 24 条预制模板和自己攒的模板都在这里，范围、标签、搜索、用量一屏全在。
 
 **👇 按钮一点，面板长这样。**
 
-<img src="assets/readme/02-panel-button.png" width="640" alt="Prompt 按钮悬浮面板：阶段筛选与模板列表" style="border:1px solid #30363d;border-radius:6px">
+<img src="assets/readme/02-panel-button.png" width="640" alt="Prompt 按钮悬浮面板：范围与标签筛选、模板列表、底栏一键屏蔽预制模板" style="border:1px solid #30363d;border-radius:6px">
+
+点底栏「屏蔽预制模板」，官方预制就收起来，只留自己攒的；再点「展示预制模板」又全铺开。
 
 </div>
 
@@ -107,12 +109,12 @@ dsh plugin --profile web remove dsh-prompt   # 卸载
 
 <div align="center">
 
-输入框敲 `/prompt`，提供选择。<br>
+输入框敲 `/prompt` 或者 `/p`。<br>
 `/prompt 复盘`可以缩小范围。
 
 **👇 /prompt 看到全部模板。**
 
-<img src="assets/readme/03-trigger-prompt.png" width="640" alt="`/prompt` 触发源：输入过滤后的候选列表" style="border:1px solid #30363d;border-radius:6px">
+<img src="assets/readme/03-trigger-prompt.png" width="640" alt="`/prompt` 触发源：模板名 + 标签 + 正文开头的候选列表" style="border:1px solid #30363d;border-radius:6px">
 
 </div>
 
@@ -138,9 +140,17 @@ dsh plugin --profile web remove dsh-prompt   # 卸载
 
 <div align="center">
 
-**👇 新增自定义Prompt提示词模板。**
+**👇 新增自定义Prompt提示词模板：名称、标签、文字颜色、正文一次配齐。**
 
-<img src="assets/readme/06-custom-manage.png" width="560" alt="自定义管理：新增自定义模板弹窗" style="border:1px solid #30363d;border-radius:6px">
+<img src="assets/readme/06-custom-manage.png" width="560" alt="自定义管理：新增自定义模板弹窗（名称、标签、文字颜色、正文）" style="border:1px solid #30363d;border-radius:6px">
+
+**👇 文字颜色可以修改，支持文字描边。**
+
+<img src="assets/readme/07-custom-manage-color.png" width="560" alt="文字颜色浮层：60 色可选、默认跟随主题、文字描边开关" style="border:1px solid #30363d;border-radius:6px">
+
+**👇 自定义提示词：可配置文字颜色。**
+
+<img src="assets/readme/02-panel-button-only-custom.png" width="640" alt="Prompt 按钮悬浮面板：预制模板已收起，只显示自定义模板" style="border:1px solid #30363d;border-radius:6px">
 
 </div>
 
@@ -149,8 +159,6 @@ dsh plugin --profile web remove dsh-prompt   # 卸载
 ## 作者的其他作品 <sub>MORE</sub>
 
 </div>
-
-喜欢这个插件的话，这些可能你也用得上：
 
 **[dsh-mattpocock-skills-deck](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck)** —— 27 个工程技能包，面板上直接调用，无需手动装技能
 
@@ -162,19 +170,17 @@ dsh plugin --profile web remove dsh-prompt   # 卸载
 
 <div align="center">
 
-有任何问题、建议、想法、IDEA、灵感、随谈：欢迎提交 [ISSUE](https://github.com/FeatherHunter/dsh-prompt/issues)🌹
-
-</div>
-
-<div align="center">
-
 ## 致谢 <sub>THANKS</sub>
 
 </div>
 
 <div align="left">
 
+有任何问题、建议、想法、IDEA、灵感、随谈：欢迎提交 [ISSUE](https://github.com/FeatherHunter/dsh-prompt/issues)🌹
+
 感谢每一位提交 Issue、PR 与Star的朋友，是你们让这个工具箱一点点变好。万分感谢！🎉🎉🎉🎉🎉🎉🎉🎉🎉
+
+---
 
 [@wqzhellohhwy](https://github.com/wqzhellohhwy)🌹🌹🌹 — [#146](https://github.com/FeatherHunter/dsh-prompt/issues/146) 运行时样式缺归属（已修）、[#147](https://github.com/FeatherHunter/dsh-prompt/issues/147) 依赖声明拖累插件 pending（已修）、[#148](https://github.com/FeatherHunter/dsh-prompt/issues/148) 关远程档整机字号被打回 14px（已修）
 
@@ -184,18 +190,20 @@ dsh plugin --profile web remove dsh-prompt   # 卸载
 
 </div>
 
-<div align="center">
-
-## DSH 插件交流群 <sub>GROUP</sub>
-
-</div>
+---
 
 <div align="center">
-
-扫码加入话题群——二维码永久有效。日常闲聊与快速答疑走群里，Bug 与需求请直接提 [ISSUE](https://github.com/FeatherHunter/dsh-prompt/issues)，更高效可追溯。
 
 **👇 飞书扫码，加入 DSH 插件交流群。**
 
 <img src="assets/readme/09-feishu-group.png" width="280" alt="DSH插件交流群飞书二维码" style="border:1px solid #30363d;border-radius:6px">
+
+</div>
+
+---
+
+<div align="center">
+
+![星标增长曲线（双轴）：左轴累计星标，右轴每日新增](https://raw.githubusercontent.com/FeatherHunter/dsh-prompt/main/docs/star-history.svg?v=20261021)
 
 </div>

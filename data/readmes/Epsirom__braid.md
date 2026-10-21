@@ -201,7 +201,8 @@ nodes. Both read-only and writable Git executions get isolated predecessor
 snapshots; read-only disables write capabilities. Outside Git all filesystem
 access is read-only. `notifyOnCompletion` requests host reminders, `pauseAfter`
 holds outgoing scheduling, and `requireSuccess` makes failure abort the whole run.
-All three booleans default to false.
+All three booleans default to false. `BraidRun.holdAfter` adds or removes the
+same hold on an execution that is already running.
 
 Unknown fields, missing references, duplicate exact edges, and undeclared cycles
 are rejected. Declared structured loops require a finite iteration limit and an
@@ -285,6 +286,7 @@ length or token cap (see [resource limits](docs/resource-limits.md)).
 | `maxConcurrency` | `4` | Maximum simultaneous runtime-managed node invocations; positive integer |
 | `nodeTimeoutMs` | `60_000` | Separate deadline for each node, starting when it runs (not while queued or suspended) |
 | `graphTimeoutMs` | `300_000` | Whole execution deadline, including node queueing, paused gates, and suspensions; starts after validation |
+| `onNodeTimeout` | `"pause"` (`"fail"` in `braid()`) | `"pause"` suspends a timed-out execution with its work until it is resumed or cancelled (needs an interruptible runner); `"fail"` fails it with `NODE_TIMEOUT` |
 | `signal` | None | Caller cancellation signal; aborts running nodes and marks queued nodes cancelled |
 | `onEvent` | None | Live observer for graph/node creation, readiness, starts, handoffs, completions, skips, failures, and graph completion |
 
@@ -339,7 +341,10 @@ Graph deadlines and execution limits remain active while paused.
 Nodes are mutable definitions; execution instances retain captured prompts and
 inputs. `startBraid` exposes revision-checked `update`, `resume`, `snapshot`, and
 `cancel`, plus `pause`/`pauseRun`/`resumeRun` to suspend running executions at
-their next model request without losing their work. Updates can change running nodes, completed nodes, edges, templates, and
+their next model request without losing their work, and `holdAfter` to hold a
+running execution's result once it settles. Execute and decision nodes can call
+`request.requestReplan` to ask the graph owner to change the plan; it holds their
+result and never edits the graph itself. Updates can change running nodes, completed nodes, edges, templates, and
 loop topology at any time before finalization. Completion uses the latest graph.
 See [loops and live updates](docs/execution-control.md) for schemas and examples.
 
@@ -360,7 +365,9 @@ human message to a running worker. Instance events carry `executionId`, admissio
 `fromExecutionId`.
 
 `loop_started`/`loop_completed` report rounds. `execution_paused` and
-`execution_resumed` report gates; `execution_suspending`/`execution_suspended`
+`execution_resumed` report gates, and `execution_hold_added`/`execution_hold_removed`
+changes to a running execution's hold; `replan_requested` reports a node asking
+its graph owner to replan; `execution_suspending`/`execution_suspended`
 report pauses of running executions, and `graph_paused`/`graph_resumed` pauses
 of the whole run. `graph_completed` or `graph_failed` terminates
 the log. Completion/failure is published after checkpointing. Node events repeat
@@ -555,8 +562,13 @@ remain 60 seconds per node and 5 minutes per graph.
   timeout or provider error may leave billable usage unavailable.
 - `error`: one representative error when failed; `nodes` retains all errors.
 
-A node timeout marks the running node `failed: NODE_TIMEOUT`; unconditional
-successors can consume its error and partial workspace. A graph timeout marks running nodes `failed: GRAPH_TIMEOUT`,
+With `startBraid` and an interruptible runner (Pi, DSH, and the OpenAI-compatible
+adapter are), a node timeout pauses the execution instead: it keeps its work and
+its successors wait until it is resumed, with a new time budget, or cancelled with
+`cancelExecutions`. See [pausing on node timeout](docs/execution-control.md#pausing-on-node-timeout).
+Otherwise, and always with `braid()` or `onNodeTimeout: "fail"`, a node timeout
+marks the running node `failed: NODE_TIMEOUT`; unconditional successors can
+consume its error and partial workspace. A graph timeout marks running nodes `failed: GRAPH_TIMEOUT`,
 skips queued/pending nodes with `graph_timeout`, and retains already completed
 terminal outputs. Timers are cleared when no longer needed.
 
@@ -624,13 +636,14 @@ and recursive Braid calls from model nodes.
 
 ## Releases and upgrades
 
-The 0.4 API is experimental. See the [changelog](CHANGELOG.md) for version changes
+The 0.5 API is experimental. See the [changelog](CHANGELOG.md) for version changes
 and [GitHub releases](https://github.com/Epsirom/braid/releases) for published releases.
 
-- Upgrading from 0.3: read the [0.3 → 0.4 migration guide](docs/compatibility.md#migrating-from-03-to-04).
+- Upgrading from 0.4: read the [0.4 → 0.5 migration guide](docs/compatibility.md#migrating-from-04-to-05).
+- Upgrading from 0.3: also follow the [0.3 → 0.4 migration guide](docs/compatibility.md#migrating-from-03-to-04).
 - Upgrading from 0.2: also follow the [0.2 → 0.3 migration guide](docs/compatibility.md#migrating-from-02-to-03).
 - Upgrading from 0.1: also follow the [0.1 → 0.2 guide](docs/compatibility.md#migrating-from-01-to-02).
-- Using the previous release: see the [0.3.6 documentation](https://github.com/Epsirom/braid/tree/v0.3.6).
+- Using the previous release: see the [0.5.0 documentation](https://github.com/Epsirom/braid/tree/v0.5.0).
 
 ## Contributing and project status
 

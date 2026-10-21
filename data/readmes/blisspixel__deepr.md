@@ -3,7 +3,7 @@
 [![CI](https://github.com/blisspixel/deepr/actions/workflows/ci.yml/badge.svg)](https://github.com/blisspixel/deepr/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/version-2.50.41-blue)](https://github.com/blisspixel/deepr/releases/tag/v2.50.41)
+[![Version](https://img.shields.io/badge/version-2.50.43-blue)](https://github.com/blisspixel/deepr/releases/tag/v2.50.43)
 
 **Persistent domain experts built from bounded, auditable research.**
 
@@ -306,6 +306,22 @@ for tested behavior and the distinction from draft standards and host certificat
 
 ## Direction
 
+v2.50.43 repairs local embedding identity and accounting, requires an explicit
+SAME verdict before absorption merges, and discloses failed rehearsal phases
+and unknown usage. It also corrects frozen dashboard guidance and affected
+dependencies. See [the changelog](docs/CHANGELOG.md#25043---2026-10-20).
+
+`deepr eval correction-survival-report` provides
+read-only inspection of completed diagnostics by an explicit recorded recipe
+hash. Original code identity stays visible after an update; answer review
+remains separate. See [the historical review contract](docs/design/correction-survival-diagnostic.md#historical-review-after-a-code-update-2026-10-20-275).
+
+v2.50.42 adds optional local embedding routing for consult findings
+(`consult.embedding_model`, off by default) and lets the correction-survival
+diagnostic answer through an attested local model. No execution, spend or
+write authority is widened. See
+[the changelog](docs/CHANGELOG.md#25042---2026-10-19).
+
 v2.50.41 makes evidence loss visible at both prompt boundaries. Brief
 synthesis now chooses findings one lens at a time instead of dropping whole
 lenses at its cap, and records what it was shown. Consult keeps each position
@@ -420,7 +436,11 @@ v2.50.22 adds `deepr eval expert-value-rehearsal`: the local four-arm
 rehearsal with isolated worker inputs, blinded review binding, verified
 resume and assembly of the value workbook, at `$0`. It also repairs local
 study prompts, which had repeated every source three times. No review or
-value result is claimed; the full run is pending.
+value result is claimed; baseline acceptance remains pending. The openly
+substituted [2026-10-20 diagnostic](docs/validation/replacement-rehearsal-2026-10-20.md)
+answered all 48 cells at `$0`, retaining one maintenance timeout and one call
+with unknown usage. No rubric was approved before collection, so it cannot
+serve as the S0 baseline. Its exploratory review packet remains unlabelled.
 
 v2.50.21 adds a local-only fleet-seat profile (`deepr mcp seat-profile`)
 so an external harness or host-side router can consult experts without a

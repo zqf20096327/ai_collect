@@ -271,6 +271,20 @@ A GGUF model whose llama-server exits (killed, crashed, out of memory) gets a ne
 
 Each llama-server LMSupply launches requires its own random key, so other processes and users on the same machine cannot call it; LMSupply's own requests carry it. A host that starts `LlamaServerProcess` itself and calls `Info.BaseUrl` sends `Authorization: Bearer <LlamaServerProcess.ApiKey>` (or sets `LlamaServerConfig.RequireApiKey = false`).
 
+A loaded generator is also a Microsoft.Extensions.AI `IChatClient` (`generator.AsChatClient()`), so a pipeline built with
+`ChatClientBuilder` or an agent framework uses a local model with no adapter of its own — tools, reasoning, images,
+JSON output and usage included, whole or streamed. The client does not own the generator:
+
+```csharp
+using LMSupply.Generator;
+using Microsoft.Extensions.AI;
+
+await using var generator = await LocalGenerator.LoadAsync("gguf:gemma4-default");
+IChatClient chat = generator.AsChatClient();
+
+var answer = await chat.GetResponseAsync("Name three primary colours.", new ChatOptions { MaxOutputTokens = 100 });
+```
+
 ### Translation
 
 ```csharp
@@ -325,10 +339,11 @@ await foreach (var segment in transcriber.TranscribeStreamingAsync("audio.wav"))
 
 ### Text-to-Speech (Synthesizer)
 
-English text is spoken out of the box: the package turns it into the phonemes each English voice was trained on, with a
-built-in English phonemizer (a pronunciation dictionary and letter-to-sound rules, offline, no extra download). A voice in
-another language (Korean, Chinese) speaks phonemes, or text through an `IPhonemizer` you supply; given text alone it throws
-`NotSupportedException` rather than producing noise.
+English and Korean text are spoken out of the box: the package turns them into the phonemes each voice was trained on,
+with a built-in English phonemizer (a pronunciation dictionary and letter-to-sound rules) and a built-in Korean one (the
+standard pronunciation's rules over the spelling), offline, with no extra download. The Chinese voice speaks phonemes,
+or text through an `IPhonemizer` you supply; given text alone it throws `NotSupportedException` rather than producing
+noise.
 
 ```csharp
 using LMSupply.Synthesizer;
@@ -583,7 +598,7 @@ matching `llama-server` build *and* its CUDA runtime on first use, so a machine 
 installed gets the GPU for generation, GGUF embedders and GGUF rerankers.
 
 **ONNX sessions (the default embedder, reranker, OCR, Whisper transcriber, captioner, …) are different:**
-LMSupply provisions the ONNX Runtime binaries, but the CUDA execution provider of ONNX Runtime 1.30 is built for
+LMSupply provisions the ONNX Runtime binaries, but the CUDA execution provider of ONNX Runtime (1.27 and later) is built for
 **CUDA 13**: it also needs a driver that supports CUDA 13 and the **CUDA 13 runtime (cuBLAS) and cuDNN 9 for CUDA 13
 installed on the machine** (`CUDA_PATH`), which LMSupply does not download. Without them
 `ExecutionProvider.Auto` runs those sessions on **CPU** and says so once per process in `Trace`
@@ -596,14 +611,14 @@ Detection priority (GGUF/llama-server): CUDA → Metal → Vulkan → CPU, runti
 ```
 
 > **DirectML removed (0.67.0).** ONNX Runtime 1.25+ ships no DirectML execution provider and the
-> `Microsoft.ML.OnnxRuntime.DirectML` package line ends at 1.24.4, so no build of LMSupply on the
-> current runtime (1.30.0) can provision it. `ExecutionProvider.DirectML` was removed in 0.111.0; a
+> `Microsoft.ML.OnnxRuntime.DirectML` package line ends at 1.24.4, so no build of LMSupply on a
+> current runtime can provision it. `ExecutionProvider.DirectML` was removed in 0.111.0; a
 > setting that still holds it is refused with `NotSupportedException` on every path (ONNX session, GenAI,
 > llama-server), and `Auto`
 > no longer tries it — on a Windows machine without CUDA, ONNX sessions run on CPU and the library
 > says so once per process in `Trace`. GGUF/llama-server paths still use the GPU through Vulkan
 > (`LlamaBackendSelector`). A machine that had cached the 1.24.4 native from an older release was
-> running a managed 1.30.0 runtime against a 1.24.4 provider binary, which is not a supported
+> running a newer managed runtime against a 1.24.4 provider binary, which is not a supported
 > combination; it moves to CPU for ONNX sessions on upgrade.
 
 ```csharp
@@ -657,7 +672,7 @@ dotnet remove package Microsoft.ML.OnnxRuntime.DirectML
 
 For NVIDIA CUDA support, ensure you have:
 - NVIDIA GPU drivers installed (enough for GGUF models — the llama-server CUDA runtime is downloaded for you)
-- For ONNX sessions: a driver that supports CUDA 13, and the CUDA 13 runtime and cuDNN 9 for CUDA 13 installed on the machine (see [GPU Acceleration](#gpu-acceleration)); LMSupply provisions the ONNX Runtime GPU build (cached under the provider key `cuda12`, which names the package slot, not the CUDA version — ONNX Runtime 1.30 is built for CUDA 13)
+- For ONNX sessions: a driver that supports CUDA 13, and the CUDA 13 runtime and cuDNN 9 for CUDA 13 installed on the machine (see [GPU Acceleration](#gpu-acceleration)); LMSupply provisions the ONNX Runtime GPU build (cached under the provider key `cuda12`, which names the package slot, not the CUDA version — ONNX Runtime 1.27 and later is built for CUDA 13)
 
 If inference behaves as though a different provider/version is active than the one you last
 requested, check `RuntimeManager.Instance.ActuallyLoadedRuntimePath` — a native runtime binary
@@ -870,6 +885,12 @@ await using var generator = await LocalGenerator.LoadAsync("/path/to/model.gguf"
 
 For private HuggingFace repositories, set the `HF_TOKEN` environment variable.
 
+Downloads and Hub requests go to `https://huggingface.co`, or to the URL in the `HF_ENDPOINT` environment variable
+when it is set — the variable `huggingface_hub` reads — for a mirror or an internal hub on a network that cannot reach
+huggingface.co. A model that is not cached and whose host cannot be reached at all (no connection, name resolution,
+proxy, TLS, timeout) fails with `ModelHostUnreachableException` (a `ModelDownloadException`) carrying the `Host`;
+a host that answered — a missing file, a refused request — still fails as before.
+
 ---
 
 ## Custom Model Aliases
@@ -1001,7 +1022,7 @@ RuntimeManager.Configure(new RuntimeManagerOptions
     // DisableAutoDownload = true,
 
     // Optional: an exact version. It is never resolved from nuget.org and never auto-updated.
-    // PinnedVersion = "1.30.0",
+    // PinnedVersion = "1.31.0",
 });
 ```
 

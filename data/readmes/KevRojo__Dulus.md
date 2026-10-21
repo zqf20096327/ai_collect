@@ -1,11 +1,4 @@
-ALERT! 🖥️ v6.2.8 OUT NOW — USE THE BINARIES! https://github.com/Dulus-Ai/dulus-updates/releases/tag/v6.2.8    < where Dulus is actively maintained — new features launch there first
-
-> **🔥 October 17, 2026 — Still building, louder than ever.** The desktop builds are where Dulus lives now: **v6.2.8** is the latest public release, and the next one is already cooking. This repo stays the open-source home of the Python runtime — the signed desktop installers get the newest features first. Watch [dulus-updates](https://github.com/Dulus-Ai/dulus-updates/releases/latest) for the drop. 🦅🇩🇴
-
-Pouring my soul into this...
-
-<img width="731" height="215" alt="image" src="https://github.com/user-attachments/assets/a45d1e05-77a1-4b15-9f41-cdcc4031c6e2" />
-
+> **🔥 v6.3.1 is live (Oct 21, 2026).** Signed Windows and macOS (Apple Silicon) desktop builds are out; Linux is coming soon. This repo is the open-source home of the Python runtime — desktop builds get new features first. [Download v6.3.1 →](https://github.com/Dulus-Ai/dulus-updates/releases/tag/v6.3.1) 🦅🇩🇴
 
 # Dulus
 
@@ -22,8 +15,15 @@ Pouring my soul into this...
 </p>
 
 <p align="center">
-  <strong>🖥️ Prefer a desktop app?</strong> Download <strong>Dulus Premium</strong> — A version where i code without giving away my creativity for free.. 09/05/2026 read the last part of the readme file.<br>
+  <strong>🖥️ Prefer a desktop app?</strong> Get the signed, auto-updating desktop build — no Python setup needed.<br>
   <a href="https://github.com/Dulus-Ai/dulus-updates/releases/latest"><strong>⬇️ Download the latest binaries → github.com/Dulus-Ai/dulus-updates</strong></a>
+</p>
+
+<p align="center">
+  <strong>📄 Dulus AI Whitepaper:</strong>
+  <a href="docs/Dulus_AI_Whitepaper_EN.pdf">English</a>
+  ·
+  <a href="docs/Dulus_AI_Whitepaper_ES.pdf">Español</a>
 </p>
 
 <p align="center">
@@ -68,9 +68,6 @@ Pouring my soul into this...
   talking to Gemini, Claude and GPT through their own web sessions, so you owe no one a key or a cent.<br>
   One runtime. Every model. Your machine. The whole world invited.
 
-  Now on 6.0.5 🚀 — for the best experience get the binaries from https://dulus.ai/ there are free models on my /dulus/dulus-* providers, love you guys!
-
-  God bless you! ♥
 </p>
 
 <p align="center">

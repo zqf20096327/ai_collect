@@ -10,15 +10,15 @@
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img alt="License: GPL-3.0-or-later" src="https://img.shields.io/badge/license-GPL--3.0--or--later-2a78d6"></a>
+  <a href="LICENSE"><img alt="License: LGPL-2.1-or-later" src="https://img.shields.io/badge/license-LGPL--2.1--or--later-2a78d6"></a>
   <img alt="Python 3.12+" src="https://img.shields.io/badge/python-3.12%2B-2a78d6">
-  <img alt="Linux" src="https://img.shields.io/badge/OS-Linux-2a78d6">
+  <img alt="Linux, Windows" src="https://img.shields.io/badge/OS-Linux%20%7C%20Windows-2a78d6">
   <img alt="NPU: XDNA 2 (AIE2P)" src="https://img.shields.io/badge/NPU-XDNA%202%20(AIE2P)-2a78d6">
 </p>
 
 Artlite runs LLMs and Stable Diffusion on the XDNA 2 NPU (an AIE2P AI Engine array) of AMD's Strix Point, Krackan
 Point and Strix Halo processors. Its runtime is a small C++ library that talks to the `amdxdna` driver directly, in
-place of XRT.
+place of XRT; on Windows 11 the same library runs through XRT.
 
 Its kernels are compiled at run time, as with NVRTC and HIPRTC, from sources generated for the task: each operator
 renders C++ specialized for its shapes, data formats and place on the array, plus an IRON design of the array's data
@@ -28,8 +28,9 @@ device rather than for portability.
 
 - **GGUF files as they are.** No conversion step, no extra copy of the weights.
 - **Prompt and generation on the NPU.**
-- **Tools in llama.cpp's style.** `artlite-cli`, `artlite-server` (an OpenAI-compatible API and llama.cpp's web chat)
-  and `artlite-bench`, with llama.cpp's option names where they apply.
+- **Tools in llama.cpp's style.** `artlite-cli`, `artlite-server` (an OpenAI-compatible API and llama.cpp's web chat,
+  for one model or with a model picker over all of yours) and `artlite-bench`, with llama.cpp's option names where
+  they apply.
 
 > [!NOTE]
 > Artlite is mostly research into how far this hardware can be pushed, and where the NPU is the right device for the
@@ -49,7 +50,8 @@ device rather than for portability.
 ## Quick start
 
 Requirements: a Ryzen AI processor with an XDNA 2 NPU, Linux with the `amdxdna` driver, libdrm, CMake, a C++23
-compiler and [uv](https://docs.astral.sh/uv/). Details: [Installation](docs/install.md).
+compiler and [uv](https://docs.astral.sh/uv/). Details: [Installation](docs/install.md) (Windows 11: [through
+XRT](docs/install.md#windows)).
 
 ```bash
 git clone https://github.com/artlite-project/artlite && cd artlite
@@ -68,6 +70,7 @@ uvx --from huggingface_hub hf download ggml-org/gemma-4-E4B-it-GGUF \
 M=ggml-org/gemma-4-E4B-it-GGUF/gemma-4-E4B-it-Q4_0.gguf
 artlite-cli -m $M -p "Factorize x^2 + x - 6"     # the answer streams to stdout
 artlite-server -m $M -rea on                     # an OpenAI-compatible API and a web chat on http://127.0.0.1:8080
+artlite-server                                   # the same for every model of the models directory (a model picker)
 artlite-bench -m $M -p 1024,8192 -n 128          # prompt and generation speeds, as llama-bench
 ```
 
@@ -106,7 +109,7 @@ How these are measured: [Benchmark methodology](docs/methodology.md).
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/ttft-dark.svg">
-  <img alt="Time to first token against prompt length from 1k to 64k tokens on log-log axes, one panel per model, Artlite, FastFlowLM and OpenFlowLM" src="docs/images/ttft.svg">
+  <img alt="Time to first token against prompt length from 1k to 128k tokens on log-log axes, one panel per model, Artlite, FastFlowLM and OpenFlowLM" src="docs/images/ttft.svg">
 </picture>
 
 <picture>
@@ -144,8 +147,8 @@ Details: [Design](docs/design.md).
 
 Copyright (C) 2025-2026 Artlite contributors
 
-Artlite is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License ([LICENSE](LICENSE)) for more
-details.
+Artlite is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation, either version 2.1 of the License, or (at your option) any later
+version. It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+([LICENSE](LICENSE)) for more details.

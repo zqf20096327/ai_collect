@@ -127,12 +127,16 @@ Browser actions and AI tool calls cannot drift into separate implementations or 
 
 ## The feature contract
 
-This shortened Create Task definition shows the information AIFA makes explicit:
+This shortened Create Task definition shows the information AIFA makes explicit, including its executable business-acceptance specification:
 
 ```json
 {
   "name": "create-task",
   "businessNeed": "Capture a categorized commitment from a person or AI suggestion.",
+  "acceptance": {
+    "specification": "acceptance.feature",
+    "ruleIds": ["CRT-R1", "CRT-R2"]
+  },
   "backend": {
     "route": "/api/tasks",
     "capabilities": ["TaskCreate", "IdCreate", "ClockNow", "DomainEventEmit"]
@@ -141,6 +145,20 @@ This shortened Create Task definition shows the information AIFA makes explicit:
   "security": { "actorRequired": true, "idempotent": true }
 }
 ```
+
+The linked Gherkin rules are the source of truth for observable business behavior. This Create Task example specifies both the expected failure and its forbidden side effects:
+
+```gherkin
+@CRT-R2
+Rule: A blank title is rejected without creating a task or emitting an event
+  Scenario: Reject an empty commitment
+    Given an empty task store
+    When I create a Work task titled "" with priority "Medium"
+    Then the operation fails with InvalidInput
+    And no task is stored and no event is emitted
+```
+
+`npm run check:requirements` verifies that each declared rule ID has executable scenario evidence. The [full Create Task specification](./demo/ai-todo-assistant/contexts/task-management/features/create-task/acceptance.feature) contains the complete scenarios.
 
 Backend behavior receives a constrained context instead of importing MongoDB, authentication code, HTTP objects, environment variables, or AI-provider SDKs:
 
@@ -182,6 +200,20 @@ export const contribution: SlotContribution<SlotName.TaskComposer> = {
 };
 ```
 
+## Building a feature from business requirements
+
+Use **behavior-driven development (BDD)** to agree on the feature's business rules before implementation:
+
+1. Define the outcome and the bounded context that owns it.
+2. Write reviewed Gherkin `Rule` and `Scenario` examples in a feature-local `acceptance.feature`, including failures and forbidden effects.
+3. Reference stable rule IDs from `feature.definition.json`; keep technical declarations and implementation guidance separate from the authoritative acceptance behavior.
+4. Implement the feature and executable scenarios through the governed runtime or the boundary needed to verify the rule.
+5. Require passing acceptance evidence, architecture checks, and relevant integration tests before merging. Review expected-behavior changes explicitly.
+
+The Create Task demo implements this workflow with Cucumber and `npm run check:requirements`. Adoption by other features is incremental. Passing scenarios establish evidence for their assertions, not proof that every business requirement has been discovered.
+
+Follow the [step-by-step feature workflow](./docs/feature-workflow.md) for the Gherkin format, source-of-truth rules, test boundaries, review process, and commands.
+
 ## What enforces the architecture?
 
 AIFA relies on executable guardrails, not documentation alone:
@@ -191,6 +223,7 @@ AIFA relies on executable guardrails, not documentation alone:
 - Dependency checks reject forbidden cross-feature and infrastructure imports.
 - The runtime denies undeclared capability access.
 - Behavioral tests execute features through the real runtime boundary.
+- The Create Task BDD pilot keeps business rules in a feature-local Gherkin specification; a required local/CI check validates rule references and executes every acceptance scenario.
 - Integration tests cover authorization, tenancy, idempotency, concurrency, HTTP, and MCP parity.
 
 ## Reference implementation: Focusly
@@ -217,6 +250,7 @@ plans, explicit suggestion acceptance, and AI workspace settings.
 ├── llms.txt                          # Machine-readable documentation index
 ├── docs/
 │   ├── architecture.md               # Concise architecture guide
+│   ├── feature-workflow.md           # Requirements, BDD, verification, and formatting
 │   ├── ticket-contract.md            # Reusable feature-brief contract
 │   └── index.html                    # Project website
 └── demo/ai-todo-assistant/
@@ -231,17 +265,22 @@ plans, explicit suggestion acceptance, and AI workspace settings.
 
 ## Start here
 
-| Goal                            | Document                                                                        |
-| ------------------------------- | ------------------------------------------------------------------------------- |
-| Understand the concept          | [Architecture guide](./docs/architecture.md)                                    |
-| Browse detailed diagrams        | [Architecture diagrams](./demo/ai-todo-assistant/AIFA-Architecture-Diagrams.md) |
-| Explore or run the product      | [Focusly demo](./demo/ai-todo-assistant/README.md)                              |
-| Make an implementation decision | [Authoritative demo architecture](./demo/ai-todo-assistant/ARCHITECTURE.md)     |
-| Add or change a feature         | [Contributor working agreement](./demo/ai-todo-assistant/AGENTS.md)             |
-| Write a feature brief           | [Feature ticket contract](./docs/ticket-contract.md)                            |
-| See the presentation            | [AIFA project website](https://adrianbesleaga.github.io/AIFA/)                  |
+| Goal                                   | Document                                                                        |
+| -------------------------------------- | ------------------------------------------------------------------------------- |
+| Understand the concept                 | [Architecture guide](./docs/architecture.md)                                    |
+| Browse detailed diagrams               | [Architecture diagrams](./demo/ai-todo-assistant/AIFA-Architecture-Diagrams.md) |
+| Explore or run the product             | [Focusly demo](./demo/ai-todo-assistant/README.md)                              |
+| Make an implementation decision        | [Authoritative demo architecture](./demo/ai-todo-assistant/ARCHITECTURE.md)     |
+| Follow the requirements-first workflow | [Feature workflow](./docs/feature-workflow.md)                                  |
+| Add or change a feature                | [Contributor working agreement](./demo/ai-todo-assistant/AGENTS.md)             |
+| Write a feature brief                  | [Feature ticket contract](./docs/ticket-contract.md)                            |
+| See the presentation                   | [AIFA project website](https://adrianbesleaga.github.io/AIFA/)                  |
 
 AI tools can use [`llms.txt`](./llms.txt) as the canonical index and [`AGENTS.md`](./AGENTS.md) for repository-level instructions.
+
+## Repository formatting
+
+From the repository root, run `npm ci` once, then `npm run format` to apply Prettier or `npm run format:check` to verify formatting. The Formatting CI workflow checks the same configuration. These root tools are separate from the demo dependencies; generated output and Gherkin files are excluded.
 
 ## Run the demo
 

@@ -24,7 +24,7 @@
 
 <div align="center">
 
-### 📦 18,740 PyPI downloads · 16,260 repository clones · 35,000 total
+### 📦 19,235 PyPI downloads · 16,717 repository clones · 35,952 total
 
 [![GitHub stars](https://img.shields.io/github/stars/OWASP/www-project-agent-memory-guard?style=social)](https://github.com/OWASP/www-project-agent-memory-guard) [![GitHub forks](https://img.shields.io/github/forks/OWASP/www-project-agent-memory-guard?style=social)](https://github.com/OWASP/www-project-agent-memory-guard/fork) [![agent-memory-guard on PyPI](https://pepy.tech/badge/agent-memory-guard)](https://pepy.tech/project/agent-memory-guard) [![langchain-agent-memory-guard on PyPI](https://pepy.tech/badge/langchain-agent-memory-guard)](https://pepy.tech/project/langchain-agent-memory-guard) [![GitHub Clones](https://img.shields.io/badge/dynamic/json?color=success&label=Clones&query=count&url=https://gist.githubusercontent.com/vgudur-dev/c04e12f68c363625faf12faaf03a03ca/raw/clone.json&logo=github)](https://github.com/OWASP/www-project-agent-memory-guard) [![Unique Cloners](https://img.shields.io/badge/dynamic/json?color=success&label=Unique%20Cloners&query=uniques&url=https://gist.githubusercontent.com/vgudur-dev/c04e12f68c363625faf12faaf03a03ca/raw/clone.json&logo=github)](https://github.com/OWASP/www-project-agent-memory-guard/graphs/traffic)
 
@@ -178,6 +178,15 @@ amg-bench --out benchmarks/memory-systems   # reproduce; grade mem0/Letta/Zep wi
 ## Framework integrations
 
 Jump to: [LangChain](#langchain-integration) · [LangChain middleware](#langchain-middleware) · [OpenAI Agents](#openai-agents-sdk) · [AutoGen](#autogen) · [mem0](#mem0) · [CrewAI](#crewai)
+
+**New to framework integrations?** Start here:
+
+1. [5-minute how-to Discussion #116](https://github.com/OWASP/www-project-agent-memory-guard/discussions/116) — walks through wiring up `MemoryGuardMiddleware` for LangChain.
+2. The [LangChain middleware snippet](#langchain-middleware) below — copy-pasteable `pip install` + agent setup.
+3. The [public clinic Gist](https://gist.github.com/vgudur-dev/ead8817d2f4df08c04b808cc5b53eb06) — a runnable `Policy.strict()` repro (~15 min) to see it block a real violation.
+4. After trying the clinic, open an [`Adopter: <name> — <framework>` issue](https://github.com/OWASP/www-project-agent-memory-guard/issues/new?title=Adopter%3A+%3Cname%3E+%E2%80%94+%3Cframework%3E&labels=adopter) with your stack versions — it's optional, but it helps us prioritize which integrations to harden next.
+
+This is a community how-to, not a product endorsement: the project is not OWASP-certified, is not MITRE-approved, and the ATLAS AML.M0031 reference is a YAML listing only (see [Recognition](#recognition)).
 
 ### LangChain integration
 

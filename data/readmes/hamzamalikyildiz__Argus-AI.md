@@ -27,13 +27,20 @@
             └──────────┬───────────┘
                        ▼
             ┌──────────────────────┐
-            │  4. Publisher Agent  │ (Yönetici özeti & Markdown bülten sentezi)
+            │  4. Reporter Agent   │ (Yönetici özeti & Markdown bülten sentezi)
+            └──────────┬───────────┘
+                       ▼
+            ┌──────────────────────┐
+            │   5. Auditor Agent   │ (Kalite Kapısı: Sızıntı kontrolü, link & format denetimi, auto-heal)
             └──────────┬───────────┘
                        ▼
   [Depolama: reports/YYYY/MM/YYYY-MM-DD-daily-brief.md + README/INDEX.md Güncellemesi]
                        │
                        ▼
          [GitHub Actions Otomatik Git Commit & Push]
+                       │
+                       ▼
+         [Auditor Agent Post-Push Verification]
 ```
 
 ---
@@ -47,6 +54,7 @@
 - **Sıfır Halüsinasyon Link Güvencesi**: Raporlardaki bağlantılar asla uydurulmaz; doğrudan Ingestion katmanından gelen gerçek doğrulanmış URL'lerdir.
 - **Fail-Safe Veri Toplama**: RSS veya arXiv kaynaklarından biri erişilemez olduğunda pipeline çökmez; hata loglanır ve kalan kaynaklarla devam edilir.
 - **Dinamik Web Kazıma (Trafilatura)**: Önemli haberlerin sayfalarına bizzat gidilip tam metin/kod/benchmark bilgisi çekilir.
+- **Auditor & Quality Assurance Agent**: Rapor oluşturulduktan sonra ve GitHub'a gönderildikten sonra devreye girer; ham LLM yanıtlarını, şifreleme imzalarını, Markdown sözdizimini ve link bütünlüğünü denetler, olası format bozukluklarını otomatik olarak onarır (auto-heal).
 - **Dil Seçeneği**: Türkçe (`tr`) veya İngilizce (`en`) olarak tek ayarla rapor üretimi.
 - **Otonom GitHub Actions**: Her sabah UTC 04:00 (TSİ 07:00) saatinde otomatik çalışır ve repo güncellenir.
 
@@ -141,6 +149,8 @@ python main.py --date 2026-10-19 --lang tr
 <!-- RECENT_REPORTS_START -->
 | Tarih | Başlık / Odak Noktası | Rapor Linki |
 |:---:|:---|:---:|
+| 2026-10-21 | Mistral AI Releases Voxtral 3, Google Cloud Ships llm-d 1.0  | [Raporu Oku](reports/2026/10/2026-10-21-daily-brief.md) |
+| 2026-10-20 | MiniMax Just Launched M3.1 Flash, [ArXiv] WeAct | [Raporu Oku](reports/2026/10/2026-10-20-daily-brief.md) |
 | 2026-10-19 | MiniMax Just Launched M3.1 Flash, NVIDIA Open Sources Run | [Raporu Oku](reports/2026/10/2026-10-19-daily-brief.md) |
 
 [Tüm Arşivi Gör (reports/INDEX.md)](reports/INDEX.md)

@@ -13,13 +13,17 @@
   <a href="https://pub.dev/packages/leancode_lint"><img src="https://img.shields.io/badge/style-leancode__lint-f0ff00?style=for-the-badge" alt="style: leancode_lint"></a>
 </p>
 
-Add an AI agent to your Flutter screens. It works on the screen together with the user, conveniently.
+**Make your Flutter app intelligent, one feature at a time.**
+
+Pick a screen. Its state class lists what an AI agent may see and which of its methods the agent may call. The agent then works on that screen together with the user, through the methods your buttons already call, and the important ones wait for the user's approval. The rest of the app stays as it is.
 
 ## How it works
 
-![The Flutter app with tandem sends the agent backend the user's message, what the agent sees and what it may call, over AG-UI. The backend keeps the API key, asks the model, and sends back replies and calls to the app's methods.](https://github.com/leancodepl/tandem/raw/main/doc/imgs/how-it-works.svg)
+![The Flutter app with tandem sends the agent backend the user's message, what the agent sees and what it may call, over AG-UI. The backend keeps the API key, asks the model, and sends back replies and calls to the app's methods. On iOS and macOS 26, OnDeviceAgent does the same with Apple's on-device model, without a backend or an API key.](https://github.com/leancodepl/tandem/raw/main/doc/imgs/how-it-works.svg)
 
-The model does not run in the app. Your agent backend calls it and keeps the API key, and the app talks to the backend over [AG-UI](https://docs.ag-ui.com), an open protocol between agents and apps. Google ADK, LangChain, CrewAI, Mastra and many other agent frameworks support it. Tandem is the app's side.
+With a remote agent, your backend calls the model and keeps the API key. The app talks to it over [AG-UI](https://docs.ag-ui.com), an open protocol between agents and apps. Google ADK, LangChain, CrewAI, Mastra and many other agent frameworks support it.
+
+On iOS and macOS 26, `OnDeviceAgent` can run [Apple's on-device model](#apples-on-device-model) instead, without a backend or an API key. The screen, its capabilities and approvals stay the same.
 
 Your state class lists what the agent may do:
 
@@ -147,13 +151,35 @@ Requires Dart 3.13 (Flutter 3.47) or newer.
 
 ## Try it without a key
 
-<p align="center">
-  <a href="https://github.com/leancodepl/tandem/blob/main/example/README.md"><img src="https://github.com/leancodepl/tandem/raw/main/doc/imgs/examples/approval.gif" alt="The agent asks to empty a shopping list. Removing an item invalidates the request, and a new request can be approved." width="300"></a>
-</p>
+https://github.com/user-attachments/assets/c25184ad-aa7c-4159-bb89-db4033f4d2ce
 
-The [example gallery](https://github.com/leancodepl/tandem/blob/main/example/README.md) runs six screens on Android, iOS and macOS with scripted agents, without a backend or an API key. Its order desk can also talk to the example's agent backend, which has a scripted model too.
+The [example gallery](https://github.com/leancodepl/tandem/blob/main/example/README.md) runs six screens on Android, iOS and macOS with scripted agents, without a backend or an API key. Its order desk can also talk to the example's agent backend, which has a scripted model too. On a Mac or an iPhone with Apple Intelligence, the [invoice list](https://github.com/leancodepl/tandem/blob/main/example/README.md#smart-invoice-input-with-apples-on-device-model) above and the shopping list run on Apple's on-device model, a real model that needs no key.
 
 To try your own screen without a backend, give `TandemScope.connected` a `ScriptedAgent` ([how](https://github.com/leancodepl/tandem/blob/main/doc/examples.md#without-an-api-key)). [More examples](https://github.com/leancodepl/tandem/blob/main/doc/examples.md) have screens to copy with bloc, Riverpod and provider.
+
+## Apple's on-device model
+
+`OnDeviceAgent.apple()` runs Apple's system model on the device, with the same screen, capabilities, chat and approvals as a remote agent. Pass it to `TandemScope.connected`. It returns the same connection on every call, so `build` may call it.
+
+Run the existing shopping list with the on-device model:
+
+<!-- example/lib/recipes/on_device/apple.dart -->
+```dart
+void main() => runApp(
+  MaterialApp(home: ShoppingListScreen(connection: OnDeviceAgent.apple())),
+);
+```
+
+Build with Xcode 26 or newer. To generate, the app needs iOS or macOS 26 on an eligible device, with Apple Intelligence on and its model ready. `await OnDeviceAgent.apple().availability()` says which of these is missing. Other platforms answer `unsupportedPlatform` and keep using remote connections. Native registration works with Swift Package Manager and CocoaPods.
+
+How it differs from a remote agent:
+
+- The text comes whole when the model finishes, not streamed. Stop waits for that answer and runs none of its calls; disposing the session cancels the run.
+- The model proposes calls; Tandem runs them with the usual approvals and sends their real results back. When one call of a batch is not a current tool, repeats an ID or has arguments that are not an object, none of the batch runs and the run fails. A remote agent's turn would run its other calls.
+- Nothing shortens the history. When it no longer fits the model, the run fails with `OnDeviceErrorCode.contextWindowExceeded`, and `if (event case RunFailed(code: OnDeviceErrorCode.contextWindowExceeded)) session.startOver();` in `onEvent` goes on without it.
+- Tool parameters can be scalars, objects, arrays, string enums, optional properties and nullable ones. A `DateTime` parameter fails the run with `OnDeviceErrorCode.unsupportedSchema`, because the model cannot keep its `format`. Integer arguments beyond 2^53 - 1 fail it with `OnDeviceErrorCode.unsupportedArguments`, because Apple keeps numbers as `double`.
+
+The model can still pick the wrong call, so keep the same validation and approvals as for a remote model. The Swift side has not had a human review yet ([AI](#ai)). [Design and tested limits](https://github.com/leancodepl/tandem/blob/main/doc/design.md#apple-on-device-connection).
 
 ## Session status
 
@@ -243,6 +269,8 @@ void showOrderMessages(
 ```
 
 `AgentCall` comes after a listed method returned, with its `tool`, `arguments` and `result`. `RunFailed` and `ConnectionLost` also add a `ChatNotice` to `session.items`, and a stop adds one or marks the last message `stopped`.
+
+`RunFailed` has the error's `code` when it has one, a `RunErrorCode` that a pattern such as `RunFailed(code: .unsupportedOutcome)` matches. When the history no longer fits the model, `session.startOver()` sends the next message to a new thread without it. The chat keeps its items and adds a `startedOver` notice. It does nothing while a run is open.
 
 ## Any state library
 
@@ -365,7 +393,7 @@ Not supported yet: AG-UI interrupts, several state objects on one screen, and a 
 
 ## AI
 
-Tandem is written with AI assistance and reviewed by hand, except the AG-UI protocol layer ([`packages/tandem/lib/src/protocol`](https://github.com/leancodepl/tandem/tree/main/packages/tandem/lib/src/protocol)) and [`tandem_generator`](https://pub.dev/packages/tandem_generator), which have not had a full human review yet.
+Tandem is written with AI assistance and reviewed by hand, except the Swift side of `OnDeviceAgent` ([`packages/tandem/darwin`](https://github.com/leancodepl/tandem/tree/main/packages/tandem/darwin)), which has not had a human review. Tandem carries its own bridge to Apple's model for now, because no package fits yet: the ones on pub.dev run tools natively, where Tandem needs to run them itself with approvals, and drop JSON Schema it needs, such as nullable unions. As with AG-UI instead of a protocol of its own, Tandem will consider switching to such a package once there is one.
 
 ## 🛠️ Maintained by LeanCode
 

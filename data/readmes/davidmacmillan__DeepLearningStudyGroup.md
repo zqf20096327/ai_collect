@@ -16,6 +16,10 @@ https://www.meetup.com/handsonprogrammingevents/
 ___________________________________________________________________________________________________________
 ### ======== 2026 ========   
    
+### Paper for October 27, 2026:    
+Swarm Telepathy: Prefill-Free KV-Cache Transfer Across Families    
+https://arxiv.org/abs/2610.15095   
+   
 ### Paper for October 20, 2026:  
 Language Models Can Control Their Own Attention   
 https://arxiv.org/pdf/2609.02737  
@@ -2295,8 +2299,4 @@ Zeeshan's slides are in the folder with his name on it.  Along with his descript
 ### February 20, 2017 - Hacker Dojo
 https://arxiv.org/pdf/1506.07285.pdf  - Ask me anything - Socher  
 https://github.com/YerevaNN/Dynamic-memory-networks-in-Theano - Code and implementation notes.  
-https://www.youtube.com/watch?v=FCtpHt6JEI8&t=27s - Socher presentation of material  
-
-
-### February 13, 2017 - Hacker Dojo 
-https://arxiv.org/pdf/1701.06538v1.pdf - Outrageously large neura
+https://www.youtube.com/watch?v=FCtpHt6JEI8&t=27s - Socher

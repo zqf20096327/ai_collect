@@ -2,13 +2,13 @@
 
 # 📚 AI Course Notes
 
-**376 份 AI / LLM 中文讲义，支持在线阅读、LaTeX 源码查看与本地 PDF 编译**
+389 份 AI / LLM 中文讲义，支持在线阅读、LaTeX 源码查看与本地 PDF 编译
 
 基于公开课视频字幕、课程 slides、访谈、技术文章与公开资料整理，使用 LaTeX 生成 PDF，并自动发布为可搜索的网页阅读站。
 
 [![Online Reading](https://img.shields.io/badge/在线阅读-GitHub%20Pages-00A884?style=for-the-badge)](https://hqhq1025.github.io/ai-course-notes/)
-[![Total Notes](https://img.shields.io/badge/讲义总数-376份-blue?style=for-the-badge)](.)
-[![Collections](https://img.shields.io/badge/内容系列-18个-green?style=for-the-badge)](.)
+[![Total Notes](https://img.shields.io/badge/讲义总数-389份-blue?style=for-the-badge)](.)
+[![Collections](https://img.shields.io/badge/内容系列-19个-green?style=for-the-badge)](.)
 [![Format](https://img.shields.io/badge/格式-Web%20%7C%20LaTeX%20%7C%20Local%20PDF-red?style=for-the-badge)](.)
 
 [🌐 在线阅读](https://hqhq1025.github.io/ai-course-notes/) · [📄 浏览目录](#-课程一览) · [🤝 参与贡献](CONTRIBUTING.md)
@@ -31,7 +31,7 @@
 
 站点由 [tools/web/generate_site.py](tools/web/generate_site.py) 从仓库中的 LaTeX 讲义自动生成 MkDocs 项目，并通过 [.github/workflows/pages.yml](.github/workflows/pages.yml) 在 `main` 分支更新后部署到 GitHub Pages。
 
-> 大多数用户**不需要 clone** —— 直接访问在线站即可阅读、搜索全部 376 份讲义。
+> 大多数用户不需要 clone，直接访问在线站即可阅读、搜索已发布的讲义。本地新增讲义在下一次发布后进入在线站。
 
 ## 📥 克隆指南
 
@@ -85,10 +85,10 @@ xelatex -interaction=nonstopmode -halt-on-error lecture01-notes.tex
 | KAIST 课程 | 15 | CS492D Diffusion Models and Flow Models |
 | Berkeley 课程 | 36 | CS294 LLM Agents / Advanced LLM Agents / Agentic AI |
 | CMU 课程 | 6 | CMU 11-768 AI Agents |
-| B 站系列课程 | 48 | Modern Agent、LLM Architect、Agentic RL、Self-Evolving Agents 2026 |
-| 演讲与访谈 | 67 | Lex Fridman、Dwarkesh Patel、青稞、WhynotTV、张小珺等 |
+| B 站系列课程 | 56 | Modern Agent、LLM Architect、Agentic RL、Self-Evolving Agents 2026、南京大学生成式软件工程 |
+| 演讲与访谈 | 72 | Lex Fridman、Dwarkesh Patel、硅谷101、青稞、WhynotTV、张小珺等 |
 | 技术文章笔记 | 25 | Agent Harness、Claude Code、Codex、Agentic Memory 等 |
-| **合计** | **376** | 统计口径：仓库内 `*-notes.tex` 讲义源文件 |
+| 合计 | 389 | 统计口径：仓库内 `*-notes.tex` 讲义源文件 |
 
 ---
 
@@ -141,7 +141,7 @@ xelatex -interaction=nonstopmode -halt-on-error lecture01-notes.tex
 |------|------|------|------|
 | [**CMU 11-768**](cmu-11-768/) | AI Agents (Fall 2026) | 6 | Graham Neubig, Daniel Fried |
 
-### 🇨🇳 B 站系列课程 (48 份)
+### 🇨🇳 B 站系列课程 (56 份讲义 + 2 讲图文实录)
 
 | 系列 | 主题 | 讲数 | UP 主 |
 |------|------|------|------|
@@ -149,11 +149,13 @@ xelatex -interaction=nonstopmode -halt-on-error lecture01-notes.tex
 | [**LLM Architect**](llm-architect/) | 模型架构 (MoE, RoPE, VLM, K2.5) | 10 | 五道口纳什 |
 | [**Agentic RL**](agentic-rl/) | RL for LLM (PPO→GRPO→DPO, veRL) | 20 | 五道口纳什 |
 | [**Self-Evolving Agents 2026**](self-evolving-agents-2026/) | 因果世界模型、Agentic RL、经验智能、能力外部化与 Agent 理论 | 1 册 / 9 单元 | NICE 学术 |
+| [南京大学生成式软件工程 2026](nju-generative-software-engineering-2026/argon-rewrite/) | 提示词、版本管理、需求架构与 Agent 开发；另有前两讲图文实录 | 8 份讲义 + 2 讲实录 | 蒋炎岩 |
 
-### 🎤 演讲与访谈 (29 份)
+### 🎤 演讲与访谈 (34 份)
 
 | 来源 / 频道 | 主题 | 数量 | 目录 |
 |-------------|------|------|------|
+| [硅谷101播客](interviews/silicon-valley-101/) | Agent、机器人与 AI 制药；商业化、大学学习、自我进化与数据行业 | 5 | interviews |
 | [**Lex Fridman Podcast**](talks/lex-fridman/) | Dario Amodei、Jensen Huang、State of AI、DeepSeek、中国 AI、OpenClaw | 5 | talks |
 | [**AITIME 论道**](talks/aitime/) | 张钹、林俊旸、姚顺雨、杨植麟 | 4 | talks |
 | [**青稞社区**](talks/qingke/) | LLM、Agentic、RL、Infra 圆桌 | 4 | talks |
@@ -259,13 +261,20 @@ graph LR
     C -->|是| D[下载 SRT]
     C -->|否| E[Whisper large-v3]
     E --> D
-    D --> F[Claude 智能整理]
+    D --> F[资料核对与写作蓝图]
     G[官方 Slides / 公开资料] --> F
-    F --> H[LaTeX 源文件]
+    F --> W[Argon 撰写与整篇润色]
+    W --> Q[内容复核与排版]
+    Q --> H[LaTeX 源文件]
     H --> I[XeLaTeX 编译]
     I --> J[PDF 讲义]
     H --> K[网页阅读站]
 ```
+
+新讲义及实质重写默认使用 Argon（`gemini-4-argon`）撰写正文和整篇润色。
+Codex 负责资料与字幕、结构和覆盖、配图、事实复核及页面验收。
+字幕内容进入实际写作请求，按讲者的问题、例子和推理组织正文。
+调用方法和回执见 [Argon 写作流程](docs/ARGON_WRITING_WORKFLOW.md)。历史讲义不因此改标作者模型。
 
 ### 本地预览在线阅读站
 

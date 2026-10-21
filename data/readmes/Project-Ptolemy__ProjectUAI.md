@@ -4,7 +4,17 @@ A universal AI agent that runs inside a Roblox client. It works in any game,
 with Chat Completions and Anthropic Messages endpoints, including compatible
 local servers and relays.
 
-**Version 3.6.0 — October 19, 2026: clearer conversations and reliable connections.**
+**Project UAI 3.6.5 — October 21, 2026: unified client, bridge and app release.**
+The bridge includes the verified OpenCode execution guard and matching permission
+handling, so a blocked desktop action can return to the Roblox agent for
+continuation. The client bounds mobile native HTTP concurrency and expanded
+thinking presentation. The Android companion checks complete encoded replies
+before sending an oversized body to the executor. Relay **Always** requires a
+relay even while discovery is unavailable; **Auto** keeps direct fallback.
+The desktop launcher refreshes its connection dashboard and groups its settings.
+All four components and their downloads share version 3.6.5.
+
+The apps retain verified automatic downloads and updates.
 The public page has a responsive white monochrome design with an interactive 3D
 centerpiece and animated SVGs, with pause controls and reduced-motion support.
 Bridge responses put the answer first, with tools and thinking grouped into
@@ -36,8 +46,8 @@ workspace. Go keeps its own catalog and routes; the optional free CLI backend
 does not intercept it. Subscription and workspace region refusals identify the
 setting to check. See [provider setup](docs/PROVIDER_COMPATIBILITY.md).
 
-Client, bridge, desktop and Android companion are 3.6.0; UI LIB
-remains 1.3.0 and SDK 1.0.0.
+Client, bridge, Windows desktop and Android companion are 3.6.5.
+UI LIB remains 1.3.0 and SDK 1.0.0.
 Model pricing and context/reply limits use a refreshed provider-specific catalog;
 included Project UAI Free access is counted at zero cost.
 See the [release notes](CHANGELOG.md), [script development manual](docs/SCRIPT_DEVELOPMENT.md)
@@ -52,7 +62,9 @@ it. The model modal edits the same global effort setting, including for other
 models when **Options → Reasoning support** is enabled. The Thinking row estimates
 visible text only. A long retained trace is labelled
 **Excerpt**, not a 5,999-token model limit. See [provider behavior](docs/PROVIDER_COMPATIBILITY.md).
-See [3.6.0 verification](docs/TESTING_3.6.0.md),
+See [3.6.5 verification](docs/TESTING_3.6.5.md),
+[bridge 3.6.2 verification](docs/TESTING_3.6.2.md),
+[3.6.1 verification](docs/TESTING_3.6.1.md), [3.6.0 verification](docs/TESTING_3.6.0.md),
 [mobile research](docs/OPENCODE_MOBILE_RESEARCH.md) and
 [companion update checks](companion/UPDATES.md). Native Android, mobile executor
 behavior, phone tool execution/replay and background survival remain unverified;
@@ -179,6 +191,23 @@ search and page reading, players, your character, raycasts and lighting and the
 camera, remotes (discover, fire, watch), on-screen interfaces, diagnostics, place
 and account metadata, plus the agent's own task list, memory, searching and
 reading its earlier conversations, and subagent dispatch.
+
+**Network and payload capture.** `net_capture` observes a loader's executor and
+game HTTP, `HttpService` calls, `loadstring`/`load`/`require` chunks and queued
+code with fixed forwarding hooks. It records bounded request/response bodies,
+redacts credentials, links a response to the chunk it produced, flags code-like
+responses that never compile, and excludes UAI's own traffic. Stop restores the
+hooks; nothing is rewritten, replayed or executed by the capture. See
+[the capture guide](docs/NET_CAPTURE.md).
+
+**Tool profiles, evidence and support.** The default **All tools** profile keeps
+the complete catalogue. Leaner profiles declare a core set for a smaller request,
+while `tool_search` lists, describes and calls every hidden tool with the same
+permissions and conversation scope. Large tool results (8 KiB+ by default) are
+retained in a per-conversation evidence ledger (`evidence` list/search/read) so
+compaction does not lose the full receipt. `support_bundle` writes a local, redacted diagnostic
+file for bug reports, excluding keys, memory, conversation text, file contents
+and captured payloads. See [the tool context guide](docs/TOOL_CONTEXT.md).
 
 **Code workspace — v1.7.0, September 24, 2026.** Open **Code** and
 choose Editor, Files, Explorer, Remotes, Output, History, Library, or Game changes.
@@ -709,7 +738,8 @@ first two entirely.
 
 Cowork gives your Roblox conversation more room in the browser. Keep Roblox and
 its local bridge running on the same computer. The [Windows desktop launcher](desktop/README.md)
-is a single **UAI-Bridge-3.6.0-win-x64.exe** download. Open it directly,
+is a single [UAI-Bridge-3.6.5-win-x64.exe](https://github.com/Project-Ptolemy/ProjectUAI/releases/download/v3.6.5/UAI-Bridge-3.6.5-win-x64.exe)
+download. Open it directly,
 complete Node setup if needed using **Get Node.js** or an existing
 installation, click **Start Cowork**, and load the updated UAI script. It discovers the app on dedicated port
 **28791** and reconnects automatically after app restarts. The executable includes
@@ -772,7 +802,7 @@ troubleshooting, limits, architecture, and organized Node/Lua/browser tests.
 
 ## Android companion
 
-Install [UAI Relay 3.6.0](https://github.com/Project-Ptolemy/ProjectUAI/releases/download/v3.6.0/UAI-Relay-3.6.0.apk)
+Install [UAI Relay 3.6.5](https://github.com/Project-Ptolemy/ProjectUAI/releases/download/v3.6.5/UAI-Relay-3.6.5.apk)
 on Android 8 or later, start the relay, and load the current UAI script in your
 executor. With Relay mode set to Auto, the client discovers and pairs with the
 companion on the same phone. The relay holds the provider connection while the

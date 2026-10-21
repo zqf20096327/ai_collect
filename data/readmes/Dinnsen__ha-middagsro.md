@@ -57,7 +57,8 @@ Ingredients and steps in large type. Tick them off as you go, start a **timer** 
 
 - For each ingredient, **the cheapest REMA product** that meets your rules is found. Products from the offers, organic products and weekly fixed items are labelled.
 - Price per product, number of packs and the total against the budget.
-- **Send til REMA-listen** puts everything on your primary list in the REMA 1000 app. Items without a safe match are added as text.
+- **Send til REMA-listen** puts everything on your primary list in the REMA 1000 app. Items without a safe match are added as text. Sent items leave Middagsro's basket, so the next send only has what was added since – nothing ends up twice in the app. **Genskab seneste kurv** puts the last sent items back if something went wrong.
+- Search the basket for any REMA product – also the offers in REMA's avis, including *partivarer* that are only sold in the shops.
 - **Search and add** other REMA products to the shopping list – also to the list for later in the week. Tap an item to change how many, swap it or delete it.
 - **Basic items in the plan** (*Basisvarer i madplanen*) shows the basic items (salt, oil, butter …) the recipes use. Out of one? Tap **Tilføj til indkøb**, and the product is found by your settings.
 - Below the list you see what is on the REMA list right now, and it can be emptied once you have shopped.
@@ -69,6 +70,10 @@ Ingredients and steps in large type. Tick them off as you go, start a **timer** 
 <img src="docs/images/favorites.png" alt="Favourite products from the REMA app that are on offer" width="100%">
 
 The products you have given a heart in the REMA 1000 app. Choose **Denne uge** (this week) or **Næste uge** (next week) to see which are on offer, with before and now price, and put them on the list with one tap. This week shows REMA's own prices, as in the app. Next week shows the avis's prices and text as soon as it is out, since REMA only has them from Sunday 02:00. Offers that only start on Thursday are shown with a blue *fra tor* badge until they start. Until next week's offers are out, this week's are shown. All favourites can be filtered.
+
+Search REMA's products at the bottom of *Favoritter* to add favourites of your own, next to the hearts from the app.
+
+**Watch list (Overvågning).** Tap the 🔔 on a favourite or any product to watch it – or type something REMA doesn't sell and watch it as text. At the top of *Favoritter* you see where the watched items are on offer: in REMA (now or from next week's avis) and in the chains you have chosen, with the price and a button that puts the item in the basket or on that chain's shopping list. In **Indstillinger → Overvågning og beskeder** you can get a notification on your phone or in Home Assistant when something on the watch list comes on offer – and only then. The list is checked every 3 hours, and each offer is told once.
 
 ### History
 
@@ -90,7 +95,7 @@ The **Opskrifter** (recipes) tab has three pages: **Ugens opskrifter** (the week
 
 - **👍, 👎 and ❤️** on every dinner in the plan and on the recipe. 👍 saves the dish in the collection as one you like, 👎 as one you don't like (it is never put on a plan again), and ❤️ as a favourite (it also gets 👍, and the heart turns red). Tap again to take it back; 👍 after 👎 changes it.
 - **Search, sort and filter** the collection (name, newest, most used, quickest; all, favourites, liked, disliked).
-- **Add a recipe from a link:** paste the link to a recipe page and tap **Hent opskrift**. The recipe is read from the page (most recipe sites have it as data; otherwise the AI reads the page), and you can correct it before it is saved. The link itself is not kept. Or write a recipe yourself.
+- **Add a recipe from a link:** paste the link to a recipe page and tap **Hent opskrift**. The recipe is read from the page (most recipe sites have it as data; otherwise the AI reads the page), and you can correct it before it is saved. The link itself is not kept. Or write a recipe yourself – type an ingredient and pick one of REMA's products for it, so the shopping list gets the very item.
 - **Open a recipe** to edit the name, times, ingredients and steps, rate it, or **put it on the meal plan** on a day you choose – its items go on the shopping list.
 - New plans and swap suggestions use the family's favourites and liked dishes when they fit the week's offers, and never the disliked ones.
 - **REMA 1000's recipes:** search or browse REMA's own recipes – popular, newest, *Avisopskrifter* (built on this week's offers), *Aftensmad*, *Mad for børn*, *Kødfri* and more. Each card shows the time, a rough price and how many of its items are on offer. Every ingredient is linked to one of REMA's products, so the shopping list gets the very item. Save a recipe in the collection (with its photo), or put it straight on a day of the plan. In the plan, tap a dish and **Vælg en REMA-opskrift** to swap it for one of REMA's.
@@ -207,7 +212,7 @@ The settings apply every time a meal plan is made and are stored per REMA 1000 a
 | **Fixed days** (*Faste dage*) | E.g. a rye-bread day on Wednesdays. | Thursday: rye bread |
 | **Wishes for the food** (*Ønsker til maden*) | Free text for the AI. | Healthy and child-friendly |
 | **Pantry** (*Basisvarer*) | What you always have and don't buy (salt, oil, flour …). | Salt, pepper, oil etc. |
-| **Fixed weekly items** (*Faste varer hver uge*) | Search REMA's range and pick a product (or write free text) that always goes on the list. | – |
+| **Fixed weekly items** (*Faste varer hver uge*) | Search REMA's range and pick a product (or write free text) that always goes on the list. Optionally, a fixed item that is already on the REMA list (not bought) is not sent again. | – |
 | **We also shop late in the week** (*Vi handler også sidst på ugen*) | Some offers only start on Thursday. Off, the meal plan only uses offers that run on the shopping day. On, it may use them in dishes from that day; the shopping list is split into the shopping day and Thursday, each sent on its own. | Off |
 | **Automation** (*Automatik*) | Make next week's plan when the new offers come out, and optionally send it to the REMA list. It is sent at 02:00 on the shopping day (Thursday's items at 02:00 on Thursday), when REMA has the week's products and prices. | Off |
 | **The family's favourites** (*Familiens favoritter*) | Dishes with how often. | – |

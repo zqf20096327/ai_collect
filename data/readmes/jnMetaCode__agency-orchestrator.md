@@ -830,3 +830,7 @@ ao-output/产品需求评审-2026-03-22/
 ## 许可证
 
 [Apache-2.0](./LICENSE)
+
+## Code signing policy
+
+Windows 当前发布包未签名；SignPath 免费签名申请已提交，等待审核，尚未获批。[Code signing policy](./docs/CODE_SIGNING_POLICY.md) · [联网与数据说明](./docs/PRIVACY.md) · [申请评估](./docs/SIGNPATH.md)

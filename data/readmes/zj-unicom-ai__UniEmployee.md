@@ -59,6 +59,7 @@ https://github.com/user-attachments/assets/73de95eb-4b26-4ddb-9145-6e1e3c3ad2c2
 | 新增一个数字员工 | [docs/guide/add-employee.md](docs/guide/add-employee.md) |
 | 编写技能规程（SKILL.md） | [docs/guide/skill-authoring.md](docs/guide/skill-authoring.md) |
 | 开发自定义工具 | [docs/guide/custom-tools.md](docs/guide/custom-tools.md) |
+| 小网安全实操与记录导出 | [docs/guide/netops-security-practical.md](docs/guide/netops-security-practical.md) |
 | 参与贡献 / 发布流程 | [CONTRIBUTING.md](CONTRIBUTING.md) |
 | 平台原理深度解读（8 篇系列） | [docs/articles](docs/articles/README.md) |
 | 当前版本与变更记录 | [CHANGELOG.md](CHANGELOG.md) |
@@ -256,7 +257,7 @@ UniEmployee/
 | `JWT_EXPIRE_HOURS` | `24` | token 有效期（小时） |
 | `LOG_LEVEL` / `LOG_FILE` | `INFO` / 空 | 日志级别 / 文件路径 |
 | `DB_BACKEND` / `POSTGRES_*` | `postgres` | 数据库后端与连接参数（host/port/user/password/db 前缀） |
-| `APP_VERSION` | `0.21.6` | 打印在 /health 与日志；可用环境变量覆盖 |
+| `APP_VERSION` | `0.22.0` | 打印在 /health 与日志；可用环境变量覆盖 |
 | `PRODUCT_WIKI_DIR` | `product-wiki/` | 销售技能的产品知识库 markdown 目录 |
 | `RAGFLOW_BASE_URL` / `RAGFLOW_API_KEY` / `RAGFLOW_DATASET_IDS` | — | RAGFlow 知识库接入（可选） |
 | `SANDBOX_ENABLED` / `SANDBOX_DOMAIN` / `SANDBOX_IMAGE` | 未启用 / `localhost:8090` / `uniemployee/sandbox:py312-data` | OpenSandbox 开关、服务地址和沙箱镜像 |

@@ -24,6 +24,9 @@ Restart OpenCode after changing the config.
 
 ## Supported Versions
 
+Requires Node.js 22 or newer and Langfuse Cloud or self-hosted Langfuse 4.59.0
+or newer.
+
 The default package entrypoint supports both OpenCode 1 and OpenCode 2. OpenCode
 1 calls the plugin's `server()` implementation, while OpenCode 2 calls its
 `setup()` implementation. The `/v1` and `/v2` entrypoints remain available for

@@ -27,8 +27,8 @@ want it to start:
 
 | | |
 |---|---|
-| **`OpenFOAMStudio-v5.8.1-folder.zip`** | **Recommended.** Unzip once, anywhere, then run `OpenFOAMStudio.exe` from the folder. **The window is up in about a tenth of a second.** |
-| **`OpenFOAMStudio-v5.8.1-portable.exe`** | One single file, nothing to unzip. Costs about half a minute at every launch: the portable format unpacks the whole app into TEMP each time it starts. |
+| **`OpenFOAMStudio-v5.8.2-folder.zip`** | **Recommended.** Unzip once, anywhere, then run `OpenFOAMStudio.exe` from the folder. **The window is up in about a tenth of a second.** |
+| **`OpenFOAMStudio-v5.8.2-portable.exe`** | One single file, nothing to unzip. Costs about half a minute at every launch: the portable format unpacks the whole app into TEMP each time it starts. |
 
 Either way nothing is installed and nothing is written to the registry — put it
 on the Desktop or a USB stick and double-click.
@@ -39,7 +39,7 @@ saying so. The app checks on startup and tells you if files are missing, but
 extracting with PowerShell avoids the problem:
 
 ```powershell
-Expand-Archive OpenFOAMStudio-v5.8.1-folder.zip -DestinationPath OpenFOAMStudio
+Expand-Archive OpenFOAMStudio-v5.8.2-folder.zip -DestinationPath OpenFOAMStudio
 ```
 
 Windows SmartScreen will warn on first run because the executable is unsigned:
@@ -67,9 +67,11 @@ sudo add-apt-repository http://dl.openfoam.org/ubuntu
 sudo apt update && sudo apt install openfoam14
 ```
 
-The app auto-detects every version in `/opt/openfoam*`, `/usr/lib/openfoam/*`
-and `/usr/local/OpenFOAM-*`, and you can switch between them from the gear on
-the **OpenFOAM card in the Dashboard**.
+The app auto-detects every version in `/opt/openfoam*`, `/usr/lib/openfoam/*`,
+`/usr/local/OpenFOAM-*` and the home folders (a source build in
+`~/OpenFOAM/OpenFOAM-X`), and you can switch between them from the gear on
+the **OpenFOAM card in the Dashboard**. An installation kept anywhere else is
+found once you add its folder under **Search folders** in the same dialog.
 
 ---
 
@@ -84,7 +86,8 @@ the **OpenFOAM card in the Dashboard**.
   **Move** button or by dragging it onto a container or the run folder, and
   turn an existing folder into a container from its rename dialog: the folders
   inside it become its cases (a case with files of its own is moved into a
-  container instead). A case in a container is named `container/case`
+  container instead). Containers open closed and show their cases when
+  clicked. A case in a container is named `container/case`
   everywhere, the agents included.
 - **New Case** — guided wizard from a template (cavity, pipe flow, airfoil,
   dam break, motorbike…). It reads the installed OpenFOAM version and writes
@@ -339,8 +342,9 @@ the ParaView tab then starts in seconds. The switch is in the same settings.
 **The WSL2 badge is red** — run `wsl --status`; if the distro hangs, `wsl --shutdown`
 and reopen. Multiple distros? Dashboard → ⚙️ → change distro.
 
-**"No OpenFOAM version found"** — it isn't in a standard path. Symlink it:
-`sudo ln -s /yourpath/OpenFOAM-X /opt/openfoam/OpenFOAM-X`.
+**"No OpenFOAM version found"** — it isn't in a standard path or in `/home`.
+Dashboard → OpenFOAM ⚙️ → **Search folders**, enter the Linux folder that holds
+it (for example `/data/OpenFOAM`) and press **Search folder**.
 
 **Blank window / "Server did not start"** — launch the `.exe` from a terminal;
 the bundled server's output is printed there with a `[server]` prefix.

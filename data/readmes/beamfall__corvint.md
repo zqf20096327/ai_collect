@@ -9,7 +9,7 @@
 
 <p align="center">A <a href="https://github.com/beamfall">Beamfall</a> project.</p>
 
-<p align="center"><strong>Context your agents can cite. Changes your reviewers can check.</strong></p>
+<p align="center">Corvint gives coding agents context they can cite and gives reviewers changes they can check.</p>
 
 <p align="center">
   Corvint is a local-first context compiler for coding agents. Before an edit it hands the agent
@@ -20,6 +20,7 @@
 
 <p align="center">
   <a href="docs/INSTALL.md">Install</a> ·
+  <a href="#what-corvint-can-do">Capabilities</a> ·
   <a href="#the-workflow">Workflow</a> ·
   <a href="#status-stated-plainly">Status</a> ·
   <a href="docs/README.md">Documentation</a>
@@ -33,40 +34,67 @@
   <img alt="License: AGPL-3.0-or-later" src="https://img.shields.io/badge/license-AGPL--3.0--or--later-334155">
 </p>
 
-**One native Go binary.** No account, hosted service, database, embeddings, or permanent daemon.
-`go.mod` declares no module requirements. Read commands do not mutate repository or trace state;
+Corvint is one native Go binary with no account, hosted service, database, embeddings, or permanent
+daemon. `go.mod` declares no module requirements. Read commands do not mutate repository or trace state;
 the two bounded exceptions are a local `.corvint/self-observations.jsonl` ledger and, only while
-the operator marker `.corvint/unplanned-reads.enabled` exists, `.corvint/unplanned-reads.jsonl` —
-neither is a direct input to ranking, evidence, or authority. Learning from these ledgers requires
+the operator marker `.corvint/unplanned-reads.enabled` exists, `.corvint/unplanned-reads.jsonl`.
+Neither is a direct input to ranking, evidence, or authority. Learning from these ledgers requires
 an explicit operator step and a frozen held-out gate ([AGENTS.md](AGENTS.md) invariant 4). Version
 `1.0.0-rc.2` is the published prerelease and the second release candidate for Corvint 1.0;
 [what 1.0 promises and what is still being qualified](#status-stated-plainly).
 
 ## Why Corvint
 
-Finding relevant text is only part of a coding task. An agent also needs to know which document
-governs the change, which tests constrain it, and what evidence is missing. A reviewer needs to
-follow those decisions back to their sources.
+Besides the text relevant to a coding task, an agent needs to know which document governs the
+change, which tests constrain it, and what evidence is missing. A reviewer needs to follow those
+decisions back to their sources.
 
 Corvint makes that evidence inspectable through context receipts and a map beside the diff.
 
-- **Every result explains itself.** Each item in a packet carries the Git blob it came from, the
-  path and line, the authority that admitted it, a confidence level, and a plain-language
-  inclusion reason. A reviewer can follow any citation to immutable content.
-- **Your repository is the authority.** Agent instructions, accepted decisions, and specs you
-  already keep outrank syntax matches, history correlations, and learned traces. Corvint uses
-  the documents you have; it introduces no new spec language.
-- **It says what it does not know.** Coverage, omissions, uncertainty, and freshness are fields
-  in the receipt, and a hunk without cited evidence is an explicit unknown. Task-level retrieval
-  abstention is experimental and unqualified; see [Status](#status-stated-plainly).
-- **Reviewers get a disposition for every hunk.** A Change Evidence Map (CEM) links each textual
-  hunk of a diff to cited evidence, an explicit unknown, or a mechanical exception. The verifier
-  checks patch, hunk, blob, and span identity locally, with no LLM, no index, and no shared
-  service. The protocol is Apache-2.0, so anyone can implement or verify it.
-- **Local and explicit.** The core reads Git and prints JSON. Default evidence flows make no
-  network call. `query`, `context`, `impact`, `affected`, and non-executing `prove` modes report
-  `mutates: false`, subject to the private-ledger exceptions above. `record` explicitly retains
-  task outcomes; learning stays local, bounded, secret-screened, and evaluation-gated.
+- Each item in a packet carries the Git blob it came from, the path and line, the authority that
+  admitted it, a confidence level, and a plain-language inclusion reason. A reviewer can follow
+  any citation to immutable content.
+- Your repository is the authority. Agent instructions, accepted decisions, and specs you already
+  keep outrank syntax matches, history correlations, and learned traces. Corvint uses the
+  documents you have; it introduces no new spec language.
+- Coverage, omissions, uncertainty, and freshness are fields in the receipt, and a hunk without
+  cited evidence is an explicit unknown. Task-level retrieval abstention is experimental and
+  unqualified; see [Status](#status-stated-plainly).
+- Reviewers get a disposition for every hunk. A Change Evidence Map (CEM) links each textual hunk
+  of a diff to cited evidence, an explicit unknown, or a mechanical exception. The verifier checks
+  patch, hunk, blob, and span identity locally, with no LLM, no index, and no shared service. The
+  protocol is Apache-2.0, so anyone can implement or verify it.
+- The core reads Git and prints JSON. Default evidence flows make no network call. `query`,
+  `context`, `impact`, `affected`, and non-executing `prove` modes report `mutates: false`,
+  subject to the private-ledger exceptions above. `record` explicitly retains task outcomes;
+  learning stays local, bounded, secret-screened, and evaluation-gated.
+
+## What Corvint can do
+
+**core** means a Core verb from `corvint help` (only the modes the
+[Core compatibility freeze](docs/specs/core-compatibility-freeze-v1.md) lists are frozen);
+**experimental** means it works today with no stability promise. The full catalog of every
+command, binary and MCP tool, with when to use each one and how it refuses, is
+[docs/CAPABILITIES.md](docs/CAPABILITIES.md). A Go test keeps that catalog and this table in step
+with the code.
+
+<!-- capability-gate:readme -->
+| Capability | What you get | Try it | Maturity |
+|---|---|---|---|
+| Governing context first | The instruction file that governs the task, then the minimum context, as one canonical receipt | `corvint query --task "add a retry to the uploader"` | core |
+| Context compilation with pinned evidence | The files to read, each pinned to a Git blob with the relation and reason that admitted it | `corvint context --task "fix the date parser" --subject internal/date/parse.go` | core |
+| Impact of a change | What a path or a committed range reaches, with uncertainty where a rule is missing | `corvint impact internal/date/parse.go` | core |
+| Affected test selection | The tests to run for a branch, the mandatory checks, and an explicit unknown frontier instead of a silent full run | `corvint affected --base FULL_SHA` | core |
+| Falsifiable evidence | Every claimed row of a packet gets a falsifier verdict, so a wrong citation is caught | `corvint prove --task "fix the date parser"` | core |
+| Change Evidence Map | Every diff hunk bound to cited evidence, an explicit unknown or a checked exception; CI verifies it with no LLM | `corvint cem prepare --base BASE_SHA --target HEAD_SHA` | core |
+| Obligation closure and review order | Declared obligations linked to test claims, then a deterministic review queue | `corvint ocm prepare --target HEAD_SHA --intent docs/specs/my-spec.md` | core |
+| Documentation corpus | Source-pinned documentation you can build, search and serve to agents | `corvint docs corpus search --artifact corpus.json --query login` | experimental |
+| Agent tools over MCP | Query, impact, status, context, CEM report and flow tools for any MCP host | `corvint-mcp --root /abs/repo --tool-profile task-review` | experimental |
+| Application flows | Flows, assertions, coverage and gaps for a web application | `corvint flows --manifest flows.json` | experimental |
+| Tasks | A local ticket store with roadmap, claims, gates and audited completion | `corvint-tasks queue status` | experimental |
+| Gated learning | Learned ranking weights reach ranking only after a frozen held-out evaluation admits them | `corvint eval --learn-slot-weights` | experimental |
+| Language support | Impact rules for Go, Ruby, JavaScript and TypeScript; affected-test providers for eleven ecosystems from Go to Swift and .NET; everything else is reported as unknown | `corvint affected --base FULL_SHA --full` | core verb; individual language providers are experimental |
+<!-- /capability-gate:readme -->
 
 ## Sixty seconds on this repository
 
@@ -240,9 +268,9 @@ binary. With an older build, or with an MCP companion that does not match your b
 installed `corvint help context` before using them.
 
 Corvint can use `gopls`, the Go language server, to add definition and reference relationships
-to a context packet. This integration is **experimental and opt-in**; it does not change ranked
+to a context packet. This integration is experimental and opt-in; it does not change ranked
 results or project authority. Install `gopls` explicitly and have your workspace dependencies
-available locally, then select a tracked Go file (here, in Corvint’s checkout):
+available locally, then select a tracked Go file (here, in Corvint's checkout):
 
 ```sh
 corvint context --task "Find callers and dependencies" \
@@ -271,7 +299,7 @@ adapters are Core host rows; Gemini CLI, OpenCode and Pi are companions:
   automatic unit/E2E reruns on editor saves. Install the VSIX and providers, configure the project's toolchains and suite, then
   enable `corvint.liveTests.enabled`. It reruns the configured suite; passing tests do not
   establish test adequacy or authority. [Setup and stop instructions](docs/INSTALL.md#editor-and-test-feedback).
-- [MCP](docs/MCP-SERVER.md): `corvint-mcp` is a **companion** local stdio server that exposes
+- [MCP](docs/MCP-SERVER.md): `corvint-mcp` is a companion local stdio server that exposes
   read-only receipts (`GOTOOLCHAIN=local go build -o ./bin/corvint-mcp ./cmd/corvint-mcp`).
   `corvint-docs-mcp` drafts source-bound documentation and checks a draft against source;
   `corvint-test-validity-mcp` lets agents inspect retained test observations. Both need a
@@ -326,8 +354,8 @@ unknown axes stay visible ([contract](docs/specs/js-live-test-provider-v0.md),
 
 ### Framework-aware test selection
 
-The live providers above are only part of the test tooling. `corvint affected` also reads source
-and configuration to recognize test units across the following ecosystems. It produces a plan;
+`corvint affected` also reads source and configuration to recognize test units across the
+following ecosystems. It produces a plan;
 it does not launch these runners or establish that omitted tests are safe to skip.
 
 | Ecosystem | Recognized test conventions and runners |
@@ -392,8 +420,8 @@ the adapter change. See
 `corvint-dashboard-snapshot` compiles one read-only snapshot of what Corvint data exists for a
 repository: the revision and authority each artifact represents, what is stale or absent, which
 denominators were never observed, and the exact artifact and verifier behind every aggregate.
-Its `roadmap` subcommand projects the ticket roadmap the same way. A snapshot is an inspector,
-not a scoreboard: an unavailable denominator is reported as unavailable, never as zero
+Its `roadmap` subcommand projects the ticket roadmap the same way. A snapshot reports an
+unavailable denominator as unavailable, never as zero
 ([Local Observability Dashboard V0](docs/specs/local-observability-dashboard-v0.md)).
 
 `corvint-console` serves that snapshot, the ticket board and detail, the specification index and
@@ -409,7 +437,7 @@ connection and holds no database ([Local Admin Console V0](docs/specs/local-admi
 
 ### Agent-facing servers
 
-Four stdio MCP servers, each bound to one repository root, each read-only. The companion bundle
+There are four stdio MCP servers; each is bound to one repository root and is read-only. The companion bundle
 builder includes `corvint-mcp`, `corvint-docs-mcp` and `corvint-test-validity-mcp`; use a published
 bundle only when its exact assets and qualification evidence exist. They are not in the Core
 archive. `corvint-corpus-mcp` is source-only and experimental:
@@ -503,7 +531,7 @@ experimental; exact client tuples and outcome/performance floors are unqualified
 | Spec-driven | Every substantive capability has an executable spec with stable requirement IDs in `docs/specs/REQUIREMENTS.tsv`; `go run ./script/spec-coverage-audit` reports test, case, and fixture mentions separately from comments and missing mentions |
 | Decision records | Numbered, accepted intent with explicit promotion boundaries in `docs/decisions/` |
 | Frozen conformance | Exact receipt and state replay, CEM/LRF/TCQ vectors, and an in-repo second consumer for `cem/1.0` in `interop/cem01-go` |
-| Honest disagreements | Every known behavioural disagreement is adjudicated and dated in the [divergence register](conformance/divergence-register.md) |
+| Divergence register | Every known behavioural disagreement is adjudicated and dated in the [divergence register](conformance/divergence-register.md) |
 | Hermetic archives | `make gate` includes `script/go-archive-gate`, which rebuilds the release archives from the committed revision and checks the closed file set ([spec](docs/specs/go-archive-gate-v0.md)) |
 | Dogfooded | Substantive Corvint changes must collect context with Corvint and bind the diff to a CEM ([dogfood contract](docs/DOGFOOD.md)) |
 
@@ -514,8 +542,9 @@ experimental; exact client tuples and outcome/performance floors are unqualified
 > final: its untouched-repository evaluation failed (Core jobs row below). The 1.0 stability promise (frozen
 > contracts, N-1 readers or deterministic migrations) covers the Core surfaces below and nothing
 > else ([1.0 scope](docs/specs/corvint-1.0-product-and-release-v1.md), decision 0373). Stable 1.0
-> also requires the expanded Flows, safe navigation, documentation/MCP, full Beamfall roadmap
-> takeover by Tasks and automatic documentation outcomes accepted in decision 0426. Those
+> also requires the expanded Flows, safe navigation, documentation/MCP and automatic
+> documentation outcomes accepted in decision 0426; the full Beamfall roadmap takeover by Tasks
+> moved post-1.0 on 2026-10-21 (`PRS-V1-014`, `PRS-V1-016`, V1-0464). Those
 > requirements do not expand Core's binary boundary or transfer its stability promise to
 > companions. The three Core jobs must pass on Corvint, Beamfall and one untouched public
 > repository (`PRS-V1-008`; urfave/cli for rc.2, decision 0432), alongside the expanded product qualification. Platform status comes
@@ -581,9 +610,9 @@ may require Python 3 and their declared external tools. See [native regression o
 
 ## License
 
-Corvint is free software under the **GNU Affero General Public License v3.0 or later**. The portable
+Corvint is free software under the GNU Affero General Public License v3.0 or later. The portable
 protocol descriptions, schemas, conformance material, and interop implementations are
-**Apache-2.0** instead, so anyone can implement the standard, including in proprietary software,
+Apache-2.0 instead, so anyone can implement the standard, including in proprietary software,
 without the copyleft attaching. The examples under `examples/` are AGPL-3.0-or-later. See
 [LICENSING.md](LICENSING.md) for the exact path boundary, [LICENSE](LICENSE) for the AGPL text,
 [LICENSE-APACHE-2.0](LICENSE-APACHE-2.0) for the Apache text, and [PROVENANCE.md](PROVENANCE.md).

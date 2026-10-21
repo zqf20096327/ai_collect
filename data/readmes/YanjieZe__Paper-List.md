@@ -46,6 +46,11 @@ Papers:
 
 
 # Recent Random Papers
+- [arXiv 2026.10](https://arxiv.org/abs/2610.28480), SuperMimic: Scaling Humanoid Whole-Body Control with One Differentiable World Model
+- [arXiv 2026.10](https://arxiv.org/abs/2610.27387), Training Controllable World Models via Action Influence Maximization
+- [arXiv 2026.10](https://arxiv.org/abs/2610.26855), Ropedia W0: Scaling Loco-Manipulation World Models across Embodiments with Human Experience
+- [arXiv 2026.10](https://arxiv.org/abs/2610.25736), Learning from Fleet Experience: A Collective Learning Paradigm for Robots
+- [arXiv 2026.10](https://arxiv.org/abs/2610.26863), Text-to-Image Generative Modeling Without Language Pretraining
 - [arXiv 2026.10](https://arxiv.org/abs/2610.22496), Scaling Online Exploration for Robot Agents
 - [arXiv 2026.10](https://arxiv.org/abs/2610.22184), Whole-Body Dexterity
 - [arXiv 2026.10](https://arxiv.org/abs/2610.22340), Dexterity from Supervised Play
@@ -753,9 +758,4 @@ Papers:
 - CVPR 2023 highlight, F2-NeRF: Fast Neural Radiance Field Training with Free Camera
 - arXiv 2023, Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware, [Website](https://tonyzhaozh.github.io/aloha/)
 - RSS 2021, RMA: Rapid Motor Adaptation for Legged Robots, [Website](https://ashish-kmr.github.io/rma-legged-robots/)
-- ICCV 2021, Where2Act: From Pixels to Actions for Articulated 3D Objects, [Website](https://cs.stanford.edu/~kaichun/where2act/)
-- CVPR 2019 oral, Semantic Image Synthesis with Spatially-Adaptive Normalization, [GitHub](https://github.com/NVlabs/SPADE)
-
-
-# Contact
-If you have any questions or suggestions, please feel free to contact me at lastyanjieze@gmail.com .
+- ICCV 2021, Where2Act: From Pixels to 

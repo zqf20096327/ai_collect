@@ -102,6 +102,10 @@ edward demo --live-scorer --offline  # same proof through the full scorer pipeli
 edward wrap -- pi "fix the flaky test"                     # full monitoring + intervention
 edward wrap --no-scorer -- python my_agent.py              # any command, rule-only
 edward wrap --scope ./src --auto-resume 60 -- pi "task"    # scoped writes, auto-resume
+edward wrap --agent claude -- claude -p "task"             # native claude stream supervision (resumable)
+edward wrap --agent codex  -- codex exec "task"            # native codex stream supervision (resumable)
+edward audit && edward replay                              # aggregates, then the session as a shareable HTML receipt
+edward mcp                                                 # control plane as an MCP server (stdio, in-loop supervision)
 ```
 
 **Local semantic scorer (one GPU, three commands).** Rule-only is protective;
@@ -196,6 +200,56 @@ measured numbers and reproduction commands).
 <img src="docs/gif/resume_verify.gif" alt="resume from audit + offline receipt verification" width="780">
 </div>
 
+
+## See it work
+
+**Resumable interventions on real CLIs** — the agent stalls, Edward pauses it,
+auto-resumes the *same conversation* with a supervisor note:
+
+```console
+$ edward wrap --agent claude --auto-resume 5 -- claude -p "build the thing"
+[TRIGGER] Output inactivity: no stdout for 90s
+[decision] PAUSE (rule — inactivity watchdog)
+[EDWARD] exit code 75. Resume: edward wrap --continue -- <command>
+auto-resume 1/3 in 5s (session edward-7f6f3752)
+# resumed run: claude --resume 1e316314-... -p "build the thing
+#   [edward supervisor] This session was paused by the external control plane...
+```
+
+Works for `pi` (native RPC), `claude` (`--session-id`/`--resume` with a
+deterministic UUID) and `codex` (`exec resume --last`) — fake-agent E2E
+included in the test suite (`rm -rf` inside a claude stream → intercepted,
+exit 76).
+
+**`edward replay`** — every audited session becomes a self-contained HTML
+receipt page (dark, dependency-free, shareable as a single file):
+
+```console
+$ edward replay
+replay written: /root/.edward/replay-7f6f3752.html (session edward-7f6f3752)
+```
+
+Per session: command, timeline, every intervention with trigger / source /
+scorer verdict / MSS snapshot / estimated avoided spend, signed-trail note.
+
+**`edward mcp`** — the control plane inside the agent loop. Any MCP client
+(including Claude Code and opencode) gets supervision tools:
+
+```json
+{ "mcpServers": { "edward": { "command": "edward", "args": ["mcp"] } } }
+```
+
+```jsonc
+// agent reports each tool execution; Edward answers with the decision:
+{"decision": {"action": "REQUEST_HUMAN_APPROVAL",
+              "reason": "Dangerous command detected: rm -rf /tmp/victim"},
+ "state": {"dangerous_commands": 1, "total_tool_calls": 42, "...": "..."}}
+```
+
+Deterministic layer owns irreversible calls; `judge_action` adds an advisory
+semantic verdict when a scorer is configured. Zero dependencies — the server
+is stdlib JSON-RPC over stdio.
+
 ## Unattended runs & CI
 
 Edward is built for agents nobody is watching. In a workflow:
@@ -229,7 +283,7 @@ touching the control plane.
 |---|---|---|
 | OS | Linux, macOS, Windows | CI matrix (incl. POSIX killpg + Windows CTRL_BREAK process trees) |
 | Python | 3.11 – 3.13 | CI matrix |
-| agents | **any subprocess** (`edward wrap -- <cmd>`); builtin `claude` / `codex` / `pi` adapters (native stream translation); more via `edward.adapters` entry points | `edward demo`, adapter test fixtures from live CLI output |
+| agents | **any subprocess** (`edward wrap -- <cmd>`); builtin `claude` / `codex` / `pi` adapters (native stream translation **+ resume parity**: PAUSE -> `--resume`/`exec resume --last` with a supervisor note); MCP agents via `edward mcp`; more via `edward.adapters` entry points | `edward demo`, adapter test fixtures from live CLI output |
 | scorer backends | `endpoint` (any OpenAI-compatible URL), `jev` (TypeSafe Jev / Kev — same wire API), `heuristic` (offline), `disabled` | `edward doctor` |
 | local scorers | Ollama (`--style ollama`), **vLLM (`--style vllm`, `allowed_token_ids` — every probability is a raw logprob)**, llama.cpp / LM Studio (`--style openai`) | BENCHMARK.md local rows |
 | GPU | none required (rule-only + heuristic); 8 GB runs qwen3.5:9b direct readout | RTX 3070 Ti measurements |

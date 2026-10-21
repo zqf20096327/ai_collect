@@ -55,6 +55,12 @@ Prebuilt, signed, and notarized binaries are available for macOS, Windows, and L
 
 ---
 
+## ⌨️ Usage
+
+See **[Keyboard Shortcuts](./docs/keyboard-shortcuts.md)** for the full list by area, with macOS and Windows/Linux keys. In the app, press **F1** for a quick reference.
+
+---
+
 ## 📸 In Action
 
 **Multi-agent, multi-repo workspace** — run agents side by side, each in its own worktree, with a live file tree and editor.
@@ -103,15 +109,25 @@ npm install -g @anthropic-ai/claude-code
 claude
 ```
 
+See [WINDOWS.md](WINDOWS.md) for the Windows smoke checklist.
+
 #### Linux
 ```bash
-sudo apt install nodejs npm gh glab
+# Node 24+ is required; the distro nodejs package is too old (Ubuntu 24.04 ships 18)
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
+sudo apt install -y nodejs gh glab
 gh auth login
 glab auth login
 npm install -g @anthropic-ai/claude-code && claude
 ```
 
+Prefer [nvm](https://github.com/nvm-sh/nvm)? `nvm install 24` works too; then install `gh` and `glab` with apt.
+
+See [LINUX.md](LINUX.md) for the Linux smoke checklist.
+
 *For Bitbucket repositories, connect an App Password or token under **Preferences → Git Accounts**.*
+
+The environment variables klaussy reads (forge tokens, path overrides, debug switches) are listed in [docs/environment-variables.md](./docs/environment-variables.md).
 
 ---
 
@@ -141,7 +157,7 @@ npm run dist:linux    # Linux AppImage + DEB (requires Linux host)
 
 *   [`main/`](file:///Users/stephaniedover/projects/klaussy-desktop/main): Electron main process. Manages PTY terminals, file watching, git worktrees, and the pre-commit review server.
 *   [`preload.js`](file:///Users/stephaniedover/projects/klaussy-desktop/preload.js): Context-isolated IPC bridge.
-*   [`docs/`](file:///Users/stephaniedover/projects/klaussy-desktop/docs): User setup guides, notification workflows, and legal policies (EULA, Privacy).
+*   [`docs/`](file:///Users/stephaniedover/projects/klaussy-desktop/docs): User setup guides, notification workflows, the [environment variable reference](./docs/environment-variables.md), and legal policies (EULA, Privacy).
 
 ---
 

@@ -320,7 +320,7 @@ gridctl groups                     # Groups, member counts, and endpoints
 gridctl link cursor --group release
 ```
 
-With `gateway.auth` configured, grouped endpoints require the same bearer token or API-key header as `/mcp` on every request. Linking selects an endpoint but does not provision credentials; supply them through your client's authentication settings. Groups and self-declared client selectors are not authenticated identities. See [gateway authentication](docs/config-schema.md#auth), including HTTPS or encrypted-tunnel requirements for remote access.
+With `gateway.auth` configured, grouped endpoints require the same credential as `/mcp` on every request. Linking selects an endpoint but does not provision credentials. Unreleased OAuth resource-server mode (`gateway.auth.type: oauth`) validates an external issuer's JWTs and uses the verified identity claim for client profiles and session ownership. A compatible MCP host discovers the issuer and completes login; CLI commands use `GRIDCTL_GATEWAY_TOKEN`. Bearer and API-key modes retain self-declared client selectors. See [gateway authentication](docs/config-schema.md#auth) and [the OAuth example](examples/gateways/gateway-oauth.yaml), including HTTPS and origin-allowlist requirements for remote access.
 
 For deployment and review steps, read the [Practical Security Guide](docs/security/practical-guide.md), which distinguishes current defaults, opt-in controls, and release availability.
 
@@ -337,7 +337,7 @@ gridctl tools search "message"
 gridctl call echo__echo '{"message":"hello"}' --format json
 ```
 
-`gridctl search` remains the install catalog. `--as` selects a caller-declared scope label and does not authenticate as that client. See [Live tools](docs/cli-reference.md#live-tools).
+`gridctl search` remains the install catalog. `--as` is display-only in OAuth mode; in other modes it selects a caller-declared scope label without authenticating as that client. See [Live tools](docs/cli-reference.md#live-tools).
 
 ### Outbound A2A (Experimental)
 
@@ -446,7 +446,7 @@ Learn more → [CLI Reference](docs/cli-reference.md#variables) · [Variable dec
 
 ### Skill Library
 
-Every `SKILL.md` in your registry surfaces to upstream MCP clients as a prompt. Author a skill as `SKILL.md` in any editor, or in the Library workspace. It enters the registry through `gridctl skill add` (a git repo or a local directory), `gridctl skill import <client>`, `gridctl import <client> --kind all`, or a pack. Local-directory import, client-home import, and `--kind` are included in v1.0.0-rc.2. A draft is activated with `gridctl activate`. Which clients can use the prompt channel, and which need a file projection, is in the [per-client matrix](docs/skills.md#how-skills-reach-the-model).
+Active, policy-visible registry skills reach upstream MCP clients as prompts, resources, and through Skills over MCP (`io.modelcontextprotocol/skills`), with file manifests and directory browsing. Author a skill as `SKILL.md` in any editor, or in the Library workspace. It enters the registry through `gridctl skill add` (a git repo or a local directory), `gridctl skill import <client>`, `gridctl import <client> --kind all`, or a pack. Local-directory import, client-home import, and `--kind` are included in v1.0.0-rc.2. A draft is activated with `gridctl activate`. Client support and file projection options are in the [per-client matrix](docs/skills.md#how-skills-reach-the-model).
 
 ```bash
 gridctl skill list                        # Show what's in the registry

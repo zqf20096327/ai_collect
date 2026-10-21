@@ -2,7 +2,10 @@
 
 A Node-RED-like visual workflow editor with a Python backend. Create workflows by connecting Python nodes that process and route messages.
 
-https://github.com/user-attachments/assets/0b53085a-2cc6-4c26-bd43-e0de1e0716a2
+<!-- https://github.com/user-attachments/assets/0b53085a-2cc6-4c26-bd43-e0de1e0716a2 -->
+[![Watch the PyNode promo video on YouTube](docs/video_thumb_play.png)](https://www.youtube.com/watch?v=d-sQIWd4X9Q)
+
+<p align="center"><a href="https://www.youtube.com/watch?v=d-sQIWd4X9Q">▶ Watch the promo video on YouTube</a></p>
 
 ## Features
 

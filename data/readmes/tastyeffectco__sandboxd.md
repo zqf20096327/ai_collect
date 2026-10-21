@@ -85,6 +85,12 @@ instead of a VM each. Under the hood it's deliberately small: **one Go program
 driving Docker**, Traefik for URLs, SQLite for state — no Kubernetes, no separate
 database, no queue.
 
+**Bring your own models.** Run **OpenCode or Pi** against local or remote
+**OpenAI-compatible** and **Anthropic-compatible** endpoints. Add connections,
+model aliases and token limits in the console; provider keys stay encrypted on
+the control plane. Use your local model server or a LiteLLM gateway, including
+gateways routing to AWS Bedrock. [Set up model connections →](docs/model-providers.md)
+
 ## Two ways to use it
 
 - **API-first** — everything is a `/v1` call, so you can build sandboxd into your
@@ -95,6 +101,12 @@ database, no queue.
   engine runs perfectly headless without it.
 
 > **New here? Start with the console. Building a product? Drive the API.**
+
+The console starts with your idea: describe an app, choose a stack and agent,
+then work in a persistent conversation beside preview, code, terminal and Git.
+Settings groups model connections, coding-agent accounts, Git credentials and
+security controls. Workspace menus expose secrets, versions, memory and runtime
+tools. See the [console guide](console/README.md) for the complete workflow.
 
 ## What can you run? (a lot — from one console, no code)
 
@@ -165,14 +177,31 @@ builds from multi-arch bases with no cross-compilation. Install in one line:
 curl -fsSL https://raw.githubusercontent.com/tastyeffectco/sandboxd/main/install.sh | bash
 ```
 
-It builds the images, starts the stack **with the web console**, and prints your
-**console URL + a generated login** — no password step. Open it, connect an agent
+On a clean stable release checkout with `cosign` installed, it pulls and verifies
+the matching prebuilt images. Otherwise it builds from source. It starts the
+stack **with the web console**, and prints your
+**console URL**. Create your password on first visit, then connect an agent
 under **Settings**, create an app, and build. No code needed.
 
-- **Console:** `http://console.localhost` — the installer prints your login; lost
-  it? run **`./console-login.sh`** to see it again anytime
+- **Build from source instead:** run **`./install.sh --build`** — a first-class,
+  fully-supported path. Compiles every image locally so you audit exactly what
+  runs. Prebuilt images are multi-arch, **cosign-signed with build provenance**
+  by [the release workflow](.github/workflows/release-images.yml). The installer
+  verifies each pulled digest against that workflow's identity at the exact
+  release tag before starting services. `./install.sh --pull` requires those
+  checks to succeed; `--build` and custom image names use local builds. No
+  signing tools are downloaded by the installer. A failure falls back to source
+  in automatic mode, or stops without starting the stack in `--pull` mode.
+- **Console:** `http://console.localhost` — create your password on first visit.
+  Run **`./console-login.sh`** to show the URL or reset the password.
 - **API:** `http://127.0.0.1:9090` (`curl http://127.0.0.1:9090/healthz` → `ok`)
-- **Headless (no console):** run with `SANDBOXD_CONSOLE=0` (or `--no-console`)
+- **Desktop (Electron):** the same builder in a native macOS/Windows app, with
+  local or remote engine connections. Desktop installation is on by default on
+  macOS; Windows uses `install.ps1` (WSL engine + native client). Opt out with
+  `--no-desktop` / `-NoDesktop` or `SANDBOXD_DESKTOP=0`. The initial signed desktop
+  release must be published before automatic downloads are available; see
+  [desktop setup, source builds and release status](docs/desktop.md).
+- **Headless:** `--no-console --no-desktop` (Windows: `-NoConsole -NoDesktop`).
 - **Upgrade later:** run **`./upgrade.sh`** — it backs up your database first,
   health-checks the new version, and rolls back automatically if it fails
   ([Upgrading](docs/upgrading.md)). `./upgrade.sh --check` shows your version.

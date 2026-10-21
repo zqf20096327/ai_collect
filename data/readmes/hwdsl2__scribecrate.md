@@ -25,11 +25,11 @@ ScribeCrate is a self-hosted speech-to-text API for transcribing audio, generati
 
 Also available as part of the [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack), which deploys a complete self-hosted AI stack with a single command.
 
-> 📘 [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) is a practical guide to building, securing, and operating your own private AI stack.
+> 📘 [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) is a practical guide to building, securing, and operating your own private AI stack. **Ebook: $0.99 for a limited time.**
 
 **Also available:**
 
-- Try it online: [Open in Colab](https://selfhostedaistack.com/scribecrate-notebook) — no Docker or installation required
+- Try it online: [Open in Colab](https://selfhostedaistack.com/scribecrate-notebook) — no Docker or local installation required
 - Related AI services: [ScribeCrate Live](https://github.com/hwdsl2/scribecrate-live), [SpeakCrate](https://github.com/hwdsl2/speakcrate), [EmbedCrate](https://github.com/hwdsl2/embedcrate), [GatewayCrate](https://github.com/hwdsl2/gatewaycrate), [InferCrate](https://github.com/hwdsl2/infercrate), [ParseCrate](https://github.com/hwdsl2/parsecrate), [UplinkCrate](https://github.com/hwdsl2/uplinkcrate)
 
 ## Quick start
@@ -202,6 +202,7 @@ This Docker image uses the following variables, that can be declared in an `env`
 | `WHISPER_WORD_TIMESTAMPS` | When set to `true`, enables word-level timestamps globally for all requests. The `verbose_json` output will include a top-level `words` array with per-word timing and confidence. Can also be enabled per-request via `timestamp_granularities[]=word`. | *(not set)* |
 | `WHISPER_DIARIZATION` | Set to `true` to enable speaker diarization. Identifies who is speaking in each segment. Uses [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx) with pyannote segmentation-3.0 ONNX models (~45 MB, auto-downloaded on first use). Not supported in streaming mode. | *(not set)* |
 | `WHISPER_DIARIZE_NUM_SPEAKERS` | Exact number of speakers (if known). Improves clustering accuracy. Set to `-1` or leave unset for auto-detection. | `-1` |
+| `WHISPER_DIARIZE_THREADS` | CPU threads per segmentation/embedding model. Canonical decimal integer `1` through `2147483647`; unset/empty inherits `WHISPER_THREADS`. | `WHISPER_THREADS` |
 | `WHISPER_DIARIZE_THRESHOLD` | Clustering threshold for auto-detection. Lower = more speakers detected, higher = fewer. Ignored when exact speaker count is set. | `0.5` |
 | `WHISPER_DISABLE_USAGE_COUNTS` | Set to `1` to disable anonymous aggregate usage counts. | *(not set)* |
 
@@ -756,7 +757,13 @@ docker exec whisper whisper_manage --downloaddiarize
 > Diarization requires full audio analysis and is **not supported in streaming mode** (`stream=true`). If both are enabled, diarization is silently skipped.
 
 - Set `WHISPER_DIARIZE_NUM_SPEAKERS` if you know the exact number of speakers for better accuracy.
-- The diarization pipeline runs after transcription, adding a small amount of processing time proportional to audio duration.
+- The diarization pipeline runs after transcription. Processing time depends on audio duration, hardware and thread settings, and can exceed transcription time.
+
+**Diarization threads:** Both the segmentation and embedding models now inherit `WHISPER_THREADS` (normally `2`) instead of using one thread each. This changes CPU resource use for existing diarization-enabled deployments. Set `WHISPER_DIARIZE_THREADS=1` to retain the previous per-model thread setting, or choose another count for your CPU budget. Removing or emptying the option restores inheritance, not the previous one-thread default.
+
+`WHISPER_DIARIZE_THREADS` accepts surrounding ASCII whitespace and at most one matching pair of outer quotes, like the repetition controls. Use ASCII decimal digits from `1` through `2147483647`, without signs or leading zeros. Invalid nonempty values stop startup before model loading, even when diarization is disabled. This option alone does not enable diarization.
+
+This is not a process-wide thread limit. Other libraries and request workers can use additional threads, and more threads do not guarantee a speedup or identical output. Diarization remains CPU-based even with the `:cuda` image, and remains batch-only. Apply changes using the [environment-variable restart/recreation guidance](#environment-variables); keep model volumes when updating or rolling back.
 
 ## Usage counts
 

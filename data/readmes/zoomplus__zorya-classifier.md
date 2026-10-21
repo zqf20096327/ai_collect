@@ -2,11 +2,17 @@
 
 [![npm version](https://img.shields.io/npm/v/zorya-classifier)](https://www.npmjs.com/package/zorya-classifier)
 
-Provider-independent text/image classification and coarse-to-fine object localization for Node.js and TypeScript. MIT application code. **Native decision models are the primary integration**, with Luna Decisions as the main example; ordinary vision language models are also supported without a native classification API.
+Provider-independent text/image classification and coarse-to-fine object localization for Node.js and TypeScript. MIT application code. The library never selects or connects a model for you: create a client with an explicit `DecisionPort`, either injected by your application or built with an adapter you configure. The model and provider shown in examples are examples, not defaults. Ordinary vision language models and native decision APIs are both supported.
 
-Use any image-capable instruction-following model through an OpenAI-compatible API, or implement the small `DecisionPort` for another protocol. OpenRouter is an optional adapter, not a mandatory service. Model compatibility and accuracy vary; see the exact [tested models/results](docs/vision-results.md), [acceptance](docs/acceptance.md), and historical [Jev baseline](docs/results.md).
+Use an explicitly configured image-capable model through a supported adapter, or implement the small `DecisionPort` for another protocol. OpenRouter is an optional adapter, not a mandatory service. A more capable model may help on a task, but model strength does not guarantee a monotonic accuracy improvement. Compatibility and quality vary; see the exact [tested models/results](docs/vision-results.md), [acceptance](docs/acceptance.md), and historical [Jev baseline](docs/results.md).
 
 [Русское руководство](docs/README.ru.md) · [API](docs/api.md) · [Architecture](docs/architecture.md) · [Benchmarks](docs/benchmarks.md)
+
+Version 0.2 adds region-seeded segmentation, mask-derived bounds and optional transparent cutouts, with a closed completeness check and one bounded mask expansion. See the [usage guide](docs/v02-usage.md) for contracts, backend ownership and CLI.
+
+The [frozen 80-case evaluation](docs/evidence/v02/region-seeded-heldout-v3/README.md) passed its predeclared admission criteria, but localization remains limited: 26/60 positive seed hits and 8/60 complete object boxes; no false seeds or cutouts on 20 negatives. Eight of 30 reference masks reached IoU 0.8, three failed and 19 had no predicted mask. These results describe one explicit caller-configured Luna/OpenAI + MobileSAM recipe, not every model or game.
+
+Six experimental encodings for text-only models were also tested on fresh photos and real UI captures. None qualified for image localization; see the [measured comparison](docs/evidence/v02/fresh-text/README.md). They remain research code rather than an advertised replacement for a vision model.
 
 ## Install
 
@@ -16,11 +22,11 @@ Node.js 22.12+ is required. Source: [zoomplus/zorya-classifier](https://github.c
 npm install zorya-classifier
 ```
 
-The release archive also installs with `npm install ./zorya-classifier-0.1.0.tgz`. Runtime dependencies are Zod and Sharp; model weights, Electron, a database and background services are not included.
+The release archive also installs with `npm install ./zorya-classifier-0.1.0.tgz`. Runtime dependencies are Zod and Sharp; model weights, Electron, a database and background services are not included. Optional local segmentation backends and their model assets are a separate responsibility of the caller; the library does not download or choose them.
 
-## Quickstart: Luna Decisions
+## Example: Luna Decisions
 
-This example uses the typed **Decisions API** with genuine Choice probabilities. Model and provider are explicit; there are no automatic retries or fallbacks. Jev is optional and is not used by this example.
+This example uses the typed **Decisions API** with genuine Choice probabilities. Model and provider are explicit; there are no automatic retries or fallbacks. It illustrates one integration and is not a library default. Jev is optional and is not used by this example.
 
 ```ts
 import { createClassifier } from 'zorya-classifier'
@@ -111,6 +117,10 @@ if (result.status === 'located') console.log(result.region)
 
 The locator uses up to three sequential calls: coarse 4×4 regions, fine grids in four padded regions, then four enlarged candidates. Coordinates come from code, never free-form model coordinates. Ordinary-model rankings select candidates; independent present/absent/unknown answers govern abstention. Multiple matching physical instances are allowed; one candidate is returned. Localization requires the model/endpoint to accept multiple images per call (up to nine); single-image-only endpoints can still support `classify`.
 
+## Extract a mask-derived object
+
+For a visible object box, center, or transparent cutout, use `extract` with an explicitly configured caller-owned segmenter. The existing region locator supplies a seed; the segmenter receives that seed while processing the full oriented source image. The library derives the returned box and center from actual mask pixels. After segmentation, the caller's decision port checks the original image with the mask-derived box and seed anchor. An incomplete box permits one enclosing-mask correction and one recheck; unresolved results remain unknown. This adds one or two closed checks to the normal region requests, without model-generated coordinates or an extent search. See the [0.2 usage guide](docs/v02-usage.md) and runnable [`extract-object.ts`](examples/extract-object.ts). The classifier and segmenter are separately caller-owned and both must be disposed.
+
 ## Development and limits
 
 ```sh
@@ -125,6 +135,6 @@ CLI uses explicit `ZORYA_MODEL` and defaults to `ZORYA_MODE=decisions`. OpenRout
 
 Tests are offline. Examples, CLI and explicitly authorized model benchmarks make paid calls. Default operation limits: 45-second absolute timeout, two active operations, sixteen waiters, bounded image/request/response sizes. Honor cancellation and call `dispose` on shutdown. The library has no import-time network request, hidden model switching or automatic retry.
 
-A model must understand the input, follow instructions and produce the checked answer shape. JSON Schema/JSON-object modes are opt-in when the chosen endpoint supports them; prompt-only mode does not require structured-output support. No universal accuracy, calibration or sub-second guarantee is asserted. Optional segmentation/refinement is a caller-owned `RefinementPort`.
+A model must understand the input, follow instructions and produce the checked answer shape. JSON Schema/JSON-object modes are opt-in when the chosen endpoint supports them; prompt-only mode does not require structured-output support. No universal accuracy, calibration or sub-second guarantee is asserted. Legacy region refinement uses `RefinementPort`; the 0.2 explicit `extract` workflow uses a caller-owned `SegmentationPort`.
 
 See [CONTRIBUTING](CONTRIBUTING.md), [SECURITY](SECURITY.md), [NOTICE](NOTICE.md), and [LICENSE](LICENSE).

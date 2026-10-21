@@ -55,16 +55,16 @@ A visitor lands on the [Home](src/app/README.md) page, learns what Maven does, a
 
 ## Tech stack
 
-- **Framework:** Next.js 15 (App Router) with React 19 and TypeScript
-- **AI / orchestration:** Vercel `ai` SDK (`ai/rsc`, generative streamed UI), Google Generative AI (Gemini), with Groq as an alternate model provider
+- **Framework:** Next.js 16 (App Router, Turbopack) with React 19 and TypeScript
+- **AI / orchestration:** Vercel AI SDK 7 (AI SDK UI: `useChat` from `@ai-sdk/react` over a UI message stream for generative streamed UI, `streamText` / `generateText` with `Output` for structured data), Google Gemini via `@ai-sdk/google` with Google Search grounding by default; users can switch to their own provider and API key (OpenAI, Anthropic, Gemini, Vercel AI Gateway, OpenRouter, Groq, xAI, DeepSeek, Mistral, Together or any OpenAI-compatible API) from **AI provider** in the chat sidebar, kept in their browser and sent per request. Providers without built-in web search use a Tavily search tool
 - **Web data:** Firecrawl for scraping, Tavily and Serper for external search
 - **Auth:** NextAuth.js (Google, GitHub OAuth)
-- **Data stores:** Neon (PostgreSQL) for persistent data, Upstash Redis for caching/session data
-- **UI:** Radix UI primitives, Tailwind CSS, Sass, `class-variance-authority`, `next-themes`
-- **Motion:** Framer Motion / `motion`, GSAP, Lenis smooth scroll
-- **Media:** Cloudinary, `next-cloudinary`, `react-player`
-- **Other:** SWR for client data fetching, Zustand for client state, `react-markdown` + `remark-gfm` for rendering AI output, `mermaid` for diagrams
-- **Deployment:** Vercel, with Vercel Analytics and Speed Insights
+- **Data stores:** PostgreSQL (self-hosted, Neon or compatible) via Prisma ORM with `@prisma/adapter-pg` for chats and all persistent data, Upstash Redis for rate limiting and short-lived session state
+- **UI:** Radix UI primitives, Tailwind CSS 4, Sass, `class-variance-authority`, `next-themes`
+- **Motion:** `motion` (formerly Framer Motion), GSAP, Lenis smooth scroll
+- **Media:** Cloudinary
+- **Other:** SWR for client data fetching, Zustand for client state, `react-markdown` + `remark-gfm` for rendering AI output
+- **Deployment:** self-hosted Node.js server on an Ubuntu VPS (systemd + Nginx reverse proxy)
 
 ## Project structure
 
@@ -78,19 +78,21 @@ src/
     history/            # Chat history grid
     rate-app/           # Feedback form
     share/              # Public shared-content viewer
-    api/                # Route handlers (ratings, etc.)
-    action.tsx          # AI/RSC action definitions and server actions
+    api/                # Route handlers (chat stream for useChat, ratings, etc.)
+    server/             # Orchestrator, agent render tools, stream runtime (stream-ui.ts) and workflow helpers (workflow.ts)
+  database/             # Prisma client (PostgreSQL)
   components/
     maven/              # App-specific feature components (chat UI, marketing pages, etc.)
     ui/                 # Shared design-system primitives (shadcn/ui-based)
   lib/                  # Agent tools, orchestrator, data services, types, utilities
+  proxy.ts              # Next.js proxy (formerly middleware): NextAuth route protection
 ```
 
 ## Getting started
 
 ### Prerequisites
 
-- Node.js v18+
+- Node.js v20.19+ / v22.12+ / v24+ (required by Prisma 7)
 - Bun (the project ships a `bun.lockb`), or npm/yarn/pnpm
 - Git
 
@@ -102,77 +104,36 @@ cd market-maven
 bun install
 ```
 
-### Database setup (Neon / PostgreSQL)
+### Database setup (PostgreSQL via Prisma)
 
-Run the following against your Neon database before first use:
+Persistent data is modeled in [`prisma/schema.prisma`](prisma/schema.prisma) and accessed with Prisma ORM over the `node-postgres` driver adapter (`@prisma/adapter-pg`), so any PostgreSQL-compatible database works: self-hosted Postgres, Neon, Supabase, RDS and similar. Set `DATABASE_URL` to its connection string (`postgresql://user:password@host:5432/db`; add `?sslmode=require` for hosted providers that need TLS).
 
-```sql
-CREATE TABLE scrape_cache (
-    key UUID PRIMARY KEY,
-    query TEXT NOT NULL,
-    response JSONB NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-CREATE INDEX idx_scrape_cache_query ON scrape_cache (query);
+`npm install` runs `prisma generate` automatically. Then apply the migrations:
 
-CREATE TABLE markdown_store (
-    key TEXT PRIMARY KEY,
-    chat_id TEXT NOT NULL,
-    owner TEXT NOT NULL,
-    type TEXT NOT NULL,
-    markdown TEXT NOT NULL,
-    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-CREATE INDEX idx_markdown_store_chat_id ON markdown_store (chat_id);
-CREATE INDEX idx_markdown_store_owner ON markdown_store (owner);
+```bash
+# New database: create all tables
+npx prisma migrate deploy
 
-CREATE TABLE object_store (
-    key TEXT PRIMARY KEY,
-    chat_id TEXT NOT NULL,
-    owner TEXT NOT NULL,
-    type TEXT NOT NULL,
-    object JSONB NOT NULL,
-    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-CREATE INDEX idx_object_store_chat_id ON object_store (chat_id);
-CREATE INDEX idx_object_store_owner ON object_store (owner);
-
-CREATE TABLE tool_data_store (
-    key TEXT PRIMARY KEY,
-    chat_id TEXT NOT NULL,
-    owner TEXT NOT NULL,
-    tool_success BOOLEAN NOT NULL,
-    tool_name TEXT NOT NULL,
-    tool_args JSONB NOT NULL,
-    tool_data JSONB NOT NULL,
-    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-CREATE INDEX idx_tool_data_store_chat_id ON tool_data_store (chat_id);
-CREATE INDEX idx_tool_data_store_owner ON tool_data_store (owner);
-
-CREATE TABLE shares (
-    id TEXT PRIMARY KEY,
-    user_id TEXT,
-    user_email TEXT NOT NULL,
-    reference_id TEXT UNIQUE NOT NULL,
-    component_id TEXT NOT NULL,
-    component_type TEXT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    last_accessed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    access_count INTEGER DEFAULT 0
-);
-CREATE INDEX idx_shares_reference_id ON shares (reference_id);
-CREATE INDEX idx_shares_user_id ON shares (user_id);
-CREATE INDEX idx_shares_component_type ON shares (component_type);
+# Existing database created from the previous hand-written SQL:
+# mark the baseline as applied, then apply the remaining migrations
+npx prisma migrate resolve --applied 0_init
+npx prisma migrate deploy
 ```
 
-| Table | Purpose |
+After changing the schema, create a new migration with `npx prisma migrate dev --name <change>`.
+
+Chats are stored in PostgreSQL since migration `2_chats`; chats previously kept in Redis are not copied over. Records that referenced them get a placeholder chat (no messages, hidden from the history list) so their links keep resolving.
+
+| Model (table) | Purpose |
 |---|---|
-| `scrape_cache` | Caches web scraping results by query to avoid redundant requests |
-| `markdown_store` | Persists markdown content tied to a chat and owner |
-| `object_store` | General-purpose JSON object storage tied to a chat and owner |
-| `tool_data_store` | Records agent tool executions, arguments, results, and success status |
-| `shares` | Tracks publicly shared content and access analytics |
+| `Chat` (`chats`) | A user's conversation; owns its messages and tool, object and markdown records (deleted together) |
+| `ChatMessage` (`chat_messages`) | Ordered AI state messages of a chat (role enum + JSON content) |
+| `ScrapeCache` (`scrape_cache`) | Caches web scraping results by query to avoid redundant requests |
+| `MarkdownStore` (`markdown_store`) | Persists scraped markdown tied to a chat and owner |
+| `ObjectStore` (`object_store`) | Structured tool output (search results, product details, comparisons) tied to a chat and owner |
+| `ToolDataStore` (`tool_data_store`) | Records agent tool executions, arguments, results, and success status |
+| `Share` (`shares`) | Tracks publicly shared content and access analytics |
+| `Rating` (`ratings`) | App ratings and feedback shown on the reviews page |
 
 ### Environment variables
 
@@ -186,7 +147,8 @@ TOKOPEDIA_SEARCH_BASE_URL="https://www.tokopedia.com/search?q="
 
 # Models
 GOOGLE_GENERATIVE_AI_API_KEY="YOUR_APIKEY"   # https://aistudio.google.com/app/apikey
-GROQ_API_KEY="YOUR_APIKEY"                   # https://console.groq.com/keys
+# MAVEN_REASONING_MODEL="gemini-2.5-flash"     # optional: routing, research, analysis
+# MAVEN_LIGHT_MODEL="gemini-2.5-flash-lite"    # optional: related queries, inquiries, titles
 XAI_API_KEY="YOUR_APIKEY"
 DEEPSEEK_API_KEY="YOUR_APIKEY"
 
@@ -198,7 +160,7 @@ FIRECRAWL_API_KEY="YOUR_APIKEY"
 # Databases
 UPSTASH_REDIS_REST_URL="YOUR_APIKEY"
 UPSTASH_REDIS_REST_TOKEN="YOUR_APIKEY"
-NEON_DATABASE_URL="YOUR_APIKEY"
+DATABASE_URL="postgresql://user:password@localhost:5432/maven"   # any PostgreSQL (self-hosted, Neon, ...)
 
 # Auth
 NEXTAUTH_SECRET="USE_SECURE_STRING_OR_RANDSSL"   # e.g. openssl rand -base64 32
@@ -207,10 +169,6 @@ AUTH_GITHUB_ID="YOUR_GITHUB_AUTH_ID"
 AUTH_GITHUB_SECRET="YOUR_GITHUB_AUTH_SECRET"
 AUTH_GOOGLE_ID="YOUR_GOOGLE_AUTH_ID"
 AUTH_GOOGLE_SECRET="YOUR_GOOGLE_AUTH_SECRET"
-
-# Redis
-USE_LOCAL_REDIS=false
-LOCAL_REDIS_URL=redis://localhost:6379   # or redis://redis:6379 under docker compose
 
 NEXT_PUBLIC_APP_URL=http://localhost:3000   # update for production
 ```
@@ -229,7 +187,7 @@ Open `http://localhost:3000`.
 
 ## Agent tools reference
 
-Maven's orchestrator automatically selects among five tools based on user intent:
+Maven's orchestrator automatically selects among six tools based on user intent:
 
 | Tool | Purpose | Example input |
 |---|---|---|
@@ -237,16 +195,114 @@ Maven's orchestrator automatically selects among five tools based on user intent
 | `searchProduct` | Finds a specific product by name | "Sony WH-1000XM5" |
 | `getProductDetails` | Full specs, reviews, pricing for one product | Attach a product via the UI |
 | `productsComparison` | Side-by-side comparison of two products | Two `callId`s from prior `getProductDetails` calls |
+| `webResearch` | Search-grounded answer with cited sources for a factual question | "Is the Galaxy S25 screen brighter than the Pixel 9?" |
 | `inquireUser` | Clarifying question when intent is ambiguous | "Find me a good laptop." → Maven asks about intended use |
 
 See the [Workflow](<src/app/(blog)/workflow/README.md>) page doc for how these fit into the request pipeline, and the [Cookbook](<src/app/(blog)/cookbook/README.md>) page doc for usage recipes.
 
-## Deployment
+## Deployment (Ubuntu VPS)
 
-1. Provision production instances of Neon (PostgreSQL) and Upstash Redis.
-2. Set all environment variables listed above on your hosting platform.
-3. Build with `bun run build`.
-4. Deploy — the project is built and tested against Vercel.
+Maven runs as a regular Node.js server (`next start`) behind Nginx. The AI prompts are bundled in the repository, so no hosting-platform services are required; the external dependencies are PostgreSQL, Upstash Redis and the API keys listed above.
+
+### 1. Install Node.js and PostgreSQL
+
+```bash
+# Node.js 22 LTS (package.json engines: ^20.19 || ^22.12 || >=24)
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt-get install -y nodejs nginx postgresql
+
+# Database and user
+sudo -u postgres psql -c "CREATE USER maven WITH PASSWORD 'change-me';"
+sudo -u postgres psql -c "CREATE DATABASE maven OWNER maven;"
+```
+
+### 2. Build the app
+
+```bash
+sudo useradd --system --create-home --shell /usr/sbin/nologin maven
+sudo -u maven git clone https://github.com/rizzzky78/market-maven.git /home/maven/app
+cd /home/maven/app
+sudo -u maven cp example.env .env   # fill in every value, see "Environment variables"
+sudo -u maven npm ci                # also runs `prisma generate`
+sudo -u maven npx prisma migrate deploy
+sudo -u maven npm run build
+```
+
+In `.env`, set `NEXTAUTH_URL` and `NEXT_PUBLIC_APP_URL` to your public URL (e.g. `https://maven.example.com`) and `DATABASE_URL` to the database created above. `NEXT_PUBLIC_APP_URL` is inlined at build time, so rebuild after changing it. Add `https://<your-domain>/api/auth/callback/google` and `.../callback/github` as OAuth redirect URLs.
+
+### 3. Run it with systemd
+
+`/etc/systemd/system/maven.service`:
+
+```ini
+[Unit]
+Description=Maven AI (Next.js)
+After=network.target postgresql.service
+
+[Service]
+User=maven
+WorkingDirectory=/home/maven/app
+# Next.js loads .env from WorkingDirectory itself
+Environment=NODE_ENV=production
+ExecStart=/home/maven/app/node_modules/.bin/next start -p 3000 -H 127.0.0.1
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now maven
+journalctl -u maven -f   # logs
+```
+
+### 4. Nginx reverse proxy and HTTPS
+
+`/etc/nginx/sites-available/maven`:
+
+```nginx
+server {
+    listen 80;
+    server_name maven.example.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        # Agent responses are streamed (React Server Components); buffering
+        # would hold them back until the whole multi-step answer is done.
+        proxy_buffering off;
+        proxy_cache off;
+        # Agent tool chains (scrape + several model calls) can take minutes.
+        proxy_read_timeout 300s;
+    }
+}
+```
+
+```bash
+sudo ln -s /etc/nginx/sites-available/maven /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx
+sudo apt-get install -y certbot python3-certbot-nginx
+sudo certbot --nginx -d maven.example.com
+```
+
+### Updating
+
+```bash
+cd /home/maven/app
+sudo -u maven git pull
+sudo -u maven npm ci
+sudo -u maven npx prisma migrate deploy
+sudo -u maven npm run build
+sudo systemctl restart maven
+```
 
 ## Contributing
 
@@ -264,8 +320,8 @@ Licensed under the [Apache License 2.0](LICENSE).
 - **App won't start:** double-check environment variables (especially database URLs and API keys) and confirm Postgres/Redis are reachable.
 - **Features not working:** check the browser console for client-side errors and confirm API keys are valid.
 - **Authentication issues:** verify GitHub/Google OAuth app settings and that `NEXTAUTH_URL` matches your current environment.
-- **Database connection problems:** re-check `NEON_DATABASE_URL` and confirm the database user has the required permissions.
+- **Database connection problems:** re-check `DATABASE_URL` and confirm the database user has the required permissions.
 
 ## Portfolio summary
 
-Maven AI is a Next.js + TypeScript application that turns natural-language product questions into AI-driven recommendations, searches, detailed breakdowns, and comparisons for electronics. It showcases a full agentic pipeline — an orchestrator that routes user intent to specialized tools, generative streamed UI via the Vercel AI SDK, real web data via Firecrawl/Tavily scraping, and persistent chat history backed by Neon and Redis — wrapped in an animated, OAuth-gated Next.js frontend with public content sharing.
+Maven AI is a Next.js + TypeScript application that turns natural-language product questions into AI-driven recommendations, searches, detailed breakdowns, and comparisons for electronics. It showcases a full agentic pipeline — an orchestrator that routes user intent to specialized tools, generative streamed UI via the Vercel AI SDK, real web data via Firecrawl/Tavily scraping, and chats and data persisted in PostgreSQL (Prisma), with Redis for rate limiting — wrapped in an animated, OAuth-gated Next.js frontend with public content sharing.

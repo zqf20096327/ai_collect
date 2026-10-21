@@ -257,9 +257,9 @@ The dependency chain is strictly layered — each module only depends on modules
 
 | Library | Version | Versioning |
 |---|---|---|
-| llama.cpp | [v0.4.1](https://github.com/ggml-org/llama.cpp/releases/tag/v0.4.1) | Semantic versioning (`vMAJOR.MINOR.PATCH`) |
-| whisper.cpp | [v1.9.4](https://github.com/ggml-org/whisper.cpp/releases/tag/v1.9.4) | Semantic versioning (`vMAJOR.MINOR.PATCH`) |
-| stable-diffusion.cpp | [master-866-42d6c0a](https://github.com/leejet/stable-diffusion.cpp/releases/tag/master-866-42d6c0a) | Git tag (no semver) |
+| llama.cpp | [v0.7.0](https://github.com/ggml-org/llama.cpp/releases/tag/v0.7.0) | Semantic versioning (`vMAJOR.MINOR.PATCH`) |
+| whisper.cpp | [v1.9.5](https://github.com/ggml-org/whisper.cpp/releases/tag/v1.9.5) | Semantic versioning (`vMAJOR.MINOR.PATCH`) |
+| stable-diffusion.cpp | [master-975-95b3090](https://github.com/leejet/stable-diffusion.cpp/releases/tag/master-975-95b3090) | Git tag (no semver) |
 
 > **Note:** Both llama.cpp and whisper.cpp now follow **semantic versioning**. Previously llama.cpp used build-number tags (e.g. `b4812`). Llamatik tracks these semver releases directly, so you can rely on stable API guarantees across patch and minor upgrades of the underlying libraries.
 
@@ -1015,6 +1015,8 @@ LLAMATIK_CMAKE_ARGS="-DGGML_CUDA=ON" ./gradlew :core:build
 ```
 
 These flags are appended to the CMake configure step for Apple (macOS/iOS wrapper), desktop JNI, and Android targets. The WASM build is intentionally excluded. See `CONTRIBUTING.md` for full details.
+
+On Android `arm64-v8a`, the CPU backend is built for several ARM feature levels and the best one the device supports is selected at load time; pass `-Pllamatik.android.cpuVariants=false` for a single baseline build. See `CONTRIBUTING.md` for details.
 
 ---
 

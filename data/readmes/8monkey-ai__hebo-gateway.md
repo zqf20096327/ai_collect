@@ -302,7 +302,7 @@ const gw = gateway({
       created: "2025-12-11",
       knowledge: "2025-08",
       modalities: {
-        input: ["text", "image", "pdf", "file"],
+        input: ["text", "image", "file"],
         output: ["text"],
       },
       context: 400000,
@@ -701,7 +701,7 @@ const { text, usage } = await client.audio.transcriptions.create({
 });
 ```
 
-Transcription models use `modalities: { input: ["audio"], output: ["text"] }` in the catalog. `advanced.maxBodySize` (default 10 MB) is enforced on all transcription request bodies, including plain multipart and JSON uploads; raise it for longer recordings (base64 adds ~33%).
+Transcription models use `modalities: { input: ["audio"], output: ["transcription"] }` in the catalog. `advanced.maxBodySize` (default 10 MB) is enforced on all transcription request bodies, including plain multipart and JSON uploads; raise it for longer recordings (base64 adds ~33%).
 
 > [!IMPORTANT]
 > **Compatibility & Roadmap:**
@@ -1064,7 +1064,7 @@ The Gateway also emits `gen_ai` metrics:
 - `gen_ai.server.time_to_first_token` (histogram, seconds)
 - `gen_ai.client.token.usage` (histogram, tokens; tagged with `gen_ai.token.type=input|output|cached|reasoning`)
 
-Transcription spans use `gen_ai.operation.name=transcription` (OTel has no standard name yet) and record the audio duration as `gen_ai.usage.audio_seconds`.
+Transcription spans use `gen_ai.operation.name=transcriptions` and record the audio duration as `gen_ai.usage.audio_seconds`.
 
 Metric names and attributes follow OpenTelemetry GenAI semantic conventions. Histogram bucket boundaries are tuned for practical dashboards and alerting rather than copied verbatim from upstream recommendations.
 

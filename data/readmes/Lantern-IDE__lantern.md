@@ -26,17 +26,19 @@ The core is a local context engine (`crates/lantern-context`, Rust + tree-sitter
 
 Languages the engine understands (symbols, calls, map, impact radius): Rust, Python, TypeScript/JavaScript, Java, Kotlin, Go, C#, C/C++. Other files still open with syntax colors, but have no symbols.
 
-**Public benchmark.** 60 real commits from [Flask](https://github.com/pallets/flask) (Python), [Hono](https://github.com/honojs/hono) (TypeScript), and [Apache Commons Lang](https://github.com/apache/commons-lang) (Java). The question is the commit message, the answer files are the code files that commit changed, and each question is measured at the commit's parent. Nobody hand-picks the answers. Same 8,000-token budget, no model calls:
+**Public benchmark.** 320 real commits from 10 repositories in 8 languages (flask, httpx, hono, vite, commons-lang, gin, axum, okhttp, axios, jq), each asked in English and in Korean. The question is the commit subject, the answer files are the code files that commit changed, and each question is measured at the commit's parent; nobody hand-picks the answers. Same files and 8,000-token budget for every method, no model calls for retrieval. Results on the 261 questions not used while developing Lantern (59 overlap with the older set below, which guided ranking and dictionary changes):
 
-| | Keyword search (grep, read whole files) | Keyword search (grep, snippets around matches) | Lantern |
-|---|---|---|---|
-| Answer files retrieved (mean recall) | 13% | 41% | **88%** |
-| An answer file among the first 3 files | 15% | 30% | **65%** |
-| Same questions in Korean: recall / first 3 | 13% / 13% | 38% / 27% | **76% / 43%** |
+| | English: first 3 / MRR | Korean: first 3 / MRR |
+|---|---|---|
+| BM25 (40-line chunks) | 58.6% / .514 | 51.3% / .432 |
+| BM25 + embeddings (RRF) | **67.8%** / .567 | 55.9% / .464 |
+| Aider RepoMap | 10.3% / .100 | 8.4% / .092 |
+| **Lantern** (no model) | 60.5% / .498 | 55.9% / .494 |
+| **Lantern + embeddings** | 67.0% / **.570** | **61.3% / .517** |
 
-Picking as many files at random as Lantern returns would hit an answer file 10% of the time. Korean questions are human translations of the same commit messages. Reproduce with `node eval/bench/run.mjs` ([results](eval/bench/결과.md), [method](eval/README.md)). Bring your own project and questions with `eval/retrieval.mjs`.
+"First 3" means an answer file is among the first three files. Without any model, Lantern trails the BM25 + embeddings hybrid in English, but loses less when the question is in Korean (first 3: −4.6 vs −11.9 points; MRR −.004 vs −.103), so the two tie in Korean; the gain comes from its Korean developer-term dictionary (without it Lantern drops −9.6), and giving the hybrid the same dictionary words still ends in a tie. With the same small multilingual model (`multilingual-e5-small`), Lantern matches the hybrid in English and, given the Korean question directly, matches machine-translating it first (NLLB-200) and running the hybrid, without a translation step that takes 3 s per question on a CPU. Rewriting the Korean question into an English search query with an LLM (one model call per question) does best: the hybrid then reaches 65.9 first-3, close to its 67.8 in English. The same model drafted and checked the Korean questions, so this is a strong reference point that may be favored, not an upper bound; with the rewrite, Lantern + embeddings matches its own English accuracy, so the two can be combined. Ablations, statistics and caveats: [eval/bilingual](eval/bilingual) ([results](eval/bilingual/results-unseen.md)); reproduce everything with `bash eval/bilingual/run_all.sh`. The older 60-question set is in [eval/bench](eval/bench) ([method](eval/README.md)); bring your own project and questions with `eval/retrieval.mjs`.
 
-**Semantic search (optional).** With an embedding server configured, the engine also finds code whose meaning is close to the question even when no keyword matches, and merges that ranking with its own. Measured on the same benchmark with a small local model (`embeddinggemma-300m`): recall 88% → **93%**, first 3 65% → **73%**; in Korean 76% → **86%**, 43% → **52%**, with about 5 more files per question ([results](eval/bench/결과-의미검색.md)). It is off by default. Turn it on in `config.toml` with any OpenAI-compatible `/embeddings` endpoint (OpenAI, Ollama, LM Studio…); code chunks, with secrets masked, are sent to that server. The first run embeds the whole project in the background, which can take hours for a large project with a CPU-only local model.
+**Semantic search (optional).** With an embedding server configured, the engine also finds code whose meaning is close to the question even when no keyword matches, and merges that ranking with its own (the "Lantern + embeddings" row above, with about 5 more files per question). It is off by default. Turn it on in `config.toml` with any OpenAI-compatible `/embeddings` endpoint (OpenAI, Ollama, LM Studio…); code chunks, with secrets masked, are sent to that server. The first run embeds the whole project in the background, which can take hours for a large project with a CPU-only local model.
 
 ```toml
 [embeddings]

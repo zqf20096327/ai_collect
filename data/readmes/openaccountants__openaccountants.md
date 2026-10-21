@@ -4,14 +4,22 @@
 
 This library includes accountant-reviewed skills and source-cited drafts. Check each skill version's review record before relying on it; a named author is distinct from a professional reviewer. Skill content is source-available under the terms in [LICENSING.md](LICENSING.md).
 
+## Need someone to do the accounting?
+
+OpenAccountants also helps business owners get bookkeeping and tax work done through partner accountants. Tell us what you need, including work across countries. We confirm whether we can take it on, who will do the work and the price before you commit.
+
+**[Book a free 30-minute call](https://www.openaccountants.com/tax-help?source=github_readme#book)** · [Explore our accounting services](https://www.openaccountants.com/tax-help?source=github_readme)
+
+The skills and AI connection remain free.
+
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-047857)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/openaccountants-mcp?label=openaccountants-mcp&color=047857)](https://pypi.org/project/openaccountants-mcp/)
 [![GitHub stars](https://img.shields.io/github/stars/openaccountants/openaccountants?style=social)](https://github.com/openaccountants/openaccountants/stargazers)
 
 <!-- oa-stats:start -->
-**1,903 AI skills** across **228 jurisdictions** · **33 accountant-reviewed** · **38 named accountants** · **20,380 questions answered** through connected AIs
+**1,903 AI skills** across **231 jurisdictions** · **33 accountant-reviewed** · **38 named accountants** · **20,782 questions answered** through connected AIs
 
-<sub>Live from openaccountants.com — updated 2026-10-19 by the nightly sync.</sub>
+<sub>Live from openaccountants.com — updated 2026-10-21 by the nightly sync.</sub>
 <!-- oa-stats:end -->
 
 ---
@@ -25,6 +33,8 @@ https://www.openaccountants.com/api/mcp
 ```
 
 Guided setup: **[openaccountants.com/connect](https://www.openaccountants.com/connect)**
+
+Listed on [Smithery](https://smithery.ai/server/info-ood9/openaccountants) and the [MCP Registry](https://registry.modelcontextprotocol.io/v0/servers?search=io.github.openaccountants/openaccountants).
 
 Then ask a question your AI would otherwise guess at:
 

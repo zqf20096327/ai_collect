@@ -90,7 +90,7 @@ Data Science is one of the hottest topics on the Computer and Internet farmland 
 
 | Link | Preview |
 | --- | --- |
-| <b><code>&nbsp;37639⭐</code></b> <b><code>&nbsp;&nbsp;7587🍴</code></b> [Data Science For Beginners](https://github.com/microsoft/Data-Science-For-Beginners)) | Microsoft are pleased to offer a 10-week, 20-lesson curriculum all about Data Science. |
+| <b><code>&nbsp;37657⭐</code></b> <b><code>&nbsp;&nbsp;7591🍴</code></b> [Data Science For Beginners](https://github.com/microsoft/Data-Science-For-Beginners)) | Microsoft are pleased to offer a 10-week, 20-lesson curriculum all about Data Science. |
 | 🌎 [What is Data Science @ O'reilly](www.oreilly.com/ideas/what-is-data-science) | _Data scientists combine entrepreneurship with patience, the willingness to build data products incrementally, the ability to explore, and the ability to iterate over a solution. They are inherently interdisciplinary. They can tackle all aspects of a problem, from initial data collection and data conditioning to drawing conclusions. They can think outside the box to come up with new ways to view the problem, or to work with very broadly defined problems: “here’s a lot of data, what can you make from it?”_ |
 | 🌎 [What is Data Science @ Quora](www.quora.com/Data-Science/What-is-data-science) | Data Science is a combination of a number of aspects of Data such as Technology, Algorithm development, and data interference to study the data, analyse it, and find innovative solutions to difficult problems. Basically Data Science is all about Analysing data and driving for business growth by finding creative ways. |
 | 🌎 [The sexiest job of 21st century](hbr.org/2012/10/data-scientist-the-sexiest-job-of-the-21st-century) | _Data scientists today are akin to Wall Street “quants” of the 1980s and 1990s. In those days people with backgrounds in physics and math streamed to investment banks and hedge funds, where they could devise entirely new algorithms and data strategies. Then a variety of universities developed master’s programs in financial engineering, which churned out a second generation of talent that was more accessible to mainstream firms. The pattern was repeated later in the 1990s with search engineers, whose rarefied skills soon came to be taught in computer science programs._ |
@@ -125,8 +125,8 @@ If you're just starting out, here's a simple recommended path:
 This section contains agent frameworks and tools that are useful for data science workflows.
 
 ### Frameworks
-- <b><code>&nbsp;&nbsp;&nbsp;713⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;111🍴</code></b> [ADK-Rust](https://github.com/zavora-ai/adk-rust)) - Production-ready AI agent development kit for Rust with model-agnostic design (Gemini, OpenAI, Anthropic), multiple agent types (LLM, Graph, Workflow), MCP support, and built-in telemetry.
-- <b><code>&nbsp;&nbsp;&nbsp;318⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;53🍴</code></b> [Lumen](https://github.com/holoviz/lumen)) - Agent framework for chatting with data, turning natural language into SQL, transformation pipelines and visualizations. Outputs are declarative specs that can be inspected, edited, reopened in a notebook or composed into a dashboard.
+- <b><code>&nbsp;&nbsp;&nbsp;717⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;111🍴</code></b> [ADK-Rust](https://github.com/zavora-ai/adk-rust)) - Production-ready AI agent development kit for Rust with model-agnostic design (Gemini, OpenAI, Anthropic), multiple agent types (LLM, Graph, Workflow), MCP support, and built-in telemetry.
+- <b><code>&nbsp;&nbsp;&nbsp;317⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;55🍴</code></b> [Lumen](https://github.com/holoviz/lumen)) - Agent framework for chatting with data, turning natural language into SQL, transformation pipelines and visualizations. Outputs are declarative specs that can be inspected, edited, reopened in a notebook or composed into a dashboard.
 
 ### Tools
 - <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?🍴</code></b> [Frostbyte MCP](https://github.com/OzorOwn/frostbyte-mcp)) - MCP server providing 13 data tools for AI agents: real-time crypto prices, IP geolocation, DNS lookups, web scraping to markdown, code execution, and screenshots. One API key for 40+ services.
@@ -135,10 +135,10 @@ This section contains agent frameworks and tools that are useful for data scienc
 - <b><code>&nbsp;&nbsp;&nbsp;&nbsp;50⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;17🍴</code></b> [DeepAlpha](https://github.com/stefanoviana/deepalpha)) - AI crypto trading framework using LightGBM + XGBoost ensemble with 72 ML features. 70.9% walk-forward validated accuracy on out-of-sample data. Supports Bybit and Binance. MIT licensed, available on 🌎 [PyPI](pypi.org/project/deepalpha-bot/).
 - <b><code>&nbsp;&nbsp;&nbsp;&nbsp;24⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6🍴</code></b> [CAJAL](https://github.com/Agnuxo1/CAJAL)) - Local AI agent for generating publication-ready scientific papers with real arXiv citations, IMRaD structure, and tribunal scoring. Runs 100% offline via Ollama with 4B-9B models. MIT licensed. 🌎 [HuggingFace](huggingface.co/Agnuxo/CAJAL-9B-P2PCLAW)
 - <b><code>&nbsp;&nbsp;&nbsp;128⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;47🍴</code></b> [ai-evaluation](https://github.com/future-agi/ai-evaluation)) - Open-source LLM and agent evaluation framework with 50+ metrics, LLM-as-Judge augmentation, and guardrail scanners (jailbreak, PII, prompt-injection). Useful for scoring RAG outputs, agent trajectories, and function-calling behavior in data-science workflows.
-- <b><code>&nbsp;&nbsp;&nbsp;309⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;26🍴</code></b> [Kitaru](https://github.com/zenml-io/kitaru)) - Open-source platform that records real AI agent runs, replays them against changes, and evaluates outcomes before deployment.
-- <b><code>&nbsp;&nbsp;&nbsp;173⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;37🍴</code></b> [Jev Social](https://github.com/socai-io/jev-social)) - Read-only social research agent that lets Jev choose bounded Instagram, TikTok, and LinkedIn operations, runs them through the local socai CLI in Chrome, and preserves source-linked evidence beside a cited report.
+- <b><code>&nbsp;&nbsp;&nbsp;309⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;27🍴</code></b> [Kitaru](https://github.com/zenml-io/kitaru)) - Open-source platform that records real AI agent runs, replays them against changes, and evaluates outcomes before deployment.
+- <b><code>&nbsp;&nbsp;&nbsp;173⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;38🍴</code></b> [Jev Social](https://github.com/socai-io/jev-social)) - Read-only social research agent that lets Jev choose bounded Instagram, TikTok, and LinkedIn operations, runs them through the local socai CLI in Chrome, and preserves source-linked evidence beside a cited report.
 - <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1🍴</code></b> [YYLO Benchmark](https://github.com/yylo-dev/yylo-benchmark)) - Open-source trusted-host experiment runner for historical agent tasks, supplied coding prompts, and workflows. Runs independent attempts with retained outputs, and compares models, harnesses, and configurations with different checks or judges later. MIT licensed.
-- <b><code>&nbsp;&nbsp;&nbsp;&nbsp;64⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;10🍴</code></b> [YYLO](https://github.com/yylo-dev/yylo)) - Open-source command-line orchestrator for coding agents and repeatable workflows, with typed task, validation, merge, and release-readiness boundaries and receipt-backed repository changes. MIT licensed, installable via npm.
+- <b><code>&nbsp;&nbsp;&nbsp;&nbsp;65⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;11🍴</code></b> [YYLO](https://github.com/yylo-dev/yylo)) - Open-source command-line orchestrator for coding agents and repeatable workflows, with typed task, validation, merge, and release-readiness boundaries and receipt-backed repository changes. MIT licensed, installable via npm.
 - <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0🍴</code></b> [YYLO Ledger](https://github.com/yylo-dev/yylo-ledger)) - Command-line task and workflow ledger for coding-agent projects: stores the Kanban board and task state as hash-chained Markdown inside the repository, tracks receipts and archives, and drives typed merge and release flows across agent worktrees. MIT licensed.
 
 ### Research & Knowledge Retrieval
@@ -156,7 +156,7 @@ This section contains agent frameworks and tools that are useful for data scienc
 ## Projects
 **[`^        back to top        ^`](#awesome-data-science)**
 
-- <b><code>&nbsp;&nbsp;&nbsp;140⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;40🍴</code></b> [Synthetic Hospital](https://github.com/sparkcpark/synthetic_hospital)) - A Medical Benchmark & EHR Simulation Platform
+- <b><code>&nbsp;&nbsp;&nbsp;145⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;41🍴</code></b> [Synthetic Hospital](https://github.com/sparkcpark/synthetic_hospital)) - A Medical Benchmark & EHR Simulation Platform
 - <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0🍴</code></b> [Amazon Bestsellers Tracker](https://github.com/huynhtanan/amazon-bestsellers-tracker)) - Open-source Python + SQLite tracker that snapshots Amazon Best Sellers across 17 country stores daily, with example SQL diff queries for rank jumps and new entries.
 - <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0🍴</code></b> [Walmart Deals Tracker](https://github.com/huynhtanan/walmart-deals-tracker)) - Open-source Python + SQLite watcher for Walmart Rollback-only deals, with example SQL queries for price drops and first-party vs marketplace filtering.
 - <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1🍴</code></b> [VulnState](https://github.com/corifeo/VulnState)) - Open-source Python library that joins NVD, EPSS and CISA KEV vulnerability data and analyzes each CVE's disclosure timeline with NumPy and pandas.
@@ -171,7 +171,7 @@ How do you learn data science? By doing data science, of course! Okay, okay - th
 **[`^        back to top        ^`](#awesome-data-science)**
 
 - 🌎 [1000 Data Science Projects](cloud.blobcity.com/#/ps/explore) you can run on the browser with IPython.
-- <b><code>&nbsp;&nbsp;8446⭐</code></b> <b><code>&nbsp;&nbsp;2587🍴</code></b> [#tidytuesday](https://github.com/rfordatascience/tidytuesday)) - A weekly data project aimed at the R ecosystem.
+- <b><code>&nbsp;&nbsp;8449⭐</code></b> <b><code>&nbsp;&nbsp;2587🍴</code></b> [#tidytuesday](https://github.com/rfordatascience/tidytuesday)) - A weekly data project aimed at the R ecosystem.
 - <b><code>&nbsp;&nbsp;&nbsp;620⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;253🍴</code></b> [Data science your way](https://github.com/jadianes/data-science-your-way))
 - 🌎 [DataCamp Cheatsheets](www.datacamp.com/cheat-sheet) Cheatsheets for data science.
 - <b><code>&nbsp;&nbsp;&nbsp;709⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;210🍴</code></b> [PySpark Cheatsheet](https://github.com/kevinschaich/pyspark-cheatsheet))
@@ -182,7 +182,7 @@ How do you learn data science? By doing data science, of course! Okay, okay - th
 - <b><code>&nbsp;&nbsp;&nbsp;&nbsp;87⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;27🍴</code></b> [Tutorials to get started on signal processing for machine learning](https://github.com/jinglescode/python-signal-processing))
 - 🌎 [Realtime deployment](www.microprediction.com/python-1) Tutorial on Python time-series model deployment.
 - 🌎 [Python for Data Science: A Beginner’s Guide](learntocodewith.me/posts/python-for-data-science/)
-- <b><code>&nbsp;12844⭐</code></b> <b><code>&nbsp;&nbsp;2041🍴</code></b> [Minimum Viable Study Plan for Machine Learning Interviews](https://github.com/khangich/machine-learning-interview))
+- <b><code>&nbsp;12844⭐</code></b> <b><code>&nbsp;&nbsp;2040🍴</code></b> [Minimum Viable Study Plan for Machine Learning Interviews](https://github.com/khangich/machine-learning-interview))
 - 🌎 [Understand and Know Machine Learning Engineering by Building Solid Projects](mlzoomcamp.com/)
 - 🌎 [12 free Data Science projects to practice Python and Pandas](www.datawars.io/articles/12-free-data-science-projects-to-practice-python-and-pandas)
 - 🌎 [Best CV/Resume for Data Science Freshers](enhancv.com/resume-examples/data-scientist/)
@@ -194,19 +194,21 @@ How do you learn data science? By doing data science, of course! Okay, okay - th
 - 🌎 [Skillancy Python Compiler](skillancy.in/tools/python-compiler) - A browser-based Python environment with NumPy and Pandas for data analysis practice.
 - 🌎 [StepByStepML](www.stepbystepml.com) - Interactive calculator that visualizes the step-by-step manual math behind machine learning algorithms for exam prep.
 - 🌎 [How to Build Optimal AI Agents That Actually Work](www.freecodecamp.org/news/how-to-build-optimal-ai-agents-that-actually-work-a-handbook-for-devs/) - A developer handbook on designing and building effective AI agents.
-- <b><code>&nbsp;12168⭐</code></b> <b><code>&nbsp;&nbsp;1734🍴</code></b> [Train LLM From Scratch](https://github.com/FareedKhan-dev/train-llm-from-scratch)) - A straightforward method for training your LLM, from downloading data to generating text.
+- <b><code>&nbsp;12365⭐</code></b> <b><code>&nbsp;&nbsp;1846🍴</code></b> [Train LLM From Scratch](https://github.com/FareedKhan-dev/train-llm-from-scratch)) - A straightforward method for training your LLM, from downloading data to generating text.
 
 ### Free Courses
 **[`^        back to top        ^`](#awesome-data-science)**
 
-- <b><code>&nbsp;22252⭐</code></b> <b><code>&nbsp;&nbsp;4336🍴</code></b> [Data Science](https://github.com/ossu/data-science)) - Open Source Society University
+- <b><code>&nbsp;22273⭐</code></b> <b><code>&nbsp;&nbsp;4345🍴</code></b> [Data Science](https://github.com/ossu/data-science)) - Open Source Society University
 - 🌎 [Data Scientist with R](www.datacamp.com/tracks/data-scientist-with-r)
 - 🌎 [Data Scientist with Python](www.datacamp.com/tracks/data-scientist-with-python)
 - 🌎 [Genetic Algorithms OCW Course](ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-034-artificial-intelligence-fall-2010/lecture-videos/lecture-1-introduction-and-scope/)
-- <b><code>&nbsp;31309⭐</code></b> <b><code>&nbsp;&nbsp;2590🍴</code></b> [AI Expert Roadmap](https://github.com/AMAI-GmbH/AI-Expert-Roadmap)) - Roadmap to becoming an Artificial Intelligence Expert
+- <b><code>&nbsp;31312⭐</code></b> <b><code>&nbsp;&nbsp;2593🍴</code></b> [AI Expert Roadmap](https://github.com/AMAI-GmbH/AI-Expert-Roadmap)) - Roadmap to becoming an Artificial Intelligence Expert
 - 🌎 [Convex Optimization](www.edx.org/course/convex-optimization) - Convex Optimization (basics of convex analysis; least-squares, linear and quadratic programs, semidefinite programming, minimax, extremal volume, and other problems; optimality conditions, duality theory...)
 - 🌎 [Learning from Data](home.work.caltech.edu/telecourse.html) - Introduction to machine learning covering basic theory, algorithms and applications
 - 🌎 [Kaggle](www.kaggle.com/learn) - Learn about Data Science, Machine Learning, Python etc
+- 🌎 [Data Science Path by Coddy](coddy.tech/landing/data-science) - Free interactive path from Python and SQL through statistics and machine learning with scikit-learn, with code written and run in the browser.
+- 🌎 [Data Analyst Path by Coddy](coddy.tech/landing/data-analyst) - Free interactive path through Excel, SQL, Python, NumPy and Pandas, with code written and run in the browser.
 - 🌎 [ML Observability Fundamentals](arize.com/ml-observability-fundamentals/) - Learn how to monitor and root-cause production ML issues.
 - 🌎 [Weights & Biases Effective MLOps: Model Development](www.wandb.courses/courses/effective-mlops-model-development) - Free Course and Certification for building an end-to-end machine using W&B
 - 🌎 [Python for Data Science by Scaler](www.scaler.com/topics/course/python-for-data-science/) - This course is designed to empower beginners with the essential skills to excel in today's data-driven world. The comprehensive curriculum will give you a solid foundation in statistics, programming, data visualization, and machine learning.
@@ -234,7 +236,7 @@ How do you learn data science? By doing data science, of course! Okay, okay - th
 - 🌎 [Oxford Deep Learning - video](www.youtube.com/playlist?list=PLE6Wd9FR--EfW8dtjAuPoTuPcqmOV53Fu)
 - 🌎 [Oxford Machine Learning](www.cs.ox.ac.uk/research/ai_ml/index.html)
 - 🌎 [UBC Machine Learning - video](www.cs.ubc.ca/~nando/540-2013/lectures.html)
-- <b><code>&nbsp;&nbsp;4156⭐</code></b> <b><code>&nbsp;30902🍴</code></b> [Data Science Specialization](https://github.com/DataScienceSpecialization/courses))
+- <b><code>&nbsp;&nbsp;4157⭐</code></b> <b><code>&nbsp;30900🍴</code></b> [Data Science Specialization](https://github.com/DataScienceSpecialization/courses))
 - 🌎 [Coursera Big Data Specialization](www.coursera.org/specializations/big-data)
 - 🌎 [Statistical Thinking for Data Science and Analytics by Edx](www.edx.org/course/statistical-thinking-for-data-science-and-analytic)
 - 🌎 [Cognitive Class AI by IBM](cognitiveclass.ai/)
@@ -313,7 +315,7 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 - Based on data points comparison and pattern detection
 
 ### Comparison
-- <b><code>&nbsp;&nbsp;&nbsp;661⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;175🍴</code></b> [datacompy](https://github.com/capitalone/datacompy)) - DataComPy is a package to compare two Pandas DataFrames.
+- <b><code>&nbsp;&nbsp;&nbsp;663⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;175🍴</code></b> [datacompy](https://github.com/capitalone/datacompy)) - DataComPy is a package to compare two Pandas DataFrames.
 
 #### Supervised Learning
 
@@ -418,12 +420,12 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 * <b><code>&nbsp;&nbsp;&nbsp;421⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;72🍴</code></b> [scikit-rebate](https://github.com/EpistasisLab/scikit-rebate))
 * <b><code>&nbsp;&nbsp;&nbsp;708⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;102🍴</code></b> [seqlearn](https://github.com/larsmans/seqlearn))
 * <b><code>&nbsp;&nbsp;&nbsp;521⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;117🍴</code></b> [sklearn-bayes](https://github.com/AmazaspShumik/sklearn-bayes))
-* <b><code>&nbsp;&nbsp;&nbsp;440⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;204🍴</code></b> [sklearn-crfsuite](https://github.com/TeamHG-Memex/sklearn-crfsuite))
+* <b><code>&nbsp;&nbsp;&nbsp;441⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;204🍴</code></b> [sklearn-crfsuite](https://github.com/TeamHG-Memex/sklearn-crfsuite))
 * <b><code>&nbsp;&nbsp;&nbsp;772⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;128🍴</code></b> [sklearn-deap](https://github.com/rsteca/sklearn-deap))
 * <b><code>&nbsp;&nbsp;&nbsp;&nbsp;75⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;11🍴</code></b> [sigopt_sklearn](https://github.com/sigopt/sigopt-sklearn))
 * <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0🍴</code></b> [sklearn-evaluation](https://github.com/edublancas/sklearn-evaluation))
-* <b><code>&nbsp;&nbsp;6614⭐</code></b> <b><code>&nbsp;&nbsp;2431🍴</code></b> [scikit-image](https://github.com/scikit-image/scikit-image))
-* <b><code>&nbsp;&nbsp;6721⭐</code></b> <b><code>&nbsp;&nbsp;1109🍴</code></b> [scikit-opt](https://github.com/guofei9987/scikit-opt))
+* <b><code>&nbsp;&nbsp;6616⭐</code></b> <b><code>&nbsp;&nbsp;2432🍴</code></b> [scikit-image](https://github.com/scikit-image/scikit-image))
+* <b><code>&nbsp;&nbsp;6723⭐</code></b> <b><code>&nbsp;&nbsp;1109🍴</code></b> [scikit-opt](https://github.com/guofei9987/scikit-opt))
 * <b><code>&nbsp;&nbsp;&nbsp;390⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;50🍴</code></b> [scikit-posthocs](https://github.com/maximtrp/scikit-posthocs))
 * 🌎 [feature-engine](feature-engine.trainindata.com/)
 * <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0🍴</code></b> [me_fasttext](https://github.com/initial-d/me_fasttext)) - Memory-efficient FastText variant with exact trie n-gram IDs, structure-aware row sharing, and mmap serving for large-vocabulary NLP.
@@ -431,25 +433,25 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 * 🌎 [Shogun](www.shogun-toolbox.org/)
 * <b><code>&nbsp;&nbsp;3092⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;515🍴</code></b> [xLearn](https://github.com/aksnzhy/xlearn))
 * <b><code>&nbsp;&nbsp;5306⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;688🍴</code></b> [cuML](https://github.com/rapidsai/cuml))
-* <b><code>&nbsp;&nbsp;6027⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;883🍴</code></b> [causalml](https://github.com/uber/causalml))
-* <b><code>&nbsp;&nbsp;5712⭐</code></b> <b><code>&nbsp;&nbsp;1724🍴</code></b> [mlpack](https://github.com/mlpack/mlpack))
-* <b><code>&nbsp;&nbsp;5186⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;934🍴</code></b> [MLxtend](https://github.com/rasbt/mlxtend))
+* <b><code>&nbsp;&nbsp;6028⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;883🍴</code></b> [causalml](https://github.com/uber/causalml))
+* <b><code>&nbsp;&nbsp;5714⭐</code></b> <b><code>&nbsp;&nbsp;1725🍴</code></b> [mlpack](https://github.com/mlpack/mlpack))
+* <b><code>&nbsp;&nbsp;5187⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;936🍴</code></b> [MLxtend](https://github.com/rasbt/mlxtend))
 * <b><code>&nbsp;&nbsp;2373⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;322🍴</code></b> [modAL](https://github.com/modAL-python/modAL))
 * <b><code>&nbsp;&nbsp;1150⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;254🍴</code></b> [Sparkit-learn](https://github.com/lensacom/sparkit-learn))
-* <b><code>&nbsp;&nbsp;2526⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;168🍴</code></b> [hyperlearn](https://github.com/danielhanchen/hyperlearn))
-* <b><code>&nbsp;14461⭐</code></b> <b><code>&nbsp;&nbsp;3438🍴</code></b> [dlib](https://github.com/davisking/dlib))
-* <b><code>&nbsp;&nbsp;1628⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;148🍴</code></b> [imodels](https://github.com/csinva/imodels))
+* <b><code>&nbsp;&nbsp;2527⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;168🍴</code></b> [hyperlearn](https://github.com/danielhanchen/hyperlearn))
+* <b><code>&nbsp;14463⭐</code></b> <b><code>&nbsp;&nbsp;3438🍴</code></b> [dlib](https://github.com/davisking/dlib))
+* <b><code>&nbsp;&nbsp;1629⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;148🍴</code></b> [imodels](https://github.com/csinva/imodels))
 * <b><code>&nbsp;&nbsp;&nbsp;&nbsp;25⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1🍴</code></b> [jSciPy](https://github.com/hissain/jscipy)) - A Java port of SciPy's signal processing module, offering filters, transformations, and other scientific computing utilities.
 * <b><code>&nbsp;&nbsp;&nbsp;444⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;122🍴</code></b> [RuleFit](https://github.com/christophM/rulefit))
-* <b><code>&nbsp;&nbsp;1021⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;297🍴</code></b> [pyGAM](https://github.com/dswah/pyGAM))
+* <b><code>&nbsp;&nbsp;1021⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;298🍴</code></b> [pyGAM](https://github.com/dswah/pyGAM))
 * <b><code>&nbsp;&nbsp;4064⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;300🍴</code></b> [Deepchecks](https://github.com/deepchecks/deepchecks))
 * 🌎 [scikit-survival](scikit-survival.readthedocs.io/en/stable)
 * 🌎 [interpretable](pypi.org/project/interpretable)
-* <b><code>&nbsp;28884⭐</code></b> <b><code>&nbsp;&nbsp;8946🍴</code></b> [XGBoost](https://github.com/dmlc/xgboost))
-* <b><code>&nbsp;18889⭐</code></b> <b><code>&nbsp;&nbsp;4091🍴</code></b> [LightGBM](https://github.com/microsoft/LightGBM))
-* <b><code>&nbsp;&nbsp;9148⭐</code></b> <b><code>&nbsp;&nbsp;1350🍴</code></b> [CatBoost](https://github.com/catboost/catboost))
-* <b><code>&nbsp;&nbsp;&nbsp;712⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;42🍴</code></b> [PerpetualBooster](https://github.com/perpetual-ml/perpetual))
-* <b><code>&nbsp;36461⭐</code></b> <b><code>&nbsp;&nbsp;3862🍴</code></b> [JAX](https://github.com/google/jax))
+* <b><code>&nbsp;28892⭐</code></b> <b><code>&nbsp;&nbsp;8948🍴</code></b> [XGBoost](https://github.com/dmlc/xgboost))
+* <b><code>&nbsp;18894⭐</code></b> <b><code>&nbsp;&nbsp;4093🍴</code></b> [LightGBM](https://github.com/microsoft/LightGBM))
+* <b><code>&nbsp;&nbsp;9154⭐</code></b> <b><code>&nbsp;&nbsp;1351🍴</code></b> [CatBoost](https://github.com/catboost/catboost))
+* <b><code>&nbsp;&nbsp;&nbsp;713⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;42🍴</code></b> [PerpetualBooster](https://github.com/perpetual-ml/perpetual))
+* <b><code>&nbsp;36469⭐</code></b> <b><code>&nbsp;&nbsp;3878🍴</code></b> [JAX](https://github.com/google/jax))
 * <b><code>&nbsp;&nbsp;&nbsp;&nbsp;11⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;20🍴</code></b> [PhilanthroPy](https://github.com/PhilanthroPy-Project/PhilanthroPy)) - Scikit-learn native toolkit for nonprofit fundraising analytics: leakage-safe donor propensity, lapse, planned-giving, wealth-screening and revenue-forecasting estimators.
 
 
@@ -457,31 +459,31 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 ### Deep Learning Packages
 
 #### PyTorch Ecosystem
-* <b><code>104839⭐</code></b> <b><code>&nbsp;32723🍴</code></b> [PyTorch](https://github.com/pytorch/pytorch))
+* <b><code>104941⭐</code></b> <b><code>&nbsp;32921🍴</code></b> [PyTorch](https://github.com/pytorch/pytorch))
 * <b><code>&nbsp;&nbsp;&nbsp;216⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;16🍴</code></b> [TorchDR](https://github.com/TorchDR/TorchDR)) - GPU and multi-GPU dimensionality reduction with a scikit-learn-compatible API.
-* <b><code>&nbsp;17960⭐</code></b> <b><code>&nbsp;&nbsp;7278🍴</code></b> [torchvision](https://github.com/pytorch/vision))
+* <b><code>&nbsp;17961⭐</code></b> <b><code>&nbsp;&nbsp;7278🍴</code></b> [torchvision](https://github.com/pytorch/vision))
 * <b><code>&nbsp;&nbsp;3554⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;806🍴</code></b> [torchtext](https://github.com/pytorch/text))
-* <b><code>&nbsp;&nbsp;2957⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;804🍴</code></b> [torchaudio](https://github.com/pytorch/audio))
-* <b><code>&nbsp;&nbsp;4794⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;744🍴</code></b> [ignite](https://github.com/pytorch/ignite))
+* <b><code>&nbsp;&nbsp;2957⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;805🍴</code></b> [torchaudio](https://github.com/pytorch/audio))
+* <b><code>&nbsp;&nbsp;4795⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;746🍴</code></b> [ignite](https://github.com/pytorch/ignite))
 * <b><code>&nbsp;&nbsp;1723⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;311🍴</code></b> [PyTorchNet](https://github.com/pytorch/tnt))
 * <b><code>&nbsp;&nbsp;&nbsp;579⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;63🍴</code></b> [PyToune](https://github.com/GRAAL-Research/poutyne))
-* <b><code>&nbsp;&nbsp;6183⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;424🍴</code></b> [skorch](https://github.com/skorch-dev/skorch))
+* <b><code>&nbsp;&nbsp;6183⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;427🍴</code></b> [skorch](https://github.com/skorch-dev/skorch))
 * <b><code>&nbsp;&nbsp;&nbsp;362⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;51🍴</code></b> [PyVarInf](https://github.com/ctallec/pyvarinf))
-* <b><code>&nbsp;24123⭐</code></b> <b><code>&nbsp;&nbsp;4080🍴</code></b> [pytorch_geometric](https://github.com/pyg-team/pytorch_geometric))
-* <b><code>&nbsp;&nbsp;3926⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;612🍴</code></b> [GPyTorch](https://github.com/cornellius-gp/gpytorch))
-* <b><code>&nbsp;&nbsp;9066⭐</code></b> <b><code>&nbsp;&nbsp;1028🍴</code></b> [pyro](https://github.com/pyro-ppl/pyro))
+* <b><code>&nbsp;24126⭐</code></b> <b><code>&nbsp;&nbsp;4083🍴</code></b> [pytorch_geometric](https://github.com/pyg-team/pytorch_geometric))
+* <b><code>&nbsp;&nbsp;3928⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;614🍴</code></b> [GPyTorch](https://github.com/cornellius-gp/gpytorch))
+* <b><code>&nbsp;&nbsp;9068⭐</code></b> <b><code>&nbsp;&nbsp;1030🍴</code></b> [pyro](https://github.com/pyro-ppl/pyro))
 * <b><code>&nbsp;&nbsp;3388⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;397🍴</code></b> [Catalyst](https://github.com/catalyst-team/catalyst))
 * <b><code>&nbsp;&nbsp;1695⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;180🍴</code></b> [pytorch_tabular](https://github.com/manujosephv/pytorch_tabular))
 * <b><code>&nbsp;10621⭐</code></b> <b><code>&nbsp;&nbsp;3420🍴</code></b> [Yolov3](https://github.com/ultralytics/yolov3))
-* <b><code>&nbsp;58181⭐</code></b> <b><code>&nbsp;17458🍴</code></b> [Yolov5](https://github.com/ultralytics/yolov5))
-* <b><code>&nbsp;62596⭐</code></b> <b><code>&nbsp;11870🍴</code></b> [Yolov8](https://github.com/ultralytics/ultralytics))
-* <b><code>&nbsp;&nbsp;&nbsp;&nbsp;26⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5🍴</code></b> [OpenLanguageModel](https://github.com/openlanguagemodel/openlanguagemodel)) - PyTorch-native library for building, training and teaching transformer language models, with architectures written as ordinary nn.Modules.
+* <b><code>&nbsp;58183⭐</code></b> <b><code>&nbsp;17458🍴</code></b> [Yolov5](https://github.com/ultralytics/yolov5))
+* <b><code>&nbsp;62656⭐</code></b> <b><code>&nbsp;11876🍴</code></b> [Yolov8](https://github.com/ultralytics/ultralytics))
+* <b><code>&nbsp;&nbsp;&nbsp;&nbsp;27⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5🍴</code></b> [OpenLanguageModel](https://github.com/openlanguagemodel/openlanguagemodel)) - PyTorch-native library for building, training and teaching transformer language models, with architectures written as ordinary nn.Modules.
 
 #### TensorFlow Ecosystem
-* <b><code>201080⭐</code></b> <b><code>&nbsp;79638🍴</code></b> [TensorFlow](https://github.com/tensorflow/tensorflow))
-* <b><code>&nbsp;&nbsp;7383⭐</code></b> <b><code>&nbsp;&nbsp;1582🍴</code></b> [TensorLayer](https://github.com/tensorlayer/TensorLayer))
+* <b><code>201200⭐</code></b> <b><code>&nbsp;79840🍴</code></b> [TensorFlow](https://github.com/tensorflow/tensorflow))
+* <b><code>&nbsp;&nbsp;7384⭐</code></b> <b><code>&nbsp;&nbsp;1582🍴</code></b> [TensorLayer](https://github.com/tensorlayer/TensorLayer))
 * <b><code>&nbsp;&nbsp;9569⭐</code></b> <b><code>&nbsp;&nbsp;2348🍴</code></b> [TFLearn](https://github.com/tflearn/tflearn))
-* <b><code>&nbsp;&nbsp;9975⭐</code></b> <b><code>&nbsp;&nbsp;1306🍴</code></b> [Sonnet](https://github.com/deepmind/sonnet))
+* <b><code>&nbsp;&nbsp;9977⭐</code></b> <b><code>&nbsp;&nbsp;1307🍴</code></b> [Sonnet](https://github.com/deepmind/sonnet))
 * <b><code>&nbsp;&nbsp;6285⭐</code></b> <b><code>&nbsp;&nbsp;1777🍴</code></b> [tensorpack](https://github.com/tensorpack/tensorpack))
 * <b><code>&nbsp;&nbsp;3130⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;384🍴</code></b> [TRFL](https://github.com/deepmind/trfl))
 * <b><code>&nbsp;&nbsp;3746⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;330🍴</code></b> [Polyaxon](https://github.com/polyaxon/polyaxon))
@@ -492,7 +494,7 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 * <b><code>&nbsp;&nbsp;&nbsp;&nbsp;60⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;27🍴</code></b> [tensorlm](https://github.com/batzner/tensorlm))
 * <b><code>&nbsp;&nbsp;&nbsp;&nbsp;11⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5🍴</code></b> [TensorLight](https://github.com/bsautermeister/tensorlight))
 * <b><code>&nbsp;&nbsp;1627⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;255🍴</code></b> [Mesh TensorFlow](https://github.com/tensorflow/mesh))
-* <b><code>&nbsp;11774⭐</code></b> <b><code>&nbsp;&nbsp;1259🍴</code></b> [Ludwig](https://github.com/ludwig-ai/ludwig))
+* <b><code>&nbsp;11774⭐</code></b> <b><code>&nbsp;&nbsp;1294🍴</code></b> [Ludwig](https://github.com/ludwig-ai/ludwig))
 * <b><code>&nbsp;&nbsp;3031⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;750🍴</code></b> [TF-Agents](https://github.com/tensorflow/agents))
 * <b><code>&nbsp;&nbsp;3305⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;521🍴</code></b> [TensorForce](https://github.com/tensorforce/tensorforce))
 
@@ -500,10 +502,10 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 
 * 🌎 [Keras](keras.io)
 * <b><code>&nbsp;&nbsp;1586⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;633🍴</code></b> [keras-contrib](https://github.com/keras-team/keras-contrib))
-* <b><code>&nbsp;&nbsp;2173⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;314🍴</code></b> [Hyperas](https://github.com/maxpumperla/hyperas))
+* <b><code>&nbsp;&nbsp;2173⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;313🍴</code></b> [Hyperas](https://github.com/maxpumperla/hyperas))
 * <b><code>&nbsp;&nbsp;1574⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;303🍴</code></b> [Elephas](https://github.com/maxpumperla/elephas))
 * <b><code>&nbsp;&nbsp;&nbsp;486⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;47🍴</code></b> [Hera](https://github.com/keplr-io/hera))
-* <b><code>&nbsp;&nbsp;2397⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;343🍴</code></b> [Spektral](https://github.com/danielegrattarola/spektral))
+* <b><code>&nbsp;&nbsp;2397⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;344🍴</code></b> [Spektral](https://github.com/danielegrattarola/spektral))
 * <b><code>&nbsp;&nbsp;&nbsp;584⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;108🍴</code></b> [qkeras](https://github.com/google/qkeras))
 * <b><code>&nbsp;&nbsp;5549⭐</code></b> <b><code>&nbsp;&nbsp;1337🍴</code></b> [keras-rl](https://github.com/keras-rl/keras-rl))
 * <b><code>&nbsp;&nbsp;1635⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;265🍴</code></b> [Talos](https://github.com/autonomio/talos))
@@ -531,7 +533,7 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 - 🌎 [import.io](www.import.io/)
 - 🌎 [Matplotlib](matplotlib.org/)
 - 🌎 [nvd3](nvd3.org/)
-- <b><code>&nbsp;33584⭐</code></b> <b><code>&nbsp;&nbsp;3190🍴</code></b> [Netron](https://github.com/lutzroeder/netron))
+- <b><code>&nbsp;33589⭐</code></b> <b><code>&nbsp;&nbsp;3190🍴</code></b> [Netron](https://github.com/lutzroeder/netron))
 - 🌎 [Openrefine](openrefine.org/)
 - 🌎 [plot.ly](plot.ly/)
 - 🌎 [raw](rawgraphs.io)
@@ -541,7 +543,7 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 - 🌎 [Timeline](timeline.knightlab.com/)
 - 🌎 [variancecharts](variancecharts.com/index.html)
 - 🌎 [vida](vida.io/)
-- <b><code>&nbsp;&nbsp;2042⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;87🍴</code></b> [vizzu](https://github.com/vizzuhq/vizzu-lib))
+- <b><code>&nbsp;&nbsp;2043⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;87🍴</code></b> [vizzu](https://github.com/vizzuhq/vizzu-lib))
 - 🌎 [Wrangler](vis.stanford.edu/wrangler/)
 - 🌎 [r2d3](www.r2d3.us/visual-intro-to-machine-learning-part-1/)
 - 🌎 [NetworkX](networkx.org/)
@@ -565,15 +567,15 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 | <b><code>&nbsp;&nbsp;&nbsp;206⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;60🍴</code></b> [Data Science Lifecycle Template Repo](https://github.com/dslp/dslp-repo-template)) | Template repository for data science lifecycle project  |
 | <b><code>&nbsp;&nbsp;&nbsp;570⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;81🍴</code></b> [TabGAN](https://github.com/Diyago/Tabular-data-generation)) | Synthetic tabular data generation using GANs, Diffusion Models, and LLMs with adversarial filtering and privacy metrics. |
 | <b><code>&nbsp;&nbsp;&nbsp;277⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;24🍴</code></b> [RexMex](https://github.com/AstraZeneca/rexmex)) | A general purpose recommender metrics library for fair evaluation.  |
-| <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0🍴</code></b> [OpenBacktesting](https://github.com/lucidcog/openbacktesting)) | Single-asset historical strategy simulation with inspectable trades, pandas statistics, and parameter optimization. |
+| <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0🍴</code></b> [OpenBacktesting](https://github.com/lucidcog/openbacktesting)) | Single-asset historical strategy simulation with inspectable trades, pandas statistics, and parameter optimization. |
 | <b><code>&nbsp;&nbsp;&nbsp;786⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;101🍴</code></b> [ChemicalX](https://github.com/AstraZeneca/chemicalx)) | A PyTorch based deep learning library for drug pair scoring.  |
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;31⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5🍴</code></b> [FileShot.io](https://github.com/FileShot/FileShotZKE)) | Secure zero-knowledge encrypted file sharing (AES-256-GCM in-browser). No account required, MIT licensed, self-hostable, optional link expiry. |
 | 🌎 [CorpusExplorer](corpusexplorer.de/) | Software for corpus linguists and text/data mining enthusiasts. Build your own corpora in over 60 languages. Use over 50 tools/visualizations.  |
 | <b><code>&nbsp;&nbsp;2992⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;402🍴</code></b> [PyTorch Geometric Temporal](https://github.com/benedekrozemberczki/pytorch_geometric_temporal)) | Representation learning on dynamic graphs.  |
 | <b><code>&nbsp;&nbsp;&nbsp;713⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;54🍴</code></b> [Little Ball of Fur](https://github.com/benedekrozemberczki/littleballoffur)) | A graph sampling library for NetworkX with a Scikit-Learn like API.  |
 | <b><code>&nbsp;&nbsp;2291⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;253🍴</code></b> [Karate Club](https://github.com/benedekrozemberczki/karateclub)) | An unsupervised machine learning extension library for NetworkX with a Scikit-Learn like API. |
-| <b><code>&nbsp;&nbsp;3548⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;454🍴</code></b> [ML Workspace](https://github.com/ml-tooling/ml-workspace)) | All-in-one web-based IDE for machine learning and data science. The workspace is deployed as a Docker container and is preloaded with a variety of popular data science libraries (e.g., Tensorflow, PyTorch) and dev tools (e.g., Jupyter, VS Code) |
-| <b><code>&nbsp;&nbsp;9672⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;750🍴</code></b> [xonsh shell](https://github.com/xonsh/xonsh)) | A Python-powered shell that enables integration, management and orchestration of data science libraries mostly written in Python, allowing you to build pipelines, code and command-based workflows. It can also be used as a kernel for Jupyter Notebook.  |
+| <b><code>&nbsp;&nbsp;3549⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;454🍴</code></b> [ML Workspace](https://github.com/ml-tooling/ml-workspace)) | All-in-one web-based IDE for machine learning and data science. The workspace is deployed as a Docker container and is preloaded with a variety of popular data science libraries (e.g., Tensorflow, PyTorch) and dev tools (e.g., Jupyter, VS Code) |
+| <b><code>&nbsp;&nbsp;9678⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;749🍴</code></b> [xonsh shell](https://github.com/xonsh/xonsh)) | A Python-powered shell that enables integration, management and orchestration of data science libraries mostly written in Python, allowing you to build pipelines, code and command-based workflows. It can also be used as a kernel for Jupyter Notebook.  |
 | 🌎 [Neptune.ai](neptune.ai) | Community-friendly platform supporting data scientists in creating and sharing machine learning models. Neptune facilitates teamwork, infrastructure management, models comparison and reproducibility. |
 | <b><code>&nbsp;&nbsp;&nbsp;136⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;32🍴</code></b> [steppy](https://github.com/minerva-ml/steppy)) | Lightweight, Python library for fast and reproducible machine learning experimentation. Introduces very simple interface that enables clean machine learning pipeline design. |
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;23⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9🍴</code></b> [steppy-toolkit](https://github.com/minerva-ml/steppy-toolkit)) | Curated collection of the neural networks, transformers and models that make your machine learning work faster and more effective. |
@@ -583,9 +585,9 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 | 🌎 [Tidyverse](www.tidyverse.org/) | is an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures. |
 | 🌎 [RStudio](www.rstudio.com) | IDE – powerful user interface for R. It’s free and open source, and works on Windows, Mac, and Linux. |
 | 🌎 [Python - Pandas - Anaconda](www.anaconda.com) | Completely free enterprise-ready Python distribution for large-scale data processing, predictive analytics, and scientific computing |
-| <b><code>&nbsp;&nbsp;3253⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;238🍴</code></b> [Pandas GUI](https://github.com/adrotog/PandasGUI)) | Pandas GUI |
+| <b><code>&nbsp;&nbsp;3254⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;238🍴</code></b> [Pandas GUI](https://github.com/adrotog/PandasGUI)) | Pandas GUI |
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0🍴</code></b> [NuriStat](https://github.com/baramgay/stat)) | Free open-source SPSS alternative — menu-driven desktop statistics (t-tests, ANOVA, regression, survival analysis, ROC) with SPSS .sav import/export |
-| <b><code>&nbsp;40109⭐</code></b> <b><code>&nbsp;&nbsp;3184🍴</code></b> [Polars](https://github.com/pola-rs/polars)) | Fast DataFrame library for Rust and Python, designed as a faster alternative to Pandas |
+| <b><code>&nbsp;40126⭐</code></b> <b><code>&nbsp;&nbsp;3187🍴</code></b> [Polars](https://github.com/pola-rs/polars)) | Fast DataFrame library for Rust and Python, designed as a faster alternative to Pandas |
 | 🌎 [CiteMe](citeme.app) | free academic citation generator with a built-in reference checker that flags fabricated or hallucinated references. Searches 11+ scholarly databases (OpenAlex, PubMed, Semantic Scholar, CrossRef, SciELO), formats 40+ citation styles, and offers a public API. No sign-up; available in English, Spanish, Portuguese, French, and German.|
 | 🌎 [Scikit-Learn](scikit-learn.org/stable/) | Machine Learning in Python |
 | 🌎 [NumPy](numpy.org/) | NumPy is fundamental for scientific computing with Python. It supports large, multi-dimensional arrays and matrices and includes an assortment of high-level mathematical functions to operate on these arrays. |
@@ -614,37 +616,37 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 | 🌎 [Datawrapper](www.datawrapper.de/) | An open source data visualization platform helping everyone to create simple, correct and embeddable charts. Also at <b><code>&nbsp;&nbsp;1460⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;279🍴</code></b> [github.com](https://github.com/datawrapper/datawrapper)) |
 | 🌎 [Tensor Flow](www.tensorflow.org/) | TensorFlow is an Open Source Software Library for Machine Intelligence |
 | 🌎 [Natural Language Toolkit](www.nltk.org/) | An introductory yet powerful toolkit for natural language processing and classification |
-| <b><code>&nbsp;20736⭐</code></b> <b><code>&nbsp;&nbsp;2085🍴</code></b> [FunASR](https://github.com/modelscope/FunASR)) | Industrial-grade speech recognition toolkit supporting 50+ languages with built-in VAD, punctuation, speaker diarization, and emotion detection. OpenAI-compatible API server included. |
+| <b><code>&nbsp;20760⭐</code></b> <b><code>&nbsp;&nbsp;2087🍴</code></b> [FunASR](https://github.com/modelscope/FunASR)) | Industrial-grade speech recognition toolkit supporting 50+ languages with built-in VAD, punctuation, speaker diarization, and emotion detection. OpenAI-compatible API server included. |
 | 🌎 [Annotation Lab](www.johnsnowlabs.com/annotation-lab/) | Free End-to-End No-Code platform for text annotation and DL model training/tuning. Out-of-the-box support for Named Entity Recognition, Classification, Relation extraction and Assertion Status Spark NLP models. Unlimited support for users, teams, projects, documents. |
 | 🌎 [nlp-toolkit for node.js](www.npmjs.com/package/nlp-toolkit) | This module covers some basic nlp principles and implementations. The main focus is performance. When we deal with sample or training data in nlp, we quickly run out of memory. Therefore every implementation in this module is written as stream to only hold that data in memory that is currently processed at any step. |
 | 🌎 [Julia](julialang.org) | high-level, high-performance dynamic programming language for technical computing |
-| <b><code>&nbsp;&nbsp;2908⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;427🍴</code></b> [IJulia](https://github.com/JuliaLang/IJulia.jl)) | a Julia-language backend combined with the Jupyter interactive environment |
+| <b><code>&nbsp;&nbsp;2909⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;427🍴</code></b> [IJulia](https://github.com/JuliaLang/IJulia.jl)) | a Julia-language backend combined with the Jupyter interactive environment |
 | 🌎 [Apache Zeppelin](zeppelin.apache.org/) | Web-based notebook that enables data-driven, interactive data analytics and collaborative documents with SQL, Scala and more  |
 | <b><code>&nbsp;&nbsp;7688⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;914🍴</code></b> [Featuretools](https://github.com/alteryx/featuretools)) | An open source framework for automated feature engineering written in python |
 | <b><code>&nbsp;&nbsp;1535⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;230🍴</code></b> [Optimus](https://github.com/hi-primus/optimus)) | Cleansing, pre-processing, feature engineering, exploratory data analysis and easy ML with PySpark backend.  |
-| <b><code>&nbsp;15308⭐</code></b> <b><code>&nbsp;&nbsp;1709🍴</code></b> [Albumentations](https://github.com/albumentations-team/albumentations)) | А fast and framework agnostic image augmentation library that implements a diverse set of augmentation techniques. Supports classification, segmentation, and detection out of the box. Was used to win a number of Deep Learning competitions at Kaggle, Topcoder and those that were a part of the CVPR workshops. |
-| <b><code>&nbsp;15928⭐</code></b> <b><code>&nbsp;&nbsp;1390🍴</code></b> [DVC](https://github.com/iterative/dvc)) | An open-source data science version control system. It helps track, organize and make data science projects reproducible. In its very basic scenario it helps version control and share large data and model files. |
+| <b><code>&nbsp;15307⭐</code></b> <b><code>&nbsp;&nbsp;1711🍴</code></b> [Albumentations](https://github.com/albumentations-team/albumentations)) | А fast and framework agnostic image augmentation library that implements a diverse set of augmentation techniques. Supports classification, segmentation, and detection out of the box. Was used to win a number of Deep Learning competitions at Kaggle, Topcoder and those that were a part of the CVPR workshops. |
+| <b><code>&nbsp;15930⭐</code></b> <b><code>&nbsp;&nbsp;1438🍴</code></b> [DVC](https://github.com/iterative/dvc)) | An open-source data science version control system. It helps track, organize and make data science projects reproducible. In its very basic scenario it helps version control and share large data and model files. |
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;26⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5🍴</code></b> [Lambdo](https://github.com/asavinov/lambdo)) | is a workflow engine that significantly simplifies data analysis by combining in one analysis pipeline (i) feature engineering and machine learning (ii) model training and prediction (iii) table population and column evaluation. |
-| <b><code>&nbsp;&nbsp;7336⭐</code></b> <b><code>&nbsp;&nbsp;1473🍴</code></b> [Feast](https://github.com/feast-dev/feast)) | A feature store for the management, discovery, and access of machine learning features. Feast provides a consistent view of feature data for both model training and model serving. |
+| <b><code>&nbsp;&nbsp;7337⭐</code></b> <b><code>&nbsp;&nbsp;1477🍴</code></b> [Feast](https://github.com/feast-dev/feast)) | A feature store for the management, discovery, and access of machine learning features. Feast provides a consistent view of feature data for both model training and model serving. |
 | <b><code>&nbsp;&nbsp;3746⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;330🍴</code></b> [Polyaxon](https://github.com/polyaxon/polyaxon)) | A platform for reproducible and scalable machine learning and deep learning. |
 | 🌎 [UBIAI](ubiai.tools) | Easy-to-use text annotation tool for teams with most comprehensive auto-annotation features. Supports NER, relations and document classification as well as OCR annotation for invoice labeling |
-| <b><code>&nbsp;&nbsp;6909⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;805🍴</code></b> [Trains](https://github.com/allegroai/clearml)) | Auto-Magical Experiment Manager, Version Control & DevOps for AI |
+| <b><code>&nbsp;&nbsp;6910⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;805🍴</code></b> [Trains](https://github.com/allegroai/clearml)) | Auto-Magical Experiment Manager, Version Control & DevOps for AI |
 | <b><code>&nbsp;&nbsp;1310⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;159🍴</code></b> [Hopsworks](https://github.com/logicalclocks/hopsworks)) | Open-source data-intensive machine learning platform with a feature store. Ingest and manage features for both online (MySQL Cluster)  and offline (Apache Hive) access, train and serve models at scale. |
-| <b><code>&nbsp;39800⭐</code></b> <b><code>&nbsp;&nbsp;6241🍴</code></b> [MindsDB](https://github.com/mindsdb/mindsdb)) | MindsDB is an Explainable AutoML framework for developers. With MindsDB you can build, train and use state of the art ML models in as simple as one line of code. |
+| <b><code>&nbsp;39802⭐</code></b> <b><code>&nbsp;&nbsp;6241🍴</code></b> [MindsDB](https://github.com/mindsdb/mindsdb)) | MindsDB is an Explainable AutoML framework for developers. With MindsDB you can build, train and use state of the art ML models in as simple as one line of code. |
 | <b><code>&nbsp;&nbsp;&nbsp;511⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;101🍴</code></b> [Lightwood](https://github.com/mindsdb/lightwood)) | A Pytorch based framework that breaks down machine learning problems into smaller blocks that can be glued together seamlessly with an objective to build predictive models with one line of code. |
-| <b><code>&nbsp;&nbsp;4122⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;752🍴</code></b> [AWS Data Wrangler](https://github.com/awslabs/aws-data-wrangler)) | An open-source Python package that extends the power of Pandas library to AWS connecting DataFrames and AWS data related services (Amazon Redshift, AWS Glue, Amazon Athena, Amazon EMR, etc). |
+| <b><code>&nbsp;&nbsp;4123⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;752🍴</code></b> [AWS Data Wrangler](https://github.com/awslabs/aws-data-wrangler)) | An open-source Python package that extends the power of Pandas library to AWS connecting DataFrames and AWS data related services (Amazon Redshift, AWS Glue, Amazon Athena, Amazon EMR, etc). |
 | 🌎 [Amazon Rekognition](aws.amazon.com/rekognition/) | AWS Rekognition is a service that lets developers working with Amazon Web Services add image analysis to their applications. Catalog assets, automate workflows, and extract meaning from your media and applications.|
 | 🌎 [Amazon Textract](aws.amazon.com/textract/) | Automatically extract printed text, handwriting, and data from any document. |
 | 🌎 [Amazon Lookout for Vision](aws.amazon.com/lookout-for-vision/) | Spot product defects using computer vision to automate quality inspection. Identify missing product components, vehicle and structure damage, and irregularities for comprehensive quality control.|
 | 🌎 [Amazon CodeGuru](aws.amazon.com/codeguru/) | Automate code reviews and optimize application performance with ML-powered recommendations.|
-| <b><code>&nbsp;&nbsp;4191⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;346🍴</code></b> [CML](https://github.com/iterative/cml)) | An open source toolkit for using continuous integration in data science projects. Automatically train and test models in production-like environments with GitHub Actions & GitLab CI, and autogenerate visual reports on pull/merge requests. |
+| <b><code>&nbsp;&nbsp;4190⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;346🍴</code></b> [CML](https://github.com/iterative/cml)) | An open source toolkit for using continuous integration in data science projects. Automatically train and test models in production-like environments with GitHub Actions & GitLab CI, and autogenerate visual reports on pull/merge requests. |
 | 🌎 [Dask](dask.org/) | An open source Python library to painlessly transition your analytics code to distributed computing systems (Big Data) |
-| <b><code>&nbsp;42234⭐</code></b> <b><code>&nbsp;&nbsp;3957🍴</code></b> [DuckDB](https://github.com/duckdb/duckdb)) | An in-process SQL OLAP database management system |
+| <b><code>&nbsp;42283⭐</code></b> <b><code>&nbsp;&nbsp;3980🍴</code></b> [DuckDB](https://github.com/duckdb/duckdb)) | An in-process SQL OLAP database management system |
 | 🌎 [Statsmodels](www.statsmodels.org/stable/index.html) | A Python-based inferential statistics, hypothesis testing and regression framework |
 | 🌎 [Gensim](radimrehurek.com/gensim/) | An open-source library for topic modeling of natural language text |
 | 🌎 [spaCy](spacy.io/) | A performant natural language processing toolkit |
-| <b><code>&nbsp;&nbsp;8808⭐</code></b> <b><code>&nbsp;&nbsp;1476🍴</code></b> [Grid Studio](https://github.com/ricklamers/gridstudio)) | Grid studio is a web-based spreadsheet application with full integration of the Python programming language. |
-|<b><code>&nbsp;50164⭐</code></b> <b><code>&nbsp;19154🍴</code></b> [Python Data Science Handbook](https://github.com/jakevdp/PythonDataScienceHandbook))|Python Data Science Handbook: full text in Jupyter Notebooks|
+| <b><code>&nbsp;&nbsp;8807⭐</code></b> <b><code>&nbsp;&nbsp;1476🍴</code></b> [Grid Studio](https://github.com/ricklamers/gridstudio)) | Grid studio is a web-based spreadsheet application with full integration of the Python programming language. |
+|<b><code>&nbsp;50179⭐</code></b> <b><code>&nbsp;19156🍴</code></b> [Python Data Science Handbook](https://github.com/jakevdp/PythonDataScienceHandbook))|Python Data Science Handbook: full text in Jupyter Notebooks|
 | <b><code>&nbsp;&nbsp;&nbsp;228⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;34🍴</code></b> [Shapley](https://github.com/benedekrozemberczki/shapley)) | A data-driven framework to quantify the value of classifiers in a machine learning ensemble.  |
 | 🌎 [DAGsHub](dagshub.com) | A platform built on open source tools for data, model and pipeline management.  |
 | 🌎 [Deepnote](deepnote.com) | A new kind of data science notebook. Jupyter-compatible, with real-time collaboration and running in the cloud. |
@@ -653,39 +655,39 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 | 🌎 [PyStan](pypi.org/project/pystan/) | Python interface to Stan (Bayesian inference and modeling) |
 | 🌎 [hmmlearn](pypi.org/project/hmmlearn/) | Unsupervised learning and inference of Hidden Markov Models |
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?🍴</code></b> [Chaos Genius](https://github.com/chaos-genius/chaos_genius/)) | ML powered analytics engine for outlier/anomaly detection and root cause analysis |
-| <b><code>&nbsp;&nbsp;&nbsp;296⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;46🍴</code></b> [PySAD](https://github.com/selimfirat/pysad)) | Python library for anomaly detection on streaming data |
+| <b><code>&nbsp;&nbsp;&nbsp;299⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;46🍴</code></b> [PySAD](https://github.com/selimfirat/pysad)) | Python library for anomaly detection on streaming data |
 | 🌎 [Nimblebox](nimblebox.ai/) | A full-stack MLOps platform designed to help data scientists and machine learning practitioners around the world discover, create, and launch multi-cloud apps from their web browser. |
 | <b><code>&nbsp;&nbsp;3450⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;256🍴</code></b> [Towhee](https://github.com/towhee-io/towhee)) | A Python library that helps you encode your unstructured data into embeddings. |
 | <b><code>&nbsp;&nbsp;&nbsp;671⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;58🍴</code></b> [LineaPy](https://github.com/LineaLabs/lineapy)) | Ever been frustrated with cleaning up long, messy Jupyter notebooks? With LineaPy, an open source Python library, it takes as little as two lines of code to transform messy development code into production pipelines. |
-| <b><code>&nbsp;&nbsp;2240⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;177🍴</code></b> [envd](https://github.com/tensorchord/envd)) | 🏕️ machine learning development environment for data science and AI/ML engineering teams |
+| <b><code>&nbsp;&nbsp;2240⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;181🍴</code></b> [envd](https://github.com/tensorchord/envd)) | 🏕️ machine learning development environment for data science and AI/ML engineering teams |
 | 🌎 [Explore Data Science Libraries](kandi.openweaver.com/explore/data-science) | A search engine 🔎 tool to discover & find a curated list of popular & new libraries, top authors, trending project kits, discussions, tutorials & learning resources |
 | <b><code>&nbsp;&nbsp;&nbsp;719⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;42🍴</code></b> [MLEM](https://github.com/iterative/mlem)) | 🐶 Version and deploy your ML models following GitOps principles |
 | 🌎 [MLflow](mlflow.org/) | MLOps framework for managing ML models across their full lifecycle |
-| <b><code>&nbsp;11712⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;930🍴</code></b> [cleanlab](https://github.com/cleanlab/cleanlab)) | Python library for data-centric AI and automatically detecting various issues in ML datasets |
-| <b><code>&nbsp;10785⭐</code></b> <b><code>&nbsp;&nbsp;1203🍴</code></b> [AutoGluon](https://github.com/awslabs/autogluon)) | AutoML to easily produce accurate predictions for image, text, tabular, time-series, and multi-modal data |
+| <b><code>&nbsp;11714⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;929🍴</code></b> [cleanlab](https://github.com/cleanlab/cleanlab)) | Python library for data-centric AI and automatically detecting various issues in ML datasets |
+| <b><code>&nbsp;10790⭐</code></b> <b><code>&nbsp;&nbsp;1204🍴</code></b> [AutoGluon](https://github.com/awslabs/autogluon)) | AutoML to easily produce accurate predictions for image, text, tabular, time-series, and multi-modal data |
 | 🌎 [Arize AI](arize.com/) | Arize AI community tier observability tool for monitoring machine learning models in production and root-causing issues such as data quality and performance drift. |
 | 🌎 [Aureo.io](aureo.io) | Aureo.io is a low-code platform that focuses on building artificial intelligence. It provides users with the capability to create pipelines, automations and integrate them with artificial intelligence models – all with their basic data. |
 | 🌎 [ERD Lab](www.erdlab.io/) | Free cloud based entity relationship diagram (ERD) tool made for developers.
 | 🌎 [Arize-Phoenix](docs.arize.com/phoenix) | MLOps in a notebook - uncover insights, surface problems, monitor, and fine tune your models. |
 | <b><code>&nbsp;&nbsp;&nbsp;174⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;69🍴</code></b> [Comet](https://github.com/comet-ml/comet-examples)) | An MLOps platform with experiment tracking, model production management, a model registry, and full data lineage to support your ML workflow from training straight through to production. |
-| <b><code>&nbsp;22699⭐</code></b> <b><code>&nbsp;&nbsp;1871🍴</code></b> [Opik](https://github.com/comet-ml/opik)) | Evaluate, test, and ship LLM applications across your dev and production lifecycles. |
+| <b><code>&nbsp;22756⭐</code></b> <b><code>&nbsp;&nbsp;1879🍴</code></b> [Opik](https://github.com/comet-ml/opik)) | Evaluate, test, and ship LLM applications across your dev and production lifecycles. |
 | 🌎 [Synthical](synthical.com) | AI-powered collaborative environment for research. Find relevant papers, create collections to manage bibliography, and summarize content — all in one place |
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;13⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0🍴</code></b> [teeplot](https://github.com/mmore500/teeplot)) | Workflow tool to automatically organize data visualization output |
-| <b><code>&nbsp;46031⭐</code></b> <b><code>&nbsp;&nbsp;4425🍴</code></b> [Streamlit](https://github.com/streamlit/streamlit)) | App framework for Machine Learning and Data Science projects |
-| <b><code>&nbsp;43793⭐</code></b> <b><code>&nbsp;&nbsp;3638🍴</code></b> [Gradio](https://github.com/gradio-app/gradio)) | Create customizable UI components around machine learning models |
-| <b><code>&nbsp;11301⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;904🍴</code></b> [Weights & Biases](https://github.com/wandb/wandb)) | Experiment tracking, dataset versioning, and model management |
-| <b><code>&nbsp;15928⭐</code></b> <b><code>&nbsp;&nbsp;1390🍴</code></b> [DVC](https://github.com/iterative/dvc)) | Open-source version control system for machine learning projects |
-| <b><code>&nbsp;14931⭐</code></b> <b><code>&nbsp;&nbsp;1426🍴</code></b> [Optuna](https://github.com/optuna/optuna)) | Automatic hyperparameter optimization software framework |
-| <b><code>&nbsp;44059⭐</code></b> <b><code>&nbsp;&nbsp;8169🍴</code></b> [Ray Tune](https://github.com/ray-project/ray)) | Scalable hyperparameter tuning library |
-| <b><code>&nbsp;47205⭐</code></b> <b><code>&nbsp;18055🍴</code></b> [Apache Airflow](https://github.com/apache/airflow)) | Platform to programmatically author, schedule, and monitor workflows |
-| <b><code>&nbsp;24033⭐</code></b> <b><code>&nbsp;&nbsp;2590🍴</code></b> [Prefect](https://github.com/PrefectHQ/prefect)) | Workflow management system for modern data stacks |
-| <b><code>&nbsp;11026⭐</code></b> <b><code>&nbsp;&nbsp;1096🍴</code></b> [Kedro](https://github.com/kedro-org/kedro)) | Open-source Python framework for creating reproducible, maintainable data science code |
-| <b><code>&nbsp;&nbsp;2610⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;222🍴</code></b> [Hamilton](https://github.com/dagworks-inc/hamilton)) | Lightweight library to author and manage reliable data transformations |
-| <b><code>&nbsp;25819⭐</code></b> <b><code>&nbsp;&nbsp;3774🍴</code></b> [SHAP](https://github.com/slundberg/shap)) | Game theoretic approach to explain the output of any machine learning model |
-| <b><code>&nbsp;&nbsp;6962⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;791🍴</code></b> [InterpretML](https://github.com/interpretml/interpret)) | InterpretML implements the Explainable Boosting Machine (EBM), a modern, fully interpretable machine learning model based on Generalized Additive Models (GAMs). This open-source package also provides visualization tools for EBMs, other glass-box models, and black-box explanations |
+| <b><code>&nbsp;46049⭐</code></b> <b><code>&nbsp;&nbsp;4430🍴</code></b> [Streamlit](https://github.com/streamlit/streamlit)) | App framework for Machine Learning and Data Science projects |
+| <b><code>&nbsp;43814⭐</code></b> <b><code>&nbsp;&nbsp;3638🍴</code></b> [Gradio](https://github.com/gradio-app/gradio)) | Create customizable UI components around machine learning models |
+| <b><code>&nbsp;11303⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;907🍴</code></b> [Weights & Biases](https://github.com/wandb/wandb)) | Experiment tracking, dataset versioning, and model management |
+| <b><code>&nbsp;15930⭐</code></b> <b><code>&nbsp;&nbsp;1438🍴</code></b> [DVC](https://github.com/iterative/dvc)) | Open-source version control system for machine learning projects |
+| <b><code>&nbsp;14943⭐</code></b> <b><code>&nbsp;&nbsp;1433🍴</code></b> [Optuna](https://github.com/optuna/optuna)) | Automatic hyperparameter optimization software framework |
+| <b><code>&nbsp;44084⭐</code></b> <b><code>&nbsp;&nbsp;8174🍴</code></b> [Ray Tune](https://github.com/ray-project/ray)) | Scalable hyperparameter tuning library |
+| <b><code>&nbsp;47222⭐</code></b> <b><code>&nbsp;18087🍴</code></b> [Apache Airflow](https://github.com/apache/airflow)) | Platform to programmatically author, schedule, and monitor workflows |
+| <b><code>&nbsp;24043⭐</code></b> <b><code>&nbsp;&nbsp;2599🍴</code></b> [Prefect](https://github.com/PrefectHQ/prefect)) | Workflow management system for modern data stacks |
+| <b><code>&nbsp;11028⭐</code></b> <b><code>&nbsp;&nbsp;1095🍴</code></b> [Kedro](https://github.com/kedro-org/kedro)) | Open-source Python framework for creating reproducible, maintainable data science code |
+| <b><code>&nbsp;&nbsp;2613⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;221🍴</code></b> [Hamilton](https://github.com/dagworks-inc/hamilton)) | Lightweight library to author and manage reliable data transformations |
+| <b><code>&nbsp;25822⭐</code></b> <b><code>&nbsp;&nbsp;3775🍴</code></b> [SHAP](https://github.com/slundberg/shap)) | Game theoretic approach to explain the output of any machine learning model |
+| <b><code>&nbsp;&nbsp;6964⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;791🍴</code></b> [InterpretML](https://github.com/interpretml/interpret)) | InterpretML implements the Explainable Boosting Machine (EBM), a modern, fully interpretable machine learning model based on Generalized Additive Models (GAMs). This open-source package also provides visualization tools for EBMs, other glass-box models, and black-box explanations |
 | <b><code>&nbsp;12170⭐</code></b> <b><code>&nbsp;&nbsp;1847🍴</code></b> [LIME](https://github.com/marcotcr/lime)) | Explaining the predictions of any machine learning classifier |
-| <b><code>&nbsp;&nbsp;7721⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;904🍴</code></b> [flyte](https://github.com/flyteorg/flyte)) | Workflow automation platform for machine learning |
-| <b><code>&nbsp;14038⭐</code></b> <b><code>&nbsp;&nbsp;2630🍴</code></b> [dbt](https://github.com/dbt-labs/dbt-core)) | Data build tool |
+| <b><code>&nbsp;&nbsp;7735⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;908🍴</code></b> [flyte](https://github.com/flyteorg/flyte)) | Workflow automation platform for machine learning |
+| <b><code>&nbsp;14045⭐</code></b> <b><code>&nbsp;&nbsp;2634🍴</code></b> [dbt](https://github.com/dbt-labs/dbt-core)) | Data build tool |
 | <b><code>&nbsp;&nbsp;2355⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;79🍴</code></b> [zasper](https://github.com/zasper-io/zasper)) | Supercharged IDE for Data Science |
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?🍴</code></b> [skrub](https://github.com/skrub-data/skrub/)) | A Python library to ease preprocessing and feature engineering for tabular machine learning |
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0🍴</code></b> [Glyph](https://github.com/Koda-OSS/Glyph)) | Framework-agnostic TypeScript library for generating, searching, and comparing MinHash fingerprints for fast text similarity, deduplication, and retrieval. |
@@ -694,15 +696,15 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;74⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6🍴</code></b> [Chinese-Elite](https://github.com/anonym-g/Chinese-Elite)) | An open-source project that automatically maps relationship networks by parsing public data using LLMs and visualizes it as an interactive graph. |
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?🍴</code></b> [Desbordante](https://github.com/desbordante/desbordante-core/)) | An open-source data profiler specifically focused on discovery and validation of complex patterns, such as 🌎 [numerical association rules](colab.research.google.com/github/Desbordante/desbordante-core/blob/main/examples/notebooks/Numerical_Association_Rules.ipynb), 🌎 [differential dependencies](colab.research.google.com/github/Desbordante/desbordante-core/blob/main/examples/notebooks/Differential_Dependencies.ipynb), 🌎 [denial constraints](colab.research.google.com/github/Desbordante/desbordante-core/blob/main/examples/notebooks/Denial_Constraints.ipynb), and more. |
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;58⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9🍴</code></b> [dna-claude-analysis](https://github.com/shmlkv/dna-claude-analysis)) | Personal genome analysis toolkit with Python scripts analyzing raw DNA data across 17 categories (health risks, ancestry, pharmacogenomics, nutrition, psychology, and more) and generating a terminal-style single-page HTML visualization. |
-| <b><code>&nbsp;&nbsp;&nbsp;266⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;10🍴</code></b> [RunMat](https://github.com/runmat-org/runmat)) | Fast MATLAB-syntax runtime with automatic CPU/GPU execution and fused array kernels. |
+| <b><code>&nbsp;&nbsp;&nbsp;267⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;10🍴</code></b> [RunMat](https://github.com/runmat-org/runmat)) | Fast MATLAB-syntax runtime with automatic CPU/GPU execution and fused array kernels. |
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;18⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2🍴</code></b> [Turbostream](https://github.com/turboline-ai/turbostream)) | A terminal UI for experimenting with custom rule engines and selective LLM analysis on real-time data streams, without worrying about streaming infra or backpressure. |
 | <b><code>&nbsp;&nbsp;1800⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;167🍴</code></b> [WFGY ProblemMap](https://github.com/onestardao/WFGY/blob/main/ProblemMap/README.md)) | Open source “failure atlas” of 16 recurring issues in LLM and RAG pipelines, with observable symptoms and suggested fixes for data science teams. |
 | 🌎 [Deploybase](deploybase.ai/) | Track real-time GPU and LLM pricing across all cloud and inference providers. |
-| <b><code>&nbsp;&nbsp;4727⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;743🍴</code></b> [DeepAnalyze](https://github.com/ruc-datalab/DeepAnalyze)) | An agentic LLM for autonomous data science, which can autonomously complete a wide range of data science tasks without human intervention. |
+| <b><code>&nbsp;&nbsp;4736⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;744🍴</code></b> [DeepAnalyze](https://github.com/ruc-datalab/DeepAnalyze)) | An agentic LLM for autonomous data science, which can autonomously complete a wide range of data science tasks without human intervention. |
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0🍴</code></b> [Disco](https://github.com/leap-laboratories/discovery-engine)) | Superhuman exploratory data analysis. Finds the feature interactions and subgroup effects in tabular data that LLMs and manual exploration miss — with p-values, effect sizes, and literature citations. Free for public data. |
 | 🌎 [AI for Database](aifordatabase.com) | Chat with your database in natural language — no SQL needed. Get instant insights, build self-refreshing dashboards, and trigger automated workflows based on database changes. |
 | <b><code>&nbsp;&nbsp;&nbsp;&nbsp;50⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;17🍴</code></b> [Crypto Pump Scanner](https://github.com/stefanoviana/deepalpha)) | AI-powered cryptocurrency trading bot with LSTM neural network (84.6% accuracy). Real-time pump detection, walk-forward validated models, multi-exchange support (Bybit, Binance, OKX, Gate.io). Open source. |
-| <b><code>&nbsp;&nbsp;2173⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;685🍴</code></b> [Future AGI](https://github.com/future-agi/future-agi)) | Open-source platform to simulate, evaluate, trace, guardrail, route, and optimize LLM and AI agent apps in one feedback loop, so agents don't just get monitored, they self-improve. Self-hostable. Apache-2.0. |
+| <b><code>&nbsp;&nbsp;2180⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;685🍴</code></b> [Future AGI](https://github.com/future-agi/future-agi)) | Open-source platform to simulate, evaluate, trace, guardrail, route, and optimize LLM and AI agent apps in one feedback loop, so agents don't just get monitored, they self-improve. Self-hostable. Apache-2.0. |
 | 🌎 [ipynbtopdf](ipynbtopdf.xyz/) | Browser-based Jupyter notebook viewer and exporter that converts `.ipynb` notebooks to PDF, HTML, and Python without installing Python or TeX. |
 
 
@@ -843,10 +845,4 @@ This section includes some additional reading material, channels to watch, and t
 - 🌎 [Greg Reda](www.gregreda.com/) - Greg Reda Personal Blog
 - 🌎 [Julia Evans](jvns.ca/) - Recurse Center alumna
 - 🌎 [Hakan Kardas](www.cse.unr.edu/~hkardes/) - Personal Web Page
-- 🌎 [Sean J. Taylor](seanjtaylor.com/) - Personal Web Page
-- 🌎 [Drew Conway](drewconway.com/) - Personal Web Page
-- 🌎 [Hilary Mason](hilarymason.com/) - Personal Web Page
-- 🌎 [Noah Iliinsky](complexdiagrams.com/) - Personal Blog
-- 🌎 [Matt Harrison](hairysun.com/) - Personal Blog
-- 🌎 [Vamshi Ambati](allthingsds.wordpress.com/) - AllThings Data Sciene
-- 🌎 [Prash Chan](www.mdmgeek.com/) - Tech Blog on Master Data Management And Ever
+- 🌎 [Sean J. Taylor](seanjtaylor.com/) - Per

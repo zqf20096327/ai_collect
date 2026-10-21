@@ -20,6 +20,7 @@
 
 - [Live Demo](#-live-demo)
 - [What's New in v5.1](#-whats-new-in-v51)
+- [What's New Since v5.1.5.3](#-whats-new-since-v5153-post-release-polish--discoverability)
 - [Architecture](#-architecture)
 - [Quick Start](#-quick-start)
 - [Three Developer Differentiators](#-three-developer-differentiators)
@@ -69,6 +70,22 @@ Three small but demoable additions, shipped together as a focused release:
 - **AI Neighborhood One-Liner** — property detail pages now feature a short AI-generated summary of the neighborhood's character, lifestyle, and accessibility. Falls back silently if the LLM is unavailable.
 
 All three work in demo mode without any paid external APIs.
+
+## ✨ What's New Since v5.1.5.3 (post-release polish + discoverability)
+
+Layered on top of the v5.1 features without changing product behaviour.
+Each item is a small, focused improvement in the demo and discovery surface.
+
+- **🧭 First-visit onboarding tour** — a 5-step guided tour (welcome → search → chat → valuation → languages) appears 1.5 s after the first visit, dismissable, with localStorage memory so it never shows again. Implementation: [`apps/web/src/components/onboarding/Tour.tsx`](apps/web/src/components/onboarding/Tour.tsx).
+- **🎯 "Try one of these" chips on the landing page** — six example natural-language queries (`2-bedroom apartment in Kraków under 500k`, `Investment property, Gdańsk, ROI > 5%`, …) navigate to `/<locale>/search?q=...` so the existing search bar picks them up. Reusable on empty states via `<EmptyStateWithPrompts />` ([`apps/web/src/components/demo/`](apps/web/src/components/demo/)).
+- **🔍 AI-citation layer** — the demo is now first-class-discoverable by ChatGPT, Claude, Perplexity, and Google AI Overviews:
+  - Expanded [`llms.txt`](apps/web/public/llms.txt) with 9-language market notes, competitive context (vs Zillow / Rightmove / Idealista / Otodom), FAQ Q&A, "Known limitations", explicit references to docs.
+  - Augmented [`robots.txt`](apps/web/public/robots.txt) with explicit `Allow` for GPTBot, ChatGPT-User, Claude-Web, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended, CCBot, Bytespider, Applebot-Extended.
+  - Added `FAQPage` JSON-LD alongside the existing Organization / WebSite / SoftwareApplication schemas ([`apps/web/src/lib/structured-data.ts`](apps/web/src/lib/structured-data.ts)).
+  - Added a custom `og:image.png` placeholder derived from `assets/screenshots/home-dark.png` ([`apps/web/public/og-image.png`](apps/web/public/og-image.png)) wired through `openGraph.images` + `twitter.images` in the locale layout.
+  - Expanded `metadataBase`, `title.template`, `keywords`, `authors`, `creator`, `publisher`, `category`, and `icons` blocks for full SEO coverage in 9 locales.
+- **⚡ Lazy-load /market-trends charts** — extracted the recharts bundle (5+ MB) into a separately-imported client component (`next/dynamic` with `ssr: false`). Initial payload for `/market-trends` shrinks by ~5 MB; charts stream in after the page renders.
+- **📣 Distribution drafts ready** — six drafts under [`docs/marketing/`](docs/marketing/) (Show HN, four-subreddit Reddit plan, Product Hunt, three YouTube scripts, directory submission plan) — see [`docs/marketing/README.md`](docs/marketing/README.md) for the recommended launch sequence.
 
 ## 💻 Local Demo Setup
 
@@ -150,7 +167,7 @@ To override the gate (e.g. force lazy loading on a different platform), set `REN
 ## ✨ Features
 
 ### 🤖 Multi-Provider AI
-6+ LLM providers with intelligent routing — OpenAI, Anthropic, Google, Grok, DeepSeek, and local Ollama. Automatic fallback chain ensures reliability.
+16 LLM providers with intelligent routing — OpenAI, Anthropic, Google, Grok, DeepSeek, OpenRouter, Together AI, Fireworks AI, HuggingFace, Groq, Mistral, Qwen, ZAI, Moonshot, OpenCode, and local Ollama. Automatic fallback chain ensures reliability.
 
 ### 🔍 Smart Property Search
 Natural language queries with automatic filter extraction. Hybrid semantic + keyword search powered by ChromaDB with MMR reranking for 30-40% better relevance.
@@ -178,7 +195,7 @@ OWASP-hardened with rate limiting, audit logging, SSRF protection, and dual-mode
 | Frontend | Next.js 16 + React 19 |
 | Vector DB | ChromaDB (semantic search + MMR reranking) |
 | Relational DB | PostgreSQL / SQLite |
-| LLM Providers | OpenAI, Anthropic, Google, Grok, DeepSeek, local Ollama |
+| LLM Providers | OpenAI, Anthropic, Google, Grok, DeepSeek, OpenRouter, Together AI, Fireworks AI, HuggingFace, Groq, Mistral, Qwen, ZAI, Moonshot, OpenCode, local Ollama |
 | Container | Docker / Docker Compose |
 | Hosting (staging) | Render free tier |
 | CI/CD | GitHub Actions (CI + GHCR + Render deploy) |
@@ -286,7 +303,7 @@ cd apps/web && npm install && npm run dev
 ## 🏠 Three Developer Differentiators
 
 ### 1. Multi-Provider LLM Routing
-13 LLM providers with automatic fallback chain — OpenAI, Anthropic Google, Grok, DeepSeek, and local Ollama. Per-request provider selection via header or request parameter; no code changes required to switch models.
+16 LLM providers with automatic fallback chain — OpenAI, Anthropic, Google, Grok, DeepSeek, OpenRouter, Together AI, Fireworks AI, HuggingFace, Groq, Mistral, Qwen, ZAI, Moonshot, OpenCode, and local Ollama. Per-request provider selection via header or request parameter; no code changes required to switch models.
 
 ### 2. Hybrid RAG + ChromaDB Vector Search
 Query complexity classifier routes requests to RAG-only (simple), hybrid RAG+enhancement (medium), or agent+tools (complex). ChromaDB with MMR reranking provides semantic similarity search.

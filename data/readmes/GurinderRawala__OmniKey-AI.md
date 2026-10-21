@@ -1,0 +1,135 @@
+<p align="center">
+   <img src="macOS/Assets.xcassets/AppIcon.appiconset/Icon-iOS-Default-1024x1024@1x.png" alt="OmniKey AI Icon" width="128" height="128" />
+</p>
+
+<h1 align="center">OmniKey AI</h1>
+
+<p align="center">
+  <strong>Select text anywhere. Press a shortcut. AI rewrites it in place.</strong><br />
+  Prompt enhancement, grammar fixes, and custom AI tasks in <em>every</em> app on macOS and Windows.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/omnikey-cli"><img alt="npm downloads" src="https://img.shields.io/npm/dm/omnikey-cli?style=flat-square&label=npm%20downloads&color=0b8f3a" /></a>
+  <a href="https://www.npmjs.com/package/omnikey-cli"><img alt="npm version" src="https://img.shields.io/npm/v/omnikey-cli?style=flat-square&color=2b6cb0" /></a>
+  <a href="https://github.com/GurinderRawala/OmniKey-AI/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/GurinderRawala/OmniKey-AI?style=flat-square&color=d4a017" /></a>
+  <a href="https://github.com/GurinderRawala/OmniKey-AI/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/GurinderRawala/OmniKey-AI?style=flat-square&color=6b46c1" /></a>
+  <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-black?style=flat-square" /></a>
+  <img alt="Platforms" src="https://img.shields.io/badge/platform-macOS%2013%2B%20%7C%20Windows%2010%2F11-444?style=flat-square" />
+</p>
+
+<p align="center">
+  <a href="https://omnikeyai.ca">Website</a> &nbsp;·&nbsp;
+  <a href="https://omnikeyai.ca/docs">Docs</a> &nbsp;·&nbsp;
+  <a href="https://omnikeyai.ca/changelog">Changelog</a> &nbsp;·&nbsp;
+  <a href="https://github.com/GurinderRawala/OmniKey-AI/discussions">Discussions</a> &nbsp;·&nbsp;
+  <a href="https://bsky.app/profile/omnikeyai.bsky.social">Bluesky</a>
+</p>
+
+> Available on **macOS** (menu bar app) and **Windows** (system tray app).
+
+> 🌐 **Full documentation, downloads, and product details live at [omnikeyai.ca](https://omnikeyai.ca).** This README only covers the essentials.
+
+## Getting Started
+
+1. **Install the CLI:**
+
+   ```sh
+   # macOS (recommended)
+   brew tap GurinderRawala/omnikey-ai https://github.com/GurinderRawala/OmniKey-AI.git
+   brew install omnikey-cli
+
+   # or via npm (cross-platform)
+   npm install -g omnikey-cli
+   ```
+
+2. **Onboard and configure a provider** — pick OpenAI, Anthropic, Google Gemini, or an OpenAI-compatible open model, and optionally a web search provider:
+
+   ```sh
+   omnikey onboard
+   ```
+
+3. **Start the persistent daemon:**
+
+   ```sh
+   omnikey daemon
+   ```
+
+4. **Download the desktop app** — [macOS](https://omnikeyai-saas-fmytqc3dra-uc.a.run.app/macos/download) · [Windows](https://omnikeyai-saas-fmytqc3dra-uc.a.run.app/windows/download).
+
+## Features
+
+A quick reference of the core capabilities and the commands or shortcuts that drive them. Full details live on the [website](https://omnikeyai.ca).
+
+- **Prompt Enhancement** — `⌘E` / `Ctrl+E` rewrites the selected text into a stronger prompt.
+- **Grammar & Clarity Fix** — `⌘G` / `Ctrl+G` cleans up grammar without changing meaning.
+- **Custom Tasks** — `⌘T` / `Ctrl+T` applies your saved task instructions to the selected text.
+- **Multiple LLM providers** — switch between OpenAI, Anthropic, Google Gemini, and OpenAI-compatible open models during onboarding or via `omnikey set`.
+- **Web Search** — opt in during onboarding. Supports DuckDuckGo, Serper, Brave Search, Tavily, and SearXNG.
+- **Authenticated Browser Sessions** — `omnikey grant-browser-access` sets up a dedicated debug profile so the agent can read logged-in pages (Chrome, Brave, Edge, Arc, Vivaldi, Opera, Chromium, and Safari on macOS).
+- **MCP Servers** — the agent sees every configured server and connects only to the one it needs. Mention the configured MCP name in your task, such as “Use Slack to search messages”:
+
+  ```sh
+  omnikey mcp add
+  omnikey mcp list
+  omnikey mcp toggle <id>
+  ```
+
+- **Telegram Integration** — run tasks and get notifications from any device:
+
+  ```sh
+  omnikey telegram start
+  omnikey telegram status
+  omnikey telegram logs
+  omnikey telegram stop
+  ```
+
+  In Telegram, use `/cmd` to start or resume an agent task, `/model` to change the active provider's agent model, `/task` to fetch progress or the last result, and `/stop` to abort a running session.
+
+- **Scheduled Jobs** — automate recurring or one-time prompt runs from the desktop app or the CLI (`omnikey schedule add` / `list` / `remove`).
+
+## The @omniAgent
+
+Select text starting with `@omniAgent` and press `⌘T` / `Ctrl+T` to hand off the task to the autonomous agent. It can:
+
+- **Run shell commands** on your machine to inspect files, processes, environment, or run builds.
+- **Read your live browser tabs** (including authenticated ones) for context from internal dashboards, private docs, and paid tools — no copy-paste required.
+- **Search the web** via your configured provider (falls back to DuckDuckGo).
+- **Use any MCP server** you have registered (databases, APIs, custom tools).
+- **Combine your saved task instructions** automatically when relevant.
+
+Use `@omnikeyai` (without the agent prefix) for plain Q&A in the context of your selected text. For the full agent design and tool list, see [omnikeyai.ca](https://omnikeyai.ca).
+
+---
+
+## Developers
+
+OmniKey AI is a Yarn monorepo with three TypeScript workspaces (`api`, `cli`, `telegram`) plus native desktop clients in Swift (macOS) and C# (Windows). For setup, build/test workflows, and a tour of the main commands, see **[DEVELOPMENT.md](./DEVELOPMENT.md)**.
+
+## Contributing
+
+Issues and pull requests are welcome. Start with
+[CONTRIBUTING.md](./CONTRIBUTING.md) and the
+[`good first issue`](https://github.com/GurinderRawala/OmniKey-AI/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+label. Security reports go through [SECURITY.md](./SECURITY.md), never a public issue.
+
+One hard rule: **OmniKey never phones home.** No telemetry, no analytics, no usage
+counters. Everything runs on your machine and talks only to the providers you configured.
+
+## License & Terms
+
+OmniKey AI is open-source software released under the [MIT License](./LICENSE).
+Use of any component is governed by the [Terms and Conditions](./TERMS.md):
+
+- **Desktop app (macOS menu bar / Windows tray)** — the first launch shows a
+  Terms & Conditions dialog you must accept before the app becomes usable.
+  Acceptance is remembered per terms revision; a materially updated `TERMS.md`
+  re-prompts on the next launch.
+- **CLI (`omnikey-cli`)** — the interactive `omnikey onboard` command handles
+  provider configuration, not terms acceptance. Installing or running the CLI
+  is treated as acceptance of the same Terms & Conditions.
+
+The software is provided **as-is, without warranty of any kind**; OmniKey and
+its contributors are not liable for any damages, data loss, third-party
+charges, or issues arising from AI-generated content or from use of the
+software.

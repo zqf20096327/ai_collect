@@ -1,5 +1,34 @@
 # REA-Reconstruction-Companion
 
+For date/time-zone and localized data behavior, use the focused
+[date and locale contracts](skills/rea-reconstruction-companion/references/date-locale.md)
+and [bounded offline example](evals/date-locale/README.md). They distinguish
+calendar dates, instants and wall time, selected offset transitions, and display
+from parsing, sorting and stored/exported values.
+
+For narrow windows, enlarged/long text or changing list volume, use the
+[responsive evidence guidance](skills/rea-reconstruction-companion/references/visual-evidence.md#responsive-layouts-and-content-extremes)
+and [small rendered example](evals/responsive-layouts/README.md). Keep visual
+agreement, reachable actions and accessibility evidence separately assessable;
+font simulation does not verify native browser zoom.
+
+For state-dependent journeys, use [workflow state guidance](skills/rea-reconstruction-companion/references/blueprint.md#consequential-workflow-states)
+and the [bounded import-confirmation example](evals/workflow-edge-cases/README.md).
+Separate visible, pending and committed state; preserve untested transitions and
+distinguish local fault injection from original-target evidence.
+
+For conflicting recordings, runtime results, docs or recollections, use
+[evidence reconciliation](skills/rea-reconstruction-companion/references/reconstruction-methods.md#conflicting-evidence-and-ambiguous-behavior)
+and the [bounded sorting example](evals/conflicting-evidence/README.md). Preserve
+source applicability, competing explanations and unresolved acceptance; newer or
+copy-derived evidence alone does not settle a claim.
+
+For reconstructed slices that handle untrusted input, sensitive data or restricted
+operations, use the conditional [security boundary guidance](skills/rea-reconstruction-companion/references/reconstruction-security.md)
+and [small local worked example](evals/reconstruction-security/README.md). Keep
+original behavior, proposed controls and demonstrated protection distinct;
+simulated authentication does not establish real access protection.
+
 ![REA Reconstruction Companion — Understand. Rebuild. Validate.](assets/discord-banner.png)
 
 **Understand existing software. Plan a reconstruction. Build and validate when requested.**

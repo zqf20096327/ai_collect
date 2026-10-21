@@ -54,6 +54,13 @@ then read the onboarding guide below.
   Opt-in [local span export](docs/configuration.md#local-tracing) uses
   `--tracing.enabled --tracing.file=/private/new-trace.jsonl`. Complete traces
   require compatible service queue handoff and caller parent propagation first.
+- **Forwarding the original HTTP request ID?** MCP HTTP forwarding is enabled
+  by default. Use `--forward-request-id=mcp,harpoon` to include Harpoon REST
+  requests, `--forward-request-id=mcp,oauth` to include eligible queued OAuth
+  discovery requests, or `--forward-request-id=none` to disable
+  automatic forwarding.
+  The same setting is available as `FORWARD_REQUEST_ID` or top-level YAML
+  `forward_request_id`; see [request ID forwarding](docs/configuration.md#request-id-forwarding).
 - **Using a namespaced tunnel ID?** Preserve the full ID returned by the service.
   The client accepts legacy IDs and aliases with a four-character namespace;
   see [tunnel identifiers](docs/protocol.md#scope).
@@ -556,7 +563,7 @@ therefore reports the tag semantic version through `tunnel-client --version`,
 builds made with the Make target or explicit linker flag above append the Git
 SHA to that semantic version.
 
-Supported release archives also bundle pinned `cloudflared` `2026.8.2` beside
+Supported release archives also bundle pinned `cloudflared` `2026.10.2` beside
 the CLI for Linux `amd64`/`arm64`, macOS `amd64`/`arm64`, and Windows
 `amd64`/`arm64`.
 Official release images are published at `ghcr.io/openai/tunnel-client` for
@@ -672,9 +679,17 @@ plugin installed by `tunnel-client codex plugin install`.
   additional configured channels can target their own MCP bindings, and
   `harpoon` is routable only when Harpoon has registered targets.
 - On startup, it fetches OAuth Protected Resource Metadata from the MCP server
-  for diagnostics. Timeout-only startup failures keep readiness pending and
-  retry with bounded exponential backoff until discovery succeeds or the
-  process stops; non-timeout discovery failures still settle readiness.
+  and registers discovered Harpoon targets. Timeouts, HTTP `429`/`5xx`, and
+  malformed successful metadata responses retry with bounded exponential
+  backoff until discovery succeeds or the process stops. Permanent errors
+  remain visible through readiness; discovery validation and trusted-origin
+  restrictions still apply.
+- Before polling for Harpoon work, the runtime waits for startup discovery and
+  target registration to complete. Failed startup catalogs do not consume
+  commands, and readiness remains non-ready until registration succeeds.
+  Plain MCP servers without OAuth and explicitly scoped pollers
+  that exclude Harpoon remain supported. Transient HTTP `429`/`5xx` MCP startup
+  initialization errors also retry without replaying tunneled commands.
 - After configured and startup OAuth-discovered Harpoon targets settle, it
   emits one privacy-safe `harpoon startup catalog digest` INFO log. Compare
   replicas only when they use the same tunnel ID and control-plane runtime API

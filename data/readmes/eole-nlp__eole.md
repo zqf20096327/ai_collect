@@ -47,7 +47,8 @@ details and remaining limitations.
 
 Browser-based Chat, translation and OCR on a rented GPU. See the
 [RunPod quick start](recipes/runpod/README.md) for password setup, GPU choices and
-the required persistent-volume attachment.
+the required persistent-volume attachment. The `0.6.4-r2` deployment
+uses prebuilt GPU kernels and pre-converted public Eole checkpoints.
 
 ## Choose your workflow
 
@@ -177,8 +178,11 @@ MAX_JOBS=2 python -m pip install -e . --no-build-isolation
 ```
 
 `setup.py` builds Eole's `eole._ops` CUDA extension, including normalization,
-rotary embeddings, activations, and Marlin quantization kernels. It only enables
-the extension when PyTorch is installed and `torch.cuda.is_available()` is true.
+rotary embeddings, activations, and Marlin quantization kernels. It enables
+the extension when PyTorch is installed and a GPU is visible, or when an explicit
+`TORCH_CUDA_ARCH_LIST` is provided for a GPU-less CUDA-toolkit build. Official
+Docker builds use the latter to bundle multi-architecture ops; see
+[Docker instructions](docs/docker.md).
 `--no-build-isolation` lets the build use that PyTorch installation. `MAX_JOBS`
 limits compilation memory use; increase it if your machine has sufficient RAM.
 

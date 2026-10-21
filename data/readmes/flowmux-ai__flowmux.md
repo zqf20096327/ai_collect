@@ -18,33 +18,21 @@
 </div>
 
 Run AI coding agents side by side, with terminals, browser tabs, and task
-notifications in one window.
+notifications in one window. Available on **Linux and macOS**.
 
 ## Install
 
-**Ubuntu 24.04+ · amd64**
+**Ubuntu 24.04+ (amd64) · macOS (Apple Silicon preview)**
 
 ```sh
 curl -fsSL https://flowmux.org/install.sh | sh
-flowmux fix
 ```
 
-Open flowmux and launch your agents in terminal tabs. `flowmux fix` sets up
-agent hooks; run it again after upgrades and restart running agent sessions.
-Codex users must approve changed hooks in `/hooks`.
+The installer asks before installing missing dependencies. Open Flowmux and
+launch your agents in terminal tabs.
 
-Uninstall: `sudo apt remove flowmux`.
-
-On first launch, Flowmux shows a six-page welcome tour with screenshots of
-notifications, pane splitting, session history, search, Files and the editor,
-and workspace overview. Use `flowmux --first-screen` to show it again.
-
-For read-only integration diagnostics, open **Options → Update → Integration
-status → Run diagnostics**, or run `flowmux doctor` (`flowmux --json doctor`
-for scripts). Both check agent skills and hooks, IPC connectivity, browser data,
-and desktop installation. Rows tagged `fix` can be repaired with `flowmux fix`;
-errors include details for manual investigation. The CLI exits with status 1
-for `fix` or `error` rows; warnings alone do not change its exit status.
+[Build from source](docs/setup.md#build-from-source) ·
+[macOS guide](packaging/macos/README.md)
 
 ## Features
 
@@ -64,9 +52,8 @@ Browse next to your terminals, or let your agents do it. With the
 and click through it in a pane you can watch. Browser tabs share WebKit
 session data within each flowmux profile, separately from your host browsers.
 
-Linux also offers opt-in [WebKitWebDriver automation](docs/webkit-automation.md)
-for Selenium clients and engine-level mouse/keyboard input in ephemeral browser
-windows. It requires a WebKitGTK runtime built with WebDriver input enabled.
+Linux and macOS also support opt-in [WebDriver automation](docs/webkit-automation.md)
+for Selenium clients, with native input in separate temporary browser windows.
 
 <img src="resources/screenshot/video_control_browser.gif" alt="browser control" width="100%" />
 

@@ -180,6 +180,8 @@ As we publish more issues, we'll gradually make earlier content freely available
   - Shared 12 articles, 12 open-source projects
 - Issue 121: [How Engineers Make High-Impact Decisions？](./docs/en/2025-09-27-weekly.md)
   - Shared 12 articles, 12 open-source projects
+- [Season 4 Collection](./docs/2026-06-07-iweekly4.md)
+  - Highlights from issues 91-120
 - Issue 120: [Comparison of New Python Type Checkers](./docs/en/2025-09-20-weekly.md)
   - Shared 13 articles, 13 open-source projects, 1 audio/videos, 2 hot discussions
 - Issue 119: [Google Discontinues Pytype Development!](./docs/en/2025-09-13-weekly.md)
@@ -364,7 +366,7 @@ As we publish more issues, we'll gradually make earlier content freely available
   - Shared 10 articles, 10 open-source projects, 3 audio/videos
 - Issue 31: [After iOS, New PEP Proposes Adding Android as an Officially Supported Platform](./docs/en/2023-12-16-weekly.md)
   - Shared 13 articles, 12 open-source projects, 3 audio/videos
-- [Season 1 Collection](./docs/2023-12-11-weekly.md)
+- [Season 1 Collection](./docs/2023-12-11-sweekly.md)
   - Highlights from issues 1-30, totaling 62K words
 - Issue 30: [An Open Letter from the African Python Community to PSF](./docs/en/2023-12-09-weekly.md)
   - Shared 12 articles, 12 open-source projects

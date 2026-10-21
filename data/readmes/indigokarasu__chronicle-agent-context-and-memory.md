@@ -12,7 +12,7 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
 [![No required services](https://img.shields.io/badge/required_services-none-6f42c1.svg)](#why-chronicle)
 
-Version: 5.11.1.
+Version: 5.12.0.
 
 Chronicle gives your Hermes agent durable long-term memory and safer working-memory
 compression in one install. Names, preferences, decisions, and prior work stay on
@@ -54,9 +54,9 @@ Start Hermes and try this small persistence test:
 2. Start a new session and ask: `When is my project launch day?`
 3. Run `/chronicle` to see the active embedder and local store counts.
 
-The database is created automatically at
-`~/.hermes/commons/db/chronicle/chronicle.db`. Chronicle has no required Python
-dependencies and no separate database or migration step.
+The database is created automatically under the active Hermes profile. For the
+default profile it is `~/.hermes/commons/db/chronicle/chronicle.db`. Chronicle has
+no required Python dependencies and no separate database setup step.
 
 > If Chronicle earns a place in your agent setup, please
 > [star the repository](https://github.com/indigokarasu/chronicle-agent-context-and-memory)
@@ -76,16 +76,19 @@ run automatically. The agent receives memory tools including `chronicle_remember
 `chronicle_search`, `chronicle_answer`, `chronicle_explain`, `chronicle_correct`,
 and `chronicle_forget`.
 
-### Migrating memories between profiles
+### Moving memories to a new machine
 
-Chronicle stores durable memory in a local SQLite database at
-`~/.hermes/commons/db/chronicle/chronicle.db`. There is no migration step:
-a fresh install creates a new store, and equipped profiles read the same
-store. To move memories to a new machine or fresh install:
+Each Hermes profile has its own store, a local SQLite database under that
+profile's home. The default profile's store is
+`~/.hermes/commons/db/chronicle/chronicle.db`. A profile named `<name>` keeps its
+store at `~/.hermes/profiles/<name>/commons/db/chronicle/chronicle.db` unless its
+`db_path` says otherwise, so profiles do not share memories unless their
+`db_path` names the same file. A fresh install creates a new store on first use.
+To move a profile's memories to a new machine or fresh install:
 
 1. Stop the running hermes session.
-2. Copy `~/.hermes/commons/db/chronicle/chronicle.db` to the same path on
-   the new machine (keep the default location so the default profile reads it).
+2. Copy that profile's `chronicle.db` to the same path on the new machine. For
+   the default profile, the path is `~/.hermes/commons/db/chronicle/chronicle.db`.
 3. Restart hermes and verify with `/chronicle`.
 
 `SOUL.md`, `USER.md`, and `MEMORY.md` are separate files of the session and
@@ -249,6 +252,41 @@ hermes plugins install indigokarasu/chronicle-agent-context-and-memory
 
 Requires Hermes Agent with plugin support. Python 3.9+.
 
+Chronicle needs no extra Python packages: vector search uses an in-memory cache over the stored vectors. On package-managed Hermes installs, never pip-install into Hermes' environments, because Hermes' package manager owns them. If sqlite-vec was installed for an earlier version, it can be uninstalled.
+
+## Check that it works
+
+None of these checks needs the `sqlite3` command-line tool.
+
+### Where the store is and what is in it
+
+```bash
+python3 <profile home>/plugins/chronicle/scripts/recall_check.py --profile <name>
+```
+
+For a named profile, `<profile home>` is `~/.hermes/profiles/<name>`. For the default profile, use `~/.hermes` and `--profile default`.
+
+The check reads the profile's `config.yaml`, resolves the store the way Chronicle does, and opens the store read-only. It prints `key: value` lines: the Hermes home and profile, the config file it read, the store path from the config and the path Chronicle resolves, the git mirror, and the number of events, active beliefs and stored vectors, with the time of the last event. The last line is `PASS` when the store holds events, or `FAIL:` with the reason. The exit code is 0 for PASS and 1 for FAIL. It creates no files. `--json` prints the same values as one JSON object.
+
+### Does Chronicle recall a fact by itself
+
+```bash
+python3 <profile home>/plugins/chronicle/scripts/recall_check.py --canary
+```
+
+`--canary` works in a temporary Hermes home, so your own home is not read or written. It captures a made-up fact in one session, closes the store, starts a new session on the reopened store, and asks for the fact with `chronicle_answer` and `chronicle_search`. It uses the offline embedder (`hashing`) and opens no network connection. `PASS` means the fact came back through Chronicle. `FAIL:` names the step that did not return it.
+
+### A live check with Hermes' own memory off
+
+Hermes keeps its own `MEMORY.md` and `USER.md` unless both `memory.memory_enabled` and `memory.user_profile_enabled` are false. To check the profile without them:
+
+1. In the profile's `config.yaml`, under `memory:`, set `memory_enabled: false` and `user_profile_enabled: false`.
+2. Tell Hermes a made-up fact, for example: `The test word for this check is juniper quill.`
+3. Start a new session with `/new`.
+4. Ask: `What is the test word for this check?`
+
+If Hermes gives the fact back, Chronicle recalled it without its own memory files. Set the two keys back if you want Hermes' memory files again.
+
 ## Configuration
 
 Set in `~/.hermes/config.yaml` (single bot) or `~/.hermes/profiles/<name>/config.yaml` (one file per bot in a multi-bot chat).
@@ -259,6 +297,7 @@ Every key **inside the `memory:` block below is Chronicle-only**. Chronicle read
 The host (Hermes Agent) owns the rest of `config.yaml`; Chronicle does not read or change host keys.
 
 - `memory.provider: chronicle` is the **host's** slot selector. Hermes reads it to load this plugin; Chronicle never reads it.
+- `memory.memory_enabled` and `memory.user_profile_enabled` are also **host** keys: they switch Hermes' own `MEMORY.md` and `USER.md`. Chronicle does not use them; `recall_check.py` only reports them.
 - Every other key under `memory:` (`db_path`, `embeddings`, `retrieval`, `curation`, …) is Chronicle's own config.
 
 ### Where this config belongs
@@ -277,7 +316,7 @@ memory:
   embeddings:
     model: auto
   retrieval:
-    abstain_gate: focus
+    abstain_gate: focus         # retrieval abstain threshold mode
 ```
 
 Bot B (profile `support`, `~/.hermes/profiles/support/config.yaml`):
@@ -294,94 +333,90 @@ memory:
 
 Both run the same plugin; only `db_path` (and any per-bot overrides) differs, so each bot keeps separate memory.
 
+> **Where the paths land.** `db_path` and `git_repo` are resolved against the **active profile's home** (`$HERMES_HOME`). A value that starts with `~/.hermes` means that home, so the canonical `~/.hermes/commons/db/chronicle/chronicle.db` is `~/.hermes/commons/...` for the default profile and `~/.hermes/profiles/<name>/commons/...` for a named profile. Absolute paths are used as written. A `~/.hermes/profiles/<name>/...` path written by hand also works: Chronicle drops the repeated profile part and logs one warning asking you to remove it from the config. The canonical `~/.hermes/...` form is the simplest choice.
+>
+> **Stores from earlier releases.** Releases before 5.12 sometimes wrote a profile's store or git mirror to a path the config does not name; an absolute `db_path` was ignored, for example. On its first start with 5.12, Chronicle moves such a store to the path the config names, when that is safe. The old name becomes a symlink to the new file, and each move is recorded in `chronicle-migration.json` next to the new store. When the new location is on another disk, the store is copied and checked first, and the original is kept at `<old name>.migrated-<time>`. When a move is not safe, nothing is moved and the log says why: if another process has the store open, the move is retried at the next start; if both locations hold data, Chronicle keeps opening the old location, as before, and logs one warning that says how to choose. A profile's git mirror is always its own: the profile's events are queued once for it, and the old shared mirror is left in place.
+>
+> **Installing per profile.** Each profile has its own `plugins/` directory (`~/.hermes/profiles/<name>/plugins/` for a named profile), so install the plugin into each profile that should use Chronicle:
+>
+> ```bash
+> hermes -p <profile> plugins install indigokarasu/chronicle-agent-context-and-memory
+> hermes -p <profile> memory setup chronicle
+> ```
+> Then restart the gateways (`hermes gateway start`, and `hermes -p <profile> gateway start` for each profile).
+
 ```yaml
 
 memory:
-  provider: chronicle    # the HOST's slot selector — Hermes reads this, not Chronicle
-  db_path: ~/.hermes/commons/db/chronicle/chronicle.db
-  git_repo: ~/.hermes/commons/db/chronicle/git
+  provider: chronicle              # Hermes slot selector: loads this plugin (host-owned key)
+  db_path: ~/.hermes/commons/db/chronicle/chronicle.db   # SQLite store path (~ expands to profile home)
+  git_repo: ~/.hermes/commons/db/chronicle/git          # git mirror for memory provenance
   embeddings:
-    model: auto          # auto-detect the local server's embedding model; or pin an id, or 'hashing'
-                         # for offline vectors. Unreachable = degraded (queued embeds), never hashed.
-                         # $CHRONICLE_EMBED_MODEL overrides this.
-    dimensions: 768
-    allow_remote: false  # permission to send memory excerpts OFF this host. See "Where memory
-                         # is allowed to go" below. Leave false unless you mean it.
+    model: auto                    # auto | hashing | <model id>; $CHRONICLE_EMBED_MODEL overrides
+    dimensions: 768                 # vector width; must match the embedder model
+    allow_remote: false            # allow sending memory excerpts off-host for embedding
   extraction:
     llm:
-      allow_remote: false  # same, for extraction.backend: llm — that path POSTs the raw excerpt
-  vector_index:
-    backend: bruteforce  # default: paged scan over observed_vectors — always correct, cost
-                         # grows with the corpus. 'sqlite-vec' opts into the ANN fast path,
-                         # which needs `pip install sqlite-vec` AND a sqlite3 built with
-                         # loadable-extension support (Apple's macOS system Python has
-                         # neither). The PyPI `sqlite-vec` package tracks the original
-                         # asg017/sqlite-vec, which is unmaintained; the community-maintained
-                         # fork vlasky/sqlite-vec is an alternative
-                         # (`pip install git+https://github.com/vlasky/sqlite-vec.git`).
-                         # Missing either — or a vec0 left over at a different
-                         # embedding width — falls back to the paged scan on its own. The
-                         # top-k is the same either way; only the time to get it changes.
-  maintenance:            # the in-process cadence; see "Maintenance runs on
-    enabled: true         # those hooks, not on cron" above
-    budget_ms: 5
-  reaper:
-    enabled: true        # false stops the idle-session reaper and its startup recovery
-    schedule: "*/5 * * * *"   # 5-field cron, UTC; "" disables
-    idle_threshold: "20m"
-    reap_threshold: "45m"
+      allow_remote: false          # allow POSTing raw excerpts to an off-host LLM extractor
+  maintenance:                     # in-process cadence; runs on hooks, not cron
+    enabled: true                  # master switch for maintenance
+    budget_ms: 5                   # wall-clock ceiling per hook scheduling decision (ms)
+  reaper:                          # idle-session reaper
+    enabled: true                  # false stops reaper and startup recovery
+    schedule: "*/5 * * * *"       # 5-field cron, UTC; empty string disables
+    idle_threshold: "20m"          # mark session idle after this duration
+    reap_threshold: "45m"          # finalize idle session after this duration
   retrieval:
-    fts_weight: 0.4
-    vector_weight: 0.6
-    rrf_k: 60
-    rerank_blend: 0.5
-    abstain_gate: focus
-    include_drafts: true  # drafts are rendered [DRAFT], not hidden; false shows
-                          # only confirmed truth. Read at the one _readable gate.
+    fts_weight: 0.4                # FTS5 score weight in hybrid retrieval (0-1)
+    vector_weight: 0.6             # vector score weight in hybrid retrieval (0-1)
+    rrf_k: 60                      # reciprocal rank fusion constant
+    rerank_blend: 0.5              # blend weight for the reranker (0-1)
+    abstain_gate: focus            # abstain threshold mode for weak matches
+    include_drafts: true           # show drafts as [DRAFT]; false shows only confirmed
   context:
-    breadth_floor: true          # reserve room for N sessions in the ranked fill
-    breadth_floor_sessions: 5
+    breadth_floor: true            # reserve room for N distinct sessions in ranked fill
+    breadth_floor_sessions: 5      # number of sessions to reserve
   forgetting:
-    decay_schedule: "0 3 * * *"
+    decay_schedule: "0 3 * * *"    # daily 03:00 UTC fidelity decay sweep
   identity:
-    schedule: "0 5 * * *"   # exact-name sweep: proposes merge CANDIDATES only
+    schedule: "0 5 * * *"         # daily 05:00 UTC exact-name sweep (proposes candidates only)
   health:
-    schedule: "0 4 * * *"
+    schedule: "0 4 * * *"         # daily 04:00 UTC health and self-heal run
     consistency_sweep:
-      enabled: true
-      schedule: "0 * * * *"
-    census_total_max_age_hours: 24
+      enabled: true                # hourly CSP consistency sweep
+      schedule: "0 * * * *"       # hourly
+    census_total_max_age_hours: 24  # cache age for vector count census (hours)
     self_heal:
-      embedder_mismatch_max: 500  # vectors ONE health run may requeue to re-embed
+      embedder_mismatch_max: 500  # vectors one health run may requeue to re-embed
   confidence:
     base:
-      user_direct: 0.85  # per source_type; this table decides a stored fact's confidence
+      user_direct: 0.85            # starting confidence for a directly-stated user fact
     trust_ceiling:
-      4: 1.00            # C(level) cap applied after the base
+      4: 1.00                      # confidence cap at trust level 4
   domains:
     user:
       contradiction_policy: flag_for_review   # flag_for_review | newer_wins | refetch
   curation:
     drain:
-      per_turn: 16       # split across task classes by the three share_* weights
-      share_write_path: 0.5
-      share_embed: 0.3
-      share_maintenance: 0.2
-    sweep_schedule: "0 * * * *"   # hourly session-index backfill for ended sessions
-    lease_seconds: 900   # a 'running' job older than this is treated as abandoned
-    max_attempts: 20
+      per_turn: 16                 # jobs one hook call may drain in total
+      share_write_path: 0.5        # relative weight for write-path jobs
+      share_embed: 0.3             # relative weight for deferred vector writes
+      share_maintenance: 0.2       # relative weight for sweeps and repair
+    sweep_schedule: "0 * * * *"    # hourly session-index backfill for ended sessions
+    lease_seconds: 900             # a running job older than this is abandoned (seconds)
+    max_attempts: 20               # claims before a job is failed
     retention:
-      enabled: true      # prune terminal job rows; false accepts unbounded growth
-      done_days: 7
-      max_rows: 20000
+      enabled: true                # prune terminal job rows
+      done_days: 7                 # age bound for pruning (days)
+      max_rows: 20000              # row-count bound for pruning
   sweeps:
-    row_budget: 5000     # shared per-run pace for every sweep without its own entry
-    page_rows: 1000
+    row_budget: 5000               # shared per-run row pace
+    page_rows: 1000                # memory page size for full-table folds
     budgets:
-      consistency: 2000
+      consistency: 2000            # groups per CSP consistency sweep
   learning:
-    max_active_deltas: 8
-    max_delta_magnitude: 0.15
+    max_active_deltas: 8           # max concurrent self-improvement deltas
+    max_delta_magnitude: 0.15      # max magnitude of a single delta
 ```
 
 Keys that `engine/config.py` declares but no shipped code reads are deliberately

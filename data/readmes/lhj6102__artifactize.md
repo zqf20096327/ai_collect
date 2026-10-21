@@ -49,33 +49,45 @@ curl -fsSL https://artifactize.dev/install.sh | sh
 ### macOS
 
 ```sh
-curl -fsSL https://artifactize.dev/install.sh | sh
+brew install lhj6102/tap/artifactize
 ```
+
+> This uses [Homebrew](https://brew.sh/). For the desktop app with the commands, use
+> `brew install --cask lhj6102/tap/artifactize` instead. Without Homebrew, use the install
+> script, which installs both: `curl -fsSL https://artifactize.dev/install.sh | sh`
 
 ### Windows
 
-In PowerShell, without administrator rights:
+Install [Artifactize from the Microsoft Store](https://apps.microsoft.com/detail/9PB6W4LL165D),
+or in a terminal:
 
 ```powershell
-irm https://artifactize.dev/install.ps1 | iex
+winget install 9PB6W4LL165D --source msstore
 ```
 
-Open a new terminal afterwards. The download is not code-signed yet, so Windows’
-Smart App Control security setting may block it. If you use Linux inside Windows
-through WSL 2, use the Linux method.
+Open a new terminal afterwards. If you use Linux inside Windows through WSL 2, use
+the Linux method.
 
-> winget and Microsoft Store packages are in preparation.
-
-The [full installation guide](https://artifactize.dev/docs/getting-started/install.html)
-explains the alternatives—Cargo and building from source—along with prerequisites,
-updates and uninstalling.
+The Linux install script and the Microsoft Store install the
+[desktop app](https://artifactize.dev/docs/getting-started/install.html#desktop-app) too. The
+[full installation guide](https://artifactize.dev/docs/getting-started/install.html)
+explains the alternatives—the PowerShell install script, disk image, `.deb`, Cargo
+and building from source—along with prerequisites, updates and uninstalling.
 
 Once installed, take the
 [5-minute quick start](https://artifactize.dev/docs/getting-started/guide.html).
 It uses an example project and needs no AI account or provider access key (API key).
 With [Hey Arti](https://artifactize.dev/docs/agent-plugin/hey-arti.html), ask your coding
-assistant in your own words to set up and run these checks; its SKILL.md file gives
-the assistant the workflow instructions.
+assistant in your own words to set up and run these checks. Its
+[plugin](https://artifactize.dev/docs/agent-plugin/plugin.html) gives Claude Code and
+Codex these instructions and Artifactize's tools in one install:
+
+```text
+/plugin marketplace add lhj6102/artifactize          # Claude Code, in a session
+/plugin install artifactize@artifactize
+codex plugin marketplace add lhj6102/artifactize     # Codex, in a terminal
+codex plugin add artifactize@artifactize
+```
 
 ## Learn more
 

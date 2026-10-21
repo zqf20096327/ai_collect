@@ -23,7 +23,7 @@ agent drives Lightflow through its CLI:
 -   **Data stays out of model context**: Intermediate outputs pass between
     Python stages on disk (`passport.json`) rather than through tool `stdout`.
     The model sees one-line stage summaries and checkpoint prompts
-    ([~250–1,700 tokens](./benchmarks/README.md) across the benchmarked
+    ([~250–1,750 tokens](./benchmarks/README.md) across the benchmarked
     workflows).
 -   **Resumable without repeating side effects**: If a stage fails or a session
     is interrupted, `lightflow resume` continues from the stopped node and
@@ -35,10 +35,10 @@ agent drives Lightflow through its CLI:
     `lightflow status --verbose` or `lightflow visualize`.
 -   **Reliable in scheduled agent automations**: When an agent runs unattended
     on a schedule (e.g., `/automation`, `claude -p`, or CI), nobody is watching
-    the turn-by-turn chat to catch skipped steps. Driving the run through a
-    Lightflow manifest guarantees the scheduled agent executes every Python and
-    `operator_action` stage in order, validates its own intermediate outputs
-    against JSON Schema, and only halts when a checkpoint requires human
+    the turn-by-turn chat to catch skipped steps. When an agent drives the run
+    through a Lightflow manifest, the engine, not the agent, decides what runs
+    next: stages execute in order, intermediate outputs are validated against
+    JSON Schema, and the run halts only when a checkpoint needs human
     sign-off.
 
 Lightflow is a pure-Python package (`PyYAML` and `jsonschema`, with stdlib
@@ -104,6 +104,19 @@ Look elsewhere when:
 
 ## Installation
 
+Install the `lightflow` CLI and Python package directly from GitHub:
+
+```bash
+# Latest on main
+pip install "git+https://github.com/google/lightflow.git"
+
+# Pinned to a specific release tag
+pip install "git+https://github.com/google/lightflow.git@v0.7.0"
+```
+
+Or clone the repository to run the bundled `examples/`, `benchmarks/`, and
+`create_lightflow` scaffolding workflow locally:
+
 ```bash
 git clone https://github.com/google/lightflow.git
 cd lightflow
@@ -112,6 +125,12 @@ pip install -e .
 
 *(Or run directly from a checkout without installing dependencies using
 `PYTHONPATH=. python3 -m lightflow ...`)*
+
+> **Note (Pre-1.0):** Lightflow is pre-1.0 (`0.x`): the CLI, manifest fields,
+> and `passport.json` format (`passport_version: 1`) may still change between
+> minor versions. Pin a release tag
+> (`pip install "git+https://github.com/google/lightflow.git@v0.7.0"`) if you
+> depend on it.
 
 ### Where state lives
 
@@ -348,6 +367,14 @@ When a stage fails:
     stage and its collateral dependents—re-running only the broken subgraph
     while preserving completed upstream work and keeping the earlier `FAILED`
     stamp in history.
+4.  **Interrupted in-flight stages (at-least-once semantics):** Completed stages
+    are never re-run on `resume`, but if the process crashes or is killed while
+    a stage is actively executing (`PENDING`), `status` reports that stage as
+    `interrupted` (`INCOMPLETE`) and `resume` warns (`⚠️ Stage '<name>' was
+    interrupted mid-run and will be executed again; make sure it is
+    idempotent.`) before re-running it from the start. Actions that perform
+    external side effects should be idempotent (or check whether their effect
+    already took place).
 
 ### CLI Exit Codes
 

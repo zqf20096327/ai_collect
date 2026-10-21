@@ -1,26 +1,28 @@
 <div align="center">
 
-<img src=".github/assets/logo.svg" alt="Morphness logo" width="112" height="112">
+<img src="docs/logo.svg" alt="Morphness logo" width="112" height="112">
 
 # Morphness
 
-**A self-improving agent harness for Claude Code**
+**The process and safety layer around Claude Code**
 
 🧭 **Plan** → 🛠️ **Build** → ✅ **QA** → 🔁 **Retro** → ✂️ **Prune** → 🌍 **Share**
 
-A ready-made AI coding workflow that starts generic, morphs into your project's own,<br>
+A self-improving agent harness: it starts generic, morphs into your project's own,<br>
 and gets better every time someone shares a lesson.
 
 💜 **From the community, for the community** 💜
 
+[![Tests](https://img.shields.io/endpoint?style=flat-square&url=https%3A%2F%2Fantarsoft.github.io%2Fmorphness%2Ftrust%2Fbadge.json)](https://antarsoft.github.io/morphness/trust.html)
 [![License: MIT](https://img.shields.io/badge/license-MIT-7C3AED?style=flat-square)](LICENSE)
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-D97757?style=flat-square&logo=claude&logoColor=white)](#-install)
 [![Stack agnostic](https://img.shields.io/badge/stack-agnostic-0EA5E9?style=flat-square)](#-what-you-get)
-[![Lessons catalog](https://img.shields.io/badge/lessons-112-F59E0B?style=flat-square)](lessons/)
+[![Lessons catalog](https://img.shields.io/badge/lessons-114-F59E0B?style=flat-square)](lessons/)
 [![GitHub stars](https://img.shields.io/github/stars/antarsoft/morphness?style=flat-square&logo=github&color=DB2777)](https://github.com/antarsoft/morphness/stargazers)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-22C55E?style=flat-square)](CONTRIBUTING.md)
+[![Discord](https://img.shields.io/badge/Discord-join-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/zcZTAQq)
 
-🌐 [Website](https://antarsoft.github.io/morphness) · 🚀 [Install](#-install) · ✨ [Why](#-why-use-it) · 🧠 [How it works](#-how-it-works) · 📦 [What you get](#-what-you-get) · 🧰 [Make it yours](#-make-it-yours) · 🦋 [How it morphs](#-how-it-morphs) · 🌍 [Community](#-community-lessons) · 🤝 [Contributing](CONTRIBUTING.md)
+🌐 [Website](https://antarsoft.github.io/morphness) · 🚀 [Install](#-install) · ✨ [Why](#-why-use-it) · 🧠 [How it works](#-how-it-works) · 📦 [What you get](#-what-you-get) · 🧰 [Make it yours](#-make-it-yours) · 🦋 [How it morphs](#-how-it-morphs) · 🌍 [Community](#-community-lessons) · 🤝 [Contributing](CONTRIBUTING.md) · <img src="https://cdn.simpleicons.org/discord/5865F2" alt="" height="14"> [Discord](https://discord.gg/zcZTAQq)
 
 </div>
 
@@ -31,6 +33,8 @@ a process around the model: a plan you approve, a separate QA check with recorde
 on risky commands, and a retro loop that turns misses into rules. It is a set of subagents,
 `CLAUDE.md` / `AGENTS.md` rules, checklists and a review loop for AI coding agents. If you have been writing those by hand (what people now call *harness engineering* or
 *context engineering*), Morphness is that work packaged, with a loop that keeps it current.
+
+Every release is tested, and the results are public, including the known limits: [see the latest run](https://antarsoft.github.io/morphness/trust.html).
 
 You talk to a **Technical Lead** in the main chat. It plans each feature with testable acceptance
 criteria and waits for your approval, then hands the work to a **Full-stack** agent and a mandatory
@@ -60,7 +64,8 @@ for clear requests so that process costs little when there's nothing to plan.
 | 🧭 **Plan first, then build** | A Technical Lead writes a plan with testable acceptance criteria and waits for your approval before any code is written. |
 | ✅ **QA is never skipped** | Every feature gets a separate QA agent that runs your checks and records the evidence, so "done" means verified, not claimed. |
 | 🔁 **Learns from its own mistakes** | Retros turn real misses (a failed QA round, a review fix, a bug you report after a pass) into rules, and prunes delete rules that never fire, so the instructions your agents read stay short and earned. |
-| 🛡️ **Safe by default** | A guard hook checks agents' tool calls before they run. It blocks pushes to environment branches, force-pushes, reading or writing common secret and credential files by name (`.env*`, keys, cloud credentials) and a set of remote database writes, and it asks you before deploys, cloud and database CLIs that aren't plainly reading, publishes, merges, connector writes and uploads to hosts you haven't listed. It also asks before it runs code it can't read (`curl … \| sh`, a shell fed from a pipe, an interpreter one-liner that starts a process, a deploy-named script, `ssh`, a package runner downloading something new). It stops accidents, not intent: what a script file or a tool it doesn't know does isn't seen, so branch protection and environment secrets on the host stay the real guard. [Exact list](template/AGENTS.md#permissions-for-this-project). Every agent also reads the rule: never write to a shared remote environment. |
+| 🛡️ **Safe by default** | A guard hook checks every tool call before it runs. It blocks pushes to environment branches, force-pushes, secret and credential files (`.env*`, keys, cloud credentials), a bare `env`, and remote database writes. It asks you before deploys, publishes, merges, connector writes, unknown downloads and edits to its own files, and blocks everything if it can't run. It stops accidents, not intent, so branch protection and environment secrets on the host stay the real guard. [Exact list](template/AGENTS.md#permissions-for-this-project). |
+| 🧪 **Tested as a kit** | Every change to the kit runs a self-test that installs it into sample projects (Next.js with Supabase among them), replays the guard's cases and brings the previous release up to date, so an update doesn't break an install that already works. The [results page](https://antarsoft.github.io/morphness/trust.html) shows the latest run, with public scanners and the known limits. |
 | 💲 **Know what each feature costs** | Every feature records an estimated dollar cost from Claude Code's own transcripts, split by agent, so you can compare features and tune effort. Useful as an estimate on a Pro or Max plan too. |
 | 🧰 **Yours to configure** | Branches, environments, checks, modules, risk areas, models, effort and loop limits all live in one `harness.config.yml`. Every rule and checklist is a plain Markdown file in your repo, so you can change anything. |
 | 🧩 **Works on any codebase** | New or existing repos, including ones that already have a `CLAUDE.md`, `AGENTS.md` or their own agent setup, monorepos with several apps, and folders that aren't a git repo or online yet. Any language or framework. |
@@ -134,6 +139,12 @@ shown, and everything lands on a branch for you to review.
 
 </details>
 
+### What setup leaves in your repo
+
+On a new branch: `harness.config.yml` with your answers, `AGENTS.md`, `CLAUDE.md` and `.claude/`
+(rules, agents, guard settings), the `harness/` process docs, a `project/` folder with your stack
+and check commands, and `scripts/`. Nothing is overwritten, and you review it as a normal PR.
+
 ### Your first feature
 
 1. Ask the Technical Lead: `plan <feature>`.
@@ -149,6 +160,11 @@ For a small change, ask for **light mode** (no feature folder or retro). For som
 Technical Lead uses **bug mode**: QA writes a failing test first, then Full-stack finds the cause and
 makes the smallest fix. When you want an answer rather than a change, ask a question and the
 Technical Lead uses **research mode**.
+
+> [!NOTE]
+> **What it isn't.** Not a sandbox: the guard stops accidents, not a determined script. It doesn't
+> make the model smarter. It adds process, and process costs tokens (about three agent runs per
+> feature), so clear small requests use a lean path.
 
 > [!TIP]
 > ⭐ If Morphness saves you a rework round, [star the repo](https://github.com/antarsoft/morphness) so more teams find it.
@@ -241,7 +257,7 @@ cost: { track: true, prices: harness/MODEL_PRICES.md }   # estimated $ per featu
 
 loop:
   retro_max_items: 3        # usual action items per retro (soft limit)
-  prune_every: 10           # features between prunes
+  prune_every: 10           # features between prunes (8 to 30)
   qa_max_rounds: 2          # QA rework rounds before asking you
 ```
 
@@ -275,12 +291,28 @@ Once installed, the harness belongs to your repo, and the loop is what changes i
 
 See [template/harness/MORPHING.md](template/harness/MORPHING.md).
 
+### 🌱 How it learns: a real example
+
+The loop corrects itself too. In one project, a run of clean features each ended with a retro that
+added a rule "just in case". Nothing had failed, yet the checklists the agents read kept growing,
+and the always-loaded size gauge never noticed because checklists aren't always loaded. The prune
+caught it.
+
+| | Before | After |
+| --- | --- | --- |
+| **Retro rule** | Any finding could add or tighten a rule. | A rule must name a miss in that feature it would have caught: a failed QA round, a review fix, a human correction, rework, or a bug after a pass. A clean feature adds no rule. |
+| **Size** | Only the always-loaded files were measured. | The checklists get their own budget, and the prune counter prints `Checklists: X/Y KB` and says when a prune is due. |
+| **Over budget** | Rules kept being added. | An approved rule removes at least as much text as it adds, or waits for the prune. |
+
+The fix shipped as a change to Morphness itself, with a short note under [`updates/`](updates/)
+that `/morph-update` offers to every install, so one project's lesson reaches the rest.
+
 ### 🔄 Staying up to date
 
 Upstream keeps improving too: new modules, sharper process rules, fixes. Nothing upstream ever
 overwrites your copy. Instead:
 
-- `/morph-update` lists what changed in Morphness since your copy last synced and fits your project,
+- `/morph-update` lists what changed in Morphness since your copy last synced (released changes only) and fits your project,
   says why each item matters, and applies only what you accept. A file you never edited takes the
   new version; a file you edited gets a merge that keeps your rules, shown before it's written.
 - Every prune runs the same check read-only, so a harness that falls behind gets noticed.
@@ -301,10 +333,9 @@ Each Morphness project runs its own retro and prune loop. When a prune shows a r
 **fired** (it caught a real problem), that rule can leave your repo and help every other team on
 a similar stack.
 
-The catalog starts with **112 lessons** from Twinpage, the product Morphness was built on. 83 of
-them already ship inside the kit as its default rules; the other 29 are stack- and service-specific
-and get offered when they match your project. It grows with every PR, and **yours would be the
-second project in it**.
+The catalog starts with **114 lessons** from Twinpage, the product Morphness was built on. 83 ship
+inside the kit as its default rules, and the rest are offered when they match your stack. It grows
+with every PR, and **yours would be the second project in it**.
 
 ```mermaid
 flowchart TB
@@ -314,13 +345,13 @@ flowchart TB
     D -.->|their rules fire too| C
 ```
 
-| Catalog | Lessons | Offered on match | What's in it |
-|---------|:-------:|:----------------:|--------------|
-| 🧠 [`practice/`](lessons/practice) | 68 | 7 | Process rules for any stack: planning, QA, handoffs, agent hygiene |
-| 🧱 [`stack/`](lessons/stack) | 24 | 14 | Framework and tool traps: Next.js, Drizzle, Playwright, pnpm, Chromium |
-| ☁️ [`service/`](lessons/service) | 20 | 9 | Hosted-service gotchas: Supabase, Vercel, Paddle, GitHub Actions, Claude Code web |
+| Catalog | Lessons | What's in it |
+|---------|:-------:|--------------|
+| 🧠 [`practice/`](lessons/practice) | 68 | Process rules for any stack: planning, QA, handoffs, agent hygiene |
+| 🧱 [`stack/`](lessons/stack) | 24 | Framework and tool traps: Next.js, Drizzle, Playwright, pnpm, Chromium |
+| ☁️ [`service/`](lessons/service) | 20 | Hosted-service gotchas: Supabase, Vercel, Paddle, GitHub Actions, Claude Code web |
 
-The rest are the kit's built-in rules, kept in the catalog so other projects can add their evidence.
+Built-in rules stay in the catalog so other projects can add their evidence.
 
 **How to contribute**
 
@@ -340,7 +371,7 @@ Products and projects that run on a Morphness harness. Add yours with a one-row 
 
 | Project | What it is | Stack | By |
 |---------|------------|-------|----|
-| [**Twinpage**](https://twinpage.app) | Split testing for websites, where Morphness started | Next.js, Supabase | [@ziadantar90](https://github.com/ziadantar90) |
+| [**Twinpage**](https://twinpage.app) | Split testing for websites, where Morphness started ([evidence](showcase/twinpage.md)) | Next.js, Supabase | [@ziadantar90](https://github.com/ziadantar90) |
 
 ---
 
@@ -350,10 +381,8 @@ Products and projects that run on a Morphness harness. Add yours with a one-row 
 
 [![Share on X](https://img.shields.io/badge/Share%20on-X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/intent/post?text=Morphness%3A%20a%20self-improving%20agent%20harness%20for%20Claude%20Code&url=https%3A%2F%2Fgithub.com%2Fantarsoft%2Fmorphness)
 [![Share on LinkedIn](https://img.shields.io/badge/Share%20on-LinkedIn-0A66C2?style=for-the-badge)](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2Fantarsoft%2Fmorphness)
-[![Share on Reddit](https://img.shields.io/badge/Share%20on-Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white)](https://www.reddit.com/submit?url=https%3A%2F%2Fgithub.com%2Fantarsoft%2Fmorphness&title=Morphness%3A%20a%20self-improving%20agent%20harness%20for%20Claude%20Code)
-[![Share on Hacker News](https://img.shields.io/badge/Share%20on-Hacker%20News-F0652F?style=for-the-badge&logo=ycombinator&logoColor=white)](https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fgithub.com%2Fantarsoft%2Fmorphness&t=Morphness%3A%20a%20self-improving%20agent%20harness%20for%20Claude%20Code)
 
-⭐ [Star the repo](https://github.com/antarsoft/morphness) · 🐛 [Report an issue](https://github.com/antarsoft/morphness/issues) · 🤝 [Contribute a lesson](CONTRIBUTING.md)
+⭐ [Star the repo](https://github.com/antarsoft/morphness) · 🐛 [Report an issue](https://github.com/antarsoft/morphness/issues) · 🤝 [Contribute a lesson](CONTRIBUTING.md) · <img src="https://cdn.simpleicons.org/discord/5865F2" alt="" height="14"> [Join the Discord](https://discord.gg/zcZTAQq)
 
 <sub>Released under the [MIT License](LICENSE) · [Changelog](CHANGELOG.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Security](SECURITY.md). Built by [Antarsoft](https://github.com/antarsoft).</sub>
 

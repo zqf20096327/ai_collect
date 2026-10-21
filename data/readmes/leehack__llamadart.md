@@ -171,6 +171,12 @@ through [stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp),
 with progress events and cancellation. It is a Preview: the API is
 experimental and may change, and the runtime is opt-in.
 
+Image models can be GGUF or Safetensors files, including mixed-format
+components; Safetensors does not need conversion to GGUF. Compatible PyTorch
+checkpoints need an explicit role and remain less qualified. See the
+[format and layout limits](https://llamadart.leehack.com/docs/next/guides/image-generation#weight-formats-and-layouts)
+before choosing files: a supported container does not imply every model works.
+
 - **Opt in** to the runtime (about 40 to 70 MB per target) in the app's
   `pubspec.yaml`, then run `flutter clean` once:
 
@@ -273,7 +279,7 @@ For Dart or Flutter apps:
 
 ```yaml
 dependencies:
-  llamadart: ^0.15.3
+  llamadart: ^0.15.5
 ```
 
 Flutter iOS/macOS apps that should link Apple XCFrameworks through Swift
@@ -301,7 +307,7 @@ overrides fail the build; resolve the matching companion and rerun
 
 ```yaml
 dependencies:
-  llamadart: ^0.15.3
+  llamadart: ^0.15.5
   llamadart_llama_cpp_flutter: ^0.15.1 # GGUF / llama.cpp
   llamadart_litert_lm_flutter: ^0.15.1 # Apple .litertlm / LiteRT-LM targets
   llamadart_stable_diffusion_flutter: ^0.15.2 # Apple image generation, opt-in
@@ -442,7 +448,7 @@ Current default runtime pins:
 | --- | --- |
 | Native llama.cpp / GGUF | `leehack/llamadart-native@v0.7.0-1` |
 | Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.18.0-2` |
-| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.66` |
+| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.67` |
 | Web LiteRT-LM / `.litertlm` | `@litert-lm/core@0.18.0` |
 
 Native overrides accept stable `vMAJOR.MINOR.PATCH` releases and preserve

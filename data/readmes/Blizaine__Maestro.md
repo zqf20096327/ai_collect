@@ -6,6 +6,11 @@ A one-click local AI **creative studio, director, and video editor** for creator
 
 ## What it does
 
+- **MOSS Image 5B Base and SFT:** image generation from captions, tags or
+  structured layouts, with a visual Prompt Helper and dedicated prompt enhancement.
+  Public BF16 and INT8 ConvRot files download on first use; no Hugging Face account
+  is needed. [Usage and model details](docs/MOSS-Image.md).
+
 - **Qwen Image 2.1 7B and official Turbo:** unified image generation and editing
   with up to ten references, dedicated prompt enhancement and transparent PNG
   output. Turbo uses its published eight-step recipe, with BF16 or INT8 downloads.
@@ -126,6 +131,34 @@ View all past Director runs with their full state — clip plans, generated imag
 ## Updates
 
 The version you are running is shown next to the Maestro title in the UI. To update, use the launcher's Update button in Pinokio.
+
+### v3.1.0 (2026-10-19)
+
+- **MOSS Image 5B Base and SFT:** text-to-image generation, a visual layout helper
+  with character, multi-panel and collage options, and model-specific prompt
+  enhancement with validated coordinate conversion. Public BF16/INT8 downloads;
+  SFT is enabled once in the image picker. [MOSS guide](docs/MOSS-Image.md).
+- **H3 community checkpoints:** accept compatible mixed-precision exports,
+  preserve retained FP32 layers, request missing QKV layout information and
+  distinguish optional Turbo LoRA recipes from the checkpoint's base settings.
+- **H3 References compatibility:** generation and enhancement accept explicitly
+  declared legacy speaker labels and reuse established speakers within a clip.
+  Shot/scene headings cannot become character names; identities and voices stay
+  paired independently of their numeric labels.
+- **FLUX 3 Klein and MOSS LoRAs:** compatible adapter loading, per-step
+  multiplier schedules and matching Civitai browser filters.
+- **Krea 2 Turbo imports:** recognize its Civitai label and supported NVFP4
+  checkpoint layouts while retaining compatibility validation.
+- **H3 VAE x2, Viggle Animate and Refine faces:** repair missing upstream asset
+  revisions; fix a second pixel conversion that washed out refined faces.
+- **Recast RAM use:** release tracking arrays before generation and record
+  useful workload and memory diagnostics. The reported RTX 4080 runtime remains
+  unverified without its original settings/logs.
+
+Update your **Main or Dev** installation in Pinokio while idle, restart Maestro and
+refresh the browser. See the
+[v3.1.0 release notes](docs/RELEASE_NOTES_V3.1.0.md) and
+[workflow troubleshooting](docs/V3-Workflow-Fixes.md).
 
 ### v3.0.0 (2026-10-18)
 
@@ -761,26 +794,4 @@ See the [complete v2.0 release notes](docs/RELEASE_NOTES_V2.0.md) and [Tailscale
 - Rebuilt Outpaint around LTX-2.3's official In/Outpainting IC-LoRA workflow with mask-preserving source conditioning.
 - Added shot-aware Outpaint: multi-scene videos are split at camera cuts, processed independently, and reassembled at the exact original frame count with the source audio restored.
 - Improved seams, detail, color-temperature matching, and removal of green/yellow marker spill without grading the protected source region.
-- Source pixels remain protected while the full source frame stays available as visual context for newly generated areas.
-- Output canvas dimensions now follow the selected quality preset and display the actual aligned pixel size before generation.
-- Fixed Outpaint ignoring visible inference-step settings, using invalid schedules, or failing immediately on supported LTX models.
-- Fixed Retake failing on LTX-2.3 distilled and two-stage pipelines.
-
-**Krea 2 image generation and editing**
-- Added Krea 2 RAW Identity Edit and Krea 2 Turbo Identity Edit using the current Krea 2 vision-conditioning pipeline and Identity Edit v1.2 LoRA.
-- Added identity-preserving instruction edits, inpainting, outpainting, background removal, and support for up to two total reference images.
-- Added automatic Qwen3-VL vision-encoder provisioning and accurate installed/readiness checks.
-- Added compatibility with current Diffusers, Kohya, and GGUF Krea 2 weight formats.
-- Added a dedicated Krea 2 filter to the CivitAI browser and My LoRAs view, with downloads routed to the correct Krea 2 library.
-- Krea 2 RAW, Turbo, RAW Identity Edit, and Turbo Identity Edit are now enabled by default in Image mode for new and existing installations.
-
-**Studio, models, and control video**
-- Enabled-model choices now persist server-side across Maestro restarts and changing Pinokio ports.
-- Newly downloaded CivitAI checkpoints appear in model selectors immediately without restarting Maestro.
-- Control video and audio behavior are now independent in Frames mode: keep source audio, generate audio from the prompt, or use an uploaded soundtrack.
-- Missing Temporal Depth assets for LTX control-video workflows are downloaded with progress, resume support, hash verification, and atomic installation.
-- Voice Reference is now a standard feature, enabled by default and no longer hidden behind the in-development feature switch.
-- Cleaned up Recast and Repaint Advanced Settings so only controls used by the selected SCAIL-2 pipeline are shown.
-
-**Reliability and fixes**
-- Director no longer creates a duplicate combined fil
+- Source pixels remain protected while the full source frame stays available as visual

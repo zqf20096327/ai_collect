@@ -23,40 +23,15 @@
 
 # Charter
 
-Charter is an open-source Python library for building agent tools from API declarations.
-You describe an API call as a Pydantic model, with each field marked as path, query or
-body. Charter makes the request and handles auth, and you control what the model sees and
-what it gets back. It works with any HTTP API, including your own.
+Charter is an open-source Python tool-definition layer for agents. Wire tools by hand and
+you're hoping for the best, blind spots and all. Vendor toolkits, MCP servers and catalog
+platforms hand you someone else's.
+
+Charter lets you control every aspect of yours, and checks each call before it's sent. It
+works for any HTTP API, including your own internal ones.
 
 A library, not a service.
 Runs in your process. No proxy, no per-call pricing, no telemetry.
-
-## Who it's for
-
-| If you're... | Charter gives you |
-|---|---|
-| A SaaS adding an agent that works in your users' Gmail, Stripe or Notion | [Per-user OAuth](https://docs.r28.ai/charter/auth/your-users) with your app's name on the consent screen, and [ready-made tools](https://docs.r28.ai/charter/packs/overview) |
-| On Composio or Zapier | Tools you own, with no per-call fees, and your users' data stays on your servers ([how it compares](#how-charter-compares)) |
-| Writing tool glue by hand | Declare the API as a Pydantic model. Charter makes the request, handles auth, and an [`Envelope`](https://docs.r28.ai/charter/reference/envelopes-and-pagination#envelope) raises when a `200` is really a failure |
-| Running a small or open model | Smaller schemas with [`derived`](https://docs.r28.ai/charter/tools/projections), and a [`Gloss`](https://docs.r28.ai/charter/reference/markers#gloss) on the exact field it keeps getting wrong |
-| Facing a security review | [`pin`](https://docs.r28.ai/charter/tools/projections#pin), [`Mode`](https://docs.r28.ai/charter/boundary/mode-system), [`scopes_for`](https://docs.r28.ai/charter/reference/oauth#scopes_for) and [`egress_map`](https://docs.r28.ai/charter/reference/observability#egress_map): what the agent can see and send, enforced in code and diffed in review |
-
-## Highlights
-
-- **Any HTTP API.** A tool is a Pydantic model and a URL. A coding agent can write one
-  from the API's docs with [the skill](https://github.com/r28ai/charter/blob/main/skills/declaring-charter-tools/SKILL.md).
-- **Shape what the model sees.** Price a tool's schema, cut it to the job, add guidance on
-  a single field, and keep hundreds of tools behind one search tool.
-- **Control what it sends.** Wire formats (MIME, base64, GraphQL) are built for the model,
-  bad arguments are refused before sending with errors it can act on, and values can be
-  pinned out of its reach.
-- **Control what comes back.** Responses are trimmed to what the model needs, and APIs
-  that report failure inside a `200` raise.
-- **Your users' accounts.** Per-user OAuth with refresh and rotation, and API keys, with no
-  OAuth library or vendor SDK.
-- **Auditable.** `egress_map` lists what every tool lets the model reach, so a change to it
-  is a diff in review.
-- **Fits your stack.** LangChain, any OpenAI-compatible API, and MCP.
 
 ## Installation
 
@@ -68,50 +43,94 @@ Requires Python 3.10+. The only dependencies are `pydantic` and `httpx`.
 
 ## Quickstart
 
+You write rules as an annotated Pydantic model that mirrors the API field by field, so your
+[coding agent](https://github.com/r28ai/charter/blob/main/skills/declaring-charter-tools/SKILL.md) can check it against the docs for drift.
+
+Then you can add your own rules on top of the API's, in Pydantic too, using any check you can
+write in Python.
+
+Unlike a plain Pydantic model, yours also marks each field as path, query or body, and Charter
+builds the request from it. Unit tests can check every rule without anything reaching the API.
+
 ```python
-from datetime import datetime
-from typing import Annotated
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, Field
 
-from charter import Body, Path, Query, api_key_tool_factory
+from charter import Body, ToolValidationError, api_key_tool_factory
 
 
-class CreateEvent(BaseModel):
-    calendar: Annotated[str, Path()] = Field(description="Which calendar, e.g. 'primary'.")
-    notify: Annotated[bool, Query()] = Field(False, description="Email the attendees.")
-    title: Annotated[str, Body()] = Field(description="What the meeting is about.")
-    start: Annotated[datetime, Body()] = Field(description="When it starts.")
-    attendees: Annotated[list[str], Body()] = Field([], description="Who to invite, by email.")
+class Refund(BaseModel):
+    charge: Annotated[str, Body()]
+    amount: Annotated[int, Body()] = Field(
+        gt=0, le=10_000,  # yours: at most $100
+    )
+    reason: Annotated[
+        Literal["duplicate", "requested_by_customer"],  # yours: no "fraudulent"
+        Body(),
+    ]
 
 
-calendar_api = api_key_tool_factory(
-    pack="calendar",
-    base_url="https://httpbin.org/anything/",  # stands in for a calendar API
-    api_key_headers={"Authorization": "Bearer sk_live_123"},
+payments = api_key_tool_factory(
+    pack="payments",
+    base_url="https://httpbin.org/anything/",  # stands in for a payments API
+    api_key_headers={"Authorization": "Bearer sk_test_123"},
+    body_format="form",
 )
-create_event = calendar_api(
-    name="create_event",
-    description="Put a meeting on a calendar.",
+refund = payments(
+    name="refund",
+    description="Refund a charge.",
     method="POST",
-    url_template="calendars/{calendar}/events",
-    args_schema=CreateEvent,
+    url_template="v1/refunds",
+    args_schema=Refund,
 )
 
-print(create_event.to_json_schema())  # the function definition the model gets
-create_event.invoke({"calendar": "primary", "notify": True, "title": "Coffee with Ada",
-                     "start": "2026-10-20T10:00:00", "attendees": ["ada@example.com"]})
+refund.invoke({"charge": "ch_3MmlLr", "amount": 1500, "reason": "duplicate"})  # sent
+
+try:
+    refund.invoke({"charge": "ch_3MmlLr", "amount": 15000, "reason": "fraudulent"})  # refused
+except ToolValidationError as refused:
+    print(refused)
 ```
 
-The request that goes out (httpbin echoes it back):
+The first call goes out (httpbin echoes it back):
 
 ```
-POST https://httpbin.org/anything/calendars/primary/events?notify=true
-Authorization: Bearer sk_live_123
-{"title": "Coffee with Ada", "start": "2026-10-20T10:00:00", "attendees": ["ada@example.com"]}
+POST https://httpbin.org/anything/v1/refunds
+Authorization: Bearer sk_test_123
+charge=ch_3MmlLr&amount=1500&reason=duplicate
 ```
 
-Charter adds the key. The model never sees it.
+The model fills in three fields. The key, the URL and the limits stay yours.
+
+The second call is refused before it leaves your process, and the model gets this back,
+naming each field and what it sent:
+
+```
+Validation error:
+- **amount**: Input should be less than or equal to 10000 (got 15000)
+- **reason**: Input should be 'duplicate' or 'requested_by_customer' (got 'fraudulent')
+```
+
+It can fix the call or stop; Charter never improvises.
+
+## What your agent sees, sends and gets back
+
+| | What Charter does | Measured |
+|---|---|---|
+| **Sees** | Cuts a tool down to the fields the job needs | On Linear's issue list, deepseek-v4p1 was refused 30/30 with the full filter and succeeded 30/30 with a curated one ([details](#shape-a-tool)) |
+| **Sends** | Builds wire formats like MIME, base64 and GraphQL, so the model fills in plain fields | Over 534 runs, a raw HTTP tool sent 32 malformed GraphQL documents and 10 calls to endpoints never declared; Charter sent 0 ([details](#control-what-goes-out)) |
+| **Gets back** | Trims responses, and raises when a `200` is really a failure | GitHub sends 346.6 KB, the model gets 10.7 KB ([details](#control-what-comes-back)) |
+
+## Who it's for
+
+| If you're... | Charter gives you |
+|---|---|
+| A SaaS adding an agent that works in your users' Gmail, Stripe or Notion | [Per-user OAuth](https://docs.r28.ai/charter/auth/your-users) with your app's name on the consent screen, and [ready-made tools](https://docs.r28.ai/charter/packs/overview) |
+| On Composio or Zapier | Tools you own, with no per-call fees, and your users' data stays on your servers ([how it compares](#how-charter-compares)) |
+| Writing tool glue by hand | Catches the bugs hand-written glue lets through: a bad argument is [refused before it's sent](#quickstart), and an [`Envelope`](https://docs.r28.ai/charter/reference/envelopes-and-pagination#envelope) raises when a `200` is really a failure |
+| Running a small or open model | Tools cut down to the fields the job needs ([`derived`](https://docs.r28.ai/charter/tools/projections)), and a one-line hint on the exact field it keeps getting wrong ([`Gloss`](https://docs.r28.ai/charter/reference/markers#gloss)) |
+| Facing a security review | What the agent can see and send, enforced in code and diffed in review: values it can't see or change ([`pin`](https://docs.r28.ai/charter/tools/projections#pin)), fields per pricing tier or region ([`Mode`](https://docs.r28.ai/charter/boundary/mode-system)), OAuth scopes worked out from the tools you hand out ([`scopes_for`](https://docs.r28.ai/charter/reference/oauth#scopes_for)), and a list of everything each tool can reach ([`egress_map`](https://docs.r28.ai/charter/reference/observability#egress_map)) |
 
 ## Examples
 
@@ -135,8 +154,11 @@ model does. We tested this on Linear's issue list, thirty runs per cell at tempe
 | the filter the model was given | bytes | glm-5p3-flash | deepseek-v4p1 | nemotron-lightning |
 |---|---:|---:|---:|---:|
 | removed entirely | 1,131 | 0/30 | 0/30 | 0/30 |
-| the full mirror | 187,655 | 22/30 | **400 ×30** | **400 ×30** |
+| the API's full filter | 187,655 | 22/30 | **400 ×30** | **400 ×30** |
 | curated | 15,531 | 28/30 | **30/30** | 4/30 |
+
+**400 ×30** means the provider rejected the request all 30 times, before the model saw it: the full
+filter is recursive and nests deeper than the provider accepts (`schema depth exceeds maximum limit of 50`).
 
 `paths(by_cost=True)` shows where a tool's tokens go:
 
@@ -273,8 +295,8 @@ connect. You pay for every tool call and get rate-limited on top. And your users
 goes through someone else's servers.
 
 Charter works like going direct. You register your own app with Google, Stripe or Notion,
-and your users authorize you. It's as direct as the vendors' own libraries and about as
-easy as a platform, without the platform's downsides: no per-call billing, no remote
+and your users authorize you. It's as direct as the vendors' own libraries, without the
+platform's downsides: no per-call billing, no remote
 server, all yours.
 
 It's not an agent framework either. LangChain, the OpenAI SDK or an MCP client runs the

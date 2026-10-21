@@ -93,17 +93,18 @@ print(model.channels_in)  # 512
 
 ### Type-safe `make()`
 
-**tl;dr:** Both `ty` and `basedpyright` are first-class supported.
-Unfortunately neither is perfect:
+**tl;dr:** `ty`, `basedpyright`, and `pyrefly` are first-class supported.
+`ty` infers everything; the others need explicit annotations in places:
 
-| | `ty` | `basedpyright` |
-|---|:---:|:---:|
-| Bare `Fig` infers parent type | ✅ | ❌ (`Any` fallback) |
-| Explicit `Fig["Parent"]` specifies parent type | ✅ | ✅ |
-| Inheritance infers parent type | ✅ | ❌ |
-| Explicit `Makes["Child"]` narrows inferred inherited parent type | ✅ | ✅ |
-| Inherited Config child fields | ✅ (workaround for [#3282](https://github.com/astral-sh/ty/issues/3282)) | ✅ |
-| `@autofig` `.Config` access | ✅ (fixed [#143](https://github.com/astral-sh/ty/issues/143)) | ✅ |
+| | `ty` | `basedpyright` | `pyrefly` |
+|---|:---:|:---:|:---:|
+| Bare `Fig` infers parent type | ✅ | ❌ (`Any` fallback) | ❌ (`Any` fallback) |
+| Explicit `Fig["Parent"]` specifies parent type | ✅ | ✅ | ✅ |
+| Inheritance infers parent type | ✅ | ❌ | ❌ |
+| Explicit `Makes["Child"]` narrows inferred inherited parent type | ✅ | ✅ | ✅ |
+| Explicit `Makes2["Grandchild"]` narrows over a `Makes` parent | ✅ | ✅ | ✅ |
+| Inherited Config child fields | ✅ (workaround for [#3282](https://github.com/astral-sh/ty/issues/3282)) | ✅ | ✅ |
+| `@autofig` `.Config` access | ✅ (fixed [#143](https://github.com/astral-sh/ty/issues/143)) | ✅ | ❌ (pending [#2294](https://github.com/facebook/pyrefly/pull/2294)) |
 
 **Details:**
 
@@ -131,7 +132,7 @@ name to give the checker the same information explicitly:
 
 ```python
 class Model:
-    class Config(Fig["Model"]):  # explicit type parameter only for basedpyright
+    class Config(Fig["Model"]):  # explicit type parameter for basedpyright and pyrefly
         channels_in: int = 256
 
     def __init__(self, config: Config):
@@ -145,23 +146,29 @@ Without `["Model"]`, non-`ty` checkers fall back to `Any` (so attribute access
 works without typecheck suppressions).
 
 `ty` gets full inference from `Intersection` -- bare `Fig` and inherited
-configs just work. `basedpyright` doesn't support `Intersection` yet, so it
-needs explicit `Fig["Parent"]` and `Makes["Child"]` annotations. `ty`
+configs just work. `basedpyright` and `pyrefly` don't support `Intersection` yet, so they
+need explicit `Fig["Parent"]` and `Makes["Child"]` annotations. `ty`
 honors class decorator return types ([#143](https://github.com/astral-sh/ty/issues/143),
 fixed in 0.0.49), so `@autofig`-decorated classes resolve `.Config` with no
-suppression on both checkers. When `Intersection` lands in the
+suppression on both checkers. `pyrefly` behaves like `basedpyright`, except it
+ignores class decorator return types
+([#1180](https://github.com/facebook/pyrefly/issues/1180), fix pending in
+[#2294](https://github.com/facebook/pyrefly/pull/2294)), so reading `.Config`
+straight off an `@autofig` class needs a
+`# pyrefly: ignore[missing-attribute]` until then; `autofig(cls)` called as a
+function needs none. When `Intersection` lands in the
 [type spec](https://github.com/python/typing/issues/213), `Makes` becomes
-unnecessary and both checkers will infer everything from bare `Fig`.
+unnecessary and every checker will infer everything from bare `Fig`.
 
 Requires `ty>=0.0.60`. Several behaviors configgle relies on
 were fixed upstream rather than worked around here -- see
 [docs/ty_missing_features.md](docs/ty_missing_features.md) for the current
 limitations and their provenance.
 
-### Inheritance with `Makes` (only for `basedpyright`)
+### Inheritance with `Makes` (for `basedpyright` and `pyrefly`)
 
 When a child class inherits a parent's Config, the `make()` return type would
-normally be the parent. Use `Makes` to re-bind it (again, only needed for `basedpyright`):
+normally be the parent. Use `Makes` to re-bind it (`ty` needs no annotation):
 
 ```python
 from configgle import Makes
@@ -188,10 +195,49 @@ class Dog(Animal):
 dog: Dog = Dog.Config(name="Rex", breed="labrador").make()  # returns Dog, not Animal
 ```
 
-`Makes` contributes nothing to the MRO at runtime -- it exists purely for the
-type checker (see the [type checker table](#type-safe-make) above). When
-[Intersection](https://github.com/python/typing/issues/213) lands, `Makes`
-becomes unnecessary.
+A grandchild whose parent Config already uses `Makes` re-binds with `Makes2`.
+Checkers reject one generic base reached twice with two type arguments, so
+`Makes2` is a separate marker:
+
+```python
+from configgle import Makes2
+
+
+class Puppy(Dog):
+    class Config(Makes2["Puppy"], Dog.Config):
+        age: int = 0
+
+
+puppy: Puppy = Puppy.Config().make()  # returns Puppy, not Dog
+```
+
+A Config meant to be subclassed can instead leave its parent slot open with a
+covariant `TypeVar` that defaults to its owner. Each subclass fills the slot,
+at any depth, with no marker:
+
+```python
+from typing_extensions import TypeVar
+
+_AnimalT_co = TypeVar("_AnimalT_co", bound="Animal", default="Animal", covariant=True)
+
+
+class Animal:
+    class Config(Fig[_AnimalT_co]):
+        name: str = "animal"
+
+
+class Dog(Animal):
+    class Config(Animal.Config["Dog"]):
+        breed: str = "mutt"
+
+
+dog: Dog = Dog.Config().make()  # returns Dog
+```
+
+`Makes` and `Makes2` contribute nothing to the MRO at runtime -- they exist
+purely for the type checker (see the [type checker table](#type-safe-make)
+above). When [Intersection](https://github.com/python/typing/issues/213)
+lands, both become unnecessary.
 
 ### Covariant `Makeable` protocol
 

@@ -6,9 +6,29 @@
 
 ---
 
-## Live Deployment
+## Try It First
 
-**[MuckScraper.news](https://muckscraper.news)** runs on this codebase. It publishes two balanced headline editions per day and is a working example of what MuckScraper produces: story grouping across outlets, bias labeling, AI-generated summaries, and ranked coverage from across the political spectrum.
+- **[sample.muckscraper.news](https://sample.muckscraper.news)**: a public, read-only copy of this app, refreshed after every fetch run. It is what you get when you install it, minus the scraped article text (summaries and links to the publishers only).
+- **[MuckScraper.news](https://muckscraper.news)**: a newspaper-style site built on the same pipeline. It publishes two balanced editions of 20 stories a day. The newspaper layer is not part of this repo; the aggregator it is built on is.
+
+---
+
+## What It Does
+
+MuckScraper gathers and breaks down the news so you don't have to read the same story twelve times, unless you want to. A few times a day it pulls in articles from RSS feeds (and NewsAPI/GNews if you have keys), works out which ones are about the same event, and turns each pile into a single story. Each story gets one headline, a summary, a look at how the left, center and right are covering it, and a link to every source.
+
+---
+
+## Why It's Different
+
+Most aggregators hand you a list of links. MuckScraper is built around stories, and it does the work on your own machine.
+
+- **One story, every outlet.** Each new article is turned into an embedding (`nomic-embed-text`, stored in pgvector) and compared with recent stories. Close calls get a quick yes/no from the model. Twelve outlets reporting "Senate passes the bill" end up as one story instead of twelve links. Wire copies, where the same AP text runs under three mastheads, are spotted by text overlap and counted once.
+- **Bias you can see.** Every outlet carries a left-to-right rating, from AllSides where they rate it and from the model where they don't. Each story shows how many left, center and right outlets covered it, and if one side trails, there's a button to go fetch more from it.
+- **Summaries of real reporting.** The model summarizes and compares articles that reporters wrote; it never writes the news. A deep report sets out how the left, center and right are each covering the story, what's contested and what's missing. Guardrails throw out cut-off summaries and model errors posing as headlines, and a quality report flags any figure that doesn't appear in the sources.
+- **Opinion in its own lane.** Op-eds never count as news coverage. They're kept separately, linked to the story they argue about, and summed up side by side.
+- **Editions, not an endless feed.** Twice a day it picks a balanced edition of 20 stories, holding back repeats unless there's real new coverage. Every past edition stays readable.
+- **It's yours, and so is your reading.** It runs in Docker on your own hardware, with Ollama by default. No subscriptions, no ads. Your server fetches every article from every side, so your ISP, or anyone else keeping tabs, only sees you collecting all the news. When you read the scraped copies, which stories you actually read stays on your own machine.
 
 ---
 
@@ -22,10 +42,17 @@ The latest published edition, with each story's Left / Center / Right coverage c
 ![Grouped Stories in dark mode](screenshots/dark_mode.png)
 
 ### Multi-Source Story View
+One story, 88 articles from 22 outlets: the summary up top, then every source with its outlet's leaning.
 ![Story Reader](screenshots/story_reader1.png)
-![Story Reader](screenshots/story_reader2.png)
+![Story sources](screenshots/story_reader2.png)
+
+### Opinion
+Columns are kept out of the news but linked to the story they argue about, filed by the outlet's leaning, each with a one-line stance and a short roundup of what each side is saying.
+![Opinion on a story](screenshots/story_opinion.png)
+![Op/Ed page](screenshots/oped.png)
 
 ### Bias Tags
+Every card counts the left, center and right outlets covering the story; when one side trails, a button fetches more coverage from that side.
 ![Bias Tags](screenshots/bias_tags1.png)
 ![Bias Tags](screenshots/bias_tags2.png)
 
@@ -37,23 +64,8 @@ Stories and articles in dense, sortable tables, filtered by time window, with Le
 ![Article Reader](screenshots/article_reader1.png)
 ![Article Reader](screenshots/article_reader2.png)
 
----
-
-## Why This Is Different
-
-Most aggregators are just article lists. MuckScraper is story-first.
-
-- **Cross-outlet story grouping**: related coverage from multiple publishers is clustered into a single story so you can compare framing side by side.
-- **Bias visibility**: outlets are labeled on a left-to-right scale using AllSides where available and local model scoring otherwise.
-- **Local-first AI analysis**: summaries, deep reports, topic classification, and outlet scoring run against your own Ollama models by default. Gemini, Groq, and any OpenAI-compatible endpoint (OpenRouter, DeepSeek, OpenAI, a local vLLM) are supported alternatives, and the two workloads can be split across providers — see LLM behavior below.
-- **Edition workflow**: the system can publish fixed-size headline editions from the broader story pool instead of leaving everything as a raw reverse-chronological feed.
-- **Self-hosted**: no subscription requirement, no ad-tech, and no mandatory third-party cloud inference.
-
----
-
-## What It Does
-
-MuckScraper fetches articles from multiple news APIs and RSS feeds on a schedule, scrapes article text, groups related coverage into stories, classifies topics, scores outlet bias, and generates summaries or deeper reports when content is ready. It includes admin tooling for scrape review, retries, regrouping, and monitoring scrape health over time.
+### Past Editions
+![Past editions](screenshots/editions.png)
 
 ---
 
@@ -104,6 +116,9 @@ muckscraper/
 │   ├── quality_checks.py           # Output-quality detectors (pure functions)
 │   ├── quality_report.py           # Read-only quality report for a run
 │   ├── rss_fetcher.py              # RSS ingestion helpers
+│   ├── google_news.py              # Resolves Google News search-feed links to publisher URLs
+│   ├── copy_detector.py            # Marks copied articles (wire copies) within a story
+│   ├── opinion_linker.py           # Links Op/Ed columns to stories, writes opinion roundups
 │   ├── scheduler.py                # Scheduled fetch runner
 │   ├── scraper.py                  # Scrape pipeline and fallback logic
 │   ├── story_grouper.py            # Story clustering logic
@@ -139,10 +154,19 @@ Recommended deployment:
 
 ## Requirements
 
-- Docker and Docker Compose (PostgreSQL with pgvector and Meilisearch run as part of the stack)
+- Docker with the Compose v2 plugin (`docker compose`). PostgreSQL with pgvector and Meilisearch run as part of the stack.
 - An LLM provider: Ollama by default, or Gemini, Groq, or any OpenAI-compatible endpoint
 - An embedding provider: Ollama (`nomic-embed-text`) or Gemini
-- Optional: NewsAPI and GNews API keys. Each source is skipped if its key is unset; RSS feeds work without either.
+- Optional: NewsAPI and GNews API keys. Each source is skipped if its key is blank; the default RSS feeds work without either.
+
+### Hardware
+
+What the live deployment runs on, as a guide:
+
+- **The Docker stack:** 2 CPU cores and 8 GB of RAM is plenty (the containers use about 1.5 GB between them). Allow about 10 GB of disk for the images, plus the database: about 1 GB for 120,000 articles over six months, and the search index on top.
+- **The LLM:** a GPU makes the difference. A full run makes about 1,200 LLM calls, one after another, so every second per call adds up. The live site uses a 10 GB GPU with `gemma4:12b-it-qat` (`OLLAMA_THINK=false`) and `nomic-embed-text`, both held on the GPU together; a full run of 250-300 new articles takes 25-35 minutes. On a smaller card, `gemma4:e4b-it-qat` (about 3 GB of VRAM) works. Ollama can run on a different machine from the stack (set `OLLAMA_HOST`).
+- **Ollama's context size:** set `OLLAMA_CONTEXT_LENGTH` to at least `16384` on the Ollama server (in its service environment, not in this `.env`). Older Ollama versions default to 4,096 tokens, which cuts off long story-summary prompts. MuckScraper never asks for a context size per call, so the server's setting is what every call gets.
+- **No GPU?** Send the summaries, or everything, to a cloud provider instead; see LLM behavior below.
 
 ---
 
@@ -154,15 +178,45 @@ cd muckscraper
 ./install.sh
 ```
 
-The first run creates `.env` from `.env.sample` and stops so you can fill in
-your API keys, Ollama host, and admin login. Run it again once that's done —
-it builds the core services, sets up the database (pgvector extension +
-tables) and admin user, and starts the scheduler. Safe to re-run: on an
+The first run creates `.env` from `.env.sample`, fills in `SECRET_KEY` and
+`MEILI_MASTER_KEY` for you, and stops so you can fill in the rest. At
+minimum set `OLLAMA_HOST`, `OLLAMA_MODEL`, `EMBEDDING_MODEL`
+(`nomic-embed-text`) and `ADMIN_PASSWORD`; pull both models on your Ollama
+box first (`ollama pull ...`). Change the Postgres password too. News API
+keys are optional.
+
+Run `./install.sh` again once that's done. It builds the images (a few
+minutes the first time), sets up the database (pgvector extension + tables),
+creates the admin user, and starts the scheduler. Safe to re-run: on an
 existing install it applies any pending migrations rather than skipping them.
 (A very old install with tables but no migration history stops with
 instructions instead of guessing its schema version.)
 
-Then open `http://localhost:5000` and sign in with the admin login from `.env`. You land on Headlines.
+Then open `http://localhost:5000` and sign in with `ADMIN_USERNAME` /
+`ADMIN_PASSWORD` from `.env`. The app only listens on localhost; to reach it
+from another machine, see Security Warning above.
+
+**What to expect on day one.** The scheduler starts a first run as soon as it
+comes up. On an empty database it has hundreds of new articles to group and
+summarize, so it takes a good while longer than a normal run; watch it with
+`docker compose logs -f scheduler`. Headlines stays empty until the first
+full run publishes an edition. After that, runs follow the schedule: full
+runs at 7:00 and 17:00 and fetch-only runs at 12:00 and 22:00, US Eastern
+time. Change them at `/admin/pipeline-schedule` (then restart the scheduler).
+
+<details>
+<summary>Manual steps (if you'd rather not use install.sh)</summary>
+
+```bash
+cp .env.sample .env && chmod 600 .env
+# Edit .env: Ollama host and models, admin password, and SECRET_KEY and
+# MEILI_MASTER_KEY, each from: python3 -c "import secrets; print(secrets.token_hex(32))"
+docker compose up -d --build postgres meilisearch app
+docker compose exec app python bootstrap_admin.py
+docker compose up -d scheduler
+```
+
+</details>
 
 ### Accounts and public access
 
@@ -178,24 +232,16 @@ Set `PUBLIC_READ_ACCESS=true` in `.env` to let signed-out visitors read Headline
 
 Dates are shown in the time zone set by `DISPLAY_TIMEZONE` in `.env` (an IANA name such as `America/New_York`; default `UTC`). After changing it, run `docker compose up -d app`; a plain restart doesn't re-read `.env`.
 
-<details>
-<summary>Manual steps (if you'd rather not use install.sh)</summary>
+### Upgrading
 
 ```bash
-cp .env.sample .env
-# Edit .env with your API keys, local model host, and admin login
-docker compose up -d --build postgres meilisearch app
-docker compose exec app python bootstrap_admin.py
-docker compose up -d scheduler
+git pull
+./install.sh
 ```
 
-</details>
-
-If you pull schema changes later:
-
-```bash
-docker exec muckscraper-app-1 flask db upgrade
-```
+`install.sh` rebuilds the images and applies any database migrations. Read the
+release's `CHANGELOG.md` entry first. To run only the migrations:
+`docker compose exec app flask db upgrade`.
 
 **Upgrading within a major version (e.g. `1.x` → `1.y`) never breaks your
 stored config or customizations** — topics, RSS feeds, prompts, scheduled
@@ -218,6 +264,8 @@ An optional, read-only [MCP](https://modelcontextprotocol.io) server lets an AI 
 
 ### Editions and ranking
 - Configurable scheduled editions per day
+- Past editions page, grouped by month, each edition readable as it was published plus anything added to its stories since
+- Opinion page per edition: the stories that got new opinion columns, with each column's stance
 - 20-story edition target
 - Repeats held back unless there is meaningful new coverage
 - Carry-over logic for underfilled editions
@@ -227,7 +275,8 @@ An optional, read-only [MCP](https://modelcontextprotocol.io) server lets an AI 
 - Scheduled multi-topic fetches
 - On-demand fetch by topic or custom query
 - NewsAPI and GNews support
-- RSS ingestion support
+- RSS ingestion support, with an optional fallback URL per feed for when a feed goes down
+- Outlets without a working feed can come in through Google News search feeds; links are resolved to the publisher's own URL before anything is stored
 - Duplicate article detection by URL and normalized title/outlet checks
 - Copied articles (wire copies, one outlet running another's piece) marked and not counted as extra sources
 - Junk filtered before storage: betting picks, fantasy advice, roundups, editorial cartoons, plus your own source and title blocks
@@ -269,9 +318,8 @@ An optional, read-only [MCP](https://modelcontextprotocol.io) server lets an AI 
 - Manual scrape and rescrape actions
 - Bulk scrape-missing workflow
 - Scrape audits
-- Ollama catch-up (missing embeddings, regrouping of single-article stories, headlines) and topic reclassification
+- Ollama helpers: wake the Ollama box, and catch up after an outage (missing embeddings, regrouping of single-article stories, headlines) plus topic reclassification
 - Outlet merge tooling
-- Ollama wake and catch-up helpers
 - Topic, RSS feed, scheduled fetch and ingestion blocklist management
 - Search index rebuild
 - Editable LLM prompts, each resettable back to its original default
@@ -365,6 +413,7 @@ Important knobs include:
 
 ## Notes
 
+- Release history and upgrade notes: [CHANGELOG.md](CHANGELOG.md).
 - This repo intentionally documents the main application and ingestion pipeline, not every deployment-specific integration.
 - Optional local integrations can exist around the core stack without being required for the open-source app itself.
 

@@ -20,7 +20,7 @@ pluggable provider layer for alternate wire formats.
 
 ## ⚠️ v4 Release Candidate
 
-**v4** is currently in release candidate status (v4.0.0-rc1). The API may
+**v4** is currently in release candidate status. The API may
 evolve before the final v4.0.0 release. **v3** and earlier are deprecated
 and no longer maintained. See [#72](https://github.com/Kardbord/hfgo/issues/72)
 for more information.
@@ -72,7 +72,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(*response.Choices[0].Message.Content)
+	if len(response.Choices) > 0 && response.Choices[0].Message.Content != nil {
+		fmt.Println(*response.Choices[0].Message.Content)
+	}
 
 	// Other tasks follow this shape. See examples/speech-recognition,
 	// examples/text-classification, and the rest of examples/ for more.
@@ -137,7 +139,7 @@ Each link points to a runnable example. Most tasks have several variants
 Errors returned by client methods are one of two types in
 [`hferrors`](./hferrors):
 
-- **`APIError`** — a non-2xx response from the API. Carries the status code,
+- **`APIError`** — a 4xx/5xx response from the API. Carries the status code,
   message, request ID, method, and URL. Helpers: `IsClientError()`,
   `IsServerError()`, `IsAuthenticationError()`, and `IsRateLimitError()`.
 - **`SDKError`** — produced locally before or while decoding a response.
@@ -204,7 +206,7 @@ before opening a PR. Security issues should follow [SECURITY.md](./SECURITY.md).
 ## Releases
 
 See the [GitHub Releases](https://github.com/Kardbord/hfgo/releases) page for
-the changelog and published versions.
+the release notes and published versions.
 
 ## License
 

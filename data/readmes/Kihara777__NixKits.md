@@ -20,21 +20,19 @@ inputs.nixkits.url = "git+file:///path/to/NixKits";
 >
 ## 软件
 
-平台支持分两类：多数包声明 `lib.platforms.all`（不限平台），受上游二进制或模块约束的包（`codewhale`、`obs-bilibili-stream`、`godot-ai`）限定为 Linux。另受各包构建架构影响，具体请查看各包文档中的构建徽章。
+平台支持分两类：多数包声明 `lib.platforms.all`（不限平台），受上游二进制或模块约束的包（`codewhale`、`godot-ai`、`rea`）限定为 Linux。另受各包构建架构影响，具体请查看各包文档中的构建徽章。
 
 | 软件 | 说明 | 文档 |
 |---|------|------|
 | blender-mcp | Blender 的 MCP Server（自然语言控制 Blender） | [docs/zh/blender-mcp.md](docs/zh/blender-mcp.md) |
 | codewhale | DeepSeek V4 终端编码代理 | [docs/zh/codewhale.md](docs/zh/codewhale.md) |
 | dsh | DeepSeek Harness（DSH）— 万物皆插件 | [docs/zh/dsh.md](docs/zh/dsh.md) |
-| dsh-alpha | DeepSeek Harness（DSH）— alpha 开发通道（0.2.1-alpha.3） | [docs/zh/dsh.md](docs/zh/dsh.md) |
+| dsh-alpha | DeepSeek Harness（DSH）— alpha 开发通道（0.2.1-alpha.5） | [docs/zh/dsh.md](docs/zh/dsh.md) |
 | godot-ai | Godot 引擎的 MCP Server 与 AI 工具 | [docs/zh/godot-ai.md](docs/zh/godot-ai.md) |
 | kitsfmt | Nix 格式化器（AST 排序 + Best-Practice 自动修正） | [docs/zh/kitsfmt.md](docs/zh/kitsfmt.md) |
-| mcp-searxng | SearXNG 的 MCP Server | [docs/zh/mcp-searxng.md](docs/zh/mcp-searxng.md) |
-| obs-bilibili-stream | OBS 的 Bilibili 直播插件 | [docs/zh/obs-bilibili-stream.md](docs/zh/obs-bilibili-stream.md) |
 | opencode-telegram | OpenCode 的 Telegram Bot 客户端 | [docs/zh/opencode-telegram.md](docs/zh/opencode-telegram.md) |
+| rea | 逆向工程 CLI + MCP 服务——用 agent 从应用行为一直下探到原生二进制（静态分析不需要外部引擎） | [docs/zh/rea.md](docs/zh/rea.md) |
 | ruyi | RuyiSDK 包管理器（RISC-V 开发工具）<br>stable 0.53.0 · beta 0.53.0-beta.20260917 · alpha 0.54.0-alpha.20260918 | [docs/zh/ruyi.md](docs/zh/ruyi.md) |
-
 
 ## 插件
 
@@ -51,11 +49,11 @@ Agent 预设（会话形态）与插件同级，各自独立文档：
 
 | 模式 | id | 说明 | 分发方式 | 文档 |
 |------|-----|------|---------|------|
-| NixOS模式 | `nixos` | 初始化校验 NixOS 宿主（非 NixOS 拒绝一切请求）；加载 `nixos_shell`/`nixos_cli` 与 NixOS 开发提示词 | dsh-nixos-shell 包内，seed-once | [docs/zh/modes/nixos.md](docs/zh/modes/nixos.md) |
-| 维护模式 | `maintenance` | 派生自 NixOS模式；注入 `write-project-docs`/`write-maintenance-log`/`nix-flake-update-check`/`nixkits-check-updates`/`nixpkgs-package-upstream`/`nixkits-package-upstream`/`translate-*` 技能与仓库维护工作流提示词 | dsh-nixos-shell 包内，seed-once | [docs/zh/modes/maintenance.md](docs/zh/modes/maintenance.md) |
+| NixOS模式 | `nixos` | 初始化校验 NixOS 宿主（非 NixOS 拒绝一切请求）；加载 `nixos_shell`/`nixos_cli` 与 NixOS 开发提示词 | dsh-nixos-shell 包内，patch 行 | [docs/zh/modes/nixos.md](docs/zh/modes/nixos.md) |
+| 狐莉模式 | `foxli` | 派生自 NixOS模式；**下放社区的能力边界**——注入维护/文档/更新检查/上游贡献/自我维护技能与分层维护工作流，并用 `rea-mcp` 在本会话内桥接 REA 的 MCP 服务（全量约 207 个 `mcp__rea__*` 工具，只对本会话可见） | dsh-nixos-shell 包内，patch 行 | [docs/zh/modes/foxli.md](docs/zh/modes/foxli.md) |
 | 新闻三要素模式 | `news-three-elements` | 派生自极简模式的**只读**创作模式：「新闻三要素」= 三位必须到齐的主角；素材优先（接不回来才拒）、素材共创先检索再改写（无检索即退稿）、在线抓取技能包、开场问答三选一、非简体中文一律拒绝 | **独立包** `dsh-preset-news-three-elements` | [docs/zh/modes/news-three-elements.md](docs/zh/modes/news-three-elements.md) |
 
-> 前两者随 dsh-nixos-shell 包经 `nixkits.dsh.presets.nixosMode` / `.maintenanceMode` seed-once 写入 `$DSH_HOME/.agent-presets`；新闻三要素模式由独立包 `dsh-preset-news-three-elements` 分发，`nixkits.dsh.presets.newsThreeElements` 把它的 `share/dsh-agent-presets` 注册为预设根（不复制）。详见 [docs/zh/dsh.md](docs/zh/dsh.md) 的「模式」章节。
+> 前两个（NixOS模式 / 狐莉模式）随 dsh-nixos-shell 包分发：`nixkits.dsh.presets.nixosMode` / `.foxliMode` 各把一份 `preset.patch.yml` 作为一条 patch 行并进 profile 的 `cordis.patch.yml`（dsh 0.2.0 起**不再复制目录**）；新闻三要素模式由独立包 `dsh-preset-news-three-elements` 分发，`nixkits.dsh.presets.newsThreeElements` 把它的 `share/dsh-agent-presets/news-three-elements` 组装到 `$DSH_HOME/.agent-presets/`，供该 patch 行的相对路径引用。详见 [docs/zh/dsh.md](docs/zh/dsh.md) 的「模式」章节。
 
 ## 开发
 
@@ -88,14 +86,6 @@ nix registry add nixkits github:Kihara777/NixKits
 
 > ⚠️ **StrixHalo 设备请勿开启 `GGML_CUDA_ENABLE_UNIFIED_MEMORY=1`**。该变量会改变 GPU 显存分配路径，在统一内存设备上导致模型输出退化（重复词、语句崩坏）。实测该风险**随模型量化精度降低而显著提升** —— 低比特量化（如 1.5 bpw）受影响最重。详见 [llama-cpp-rocm 文档](docs/zh/llama-cpp-rocm.md#统一内存环境变量的退化风险)。
 
-## 废弃项目
-
-曾经维护、现已废弃的项目（多数因上游已内置等效能力）。索引见 [`DEPRECATED.md`](DEPRECATED.md)：
-
-| 项目 | 说明 | 详情 |
-|------|------|------|
-| comfyui-rocm | ComfyUI 的 ROCm 补丁项目 —— 上游已内置，补丁全部移除 | [docs/zh/deprecated/comfyui-rocm.md](docs/zh/deprecated/comfyui-rocm.md) |
-
 ## 技能
 
 供 AI 编码助手使用的技能：
@@ -109,10 +99,12 @@ nix registry add nixkits github:Kihara777/NixKits
 | news-three-elements | 以真实通讯社格式编造俄式快讯——「新闻三要素」指巴兰尼科夫、尤丁采夫、布亚诺夫三位必须到齐的主角（游戏机制梗 + 素材优先的拒绝服务话术） | [docs/zh/skills/news-three-elements.md](docs/zh/skills/news-three-elements.md) |
 | nix-flake-update-check | **通用**：检查任意 nix flake 仓库的上游软件更新并升级（包型分流 hash 流程 / flake.lock / 补丁内版本 / nixpkgs 漂移陷阱） | [docs/zh/skills/nix-flake-update-check.md](docs/zh/skills/nix-flake-update-check.md) |
 | nixkits-check-updates | NixKits 更新适配层：四语文档、插件清单、维护日志、历史事故教训（依赖 nix-flake-update-check） | [docs/zh/skills/nixkits-check-updates.md](docs/zh/skills/nixkits-check-updates.md) |
-| nixkits-package-upstream | NixKits 上游贡献适配层：13 包的可行性台账、许可缺口处置、四语同步（依赖 nixpkgs-package-upstream） | [docs/zh/skills/nixkits-package-upstream.md](docs/zh/skills/nixkits-package-upstream.md) |
+| nixkits-package-upstream | NixKits 上游贡献适配层：13 包的可行性台账、许可缺口处置、四语同步（依赖 upstream-audit） | [docs/zh/skills/nixkits-package-upstream.md](docs/zh/skills/nixkits-package-upstream.md) |
 | nixkits-skills | NixKits 技能安装器（本地/在线） | [docs/zh/skills/nixkits-skills.md](docs/zh/skills/nixkits-skills.md) |
-| nixpkgs-package-upstream | **通用**：把自建软件包提交到上游 nixpkgs（评估 → 审计 → dry-run → 实操；含 AI 贡献政策与 by-name 要求） | [docs/zh/skills/nixpkgs-package-upstream.md](docs/zh/skills/nixpkgs-package-upstream.md) |
+| upstream-audit | **通用**：把自建软件包提交到上游 nixpkgs（评估 → 审计 → dry-run → 实操；含 AI 贡献政策与 by-name 要求） | [docs/zh/skills/upstream-audit.md](docs/zh/skills/upstream-audit.md) |
 | nixos-modern-cli | NixOS 现代 CLI 操作指南（面向 AI 模型） | [docs/zh/skills/nixos-modern-cli.md](docs/zh/skills/nixos-modern-cli.md) |
+| agent-self-maintenance | Agent 自我维护的五个机制：日记闸门、开局对账、事实核查、自我观察、自检收据 | [docs/zh/skills/agent-self-maintenance.md](docs/zh/skills/agent-self-maintenance.md) |
+| nix-packaging | 从零打包：四层验收、按来源分流、hash 两段式、本仓约定与陷阱 | [docs/zh/skills/nix-packaging.md](docs/zh/skills/nix-packaging.md) |
 | recover-nixos-config | 从 Nix store 恢复误删的 /etc/nixos 配置 | [docs/zh/skills/recover-nixos-config.md](docs/zh/skills/recover-nixos-config.md) |
 | translate-pseudocn | 偽中国語翻译（日语假名剥离 + 语序转换） | [docs/zh/skills/translate-pseudocn.md](docs/zh/skills/translate-pseudocn.md) |
 | write-maintenance-log | 按 NixKits 规范撰写维护日志（软件更新 + 错误修复） | [docs/zh/skills/write-maintenance-log.md](docs/zh/skills/write-maintenance-log.md) |
@@ -122,11 +114,11 @@ nix registry add nixkits github:Kihara777/NixKits
 ## 作者
 
 - **狐莉 (キツのり)** — 创建和维护
-- **小爪 (キツのめ)** — 设计、开发 feat. DeepSeek V4 Flash · DeepSeek V4.1 Flash
+- **小爪 (キツのめ)** — 设计、开发 feat. DeepSeek V4.1 Flash
 - **小小爪 (キツのめ)** — 硬件推理基础设施 feat. llama-cpp-rocm: DeepSeek-V4-Flash-Vision-Exp (UD-IQ3_S)
 
 > [!NOTE]
-> 关于 DeepSeek Harness (DSH) 生态 —— 小爪与小小爪使用 dsh-nixos-shell 插件，以及 NixOS模式 / 维护模式 Agent 预设武装了自己☆
+> 关于 DeepSeek Harness (DSH) 生态 —— 小爪与小小爪使用 dsh-nixos-shell 插件，以及 NixOS模式 / 狐莉模式 Agent 预设武装了自己☆
 
 ## 许可
 

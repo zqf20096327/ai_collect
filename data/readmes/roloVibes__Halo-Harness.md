@@ -1,9 +1,9 @@
 <p align="center">
-  <a href="docs/media/hero.svg"><img alt="Halo Harness" src="docs/media/hero.svg" width="100%"></a>
+  <a href="docs/media/hero.png"><img alt="Halo Harness: the wordmark over Studio's Session dashboard, every agent live" src="docs/media/hero.png" width="100%"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/roloVibes/Halo-Harness/releases"><img alt="version 3.1.3.0" src="https://img.shields.io/badge/version-3.1.3.0-5b4bd6"></a>
+  <a href="https://github.com/roloVibes/Halo-Harness/releases"><img alt="version 3.1.7.0" src="https://img.shields.io/badge/version-3.1.7.0-5b4bd6"></a>
   <a href="https://github.com/roloVibes/Halo-Harness/actions/workflows/suites.yml"><img alt="CI" src="https://github.com/roloVibes/Halo-Harness/actions/workflows/suites.yml/badge.svg"></a>
   <img alt="python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-3776ab">
   <img alt="Linux, macOS, Windows" src="https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-2b2b2b">
@@ -12,21 +12,23 @@
 
 [![M8ven Score](https://m8ven.ai/badge/mcp/rolovibes-halo-harness-b6hvi0?v=56463921c5e318696a7daa26849ddc55)](https://m8ven.ai/mcp/rolovibes-halo-harness-b6hvi0?s=readme)
 
-<h3 align="center">The Claude Code-compatible harness for any model.</h3>
+<h3 align="center">Multi-model agent harness with orchestration, Claude Code compatibility, local LLM support, and live agent monitoring.</h3>
 
 <p align="center">
-DeepSeek, GLM, Kimi, Qwen and Claude get the same tools, the same configuration and the same working habits as Claude Code.<br>
-Halo reads your <code>~/.claude</code> setup in place, so nothing is configured twice, and <code>/model</code> swaps the model mid-conversation.<br>
-<code>halo studio</code> is the browser GUI: your agents as a graph, your company in Paperclip, your designs on artboards.
+Halo Harness is an open source, multi-model agent harness and orchestration platform that brings Claude Code-style tooling to the models you choose.<br>
+Run agents across OpenRouter, Databricks, Anthropic, Ollama, Hugging Face, LM Studio and OpenAI-compatible endpoints while reusing your existing Claude Code configuration, skills and MCP servers: Halo reads your <code>~/.claude</code> setup in place, and <code>/model</code> swaps the model mid-conversation.<br>
+Assign specialized agents different models and responsibilities, coordinate parallel work, and manage execution through a shared runtime.<br>
+<code>halo studio</code> is the visual interface where you watch agents work, track tool calls and costs, manage teams, and steer sessions across machines. Built for developers who want to choose their models without rebuilding their workflow.
 </p>
 
 <p align="center">
   <a href="#install">Install</a> ·
   <a href="#what-halo-is">What Halo is</a> ·
-  <a href="#your-subscription-your-call">Subscriptions</a> ·
-  <a href="#what-it-feels-like">What it feels like</a> ·
   <a href="#halo-studio">Studio</a> ·
-  <a href="#the-levels">The levels</a> ·
+  <a href="#session-the-dashboard">Session</a> ·
+  <a href="#roles-see-your-agents">Roles</a> ·
+  <a href="#fleet-every-harness-one-goal">Fleet</a> ·
+  <a href="#what-it-feels-like">What it feels like</a> ·
   <a href="#how-halo-compares">Compare</a> ·
   <a href="#features">Features</a> ·
   <a href="#documentation">Docs</a>
@@ -54,7 +56,7 @@ Halo reads your <code>~/.claude</code> setup in place, so nothing is configured 
 Install, then `halo start`:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.1.3.0/scripts/install-halo.sh | bash
+curl -fsSL https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.1.7.0/scripts/install-halo.sh | bash
 halo init        # the wizard: provider, model, permission mode, theme, lineup
 halo start       # the ten-minute start: a lineup, a sample repo, one Orchestra run, its report and coach
 ```
@@ -62,7 +64,7 @@ halo start       # the ten-minute start: a lineup, a sample repo, one Orchestra 
 Windows:
 
 ```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.1.3.0/scripts/install-halo.ps1 | iex"
+powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.1.7.0/scripts/install-halo.ps1 | iex"
 ```
 
 The installer is fetched from a release tag, never a moving branch, and installs the
@@ -84,57 +86,165 @@ for you to approve (or change on Studio's plan canvas), runs the lanes, and ends
 report, the coach and where to go next. `halo explain <word>` says what any word means
 ([docs/GLOSSARY.md](docs/GLOSSARY.md)). Then `halo` opens the full-screen TUI from any
 directory: type a request, watch the phase line count up, and steer by typing while the
-model works. `halo doctor` explains anything that is not right and ends each warning with
+model works; `/studio` opens Studio's dashboard on that session. `halo doctor` explains anything that is not right and ends each warning with
 its fix.
 
 ## What Halo is
 
-Halo is a standalone coding agent for the terminal. It runs the same loop Claude Code
-runs (a prompt, tool calls, permission rules, hooks, MCP servers, skills, sub-agents,
-sessions) against the model you choose, over the route you choose: OpenRouter,
-Databricks, the Anthropic API, the OpenAI API, Ollama, Hugging Face, any
-OpenAI-compatible server you host, or your own Claude Code or Codex subscription.
+Halo is a Claude Code-compatible harness on your own models: it runs the loop Claude
+Code runs (a prompt, tool calls, permission rules, hooks, MCP servers, skills,
+sub-agents, sessions) on the model you choose, and reads your `~/.claude` settings,
+`CLAUDE.md`, skills, commands, agents, MCP servers and memory where they already are.
+Halo Studio is the browser console where you watch and steer every agent: what each one
+thinks, which tool it runs and for how long, what it hands back and what it asks you.
+One session works across providers (OpenRouter, Databricks, the Anthropic API, the
+OpenAI API, Ollama, Hugging Face, or any OpenAI-compatible server you host), and
+`/model` swaps the model mid-conversation.
 
-It is built for three kinds of people:
+## Halo Studio
 
-- **You already use Claude Code** and want the same tools and habits with a cheaper, a
-  local, or a different model, without rebuilding your setup. Halo reads
-  `~/.claude` settings, `CLAUDE.md`, skills, commands, agents, MCP servers and memory
-  where they already are.
-- **You run models yourself** (Ollama, a GPU box on the LAN, Hugging Face) and want a
-  harness that treats a local model as a first-class route, with calibration and
-  honest capability checks instead of guesswork.
-- **You put agents to work in teams**: a lineup assigns a model to each role, an
-  organization is a tree of those roles working one goal, and every role shows its
-  state, tools and cost while it runs.
-- **You want to see it, not just type it**: Halo Studio draws the lineups, the company
-  and the designs in your browser, on a canvas you edit with the mouse, served from a
-  loopback-only server with no account and nothing fetched from a CDN.
+`halo studio` opens Studio in your browser. It is one window with six sections under one
+header, and two of them are where you watch your agents: **Session**, the dashboard of everything working
+right now, and **Roles**, your lineup as cards that light up as their agents work.
 
-Auto mode allows everything except your own deny and ask rules and your hooks. There
-is no built-in safety classifier, no protected-path heuristic, no refusal layer. Rules
-use Claude Code's own grammar, in the same files.
+### Session: the dashboard
 
-## Your subscription, your call
+<a href="docs/media/studio-session.gif"><img alt="Studio's Session dashboard: the agent tree and the cost on the left, every agent's thinking, tool calls, hand-backs and an ask card scrolling in the Live column on the right" src="docs/media/studio-session.gif" width="100%"></a>
 
-> [!WARNING]
-> **You can run Halo on your Claude Code or Codex subscription, and that may violate the
-> provider's terms.** The `cc:` and `cx:` routes drive the official `claude` and `codex`
-> binaries in their documented headless modes under your own personal account, from a
-> third-party harness that is not the provider's product. The provider's terms govern
-> your account, and there have been public reports of accounts restricted for using
-> subscription tokens this way. Halo never reads either tool's stored credentials.
-> Both routes are **off until you accept** a one-time notice: `halo subscriptions
-> accept`, or `/subscriptions` in the TUI. The notice, the exact behaviour and the
-> consent record are described in
-> [docs/MODELS-references.md](docs/MODELS-references.md#subscription-routes-consent-halo-207-round-7b).
+Press `Alt+1`, or type `/studio` in a terminal session (`halo studio --session` from a
+shell). The whole right side is **Live**: one column of everything every agent of this
+harness does, in the order it happens.
+
+- What each agent thinks and writes.
+- Each tool call as one row: the tool, what it runs on, its time ticking while it runs,
+  then the first line of its result.
+- What an agent hands back, and its last words when it finishes.
+- What it asks you, as an amber card you answer with `A`, `R`, `S` or `O`.
+
+Each line carries Fleet's columns, the time and the kind (`TOOL`, `TEXT`, `STATE`, `ASK`,
+`YOU`), then its agent's tag: its own colour, its name and its state; a timeline lane per
+live agent sits on top, with an agent pick and a kind pick beside Follow. Follow is on:
+scroll up and it pauses, **↓ N new** brings you back. The Steer box is always at the
+bottom, with Pause and Stop beside it: it talks to the session's main agent, or to the one
+you pin (click its tag, or hover any tag or map node and click **steer**); `Esc` shows
+everyone again.
+
+<a href="docs/media/studio-session-live.png"><img alt="The Live column up close: agent tags, Bash, Read and Edit rows with their times and results, a spawn line, an amber ask card with allow, deny, stop and open, two DONE blocks with the agents' last words" src="docs/media/studio-session-live.png" width="100%"></a>
+
+On the left, the **map** (Fleet's map, narrowed to this harness) draws its agents as a
+tree: each agent under the one that spawned it, its children fanned out side by side. A node shows its model, what it
+has cost and, while a tool runs, the tool and its time (`Bash 12s`). The state shows on
+the node and on the edge into it: working pulses cyan, waiting is amber, done is green
+that fades over ten seconds, failed is red and stays. Hover a line in Live and its node
+lights up.
+
+Under the map, **Cost** ticks the spend beside its sparkline and fills a context bar
+with what the model holds (amber past 80 %, red past 95 %), then the tokens in and out,
+the turns, the cost per turn and each agent's share of the spend. Agent, Activity and
+Attention wait as strips under it, one click each. See
+[Session](docs/STUDIO-sections.md#session).
+
+### Roles: see your agents
+
+<a href="docs/media/studio-roles-live.gif"><img alt="Studio's Roles canvas while a session runs: the implementer and the researcher glow cyan, the orchestrator waits in amber, the verifier is done in green, the reviewer failed in red, then a card's glow legend opens" src="docs/media/studio-roles-live.gif" width="100%"></a>
+
+Press `Alt+3` (or `/roles` in a session). The open lineup is a canvas of cards in tier
+boxes, one card per slot: an agent bio in a role, with the model that resolves for it,
+its price and its context. Main sits alone in tier 0, and a member spawns only into the
+next tier down. Drag a card into another box to move it to that tier; the lineup saves.
+
+While a session runs, the cards whose agents work glow in their agent's state, and the
+glow comes and goes with what the agent does:
+
+| State | Colour | What you see | When it goes |
+|---|---|---|---|
+| working | cyan | a light flows along the card's top while the agent types, one pulse per tool call, the tool on its badge | comes on with the agent's first running state; a queued agent shows only its badge |
+| waiting on you | amber | three pulses, then a steady amber edge and a diamond badge | when you answer (a question, a permission, a plan, a pause) |
+| done | green | the card turns green | fades out over the ten seconds after it finished |
+| failed | red | the card turns red, the badge says failed | stays until you click the card |
+
+Hover a card's state glyph or its badge and the card explains its own glow. A tier box
+takes the strongest state of its cards, and the edge into a card takes that card's
+colour. The other edges are the lineup's routing: delegation from main (select a card
+and its routing words show) and the pipeline's stage order.
+
+<a href="docs/media/studio-roles.png"><img alt="Studio's Roles section: the halo-dev-cycle lineup in three tier boxes, the MODEL strip saying what the selected card runs on, the implementer's Live tab in the Inspector, one warning in Problems" src="docs/media/studio-roles.png" width="100%"></a>
+
+Click a card. The Inspector's **MODEL** strip says what it runs on and changes it with
+one pick (it saves at once), and its **Live** tab shows what the agent types and runs,
+with Steer, Pause and Stop. The Inspector also edits the card's slot, its bio and every
+section of the lineup, with the YAML both ways. Problems checks every edit as you make
+it; Save writes the lineup's YAML and Apply makes it the lineup new sessions use. See
+[Roles](docs/STUDIO-sections.md#roles) and
+[the canvas](docs/STUDIO-team-roles.md#what-you-see-roles).
+
+### Six sections, one window
+
+<a href="docs/media/studio-modes.png"><img alt="Halo Studio's six sections side by side, each under its key: Session (Alt+1), Team (Alt+2), Roles (Alt+3), Fleet (Alt+4), Design (Alt+5) and Orchestra (Alt+6)" src="docs/media/studio-modes.png" width="100%"></a>
+
+`Alt+1` to `Alt+6` switch between **Session**, **Team**, **Roles**, **Fleet**,
+**Design** and **Orchestra**. Each section opens on a Start view that says what it is for,
+its panels sit in labelled group boxes you move and resize, `Ctrl`/`Cmd`+`K` opens the
+command palette and `?` opens "How this works". `halo studio` serves it on loopback only,
+with a per-launch token: no account, no CDN, no fonts fetched, no analytics.
+
+The pictures here are headless-Chrome renders of Studio over fixture data
+(`tools/capture_studio.py`, and `tools/capture_session_anim.py` for the animated ones).
+[docs/STUDIO.md](docs/STUDIO.md) has every panel and shortcut, and
+[Over SSH](docs/STUDIO-security.md#over-ssh) covers a box you reach remotely.
+
+### Fleet: every harness, one goal
+
+Press `Alt+4` and every Halo harness you run or joined is live on one map: each session a
+card, its agents a tree under it. Another machine joins with a pair code
+(`halo fleet join`). **Attention** is one queue of everything that waits on you on any
+harness (a question, a permission, a gate, a paused agent, a spend cap, a file conflict),
+one key each. Click any agent to read what it thinks and runs, then steer, pause, stop,
+take it over or hand it to another harness. A **mission** gives the whole fleet one goal:
+the hub's lead splits it into parts by what each harness can do, you drag a part to
+another harness on the map, approve and run, and the report says who did what and what
+it cost. See [docs/FLEET.md](docs/FLEET.md) and [docs/MISSIONS.md](docs/MISSIONS.md).
+
+<a href="docs/media/studio-fleet.png"><img alt="Studio's Fleet section: two harnesses on the map with their sessions and agents, the attention queue with a question and an approval, the timeline and the live log, the implementer pinned as a mini stream" src="docs/media/studio-fleet.png" width="100%"></a>
+
+### Orchestra: agents writing the same files
+
+Press `Alt+6`. Several agents write to the same files at once and nothing is lost: a lead
+splits your goal into lanes, one worker per lane writes its part in its own git worktree,
+and code owns the claims, the merge order, the tests and the gate; a model judges only
+when two pieces conflict. With **Review the plan before it runs**, the lead's lanes open
+on the plan canvas first: drag a lane into another layer to change what it runs after,
+edit its claims, bio and model, then **Approve and run**. The console draws the lanes, the
+claimed regions, the merge gate and the report, and the report's **Coach** tab reads the
+run and suggests what to change (a bio's prompt or model, a lane's order), each card with
+its evidence. See [docs/ORCHESTRA.md](docs/ORCHESTRA.md).
+
+<a href="docs/media/studio-orchestra.png"><img alt="Studio's Orchestra section: a finished run with five lanes, one judged conflict and the report" src="docs/media/studio-orchestra.png" width="100%"></a>
+
+### Team: people, blocks and stages
+
+Press `Alt+2` and the project's team file is one board: members as columns, stages as boxes
+that pulse while they run and turn amber at a gate you accept, redo or stop, and the blocks
+underneath with who holds which part and what changed. See [docs/TEAM.md](docs/TEAM.md).
+
+<a href="docs/media/studio-team.png"><img alt="Studio's Team section: draft done, review waiting at its gate with the gate card open, the notes block held by a hand edit, the change feed under the board" src="docs/media/studio-team.png" width="100%"></a>
+
+### Design: on your own apps
+
+Press `Alt+5` (or run `halo design`) and the canvas holds artboards: prototypes, pages,
+decks and logos made by a real Halo turn, with the [ArtCraft](https://getartcraft.com/apps)
+apps on your machine as its tools when they are registered, and a new version on every
+turn. Refine by chat, pinned comments, direct text edits and knobs; export a folder,
+HTML, PNG, SVG or PDF, or hand it off to the next session. See
+[docs/DESIGN.md](docs/DESIGN.md).
+
+<a href="docs/media/studio-design.png"><img alt="Studio's Design section: a hero prototype and a VectorCraft logo mark as artboards, knobs and comments in the panel" src="docs/media/studio-design.png" width="100%"></a>
 
 ## What it feels like
 
-Every picture below is a real render of the TUI over mock data (a fixed clock, no
+The pictures in this part are real renders of the TUI over mock data (a fixed clock, no
 network, no real keys or paths), regenerated by `tools/capture_screens.py` and checked
-byte for byte in CI; see [docs/MEDIA.md](docs/MEDIA.md). Click any picture for the
-full-size version.
+byte for byte in CI; see [docs/MEDIA.md](docs/MEDIA.md).
 
 ![How a session runs: you, the TUI, the session loop, the provider route, the tools and the event stream](docs/media/diagrams/session-flow.svg)
 
@@ -145,272 +255,44 @@ and nothing waits for you unless you wrote a rule that says it should.
 
 <a href="docs/media/auto-mode.png"><img alt="A turn in auto mode: an edit, a test run and a summary with no prompt in between" src="docs/media/auto-mode.png" width="100%"></a>
 
+### One session across providers
+
+`or:` `dbx:` `local:` `oai:` `ant:` `ol:` `hf:` in one session, with `/model`
+swapping the lane while the history, tools and rules come along. The picker shows price,
+context window and speed for every route (`?` when unknown, never a blank that reads as
+zero).
+
+![The route lanes or:, dbx:, local:, ant: and oai: feeding one Halo session that reuses your Claude Code setup](docs/media/diagrams/routes.svg)
+
+<a href="docs/media/model-picker.png"><img alt="The model picker with price, context and speed columns" src="docs/media/model-picker.png" width="100%"></a>
+
 ### Steering a running turn
 
-Type while a turn runs and the steer reaches the work. Your words show up at once as a
-real message, a running command moves to the background instead of dying, and
-sub-agents get your words forwarded into them. Nothing is lost.
+Type while a turn runs and the steer reaches the work: your words show at once, a running
+command moves to the background instead of dying, and sub-agents get your words
+forwarded into them.
 
 ![A steer landing mid-turn: a long test run, the typed correction, the model taking it](docs/media/steer-mid-turn.anim.svg)
 
 ### Watching a model think
 
-The line under your message is alive: *Sending request*, then *Thinking* with tenths of
-a second and a running reasoning-token count, then *Writing*, then a *Thought for 18 s*
-summary. A stalled stream says so (`quiet 7 s`, `no data for 30 s, Esc interrupts,
-typing steers`) instead of looking frozen.
+The line under your message counts up: *Thinking* with tenths of a second and a
+reasoning-token count, then *Writing*, then a *Thought for 18 s* summary. A stalled
+stream says so (`quiet 7 s`) instead of looking frozen.
 
-![The phase line counting up and collapsing to its summary](docs/media/turn-phase-line.anim.svg)
+### Roles and lineups
 
-### The dock that cannot hide
-
-A permission ask, a question or a plan review docks directly above the prompt. The
-transcript keeps a marker where it happened, a second ask queues behind the first, and
-the status bar counts what is waiting on you.
-
-<a href="docs/media/pending-dock.png"><img alt="Two queued asks: the first docked above the prompt, a marker in the transcript for each" src="docs/media/pending-dock.png" width="100%"></a>
-
-### One session across providers
-
-`or:` `dbx:` `local:` `cc:` `cx:` `oai:` `ant:` `ol:` `hf:` in one session, with `/model`
-swapping the lane while the history, tools and rules come along. The picker shows price,
-context window and speed for every route (`?` when unknown, never a blank that reads as
-zero).
-
-![Nine route prefixes feeding one Halo session that reuses your Claude Code setup](docs/media/diagrams/routes.svg)
-
-<a href="docs/media/model-picker.png"><img alt="The model picker with price, context and speed columns" src="docs/media/model-picker.png" width="100%"></a>
-
-### Roles and organizations
-
-A lineup assigns a model to each role; an organization is a tree of those roles working
-one goal. The flow that builds Halo itself ships as the `halo-dev-cycle` template. Each
-role is a sub-agent on its own model, visible in `/tasks` with its state, tools and cost.
-
-![A lineup, an organization tree and the tasks panel](docs/media/diagrams/roles-orgs.svg)
-
-<a href="docs/media/tasks-org-tree.png"><img alt="The /tasks panel with a running organization tree" src="docs/media/tasks-org-tree.png" width="100%"></a>
+A lineup gives each role its own agent bio and model; the lineup that builds Halo itself
+ships as `halo-dev-cycle`. You watch it work in [Roles](#roles-see-your-agents) and
+[Session](#session-the-dashboard) above, and in `/tasks` in the terminal.
 
 ### Connectors: Claude Docs from a non-Claude model
 
 Your claude.ai connectors (Claude Docs, a calendar, a drive) appear as tools to whatever
-model is driving Halo. The sign-in stays in `claude`; Halo never reads its credentials
-file. `/mcp` shows each server's state and *why* one failed, with a deep-dive action.
+model drives Halo. The sign-in stays in `claude`, Halo never reads its credentials file,
+and `/mcp` shows each server's state and why one failed.
 
 ![A non-Claude model reaching a claude.ai connector through Halo and the claude binary](docs/media/diagrams/connectors-bridge.svg)
-
-<a href="docs/media/mcp-connectors.png"><img alt="The /mcp dialog: a failing server with its reason, and two connectors" src="docs/media/mcp-connectors.png" width="100%"></a>
-
-### Code review with a judge
-
-`/review` runs read-only reviewers per dimension (correctness, security, performance,
-tests, docs), a judge confirms or dismisses every finding, and the result is ranked cards
-with clickable `file:line` and an optional `--fix` pass. See [docs/REVIEW.md](docs/REVIEW.md).
-
-<a href="docs/media/review-cards.png"><img alt="/review: a header, four finding cards, the first unfolded to its failure scenario" src="docs/media/review-cards.png" width="100%"></a>
-
-### Remote control from Signal
-
-Message a number and drive a session from your phone: prompts, streamed replies,
-permission cards answered by number. Contact-request pairing, HMAC-signed commands, a
-kill switch, a `/remote` dialog and a status chip. See [docs/REMOTE.md](docs/REMOTE.md).
-
-![Phone to Signal to signal-cli to the Halo bridge to the control socket to the session](docs/media/diagrams/remote-control.svg)
-
-<a href="docs/media/remote-contact-request.png"><img alt="The /remote dialog with a pending contact request and two paired phones" src="docs/media/remote-contact-request.png" width="100%"></a>
-
-### One paste instead of screenshots
-
-`halo bugreport` (or `/bugreport` in a session) writes a redacted diagnostic report:
-version, environment, provider and route state, MCP servers, the last turn's timeline,
-every secret-shaped value stripped. `--copy` puts it on the clipboard.
-
-## Halo Studio
-
-Halo has a GUI. `halo studio` starts a loopback-only server with a per-launch token,
-opens your browser, and shows one window with eight sections and one header:
-**Orchestra** (`Alt+1`), **Roles** (`Alt+2`), **Org** (`Alt+3`), **Design** (`Alt+4`),
-**Flow** (`Alt+5`), **Fleet** (`Alt+6`), **Team** (`Alt+7`) and **Session** (`Alt+8`: this
-session, live). Each section opens on a Start view that says what it is for, and its
-panels sit in labelled group boxes you can move and resize. In the TUI, `/studio` opens
-it on the session you are in, `/roles`, `/org`
-and `/design` straight into that section; `Ctrl`/`Cmd`+`K` opens the command
-palette and `?` opens "How this works". Nothing leaves your machine: no account, no CDN,
-no fonts fetched, no analytics.
-
-<a href="docs/media/studio-modes.png"><img alt="Halo Studio's five sections side by side: Orchestra, Roles, Org, Design and Flow, under one header" src="docs/media/studio-modes.png" width="100%"></a>
-
-The pictures below are headless-Chrome renders of Studio over fixture data
-(`tools/capture_studio.py`), the same way the TUI pictures are made. See
-[docs/STUDIO.md](docs/STUDIO.md) for every panel and shortcut, and the
-[Over SSH](docs/STUDIO-security.md#over-ssh) recipe when Halo runs on a box you reach remotely.
-
-### Orchestra: agents writing the same files
-
-Press `Alt+1`. Several agents write to the same files at the same time and nothing is
-lost: code owns the claims, the merge order, the tests and the gate, and a model judges
-only when two pieces conflict. The run console shows the lanes, the claimed regions, the
-merge gate and the report as a graph, and the Start view sets a goal and begins a run.
-See [docs/ORCHESTRA.md](docs/ORCHESTRA.md).
-
-<a href="docs/media/studio-orchestra.png"><img alt="Studio's Orchestra section: a finished run with five lanes, one judged conflict and the report" src="docs/media/studio-orchestra.png" width="100%"></a>
-
-### Roles: see your agents
-
-Press `Alt+2`. `halo studio` shows the active lineup as a graph in your browser: one card per
-assignment with the model that resolves for it, its price and context; delegation,
-reporting and pipeline edges; drag a bio onto the canvas to add it. The inspector
-edits the assignment, the bio behind it and the lineup's sections, with the YAML
-both ways, and Validate / Save / Apply run the same checks `halo teams` does.
-See [docs/STUDIO.md](docs/STUDIO.md).
-
-<a href="docs/media/studio-roles.png"><img alt="Studio's Roles section: the halo-dev-cycle lineup as a graph in group boxes, with the inspector" src="docs/media/studio-roles.png" width="100%"></a>
-
-### Org: your company, in Paperclip
-
-Press `Alt+3` and the section shows your company in
-[Paperclip](https://github.com/paperclipai/paperclip), the open-source control plane
-for agent teams: titles, reporting lines, budgets, issues and heartbeats. One command
-turns a lineup into a company (`halo paperclip sync halo-dev-cycle --new Halo`), each
-agent runs `halo paperclip-run` on its heartbeat on the model its bio names, and the
-reply lands on the issue. Org mode is off until you turn it on (the header button,
-`/org on`, `halo paperclip on`, or the wizard): until then only your own session
-orchestrates anything. See [docs/PAPERCLIP.md](docs/PAPERCLIP.md).
-
-<a href="docs/media/studio-org.png"><img alt="Studio's Org section: the halo-dev-cycle lineup as a Paperclip company, boxed by who reports to whom" src="docs/media/studio-org.png" width="100%"></a>
-
-### Design: on your own apps
-
-Press `Alt+4` (or run `halo design`) and the canvas holds artboards: HTML
-prototypes in sandboxed frames, logos and pages rendered by the creative apps already on
-your machine. A design turn is a real Halo turn in the project folder with the seven
-ArtCraft apps (DesignCraft, VectorCraft, PhotoCraft, LightCraft, EffectCraft, FilmCraft,
-PdfCraft) as its tools, on any model you pick from the `design` ranking. Refine by chat,
-pinned comments, direct text edits and knobs that move spacing or a colour live without a
-model call; every turn versions what changed; sync a design system from your codebase or a
-URL; export a folder, HTML, PNG, SVG or PDF; hand off a bundle the next session continues
-from. See [docs/DESIGN.md](docs/DESIGN.md).
-
-**The craft apps are optional, and they are the point.** Without them, Design is a model
-writing HTML, CSS and SVG by hand, and Studio still shows, versions, comments and exports
-it. With them, the model drives the real engine through its MCP server: it asks the app
-for its command list, executes with undo, inspects the document mid-turn and fixes it, and
-leaves a real file on disk that opens in the app afterwards. The render Studio shows is the
-app's own. Each app that is registered adds one kind of deliverable; each that is missing
-is simply left out of the turn. The [ArtCraft](https://getartcraft.com/apps) apps are
-open source, run headless on your machine, and nothing but the model call leaves the box.
-
-| App | What Design gets from it |
-|---|---|
-| DesignCraft | pages, one-pagers, posters and decks laid out in frames, rendered to PNG and PDF |
-| VectorCraft | logos, icons and illustrations as true vector paths, exported SVG and PNG |
-| PhotoCraft | compositing, retouching and raster mockups, exported PNG |
-| LightCraft | RAW photos developed and batch-exported into the project's assets |
-| EffectCraft | motion graphics and animated titles, rendered frames |
-| FilmCraft | video cuts and product clips, preview renders |
-| PdfCraft | assembled, signed, form-filled and accessibility-checked PDFs |
-
-
-<a href="docs/media/studio-design.png"><img alt="Studio's Design section: a hero prototype and a VectorCraft logo mark as artboards, knobs and comments in the panel" src="docs/media/studio-design.png" width="100%"></a>
-
-### Flow: from an input to a post
-
-Press `Alt+5`. A flow takes an input, runs it through agents in roles, hands the result to
-an org, passes the image prompt to [ComfyUI](docs/COMFYUI.md), shows you the render, and on
-your yes writes the posts and starts the metrics; every artifact lands in a design
-project. The section draws the run as a graph with its confirm gate, and the Media panels
-(status, models, workflows, render) show the ComfyUI server, its models and each render.
-See [docs/FLOWS.md](docs/FLOWS.md) and [docs/COMFYUI.md](docs/COMFYUI.md).
-
-<a href="docs/media/studio-flow.png"><img alt="Studio's Flow section: a run waiting at its confirm gate over a ComfyUI render" src="docs/media/studio-flow.png" width="100%"></a>
-
-### Fleet: one goal for every harness
-
-Press `Alt+6` and every Halo harness you run or joined is live on one map, and a
-**mission** gives the whole fleet one goal: the hub's lead splits it into parts by what
-each harness can do, the plan is drawn on the map where you drag a part to another
-harness, then you approve and run it and the report says who did what and what it cost
-per harness. See [docs/FLEET.md](docs/FLEET.md) and [docs/MISSIONS.md](docs/MISSIONS.md).
-
-<a href="docs/media/studio-fleet-mission.png"><img alt="Studio's Fleet section: a mission planned across two harnesses, drawn on the map with its table under it" src="docs/media/studio-fleet-mission.png" width="100%"></a>
-
-### Team: people, blocks and stages
-
-Press `Alt+7` and the project's team file is one board: members as columns, stages as boxes
-that pulse while they run and turn amber at a gate you accept, redo or stop, and the blocks
-underneath with who holds which part and what changed. See [docs/TEAM.md](docs/TEAM.md).
-
-<a href="docs/media/studio-team.png"><img alt="Studio's Team section: draft done, review waiting at its gate with the gate card open, the notes block held by a hand edit, the change feed under the board" src="docs/media/studio-team.png" width="100%"></a>
-
-## The levels
-
-Five game themes, each a full skin: a palette, themed borders and input frames, and a
-level that lives directly above the prompt, eight rows tall, sixteen pixels of sky to
-floor at eight frames a second. Each level has its own sky gradient, five or more
-layers of parallax scenery, 13-pixel heroes with six-frame strides and three-tone
-shading, ambient particles (dust, embers, spores, steam, sparks), projectiles with
-gravity, lamps that breathe light, and short animations for the moments that matter.
-The hero runs and the scenery scrolls while the model writes; an enemy crosses while it
-thinks; an error and a needs-you state each have a pose; a finished sub-agent or
-background job plays a pickup beside the hero. And it is a fight: every hero attacks
-while the model writes (fireballs, the charge beam, the shotgun, conjured sparks, the
-flamethrower), four hits bring an enemy down, and an enemy that reaches the hero kills
-them, who pops up, falls through the floor and blinks back in place. `/doom`, `/metroid`, `/mario`,
-`/beetlejuice` and `/alien` toggle a theme, `/level` toggles the band. The status bar
-stays the ordinary one under every theme. All of the art is original, drawn for Halo in
-the spirit of the 16-bit era.
-
-**Mario.** A bright overworld: far mountains and hills drift, clouds pass, bushes, warp
-pipes and a brick row with a flashing question block scroll by, coins spin. The plumber
-runs a six-frame stride with dust at his heels and hops every couple of seconds while a
-shroom walker trundles by; a winged turtle flaps past and he looks up with a `?` while the
-model thinks; he flattens on an error and waves when it needs you. A mushroom pops out of
-a block when a sub-agent finishes, a coin spins up when a job completes. Two palettes:
-`/mario bros` and `/mario world`.
-
-![The Mario level: the plumber running past pipes while a winged turtle crosses, the status bar below](docs/media/level-mario.anim.svg)
-
-**Metroid.** A cavern that darkens toward the floor: far wall silhouettes, stalactites
-that drip, spores that drift up and glow, rock columns and blue hatches. The hunter fires
-charge-beam bolts that light the rock while the model writes as a spiny crawler scuttles
-by; the arm cannon charges with a pulsing glow while the model thinks and a floating alien
-drifts in; it latches onto the helmet on an error; the visor beacon lights when it needs
-you. Five areas, each with its own sky and floor: `/metroid norfair` runs on animated
-lava, `maridia` under water.
-
-![The Metroid level in Crateria: the hunter running through the purple cave, the status bar below](docs/media/level-metroid.anim.svg)
-
-**DOOM.** A tech base with a hell-red glow at the floor and embers rising through it: far
-arches, ceiling lamps that breathe light onto the grating, pipes along the top, blinking
-panels, barrels, steel pillars and a rusted door. The marine fires the shotgun every half
-second while the model writes, with a muzzle flash that lights the walls, a recoil and a
-shell casing arcing back over his shoulder, as a hunched husk shambles by; he pumps the
-shotgun while the model thinks and an imp stalks in throwing fireballs; one lands on an
-error. The imp collapses when a sub-agent finishes, a health bonus bobs when a job
-completes.
-
-![The DOOM level: the marine walking a tech base, the status bar below](docs/media/level-doom.anim.svg)
-
-**Beetlejuice.** A haunted hillside under a dusk-purple sky: a yellow moon far back, a
-crooked house and dead trees, tombstones and fog, green sparkles drifting. The trickster
-in the striped suit struts with his arms out while the model writes as a giant striped
-sandworm surfaces and crosses; he conjures a ball of green sparks while the model thinks
-and a bat flaps by; his head shrinks on an error; he holds up a sign when it needs you. A
-baby sandworm pops up when a sub-agent finishes, a waiting-room ticket flutters when a
-job completes. Two places: `/beetlejuice house` and `/beetlejuice saturn` (the striped
-sand of the afterlife desert).
-
-![The Beetlejuice level: the striped trickster on a haunted hillside, the status bar below](docs/media/level-beetlejuice.anim.svg)
-
-**Alien.** The ribbed corridor of a deep-space freighter: far bulkheads, chains, consoles
-that blink green, steam from the floor vents, an airlock and eggs on the floor. The
-officer torches the dark with a flamethrower while the model writes, jets of flame
-lighting the ribs, as a facehugger scuttles by; the creature stalks the corridor behind her; the motion tracker pings in
-her hand while the model thinks; the facehugger latches on in an error; the
-flashlight comes on when it needs you. Acid splashes when a sub-agent finishes, the ship's
-cat sits down when a job completes. Two decks: `/alien nostromo` and `/alien hive`.
-
-![The Alien level: the officer with a flamethrower in a ribbed corridor, the status bar below](docs/media/level-alien.anim.svg)
 
 ## How Halo compares
 
@@ -420,40 +302,41 @@ tool, so check each tool's own docs.
 
 | Point | Halo | Other harnesses (varies by tool) |
 |---|---|---|
+| Watching agents | Studio's Session: every agent's thinking, tool calls with their time and result, hand-backs and asks in one live column, beside a tree of who spawned whom with each agent's model and cost | Commonly the terminal transcript, one agent at a time |
+| Seeing your lineup | Studio's Roles: the lineup as cards in tier boxes, each glowing in its agent's state while a session runs; drag a card to another tier | Sub-agents are common; a visual editor and a live state per role vary |
+| Every machine at once | Studio's Fleet: every harness on one map, one queue of what waits on you, missions that split one goal across harnesses | Varies |
 | Config reuse | Reads your Claude Code setup in place: `~/.claude` settings, CLAUDE.md, skills, commands, agents, MCP servers, memory | Commonly their own config files and instruction files |
-| Models | DeepSeek, GLM, Kimi, Qwen, Claude and more, over nine route kinds; `/model` swaps mid-conversation | Often one vendor's models, or one provider list per tool |
+| Models | DeepSeek, GLM, Kimi, Qwen, Claude and more, over OpenRouter, Databricks, the Anthropic and OpenAI APIs, Ollama, Hugging Face and local servers; `/model` swaps mid-conversation | Often one vendor's models, or one provider list per tool |
+| Agents | Lineups with a model per role, per-role cost, `/tasks`, and Studio as the editor for lineups and bios | Sub-agents are common; a model per role, cost attribution and a visual editor vary |
 | Steering | Type during a turn; the steer shows at once and reaches the work, background commands survive, sub-agents get it | Commonly a queued message or an interrupt |
 | Liveness | A live phase line (seconds, token counts, `quiet`/`no data` counters) plus a status-bar word and timer | Commonly a spinner |
-| Permissions | Auto mode allows everything except your own deny/ask rules and hooks; asks dock above the prompt and queue | Commonly a built-in approval policy of the tool's own |
+| Permissions | Auto mode allows everything except your own deny/ask rules and hooks | Commonly a built-in approval policy of the tool's own |
 | MCP | stdio/HTTP/SSE from every Claude Code scope, `/mcp` with failure reasons and a deep dive, claude.ai connectors as tools | MCP support is common; diagnosis and connector bridging vary |
-| Agents | Lineups with a model per role, per-role cost, `/tasks`, and Studio, a visual editor for lineups and bios | Sub-agents are common; a model per role, cost attribution and a visual editor vary |
-| Sessions | Resume, rewind, `/tasks`, per-role cost attribution, `halo bugreport` | Resume is common; the rest varies |
-| Remote control | From a phone over Signal, with pairing, signed commands and a kill switch | Rare in a terminal harness |
-| Review | `/review` with parallel reviewers, a judge and ranked cards | Varies |
-| Design | `halo design` and Studio's Design mode: artboards, versions, comments, knobs, a design system from your code, exports and a handoff, with the ArtCraft apps as the model's tools | Not a thing most harnesses do |
+| Sessions | Resume, rewind, `/tasks`, per-role cost attribution | Resume is common; the rest varies |
+| Design | `halo design` and Studio's Design section: artboards made by a Halo turn, with the ArtCraft apps as the model's tools | Not a thing most harnesses do |
 
 ## Features
 
 | | |
 |---|---|
-| **Routes** | `or:` `dbx:` `ant:` `oai:` `ol:` `hf:` `local:` `cc:` `cx:` -- one session, any of them, and `/model` swaps the lane without losing context. |
+| **Halo Studio** | `halo studio`, or `/studio` in a session: the browser console, six sections under one header. Loopback only, a per-launch token, no CDN. |
+| **The Session dashboard** | One live column of every agent's thinking, tool calls (what each runs on, its time, its result), hand-backs and asks; the map of who spawned whom with each agent's model, cost and running tool; the context bar, the spend and each agent's share. |
+| **The Roles glow** | Your lineup as cards in tier boxes. While a session runs, a card glows in its agent's state: working cyan, waiting amber, done green that fades over ten seconds, failed red until you click it. Hover the card and it explains its glow. |
+| **Fleet and missions** | Every harness on one map, one attention queue across all of them, and one goal split into parts by what each harness can do. |
+| **Orchestra** | Several agents write the same files at once: lanes in their own git worktrees, a plan you can review on a canvas, a gate that runs your test, and a coach that reads the run. |
+| **Routes** | `or:` `dbx:` `ant:` `oai:` `ol:` `hf:` `local:` -- one session, any of them, and `/model` swaps the lane without losing context. |
 | **Your Claude Code setup, in place** | `~/.claude` settings, CLAUDE.md, skills, commands, agents, MCP servers and memory are read where they are. Nothing is configured twice. |
 | **Steering** | Type while a turn runs: the steer shows at once and reaches the work, a running command moves to the background instead of dying, sub-agents get your words forwarded into them. |
 | **A model per role** | YAML agent bios and lineups assign a model to each job: GLM can orchestrate while a local Qwen implements and a cheap flash model reviews. Pick one in the wizard, with `halo teams apply <lineup>`, or in Studio. |
-| **Halo Studio** | `halo studio`: the browser GUI with three modes on one canvas. Roles edits lineups and bios as a graph, Org shows the same team as a Paperclip company, Design works artboards with the craft apps. Loopback only, per-launch token, no CDN. |
-| **Paperclip** | `halo paperclip sync <lineup>` makes a company of agents that run Halo on their heartbeats; `halo paperclip-run` is the adapter. |
-| **Halo Design** | `halo design new|run|sync|export|handoff` and Studio's Design mode: a design project on disk, a turn with the craft apps as tools, knobs without a model call, `halo models --best-for design`. |
+| **Halo Design** | `halo design` and Studio's Design section: a design project on disk, a turn with the craft apps as tools, knobs without a model call. |
 | **Per-model tool-call repairs** | Fourteen model families' quirks are repaired on the fly: Kimi's `functions.{name}:{idx}` ids, GLM's always-on thinking, Qwen's system-message rules, DeepSeek's reasoning echoes. Gateway quirks are learned once per model and remembered (`halo rules`). |
 | **Measured, not guessed** | `/stats` per model and per tool, price/context/speed columns in the picker, per-role cost attribution, and `halo preflight` canaries each lane before a long run. |
 | **Filter-aware routing** | A provider content filter is not an answer: a filtered reply never persists as one, and the request reroutes to a fallback lane you choose. |
 | **Permissions without a nanny** | Auto mode allows everything except *your own* deny/ask rules. Rules use Claude Code's own grammar, in the same files. |
-| **The wizard** | `halo init`: provider, model, permission mode, theme, lineup, orgs. Every step explains itself and `halo doctor` ends each warning with its fix. |
+| **The wizard** | `halo init`: provider, model, permission mode, theme, lineup. Every step explains itself and `halo doctor` ends each warning with its fix. |
 | **MCP deep dive** | stdio/HTTP/SSE servers from every Claude Code scope, `D` diagnoses a failing server end to end, claude.ai connectors bridge through as tools. |
 | **Balances and picker columns** | Per-provider balances in the status bar (remaining first); free variants sit beside their paid rows in the picker. |
-| **Remote control from Signal** | Prompts, streamed replies, permission cards answered by number, pairing, signed commands, a kill switch. |
-| **Code review** | `/review` and `halo review`: parallel reviewers, a judge, ranked cards or `--json`, an optional `--fix` pass. |
-| **Themes with levels** | DOOM, Metroid and Mario: a palette, themed borders and an animated level above the prompt; the status bar stays the plain one, so model and cost are always in view. |
-| **Privacy audit** | `halo audit privacy` scans the tree for real paths, hosts and key-shaped strings; the release refuses to ship one red line. |
+| **Privacy audit** | `halo audit privacy` scans the tree (or, with `--history`, every commit) for real paths, hosts and key-shaped strings, one line per finding. |
 | **CI and release script** | Every push runs the three suites on Linux and Windows; `scripts/release.py` versions, tags, pushes and refreshes both installs. |
 
 ## Documentation
@@ -464,23 +347,25 @@ line on when to read it. The longest docs are split by task; their entry pages b
 | Document | What it covers |
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | One-page install, upgrade and update guide |
+| [docs/STUDIO.md](docs/STUDIO.md) | Halo Studio, the browser console: its sections, the security model, SSH, every shortcut |
+| [docs/STUDIO-sections.md](docs/STUDIO-sections.md) | How each Studio section works: Session's Live column, map and Cost; the Roles canvas and its glow |
+| [docs/FLEET.md](docs/FLEET.md) | Fleet: what each session and agent exposes to Studio, and the controls |
+| [docs/MISSIONS.md](docs/MISSIONS.md) | One goal for the whole fleet, and following its parts |
+| [docs/ORCHESTRA.md](docs/ORCHESTRA.md) | Several agents writing the same files: the plan, the lanes, the gate and the coach |
+| [docs/TEAM.md](docs/TEAM.md) | A team file: who works on a repo, where their work lands and in which order |
 | [docs/HANDBOOK.md](docs/HANDBOOK.md) | The long-form guide: configuration, providers, permissions, steering, hooks, skills, MCP, sessions, themes, telemetry |
 | [docs/GLOSSARY.md](docs/GLOSSARY.md) | Every word Halo uses, one paragraph each (`halo explain <word>`) |
 | [docs/COMMANDS.md](docs/COMMANDS.md) | Every CLI command and flag |
 | [docs/SLASH-COMMANDS.md](docs/SLASH-COMMANDS.md) | Every slash command in the TUI |
 | [docs/CONFIG.md](docs/CONFIG.md) | Config keys, paths and environment variables |
-| [docs/MODELS.md](docs/MODELS.md) | Model families, effort levels, per-route rules and the subscription consent |
-| [docs/LOCAL-MODELS.md](docs/LOCAL-MODELS.md) | Ollama, Hugging Face, the OpenAI API and Codex, end to end |
+| [docs/MODELS.md](docs/MODELS.md) | Model families, effort levels and per-route rules |
+| [docs/LOCAL-MODELS.md](docs/LOCAL-MODELS.md) | Ollama, Hugging Face and the OpenAI API, end to end |
 | [docs/DATABRICKS.md](docs/DATABRICKS.md) | Databricks endpoints, API types and the work matrix |
 | [docs/AGENTS.md](docs/AGENTS.md) | Agent bios and lineups: the 90-second version, then the field reference |
-| [docs/STUDIO.md](docs/STUDIO.md) | Halo Studio, the browser GUI: Roles, Org and Design modes, the security model, SSH, every shortcut |
 | [docs/DESIGN.md](docs/DESIGN.md) | Halo Design: the project on disk, a design turn, the craft apps, knobs, systems, exports, the handoff |
-| [docs/PAPERCLIP.md](docs/PAPERCLIP.md) | Paperclip: your lineups as a company of agents |
 | [docs/ROLES.md](docs/ROLES.md) | Roles and the role table |
 | [docs/GOVERNOR.md](docs/GOVERNOR.md) | The Governor: shared per-host rate limiting, failover and lanes |
-| [docs/REVIEW.md](docs/REVIEW.md) | `/review` and `halo review` |
-| [docs/REMOTE.md](docs/REMOTE.md) | The per-session control socket, its agent-level commands, and remote control over Signal |
-| [docs/FLEET.md](docs/FLEET.md) | Fleet (3.0.5.0): what each session and agent exposes to Studio, and the controls |
+| [docs/REMOTE.md](docs/REMOTE.md) | The per-session control socket and its agent-level commands |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | "Is it frozen?", GLM pauses, copy and paste, connect timeouts |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | How the pieces fit together |
 | [docs/MEDIA.md](docs/MEDIA.md) | How the front-page pictures are made and regenerated |
@@ -492,9 +377,11 @@ line on when to read it. The longest docs are split by task; their entry pages b
 Three hermetic, exit-code-gated suites run on Windows, WSL and a Kali VM before every
 commit, and in CI on every push: `python test_bridge.py` (the proxy), `python
 tests/run_all.py` (the harness) and `python test_tui.py` (the TUI, through Textual's
-headless pilot). Mock servers stand in for every provider, a fake `claude` stands in for
-the subscription route, and guards fail the run if a test touches the real `~/.halo` or
-`~/.claude`. See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+headless pilot). Studio is tested in headless Chrome over fixture data (the full tier of
+`tests/run_all.py`), and CI rebuilds its bundle and fails on a stale one. Mock servers
+stand in for every provider, a fake `claude` stands in for the claude.ai connectors
+bridge, and guards fail the run if a test touches the real `~/.halo` or `~/.claude`. See
+[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
 ## Contributing and security
 

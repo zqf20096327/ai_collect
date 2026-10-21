@@ -47,10 +47,10 @@
 打开桌面应用的**插件**页，点击**添加插件**，在**包名或地址**中填入**带版本号**的包名：
 
 ```text
-dsh-packycode-api@1.3.6
+dsh-packycode-api@1.3.7
 ```
 
-在**安装源**中选择**官方源**，然后点击**安装**。`1.3.6` 是写这份说明时的最新版，当前最新版本号以 [npm 页面](https://www.npmjs.com/package/dsh-packycode-api) 为准。
+在**安装源**中选择**官方源**，然后点击**安装**。`1.3.7` 是写这份说明时的最新版，当前最新版本号以 [npm 页面](https://www.npmjs.com/package/dsh-packycode-api) 为准。
 
 > **一定要带版本号。** 只填 `dsh-packycode-api` 时，安装前的提示显示的是 npm 上的最新版，但 DSH 自带的 pnpm 默认只安装发布满 24 小时的版本，实际装上的可能是好几个版本之前的旧版，而安装提示里看不出这一点。填写精确版本时，pnpm 会直接安装这个版本，并自动把它加入 profile 的 `minimumReleaseAgeExclude`。装好后可以在 **设置 → PackyCode → 插件版本** 核对「当前版本」。
 
@@ -71,7 +71,7 @@ dsh-packycode-api@1.3.6
 
 桌面应用的**插件**页可以看到已安装状态与版本，也可以在那里启用、停用或卸载。
 
-**仅用于非 desktop profile：** `dsh plugin --profile <name> add dsh-packycode-api@1.3.6`。不要对 `desktop` 使用它 —— CLI 会直接拒绝（`profile "desktop" is managed exclusively by the Electron application`）。
+**仅用于非 desktop profile：** `dsh plugin --profile <name> add dsh-packycode-api@1.3.7`。不要对 `desktop` 使用它 —— CLI 会直接拒绝（`profile "desktop" is managed exclusively by the Electron application`）。
 
 本地开发要加 `link:` 前缀：`dsh plugin --profile <name> add link:/path/to/dsh-packycode-api`。**不要直接写路径（或 `file:`）** —— 那样的安装会把整个仓库目录（连同 `node_modules`）复制进 profile，之后它会在 profile 内部挡住 DSH 自带的包，插件看起来像没装，见「常见问题」。已经那样装过的话，先卸载再按上面的方式重装。
 
@@ -89,7 +89,7 @@ dsh-packycode-api@1.3.6
 
 **看余额。** 「账户与 Key」里每个 Key 显示它自己的剩余、已用与额度（额度 = 剩余 + 已用），不限额的 Key 显示「不限额度」；多个 Key 不相加成合计。API Key 只能读到自己的额度，读不到 PackyCode 账号的总余额，账号余额请到 PackyCode 控制台查看。读失败的 Key 会在它那一行注明原因；某个 Key 这次读失败但之前读到过，会继续显示上次的余额并注明读取时间（输入框里显示为 `≈US$…`），重启 DSH 后才清空。输入框右侧只在选中 PackyCode 模型时显示当前 Key 的剩余额度。「刷新」会跳过约 60 秒的缓存。默认模型接口是 `https://cf.api.fan`，余额接口是 `https://www.packyapi.ai`，可在「高级：接口地址」里改。旧默认值 `https://www.packyapi.com` 在国内网络下 DNS 被污染、直连会 `fetch failed`，即使设置里保存的是它，插件也会先试 `.ai`。
 
-**用 Claude。** 直接选择三个 Claude 模型之一。Key 在 `cc` 分组时，插件用本机的官方 Claude Code CLI 发出请求，需要先在 **设置 → PackyCode → Claude Code CLI** 一键安装（或自行 `npm install -g @anthropic-ai/claude-code --allow-scripts=@anthropic-ai/claude-code`），版本过低时在同一处点「更新 Claude Code CLI」；`cc-sale`、`cc-expensive`、`claude-officially` 等分组直接走插件内 HTTP，不需要 CLI。「账户与 Key」里每个能用 Claude 的 Key 会标出「Claude 经官方 CLI」或「Claude 经 HTTP」，通道只由分组决定，不能手动切换。无论哪条通道，工具都由 DSH 执行并按 DSH 的权限审批，计划模式、提问、待办、子代理、附件、思考档位和历史都和其它模型一样。详见下方「Claude Code CLI 通道」。
+**用 Claude。** 直接选择三个 Claude 模型之一。Key 在 `cc` 分组时，插件用本机的官方 Claude Code CLI 发出请求，需要先在 **设置 → PackyCode → Claude Code CLI** 一键安装（或自行 `npm install -g @anthropic-ai/claude-code --allow-scripts=@anthropic-ai/claude-code`），版本过低或有新版本时在同一处点「更新 Claude Code CLI」；`cc-sale`、`cc-expensive`、`claude-officially` 等分组直接走插件内 HTTP，不需要 CLI。「账户与 Key」里每个能用 Claude 的 Key 会标出「Claude 经官方 CLI」或「Claude 经 HTTP」，通道只由分组决定，不能手动切换。无论哪条通道，工具都由 DSH 执行并按 DSH 的权限审批，计划模式、提问、待办、子代理、附件、思考档位和历史都和其它模型一样。详见下方「Claude Code CLI 通道」。
 
 **网页搜索。** DSH 的 `web_search` 默认调用 DeepSeek 官方接口（用 `DEEPSEEK_API_KEY` 计费）。在 **设置 → PackyCode → 网页搜索** 里可以改走 PackyCode：
 
@@ -139,7 +139,7 @@ PackyCode 的 `cc` 分组（「claude code专用」）只接受官方 Claude Cod
 - **提示与历史保持 DSH 原样。** DSH 的系统提示追加在 CLI 官方提示之后；历史（文字、图片、带签名的思考、工具调用与结果）由插件写成 CLI 的会话记录后续接，思考档位以 `--effort` 传入。
 - **一个会话一个常驻进程。** 同一个 DSH 会话、同一模型复用一个 CLI 进程：工具结果和下一轮消息直接续接，请求前缀不变，网关缓存照常命中。历史被压缩、切换计划模式或换 Key 时，用 DSH 的完整历史恢复一个新进程；会话标题和压缩用一次性进程。空闲 20 分钟的进程自动结束，最多同时保留 8 个。
 - **与你自己的 Claude Code 隔离。** 使用独立配置目录 `~/.dsh/packycode-claude-cli`，不读取 `~/.claude` 的设置、CLAUDE.md、MCP 配置和登录状态；只把插件保存的 Key 交给子进程。自动更新、遥测、自动压缩、自动记忆和模型回退都关闭，失败重试交还给 DSH 的重试策略（会按 Key 轮换）。
-- **版本过低一键更新。** 插件需要 Claude Code 2.1.259 或更新版本（插件传入的 `--permission-prompts` 从这一版开始提供）。更旧的 CLI 在请求发出前就被拦下并说明原因，CLI 卡片标出「版本过低」并提供「更新 Claude Code CLI」：官方安装器（`~/.local/bin/claude`）装的执行 `claude update`；npm 全局安装的执行 `npm install -g @anthropic-ai/claude-code@latest --allow-scripts=@anthropic-ai/claude-code`，因为 npm 12 默认不运行安装脚本，而 `claude update` 在 npm 安装上不会放行脚本，会留下一个无法运行的 CLI。只有点这个按钮时才会更新你的 Claude Code。
+- **版本过低一键更新。** 插件需要 Claude Code 2.1.259 或更新版本（插件传入的 `--permission-prompts` 从这一版开始提供）。更旧的 CLI 在请求发出前就被拦下并说明原因，CLI 卡片标出「版本过低」并提供「更新 Claude Code CLI」：官方安装器（`~/.local/bin/claude`）装的执行 `claude update`；npm 全局安装的执行 `npm install -g @anthropic-ai/claude-code@latest --allow-scripts=@anthropic-ai/claude-code`，因为 npm 12 默认不运行安装脚本，而 `claude update` 在 npm 安装上不会放行脚本，会留下一个无法运行的 CLI。CLI 能用但不是最新版时，卡片也会提示新版本并提供同一个按钮：插件在本机读取 npm 上 `@anthropic-ai/claude-code` 的 `latest`（与官方安装器的 `latest` 通道是同一版本），30 分钟内最多读一次，点「重新检测」立即重读；读不到时不提示。只有点这个按钮时才会更新你的 Claude Code。
 - **出错会说清原因。** 未安装 CLI、CLI 版本过旧、官方 CLI 发出的请求仍被网关拒绝，分别给出说明和下一步，不会改走其它通道或提供商，也不会停用 Key。
 
 已知差异：新进程启动约 0.3–1 秒；在一轮工具调用中途恢复进程时，CLI 会按官方行为在工具结果后附上一句 “Continue from where you left off.”。需要 Claude Code 2.1.259 或更新版本（实测 2.1.295 与 2.1.303）。Windows 上 Claude Code 还需要 Git for Windows。
@@ -216,9 +216,9 @@ DeepSeek Flash 走网关的 Responses 接口（`/api/pricing` 列出 `openai-res
 
 ## 更新与卸载
 
-> **从 1.3.2 或更早版本升级：** 请在插件页填写 `dsh-packycode-api@1.3.6` 安装，不要点旧版设置页里的「更新插件」。旧按钮安装时会绕过 pnpm 的发布冷却期：装到的版本如果发布还不满 24 小时，这个 profile 在它满 24 小时之前就装不了其他插件。装好并重启后，按钮就换成了修好的版本，以后直接点即可。
+> **从 1.3.2 或更早版本升级：** 请在插件页填写 `dsh-packycode-api@1.3.7` 安装，不要点旧版设置页里的「更新插件」。旧按钮安装时会绕过 pnpm 的发布冷却期：装到的版本如果发布还不满 24 小时，这个 profile 在它满 24 小时之前就装不了其他插件。装好并重启后，按钮就换成了修好的版本，以后直接点即可。
 
-**更新：** 打开 **设置 → PackyCode**，有新版本时点「更新插件」。它会在当前 profile 目录里用 DSH 自带的 pnpm 安装精确版本，并读回 `package.json` 确认版本落地。安装遵守 pnpm 的发布冷却策略，不会绕过它：默认情况下 pnpm 会直接装上这个版本，并把它记进 profile 的 `minimumReleaseAgeExclude`；如果你给 pnpm 配了更严格的策略，按钮会提示什么时候可以更新。本地 `link:` 开发安装不会出现这个按钮。完成后完全退出并重新打开桌面应用。只刷新页面不会重载 Host。也可以在**插件**页重新安装，同样要填写带版本号的包名（例如 `dsh-packycode-api@1.3.6`），否则装上的可能是发布满 24 小时的旧版。
+**更新：** 打开 **设置 → PackyCode**，有新版本时点「更新插件」。它会在当前 profile 目录里用 DSH 自带的 pnpm 安装精确版本，并读回 `package.json` 确认版本落地。安装遵守 pnpm 的发布冷却策略，不会绕过它：默认情况下 pnpm 会直接装上这个版本，并把它记进 profile 的 `minimumReleaseAgeExclude`；如果你给 pnpm 配了更严格的策略，按钮会提示什么时候可以更新。本地 `link:` 开发安装不会出现这个按钮。完成后完全退出并重新打开桌面应用。只刷新页面不会重载 Host。也可以在**插件**页重新安装，同样要填写带版本号的包名（例如 `dsh-packycode-api@1.3.7`），否则装上的可能是发布满 24 小时的旧版。
 
 **从本地路径安装切回官方源时，必须先卸载。** 「更新」是 `pnpm add`，它只重写包目录里的文件，不会删除更早一次本地路径安装留在包目录内的 `node_modules`；那份旧依赖会继续挡住 DSH 自带的包，插件行加载失败且看不出原因。「卸载」执行的是 `pnpm remove`，会删掉整个包目录，重装才是干净的。用 `node scripts/install-check.mjs` 可以确认当前 profile 是否处于这个状态。
 
@@ -234,7 +234,7 @@ ls ~/.dsh/profiles/desktop/node_modules/dsh-packycode-api/node_modules
 
 有输出就是残留：从 npm 安装的包不会自带 `node_modules`，这一份通常来自更早一次「本地路径」安装（`file:` 或直接写路径，而不是 `link:`）。它位于 profile 目录内部，而 DSH 解析插件导入时优先使用 profile 内的副本，所以插件拿到的仍是那份旧依赖 —— 例如 `@deepseek-ai/schemastery` 3.18.2 没有 `Schema.volatile()`，模块在导入阶段就抛错。导入失败时 Loader 不会为这一行创建 fiber，客户端 bundle 也不会被组合，于是模型路由、RPC 通道和设置页全都不会出现。
 
-修复：到**插件**页**卸载**本插件，再用带版本号的包名重新**安装**（例如 `dsh-packycode-api@1.3.6`），然后完全退出并重新打开桌面应用。卸载执行的是 `pnpm remove`，会删掉整个包目录；直接重装或点「更新」只重写文件，不会清掉这份残留。也可以手动删掉上面那个 `node_modules` 再重启。
+修复：到**插件**页**卸载**本插件，再用带版本号的包名重新**安装**（例如 `dsh-packycode-api@1.3.7`），然后完全退出并重新打开桌面应用。卸载执行的是 `pnpm remove`，会删掉整个包目录；直接重装或点「更新」只重写文件，不会清掉这份残留。也可以手动删掉上面那个 `node_modules` 再重启。
 
 **首次安装后，设置页每张卡片都显示 `transport failure for /packycode-api/…: HTTP 405`？** 实际装上的是 1.1.6 或更早的版本，通常是因为安装时只填了包名：安装提示显示的是最新版，pnpm 实际装的却是发布满 24 小时的旧版（见「安装插件」）。这些旧版要等 DSH 重启、重建它的 `connection` 服务之后，才能注册设置通道。所以首次安装后 `/packycode-api` 通道还不存在，请求落到静态页面，返回 405；模型路由和设置页本身照常加载。1.1.7 起首次安装不需要重启。先确认装上的版本：
 

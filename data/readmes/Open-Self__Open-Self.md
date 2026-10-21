@@ -134,6 +134,85 @@ OpenSelf is also listed on the MCP Registry as `io.github.Open-Self/openself`
 (see [`server.json`](./server.json)), so registry-aware clients can discover it
 directly.
 
+## OpenSelf app
+
+For an approachable local app, run:
+
+```bash
+openself app --data-dir ~/.openself
+# From a source checkout: node src/cli/index.js app --data-dir ./data
+```
+
+Open the bootstrap URL printed in your terminal. Home guides you through adding a memory,
+reviewing agent proposals, previewing scoped context and inspecting access history. Browser
+Back/Forward and reload preserve the selected view. The existing `dashboard` command remains
+available and opens Memories directly. No account is needed for the vault.
+
+### Context Lab
+
+Open **Context Lab** to compare two compiled context packages before sharing anything with an
+agent. Change character budgets, scope or an ISO `asOf` date; both sides run through the existing
+compiler against one frozen SQLite read snapshot. Blank dates use the same current timestamp.
+The UI shows selected memory IDs, content hashes and selection reasons, plus actual character
+counts and clearly estimated tokens (characters / 4, not a provider tokenizer or bill).
+
+- Uses local lexical retrieval and the compiler's default local policy (private sensitivity
+  ceiling). It does not emulate every MCP client's configured permissions, call a model, or
+  change memories. Superseded/forgotten records retain the compiler's existing privacy rules.
+- Owner-only diagnostics remain separate from the context blocks. A hash establishes identity,
+  not factual accuracy or evidence that a model answer will improve.
+- Export a regression scenario only after reviewing the privacy warning. It includes request
+  metadata (query/task/scope), IDs and hashes, **not memory plaintext**. Metadata can still be
+  sensitive. No form or context data is saved to browser storage.
+- Replay checks the vault baseline/compiler version and expected context hashes. If the vault
+  changed, it fails visibly instead of reporting a false successful comparison. The file is
+  a regression recipe, not a vault backup or portable plaintext dataset. The conservative
+  fingerprint scans vault tables, so cost grows with vault size and even unrelated vault changes
+  invalidate old scenarios.
+- Cancelling, editing parameters or navigating away invalidates pending results. Reopening or
+  reloading starts clean. Exporting or importing a local file never uploads it to an AI provider.
+
+### Workspace rehearsal (simulation only)
+
+The **Workspace rehearsal** view previews selected context and exercises explicit start consent,
+synthetic streaming, cancellation and mock proposal review. It never starts Codex, calls a model,
+runs shell/network tools, or saves mock proposals into your vault. Live execution is unavailable,
+even when the optional Codex connection is signed in. This is a control-flow prototype, not proof
+that an agent completed the entered task. See [the boundaries and live-adapter prerequisites](docs/workspace-rehearsal.md).
+
+### Optional Codex connection
+
+Install the official [Codex CLI](https://learn.chatgpt.com/docs/cli) separately, then launch
+`openself app --codex`. The connection is **off by default**. In Home, select **Connect ChatGPT**,
+review the consent dialog, then complete sign-in on OpenAI's site. Only a matching completed
+login and verified account response show Connected. Cancel and Disconnect are available.
+
+This milestone uses the official **local Codex app-server managed-auth protocol**, not a new
+OpenSelf OAuth service or a generic “Sign in with ChatGPT” implementation. The CLI owns sign-in
+and credential storage in a separate `<data-dir>/codex-app` home; OpenSelf does not import your
+existing Codex credentials or expose tokens to the browser. Use a recent Codex CLI supporting
+`account/read`, `account/login/start`, `account/login/cancel`, and `account/logout`.
+
+- The bridge invokes a native `codex` executable without a shell. Windows npm-only `.cmd` launchers
+  are not supported by this bridge yet; Windows vault/dashboard functionality remains supported.
+  Live sign-in has not been validated on any platform in this test run.
+- Sign-in does not send vault memories, start model requests, or run coding tasks. MCP client
+  setup and context-access policy remain separate. This is connection management, not yet a chat UI.
+- Codex eligibility and usage limits depend on the account and plan. No API credit or unlimited
+  usage is implied. Account access has to be verified by the user at sign-in.
+- Keep the app on a trusted **local machine**. It binds to loopback, requires an authenticated
+  browser session, and requires exact same-origin JSON requests for Codex controls. Do not expose
+  this managed-auth surface as a public or commercial hosted service.
+- Cloud development and mocked tests do not establish a real account connection. Browser login
+  callbacks may not work across remote hosts. This release does not transfer credentials to a VM.
+- OpenAI recommends [Sign in with ChatGPT for open-source apps](https://developers.openai.com/siwc/token-sharing-open-source)
+  for new integrations. A future SIWC adapter must retain explicit consent and provider-required
+  registration; it is not implemented or simulated as successful here.
+
+Protocol and deployment guidance: [app-server authentication](https://learn.chatgpt.com/docs/app-server),
+[Codex authentication](https://learn.chatgpt.com/docs/auth), and
+[SIWC self-hosted VMs](https://developers.openai.com/siwc/token-sharing-open-source/self-hosted-vms).
+
 ## Local dashboard
 
 Launch the Context Vault dashboard:

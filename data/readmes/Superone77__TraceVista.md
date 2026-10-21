@@ -69,6 +69,10 @@ Open an example and follow its decisions from the overview down to the original 
 Install skills/tracevista-skill from https://github.com/Superone77/TraceVista
 ```
 
+Prefer your agent's plugin installer? See [agent integrations](docs/AGENT-INTEGRATIONS.md)
+for Claude Code, Codex, Cursor, Gemini CLI, OpenCode and Pi, or the
+[DeepSeek Harness plugin](integrations/deepseek-harness/README.md) for conversion from a session.
+
 ### 2. Convert and open
 
 ```text
@@ -76,7 +80,7 @@ Use tracevista-skill to convert [trajectory file or folder] into a complete .age
 then open https://tracevista.pages.dev/ in my browser and import it.
 ```
 
-Use `$tracevista-skill` in Codex or `/tracevista-skill` in Claude Code. The skill reads the logs, builds the state map and summaries, validates the export, and opens it in the viewer. You can ask the agent to refine the same map as you explore.
+Use `$tracevista-skill` in Codex or `/tracevista-skill` in Claude Code (`/tracevista:tracevista-skill` when installed as a plugin). The skill reads the logs, builds the state map and summaries, validates the export, and opens it in the viewer. You can ask the agent to refine the same map as you explore.
 
 Its [writing guide](skills/tracevista-skill/references/clear-writing.md) borrows from ASD-STE100: concrete verbs, consistent terms, and one idea per sentence. Explanations connect what the agent did, what the evidence showed, and what it chose next, with the technical conditions intact.
 
@@ -212,6 +216,19 @@ TraceVista pairs a **React Flow viewer** with a **trajectory conversion skill**.
 - [Code of conduct](CODE_OF_CONDUCT.md) — community standards and reporting concerns.
 
 Have an interesting trajectory or an idea for the viewer? [Open an issue](https://github.com/Superone77/TraceVista/issues).
+
+## Citation
+
+If you use TraceVista in your work, please cite:
+
+```bibtex
+@misc{yang2026tracevista,
+  author = {Wanqi Yang and Xia Chen and Qilong Huang and Mei Xie and André Borrmann and Shiwei Liu},
+  title = {{TraceVista}: Understanding Agent Trajectories through Hierarchical Exploration},
+  year = {2026},
+  howpublished = {\url{https://github.com/Superone77/TraceVista}}
+}
+```
 
 ## License
 

@@ -143,7 +143,9 @@ Secure MCP Tunnel / VPN / authenticated reverse proxy
   pipelines, `&&`/`||`/`;`, command substitution, subshells - not just the first word, and can't be bypassed with
   `ls && curl … | sh` or `ls $(rm …)`.
 - A resilient PTY: a shell that won't return to a prompt (even after Ctrl-C) is auto-reset at the same cwd/mode, child
-  processes are reaped on drop, and prompt detection is robust to a custom `PS1`. Opt into `zsh` with `WINX_SHELL=zsh`.
+  processes are reaped on drop, and prompt detection is robust to a custom `PS1`. Opt into `zsh` with `WINX_SHELL=zsh`,
+  or into PowerShell 7 with `WINX_SHELL=pwsh` (same completion marker, exit codes and cwd tracking; one pipeline per
+  call unless `allow_multi`).
 - File reads with WCGW-style line ranges (`file.rs:10-40`, `file.rs:10-`, `file.rs:-40`). Active files are tracked
   and prioritized in the repository context across calls.
 - One public `EditFiles` tool for replace, SEARCH/REPLACE, revision-bound line patch, atomic batches, verification, and
@@ -152,8 +154,8 @@ Secure MCP Tunnel / VPN / authenticated reverse proxy
   verification. A planning failure writes nothing. A rare mid-commit I/O failure stops immediately and reports the
   committed prefix instead of pretending the whole batch rolled back.
 - Tree-sitter code navigation via `CodeMap`: a token-budgeted symbol map of a file or the whole repo, or a
-  definition/reference lookup for a symbol name - the semantic view that plain `grep` can't give you, across 13
-  languages.
+  definition/reference lookup by symbol name across 13 languages. It is syntax-aware name matching, not resolved
+  symbol identity: two types with the same method name both match, so treat it as a fast map, not a rename oracle.
 - `ContextSave` for handing a task summary plus its files to the next session - including workspace context, active
   files, git status/diff, and terminal sharing for proper resumption. Resuming reopens the saved project root and
   token-caps the restored memory so it never overflows the context window.
@@ -222,7 +224,7 @@ weaken or strengthen the shell/file authority granted by the initialized Winx mo
 
 | Tool              | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 |-------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Initialize`      | Boots the workspace, picks the mode, hands you an inseparable `thread_id`/`workspace_root` pair plus a bounded `temporary_artifact_dir` for session-local derived helpers. Call it once unless a local MCP client exposes Roots, in which case Winx can bootstrap automatically. Repeated `first_call` requests reattach without rebuilding or resending unchanged workspace context. Use `reset_shell` only after `BashCommand` reports a shell-runtime failure: the first recovery reset is allowed, while another within five minutes and without new failure evidence returns `reset_skipped_healthy` and preserves the PTY. If adapter state disappears, `reset_shell` or `user_asked_mode_change` safely recovers the same intended project as a first call and reports `initialize_recovered_missing_session`. A request that tries to rebind an already-bound remote conversation is terminal: keep the current pair for allowed external targets or start a new conversation for another project. With no workspace path it creates a scratch playground; resuming a task (`task_id_to_resume`) reopens its saved project root. |
+| `Initialize`      | Boots the workspace, picks the mode, hands you an inseparable `thread_id`/`workspace_root` pair plus a bounded `temporary_artifact_dir` for session-local derived helpers. Call it once unless a local MCP client exposes Roots, in which case Winx can bootstrap automatically. Repeated `first_call` requests reattach without rebuilding or resending unchanged workspace context. Use `reset_shell` only after `BashCommand` reports a shell-runtime failure: the first recovery reset is allowed, while another within five minutes and without new failure evidence returns `reset_skipped_healthy` and preserves the PTY. If adapter state disappears, `reset_shell` or `user_asked_mode_change` safely recovers the same intended project as a first call and reports `initialize_recovered_missing_session`. A request that tries to rebind an already-bound remote conversation is terminal: keep the current pair for allowed external targets or start a new conversation for another project. With no workspace path it creates a scratch playground; resuming a task (`task_id_to_resume`) reopens its saved project root. `type="status"` with the bound pair is a read-only probe: workspace, cwd, mode, runtime, guardian identity and whether a command is running, without touching the shell. |
 | `BashCommand`     | Runs commands, polls long-running ones, sends Enter/Ctrl-C, and drives TUIs. Related finite fail-fast checks can be composed with `&&` in one call. `wait_policy` is generic: `adaptive` (default) keeps short calls inline and promotes an already-running foreground command when Tasks are available; `until_complete` is only for a finite foreground command; `return_early` always stays inline. An incompatible policy is a recoverable tool result with corrected retry arguments. Supports `is_background`, `status_check`, input actions, `screen`, and `wait_for_turn`. Foreground and background PTYs export `WINX_WORKSPACE_ROOT` and the managed helper directory as `WINX_TEMP_DIR`; structured results include post-action usage and stale-reclamation counters. Fresh over-budget sessions require explicit cleanup before ordinary commands continue. Use it for commands, formatters, and generators; ordinary source reads and edits belong to `ReadFiles`/`EditFiles`. When a foreground command finishes, its runtime-owned state reports the real exit code. |
 | `ReadFiles`       | One or many files, with line numbers. Batched reads use a bounded parallel worker pool while preserving request order and read-before-edit coverage. Each file also returns an opaque revision and its exact visible ranges for the default existing-file `line_patch` flow. Append `:10-40` to a path for a range. Token truncation reports the exact continuation and never records unseen lines. |
 | `EditFiles`       | Creates, changes, or undoes one or many files. One edit call may contain up to 100 unique targets and validates the full batch before writing. Each entry selects an explicit mode: revision-bound `line_patch` is the default after `ReadFiles`, `search_replace` is reserved for intentional exact text anchoring, `replace` handles new files or deliberate whole-file rewrites, and `undo` uses the exact returned `undo_id`. Optional `verify_command` runs once after commit; a failed check never repeats the edit. |
@@ -328,10 +330,14 @@ On every platform this installs `winx-code-agent`, `winxd`, and `winx-guardian` 
 starts one guardian per shell session. Every config snippet below assumes that directory is on `$PATH`; with a sterile
 client environment, use the absolute path returned by `which winx-code-agent`.
 
-Needs Rust 1.88+, bash, and a real terminal. The durable daemon runtime runs on Linux, macOS, WSL2, and native
+Needs Rust 1.90+, bash, and a real terminal. The C#, C++, Ruby, PHP, Elixir, and Lua grammars are behind the
+default-on `languages-extra` feature; `cargo install winx-code-agent --no-default-features` drops about 13 MB from
+the adapter when `CodeMap` only needs the other languages. The durable daemon runtime runs on Linux, macOS, WSL2, and native
 Windows 10/11 (named pipes under `%LOCALAPPDATA%\winx\run`, job objects for the shell tree, no WSL involved). On
 native Windows the shell is the Git for Windows `bash.exe` (resolved from the standard install locations or `PATH`;
-the WSL launcher in `System32` is never used), so install Git for Windows before running `BashCommand`. GitHub
+the WSL launcher in `System32` is never used). Without Git for Windows, Winx drives PowerShell instead (`pwsh`, else
+Windows PowerShell 5.1) with the same completion contract; `WINX_SHELL=pwsh` selects it explicitly, and restricted
+mode still requires bash. GitHub
 Release downloads are `.tar.gz` bundles on Unix and a `.zip` bundle on Windows, each containing all three sibling
 binaries.
 
@@ -641,7 +647,7 @@ List MCP tools in your client. You should see 7 entries with `full`, 5 with `cod
 aliases should not. Start with `Initialize` unless a local client exposes MCP Roots and Winx bootstraps from them; preserve its
 returned `thread_id`/`workspace_root` pair for every later call.
 
-## Durable session lifecycle (Unix)
+## Durable session lifecycle
 
 The daemon runtime caps live guardians at 32 by default and uses tiered idle retention: a shell that has never run a
 command expires after 30 minutes, while a used shell expires after 24 hours. A foreground command or live background
@@ -672,7 +678,16 @@ winx-code-agent doctor
 
 # Aggregate the latest privacy-safe tool/HTTP events and audit recovery invariants
 winx-code-agent report --last 10000 --since-minutes 120
+
+# Download the latest release bundle, verify SHA256SUMS, and swap the three binaries in place
+winx-code-agent update            # --check only reports; --tag vX.Y.Z pins a release
 ```
+
+`update` uses the system `curl` and `tar` (bsdtar on Windows also reads the zip bundle), installs next to the running
+executable, and leaves running daemons on the old build until `restart-daemon` replaces `winxd`; guardians switch as
+their sessions end. `doctor` reports `daemon_topology.last_exit`, the reason the control daemon last stopped on
+purpose (a `winx.shutdown` request, a signal, or a listener failure), so a stale socket without a record means a
+hard kill.
 
 The quota and TTL are enforced by `winxd`, not just by one MCP adapter, so reconnecting clients and multiple adapters
 share the same resource boundary. Under quota pressure, Winx first reclaims the oldest inactive guardian that has never
@@ -772,6 +787,7 @@ requirements.
 | Request timeout              | 120 seconds                                                    |
 | Concurrent requests          | 32 globally                                                    |
 | Rate limit                   | 120 requests/minute per source IP                              |
+| Principal rate limit         | 120 requests/minute per authenticated principal                |
 | Invalid authentication delay | 100 ms                                                         |
 | Query token                  | Disabled; requires `--allow-query-token`                       |
 | Session affinity             | `workspace`; optional `conversation` or caller-owned `thread`  |
@@ -829,7 +845,7 @@ All optional - Winx works out of the box without any of these. Boolean variables
 | `WINX_KEEP_TAIL_PIPE`                                      | Set to `1` to keep a trailing `\| tail …` instead of stripping it. Winx truncates output server-side, so by default it drops a redundant trailing `tail` (wcgw parity).                                                                                                                                                                                                                                                                                 |
 | `WINX_USE_SCREEN` / `WINX_ATTACH_TERMINAL`                 | Run the shell inside `screen`/`tmux` so you can attach to the live session. Set to `screen`, `tmux`, or any truthy value; Winx prints an attach hint on `Initialize`.                                                                                                                                                                                                                                                                                   |
 | `WINX_OPEN_CONTEXT`                                        | Set to `1` to open the saved context file in your default app after `ContextSave`.                                                                                                                                                                                                                                                                                                                                                                      |
-| `WINX_SHELL`                                               | Set to `zsh` to run the session under zsh instead of bash (opt-in; bash stays the default). Falls back to bash if zsh isn't on `PATH` or the mode is restricted. An absolute path selects that exact shell binary; `WINX_SHELL_ARGS` appends whitespace-separated arguments (for example `-i --login`). On native Windows the default is the Git for Windows `bash.exe`. |
+| `WINX_SHELL`                                               | Set to `zsh` to run the session under zsh instead of bash (opt-in; bash stays the default). Falls back to bash if zsh isn't on `PATH` or the mode is restricted. An absolute path selects that exact shell binary; `WINX_SHELL_ARGS` appends whitespace-separated arguments (for example `-i --login`). On native Windows the default is the Git for Windows `bash.exe`. `pwsh` or `powershell` selects PowerShell 7 (Windows PowerShell 5.1 as the Windows fallback); restricted mode always keeps bash. |
 | `WINX_SERVER_INSTRUCTIONS`                                 | Extra operator instructions appended to the MCP handshake and every `Initialize` response, after Winx's built-in orchestration contract.                                                                                                                                                                                                                                                                                                                |
 
 ## Verifying releases
@@ -849,7 +865,7 @@ cargo fmt --all -- --check
 cargo check --all-features --locked
 cargo clippy --all-targets --all-features --locked -- -D warnings
 cargo test --all-features --locked
-cargo +1.88.0 check --all-features --locked
+cargo +1.90.0 check --all-features --locked
 cargo package --locked
 cargo bench --bench performance --locked --no-run
 cargo deny --all-features check
@@ -874,7 +890,7 @@ Robustness is also fuzzed and model-checked:
 
 - **proptest** feeds arbitrary/adversarial bytes into the live terminal emulator, the ANSI stripper, and the exit-code
   parser, asserting they never panic and stay within the viewport. (This is how we found - and worked around - a vt100
-  underflow on tiny grids and a reflow panic on column shrink that would otherwise crash the `panic = "abort"` release.)
+  underflow on tiny grids and a reflow panic on column shrink that would otherwise take a whole session down.)
 - **loom** exhaustively model-checks the session pin counter (the lock-free guard that keeps an in-flight session from
   being LRU-evicted) across every thread interleaving. It's behind a feature so it doesn't perturb the normal build:
 

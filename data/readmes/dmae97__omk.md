@@ -20,7 +20,9 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/open-multi-agent-kit"><img alt="npm version" src="https://img.shields.io/npm/v/open-multi-agent-kit?style=flat-square&label=npm" /></a>
   <a href="https://www.npmjs.com/package/open-multi-agent-kit"><img alt="npm downloads per month" src="https://img.shields.io/npm/dm/open-multi-agent-kit?style=flat-square" /></a><br />
-  <a href="https://github.com/dmae97/omk/releases/latest"><img alt="latest GitHub release" src="https://img.shields.io/github/v/release/dmae97/omk?style=flat-square&label=release" /></a><br />
+  <a href="https://github.com/dmae97/omk/releases/latest"><img alt="latest GitHub release" src="https://img.shields.io/github/v/release/dmae97/omk?style=flat-square&label=release" /></a>
+  <a href="https://github.com/dmae97/omk/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/dmae97/omk/ci.yml?branch=main&style=flat-square&label=CI" /></a>
+  <a href="https://github.com/dmae97/omk/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/dmae97/omk?style=flat-square" /></a><br />
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/npm/l/open-multi-agent-kit?style=flat-square" /></a>
   <img alt="supported Node.js version" src="https://img.shields.io/node/v/open-multi-agent-kit?style=flat-square" />
 </p>
@@ -60,6 +62,27 @@ OMK is a standalone CLI, not a plugin for Claude Code or OpenCode. It supports
 Start with one agent that reads files, edits code, and runs commands. Add
 subagents or explicit verification workflows when you need them; neither is
 required for your first task.
+
+### At a glance
+
+- **Done means a passing check.** `/goal verify <command>` completes a goal only when your check passes on the current workspace.
+- **One session, many models.** Switch with `/model` mid-conversation; resume later with `/resume` or `omk -c`.
+- **Sandboxed by default.** Built-in bash runs under `sandbox-exec` or `bwrap`, without network, and fails closed.
+- **Opt-in power.** Subagents, MCP servers, skills and extensions load only when you configure them.
+- **Honest evidence.** Claims below link to the docs that back them, and the limits are stated next to them.
+
+```mermaid
+flowchart LR
+  U[You: prompt or /goal] --> L[Agent loop]
+  L --> M[Model via /model<br/>subscription, API key or local]
+  M --> L
+  L --> T[Tools: read, edit, sandboxed bash]
+  T --> L
+  L -->|settled turn| V{/goal verify<br/>check passes?}
+  V -- no --> L
+  V -- yes --> D[Goal complete<br/>fresh receipt]
+  X[Optional: subagents, MCP, skills, extensions] -.-> L
+```
 
 ## Quick start
 
@@ -455,7 +478,7 @@ material that is not published with the repository.
 - [Containerization](packages/coding-agent/docs/containerization.md)
 - [Public skill catalog](SKILLS.md)
 - [Changelog](packages/coding-agent/CHANGELOG.md)
-- [Release notes for v1.5.3](.github/RELEASE_NOTES_v1.5.3.md)
+- [Release notes for v1.5.5](.github/RELEASE_NOTES_v1.5.5.md)
 - Latest public release: [GitHub Releases](https://github.com/dmae97/omk/releases/latest). The source-version notes linked above can describe a candidate until its tag workflow completes.
 
 ## Development
@@ -546,6 +569,53 @@ On hold:
 
 <!-- releases:start -->
 
+## Release v1.5.5
+
+### Behavior change (security)
+
+- Secret redaction no longer runs on text, log, session, run-journal and bash-output paths (d58ed90719). Secrets that appear in those values (for example API responses recorded by `ApiBroker`, compaction input, journal entries, verified-bash output) are now written to disk as-is. If you relied on omk to mask them, keep secrets out of tool output or clean those files yourself.
+
+### Changed
+
+- `VERIFIED_BASH_REDACTION_POLICY_ID` is now `omk-bash-combined-v2+raw-unredacted+utf8+capture-tail-128k+tail-64k`. The old id claimed `omk-sensitive-text-v1` redaction that no longer runs. Receipts already written with the old id are unchanged; code that compares against the old string must update.
+
+### Deprecated
+
+- `redactForModel` is still exported from the package root with its v1.5.4 behavior, but omk no longer calls it. It will be removed in 2.0.0.
+
+### Fixed
+
+- Next-task suggestions follow the editor on screen. An extension that swaps in its own editor at session start (for example `pi-powerline-footer`) left the gray suggestion on the hidden default editor, so it never appeared and Tab never inserted it.
+
+Release notes live in [RELEASE_NOTES_v1.5.5.md](.github/RELEASE_NOTES_v1.5.5.md).
+
+## Release v1.5.4
+
+### Added
+
+- `/jev set`, `/jev status`, and `/jev clear` manage the TypeSafe (JEV) key in `auth.json`. `status` prints only `stored`, `env`, or `none`; no subcommand echoes key characters or makes a network call. A stored key wins over `TYPESAFE_API_KEY`, as for every other provider.
+- An extension that registers `/jev` still receives `/jev <query>`. The built-in command handles only `set`, `status`, `clear`, and a bare `/jev`.
+- Next-task suggestions after a completed turn, behind `OMK_NEXT_SUGGESTIONS` (default off). A suggestion reuses the warm prompt cache of the same model, caps output at the thinking budget plus 128 tokens (128 with reasoning off), and is skipped when the cache is cold, the model changed, or provider usage is unavailable or at 90% or more.
+- A pinned model that fails over on quota exhaustion shows one warning per turn and writes a `pinned-quota-failover` run-log record. Set `providerResilience.autoFailoverOnQuotaExhaustion: false` to keep the pin.
+
+### Changed
+
+- Quota exhaustion is no longer retried on the same model. The turn fails over at once when `providerResilience.autoFailoverOnQuotaExhaustion` is on, and otherwise ends with `QuotaExhaustedNoRetryError` and a run-log record. Other retryable errors keep exponential backoff, honor a `Retry-After` hint, and cap a single wait at 60 s.
+
+### Fixed
+
+- A run-journal reader drops the torn tail of an in-progress append only while the owner lease is live, retries for at most 250 ms, and retries a journal that has no complete record yet.
+
+### Security
+
+- `/jev set` rejects keys that start with `!`. `getApiKey` runs such a stored value as a shell command, so the key is refused and nothing is written.
+
+### Tests
+
+- `test.sh` removes every variable whose name contains `KEY`, `SECRET`, `TOKEN`, `PASSWORD`, or `CREDENTIAL` (any case), plus a short list of credential-bearing names the pattern misses, so a release test run cannot reach a live provider with the operator's key.
+
+Release notes live in [RELEASE_NOTES_v1.5.4.md](.github/RELEASE_NOTES_v1.5.4.md).
+
 ## Release v1.5.3
 
 ### Fixed
@@ -564,30 +634,27 @@ On hold:
 
 Release notes live in [RELEASE_NOTES_v1.5.3.md](.github/RELEASE_NOTES_v1.5.3.md).
 
-## Release v1.5.2
-
-### Changed
-
-- Lockstep version alignment with OMK 1.5.2 to restore publication of all seven workspace packages after the 1.5.1 registry staging conflict. Provider recovery behavior is unchanged from 1.5.1.
-
-Release notes live in [RELEASE_NOTES_v1.5.2.md](.github/RELEASE_NOTES_v1.5.2.md).
-
-## Release v1.5.1
-
-### Fixed
-
-- Cloudflare `520` through `527` gateway responses and Explabs/OpenRouter free-limit quota bodies are classified as retryable provider failures. `Turn prefix summarization failed: 429 Go usage limit exceeded` is recognized through the quota classifier.
-- Quota exhaustion can now fail over to an authenticated `providerResilience.failoverCandidates` entry even when `--model` or `--provider` pinned the current model. Safety-stop failover remains pin-gated. Disable the new behavior with `providerResilience.autoFailoverOnQuotaExhaustion: false`.
-
-### Changed
-
-- The default `retry.maxRetries` is now `5`, giving 2s, 4s, 8s, 16s, and 32s backoff instead of stopping after 2s, 4s, and 8s.
-
-Release notes live in [RELEASE_NOTES_v1.5.1.md](.github/RELEASE_NOTES_v1.5.1.md).
-
 <!-- releases:end -->
 
 </details>
+
+## Contributing
+
+Issues and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md)
+first, run `npm run check` and `npm test` before opening a pull request, and
+report security issues as described in [SECURITY.md](SECURITY.md).
+
+## Star OMK
+
+If a check-backed “done” is useful to you, a
+[star on GitHub](https://github.com/dmae97/omk/stargazers) helps other
+developers find OMK.
+
+<p align="center">
+  <a href="https://star-history.com/#dmae97/omk&Date">
+    <img alt="Star history chart for dmae97/omk" src="https://api.star-history.com/svg?repos=dmae97/omk&type=Date" width="600" />
+  </a>
+</p>
 
 ## Acknowledgments
 

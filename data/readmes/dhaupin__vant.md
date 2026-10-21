@@ -2,7 +2,7 @@
 
 > **Agent memory that lives in your repo.**
 
-**v0.8.6** · [Lander](https://vant.creadev.org) · [Docs](https://docs.creadev.org/vant) · [GitHub](https://github.com/dhaupin/vant)
+**v0.8.6** · [Home](https://vant.creadev.org) · [Docs](https://docs.creadev.org/vant) · [GitHub](https://github.com/dhaupin/vant)
 
 ---
 
@@ -123,7 +123,6 @@ stay live. Full REST routes in
 | `VANT_SERVER_PORT` | REST sidecar / `vant server` port (default `3456`) |
 | `VANT_SERVER_BIND` | Bind address (default `127.0.0.1`) |
 | `VANT_SERVER_CERT` / `VANT_SERVER_KEY` | TLS cert/key for direct HTTPS |
-| `VANT_MCP_PORT` | MCP server port (default `3457`) |
 | `VANT_MCP_REQUIRE_KEY` | Require API key for MCP access (`true`/`false`) |
 
 ## Upgrading from an older Vant (single-brain layout)
@@ -166,15 +165,24 @@ Notes:
 
 ---
 
-## Web Dashboard (planned)
+## Web Dashboard
 
-A React dashboard ("a guest identity with a browser") is specced and
-planned - no code yet. The contract lives in
-[labs/prd-web.md](labs/prd-web.md): `web/<app>` self-contained frontends,
-a Cloudflare Pages Worker proxy to the pod's MCP door, identity tiers,
-a multi-install property switcher, and an in-dashboard module frame.
-Until it ships, the MCP door plus `vant guest` remain the headless
-interface.
+A React dashboard ("a guest identity with a browser") ships under
+`web/dashboard` (codename Bolete) - 19 modules (status, brains, agents,
+guests, chat, forum, carriers, chain, market, work, traveler, users,
+...) with Cloudflare Pages Functions proxying `/api/*` to the pod's
+MCP door. (One-way boundary: frontends never require the pod's lib
+graph and vice versa.) The module/frame contract and its phases live in
+[labs/prd-web.md](labs/prd-web.md): `web/<app>` self-contained
+frontends, identity tiers, a multi-install property switcher, and the
+in-dashboard module frame.
+
+The second shipped frontend is `web/relay` - the sealed relay hop face
+(the blind ciphertext forwarder, `relay.hop`; see
+[Relay](docs/operations/relay.md)).
+
+Until you deploy them, the MCP door plus `vant guest` remain the
+headless interface.
 
 ## Documentation
 
@@ -209,7 +217,7 @@ Full docs at **[docs.creadev.org/vant](https://docs.creadev.org/vant)**
 
 ## Links
 
-- **Lander**: [vant.creadev.org](https://vant.creadev.org)
+- **Home**: [vant.creadev.org](https://vant.creadev.org)
 - **Docs**: [docs.creadev.org/vant](https://docs.creadev.org/vant)
 - **GitHub**: [github.com/dhaupin/vant](https://github.com/dhaupin/vant)
 - **Issues**: [github.com/dhaupin/vant/issues](https://github.com/dhaupin/vant/issues)

@@ -302,7 +302,7 @@ Print-mode stats contain `provider`, `model`, `prompt_tokens`, `reasoning_tokens
 
 ## Tools
 
-- `read`: read text files, or inline images (PNG, JPEG, GIF, WebP). BMP and TIFF files are converted to PNG before sending to the model. Other image formats are not supported. Model and provider image support may vary.
+- `read`: read text files, or inline images (PNG, JPEG, GIF, WebP). BMP and TIFF files are converted to PNG before sending to the model. Other image formats are not supported. HEIC, HEIF, AVIF, JPEG 2000, and JPEG XL files are recognized and rejected with an error naming the format, so convert them to PNG or JPEG first. Model and provider image support may vary.
 - `write`: create or overwrite files, making parent directories as needed.
 - `edit`: one or more exact-match replacements in an existing file.
 - `bash`: run a command in the session cwd with merged stdout/stderr and a timeout. On Unix, zot uses `/bin/bash -c` when available, then `bash -c` from `PATH`, and falls back to POSIX `/bin/sh -c` when Bash is unavailable. On Windows, it uses `cmd /C`. macOS ships Bash 3.2 by default, so newer Bash features may be unavailable.
@@ -1021,6 +1021,15 @@ process. `/model` reports discovery failures without blocking other providers.
 Use `/logout lmstudio` to remove the connection and stop discovery.
 Background refresh never executes API-key commands.
 
+Some local OpenAI-compatible endpoints reject PNG or WebP images with HTTP 400
+and the message `'url' field must be a base64 encoded image`. For this specific
+rejection, zot retries once after converting decodable PNG/WebP images to JPEG.
+This also applies to images replayed from existing sessions. The saved images
+remain unchanged. The fallback is lossy, preserves dimensions, and composites
+transparency onto white. Conversion is limited to 32 MiB of source bytes and
+25 million pixels per image. Other errors are returned normally, and this does
+not add support for HEIC, JPEG 2000, or JPEG XL.
+
 ### Local models with llama.cpp router mode
 
 zot can connect to a recent [llama.cpp](https://github.com/ggml-org/llama.cpp) router, manage its GGUF files, and use loaded models through the router's OpenAI-compatible inference API. This is separate from Ollama. An Ollama server normally listens on port `11434` and should use zot's `ollama` provider instead.
@@ -1159,19 +1168,4 @@ Set the `tool_render` key in `$ZOT_HOME/config.json`:
 
 The `ZOT_FLAT_TOOLS` env var overrides the config for a single run, which is handy for trying it without editing the file:
 
-| Value | Effect |
-|---|---|
-| `1`, `true`, `yes`, `on`, `flat` | Force flat rendering. |
-| `0`, `false`, `no`, `off`, `box` | Force the bordered panel. |
-| unset | Fall back to the `tool_render` config key. |
-
-```sh
-ZOT_FLAT_TOOLS=1 zot   # flat, just this run
-ZOT_FLAT_TOOLS=0 zot   # boxes, even if config.json says "flat"
-```
-
-Either way, theme colors still drive the rendering (the header uses your accent/foreground, output uses the tool-output color) and `ctrl+o` still expands a truncated result.
-
-### Tool arg width
-
-The header line for a tool call shows the tool name plus a one-line summary of its primary argument — a `path`, a `command`, or a query. That summary is truncated to 60 cells by default (`web_answer What is the best architecture to im
+| Value | Eff

@@ -604,8 +604,9 @@ In the settings:
   - `@improve` keeps a Korean, Hindi or French sentence in its own language, and `@translate` translates it into your languages (French is told apart from English when it's one of your input languages).
 - **Language packs**: the app comes with English (and French, which needs only macOS's layout). Chinese, Korean and Hindi are packs you download when you add them: adding Chinese (pinyin) downloads its dictionaries (about 34 MB, 125 MB unpacked) with a progress bar, and pinyin works as soon as it's done, without a restart; Korean's pack (its key table and how jamo make syllables) and Hindi's (its letters and common words) are a few kilobytes. A pack is data only (dictionaries, tables and schemas, never code), listed in a signed index and checked against its SHA-256 before it's used, like plugins. Each language's card shows its pack (version, size, where it came from) with Delete…, and removing the language offers to delete its pack. Updating from 0.6.1 or earlier keeps Chinese without a download: the installer keeps the dictionaries the old version came with.
 - **Candidate layout**: for picking words, pinyin and Hindi candidates are side by side by default (Horizontal), like the system's own input methods: ← → choose and ↑↓ (or - =) turn the page. Choose Vertical on the Input page, under the input languages, for one under the other (↑↓ choose). The @ command list and the results are always vertical.
+- **English words in pinyin** (with Chinese input): type a few letters and the English words they start come up among the candidates: bedr → Bedrock, and bedrock → Bedrock first (Space puts it in). Besides rime-ice's own English words: yours (Input page → Chinese (pinyin) → English Words, where you add and remove them), the English terms of your jargon list, and about 220 product and technical words rime-ice lacks (Bedrock, SageMaker, DynamoDB, LangGraph…). A word whose letters are all you typed comes first, unless they're pinyin too (xiaomi: second); a longer one second, or after the page while what you type may still be pinyin. The same letters put in as typed twice (bedrock ⏎, or a tap of Shift) are learned, with no command; the first time they're only remembered, until the app quits. Never in password fields, terminals and SSH clients, remote desktops and virtual machines, or apps with No AI (a terminal inside an editor, VS Code's say, can't be told from the editor), never pinyin (rime-ice's corrected spellings too: zhogn; and your fuzzy pinyin), nothing that looks like a key or a number or holds one of your hidden words (switch: "Learn the English words you type"). A word you add that looks like a key, a card or phone number or an IP address is refused; adding one it learned makes it yours. They sync through iCloud with the learned words, merged by their letters; past 2,000 the oldest learned go first, never one you added.
 - **Fuzzy pinyin** (with Chinese input): sounds you don't tell apart typed either way, e.g. z ↔ zh, n ↔ l, in ↔ ing. On the Input page, pick Chinese (pinyin) in the bar of input languages, turn on "Fuzzy pinyin" and pick the pairs; the dictionaries are deployed again in a second or two. It writes `rime_ice.custom.yaml` in the Rime user folder, and never over a file of your own there.
-- **Translate (@translate)**: add the languages to translate into (Spanish, French, German, Japanese, Korean, Chinese, Hindi, Bengali, Tamil and the other main Indian languages…) and drag them into order. Hindi typed in Latin letters ("aap kaise ho") comes back in Devanagari. `@translate` writes a line in each, in this order (three versions with only one); the sentence's own language is skipped. A new install translates into the first language in your Mac's preferred languages that isn't English; with English alone, `@translate` opens this page to add one.
+- **Translate (@translate)**: add the languages to translate into (Spanish, French, German, Japanese, Korean, Chinese, Hindi, Bengali, Tamil and the other main Indian languages…) and drag them into order. Hindi typed in Latin letters ("aap kaise ho") comes back in Devanagari. `@translate` writes a line in each, in this order (three versions with only one); the sentence's own language is skipped. A new install translates into the first language in your Mac's preferred languages that isn't English; with English alone, `@translate` says there's nothing to translate into yet, and ⏎ on that notice opens this page with its Add… outlined (the sentence goes in as typed). Translate as You Type doesn't turn on then, and says where to add one.
 - **Keyboard layouts**: French types with the layout picked on its card (`keyboardLayouts` in the config). For the other languages, under the input method macOS keeps your last Latin layout (AZERTY, QWERTZ, Spanish, US International…), so you type as usual, `@` included wherever your layout has it, and dead keys compose in a command's text too (⌥E then E → é, ^ then e → ê). Layouts without Latin letters (Russian, Hindi InScript) can't be used under an input method: switch to them with ⌃Space, or paste (⌃V) or dictate text into a command.
 - `@improve` polishes and rewrites without translating; `@translate @improve` together translates and rewrites in one request. Turn on "@improve also translates" in the settings to make `@improve` always do that.
 
@@ -655,12 +656,13 @@ dot. There is no command for it.
 While it's on, what you type collects into a draft, with the languages on the chip by it ("ZH → EN"; 「中 → 英」 in the
 Chinese interface). It translates into the language you picked last on its chip (below), in every app and after a
 restart; until you pick one, into your first translation language in Settings (and back to that one when the language
-picked is no longer among them). The language you're typing when it comes on doesn't change it. ⏎ translates the draft
-and the translation goes in at once, with no candidates to pick: the draft says "Translating…" meanwhile, and nothing is
-sent (⏎ again is the app's own). ⇧⏎ inserts the draft as typed; Esc while it's translating stops it and keeps the draft
-(⌫ stops it too, and deletes a character as on the draft); if it fails (the network, a refusal, secure input), the draft
-stays with a one-line notice and ⏎ tries again. Text typed in the language it translates into (tap Shift to English)
-goes in as typed.
+picked is no longer among them). If you type only one language, it's passed over: typing English alone, with English
+then French to translate into, it's French. The language you're typing when it comes on doesn't change it. ⏎ translates
+the draft and the translation goes in at once, with no candidates to pick: the draft says "Translating…" meanwhile, and
+nothing is sent (⏎ again is the app's own). ⇧⏎ inserts the draft as typed; Esc while it's translating stops it and keeps
+the draft (⌫ stops it too, and deletes a character as on the draft); if it fails (the network, a refusal, secure input),
+the draft stays with a one-line notice and ⏎ tries again. Text typed in the language it translates into (tap Shift to
+English) goes in as typed.
 
 While it's on, a small chip "ZH → EN" (「中 → 英」 in the Chinese interface) shows under the line you're typing in, in the
 input method's own panel (the candidate panel: on top of the candidates while you type pinyin), so it never takes the
@@ -865,6 +867,9 @@ All settings are stored in `~/.config/allinoneime/config.json`; after a change, 
 | `menuBarIcon` | The menu bar icon and its drop-down panel | `true` |
 | `candidateLayout` | Pinyin and Hindi candidates: `"vertical"` (one under the other) or `"horizontal"` (side by side; ← → choose, ↑↓ turn the page) | `"horizontal"` |
 | `fuzzyPinyin` | Fuzzy pinyin pairs: `["z-zh", "n-l", "in-ing"]` (z-zh, c-ch, s-sh, n-l, f-h, r-l, an-ang, en-eng, in-ing, ian-iang, uan-uang) | `[]` |
+| `englishWords` | Your English words among pinyin's candidates, as written: `["Bedrock", "OpenRouter Chat"]` (added in Settings or learned) | `[]` |
+| `addedEnglishWords` | Those of `englishWords` you added in Settings (the others were learned): past 2,000 words the oldest learned go first | `[]` |
+| `learnsEnglishWords` | The same letters put in as typed twice while typing pinyin (bedrock ⏎) are learned as an English word | `true` |
 | `useSelection` | @ commands work on the text selected in the field (see On the selected text) | `true` |
 | `checkForUpdates` | Look for a new version once a day, in the background; nothing is installed until you click | `true` |
 | `agent` | The coding agent `@agent` hands the text to (Settings → Agent): `claude` (Claude Code), `gemini` (Gemini CLI), `kiro` (Kiro CLI) or `custom` | `claude` |
@@ -924,20 +929,4 @@ make realtest     # types into a real app's text field (needs the screen unlocke
 make screenshots  # regenerates the screenshots in docs/
 make cli && .build/release/allinoneime-cli --styles concise,jargon "this is a blocker bug your team need fix it asap"   # try polishing and rewrites in the terminal
 make icon         # regenerates the app icon and the menu bar icon from Resources/AppIcon.png
-make dmg          # the release installer, build/AllInOneIME-<version>.dmg (universal; needs the Developer ID certificate it's signed with and DIST_PROFILE, the provisioning profile; optionally notarized), and the in-app update, build/AllInOneIME-<version>-update.zip
-make app PROFILE=<profile> SIGN_IDENTITY=<a certificate it lists>   # a build with the keychain entitlements: it can sync keys through iCloud Keychain
-make update-test  # the in-app updater end to end: a temporary install, a test server on 127.0.0.1, a test key (never the installed app)
-```
-
-`make selftest` and `make realtest` don't depend on your settings. The self-test uses a config of its own (Amazon Bedrock with the AWS profile and region from yours, everything else the defaults); the real-app test sets the provider to Bedrock while it runs and puts yours back. What they can't check at the moment is skipped, not failed: live Bedrock checks without credentials for that profile, and anything typed while secure input is on (the screen locked, a password field). The last line counts passed, failed and skipped checks; only failures fail the run, and a run with skips ends in INCOMPLETE, or SKIPPED when nothing that types ran (BLOCKED: the real-app test started on a locked screen), never PASSED.
-
-Interface text is written as `tr("中文", "English")`: Simplified Chinese and English come from the code, other languages
-from the String Catalogs, `Core/Resources/Localizable.xcstrings` for the core's text and `Resources/Localizable.xcstrings`
-for the app's own (merged and compiled into each app by the Makefile with Xcode's `xcstringstool`), keyed by the
-English text with `%@` for each interpolation. After adding or changing text, run
-`make strings` (`make test` fails until then; the self-tests' text, in `*SelfTest.swift`, isn't for translators). Where
-one English text means two things (`make strings` reports them, and `make strings-check` fails on them), give one a key
-of its own, a short dotted name for where or how it is used: `tr("删除", "Remove", key: "remove.delete")`; its English is
-the key's English value in the catalog. Adding a language is adding its column to the catalog: reviewed translations,
-one JSON file per language (`"core\t<key>"` or `"app\t<key>"` → its translation), go in with
-`Scripts/import-translations.py <folder>`,
+make dmg          # the release installer, build/AllInOneIME-<version>.dmg (universal; needs the Developer ID certificate it's s

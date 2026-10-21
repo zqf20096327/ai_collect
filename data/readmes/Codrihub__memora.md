@@ -49,7 +49,7 @@ Screenshots use a demo vault.
   `[[wikilinks]]`. Edit it with any tool; nothing is locked in a database.
 - **Git history.** Changes are committed, so any revision can be listed, diffed
   and restored (`get_history`, `diff`, `restore_memory`).
-- **MCP for agents.** 74 tools for notes, folders, search, tags, graph traversal,
+- **MCP for agents.** 75 tools for notes, folders, search, tags, graph traversal,
   history, locks, activity, pins and import/export, plus admin tools, over the
   streamable HTTP transport.
 - **API keys or OAuth.** Give each agent its own key, or let MCP clients such as
@@ -72,7 +72,7 @@ Three steps, about two minutes.
 **1. Install** (pick one, in this order of ease)
 
 ```bash
-# npm (Linux x86_64 / arm64, Windows x64; Node 18+): install, then keep it running
+# npm (Linux x86_64 / arm64, Windows x64; Node.js 22 or newer): install, then keep it running
 npm install -g @codrihub/memora && memora
 
 # Docker (any OS with Docker)
@@ -83,9 +83,7 @@ docker run -d --name memora --restart unless-stopped -p 8400:8400 \
 curl -fsSL https://raw.githubusercontent.com/Codrihub/memora/main/scripts/install.sh | sudo sh
 ```
 
-On Windows without Node, download `memora-<version>-x86_64-windows.zip` from
-[Releases](https://github.com/Codrihub/memora/releases/latest), unzip it and run
-`memora.exe` (see [Windows](#windows-zip-no-node)).
+On Windows, install Node.js 22 or newer and use npm (see [npm](#npm-linux-x86_64--arm64-windows-x64)).
 
 **2. Get a one-time setup code**
 
@@ -93,7 +91,6 @@ On Windows without Node, download `memora-<version>-x86_64-windows.zip` from
 memora-cli setup --minutes 15                         # npm, in a second terminal
 docker exec -it memora memora-cli setup --minutes 15  # Docker
 sudo memora-cli setup --minutes 15                    # native
-.\memora-cli.exe setup --minutes 15                   # Windows zip, in the unzipped folder
 ```
 
 **3. Open the link it prints** (`http://<your-server>:8400/login`), enter the code
@@ -123,26 +120,10 @@ $env:MEMORA_STATE = '.\state'; memora-cli setup --minutes 15
 ```
 
 The package carries the prebuilt release binaries and the web UI (no install
-script, nothing downloaded at install time) and needs Node 18 or newer. It is
+script, nothing downloaded at install time) and needs Node.js 22 or newer. It is
 handy for trying Memora or running it under your own user; for a server, the
 native installer adds the systemd service. On macOS use Docker or build from
 source. Update with `npm install -g @codrihub/memora@latest`.
-
-### Windows (zip, no Node)
-
-Each release has a `memora-<version>-x86_64-windows.zip` with `memora.exe`,
-`memora-cli.exe` and the web UI. Unzip it anywhere, then in PowerShell:
-
-```powershell
-cd memora-<version>-x86_64-windows
-$env:MEMORA_VAULT = '.\vault'; $env:MEMORA_STATE = '.\state'; .\memora.exe
-# in a second PowerShell window, same folder:
-$env:MEMORA_STATE = '.\state'; .\memora-cli.exe setup --minutes 15
-```
-
-Open `http://localhost:8400/login` and enter the code. The binaries need no
-installer or runtime; check the zip against `SHA256SUMS` from the same release
-(`Get-FileHash memora-*.zip`).
 
 ### Docker (any OS)
 
@@ -297,11 +278,21 @@ memora-cli uninstall      # or /uninstall
 ```
 
 They work out how this install runs: a systemd service is driven with
-`systemctl`, an npm, zip or source install runs in the background (pid and
+`systemctl`, an npm or source install runs in the background (pid and
 log in the state folder), and inside Docker the console prints the host
 commands (`docker start / stop / restart memora`). Uninstall asks, with a
 checklist, whether to also delete your settings and your vault; both are kept
 unless you tick them. Details: [docs/INSTALL.md](docs/INSTALL.md#uninstall-with-memora-cli).
+
+### Update, uninstall, troubleshooting
+
+`memora-cli update` prints the right steps for your install (npm:
+`npm install -g @codrihub/memora@latest`, then `memora-cli restart`). Check
+your version with `memora --version`. Per install method, and for older
+versions without `memora-cli uninstall` (before 1.3.2), see
+[Update](docs/INSTALL.md#update),
+[Uninstall by hand](docs/INSTALL.md#uninstall-by-hand-versions-before-132) and
+[Troubleshooting](docs/INSTALL.md#troubleshooting).
 
 The owner can also **shut the server down from the browser**: Settings, Server,
 Shut down. Every browser and agent is disconnected until it is started again on
@@ -315,8 +306,8 @@ command to use instead.
   session ids are stored only as SHA-256 hashes; a key is shown once.
 - Session cookies are `HttpOnly` and `SameSite=Lax`, cookie writes are checked
   against the request origin, and pages use a nonce-based Content-Security-Policy.
-- Login and setup are rate limited with cooldowns; a wrong setup code closes the
-  window.
+- Login and setup are rate limited with per-IP cooldowns; many failures from
+  many IPs only slow sign-ins down and never lock the owner out.
 - Forwarding headers are trusted only from loopback and `MEMORA_TRUSTED_PROXIES`.
 - Access rules can allow or block by IP, range, CIDR and domain; loopback always
   stays allowed so you cannot lock yourself out.
@@ -328,7 +319,7 @@ Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
 
 | Document | Contents |
 |---|---|
-| [docs/INSTALL.md](docs/INSTALL.md) | Native installer, Docker, npm, reverse proxy, backups |
+| [docs/INSTALL.md](docs/INSTALL.md) | Native installer, Docker, npm, updates, uninstall, troubleshooting, reverse proxy, backups |
 | [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | Every setting and where it lives |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Production deployment and hardening |
 | [docs/MCP.md](docs/MCP.md) | Connecting agents, OAuth, tool reference |

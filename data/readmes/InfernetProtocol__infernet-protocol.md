@@ -322,6 +322,29 @@ Payments:
 
 Use `infernet start --foreground` under systemd / Docker / Kubernetes when a supervisor wants the process in the foreground.
 
+### Staying up
+
+A node restarts itself; you should never have to notice it went down.
+
+- `infernet setup` installs a **systemd user unit** on Linux (with `loginctl enable-linger`, so it runs without a login and starts at boot) or a **launchd agent** on macOS. Opt out with `--no-service` or `INFERNET_NO_SERVICE=1`; containers rely on their own restart policy.
+- Without a service manager, `infernet start` runs a small built-in **supervisor** that restarts the daemon after a crash or kill (backoff 1 s doubling to 60 s). `infernet stop` stops the supervisor too.
+- Self-update drains running jobs, then exits with code **75**; the supervisor or unit starts the new version. Exit 0 means a deliberate stop and stays stopped.
+- If a node linked to your account is silent for 24 hours you get one email with the restart commands.
+
+### Aggregators
+
+An aggregator verifies providers independently: every minute it dials each provider's advertised P2P address, checks it answers as the node it claims to be, and reports reachability and round-trip time (signed `POST /api/v1/node/aggregator/probes`). /status and each `/nodes/<id>` page show how many aggregators reached a provider in the last hour. Anyone can run one, on any small box:
+
+```bash
+infernet init --role aggregator --name my-aggregator
+infernet register
+infernet setup --yes        # installs the service; or `infernet start`
+```
+
+Running it on a box that already runs a provider? Give it its own config dir and let only the provider update the install: `XDG_CONFIG_HOME=/var/lib/infernet-aggregator INFERNET_AUTO_UPDATE=follow infernet start --foreground --no-p2p` (and a free `PORT` for its `/healthz`). In `follow` mode a daemon never runs the installer; it restarts into a newer version once one is installed.
+
+Coordinating multi-node jobs (IPIP-0028 / IPIP-0033) is the next aggregator duty.
+
 ### P2P port
 
 Each provider/aggregator node binds TCP **46337** (dual-stack) for peer communication. Change with `--p2p-port`, or disable with `--no-p2p`. The node advertises its `address:port` to the control plane on every signed heartbeat so other nodes can discover it — unless it was started with `--no-advertise`, in which case nothing is published and the node operates outbound-only.
@@ -361,9 +384,10 @@ BTC, BCH, ETH, SOL, POL, BNB, XRP, ADA, DOGE; plus USDT on ETH/Polygon/Solana; p
 
 - Canonical list: [`packages/config/payment-coins.js`](./packages/config/payment-coins.js)
 - Platform deposit addresses: [`packages/config/deposit-addresses.js`](./packages/config/deposit-addresses.js) — also seeded into the `platform_wallets` table.
-- Gateway: CoinPayPortal ([`src/payments/coinpayportal.js`](./src/payments/coinpayportal.js)). Set `COINPAYPORTAL_API_KEY`, `COINPAYPORTAL_WEBHOOK_SECRET` in `.env`.
-- Invoice: `POST /api/payments/invoice` with `{ jobId, coin }`.
-- Webhook: `POST /api/payments/webhook` — HMAC-verified, updates `payment_transactions` + `jobs.payment_status`.
+- Gateway: CoinPayPortal ([`packages/payments/src/coinpayportal.js`](./packages/payments/src/coinpayportal.js)). Set `COINPAY_API_KEY`, `COINPAY_WEBHOOK_SECRET` (and optionally `COINPAY_BUSINESS_ID`) in `.env`.
+- Methods: `GET /api/payments/methods` lists every coin the CoinPay business takes, plus PayPal; `hosted: true` once CoinPay hosts checkout sessions.
+- Invoice: `POST /api/payments/invoice` with `{ jobId, method }` (`USDC_POL`, `BTC`, `paypal`, ...) or `{ jobId, coin, network }`; returns `paymentUrl`. Metadata carries `property`, `account_id` (the job's client) and `email`.
+- Webhook: `POST /api/payments/webhook`, verified by `X-CoinPay-Signature`; settles by the stored CoinPay id, updates `payment_transactions` + `jobs.payment_status`.
 
 Provider earnings flow into the outbound direction of `payment_transactions`. Configure a payout wallet with `infernet payout set <COIN> <ADDRESS>`.
 
@@ -414,7 +438,8 @@ GET   /api/clients
 GET   /api/models
 POST  /api/chat                            Chat playground — picks P2P provider OR NIM fallback, returns streamUrl
 GET   /api/chat/stream/[jobId]             SSE: tokens streamed live (job|meta|token|done|error)
-POST  /api/payments/invoice                CoinPayPortal invoice mint
+GET   /api/payments/methods                CoinPay coins + PayPal on offer
+POST  /api/payments/invoice                CoinPay checkout for a job
 POST  /api/payments/webhook                CoinPayPortal webhook sink (HMAC-verified)
 GET   /api/deploy/runpod/gpu-types         RunPod GPU catalog (proxied via user API key; not stored)
 POST  /api/deploy/runpod                   One-click launch an Infernet provider pod

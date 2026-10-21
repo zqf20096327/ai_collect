@@ -113,33 +113,12 @@ skill 自动激活，读取 `progress.md`（第一次会自动创建），从你
 
 ---
 
-## 项目结构
-
-```
-schengen-visa-guide/
-├── SKILL.md                      # 主控文件，完整交互流程 + 状态机
-├── references/
-│   ├── checklist.md              # 按身份分类的材料详细说明 + 预算公式 + 时间费用
-│   ├── country-notes.md          # 29 国签证中心网址 + 法意西预约流程 + 领区 + 录指纹
-│   ├── cover-letter.md           # 解释信模板 + 常见疑点应对策略
-│   └── itinerary.md              # 行程单生成规则 + 景点营业时间验证
-├── docs/
-│   ├── design.md                 # 架构与设计思路
-│   ├── plan.md                   # 实现计划
-│   ├── project-description.md    # 设计理念
-│   └── README_EN.md              # 英文 README
-├── CHANGELOG.md                  # 版本变更记录
-└── LICENSE
-```
-
----
-
 ## 底层原理
 
 1. **会话启动门**——每次新会话，办签流程必先读 `progress.md` 再开口（单点咨询除外）。硬指令。
 2. **先存再回**——用户说"好了" → 先写文件勾掉 → 再回复。落盘优先于输出。
 3. **申请国路由**——用户选国家 → 查 `country-notes.md` 获取官方直链。查表不推理，杜绝幻觉。
-4. **敏感/非敏感分界**——证件、学籍、资金 = 只提醒。行程单、解释信 = 可生成。
+4. **材料处理边界**——证件、资金只提醒。行程单、解释信可生成。
 5. **最终对账**——全部勾完再逐项复核，因为勾选和材料真正到手上是两回事。
 
 ---
@@ -149,6 +128,44 @@ schengen-visa-guide/
 - **行程单**：也可以用「行程助手」App 自己动手创建。自己做一遍，每天去哪、住哪、怎么走心里有数。如果让 AI 生成，务必仔细看过并记住行程内容——电调时签证官会随机问行程、机票、酒店细节，答不上来直接拒签
 - **解释信**：AI 写完之后请务必本人逐句核实。解释信是判断能否下签的关键材料，信息不实后果严重
 - **信息时效**：签证政策、费率、网址及各国每日参考金额会调整，本 skill 信息截至 2025-07，**所有材料要求最终以申请国使领馆官网为准**
+
+---
+
+## 学信网报告翻译
+
+本 skill 集成了[学籍报告翻译项目](https://github.com/muxiymmm/Online-Verification-Report-Translator20260714)，支持将中文版《教育部学籍在线验证报告》翻译为英文 PDF。译件的主要字段内容和整体样式与学信网官方英文报告基本一致；本译件由工具生成，是否接受仍以申请国使领馆或签证中心要求为准。[使用说明](references/chsi-translation.md)
+
+以下为虚构资料示例，点击小图可查看大图。
+
+| 中文报告示例 | 本工具英文译件示例 |
+|---|---|
+| <a href="assets/chsi/chsi-student-record-zh.png"><img src="assets/chsi/chsi-student-record-zh.png" alt="中文学籍报告虚构示例" width="180"></a> | <a href="assets/chsi/chsi-student-record-en.png"><img src="assets/chsi/chsi-student-record-en.png" alt="本工具英文译件虚构示例" width="180"></a> |
+
+---
+
+## 项目结构
+
+```
+schengen-visa-guide/
+├── SKILL.md                      # 主控文件，完整交互流程 + 状态机
+├── references/
+│   ├── checklist.md              # 按身份分类的材料详细说明 + 预算公式 + 时间费用
+│   ├── country-notes.md          # 29 国签证中心网址 + 法意西预约流程 + 领区 + 录指纹
+│   ├── cover-letter.md           # 解释信模板 + 常见疑点应对策略
+│   ├── itinerary.md              # 行程单生成规则 + 景点营业时间验证
+│   └── chsi-translation.md        # 学信网报告翻译流程与使用说明
+├── scripts/translate_chsi.py      # 提取中文报告、调用翻译引擎、生成预览
+├── assets/chsi/                  # 仅两张虚构示例图
+├── vendor/chsi-translator/       # 原项目引擎、字体、参考模板及 Apache-2.0 许可证
+├── requirements-chsi.txt         # 可选翻译功能依赖
+├── docs/
+│   ├── design.md                 # 首版历史设计（当前流程以 SKILL.md 为准）
+│   ├── plan.md                   # 首版历史实现计划
+│   ├── project-description.md    # 设计理念
+│   └── README_EN.md              # 英文 README
+├── CHANGELOG.md                  # 版本变更记录
+└── LICENSE
+```
 
 ---
 
@@ -162,4 +179,4 @@ schengen-visa-guide/
 
 ## License
 
-MIT — 商用、修改、闭源集成均可。
+主体 skill 使用 MIT。内置翻译引擎保留 Apache-2.0 许可证，运行时依赖另遵从各自许可证，见 [第三方说明](THIRD_PARTY_NOTICES.md)。

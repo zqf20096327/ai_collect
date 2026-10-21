@@ -1,0 +1,164 @@
+![Mibly — Apple Health for AI Agents](mibly-github.png)
+
+[English](README.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
+[![Download on the App Store](https://img.shields.io/badge/App_Store-Mibly-0D96F6?logo=apple&logoColor=white)](https://apps.apple.com/us/app/mibly-health-data-for-ai/id6812404098)
+[![Release](https://img.shields.io/github/v/release/littlenew117/mibly-apple-health-mcp)](https://github.com/littlenew117/mibly-apple-health-mcp/releases)
+[![CI](https://img.shields.io/github/actions/workflow/status/littlenew117/mibly-apple-health-mcp/ci.yml?branch=main&label=CI)](https://github.com/littlenew117/mibly-apple-health-mcp/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
+[![MCP](https://img.shields.io/badge/MCP-server-6E56CF)](https://modelcontextprotocol.io)
+[![Website](https://img.shields.io/badge/website-mibly.app-black)](https://mibly.app)
+[![mibly-apple-health-mcp MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/littlenew117/mibly-apple-health-mcp/badges/score.svg)](https://glama.ai/mcp/servers/littlenew117/mibly-apple-health-mcp)
+[![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/littlenew117/mibly-apple-health-mcp)
+
+# Apple Health MCP — Mibly Receiver
+
+An open-source **Apple Health MCP server**: bring your Apple Health (HealthKit) data — sleep, steps, heart rate, HRV, workouts, weight, body fat, and more — into Claude Desktop/Code, Codex, or any other AI agent you build or run yourself (anything that speaks MCP).
+
+**Local mode: your data never touches Mibly's servers.** No account, no cloud, no telemetry. It is stored encrypted on a machine you control, and this repository is the code that does it.
+
+## Quickest way to get started
+
+1. **Download Mibly** on your iPhone → [App Store](https://apps.apple.com/us/app/mibly-health-data-for-ai/id6812404098)
+2. **Copy the setup prompt** from inside the Mibly app (Connection Settings → "Copy for your Agent") and paste it into your agent.
+
+Your agent sets up the receiver and MCP service for you. No cloning, no building, no config files.
+
+## Why an iPhone app?
+
+Apple Health data can only be read through HealthKit, inside a native iOS app. There is no web API. Mibly handles the HealthKit side — permissions, background sync, and data formatting — so you don't need an Apple Developer account or Xcode.
+
+## What this repository is
+
+A reference implementation of the receiver your agent installs. It's here so you can:
+
+- **Review** exactly what runs on your machine and where your data goes
+- **Customize** it if you want to
+
+You don't need this code to use Mibly. The setup prompt above is the recommended path.
+
+## Where does the data go?
+
+| Question | Answer |
+|---|---|
+| Where is health data stored? | `~/.mibly/data.enc` only. AES-256-GCM, key = scrypt(pairing token, random salt). |
+| Does the service make outbound network requests? | No. It only listens. No telemetry, no update check. |
+| Who can read it over the network? | Anyone holding the pairing token. Every route requires `Authorization: Bearer <token>`. |
+| How long is it kept? | 365 days of history. Only the latest sample per type is kept longer. |
+| Is traffic encrypted in transit? | **No.** Local mode is designed for your home or office LAN: the iPhone and this receiver sit on the same Wi-Fi and talk plain HTTP. Don't expose the port to the public internet. |
+
+Check it yourself. This should print nothing:
+
+```sh
+grep -rnE "fetch\(|https?\.request|axios|net\.connect|XMLHttpRequest" src
+```
+
+The wire protocol (endpoints, payloads, storage format) is in [PROTOCOL.md](PROTOCOL.md); the threat model is in [SECURITY.md](SECURITY.md).
+
+## Run it yourself
+
+Requires Node.js 18+.
+
+```sh
+npm ci
+npm run build
+MIBLY_TOKEN=<token from the Mibly app> npm start
+```
+
+On first run the token is saved to `~/.mibly/config.json` (mode 0600), so later restarts need no env var. On startup the receiver prints the address(es) to use, e.g. `Target Host to enter in Mibly: 192.168.1.24:7345 (en0)`. Enter that in the app's Target Host field (just `IP:port`, no `http://`, no path); pick the address on your Wi-Fi/LAN if several are listed.
+
+| Variable | Meaning | Default |
+|---|---|---|
+| `MIBLY_TOKEN` | Pairing token from the app | saved config |
+| `MIBLY_HOST` | Bind address `host:port` | `0.0.0.0:7345` |
+
+Connect an MCP client over HTTP to `http://<ip>:7345/mcp` with the header `Authorization: Bearer <token>`. For agents that spawn MCP servers over stdio, add `--stdio` (logs go to stderr).
+
+If you regenerate the token in the app, restart with the new `MIBLY_TOKEN`. The old encrypted store can't be decrypted with the new key, so the receiver starts empty.
+
+Code map: `src/index.ts` (routes) · `src/auth.ts` (token check) · `src/config.ts` (`~/.mibly/config.json`) · `src/ingest.ts` (validation) · `src/store.ts` (encryption, retention, queries) · `src/mcp.ts` (the two tools). Run the tests with `npm test`.
+
+## Start automatically on boot
+
+The receiver should keep running after a restart. Replace the paths (and, on Linux, the user) with yours; the token is already saved in `~/.mibly/config.json`, so no env var is needed.
+
+**macOS (launchd)** — `~/Library/LaunchAgents/com.mibly.receiver.plist`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.mibly.receiver</string>
+  <key>ProgramArguments</key><array>
+    <string>/usr/local/bin/node</string>
+    <string>/Users/you/mibly-apple-health-mcp/dist/index.js</string>
+  </array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+</dict></plist>
+```
+
+```sh
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.mibly.receiver.plist
+```
+
+**Linux (systemd)** — `/etc/systemd/system/mibly-receiver.service`:
+
+```ini
+[Unit]
+Description=Mibly receiver
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=you
+ExecStart=/usr/bin/node /home/you/mibly-apple-health-mcp/dist/index.js
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```sh
+sudo systemctl enable --now mibly-receiver
+```
+
+Restart the machine, then confirm the receiver is back (use the IP the receiver printed):
+
+```sh
+curl -H "Authorization: Bearer <token>" http://<ip>:7345/status
+```
+
+A JSON reply with `version` and `lastPushAt` means it is running.
+
+## Upgrading from an earlier version
+
+Update in place; do not set up a second receiver.
+
+1. Pull the new code, then `npm ci && npm run build`, and restart the service.
+2. **Keep your token and data.** Do not delete `~/.mibly` and do not change the token. A new token starts an empty store.
+3. Legacy `heartRate` records (single readings without `heartRateSummary`) are deleted on start-up, because `heartRate` is now an hourly summary. Everything else is kept.
+4. Check `GET /status`: it should show the new `version` and `capabilities`.
+
+Newer Mibly app features need the matching receiver version; older apps keep working with a newer receiver.
+
+## Local vs Cloud
+
+| | Local (Free) | Cloud (Pro) |
+|---|---|---|
+| Data path | iPhone → an agent environment you control | iPhone → Mibly Cloud → your agents |
+| Remote access across devices | — | ✓ |
+| Multiple agents on the same data | — | ✓ |
+| Menstrual cycle data | Available (off by default) | Never uploaded |
+
+This repository covers Local only. You choose which data types are shared and can turn each one off at any time.
+
+## Notes
+
+- Mibly does not diagnose or make medical decisions. It only gives your agent access to the data you choose to share.
+- Issues in this repo are for the receiver code. For app support, see [mibly.app](https://mibly.app/).
+- Privacy policy: https://mibly.app/privacy/
+
+## License
+
+MIT

@@ -25,13 +25,13 @@
 <table>
 <tr>
 <td width="300" valign="top">
-<img src="/assets/img/daily_haiku_card.jpg?t=1792404032" width="280" alt="Daily Haiku Card">
+<img src="/assets/img/daily_haiku_card.jpg?t=1792576837" width="280" alt="Daily Haiku Card">
 </td>
 <td valign="top">
 
-> _"This haiku presents a striking contrast between warmth, violence, and emotional control. The image of someone “smiling at the fire” suggests danger, pain, or emotional intensity, yet the smile implies calmness, resilience, or even defiance. The next line, “throw cold water over him,” introduces a sudden act of shock or attempted suppression, as if someone is trying to extinguish his spirit or passion. The final phrase, “composed of a stone,” deepens the meaning by portraying the person as unshaken, hard, and emotionally impenetrable. Overall, the haiku suggests a character who remains steady and composed despite pressure, hardship, or hostility."_
+> _"This haiku captures a quiet journey at daybreak, where the speaker and another person begin their path in the early morning light. The line "he perceived several trees" suggests a moment of gentle observation, as nature slowly comes into view. The final line, "Not a sound inside," creates a sense of stillness and inward emptiness, emphasizing silence both in the surrounding world and within the speaker’s mind or heart. Together, the poem evokes calm, solitude, and a reflective mood."_
 
-— **BotenKu** 📅 _Oct 19, 2026_
+— **BotenKu** 📅 _Oct 21, 2026_
 
 </td>
 </tr>

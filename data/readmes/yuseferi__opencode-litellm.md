@@ -78,10 +78,11 @@ also shows how to configure a provider directly in `opencode.json`.
 | 💵 **Real pricing** | Maps `input_cost_per_token` / `output_cost_per_token` (and cache read/write costs) from `/v1/model/info` into OpenCode's `cost` field, so the picker and `/cost` show what the proxy actually bills instead of `$0.00`. Models LiteLLM has no price for are left unpriced, not falsely marked free. |
 | 🧩 **Reasoning-effort variants** | When LiteLLM reports per-model effort support (`supports_low_reasoning_effort`, …), the plugin surfaces each level as a picker variant automatically. |
 | 🧭 **Responses-API routing** | Models LiteLLM reports with `mode: "responses"` are invoked through `/v1/responses` instead of `/v1/chat/completions`, with no extra configuration. OpenCode 2 overrides the runtime package per model; OpenCode 1 gets a `<provider>-responses` sibling. |
-| 🔐 **Auth-aware** | Honours `LITELLM_API_KEY` / `LITELLM_MASTER_KEY`, `providers.litellm.settings.apiKey`, and OpenCode `/connect` credentials on the V1 server path. |
+| 🔐 **Auth-aware** | Honours `providers.litellm.settings.apiKey`, OpenCode `/connect` credentials, the box auth store, and `LITELLM_API_KEY` / `LITELLM_MASTER_KEY` on both the V1 server path and the OpenCode 2 plugin host; on OpenCode 2 a **LiteLLM** entry in the connect-provider dialog (key plus optional base URL) connects a gateway entirely from the web UI. A saved credential beats the environment key. |
 | 🌐 **Gateway-friendly** | Supports provider `headers` (and the legacy `customHeaders` option) for proxies behind Cloudflare Access or other API gateways. |
 | 🧩 **Splittable catalog** | `includeModels` / `excludeModels` (glob patterns) let one LiteLLM proxy be divided into several OpenCode providers — e.g. by naming prefix — without hand-maintaining a model list. |
 | 🎚️ **Capability overrides** | `modelCapabilities` forces or retracts per-model capability flags (`supports_vision`, `supports_function_calling`, …) when `/v1/model/info` is unavailable or disagrees with your deployment. |
+| 💾 **Prompt caching (OpenCode 2.0.28+)** | Chat models whose deployment accepts Anthropic `cache_control` markers are registered with `compatibility.cacheFormat: "anthropic"`, so OpenCode 2 places cache breakpoints as it does for a native Anthropic provider. `modelCompatibility` corrects this per model. |
 | ⏱️ **Bounded startup** | Health checks fail fast (3 s); discovery fetches are capped at **15 s** (configurable via `LITELLM_REQUEST_TIMEOUT_MS`) for slow remote proxies. V2 model refresh runs in the background. |
 | 📝 **OpenCode logging** | V1 logs go through OpenCode's log API; V2 logs use the V2 plugin host's console logging. |
 | 🤝 **Non-destructive merge** | Only adds models you don't already have configured. Hand-curated entries are preserved verbatim. |
@@ -244,6 +245,31 @@ between effort levels from the model picker without hand-curating every entry.
 > `mode: "responses"` the plugin routes it to `/v1/responses` automatically;
 > otherwise reach it without `reasoningEffort`. See the FAQ entry below.
 
+On OpenCode 2, models whose effective package is `@opencode/ai/providers/anthropic`
+or `@opencode/ai/providers/anthropic-compatible` get the same levels in the
+shape that runtime reads, `{ thinking: { type: "adaptive", display: "summarized" }, effort }`,
+for models LiteLLM reports with `supports_adaptive_thinking`, with `none`
+becoming `thinking: { type: "disabled" }` (dropped when `thinking_always_on`).
+Models without adaptive thinking get no variants on those packages, since
+`reasoningEffort` would be ignored there. To reach Claude over the proxy's
+`/v1/messages` while the rest of the catalog keeps its usual transport, split it
+with [`includeModels`/`excludeModels`](#splitting-one-proxy-into-multiple-providers-includemodels--excludemodels):
+
+```jsonc
+{
+  "providers": {
+    "litellm": {
+      "package": "@opencode/ai/providers/openai-compatible",
+      "settings": { "baseURL": "http://localhost:4000/v1", "excludeModels": ["*claude*"] }
+    },
+    "litellm-claude": {
+      "package": "@opencode/ai/providers/anthropic-compatible",
+      "settings": { "baseURL": "http://localhost:4000/v1", "includeModels": ["*claude*"] }
+    }
+  }
+}
+```
+
 ### Responses API models
 
 LiteLLM reports `mode` per model on `/v1/model/info` (the plugin fetches it
@@ -296,17 +322,29 @@ Selecting a Responses model on OpenCode 1 therefore means picking
 
 ### Authentication
 
-If your LiteLLM proxy requires a master key, expose it via either approach:
+If your LiteLLM proxy requires a master key, expose it via any of these approaches:
 
 | Method | Example |
 |---|---|
+| Web UI / `/connect` | Run `/connect` (or use the Desktop providers view), pick **LiteLLM**, paste the key, and optionally fill in the base URL and provider id |
 | Env var (base URL) | `LITELLM_BASE_URL=https://litellm.internal.example.com/v1` |
 | Env var | `export LITELLM_API_KEY=sk-...` |
 | Env var (alias) | `export LITELLM_MASTER_KEY=sk-...` |
 | Config | `"settings": { "apiKey": "{env:LITELLM_API_KEY}" }` |
-| OpenCode `/connect` | Run `/connect`, search for your `litellm` provider entry, and paste the key |
 
-The env var path lets you commit `opencode.json` without leaking secrets. On OpenCode 1, `/connect` credentials are read from OpenCode's auth store (`~/.local/share/opencode/auth.json`) and applied to health checks, model discovery, and completion-time requests. OpenCode 2 users can use `settings.apiKey` with an environment substitution or set `LITELLM_API_KEY` on the background service as shown in the Quickstart.
+The env var path lets you commit `opencode.json` without leaking secrets. `/connect` credentials are read from OpenCode's auth store (`~/.local/share/opencode/auth.json`) and applied to health checks, model discovery, and completion-time requests on BOTH OpenCode 1 and OpenCode 2. On OpenCode 2, a credential saved through `/connect` is a first-class integration connection: the plugin registers the **LiteLLM** integration with an API-key form, uses the stored key for discovery, and lets OpenCode inject it into completion requests — the key never appears in `opencode.json` or provider settings. A credential the user saves in the box (the active connection or the auth-store entry) wins over `LITELLM_API_KEY` / `LITELLM_MASTER_KEY`; the environment is a box-level fallback, never an override of a saved key.
+
+#### Web UI connect (OpenCode 2)
+
+With no configuration at all, `/connect` → **LiteLLM** is enough:
+
+1. Enter the API key when prompted.
+2. Optionally fill the form: **Base URL** (e.g. `https://llm.example.com/v1`) and **Provider ID** (defaults to `litellm`; pick a different id when your config already defines a `litellm` provider, so the connected gateway gets its own entry). Reconnecting with a different id moves the gateway to that provider.
+3. Models appear in the picker without editing `opencode.json` or restarting.
+
+Precedence when several sources are configured: explicit provider/plugin settings always win. For the key, a credential saved in the box (the active connection or the `/connect` entry) beats the environment (`LITELLM_API_KEY`/`LITELLM_MASTER_KEY`), which is only a fallback; for the base URL, the dialog answer beats `LITELLM_BASE_URL` and local port auto-detection. A provider defined in `opencode.json` (without its own key) picks the saved credential up on the next start, while providers created from the dialog update immediately — reconnecting re-points them in place, including a changed base URL or provider id.
+
+The discovered model list is cached per credential: a short hash of the effective key (never the raw key) is part of every cache entry's key, so when the selected credential changes the next discovery starts fresh instead of serving another credential's model list. A `credential.switched` event also recomputes the effective key and reloads the provider registry when it changed — including the first credential saved after setup.
 
 ### Slow proxies (`LITELLM_REQUEST_TIMEOUT_MS`)
 
@@ -422,6 +460,33 @@ By default the plugin prettifies each discovered id into a display name — `ant
 - Only a boolean `false` disables formatting; omitting the option or setting anything else keeps the default.
 - Like the other options above, `formatModelNames` is part of the cache identity, so toggling it triggers a fresh discovery on the next start instead of serving previously cached names.
 - To rename just a handful of models while keeping smart formatting for the rest, use the per-model `name` override described in [Overriding or curating individual models](#overriding-or-curating-individual-models-optional).
+
+### Prompt caching (`modelCompatibility`)
+
+On OpenCode 2.0.28+ (earlier 2.x releases ignore the setting), the OpenAI-compatible Chat Completions runtime only places Anthropic-style `cache_control` breakpoints when a model declares `compatibility.cacheFormat: "anthropic"`. The plugin sets that for every discovered Chat Completions model whose `/v1/model/info` entry lists `cache_control` under `supported_openai_params` — which LiteLLM reports for Anthropic and Vertex AI Anthropic deployments — so prompt caching keeps working for Claude behind the proxy. Only the Chat Completions runtimes read this setting: the Anthropic Messages runtime adds its own cache breakpoints, and the Responses runtimes do not use it, so models on those packages are left alone.
+
+To correct the inference per model id, set `cacheFormat` to `"anthropic"`, `"alibaba"`, or `null` to remove it:
+
+```jsonc
+{
+  "providers": {
+    "litellm": {
+      "settings": {
+        "baseURL": "http://localhost:4000/v1",
+        "modelCompatibility": {
+          "bedrock/claude-sonnet-4": { "cacheFormat": "anthropic" },
+          "gateway/claude-opus": { "cacheFormat": null }
+        }
+      }
+    }
+  }
+}
+```
+
+- Keys are exact model ids as they appear in `/v1/models` (not globs). Only `cacheFormat`, the one key the plugin sets, is accepted.
+- OpenCode's own `providers.<id>.models.<model>.compatibility` is merged over the plugin's value, so it can add or change a key but not remove one the plugin inferred; that is what `null` here is for.
+- Overrides are applied when models are registered, not during discovery, so changing them does not start a new discovery.
+- Neither applies on OpenCode 1.
 
 ## 🔧 How it works
 
@@ -601,6 +666,7 @@ src/
 │   ├── model-cache.ts          # stale-while-revalidate on-disk model cache
 │   ├── model-filter.ts         # includeModels/excludeModels glob filtering
 │   ├── model-capabilities.ts   # per-model capability flag overrides
+│   ├── model-compatibility.ts  # cacheFormat inference and per-model overrides
 │   └── opencode-auth.ts        # fallback to OpenCode's /connect-stored credentials
 └── plugin/
     ├── index.ts                # OpenCode 1 server entry and shared discovery logic

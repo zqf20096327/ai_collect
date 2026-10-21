@@ -37,7 +37,7 @@ This project aims to build a modular Agent Runtime from first principles, where 
 
 ### docs
 
-Contains usage guides for the main subsystems (harness manifest & lineage, user-facing events & CLI renderer).
+Contains usage guides for the main subsystems (harness manifest & lineage, user-facing events & CLI renderer, web UI, storage layout).
 
 It explains the "why" behind the Agent Runtime design, including core concepts, implementation decisions, and engineering trade-offs.
 
@@ -45,7 +45,11 @@ It explains the "why" behind the Agent Runtime design, including core concepts, 
 
 Contains the core modular implementation of the Agent Runtime.
 
-Each component is designed as an independent and reusable module: agent loop (`agent/`), tools (`tools/`), harness manifests (`harness.py`), tracing (`trace.py`), user-facing events (`events.py`), CLI channel (`channels/`), executors (`execution/`), LLM providers (`providers/`), skills (`skills.py`), and benchmark integration (`integrations/`, `evaluation.py`).
+Each component is designed as an independent and reusable module: agent loop (`agent/`), tools (`tools/`), harness manifests (`harness.py`), tracing (`trace.py`), user-facing events (`events.py`), channels (`channels/`), executors (`execution/`), LLM providers (`providers/`), skills (`skills.py`), storage layout (`storage.py`), and benchmark integration (`integrations/`, `evaluation.py`).
+
+### webui
+
+Contains the browser front end: a FastAPI server, the session store, and the static client. It is a channel like the CLI — it consumes the same user-facing agent events and renders them in a browser. See `docs/webui.md`.
 
 ### harnesses
 
@@ -112,7 +116,8 @@ uv run python run_agent.py "List the files in the current directory"
 
 `run_agent.py` is interactive when no prompt is given. Use `--harness` to run
 a manifest from `harnesses/` (file path or id) and `--trace PATH` to append the
-run's events as JSONL. If another project's virtual environment is active, use
+run's events as JSONL. Without `--harness` the run uses the default harness
+`common-v0`. If another project's virtual environment is active, use
 `uv run --active` or activate this project's `.venv` first — the
 `VIRTUAL_ENV` warning comes from uv, not the agent runtime.
 
@@ -140,6 +145,22 @@ workflows (single-task smoke runs, image GC, job outputs) are documented in
 `evaluation/terminal_bench/readme.md` and `evaluation/swe_bench/readme.md`.
 
 
+## Web UI
+
+The agent can also be driven from a browser. The web UI is a channel: it
+consumes the same user-facing events as the CLI and renders them as a
+conversation with streaming text, thinking blocks, and tool cards.
+
+```bash
+uv sync
+uv run webui --port 8000
+```
+
+Then open <http://127.0.0.1:8000>. Conversations are grouped in the sidebar
+and persisted under `workspace/sessions/`. The design and the HTTP API are
+documented in `docs/webui.md`.
+
+
 
 ## RunTrace
 
@@ -149,7 +170,7 @@ in memory for tests, or append it as JSONL:
 ```python
 from agent_runtime.agent import RunTrace, run_turn
 
-trace = RunTrace(run_id="run-001", output_path="runs/run-001.jsonl")
+trace = RunTrace(run_id="run-001", output_path="workspace/traces/run-001.jsonl")
 answer = await run_turn("What's the weather in Singapore?", llm, tools, trace=trace)
 ```
 
@@ -196,8 +217,9 @@ Supports OpenAI as well as model providers offering compatible interfaces.
 Optional knobs (temperature, workspace root, output caps, command guard) are
 documented in `.env.example`. The two most relevant to running:
 
-- `AGENT_RUNTIME_HARNESS` — default harness id when `--harness` is omitted
-  (also used by the Harbor adapter and `scripts/run_with_image_gc.py`)
+- `AGENT_RUNTIME_HARNESS` — harness id to run when `--harness` is omitted
+  (also used by the Harbor adapter and `scripts/run_with_image_gc.py`);
+  unset means the default harness `common-v0`
 - `AGENT_RUNTIME_STREAM` — set to `0` to disable streaming LLM consumption
 - `AGENT_RUNTIME_REASONING_ECHO` — how the model's `reasoning_content` is
   replayed on history turns: `auto` (default; echo for thinking-mode families

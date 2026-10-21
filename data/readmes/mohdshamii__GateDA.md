@@ -25,6 +25,7 @@ A **topic-wise, exam-focused** resource for the **GATE Data Science & Artificial
 -  Previous year GATE questions with solutions
 -  Short tricks and formula sheets for last-minute revision
 -  High-weightage topics highlighted
+-  A complete Test Series with Subject wise, topic wise mock test and Full Mock Test 
 
 ---
 
@@ -45,6 +46,13 @@ A **topic-wise, exam-focused** resource for the **GATE Data Science & Artificial
 >  All links are **public**. No login required.
 
 ---
+
+##  Test Series
+
+  | [Open Test Series](https://mohdshamii.github.io/Test-Series) | 
+
+---
+
 
 ##  The Boss Roster
 
@@ -104,7 +112,7 @@ Found a mistake or have better notes?
 
 **Made with a mild caffeine-induced sense of invincibility**
 
-*— [mohdshamii](https://mohdshamii.github.io/GateDA/)*
+*— [mohdshamii](https://mohdshamii.github.io)*
 
 `Last updated: October 2026`
 

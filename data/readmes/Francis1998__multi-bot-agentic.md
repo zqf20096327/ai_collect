@@ -167,6 +167,24 @@ Offline HITL `drift_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen tool-permissio
 
 Offline HITL `thrash_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen blackboard lease-thrash monitors. See `docs/guides/BLACKBOARD_LEASE_THRASH_ADVISOR_GUIDE.md`.
 
+
+### PlannerCriticOscillationBandAdvisor
+
+![PlannerCriticOscillationBandAdvisor](assets/demo/planner-critic-oscillation-band.gif)
+
+Offline HITL `oscillation_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen planner-critic oscillation monitors. See `docs/guides/PLANNER_CRITIC_OSCILLATION_BAND_ADVISOR_GUIDE.md`.
+![ToolTimeoutCascadeBandAdvisor](assets/demo/tool-timeout-cascade-band.gif)
+### ToolTimeoutCascadeBandAdvisor
+
+![ToolTimeoutCascadeBandAdvisor](assets/demo/tool-timeout-cascade-band.gif)
+
+Offline HITL `cascade_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen tool-timeout cascade monitors. See `docs/guides/TOOL_TIMEOUT_CASCADE_BAND_ADVISOR_GUIDE.md`.
+![ActorMailboxOverflowAdvisor](assets/demo/actor-mailbox-overflow.gif)
+### ActorMailboxOverflowAdvisor
+
+![ActorMailboxOverflowAdvisor](assets/demo/actor-mailbox-overflow.gif)
+
+Offline HITL `mailbox_depth_ratio` bands. Gap vs Ray/Akka/Orleans actor-mailbox overflow monitors. See `docs/guides/ACTOR_MAILBOX_OVERFLOW_ADVISOR_GUIDE.md`.
 ### MemoryNamespaceLeakAdvisor
 
 ![MemoryNamespaceLeakAdvisor](assets/demo/memory-namespace-leak.gif)

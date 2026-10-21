@@ -19,7 +19,9 @@ oracle-aidp-samples/
 │   └── migration/            # Migrating workloads to AIDP
 ├── data-engineering/
 │   ├── ingestion/            # Connectors and data loading patterns
+│   ├── lineage/              # Reading and visualizing AIDP data lineage
 │   └── transformation/       # Pipeline architectures and table formats
+│       ├── delta-clone-metadata/
 │       ├── liquid-clustering/
 │       ├── medallion-lake/
 │       ├── scd/
@@ -80,7 +82,8 @@ Patterns for connecting to and loading data from a wide range of sources.
 |---|---|
 | [Read/Write Oracle Ecosystem Connectors](data-engineering/ingestion/Read_Write_Oracle_Ecosystem_Connectors.ipynb) | Connect to Oracle Database, Oracle Exadata, ALH, and ATP with external catalog support and SQL pushdown. |
 | [Read/Write External Ecosystem Connectors](data-engineering/ingestion/Read_Write_External_Ecosystem_Connectors/) | Per-database read/write ingestion notebooks — Apache Hive Metastore, Microsoft SQL Server, Azure SQL, PostgreSQL, MySQL, and IBM Db2 (4.1) — each with SQL pushdown and a connector-options reference. |
-| [Read-Only Ingestion Connectors](data-engineering/ingestion/Read_Only_Ingestion_Connectors.ipynb) | Use read-only connectors for MySQL HeatWave, REST APIs, Oracle Fusion BICC, Apache Kafka, and other sources. |
+| [Read-Only Ingestion Connectors](data-engineering/ingestion/Read_Only_Ingestion_Connectors/) | Use read-only connectors for Google BigQuery, MySQL HeatWave, REST APIs, Oracle Fusion BICC, Apache Kafka, and other sources. |
+| [Google BigQuery](data-engineering/ingestion/Read_Only_Ingestion_Connectors/Google_BigQuery.ipynb) | Read BigQuery tables and views using service-account authentication, SQL pushdown, partitioned reads, and external catalogs. |
 | [Connect Using Custom JDBC Driver](data-engineering/ingestion/Connect_Using_Custom_JDBC_Driver.ipynb) | Integrate custom JDBC drivers (e.g., SQLite, Snowflake) with Spark for connecting to databases not bundled by default. |
 | [Execute Oracle ALH SQL](data-engineering/ingestion/Execute%20Oracle%20ALH%20SQL.ipynb) | Execute SQL statements directly against Oracle ALH using the `oracledb` Python package. |
 | [Ingest Data Using YAML](data-engineering/ingestion/Ingest_data_using_yaml/Ingest_data_using_YAML.ipynb) | Config-driven ingestion from cloud storage (CSV, JSON) and JDBC sources with schema validation and data quality checks. |
@@ -90,6 +93,16 @@ Patterns for connecting to and loading data from a wide range of sources.
 | [Read Excel Files](data-engineering/ingestion/Read_excel_data/read_excel.ipynb) | Read Excel (`.xlsx`) files using the Spark Excel connector and convert them to Spark DataFrames or CSV. |
 | [Streaming from OCI Streaming Service](data-engineering/ingestion/Streaming/StreamingFromOCIStreamingService.ipynb) | Consume messages from OCI Streaming (Kafka-compatible) using Spark Structured Streaming with SASL/OAUTHBearer authentication. |
 | [Streaming from Volume Path](data-engineering/ingestion/Streaming/StreamingFromVolumePath.ipynb) | Process CSV files from a workspace volume using one-time micro-batch streaming with `Trigger.Once()`. |
+
+---
+
+### Data Engineering — Lineage
+
+Working with the lineage AIDP records automatically for every notebook and workflow run: which tables fed which, through which job, and how each column was derived.
+
+| Notebook | Description |
+|---|---|
+| [Visualize AIDP Lineage](data-engineering/lineage/Visualize_AIDP_Lineage.ipynb) | Fetch a table's upstream and downstream lineage through the DataLineage API, draw the table and column graphs inline in the notebook, and hand the lineage to other tools as DataFrames or OpenLineage events. |
 
 ---
 
@@ -159,14 +172,17 @@ Combines Delta liquid clustering with UniForm-generated Iceberg metadata for cro
 | Notebook | Description |
 |---|---|
 | [Slowly Changing Dimensions (SCD Type 2)](data-engineering/transformation/scd/slowly_changing_dimension_template.ipynb) | Track historical changes to dimension records using SCD Type 2 with Jinja2-templated merge logic. |
+| [Concurrent Writes to Native Iceberg Tables](data-engineering/transformation/iceberg/Iceberg_Concurrent_Writes.ipynb) | Concurrent appends and overlapping MERGE statements on native Iceberg tables, with a retry helper for commit conflicts. |
 | [Streaming — Energy Delta Liquid Clustering](data-engineering/transformation/streaming/energy_delta_streaming_liquid_clustering_demo.ipynb) | Real-time smart grid monitoring with streaming Delta tables, anomaly detection, and statistical baselines for energy consumption. |
 | [Streaming — Manufacturing Delta Liquid Clustering](data-engineering/transformation/streaming/manufacturing_delta_streaming_liquid_clustering_demo.ipynb) | Continuous ingestion and clustering of manufacturing sensor data using Spark Structured Streaming and Delta Lake. |
+| [Zero-Copy Clone and Table Metadata](data-engineering/transformation/delta-clone-metadata/zero_copy_clone_and_table_metadata.ipynb) | Create constant-time zero-copy clones with Delta `SHALLOW CLONE`, observe copy-on-write divergence from the source, and attach and read table and column metadata in SQL. |
 
 #### Cross-Format & External Table Interop
 
 | Sample | Description |
 |---|---|
 | [ADW External Table on Delta UniForm](data-engineering/adw-ext-table-on-uniform/README.md) | Automates recreating an ADW Iceberg external table against the latest UniForm-generated metadata file when a UniForm-enabled Delta table evolves — ADW + Python + a stored procedure that resolves the newest `vN.metadata.json`. Start here to learn the pattern on one table; to automate a whole catalog across a fleet of ADWs on a schedule, see [ADW Iceberg External Table Sync](data-engineering/adw-iceberg-external-table-sync/README.md). |
+| [Delta UniForm Metadata Doctor](data-engineering/delta-uniform-metadata-doctor/README.md) | Scheduled health check and repair job for the Iceberg metadata that Delta UniForm generates — the layer every Iceberg consumer (ADW external tables, Spark Iceberg reads) depends on. Runs as an AIDP job parameterized by catalog: classifies every UniForm table as healthy / lagging / stuck / broken using the `delta-version` completion signal recorded in the Iceberg metadata, tolerates a configurable conversion lag (default 30 min), and in repair mode regenerates metadata that is no longer usable (for example after a table rename: Iceberg metadata records absolute paths, so it references the previous folder until regenerated) by moving `metadata/` to a timestamped backup — never deleting — and triggering a full regeneration with a data-free commit ladder. Report mode writes nothing and fails loudly, so the workflow's alerting is the notification channel. |
 | [ADW Iceberg External Table Sync](data-engineering/adw-iceberg-external-table-sync/README.md) | Scheduled, fleet-scale automation that keeps an entire AIDP catalog queryable from N Autonomous Databases as read-only Iceberg external tables — no data copy, no catalog service in the read path. Runs as an AIDP job parameterized by catalog: fingerprints the Iceberg metadata so only schema-drifted tables are recreated (steady state issues zero DDL against the fleet), reads every credential through the AIDP Credential Store (the service account natively, the per-ADW secrets from OCI Vault), reinstalls the ADW-side credential when the API key rotates, connects with or without an mTLS wallet, preserves consumer grants across recreates, and keeps sync state in a per-catalog registry. Measured at 4,777 tables × 2 ADWs. Start from the single-table sample above if the pattern is new to you. |
 
 #### Other Utilities
@@ -195,6 +211,7 @@ Notebooks covering generative AI, NLP, ML model training, and LLM-powered analyt
 | [OCI Language Service Translation](ai/ml-datascience/ai-services/OCI_LanguageService_Example.ipynb) | Translate text using OCI AI Language Service via REST API, demonstrated with a round-trip English ↔ Spanish translation. |
 | [Customer Churn Prediction (GPU)](ai/ml-datascience/churn-analysis/CustomerChurn_ModelTraining_GPU.ipynb) | Train a TensorFlow neural network on GPU for customer churn prediction, including preprocessing, training, and evaluation. |
 | [LLM Model Output Parser](ai/ml-datascience/llm-utils/llm_model_output_parser.ipynb) | Use an LLM to parse and translate statistical model outputs into business-friendly insights and plain-language summaries. |
+| [LLMs in SQL with ai_generate](ai/ml-datascience/llm-utils/AI_Generate_In_SQL.ipynb) | Classify, extract, and summarize table rows with `ai_generate` in Spark SQL, checking for errors returned as answers and saving results to avoid repeat model calls. |
 | [Natural Language to SQL (NL2SQL)](ai/ml-datascience/nl2sql/nl2sql.ipynb) | Introspect a database schema and generate accurate SQL queries from natural language questions using an LLM, with result summarization. |
 | [Multi-Table NL2SQL with Grouped Analysis](ai/ml-datascience/nl2sql/multi_table_nl2sql_analysis.ipynb) | Extend NL2SQL to multi-table scenarios with grouped LLM analysis for complex procurement and supplier-item intelligence. |
 | [Retrieval-Augmented Generation (RAG)](ai/ml-datascience/rag/rag_implementation.ipynb) | End-to-end RAG pipeline: ingest documents from OCI Object Storage, chunk and embed text, retrieve relevant context, and generate answers with an LLM. |
@@ -292,7 +309,7 @@ Before running any sample, ensure you have:
 
 - An active **Oracle AI Data Platform Workbench** environment with a compute cluster.
 - The required **IAM policies** configured for the services used (Object Storage, ALH, AI Services, etc.).
-- Cluster libraries installed from the `requirements.txt` file included in the relevant sample folder, where applicable.
+- Cluster libraries installed from the `requirements.txt` file included in the relevant sample folder, where applicable. A `requirements-test.txt`, where present, is for running that sample's tests locally and is not for the cluster.
 
 ### General Steps
 

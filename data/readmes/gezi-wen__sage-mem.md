@@ -80,6 +80,10 @@ Most memory schemes take the "SQLite + a long-running worker" route: once memori
 
 The UI also carries four more capabilities (all of them optional): the memory management page, type and tag filtering, the memory star map, and audit & archiving.
 
+The memory management page's file list also has an **Open memory folder** button: it opens the
+memory directory in the system file manager (Explorer / Finder / the Linux file manager) through a
+detached host-side process and returns without waiting for the window.
+
 ## Quick Start
 
 Requires **DSH `0.1.2-rc.1` or higher** (see [Compatibility](#compatibility)) and **Node.js `>= 18`**.
@@ -151,7 +155,7 @@ Every image below is **rendered from the UI code in this repository** (the same 
 
 ![File list: one Markdown file per memory, greyed rows are archived](https://raw.githubusercontent.com/gezi-wen/sage-mem/main/docs/images/files-list.png)
 
-*File list — the header always shows 「体检 N 个问题」(audit: N issues) and 「待重启生效」(restart to apply), so you know whether you should deal with it without opening anything; greyed rows are archived and can be restored at any time.*
+*File list — the header always shows 「体检 N 个问题」(audit: N issues) and 「待重启生效」(restart to apply), so you know whether you should deal with it without opening anything; greyed rows are archived and can be restored at any time, or deleted for good with 「彻底删除」(irreversible, asks once more).*
 
 ![Tools drawer: archive candidates / reserved-name editing, zero footprint when closed](https://raw.githubusercontent.com/gezi-wen/sage-mem/main/docs/images/tools-drawer.png)
 
@@ -171,7 +175,7 @@ Every image below is **rendered from the UI code in this repository** (the same 
 
 ![Archive candidates: each states "why archiving is suggested", executed only after confirmation](https://raw.githubusercontent.com/gezi-wen/sage-mem/main/docs/images/archive-candidates.png)
 
-*Archive candidates — each states "why archiving is suggested" (idle days vs the threshold for that type); files are touched only after you confirm one by one or select all. Archiving moves a file into `archive/`, it **does not delete**.*
+*Archive candidates — each states "why archiving is suggested" (idle days vs the threshold for that type); files are touched only after you confirm one by one or select all. Archiving moves a file into `archive/`, it **does not delete**; to actually delete an archived entry, click 「彻底删除」(delete permanently) in the archive view and confirm once more.*
 
 ![Memory star map: dark stars are archived memories](https://raw.githubusercontent.com/gezi-wen/sage-mem/main/docs/images/starmap-archive.png)
 
@@ -492,6 +496,16 @@ memory/ directory (markdown files, 4 types)
 
 No worker, no SQLite, no HTTP port, no long-running process.
 
+Module boundaries (since 1.2.0):
+
+- `lib/index.js` — the **composition root** plus the three gateways. The typert manifest pins `sourceLocation` to this file, so the gateway classes stay here (moving them would be a contract drift)
+- `lib/recall/` — the injection chain: selection (`select`) / rendering and budget (`compose`) / text (`text`) / session state (`state`)
+- `lib/assembly/` — the four mounts: autodream / retrieval tools / observation / write gate
+- `lib/memory/` — pure memory-layer functions and file operations; `lib/autodream/` — the autodream engine
+- `lib/shared/` — zero-dependency cross-layer rules: file-name rule / local timestamps / the two size limits (**exactly one copy each**; `test/duplication-test.mjs` turns red otherwise)
+- UI side: `client/*.js` is split per screen (`05-shared.js` holds the cross-screen primitives and type tables); `npm run build:client` concatenates them into `lib/client.js`
+- Dependency direction: `memory` never imports `autodream`, `recall` depends only on `memory`, `assembly` never imports the composition root (`test/structure-test.mjs` turns red if that changes)
+
 ## Contributing
 
 ```bash
@@ -527,6 +541,9 @@ No. Serialized writes guarantee only **in-process** ordering; there is no file l
 
 **Can I do without autodream?**
 Yes, it is off by default. It and archiving are two different things: archiving is a deterministic rule (by idle days), calls no model and costs nothing.
+
+**The plugin market says "the registry's latest is older than the installed version, updating would downgrade"?**
+That is a **stale `/latest` cache on the download-region mirror**, not a mis-published package: the mirror's full metadata (the document pnpm reads) already has the new version, while the `/<pkg>/latest` shortcut still serves an old one. Retry after a minute or two; if it persists, temporarily switch the market's download region to "Global" (the origin registry, registry.npmjs.org), update, then switch back. To check what is actually published: `npm view sage-mem dist-tags`.
 
 ## Uninstall
 

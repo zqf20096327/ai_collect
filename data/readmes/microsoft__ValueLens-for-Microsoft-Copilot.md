@@ -3,6 +3,10 @@
 A Power BI dashboard that shows how your organisation uses Microsoft 365 Copilot and agents, and
 the hours and value they deliver.
 
+**Also see [Analytics Hub for Microsoft Copilot](https://github.com/microsoft/AnalyticsHub-Dashboard):**
+one installer sets up an app on Microsoft Fabric or Azure that shows Copilot and agent adoption,
+value, consumption and governance in one place. It includes the ValueLens report.
+
 ![ValueLens preview](Images/ValueLens-Preview.gif)
 
 ## Watch first
@@ -15,7 +19,7 @@ the hours and value they deliver.
 
 **Have Fabric?** Follow the [manual setup](1.%20Fabric/README.md#set-it-up): import the notebooks,
 schedule the pipeline and publish the report. **[🎥 Watch the setup](1.%20Fabric/README.md#set-it-up)**.
-The [Analytics Hub installer](1.%20Fabric/README.md#analytics-hub-installer-work-in-progress)
+The [Analytics Hub installer](https://github.com/microsoft/AnalyticsHub-Dashboard)
 automates it, but it's a work in progress: try it in a test tenant first.
 
 **Before you start**, see [what you need](1.%20Fabric/README.md#before-you-start). No Fabric capacity?
@@ -46,10 +50,16 @@ steps in its README.
 | **[2. Azure](2.%20Azure/)** (work in progress) | An Azure subscription (Contributor plus User Access Administrator) and Power BI Pro | Open the installer and pick **Your Azure subscription**. It runs the data collection in your Azure subscription (scheduled jobs in Azure Container Apps, with Azure SQL and the web app) and publishes to a Power BI workspace, with no Fabric. See [Azure target](1.%20Fabric/installer/README.md#azure-target). |
 | **[3. Power Automate + Dataverse](3.%20Power%20Automate%20+%20Dataverse/)** (preview) | Power Automate premium and Dataverse | Import a collector solution and run a refresh script. |
 | **[4. SharePoint](4.%20SharePoint/)** | Power BI Pro | App registration, a SharePoint library and a scheduled export. |
-| **[5. Local CSV](5.%20Local%20CSV/)** | Power BI Desktop | Open the template. Sample data is included. |
+| **[5. Local CSV](5.%20Local%20CSV/)** | Power BI Desktop, June 2024 or later | Open the template. Sample data is included. |
 
 **Just want a look?** Use [5. Local CSV](5.%20Local%20CSV/) with its sample data. It takes two
 minutes and needs no access to your tenant.
+
+**Opening a template?** Use Power BI Desktop from June 2024 or later. In older releases, the
+habit-stage charts and cards on the Habit Formation page can show errors, because their measures
+use [`SUMMARIZECOLUMNS`](https://learn.microsoft.com/dax/summarizecolumns-function-dax#contextual-summarizecolumns)
+in ways those releases don't fully support. Reports in the Power BI service and Fabric aren't
+affected.
 
 ## Report interpretation guide
 

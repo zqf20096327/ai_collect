@@ -115,12 +115,12 @@ How a venue gets connected depends on where the agent runs:
 
 For any other exchange or broker with an API, the agent can write a helper from `lib/account_TEMPLATE.py` and `lib/order_TEMPLATE.py`. That code has not been tested by Blave.
 
-**Paper trading** needs no keys. It ships as `lib/account_paper.py` + `lib/order_paper.py` and fills at the latest close from the strategy's own data source (`lib/paper_data.py`).
+**Paper trading** needs no keys. It ships as `lib/account_paper.py` + `lib/order_paper.py` and fills at the market's latest real price, never an adjusted one: crypto at Binance's last trade, TAIFEX futures at the latest minute, stocks at the unadjusted daily close (`lib/paper_data.py`).
 
 **Data.**
 
-- Desktop app, no account needed: crypto klines from Binance (USDT-M perpetuals, all intervals, back to listing) and BingX public endpoints; Taiwan stock daily bars straight from TWSE and TPEx with the exchanges' own ex-dividend adjustment (listed from 2010, OTC from the 1990s); Taiwan index futures daily bars from TAIFEX public data (since 1998); market-wide institutional net buying from TWSE (foreign investors since 2004); US stock and ETF daily bars (backtest only, no auto trading); the Crypto Fear & Greed index (since 2018). Blave's indicators, Taiwan intraday and per-stock flow data, futures intraday bars and the rest of the futures data, and the macro calendar need a Blave account with data access.
-- Cloud machine: market data comes from the Blave API through `lib/data.py` — crypto klines and indicators, Taiwan stocks, futures.
+- Desktop app, no account needed: crypto klines from Binance (USDT-M perpetuals, all intervals, back to listing) and BingX public endpoints; Taiwan stock daily bars straight from TWSE and TPEx with the exchanges' own ex-dividend adjustment (listed from 2010, OTC from the 1990s); Taiwan index futures daily bars from TAIFEX public data (since 1998); market-wide institutional net buying from TWSE (foreign investors since 2004); US stock and ETF daily bars (auto trading only through a single-symbol strategy on the stock's own perpetual, e.g. NVDA → NVDAUSDT); the Crypto Fear & Greed index (since 2018). Blave's indicators, Taiwan intraday and per-stock flow data, futures intraday bars and the rest of the futures data, and the macro calendar need a Blave account with data access.
+- Cloud machine: market data comes from the Blave API through `lib/data.py` — crypto klines and indicators, Taiwan stocks, futures. US stock and ETF daily bars are fetched the same way as on the desktop app.
 
 ## Safety and Limits
 

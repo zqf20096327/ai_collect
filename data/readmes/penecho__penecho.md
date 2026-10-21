@@ -10,7 +10,7 @@
 <p align="center">Bring a question, a sketch, or your notes. PenEcho's built-in AI — or Codex, Claude Code and any MCP client — shows you the answer as diagrams, documents and working widgets, right beside your work.</p>
 
 <p align="center">
-  <a href="https://github.com/penecho/penecho/releases/latest"><img src="https://img.shields.io/badge/release-v1.4.1-087f83" alt="Release v1.4.1"></a>
+  <a href="https://github.com/penecho/penecho/releases/latest"><img src="https://img.shields.io/badge/release-v1.4.2-087f83" alt="Release v1.4.2"></a>
   <a href="https://www.npmjs.com/package/penecho"><img src="https://img.shields.io/badge/npm-penecho-cb3837" alt="npm penecho"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue" alt="AGPL-3.0-only"></a>
   <a href="https://discord.gg/3jrPJ3mXdX"><img src="https://img.shields.io/badge/discord-join-5865f2" alt="Join Discord"></a>
@@ -24,10 +24,15 @@
 </p>
 
 <p align="center">
+  <a href="https://buymeacoffee.com/penecho"><img src="docs/assets/support-penecho.svg" alt="Support PenEcho open source — buy us a coffee to help fund development, testing, and documentation" width="820"></a>
+</p>
+
+<p align="center">
   <a href="#new-in-1-4">What's new in 1.4</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="#connect-your-ai-agent-mcp">Connect your AI (MCP)</a> ·
   <a href="docs/">Docs</a> ·
+  <a href="#support-penecho">Support PenEcho</a> ·
   <a href="https://discord.gg/3jrPJ3mXdX">Discord</a>
 </p>
 
@@ -235,6 +240,16 @@ These recommendations balance answer quality against the latency of PenEcho's re
 - **Canvas polish:** improved pen gestures, stroke deletion, navigation and collaboration with Agent and MCP.
 
 [Watch the 1.4 tour →](https://penecho.ai/#knows-you) · [Full changelog →](CHANGELOG.md#140)
+
+## Support PenEcho
+
+Help keep PenEcho's open-source canvas improving. Your support funds development, bug fixes, cross-platform testing, accessibility, and documentation.
+
+<p align="center">
+  <a href="https://github.com/sponsors/penecho"><img src="https://img.shields.io/badge/GitHub_Sponsors-Support_PenEcho-db61a2?style=for-the-badge&amp;logo=githubsponsors&amp;logoColor=white" alt="Support PenEcho on GitHub Sponsors" height="32"></a>
+</p>
+
+Choose [Buy Me a Coffee](https://buymeacoffee.com/penecho) for a quick thank-you, or [GitHub Sponsors](https://github.com/sponsors/penecho) for monthly or one-time support. Contributions support open-source maintenance; they do not purchase a commercial license, dedicated support, or guaranteed features.
 
 ## Community
 

@@ -29,6 +29,37 @@
 
 ---
 
+## See it work
+
+**On its own.** One sentence in, an Excel file out. Sonjari opens GitHub Trending, reads the top three Python
+repositories and saves name, stars and description as a table. Shown at about 9x; the real run took 2 min 46 s on an
+RTX 3090 with Qwen3.8 27B.
+
+https://github.com/user-attachments/assets/91763b31-fe72-4614-b574-b3457ef0518c
+
+**With Claude Code.** Claude Code hands the research to Sonjari over MCP. Sonjari reads the release page on this PC and
+only the answer, its source and a short receipt go back to Claude. Claude then checks it: in this run it flags that the
+top entry is a release candidate and that Sonjari saved a Word file nobody asked for. Shown at 4x.
+
+https://github.com/user-attachments/assets/415a77b1-6126-45cb-afd3-88bf71ddbea9
+
+**First run.** Setup looks at this PC, picks a model that fits, runs it once to check, and connects Claude Code, Codex
+or Cursor. Each step is held for 3 seconds.
+
+https://github.com/user-attachments/assets/c6dd2281-8981-404d-9222-d9f1534f79bc
+
+## Documentation
+
+| I want to … | Read |
+|---|---|
+| see how the maintainers use it day to day — research and coding with Claude Code, with real numbers | [How we use it](docs/guide/workflows.md) |
+| use Sonjari from Claude Code, Codex or Cursor — connect, the three tools, what comes back, code jobs | [MCP guide](docs/guide/mcp.md) |
+| know exactly what leaves my PC when another AI uses Sonjari | [What leaves your PC](docs/guide/privacy.md) |
+| understand which model I got and what to do if it does not fit | [How Sonjari picks a model](docs/guide/models.md) |
+| add know-how or a whole field — skills, skill packs anyone can write, domain packs | [Skills and packs](docs/guide/packs.md) |
+| build from source and run the tests | [Developing](#developing) · [Contributing](CONTRIBUTING.md) |
+
+
 ## What it does
 
 - **Proof you can check.** Every run leaves its steps, the pages it read and where each value came from. A number that no
@@ -74,7 +105,7 @@ On first launch the wizard measures this PC, recommends one and downloads it (se
 card's name — or pick any Hugging Face GGUF that fits. How far a small card gets is written out under "What we measured" below.
 
 **Connect your AI** — press *Connect* in the app. It adds the `sonjari_task` MCP entry to Claude Code, Claude Desktop, Codex or
-Cursor and backs up the original config first.
+Cursor and backs up the original config first. Setting it up by hand, the tools and what comes back: [MCP guide](docs/guide/mcp.md).
 
 **Build from source**
 
@@ -117,16 +148,20 @@ ran the 27B on an RTX 3090. 3 products × 3 rounds = 27 rows per arm.
 
 | Arm | Whole rows | Claude cost per whole row | Median time per task |
 |---|---|---|---|
-| Claude Code + Sonjari's browser tools | 23 of 27 | $0.074 | 401 s |
-| Claude Code hands the whole task to Sonjari | 18 of 27 | $0.075 | 391 s |
+| Claude Code + Sonjari's browser tools | 17–23 of 27 | $0.074–0.100 | 401 s |
+| Claude Code hands the whole task to Sonjari | 15–18 of 27 | $0.075–0.090 | 391 s |
 | Claude Code alone (web fetch and search) | 15 of 27 | $0.246 | 96 s |
 | Claude Code + Playwright MCP | 11 of 27 | $0.635 | 162 s |
 
-- At this size only "Sonjari's tools vs Playwright" is a clear difference (13 rows only Sonjari got, 1 only Playwright got;
-  exact sign test p ≈ 0.002). Against Claude alone it is borderline (9 vs 1, p ≈ 0.02 before correcting for several
-  comparisons). The rest is within noise.
+- The two Sonjari arms are shown as a range because some of their rows were graded by hand (6 for the browser tools,
+  3 for the handoff). Automatic grading alone gives the lower number. Details are in the
+  [measurement record](measurements/2026-10-19-head-to-head/README.md).
+- Counting only automatically graded rows, no difference in correct rows is clear at this size: Sonjari's tools vs
+  Playwright 10 vs 4 (sign test p = 0.18), vs Claude alone 7 vs 5 (p = 0.77). With the hand-graded rows the same pairs
+  are 13 vs 1 (p = 0.0018) and 9 vs 1 (p = 0.022). An earlier version of this page quoted only the second set.
 - It is slow: 6–7 minutes a task against about 1.5 for Claude alone.
-- 6 of the handoff arm's 9 misses were the agent waiting for an approval nobody was there to give; 3 were one shop page that
+- The handoff arm missed 9 rows counting the hand-graded ones (12 by the automatic grader alone; the extra 3 are hand-graded rows
+  the saved files cannot confirm). 6 of the 9 were the agent waiting for an approval nobody was there to give; 3 were one shop page that
   never finished loading. Playwright lost most of its rows to one shop's bot block.
 - Our own grader was wrong several times while we built this; each fix was re-run over every past row. Three of the 36
   cells were confirmed by hand, because the pages Sonjari had read were no longer stored at the time.

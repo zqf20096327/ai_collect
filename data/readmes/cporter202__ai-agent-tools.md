@@ -23,6 +23,19 @@ Welcome to AI Agent Tools! This is a curated collection of AI tools, utilities, 
 
 ---
 
+<!-- APIMESA-FEATURED-START -->
+## ⭐ Featured: APIMesa
+
+<p align="center">
+  <a href="https://apimesa.com" target="_blank" rel="noopener">
+    <img src=".github/assets/apimesa-promo-banner.png" alt="APIMesa — AI, Scraping & Data APIs. 150+ APIs, one API key, live playground at apimesa.com" width="100%">
+  </a>
+</p>
+
+**[APIMesa](https://apimesa.com)** is a pay-per-call API marketplace with 150+ live APIs for AI, scraping, data, SEO, lead generation, media, and developer utilities — one API key, clear per-call credit pricing, and a live playground for every API.
+
+<!-- APIMESA-FEATURED-END -->
+
 ## 🚀 Featured Monthly AI Tool: ViralWave Studio
 
 <div align="center">
@@ -202,6 +215,15 @@ Welcome to AI Agent Tools! This is a curated collection of AI tools, utilities, 
 * **[CodeT5](https://github.com/salesforce/CodeT5)** - Code understanding and generation model
 * **[WizardCoder](https://github.com/nlpxucan/WizardLM/tree/main/WizardCoder)** - Code generation model
 * **[Continue](https://continue.dev/)** - Open-source autopilot for VS Code
+
+* **[OpenAPI Validate API](https://apimesa.com)** - Validate core OpenAPI JSON structure and count paths and operations for agent/tool integration checks.
+* **[JSON Schema Infer API](https://apimesa.com)** - Infer a practical JSON Schema from a sample API response or payload.
+* **[JSON Schema Validate API](https://apimesa.com)** - Validate JSON data against a lightweight subset of JSON Schema including type, required, properties, arrays, enums, and ranges.
+* **[cURL to Fetch API](https://apimesa.com)** - Convert a simple cURL command into JavaScript fetch code for docs, agents, and SDK bootstrapping.
+* **[cURL to Python API](https://apimesa.com)** - Convert a simple cURL command into Python requests code for examples and automation scripts.
+* **[Webhook Replay Payload API](https://apimesa.com)** - Generate a replayable webhook cURL command with optional timestamped HMAC signature headers.
+* **[API Response Shape API](https://apimesa.com)** - Summarize JSON response structure into fields, paths, types, and an inferred schema for agents and docs.
+* **[Env Var Template API](https://apimesa.com)** - Generate .env.example content and a Markdown environment variable table from variable names or NAME=value lines.
 
 ## 🖼️ Generative AI Images
 

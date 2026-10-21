@@ -443,6 +443,37 @@ result = await solve(clauses=clauses)   # called like any AI Function
 
 `@routed` stacks on an ordinary `@ai_function`, routing each call across several models. `value` is what a verified success is worth in dollars; `models` are the candidates, each pairing a model with its token prices; and the post-conditions define success. Each call starts from per-candidate estimates (the chance of passing and expected cost, provided here by `LLMForecaster`), tries the most profitable candidate, returns its result if it passes, switches if it fails, and abstains when no candidate is worth its cost. See the [economics documentation](docs/economics.md) for more details.
 
+## Method Agents
+
+The `ai_functions.experimental.methods` module applies `@ai_function` to methods. Each `@ai_method` on a `MethodAgent` is a typed AI Function whose docstring can read the object's state through `self`, and `agents()` hands every method to another agent as a typed tool (see `examples/methods/analyst_team.py`):
+
+```python
+from ai_functions.experimental.methods import MethodAgent, ai_method
+
+
+class Analyst(MethodAgent):
+    def __init__(self, notes: str) -> None:
+        self.notes = notes
+
+    # Other agents see this method as the `analyst_causes` tool.
+    @ai_method(Finding, description="Name the likely causes of a symptom")
+    def causes(self, symptom: str, max_causes: int = 2) -> Finding:
+        """Using only these notes, name at most {max_causes} likely causes of {symptom}:
+
+        {self.notes}
+        """
+
+
+analyst = Analyst(notes)
+
+
+@ai_function(tools=analyst.agents())
+def postmortem(incident: str) -> str:
+    """Write a short postmortem for this incident, using the analyst's tools: {incident}"""
+```
+
+A method can also run on a live thread whose calls share history, have its proposals checked by a gate that runs as its post-condition, or read memory that the optimizer can update. See the [methods documentation](docs/methods.md) for details.
+
 ## Security
 
 Code execution is off by default. The `"local"` mode validates generated code with AST checks, restricts imports to the allowlist you pass in, and applies timeouts. But it is not a sandbox: it cannot stop resource exhaustion (an infinite loop, runaway memory allocation) and offers no process-level isolation. For production, run AI Functions inside a container or other isolated environment, which adds the process isolation and resource limits that `"local"` mode cannot provide. For untrusted input, use `"disabled"` mode.

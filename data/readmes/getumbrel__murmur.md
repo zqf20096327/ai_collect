@@ -17,6 +17,15 @@
 </p>
 
 <p align="center">
+  <a href="https://apps.umbrel.com/app/murmur">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/readme/app-store-badge-dark.svg">
+      <img src="docs/readme/app-store-badge-light.svg" alt="Available on the Umbrel App Store" width="220">
+    </picture>
+  </a>
+</p>
+
+<p align="center">
   <a href="#get-murmur"><b>Get Murmur</b></a> ·
   <a href="#bring-your-hermes-or-start-fresh">Your Hermes</a> ·
   <a href="#what-you-can-do">Features</a> ·
@@ -151,7 +160,7 @@ Scan a code and an agent is on WhatsApp or Telegram, so you can text it from the
 <td width="50%" valign="top">
 
 #### On umbrelOS
-Install **Murmur** from the Umbrel App Store. It comes with Hermes built in. Already use the **Hermes Agent** app? Murmur finds it and offers to use it instead, agents and all.
+Install **Murmur** from the [Umbrel App Store](https://apps.umbrel.com/app/murmur). It comes with Hermes built in. Already use the **Hermes Agent** app? Murmur finds it and offers to use it instead, agents and all.
 
 </td>
 <td width="50%" valign="top">
@@ -176,7 +185,7 @@ docker compose up -d
 Or run Murmur alone and point it at your Hermes. [`docs/STANDALONE.md`](docs/STANDALONE.md) has every option.
 
 ```sh
-docker run -d -p 3000:3000 -v murmur:/data ghcr.io/getumbrel/murmur:0.6
+docker run -d -p 3000:3000 -v murmur:/data ghcr.io/getumbrel/murmur:0.7
 ```
 
 Murmur comes with **Hermes 0.22.0**, and works with any **Hermes Agent 0.21.4 or newer**. If yours is older, Murmur shows you how to update it.
@@ -210,6 +219,12 @@ npm run dev:web                                        # the app on :5173, with 
 ```
 
 [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) covers the architecture, server settings, tests, releases and updating the Hermes client. [`docs/DESKTOP.md`](docs/DESKTOP.md) covers the desktop app, and [`docs/DESIGN.md`](docs/DESIGN.md) and [`docs/BRAND.md`](docs/BRAND.md) cover design and brand.
+
+## Contributing
+
+Found a bug, or wish Murmur did something it doesn't? [Open an issue](https://github.com/getumbrel/murmur/issues/new) and tell us about it. We read every one, reply, and work on them.
+
+We're not accepting pull requests for now. So many arrive written by AI that we can't review each one with the care it deserves, so an issue is the best way to help.
 
 ## License
 

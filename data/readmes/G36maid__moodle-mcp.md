@@ -14,13 +14,13 @@
 </p>
 
 <p align="center">
-  <b>English</b> | 
-  <a href="i18n/README.zh-TW.md">繁體中文</a> | 
-  <a href="i18n/README.zh-CN.md">简体中文</a> | 
-  <a href="i18n/README.ja.md">日本語</a> | 
-  <a href="i18n/README.es.md">Español</a> | 
-  <a href="i18n/README.de.md">Deutsch</a> | 
-  <a href="i18n/README.pt-BR.md">Português</a> | 
+  <b>English</b> |
+  <a href="i18n/README.zh-TW.md">繁體中文</a> |
+  <a href="i18n/README.zh-CN.md">简体中文</a> |
+  <a href="i18n/README.ja.md">日本語</a> |
+  <a href="i18n/README.es.md">Español</a> |
+  <a href="i18n/README.de.md">Deutsch</a> |
+  <a href="i18n/README.pt-BR.md">Português</a> |
   <a href="i18n/README.fr.md">Français</a>
 </p>
 
@@ -28,8 +28,10 @@ A [Model Context Protocol](https://modelcontextprotocol.io) server that lets
 LLM agents **use a real Moodle LMS** — read courses, fetch assignment PDFs,
 write code, upload and submit — through a single static binary.
 
+mcp-name: io.github.G36maid/moodle-mcp
+
 Built in Rust on the official MCP SDK ([`rmcp`](https://crates.io/crates/rmcp)).
-Validated live against **Moodle 3.7 → 5.x**.
+Verified live against Moodle 3.7, 4.5 and 5.2; designed for **3.7 → 5.x**.
 
 ## ✅ Why
 
@@ -61,7 +63,7 @@ service (most do — see
 
 ```bash
 # 1. Install
-cargo install moodle-mcp        # or grab a prebuilt binary — no Rust needed
+cargo install moodle-mcp        # or a prebuilt binary / one-click .mcpb — no Rust needed
 
 # 2. Log in once — prints MOODLE_URL and MOODLE_TOKEN
 moodle-mcp auth
@@ -74,6 +76,18 @@ claude mcp add moodle \
 
 # 4. Open a chat and ask:
 #    "What's due in the next two weeks? Plan my studying around it."
+```
+
+Or paste this into your agent and let it do every step (it will open
+`moodle-mcp auth` in its terminal — type your school credentials there):
+
+```text
+Set up moodle-mcp (github.com/G36maid/moodle-mcp): read docs/src/installation.md
+and docs/src/configuration.md from the repo's main branch first. Then install
+the binary for my platform, run `moodle-mcp auth` in the terminal so I can
+type my school credentials when it prompts, and register the server in your
+own MCP config using the snippet for your harness. Never store or repeat my
+credentials; ask before anything global.
 ```
 
 Prebuilt binaries, SSO login, config snippets for every client, and the

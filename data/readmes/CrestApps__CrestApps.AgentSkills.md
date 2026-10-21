@@ -1,5 +1,7 @@
 # CrestApps.AgentSkills
 
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-db61a2?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/MikeAlhayek)
+
 Shared **AI agent skills** and MCP tooling for .NET applications, Orchard Core solutions, CrestApps OrchardCore modules, and CrestApps.Core libraries.
 
 ## Projects
@@ -95,6 +97,19 @@ copilot plugin install crestapps-core@crestapps-agentskills
 ```
 
 If you want the full Orchard Core plugin experience without copying files into your repository, install **both** `orchardcore` and `crestapps-orchardcore`.
+
+## Claude Code plugins
+
+The same plugins can be installed in Claude Code (CLI or desktop app):
+
+```bash
+claude plugin marketplace add CrestApps/CrestApps.AgentSkills
+claude plugin install orchardcore@crestapps-agentskills
+claude plugin install crestapps-orchardcore@crestapps-agentskills
+claude plugin install crestapps-core@crestapps-agentskills
+```
+
+Inside an interactive Claude Code session, the equivalent commands are `/plugin marketplace add CrestApps/CrestApps.AgentSkills` and `/plugin install <plugin>@crestapps-agentskills`.
 
 The `crestapps-orchardcore` plugin is versioned from **2.0.0** onward because it now contains only CrestApps OrchardCore module skills instead of the previous mixed bundle.
 
@@ -207,6 +222,12 @@ done
 ## Contributing
 
 See [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md) for contribution guidelines and the expected source-root placement for new skills.
+
+## ❤️ Sponsor
+
+This project is free and open source, built and maintained alongside full-time work. If it saves you time or powers something you ship, please consider [sponsoring on GitHub](https://github.com/sponsors/MikeAlhayek). Sponsorship funds new features, faster fixes, documentation and long-term maintenance, and companies using it in production are especially encouraged to sponsor.
+
+[![Sponsor on GitHub](https://img.shields.io/badge/Sponsor_on_GitHub-%E2%9D%A4-db61a2?logo=githubsponsors&logoColor=white&style=for-the-badge)](https://github.com/sponsors/MikeAlhayek)
 
 ## License
 

@@ -185,10 +185,10 @@ An index is described in one of two styles:
 - **The `schema` style**, with `schema` and `deployment`, the way Pinecone API version `2026-07` describes indexes. A
   schema of named fields creates a document index, which combines dense vector, sparse vector, and full-text-search
   fields. A schema made only of the reserved fields `_values` and `_sparse_values` creates a vector index. Use this
-  style for new indexes without integrated embedding.
+  style for new indexes.
 - **The `spec` style**, with `dimension`, `metric`, `vector_type`, `spec`, and `embed`, the way earlier versions of
-  the provider described indexes. It's planned for deprecation. Indexes with integrated embedding and existing
-  pod-based indexes still need it for now.
+  the provider described indexes. It's planned for deprecation. Legacy integrated indexes, created with `embed`, and
+  existing pod-based indexes still need it for now.
 
 A configuration uses one style or the other. Upgrading from version 4? See the
 [version 5 upgrade guide](docs/guides/version-5-upgrade.md).
@@ -215,6 +215,32 @@ Field names are at most 64 bytes and can't start with `$` or `_`. An index can h
 one sparse vector field, and 100 full-text-search fields. Metadata fields don't need to be declared: they're indexed
 automatically when you upsert data. The schema can't be changed after the index is created; changing it replaces the
 index. Document indexes run only on managed (serverless) deployments.
+
+#### Integrated embedding
+
+A document index's `string` fields can use integrated embedding: Pinecone embeds the field's text with a hosted model
+when you upsert documents, and embeds your query text when you search with `embed` or `sparse_embed` scoring. Set
+`embed` for a dense model, `sparse_embed` for a sparse model, or both. `{}` selects the default model.
+
+```terraform
+resource "pinecone_index" "articles" {
+  name = "articles"
+  deployment = {
+    managed = { cloud = "aws", region = "us-east-1" }
+  }
+  schema = {
+    fields = {
+      body    = { string = { embed = {} } }
+      summary = { string = { sparse_embed = {}, store_text = false } }
+    }
+  }
+}
+```
+
+By default, the text is also stored and indexed for full-text search, so `body` above also supports `text` scoring.
+Set `store_text = false` to embed the text without storing it. Integrated embedding takes the index's vector slots:
+at most one field can set `embed` or be a `dense_vector` field, and at most one can set `sparse_embed` or be a
+`sparse_vector` field. Like the rest of the schema, it's fixed when the index is created.
 
 A schema made only of the reserved fields `_values` (dense) and `_sparse_values` (sparse) creates a vector index
 instead, used with the vectors API:
@@ -251,7 +277,7 @@ resource "pinecone_index" "serverless" {
 ```
 
 BYOC (Bring Your Own Cloud) indexes are deployed into your own cloud environment, identified by the `environment`
-Pinecone provides. They need dedicated read capacity:
+Pinecone provides. Like serverless indexes, they default to on-demand read capacity (see [Read Capacity](#read-capacity)):
 
 ```terraform
 resource "pinecone_index" "byoc" {
@@ -260,26 +286,21 @@ resource "pinecone_index" "byoc" {
   spec = {
     byoc = {
       environment = "my-byoc-env-id"
-      read_capacity = {
-        dedicated = {
-          node_type = "b1"
-          replicas  = 1
-          shards    = 1
-        }
-      }
     }
   }
 }
 ```
 
-#### Integrated embedding
+#### Legacy integrated indexes
 
-An index with `embed` embeds text with a model hosted by Pinecone. The model and `field_map` are fixed when the
-index is created; `read_parameters` and `write_parameters` can be updated in place.
+An index with `embed` is a legacy integrated index: it embeds text with a model hosted by Pinecone, and is read and
+written through the legacy Records API. For new indexes, use [integrated embedding](#integrated-embedding) on a
+document index instead. The model and `field_map` are fixed when the index is created; `read_parameters` and
+`write_parameters` can be updated in place.
 
 ```terraform
-resource "pinecone_index" "integrated" {
-  name = "my-integrated-index"
+resource "pinecone_index" "legacy_integrated" {
+  name = "my-legacy-integrated-index"
   spec = {
     serverless = {
       cloud  = "aws"
@@ -322,9 +343,8 @@ terraform import pinecone_index.example my-index
 ### Read Capacity
 
 Serverless and BYOC indexes support configurable read capacity. With `schema`, set `read_capacity` at the top level;
-with `spec`, set it inside the `serverless` or `byoc` block. Omitting `read_capacity` defaults to `on_demand`, which
-BYOC indexes don't support, so BYOC indexes must set `dedicated`. Creating or changing read capacity waits until the
-new capacity is running (see `timeouts.create` and `timeouts.update`):
+with `spec`, set it inside the `serverless` or `byoc` block. Omitting `read_capacity` defaults to `on_demand`. Creating
+or changing read capacity waits until the new capacity is running (see `timeouts.create` and `timeouts.update`):
 
 ```terraform
 # Dedicated read capacity on a document index
@@ -372,8 +392,8 @@ resource "pinecone_index" "dedicated" {
 ### Metadata Schema (deprecated)
 
 `spec.serverless.schema` and `spec.byoc.schema` are deprecated: metadata fields are indexed automatically when you
-upsert data. New indexes accept them only together with `embed`. Existing indexes keep the value, and it can be
-removed from the configuration without replacing the index.
+upsert data. New indexes accept them only together with `embed`, on legacy integrated indexes. Existing indexes keep
+the value, and it can be removed from the configuration without replacing the index.
 
 ## Documentation
 

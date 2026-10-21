@@ -41,8 +41,11 @@ Open source under the [Apache License 2.0](LICENSE).
   do the work, not just describe it. When a turn is all
   reads (e.g. open five files at once), they run **concurrently**; anything that
   writes, runs a command, or needs approval stays sequential. Edits are matched
-  **resiliently** — if the model's snippet drifts from the file by indentation or
-  whitespace, Houston still locates and applies it instead of failing.
+  **resiliently**: if the model's snippet drifts from the file by indentation or
+  whitespace, Houston still locates and applies it instead of failing, and shows the
+  model the lines it actually changed. Reads come back **line-numbered**, and the
+  agent must have read a file, unchanged since, before it overwrites or edits it, so
+  an edit you make in your editor mid-turn is never clobbered.
   `search_files` ships with a bundled **ripgrep**, so fast content search works
   out of the box without anything installed on your PATH (it falls back to a
   built-in scan if the binary is ever unavailable).
@@ -69,17 +72,26 @@ Open source under the [Apache License 2.0](LICENSE).
   build → look → fix loop without a human eyeballing the page. The screenshot
   comes back through the same vision pipeline as pasted images, so a
   vision-capable model views it directly, and it shows inline in the transcript.
-  Only loopback hosts (`localhost`, `127.0.0.1`, `::1`) are allowed — public URLs
-  go through `web_fetch` — and, being local network egress, it always prompts for
+  Only loopback hosts (`localhost`, `127.0.0.1`, `::1`) are allowed (public URLs
+  go through `web_fetch`), and, being local network egress, it always prompts for
   approval like `web_fetch`. Pass a `selector` to capture just one element.
 - **Live preview panel.** When the agent starts a dev server (a background
-  `run_shell`), Houston detects the loopback URL it prints and offers a **Preview**
-  panel — a resizable right-hand dock that renders the running page live and
-  interactively, right beside the chat. Multiple servers stack top-to-bottom (up to
-  three), each with reload and open-in-browser controls; you can also add a
+  `run_shell`), Houston detects the loopback URLs it prints and offers a **Preview**
+  panel: a resizable right-hand dock that renders the running page live and
+  interactively, right beside the chat. A script that starts several servers (a
+  client and its API) shows the page it labels `Local:`, with a picker for the
+  others. Multiple servers stack top-to-bottom (up to three), each showing its full
+  URL with reload, copy, and open-in-browser controls; you can also add a
   `localhost` URL or port by hand. The pages render in isolated, sandboxed,
   loopback-pinned views with the same network guards as `view_localhost`, so
   untrusted dev-server output can't reach your network.
+- **Background tasks.** The tasks button in the titlebar shows a pulsing count while
+  terminals or commands the agent backgrounded are running, and opens a **Tasks** tab
+  in the same right-hand dock as Preview. Each row names the command that does the
+  work (setup like `cd` and virtualenv activation is stripped), its port and folder;
+  expand it for the full command, recent output, and Stop, Open preview, or Go to
+  chat. A shell that exited but left a server running is flagged, with a button to
+  stop the leftover process. The panel never opens by itself.
 - **@-mention files.** Type `@` in the composer to fuzzy-search project files and
   drop a path into your message — no need to paste or describe where things live.
 - **Slash commands.** Type `/` for a command menu. Built-ins: `/new` (new chat),
@@ -123,7 +135,8 @@ Open source under the [Apache License 2.0](LICENSE).
 - **Spawn separate sessions.** Where a subagent reports back into the current turn,
   `spawn_session` spins off a *separate* chat: the agent hands it a task, optionally
   on its own git branch and worktree, and sets it running autonomously in the
-  background. It appears in the sidebar with a live running indicator, seeded with
+  background. It appears in the sidebar nested under the chat that started it, with a
+  live running indicator, seeded with
   the handed-off context as its first message (open it to watch, answer an
   approval, or take over), or with a copy of the current chat when the agent
   forks it. The spawned session inherits your current approval policy, so it is
@@ -227,7 +240,8 @@ Open source under the [Apache License 2.0](LICENSE).
 - **Background processes.** `run_shell` can start long-running commands (dev
   servers, watchers) in the background and return immediately; the agent polls
   them with `read_shell_output` and stops them with `kill_shell`. They're killed
-  when the app quits.
+  when the app quits. If Houston exits without that cleanup (a crash or a force-quit),
+  the next launch stops the ones it left running (macOS and Linux).
 - **Persistent shell session.** Foreground `run_shell` commands share a session
   within a turn: `cd` and exported environment variables carry over to later
   commands (e.g. `cd build` then `make`, or activate a virtualenv once and reuse
@@ -329,10 +343,11 @@ Open source under the [Apache License 2.0](LICENSE).
 - **Light & dark themes.** Pick *System*, *Dark*, or *Light* in Settings →
   *Appearance*; *System* follows your macOS appearance and switches live.
 - **Resilient streaming.** Transient provider failures (rate limits, overloads,
-  dropped connections) are retried with exponential backoff — shown inline as a
-  "retrying…" notice — as long as nothing has streamed yet, so a blip mid-run no
-  longer throws the whole turn away. If a turn still fails, a **Retry** button
-  re-runs it without you re-typing.
+  dropped connections) are retried with exponential backoff, shown inline as a
+  "retrying…" notice, so a blip mid-run no longer throws the whole turn away. A
+  reply that drops partway through is discarded and started over, never shown
+  twice. If a turn still fails, a **Retry** button re-runs it without you
+  re-typing.
 - **Secure key storage.** API keys are encrypted with the macOS Keychain
   (Electron `safeStorage`) and never leave the main process or touch the renderer.
 - **Persistent conversations**, scoped per project folder. Export any chat to a
@@ -506,6 +521,9 @@ Houston -p "Add a unit test for utils/date.ts and run the suite" --cwd . --full-
 # gate shell commands but approve them when the run asks (instead of denying)
 Houston -p "Fix the lint errors" --approval auto-edit --on-approval allow
 
+# same, and let those shell commands reach the network (e.g. to install deps)
+Houston -p "Add zod and use it in api.ts" --approval auto-edit --on-approval allow --allow-shell-network
+
 # CI guard: exit non-zero if the run needs anything the policy doesn't auto-approve
 Houston -p "Summarize open TODOs" --on-approval fail
 
@@ -523,8 +541,9 @@ Houston -i   # /resume picks up the same conversation
 Flags: `--cwd <dir>` (project folder, default the current directory),
 `--provider <id>` / `--model <id>` (default your selected model), `--approval
 <plan|ask|auto-edit|full-auto>` (default `plan`), `--on-approval
-<allow|deny|fail>` (below), `--json`, `--continue` (resume the most recent
-session in the folder), `--resume <id>` (resume a specific one).
+<allow|deny|fail>` (below), `--allow-shell-network` (below), `--json`,
+`--continue` (resume the most recent session in the folder), `--resume <id>`
+(resume a specific one).
 Assistant text streams to stdout, tool activity (plus a one-line token/cost
 total, failed tools, and an early-stop notice if the run hits a step/output
 limit) to stderr, and the exit code says how the run ended (below). It
@@ -599,6 +618,16 @@ auto-approves), `allow` approves it, and `fail` refuses it and exits non-zero so
 a script can tell the run needed more than it was granted. The default is
 `deny`, except under `full-auto` (which already opts into everything) where it
 is `allow`; an unrecognized value is treated as `deny`.
+
+**Shell network.** Shell commands run in a sandbox with network off until the run
+is granted it, because the sandbox can read your whole filesystem.
+Interactively that grant is "Allow for run" on a shell command (or, under full
+auto, a one-time consent). `--on-approval allow` approves each command the way
+plain "Allow" does, so under `ask` or `auto-edit` those commands still run
+offline. Pass `--allow-shell-network` to grant shell network for the run under
+any policy; granted traffic still goes through the egress allowlist. Under
+`full-auto`, `--on-approval allow` (its default) also answers the one-time
+consent with yes.
 
 ## Interactive terminal
 
@@ -826,8 +855,9 @@ macOS arm64, macOS x64 (Intel), and Windows x64, each packaging on its own runne
 macOS legs also smoke-test the packaged app with Playwright. Each leg uploads its build as
 an inspection-only artifact (`houston-linux-x64` / `houston-mac-arm64` / `houston-mac-x64`
 / `houston-win-x64`, 3-day retention), so you can grab a PR's build from the **Actions**
-tab without building locally. The same matrix gates a release in `release-prepare.yml`,
-and `release-publish.yml` builds and publishes the Release artifacts.
+tab without building locally. A release is checked the same way before its release PR opens
+(`release-prepare.yml`) and then built, signed and published (`release-publish.yml`);
+[docs/RELEASING.md](docs/RELEASING.md) describes the process.
 
 ## Updates
 
@@ -911,7 +941,8 @@ the agent loop and UI never depend on a specific provider.
 - **Tool execution is sandboxed.** `run_shell` runs under `sandbox-exec` with a
   generated profile: deny-by-default, filesystem reads allowed, writes restricted
   to the project + temp dirs, network denied until you grant it (a one-time
-  consent in *full auto*, or "Allow for run" on a shell approval). Granted
+  consent in *full auto*, "Allow for run" on a shell approval, or
+  `--allow-shell-network` on a headless run). Granted
   network is confined to a per-domain egress allowlist on macOS and Linux:
   direct sockets stay blocked and traffic flows through a local proxy that
   permits package registries, VCS hosts, and domains you add in Settings (see
@@ -919,9 +950,14 @@ the agent loop and UI never depend on a specific provider.
 - **File tools are contained** to the workspace in code — any path that resolves
   outside the project root is rejected.
 - **Human in the loop.** Writes and shell commands require approval unless you
-  opt into a more autonomous policy. Network egress (`web_fetch`, `web_search`,
-  `view_localhost`) always prompts on first use — even in *full auto* — since it
-  leaves the machine; choose *allow-for-the-run* to stop further prompts that run.
+  opt into a more autonomous policy. A new install starts in *full auto* only where
+  the OS sandbox confines shell commands (macOS, Linux with bubblewrap), and in *ask*
+  elsewhere; an existing install keeps its saved mode. Network egress (`web_fetch`,
+  `web_search`, `view_localhost`) always prompts on first use, even in *full auto*,
+  since it leaves the machine; choose *allow-for-the-run* to stop further prompts that
+  run. A shell command that can throw away work in the project (`git reset --hard`, a
+  forced `git clean`, `rm -r` of source, a forced or deleting push) asks in every mode,
+  since the sandbox protects everything but the project itself.
   `view_localhost` is restricted to loopback addresses and loads untrusted page
   content in a sandboxed, isolated, no-Node window; its main frame can't be
   navigated or redirected off loopback, and its requests can't reach
@@ -938,8 +974,8 @@ the agent loop and UI never depend on a specific provider.
   to disk (`0600`), and the renderer only ever sees a `hasKey` flag.
 
 Coding agents run model-authored commands. Treat *full auto* + network with the
-same caution you'd treat running untrusted code, and prefer the default
-*ask*/*auto-edit* policies.
+same caution you'd treat running untrusted code, and switch to *ask* or *auto-edit*
+for a project you don't trust.
 
 ## Signing & notarization
 

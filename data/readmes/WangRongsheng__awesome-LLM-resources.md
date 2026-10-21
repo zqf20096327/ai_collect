@@ -773,6 +773,7 @@ To speed up Long-context LLMs' inference, approximate and dynamic sparse calcula
 35. Confucius4-TTS: https://github.com/netease-youdao/Confucius4-TTS
 36. Dia-1.6B: https://huggingface.co/nari-labs/Dia-1.6B-0626
 37. FireRedTTS3: https://github.com/FireRedTeam/FireRedTTS3
+38. Ming-3.0: https://huggingface.co/collections/inclusionAI/ming-30
 
 #### STT/ASR
 
@@ -1372,4 +1373,84 @@ MCP工具聚合：
 
 ## 推理 Open o3
 
-1. Mini-o3: https://arxiv.org/abs/250
+1. Mini-o3: https://arxiv.org/abs/2509.07969
+2. Simple-o3: https://arxiv.org/abs/2508.12109
+3. Thyme: https://arxiv.org/abs/2508.11630
+4. Open o3 Video: https://arxiv.org/abs/2510.20579
+
+<div align="right">
+    <b><a href="#Contents">↥ back to top</a></b>
+</div>
+
+## 小语言模型 Small Language Model
+
+1. https://github.com/jiahe7ay/MINI_LLM
+2. https://github.com/jingyaogong/minimind
+3. https://github.com/DLLXW/baby-llama2-chinese
+4. https://github.com/charent/ChatLM-mini-Chinese
+5. https://github.com/wdndev/tiny-llm-zh
+6. https://github.com/Tongjilibo/build_MiniLLM_from_scratch
+7. https://github.com/jzhang38/TinyLlama
+8. https://github.com/AI-Study-Han/Zero-Chatgpt
+9. https://github.com/loubnabnl/nanotron-smol-cluster ([使用Cosmopedia训练cosmo-1b](https://huggingface.co/blog/zh/cosmopedia))
+10. https://github.com/charent/Phi2-mini-Chinese
+11. https://github.com/allenai/OLMo
+12. https://github.com/keeeeenw/MicroLlama
+13. https://github.com/Chinese-Tiny-LLM/Chinese-Tiny-LLM
+14. https://github.com/leeguandong/MiniLLaMA3
+15. https://github.com/Pints-AI/1.5-Pints
+16. https://github.com/zhanshijinwat/Steel-LLM
+17. https://github.com/RUC-GSAI/YuLan-Mini
+18. https://github.com/Om-Alve/smolGPT
+19. https://github.com/skyzh/tiny-llm
+20. https://github.com/qibin0506/Cortex
+21. https://github.com/huggingface/picotron
+22. https://github.com/Alic-Li/Mini_RWKV_7
+23. https://huggingface.co/Nanbeige/Nanbeige4-3B-Thinking-2511 `23T tokens预训练模型`
+24. https://github.com/stepfun-ai/SteptronOss
+25. https://github.com/huggingface/nanowhale
+26. https://github.com/OpenBMB/ForgeTrain
+27. https://github.com/vukrosic/glm-5.3-flash-from-scratch
+
+
+<div align="right">
+    <b><a href="#Contents">↥ back to top</a></b>
+</div>
+
+## 小多模态模型 Small Vision Language Model
+
+1. https://github.com/jingyaogong/minimind-v
+2. https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/train_llava
+3. https://github.com/AI-Study-Han/Zero-Qwen-VL
+4. https://github.com/Coobiw/MPP-LLaVA
+5. https://github.com/qnguyen3/nanoLLaVA
+6. https://github.com/TinyLLaVA/TinyLLaVA_Factory
+7. https://github.com/ZhangXJ199/TinyLLaVA-Video
+8. https://github.com/Emericen/tiny-qwen
+9. https://github.com/merveenoyan/smol-vision
+10. https://github.com/huggingface/nanoVLM
+11. https://github.com/GeeeekExplorer/nano-vllm
+12. https://github.com/ritabratamaiti/AnyModal
+13. https://github.com/yujunhuics/Reyes
+14. https://github.com/Victorwz/Open-Qwen2VL
+15. https://github.com/jingyaogong/minimind-o
+
+<div align="right">
+    <b><a href="#Contents">↥ back to top</a></b>
+</div>
+
+## 技巧 Tips
+
+1. [What We Learned from a Year of Building with LLMs (Part I)](https://www.oreilly.com/radar/what-we-learned-from-a-year-of-building-with-llms-part-i/)
+2. [What We Learned from a Year of Building with LLMs (Part II)](https://www.oreilly.com/radar/what-we-learned-from-a-year-of-building-with-llms-part-ii/)
+3. [What We Learned from a Year of Building with LLMs (Part III): Strategy](https://www.oreilly.com/radar/what-we-learned-from-a-year-of-building-with-llms-part-iii-strategy/)
+4. [轻松入门大语言模型（LLM）](https://www.bilibili.com/video/BV1pF4m1V7FB/?spm_id_from=333.999.0.0&vd_source=c739db1ebdd361d47af5a0b8497417db)
+5. [LLMs for Text Classification: A Guide to Supervised Learning](https://www.striveworks.com/blog/llms-for-text-classification-a-guide-to-supervised-learning)
+6. [Unsupervised Text Classification: Categorize Natural Language With LLMs](https://www.striveworks.com/blog/unsupervised-text-classification-how-to-use-llms-to-categorize-natural-language-data)
+7. [Text Classification With LLMs: A Roundup of the Best Methods](https://www.striveworks.com/blog/text-classification-with-llms-a-roundup-of-the-best-methods)
+8. [LLM Pricing](https://docs.google.com/spreadsheets/d/18GHPEBJzDbICmMStPVkNWA_hQHiWmLcqUdEJA1b4MJM/edit?gid=0#gid=0)
+9. [Uncensor any LLM with abliteration](https://huggingface.co/blog/mlabonne/abliteration)
+10. [Tiny LLM Universe](https://github.com/datawhalechina/tiny-universe)
+11. [Zero-Chatgpt](https://github.com/AI-Study-Han/Zero-Chatgpt)
+12. [Zero-Qwen-VL](https://github.com/AI-Study-Han/Zero-Qwen-VL)
+13. [f

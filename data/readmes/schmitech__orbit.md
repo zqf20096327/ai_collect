@@ -24,9 +24,44 @@
 </p>
 
 <p align="center">
-  <img width="960" alt="ORBIT admin panel in action: resource monitoring, API keys, users, audit logs, and MCP tools" src="https://github.com/user-attachments/assets/6adf3f49-434c-4915-b2c1-ca6c44c0beee" />
+  <strong>ORBIT control plane</strong>
+  <br />
+  <img width="700" alt="ORBIT admin panel in action: resource monitoring, API keys, users, audit logs, and MCP tools" src="https://github.com/user-attachments/assets/9d56a174-fbf1-4caa-887b-691c4f1b07a7" />
   <br />
   <sub>Monitor resources, manage API keys and users, review audit logs, and configure MCP tools—all in one place.</sub>
+</p>
+
+<br/>
+
+<p align="center">
+  <strong>Chat with files using a multimodal agent</strong>
+  <br />
+  <img width="700" alt="Chat with files using a multimodal agent" src="https://github.com/user-attachments/assets/8526017b-756c-420d-b880-8ebe1a5dd33e" />
+  <br />
+  <sub>Ask questions about your documents and images through one conversational interface.</sub>
+  <br />
+</p>
+
+<br/>
+
+<p align="center">
+  <strong>Real-time AI-powered decisions</strong>
+  <br />
+  <img width="700" alt="Decision Car Simulation showing ORBIT-powered lane choices in an arcade driving game" src="https://github.com/user-attachments/assets/cc4d9839-263b-4632-b0a2-770b90121e57" />
+  <br />
+  <sub>ORBIT chooses lanes and assesses collision risk—the same decision-model adapters can power routing, triage, and moderation.</sub>
+  <br />
+</p>
+
+<br/>
+
+<p align="center">
+  <strong>MCP Tools Calling</strong>
+  <br />
+  <img width="700" alt="MCP Tool Calling" src="https://github.com/user-attachments/assets/2e3ea9a0-d0fa-4592-a8fd-7a210fccfdc5"" />
+  <br />
+  <sub>Configure MCP servers in one place, then call MCP tools from your ORBIT client.</sub>
+  <br />
 </p>
 
 ## Why ORBIT
@@ -45,7 +80,6 @@ Explore the [capability matrix](docs/ORBIT_CAPABILITY_MATRIX.md) for a detailed 
 
 Explore what you can build with ORBIT, from conversations over private data to voice assistants and tool-using agents.
 
-- [Chat with files using a multimodal agent](https://github.com/user-attachments/assets/9d09fb57-ed65-4426-857c-cd2f76a58c8c)
 - [Talk to a municipal assistant in real time](https://github.com/user-attachments/assets/9c6530be-1116-4a14-aa82-321448ea5a8d)
 - [Choose AI models and configure model availability per agent](https://github.com/user-attachments/assets/17b2521c-b65a-4717-a842-074bfea9ffb7)
 - [Call MCP tools from an agent](https://github.com/user-attachments/assets/b177b234-e64f-491a-8c3e-8294774c548c)
@@ -145,8 +179,8 @@ See the [Docker guide](docker/README.md#flavor-images-recommended-pull-and-run) 
 **Prerequisites:** Python 3.12+, an internet connection for downloads, and [Ollama](https://ollama.com/) installed and running. If needed, run `ollama serve` in a separate terminal. On Windows, follow the [installation guide](install/windows.md).
 
 ```bash
-curl -LO https://github.com/schmitech/orbit/releases/download/v2.18.7/orbit-2.18.7.tar.gz
-tar -xzf orbit-2.18.7.tar.gz && cd orbit-2.18.7
+curl -LO https://github.com/schmitech/orbit/releases/download/v2.19.1/orbit-2.19.1.tar.gz
+tar -xzf orbit-2.19.1.tar.gz && cd orbit-2.19.1
 ./install/setup.sh --profile default
 
 ollama pull gemma4:e2b

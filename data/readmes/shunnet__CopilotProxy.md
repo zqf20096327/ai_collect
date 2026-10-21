@@ -1,4 +1,4 @@
-﻿<h1 align="center">
+<h1 align="center">
   <img width="120" height="120" src="https://api.snet.cn/pic/nuget.png" alt="Snet Logo"/><br/>
   📦 CopilotProxy
 </h1>
@@ -10,344 +10,312 @@
 <p align="center">
   <img src="https://img.shields.io/badge/.NET-10.0%2B-purple.svg" alt=".NET 10"/>
   <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT"/>
-  <img src="https://img.shields.io/badge/platform-Windows-success"/>
-  <img src="https://img.shields.io/github/stars/shunnet/CopilotProxy?style=social"/>
+  <img src="https://img.shields.io/badge/platform-Windows-success" alt="Windows"/>
+  <a href="https://github.com/shunnet/CopilotProxy/releases/latest"><img src="https://img.shields.io/github/v/release/shunnet/CopilotProxy" alt="Latest Release"/></a>
+  <a href="https://github.com/shunnet/CopilotProxy/actions/workflows/release.yml"><img src="https://github.com/shunnet/CopilotProxy/actions/workflows/release.yml/badge.svg?branch=main" alt="Build and validation"/></a>
+  <img src="https://img.shields.io/github/stars/shunnet/CopilotProxy?style=social" alt="GitHub Stars"/>
 </p>
 
 <p align="center">
   <a href="https://snet.cn"><b>🌐 官方网站</b></a> ·
   <a href="https://www.nuget.org/profiles/shun"><b>📚 NuGet</b></a> ·
-  <a href="https://github.com/shunnet"><b>💻 GitHub</b></a>
+  <a href="https://github.com/shunnet"><b>💻 GitHub</b></a> ·
+  <a href="https://github.com/shunnet/CopilotProxy/releases/latest"><b>📥 下载</b></a>
 </p>
 
 ## 📖 项目介绍
 
-CopilotProxy 是一个**本地代理服务**，在 GitHub Copilot 与国产大模型（DeepSeek、小米 MiMo）之间架起桥梁。它模拟 Ollama 的 API 协议，让 Visual Studio 2026 和 VS Code 中的 Copilot Chat / Agent 能直接使用 DeepSeek V4 Pro/Flash 和 MiMo V2.5 系列模型，无需修改 IDE 任何配置。
+CopilotProxy 是一个 **Windows WPF 管理工具与本地 Ollama / OpenAI Chat Completions 兼容代理**，在 GitHub Copilot Chat / Agent 与 DeepSeek、小米 MiMo 之间转换协议。WPF 提供配置、构建、启停和日志界面，Node.js / Bun 服务负责实际转发。
 
-**它解决什么问题？**
-
-GitHub Copilot 默认仅支持 OpenAI / Anthropic 等海外模型。对于国内用户，DeepSeek 和小米 MiMo 在中文代码理解、推理能力、成本方面具有明显优势，但 Copilot 无法直接连接。CopilotProxy 作为一个本地中间层，实现了协议转换、智能提示词压缩、会话管理、工具调用标准化等功能，让国产模型无缝接入 Copilot 生态。
-
-**WPF 桌面管理工具**提供了可视化的一键操作界面——配置 API Key、构建部署、启动/停止/重启服务、查看实时日志，无需接触命令行。脚本服务端则负责实际的 API 转发、压缩、会话保活和并发控制。
+模型从账号可见的供应商官方目录自动发现，**不维护固定型号白名单，不设置默认模型或隐藏回退**。每次生成请求必须显式提供目录返回的完整 `model`。IDE 仍需按下文添加自定义端点，供应商权限、额度和模型能力决定实际可用范围。
 
 ## ✨ 功能亮点
 
 <table>
-<tr><td>🔌 <b>多模型支持</b></td><td>DeepSeek V4 Pro / Flash + 小米 MiMo V2.5 系列</td></tr>
-<tr><td>🖥️ <b>WPF 桌面管理</b></td><td>可视化配置 API Key、一键构建、启动/停止/重启、实时日志</td></tr>
-<tr><td>🌍 <b>中英文国际化</b></td><td>WPF 与脚本服务双向语言同步，默认中文</td></tr>
-<tr><td>🪟 <b>单实例 + 托盘</b></td><td>Mutex + NamedPipe 确保唯一实例，关闭到托盘，新启动唤醒已有窗口</td></tr>
-<tr><td>🔄 <b>Ollama 协议兼容</b></td><td>模拟 Ollama API，VS 2026 / VS Code 原生接入</td></tr>
-<tr><td>🧠 <b>自动推理</b></td><td>Pro 模型使用最大推理强度（更精准、较慢），Flash / 非 Pro 使用最低推理（响应最快）</td></tr>
-<tr><td>📦 <b>提示词压缩</b></td><td>9 级可选（off / lite / caveman / rtk / ultra / delta / stacked / aggressive / standard），默认关闭</td></tr>
-<tr><td>💬 <b>会话保活</b></td><td>自动维持 KV Cache，降低 API 费用，日志可见</td></tr>
-<tr><td>⚡ <b>高并发</b></td><td>推理模型 5 并发、标准模型 15 并发，大幅提升响应速度</td></tr>
-<tr><td>📊 <b>Token 用量</b></td><td>请求/响应 Token 合并到完成行，一目了然</td></tr>
-<tr><td>🔧 <b>工具调用</b></td><td>完整的 Function Calling 支持，Schema 自动校验补全，智能 JSON 修复</td></tr>
-<tr><td>🛡️ <b>安全可靠</b></td><td>API Key 环境变量存储，WPF 密码框掩码</td></tr>
-<tr><td>🔍 <b>版本检测</b></td><td>一键检查 GitHub 最新版本，自动比对提示更新</td></tr>
+<tr><td>🔌 <b>官方模型发现</b></td><td>DeepSeek / MiMo 官方目录、缓存刷新、认证失效处理；新型号无需修改允许列表</td></tr>
+<tr><td>🖥️ <b>WPF 桌面管理</b></td><td>可视化设置、构建、启动/停止/重启、实时日志；保留单实例、托盘和中英文界面</td></tr>
+<tr><td>🔄 <b>双协议入口</b></td><td>Ollama NDJSON 与 OpenAI JSON/SSE 共用模型、消息、队列和上游传输管线</td></tr>
+<tr><td>🧠 <b>推理与工具</b></td><td>尊重显式控制及上游默认，保留原生工具 ID、参数和完整推理历史</td></tr>
+<tr><td>🖼️ <b>视觉输入</b></td><td>向支持图片的模型转发 Ollama images / OpenAI image_url，能力以实际元数据为准</td></tr>
+<tr><td>⚡ <b>有界并发</b></td><td>队列上限、总截止时间、取消与下游背压清理；溢出明确失败</td></tr>
+<tr><td>📦 <b>无损默认</b></td><td>off 默认不压缩；lite 仅整理工具描述空白，不截断工具结果或改写历史</td></tr>
+<tr><td>🛡️ <b>配置与进程保护</b></td><td>仅停止自有进程树，构建保留运行配置，发布按清单排除个人密钥与缓存</td></tr>
+<tr><td>📊 <b>可验证交付</b></td><td>JS / C# 回归、VS 构建、三种运行时包、发布排除检查和本地 HTTP 压测</td></tr>
+<tr><td>🔍 <b>版本与分发</b></td><td>项目版本统一注入桌面、代理及分发清单，GitHub Actions 验证后生成版本 Release</td></tr>
 </table>
 
 ## 📋 系统要求
 
-| 组件 | 说明 |
-|------|------|
-| 🟢 **Node.js** | 脚本运行时（自动检测版本，未安装时提示下载） |
-| 🔵 **Visual Studio 2026** (18.6.0+) | Ollama 提供程序支持 |
-| 🟣 **Windows 10+** | WPF 桌面管理工具 |
-| 🟡 **API Key** | DeepSeek 或 MiMo 至少配置一个 |
+| 用途 | 要求 |
+|---|---|
+| Windows x64 Node 包 / 源码 | Node 24；源码最低 Node 22，按 lockfile 安装依赖 |
+| Windows x86 Node 包 | Node 22，实测 22.23.3 / ia32 在 x64 Windows WOW64 下运行；Node 24 不提供 Windows x86 包 |
+| Windows x64 Bun 包 / 源码 | Bun，实测 1.4.3，原生 HTTP 与独立编译 |
+| WPF 开发 | Windows、.NET 10 SDK、Visual Studio 2026 的 .NET 桌面开发工作负载 |
+| 上游 | 至少一个有效 DeepSeek / MiMo Key；权限和额度决定可见及可调用模型 |
+
+Node 22 维护期于 **2027-04-30** 结束，x86 部署需在此之前重新评估支持范围。[Node 发布计划](https://github.com/nodejs/Release/blob/main/schedule.json)。启动器采用 V8 按架构选择的默认堆限制；需要调优时使用适合目标架构的 `NODE_OPTIONS`。
 
 ## 🚀 快速开始
 
+可先从 [GitHub Releases](https://github.com/shunnet/CopilotProxy/releases/latest) 下载对应架构的完整桌面包。Windows x64 可选 Node 或 Bun 包；Windows x86 选择 Node 包。WPF 需要 .NET 10 Desktop Runtime；源码构建另需下方 SDK 和开发环境。
+
 ### 1️⃣ 配置 API Key
 
-打开 WPF 管理工具 → 点击 **设置** → 填入 API Key：
-
-```env
-# DeepSeek API（https://platform.deepseek.com/api_keys）
-DEEPSEEK_API_KEY=sk-your-deepseek-key
-
-# 小米 MiMo API（https://platform.xiaomimimo.com/#/console/api-keys）
-MIMO_API_KEY=sk-your-mimo-key
-```
-
-> 💡 配置后自动同步到 `script/.env` 和 `.dist/.env`。服务运行时保存配置会自动重启以应用新配置。
+首次复制 `src/script/.env.example` 为 `.env` 并填入 Key；已有文件请直接编辑。也可在 WPF 设置页保存，或设置 `SNET_ENV_PATH` 指向外部配置。进程环境优先于文件，显式配置路径不存在时启动失败。不要提交个人配置。
 
 ### 2️⃣ 构建 & 启动
 
-在 WPF 工具中依次点击 **构建** → **启动**，或在终端中：
+下载包解压后打开 WPF 程序，保存设置并点击 **启动**；源码方式可先构建再启动，或使用以下 Node 入口：
 
-```bash
-start.cmd          # Windows（双击运行）
-bun run start      # Bun（推荐）
-npm run node       # Node.js 备选
+```powershell
+Set-Location src/script
+npm.cmd ci
+Copy-Item .env.example .env   # 仅首次创建
+notepad .env
+npm.cmd run node             # Node 前台
+# 或 .\start.cmd             # Windows 自动选择运行时
+# 或 npm.cmd start           # Bun
 ```
+
+默认地址 `http://127.0.0.1:11434`。端口占用时明确失败，不换端口、不终止占用者。管理接口只接受可信本机连接，修改操作另校验 Origin/Host；该服务未提供公网鉴权。
 
 ### 3️⃣ 添加到 Visual Studio
 
-> 需要 Visual Studio 2026 **18.6.0+**（正式版或 Insiders）
+使用 **18.10+ 的新 Agent (Preview)**。打开 Chat → 模型选择器 → **Add a model / Manage Models** → 连接 **Ollama 自定义端点**，服务地址为 `http://127.0.0.1:11434`，选择目录返回的完整 ID，再进入 Agent (Preview)。OpenAI 自定义端点也可连接 Chat Completions：基地址为 `http://127.0.0.1:11434/v1`，实际请求路径 `/v1/chat/completions`。字段名称以当前界面为准，不把 VS Code JSON 配置粘贴进 Visual Studio。
 
-1. 打开 Copilot Chat 面板
-2. 点击模型下拉菜单 → **管理模型**
-3. 选择提供程序 → **Ollama**
-4. 端点保持 `http://localhost:11434`
-5. 点击 **添加** — 模型自动加载
+微软说明 18.10 的 BYOK 替换旧 Ask/Agent 体验，既有 Ollama 模型可能需重新添加。依据：[当前 VS 指南](https://learn.microsoft.com/en-us/visualstudio/ide/copilot-select-add-models?view=visualstudio)、[2026-09-29 更新说明](https://devblogs.microsoft.com/visualstudio/visual-studio-september-update-power-your-workflow-with-your-model/)。本机 VS Professional 18.11.0 构建通过；实际 IDE GUI 未执行，不承诺所有内联补全或其他 IDE 功能。
 
 ### 4️⃣ 添加到 VS Code
 
-1. 安装 GitHub Copilot 扩展
-2. Copilot Chat → 模型下拉 → **管理模型**
-3. 选择提供程序 → **Ollama**
-4. 输入 `http://localhost:11434` 作为端点
-5. 点击 **添加** — 模型以 `[DEEPSEEK]` / `[MIMO]` 前缀出现
+模型选择器 → **Manage Language Models**（命令 `Chat: Manage Language Models`）→ **Add Models → Custom Endpoint**，选择 **Chat Completions**。当前文档已弃用内置 Ollama 提供程序及旧 `github.copilot.chat.customOAIModels`；原生 Ollama 方式请按官方 Ollama 扩展的当前说明设置 `http://127.0.0.1:11434`。
+
+Custom Endpoint 的 `chatLanguageModels.json` 可使用自动发现：
+
+```json
+[
+  {
+    "name": "CopilotProxy",
+    "vendor": "customendpoint",
+    "apiType": "chat-completions",
+    "url": "http://127.0.0.1:11434/v1"
+  }
+]
+```
+
+供应商 Key 只配置在代理端；如客户端强制要求 Key，可填无权限的本地占位文本，代理不使用该字段选择供应商凭据。手动配置时从 `/v1/models` 复制 ID，完整 URL 用 `http://127.0.0.1:11434/v1/chat/completions`，工具/视觉/上下文以实际元数据为准。Responses 和 Messages 未实现。
+
+当前 Agent Host 的 BYOK 可能需要实验设置 `chat.agentHost.byokModels.enabled`，组织策略也影响可用性。依据：[VS Code 当前模型配置](https://code.visualstudio.com/docs/agent-customization/language-models)。实际 VS Code GUI 未验收；官方 Copilot SDK 1.0.23 / runtime 1.0.100 的真实客户端本地协议测试已通过，包括多轮工具、推理和空 ID 增量。
 
 ## 🤖 支持模型
 
-### DeepSeek
+- 启动及五分钟 TTL 过期后访问供应商官方 `/models`。ID 为 `ds/<官方ID>` / `mimo/<官方ID>`；`:latest` 只是兼容别名。认证失败或凭据/端点变更立即失效，暂时故障最多使用同凭据/端点一小时内成功目录并标记 `stale`。
+- API 元数据优先。仅对确切型号的缺失字段使用注明来源的官方能力补充；未知能力/上下文保持未知，未来新型号不会因此被过滤。专用语音模型不列为通用聊天模型。验收账号快照不是固定型号表。
 
-| 模型 | 上下文 | 工具调用 | 推理 |
-|------|---------|---------|------|
-| 🔮 **DeepSeek V4 Pro** | 1M | ✅ | 🧠 MAXIMUM（精准，较慢） |
-| ⚡ **DeepSeek V4 Flash** | 1M | ✅ | ⚡ LOW（响应最快） |
+| 供应商 | 模型 ID | 选择方式 |
+|---|---|---|
+| 🔮 DeepSeek | `ds/<官方ID>` | 从 `/api/tags` 或 `/v1/models` 获取 |
+| 🎯 小米 MiMo | `mimo/<官方ID>` | 从 `/api/tags` 或 `/v1/models` 获取 |
 
-### 小米 MiMo
-
-| 模型 | 上下文 | 工具调用 | 视觉 | 推理 |
-|------|---------|---------|------|------|
-| 🎯 **MiMo V2.5** | 1M | ✅ | ❌ | ⚡ LOW（响应最快） |
-| 🎯 **MiMo V2.5 Pro** | 1M | ✅ | ❌ | 🧠 MAXIMUM（精准，较慢） |
+💡 型号以官方 API 当前返回为准；`/api/show` 提供实际已知上下文和能力，未知字段不伪造。
 
 ## ⚙️ 配置参数
 
-### 🔌 核心配置
+完整模板见 [`.env.example`](src/script/.env.example)。按启动快照加载，保存新配置后重启；WPF 保留未知有效配置键。
 
-| 变量 | 默认值 | 说明 |
-|------|--------|------|
-| `DEEPSEEK_API_KEY` | — | DeepSeek API Key |
-| `MIMO_API_KEY` | — | MiMo API Key |
-| `DEFAULT_MODEL` | `ds/deepseek-v4-pro` | 默认模型 |
-| `SERVER_HOST` | `127.0.0.1` | 绑定地址 |
-| `SERVER_PORT` | `11434` | 监听端口 |
+| 变量 | 默认值 | 含义 |
+|---|---|---|
+| `SERVER_HOST` / `SERVER_PORT` | `127.0.0.1` / `11434` | 监听地址 |
+| `DEEPSEEK_API_KEY` / `MIMO_API_KEY` | 空 | 各供应商凭据 |
+| `DEEPSEEK_BASE_URL` / `MIMO_BASE_URL` | 见模板 | 目录与生成共用地址 |
+| `CONCURRENCY_STANDARD` / `CONCURRENCY_THINKING` | `15` / `5` | 按实际思考状态分队列 |
+| `MAX_QUEUE_SIZE` / `QUEUE_TIMEOUT_MS` | `100` / `30000` | 每队列等待上限；容量 0 禁止等待 |
+| `REQUEST_TIMEOUT_MS` / `THINKING_TIMEOUT_MS` | 各 `300000` | 排队、请求与读取共用总截止时间 |
+| `MAX_REQUEST_BODY_BYTES` / `MAX_UPSTREAM_RESPONSE_BYTES` | 各 `67108864` | 读取字节限制，非 token 上限 |
+| `RETRY_MAX` / `RETRY_BASE_DELAY_MS` | `6` / `100` | 明确 429/502/503/504 有限重试；不重播不确定网络 POST 或已输出的流 |
+| `MODEL_TTL_MS` / `MODEL_STALE_TTL_MS` | `300000` / `3600000` | 新鲜期 / 陈旧结果期限 |
+| `DEFAULT_TEMPERATURE` | 空 | 上游默认；非空范围 0..2 |
+| `COMPRESSION_LEVEL` / `SNET_LANGUAGE` | `off` / `zh` | off 或 lite；zh 或 en |
 
-### ⚡ 压缩与性能
-
-| 变量 | 默认值 | 说明 |
-|------|--------|------|
-| `COMPRESSION_LEVEL` | `off` | 压缩级别 |
-| `CONCURRENCY_THINKING` | `5` | 推理模型最大并发 |
-| `CONCURRENCY_STANDARD` | `15` | 标准模型最大并发 |
-| `RETRY_MAX` | `6` | 429 错误重试次数 |
-| `THINKING_TIMEOUT_MS` | `300000` | 推理模型超时（毫秒） |
-| `REQUEST_TIMEOUT_MS` | `300000` | 请求超时（毫秒） |
-
-### 🧠 模型与上下文
-
-| 变量 | 默认值 | 说明 |
-|------|--------|------|
-| `DEFAULT_CONTEXT_LENGTH` | `262144` | 默认上下文长度（Token） |
-
-### 💬 会话保活
-
-| 变量 | 默认值 | 说明 |
-|------|--------|------|
-| `SESSION_KEEPALIVE_ENABLED` | `true` | 会话保活开关 |
-| `SESSION_KEEPALIVE_INTERVAL_MS` | `60000` | 保活 Ping 间隔（毫秒，1分钟） |
-| `SESSION_KEEPALIVE_IDLE_TIMEOUT_MS` | `1800000` | 保活空闲超时（毫秒，30分钟） |
-
-### 🌍 语言
-
-| 变量 | 默认值 | 说明 |
-|------|--------|------|
-| `SNET_LANGUAGE` | `zh` | 界面语言（zh / en） |
+推理恢复缓存默认 5,000 条 / 16 MiB / 24 小时，条目与 UTF-8 字节双重约束，到期按访问清理。默认日志只记录元数据，不打印正文或密钥。
 
 ## 🌐 API 端点
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/tags` | GET | Ollama 模型列表（含推理模式变体） |
-| `/v1/chat/completions` | POST | 聊天补全（流式、工具调用、推理优化） |
-| `/api/chat` | POST | Ollama /api/chat 兼容（流式、工具调用） |
-| `/api/generate` | POST | Ollama /api/generate 兼容 |
-| `/v1/models` | GET | OpenAI 格式模型列表 |
-| `/api/language` | GET/POST | 获取/设置脚本语言 |
-| `/health` | GET | 健康检查 |
-| `/api/refresh` | POST | 强制刷新模型列表 |
-| `/api/version` | GET | 服务版本 |
-| `/api/ps` | GET | 进程/模型状态 |
-| `/stop` | GET | 优雅关闭服务 |
-| `/api/session/stop` | POST | 手动关闭指定会话（`{"sessionId":"1"}`） |
+| 方法与路径 | 行为 |
+|---|---|
+| `GET /api/tags`、`/api/list`、`/api/models`、`/v1/models` | 动态目录、真实已知能力、陈旧状态 |
+| `POST /api/show` | 能力、已知上下文、声明的思考选项 |
+| `POST /api/chat`、`/api/generate` | 默认 NDJSON；`stream:false` 单 JSON，保留 thinking、换行、结束原因和用量 |
+| `POST /v1/chat/completions` | JSON/SSE、原生工具与推理，参数只输出新增片段 |
+| `POST /v1/completions` | 字符串 prompt 的 JSON/SSE；不支持 suffix、echo、best_of、多 choice，明确拒绝 |
+| `GET /api/ps` | 当前活跃请求模型，不伪称本地驻留模型 |
+| `GET /health`、`/api/version`、`/version` | 健康、版本与目录状态 |
+| `GET /api/stats`、`POST /api/refresh`、`/api/diagnostics` | 本机统计、刷新、本地诊断，诊断不发推理请求 |
+| `GET/POST /api/language`、`POST /api/session/stop`、`GET /stop` | 语言、本机会话取消、优雅关闭 |
+| `POST /api/pull`、`/api/push`、`/api/copy`、`/api/create`、`/api/embed`、`/api/embeddings`；`DELETE /api/delete` | 未实现的本地操作明确 501 |
+
+缺少 model / 无效 JSON 为 400，未知模型 404，超大输入 413，队列溢出 503。上游认证、额度、限流保留失败状态；流开始后的错误不伪造成功结束。没有 `/v1/responses`。
 
 ## ⌨️ WPF 界面操作
 
-| 按钮 | 操作 | 快捷键 |
-|------|------|--------|
-| 🏗️ 构建 | 编译打包脚本到 .dist | — |
-| ⚙️ 设置 | 配置 API Key、模型参数 | — |
-| ▶️ 启动 | 启动代理服务 | — |
-| ⏹️ 停止 | 优雅关闭（HTTP /stop → 精准杀进程） | — |
-| 🔄 重启 | 停止 → 等待 → 启动 | — |
-| 🔧 重建 | 停止 → 删除 .dist → 重新构建 | — |
-| 🔍 检查更新 | GitHub Releases API 比对版本号 | — |
-| 🧹 清空 | 清除日志显示 | — |
+| 按钮 | 操作 |
+|---|---|
+| 🏗️ 构建 | 构建运行时分发包，保留已有配置和失败前的有效产物 |
+| ⚙️ 设置 | 编辑实际运行入口旁的配置；保留未知配置键，运行中保存后重启服务以应用配置 |
+| ▶️ 启动 | 启动所选入口；端口冲突明确失败，不终止其他程序 |
+| ⏹️ 停止 | 取消并等待本窗口启动的进程树退出 |
+| 🔄 重启 | 停止自有进程后重新启动 |
+| 🔧 重建 | 停止后安全构建，不先删除整个 .dist |
+| 🔍 检查更新 | 查询 GitHub 最新 Release 并比对版本 |
+| 🧹 清空 | 清除界面日志显示 |
 
 ## 🏗️ 技术架构
 
-```
-┌─────────────────────────────────┐
-│   WPF 桌面管理工具 (.NET 10)       │
-│  ┌─────────┐ ┌─────────┐        │
-│  │ 配置管理  │ │ 实时日志  │        │
-│  └─────────┘ └─────────┘        │
-│  ┌─────────┐ ┌─────────┐        │
-│  │ 构建部署  │ │ 服务控制  │        │
-│  └─────────┘ └─────────┘        │
-└──────────────┬──────────────────┘
-               │ 进程管理 (精准 PID 追踪) + 语言同步
-               ▼
-┌─────────────────────────────────┐
-│   代理服务 (Node.js / Bun)        │
-│  ┌───────────────────────────┐  │
-│  │  Ollama 兼容 API (Hono)    │  │
-│  ├───────────────────────────┤  │
-│  │  动态推理 · 提示词压缩        │  │
-│  │  会话保活 · 工具调用标准化     │  │
-│  │  Token 日志 · 中英文 i18n   │  │
-│  ├───────────────────────────┤  │
-│  │  DeepSeek / MiMo API 适配   │  │
-│  └───────────────────────────┘  │
-└─────────────────────────────────┘
+```text
+┌──────────────────────────────────────────┐
+│ WPF 管理工具 (.NET 10 / Visual Studio)    │
+│ 配置 · 构建 · 自有进程控制 · 日志 · 语言   │
+└────────────────────┬─────────────────────┘
+                     │ Node / Bun 源入口或托管 service.exe
+                     ▼
+┌──────────────────────────────────────────┐
+│ 本地 HTTP 入口 (Hono / Node / Bun)        │
+│ Ollama API            OpenAI Chat API    │
+├──────────────────────────────────────────┤
+│ 官方模型目录 · 能力元数据 · 消息规范化      │
+│ 有界队列 · 总截止时间 · 取消 · 推理缓存    │
+│ 统一上游传输 → JSON / SSE / NDJSON 编码   │
+└────────────────────┬─────────────────────┘
+                     ▼
+             DeepSeek / Xiaomi MiMo
 ```
 
 ## 📁 项目结构
 
-```
+```text
 CopilotProxy/
-├── .github/workflows/
-│   └── release.yml                # GitHub Actions 自动发版
-├── image/                         # 界面截图
-├── src/                           # WPF 管理工具 & 代理脚本
-│   ├── App.xaml / App.xaml.cs     # 应用入口 & 全局异常捕获 & 单实例
-│   ├── MainWindow.xaml / .cs      # 主窗口 UI & AvalonEdit 日志控件
-│   ├── MainWindowModel.cs         # MVVM ViewModel（构建/设置/启停/检查更新）
-│   ├── AssemblyInfo.cs            # 主题资源声明
-│   ├── Language.resx              # 中文本地化资源
-│   ├── Language.en.resx           # 英文国际化资源
+├── .github/
+│   ├── workflows/release.yml          # 验证、三种分发包、版本标签发布
+│   └── scripts/Publish-Release.ps1    # 标签一致性与已有 Release 保护
+├── docs/validation/                  # 验收记录、原始问题映射与边界
+├── image/                            # 历史界面截图
+├── src/
+│   ├── Snet.CopilotProxy.csproj      # WPF 项目与唯一版本来源
+│   ├── App.xaml.cs / MainWindowModel.cs
 │   ├── handler/
-│   │   ├── CmdHandle.cs           # CMD 脚本进程管理 & ANSI 转义过滤
-│   │   ├── EnvHandle.cs           # .env 配置读写 & 双向同步
-│   │   └── SingleInstanceHandle.cs # 单实例管理（Mutex + NamedPipe）
-│   ├── models/
-│   │   └── EnvConfigModel.cs      # 配置模型（含 DataAnnotations 验证）
-│   ├── script/
-│   │   ├── start.cmd              # 启动脚本（自动检测 Bun/Node）
-│   │   ├── build.cmd              # 构建入口（分发到 build-bun/build-node）
-│   │   ├── build-bun.cmd          # Bun 编译为单文件 .exe
-│   │   ├── build-node.cmd         # Node.js 可移植构建
-│   │   ├── package.json           # npm 依赖声明
-│   │   └── src/
-│   │       ├── server.js          # 主服务入口 & Hono HTTP 路由 & 仪表盘 TUI
-│   │       ├── snet-handle.js     # 模型管理 & API 请求 & 聊天补全
-│   │       ├── token-optimizer.js # 9 级提示词压缩引擎 & Plan 模板
-│   │       ├── concurrency.js     # 并发队列管理 & 指数退避重试 & 工具截断
-│   │       ├── tool-extractor.js  # AI 文本中提取工具调用 & Schema 补全
-│   │       ├── tool-schemas.js    # VS/VSCode 工具 Schema 定义 & 标准化
-│   │       ├── stream-handler.js  # 流式响应处理 & 推理内容管理
-│   │       ├── message-pipeline.js # 消息清理 & 孤立工具调用剥离
-│   │       ├── reasoning-cache.js # 跨请求推理缓存（工作区感知）
-│   │       ├── reasoning-replay.js # 推理内容回放 & 注入
-│   │       ├── session-tracker.js # 会话注册 & 工作区摘要 & 速率限制
-│   │       ├── session-keepalive.js # 会话保活（KV Cache 维持）
-│   │       ├── logger.js          # 控制台仪表盘日志（滚动/折叠）
-│   │       ├── i18n.js            # 中英文国际化（76 key）
-│   │       ├── deepseek-client.js # DeepSeek API 封装
-│   │       ├── mimo-client.js     # MiMo API 封装
-│   │       ├── win-service.js     # Windows 服务集成（bun:ffi + SCM）
-│   │       └── polyfill.js        # 跨运行时兼容层（Bun/Node）
+│   │   ├── DesktopRuntimeController.cs # 构建、设置与启动配置的一致入口
+│   │   ├── CmdHandle.cs / OwnedProxyProcess.cs
+│   │   └── EnvHandle.cs / SingleInstanceHandle.cs
+│   └── script/
+│       ├── .env.example              # 无个人密钥的配置模板
+│       ├── start.cmd / build*.cmd    # 源码启动与构建入口
+│       ├── Build.ps1 / Package.ps1   # 暂存、回滚、清单导出
+│       ├── Launcher.cs               # 共享托管进程 / SCM 包装程序
+│       ├── src/
+│       │   ├── server.js / app.js    # 运行时启动与 HTTP 路由
+│       │   ├── config.js / model-registry.js
+│       │   ├── capability-profiles.js # API 缺失字段的有来源能力补充
+│       │   ├── message-pipeline.js / provider-transport.js
+│       │   ├── protocol.js / sse-parser.js / concurrency.js
+│       │   └── reasoning-cache.js / reasoning-replay.js
+│       └── test/                     # JS 回归与独立本地负载脚本
+└── tests/
+    ├── Snet.CopilotProxy.Tests/       # 引用生产项目的桌面回归
+    └── scripts/                      # 构建、启动、发布与密钥排除检查
 ```
 
 ## 🔧 高级特性
 
-### 🌍 中英文国际化
-- WPF 切换语言 → 自动同步脚本服务（`POST /api/language`）
-- 启动时通过 `SNET_LANGUAGE` 环境变量预设语言
-- 默认中文，覆盖 76 个翻译 Key：服务状态、API 错误、保活、Token 日志、Windows 服务等
+### 🧠 推理、工具与多模态
 
-### 🧠 动态推理
-- Pro 模型（v4-pro / v4.5 / MiMo 2.5-pro）自动 HIGH 推理
-- Flash / 非 Pro 模型自动 LOW 推理
-- MiMo 使用 `thinking: { type: "enabled" }`，DeepSeek 使用 `reasoning_effort`
-- 多轮对话自动回传 `reasoning_content`（API 要求）
+- 无显式推理控制时尊重上游默认，不按名称强制 LOW/MAX。原生 `think`、OpenAI `reasoning_effort` / `reasoning.effort` 和供应商 `thinking` 按声明能力映射；冲突/不支持值明确失败。MiMo 二元思考不伪造多档 effort。显式输出 cap 不增加，MiMo 使用同值 `max_completion_tokens`。
+- 完整回传原生 `thinking` / `reasoning_content`，包括无工具历史助手轮次。仅在显式 `x-session-id`、精确历史、供应商、端点和凭据范围内恢复缺失推理；信息不足则明确失败，不按工作区猜测。内存缓存重启丢失。
+- 仅转发原生声明工具调用，不从 Markdown、计划或推理文字制造动作。参数、ID、schema、大工具结果保持完整，非法交换明确拒绝。默认 `COMPRESSION_LEVEL=off` 无损；`lite` 仅压缩函数描述空白，其余旧模式拒绝。
+- 原生 `messages[].images` 与 OpenAI `image_url` 输入传给视觉模型；不提供生成图片、音频合成或 embedding。`/api/show` 的 `general.architecture=copilotproxy` 是公开网关兼容命名空间，`copilotproxy.context_length` 供 Copilot 读取真实已知上下文，不是底层神经网络架构；未知上下文省略，IDE 回退由 IDE 决定。
+- “会话保活”仅指有界本地状态与空闲清理，不自动发送付费 ping，不保证供应商 KV Cache 持续存在。
 
-### 🗺️ Plan 模板
-- AI 启动多步骤任务时注入结构化 Markdown 计划模板
-- 包含步骤列表、注意事项、验证标准
-- 引导 AI 创建可追踪的完整计划
+### ⚙️ 桌面配置一致性
 
-### 📏 上下文管理
-- 超长工具结果截断（>4K 字符）
-- Offset 提示：引导 AI 按偏移量继续读取而非重复读取
-- 1M 上下文窗口上报（让 Copilot 知道可用大窗口）
-
-### 🔄 智能重试
-- 指数退避 + 随机抖动
-- 429 / 502 / 503 / 504 自动重试
-- reasoning_content 错误自动处理（无 thinking 模式重试）
-- 并发队列超时保护
-
-### 🔧 工具调用 Schema 自动补全
-- `tool-schemas.js` 定义了 VS 2026 / VS Code 所有工具的正确参数 Schema
-- `normalizeToolCall` 使用 Schema 自动补全 AI 生成的缺失/错误参数
-- VS `type: "custom"` 工具调用自动转换为标准 `type: "function"` 格式
-- 新增工具只需在 Schema 文件加一行，无需手写正则
-
-### 📊 Token 用量日志
-- Token 合并到请求完成行：`[request]64595 [response]136 → [12135ms]`
-- 覆盖所有路径：流式/非流式/错误/速率限制
-- 支持中英文格式，跟随语言设置切换
-
-### 📝 C# 日志集成（`--plain` 模式）
-C# 管理工具启动脚本时自动传入 `--plain` 参数与 `SNET_PLAIN=1` 环境变量，禁用 TUI 仪表盘，ANSI 转义码自动过滤，输出干净的文本日志。
+WPF 设置与启动共用实际入口旁的 `.env`（优先 `.dist/service.exe`，否则源目录 `start.cmd`）。Build/Rebuild 逐字节保留已有 `.dist/.env`；首次桌面构建仅在配置不存在时从源文件复制，源文件也不存在则使用默认值。设置保存保留未知键，只修改所选运行入口的配置。`REQUEST_LOG=false` 在重启后关闭请求/完成元数据日志，错误仍可见。
 
 ## 🛠️ 构建独立包
 
 | 脚本 | 说明 |
-|------|------|
-| `build.cmd` | 自动检测运行时（Bun / Node.js） |
-| `build-bun.cmd` | 编译为单文件 `.exe`（需要 Bun） |
-| `build-node.cmd` | 可移植文件夹（需要 Node.js） |
+|---|---|
+| `build.cmd` | 自动选择 Bun / Node.js |
+| `build-bun.cmd` | 构建 Windows x64 原生 Bun 程序与托管入口 |
+| `build-node.cmd` | 构建当前 Node 架构的可移植运行时包 |
+| `Package.ps1` | 校验当前 distribution.json 的文件与哈希，导出干净包 |
+
+在 `src/script` 中运行构建脚本。从源码构建的默认运行时取决于本机；下载包的架构与运行时由文件名标明。
+
+`src/script/build.cmd` 选择 Bun 优先、Node 备用；`build-node.cmd` / `build-bun.cmd` 明确选择。Node 包携带当前构建架构的 Node；Bun 包为 x64 编译程序。失败返回非零，保留既有产物和本地配置。
+
+两种包均由托管 `service.exe` 管理子进程和 SCM 入口。裸 JS 服务管理命令委托经过清单验证的相邻托管入口，没有该入口时明确失败。真实 SCM 安装/启动/停止尚未验收，隔离命令替身测试不能代替实际 Windows 服务验收。
+
+本地 `.dist/.env` 会保留；`.dist` 是工作目录，不能直接归档。使用 `Package.ps1 -Destination <新的目录>` 按当前 `distribution.json` 的文件与哈希导出干净包，排除个人配置、缓存和旧运行时。WPF publish 只复制明确的源码/生产依赖，不复制源码 `.env`。发布要求新标签与项目版本一致，保留既有标签及 release。GitHub Actions 对 main / PR 执行验证与打包；推送与项目版本完全匹配的新版本标签后，才创建 Release。
+
+## 🧪 开发与验收
+
+仓库根目录执行，PowerShell 请逐条检查退出码，依赖安装结束后再构建：
+
+```powershell
+npm.cmd --prefix src/script ci
+dotnet build Snet.CopilotProxy.sln -m:1 -p:UseSharedCompilation=false
+npm.cmd --prefix src/script test
+dotnet test tests/Snet.CopilotProxy.Tests/Snet.CopilotProxy.Tests.csproj -m:1 -p:UseSharedCompilation=false
+```
+
+Visual Studio 打开 `Snet.CopilotProxy.sln`，以 WPF 项目为启动项目构建/调试；Debug 输出包含脚本路径。VS MSBuild Debug/Release 已实际通过，WPF 交互仍需手动验收。VS Code 可用集成终端执行上述命令，用 Node 调试器启动 `src/script/src/server.js`，工作目录设为 `src/script`。
+
+### 🔍 故障排查与本地压测
+
+先查 `/health`、`/v1/models`，再用返回的完整 ID 生成。目录为空时检查供应商 Key、地址、权限和目录错误/陈旧状态，不补固定默认型号。`length` 表示达到调用者输出 cap，增加预算需由调用者决定。供应商约束仍适用，例如 DeepSeek thinking 不支持 required/named tool_choice。
+
+```powershell
+npm.cmd --silent --prefix src/script run bench > local-load.json
+```
+
+压测完全本地，不读取个人 `.env`。独立代理进程执行 1,000 请求/50 客户端、100 个 262,144 字符工具历史、队列饱和/取消和三轮 RSS 趋势，JSON 记录 TTFB、p50/p95、吞吐、RSS、队列与缓存。普通 `npm test` 仅选择 `*.test.js`，不会隐式压测。
+
+截至 2026-10-20：156 个 JS 测试、25 个 C# 测试与 VS Debug/Release 构建通过；真实账号 7 个聊天模型基础 JSON/SSE 14/14、5 个视觉模型两路径合计 10/10、7 个模型推理工具三轮对话通过。初始失败、截断、探针修正及具体运行时边界保留在[验证记录](docs/validation/2026-10-20-modernization.md)。这些结果不代表 GUI、实际 SCM、原生 32 位 Windows、无限时长内存稳定性或未来型号已经验收。
+
+📋 [完整验证记录与 38 项问题修复映射](docs/validation/2026-10-20-modernization.md)。各提交的远程构建结果请查看 [GitHub Actions](https://github.com/shunnet/CopilotProxy/actions/workflows/release.yml)。
 
 ## 📸 界面截图
 
+> 💡 以下保留原项目截图，展示桌面与 IDE 的使用布局。模型列表、配置项和 IDE 菜单可能来自旧版，请以本文说明及当前界面为准。
+
 <p align="center">
-  <img src="image/1.png" alt="主界面" width="45%"/>
-  <img src="image/2.png" alt="设置" width="45%"/>
+  <img src="image/1.png" alt="主界面（历史截图）" width="45%"/>
+  <img src="image/2.png" alt="设置（历史截图）" width="45%"/>
 </p>
 <p align="center">
-  <img src="image/3.png" alt="构建" width="45%"/>
-  <img src="image/4.png" alt="启动服务" width="45%"/>
+  <img src="image/3.png" alt="构建（历史截图）" width="45%"/>
+  <img src="image/4.png" alt="启动服务（历史截图）" width="45%"/>
 </p>
 <p align="center">
-  <img src="image/5.png" alt="VS Code 配置" width="45%"/>
-  <img src="image/6.png" alt="模型列表" width="45%"/>
+  <img src="image/5.png" alt="VS Code 配置（历史截图）" width="45%"/>
+  <img src="image/6.png" alt="模型列表（历史截图）" width="45%"/>
 </p>
 <p align="center">
-  <img src="image/7.png" alt="Copilot Chat" width="45%"/>
-  <img src="image/8.png" alt="终端输出" width="45%"/>
+  <img src="image/7.png" alt="Copilot Chat（历史截图）" width="45%"/>
+  <img src="image/8.png" alt="终端输出（历史截图）" width="45%"/>
 </p>
 <p align="center">
-  <img src="image/9.png" alt="完整工作流" width="80%"/>
+  <img src="image/9.png" alt="完整工作流（历史截图）" width="80%"/>
 </p>
 
 ## 📈 Star History
 
 <a href="https://www.star-history.com/?repos=shunnet%2FCopilotProxy&type=date&legend=bottom-right">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=shunnet/CopilotProxy&type=date&theme=dark&legend=bottom-right&sealed_token=ZQC0RY6zyRJsrkkEanQjkuKXJ2ytnybHWVZ24vrizx6s6hxE3BqB9VPt6TeGPoHyRacFqNTlMvVBm_ccm8JuJr_CY9twzEBCy-cAhwzlER3XzSDO1BJvxA" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=shunnet/CopilotProxy&type=date&legend=bottom-right&sealed_token=ZQC0RY6zyRJsrkkEanQjkuKXJ2ytnybHWVZ24vrizx6s6hxE3BqB9VPt6TeGPoHyRacFqNTlMvVBm_ccm8JuJr_CY9twzEBCy-cAhwzlER3XzSDO1BJvxA" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=shunnet/CopilotProxy&type=date&legend=bottom-right&sealed_token=ZQC0RY6zyRJsrkkEanQjkuKXJ2ytnybHWVZ24vrizx6s6hxE3BqB9VPt6TeGPoHyRacFqNTlMvVBm_ccm8JuJr_CY9twzEBCy-cAhwzlER3XzSDO1BJvxA" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=shunnet/CopilotProxy&type=date&theme=dark&legend=bottom-right"/>
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=shunnet/CopilotProxy&type=date&legend=bottom-right"/>
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=shunnet/CopilotProxy&type=date&legend=bottom-right"/>
  </picture>
 </a>
 
 <p align="center">
-  <sub>Made with ❤️ by <a href="https://snet.cn">Snet.cn</a></sub>
+  <sub>Made with ❤️ by <a href="https://snet.cn">Snet.cn</a> · MIT License</sub>
 </p>

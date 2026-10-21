@@ -10,7 +10,7 @@ A background daemon keeps the agent working until the daemon's own run of that
 check passes. The **Floor** is a 3D office in your browser. It shows each agent at a desk, and what
 you see there is what the daemon knows.
 
-![The Floor in a browser. An isometric voxel office holds a crew of eight: four agents type at desks, two stand at the goal board between turns, one sits on the lounge sofa under a question mark, and one stands at the bell after its goal is done. The top bar counts the crew by status. The Crew list on the left shows each agent's initial, role, engine, workspace, goal and status. The drawer on the right is open on the waiting agent, with a portrait of its voxel figure, its question, an answer box and the buttons to pause, retire or attach to it.](.github/readme/floor.webp)
+![The Floor in a browser. An isometric voxel office holds a crew of eight: four agents type at desks, two stand at the goal board between turns, one sits on the lounge sofa under a question mark, and one stands at the bell after its goal is done. The top bar counts the crew by status. The Crew list on the left shows each agent's initial, role, engine, project, goal and status. The drawer on the right is open on the waiting agent, with a portrait of its voxel figure, its question, an answer box and the buttons to pause, retire or attach to it.](.github/readme/floor.webp)
 
 ## Status
 
@@ -41,9 +41,9 @@ To upgrade, run `dudes upgrade`. It asks GitHub for the latest release, installs
 starts the new one. It refuses while an agent is running a turn, waiting for an answer or attached to your session, unless you add `--now`, which restarts with closing time (up to 6 minutes for agents to save), and it never installs an older
 release. `dudes upgrade --check` prints the current and latest versions and changes nothing. It only works for a
 copy that `install.sh` installed. Running the install command again, then `dudes stop` and `dudes start`, does the
-same by hand, except that it signs every open Floor tab out. `dudes upgrade` keeps those sign-ins: an open Floor tab
+same by hand. Browsers that are signed in to the Floor stay signed in: an open Floor tab
 needs one reload afterwards, and it shows the same agents.
-The first upgrade from a version that predates this still signs open tabs out.
+The first upgrade from a version that kept sign-ins only in memory still signs open tabs out once.
 Dudes connects to GitHub only when you run `dudes upgrade`, and never checks for updates on its own.
 
 To build from source, or on Windows, see [Build Dudes from source](docs/building-from-source.md).
@@ -59,12 +59,11 @@ From the repository you want agents to work in:
 ```sh
 cd /absolute/path/to/repo
 dudes quickstart
-dudes floor open
 ```
 
-`dudes quickstart` asks only what it cannot work out, starts the daemon, prints a link to the Floor and can
-hire a first agent. Paste the link into any browser; `dudes floor open` prints a new one later. On a remote
-machine, forward the link's port over SSH first, because the link is a loopback address. To hire an agent
+`dudes quickstart` asks only what it cannot work out, starts the daemon, opens the Floor in your browser and can
+hire a first agent. Later, `dudes open` opens it again and starts the daemon first when it is down. On a remote machine, `dudes open` prints a link instead, and you forward the
+link's port over SSH first, because the link is a loopback address. To hire an agent
 yourself and give it
 a goal, use the id that `dudes hire` prints. Give a second agent a folder of its own: Dudes cannot check
 another agent's engine settings for a ticket, so in a repository two agents share it holds tickets in Needs
@@ -88,15 +87,28 @@ If you skipped the project in quickstart, add it in one step from its git reposi
 
 ```sh
 cd /absolute/path/to/repo
-dudes workspace add
+dudes project add
 ```
 
 Dudes suggests a completion check from the repository's files and prints the project id.
-If it finds no check, pass one with `dudes workspace add -- <program> [args...]`.
+If it finds no check, pass one with `dudes project add -- <program> [args...]`.
 Tickets and Floor hiring need an enrolled project.
 
 If `dudes` runs something else, check `type dudes` for an alias or shell function and use
 `command dudes`. After removing an old definition from your shell profile, open a new terminal.
+
+## Try it without an account
+
+[`examples/two-roles/`](examples/two-roles/) runs the whole loop on your own machine with no
+account at any model vendor and no network: two agents are hired, one is given a goal, and the goal
+closes only when the daemon's own run of the completion check passes. It drives the binaries in
+`target/release/`, so it needs a source build — see
+[Build Dudes from source](docs/building-from-source.md) for what to install. From a checkout:
+
+```sh
+cargo build --release --workspace
+./examples/two-roles/run.sh
+```
 
 ## How it works
 
@@ -122,7 +134,8 @@ If `dudes` runs something else, check `type dudes` for an alias or shell functio
 - **Mail.** Agents send each other messages with `dudes mail` and find colleagues with
   `dudes team`.
 - **Worktrees.** `dudes hire --worktree` gives a Claude Code agent in a repository you mark with `--trusted` its own git worktree and a
-  branch named `dudes/<id>`. Dudes never merges or pushes these branches.
+  branch named `dudes/<id>`. In a project you trust with `dudes project trust`, the Floor's Hire dialog
+  offers the same as a box. Dudes never merges or pushes these branches.
 - **The Floor.** An agent types at its desk during a turn, stands at the goal board while the
   daemon runs the check, waits in the lounge when it needs your answer, and rings the bell when the
   goal is Done. [The Floor](docs/floor.md) explains the rest, and [Chat](docs/chat.md) lets you

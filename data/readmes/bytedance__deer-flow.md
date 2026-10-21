@@ -207,6 +207,8 @@ streams simulate chunks from a non-streaming response, while no-tool streams sta
    Jina can also bound concurrent HTTP attempts and FIFO waiting with the opt-in `request_admission` tool extra. One immutable budget is shared across clients and agent threads in each process; replicas have independent budgets. See [Jina request admission](backend/docs/CONFIGURATION.md#jina-request-admission).
 
    Run `make doctor` at any time to verify your setup and get actionable fix hints.
+   The setup wizard and health check support legacy terminal encodings, including
+   Windows cp936, replacing unsupported characters so both commands can finish.
    If you are opening a GitHub issue about a local setup or runtime problem, run
    `make support-bundle`. The command prints reporter next steps, writes a
    `*-issue-summary.md` file to paste into the issue, a `*-issue-draft.md` file
@@ -464,6 +466,11 @@ frontend retain their own environment loading. Values they already export win.
 It does not select `ENV` profiles or isolate databases, storage or tenants.
 See [backend dotenv selection](backend/docs/CONFIGURATION.md#backend-dotenv-selection).
 
+Custom blob storage backends accept `blob_storage.backend: module.Class` or
+`module:Class`, including a single `.py` module importable by the Gateway.
+The selected class must implement `BlobStore`; backend options go under
+`blob_storage.backend_config`. See [blob storage](backend/docs/blob-storage.md).
+
 ### Running the Application
 
 #### Deployment Sizing
@@ -494,7 +501,7 @@ make docker-start   # Start services (auto-detects sandbox mode from config.yaml
 make docker-logs    # View logs
 ```
 
-`make docker-start` starts `provisioner` only when `config.yaml` uses provisioner mode (`sandbox.use: deerflow.community.aio_sandbox:AioSandboxProvider` with `provisioner_url`).
+`make docker-start` starts `provisioner` only when `config.yaml` uses provisioner mode (`sandbox.use: deerflow.community.aio_sandbox:AioSandboxProvider` with `provisioner_url`). Direct Compose users can add `--profile provisioner` to the dev command for the same mode; the default stack does not require Kubernetes.
 
 Docker builds use the upstream `uv` registry by default. The gateway image installs with `uv sync --locked`, and `uv.lock` pins `https://pypi.org/simple`, so `UV_INDEX_URL` has to keep that value: exporting a mirror such as `https://pypi.tuna.tsinghua.edu.cn/simple` fails the build with ``The lockfile at `uv.lock` needs to be updated, but `--locked` was provided`` (reproduce in an already-synced environment with `cd backend && UV_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple uv sync --locked --check`; if the environment itself is stale, `--check` reports that instead for either index, so use `uv lock --check` to see it without syncing). Installing from a mirror requires regenerating the lock or dropping `--locked`, and both change what the image installs, so keep the default index for a checkout you intend to contribute back. `NPM_REGISTRY=https://registry.npmmirror.com` is independent of this: it applies to the frontend image's `pnpm` install and to the gateway image's Lark CLI install (`@larksuite/cli`, which `backend/Dockerfile` installs with npm).
 
@@ -535,6 +542,13 @@ different cache settings. Redis thread cleanup treats a configured `key_prefix`
 as literal text, including glob metacharacters, so deletion stays within that
 namespace and thread.
 
+Gateway checkpoint cleanup runs when the next run wins durable same-thread
+admission, before its first checkpoint read. It checks only the root head and
+its parent, removes at most one metadata-only duration leaf without pending
+writes, and preserves explicit checkpoint selections and delta replay state.
+See [checkpoint operations](https://deerflow.tech/docs/harness/checkpoints/operations)
+for the retention constraints.
+
 > [!TIP]
 > On Linux, if Docker-based commands fail with `permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock`, add your user to the `docker` group and re-login before retrying. See [CONTRIBUTING.md](CONTRIBUTING.md#linux-docker-daemon-permission-denied) for the full fix.
 
@@ -559,6 +573,12 @@ recovery command and retry. The check honors secret overrides from the shell or
 `.env`, accepts readable read-only secret files, and leaves `make down` available
 without reading or generating secrets.
 
+Production Docker commands can select a root dotenv profile with
+`DEER_FLOW_COMPOSE_ENV_FILE=/srv/deer-flow/stage.env make up`. The same file
+feeds Compose interpolation, Gateway/provisioner variables, and deployment
+secret checks. YAML and runtime-state locations remain separate selectors;
+see [production env files](backend/docs/CONFIGURATION.md#production-compose-env-files).
+
 For persistent deployments, configure `database.backend` as `sqlite` or
 `postgres`. The selected backend is shared by the LangGraph checkpointer,
 LangGraph Store, and DeerFlow application data. The deprecated `checkpointer`
@@ -582,6 +602,8 @@ The unified nginx endpoint is same-origin by default and does not emit browser C
 
 When fine-grained authorization is enabled, Live Browser connections require `threads:write` as well as ownership of the thread, even when only viewing frames: the same connection can control the browser. Permission checks run when connecting. Restart Gateway after upgrading to disconnect sessions admitted by older code.
 
+The bundled Docker, local and Helm nginx configs proxy Live Browser WebSocket upgrades with a 600-second read timeout for quiet streams. Helm uses nginx's default connection and send timeouts for the in-cluster Gateway. Any additional Ingress or reverse proxy must also allow WebSocket upgrades.
+
 Browser login uses `HttpOnly` session cookies. The login page offers a "keep me signed in" option that extends the browser session when the request is HTTPS (including trusted `X-Forwarded-Proto: https`) or localhost HTTP. The localhost exception uses the direct request `Host` and ignores forwarded host headers. Public HTTP deployments, including many temporary sandbox URLs, fall back to session cookies by default. DeerFlow never stores the password in browser storage; the UI may remember only the email address.
 
 OIDC/SSO authorization endpoints may include provider query parameters such as `?prompt=login`. DeerFlow preserves those parameters when adding the login request, including for configured `authorization_endpoint` overrides.
@@ -591,7 +613,7 @@ Administrators can suspend and restore accounts from **Settings → Users** (adm
 DeerFlow still uses `Forwarded` / `X-Forwarded-*` headers to recover the browser-facing scheme and origin behind a proxy. The bundled nginx sets `X-Forwarded-Proto`, but preserves an upstream HTTPS value and does not overwrite every forwarded header. Configure the outer trusted proxy to replace or strip client-supplied forwarding headers before traffic reaches DeerFlow.
 
 > [!IMPORTANT]
-> The Gateway still owns active run tasks in process, so production defaults to a single Gateway worker (`GATEWAY_WORKERS=1`). Multi-worker deployments require Postgres, the Redis stream bridge (`stream_bridge.type: redis`), `run_ownership.heartbeat_enabled: true`, and `run_events.backend: db`; process-local memory/JSONL event stores cannot enforce singleton delivery receipts across workers. Kubernetes replicas run one worker per Pod, which the worker count cannot see: declare them with `deployment.multi_instance: true` (or `DEER_FLOW_MULTI_INSTANCE=1`, which deploy tooling such as a Helm chart can set from its replica count) so the startup gate enforces the same prerequisites instead of staying inert. Declared instances that store credentials (`channel_connections`) must also share one at-rest `DEER_FLOW_CREDENTIALS_KEY` (the Helm chart and `make up` generate it; back it up, see [backend/docs/CONFIGURATION.md](backend/docs/CONFIGURATION.md#credentials-encryption-key-deer_flow_credentials_key)). The bridge shares SSE delivery and bounded `Last-Event-ID` replay across workers. When a trimmed reconnect cursor cannot be verified for complete replay, or a subscriber that already established an empty-stream wait falls behind before its first delivery, Memory and Redis emit a machine-readable SSE `gap` event instead of silently returning a partial replay; the Web UI reloads durable thread/event state and resumes from the retained tail. The Memory bridge can replay without recovery when the cursor is its exact last evicted event: every successor is still retained. Older or unverifiable evicted cursors still trigger recovery. An already-observed Redis stream removed during replay also signals a gap, so slow subscribers reload durable state instead of heartbeating forever after cleanup. Redis also tracks terminal stream producers with a short lease: if a worker dies after committing a terminal run status but before publishing END, SSE and `/wait` finish after the lease expires instead of waiting for the retained stream's TTL. Lease reconciliation marks runs from dead workers as errors, persists their delivery receipts, publishes the terminal stream marker, schedules retained-stream cleanup, and updates the affected thread status. SSE, `/wait`, and internal stream consumers use `stream_bridge.heartbeat_interval_seconds` (default `15`) for idle liveness checks; changing it requires a Gateway restart. Malformed Redis reconnect IDs live-tail new events instead of replaying the retained buffer, and the rolling retained-buffer TTL (`stream_ttl_seconds`) remains a cleanup safety net rather than a run timeout. Failed-login counters and lockouts for `POST /api/v1/auth/login/local` (`auth.local.max_login_attempts` / `lockout_seconds`) are kept in the shared `login_throttle` table whenever the application database is SQLite or Postgres (`auth.local.throttle_storage: auto`, the default), so every replica enforces one lockout per client IP; `memory` keeps the historical per-process counter, which under N replicas hands an attacker N × `max_login_attempts` guesses and logs a startup warning. IM chat-to-thread bindings live in the shared `channel_thread_bindings` table whenever the application database is SQLite or Postgres (an existing `channels/store.json` is imported once at startup and renamed `store.json.migrated`); IM bot credentials entered in the web UI live in the shared `channel_runtime_configs` table, encrypted with `DEER_FLOW_CREDENTIALS_KEY` (an existing `channels/runtime-config.json` is imported once and then deleted), so a save on any instance reaches the provider's connection within one lease renewal; each provider's platform connection is held by one instance through the shared `channel_leases` table — `channels.leader_lease` (default `auto`, on wherever the multi-process signal is) hands it to another instance when the holder dies, and the startup gate refuses `enabled: false` while an IM channel other than GitHub is enabled (see [IM channel leader lease](backend/docs/CONFIGURATION.md#im-channel-leader-lease-channelsleader_lease)); follow-up buffers still need their own multi-worker coordination. To try this topology on one machine, `make dev-multi` starts two Gateways on shared Postgres, Redis and `DEER_FLOW_HOME`, and `make dev-multi-check` runs the cross-instance checks; see the local two-Gateway harness in [backend/docs/CONFIGURATION.md](backend/docs/CONFIGURATION.md#local-two-gateway-harness).
+> The Gateway still owns active run tasks in process, so production defaults to a single Gateway worker (`GATEWAY_WORKERS=1`). Multi-worker deployments require Postgres, the Redis stream bridge (`stream_bridge.type: redis`), `run_ownership.heartbeat_enabled: true`, and `run_events.backend: db`; process-local memory/JSONL event stores cannot enforce singleton delivery receipts across workers. Kubernetes replicas run one worker per Pod, which the worker count cannot see: declare them with `deployment.multi_instance: true` (or `DEER_FLOW_MULTI_INSTANCE=1`, which deploy tooling such as a Helm chart can set from its replica count) so the startup gate enforces the same prerequisites instead of staying inert. Declared instances that store credentials (`channel_connections`, or MCP servers using the OAuth `refresh_token` grant, whose rotating tokens they share through the database) must also share one at-rest `DEER_FLOW_CREDENTIALS_KEY` (the Helm chart and `make up` generate it; back it up, see [backend/docs/CONFIGURATION.md](backend/docs/CONFIGURATION.md#credentials-encryption-key-deer_flow_credentials_key)). The bridge shares SSE delivery and bounded `Last-Event-ID` replay across workers. When a trimmed reconnect cursor cannot be verified for complete replay, or a subscriber that already established an empty-stream wait falls behind before its first delivery, Memory and Redis emit a machine-readable SSE `gap` event instead of silently returning a partial replay; the Web UI reloads durable thread/event state and resumes from the retained tail. The Memory bridge can replay without recovery when the cursor is its exact last evicted event: every successor is still retained. Older or unverifiable evicted cursors still trigger recovery. An already-observed Redis stream removed during replay also signals a gap, so slow subscribers reload durable state instead of heartbeating forever after cleanup. Redis also tracks terminal stream producers with a short lease: if a worker dies after committing a terminal run status but before publishing END, SSE and `/wait` finish after the lease expires instead of waiting for the retained stream's TTL. Lease reconciliation marks runs from dead workers as errors, persists their delivery receipts, publishes the terminal stream marker, schedules retained-stream cleanup, and updates the affected thread status. SSE, `/wait`, and internal stream consumers use `stream_bridge.heartbeat_interval_seconds` (default `15`) for idle liveness checks; changing it requires a Gateway restart. Malformed Redis reconnect IDs live-tail new events instead of replaying the retained buffer, and the rolling retained-buffer TTL (`stream_ttl_seconds`) remains a cleanup safety net rather than a run timeout. Failed-login counters and lockouts for `POST /api/v1/auth/login/local` (`auth.local.max_login_attempts` / `lockout_seconds`) are kept in the shared `login_throttle` table whenever the application database is SQLite or Postgres (`auth.local.throttle_storage: auto`, the default), so every replica enforces one lockout per client IP; `memory` keeps the historical per-process counter, which under N replicas hands an attacker N × `max_login_attempts` guesses and logs a startup warning. IM chat-to-thread bindings live in the shared `channel_thread_bindings` table whenever the application database is SQLite or Postgres (an existing `channels/store.json` is imported once at startup and renamed `store.json.migrated`); IM bot credentials entered in the web UI live in the shared `channel_runtime_configs` table, encrypted with `DEER_FLOW_CREDENTIALS_KEY` (an existing `channels/runtime-config.json` is imported once and then deleted), so a save on any instance reaches the provider's connection within one lease renewal; each provider's platform connection is held by one instance through the shared `channel_leases` table — `channels.leader_lease` (default `auto`, on wherever the multi-process signal is) hands it to another instance when the holder dies, and the startup gate refuses `enabled: false` while an IM channel other than GitHub is enabled (see [IM channel leader lease](backend/docs/CONFIGURATION.md#im-channel-leader-lease-channelsleader_lease)); follow-up buffers still need their own multi-worker coordination. To try this topology on one machine, `make dev-multi` starts two Gateways on shared Postgres, Redis and `DEER_FLOW_HOME`, and `make dev-multi-check` runs the cross-instance checks; see the local two-Gateway harness in [backend/docs/CONFIGURATION.md](backend/docs/CONFIGURATION.md#local-two-gateway-harness).
 >
 > The producer-lease recovery behavior above is gated by `stream_bridge.producer_lease_recovery_enabled`. Keep it disabled while old Gateway binaries or their runs remain; enable it on every instance only after the writer rollout and drain complete.
 >
@@ -634,7 +656,7 @@ DeerFlow still uses `Forwarded` / `X-Forwarded-*` headers to recover the browser
 
 > Cancelling a model recovery probe, including while it is queued or waiting to retry, lets the next call check whether the provider has recovered. Cancellation does not count as a provider failure or release another call's active recovery probe.
 >
-> Model retries honor valid provider `Retry-After` hints up to 24 hours, including waits longer than the local backoff cap. Malformed, non-finite, or over-limit hints use normal backoff instead. This applies to numeric/date hints in LLM error handling and integer-second hints in Claude's retry path.
+> Model retries honor valid provider `Retry-After` hints up to 24 hours, including waits longer than the local backoff cap. Malformed, non-finite, or over-limit hints use normal backoff instead. This applies to numeric and HTTP-date hints in LLM error handling and Codex's retry path, and integer-second hints in Claude's retry path. Codex prioritizes numeric `retry-after-ms` hints; past HTTP-date hints retry immediately.
 >
 > With lease heartbeat enabled, a transient RunStore renewal error is retried only until the last confirmed lease expires; the stale worker then cancels local execution and suppresses checkpoint, completion-hook, delivery-receipt, and thread-status finalization. A remote tool side effect already in flight may still be outside local cancellation.
 >
@@ -747,6 +769,10 @@ DeerFlow runs the agent runtime inside the Gateway API. Development mode enables
 |---|---|---|---|
 | **Stop** | `./scripts/serve.sh --stop`<br/>`make stop` | `./scripts/docker.sh stop`<br/>`make docker-stop` | `./scripts/deploy.sh down`<br/>`make down` |
 | **Restart** | `./scripts/serve.sh --restart [flags]` | `./scripts/docker.sh restart` | — |
+
+Local and Docker development stop commands also stop running sandbox containers
+whose names start with `deer-flow-sandbox-`. Containers with that text elsewhere
+in their names are left alone.
 
 `make start` and `make start-daemon` rebuild the frontend with `next build` on
 every run. To reuse the last build instead, pass `SKIP_FRONTEND_BUILD=1` (or add
@@ -927,6 +953,7 @@ For HTTP/SSE MCP servers, OAuth token flows are supported (`client_credentials`,
 Missing, malformed, or out-of-range token response `expires_in` values use a one-hour default lifetime. This includes lifetimes that cannot be added to the current time without overflowing the expiry timestamp.
 Durable HTTP/SSE task status and cancellation calls select configured `user_auth` credentials using the persisted task owner, including after restart; per-request secrets are not retained for background calls. If a request-scoped credential overrides submit authentication, both credentials must authorize access to the same remote task.
 For stdio MCP servers, per-tool call timeouts can be configured with `tool_call_timeout`; durable background-task calls honor the same setting for HTTP/SSE servers as well.
+Durable background-task status and cancellation calls renew their claims while they run, so a slow response can still be saved after the original lease duration. If ownership is lost or renewal cannot be confirmed, the worker stops its local call and leaves recovery to the durable state. See [control-call leases](backend/docs/mcp-control-leases.md) for recovery and shutdown behavior.
 The persistent stdio session pool evicts only idle sessions at capacity. If every pooled session is executing a tool, a new session request fails with a capacity error and can be retried after a call finishes.
 For stdio file outputs, a bare filename is linked to a uniquely matching file created or changed by that call. Filenames embedded in unrelated paths, including Windows backslash paths, are left intact. Explicit remote URLs (`scheme://...`) retain their original query parameters and fragments even when these contain a generated file's name or path, including URLs with backslash-escaped quotes or markup delimiters; local references outside the URL still translate normally.
 For HTTP/SSE background-task calls, `session_init_timeout` separately bounds connection setup (including the SSE endpoint event) and MCP initialization together; it stops applying once the tool call begins. Initialization deadline errors identify the server and configured time limit.
@@ -995,7 +1022,7 @@ After a restart, the configured refresh token must still be valid.
 
 Notification launch and failed Agent-run deliveries use capped exponential backoff with a visible attempt count and stop after five failed attempts. When a bounded ordinary release exceeds its drain deadline, the service retains ownership until it settles. A permanently rejected target such as a deleted chat is dead-lettered immediately instead of retried forever or recreated. Cancellation endpoints return after durably recording the request; the background service owns the potentially slow remote MCP call and its retry schedule.
 
-Notification runs keep their trusted delivery instruction separate from the framed, untrusted remote event payload. The process-started task runtime—not a hot config read—controls whether the task-management tools are exposed, so changing `mcp_tasks` requires a Gateway restart. When a skill's `allowed-tools` policy is active, `list_background_tasks` and `cancel_background_task` must be declared explicitly like other business tools.
+Notification runs keep their trusted delivery instruction separate from the framed, untrusted remote event payload. The process-started task runtime—not a hot config read—controls whether the task-management tools are exposed, so changing `mcp_tasks` requires a Gateway restart. `list_background_tasks` and `cancel_background_task` are ordinary business tools governed by the agent's own authorization, like every other tool.
 See the [MCP Server Guide](backend/docs/MCP_SERVER.md) for detailed instructions.
 
 Security: pass per-request MCP credentials only through `config.context.secrets`;
@@ -1009,6 +1036,19 @@ cleanup when migrating from legacy metadata credentials.
 DeerFlow supports receiving tasks from messaging apps. Channels auto-start when configured — no public IP required for any of them.
 
 Cancelling a channel restart discards its pending configuration reload, preserving newer runtime settings applied afterward.
+
+Invalid UTF-8 in `channels/store.json` follows the same recovery policy as malformed JSON:
+SQL migration warns and skips the file, leaving it unchanged so channels can start; the
+memory backend's JSON store warns and starts empty, replacing the file on its next write.
+
+Conversation-binding, runtime channel-credential and WeChat auth-state saves preserve the original
+persistence failure when staged-file cleanup also fails. Remaining cleanup still runs, and warnings
+identify copies that could not be removed. Buzz keeps failed snapshots available for retry, even if
+cleanup or logging fails.
+
+On startup, runtime credential and WeChat auth stores remove their own `.<state-file>.deerflow-*.tmp`
+staging files older than 24 hours. Fresh files, symlinks and unrelated files are preserved. Older
+anonymous `tmp*.tmp` files require manual inspection because their writer cannot be identified safely.
 
 DeerFlow can also expose user-owned IM channel connections in the workspace UI. When `channel_connections` is enabled, logged-in users can bind Telegram, Slack, Discord, Feishu/Lark, DingTalk, WeChat, WeCom, QQ, or Buzz from the sidebar / Settings > Channels. It reuses the existing outbound `channels.*` transports, so no public IP or provider callback URL is required. Incoming IM messages then run under the connected DeerFlow user account. See [IM Channel Connections](backend/docs/IM_CHANNEL_CONNECTIONS.md) for setup and security notes. Buzz backlog paging stops with a warning if timestamp-based queries cannot advance, and channel removal closes both live and backlog subscriptions.
 
@@ -1027,6 +1067,9 @@ Attachments saved by the shared IM ingestion pipeline or Feishu/DingTalk's
 embedded downloads keep distinct filenames, including when concurrent uploads
 choose the same name. The final filename is passed to the agent and used for
 sandbox sync; an existing conversation file is not overwritten.
+
+Feishu and DingTalk attachment transfers return standalone temporary sandboxes
+to the pool after synchronization, without interrupting an active run.
 
 **Configuration in `config.yaml`:**
 
@@ -1146,56 +1189,4 @@ Notes:
 - `assistant_id: lead_agent` calls the default LangGraph assistant directly.
 - If `assistant_id` is set to a custom agent name, DeerFlow still routes through `lead_agent` and injects that value as `agent_name`, so the custom agent's SOUL/config takes effect for IM channels.
 - IM channel workers call Gateway's LangGraph-compatible API internally and automatically attach process-local internal auth plus the CSRF cookie/header pair required for thread and run creation.
-- Inbound work is bounded to `inbound_queue_maxsize` pending messages plus `max_concurrency` active workers. When capacity is exhausted, socket/polling providers drop new messages before sending DeerFlow's working acknowledgment and emit a rate-limited warning. Buzz leaves its replay cursor unchanged and reconnects for relay replay; GitHub webhooks return `503`, marking the delivery failed for manual/API redelivery. Shutdown closes admission immediately, keeps channel transports available while accepted messages drain for up to `shutdown_grace_period_seconds`, then cancels and awaits active handlers before closing provider resources; the Gateway's outer timeout can cancel an incomplete shutdown without detaching those resources.
-- Telegram shutdown retains ongoing cleanup across a timeout or cancellation so a retry can finish it. Stopping during startup also cancels initialization and closes the partially initialized bot's HTTP clients before retiring its worker loop. If the Telegram loop has already stopped, shutdown warns that download clients may remain open and releases the abandoned cleanup state; later stops do not repeat that warning.
-- Slack stop waits up to five seconds for an in-flight Socket Mode connection and its cleanup. If cleanup is still pending, the previous instance stays tracked and a restart can be retried after it finishes. SDK cleanup failures report their original error and remain retryable.
-- In Telegram private chats, text, attachment and streaming replies (including "Working on it...") can still be delivered if their referenced user or bot message was deleted, such as after clearing chat history during a run. Group reply-target requirements remain unchanged to preserve forum routing.
-- Feishu/Lark now queues rapid follow-up messages per mapped DeerFlow `thread_id` instead of immediately surfacing the generic busy reply, and topic replies keep a per-message card with a compact source-message preview across queued/running/final patches.
-- Streaming IM channels treat backend `error` events like transport failures and follow the same reply and retry path. The channel logs the error type and message for diagnosis.
-
-Set the corresponding API keys in your `.env` file:
-
-```bash
-# Telegram
-TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrSTUvwxYZ
-
-# Slack
-SLACK_BOT_TOKEN=xoxb-...
-SLACK_APP_TOKEN=xapp-...
-
-# Feishu / Lark
-FEISHU_APP_ID=cli_xxxx
-FEISHU_APP_SECRET=your_app_secret
-
-# WeChat iLink
-WECHAT_BOT_TOKEN=your_ilink_bot_token
-WECHAT_ILINK_BOT_ID=your_ilink_bot_id
-
-# WeCom
-WECOM_BOT_ID=your_bot_id
-WECOM_BOT_SECRET=your_bot_secret
-
-# DingTalk
-DINGTALK_CLIENT_ID=your_client_id
-DINGTALK_CLIENT_SECRET=your_client_secret
-```
-
-**Telegram Setup**
-
-1. Chat with [@BotFather](https://t.me/BotFather), send `/newbot`, and copy the HTTP API token.
-2. Set `TELEGRAM_BOT_TOKEN` in `.env` and enable the channel in `config.yaml`.
-3. The bot accepts inbound text, photos, and documents (with or without captions). Hosted Bot API downloads are limited to 20 MB per attachment.
-
-**Slack Setup**
-
-1. Create a Slack App at [api.slack.com/apps](https://api.slack.com/apps) → Create New App → From scratch.
-2. Under **OAuth & Permissions**, add Bot Token Scopes: `app_mentions:read`, `chat:write`, `im:history`, `im:read`, `im:write`, `files:write`.
-3. Enable **Socket Mode** → generate an App-Level Token (`xapp-…`) with `connections:write` scope.
-4. Under **Event Subscriptions**, subscribe to bot events: `app_mention`, `message.im`.
-5. Set `SLACK_BOT_TOKEN` and `SLACK_APP_TOKEN` in `.env` and enable the channel in `config.yaml`.
-
-**Feishu / Lark Setup**
-
-1. Create an app on [Feishu Open Platform](https://open.feishu.cn/) → enable **Bot** capability.
-2. Add permissions: `im:message`, `im:message.p2p_msg:readonly`, `im:resource`.
-3. Under **Events**, subscribe to `im.message.receive_v1` and select **Long
+- Inbound work is bounded to `inbound_queue_maxsize` pending messages plus `max_concurrency` active workers. When capacity is exhausted, socket/polling providers drop new messages before sending DeerFlow's working acknowledgment and emit a rate-limited warning. Buzz leaves its replay cursor unchan

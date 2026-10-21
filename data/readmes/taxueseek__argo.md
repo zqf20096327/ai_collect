@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/readme/hero.svg" width="100%" alt="Argo 阿尔戈：给 Agent 用的搜索，argo 的定位是不依赖任何订阅/账号体系的自主搜索基础设施，能够超越大部分 agent 的原生搜索能力">
+  <img src="assets/readme/hero.svg" width="100%" alt="Argo 阿尔戈：给 Agent 用的搜索与深度研究工具，264 个搜索源，按域按语言选路，输出可吸收的证据">
 </p>
 
 <p align="center">
@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="#这是什么">介绍</a> ·
-  <a href="#它和模型自带搜索-ai-搜索-聚合搜索比强在哪">对比</a> ·
+  <a href="#它和模型自带搜索--ai-搜索--聚合搜索比强在哪">对比</a> ·
   <a href="#问啥像啥">证明</a> ·
   <a href="#它怎么工作">机制</a> ·
   <a href="#快速开始">快速开始</a> ·
@@ -25,54 +25,17 @@
   <img alt="license" src="https://img.shields.io/badge/license-Apache_2.0-blue">
   <img alt="python" src="https://img.shields.io/badge/python-3.9+-green">
   <img alt="version" src="https://img.shields.io/badge/version-2.9.7-informational">
-  <img alt="engines" src="https://img.shields.io/badge/engines-266-orange">
+  <img alt="engines" src="https://img.shields.io/badge/engines-264-orange">
   <img alt="mcp" src="https://img.shields.io/badge/MCP-19%20tools-purple">
 </p>
 
 > **这是踏雪寻仙 DeepSeek Harness 插件系列的一员**（[dsh-files](https://github.com/taxueseek/dsh-files) 39★ · [dsh-models](https://github.com/taxueseek/dsh-models) 模型选择 + 子代理路由 + 推理层级）。同作者完整技能系列：[session-digger](https://github.com/taxueseek/session-digger) 29★ · [taxue-invest](https://github.com/taxueseek/taxue-invest) 21★ · [taxueskills](https://github.com/taxueseek/taxueskills) 23★ · [taxue-creative-style](https://github.com/taxueseek/taxue-creative-style) 12★
 
-
-## 它和「模型自带搜索 / AI 搜索 / 聚合搜索」比，强在哪
-
-> 简单来说：前三种方案解决「**人**找信息」，Argo 解决「**Agent 及搜索核查于一身，具备一条龙的搜索服务**」。差别不在界面，在交付物，给人看的叫总结页或链接清单，给 Agent 的应是能排序、能复核、不撑爆上下文的优质内容，更可靠的搜索信息。
-
-<p align="center">
-  <img src="assets/readme/why-better.svg" width="100%" alt="左侧三种默认搜索给人看的结果，右侧 Argo 给 Agent 的可吸收证据 JSON">
-</p>
-
-| 维度 | 模型自带搜索 | AI 搜索（总结型） | 聚合搜索 / 搜索引擎 | **Argo** |
-|------|------------|-------------------|---------------------|----------|
-| 结果形态 | 拼好的长文本 | 给人看的总结页 | SERP 链接清单 | **精简 JSON：证据候选 + 可信度分解** |
-| 垂直问题（行情 / 化学式） | 泛搜网页 | 泛搜再总结 | 泛搜网页 | **直连垂直源，直接给答案** |
-| 证据可信度 | 无评分 | 无结构化评分 | 无评分 | **selection · absorption · freshness · 共识** |
-| 重复查询 | 每次都打网 | 每次都打网 | 靠页面缓存 | **双层缓存（内存 + SQLite），热查询约 10ms** |
-| 成本控制 | 不可控 | 单次贵 | 免费但费事 | **预算模式，免费优先，Key 全可选** |
-| 多语言 | 随模型走 | 随模型走 | 随引擎走 | **语言检测 + 引擎语言参数 + 多国语言支持** |
-
-> 机制上，Argo 把搜索当成一条**证据管线**：语言检测 → 领域路由 → 多引擎召回 → RRF 融合 → 证据快评，交付的是 Agent 可直接排序、可 `fetch` 复核、不撑爆上下文的材料。工具链不用换，需要换的是「搜索结果应该长什么样」——再往下一层，还有和「再包一层搜索 API 的差别」，那是实现细节的对比。
-
----
-
-## 2026，检索正在发生什么变化
-
-Agent 干活的量级变了，检索的玩法跟着变了四件事，每一件 Argo 都已经落在代码里：
-
-1. **检索从「给链接」变成「给证据」。** Agent 不看网页排版，它要能排序、能复核、不撑爆上下文的结构化材料——所以 Argo 交付的是带可信度分解的 JSON，而不是 SERP 清单。
-2. **上下文成为第一成本。** 一次网页抓取动辄上万 token，Agent 的窗口烧不起。Argo 的 Agent 档单次约 3.7KB，字段集合与字节预算都有检查卡着，升级不会悄悄变胖。
-3. **网站开始为 AI 备料。** llms.txt 标准与 `.md` 直出在头部文档站快速铺开——Argo 抓取链第零级自动探测这些 AI 友好变体，命中即跳过整条反爬链；HTTP/TLS 都失败还有 r.jina.ai 阅读器级保底。
-4. **免费开放生态够用了。** 政府、学术、标准、安全机构的开放 API + 免 key 引擎，已经能覆盖大多数领域（221 个免配置源）；稀缺免费额度（firecrawl 1000 credits/月、stackexchange 300 次/天）做了「日常补位、关键顶上」的分层，订阅墙不是唯一解。
-5. **检索质量从「感觉」到「度量」。** 排序有金标（MRR/nDCG 地板）、融合有增益消融检查、路由有负向控制矩阵——「这版比上版好吗」从此是数字问题，不是玄学。
-
-> v2.9.3 把以上全部落地：264 个源、94 个领域、229 个免配置开箱。逐项细节见 [docs/为什么选择argo.md](docs/为什么选择argo.md) 与 [发布说明](docs/RELEASE_NOTES_v2.9.0.md)。
-
----
-
-
 # Argo 阿尔戈：给 Agent 用的搜索与深度研究工具
 
 ## 这是什么
 
-**Argo 是一个装在 Agent 里的搜索与深度研究工具，也可以获取相关网页的信息。背后连着 266 个搜索源，覆盖 95 个业务领域，同时支持本地文件的基础搜索能力。在开源搜索项目里，具备非常强大的搜索能力。**
+**Argo 是一个装在 Agent 里的搜索与深度研究工具，也可以获取相关网页的信息。背后连着 264 个搜索源，覆盖 95 个业务领域，同时支持本地文件的基础搜索能力。在开源搜索项目里，具备非常强大的搜索能力。**
 
 支持配置 API Key 提升搜索质量（配了 Key 的源质量通常更好，没配则自动跳过），也支持免费引擎和本地引擎自动保底。覆盖中英日韩等 18 种语言，支持金融、学术、影视、体育、代码、宏观等垂直场景。
 
@@ -97,11 +60,65 @@ Argo 同时是 DeepSeek Harness 的插件，一行命令装好：
 dsh plugin --profile web add "github:taxueseek/argo"
 ```
 
-装完重启 `dsh web` 即生效。搜索和抓取成为原生一等工具，不依赖 MCP 连接，不占常驻上下文开销。另有十一个工具按需开启。完整接入形态见下文。
+装完重启 `dsh web` 即生效。搜索和抓取成为原生一等工具，不依赖 MCP 连接，不占常驻上下文开销。另有 1 个 `wide_research` 并行研究和 19 个 MCP 工具按需开启。完整接入形态见下文。
+
+### 三种调用通道，一套能力
+
+同一个 argo 检索内核（同引擎、同压缩、同守卫）在 DSH 里开三条通道，按宿主能力自动降级、互为冗余：
+
+| 通道 | 默认 | 说明 |
+|------|------|------|
+| **原生一等工具** | 开 | `argo_search` / `argo_fetch` 等经 `ctx.tools.register` 注册，走 CLI 单发（`--call`）复用 MCP 同一套引擎与守卫，**不依赖 MCP 连接、零常驻 token 开销** |
+| **原生 web seam** | 开 | 注册 `argo` 搜索与抓取两个 provider，宿主内置 `web_search` 路由到 argo 引擎链、`web_fetch` 走 argo 抓取链（HTTP 优先，遇 Cloudflare / JS 渲染自动升级反检测浏览器） |
+| **MCP 形态** | 按需 | 19 个 `mcp__argo__*` 完整工具面。工具定义每轮注入上下文且压缩清不掉（实测 19 工具 ≈3.7K token/轮），而高频路径已由原生工具与 web seam 覆盖，故默认不挂载；需要长尾取证能力时在 profile patch 中取消 `mcp-argo` 行注释 |
+
+另有 1 个 `wide_research`：规划互补轨道（`depends_on` 依赖分阶段，默认并行）→ 有界并发子代理取证 → 来源账本（仅 http(s) URL 入账）→ 综合报告；输出自带 `quality_gate_results`（`conclusion_cap`：low/medium/high），`passed=false` 时降级表述、先核验账本来源再下结论。worker 取证工具白名单默认双写 MCP 与原生工具名（allow 语义）——MCP 挂载与否两态自洽：MCP 在时用全量面，缺席时自动落到 `argo_search` / `argo_fetch` 与宿主 `web_search` / `web_fetch`。
+
+日常一问用 `argo_search`；单代理取证用 `argo_research`；多视角对比、要引用账本用 `wide_research`。worker 默认只能调 argo 取证工具，不会再调 `argo_research`（硬保护，用户层放行也无效）。
+
+### 自带设置页：六个分区，改完即生效
+
+插件自带浏览器端设置页，两个入口：设置弹窗（`Cmd+,`）左侧一级菜单「Argo」，或 设置 > 插件 > Argo（同一面板的摘要卡片，点开即用）。
+
+<p align="center">
+  <img src="assets/readme/settings-tools.png" width="100%" alt="Argo 设置页「工具」分区：高频路径默认开 argo_search / argo_fetch，长尾取证 16 个按需勾选，下方是单次调用超时与返回文本上限">
+</p>
+
+<p align="center">
+  <img src="assets/readme/settings-keys.png" width="100%" alt="Argo 设置页「密钥」分区：常用引擎 key 的填写、更新、清除，显示已配置/未配置与来源层，明文不回显，每行可勾选「转发」">
+</p>
+
+| 分区 | 管什么 |
+|------|--------|
+| **接入** | `web_search` / `web_fetch` seam 开关；引擎入口命令与参数（npx 或本机 `mcp_server.py`）；搜索/抓取超时、正文上限、连接空闲回收、并发连接数 |
+| **工具** | 18 个原生一等工具的勾选（默认只开 `argo_search` / `argo_fetch`）；单次调用超时与返回文本上限 |
+| **引擎** | argo 本体的行为开关（原环境变量，curated 白名单 28 个：缓存 / TF-IDF 重排 / 数值交叉校验 / MinHash 去重 / SERP 守卫、Jina / 移动端 UA / Parallel 抓取层、语义证据层、对冲宽限与尾宽、引擎启停名单、代理、本机检索根与读取白名单、预热 / 使用日志 / 连接池 / 各类 TTL）。开关类即时生效，数字 / 文本 / 名单类分组保存；未配置行显示 argo 默认态并标注「默认」。授权类开关（可复算执行、内网 URL）刻意不进面板 |
+| **密钥** | 常用引擎 key 的填写、更新、清除；显示「已配置 / 未配置 + 来源层（凭证库 / 启动环境 / .env）+ 只读态」，明文不回显；每行可勾选「转发」，等价于把引用名加进 `keyRefs` |
+| **研究** | worker / 轨道 / 每轨信源 / token 上限与报告落盘目录 |
+| **高级** | worker 工具 allow / deny 名单、凭证转发名单 |
+
+保存即生效（全部为 volatile 配置）：原生工具集合按勾选增删注册，超时、并发、研究上限在下一次调用时读取；引擎开关写成 `argoEnv`（一行一个 `KEY=VALUE`）随 argo 子进程 env 进入，对下一次新建连接生效（池内旧连接按 `searchIdleMs` 回收，默认 60s）。结构性字段（`toolName`、`provider`、`searchProviderId`、`fetchProviderId`）不在设置页，仍走 profile patch，改后需重启。
+
+**密钥安全**：写入 DSH 凭证库（与 Models 页同一处），不写进插件配置、不打日志、不回显明文。凭证服务优先级为**存储文件层 > 启动环境 > 项目 .env > 家目录 .env**：在面板（或 Models 页）保存即覆盖启动环境里的旧值，argo 子进程下一跳新连接用新 key；「清除」只删凭证库里的值，环境变量或 `.env` 提供的 key 会重新露出。设置页只是凭证域的写入口，读取仍由宿主在每次调用时完成。
+
+**DeepSeek 官方 key 原生供给**：argo 的 `deepseek_search` 引擎（官方 `api.deepseek.com/v1/tools/search`，结果自带 authority 权威分级 / rerank_score 排序分 / 发布时间）与 DSH 官方搜索后端**共用同一把 key**。插件经 DSH 原生凭证 seam 取用，不需要任何手工配置：解析路径 `ctx.get('credentials').resolve('DEEPSEEK_API_KEY')`，逐次解析——在 web Models 页轮换 key 后，下一跳新连接即生效，无需重启插件。插件不读 key 文件、不落盘、不打日志；key 值只经内存进入 argo 子进程 env，任何输出与错误信息都不含它。旧宿主无 credentials 服务时静默跳过：argo 侧该引擎按缺 key 停用，其余 263 个源不受影响。
+
+**web seam 的 pin 必读**（漏配会打挂 `web_fetch`）：宿主 `dsh-web` 的 provider 选择规则是「配置 id 优先；都没有且恰好一个可用则选它；**多个可用直接报 `WEB_PROVIDER_AMBIGUOUS`**」。web profile 默认挂着官方 http fetch provider（免 key、永远可用），本 bundle 再注册一个就是两个可用——**不 pin 的话 `web_fetch` 整个挂掉**（`web_search` 同理，若 profile 里另有搜索 provider）。故启用 web seam 的 profile 必须在 web 服务行显式指定：
+
+```yaml
+- id: web
+  config:
+    searchProvider: argo    # 已默认启用搜索 seam 时必配
+    fetchProvider: argo     # 已默认启用抓取 seam 时必配
+```
+
+`searchProviderEnabled: false` / `fetchProviderEnabled: false` 可整体关掉对应 seam（provider 仍注册但不可选，不影响另一个）。搜索引擎侧，Firecrawl 等匿名可用引擎 **keyless 免配置即用**（免费层额度），配置了密钥的引擎自动升级为认证请求；缺密钥不阻断路由。
+
+> 完整配置项、Compatibility 版本对照表与卸载方式见 [packages/dsh-plugin/README.md](packages/dsh-plugin/README.md)。
 
 ## 核心优势
 
-**266 个源，229 个免密钥开箱可用。** 不配任何 API Key 就能跑，免费引擎和本地引擎自动保底。配了 Key 的源质量通常更好，没配则自动跳过。一次安装，全场景可用。
+**264 个源，227 个免密钥开箱可用。** 不配任何 API Key 就能跑，免费引擎和本地引擎自动保底。配了 Key 的源质量通常更好，没配则自动跳过。一次安装，全场景可用。
 
 **本地搜索 + 联网搜索一体。** 这是 Argo 独一份的能力。本机文件搜索底层是 rg、mdfind 那套开发者日常工具，搜代码符号、文件名、文档全文、文件结构。加一个开关，本机命中会并进同一次网络搜索结果里，结果上标着来源是本机文件。写东西时记得自己半年前记过一段话但忘了在哪，用这个搜比翻文件夹快。
 
@@ -151,11 +168,46 @@ Argo 支持四种接入方式，按你的场景挑：
 | 形态 | 适合 | 说明 |
 |------|------|------|
 | **MCP Server** | Agent 常驻挂载 | 19 个检索工具随时可用，一条命令注入 Claude Code / Cursor / Windsurf / Codex / OpenCode / Cline，写配置前自动备份 |
-| **DSH 插件** | DeepSeek Harness 用户 | 一行 `dsh plugin add` 装好，搜索和抓取成为原生一等工具，不依赖 MCP 连接，不占常驻上下文开销 |
+| **DSH 插件** | DeepSeek Harness 用户 | 一行 `dsh plugin add` 装好，搜索和抓取成为原生一等工具，不依赖 MCP 连接，不占常驻上下文开销；自带六分区设置页，改完即生效 |
 | **Skill 文件** | Claude Code / Grok Build / Kimi 等 | 技能包装进 Agent 的技能目录，你说「帮我查一下」「核实一下」，它自己去查 |
 | **npx 即用即走** | 快速试一下 | `npx -y github:taxueseek/argo`，不用装，适合临时把 MCP 挂进任意客户端 |
 
 四种形态底层是同一套 Python 代码，CLI 与 MCP 工具一一对应，装哪种都不缺能力。
+
+## 它和「模型自带搜索 / AI 搜索 / 聚合搜索」比，强在哪
+
+> 简单来说：前三种方案解决「**人**找信息」，Argo 解决「**Agent 及搜索核查于一身，具备一条龙的搜索服务**」。差别不在界面，在交付物，给人看的叫总结页或链接清单，给 Agent 的应是能排序、能复核、不撑爆上下文的优质内容，更可靠的搜索信息。
+
+<p align="center">
+  <img src="assets/readme/why-better.svg" width="100%" alt="左侧三种默认搜索给人看的结果，右侧 Argo 给 Agent 的可吸收证据 JSON">
+</p>
+
+| 维度 | 模型自带搜索 | AI 搜索（总结型） | 聚合搜索 / 搜索引擎 | **Argo** |
+|------|------------|-------------------|---------------------|----------|
+| 结果形态 | 拼好的长文本 | 给人看的总结页 | SERP 链接清单 | **精简 JSON：证据候选 + 可信度分解** |
+| 垂直问题（行情 / 化学式） | 泛搜网页 | 泛搜再总结 | 泛搜网页 | **直连垂直源，直接给答案** |
+| 证据可信度 | 无评分 | 无结构化评分 | 无评分 | **selection · absorption · freshness · 共识** |
+| 重复查询 | 每次都打网 | 每次都打网 | 靠页面缓存 | **双层缓存（内存 + SQLite），热查询约 10ms** |
+| 成本控制 | 不可控 | 单次贵 | 免费但费事 | **预算模式，免费优先，Key 全可选** |
+| 多语言 | 随模型走 | 随模型走 | 随引擎走 | **语言检测 + 引擎语言参数 + 多国语言支持** |
+
+> 机制上，Argo 把搜索当成一条**证据管线**：语言检测 → 领域路由 → 多引擎召回 → RRF 融合 → 证据快评，交付的是 Agent 可直接排序、可 `fetch` 复核、不撑爆上下文的材料。工具链不用换，需要换的是「搜索结果应该长什么样」——再往下一层，还有和「再包一层搜索 API 的差别」，那是实现细节的对比。
+
+---
+
+## 2026，检索正在发生什么变化
+
+Agent 干活的量级变了，检索的玩法跟着变了五件事，每一件 Argo 都已经落在代码里：
+
+1. **检索从「给链接」变成「给证据」。** Agent 不看网页排版，它要能排序、能复核、不撑爆上下文的结构化材料——所以 Argo 交付的是带可信度分解的 JSON，而不是 SERP 清单。
+2. **上下文成为第一成本。** 一次网页抓取动辄上万 token，Agent 的窗口烧不起。Argo 的 Agent 档单次约 3.7KB，字段集合与字节预算都有检查卡着，升级不会悄悄变胖。
+3. **网站开始为 AI 备料。** llms.txt 标准与 `.md` 直出在头部文档站快速铺开——Argo 抓取链第零级自动探测这些 AI 友好变体，命中即跳过整条反爬链；HTTP/TLS 都失败还有 r.jina.ai 阅读器级保底。
+4. **免费开放生态够用了。** 政府、学术、标准、安全机构的开放 API + 免 key 引擎，已经能覆盖大多数领域（227 个免配置源）；稀缺免费额度（firecrawl 1000 credits/月、stackexchange 300 次/天）做了「日常补位、关键顶上」的分层，订阅墙不是唯一解。
+5. **检索质量从「感觉」到「度量」。** 排序有金标（MRR/nDCG 地板）、融合有增益消融检查、路由有负向控制矩阵——「这版比上版好吗」从此是数字问题，不是玄学。
+
+> v2.9.3 把以上全部落地：264 个源、95 个领域、227 个免配置开箱。逐项细节见 [docs/为什么选择argo.md](docs/为什么选择argo.md) 与 [发布说明](docs/RELEASE_NOTES_v2.9.0.md)。
+
+---
 
 ## 问啥像啥
 
@@ -370,11 +422,11 @@ python3 -m pytest tests/test_unit.py -q             # 单测（可选）
 
 ## 能做什么
 
-### 五种能力，通俗说
+### 七种能力，通俗说
 
 **1. 通用搜索 + 垂直搜索，双管齐下**
 
-日常问题走通用网页搜索；一问到行情、影视、体育、宏观这类「有标准答案」的问题，自动切到垂直源直接给答案，而不是扔给你一堆链接。目前 266 个源（229 个免密钥开箱可用）、94 个业务域，金融 / 宏观 / 影视 / 体育 / 地理 / 组织 / 媒体 / 化学 / 学术 / 代码等都有专门的路。
+日常问题走通用网页搜索；一问到行情、影视、体育、宏观这类「有标准答案」的问题，自动切到垂直源直接给答案，而不是扔给你一堆链接。目前 264 个源（227 个免密钥开箱可用）、94 个业务域，金融 / 宏观 / 影视 / 体育 / 地理 / 组织 / 媒体 / 化学 / 学术 / 代码等都有专门的路。
 
 **2. 缓存：不重复花冤枉钱**
 
@@ -395,6 +447,10 @@ python3 -m pytest tests/test_unit.py -q             # 单测（可选）
 **6. 时间能力（时间窗 + 方向排序）**
 
 要搜「最近几天刚发布的内容」，用 `--since 7d` 这类时间窗框住发布时间范围，判断新旧不再靠猜。支持引擎（如 `realtime_index`，免 Key 实时索引源、需自装 CLI，结果自带发布时间）把窗口下推给数据源；其余引擎的融合结果会按 `published_at` 最后再剔除明确超窗的条目（宽松策略，无时间字段的保留），返回包带 `time_filtered` 统计，CLI 与 MCP 均支持。`--since 7d` 与「7 天前的绝对日期」等价、共享缓存；`--until 2026-08-01` 含当天。配合 `--sort newest|oldest` 按发布时间重排——找最新动态用 `newest`，找最早出处用 `oldest`。
+
+**7. 在 DSH 里当原生工具用**
+
+装成 DSH 插件后，搜索与抓取是宿主的一等工具，不是外挂的 MCP 连接：`argo_search` / `argo_fetch` 直接可调，宿主的 `web_search` / `web_fetch` 也自动路由到 argo 的引擎链与抓取链。高频路径零常驻 token 开销，长尾取证能力（截图 / PDF / 社交 / 公众号 / 招聘 / 结构化提取 / 证据核验 / 意图消歧 / 站点爬取 / 批量预检 / 变化监控 / DOI 引用 / 本机检索）按需勾选开启。改配置不用碰文件——设置页六个分区改完即生效，密钥写进宿主凭证库、明文不回显。详见上文「DSH 插件」。
 
 ### 能力入口速查
 
@@ -418,6 +474,9 @@ python3 -m pytest tests/test_unit.py -q             # 单测（可选）
 | 时间窗过滤 | `--since` / `--until`（`7d` 或 `2026-08-01`）限定发布时间范围；支持引擎下推 + 融合后过滤（`time_filtered`），CLI 与 MCP 均支持 | `--since 7d` |
 | 时间方向排序 | `--sort newest\|oldest` 按发布时间重排（最新动态 / 最早出处） | `--sort oldest` |
 | 登录态专业搜索 | 知乎 / 小红书等登录墙正文、JS 渲染页、登录站点接口直取 | `sub-skills/ego-search/scripts/ego_search.py`（默认关闭，见下） |
+| DSH 原生工具 | 装成 DSH 插件后 `argo_search` / `argo_fetch` 等成为宿主一等工具，走 CLI 单发、零常驻 token 开销 | `dsh plugin add` 后直接调 |
+| DSH web seam | 宿主内置 `web_search` / `web_fetch` 路由到 argo 引擎链与抓取链（HTTP 优先，Cloudflare / JS 渲染自动升级浏览器） | 插件默认注册，profile 里 pin `searchProvider` / `fetchProvider` |
+| DSH 设置页 | 接入 / 工具 / 引擎 / 密钥 / 研究 / 高级 六分区，改完即生效；密钥进宿主凭证库、明文不回显 | 设置弹窗 `Cmd+,` → 左侧「Argo」 |
 
 ### 预算模式
 
@@ -432,9 +491,13 @@ python3 -m pytest tests/test_unit.py -q             # 单测（可选）
 
 Argo 干的事，一句话能说完：把一个问题按领域和语言分给合适的源，取回结果后按可信度排个序，交回给 Agent 的是能排序、能复核的材料。搜索、抓取、核验、本机文件检索走同一条管线，19 个 MCP 工具和 CLI 命令一一对应，装哪种形态都不缺能力。另有几个单点命令随用随取：argo tweet 打包 X 帖子，argo auth 管登录态，argo job 聚合招聘信息。
 
-最近四个版本各修了一类问题。
+装成 DSH 插件后，这些能力直接变成宿主的原生工具：高频的搜索与抓取默认就开，长尾取证能力在设置页里按需勾选，argo 本体的 28 个行为开关（缓存、重排、去重、守卫、代理、TTL 等）也从环境变量搬进了面板。密钥写进宿主凭证库，明文不回显，改完即生效。
+
+最近几个版本各修了一类问题。
 
 v2.9.7 修的是三个老毛病。DSH 宿主里的 AI 要读一个网址时，走的是宿主自带的抓取，短链跳转和 JS 挑战页经常直接失败，argo 的抓取链根本用不上；这版把宿主的读网址接到 argo 上，这类页面从失败变成成功，普通页面没有变化。路由候选池里原先混着 18 个「只能显式指定」的引擎，万一被自动选中，唯一的付费引擎就会悄悄扣费；如今候选池里没有它们，要用必须写明白。引擎每成功一次，熔断器都要加锁重写一次磁盘；健康状态下这版已经零文件开销，多个引擎的记账也合并成一笔事务。开源协议同时从 MIT 换成了 Apache-2.0，公司商用更放心。
+
+这之后 DSH 插件又补了一层：设置页从五个分区扩到六个，「引擎」分区把 argo 本体的行为开关收进面板（原先只能改环境变量），密钥页能看出每个 key 来自凭证库、启动环境还是 .env，工具勾选、超时、并发、研究上限全部改完即生效。取消信号也贯通到了连接建立阶段——AI 中途喊停，正在拉起的 argo 子进程会被立刻杀掉，不再空等超时。
 
 v2.9.6 做的是查询指令和传输层。搜「site:github.com 某某」这类查询，指令有时被当成普通词，有时解析了也不过滤；现在有统一的契约层，路由和缓存只认剥掉指令后的查询，site: 真正执行过滤并进缓存键，两次搜索不会串味。传输上，以前每次 POST 都重新付一次 TLS 握手，三百到五百毫秒；连接复用之后，常驻的 MCP 进程每笔查询都省这笔钱。这版还接入了官方 DeepSeek 搜索，按次计费，不进日常组合。
 
@@ -447,7 +510,7 @@ v2.9.4 修的是显式选引擎的场景。用 --engine X 指定引擎时，缓�
 
 ## 引擎与路由
 
-当前配置 **266** 个源（**229** 个免密钥开箱可用）、**95** 个业务域（以 `config.yaml` 与 `--list-engines` 为准）。
+当前配置 **264** 个源（**227** 个免密钥开箱可用）、**95** 个业务域（以 `config.yaml` 与 `--list-engines` 为准）。
 
 ### 直连与垂类（节选）
 
@@ -668,6 +731,13 @@ argo/
 ---
 
 ## 最近更新
+
+### 未发布（DSH 插件）：设置页补「引擎」分区 + 取消信号贯通连接建立
+
+- **设置页第六个分区「引擎」**：argo 本体的 28 个行为开关从环境变量搬进面板（缓存 / TF-IDF 重排 / 数值交叉校验 / MinHash 去重 / SERP 守卫、Jina / 移动端 UA / Parallel 抓取层、语义证据层、对冲宽限与尾宽、引擎启停名单、代理、本机检索根与读取白名单、预热 / 使用日志 / 连接池 / 各类 TTL）。经新 volatile 配置 `argoEnv`（一行一个 `KEY=VALUE`）随 argo 子进程 env 生效；名字走 `ARGO_ENV_SPECS` 白名单，白名单外 apply 期 loud fail，防拼写静默失效。开关类即时生效，数字 / 文本 / 名单类分组保存；未配置行显示 argo 默认态并标注「默认」。授权类开关（可复算执行、内网 URL）刻意不进面板
+- **密钥页来源层可见**：显示「已配置 / 未配置 + 来源层（凭证库 / 启动环境 / 项目 .env / 家目录 .env）+ 只读态」，非 file 层提示保存后将覆盖；`DEEPSEEK_API_KEY` 标注与宿主 `web_search` 共用；`fetchMaxChars` 保存时截断到 argo 工具 schema 上限 50000，消除「显示值与实效不符」
+- **取消信号贯通连接建立**：`acquireMcp` 在连接建立阶段认取消——abort 即杀子进程并以 `WEB_ABORTED` 收摊，不再空等超时；取消信号同时贯通单发兜底
+- **修复**：证据去重不再吞大小写；旧宿主缺 `effect` 不再炸激活；`saveKey` / `setForward` / `toggleTool` 改读实时快照，修连续操作的竞态丢更新；`describe` 响应乱序防护，只认最新一次请求的响应
 
 ### v2.9.7：架构收口——DSH web_fetch 占位 + explicit_only 契约 + 状态态统一（License 转 Apache-2.0）
 

@@ -258,6 +258,22 @@ streamlit run main.py
 `requirements.txt` and `requirements-yfiles.txt` are exported from `uv.lock`, so pip installs the same versions as
 uv; a workflow exports them again whenever `uv.lock` changes on `main`.
 
+With conda instead of a virtual environment, `environments/environment.yml` installs Python 3.14 from conda-forge
+and then `requirements.txt`, so the packages are the same:
+
+```bash
+conda env create -f environments/environment.yml
+conda activate cohortstudio
+streamlit run main.py
+```
+
+Run it from your copy of the repository: conda reads `requirements.txt` next to the `environments` folder. After an
+update, create the environment again (`conda env remove -n cohortstudio` first): `conda env update` keeps the pip
+packages that the lock no longer lists.
+
+On macOS the full install needs Apple silicon, with pip as with conda: some locked packages (LanceDB, numba,
+cryptography) ship no wheel for Intel Macs.
+
 ### Option C: Containerized Deployment (Docker)
 
 ```bash
@@ -314,6 +330,10 @@ ANTHROPIC_API_KEY=
 - Without them, the first start writes a **one-time setup token** to the server log, and the login page creates the administrator with it. Only a hash of the token is stored; it stops working once used. `python manage_users.py setup-token` issues a new one.
 - `python manage_users.py list | activate | deactivate | reset-password <username>` covers day-to-day administration.
 
+### The data folder
+
+The application keeps what it stores under `DATA_ROOT`, one workspace per user: datasets, traces and their snapshots, uploads, the document library. (A parallel multiple imputation also writes the table to the system's temporary folder while it runs, and deletes it afterwards.) When the application deletes a file, it is a plain file deletion: copies kept by backups, synchronised folders or the disk itself are not removed. Keep `DATA_ROOT` on an encrypted disk and outside folders synchronised to a cloud service, and remember that backups keep their own copies.
+
 ---
 
 ## Verification & Test Suite
@@ -331,7 +351,7 @@ uv run pytest -v
 uv run pytest --cov=. --cov-report=term-missing
 ```
 
-CI fails when the line coverage of the non-test code falls below 63 %, or a package falls below its floor: biostats and core 92 %, graph 91 %, ingest 87 %, ui 81 %, explore 74 %, manage 61 %, enrich 56 %. It also runs the suite in an environment without the optional groups (the AI tests are skipped), builds the Docker image and checks a fresh container, and runs the statistical simulation suites (`pytest -m slow`) every week. Dependabot proposes the dependency updates in `uv.lock` (and the GitHub Actions versions); the requirements files follow automatically.
+CI fails when the line coverage of the non-test code falls below 70 %, or a package falls below its floor (one per package, about 2 points under its measured coverage, in [`check_coverage_floors.py`](dev_scripts/check_coverage_floors.py)); a package more than 4 points above its floor fails too, until the floor is raised. It checks the formatting of every file but a list that only shrinks, the type errors per file against a baseline that only falls ([`check_type_baseline.py`](dev_scripts/check_type_baseline.py)), and the layers of the code ([`test_layering.py`](tests/test_layering.py)). It also runs the suite in an environment without the optional groups (the AI tests are skipped), builds the Docker image and checks a fresh container, and runs the statistical simulation suites (`pytest -m slow`) every week. Dependabot proposes the dependency updates in `uv.lock` (and the GitHub Actions versions); the requirements files follow automatically.
 
 ### What is checked, and where
 
@@ -341,7 +361,7 @@ CI fails when the line coverage of the non-test code falls below 63 %, or a pack
 | Under data missing at random, the imputation is unbiased and its 95 % intervals reach their nominal coverage, while the complete cases are biased | [`test_mi_simulation.py`](tests/biostats_layer/test_mi_simulation.py), 200 simulated samples, run weekly by [`slow.yml`](.github/workflows/slow.yml) |
 | The trace is hash-chained: an edited, removed or reordered step is reported | [`core/lineage.py`](core/lineage.py), [`test_lineage.py`](tests/core_layer/test_lineage.py) |
 | The ticked criteria drive the imputation, and a replay reproduces the analysed table | [`test_pipeline_integrity.py`](tests/test_pipeline_integrity.py) |
-| The data and statistics engine imports no Streamlit | [`test_layering.py`](tests/test_layering.py) |
+| Imports go down the layers, without cycles; nothing below the interface reaches Streamlit; the engine loads no interface, plotting or AI package | [`test_layering.py`](tests/test_layering.py) |
 | Each account works in its own workspace, paths cannot leave it, and expressions run in a whitelisted sandbox | [`test_workspace.py`](tests/core_layer/test_workspace.py), [`test_safe_eval.py`](tests/core_layer/test_safe_eval.py) |
 | The coverage floors, overall and per package | [`ci.yml`](.github/workflows/ci.yml), [`check_coverage_floors.py`](dev_scripts/check_coverage_floors.py) |
 

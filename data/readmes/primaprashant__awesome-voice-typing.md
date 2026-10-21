@@ -27,20 +27,20 @@ These tools let you speak and have text appear wherever you're typing. Some run 
 
 <!-- trending:start -->
 
-Last updated: 2026-10-19
+Last updated: 2026-10-21
 
 | Tool | Stars gained (30 days) | Total stars | Growth |
 | --- | ---: | ---: | ---: |
-| [Handy](https://github.com/cjpais/Handy) | 2,341 | 34,098 | 7.4% |
-| [OpenWhispr](https://github.com/OpenWhispr/openwhispr) | 1,258 | 9,557 | 15.2% |
-| [FluidVoice](https://github.com/altic-dev/FluidVoice) | 710 | 12,279 | 6.1% |
-| [VoiceInk](https://github.com/Beingpax/VoiceInk) | 421 | 6,853 | 6.5% |
-| [OpenLess](https://github.com/Open-Less/openless) | 318 | 3,882 | 8.9% |
-| [CapsWriter-Offline](https://github.com/HaujetZhao/CapsWriter-Offline) | 186 | 6,977 | 2.7% |
-| [VoxType](https://github.com/peteonrails/voxtype) | 180 | 1,666 | 12.1% |
-| [OpenSuperWhisper](https://github.com/Starmel/OpenSuperWhisper) | 165 | 3,064 | 5.7% |
-| [Muesli](https://github.com/Muesli-HQ/muesli) | 162 | 1,431 | 12.8% |
-| [fcitx5-vinput](https://github.com/xifan2333/fcitx5-vinput) | 152 | 589 | 34.8% |
+| [Handy](https://github.com/cjpais/Handy) | 2,369 | 34,220 | 7.4% |
+| [OpenWhispr](https://github.com/OpenWhispr/openwhispr) | 1,299 | 9,660 | 15.5% |
+| [FluidVoice](https://github.com/altic-dev/FluidVoice) | 723 | 12,326 | 6.2% |
+| [VoiceInk](https://github.com/Beingpax/VoiceInk) | 403 | 6,873 | 6.2% |
+| [OpenLess](https://github.com/Open-Less/openless) | 324 | 3,914 | 9.0% |
+| [CapsWriter-Offline](https://github.com/HaujetZhao/CapsWriter-Offline) | 185 | 6,991 | 2.7% |
+| [VoxType](https://github.com/peteonrails/voxtype) | 180 | 1,673 | 12.1% |
+| [OpenSuperWhisper](https://github.com/Starmel/OpenSuperWhisper) | 169 | 3,071 | 5.8% |
+| [Muesli](https://github.com/Muesli-HQ/muesli) | 163 | 1,439 | 12.8% |
+| [fcitx5-vinput](https://github.com/xifan2333/fcitx5-vinput) | 134 | 593 | 29.2% |
 
 <!-- trending:end -->
 

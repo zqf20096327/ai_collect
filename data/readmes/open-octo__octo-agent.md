@@ -31,6 +31,8 @@ curl -fsSL https://octo-agent.dev/install.sh | sh     # single binary — no Nod
 octo "Add a --json flag to 'octo config show' and run the tests"   # one prompt → full agentic loop
 ```
 
+**📱 On your phone:** [download the Android app](https://dl.octo-agent.dev/releases/latest/download/octo-android.apk) (built with every release), then scan the QR in **Settings → Mobile** to connect — [setup guide](https://octo-agent.dev/docs/getting-started/install/#mobile-app).
+
 octo is built around that positioning:
 
 - **Works out of the box**: shell, file read/write/edit, search, MCP servers, skills, and sub-agents are all on by default — one message after install is enough for it to actually do work.
@@ -66,7 +68,7 @@ octo (single binary)
   -> Mobile               iOS + Android developer preview
 ```
 
-**Stable (1.0)** already covers TUI, CLI, Web UI, Desktop, IM bridge, and the [VS Code](https://github.com/open-octo/octo-vscode) / [Obsidian](https://github.com/open-octo/octo-obsidian) extensions. The eighth — a mobile app (iOS + Android) — is implemented and in **developer preview**: buildable from source today against a self-hosted relay (see [`mobile/`](mobile/)), with a hosted relay and app-store builds next.
+**Stable (1.0)** already covers TUI, CLI, Web UI, Desktop, IM bridge, and the [VS Code](https://github.com/open-octo/octo-vscode) / [Obsidian](https://github.com/open-octo/octo-obsidian) extensions. The eighth — a mobile app (iOS + Android) — is implemented and in **developer preview**: connecting straight to your own `octo serve` over your LAN, Tailscale or any tunnel. Android: [download the APK](https://github.com/open-octo/octo-agent/releases/latest/download/octo-android.apk) from each release; iOS builds from source (see [`mobile/`](mobile/)). App-store builds are next.
 
 ## Core Features
 

@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="#quick-start"><img src="https://img.shields.io/badge/tests-254%2F254-brightgreen" alt="tests 254/254"></a>
+  <a href="#quick-start"><img src="https://img.shields.io/badge/tests-250%2F250-brightgreen" alt="tests 254/254"></a>
   <a href="#why-rail"><img src="https://img.shields.io/badge/self--hosting-fixed%20point-blue" alt="self-hosting"></a>
   <a href="#what-rail-does"><img src="https://img.shields.io/badge/HTTPS-pure%20Rail-ff5500" alt="pure-Rail HTTPS"></a>
   <a href="#how-it-works"><img src="https://img.shields.io/badge/GC-ARM64%20assembly-purple" alt="GC in ARM64 asm"></a>
@@ -34,7 +34,7 @@ Rail compiles itself. The compiler — ~10,000 lines of Rail — produces a ~0.9
 ```
 RAIL_ARENA_MB=6000 ./rail_native self && cp /tmp/rail_self ./rail_native  # cycle 1
 RAIL_ARENA_MB=6000 ./rail_native self && cmp rail_native /tmp/rail_self   # cycle 2 — byte-identical
-./rail_native test                                     # 254/254
+./rail_native test                                     # 250/250
 ```
 
 ### What the self-hosting is *for*
@@ -63,18 +63,16 @@ cd rail
 ./rail_native run examples/hello.rail
 ```
 
-Apple Silicon (ARM64 macOS) is the primary target; Linux ARM64, Linux x86_64, WebAssembly (experimental), Cortex-M4, and RISC-V rv32imc backends are supported.
+Apple Silicon (ARM64 macOS) is the primary target; Linux ARM64, Linux x86_64 and WebAssembly (experimental) backends are supported.
 
 ```bash
 ./rail_native <file.rail>        # compile to /tmp/rail_out
 ./rail_native run <file.rail>    # compile + execute
-./rail_native test               # run the suite (254 tests)
+./rail_native test               # run the suite (250 tests)
 RAIL_ARENA_MB=6000 ./rail_native self               # self-compile, fixed point at gen2
 ./rail_native x86 <file.rail>    # cross-compile to Linux x86_64
 ./rail_native linux <file.rail>  # cross-compile to Linux ARM64
 ./rail_native wasm <file.rail>   # compile to WebAssembly
-./rail_native cortexm <file.rail># compile to Cortex-M4 (Thumb-2)
-./rail_native riscv32 <file.rail># compile to RISC-V rv32imc
 ```
 
 ## What Rail does
@@ -150,7 +148,7 @@ publish both — a benchmark quoted without its failure mode is marketing.
 - **Byte-identical self-compile.** `./rail_native self` produces output identical to the binary that produced it. The compiler's own source is the regression suite.
 - **One binary checks everything.** Training loops, tests, site generation, HTTPS clients — all compiled by the same binary you cloned. That makes the compiler a single, reproducible *checker* you can re-run yourself — not a proof of correctness: a program can compile and still be wrong. Compilation proves a program is *accepted by the binary you run*, nothing more.
 - **Production surface is narrow and honest.** Rail ships the crypto it uses (ChaCha20-Poly1305, x25519, SHA-256/384/512, ECDSA-P256/P384/P521, RSA-PSS/PKCS1) and nothing more. Every primitive is NIST- or RFC-vector-validated.
-- **Six backends travel with the language.** macOS ARM64, Linux ARM64 (Pi Zero 2 W), Linux x86_64, WebAssembly (experimental), Cortex-M4 (Thumb-2), and RISC-V rv32imc — the same compiler cross-compiles to all of them.
+- **Four backends travel with the language.** macOS ARM64, Linux ARM64 (Pi Zero 2 W), Linux x86_64 and WebAssembly (experimental) — the same compiler cross-compiles to all of them.
 
 ## The language
 
@@ -204,7 +202,7 @@ Tail-recursive loops match C `-O2` (5 instructions per iteration). The full arch
 
 ## What moved out
 
-On 2026-09-22 the tool shed left this repo for a private one (`rail-lab`): the LM experiments and ports (`tools/train`, `tools/railml`), the watch-firmware fuzzing (`tools/garmin`), the autodiff oracles (`tools/ad`), orchestration, agents, MCP, and a dozen small probes. What stays is the language: the compiler, the stdlib, the suite, the fuzz corpus, attestation and verification, the beacon, the playground, and the backends. The x86, WASM and Cortex-M backends are experimental: each has a handful of tests; ARM64 (macOS and Linux) is the supported target.
+On 2026-09-22 the tool shed left this repo for a private one (`rail-lab`): the LM experiments and ports (`tools/train`, `tools/railml`), the watch-firmware fuzzing (`tools/garmin`), the autodiff oracles (`tools/ad`), orchestration, agents, MCP, and a dozen small probes. What stays is the language: the compiler, the stdlib, the suite, the fuzz corpus, attestation and verification, the beacon, the playground, and the backends. The x86 and WASM backends are experimental: each has a handful of tests; ARM64 (macOS and Linux) is the supported target. On 2026-10-20 the hard-bench (`tools/bench`) and the inference engine (`tools/infer`) followed the shed to `rail-lab`, and the entropy beacon (`tools/plasma`, the MHD kernels, suite tests t186 to t189) became the public [`rail-plasma`](https://github.com/Ledatic-Empire/rail-plasma); the tree they left is tag `archive/tier2-precut-2026-10-20`.
 
 ## Releases
 
@@ -257,7 +255,7 @@ The v5 line opens with **v5.0.0** (2026-05-14) — the self-hosted toolchain: Ra
 
 A major-version bump positioning Rail as a substrate, not a model. 216 commits since v3.11.0 across concurrency, JIT, dual-backend parity, attested provenance, and 30/30 hard-bench reproducibility.
 
-- **30/30 hard-bench, publicly reproducible.** A frontier model + a 1 KB Rail spec compiles 30/30 of a held-out hard-bench. Anyone with an API key can re-run.
+- **30/30 hard-bench, publicly reproducible.** A frontier model + a 1 KB Rail spec compiles 30/30 of a held-out hard-bench. Anyone with an API key can re-run (the bench is `tools/bench` at tag `archive/tier2-precut-2026-10-20`; it moved to `rail-lab` on 2026-10-20).
 - **Self-hosted on two backends with full parity.** ARM64 140/140 and x86_64 136/136. The same compiler runs both; same-bug-class sweep closed for all 9 binary ops across both operand orderings.
 - **Concurrency v1.** Typed channels + select over a pthread-backed runtime. `import "stdlib/concurrent.rail"`.
 - **JIT in pure Rail.** `import "jit/grade.rail"` — a Rail program can compile + execute new Rail at runtime in the same process. Found a 17-day silent-corruption auto-memo bug by dual-implementing the compile path.

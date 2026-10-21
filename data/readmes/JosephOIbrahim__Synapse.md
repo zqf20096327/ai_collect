@@ -4,36 +4,35 @@
 
 <p align="center"><strong>Your AI assistant inside Houdini.</strong><br>Describe a task. Inspect the nodes. Keep creative control.</p>
 
-<p align="center"><sub>v5.97.4 · Houdini 22.0.400 · Python 3.13 runtime<br>tags: v5.97.4 is Latest</sub></p>
+<p align="center"><sub>v5.97.6 · Houdini 22.0.400 · Python 3.13 runtime<br>tags: v5.97.6 is Latest</sub></p>
 
 [![Latest release](https://img.shields.io/github/v/release/JosephOIbrahim/Synapse)](https://github.com/JosephOIbrahim/Synapse/releases/latest)
 [![CI](https://github.com/JosephOIbrahim/Synapse/actions/workflows/ci.yml/badge.svg)](https://github.com/JosephOIbrahim/Synapse/actions/workflows/ci.yml)
 [![MIT license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**[Install](docs/getting-started/installation.md)** · [First session](docs/getting-started/quickstart.md) · [JEV key setup](docs/getting-started/jev-setup.md) · [Help](#when-you-get-stuck) · [What's new](docs/releases/v5.97.4.md)
+**[▶️ Instructions](INSTRUCTIONS.md)** · [🏷️ Versions and tags](TAGS.md) · [What's new](docs/releases/v5.97.6.md) · [Help](#when-you-get-stuck)
 
 ## Start here
 
-- **Published source:** [v5.97.4](https://github.com/JosephOIbrahim/Synapse/releases/tag/v5.97.4). Targets **Windows + Houdini 22.0.400**, using Houdini's bundled Python 3.13.
-- **Houdini qualification:** v5.97.4 has **not** run in Houdini or hython. Its checks ran in standalone Python. [What was tested](docs/releases/v5.97.4.md#tests).
-- **One-click installer:** [Windows Setup v5.86.0](https://github.com/JosephOIbrahim/Synapse/releases/download/v5.86.0/SYNAPSE-5.86.0-Setup.exe). It does **not** include v5.87.0 through v5.97.4.
+- 📦 **Get 5.97.6:** [Windows Setup](https://github.com/JosephOIbrahim/Synapse/releases/download/v5.97.6/SYNAPSE-5.97.6-Setup.exe) or [source ZIP](https://github.com/JosephOIbrahim/Synapse/releases/download/v5.97.6/SYNAPSE-5.97.6-source.zip).
+- 🔎 **Check the download:** Setup is **unsigned**. Compare its [SHA-256 checksum](https://github.com/JosephOIbrahim/Synapse/releases/download/v5.97.6/SHA256SUMS.txt).
+- 🦀 **Rust when verified:** Setup includes a pinned native artifact. Fresh supported setups enable it after actual execution checks. Explicit OFF stays OFF. [Existing setups](INSTRUCTIONS.md#existing-native-on-or-off-setups).
+- ✅ **Checks:** native execution, encrypted-mirror reopen and migration/restoration controls. Read the [final artifact evidence and limits](docs/releases/v5.97.6.md#tests); interactive wizard and clean-machine checks remain separate.
 
-**New in 5.97.4: a native panic during a command gets an answer.** If a native (Rust) extension panics while SYNAPSE runs a command, that request now gets a failed reply, and the next request is answered. Before, the WebSocket connection sent no reply. SYNAPSE answers the panic; it does not repair the module, and a failed reply does not mean nothing was written. Tested with fakes only, and not run under hython ([what changed](docs/releases/v5.97.4.md#what-changes)).
+Setup includes the panel as of v5.97.6, including Spatial, the Render footer row and the scene-reading Scatter recipe.
 
-**Want the current changes? Use the [source installation](docs/getting-started/installation.md#source-installation).** Spatial, the Render footer row and the Scatter recipe that reads the scene need a source install.
+**New in 5.97.6:** preserve native/custom package choices, verify the exact bundled Rust artifact and run real Moneta scan/decay before activating ON. The existing Moneta 1.3.0 and bounded LIGHT scope from [5.97.5](docs/releases/v5.97.5.md) are unchanged.
 
-**Prefer the older Setup?** It includes Identify and the panel as of v5.86.0, with that release's JEV and SideFX library changes. It is unsigned: check its [SHA-256 checksums](https://github.com/JosephOIbrahim/Synapse/releases/download/v5.86.0/SHA256SUMS.txt) before running it.
+**Published, installed and running can differ.** This page does not update your seat or an open Houdini session. Install separately and restart Houdini to load the update. The 5.97.5 tag and assets remain unchanged.
 
-Published source, an installed version and a qualified Houdini session are different states. Updating this page does not update an open Houdini session.
+**🚀 Pick one install path, then take four steps.**
 
-**Pick one path, then follow these four steps.**
-
-1. Save your scene and close Houdini. Follow **[source installation](docs/getting-started/installation.md#source-installation)** for v5.97.4, or run the v5.86.0 **[Windows Setup](docs/getting-started/installation.md#windows-installer)**.
+1. Save your scene and close Houdini. Follow **[source installation](docs/getting-started/installation.md#source-installation)** for v5.97.6, or run the v5.97.6 **[Windows Setup](docs/getting-started/installation.md#windows-installer)**.
 2. Restart Houdini. Open **New Pane Tab → Synapse**.
 3. Open **Connect models**. Choose a provider and model; add its key if needed.
 4. For node creation, select **Build and edit networks**. Choose **Check connection → Use this model**.
 
-Using Ollama? Start its service first. **Connect** starts the separate Houdini bridge; **Doctor** checks the setup without a model.
+💡 Using Ollama? Start its service first. **Connect** starts the separate Houdini bridge; **Doctor** checks the setup without a model.
 
 **Jump to:** [First build](#your-first-build) · [Controls](#find-the-right-control) · [Stop safely](#three-ways-to-stop) · [Troubleshooting](#when-you-get-stuck)
 
@@ -96,7 +95,7 @@ flowchart LR
 
 These checks do not measure a complex scene's time savings or qualify every panel interaction. See [release notes and evidence](docs/releases/v5.97.2.md#what-was-measured).
 
-**v5.97.3 drops a false merge warning.** A wire that names no input appends to an existing merge's lowest free input. The check used to warn `input gap: indices [0, 0]` for two such wires. It no longer does. The fix has a standalone test only and has not run in Houdini ([notes](docs/releases/v5.97.3.md#solaris-merge-warning-side-fix)).
+The inherited merge-warning fix has standalone tests; its original limits remain in the [5.97.3 notes](docs/releases/v5.97.3.md#solaris-merge-warning-side-fix).
 
 ## Build from a verified recipe
 
@@ -140,16 +139,16 @@ A short bubble appears beside each node, drawn over the network editor. It says 
 
 The bubble comes from the node itself and its page in your local SideFX help library, found the way Houdini's own help finds it, or from an HDA's own help when the library has no page for it. No model runs, and nothing leaves your machine.
 
-Click **Identify** again, or send `/identify off`, to clear the bubbles. They are drawn over the editor, so nothing is written to your scene.
+Click **Identify** again, or send `/identify off`, to clear the bubbles. The overlay is not saved into your scene. Identify can also remove its own old-format comment blocks in one undo group while preserving artist text. [Cleanup details](docs/architecture/overview.md#identify).
 
 ```mermaid
 flowchart LR
     accTitle: How Identify explains selected nodes
-    accDescr: You select nodes and click Identify. SYNAPSE reads each node and finds its exact page in the local SideFX help library, the way Houdini's own help does, or uses an HDA's own help, without a model. A short bubble appears beside each node, drawn over the network editor. Nothing is written to the scene.
+    accDescr: You select nodes and click Identify. SYNAPSE reads each node and finds its exact local help page, or uses an HDA's help, without a model. A short bubble appears over the editor. The overlay is not saved; old Identify-generated comment blocks can be removed in an undo group while artist text is preserved.
     S["Select nodes"] --> I["Click Identify"]
     I --> R["Read the node +<br/>its exact help page"]
     R --> N["Short bubble<br/>beside each node"]
-    N --> F["Nothing written<br/>to the scene"]
+    N --> F["Overlay not saved<br/>legacy cleanup is undoable"]
     classDef default fill:#F6B26B,stroke:#D07020,color:#000000
     classDef artist fill:#F6B26B,stroke:#D07020,color:#000000
     classDef synapse fill:#D07020,stroke:#D07020,color:#000000
@@ -197,7 +196,7 @@ Saving a JEV key keeps it in memory until Houdini closes. **It does not enable J
 - **Optional JEV assistance:** rank selected-network actions or measure routing. Your generation model stays selected.
 - **Local knowledge:** [SideFX library](docs/studio/SIDEFX_LIBRARY.md), [project memory](docs/architecture/overview.md#project-and-scene-memory) and [checked lookdev suggestions](docs/development/rsi_stage0.md).
 
-[Current limits](docs/status.md) · [Latest release notes](docs/releases/v5.97.4.md) · [Changelog](CHANGELOG.md)
+[Current limits](docs/status.md) · [Latest release notes](docs/releases/v5.97.6.md) · [Changelog](CHANGELOG.md)
 
 ## When you get stuck
 
@@ -237,22 +236,30 @@ Explicit memory writes, decisions and error rows are recorded. Automatic session
 
 Moneta's USD mirror is an inspection view, not the storage owner. Missing services and unknown outcomes remain visible. A memory store that cannot be read is reported as a failure, not as an empty answer.
 
-**Moneta's native module stays out unless you opt in.** `MONETA_NATIVE=0`, set before Moneta first loads, keeps it out of the Houdini process. The module is not qualified under hython, so [`packages/synapse.json`](packages/synapse.json) sets `MONETA_NATIVE=0`. Memory status and provenance report the module as `loaded`, `blocked` or `not_loaded`.
+**Native policy depends on the installation route.** The [source package](packages/synapse.json) retains OFF. Windows Setup 5.97.6 can enable a fresh Windows x64 / H22.0.400 / Python 3.13.10 setup only after pinned-artifact and actual execution checks. Explicit OFF and existing default-OFF choices stay OFF. Existing ON needs the same host/artifact/execution qualification. Memory status reports the module as `loaded`, `blocked` or `not_loaded`; a flag alone proves no execution. [Measured limits](docs/releases/v5.97.6.md#tests).
 
 **A native panic is caught in four places.** If the Moneta store panics while it is built, SYNAPSE logs it, records the fallback and serves the JSONL store. A panic inside `synapse_sleep_pass` returns `ran=False`. Since 5.97.4, a panic that reaches the command dispatcher gets a failed reply under its request id, and with `SYNAPSE_AUTO_MEMORY=1` a panic in an automatic session row is logged and that row is skipped. The connection handlers themselves still catch `Exception` only.
 
 **`synapse_sleep_pass` is refused unless `SYNAPSE_ALLOW_SLEEP_PASS=1` is set.** It prunes memory, and a request cannot opt in. Over the WebSocket connection it opens no undo group, so it cannot take back your last edit. On the in-Houdini HTTP `/mcp` route and the panel's tool route, an opted-in pass still runs inside the bridge's undo group. A pass that fails after pruning is still audited.
 
-**Risk B is not fixed.** After a save, Moneta attention that has not been drained is lost at the next store switch or quit. Nothing drains it automatically, and no error is shown. The fix is planned for the next Moneta release ([limits that remain](docs/releases/v5.97.4.md#limits-that-remain)).
+**Attention durability has a bounded contract.** Moneta 1.3.0 implements preservation of undrained attention in attached keyed snapshots; its degraded/keyless and unattached save paths have separate limits. The local reopen probes do not establish every attention/save/switch/quit path. See [current storage limits](docs/releases/v5.97.6.md#limits).
 
 [Storage and recall diagram](docs/architecture/overview.md#project-and-scene-memory) · [Optional memory LOOP](docs/architecture/overview.md#memory-loop) · [Saved suggestions](docs/development/rsi_stage0.md)
 
-**CI covers stock Python on Linux, macOS and Windows.** Its Moneta step shows that Moneta imports, not that the Rust extension runs. Native Houdini behavior and Windows installer qualification are separate checks. See each [release's evidence](docs/releases/v5.97.4.md) before relying on it.
+**CI covers stock Python on Linux, macOS and Windows.** Its Moneta step shows that Moneta imports, not that the Rust extension runs. Native Houdini behavior and Windows installer qualification are separate checks. See each [release's evidence](docs/releases/v5.97.6.md) before relying on it.
 
 </details>
 
 ## License
 
-[MIT](LICENSE). Bundled Moneta retains its separate proprietary terms.
+[MIT](LICENSE).
+
+Moneta 1.3.0 is bundled under the MIT License by its copyright holder's written
+grant of 2026-10-19. Its pinned upstream metadata still declares "Proprietary";
+the bundle includes the grant notice and full MIT text.
+
+Third-party packages retain their own licenses. The installer's `DEPENDENCIES.txt`
+lists the included components and license-text locations. The SideFX PDF, MPM
+masterclass transcripts and rewritten guides are excluded from this release.
 
 Patent applications pending on the USD cognitive-state substrate, digital injection, and predictive lighting — see [PATENTS](PATENTS).

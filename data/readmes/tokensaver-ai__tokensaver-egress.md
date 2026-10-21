@@ -71,7 +71,7 @@ That’s it. Open [platform.tokensaver.fr](https://platform.tokensaver.fr) → *
 | Two-shell proxy | `Ctrl+C` in terminal 1, then `tokensaver-egress stop` (or `unproxy --ide`) |
 | Shell still pointing at `:8888` | `eval "$(tokensaver-egress unproxy --sh)"` |
 
-Requires **Python ≥ 3.10**. The wizard asks for a TokenSaver account or a `ts_…` API key.
+Requires **Python ≥ 3.10**. The wizard asks for a TokenSaver account or a `tsv_…` virtual key.
 
 ---
 
@@ -81,7 +81,7 @@ Interactive wizard (`tokensaver-egress setup`):
 
 | Step | Choices |
 |------|---------|
-| **API key** | Create account · **Log in** (email/password) · Paste `ts_…` · Open console |
+| **Virtual key** | Create account · **Log in** (email/password) · Paste `tsv_…` · Open console |
 | Platform | SaaS (`api.tokensaver.fr`) or Local (`localhost:8000`) |
 | Then | Ingest URL · MITM CA · body capture · port · Claude skills · **CLI vs VS Code** |
 
@@ -121,7 +121,7 @@ eval "$(tokensaver-egress unproxy --sh)"
 |---|--------|-----|----------------|
 | **1** | **Create a free account** | New users | Signup + key returned once |
 | **2** | **Log in** (default) | Existing email/password | Sign-in → create key **Egress CLI** |
-| **3** | **Paste** an existing key | CI / SSO / reuse a key | You paste `ts_…` from Settings → API keys |
+| **3** | **Paste** an existing virtual key | CI / SSO / reuse a key | You paste `tsv_…` from Console → Clés virtuelles |
 | **4** | **Open** the console | Browser | https://platform.tokensaver.fr |
 
 ```text
@@ -150,7 +150,7 @@ Notes:
 |-----------------------------|-------------------------------------------------------------------------------------|
 | Listen / MITM / forward HTTPS | Ingest, Flux IA, storage |
 | Optional body capture (auth headers masked) | Governance policies (cache, RAG, compression, PII, routing) |
-| Ship audits + call policy APIs with your `ts_…` key | Catalogue enforce, quotas, dashboards |
+| Ship audits + call policy APIs with your `tsv_…` virtual key | Catalogue enforce, quotas, dashboards |
 
 Default ingest: `https://api.tokensaver.fr/api/v1/egress/ingest`.
 
@@ -222,7 +222,7 @@ MITM can see **model, tokens, and tool names**. Trust a **local** CA once.
 ### 1. Configure TokenSaver
 
 ```bash
-export TOKENSAVER_API_KEY=ts_your_key_here
+export TOKENSAVER_API_KEY=tsv_your_virtual_key_here
 export TOKENSAVER_INGEST_URL=https://api.tokensaver.fr/api/v1/egress/ingest
 ```
 
@@ -271,7 +271,7 @@ claude
 
 ```bash
 # Terminal A — proxy
-export TOKENSAVER_API_KEY=ts_…
+export TOKENSAVER_API_KEY=tsv_…
 export TOKENSAVER_INGEST_URL=https://api.tokensaver.fr/api/v1/egress/ingest
 EGRESS_MITM_ENABLED=true EGRESS_CAPTURE_BODIES=1 \
   tokensaver-egress serve --port 8888
@@ -284,6 +284,17 @@ claude
 ```
 
 `EGRESS_CAPTURE_BODIES=1` stores request/response bodies in TokenSaver (auth headers are masked). Omit it if you only want metadata (host, latency, tokens).
+
+### A′. Audit-only (journalisation seule — TNF bisection)
+
+Forward the client body **unchanged** to Anthropic (no cache / RAG / compression / PII / routing), while still ingesting audit rows. Use this for the « without TokenSaver transforms » leg of a `thread_not_found` bisection:
+
+```bash
+EGRESS_MITM_ENABLED=true EGRESS_CAPTURE_BODIES=1 EGRESS_AUDIT_ONLY=1 \
+  tokensaver-egress serve --port 8888
+```
+
+(`EGRESS_PIPELINE_MODE=audit` is an alias.) Audit attrs include `audit_only=true` and `pipeline_modules=["audit_only"]`.
 
 ### B. One-shot curl through the proxy
 
@@ -302,7 +313,7 @@ curl -sS https://api.anthropic.com/v1/messages \
 No CA trust needed. You still see host / bytes / latency, not model tokens.
 
 ```bash
-export TOKENSAVER_API_KEY=ts_…
+export TOKENSAVER_API_KEY=tsv_…
 export TOKENSAVER_INGEST_URL=https://api.tokensaver.fr/api/v1/egress/ingest
 tokensaver-egress serve --port 8888
 
@@ -314,7 +325,7 @@ export HTTP_PROXY=http://127.0.0.1:8888
 ### D. Local TokenSaver backend (dev)
 
 ```bash
-export TOKENSAVER_API_KEY=ts_…
+export TOKENSAVER_API_KEY=tsv_…
 export TOKENSAVER_INGEST_URL=http://localhost:8000/api/v1/egress/ingest
 EGRESS_MITM_ENABLED=true tokensaver-egress serve --port 8888
 ```
@@ -346,7 +357,7 @@ tokensaver-egress serve --transparent --port 8888
 
 | Variable | Meaning |
 |----------|---------|
-| `TOKENSAVER_API_KEY` | Your `ts_…` key (required to ship audits) |
+| `TOKENSAVER_API_KEY` | Your `tsv_…` virtual key (required to ship audits) |
 | `TOKENSAVER_INGEST_URL` | SaaS default: `https://api.tokensaver.fr/api/v1/egress/ingest` |
 | `EGRESS_MITM_ENABLED` | `true` = decrypt known LLM hosts |
 | `EGRESS_CAPTURE_BODIES` | `1` = store bodies in Flux IA |

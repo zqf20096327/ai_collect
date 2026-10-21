@@ -25,6 +25,23 @@ remind remember "Cache TTL is 600 seconds" -t fact -e concept:caching
 remind recall "What tech stack are we using?"
 ```
 
+## Durable local memory
+
+Local memory is stored as deterministic JSON records in `.remind/memory/`. Commit those files with the code; memories follow branch checkout and merge normally. `.remind/cache/` and `.remind/runtime/` hold ignored indexes, embeddings, logs, and recovery data. Existing local databases migrate automatically with a retained backup. Explicit `sqlite://`, PostgreSQL, and MySQL URLs continue selecting SQL directly.
+
+```bash
+remind --store ./my-memory remember "User prefers concise answers"
+remind remember "Cache TTL is 600 seconds" -t fact --json --idempotency-key ttl-change
+remind recall "cache configuration" --json --explain
+remind doctor
+remind export memory.json                # complete portable knowledge
+remind export backup.json --mode backup  # also include embeddings and usage
+```
+
+Edits now require revisions from `snapshot`; CLI apply accepts `--revisions '{"<id>":"<revision>"}'`, MCP/Python apply accepts `expected_revisions`. Read-only recall returns a structured `RecallResult` in Python; use `.text` for prompt context. [Storage and migration](https://sandst1.github.io/remind/concepts/storage) describes the breaking changes.
+
+Local evaluations cover capture → curation → restart → recall through Python, CLI, MCP, and REST. Run `remind-eval --suite operational`, `remind-eval --suite retrieval` (real local embeddings), or `remind-eval --suite agent --agent-command '<runner command>'`. See [evals/README.md](evals/README.md) for datasets, gates, and the external runner contract. No internal LLM calls or CI are introduced.
+
 ## How it works
 
 Remind stores **episodes** (raw experiences) and **concepts** (generalized knowledge). You capture and curate memories explicitly using CLI commands or MCP tools.
@@ -39,7 +56,7 @@ For any `remember` call, the output also surfaces the **top-5 nearest episodes a
 For **patterns and concepts**, you use `remind apply` to create them from episodes:
 
 ```bash
-remind apply << 'EOF'
+remind apply --revisions '<ID-to-revision JSON from snapshot>' << 'EOF'
 concept from=ep:11,ep:12 title="Retry-with-backoff for resilience" "Exponential backoff resolves flaky deploys and API timeouts."
 processed ids=ep:11,ep:12
 EOF
@@ -139,7 +156,16 @@ Install skills to teach AI agents how to use Remind:
 
 ```bash
 remind skill-install
+remind skill-install --agent claude       # Use .claude/skills instead
+remind skill-install --dir ~              # Install into ~/.agents/skills
+remind skill-install --agent cursor --dir /path/to/project
 ```
+
+By default, skills go into `.agents/skills` under the current working directory.
+Use `--agent agents|claude|cursor|codex|opencode` to select a layout and `--dir`
+to choose any base folder. Codex uses `.agents/skills`; OpenCode uses
+`.opencode/skills` in projects and `.config/opencode/skills` when targeting home.
+Re-running the command overwrites installed skill files with the bundled versions.
 
 Three skills:
 - **remind-capture** — When and how to write memories (includes decision tree and entity type guide)
@@ -206,7 +232,7 @@ pip install "remind-mcp[rerank]"   # Cross-encoder reranking
 
 ## Database backends
 
-SQLite is the default. For PostgreSQL or MySQL:
+Local JSON records are the default; SQLite is used for disposable indexes. Explicit SQL URLs select a database backend. For PostgreSQL or MySQL:
 
 ```bash
 pip install "remind-mcp[postgres]"   # PostgreSQL (psycopg v3 + pgvector)

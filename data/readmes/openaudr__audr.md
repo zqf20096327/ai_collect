@@ -2,7 +2,7 @@
 
 [![spec](https://img.shields.io/github/actions/workflow/status/openaudr/audr/spec-verify.yml?branch=main&label=spec)](https://github.com/openaudr/audr/actions/workflows/spec-verify.yml)
 [![docs](https://img.shields.io/github/actions/workflow/status/openaudr/audr/docs-verify.yml?branch=main&label=docs)](https://github.com/openaudr/audr/actions/workflows/docs-verify.yml)
-[![Spec v1.0.0](https://img.shields.io/badge/spec-v1.0.0-blue)](spec/SPEC.md)
+[![Specification release](https://img.shields.io/github/v/release/openaudr/audr?display_name=tag&label=specification)](https://github.com/openaudr/audr/releases/latest)
 [![PyPI](https://img.shields.io/pypi/v/audr?include_prereleases&label=pypi%20audr)](https://pypi.org/project/audr/)
 [![Python versions](https://img.shields.io/pypi/pyversions/audr)](https://pypi.org/project/audr/)
 [![npm](https://img.shields.io/npm/v/@openaudr/audr?include_prereleases&label=npm%20%40openaudr%2Faudr)](https://www.npmjs.com/package/@openaudr/audr)
@@ -22,7 +22,7 @@ attribution that the records join.
 
 ```json
 {
-  "spec_version": "1.0.0",
+  "spec_version": "1.1.0",
   "record_id": "01K4N8D2J4P7Q9R3S6T8V1W5XY",
   "emitter": { "component": "router", "name": "@audr/openrouter", "version": "0.5.1" },
   "timing": { "event_time": "2026-09-08T12:00:00.000Z" },
@@ -160,6 +160,9 @@ asyncio.run(main())
 | Core SDK | [`audr`](adapters/core/python/README.md) (Python)<br>[`@openaudr/audr`](adapters/core/typescript/README.md) (TypeScript) | [`adapters/core/README.md`](adapters/core/README.md) — the `Client`, the sink contract, delivery states |
 | Adapters | [`audr-adapter-litellm`](adapters/litellm/python/README.md) (Python)<br>[`audr-adapter-nemo-relay`](adapters/nemo-relay/python/README.md) (Python)<br>[`@openaudr/audr-adapter-merge-gateway`](adapters/merge-gateway/typescript/README.md) (TypeScript)<br>[`@openaudr/audr-adapter-openrouter`](adapters/openrouter/typescript/README.md) (TypeScript)<br>[`@openaudr/audr-adapter-vercel-ai`](adapters/vercel-ai/typescript/README.md) (TypeScript)<br>[`@openaudr/audr-adapter-mastra`](adapters/mastra/typescript/README.md) (TypeScript) | [`adapters/README.md`](adapters/README.md) |
 | Sinks | [`audr-sink-chargebee`](sinks/chargebee/python/README.md) (Python)<br>[`@openaudr/audr-sink-chargebee`](sinks/chargebee/typescript/README.md) (TypeScript)<br>[`@openaudr/audr-sink-lago`](sinks/lago/typescript/README.md) (TypeScript) | [`sinks/README.md`](sinks/README.md) |
+
+Adapters, sinks and tools maintained outside this repository are listed in
+[`IMPLEMENTATIONS.md`](IMPLEMENTATIONS.md).
 
 ## Status
 

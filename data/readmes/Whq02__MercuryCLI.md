@@ -7,11 +7,11 @@ Website: [mercury-cli.ai](https://mercury-cli.ai) · Repository: [github.com/Whq
 An agent reads and edits files, runs shell commands, steps through tests and debuggers, and checks the results. You choose the model provider, the model, and what the agent is allowed to do:
 
 - **Multi-session Concourse and isolated worktrees:** run multiple sessions side by side on the Session Concourse (`/concourse`), and delegate parallel work to cross-provider crewmates (`Crewmate`) in isolated `git worktree` checkouts with project file leases so parallel agents do not overwrite each other.
-- **20 model providers and `/localsetup`:** keep all 20 providers signed in at once (OpenAI, Anthropic, Google Gemini, DeepSeek, Moonshot/Kimi, Z.AI/GLM, OpenRouter, Hugging Face, xAI/Grok, Meta/Muse, Mistral, Nous Portal, OpenCode Zen, Qwen, MiniMax, Together AI, Cohere, Groq, Cerebras, Fireworks AI), switch providers and models mid-chat, or run `/localsetup` for one-command local model setup with Ollama alongside LM Studio, vLLM and llama.cpp.
-- **Mneme hybrid RAG project memory:** combines an on-device 118 MB BGE semantic embedding model (`bge-base-en-v1.5`) with BM25 word ranking and citation tracking, verbatim pinned rules, branch-aware startup context, write-time contradiction checks, session handoff notes, and the `/memory page` browser graph.
-- **Compiler, AST and DAP debugging tools:** wires in LSP code intelligence and previewed refactors (`LspRead`, `LspRename`, `LspMoveSymbol`, `LspMoveFile`, `LspCodeAction`, `LspFormat`), 23-language tree-sitter AST structural search and rewrites (`AstSearch`, `AstEdit`), a built-in Debug Adapter Protocol (`Debug`) debugger (`debugpy`, `js-debug`, `lldb`, `gdb`, `dlv`) that failing Python, Node, Go and Rust tests step straight into, and persistent Python and JavaScript `Eval` cells.
-- **Keyless `WebSearch` and markdown `WebFetch`:** searches through provider-native search, Brave or Tavily keys, official APIs (Stack Exchange, npm, PyPI, crates.io, GitHub, Hacker News, Wikipedia), SearXNG and keyless DuckDuckGo, and fetches public documentation as clean markdown within a 38,000-character call budget.
-- **Desktop computer use, Whisper voice, Saturn scheduling and editor bridges:** drives desktop applications (`Computer`), transcribes push-to-talk voice dictation on-device with Whisper (`/voice`), schedules recurring or one-shot sessions with Saturn (`/saturn`), and connects to VS Code over the Agent Client Protocol (`mercury acp`) as well as Unity, Blender, Godot and Aseprite.
+- **20 model providers, `/llmhost` and `/localsetup`:** keep all 20 providers signed in at once (OpenAI, Anthropic, Google Gemini, DeepSeek, Moonshot/Kimi, Z.AI/GLM, OpenRouter, Hugging Face, xAI/Grok, Meta/Muse, Mistral, Nous Portal, OpenCode Zen, Qwen, MiniMax, Together AI, Cohere, Groq, Cerebras, Fireworks AI) and switch providers and models mid-chat. Open `/llmhost` to pick a model, check its quantization, `conversations × context` split and thinking level, and run it on a rented GPU (Runpod, Vast.ai or Lambda), on your own computer (`mercury host`), or on an existing server. Or run `/localsetup` to install or connect Ollama alongside LM Studio, vLLM and llama.cpp.
+- **Mneme hybrid RAG project memory:** uses an on-device 118 MB BGE semantic embedding model (`bge-base-en-v1.5`) with BM25 word ranking and citation tracking, verbatim pinned rules, branch-aware startup context, write-time contradiction checks, session handoff notes, and the `/memory page` browser graph.
+- **Compiler, AST and DAP debugging tools:** connects LSP code intelligence and previewed refactors (`LspRead`, `LspRename`, `LspMoveSymbol`, `LspMoveFile`, `LspCodeAction`, `LspFormat`), 23-language tree-sitter AST structural search and rewrites (`AstSearch`, `AstEdit`), a built-in Debug Adapter Protocol (`Debug`) debugger (`debugpy`, `js-debug`, `lldb`, `gdb`, `dlv`) for stepping into failing Python, Node, Go and Rust tests, and persistent Python and JavaScript `Eval` cells.
+- **Keyless `WebSearch` and markdown `WebFetch`:** searches through provider-native search, Brave or Tavily keys, official APIs (Stack Exchange, npm, PyPI, crates.io, GitHub, Hacker News, Wikipedia), SearXNG and keyless DuckDuckGo, and fetches public documentation as markdown within a 38,000-character call budget.
+- **Desktop computer use, Whisper voice, Saturn scheduling and editor bridges:** controls desktop applications (`Computer`), transcribes push-to-talk voice dictation on-device with Whisper (`/voice`), schedules recurring or one-shot sessions with Saturn (`/saturn`), and connects to VS Code over the Agent Client Protocol (`mercury acp`) alongside Unity, Blender, Godot and Aseprite.
 
 I use Mercury to build Mercury, running multiple sessions and models across long tasks. Keeping track of that work is the hard part: what is still running, what changed, and what needs a decision. Each session writes its own handoff note when it finishes, and the next session reads that note once at startup alongside my pinned rules, stopping context poisoning between sessions.
 
@@ -55,9 +55,13 @@ platform, check its SHA-256 against `SHA256SUMS.txt`, unpack it, and run the
 archive's own `mercury install` command.
 
 Homebrew and the npm package are each pinned to a particular release and are
-republished after a tag, so they can lag behind the newest release. The npm
-package, `mercury-tech-cli`, is a launcher that downloads its pinned release;
-mise installs that same package.
+republished after a tag, so they can lag behind the newest release. Homebrew
+commands use the full tap name `Whq02/mercury/mercury` (bare `mercury` in
+`homebrew-core` is a different program). The npm package, `mercury-tech-cli`,
+is a launcher that downloads its pinned release; mise installs that same
+package. `mercury install --uninstall` removes the installed release and command
+shim while keeping your configuration and sessions (also run `npm uninstall -g
+mercury-tech-cli` if you installed the npm launcher).
 
 Mercury's installation is user-local and does not require administrator
 access. You can safely rerun an installation command.
@@ -364,11 +368,12 @@ Tool output; the setting is saved for later launches.
 Use `/model` and `/effort` to adjust the session. `/permissions` controls what
 can run without approval and what must ask first.
 
-Review changes with `/diff`, by source, file and hunk. `/runs` shows running
-shells and crewmates (`/tasks` still opens the same board), and `/crewmates`
-opens the live Crew view. When no turn is running, `/clear` saves the current
-chat for later and opens a fresh session; `/title` names the chat, and `/help`
-lists the available commands.
+Review changes with `/diff`, by source, file and hunk. `! <command>` runs a
+shell command in chat with a live output tail. `/runs` shows running shells and
+crewmates (`/tasks` opens the same board), and `/crewmates` opens the live Crew
+view. Between turns, `/clear` saves the current chat and opens a fresh session,
+and `/restart` moves the chat onto a newly installed Mercury build. `/title`
+names the chat, and `/help` lists the available commands.
 
 ### Moving between screens
 
@@ -394,7 +399,7 @@ reason, until you release it.
 
 [docs/SESSIONS.md](docs/SESSIONS.md) covers the session lifecycle.
 
-## Providers and models: 20 provider sign-ins and `/localsetup`
+## Providers and models: sign-ins, `/localsetup` and `/llmhost`
 
 Use `/logins` to connect a provider. It opens the same sign-in catalogue used
 during setup. `/accounts` manages connected provider slots afterwards.
@@ -405,8 +410,8 @@ during setup. `/accounts` manages connected provider slots afterwards.
 - **Google Gemini:** Sign in with Google, an API key, or your own OAuth client. Sign in with Google runs Gemini on the quota of the plan the Google account holds (a free account, Google AI Pro or Google AI Ultra) through Google's own Antigravity client: the prompt, the tool schemas and the tool results go to Google's Code Assist endpoint under that client and the signed-in account, and `/model` lists the roster Google serves the account. An API key or your own OAuth client bills a Cloud project instead.
 - **Hugging Face:** device-code sign-in or Hub token.
 - **Kimi (Moonshot):** device-code sign-in or API key.
-- **GLM (Z.AI):** API key.
-- **DeepSeek:** API key.
+- **GLM (Z.AI):** a GLM Coding Plan subscription key or a general pay-as-you-go API key. `/logins zai` stores either and records the plan; `ZAI_API_KEY` works too, with `ZAI_KEY_PLAN=coding|general` naming the plan (unset, Mercury reads it from the key's own model list).
+- **DeepSeek:** an API key from the DeepSeek platform (`/logins deepseek`, or `DEEPSEEK_API_KEY`).
 - **xAI (Grok):** sign in with your Grok subscription (SuperGrok / X Premium) or paste an API key through `/logins xai`.
 - **Meta (Muse):** Sign in with Meta (a Muse Code subscription, a device code in your browser) or a pay-as-you-go Model API key. Sign in with Meta exchanges the device code against Meta's OIDC endpoints (`https://auth.meta.com/oidc/device/authorization/` and `/oidc/device/token/`) under Muse Code's public client id, sends the resulting account token once to `https://api.meta.ai/muse-code/key` to mint the subscription's API key (and on bounded `/usage` reads for the plan's tier and usage windows), and sends only the minted key on every model request to `https://api.meta.ai/v1`. A pasted Model API key or `MODEL_API_KEY` / `META_API_KEY` bills pay-as-you-go.
 
@@ -419,15 +424,27 @@ during setup. `/accounts` manages connected provider slots afterwards.
 - **Groq**, **Cerebras** and **Fireworks AI:** API key; any family's key can
   also come from a command named in `credentials.keyCommands.<family>`.
 
-Mistral, Nous Portal and OpenCode Zen connect through `/logins` as well, giving
-20 sign-in provider families in all. Local model servers (Ollama, LM Studio,
-vLLM and llama.cpp) and custom OpenAI-compatible endpoints are discovered or
-configured without a provider sign-in; run `/localsetup` to install or start
-Ollama, pull a model sized to your machine's memory, set its context window,
-or connect a running LM Studio, vLLM or llama.cpp server
-([docs/LOCAL-SETUP.md](docs/LOCAL-SETUP.md)). Each provider has its own
-protocol, credentials and error handling. A request does not fall back from
-one provider to another. See [docs/ENGINES.md](docs/ENGINES.md).
+Mistral, Nous Portal and OpenCode Zen connect through `/logins` as well, for 20
+sign-in provider families in all. Local model servers (Ollama, LM Studio, vLLM
+and llama.cpp) and custom OpenAI-compatible endpoints work without a provider
+sign-in. Run `/localsetup` to install or start Ollama, pull a model that fits
+your memory, set its context window, or connect a running LM Studio, vLLM or
+llama.cpp server ([docs/LOCAL-SETUP.md](docs/LOCAL-SETUP.md)). Each provider
+uses its own protocol, credentials and error handling, and requests never fall
+back to another provider. See [docs/ENGINES.md](docs/ENGINES.md).
+
+`/llmhost` lists the models you can host and shows where each one can run right
+now: on a GPU rented from Runpod, Vast.ai or Lambda, on your own computer or a
+saved SSH computer (`mercury host`), or on an existing model server. Each model
+page shows quantization options, how the GPU-memory budget divides across
+parallel conversations (`conversations × context`), and the default thinking
+level (which `/effort` changes per request). GPU rentals require an explicit
+hourly-price confirmation, and setup continues in the background if you close
+the popup. On Runpod you can also tune quality, context splits and thinking
+before renting or on a running pod (`Tune`), keep weights on a fast-load volume,
+and set 5-second stock watches. Vast.ai and Lambda rentals are new in
+1.0.0-beta.40 and verified against the vendors' published APIs on fixtures (live
+rental runs were not performed). See [docs/LLM-HOST.md](docs/LLM-HOST.md).
 
 New sessions use your most recently connected provider and the newest model
 available to that account. Models the account cannot access are skipped.
@@ -576,9 +593,10 @@ exits 1. If a later tool call in the same turn succeeds, the turn recovers and
 finishes `completed` (exit 0) with a warning `notice` (`"<Tool> was not
 approved; the run continued with other tools."`). A refusal you did
 answer (through a deny rule, a hook, or a host that said no) leaves a completed turn
-completed. A run whose final answer ends with the two lines `BLOCKED ON
-OPERATOR: …` and `RESUME WHEN: …` is `blocked` the same way: `error` carries
-the blocker and the resume condition, and the run exits 1. An unknown slash
+completed. An unanswered `AskUserQuestion` call also ends the run `blocked`,
+with the question quoted in `error`; Mercury reads the outcome from the run's
+recorded asks, never from the reply text, so a question written only in the
+reply finishes `completed`. An unknown slash
 command is `refused` with the same sentence the interactive screen gives (`Unknown
 command: /name · /help lists commands`) and exits 1.
 
@@ -723,6 +741,10 @@ Available commands include:
   daemon hosts now is refused, and an unknown id is refused with a hint to the
   roster (`/sessions` inside Mercury). Saved sessions are otherwise never
   deleted on their own.
+- **`mercury host [status|start|stop|restart|logs|uninstall|add|recipes]`**:
+  run a local or SSH computer as a model server for every session sharing the
+  config home (`compat/box-<name>/<model>`), using a verified local weight bank
+  or a confirmed download. See [docs/LLM-HOST.md](docs/LLM-HOST.md).
 - **`mercury lsp list`** and **`mercury lsp install <server>`**: the
   language-server catalogue, each server installed (with its binary) or
   absent (with its install remedy); `install` shows a server's remedy, asks,
@@ -875,14 +897,20 @@ commands.
 | --- | --- |
 | current work | `/run` `/runs` `/workbench` `/diff` `/mission` |
 | crew & delegation | `/agents` `/crewmates` `/crew` `/workflows` `/daemon` `/saturn` `/seats` `/kill` `/unkill` |
-| session & context | `/clear` `/compact` `/context` `/rewind` `/sessions` `/concourse` `/rename` `/title` `/contract` `/export` `/copy` `/usage` `/realms` |
+| session & context | `/clear` `/compact` `/context` `/rewind` `/sessions` `/concourse` `/rename` `/title` `/contract` `/export` `/copy` `/usage` `/realms` `/restart` |
 | memory & goals | `/memory` `/console` |
 | model & effort | `/model` `/effort` `/submodels` `/advise` `/caching` |
 | git & review | `/review` `/audit` |
 | health & introspection | `/health` `/verify` `/trace` `/capabilities` `/lsp` |
-| config & setup | `/config` `/jev` `/localsetup` `/permissions` `/hooks` `/mcp` `/extensions` `/skills` `/sandbox` `/browser` `/orient` `/keybindings` `/keys` `/vim` `/mouse` `/keysetup` `/bootmenu` `/voice` |
+| config & setup | `/config` `/jev` `/localsetup` `/llmhost` `/permissions` `/hooks` `/mcp` `/extensions` `/skills` `/browser` `/orient` `/keybindings` `/keys` `/vim` `/mouse` `/keysetup` `/bootmenu` `/voice` |
 | appearance & cockpit | `/appearance` `/critter` `/palette` `/zen` `/browse` |
 | account & app | `/logins` `/logout` `/accounts` `/defaultprovider` `/update-notes` `/feedback` `/help` `/exit` |
+
+| Command | What it does |
+| --- | --- |
+| `/llmhost` | Choose a model to rent on Runpod, Vast.ai or Lambda, run on your own computer, or connect an existing server. |
+| `/restart` | Move this chat to the installed Mercury build; running watches and background shells stop. |
+| `/mcp` | Inspect servers, sign in, browse each server’s tools and parameters, reconnect, or toggle a server for this chat. |
 
 `/mouse off` returns the pointer to the terminal for native text selection
 and copying. The preference is saved and appears in `/config` as Mouse

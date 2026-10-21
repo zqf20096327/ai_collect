@@ -36,8 +36,8 @@
 Each work folder, with all its repos, gets a terminal, an agent, and the right account. Switch
 between them like Slack workspaces.
 
-The daemon owns the terminals, so your agents keep running when you close the window. The GUI,
-whether the desktop app or the browser from your phone, is just a viewport onto them.
+The daemon owns the terminals, so your agents keep running when you close the window. The desktop
+app is just a viewport onto them.
 
 ## Download
 
@@ -67,8 +67,9 @@ Grab the latest build for your platform from the
   never mix.
 - **Work on just the folders you choose.** Select the repos or folders that matter and the agent
   stays focused on them.
-- **Browse files without leaving.** A read-only file tree and preview for quick reference; your
-  real editor stays your editor.
+- **Browse files without leaving.** A file tree and preview for quick reference, where a right
+  click (a long press on the phone) copies a path or moves a file or folder to the Trash after
+  asking; your real editor stays your editor.
 - **Skills at a click.** See your agent's commands and skills in a sidebar and drop one into the
   terminal.
 
@@ -85,8 +86,8 @@ Grab the latest build for your platform from the
 
 - **Shareable setup.** Export a workspace to a small file anyone can import, or start fresh with
   no file at all.
-- **Reach it from anywhere.** Open the same live terminal from your phone's browser. See
-  [Remote access](#remote-access).
+- **Built to be reached from anywhere.** Pair a device over an end-to-end-encrypted relay; the
+  phone app that connects through it is in development. See [Remote access](#remote-access).
 - **One app, nothing to wire up.** Everything runs from a single desktop app.
 
 ## Screenshots
@@ -108,14 +109,31 @@ Grab the latest build for your platform from the
 
 ## Remote access
 
-The daemon owns the terminals, so any viewport that speaks the protocol can attach, including
-a browser. Open Soromi from your phone or another machine and get the same live session: watch the
-output stream, type into it, run a skill, and answer permission prompts with a tap.
+The daemon owns the terminals, so any viewport that speaks the protocol can attach, not only the
+desktop app. A paired device gets the same live session: watch the output stream, type into it, run
+a skill, and answer permission prompts with a tap.
 
-Control is exclusive and hands off cleanly. Move to the desktop app and it takes over; come back to
-the web client and it asks to take control again, so two devices never fight over the same terminal.
-The web viewport is responsive: a full sidebar-and-tabs layout on desktop, and a bottom-tab layout
-tuned for touch on mobile.
+> **Status:** the phone client is a native mobile app (`apps/mobile`), in development and not
+> released yet. Today it can be run from source with Expo: it pairs, lists sessions live, and
+> follows and continues a chat. The earlier browser client has been removed.
+>
+> Push notifications need credentials of your own, which are not in this repository: a Firebase
+> project for Android and an Apple push key for iOS. See
+> [`apps/mobile/README.md`](apps/mobile/README.md#push-notifications). Without them the app works
+> and notifies only while it is open.
+
+The daemon also runs on its own on a Linux server, with no desktop. One line in an SSH session
+installs it, runs it as a service and shows the QR code to pair the phone:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/soromi/soromi/main/scripts/install.sh | sh
+```
+
+See [`docs/server.md`](docs/server.md).
+
+Control is exclusive and hands off cleanly. One device drives the terminals at a time: it types and
+its window decides their size. Every other device keeps watching live, read-only, and takes over
+with one explicit action, so two devices never fight over the same terminal.
 
 ### Secure by design
 
@@ -124,26 +142,31 @@ middle can read your session:
 
 - **🔒 End-to-end encrypted.** Frames on the relay link are sealed with XChaCha20-Poly1305. The
   relay is a content-blind pipe that only ever forwards ciphertext, so it never sees your terminal,
-  keystrokes, or output.
+  keystrokes, or output. Every connection agrees on fresh keys, one per direction, and frames are
+  numbered, so a recorded frame cannot be played back later or turned around on its sender.
 - **🚪 No open ports.** The daemon *dials out* to the relay; it never listens for inbound
   connections. Nothing on your machine is exposed to the internet, so there's no port to scan or
   firewall to open.
+- **🔐 A locked local port.** The desktop app and the `soromi` commands reach the daemon on
+  `localhost` with a token only your user can read, so another account on the machine, or a web
+  page open in your browser, can't drive it.
 - **🎟️ Relay access key never leaves the daemon.** The relay is gated by an access key so randoms
   can't abuse it, but that key lives only in the daemon (config / `SOROMI_RELAY_ACCESS_KEY` /
   Settings) and is sent as a WebSocket header when dialing, never in a URL. Only the daemon can
-  *create* a room; the web viewport only ever *joins* an existing one with the room id. So the key
-  never rides along in the pairing link, browser history, or logs, and a URL leak can't expose it.
+  *create* a room; a paired device only ever *joins* an existing one with the room id. So the key
+  never rides along in the pairing code or in logs, and a leaked code can't expose it.
 - **📱 Per-device keys, revocable.** Pairing a phone (via QR) mints that device its own relay room
   and end-to-end key. Each paired device shows a live connection indicator, and you can revoke any
-  of them at any time from the paired-devices list. Rooms are strictly two-peer: even if a room id
-  leaked, an attacker would grab a slot at worst (a revocable nuisance) and still see nothing,
-  because the session is end-to-end encrypted.
+  of them at any time from the paired-devices list. A room holds one daemon and one device: even if a
+  room id leaked, an attacker could at worst take the device's place (a nuisance you end by revoking
+  the device) and still see nothing, because the session is end-to-end encrypted.
 - **🔑 No downgrade.** An invalid or missing key is refused rather than silently falling back to
   plaintext. Plaintext relay exists only for local development.
-- **🏠 Self-hostable.** Point the relay and web-viewport URLs at your own infrastructure from
-  Settings (or `~/.soromi/config.json`), no rebuild required. The relay is a small, separate,
-  content-blind service you can run yourself; public builds create rooms on the public relay with
-  zero config, while self-hosters set their own access key on the relay and in Settings.
+- **☁️ Close to you, on Cloudflare.** The relay is a small Cloudflare Worker
+  ([`packages/relay`](packages/relay)): each room runs near the daemon that opened it, and both
+  ends connect through their nearest Cloudflare location. Deploy it to your own account and point
+  the relay URL at it from Settings (or `~/.soromi/config.json`), no rebuild required, with your
+  own access key on the Worker and in Settings.
 
 ## Why?
 
@@ -214,14 +237,14 @@ Notes:
 Soromi is one idea repeated everywhere: **the daemon is the product, and every UI is just a
 viewport onto it.** The daemon owns all state (PTYs, workspaces, accounts, the file tree,
 notifications); viewports are stateless and interchangeable. The same protocol runs over a trusted
-local socket or an end-to-end-encrypted relay, so your phone's browser and the desktop app are the
-exact same client, just a different transport.
+local socket or an end-to-end-encrypted relay, so a phone and the desktop app speak to the daemon
+the same way, just over a different transport.
 
 ```
           VIEWPORTS (stateless)
     ┌───────────────┐     ┌───────────────┐
-    │  Desktop GUI  │     │    Web PWA    │     React + Zustand + xterm.js
-    │  (Electron)   │     │    (phone)    │     render from messages, send input
+    │  Desktop GUI  │     │  Mobile app   │     render from messages, send input
+    │  (Electron)   │     │   (planned)   │     desktop: React + Zustand + xterm.js
     └───────┬───────┘     └───────┬───────┘
             │ local WS            │ relay WS (E2EE)
             │ (localhost)         │ XChaCha20-Poly1305
@@ -247,7 +270,7 @@ exact same client, just a different transport.
 
 - **The daemon is the sole state authority.** Viewports never hold authoritative state; they render
   what the daemon sends and forward input and resize. Any viewport can drop and reattach, and
-  terminals replay their scrollback.
+  terminals are redrawn as they stand, scrollback included.
 - **Local and remote are the same client.** The transport is swappable (local WS vs. E2EE relay);
   everything above it is identical, so a feature works everywhere the moment it works once.
 - **The protocol is defined once.** The wire types live in Rust (`crates/protocol`) and the
@@ -277,12 +300,14 @@ crates/
   daemon/     Rust: PTY sessions, account resolution, status, agent hooks, WS server
 packages/
   protocol/   TypeScript types generated from crates/protocol (do not edit by hand)
-  client/     Shared viewport engine + transports (local WS, E2EE relay)
+  core/       What every client shares, no UI framework: transports (local WS, E2EE relay),
+              the store that mirrors the daemon, the pairing code
+  client/     The desktop's React bindings for core, and the xterm terminal
   relay/      Content-blind WebSocket relay that pairs a daemon with a remote viewport
   gui/        React + Zustand + xterm.js viewport (runs in the desktop app's webview)
-  web/        Touch-first PWA viewport for the phone/browser, on the shared engine
 apps/
   desktop/    Electron app that spawns the daemon and renders the gui
+  mobile/     Expo (React Native) phone app, on core
 ```
 
 Each package and crate has a README describing its boundaries.
@@ -295,7 +320,7 @@ Requires **Node 22+**, **pnpm 10**, and a stable **Rust** toolchain.
 pnpm install         # install workspace deps
 pnpm build           # build every package + the desktop bundle (turbo)
 pnpm typecheck       # type-check the TypeScript packages
-pnpm lint            # lint with biome
+pnpm check           # format + lint with biome (pnpm check:fix to fix)
 pnpm test            # run the vitest suite
 pnpm gen:protocol    # regenerate the TypeScript protocol types from the Rust crate
 ```
@@ -317,7 +342,7 @@ pnpm dev:desktop     # the full app (Electron: builds the daemon + gui, then lau
 Or iterate on the two processes separately:
 
 ```bash
-pnpm daemon          # the Rust daemon (serves the local WebSocket)
+pnpm dev:daemon      # the Rust daemon (serves the local WebSocket)
 pnpm dev             # the GUI dev server against that daemon
 ```
 

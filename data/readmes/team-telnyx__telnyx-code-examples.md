@@ -381,18 +381,19 @@ Send and receive text messages with the [Telnyx SMS API](https://telnyx.com/prod
 </details>
 
 <details open>
-<summary><h2>Email</h2> <em>(1 examples)</em></summary>
+<summary><h2>Email</h2> <em>(2 examples)</em></summary>
 
 Send, track, and automate email workflows with the [Telnyx Email API](https://telnyx.com/products/email-api) - transactional messages, templates, tracking, and event-driven dashboards.
 
 | Example | Language | Description |
 |---------|----------|-------------|
+| [email-whatsapp-support-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/email-whatsapp-support-python/README.md) | Python | --- |
 | [setup-email-api-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-email-api-nodejs/README.md) | Node.js | Send a Telnyx Email API message from a local Node.js dashboard, enable per-send open and click tracking, and poll delivery and engagement events. |
 
 </details>
 
 <details open>
-<summary><h2>AI Assistants</h2> <em>(167 examples)</em></summary>
+<summary><h2>AI Assistants</h2> <em>(172 examples)</em></summary>
 
 Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assistants) - LLM-powered agents for voice and messaging automation.
 
@@ -470,5 +471,4 @@ Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assis
 | [changelog-generator-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/changelog-generator-python/README.md) | Python | AI Changelog Generator — turn git commits and diffs into a clean, human-readable changelog via Telnyx AI Inference. |
 | [chargeback-adjudication](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chargeback-adjudication/README.md) | Typescript | A durable actor that adjudicates payment chargebacks using Telnyx Decision Models, manages regulatory deadlines, and maintains an append-only audit ledger. |
 | [chat-with-ai-assistant-csharp](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-csharp/README.md) | C# | --- |
-| [chat-with-ai-assistant-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-go/README.md) | Go | Send messages to a Telnyx AI assistant and maintain multi-turn context with a conversation id, using a Go + Gin server. |
-| [chat-with-ai-assistant-java](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-a
+| [chat-with-ai-assistant-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-go/README.md) | Go | Send messages to a Telnyx AI assistant and maintain multi-turn context with 

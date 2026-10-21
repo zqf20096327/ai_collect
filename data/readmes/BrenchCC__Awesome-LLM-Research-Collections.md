@@ -246,6 +246,11 @@
   <a href="https://arxiv.org/abs/2604.24927"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
   <a href="https://github.com/LinesHogan/tLLM"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
 
+- **Procedural Knowledge at Scale Improves Reasoning** (2026.04) \
+  **Description**: Reasoning Memory decomposes existing reasoning trajectories into 32 million self-contained subquestion–subroutine pairs, then retrieves relevant subroutines within the model's reasoning trace as procedural priors. Across six math, science, and coding benchmarks, it outperforms document-, trajectory-, and template-based RAG as well as a compute-matched test-time scaling baseline. \
+  <a href="https://arxiv.org/abs/2604.01348"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://github.com/facebookresearch/reasoning-memory"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
+
 - **Caterpillar of Thoughts: The Optimal Test-Time Algorithm for Large Language Models** (2026.03) \
   **Description**: This paper presents a theoretical framework for optimal test-time computation in LLMs, proving that the optimal algorithm always generates a caterpillar tree structure, and introduces CaT which achieves better success rate than Tree-of-Thoughts with fewer token generations. \
   <a href="https://arxiv.org/abs/2603.22784"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -833,9 +838,4 @@
   <a href="https://huggingface.co/collections/panzs19/contextpilot"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
 
 - **EnvHarness: Awakening Static Worlds for Agent Learning** (2026.08) \
-  **Description**: EnvHarness wraps static agent environments with composable plug-in components that reshape their behavior while preserving the original logic and verifiers. Its automated EnvRigger diagnoses policy weaknesses from trajectories and synthesizes targeted environments, providing stronger learning signals for reinforcement learning and continuous policy-environment co-evolution. \
-  <a href="https://arxiv.org/abs/2608.19880"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://envharness.com/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
-  <a href="https://github.com/google-research/envharness"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-
-- **Skill Self-Play: Pushing the Frontier of LLM Capability with Co-Evolvin
+  **Description**: EnvHarness wraps static agent environments with composable plug-in components t

@@ -10,13 +10,13 @@
 
 ---
 ## 剧本知识库：
-https://github.com/GongLingRui/skills
+https://github.com/VanGong1999/skills
 
 ## 影视创作skills：
-https://github.com/GongLingRui/screen-creative-skills
+https://github.com/VanGong1999/screen-creative-skills
 
-## 影视创作Agents：
-https://github.com/GongLingRui/juben
+## 多智能体批量剧本策划评估生成（包含了此项目全部内容)：
+https://github.com/VanGong1999/juben
 
 ## 为什么选择这些 Skills？
 

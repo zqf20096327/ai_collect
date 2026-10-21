@@ -95,6 +95,8 @@ We intentionally **exclude** pure Atari / MuJoCo / classic RL benchmarks, and we
 
 - **[SWE-Bench Pro](https://github.com/scaleapi/SWE-bench_Pro-os)** *(Scale AI)* — Enterprise-grade long-horizon tasks: 1,865 problems from 41 actively maintained repos. Top models score ~23% (vs. ~70% on Verified). 📄 [Paper](https://arxiv.org/abs/2509.16941)
 
+- **[YYLO Benchmark](https://github.com/yylo-dev/yylo-benchmark)** — Thin trusted-host experiment runner for coding-agent attempts: each attempt starts from a fresh repository with reviewed pre-solution files, and retained outputs are scored against frozen deterministic criteria (with optional later re-judging), for comparing models, harnesses and configurations.
+
 ---
 
 ## Web / Browser Environments
@@ -194,6 +196,8 @@ We intentionally **exclude** pure Atari / MuJoCo / classic RL benchmarks, and we
 - **[ALFWorld](https://github.com/alfworld/alfworld)** — Aligns text-based TextWorld policies with the visual ALFRED benchmark. Standard baseline for embodied / household agents. 📄 [Paper](https://arxiv.org/abs/2010.03768)
 
 - **[Crafter](https://github.com/danijar/crafter)** *(Danijar Hafner)* — Minecraft-inspired 2D open-world survival benchmark. Gym API; popular as a tractable open-ended task in LLM-agent papers.
+
+- **[SECOND STRIKE](https://github.com/KyleClouthier/secondstrike-openenv)**: OpenEnv environment where one model commands a nation in a real-time world war against 42 AI nations, with pacts, betrayals and a nuclear doomsday clock. The reward comes from the game server's own record of the war (no LLM judge), presets include `safe_win` (ending the world scores 0), and the same war is on the Prime Intellect Environments Hub as `clouthier-labs/second-strike`.
 
 ---
 

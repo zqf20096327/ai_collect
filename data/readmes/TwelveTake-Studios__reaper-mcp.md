@@ -12,7 +12,7 @@ Listed in the [MCP Registry](https://registry.modelcontextprotocol.io/) as `mcp-
 
 TwelveTake REAPER MCP is a Model Context Protocol server that enables AI assistants to control REAPER for mixing, mastering, MIDI composition and music production.
 
-**Version:** 1.9.1
+**Version:** 1.9.3
 
 ## Why This Server
 
@@ -93,9 +93,8 @@ The script is now in the action list. Select it and click **Run**:
 
 ![The action list filtered to the bridge script, ready to run](https://raw.githubusercontent.com/TwelveTake-Studios/reaper-mcp/main/images/bridge-run.png)
 
-REAPER's console confirms the bridge is running:
-
-![REAPER's console showing the bridge has started](https://raw.githubusercontent.com/TwelveTake-Studios/reaper-mcp/main/images/bridge-started.png)
+The bridge runs in the background, without opening a window, until you close REAPER. Step 3
+checks that it is working.
 
 Next time, find it by typing `mcp bridge` in the action list's filter box, or have REAPER
 start it for you (below).
@@ -207,7 +206,7 @@ a number back means the server, bridge, and REAPER are all talking.
 To work on the server itself, run it from a clone instead of from PyPI. Install the dependencies:
 
 ```bash
-pip install -r requirements.txt   # or: pip install mcp
+pip install -r requirements.txt   # or: pip install "mcp>=1.2.0,<2.0"
 ```
 
 Point your MCP client at the local script:
@@ -382,7 +381,7 @@ ever reached REAPER. `REAPER_COMM_MODE` no longer does anything.
 | `get_fx_presets(index, fx_index)` | List available presets |
 | `get_fx_preset(index, fx_index)` | Get current preset |
 | `set_fx_preset(index, fx_index, name)` | Load preset |
-| `save_fx_preset(index, fx_index, name)` | Save current settings as preset |
+| `save_fx_preset(index, fx_index, name)` | Not supported: always returns an error, because REAPER's API cannot save a named FX preset |
 
 ### ReaEQ Operations (5 tools)
 
@@ -475,7 +474,7 @@ Multi-take workflows: list/switch/delete takes, explode/crop, REAPER 7 fixed-lan
 | `get_time_signature()` | Get time signature |
 | `set_time_signature(num, denom)` | Set time signature |
 | `render_project(path, start, end, tail, skip_postprocessing)` | Render to audio file; lists the project's normalization, fades and other processing, or skips them |
-| `render_region(index, path)` | Render specific region |
+| `render_region(index, path)` | Not implemented: always returns an error; use `render_project` with the region's start and end |
 | `zoom_to_selection()` | Zoom to time selection |
 | `zoom_to_project()` | Zoom to show entire project |
 
@@ -652,7 +651,8 @@ Third-party plugins use their full name as shown in REAPER's FX browser.
 
 ### "Cannot connect to REAPER"
 1. Ensure REAPER is running
-2. Ensure the bridge script is running (check REAPER's console)
+2. Ensure the bridge script is running: start it from the action list (type `mcp bridge` in the
+   filter box)
 3. Verify the bridge directory exists
 
 ### "Track not found"
@@ -673,8 +673,9 @@ Third-party plugins use their full name as shown in REAPER's FX browser.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `REAPER_BRIDGE_DIR` | REAPER's `Scripts/mcp_bridge_data`, resolved per platform | File bridge directory |
-| `REAPER_FILE_TIMEOUT` | `5.0` | Seconds to wait for the bridge to answer. The bridge answers only once the work finishes, and renders run at roughly realtime, so a render longer than this reports a timeout while REAPER completes it normally. Raise it when rendering; note that a genuinely unreachable bridge then also takes this long to report. |
-| `REAPER_MCP_DEBUG` | unset | Set to `1` before launching REAPER for per-call bridge console logging |
+| `REAPER_FILE_TIMEOUT` | `5.0` | Seconds to wait for the bridge to answer a call, except for the render and measurement tools below. The bridge answers only after the work finishes, so a slow operation such as freezing a track or opening a project can report a timeout while REAPER completes it normally. A higher value also delays the report when the bridge is not running. |
+| `REAPER_RENDER_TIMEOUT` | `600` | Seconds to wait for `render_project`, `measure_loudness` and `measure_spectrum`, which run at roughly realtime. Raise it for renders longer than ten minutes. |
+| `REAPER_MCP_DEBUG` | unset | Set to `1` before launching REAPER to see the bridge's start message and a console line for every call |
 
 ## Contributing
 

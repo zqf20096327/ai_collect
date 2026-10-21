@@ -1,9 +1,9 @@
 <h1 align="center">droid-mcp</h1>
 
 <p align="center">
-  <b>Give your AI app the whole phone.</b><br/>
-  151 Android capabilities (calendar, messages, camera, sensors, UI automation, and more) as typed tools
-  for on-device LLMs and any <a href="https://modelcontextprotocol.io">MCP</a> client.
+  <b>An Android SDK and MCP server that lets an LLM use the phone.</b><br/>
+  157 tools for calendar, contacts, SMS, files, camera, sensors, notifications and UI automation,
+  for on-device models and any <a href="https://modelcontextprotocol.io">MCP</a> client, such as Claude or Cursor.
 </p>
 
 <p align="center">
@@ -17,16 +17,23 @@
 
 ---
 
-droid-mcp is an Android SDK that turns phone capabilities into tools an LLM can call. Use them in two ways:
+droid-mcp turns Android phone capabilities into tools a language model can call, using the [Model Context Protocol](https://modelcontextprotocol.io). Use it in two ways:
 
-- **On-device**: call tools straight from your app's model output. No server involved.
-- **Over MCP**: run a small HTTP server on the phone and connect Claude Code, Cursor, or any other MCP client over Wi-Fi.
+- **On-device:** your app runs a local model and calls the tools directly. No server involved.
+- **Over MCP:** your app runs a small HTTP server on the phone, and Claude Code, Cursor or any other MCP client that speaks Streamable HTTP connects over Wi-Fi.
+
+With the matching modules, a model can for example:
+
+- summarize today's calendar and unread messages, then reply to one of them
+- find a photo from last weekend and read the text in it
+- open an app and tap through its screens with the accessibility tools
+- check battery, storage and connectivity, and turn on Do Not Disturb
 
 Highlights:
 
 - **Pick only what you need.** 53 independent modules. Each adds only its own permissions to your manifest.
 - **Safe by default.** Bearer auth, Origin and session checks, an SSRF guard, sandboxed file access, read-only mode, per-tool gating, and optional user confirmation for risky calls.
-- **Current MCP.** Protocol 2025-11-25, structured results, image content, progress, elicitation, and cancellation.
+- **Current MCP.** Protocol 2025-11-25: typed results (`outputSchema`) on every tool, resources, prompts, live `list_changed` updates, image content, progress, elicitation and cancellation.
 - **Your permission UX.** The library never asks for permissions. Your app decides when and how.
 
 ## Quick start
@@ -41,11 +48,11 @@ dependencyResolutionManagement {
 
 // build.gradle.kts
 dependencies {
-    implementation("com.github.stixez.droid-mcp:droid-mcp-core:0.11.0")
-    implementation("com.github.stixez.droid-mcp:droid-mcp-calendar:0.11.0")
-    implementation("com.github.stixez.droid-mcp:droid-mcp-contacts:0.11.0")
+    implementation("com.github.stixez.droid-mcp:droid-mcp-core:0.12.1")
+    implementation("com.github.stixez.droid-mcp:droid-mcp-calendar:0.12.1")
+    implementation("com.github.stixez.droid-mcp:droid-mcp-contacts:0.12.1")
     // or everything except the opt-in modules:
-    // implementation("com.github.stixez.droid-mcp:droid-mcp-all:0.11.0")
+    // implementation("com.github.stixez.droid-mcp:droid-mcp-all:0.12.1")
 }
 ```
 
@@ -134,6 +141,20 @@ The phone advertises itself over mDNS (`_mcp._tcp`). Useful `enableHttpServer` o
 
 Pairing, sessions and TLS are covered in [docs/PAIRING.md](docs/PAIRING.md).
 
+### Resources and prompts
+
+Give clients device data to attach, and ready-made prompts:
+
+```kotlin
+DroidMcp.builder()
+    .addTools(MediaTools.all(context))
+    .addResourceProvider(MediaTools.resources(context))    // recent photos and videos
+    .addResourceProvider(CalendarTools.resources(context)) // droidmcp://calendar/today
+    .addBuiltInPrompts()                                    // message_contact, device_health_check, …
+```
+
+A prompt is listed only while the tools it uses are registered. Tools added later with `mcp.registerTools(...)`, for example after the user grants a permission, reach connected clients through `notifications/tools/list_changed`. Details are in [docs/TOOLS.md](docs/TOOLS.md#resources-and-prompts).
+
 ### Confirm risky calls
 
 Ask the user before a destructive tool runs, on either transport:
@@ -199,7 +220,7 @@ The HTTP server:
 - rejects foreign `Origin` headers, non-JSON bodies, bodies over 4 MB and unknown protocol versions
 - ties every request to a session
 
-Tools are also constrained: file tools only read external storage, web tools refuse private and loopback addresses, and intents use an action and URI-scheme allowlist. The server listens on every network the phone joins, so use it on networks you trust or enable TLS. The threat model is in [docs/SECURITY.md](docs/SECURITY.md).
+Tools are also constrained: file tools and file resources are sandboxed to external storage (the file write tools are opt-in), web tools refuse private and loopback addresses, and intents use an action and URI-scheme allowlist. The server listens on every network the phone joins, so use it on networks you trust or enable TLS. The threat model is in [docs/SECURITY.md](docs/SECURITY.md).
 
 droid-mcp itself sends no analytics. Google ML Kit, used by `mlkit` and `qr`, reports usage to Google under its own terms.
 
@@ -210,7 +231,7 @@ droid-mcp itself sends no analytics. Google ML Kit, used by `mlkit` and `qr`, re
 
 ## Sample app
 
-`sample-app` registers every module and has four tabs:
+`sample-app` registers every module, the four resource providers and the built-in prompts, and has four tabs:
 - **Tools**: a test button per tool, plus shortcuts to grant special permissions.
 - **Gating**: switch tools on and off on the live server.
 - **Activity**: recent calls.

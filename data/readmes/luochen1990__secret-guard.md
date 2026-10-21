@@ -56,6 +56,11 @@ Return:    local tools ◄──real Secret──  secret-guard  ◄──Mock r
   zero configuration, effective the instant a token is created. If a prompt injection
   talks your Agent into pasting its own gateway token into the conversation, the LLM
   vendor only ever sees an equal-length Mock.
+- **Suspected-secret alerts (privacy scan)**: an opt-in side-channel scanner watches
+  requests for token-shaped values that no registered secret accounts for (API keys,
+  JWTs, cloud credentials, ...), and surfaces them in a WebUI panel as "unregistered
+  suspects" — one click prefills the registration form. It never auto-registers and
+  never interferes with forwarding.
 
 The same request, before and after it leaves the machine (captured from a real run; only
 the token value is fictional):
@@ -106,10 +111,33 @@ cargo install --git https://github.com/luochen1990/secret-guard
 > module (its default package enables the feature). The local API-key path is always
 > compiled in. See [docs/configuration.md](docs/configuration.md) `[auth]`.
 
-### 2. Minimal configuration
+### 2. Configure
 
-Create `secret-guard.toml` somewhere (one upstream provider + one secret to protect is
-all it takes):
+#### Option B (recommended for new users) — zero-config start, set up in the WebUI
+
+Skip the config file entirely: start the gateway empty and create the two entries in
+the browser.
+
+```bash
+secret-guard run        # no config file needed — starts empty on 127.0.0.1:8787
+```
+
+Open `http://127.0.0.1:8787/` and:
+
+1. **Providers** tab → **New provider**: give it an id, paste the provider URL
+   and api_key — unsure which protocols it speaks? Hit **Detect** to probe every
+   protocol face and add endpoints from the results (or add them manually —
+   saving never depends on detection).
+2. **Secrets** tab → **New secret**: register the value you want protected.
+
+Entries take effect immediately and persist to `secret-guard.state.toml` — no
+hand-written TOML, no restart, and by construction none of Option A's two known TOML
+pitfalls (field order / nesting style).
+
+#### Option A — hand-written declarative config
+
+Declarative config fits version-managed setups. Create `secret-guard.toml` somewhere
+(one upstream provider + one secret to protect is all it takes):
 
 ```toml
 [[providers]]
@@ -130,6 +158,9 @@ value = "ghp_0123456789abcdefghijklmnopqrstuvwxyz"   # the secret to protect (ne
 > [docs/configuration.md](docs/configuration.md).
 
 ### 3. Start and send the first request
+
+Option A users: start the gateway with the first line below. Option B users: it's
+already running on 8787 — adjust the port in the examples accordingly.
 
 ```bash
 secret-guard run --port 18787
@@ -273,7 +304,7 @@ secret-protection dimensions, including where the alternatives are stronger:
   `[redact] on_unsupported_protocol = "fail_closed"`; the error message carries a hint).
   They can still be created via hand-written config / the REST API (fine for secret-free
   pure forwarding); the WebUI creation form does not offer them, but editing an existing
-  entry or a Detect probe recommendation supports them via "(experimental)" options.
+  entry or an autocomplete preset prefill supports them via "(experimental)" options.
 - **Fail-safe degradation**: on Redact's abnormal paths (unparsable upstream responses /
   non-2xx), Mocks are passed through by default — real values never land in failure
   bodies; `on_fallback_restore = "restore"` opts into restoration. Full semantics of the
@@ -297,9 +328,10 @@ the full development guide lives in [AGENTS.md](AGENTS.md):
   delta event-type normalization, multi content part folding) — streaming itself,
   including the Redact restore path, now works for every codec-covered pair; tracked
   in [docs/known-limitations.md](docs/known-limitations.md).
-- **Unknown-secret detection (NER / regex / entropy) as an alerting layer**: flag
-  suspected undeclared secrets in the WebUI without auto-redacting (zero false-positive
-  replacements stay guaranteed). See [#257](https://git.lambda.lc/lc-studio/secret-guard/issues/257).
+- **Smarter unknown-secret detection (NER / entropy scoring)**: the pattern-based
+  suspect scanner and its WebUI panel are shipped (see "Suspected-secret alerts" above);
+  this item is the accuracy upgrade — catching token shapes the fixed pattern table
+  misses. Zero auto-redaction stays guaranteed. See [#257](https://git.lambda.lc/lc-studio/secret-guard/issues/257).
 - **Real-Provider field validation**: integration-test profiles against real upstreams
   for the protocol matrix.
 

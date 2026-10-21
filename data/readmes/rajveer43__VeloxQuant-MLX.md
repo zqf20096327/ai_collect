@@ -22,8 +22,8 @@
        "badge/tests-<n>%20passing-" and "badge/changelog-<version>-" patterns.
        Keep both in badge form — converting either to a text link silently
        disables that sync. -->
-  <img src="https://img.shields.io/badge/tests-5140%20passing-22c55e?style=flat-square" alt="Tests"/>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/changelog-0.94.10-64748b?style=flat-square" alt="Changelog"/></a>
+  <img src="https://img.shields.io/badge/tests-5254%20passing-22c55e?style=flat-square" alt="Tests"/>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/changelog-0.94.13-64748b?style=flat-square" alt="Changelog"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square" alt="License"/></a>
   <a href="https://doi.org/10.5281/zenodo.20647294"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20647294-1f6feb?style=flat-square" alt="DOI"/></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-policy-1f6feb?style=flat-square" alt="Security policy"/></a>
@@ -204,13 +204,13 @@ Not sure which to pick? Run `python -m veloxquant_mlx recommend --goal everyday`
 `auto-config` for a workload shape; the planner is
 [RFC #469](https://github.com/rajveer43/VeloxQuant-MLX/issues/469)), or start with one of
 these `stable` methods. Override the recommendation only when you need a specific
-trade-off, such as a hard token cap (eviction) or a fixed ratio.
+trade-off, such as a prompt-length cap (eviction) or a fixed ratio.
 
 | Goal | Method | Maturity |
 |---|---|---|
 | Smaller cache, no calibration | `turboquant_rvq` b=1 | stable |
 | Quality-first quantization | `kivi` | stable |
-| Hard token cap, lower resident memory | `snapkv` | stable |
+| Cap the prompt's cache (decode still grows), lower resident memory | `snapkv` | stable |
 
 Measured results for these three will be added with the reproducible benchmark (#786).
 

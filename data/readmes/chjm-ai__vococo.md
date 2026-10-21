@@ -85,36 +85,21 @@ Web 入口:`serve` 时设 `WEB_ENABLED=1` 即在同进程起网页服务(默认�
 `/model <模型名>` 可临时覆盖。只用第三方时,`.env` 里的订阅 token 可留空。
 认证细节见 [REQUIREMENTS.md](REQUIREMENTS.md) §6。
 
-## 深度研究
+## 历史研究
 
-在聊天中说「对 XX 做一次深度研究，比较官方资料并给出带来源的结论」，助手通过
-`start_research` 创建独立任务。简单查事实仍走普通搜索，不启动研究流程。
+原生深度研究已移除，不再提供助手研究工具，也不在重启后恢复未完成研究。
+后续调研使用普通搜索与子代理，不新增自动流程。历史任务、报告、来源证据和检查点保留。
 
-- 四阶段：规划 → 搜集资料 → 复核与补查 → 报告；阶段和来源保存在 `data/research.db`。
-- 默认预算：创建起 300 秒、12 次搜索、18 次抓取、180000 新鲜 token；可在发起时指定
-  `budget`（`seconds/searches/fetches/tokens/max_turns`）。次数执行前扣除，失败重试也计数。
-  token 依 SDK 用量事件超限打断，可能单次响应超调，不是精确费用封顶。
-- 模型固定为发起时显式选择／来源会话选择／全局默认，不自动换便宜模型。所选供应商
-  必须实际支持网页工具；认证、工具不可用时如实失败，不用模型常识冒充联网研究。
-- 研究仅能使用获准网页工具与证据登记工具，不加载个人记忆、项目文件或通用 MCP。
-- 任务完成后在侧边栏查看报告；明确要求恢复时调用 `resume_research`，保留全部用量和
-  原截止时间。服务重启只恢复有已提交阶段且仍有预算的运行任务，取消的任务不自动重开。
-- 引文逐字匹配的是工具提取内容（可能摘要/截断），不等于原始网页存档或事实核验。
-  公共地址校验不控制 SDK 内部重定向，不应把研究执行器视为完整网络沙箱。
-
-受现有 Web 登录认证保护的接口：
+以下接口仍受现有 Web 登录认证保护：
 
 | 接口 | 用途 |
 |---|---|
-| `POST /research?session_key=<聊天ID>` | JSON：`title`、`prompt`，可选 `model`、`budget` |
-| `GET /tasks/<id>/research` | 阶段、预算、来源证据和检查点 |
-| `POST /tasks/<id>/resume` | 在原额度内恢复失败／取消的研究 |
-| `GET /tasks/<id>/report` | 下载 Markdown 报告，未完成返回 409 |
-| `POST /tasks/<id>/stop` | 复用已有取消入口 |
-
-验收：`uv run pytest tests/test_research*.py -q`；真实联网验收脚本为
-`tests/manual/research_smoke.py`（需显式传 `--env-file`，可选只读 `--settings-file` 与 `--model`；
-结果写入独立的 `data/research-validation/`，不改生产数据库）。
+| `POST /research` | 返回 410：原生深度研究已移除 |
+| `GET /tasks/<id>/research` | 读取历史阶段、预算、来源证据和检查点 |
+| `GET /tasks/<id>/research/progress` | 读取历史操作、来源与已提交产出的轻量快照 |
+| `POST /tasks/<id>/resume` | 返回 410：不再恢复研究 |
+| `GET /tasks/<id>/report` | 下载历史 Markdown 报告，未完成返回 409 |
+| `POST /tasks/<id>/stop` | 保留取消入口 |
 
 ## 常驻(macOS)
 
@@ -189,3 +174,60 @@ uv run vococo chat
 
 [MIT](LICENSE)。这是个人自用助理框架,fork 后请生成属于自己的凭据
 (Claude / VAPID),别把 `.env`、`data/` 提交进仓库(默认已 gitignore)。
+
+### GPT 输出详细程度
+
+在 **设置 → 模型 → 输出详细程度** 为每个 GPT 模型选择「模型默认 / 低 / 中 / 高」。
+保存后下一条消息生效，思考强度不受影响。「模型默认」不传详细程度参数，交给模型默认行为。
+所有档位均使用原生 verbosity，不再逐轮追加表达提示；本轮用户明确要求仍应遵循。
+旧 SDK transcript 仍含此前的历史提醒，升级不会删除它们；干净对比请新建会话，不要清空所有现有会话。
+
+vococo 使用 Claude Agent SDK，请求通过 Anthropic 兼容端点进入代理。
+`CLAUDE_CODE_EXTRA_BODY` 携带 `text.verbosity`，但 CLIProxyAPI 原版的
+Claude→Codex / OpenAI 转换会丢弃该字段。仓库提供经过回归测试的兼容补丁：
+
+```bash
+bash deploy/patch-codex-verbosity.sh /path/to/CLIProxyAPI
+```
+
+脚本只修改代理源码并运行测试，不替换二进制或重启服务；重复执行不会重复打补丁。
+脚本要求独立 Git checkout 和可用 Go 工具链，按模块版本选择补丁；上下文不匹配时停止。
+支持 v7.2.116（`a88197f845c979132c8978ea223c6af05cc81536`）及 v8 基线
+`20c9095cac089c6a8e40554debe4dd8a19d4c14f`，无需为参数透传升级代理大版本。
+v7 另外运行新增 executor 出站回归；其全量测试有 3 项上游既存设备指纹失败，不在此脚本范围内。
+按代理原有流程构建、部署后，GPT 请求才会收到原生详细程度参数；未部署兼容补丁的代理不再有逐轮提示兜底。
+它控制回答详略，不保证固定字数，也不使用输出 token 上限截断回答。
+
+验证（不需要真实模型密钥）：
+
+```bash
+uv run pytest tests/test_verbosity.py tests/test_verbosity_wire.py tests/test_client_pool.py -q
+node tests/verbosity_settings.cjs
+```
+
+`test_verbosity_wire.py` 使用真实 SDK/CLI 向本地 HTTP 服务发请求，验证最终请求参数，
+不访问真实 GPT。代理补丁自带 Go 测试，验证最终 Codex Responses 的 `text.verbosity`
+和 OpenAI Chat Completions 的顶层 `verbosity`，不向其他模型透传。
+
+### GPT 思考摘要与真实效果测试
+
+在 **设置 → 模型 → 思考摘要** 按模型选择「模型默认 / 自动 / 简短 / 详细 / 关闭」。
+它只控制返回的摘要文字，不控制最终回答长短，也不会关闭模型思考；简单问题可能没有摘要。
+设置保存后下一轮生效，修改摘要不会改动思考强度或输出详细程度。
+
+上面的 `patch-codex-verbosity.sh` 现在同时应用两个补丁：详细程度透传 + 摘要档位保留。
+已打过旧补丁时直接重跑脚本即可。摘要仅由 Codex Responses 链路支持；
+普通 OpenAI Chat Completions 不提供这个摘要选项。关闭时 vococo 发兼容标记
+`reasoning.summary: null`，代理将其转成省略字段，不把 null 发给 GPT。
+
+真实模型效果测试（会使用本机现有 Codex 订阅额度，不打印或保存认证令牌）：
+
+```bash
+uv run python scripts/eval_gpt_output.py --model gpt-6.1-sol --repeats 2 --output /tmp/gpt-output-comparison.json
+```
+
+测试共 26 次请求：3 道问题 × 3 档详细程度 × 2 次重复，加 4 档摘要 × 2 次重复。
+每组只变一个参数，不加固定字数要求、不设置输出 token 上限。记录模型与参数回显、
+完整回答和摘要、去空白字符数、用时及 token 用量；失败或截断的回答不会计入有效样本。
+结果是同名 JSON + TXT 文件。此测试直连原生 Responses，不能替代部署后 vococo 的端到端验证；
+小样本不能保证每个问题的低档回答都更短，空摘要也不能证明摘要详略控制有效。

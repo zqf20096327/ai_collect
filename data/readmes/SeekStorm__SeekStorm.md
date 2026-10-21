@@ -4,7 +4,7 @@
 
 <h3 align="center">
 Sub-millisecond lexical, vector &amp; hybrid search in Rust.<br>
-Embed it as a library, run it as a server, or give your agents search via MCP.
+Embed as a library, run as a multi-tenant server, or give your agents search via MCP.
 </h3>
 
 <p align="center">
@@ -267,10 +267,10 @@ Vector search, hybrid search, facets and more: see [Usage of the library](#usage
 ## What can you build?
 
 * **Search for your app or site**: product and site search with facets, typo tolerance, query completion and instant search.
-* **Instant search UIs**: build on the InstantSearch widgets, or keep your existing Algolia InstantSearch frontend and swap only the backend with the [adapter](#components).
 * **RAG and agent retrieval**: hybrid search over [MCP](#mcp-server-for-ai-agents), searchable the moment a document is indexed.
 * **Search over your own data**: JSON, CSV, NDJSON and PDF, e.g. an English Wikipedia search engine in 5 steps ([tutorial](#demos)).
-* **Search inside your application**: link the library, no server to run.
+* **Search inside your application**: embed the library, no server to run.
+* **Instant search UIs**: build on the InstantSearch widgets, or keep your existing Algolia InstantSearch frontend and swap only the backend with the [adapter](https://github.com/SeekStorm/seekstorm-instantsearch-adapter).
 
 More in [Search API use cases](https://seekstorm.com/search-api-use-cases) and [Search API features](https://seekstorm.com/search-api-features).
 
@@ -442,7 +442,7 @@ No re-indexing, no export/import, and you can move in either direction. No vendo
 <img src="https://raw.githubusercontent.com/SeekStorm/SeekStorm/main/assets/search_benchmark_game1.png" width="800" alt="Query latency in µs: Lucene vs. Tantivy vs. SeekStorm">
 
 5 million English Wikipedia documents, result type top-k + count, via the [search_benchmark_game](https://github.com/SeekStorm/search-benchmark-game/) (Lucene 10.3.0-bp, Tantivy 0.25, SeekStorm 1.0.0).
-<!-- TODO: add CPU / RAM / OS of the benchmark machine -->
+<!-- CPU / RAM / OS of the benchmark machine: https://github.com/SeekStorm/search-benchmark-game/#benchmark-environment -->
 
 | Query type, single field | Lucene (µs) | Tantivy (µs) | **SeekStorm (µs)** | vs. best of the two | vs. Lucene |
 |---|---:|---:|---:|---:|---:|
@@ -574,8 +574,8 @@ We are using the **English Wikipedia** data (*5 million entries*) and queries (*
 | Component | What it is | Links |
 |---|---|---|
 | **[seekstorm](https://crates.io/crates/seekstorm)** | In-process search library (lexical, vector, hybrid) | [![Crates.io](https://img.shields.io/crates/v/seekstorm.svg)](https://crates.io/crates/seekstorm) [![Downloads](https://img.shields.io/crates/d/seekstorm.svg?style=flat-square)](https://crates.io/crates/seekstorm) [![Docs](https://docs.rs/seekstorm/badge.svg)](https://docs.rs/seekstorm) |
-| **[seekstorm_mcp_server](seekstorm_mcp_server/README.md)** | Local MCP server over stdio for agentic search, embeds the library | [![Crates.io](https://img.shields.io/crates/v/seekstorm_mcp_server.svg)](https://crates.io/crates/seekstorm_mcp_server) [![Downloads](https://img.shields.io/crates/d/seekstorm_mcp_server.svg?style=flat-square)](https://crates.io/crates/seekstorm_mcp_server) |
-| **[seekstorm_server](https://github.com/SeekStorm/SeekStorm/blob/main/seekstorm_server/README.md)** | Multi-tenancy search server with REST API and web UI | [![Crates.io](https://img.shields.io/crates/v/seekstorm_server.svg)](https://crates.io/crates/seekstorm_server) [![Downloads](https://img.shields.io/crates/d/seekstorm_server.svg?style=flat-square)](https://crates.io/crates/seekstorm_server) [![Docker](https://img.shields.io/docker/pulls/wolfgarbe/seekstorm_server)](https://hub.docker.com/r/wolfgarbe/seekstorm_server) [![REST API docs](https://img.shields.io/badge/REST%20API-docs-blue?style=flat-square&logo=openapiinitiative&logoColor=white)](https://seekstorm.com/documentation/) |
+| **[seekstorm_mcp_server](seekstorm_mcp_server/README.md)** | Local MCP server over stdio for agentic search, <br>embeds the library | [![Crates.io](https://img.shields.io/crates/v/seekstorm_mcp_server.svg)](https://crates.io/crates/seekstorm_mcp_server) [![Downloads](https://img.shields.io/crates/d/seekstorm_mcp_server.svg?style=flat-square)](https://crates.io/crates/seekstorm_mcp_server) |
+| **[seekstorm_server](https://github.com/SeekStorm/SeekStorm/blob/main/seekstorm_server/README.md)** | Multi-tenancy search server with REST API and web UI, <br>embeds the library | [![Crates.io](https://img.shields.io/crates/v/seekstorm_server.svg)](https://crates.io/crates/seekstorm_server) [![Downloads](https://img.shields.io/crates/d/seekstorm_server.svg?style=flat-square)](https://crates.io/crates/seekstorm_server) [![Docker](https://img.shields.io/docker/pulls/wolfgarbe/seekstorm_server)](https://hub.docker.com/r/wolfgarbe/seekstorm_server) [![REST API docs](https://img.shields.io/badge/REST%20API-docs-blue?style=flat-square&logo=openapiinitiative&logoColor=white)](https://seekstorm.com/documentation/) |
 | **Client SDK** | A client for every stack: Same REST API underneath, idiomatic on top. |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**[Rust](https://github.com/SeekStorm/SeekStorm/tree/main/seekstorm_client)** |  | [![Crates.io](https://img.shields.io/crates/v/seekstorm_client_rs.svg)](https://crates.io/crates/seekstorm_client_rs) [![Downloads](https://img.shields.io/crates/d/seekstorm_client_rs.svg?style=flat-square)](https://crates.io/crates/seekstorm_client_rs) [![Docs](https://docs.rs/seekstorm_client_rs/badge.svg)](https://docs.rs/seekstorm_client_rs) |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**[Python](https://github.com/SeekStorm/seekstorm_client_pure_py)** |  | [![PyPI](https://img.shields.io/pypi/v/seekstorm-client-pure-py?label=PyPI)](https://pypi.org/project/seekstorm-client-pure-py/) |
@@ -776,8 +776,6 @@ We have (partially) ported the SeekStorm codebase from C# to Rust
 
 Rust is great for performance-critical applications 🚀 that deal with big data and/or many concurrent users. 
 Fast algorithms will shine even more with a performance-conscious programming language 🙂
-
-100% human 😎 craftsmanship: no vibe coding.
 
 ---
 

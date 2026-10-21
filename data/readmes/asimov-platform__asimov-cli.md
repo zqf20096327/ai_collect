@@ -221,113 +221,49 @@ $ asimov module install --help
 
 </details>
 
-#### `asimov proxy`
+#### `asimov resource`
+
+Alias: `asimov source`.
 
 ```shellsession
-$ asimov proxy --help
+$ asimov resource --help
 ```
 
 <details>
-<summary><code>asimov proxy serve</code></summary>
+<summary><code>asimov resource fetch</code></summary>
 
 ```shellsession
-$ asimov proxy serve --help
+$ asimov resource fetch --help
 ```
 
 </details>
 
 <details>
-<summary><code>asimov proxy url</code></summary>
+<summary><code>asimov resource list</code></summary>
 
 ```shellsession
-$ asimov proxy url --help
+$ asimov resource list --help
 ```
 
 </details>
 
 <details>
-<summary><code>asimov proxy host</code></summary>
+<summary><code>asimov resource read</code></summary>
 
 ```shellsession
-$ asimov proxy host --help
+$ asimov resource read --help
 ```
 
 </details>
 
 <details>
-<summary><code>asimov proxy port</code></summary>
+<summary><code>asimov resource snap</code> (unstable)</summary>
+
+Requires the `unstable` feature, e.g.
+`cargo install asimov-cli --locked --features unstable`.
 
 ```shellsession
-$ asimov proxy port --help
-```
-
-</details>
-
-<details>
-<summary><code>asimov proxy models</code></summary>
-
-```shellsession
-$ asimov proxy models --help
-```
-
-</details>
-
-<details>
-<summary><code>asimov proxy config</code></summary>
-
-```shellsession
-$ asimov proxy config --help
-```
-
-</details>
-
-<details>
-<summary><code>asimov proxy install</code></summary>
-
-```shellsession
-$ asimov proxy install --help
-```
-
-</details>
-
-#### `asimov source`
-
-```shellsession
-$ asimov source --help
-```
-
-<details>
-<summary><code>asimov source fetch</code></summary>
-
-```shellsession
-$ asimov source fetch --help
-```
-
-</details>
-
-<details>
-<summary><code>asimov source list</code></summary>
-
-```shellsession
-$ asimov source list --help
-```
-
-</details>
-
-<details>
-<summary><code>asimov source read</code></summary>
-
-```shellsession
-$ asimov source read --help
-```
-
-</details>
-
-<details>
-<summary><code>asimov source snap</code></summary>
-
-```shellsession
-$ asimov source snap --help
+$ asimov resource snap --help
 ```
 
 </details>
@@ -355,7 +291,8 @@ asimov configure telemetry disable
 export ASIMOV_TELEMETRY=0   # or `false`
 
 # By building the CLI yourself, without the `telemetry` feature:
-cargo install asimov-cli --locked --no-default-features --features module,proxy,source
+cargo install asimov-cli --locked --no-default-features \
+  --features module,resource
 ```
 
 Disabling telemetry also discards any events that haven't been sent yet.
@@ -368,7 +305,7 @@ Each command you run records when it started and finished. Each event
 contains:
 
 - A random installation ID (`~/.asimov/.telemetry/id`), as an identifier
-- The command that was run (e.g., `source fetch`), without its arguments
+- The command that was run (e.g., `resource fetch`), without its arguments
 - The names of the modules involved
 - The exit code and duration
 - The CLI version, operating system, and CPU architecture

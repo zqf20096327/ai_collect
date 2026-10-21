@@ -197,8 +197,17 @@ agent) gets a lot. Read this before you put anything valuable on the box.
   photos must be PNG, JPEG or WebP (checked by their first bytes, 25 MB at most) and are stored
   under names the Studio makes up; it serves renders only by those names, so a request can't
   reach other files.
+- The logs page (ai module, port 8009, via Caddy; VictoriaLogs) needs the same login as SwarmUI;
+  VictoriaLogs itself listens on `127.0.0.1` only. The logs hold the Studio's prompts and the
+  models' answers, and whatever the containers print. Vector reads the containers' logs through
+  its own read-only Docker proxy (list, inspect, logs, events), on an internal network nothing
+  else is on. The logs stay on the media disk, out of the backups, for 30 days.
 - The wake relay Pi (`extras/wake-relay`) answers `/api/wake` without a login to anyone on the
   LAN; all it can do is send the magic packet to the box.
+- With `extras/sudo-touch-id`, sudo also accepts a key from your forwarded SSH agent. With
+  Secretive that key stays in the Mac's Secure Enclave and every use needs Touch ID, so whoever
+  is root on a server can't use the forwarded agent unnoticed. Only that one key is accepted, and
+  only the `-root` SSH hosts forward it. The password still works.
 - Hermes pushes to GitHub with per-repo deploy keys, not your account.
 - The Mac's backup key can only read the backup folder (`rrsync -ro`).
 - Backups are encrypted with restic.
@@ -263,7 +272,7 @@ single-maintainer project built from a git tag on the box and run as root in its
 with page-locked memory: a tag that gets moved, or a bad release, runs on your GPU box.
 SwarmUI is built the same way, and installs ComfyUI and Python packages at runtime, unpinned;
 every ComfyUI custom node or SwarmUI extension you add runs code with access to its container
-(your images and the models disk). The Studio adds two community node packs
+(your images, the models and media disks). The Studio adds two community node packs
 (`stacks/ai/studio/comfy-nodes.txt`): pinned to a commit, read before pinning (no network
 calls, subprocesses or installs at runtime), put in place by `before-up.sh`. It also fetches
 MiniMax's H3 prompt guide, a text file that goes into Qwen's prompt: pinned to a commit and
@@ -396,6 +405,8 @@ to "wake the gpubox". The other computer has to allow Wake-on-LAN (see `extras/w
 - `extras/wifi-watchdog/`: reconnects Wi-Fi when it stays connected but stops passing traffic.
   See its README.
 - `extras/wake-on-lan/`: wakes the box over the network from suspend or off (`WAKE_ON_LAN_*`).
+  See its README.
+- `extras/sudo-touch-id/`: sudo waits for your fingerprint on the Mac instead of the password.
   See its README.
 - `extras/wake-relay/`: wakes the box while it's on Wi-Fi, through a Pi cabled to its Ethernet
   port (`WAKE_RELAY_*`). See its README.

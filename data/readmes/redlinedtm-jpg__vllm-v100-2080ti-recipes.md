@@ -1,0 +1,75 @@
+# Running large LLMs on old NVIDIA GPUs (Tesla V100 · RTX 2080 Ti)
+
+Working recipes, hard-won gotchas and **real measured benchmarks** for serving large language models on pre-Ampere NVIDIA hardware — Volta (`sm_70`) and Turing (`sm_75`).
+
+Most of the modern inference stack quietly assumes `sm_80+`. On V100 and 2080 Ti you hit a wall roughly every second step: quantized kernels refuse to load, PyTorch wheels ship without your arch, FlashAttention-2 needs Ampere, FP8 needs Hopper. Every recipe here was run on real hardware and the numbers below are our own measurements, not vendor claims.
+
+> **Short version:** upstream vLLM will not serve AWQ/GPTQ on V100 or MoE-AWQ on 2080 Ti. You need architecture-specific forks. Which one, and with exactly which flags, is what this repo documents.
+
+## Compatibility matrix
+
+| | Tesla V100 (Volta, `sm_70`) | RTX 2080 Ti (Turing, `sm_75`) | RTX 4090 (Ada, `sm_89`) |
+|---|---|---|---|
+| Upstream vLLM + AWQ/GPTQ | ❌ `Minimum capability: 75` | ❌ MoE-AWQ dies in Marlin | ✅ |
+| Working engine | [1Cat-vLLM fork](docs/volta-v100.md) | [weicj fork](docs/turing-2080ti.md) | upstream |
+| Attention backend | `FLASH_ATTN_V100` | FlashQLA (fork) / Triton | FlashAttention-2 |
+| dtype | `float16` only | `float16` only | bf16 |
+| FlashAttention-2 | ❌ needs `sm_80` | ❌ | ✅ |
+| FP8 / FP4 | ❌ needs Hopper/Ada | ❌ | FP8 ✅ |
+| Real tensor parallelism | ✅ fork, or `llama.cpp -sm tensor` | ✅ fork | ✅ |
+| Quantization that works | AWQ (W4A16) via fork | AWQ dense + AWQ MoE via fork | everything |
+
+## Guides
+
+- **[Tesla V100 (Volta, sm_70)](docs/volta-v100.md)** — what breaks and why; 1Cat-vLLM wheel install (incl. the `PackageNotFoundError` shim); building `llama.cpp` with real tensor parallelism and NCCL; Ollama configuration.
+- **[RTX 2080 Ti (Turing, sm_75)](docs/turing-2080ti.md)** — building the weicj fork from source; `turboquant_k8v4` KV cache; the `awq` vs `awq_marlin` rule that changes throughput by **7.8×**.
+- **[Benchmarks](docs/benchmarks.md)** — measured tokens/s across V100, 2080 Ti, A100 and 4090-48GB.
+- **[Ubuntu 26.04 + CUDA](docs/ubuntu-2604-cuda.md)** — Python 3.14, gcc-15, cmake 4.2 and the glibc 2.41 `math_functions.h` patch that unblocks nvcc.
+- **[GLM-5.2 on Volta: why it cannot work](docs/glm-5.2-on-volta.md)** — research writeup on DSA sparse attention and the only remaining path.
+- **[Troubleshooting](docs/troubleshooting.md)** — garbled `Ġ`/`Ċ` output, the Ollama context trap that costs you 7× speed, and more.
+
+### Hardware
+
+The software half is only half the problem. These cover the boxes the models actually run on:
+
+- **[NVLink on V100 SXM2 carrier boards](docs/nvlink-sxm2.md)** — what a healthy 24-link mesh looks like, why a dead link is usually a loose screw rather than a dead GPU, and why error counters point at the wrong card.
+- **[nvidia-smi finds no devices on V100](docs/volta-driver-trap.md)** — the open kernel module does not support Volta. Four GPUs that look dead, the `BAR0 is 0M` signature, and the exact sequence that brings them back.
+- **[Acceptance checklist for used V100 SXM2 kits](docs/buying-used-v100.md)** — serials, ECC, NVLink, load test and the Xid codes that decide whether to accept or reject a kit.
+- **[Cooling passive Tesla cards](docs/cooling-passive-teslas.md)** — what healthy sustained load looks like, the memory sensor everyone ignores, the 90 °C reading that is not a temperature, and why the spread between cards is the best diagnostic you have.
+- **[CMP 170HX: what it actually is, measured](docs/cmp-170hx.md)** — the only GA100 mining card, unlocked and benchmarked. Tensor cores are **not** disabled (164 TFLOPS FP16 measured), the memory is real, and here is how to tell one from an A100 before you pay for it.
+
+## Headline numbers (our measurements)
+
+| Hardware | Model | Config | Speed |
+|---|---|---|---|
+| 4× V100 32GB | Qwen3.5-122B-A10B-AWQ | 1Cat fork 1.2.0, TP=4 | **67.4 tok/s** single · 1059 @64 · **prefill 3767** |
+| 4× V100 32GB | Qwen3.6-35B-A3B | 1Cat fork 1.2.0, TP=4 | **69.8 tok/s** single · 841 @64 |
+| 4× V100 32GB | DeepSeek-R1-70B-AWQ | 1Cat fork, TP=4 | 40 tok/s single · 92 @16 |
+| 4× 2080 Ti 22GB | Qwen3.5-122B-A10B-AWQ | weicj fork, TP=4 | **52 tok/s** single |
+| 4× 2080 Ti 22GB | Qwen3.6-27B-AWQ ×2 | 2 instances TP=2 + MTP K=3 | **152 tok/s** aggregate |
+| 4× A100 | Qwen3.6-35B-A3B | upstream | 95 tok/s single · **1826 @64** |
+| 2× RTX 4090 48GB | Qwen3.6-35B-A3B | upstream | **149 tok/s** single |
+
+A 122B MoE model serving 64 concurrent users at 1059 tok/s on 2018 hardware, drawing 837 W and peaking at 47 °C, is the headline result here.
+
+Full tables — concurrency curves, power draw, A100-vs-V100 across load levels, and the failures — in [docs/benchmarks.md](docs/benchmarks.md).
+
+## Three lessons that save the most time
+
+1. **Check your arch is actually in the wheel.** `python -c "import torch; print(torch.cuda.get_arch_list())"` must contain `sm_70`. Torch built against cu128/cu130 dropped Volta — you want `torch 2.5.1+cu124`, or a fork wheel that rebuilt it.
+2. **A dense 70B cannot give you 60 tok/s on V100.** 900 GB/s × 4 ÷ 40 GB ≈ 90 tok/s is the hard memory-bandwidth ceiling. Benchmarks claiming 60 tok/s are MoE models (~3B active parameters/token). Memory bandwidth decides inference speed — NVLink matters far less than people assume.
+3. **Every GPU generation needs its own fork.** Mixing them up produces crashes that look like model bugs. Turing → weicj, Volta → 1Cat, Ada → upstream.
+4. **Most "dead" V100s are not dead.** Two failure modes dominate, and neither is the silicon: an open-flavour kernel driver that does not support Volta at all (`BAR0 is 0M`, every GPU failing identically), and NVLink links that will not train because a module retention screw is loose. Both look catastrophic and both are reversible — see the hardware guides above.
+5. **Check topology before choosing parallelism.** Multi-GPU boards are rarely fully meshed: 8× V100 without NVSwitch is *two* NV2 quads, and 4× 2080 Ti is NVLinked in pairs. Two smaller instances on full NVLink routinely beat one big instance that has to all-reduce over PCIe — measured 152 vs ~90 tok/s aggregate in one such case. Run `nvidia-smi topo -m` first.
+
+## Contributing
+
+Corrections and additional measurements are very welcome — especially if you have V100/2080 Ti results that contradict ours. Open an issue with your exact flags, engine version and `nvidia-smi` output.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+---
+
+Maintained by **[NextGen-PC](https://nextgen-pc.online/)** — we build and sell ready-made GPU servers for local LLM inference in Russia (Tesla V100 / A100, RTX 4090 48GB, RTX 2080 Ti 22GB). Everything documented here comes out of hardware we actually assemble, test and ship. Questions about a build are welcome in the issues.

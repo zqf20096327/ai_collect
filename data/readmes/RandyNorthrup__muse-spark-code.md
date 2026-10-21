@@ -54,7 +54,8 @@ built, what is planned and what each release shipped.
 [Troubleshooting](#troubleshooting) ·
 [Reporting a problem](#reporting-a-problem) · [Development](#development)
 
-Saved reports write money version 2; historical numeric reports retain their original
+Candidate schedule budgets and consent, and rental cost evidence, use exact decimal USD. Saved
+reports write money version 2; historical numeric reports retain their original
 hash verification and migrate when read.
 
 ## What's new in 0.18.2
@@ -191,12 +192,16 @@ hash verification and migrate when read.
 - **ACP and terminal.** Use local `/prompt` and `/share chat` commands in ACP
   editors, or `muse-spark-code-acp prompts` and `share chat` in the terminal.
   Help & Reference lists the commands and the opt-in prompt sync setting.
+  Terminal prompt commands print saved ids, matching prompts and prepared text;
+  add `--json` for their structured result. A terminal `use` prepares text only:
+  it does not insert into an editor or send a model request.
 
 ### Earlier in 0.14.3
 
 - **Questions never block.** A question Muse asks you is pinned in the
-  attention dock above the composer and kept in the transcript. After a minute
-  (`museSpark.questions.deferAfterSeconds`), Muse carries on with work that
+  attention dock above the composer and kept in the transcript. After your
+  own delay (`museSpark.questions.deferAfterSeconds`, unset by default so
+  questions never defer on their own), Muse carries on with work that
   does not need the answer.
 - **Answer later.** An unanswered question becomes an **Open Question** you can
   answer any time using **Answer** on its transcript marker or the open-question chip; **Dismiss** closes it
@@ -222,7 +227,7 @@ hash verification and migrate when read.
 - **Accurate details.** Help is generated from the extension's own tables.
   Defaults, availability and paid costs are now described for each backend.
 - **Editors and terminal.** Use `/help` in the chat panel and ACP editors, or
-  `muse-spark-code-acp help --all` in the terminal.
+  `muse-spark-code-acp help reference` in the terminal.
 
 **0.14.1**
 
@@ -268,13 +273,21 @@ model call or a charge. **Needs You** comes first; every source names its
 availability, freshness and observation time. Missing integrations remain
 visible as unavailable.
 
-| Kind      | Input                                                                        |
-| --------- | ---------------------------------------------------------------------------- |
-| Project   | `/report project`                                                            |
-| Milestone | `/report milestone M113`                                                     |
-| Release   | `/report release latest`                                                     |
-| Changes   | `/report changes`; `since <tag, branch, or YYYY-MM-DD>` selects Git ancestry |
-| Quality   | `/report quality`                                                            |
+| Kind                 | Input                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| Project              | `/report project`                                                                           |
+| Milestone            | `/report milestone M113`                                                                    |
+| Release              | `/report release latest`                                                                    |
+| Changes              | `/report changes`; `since <tag, branch, or YYYY-MM-DD>` selects Git ancestry                |
+| Quality              | `/report quality`                                                                           |
+| Usage                | `/report usage`; `30d --by model` scopes the window and breakdown                           |
+| Session              | `/report session`                                                                           |
+| Key Bindings         | `/report keybindings`                                                                       |
+| Accounts             | `/report accounts`                                                                          |
+| Security             | `/report security`                                                                          |
+| Estimate             | `/report estimate M113`; `--by <date>` sets the deadline, `--fleet minimum` picks the setup |
+| Engineering Playbook | `/report playbook`                                                                          |
+| Schedules            | `/report schedules`                                                                         |
 
 Each table shows at most ten rows with an omitted-row count; `--full` retains
 all available rows. Next steps follow the plan's declared delivery order and
@@ -307,11 +320,26 @@ explicitly enable (`claudeCode`, `codex`) have their confined local usage files
 read. A missing usage capability, ledger, account or future feature produces
 an unavailable source; a subscription never implies known token or cost data.
 
+`museSpark.reports.planMaxBytes` caps the plan file reports read, in bytes.
+No limit unless you set one: `0` (the default) reads the whole plan however
+large, and a plan past a set value is refused with `input-size` drift naming
+your limit. Machine-scoped. In a terminal or an ACP editor the same bound is
+`reportsPlanMaxBytes` in the agent data folder's `settings.json` (`0`, the
+default, reads whole).
+
 The shared CLI/ACP engine supplies the same report data to every editor.
 Installed native editor tabs are certified by M104; the portable MHP 1.2
 report methods are already validated. In a terminal, the command is
 `muse-spark-code-acp report <kind>`; bare `report` retains the problem-report
 command. See the [ACP guide](docs/acp.md#deterministic-reports-m113).
+
+The estimator also checks the workspace plan without forecasting.
+`/estimate --check-plan` checks every plan row independently of any forecast's
+dependency closure and answers empty for a clean plan. Use the flag alone,
+with no goal or other flags; it requires plan-format-v1 and a lane table.
+The exclusive standalone check is `muse-spark-code-acp estimate --check-plan`:
+exit 0 means a clean plan, 1 means problems or an unavailable check, 2 means
+usage.
 
 ![Local report tab with export actions](https://raw.githubusercontent.com/RandyNorthrup/muse-spark-code/main/media/readme/deterministic-report.png)
 
@@ -358,7 +386,8 @@ reason and record the owner. The reviewer charter ships as the
   travel with the message.
 - **Voice dictation at no cost.** Tap or hold the microphone (`Ctrl+D`) and
   speak; the words land at the caret. Windows and macOS use the recogniser
-  built into the operating system, so no audio goes to a paid service unless
+  built into the operating system; Linux x64/arm64 uses offline English Whisper
+  tiny.en after one consented helper and model download, so no audio goes to a paid service unless
   you turn on Muse Voice.
 - **Paid extras, only if you ask.** On a Model API key: web search with its
   sources, image files made on request, and Meta's Muse Voice for
@@ -366,8 +395,10 @@ reason and record the owner. The reviewer charter ships as the
   paid wherever it is used, and tallied in Account & usage.
 - **Scheduled prompts under your control.** On the Model API backend,
   `/loop` saves a recurring prompt in this conversation. By default a due
-  prompt waits for you to run and confirm it; your key is spent only
-  after your consent. Scheduled turns currently cannot read video or audio:
+  prompt waits for you to run and confirm it; unattended v2 delivery is disabled,
+  and the running editor does not request v2 consent or reserve its paid caps.
+  Your key is never spent
+  without your consent. Scheduled turns currently cannot read video or audio:
   verified upload storage, the captured media codec and production calibration bindings are
   unavailable (PLAN D85.6, M105). The shared paid accounting refuses bills
   above an admitted reserve and retains that reserve as uncertain liability.
@@ -400,11 +431,10 @@ reason and record the owner. The reviewer charter ships as the
 ## Screenshots
 
 M106 development: the Model API client paces tagged background requests from
-captured Meta request and token limits. Concurrent responses retain local
-charges, and background work reserves half the observed token budget for the
-foreground. A queued request reports that it is waiting for rate-limit
-headroom, with a separate ten-minute admission deadline; provider idle timing
-starts at dispatch. Gateway-timeout retries remain bounded. Public status
+the provider's observed rate-limit headers and 429 answers, with no invented
+pace of its own. A queued request reports that it is waiting for rate-limit
+headroom and keeps waiting until Stop; retries follow the provider's
+Retry-After and its documented guidance. Public status
 failures expose fixed text and safe status fields. Its service-status read and usage/report
 presentation ports await the integration bindings listed in
 [the lane R certification](docs/certification/m106-r.md).
@@ -446,23 +476,26 @@ so they match the build.
 
 ## What's on out of the box
 
-| Enhancement                                               | Default                                 | First use                                                                      |
-| --------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------ |
-| Observation packing                                       | On, Model API                           | Long outputs shrink after two requests; originals remain recallable            |
-| Hooks                                                     | On, Model API                           | Inert without configured hooks; trusted workspaces only                        |
-| Reply tokens and cost                                     | On, Model API                           | Display only                                                                   |
-| Images, Auto reviewer, child agents and scheduled prompts | Available, Model API                    | Price and shared daily budget in Allow once / Allow always / Deny popup        |
-| Hosted search and Muse Voice                              | Available, Model API                    | Transport refused under the finite daily cap until billing bounds are verified |
-| Best-of-N                                                 | Available as a separate explicit action | Ordinary turns still use one model; its dialog and consent name extra attempts |
-| Dictation                                                 | Free OS recognizer                      | Paid engine choice is separate (`dictationEngine`)                             |
-| Repo map in the prompt                                    | Off                                     | Q11 awaits its paired M75 arm; the repo-map tool remains available             |
+| Enhancement                                               | Default                                 | First use                                                                                                                                                                                                                                                |
+| --------------------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Observation packing                                       | On, Model API                           | Long outputs shrink after two requests; originals remain recallable                                                                                                                                                                                      |
+| Hooks                                                     | On, Model API                           | Inert without configured hooks; trusted workspaces only                                                                                                                                                                                                  |
+| Reply tokens and cost                                     | On, Model API                           | Display only                                                                                                                                                                                                                                             |
+| Images, Auto reviewer, child agents and scheduled prompts | Available, Model API                    | Price and shared daily budget in Allow once / Allow always / Deny popup                                                                                                                                                                                  |
+| Hosted search                                             | Available, Model API                    | Transport refused under the finite daily cap until billing bounds are verified                                                                                                                                                                           |
+| Muse Voice                                                | Available, both backends                | Three-minute recordings reserve the daily budget before connecting; a set conversation cap refuses microphone recordings, and attached audio is transcribed only when its bounded cost still fits the cap; final reported duration supplies the estimate |
+| Best-of-N                                                 | Available as a separate explicit action | Ordinary turns still use one model; its dialog and consent name extra attempts                                                                                                                                                                           |
+| Dictation                                                 | Free OS/offline recognizer              | Paid engine choice is separate (`dictationEngine`)                                                                                                                                                                                                       |
+| Repo map in the prompt                                    | Off                                     | Q11 awaits its paired M75 arm; the repo-map tool remains available                                                                                                                                                                                       |
 
-Explicit `false` settings stay off. Interactive paid extras share
-`museSpark.paidDailyBudgetUsd`: $5/day by default, $0.50–$500, machine-scoped,
-across windows, workspaces and keys in this extension profile. The local
-calendar day owns each durable reservation. Known usage settles its estimate;
-unknown sent usage keeps its full reservation. Corrupt or incomplete storage
-counts as budget reached and refuses paid requests. At the limit choose
+Explicit `false` settings stay off. Interactive paid extras can share a daily
+limit you set, `museSpark.paidDailyBudgetUsd` (none by default; machine-scoped,
+across windows, workspaces and keys in this extension profile). With no limit,
+nothing is checked or written for a paid request. With one, each request's
+reported cost joins the local day's total after it ends; nothing is held for a
+request in flight, and a sent request with unknown usage counts as cost
+unknown, never as its estimate. Unreadable storage refuses paid requests while
+a limit is set. When a request's estimate would pass the limit, choose
 **Raise for Today** or **Stop Until Tomorrow**; both choices are shared on disk.
 Stop remains in force even if another window's pending raise finishes later.
 Cancelling admission refunds an unsent request; late budget-dialog answers
@@ -482,7 +515,7 @@ request settles at its original quote. Accounting
 keeps exact decimal amounts, and paid displays round upward so a positive
 charge is never shown as free. Hosted-search product wiring remains subject
 to the verified billing-bound availability described above.
-Tab's $1/day cap is separate and is never charged into this extras ledger.
+Tab's own daily budget, when the person sets one, is separate and is never charged into this extras ledger.
 The optional per-conversation cap still applies independently. ACP and
 headless execution retain explicit flags and their hard budget policy.
 Muse Code's subscription and its existing explicit key-paid opt-ins are unchanged.
@@ -495,8 +528,19 @@ Muse Code's subscription and its existing explicit key-paid opt-ins are unchange
    [GitHub Release](https://github.com/RandyNorthrup/muse-spark-code/releases):
 
    ```bash
-   code --install-extension muse-spark-code-0.14.0.vsix
+   code --install-extension muse-spark-code-linux-x64-0.14.0.vsix
    ```
+
+   Each release ships one `.vsix` per platform
+   (`muse-spark-code-<target>-<version>.vsix` for `win32-x64`,
+   `win32-arm64`, `darwin-x64`, `darwin-arm64`, `linux-x64` and
+   `linux-arm64`) plus the fallback `muse-spark-code-<version>.vsix`,
+   which carries the Linux helpers and which VS Code serves on platforms
+   without their own package (Alpine and 32-bit ARM Linux servers keep
+   installing the way they always have). Pick the file matching the
+   machine VS Code runs
+   on — in a Remote SSH or Dev Container window, the machine holding
+   the workspace folder.
 
    Other editors install it from
    [Open VSX](https://open-vsx.org/extension/RandyNorthrup/muse-spark-code)
@@ -556,8 +600,10 @@ stopped typing, and does not take the keyboard. After a fixes-only patch a
 quiet notification offers it instead. A fresh install shows nothing. **Muse
 Spark: What's New** (or **What's New** in the panel's palette) opens it any
 time; `museSpark.showWhatsNewOnUpdate` or the page's **Don't show on
-updates** box turns it off. The page's words follow your display language;
-the release notes are in English.
+updates** box turns it off. In an ACP editor (Zed, Neovim, Emacs and the
+others in [Muse Spark in other editors](docs/acp.md)) `/whatsnew` reads the
+same release notes as text, with no model turn. The page's words follow your
+display language; the release notes are in English.
 
 Each panel is its own conversation, started on the first message with the
 standard `muse-spark-1.3` model (never a contributor-tier model by default).
@@ -590,10 +636,12 @@ consent; a changed model or price asks again for its own key. A request whose
 model, consent or hook configuration changes before it goes out sends
 nothing; the last check runs immediately before the request is sent.
 
-The hard daily budget defaults to **$1.00 across every window on this
-machine**, reserved before each request. The status shows today's spend;
-Account & usage shows requests, tokens, cached tokens, today's cross-window
-total, this window's reported cost and your configured budget. Requests
+There is **no daily budget unless you set one**: nothing is reserved or
+locked. When you set `museSpark.tabDailyBudgetUsd`, that budget applies
+across every window on this machine and is reserved before each request.
+The status shows today's spend; Account & usage shows requests, tokens,
+cached tokens, today's cross-window total, this window's reported cost and
+your configured budget (or that no budget is set). Requests
 without reported usage retain their worst-case reservation. The next local
 day, or a larger budget, permits requests again. At the probe's token counts,
 Standard's projected average was $0.00242 per fast request and $0.00706 per
@@ -612,7 +660,7 @@ All Tab settings are machine-scoped:
 | ----------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `museSpark.modelApiTab`       | `true`                                       | Offer Tab, with consent required before the first charge.                                                                                                          |
 | `museSpark.tabModel`          | `muse-spark-1.3`                             | Standard: Meta does not train on your code. The cheaper `muse-spark-1.3-contributor` tier trains on the code sent.                                                 |
-| `museSpark.tabDailyBudgetUsd` | `1`                                          | Hard local-day USD limit, from $0.05 to $50.                                                                                                                       |
+| `museSpark.tabDailyBudgetUsd` | `0` (no budget)                              | Optional local-day USD cap: `0` is no budget, a set budget starts at $0.05 with no maximum.                                                                        |
 | `museSpark.tabLanguages`      | All except plaintext, Markdown and SCM input | Per-language switches over a `"*"` default, like Copilot's enable setting.                                                                                         |
 | `museSpark.tabMultiline`      | `auto`                                       | Automatic requests add context on a blank line or block opener; `onInvoke` and `never` keep automatic requests in fast mode. Explicit Invoke uses multi-line mode. |
 | `museSpark.tabTrigger`        | `onInvoke`                                   | Alt+\ or **Inline Suggest: Trigger**; `automatic` enables typing triggers.                                                                                         |
@@ -747,7 +795,8 @@ with the release's version:
 npm install -g https://github.com/RandyNorthrup/muse-spark-code/releases/download/v<version>/muse-spark-code-acp-<version>.tgz
 ```
 
-**Zed** (tested with Zed 1.20.2): add this to `settings.json`, then pick
+**Zed** (this setup was checked in Zed 1.20.2, against a stand-in for Muse
+Code, not yet in a real conversation): add this to `settings.json`, then pick
 Muse Spark under External Agents in the Agent Panel's new-thread menu.
 
 ```json
@@ -819,10 +868,54 @@ platform ([docs/acp.md](docs/acp.md#install)).
 ```
 
 [docs/ide-compatibility/hosts.md](docs/ide-compatibility/hosts.md) records
-which editors have been tried: so far VSCodium, code-server, Eclipse
-Theia, Cursor, Devin Desktop (formerly Windsurf), Kiro and Positron with
-the extension, and Zed, Emacs (agent-shell), Neovim (CodeCompanion) and
-JupyterLab (Jupyter AI) with the agent.
+which editors have been tried. The extension's integration tests pass in
+VSCodium, Cursor, Devin Desktop (formerly Windsurf), Kiro and Positron.
+code-server and Eclipse Theia ran it only against a stand-in for Muse Code,
+by hand and in checks since deleted, so they are not yet tried for real. The agent has
+run in Zed, Emacs (agent-shell), Neovim (CodeCompanion) and JupyterLab
+(Jupyter AI) only against that stand-in, so none of them is yet tried for
+real either.
+
+## MCP connector for other agents (M124)
+
+**In progress: the local phase.** `muse-spark-code-acp mcp` serves Muse
+Spark Code's tools to another agent on your machine over MCP on stdio:
+Codex, Claude Code and Gemini CLI can list and read your saved prompts,
+preview a prompt share, list schedules and pause one, and generate a
+deterministic report, within what you grant. A write (for now, saving a new
+prompt) waits for **you** to approve it on Muse Spark Code's own approval
+page in your browser; the other agent's Allow, Auto or Bypass cannot
+approve it. Stop never asks. Fleet status, agent outcomes, lanes, teams and
+new schedules answer `unavailable` until their owners expose them. The
+hosted connector for ChatGPT and claude.ai is not built.
+
+If the approval page closes on idle, the next save request opens a fresh
+page. A browser opener failure refuses that request and closes its page;
+after the opener recovers, a new save request can ask for approval again.
+
+Grant a connection in your own terminal, and control it from there:
+
+```sh
+muse-spark-code-acp mcp grant --workspace ~/code/my-project
+muse-spark-code-acp mcp status
+muse-spark-code-acp mcp revoke
+muse-spark-code-acp mcp kill
+muse-spark-code-acp mcp resume
+```
+
+Then add it to your agent. These client commands follow each vendor's
+documentation (read 2026-10-09) and **have not been run against a real
+client**: they write your global client configuration, which this project's
+checks never do, and no client is qualified against this server yet.
+
+```sh
+codex mcp add muse-spark-code -- muse-spark-code-acp mcp
+claude mcp add --transport stdio --scope user muse-spark-code -- muse-spark-code-acp mcp
+gemini mcp add -s user muse-spark-code muse-spark-code-acp mcp
+```
+
+[docs/mcp.md](docs/mcp.md) has every tool and its availability, the grant
+families, the client configuration, the limits and what is recorded.
 
 ## Subscriptions
 
@@ -880,17 +973,69 @@ before sending. Configured API-key and local providers share the captured
 Responses, Chat Completions, Anthropic, Gemini and Ollama codecs; redirects
 are refused and each request pins checked DNS answers. ACP reads the same
 user-level `providers.json`, using its own OS credential store. The terminal
-offers `providers list`, `providers add`, `providers test`, `providers remove`
+offers `providers list`, `providers add`, `providers test`, `providers remove`,
+`providers models <entry> [--add <model>] [--remove <model>]`
 and `auth set|status|clear --provider <id>`. Free checks use the shared
 transport; keys are entered through stdin and stored with their origin.
-Headless `exec --provider` validates configuration, credentials and endpoints,
-then refuses before dispatch until its provider-aware accounting runner exists;
+A provider key is never refused for how it looks: any non-blank key is
+sent to the provider's own free key test, and a refusal shows the
+provider's reason.
+Headless `exec --provider` runs through that same client with model-specific
+request admission, settlement, and refunds for unsent reservations. Each request
+is capped at the model's own output limit; unknown prices refuse.
+For a configured Anthropic key: With no `--model`, exec and ACP use the configured `defaultModel`;
+a missing or unavailable default refuses and lists the configured models.
+Ephemeral exec omits durable usage history and records
+`usageHistory: "omitted_ephemeral"`; ordinary runs retain usage history.
+Command `--help` prints only its own usage; `help reference` prints the catalogue.
+
+```sh
+muse-spark-code-acp exec --backend modelApi --provider anthropic --model anthropic/claude-opus-5-5 --max-budget-usd 0.10 --max-requests 1 --ephemeral --output json "Reply with the single word: ready"
+```
+
+JSON runs show request progress on stderr and return a redacted partial answer
+when stopped, with `finalMessageComplete: false` and the incurred or uncertain
+cost. Structured output still requires validation.
+
+Deep commands have local help, such as `developer status --help`,
+`playbook status --help` and `report usage --help`. The full command,
+setting and feature catalogue is available through `help reference`.
+
 installed-editor and live provider certification are still open. MiniMax
 and Alibaba plan presets await captures, and Hugging Face OAuth awaits
 application registration.
 
-OpenRouter models accept pasted keys.
+OpenRouter’s **Connect OpenRouter Account** opens browser authorization and
+keeps the returned key in the host’s draft until **Save** stores it through
+the same origin-bound key path as a pasted key. Local windows require no
+copy-paste; remote windows ask for the single-use authorization code in a
+password box. Models & Agents and Account & usage read OpenRouter’s key
+endpoint to show total, daily, weekly and monthly usage, the limit and
+remaining balance. Models & Agents reads on open, after Save and on **Refresh**;
+filtering and sorting use the cached observation. Pending reads are shared.
+Missing,
+changed or unreadable credentials discard the previous key's amounts.
+**Cancel**, **Back**, and closing the panel stop pending authorization and
+usage requests; a late connection cannot save a key. A discarded created key
+is named with its removal page. Terminal Connect asks before replacing a
+stored key and cancellation preserves the previous credential. Terminal usage
+retains the exact wire decimals. These are
+free account reads, with no model request. New setups keep no data retention
+(ZDR) routing. A failed read says so instead of displaying zero usage. The ACP agent offers
+`providers connect openrouter` and `providers usage <id>` through the same
+portable flow; see [the terminal and remote-editor guide](docs/acp.md).
 Scan this computer probes each local preset's loopback port and model-list path.
+Local models retain their scanned context window. The provider wizard and
+Models table also accept a positive whole-token **Context window** for each
+model; enter the window actually loaded on the server. Manual values override
+scan values and survive rescans and edits. A missing window is refused before
+inference. LM Studio's captured `/v1/models` list has no window, so enter it
+manually. The ACP CLI accepts `providers add --preset lmstudio --model
+qwen3-0.6b --context-window 8192`; its window applies to all selected models.
+ACP reads the same validated per-model `modelLimits` in user-level
+`providers.json`, including `contextTokens` and `outputTokens` (positive whole
+counts, output no larger than context). Manual and automatic compaction use
+the selected model's saved window.
 Provider exports include subscription configuration without credentials. A
 confirmed import requires credentials to be entered again, clears credentials
 for imported and removed ids, and replaces providers and the validated default
@@ -950,8 +1095,9 @@ Ctrl+Alt+Shift+J (Cmd+Option+J and Cmd+Option+Shift+J on macOS). The view badge,
 tab title and History marker show the count. Native editors use their own
 bindings: these keys conflict with defaults in JetBrains and Visual Studio.
 
-`museSpark.questions.deferAfterSeconds` is machine-scoped: 60 by default,
-0 to wait indefinitely, otherwise 10–3600 seconds (1–9 are read as 10).
+`museSpark.questions.deferAfterSeconds` is machine-scoped: no limit unless
+you set one (0, the default, waits indefinitely; otherwise 10–3600 seconds,
+and 1–9 are read as 10).
 A workspace setting cannot change it. Open questions survive a reload and
 resume, with at most 20 open per session and two reminders per question.
 A late answer is your own message in the current mode and approves nothing.
@@ -1011,7 +1157,8 @@ bundled.
 ## Developer options
 
 `muse-spark-code-acp developer` opens the terminal's machine-local Developer
-options after typed confirmation; `developer status` shows its state. Testing mode is badged and audited, expires, and Reset stops and removes only
+options after typed confirmation; `developer status` shows its state.
+`developer --help` prints its usage; any other misuse reports the usage with exit 2. Testing mode is badged and audited, expires, and Reset stops and removes only
 its recorded profiles. Profile start and cleanup report unavailable until their
 resource owner is bound; no successful cleanup is claimed in its absence.
 Revoking testing authority closes admission immediately and attempts to stop
@@ -1110,6 +1257,20 @@ tools", and probes of 1.4.2 on 2026-10-04 confirmed it
 ([certification](docs/certification/musecode-write-asks.md)). The panel
 warns once per window when Muse Code runs without its sandbox, and
 **Muse Spark: Diagnostics** says where its file tools can write.
+On Linux, where Muse Code's sandbox is bubblewrap with a user namespace, a
+machine that cannot create one (an outer sandbox, or Ubuntu's AppArmor
+default `kernel.apparmor_restrict_unprivileged_userns=1`) stops every
+command Muse Code runs without asking with a `bwrap` error. At host start
+the app probes that same mechanism once, and when the sandbox cannot start
+it says so once in words on every surface — panel notice, editor-protocol
+session update, terminal log — naming the two ways out (turn
+`museSpark.shellSandbox` off, or allow unprivileged user namespaces,
+e.g. an AppArmor profile granting `bwrap` the `userns` rule as
+[Claude Code documents](https://code.claude.com/docs/en/sandboxing)).
+The posture never changes on its own: turning the sandbox off stays your
+choice, and the model hears it once too, so it never reads a failing
+read-only command as a dead shell
+([certification](docs/certification/sandbox-say.md)).
 
 **Protected writes.** On the Model API backend, writes to files that
 configure or run code always ask, whatever the mode: `.git`, `.husky`,
@@ -1177,7 +1338,7 @@ says why when it cannot.
   - Pressing again the same day finds the file already saved with the same
     content and writes nothing.
   - `.agents` is a protected folder, so the save asks first.
-  - A plan may be up to 256 KB.
+  - A plan saves at any size.
   - The file is published by a hard link; on a file system without hard
     links the save is refused rather than risk replacing a file.
   - The reply you approve is shown as the model will get it: a link's
@@ -1233,8 +1394,8 @@ you need to, then **Start New Conversation**, or **Cancel** and nothing
 starts. Starting leaves the old conversation in History and seeds the new
 one with the brief alone — the goal and the open items travel in its note,
 and on the Model API backend the open items become the todo list before
-the first request. The generated or edited brief may be up to 256 KB in
-UTF-8. Cancel closes a handoff before the new conversation commits. A
+the first request. The generated or edited brief reads at any size.
+Cancel closes a handoff before the new conversation commits. A
 brief that is ready while Account & usage, the Agent map or a share file is open waits
 until you close that dialog, then opens.
 
@@ -1253,6 +1414,42 @@ character) starts in a mode that asks, Manual (Plan when that is your
 starting mode), and the panel names the mode. A handoff from a
 conversation in Plan mode stays in Plan.
 
+Automatic compaction, its exact todo continuation and the memory flush are
+implemented in the shared Model API engine and on by default: the M75
+binding run passed on 2026-10-12 (receipts in
+`docs/certification/m101-binding-report.json` and
+`docs/certification/m101-binding-report.md`).
+`museSpark.modelApiAutoCompaction` defaults to `true`; set it to `false` to
+turn the mechanism off. The ACP agent uses the same core: compaction is on
+by default and its first paid use asks once through the editor's permission
+request, naming the model, the price and the daily budget; `--no-auto-compaction`
+turns it off, and where the client cannot show the approval it stays off.
+Headless `exec` never asks, so it compacts only with `--auto-compaction`
+under `--max-budget-usd` (see `docs/ci.md`). Muse Code continues to compact
+itself. A team-worker (child) session never compacts automatically: the
+engine excludes child sessions before any admission is requested, so nobody
+is asked and nothing is charged, and a child that fills its context fails
+that child's turn with the route's context-full stop. A scheduled turn is an
+ordinary turn of its session for this policy and compacts under the same
+per-host rule above.
+
+With the M75 pair passed and the shared paid gate/ledger connected,
+compaction is considered inside your turn after a settled tool batch. A
+registered todo completion can trigger it when the expected token saving
+repays the summary call, cache-write premium and carried debt. Cost decisions
+require at least 50% context occupancy and two ordinary requests since the
+last compaction. At 90% occupancy, protection bypasses those economic guards;
+a classified overflow gets at most one automatic compact-and-retry per turn.
+The first paid charge requires the shared price/daily-budget consent, and
+every attempt is tallied. Stop and final account/key/budget checks still apply.
+
+The memory flush writes a labelled, untrusted host snapshot through the
+ordinary memory permission path: Manual asks; Plan and Restricted Mode refuse
+the write while compaction can continue. The next request restores the exact
+host todo list and goal as data, including completed items. It adds no separate
+model call to guess the list. An unsuccessful summary keeps the existing
+conversation; failed or refused automatic work clears economic debt.
+
 When a Model API turn fills its context window, it reports **Context window
 full: /compact or /handoff**. Ordinary requests are refused locally only when
 their lower input estimate exceeds the full window; a high upper estimate
@@ -1263,249 +1460,4 @@ each dispatched attempt retaining its admitted window and format. The documented
 Muse window applies only to verified legacy Muse ids without a registry resolver;
 an authoritative missing row stays unknown. Provider
 registry wiring must supply each BYO model's window; Ollama needs its loaded
-`num_ctx`, rather than its trained maximum. Automatic recovery remains inactive
-until the evaluation and paid-admission requirements above are satisfied.
-
-Handoff runs on the Model API backend only: on Muse Code the command says
-so, where Muse Code compacts its own conversations. It starts from the
-main conversation, never a side chat.
-
-## Rules, skills and memory
-
-In a trusted workspace the agent follows the same files Muse Code does:
-
-- **Rules:** `AGENTS.md` at the workspace root (`CLAUDE.md` where there is no
-  `AGENTS.md`), and the same files in subdirectories, which apply once the
-  agent touches a path beneath them; the deeper file wins.
-- **Skills:** `.agents/skills/<id>/SKILL.md` in the workspace (project scope)
-  and Muse Code's personal root `~/.config/muse/skills`
-  (`$XDG_CONFIG_HOME/muse/skills` when set). The palette's **Skills** group
-  lists them, `/id arguments` invokes one, and the model loads one itself
-  when a task matches its description. `user-invocable: false` in the front
-  matter keeps a skill out of the palette. The extension also brings four
-  skills of its own; see [Bundled skills](#bundled-skills).
-- **Agents** (Model API backend only): `.agents/agents/<id>/AGENT.md` in the
-  workspace (project scope) and the personal root `~/.config/muse/agents`
-  (`$XDG_CONFIG_HOME/muse/agents` when set), plus the built-in `explore` and
-  `second-opinion`. The folder is this extension's own: the Muse Code CLI
-  names none. The model runs one through `subagent_spawn` with `agent` set to
-  its id; see [Custom agents](#custom-agents).
-- **Memory:** Markdown notes the agent keeps for later conversations, in
-  Muse Code's three places, on both backends; see [Memory](#memory).
-
-**Muse Spark: Create AGENTS.md** starts `AGENTS.md` where the workspace
-root has none. `muse init` writes it when the CLI is installed and the workspace
-is trusted (the CLI's own scaffold, no model call); otherwise the extension
-writes the same layout. An existing `AGENTS.md` is opened, never
-overwritten; a `CLAUDE.md` is not checked, and the new `AGENTS.md` is read
-in its place.
-
-On the CLI backend Muse Code loads the rules, skills and memory itself (the extension starts
-it with `--trust-workspace`), plus its bundled skills and your user rules.
-On the Model API backend the extension loads the files above and nothing
-else:
-
-- **Sizes:** a rules file, a `SKILL.md` or an `AGENT.md` over 64 KB is
-  skipped with a warning in the log (a skill or agent file is read only up to
-  that size, and only when it is a regular file); the rules together are cut
-  at 256 KB, and each scope's `MEMORY.md` at 200 lines or 32 KB.
-- **Encodings:** UTF-8, or UTF-16 with a byte-order mark; a file that is not
-  text is skipped with a line in the log. Memory notes are UTF-8 only, as
-  Muse Code reads them.
-- **Links:** a skill or agent folder may be a symbolic link or junction. In
-  the workspace it must lead to a place inside it or it is skipped; links in
-  the personal root are followed wherever they lead.
-- **The system prompt** also carries the date, the git branch, the number of
-  changed files and the latest commit subjects at session start (metadata
-  only), and a short set of working rules (read before editing, no commits
-  unless asked, `path:line` references).
-
-In VS Code's **Restricted Mode** (an untrusted folder), neither backend loads
-the workspace's rules or skills (Muse Code starts without
-`--trust-workspace`). The Model API backend loads no skills at all, no custom agents or memory,
-offers no memory tools, starts no MCP servers and runs no hooks. No shell command or `git`
-runs (git reads
-the repository's own config, which can name programs to run): `@` mentions
-come from VS Code's file search and the prompt carries no git facts. Trust
-the workspace to enable them. Muse Code itself, by its documentation,
-still reads a repository's committed project memory in an untrusted
-workspace: treat a checkout's `.agents/memory/MEMORY.md` as text someone
-else wrote.
-
-### Bundled skills
-
-The extension ships the three workflows of the
-[high-quality-projects](https://github.com/RandyNorthrup/high-quality-projects-skill)
-package (MIT, one pinned release, vendored into the extension at build time
-and never downloaded while it runs), plus one skill of its own:
-
-- **project_setup:** a new project from a product interview through strict
-  quality gates.
-- **feature_delivery:** a scoped feature or change in an existing project,
-  with tests and red drills.
-- **quality_retrofit:** an existing codebase brought up to strict standards.
-- **muse_gadgets:** Meta's Muse Gadgets devices (ESP32 firmware and Linux
-  services); see [Muse Gadgets](#muse-gadgets). It is a first-party skill the
-  extension authors in its own folder, not part of the vendored package, so
-  the Muse Code install below does not copy it: it is a Model API skill only.
-
-They lean on the package's shared `scripts/`, `templates/` and `docs/`, so
-each workflow is the whole package, never a lone `SKILL.md`. The delivery
-helpers need **Python 3.12 or newer** on your `PATH`; they do not check
-the version, so an older Python fails with an error, and the skill then
-records that gate as deferred. The scripts run only through the shell tool, under the
-conversation's permission mode, like any other command.
-
-- **Model API backend:** they are a third skill source, after the project's
-  and your own: a project or personal skill with the same id wins. They are
-  listed in the palette, invoked with `/project_setup …`, and read by the
-  model like the others. When the model reads one from the extension's
-  package, the skill's text is preceded by one line naming the package
-  folder inside the installed extension, which is the skill's `SKILL_ROOT`.
-- **Muse Code:** the CLI reads only its own folders, so the skills are
-  installed there on request. **Muse Spark: Install Bundled Skills for Muse
-  Code** copies the package to
-  `~/.config/muse/skill-sources/high-quality-projects-skill/`
-  (`$XDG_CONFIG_HOME/muse/…` when set), marks the copy as the extension's
-  (`.muse-spark-bundled.json`), and links each skill into Muse Code's
-  personal skills folder, `~/.config/muse/skills/<id>`: a junction on
-  Windows, a directory symlink on macOS and Linux. A skill of yours with the
-  same name is left alone and named in the result. The first Muse Code
-  conversation in each window offers the install, in the panel, with
-  **Install** and **Not Now** (Not now is remembered); when the extension's
-  packaged release differs from the installed one, it offers **Update** the
-  same way.
-  **Muse Spark: Remove Bundled Skills from Muse Code** removes the links that
-  lead into the marked copy, then the copy, and nothing else. A running Muse
-  Code keeps the skills it started with, so both end by offering to restart
-  it.
-
-`museSpark.bundledSkills` (on by default, machine-scoped) turns them off: the
-Model API backend stops listing them at once, and no install is offered. It
-does not remove an install; the Remove command does. Until then the Model
-API backend, which reads the same personal skills folder, lists an installed
-copy as your own skills.
-
-### Memory
-
-Muse Code keeps memory in three scopes, and both backends read and write the
-same notes, so a fact saved in one is known in the other:
-
-| Scope                                          | Where the notes are                                                              | Who sees them          |
-| ---------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------- |
-| **Your Memory for This Project** (the default) | `~/.local/share/muse/memory/projects/<path-slug>-<hash>`, outside the repository | You, in this workspace |
-| **Project memory**                             | `.agents/memory` in the repository                                               | Everyone who clones it |
-| **Your Memory for Every Project**              | `~/.local/share/muse/memory/personal`                                            | You, everywhere        |
-
-`$XDG_DATA_HOME` replaces `~/.local/share` when it is set (on Windows too, as
-Muse Code does). Each scope may keep a `MEMORY.md` index, one line per note:
-`- [Title](file.md) | hook`.
-Model API memory tools retain their original Stop, permission-mode, trust and
-conversation lifetime across reads, preimage copies and native publication.
-A late refusal preserves the old note; a new note already published stays
-written if its later index update is refused, with an index warning in the log.
-Names with spaces or Markdown punctuation are encoded in the index link, so
-the note can still be found and its line removed when the note is deleted.
-
-- **Memory…** in the palette (`/memory`, or **Muse Spark: Memory** in the
-  Command Palette) lists up to 500 Markdown notes per scope, nested up to
-  eight folders, with each note's scope and what it is about.
-  Pick one to open it in an editor, where you read and change it like any
-  file, or to delete it (to the trash, after a confirmation). **New Note…**
-  asks for the scope, a name and a one-line description, creates the note
-  and opens it. A note the view creates gets its line in the scope's
-  `MEMORY.md`, and a note it deletes loses its lines, so the index the next
-  conversation reads stays true.
-- **On the Model API backend** the model has Muse Code's own memory tools,
-  `read_memory`, `add_memory` and `edit_memory`, with the same arguments and
-  results, so their rows look the same as on the CLI backend. At the start of
-  a conversation it is given each scope's `MEMORY.md` and the names of the
-  other notes (up to 48 per scope), as Muse Code gives them. A new note gets
-  its line in its scope's index. A write asks in Manual, is made in Auto and
-  Edit automatically, and is refused in Plan, like any edit; a read asks
-  only when a hook demands it. A path Muse Code would refuse (outside the scope, hidden, not a
-  `.md` file, or through a link) is refused before any card.
-- **On the CLI backend** Muse Code runs its memory tools itself.
-
-A new note is published only if its path is still free. The extension writes
-and syncs it under a hidden temporary name, then hard-links the complete file
-to the note's name in one step. Another writer's file is never replaced or
-exposed half written; a filesystem without hard-link support refuses the
-create rather than using a partial-write fallback. The index line is added
-only after publication. Updates to an existing note replace it whole (a
-temporary file renamed over it). The extension does not take Muse Code's own
-lock, so two agents updating the same note or index in the same instant could
-lose one of the writes.
-The `.muse-memory.lock` file can remain after its owner exits; its presence
-or stored PID alone does not show that a write is in progress.
-
-### Agent outcomes
-
-The Agent map separates **Active**, **Waiting** (approval, input, queued or
-interrupted) and **Inactive** from an ended agent's outcome: **Complete**,
-**Incomplete**, **Failed**, **Cancelled**, or **Ended, Unverified**. Completion
-needs structured evidence. Budget limits, unfinished task lists and missing
-required checks are incomplete; failed final checks are failed. Final-message
-prose never certifies success. An ordinary native end without proof remains
-unverified.
-
-Select an ended agent for its redacted, size-limited receipt: reported file
-changes and line counts, commands/checks with supplied exits and durations,
-stop reason, final message, and observed attempt history. Missing evidence is
-labelled unavailable. **Continue** asks first, keeps the same child session and
-workspace edits, and sends failure/unfinished items followed by the original
-objective. Current permissions, paid-use consent and budgets still apply.
-**Retry** asks first and refuses when no isolated checkpoint is available.
-Today's children share the workspace or provide no captured checkpoint; shared
-changes are kept. Native ended-child recovery remains unavailable until its
-preservation guarantees are captured; interrupted Resume is unchanged.
-
-Other editors use ACP's local commands without a model request:
-`/agents`, `/agents receipt ID`, `/agents continue ID`, and `/agents retry ID`.
-Recovery asks through the editor's permission prompt even in Bypass. Workflow
-children and background tasks appear too; missing per-agent evidence and
-unsupported recovery are explicit.
-
-### Custom agents
-
-On the Model API backend the model can run specialised agents, each with its
-own prompt, tools, model or effort, and permissions: the built-in `explore`
-(read-only reconnaissance: it reads, searches and lists, and reports back with
-`path:line` references) and `second-opinion` (a high-effort consult told to
-advise rather than act; it keeps the session's tools), plus your own. A custom agent is an `AGENT.md` with
-front matter above a Markdown prompt:
-
-```md
----
-name: reviewer
-description: Reviews a change for risks
-tools: read_file, edit_file
-permission-mode: plan
----
-
-You are a reviewer. Read the change, then report ...
-```
-
-Put it in `.agents/agents/<id>/AGENT.md` in the workspace (project scope) or
-`~/.config/muse/agents/<id>/AGENT.md` (`$XDG_CONFIG_HOME/muse/agents` when
-set), following the skill layout; the folder name is the agent's id, and a
-file agent shadows a built-in or personal one with the same id. Agents load
-once, when the conversation starts. Each folder loads on its own: one that
-cannot be read is named in the log and the others still load. An agent that
-folder might define, or that a file there defines but was skipped (unreadable,
-too large, refused), is refused by name with the folder or file it names,
-never replaced by a personal or built-in agent of the same id; fix or remove
-it and start a new conversation.
-
-- **Front matter.** `name` and `description` are required (at most 64 and 240
-  characters). `tools` is a comma-separated allowlist of tool names,
-  `model` a model id, `effort` one of `minimal`, `low`, `medium`, `high`,
-  `xhigh` or `max`, and `permission-mode` one of `manual`, `acceptEdits`,
-  `plan`, `auto` or `bypassPermissions`; all four are optional. Write each
-  key on one line as `key: value`: a file whose front matter is a list, an
-  indented value or a repeated key, whose `tools` line names no tool, or that
-  holds a control or direction character in a name, description or model is
-  skipped with a line in the log, never guessed at. At most 32 agent files
-  load.
-- **What an agent can do.** It can only narrow what the session already has.
-  A tool out
+`num_ctx`, rather than its trai

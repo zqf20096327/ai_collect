@@ -31,6 +31,7 @@ Works with 23 agents today, and any other that speaks ACP:
 - [[https://docs.github.com/en/copilot/reference/copilot-cli-reference/acp-server][GitHub Copilot]]
 - [[https://www.kimi.com/code][Kimi Code CLI]]
 - [[https://www.codebuddy.ai][CodeBuddy]]
+- [[https://github.com/deepseek-ai/deepseek-harness][DeepSeek Harness]]
 - [[https://kiro.dev][Kiro CLI]]
 - [[https://qoder.com][Qoder CLI]]
 - [[https://github.com/QwenLM/qwen-code][Qwen Code]]
@@ -196,6 +197,25 @@ codebuddy --acp
 #+end_src
 
 See https://www.codebuddy.ai/docs/zh/ide/Getting-Started/Installation for details.
+
+*** DeepSeek Harness
+
+For DeepSeek Harness, install with:
+
+#+begin_src bash
+npm install -g @deepseek-ai/dsh
+#+end_src
+
+The ACP server reads your API key from =DEEPSEEK_API_KEY=.  If Emacs
+does not inherit it from your shell, set it via
+=agent-shell-deepseek-authentication=:
+
+#+begin_src emacs-lisp
+(setq agent-shell-deepseek-authentication
+      (agent-shell-deepseek-make-authentication :api-key "your-key"))
+#+end_src
+
+See https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/acp/acp/README.md for details.
 
 *** Junie
 
@@ -848,6 +868,7 @@ Start a specific agent shell session directly:
 - =M-x agent-shell-goose-start-agent= - Start a Goose agent session
 - =M-x agent-shell-xai-start-grok= - Start a Grok Build (xAI) agent session
 - =M-x agent-shell-cursor-start-agent= - Start a Cursor agent session
+- =M-x agent-shell-deepseek-start-agent= - Start a DeepSeek Harness agent session
 - =M-x agent-shell-junie-start-agent= - Start a Junie agent session
 - =M-x agent-shell-kiro-start-agent= - Start a Kiro CLI agent session
 - =M-x agent-shell-qoder-start-agent= - Start a Qoder CLI agent session
@@ -1144,6 +1165,10 @@ always go to Evil modes if you need to with ~C-z~).
 | agent-shell-cursor-authentication             | Configuration for Cursor authentication.                                        |
 | agent-shell-cursor-environment                | Environment variables for the Cursor agent client.                              |
 | agent-shell-cwd-function                      | When non-nil, a function called to determine the shell’s CWD.                   |
+| agent-shell-deepseek-acp-command              | Command and parameters for the DeepSeek Harness ACP server.                     |
+| agent-shell-deepseek-authentication           | Configuration for DeepSeek Harness authentication.                              |
+| agent-shell-deepseek-default-config-options   | Default DeepSeek Harness config options, applied at session start.              |
+| agent-shell-deepseek-environment              | Environment variables for the DeepSeek Harness ACP server.                      |
 | agent-shell-display-action                    | Display action for agent shell buffers.                                         |
 | agent-shell-dot-subdir-function               | Function used by ‘agent-shell--dot-subdir’ to resolve subdirectory paths.       |
 | agent-shell-droid-acp-command                 | Command and parameters for the Factory Droid ACP client.                        |
@@ -1314,6 +1339,7 @@ always go to Evil modes if you need to with ~C-z~).
 |                                                       | agent-shell-copy-source-block-at-point                  | Copy the rendered fenced code block body at POS (or point) to the kill ring.  |
 |                                                       | agent-shell-cursor-start-agent                          | Start an interactive Cursor agent shell.                                      |
 | C-<tab>                                               | agent-shell-cycle-session-mode                          | Cycle through available session modes for the current `agent-shell' session.  |
+|                                                       | agent-shell-deepseek-start-agent                        | Start an interactive DeepSeek Harness agent shell.                            |
 |                                                       | agent-shell-delete-interaction-at-point                 | Delete interaction (request and response) at point.                           |
 |                                                       | agent-shell-diff-accept-all                             | Accept all changes in the current diff buffer.                                |
 |                                                       | agent-shell-diff-mode                                   | Major mode for `agent-shell' diff buffers.                                    |
@@ -1452,11 +1478,4 @@ always go to Evil modes if you need to with ~C-z~).
 |                                                       | agent-shell-viewport-reply-6                            | Reply with "6" and send immediately.                                          |
 |                                                       | agent-shell-viewport-reply-7                            | Reply with "7" and send immediately.                                          |
 |                                                       | agent-shell-viewport-reply-8                            | Reply with "8" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-9                            | Reply with "9" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-again                        | Reply with "again" and send immediately.                                      |
-|                                                       | agent-shell-viewport-reply-continue                     | Reply with "continue" and send immediately.                                   |
-|                                                       | agent-shell-viewport-reply-more                         | Reply with "more" and send immediately.                                       |
-|                                                       | agent-shell-viewport-reply-yes                          | Reply with "yes" and send immediately.                                        |
-|                                                       | agent-shell-viewport-save-traffic                       | Save agent shell traffic to a .traffic file and reveal it in `dired'.         |
-|                                                       | agent-shell-viewport-search-history                     | Search prompt history, select, and insert into compose buffer.                |
-|                             
+|                                                   

@@ -7,30 +7,35 @@ Every morning a GitHub Actions workflow reads the GitHub trending page, looks up
 ## Live view
 
 <!-- TRACKER_START -->
-### 🔥 AI repos trending today · 2026-10-19
+### 🔥 AI repos trending today · 2026-10-21
 
-10 of 13 trending repositories are AI-related.
+13 of 14 trending repositories are AI-related.
 
 | # | Repo | Language | ⭐ today | ⭐ total | Topics |
 |--:|---|---|--:|--:|---|
-| 1 | [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)<br><sub>Sponsor Star MadsLorentzen / ai-job-search The job search that runs on your machine. AI jo…</sub> | Python | 2,232 | 54,462 | `ai` `ai-agents` `career` `claude-code` |
-| 2 | [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official)<br><sub>Star anthropics / claude-plugins-official Official, Anthropic-managed directory of high qu…</sub> | Python | 1,175 | 42,921 | `claude-code` `mcp` `skills` |
-| 3 | [anomalyco/opencode](https://github.com/anomalyco/opencode)<br><sub>Sponsor Star anomalyco / opencode The open source coding agent.</sub> | TypeScript | 1,414 | 216,948 | – |
-| 5 | [ruvnet/ruflo](https://github.com/ruvnet/ruflo)<br><sub>Star ruvnet / ruflo 🌊 The original agent harness. Deploy intelligent multi-player swarms, …</sub> | TypeScript | 513 | 76,735 | `agentic-ai` `agentic-framework` `agentic-workflow` `agents` |
-| 6 | [akitaonrails/ai-memory](https://github.com/akitaonrails/ai-memory)<br><sub>Star akitaonrails / ai-memory Solution for long term memory for agent coding CLIs and to f…</sub> | Rust | 512 | 10,736 | – |
-| 7 | [stablyai/orca](https://github.com/stablyai/orca)<br><sub>Star stablyai / orca Orca is the place for working with a fleet of agents (e.g. Grok Bot, …</sub> | TypeScript | 1,146 | 97,193 | `ade` `agent-ide` `ai-agents` `automation` |
-| 8 | [HKUDS/CLI-Anything](https://github.com/HKUDS/CLI-Anything)<br><sub>Star HKUDS / CLI-Anything "CLI-Anything: Making ALL Software Agent-Native" -- CLI-Hub: htt…</sub> | Python | 589 | 54,821 | – |
-| 9 | [debpalash/VoiceStudio](https://github.com/debpalash/VoiceStudio)<br><sub>Sponsor Star debpalash / VoiceStudio VoiceStudio is the open-source, fully-local ElevenLab…</sub> | Python | 2,082 | 76,204 | `ai` `audiobook` `cuda` `dubbing` |
-| 11 | [mlabonne/llm-course](https://github.com/mlabonne/llm-course)<br><sub>Star mlabonne / llm-course Course to get into Large Language Models (LLMs) with roadmaps a…</sub> | – | 81 | 84,237 | `course` `large-language-models` `llm` `machine-learning` |
-| 13 | [Comfy-Org/ComfyUI](https://github.com/Comfy-Org/ComfyUI)<br><sub>Star Comfy-Org / ComfyUI The most powerful and modular diffusion model GUI, api and backen…</sub> | Python | 154 | 138,949 | `ai` `comfy` `comfyui` `python` |
+| 1 | [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)<br><sub>Sponsor Star MadsLorentzen / ai-job-search The job search that runs on your machine. AI jo…</sub> | Python | 3,861 | 61,499 | `ai` `ai-agents` `career` `claude-code` |
+| 2 | [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill)<br><sub>Star cloudflare / security-audit-skill A coding-agent skill for multi-phase security audit…</sub> | JavaScript | 1,712 | 34,773 | – |
+| 3 | [stablyai/orca](https://github.com/stablyai/orca)<br><sub>Star stablyai / orca Orca is the place for working with a fleet of agents (e.g. Grok Bot, …</sub> | TypeScript | 1,565 | 100,196 | `ade` `agent-ide` `ai-agents` `automation` |
+| 4 | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail)<br><sub>Sponsor Star DietrichGebert / ponytail Makes your AI agent think like the laziest senior d…</sub> | JavaScript | 1,208 | 170,312 | `agent-skills` `ai-agents` `claude` `claude-code` |
+| 5 | [Comfy-Org/ComfyUI](https://github.com/Comfy-Org/ComfyUI)<br><sub>Star Comfy-Org / ComfyUI The most powerful and modular diffusion model GUI, api and backen…</sub> | Python | 1,206 | 141,041 | `ai` `comfy` `comfyui` `python` |
+| 6 | [ruvnet/ruflo](https://github.com/ruvnet/ruflo)<br><sub>Star ruvnet / ruflo 🌊 The original agent harness. Deploy intelligent multi-player swarms, …</sub> | TypeScript | 684 | 77,993 | `agentic-ai` `agentic-framework` `agentic-workflow` `agents` |
+| 7 | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify)<br><sub>Star Graphify-Labs / graphify Turn any codebase, with its docs, SQL schemas, configs, and …</sub> | Python | 802 | 130,653 | `ai-agents` `antigravity` `ast` `claude-code` |
+| 8 | [anomalyco/opencode](https://github.com/anomalyco/opencode)<br><sub>Sponsor Star anomalyco / opencode The open source coding agent.</sub> | TypeScript | 1,240 | 219,234 | – |
+| 9 | [msitarzewski/agency-agents](https://github.com/msitarzewski/agency-agents)<br><sub>Sponsor Star msitarzewski / agency-agents A complete AI agency at your fingertips - From f…</sub> | Shell | 562 | 162,595 | – |
+| 10 | [headroomlabs-ai/headroom](https://github.com/headroomlabs-ai/headroom)<br><sub>Star headroomlabs-ai / headroom Compress tool outputs, logs, files, and RAG chunks before …</sub> | Python | 549 | 76,896 | `agent` `ai` `anthropic` `claude-code` |
+| 11 | [anthropics/knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins)<br><sub>Star anthropics / knowledge-work-plugins Open source repository of plugins primarily inten…</sub> | Python | 267 | 30,914 | – |
+| 12 | [wshobson/agents](https://github.com/wshobson/agents)<br><sub>Sponsor Star wshobson / agents Multi-harness agentic plugin marketplace for Claude Code, C…</sub> | Python | 93 | 41,358 | `agent-skills` `agentic-ai` `ai-agents` `anthropic` |
+| 14 | [vllm-project/vllm](https://github.com/vllm-project/vllm)<br><sub>Sponsor Star vllm-project / vllm A high-throughput and memory-efficient inference and serv…</sub> | Python | 128 | 94,575 | `amd` `blackwell` `cuda` `deepseek` |
 
 ### 📊 This week so far · 2026-W43
 
 #### Summary
 
-- **10** distinct AI repos trended over 1 day(s) (last week: 27)
-- AI share of all trending slots: **77%** (-1 pts vs last week)
-- Dominant language: **Python** (50% of AI repos)
+- **19** distinct AI repos trended over 3 day(s) (last week: 27)
+- AI share of all trending slots: **82%** (+4 pts vs last week)
+- Dominant language: **Python** (53% of AI repos)
+- Rising topics: `cursor` (+3), `claude-code-plugin` (+2), `cursor-rules` (+2), `pytorch` (+2), `agentic-ai` (+1)
+- New this week: `cursor`, `pytorch`, `cursor-rules`, `claude-code-plugin`
 
 #### Languages
 
@@ -38,10 +43,12 @@ Every morning a GitHub Actions workflow reads the GitHub trending page, looks up
 
 | Language | Repos | Share | Last week |
 |---|--:|--:|--:|
-| Python | 5 | 50% | 10 |
-| TypeScript | 3 | 30% | 7 |
-| Rust | 1 | 10% | 3 |
-| Unspecified | 1 | 10% | 0 |
+| Python | 10 | 53% | 10 |
+| TypeScript | 4 | 21% | 7 |
+| JavaScript | 2 | 11% | 1 |
+| Rust | 1 | 5% | 3 |
+| Unspecified | 1 | 5% | 0 |
+| Shell | 1 | 5% | 1 |
 
 #### Topics
 
@@ -49,37 +56,37 @@ Every morning a GitHub Actions workflow reads the GitHub trending page, looks up
 
 | Topic | Repos this week |
 |---|--:|
-| `claude-code` | 3 |
-| `ai-agents` | 3 |
-| `skills` | 2 |
-| `codex` | 2 |
-| `job-application` | 1 |
-| `job-search` | 1 |
-| `interview-preparation` | 1 |
-| `job-hunting` | 1 |
-| `latex` | 1 |
-| `career` | 1 |
-| `cover-letter` | 1 |
-| `cv` | 1 |
+| `claude-code` | 7 |
+| `ai-agents` | 6 |
+| `mcp` | 4 |
+| `codex` | 4 |
+| `skills` | 3 |
+| `claude` | 3 |
+| `cursor` | 3 |
+| `multi-agent` | 2 |
+| `agentic-ai` | 2 |
+| `opencode` | 2 |
+| `openclaw` | 2 |
+| `cuda` | 2 |
 
 #### Most persistent AI repos
 
 | Repo | Language | Days trending | Stars gained | Total stars |
 |---|---|--:|--:|--:|
-| [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search) | Python | 1 | 2,232 | 54,462 |
+| [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search) | Python | 3 | 9,949 | 61,499 |
+| [stablyai/orca](https://github.com/stablyai/orca) | TypeScript | 3 | 4,301 | 100,196 |
+| [anomalyco/opencode](https://github.com/anomalyco/opencode) | TypeScript | 3 | 3,965 | 219,234 |
+| [Comfy-Org/ComfyUI](https://github.com/Comfy-Org/ComfyUI) | Python | 3 | 2,371 | 141,041 |
+| [ruvnet/ruflo](https://github.com/ruvnet/ruflo) | TypeScript | 3 | 1,761 | 77,993 |
+| [HKUDS/CLI-Anything](https://github.com/HKUDS/CLI-Anything) | Python | 2 | 1,195 | 55,434 |
+| [akitaonrails/ai-memory](https://github.com/akitaonrails/ai-memory) | Rust | 2 | 1,178 | 11,580 |
+| [headroomlabs-ai/headroom](https://github.com/headroomlabs-ai/headroom) | Python | 2 | 859 | 76,896 |
 | [debpalash/VoiceStudio](https://github.com/debpalash/VoiceStudio) | Python | 1 | 2,082 | 76,204 |
-| [anomalyco/opencode](https://github.com/anomalyco/opencode) | TypeScript | 1 | 1,414 | 216,948 |
-| [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) | Python | 1 | 1,175 | 42,921 |
-| [stablyai/orca](https://github.com/stablyai/orca) | TypeScript | 1 | 1,146 | 97,193 |
-| [HKUDS/CLI-Anything](https://github.com/HKUDS/CLI-Anything) | Python | 1 | 589 | 54,821 |
-| [ruvnet/ruflo](https://github.com/ruvnet/ruflo) | TypeScript | 1 | 513 | 76,735 |
-| [akitaonrails/ai-memory](https://github.com/akitaonrails/ai-memory) | Rust | 1 | 512 | 10,736 |
-| [Comfy-Org/ComfyUI](https://github.com/Comfy-Org/ComfyUI) | Python | 1 | 154 | 138,949 |
-| [mlabonne/llm-course](https://github.com/mlabonne/llm-course) | – | 1 | 81 | 84,237 |
+| [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill) | JavaScript | 1 | 1,712 | 34,773 |
 
 ➡️ Last full weekly analysis: [2026-W42](reports/weekly/2026-W42.md) · [all reports](reports/weekly)
 
-_Tracking since 2026-10-01 · 19 day(s) of data · [raw data](data/trending.csv)_
+_Tracking since 2026-10-01 · 21 day(s) of data · [raw data](data/trending.csv)_
 <!-- TRACKER_END -->
 
 ## How it works

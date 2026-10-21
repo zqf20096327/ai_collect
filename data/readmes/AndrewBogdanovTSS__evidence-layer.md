@@ -415,7 +415,7 @@ package's `2` (bad usage) is their "block".
 
 ```yaml
 - uses: actions/checkout@v5
-- uses: AndrewBogdanovTSS/evidence-layer@v0.11.0
+- uses: AndrewBogdanovTSS/evidence-layer@v0.14.0
   with:
     claims: review.md            # comma- or newline-separated
     # receipt: review.md         # needs fetch-depth: 0 and the target branch
@@ -558,7 +558,7 @@ own checks and then checks that something actually runs them - an invariant no
 git hook or CI workflow reaches is a finding, because a rule with no trigger is
 decoration.
 
-The suite is **483 tests** across **38 files**, and that sentence is checked
+The suite is **503 tests** across **38 files**, and that sentence is checked
 too - `check:docs` runs the suite and compares. Change the number and watch it
 fail; a check nobody has seen fail is indistinguishable from a check that
 cannot fail.

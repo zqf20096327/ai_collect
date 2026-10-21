@@ -173,7 +173,7 @@ Change settings with a slash command. There are no config files to edit by hand.
 | Any agent | `/answer-me-with-html config open off`, or just say "stop opening the browser" |
 | Terminal | `am config` to view, `am config set open off` to change, `am config reset` to restore defaults |
 
-The settings are `open` (open pages in the browser), `theme`, `mode` (light or dark), `style` (writing check), `update_check`, `close_after_reply` (close the tab after the reply is copied) and `voice` (video narration). Defaults and values: [reference](docs/reference.md#settings).
+The settings are `open` (open pages in the browser), `theme`, `mode` (light or dark), `style` (writing check), `scale` (text size on the page; diagrams and charts grow with it), `update_check`, `close_after_reply` (close the tab after the reply is copied) and `voice` (video narration). Defaults and values: [reference](docs/reference.md#settings).
 
 ## Always-on mode (recommended)
 
@@ -266,7 +266,7 @@ The agent picks a component by the shape of the information:
 | `annot` | Word-by-word notes on a sentence |
 | `kv` | Metadata, a drawing's title block |
 | `callout` | A conclusion, a tip, a warning |
-| `ask` | A decision you make on the page; the agent's suggestion starts selected |
+| `ask` | A decision you make on the page; the agent's suggestion has a tag; nothing starts selected |
 | Code block | Real code quoted from a file (`src=` `lines=`), or a sketch |
 | Table | Multi-way comparison. Write `ok` / `no` / `warn` in a cell to get ✓ ✗ ! |
 

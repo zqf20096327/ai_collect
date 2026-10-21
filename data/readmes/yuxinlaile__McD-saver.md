@@ -7,14 +7,17 @@
 **让 AI 帮你用最少的钱吃麦当劳** —— Agent Skill + 独立 CLI 二合一
 
 [![在线试算](https://img.shields.io/badge/%F0%9F%8C%90_在线试算-免登录-FFC72C?style=flat-square)](https://yuxinlaile.github.io/McD-saver/demo.html)
-[![Release](https://img.shields.io/badge/Release-v2.2.0-9a3412?style=flat-square)](https://github.com/yuxinlaile/McD-saver/releases/tag/v2.2.0)
+[![Release](https://img.shields.io/badge/Release-v2.4.2-9a3412?style=flat-square)](https://github.com/yuxinlaile/McD-saver/releases/tag/v2.4.2)
+[![Stars](https://img.shields.io/github/stars/yuxinlaile/McD-saver?style=flat-square&label=Stars)](https://github.com/yuxinlaile/McD-saver/stargazers)
+[![CI](https://github.com/yuxinlaile/McD-saver/actions/workflows/ci.yml/badge.svg)](https://github.com/yuxinlaile/McD-saver/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
 ![Dependencies](https://img.shields.io/badge/Dependencies-None%20(stdlib)-green)
-![Tests](https://img.shields.io/badge/Tests-245%20passed-brightgreen)
+![Tests](https://img.shields.io/badge/Tests-317%20passed-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-orange)
+![Agent Skills](https://img.shields.io/badge/Works%20with-Agent%20Skills%20standard-0A7A72)
 ![MCP](https://img.shields.io/badge/MCP-Streamable%20HTTP-purple)
 
-**[🎮 30 秒在线试算（免登录）](https://yuxinlaile.github.io/McD-saver/demo.html) · [📦 快速开始](#快速开始) · [💬 讨论区](https://github.com/yuxinlaile/McD-saver/discussions) · [🛍️ Also on Agensi](https://www.agensi.io/creators/creator-571) · [English](README_EN.md)**
+**[English](README_EN.md) · [🎮 30 秒在线试算（免登录）](https://yuxinlaile.github.io/McD-saver/demo.html) · [📦 快速开始](#快速开始) · [💬 讨论区](https://github.com/yuxinlaile/McD-saver/discussions) · [🛍️ Also on Agensi](https://www.agensi.io/skills/mcd-saver-mcdonald-s-china-order-savings-check)**
 
 </div>
 
@@ -35,7 +38,6 @@
 - [工具能力总览](#工具能力总览)
 - [常见问题](#常见问题)
 - [更新说明](#更新说明)
-- [发布产物与版本策略](#发布产物与版本策略)
 - [反馈与支持](#反馈与支持)
 - [参与贡献](#参与贡献)
 - [免责声明](#免责声明)
@@ -97,13 +99,18 @@
 - 消费画像（客单价/高频单品）+ 积分影子价格
 - 无面值券 `--probe` 实测精确价值；`--html` 生成可分享单文件报告
 
+**📸 一键分享卡**（在线试算页）
+
+- 试算完成后点相机按钮，直接导出 1080×1350 的「省钱账单」图（无第三方依赖，Canvas 绘制）
+- 图内含无券价、最优方案、实付与省下金额，发群里比截图更清楚
+
 **🛡️ 安全与合规设计**
 
 - Token 三通道解析（环境变量/文件/参数），绝不写入日志
 - 401 快速失败、429 指数退避尊重 `Retry-After`、5xx/网络错误自动重试
 - 范围边界：聚焦下单前的省钱决策——不包含爬虫、自动下单、无人值守定时领券等自动化能力
 
-**🧪 测试保障**：245 个单元测试覆盖 SSE 解析、Token 解析、退避计算、比价决策、
+**🧪 测试保障**：317 个单元测试覆盖 SSE 解析、Token 解析、退避计算、比价决策、
 组合优化与 CLI 退出码；`demo.py` 全链路输出被 `tests/test_demo_pipeline.py`
 断言——**demo 即回归测试**。
 
@@ -121,6 +128,9 @@ python demo.py          # 离线全链路：领券→选券→比价→积分→
 31 项菜单 / 9 张券 / 11 条团购示例；支持 **Token 快速导入**——桌面生成命令、
 手机端 Agent 粘贴或 menu.json 文件导入，同步麦当劳 App 全量真实菜单）。
 
+**运行要求**：Python 3.9+（全部功能仅用标准库，无第三方运行时依赖）；跑测试需
+`pip install -r requirements-dev.txt`（`pytest` / `pytest-cov`）。
+
 ### 安装步骤
 
 **第 1 步 · 申请 MCP Token**（方式一/二需要；30 秒体验与在线试算不需要）
@@ -133,7 +143,7 @@ python demo.py          # 离线全链路：领券→选券→比价→积分→
 | 方式 | 适合谁 | 怎么做 |
 |---|---|---|
 | **方式一 · MCP 客户端直连** | 用 WorkBuddy / Cursor / Claude Code 等客户端 | 把 [`config/mcp.example.json`](config/mcp.example.json) 中 `${MCD_MCP_TOKEN}` 换成真实 Token，粘贴到客户端 MCP 设置（位置见[配置说明](#配置说明)）并启用 `mcd-mcp` |
-| **方式二 · Agent Skill 安装** | 想让 Agent 自动触发省钱检查 | `git clone https://github.com/yuxinlaile/McD-saver.git ~/.claude/skills/maimai-saver`（Cursor: `~/.cursor/skills/` · Codex: `~/.agents/skills/` · WorkBuddy: `~/.workbuddy/skills/`，Windows 可直接运行仓库内 `install.ps1`），另按方式一配置 MCP 连接；各平台细节见 [agent-skill-installation.md](references/agent-skill-installation.md) |
+| **方式二 · Agent Skill 安装** | 想让 Agent 自动触发省钱检查 | `git clone https://github.com/yuxinlaile/McD-saver.git ~/.claude/skills/mcd-saver`（Cursor: `~/.cursor/skills/` · Codex: `~/.agents/skills/` · WorkBuddy: `~/.workbuddy/skills/`，Windows 可直接运行仓库内 `install.ps1`），另按方式一配置 MCP 连接；各平台细节见 [agent-skill-installation.md](references/agent-skill-installation.md) |
 | **方式三 · CLI 独立使用** | 脚本与调试，不装任何客户端 | `export MCD_MCP_TOKEN="你的Token"`（或写入 `~/.mcd_mcp_token` 文件），然后 `python scripts/mcd.py check` 验证连通性 |
 
 安装 Skill 后 Agent 会按 `SKILL.md` 自动执行四步检查，并遵守四条规范：
@@ -177,8 +187,8 @@ python scripts/deal_compare.py compare --mcd-face 48.5 --mcd-price 38.5
 ```
 
 > 比价结果为本地估算（团购平台无公开 API），方法论见
-> [group-buy-comparison.md](references/group-buy-comparison.md)；数据层预留
-> `MAIMAI_DEALS_PROVIDER` 插件接口。
+> [group-buy-comparison.md](references/group-buy-comparison.md)；数据层可用
+> `--provider <模块路径>` 显式接入外部数据源（该 .py 会在本机执行，仅在完全信任时使用）。
 
 ## 配置说明
 
@@ -195,9 +205,9 @@ python scripts/deal_compare.py compare --mcd-face 48.5 --mcd-price 38.5
 |---|---|
 | `MCD_MCP_TOKEN` | MCP Token（优先级最高） |
 | `MCD_MCP_TOKEN_FILE` | Token 文件路径，默认 `~/.mcd_mcp_token` |
-| `MCD_MCP_URL` | MCP Server 地址，默认 `https://mcp.mcd.cn` |
-| `MAIMAI_DEALS_FILE` | 团购券库路径，默认 `~/.maimai_saver/deals.json` |
-| `MAIMAI_DEALS_PROVIDER` | 外部数据源模块路径（实现 `load_deals()`），可选 |
+| `MCD_MCP_URL` | MCP Server 地址，默认 `https://mcp.mcd.cn`；**非官方地址默认被拒绝**（请求头带 Token），需显式加 `--allow-non-official-url` 才会放行并打印告警 |
+| `MCD_DEALS_FILE` | 团购券库路径，默认 `~/.mcd_saver/deals.json`（旧名 `MAIMAI_DEALS_FILE` 仍兼容，优先级更低） |
+| `MCD_DATA_DIR` | 券库根目录，默认 `~/.mcd_saver`（旧名 `MAIMAI_DATA_DIR` 仍兼容） |
 
 **MCP 客户端配置位置**：WorkBuddy `~/.workbuddy/mcp.json` · Cursor 设置 → Tools & MCP ·
 Cherry Studio / Trae / VSCode / Kiro 各自 MCP 设置页 · Codex `~/.codex/config.toml` 的
@@ -212,7 +222,7 @@ Cherry Studio / Trae / VSCode / Kiro 各自 MCP 设置页 · Codex `~/.codex/con
 scripts/     核心实现：MCP 客户端、CLI、券组合优化器、沉默成本体检、版本与发布工具
 references/  方法论手册：工具目录、省钱策略、团购比价、场景工作流、MCP 踩坑、排错
 docs/        在线试算页与品牌资源（demo.html / index.html / banner.svg）
-tests/       245 项单元测试 + 规范一致性校验
+tests/       317 项单元测试 + 规范一致性校验
 fixtures/    离线回归数据（菜单、券、订单、积分、商城、团购）
 releases/    发布产物：每版英文压缩包 + 中文说明 + 索引
 ```
@@ -256,7 +266,7 @@ releases/    发布产物：每版英文压缩包 + 中文说明 + 索引
 结果才能作为下单依据。
 
 **Q6：比价数据从哪来？** 美团/抖音无公开 API，券信息手动录入本地券库，结果为估算；
-外部数据源可经 `MAIMAI_DEALS_PROVIDER` 接入。
+外部数据源可用 `--provider <模块路径>` 显式接入（该 .py 会在本机执行）。
 
 **Q7：支持哪些 Agent？** WorkBuddy、Claude Code、Cursor、OpenAI Codex（同一 SKILL.md）。
 
@@ -267,54 +277,45 @@ releases/    发布产物：每版英文压缩包 + 中文说明 + 索引
 
 ## 更新说明
 
-当前版本 **v2.2.0**。近期版本要点：
+当前版本 **v2.4.2**。最近 3 个版本（由 CHANGELOG 自动生成）：
 
+<!-- release-highlights:start -->
 | 版本 | 亮点 |
 |---|---|
-| **v2.2.0** | 测试 171→245 · 覆盖率 76% · 文档一致性进 CI · JSON-RPC 错误码修复 |
-| **v2.1.3** | 滑杆支持直接输入数值 · 移动端卡片裁切修复 |
-| **v2.1.2** | 试算页四维约束滑杆 · 真实运行验证记录 · CI 覆盖率门槛 |
-| **v2.1.1** | 真实计价两阶段优化（Top-K 预筛，调用次数 -60%）|
-| **v2.1.0** | 主动滑动窗口限速（300/min）· 方案排名场景标签 |
-| **v2.0.3** | optimizer 自动衔接团购终局建议（官方 vs 团购一次算清）|
-| v2.0.2 | 移动端文案适配 + 悬浮计算按钮（结果可达性）|
-| v2.0.0 | 版本号自动递增工具（自定义 z.x.y 格式：y≤3、x≤6）|
-| v1.7.4 | 试算页移动端优化（触控 44px / iOS 输入缩放规避）|
-| v1.7.3 | 试算页 Token 快速导入卡片置顶 · 团购示例扩充 11 条 |
-| v1.7.2 | 用券排程升级净价值模型（修正高估）· 客单价口径修正 |
-| v1.7.1 | 省钱等级（S/A/B/C/D）· 参数自动串联技巧 |
-| v1.7.0 | 点餐替换建议（热量代价从小到大）· 口味记忆 · MCP 实战踩坑指南 |
-| v1.6.0 | 用券排程 · 券面值实测 · 可分享 HTML 体检报告 · 离线全链路 demo |
-| v1.5.0 | 营养约束：蛋白质下限 / 钠上限，违规如实标注 |
-| v1.4.x | 多维约束 + 套餐替换 + 积分影子价格 + 一键领券 |
-
+| **v2.4.2** | 退款与重试链路修复 |
+| **v2.4.1** | Star History 图改回 star-history.com 渲染 |
+| **v2.4.0** | `CODE_OF_CONDUCT.md`（改编自 Contributor Covenant 2.1）；README「参与 |
+<!-- release-highlights:end -->
 
 完整变更记录见 [CHANGELOG.md](CHANGELOG.md)，各版本下载见
 [Releases](https://github.com/yuxinlaile/McD-saver/releases)。
 
-## 发布产物与版本策略
+## 反馈与支持
 
-每个版本在 [`releases/`](releases/README.md) 与同名 GitHub Release 上各有一对产物，命名固定：
-
-| 类型 | 命名 | 形式 | 内容 |
-|---|---|---|---|
-| 英文名 | `mcd-saver-v<版本>.zip` | 压缩包 | 对应 tag 的完整源码，解压后根目录 `McD-Saver-v<版本>/` |
-| 中文名 | `麦麦省钱助手-v<版本>-发布说明.md` | 说明文档 | 版本信息、安装指引、该版变更记录、SHA-256 校验 |
-
-- 版本号遵循项目自定义 `z.x.y` 规则（修订号 ≤3、次版本号 ≤6，超限进位），由 `scripts/version.py` 递增并同步发布文件
-- 产物由 `scripts/build_releases.py` 生成与校验：`--all` 构建全部版本、`--verify` 校验命名、配对与压缩包完整性
-- 每个 tag 与同名 Release 一一对应，Release 挂载同名压缩包与说明文档，形成「tag ↔ Release ↔ releases 目录」三方一致
-  （GitHub 资产名不支持非 ASCII：中文说明在 Release 附件中另存为 `mcd-saver-v<版本>-release-notes-zh.md`，
-  内容一致，**中文原名以 `releases/` 目录为准**）
+如有问题或建议，欢迎在 [讨论区留言](https://github.com/yuxinlaile/McD-saver/discussions)，
+或按场景选择：🐛 [提交 Bug 报告](https://github.com/yuxinlaile/McD-saver/issues/new?template=bug_report.md) ·
+💡 [提出功能建议](https://github.com/yuxinlaile/McD-saver/issues/new?template=feature_request.md) ·
+🤝 [分享团购券数据](https://github.com/yuxinlaile/McD-saver/discussions)（助力比价库更全）。
+每一条反馈都会认真查看——这也是试算页持续按真实使用场景优化的依据。
 
 ## 参与贡献
 
-欢迎 Issue / PR / Discussions：工作流文档、中英校对、工具目录更新（以 `tools`
-子命令实时结果为准）。完整流程见 [CONTRIBUTING.md](CONTRIBUTING.md)；
-真实运行留档见 [examples/verified-run.md](examples/verified-run.md)。
+欢迎 Issue / PR / Discussions。动手前请先读 [CONTRIBUTING.md](CONTRIBUTING.md)（开发环境、分支与提交规范、
+发版流程），并遵守[贡献者行为准则](CODE_OF_CONDUCT.md)。
 
-提交前确认：pytest 全过 · 无 Token 等敏感信息 · `references/` 与 `SKILL.md` 同步 ·
-CHANGELOG 补充 · **README 中英同步**。
+| 你可以做什么 | 从这里开始 |
+|---|---|
+| **报 Bug** | [提交 Bug 报告](https://github.com/yuxinlaile/McD-saver/issues/new?template=bug_report.md)——附复现命令与 `--verbose` 输出（**请勿粘贴 Token**） |
+| **提需求** | [提交功能请求](https://github.com/yuxinlaile/McD-saver/issues/new?template=feature_request.md) |
+| **改代码** | 认领 Issue → 从 `main` 拉分支 → 按 [PR 模板](.github/PULL_REQUEST_TEMPLATE.md) 填写 → 提交前跑 `python -m pytest tests/` |
+| **补文档 / 算例** | `references/workflows.md` 补场景、`examples/` 补离线算例；中英校对后跑 `python scripts/check_toc.py` |
+
+**提交前自查**：`python -m pytest tests/` 全过 · 无 Token 等敏感信息 · `references/` 与
+`SKILL.md` 同步 · CHANGELOG 补条目 · **README 中英同步**。
+
+真实运行留档见 [examples/verified-run.md](examples/verified-run.md)；离线算例见
+[examples/three-ways.md](examples/three-ways.md)（一单三种买法）与
+[examples/silent-cost-example.md](examples/silent-cost-example.md)（沉默成本体检读法）。
 
 ## 免责声明
 
@@ -330,14 +331,6 @@ CHANGELOG 补充 · **README 中英同步**。
 集成指南仓库（[M-China/mcd-mcp-server](https://github.com/M-China/mcd-mcp-server)），
 相关使用须遵守其服务条款与上游限制。
 
-## 反馈与支持
-
-如有问题或建议，欢迎在 [讨论区留言](https://github.com/yuxinlaile/McD-saver/discussions)，
-或按场景选择：🐛 [提交 Bug 报告](https://github.com/yuxinlaile/McD-saver/issues/new?template=bug_report.md) ·
-💡 [提出功能建议](https://github.com/yuxinlaile/McD-saver/issues/new?template=feature_request.md) ·
-🤝 [分享团购券数据](https://github.com/yuxinlaile/McD-saver/discussions)（助力比价库更全）。
-每一条反馈都会认真查看——这也是试算页持续按真实使用场景优化的依据。
-
 ## Star History
 
 觉得有用的话，点个 ⭐ 让更多人看到：
@@ -345,6 +338,9 @@ CHANGELOG 补充 · **README 中英同步**。
 <div align="center">
 
 [![Star History Chart](https://api.star-history.com/svg?repos=yuxinlaile/McD-saver&type=Date)](https://star-history.com/#yuxinlaile/McD-saver&Date)
+
+> 曲线由 star-history.com 渲染：对方服务端定期抓取并缓存数据，可能比顶部的实时星数徽章
+> 滞后数小时到一天，**当前星数以顶部 Stars 徽章为准**。
 
 </div>
 

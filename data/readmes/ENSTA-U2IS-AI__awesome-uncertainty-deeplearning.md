@@ -437,6 +437,7 @@ Awesome Conformal Prediction [[GitHub]](<https://github.com/valeman/awesome-conf
 
 - Confidence Should Be Calibrated More Than One Turn Deep [[ACL2026]] (<https://arxiv.org/pdf/2604.05397>)
 - Grace: A generative approach to better confidence elicitation in large language models [[ACL2026]] (<https://arxiv.org/pdf/2509.09438>)
+- Don't Pass@k: A Bayesian Framework for Large Language Model Evaluation [[ICLR2026]](<https://arxiv.org/abs/2510.04265>)
 - Improving Perturbation-based Explanations by Understanding the Role of Uncertainty Calibration [[NeurIPS2025]](<https://openreview.net/forum?id=AjOl3iahHd&referrer=%5Bthe%20profile%20of%20Volker%20Tresp%5D(%2Fprofile%3Fid%3D~Volker_Tresp1)>)
 - Uncertainty Weighted Gradients for Model Calibration [[CVPR2025]](<https://www.arxiv.org/abs/2503.22725>)
 - Smooth ECE: Principled Reliability Diagrams via Kernel Smoothing [[ICLR2024]](<https://arxiv.org/abs/2309.12236>)
@@ -769,6 +770,7 @@ Awesome LLM Uncertainty, Reliability, & Robustness [[GitHub]](<https://github.co
 - Mixture Density Networks (MDN) for distribution and uncertainty estimation [[GitHub]](<https://github.com/axelbrando/Mixture-Density-Networks-for-distribution-and-uncertainty-estimation>)
 - UQLM: Uncertainty Quantification for Language Models [[GitHub]](<https://github.com/cvs-health/uqlm>)
 - SafetyCage: A unified interface for misclassification detection methods (MSP, DOCTOR, Mahalanobis, RED, SPARDACUS) [[GitHub]](<https://github.com/SINTEF/safetycage>)
+- jebadiah-decide: Calibrated per-option probabilities for typed LLM decisions (choice, yes/no, score), read from label-token logits of the open Jebadiah models [[GitHub]](<https://github.com/getainode/jebadiah>)
 
 ## PyTorch
 

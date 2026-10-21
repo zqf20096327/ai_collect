@@ -1,7 +1,7 @@
 # Trae2API-Hub — 国际版、国内版双区多账号网关中枢
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Release-v1.0.0-2496ED?style=flat-square" alt="Version 1.0.0">
+  <img src="https://img.shields.io/badge/Release-v1.1.1-2496ED?style=flat-square" alt="Version 1.0.0">
   <img src="https://img.shields.io/badge/Python-3.11+-blue.svg?style=flat-square" alt="Python">
   <img src="https://img.shields.io/badge/API-OpenAI_Compatible-412991?style=flat-square" alt="OpenAI API">
   <img src="https://img.shields.io/badge/Dual_Realm-CN_%26_Intl-0DBD8B?style=flat-square" alt="Dual Realm">
@@ -12,7 +12,9 @@
 
 **Trae2API-Hub** 把 Trae **国际版**与**国内版**的原生模型服务封装成标准 **OpenAI 兼容 API**，支持 Chat Completions、Responses（Codex / Claude Code）与 Anthropic Messages。项目提供双区账号池、自动换区、模型目录、流式推理、工具调用，以及一套完整的 Web 监控看板。
 
-> **1.0.0 的核心变化：国际版不再需要 Trae 桌面版。**  
+> **1.1.1 的核心变化：一键更新 + 自动检测即时生效。** 看板检测到新版本后会显示顶部徽标与「一键更新」按钮，点击即可下载、备份、替换并自动重启。
+>
+> **1.0.0 的基础：国际版不再需要 Trae 桌面版。**  
 > 修复了旧版本头导致的 `4015` 和错误鉴权方案导致的 `4023`，国际版现在使用当前客户端版本头 + `Authorization: Bearer <access_token>` 直接调用官方 `llm_raw_chat`。**Docker / Linux 无桌面环境可以直接运行**，不需要启动 Trae、调试端口或 `websocket-client`。
 
 ---
@@ -284,6 +286,18 @@ POST /config/restore
 
 ---
 
+## 🔄 版本检测与一键更新
+
+- 看板加载时强制检查 GitHub 最新 Release；有更新时顶部出现「有新版本 → 一键更新」。
+- 设置 → 运行信息也会显示当前版本、最新版本与「一键更新」按钮。
+- 点击后自动：下载 release tarball → 安全解压 → 备份到 `update-backups/` → 替换代码 → 重启网关。
+- 页面轮询 `/health`，检测到新版本后自动刷新；进度与错误写入 `update.log`。
+- 更新过程不会覆盖 `accounts/`、`usage/`、`.git/`、`update-backups/`。
+
+回滚：停止网关，解压最近的 `update-backups/update-*.tar.gz` 覆盖项目目录，再重新启动。
+
+> Docker 部署不支持容器内自更新（重建后文件会丢失）。请使用 `docker compose pull && docker compose up -d`。
+
 ## 🐳 Docker 说明
 
 - 镜像内监听 `0.0.0.0:8791`
@@ -355,6 +369,7 @@ python _diag_gateway.py --chat
 - [x] API Key 日配额 / 模型白名单
 - [x] 按 Key 图形化用量页
 - [x] 配置一键备份 / 恢复
+- [x] 版本检测与一键自动更新
 - [ ] 定时配置备份与保留策略
 - [ ] Webhook / 飞书 / Telegram 告警
 - [ ] 智能成本-延迟路由

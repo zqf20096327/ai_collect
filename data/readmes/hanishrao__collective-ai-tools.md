@@ -325,7 +325,7 @@ Use these hashtags in search to filter out the tools
 - [Baidu GBI](https://www.baidu.com/) - Generative BI and data visualization tool. `#paid`
 - [ChatExcel](https://chatexcel.co/) - Chat-style spreadsheet processing and analysis. `#free`
 - [CSV-GPT](https://getluminal.com/) - Enables users to ask natural language questions about their data and receive instant analysis and insights. `#free`
-- [Datacircle](https://datacircle.dev/) - Query your favorite B2B data APIs through us. Same request, same price, no markup. Use it from Claude, ChatGPT or Cursor: add api.datacircle.dev/mcp as an MCP server. `#freemium` `#mcp`
+- [Datacircle](https://datacircle.dev/) - Datacircle lists all the GTM APIs. Our MCP server is open to anyone, with no key: add api.datacircle.dev/mcp to Claude, ChatGPT or Cursor. `#free` `#mcp`
 - [Dataspot](https://dataspot.com/) - Understand any data instantly using AI `#freemium`
 - [DC Hub](https://dchub.cloud/) - DC Hub is the live data layer for data-center site selection. Its Data Center Power Index (DCPI) is a daily score of where data centers can get grid power, across 300+ markets. Add https://dchub.cloud/mcp as an MCP server in Claude, ChatGPT or Cursor. `#freemium` `#mcp`
 - [Excel Formula Bot](https://excelformulabot.com/) - Create Excel formulas in seconds with AI-powered formula generators. `#freemium`
@@ -468,6 +468,7 @@ Use these hashtags in search to filter out the tools
 - [Fig](https://fig.io/) - Terminal auto-completion (Shutdown 2024). `#free`
 - [Firebase Studio](https://firebase.google.com/) - Google backend and front-end AI integration. `#free`
 - [Fitten Code](https://code.fitten.com/) - Jittor framework high-speed completion tool. `#free`
+- [Frink](https://frink.dev) - Desktop-first, open-source (MIT) application for running parallel agents, and multi-step custom workflows triggered by schedules, webhooks or events from tools like Linear and Sentry, across your already-used providers. `#free` `#opensource`
 - [Fronty](https://fronty.com/) - Converts image/screenshots to HTML/CSS. `#freemium`
 - [Genie](https://genie.ai/) - Simulating human engineer cognitive processes. `#paid`
 - [Gemini CLI](https://github.com/google-gemini/gemini-cli) - Google's open-source AI coding agent for the terminal with Gemini models. `#free` `#opensource`
@@ -1097,6 +1098,4 @@ Use these hashtags in search to filter out the tools
 - [Consensus](https://consensus.app/) - AI-powered research engine that finds and summarizes scientific papers. `#freemium`
 - [Elicit](https://elicit.org/) - AI research assistant that helps you find and analyze academic papers. `#freemium`
 - [Lime AI](https://www.datalimeai.com/) - AI-powered research assistant for data-related tasks, designed to streamline and simplify data research and analysis processes. `#paid`
-- [Musuw](https://musuw.com/) - AI knowledge workspace with cited answers, connected Wiki pages, and a knowledge graph. `#freemium`
-- [NotebookLM](https://notebooklm.google.com/) - Google’s multimodal research thinking assistant. `#free`
-- [Research Rabbit](https://www.researchrabbit.ai/) - AI-powered research discovery and organization t
+- [Musuw](https://musuw.com/) - AI knowledge workspace with cited answers, connected Wiki pages, an

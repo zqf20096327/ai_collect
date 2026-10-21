@@ -7,11 +7,11 @@
 
 <p align="center">
 
-[![Release](https://img.shields.io/github/v/release/VahidAlizadeh/NexQ?style=flat-square&color=blue)](https://github.com/VahidAlizadeh/NexQ/releases/latest)
+[![Release](https://img.shields.io/github/v/release/naxhq/NexQ?style=flat-square&color=blue)](https://github.com/naxhq/NexQ/releases/latest)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
-[![Build](https://img.shields.io/github/actions/workflow/status/VahidAlizadeh/NexQ/release.yml?style=flat-square&label=build)](https://github.com/VahidAlizadeh/NexQ/actions/workflows/release.yml)
-[![Downloads](https://img.shields.io/github/downloads/VahidAlizadeh/NexQ/total?style=flat-square&color=orange)](https://github.com/VahidAlizadeh/NexQ/releases)
-[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6?style=flat-square&logo=windows)](https://github.com/VahidAlizadeh/NexQ/releases/latest)
+[![Build](https://img.shields.io/github/actions/workflow/status/naxhq/NexQ/release.yml?style=flat-square&label=build)](https://github.com/naxhq/NexQ/actions/workflows/release.yml)
+[![Downloads](https://img.shields.io/github/downloads/naxhq/NexQ/total?style=flat-square&color=orange)](https://github.com/naxhq/NexQ/releases)
+[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6?style=flat-square&logo=windows)](https://github.com/naxhq/NexQ/releases/latest)
 [![Tauri](https://img.shields.io/badge/Tauri-2.0-FFC131?style=flat-square&logo=tauri&logoColor=white)](https://v2.tauri.app/)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white)](https://react.dev/)
 [![Rust](https://img.shields.io/badge/Rust-stable-DEA584?style=flat-square&logo=rust&logoColor=white)](https://www.rust-lang.org/)
@@ -31,14 +31,16 @@
 
 🆓 **Free & Open Source** — no subscriptions, no limits, ever
 
-⚡ **10 STT + 8 LLM providers** — from local Whisper & Ollama to cloud Deepgram & OpenAI
+⚡ **10 STT + 9 LLM providers** — from local Whisper & Ollama to cloud Deepgram & OpenAI, or your own Claude subscription
 
 ## Features
 
 - **Dual-party transcription** — captures mic ("You") and system audio ("Them") simultaneously
-- **Real-time AI copilot** — get streaming answers, follow-up suggestions, and meeting recaps from 8 LLM providers
+- **Real-time AI copilot** — get streaming answers, follow-up suggestions, and meeting recaps from 9 LLM providers, including Claude via your own subscription (Beta)
 - **Local RAG pipeline** — index your own documents (PDF, DOCX, TXT, MD) for context-aware AI responses
 - **Gemini Context Cache** — upload documents to Gemini once, skip local embedding entirely for ~3-5s faster queries
+- **Claude subscription (Beta)** — use your own Claude Pro/Max login through the local `claude` CLI, no API key
+- **Automatic updates** — silent background download, one-click restart (installs on quit; never ends a meeting without asking)
 - **10 STT providers** — Web Speech API, Deepgram, Groq, Whisper, ONNX Runtime, and more
 - **Always-on-top overlay** — compact, transparent floating window visible only to you
 - **Bookmarks & action items** — pin key moments and auto-extract tasks
@@ -49,7 +51,7 @@
 
 ## Quick Start
 
-1. **Download** the [latest release](https://github.com/VahidAlizadeh/NexQ/releases/latest)
+1. **Download** the [latest release](https://github.com/naxhq/NexQ/releases/latest)
 2. **Configure** your STT and LLM providers (or use free local models)
 3. **Start** any meeting — NexQ captures system audio automatically
 
@@ -88,7 +90,7 @@ Cache expires after your chosen TTL (30 min – 24 hours). Delete it early from 
 | **Open Source** | Yes | No | No | No |
 | **No Bot Joins** | Yes | No | Yes | Yes |
 | **STT Providers** | **10** | 1 | 1 | 1 |
-| **LLM Providers** | **8** | 1 | 1 | 1 |
+| **LLM Providers** | **9** | 1 | 1 | 1 |
 | **Local LLM** | Yes | No | No | No |
 | **RAG / Doc Context** | Yes | No | No | No |
 
@@ -108,7 +110,7 @@ Cache expires after your chosen TTL (30 min – 24 hours). Delete it early from 
 | Styling | Tailwind CSS 3.4, shadcn/ui |
 | Audio | cpal, WASAPI (Windows loopback) |
 | STT | whisper-rs, ONNX Runtime, Deepgram, Groq, Web Speech API |
-| LLM | OpenAI, Anthropic, Groq, Ollama, LM Studio, Gemini |
+| LLM | OpenAI, Anthropic, Groq, Ollama, LM Studio, Gemini, Claude (your subscription via Claude Code) |
 | Database | SQLite (rusqlite) |
 
 ## Development
@@ -123,7 +125,7 @@ Cache expires after your chosen TTL (30 min – 24 hours). Delete it early from 
 
 ```bash
 # Clone the repository
-git clone https://github.com/VahidAlizadeh/NexQ.git
+git clone https://github.com/naxhq/NexQ.git
 cd NexQ
 
 # Install frontend dependencies

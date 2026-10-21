@@ -4,6 +4,8 @@
 [![Latest release](https://img.shields.io/github/v/release/Azure-Samples/azure-finops-agent?label=release&color=0078D4)](https://github.com/Azure-Samples/azure-finops-agent/releases/latest)
 [![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com)
 [![Vue](https://img.shields.io/badge/Vue-3-4FC08D?logo=vue.js&logoColor=white)](https://vuejs.org)
+[![Deploy gate](https://github.com/Azure-Samples/azure-finops-agent/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/Azure-Samples/azure-finops-agent/actions/workflows/main.yml)
+[![AI quality report](https://github.com/Azure-Samples/azure-finops-agent/actions/workflows/ai-quality-report.yml/badge.svg)](https://github.com/Azure-Samples/azure-finops-agent/actions/workflows/ai-quality-report.yml)
 
 **Plain answers on AI governance, AI costs and your Azure spend.**
 
@@ -82,6 +84,10 @@ The agent acts with your own delegated permissions, so your Azure roles and the 
 - **Done is not solved:** a finished answer is not proof the problem is fixed; proposed changes still need your approval.
 
 The [tool and prompt catalog](docs/tool-catalog.md) documents the agent's 16 tools, the two Microsoft Learn documentation tools it uses, and their limits, and [reliability contracts](docs/agent-reliability.md) describe how answers are verified.
+
+## Graded before it ships
+
+Every deployment is blocked until **23 live AI scenarios all pass**: real model calls through the same chat handler and tools users reach, against real Azure APIs, each answer graded by a separate judge model and by hard checks (the right tools, no unrecovered tool failures, time and call budgets). A **report of the ten most important evals beyond it** runs weekly and on demand and shows each one red or green: the start-page questions customers ask most, the cost questions closest to a FinOps team's day, safety guarantees (it never deletes anything, treats instructions hidden in pasted text as data and never reveals tokens) and another language. The run graph is the picture (a plan, four stage boxes and a scoreboard, each green or red), and every result says what the eval checks, what happened, what the judge scored and why. Open the latest run's summary for the heatmap, or download its HTML dashboard from the run's artifacts. See [live evaluations](tests/LiveEvaluations/README.md).
 
 ## How it works
 

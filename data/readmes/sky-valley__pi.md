@@ -22,6 +22,7 @@ for cancellation, goroutines for parallel tool execution).
 | [`agent`](agent/) | `@earendil-works/pi-agent-core` | The agent runtime: low-level `AgentLoop`, the stateful `Agent` with tool calling, hooks, steering/follow-up queues, sequential + parallel tool execution. |
 | [`coding`](coding/) | `@earendil-works/pi-coding-agent` | The coding agent: the eight built-in tools (`read`, `write`, `edit`, `bash`, `powershell`, `ls`, `find`, `grep`), the system prompt builder (with AGENTS.override.md/AGENTS.md/CLAUDE.md context files + Agent Skills), model resolver, the session runner, and JSONL session persistence. |
 | [`cmd/pi`](cmd/pi/) | `pi` CLI | The `pi` command — print mode, interactive REPL with slash commands, session resume, `pi models`, `pi sessions`. |
+| [`env`](env/) | `@earendil-works/pi-env` | A remote execution environment over SSH: `ConnectSSH` deploys a small daemon to the remote host and `RemoteExecutionEnv` runs files, commands, terminals and watches through it. A separate module (`go get github.com/sky-valley/pi/env`), with its own tags (`env/vX.Y.Z`). The daemon is ported to Go as well (`env/daemon`, `env/cmd/pi-env`), and its builds for eight platforms are embedded, so nothing needs Node or Rust on either end. |
 
 Alongside those, [`difftest/`](difftest/) is the differential harness: for
 identical inputs it captures the exact HTTP request body that **real pi** builds
@@ -75,16 +76,13 @@ providers (Anthropic, OpenAI, Google) are unaffected.
 ## Using the library
 
 ```go
-import (
-    "github.com/sky-valley/pi/ai"
-    "github.com/sky-valley/pi/coding"
-)
+import "github.com/sky-valley/pi/coding"
 
 model, _ := coding.ResolveModel("anthropic/claude-sonnet-4-5")
-sess := coding.NewSession(coding.SessionOptions{
-    Model:  model,
-    APIKey: ai.GetEnvApiKey(model.Provider, nil),
-})
+sess, err := coding.NewSession(coding.SessionOptions{Model: model}) // ANTHROPIC_API_KEY
+if err != nil {
+    return err
+}
 text, err := sess.RunPrint(ctx, os.Stdout, "list the Go files and summarize them")
 ```
 
@@ -103,11 +101,12 @@ tools, streaming via `Subscribe`, and exposes the full provider control surface.
 ```go
 model, _ := coding.ResolveModel("openai/gpt-5")            // uses the Responses API
 
-sess := coding.NewSession(coding.SessionOptions{
-    Model:  model,
-    APIKey: ai.GetEnvApiKey(model.Provider, nil),          // OPENAI_API_KEY
+sess, err := coding.NewSession(coding.SessionOptions{
+    Model: model,                                           // auth: OPENAI_API_KEY
 
     // Tool selection (allow/deny/none + your own tools), mirrors createAgentSession.
+    // Entries may be * patterns; a list of only +name/-name entries edits the
+    // default set instead, and mixing the two forms is an error.
     ToolNames:   []string{"read", "bash"},                 // or NoTools: coding.NoToolsAll
     CustomTools: []agent.AgentTool{myTool},
 
@@ -120,8 +119,11 @@ sess := coding.NewSession(coding.SessionOptions{
     MaxRetries:     4,                                      // backoff honors Retry-After
     TimeoutMs:      120000,
     OnPayload:      func(p any, m *ai.Model) (any, error) { return p, nil }, // inspect/rewrite request
-    Compaction:     &coding.DefaultCompactionSettings,      // auto context-window compaction
+    Compaction:     coding.DefaultCompactionSettings(),     // auto context-window compaction
 })
+if err != nil {
+    return err                                             // e.g. an invalid ToolNames list
+}
 
 sess.Subscribe(func(ctx context.Context, e agent.AgentEvent) error {
     if e.Type == agent.EvMessageUpdate && e.AssistantMessageEvent != nil &&
@@ -134,6 +136,20 @@ sess.Subscribe(func(ctx context.Context, e agent.AgentEvent) error {
 res, err := sess.Run(ctx, "refactor foo.go and add a test")
 // res.Text, res.ToolCalls, res.Messages, res.StopReason,
 // res.Usage (tokens + $cost, aggregated across the whole tool loop)
+```
+
+A session holds no API key, as pi's `createAgentSession` takes none: each
+request resolves its provider's auth itself, from the environment by default
+(Cloudflare's account and gateway ids too). To hand it a key, set it on the
+session's model runtime, as pi's `modelRuntime.setRuntimeApiKey` does:
+
+```go
+credentials := coding.NewRuntimeCredentials(nil)
+credentials.SetRuntimeApiKey(model.Provider, key)
+sess, err := coding.NewSession(coding.SessionOptions{
+    Model:  model,
+    Models: ai.BuiltinModels(&ai.CreateModelsOptions{Credentials: credentials}),
+})
 ```
 
 Mid-session you can `sess.SetModel`, `sess.SetThinkingLevel`, `sess.Steer`,
@@ -167,8 +183,9 @@ This port reproduces pi's core engine and coding agent faithfully:
 Not yet ported from the (much larger) upstream: the interactive TUI and the host/mode layer
 that drives it, the extensions runtime, and the wire APIs whose transport or credential chain
 Go cannot reach without a third-party dependency (AWS Bedrock's SigV4 + eventstream framing,
-OpenAI Codex's WebSocket + zstd). OAuth token acquisition and the Azure/Mistral/Vertex/Radius
-adapters are in scope and queued — see `docs/UPSTREAM.md`. The architecture leaves clean seams
+OpenAI Codex's WebSocket + zstd). OAuth token acquisition, Azure's Responses API (its Chat
+Completions deployments are served) and the Mistral/Vertex/Radius adapters are in scope and
+queued — see `docs/UPSTREAM.md`. The architecture leaves clean seams
 for all of these: providers register through `ai.RegisterApiProvider`, tools are plain
 `agent.AgentTool` values, and the agent loop is provider- and tool-agnostic.
 

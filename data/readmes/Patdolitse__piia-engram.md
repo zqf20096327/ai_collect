@@ -130,7 +130,7 @@ These are current repository facts from `docs/public-facts.json`. Public registr
 
 | | Current repo / development facts |
 |---|---|
-| Version frame | **v4.24.0** (verified 2026-10-11; check PyPI and GitHub Releases for the latest published package) |
+| Version frame | **v4.26.0** (verified 2026-10-21; check PyPI and GitHub Releases for the latest published package) |
 | Supported AI tools | **16** (evidence level varies by client; see Supported Tools and the validation runbook) |
 | MCP tools | **19 Core** (loaded by default) + **40 Advanced** (opt-in via `ENGRAM_TOOLS=all`) |
 | Knowledge types | **3** (lessons, decisions, playbooks) |
@@ -296,7 +296,11 @@ python demos/cross_tool_continuity_demo.py --json
 
 ### Replay experience mode
 
-Offline replays and evaluations that re-feed historical material in chronological order can initialize an isolated store with `"mode": "replay_experience"` in its launcher configuration. The root mode is immutable. Admission requires timezone-aware `admitted_before` and `now` parameters; recall also requires `now`. Historical admission uses the supplied time while receipts keep real timestamps, and automatic same-family exclusion is disabled. Evidence still stops at the decision point's `as_of`. Replay admission keeps nonidentical normalized summaries verified even when template similarity is high; exact duplicates and existing tombstone, retired and archived twin rules still apply. Production duplicate handling and all capacity limits are unchanged. Replay roots may pin `hard_cap` up to 10,000 (for example, 1,400); production roots retain the 1,000 default. Native backups and returned entries carry `store_mode: replay_experience`, and ordinary roots refuse replay roots and marked imports.
+Automated offline and online evaluation callers can use `IsolatedStore.admit(..., event_key="source:event:record:v1")` in either isolated mode to distinguish events with identical text and retry the same event safely. Recall returns a ledger-backed `receipt` with a snapshot identifier, ordered IDs, content hashes and effective filters; `verify_recall_receipt` reports later changes without bodies. Replay callers may also supply `effective_at` and `now` to retire/restore at historical times. An Owner veto hides a card at every time.
+
+Pin the isolated store API with `from piia_engram.isolated_store import require_contract; require_contract("1")` before opening a store. Contract v1 supports `admit(..., supersedes=item_id)` to admit a replacement and deactivate its predecessor in one completion receipt, with crash-safe retries in both modes. Family, subject and the exact opaque `source_decision_point` must match. An active version blocks restoration of another version; rollback appends a new version. Recall also returns and seals a deterministic `result_sha256` over effective cuts, exclusion counts and ordered content references. Incompatible changes require a new contract version, with continued support or `contract_version_unsupported`; existing ledgers remain readable.
+
+Offline replays and evaluations that re-feed historical material in chronological order can initialize an isolated store with `"mode": "replay_experience"` in its launcher configuration. The root mode is immutable. Admission requires timezone-aware `admitted_before` and `now` parameters; recall also requires `now`. Historical admission uses the supplied time while receipts keep real timestamps, and automatic same-family exclusion is disabled. Evidence still stops at the decision point's `as_of`. Replay admission keeps nonidentical normalized summaries verified even when template similarity is high; exact duplicates and existing tombstone, retired and archived twin rules still apply. Without event keys, production duplicate handling is unchanged; all capacity limits still apply. Replay roots may pin `hard_cap` up to 10,000 (for example, 1,400); production roots retain the 1,000 default. Native backups and returned entries carry `store_mode: replay_experience`, and ordinary roots refuse replay roots and marked imports.
 
 The separation prevents accidental mixing, such as using the wrong configuration, attaching another root, or importing an unmarked export. New initialization receipts are bound to the directory identity, and context text retains its replay marker. This is not a tamper-proof boundary against someone who can edit both roots and their ledgers. Existing production roots created before replay mode retain direct attachment without launcher configuration.
 
@@ -907,7 +911,9 @@ pip install piia-engram[secure]
 export ENGRAM_SECRET="your-strong-passphrase"
 ```
 
-Encrypted fields are stored as `enc:v2:...` in JSON files; legacy `enc:v1:...` values still decrypt. Without `ENGRAM_SECRET`, piia-engram works normally with plaintext (backward compatible).
+Encrypted fields are stored as `enc:v2:...` in JSON files; legacy `enc:v1:...` values still decrypt. Unencrypted stores work normally with plaintext (backward compatible).
+
+When store encryption is enabled on the intended root, hook queue bodies and their queue publication intermediates are also protected. This is root-local opt-in: a salt or required queue policy prevents plaintext fallback if only the secret is missing. Every writer must use the intended root; copies must preserve the policy and original salt, with the secret propagated to each host. Incomplete restores that omit both local signals can select plaintext. Quiesce writers during enablement or use the shared policy gate described in the [hook queue scope and recovery guide](docs/hook-queue-protection.md). Downstream archives, digests, quick-context, project snapshots and some knowledge metadata remain plaintext; this is not whole-store or end-to-end encryption.
 
 ### Audit logging (on by default)
 

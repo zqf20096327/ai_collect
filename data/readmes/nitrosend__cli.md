@@ -1,0 +1,245 @@
+# @nitrosend/cli
+
+The Nitrosend command-line interface. Draft campaigns, send tests, run flows, query contacts, and inspect account state — from your terminal or a CI pipeline.
+
+All plans, including free plans, have full access to Nitrosend MCP/API/CLI. The CLI is not a paid-plan feature; plan limits apply to usage volume and paid add-ons.
+
+```bash
+npm install -g @nitrosend/cli
+nitrosend login
+nitrosend
+```
+
+Requires Node.js 18+.
+
+## Quick start
+
+```bash
+nitrosend login            # browser-based OAuth (recommended)
+nitrosend                  # dashboard: account state, blockers, next actions
+nitrosend status           # account health, onboarding, billing
+nitrosend flows list       # your flows
+nitrosend campaigns list   # your campaigns
+```
+
+Add `--json` to any command for a machine-readable envelope. `nitrosend <command> --help` prints a command's usage and examples, and `nitrosend describe <command> --json` returns its input schema (every flag, its type and allowed values, and which are required), safety class and examples.
+
+## What you can do
+
+### Inspect
+
+```bash
+nitrosend whoami                # active profile + the MCP endpoint the CLI calls
+nitrosend status                # live account, billing, preflight checks
+nitrosend flows list            # --status --search --page --per
+nitrosend campaigns list
+nitrosend contacts list         # --query --list-id
+nitrosend lists list
+nitrosend templates list
+```
+
+### Agent Inbox
+
+Agent Inbox commands are thin adapters over the existing `nitro_inbox` and
+`nitro_inbox_action` tools. They require Agent Inbox access for the active
+account and brand.
+
+```bash
+nitrosend inbox list --query billing       # search mailbox conversations
+nitrosend inbox queue                      # prioritized items needing attention
+nitrosend inbox get 123                    # bounded, sanitized thread context
+nitrosend inbox item 456                   # one queue item and its thread context
+
+nitrosend inbox reply 123 --body 'Thanks, we are on it.' --dry-run
+nitrosend inbox reply 123 --body 'Thanks, we are on it.' --confirm 123
+nitrosend inbox reply 123 --body 'Draft reply' --test-to me@example.com --confirm 123
+
+nitrosend inbox action 456 mark-handled
+nitrosend inbox action 456 request-human
+nitrosend inbox action 456 release-to-agent
+nitrosend inbox action 456 mark-quarantine
+```
+
+Reply and action commands receive an automatic idempotency key. Pass
+`--idempotency-key <key>` when a caller needs to retry the same operation with a
+stable key. Real replies and test sends require typed conversation confirmation;
+`--dry-run` validates a reply without sending.
+
+### Send and automate
+
+Send one email (or SMS with `--channel sms`) from your account's sender:
+
+```bash
+nitrosend send --to you@example.com --subject 'Hello' --body 'First send.'
+nitrosend send --to you@example.com --subject 'Hello' --body 'First send.' --dry-run
+```
+
+`send` calls `nitro_send_message`, which requires an idempotency key. The CLI makes one for each run; pass your own `--idempotency-key` to retry the same send safely, since a retry with the same key never sends twice.
+
+The CLI exposes the full Nitrosend MCP surface — every tool an AI agent can call, you can call too:
+
+```bash
+nitrosend mcp tools list
+nitrosend mcp tools call nitro_compose_campaign --args '{...}'
+nitrosend mcp tools call nitro_send_test_message --args '{...}'
+nitrosend mcp tools call nitro_get_status --args '{"include":["account"]}'
+```
+
+Resources and prompts work the same way:
+
+```bash
+nitrosend mcp resources list
+nitrosend mcp resources read nitro://account
+nitrosend mcp prompts list
+nitrosend mcp prompts get build-email --args '{"goal":"welcome series"}'
+```
+
+### Inspect, plan, and replay
+
+```bash
+nitrosend describe campaigns list   # schema + examples + safety class
+nitrosend recent                    # redacted history
+nitrosend redo 1                    # re-run a previous command
+nitrosend redo 1 --explain          # show the resolved plan, don't execute
+nitrosend <any-command> --dry-run   # preview without persisting (where supported)
+```
+
+## Authentication
+
+OAuth (browser-based) is the default:
+
+```bash
+nitrosend login
+```
+
+It opens your browser and prints the sign-in URL to stderr. With `--no-browser` it only prints the URL, for a remote shell or another device.
+
+For CI or headless environments, use an API key — either as an environment variable (nothing written to disk):
+
+```bash
+export NITROSEND_API_KEY=nskey_live_...
+nitrosend status
+```
+
+…or stored in a local profile:
+
+```bash
+nitrosend login --api-key nskey_live_...
+```
+
+No account yet? Create one without a browser. The password is read from stdin, never from a flag:
+
+```bash
+printf '%s' "$PASSWORD" | nitrosend signup --email you@example.com --password-stdin
+```
+
+It creates the account, makes an API key for it, and stores that key as your profile.
+
+`NITROSEND_BEARER_TOKEN` and `NITROSEND_API_KEY` always take precedence over stored profiles. `nitrosend logout` removes the active profile.
+
+Pass `--profile <name>` to `login`, `signup` or any command to keep several accounts side by side. A project's `.nitrosend.yml` can name one with `profile: <name>`, and its commands use that profile unless a flag says otherwise.
+
+Profiles live under your platform config directory (or `NITROSEND_CONFIG_DIR` if set), with directory permissions locked to your user. On shared machines, prefer the env-var form.
+
+## Output and scripting
+
+Every command returns the same envelope under `--json`:
+
+```json
+{
+  "schema_version": 1,
+  "ok": true,
+  "command": "flows list",
+  "data": { "rows": [ ... ] },
+  "meta": { "duration_ms": 142 },
+  "presentation": { "type": "table" }
+}
+```
+
+Errors return `ok: false` with a structured `error` object (`code`, `message`, `retriable`).
+
+Useful flags:
+
+| Flag | Effect |
+|------|--------|
+| `--json`, `--ndjson`, `--csv` | Output mode |
+| `--machine` | Implies `--json --non-interactive --no-color --no-pager` |
+| `--explain` | Print the resolved plan; don't execute |
+| `--dry-run` | Preview changes without persisting (where supported) |
+| `--idempotency-key <key>` | Supply a stable retry key for idempotent mutations |
+| `--yes` | Skip non-destructive confirmations (typed confirmation still required for destructive ops) |
+| `--non-interactive` | Fail closed when input would be required |
+| `--trace` | Write a structured trace to stderr |
+
+JSON stdout is sacred: no spinners, prompts, or upgrade notices ever land there. Anything advisory goes to stderr.
+
+### Exit codes
+
+| Code | Meaning |
+|------|---------|
+| `0`  | Success |
+| `64` | Usage error |
+| `65` | Validation or data error |
+| `69` | Service unavailable / network error |
+| `70` | Internal error |
+| `75` | Temporary, retriable failure |
+| `77` | Authentication or permission error |
+| `78` | Unsupported / outdated CLI |
+
+See [`docs/ux-contract.md`](docs/ux-contract.md) for the full UX contract.
+
+## Configuration
+
+Project-level defaults can live in `.nitrosend.yml`:
+
+```yaml
+profile: default
+environment: production
+output: json
+```
+
+`environment` is a local label: `production`, `staging`, `sandbox`, or `development`, and there is none unless the file sets one. The CLI shows it on command results and in `meta.environment`, and `production` makes every destructive command ask for a typed confirmation. It is not a sandbox. It does not change the endpoint, account, or brand, and commands send real mail under every label, `sandbox` included.
+
+Environment variables:
+
+| Variable | Purpose |
+|----------|---------|
+| `NITROSEND_API_KEY` | API key (highest precedence) |
+| `NITROSEND_BEARER_TOKEN` | Pre-issued OAuth token |
+| `NITROSEND_API_URL` | Override the default endpoint (`https://api.nitrosend.com/mcp`) |
+| `NITROSEND_CONFIG_DIR` | Custom profile storage path |
+
+## Shell completion
+
+```bash
+nitrosend completion bash >> ~/.bashrc
+nitrosend completion zsh > "${fpath[1]}/_nitrosend"
+nitrosend completion fish > ~/.config/fish/completions/nitrosend.fish
+```
+
+## Upgrades
+
+```bash
+nitrosend update                       # show guidance for the installed CLI
+npm install -g @nitrosend/cli@latest   # upgrade
+```
+
+When the API signals a newer version is available, the CLI prints a one-line stderr notice. When the installed version is below the supported minimum, authenticated commands exit non-zero before running. The CLI does not poll the npm registry.
+
+## Related packages
+
+`@nitrosend/cli` is the user-facing CLI. If you're integrating Nitrosend into an MCP-aware AI host (Claude Desktop, Cursor, etc.), use [`@nitrosend/mcp`](https://www.npmjs.com/package/@nitrosend/mcp) — a stdio bridge that proxies MCP traffic from the host to the Nitrosend HTTP endpoint.
+
+## Issues
+
+Bug reports and feature requests: <https://github.com/nitrosend/cli/issues>.
+
+## Working on the CLI
+
+```bash
+npm ci
+npm run typecheck
+npm test
+npm run build
+node dist/index.js --help
+```

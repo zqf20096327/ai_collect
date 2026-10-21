@@ -14,8 +14,8 @@ Source-available, not open source. Free for research and other non-commercial us
 
 ### Why it's interesting
 
-- **It sleeps.** Waking only records episodes and picks an action. Slow memory is rewritten later, in a separate sleep phase.
-- **No backprop, no global loss.** Learning is local reward-prediction error. Dopamine, serotonin, norepinephrine, acetylcholine, and cortisol scale plasticity.
+- **It sleeps.** While awake the core writes only a bounded, decaying **labile** layer (fast bias on Q and Go/NoGo). **Stable** memory — values, habits, channels, cortex, slow affect — changes only in `Agent.sleep()`.
+- **No backprop, no global loss.** Learning is local reward-prediction error on effective (stable + labile) values. Neuromodulators scale state and replay; stable writers are gated (`learning_guard`).
 - **It has a body of feelings and a genome.** An 8-dimensional affect vector biases action. Offspring inherit module coefficients, and a bounded epigenome of traces that already consolidated.
 - **Same mind, different bodies.** A chinchilla colony, a tamagotchi, a virtual company, and a check against published word-emotion norms. Tools are organs. Risky writes wait for a person. No language model in the loop.
 
@@ -148,7 +148,7 @@ Reading order: [Docs/START_HERE_NEW.en.md](Docs/START_HERE_NEW.en.md).
 
 ### Subject
 
-During waking the agent records episodes, activates memory, and selects an action. Consolidation of slow memory and the systemic update of gating channels are performed in the sleep cycle. Neuromodulators scale plasticity. The genome encodes inheritable coefficients of the subsystems; the epigenome carries a bounded set of traces already consolidated. The cognitive core does not import the protocol of external tools.
+During waking the agent records episodes, activates memory, and selects an action using stable plus labile effective values. The host passes elapsed time (`dt` or `advance_time`) and calls `sleep()` when its schedule requires consolidation; stable parameters do not change between sleeps. Neuromodulators modulate state and sleep replay. The genome encodes inheritable coefficients of the subsystems; the epigenome carries a bounded set of traces already consolidated. Host contract and plasticity parameters: [docs/architecture/two-tier-plasticity.en.md](docs/architecture/two-tier-plasticity.en.md). The cognitive core does not import the protocol of external tools.
 
 ### Repository layout
 
@@ -207,6 +207,12 @@ The public license does not allow redistribution or derivative works.
 Modification, redistribution and any commercial use require a separate commercial license from the author.
 Commercial licensing: GitHub [@burlakovmb](https://github.com/burlakovmb).
 If you use this in research, see [CITATION.cff](CITATION.cff).
+
+### Contributing / Участие
+
+Contributions are accepted only by individual invitation from Mikhail Burlakov, the Author and Owner of this repository. If invited, contribute via a public fork and pull request. Your contribution is governed by [CONTRIBUTOR_LICENSE.md](CONTRIBUTOR_LICENSE.md). The project’s source code remains licensed under [PolyForm Strict License 1.0.0](https://polyformproject.org/licenses/strict/1.0.0); see [LICENSE](LICENSE).
+
+Участие возможно только по индивидуальному приглашению от Михаила Бурлакова как Автора и Владельца данного репозитория. Приглашённым контрибьюторам следует работать через публичный форк и pull request. Условия участия заданы в [CONTRIBUTOR_LICENSE.md](CONTRIBUTOR_LICENSE.md). Исходный код проекта по-прежнему распространяется по [PolyForm Strict License 1.0.0](https://polyformproject.org/licenses/strict/1.0.0); полный текст — в [LICENSE](LICENSE).
 
 ---
 
@@ -305,7 +311,7 @@ NOWA — программная модель агента, который жив
 
 ### Предмет
 
-В бодрствовании агент записывает эпизоды, активирует память и выбирает действие. Консолидация медленной памяти и системное обновление каналов допуска выполняются в цикле сна. Нейромодуляторы масштабируют пластичность. Геном кодирует наследуемые коэффициенты подсистем; эпигеном переносит ограниченный набор уже консолидированных следов. Когнитивное ядро не импортирует протокол внешних инструментов.
+В бодрствовании агент записывает эпизоды, активирует память и выбирает действие по эффективным (стабильным + лабильным) значениям. Хост передаёт прошедшее время (`dt` или `advance_time`) и вызывает `sleep()` по своему расписанию; стабильные параметры между снами не меняются. Нейромодуляторы модулируют состояние и replay во сне. Геном кодирует наследуемые коэффициенты подсистем; эпигеном переносит ограниченный набор уже консолидированных следов. Контракт с хостом: [docs/architecture/two-tier-plasticity.ru.md](docs/architecture/two-tier-plasticity.ru.md). Когнитивное ядро не импортирует протокол внешних инструментов.
 
 ### Состав репозитория
 
