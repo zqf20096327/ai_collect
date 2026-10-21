@@ -888,11 +888,15 @@ def pool_by_fullname() -> dict:
 
 
 def pick_pending(pool: dict, limit: int | None, sample: int | None = None) -> list[str]:
-    """待解读 = README 在盘 + 在池 + sha 未解读过(去重索引)。star 降序;
+    """待解读 = README 在盘 + 在池 + sha 未解读过(去重索引)。
+    组内 star 降序;首解读仓(从无卡片)整组排在 sha 变化的重解读仓之前:
+    头部仓 README 周更后新 sha 会按星数插回队首,不降级则每批配额大半
+    被刷新老卡吃掉(10-21 实测一整批 470 张全是刷新、净增为零);
     sample>0 时改为无放回随机抽样(测试用)。"""
     import random as _random
     seen = cstore.load_sha_index()["sha_to_fn"]
-    todo = []
+    done_fn = set(seen.values())          # 已有卡片的仓(fn 口径,跨 sha)
+    fresh, refresh = [], []
     for p in READMES.glob("*.md"):
         fn = p.stem.replace("__", "/")
         rec = pool.get(fn)
@@ -900,9 +904,10 @@ def pick_pending(pool: dict, limit: int | None, sample: int | None = None) -> li
             continue
         if sha_of(readme_path(fn).read_text(encoding="utf-8", errors="ignore")) in seen:
             continue
-        todo.append((rec.get("stars") or 0, fn))
-    todo.sort(reverse=True)
-    fns = [fn for _, fn in todo]
+        (refresh if fn in done_fn else fresh).append((rec.get("stars") or 0, fn))
+    fresh.sort(reverse=True)
+    refresh.sort(reverse=True)
+    fns = [fn for _, fn in fresh + refresh]
     if sample:
         return _random.Random(11).sample(fns, min(sample, len(fns)))
     return fns[:limit] if limit else fns
