@@ -1815,5 +1815,59 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "ahundt/ai-session-search": {
+  "rel_ver": "v1.0.0rc4",
+  "rel_pub": "2026-09-28",
+  "rel_days": 23,
+  "rel_n90": 4,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Rust": 86,
+   "Python": 13,
+   "Shell": 1,
+   "PowerShell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "heuwels/lector": {
+  "rel_ver": "v3.15.0",
+  "rel_pub": "2026-09-12",
+  "rel_days": 39,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 89,
+   "Python": 9,
+   "Shell": 1,
+   "JavaScript": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

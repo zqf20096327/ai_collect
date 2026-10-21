@@ -2403,5 +2403,83 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
- }
+ },
+ "Jamie-Cui/magent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Emacs Lisp": 94,
+   "Python": 6,
+   "Makefile": 0,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "carrythroughsystems/omp-session-gateway": {
+  "rel_ver": "v0.7.7",
+  "rel_pub": "2026-10-14",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "TypeScript": 90,
+   "Shell": 5,
+   "CSS": 2,
+   "HTML": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "liwusen/FaustBot-llm-vtuber": {
+  "rel_ver": "V3.5.2",
+  "rel_pub": "2026-10-15",
+  "rel_days": 6,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 65,
+   "JavaScript": 31,
+   "CSS": 3,
+   "HTML": 1,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "jmwind/weawr": {}
 }

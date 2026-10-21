@@ -1988,5 +1988,53 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "Aurite-ai/agent-verifier": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-09",
+  "rel_days": 12,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Hermes-Deck/hermes-deck": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 6,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 84,
+   "Python": 11,
+   "CSS": 4,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

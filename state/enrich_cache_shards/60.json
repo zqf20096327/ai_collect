@@ -1643,5 +1643,55 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "Ike-li/claude-chat-mobile": {
+  "rel_ver": "v1.13.0",
+  "rel_pub": "2026-09-24",
+  "rel_days": 27,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 88,
+   "TypeScript": 7,
+   "Swift": 3,
+   "HTML": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "xigh/herbert-rs": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Rust": 77,
+   "Metal": 12,
+   "Assembly": 8,
+   "Vue": 2,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

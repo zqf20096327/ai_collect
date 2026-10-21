@@ -1953,5 +1953,57 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "imprvhub/mcp-browser-agent": {
+  "rel_ver": "0.10.0",
+  "rel_pub": "2026-09-27",
+  "rel_days": 24,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 78,
+   "JavaScript": 20,
+   "Dockerfile": 3
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "tamanitomo/tamanitomo": {
+  "rel_ver": "v3.16.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 74,
+   "JavaScript": 16,
+   "CSS": 5,
+   "Go Template": 2,
+   "Shell": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

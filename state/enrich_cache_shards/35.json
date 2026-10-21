@@ -2151,5 +2151,28 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "huggingface/lerobot-annotate": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 48,
+   "JavaScript": 31,
+   "HTML": 10,
+   "CSS": 10,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

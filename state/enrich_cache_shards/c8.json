@@ -1684,5 +1684,58 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
- }
+ },
+ "AutoEmbed/AutoEmbed": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-03-03",
+  "rel_days": 232,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 50,
+   "TypeScript": 48,
+   "Batchfile": 1,
+   "Shell": 1,
+   "NSIS": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "infaton/MCP35": {
+  "rel_ver": "v6.2.8",
+  "rel_pub": "2026-10-16",
+  "rel_days": 5,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "1C Enterprise": 93,
+   "JavaScript": 7
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "perazz/fortran-lapack": {},
+ "wujing855/academic-workbench": {}
 }

@@ -2265,5 +2265,54 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "ryannli/tiny-roommate": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 73,
+   "Python": 16,
+   "HTML": 11,
+   "Rust": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "The-AgenticFlow/openflows": {
+  "rel_ver": "openflows-1.7.1",
+  "rel_pub": "2026-10-09",
+  "rel_days": 12,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Rust": 91,
+   "Shell": 4,
+   "Python": 3,
+   "HCL": 2,
+   "Makefile": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

@@ -1933,5 +1933,55 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "Lianues/PureTavern": {
+  "rel_ver": "v0.1.12",
+  "rel_pub": "2026-07-31",
+  "rel_days": 82,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 71,
+   "TypeScript": 15,
+   "HTML": 9,
+   "CSS": 3,
+   "Swift": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "chimit/prompt": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-07-11",
+  "rel_days": 102,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PHP": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

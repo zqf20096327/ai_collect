@@ -1869,5 +1869,57 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "mirror29/inalpha": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-09-21",
+  "rel_days": 30,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 62,
+   "TypeScript": 37,
+   "Shell": 1,
+   "CSS": 0,
+   "D2": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "yagi-agent/yagi": {
+  "rel_ver": "v0.0.47",
+  "rel_pub": "2026-09-01",
+  "rel_days": 50,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Go": 98,
+   "Makefile": 1,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

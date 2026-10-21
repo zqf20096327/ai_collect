@@ -1491,5 +1491,86 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "vertz-dev/vertz": {
+  "rel_ver": "v0.2.80",
+  "rel_pub": "2026-05-02",
+  "rel_days": 172,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "TypeScript": 69,
+   "Rust": 26,
+   "MDX": 5,
+   "JavaScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "ninocss/UntisPlus": {
+  "rel_ver": "v5.6.2",
+  "rel_pub": "2026-09-28",
+  "rel_days": 23,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Dart": 92,
+   "Kotlin": 3,
+   "Swift": 3,
+   "C++": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "xiabai2008/ruoyi-scan": {
+  "rel_ver": "v1.5.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 9,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 89,
+   "TypeScript": 8,
+   "HTML": 1,
+   "JavaScript": 1,
+   "Rust": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

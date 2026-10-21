@@ -1984,5 +1984,80 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "najeed/ai-agent-eval-harness": {
+  "rel_ver": "v1.1",
+  "rel_pub": "2026-04-02",
+  "rel_days": 202,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 83,
+   "TypeScript": 12,
+   "JavaScript": 5,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "bernoussama/lazyshell": {
+  "rel_ver": "v1.0.12-16",
+  "rel_pub": "2025-07-01",
+  "rel_days": 477,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 91,
+   "Shell": 7,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "ziming/laravel-scrapingbee": {
+  "rel_ver": "2.25",
+  "rel_pub": "2026-09-17",
+  "rel_days": 34,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "PHP": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }
