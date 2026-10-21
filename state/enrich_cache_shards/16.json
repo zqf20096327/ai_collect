@@ -2210,5 +2210,29 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "peakflames/PolarionMcpServers": {
+  "rel_ver": "v0.20.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C#": 94,
+   "Python": 6
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

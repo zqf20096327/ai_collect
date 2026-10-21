@@ -1717,5 +1717,28 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "AI-SDC/SACRO-ML": {
+  "rel_ver": "v2.0.1",
+  "rel_pub": "2026-09-25",
+  "rel_days": 26,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

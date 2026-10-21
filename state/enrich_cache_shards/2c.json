@@ -1756,5 +1756,56 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "mobinbiback/Subify": {
+  "rel_ver": "v2.9.30",
+  "rel_pub": "2026-10-13",
+  "rel_days": 8,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 80,
+   "HTML": 20
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "janus-llm/janus-llm": {
+  "rel_ver": "v4.5.4",
+  "rel_pub": "2025-03-03",
+  "rel_days": 597,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Python": 66,
+   "Assembly": 29,
+   "Fortran": 2,
+   "M": 2,
+   "MATLAB": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

@@ -2296,5 +2296,58 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "phoityne/pty-mcp-server": {
+  "rel_ver": "pty-mcp-server-0.2.2.0",
+  "rel_pub": "2026-07-13",
+  "rel_days": 100,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Haskell": 53,
+   "Shell": 30,
+   "Dockerfile": 14,
+   "Batchfile": 3
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "velane-sh/velane": {
+  "rel_ver": "v0.9.3",
+  "rel_pub": "2026-08-07",
+  "rel_days": 75,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Go": 68,
+   "TypeScript": 22,
+   "HCL": 5,
+   "PLpgSQL": 2,
+   "Python": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

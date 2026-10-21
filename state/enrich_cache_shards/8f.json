@@ -2423,5 +2423,73 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "brave-chat/brave-chat-server": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-08-22",
+  "sec_ids": [
+   "GHSA-hg36-255r-jgmh(-,critical)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 96,
+   "Makefile": 3,
+   "Dockerfile": 1,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "mobius-os/mobius": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "Python": 62,
+   "JavaScript": 33,
+   "CSS": 2,
+   "Shell": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "gerdm/reinforcement-learning": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

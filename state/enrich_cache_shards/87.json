@@ -1758,5 +1758,32 @@
    "contrib": "20261020",
    "lang": "20261020"
   }
+ },
+ "backbay-labs/thrunt-god": {
+  "rel_ver": "v0.3.6",
+  "rel_pub": "2026-04-11",
+  "rel_days": 193,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 90,
+  "lang": {
+   "JavaScript": 70,
+   "TypeScript": 29,
+   "CSS": 1,
+   "Shell": 0,
+   "Go Template": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

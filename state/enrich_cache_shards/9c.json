@@ -1662,5 +1662,77 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
- }
+ },
+ "Kommunicate-io/Kommunicate-Web-SDK": {
+  "rel_ver": "v6.5",
+  "rel_pub": "2021-02-04",
+  "rel_days": 2085,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 64,
+  "lang": {
+   "JavaScript": 80,
+   "CSS": 9,
+   "HTML": 7,
+   "SCSS": 4,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "DanWahlin/github-azure-agentic-journeys": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {},
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "zoompilot/jetlink": {
+  "rel_ver": "edge",
+  "rel_pub": "2026-09-29",
+  "rel_days": 22,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Swift": 47,
+   "Python": 33,
+   "Shell": 8,
+   "Kotlin": 7,
+   "C": 3
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "runify-dev/runify": {}
 }

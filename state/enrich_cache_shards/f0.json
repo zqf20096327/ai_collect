@@ -2035,5 +2035,57 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "Azornes/Comfyui-Model-Resolver": {
+  "rel_ver": "v1.2.1",
+  "rel_pub": "2026-09-12",
+  "rel_days": 39,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 47,
+   "Python": 46,
+   "CSS": 7
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "Ashif4354/StreamStorm": {
+  "rel_ver": "v4.2.0",
+  "rel_pub": "2026-03-10",
+  "rel_days": 225,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "JavaScript": 52,
+   "Python": 40,
+   "CSS": 6,
+   "Makefile": 1,
+   "Inno Setup": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

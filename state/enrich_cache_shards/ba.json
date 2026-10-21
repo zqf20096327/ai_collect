@@ -1772,5 +1772,59 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "bydtesla1609/rucareer": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-08-26",
+  "rel_days": 56,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 55,
+   "JavaScript": 19,
+   "CSS": 11,
+   "HTML": 7,
+   "TypeScript": 3
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "7757/Fan-Browser-Agent": {
+  "rel_ver": "v0.4.3",
+  "rel_pub": "2026-08-15",
+  "rel_days": 67,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 71,
+   "JavaScript": 14,
+   "TypeScript": 14,
+   "CSS": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
  }
 }

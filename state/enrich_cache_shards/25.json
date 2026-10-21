@@ -1935,5 +1935,84 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
- }
+ },
+ "md2docx/mdast2docx": {
+  "rel_ver": "1.6.1",
+  "rel_pub": "2025-10-31",
+  "rel_days": 355,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 67,
+   "SCSS": 18,
+   "JavaScript": 14,
+   "Shell": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "node-llm/node-llm": {
+  "rel_ver": "core-v1.17.1",
+  "rel_pub": "2026-09-13",
+  "rel_days": 38,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 2,
+   "PLpgSQL": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "bluebear-io/baloo-bear": {
+  "rel_ver": "v2.5.0",
+  "rel_pub": "2026-09-23",
+  "rel_days": 28,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 93,
+   "HTML": 3,
+   "TypeScript": 2,
+   "CSS": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261021",
+  "dim_ts": {
+   "release": "20261021",
+   "security": "20261021",
+   "contrib": "20261021",
+   "lang": "20261021"
+  }
+ },
+ "google-deepmind/levintreesearch_cm": {}
 }
