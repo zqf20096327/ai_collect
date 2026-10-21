@@ -71,7 +71,8 @@ jobs:
       # ENRICH_SKIP=true 时整步跳过(本地富集窗期间暂停远端,防两边重复烧;
       # 本地窗收工后把变量改回 false 或删掉即恢复,无需改代码)
       - name: s7 富集(分层增量:未到期零调用,到期才采)
-        if: vars.ENRICH_SKIP != 'true'
+        if: false   # 临时暂停(2026-10-21):富集由 enrich-hourly 小时窗冲刺接力,
+                    # 夜间窗不再烧富集配额;冲刺收工后改回 vars.ENRICH_SKIP != 'true' 即恢复
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >

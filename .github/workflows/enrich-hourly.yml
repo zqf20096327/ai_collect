@@ -5,7 +5,8 @@ name: enrich-hourly
 # 富集全部完成后删除本文件(或注释掉 schedule)即可停。
 on:
   schedule:
-    - cron: "0 0-12,14-23 * * *"   # 每小时整点;与 collect 的互斥已由共组 state-writer 保证,cron 不再需要避让
+    - cron: "17 0-12,14-23 * * *"  # 每小时第 17 分:避整点 GHA 排队拥挤(同 atlas :17 修法);
+                                   # 与 collect 的互斥仍由共组 state-writer 保证,cron 无需避让
   workflow_dispatch: {}             # 手动可触发
 
 permissions:
@@ -33,7 +34,7 @@ jobs:
           python-version: "3.12"
 
       # 45 分钟自限时 + 0 跨窗等待:配额触保即优雅退出,接力交给下一小时窗
-      # (整点起跑对齐 GITHUB_TOKEN 整点重置,每窗都是满额配额小时)
+      # (:17 起跑避整点 GHA 排队;配额触保退出逻辑不变)
       - name: s7 富集(小时窗,断点接力)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
