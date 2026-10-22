@@ -2754,5 +2754,31 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "meshery-extensions/tcslabs-academy": {
+  "rel_ver": "v2.2.3",
+  "rel_pub": "2026-07-15",
+  "rel_days": 99,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 28,
+  "lang": {
+   "Makefile": 67,
+   "Jupyter Notebook": 31,
+   "JavaScript": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }
