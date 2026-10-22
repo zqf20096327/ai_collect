@@ -2672,5 +2672,53 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "PNNL-CompBio/coderdata": {
+  "rel_ver": "v2.2.1",
+  "rel_pub": "2025-10-07",
+  "rel_days": 380,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Jupyter Notebook": 87,
+   "Python": 10,
+   "R": 3,
+   "Shell": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "DasDigitaleMomentum/strix-halo-cuda-combined-toolbox": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Shell": 69,
+   "Python": 17,
+   "Dockerfile": 14
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

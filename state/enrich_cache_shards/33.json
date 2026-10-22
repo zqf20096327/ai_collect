@@ -3074,5 +3074,53 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "gtesei/agentic_design_patterns": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-06-10",
+  "rel_days": 134,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 72,
+   "TypeScript": 20,
+   "Shell": 8
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "autotraderuk/fastapi-mlflow": {
+  "rel_ver": "0.8.0",
+  "rel_pub": "2026-04-10",
+  "rel_days": 195,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

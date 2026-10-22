@@ -2724,5 +2724,57 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "lomi-dev/lomi": {
+  "rel_ver": "v0.6.1",
+  "rel_pub": "2026-10-18",
+  "rel_days": 4,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 57,
+   "TypeScript": 31,
+   "JavaScript": 8,
+   "CSS": 2,
+   "Python": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "SilvioBaratto/stockpy": {
+  "rel_ver": "v0.3.2",
+  "rel_pub": "2023-11-20",
+  "rel_days": 1067,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 71,
+   "Jupyter Notebook": 29,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

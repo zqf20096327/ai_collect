@@ -2893,5 +2893,26 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "LibraryCarpentry/lc-machine-learning": {
+  "rel_ver": "pre-workbench",
+  "rel_pub": "2024-05-07",
+  "rel_days": 898,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 17,
+  "lang": {},
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

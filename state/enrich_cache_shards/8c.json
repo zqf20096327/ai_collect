@@ -2218,5 +2218,29 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
- }
+ },
+ "microsoft/github-copilot-workshops-full": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Java": 25,
+   "C#": 24,
+   "HTML": 19,
+   "Jupyter Notebook": 9,
+   "Python": 8
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "vastxie/ai-worldcup-2026": {}
 }

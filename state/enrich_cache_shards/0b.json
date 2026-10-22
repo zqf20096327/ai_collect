@@ -2771,5 +2771,86 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "docdyhr/simplenote-mcp-server": {
+  "rel_ver": "v1.18.3",
+  "rel_pub": "2026-10-21",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 97,
+   "Shell": 3,
+   "Dockerfile": 0,
+   "TypeScript": 0,
+   "Go Template": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "vanvuongngo/ClaraN": {
+  "rel_ver": "app-v0.2.8",
+  "rel_pub": "2025-10-08",
+  "rel_days": 379,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Kotlin": 44,
+   "TypeScript": 40,
+   "Rust": 10,
+   "CSS": 4,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "core0-io/nio": {
+  "rel_ver": "v2.5.1",
+  "rel_pub": "2026-06-22",
+  "rel_days": 122,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 80,
+   "Shell": 7,
+   "JavaScript": 5,
+   "HTML": 5,
+   "Python": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

@@ -2943,5 +2943,55 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "Azure-Samples/azure-openai-rag-workshop-java": {
+  "rel_ver": "latest",
+  "rel_pub": "2024-06-13",
+  "rel_days": 861,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Bicep": 55,
+   "TypeScript": 21,
+   "Java": 8,
+   "Shell": 8,
+   "Dockerfile": 6
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "orvi2014/Baar-Core": {
+  "rel_ver": "v0.7.1",
+  "rel_pub": "2026-05-18",
+  "rel_days": 157,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

@@ -2474,5 +2474,32 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "ron3899/aftercode": {
+  "rel_ver": "v0.1.4",
+  "rel_pub": "2026-06-18",
+  "rel_days": 126,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 78,
+   "TypeScript": 19,
+   "Dockerfile": 1,
+   "CSS": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

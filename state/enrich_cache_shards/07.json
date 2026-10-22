@@ -2578,5 +2578,32 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "pzivich/publications-code": {
+  "rel_ver": "v2026.07.20",
+  "rel_pub": "2026-07-20",
+  "rel_days": 94,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 52,
+   "Jupyter Notebook": 31,
+   "R": 8,
+   "SAS": 8,
+   "Stata": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

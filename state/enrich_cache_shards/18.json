@@ -2384,5 +2384,27 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "ani03sha/distributed-rag-system": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 93,
+   "Makefile": 4,
+   "Shell": 2,
+   "Mako": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

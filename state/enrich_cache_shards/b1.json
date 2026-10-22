@@ -2786,5 +2786,32 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "estebanbaigts/Yumi": {
+  "rel_ver": "v0.1.0-alpha.10",
+  "rel_pub": "2026-10-14",
+  "rel_days": 8,
+  "rel_n90": 9,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Swift": 87,
+   "TypeScript": 7,
+   "HTML": 5,
+   "Python": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }
