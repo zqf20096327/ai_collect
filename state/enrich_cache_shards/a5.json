@@ -2562,5 +2562,26 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "f2k-jul23/La-Noire-foobar2000": {
+  "rel_ver": "V1.07",
+  "rel_pub": "2026-03-03",
+  "rel_days": 233,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

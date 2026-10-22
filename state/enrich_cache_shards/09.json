@@ -2192,5 +2192,49 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "bartczernicki/ArtificialIntelligence-Presentations": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "ranasl62/ehr-risk-framework": {
+  "rel_ver": "EHR-RISK-FRAMEWORK-1.1.1",
+  "rel_pub": "2026-07-22",
+  "rel_days": 92,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 58,
+   "TypeScript": 30,
+   "HTML": 8,
+   "CSS": 3,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

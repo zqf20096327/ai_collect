@@ -2577,5 +2577,35 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "flisk-sh/flisk": {
+  "rel_ver": "v1.3.204",
+  "rel_pub": "2026-10-22",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": "low",
+  "sec_last": "2026-10-08",
+  "sec_ids": [
+   "GHSA-phgf-pww4-7jxc(-,medium)",
+   "GHSA-3hj3-f39v-j2x5(-,low)"
+  ],
+  "contrib_n": 34,
+  "lang": {
+   "TypeScript": 52,
+   "Starlark": 23,
+   "Python": 8,
+   "JavaScript": 7,
+   "Shell": 7
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

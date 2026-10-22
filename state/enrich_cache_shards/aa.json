@@ -2328,5 +2328,55 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "antonko/gigachat-adapter": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2025-08-21",
+  "rel_days": 427,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Dockerfile": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "OpenHeartDevelopers/CemrgApp": {
+  "rel_ver": "v3.0-beta",
+  "rel_pub": "2026-03-26",
+  "rel_days": 210,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C++": 97,
+   "CMake": 3,
+   "Python": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

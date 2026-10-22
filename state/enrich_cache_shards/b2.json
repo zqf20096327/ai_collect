@@ -2241,5 +2241,76 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "serkannpolatt/REAL-LIFE-DATA-SCIENCE-PROJECTS": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 93,
+   "HTML": 6,
+   "Python": 1,
+   "Roff": 0,
+   "PureBasic": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "scikit-learn/blog": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 24,
+  "lang": {
+   "SCSS": 46,
+   "Jupyter Notebook": 34,
+   "HTML": 18,
+   "Python": 1,
+   "Ruby": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "namastexlabs/automagik-hive": {
+  "rel_ver": "v1.0.0rc7",
+  "rel_pub": "2025-11-21",
+  "rel_days": 335,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 90,
+   "Makefile": 8,
+   "Shell": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

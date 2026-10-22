@@ -2002,5 +2002,81 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "tunabirgun/arf": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-07-15",
+  "rel_days": 99,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Svelte": 58,
+   "JavaScript": 30,
+   "CSS": 12,
+   "Rust": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "magicdrive/ark": {
+  "rel_ver": "v6.7.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 99,
+   "Shell": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "gtzjh/mymodels": {
+  "rel_ver": "0.13.0",
+  "rel_pub": "2025-12-31",
+  "rel_days": 295,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 90,
+   "Jupyter Notebook": 10
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

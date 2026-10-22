@@ -2664,5 +2664,85 @@
    "lang": "20261022"
   }
  },
- "abbcreat-cyber/stepfun-harness": {}
+ "abbcreat-cyber/stepfun-harness": {
+  "rel_ver": "v1.0.11",
+  "rel_pub": "2026-10-11",
+  "rel_days": 11,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 93,
+   "JavaScript": 6,
+   "CSS": 0,
+   "C#": 0,
+   "NSIS": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "vul-os/vulos": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-08-14",
+  "rel_days": 69,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 62,
+   "TypeScript": 24,
+   "Shell": 5,
+   "HTML": 3,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Jaluus/MaskTerial": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2025-07-01",
+  "rel_days": 478,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 84,
+   "Python": 13,
+   "Cuda": 2,
+   "JavaScript": 1,
+   "C++": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ }
 }

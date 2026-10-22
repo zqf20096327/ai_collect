@@ -2657,5 +2657,30 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "Rorical/VaMMCP": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-08-20",
+  "rel_days": 63,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 89,
+   "Shell": 8,
+   "PowerShell": 3
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

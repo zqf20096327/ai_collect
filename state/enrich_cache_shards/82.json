@@ -2775,5 +2775,82 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "UselessToys/Ecosystem_WebUI": {
+  "rel_ver": "v0.36-Beta",
+  "rel_pub": "2026-07-31",
+  "rel_days": 83,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 74,
+   "TypeScript": 24,
+   "Shell": 1,
+   "JavaScript": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "austinrockman/reflector": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-07-23",
+  "rel_days": 91,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Xsxdot/handoff": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 10,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Go": 68,
+   "TypeScript": 17,
+   "HTML": 11,
+   "CSS": 1,
+   "Swift": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

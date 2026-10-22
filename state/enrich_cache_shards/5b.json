@@ -2643,5 +2643,28 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "AGiXT/python-sdk": {
+  "rel_ver": "v0.0.82",
+  "rel_pub": "2026-01-25",
+  "rel_days": 270,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }
