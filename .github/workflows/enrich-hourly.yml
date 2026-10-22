@@ -1,8 +1,9 @@
 name: enrich-hourly
 
-# 临时冲刺:每小时一个 s7 小时窗(断点接力,未到期零调用),剩余 ~2.5 万 tail 仓
-# 每窗 ~3400 仓(75 调用/分钟 × 45 分钟),约 8 个小时窗收完全部到期目标。
-# 富集全部完成后删除本文件(或注释掉 schedule)即可停。
+# 临时冲刺:每小时一个 s7 小时窗(断点接力,未到期零调用)
+# 10-22 提速:worker 数非瓶颈,吞吐被 CORE_PACE 按小时摊薄(实测 3.2s/仓匀速);
+# 52 分钟窗 + 低配额起窗先睡到重置点再全速(--wait-windows 1),全速 ~75 调用/分,
+# 每窗 ~2000+ 仓(视配额余量)。富集全部完成后删除本文件(或注释 schedule)停。
 on:
   schedule:
     - cron: "17 0-12,14-23 * * *"  # 每小时第 17 分:避整点 GHA 排队拥挤(同 atlas :17 修法);
@@ -20,7 +21,7 @@ concurrency:
 jobs:
   enrich:
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    timeout-minutes: 60
     env:
       PROXY: ""
       PYTHONUNBUFFERED: "1"
@@ -33,14 +34,14 @@ jobs:
         with:
           python-version: "3.12"
 
-      # 45 分钟自限时 + 0 跨窗等待:配额触保即优雅退出,接力交给下一小时窗
-      # (:17 起跑避整点 GHA 排队;配额触保退出逻辑不变)
+      # 52 分钟自限时 + 1 次跨窗等待:配额触保(rem≤800)先睡到重置点再全速,
+      # 不整窗爬行;worker 12 只为吸收偶发慢请求,吞吐仍由 CORE_PACE 管
       - name: s7 富集(小时窗,断点接力)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
           python s7_enrich.py --tier all
-          --max-calls 5000 --max-minutes 45 --wait-windows 0 --workers 6
+          --max-calls 5000 --max-minutes 52 --wait-windows 1 --workers 12
 
       - name: commit & push
         if: always()   # 配额触保/超时退出也保住本窗断点
