@@ -3118,5 +3118,118 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "zhongkaiyu/ChipMATE": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 98,
+   "Shell": 1,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "fabriziosalmi/iamnotacoder": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2025-05-05",
+  "rel_days": 535,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "alexellis/rigmark": {
+  "rel_ver": "v0.0.4",
+  "rel_pub": "2026-10-06",
+  "rel_days": 16,
+  "rel_n90": 4,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "HzcIrving/SOTAFollow": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "branover/hexgraph": {
+  "rel_ver": "hexgraph-v0.9.0",
+  "rel_pub": "2026-07-07",
+  "rel_days": 107,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 87,
+   "TypeScript": 11,
+   "CSS": 1,
+   "Dockerfile": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

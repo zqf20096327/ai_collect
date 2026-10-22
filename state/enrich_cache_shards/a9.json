@@ -2850,5 +2850,144 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "huggingface/ioi": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 86,
+   "Shell": 14
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "rouralberto/zim-llm": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "Shell": 3
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "doobidoo/MCP-Context-Provider": {
+  "rel_ver": "v2.0.0-alpha.1",
+  "rel_pub": "2026-03-08",
+  "rel_days": 228,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 94,
+   "JavaScript": 6
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Agnuxo1/openclaw-seed": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-05-05",
+  "rel_days": 170,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "JavaScript": 1,
+   "Dockerfile": 0,
+   "Procfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "baahaus/flock": {
+  "rel_ver": "v0.11.0",
+  "rel_pub": "2026-06-09",
+  "rel_days": 135,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 91,
+   "Shell": 9
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "github/copilot-engine-sdk": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-09-01",
+  "rel_days": 51,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "TypeScript": 56,
+   "Go": 41,
+   "Shell": 3
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

@@ -3124,5 +3124,97 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "cld-maindev/codex-synaptic": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 78,
+   "JavaScript": 18,
+   "Python": 3,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "roychowdhuryresearch/gsw-memory": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 83,
+   "Jupyter Notebook": 17
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "ant-research/meta-agent-challenge": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-06-03",
+  "rel_days": 141,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 86,
+   "Shell": 14,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "visserle/AnkiOps": {
+  "rel_ver": "v0.6.6",
+  "rel_pub": "2026-07-14",
+  "rel_days": 100,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "CSS": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

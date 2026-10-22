@@ -2856,5 +2856,28 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "uw-math-ai/TheoremSearch": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Jupyter Notebook": 70,
+   "Python": 25,
+   "Shell": 2,
+   "Lean": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

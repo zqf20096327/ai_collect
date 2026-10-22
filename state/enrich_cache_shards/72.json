@@ -3003,5 +3003,146 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "kks0488/vibe-claude": {
+  "rel_ver": "v6.0.0",
+  "rel_pub": "2026-10-09",
+  "rel_days": 13,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 88,
+   "TypeScript": 12,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "yyysjz1997/Time-RA": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 82,
+   "Jupyter Notebook": 13,
+   "Shell": 5
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "foreverse-app/character-card-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Eurekashen/R2Seg": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 94,
+   "Cuda": 5,
+   "C++": 1,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Rin313/StegLLM": {
+  "rel_ver": "v1.4.1",
+  "rel_pub": "2025-08-20",
+  "rel_days": 428,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 79,
+   "Astro": 17,
+   "Shell": 3,
+   "Batchfile": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "yreidev/workbuddy2api-panel": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 23,
+  "lang": {
+   "Go": 87,
+   "TypeScript": 11,
+   "Python": 1,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

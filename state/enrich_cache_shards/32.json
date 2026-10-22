@@ -3055,5 +3055,104 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "C4rohan/Lampline": {
+  "commit_90d": 108,
+  "commit_7d": 108,
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 0,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 72,
+   "TypeScript": 25,
+   "JavaScript": 1,
+   "Shell": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "commit": "20261022",
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "gautierdag/plancraft": {
+  "rel_ver": "v0.4.9",
+  "rel_pub": "2025-07-05",
+  "rel_days": 474,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "guanyang/llm-wiki": {
+  "rel_ver": "v2.0.2",
+  "rel_pub": "2026-04-19",
+  "rel_days": 186,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "mpaymenremora/CacheCraft": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 76,
+   "Go": 24,
+   "Makefile": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

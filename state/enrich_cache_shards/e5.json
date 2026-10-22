@@ -2480,5 +2480,55 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "ConsciousML/prompt-engineering-hub": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-05-11",
+  "rel_days": 164,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Dicklesworthstone/source_to_prompt_tui": {
+  "rel_ver": "v0.3.4",
+  "rel_pub": "2026-07-03",
+  "rel_days": 111,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 50,
+   "HTML": 37,
+   "JavaScript": 6,
+   "Shell": 4,
+   "PowerShell": 3
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

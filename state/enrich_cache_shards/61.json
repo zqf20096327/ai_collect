@@ -2557,5 +2557,85 @@
   "sec_last": null,
   "sec_ids": [],
   "contrib_n": 0
+ },
+ "llmsecrets/llm-secrets": {
+  "rel_ver": "v3.1.0-macos",
+  "rel_pub": "2026-02-03",
+  "rel_days": 261,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 40,
+   "Shell": 38,
+   "PowerShell": 14,
+   "HTML": 7,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "agencyenterprise/GlossoGen": {
+  "rel_ver": "v0.13.6",
+  "rel_pub": "2026-10-22",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 79,
+   "TypeScript": 16,
+   "Jinja": 4,
+   "Jupyter Notebook": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "hev/vibecheck": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2025-11-13",
+  "rel_days": 343,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 92,
+   "JavaScript": 6,
+   "Shell": 2,
+   "Ruby": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

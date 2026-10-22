@@ -2032,13 +2032,16 @@
    "TypeScript": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261022"
+  },
+  "commit_90d": 13,
+  "commit_7d": 11
  },
  "awrshift/agent-memory-kit": {
   "rel_ver": "v7.2.3",
@@ -2543,5 +2546,130 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "Human-Centric-Machine-Learning/counterfactual-llms": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 94,
+   "Python": 6,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "clifton/rstructor": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-08-05",
+  "rel_days": 78,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "EasyMetaAu/helm-api": {
+  "rel_ver": "v0.30.52",
+  "rel_pub": "2026-10-21",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 93,
+   "Svelte": 6,
+   "CSS": 0,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "cobusgreyling/NVIDIA-Nemotron-3-Super": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 94,
+   "Jupyter Notebook": 6,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "maquina-app/recuerd0": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Ruby": 54,
+   "HTML": 34,
+   "CSS": 9,
+   "JavaScript": 3,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Nahuel990/Baldanders": {
+  "rel_ver": "v0.1.5",
+  "rel_pub": "2026-10-17",
+  "rel_days": 5,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false
  }
 }

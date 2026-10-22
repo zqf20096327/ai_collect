@@ -2042,13 +2042,16 @@
    "PowerShell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261022"
+  },
+  "commit_90d": 268,
+  "commit_7d": 16
  },
  "n3428093-rgb/rl-gym-forge": {
   "rel_ver": null,
@@ -2995,6 +2998,77 @@
    "CSS": 54,
    "HTML": 34,
    "JavaScript": 13
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "agentprojectcontext/apx": {
+  "rel_ver": "v2.8.1",
+  "rel_pub": "2026-10-22",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 64,
+   "TypeScript": 32,
+   "Java": 2,
+   "HTML": 2,
+   "CSS": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "frankhommers/autodesk-fusion-mcp": {
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-09-26",
+  "rel_days": 26,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 97,
+   "JavaScript": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "litemars/LLM-Fingerprinter": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
   },
   "enriched_at": "20261022",
   "dim_ts": {

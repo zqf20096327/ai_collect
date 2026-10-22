@@ -1362,13 +1362,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261019",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261022"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "microsoft/m365-copilot-automated-readiness-assessment": {
   "rel_ver": null,
@@ -2779,5 +2782,165 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "Sidiora-Labs/paxeer-monorepo": {
+  "commit_90d": 6787,
+  "commit_7d": 668,
+  "rel_ver": "hpx-registry-87945ae90ce045296d595537c140faabd028d724",
+  "rel_pub": "2026-10-04",
+  "rel_days": 18,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Go": 31,
+   "Rust": 25,
+   "TypeScript": 12,
+   "C": 7,
+   "Elixir": 7
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "commit": "20261022",
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "BauplanLabs/DBPLANBENCH": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 68,
+   "Rust": 29,
+   "Shell": 1,
+   "Jupyter Notebook": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "termaxa/termaxa": {
+  "rel_ver": "v0.21.5",
+  "rel_pub": "2026-10-22",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 6,
+  "sec_worst": "high",
+  "sec_last": "2026-10-13",
+  "sec_ids": [
+   "GHSA-3hg6-x893-mfr4(-,high)",
+   "GHSA-36jf-95xr-37f2(-,medium)",
+   "GHSA-rv66-7qcx-c45j(-,high)",
+   "GHSA-m854-p747-v3gw(-,medium)",
+   "GHSA-p2fg-58v6-j4fx(-,medium)",
+   "GHSA-gxg4-5fmj-534m(-,medium)"
+  ],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 98,
+   "Shell": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "fseixas/super-geo-agent-readiness": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "jshiv/cronicle": {
+  "rel_ver": "v0.8.1",
+  "rel_pub": "2026-10-15",
+  "rel_days": 7,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Go": 98,
+   "HCL": 1,
+   "Shell": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Cansiny0320/token-speed-tester": {
+  "rel_ver": "desktop-v1.1.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 10,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 92,
+   "HTML": 6,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "GobbyAI/gobby": {
+  "rel_ver": "ghook-v0.7.2",
+  "rel_pub": "2026-07-15",
+  "rel_days": 99,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false
  }
 }

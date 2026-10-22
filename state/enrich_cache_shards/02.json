@@ -2608,5 +2608,31 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "sx4im/skillcheck": {
+  "rel_ver": "v0.13.1",
+  "rel_pub": "2026-10-10",
+  "rel_days": 12,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "TypeScript": 71,
+   "JavaScript": 17,
+   "HTML": 7,
+   "CSS": 5
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

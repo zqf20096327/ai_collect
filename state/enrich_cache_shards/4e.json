@@ -2623,5 +2623,132 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "vidispine/hull": {
+  "commit_90d": 40,
+  "commit_7d": 24,
+  "rel_ver": "hull-demo-1.37.1",
+  "rel_pub": "2026-10-22",
+  "rel_days": 0,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 63,
+   "Go Template": 26,
+   "PowerShell": 4,
+   "Ruby": 4,
+   "Java": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "commit": "20261022",
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "jrm-code-project/llambda": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Common Lisp": 95,
+   "C++": 3,
+   "Python": 1,
+   "CMake": 0,
+   "C": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "JavdexLabs/Javdex": {
+  "rel_ver": "v0.9.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 4,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 85,
+   "JavaScript": 10,
+   "CSS": 4,
+   "C++": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Wenaixi/dsh-ponytail": {
+  "rel_ver": "v5.6.1",
+  "rel_pub": "2026-10-18",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 64,
+   "TypeScript": 36
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "shimo-lab/modelmap": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Jupyter Notebook": 87,
+   "Python": 9,
+   "TeX": 4,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

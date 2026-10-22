@@ -1309,13 +1309,16 @@
   "lang": {
    "TeX": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261022"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "kayba-ai/Kyoko": {
   "rel_ver": null,
@@ -1332,13 +1335,16 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261022"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "esa/dSGP4": {
   "rel_ver": "v1.5.1",
@@ -2740,6 +2746,60 @@
   "contrib_n": 1,
   "lang": {
    "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "CloudSilk/CloudSilk": {
+  "rel_ver": "v0.2.3",
+  "rel_pub": "2026-08-15",
+  "rel_days": 68,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 88,
+   "TypeScript": 8,
+   "C#": 3,
+   "Less": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "MaxwellCalkin/sentinel-ai": {
+  "rel_ver": "v0.85.0",
+  "rel_pub": "2026-03-09",
+  "rel_days": 227,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 90,
+   "TypeScript": 6,
+   "HTML": 4,
+   "Shell": 0,
+   "JavaScript": 0
   },
   "enriched_at": "20261022",
   "dim_ts": {

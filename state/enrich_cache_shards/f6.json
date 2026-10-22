@@ -1838,13 +1838,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261019",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261022"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "SDLLL/claude-for-safari": {
   "rel_ver": null,

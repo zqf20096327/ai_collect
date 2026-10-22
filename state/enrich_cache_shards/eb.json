@@ -1386,13 +1386,16 @@
    "Python": 1,
    "HTML": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261022"
+  },
+  "commit_90d": 69,
+  "commit_7d": 20
  },
  "JonJLevesque/Helix": {
   "rel_ver": null,
@@ -2032,13 +2035,16 @@
    "CSS": 3,
    "Shell": 2
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261022"
+  },
+  "commit_90d": 174,
+  "commit_7d": 172
  },
  "scitex-ai/automated-research-demo": {
   "rel_ver": "v0.1.0",
@@ -2708,6 +2714,107 @@
   "contrib_n": 1,
   "lang": {
    "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "fjwood69/mori": {
+  "rel_ver": "v2.3.12",
+  "rel_pub": "2026-10-03",
+  "rel_days": 19,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 79,
+   "JavaScript": 8,
+   "Shell": 5,
+   "PowerShell": 4,
+   "HTML": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "zayr0-9/Graviton": {
+  "rel_ver": "v0.3.19",
+  "rel_pub": "2026-10-16",
+  "rel_days": 6,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 93,
+   "HTML": 5,
+   "CSS": 2,
+   "JavaScript": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Deltik/shell-ai": {
+  "rel_ver": "v0.7.3",
+  "rel_pub": "2026-06-11",
+  "rel_days": 133,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "Rust": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "openvang/vanguarstew": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-07-28",
+  "rel_days": 86,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 79,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
   },
   "enriched_at": "20261022",
   "dim_ts": {

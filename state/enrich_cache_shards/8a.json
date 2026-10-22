@@ -2672,5 +2672,105 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "simple-agent-lab/simple-long-horizon-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 85,
+   "HTML": 14,
+   "Shell": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "unarbos/arbos": {
+  "rel_ver": "v0.6.145",
+  "rel_pub": "2026-10-22",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 72,
+   "Swift": 17,
+   "Python": 7,
+   "Shell": 3,
+   "HTML": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "KRLabsOrg/squeez": {
+  "rel_ver": "v0.1.4",
+  "rel_pub": "2026-04-27",
+  "rel_days": 178,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "HTML": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "romp-on/romp": {
+  "rel_ver": "v0.17.1",
+  "rel_pub": "2026-09-24",
+  "rel_days": 28,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "Python": 69,
+   "TypeScript": 25,
+   "JavaScript": 3,
+   "Shell": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

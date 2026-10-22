@@ -2693,5 +2693,59 @@
   }
  },
  "codewithbro95/openmind": {},
- "godfaddaai/multiplayer-ai": {}
+ "godfaddaai/multiplayer-ai": {},
+ "mrviduus/textstack": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-05-06",
+  "rel_days": 169,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 53,
+   "C#": 35,
+   "HTML": 6,
+   "CSS": 3,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "mrobinson2/AzureAgentForge": {
+  "rel_ver": "v1.8.2",
+  "rel_pub": "2026-07-21",
+  "rel_days": 93,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 63,
+   "JavaScript": 11,
+   "HCL": 9,
+   "Shell": 9,
+   "HTML": 3
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ }
 }

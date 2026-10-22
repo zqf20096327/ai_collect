@@ -2629,5 +2629,54 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "FalkorDB/JFalkorDB": {
+  "rel_ver": "v0.14.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 4,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "Java": 97,
+   "Just": 1,
+   "Python": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Water-Run/ft": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 71,
+   "Python": 14,
+   "HTML": 7,
+   "CSS": 4,
+   "PowerShell": 3
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

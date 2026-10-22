@@ -2740,5 +2740,28 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "onurtirpan/agentic-llm-token-and-performance-tests": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 13,
+   "C": 13,
+   "C++": 10,
+   "Zig": 8,
+   "Rust": 7
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

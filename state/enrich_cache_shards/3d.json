@@ -2725,5 +2725,85 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "zenineasa/Konjugate": {
+  "rel_ver": "v1.2.2",
+  "rel_pub": "2026-10-20",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 70,
+   "C++": 22,
+   "CSS": 3,
+   "HTML": 3,
+   "Python": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "ryohgicc/ShareCraft": {
+  "rel_ver": "2.1.1",
+  "rel_pub": "2026-05-28",
+  "rel_days": 147,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 70,
+   "CSS": 18,
+   "HTML": 10,
+   "Python": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "VanoPeradze/cutroom": {
+  "rel_ver": "v1.2-beta-20261022-maintenance1",
+  "rel_pub": "2026-10-22",
+  "rel_days": 0,
+  "rel_n90": 6,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 61,
+   "JavaScript": 28,
+   "CSS": 7,
+   "HTML": 3,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

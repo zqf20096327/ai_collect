@@ -2587,5 +2587,77 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "GenAI-Security-Project/crosswalk": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "JavaScript": 78,
+   "Python": 15,
+   "TypeScript": 4,
+   "Shell": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "kuhumcst/DanNet": {
+  "rel_ver": "v2026-10-02",
+  "rel_pub": "2026-10-02",
+  "rel_days": 20,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Clojure": 91,
+   "CSS": 7,
+   "Python": 2,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "npxcnency-ux/pi-trace-extension": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 31,
+   "JavaScript": 29,
+   "TypeScript": 24,
+   "CSS": 12,
+   "HTML": 3
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

@@ -1797,13 +1797,16 @@
    "PowerShell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261022"
+  },
+  "commit_90d": 38,
+  "commit_7d": 0
  },
  "microsoft/classy-fire": {
   "rel_ver": "0.2.1",
@@ -3205,6 +3208,108 @@
   "lang": {
    "TypeScript": 85,
    "JavaScript": 15
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "wenb1n-dev/SmartDB_MCP": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 0,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0,
+   "HTML": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Open-Galapagos/evolution-fine-tuning": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 60,
+   "C++": 31,
+   "MLIR": 6,
+   "Shell": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "OpenRouterTeam/benchmark-harness": {
+  "rel_ver": "agent-runtime-v2",
+  "rel_pub": "2026-09-01",
+  "rel_days": 51,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "TypeScript": 100,
+   "Dockerfile": 0,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Harusame64/desktop-touch-mcp": {
+  "rel_ver": "v2.3.1",
+  "rel_pub": "2026-10-13",
+  "rel_days": 9,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 82,
+   "Rust": 11,
+   "JavaScript": 5,
+   "HTML": 1,
+   "C#": 1
   },
   "enriched_at": "20261022",
   "dim_ts": {

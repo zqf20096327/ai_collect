@@ -2590,5 +2590,54 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "ningzimu/claude-code-lens": {
+  "rel_ver": "v0.0.11",
+  "rel_pub": "2026-05-17",
+  "rel_days": 158,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 60,
+   "HTML": 40
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "rajkripal/cashew": {
+  "rel_ver": "v1.2.1",
+  "rel_pub": "2026-06-29",
+  "rel_days": 115,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 78,
+   "HTML": 22,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

@@ -2442,13 +2442,16 @@
    "JavaScript": 8,
    "HTML": 8
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261022"
+  },
+  "commit_90d": 4,
+  "commit_7d": 4
  },
  "bei666qi-pan/VerseCraft": {
   "rel_ver": null,
@@ -3062,6 +3065,60 @@
    "JavaScript": 6,
    "CSS": 3,
    "Python": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "isakskogstad/Riksdag-Regering-MCP": {
+  "rel_ver": "v2.2.1",
+  "rel_pub": "2025-11-23",
+  "rel_days": 333,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 91,
+   "PLpgSQL": 4,
+   "JavaScript": 2,
+   "HTML": 2,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "shayandaneshvar/VulScribeR": {
+  "rel_ver": "RQ4",
+  "rel_pub": "2025-06-09",
+  "rel_days": 500,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Java": 58,
+   "Jupyter Notebook": 28,
+   "Python": 8,
+   "Groovy": 4,
+   "ANTLR": 1
   },
   "enriched_at": "20261022",
   "dim_ts": {

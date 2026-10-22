@@ -2516,6 +2516,99 @@
    "release": "20261022",
    "security": "20261022",
    "contrib": "20261022",
+   "lang": "20261022",
+   "commit": "20261022"
+  },
+  "commit_90d": 21,
+  "commit_7d": 21
+ },
+ "Badtheorylabs/Macaw": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 53,
+   "Swift": 47
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "spec2ship/spec2ship": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-07-12",
+  "rel_days": 102,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 99,
+   "Makefile": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "joansongjr/investor-harness": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-04-08",
+  "rel_days": 197,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "fabio-rovai/tardygrada": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 87,
+   "Python": 6,
+   "Shell": 5,
+   "HTML": 1,
+   "C++": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
    "lang": "20261022"
   }
  }

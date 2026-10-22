@@ -1587,13 +1587,16 @@
    "Python": 3,
    "TypeScript": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261022"
+  },
+  "commit_90d": 149,
+  "commit_7d": 0
  },
  "JeffWang0325/Image-Identification-for-Self-Driving-Cars": {
   "rel_ver": "v2.0.2",
@@ -2237,6 +2240,123 @@
   "lang": {
    "Python": 72,
    "Cuda": 28
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "gregorydickson/pickle-rick-claude": {
+  "rel_ver": "v2.2.2",
+  "rel_pub": "2026-10-11",
+  "rel_days": 11,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 78,
+   "TypeScript": 20,
+   "Shell": 2,
+   "Python": 0,
+   "HCL": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "quadbio/cell-annotator": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-06-09",
+  "rel_days": 135,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "memwyreai/Memwyre": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 78,
+   "JavaScript": 15,
+   "PowerShell": 3,
+   "HTML": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "AndyShaman/senior-fable": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-09-29",
+  "rel_days": 23,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "banadmiralpurge/lora-merge": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 100
   },
   "enriched_at": "20261022",
   "dim_ts": {

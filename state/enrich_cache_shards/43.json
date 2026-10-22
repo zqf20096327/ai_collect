@@ -1495,13 +1495,16 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261022"
+  },
+  "commit_90d": 51,
+  "commit_7d": 5
  },
  "sparks-baird/self-driving-lab-demo": {
   "rel_ver": "v0.8.13",
@@ -2631,6 +2634,83 @@
   "lang": {
    "TypeScript": 97,
    "JavaScript": 3
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "MuzeAnisichael/agent-skill-factory": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-10-03",
+  "rel_days": 19,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "appatalks/eva-agent": {
+  "rel_ver": "v5.6.10",
+  "rel_pub": "2026-09-30",
+  "rel_days": 22,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 55,
+   "JavaScript": 36,
+   "CSS": 5,
+   "HTML": 3,
+   "Shell": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "yanzai-4/Contrix": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-03-30",
+  "rel_days": 206,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 89,
+   "CSS": 10,
+   "JavaScript": 1,
+   "HTML": 0,
+   "Rust": 0
   },
   "enriched_at": "20261022",
   "dim_ts": {

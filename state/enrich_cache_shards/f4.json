@@ -2399,5 +2399,58 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "strzhao/autopilot": {
+  "rel_ver": "v3.77.1",
+  "rel_pub": "2026-10-12",
+  "rel_days": 10,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Shell": 69,
+   "JavaScript": 27,
+   "HTML": 3,
+   "Python": 1,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "BETAER-08/amdb": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-07-24",
+  "rel_days": 90,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 92,
+   "Python": 6,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

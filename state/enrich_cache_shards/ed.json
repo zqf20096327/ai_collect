@@ -2413,13 +2413,16 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261022"
+  },
+  "commit_90d": 1318,
+  "commit_7d": 246
  },
  "ShenzheZhu/A2A-NT": {
   "rel_ver": null,
@@ -2699,6 +2702,145 @@
   "contrib_n": 1,
   "lang": {
    "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "guoqingbao/attention.rs": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Cuda": 53,
+   "Rust": 33,
+   "Metal": 13,
+   "C++": 1,
+   "C": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "tastytrade/tastytrade-mcp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "iamaanahmad/everything-kiro": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-01-22",
+  "rel_days": 273,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Zh1yuShen/HopWeaver": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "pipedude/yahont-ce": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 67,
+   "TypeScript": 27,
+   "Go": 4,
+   "JavaScript": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "mohsenhariri/scorio": {
+  "rel_ver": "python-v0.2.3",
+  "rel_pub": "2026-10-05",
+  "rel_days": 17,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 40,
+   "Julia": 22,
+   "TypeScript": 22,
+   "Jupyter Notebook": 14,
+   "HTML": 1
   },
   "enriched_at": "20261022",
   "dim_ts": {

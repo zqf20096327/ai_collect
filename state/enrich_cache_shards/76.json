@@ -1274,13 +1274,16 @@
    "JavaScript": 5,
    "NSIS": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261022"
+  },
+  "commit_90d": 668,
+  "commit_7d": 0
  },
  "indiesoftby/defold-agent-config": {
   "rel_ver": null,
@@ -2517,6 +2520,46 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "maxyeh0817/Forge": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "connorkapoor/Palmetto": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 54,
+   "TypeScript": 22,
+   "Python": 17,
+   "CSS": 5,
+   "CMake": 1
+  },
   "enriched_at": "20261022",
   "dim_ts": {
    "release": "20261022",
