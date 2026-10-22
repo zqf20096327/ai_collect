@@ -2118,5 +2118,49 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "michalwols/yann": {
+  "rel_ver": "v0.0.5",
+  "rel_pub": "2018-08-31",
+  "rel_days": 2974,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 94,
+   "Jupyter Notebook": 5,
+   "Shell": 0,
+   "Dockerfile": 0,
+   "Just": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "matlab-deep-learning/Pretrained-YOLOX-Network-For-Object-Detection": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

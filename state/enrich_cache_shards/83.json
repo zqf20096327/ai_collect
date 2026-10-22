@@ -2752,5 +2752,32 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "loblawbob873-svg/posterchanai": {
+  "rel_ver": "desktop-v1.0.1985",
+  "rel_pub": "2026-10-22",
+  "rel_days": 0,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 60,
+   "JavaScript": 28,
+   "Java": 5,
+   "Shell": 3,
+   "CSS": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

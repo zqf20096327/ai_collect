@@ -2398,5 +2398,32 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "aowang-ai/seris": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2026-10-08",
+  "rel_days": 14,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 71,
+   "JavaScript": 22,
+   "CSS": 5,
+   "Rust": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

@@ -2011,5 +2011,75 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "ahb-sjsu/turboquant-pro": {
+  "rel_ver": "data-1t-hash-manifests-2026-10-02",
+  "rel_pub": "2026-10-02",
+  "rel_days": 20,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 79,
+   "TeX": 12,
+   "Jupyter Notebook": 4,
+   "Shell": 1,
+   "Go": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "huggingface/pyspark_huggingface": {
+  "rel_ver": "2.1.0",
+  "rel_pub": "2026-04-14",
+  "rel_days": 191,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 77,
+   "Jupyter Notebook": 23
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "0xblewalker/memory-recall-rerank": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

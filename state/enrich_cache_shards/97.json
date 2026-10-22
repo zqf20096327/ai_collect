@@ -2593,5 +2593,167 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "Hal9000AIML/arc-pro-b70-ubuntu-gpu-speedup-bugfixes": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 56,
+   "Shell": 44
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Devinterview-io/tensorflow-interview-questions": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "hofnerb/stabs": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "R": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "timothywarner-org/context-engineering": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 69,
+   "Bicep": 9,
+   "HTML": 6,
+   "Jupyter Notebook": 6,
+   "Astro": 3
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "smanx/dsh-proxy": {
+  "rel_ver": "v0.1.4",
+  "rel_pub": "2026-10-20",
+  "rel_days": 2,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 48,
+   "TypeScript": 46,
+   "Go": 5,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "tudelft-cda-lab/FlexFringe": {
+  "rel_ver": "latest",
+  "rel_pub": "2024-10-24",
+  "rel_days": 728,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "C++": 95,
+   "CMake": 2,
+   "HTML": 2,
+   "Python": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "arikusi/deepseek-mcp-server": {
+  "rel_ver": "v2.3.0",
+  "rel_pub": "2026-09-05",
+  "rel_days": 47,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 4,
+  "sec_worst": "high",
+  "sec_last": "2026-09-05",
+  "sec_ids": [
+   "GHSA-x8gc-v7v9-72wv(-,high)",
+   "GHSA-pf89-39r3-75vq(-,high)",
+   "GHSA-72f3-6w86-7rv3(CVE-2026-55605,medium)",
+   "GHSA-fh3r-g96v-f578(CVE-2026-55604,high)"
+  ],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

@@ -2678,5 +2678,55 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "es-ude/elastic-ai.creator": {
+  "rel_ver": "v0.68.0",
+  "rel_pub": "2026-04-25",
+  "rel_days": 180,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "Python": 64,
+   "VHDL": 32,
+   "Verilog": 4,
+   "Nix": 0,
+   "Tcl": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "mardillu/OpenAI-Client-Android": {
+  "rel_ver": "2.0.0",
+  "rel_pub": "2025-11-21",
+  "rel_days": 335,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Kotlin": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

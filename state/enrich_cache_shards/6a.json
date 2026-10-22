@@ -2853,5 +2853,55 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "InterfazeAI/jigsawstack-js": {
+  "rel_ver": "v0.4.6",
+  "rel_pub": "2026-07-06",
+  "rel_days": 108,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "c8dhjp4tyv-bit/hawkpoint-npu-llm": {
+  "rel_ver": "v0.1.0-alpha.1",
+  "rel_pub": "2026-07-29",
+  "rel_days": 85,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 76,
+   "C++": 20,
+   "Shell": 3,
+   "C": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

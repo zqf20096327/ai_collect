@@ -2633,5 +2633,59 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "quantifylabs/aegis-memory": {
+  "rel_ver": "v2.7.0",
+  "rel_pub": "2026-08-02",
+  "rel_days": 81,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100,
+   "PowerShell": 0,
+   "Makefile": 0,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Hyland/DocumentFilters": {
+  "rel_ver": "v1.0.0-prerelease.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 6,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "C#": 58,
+   "C++": 23,
+   "Python": 10,
+   "C": 8,
+   "CMake": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

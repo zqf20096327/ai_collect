@@ -2273,5 +2273,81 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "WP-Autoplugin/superdraft": {
+  "rel_ver": "v1.1.4",
+  "rel_pub": "2025-12-11",
+  "rel_days": 315,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "PHP": 68,
+   "JavaScript": 24,
+   "CSS": 8
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "n1majne3/CyberPenda": {
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 10,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 77,
+   "TypeScript": 18,
+   "HTML": 1,
+   "JavaScript": 1,
+   "Python": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "ArthurBernard/Fynance": {
+  "rel_ver": "v2.13.1",
+  "rel_pub": "2026-07-06",
+  "rel_days": 108,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

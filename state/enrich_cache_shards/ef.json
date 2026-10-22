@@ -2269,5 +2269,30 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "openqa-labs/openqa": {
+  "rel_ver": "v0.0.10",
+  "rel_pub": "2026-05-07",
+  "rel_days": 168,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 96,
+   "TypeScript": 3,
+   "Gherkin": 2
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

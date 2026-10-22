@@ -2610,5 +2610,102 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "donutloop/machine-learning-research-papers": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "slalaure/korelate": {
+  "rel_ver": "v1.6.1",
+  "rel_pub": "2026-05-27",
+  "rel_days": 148,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 89,
+   "HTML": 7,
+   "CSS": 4,
+   "Python": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "kengio/dp-800-study-guide": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-07-11",
+  "rel_days": 103,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 44,
+   "CSS": 40,
+   "Python": 8,
+   "HTML": 7
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "binghuang2018/aqml": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2021-11-16",
+  "rel_days": 1801,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 50,
+   "Jupyter Notebook": 44,
+   "Fortran": 4,
+   "DIGITAL Command Language": 1,
+   "C++": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

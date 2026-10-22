@@ -1969,5 +1969,51 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "kirushyk/le": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 85,
+   "Meson": 6,
+   "C++": 5,
+   "Objective-C": 3,
+   "Cuda": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "anilcancakir/laravel-ai-sdk-skills": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-09-13",
+  "rel_days": 39,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "PHP": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

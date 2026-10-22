@@ -2800,5 +2800,59 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "openlanguagemodel/openlanguagemodel": {
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-06-20",
+  "rel_days": 124,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 84,
+   "TypeScript": 9,
+   "Jupyter Notebook": 4,
+   "CSS": 3,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "gitmoot/gitmoot": {
+  "rel_ver": "v0.9.6.3",
+  "rel_pub": "2026-08-04",
+  "rel_days": 79,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 100,
+   "TypeScript": 0,
+   "Dockerfile": 0,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }
