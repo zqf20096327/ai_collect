@@ -145,8 +145,8 @@
   }
  },
  "zuruoke/watermark-removal": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-06-05",
   "rel_days": 133,
@@ -172,8 +172,8 @@
   }
  },
  "SwanHubX/SwanLab": {
-  "commit_90d": 40,
   "commit_7d": 1,
+  "commit_90d": 40,
   "rel_ver": "v0.10.2",
   "rel_pub": "2026-10-09",
   "rel_days": 7,
@@ -201,8 +201,8 @@
   }
  },
  "Intelligent-Internet/ii-agent": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "v0.4",
   "rel_pub": "2025-07-29",
   "rel_days": 445,
@@ -231,8 +231,8 @@
   }
  },
  "heavyai/heavydb": {
-  "commit_90d": 24,
   "commit_7d": 0,
+  "commit_90d": 24,
   "rel_ver": "v10.0.0",
   "rel_pub": "2026-10-08",
   "rel_days": 9,
@@ -261,8 +261,8 @@
   }
  },
  "autodistill/autodistill": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v0.1.26",
   "rel_pub": "2024-02-13",
   "rel_days": 977,
@@ -289,8 +289,8 @@
   }
  },
  "Guang000/Awesome-Dataset-Distillation": {
-  "commit_90d": 47,
   "commit_7d": 0,
+  "commit_90d": 47,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -314,8 +314,8 @@
   }
  },
  "google-research/language": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -340,8 +340,8 @@
   }
  },
  "DEEIX-AI/DEEIX-Chat": {
-  "commit_90d": 612,
   "commit_7d": 53,
+  "commit_90d": 612,
   "rel_ver": "v0.4.5",
   "rel_pub": "2026-10-16",
   "rel_days": 1,
@@ -370,8 +370,8 @@
   }
  },
  "dyoshikawa/rulesync": {
-  "commit_90d": 2907,
   "commit_7d": 315,
+  "commit_90d": 2907,
   "rel_ver": "v36.0.2",
   "rel_pub": "2026-10-16",
   "rel_days": 1,
@@ -400,8 +400,8 @@
   }
  },
  "nlkitai/nlux": {
-  "commit_90d": 14,
   "commit_7d": 14,
+  "commit_90d": 14,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -425,8 +425,8 @@
   }
  },
  "coollabsio/jean": {
-  "commit_90d": 676,
   "commit_7d": 42,
+  "commit_90d": 676,
   "rel_ver": "v1.0.11",
   "rel_pub": "2026-10-14",
   "rel_days": 3,
@@ -455,8 +455,8 @@
   }
  },
  "RyanAlberts/best-of-Agent-Harnesses": {
-  "commit_90d": 77,
   "commit_7d": 1,
+  "commit_90d": 77,
   "rel_ver": "list-2026-09-2",
   "rel_pub": "2026-09-14",
   "rel_days": 33,
@@ -482,8 +482,8 @@
   }
  },
  "NVIDIA-NeMo/labs-molt": {
-  "commit_90d": 175,
   "commit_7d": 17,
+  "commit_90d": 175,
   "rel_ver": "v0.1.12",
   "rel_pub": "2026-10-15",
   "rel_days": 2,
@@ -510,8 +510,8 @@
   }
  },
  "lastmile-ai/aiconfig": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.1.32",
   "rel_pub": "2024-03-18",
   "rel_days": 943,
@@ -540,8 +540,8 @@
   }
  },
  "agi-now/buffett-skills": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -560,8 +560,8 @@
   }
  },
  "joelhooks/swarm-tools": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "swarm-mail@1.11.2",
   "rel_pub": "2026-02-06",
   "rel_days": 253,
@@ -590,8 +590,8 @@
   }
  },
  "cfgranda/ps4ds": {
-  "commit_90d": 18,
   "commit_7d": 1,
+  "commit_90d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -614,8 +614,8 @@
   }
  },
  "BlockRunAI/Franklin": {
-  "commit_90d": 193,
   "commit_7d": 8,
+  "commit_90d": 193,
   "rel_ver": "v3.49.10",
   "rel_pub": "2026-10-17",
   "rel_days": 0,
@@ -646,8 +646,8 @@
   }
  },
  "deepqmc/deepqmc": {
-  "commit_90d": 8,
   "commit_7d": 0,
+  "commit_90d": 8,
   "rel_ver": "1.3.0",
   "rel_pub": "2026-07-20",
   "rel_days": 90,
@@ -672,8 +672,8 @@
   }
  },
  "droidrun/mobilerun-portal": {
-  "commit_90d": 50,
   "commit_7d": 0,
+  "commit_90d": 50,
   "rel_ver": "v0.7.25",
   "rel_pub": "2026-08-18",
   "rel_days": 61,
@@ -699,8 +699,8 @@
   }
  },
  "iflytek/astronclaw-tutorial": {
-  "commit_90d": 8,
   "commit_7d": 1,
+  "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -721,8 +721,8 @@
   }
  },
  "rush-db/rushdb": {
-  "commit_90d": 48,
   "commit_7d": 1,
+  "commit_90d": 48,
   "rel_ver": "@rushdb/mcp-server@2.13.0",
   "rel_pub": "2026-08-31",
   "rel_days": 48,
@@ -751,8 +751,8 @@
   }
  },
  "evolution-foundation/evo-crm-community": {
-  "commit_90d": 29,
   "commit_7d": 0,
+  "commit_90d": 29,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-09-02",
   "rel_days": 46,
@@ -780,8 +780,8 @@
   }
  },
  "mingchen666/DocTranslator": {
-  "commit_90d": 15,
   "commit_7d": 0,
+  "commit_90d": 15,
   "rel_ver": "v1.6.1",
   "rel_pub": "2026-08-14",
   "rel_days": 65,
@@ -810,8 +810,8 @@
   }
  },
  "thuiar/TEXTOIR": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -836,8 +836,8 @@
   }
  },
  "holtwood/awesome-cursorrules-zh": {
-  "commit_90d": 7,
   "commit_7d": 0,
+  "commit_90d": 7,
   "rel_ver": "v2.0.1",
   "rel_pub": "2026-04-16",
   "rel_days": 185,
@@ -862,8 +862,8 @@
   }
  },
  "BrikerMan/skilless.ai": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "release/v2026.03.12.01",
   "rel_pub": "2026-03-12",
   "rel_days": 220,
@@ -892,8 +892,8 @@
   }
  },
  "yeasy/ai_beginner_guide": {
-  "commit_90d": 55,
   "commit_7d": 2,
+  "commit_90d": 55,
   "rel_ver": "preview-pdf",
   "rel_pub": "2026-03-29",
   "rel_days": 203,
@@ -918,8 +918,8 @@
   }
  },
  "ilindaniel/ponytail-lite": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -938,8 +938,8 @@
   }
  },
  "Mangaba-ai/mangaba_ai": {
-  "commit_90d": 7,
   "commit_7d": 0,
+  "commit_90d": 7,
   "rel_ver": "v3.2.0",
   "rel_pub": "2026-04-26",
   "rel_days": 175,
@@ -967,8 +967,8 @@
   }
  },
  "zeus-12/uxie": {
-  "commit_90d": 33,
   "commit_7d": 0,
+  "commit_90d": 33,
   "rel_ver": "v0.1.1",
   "rel_pub": "2026-08-30",
   "rel_days": 49,
@@ -997,8 +997,8 @@
   }
  },
  "fastmachinelearning/qonnx": {
-  "commit_90d": 4,
   "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-02-19",
   "rel_days": 241,
@@ -1025,8 +1025,8 @@
   }
  },
  "microsoft/Azure-Analytics-and-AI-Engagement": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1051,8 +1051,8 @@
   }
  },
  "OpenSTEF/openstef": {
-  "commit_90d": 52,
   "commit_7d": 4,
+  "commit_90d": 52,
   "rel_ver": "v4.4.8",
   "rel_pub": "2026-10-12",
   "rel_days": 6,
@@ -1077,8 +1077,8 @@
   }
  },
  "vlang/vtl": {
-  "commit_90d": 603,
   "commit_7d": 159,
+  "commit_90d": 603,
   "rel_ver": "v0.2.0-beta.1",
   "rel_pub": "2026-06-02",
   "rel_days": 138,
@@ -1107,8 +1107,8 @@
   }
  },
  "steveyeow/Feynman": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1133,8 +1133,8 @@
   }
  },
  "xcoding1024/behavior3lua": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1155,8 +1155,8 @@
   }
  },
  "sitbon/magg": {
-  "commit_90d": 14,
   "commit_7d": 0,
+  "commit_90d": 14,
   "rel_ver": "v1.3.0",
   "rel_pub": "2026-09-26",
   "rel_days": 22,
@@ -1181,8 +1181,8 @@
   }
  },
  "banmu123/LoomFlow": {
-  "commit_90d": 232,
   "commit_7d": 0,
+  "commit_90d": 232,
   "rel_ver": "v0.1.11",
   "rel_pub": "2026-09-02",
   "rel_days": 46,
@@ -1211,8 +1211,8 @@
   }
  },
  "GeminiLight/gen-mentor": {
-  "commit_90d": 69,
   "commit_7d": 0,
+  "commit_90d": 69,
   "rel_ver": "preview",
   "rel_pub": "2025-02-12",
   "rel_days": 613,
@@ -1241,8 +1241,8 @@
   }
  },
  "lgy1027/matrix-live-diarizer": {
-  "commit_90d": 24,
   "commit_7d": 0,
+  "commit_90d": 24,
   "rel_ver": "v0.2.0-beta",
   "rel_pub": "2026-08-03",
   "rel_days": 76,
@@ -1271,8 +1271,8 @@
   }
  },
  "oripress/AlgoTune": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1297,8 +1297,8 @@
   }
  },
  "SnowballSH/Avalanche": {
-  "commit_90d": 77,
   "commit_7d": 1,
+  "commit_90d": 77,
   "rel_ver": "v5.0.0",
   "rel_pub": "2026-10-11",
   "rel_days": 7,
@@ -1327,8 +1327,8 @@
   }
  },
  "eth-sri/type-constrained-code-generation": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "1.0.1",
   "rel_pub": "2025-05-07",
   "rel_days": 529,
@@ -1356,8 +1356,8 @@
   }
  },
  "GaeaRuiW/kube-llmops": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-03-19",
   "rel_days": 213,
@@ -1386,8 +1386,8 @@
   }
  },
  "AstraZeneca/awesome-drug-pair-scoring": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v_00002",
   "rel_pub": "2022-01-03",
   "rel_days": 1750,
@@ -1410,8 +1410,8 @@
   }
  },
  "Peon-sh/Peon": {
-  "commit_90d": 511,
   "commit_7d": 41,
+  "commit_90d": 511,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-10-16",
   "rel_days": 3,
@@ -1890,8 +1890,8 @@
   }
  },
  "Agions/kineo": {
-  "commit_90d": 87,
   "commit_7d": 14,
+  "commit_90d": 87,
   "rel_ver": "v0.0.2",
   "rel_pub": "2026-10-21",
   "rel_days": 0,
@@ -2466,12 +2466,8 @@
   }
  },
  "OmerFarukTutkun/Devre": {
-  "rel_ver": "v7.0",
-  "rel_pub": "2026-08-07",
-  "rel_days": 76,
-  "rel_n90": 1,
-  "rel_pre": false,
-  "rel_none": false,
+  "rel_ver": null,
+  "rel_none": true,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,

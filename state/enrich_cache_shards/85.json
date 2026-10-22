@@ -145,8 +145,8 @@
   }
  },
  "AIPentest/CyberStrikeAI": {
-  "commit_90d": 428,
   "commit_7d": 97,
+  "commit_90d": 428,
   "rel_ver": "v1.7.24",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -175,8 +175,8 @@
   }
  },
  "jason718/awesome-self-supervised-learning": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -195,8 +195,8 @@
   }
  },
  "Vedenin/useful-java-links": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -218,8 +218,8 @@
   }
  },
  "dimthink/PriceAI": {
-  "commit_90d": 155,
   "commit_7d": 0,
+  "commit_90d": 155,
   "rel_ver": "v1.3.0",
   "rel_pub": "2026-06-29",
   "rel_days": 109,
@@ -248,8 +248,8 @@
   }
  },
  "geekjourneyx/md2wechat-skill": {
-  "commit_90d": 77,
   "commit_7d": 6,
+  "commit_90d": 77,
   "rel_ver": "v3.8.0",
   "rel_pub": "2026-09-24",
   "rel_days": 22,
@@ -278,8 +278,8 @@
   }
  },
  "e2b-dev/awesome-ai-sdks": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -298,8 +298,8 @@
   }
  },
  "VisoMasterFusion/VisoMaster-Fusion": {
-  "commit_90d": 130,
   "commit_7d": 0,
+  "commit_90d": 130,
   "rel_ver": "v3.12.3",
   "rel_pub": "2026-08-29",
   "rel_days": 49,
@@ -326,8 +326,8 @@
   }
  },
  "Pasta-Devs/Marinara-Engine": {
-  "commit_90d": 5623,
   "commit_7d": 0,
+  "commit_90d": 5623,
   "rel_ver": "v2.5.0",
   "rel_pub": "2026-10-06",
   "rel_days": 11,
@@ -356,8 +356,8 @@
   }
  },
  "BorisPolonsky/dify-helm": {
-  "commit_90d": 36,
   "commit_7d": 1,
+  "commit_90d": 36,
   "rel_ver": "dify-0.39.0",
   "rel_pub": "2026-10-15",
   "rel_days": 2,
@@ -384,8 +384,8 @@
   }
  },
  "InfinitiBit/graphbit": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "Graphbit_Python_v0.6.8",
   "rel_pub": "2026-06-22",
   "rel_days": 117,
@@ -413,8 +413,8 @@
   }
  },
  "ome-projects/ome": {
-  "commit_90d": 493,
   "commit_7d": 20,
+  "commit_90d": 493,
   "rel_ver": "v1.2.2",
   "rel_pub": "2026-08-05",
   "rel_days": 73,
@@ -443,8 +443,8 @@
   }
  },
  "fadel/pytorch_ema": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "v0.3.0",
   "rel_pub": "2021-11-17",
   "rel_days": 1796,
@@ -469,8 +469,8 @@
   }
  },
  "kozistr/pytorch_optimizer": {
-  "commit_90d": 99,
   "commit_7d": 7,
+  "commit_90d": 99,
   "rel_ver": "v4.0.0",
   "rel_pub": "2026-10-04",
   "rel_days": 14,
@@ -496,8 +496,8 @@
   }
  },
  "fcakyon/phd-skills": {
-  "commit_90d": 2,
   "commit_7d": 1,
+  "commit_90d": 2,
   "rel_ver": "v1.3.0",
   "rel_pub": "2026-05-09",
   "rel_days": 162,
@@ -522,8 +522,8 @@
   }
  },
  "aidatatools/ollama-benchmark": {
-  "commit_90d": 4,
   "commit_7d": 2,
+  "commit_90d": 4,
   "rel_ver": "v0.5.5",
   "rel_pub": "2026-10-13",
   "rel_days": 5,
@@ -548,8 +548,8 @@
   }
  },
  "duoan/mega-data-factory": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -573,8 +573,8 @@
   }
  },
  "pytorch/ort": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -597,8 +597,8 @@
   }
  },
  "IliaLarchenko/behavior-1k-solution": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -620,8 +620,8 @@
   }
  },
  "HojoAI/Hojo-ASR": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -642,8 +642,8 @@
   }
  },
  "ai-hpc/ai-hardware-engineer-roadmap": {
-  "commit_90d": 90,
   "commit_7d": 15,
+  "commit_90d": 90,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -668,8 +668,8 @@
   }
  },
  "Vincent-Xi08/IntentRoute-AI": {
-  "commit_90d": 107,
   "commit_7d": 0,
+  "commit_90d": 107,
   "rel_ver": "v0.31.0",
   "rel_pub": "2026-09-13",
   "rel_days": 35,
@@ -696,8 +696,8 @@
   }
  },
  "fitchmultz/pi-posthorse": {
-  "commit_90d": 210,
   "commit_7d": 6,
+  "commit_90d": 210,
   "rel_ver": "v0.9.3",
   "rel_pub": "2026-10-12",
   "rel_days": 6,
@@ -723,8 +723,8 @@
   }
  },
  "little51/llm-dev": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -749,8 +749,8 @@
   }
  },
  "Tenney95/AI-Canvas-tauri": {
-  "commit_90d": 1009,
   "commit_7d": 75,
+  "commit_90d": 1009,
   "rel_ver": "v0.10.9",
   "rel_pub": "2026-10-16",
   "rel_days": 2,
@@ -779,8 +779,8 @@
   }
  },
  "graniet/kheish": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "0.1.0",
   "rel_pub": "2026-06-27",
   "rel_days": 113,
@@ -809,8 +809,8 @@
   }
  },
  "ClickHouse/ai-sdk-cpp": {
-  "commit_90d": 8,
   "commit_7d": 0,
+  "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -833,8 +833,8 @@
   }
  },
  "FrankS-IntelLab/agentic-kaggle-skill": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -855,8 +855,8 @@
   }
  },
  "ivan-magda/swift-coding-agent": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -877,8 +877,8 @@
   }
  },
  "sharzoy/auto-job-apply": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -899,8 +899,8 @@
   }
  },
  "rtemis-org/rtemis": {
-  "commit_90d": 375,
   "commit_7d": 24,
+  "commit_90d": 375,
   "rel_ver": "v1.2.5",
   "rel_pub": "2026-06-19",
   "rel_days": 121,
@@ -928,8 +928,8 @@
   }
  },
  "kieranklaassen/leva": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.3.4",
   "rel_pub": "2025-12-17",
   "rel_days": 305,
@@ -957,8 +957,8 @@
   }
  },
  "AhsanAyaz/react-in-90ish": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -982,8 +982,8 @@
   }
  },
  "strakam/generals-bots": {
-  "commit_90d": 57,
   "commit_7d": 0,
+  "commit_90d": 57,
   "rel_ver": "v2.5.0",
   "rel_pub": "2024-12-31",
   "rel_days": 656,
@@ -1011,8 +1011,8 @@
   }
  },
  "PouriaRouzrokh/LatteReview": {
-  "commit_90d": 25,
   "commit_7d": 7,
+  "commit_90d": 25,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1035,8 +1035,8 @@
   }
  },
  "golololologol/LLM-Distillery": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.0.0",
   "rel_pub": "2025-03-25",
   "rel_days": 572,
@@ -1063,8 +1063,8 @@
   }
  },
  "garfiec/Librechat-Mobile": {
-  "commit_90d": 251,
   "commit_7d": 46,
+  "commit_90d": 251,
   "rel_ver": "v2026.10.5",
   "rel_pub": "2026-10-16",
   "rel_days": 2,
@@ -1093,8 +1093,8 @@
   }
  },
  "wtfzambo/speak-like-you-eat": {
-  "commit_90d": 86,
   "commit_7d": 0,
+  "commit_90d": 86,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-09-28",
   "rel_days": 20,
@@ -1119,8 +1119,8 @@
   }
  },
  "Kartik-Katkar/OrganEase": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1143,8 +1143,8 @@
   }
  },
  "latitude-dev/promptl": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2193,12 +2193,8 @@
   }
  },
  "mhaviv/Swift-FocusEngine-Agent-Skill": {
-  "rel_ver": "v1.8.1",
-  "rel_pub": "2026-08-31",
-  "rel_days": 52,
-  "rel_n90": 3,
-  "rel_pre": false,
-  "rel_none": false,
+  "rel_ver": null,
+  "rel_none": true,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,

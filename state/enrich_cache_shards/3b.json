@@ -59,8 +59,8 @@
   }
  },
  "deepseek-ai/awesome-deepseek-agent": {
-  "commit_90d": 5,
   "commit_7d": 0,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -79,8 +79,8 @@
   }
  },
  "uber/causalml": {
-  "commit_90d": 60,
   "commit_7d": 1,
+  "commit_90d": 60,
   "rel_ver": "v0.18.0",
   "rel_pub": "2026-10-12",
   "rel_days": 4,
@@ -107,8 +107,8 @@
   }
  },
  "hiyouga/EasyR1": {
-  "commit_90d": 6,
   "commit_7d": 0,
+  "commit_90d": 6,
   "rel_ver": "v0.3.2",
   "rel_pub": "2025-09-18",
   "rel_days": 393,
@@ -135,8 +135,8 @@
   }
  },
  "IBM/mcp-context-forge": {
-  "commit_90d": 289,
   "commit_7d": 25,
+  "commit_90d": 289,
   "rel_ver": "v1.0.11",
   "rel_pub": "2026-09-28",
   "rel_days": 18,
@@ -174,8 +174,8 @@
   }
  },
  "shadcn-ui/lint": {
-  "commit_90d": 60,
   "commit_7d": 34,
+  "commit_90d": 60,
   "rel_ver": "@shadcn/lint@0.2.1",
   "rel_pub": "2026-10-10",
   "rel_days": 7,
@@ -202,8 +202,8 @@
   }
  },
  "NeuromatchAcademy/course-content": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v3.2.2",
   "rel_pub": "2026-07-14",
   "rel_days": 95,
@@ -230,8 +230,8 @@
   }
  },
  "microsoft/mattergen": {
-  "commit_90d": 6,
   "commit_7d": 0,
+  "commit_90d": 6,
   "rel_ver": "v1.0.3",
   "rel_pub": "2025-07-23",
   "rel_days": 451,
@@ -257,8 +257,8 @@
   }
  },
  "microsoft/edgeai-for-beginners": {
-  "commit_90d": 12,
   "commit_7d": 0,
+  "commit_90d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -283,8 +283,8 @@
   }
  },
  "sb-ai-lab/LightAutoML": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v.0.4.2",
   "rel_pub": "2025-12-04",
   "rel_days": 317,
@@ -310,8 +310,8 @@
   }
  },
  "spring-projects/spring-ai-examples": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -336,8 +336,8 @@
   }
  },
  "xunbu/docutranslate": {
-  "commit_90d": 35,
   "commit_7d": 11,
+  "commit_90d": 35,
   "rel_ver": "v1.7.10",
   "rel_pub": "2026-10-12",
   "rel_days": 5,
@@ -366,8 +366,8 @@
   }
  },
  "unipds-engenharia-de-ia-aplicada/engenharia-de-software-com-ia-aplicada": {
-  "commit_90d": 38,
   "commit_7d": 0,
+  "commit_90d": 38,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -392,8 +392,8 @@
   }
  },
  "sentinel-hub/eo-learn": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v1.5.7",
   "rel_pub": "2024-09-27",
   "rel_days": 750,
@@ -421,8 +421,8 @@
   }
  },
  "microsoft/skills-for-fabric": {
-  "commit_90d": 29,
   "commit_7d": 0,
+  "commit_90d": 29,
   "rel_ver": "v0.3.18",
   "rel_pub": "2026-09-25",
   "rel_days": 22,
@@ -450,8 +450,8 @@
   }
  },
  "momozi1996/momo-code": {
-  "commit_90d": 37,
   "commit_7d": 16,
+  "commit_90d": 37,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-10-11",
   "rel_days": 6,
@@ -480,8 +480,8 @@
   }
  },
  "ttttonyhe/ouorz-mono": {
-  "commit_90d": 13,
   "commit_7d": 0,
+  "commit_90d": 13,
   "rel_ver": "0.0.2",
   "rel_pub": "2021-11-06",
   "rel_days": 1806,
@@ -510,8 +510,8 @@
   }
  },
  "papercopilot/paperlists": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -532,8 +532,8 @@
   }
  },
  "CHATS-lab/verbalized-sampling": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -557,8 +557,8 @@
   }
  },
  "SkalskiP/top-cvpr-2024-papers": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -579,8 +579,8 @@
   }
  },
  "raymin0223/mixture_of_recursions": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -603,8 +603,8 @@
   }
  },
  "stepfun-ai/StepDeepResearch": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -628,8 +628,8 @@
   }
  },
  "arakoodev/EdgeChains": {
-  "commit_90d": 14,
   "commit_7d": 3,
+  "commit_90d": 14,
   "rel_ver": "0.30.3",
   "rel_pub": "2024-12-26",
   "rel_days": 661,
@@ -658,8 +658,8 @@
   }
  },
  "smousavi05/EQTransformer": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -681,8 +681,8 @@
   }
  },
  "microsoft/Agent-Framework-Samples": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -707,8 +707,8 @@
   }
  },
  "cmunch1/nba-prediction": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -730,8 +730,8 @@
   }
  },
  "google-deepmind/alphaevolve_results": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -752,8 +752,8 @@
   }
  },
  "physical-superintelligence-lab/Agent-Driver": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -776,8 +776,8 @@
   }
  },
  "lobehub/lobe-chat-plugins": {
-  "commit_90d": 1,
   "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": "v1.7.0",
   "rel_pub": "2023-08-26",
   "rel_days": 1149,
@@ -803,8 +803,8 @@
   }
  },
  "pytorch/tensorpipe": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -829,8 +829,8 @@
   }
  },
  "aza-ali/awesome-ai-product-management": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -849,8 +849,8 @@
   }
  },
  "praetorian-inc/julius": {
-  "commit_90d": 18,
   "commit_7d": 0,
+  "commit_90d": 18,
   "rel_ver": "v1.5.1",
   "rel_pub": "2026-10-03",
   "rel_days": 15,
@@ -876,8 +876,8 @@
   }
  },
  "sjmoran/curl-image-enhancement": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-09-16",
   "rel_days": 32,
@@ -903,8 +903,8 @@
   }
  },
  "roomi-fields/notebooklm-mcp": {
-  "commit_90d": 79,
   "commit_7d": 0,
+  "commit_90d": 79,
   "rel_ver": "v3.2.0",
   "rel_pub": "2026-09-04",
   "rel_days": 44,
@@ -935,8 +935,8 @@
   }
  },
  "google-deepmind/neural_testbed": {
-  "commit_90d": 4,
   "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -959,8 +959,8 @@
   }
  },
  "Psyyke/A.C.A.S": {
-  "commit_90d": 84,
   "commit_7d": 18,
+  "commit_90d": 84,
   "rel_ver": "v1.1.0-beta-server",
   "rel_pub": "2026-10-01",
   "rel_days": 17,
@@ -989,8 +989,8 @@
   }
  },
  "jungang/alumnet": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-05-09",
   "rel_days": 162,
@@ -1019,8 +1019,8 @@
   }
  },
  "ningzimu/awesome-ai-ppt": {
-  "commit_90d": 97,
   "commit_7d": 9,
+  "commit_90d": 97,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1041,8 +1041,8 @@
   }
  },
  "ineedbots/iw5_bot_warfare": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v2.3.0",
   "rel_pub": "2024-05-04",
   "rel_days": 897,
@@ -1068,8 +1068,8 @@
   }
  },
  "Azure-Samples/azure-openai-rag-workshop": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": "latest",
   "rel_pub": "2023-11-08",
   "rel_days": 1075,
@@ -1098,8 +1098,8 @@
   }
  },
  "wulawulu/learn-claude-code-rs": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-04-28",
   "rel_days": 173,
@@ -1125,8 +1125,8 @@
   }
  },
  "LeoYeAI/MyClaw": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1145,8 +1145,8 @@
   }
  },
  "diegosouzapw/OmniCopilot": {
-  "commit_90d": 18,
   "commit_7d": 0,
+  "commit_90d": 18,
   "rel_ver": "v1.3.0",
   "rel_pub": "2026-09-02",
   "rel_days": 46,
@@ -1172,8 +1172,8 @@
   }
  },
  "symisc/pixlab": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1197,8 +1197,8 @@
   }
  },
  "ad-si/FastLint": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1221,8 +1221,8 @@
   }
  },
  "sumit-ai-ml/claude-md-starter": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1241,8 +1241,8 @@
   }
  },
  "neo4j-partners/hands-on-lab-neo4j-and-google": {
-  "commit_90d": 17,
   "commit_7d": 0,
+  "commit_90d": 17,
   "rel_ver": "1.0",
   "rel_pub": "2023-10-08",
   "rel_days": 1106,
@@ -1265,8 +1265,8 @@
   }
  },
  "NicoKhaghani/nexus-ai-sdk": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1290,8 +1290,8 @@
   }
  },
  "manykarim/rf-mcp": {
-  "commit_90d": 100,
   "commit_7d": 0,
+  "commit_90d": 100,
   "rel_ver": "v0.36.0",
   "rel_pub": "2026-09-26",
   "rel_days": 22,
@@ -1320,8 +1320,8 @@
   }
  },
  "templetongroup/radiant": {
-  "commit_90d": 671,
   "commit_7d": 14,
+  "commit_90d": 671,
   "rel_ver": "v0.9.67",
   "rel_pub": "2026-10-15",
   "rel_days": 3,
@@ -1350,8 +1350,8 @@
   }
  },
  "alan-turing-institute/scivision": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "0.7.4",
   "rel_pub": "2024-08-14",
   "rel_days": 795,
@@ -1380,8 +1380,8 @@
   }
  },
  "isjinghao/OralGPT": {
-  "commit_90d": 53,
   "commit_7d": 16,
+  "commit_90d": 53,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1406,8 +1406,8 @@
   }
  },
  "gojargo/jargo": {
-  "commit_90d": 480,
   "commit_7d": 0,
+  "commit_90d": 480,
   "rel_ver": "v0.2.0",
   "rel_pub": "2026-09-18",
   "rel_days": 30,
@@ -1435,6 +1435,8 @@
   }
  },
  "jeecgboot/jeecg-ai": {
+  "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v3.9.1",
   "rel_pub": "2026-03-20",
   "rel_days": 213,
@@ -1455,14 +1457,12 @@
   },
   "enriched_at": "20261020",
   "dim_ts": {
+   "commit": "20261020",
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019",
-   "commit": "20261020"
-  },
-  "commit_90d": 0,
-  "commit_7d": 0
+   "lang": "20261019"
+  }
  },
  "Xquik-dev/tweetclaw": {
   "rel_ver": "v1.7.1",
@@ -1853,8 +1853,8 @@
   }
  },
  "ykyritsis/ChatGPT-code-preview": {
-  "commit_90d": 6,
   "commit_7d": 6,
+  "commit_90d": 6,
   "rel_ver": "v1.3",
   "rel_pub": "2024-07-02",
   "rel_days": 840,
@@ -1880,8 +1880,8 @@
   }
  },
  "TIGER-AI-Lab/Vamba": {
-  "commit_90d": 1,
   "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2839,12 +2839,8 @@
   }
  },
  "whycorporation/whycodes": {
-  "rel_ver": "v0.6.14",
-  "rel_pub": "2026-10-18",
-  "rel_days": 4,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
+  "rel_ver": null,
+  "rel_none": true,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -2889,12 +2885,8 @@
   }
  },
  "joshuaswarren/omarchy-cluster": {
-  "rel_ver": "v0.3.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 6,
-  "rel_n90": 3,
-  "rel_pre": false,
-  "rel_none": false,
+  "rel_ver": null,
+  "rel_none": true,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,

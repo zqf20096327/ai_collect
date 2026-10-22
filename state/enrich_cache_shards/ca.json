@@ -158,8 +158,8 @@
   }
  },
  "bytedance/flowgram.ai": {
-  "commit_90d": 15,
   "commit_7d": 9,
+  "commit_90d": 15,
   "rel_ver": "v1.0.16",
   "rel_pub": "2026-10-13",
   "rel_days": 3,
@@ -188,8 +188,8 @@
   }
  },
  "google/draco": {
-  "commit_90d": 59,
   "commit_7d": 12,
+  "commit_90d": 59,
   "rel_ver": "1.5.8",
   "rel_pub": "2026-10-15",
   "rel_days": 1,
@@ -218,8 +218,8 @@
   }
  },
  "drumih/turbo-fieldfare": {
-  "commit_90d": 51,
   "commit_7d": 2,
+  "commit_90d": 51,
   "rel_ver": "0.9.3",
   "rel_pub": "2026-10-15",
   "rel_days": 1,
@@ -247,8 +247,8 @@
   }
  },
  "roboflow/sports": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "soccer-analytics-pr-demos",
   "rel_pub": "2026-07-06",
   "rel_days": 102,
@@ -273,8 +273,8 @@
   }
  },
  "PeonPing/peon-ping": {
-  "commit_90d": 64,
   "commit_7d": 0,
+  "commit_90d": 64,
   "rel_ver": "v2.37.0",
   "rel_pub": "2026-08-26",
   "rel_days": 51,
@@ -303,8 +303,8 @@
   }
  },
  "dagucloud/dagu": {
-  "commit_90d": 603,
   "commit_7d": 95,
+  "commit_90d": 603,
   "rel_ver": "v2.20.1",
   "rel_pub": "2026-10-14",
   "rel_days": 2,
@@ -340,8 +340,8 @@
   }
  },
  "DSXiangLi/DecryptPrompt": {
-  "commit_90d": 18,
   "commit_7d": 2,
+  "commit_90d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -360,8 +360,8 @@
   }
  },
  "tslearn-team/tslearn": {
-  "commit_90d": 43,
   "commit_7d": 2,
+  "commit_90d": 43,
   "rel_ver": "v0.9.0",
   "rel_pub": "2026-06-30",
   "rel_days": 109,
@@ -386,8 +386,8 @@
   }
  },
  "GH05TCREW/pentestagent": {
-  "commit_90d": 15,
   "commit_7d": 0,
+  "commit_90d": 15,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -412,8 +412,8 @@
   }
  },
  "llmsresearch/paperbanana": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v0.3.0",
   "rel_pub": "2026-06-12",
   "rel_days": 127,
@@ -440,8 +440,8 @@
   }
  },
  "ddalcu/mlx-serve": {
-  "commit_90d": 672,
   "commit_7d": 85,
+  "commit_90d": 672,
   "rel_ver": "v26.10.2",
   "rel_pub": "2026-10-12",
   "rel_days": 5,
@@ -470,8 +470,8 @@
   }
  },
  "shaypal5/awesome-twitter-data": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -490,8 +490,8 @@
   }
  },
  "jae-jae/fetcher-mcp": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -514,8 +514,8 @@
   }
  },
  "Anil-matcha/awesome-agent-apis": {
-  "commit_90d": 128,
   "commit_7d": 1,
+  "commit_90d": 128,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -536,8 +536,8 @@
   }
  },
  "taishi-i/awesome-japanese-nlp-resources": {
-  "commit_90d": 80,
   "commit_7d": 6,
+  "commit_90d": 80,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -556,8 +556,8 @@
   }
  },
  "Qengineering/Jetson-Nano-Ubuntu-20-image": {
-  "commit_90d": 4,
   "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -576,8 +576,8 @@
   }
  },
  "wuwenjie1992/StarryDivineSky": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -596,8 +596,8 @@
   }
  },
  "SkalskiP/top-cvpr-2025-papers": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -618,8 +618,8 @@
   }
  },
  "NVIDIA-BioNeMo/bionemo-recipes": {
-  "commit_90d": 34,
   "commit_7d": 2,
+  "commit_90d": 34,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-06-24",
   "rel_days": 115,
@@ -648,8 +648,8 @@
   }
  },
  "yvann-ba/Robby-chatbot": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-01-14",
   "rel_days": 276,
@@ -675,8 +675,8 @@
   }
  },
  "hanlulong/econ-writing-skill": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -698,8 +698,8 @@
   }
  },
  "java-up-up/nexus-agent": {
-  "commit_90d": 8,
   "commit_7d": 0,
+  "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -724,8 +724,8 @@
   }
  },
  "agentenatalie/get-job.skill": {
-  "commit_90d": 4,
   "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -746,8 +746,8 @@
   }
  },
  "Arvincreator/project-golem": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v9.6.14",
   "rel_pub": "2026-05-18",
   "rel_days": 152,
@@ -776,8 +776,8 @@
   }
  },
  "RingBDStack/SocialED": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "1.1.7",
   "rel_pub": "2025-07-27",
   "rel_days": 447,
@@ -802,8 +802,8 @@
   }
  },
  "PaddlePaddle/PaddleTS": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "1.1.0",
   "rel_pub": "2022-12-30",
   "rel_days": 1387,
@@ -829,8 +829,8 @@
   }
  },
  "Jack47/hack-SysML": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -852,8 +852,8 @@
   }
  },
  "Tswoen/Paper-Agent": {
-  "commit_90d": 48,
   "commit_7d": 0,
+  "commit_90d": 48,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -878,8 +878,8 @@
   }
  },
  "modelscope/ms-cookbook": {
-  "commit_90d": 69,
   "commit_7d": 5,
+  "commit_90d": 69,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -904,8 +904,8 @@
   }
  },
  "VicenteVivan/geo-clip": {
-  "commit_90d": 9,
   "commit_7d": 0,
+  "commit_90d": 9,
   "rel_ver": "v1.2.3",
   "rel_pub": "2026-10-07",
   "rel_days": 11,
@@ -930,8 +930,8 @@
   }
  },
  "cocofhu/grasp": {
-  "commit_90d": 1381,
   "commit_7d": 35,
+  "commit_90d": 1381,
   "rel_ver": "v2.2.0",
   "rel_pub": "2026-10-15",
   "rel_days": 3,
@@ -960,8 +960,8 @@
   }
  },
  "aangelopoulos/ppi_py": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.2.3",
   "rel_pub": "2024-12-22",
   "rel_days": 665,
@@ -986,8 +986,8 @@
   }
  },
  "nuskey8/UnityAgentClient": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.1.0",
   "rel_pub": "2025-11-05",
   "rel_days": 347,
@@ -1013,8 +1013,8 @@
   }
  },
  "deepgram/deepgram-js-sdk": {
-  "commit_90d": 168,
   "commit_7d": 2,
+  "commit_90d": 168,
   "rel_ver": "v5.15.0",
   "rel_pub": "2026-10-12",
   "rel_days": 6,
@@ -1042,8 +1042,8 @@
   }
  },
  "ayushh0110/ScreenMind": {
-  "commit_90d": 43,
   "commit_7d": 25,
+  "commit_90d": 43,
   "rel_ver": "v0.2.5",
   "rel_pub": "2026-10-14",
   "rel_days": 4,
@@ -1071,8 +1071,8 @@
   }
  },
  "jmagly/aiwg": {
-  "commit_90d": 2307,
   "commit_7d": 437,
+  "commit_90d": 2307,
   "rel_ver": "v2026.10.3",
   "rel_pub": "2026-10-15",
   "rel_days": 3,
@@ -1101,8 +1101,8 @@
   }
  },
  "PRQELT/Autonomix": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1125,8 +1125,8 @@
   }
  },
  "Digital-Process-Tools/claude-remember": {
-  "commit_90d": 481,
   "commit_7d": 11,
+  "commit_90d": 481,
   "rel_ver": "v0.43.1",
   "rel_pub": "2026-10-11",
   "rel_days": 7,
@@ -1154,8 +1154,8 @@
   }
  },
  "velocitybolt/open-extract": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1178,8 +1178,8 @@
   }
  },
  "Bouwles/DriftSync": {
-  "commit_90d": 59,
   "commit_7d": 0,
+  "commit_90d": 59,
   "rel_ver": "v2.2.0",
   "rel_pub": "2026-09-20",
   "rel_days": 28,
@@ -1205,8 +1205,8 @@
   }
  },
  "rzhub/GateMem": {
-  "commit_90d": 8,
   "commit_7d": 8,
+  "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1227,8 +1227,8 @@
   }
  },
  "tg-prplx/vellium": {
-  "commit_90d": 44,
   "commit_7d": 1,
+  "commit_90d": 44,
   "rel_ver": "v1.8.0",
   "rel_pub": "2026-10-04",
   "rel_days": 14,
@@ -1257,8 +1257,8 @@
   }
  },
  "docmancer/docmancer": {
-  "commit_90d": 69,
   "commit_7d": 0,
+  "commit_90d": 69,
   "rel_ver": "v0.9.17",
   "rel_pub": "2026-08-13",
   "rel_days": 66,
@@ -1287,8 +1287,8 @@
   }
  },
  "Onion99/KMP-MineStableDiffusion": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v5.6.0",
   "rel_pub": "2026-03-13",
   "rel_days": 219,
@@ -1317,8 +1317,8 @@
   }
  },
  "mmethodz/dreamgraph": {
-  "commit_90d": 49,
   "commit_7d": 0,
+  "commit_90d": 49,
   "rel_ver": "v14.0.2",
   "rel_pub": "2026-10-07",
   "rel_days": 11,
@@ -1347,8 +1347,8 @@
   }
  },
  "Aryan-0001/Jarvis-AI": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1371,8 +1371,8 @@
   }
  },
  "OscarSouth/theHarmonicAlgorithm": {
-  "commit_90d": 35,
   "commit_7d": 3,
+  "commit_90d": 35,
   "rel_ver": "v3.1.0",
   "rel_pub": "2026-08-30",
   "rel_days": 49,
@@ -1401,8 +1401,8 @@
   }
  },
  "jenkinsci/mcp-server-plugin": {
-  "commit_90d": 35,
   "commit_7d": 3,
+  "commit_90d": 35,
   "rel_ver": "0.211.v5d12e5b_b_437e",
   "rel_pub": "2026-09-30",
   "rel_days": 18,
@@ -1427,8 +1427,8 @@
   }
  },
  "basf/mlipx": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.1.5",
   "rel_pub": "2025-06-09",
   "rel_days": 496,
@@ -1454,8 +1454,8 @@
   }
  },
  "chanon/comfyui-obvpm": {
-  "commit_90d": 101,
   "commit_7d": 15,
+  "commit_90d": 101,
   "rel_ver": "v0.2.17",
   "rel_pub": "2026-10-18",
   "rel_days": 0,
@@ -1481,8 +1481,8 @@
   }
  },
  "robertkarl/UnbiasedStrata": {
-  "commit_90d": 169,
   "commit_7d": 156,
+  "commit_90d": 169,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1507,8 +1507,8 @@
   }
  },
  "migsilva89/MarkMind": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1672,8 +1672,8 @@
   }
  },
  "LumiDesk/verifin": {
-  "commit_90d": 785,
   "commit_7d": 134,
+  "commit_90d": 785,
   "rel_ver": "v1.20.11",
   "rel_pub": "2026-10-19",
   "rel_days": 1,
@@ -2846,12 +2846,8 @@
   }
  },
  "Suren878/matrixclaw": {
-  "rel_ver": "v0.2.2",
-  "rel_pub": "2026-10-20",
-  "rel_days": 2,
-  "rel_n90": 5,
-  "rel_pre": false,
-  "rel_none": false,
+  "rel_ver": null,
+  "rel_none": true,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,

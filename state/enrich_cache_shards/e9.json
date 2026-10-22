@@ -55,8 +55,8 @@
   }
  },
  "memovai/mimiclaw": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": "v0.1.1",
   "rel_pub": "2026-03-17",
   "rel_days": 213,
@@ -83,8 +83,8 @@
   }
  },
  "alvinreal/awesome-opensource-ai": {
-  "commit_90d": 226,
   "commit_7d": 32,
+  "commit_90d": 226,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -105,8 +105,8 @@
   }
  },
  "secretflow/secretflow": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.14.0b0",
   "rel_pub": "2025-09-26",
   "rel_days": 386,
@@ -134,8 +134,8 @@
   }
  },
  "DEEP-PolyU/Awesome-GraphRAG": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -154,8 +154,8 @@
   }
  },
  "skfolio/skfolio": {
-  "commit_90d": 178,
   "commit_7d": 25,
+  "commit_90d": 178,
   "rel_ver": "v1.9.3",
   "rel_pub": "2026-10-16",
   "rel_days": 1,
@@ -180,8 +180,8 @@
   }
  },
  "LiuMengxuan04/shushu-internship-tool": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -202,8 +202,8 @@
   }
  },
  "amrzv/awesome-colab-notebooks": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -224,8 +224,8 @@
   }
  },
  "elevenyellow/handcrafted-persona-engine": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v3.0.2",
   "rel_pub": "2026-04-23",
   "rel_days": 177,
@@ -254,8 +254,8 @@
   }
  },
  "MoonshotAI/FlashKDA": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -279,8 +279,8 @@
   }
  },
  "dropbox/hqq": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.2.8.post1",
   "rel_pub": "2025-10-20",
   "rel_days": 362,
@@ -307,8 +307,8 @@
   }
  },
  "cyrusagents/cyrus": {
-  "commit_90d": 68,
   "commit_7d": 0,
+  "commit_90d": 68,
   "rel_ver": "v0.2.73",
   "rel_pub": "2026-09-30",
   "rel_days": 17,
@@ -335,8 +335,8 @@
   }
  },
  "astra-vision/MonoScene": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.1",
   "rel_pub": "2021-12-09",
   "rel_days": 1773,
@@ -361,8 +361,8 @@
   }
  },
  "Bytedesk/bytedesk": {
-  "commit_90d": 54,
   "commit_7d": 5,
+  "commit_90d": 54,
   "rel_ver": "v4.9.0",
   "rel_pub": "2026-10-17",
   "rel_days": 0,
@@ -391,8 +391,8 @@
   }
  },
  "ratel-ai/ratel": {
-  "commit_90d": 72,
   "commit_7d": 1,
+  "commit_90d": 72,
   "rel_ver": "sdk-ts-v0.13.0-rc.12",
   "rel_pub": "2026-10-16",
   "rel_days": 2,
@@ -421,8 +421,8 @@
   }
  },
  "Meridiona/meridian": {
-  "commit_90d": 1430,
   "commit_7d": 0,
+  "commit_90d": 1430,
   "rel_ver": "v1.96.0",
   "rel_pub": "2026-10-07",
   "rel_days": 11,
@@ -451,8 +451,8 @@
   }
  },
  "microblink/blinkid-ios": {
-  "commit_90d": 19,
   "commit_7d": 3,
+  "commit_90d": 19,
   "rel_ver": "v8002.0.2",
   "rel_pub": "2026-10-12",
   "rel_days": 6,
@@ -480,8 +480,8 @@
   }
  },
  "wjluoxiao/XB_ToolBox": {
-  "commit_90d": 80,
   "commit_7d": 14,
+  "commit_90d": 80,
   "rel_ver": "v0.9.08",
   "rel_pub": "2026-09-23",
   "rel_days": 25,
@@ -508,8 +508,8 @@
   }
  },
  "microsoft/agentsleague": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -528,8 +528,8 @@
   }
  },
  "RayFernando1337/LLM-Calc": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -553,8 +553,8 @@
   }
  },
  "Ubanillx/smartclass-backend": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -577,8 +577,8 @@
   }
  },
  "Chen-zexi/LangAlpha": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -603,8 +603,8 @@
   }
  },
  "ClawLabsAI/free-ai-models": {
-  "commit_90d": 103,
   "commit_7d": 8,
+  "commit_90d": 103,
   "rel_ver": "week-2026-10-12",
   "rel_pub": "2026-10-12",
   "rel_days": 6,
@@ -629,8 +629,8 @@
   }
  },
  "LangGraph-GUI/CrewAI-GUI-Qt": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -651,8 +651,8 @@
   }
  },
  "AI-Efficiency/Awesome-Efficient-Diffusion": {
-  "commit_90d": 13,
   "commit_7d": 1,
+  "commit_90d": 13,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -671,8 +671,8 @@
   }
  },
  "czottmann/pi-automode": {
-  "commit_90d": 129,
   "commit_7d": 0,
+  "commit_90d": 129,
   "rel_ver": "v1.17.0",
   "rel_pub": "2026-09-22",
   "rel_days": 26,
@@ -697,8 +697,8 @@
   }
  },
  "microsoft/Building-AI-Agents-From-Zero-To-Production": {
-  "commit_90d": 26,
   "commit_7d": 0,
+  "commit_90d": 26,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -723,8 +723,8 @@
   }
  },
  "Myzel394/zsh-copilot": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -745,8 +745,8 @@
   }
  },
  "eclarson/MachineLearningNotebooks": {
-  "commit_90d": 17,
   "commit_7d": 0,
+  "commit_90d": 17,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -768,8 +768,8 @@
   }
  },
  "kaiko-ai/eva": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "0.4.5",
   "rel_pub": "2026-04-29",
   "rel_days": 172,
@@ -794,8 +794,8 @@
   }
  },
  "Ludeme/Ludii": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.3.14",
   "rel_pub": "2025-06-08",
   "rel_days": 497,
@@ -824,8 +824,8 @@
   }
  },
  "vsaveris/trading-technical-indicators": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -846,8 +846,8 @@
   }
  },
  "GAMS-dev/gamspy": {
-  "commit_90d": 269,
   "commit_7d": 40,
+  "commit_90d": 269,
   "rel_ver": "v1.29.1",
   "rel_pub": "2026-10-16",
   "rel_days": 2,
@@ -876,8 +876,8 @@
   }
  },
  "chayandatta/Heart_disease_prediction": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -898,8 +898,8 @@
   }
  },
  "off-grid-ai/OGAD": {
-  "commit_90d": 2720,
   "commit_7d": 398,
+  "commit_90d": 2720,
   "rel_ver": "v0.0.55-beta.123",
   "rel_pub": "2026-10-15",
   "rel_days": 3,
@@ -928,8 +928,8 @@
   }
  },
  "Ge-Shun/origin-mcp": {
-  "commit_90d": 5,
   "commit_7d": 0,
+  "commit_90d": 5,
   "rel_ver": "v0.1.4",
   "rel_pub": "2026-07-19",
   "rel_days": 91,
@@ -955,8 +955,8 @@
   }
  },
  "MaleleStudySpace/wx-assist": {
-  "commit_90d": 200,
   "commit_7d": 8,
+  "commit_90d": 200,
   "rel_ver": "v1.7.0",
   "rel_pub": "2026-10-04",
   "rel_days": 14,
@@ -985,8 +985,8 @@
   }
  },
  "Prism-Shadow/model-message-stream-protocol": {
-  "commit_90d": 91,
   "commit_7d": 2,
+  "commit_90d": 91,
   "rel_ver": "v0.5.3",
   "rel_pub": "2026-10-14",
   "rel_days": 4,
@@ -1015,8 +1015,8 @@
   }
  },
  "chengyuZou/Open-LLM": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1035,8 +1035,8 @@
   }
  },
  "contember/okena": {
-  "commit_90d": 509,
   "commit_7d": 77,
+  "commit_90d": 509,
   "rel_ver": "v0.34.0",
   "rel_pub": "2026-10-09",
   "rel_days": 10,
@@ -2222,16 +2222,28 @@
   }
  },
  "markub3327/rl-toolkit": {
-  "rel_ver": "v5.0.0",
-  "rel_pub": "2025-01-11",
-  "rel_days": 649,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
+  "rel_ver": null,
+  "rel_none": true,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
-  "contrib_n": 2
+  "contrib_n": 2,
+  "lang": {
+   "Python": 98,
+   "Dockerfile": 2,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  },
+  "rel_pub": "2025-01-11",
+  "rel_days": 649,
+  "rel_n90": 0,
+  "rel_pre": false
  }
 }

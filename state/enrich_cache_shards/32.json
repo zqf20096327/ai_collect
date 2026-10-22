@@ -28,8 +28,8 @@
   }
  },
  "osaurus-ai/osaurus": {
-  "commit_90d": 780,
   "commit_7d": 33,
+  "commit_90d": 780,
   "rel_ver": "0.25.22",
   "rel_pub": "2026-10-14",
   "rel_days": 2,
@@ -58,8 +58,8 @@
   }
  },
  "Gentleman-Programming/gentle-ai": {
-  "commit_90d": 3330,
   "commit_7d": 55,
+  "commit_90d": 3330,
   "rel_ver": "v4.2.0",
   "rel_pub": "2026-10-15",
   "rel_days": 1,
@@ -88,8 +88,8 @@
   }
  },
  "grab/cursor-talk-to-figma-mcp": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -114,8 +114,8 @@
   }
  },
  "clearml/clearml": {
-  "commit_90d": 47,
   "commit_7d": 1,
+  "commit_90d": 47,
   "rel_ver": "v2.1.12",
   "rel_pub": "2026-08-19",
   "rel_days": 58,
@@ -140,8 +140,8 @@
   }
  },
  "Countly/countly-server": {
-  "commit_90d": 816,
   "commit_7d": 12,
+  "commit_90d": 816,
   "rel_ver": "25.03.55",
   "rel_pub": "2026-10-12",
   "rel_days": 4,
@@ -176,8 +176,8 @@
   }
  },
  "LeelaChessZero/lc0": {
-  "commit_90d": 25,
   "commit_7d": 0,
+  "commit_90d": 25,
   "rel_ver": "v0.33.0-rc0",
   "rel_pub": "2026-09-05",
   "rel_days": 42,
@@ -206,8 +206,8 @@
   }
  },
  "meta-pytorch/torchrec": {
-  "commit_90d": 416,
   "commit_7d": 26,
+  "commit_90d": 416,
   "rel_ver": "v1.9.2-rc3",
   "rel_pub": "2026-09-30",
   "rel_days": 17,
@@ -236,8 +236,8 @@
   }
  },
  "daodao97/chatmcp": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v0.0.76",
   "rel_pub": "2025-08-25",
   "rel_days": 418,
@@ -266,8 +266,8 @@
   }
  },
  "anthropics/anthropic-sdk-typescript": {
-  "commit_90d": 369,
   "commit_7d": 32,
+  "commit_90d": 369,
   "rel_ver": "sdk-v0.135.0",
   "rel_pub": "2026-10-15",
   "rel_days": 2,
@@ -299,8 +299,8 @@
   }
  },
  "Mukosame/Anime2Sketch": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -323,8 +323,8 @@
   }
  },
  "fetchai/uAgents": {
-  "commit_90d": 24,
   "commit_7d": 2,
+  "commit_90d": 24,
   "rel_ver": "core@0.4.12",
   "rel_pub": "2026-10-13",
   "rel_days": 4,
@@ -351,8 +351,8 @@
   }
  },
  "Unclecheng-li/AI_Animation": {
-  "commit_90d": 45,
   "commit_7d": 0,
+  "commit_90d": 45,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -377,8 +377,8 @@
   }
  },
  "PaperDebugger/paperdebugger": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v2.12.28",
   "rel_pub": "2026-01-12",
   "rel_days": 278,
@@ -407,8 +407,8 @@
   }
  },
  "fukuball/jieba-php": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "0.42",
   "rel_pub": "2025-07-19",
   "rel_days": 455,
@@ -433,8 +433,8 @@
   }
  },
  "ilmoi/MML-Book": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -456,8 +456,8 @@
   }
  },
  "JourniOne-ai/JourniOne-Planning-Skills": {
-  "commit_90d": 3,
   "commit_7d": 1,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -478,8 +478,8 @@
   }
  },
  "mlcommons/croissant": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": "v1.1.1",
   "rel_pub": "2026-10-05",
   "rel_days": 12,
@@ -508,8 +508,8 @@
   }
  },
  "microsoft/mcp-gateway": {
-  "commit_90d": 12,
   "commit_7d": 1,
+  "commit_90d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 1,
@@ -536,8 +536,8 @@
   }
  },
  "AltimateAI/altimate-code": {
-  "commit_90d": 173,
   "commit_7d": 18,
+  "commit_90d": 173,
   "rel_ver": "v0.12.7",
   "rel_pub": "2026-10-12",
   "rel_days": 5,
@@ -566,8 +566,8 @@
   }
  },
  "microsoft/ghqr": {
-  "commit_90d": 83,
   "commit_7d": 20,
+  "commit_90d": 83,
   "rel_ver": "v.0.6.1",
   "rel_pub": "2026-09-07",
   "rel_days": 40,
@@ -596,8 +596,8 @@
   }
  },
  "pab1it0/prometheus-mcp-server": {
-  "commit_90d": 16,
   "commit_7d": 1,
+  "commit_90d": 16,
   "rel_ver": "v1.6.2",
   "rel_pub": "2026-08-03",
   "rel_days": 75,
@@ -624,8 +624,8 @@
   }
  },
  "HRNPH/AIwaifu": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -646,8 +646,8 @@
   }
  },
  "Mintplex-Labs/anythingllm-docs": {
-  "commit_90d": 30,
   "commit_7d": 3,
+  "commit_90d": 30,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -671,8 +671,8 @@
   }
  },
  "agentmorris/MegaDetector": {
-  "commit_90d": 127,
   "commit_7d": 18,
+  "commit_90d": 127,
   "rel_ver": "v1000.0",
   "rel_pub": "2025-07-23",
   "rel_days": 452,
@@ -701,8 +701,8 @@
   }
  },
  "hakaru-dev/hakaru": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -727,8 +727,8 @@
   }
  },
  "breakstageaxe61/genspark-claw": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -749,8 +749,8 @@
   }
  },
  "acvnace/awesome-vibe-coding-resources": {
-  "commit_90d": 252,
   "commit_7d": 70,
+  "commit_90d": 252,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -769,8 +769,8 @@
   }
  },
  "hardrave/NIGHTRUN": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -795,8 +795,8 @@
   }
  },
  "Hainrixz/cyber-neo": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -817,8 +817,8 @@
   }
  },
  "smaramwbc/statewave": {
-  "commit_90d": 149,
   "commit_7d": 6,
+  "commit_90d": 149,
   "rel_ver": "v1.5.0",
   "rel_pub": "2026-08-30",
   "rel_days": 49,
@@ -847,8 +847,8 @@
   }
  },
  "PatBall1/detectree2": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v2.1.2",
   "rel_pub": "2026-02-14",
   "rel_days": 246,
@@ -877,8 +877,8 @@
   }
  },
  "ANDRETRIPOL/OpenGhost": {
-  "commit_90d": 70,
   "commit_7d": 31,
+  "commit_90d": 70,
   "rel_ver": "v1.4.9",
   "rel_pub": "2026-10-16",
   "rel_days": 2,
@@ -905,8 +905,8 @@
   }
  },
  "kangjul3854/hyufa": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "chatbot",
   "rel_pub": "2025-12-02",
   "rel_days": 320,
@@ -933,8 +933,8 @@
   }
  },
  "awesome-algorand/awesome-algorand": {
-  "commit_90d": 8,
   "commit_7d": 2,
+  "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -955,8 +955,8 @@
   }
  },
  "MCP-Manager/MCP-Checklists": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -979,8 +979,8 @@
   }
  },
  "microsoft/Agents-for-net": {
-  "commit_90d": 515,
   "commit_7d": 21,
+  "commit_90d": 515,
   "rel_ver": "v1.8.77",
   "rel_pub": "2026-08-24",
   "rel_days": 55,
@@ -1007,8 +1007,8 @@
   }
  },
  "Vieeeeeee/wibi-style": {
-  "commit_90d": 141,
   "commit_7d": 2,
+  "commit_90d": 141,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1029,8 +1029,8 @@
   }
  },
  "Sstobo/Claude-Code-Game-Master": {
-  "commit_90d": 85,
   "commit_7d": 0,
+  "commit_90d": 85,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1052,8 +1052,8 @@
   }
  },
  "bitsky-tech/bridgic": {
-  "commit_90d": 7,
   "commit_7d": 0,
+  "commit_90d": 7,
   "rel_ver": "v0.4.1.post2",
   "rel_pub": "2026-08-04",
   "rel_days": 75,
@@ -1080,8 +1080,8 @@
   }
  },
  "speq-ai/speq": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1100,8 +1100,8 @@
   }
  },
  "vectora-foundry/native-devtools-mcp": {
-  "commit_90d": 42,
   "commit_7d": 0,
+  "commit_90d": 42,
   "rel_ver": "v0.10.1",
   "rel_pub": "2026-05-31",
   "rel_days": 140,
@@ -1129,8 +1129,8 @@
   }
  },
  "chrismattmann/MLwithTensorFlow2ed": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1154,8 +1154,8 @@
   }
  },
  "Sandermage/sndr_core_engine": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v12.1.0",
   "rel_pub": "2026-07-04",
   "rel_days": 106,
@@ -1184,8 +1184,8 @@
   }
  },
  "ChenLiu-1996/LM-Dispersion": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1206,8 +1206,8 @@
   }
  },
  "therezor/cardputer-ai": {
-  "commit_90d": 7,
   "commit_7d": 0,
+  "commit_90d": 7,
   "rel_ver": "2.2",
   "rel_pub": "2026-09-25",
   "rel_days": 23,
@@ -1236,8 +1236,8 @@
   }
  },
  "Shaf2665/Hermes-router": {
-  "commit_90d": 40,
   "commit_7d": 0,
+  "commit_90d": 40,
   "rel_ver": "vscode-v0.7.0",
   "rel_pub": "2026-06-26",
   "rel_days": 114,
@@ -1266,8 +1266,8 @@
   }
  },
  "Elite588/Hacker": {
-  "commit_90d": 4,
   "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1292,8 +1292,8 @@
   }
  },
  "dabit3/a2a-x402-typescript": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1317,8 +1317,8 @@
   }
  },
  "modelscope/mcore-bridge": {
-  "commit_90d": 53,
   "commit_7d": 4,
+  "commit_90d": 53,
   "rel_ver": "v1.6.5",
   "rel_pub": "2026-10-13",
   "rel_days": 5,
@@ -1343,8 +1343,8 @@
   }
  },
  "JayFarei/opentraces": {
-  "commit_90d": 58,
   "commit_7d": 1,
+  "commit_90d": 58,
   "rel_ver": "v0.4.13",
   "rel_pub": "2026-07-29",
   "rel_days": 82,
@@ -2358,8 +2358,8 @@
   }
  },
  "SiliconLabsSoftware/arduino": {
-  "commit_90d": 110,
   "commit_7d": 6,
+  "commit_90d": 110,
   "rel_ver": "5.0.0",
   "rel_pub": "2026-09-15",
   "rel_days": 36,
@@ -2887,12 +2887,8 @@
   }
  },
  "luochenw/deepseek-harness-macos": {
-  "rel_ver": "v0.5.1",
-  "rel_pub": "2026-08-28",
-  "rel_days": 55,
-  "rel_n90": 8,
-  "rel_pre": false,
-  "rel_none": false,
+  "rel_ver": null,
+  "rel_none": true,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,

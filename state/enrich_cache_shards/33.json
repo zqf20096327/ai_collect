@@ -120,8 +120,8 @@
   }
  },
  "yifanfeng97/Hyper-Extract": {
-  "commit_90d": 238,
   "commit_7d": 10,
+  "commit_90d": 238,
   "rel_ver": "v0.10.5",
   "rel_pub": "2026-09-29",
   "rel_days": 17,
@@ -146,8 +146,8 @@
   }
  },
  "openai/openai-go": {
-  "commit_90d": 313,
   "commit_7d": 39,
+  "commit_90d": 313,
   "rel_ver": "v3.79.0",
   "rel_pub": "2026-10-16",
   "rel_days": 1,
@@ -176,8 +176,8 @@
   }
  },
  "jslee02/awesome-robotics-libraries": {
-  "commit_90d": 12,
   "commit_7d": 12,
+  "commit_90d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -198,8 +198,8 @@
   }
  },
  "tickernelz/opencode-mem": {
-  "commit_90d": 301,
   "commit_7d": 22,
+  "commit_90d": 301,
   "rel_ver": "v2.31.3",
   "rel_pub": "2026-10-15",
   "rel_days": 2,
@@ -228,8 +228,8 @@
   }
  },
  "google-deepmind/mujoco_mpc": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.1.0",
   "rel_pub": "2024-02-23",
   "rel_days": 967,
@@ -258,8 +258,8 @@
   }
  },
  "CliMA/Oceananigans.jl": {
-  "commit_90d": 267,
   "commit_7d": 28,
+  "commit_90d": 267,
   "rel_ver": "v0.114.0",
   "rel_pub": "2026-10-14",
   "rel_days": 3,
@@ -288,8 +288,8 @@
   }
  },
  "Amm1rr/WebAI-to-API": {
-  "commit_90d": 85,
   "commit_7d": 1,
+  "commit_90d": 85,
   "rel_ver": "v0.7.0",
   "rel_pub": "2026-09-03",
   "rel_days": 44,
@@ -318,8 +318,8 @@
   }
  },
  "Vincentqyw/image-matching-webui": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.1.3",
   "rel_pub": "2026-07-14",
   "rel_days": 95,
@@ -348,8 +348,8 @@
   }
  },
  "huggingface/AnyLanguageModel": {
-  "commit_90d": 103,
   "commit_7d": 8,
+  "commit_90d": 103,
   "rel_ver": "1.0.0",
   "rel_pub": "2026-10-13",
   "rel_days": 4,
@@ -374,8 +374,8 @@
   }
  },
  "IgorShadurin/app.yumcut.com": {
-  "commit_90d": 24,
   "commit_7d": 0,
+  "commit_90d": 24,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -400,8 +400,8 @@
   }
  },
  "TalEliyahu/Awesome-AI-Security": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -420,8 +420,8 @@
   }
  },
  "aws-samples/aws-lex-web-ui": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "v0.24.2",
   "rel_pub": "2026-07-29",
   "rel_days": 80,
@@ -450,8 +450,8 @@
   }
  },
  "wsxiaoys/awesome-ai-coding": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -470,8 +470,8 @@
   }
  },
  "emlearn/emlearn": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "0.21.1",
   "rel_pub": "2025-04-15",
   "rel_days": 550,
@@ -500,8 +500,8 @@
   }
  },
  "Gitruck/cli": {
-  "commit_90d": 598,
   "commit_7d": 38,
+  "commit_90d": 598,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -525,8 +525,8 @@
   }
  },
  "google-deepmind/distrax": {
-  "commit_90d": 8,
   "commit_7d": 1,
+  "commit_90d": 8,
   "rel_ver": "v0.1.9",
   "rel_pub": "2026-06-12",
   "rel_days": 127,
@@ -552,8 +552,8 @@
   }
  },
  "LeoYeAI/openclaw-guardian": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -574,8 +574,8 @@
   }
  },
  "dirge-code/dirge": {
-  "commit_90d": 307,
   "commit_7d": 0,
+  "commit_90d": 307,
   "rel_ver": "v0.25.7",
   "rel_pub": "2026-09-27",
   "rel_days": 21,
@@ -604,8 +604,8 @@
   }
  },
  "lab-v2/pyreason": {
-  "commit_90d": 14,
   "commit_7d": 0,
+  "commit_90d": 14,
   "rel_ver": "v4.0.0b3",
   "rel_pub": "2026-10-17",
   "rel_days": 1,
@@ -632,8 +632,8 @@
   }
  },
  "facex-engine/facex": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "facex-nano-1.0",
   "rel_pub": "2026-05-14",
   "rel_days": 157,
@@ -662,8 +662,8 @@
   }
  },
  "azorng/goose.nvim": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "v1.0.5",
   "rel_pub": "2026-01-06",
   "rel_days": 285,
@@ -690,8 +690,8 @@
   }
  },
  "sisinflab/elliot": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.3.1",
   "rel_pub": "2021-07-08",
   "rel_days": 1928,
@@ -716,8 +716,8 @@
   }
  },
  "Sibyl-Research-Team/AutoResearch-SibylSystem": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.6.1",
   "rel_pub": "2026-03-10",
   "rel_days": 222,
@@ -746,8 +746,8 @@
   }
  },
  "channprj/kmsg": {
-  "commit_90d": 130,
   "commit_7d": 0,
+  "commit_90d": 130,
   "rel_ver": "v1.260921.0",
   "rel_pub": "2026-09-21",
   "rel_days": 27,
@@ -776,8 +776,8 @@
   }
  },
  "huggingface/data-is-better-together": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -800,8 +800,8 @@
   }
  },
  "ErdemOzgen/Data-Engineering-Roadmap": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -826,8 +826,8 @@
   }
  },
  "QVerisAI/qveris-agent-toolkit": {
-  "commit_90d": 191,
   "commit_7d": 14,
+  "commit_90d": 191,
   "rel_ver": "python-sdk-v0.8.0",
   "rel_pub": "2026-10-04",
   "rel_days": 14,
@@ -856,8 +856,8 @@
   }
  },
  "VlSomers/bpbreid": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -881,8 +881,8 @@
   }
  },
  "14790897/tg-voice-ai": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -903,8 +903,8 @@
   }
  },
  "ai-ng/magic-spell": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -927,8 +927,8 @@
   }
  },
  "sandbaseai/deepseek-harness-handbook": {
-  "commit_90d": 796,
   "commit_7d": 0,
+  "commit_90d": 796,
   "rel_ver": "v0.5.438",
   "rel_pub": "2026-08-29",
   "rel_days": 50,
@@ -955,8 +955,8 @@
   }
  },
  "bitrouter/bitrouter": {
-  "commit_90d": 219,
   "commit_7d": 15,
+  "commit_90d": 219,
   "rel_ver": "v1.0.0-alpha.33",
   "rel_pub": "2026-09-23",
   "rel_days": 25,
@@ -981,8 +981,8 @@
   }
  },
  "second-state/echokit_box": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.3.2",
   "rel_pub": "2026-05-05",
   "rel_days": 166,
@@ -1011,8 +1011,8 @@
   }
  },
  "Techopolis/afm-Server": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.1.0-beta.3",
   "rel_pub": "2026-06-02",
   "rel_days": 138,
@@ -1037,8 +1037,8 @@
   }
  },
  "baianjo/Douyin-Smart-Feed-Assistant": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1060,8 +1060,8 @@
   }
  },
  "Hkshoonya/nvidia-broadcast-linux": {
-  "commit_90d": 114,
   "commit_7d": 13,
+  "commit_90d": 114,
   "rel_ver": "infra-native-builders-20261011",
   "rel_pub": "2026-10-11",
   "rel_days": 7,
@@ -1090,8 +1090,8 @@
   }
  },
  "Li-Jinsong/DAEDAL": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1113,8 +1113,8 @@
   }
  },
  "Lomnus-ai/TokenBurner": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1133,8 +1133,8 @@
   }
  },
  "sammcj/mcp-devtools": {
-  "commit_90d": 40,
   "commit_7d": 4,
+  "commit_90d": 40,
   "rel_ver": "v0.59.119",
   "rel_pub": "2026-10-18",
   "rel_days": 0,
@@ -1163,8 +1163,8 @@
   }
  },
  "Ximilar-com/xcenternet": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.0.0",
   "rel_pub": "2021-01-04",
   "rel_days": 2113,
@@ -1190,8 +1190,8 @@
   }
  },
  "Nyrok/flompt": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.5.0",
   "rel_pub": "2026-03-18",
   "rel_days": 214,
@@ -1220,8 +1220,8 @@
   }
  },
  "HilbertraumAI/HilbertRaum": {
-  "commit_90d": 1211,
   "commit_7d": 265,
+  "commit_90d": 1211,
   "rel_ver": "v0.1.63",
   "rel_pub": "2026-10-12",
   "rel_days": 6,
@@ -1250,8 +1250,8 @@
   }
  },
  "Devinterview-io/nlp-interview-questions": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1270,8 +1270,8 @@
   }
  },
  "R3dShad0w7/PromptMe": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "v1.0.0",
   "rel_pub": "2025-06-03",
   "rel_days": 502,
@@ -1300,8 +1300,8 @@
   }
  },
  "octopusreview/octopus": {
-  "commit_90d": 724,
   "commit_7d": 34,
+  "commit_90d": 724,
   "rel_ver": "v1.3.1",
   "rel_pub": "2026-10-17",
   "rel_days": 1,
@@ -1330,8 +1330,8 @@
   }
  },
  "PaulineWang183/daytrace": {
-  "commit_90d": 7,
   "commit_7d": 0,
+  "commit_90d": 7,
   "rel_ver": "v1.0.0-preview.1",
   "rel_pub": "2026-08-28",
   "rel_days": 51,
@@ -1358,8 +1358,8 @@
   }
  },
  "DTDucas/chm-converter": {
-  "commit_90d": 8,
   "commit_7d": 0,
+  "commit_90d": 8,
   "rel_ver": "1.0.0.1",
   "rel_pub": "2025-07-29",
   "rel_days": 446,
@@ -1384,8 +1384,8 @@
   }
  },
  "michaelhla/pro-1": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1408,8 +1408,8 @@
   }
  },
  "AssafWoo/homebrew-pandafilter": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.3.26",
   "rel_pub": "2026-06-12",
   "rel_days": 129,
@@ -3020,6 +3020,52 @@
   "contrib_n": 2,
   "lang": {
    "R": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "joshclemm/ai-search": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 55,
+   "PHP": 42,
+   "CSS": 3
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "explorium-ai/mcp-explorium": {
+  "rel_ver": "1.0.0",
+  "rel_pub": "2025-09-16",
+  "rel_days": 401,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Dockerfile": 73,
+   "Shell": 18,
+   "JavaScript": 8
   },
   "enriched_at": "20261022",
   "dim_ts": {

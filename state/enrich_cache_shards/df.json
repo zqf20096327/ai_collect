@@ -65,8 +65,8 @@
   }
  },
  "netease-youdao/LobsterAI": {
-  "commit_90d": 1175,
   "commit_7d": 166,
+  "commit_90d": 1175,
   "rel_ver": "2026.10.16",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -95,8 +95,8 @@
   }
  },
  "HIT-SCIR/ltp": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v4.2.0",
   "rel_pub": "2022-08-15",
   "rel_days": 1523,
@@ -125,8 +125,8 @@
   }
  },
  "Lightricks/ComfyUI-LTXVideo": {
-  "commit_90d": 24,
   "commit_7d": 4,
+  "commit_90d": 24,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -148,8 +148,8 @@
   }
  },
  "pnnbao97/VieNeu-TTS": {
-  "commit_90d": 136,
   "commit_7d": 2,
+  "commit_90d": 136,
   "rel_ver": "app-v0.18.11",
   "rel_pub": "2026-10-15",
   "rel_days": 2,
@@ -177,8 +177,8 @@
   }
  },
  "TNT-Likely/BeeCount": {
-  "commit_90d": 50,
   "commit_7d": 6,
+  "commit_90d": 50,
   "rel_ver": "3.8.6",
   "rel_pub": "2026-10-08",
   "rel_days": 9,
@@ -207,8 +207,8 @@
   }
  },
  "dsphper/lanhu-mcp": {
-  "commit_90d": 321,
   "commit_7d": 3,
+  "commit_90d": 321,
   "rel_ver": "v1.8.7",
   "rel_pub": "2026-10-13",
   "rel_days": 4,
@@ -236,8 +236,8 @@
   }
  },
  "google/XNNPACK": {
-  "commit_90d": 697,
   "commit_7d": 56,
+  "commit_90d": 697,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -262,8 +262,8 @@
   }
  },
  "osqp/osqp": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.0.0",
   "rel_pub": "2025-03-21",
   "rel_days": 575,
@@ -292,8 +292,8 @@
   }
  },
  "vitoplantamura/OnnxStream": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.2",
   "rel_pub": "2024-01-14",
   "rel_days": 1007,
@@ -322,8 +322,8 @@
   }
  },
  "guinmoon/LLMFarm": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "1.4.3",
   "rel_pub": "2025-01-27",
   "rel_days": 628,
@@ -351,8 +351,8 @@
   }
  },
  "aidanpark/openclaw-android": {
-  "commit_90d": 23,
   "commit_7d": 11,
+  "commit_90d": 23,
   "rel_ver": "v0.5.1",
   "rel_pub": "2026-10-12",
   "rel_days": 5,
@@ -381,8 +381,8 @@
   }
  },
  "ThioJoe/Auto-Synced-Translated-Dubs": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.21.0",
   "rel_pub": "2025-01-28",
   "rel_days": 627,
@@ -407,8 +407,8 @@
   }
  },
  "appleboy/CodeGPT": {
-  "commit_90d": 11,
   "commit_7d": 0,
+  "commit_90d": 11,
   "rel_ver": "v1.8.0",
   "rel_pub": "2026-09-28",
   "rel_days": 19,
@@ -437,8 +437,8 @@
   }
  },
  "xl0/lovely-tensors": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -461,8 +461,8 @@
   }
  },
  "pnnl/neuromancer": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v1.5.6",
   "rel_pub": "2025-09-26",
   "rel_days": 386,
@@ -489,8 +489,8 @@
   }
  },
  "Gentleman-Programming/gentle-shell": {
-  "commit_90d": 2042,
   "commit_7d": 300,
+  "commit_90d": 2042,
   "rel_ver": "v4.3.0",
   "rel_pub": "2026-10-16",
   "rel_days": 1,
@@ -519,8 +519,8 @@
   }
  },
  "dmlc/dlpack": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "v1.3",
   "rel_pub": "2026-01-26",
   "rel_days": 264,
@@ -549,8 +549,8 @@
   }
  },
  "jenly1314/MLKit": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "2.5.0",
   "rel_pub": "2026-06-11",
   "rel_days": 128,
@@ -576,8 +576,8 @@
   }
  },
  "THUMNLab/AutoGL": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.4.0",
   "rel_pub": "2022-12-30",
   "rel_days": 1387,
@@ -604,8 +604,8 @@
   }
  },
  "officecli/officedex": {
-  "commit_90d": 97,
   "commit_7d": 49,
+  "commit_90d": 97,
   "rel_ver": "v1.0.35",
   "rel_pub": "2026-10-14",
   "rel_days": 3,
@@ -634,8 +634,8 @@
   }
  },
  "pytorch/benchmark": {
-  "commit_90d": 59,
   "commit_7d": 4,
+  "commit_90d": 59,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -660,8 +660,8 @@
   }
  },
  "topoteretes/awesome-ai-memory": {
-  "commit_90d": 5,
   "commit_7d": 0,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -682,8 +682,8 @@
   }
  },
  "aws-samples/sample-mobile-ai-assistant": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "2.9.0",
   "rel_pub": "2026-04-24",
   "rel_days": 176,
@@ -712,8 +712,8 @@
   }
  },
  "mario-andreschak/FLUJO": {
-  "commit_90d": 2310,
   "commit_7d": 217,
+  "commit_90d": 2310,
   "rel_ver": "v3.46.2",
   "rel_pub": "2026-10-02",
   "rel_days": 15,
@@ -742,8 +742,8 @@
   }
  },
  "tommy0103/obelisk": {
-  "commit_90d": 127,
   "commit_7d": 0,
+  "commit_90d": 127,
   "rel_ver": "v0.2.5",
   "rel_pub": "2026-10-08",
   "rel_days": 9,
@@ -772,8 +772,8 @@
   }
  },
  "NightMean/OlliteRT": {
-  "commit_90d": 212,
   "commit_7d": 0,
+  "commit_90d": 212,
   "rel_ver": "v0.9.7-beta.1",
   "rel_pub": "2026-09-22",
   "rel_days": 25,
@@ -798,8 +798,8 @@
   }
  },
  "ilsilfverskiold/Awesome-LLM-Resources-List": {
-  "commit_90d": 10,
   "commit_7d": 0,
+  "commit_90d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -820,8 +820,8 @@
   }
  },
  "truecourse-ai/truecourse": {
-  "commit_90d": 105,
   "commit_7d": 9,
+  "commit_90d": 105,
   "rel_ver": "v0.9.3",
   "rel_pub": "2026-10-01",
   "rel_days": 16,
@@ -850,8 +850,8 @@
   }
  },
  "harleyszhang/dl_note": {
-  "commit_90d": 5,
   "commit_7d": 0,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -873,8 +873,8 @@
   }
  },
  "okx/agent-trade-kit": {
-  "commit_90d": 10,
   "commit_7d": 0,
+  "commit_90d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -898,8 +898,8 @@
   }
  },
  "softmata/horus": {
-  "commit_90d": 456,
   "commit_7d": 0,
+  "commit_90d": 456,
   "rel_ver": "v0.4.1",
   "rel_pub": "2026-09-04",
   "rel_days": 44,
@@ -928,8 +928,8 @@
   }
  },
  "Thinklab-SJTU/pygmtools": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "0.6.0",
   "rel_pub": "2026-04-02",
   "rel_days": 199,
@@ -956,8 +956,8 @@
   }
  },
  "anthropics/uplifting-biomolecular-modeling": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -982,8 +982,8 @@
   }
  },
  "liangdabiao/perler-beads-ai": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1007,8 +1007,8 @@
   }
  },
  "sgl-project/rbg": {
-  "commit_90d": 63,
   "commit_7d": 5,
+  "commit_90d": 63,
   "rel_ver": "v0.9.0-alpha.1",
   "rel_pub": "2026-09-17",
   "rel_days": 31,
@@ -1036,8 +1036,8 @@
   }
  },
  "CodeAlta/CodeAlta": {
-  "commit_90d": 1153,
   "commit_7d": 430,
+  "commit_90d": 1153,
   "rel_ver": "1.9.5",
   "rel_pub": "2026-10-17",
   "rel_days": 1,
@@ -1066,8 +1066,8 @@
   }
  },
  "Mats2208/MCP-Packet-Tracer": {
-  "commit_90d": 110,
   "commit_7d": 17,
+  "commit_90d": 110,
   "rel_ver": "v0.9.0",
   "rel_pub": "2026-08-30",
   "rel_days": 49,
@@ -1094,8 +1094,8 @@
   }
  },
  "LucidAkshay/kavach": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-03-18",
   "rel_days": 214,
@@ -1123,8 +1123,8 @@
   }
  },
  "microsoft/langchainjs-for-beginners": {
-  "commit_90d": 6,
   "commit_7d": 0,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1146,8 +1146,8 @@
   }
  },
  "lightning-uq-box/lightning-uq-box": {
-  "commit_90d": 93,
   "commit_7d": 7,
+  "commit_90d": 93,
   "rel_ver": "v0.4.0",
   "rel_pub": "2026-09-28",
   "rel_days": 20,
@@ -1172,8 +1172,8 @@
   }
  },
  "CiscoDevNet/foundry-security-spec": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1192,8 +1192,8 @@
   }
  },
  "reaviz/reachat": {
-  "commit_90d": 10,
   "commit_7d": 0,
+  "commit_90d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1218,8 +1218,8 @@
   }
  },
  "SikamikanikoBG/homelab-monitor": {
-  "commit_90d": 262,
   "commit_7d": 2,
+  "commit_90d": 262,
   "rel_ver": "v0.37.0",
   "rel_pub": "2026-09-23",
   "rel_days": 25,
@@ -1248,8 +1248,8 @@
   }
  },
  "engeldlgado/toshllm": {
-  "commit_90d": 737,
   "commit_7d": 64,
+  "commit_90d": 737,
   "rel_ver": "v0.87.26",
   "rel_pub": "2026-10-17",
   "rel_days": 1,
@@ -1278,8 +1278,8 @@
   }
  },
  "hyperai/vllm-cn": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1304,8 +1304,8 @@
   }
  },
  "miuuyy/Clew": {
-  "commit_90d": 19,
   "commit_7d": 1,
+  "commit_90d": 19,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-10-02",
   "rel_days": 16,
@@ -1334,8 +1334,8 @@
   }
  },
  "crabbuild/compass": {
-  "commit_90d": 1535,
   "commit_7d": 0,
+  "commit_90d": 1535,
   "rel_ver": "compass-v0.4.2",
   "rel_pub": "2026-10-03",
   "rel_days": 15,
@@ -1364,8 +1364,8 @@
   }
  },
  "iamzifei/wechat-article-publisher-skill": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1386,8 +1386,8 @@
   }
  },
  "RUSOCIAL-SU/RUSocial-Panel": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1406,8 +1406,8 @@
   }
  },
  "LAMDA-NeSy/ChinaTravel": {
-  "commit_90d": 38,
   "commit_7d": 0,
+  "commit_90d": 38,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1428,8 +1428,8 @@
   }
  },
  "Sunanzhe2004/shushu-internship-resume-optimizer": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1450,8 +1450,8 @@
   }
  },
  "davisidarta/topometry": {
-  "commit_90d": 34,
   "commit_7d": 0,
+  "commit_90d": 34,
   "rel_ver": "v0.0.1",
   "rel_pub": "2021-05-07",
   "rel_days": 1990,
@@ -1476,8 +1476,8 @@
   }
  },
  "emanuelcasco/pi-mono-extensions": {
-  "commit_90d": 6,
   "commit_7d": 0,
+  "commit_90d": 6,
   "rel_ver": "release-20260509-1",
   "rel_pub": "2026-05-08",
   "rel_days": 163,
@@ -1502,8 +1502,8 @@
   }
  },
  "sonirico/mcp-shell": {
-  "commit_90d": 44,
   "commit_7d": 0,
+  "commit_90d": 44,
   "rel_ver": "v1.1.1",
   "rel_pub": "2026-09-25",
   "rel_days": 23,
@@ -1538,8 +1538,8 @@
   }
  },
  "AskTheWay/dsh-auto-memory": {
-  "commit_90d": 41,
   "commit_7d": 3,
+  "commit_90d": 41,
   "rel_ver": "v0.7.2",
   "rel_pub": "2026-10-13",
   "rel_days": 5,
@@ -1565,8 +1565,8 @@
   }
  },
  "YigitEkin/CLIPAway": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1588,8 +1588,8 @@
   }
  },
  "lucidrains/robo_ttt": {
-  "commit_90d": 21,
   "commit_7d": 0,
+  "commit_90d": 21,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2736,12 +2736,8 @@
   }
  },
  "hifly81/bikescout": {
-  "rel_ver": "1.6.1",
-  "rel_pub": "2026-09-26",
-  "rel_days": 26,
-  "rel_n90": 2,
-  "rel_pre": false,
-  "rel_none": false,
+  "rel_ver": null,
+  "rel_none": true,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
