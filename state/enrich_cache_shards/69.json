@@ -2311,5 +2311,55 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "DIAGNijmegen/rse-grand-challenge-metrics": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2025-12-09",
+  "rel_days": 317,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "xianml/copilot-api-pro": {
+  "rel_ver": "v0.1.6",
+  "rel_pub": "2025-12-10",
+  "rel_days": 316,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 68,
+   "JavaScript": 16,
+   "HTML": 15,
+   "Dockerfile": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

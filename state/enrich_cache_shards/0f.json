@@ -2215,5 +2215,51 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "bu-icsg/Hardware_Performance_Counters_Can_Detect_Malware_Myth_or_Fact": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C++": 88,
+   "C": 9,
+   "Python": 3,
+   "CMake": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Asem-D/arcgis-portal-mcp": {
+  "rel_ver": "v1.15.0",
+  "rel_pub": "2026-10-02",
+  "rel_days": 20,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

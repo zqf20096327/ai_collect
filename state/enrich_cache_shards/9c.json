@@ -2230,5 +2230,55 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "avabbbb/OfferU": {
+  "rel_ver": "nightly",
+  "rel_pub": "2026-10-19",
+  "rel_days": 3,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 56,
+   "TypeScript": 40,
+   "CSS": 1,
+   "JavaScript": 1,
+   "Rust": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "NickScherbakov/codementor-ai-platform": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 43,
+   "JavaScript": 22,
+   "Python": 21,
+   "Shell": 10,
+   "HCL": 3
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

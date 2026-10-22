@@ -2865,5 +2865,56 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "rergards/mempalace-code": {
+  "rel_ver": "v1.16.0",
+  "rel_pub": "2026-10-06",
+  "rel_days": 16,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "Python": 100,
+   "Shell": 0,
+   "Go": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "netresearch/skill-repo-skill": {
+  "rel_ver": "v3.0.1",
+  "rel_pub": "2026-10-22",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-10-06",
+  "sec_ids": [
+   "GHSA-f665-vr5m-92qc(-,high)"
+  ],
+  "contrib_n": 7,
+  "lang": {
+   "Shell": 94,
+   "Python": 6
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

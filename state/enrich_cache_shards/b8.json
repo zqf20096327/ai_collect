@@ -2924,5 +2924,29 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
- }
+ },
+ "JustTheMartin/fivem_anims": {
+  "rel_ver": "v2.7",
+  "rel_pub": "2023-06-08",
+  "rel_days": 1232,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Lua": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "dronefreak/NeuralFlight": {}
 }

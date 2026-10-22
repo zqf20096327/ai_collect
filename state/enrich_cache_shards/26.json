@@ -2444,5 +2444,56 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "Wolfe-Jam/claude-faf-mcp": {
+  "rel_ver": "v7.0.1",
+  "rel_pub": "2026-10-01",
+  "rel_days": 21,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2026-06-11",
+  "sec_ids": [
+   "GHSA-rr55-jp92-8wp2(-,medium)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 91,
+   "JavaScript": 7,
+   "Python": 1,
+   "HTML": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Dqz00116/skill-lib": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 62,
+   "Python": 37,
+   "Shell": 1,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }
