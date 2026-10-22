@@ -31,6 +31,10 @@ Codex, Claude, Gemini, and Antigravity sessions show compact tool status and com
 previews, with output previews for failed calls. Explicit Claude skill invocations
 appear alongside them, and answers retain saved usage counts.
 
+The `/plan` workflow uses bundled Markdown agent definitions. Repository overrides live
+in `.agents/agents/<id>/agent.md`; see the
+[workflow guide](https://agentty.xyz/docs/usage/workflow/) for the supported format.
+
 ## Installation
 
 ### npm (recommended)
@@ -172,9 +176,16 @@ agentty              # Launch with auto-update enabled (default)
 agentty --no-update  # Launch without automatic updates
 agentty --otlp-endpoint http://localhost:4318/v1/traces  # Export session traces
 agentty --experimental-harness  # Offer preview Harness sessions
+agentty --experimental-multi-agent  # Enable the /plan orchestrated chat
 agentty --help       # Show supported command-line options
 agentty --version    # Show the installed Agentty version
 ```
+
+Start with `agentty --experimental-multi-agent` to enable `/plan`. Use it in a session
+with a prepared worktree, including a new **Regular** session, to turn the chat into a
+**Plan then implement** conversation. Answer or revise the read-only **Planner**
+proposal in the composer, then approve it in your own words to run the **Implementer**;
+follow-ups go to the Implementer.
 
 `--experimental-harness` adds a preview **Harness** session type that runs Agentty's
 built-in agent loop against Muse, Kimi, or Qwen using `MODEL_API_KEY`, `KIMI_API_KEY`

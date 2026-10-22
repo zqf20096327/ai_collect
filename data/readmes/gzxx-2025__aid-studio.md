@@ -54,7 +54,7 @@ This group is exclusively for open-source discussion and technical support, with
 
 | | |
 |:---:|---|
-| <a href="https://metaso.cn/minimax-h3/?s=aid-studio"><img src="references/metasota-logo.jpg" alt="Meta Sota" width="170"></a> | **MiniMax H3 Video Generation API · Meta Sota**<br>Meta Sota offers cost-effective MiniMax H3 video generation: **768P at just CNY 0.09/second and 2K at CNY 0.15/second**. It supports native 2K and synchronized audio and video, with an **OpenAI-compatible API** and **ComfyUI** support. No self-hosted GPU is required.<br>🎁 Register through the [exclusive aid-studio link](https://metaso.cn/minimax-h3/?s=aid-studio) to receive complimentary credits and exclusive discounts. |
+| <a href="https://metaso.cn/minimax-h3/?s=aid-studio"><img src="references/metasota-logo.jpg" alt="秘塔科技 Meta Sota" width="170"></a> | **MiniMax H3 视频生成 API｜秘塔科技**<br>秘塔科技提供高性价比的 MiniMax H3 视频生成服务：**768P 仅 0.09 元/秒，2K 仅 0.15 元/秒**。支持原生 2K、音画同步，API 兼容 **OpenAI 协议**，同时支持 **ComfyUI**，无需自行部署 GPU。<br>🎁 通过 [aid-studio 专属链接注册](https://metaso.cn/minimax-h3/?s=aid-studio)，即可领取赠送额度及专属优惠。 |
 
 <a id="核心能力"></a>
 
@@ -474,6 +474,21 @@ Issues and Pull Requests in Chinese or English are welcome. Read the [contributi
 - [Report a security issue](SECURITY.md)
 
 If AID helps you, consider starring the repository. You are also welcome to share creative examples you have the right to publish, along with your deployment experience.
+
+<a id="donate"></a>
+
+## 赞赏支持 / Donate
+
+如果 AID Studio 对你有帮助，欢迎自愿赞赏，支持项目持续维护与改进。
+
+If AID Studio is useful to you, consider a voluntary donation to support ongoing maintenance and improvements.
+
+<p align="center">
+  <a href="references/wechat-donation.jpg">
+    <img src="references/wechat-donation.jpg" alt="微信赞赏码 / WeChat donation code" width="320">
+  </a><br>
+  <sub>微信扫码赞赏 · Scan with WeChat to donate<br>点击图片查看原图 / Click the image to view full size</sub>
+</p>
 
 <a id="开源协议"></a>
 

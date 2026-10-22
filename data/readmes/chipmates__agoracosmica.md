@@ -58,7 +58,7 @@ Laozi, Siddhartha Gautama, Plato, Marcus Aurelius, Hildegard von Bingen, Dōgen 
 
 </details>
 
-Hear the live Echo voices, Qwen3-TTS on our own speech servers:
+Hear the live Echo voices, Qwen3-TTS on our own speech server:
 
 | English | German |
 |---|---|
@@ -99,14 +99,14 @@ The interface targets WCAG 2.2 AA: keyboard paths, screen reader labels, 44 px t
 
 You enter with one click on a consent screen (16 or older, and the terms). There is no account. Conversation history, your profile and any API key you add live in IndexedDB in your browser, encrypted at rest with AES-256-GCM. The API key sits under a device key the browser marks non-extractable: a script on the page can use it and cannot read it out. [The threat model](docs/THREAT-MODEL.md) says what that protects against and what it does not.
 
-The free tier is 30 messages a day per device. They pass through a Cloudflare Worker to DeepSeek V4 Pro at Nebius in the United Kingdom, with Qwen3-235B in Finland as the fallback when the day's shared budget is spent, the primary errors, or the first token takes longer than five seconds. Each reply names the model that answered. Every free reply costs us money at a provider, which is why the day has a budget behind it. The worker keeps no per-request log. With your own OpenRouter key, requests go from your browser to OpenRouter directly, pinned to one model with zero data retention on by default, and the key never reaches us.
+The free tier is 30 messages a day per device. They pass through a Cloudflare Worker to DeepSeek V4 Pro at Nebius in the United Kingdom, with Qwen3-235B in Finland as the fallback when the day's shared budget is spent, the primary errors, or the first token takes longer than five seconds. Each reply names the model that answered. Every free reply costs us money at a provider, which is why the day has a budget behind it. The worker keeps no per-request log. With your own OpenRouter key, requests go from your browser to OpenRouter directly, pinned to one model with zero data retention on by default, and the key never reaches us. Only if OpenRouter rejects your key and you agree in the app to continue on the daily free quota does that conversation, including what was written before, pass through our servers as in the free mode.
 
-Live speech runs on Qwen3-TTS for English and German on our own GPU servers in Germany, with faster-whisper for speech-to-text. The recorded catalog is served from Cloudflare R2 in Western Europe.
+Live speech runs on Qwen3-TTS for English and German on our own GPU server in Germany, with faster-whisper for speech-to-text. The recorded catalog is served from Cloudflare R2 in Western Europe.
 
 What we count is aggregate, with no user dimension and no key that joins two rows. The only cookies on the site are Cloudflare's bot-detection ones. One exception, named up front: visitors from our free nonprofit Google Ad Grants ads carry a click id, and if they opt in (off by default, revocable in Settings) the worker forwards it to Google Ads at a conversion step. It never enters our own counters. [What we measure](docs/MEASUREMENT.md) lists every counter, [Security architecture](docs/SECURITY-ARCHITECTURE.md) the data flows and subprocessors, [Compliance](docs/COMPLIANCE.md) the GDPR, EU AI Act Article 50 and youth protection (JMStV, 16+) posture. All of it is checkable against the code in this repository, which is the reason the code is public.
 
 <p align="center">
-  <img src=".github/assets/architecture.svg" alt="Architecture: your device keeps your keys and history in IndexedDB, encrypted with AES-256-GCM. Cloudflare Workers act as thin proxies for chat and audio, with no per-request logs and no user data at rest, next to the media CDN that serves pre-recorded audio from EU storage. Backends: OpenRouter for your own key, Nebius in the United Kingdom and Finland for the free tier, Hetzner GPUs in Germany for live audio, Cloudflare R2 for pre-recorded audio. Or self-host with docker compose and your own LLM." width="100%" />
+  <img src=".github/assets/architecture.svg" alt="Architecture: your device keeps your keys and history in IndexedDB, encrypted with AES-256-GCM. Cloudflare Workers act as thin proxies for chat and audio, with no per-request logs and no user data at rest, next to the media CDN that serves pre-recorded audio from EU storage. Backends: OpenRouter for your own key, Nebius in the United Kingdom and Finland for the free tier, Hetzner GPU in Germany for live audio, Cloudflare R2 for pre-recorded audio. Or self-host with docker compose and your own LLM." width="100%" />
 </p>
 
 <details>
@@ -115,7 +115,7 @@ What we count is aggregate, with no user dimension and no key that joins two row
 | Your setup | Where the request goes |
 |---|---|
 | Hosted free tier | Browser, through our Cloudflare Worker, to Nebius: DeepSeek V4 Pro in the United Kingdom, Qwen3-235B in Finland as the fallback |
-| Your own OpenRouter key | Browser directly to OpenRouter, pinned to Qwen3 235B, zero data retention on by default, our worker outside the path |
+| Your own OpenRouter key | Browser directly to OpenRouter, pinned to Qwen3 235B, zero data retention on by default, our worker outside the path. If OpenRouter rejects the key, the app asks first, and only a yes sends that conversation the free-tier way |
 | Local Mode | An OpenAI-compatible endpoint you run, set in Settings, with local speech set up separately |
 
 | Limit | Allowance |

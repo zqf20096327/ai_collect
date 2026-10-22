@@ -215,6 +215,14 @@ does not inherit it from your shell, set it via
       (agent-shell-deepseek-make-authentication :api-key "your-key"))
 #+end_src
 
+agent-shell launches =dsh --profile acp=, which keeps its own settings
+separate from other dsh profiles.  If models configured elsewhere (for
+example, via the dsh web UI) are missing, copy them over:
+
+#+begin_src bash
+cp -i ~/.dsh/profiles/web/cordis.patch.yml ~/.dsh/profiles/acp/cordis.patch.yml
+#+end_src
+
 See https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/acp/acp/README.md for details.
 
 *** Junie
@@ -1476,6 +1484,4 @@ always go to Evil modes if you need to with ~C-z~).
 |                                                       | agent-shell-viewport-reply-4                            | Reply with "4" and send immediately.                                          |
 |                                                       | agent-shell-viewport-reply-5                            | Reply with "5" and send immediately.                                          |
 |                                                       | agent-shell-viewport-reply-6                            | Reply with "6" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-7                            | Reply with "7" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-8                            | Reply with "8" and send immediately.                                          |
-|                                                   
+|                                                       | agent-shell-viewport-reply-7                            | Reply with "7" and 

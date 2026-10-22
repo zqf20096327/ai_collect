@@ -35,15 +35,15 @@
 
 ---
 
-## 🎥 Video — Compliance in the AI era
+## 🎥 Video — The console, page by page
 
-A short walkthrough of how CorvinOS keeps AI work compliant with GDPR and the EU AI Act. The preview below plays right here on GitHub.
+A 30-minute tour of the CorvinOS operator console: chat, dashboard, learnings, tasks and every other page, one at a time. The preview below plays right here on GitHub; click it to watch the full video on YouTube.
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=4sXl26Hr1pA&amp;t=22s">
-    <img src="assets/compliance-in-the-ai-era-teaser.gif" alt="Video: Compliance in the AI era (45 s preview, plays inline)" width="720"/>
+  <a href="https://www.youtube.com/watch?v=vjTaHDcyIIE" target="_blank" rel="noopener">
+    <img src="docs/media/corvinos-console-tour-teaser.gif" alt="Video: CorvinOS console tour (animated preview, plays inline; click to watch on YouTube)" width="720"/>
   </a><br/>
-  <sub>45 s preview &middot; <a href="assets/compliance-in-the-ai-era.mp4">full video (MP4, hosted in this repo)</a> &middot; <a href="https://www.youtube.com/watch?v=4sXl26Hr1pA&amp;t=22s">on YouTube</a></sub>
+  <sub>30 min &middot; English &middot; <a href="https://www.youtube.com/watch?v=vjTaHDcyIIE" target="_blank" rel="noopener">&#9654; watch on YouTube</a></sub>
 </p>
 
 ---
@@ -89,7 +89,8 @@ git-ignored — and `~/.config/corvin-voice`) are never touched by an update.
 
 Because the install is editable, the code that runs **is** your clone. Everything the install generates —
 the Node.js runtime, the services' state, the audit chain — lives in ONE place, `.corvin/` inside the clone
-(`CORVIN_HOME`); nothing is written to `~/.corvin`. On Linux, with passwordless `sudo` available, optional
+(`CORVIN_HOME`); on Linux and macOS nothing is written to `~/.corvin` (`install.ps1` keeps
+`%USERPROFILE%\.corvin` unless `CORVIN_HOME` is set). On Linux, with passwordless `sudo` available, optional
 system tools (`jq`, `espeak-ng`, `poppler-utils`, `pandoc`, `pulseaudio-utils`, `gnupg`) are installed through
 `apt`/`dnf`/`pacman`; without it they are skipped and the exact command is printed — nothing else elevates,
 and nothing ever prompts for a password.

@@ -204,6 +204,7 @@ Tracing, monitoring, and debugging agent executions in production.
 | **Braintrust** | Evaluation framework for scoring agent outputs against golden datasets with automatic regression detection. | TypeScript | API-based | Web UI | [Link](https://github.com/braintrustdata/braintrust-sdk) |
 | **antiburn** | Local desktop app that checks coding agent sessions for common causes of token burn: sessions too deep, overpowered subagents, broken caching, and unused MCP servers, skills, and tools. Supports Claude Code, Codex, Cursor, Copilot, Pi, and more. | Rust/Tauri | N/A | App | [Link](https://github.com/antiburn/antiburn) |
 | **OrcaReplay** | Local record-and-replay proxy for agent runs: captures provider traffic (prompts, tool calls, responses) into a trace and replays the run from it without calling the provider again, for deterministic debugging and regression diffs. | TypeScript/Node | Hybrid | CLI | [Link](https://github.com/Continuum-AI-Corp/OrcaReplay) |
+| **Self-Auditing Agent** | Public audit log for an agent's own claims: each recorded conclusion links a runnable command a third party can execute, so the process is reviewable rather than just its output. Ships gatecheck, a mutation tester that runs 175 mutations against the project's own validator and reports the ones it fails to catch. | Python | N/A | CLI | [Link](https://github.com/simin-yuan/self-auditing-agent) |
 
 ---
 
@@ -294,6 +295,7 @@ Optimized semantic processing for professional and regulated fields.
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **LogNorm** | Hosted MCP server that hands a site's SEO and AI-visibility backlog (audits, fixes, content drafts) to Claude Code, Codex and Cursor. | MCP (hosted) | API-based | CLI | [Link](https://lognorm.com) |
 | **NotFair** | Claude Code skill set for SEO, GEO, Google Ads, and Meta Ads. Connects to live account data via Google Ads MCP, Meta Ads MCP, Google Search Console MCP, and Google Analytics (GA4) MCP to execute audits, keyword research, creative analysis, and bid management. | TypeScript | API-based | CLI | [Link](https://github.com/nowork-studio/NotFair) |
+| **Robot Speed** | Hosted SEO and AI-visibility MCP. OAuth remote exposes 39 tools; a rate-limited, read-only no-auth endpoint exposes 12 ([docs](https://www.robot-speed.com/mcp)). EU-hosted (Supabase + Vercel); read-only except 4 write tools. Submitted by the publisher. | Remote MCP (MIT) | API-based | Web UI | [Link](https://github.com/robot-speed/mcp) |
 
 ---
 
@@ -347,6 +349,7 @@ Frameworks and pipelines designed to enforce policy constraints, prevent prompt 
 | **Llama Guard** | Tuned safeguard classifier determining adversarial input topologies to reject unsafe conversational payloads. | Llama | API-based | Library | [Link](https://github.com/meta-llama/PurpleLlama) |
 | **Garak** | Systematic vulnerability scanner probing for hallucination vectors and jailbreak surfaces in LLM agents. | Python | API-based | CLI | [Link](https://github.com/leondz/garak) |
 | **Lakera Guard** | Comprehensive API-based security middleware blocking active execution attacks on agentic APIs. | Python | API-based | API | [Link](https://github.com/lakeraai) |
+| **Ironheights** | Static pre-install scanner for agent skill folders (SKILL.md and bundled files) that flags prompt injection, hidden text, credential reads, remote-exec installs and persistence, with integrity baselines and SARIF output. Rules run offline; optional LLM review via Ollama or an OpenAI-compatible API. | TypeScript/Node.js | Hybrid | CLI | [Link](https://github.com/Frank-Masciopinto/ironheights) |
 
 ---
 
@@ -366,6 +369,7 @@ Autonomous financial agents interacting natively with blockchain nodes, executin
 
 | Repository | Description | Stack | Engine | Deployment | Link |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Agent Payment Node** | Local CLI and stdio MCP payments on macOS Apple Silicon; every signature requires foreground owner approval. Only documented EVM/Solana/TRON networks and listed assets are supported. Asset/issuer, chain/provider, irreversible-transfer and variable network/third-party fee risks remain. Payment execution was not tested. | TypeScript / Node 24 | N/A | CLI | [Link](https://github.com/nuanu-ai/agent-payment-node) |
 | **Eliza** | Specialized multi-agent framework tailored for interacting with crypto endpoints, executing DeFi operations, and orchestrating decentralized DAOs. | TypeScript | Hybrid | Node | [Link](https://github.com/elizaOS/eliza) |
 | **Rig** | Rust-native ecosystem building secure Web3 agents capable of deterministic contract execution and complex state transitions. | Rust | Hybrid | Node | [Link](https://github.com/0xPlaygrounds/rig) |
 | **Goat** | The Great Open Agent Toolkit. Middleware connecting off-chain AI reasoning with on-chain EVM transactional networks. | TypeScript | Hybrid | Web UI | [Link](https://github.com/goat-sdk/goat) |

@@ -1409,6 +1409,11 @@ Each transport ships a type-safe fluent builder. Builders implement `implicit op
 .To(MockDsl.Endpoint("result").ExpectedMessageCount(3))         // mock:result?...
 ```
 
+A `seda:` queue belongs to its consumer's run. When the consumer stops (`context.Stop()`, a stop of its route), it
+finishes the exchanges already queued and a send fails with `ChannelClosedException` until the consumer starts again,
+which opens a new queue: a `Stop()` and `Start()` of the same context leaves every seda hop working. An exchange the
+stop did not get to within its drain timeout is released with a warning in the log when the consumer starts again.
+
 ### Selected transport builders
 
 ```csharp
@@ -1581,6 +1586,7 @@ flowchart TB
 | `Soap` | `System.Xml` + Kestrel | SOAP 1.1/1.2, WS-Security, MTOM, `?wsdl` |
 | `WebSocket` | `ClientWebSocket` + Kestrel | Text/binary, reconnect |
 | `SignalR` | `Microsoft.AspNetCore.SignalR` | Hub consumer + producer/broadcast |
+| `SignalR.StackExchangeRedis` | `Microsoft.AspNetCore.SignalR.StackExchangeRedis` | Redis backplane for the hubs, channels keyed on the hub path |
 | `Tcp` | `System.Net.Sockets` | Text-line, length-prefixed, TLS |
 | `File` | File system | Polling, atomic writes, glob, locking |
 | `Ftp` | `FluentFTP` | FTP/FTPS, passive/active |
@@ -1864,4 +1870,18 @@ flowchart TB
     Modules --> Worker
     Worker --> Ctx
     Worker --> Cluster
-    Worker --> Q
+    Worker --> Quartz
+    Worker --> Metrics
+    Worker --> Sec
+    Tsak --> Surfaces
+    Cluster --> Redb
+    Sec --> Redb
+    Quartz --> Redb
+```
+
+### Project layout
+
+| Project | Purpose |
+|---------|---------|
+| `redb.Tsak.Core` | Controllers, services, security, hot-reload, monitoring |
+| 

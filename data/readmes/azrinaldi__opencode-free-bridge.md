@@ -95,7 +95,13 @@ cd opencode-free-bridge
 bun server.js
 ```
 
+`bash install.sh` inside the clone installs that working tree (including
+uncommitted or unpushed files) instead of downloading from GitHub. Force a
+download with `SOURCE=remote bash install.sh`.
+
 The server listens on `http://127.0.0.1:20129` by default.
+Open `http://127.0.0.1:20129/` for the panel: it shows the live egress state and sets
+an HTTP proxy for every outbound request. See [Egress proxy](#egress-proxy).
 
 ### Docker
 
@@ -125,6 +131,9 @@ What the container setup does:
 - Persists the on-disk catalog cache in the `bridge-cache` volume
   (`OPENCODE_CACHE_DIR=/data/cache`), so a restart does not re-fetch the
   upstream model catalog.
+- Persists the panel's egress-proxy setting in the `bridge-state` volume
+  (`OPENCODE_BRIDGE_STATE_DIR=/data/state`). Without it, the container
+  filesystem is thrown away on recreate and the proxy would silently revert.
 - Runs with `no-new-privileges` and all Linux capabilities dropped.
 
 The image is the unit of deployment, so `AUTO_UPDATE` defaults to `0` in the
@@ -143,7 +152,9 @@ docker build -t opencode-free-bridge .
 docker run -d --name opencode-free-bridge \
   -p 127.0.0.1:20129:20129 \
   -e OPENCODE_CACHE_DIR=/data/cache \
+  -e OPENCODE_BRIDGE_STATE_DIR=/data/state \
   -v opencode-free-bridge-cache:/data/cache \
+  -v opencode-free-bridge-state:/data/state \
   opencode-free-bridge
 ```
 
@@ -350,7 +361,7 @@ curl -s http://127.0.0.1:20129/health
 ## Testing, Verification & Gate Drills
 
 ```bash
-bun test                        # 145 offline unit, contract, and regression tests
+bun test                        # 165 offline unit, contract, and regression tests
 bun run verify                  # live check: probes every discovered free model
 bun run verify:quick            # live check: stops at the first model that answers
 bun run drill                   # runs live + offline self-healing gate drills
@@ -399,6 +410,8 @@ Before running the 4 live drills, `gate-drill.js` sends a single CLI-shaped cont
 | `OPENCODE_CHAT_URL` | _(derived)_ | Override the upstream Chat Completions endpoint URL |
 | `OPENCODE_RESPONSES_URL` | _(derived)_ | Override the upstream Responses API endpoint URL |
 | `UPSTREAM_RELAY_URL` | _(unset)_ | Route inference through an egress relay (`x-relay-target` / `x-relay-path` contract); empty = direct. See [Optional egress relay](#optional-egress-relay) |
+| `UPSTREAM_PROXY_URL` | _(unset)_ | Operator-level default for the egress proxy (`http://[user:pass@]host:port`). When set it wins over the panel and locks runtime edits. See [Egress proxy](#egress-proxy) |
+| `PANEL_ALLOWED_HOSTS` | _(unset)_ | Extra `Host` names the panel and `/api/proxy` accept (comma-separated), for a reverse proxy in front of the bridge. Loopback names and the configured `HOST` are always accepted |
 | `AUTO_UPDATE` | `1` | Poll GitHub for bridge updates every 6 hours (automatically skipped inside a `.git` checkout; set `0` to disable) |
 | `ALLOW_NODE` | _(unset)_ | Set `ALLOW_NODE=1` to bypass the startup Bun check for offline tests |
 
@@ -419,6 +432,45 @@ or `relay`) and the relay's origin, without credentials or query strings. Use a
 trusted HTTPS relay: it receives the request headers (including
 `Authorization: Bearer public`) and the full prompt. Changing the variable
 requires a restart.
+
+### Egress proxy
+
+Open `http://127.0.0.1:20129/` and enter an HTTP proxy. Every outbound request
+the bridge makes then tunnels through it (`CONNECT`), so upstream sees the
+proxy's IP rather than this machine's. That covers inference, model discovery,
+identity sync, and the self-updater.
+
+- **Protocol:** `http://` and `https://` only. Bun's fetch accepts those and
+  tunnels TLS itself, so `transport-baseline.json` still matches. SOCKS5 is
+  refused by Bun (`UnsupportedProxyProtocol`) and rejected in the panel with
+  that reason.
+- **Credentials:** `http://user:pass@host:port`, percent-encoded if they contain
+  `@`, `:`, or `/`. They are stored in `~/.opencode-free-bridge/proxy.json`
+  (mode `0600`) and never returned by the panel, `/api/proxy`, or `/health`;
+  those show `host:port` only.
+- **Test before trusting it:** *Uji koneksi* fetches the models endpoint through
+  the candidate proxy and reports the exit IP from `cdn-cgi/trace`. A 403 there
+  means the proxy reaches upstream but its egress is refused.
+- **No restart:** the setting is read on every request. *Matikan proxy* returns
+  to direct egress.
+- **Operator override:** `UPSTREAM_PROXY_URL` beats the panel and locks runtime
+  edits to it.
+- **Only from this machine:** the panel and `/api/proxy` accept `Host` names of
+  loopback (or the configured bind address) plus anything in
+  `PANEL_ALLOWED_HOSTS`, reject cross-site requests, and require
+  `Content-Type: application/json` for writes. That blocks a random website from
+  re-pointing your egress and blocks DNS rebinding. Put a reverse proxy in front
+  and add its name to `PANEL_ALLOWED_HOSTS` if you reach the panel that way.
+- **Container:** the compose file mounts the `bridge-state` volume at
+  `/data/state` (`OPENCODE_BRIDGE_STATE_DIR`) so the setting survives a
+  recreate. Plain `docker run` needs that env var and volume too.
+
+`/health` reports `egress.mode` (`proxy`, `relay`, or `direct`) plus
+`egress.proxy` with the same credential-free description.
+
+The proxy applies *in addition to* the relay: with both configured, the request
+is still sent to `UPSTREAM_RELAY_URL`, and that connection is dialled through
+the proxy.
 
 ## Troubleshooting
 

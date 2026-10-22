@@ -2,12 +2,12 @@
 
 <p align="center">
   <a href="https://www.liftcuttracker.com/">
-    <img src="docs/product/evidence/minimal-agent/home-desktop.png" alt="LiftCut: a monochrome home with Home, Agent and Settings navigation; synthetic account" width="100%" />
+    <img src="docs/product/evidence/readme-20261021/home-desktop.png" alt="LiftCut: current plan on a monochrome home with Home, Agent and Settings navigation; synthetic account" width="100%" />
   </a>
 </p>
 
 <p align="center">
-  <strong>训练、饮食、身体变化，问 Agent 就好。</strong><br />
+  <strong>训练、饮食、身体变化，问 Agent 就好.</strong><br />
   An open-source fitness application and tool-using agent research project by <a href="https://townzc.github.io/">Zhice Tang</a>.
 </p>
 
@@ -25,11 +25,14 @@
   <a href="https://github.com/Townzc/liftcut-tracker/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Townzc/liftcut-tracker/actions/workflows/ci.yml/badge.svg" /></a>
   <a href="https://www.liftcuttracker.com/"><img alt="Live" src="https://img.shields.io/badge/live-liftcuttracker.com-65a30d" /></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-2563eb" /></a>
+  <a href="https://hub.xerj.org/contributors/Townzc"><img alt="XERJ Corpus Hub contributor" src="https://hub.xerj.org/contributors/Townzc/badge.svg" /></a>
   <img alt="Next.js 16" src="https://img.shields.io/badge/Next.js-16-111827" />
   <img alt="TypeScript strict" src="https://img.shields.io/badge/TypeScript-strict-3178c6" />
 </p>
 
 LiftCut brings workout completion, exercise performance, food logs, body trends, and AI-generated plans into one bilingual product. Its AI layer treats model output as untrusted structured data: every plan is extracted, normalized, strictly validated, shown in an editable preview, and saved only after user confirmation.
+
+**已被 XERJ 语料库选录 · Selected for the XERJ Corpus Hub.** [查看官方收录记录 / View contributor record](https://hub.xerj.org/contributors/Townzc).
 
 ## Current product experience · October 2026
 
@@ -135,10 +138,14 @@ flowchart LR
   Ledger --> DB
   Engine["Progression engine<br/>loads computed by code"] -.-> Web
   Engine -.-> Mobile
-  Parser["Planned sentence fallback: rules → on-device model → cloud<br/>M4 GPU candidate evaluated; native integration pending<br/>source checks + user confirmation required"] -.-> Mobile
+  Parser["Planned sentence fallback: rules → on-device model → cloud<br/>M4 v5 quality gate failed; native integration pending<br/>source checks + user confirmation required"] -.-> Mobile
 ```
 
 See the [mobile plan](docs/product/2026-10-18-mobile-agent-plan.md), [product log](docs/product/PRODUCT_LOG.md) and the [90-second phone demo](docs/product/DEMO_90S.md) (synthetic data; the coach answer in it is a scripted fixture).
+
+[M4 v5 evidence](research/m4-parser/results/run-20261022T071000Z-v5/README.md): a fresh loss-reduction comparison reproduces the previous control exactly, but the candidate falls from 206/240 to 197/240 challenge accuracy. Quantization agreement, zero truncation and legal clarification labels pass; exercise binding, missing units and RPE scope still reject the candidate. Verified backup/replay and reproducible CPU error/catalog audits explain the next step; native integration remains pending.
+
+[M4 v6 preparation](research/m4-parser/train/GPU_V6.md) aligns 40 conflicting alias labels and fixes a two-arm catalog comparison, with actual CPU token/train/export and recovery checks. It has no GPU quality result yet; original acceptance gates and the exclusion of private utterances/derivatives remain in force.
 
 ## AI reliability pipeline
 

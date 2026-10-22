@@ -144,6 +144,9 @@ If you find this work helpful for your research, please kindly consider citing o
 | `DriveMamba` | [![arXiv](https://img.shields.io/badge/arXiv-2602.13301-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2602.13301)<br>DriveMamba: Task-Centric Scalable State Space Model for Efficient End-to-End Autonomous Driving | ICLR 2026 | - | - |
 | `FPD-Drive` | [![arXiv](https://img.shields.io/badge/arXiv-2610.13232-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.13232)<br>FPD-Drive: Future Policy Distillation for End-to-End Autonomous Driving | arXiv 2026 | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo=gitbook)](https://countnemochan.github.io/FPD-Drive/) | [![GitHub](https://img.shields.io/github/stars/CountNemoChan/FPD-Drive)](https://github.com/CountNemoChan/FPD-Drive) |
 | `ConDenseDrive` | [![arXiv](https://img.shields.io/badge/arXiv-2610.16908-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.16908)<br>ConDenseDrive: Knowledge-Dense, Token-Sparse Visual Encoder for End-to-End Autonomous Driving | arXiv 2026 | - | - |
+| `GRID-Planner` | [![arXiv](https://img.shields.io/badge/arXiv-2610.21984-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.21984)<br>GRID-Planner: Graph-Structured Relational Reward Shaping for Diffusion Planning | arXiv 2026 | - | [![GitHub](https://img.shields.io/github/stars/yangzhaojason/GRID-Planner)](https://github.com/yangzhaojason/GRID-Planner) |
+| `Expand-and-Prune` | [![arXiv](https://img.shields.io/badge/arXiv-2610.23262-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.23262)<br>Expand-and-Prune: Test-Time Candidate-Space Adaptation for End-to-End Autonomous Driving | WACV 2027 | - | [![GitHub](https://img.shields.io/github/stars/iis-esslingen/Expand-and-Prune)](https://github.com/iis-esslingen/Expand-and-Prune) |
+| `QualiDrive` | [![arXiv](https://img.shields.io/badge/arXiv-2610.23885-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.23885)<br>From Likelihood to Utility: Quality-Axis Diffusion for End-to-End Autonomous Driving | arXiv 2026 | - | - |
 
 
 
@@ -219,7 +222,6 @@ If you find this work helpful for your research, please kindly consider citing o
 
 | Model | Paper | Venue | Website | GitHub | 
 |:-:|:-|:-:|:-:|:-:|
-| `DA-WAM` | [![arXiv](https://img.shields.io/badge/arXiv-2608.19085-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.19085)<br>DA-WAM: Decision-Aligned Future Latents for Driving World Models | arXiv 2026 | - | - |
 | `WA-JEPA` | [![arXiv](https://img.shields.io/badge/arXiv-2608.20974-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.20974)<br>WA-JEPA: Rethinking the Video JEPA Paradigm for World-Action Modeling in Autonomous Driving | arXiv 2026 | - | - |
 | `GeoWAM` | [![arXiv](https://img.shields.io/badge/arXiv-2608.23486-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.23486)<br>GeoWAM: Visual Geometry World Action Models for Autonomous Driving | arXiv 2026 | - | - |
 | `RISE` | [![arXiv](https://img.shields.io/badge/arXiv-2608.20430-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.20430)<br>RISE: Adaptive Imagination for World Action Models | arXiv 2026 | - | - |
@@ -252,7 +254,7 @@ If you find this work helpful for your research, please kindly consider citing o
 | `HyWorldVLA` | [![arXiv](https://img.shields.io/badge/arXiv-2607.20988-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2607.20988)<br>HyWorldVLA: A Vision-Language-Action Model with Hybrid World Modeling for Autonomous Driving | arXiv 2026 | - | - |
 | `LWDrive` | [![arXiv](https://img.shields.io/badge/arXiv-2606.29879-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2606.29879)<br>LWDrive: Layer-Wise World-Model-Guided Vision-Language Model Planning for Autonomous Driving | arXiv 2026 | - | - |
 | `DriveCache` | [![arXiv](https://img.shields.io/badge/arXiv-2608.16354-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.16354)<br>DriveCache: Action-Aware Caching for Driving World Model Inference | arXiv 2026 | - | - |
-| `DA-WAM` | [![arXiv](https://img.shields.io/badge/arXiv-2608.19085-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.19085)<br>DA-WAM: Decision-Aligned Future Latents for Driving World Models | arXiv 2026 | - | - |
+| `DA-WAM` | [![arXiv](https://img.shields.io/badge/arXiv-2608.19085-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.19085)<br>DA-WAM: Decision-Aligned Future Latents for Driving World Models | arXiv 2026 | - | [![GitHub](https://img.shields.io/github/stars/LeapWM/da-wam)](https://github.com/LeapWM/da-wam) |
 | `RISE` | [![arXiv](https://img.shields.io/badge/arXiv-2608.20430-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.20430)<br>RISE: Adaptive Imagination for World Action Models | arXiv 2026 | - | - |
 | `WA-JEPA` | [![arXiv](https://img.shields.io/badge/arXiv-2608.20974-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.20974)<br>WA-JEPA: Rethinking the Video JEPA Paradigm for World-Action Modeling in Autonomous Driving | arXiv 2026 | - | [![GitHub](https://img.shields.io/github/stars/AFARI-Research/WA-JEPA)](https://github.com/AFARI-Research/WA-JEPA) |
 | `GeoWAM` | [![arXiv](https://img.shields.io/badge/arXiv-2608.23486-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.23486)<br>GeoWAM: Visual Geometry World Action Models for Autonomous Driving | arXiv 2026 | - | - |
@@ -271,6 +273,8 @@ If you find this work helpful for your research, please kindly consider citing o
 | `ManeuverFlow` | [![arXiv](https://img.shields.io/badge/arXiv-2610.13409-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.13409)<br>ManeuverFlow: Maneuver Hypothesis Generation with Future Evidence for Trajectory Evaluation and Refinement in End-to-End Autonomous Driving | arXiv 2026 | - | [![GitHub](https://img.shields.io/github/stars/wyh-autonomy/maneuverflow)](https://github.com/wyh-autonomy/maneuverflow) |
 | `MORE` | [![arXiv](https://img.shields.io/badge/arXiv-2610.14871-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.14871)<br>MORE: Learning Motion-Oriented Registers for Driving World Models and Planning | arXiv 2026 | - | [![GitHub](https://img.shields.io/github/stars/Cyril-gyd/MORE)](https://github.com/Cyril-gyd/MORE)<br>Release pending |
 | `VITAL` | [![arXiv](https://img.shields.io/badge/arXiv-2610.20604-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.20604)<br>VITAL: From Visual Motion to Precise Action | arXiv 2026 | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo=gitbook)](https://worldbench.github.io/vital/) | [![GitHub](https://img.shields.io/github/stars/worldbench/VITAL)](https://github.com/worldbench/VITAL) |
+| `WAC` | [![arXiv](https://img.shields.io/badge/arXiv-2610.22825-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.22825)<br>World Action Critic (WAC) Model: Joint Foresight and Criticism for Policy Learning | arXiv 2026 | - | - |
+| `EvoAD` | [![arXiv](https://img.shields.io/badge/arXiv-2610.23886-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.23886)<br>EvoAD: Self-Evolving Autonomous Driving via Latent World-Model Guided Post-hoc Reflection | arXiv 2026 | - | - |
 
 
 
@@ -440,18 +444,4 @@ If you find this work helpful for your research, please kindly consider citing o
 | `DriveWLA` | [![arXiv](https://img.shields.io/badge/arXiv-2610.17903-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.17903)<br>DriveWLA: Unifying Future Dynamics and Scene Semantics through World-Language-Action Modeling for Autonomous Driving | arXiv 2026 | - | - |
 | `Reflect-VLA` | [![arXiv](https://img.shields.io/badge/arXiv-2610.13453-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.13453)<br>Reflect-VLA: Internalizing Reflective Guidance via Dual-Path On-Policy Self-Distillation for Autonomous Driving | arXiv 2026 | - | [![GitHub](https://img.shields.io/github/stars/luo-yc17/Reflect-VLA)](https://github.com/luo-yc17/Reflect-VLA) |
 | `AffordDrive3D` | [![arXiv](https://img.shields.io/badge/arXiv-2610.11060-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.11060)<br>AffordDrive3D: Affordance-Aware World-Action Modeling with Spatial Understanding | arXiv 2026 | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo=gitbook)](https://afforddrive3d.github.io/) | - |
-||
-
-
-### :three: Explicit Action Guidance
-
-> :timer_clock: In chronological order, from the earliest to the latest.
-
-| Model | Paper | Venue | Website | GitHub | 
-|:-:|:-|:-:|:-:|:-:|
-||
-| `DriveVLM` | [![arXiv](https://img.shields.io/badge/arXiv-2402.12289-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2402.12289)<br>DriveVLM: The Convergence of Autonomous Driving and Large Vision-Language Models | CoRL 2024 | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo=gitbook)](https://tsinghua-mars-lab.github.io/DriveVLM/) | - |
-| `LeapAD` | [![arXiv](https://img.shields.io/badge/arXiv-2405.15324-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2405.15324)<br>Continuously Learning, Adapting, and Improving: A Dual-Process Approach to Autonomous Driving | NeurIPS 2024 | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo=gitbook)](https://pjlab-adg.github.io/LeapAD/) | [![GitHub](https://img.shields.io/github/stars/PJLab-ADG/LeapAD)](https://github.com/PJLab-ADG/LeapAD) |
-| `FasionAD` | [![arXiv](https://img.shields.io/badge/arXiv-2411.18013-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2411.18013)<br>FASIONAD: Fast and Slow Fusion Thinking Systems for Human-Like Autonomous Driving with Adaptive Feedback | arXiv 2024 | - | - |
-| `Senna` | [![arXiv](https://img.shields.io/badge/arXiv-2410.22313-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2410.22313)<br>Senna: Bridging Large Vision-Language Models and End-to-End Autonomous Driving | arXiv 2024 | - | [![GitHub](https://img.shields.io/github/stars/hustvl/Senna)](https://github.com/hustvl/Senna) |
-| `DualAD` | [![arXiv](https://img.shields.io/badge/arXiv-2409.18053-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2409.18053)<br>DualAD: Dual-Layer Planning for Reasoning in Autonomous Driving | IROS 2025 | [![W
+| `SafeDriveVLA` | [![arXiv](https://img.shields.io/badge/arXiv-2610.20609-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.20609)<br>SafeDriveVLA: Navigation-Conditioned World Model Dreaming for Conflict-Aware End-to-End Autonomous Driving | CoRL 2026 | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo=gitbook)](https://safedrive-vla.github.io/SafeDriveVLA/) | [![GitHub](https://img.shields.io/github/stars/ASGuard-UCI/safedrive-vla)](https://github.com/

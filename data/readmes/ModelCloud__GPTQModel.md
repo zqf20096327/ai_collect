@@ -26,6 +26,7 @@
 
 ## Latest News 🗞️🚀
 
+* 10/22/2026 7.7.0-dev `main`: ✨ Added `llava` quantization support.
 * 10/14/2026 7.7.0-dev `main`: ✨ Added `qwen2_audio` quantization support.
 * 10/13/2026 7.7.0-dev `main`: ✨ Added `openvla` quantization support.
 
@@ -81,15 +82,29 @@ Canonical backend names are shown below. Method-specific aliases are only accept
 
 | Quant Method | Formats | Backends / Kernels |
 | --- | --- | --- |
+| `METHOD.GPTQ` CPU | `FORMAT.GPTQ`, `FORMAT.GPTQ_V2` | `BACKEND.GPTQ_TORCH_CPU_AVX512` |
+| `METHOD.AWQ` CPU | `FORMAT.GEMM` | `BACKEND.AWQ_TORCH_CPU_AVX512` |
 | `METHOD.GPTQ` | `FORMAT.GPTQ`, `FORMAT.GPTQ_V2`, `FORMAT.MARLIN`, `FORMAT.BITBLAS` | `FORMAT.GPTQ`: `BACKEND.GPTQ_TORCH_ATEN`, `BACKEND.GPTQ_MACHETE`, `BACKEND.GPTQ_MARLIN`, `BACKEND.GPTQ_EXLLAMA_V2`, `BACKEND.GPTQ_TORCH_FUSED`, `BACKEND.GPTQ_TRITON`, `BACKEND.GPTQ_BITBLAS`, `BACKEND.GPTQ_TORCH`, `BACKEND.GPTQ_TORCH_INT8`<br>`FORMAT.GPTQ_V2`: `BACKEND.GPTQ_TORCH_ATEN`, `BACKEND.GPTQ_EXLLAMA_V2`, `BACKEND.GPTQ_TORCH_FUSED`, `BACKEND.GPTQ_TRITON`, `BACKEND.GPTQ_BITBLAS`, `BACKEND.GPTQ_TORCH`, `BACKEND.GPTQ_TORCH_INT8`<br>`FORMAT.MARLIN`: `BACKEND.GPTQ_MARLIN`<br>`FORMAT.BITBLAS`: `BACKEND.GPTQ_BITBLAS` |
 | `METHOD.AWQ` | `FORMAT.GEMM`, `FORMAT.GEMV`, `FORMAT.GEMV_FAST`, `FORMAT.LLM_AWQ`, `FORMAT.MARLIN`, `FORMAT.BITBLAS` | `FORMAT.GEMM`: `BACKEND.AWQ_TORCH_ATEN`, `BACKEND.AWQ_MACHETE`, `BACKEND.AWQ_MARLIN`, `BACKEND.AWQ_EXLLAMA_V2`, `BACKEND.AWQ_GEMM`, `BACKEND.AWQ_GEMM_TRITON`, `BACKEND.AWQ_TORCH_FUSED`, `BACKEND.AWQ_TORCH`, `BACKEND.AWQ_TORCH_INT8`, `BACKEND.AWQ_BITBLAS`<br>`FORMAT.GEMV`: `BACKEND.AWQ_GEMV`<br>`FORMAT.GEMV_FAST`: `BACKEND.AWQ_GEMV_FAST`<br>`FORMAT.LLM_AWQ`: `BACKEND.AWQ_GEMV_FAST`<br>`FORMAT.MARLIN`: `BACKEND.AWQ_MACHETE`, `BACKEND.AWQ_MARLIN`<br>`FORMAT.BITBLAS`: `BACKEND.AWQ_BITBLAS` |
 | `METHOD.PARO` | `FORMAT.PAROQUANT` | `BACKEND.PAROQUANT_CUDA`, `BACKEND.PAROQUANT_TRITON` |
 | `METHOD.QQQ` | `FORMAT.QQQ` | `BACKEND.QQQ`, `BACKEND.QQQ_TORCH` |
-| `METHOD.VPTQ` | `FORMAT.VPTQ` | `BACKEND.VPTQ_TORCH` |
+| `METHOD.VPTQ` | `FORMAT.VPTQ` | `BACKEND.VPTQ_CUDA`, `BACKEND.VPTQ_TORCH` |
 | `METHOD.GGUF` | `FORMAT.GGUF` | `BACKEND.GGUF_TRITON`, `BACKEND.GGUF_CPP_CUDA`, `BACKEND.GGUF_CPP_CPU`, `BACKEND.GGUF_TORCH` |
 | `METHOD.FP8` | `FORMAT.FP8` | `BACKEND.FP8_TORCH` |
 | `METHOD.BITSANDBYTES` | `FORMAT.BITSANDBYTES` | `BACKEND.BITSANDBYTES` |
 | `METHOD.EXL3` | `FORMAT.EXL3` | `BACKEND.EXL3_EXLLAMA_V3`, `BACKEND.EXL3_TORCH` |
+
+`BACKEND.GPTQ_TORCH_CPU_AVX512` and `BACKEND.AWQ_TORCH_CPU_AVX512` share the
+same AVX512-BF16 int4 GEMM on Linux x86-64 hosts with AVX512-BF16,
+AVX512-VBMI, and OS AVX512 state enabled. GPTQ and AWQ use separate fused
+checkpoint-to-kernel packers but no separate compute kernels. `AUTO` selects
+the AVX512 path ahead of the ATen int4pack fallback when the layer shape
+satisfies the kernel's 32-row and group-size alignment requirements. Supported
+group sizes are 16, 32, 64, 128, 256, and 512.
+
+`BACKEND.EXL3_TORCH` uses oneDNN BF16x3 FP32 matmul on AVX512-BF16 hosts for
+GEMMs large enough to amortize dispatch. Set `GPTQMODEL_EXL3_CPU_BF16X3=0` to
+disable this path.
 
 `BACKEND.VLLM`, `BACKEND.SGLANG`, and `BACKEND.MLX` are external runtime backends and are not part of the native kernel matrix above.
 
@@ -188,6 +203,7 @@ The table mirrors every explicit registration in `gptqmodel.models.auto.MODEL_MA
 | LLaDA2 MoE | `llada2_moe` |
 | Llama 1-4 / TinyLlama / Nemotron Ultra | `llama`, `llama4`, `llama4_text` |
 | Llama 3.2 VL | `mllama`, `mllama_text_model` |
+| LLaVA-1.5 | `llava` |
 | FastVLM / LLaVA-Qwen2 | `llava_qwen2` |
 | LocateAnything | `locateanything` |
 | LongCat Flash | `longcat_flash` |
@@ -748,6 +764,28 @@ print(f"Result: {result}")
 # Please use the benchmark tools in later part of this README to evaluate EoRA effectiveness
 ```
 
+### Remote LoRA Adapters 🔒
+
+Adapter paths stored in `quantize_config.json` are confined to the checkpoint's own storage (including same-repository Hugging Face cache blobs); metadata cannot authorize Hub downloads. Loading an adapter hosted on the Hub requires an explicit opt-in with an immutable commit pin and a SHA-256 digest of `adapter_model.safetensors`:
+
+```py
+model = GPTQModel.load(
+  model_id_or_path=quant_path,
+  adapter=Lora(path="org/adapter-repo", rank=32),
+  allow_remote_adapter=True,
+  adapter_revision="<40-char Hub commit sha>",
+  adapter_sha256="<sha256 of adapter_model.safetensors>",
+)
+```
+
+Manifest adapter directories must be checkpoint-relative and cannot contain directory symlinks.
+Adapter-file symlinks are rejected except for the standard Hugging Face cache links into the
+same repository's `blobs` directory. This confinement also applies when using
+`QuantizeConfig.from_pretrained()` and initializing its adapter directly.
+Explicit local `adapter=` arguments remain available for adapters stored elsewhere.
+For pinned Hugging Face blob URLs, the config and weights are loaded from the URL's
+containing folder at the supplied revision.
+
 ### PEFT LoRA Training and Adapter Loading 🤗
 
 GPT-QModel GPTQ/AWQ checkpoints can be fine-tuned with PEFT LoRA and loaded through `PeftModel`. Use a current PEFT release with `optimum>=1.24.0`; older combinations may warn that the quantized layer type is unsupported. For training, select the method-specific trainable backend (`gptq_torch` for GPTQ, `torch_awq` for AWQ); default inference kernels do not propagate gradients.
@@ -1123,6 +1161,8 @@ Models quantized by GPT-QModel are inference compatible with HF Transformers (mi
 ```
 
 ## Operational notes 🗒️
+
+For MoE quantization across multiple GPUs, see the [multi-GPU quantization guide](docs/multi_gpu_quantization.md). Setting `CUDA_VISIBLE_DEVICES` exposes GPUs to the process; MoE device placement and free-threaded parallel quantization also need to be configured.
 
 ### Limit log level 🔇
 

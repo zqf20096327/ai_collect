@@ -35,11 +35,12 @@ device rather than for portability.
 > [!NOTE]
 > Artlite is mostly research into how far this hardware can be pushed, and where the NPU is the right device for the
 > work. The CPU, the iGPU and the NPU share one power budget and one LPDDR5X bus. The iGPU reads that bus at its full
-> width, but it throttles under a power cap and on battery; the NPU computes at about 8 W.
+> width; the NPU computes at about 8 W.
 >
-> The NPU's limit is memory bandwidth. All its DRAM traffic goes through one 32-byte-per-cycle port clocked by the AI
-> Engine array: ~57 GB/s on Strix Halo, where the iGPU reads ~244 GB/s of the 256 GB/s bus. Decode, which reads every
-> weight once per token, is therefore ~3.6x faster on the iGPU, with Artlite's decode already close to the NPU's limit.
+> The NPU's limit is memory bandwidth: ~57 GB/s on Strix Halo, where the iGPU reads ~244 GB/s of the 256 GB/s bus.
+> Decode, which reads every weight once per token, is therefore ~3.6x faster on the iGPU there, with Artlite's decode
+> already close to the NPU's limit; on a Krackan Point laptop, whose NPU reads ~98 GB/s of its 120 GB/s bus, the
+> iGPU's lead is 1.25-1.44x.
 > Compute-bound work such as prefill runs on par with the iGPU, at a fraction of its power, and leaves the iGPU free.
 > Which workloads belong on the NPU is not fully explored yet: [Where the NPU fits](docs/npu-vs-igpu.md) has the
 > measurements and the candidates.
@@ -88,7 +89,7 @@ Every option: [artlite-cli](docs/cli.md) (text and images), [artlite-server](doc
 |---|---|---|
 | [Llama 3.2 1B, 3B, Llama 3.1 8B Instruct](docs/models/llama3.md) | GGUF Q2_K to Q6_K, Q4_0, Q4_1, BF16 | prefill, decode |
 | [Gemma 4 E4B it](docs/models/gemma4.md) | GGUF Q4_0 | prefill, decode with its MTP drafter |
-| [Qwen3.5 9B, Qwen3.6 27B, Qwen3.8 27B, MiniCPM-V 4.7 1B](docs/models/qwen35.md) | GGUF Q4_K_M | prefill, decode; MiniCPM-V's vision encoder |
+| [Qwen3.5 9B, Qwen3.6 27B, Qwen3.8 27B, Qwen3.6 35B-A3B, MiniCPM-V 4.7 1B](docs/models/qwen35.md) | GGUF Q4_K_M | prefill, decode; MiniCPM-V's vision encoder |
 | [Stable Diffusion 1.5](docs/models/sd15.md) | diffusers safetensors | the UNet and the VAE decoder |
 
 Each model's tested files and the planned models: [Models](docs/models/README.md).
@@ -136,7 +137,7 @@ Details: [Design](docs/design.md).
 | | |
 |---|---|
 | [Installation](docs/install.md) | hardware, driver, build, models directory, troubleshooting |
-| [artlite-cli](docs/cli.md), [artlite-server](docs/server.md), [artlite-bench](docs/bench.md) | the tools and every option |
+| [artlite-cli](docs/cli.md), [artlite-server](docs/server.md), [artlite-bench](docs/bench.md), [artlite-probe](docs/probe.md) | the tools and every option |
 | [Models](docs/models/README.md) | tested files, plans, how each model runs on the NPU |
 | [Benchmark methodology](docs/methodology.md) | how the charts are measured: test system, files, other runtimes |
 | [Where the NPU fits](docs/npu-vs-igpu.md) | bandwidth and power against the iGPU, workloads to explore |

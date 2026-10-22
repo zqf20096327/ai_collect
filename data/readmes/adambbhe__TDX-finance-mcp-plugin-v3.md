@@ -20,7 +20,7 @@
 
 **TDX Finance MCP Plugin v3** 是一个为 OpenClaw 平台设计的金融数据服务插件，提供通达信（TDX）A 股金融数据接口的统一访问能力。
 
-本插件封装了 **6 个经过验证的核心工具**，并内置 **45 个专业投资分析技能**，覆盖 A 股实时行情、K线、F10 基本面、智能选股、指标筛选与代码检索等需求。
+本插件封装了 **6 个经过验证的核心工具**，并内置 **46 个专业投资分析技能**，覆盖 A 股实时行情、K线、F10 基本面、智能选股、指标筛选与代码检索等需求。
 
 ### v3 与旧版的区别
 
@@ -31,8 +31,9 @@ v3 是在 v2 基础上的**清理与精简版本**，主要变更（详见 [CHAN
 - 删除了仓库内的调试 / 抓取 Cookie / 重复扫描脚本，只保留可发布的插件资产。
 - 统一了版本号、仓库地址与技能数量等元数据。
 
-### 近期变更（v3.3.x）
+### 近期变更（v3.4.x）
 
+- **v3.4.0**：新增单股盘中跟踪分析技能（`tdx-intraday-tracking`），技能总数 45 → 46；配套 `scripts/indicators.mjs`（MA/MACD/KDJ/OBV 海峡四象限，真实日K验证）。
 - **v3.3.1**：移除一进二打板技能（`tdx-daban-yijinerb-PS-SKILL`），技能总数 46 → 45。
 - **v3.3.0**：`tdx_api_data` 注册表接入 `ybpj|yjyg`（业绩预告，服务端当前返回空表、原始透传）；修复 `tdx_quotes` 摘要涨跌幅 NaN；修正测试分类器对数据数字的 401 误判（详见 [CHANGELOG.md](./CHANGELOG.md)）。
 
@@ -44,7 +45,7 @@ v3 是在 v2 基础上的**清理与精简版本**，主要变更（详见 [CHAN
 tdx-finance-mcp-plugin-v3/
 ├── index.js                 # 6 个数据工具（核心实现，单文件 ESM）
 ├── openclaw.plugin.json     # 插件清单（工具 + 技能声明）
-├── skills/                  # 45 个专业投资技能（提示词 + agents 配置）
+├── skills/                  # 46 个专业投资技能（提示词 + agents 配置）
 ├── install.sh               # Linux/Mac 安装脚本
 ├── install.ps1              # Windows 安装脚本
 ├── config.example.json      # 配置示例
@@ -90,7 +91,7 @@ tdx-finance-mcp-plugin-v3/
 - **不可用子模块（服务端未注册，与 Token 权限无关）：** `fhrz_fh/fh`、异动 `iyds/yxsbxx`（`E|-7202` / HTTP 503）。另有 4 个非标准 fixedTag 组合返回 `-1005 数据库执行失败`（探测噪声，不代表 entry 不可达）。
 - **「无数据」的表现形式是 0 行空结果集**（如北交所贝特瑞 835185 的资金流向），而非错误。
 - **⚠️ 历史勘误（v3.2.7 及更早报告）**：此前记载的 `401 需登录` 子模块（股东人数/分红历史/融资融券/资金流向等）为测试分类器把数据数字（如 `4.814011`、`4018`）误判为 401 的伪影，v3.3.0 已修复分类器——上述子模块实际全部可用，无需升级 Token 权限。
-- **技能层：45 个技能 42 ✅ 可用 / 2 🟡 部分 / 0 ❌ 不可用**。测试框架（`test/run-tests.mjs`）动态枚举 `skills/` 目录，按各技能声明的数据依赖逐项验证；「部分可用」指个别依赖子模块未注册时自动降级。
+- **技能层：46 个技能 43 ✅ 可用 / 2 🟡 部分 / 0 ❌ 不可用**。测试框架（`test/run-tests.mjs`）动态枚举 `skills/` 目录，按各技能声明的数据依赖逐项验证；「部分可用」指个别依赖子模块未注册时自动降级。
 
 ---
 
@@ -110,7 +111,7 @@ tdx-finance-mcp-plugin-v3/
 git clone https://github.com/adambbhe/TDX-finance-mcp-plugin-v3.git
 cd TDX-finance-mcp-plugin-v3
 
-# 一键安装（自动配置 Token + 安装 45 个技能）
+# 一键安装（自动配置 Token + 安装 46 个技能）
 # Linux/Mac:
 chmod +x install.sh && ./install.sh
 
@@ -148,7 +149,7 @@ $env:TDX_API_KEY = "你的API_KEY"
 openclaw start
 ```
 
-插件会自动加载 **6 个工具 + 45 个技能**。
+插件会自动加载 **6 个工具 + 46 个技能**。
 
 ---
 
@@ -316,4 +317,4 @@ Token 来源优先级：插件配置 `tdxApiToken` → 环境变量 `TDX_API_KEY
 
 ---
 
-<p align="center">Made with ❤️ by TDX Team · v3.3.1</p>
+<p align="center">Made with ❤️ by TDX Team · v3.4.0</p>

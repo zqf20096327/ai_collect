@@ -107,6 +107,9 @@ SharpAI/
 - **SQLite Model Registry** — Tracks model metadata and file information
 - **Web Dashboard** — Vite + React + Ant Design UI for pulling models, generating embeddings, running completions and chat, inspecting running models, and editing server configuration live
 
+See [inference operations and verification](docs/OPERATIONS.md) for verified downloads, usage fields,
+context preflight, memory admission, diagnostics, benchmark receipts, and the integration test harness.
+
 ## 📋 Table of Contents
 
 - [Installation](#-installation)
@@ -147,7 +150,7 @@ using SharpAI;
 using SyslogLogging;
 
 // Initialize the AI driver
-var ai = new AIDriver(
+AIDriver ai = new AIDriver(
     logging: new LoggingModule(), 
     databaseFilename: "./sharpai.db",     
     huggingFaceApiKey: "hf_xxxxxxxxxxxx", 
@@ -299,7 +302,7 @@ SharpAI includes prompt builders to format conversations for different model typ
 ```csharp
 using SharpAI.Prompts;
 
-var messages = new List<ChatMessage>
+List<ChatMessage> messages = new List<ChatMessage>
 {
     new ChatMessage { Role = "system", Content = "You are a helpful assistant." },
     new ChatMessage { Role = "user", Content = "What is the capital of France?" },
@@ -357,7 +360,7 @@ If you are unsure which your model supports, choose `Simple`.
 
 SharpAI maps common architecture aliases automatically, including `qwen3.5`, `qwen-3.5`, `gemma4`, and `gemma-4`.
 
-These mappings align with the LLamaSharp 0.27.0 upgrade and help newer Qwen3.5 and Gemma4 GGUFs pick the correct prompt template automatically.
+These mappings help newer Qwen3.5 and Gemma4 GGUFs pick the correct prompt template automatically.
 
 ### Text Generation Formatting
 
@@ -377,7 +380,7 @@ Write a haiku about programming
 */
 
 // Code generation with context
-var context = new Dictionary<string, string>
+Dictionary<string, string> context = new Dictionary<string, string>
 {
     ["language"] = "python",
     ["requirements"] = "Include error handling"
@@ -408,10 +411,10 @@ Answer:
 */
 
 // Few-shot examples
-var examples = new List<(string input, string output)>
+List<PromptExample> examples = new List<PromptExample>
 {
-    ("2+2", "4"),
-    ("5*3", "15")
+    new PromptExample("2+2", "4"),
+    new PromptExample("5*3", "15")
 };
 
 string fewShotPrompt = TextPromptBuilder.BuildWithExamples(
@@ -527,7 +530,7 @@ SharpAI has been tested on:
 
 ### Full Deployment Guide
 
-For detailed installation instructions, troubleshooting, and production deployment, see **[DEPLOYMENT-GUIDE.md](DEPLOYMENT-GUIDE.md)**.
+For detailed installation instructions, troubleshooting, and production deployment, see **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)**.
 
 ## 📊 Model Information
 
@@ -566,36 +569,56 @@ SharpAI automatically detects GPU availability and optimizes layer allocation at
 - AMD GPUs (ROCm/Vulkan not supported)
 - Intel GPUs (SYCL/Vulkan not supported)
 
-The `NativeLibraryBootstrapper` automatically detects your platform and GPU at startup, selecting the appropriate backend (CPU, CUDA, or Metal). See the [Requirements](#-requirements) section for detailed GPU requirements.
+The SharpAI library automatically selects CPU, CUDA, or Metal before loading a model. On native macOS ARM64, the packaged Metal backend is selected and model layers are offloaded by default. The server delegates to the same library initializer.
+
+For embedded use, backend selection runs automatically through `LlamaSharpEngine` (including engines created by `AIDriver`):
+
+```csharp
+using SharpAI.Classes.Runtime;
+using SharpAI.Engines;
+
+using LlamaSharpEngine engine = new LlamaSharpEngine();
+await engine.InitializeAsync("model.gguf");
+Console.WriteLine(NativeBackendInfo.SelectedBackend);
+```
+
+`SHARPAI_FORCE_BACKEND=cpu` disables automatic acceleration. `SHARPAI_GPU_LAYERS=0` keeps the selected backend but loads model layers on the CPU; positive values limit offloaded layers, and `-1` requests all layers. Set `SHARPAI_ENABLE_NATIVE_LOGGING=true` to inspect native offload messages.
+
+Embedded applications can call `NativeBackendInitializer.Initialize` with `NativeBackendOptions` before the first native operation to supply custom backend paths. `NativeLibraryLoader.Configure(path, "metal")` also supports an explicit library and backend identity. Configuration is process-wide; later automatic initialization preserves the initial selection. See the [Requirements](#-requirements) section for hardware requirements.
 
 ## 🐳 Running in Docker
 
 SharpAI.Server is available as a Docker image, providing an easy way to deploy the Ollama-compatible API server without local installation.
 
-### Quick Start
+### Quick Start (v4.0.1)
+
+For the bundled stack, run `cd docker && ./update.sh`. This initializes a missing SQLite database
+file, pulls the v4.0.1 server/dashboard images, and starts the stack. The UI is at
+http://localhost:3000 and waits for the server at http://localhost:8000/ready to become healthy.
+For a first manual `docker compose up -d`, run `touch sharpai.db` from `docker/` beforehand.
 
 #### Using Docker Run
 
-For Windows:
-```batch
-run.bat v2.0.0
-```
-
-For Linux/macOS:
 ```bash
-./run.sh v2.0.0
+docker run -d --name sharpai -p 8000:8000 jchristn77/sharpai:v4.0.1
 ```
 
 #### Using Docker Compose
 
-For Windows:
-```batch
-compose-up.bat
+Linux/macOS, from the repository root:
+
+```bash
+cd docker
+./update.sh
 ```
 
-For Linux/macOS:
-```bash
-./compose-up.sh
+Windows PowerShell, from the repository root:
+
+```powershell
+cd docker
+if (!(Test-Path sharpai.db)) { New-Item -ItemType File sharpai.db | Out-Null }
+docker compose pull
+docker compose up -d
 ```
 
 ### Prerequisites
@@ -679,22 +702,18 @@ Operational endpoints:
 
 3. Run the container:
    ```bash
-   # Windows
-   run.bat v2.0.0
-   
-   # Linux/macOS
-   ./run.sh v2.0.0
+   docker run -d --name sharpai -p 8000:8000 jchristn77/sharpai:v4.0.1
    ```
 
 4. Download a model using the API (GGUF format required):
    ```bash
-   curl http://localhost:8000/api/pull \
+   curl -H "Authorization: Bearer $SHARPAI_BEARER_TOKEN" http://localhost:8000/api/pull \
      -d '{"model":"QuantFactory/Qwen2.5-3B-GGUF"}'
    ```
 
 5. Generate text:
    ```bash
-   curl http://localhost:8000/api/generate \
+   curl -H "Authorization: Bearer $SHARPAI_BEARER_TOKEN" http://localhost:8000/api/generate \
      -d '{
        "model": "QuantFactory/Qwen2.5-3B-GGUF",
        "prompt": "Why is the sky blue?",
@@ -711,12 +730,16 @@ and `compose-cuda.yaml`. A minimal standalone service looks like this:
 ```yaml
 services:
   sharpai:
-    image: jchristn77/sharpai:v2.0.0
+    image: jchristn77/sharpai:v4.0.1
     ports:
       - "8000:8000"
     volumes:
       - ./sharpai.json:/app/sharpai.json
-      - ./sharpai.db:/app/sharpai.db
+      - type: bind
+        source: ./sharpai.db
+        target: /app/sharpai.db
+        bind:
+          create_host_path: false
       - ./logs:/app/logs
       - ./models:/app/models
     environment:
@@ -763,7 +786,7 @@ docker run --gpus all \
   -v ./sharpai.db:/app/sharpai.db \
   -v ./logs:/app/logs \
   -v ./models:/app/models \
-  jchristn77/sharpai:v2.0.0
+  jchristn77/sharpai:v4.0.1
 ```
 
 For Docker Compose, add:
@@ -807,3 +830,29 @@ This project is licensed under the MIT License.
 - Model hosting by [HuggingFace](https://huggingface.co/)
 - Inspired by (and forever grateful to) [Ollama](https://ollama.ai/) for API compatibility
 - Special thanks to the community of developers that helped build, test, and refine SharpAI
+
+## Operator interface plans and diagnostics
+
+See [the TUI implementation plan](TUI_PLAN.md) for the proposed C#/TUIKit client and complete dashboard parity checklist. The TUI is planned, not yet shipped. Current dashboard diagnostics are documented in [request and inference history](docs/HISTORY_TELEMETRY.md), [JSON logging](docs/LOGGING.md), and [Access administration](docs/DASHBOARD_ADMINISTRATION.md).
+
+### Scoped prompt and model-configuration libraries
+
+The dashboard manages system-wide defaults, tenant defaults and private user items on the **System prompts**
+and **Model configurations** pages. Playground selects these saved items using two dropdowns and adjacent
+edit actions. Users can duplicate shared defaults into their personal library; administrators may publish
+to their authorized shared scopes. See [Scoped libraries](docs/SCOPED_LIBRARIES.md) for ownership rules,
+API operations and migration behavior. Legacy model presets remain available independently.
+
+### Dashboard and API authentication
+
+Sign in with `admin@sharpai.local` / `password`, tenant `default`, on an initial installation.
+Dashboard access requires a validated session. All API calls require `Authorization: Bearer <token>`;
+only health/readiness probes and login are anonymous. The default model/inference bearer token is
+provisioned at `docker/auth/default-bearer-token` for Compose installations. Manage additional tokens
+and permissions under **Access**. See [authentication setup](DEPLOYMENT_GUIDE.md#api-bearer-credentials).
+
+Credential administrators can reveal, hide, copy and regenerate API bearer tokens under **Access → Credentials**.
+See [token management API](DEPLOYMENT_GUIDE.md#reveal-and-regenerate-api-bearer-tokens) for the endpoints and migration behavior.
+
+API curl examples use `SHARPAI_BEARER_TOKEN`. From the repository root, set it with
+`export SHARPAI_BEARER_TOKEN="$(cat docker/auth/default-bearer-token)"` before making model or inference requests.

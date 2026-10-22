@@ -912,10 +912,19 @@ each of those as a scheduling problem.
     prefix cache's restores and set-asides (a context one sequence set aside, any other restores), and the Busy
     rule: one call at a time per sequence. `embed()`, `rerank()`, `save_state()`, `load_state()` and segment reuse
     stay on the default sequence; the others' passes wait while they run.
-  * **Memory.** Each sequence keeps its own KV pages, up to `context_length()` positions, and on hybrid models its
-    recurrent states and up to four snapshots, set aside at load from the expert cache's budget for every sequence
-    `max_sequences` allows (62.8 MiB each on the 35B). `max_sequences` is 1 by default: one conversation, the
-    memory plan of before. Not with a draft model, whose cache follows one sequence.
+  * **Memory, only while a sequence is open.** `max_sequences` is a ceiling and reserves nothing: the model loads
+    with the memory plan of a single conversation whatever it allows (the same expert cache, the same decision to
+    requantize, the same bits out), so an engine with no sequence open is the engine of one sequence. Each
+    sequence keeps its own KV pages as it uses them, up to `context_length()` positions. On hybrid models it also
+    holds its recurrent states, rollback checkpoints and up to four snapshots (62.8 MiB of state each on the 35B,
+    five of them): with streamed experts, `open_sequence()` takes that much out of the expert cache before
+    allocating it (slots at the end of each size class, their experts evicted, their pages returned to the OS) and
+    closing the sequence gives it back. Reserving it at load for every sequence allowed shrank the 35B's cache from
+    2286 to about 1970 MiB with the app's API on, below the line where the resident Q8_0 matrices are requantized
+    to 4 bits: other replies, 15.9 s to load instead of 3.7 s, an 11% higher peak, for a sequence that was never
+    opened. A cache that cannot spare a sequence's memory without going below its minimum (a block's top-k and the
+    reads in flight) refuses the open (`OutOfMemory`) instead of overcommitting; nothing is requantized after load.
+    Not with a draft model, whose cache follows one sequence.
 * **Automatic context length.** With `context_length = 0`, the context is what 256 MiB of KV holds: 4,096 to 32,768
   positions, at most the training context. That is ~24k on Qwen3.6-35B-A3B (only 10 of 40 blocks have a KV cache)
   and 4,096 on a dense 4B. Windowed blocks count for what they keep: their window plus the rollback margin is set
@@ -1150,17 +1159,4 @@ step, and speed-ups over plain decoding of 2.02× / 2.10×, 1.17× / 1.11×, 1.4
   right; where the occurrences part, the likeliest one is mostly the right one. A tree gains where earlier text
   continues the same words several ways and the target takes a less frequent one: the tests build such text and
   check that the sibling is kept.
-* **It costs what the branch costs.** A tree pass of *k* + 1 tokens runs the same matmuls as a linear one, its
-  tokens attend to fewer positions (their ancestors only), and building the tree takes microseconds (7 µs for 8
-  drafts on a 6000-token text against 3 µs for the branch). Plain decoding is unchanged (the decode step at a
-  4000-token context timed alternately against the previous build: equal within the host's noise).
-
----
-
-## Embeddings and reranking
-
-Local memory and retrieval need two more kinds of model next to the generative one: an embedding model, which turns
-a text into a vector so similar texts lie close together, and a reranker, which scores how well a document answers a
-query. Decoder models fine-tuned for these jobs (Qwen3-Embedding, Qwen3-Reranker) run on the architectures above with
-the same forward pass; `Engine::embed()` and `Engine::rerank()` (C: `liyab_engine_embed` / `_rerank`) use them, and
-so does the app's [local API](#local-api-one-model-for-every-app-on-the-device) (`/v1/embeddings`, `/v1/rerank
+* **It costs what the branch costs.** A tree pas

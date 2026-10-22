@@ -19,7 +19,7 @@ as a proxy or a Python library. No dashboard, no database, no setup.
 "Write a Python function that parses dates"   → gpt-oss-20b      (groq)     ~$0.0004
 "Implement a lock-free concurrent hash map in
  Rust, thread-safe, no global locks, and
- handle all edge cases"                       → gpt-oss-120b     (groq)     ~$0.0007
+ handle all edge cases"                       → gpt-6-luna       (openai)   ~$0.0006
 ```
 
 (Decisions with `GROQ_API_KEY`, `OPENAI_API_KEY` and `MISTRAL_API_KEY` set. Which model wins depends on the
@@ -31,7 +31,7 @@ difficulty, tools, images, JSON mode, context size), sets a quality bar, and pic
 is **rerouted** to the next-best model, on a different provider first.
 
 - **Zero code changes.** Point your OpenAI or Anthropic client at flux-os and set `model="auto"`.
-- **Agents work.** Tool calls, streaming tool calls, and multi-turn tool loops work across every provider, whichever API format your framework speaks.
+- **Agent tool calls.** Tool calls, streaming tool calls, and multi-turn tool loops are covered by tests against mocked OpenAI-compatible and Anthropic upstreams, plus a Gemini tool-loop test. They have not been checked against each provider's live API, and GPT-6 Astra is excluded from tool requests (see Known limits).
 - **Three API formats in, any provider out.** Chat Completions, the Responses API and Anthropic Messages, translated to OpenAI, Anthropic, Gemini, Groq, Mistral, DeepSeek, OpenRouter or Ollama. Point another OpenAI-compatible server at flux-os by setting `OPENAI_BASE_URL` (or `OLLAMA_BASE_URL` for an Ollama-compatible one) before starting `flux-os serve`.
 - **Fast.** Pure-Python heuristics, no LLM in the decision path, well under 1 ms per decision.
 
@@ -45,10 +45,10 @@ flux-os route --all "Prove that there are infinitely many primes"
 ```
 
 ```text
-model:       gpt-oss-120b  (groq)
+model:       gpt-6-luna  (openai)
 task:        reasoning   complexity 0.55   quality bar 0.84
-est. cost:   $0.000602
-reroute to:  gpt-5.6-luna, gemini-3.1-flash-lite, gemini-3-flash-preview
+est. cost:   $0.000501
+reroute to:  gpt-oss-120b, gpt-5.6-luna, gemini-3.1-flash-lite
 ```
 
 Then set keys for the providers you use (any subset) and start the proxy:
@@ -86,7 +86,7 @@ print(resp.choices[0].message.content, resp.flux["model"])
 | pip / CLI | `pip install "git+https://github.com/vbc1406/flux-os"` then `flux-os serve` |
 | uv, no install | `uvx --from git+https://github.com/vbc1406/flux-os flux-os serve` |
 | Docker | `docker build -t flux-os . && docker run -p 127.0.0.1:8000:8000 -e OPENAI_API_KEY -e FLUX_OS_API_KEY flux-os` |
-| Docker Compose | `docker compose up -d` (reads keys from your environment) |
+| Docker Compose | `FLUX_OS_API_KEY=$(openssl rand -hex 24) docker compose up -d` (reads provider keys from your environment; `FLUX_OS_API_KEY` is required) |
 | Python module | `python -m flux_os serve` |
 | Python library | `from flux_os import FluxOS, route`: sync, async and streaming |
 | Decision only | `flux_os.route(messages)` or `POST /v1/route`: flux-os picks, you call |
@@ -94,8 +94,11 @@ print(resp.choices[0].message.content, resp.flux["model"])
 ## Works with
 
 Each row below is exercised by the test suite or was run end to end against a live
-flux-os server. Provider responses were faked; the HTTP, SSE, tool calling, format
-translation and routing are the real code paths.
+flux-os server. The upstream provider responses in these tests are mocked, so no row
+here has been checked against a live provider API. The HTTP, SSE, tool calling, format
+translation and routing are the real code paths. The mocks speak two wire formats: OpenAI
+Chat Completions (standing in for OpenAI, Gemini, Groq, Mistral, DeepSeek, OpenRouter and
+Ollama) and Anthropic Messages. Only Gemini has its own tool-loop test.
 
 | Client | Setup | Verified |
 |---|---|---|
@@ -127,7 +130,7 @@ request ─► classify ─► filter ─► quality bar ─► rank ─► call
 
 1. **Classify.** Task type (`code_generation`, `code_review`, `reasoning`, `analysis`, `creative_writing`, `summarization`, `extraction`, `translation`, `classification`, `simple_qa`, `conversation`, ...) and a 0–1 complexity score from signals like constraints, math, domain difficulty, multi-part questions, and prompt length.
 2. **Filter.** Only models whose provider has a key, and that support what the request needs: tools, images, JSON mode, and a large enough context window.
-3. **Set a bar.** Harder requests need higher-rated models. Tool-calling agent steps never go below 0.80.
+3. **Set a bar.** Harder requests need higher-rated models. Tool-calling agent steps use a bar of at least 0.80 (and are scored on the average of the task and function-calling ratings). The `FLUX_OS_QUALITY_TOLERANCE` band (default 0.02) applies on top.
 4. **Rank.** Models that clear the bar are sorted by estimated cost for this request, and the rest follow by quality. That ordered list is also the reroute order.
 5. **Call, and reroute on failure.** Rate limits, 5xx errors, timeouts, auth errors, unknown models and capability errors move the request to the next candidate, trying other providers before the one that failed. Plain bad requests (a 400) are returned as they are, and streams are only rerouted before the first token.
 
@@ -184,6 +187,7 @@ Everything works with nothing but provider keys. For more control:
 |---|---|---|
 | `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY` (or `GEMINI_API_KEY`), `GROQ_API_KEY`, `MISTRAL_API_KEY`, `DEEPSEEK_API_KEY`, `OPENROUTER_API_KEY` | | Providers to route across. Unset providers are skipped. |
 | `FLUX_OS_API_KEY` | none | Clients must send it as `Authorization: Bearer ...` or `x-api-key`. **Set it whenever the server is reachable by others.** |
+| `FLUX_OS_ALLOWED_HOSTS` | none | Extra `Host` / `Origin` names accepted when flux-os runs on loopback **without** `FLUX_OS_API_KEY` (for example a local reverse proxy name). Loopback names are always accepted. |
 | `FLUX_OS_HOST` / `FLUX_OS_PORT` | `127.0.0.1` / `8000` | Bind address (`PORT` is honoured too) |
 | `FLUX_OS_DEFAULT_MODE` | `auto` | `auto`, `cheap` or `fast` |
 | `FLUX_OS_ROUTE_ALL` | off | Treat every model name as `auto`, for tools that hard-code a model (Claude Code) |
@@ -210,7 +214,7 @@ instead. The catalog decides whether a coding turn needs a frontier model.
 
 ## Model catalog
 
-27 current models from OpenAI, Anthropic, Google, Groq and Mistral ship in
+31 current models from OpenAI, Anthropic, Google, Groq and Mistral ship in
 [`flux_os/models.json`](flux_os/models.json), with prices (USD per 1M tokens), context windows,
 capabilities and per-task quality ratings. Run `flux-os models --all` to list them. The quality
 ratings are editorial estimates built from public benchmarks, not measurements of your
@@ -228,6 +232,15 @@ off with `FLUX_OS_DISABLE=mistral-large-3` (or a whole provider with `FLUX_OS_DI
   non-loopback host without it (override with `FLUX_OS_ALLOW_UNAUTHENTICATED=1` if you understand
   the risk).
 - **Bind to localhost** (`FLUX_OS_HOST=127.0.0.1`, the default) unless you have a reason not to.
+  Without a key on localhost, flux-os still refuses requests whose `Host` or `Origin` is not a loopback
+  name, so a web page you visit cannot spend your credits through your browser (CSRF / DNS rebinding).
+  Set `FLUX_OS_API_KEY` if other local software or users should not be able to use your keys either.
+- **`FLUX_OS_DISABLE` and `FLUX_OS_ONLY_MODELS` also apply to pinned models.** A client cannot pin a model or
+  provider you switched off. Pass-through names (`provider/model`, unknown `gpt-*` / `claude-*` names) are
+  checked against the same lists. `ollama/<model>` reaches whatever `OLLAMA_BASE_URL` points to.
+- **Logs are not telemetry, but they can contain provider error text.** Prompts, responses and keys are never
+  logged. Upstream error messages are, with key-shaped strings and your configured keys masked, so treat
+  the server's stderr as sensitive anyway.
 - **Put a TLS reverse proxy in front** (nginx, Caddy, your cloud load balancer, ...) before exposing
   flux-os beyond your own machine. flux-os itself speaks plain HTTP.
 - flux-os has **no rate limiting, budgets or spend caps**. Set spend limits at each provider
@@ -253,6 +266,7 @@ is a small LRU cache of tool-call ids (for agent loop continuity) and recent Res
 (for `previous_response_id`).
 
 Known limits:
+- GPT-6 Astra is marked as not tool-capable. Whether it accepts `tools` on Chat Completions has not been confirmed against the live API (`tests/test_live_astra.py` is written but unrun), so tool requests skip it.
 - Reasoning models (gpt-oss, o-series, Gemini thinking) spend `max_tokens` on hidden reasoning. With a
   small limit (say 50) they can return nothing. flux-os treats an empty reply with
   `finish_reason: length` as a failure and reroutes (non-streaming only); if every candidate does it,
@@ -279,7 +293,7 @@ above, and quality ratings backed by data. See [CONTRIBUTING.md](CONTRIBUTING.md
 flux-os is an independent, unofficial project and is not affiliated with, endorsed by, or
 sponsored by OpenAI, Anthropic, Google, Groq, Mistral, DeepSeek, OpenRouter, Ollama, LangChain or
 Vercel. Their names are used only to describe API and provider compatibility. Prices and quality
-ratings in this repository are estimates as of 2026-09-27 and must be checked against each
+ratings in this repository are estimates as of 2026-10-22 and must be checked against each
 provider's current, official pricing before you rely on them.
 
 ## License

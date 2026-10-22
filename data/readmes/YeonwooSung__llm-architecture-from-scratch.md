@@ -1,5 +1,7 @@
 # LLM architecture from scratch
 
+[![Trendshift](https://img.shields.io/badge/Trendshift-View%20Stats-blue)](https://trendshift.io/repositories/304940)
+
 Implementing LLM architectures from scratch for deep understanding of modern LLM architectures.
 
 ## Implemented

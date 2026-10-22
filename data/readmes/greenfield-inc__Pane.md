@@ -517,7 +517,7 @@ pnpm run setup
 PANE_DIR=~/.pane_test pnpm dev
 ```
 
-You need Node 22.18 or newer and pnpm 10 (`corepack enable`). `PANE_DIR` keeps
+You need patched Node 22.23.4+ (22.x), 24.22.1+ (24.x), or 26.12.1+ (26.x), and pnpm 10 (`corepack enable`). `PANE_DIR` keeps
 the dev build away from an installed Pane's data in `~/.pane`. It doesn't
 isolate Electron's browser profile; see
 [Running a dev build safely](CONTRIBUTING.md#running-a-dev-build-safely).
@@ -528,7 +528,8 @@ isolate Electron's browser profile; see
 pnpm build:win:x64    # Windows (x64)
 pnpm build:win:arm64  # Windows (ARM64)
 pnpm build:mac        # macOS (Apple Silicon + Intel)
-pnpm build:linux      # Linux (x64 + ARM64)
+pnpm build:linux:x64  # Linux x64 (run on an x64 Linux host)
+pnpm build:linux:arm64 # Linux ARM64 (run on an ARM64 Linux host)
 ```
 
 ### Releasing

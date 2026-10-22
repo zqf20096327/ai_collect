@@ -12,7 +12,11 @@
 
 English · [简体中文](docs/README.zh-CN.md) · [繁體中文](docs/README.zh-TW.md) · [日本語](docs/README.ja-JP.md) · [Deutsch](docs/README.de.md) · [Français](docs/README.fr.md) · [Español](docs/README.es.md)
 
-**One-click add and sync MCP servers across AI clients — No LLM calls needed, Built-in marketplace**
+**One-click add and sync MCP servers, skills and plugins across AI clients — No LLM calls needed, Built-in marketplace**
+
+[![Download](https://img.shields.io/badge/Download-macOS%20%C2%B7%20Windows%20%C2%B7%20Linux-2ea44f?style=for-the-badge&logo=github)](https://github.com/milisp/mcp-linker/releases/latest)
+
+`brew install mcplinker` · [More install options](#installation)
 
 </div>
 
@@ -23,13 +27,15 @@ English · [简体中文](docs/README.zh-CN.md) · [繁體中文](docs/README.zh
 
 ## 🚀 Why MCP Linker?
 
-- ⚡ **Instant** — Add MCP servers in seconds
+- ⚡ **Instant** — Add MCP servers, skills and plugins in seconds
 - 🧠 **Multi-Client Support** — Works with all major AI clients
 
 ## ✨ Features
 
 - **Local Sync** — Sync MCP server configs across multiple clients
 - **Official MCP Registry** — Browse and install servers straight from registry.modelcontextprotocol.io
+- **Skills** — Curated and community catalog, install from any GitHub repo, enable per client for Claude Code and Codex. Same layout as `npx skills`. [see Detail](./docs/skills.md)
+- **Plugins** — Browse Claude Code and Codex plugin marketplaces, and copy plugins between the two in a Sync panel. [see Detail](./docs/plugins.md)
 - **Multi-Client Support** — Claude Desktop/Code, Codex, Cursor, VS Code, GitHub Copilot CLI, Cline, OpenCode, Pi, Hermes Agent. [see Detail](./docs/clients.md)
 - **Cross-Platform** — macOS, Windows, Linux
 - **Smart Detection** — Auto-detect Python, Node.js, uv environments
@@ -72,6 +78,8 @@ mcpl add fs -c claude-code -c codex -c cursor -- npx -y @modelcontextprotocol/se
 
 mcpl ls                                  # every client on this machine
 mcpl sync --from claude-code --to codex  # copy servers between clients (license)
+mcpl skill install owner/repo            # install skills for Claude Code and Codex
+mcpl plugin ls                           # plugins of Claude Code and Codex
 ```
 
 See [docs/cli.md](docs/cli.md) for every command.
@@ -89,6 +97,10 @@ Model Context Protocol is like USB-C for AI — a standard way to connect AI mod
 
 Built an MCP server, or run one for your product? **Submit it to the directory.** Any working, safe server is welcome, however new it is. Open a pull request that adds one JSON file: see [how to add a server](./registry/README.md#adding-a-server) and the [listing criteria](./CONTRIBUTING.md#listing-an-mcp-server).
 
+Built a Claude Code plugin (MCP servers + skills)? **List it too**: one entry in the plugin marketplace, pointing at your repo. See [submitting your plugin](./plugins/README.md#submitting-your-plugin).
+
+Have a skill (`SKILL.md`)? **List it in the Skills page**: one entry in [`skills/catalog.json`](./skills/catalog.json). See [docs/skills.md](./docs/skills.md).
+
 ## 🧭 Related Projects
 
 - [milisp/codexia](http://github.com/milisp/codexia) - Agent workstation for the Codex & claude code.
@@ -97,6 +109,7 @@ Built an MCP server, or run one for your product? **Submit it to the directory.*
 
 ## 💬 Community & Support
 
+- [💬 Join Discord](https://discord.gg/zAjtD4kf5K)
 - [💬 Join Discussions](https://github.com/milisp/mcp-linker/discussions)
 - [🐛 Report Issues](https://github.com/milisp/mcp-linker/issues)
 

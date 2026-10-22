@@ -173,6 +173,7 @@ Have an AI agent, framework, tool, skill, or infrastructure project worth sharin
 - [Cortex Memory](https://github.com/prem-research/cortex) `🌱` `[Python]` `[Vector DB]` - Full-stack solution for agent memory covering extraction, vector search, and optimization.
 - [deja](https://github.com/vshulcz/deja-vu) `🌱` `[Go]` `[MCP]` - Indexes the session transcripts 25 coding agents already write on the machine and serves them to any of the others, including sessions from before install; lexical retrieval, no LLM, no embeddings.
 - [Engrava](https://github.com/sovantica/engrava) `🔬` `[Python]` `[Graph-Based]` - Stores agent memory as a typed knowledge graph with hybrid search and a tamper-evident journal, embedded in SQLite.
+- [Folio](https://github.com/evergreen-it-dev/folio) `🔬` `[TypeScript]` `[MCP]` - Git-backed team wiki that gives agents 40 MCP tools to search, read and edit pages and tables.
 - [graphiti](https://github.com/getzep/graphiti) `🌱` `[Python]` `[Multi-Agent]` - Build real-time knowledge graphs for AI agents with automatic entity extraction and linking.
 - [Kage](https://github.com/kage-core/Kage) `🌱` `[TypeScript]` `[MCP]` - Git-native memory for coding agents that stores decisions and fixes as repo files and verifies them against the codebase, withholding stale knowledge.
 - [LanceDB](https://github.com/lancedb/lancedb) `🌱` `[Rust]` `[Vector DB]` - Serverless vector search database embedded directly in the agent process with no infrastructure needed.
@@ -250,6 +251,7 @@ The protocol layer that enables agents to discover tools, communicate with each 
 - [NotFair](https://notfair.co) `🚀` `[Cloud]` `[MCP]` - Hosted Google Ads MCP server for diagnosing, optimizing, and executing campaign changes via the Google Ads API with a human-approval gate.
 - [NotFair Skills](https://github.com/nowork-studio/notfair-plugin) `🚀` `[TypeScript]` `[MCP]` - Open-source Claude Code skills for SEO, GEO, Google Ads, and Meta Ads, connecting to live data through Google Ads MCP, Meta Ads MCP, Google Search Console MCP, and Google Analytics (GA4) MCP.
 - [Scalekit](https://www.scalekit.com/agentkit) `🔬` `[Cloud]` `[MCP]` - Hosted MCP gateway and SDKs giving agents per-user OAuth, scoped tool permissions and audit logs across 500+ connectors.
+- [Seonix SEO MCP](https://github.com/seonix-ai/seonix-mcp) `🔬` `[TypeScript]` `[MCP]` - Audits any website for technical SEO, GEO/AEO readiness and page speed, then proposes and dry-runs minimal fixes.
 - [Tapetide MCP](https://github.com/Tapetide-hq/nse-bse-indian-stock-market-data-mcp) `🔬` `[TypeScript]` `[MCP]` - Gives agents quotes, financials, shareholding, screener and FII/DII flow data for about 8,200 NSE and BSE stocks.
 - [Toolhouse](https://toolhouse.ai/en/) `🌱` `[Python]` `[Multi-Agent]` - Cloud-hosted tool infrastructure for agents with optimized execution and low-latency access.
 - [Xquik](https://github.com/Xquik-dev/x-twitter-scraper) `🔬` `[Cloud]` `[MCP]` - Hosted X Twitter data MCP for search, follower export, monitors, and confirmation-gated writes.
@@ -285,6 +287,7 @@ The protocol layer that enables agents to discover tools, communicate with each 
 Sandboxes, web scrapers, browser automation, and networking layers that agents depend on.
 
 - [Agent Bounties](https://github.com/NSPG13/agent-bounties) `🔬` `[Rust]` `[MCP]` - Coordinates verifiable digital bounty workflows designed for agents to post, fund, claim, solve, verify, and earn.
+- [Agent Payment Node](https://github.com/nuanu-ai/agent-payment-node) `🔬` `[TypeScript]` `[MCP Server]` - Local CLI and stdio MCP payment runtime for AI agents on macOS Apple Silicon, with foreground owner approval for signing.
 - [AgentDock](https://github.com/agentdock/agentdock) `🚀` `[Python]` `[Docker]` - Framework for building and deploying production-ready AI agents with composable node architecture.
 - [agent-qa](https://github.com/vostride/agent-qa) `🌱` `[TypeScript]` `[Testing]` - Runs natural-language web and mobile tests with persistent memory and UI-change adaptation.
 - [Arcmira](https://arcmira.com) `🔬` `[Cloud]` `[MCP]` - Search indexed YouTube transcripts for timestamped passages, speaker appearances, entity mentions, sponsors and recommendations.
@@ -494,6 +497,7 @@ Curated list of vertical agent solutions for finance, healthcare, legal, manufac
 
 - [Agent Cookbook](https://agentcookbook.dev) `🔬` `[Browser]` `[Guide]` - Collects 75 real AI agent setups, 20 that people made money with, each with source, prompt, and steps.
 - [AgentBench: Evaluating LLMs as Agents](https://arxiv.org/abs/2309.07864) `🌱` `[Python]` `[Benchmark]` - The benchmark paper for evaluating LLMs as agents across diverse environments.
+- [Agents Handbook](https://agentshandbook.com) `🔬` `[Browser]` `[Guide]` - Collects sourced playbooks for real agent jobs with prompts, steps, human checkpoints and known failures.
 - [AI Agents in LangGraph](https://www.deeplearning.ai/courses/ai-agents-in-langgraph) `🚀` `[Python]` `[Multi-Agent]` - Short course on building production agents with LangGraph by Andrew Ng's platform.
 - [AI Engineering by Chip Huyen](https://www.oreilly.com/library/view/ai-engineering/9781098166298/) `🌱` `[Python]` `[IDE]` - Comprehensive guide on AI systems design and deployment covering agent architecture patterns.
 - [Anthropic Cookbook](https://github.com/anthropics/claude-cookbooks) `🚀` `[Python]` `[Anthropic]` - Collection of Claude agent recipes and integration patterns from Anthropic.
@@ -707,6 +711,7 @@ Platforms for building, deploying, and scaling voice-based AI agents across call
 - [ElevenLabs](https://elevenlabs.io) `🌱` `[Cloud]` `[RAG]` - Industry- voice AI with 75ms latency, Conversational AI 2.0, RAG, and HIPAA compliance.
 - [HeyGen](https://www.heygen.com) `🌱` `[Cloud]` `[IDE]` - Creates AI talking avatars with voice cloning and lip-sync for video-based agent interactions.
 - [Hermes](https://www.buildwithhermes.com) `🌱` `[Cloud]` `[Voice]` - White-label voice agent platform for agencies, bundling telephony, CRM, campaign orchestration, and usage billing so one team can run agents for many client brands.
+- [PlaceCall](https://voygr.tech/placecall/) `🔬` `[Cloud]` `[MCP]` - Places outbound phone calls to US businesses for AI agents over MCP or REST, returning outcome and transcript.
 - [PolyAI](https://poly.ai/) `🚀` `[Cloud]` `[Voice]` - Enterprise voice AI platform for natural multi-turn conversations with high-volume call handling.
 - [Retell AI](https://www.retellai.com) `🌱` `[Cloud]` `[Voice]` - Builds human-like voice agents with multi-language telephony support and low-latency responses.
 - [Synthesia](https://www.synthesia.io) `🌱` `[Cloud]` `[IDE]` - Generates AI video avatars that speak in 120+ languages for training and communication agents.
@@ -795,10 +800,4 @@ Open-weight LLMs optimized for agentic tasks including tool use, planning, multi
 - [DeepSeek V3](https://github.com/deepseek-ai/DeepSeek-V3) `🌱` `[Python]` `[Local]` - A 671B MoE model that delivers GPT-4 level reasoning at 68x lower cost for budget-conscious agent deployments.
 - [Falcon 3](https://huggingface.co/tiiuae) `🌱` `[Python]` `[Local]` - Efficient open model from TII UAE with strong multilingual support across 10B to 180B parameter variants.
 - [Gemma 3](https://github.com/google-deepmind/gemma) `🚀` `[Python]` `[IDE]` - Efficient multimodal model from Google in 1B to 27B sizes ideal for edge and on-device agents.
-- [Gemma 4](https://deepmind.google/models/gemma/) `🚀` `[Python]` `[Local]` - Consumer and IoT-optimized model from Google in 2B to 31B sizes with E2B and E4B variants.
-- [GLM-4](https://github.com/zai-org/GLM-4) `🌱` `[Python]` `[Local]` - Zhipu AI's 744B MoE model achieving the lowest hallucination rate and 77.8% on SWE-bench.
-- [GLM-5.2](https://github.com/zai-org/GLM-5) `🌱` `[Python]` `[Local]` - Zhipu AI’s newest open-source GLM family release optimized for large-context reasoning and agentic tool use.
-- [InternLM 3](https://github.com/InternLM/InternLM) `🌱` `[Python]` `[Local]` - Shanghai AI Lab model with strong long-context reasoning capabilities for complex agent tasks.
-- [Llama 4](https://github.com/meta-llama/llama-models) `🚀` `[Python]` `[Local]` - Meta's flagship open model family with Scout and Maverick variants and strong tool use capabilities.
-- [Mistral Large 2](https://mistral.ai/research/) `🌱` `[Python]` `[Multi-Agent]` - European open model at 123B parameters with strong function calling for agent workflows.
-- [Phi-4](https://huggingface.co/microsoft/phi-4) `🚀` 
+- [Gemma 4](https://deepmind.google/models/gemma/) `🚀` `[Python]` `[Local]` - Consumer and IoT-optimized model from Google in 

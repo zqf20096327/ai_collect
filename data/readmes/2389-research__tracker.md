@@ -13,13 +13,29 @@ brew install 2389-research/tap/tracker
 # or:  go install github.com/2389-research/tracker/cmd/tracker@latest
 ```
 
-**Three steps to your first run** — no `.dip` file needed:
+**Your first run, on your Claude subscription** — no API key, no `.dip` file. If you already use [Claude Code](https://docs.claude.com/en/docs/claude-code) (`claude` installed and signed in), `cd` into any repo:
 
 ```bash
-tracker doctor            # 1. check setup: API keys, dippin binary, working dir
-tracker ask_and_execute   # 2. run a built-in workflow: describe what you want, answer one gate, watch it build
-tracker diagnose          # 3. inspect what happened (also: tracker audit / tracker list)
+tracker explain --param question="what does this repo do?"
 ```
+
+```
+backend: auto → claude-code (claude 2.x at /opt/homebrew/bin/claude; no API key needed)
+… Start → Answer → WriteAnswer → Done, the answer streamed in the activity log …
+answer saved to .tracker/runs/<id>/explain.md
+next: make a small change with
+  tracker quickfix --param change="<one sentence>"
+```
+
+`explain` only reads (it can't change a file). Then make one small change:
+
+```bash
+tracker quickfix --param change="fix the typo in the README"
+```
+
+The change is made in a separate git worktree on its own branch, `tracker/quickfix/<run-id>`: Tracker never changes your checkout, and the review gate warns if anything outside the worktree changed while the agent worked. Tracker runs your tests and shows the diff: **approve** commits it to that branch (nothing is merged or pushed), **revise** tries again with your feedback, **reject** throws it away.
+
+No Claude Code? Install it (`npm i -g @anthropic-ai/claude-code && claude /login`), or add an API key with `tracker setup` — the same two commands then run on the key. Leave off `--param` to be asked instead. If something doesn't work, `tracker doctor` checks your setup and `tracker diagnose` explains the last run.
 
 From there:
 
@@ -110,8 +126,8 @@ graph LR
 Pipelines are embedded in the binary so `brew` and `go install` users can run them without cloning the repo:
 
 ```bash
-tracker workflows              # List all built-in workflows
-tracker ask_and_execute        # Run directly by name — no files needed
+tracker workflows              # List all built-in workflows (starters first)
+tracker explain                # Run directly by name — no files needed
 tracker validate build_product # Validate works too
 tracker simulate build_product # Simulate too
 tracker init build_product     # Copy .dip + scaffold a starter SPEC.md for editing
@@ -257,7 +273,7 @@ agent ImplementClaude
   prompt: Implement the spec in this isolated worktree.
 ```
 
-The `working_dir` attribute is validated against path traversal and shell metacharacters.
+The `working_dir` attribute is validated against path traversal and shell metacharacters. A relative `working_dir` resolves under the run's workdir (`-w`), like tool nodes, not the tracker process's current directory.
 
 ### Human Gates
 
@@ -627,7 +643,8 @@ tracker audit <run-id>
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| "no LLM providers configured" | Missing API keys | `tracker setup` or export env vars |
+| "no LLM providers configured" | Missing API keys | `tracker setup` or export env vars — or install Claude Code (`npm i -g @anthropic-ai/claude-code && claude /login`): `backend: auto` / `claude-code` workflows, the starters included, need no key |
+| claude-code nodes fail with `unrecognized_model` or an old-CLI error | A stale `claude` earlier on PATH | `tracker doctor` lists every `claude` on PATH with its version; export `TRACKER_CLAUDE_BIN=/absolute/path/to/claude` (shell only — a `.env` can't set it) |
 | TestMilestone instantly escalates | Stale `fix_attempts` counter | `rm .ai/milestones/fix_attempts` |
 | Node fails with no visible error | Tool stderr not surfaced | `tracker diagnose` shows full output |
 | Pipeline loops forever | Unconditional fallback to loop target | Ensure fallbacks go to an exit node (Done, escalation gate), not back into the loop |
@@ -641,6 +658,10 @@ tracker audit <run-id>
 
 Tracker exposes per-provider token and dollar cost from every run, and can halt
 pipelines that exceed configured ceilings.
+
+Claude Code reports a notional cost on a subscription, so a run whose only
+provider is claude-code shows it as `~$X.XX usage (included in your Claude
+plan)`; it still counts against `--max-cost` like any other cost.
 
 **Library consumers** read cost via `Result.Cost`:
 
@@ -697,7 +718,7 @@ workflow MyPipeline
 Explicit library/CLI values still win over the `.dip` defaults.
 
 Prices come from [dippin-lang](https://github.com/2389-research/dippin-lang)'s
-`pricing` catalog at the version pinned in `go.mod` (v0.78.0), so a new or
+`pricing` catalog at the version pinned in `go.mod` (v0.80.0), so a new or
 repriced model is adopted by bumping that pin; the full table is on the
 [models page](https://2389-research.github.io/tracker/models.html). A model the
 catalog doesn't price costs $0 with one warning. The catalog holds one price
@@ -872,7 +893,7 @@ tracker version                  Show version information
 - `--json` — stream events as NDJSON to stdout
 - `--no-tui` — disable TUI dashboard, use plain console
 - `--verbose` — show raw provider stream events
-- `--backend` — agent backend: `native` (default), `claude-code`, or `acp`. A `claude-code` node fails (routably, not retried) when Claude Code refuses a tool call on a node left on the default `bypassPermissions` with no `tool_access` or `disallowed_tools`, instead of reporting success on a reply nobody can approve
+- `--backend` — agent backend: `native` (default), `claude-code`, or `acp`. An explicit value also overrides `backend: auto` nodes; `auto` itself is a node value only (`--backend auto` is rejected). A `claude-code` node fails (routably, not retried) when Claude Code refuses a tool call on a node left on the default `bypassPermissions` with no `tool_access` or `disallowed_tools`, instead of reporting success on a reply nobody can approve
 - `--autopilot <persona>` — replace human gates with an LLM judge (`lax` / `mid` / `hard` / `mentor`)
 - `--autopilot-model <model>` — the model that judge uses (default: the default provider's autopilot model); set a model your plan serves when `TRACKER_OPENAI_AUTH=chatgpt`
 - `--auto-approve` — deterministically accept every human gate (no LLM)

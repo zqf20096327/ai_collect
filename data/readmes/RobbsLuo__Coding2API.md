@@ -60,7 +60,7 @@ docker compose exec coding2api python scripts/create_user.py admin --role admin
 
 ```bash
 docker compose pull
-# 或指定版本：docker pull ghcr.io/robbsluo/coding2api:v0.9.0
+# 或指定版本：docker pull ghcr.io/robbsluo/coding2api:v0.9.1
 ```
 
 推送新版本：打 tag `v*` 推到 main 即触发 publish workflow（`.github/workflows/publish.yml`），同时打 `<tag>` 与 `:latest` 到 GHCR；也可在 Actions 页面手动触发。
@@ -338,7 +338,7 @@ claude
 
 ```json
 {
-  "status": "ok", "service": "coding2api", "version": "0.9.0",
+  "status": "ok", "service": "coding2api", "version": "0.9.1",
   "credentials": {"total": 5, "ready": 4, "cooling": 1, "paused": 0, "disabled": 0}
 }
 ```
@@ -427,7 +427,7 @@ claude
 - **筛选工具条**：搜索（昵称 / 渠道 / id，忽略大小写）× 渠道 × 状态 × 标签四件套。四者是 **AND** 关系，纯前端收敛，不改后端排序（后端仍按 `sort` / `order` 给全量）。命中时显示「筛选后 N / 总数」，并提供「清空」；无匹配给空态而非空白表格。渠道 / 状态 / 标签下拉里的计数来自当前全量，切换筛选不会自我缩窄。**标签下拉只在池里真的出现过标签时渲染**（没有标签时不留一个恒为「全部标签」的空控件）；标签是结构化维度，**不参与搜索词匹配**——否则「查一个恰好叫『生产』的昵称」会变得不可能。
 - **标签**：每条凭证可贴任意个运维标签（逗号分隔，最多 16 个、单个 ≤ 24 字符；半角/全角逗号与分号都当分隔符），入口在行内「更多操作 → 设置标签」。标签**只用于列表筛选与展示**，不参与选号、不改变任何请求行为——把标签当策略用会让改名静默改变线上流量。行内最多列两个标签，多余收成 `+N` 并在悬浮里给全量。
 - **组排序**：单独一个控件，只重排「渠道组」，不动组内行序（行序仍由列头 / 后端 `sort` 决定）。默认**额度从高到低**，按组内额度剩余合计排名，让还能打最多的渠道排前面；可切回**渠道顺序**（固定，30s 轮询不会让组头乱跳）。无额度接口的免费层垫底（不当 `0` 参与比较），额度相同（含都为 null）时回落到渠道顺序。
-- **按渠道分组**：列表按渠道聚合，组头做成一张紧凑的「渠道仪表盘」——品牌图标 + 渠道名 + 账号数，加上**状态分布**（图标 + 计数，只列出现过的态，口径与行内状态徽章同一套 `credentialState`）、**额度合计**（占比环 + 数字；环是纯图形仪表，精确百分比写在「额度合计 / 积分合计」标签行，对组内非 null 值求和，免费层 zen / kilo 无额度接口时显示 `—` 而不是 `0`，也不出环），以及**到期积分**（主窗口 1.5 天一块，次窗口 7 天仅在**比主窗口多**时再出一块——次窗口是主窗口的超集，数字相同说明没有超出 1.5 天的部分）。点组头折叠 / 展开该渠道，**默认全折叠**（首屏先看结构，要看具体账号再展开）；筛选生效时自动展开命中渠道，清空筛选回到折叠总览。组顺序默认「额度从高到低」，也可用工具条切到固定的全站渠道顺序（CodeBuddy、TRAE 在前），不随行排序键变化。渠道名只出现在组头，行内不重复。**一个真实渠道一个组**：CodeArts 额度就是积分，组头额度合计标签写「积分合计」，其余渠道写「额度合计」。
+- **按渠道分组**：列表按渠道聚合，组头做成一张紧凑的「渠道仪表盘」——品牌图标 + 渠道名 + 账号数，加上**模型**（该渠道当前能提供的模型数量 + **最低倍率**，数据源与 Playground / `/v1/models` 同源，只算有可用凭证且过当前黑名单的渠道；**最低倍率只统计收费模型**——免费额度（0）不参与取最小，否则渠道里混着 1~2 个免费模型就会显示「最低 免」，读起来像整个渠道免费；整组都免费时才写「全免」；自定义别名不算独立模型（后端克隆目标条目，算进来会虚高）；组头只给数量与最低倍率，hover 展开**卡片式浮层**——头部是渠道身份 + 条数胶囊，中部是限高内滚的逐条「模型名 + 该渠道倍率」清单，底部是倍率口径脚注。几十条模型铺开会把组头撑成十几行，而「几个模型、最便宜多少」正是判断这渠道值不值得展开的第一信息。倍率按渠道取（`by_provider` 优先，单渠道回退合并值），多渠道模型各渠道倍率不同，不能拿合并值冒充；`0` 显示成「免」并着色，未给倍率的显示 `—` 而不是当免费；模型列表未取到时整块不渲染，不显示「0 个」。模型块是**独立的可聚焦按钮**（放在折叠按钮外——button 套 button 会被 HTML 解析器拆开），键盘 Tab 到它同样能打开清单，不依赖鼠标 hover）、**状态分布**（图标 + 计数，只列出现过的态，口径与行内状态徽章同一套 `credentialState`）、**额度合计**（占比环 + 数字；环是纯图形仪表，精确百分比写在「额度合计 / 积分合计」标签行，对组内非 null 值求和，免费层 zen / kilo 无额度接口时显示 `—` 而不是 `0`，也不出环），以及**到期积分**（主窗口 1.5 天一块，次窗口 7 天仅在**比主窗口多**时再出一块——次窗口是主窗口的超集，数字相同说明没有超出 1.5 天的部分）。点组头折叠 / 展开该渠道，**默认全折叠**（首屏先看结构，要看具体账号再展开）；筛选生效时自动展开命中渠道，清空筛选回到折叠总览。组顺序默认「额度从高到低」，也可用工具条切到固定的全站渠道顺序（CodeBuddy、TRAE 在前），不随行排序键变化。渠道名只出现在组头，行内不重复。**一个真实渠道一个组**：CodeArts 额度就是积分，组头额度合计标签写「积分合计」，其余渠道写「额度合计」。
 - **列头跟着展开区走**：没有全局表头，列头（含排序按钮与列说明）渲染在每个展开的渠道组内部，并在滚动容器里吸顶——折叠态下组头本身就是总览，列名没有对应内容，只有展开某组时才需要「这一列是什么」的锚点。同一时间可能有多个组展开，各组列头共用同一套排序状态（点任一处都写回同一个后端 `sort` 参数）。**「成长中心」列只在支持的渠道（CodeBuddy）出现**，其余渠道留一个空占位格——列数保持恒定，否则 auto 布局会重算列宽、下面展开的组整列错位。
 - **一个渠道一个组**：组头 label 就是渠道展示名，`ProviderGroup.key === provider`；CodeArts 不再拆「内置 / 福利」两组（福利链路已下线，额度就是积分账）。行内额度列读的是同一个渠道账本：CodeArts 是积分（`ledger=credits`），其余渠道是套餐 / 每日余额（`ledger=pool`），由 `providerLedger()` 派生。
 - **长列表可滚**：表格限高（70vh），滚到第 20 行时该组的吸顶列头与「操作」按钮仍在。
@@ -737,7 +737,7 @@ python3 scripts/restore_db.py data/backups/coding2api-20261014-030000.sqlite3 --
 
 ### 管理台热更（「任务与配置」页）
 
-上表中带「可热更」语义的 **58 项**可不改 `.env`、不重启，直接在管理台「任务与配置」页修改：
+上表中带「可热更」语义的 **60 项**可不改 `.env`、不重启，直接在管理台「任务与配置」页修改：
 
 `DEFAULT_MODEL`、`MODEL_BLOCKLIST`、`MODEL_ALIASES`、`CONTEXT_COMPRESS_ENABLED`、`CONTEXT_COMPRESS_RESERVE_TOKENS`、`CONTEXT_COMPRESS_MIN_KEEP_MESSAGES`、`CONTEXT_COMPRESS_SAFETY_RATIO`、`MODEL_FALLBACK_GROUPS`、`STREAM_FIRST_EVENT_TIMEOUT_SECONDS`、`STREAM_IDLE_TIMEOUT_SECONDS`、`SHORT_COOLDOWN_WAIT_SECONDS`、`QUOTA_EXPIRY_WINDOW_SECONDS`、`QUOTA_EXPIRY_SECONDARY_WINDOW_SECONDS`、`CONVERSATION_STICKY_SECONDS`、`MAX_INFLIGHT_PER_CREDENTIAL`、`GROWTH_IRREVERSIBLE_ACTIONS`、`GROWTH_INTERVAL_MINUTES`、`REFRESH_INTERVAL_MINUTES`、`QUOTA_PROBE_MINUTES`、`MODEL_CATALOG_MINUTES`、`OPENROUTER_CATALOG_MINUTES`、`USD_CNY_RATE`、`CODEBUDDY_CHAT_MIN_INTERVAL`、`CODEBUDDY_INTL_CHAT_MIN_INTERVAL`、`ZEN_CHAT_MIN_INTERVAL`、`KILO_CHAT_MIN_INTERVAL`、`QODER_CHAT_MIN_INTERVAL`、`CODEARTS_CHAT_MIN_INTERVAL`、`CODEARTS_MAX_CONCURRENCY`、`CODEARTS_REQUEST_WINDOW_SECONDS`、`PACER_MIN_SECONDS`、`PACER_MAX_SECONDS`、`ACTIVITY_REPORT_ENABLED`、`ACTIVITY_REPORT_HOUR`、`ALERT_ENABLED`、`ALERT_WEBHOOK_URL`、`ALERT_INTERVAL_MINUTES`、`ALERT_SILENCE_MINUTES`、`ALERT_FOR_TICKS`、`ALERT_CLEAR_TICKS`、`ALERT_POOL_READY_MIN`、`ALERT_TASK_FAILURES`、`ALERT_TOKEN_EXPIRY_HOURS`、`ALERT_ERROR_RATE_THRESHOLD`、`ALERT_ERROR_RATE_MIN_REQUESTS`、`ALERT_ERROR_RATE_WINDOW_MINUTES`、`BACKUP_INTERVAL_MINUTES`、`BACKUP_KEEP`、`UPSTREAM_STATUS_ENABLED`、`UPSTREAM_STATUS_MINUTES`、`MODEL_PROBE_MINUTES`、`METRICS_ENABLED`、`REQUEST_LOG_ENABLED`、`FORCE_DISABLE_THINKING`、`REASONING_EFFORT_MAP`、`ANTHROPIC_THINKING_EFFORTS`、`CHECKIN_TIMES`、`CHECKIN_JITTER_MINUTES`、`LOG_BUFFER_LINES`。
 
@@ -773,7 +773,7 @@ sudo systemctl restart coding2api       # systemd
 **确认升级已生效**（先查版本，再查路由）：
 
 ```bash
-# 1) schema 版本已迁移（期望 22）且账号已导入
+# 1) schema 版本已迁移（期望 29）且账号已导入
 sqlite3 data/coding2api.sqlite3 "PRAGMA user_version; SELECT username, role, enabled FROM users;"
 # 2) 路由存在：期望 401（未登录），404 = 旧后端进程
 curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8000/api/users
@@ -789,6 +789,8 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8000/api/users
 ./scripts/build-web.sh            # 仅在产物过期时构建
 ./scripts/build-web.sh --force    # 无条件重建
 ```
+
+> **`web/.npmrc` 不能删，也不能只在本地改**：它把 `auto-install-peers` 关掉了。`@lobehub/icons` 把 `@lobehub/ui` / `antd` 声明为 peer，自动安装会拖进 400+ 个用不到的包（本项目只 import 它的静态图标组件，不引用 `@lobehub/ui`）；关掉后 lock 里少一半包，`pnpm audit --prod` 也是 0 漏洞。代价是**真正需要的 peer 必须显式声明**（`@testing-library/dom` 就是这么加进 `devDependencies` 的）。该设置与 lockfile 里的 `settings.autoInstallPeers` 强耦合，所以 `Dockerfile` 也必须 `COPY web/.npmrc`，否则 `--frozen-lockfile` 直接报 `ERR_PNPM_LOCKFILE_CONFIG_MISMATCH`。
 
 > **部署相关操作记在本地文档**：当前开发机的进程管理方式、路径与工具版本等见 `docs/local-environment.md`。该目录已在 `.gitignore` 中，**克隆仓库的人不会有这个文件**。
 

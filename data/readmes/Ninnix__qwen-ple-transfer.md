@@ -1,5 +1,9 @@
 # qwen-ple-transfer
 
+<p align="center">
+  <img src="logo.png" alt="Qwengram logo" width="220">
+</p>
+
 [QwenGram 0.8B model on Hugging Face](https://huggingface.co/Ninnix96/Qwengram-0.8B) ·
 [Qwengram 2B](https://huggingface.co/Ninnix96/Qwengram-2B) ·
 [Qwengram 4B](https://huggingface.co/Ninnix96/Qwengram-4B) ·

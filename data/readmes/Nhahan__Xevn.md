@@ -1,8 +1,10 @@
 # Xevn
 
+[![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Xevn--4B-ffcc4d?logo=huggingface&logoColor=black)](https://huggingface.co/quevirus/Xevn-4B) [![Website](https://img.shields.io/badge/Website-nhahan.github.io%2FXevn-3a4cf0)](https://nhahan.github.io/Xevn/)
+
 **English** | [한국어](README.ko.md)
 
-Xevn is a 4B decision model built for Korean. It starts from the general-purpose [Qwen3.5-4B](https://huggingface.co/Qwen/Qwen3.5-4B) and is further trained for Korean understanding, knowledge, and judgment.
+Xevn is a 4B decision model built for Korean, trained for Korean understanding, knowledge, and judgment.
 
 Xevn follows the [Jev](https://benchmarkheaven.com/jev-models) decision format. It reads a question and its options once and returns the answer together with a probability for every option. There is no text generation, so a request costs one forward pass.
 
@@ -15,6 +17,8 @@ Xevn follows the [Jev](https://benchmarkheaven.com/jev-models) decision format. 
 | `score` | An item and a graded scale | Probability for each level |
 
 ## Benchmarks
+
+### Korean
 
 <p align="center"><img src="assets/acc_en.svg" alt="Korean benchmarks: accuracy" width="100%"></p>
 
@@ -46,6 +50,34 @@ Xevn follows the [Jev](https://benchmarkheaven.com/jev-models) decision format. 
 | CLIcK | **72.5** | 74.8 | 73.1 | 68.5 | 68.1 | 68.6 |
 | KMMLU-1035 | **60.1** | 55.7 | 57.8 | 53.3 | 49.5 | 49.3 |
 
+### English
+
+<p align="center"><img src="assets/en_acc_en.svg" alt="English benchmarks: accuracy" width="100%"></p>
+
+**Accuracy (%)**
+
+| Benchmark | Measures | **Xevn** | JevK5 | Plumb | Decider | Mica | Tev1 |
+|---|---|:-:|:-:|:-:|:-:|:-:|:-:|
+| MMLU | Knowledge across 57 subjects | **76.5** | 74.8 | 74.9 | 74.5 | 75.4 | 71.6 |
+| ARC | Grade-school science | **96.7** | 96.7 | 96.4 | 96.5 | 96.5 | 95.3 |
+| SciQ | Science exam questions | **95.6** | 96.6 | 95.4 | 95.6 | 95.3 | 95.4 |
+| PIQA | Physical commonsense | **87.3** | 87.2 | 86.1 | 88.7 | 84.3 | 84.8 |
+| Social IQa | Social commonsense | **76.5** | 78.1 | 75.3 | 76.1 | 69.9 | 75.9 |
+| OBQA | Open-book science reasoning | **88.7** | 88.7 | 87.7 | 91.0 | 85.0 | 79.3 |
+
+<p align="center"><img src="assets/en_h_en.svg" alt="English benchmarks: Headline" width="100%"></p>
+
+**Headline**
+
+| Benchmark | **Xevn** | JevK5 | Plumb | Decider | Mica | Tev1 |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|
+| MMLU | **83.2** | 79.7 | 78.8 | 80.0 | 77.3 | 74.2 |
+| ARC | **94.8** | 94.9 | 87.7 | 95.6 | 97.0 | 94.6 |
+| SciQ | **94.5** | 94.2 | 88.7 | 94.1 | 95.5 | 94.7 |
+| PIQA | **80.8** | 84.6 | 83.0 | 87.2 | 81.5 | 79.7 |
+| Social IQa | **79.6** | 82.4 | 78.1 | 75.8 | 67.3 | 77.6 |
+| OBQA | **84.9** | 86.1 | 78.6 | 89.6 | 86.9 | 83.2 |
+
 **Setup.** Every model was run in 16-bit (bf16; Decider in its official FP16) with the same prompts and the same scoring, on an Apple M4 Max.
 
 ## Speed
@@ -60,16 +92,16 @@ Latency of a single request over HTTP, bf16, Apple M4 Max, 3,000 requests.
 
 ## Models
 
-| Precision | Size | Accuracy | Headline | Speed (p50) | Download |
-|---|:-:|:-:|:-:|:-:|:-:|
-| 16-bit | 8.4 GB | 68.5 | 76.1 | 88 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-bf16) |
-| 8-bit | 4.5 GB | 68.3 | 76.0 | 83 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-8bit) |
-| 6-bit | 3.4 GB | 68.2 | 75.8 | 82 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-6bit) |
-| 5-bit | 2.9 GB | 68.4 | 75.6 | 80 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-5bit) |
-| 4-bit | 2.4 GB | 67.0 | 75.4 | 78 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-4bit) |
-| 3-bit | 1.8 GB | 55.3 | 65.7 | 77 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-3bit) |
+| Precision | Size | Speed (p50) | Download |
+|---|:-:|:-:|:-:|
+| 16-bit | 8.4 GB | 88 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-bf16) |
+| 8-bit | 4.5 GB | 83 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-8bit) |
+| 6-bit | 3.4 GB | 82 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-6bit) |
+| 5-bit | 2.9 GB | 80 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-5bit) |
+| 4-bit | 2.4 GB | 78 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-4bit) |
+| 3-bit | 1.8 GB | 77 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-3bit) |
 
-16-bit is the bf16 format. Accuracy and Headline are the mean over the eight Korean benchmarks above. Speed is the p50 over an equal mix of the three input lengths, measured in the same session as the Speed table. 8-bit to 4-bit stay within 1.5 points of 16-bit. 3-bit loses substantial accuracy and is provided for experimentation.
+16-bit is the bf16 format. Speed is the p50 over an equal mix of the three input lengths, measured in the same session as the Speed table. On every benchmark, 8-bit to 5-bit stay within 2 points of 16-bit accuracy and 4-bit within 3 points. 3-bit loses 7 to 21 points and is provided for experimentation.
 
 PyTorch (Transformers) 16-bit weights: [Xevn-4B](https://huggingface.co/quevirus/Xevn-4B).
 

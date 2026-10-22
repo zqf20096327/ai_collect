@@ -56,7 +56,7 @@ It takes about a minute to try: [quick start](#quick-start).
   and Anthropic APIs, so your apps and coding agents connect without changes.
 - **Measured, not assumed.** Twelve model families have been scored against
   their publishers' own implementations, and Runner is closer to the
-  reference than llama.cpp on 21 of 22 rows. A model it does not know is
+  reference than llama.cpp on 20 of 23 rows. A model it does not know is
   refused by name, never guessed at.
 - **Yours.** Free forever under Apache 2.0, built in Sweden, and your prompts
   never leave your machine.
@@ -72,7 +72,7 @@ It takes about a minute to try: [quick start](#quick-start).
   <a href="docs/community-results.md">Community results</a>
 </p>
 
-> **Version `1.4.2`.** The command line, the HTTP API, the record formats and
+> **Version `1.5.0`.** The command line, the HTTP API, the record formats and
 > the model files that load stay compatible across 1.x
 > ([versioning policy](docs/versioning.md)). This page is the short version;
 > every flag, endpoint, limit and measurement is in the [manual](MANUAL.md).
@@ -389,8 +389,8 @@ can change them, which is a stated limit, not a promise broken.
   download with `-hf`. Experimental layouts and backend limits are listed
   in the [support matrix](MANUAL.md#support-matrix).
 - **How Runner compares.** Closer to the publisher's reference than
-  llama.cpp on 21 of 22 measured rows, and level or ahead on the reference's
-  chosen token on 20 of 22. [Evidence](MANUAL.md#evidence-and-tradeoffs) ·
+  llama.cpp on 20 of 23 measured rows, and level or ahead on the reference's
+  chosen token on 22 of 23. [Evidence](MANUAL.md#evidence-and-tradeoffs) ·
   [Speed tables](docs/benchmarks.md)
 
 <a id="all-commands"></a>
@@ -440,7 +440,7 @@ passing evaluation made for those exact bytes.
 git clone https://github.com/Joakimpalm-Zen/xyntetik-runner
 cd xyntetik-runner
 make
-./runner --version   # -> runner 1.4.2
+./runner --version   # -> runner 1.5.0
 ```
 
 Linux, macOS and Windows. NVIDIA GPUs need a driver with CUDA 13.0 support

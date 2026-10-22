@@ -1,0 +1,114 @@
+<div align="center">
+
+<img src="./docs/screenshots/hero-banner.jpg" alt="Vedit Studio Banner" width="100%" style="border-radius: 14px;" />
+
+# Vedit Studio (`v0.7.0`)
+
+**Native Multi-Track NLE Video Editor for Windows PC & Android • Bring-Your-Own AI Model & Base URL • Cinema 3D `.cube` LUTs & Split-Wipe Scopes • Hardware GPU Render • Built-In MCP Server**
+
+[![Android APK](https://img.shields.io/badge/Android%208--15-Download%20Vedit.apk%20(v0.7.0)-22c55e?logo=android&logoColor=white)](https://github.com/lilrepaer-glitch/Vedit/raw/main/releases/Vedit.apk)
+[![Latest Release](https://img.shields.io/github/v/release/lilrepaer-glitch/Vedit?color=00c8d7&label=Download%20Windows%20Installer&logo=windows)](https://github.com/lilrepaer-glitch/Vedit/releases/latest)
+[![Tests](https://img.shields.io/badge/Vitest-93%2F93%20Passing-22c55e?logo=vitest)](./test)
+[![Codecs](https://img.shields.io/badge/FFmpeg%20%2B%20MediaCodec-NVENC%20%7C%20AMF%20%7C%20QSV%20%7C%20ProRes%20%7C%20Android-3b82f6)](#)
+[![MCP Ready](https://img.shields.io/badge/MCP-Claude%20%7C%20Cursor%20%7C%20Agents-8b5cf6)](#mcp-server-claude-desktop--cursor--ai-agents)
+
+### [📱 Download `Vedit.apk` (Android 8.0 – 15 — 100% Standalone On-Device APK)](https://github.com/lilrepaer-glitch/Vedit/raw/main/releases/Vedit.apk) · [🪟 Download `Vedit_installer.exe` (Windows 10 / 11 — Self-Contained Installer)](https://github.com/lilrepaer-glitch/Vedit/releases/latest/download/Vedit_installer.exe)
+
+</div>
+
+---
+
+## Visual Studio Showcase
+
+<p align="center">
+  <img src="./docs/screenshots/shot-01-editor.jpg" alt="Vedit Studio 4-Zone Multi-Track Editor" width="100%" />
+</p>
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="./docs/screenshots/shot-02-color-scopes.jpg" alt="Cinema 3D LUTs & Broadcast Scopes" width="100%" />
+      <p align="center"><strong>Cinema 3D <code>.cube</code> LUTs, Split-Wipe Compare &amp; Broadcast RGB Scopes</strong><br/><sub>Kodak 2383, Teal &amp; Orange, Fuji Eterna, Bleach Bypass, Cyberpunk Neon + live touch/pointer Split-Wipe</sub></p>
+    </td>
+    <td width="50%">
+      <img src="./docs/screenshots/shot-03-ai-copilot.jpg" alt="Custom API, Model Picker & AI Copilot" width="100%" />
+      <p align="center"><strong>Custom API Key, Base URL &amp; Model Configurator</strong><br/><sub>OpenAI, OpenRouter, DeepSeek, NVIDIA NIM, Groq, Ollama / LM Studio + live <code>/models</code> search on PC &amp; Android</sub></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="./apps/desktop/public/showcase/hero-cinema.jpg" alt="35mm Film Look Demo" width="100%" />
+      <p align="center"><strong>Built-In 35mm Cinema Plates &amp; Interactive Demo Scenes</strong><br/><sub>One-click demo timelines right inside Vedit's <code>✨ Showcase</code> studio modal</sub></p>
+    </td>
+    <td width="50%">
+      <img src="./apps/desktop/public/showcase/motion-neon.jpg" alt="High-Speed VFX & Motion Presets" width="100%" />
+      <p align="center"><strong>Touch &amp; Mouse Multi-Track NLE Timeline, Speed Ramps &amp; PiP Layouts</strong><br/><sub>Smooth touch &amp; mouse splitters, UI scaling (<code>70%–150%</code>), and native Win32 / Android Immersive Fullscreen</sub></p>
+    </td>
+  </tr>
+</table>
+
+---
+
+## Architecture Overview
+
+<p align="center">
+  <img src="./docs/graphics/architecture.svg" alt="Vedit Studio Architecture" width="100%" />
+</p>
+
+---
+
+## Highlights in `v0.7.0`
+
+- **Native Standalone Android App (`Vedit.apk` — `com.vedit.studio`)**: Signed with APK Signature Scheme `v2 + v3` (`minSdk 26`, `targetSdk 34`, 4-byte zipaligned uncompressed `resources.arsc`). Runs 100% locally on Android phones & tablets with zero external server required — native multi-file Gallery Video/Audio/Photo picker, touch timeline scrubbing & trim handles, 3D LUTs & Split-Wipe, Custom API Key / Base URL / Model Copilot, immersive edge-to-edge fullscreen, and direct video export straight into `Downloads/Vedit/` + Android Share Sheet.
+- **Native Windows Desktop App (`Vedit_installer.exe`)**: 4-Zone Resizable Studio Workspace, universal `Ctrl+K` instant search, hardware-accelerated FFmpeg (`NVENC` / `AMF` / `QSV` / `ProRes` / `HEVC`), in-place NSIS `Update` installer, and 1-click **`🔄 Update`** self-updater.
+- **Interactive Before / After Split-Wipe & Broadcast Scopes**: Compare raw vs. color-graded video directly inside the Player monitor (`⇆ Split Wipe`) alongside live RGB Histograms & IRE Waveforms (`📊 Scopes`).
+- **Bring Your Own API Key, Base URL & AI Model (`⚙ API & Model`)**: Connect OpenAI, OpenRouter, DeepSeek, NVIDIA NIM, Groq, Ollama, LM Studio, or any custom OpenAI-compatible `/v1` endpoint with live `/models` discovery, connection testing, and natural-language AI Copilot execution on both Windows and Android.
+
+---
+
+## Install on Android (`Vedit.apk`)
+
+1. Tap **[Download `Vedit.apk`](https://github.com/lilrepaer-glitch/Vedit/raw/main/releases/Vedit.apk)** directly on your Android phone or tablet (Android 8.0 – Android 15).
+2. Open the downloaded **`Vedit.apk`** file and tap **Install** (allow installation from your browser if prompted the first time).
+3. Launch **Vedit Studio** — works 100% offline immediately, with optional **⚙ API & Model** configuration whenever you want cloud LLM AI editing.
+
+---
+
+## Install / Update on Windows 10 & 11 (`Vedit_installer.exe`)
+
+```powershell
+irm https://raw.githubusercontent.com/lilrepaer-glitch/Vedit/main/vedit-install.ps1 | iex
+```
+
+Or download **`Vedit_installer.exe`** directly from **[GitHub Releases](https://github.com/lilrepaer-glitch/Vedit/releases/latest)**.
+
+---
+
+## Quick Start (Development & Building From Source)
+
+```bash
+npm ci
+npm test                        # Run all 93 end-to-end Vitest tests (including Android APK binary checks)
+npm run build                   # Build TypeScript backend + CLI + MCP
+npm run dist:apk                # Compile & sign standalone Android releases/Vedit.apk
+npm run dev:api                 # Start local Vedit Engine on http://127.0.0.1:47000
+npm run dev:ui                  # Start React + Vite Studio UI on http://localhost:5173
+```
+
+## MCP Server (Claude Desktop / Cursor / AI Agents)
+
+```json
+{
+  "mcpServers": {
+    "vedit": {
+      "command": "node",
+      "args": ["/path/to/Vedit/dist/mcp/stdio.js"],
+      "env": { "VEDIT_PROJECT": ".vedit/project.vedit" }
+    }
+  }
+}
+```
+
+## License
+
+MIT

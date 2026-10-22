@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 
-Booley turns Claude Code or Codex into a capable RTL assistant. It runs the Developer Agent in a sandbox, hands it real EDA tools, and checks its work against your acceptance criteria: passing tests, area and timing budgets, cycle counts, coverage, and more. You design; it does the grunt work.
+Booley turns Claude Code or Codex into a capable RTL assistant. It runs the Developer Agent in a sandbox, hands it real EDA tools, and checks its work against your acceptance criteria: passing tests, area and timing budgets, cycle counts, coverage, and more.
 
 **Website:** [boldaxolotl.github.io/booley](https://boldaxolotl.github.io/booley/) for the full feature tour, videos, and blog.
 
@@ -15,20 +15,21 @@ Booley turns Claude Code or Codex into a capable RTL assistant. It runs the Deve
 
 ## What it does
 
-- **Typed EDA Flows:** `sim`, `lint`, `synth`, and `fpga` each run an EDA job end to end and return pass/fail plus metrics such as area, timing, or cycle counts. The interface stays the same across EDA tools and projects.
-- **Reproducible team environment:** one Docker environment supplies the same pinned EDA stack and agent tooling to everyone on the project.
-- **Sandboxed Developer Agent:** the agent and every command it runs stay inside a container with restricted mounts and network access, so it can work unattended.
-- **Goal Mode:** you set acceptance criteria up front, and Booley checks them in deterministic code against recorded results, not against the agent's claim of success.
-- **Waveform queries:** `bwave` lets the agent answer questions from real simulation traces instead of guessing from RTL.
+- **Typed EDA Flows:** `sim`, `lint`, `synth`, and `fpga` replace per-repo glue Tcl scripts. Each Flow runs an EDA job end to end and returns a structured result: pass/fail plus metrics such as area, timing, or cycle counts, not just raw logs. Flows are built on FuseSoC, and the interface stays the same across tools and projects: `sim` stays `sim` whether it runs Verilator today or Xcelium tomorrow.
+- **Reproducible team environment:** Configure the project once, and its Docker environment supplies the same pinned EDA stack, agent tooling, and system dependencies to everyone on the project ([why Docker](https://github.com/boldaxolotl/Booley/blob/main/docs/internals/WHY.md#why-docker)).
+- **One VS Code window:** RTL work is usually scattered across editors, tool-specific commands, build environments, logs, and waveform viewers. Booley puts RTL, agent sessions, terminals, EDA runs, waveforms, and the Booley Dashboard side by side in one VS Code window.
+- **Sandboxed Developer Agent:** Booley treats the agent like a talented junior engineer. It can write RTL and testbenches, but it is inexperienced with EDA tools, prone to questionable design decisions, and too risky to give unrestricted host access. So the agent and every command it runs stay inside a Docker container with restricted mounts and network access, and its work goes through explicit specifications, automated checks, and human review. That lets it work unattended.
+- **Goal Mode:** You set mandatory Goals up front, such as `SYNTH:synth_fifo (area increase ≤ 10%)` or `COVERAGE:sim_fifo (line ≥ 90%, tests all)`. Goals cover passing tests, lint, area, timing, cycle counts, coverage, mutation testing, and code review. Booley checks each one in deterministic code against fresh recorded Flow results, not against the agent's claim of success ([details](https://github.com/boldaxolotl/Booley/blob/main/docs/user/USAGE.md#goal-mode)).
+- **Waveform queries:** `bwave` lets the agent find, sample, snapshot, and measure real simulation traces. Ask "When did `data_o` equal `0xDEADBEEF`?" and it answers from simulation data instead of guessing from RTL.
 
-The [website](https://boldaxolotl.github.io/booley/#features) explains each feature in full; [FEATURES.md](https://github.com/boldaxolotl/Booley/blob/main/docs/user/FEATURES.md) is the complete reference.
+[FEATURES.md](https://github.com/boldaxolotl/Booley/blob/main/docs/user/FEATURES.md) is the complete feature reference.
 
 ## Quick Start
 
 Three ways in, ordered by how much you want to invest:
 
 1. **[Level 1: Watch](#level-1-watch).** See an engineer drive Booley on a demo project, start to finish. Zero setup.
-2. **[Level 2: Try the demo yourself](#level-2-try-the-demo-yourself).** Clone the configured demo, enter Goal Mode with `/booley-goal`, and run your own change.
+2. **[Level 2: Try the demo yourself](#level-2-try-the-demo-yourself).** Clone the configured demo, open it in VS Code, and type your first request to the agent.
 3. **[Level 3: Use it on your own project](#level-3-use-it-on-your-own-project).** Full integration on your own RTL.
 
 ### Level 1: Watch

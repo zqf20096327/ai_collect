@@ -17,8 +17,6 @@ Are you a college student or a working professional looking for resources to lea
 
 When I was in college, I missed a lot of opportunities like hackathons, conferences, internships, workshops and many global events due to lack of awareness. I don't want the emerging developers to suffer the same as me. Hence, I and a bunch of other developers around have collected a list of resources for students. If you are in college, a college graduate, or just starting out as a developer, you should definitely check it out!
 
-![Image](res/a2z.png)
-
 *Image credits: Google*
 
 [AI Tools and Resources](#ai-tools-and-resources)
@@ -1524,4 +1522,5 @@ When I was in college, I missed a lot of opportunities like hackathons, conferen
 3. [Facebook Developer Circle Scholarship Program - DataScience/Frontend Dev](http://bit.ly/DevCTrainingInterest1)
 4. [Coding Bootcamp Scholarships - Course Report](https://www.coursereport.com/blog/the-definitive-list-of-programming-bootcamp-scholarships)
 5. [Apple WWDC Scholarship](https://developer.apple.com/wwdc19/scholarships/) Application Deadline - **Mid-April**
-6. [Technology Scholarship Program - Udacity](https://www.udacity.com/bertelsmann-data-scholarships) Application dead
+6. [Technology Scholarship Program - Udacity](https://www.udacity.com/bertelsmann-data-scholarships) Application deadline - **November 6th, 2019**
+7. [Goldman Sachs Global Scholarship and Mentorship Program](https://www.iie.org/Progra

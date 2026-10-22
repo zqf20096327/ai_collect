@@ -32,6 +32,7 @@
 | **Claude 按分组选通道** | `cc` 分组只接受官方客户端，这些 Key 的 Claude 请求由本机 Claude Code CLI 发出；`cc-sale`、`cc-expensive`、`claude-officially` 等分组走插件内 HTTP。两条通道都由 DSH 执行工具、审批权限，计划模式、附件和完整对话历史完全一致 |
 | **网页搜索可走 PackyCode** | 可选：DSH 的 `web_search` 改用 PackyCode 搜索，后端在 DeepSeek 与 GPT 之间切换；可只对 PackyCode 模型生效 |
 | **图片生成与编辑** | 独立图片 Key，支持 GPT Image 2 / 2.5 Flare / 2.5 Sunburst、型号与质量设置、参考图编辑和 PNG 原图保存；已通过网关生图与编辑实测 |
+| **自动审查可换模型** | 开启 DSH 自带的「自动授权审查」后，权限菜单里的「自动审查」可改用 jev-latest 或 DeepSeek Flash 审查每次工具调用，审查规则和处理方式保持官方原样 |
 | **凭据不离开本机** | Key 只存在 DSH 凭据文件里。浏览器只能看到备注、状态和余额，拿不到 Key |
 
 <img width="774" height="455" alt="截屏2026-10-15 10 34 28" src="https://github.com/user-attachments/assets/060c4192-00ea-40e6-9b85-bbec605b5c31" />
@@ -47,10 +48,10 @@
 打开桌面应用的**插件**页，点击**添加插件**，在**包名或地址**中填入**带版本号**的包名：
 
 ```text
-dsh-packycode-api@1.3.7
+dsh-packycode-api@1.3.9
 ```
 
-在**安装源**中选择**官方源**，然后点击**安装**。`1.3.7` 是写这份说明时的最新版，当前最新版本号以 [npm 页面](https://www.npmjs.com/package/dsh-packycode-api) 为准。
+在**安装源**中选择**官方源**，然后点击**安装**。`1.3.9` 是写这份说明时的最新版，当前最新版本号以 [npm 页面](https://www.npmjs.com/package/dsh-packycode-api) 为准。
 
 > **一定要带版本号。** 只填 `dsh-packycode-api` 时，安装前的提示显示的是 npm 上的最新版，但 DSH 自带的 pnpm 默认只安装发布满 24 小时的版本，实际装上的可能是好几个版本之前的旧版，而安装提示里看不出这一点。填写精确版本时，pnpm 会直接安装这个版本，并自动把它加入 profile 的 `minimumReleaseAgeExclude`。装好后可以在 **设置 → PackyCode → 插件版本** 核对「当前版本」。
 
@@ -71,7 +72,7 @@ dsh-packycode-api@1.3.7
 
 桌面应用的**插件**页可以看到已安装状态与版本，也可以在那里启用、停用或卸载。
 
-**仅用于非 desktop profile：** `dsh plugin --profile <name> add dsh-packycode-api@1.3.7`。不要对 `desktop` 使用它 —— CLI 会直接拒绝（`profile "desktop" is managed exclusively by the Electron application`）。
+**仅用于非 desktop profile：** `dsh plugin --profile <name> add dsh-packycode-api@1.3.9`。不要对 `desktop` 使用它 —— CLI 会直接拒绝（`profile "desktop" is managed exclusively by the Electron application`）。
 
 本地开发要加 `link:` 前缀：`dsh plugin --profile <name> add link:/path/to/dsh-packycode-api`。**不要直接写路径（或 `file:`）** —— 那样的安装会把整个仓库目录（连同 `node_modules`）复制进 profile，之后它会在 profile 内部挡住 DSH 自带的包，插件看起来像没装，见「常见问题」。已经那样装过的话，先卸载再按上面的方式重装。
 
@@ -166,6 +167,53 @@ Claude 与其它模型一样，通过 DSH 的 `packycode_image_generate` 工具�
 
 2026-10-15 实测：三个型号均通过 `low` 生图与编辑；Sunburst 额外通过 `xhigh`、`max` 生图与编辑，两档响应的 quality 均与请求一致。合计 10 次成功请求，无重试，全部返回 1024×1024 PNG；编辑正确改色并保留构图。xhigh 生成/编辑约 43/48 秒，max 约 84/91 秒。这是已构建图片 client 的网关验证；本轮未新建 DSH 对话验证完整聊天流程。完整范围和记录见[协议核查与网关实测](docs/research/image-api.md)。
 
+### 自动审查
+
+DSH 自带一个实验性插件「自动授权审查」，默认关闭。开启后，输入框下方的权限菜单（「仅可查看 / 工作区内修改 / 完全权限」）会多出一项 **自动审查**（带 EXP 标记）。选了自动审查的会话里，每次工具调用前都先由模型审查：
+
+- 放行的直接执行，不使用沙箱。
+- 拒绝的改为请你批准；在子代理里则直接拒绝。
+- 审查本身失败时，这次调用不执行。
+
+官方默认用当前对话的模型审查。本插件不改官方的审查逻辑，只替换审查模型。在 **设置 → PackyCode → 自动审查** 里选：
+
+| 审查模型 | 说明 | 需要的分组 |
+| --- | --- | --- |
+| jev-latest（默认） | TypeSafe 的决策分类模型，一次约 0.4 秒，只按输入计费；拒绝时只给出风险等级 | `typesafe-officially` |
+| DeepSeek Flash | 一次约 2 秒，拒绝时写明原因 | `deepseek-officially` / `deepseek-sale` |
+| 跟随对话模型 | 不接管，按官方默认审查 | — |
+
+使用步骤：
+
+1. 在 DSH 左侧「插件」页开启「自动授权审查」。
+2. 在输入框的权限菜单里选「自动审查」，确认风险提示。
+3. 在「设置 → PackyCode → 自动审查」选审查模型。
+
+卡片会显示：官方插件是否已开启、本插件处理过多少次审查（放行 / 拒绝 / 失败）和最近一次结果。如果没有 Key 能调用所选模型，卡片会提示。
+
+<details>
+<summary>怎么接管的</summary>
+
+- 官方审查器每次审查发出一个模型请求：
+  - 系统提示是它固定的 `REVIEW_POLICY`；
+  - 用户消息是四段 JSON：ENVIRONMENT、PROJECT_INSTRUCTIONS、FILTERED_HISTORY、PENDING_ACTION；
+  - 要求返回一个 `{"risk","decision","reason"?}` 对象。
+- 所有模型请求都经过 DSH 的 `llm/stream` 流水线。本插件在这里只认这一种请求，对话等其它请求原样放过。
+- **DeepSeek Flash**：同一个请求原样改发到 PackyCode 线路，结果仍由官方解析。
+- **jev-latest**：它写不出 JSON。插件把四段内容和官方规则原文作为 System One 的 state，问两个问题：风险等级，以及你是否明确要求过这个操作。
+  - 放行条件：「低风险，或中风险且你要求过」的概率不低于 0.6，且高风险概率低于 0.2。
+  - 拒绝时，理由里写明是 jev-latest 判定的中风险或高风险。
+  - jev-latest 上下文较小，过长的历史会从最旧的开始截掉，你的指令优先保留。
+- 看什么、按什么规则判、放行或拒绝后怎么处理，都由官方插件决定。官方对审查失败（例如 Key 调不了 jev-latest）的处理是拒绝这次调用，本插件不改变这一点。
+- 实测方式：37 个场景，用官方的请求格式和官方解析器。其中 35 个有明确答案，两个模型都全部符合预期。
+  - jev-latest 中位 0.35 秒，DeepSeek Flash 中位 2.3 秒。
+- 如果以后 DSH 改了审查请求的格式：
+  - 认不出这个请求时，原样放过，由对话模型审查；
+  - jev-latest 读不懂新格式时，这次审查失败，卡片计数里会看到。
+- 菜单里「自动审查」的说明写的是「由同一模型审查」，那是 DSH 的文字。选了 jev-latest 或 DeepSeek Flash 时，实际由所选模型审查。
+
+</details>
+
 ## 模型与分组
 
 | 模型 | 怎么调用 | 推理档位 | 适合的令牌分组 |
@@ -182,6 +230,8 @@ Claude 与其它模型一样，通过 DSH 的 `packycode_image_generate` 工具�
 | `claude-haiku-5-5` | 同上；Claude 会话标题固定走它 | 同上 | 同上 |
 
 列表里看得到模型，不代表当前令牌分组一定放行。换分组时不要把对应分组一起去掉。
+
+`jev-latest`（TypeSafe Jev）不在模型选择器里：它是只回答分类问题的决策模型，不能对话，只用于[自动审查](#自动审查)。插件在宿主侧直接调用 `/v1/systemone`，需要 Key 在 `typesafe-officially` 分组；「账户与 Key」里每个 Key 的「Jev」一项会显示能否使用。
 
 当前目录中的 10 个模型都声明了文字和图像输入。DeepSeek Flash 的识图能力按 [官方图像理解文档](https://api-docs.deepseek.com/zh-cn/guides/vision/) 配置；图片通过 DSH 附件服务读取，再随 Responses 请求发送。
 
@@ -216,9 +266,9 @@ DeepSeek Flash 走网关的 Responses 接口（`/api/pricing` 列出 `openai-res
 
 ## 更新与卸载
 
-> **从 1.3.2 或更早版本升级：** 请在插件页填写 `dsh-packycode-api@1.3.7` 安装，不要点旧版设置页里的「更新插件」。旧按钮安装时会绕过 pnpm 的发布冷却期：装到的版本如果发布还不满 24 小时，这个 profile 在它满 24 小时之前就装不了其他插件。装好并重启后，按钮就换成了修好的版本，以后直接点即可。
+> **从 1.3.2 或更早版本升级：** 请在插件页填写 `dsh-packycode-api@1.3.9` 安装，不要点旧版设置页里的「更新插件」。旧按钮安装时会绕过 pnpm 的发布冷却期：装到的版本如果发布还不满 24 小时，这个 profile 在它满 24 小时之前就装不了其他插件。装好并重启后，按钮就换成了修好的版本，以后直接点即可。
 
-**更新：** 打开 **设置 → PackyCode**，有新版本时点「更新插件」。它会在当前 profile 目录里用 DSH 自带的 pnpm 安装精确版本，并读回 `package.json` 确认版本落地。安装遵守 pnpm 的发布冷却策略，不会绕过它：默认情况下 pnpm 会直接装上这个版本，并把它记进 profile 的 `minimumReleaseAgeExclude`；如果你给 pnpm 配了更严格的策略，按钮会提示什么时候可以更新。本地 `link:` 开发安装不会出现这个按钮。完成后完全退出并重新打开桌面应用。只刷新页面不会重载 Host。也可以在**插件**页重新安装，同样要填写带版本号的包名（例如 `dsh-packycode-api@1.3.7`），否则装上的可能是发布满 24 小时的旧版。
+**更新：** 打开 **设置 → PackyCode**，有新版本时点「更新插件」。它会在当前 profile 目录里用 DSH 自带的 pnpm 安装精确版本，并读回 `package.json` 确认版本落地。安装遵守 pnpm 的发布冷却策略，不会绕过它：默认情况下 pnpm 会直接装上这个版本，并把它记进 profile 的 `minimumReleaseAgeExclude`；如果你给 pnpm 配了更严格的策略，按钮会提示什么时候可以更新。新版本号是从 npm 读到的，pnpm 却从 profile 配置的安装源下载：刚发布的版本，安装源（尤其是国内镜像）可能还没同步到，这时按钮会提示过几分钟再更新；连不上安装源时，会提示检查网络或代理。本地 `link:` 开发安装不会出现这个按钮。完成后完全退出并重新打开桌面应用。只刷新页面不会重载 Host。也可以在**插件**页重新安装，同样要填写带版本号的包名（例如 `dsh-packycode-api@1.3.9`），否则装上的可能是发布满 24 小时的旧版。
 
 **从本地路径安装切回官方源时，必须先卸载。** 「更新」是 `pnpm add`，它只重写包目录里的文件，不会删除更早一次本地路径安装留在包目录内的 `node_modules`；那份旧依赖会继续挡住 DSH 自带的包，插件行加载失败且看不出原因。「卸载」执行的是 `pnpm remove`，会删掉整个包目录，重装才是干净的。用 `node scripts/install-check.mjs` 可以确认当前 profile 是否处于这个状态。
 
@@ -234,7 +284,7 @@ ls ~/.dsh/profiles/desktop/node_modules/dsh-packycode-api/node_modules
 
 有输出就是残留：从 npm 安装的包不会自带 `node_modules`，这一份通常来自更早一次「本地路径」安装（`file:` 或直接写路径，而不是 `link:`）。它位于 profile 目录内部，而 DSH 解析插件导入时优先使用 profile 内的副本，所以插件拿到的仍是那份旧依赖 —— 例如 `@deepseek-ai/schemastery` 3.18.2 没有 `Schema.volatile()`，模块在导入阶段就抛错。导入失败时 Loader 不会为这一行创建 fiber，客户端 bundle 也不会被组合，于是模型路由、RPC 通道和设置页全都不会出现。
 
-修复：到**插件**页**卸载**本插件，再用带版本号的包名重新**安装**（例如 `dsh-packycode-api@1.3.7`），然后完全退出并重新打开桌面应用。卸载执行的是 `pnpm remove`，会删掉整个包目录；直接重装或点「更新」只重写文件，不会清掉这份残留。也可以手动删掉上面那个 `node_modules` 再重启。
+修复：到**插件**页**卸载**本插件，再用带版本号的包名重新**安装**（例如 `dsh-packycode-api@1.3.9`），然后完全退出并重新打开桌面应用。卸载执行的是 `pnpm remove`，会删掉整个包目录；直接重装或点「更新」只重写文件，不会清掉这份残留。也可以手动删掉上面那个 `node_modules` 再重启。
 
 **首次安装后，设置页每张卡片都显示 `transport failure for /packycode-api/…: HTTP 405`？** 实际装上的是 1.1.6 或更早的版本，通常是因为安装时只填了包名：安装提示显示的是最新版，pnpm 实际装的却是发布满 24 小时的旧版（见「安装插件」）。这些旧版要等 DSH 重启、重建它的 `connection` 服务之后，才能注册设置通道。所以首次安装后 `/packycode-api` 通道还不存在，请求落到静态页面，返回 405；模型路由和设置页本身照常加载。1.1.7 起首次安装不需要重启。先确认装上的版本：
 

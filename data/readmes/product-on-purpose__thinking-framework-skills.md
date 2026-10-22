@@ -1,6 +1,6 @@
 <a id="readme-top"></a>
 
-# Thinking Framework Skills
+# [Thinking Framework Skills](https://github.com/product-on-purpose/thinking-framework-skills)
 
 **An evidence-graded library of agent-executable thinking-method skills.**
 
@@ -462,13 +462,13 @@ Two Gold checks are **not applicable** here, and the library says so rather than
 
 ## 📊 Project status
 
-`v0.18.5` - **public and growing.** The library grows additively, and evidence grades are refreshed as the research does. User-facing highlights live in [`RELEASE-NOTES.md`](RELEASE-NOTES.md); the full technical history is in [`CHANGELOG.md`](CHANGELOG.md).
+`v0.18.6` - **public and growing.** The library grows additively, and evidence grades are refreshed as the research does. User-facing highlights live in [`RELEASE-NOTES.md`](RELEASE-NOTES.md); the full technical history is in [`CHANGELOG.md`](CHANGELOG.md).
 
 ### At a glance
 
 |  |  |
 |---|---|
-| **Current version** | [v0.18.5](https://github.com/product-on-purpose/thinking-framework-skills/releases/tag/v0.18.5) |
+| **Current version** | [v0.18.6](https://github.com/product-on-purpose/thinking-framework-skills/releases/tag/v0.18.6) |
 | **Frameworks** | 63, across 12 cognitive-operation families (56 core + 7 contested lenses) |
 | **Tools** | 4 meta-skills (a router, two applicators, the research engine) |
 | **Recipes** | 9 (skill chains shipped as workflow components), each runnable as a slash command |
@@ -507,7 +507,7 @@ thinking-framework-skills/
 | Path | What's in it |
 |---|---|
 | [`skills/`](skills/) | All 63 frameworks + 4 tools, each a self-contained unit (the site renders from these) |
-| [`frameworks/`](frameworks/) | `registry.mjs` (the single-source-of-truth catalog of 135 evaluated methods) + per-method dossiers |
+| [`frameworks/`](frameworks/) | `registry.mjs` (the single-source-of-truth catalog of 150 evaluated methods) + per-method dossiers |
 | [`_workflows/`](_workflows/) | The 9 recipes as workflow components - ordered skill chains with handoffs |
 | [`scripts/`](scripts/) | Generators (site, manifests, name-safety set) and [`check.mjs`](scripts/check.mjs), the conformance gate |
 | [`docs/`](docs/) | [Getting started](docs/getting-started.md), [architecture](docs/architecture.md), [concepts](docs/concepts.md), [contributing](docs/contributing.md), [conformance](docs/conformance.md) |
@@ -522,6 +522,7 @@ Full detail in [`CHANGELOG.md`](CHANGELOG.md); curated highlights in [`RELEASE-N
 
 | Version | Highlights |
 |---|---|
+| [**0.18.6**](https://github.com/product-on-purpose/thinking-framework-skills/releases/tag/v0.18.6) | Patch. The last two deferred source checks resolved: the issue-tree page drops an unsourced omission claim and the pyramid-principle page reports mixed comprehension evidence. The premortem's confidence effect is graded M in all six places that stated it, including the installed skill. Confirm-note baseline 2 to 0. No governing-tier changes; catalog stays 56 core + 7 contested. |
 | [**0.18.5**](https://github.com/product-on-purpose/thinking-framework-skills/releases/tag/v0.18.5) | Patch. Nine deferred source checks done against the sources: the premortem study measured confidence, not calibration, and a letter year, a misquote, three titles and a co-author's name are corrected. Also two research tools, a CrossRef retraction sweep and two registry links fixed. Confirm-note baseline 11 to 2. No tier changes; catalog stays 56 core + 7 contested. |
 | [**0.18.4**](https://github.com/product-on-purpose/thinking-framework-skills/releases/tag/v0.18.4) | Patch. The evidence decisions the two audits left open: a retracted 2002 study flagged on the pre-commitment page, four checked caveats (natural frequencies, WOOP, premortem, calibration feedback), the premortem "30%" wording corrected, three citations fixed, four eval answer keys widened, and a gate ratchet on deferred "confirm before a public claim" notes. No tier changes; catalog stays 56 core + 7 contested. |
 | [**0.18.3**](https://github.com/product-on-purpose/thinking-framework-skills/releases/tag/v0.18.3) | Patch. A second audit checked the other 199 published figures in the skill and library dossiers and corrected 21: wrong authors in two skills, theory papers cited as effect sizes, a 29% that a corrigendum made 19%, and CliftonStrengths figures re-credited to the right Gallup report. No tier changes; catalog stays 56 core + 7 contested. |

@@ -16,11 +16,11 @@
 <!-- recent-features:start -->
 ## 近期新增与改进（最近 5 项）
 
+- **2.1.1** · 压缩检查点保留可信提交的用户原文，减少任务参数丢失；草稿按会话隔离，不恢复旧授权或登录态。
+- **2.1.1** · Windows/Linux 2.1.1补齐同源功能与独立更新签名；Linux同时提供Debian和AppImage，各平台特殊引擎不随应用隐式升级。
 - **2.0.8** · 模型设置保存与登记统一路径校验，普通保存不误停独立引擎；不放宽外部目录授权。
 - **2.0.8** · 新增网页CTF基础入口、任务内登录态及分页证据/截图导出；完整隔离浏览器与模型CTF闭环尚未验收。
 - **2.0.7** · Windows/Linux 2.0.7补齐同源功能与独立更新签名；Linux同时提供Debian和AppImage，各平台特殊引擎不随应用隐式升级。
-- **2.0.7** · 网络安全工作台补齐授权渗透：显式逐目标授权后在隔离沙箱内进行服务识别、注入探测、TLS审计、目录发现与自写PoC，逐次确认、出口锁死授权端口。
-- **2.0.7** · 离线漏洞库下载实时显示速度与进度，完成回执明示缓存复用与文件大小；安全检查报告可原文导出并逐字节校验，本地模型已实测独立完成调查、核对与复测全链路。
 <!-- recent-features:end -->
 
 <!-- windows-performance:start -->
@@ -53,26 +53,27 @@
 视频演示的是拍摄时的版本；安装包与当前功能以本页正式发行信息为准。视频为中文讲解。
 <!-- evergreen:demos:end -->
 
-## 最新下载：Windows 2.0.8 · Mac 2.0.7 · Linux 2.0.8
+## 最新下载：Windows 2.1.1 · Mac 2.1.1 · Linux 2.1.1
 
-Mac 2.0.7补齐授权渗透完整线：逐目标显式授权（单地址、最多8个端口、1–60分钟、内网单独确认），隔离沙箱内进行服务识别、注入探测（限只读技术）、TLS审计、目录发现与自写PoC——逐次原生确认、每次全新容器、出口锁死授权端口、破坏性类别一律拒绝。离线漏洞库下载实时显示速度与进度；安全检查报告可原文导出并逐字节校验。本机实测本地模型独立完成虚构商城越权调查、独立凭证核对、修复后复测与报告导出。此前先发布Mac，本次另补Windows/Linux。[安全能力与限制](SECURITY-CAPABILITIES.md) · [2.0.7验收记录](https://github.com/HackerChi-Hub/localbrain/blob/main/docs/RELEASE_2.0.7_MAC_VERIFICATION.md)。
+Mac 2.1.1 修复压缩后用户原文丢失与会话草稿串用：压缩时在语义摘要之外保留你给出的目标、账户、参数与限制，网页内容与工具回执不能冒充你的要求；草稿与安全任务标记随所属对话，删除后丢弃。单轮时长改为整轮硬上限并分别报告预填/生成耗时；网页证据支持控件链接目标、正文续读区间、核验失败分因且不透露候选对错；授权中途到期明确要求停手；本地清理入口整批预检并核对保护登记。真实 HTB 握手仍未建立：本轮实测该网络到不了平台边缘（10 个节点与 TCP/UDP 配置均无服务端回应），不能据此排除平台或账号原因；原生批准、含待办操作的重启恢复与 Windows/Linux 本轮实收未完成。Windows 2.0.8 与 Linux 2.0.8 保持原版本。[安全能力与限制](SECURITY-CAPABILITIES.md) · [本轮验收记录](https://github.com/HackerChi-Hub/localbrain/blob/main/docs/RELEASE_2.1.1_MAC_VERIFICATION.md)。
 
 Mac 1.9.9修复下载终态及Sushi启动错误提示，包括状态刷新遮蔽内存原因的问题。最终安装版已验证真实预检拒绝、恢复32K后完整常驻加载与中文响应；同权重常驻／32 GiB精确SSD分别驻留44.20／31.21 GiB。模式手动选择，保存并重启生效，不自动降级。见[最终安装与实测范围](VERIFICATION-1.9.9-MAC.md)。下方1.9.8段落保留其当时验收边界。
 
 
 
-Windows/Linux 2.0.8安装包已构建验收：Windows原生聊天、工具写入与压缩续答通过，已安装且配置哈希不变；Linux Debian与AppImage的资源、包内DSH和WSL2启动检查通过，Debian已安装。Linux未做裸机桌面/GPU验收，安全隔离须本平台反向验证通过。Mac 2.0.7既有资产保留。见[验收与限制](VERIFICATION-2.0.8-WIN-LINUX.md)。下方候选和旧版本段落均为历史状态。
-
 
 2.0.8新增模型设置路径校验修复与网页CTF基础。网页传输6项在Windows/Linux通过，但生产隔离浏览器、原生批准和真实模型CTF完整链路仍未验收；须本平台隔离验证通过才能执行。[机制与限制](SECURITY-WEB-CTF.md)。
 
+
+Windows/Linux 2.1.1安装包已构建验收：Windows原生聊天、工具写入与压缩续答通过，已安装且配置哈希不变；Linux Debian与AppImage的资源、包内DSH和WSL2启动检查通过，Debian已安装。Linux未做裸机桌面/GPU验收，安全隔离须本平台反向验证通过。Mac 2.1.1既有资产保留。见[验收与限制](VERIFICATION-2.1.1-WIN-LINUX.md)。下方候选和旧版本段落均为历史状态。
+
 | 平台 | 安装包与状态 |
 | --- | --- |
-| Apple Silicon Mac 2.0.7 | [DMG](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.0.7/LocalBrain_2.0.7_aarch64.dmg) · 已安装；原生界面回归、报告原文逐字节复核与授权商城完整闭环实测通过。严格签名与独立更新签名通过，尚未 Apple 公证 |
-| Windows x64 | [安装程序](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.0.8/LocalBrain_2.0.8_x64-setup.exe) · 2.0.8已安装；原生聊天、工具及压缩续答通过，更新签名通过，非Authenticode |
-| Linux x64 | [Debian](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.0.8/LocalBrain_2.0.8_amd64.deb) · [AppImage](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.0.8/LocalBrain_2.0.8_amd64.AppImage) · 2.0.8，包内DSH与Ubuntu22.04 WSL2+Xvfb启动核对通过；Debian已安装，预览支持，未代替裸机/GPU验收 |
+| Apple Silicon Mac 2.1.1 | [DMG](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.1.1/LocalBrain_2.1.1_aarch64.dmg) · 已安装；四道本地闸与包内代码/更新签名通过；压缩保留原文、草稿隔离、整轮时长与网页证据已实测。授权商城为指定任务工具链验证（不是无提示盲测）；原生批准、含待办重启恢复与真实 HTB 未验收。尚未 Apple 公证 |
+| Windows x64 | [安装程序](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.1.1/LocalBrain_2.1.1_x64-setup.exe) · 2.1.1已安装；原生聊天、工具及压缩续答通过，更新签名通过，非Authenticode |
+| Linux x64 | [Debian](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.1.1/LocalBrain_2.1.1_amd64.deb) · [AppImage](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.1.1/LocalBrain_2.1.1_amd64.AppImage) · 2.1.1，包内DSH与Ubuntu22.04 WSL2+Xvfb启动核对通过；Debian已安装，预览支持，未代替裸机/GPU验收 |
 
-[2.0.8 发行说明及校验文件](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.0.8)。Mac 拖入应用程序；Debian/Ubuntu 执行 `sudo apt install ./LocalBrain_2.0.8_amd64.deb`。旧发行保留。
+[2.1.1 发行说明及校验文件](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.1.1)。Mac 拖入应用程序；Debian/Ubuntu 执行 `sudo apt install ./LocalBrain_2.1.1_amd64.deb`。旧发行保留。
 
 以下Windows 2.0.1及更早段落保留其发布时的历史状态；当前平台版本以上方下载表为准。
 
@@ -134,10 +135,10 @@ Mac支持已集成MLX、Metal llama.cpp、Splash与Prism；Windows使用适配ll
 
 | 文件 | 散列 |
 | --- | --- |
-| Mac DMG | `1d2914d82a9ba251cdff69f77dd86f7d412a6826d12019e08374a049b1706aa8` |
-| Windows安装程序 | `06f8bbb84cf538bfb9e5b5d9ad0623b343a6d09eb14ea94b1b9e7acb29e4f066` |
-| Linux AppImage | `c67b9bbb2255806df557459e14877ddace203052f5b4f94e32b8ee7a2160698e` |
-| Linux Debian包 | `4cfca85b29dc659f04ef2a9813fbf3d5ff055bcaf080525255c4aa62d0c7f0c9` |
+| Mac DMG | `20f44469c1ef3804657017965de199fbc0a37f3a484c0c97edecff29ae1aea72` |
+| Windows安装程序 | `eb8065515b4b40b8966384e0ecc5046e93ee26be5b44e2dad4173545239deb31` |
+| Linux AppImage | `247ac5202fa49db24e7e181411864e133ab1e77ba350cd7e247f14fa6051db99` |
+| Linux Debian包 | `b560fa612b17b05e95078f3c7edc658c9100883d9319859bc2cb796dcce39276` |
 
 本仓提供安装包与说明，不是开发源码目录。专有软件，© HyphenTech · 黑粉科技。
 

@@ -1,0 +1,153 @@
+# VibeWand
+
+[![VibeWand: one wand to command them all. Watch the three-minute film](docs/images/cover-en.jpg)](https://youtu.be/8eKGw3LD_aI)
+
+<p align="center"><a href="https://youtu.be/8eKGw3LD_aI">▶ Watch the three-minute film</a></p>
+
+A dial, a game controller, a remote or just the keyboard, plus a spoken sentence, for driving the AI tools on your Mac: Codex, Claude, DeepSeek Harness and WorkBuddy, Claude Code, Codex and OpenCode in a terminal, and browsers, WeChat and Feishu.
+
+[简体中文](README.zh-CN.md) · [Get started](docs/getting-started.en.md) · [Apps](#apps) · [Computer use](#computer-use) · [Documentation](docs/README.md) · [Project site](https://vibewand.xuhao1.me)
+
+<table align="center">
+<tr>
+<td align="center"><img src="assets/apps/codex.png" width="48" alt=""><br><sub>Codex</sub></td>
+<td align="center"><img src="assets/apps/claude.png" width="48" alt=""><br><sub>Claude</sub></td>
+<td align="center"><img src="assets/apps/deepseek-harness.png" width="48" alt=""><br><sub>DeepSeek<br>Harness</sub></td>
+<td align="center"><img src="assets/apps/workbuddy.png" width="48" alt=""><br><sub>WorkBuddy</sub></td>
+<td align="center"><img src="assets/apps/iterm2.png" width="48" alt=""><br><sub>iTerm2</sub></td>
+<td align="center"><img src="assets/apps/safari.png" width="48" alt=""><br><sub>Safari</sub></td>
+<td align="center"><img src="assets/apps/chrome.png" width="48" alt=""><br><sub>Chrome</sub></td>
+<td align="center"><img src="assets/apps/wechat.png" width="48" alt=""><br><sub>WeChat</sub></td>
+<td align="center"><img src="assets/apps/feishu.png" width="48" alt=""><br><sub>Feishu</sub></td>
+</tr>
+</table>
+
+Most of vibe coding is not typing. You read a reply, flip between chats, change the model, say a sentence, and wait. One hand is enough for all of that. VibeWand puts it on a dial or a controller so you can lean back while you work.
+
+The tools keep multiplying, and each has its own chat list, model menu and shortcuts. VibeWand replaces none of them. It puts them behind one set of motions: the same dial reads, the same button listens and the same press switches in every app, and the work is still done by the software you chose. What is unified is the way in, not the features. That is what "One wand to command them all" means.
+
+## What it does
+
+![Illustration: read with a dial, edit and dictate with a controller, confirm with a remote](docs/images/workflow-scenes.png)
+
+- **Read.** Turn the dial or push a stick to scroll the conversation. Once the draft has text in it, the same motion moves the cursor instead.
+- **Speak.** Hold the microphone button and talk. When you let go, the text is in the composer, and nothing is sent for you. Use the built-in recognition, which records from the microphone of the device you are holding: macOS dictation or your own speech API, both of which take your own vocabulary, or SenseVoice running on this Mac with no key and no network. Or keep using an input method such as Typeless. With vocabulary learning on (it is off by default), the words you correct in the field afterwards go into your vocabulary.
+- **Switch.** Press once for the chat list, turn to choose, press to confirm. Long-press for reasoning effort and models. Double-press to switch macOS apps.
+- **Remap.** Every button's press, double press and long press can be reassigned in Settings, and each device keeps its own layout.
+- **Command.** Hold the command key and say “switch to the Codex chat about the microphone” or “open the Runtime.swift tab”, and it finds and opens it for you; “set the effort to the lowest” works the menu that Codex's model button opens. With Alibaba's voice service, its model hears the command itself, acts, and answers you aloud; the voice is yours to pick, a man's, a woman's or a dialect, and “switch to a man's voice” does it too. A command you spoke can be played back as you said it. The model is yours to choose: DeepSeek, OpenAI, Anthropic, a local model or any compatible address. It works as soon as one is set up, and can instead run as a plugin of a DeepSeek Harness you installed yourself, where each conversation can be read and models are set up; see [Command mode](docs/command-mode.en.md).
+
+<p align="center"><img src="docs/images/overlay-v0112-screenshot-en.png" width="500" alt="Actual VibeWand 0.11.2 overlay and speech bar in Demo mode"></p>
+
+*Actual VibeWand 0.11.2 window, captured in Demo mode.*
+
+A floating overlay shows what each button will do right now. It collapses into a thin bar when you want it out of the way, and the button that expands and collapses it never moves.
+
+## Devices
+
+| Type | Connection | Tested with |
+| --- | --- | --- |
+| **VibeKey**<br><img src="assets/device/controller.png" height="110" alt="VibeKey dial controller"> | USB receiver, built-in protocol | Ulanzi VibeKey (AU05) |
+| **Controller**<br><img src="assets/device/gamepad.png" height="90" alt="Game controller"> | USB or Bluetooth, detected by macOS | Sony DualSense (PS5) |
+| **Remote**<br><img src="assets/device/remote.png" height="110" alt="Remote control"> | Needs an imported HID profile | Xiaomi Bluetooth Remote 2 Pro |
+| **Keyboard** | No device needed: six key combinations stand for the buttons, and any key, a custom keyboard's extra keys included, is recorded by pressing it | Key events posted into a test window; a physical custom keyboard has not been tried |
+
+Several devices can stay connected at once. Press a button on one and the overlay and button layout follow it; there is nothing to switch in Settings. A Bluetooth controller powers itself off after about ten idle minutes, so Settings has a "Keep the controller awake" switch.
+
+Forgot what a button does? Bring up the controls card at any time: the device in the middle, each control with what it does right now, and whatever you press lights up without reaching the app. It draws your own layout, so a button you changed shows what you gave it.
+
+<p align="center"><img src="docs/images/controls-card-v0102-en.jpg" width="760" alt="The controls card of VibeWand 0.10.2 with the controller's default layout, rendered off screen"></p>
+
+<p align="center"><sub>The controls card of VibeWand 0.10.2, the controller's default layout. Rendered off screen from the app's own view, with no device connected.</sub></p>
+
+Per-model details are in the [hardware guide](docs/device-templates.en.md).
+
+**VibeWand is an independent project. It is not affiliated with, sponsored by or endorsed by Ulanzi, Sony, Xiaomi or any other device maker. Product names and trademarks belong to their owners.**
+
+## Apps
+
+| Program | Scroll and read | Switch chats | Change model | Set reasoning effort | Dictate |
+| --- | :-: | :-: | :-: | :-: | :-: |
+| <img src="assets/apps/codex.png" width="20" align="top" alt=""> Codex | ✓ | ✓ | ✓ | ✓ | ✓ |
+| <img src="assets/apps/claude.png" width="20" align="top" alt=""> Claude | ✓ | ✓ | ✓ | ✓ | ✓ |
+| <img src="assets/apps/deepseek-harness.png" width="20" align="top" alt=""> DeepSeek Harness | ✓ | ✓ | ✓ | ✓ | ✓ |
+| <img src="assets/apps/workbuddy.png" width="20" align="top" alt=""> WorkBuddy | ✓ | ✓ tasks | ✓ | — | ✓ |
+| <img src="assets/apps/iterm2.png" width="20" align="top" alt=""> Claude Code, Codex and OpenCode in iTerm2 | ✓ | ✓ | ✓ | Codex only | ✓ |
+| <img src="assets/apps/safari.png" width="20" align="top" alt=""> <img src="assets/apps/chrome.png" width="20" align="top" alt=""> Browsers: Safari, Chrome, Edge, Brave, Firefox, Opera, Vivaldi | ✓ | ✓ tabs | — | — | ✓ |
+| <img src="assets/apps/wechat.png" width="20" align="top" alt=""> <img src="assets/apps/feishu.png" width="20" align="top" alt=""> WeChat, Feishu / Lark | ✓ | ✓ chats | — | — | ✓ |
+
+A ✓ is something you can do in that app. How each app is operated, the versions tested and the known limits are in [Applications](docs/applications.en.md). A few notes:
+
+- In WorkBuddy what you switch between is tasks. Its thinking switch and finer reasoning settings are still set in its own menu.
+- All three terminal tools switch chats and change the model. Reasoning effort can be set from the dial only in Codex for now.
+- In a browser what you switch between is tabs. There is no model to change, so the same button jumps to the address bar.
+- In WeChat and Feishu what you switch between is chats. WeChat's chat controls cannot be read, so the chat button only opens WeChat's own search, and choosing a result there has not been verified in the real app.
+
+The first five rows, the AI tools, were exercised on a real machine. The terminal row was accepted in iTerm2 3.7.3 against Codex CLI 0.160.0, Claude Code 2.1.289 and OpenCode 1.18.34 with the screen read back after every step; see the [acceptance record](docs/terminal-acceptance.md). WorkBuddy 5.6.2 passed native UI readback checks for task search and opening, model switching, draft editing and dictation delivery with transcript replay.
+
+Three things work in apps that are not in the table. Dictation follows the keyboard focus: native fields fill in as you speak, and everything else gets a single paste when you release, after which your clipboard is put back. Switching macOS apps works everywhere. The controller's touchpad moves the pointer and clicks. To make another app answer the chat and model buttons, add it in Settings by bundle ID and assign the shortcuts. These app actions go only to the apps in the table and to rules you added yourself, matched by full bundle ID and never by window title, and each one can be turned off in Settings.
+
+App names and icons are trademarks of their owners and are shown only to indicate compatibility. VibeWand is not affiliated with, sponsored by or endorsed by them.
+
+## Computer use
+
+What VibeWand does is computer use: it works out what the front app is showing and operates it for you. It reads the control structure that macOS Accessibility provides, the same one a screen reader gets; by default it takes no screenshots and clicks nothing it has only seen. For an app that publishes no controls, you can let command mode look at a picture of the window and click in it. An action starts either from a button you press or from a sentence you say.
+
+| | Driven by buttons | Driven by a sentence ([command mode](docs/command-mode.en.md)) |
+| --- | --- | --- |
+| Status | Released | Released in 0.9.0; usable once a model is set up |
+| Who decides what happens | The button and the current context, by fixed rules; no model is involved | The model you configured, choosing among 13 tools. Seeing the window and clicking in its picture, and in plugin mode the harness's own tools, are added only if you turn them on; while it speaks in a voice of the voice service there is one more, for changing that voice |
+| What it looks at | Which app is in front; whether focus is in a field and whether the draft is empty; whether a chat, model or effort list is open and what it offers; input-method candidates and unknown dialogs | App, window and chat titles; the kind, name and state of the controls in the front window; the status line an app announces; with seeing turned on, a picture of the window and the text read in it |
+| What it does | Presses buttons and adjusts sliders; sends shortcuts and arrow keys; scrolls the conversation; parks the pointer on a candidate or clicks it; writes or pastes text; switches apps | Finds and opens chats; opens an app's own search and types the keywords; switches apps, opens a file or URL; presses a control, sends a shortcut, chooses a menu item, types into a field; with seeing turned on, clicks a line of text or a point in the window's picture |
+| Reach | The apps in the table above and the rules you added | Any app whose controls can be read, and with seeing turned on those that publish none, one at a time |
+
+Both paths keep the same rules:
+
+- **Nothing is sent for you.** Text stays in the field, and Return is yours to press. By default command mode asks only before deleting, sending, submitting or paying; you can have it ask at every step, or not at all.
+- **An action goes only to the target that was in front when you pressed.** If the app, window or focus has changed, the action is dropped.
+- **Structure is read, content is not.** A field is known only as empty or not. Conversation text and documents are not read, no screenshot is taken and no point of a picture is clicked unless you turn on seeing the window for command mode, and nothing is typed into a password field. A terminal has no controls, so only the few rows next to the cursor are read to find the prompt, reduced to a state and dropped.
+- **No shell and no file access by default.** Configuration runs no scripts, and the model cannot reach anything outside its tool list. In plugin mode you can hand it the harness's own tools, a shell and files among them; the harness's sandbox holds them at the permission mode you chose.
+
+What each capability covers, which channel each app uses and what has been verified in real apps is in [Computer use](docs/computer-use.en.md).
+
+## Install
+
+**[Download VibeWand 0.11.3 (Apple Silicon)](https://github.com/xuhao1/VibeWand/releases/download/v0.11.3/VibeWand-0.11.3-macOS-arm64.zip)** · [Release notes](https://github.com/xuhao1/VibeWand/releases/latest)
+
+Requires macOS 26 or later on an M-series Mac (0.8.4 is the last version for macOS 13 to 15). Unzip, drag **VibeWand.app** into Applications and open it. The first launch shows a guide that walks you through the steps below, voice input and command mode; every step can be skipped. By hand:
+
+1. Allow VibeWand under System Settings → Privacy & Security → Accessibility. Without it, the app can neither see the composer nor send keys.
+2. Connect your device. For the VibeKey, quit Ulanzi Studio first; the two cannot share the receiver.
+3. No device yet? Try Settings → Developer → Demo mode.
+
+This build is ad-hoc signed and not notarized by Apple, so the first launch takes one extra step. See [Get started](docs/getting-started.en.md).
+
+### Build from source
+
+You need Xcode 26 or later and Opus from Homebrew. The minimum system is macOS 26:
+
+```sh
+brew install opus
+bash scripts/build-app.sh
+```
+
+The result is `dist/VibeWand.app`. The build downloads pinned versions of Node.js and DeepSeek Harness as the kernel for command mode, which makes the app about 325 MB; `VIBEWAND_SKIP_KERNEL=1` leaves it out. More in the [development guide](docs/development.md).
+
+## Documentation
+
+[Default controls](docs/core-experience.en.md) · [Settings and remapping](docs/settings.en.md) · [Voice input](docs/voice-input.md) · [Command mode](docs/command-mode.en.md) · [Applications](docs/applications.en.md) · [Troubleshooting](docs/troubleshooting.en.md) · [Development](docs/development.md)
+
+## Privacy
+
+Device input and configuration stay on your Mac. VibeWand has no server and needs no account. With an external input method it only holds Fn for you. With built-in recognition, audio stays in memory; macOS dictation runs on device when it can, SenseVoice always does, and API mode sends audio to the endpoint you entered. Keys live in the macOS Keychain and are never part of an exported configuration. Dictated text goes into the field and no further; sending it is up to you. With vocabulary learning on (off by default), the dictations you corrected are kept on this Mac until the vocabulary is next brought up to date, sent then to the model service of command mode, and deleted. A terminal has no composer control, so VibeWand reads the few rows next to the cursor to find the prompt; they are reduced to a state in memory and dropped, never stored or sent anywhere.
+
+Command mode is on by default, and until you set up a model it does nothing and contacts no service. After that, the words of your commands, the titles of apps and chats, and the labels of controls in the front window while the interface is operated are sent to the model service you chose yourself. The contents of fields and documents are not, unless you turn on seeing the window, which sends the model a picture of the window as it is and the text read in it. When Voice input uses Alibaba Qwen Realtime, its model hears commands itself by default, and all of this goes to that voice service together with the recording of the command; with several models instead, the voice service is sent only the line that is to be read out. What each command did is recorded on this Mac, a spoken command with its recording (which can be turned off), and deleted after 14 days. See [Command mode](docs/command-mode.en.md#what-is-sent).
+
+## License
+
+VibeWand is free software, copyright (C) 2026 [Hao Xu](https://github.com/xuhao1). You may use it for any purpose, and redistribute and modify it under the [GNU General Public License, version 3](LICENSE) (`GPL-3.0-only`): whatever you distribute that is built on it carries the same license and comes with its source. It is provided without warranty, as far as the law allows.
+
+**For use the GPL does not fit, such as building VibeWand's code into a closed-source product, a commercial license is available from the author**; open a [commercial licensing inquiry](https://github.com/xuhao1/VibeWand/issues/new?title=Commercial%20licensing%20inquiry) to ask. Contributions are accepted on [terms that keep both possible](CONTRIBUTING.md#license-of-contributions--贡献的授权).
+
+The license grants no trademark rights in the name “VibeWand” or its icon. A modified version you pass on has to be plainly marked as different from the original, and should go by another name. Third-party components keep their own licenses; see the [third-party notices](third-party/README.md), which also say how to put in your own build of the LGPL library that ships. The icons of supported apps under `assets/apps/` belong to their owners and are not covered by this license. What is still undecided is listed in [Licensing and copyright: open items](docs/licensing-open-items.md).
+
+By **Dr. Xu** · [Homepage](http://xuhao1.me) · [GitHub](https://github.com/xuhao1)

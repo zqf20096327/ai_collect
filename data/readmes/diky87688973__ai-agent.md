@@ -48,7 +48,6 @@ python3 -m agent.entry.web --host 127.0.0.1 --port 8765 --open
 [agent]
 reasoning_effort = max       # 全局推理档位：max（深度推理）/ high（标准推理）
 backup_retention_days = 7    # 版本化备份保留天数；0 = 永久保留
-user_rules_file =            # 可选：自定义规则文件（.md / .txt），留空不加规则段
 
 [context]
 summary_token_fallback   = 64000
@@ -84,7 +83,8 @@ full_user_rounds         = 1
 | [插件](docs/subsystems/plugins.md) | 插件包形态、可贡献的能力、界面资产、生命周期与边界 |
 | [知识库](docs/subsystems/knowledge.md) | `knowledge` 的文件收录、勾选状态、注入与端点 |
 | [多模型](docs/subsystems/multi-model.md) | `multi_model` 的目录条目、设置页表单与模型下拉 |
-| [Skills](docs/subsystems/skills.md) | `skills` 插件的三层披露与 `skill_manage` |
+| [Skills](docs/subsystems/skills.md) | `skills` 插件的三层披露、内置/外置来源与 `skills` 工具 |
+| [Rules](docs/subsystems/rules.md) | `rules` 插件：`rules/` 下的 `.md` 全量注入与热开关 |
 | [Visual Operator](docs/subsystems/visual-operator.md) | `visual_operator` 的截屏、坐标网格与鼠标键盘工具 |
 | [AI说话](docs/subsystems/ai-speak.md) | `ai_speak` 的文本规范、语音合成、插件事件与播放器 |
 | [会话与协作](docs/subsystems/session.md) | 事实日志、跨进程锁、运行态登记、协作网格 |
@@ -95,6 +95,7 @@ full_user_rounds         = 1
 | [多模型配置方案](docs/plan/multi-model.md) | 模型目录、Provider 路由、Messages 协议适配、模型插件 |
 | [AI说话方案](docs/plan/ai-speak.md) | `ai_speak` 的文本、切段、SSE 与播放器设计 |
 | [配置](docs/guide/config.md) | 配置项全表、启动参数、环境变量 |
+| [上下文导出](docs/guide/context-dump.md) | 开发者用会话上下文导出 CLI |
 
 ## 开发
 
@@ -112,7 +113,13 @@ python scripts/ci.py --fast    # 跳过验收
 python scripts/ci.py --list    # 列出检查项
 ```
 
-单元测试（1630 个用例）：
+导出某个会话的真实请求上下文（开发者只读工具）：
+
+```bash
+python scripts/dump_context.py --cid <会话ID> --format json --out context.json
+```
+
+单元测试（1698 个用例）：
 
 ```bash
 python -m unittest discover -s tests -p "test_*.py" -t tests

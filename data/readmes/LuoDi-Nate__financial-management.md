@@ -4,7 +4,7 @@
 > 算得出真实年化、分得清「人赚的」和「钱赚的」;大账户手 key 太累?**AI 截图一拍就把每支真实持仓识别拆开**;
 > 还有 AI 帮你诊断持仓与配置、看清风险敞口、把再平衡落成可执行的行动(只解读,不荐产品、不预测涨跌)。
 
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
 [![Java 21](https://img.shields.io/badge/Java-21-orange)](https://openjdk.org/projects/jdk/21/)
 [![Spring Boot 3.3](https://img.shields.io/badge/Spring%20Boot-3.3-green)](https://spring.io/projects/spring-boot)
 
@@ -96,12 +96,12 @@
 
 > 完整发布记录与截图见 [Releases](https://github.com/LuoDi-Nate/financial-management/releases)(本段每版只留 2–4 行,细节不搬过来)。
 
-**[v1.35.0](https://github.com/LuoDi-Nate/financial-management/releases/tag/v1.35.0) · UI 精修:按钮不再又大又方**
-全站按钮从 42px 直角大写降到 32px、圆角、无衬线,删除 / 归档这类操作统一成红色描边;标签换成浅底圆角小标;持仓页按钮收进「添加其他 ▾」菜单;顶栏小图标换成存钱罐。规格对照 shadcn/ui 等主流组件库([调研](docs/research/ui-frameworks-2026-10.md)),只改外观、不改数据。
+**[v1.37.0](https://github.com/LuoDi-Nate/financial-management/releases/tag/v1.37.0) · iPhone Duo 按苹果规范:主屏 App 里操作挪到右侧一列**
+装到主屏上用时,外屏和内屏横着的情况下,顶栏按钮和右下浮钮收进页面右侧一列(本页目录 / 超级 Agent / 隐私眼 · 仪表盘 / 填报 / 账户 / 报表 / 更多);帐篷、外屏横握不再冻结旋转;内屏横时弹框开在右半边、网格改偶数列,避开折痕。浏览器里和普通 iPhone、iPad、电脑都不变([PRD](prd/v1.37.md) · [调研](docs/research/iphone-duo-hig-2026-10.md))。
 
-**[v1.34.0](https://github.com/LuoDi-Nate/financial-management/releases/tag/v1.34.0) – [v1.34.2](https://github.com/LuoDi-Nate/financial-management/releases/tag/v1.34.2) · 持仓和账户都能拖着排顺序 · 持仓改名 · 升级不再拖死服务器 · 补历史账不再凭空多出收益**
-账户里的持仓可以拖着排,和券商 / 基金 App 的顺序对上,每月核对从上往下挨个对就行([#40](https://github.com/LuoDi-Nate/financial-management/issues/40));持仓页、填报页、截图导入、资产打标都按这个顺序。账户本身也能在账户簿里拖着排。持仓名字填错了可以直接改([#41](https://github.com/LuoDi-Nate/financial-management/issues/41))。v1.34.1 让 `deploy.sh` 升级时先编译再改库、编译带内存保护(内存不够就停下,线上不动),也可以用 `--jar` 传别处编好的包。
-v1.34.2:重开历史月份补记一笔时会问「当时的余额算进去了吗」—— 默认只补记、余额不动,也可以选这个月和之后每个月一起改,对方账户不再凭空多出一笔收益;新账户第一个月的收支不再算两遍;已关账月份不再把之后才建的账户算成「缺」。
+**[v1.36.0](https://github.com/LuoDi-Nate/financial-management/releases/tag/v1.36.0) – [v1.36.1](https://github.com/LuoDi-Nate/financial-management/releases/tag/v1.36.1) · iPhone Duo 折叠屏:合上、打开、分屏都不走样 · 许可证改 AGPL-3.0**
+页面打开以后宽度变了(折叠屏合上 / 打开、分屏、电脑拖窗口),图表跟着重排并换成窄屏或宽屏样式,正在看的那一节留在原处,筛选条不再消失,填了一半的不丢。顺带修掉 v1.19 起图表库加载两份、横屏重排和隐私重绘对仪表盘图表失效的老问题。只看宽高、不认设备([PRD](prd/v1.36.md))。
+v1.36.1:许可证改为 **AGPL-3.0 + 双许可**(自用和商用照旧;改了做成网络服务要公开源码;组织可申请商业授权;v1.36.0 及以前仍是 Apache-2.0,见 [NOTICE](NOTICE));修掉手机上旭日图多出的「其他 undefined」。
 
 ## 主要能力
 
@@ -121,7 +121,7 @@ v1.34.2:重开历史月份补记一笔时会问「当时的余额算进去了吗
 - **决策辅助** — 账户级基准对照 / 提前还贷决策器(NPV 18 年视角)/ 应急金不闲置提示
 - **截止前强提醒** — 3 种填报模板 · 截止前 N 天短信(阿里云,可选)+ 站内 banner 兜底
 - **全在管理页热改** — LLM key / 股票开关 + cron / 汇率 cron / checkup 阈值 / 会话期 等运营参数实时生效不重启(DB > env > 代码默认 三层 fallback)
-- **一键部署 + 隐私可移植** — Docker compose 一键(amd64 + arm64,覆盖 NAS / Apple Silicon)或 systemd 直装 · 自托管,数据只在自己服务器 · 真名脱敏后才喂 LLM · 手机号 / aksk / key 双重防回归 · CSV 一键导出 · Apache 2.0
+- **一键部署 + 隐私可移植** — Docker compose 一键(amd64 + arm64,覆盖 NAS / Apple Silicon)或 systemd 直装 · 自托管,数据只在自己服务器 · 真名脱敏后才喂 LLM · 手机号 / aksk / key 双重防回归 · CSV 一键导出 · AGPL-3.0 开源
 
 > 想知道每个能力是哪个版本加的、完整迭代史 → 见 [CHANGELOG.md](CHANGELOG.md)。
 
@@ -134,7 +134,7 @@ v1.34.2:重开历史月份补记一笔时会问「当时的余额算进去了吗
 | 前端 | Thymeleaf + HTMX 1.9 + Chart.js 4 + ECharts(无 SPA、无构建管线) |
 | 认证 | Spring Security + bcrypt + Session Cookie |
 | 部署 | **Docker compose 一键(v0.7,推荐)** · 或 Linux systemd + nginx 反代 :80 → :20000 · macOS launchd(可选)直连 :20000 |
-| 测试 | JUnit 5 · **1266 单元** / 1600+ e2e 断言(34 条浏览器主线,真浏览器 + 真 DB)/ **1019 黑盒回归**护栏 —— 每条护栏守的是哪个坑,见 [QA case 库](docs/qa-cases.md) |
+| 测试 | JUnit 5 · **1273 单元** / 1800+ e2e 断言(37 条浏览器主线,真浏览器 + 真 DB)/ **1032 黑盒回归**护栏 —— 每条护栏守的是哪个坑,见 [QA case 库](docs/qa-cases.md) |
 
 ## 快速开始(自托管部署)
 
@@ -380,12 +380,14 @@ bash scripts/regression-data.sh # 数据层/口径回归(原 e2e.sh · curl 端�
 每版做了什么、为什么那么做,都写在各自的文档里;这里只放入口,不复述。
 
 <details>
-<summary><b>展开全部 51 个版本</b>(v0.1 → v1.34)</summary>
+<summary><b>展开全部 54 个版本</b>(v0.1 → v1.37)</summary>
 
 | 版本 | 文档 |
 |---|---|
-| `v1.34` | [PRD](prd/v1.34.md)(已实施)· [技术设计](tech-design/v1.34.md) · [预览](preview/v1.34/) |
+| `v1.37` | [PRD](prd/v1.37.md)(已实施)· [技术设计](tech-design/v1.37.md) · [预览](preview/v1.37/side-rail.html) · [Duo 官方规范调研](docs/research/iphone-duo-hig-2026-10.md) |
+| `v1.36` | [PRD](prd/v1.36.md)(已实施)· [技术设计](tech-design/v1.36.md) · [实测对比图](preview/v1.36/shots/) |
 | `v1.35` | [PRD](prd/v1.35.md)(已实施)· [技术设计](tech-design/v1.35.md) · [预览](preview/v1.35/) · [UI 调研](docs/research/ui-frameworks-2026-10.md) |
+| `v1.34` | [PRD](prd/v1.34.md)(已实施)· [技术设计](tech-design/v1.34.md) · [预览](preview/v1.34/) |
 | `v1.33` | [PRD](prd/v1.33.md)(已实施)· [技术设计](tech-design/v1.33.md) · [预览](preview/v1.33/) · [影响梳理](docs/research/account-delete-impact.md) |
 | `v1.32` | [PRD](prd/v1.32.md)(已实施)· [技术设计](tech-design/v1.32.md) · [预览](preview/v1.32/) |
 | `v1.31` | [PRD](prd/v1.31.md)(第一批已实施)· [技术设计](tech-design/v1.31.md) · [预览](preview/v1.31/) |
@@ -477,7 +479,7 @@ financial-management/
 ├── docs/qa-cases.md                      # QA case 库
 ├── icons/                                # 用户可替换的图标源 PNG
 └── scripts/
-    ├── qa-run.sh                         # 黑盒回归护栏(1019 条)
+    ├── qa-run.sh                         # 黑盒回归护栏(1032 条)
     ├── e2e/run.cjs                       # 端到端(真浏览器点 + 回库查真值)
     └── release-shots.cjs                 # 发版截图(隐私模式默认开)
 ```
@@ -545,7 +547,14 @@ financial-management/
 
 ## License
 
-Apache 2.0 · 见 [`LICENSE`](LICENSE)。
+**AGPL-3.0**(v1.36.0 之后的版本)· 见 [`LICENSE`](LICENSE) 与 [`NOTICE`](NOTICE)。
+
+- 个人、家庭、公司内部自用、修改、再分发都可以,也可以商用;
+- 改了之后通过网络给别人用(比如做成托管服务),必须把改过的完整源码按 AGPL 公开;
+- 不想公开改动的组织(闭源改造、嵌进闭源产品或服务)可以申请**商业授权**,开 issue 联系作者;
+- **v1.36.0 及以前的版本仍是 Apache 2.0**,不受影响。
+
+贡献代码需同意 [`CONTRIBUTING.md`](CONTRIBUTING.md) 里的贡献者授权条款(为了让双许可成立)。
 
 ## 致谢
 

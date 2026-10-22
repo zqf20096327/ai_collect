@@ -34,7 +34,7 @@ No key needed to read any of it. No scraping: only public, official APIs.
 ## Free models (auto-updated daily)
 
 <!-- TABLE_START -->
-> Last updated: **Wed, 21 Oct 2026 09:12:46 UTC** · 17 free chat models · ranked by the [open score](scoring/) in this repo · free-tier limits are the provider's, per account[^or][^poll]
+> Last updated: **Thu, 22 Oct 2026 09:15:33 UTC** · 18 free chat models · ranked by the [open score](scoring/) in this repo · free-tier limits are the provider's, per account[^or][^poll]
 >
 > **5 of today's top 10** are served only by providers that may train on your prompts.
 
@@ -48,15 +48,16 @@ No key needed to read any of it. No scraping: only public, official APIs.
 | 6 | **NVIDIA: Nemotron 3 Super** | 46 | benchmarks + Arena | 🔴 may train | 262K | 236K | ✓ | 💬 text | — | [link](https://openrouter.ai/nvidia/nemotron-3-super-120b-a12b:free) |
 | 7 | **NVIDIA: Nemotron 3 Ultra** | 44 | benchmarks | 🔴 may train | 1M | 66K | ✓ | 💬 text | — | [link](https://openrouter.ai/nvidia/nemotron-3-ultra-550b-a55b:free) |
 | 8 | **NVIDIA: Nemotron 3.5 Super VL** | 43 | benchmarks | 🔴 may train | 1M | 131K | ✓ | 🖼️ vision, video | — | [link](https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free) |
-| 9 | **Poolside: Laguna S 2.1** <br><sub>⏳ retiring 2026-10-31</sub> | 34 | estimate (size) | ✅ no · retention unknown | 262K | 33K | ✓ | 💬 text | ⚠️ degraded | [link](https://openrouter.ai/poolside/laguna-s-2.1:free) |
-| 10 | **Poolside: Laguna XS 2.1** <br><sub>⏳ retiring 2026-10-31</sub> | 26 | estimate (size) | ✅ no · retention unknown | 262K | 33K | ✓ | 💬 text | ⚠️ degraded | [link](https://openrouter.ai/poolside/laguna-xs-2.1:free) |
+| 9 | **Poolside: Laguna S 2.1** <br><sub>⏳ retiring 2026-10-31</sub> | 34 | estimate (size) | ✅ no · retention unknown | 262K | 33K | ✓ | 💬 text | — | [link](https://openrouter.ai/poolside/laguna-s-2.1:free) |
+| 10 | **Poolside: Laguna XS 2.1** <br><sub>⏳ retiring 2026-10-31</sub> | 26 | estimate (size) | ✅ no · retention unknown | 262K | 33K | ✓ | 💬 text | — | [link](https://openrouter.ai/poolside/laguna-xs-2.1:free) |
 | 11 | **XingChen: Xing4.0 29B A4B** | 25 | estimate (size) | — | 262K | 236K | ✓ | 💬 text | ✅ up | [link](https://openrouter.ai/xingchen-agi/xing4.0-29b-a4b:free) |
 | 12 | **Cohere: North Mini Code** | 23 | benchmarks | ✅ no · kept 30 days | 256K | 64K | ✓ | 💬 text | ✅ up | [link](https://openrouter.ai/cohere/north-mini-code:free) |
 | 13 | **NVIDIA: Nemotron 3.5 Lightning** | 22 | benchmarks | 🔴 may train | 1M | 66K | ✓ | 💬 text | — | [link](https://openrouter.ai/nvidia/nemotron-3.5-lightning:free) |
-| 14 | **NVIDIA: Nemotron 3 Nano Omni** | 15 | benchmarks | 🔴 may train | 256K | 66K | ✓ | audio, 🖼️ vision, video | — | [link](https://openrouter.ai/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free) |
-| 15 | **Dots Studio: Dots3-Note Preview** <br><sub>⏳ retiring 2026-12-31</sub> | 13 | estimate (size) | ✅ no · retention unknown | 512K | 461K | ✓ | 🖼️ vision | ✅ up | [link](https://openrouter.ai/dots-studio/dots-3-note-preview:free) |
-| 16 | **LiquidAI: LFM2.5-2.6B** | 9 | benchmarks | 🔴 may train | 66K | 8K | ✓ | 💬 text | — | [link](https://openrouter.ai/liquid/lfm-2.5-2.6b:free) |
-| 17 | **GPT-OSS 20B Reasoning LLM (OVH)** | — | — | — | — | — | — | 💬 text | — | [link](https://pollinations.ai) |
+| 14 | **Recursive: Flint** | 20 | estimate (size) | — | 262K | 236K | ✓ | 💬 text | ✅ up | [link](https://openrouter.ai/recursive/flint-v1.0:free) |
+| 15 | **NVIDIA: Nemotron 3 Nano Omni** | 15 | benchmarks | 🔴 may train | 256K | 66K | ✓ | audio, 🖼️ vision, video | — | [link](https://openrouter.ai/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free) |
+| 16 | **Dots Studio: Dots3-Note Preview** <br><sub>⏳ retiring 2026-12-31</sub> | 13 | estimate (size) | ✅ no · retention unknown | 512K | 461K | ✓ | 🖼️ vision | ✅ up | [link](https://openrouter.ai/dots-studio/dots-3-note-preview:free) |
+| 17 | **LiquidAI: LFM2.5-2.6B** | 9 | benchmarks | 🔴 may train | 66K | 8K | ✓ | 💬 text | — | [link](https://openrouter.ai/liquid/lfm-2.5-2.6b:free) |
+| 18 | **GPT-OSS 20B Reasoning LLM (OVH)** | — | — | — | — | — | — | 💬 text | — | [link](https://pollinations.ai) |
 
 3 free models that are not chat models (music, image, audio, classifiers):
 
@@ -76,8 +77,11 @@ No key needed to read any of it. No scraping: only public, official APIs.
 - **Trains on your prompts?** — the policy of the provider *serving the free
   endpoint on OpenRouter*, from
   [OpenRouter's provider table](https://openrouter.ai/docs/guides/privacy/provider-logging)
-  (last read by hand on 2026-10-10), plus how long that provider keeps
-  prompts. `—` means we could not establish it; we do not guess.
+  (last read by hand on 2026-10-22), plus how long that provider keeps
+  prompts. `—` means we could not establish it; we do not guess. Where
+  OpenRouter treats a provider's *free* endpoint more strictly than its table
+  row (Poolside, since October: its free endpoints are refused to accounts
+  that disallow free-model training), the stricter answer is shown.
 - **Today** — whether the free endpoint is actually answering. A GitHub Action
   has no traffic to know that, so this one column is borrowed from the
   production health checks of [ZeroLimitAI](https://www.zerolimitai.com)'s
@@ -91,7 +95,7 @@ Free-tier limits are the provider's and belong to the account, not the model:
 on OpenRouter every `:free` id shares 20 requests/minute and 50 requests/day
 (1,000/day once the account has bought $10 in credits).[^or]
 
-[^or]: OpenRouter, [Free usage limits](https://openrouter.ai/docs/api-reference/limits) (checked 2026-10-10). The cap is global per account — extra API keys or accounts do not widen it.
+[^or]: OpenRouter, [Free usage limits](https://openrouter.ai/docs/api-reference/limits) (checked 2026-10-22). The cap is global per account — extra API keys or accounts do not widen it.
 [^poll]: [Pollinations](https://pollinations.ai) serves an anonymous tier with no API key. Which models are in it changes; this list reads their live catalogue every day and keeps the models marked `tier: "anonymous"`. They are listed unscored: no public benchmark data is attached to them.
 
 ### About the data-use column
@@ -237,20 +241,29 @@ ranking it produces. That is what the file is for.
 For anyone wiring up a provider directly. All of them speak the OpenAI shape
 unless noted, so `base_url` is the only change.
 
-| Provider | Base URL | Free tier | Key | Checked |
-|---|---|---|---|---|
-| [OpenRouter](https://openrouter.ai/keys) | `https://openrouter.ai/api/v1` | Every `:free` model: 20 RPM, 50 RPD per account (1,000 RPD after $10 in credits) [^or] | Yes, no card | 2026-10-10 |
-| [Pollinations](https://pollinations.ai) | `https://text.pollinations.ai` | Anonymous tier, rotating model list [^poll] | No key | 2026-09-23 |
-| [OVHcloud AI Endpoints](https://www.ovhcloud.com/en/public-cloud/ai-endpoints/catalog/) | `https://oai.endpoints.kepler.ai.cloud.ovh.net/v1` | Catalogue is public and keyless; the anonymous chat tier is 2 RPM per IP and in practice answers `429` most of the time [^ovh] | No key | 2026-09-23 |
-| [Groq](https://console.groq.com/keys) | `https://api.groq.com/openai/v1` | Free plan, per-model limits — [published table](https://console.groq.com/docs/rate-limits) | Yes, no card | — |
-| [Google AI Studio](https://aistudio.google.com/app/apikey) | `https://generativelanguage.googleapis.com/v1beta/openai` | Free tier per model — [published limits](https://ai.google.dev/gemini-api/docs/rate-limits) | Yes, no card | — |
-| [Cerebras](https://cloud.cerebras.ai) | `https://api.cerebras.ai/v1` | Free tier — [published limits](https://inference-docs.cerebras.ai/support/rate-limits) | Yes | — |
-| [Cloudflare Workers AI](https://dash.cloudflare.com/profile/api-tokens) | `https://api.cloudflare.com/client/v4/accounts/{id}/ai/v1` | 10,000 Neurons/day shared across all models — [pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/) | Yes | — |
+| Provider | Base URL | Free allowance | Card | Your prompts | The catch | Checked |
+|---|---|---|---|---|---|---|
+| [OpenRouter](https://openrouter.ai/keys) | `https://openrouter.ai/api/v1` | Every `:free` model together: 20 RPM, 50 RPD per account (1,000 RPD after $10 in credits) [^or] | No | Depends on who serves the model: see the data-use column above; send `provider.data_collection: "deny"` to refuse providers that may train [^orp] | One daily cap for all free models | 2026-10-22 |
+| [Groq](https://console.groq.com/keys) | `https://api.groq.com/openai/v1` | Per model: 30 RPM, 1,000 RPD, 8,000 tokens/min for `qwen/qwen3.8-27b`, `openai/gpt-oss-120b`, `openai/gpt-oss-20b` [^groq] | No | Not retained by default; may be logged up to 30 days for abuse review; training not mentioned [^groqd] | 8K tokens/min: one long prompt fails. With a card on file the org can be on paid on-demand usage — check Billing | 2026-10-22 |
+| [Google AI Studio](https://aistudio.google.com/app/apikey) | `https://generativelanguage.googleapis.com/v1beta/openai/` | Per model and per project, shown in AI Studio (no numbers in the docs) [^gem] | No | Free tier: used to improve Google products, may be read by human reviewers [^gemt] | Not allowed in apps for users in the EEA, Switzerland or the UK [^gemt] | 2026-10-22 |
+| [Cloudflare Workers AI](https://dash.cloudflare.com/profile/api-tokens) | `https://api.cloudflare.com/client/v4/accounts/{id}/ai/v1` | 10,000 Neurons/day across all models, reset 00:00 UTC [^cf] | No | Not used for training; not kept for standard requests [^cfd] | Neurons, not requests: how far they go depends on the model | 2026-10-22 |
+| [Cerebras](https://cloud.cerebras.ai) | `https://api.cerebras.ai/v1` | **Trial, not a free tier**: $5 of credits that expire after 30 days; 5 RPM [^cer] | **Yes** | Not covered on the limits page | API stays inactive until you add a payment method | 2026-10-22 |
+| [Pollinations](https://pollinations.ai) | `https://text.pollinations.ai` | Anonymous tier, rotating model list [^poll] | No key | — | — | 2026-09-23 |
+| [OVHcloud AI Endpoints](https://www.ovhcloud.com/en/public-cloud/ai-endpoints/catalog/) | `https://oai.endpoints.kepler.ai.cloud.ovh.net/v1` | Anonymous: 2 RPM per IP; in practice `429` most of the time [^ovh] | No key | — | — | 2026-09-23 |
 
-A blank **Checked** means we link the provider's own limits page but have not
-verified the numbers ourselves — treat their page as the source of truth.
-Free tiers are meant for building and trying things; read each provider's
-terms before putting one behind a product.
+Mistral is not listed: on 2026-10-22 its pricing page showed no free API plan we could verify.
+Free tiers are meant for building and trying things; read each provider's terms
+before putting one behind a product. Plain-language pages per provider:
+[zerolimitai.com/free-llm-api](https://www.zerolimitai.com/free-llm-api?utm_source=github&utm_medium=readme&utm_campaign=free-ai-models).
+
+[^orp]: OpenRouter, [provider logging and training](https://openrouter.ai/docs/guides/privacy/provider-logging).
+[^groq]: Groq, [rate limits](https://console.groq.com/docs/rate-limits). Your organisation's own limits are at console.groq.com/settings/limits.
+[^groqd]: Groq, [your data](https://console.groq.com/docs/your-data).
+[^gem]: Google, [Gemini API rate limits](https://ai.google.dev/gemini-api/docs/rate-limits): per project, vary by model; setting up billing moves the project to a paid tier.
+[^gemt]: Google, [Gemini API additional terms](https://ai.google.dev/gemini-api/terms) (updated 2026-04-28): Unpaid Services, and "You may use only Paid Services when making API Clients available to users in the European Economic Area, Switzerland, or the UK".
+[^cf]: Cloudflare, [Workers AI pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/).
+[^cfd]: Cloudflare, [Workers AI data usage](https://developers.cloudflare.com/workers-ai/platform/data-usage/).
+[^cer]: Cerebras, [rate limits](https://inference-docs.cerebras.ai/support/rate-limits): "no permanently free tier".
 
 [^ovh]: OVHcloud publishes a permanent anonymous tier (no signup, no key) limited to 2 requests/minute per IP per model. Their `/v1/models` catalogue answers without a key; on 2026-09-23 four chat completions from two different models, spaced over several minutes, all returned `API rate limit exceeded`.
 

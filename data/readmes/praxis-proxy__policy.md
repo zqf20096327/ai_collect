@@ -1,0 +1,85 @@
+# Praxis Policy Engine
+
+<i>Policy Engine enforcement for Praxis.</i>
+
+[![CI](https://github.com/praxis-proxy/policy/actions/workflows/ci.yml/badge.svg)](https://github.com/praxis-proxy/policy/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![crates.io](https://img.shields.io/crates/v/praxis-policy.svg)](https://crates.io/crates/praxis-policy)
+[![docs.rs](https://img.shields.io/docsrs/praxis-policy)](https://docs.rs/praxis-policy)
+[![MSRV](https://img.shields.io/badge/MSRV-1.92-blue.svg)](rust-toolchain.toml)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fpraxis-proxy%2Fpolicy.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fpraxis-proxy%2Fpolicy?ref=badge_shield)
+
+Policy engine for [Praxis](https://github.com/praxis-proxy/praxis), covering
+both standard policy use cases as well as AI inference and agents.
+
+A typed, phased plugin runtime and policy evaluator for agent traffic. It decides
+who may call which tool, what data comes back, and where that data is allowed to
+go next.
+
+## What it does
+
+- **Identity**: Resolves and independently validates user, agent, and workload
+  identities.
+- **Authorization**: Evaluates APL predicates and pluggable decision points,
+  including relationship-based authorization.
+- **Delegation**: Exchanges credentials through RFC 8693, giving each upstream
+  service a token scoped to that service.
+- **Data control**: Redacts fields in transit, propagates Session Taint across
+  tool calls and requests, and filters what an upstream is allowed to tell a
+  client back.
+- **Out-of-band approval**: Supports out-of-band approval and elicitation.
+- **Audit**: Emits an audit event for every decision.
+
+## Using it
+
+Add one dependency to get the engine and all stable bundled extensions:
+
+```toml
+praxis-policy = { version = "0.4", features = ["builtins"] }
+```
+
+Without `builtins`, you get the engine alone and no extensions compiled in.
+Declare individual features instead: `jwt`, `api-key`, `oauth`,
+`elicitation-ciba`, `cedar`, `cel`, `opa`, `valkey`, `secrets-vault`.
+The token quota plugin is available separately through `experimental-quota`.
+
+The crates are versioned together and released together, so a single `0.4`
+requirement covers the set. Requires Rust 1.92 or newer.
+
+## Documentation
+
+Full [documentation](docs/content/index.md).
+
+## Status
+
+The public API will move between minor versions while the shape settles;
+a breaking change gets a minor bump and is documented in the CHANGELOG.
+
+## Layout
+
+    crates/             the engine, APL implementation, and host facade
+    crates/builtins/    the nine bundled extensions, one feature each
+    reference/          worked examples, not published and not bundled
+
+A host may replace any bundled plugin. Implement a Plugin Factory through
+`PluginFactory` against `praxis_policy_core::prelude`, then register it with
+`PolicyEngine::register_factory` under the `kind:` your policy names. An
+unrecognized `kind` causes policy loading to fail, so missing registrations are
+detected at startup.
+
+`reference/plugins/` holds three worked examples: a PII scanner, an audit
+logger, and an OCSF audit sink that emits each decision as a signed,
+hash-chained OCSF event. These are not published, but are linted and tested
+here, and the reference [demo](https://github.com/praxis-proxy/demos)
+registers the first two as host plugins.
+
+## Building
+
+The toolchain is pinned and is also the MSRV, so `cargo build` picks the right
+one. `make help` lists the available targets.
+
+## License
+
+[Apache-2.0](LICENSE)
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fpraxis-proxy%2Fpolicy.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fpraxis-proxy%2Fpolicy?ref=badge_large)

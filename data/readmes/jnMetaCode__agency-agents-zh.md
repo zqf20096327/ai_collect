@@ -107,13 +107,13 @@
 <table>
 <tr>
 <td width="25%">
-  <a href="https://www.packyapi.ai/register?aff=js5W">
+  <a href="https://www.packyapi.ai/register?aff=Zpx1">
     <img src="assets/sponsor-packycode.jpeg" alt="PackyCode — 稳定高效的 API 中转服务，统一域名与密钥接入主流大模型，97% 可用性，多分组低至 2 折，提供 Codex / Claude Code 高速通道" width="100%">
   </a>
 </td>
 <td width="75%" valign="middle">
 
-感谢 [PackyCode](https://www.packyapi.ai/register?aff=js5W) 赞助了本项目！PackyCode 是一家稳定、高效的 API 中转服务商，一句话接入主流大模型。统一域名、统一密钥、智能容灾切换，97% 可用性。人民币 1:1 充值，无汇率、无手续费坑，多分组折扣低至 2 折起，提供专属 Codex / Claude Code 高速通道。支持 Stripe、支付宝、微信、银行卡、对公付款，对公付款可开票。🎁 **新用户通过[此链接](https://www.packyapi.ai/register?aff=js5W)注册，首充立享折扣，另赠 $1 免费体验额度！**
+感谢 [PackyCode](https://www.packyapi.ai/register?aff=Zpx1) 赞助了本项目！PackyCode 是一家稳定、高效的 API 中转服务商，一句话接入主流大模型。统一域名、统一密钥、智能容灾切换，97% 可用性。人民币 1:1 充值，无汇率、无手续费坑，多分组折扣低至 2 折起，提供专属 Codex / Claude Code 高速通道。支持 Stripe、支付宝、微信、银行卡、对公付款，对公付款可开票。🎁 **新用户通过[此链接](https://www.packyapi.ai/register?aff=Zpx1)注册，首充立享折扣，另赠 $1 免费体验额度！**
 
 </td>
 </tr>
@@ -612,7 +612,7 @@ cp -r marketing/*.md ~/.claude/agents/
 | [土木工程师](specialized/specialized-civil-engineer.md) | Eurocode/DIN/ACI/GB 多标准结构分析 | 土木与结构工程设计 |
 | [法国咨询市场专家](specialized/specialized-french-consulting-market.md) | ESN/SI 生态、Malt 平台、薪资代管 | 法国自由职业市场导航 |
 | [韩国商务专家](specialized/specialized-korean-business-navigator.md) | 품의流程、KakaoTalk 礼仪、层级关系 | 韩国商务文化导航 |
-| [招聘专家](specialized/recruitment-specialist.md) ⭐ | 国内招聘平台、人才评估、劳动法合规 | 招聘运营与雇主品牌 |
+| [人才获取专家](specialized/recruitment-specialist.md) ⭐ | 国内招聘平台、人才评估、劳动法合规 | 招聘运营与雇主品牌 |
 | [技术翻译专家](specialized/technical-translator-agent.md) ⭐ | 中英文双向翻译、编程/AI/云计算术语 | 技术文档翻译 |
 | [商业战略家](specialized/business-strategist.md) | 竞争分析、市场进入、商业模式设计 | 战略规划与重大业务决策 |
 | [运营经理](specialized/operations-manager.md) | 精益/六西格玛、产能规划、KPI 治理 | 业务运营流程优化 |

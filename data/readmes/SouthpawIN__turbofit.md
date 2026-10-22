@@ -1,6 +1,6 @@
 # TurboFit
 
-![Turbofit — unified backend, amber and mint aesthetic](wiki/assets/turbofit-hero.png)
+![Turbofit — unified backend, amber and mint aesthetic](assets/turbofit-hero.png)
 
 **One model provider. Every machine. The best local configuration the hardware can safely sustain.**
 
@@ -31,12 +31,12 @@ Prefer a specific route? All five are supported.
 ### After install (any path)
 1. Quit Hermes Desktop (⌘Q) and open a new session.
 2. `/turbofit status` → `/turbofit setup` — **this scans your machine and populates your model list** with every model that fits your hardware tier: the best sustainable fit on top (your `auto` model), the rest below as explicit choices.
-3. The sovthpaw pet is selected for you (or run `hermes pets select s0uthpaw` manually).
+3. The sovthpaw pet is selected for you (or run `hermes pets select sovthpaw` manually).
 
 ---
 
 ## The Fit — two ladders that converge on Flash Next (source of truth for the UI)
-![TurboFit hero](https://raw.githubusercontent.com/SouthpawIN/turbofit/main/assets/turbofit-hero.jpg)
+![TurboFit hero](assets/turbofit-hero.png)
 
 > **Two ladders, not one.** Dense doesn't run well on CPU / Unified memory, so the tiers split into **two fit ladders** — the **GPU-dedicated ladder is dense**, the **Unified (CPU / Mac) ladder is MoE** — and **both converge on Qwen 3.8 Flash Next**. Flash Next is an MoE, and it's the *only* rung where the dense ladder switches to MoE.
 >
@@ -80,7 +80,7 @@ A native engine for **DeepSeek V4.1** (the **1017 update**) is in testing and me
 
 ### Live catalog (what `serve auto` ships today)
 
-The currently-automated, downloadable set (`model-catalog.json`) — **61 models in 13 families**: `Ternary Bonsai 2 27B` (3 variants), `Underdog 27B`, `Qwen 3.8 27B` (11, incl. GSQ-RCO), `Qwen 3.8 Flash Next`, `Maple Preview 20B-A1B`, `Cyber-Tiel Coder 35B-A3B` (5), `Ornith 1.5 35A3B` (3), `Ternary Bonsai 27B` (12), `Bonsai 27B` (18), `Carwin Nano` (2), `GLM 5.2`, `Laguna S2.1` (2), `MiniMax M3`. The two ladders above are the curated rungs `serve auto` promotes; the rest of the catalog is Model Zoo download-only.
+The currently-automated, downloadable set (`model-catalog.json`) — **62 models in 14 families**: `Ternary Bonsai 2 27B` (3 variants), `Underdog 27B`, `Qwen 3.8 27B` (11, incl. GSQ-RCO), `Qwen 3.8 Flash Next`, `Maple Preview 20B-A1B`, `Cyber-Tiel Coder 35B-A3B` (5), `Ornith 1.5 35A3B` (3), `Ternary Bonsai 27B` (12), `Bonsai 27B` (18), `Carwin Nano` (2), `GLM 5.2`, `Laguna S2.1` (2), `MiniMax M3`, `Darwin 180B RSI`. The two ladders above are the curated rungs `serve auto` promotes; the rest of the catalog is Model Zoo download-only.
 
 ### New models (canonical names)
 
@@ -107,11 +107,11 @@ Ranked by measured evidence, not heuristics:
 
 ## TurboSouth — your TurboFit service tech
 
-![TurboSouth — the sovthpaw pet](wiki/assets/turbosouth-hero.png)
+![TurboSouth — the sovthpaw pet](assets/turbosouth-hero.png)
 
 TurboSouth is the dedicated, self-updating customer-service bot for TurboFit. It's not a second model backend — it's the hands that get you from *"I have a machine"* to *"TurboFit is running the best model it can"* — and it keeps feeding improvements back upstream.
 
-Installing TurboSouth **defaults to the sovthpaw pet** (`s0uthpaw`) — a chibi agent with big curly auburn hair, black sunglasses, a sleeveless black vest, and a pink strap — for both the default home and the TurboSouth profile.
+Installing TurboSouth **defaults to the sovthpaw pet** (`sovthpaw`) — a chibi agent with big curly auburn hair, black sunglasses, a sleeveless black vest, and a pink strap — for both the default home and the TurboSouth profile.
 
 What TurboSouth helps with:
 - **Install + setup** — resolves the right Auto-chain artifacts for your machine and gets the gateway up.
@@ -173,7 +173,7 @@ Tailscale is a **built-in backend**, not an add-on or a machine-specific setup: 
 - **Native engines** — CUDA, ROCm, Vulkan, Metal, and CPU backends chosen by your hardware.
 - **One package** — installing TurboFit brings TurboSouth (and its default sovthpaw pet) along automatically.
 
-![Turbofit settings in Hermes Desktop, including fallback routing, multimodal model selection, and hardware-fit recommendations](wiki/assets/hermes-desktop-turbofit-settings.png)
+![Turbofit settings in Hermes Desktop, including fallback routing, multimodal model selection, and hardware-fit recommendations](assets/hermes-desktop-turbofit-settings.png)
 
 ---
 
@@ -199,9 +199,9 @@ This entry is the overview. The full evidence is one level down:
 
 ## Visual reference
 
-![Fit ladder — from low-VRAM rungs to the largest sustainable model](wiki/assets/scaling-ladder.png)
-![Provider integration](wiki/assets/provider-integration.png)
-![2.4 Spec-decode — Draft. Verify. Accept.](wiki/assets/turbofit-2.4-spec-decode.png)
+![Fit ladder — from low-VRAM rungs to the largest sustainable model](assets/scaling-ladder.png)
+![Provider integration](assets/provider-integration.png)
+![2.4 Spec-decode — Draft. Verify. Accept.](assets/turbofit-2.4-spec-decode.png)
 
 ## License
 

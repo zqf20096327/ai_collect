@@ -5,11 +5,11 @@
 
 [![License](https://img.shields.io/badge/license-MIT-787868.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-22-787868.svg)](.nvmrc)
-[![agent-sh](https://img.shields.io/badge/agent--sh-0.15.17-a58b5d.svg)](package.json)
+[![agent-sh](https://img.shields.io/badge/agent--sh-6ea34cc-a58b5d.svg)](https://github.com/guanyilun/agent-sh/commit/6ea34cc9247344715e16c7becf49d4dc46ccb71a)
 
 asHub is an open-source desktop workspace powered by [agent-sh](https://github.com/guanyilun/agent-sh). Keep conversations, models, subagents, terminals and project files together, with a readable result and an inspectable execution trail.
 
-Available for **macOS (Apple Silicon / Intel), Windows x64 and Linux x64**. The desktop app and browser share the same client. Bring your own model provider and API credentials; model usage is billed by your provider.
+Available for **macOS (Apple Silicon / Intel), Windows x64 and Linux x64**. The desktop app and local browser view share the same client. Bring your own model provider and API credentials; model usage is billed by your provider.
 
 ![asHub workspace with session tabs, project analysis and a formatted table](website/assets/showcase-workspace.png)
 
@@ -26,7 +26,8 @@ Available for **macOS (Apple Silicon / Intel), Windows x64 and Linux x64**. The 
 | Reviewable actions | Permission prompts, change previews, session-wide approval and background notifications |
 | Project tools | PTY terminals, file browsing, image input, a skills marketplace and user extensions |
 | Persistent work | Saved conversations, branches, rewind and Markdown export |
-| A consistent interface | Light, dark and academic themes; English and Chinese; display scaling and a collapsible status bar |
+| A consistent interface | Gruvbox light and dark themes; English and Chinese; display scaling and a collapsible status bar |
+| Mobile access · preview | Continue authorized desktop conversations from a phone; shared history, streaming replies and one-time approvals |
 
 <details>
 <summary>Execution detail: tasks, code changes and tool output</summary>
@@ -36,7 +37,7 @@ Available for **macOS (Apple Silicon / Intel), Windows x64 and Linux x64**. The 
 </details>
 
 <details>
-<summary>Project files and the warm academic theme</summary>
+<summary>Project files</summary>
 
 ![Conversation and project file drawer side by side](website/assets/showcase-files.png)
 
@@ -78,9 +79,19 @@ chmod +x ./asHub-*.AppImage
 ./asHub-*.AppImage
 ```
 
+## Mobile access · preview
+
+Continue desktop conversations at [asHub Mobile](https://ashub.aihao.world/mobile/). **Requires asHub v0.20.5 or later.**
+
+1. Open **Mobile Access (移动访问)** in the desktop toolbar, sign in or create an account, and authorize project directories
+2. Save the recovery code, then select **I have saved it (我已保存)**. Unconfirmed codes survive menu switches, but must be saved before quitting or refreshing the app
+3. Sign in with the same account on your phone, select your computer, and continue a conversation or start a new one
+
+Keep the computer awake and asHub running. Only conversations in authorized, existing directories are shared; restore archived conversations on the desktop first. Mobile supports streamed replies, images, model switching and one-time approvals. The relay forwards content without persisting conversation bodies; it is not end-to-end encrypted.
+
 ## Run from source
 
-The project pins **Node.js 22.23.3** (minimum **22.12.0**) and **agent-sh 0.15.17**. With nvm:
+The project pins **Node.js 22.23.3** (minimum **22.12.0**) and official **agent-sh commit `6ea34cc`**, which includes the Unicode fix pending an npm release. Git is required to install dependencies. With nvm:
 
 ```sh
 git clone https://github.com/firslov/asHub.git

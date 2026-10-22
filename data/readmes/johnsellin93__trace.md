@@ -2,17 +2,19 @@
 
 **Your coding friend in the terminal.**
 
-## Version 1 works. Version 2 doesn't.
+## Investigate any codebase, one piece of evidence at a time.
 
-Instead of opening files, comparing implementations, searching logs, and repeatedly assembling context for an AI, ask the model:
+Instead of manually searching through files, comparing implementations, and assembling context, let the AI decide what evidence it needs.
 
+Describe your problem and ask:
 
-
-> Find what changed that could explain the regression.
+> **Problem statement:** Describe the issue you're investigating.
 >
 > What Trace commands do you need?
 
-Trace can start with a repository-level diff:
+The AI generates a batch of Trace commands based on your problem. You run them in your terminal, paste the accumulated evidence back into the conversation, and let the AI decide what to investigate next.
+
+For example, if something worked in version 1 but broke in version 2, Trace can start by comparing the repositories:
 
 ```bash
 trace --diff version-1/ version-2/
@@ -53,7 +55,9 @@ app_state.py:120-168  build_state(...)
 runner.py:74-132      execute_run(...)
 server.py:411-458     cancel_run(...)
 ```
-The model can use those locations as coordinates. Instead of loading entire files, it can choose the specific implementations that are relevant to the problem using the [Protocol](PROTOCOL.md):
+The model can use these locations as coordinates to investigate problems across the entire application, from backend functions and API calls to frontend JavaScript, HTML, CSS, configuration, and logs.
+
+Instead of loading entire files, it can extract only the relevant implementations and follow how different parts of the system interact using the [Protocol](PROTOCOL.md):
 
 ```bash
 # Inspect suspicious implementations
@@ -93,6 +97,7 @@ trace --symbol app.html renderRun
 trace --json-path config.json '.runtime.providers.openai'
 ```
 
+
 The evidence accumulates.
 
 The model updates its hypothesis.
@@ -100,6 +105,12 @@ The model updates its hypothesis.
 Then it asks for another batch.
 
 Every successful evidence-producing Trace command adds its result to the investigation and automatically copies the accumulated context to your clipboard.
+
+You can check how many lines of evidence have accumulated at any time:
+
+```bash
+wc -l ~/.cache/trace/context.txt
+```
 
 That keeps the loop simple: run a batch, paste the accumulated evidence back into the AI, and continue.
 
@@ -128,6 +139,12 @@ Root cause
 
 **The AI doesn't need the entire repository.
 It needs the right evidence at the right time.**
+
+---
+
+## Quick Start
+
+Want to try Trace? Follow the [installation instructions](#install) to get started.
 
 ---
 

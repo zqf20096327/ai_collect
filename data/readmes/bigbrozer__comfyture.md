@@ -26,7 +26,7 @@ Contents:
 * Easy to run ComfyUI from Docker.
 * GPU-accelerated (Nvidia CUDA only).
 * Flash Attention support (v2 / v3).
-* Sage Attention support (v2).
+* ~~Sage Attention support (v2)~~ -- **REMOVED, need refactoring**.
 * Triton support.
 * [New Manager](https://blog.comfy.org/p/meet-the-new-comfyui-manager) enabled by default.
 * Do not run as root, UID/GID are configurables.
@@ -106,7 +106,6 @@ Here is the list of pre-installed extensions:
 | [ClownsharkBatwing/RES4LYF](https://github.com/ClownsharkBatwing/RES4LYF)                             | Advanced sampling nodes with 69+ selectable samplers, regional/temporal conditioning, and style transfer.      |
 | [cubiq/ComfyUI_essentials](https://github.com/cubiq/ComfyUI_essentials)                               | Essential nodes and utilities for ComfyUI.                                                                     |
 | [cubiq/ComfyUI_IPAdapter_plus](https://github.com/cubiq/ComfyUI_IPAdapter_plus)                       | IPAdapter Plus nodes for ComfyUI.                                                                              |
-| [Enemyx-net/VibeVoice-ComfyUI](https://github.com/Enemyx-net/VibeVoice-ComfyUI)                       | Integration for using VibeVoice audio generation in ComfyUI.                                                   |
 | [Fannovel16/comfyui_controlnet_aux](https://github.com/Fannovel16/comfyui_controlnet_aux)             | Auxiliary ControlNet nodes for ComfyUI.                                                                        |
 | [Fannovel16/ComfyUI-Frame-Interpolation](https://github.com/Fannovel16/ComfyUI-Frame-Interpolation)   | Video frame interpolation nodes for ComfyUI (RIFE, FILM, GMFSS Fortuna, and more).                             |
 | [Firetheft/ComfyUI_Local_Image_Gallery](https://github.com/Firetheft/ComfyUI_Local_Image_Gallery)     | A local image gallery node for ComfyUI.                                                                        |
@@ -151,13 +150,6 @@ A default set of arguments are passed to ComfyUI by default:
 You can add [extra arguments](https://docs.comfy.org/interface/settings/server-config) to ComfyUI. Creates `extra.yaml`:
 
 ```yaml
-# Example to enable sage attention
-services:
-  comfyui:
-    command:
-      - "--enable-sage-attention"
-
-# Or...
 # Example to enable flash attention
 services:
   comfyui:
@@ -177,11 +169,12 @@ If you do not like the default arguments, switch them off by setting `COMFYUI_NO
 
 You can use these variables in `compose.yaml`.
 
-| Variable            | Default | Description                                                                                                |
-|---------------------|---------|------------------------------------------------------------------------------------------------------------|
-| PUID                | `1000`  | Set the User ID for files.                                                                                 |
-| PGID                | `1000`  | Set the Group ID for files.                                                                                |
-| COMFYUI_NO_DEFAULTS | `false` | If `true`, disable default arguments, see how to pass [your own arguments to ComfyUI](#comfyui-arguments). |
+| Variable                  | Default                                | Description                                                                                                    |
+|---------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| PUID                      | `1000`                                 | Set the User ID for files.                                                                                     |
+| PGID                      | `1000`                                 | Set the Group ID for files.                                                                                    |
+| COMFYUI_NO_DEFAULTS       | `false`                                | If `true`, disable default arguments, see how to pass [your own arguments to ComfyUI](#comfyui-arguments).     |
+| LORA_MANAGER_SETTINGS_DIR | `/opt/comfyui/app/user/__lora_manager` | Where [ComfyUI-Lora-Manager](https://github.com/willmiao/ComfyUI-Lora-Manager) stores its settings and caches. |
 
 ### Data storage
 

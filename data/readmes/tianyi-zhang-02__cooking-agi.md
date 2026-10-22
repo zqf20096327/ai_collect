@@ -14,15 +14,15 @@
   <tr>
     <td align="center" width="33%">
       <picture><source media="(prefers-color-scheme: light)" srcset=".github/media/tour/en-figure-light.webp"><img src=".github/media/tour/en-figure-dark.webp" width="280" alt="A roofline figure stepping through three operations"></picture>
-      <br><b>Step by step</b><br>Each figure replays the note's own worked example and stops on its result.
+      <br><b>Step by step</b><br>Follow the worked example, pausing or replaying the calculation as needed.
     </td>
     <td align="center" width="33%">
       <picture><source media="(prefers-color-scheme: light)" srcset=".github/media/tour/en-paper-light.webp"><img src=".github/media/tour/en-paper-dark.webp" width="280" alt="BEVFormer's architecture figure embedded in a note"></picture>
-      <br><b>From the papers</b><br>The original figure where it is explained, with credit and licence.
+      <br><b>From the papers</b><br>Architecture figures alongside their explanations, with sources and licences.
     </td>
     <td align="center" width="33%">
       <picture><source media="(prefers-color-scheme: light)" srcset=".github/media/tour/en-frontier-light.webp"><img src=".github/media/tour/en-frontier-dark.webp" width="280" alt="A table of settled, still moving and signals to watch"></picture>
-      <br><b>Frontier watch</b><br>What is settled, what is still moving, and what to watch, dated and sourced.
+      <br><b>Frontier watch</b><br>What new methods have demonstrated and what remains open, with dates and sources.
     </td>
   </tr>
 </table>
@@ -71,7 +71,7 @@ Diagrams show the main idea without requiring interaction. The controls are ther
 
 ### Practice with your AI agent (interview coach skill)
 
-Install the notes into an agent that reads skills, such as Claude Code or Codex, and it becomes an interviewer: one question at a time, graded against the notes, with follow-up questions, and a record of what you got wrong so the next session starts there. The notes and questions come from the site's read-only data API and update with the site; your answers and scores stay on your machine.
+Install the skill into an AI agent such as Claude Code or Codex to practice against the notes: one question at a time, feedback and follow-ups after your answer, and a record of what to revisit next time. The notes and questions come from the site's read-only data API and update with the site. Progress records are saved on your machine; the script does not upload them to this site. Answers you enter into your AI agent are still handled according to that agent's and model provider's settings—this does not make the conversation local-only.
 
 ```bash
 npx skills add https://github.com/tianyi-zhang-02/cooking-agi --skill cooking-agi-interview
@@ -85,7 +85,7 @@ Then ask, for example, "Mock interview for an LLM inference engineer role, 5 que
 
 <!-- repository-only -->
 
-<a href="https://tianyi-zhang-02.github.io/cooking-agi/learn/coverage.en.html"><picture><source media="(prefers-color-scheme: dark)" srcset="https://tianyi-zhang-02.github.io/cooking-agi/static/readme-topics-en-dark.svg"><img src="https://tianyi-zhang-02.github.io/cooking-agi/static/readme-topics-en-light.svg" width="100%" alt="Topics by area: how many notes each has and which are drafts; numbers update on every deploy"></picture></a>
+<a href="https://tianyi-zhang-02.github.io/cooking-agi/learn/coverage.en.html"><picture><source media="(prefers-color-scheme: dark)" srcset="https://tianyi-zhang-02.github.io/cooking-agi/static/readme-topics-en-dark.svg"><img src="https://tianyi-zhang-02.github.io/cooking-agi/static/readme-topics-en-light.svg" width="100%" alt="Topics by area and how many notes each has; numbers update on every deploy"></picture></a>
 
 <!-- /repository-only -->
 
@@ -94,7 +94,7 @@ A few articles to start reading now:
 - **How models work:** [Transformer walkthrough](https://tianyi-zhang-02.github.io/cooking-agi/00-foundations/transformer-lab.en.html) · [BERT](00-foundations/core/bert.en.md) · [CLIP and multimodal learning](03-multimodal-learning/clip.en.md).
 - **How models learn:** [Training basics](learn/pretraining/README.en.md) · [Deep RL](05-post-training/deep-rl/README.en.md) · [Post-training](05-post-training/README.en.md) · [LLM-as-a-Judge](07-evaluation/llm-as-a-judge/README.en.md).
 - **How models get used:** [Inference](learn/inference/README.en.md) · [Search and retrieval](04-search/README.en.md) · [Agents and tools](10-agents/README.en.md).
-- **What's moving:** [Frontier watch](11-frontier/README.en.md) (world models, self-improvement, test-time compute) · [AI infrastructure](12-infra/README.en.md) and [perception, robots and driving](13-embodied/README.en.md), both drafts pending review.
+- **What's moving:** [Frontier watch](11-frontier/README.en.md) (world models, self-improvement, test-time compute) · [AI infrastructure](12-infra/README.en.md) and [perception, robots and driving](13-embodied/README.en.md).
 
 For practice, head to [ML coding](learn/ml-exercises/README.en.md), [Python](interview/python.en.md), [algorithm patterns](interview/leetcode.en.md), or [system design](learn/system-design/README.en.md).
 
@@ -110,9 +110,11 @@ For practice, head to [ML coding](learn/ml-exercises/README.en.md), [Python](int
 
 ### Now
 
-**Better notes, not more of them.** Every note has been re-read once in both languages, and in October the facts were checked again against primary sources: errors fixed, stale numbers updated, repeated explanations folded into one place. The newest series (AI infrastructure, perception and driving, three frontier series, scaling, diffusion LMs and quantization) are drafts until the site owner has read them. If something reads awkwardly, is hard to follow, or seems wrong, please [tell us](https://github.com/tianyi-zhang-02/cooking-agi/issues/new?template=note-feedback.yml); every article also ends with a feedback button.
+Recent work has focused on revising existing notes: checking primary sources, updating old figures, consolidating repeated explanations, and adding worked examples. Both languages have had an initial read-through. The October 21 update included another note-by-note review and removed draft labels from several reviewed series.
 
-**Next:** a faster way to the answer: better search and quicker pages, then an MCP server, so Claude, ChatGPT and Cursor can search the notes and quiz you from the same data as the [interview coach skill](#interview-coach). For Jetson, physical simulation, and reviewing the vision, driving and robotics drafts, we'd like people who have worked in those areas to join us. See the [roadmap](community/roadmap.en.md) for the full plan; the scope of the upcoming v1.0 interview-prep release is in [release scope](community/updates.en.md).
+Review does not catch everything. If a passage sounds awkward, is hard to follow, or contains an error, please [tell us](https://github.com/tianyi-zhang-02/cooking-agi/issues/new?template=note-feedback.yml). Every article has a feedback link at the end.
+
+**Next:** a faster way to the answer: better search and quicker pages, then an MCP server, so Claude, ChatGPT and Cursor can search the notes and quiz you from the same data as the [interview coach skill](#interview-coach). For Jetson, physical simulation, and reviewing the vision, driving and robotics series, we'd like people who have worked in those areas to join us. See the [roadmap](community/roadmap.en.md) for the full plan; the scope of the upcoming v1.0 interview-prep release is in [release scope](community/updates.en.md).
 
 ### Topic coverage
 
@@ -161,7 +163,9 @@ Details of every merge are in the [changelog](README.md#changelog) at the bottom
 
 <!-- /repository-only -->
 
-Everyone with a commit or co-author credit, the reviewers who approve changes in each area, and where readers went next if they chose to share it. The card is rebuilt from git history, GitHub and `site/collaboration.toml` on every deploy and every hour. Commit counts are not a ranking: questions, reviews and corrections count too. To be credited for a review or correction, or to share your next stop (only what you choose to show), open an issue: [credit me](https://github.com/tianyi-zhang-02/cooking-agi/issues/new?template=add-me-to-the-crew.yml) · [share my next stop](https://github.com/tianyi-zhang-02/cooking-agi/issues/new?template=next-stop.yml).
+This lists contributors with commit or co-author credit, reviewers for each area, and readers' next steps when they choose to share them. The card updates on deployment and every hour using git history, GitHub, and `site/collaboration.toml`. Commit counts tell only part of the story; questions, reviews, and corrections matter too.
+
+To add credit for a review or correction, or share your next stop, open an issue: [add a contribution credit](https://github.com/tianyi-zhang-02/cooking-agi/issues/new?template=add-me-to-the-crew.yml) · [share my next stop](https://github.com/tianyi-zhang-02/cooking-agi/issues/new?template=next-stop.yml). Include only what you want to make public.
 
 <span id="_3"></span>
 

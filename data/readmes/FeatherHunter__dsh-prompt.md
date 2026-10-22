@@ -160,13 +160,17 @@ dsh plugin --profile web remove dsh-prompt   # 卸载
 
 </div>
 
-**[dsh-mattpocock-skills-deck](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck)** —— 27 个工程技能包，面板上直接调用，无需手动装技能
+<div align="left">
 
-**[dsh-opencode-palette](https://github.com/FeatherHunter/dsh-opencode-palette)** —— 38 款 opencode 经典配色一键换装 DSH，即点即换，重启不丢
+**[dsh-mattpocock-skills-deck](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck)** —— 近 30 万 star 的 mattpocock/skills 整套预置好（27 个技能），装好即用。
 
-**[ilife](https://github.com/FeatherHunter/ilife)** —— 爱生活：DSH 里的居家生活套件，一个仓库七个可独立安装的插件
+**[dsh-opencode-palette](https://github.com/FeatherHunter/dsh-opencode-palette)** —— 38 款 opencode 经典配色 + 20+自定义主题 一键换装 DSH。
 
-**[dsh-im-companion](https://github.com/FeatherHunter/dsh-im-companion)** —— 以助理和家的概念增强 dsh-im：哪个工作区有助理在管、在不在线尽收眼底，搬家拖一下就行
+**[dsh-im-companion](https://github.com/FeatherHunter/dsh-im-companion)** —— 给 dsh-im 加了「助理」和「家」的概念。
+
+**[ilife](https://github.com/FeatherHunter/ilife)** —— ⚠️建设中⚠️爱生活：居家生活套件，记账、运动、饮食、体重、食谱、物品管理、作息规划、备忘录等。
+
+</div>
 
 <div align="center">
 
@@ -180,13 +184,13 @@ dsh plugin --profile web remove dsh-prompt   # 卸载
 
 感谢每一位提交 Issue、PR 与Star的朋友，是你们让这个工具箱一点点变好。万分感谢！🎉🎉🎉🎉🎉🎉🎉🎉🎉
 
----
-
-[@wqzhellohhwy](https://github.com/wqzhellohhwy)🌹🌹🌹 — [#146](https://github.com/FeatherHunter/dsh-prompt/issues/146) 运行时样式缺归属（已修）、[#147](https://github.com/FeatherHunter/dsh-prompt/issues/147) 依赖声明拖累插件 pending（已修）、[#148](https://github.com/FeatherHunter/dsh-prompt/issues/148) 关远程档整机字号被打回 14px（已修）
-
-[@dagangwo](https://github.com/dagangwo)🌹 — [#175](https://github.com/FeatherHunter/dsh-prompt/issues/175) 悬浮列表最上边一项选不到、窗口自动关闭（待复现）
-
-[@jheroy](https://github.com/jheroy)🌹 — [#165](https://github.com/FeatherHunter/dsh-prompt/issues/165) 屏蔽预制模板需求，并拍板按钮方案与交互细节
+<!-- THANKS-TABLE-ZH-START -->
+| 贡献者 | 致敬 | 贡献 |
+| --- | --- | --- |
+| [@wqzhellohhwy](https://github.com/wqzhellohhwy) | 🌹🌹🌹 | [#146](https://github.com/FeatherHunter/dsh-prompt/issues/146) [#147](https://github.com/FeatherHunter/dsh-prompt/issues/147) [#148](https://github.com/FeatherHunter/dsh-prompt/issues/148) |
+| [@dagangwo](https://github.com/dagangwo) | 🌹 | [#175](https://github.com/FeatherHunter/dsh-prompt/issues/175) |
+| [@jheroy](https://github.com/jheroy) | 🌹 | [#165](https://github.com/FeatherHunter/dsh-prompt/issues/165) |
+<!-- THANKS-TABLE-ZH-END -->
 
 </div>
 
@@ -204,6 +208,6 @@ dsh plugin --profile web remove dsh-prompt   # 卸载
 
 <div align="center">
 
-![星标增长曲线（双轴）：左轴累计星标，右轴每日新增](https://raw.githubusercontent.com/FeatherHunter/dsh-prompt/main/docs/star-history.svg?v=20261021)
+![星标增长曲线（双轴）：左轴累计星标，右轴每日新增](https://raw.githubusercontent.com/FeatherHunter/dsh-prompt/main/docs/star-history.svg?v=20261022)
 
 </div>

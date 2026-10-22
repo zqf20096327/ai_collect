@@ -20,9 +20,9 @@
 Key features:
 
 - **Simple, Pythonic API** — fit a model in one line with `torch_bsf.fit()`, which solves the least-squares problem exactly by default, call it like any PyTorch module, and persist control points in `.pt`, `.csv`, `.tsv`, `.json`, or `.yaml` formats.
-- **Scalable Training** — fully vectorized `forward` pass, and an optional [PyTorch Lightning](https://www.pytorchlightning.ai/) trainer (`solver="trainer"`) for seamless scaling from a single CPU to multi-GPU, multi-node clusters.
+- **Scalable Training** — fully vectorized `forward` pass, and an optional [PyTorch Lightning](https://www.pytorchlightning.ai/) trainer (`solver="trainer"`, installed with `pip install "pytorch-bsf[lightning]"`) for seamless scaling from a single CPU to multi-GPU, multi-node clusters.
 - **Robust & Automatic Fitting** — built-in smoothness regularization tames noisy data, and automatic degree selection via k-fold cross-validation removes guesswork.
-- **Rich ML Ecosystem** — scikit-learn-compatible `BezierSimploidRegressor` for use in `Pipeline` and `GridSearchCV`; [MLflow](https://mlflow.org/) experiment tracking; active learning; and advanced sampling strategies (Dirichlet, Sobol).
+- **Rich ML Ecosystem** — scikit-learn-compatible `BezierSimploidRegressor` for use in `Pipeline` and `GridSearchCV`; [MLflow](https://mlflow.org/) experiment tracking for the CLI (optional, installed with `pip install "pytorch-bsf[mlflow]"`); active learning; and advanced sampling strategies (Dirichlet, Sobol).
 - **Beyond Simplices** — the same `torch_bsf.fit()` fits Bézier simploids (e.g., `simploid_type=(2, 1)` for a prism), and `torch_bsf.simploidal` fits simploidal sets, when a single simplex is not the right parameter domain.
 - **Ready to Run** — CLI entry points, a pre-built Docker image, and a Conda/MLflow project so you can run `pytorch-bsf` without installing it into your local environment.
 
@@ -38,6 +38,8 @@ See [Full Documentation](https://opthub-org.github.io/pytorch-bsf/) and the foll
 ## Quickstart
 
 **Requirements:** For local installation and CLI/library usage, Python >=3.10. For Docker-only usage, only Docker is required.
+
+**Optional extras:** Lightning (`solver="trainer"`), MLflow (CLI experiment tracking), SciPy, scikit-learn and matplotlib are optional; install them with extras, e.g. `pip install "pytorch-bsf[lightning,mlflow]"`. See [Installation](https://opthub-org.github.io/pytorch-bsf/master/installation.html) for the list of extras and the features each one enables, and for upgrading from a version that installed Lightning and MLflow by default.
 
 First, prepare your data:
 
@@ -62,7 +64,7 @@ EOS
 
 **Prerequisites:** [Docker](https://docs.docker.com/get-docker/).
 
-A pre-built image is available on GHCR, built on `continuumio/miniconda3` with PyTorch installed via the `pytorch` conda channel, providing Intel MKL as the BLAS backend:
+A pre-built image is available on GHCR, built on `condaforge/miniforge3` with PyTorch (CPU build) installed from the `conda-forge` channel:
 
 ```bash
 docker run --rm \
@@ -77,9 +79,9 @@ docker run --rm \
 
 ### 2. via MLflow (No Installation Required)
 
-**Prerequisites:** [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or Anaconda, and `pip install mlflow`.
+**Prerequisites:** [Miniforge](https://conda-forge.org/download/), and `pip install mlflow`. Another conda installation also works, but conda 26.7 and later still add the channels in your `.condarc` to the environment ([conda/conda#16816](https://github.com/conda/conda/issues/16816)), so remove `defaults` there (`conda config --remove channels defaults`) to keep it out.
 
-MLflow creates a conda environment from the project's `environment.yml`, which uses the `pytorch` conda channel and Intel MKL:
+MLflow creates a conda environment from the project's `environment.yml`, which installs PyTorch and the other dependencies from the `conda-forge` channel only:
 
 ```bash
 mlflow run https://github.com/opthub-org/pytorch-bsf \
@@ -96,6 +98,12 @@ Installation:
 
 ```bash
 pip install pytorch-bsf
+```
+
+MLflow is optional. To log the parameters, metrics and models of the CLI runs to MLflow (see `loglevel` below), install the `mlflow` extra (or `all`); without it, the CLI fits and saves the model but logs nothing:
+
+```bash
+pip install "pytorch-bsf[mlflow]"
 ```
 
 Execution:
@@ -129,7 +137,7 @@ The MLflow `main` entry point exposes `params`, `values`, `meshgrid`, `degree`, 
 | split_ratio | float $(0 < x \le 1)$ | `1.0` | The ratio of training data against validation data. The validation error is logged as `val_mse` and `val_mae`. When set to `1.0` (the default), all data is used for training. |
 | seed | int | `None` | The random seed for splitting the data and for training. |
 | save | path | see desc. | The file to save the control points of the fitted model to (`.csv`, `.tsv`, `.json`, `.yml`, `.yaml` or `.pt`). Defaults to `<params>,<values>,control_points,t_<a_1-...-a_n>,d_<degree>.csv`. CLI only. |
-| loglevel | int $(0 \le x \le 2)$ | `2` | What objects to be logged. `0`: nothing; `1`: metrics; `2`: metrics and models. |
+| loglevel | int $(0 \le x \le 2)$ | `2` | What objects to be logged to MLflow. `0`: nothing; `1`: metrics; `2`: metrics and models. The CLI requires the `mlflow` extra (`pip install "pytorch-bsf[mlflow]"`) to log; without it, a warning is printed and nothing is logged. |
 | batch_size | int $(x \ge 1)$ | `None` | The size of minibatch for `--solver=trainer`. The default (`None`) uses all records in a single batch. |
 | max_epochs | int $(x \ge 1)$ | `2` | The number of epochs to stop training for `--solver=trainer`. |
 | accelerator | `"auto"`, `"cpu"`, `"gpu"`, etc. | `"auto"` | Accelerator to use for `--solver=trainer`. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/accelerator.html). |
@@ -216,7 +224,7 @@ Additional parameters for k-fold (all standard parameters except `split_ratio` a
 | shuffle     | bool  | `True`  | Whether to shuffle data before splitting (`--no-shuffle` to disable). |
 | seed        | int   | `None`  | Random seed for shuffling (and for training).       |
 
-The command prints the errors of each fold model on its held-out fold (`val_mse` and `val_mae`) and their means, which are also logged to MLflow (unless `--loglevel=0`).
+The command prints the errors of each fold model on its held-out fold (`val_mse` and `val_mae`) and their means, which are also logged to MLflow (unless `--loglevel=0`, and if the `mlflow` extra is installed).
 It saves per-fold meshgrid predictions as well as an ensemble mean:
 
 - `{params},{values},{num_folds}fold,meshgrid,t_{type},d_{degree},{k}.csv` (per fold)

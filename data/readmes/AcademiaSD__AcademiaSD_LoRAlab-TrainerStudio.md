@@ -53,6 +53,7 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 | **SDXL** | Image LoRAs for SDXL Base, Pony, Illustrious, NoobAI, Juggernaut, RealVis or your own SDXL checkpoint | **4 GB** (NF4) / 12 GB (BF16) |
 | **LTX-2.3** (also LTX-2.5) | Character and style LoRAs for the LTX video model, trained from images | 12 GB |
 | **MiniMax-H3** | Video LoRAs from images, clips and audio, plus training-free **RefMods** | 8 GB |
+| **YuE2-3B** *(experimental / beta)* | Song LoRAs: the AR clones the singer's voice, the NAR learns lyrics and phrasing | ~8 GB (NF4, measured on NAR) |
 
 ---
 
@@ -559,6 +560,38 @@ MiniMax-H3 is a 33B model that generates **video and audio together**. The offic
 | Steps | 600 (~37 min on 16 GB) | 600 (~1 h 10 min on 16 GB) |
 
 Rank 16 matters for characters: with rank 8 the likeness is just as good, but the model starts ignoring the prompt (ask for a beach, get a bedroom). On an 8 GB card the same image run takes ~80 minutes instead of 37.
+
+---
+
+### YuE2-3B — song LoRAs (voice AR + phrasing NAR) · ⚠ Experimental / Beta
+
+> [!WARNING]
+> **This trainer is experimental and in beta.** The settings below — defaults, "verified starting point", steps, rank and learning rates — are **not final** and should not be taken too seriously: they come from a handful of runs on one dataset. **Check every result by ear and keep adjusting it**; expect the recipe to change.
+
+> [!IMPORTANT]
+> **Real tests: the AR LoRA clones the singer's voice; the NAR LoRA does not.** To get an artist's voice, train the **`ar`** stage (or `both`) and load the AR LoRA in ComfyUI. A NAR LoRA alone changes how the codes are rendered, but the voice stays the base model's.
+
+YuE2-3B (m-a-p) is a **Mixture-of-Transformers**: every one of its 28 blocks carries two complete routes — an **AR** causal route that generates the semantic codec tokens, and a **NAR** route that does flow matching on the 64-dim audio latent. This trainer keeps them apart: choose **`ar` (default), `nar`, or `both`** in Training Settings. Each stage exports its own LoRA and only touches its own branch; `both` runs NAR first, reloads the base model from disk, then runs AR.
+
+- **Datasets:** songs (`.wav`, `.mp3`, `.flac`, …) with their lyrics in a `.txt` of the same name. The prepare pass re-encodes to **48 kHz stereo** and slices by silence into ≤30 s clips (`__cNN.wav`); a global `Style prompt` (and the optional `[Tags]`/`[Lyrics]` protocol) shapes every request.
+- **Real-audio codes:** m-a-p has not released YuE2's audio-to-code tokenizer, so Pre-Cache uses the community one: MERT-v2-FullSong layer 20 → Mothersuperior's tokenizer head (`v5_30k`) → one semantic code per 40 ms latent frame (`<cache>/_realcodes_<clip>.pt`, ~2.8 GB VRAM, ~1.4 GB downloaded once). It gets about 1 code in 5 exactly right, but rendering those codes with the base NAR keeps the song's voice timbre, harmony and structure.
+- **Stage = `nar`** — lyrics and phrasing: it renders the codes into audio. **In real tests it does not clone the voice**: the voice comes from the codes, which the AR writes. It learns the VAE-latent velocity seeing the text prefix **plus the clip's real codes**, the same context ComfyUI gives it, so the LoRA acts where ComfyUI generates. It is exported in ComfyUI's native layout (`diffusion_model.model.layers.N.self_attn.qkv_proj`, `mlp.gate_up_proj`…, q/k/v and gate/up fused losslessly): load it with **Load LoRA (model only)**.
+- **Stage = `ar`** (default) — voice identity, vocal timbre, instruments and the sound of the artist. **This is the stage that clones the voice in real tests**: the AR writes the semantic codes, and the voice lives in those codes (cross-entropy on the clips' real codes). This is the stage of the community's artist LoRAs, mixed 50 % with the minted regularizer pack so a small dataset cannot collapse YuE2's token grammar. It memorizes the training songs past ~1500 steps.
+- **Stage = `both`** — NAR first, then a fresh base model from disk for AR: two exports, `YuE2_FINAL_NAR_LoRA.safetensors` (ComfyUI layout) + `YuE2_FINAL_AR_LoRA.safetensors` (ComfyUI layout for the CLIP side, `text_encoders.model.layers.N.self_attn.qkv_proj`…). In ComfyUI, load the NAR LoRA on the model and the AR LoRA with **Load LoRA** (clip strength). There is no `_BOTH` file: the two stages load in different places, so they are always two LoRAs.
+- **File names:** every LoRA carries its stage. In the output folder: `YuE2_AR_LoRA_step_N` / `YuE2_FINAL_AR_LoRA` and `YuE2_NAR_LoRA_step_N` / `YuE2_FINAL_NAR_LoRA` (older runs named the NAR `YuE2_LoRA_step_N` / `YuE2_FINAL_LoRA`; they are still recognised). **Send to Models** and **Download LoRA** add `_AR` or `_NAR` to your *Final LoRA Filename* (`yue2_lora_<project>_AR.safetensors`), read from the LoRA's own metadata; Send to Models exports the stage selected in *Training Stage*, and with `both` it exports the two files.
+- **Previews** render short songs (codes → 32-step midpoint ODE → VAE decoder) as 48 kHz WAVs during training.
+- **NF4:** a pre-quantized backbone (`YuE2-3B_NF4`, built with `tools/yue2/5_conversor_YuE2_NF4.py`) loads in ~5 s at 3.1 GB; only the attention+MLP of both branches are quantized — the latent bridges (`llm2vae`/`vae2llm`/`time_embedder`), layernorms, embeddings and heads stay BF16. Without the cache the trainer quantizes the raw model on the fly.
+
+| Starting point (not final) | NAR (lyrics & phrasing) | AR (voice, timbre & sound) |
+| :--- | :--- | :--- |
+| Rank / Alpha | 16 / 16 | 8 / 8 |
+| Learning rate | 3e-4 | 2e-4 |
+| Steps | 1200 | 600 |
+| VRAM (NF4, 30-32 s clips) | ~8 GB steady, peaks 8.7 GB | pending |
+
+Measured on an RTX 5080 with the Agila dataset (91 clips, rank 16/16, lr 3e-4): the NF4 backbone loads in 3.1 GB and the run holds **~8 GB of VRAM with brief peaks to ~8.7 GB** (preview ODE + VAE decode and checkpoint saves) — everything fits comfortably under 9 GB on a 16 GB card. Loss went 1.18 → 1.08 in 300 steps and → 1.056 by step 1200, dropping slowly and cleanly; exact-step resume reproduced the schedule mid-run (step 301 continues the same warmup/cosine curve).
+
+The NAR loss depends on the clips' latent amplitude (the latent is not normalized, std ≈ 1.07): ~2.3 at the start on short synthetic test clips, ~1.15 on real music (91 clips of a full album, 30–32 s). It falls slowly and cleanly: 1.18 → 1.08 in 300 steps and → 1.056 at 1200 (rank 16/16, lr 3e-4). Training holds **~8 GB of VRAM on a 16 GB card with the NF4 backbone** (brief peaks ~8.7 GB at preview decode and checkpoint save) and runs at ~0.4 s/step with 30 s clips; the BF16 backbone takes ~7.3 GB more of headroom (~1 s/step with 12 s clips). The initial AR CE is well below `ln(32768)` and drops steadily.
 
 ---
 

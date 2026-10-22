@@ -89,7 +89,7 @@ docker compose logs spillway    # prints the setup link
 ```
 
 This pulls the signed image `ghcr.io/artemy-and/spillway` for amd64 or arm64; nothing is built
-on your machine. `latest` follows releases. To pin one, put `SPILLWAY_TAG=0.4.0` in `.env` next
+on your machine. `latest` follows releases. To pin one, put `SPILLWAY_TAG=0.5.0` in `.env` next
 to the compose file (`.env.example` lists every setting). Put Spillway behind your usual reverse
 proxy for HTTPS and set `PUBLIC_URL` to the address people open.
 
@@ -136,8 +136,8 @@ with no long-lived signing key, and carry an SBOM and build provenance. To check
 it:
 
 ```sh
-cosign verify ghcr.io/artemy-and/spillway:0.4.0 \
-  --certificate-identity https://github.com/Artemy-And/spillway/.github/workflows/release.yml@refs/tags/v0.4.0 \
+cosign verify ghcr.io/artemy-and/spillway:0.5.0 \
+  --certificate-identity https://github.com/Artemy-And/spillway/.github/workflows/release.yml@refs/tags/v0.5.0 \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
 
@@ -214,7 +214,12 @@ the same Codex can run on Claude or on the local model.
 
 **Overview.** Spend against the budget, the share served by local models, and what needs attention.
 
-![Overview: $147.82 of an $860 budget spent this month, 16% of requests served by local models, Marketing over its budget](docs/overview.png)
+![Overview: $179.90 of an $860 budget spent this month, 18% of requests served by local models, Marketing over its budget](docs/overview.png)
+
+**Where the money goes.** Who spends the most, which apps send the requests, and what the same
+requests would have cost on another model.
+
+![Bottom of Overview: top spenders, requests by app (Claude Code 33%, n8n 32%, other apps 35%) and the month's requests costing about $63.65 on Claude Haiku instead of $179.90](docs/overview-costs.png)
 
 **Keys.** One key per person, device or agent, each with its own daily limit.
 

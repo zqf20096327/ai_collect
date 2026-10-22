@@ -13,6 +13,20 @@
 </p>
 
 <p align="center">
+  <a href="https://sonarcloud.io/summary/overall?id=arrase_ollama-agent"><img src="https://sonarcloud.io/api/project_badges/measure?project=arrase_ollama-agent&amp;metric=alert_status" alt="Quality Gate Status"></a>
+  <a href="https://sonarcloud.io/summary/overall?id=arrase_ollama-agent"><img src="https://sonarcloud.io/api/project_badges/measure?project=arrase_ollama-agent&amp;metric=coverage" alt="Coverage"></a>
+  <a href="https://sonarcloud.io/summary/overall?id=arrase_ollama-agent"><img src="https://sonarcloud.io/api/project_badges/measure?project=arrase_ollama-agent&amp;metric=bugs" alt="Bugs"></a>
+  <a href="https://sonarcloud.io/summary/overall?id=arrase_ollama-agent"><img src="https://sonarcloud.io/api/project_badges/measure?project=arrase_ollama-agent&amp;metric=vulnerabilities" alt="Vulnerabilities"></a>
+  <a href="https://sonarcloud.io/summary/overall?id=arrase_ollama-agent"><img src="https://sonarcloud.io/api/project_badges/measure?project=arrase_ollama-agent&amp;metric=code_smells" alt="Code Smells"></a>
+  <a href="https://sonarcloud.io/summary/overall?id=arrase_ollama-agent"><img src="https://sonarcloud.io/api/project_badges/measure?project=arrase_ollama-agent&amp;metric=sqale_index" alt="Technical Debt"></a>
+  <a href="https://sonarcloud.io/summary/overall?id=arrase_ollama-agent"><img src="https://sonarcloud.io/api/project_badges/measure?project=arrase_ollama-agent&amp;metric=duplicated_lines_density" alt="Duplicated Lines (%)"></a>
+  <a href="https://sonarcloud.io/summary/overall?id=arrase_ollama-agent"><img src="https://sonarcloud.io/api/project_badges/measure?project=arrase_ollama-agent&amp;metric=security_rating" alt="Security Rating"></a>
+  <a href="https://sonarcloud.io/summary/overall?id=arrase_ollama-agent"><img src="https://sonarcloud.io/api/project_badges/measure?project=arrase_ollama-agent&amp;metric=reliability_rating" alt="Reliability Rating"></a>
+  <a href="https://sonarcloud.io/summary/overall?id=arrase_ollama-agent"><img src="https://sonarcloud.io/api/project_badges/measure?project=arrase_ollama-agent&amp;metric=sqale_rating" alt="Maintainability Rating"></a>
+  <a href="https://sonarcloud.io/summary/overall?id=arrase_ollama-agent"><img src="https://sonarcloud.io/api/project_badges/measure?project=arrase_ollama-agent&amp;metric=ncloc" alt="Lines of Code"></a>
+</p>
+
+<p align="center">
   <a href="#-not-another-coding-agent">Why Ollama Agent?</a> •
   <a href="#-built-for-ollama-not-bolted-on">The Ollama Advantage</a> •
   <a href="#-quick-start">Quick Start</a> •

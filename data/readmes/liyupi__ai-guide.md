@@ -158,9 +158,9 @@ ai-guide/
 │   ├── 50 产品变现/               # 盈利模式、SEO、运营
 │   ├── 60 Vibe Coding 资源大全
 │   ├── 65 鱼皮的 AI 编程实战视频课
-│   ├── 70 Vibe Coding 概念大全
-│   ├── 75 AI 大模型原理入门
+│   ├── 70 AI 编程概念大全/         # 概念词条 + 大模型原理、Personal Agent 等深度讲解
 │   └── 90 Vibe Coding 常见问题和解决
+├── OpenClaw 保姆级教程/           # 从安装部署到多 Agent 协作的系列教程
 ├── AI/
 │   ├── 鱼皮的 AI 指南/            # AI 核心概念、工具、技巧
 │   ├── 关于 DeepSeek/             # DeepSeek 基础知识

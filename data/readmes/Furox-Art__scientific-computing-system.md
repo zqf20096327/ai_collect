@@ -49,19 +49,23 @@ The import name is **`cds`** (the distribution is `scientific-computing-system`)
 | **PyPI** (the library) | `pip install scientific-computing-system` | The actual Python package. Zero runtime dependencies. This is what you want. |
 | **npm** (a launcher shim) | `npm i -g scientific-computing-system` | A thin Node wrapper that runs `python -m cds`. It ships no Python and needs the Python distribution installed so that `python -m cds` resolves. |
 
-Both channels are published at the same version. They are **not** equally
-verifiable:
+At the time of writing (2026-10-22), both registries' latest versions are 2.2.13,
+but they are not published in lockstep and are **not** equally verifiable:
 
 - **PyPI** — carries a **PEP 740 provenance attestation** (Sigstore-signed,
-  binding the file digest to the publishing workflow). Verified on 2.2.3, and
-  on every release since attestations were enabled.
+  binding the file digest to the publishing workflow). Verified on 2.2.3,
+  2.2.4, 2.2.5, 2.2.6, 2.2.8, 2.2.11, 2.2.12 and 2.2.13. The 2.2.7 wheel and
+  sdist return 404 from the per-file provenance endpoint, so "every release
+  since attestations were enabled" would be false.
 - **npm** — carries a **Sigstore attestation as of 2.2.3**, minted by npm's
   OIDC trusted publisher (the registry serves both an npm publish attestation
   and a SLSA provenance v1 bundle for that tarball). 1.0.0 through 2.2.2
   predate the publisher registration and have none, so pin 2.2.3 or newer. npm
-  also exposes `dist.integrity` (sha512), which is a content pin, not proof of
-  origin, and `dist.signatures`, which is npm's registry transport signature,
-  not build provenance.
+  has no 2.2.7, 2.2.8 or 2.2.11 at all: its 2.2.x line is 2.2.0 through 2.2.6
+  plus 2.2.12 and 2.2.13, which is how the latest versions can match while the
+  histories do not. npm also exposes `dist.integrity` (sha512), which is a content pin,
+  not proof of origin, and `dist.signatures`, which is npm's registry transport
+  signature, not build provenance.
 
 Prefer PyPI if you need an attestation for a version older than 2.2.3.
 [SECURITY.md](SECURITY.md#distribution-channels-and-provenance) has the
@@ -111,7 +115,7 @@ The authoritative per-module list is the [API reference](https://furox-art.githu
 
 ### Runnable examples and the dashboard
 
-- **[`examples/`](examples/)** — 35 runnable scripts and notebooks (33 `.py`, 2
+- **[`examples/`](examples/)** — 34 runnable scripts and notebooks (32 `.py`, 2
   `.ipynb`), each self-contained and dependency-free unless noted. Every tutorial
   page in the docs has a matching example.
 - **[`dashboard/app.py`](dashboard/app.py)** — a Streamlit dashboard:
@@ -177,7 +181,7 @@ The package installs a `cds` command with 13 subcommands:
 
 ```console
 $ cds --version
-System version 2.2.3
+System version 2.2.13
 $ cds constants        # physical constants table
 ```
 
@@ -207,10 +211,14 @@ NumPy or the 2.0 build instead.
 ## Contributing
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[dev,test,docs]"   # lint/type, test, and docs tooling
 pytest            # CI also enforces 100% blended coverage (statement + branch)
 mkdocs serve      # docs at http://127.0.0.1:8000/
 ```
+
+`.[dev,test,docs]` is the smallest environment for the default test suite and the docs.
+Add `.[property]` for the Hypothesis invariants, or `.[all]` for the dashboard,
+HDF5/NetCDF, plotting and scientific backends together.
 
 Issues and PRs welcome; see [CONTRIBUTING.md](CONTRIBUTING.md) and
 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).

@@ -140,6 +140,7 @@ Maintainers can use the [arXiv candidate pipeline](docs/arxiv-pipeline.md) to di
 ---
 ## Datasets & Benchmarks & Evaluation
 * **WorldMemBench**: "WorldMemBench: A Comprehensive Benchmark for Memory of Video World Models", **`arxiv 2026.10`**. [[Paper](https://arxiv.org/abs/2610.19063)] [[Website](https://zju-real.github.io/WorldMemBench/)] [[Code](https://github.com/ZJU-REAL/WorldMemBench)]
+* **NavSafe-∞**: "NavSafe-∞: Benchmarking Closed-Loop Driving Safety in Photorealistic Environments", **`arxiv 2026.09`**. [[Paper](https://arxiv.org/abs/2609.26618)] [[Website](https://navsafe-vail.github.io/)] [[Code](https://github.com/VAIL-UCLA/NavSafe-infty)]
 * **VeriPhy**: "VeriPhy: Agentic Physical Reasoning for World Model Evaluation and Refinement", **`arxiv 2026.09`**. [[Paper](https://arxiv.org/abs/2609.03153)]
 * **SolarWM**: "SolarWM: Open Data and Scalable Training for Long-Horizon Video World Models", **`arxiv 2026.09`**. [[Paper](https://arxiv.org/abs/2609.02886)]
 * **PAWBench**: "PAWBench: How Far Are We from Probabilistically Aligned World Modeling?", **`arxiv 2026.08`**. [[Paper](https://arxiv.org/abs/2608.27345)]
@@ -205,6 +206,7 @@ Maintainers can use the [arXiv candidate pipeline](docs/arxiv-pipeline.md) to di
 * **LikePhys**: "LikePhys: Evaluating Intuitive Physics Understanding in Video Diffusion Models via Likelihood Preference", **`ICLR 2026`**. [[Paper](https://arxiv.org/abs/2510.11512)] [[Website](https://yuanjianhao508.github.io/LikePhys/)]
 * **World-in-World**: "World-in-World: World Models in a Closed-Loop World", **`arXiv 2025.10`**. [[Paper](https://arxiv.org/abs/2510.18135)] [[Website](https://github.com/World-In-World/world-in-world)] 
 * **VideoVerse**: "VideoVerse: How Far is Your T2V Generator from a World Model?", **`arXiv 2025.10`**. [[Paper](https://arxiv.org/abs/2510.08398)] 
+* **VideoScore2**: "VideoScore2: Think before You Score in Generative Video Evaluation", **`arxiv 2025.09`**. [[Paper](https://arxiv.org/abs/2509.22799)] [[Code](https://github.com/TIGER-AI-Lab/VideoScore2)]
 * **OmniWorld**: "OmniWorld: A Multi-Domain and Multi-Modal Dataset for 4D World Modeling", **`arXiv 2025.09`**. [[Paper](https://arxiv.org/abs/2509.12201)] [[Website](https://yangzhou24.github.io/OmniWorld/)]
 * "Beyond Simulation: Benchmarking World Models for Planning and Causality in Autonomous Driving", **`ICRA 2025`**. [[Paper](https://arxiv.org/abs/2508.01922)] 
 * **WM-ABench**: "Do Vision-Language Models Have Internal World Models? Towards an Atomic Evaluation", **`ACL 2025(Findings)`**. [[Paper](https://arxiv.org/abs/2506.21876)] [[Website](https://wm-abench.maitrix.org/)]
@@ -618,7 +620,4 @@ Agent, and World Models for Reasoning and Planning (LAW)`**. [[Paper](https://ar
 * **Martian World Models**: "Martian World Models: Controllable Video Synthesis with Physically Accurate 3D Reconstructions", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/2507.07978)] [[Website](https://marsgenai.github.io)]
 * "What Has a Foundation Model Found? Using Inductive Bias to Probe for World Models", **`ICML 2025`**. [[Paper](https://arxiv.org/abs/2507.06952)]
 * "Critiques of World Models", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/2507.05169)]
-* "When do World Models Successfully Learn Dynamical Systems?", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/2507.04898)]
-* **WebSynthesis**: "WebSynthesis: World-Model-Guided MCTS for Efficient WebUI-Trajectory Synthesis", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/2507.04370)]
-* "Accurate and Efficient World Modeling with Masked Latent Transformers", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/2507.04075)]
-* **Dyn-O**: "Dyn-O: Building Structured World Models with Object-Centric Representations", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/2507.03
+* "When do World Models Successfully Learn Dynamical Systems?", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/

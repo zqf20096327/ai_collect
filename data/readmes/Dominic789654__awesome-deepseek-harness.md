@@ -345,6 +345,13 @@ _DSH's core composition mechanism: a **profile** stacks bundle patch layers, the
 - [kol-mm/dsh-config-migrate](https://github.com/kol-mm/dsh-config-migrate) — DeepSeek Harness config migration plugin: one-click export/import of DSH_HOME settings, credentials, profiles and external plugins. Cross-platform (Windows/macOS/Linux).
 - [SuangXX/dsh-zh-cot-fidelity](https://github.com/SuangXX/dsh-zh-cot-fidelity) — Global system-prompt plugin: Chinese chain-of-thought, content fidelity and anti-formulaic writing; rules are editable and take effect immediately.
 - [YOGEMOW/DSH-Cyrene](https://github.com/YOGEMOW/DSH-Cyrene) — Cyrene persona preset for DeepSeek Harness: a chat mode and a work mode (fork of Cyrene-xl/DSH-Cyrene), with a bundled world book, forms of address, three forms and style levels, plus an entry point to Eternal Page Memory.
+- [TikaFlow/dsh-model-fix](https://github.com/TikaFlow/dsh-model-fix) — Better model experience: several ways to fill model parameters, improved model compatibility, remembered reasoning level, sub-agents that follow model and reasoning level live, and AI-controlled tier switching.
+- [w17her/dsh-power-control](https://github.com/w17her/dsh-power-control) — Reload, restart or shut down the DeepSeek Harness desktop app from inside its own window.
+- [cheng-wj/dsh-app-control](https://github.com/cheng-wj/dsh-app-control) — Windows DSH plugin: restart, update and inspect the DeepSeek Harness desktop app from the model side.
+- [58fly/dsh-language-guard](https://github.com/58fly/dsh-language-guard) — Make the DSH agent think and reply in the language you choose: three strength levels, a settings panel and a sidebar quick switch. Zero dependencies, no build step.
+- [lirenjie95/IamChinese](https://github.com/lirenjie95/IamChinese) — Treats the session as a mainland-China user: locale, time zone, date and currency conventions, plus a self-consistent test persona. DSH plugin + Claude Code plugin.
+- [M1r0er/dsh-workspace-gate](https://github.com/M1r0er/dsh-workspace-gate) — Workspace-scoped plugin gate for DeepSeek Harness: plugins still load, but their prompt prefixes are stripped per workspace so tool schemas and prompt sections no longer reach the model context.
+- [rvaim/dsh-plugin-bridge](https://github.com/rvaim/dsh-plugin-bridge) — Legacy plugin compatibility layer for DeepSeek Harness (dsh-compat): runs plugins written for Claude Code and Codex with their original directory layout and semantics instead of porting each one to a DSH-native plugin.
 
 ## Harnesses & Runtimes
 
@@ -545,14 +552,4 @@ _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime
 - [omdsh-dev/omdsh-runtime](https://github.com/omdsh-dev/omdsh-runtime) — Headless execution layer reusing official Profile/Bundle/Cordis operations, adding deterministic plan/apply, candidate generations, and previous-generation recovery.
 - [wangshunnn/oh-my-dsh](https://github.com/wangshunnn/oh-my-dsh) — A collection of DeepSeek Harness plugins.
 - [yjh051108/dsh-super-injector](https://github.com/yjh051108/dsh-super-injector) — BepInEx-style mod injector: hot-injects local plugin packages into a running DSH web instance without patches or restarts.
-- [yoke233/dsh-openai-codex-auth](https://github.com/yoke233/dsh-openai-codex-auth) — OpenAI Codex OAuth login and usage card plugin.
-- [YYTbit/dsh-plugin-claude-bridge](https://github.com/YYTbit/dsh-plugin-claude-bridge) — Bridges Claude Code memory, skills, and config into DeepSeek Harness.
-- [Gordonynh/dsh-plugin-codex-import](https://github.com/Gordonynh/dsh-plugin-codex-import) — Imports Codex conversation history into DSH.
-- [Hu9956/dsh-codex-provider](https://github.com/Hu9956/dsh-codex-provider) — Codex provider plugin with OAuth login support.
-- [WSL043/dsh-codex-subscription](https://github.com/WSL043/dsh-codex-subscription) — Caches Codex subscription/usage state for DSH.
-- [kinoward/dsh-plugin-subhub](https://github.com/kinoward/dsh-plugin-subhub) — Use third-party subscription accounts in DeepSeek Harness: chat, image understanding, image generation, and image editing with the models your subscription covers, with available models and reasoning levels synced from your account; currently supports OpenAI/ChatGPT subscriptions, more providers planned.
-- [PerryLink/dsh-output-styles](https://github.com/PerryLink/dsh-output-styles) — Switch between different assistant output styles.
-- [Toukaiteio/dsh-effort-tweak](https://github.com/Toukaiteio/dsh-effort-tweak) — Adjusts model reasoning effort on the fly.
-- [csiroqa/dsh-backup-sync](https://github.com/csiroqa/dsh-backup-sync) — Snapshot backup and WebDAV sync for DSH workspaces.
-- [having5548/dsh-backup](https://github.com/having5548/dsh-backup) — Backup & restore plugin for DeepSeek Harness: workspace, full conversations (byte-exact), attachments, settings and dsh-mnemon memory data in one zip.
-- [csiroqa/dsh-schedule](https://github.com/csiroqa/dsh-schedule) — Cron-style scheduled tasks with status 
+- [yoke233/dsh-openai-codex-auth](https://github.com/yoke233/dsh-openai-codex-auth) — OpenAI Codex OAuth login and usage

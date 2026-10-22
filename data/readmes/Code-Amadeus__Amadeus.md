@@ -10,7 +10,7 @@
 <p>
   <a href="https://www.bilibili.com/video/BV1783G6hEYY/"><img src="https://img.shields.io/badge/demo-Bilibili-b94b43?labelColor=191a1d&amp;logo=bilibili&amp;logoColor=e8e2d4" alt="Bilibili demo"/></a>
   <a href="#architecture"><img src="https://img.shields.io/badge/architecture-current-444449?labelColor=191a1d" alt="Current architecture"/></a>
-  <a href="./docs/alpha-0.17.1.md"><img src="https://img.shields.io/badge/version-0.17.1_Alpha-b94b43?labelColor=191a1d" alt="0.17.1 Alpha"/></a>
+  <a href="./docs/alpha-0.17.1-alpha.1.md"><img src="https://img.shields.io/badge/version-0.17.1_Alpha_1_candidate-b94b43?labelColor=191a1d" alt="0.17.1 Alpha 1 candidate"/></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-444449?labelColor=191a1d" alt="AGPL-3.0 license"/></a>
   <br/>
   <a href="#quick-start"><img src="https://img.shields.io/badge/Windows-reference-444449?labelColor=191a1d" alt="Windows — reference platform"/></a>
@@ -51,7 +51,7 @@ the Host owns identity, state, permissions, persistence, and recovery.
 
 > [!IMPORTANT]
 > This repository contains buildable, runnable source. This branch targets
-> **0.17.1 Alpha**, not a packaged desktop release.
+> **0.17.1 Alpha 1 candidate**, not a published or self-contained desktop release.
 > Amadeus first-party code is open-source under the
 > [GNU Affero General Public License v3.0 (AGPL-3.0)](LICENSE).
 > Third-party code and external assets retain their own terms.
@@ -261,14 +261,31 @@ macOS. For T2 on macOS, install PortAudio first with `brew install portaudio`;
 PyAudio builds from source there. Chinese step-by-step guides that cover every
 feature and its external prerequisites (for example Lively Wallpaper on Windows)
 are in [WINDOWS_INSTALL.md](WINDOWS_INSTALL.md), [MACOS_INSTALL.md](MACOS_INSTALL.md)
-and [LINUX_INSTALL.md](LINUX_INSTALL.md). Then clone and choose a tier with the same
-commands on both platforms:
+and [LINUX_INSTALL.md](LINUX_INSTALL.md). First clone the repository:
 
 ```bash
 git clone https://github.com/Code-Amadeus/Amadeus.git
 cd Amadeus
+```
 
+Create the environment for your platform. On **Windows**:
+
+```bash
 uv venv .venv --python 3.12
+```
+
+On **macOS**, use the uv-managed build qualified for the native VN portrait.
+If `.venv` already exists, follow the [interpreter migration
+instructions](MACOS_INSTALL.md#vn-portrait-tk) first:
+
+```bash
+uv python install 3.12.14
+uv venv .venv --python 3.12.14 --managed-python
+```
+
+Then choose a tier on either platform:
+
+```bash
 uv sync --locked                              # T1 core
 uv sync --locked --extra voice                # T2 voice (optional)
 ```
@@ -276,6 +293,11 @@ uv sync --locked --extra voice                # T2 voice (optional)
 Keep the environment named `.venv`. Electron discovers its interpreter
 automatically (`Scripts/python.exe` on Windows, `bin/python3` on macOS), without
 requiring an `AMADEUS_PYTHON` override.
+
+When enabling the native VN portrait on macOS, run
+`uv run --locked --no-sync python tools/verify_vn_portrait_environment.py` in a
+graphical desktop session. Older standalone Python builds can pass the package
+verifier but fail Tk/ImageTk. This additional check is not required for headless use.
 
 Build the Electron frontend on either platform:
 
@@ -1001,9 +1023,12 @@ automatic rights to character, model, reference-audio, or external asset packs.
 
 ## Related projects
 
+- [Pi](https://github.com/earendil-works/pi): the MIT-licensed agent toolkit behind Amadeus's default daily-task agent. Amadeus integrates its pinned coding-agent runtime through native RPC; see [Pi integration and configuration](docs/pi-rpc-provider.md).
 - [Aqua-TTS](https://github.com/Lucas1479/Aqua-TTS): an MIT-licensed low-latency GPT-SoVITS v3 inference runtime. Amadeus does not require Aqua to start today.
 - [Amadeus SpriteForge](https://github.com/Code-Amadeus/Amadeus-SpriteForge): public **0.1.0 Source Alpha** for local sprite inspection, behavior-graph editing, and KTX2 character-pack preview/export. Licensed under AGPL-3.0-only; generation services are separate from the Amadeus runtime.
 - [Experimental extension Host profile](docs/extension_host_profile_v0.1.md): the implemented local-wheel TTS/MCP/Skill/theme subset, package application lifecycle, Agent binding and current limits. This is not a stable SDK or a full extension protocol conformance claim.
+- [Extension authoring](docs/extension_authoring.md): minimal static checks, local wheel examples and the implemented Host support boundary.
+- [Experimental plugin catalog](docs/extension_catalog.md): browse, install and manually update exact reviewed artifacts; public publication and independent review remain pending. See the [release checklist](docs/verification/extensions/store-v1.md).
 - [AUIP](https://github.com/Code-Amadeus/AUIP): the experimental application-session / typed-action protocol implemented in Amadeus. The separate repository documents its status and public implementation entry points; a separately versioned SDK and conformance suite are not yet published.
 - [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS): the embedded speech-synthesis inference foundation.
 - [OpenClaw](https://github.com/openclaw/openclaw): an optional external Work gateway.

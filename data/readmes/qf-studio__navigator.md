@@ -5,7 +5,7 @@
 Sessions that last. AI that learns. Features that ship.
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-8.4.4-blue.svg)](https://github.com/qf-studio/navigator/releases)
+[![Version](https://img.shields.io/badge/version-8.4.11-blue.svg)](https://github.com/qf-studio/navigator/releases)
 
 ---
 
@@ -181,7 +181,10 @@ Efficiency score:                  94/100 (excellent)
 ### Install
 
 ```bash
-# Claude Code plugin marketplace
+# Claude Code plugin marketplace (one step on Claude Code 2.1.275 or later)
+/plugin install navigator --marketplace qf-studio/navigator
+
+# Older Claude Code: add the marketplace first
 /plugin marketplace add qf-studio/navigator
 /plugin install navigator
 
@@ -256,8 +259,7 @@ Navigator fixes this with context engineering—the same principles Anthropic re
 **92% token savings. 20+ exchange sessions. Verified metrics.**
 
 ```bash
-/plugin marketplace add qf-studio/navigator
-/plugin install navigator
+/plugin install navigator --marketplace qf-studio/navigator
 ```
 
 **Finish what you start.**

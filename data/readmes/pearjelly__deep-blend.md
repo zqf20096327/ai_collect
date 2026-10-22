@@ -21,7 +21,9 @@ Start with a product recipe or your own model. Shape the scene. Compare real ren
 
 [Quick start](#quick-start) · [See the workbench](#see-the-workbench) · [Documentation](deepblend/docs/README.md) · [Latest release](https://github.com/pearjelly/deep-blend/releases/latest) · [Contribute](CONTRIBUTING.md)
 
-Latest stable [0.13.0](https://github.com/pearjelly/deep-blend/releases/tag/v0.13.0) keeps moved or tilted handled cups in place during dimension edits and fits the default hero camera to measured geometry. Saved versions, manual appearance, handle parameters, independent photography and animation stay protected.
+Version **0.18.0** introduces the Lighttable workbench: start a project, inspect a large saved result, adjust its objects and photography, then export. Recent results retain their source revisions and can be compared with the current version. See the [release notes and validation scope](deepblend/docs/releases/0.18.0.md).
+
+Use **Save an editable copy** on the Revisions page to download a saved version as a ZIP, optionally with a verified completed video. Preparation supports cancellation, retry and recovery after a reload. [How to use it](deepblend/docs/usage.md#editable-snapshot).
 
 ## Quick start
 
@@ -79,6 +81,12 @@ Created through DeepSeek Harness with the installed deep-blend **0.5.0** plugin:
 The robot uses the source asset’s static frame-1 pose; the film demonstrates the new set and camera motion. **CHARGE Packbot © Blender Studio / Blender Foundation — CC-BY**; new scene code is MIT. The promotional edit only adds titles and attribution. Release 0.8.1 includes replay inputs under `examples/charge-study/`; the guide pins the verified 0.5.0 environment.
 
 
+## New case: Courtyard Pagoda
+
+[![Courtyard pagoda key frame](deepblend/docs/assets/showcase/pagoda/poster.png)](https://pearjelly.github.io/deep-blend/pagoda/)
+
+The latest case film is a five-shot courtyard pagoda sequence: 37.5 seconds, 900 frames, 24 fps, 1280 × 720, rendered with Cycles at 128 samples. [Watch the film and view key frames](https://pearjelly.github.io/deep-blend/pagoda/) · [Case notes](deepblend/showcase/pagoda/README.md) · [Asset credits](deepblend/docs/assets/showcase/pagoda/CREDITS.md).
+
 ## Real work: light and material
 
 Three product studies made with the locally installed DeepBlend plugin: amber glass, a champagne-metal lamp and a speaker with a physical woven grille. Each includes a high-resolution hero, a material close-up and a **6-second / 1080p / 24 fps** camera animation.
@@ -103,7 +111,7 @@ The cup image comes from the [recorded tutorial](deepblend/docs/assets/creator-t
 | --- | --- |
 | [Cycles render of a metal task lamp](deepblend/benchmarks/previews/metal-lamp-hero.png) | [Cycles render of a hollow glass vessel and ceramic tray](deepblend/benchmarks/previews/glass-ceramic-hero.png) |
 | **Desktop speaker** | **Glazed handled cup** |
-| [Cycles render of a desktop speaker](deepblend/benchmarks/previews/modular-speaker-hero.png) | ![Original PNG from the glazed cup walkthrough](deepblend/docs/assets/creator-tutorial/cup-final-frame.png) |
+| [Cycles render of a desktop speaker](deepblend/benchmarks/previews/modular-speaker-hero.png) | [Original PNG from the glazed cup walkthrough](deepblend/docs/assets/creator-tutorial/cup-final-frame.png) |
 
 Pick a [recipe](deepblend/docs/recipes.md), adjust its exposed color, roughness and exposure, and create a project with a rendered preview.
 Creation errors keep your inputs and offer repair guidance and explicit retry. If a saved project's reply was lost, retry recovers it without creating another project. [Browser creation drafts](deepblend/docs/creation-drafts.md) can be explicitly continued after reload or reopening, with separate drafts for each page.
@@ -154,15 +162,15 @@ The prebuilt tarball was independently installed. Keep DSH's explicit source-bui
 
 ## See the workbench
 
-The following images were captured from a running DSH workbench, Chrome and Blender by
-`deepblend/tools/capture-docs-images.mjs`. They are **product screenshots and render output**, separate from the illustrated brand banner above.
+The Lighttable workbench below was captured from a running DSH session in a real browser.
+[Capture details and source hashes](deepblend/docs/assets/lighttable/README.md) include the desktop and narrow views. These are **product screenshots and render output**; the banner above is an illustration.
 
-![Actual Blender workbench showing a project, revision and scene controls](deepblend/docs/images/workbench-scene.png)
+![Actual Lighttable workbench showing the saved cup preview and revision history](deepblend/docs/assets/lighttable/workbench.png)
 
 <details>
 <summary><strong>Preview comparison and the rendered contact sheet</strong></summary>
 
-The comparison displays actual saved previews from two revisions; image and source hashes are retained in the capture manifest.
+The comparison and contact sheet were produced by `deepblend/tools/capture-docs-images.mjs`. The comparison displays actual saved previews from two revisions; image and source hashes are retained in the [capture manifest](deepblend/docs/images/manifest.json), alongside the earlier workbench screenshot.
 
 ![Actual before/after revision previews with their own image digests and timestamps](deepblend/docs/images/preview-compare.png)
 
@@ -254,7 +262,7 @@ npm run dev:test
 Full native acceptance remains a separate entry:
 
 ```sh
-bash deepblend/tests/run-all.sh      # 42 suites; README.zh.md carries the measured snapshot
+bash deepblend/tests/run-all.sh      # 43 suites; README.zh.md carries the measured snapshot
 ```
 
 [Development setup](deepblend/development/README.md) · [CI scope and artifacts](deepblend/docs/ci.md) · [Architecture decisions](deepblend/docs/architecture-decisions.md)

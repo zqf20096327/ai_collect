@@ -147,7 +147,13 @@ What works:
   through Claude's own inbox, working or idle, and falls back to the typed
   path if that is unavailable; a Pi session takes it through Hive's Pi
   extension the same way (queued behind its current turn), and every other
-  agent gets the typed path
+  agent gets the typed path. From inside any session (no grant needed),
+  `hived session list` prints the sessions in its project — id, name,
+  agent, state — and `hived wait <id-or-name> [--state idle,exited,error]
+  [--timeout 10m] [--after-working]` blocks until a sibling reaches one of
+  those states, so an agent can carry on once the note it sent has been
+  dealt with. Use `--after-working` right after `hived msg`, because the
+  target is still idle until its agent picks the note up
 - In-app updates (macOS): pick a release or latest-commit channel in
   Settings, then Update → Reload (or Restart, when the daemon changed)
 - What's new: the gift in the sidebar header opens a list of what has
@@ -425,4 +431,18 @@ map, and `CONTRIBUTING.md` for the contribution flow.
 
 ## License
 
-MIT — see `LICENSE`.
+Hive is free software, licensed under the
+[GNU General Public License v3.0 only](LICENSE) (`GPL-3.0-only`) with
+[additional terms under Section 7](ADDITIONAL-TERMS.md). Copyright (C)
+2026 Lucas Caro.
+
+## NOTICE
+
+- License: GNU GPL v3 with additional terms — see [LICENSE](LICENSE) and
+  [ADDITIONAL-TERMS.md](ADDITIONAL-TERMS.md).
+- Attribution (required by ADDITIONAL-TERMS.md, term a): "Based on Hive by
+  Lucas Caro — https://github.com/lucascaro/hive"
+- Releases up to and including v2.9.0 were published under the MIT License
+  and remain available under those terms.
+- Bundled fonts (IBM Plex Sans, JetBrains Mono) keep their own SIL Open Font
+  License 1.1; see `cmd/hivegui/frontend/public/fonts/`.

@@ -31,7 +31,7 @@ no toolchain needed. Come hang out with other keepers on the
 **[Pocket Tank Discord](https://pocketank.com/discord)**: show off your tank,
 get help, and share ideas for what comes next.
 
-The current release is **v0.3.8** (alpha); the settings page shows the one
+The current release is **v0.3.8.1** (alpha); the settings page shows the one
 on your tank. What changed in each release:
 **[pocketank.com/updates](https://pocketank.com/updates/)**.
 

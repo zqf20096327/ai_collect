@@ -26,10 +26,17 @@ Build the neural network using `.build ([structure])`, train the model using `.t
  - [My other projects](#my-other-projects)
 ---
 ## What's new
+ - ### v1.0.2
+     1. <ins>Optimize the code:</ins> The length values of the loops are now cached to avoid repeated access to the length property, improving overall performance.
+     2. <ins>Added `output_Transformation`:</ins> neo.js now supports 4+1 types of output transformation (`'normalize'`, `'softmax'`, `'hardmax'`, `'threshold'` and a default `'none'`) for transforming the result(s) of the output layer. The two new property `output_Transformation` and `transformation_Factor` are added to the `config` for adjusting the transformation.
+     3. <ins>Added support for specifying the numeric precision:</ins> During the `.build( )` neo.js now allows to specify the floating-point number precision used to store weights and biases. This affects memory usage, numerical precision and overall performance of the neo.js. Supported options are `'f16'` for 'Float16', `'f32'` for 'Float32' and `'f64'` for 'Float64'. The default is `'f32'`.
+     4. <ins>Updated the .neom (NEO's Model) data format version from v1.0.0 to v1.0.1:</ins> Updated the model data format to support the new numerical precision option and the output_Transformation feature. The `.save()` method now stored the model data in v1.0.1 neom format. The `.load()` method now loads only model data saved in the v1.0.1 format and rejects data saved in any other format version to ensure compatibility.
+
  - ### v1.0.1
      1. <ins>Added activation function name validation:</ins> Added an error message when an invalid or unsupported activation function name is provided.
      2. <ins>Optimized the `tanh` activation function:</ins> The implementation of the `tanh` activation function has been switched from the `Math.exp()` expression based approch to the native `Math.tanh()` based approch for better accuracy and efficiency.
      3. <ins>Fixed the iteration counter in `logMode`</ins> Fixed the iteration counter to display the proper iteration counting when `logMode` is enabled during the training.
+
  - ### v1.0.0
      1. Supports feed-forward neural network architecture.
      2. Supports customizable network structure with specified input and output nodes, hidden layers, and neurons per layer.
@@ -61,8 +68,8 @@ To use this library, firstly, you need to link **neo.js** to your project. You c
 
 1. **Download / Clone and Use:** Download or clone the repository and use the **neo.js** file in your project.
 2. **Use via CDN:**
-     - Use the library directly via CDN using the following script tag: ```https://cdn.jsdelivr.net/gh/nirmalpaul383/neo.js/neo.js```
-     - For using it in browser/webpage you can use ```<script src="https://cdn.jsdelivr.net/gh/nirmalpaul383/neo.js/neo.js"></script>```
+     - Use the library directly via CDN using the following script tag: ```https://cdn.jsdelivr.net/gh/nirmalpaul383/neo.js@1.0.2/neo.js```
+     - For using it in browser/webpage you can use ```<script src="https://cdn.jsdelivr.net/gh/nirmalpaul383/neo.js@1.0.2/neo.js"></script>```
 
 ---
 
@@ -148,9 +155,11 @@ A `neo` network objects has various methods and properties for doing various thi
 
 - <b>Parameter 3 (for defining output layer):</b> Expects the number desired nodes in the output layer.
 
+- <b>Parameter 4 (for specifying the numerical precision):</b> This optional parameter specifies the numerical precision of the neo network structure. This parameter affects the memory usage, numerical precision and the overall performance of the neo.js. Supported options are: `'f16'` for Float16, `'f32'` for Float32 and `'f64'` for Float64. Default is `'f32'`
+
 ```javascript
-//Building a neo network structure with 4 input node, 4 hidden layers (with respectively 10 , 5, 15 and 20 neo cores (neurons) in its hidden layer) and 2 output nodes
-neo_net.build (4, [10, 5, 15, 20], 2);
+//Building a neo network structure with 4 input nodes, 4 hidden layers (with respectively 10 , 5, 15 and 20 neo cores (neurons) in its hidden layer), 2 output nodes and with float-32 numerical precision
+neo_net.build (4, [10, 5, 15, 20], 2, 'f32');
 ```
 
 > <b>[NOTE] :</b>
@@ -166,6 +175,16 @@ The <b>neo</b> network object has a `.config` property for configuring various s
 - <b>`learning_Step` :</b> This parameter specifies the learning step of the neo network durning the traning. A lower learning step means neo network can learn more accurately but may require more training time. A larger learning step means neo network can learn more quickly but may reduce the accuracy. Default is `0.1`
 
 - <b>`alpha` :</b> This parameter can be used for specifying the alpha value for leaky-relu activation function. Default value is `0.01`
+
+- <b>`output_Transformation` :</b> This parameter specifies the name of function for transforming the output layer's results. <b>neo.js</b> supports 4+1 output transformation functions (`'normalize'`, `'softmax'`, `'hardmax'` , `'threshold'` and a default `'none'`).
+  
+  - `'normalize'`: This function transforms each element relative to the total sum, ensuring that the final sum of all elements equals exactly 1 (or 0 if all inputs are zero).
+  - `'softmax'`: The softmax function transforms each element into a value between 0 and 1, where the sum of all output values equals 1. The additional parameter (transformation_Factor) acts here as a 'temperature' parameter and it can control the behaviour of the softmax function.
+  - `'hardmax'`: The hardmax function transforms the maximum valued element(s) into 1 and 0 to all other elements.
+  - `'threshold'`: The threshold function transforms each element into 1 if that element is greater than or equal to the specified threshold value or otherwise 0. The additional parameter (transformation_Factor) acts here as threshold value holder.
+  - `'none'`: If the output_Transformation function is set to 'none', then the output layer's results will NOT be transformed.
+
+- <b>`transformation_Factor` :</b> This parameter can be used for specifying the additional value for the output_Transformation function (if needed). E.g. it can act as 'temperature' parameter in the 'softmax' output_Transformation function; or it can acts as the threshold 's value holder for the 'threshold' output_Transformation function.
 
 ```javascript
 //Changing the learning_step setting in the neo network object

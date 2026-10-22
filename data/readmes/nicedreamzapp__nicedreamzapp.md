@@ -1,94 +1,142 @@
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/hero-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/hero-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/hero.svg" width="100%" alt="Matt Macosko. Something was eating my chickens. That is the whole origin story. Local AI on Apple Silicon. Humboldt County, CA. Open to work."></picture>
+
 <div align="center">
-
-<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/coop.gif" width="760" alt="A local vision model tagging every chicken in the yard, running offline on an Apple Silicon Mac">
-
-# Matt Macosko
-
-### Something was eating my chickens. That is the whole origin story.
-
-Protecting them needed a camera that could see at night. That needed a vision model small enough to live on a robot. That needed AI running on my own hardware instead of somebody else's cloud. Dozens of repos later I am somehow doing neuroscience, and every one of them still traces back to the coop.
-
-**Local AI on Apple Silicon · Humboldt County, CA · open to work**
 
 [![GitHub followers](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-followers-nicedreamzapp-c923c7.svg)](https://github.com/nicedreamzapp)
 [![Mentioned in Awesome Claude Code](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-mentioned-in-awesome-claude-code-fc60a8-500728.svg)](https://github.com/hesreallyhim/awesome-claude-code)
 [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-claude-code-local-af34a8.svg)](https://github.com/nicedreamzapp/claude-code-local)
-[![App downloads](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/app-downloads-2c2e02.svg)](#-app-stats)
-[![New this week](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/app-week-20cec2.svg)](#-app-stats)
+[![App downloads](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/app-downloads-2c2e02.svg)](#app-stats)
+[![New this week](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/app-week-20cec2.svg)](#app-stats)
 
 </div>
 
----
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/coop.gif?v=2" width="100%" alt="A local vision model tagging every chicken in the yard, running offline on an Apple Silicon Mac">
 
-## 💼 OPEN TO WORK — LOCAL AI & APPLE SILICON INFERENCE
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/top-stats-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/top-stats-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/top-stats.svg" width="100%" alt="5 of 5 apps approved on both stores. 23/23 parity tests vs NVIDIA&#x27;s reference. 601 objects named, fully offline. 13 always-on agents across 3 machines."></picture>
 
-**[matt@ineedhemp.com](mailto:matt@ineedhemp.com)** · looking for a role building on-device / local AI.
+<a id="story"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s01-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s01-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s01-banner.svg" width="100%" alt="01. The story so far. From a chicken coop to robots that help people"></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s01-r1-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s01-r1-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s01-r1.svg" width="100%" alt="99.0% 2B version, on 400 held-out photos. 98.5% the 0.8B, down to 622 MB."></picture>
 
-Case studies of nine of these projects, with the bugs and the measured numbers: [nicedreamzwholesale.com/software/case-studies](https://nicedreamzwholesale.com/software/case-studies/)
+> 🐔 **Something was eating my chickens.** That is the whole origin story.
 
-- **[claude-code-local](https://github.com/nicedreamzapp/claude-code-local)**: Claude Code running 100% on-device on Apple Silicon, with its own MLX server and tool-call parser. **<!--CCL:START-->3,300+ stars, 637 forks<!--CCL:END-->**, featured in [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code), and fixes merged from contributors on hardware I don't own.
-- **Upstream in Apple's MLX**: [Muse Glimmer (Meta) text model support](https://github.com/ml-explore/mlx-lm/pull/1710) merged into `ml-explore/mlx-lm` (+302 lines). Thanks to [@zcbenz](https://github.com/zcbenz) for the review and merge.
-- **[nemotron-omni-mlx](https://github.com/nicedreamzapp/nemotron-omni-mlx)**: first open Apple Silicon runtime for NVIDIA Nemotron Omni's vision and audio towers, **23/23 parity tests** against NVIDIA's PyTorch reference.
-- **[Agent-12](https://github.com/nicedreamzapp/agent12)**: a filesystem-judged local agent leaderboard, independently reproduced by [@galashko](https://github.com/galashko).
-- **[HQ: the AI system that runs my shop](https://github.com/nicedreamzapp/how-my-shop-runs)**: orders from checkout to the door, four-second shipping labels, support drafts I approve, and agents on four machines sharing one memory.
-- **Shipped apps**: <!--APPS-LINE:START-->5 apps on the App Store and Google Play, **2,225 downloads** so far (1,500 App Store, 725 Google Play), 49 new on iPhone in the last week.<!--APPS-LINE:END-->
+🌙 Protecting them needed a camera that could see at night.
 
----
+🤖 That needed a vision model small enough to live on a robot.
 
-## 📱 APPS — iPHONE & ANDROID
+💻 That needed AI running on my own hardware instead of somebody else's cloud.
 
-Every app, one row, both stores. Private by default, pay once (or nothing), no subscriptions.
+📷 That became RealTime AI Cam: it names 601 objects, fully offline.
 
-| App | What it is | Downloads | iPhone | Android |
-|---|---|---|---|---|
-| **Song Forge** | Describe a song, get a finished original. Any genre, 19 languages, rendered on my Macs at home, never stored. 10 free songs, no account, no email. | [![downloads](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/app-song-forge-1c07bd.svg)](#-app-stats) | [![App Store](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-app-store-0d96f6-2bf332.svg)](https://apps.apple.com/us/app/id6788616929) | [![Google Play](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-google-play-01875f-9cd304.svg)](https://play.google.com/store/apps/details?id=com.nicedreamz.ownatune) |
-| **RealTime AI Cam** | Point your camera, it names 601 objects. Fully offline. | [![downloads](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/app-realtime-ai-cam-329e88.svg)](#-app-stats) | [![App Store](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-app-store-0d96f6-2bf332.svg)](https://apps.apple.com/us/app/id6751230739) | [![Google Play](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-google-play-01875f-9cd304.svg)](https://play.google.com/store/apps/details?id=com.mattmacosko.realtimeaicam) |
-| **RealTime Space** | Fly a real-physics starship through the solar system and 8,920 real stars. | [![downloads](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/app-realtime-space-d1c822.svg)](#-app-stats) | [![App Store](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-app-store-0d96f6-2bf332.svg)](https://apps.apple.com/us/app/id6788646103) | [![Google Play](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-google-play-01875f-9cd304.svg)](https://play.google.com/store/apps/details?id=com.nicedreamz.realtimespace) |
-| **Brainforest** | 2,000+ K-4 lessons, reads everything aloud, fully offline, one-time $1.99. No ads, no tracking. Built for my daughter. | [![downloads](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/app-brainforest-dc7d28.svg)](#-app-stats) | [![App Store](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-app-store-0d96f6-2bf332.svg)](https://apps.apple.com/us/app/id6788301765) | [![Google Play](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-google-play-01875f-9cd304.svg)](https://play.google.com/store/apps/details?id=com.brainforest.app) |
-| **Hive Strike** | One bee against sixteen worlds, sixteen bosses and seventy-five kinds of bug. Every sprite, background, animated scene and music bed generated locally on one Mac, no cloud, no stock art. | [![downloads](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/app-hive-strike-6b634f.svg)](#-app-stats) | [![App Store](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-app-store-0d96f6-2bf332.svg)](https://apps.apple.com/us/app/id6808332314) | [![Google Play](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-google-play-01875f-9cd304.svg)](https://play.google.com/store/apps/details?id=com.nicedreamz.hivestrike) |
+🦯 Along the way it turned out to help blind people see, with no internet.
 
-Android source ships in each repo's `android/` folder.
+🌱 **Next: a robot that grows food.** · The bigger idea: robots that give people back what they have lost.
 
----
+> Dozens of repos later I am somehow doing neuroscience, and every one of them still traces back to the coop.
 
-## 📊 APP STATS
+👁️ **The model that does the describing** · Vision Narrator 0.8B is RealTime AI Cam's describer, and it's my own model, on Hugging Face.
+
+**A LoRA fine-tune of Qwen3.5-0.8B** · Taught by a 27B teacher.
+
+**Trained on VizWiz** · Photos taken by blind people (CC BY 4.0). About a dozen versions over one month.
+
+**Blind Android Users podcast** · I'm a guest, Saturday, Oct 24, 2026.
+
+
+🔗 [RealTime AI Cam](https://github.com/nicedreamzapp/RealTimeAICam) · [Vision Narrator 0.8B on Hugging Face](https://huggingface.co/divinetribe/Vision-Narrator-0.8B-4bit-mlx) · [A robot that grows food](#long-arc)
+
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s01-rule.svg" width="100%" alt="">
+
+<a id="open-to-work"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s02-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s02-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s02-banner.svg" width="100%" alt="02. Open to work. Local AI and Apple Silicon inference"></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s02-r1-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s02-r1-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s02-r1.svg" width="100%" alt="matt@ineedhemp.com. Looking for a role building on-device / local AI. Case studies. Case studies of nine of these projects, with the bugs and the measured numbers. Upstream in Apple&#x27;s MLX. Muse Glimmer (Meta) text model support merged into ml-explore/mlx-lm (+302 lines). Thanks to @zcbenz for the review and merge."></picture>
+
+🧠 **claude-code-local** · Claude Code running 100% on-device on Apple Silicon, with its own MLX server and tool-call parser. Featured in Awesome Claude Code, and fixes merged from contributors on hardware I don't own.
+
+👁️ **nemotron-omni-mlx** · First open Apple Silicon runtime for NVIDIA Nemotron Omni's vision and audio towers, 23/23 parity tests against NVIDIA's PyTorch reference.
+
+🏁 **Agent-12** · A filesystem-judged local agent leaderboard, independently reproduced by @galashko.
+
+🏪 **HQ: the AI system that runs my shop** · Orders from checkout to the door, four-second shipping labels, support drafts I approve, and agents on four machines sharing one memory.
+
+
+📬 **[matt@ineedhemp.com](mailto:matt@ineedhemp.com)** · 📚 **[Case studies](https://nicedreamzwholesale.com/software/case-studies/)** · 🧠 [claude-code-local](https://github.com/nicedreamzapp/claude-code-local): **<!--CCL:START-->3,300+ stars, 638 forks<!--CCL:END-->** · [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code) · [MLX pull request](https://github.com/ml-explore/mlx-lm/pull/1710) · [@zcbenz](https://github.com/zcbenz) · [nemotron-omni-mlx](https://github.com/nicedreamzapp/nemotron-omni-mlx) · [Agent-12](https://github.com/nicedreamzapp/agent12) · [@galashko](https://github.com/galashko) · [HQ](https://github.com/nicedreamzapp/how-my-shop-runs)
+
+📱 **Shipped apps**: <!--APPS-LINE:START-->5 apps on the App Store and Google Play, **2,240 downloads** so far (1,509 App Store, 731 Google Play), 39 new on iPhone in the last week.<!--APPS-LINE:END-->
+
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s02-rule.svg" width="100%" alt="">
+
+<a id="apps"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s03-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s03-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s03-banner.svg" width="100%" alt="03. Apps. iPhone and Android, private by default"></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s03-r1-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s03-r1-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s03-r1.svg" width="100%" alt="RealTime AI Cam. Point your camera, it names 601 objects. Fully offline. RealTime Space. Fly a real-physics starship through the solar system and 8,920 real stars. Open source. Android source ships in each repo&#x27;s android/ folder."></picture>
+
+> 📱 **Every app, both stores.** Private by default, pay once (or nothing), no subscriptions.
+
+🎵 **Song Forge** · Describe a song, get a finished original. Any genre, 19 languages, rendered on my Macs at home, never stored. 10 free songs, no account, no email.
+
+🌳 **Brainforest** · 2,000+ K-4 lessons, reads everything aloud, fully offline, one-time $1.99. No ads, no tracking. Built for my daughter.
+
+🐝 **Hive Strike** · One bee against sixteen worlds, sixteen bosses and seventy-five kinds of bug. Every sprite, background, animated scene and music bed generated locally on one Mac, no cloud, no stock art.
+
+✅ **Review record: every app approved on both stores.** · Five of five on the App Store and five of five on Google Play.
+
+
+🍎 **App Store:** [Song Forge](https://apps.apple.com/us/app/id6788616929) · [RealTime AI Cam](https://apps.apple.com/us/app/id6751230739) · [RealTime Space](https://apps.apple.com/us/app/id6788646103) · [Brainforest](https://apps.apple.com/us/app/id6788301765) · [Hive Strike](https://apps.apple.com/us/app/id6808332314)<br>
+🤖 **Google Play:** [Song Forge](https://play.google.com/store/apps/details?id=com.nicedreamz.ownatune) · [RealTime AI Cam](https://play.google.com/store/apps/details?id=com.mattmacosko.realtimeaicam) · [RealTime Space](https://play.google.com/store/apps/details?id=com.nicedreamz.realtimespace) · [Brainforest](https://play.google.com/store/apps/details?id=com.brainforest.app) · [Hive Strike](https://play.google.com/store/apps/details?id=com.nicedreamz.hivestrike)
+
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s03-rule.svg" width="100%" alt="">
+
+<a id="app-stats"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s04-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s04-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s04-banner.svg" width="100%" alt="04. App stats. Updated automatically every day"></picture>
 
 <!--APP-STATS:START-->
-> _Updated automatically **Oct 20, 2026** from Apple's sales reports and Google Play's install reports. Downloads are first-time App Store downloads (no updates or re-downloads) plus Google Play installs; Google runs about two weeks behind._
+> _Updated automatically **Oct 22, 2026** from Apple's sales reports and Google Play's install reports. Downloads are first-time App Store downloads (no updates or re-downloads) plus Google Play installs; Google runs about two weeks behind._
 
 | App | Live since | Downloads | App Store | Google Play | New on iPhone, last 7 days | App Store rating |
 |---|---|---:|---:|---:|---:|:---:|
-| **RealTime AI Cam** | Aug 2025 | **1,668** | 1,165 | 503 | 18 | ★ 5.0 (2) |
-| **Song Forge** | Jul 2026 | **277** | 111 | 166 | 6 | – |
-| **RealTime Space** | Jul 2026 | **208** | 162 | 46 | 23 | – |
-| **Brainforest** | Jul 2026 | **67** | 60 | 7 | 1 | ★ 5.0 (1) |
-| **Hive Strike** | Sep 2026 | **5** | 2 | 3 | 1 | – |
-| **Total** | | **2,225** | **1,500** | **725** | **49** | |
+| **RealTime AI Cam** | Aug 2025 | **1,676** | 1,169 | 507 | 15 | ★ 5.0 (2) |
+| **Song Forge** | Jul 2026 | **280** | 113 | 167 | 5 | – |
+| **RealTime Space** | Jul 2026 | **210** | 164 | 46 | 16 | – |
+| **Brainforest** | Jul 2026 | **68** | 61 | 7 | 2 | ★ 5.0 (1) |
+| **Hive Strike** | Sep 2026 | **6** | 2 | 4 | 1 | – |
+| **Total** | | **2,240** | **1,509** | **731** | **39** | |
 
-**New iPhone downloads per week, last 8 weeks:** 52 → 40 → 78 → 117 → 65 → 157 → 85 → 49 (-36 vs the week before).
+**New iPhone downloads per week, last 8 weeks:** 41 → 42 → 90 → 113 → 74 → 147 → 87 → 39 (-48 vs the week before).
 <!--APP-STATS:END-->
 
-**Review record: every app approved on both stores.** Five of five on the App Store and five of five on Google Play.
+<a id="just-shipped"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s05-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s05-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s05-banner.svg" width="100%" alt="05. Just shipped. The newest builds"></picture>
 
----
+🖥️ **Trinidad Head** · My own terminal, built from scratch for Windows and Mac. Glass windows with a neon glow A different color for every open window Your own questions easy to spot when you scroll back through an AI chat
 
-## 🆕 JUST SHIPPED
+👁️ **nemotron-omni-mlx** · NVIDIA's Nemotron Omni sees, hears, and reasons. Its vision and audio towers had no open runtime for Apple Silicon. So I wrote one.
 
-**[Trinidad Head](https://github.com/nicedreamzapp/trinidad-head)** — my own terminal, built from scratch for Windows and Mac. Glass windows with a neon glow, a different color for every open window, and your own questions easy to spot when you scroll back through an AI chat. [Project page →](https://nicedreamzwholesale.com/software/trinidad-head/)
+⚡ **The numbers** · 23/23 parity tests against NVIDIA's PyTorch reference 67.7 tok/s with an image, end to end 110.5 tok/s with audio, end to end On an M5 Max, wifi off
 
-**[nemotron-omni-mlx](https://github.com/nicedreamzapp/nemotron-omni-mlx)** — NVIDIA's [Nemotron Omni](https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-BF16) sees, hears, and reasons, but its vision and audio towers had no open runtime for Apple Silicon. So I wrote one. Pure MLX, MIT, **23/23 parity tests** against NVIDIA's PyTorch reference. 67.7 tok/s with an image and 110.5 tok/s with audio end to end on an M5 Max, wifi off. Credit to NVIDIA for the open weights and [yayr](https://huggingface.co/mlx-community/NVIDIA-Nemotron-3-Nano-Omni-30B-A3B-4bit) for the 4-bit conversion.
 
----
+🔗 [Trinidad Head](https://github.com/nicedreamzapp/trinidad-head) · [project page](https://nicedreamzwholesale.com/software/trinidad-head/) · [nemotron-omni-mlx](https://github.com/nicedreamzapp/nemotron-omni-mlx) · Credit to NVIDIA for the [open weights](https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-BF16) and [yayr](https://huggingface.co/mlx-community/NVIDIA-Nemotron-3-Nano-Omni-30B-A3B-4bit) for the 4-bit conversion.
 
-## 🧭 WHAT I'M ACTUALLY BUILDING
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s05-rule.svg" width="100%" alt="">
 
-Most of these repos look standalone. They're not. They're one system spread across three machines that talk to each other 24/7:
+<a id="building"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s06-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s06-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s06-banner.svg" width="100%" alt="06. What I&#x27;m actually building. One system, three machines"></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s06-r1-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s06-r1-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s06-r1.svg" width="100%" alt="13 always-on agents run across those nodes. A GitHub watcher that drafts issue replies with local AI and texts me the draft. A 9am iMessage business briefing. Email triage. A Reddit brand watcher. $0 per call. The trick that powers it all: mini_claude, which lets every agent use my Claude Max plan for zero dollars per call."></picture>
 
-- 💻 **M5 Max MacBook Pro · 128 GB** — heavy compute: model inference, video, image, training
-- 🖥️ **M4 Mac mini · 64 GB** — always-on workhorse: autonomous agents, FiaOS web shell, free Claude for the whole mesh
-- ☁️ **Hostinger VPS** — public gateway: HQ Dashboard, the Ohm chat agent, sites, cron
+> 🧩 **Most of these repos look standalone. They're not.** They're one system spread across three machines that talk to each other 24/7.
 
-The idea: Apple Silicon is fast enough now that the everyday AI I want doesn't need a cloud subscription. Build local-first, stay useful when the internet goes down. The same stack is airgap-ready, which matters to the law / medical / compliance-sensitive firms I work with through Nice Dreamz LLC.
+💡 **The idea** · Apple Silicon is fast enough now that the everyday AI I want does not need a cloud subscription. Build local-first, stay useful when the internet goes down.
+
+🔒 **Airgap-ready** · The same stack is airgap-ready, which matters to the law / medical / compliance-sensitive firms I work with through Nice Dreamz LLC.
+
+**M5 Max MacBook Pro · 128 GB** · Heavy compute: model inference, video, image, training.
+
+**M4 Mac mini · 64 GB** · Always-on workhorse: autonomous agents, FiaOS web shell, free Claude for the whole mesh.
+
+**Hostinger VPS** · Public gateway: HQ Dashboard, the Ohm chat agent, sites, cron.
+
+
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s06-rule.svg" width="100%" alt="">
+
 
 <details>
 <summary><i>the wiring diagram, if you like that sort of thing</i></summary>
@@ -109,131 +157,132 @@ The idea: Apple Silicon is fast enough now that the everyday AI I want doesn't n
 
 </details>
 
-Thirteen always-on agents run across those nodes: a GitHub watcher that drafts issue replies with local AI and texts me the draft, a 9am iMessage business briefing, email triage, a Reddit brand watcher, and the trick that powers it all — `mini_claude`, which lets every agent use my Claude Max plan for $0 per call.
+<a id="airgap"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s07-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s07-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s07-banner.svg" width="100%" alt="07. AirGap. A skill, not a product"></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s07-r1-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s07-r1-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s07-r1.svg" width="100%" alt="A capability I keep sharp. It started as a packaged offering; these days I treat it as a capability I keep sharp rather than something I sell. Open source on this page. Everything it needs is open source on this page, so any competent IT person can stand one up without me. That&#x27;s the point."></picture>
 
----
+> 🔒 **AirGap is my name for the full private-AI build.** A complete AI workstation on one Mac, wifi off, nothing leaving the building.
 
-## 🔒 AIRGAP — A SKILL, NOT A PRODUCT
+📬 **Data that cannot touch the cloud?** · If your firm handles data that cannot touch the cloud and you want one built and your team trained on it, email info@nicedreamzwholesale.com.
 
-AirGap is my name for the full private-AI build: a complete AI workstation on one Mac, wifi off, nothing leaving the building. It started as a packaged offering; these days I treat it as a capability I keep sharp rather than something I sell. Everything it needs is open source on this page, so any competent IT person can stand one up without me. That's the point.
 
-If your firm handles data that can't touch the cloud and you want one built and your team trained on it, email [info@nicedreamzwholesale.com](mailto:info@nicedreamzwholesale.com). [What it looks like →](https://nicedreamzwholesale.com/airgap/) · [Why it matters now →](https://nicedreamzwholesale.com/2026/05/22/the-heppner-ruling-warner-v-gilbarco-and-what-confidential-ai-actually-has-to-mean/)
+📬 [info@nicedreamzwholesale.com](mailto:info@nicedreamzwholesale.com) · 👉 [What it looks like →](https://nicedreamzwholesale.com/airgap/) · [Why it matters now →](https://nicedreamzwholesale.com/2026/05/22/the-heppner-ruling-warner-v-gilbarco-and-what-confidential-ai-actually-has-to-mean/)
 
----
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s07-rule.svg" width="100%" alt="">
 
-## ⭐ THE FRONT FIVE
+<a id="front-five"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s08-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s08-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s08-banner.svg" width="100%" alt="08. The front five. Sorted by GitHub stars"></picture>
 
-> _Sorted by GitHub stars._
+🧠 **Claude Code Local** · Run Claude Code 100% on-device on Apple Silicon. Current lineup led by Qwen 3.8 27B and Gemma 4 31B, four modes (code, browser, voice, phone), Anthropic-compatible MLX server, setup.sh picks the right model for your RAM. Your code never leaves your Mac. Featured in Awesome Claude Code.
 
-### [Claude Code Local](https://github.com/nicedreamzapp/claude-code-local) &nbsp; [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-claude-code-local-357b31.svg)](https://github.com/nicedreamzapp/claude-code-local/stargazers) [![Forks](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-forks-claude-code-local-5184c0.svg)](https://github.com/nicedreamzapp/claude-code-local/network/members)
-Run Claude Code 100% on-device on Apple Silicon. Current lineup led by Qwen 3.8 27B and Gemma 4 31B, four modes (code, browser, voice, phone), Anthropic-compatible MLX server, `setup.sh` picks the right model for your RAM. Your code never leaves your Mac. Featured in [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code).
+🤝 **Browser Broker** · One logged-in browser, many agents, nobody fights. Leases each agent an ordinary background tab in your real browser, with your real logins, and every agent sees only its own. ~300 lines, one dependency. Verified on Linux by a stranger who then found a bug in my own docs.
 
-`MLX` `Apple Silicon` `Claude Code` `Python`
+🗣️ **NarrateClaude + Ohm** · Talk to your Mac, hear it reply in your own cloned voice. 100% private, works on a plane, and the Ohm web chat brings the same loop to any browser at zero API cost.
 
-### [NarrateClaude + Ohm](https://github.com/nicedreamzapp/NarrateClaude) &nbsp; [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-narrateclaude-7426bb.svg)](https://github.com/nicedreamzapp/NarrateClaude/stargazers)
-Talk to your Mac, hear it reply in your own cloned voice. 100% private, works on a plane, and the Ohm web chat brings the same loop to any browser at zero API cost.
+📷 **RealTimeAICam** · The biggest free open-vocabulary detector that fits on an iPhone: 601 classes, OCR, LiDAR depth, all on-device. The seed of the robot's vision stack.
 
-`Pocket TTS` `Apple Silicon` `Flask`
+🌐 **Browser Agent** · Local MLX models driving Chrome via DevTools Protocol. Handles what other agents can't: cross-origin iframes, Shadow DOM, ProseMirror.
 
-### [Browser Agent](https://github.com/nicedreamzapp/browser-agent) &nbsp; [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-browser-agent-f805b6.svg)](https://github.com/nicedreamzapp/browser-agent/stargazers)
-Local MLX models driving Chrome via DevTools Protocol. Handles what other agents can't: cross-origin iframes, Shadow DOM, ProseMirror. [56-second demo →](https://youtu.be/SIuMNa2k6Wc)
+📱 **Claude → Phone** · Control Claude Code from your iPhone via iMessage. Commands by text; screenshots, recordings, and YES / NO / YES_TO_ALL approval buttons come back.
 
-`MLX` `Chrome DevTools Protocol` `Local AI`
 
-### [Browser Broker](https://github.com/nicedreamzapp/browser-broker) &nbsp; [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-browser-broker-b96186.svg)](https://github.com/nicedreamzapp/browser-broker/stargazers)
-One logged-in browser, many agents, nobody fights. Leases each agent an ordinary background tab in your real browser, with your real logins, and every agent sees only its own. ~300 lines, one dependency. Verified on Linux by a stranger who then found a bug in my own docs.
+[Claude Code Local](https://github.com/nicedreamzapp/claude-code-local) [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-claude-code-local-357b31.svg)](https://github.com/nicedreamzapp/claude-code-local/stargazers) [![Forks](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-forks-claude-code-local-5184c0.svg)](https://github.com/nicedreamzapp/claude-code-local/network/members) · [Browser Broker](https://github.com/nicedreamzapp/browser-broker) [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-browser-broker-b96186.svg)](https://github.com/nicedreamzapp/browser-broker/stargazers) · [NarrateClaude + Ohm](https://github.com/nicedreamzapp/NarrateClaude) [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-narrateclaude-7426bb.svg)](https://github.com/nicedreamzapp/NarrateClaude/stargazers) · [Browser Agent](https://github.com/nicedreamzapp/browser-agent) [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-browser-agent-f805b6.svg)](https://github.com/nicedreamzapp/browser-agent/stargazers) · [RealTimeAICam](https://github.com/nicedreamzapp/RealTimeAICam) [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-realtimeaicam-b2f1d2.svg)](https://github.com/nicedreamzapp/RealTimeAICam/stargazers) · [Claude → Phone](https://github.com/nicedreamzapp/claude-screen-to-phone) [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-claude-screen-to-phone-2c6c89.svg)](https://github.com/nicedreamzapp/claude-screen-to-phone/stargazers)
 
-`Chrome DevTools Protocol` `Multi-agent` `Local AI`
+▶ [Browser Agent, 56-second demo](https://youtu.be/SIuMNa2k6Wc) · ▶ [RealTime AI Cam: watch it see the world, fully offline (90 sec)](https://www.youtube.com/watch?v=2BEYv-fv-gE) · [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code)
 
-### [RealTimeAICam](https://github.com/nicedreamzapp/RealTimeAICam) &nbsp; [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-realtimeaicam-b2f1d2.svg)](https://github.com/nicedreamzapp/RealTimeAICam/stargazers)
-The biggest free open-vocabulary detector that fits on an iPhone: 601 classes, OCR, LiDAR depth, all on-device. The seed of the robot's vision stack.
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s08-rule.svg" width="100%" alt="">
 
-▶ **[Watch it see the world, fully offline (90 sec)](https://www.youtube.com/watch?v=2BEYv-fv-gE)**
+<a id="daily-drivers"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s09-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s09-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s09-banner.svg" width="100%" alt="09. The daily drivers. Tools I use every day"></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s09-r1-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s09-r1-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s09-r1.svg" width="100%" alt="FiaOS. The Mac mini in a browser tab: live desktop, real PTY shell, voice. The bridge that gives the whole mesh free Claude. studio-record. Screen + facecam recorder with a local HTTP API, so Claude can record itself working. claude-failover. One command and your claude -p agents keep running on a local MLX model when the cloud is down."></picture>
 
-`YOLOv8` `CoreML` `Swift` `LiDAR`
+🎬 **story-forge** · A whole film studio on one laptop. A director keeps going until every shot passes a local vision judge, then cuts, scores and voices the film. Two finished films, no cloud.
 
-### [Claude → Phone](https://github.com/nicedreamzapp/claude-screen-to-phone) &nbsp; [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-claude-screen-to-phone-2c6c89.svg)](https://github.com/nicedreamzapp/claude-screen-to-phone/stargazers)
-Control Claude Code from your iPhone via iMessage. Commands by text; screenshots, recordings, and YES / NO / YES_TO_ALL approval buttons come back.
 
-`iMessage` `AppleScript` `macOS Automation`
+🔗 [FiaOS](https://github.com/nicedreamzapp/FiaOS) · [studio-record](https://github.com/nicedreamzapp/studio-record) · [claude-failover](https://github.com/nicedreamzapp/claude-failover) · [story-forge](https://github.com/nicedreamzapp/story-forge)
 
----
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s09-rule.svg" width="100%" alt="">
 
-## 🔧 THE DAILY DRIVERS
+<a id="long-arc"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s10-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s10-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s10-banner.svg" width="100%" alt="10. The long-arc bet. A robot that grows food"></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s10-r1-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s10-r1-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s10-r1.svg" width="100%" alt="What it does. It plants, waters, weeds, harvests, carries the food in, and someday maybe cooks it too. No grid, no cloud. It charges from the sun and its whole brain lives inside it, so it keeps working where there&#x27;s no internet at all. Every repo on this page is a piece of it. Right now I&#x27;m scraping the edges, but every piece works with the wifi off, and that&#x27;s on purpose."></picture>
 
-| | Repo | One line |
-|---|---|---|
-| 🌐 | **[FiaOS](https://github.com/nicedreamzapp/FiaOS)** | The Mac mini in a browser tab: live desktop, real PTY shell, voice. The bridge that gives the whole mesh free Claude. |
-| 🎥 | **[studio-record](https://github.com/nicedreamzapp/studio-record)** | Screen + facecam recorder with a local HTTP API, so Claude can record itself working. |
-| 🛟 | **[claude-failover](https://github.com/nicedreamzapp/claude-failover)** | One command and your `claude -p` agents keep running on a local MLX model when the cloud is down. |
-| 🎬 | **[story-forge](https://github.com/nicedreamzapp/story-forge)** | A whole film studio on one laptop. A director keeps going until every shot passes a local vision judge, then cuts, scores and voices the film. Two finished films, no cloud. |
+> 🌱 **Here's where all of this is headed.** You hand a robot a bag of seeds, show it where the hose is, and a few months later there are vegetables on the table.
 
----
+🏘️ **Now picture a village** · Now picture dropping two of them in a village where people are hungry and there's no signal for a hundred miles. They dig the well, plant the rows, and bring in the harvest.
 
-## 🤖 THE LONG-ARC BET
+> That's the science fiction story I'm building toward, and I think we're closer to it than most people realize.
 
-### [Cemani Homestead Robot](https://github.com/nicedreamzapp/CemaniHomesteadRobot) &nbsp; [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-cemanihomesteadrobot-d8038a.svg)](https://github.com/nicedreamzapp/CemaniHomesteadRobot/stargazers)
-Started with protecting my chickens from predators. Now a 1 kW autonomous tank robot you text from your phone: 601-class vision on a Jetson, dual PTZ cameras, 3D LIDAR, and it pulls a cart of firewood. Actually. The honest goal: a Lego-clip-in modular robotics kit running the same local-AI brain as the desk. [VisionBuilder](https://github.com/nicedreamzapp/VisionBuilder) trains its eyes from photos on my phone.
+**RealTime AI Cam is the eyes** · A vision model that runs fully offline on a phone, and along the way it turned out to help blind people see.
 
-<a href="https://youtu.be/NWnGvvdvRik"><img src="https://img.youtube.com/vi/NWnGvvdvRik/maxresdefault.jpg" width="480" alt="▶ Watch the 53-second demo"></a>
+**Claude Code Local is the brain** · The brain without a cloud.
 
-`Jetson Orin Nano` `YOLOv8` `Teensy` `RPLidar` `Robotics`
+**The Cemani robot is the first body** · Started with protecting my chickens from predators. Now a 1 kW autonomous tank robot you text from your phone: 601-class vision on a Jetson, dual PTZ cameras, 3D LIDAR, and it pulls a cart of firewood. Actually.
 
----
+🧱 **The honest goal** · A Lego-clip-in modular robotics kit running the same local-AI brain as the desk. VisionBuilder trains its eyes from photos on my phone.
 
-## 👨‍👧 THE FAMILY PROJECT
+🦿 **Also on the bench: Run + Sit Exo** · A powered knee exoskeleton design I'm working on. It's a design and prototype, not a finished product.
 
-### [Brainforest](https://nicedreamzwholesale.com/software/brainforest/) — built for my daughter, live on both stores
-2,000+ K-4 lessons with a friendly narrator that reads everything aloud. Themes she picks (unicorns, dinosaurs, space, cats, Bluey), difficulty that climbs as she masters skills and gently drops when she struggles, click-only kid-safe interface. Fully offline, one-time $1.99, no ads, no tracking, no internet needed. Source is open: [brainforest-app](https://github.com/nicedreamzapp/brainforest-app), iOS and Android in one repo.
 
-`iOS` `Fully Offline` `Adaptive Learning` `Kid-Safe`
+🔗 [Cemani Homestead Robot](https://github.com/nicedreamzapp/CemaniHomesteadRobot) [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-cemanihomesteadrobot-d8038a.svg)](https://github.com/nicedreamzapp/CemaniHomesteadRobot/stargazers) · ▶ [53-second demo](https://youtu.be/NWnGvvdvRik) · [VisionBuilder](https://github.com/nicedreamzapp/VisionBuilder) · [RealTime AI Cam](https://github.com/nicedreamzapp/RealTimeAICam) · [Claude Code Local](https://github.com/nicedreamzapp/claude-code-local)
 
----
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s10-rule.svg" width="100%" alt="">
 
-## 🧾 RECEIPTS — DOES LOCAL ACTUALLY WORK?
+<a id="family"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s11-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s11-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s11-banner.svg" width="100%" alt="11. The family project. Brainforest"></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s11-r1-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s11-r1-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s11-r1.svg" width="100%" alt="2,000+ K-4 lessons. With a friendly narrator that reads everything aloud. Themes she picks. Unicorns, dinosaurs, space, cats, Bluey. Difficulty that climbs. It climbs as she masters skills and gently drops when she struggles."></picture>
 
-Four real jobs, run one at a time and then in four browser tabs at once, each answer checked by script, no AI judge (Sep 16, 2026, M5 Max, [browser-agent](https://github.com/nicedreamzapp/browser-agent) + [browser-broker](https://github.com/nicedreamzapp/browser-broker)):
+> 🌳 **Brainforest** Built for my daughter, live on both stores.
 
-| Local model | Right answers (4 one at a time + 4 at once) | All four tabs at once |
-|---|---:|---:|
-| 🟢 Gemma 4 31B (MLX, bf16) | **8/8** | **110 s** |
-| 🟣 Qwen 3.8 27B (MLX, bf16) | 8/8 | 176 s |
+🔌 **Kid-safe and fully offline** · Click-only kid-safe interface. One-time $1.99, no ads, no tracking, no internet needed.
 
-Every model we run is also scored on real agent tasks at the open [Agent-12 leaderboard](https://nicedreamzapp.github.io/agent12/).
+🔓 **Source is open** · brainforest-app: iOS and Android in one repo.
 
----
 
-## 🛒 THE STORES
+🔗 [Brainforest](https://nicedreamzwholesale.com/software/brainforest/) · [brainforest-app](https://github.com/nicedreamzapp/brainforest-app)
 
-[Divine Tribe](https://ineedhemp.com) (vaporizer hardware, American-owned since 2013) plus [three more stores](https://marijuanaunion.com) — 140+ products, 5,000+ units shipped, all automated by the mesh above. Divine Tribe pays the bills; everything else is downstream.
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s11-rule.svg" width="100%" alt="">
 
----
+<a id="receipts"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s12-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s12-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s12-banner.svg" width="100%" alt="12. Receipts. Does local actually work?"></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s12-r1-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s12-r1-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s12-r1.svg" width="100%" alt="110 s Gemma 4 31B (MLX, bf16). 8/8 right answers (4 one at a time + 4 at once). All four tabs at once in 110 seconds. 176 s Qwen 3.8 27B (MLX, bf16). 8/8 right answers (4 one at a time + 4 at once). All four tabs at once in 176 seconds."></picture>
+
+🧾 **Four real jobs** · Run one at a time and then in four browser tabs at once, each answer checked by script, no AI judge (Sep 16, 2026, M5 Max, browser-agent + browser-broker).
+
+
+Every model we run is also scored on real agent tasks at the open [Agent-12 leaderboard](https://nicedreamzapp.github.io/agent12/). Tools: [browser-agent](https://github.com/nicedreamzapp/browser-agent) · [browser-broker](https://github.com/nicedreamzapp/browser-broker)
+
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s12-rule.svg" width="100%" alt="">
+
+<a id="stores"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s13-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s13-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s13-banner.svg" width="100%" alt="13. The stores. What pays the bills"></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s13-r1-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s13-r1-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s13-r1.svg" width="100%" alt="2013 Divine Tribe, American-owned since. +3 more stores. 140+ products."></picture>
+
+**5,000+ units shipped**
+
+⚙️ **All automated by the mesh above** · Divine Tribe sells vaporizer hardware. It pays the bills; everything else is downstream.
+
+**5,000+ units shipped**
+
+
+🛒 [Divine Tribe](https://ineedhemp.com) · 🏬 [three more stores](https://marijuanaunion.com)
+
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s13-rule.svg" width="100%" alt="">
 
 <details>
-<summary><b>🗂️ LAB NOTEBOOK — everything else</b> <i>(click to open: experiments, one-offs, internal builds)</i></summary>
+<summary><b>🗂️ LAB NOTEBOOK: everything else</b> <i>(click to open: experiments, one-offs, internal builds)</i></summary>
 
 <br>
 
-| Project | What it is |
-|---|---|
-| [song-forge](https://github.com/nicedreamzapp/song-forge) | The local AI music engine behind the Song Forge app: ACE-Step + Gemma + seed-vc, fully on-device |
-| [Parkinson's Vulnerability Predictor](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor) | ML on 65,000+ cells, 20-gene signature · [1-min video](https://youtu.be/bC4hgeHS9cg) |
-| [Family Planner](https://github.com/nicedreamzapp/Family-Planner) | Skylight-style family dashboard on old tablets: voice, OCR, AI assistant |
-| [SpeakAnywhere](https://github.com/nicedreamzapp/SpeakAnywhere) | Whisper-powered voice control for the desktop |
-| [RealTime Space](https://github.com/nicedreamzapp/RealTime-Space) | The photoreal solar system engine behind the RealTime Space app, iOS and Android in one repo |
-| [The Farmstand 3D](https://github.com/nicedreamzapp/the-farmstand-3d) | WebXR marketplace, [live](https://marijuanaunion.com/marketplace) |
-| [MattPaint](https://github.com/nicedreamzapp/MattPaint) | Pixel-perfect MS Paint clone, zero dependencies |
-| [Heat-N-Clean Glass Oven](https://github.com/nicedreamzapp/Heat-N-Clean-Glass-Oven) | Custom temperature-controlled cleaning kiln, CAD included |
-| [job-search-agent](https://github.com/nicedreamzapp/job-search-agent) | Daily AI job scoring against your own background, straight from public Ashby, Greenhouse and Lever boards |
-| [dan-aquatic-ecology](https://github.com/nicedreamzapp/dan-aquatic-ecology) | A friend's HSU thesis site, built end-to-end in one sitting |
-| [DisclosureDay](https://github.com/nicedreamzapp/DisclosureDay) | SEO + chatbot site for the UFO film |
-| [BitcoinPredictor](https://github.com/nicedreamzapp/BitcoinPredictor) | Real-time BTC dashboard with ML signals (trading systems retired 2026) |
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r1-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r1-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r1.svg" width="100%" alt="song-forge. The local AI music engine behind the Song Forge app: ACE-Step + Gemma + seed-vc, fully on-device. Parkinson&#x27;s Vulnerability Predictor. ML on 65,000+ cells, 20-gene signature. Family Planner. Skylight-style family dashboard on old tablets: voice, OCR, AI assistant."></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r2-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r2-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r2.svg" width="100%" alt="SpeakAnywhere. Whisper-powered voice control for the desktop. RealTime Space. The photoreal solar system engine behind the RealTime Space app, iOS and Android in one repo. The Farmstand 3D. WebXR marketplace, live."></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r3-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r3-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r3.svg" width="100%" alt="MattPaint. Pixel-perfect MS Paint clone, zero dependencies. Heat-N-Clean Glass Oven. Custom temperature-controlled cleaning kiln, CAD included. job-search-agent. Daily AI job scoring against your own background, straight from public Ashby, Greenhouse and Lever boards."></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r4-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r4-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r4.svg" width="100%" alt="dan-aquatic-ecology. A friend&#x27;s HSU thesis site, built end-to-end in one sitting. DisclosureDay. SEO + chatbot site for the UFO film. BitcoinPredictor. Real-time BTC dashboard with ML signals (trading systems retired 2026)."></picture>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r5-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r5-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/lab-r5.svg" width="100%" alt="INTERNAL. Internal builds (no public repo). HQ Dashboard (central command: orders, email, shipping, agents), Ohm (the LLM chat agent that bridges the mesh), and an AI customer chatbot trained on the full Divine Tribe lineup."></picture>
 
-**Internal builds (no public repo):** HQ Dashboard (central command: orders, email, shipping, agents), Ohm (the LLM chat agent that bridges the mesh), and an AI customer chatbot trained on the full Divine Tribe lineup.
+🔗 [song-forge](https://github.com/nicedreamzapp/song-forge) · [Parkinson's Vulnerability Predictor](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor) · [Family Planner](https://github.com/nicedreamzapp/Family-Planner) · [SpeakAnywhere](https://github.com/nicedreamzapp/SpeakAnywhere) · [RealTime Space](https://github.com/nicedreamzapp/RealTime-Space) · [The Farmstand 3D](https://github.com/nicedreamzapp/the-farmstand-3d) · [MattPaint](https://github.com/nicedreamzapp/MattPaint) · [Heat-N-Clean Glass Oven](https://github.com/nicedreamzapp/Heat-N-Clean-Glass-Oven) · [job-search-agent](https://github.com/nicedreamzapp/job-search-agent) · [dan-aquatic-ecology](https://github.com/nicedreamzapp/dan-aquatic-ecology) · [DisclosureDay](https://github.com/nicedreamzapp/DisclosureDay) · [BitcoinPredictor](https://github.com/nicedreamzapp/BitcoinPredictor) · ▶ [Parkinson's 1-min video](https://youtu.be/bC4hgeHS9cg) · [The Farmstand, live](https://marijuanaunion.com/marketplace)
 
 </details>
-
----
 
 <details>
 <summary><b>🧰 TECH STACK</b> <i>(click: the usual badge wall)</i></summary>
@@ -259,24 +308,30 @@ Every model we run is also scored on real agent tasks at the open [Agent-12 lead
 
 </details>
 
----
+<a id="why"></a>
+<picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s14-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s14-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s14-banner.svg" width="100%" alt="14. Why this exists. Still figuring it out"></picture>
 
-## 🌲 WHY THIS EXISTS
+**I run Divine Tribe** · Vaporizer hardware, since 2013. HQ, the AI system I built, runs the shop side. Everything else is downstream of paying the bills.
 
-I run [Divine Tribe](https://ineedhemp.com) — vaporizer hardware, since 2013. [HQ](https://github.com/nicedreamzapp/how-my-shop-runs), the AI system I built, runs the shop side. Everything else is downstream of paying the bills.
+**Nice Dreamz LLC** · The umbrella on top.
 
-**Nice Dreamz LLC** is the umbrella on top. [AirGap AI](https://nicedreamzwholesale.com/airgap) is the showcase: what a full private-AI build looks like for the kind of firm that can't put its data into a cloud chatbot. It's a capability I maintain, not a product I'm pushing. The three-node mesh is the demo: it's been my daily driver for a year and a half. I'm also building the [Cannabis Device Safety Institute](https://cdsi.click) in parallel, a standards body for cannabis-consumption hardware.
+**Cannabis Device Safety Institute** · I'm also building it in parallel, a standards body for cannabis-consumption hardware.
 
-The long arc is the robot. Same eyes, different bodies.
+**AirGap AI** · What a full private-AI build looks like for the kind of firm that cannot put its data into a cloud chatbot. It's a capability I maintain, not a product I'm pushing. The three-node mesh is the demo: it's been my daily driver for a year and a half.
 
-Still figuring it out. No investors. One MacBook, one Mac mini, one VPS, and a lot of late nights.
+**The long arc is the robot.** · Same eyes, different bodies.
 
----
+> 🌙 **Still figuring it out.** No investors. One MacBook, one Mac mini, one VPS, and a lot of late nights.
+
+
+🔗 [Divine Tribe](https://ineedhemp.com) · [HQ](https://github.com/nicedreamzapp/how-my-shop-runs) · [AirGap AI](https://nicedreamzwholesale.com/airgap) · [Cannabis Device Safety Institute](https://cdsi.click)
+
+<img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/956e908f52623e62852c44a3e893b6480a78592a/assets/profile/rows/s14-rule.svg" width="100%" alt="">
 
 <div align="center">
 
-[ineedhemp.com](https://ineedhemp.com) · [GitHub](https://github.com/nicedreamzapp) · [LinkedIn](https://www.linkedin.com/in/matt-macosko-34708235/)
+**[ineedhemp.com](https://ineedhemp.com) · [GitHub](https://github.com/nicedreamzapp) · [LinkedIn](https://www.linkedin.com/in/matt-macosko-34708235/)**
 
-<sub>Built with code, caffeine, and Claude · Humboldt County, CA · the chickens are fine</sub>
+Built with code, caffeine, and Claude · Humboldt County, CA · the chickens are fine
 
 </div>

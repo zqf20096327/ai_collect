@@ -46,7 +46,16 @@ as Claude can work directly on your animation projects, not just talk about them
 Ask things like *"Which images are missing from hero.skel?"* *"Add a 1-second wave animation to
 rigbytron.rigby that raises the right arm and fires a 'hi' event at the end"*, or *"Add line.wav to the
 talk animation and lip-sync the mouth control to it."* Edits save in the
-file's own format and stay inside the folders you allow. Setup is one line ([details](docs/mcp.md)):
+file's own format and stay inside the folders you allow.
+
+**Claude Desktop (Windows, macOS):** download
+**[Rigby2D-AI.mcpb](https://github.com/jaisurya-dev-art/rigby2d/releases/latest/download/Rigby2D-AI.mcpb)**,
+drag it onto the Claude Desktop window (or use *Settings ▸ Extensions ▸ Advanced settings ▸ Install
+Extension…*), choose your project folders and click *Install*. Nothing else to install: Claude
+Desktop brings everything the extension needs. The editor walks you through it in
+*Help ▸ Connect an AI assistant*.
+
+**Claude Code:** one line ([details](docs/mcp.md)):
 
 ```bash
 claude mcp add rigby2d -- node /path/to/rigby2d/src/mcp/server.js --root /path/to/your/projects
@@ -146,7 +155,7 @@ The files are **not code-signed** yet, so Windows SmartScreen may warn before ru
 before running anything:
 
 ```powershell
-Get-FileHash .\Rigby2D_0.2.4_x64_en-US.msi -Algorithm SHA256
+Get-FileHash .\Rigby2D_0.2.5_x64_en-US.msi -Algorithm SHA256
 ```
 
 To build from source instead, follow the steps below.
@@ -251,10 +260,10 @@ blend mode for every visible region and mesh. `examples/webgl.html` is a small p
 
 ## MCP server reference
 
-34 tools. Read and convert: `inspect_project`, `describe_rig`, `describe_animation`, `sample_pose`,
+35 tools. Read and convert: `inspect_project`, `describe_rig`, `describe_animation`, `sample_pose`,
 `validate_project`, `convert_project`. Edit: `add_bone`, `set_bone_setup`, `rename_bone`,
 `add_animation`, `rename_animation`, `delete_animation`, `set_bone_key`, `delete_bone_key`,
-`set_attachment_key`, `set_event_key`, `set_slot`. Film, poses and audio (`.rigby`): `set_workspace`,
+`set_attachment_key`, `set_event_key`, `set_slot`, and `batch_edit` for many edits in one atomic call. Film, poses and audio (`.rigby`): `set_workspace`,
 `set_output`, `save_pose`, `apply_pose`, `delete_pose`, `add_face_control`, `set_face_control`,
 `delete_face_control`, `add_audio_track`, `set_audio_track`, `remove_audio_track`, `lip_sync`.
 Rigging: `detect_parts`, `autorig`, `map_bones`, `retarget_animation`. Scripts: `run_script`

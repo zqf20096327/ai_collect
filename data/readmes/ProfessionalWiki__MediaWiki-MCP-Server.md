@@ -170,7 +170,7 @@ Create a `config.json` file to configure wiki connections. Use the `config.examp
 }
 ```
 
-**Internal vs public address.** The `server` you configure may be an internal hostname (e.g. `http://mediawiki` in Docker); URLs handed back to the caller are built from the wiki's public address, so internal hostnames don't leak into links. See [docs/configuration.md — per-wiki fields](docs/configuration.md#per-wiki-fields).
+**Internal vs public address.** The `server` you configure may be an internal hostname (e.g. `http://mediawiki` in Docker); URLs handed back to the caller are built from the wiki's public address, so internal hostnames don't leak into links, once the internal host is listed in `MCP_TRUSTED_HOSTS`. See [docs/configuration.md — per-wiki fields](docs/configuration.md#per-wiki-fields).
 
 For the full field reference, env-var substitution, secret sources, change tags, upload directories, and authentication options, see [docs/configuration.md](docs/configuration.md).
 
@@ -184,7 +184,7 @@ Tools marked 🔐 require authentication. Write tools (including extension-pack 
 - **Manual OAuth2 access token.** Paste a long-lived token into `config.json`. See [docs/configuration.md — manual OAuth2 access token](docs/configuration.md#manual-oauth2-access-token).
 - **Bot password.** Fallback when Extension:OAuth isn't installed. See [docs/configuration.md — bot password](docs/configuration.md#bot-password).
 
-The Cargo tools (`cargo-query`, `cargo-list-tables`, `cargo-describe-table`) call API actions gated by the `runcargoqueries` user right. Most wikis grant this to all users by default; wikis that restrict it require the **`Create, query and delete data through the Cargo extension`** grant on the bot password or OAuth consumer. The Cargo extension is also detected on wiki.gg-hosted wikis (Helldivers, Terraria, Ark, etc.), where it ships under the rebranded name `LIBRARIAN`.
+`cargo-query` needs the **`Create, query and delete data through the Cargo extension`** grant on a bot password or OAuth consumer, even on a wiki that lets every user run Cargo queries. The Cargo extension is also detected on wiki.gg wikis, which run `LIBRARIAN`, wiki.gg's fork of Cargo.
 
 ## Installation
 

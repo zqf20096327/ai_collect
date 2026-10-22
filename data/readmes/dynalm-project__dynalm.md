@@ -46,10 +46,10 @@ CPU and on your GPU, and it needs no internet once the model is downloaded.
 - **One small program.** It needs no Python, PyTorch or Docker, and no background service.
 - **Private.** Your prompts never leave your machine. There is no telemetry.
 - **Familiar commands.** `pull`, `run` and `serve`, like Ollama.
-- **Works with your tools.** It has a built-in OpenAI-compatible API, so the OpenAI SDK,
-  LangChain, LlamaIndex, Open WebUI, Continue.dev and Cursor connect to it directly.
-- **Uses less memory.** On an Apple M4 Pro, DynaLM serves a 1.5B model in **about 3× less
-  memory** than llama.cpp's server: 390 MB against 1,113 MB.
+- **Works with your tools.** It has a built-in OpenAI-compatible API (`/v1/chat/completions`,
+  `/v1/completions`, `/v1/models`, streaming), so tools written for the OpenAI API, such as the
+  OpenAI SDK, LangChain, LlamaIndex, Open WebUI, Continue.dev and Cursor, are designed to connect to it.
+  For this release only DynaLM's own client and test suite are verified against it.
 - **Built for many users.** Continuous batching, a paged KV cache and prefix sharing keep
   answers coming when several people use it at once.
 
@@ -85,18 +85,16 @@ dynalm run qwen2.5:1.5b
 | **Windows 10 / 11 (x64 and ARM64)** | PowerShell: `irm https://raw.githubusercontent.com/dynalm-project/dynalm/main/scripts/install.ps1 \| iex` |
 | **Docker** | `docker run --rm -p 127.0.0.1:8000:8000 -v "$PWD/models:/models" ghcr.io/dynalm-project/dynalm:cpu serve /models/model.gguf --allow-unauthenticated` |
 
-**GPU included:** the installer gives you the GPU version when your computer can use it:
-- **Macs with Apple Silicon:** always (Metal).
-- **Linux x86-64 and Windows x64 with graphics drivers:** the Vulkan version (AMD, Intel or
-  NVIDIA).
-
-Otherwise you get the CPU version. To choose yourself, add `--cpu` or `--gpu`:
-`curl -fsSL .../install.sh | sh -s -- --cpu`.
+**Which build you get:**
+- **Macs with Apple Silicon:** the GPU version (Metal), always.
+- **Everything else:** the CPU version. On Linux x86-64 and Windows x64, add `--gpu` (`-Gpu` on
+  Windows) for the experimental Vulkan version: `curl -fsSL .../install.sh | sh -s -- --gpu`.
 
 **Notes:**
 - No administrator rights are needed.
 - Every download is checked with SHA-256.
-- Open a new terminal afterwards, then run `dynalm doctor`.
+- The installer adds DynaLM to your `PATH` (skip with `--no-modify-path`, or `-NoPath` on Windows).
+  Open a new terminal afterwards, then run `dynalm doctor`.
 
 More detail, including manual downloads and building from source: [docs/installation.md](docs/installation.md).
 
@@ -104,21 +102,26 @@ More detail, including manual downloads and building from source: [docs/installa
 
 ## Where it runs
 
-**Status labels:**
-- ✅ **Stable:** ready for everyday use.
-- 🧪 **Preview:** works and passes our test suite. Feedback is welcome.
+**Status labels** (this release):
+- ✅ **Verified:** checked on real hardware with real models for this release: the full test
+  suite plus token-by-token parity with llama.cpp on eight models (Apple M4 Pro, macOS 26).
+- ☑️ **CI-tested:** built, tested with the model-free test suite and checked with a fresh install in CI
+  on that platform; not yet checked with real models for this release.
+- 🧪 **Preview:** implemented and covered by model-free tests; not yet checked with real models for
+  this release. Feedback is welcome.
+- ⚗️ **Experimental:** built in CI, tested only on a software GPU or not on a GPU at all.
 
 ### CPU
 
 | System | Chips | Status |
 |---|---|---|
-| macOS | Apple Silicon | ✅ Stable |
-| macOS | Intel Macs | ✅ Stable |
-| Linux x86-64 | Intel and AMD (AVX2, AVX-512, AMX) | ✅ Stable |
-| Linux ARM64 | 64-bit ARM boards and servers | ✅ Stable |
-| Windows 10 / 11 x64 | Intel and AMD | ✅ Stable |
-| Windows 11 on ARM | ARM64 PCs | 🧪 Preview |
-| Docker | linux/amd64, linux/arm64 | ✅ Stable |
+| macOS | Apple Silicon | ✅ Verified |
+| macOS | Intel Macs | ☑️ CI-tested (under Rosetta) |
+| Linux x86-64 | Intel and AMD (AVX2, AVX-512, AMX) | ☑️ CI-tested |
+| Linux ARM64 | 64-bit ARM boards and servers | ☑️ CI-tested |
+| Windows 10 / 11 x64 | Intel and AMD | ☑️ CI-tested |
+| Windows 11 on ARM | ARM64 PCs | ☑️ CI-tested |
+| Docker | linux/amd64, linux/arm64 | 🧪 Preview |
 
 Older CPUs without AVX2 still work, using portable code. `dynalm doctor` shows what your CPU uses.
 
@@ -126,9 +129,9 @@ Older CPUs without AVX2 still work, using portable code. `dynalm doctor` shows w
 
 | GPU | Works on | Status |
 |---|---|---|
-| **Apple Metal** | Apple Silicon Macs | 🧪 Preview |
-| **Vulkan** | AMD, Intel, NVIDIA and Qualcomm GPUs (Windows and Linux) | 🧪 Preview |
-| **NVIDIA CUDA** | NVIDIA GPUs (Windows and Linux) | 🧪 Preview |
+| **Apple Metal** | Apple Silicon Macs | ✅ Verified (M4 Pro) |
+| **Vulkan** | AMD, Intel, NVIDIA and Qualcomm GPUs (Windows and Linux) | ⚗️ Experimental (CI: software GPU, lavapipe) |
+| **NVIDIA CUDA** | NVIDIA GPUs (Windows and Linux) | ⚗️ Experimental (CI: build only) |
 
 ---
 
@@ -195,25 +198,37 @@ dynalm models --available                                                       
 
 ## Speed
 
-All numbers come from our own repeatable tests. Full results, setup and limits:
-[docs/benchmarks.md](docs/benchmarks.md). Method: [docs/benchmarking.md](docs/benchmarking.md).
+Measured on one machine (Apple M4 Pro, 24 GB, macOS 26.7, AC power) against llama.cpp's server
+(commit `9a16f1dbe`) on the same GGUF files: Qwen2.5-1.5B, Qwen3-4B and Qwen3-8B (Q4_K_M) and
+Llama-3.1-8B (Q8_0); 512-token prompts, 128 output tokens, 2,048 tokens of context per user,
+3 rounds, both engines checked to run on the intended backend. Ratios: DynaLM ÷ llama.cpp for
+throughput, llama.cpp ÷ DynaLM for latencies, so above 1 means DynaLM is better; values are medians
+over the 3 rounds, ranges across the four models.
 
-**Apple M4 Pro (24 GB, macOS 26.7, on AC power), Metal, Qwen2.5-1.5B Q4_K_M, compared with llama.cpp's server on the same
-file:**
+**Confidence:** a difference counts as confirmed only when all 3 rounds agree beyond ±10% and both
+engines varied by 10% or less between rounds. llama.cpp's multi-user results varied by up to about
+30% between rounds, so several differences below are **not confirmed** (the direction was
+consistent, the size is uncertain).
 
-| What we measured | Result |
-|---|---|
-| Memory, one user | **390 MB vs 1,113 MB**: about 3× less |
-| First word (typical), 4 users at once | **1.9–2.1× faster** |
-| First word (typical), 8 users at once | **2.5× faster** |
-| Speed per token, one user | about 7 ms per token; llama.cpp is about 10% faster |
+| Metal | Result | Confirmed? |
+|---|---|---|
+| One user | about the same speed (throughput 0.98–1.21×, time per token 0.96–1.24×) | parity on the 8B models; the others inconclusive |
+| 16 users: total tokens per second | DynaLM 0.71–0.78× (llama.cpp ahead) | yes, 3 of 4 models |
+| 16 users: slowest token gaps (99th percentile) | 7–10× shorter with DynaLM | yes for the 8B models, not for 1.5B / 4B |
+| 16 users: first token | 2.1–3.3× sooner with DynaLM (median) | no, on all four models |
+| 4 users: 99th-percentile token gaps | longer with DynaLM (0.19–0.30×) | no (consistent direction) |
 
-**Where llama.cpp is still ahead:**
-- total tokens per second with 8 or more users at once (0.66–0.82× of llama.cpp);
-- the time to finish each request with several users;
-- the slowest first words (95th percentile) with 8 or more users.
+| CPU | Result | Confirmed? |
+|---|---|---|
+| One user: time per token | 0.77–0.97× llama.cpp's (the gap grows with context) | yes, 3 of 4 models |
+| 4 users: first token | 1.7–2.0× sooner with DynaLM | yes, 2 of 4 models |
+| 4 users: total tokens per second | 0.83–0.93× | yes for one model; parity or inconclusive for the others |
 
-Closing this gap is our next focus.
+DynaLM is not faster than llama.cpp overall: it trades total throughput for first-token time and
+worst-case gaps at high concurrency. The two engines were built with different CPU options
+(llama.cpp: native CPU features and Apple Accelerate; DynaLM's package: portable), which affects
+the CPU rows. Method: [docs/benchmarking.md](docs/benchmarking.md). Earlier results (DynaLM
+0.1.5–0.1.6), now withdrawn, stay in [docs/benchmarks.md](docs/benchmarks.md) for reference.
 
 **Measure your own machine:** `dynalm benchmark qwen2.5:1.5b`.
 
@@ -300,11 +315,11 @@ DynaLM uses it automatically for faster answers.
 Yes. It runs on Apple Silicon Macs, on the CPU and on the GPU through Metal.
 
 ### Does it work with AMD or Intel graphics cards?
-Yes, through Vulkan. On Linux and Windows, the installer picks the Vulkan version when your
-graphics driver supports it.
+Experimentally, through Vulkan: install with `--gpu` (`-Gpu` on Windows). Vulkan is tested in
+CI on a software GPU only.
 
 ### Does it work with NVIDIA GPUs?
-Yes, through Vulkan (installed automatically) or CUDA (build from source,
+Experimentally, through Vulkan (install with `--gpu`) or CUDA (build from source,
 [docs/gpu.md](docs/gpu.md)).
 
 ### Does it run on Windows on ARM laptops?
@@ -315,9 +330,9 @@ Yes. It uses the same kind of commands (`pull`, `run`, `serve`), the same GGUF m
 an OpenAI-compatible API. It ships as one small program with no background service.
 
 ### How does DynaLM compare to llama.cpp?
-On an Apple M4 Pro, DynaLM uses about 3× less memory and typically gives the first word 2× faster
-when several people use it at once. Its single-user speed is within about 10% of llama.cpp's.
-llama.cpp still has higher total throughput with many users.
+Both run the same ggml kernels for GGUF models on Metal and on the fast CPU path, and DynaLM's
+output is checked against llama.cpp's token by token (teacher-forced parity). Speed and memory
+comparisons are being re-measured for this release; see [Speed](#speed).
 
 ### Is it private?
 Yes. Nothing is sent anywhere. DynaLM only goes online when you run `dynalm pull`.
@@ -341,8 +356,22 @@ plain fp32 CPU kernels, for debugging. `dynalm autotune` shows what each mode ru
 
 ## Known limitations
 
-- **GPU backends are previews.** Models that a GPU cannot run yet fall back to the CPU under
-  `--backend auto`; `--gpu` reports why instead of falling back.
+- **Platform status for this release:** verified on macOS on Apple Silicon (CPU and Metal), on one
+  machine (M4 Pro). Linux and Windows are CI-tested (model-free tests in CI); Vulkan and CUDA are
+  Experimental. Models that a GPU cannot run yet fall back to the CPU under `--backend auto`;
+  `--gpu` reports why instead of falling back.
+- **16 users on Metal:** total throughput is 0.71–0.78× llama.cpp's (worst-case token gaps are
+  much shorter, confirmed on the 8B models; see [Speed](#speed)).
+- **4 users:** the 99th-percentile gap between tokens is longer than llama.cpp's (0.19–0.30×,
+  consistent in every round but not confirmed by the verdict rule): new prompts are processed in
+  chunks alongside the running streams.
+- **CPU decode:** 0.77–0.97× llama.cpp's time per token, more at longer contexts.
+- **Memory limits are enforced at load.** A KV cache that does not fit the GPU working set is
+  refused with the largest `--ctx` that fits. Example: Llama-3.1-8B Q8_0 with 16 users × 4,096
+  tokens on a 24 GB Mac (8.0 GiB of KV, 6.9 GiB available) is refused; `--ctx 57024` or
+  `--kv q8_0` runs. Granite MoE on the CPU uses about 0.7 GB more for its repacked expert weights.
+- **Long-running Metal servers:** sparse attention keeps a cache-filled KV pool fast for contexts up
+  to 4,096 tokens; longer contexts still slow down as the prefix cache fills the pool.
 - **Tested hardware for the newest changes.** The ARM int8 kernels, runtime ARM feature detection,
   AutoTune, IQ4 support, the GPT-4o tokenizer and the Phi-3 / Phi-4 fixes in the changelog's
   Unreleased section were measured on an Apple M4 Pro (macOS, CPU, Metal, Vulkan via MoltenVK)

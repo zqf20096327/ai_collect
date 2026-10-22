@@ -1,6 +1,6 @@
 # BeanBot
 
-[![Version](https://img.shields.io/badge/version-1.25.0-blue.svg)](pom.xml)
+[![Version](https://img.shields.io/badge/version-1.26.1-blue.svg)](pom.xml)
 [![Build Status](https://img.shields.io/badge/build-success-brightgreen.svg)](https://github.com/anandb/nb-complete)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.anandb/beanbot)](https://central.sonatype.com/artifact/io.github.anandb/beanbot/versions)
 [![NetBeans](https://img.shields.io/badge/NetBeans-RELEASE220-blue.svg)](https://netbeans.apache.org/download/index.html)
@@ -24,23 +24,6 @@ Supported coding harnesses: **Oh My Pi, OpenCode, Codex, OpenClaw, Pi, Goose, Cu
 
 **Token and cost statistics** are captured from the ACP traffic itself, not from an external process: the usage updates and per-turn token figures a harness already sends are recorded into an embedded H2 database under the NetBeans user directory (`beanbot/usage-stats.mv.db`), so they survive restarts and are readable without a harness running. The currency button in the toolbar opens the panel, which breaks the figures down by model and by agent; they are approximate for harnesses that report incomplete usage.
 
-### Test Configuration
-
-Due to time constraints, testing is primarily done on this configuration. The plugin
-should work on other versions/operating systems, but your experience may vary.
-
-| Component | Details |
-| --- | --- |
-| **OS** | openSUSE Tumbleweed-Slowroll |
-| **NetBeans** | RELEASE220 |
-| **Java** | JDK 17+ |
-| **Oh My Pi** | 18.1.21 |
-| **Opencode** | 2.0.20 |
-| **Opencode plugins** | `@franzmoca/opencode-lombok`, `true-mem` |
-| **LLMs** | Big Pickle; GPT 5.4-mini, GPT 5.4-nano; GLM 5.1, GLM 5.2; DeepSeek V4 Pro, DeepSeek V4 Flash; Kimi K2.5, Kimi K2.6; Mimo V2.5; Qwen3.5, Qwen3.6; Gemma4 |
-
-Note: Qwen models require `--think=false` if using Ollama, and a `"reasoningEffort": "none"`
-configuration in `opencode.json`
 
 ### Installation from Source
 1. Clone the repository:
@@ -193,10 +176,12 @@ The plugin reads the following system properties and environment variables:
 | `beanbot.roundedPanels` | System (`true`) | Toggle rounded panel corners (`RoundedPanel`) |
 | `beanbot.fs.write.enabled` | System (`true`) | ACP-only: gates the `fs/writeTextFile` / `fs/write_text_file` ACP tools (`FsWriteSettings`). MCP write tools (`write_to_file`, `replace_lines`, `insert_in_file`) are always confined to open projects and unaffected by this property. Set `-Dbeanbot.fs.write.enabled=false` to stop advertising the ACP write capability and reject every ACP write |
 | `beanbot.color.*` | System (varies) | Override any UI color. Read by `model/ColorRegistry` (resolution order: system property → `UIManager` key → built-in light/dark fallback), not by `ColorTheme`, which only loads `colors.json` |
-| `beanbot.update.url` | System | Override the update-manifest URL fetched by the update checker (`support/AppLinks`); defaults to `https://anandb.github.io/beanbot.json` — lets a fork or self-hosted deployment serve its own manifest |
+| `beanbot.update.url` | System | Override the update metadata URL fetched by the update checker (`support/AppLinks`); defaults to `https://repo1.maven.org/maven2/io/github/anandb/beanbot/maven-metadata.xml` — lets a fork or self-hosted deployment serve its own `maven-metadata.xml` |
+| `beanbot.nbm.base` | System | Base for the "Download Now" link, default `https://repo1.maven.org/maven2/io/github/anandb/beanbot`; the checker appends `/<version>/beanbot-<version>.nbm`, so it does not guess release-asset URLs |
+| `beanbot.changelog.url` | System | Target of the "View Release Notes" link, default `https://github.com/anandb/nb-complete/blob/main/CHANGELOG.md` — points at the changelog so the link works before a release is tagged |
 | `beanbot.user.guide.url` | System | Override the user-guide URL opened from the help menu (`support/AppLinks`); defaults to `https://anandb.github.io/beanbot_user_guide.html` |
 | `nb.dark.theme` | UIManager | Detect dark theme for icon resolution (`IconResourceManager`) |
-| `ACP_WIRE_LOG` | Env | Path template for the ACP wire-protocol log (`WireLogger`). The file written is `<template-without-extension>_<YYYYMMDD>-<harness>.log` in the template's directory, so successive days and harnesses do not share one file |
+| `ACP_WIRE_LOG` | Env | Path template for the ACP wire-protocol log (`WireLogger`). The file written is `<template-without-extension>_<YYYYMMDD>-<harness>.log` in the template's directory, so successive days and harnesses do not share one file. Every entry is one line: `<local time, no time zone> <json message>` |
 | `PATH` | Env | Search path for the harness binary; all 12 supported harness names are probed (`BinaryResolver`) |
 
 The color properties are declared in [`colors.json`](src/main/resources/github/anandb/netbeans/ui/colors.json) and cover: background, foreground, selection, accent, sunken background, bubble (user/assistant), code, table, header, thinking, tool, permission, and error colors. Most entries define both light and dark variants; the ones resolved straight from a `UIManager` key or a single fallback (`foreground`, `sunkenBackground`, `codeBackground`, `codeForeground`, `codeSelection`) do not.

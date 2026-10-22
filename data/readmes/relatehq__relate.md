@@ -31,35 +31,28 @@ database, Docker or credentials.
 ```sh
 git clone https://github.com/relatehq/relate && cd relate
 pnpm install
-pnpm example:customer-workspace
+pnpm example:connected-sources
 ```
 
-For the smallest terminal app, run `pnpm example:todo-notes` to create and list
-owner-only todos with notes. The [three examples](examples/README.md) explain
-what each application teaches.
+Each default example command opens a seeded Inspector. Run
+`pnpm example:native-objects` for owner-only todos with notes, or
+`pnpm example:datasets` for ad campaigns with impression analytics. Add
+`:walkthrough` to the todo command for the scripted terminal demo. The
+[examples](examples/README.md) explain what each application teaches.
 
 Preparation runs quietly; add `--verbose` to see build logs. Build failures and
 runtime errors are always shown.
 
-The customer-workspace launcher loads the root `.env` if present. Add
-`ANTHROPIC_API_KEY` there to enable the inspector's built-in agent, then restart
-the example. The browser demo and seeded graph also work without a key.
+Each example launcher loads the root `.env` if present. Add `ANTHROPIC_API_KEY`
+there to enable the inspector's built-in agent, then restart the example. The
+seeded graph and Playground also work without a key.
 
-A small app opens in your browser. Its customer comes from an HTTP CRM, its
-invoices from a SQLite database and its account reviews from Relate itself.
+The Inspector opens with a seeded customer from an HTTP CRM, invoices from a
+SQLite database and Relate-owned account reviews. Explore the graph and use the
+Playground as Ana or Fin.
 
-1. As **Ana**, an account manager, you see Mothlight's invoices, amounts and
-   currency. Customer revenue is withheld.
-2. Switch to **Fin** in finance. Customer revenue appears, but invoice amounts
-   and currency are withheld.
-3. As Ana, add a review, then click **Retry last submission**. You get the same
-   receipt back and no duplicate review.
-4. Rename the customer in the CRM and click **Refresh from sources**.
-5. Open **Inspect model** to see the graph. It redraws when you edit
-   `src/graph.ts`.
-
-Expand **See what Relate did** to see the exact SDK calls and the evidence
-returned with each read.
+Run `pnpm example:connected-sources:walkthrough` for a scripted SDK example of
+role-based reads, review creation and receipt replay.
 
 ## Why
 
@@ -174,19 +167,19 @@ Then connect the sources and read as an authenticated caller:
 ```ts
 const relate = createRuntime({
   graph,
-  connections: [
-    connect(crm, {
+  bindings: [
+    bind(crm, {
       connectionId: 'crm',
+      resourceId: 'records',
       providerAccountId: 'spindle-ferry-crm',
       connector: crmApi,
     }),
-    connect(billing, {
-      connectionId: 'billing',
-      connector: sqlite({ path: './billing.sqlite' }).table('invoices', {
-        idColumn: 'id',
-        columns: ['crm_customer_id', 'status', 'total'],
-      }),
-    }),
+    bind(
+      billing,
+      sqlite({ connectionId: 'billing', path: './billing.sqlite' }).table(
+        'invoices',
+      ),
+    ),
   ],
 });
 
@@ -274,20 +267,21 @@ for a complete example.
 
 ## Status
 
-| Works today                                                            | Not yet                                       |
-| ---------------------------------------------------------------------- | --------------------------------------------- |
-| TypeScript authoring, compiler and diagnostics                         | Direct source queries and sync from sources   |
-| Objects backed by one source; references across sources                | One object enriched from several sources      |
-| Graph queries and to-many traversals with scalar and timestamp filters | Sorting, aggregates and indexed filters       |
-| Two-way relationship traversal                                         | Standalone HTTP consumer API                  |
-| Role gates, claim filters, field-level access                          | Writing back to source systems                |
-| Per-field evidence and freshness bounds                                | Migrating between model revisions             |
-| Relate-owned objects, idempotent actions and receipts                  | Published npm packages                        |
-| In-memory and Postgres stores                                          | Work lineage graph of agent reads and actions |
-| SQLite, Stripe and Salesforce (read-only) connectors                   | Cloud MCP clients (ChatGPT) for `relate dev`  |
-| MCP discovery and JS execution (stdio / Streamable HTTP)               |                                               |
-| `relate dev` model inspector, `/mcp` and activity log                  |                                               |
-| Activity feed, operation history and object provenance (host APIs)     |                                               |
+| Works today                                                                     | Not yet                                       |
+| ------------------------------------------------------------------------------- | --------------------------------------------- |
+| TypeScript authoring, compiler and diagnostics                                  | Direct source queries and sync from sources   |
+| Objects backed by one source; references across sources                         | One object enriched from several sources      |
+| Graph queries and to-many traversals with scalar and timestamp filters          | Ordinary-property sorting and indexed filters |
+| Dataset calculations, computed filters/order and exact result types             | Graph-wide aggregates                         |
+| Two-way relationship traversal                                                  | Standalone HTTP consumer API                  |
+| Role gates, claim filters, field-level access                                   | Writing back to source systems                |
+| Per-field evidence and freshness bounds                                         | Migrating between model revisions             |
+| Relate-owned objects, idempotent actions and receipts                           | Published npm packages                        |
+| In-memory and Postgres stores                                                   | Work lineage graph of agent reads and actions |
+| SQLite, PostgreSQL/DuckDB analytics, Stripe and read-only Salesforce connectors | Cloud MCP clients (ChatGPT) for `relate dev`  |
+| MCP discovery and JS execution (stdio / Streamable HTTP)                        |                                               |
+| `relate dev` model inspector, `/mcp` and activity log                           |                                               |
+| Activity feed, operation history and object provenance (host APIs)              |                                               |
 
 Relate runs embedded in a Node application and exposes actor-bound graph access
 through two MCP tools: `discover` and `execute`. Both stdio and Streamable HTTP

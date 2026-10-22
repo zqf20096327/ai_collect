@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.png" alt="torch-molecule logo" width="600"/>
+  <img src="https://raw.githubusercontent.com/liugangcode/torch-molecule/main/assets/logo.png" alt="torch-molecule logo" width="600"/>
 </p>
 
 <p align="center">
@@ -20,12 +20,14 @@
 `torch-molecule` is a package that facilitates molecular discovery through deep learning, featuring a user-friendly, `sklearn`-style interface. It includes model checkpoints for efficient deployment and benchmarking across a range of molecular tasks. The package focuses on three main components: **Predictive Models**, **Generative Models**, and **Representation Models**, which make molecular AI models easy to implement and deploy. 
 
 <p align="center">
-  <img src="assets/cover.png" alt="scikit-learn vs torch-molecule comparison" width="800"/>
+  <img src="https://raw.githubusercontent.com/liugangcode/torch-molecule/main/assets/cover.png" alt="scikit-learn vs torch-molecule comparison" width="800"/>
 </p>
 
 See the [List of Supported Models](#list-of-supported-models) section for all available models.
 
 ## Installation
+
+Python 3.10 or newer is required; GenMol and Molexar require Python 3.11 or newer.
 
 1. **Create a mamba environment**:
    ```bash
@@ -54,31 +56,31 @@ See the [List of Supported Models](#list-of-supported-models) section for all av
 
 ### Additional Packages
 
-| Model | Required Packages |
-|-------|-------------------|
-| HFPretrainedMolecularEncoder | transformers |
-| HFPretrainedMolecularGenerator | transformers |
-| HFPretrainedMolecularGenerator (MolGen) | transformers, [selfies](https://github.com/aspuru-guzik-group/selfies) |
-| HFPretrainedMolecularGenerator (Molexar) | transformers, [fragment-selfies](https://github.com/fairydance/Fragment-SELFIES), [molexar](https://github.com/fairydance/Molexar) |
-| HFPretrainedMolecularGenerator (SAFE-GPT) | transformers, [safe-mol](https://github.com/datamol-io/safe) |
-| GenMolMolecularGenerator | transformers, [safe-mol](https://github.com/datamol-io/safe) |
-| BFGNNMolecularPredictor | torch-scatter |
-| GRINMolecularPredictor | torch-scatter |
-| GRINMolecularPredictor (if enable `repetition_augmentation=True`) | CombineMols |
+Optional model requirements install as pip extras, e.g. `pip install "torch-molecule[molgen]"` (or `pip install ".[molgen]"` from a source checkout):
 
-**For models that require `torch-scatter`**: Install using the following command: `pip install torch-scatter -f https://data.pyg.org/whl/torch-${TORCH}+${CUDA}.html`, e.g.,
+| Extra | Installs | For |
+|-------|----------|-----|
+| `hf` | torch>=2.6, transformers | HFPretrainedMolecularEncoder, HFPretrainedMolecularGenerator |
+| `molgen` | torch>=2.6, transformers, selfies>=2.1 | MolGen |
+| `molexar` | torch>=2.6, transformers>=5.8, loguru | Molexar (Python 3.11+); also install [Fragment-SELFIES](https://github.com/yiyanliao/Fragment-SELFIES) and [Molexar](https://github.com/yiyanliao/Molexar) from source |
+| `safe` | torch>=2.6, transformers, safe-mol | SAFE-GPT |
+| `genmol` | transformers==4.57.1, safe-mol>=0.2.1,<0.3 | GenMol (Python 3.11+) |
+| `scatter` | torch-scatter | BFGNN, GRIN |
+| `grin` | torch-scatter, CombineMols | GRIN with `repetition_augmentation=True` |
 
-> `pip install torch-scatter -f https://data.pyg.org/whl/torch-2.7.1+cu128.html`
+Hugging Face pretrained generators require PyTorch 2.6 or newer.
 
-**For models that require `transformers`:** `pip install transformers`
+Use separate environments for GenMol and Molexar: GenMol requires
+`transformers==4.57.1`, while Molexar requires `transformers>=5.8`.
 
-**For MolGen (`selfies`):** `pip install "selfies>=2.1"`. Source: [aspuru-guzik-group/selfies](https://github.com/aspuru-guzik-group/selfies).
+After installing the `molexar` extra, install its source packages:
 
-**For Molexar:** `pip install fragment-selfies loguru` ([Fragment-SELFIES](https://github.com/fairydance/Fragment-SELFIES)) and `pip install git+https://github.com/fairydance/Molexar.git` ([Molexar](https://github.com/fairydance/Molexar)). Molexar itself requires `transformers>=5.8`.
+```bash
+python -m pip install git+https://github.com/yiyanliao/Fragment-SELFIES.git git+https://github.com/yiyanliao/Molexar.git
+```
 
-**For SAFE-GPT:** `pip install safe-mol` ([SAFE](https://github.com/datamol-io/safe)).
-
-**For GenMol (Python 3.11+):** From the source checkout, run `pip install ".[genmol]"`. This installs `transformers==4.57.1` and `safe-mol>=0.2.1,<0.3`; `datasets` is not required.
+Install a `torch-scatter` wheel matching your PyTorch and CUDA versions using
+the [PyTorch Geometric installation guide](https://pytorch-geometric.readthedocs.io/en/latest/install/installation.html).
 
 ```python
 from torch_molecule import HFPretrainedMolecularGenerator
@@ -93,40 +95,42 @@ print(model.generate(n_samples=5, scaffold="c1ccccc1"))
 
 ## Usage
 
-> More examples can be found in the `examples` and `tests` folders.
+> More examples can be found in the `examples` folder.
 
-`torch-molecule` supports applications in broad domains from chemistry, biology, to materials science. To get started, you can load prepared datasets from `torch_molecule.datasets` (updated after v0.1.3):
-| Dataset | Description | Function |
-|---------|-------------|----------|
-| qm9 | Quantum chemical properties (DFT level) | `load_qm9` |
-| chembl2k | Bioactive molecules with drug-like properties | `load_chembl2k` |
-| broad6k | Bioactive molecules with drug-like properties | `load_broad6k` |
-| toxcast | Toxicity of chemical compounds | `load_toxcast` |
-| admet | Chemical absorption, distribution, metabolism, excretion, and toxicity | `load_admet` |
-| gasperm | Five gas permeability properties for polymeric materials | `load_gasperm` |
-| zinc250k | A common subset of ZINC dataset, which does not have labels and could be used for unconditional generation or virtual screening | `load_zinc250k` |
+### Datasets
+
+Explore small-molecule and polymer datasets in the [molecular dataset hub](https://liugangcode.github.io/molecular-dataset-hub/), with original sources, licenses, units, source splits, and quality tags.
+
+See the [dataset documentation](https://liugangcode.github.io/torch-molecule/dataset.html)
+for dataset selection, caching, target columns, and train/test splits.
+
+<a href="https://liugangcode.github.io/molecular-dataset-hub/#explore">
+  <picture>
+    <source media="(max-width: 600px)" srcset="https://liugangcode.github.io/torch-molecule/_static/dataset-statistics-compact.svg">
+    <img src="https://liugangcode.github.io/torch-molecule/_static/dataset-statistics.svg" alt="Open the Molecular Dataset Hub for current dataset counts, Hugging Face coverage, source rows, tasks, and the interactive map.">
+  </picture>
+</a>
+
+[Current counts](https://liugangcode.github.io/molecular-dataset-hub/#stats) follow the hub's published metadata. Hugging Face entries include public and gated datasets and files without SMILES tables. Source rows may repeat structures; each dataset retains its own license.
+
+Load published SMILES tables by their original dataset name:
 
 ```python
-from torch_molecule.datasets import load_qm9
+from torch_molecule.datasets import list_datasets, load_dataset
 
-# local_dir is the local path where the dataset will be saved
-molecular_data = load_qm9(local_dir='torchmol_data')
-smiles_list, property_np_array = molecular_data.data, molecular_data.target
+list_datasets(category="adme", grade="ready")      # browse by category, quality grade, or license
 
-# len(smiles_list): 133885
-# Property array shape: (133885, 1)
+data = load_dataset("qm9", targets=["homo", "lumo", "gap"], local_dir="torchmol_data")
+smiles_list, property_np_array = data.data, data.target   # 133,885 molecules, shape (133885, 3)
+data.info["targets"]["gap"]["units"]                        # 'Hartree'
 
-# load_qm9 returns the target "gap" by default, but you can adjust it by passing new target_cols
-target_cols = ['homo', 'lumo', 'gap']
-molecular_data = load_qm9(local_dir='torchmol_data', target_cols=target_cols)
-smiles_list, property_np_array = molecular_data.data, molecular_data.target
+train = load_dataset("moleculeace_chembl204_ki", split="train")   # source splits where defined;
+test = load_dataset("moleculeace_chembl204_ki", split="test")     # test drops molecules seen in train
 
-# the target could be None if loading an unlabeled dataset
-from torch_molecule.datasets import load_zinc250k
-molecular_data = load_zinc250k(local_dir='torchmol_data')
-smiles_list = molecular_data.data
-assert molecular_data.target is None
+zinc = load_dataset("zinc250k", targets=[])                 # structures only: target is None
 ```
+
+`load_qm9`, `load_chembl2k`, `load_broad6k`, `load_toxcast`, `load_admet`, `load_gasperm`, and `load_zinc250k` still work but are deprecated aliases of `load_dataset` and will be removed.
 
 (We are actively adding more datasets. We welcome your suggestions and contributions on your datasets!)
 
@@ -135,10 +139,10 @@ assert molecular_data.target is None
 After preparing the dataset, split it, then fit a model with an sklearn-style API (no extra SMILES featurization is required):
 
 ```python
-from torch_molecule.datasets import load_qm9
+from torch_molecule.datasets import load_dataset
 from torch_molecule import GREAMolecularPredictor
 
-data = load_qm9(local_dir='torchmol_data')
+data = load_dataset("qm9", targets=["gap"], local_dir="torchmol_data")
 # "random" | "scaffold" | "butina" | "size"
 # scaffold: unseen Bemis-Murcko scaffolds; butina: Tanimoto clusters; size: heavy-atom count
 train, val = data.train_test_split(test_size=0.2, method="scaffold", seed=42)
@@ -159,6 +163,11 @@ grea.autofit(
     n_trials=10,
 )
 ```
+
+Random splitting assigns individual rows, so repeated structures can occur
+in both splits. The splitters preserve `data.groups` metadata but do not use it
+to assign rows. Use `scaffold` or `butina`, or split by group yourself, when
+repeated measurements must stay together.
 
 ### Checkpoints
 
@@ -217,6 +226,7 @@ new_model.load_from_local("qm9_grea.pt")
 
 | Model      | Reference           |
 |------------|---------------------|
+| DemoDiff   | [Graph Diffusion Transformers are In-Context Molecular Designers. ICLR 2026](https://openreview.net/forum?id=lJ87GN5zJc) |
 | GenMol     | [GenMol: A Drug Discovery Generalist with Discrete Diffusion. ICML 2025](https://proceedings.mlr.press/v267/lee25o.html) |
 | DeFoG      | [DeFoG: Discrete Flow Matching for Graph Generation. ICML 2025](https://openreview.net/pdf?id=KPRIwWhqAZ) |
 | Graph DiT  | [Graph Diffusion Transformers for Multi-Conditional Molecular Generation. NeurIPS 2024](https://openreview.net/forum?id=cfrDLD1wfO) |

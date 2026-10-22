@@ -8,7 +8,7 @@
 
 > **⚠️ Work in progress.** The API is under active development and may change between versions without notice.
 
-> **📛 Naming note.** As of `v0.3.0`, `ActiveHarness::Agent` was renamed to `ActiveHarness::Request` — it's a single resilient LLM call (model chain, fallback, retry, hooks), not an autonomous entity, and `Request` describes that more accurately. The `Agent` name is reserved for a future, separate abstraction — something that *uses* a model to decide and take actions — which doesn't exist in this gem yet.
+> **📛 Naming note.** As of `v0.3.0`, `ActiveHarness::Agent` was renamed to `ActiveHarness::Request` — it's a single resilient LLM call (model chain, fallback, retry, hooks), not an autonomous entity, and `Request` describes that more accurately. The `Agent` name now belongs to a separate abstraction — a loop that *uses* a model to decide and take actions through safe `Tool`s (see [docs/AGENT.md](docs/AGENT.md) and [docs/TOOLS.md](docs/TOOLS.md)); it is a first iteration.
 
 Running a single LLM call is easy. Running a _reliable, observable, cost-controlled AI system_ is not.
 
@@ -34,7 +34,14 @@ Group related steps into reusable sub-pipelines, and compose complex workflows f
 
 ## Compose Hybrid Pipelines!
 
-Orchestrate deterministic and AI steps together.
+Orchestrate deterministic and AI steps together: plain Ruby does what code does best, a model does what only a model can, and the pipeline passes the result from one to the other.
+
+The picture below is the OpenAI Pricing pipeline from the playground. It has two steps:
+
+1. **Fetch the page — deterministic.** A Playwright scraper downloads the live OpenAI API pricing page and returns its text. No model, no tokens, the same result every time.
+2. **Extract the prices — LLM.** A request reads that text and turns it into structured JSON: model names and token prices.
+
+The picture shows both steps as they run, and the final result: the table of prices extracted from the page.
 
 <img  alt="Image" src="https://github.com/user-attachments/assets/9df61547-e2b5-48c0-8cf2-3ae3aae60c4a" />
 
@@ -47,6 +54,76 @@ With ActiveHarness you can track time, tokens, and dollars for every request cal
 | Cost in Application                                                                                       | Provider's Cost                                                                                            |
 | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | <img alt="Image" src="https://github.com/user-attachments/assets/6890af98-34cb-45e7-8162-030292d016a5" /> | <img  alt="Image" src="https://github.com/user-attachments/assets/c5a3cc01-5adc-4b84-b7c1-5a08a9e79b50" /> |
+
+## Give Models Safe Tools!
+
+A `Tool` is a controlled action a model may ask for: typed parameters, ordered `step`s that validate and transform the input, **default deny**. A refusal or a failure goes back to the model as a safe message instead of crashing anything. Tools are plain classes — an `Agent` is only one of the ways to use them.
+
+```ruby
+# app/ai/tools/read_file_tool.rb
+class ReadFileTool < ActiveHarness::Tool
+  include ActiveHarness::Tool::PathPolicy
+
+  tool_scope :os          # full name: os::read_file
+  tool_name  "read_file"
+
+  description   "Read the first lines of a text file inside the workspace"
+  param :path,  "Absolute path of the file"
+  param :lines, "How many lines to read", type: :integer, required: false
+
+  ALLOWED_PATHS = [Rails.root.join("storage").to_s].freeze
+
+  # Steps run in order; `deny!` refuses the call, `transform: true` rewrites the input.
+  step :resolve_path, transform: true do |input|
+    input.merge(path: safe_path!(input[:path]))
+  end
+
+  def perform(input)
+    File.foreach(input[:path]).first((input[:lines] || 50).to_i).join
+  end
+end
+```
+
+See [docs/TOOLS.md](docs/TOOLS.md).
+
+## Build Agents!
+
+An `Agent` runs the loop: ask the model, run the tools it calls, check the goal, stop at the limits. It owns the loop and the limits; the tools it may use are listed explicitly (anything else is refused).
+
+A goal check — decides whether the final answer is good enough:
+
+```ruby
+# app/ai/goals/answer_present_goal.rb
+class AnswerPresentGoal < ActiveHarness::GoalCheck
+  def call(candidate:, goal:, state:)
+    ok = !candidate.to_s.strip.empty?
+    ActiveHarness::GoalCheckResult.new(status: ok ? :achieved : :continue, feedback: "Give a non-empty answer")
+  end
+end
+```
+
+An agent — the loop that ties a request, tools and a goal together:
+
+```ruby
+# app/ai/agents/files_agent.rb
+class FilesAgent < ActiveHarness::Agent
+  request FilesRequest          # owns the model chain, retries and fallback
+  tools   LsTool, ReadFileTool  # the only tools the model may call
+  goal    AnswerPresentGoal
+  max_turns 8
+end
+```
+
+Run it:
+
+```ruby
+agent = FilesAgent.call(input: "What is in the storage directory?")
+agent.output       # final answer
+agent.stop_reason  # :goal_reached, :max_turns, ...
+puts agent.trace
+```
+
+`rails g active_harness:install` creates a working `FilesAgent` with its tools, goal check and tracing concerns; `rails g active_harness:agent`, `:tool` and `:goal` add more. Tool calling works with OpenAI-compatible providers and Anthropic. First iteration — see [docs/AGENT.md](docs/AGENT.md) and the [overview](docs/OVERVIEW.md).
 
 ## Use Consensus-Based Decisions!
 
@@ -94,6 +171,8 @@ See [`docs/JEV.md`](docs/JEV.md) for the full request/response schema and use-ca
 
 | Capability                              | What it means                                                                                               |
 | --------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Tools**                               | Typed, default-deny actions a model may call: validated steps, safe refusals and failures                     |
+| **Agents**                              | A tool-calling loop with goal checks, turn/cost/error limits and safe stops                                   |
 | **Multi-step&nbsp;Pipelines**           | Chain requests sequentially, with per-step stop conditions and context forwarding                             |
 | **Tribunal&nbsp;Consensus**             | Run multiple requests in parallel and accept the result only if they agree (unanimous, majority, or custom)   |
 | **Automatic&nbsp;Fallbacks**            | If a model fails, the next one in the chain takes over — zero extra code                                    |
@@ -103,13 +182,13 @@ See [`docs/JEV.md`](docs/JEV.md) for the full request/response schema and use-ca
 | **Execution&nbsp;Time&nbsp;Tracking**   | Per-request and per-pipeline timing built in                                                                  |
 | **Token&nbsp;&nbsp;Cost&nbsp;Tracking** | Know exactly what each call cost in tokens and dollars                                                      |
 | **Rails-native&nbsp;DSL**               | Clean file structure, Railtie integration, generator support                                                |
-| **Event&nbsp;Tracing**                  | OpenTelemetry integration for distributed tracing of requests, tribunals, and pipelines                       |
+| **Event&nbsp;Tracing**                  | OpenTelemetry integration for distributed tracing of requests, tribunals, pipelines, and agents               |
 
 ## File Structure
 
 File structure for Ruby and Ruby on Rails applications:
 
-Place all of your AI-related code in `app/ai` to keep it organized and separate from your core application logic. You can further organize it into subdirectories for prompts, requests, tribunals, pipelines, and memory.
+Place all of your AI-related code in `app/ai` to keep it organized and separate from your core application logic. You can further organize it into subdirectories for prompts, requests, tribunals, pipelines, memory, agents, tools, goals, and tracing concerns.
 
 ```
 app/
@@ -121,7 +200,11 @@ app/
     ├── requests/       # request classes
     ├── tribunals/    # parallel verdict panels
     ├── pipelines/    # multi-step pipelines
-    └── memory/       # custom memory classes
+    ├── memory/       # custom memory classes
+    ├── agents/       # tool-calling agents
+    ├── tools/        # tools agents can call
+    ├── goals/        # goal checks (ActiveHarness::GoalCheck)
+    └── concerns/     # shared tracing (request/tribunal/pipeline/agent/tool)
 ```
 
 ## Prompt Documentation
@@ -153,6 +236,21 @@ app/
 - [Image Generation](docs/requests/image_generation.md)
 - [Audio Transcription](docs/requests/audio_transcription.md)
 - [Jev / TypeSafe AI Evaluation (Vercel AI Gateway)](docs/JEV.md)
+
+## Agent Documentation
+
+- [Overview of all concepts](docs/OVERVIEW.md)
+- [Idea and DSL](docs/AGENT.md#1-idea)
+- [Data contracts (Goal, GoalCheck, AgentState)](docs/AGENT.md#4-data-contracts)
+- [The standard loop](docs/AGENT.md#5-the-standard-loop)
+- [Hooks, events, tracing](docs/AGENT.md#7-hooks-events-tracing)
+- [Completion and failure](docs/AGENT.md#9-completion-and-failure)
+
+## Tool Documentation
+
+- [Design (steps, deny, hooks, schema)](docs/TOOLS.md#2-proposed-design)
+- [Examples](docs/TOOLS.md#3-examples)
+- [Security checklist](docs/TOOLS.md#4-security-rules-to-keep-checklist)
 
 ## Pipeline Documentation
 

@@ -315,8 +315,12 @@ because the same change added three more classes below):
   gates passed an eBPF object the kernel then refused to load, because a warn-by-default style
   lint had suggested an owned argument that spent 52 bytes of a **512-byte** stack — on a
   constrained target a lint's *premise* can be false, and the word "mechanical" is a
-  classification applied **before** the analysis that would justify it.
+  classification applied **before** the analysis that would justify it. A gate can also stop
+  short by **default**: ShellCheck does not report an unset ALL-CAPS name, so a `set -u` typo
+  passes the lint and `bash -n` and dies at run time; the optional check
+  `check-unassigned-uppercase` reports it, and this repo's CI enables it.
   ([devsecops rules/09 §2a](skills/sota-devsecops/rules/09-gates-that-hold.md),
+  [shell rules/03 §7](skills/sota-shell-scripting/rules/03-security.md),
   [rust rules/07 §1a](skills/sota-rust/rules/07-tooling-ci.md))
 - **A version recalled instead of looked up.** Not a stale pin — a *measurement* of someone
   else's artifact, which never feels like a version decision. A recalled release number
@@ -386,7 +390,8 @@ because the same change added three more classes below):
   file** — exit 0, target untouched. Measured across four implementations, and the danger is
   the **platform split**: only **BSD** sed refuses, so a macOS developer sees the safe
   behaviour and CI (GNU, BusyBox) does not. That one-liner converted this repository's own
-  tracked symlinks.
+  tracked symlinks. And a guard tested in zsh can pass what bash rejects: zsh leaves
+  `BASH_REMATCH` unset, so empty `-eq` empty accepted `43/44` as "N/N checks passed".
   ([rules/06](skills/sota-shell-scripting/rules/06-ad-hoc-commands.md),
   [rules/03 §3a](skills/sota-shell-scripting/rules/03-security.md))
 - **Controls that block everything** — the mirror image, and the one every other pass
@@ -400,7 +405,9 @@ because the same change added three more classes below):
   your control permits it. Worked instance: a memory budget set with `RLIMIT_AS`
   refuses the runaway allocation exactly as intended, and also kills every Go or JVM
   process **at startup**, since those runtimes reserve gigabytes of address space they
-  never touch (measured: 1.17 GiB reserved against 2.3 MiB resident).
+  never touch (measured: 1.17 GiB reserved against 2.3 MiB resident). Its host-hardening twin:
+  forcing AppArmor's shipped `flags=(unconfined)` profiles into complain mode broke rootless
+  Podman, because those profiles exist to grant a permission, not to skip a policy.
   ([rules/12 §1a](skills/sota-code-security/rules/12-verifying-the-verifier.md),
   [sandboxing rules/02](skills/sota-sandboxing/rules/02-linux-os-hardening.md))
 - **Layers that were never layers** — the same test applied to an *architecture*
@@ -436,10 +443,11 @@ because the same change added three more classes below):
 - **A search that never ran, reported as a clean tree.** In zsh — macOS's interactive
   shell, and the one these checklists get pasted into — an unquoted glob in a flag value
   (`grep --include=*.md`) trips the default `NOMATCH` and **aborts the command**, where
-  bash would pass the word through and run it. Add the `2>/dev/null` everyone uses to
-  hide `Permission denied` noise and the broken probe is byte-identical to a real
-  no-match: empty output, exit 1. The sweep you read as *"nothing is stale"* may never
-  have executed. **A second route reaches the same false-clean**: in zsh an unquoted
+  bash would pass the word through and run it. Its stdout and exit status are those of a
+  real no-match: empty output, exit 1. zsh's `no matches found` still reaches stderr (the
+  command's own `2>/dev/null` does not cover it), so a script reading `$out` or `$?`, or a
+  sweep with stderr dropped around it, reports a clean tree. The sweep you read as *"nothing
+  is stale"* may never have executed. **A second route reaches the same false-clean**: in zsh an unquoted
   expansion does not word-split, so `files=$(git ls-files '*.md'); grep -l X $files`
   passes the whole newline-joined list as **one impossible filename** and it
   **searched nothing** — and the remedy is **separator-specific**, since the `${=var}` fix
@@ -546,7 +554,10 @@ because the same change added three more classes below):
   working control's signal, because on the guarded subset it is one. The audit move is a
   **census** — enumerate the protected *operation*, mark each call site, report the ratio —
   and the API fix is that a parameter selecting a trust boundary **defaults to the closed
-  side**. ([code-security rules/14 §6](skills/sota-code-security/rules/14-control-not-in-force.md))
+  side**. The population has a second axis, the principals it runs as: `pam_faillock` returns
+  success when it cannot open its tally, so a 0700 tally directory recorded no lock-screen
+  failures (PAM runs as the user there) while every root-run test passed.
+  ([code-security rules/14 §6](skills/sota-code-security/rules/14-control-not-in-force.md))
 - **Security prose the code no longer keeps** — "containment is applied at every target
   walk" (it was 9 of 61); "no function-calling, no shell — this RCE mechanism is NOT
   APPLICABLE" (tools were on by default). Each had been true when written. Most such
@@ -738,7 +749,9 @@ read, hack on, or pin). A few details on the clone path:
 
 - Skills are discovered from `.claude/skills/` (per project) or `~/.claude/skills/`
   (personal, all projects); `install.sh` symlinks every skill and your profile.
-- `--project DIR` scopes to one repo; `--copy` pins a snapshot instead of linking.
+- `--project DIR` scopes the skills to one repo (the slash commands still go to
+  `~/.claude/commands`, on purpose: they are run about work in another project);
+  `--copy` pins a snapshot instead of linking.
 - **Other agents need `--target all`.** Copilot CLI, Codex, Gemini CLI and Antigravity do not
   document `~/.claude/skills`; `--target all` also links `~/.agents/skills` (Copilot, Codex,
   Cursor, Gemini CLI) and Antigravity's own `~/.gemini/config/skills` /
@@ -750,9 +763,12 @@ read, hack on, or pin). A few details on the clone path:
 - **On Windows without Developer Mode, the install is a copy.** Git Bash's `ln -s` copies
   silently when a symlink is refused; the installer now detects that and **says so** —
   re-run it after every `git pull`, or enable Developer Mode and re-run for live links.
+  Run as an elevated administrator, it links: 43 of 43 skills were real symlinks on
+  Windows 11 with Git for Windows 2.56 (measured 2026-10-22). The no-privilege copy path
+  above follows the Git for Windows and MSYS2 docs, and was not measured.
 - Prefer no script? Symlink `skills/*/` into `~/.claude/skills/` and `commands/*.md`
   into `~/.claude/commands/` by hand. You then skip what the script adds beyond links:
-  the update-reminder hook, the routing-hook, code-rules-hook and listing-budget offers, and the
+  the update-reminder hook, the routing-hook, code-rules-hook, zsh EQUALS hook and listing-budget offers, and the
   reach check.
 
 The plugin (or `--copy`) installs the skills; a few extras (routing reminder,
@@ -811,7 +827,10 @@ run the check. Installed by `install.sh` (clone) and by the plugin's own hook; s
 it with `SOTA_UPDATE_REMINDER_DAYS=0`, or set your own interval in days. The one thing it
 *can* know locally it says every session: a **copied** install (no symlinks, e.g. Git Bash
 without Developer Mode) is stamped with its release, and once `git pull` moves the checkout past
-it, the hook names the stale copy and the re-install command.
+it, the hook names the stale copy and the re-install command. A second local fact, said **once**: a default-on
+hook script that a `git pull` brought to a clone install and nothing registered (the code-rules
+hook, or the zsh `EQUALS` hook when the agent's shell is zsh), since only `install.sh --routing`
+writes `settings.json`. A fresh install stays silent: it was just offered every hook.
 
 **Which version am I on?** `scripts/install.sh --version` reports the release, the
 checkout (`git describe`), whether your remote is ahead as of the last fetch, and
@@ -876,6 +895,12 @@ session that found it.*
 wrote gives `[WARN] Skill listing over budget: 65 skills, 47324 chars > 8000 budget —
 descriptions will be truncated.` That line goes to `~/.claude/debug/` and appears nowhere
 else, which is exactly why a whole session can run on a crippled listing unnoticed.
+*Since then (code.claude.com/docs/en/skills, re-read 2026-10-20):* the docs name two places to
+look in a session. `/doctor` estimates the listing's context cost and its biggest
+contributors. The Skills row in `/context` reports the listing's size **after** the budget is
+applied, so it matches what the model receives (before v2.1.196 it counted every description
+in full). The docs also say the over-budget warning is written to the debug log; they do not
+say whether `/doctor` shows it. Not re-measured here.
 
 **Why it still works anyway, and what actually breaks.** The `sota` router is used every
 session, so it ranks near the top and keeps its description — and a name-only skill is
@@ -1023,7 +1048,9 @@ anything". Three corrections, each re-checked 2026-10-02:
   [Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview) exposes the same loop with
   hooks and permissions programmatically. **`scripts/verified-done-hook.py`** uses that: an
   opt-in Stop hook that refuses "done" on a changed tree until a verification command has
-  passed on exactly that tree (router principle 6, enforced). The git hooks from
+  passed on exactly that tree (router principle 6, enforced). **`scripts/zsh-equals-hook.py`**, on by
+  default in the plugin, is a PreToolUse hook that refuses a zsh command carrying an unquoted `=word` before it runs
+  (`sota-shell-scripting` rules/06 §1), a reflex the written rule did not stop. The git hooks from
   `scripts/init-gates.sh` and CI are enforcement on every host, whatever the agent.
 - **The router is not an always-on 43 KB blob.** Only each skill's frontmatter `description`
   is in every turn's listing; the router's body loads when the skill is invoked
@@ -1222,42 +1249,4 @@ run is *skipped* is a gate on paper.
 
 ```sh
 /path/to/SOTA-skills/scripts/verify-setup.sh     # read-only; --runs N widens the CI sample
-/path/to/SOTA-skills/scripts/verify-setup.sh --reach-only   # section A only: is the library reaching this machine?
-/path/to/SOTA-skills/scripts/verify-setup.sh --no-color     # plain rows; also honours NO_COLOR and TERM=dumb
-```
-
-`install.sh` (and therefore `update.sh`) runs the `--reach-only` half itself at the end
-of every run, because *"linked 42 skills"* is what the installer **did** and reachability
-is what the agent **gets** — and the two diverge silently, since a `git pull` updates
-every existing symlink and can create none. Pass `--no-verify` to skip it.
-
-It reports skills reachability, the routing hook, the profile symlink, a licence
-under *any* name, which gates exist, whether a hook is **installed** rather than
-merely configured, and — from real run conclusions — whether CI has ever
-*executed* and ever *rejected* anything. Its **section F** adds one fact about the
-*machine* rather than the repo: **what your default searcher silently skips**. Every
-searcher excludes something quietly — a symlinked directory, a `.gitignore`'d path, a
-dot-directory — and the failure mode is a *clean absence*, which is exactly the answer
-a sweep was hoping to prove. It runs a four-match fixture under `$TMPDIR` and names the
-exclusions as **INFO**; nothing fails for them, because `rg` skipping ignored files is a
-feature. The one thing that *can* fail is the **positive control** — a searcher that
-cannot find the plain file is broken, and its absences are not evidence. It changes nothing and exits 1 on any
-FAIL. Anything it could not observe is marked **UNVERIFIED**, never passed: on
-this repo the reject-history check reads UNVERIFIED at the default sample and
-turns up a real rejection at `--runs 200`, which is why the sample size is
-printed. [docs/VERIFY-SETUP.md](docs/VERIFY-SETUP.md) carries the other half — a
-paste-in prompt for the judgement calls a script can't make: whether the agent
-file's content is meaningful and whether its claims are still *true*.
-
-Add `--docs-gate` to also install a pre-commit hook that **blocks a commit which
-changes code but updates no docs** (README/CHANGELOG/`docs/`/`*.md`) — so docs
-stay current without you having to ask. It writes a small helper to
-`.sota/docs-gate.sh`; it's heuristic (a docstring-only edit inside a code file
-will trip it) and bypassable with `SKIP=sota-docs-gate git commit`, which is why
-it's opt-in.
-
-### Other AI agents (Codex, Copilot, Gemini, …)
-
-The skill *content* is plain Markdown — any model reads it. **To make the skills
-themselves discoverable** by Copilot CLI, Copilot in VS Code, Codex, Cursor, Gemini
-CLI or Antigravity, install with 
+/path/to/SOTA-skills/scripts/verify-setup.sh --reach-only   # section A only: is the library reachi

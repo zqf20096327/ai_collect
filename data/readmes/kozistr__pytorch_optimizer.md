@@ -91,13 +91,17 @@ Set `compile=True` to let PyTorch optimize and automatically fuse optimizer upda
 ```python
 from pytorch_optimizer import create_optimizer
 
-optimizer = create_optimizer(model, 'tiger', lr=1e-3, compile=True)
+optimizer = create_optimizer(model, 'laprop', lr=1e-3, compile=True)
 ```
 
-Optimizers with a dedicated compiled foreach path include AdaBound, AdaMax, AdaMod, AdaMuon, DiffGrad, Lion, Muon,
-PAdam, RAdam, SGDW, SignSGD, Tiger, and Yogi. These paths keep state initialization and step counters eager
-and pass learning rates to compiled updates as tensors. Native PyTorch AdamW and StableAdamW are also tested.
-Use `compile=False` (the default) for eager execution.
+Optimizers with a dedicated compiled foreach path include AccSGD, AdaBound, AdaDelta, AdaGC, AdaHessian, Adai,
+AdaMax, AdaMod, AdaMuon, AdaNorm, AdaPNM, AdaShift, AdaSmooth, AdaTAM, AdamC, AdamG, AdamS, AdamWSN, Aida, Amos,
+Ano, ASGD, AvaGrad, BCOS, CAME, DiffGrad, DualAdam, EXAdam, FAdam, FOCUS, Fromage, Gravity, GrokFastAdamW, Kate,
+LaProp, Lion, MADGRAD, MSVAG, Muon, Nero, NovoGrad, PAdam, PID, PNM, RAdam, ROSE, ScheduleFreeAdamW,
+ScheduleFreeRAdam, ScheduleFreeSGD, SGDSaI, SGDW, SRMM, SignSGD, SimplifiedAdEMAMix, SophiaH, StableAdamW, TAM,
+Tiger, VSGD, and Yogi. These paths keep state initialization and step counters eager and pass learning rates to compiled
+updates as tensors. Native PyTorch AdamW is also tested. Use `compile=False` (the default) for eager
+execution.
 
 The library selects the batched update path automatically for supported optimizers.
 The compiler chooses which operations to fuse; no separate fusion setting is required.

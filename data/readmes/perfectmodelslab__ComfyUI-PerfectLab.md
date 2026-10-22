@@ -135,11 +135,13 @@ From a neon-lit arcade to a minimalist marble studio, from a rooftop pool to a r
 
 12 conditions, each an empty landscape, plus in-air effects that work indoors too: falling petals, floating bubbles.
 
+<p align="center"><img src="docs/sections/weather_pick.png" alt="Weather card" width="720"></p>
+
 ### Props
 
 39 scene props in four blocks: portable (a vintage bicycle, a motorcycle, balloons, a bouquet, a film camera, a polaroid, a vinyl record, a skateboard, a suitcase), everyday carry (a takeaway coffee cup, an ice cream cone, a slice of pizza, a disposable camera, dried flowers, a rolled magazine, roller skates, shopping bags, a cocktail glass, a hand mirror), living props (a fluffy cat in her arms, a small dog on a leash) and statement furniture (a grand piano, a lit fireplace, a chandelier, a four-poster bed, a coat rack, a wall of framed photos). Multi-select: they ride the scene line as *with a bouquet and a vinyl record*.
 
-<p align="center"><img src="docs/sections/weather_pick.png" alt="Weather card" width="720"></p>
+<p align="center"><img src="docs/sections/props_pick.png" alt="The props grid in the location card" width="760"></p>
 
 ## 🎞 Style
 
@@ -180,15 +182,21 @@ The SESSION section sets what one START SHOOT renders: **shots** (1 to 100), **t
 
 The SESSION section also carries the **model profile**: a named token budget (Z-Image 400, Flux 512, Krea 2 512, Qwen-Image 1024, SDXL 75, or your own number). The linter and the engine's guard read the same string, so what the panel warns about is exactly what the engine trims. Under it, the **prompt template** editor: the sentence the engine fills, slot by slot. A custom slot order for exotic encoders is one edit, the reset button brings the stock order back, and the linter flags unknown slots.
 
-The **⚙ button** in the panel header opens the **seed settings**: the seed value, a 🎲 roll for a fresh one, and how the seed advances between shoots (fixed, +1, or random). This is the same seed ComfyUI's own control would carry; the panel just keeps it one click away, and LIVE TEXT re-rolls its wildcards with it.
+The **⚙ button** in the panel header opens the **settings**: the seed (its value, a 🎲 roll, and how it advances between shoots: fixed, +1 or random), the **view** (the preview tile size S / M / L / XL and the interface scale 100 / 115 / 130%) and the **interface language**. The seed is the same seed ComfyUI's own control would carry; the panel keeps it one click away, and LIVE TEXT re-rolls its wildcards with it.
+
+<p align="center"><img src="docs/sections/settings.png" alt="The settings popup: seed, view, language" width="760"></p>
 
 The rendered frames land in the preview dock under the panel. In session mode every dock tile is clickable: **re-shoot this frame** queues a single fresh take of that exact shot, same framing, pose and expression, a new roll of the dice on the seed. Each tile also carries a ★: star the keepers, press ↺ and the panel re-shoots every frame you did not star, each fresh take landing back in its own slot.
+
+<p align="center"><img src="docs/sections/session_pick.png" alt="The SESSION section: profile, arc, couplings, template" width="760"></p>
 
 **RESET ALL** empties every pick, and a session with nothing picked composes an empty prompt: a blank slate reads blank, no stock words ride in uninvited. The first real pick switches the full machinery back on.
 
 ## 🎭 Dramaturgy arcs
 
 A photoshoot reads better as a story than as a list. An arc gives the session an emotional curve: every shot gets an energy level from 0 (quiet point) to 1 (climax), and the engine bends the shoot along it.
+
+<p align="center"><img src="docs/sections/session_pick.png" alt="An arc picked with all five couplings on and its expression route" width="760"></p>
 
 **What an arc is.** A named curve plus its expression route. `quiet to climax` walks serene → curious → soft smile → half-smile → excited → laughing out loud; `slow burn` smolders from pensive to a bitten lip; `cold front` hardens from serene to a fierce glare; `story wave` rises, falls and rises again. Pick one in the SESSION section: the chip row shows every arc with its route as a tooltip, and the plan prints the route shot by shot, so you see which face each frame wears before you press the button.
 
@@ -237,6 +245,8 @@ The ⚠ badge in the header counts problems in the composed prompt: token overfl
 
 It also counts **conflicts**: the swaps the engine would make silently, said out loud before the GPU pays for them. A face focus (the face, the eyes, the lips) does not survive figure-tier crops, the engine swaps it to the full figure there. A back-to-camera pose reads the silhouette, so a face focus turns into one. A walked format feed drops every ratio the picked crops contradict, while a pinned format is a deliberate ask and passes as-is. Each warning names the values and the swap: change the pick, or pin it on purpose.
 
+<p align="center"><img src="docs/sections/inspire_pick.png" alt="After one inspiration roll: every creative section re-rolled" width="760"></p>
+
 The **🎲 inspiration roll** in the header re-rolls every creative section at once: garments, colors, materials, accessories, location, weather, light, props, grade, film, palette, framings, focus, lens, poses and expressions. The persona, the trigger, your own words, the negative, the session settings and the output formats stay untouched. The whole roll is one undo step: Ctrl+Z takes it back.
 
 ## 🤖 Models and token budgets
@@ -251,6 +261,10 @@ The panel composes for the encoder in front of it. The **model profile** in the 
 | Qwen-Image | natural language | 1024 tokens |
 | SDXL base and refines | comma tags | 75-token chunks |
 | Custom | keeps the current style | your own number |
+
+When the estimate runs over the budget the linter badge turns amber, LIVE TEXT says so, and the engine's guard drops the low-priority slots on the render itself:
+
+<p align="center"><img src="docs/sections/budget_pick.png" alt="Over budget: the amber linter badge, the warning list, the estimate over the limit" width="760"></p>
 
 Own lines (the main prompt, the scene line, custom additions) are capped at 300 characters each: past that the encoder stops reading the line as one intent. Token order follows the encoder behavior: the style clause goes first, the mood second, the camera line before the person.
 
@@ -292,7 +306,7 @@ Yes. The node outputs PROMPT, NEGATIVE, WIDTH, HEIGHT, SEED and META lists. Wire
 If a character is a LoRA, type its trigger word into the trigger/prefix line and it rides every prompt. The **character cards** row in PERSONA saves the fields plus the trigger under a name and loads them back in one click. Saved prompt texts can be pasted into any own-line field, and the presets row now exports and imports presets as files, so setups move between installs.
 
 **Can I make the preview tiles bigger?**
-Three levers, all in the header. The **▦ button** cycles the tile size (M / L / XL / S), remembered per browser. The **% button** cycles the interface scale (100 / 115 / 130%), growing the text and every em-sized control with it. And the node itself stretches: drag its bottom-right corner and the whole panel follows, fitting more of the library on screen; it never collapses below its comfortable minimum.
+Two levers live in the **⚙ settings popup**: the preview tile size (S / M / L / XL) and the interface scale (100 / 115 / 130%, growing the text and every em-sized control). Both are remembered per browser. The node itself stretches too: drag its bottom-right corner and the whole panel follows, fitting more of the library on screen; it never collapses below its comfortable minimum.
 
 **Will prompts alone give me a fully consistent character?**
 No, and it is worth saying plainly: text locks the description, not the face. The persona fields keep the same wording in every shot, the fixed-seed option keeps the same noise, and a character LoRA is what locks the face itself. The trigger line exists for exactly that.
@@ -301,7 +315,7 @@ No, and it is worth saying plainly: text locks the description, not the face. Th
 No. All 700 preview tiles ship inside the package and load from your disk, so the panel works fully offline.
 
 **Is the interface translated?**
-The RU/EN button in the header switches the interface language; the choice is remembered per browser. Library captions are translated too, the prompts stay English on purpose: English is what the encoders read best.
+The language switch lives in the **⚙ settings popup** (EN / RU); the choice is remembered per browser. Library captions are translated too, the prompts stay English on purpose: English is what the encoders read best.
 
 ## ⌨️ Hotkeys
 

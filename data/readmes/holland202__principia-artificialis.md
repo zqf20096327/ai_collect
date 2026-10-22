@@ -6,11 +6,11 @@
 
 **[Visit the PA Public Research Dashboard →](https://holland202.github.io/principia-artificialis/dashboard.html)** · [Public homepage](https://holland202.github.io/principia-artificialis/) · [How to contribute](JOIN_RESEARCH.md) · [Contributor acknowledgments](AUTHORS.md)
 
-**Public pilot update (2026-10-19):** Active outreach/recruitment is paused while existing collaborations receive priority. Anyone may still explore or submit independent research. Participation remains voluntary, unpaid and at your own pace; submission does not confer scientific approval, publication authority or repository access.
+**Public pilot update (2026-10-22):** Recruitment is open again. The pause announced on 2026-10-19 has ended. New contributors are welcome through the [entry challenges](challenges/entry/README.md) or their own research questions ([JOIN_RESEARCH.md](JOIN_RESEARCH.md)). Participation remains voluntary, unpaid and at your own pace; submission does not confer scientific approval, publication authority or repository access.
 
 **Research is open — start your own idea today.** You do **not** need an assignment, a starter issue or advance permission to explore a question or [submit a PR from your fork](JOIN_RESEARCH.md). [Join the Research Gateway pilot](JOIN_RESEARCH.md) · [Optional starter questions](RESEARCH_OPPORTUNITIES.md) · [Volunteer review process](REVIEW_PLAYBOOK.md). Official PA experiments, canonical rule changes and merges still follow the research controls.
 
-[![Principia Artificialis — existing research artwork](figures/principia_hero.png)](https://holland202.github.io/principia-artificialis/dashboard.html)
+<a href="https://holland202.github.io/principia-artificialis/dashboard.html"><picture><source media="(prefers-reduced-motion: reduce)" srcset="figures/principia_hero.png"><img src="figures/principia_hero_animated.webp" alt="Principia Artificialis: the 600-cell turning in four dimensions"></picture></a>
 
 ![repo fetch](figures/principia_fetch.svg)
 
@@ -277,6 +277,12 @@ See [research_notes/note063_evidence_bound_learning_loop.md](research_notes/note
 
 ## Research notes
 
+**Research literature intake (2026-10-21; speculative / not registered / not run):**
+[PA-QM-OBS-001 — Quantum Measurement, Observers, and Consciousness](docs/PA_QM_OBS_001_LITERATURE_INTAKE_2026-10-21.md)
+and its [checked source-identity ledger](docs/external/PA_QM_OBS_001_SOURCES_2026-10-21.md).
+These references do not establish consciousness-induced quantum collapse or AI consciousness, and are separate from the generated notes index.
+
+
 **Historical description (count preserved, not current): 80 notes** spanning measurement, geometry of reasoning,
 thermodynamics of cognition, quantum-information frameworks, and
 labeled exotic frontiers (emergent gravity, holographic duality,
@@ -299,7 +305,8 @@ plot are the numbers the code prints.
 
 | Figure | From | Shows |
 |---|---|---|
-| `figures/principia_hero.png` | `figures/make_logo.py` | the logo is the exact 600-cell: 120 unit quaternions of 2I, 720 edges of length 1/φ |
+| `figures/principia_hero.png` | `figures/make_logo.py` (referenced here but not present in the repository) | the logo is the exact 600-cell: 120 unit quaternions of 2I, 720 edges of length 1/φ |
+| `figures/principia_hero_animated.webp` | `scripts/make_logo_animated.py` | the same 600-cell under an isoclinic 4D rotation by an element of 2I, so the 36° loop closes exactly; the script prints its checks |
 | `figures/note047_cloister_chorus.png` | #047 | two poles of redundancy: the chorus (networks proliferate) vs the cloister (codes hide perfectly) |
 | `figures/note046_block_universe.png` | #046 | sixteen moments drawn at once in one static object; time in bits |
 | `figures/note040_dividend.png` | #040 | redundancy predicts fault survival; lost vs lying observers |

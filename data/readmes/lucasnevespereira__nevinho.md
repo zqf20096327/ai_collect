@@ -39,6 +39,7 @@ nevinho
 ```
 
 A fresh local install needs no setup wizard. Configure providers from inside the session with `/config`.
+You can also run `nevinho login` to use an eligible ChatGPT plan.
 
 ### Upgrade and uninstall
 
@@ -54,6 +55,7 @@ nevinho stop       stop the bot
 nevinho status     check if the bot is running
 nevinho logs       show live logs (--full, --last N)
 nevinho config     view, set, or delete config keys
+nevinho login      connect an eligible ChatGPT plan
 nevinho upgrade    update to the latest version
 nevinho uninstall  remove what is installed
 nevinho version    show version
@@ -73,6 +75,8 @@ For development, copy `.env.example` to `.env`, fill `DISCORD_BOT_TOKEN`, `DISCO
 
 Configure one or more LLM backends with `nevinho setup` or the in-session `/config` picker.
 
+To use an eligible ChatGPT Plus or Pro plan, run `nevinho login` on the machine where Nevinho runs. Open the printed link and sign in. You can also run `/login` from the terminal UI when already inside Nevinho; it pauses the UI for browser sign-in and then switches to the connected plan's model. On a remote VM, the browser's loopback redirect may fail to load; copy its full final URL from the address bar and paste it into Nevinho's waiting terminal. Login discovers the models available to your account, selects the first one, and adds `chatgpt:` models to `/model`. Run `nevinho login --new` or `/login --new` to register a different ChatGPT account. `nevinho login chatgpt` also works. This uses [OpenAI's Sign in with ChatGPT flow](https://developers.openai.com/siwc/token-sharing-open-source), so plan usage and limits apply; it does not use an API key. Nevinho stores renewable credentials in `~/.nevinho/chatgpt-auth.json` with owner-only permissions. Use [ChatGPT Settings](https://chatgpt.com/#settings) to manage connected app access and usage.
+
 | Provider   | Env var               | Default model                                     | Get a key                              |
 | ---------- | --------------------- | ------------------------------------------------- | -------------------------------------- |
 | Anthropic  | `ANTHROPIC_API_KEY`   | claude-haiku-4-5                                  | https://console.anthropic.com          |
@@ -86,7 +90,10 @@ Groq and OpenRouter both offer a free tier with daily request quotas. Useful for
 
 Groq model names are prefixed with `groq:`. OpenRouter routes are prefixed with `openrouter:`. Both providers accept any model name in their catalog after the prefix.
 
+ChatGPT plan models are prefixed with `chatgpt:` and come from the signed-in account's model list. The OpenAI API key provider remains available separately.
+
 Switch models with `/model` (picker) or `/model <name>`.
+The terminal picker and Discord model menus show whether a model uses the ChatGPT plan, an API key, or OpenRouter. The saved model ID remains unchanged when you switch.
 
 ## Tools
 
@@ -149,13 +156,14 @@ Slash commands inside the terminal:
 | Command        | What it does                                |
 | -------------- | ------------------------------------------- |
 | `/model`       | Pick a model from an interactive list       |
+| `/login`       | Sign in with ChatGPT                        |
 | `/config`      | Set provider keys, toggle CAVEMAN, ELEPHANT |
 | `/memory`      | Show what nevinho remembers about you       |
-| `/session`     | Show the saved conversation summary         |
-| `/status`      | Model, uptime, token usage, cost            |
+| `/session`     | Show this project's checkpoint and summary  |
+| `/status`      | Model, usage, cost, turn cap, limit hits    |
 | `/paths`       | List approved paths, enter to revoke one    |
 | `/paths clear` | Revoke all path permissions                 |
-| `/forget`      | Wipe this conversation and saved summary    |
+| `/forget`      | Wipe this project's saved conversation      |
 | `/help`        | Show the command list                       |
 | `/quit`        | Leave (or ctrl+c)                           |
 
@@ -165,19 +173,25 @@ Configuration is encrypted and stored in `~/.nevinho/`:
 
 ```
 config.enc          encrypted configuration (AES-256-GCM)
+chatgpt-auth.json   ChatGPT plan credentials (owner-only permissions)
 secret.key          auto-generated encryption key
 approved_paths.json persisted write permissions
 memory.md           learned user preferences
-summaries/          per-user conversation summaries (ELEPHANT)
+summaries/          encrypted turn checkpoints and shutdown summaries (ELEPHANT)
 whisper/            local Whisper model and binary (if voice enabled)
-chat.log            terminal client runtime log
+chat.log            terminal client runtime log (8 MiB, 3 rotated backups)
+last_alive.json     daemon heartbeat and clean-shutdown marker
 ```
 
 `.env` in the project directory also works for development. Env vars take priority over the encrypted config.
 
 Set `CAVEMAN=on` via `/config` for a token-saving caveman-style response. Off by default.
 
-Set `ELEPHANT=off` via `/config` to stop persisting conversation summaries across restarts. On by default. When on, nevinho summarizes your conversation on shutdown and reloads it on the next start.
+Set `ELEPHANT=off` via `/config` to stop persisting conversations across restarts. On by default. When on, nevinho saves an encrypted checkpoint after each completed turn and restores it on restart. Image bytes are omitted. The Discord daemon also writes a short summary on graceful shutdown as a fallback.
+
+The Discord daemon updates `last_alive.json` every minute. If it restarts after an unclean stop, it sends the owner one DM with the last recorded heartbeat time.
+
+Terminal conversations are scoped to the directory where you launch `nevinho`. `/forget` clears that project's saved state. Older terminal summaries under the former shared `terminal` ID remain on disk but are not loaded into a project automatically.
 
 ## Project structure
 

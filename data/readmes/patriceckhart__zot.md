@@ -268,6 +268,7 @@ zot --json "refactor main.go"    # newline-delimited json events, exit
 zot --continue                   # resume the most recent session for this cwd
 zot --resume                     # pick a session to resume
 zot --list-models                # show supported models
+zot --list-models-json           # picker-visible catalog as JSON, for extensions
 zot --help
 ```
 
@@ -1166,6 +1167,4 @@ Set the `tool_render` key in `$ZOT_HOME/config.json`:
 | unset / `"box"` (default) | Each tool call is wrapped in a bordered panel. |
 | `"flat"` | Boxless: a quiet header line plus indented output. |
 
-The `ZOT_FLAT_TOOLS` env var overrides the config for a single run, which is handy for trying it without editing the file:
-
-| Value | Eff
+The `ZOT_FLAT_TOOLS` env var overrides the config for a

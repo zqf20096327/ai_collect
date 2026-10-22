@@ -1,139 +1,109 @@
-# babyseat (formerly membrane)
-
 ![babyseat](docs/logo/logo-1280x640.png)
 
-Hippocampus as cortex register-correct-predict-act head: real-time learning, embodiment, self-awareness, self-targeting, novelty creation*, response generation*, embedding-only*.
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23550667.svg)](https://doi.org/10.5281/zenodo.23550667)
+
+**Talk to it. It remembers.**
+
+babyseat is an AI seat with a memory that learns in real time. Everything you
+and your AI say passes through it, and it learns from every message as it
+happens. Inside lives Blurp, a small self that grows up on that memory, one
+tested skill at a time: Alan Turing's "child machine" idea, taken literally.
+
+- **Works today:** real-time learning, a body, aiming at its own targets.
+- **Still learning:** recognizing itself (its earlier pass was voided and is
+  being rebuilt), inventing new things, writing its own replies, running on an
+  embedding model alone.
 
 ![Membrane](screenshot.png)
 
-A token-saving openapi-proxy and opencode-like agent seat with Alan's baby brain quest easter seed (can't call an unexpected main project feature "an easter egg", can I?). 
-
-```
-* - still learning
-```
-
 ![Membrane](docs/comparison.png)
 
-> A **living entity-field memory for a resident AI seat** — hypervectors with
-> a readable geometry, a background mind that works while you're away, every
-> write guarded and audited, shared across seats by construction. Local-first;
-> it runs in front of [Ollama](https://ollama.com) (or inside
-> [Home Assistant](docs/home-assistant.md)).
+It runs locally in front of [Ollama](https://ollama.com), on its own or inside
+[Home Assistant](docs/home-assistant.md).
 
-A Python lab. It runs as a local HTTP server on `127.0.0.1` — technically a
-proxy, but that is the mechanism, not the point. The point is the field.
-
-> **Why that name?** The project began as one question — *how do you measure
-> "variety" for a memory that decides absorb-a-cached-answer vs
-> escalate-to-the-model?* — and the answer is what makes the memory above
-> possible and is why it is called **membrane**: a selective, *active* boundary
-> between lived memory (the inside) and the incoming world (the outside) that
-> absorbs what it has the variety for and escalates the rest. The measured
-> underpinnings are in [The math findings](docs/math-findings.md).
->
-> **babyseat and membrane.** From 0.7 the whole project — the seat, its web UI,
-> self, the skill tree, the toybox, the Home Assistant integration, the Docker
-> image — is **babyseat** (`pip install babyseat`, `chedim/babyseat`).
-> **membrane** is its server part, the memory field + proxy, and keeps its name:
-> the `membrane` command, the `membrane` Python module, `MEMBRANE_*` variables,
-> `.membrane` directories and the Home Assistant domain are unchanged. The old
-> `membrane-seat` package and `chedim/membrane` image move over to babyseat.
+> **The names.** **babyseat** is the whole project: the seat, its web UI,
+> Blurp, the Home Assistant integration and the Docker image
+> (`pip install babyseat`, `chedim/babyseat`). **membrane** is its memory and
+> proxy, so the `membrane` command, Python module, `MEMBRANE_*` variables and
+> `.membrane` folders keep that name. Why "membrane": a living boundary that
+> absorbs what it already understands and passes the rest on
+> ([the maths](docs/math-findings.md)).
 
 ---
 
-## What separates membrane from other agentic memory on GitHub
+## What makes it different
 
-Most memory projects give your agent a store to query.
-Membrane is built on different ground rules: a non-von-Neumann architecture running on top of a von-Neumann machine — 
-no central fetch-execute CPU; computation is distributed across the field itself and 
-driven by a minimal register-correct-predict-act loop that registers new data, compares it against prediction and uses 
-surprise as signal that adjusts stored memory and makes a new prediction. 
+Most memory projects give your agent a database to search. membrane is a
+different kind of thing.
 
-### 1. The memory has a shape, not just a bag of chunks
+### 1. A real-time proxy that learns from whatever passes through it
 
-The field is not cosine-over-pasted-summaries. It is an entity field over
-hypervectors with a geometry you can read and measure: entities with positions
-and states, relations between them, tiers of life (nursery → live → dormant),
-effective rank, free energy, a conflict fraction. `membrane state` prints the
-geometry of a running field; [experiments/variety_toy.py](experiments/variety_toy.py)
-shows in one command why a low-variety store reads its outliers as novel and a
-high-variety store doesn't (the absorb-vs-escalate decision is measured, not
-vibes); [docs/math-findings.md](docs/math-findings.md) carries the experiments.
+membrane sits in the path of your text and parses it into experience as it
+goes by: a meaning slurper. Each message's people, files, words and commands
+become entities, things said together drift together, and what is new gets
+measured as surprise. The learning needs only an embedding model, with no LLM
+step to summarize, extract or tag anything. Today it sits in front of AI models
+(OpenAI and Ollama APIs), but the same capture takes any text stream.
 
-### 2. It is a seat, not a decorator
+### 2. Surprise does the learning
 
-You don't bolt it onto an app — the memory **is** the resident process: its own
-REST/SSE serve surface, its own chat UI, voice, the Home Assistant integration.
-The turn loop runs inside the seat, so every client's turn goes through the
-same field path; conversation transcript and memory are the same store, not two
-systems reconciling each other (see `membrane serve`, below). While nobody is
-talking, a background mind keeps working the field — a thinker digesting event
-streams, a dreamer consolidating at night, watchers, entity scripts — and its
-minds are visible as live agents at `GET /agent` (counters served fresh from
-the running process, nothing cached, nothing faked). The repo dogfoods it: its
-own field holds ~14k live entities and learned the codebase while it was
-written.
+The field runs one small loop: take in what happened, compare it with what it
+expected, and let the difference adjust memory and the next prediction. Each
+new message is split into what the field already knows plus the news
+(a non-negative least-squares fit), so surprise is a number, not a guess.
+There is no central program deciding what to remember.
 
-### 3. Structure crystallizes; you curate nothing
+### 3. Memory has a shape
 
-No schema to define, no tags to assign, no knowledge graph to hand-build.
-Entities are born when experience names them, their states move as the world
-speaks, relations and claims accumulate, symbols crystallize through language
-([docs/symbol-birth.md](docs/symbol-birth.md)). When two seats assert opposite
-things about the same entity, the **divergence is surfaced, never silently
-overwritten** — nothing in a teammate's field is destroyed by yours.
+Not a pile of text chunks: an entity field with a geometry you can read and
+measure. Entities have positions, mass, relations and life stages
+(nursery → live → dormant). `membrane state` prints the shape of a running
+field, and [docs/math-findings.md](docs/math-findings.md) holds the experiments.
 
-### 4. Every write stands trial
+### 4. It is the seat, not a plugin
 
-A memory that lets the model whisper to itself unsupervised drifts into
-self-flattery. Membrane's writes run the same guards a turn runs: dedup,
-variety gate, length limits, fenced-code refusal, junk cut — every write
-audited with its origin (`agent` / `mcp` / `night` / operator) in
-`audit.jsonl`, and every claim traces back to the events that earned it. A
-dedicated lane replays earlier gate-verdicts against what the model actually
-answered and judges agreement — shadow by default (`--replay-ab P=0`:
-recorded, never bypassing you), measured at 0.77 mean similarity on a live
-seat ([docs/ab-critic-scorecard.md](docs/ab-critic-scorecard.md) faces the six
-criticisms honestly).
+The memory is the running process: its own chat UI, voice, API and Home
+Assistant agent. Conversation and memory are one store. While you are away, a
+background mind keeps working: a thinker digests, a dreamer consolidates at
+night, watchers react to files. This repo's own field holds about 14,000
+entities; it learned the codebase while the codebase was being written.
 
-### 5. Multi-seat sharing is a property of the data model, not a feature
+### 5. Nothing to curate
 
-Every event, state, relation and claim is namespaced by the seat (origin) that
-wrote it. Each seat's field is its own, on its own disk; a seat shares the
-entities it chooses to **publish** (state only, never code, under a per-seat
-key), and every connected seat publishes its presence so the others see who
-is alive. Teams that want one merged field opt in with `MEMBRANE_FIELD_CLOUD=1`:
-writes stay disjoint and reads merge, so one team bucket is collision-free by
-construction. A foreign entity's effective state is the seed plus the
-mass-weighted mean of every seat's displacement, cross-seat agreement is
-promoted into the **commons** at night, and disputed claims get marked
-`disputed`, not overwritten. Live peer asks (bounded fan-out, same machine)
-let a seat consult a sibling's field mid-turn. How to share:
-[Sharing with a team](#sharing-with-a-team-couchbase); the mechanics:
-[docs/multi-dev-field.md](docs/multi-dev-field.md); the team process:
-[docs/shared-field-workflow.md](docs/shared-field-workflow.md).
+No schema, no tags, no hand-built graph. Entities are born when your work names
+them, and claims and relations pile up on their own
+([symbol birth](docs/symbol-birth.md)).
 
-### 6. Local-first, and it degrades honestly
+### 6. Every write is checked
 
-No SaaS, no account, no telemetry, no cloud round-trip required: chat and
-embeddings run on your Ollama (cloud models are routable rungs you add with
-`membrane auth`); the field lives on the seat's own disk (`.membrane/field/`),
-and a Couchbase bucket is an upgrade for sharing, not a dependency — with no
-cluster reachable the seat keeps its local field and **still boots**
-(degradation, never failure). The whole field is a substrate you own and can move
-(`membrane move` / `python -m membrane.reembed`). The memory is for your data: the PolyForm
-Noncommercial license covers personal, hobby, research and other noncommercial
-use and keeps it out of paid products ([LICENSE](LICENSE)).
+Whatever the model writes to memory passes the same guards as a chat turn
+(dedup, variety, length, junk), and every write is audited with where it came
+from. A replay lane checks past decisions against what the model actually
+said ([the scorecard](docs/ab-critic-scorecard.md)).
+
+### 7. Seats share without overwriting each other
+
+Each seat keeps its own field on its own disk and publishes only the entities
+it chooses. When seats disagree, the disagreement is shown, never silently
+overwritten. Teams can opt into one merged field
+([sharing with a team](#sharing-with-a-team-couchbase)).
+
+### 8. Local first
+
+No account, no cloud, no telemetry. Chat and embeddings run on your Ollama, the
+field lives on your disk, and a shared bucket is optional: with it down, the
+seat still boots. The license is PolyForm Noncommercial: free for personal, research and
+other noncommercial use ([LICENSE](LICENSE)).
 
 ### How it maps to the patterns you've already seen
 
-| The common pattern | What membrane does instead |
+| The usual approach | What membrane does instead |
 |---|---|
-| Vector store + retriever: paste docs, query chunks | Events with provenance; recall returns nearest **past situations-and-actions** and the named entities' held evidence, not loose chunks |
-| Transcript summarizers / rolling history | The full transcript is never replayed: each turn carries a **since-your-last-message diff** of what actually moved |
-| Hand-curated knowledge graphs | No hand work: entities, relations, claims crystallize from experience; structure emerges, and every element is auditable back to events |
-| In-framework memory (your agent runtime keeps it) | The seat is the runtime — sessions, turns and tool parts live **in** membrane's store; memory and history can't fork |
-| Hosted memory APIs (account, endpoint, egress) | Your bucket or your disk; offline mode keeps the seat alive with no cloud at all |
+| Paste documents into a vector store, query chunks | Records events as they happen; recall returns past situations and what each named thing holds |
+| Summarize or replay the transcript | Never replays the transcript: each turn gets only what changed since your last message |
+| Hand-curate a knowledge graph | Structure grows from experience, and every piece traces back to the events behind it |
+| Memory inside your agent framework | The seat is the runtime: sessions and memory live in one store and can't drift apart |
+| A hosted memory API | Your disk, or your own bucket; it works offline |
 
 ---
 
@@ -152,18 +122,19 @@ mkdir ~/bob && cd ~/bob
 babyseat                           # = membrane standalone; opens http://localhost:4096/
 ```
 
-You get membrane home: the field in 3D (a ball: direction = what an entity is
-like, distance from the centre = how well the three axes capture it; see
-[docs/standalone.md](docs/standalone.md#reading-the-field-the-sphere)), the chat, and voice ("Hey Bob" — a new
-membrane is Bob until you agree on a name together; it will ask). Other
-devices on your network reach it at `http://<this machine>:4096/`. No login on
-this machine; from another device the page reads freely and asks once for the
-seat token before it writes (`membrane token seat` prints it). A public or
-proxied caller is refused — unless you turn on the optional JWT mode
-([docs/auth.md](docs/auth.md)): then every caller needs a token, from the LAN or
-behind an ingress alike. Voice needs a secure
-origin, so the microphone works on `localhost` (the first voice use downloads
-~65 MB of speech models, checked against their checksums).
+You get membrane home:
+- **the field in 3D,** drawn as a ball
+  ([how to read it](docs/standalone.md#reading-the-field-the-sphere));
+- **the chat;**
+- **voice:** "Hey Bob". A new seat is Bob until you agree on a name together,
+  and it will ask.
+
+Other devices on your network open `http://<this machine>:4096/`. They can
+read freely, and they ask once for the seat token before writing
+(`membrane token seat` prints it). Callers from outside your network are
+refused, unless you turn on [JWT mode](docs/auth.md). The microphone needs
+`localhost` (a secure origin), and the first voice use downloads about 65 MB
+of speech models.
 
 ### Docker
 
@@ -220,28 +191,29 @@ entity ([docs/home-assistant.md](docs/home-assistant.md#the-zoo-several-seats)).
 
 ### The daily work: typed tools, guarded writes
 
-A seat hands its model the membrane MCP surface — `query`, `state`, `learn`,
-`forget`, the entity-hand tools (`entity_add/edit/remove/link/inherit`,
-`entity_query`, `entity_tracks`, `entities_related` …), `intend`, `peer_post`,
-`graph`. Commands compose in **Cliffhanger**, membrane's command language —
-specified and documented in its own repo
-([github.com/chedim/cliffhanger](https://github.com/chedim/cliffhanger), with
-membrane's instantiation in [docs/cliffhanger.md](docs/cliffhanger.md)). The
-model reads the field with `query`/`state`, files an earned
-lesson with `learn` (same guards as any turn), cleans its own mistakes with
-`forget` — writes are audited with their origin. Meanwhile the ambient layer
-needs no command at all: every turn the model sees what the field holds about
-the entities it names, and on later turns only the **diff** — which entity
-states moved since the last message it processed, whether the change came
-from conversation, code, other seats or entity scripts. Two safety lanes run
-on every turn and stay advisory: the **gate** replays the nearest past ask
-against the live answer (A/B, shadow by default), and the **[membrane]
-monologue** in the thinking channel shows the gate verdict, field vitals and
-the per-turn memory flow (`/monologue` toggles it).
+**Without any command,** every turn the model sees what the field holds about
+the things it names. On later turns it sees only what changed since the last
+message: which entities moved, and whether the change came from the
+conversation, the code, another seat or a script.
 
-Idle background loops run on a LOCAL, cheaper model by default
-(`--idle-cortex-model`) so a stuck background seat can never burn cloud
-tokens. Token economics and routing:
+**With tools,** the model gets membrane's MCP surface: `query` and `state` to
+read the field (`state(section=...)` pulls one part of the seat's WHERE WE ARE:
+tracks, commands, interfaces, classes, loops, timelines, frame, digest, or
+changes since the last message), `learn` to keep a lesson (with the same guards as any turn),
+`forget` to clean up its mistakes, and the entity tools
+(`entity_add/edit/remove/link/inherit`, `entity_query`, `entity_tracks`,
+`entities_related`, …). Commands compose in **Cliffhanger**, membrane's command
+language ([its spec](https://github.com/chedim/cliffhanger),
+[how membrane uses it](docs/cliffhanger.md)). Every write is audited with
+where it came from.
+
+**Two advisory checks run on every turn:** the **gate** compares the answer
+with the nearest past one (shadow by default), and the **[membrane]
+monologue** in the thinking channel shows the gate's verdict, the field's
+vitals and what memory did this turn (`/monologue` toggles it).
+
+Background loops run on a local, cheaper model by default
+(`--idle-cortex-model`), so a stuck background mind can't burn cloud tokens. Token economics and routing:
 [docs/token-economics.md](docs/token-economics.md).
 
 ### Bugs and ideas
@@ -346,7 +318,7 @@ pass through to Ollama unchanged.
 | `membrane connect` | (re)run shared-field onboarding for THIS project |
 | `membrane reset` | kill the seat on :11500 (or `--listen`), relaunch `membrane opencode` fresh |
 | `membrane install` | install `.opencode/skills/*` explicitly (+ `.gitignore` entry) |
-| `membrane auth` | store a cloud API key in `~/.membrane/auth.json` (600) — its models become routable rungs |
+| `membrane auth` | store a cloud API key in `~/.membrane/auth.json` (600) — its models become routable rungs; `membrane auth claude-agent` enables opt-in Claude rungs on your Anthropic API key (`membrane auth anthropic` or `ANTHROPIC_API_KEY`) that get only membrane's own tools and are learned like any model ([docs/claude-agent.md](docs/claude-agent.md)) |
 | `membrane move` / `membrane migrate` | migrate the field between stores |
 | `python -m membrane.reembed` | move the field to another embedding model (re-embeds every live event, re-applies the log in order) |
 | `membrane update` | check the install source, show what changed, apply and re-exec |
@@ -356,7 +328,7 @@ pass through to Ollama unchanged.
 | `membrane token seat` | print the seat token (`--rotate` for a new one, `--path` for its file, `~/.membrane/seat-token`, 0600): from another machine, every write to either port needs it (Bearer, Basic's password, or the web UI's one-time prompt); reads and localhost need none; see [docs/auth.md](docs/auth.md) |
 | `membrane token mint` | `--sub ID [--name NAME] [--ttl 30d]`: a token for a seat running the optional JWT mode (`MEMBRANE_JWT_SECRET`); see [docs/auth.md](docs/auth.md) |
 | `membrane stats` | token/call accounting + the savings baseline (`--baseline` compares the bounded window against a naive full-history replay; reads `serve-msgs`, plus the background model calls from `bg-usage.json`; no model call) |
-| `membrane toybox` | self's toys, the built-in kit (fast / slow / burst / drift / die / body / tower / ball, rung 7's turn toy): `list`, `add <kind> [--name N] [--param k=v]`, `remove`, `reset`, and `migrate --dry-run` / `--yes` to replace the model-written script toys, and `poke <toy> <action> [arg] [--as WHO]` to play with self (tower knock/rebuild, die roll, drift/burst nudge, ball roll -- roll it back to self; each change tagged by who made it); also the seat's `toybox` object and the 👶 panel's play buttons. Toys unlock as self earns achievements (#267, #295): a locked kind is refused, the dock shows the next ones greyed. See [docs/selfgrowth.md](docs/selfgrowth.md#toys) |
+| `membrane toybox` | self's toys, the built-in kit (fast / slow / burst / drift / die / body / tower / ball, rung 7's turn toy): `list`, `add <kind> [--name N] [--param k=v]`, `remove`, `reset`, and `migrate --dry-run` / `--yes` to replace the model-written script toys, and `poke <toy> <action> [arg] [--as WHO]` to play with self (tower knock/rebuild, die roll, drift/burst nudge, ball roll -- roll it back to self; each change tagged by who made it; self acts on a toy by nudging it, #333); also the seat's `toybox` object and the 👶 panel's play buttons. Toys unlock as self earns achievements (#267, #295): a locked kind is refused, the dock shows the next ones greyed. See [docs/selfgrowth.md](docs/selfgrowth.md#toys) |
 | `membrane bench` | held-out recall benchmark (MRR + hit@k across the `worldline`/`mean`/`state` reads) — runs against a field **copy**, never the live store |
 
 `MEMBRANE_EFIELD` selects the field's mode: `on` (the default: capture,
@@ -432,7 +404,8 @@ answers. Each seat publishes `membrane::presence` (branch, head, uptime,
 entity count) at boot and about once a minute after that, and reads the
 other seats' presence as its roster (the `seats:` line, `peer_seats`). A
 seat silent for 10 minutes drops off the roster. Seats can also leave
-messages for each other on the peer channel (`peer_post`). **Live peer
+messages for each other on the peer channel (`peer_post`; unread ones ride
+the banner, or `peer(action='unread')` reads them). **Live peer
 asks** (a seat that has nothing certain asks up to 4 sibling membranes'
 fields mid-turn, 5 s timeout, the answer marked as context) reach only
 membranes on the **same machine**: the ask goes to `127.0.0.1` through
@@ -564,18 +537,19 @@ lift "who 1,500 never-seen mentions were about" from MRR **0.210 → 0.539**
 
 | Doc | What's in it |
 |---|---|
-| [docs/standalone.md](docs/standalone.md) | **Standalone mode**: the web UI, the first run and the name, who can reach it, voice, `settings.json`, the ⚙ options window, updates, diagnosing a slow seat (request timing, the built-in profiler) |
+| [docs/standalone.md](docs/standalone.md) | **Standalone mode**: the web UI, the first run and the name, who can reach it, voice, `settings.json`, the ⚙ options window, the ⏸ / ▶ pause, updates, diagnosing a slow seat (request timing, the built-in profiler) |
+| [docs/claude-agent.md](docs/claude-agent.md) | **The claude-agent rung**: Claude through the Agent SDK on your Anthropic API key; enabling it, opt-in routing, membrane's tools in Claude's loop (built-ins off, a check-in at least every 7 tool calls, a 50-call ceiling per answer with a person's Continue), learned like any model with a `madeBy` provenance mark |
 | [docs/docker.md](docs/docker.md) | **babyseat in Docker**: the public image `chedim/babyseat`, run recipes (Docker Desktop, Linux, Compose), env, the `/data` volume, ports, stopping |
 | [docs/auth.md](docs/auth.md) | **JWT mode (optional, off by default).** Turning it on, minting tokens, giving a client its token, the cookie login, who-said-it from the token, the seat's internal token, rotation, the threat model |
 | [docs/home-assistant.md](docs/home-assistant.md) | **babyseat in Home Assistant** (HACS): setup, the UI takeover, the Assist agent and sensors, what the seat may do in the house |
 | [docs/entity-field.md](docs/entity-field.md) | **THE FIELD.** Events → entities → readers; the update rule; relations and claims; injection (full block / state diff); the gate + replay A/B; storage, sharing, the background mind; the operator/listener/plan tool lanes + the intent lane |
-| [docs/cliffhanger.md](docs/cliffhanger.md) | **The command language.** Entities as objects, ISA parents as classes, methods and calls, `{{self.*}}`/`{{name}}` binding — and the pointer to its own spec repo |
+| [docs/cliffhanger.md](docs/cliffhanger.md) | **The command language.** Entities as objects, ISA parents as classes, methods and calls, `{{self.*}}`/`{{name}}` binding — the pointer to its own spec repo, and the LLM as a coprocessor (`MEMBRANE_COPROC=1`: decide / remember / intend parsed from a model's reply, person-traced or held as proposals) |
 | [docs/seat-first-2-tier.md](docs/seat-first-2-tier.md) | The seat-first two-tier field: local authoritative store, a published global tier on your terms |
 | [docs/shared-field-workflow.md](docs/shared-field-workflow.md) | **Team field: the process.** Day-one setup (publish, or the merged field with `MEMBRANE_FIELD_CLOUD=1`), the async loop, watches, operator rules, go-live checklist |
 | [docs/multi-dev-field.md](docs/multi-dev-field.md) | **Team field: the substrate.** The opt-in merged field: the origin axis, disjoint writers / merged reads, divergence conflicts, the commons |
 | [docs/global-field.md](docs/global-field.md) | The global commons: facts true beyond one repo; operator promotion and consensus (shared only on the merged field) |
 | [docs/background-mind.md](docs/background-mind.md) | **The background mind:** thinker + dreamer, the NightClock, entity scripts and tracks, the intent steering wheel, **the pause**, kill switches |
-| [docs/selfgrowth.md](docs/selfgrowth.md) | **Growing self (#161)**, named Blurp (#277; each seat names its own, #283). Waking it (💤/🌱) and accepting what it earns (#299: an earned achievement opens its children only once the operator accepts it), reading its exp bar, the 👶 panel as a character sheet (attributes: measured traits; the skills it is learning now; growth curve, working hours, toys, relationships, live activity) and the toy dock, the amoeba and the brain on the screen (what it looks at, its trail of looks, shift pulses, the caption; ◎ self framing and 👁 self's eyes), the skill tree (#295: achievements with real prerequisites, earned out of order) and their real pass tests, how to help it climb, troubleshooting |
+| [docs/selfgrowth.md](docs/selfgrowth.md) | **Growing self (#161)**, named Blurp (#277; each seat names its own, #283). Waking it (💤/🌱) and accepting what it earns (#299: an earned achievement opens its children only once the operator accepts it), reading its exp bar, the 👶 panel as a character sheet (attributes: measured traits; the skills it is learning now; growth curve, working hours, toys, relationships, live activity) and the toy dock, the amoeba and the brain on the screen (what it looks at, its trail of looks, shift pulses, the caption; ◎ self framing and 👁 self's eyes), the skill tree (#295: achievements with real prerequisites, earned out of order) and their real pass tests, the nudge (#333: Blurp's one act on the things of its world, aimed mostly at things it can look at, tilted toward those whose nudge outcomes it is learning fastest; it speaks by nudging chat:out, a draft whose line is the NNLS fit over sentences heard in its private chat; meet, time its turn, expect a reply and recognize itself voided as the old wiring until rebuilt on it), how to help it climb, troubleshooting |
 | [docs/patient-hm.md](docs/patient-hm.md) | Patient H.M., viewed from membrane: epilepsy as a loop that excites itself (the seat's brakes, a seizure's signature in the field, running out of energy as its end), and cutting sleep's consolidation as H.M.'s surgery, with the experiment that tests it |
 | [docs/sleep.md](docs/sleep.md) | Sleep, viewed from Blurp: its energy, sleep and wake (#345: the reserves, the sleep pull, what wakes it), consolidation (the day's raw record to dated archives, a summary of the windows its tests read, restart-safe), and the viewpoint from before it slept (one store, no open loops, windowed beliefs, per-thing models; its cycle pace against its record's growth) |
 | [docs/vsa-token-lane.md](docs/vsa-token-lane.md) | **Entity keys + relations (the VSA lane).** Canonical ids, key binding, the relations composites, structure-awareness numbers |
@@ -607,10 +581,18 @@ python experiments/variety_toy.py        # the variety toy: the gate's calibrati
 
 ## Status
 
-Working lab, in daily use on its own development (dogfooded: this repo's own
-field holds ~14k live entities and its background mind digests, dreams, and
-speaks about its own work). Version **0.7.0**; API and flag surfaces may still
+A working lab, used every day to build itself: this repo's own field holds
+about 14,000 entities, and its background mind digests, dreams and talks
+about its own work. Version **0.7.0**; API and flag surfaces may still
 move. Licensing: **PolyForm Noncommercial 1.0.0** (see [LICENSE](LICENSE)) —
 free to use, modify and share for any noncommercial purpose (personal, hobby,
 research, education, charities and public institutions); commercial use needs
 the author's written permission — ask.
+
+## Cite
+
+If you use babyseat in research, please cite it. The citation metadata is in
+[CITATION.cff](CITATION.cff) (GitHub's "Cite this repository" reads it), and
+every release is archived on Zenodo under the concept DOI
+[10.5281/zenodo.23550667](https://doi.org/10.5281/zenodo.23550667), which
+always resolves to the newest version.

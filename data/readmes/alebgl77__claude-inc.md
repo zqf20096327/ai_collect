@@ -6,6 +6,11 @@
 
 **Peer CEO, CTO, and CAIO executives · 9 departments · 64 skill manuals.**
 
+**Development source: `1.6.0-dev.0` (unreleased).** The latest published release,
+[v1.5.1](https://github.com/alebgl77/claude-inc/releases/tag/v1.5.1), has eight
+departments, 54 manuals and peer CEO/CTO. Growth and CAIO are additions on `main`;
+see the [unreleased changelog](CHANGELOG.md#unreleased).
+
 [![compliance](https://github.com/alebgl77/claude-inc/actions/workflows/validate.yml/badge.svg)](https://github.com/alebgl77/claude-inc/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Contribute](https://img.shields.io/badge/contributions-welcome-orange)](CONTRIBUTING.md)
@@ -35,6 +40,10 @@ operating instructions, and a local task-and-decision record.
 [Roadmap](ROADMAP.md)
 
 ## Hire everyone in 60 seconds
+
+The commands below install the **development source on `main`**, including
+Growth and CAIO. For the last published release, inspect and install a clone
+checked out at `v1.5.1`; its eight-department roster differs from this guide.
 
 **Claude Code plugin**: install in Claude Code, then open your project folder:
 
@@ -541,6 +550,10 @@ business, technical, and operating tradeoffs together.
 
 [MIT](LICENSE) for first-party content. The vendored NVIDIA reference retains
 its [Apache-2.0 license](skills/skill-vetting/references/LICENSE.nvidia).
+
+## Author
+
+Built and maintained by **[Alexandre Beguel](https://github.com/alebgl77)**, Agentic AI Architect and external CAIO based in Paris. He works on production GenAI, LLMOps, LLM FinOps and evidence-first AI governance. [beguel.com](https://beguel.com/) · [LinkedIn](https://www.linkedin.com/in/beguel/) · [Profile in English, French and Spanish](https://alebgl77.github.io/)
 
 ---
 

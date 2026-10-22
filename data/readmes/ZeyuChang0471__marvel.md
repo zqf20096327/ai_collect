@@ -8,8 +8,10 @@
 </p>
 
 <p align="center">
-  <b>🚫 本项目仅供非商业的研究与教学使用，禁止商用。</b><br>
-  许可构成见 <a href="./LICENSING.md">LICENSING.md</a>。<br>
+  <b>🚫 本项目整体按非商业许可分发：Apache-2.0 + PolyForm-NC-1.0.0，禁止商用。</b><br>
+  GitHub 侧栏只识别 Apache-2.0（因为 <code>LICENSE</code> 是 Apache 文本），但 PolyForm 组件使
+  <b>整个发行版</b>不可商用；逐文件清单见 <a href="./LICENSING.md">LICENSING.md</a> 与
+  <a href="./NOTICE">NOTICE</a>。<br>
   <b>⚠️ 免责声明：仅供学习研究与技术演示，不构成任何投资建议。投资决策请咨询持牌专业机构。</b>
 </p>
 
@@ -145,13 +147,25 @@
 |------|------|---------|
 | **mootdx** | TCP 7709 | OHLCV K 线、财务快照、F10 文本 |
 | **腾讯财经** | HTTP (`qt.gtimg.cn`) | PE / PB / 市值 / 换手率（实时） |
-| **东方财富** | HTTP (datacenter / push2) | 龙虎榜、限售解禁、板块行情、个股信息 |
-| **新浪财经** | HTTP | K 线历史、财报三表 |
+| **东方财富** | HTTP (datacenter / push2 / np-*) | 龙虎榜、限售解禁、板块行情、个股信息、**个股公告（含正文）/ 研报 / 7×24 快讯** |
+| **新浪财经** | HTTP | K 线历史、财报三表、**个股新闻稿 / 7×24 快讯** |
 | **同花顺** | HTTP (10jqka) | EPS 一致预期 |
-| **财联社** | HTTP (cls.cn) | 全球财经快讯 |
+| **财联社** | HTTP (cls.cn，v1 + 签名) | 全球财经快讯 |
 | **百度股市通** | HTTP (finance.pae.baidu) | 概念板块归属（K 线带 MA 备用源） |
 
 > 完全不依赖 Tushare（积分墙）、Alpha Vantage（海外 API）、Yahoo Finance（不支持 A 股）。
+
+> **新闻层（2026-10-17 修）**：`get_news` 把取数窗口传给源（公告/研报按日期过滤，
+> 公告翻页到窗口取完为止），抓取窗口内最新公告的**正文**，并按「几个源报过同一件事」
+> 给每条消息标「多源印证」或「单一来源，未经交叉验证」。正文条数用
+> `MARVEL_NEWS_BODY_LIMIT`（默认 5，0 关闭）、公告翻页用
+> `MARVEL_NEWS_ANNOUNCEMENT_PAGES`（默认 3）控制。
+>
+> **去极化（2026-10-17）**：这些标注不会被丢掉——质量门控核对标注是否传递（丢了封顶 B，
+> 但不判真伪）；Research Manager 收到机器生成的来源印证摘要并要显式声明
+> `unverified_reliance`；Portfolio Manager 把未核实说法移进报告末尾的「未经证实的信息」
+> 附录（不删除原文）；记忆日志重新注入时会剔除附录内容。真实模型的行为用
+> `python scripts/record_debate.py` 录制后离线分析。
 
 ---
 
@@ -167,6 +181,9 @@ git clone https://github.com/ZeyuChang0471/marvel.git
 cd marvel
 pip install -e .
 ```
+
+> PyPI 分发名是 `marvel-astock`（避免与已有的 `marvel` 包冲突），导入包名仍是 `marvel`。
+> 发布后可用 `pip install marvel-astock`；当前请从源码安装。
 
 > **⚠️ 没有 `[google]` extra，Gemini 默认装不上**：mootdx 依赖 `httpx>=0.25,<0.26`，
 > 而 `langchain-google-genai` 要求 `httpx>=0.28.1`，声明成 extra 会是一个 pip 解析

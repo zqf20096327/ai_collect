@@ -223,6 +223,11 @@ Use the upstream prebuilt binary. Building current `bpf-linker` releases with
 
 ## <img src="figures/RustiFlow_nobg.png" width="60px"/> Building the Project
 
+`cargo xtask` enforces the committed lockfiles for the helper and every build it
+launches. If a manifest change requires a lockfile update, update and commit the
+affected lockfile explicitly before rebuilding. Direct Cargo commands need
+`--locked` for the same enforcement.
+
 - **eBPF Programs**:
   ```bash
   cargo xtask ebpf-ipv4
@@ -237,6 +242,40 @@ Use the upstream prebuilt binary. Building current `bpf-linker` releases with
   ```bash
   cargo build --release --features profiling
   ```
+
+## Fragmented and encrypted packets
+
+Offline and realtime capture skip non-initial IPv4 and IPv6 fragments because
+those fragments do not contain the original transport header. Initial fragments
+remain eligible for extraction; RustiFlow does not reassemble fragmented packets.
+IPv6 AH uses its four-byte length units. IPv6 ESP is skipped because its encrypted
+payload cannot be parsed as a transport header.
+
+## TCP flow lifecycle
+
+A flow first observed as SYN-ACK uses that packet's destination as the forward
+endpoint. Other flows use the first observed packet's source. Handshake and FIN
+acknowledgments tolerate reordered observations using TCP sequence arithmetic.
+The `four_way_fin` close style includes a three-segment FIN, FIN|ACK, ACK close;
+`simultaneous_fin` requires both FIN packets to carry ACKs that do not acknowledge
+the peer's FIN. Packets observed after a completed flow was exported start a new
+flow, including retransmitted FINs. This preserves observed packet counts.
+
+Retransmission counters retain at most 1,024 merged TCP sequence ranges per
+direction. The lowest sequence ranges are evicted first; retransmissions that
+overlap only evicted history may be missed. Sequence numbers are unwrapped across
+32-bit rollover, assuming observations are less than half the sequence space
+apart. These counters do not perform full TCP stream reassembly.
+
+## Out-of-order packet timing
+
+Flow and directional durations use the earliest and latest observed packet
+timestamps. IAT statistics follow processing order with a nondecreasing timestamp
+reference: late packets contribute a zero interval and do not move that reference
+backwards. Active/idle periods also advance monotonically; completed periods are
+not reconstructed. Bulk durations retain the timestamp bounds of their current
+bulk. These bounded streaming statistics do not reconstruct chronological IATs.
+The same rules apply to offline and realtime input.
 
 ## Running the Project in dev mode
 

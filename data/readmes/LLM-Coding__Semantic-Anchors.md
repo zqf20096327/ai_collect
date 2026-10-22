@@ -1,0 +1,213 @@
+= Semantic Anchors for LLMs
+:toc:
+:icons: font
+:experimental:
+
+++++
+<a href="https://www.star-history.com/?repos=LLM-Coding%2FSemantic-Anchors&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=LLM-Coding/Semantic-Anchors&type=date&theme=dark&legend=top-left&sealed_token=iGeDv_VxZyQUce9jB8mS-R_HRB7CoMmPPPRnV33fgDVkEFsA6Rr0ZINV3V4NgiKYOJoJp4nh12Qh2pd0M-4HGAjO9XdJzUdUMTIxNZToK2juUXC6KcRyBg" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=LLM-Coding/Semantic-Anchors&type=date&legend=top-left&sealed_token=iGeDv_VxZyQUce9jB8mS-R_HRB7CoMmPPPRnV33fgDVkEFsA6Rr0ZINV3V4NgiKYOJoJp4nh12Qh2pd0M-4HGAjO9XdJzUdUMTIxNZToK2juUXC6KcRyBg" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=LLM-Coding/Semantic-Anchors&type=date&legend=top-left&sealed_token=iGeDv_VxZyQUce9jB8mS-R_HRB7CoMmPPPRnV33fgDVkEFsA6Rr0ZINV3V4NgiKYOJoJp4nh12Qh2pd0M-4HGAjO9XdJzUdUMTIxNZToK2juUXC6KcRyBg" />
+ </picture>
+</a>
+++++
+
+== 🚀 Explore the Catalog
+
+Browse the full catalog of 230+ semantic anchors with interactive visualization, search, and role-based filtering:
+
+🌐 *https://llm-coding.github.io/Semantic-Anchors/[Visit Semantic Anchors Website]*
+
+== What are Semantic Anchors?
+
+*Semantic anchors* are well-defined terms, methodologies, and frameworks that serve as reference points when communicating with Large Language Models (LLMs). They act as shared vocabulary that triggers specific, contextually rich knowledge domains within an LLM's training data.
+
+*Example:* Instead of explaining "write tests before code, use mocks, design from outside-in," you can simply say *"TDD, London School"* and the LLM activates its entire knowledge about that methodology.
+
+=== Why Use Them?
+
+[horizontal]
+🎯 *Precision*:: Reduce ambiguity by referencing established bodies of knowledge
+⚡ *Efficiency*:: Convey rich context with minimal tokens
+🔄 *Consistency*:: Ensure LLMs interpret concepts as intended
+🧠 *Depth*:: Activate multiple interconnected concepts with a single term
+
+== 🤖 Using Anchors with Local LLMs
+
+Most frontier LLMs already recognize semantic anchors from their training data. However, if you use local or smaller models (Llama, Mistral, Phi, etc.) that may not know all anchors, you can inject explicit definitions into your project's agent instruction files. See the link:docs/agent-installation.adoc[Agent Installation Guide] for setup instructions covering Claude Code, Codex, Gemini CLI, Cursor, GitHub Copilot, and Windsurf.
+
+== Quality Criteria
+
+A good semantic anchor is:
+
+* *Precise*: References a specific, established body of knowledge
+* *Rich*: Activates multiple interconnected concepts
+* *Consistent*: Different users get similar conceptual activation
+* *Attributable*: Can be traced to key proponents or publications
+
+Learn more in our link:https://llm-coding.github.io/Semantic-Anchors/about/[About page].
+
+== Contributing
+
+We welcome proposals for new semantic anchors! You only name the term. We test it ourselves, and GitHub Copilot helps with the rest:
+
+1. Click link:https://github.com/LLM-Coding/Semantic-Anchors/issues/new?template=propose-anchor.yml[Propose New Anchor]
+2. Provide the term and optional context
+3. We run the link:https://llm-coding.github.io/Semantic-Anchors/anchor-prior-test/[Anchor Prior Test] against the quality criteria
+4. If accepted, Copilot enriches and creates the anchor
+5. Maintainers review and merge the PR
+
+See the full link:CONTRIBUTING.adoc[Contributing Guide] or read it on the link:https://llm-coding.github.io/Semantic-Anchors/contributing/[website].
+
+== Categories
+
+The catalog is organized into 12 MECE (Mutually Exclusive, Collectively Exhaustive) categories:
+
+* Communication & Presentation
+* Design Principles & Patterns
+* Development Workflow
+* Dialogue & Interaction Patterns
+* Documentation Practices
+* Meta
+* Problem-Solving Methodologies
+* Requirements Engineering
+* Software Architecture
+* Statistical Methods & Process Monitoring
+* Strategic Planning & Decision Making
+* Testing & Quality Practices
+
+== Professional Roles
+
+Filter anchors by role (see link:docs/roles/[`docs/roles/`] for detailed descriptions):
+
+=== Operational Professional Roles
+
+* software-developer
+* software-architect
+* qa-engineer
+* devops-engineer
+* product-owner
+* business-analyst
+* technical-writer
+* ux-designer
+* data-scientist
+* consultant
+* team-lead
+* educator
+
+=== Organizational Governance Roles
+
+* data-protection-officer
+* ethics-officer
+* legal-compliance
+
+== Project Structure
+
+----
+Semantic-Anchors/
+├── docs/
+│   ├── anchors/          # Individual anchor files (230+)
+│   ├── about.adoc        # About page content
+│   ├── PRD.md            # Product Requirements
+│   ├── specs/            # Specifications & ADRs
+│   └── arc42/            # Architecture docs
+├── website/              # Vite-based static site
+│   ├── src/
+│   │   ├── components/   # Card Grid, Modal, etc.
+│   │   ├── utils/        # Search, Router, Data
+│   │   └── styles/       # Tailwind CSS
+│   └── public/
+├── scripts/              # Metadata extraction
+├── CONTRIBUTING.adoc     # Contribution guide
+└── CLAUDE.md             # Project instructions for AI agents
+----
+
+== Development
+
+=== Prerequisites
+
+* Node.js 20+
+* npm
+
+=== Local Development
+
+[source,bash]
+----
+cd website
+npm install
+npm run dev
+----
+
+Open http://localhost:5173
+
+=== Build
+
+[source,bash]
+----
+# Extract metadata from anchors
+cd scripts
+npm ci
+node extract-metadata.js
+
+# Build website
+cd ../website
+npm run build
+----
+
+=== Deployment
+
+The website is automatically deployed to GitHub Pages on push to `main`:
+
+* *Production*: https://llm-coding.github.io/Semantic-Anchors/
+* *Workflow*: `.github/workflows/deploy.yml`
+
+== Technology Stack
+
+* *Build Tool*: Vite 7.x
+* *Visualization*: Card Grid with category sections
+* *Search*: Full-text search with async indexing
+* *Content*: AsciiDoc with asciidoctor.js
+* *Styling*: Tailwind CSS with typography plugin
+* *i18n*: English/German language switching
+* *Hosting*: GitHub Pages
+* *Automation*: GitHub Actions + Copilot
+
+== Architecture Decisions
+
+All major decisions documented with Pugh matrices:
+
+* link:docs/specs/adrs/adr-001-static-site-generator.adoc[ADR-001]: Vite as Static Site Generator
+* link:docs/specs/adrs/adr-002-metadata-storage.adoc[ADR-002]: AsciiDoc Attributes for Metadata
+* link:docs/specs/adrs/adr-003-treemap-library.adoc[ADR-003]: Apache ECharts for Treemap (superseded by ADR-005)
+* link:docs/specs/adrs/adr-004-one-file-per-anchor.adoc[ADR-004]: One File per Anchor
+* link:docs/specs/adrs/adr-005-card-grid-visualization.adoc[ADR-005]: Card Grid Visualization (current)
+* link:docs/specs/adrs/adr-006-code-review-tooling.adoc[ADR-006]: Code-Review Tooling
+* link:docs/specs/adrs/adr-007-artifact-taxonomy.adoc[ADR-007]: Artifact Taxonomy — Anchor vs. Contract vs. Skill
+* link:docs/specs/adrs/adr-008-personality-assessment-anchors.adoc[ADR-008]: Personality & Assessment Frameworks — the Utility Gate
+
+== Documentation
+
+* link:https://llm-coding.github.io/Semantic-Anchors/about/[About Semantic Anchors]
+* link:https://llm-coding.github.io/Semantic-Anchors/contributing/[Contributing Guide]
+* link:docs/PRD.md[Product Requirements Document]
+* link:docs/arc42/arc42.adoc[Architecture Documentation (arc42)]
+* link:PROJECT_STATUS.md[Project Status & Roadmap]
+
+== License
+
+See link:LICENSE[LICENSE] file.
+
+== Maintainers
+
+This project is maintained by the link:https://github.com/LLM-Coding[LLM Coding] community.
+
+== Questions or Feedback?
+
+* Browse the link:https://llm-coding.github.io/Semantic-Anchors/[website]
+* Read the link:CONTRIBUTING.adoc[Contributing Guide]
+* Open an link:https://github.com/LLM-Coding/Semantic-Anchors/issues[issue]
+
+---
+
+*Start exploring:* https://llm-coding.github.io/Semantic-Anchors/

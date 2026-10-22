@@ -62,9 +62,9 @@ numbers, forward- and reverse-mode differentiation, and Jacobians. It is due
 version](https://mitmath.github.io/JuliaComputation/homeworks/hw3-2026.html)
 will be generated automatically.
 
-Project presentations will begin around the halfway point of the semester. The second half of the course will be devoted to student presentations, questions, and discussion.
+## Homework 4
 
-Sign up for a presentation date between Oct 21 and Dec 7 by making a GitHub pull request. We may be able to have two or three projects on a date, and teams of two are allowed. Students who present earlier in the semester will receive a little extra credit for being courageous.
+[Homework 4: How Are We Learning?](https://mitmath.github.io/JuliaComputation/homeworks/hw4-2026.html) asks you to reflect honestly on how the course is working, investigate one gap in your understanding, and propose concrete improvements to the course and your own learning. It is due **Monday, November 2, 2026 at 11:59 PM EST**.
 
 ## Calendar
 
@@ -83,12 +83,12 @@ Dates follow the [MIT Registrar calendar](https://registrar.mit.edu/calendar/cur
 | 9 | W | Oct 7 | Edelman |  |
 |  | M | Oct 12 |  | Indigenous Peoples Day - holiday |
 | 10 | T | Oct 13 | Maxwell Zhou | The Hodgkin–Huxley model and Evans function; Monday schedule of classes |
+| 10 | T | Oct 13 | Laura Lerebours |  |
 | 11 | W | Oct 14 | Michelle Chen | Finding Invisbile Planets with Gravity |
 | 11 | W | Oct 14 | Logan Reich | [General Circulation Models](notebooks/GCM_presentation_v2_fixed.jl) ([static HTML](https://mitmath.github.io/JuliaComputation/notebooks/GCM_presentation_v2_fixed.html)) |
 | 12 | M | Oct 19 | Kathleen Zhang, Krishna Parvataneni | [Stochastic Volatility: Black–Scholes, Heston, and Rough Bergomi](notebooks/options-pricing-lecture.jl) ([static HTML](https://mitmath.github.io/JuliaComputation/notebooks/options-pricing-lecture.html)) |
 | 12 | M | Oct 19 | Favio Lesnjak | [Kepler: Harmony to Chaos](notebooks/Favio_project.jl) ([static HTML](https://mitmath.github.io/JuliaComputation/notebooks/Favio_project.html)) |
-| 13 | W | Oct 21 | An Dinh |  |
-| 13 | W | Oct 21 | Thomas Shoales | Burst Altitude Effect on Radioactive Deposition |
+| 13 | W | Oct 21 | Thomas Shoales | [Burst Altitude Effect on Radioactive Deposition](notebooks/fallout_by_height.jl) ([static HTML](https://mitmath.github.io/JuliaComputation/notebooks/fallout_by_height.html)) |
 | 14 | M | Oct 26 | Mary Feliz, Drew Hussar |  |
 | 14 | M | Oct 26 | Rochelle Griffith |  |
 | 15 | W | Oct 28 | Jhanny Jimenez |  |
@@ -96,7 +96,7 @@ Dates follow the [MIT Registrar calendar](https://registrar.mit.edu/calendar/cur
 | 16 | M | Nov 2 | Angelina Ning |  |
 | 16 | M | Nov 2 | Maximo Del Pino |  |
 | 17 | W | Nov 4 | Jon Ebataleye |  |
-| 17 | W | Nov 4 |  |  |
+| 17 | W | Nov 4 | Nathan Zhu |  |
 | 18 | M | Nov 9 |  |  |
 |  | W | Nov 11 |  | Veterans Day - holiday |
 | 19 | M | Nov 16 |  |  |
@@ -157,6 +157,12 @@ This notebook expects accompanying `team_data.csv` and `game_data.csv` files.
 
 - **Pluto notebook:** [Kepler: Harmony to Chaos](notebooks/Favio_project.jl)
 - **Static HTML:** [Read the notebook with rendered results](https://mitmath.github.io/JuliaComputation/notebooks/Favio_project.html). This snapshot uses the default parameter values; open the Pluto notebook in Julia to change sliders and rerun the models.
+
+## October 21: Fallout by Height — Thomas Shoales
+
+- **Pluto notebook:** [Fallout by Height: How burst altitude controls radioactive deposition](notebooks/fallout_by_height.jl)
+- **Static HTML:** [Read the notebook with rendered results](https://mitmath.github.io/JuliaComputation/notebooks/fallout_by_height.html). This snapshot uses the default parameter values; open the Pluto notebook in Julia to change sliders and rerun the models.
+- **Images:** Keep [hiroshima.jpg](notebooks/hiroshima.jpg) and [bravo_map.jpg](notebooks/bravo_map.jpg) in the same folder as the notebook when running it locally.
 
 ## Previous Offering
 

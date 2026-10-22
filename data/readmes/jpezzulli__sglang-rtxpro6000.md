@@ -15,15 +15,21 @@ hardware. Penny Royal is an SGLang-derived runtime tuned for **NVIDIA RTX PRO
 keep reusable state in system RAM and on NVMe, beyond what fits on the GPU,
 so long-running sessions can pick up from cached history.
 
-**524K context · HiCache + NIXL · FR-Spec + adaptive MTP**
+**524K context · HiCache + NIXL · FR-Spec · FlashInfer verification · DFlash2**
 
 [Get started](#build-and-launch) · [Conversation cache](#hicache-and-nixl) ·
 [Performance](#performance) ·
-[3.0.2 release notes](RELEASE_NOTES_3.0.2.md) · [Community results](COMMUNITY-RESULTS.md)
+[3.1.1 release notes](RELEASE_NOTES_3.1.1.md) · [Community results](COMMUNITY-RESULTS.md)
 
-**3.0.2 maintenance update:** reclaims about **14.1 GiB of host RAM** in our
-Flash-Next NIXL setup, reduces rapid MTP width switching, and fixes 27B DFlash2
-and reasoning-history compatibility.
+**Penny Royal 3.1:** Flash-Next runs native NEXTN MTP with FR-Spec as the
+maintained default profile, with automatic KV pool sizing replacing the preset
+cap; Flash-Next DFlash2 with a separate draft model, fixed concurrency
+width routing (block 6 for one request, block 4 for two or more) and
+FlashInfer draft-token verification is fully available as an optional
+profile.
+
+**3.1.1 patch:** removes the stale source-hash check that blocked NVMe PLE
+startup in 3.1.0.
 
 <a id="hicache-and-nixl"></a>
 
@@ -56,25 +62,21 @@ you can disable it while keeping GPU and RAM caching. The
 [memory and persistence](MEMORY-AND-PERSISTENCE.md#hicache-and-nixl) explains
 how the state is stored and restored.
 
-## What's new in 3.0
+## What's new in 3.1
 
-Flash-Next gets adaptive MTP at **C=1**, automatic FP8 and small-batch kernels,
-and more room for cached tokens. There are also fixes for session state, agent
-API responses, image requests, and interrupted builds.
-
-**Container configuration now lives on your host.** Edit your startup file,
-model paths and mounts, then run the downloaded image. Updating the image does
-not replace your configuration.
-
-**The release went on a diet.** We kept RTX Blackwell for inference and
-Ampere/Ada Lovelace for image-processing sidecars, and trimmed the other GPU
-build targets. The result is a slimmer release for easier downloads. CPU image
-processing remains available.
-
-**Penny Royal did almost all the coding for this release.** John, Penny and
-Codex worked through the architecture, tuning and debugging together, down to
-fused kernels, memory layouts and milliseconds per decode cycle.
-See the [release notes](RELEASE_NOTES_3.0.md) for the full change list.
+Flash-Next keeps **native NEXTN MTP with FR-Spec as the maintained default**,
+and its verify width is now **fixed by active concurrency** - block 8 for a
+single running request, block 4 for two or more - so the width is identical at
+every boot. **DFlash2 with FR-Spec** and its own draft model,
+`incoai/Qwen3.8-Flash-Next-DFlash2`, is an optional profile with the same
+concurrency-routed widths (block 6 at one request, block 4 at two or more),
+and it now verifies accepted draft tokens with **FlashInfer's SM120 kernel**.
+The **KV pool is sized automatically** from profiled memory instead of a preset
+cap; an explicit `MAX_TOTAL_TOKENS` remains available. Scheduler admission,
+stop-regex inside speculative blocks and mixed-probability requests are fixed.
+See the
+[3.1 release notes](RELEASE_NOTES_3.1.md) for the full change list and the
+[configuration reference](CONFIGURATION.md) for every supported setting.
 
 <a id="models-and-launch-recipes"></a>
 <a id="qualified-model-profiles-and-launch-recipes"></a>
@@ -86,35 +88,47 @@ images, HiCache RAM prefix caching, and optional NIXL disk caching.
 
 | Model | Weights | Speculative decoding | Checkpoints |
 |---|---|---|---|
-| **Qwen3.8 Flash-Next** | NVFP4 experts, automatic FP8 dense layers on SM120 | Native NEXTN MTP with FR-Spec; adaptive four/eight-token windows | [Our OrcaRouter ModelOpt conversion](https://huggingface.co/jpezzulli/OrcaRouter-Qwen3.8-Flash-Next-Uncensored-ModelOpt-NVFP4) · [RadixArk](https://huggingface.co/RadixArk/Qwen3.8-Flash-Next-NVFP4) |
-| **Qwen3.8-27B** | FP8 | DFlash2, with a separate draft model | [Qwen FP8](https://huggingface.co/Qwen/Qwen3.8-27B-FP8) · [DFlash2 draft](https://huggingface.co/incoai/Qwen3.8-27B-DFlash2) |
+| **Qwen3.8 Flash-Next** | NVFP4 experts, automatic FP8 dense layers on SM120 | Maintained native NEXTN MTP with FR-Spec is the default, width routed by batch size (block 8 at C1, block 4 at C2+); optional DFlash2 profile (separate draft model, FR-Spec, block 6 at C1 / block 4 at C2+) verifies draft tokens with FlashInfer | [Our OrcaRouter ModelOpt conversion](https://huggingface.co/jpezzulli/OrcaRouter-Qwen3.8-Flash-Next-Uncensored-ModelOpt-NVFP4) · [RadixArk](https://huggingface.co/RadixArk/Qwen3.8-Flash-Next-NVFP4) · [Flash-Next DFlash2 draft](https://huggingface.co/incoai/Qwen3.8-Flash-Next-DFlash2) |
+| **Qwen3.8-27B** | FP8 | DFlash2, with a separate draft model at fixed block 8 | [Qwen FP8](https://huggingface.co/Qwen/Qwen3.8-27B-FP8) · [DFlash2 draft](https://huggingface.co/incoai/Qwen3.8-27B-DFlash2) |
 
 I personally run Flash-Next on **one RTX PRO 6000 at C=6**, with **524,288-token
-context** and an observed **1,067,072-token GPU pool**. That pool is shared
-across active requests and cached prefixes.
+context** and the KV pool sized automatically from profiled memory; the final
+3.1 measurements resolved a shared **target KV pool** of **1,081,792 tokens**
+on the maintained native-MTP profile and **1,210,944 tokens** on the optional
+DFlash2 profile of this system. The profile reports the resolved number at
+startup.
+That pool is shared across active requests and cached prefixes.
 
-### How adaptive MTP works
+### How draft width is routed
 
-Flash-Next's MTP head is part of the checkpoint; no separate draft model is
-loaded. **Only C=1 uses adaptive draft width.**
+Both Flash-Next speculation paths read their verification width from a bundled
+fixed policy, keyed only by how many requests are generating together: the
+maintained native-MTP recipes from `configs/pennyroyal/adaptive-next.json`,
+and the optional DFlash2 profile (NVFP4 target with the separate
+`incoai/Qwen3.8-Flash-Next-DFlash2` draft and FR-Spec) from
+`configs/pennyroyal/adaptive-dflash2.json`:
 
-| Requests generating together | Draft behavior |
-|---|---|
-| **C=1** | Switch between four- and eight-token windows as draft acceptance changes. |
-| **C=2 or more** | Fixed four-token windows; speculative decoding stays on. |
+| Requests generating together | Native MTP (`next`, `next-plain`) | DFlash2 (`next-dflash2`, optional) |
+|---|---|---|
+| **C=1** | Fixed eight-token blocks. | Fixed six-token blocks. |
+| **C=2 or more** | Fixed four-token blocks. | Fixed four-token blocks. |
 
-This lets one request benefit from wider drafts without making every request
-in a busy batch pay that extra draft work. Configuring capacity for C=6 does
-not disable adaptation: a lone active request can still use it. **C is request
-concurrency; TP is the number of inference GPUs.**
+One candidate width per tier means the width is a lookup, so it is identical
+between boots, and a single request gets the wider draft without making every
+request in a busy batch pay that extra draft work. **C is request concurrency;
+TP is the number of inference GPUs.**
 
-**FR-Spec remains enabled alongside adaptive MTP.** FR-Spec narrows the
-vocabulary searched by the draft head; adaptation changes how many tokens it
-drafts. At C2 and above, FR-Spec stays on while draft width stays at four.
-The target model keeps its full vocabulary. Use the
-[Flash-Next FR-Spec recipe](RUN.md#launch-flash-next-with-fr-spec); the
-[non-FR recipe](RUN.md#launch-flash-next-without-fr-spec-alternative) is the
-optional alternative.
+**FR-Spec rides along at every concurrency.** FR-Spec narrows the vocabulary
+searched by the draft head; routing selects how many tokens it drafts. The
+target model keeps its full vocabulary. The maintained default is the
+[FR-Spec native-MTP recipe](RUN.md#launch-flash-next-with-fr-spec), with the
+[non-FR recipe](RUN.md#launch-flash-next-without-fr-spec-alternative) also
+selectable - without the map, and with the same block 8 / block 4 routing; the
+optional [DFlash2 recipe](RUN.md#launch-flash-next-with-dflash2) - which
+verifies its draft tokens with FlashInfer's SM120 kernel - remains
+fully available as an opt-in. DFlash2 offers more token-pool capacity; we are
+still evaluating performance across concurrency levels. TP2 for the DFlash2
+profile is expected to work; it has not been tested on two-GPU hardware.
 
 For 27B alternatives, see the [Swift 27B results](SWIFT-27B.md) and the
 [OrcaRouter FP8 checkpoint](https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored-FP8).
@@ -125,72 +139,65 @@ For 27B alternatives, see the [Swift 27B results](SWIFT-27B.md) and the
 
 ## Performance
 
-### Flash-Next 3.0
+### Flash-Next 3.1
 
-**Real coding: 262 tok/s mean, 518 peak. Presentation workflow: 240 mean, 544 peak.**
+**Native MTP default: 252.83 tok/s mean / 501.63 peak on a real coding
+workflow, and 216.23 / 525.80 on the ten-slide presentation (agentic), single
+request at block 8.**
 
 Measured on one RTX PRO 6000 Blackwell, using our OrcaRouter ModelOpt NVFP4
-checkpoint, FR-Spec plus adaptive MTP, a 524K context limit, and normal non-greedy sampling.
+checkpoint, FR-Spec, a 524K context limit, and normal non-greedy sampling. The
+native rows are the final October 21 screens on the merged source
+(`fe5f02c`); the DFlash2 rows keep their `a60f442` labels. Every rate is
+SGLang's native generation rate, including reasoning; prefill, tool execution,
+and idle time are separate.
 
-| Workload | Mean tok/s | Sampled peak tok/s |
+| Profile / workload | Mean tok/s | Sampled peak tok/s |
 |---|---:|---:|
-| Real coding workflow | **262.32** | **518.18** |
-| Presentation workflow | **239.53** | **543.72** |
-| Single request | 218.63 | 326.56 |
-| Four concurrent requests, aggregate | 489.35 | 636.71 |
-| Six concurrent requests, aggregate | 433.54 | 606.48 |
+| Native MTP (maintained default), single request, C1 W8 | **197.87** | **345.30** |
+| Native MTP, full four-request batch, aggregate, C4 W4 | **555.11** | **731.06** |
+| Native MTP, full six-request batch, aggregate, C6 W4 | **472.79** | **528.49** |
+| Native MTP, coding workflow (agentic), C1 W8 | **252.83** | **501.63** |
+| Native MTP, presentation workflow (agentic), C1 W8 | **216.23** | **525.80** |
+| DFlash2 + FlashInfer (optional profile), single request, C1 W6 | **241.49** | **339.53** |
+| DFlash2 + FlashInfer, six concurrent requests, aggregate, C6 W4 | **504.80** | **568.90** |
+| DFlash2 + FlashInfer, presentation workflow (agentic), C1 W6 | **217.19** | **448.70** |
 
-These are **SGLang's native generation rates**, including reasoning. Prefill,
-tool execution, and idle time are separate. The coding task ran for 21 model
-turns; the presentation task ran for 113. The concurrent rows are combined
-throughput, not the speed of each request.
+Both native workflows completed end to end at block 8 with one request
+generating, and the finished presentation deck previewed.
+[Current results](RESULTS.md#penny-royal-31) records the sources, intervals
+and settings behind every number, plus the dated earlier screens.
 
-| Cold prompt | Mean prefill tok/s | Time to first token |
-|---|---:|---:|
-| 64K | **17,235.90** | 4.71 s |
-| 490K | **8,839.75** | 60.37 s |
+| Cold prompt (Flash-Next DFlash2) | Mean prefill tok/s |
+|---|---:|
+| 63,906 tokens | **15,365.38** |
+| 489,921 tokens | **8,715.05** |
 
-The reasoning suite scored **95.69/100**. See [results and measurement settings](RESULTS.md#penny-royal-30)
+The Flash-Next DFlash2 reasoning qualification scored **93.46/100**. See
+[results and measurement settings](RESULTS.md#penny-royal-31)
 for the tool checks, cache restore, sampling details, and earlier results.
-
-### Compared with 2.5.3
-
-Our saved native single-request runs went from **186.79 to 218.63 tok/s mean**,
-a **17.0% higher recorded rate**. The GPU token pool grew from **1,039,040 to
-1,067,072 tokens** at the same 524K context limit and C6 capacity.
-
-Those runs used each release's recorded settings: medium reasoning in the
-October 6 baseline and xhigh in the October 10 release run. [Comparison details](RESULTS.md#recorded-comparison-with-253)
-keep the sampling and source records together.
-
-### The public code-edit benchmark
-
-For comparison with the token-maxxing results, we also ran the public
-**code-edit prompt**: **491.88 tok/s mean and 574.16 sampled peak** in the
-accepted adaptive screen, using normal non-greedy sampling. The saved 2.5.3
-code-edit set averaged **336.57 tok/s** with greedy sampling.
-
-This workload asks for a mechanical rewrite of supplied code. Its predictable
-output is well suited to wider speculation. The **real coding workflow above**
-is a separate task with tool calls, implementation and tests. [Code-edit details](RESULTS.md#public-code-edit-benchmark)
-identify the prompt, output limit and measured configuration.
 
 <a id="27b-fp8--dflash2-performance-at-a-glance"></a>
 
 ### Qwen3.8-27B FP8 with DFlash2
 
-Latest recorded performance, from the September 10 v2.4.1 run on one RTX PRO
-6000 with the OrcaRouter FP8 checkpoint:
+Current recorded performance on one RTX PRO 6000, fixed block 8:
 
-| Workload | Recorded speed |
+| Workload | Mean tok/s | Sampled peak tok/s |
+|---|---:|---:|
+| Single request | **133.06** | **232.07** |
+| Four concurrent requests, aggregate | **459.74** | **570.73** |
+
+| Cold prompt | Mean prefill tok/s |
 |---|---:|
-| 64K cold prefill | 6,570 tok/s |
-| 490K cold prefill | 1,646 tok/s |
-| Single-request decode, after the first token | 108.31 tok/s |
-| Four requests, aggregate including time to first token | 374.98 tok/s |
+| 63,906 tokens | 6,421.59 |
+| 489,921 tokens | 1,677.10 |
 
-[Benchmark history](RESULTS.md) keeps these dated measurements and their
-original timing methods.
+The reasoning suite scored **96.94/100** on this profile.
+
+[Benchmark history](RESULTS.md) keeps the earlier records — the October 10 3.0
+screens, the 2.5.3 comparison, the public code-edit benchmark, and the dated
+27B campaigns — with their original labels and timing methods.
 
 <a id="independent-tp2-fp8-validation"></a>
 
@@ -209,15 +216,16 @@ Choose the installation path that suits your machine:
 Both paths work with ordinary configuration files. The optional
 **[beta configurator](CONFIGURE.md)** helps write those files and prints the
 launch command. It is open for testing; please [report issues](https://github.com/jpezzulli/sglang-rtxpro6000/issues)
-if you try it.
+if you try it. The complete list of supported settings, defaults, interactions
+and restart/cache effects is the [configuration reference](CONFIGURATION.md).
 
 ### Your container configuration stays outside the image
 
 ```text
 your-host/
-  run.sh                         image, GPU selection, ports and mounts
-  config/start-flash-next-frspec.sh  model and SGLang startup settings
-  config/nixl-posix-frspec.toml      optional disk-cache settings
+  run.sh                              image, GPU selection, ports and mounts
+  config/start-flash-next-frspec.sh   model and SGLang startup settings
+  config/nixl-posix-frspec.toml        optional disk-cache settings
 ```
 
 Prepare those files before starting. `run.sh` starts Docker and mounts your
@@ -233,7 +241,10 @@ commands; the beta configurator can generate the same ordinary files for you.
 
 The inference target is **RTX PRO 6000 Blackwell, TP1 or TP2**. An Ampere or
 Ada Lovelace GPU can be used separately for image preprocessing; it is not an
-extra tensor-parallel inference card. CPU preprocessing is also available.
+extra tensor-parallel inference card. CPU preprocessing is also available. The
+build is narrowed to RTX Blackwell inference and Ampere/Ada sidecar image
+processing — other GPU build targets are trimmed, which keeps the release
+slimmer and easier to download.
 
 | Profile | Default host cache | Additional model-related host memory |
 |---|---|---|
@@ -266,23 +277,26 @@ session-cache and WSL2 contributions, **[cube4elements](https://github.com/cube4
 for the image-request crash fix, and **[untcoder2](https://github.com/untcoder2)**,
 **[StockSpecialist1707](https://www.reddit.com/user/StockSpecialist1707/)**, and
 **[palves](https://github.com/palves)** for field testing and setup feedback.
-[Penny Royal](mailto:Pennyroyal@agentmail.to) did almost all the coding for 3.0,
-including the ports and integration work. [John](https://github.com/jpezzulli),
-Penny and Codex worked through the design, implementation, tuning and debugging
-together, with plenty of back and forth over what was actually worth keeping.
+For 3.1, **[@jhsmith409](https://github.com/jhsmith409)** and
+**[@LocalhostRonin](https://github.com/LocalhostRonin)** contributed directly.
+[Penny Royal](mailto:Pennyroyal@agentmail.to) did almost all the coding across
+these releases, including the ports and integration work. [John](https://github.com/jpezzulli),
+Penny and Codex worked through the architecture, implementation, tuning,
+verification-backend choice and debugging together, with plenty of back and forth
+over what was actually worth keeping.
 
 ## Documentation
 
 | I want to… | Read |
 |---|---|
 | Install or upgrade | [Native build](BUILD.md) · [Container](docker/pennyroyal/README.md) |
-| Choose launch, cache, GPU, and context settings | [Run guide](RUN.md) |
+| Choose launch, cache, GPU, and context settings | [Run guide](RUN.md) · [Configuration reference](CONFIGURATION.md) |
 | Understand conversation caching | [HiCache and NIXL](#hicache-and-nixl) · [Memory and persistence](MEMORY-AND-PERSISTENCE.md#hicache-and-nixl) |
 | Try guided setup | [Beta configurator](CONFIGURE.md) |
 | Understand the FP8 and SSD options | [Online FP8](FP8.md) · [NVMe PLE](NVME-PLE.md) |
 | See measurements | [Results and history](RESULTS.md) · [Community reports](COMMUNITY-RESULTS.md) |
 | Read the implementation details | [Backends](BACKENDS.md) · [Memory and persistence](MEMORY-AND-PERSISTENCE.md) |
-| Check changes and source lineage | [3.0.2 notes](RELEASE_NOTES_3.0.2.md) · [Machine-readable notes](release-3.0.2.json) · [History](CHANGES.md) · [Provenance](PROVENANCE.md) |
+| Check changes and source lineage | [3.1.1 notes](RELEASE_NOTES_3.1.1.md) · [Machine-readable notes](release-3.1.1.json) · [History](CHANGES.md) · [Provenance](PROVENANCE.md) |
 | Check known issues | [Limitations](LIMITATIONS.md) |
 | Use an AI assistant for setup | [llms.txt](llms.txt) |
 
@@ -322,8 +336,8 @@ components retain their own licenses.
 <a id="scope-and-limitations"></a>
 <a id="documentation-map"></a>
 
-[Current release notes](RELEASE_NOTES_3.0.2.md) · [Benchmark history](RESULTS.md) ·
-[Configuration reference](BACKENDS.md) · [Known issues](LIMITATIONS.md)
+[Current release notes](RELEASE_NOTES_3.1.1.md) · [Benchmark history](RESULTS.md) ·
+[Configuration reference](CONFIGURATION.md) · [Known issues](LIMITATIONS.md)
 
 <!-- Compatibility anchors for earlier versions of this guide. -->
 <a id="broader-model-support-without-hicachenixl"></a>

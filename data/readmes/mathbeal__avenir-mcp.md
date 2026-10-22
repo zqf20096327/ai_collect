@@ -97,14 +97,33 @@ less motion, or a viewer that does not animate, sees that frame instead.
 
 ## Install
 
-You need [uv](https://docs.astral.sh/uv/) and a YNAB personal access token
-(YNAB → Account Settings → Developer Settings → New Token).
+You need a YNAB personal access token
+(YNAB → Account Settings → Developer Settings → New Token), and, except with the Claude
+Desktop extension, [uv](https://docs.astral.sh/uv/).
 
-[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_avenir--mcp-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=avenir-mcp&inputs=%5B%7B%22id%22%3A%22ynab_token%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22YNAB%20personal%20access%20token%22%2C%22password%22%3Atrue%7D%5D&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22avenir-mcp%22%5D%2C%22env%22%3A%7B%22YNAB_API_KEY%22%3A%22%24%7Binput%3Aynab_token%7D%22%7D%7D)
-[![Install in Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=avenir-mcp&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJhdmVuaXItbWNwIl0sImVudiI6eyJZTkFCX0FQSV9LRVkiOiJ5b3VyLXRva2VuIn19)
+[![Download for Claude Desktop](https://img.shields.io/badge/Claude_Desktop-Download_the_extension-D97757?style=flat-square&logo=claude&logoColor=white)](https://github.com/mathbeal/avenir-mcp/releases/latest/download/avenir-mcp.mcpb)
 
-One click installs avenir-mcp **read-only**: VS Code asks for your token in a password box and keeps it in its secret
-storage; in Cursor, replace `your-token` in the server's settings. Add `AVENIR_MCP_WRITE=1` to allow changes.
+One click installs avenir-mcp **read-only** in Claude Desktop: open
+**Settings → Extensions** and drag the `avenir-mcp.mcpb` the button downloads onto that
+screen, then paste your token, which the extension keeps out of sight. Add
+`AVENIR_MCP_WRITE=1`, or tick **Allow changes to your plans** in the extension, to allow
+changes.
+
+**On Windows, or if a terminal is not where you are at home**, the extension is the way
+in: no uv, no command, no file to edit. Numbered steps, from the download to a first
+answer:
+[Install the Claude Desktop extension](https://avenir-mcp.pages.dev/avenir-mcp/getting-started/install/#install-the-claude-desktop-extension).
+The extension is attached by the release workflow, so a release published before that job
+existed carries none: while the latest release is one of those, the button gives GitHub's
+*Not Found* page, and installing by hand, below, is what works until the next release.
+The [releases](https://github.com/mathbeal/avenir-mcp/releases) say which assets each one
+carries.
+
+**Cursor**, **LM Studio** and **VS Code** install it read-only in one click too, from the
+buttons on the
+[Install](https://avenir-mcp.pages.dev/avenir-mcp/getting-started/install/#add-avenir-mcp-to-your-client)
+page. A README cannot carry those: GitHub drops a link an editor opens, so the button
+would lead nowhere.
 
 Or by hand:
 
@@ -129,6 +148,19 @@ claude mcp add avenir-mcp --env YNAB_API_KEY=your-token --env AVENIR_MCP_WRITE=1
 Drop `AVENIR_MCP_WRITE` to stay read-only. Other clients and every option:
 [Install](https://avenir-mcp.pages.dev/avenir-mcp/getting-started/install/) ·
 [Configuration](https://avenir-mcp.pages.dev/avenir-mcp/reference/configuration/).
+
+## Claude Code plugin
+
+`plugin/` is avenir-mcp as a Claude Code plugin: Claude Code asks for your YNAB token in
+the plugin's settings, keeps it out of sight, and starts the server from the plugin's own
+locked environment. From a clone: `claude --plugin-dir plugin`.
+
+| The plugin | What |
+|---|---|
+| runs | `uv run --locked --project` *the plugin's folder*, which starts the release `plugin/pyproject.toml` pins, and nothing else. No script of its own, no build step, no hook, no shell |
+| contacts | `pypi.org` and `files.pythonhosted.org`, to install that release and the versions `plugin/uv.lock` pins, the first time; then `api.ynab.com`, with your token, as avenir-mcp always does |
+| writes | the environment `uv` resolves inside the plugin's folder, and `uv`'s own cache. Nothing elsewhere |
+| changes in your plan | nothing. It starts avenir-mcp read-only: `AVENIR_MCP_WRITE` is not set, so the tools that change a plan are never registered |
 
 ## What you can ask
 
@@ -166,6 +198,16 @@ Read [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md) before openin
 pull request. Security reports: [SECURITY.md](SECURITY.md). Also:
 [ARCHITECTURE.md](ARCHITECTURE.md), [ROADMAP.md](ROADMAP.md),
 [GOVERNANCE.md](GOVERNANCE.md) and the [code of conduct](CODE_OF_CONDUCT.md).
+
+## Privacy Policy
+
+avenir-mcp is a program you run yourself, not a service: its publisher runs no server and
+receives none of your data. Your token is read from the environment, kept in memory as a
+secret value and sent only to YNAB; your plan's data is fetched when a tool needs it, kept
+in memory, and returned to your agent, which means the model provider your MCP client
+sends tool results to also sees it. Nothing is sold, and nothing goes to a third party
+this does not name. What is handled, how long it is kept and how to erase it:
+<https://avenir-mcp.pages.dev/avenir-mcp/project/privacy/>.
 
 ## Licence
 

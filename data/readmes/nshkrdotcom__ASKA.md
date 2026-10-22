@@ -1,82 +1,44 @@
-# ASKA 2.0 — Research Architecture
+# ASKA 4.0 — Research Architecture
 
-**ASKA 2.0 · 20 October 2026 · Conceptual design and research questions**
+**22 October 2026**
 
-ASKA explores a computer architecture in which the boundaries of authority are part of the machine: execution, memory, devices, internal communication, and external networking enforce explicit limits on what each participant may access, disclose, or cause. Its central unit is the **Isolated Execution Stack (IES)**, a proposed hardware-enforced compartment spanning computation and its relevant resources.
+ASKA proposes a computing and networking architecture whose boundaries remain effective after a component is compromised. Its execution domains own physical compute and private memory. Explicit authority governs objects and effects, physical networks separate purposes, and independent authorities govern security domains. An AI-first operating environment connects these services to user tasks.
 
-The long-term vision includes heterogeneous IES cells, protected on-chip and external fabrics, independently governed receiving systems, and constrained autonomous software. The immediate research question is smaller and concrete:
+Start with the [architecture and reading map](01_architecture_and_reading_map.md).
 
-> Can a system preserve the meaning of an authorization as data moves from protected computation, through memory and devices, into a network message, and into another independently governed machine—even when ordinary operating systems and routing controllers are compromised?
+## Architecture
 
-An affirmative answer would require more than an authenticated connection. It would require an account of where authority and data classification originate, how they survive each representation change, and which components remain trusted.
+The selected organization is a spatial object machine. Small execution domains own their compute and writable memory for an admitted lifetime. They exchange bounded objects through protected interfaces. Persistent services own durable state and independently authorize operations. Native cross-trust execution requires physical resource ownership; high-consequence policy and recovery functions use independently rooted domains.
 
-This is an independent architecture investigation. ASKA 2.0 contains **no fabricated silicon, implemented ASKA protocol, measured performance results, or completed security proof**. It claims no new cryptographic primitive or completed ISA. A new ISA remains a research option if the required execution semantics justify one. Existing instruction sets and components are comparison points and possible building blocks.
+Purpose-specific physical fabrics constrain connectivity. Source release controls and destination effect checks constrain what may cross them. Network membership and authentication confer no implicit operation or disclosure rights. The same rules apply to peripherals, printing, displays, removable storage, management, and recovery paths.
 
-## The architecture in one view
+The AI environment supports interaction, context retrieval, application construction, and orchestration. Isolated planners and builders propose work; protected interaction, admission, and effect services enforce its authority. A compromised planner cannot create consent or approve its own deployment.
 
-```mermaid
-flowchart LR
-  subgraph A[Administrative realm A]
-    AC[Protected policy and key authority]
-    IES[IES computation and protected memory]
-    EG[Memory, DMA, and egress enforcement]
-    AC -.-> EG
-    IES --> EG
-  end
-  EG --> N[External transport]
-  subgraph B[Administrative realm B]
-    BC[Independent receiving authority]
-    IG[Ingress and placement enforcement]
-    DST[Receiving IES]
-    BC -.-> IG
-    IG --> DST
-  end
-  N --> IG
-  U[Ordinary OS and route controllers] -.->|requests and route proposals| EG
-  U -.->|requests and route proposals| IG
-```
+The architecture defines required semantics without selecting a binary ISA, fabrication process, interconnect, or production packet encoding. Candidate mechanisms include existing capability processors, new object instructions, spatial/dataflow engines, advanced integration, and optical links. Each is evaluated against the same requirements.
 
-The diagram hides an essential distinction. Authenticated encryption can protect a message over untrusted transport. Preventing that message from traversing a particular physical port requires enforcement at that port and an accurate account of the topology. These are separate claims, developed separately below.
+This is an unvalidated research architecture. No complete ASKA hardware, protocol implementation, performance result, or security proof is claimed. The documents identify selected designs, assumptions, external demonstrations, open research, and intermediate realizations.
 
-## Reading the set
+## Documents
 
-| Document | Question it answers |
+| Documents | Contents |
 |---|---|
-| [01 — Vision, problem, and threat model](01_vision_problem_and_threat_model.md) | What is ASKA trying to change, and against which adversary? |
-| [02 — IES execution and authority](02_ies_execution_and_authority.md) | What makes an IES a security boundary, and where does its authority come from? |
-| [03 — The protected handoff](03_protected_handoff.md) | How could a buffer become an authorized message without losing its restrictions? |
-| [04 — Network transport and independent realms](04_network_transport_and_realms.md) | What must travel on the wire, what state remains, and what can a receiver independently refuse? |
-| [05 — Costs, limits, and unresolved questions](05_costs_limits_and_open_questions.md) | Where can the architecture become too expensive, too restrictive, or incorrect? |
-| [06 — Research plan and evidence](06_research_plan_and_evidence.md) | What useful work can be done before hardware, and what would falsify a candidate? |
-| [07 — Prior art and sources](07_prior_art_and_sources.md) | Which ideas already exist, and what comparisons remain necessary? |
-| [08 — Defensive structural disclosure](08_defensive_structural_disclosure.md) | Which precise structural relationships and alternatives are disclosed for public examination and reuse? |
+| [01 — Overview](01_architecture_and_reading_map.md) · [02 — Requirements](02_requirements_and_threat_model.md) · [03 — Decisions](03_architectural_candidates_and_decisions.md) | Organization, threat model, requirements, and competing designs |
+| [04 — Physical substrate](04_physical_substrate_and_frontier.md) · [05 — Execution](05_execution_and_instruction_semantics.md) · [06 — Memory](06_memory_ownership_and_lifecycle.md) | Physical profiles, processor semantics, ownership, and safe reuse |
+| [07 — Persistence](07_persistence_and_effects.md) · [08 — Information flow](08_authority_and_information_flow.md) | Durable effects, scoped grants, confinement, and release |
+| [09 — Applications](09_native_applications_and_development.md) · [10 — AI environment](10_ai_environment_and_trusted_interaction.md) | Component contracts, development, user interaction, and isolated agents |
+| [11 — Purpose networks](11_purpose_networks_and_gateways.md) | Physical topology and gateways |
+| [12 — Cross-domain security](12_cross_domain_security_and_information_release.md) | Insider threats, adversarial bridges, information release, and observation limits |
+| [13 — Delivery](13_admission_and_delivery.md) | Admission, replay, and publication |
+| [14 — Governance](14_governance_updates_and_recovery.md) · [15 — Failure cases](15_compromise_and_failure_cases.md) | Independent management, updates, recovery, and adversarial scenarios |
+| [16 — Validation](16_validation_and_cost_models.md) · [17 — Research program](17_research_and_realizations.md) | Models, experiments, cost comparisons, and long-term dependencies |
+| [18 — Traceability](18_traceability_and_evolution.md) · [19 — Sources](19_sources_and_evidence.md) | Requirement-to-design mapping and primary-source evidence |
 
-Read 01–03 for the core argument. Read 05 before deciding whether its costs could be acceptable. Document 06 is a starting point for contributing an analysis, counterexample, or experiment.
+## Earlier versions
 
-Document 08 is an open defensive structural disclosure. It retains 35 numbered, claim-form statements for precision; no patent application is being filed as part of this release. Formal wording does not establish novelty, patentability, or additional technical evidence.
+Historical documentation is preserved in [v1](v1/ARCHIVE_NOTICE.md), [v2](v2/README.md), and [v3](v3/README.md). The root documents describe ASKA 4.0.
 
-## What ASKA 2.0 commits to
+## License and contributions
 
-ASKA retains the hardware-first IES direction. An ordinary host kernel is not the final authority over an IES boundary. A routing controller may select permitted routes; it cannot create permission merely by installing a route. A receiving realm retains its own decision. Recovery, debug, and device access must obey explicit boundaries too.
+Original documentation and diagrams are licensed under [Creative Commons Attribution 4.0 International](LICENSE), except where separate terms are identified. Third-party material retains its own terms. Suggested attribution: **Paul Lowndes and ASKA contributors, ASKA 4.0**, with this repository and the commit used. The copyright license does not grant patent rights.
 
-The architecture does **not** yet commit to one core design, a universal label format, a new Internet protocol, or dedicated hardware for every logical process. Those decisions depend on the properties and costs established through research. A small experiment can test an architectural requirement without fixing the final machine around that apparatus.
-
-The first candidate uses coarse compartment labels and a bounded message handoff. This gives the discussion a mechanism to examine. It is not evidence that the full IES vision is feasible, nor a decision to reduce ASKA to a network adapter.
-
-## How to interpret claims
-
-**Existing work** is attributed to sources. **Proposed mechanisms** describe designs to investigate. **Derived examples** show arithmetic under stated assumptions. **Open questions** identify missing decisions or evidence. None of these categories implies a measured ASKA result.
-
-A worthwhile outcome could be a better architecture, a useful component, a precise counterexample, or evidence that an existing system already satisfies the desired contract. The investigation does not depend on being first to imagine isolation, capabilities, hardware messaging, or distributed information-flow control.
-
-The earlier repository, including its original README, is preserved in [ASKA_v1](ASKA_v1/ARCHIVE_NOTICE.md). It is historical material; its patent-portfolio language, performance assertions, and proposed specifications are not evidence of granted patents or validated results. The ASKA 2.0 documents at the repository root describe the current research position.
-
-## License and reuse
-
-The original documentation and diagrams in this repository are licensed under [Creative Commons Attribution 4.0 International](LICENSE), including the historical archive except where separate terms are identified. You may share and adapt this material, including commercially, with attribution and an indication of changes. Third-party quotations, linked publications, and other separately attributed material retain their own terms.
-
-Suggested attribution: **Paul Lowndes and ASKA contributors, ASKA 2.0**, with a link to [this repository](https://github.com/nshkrdotcom/ASKA) and the commit used. This is a copyright license, not a public-domain dedication or a patent license. See [Document 08](08_defensive_structural_disclosure.md) for the defensive-publication intent and its limits.
-
-## Contributing
-
-Useful contributions include concrete counterexamples, missing references, corrected assumptions, and small models or measurements that test a stated property. Cite the relevant document and distinguish a proposal from an observed result. Original documentation contributions are accepted under the repository's CC BY 4.0 license; identify any third-party material and its terms.
+Contributions can include counterexample traces, corrected assumptions, source comparisons, and reproducible models or measurements. Identify the document and requirement being tested, distinguish proposals from observed results, and include the conditions needed to reproduce any result. Original documentation contributions use the repository's CC BY 4.0 license; identify separately licensed material.

@@ -5,7 +5,7 @@
 19 personality-driven agents · 57 composable skills · 17 end-to-end workflows
 Android · iOS · Flutter · React Native · Kotlin Multiplatform · Unity · Unreal
 
-[![npm](https://img.shields.io/npm/v/mobile-ai-agents?color=CB3837&label=npm)](https://www.npmjs.com/package/mobile-ai-agents)
+[![npm](https://img.shields.io/npm/v/mobile-ai-agents.svg?color=CB3837&label=npm)](https://www.npmjs.com/package/mobile-ai-agents)
 [![npm downloads](https://img.shields.io/npm/dm/mobile-ai-agents?color=CB3837)](https://www.npmjs.com/package/mobile-ai-agents)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/salmanashraf/mobile-agency?style=social)](https://github.com/salmanashraf/mobile-agency/stargazers)
@@ -132,6 +132,8 @@ node cli/index.js network capture \
 This delivers browser API evidence. Mobile code generation and verified app/API parity require the [web-network-to-mobile skill](skills/cross-platform/web-network-to-mobile.md), your target app and device/network tooling. It does not prove a native app works from a website capture alone.
 
 [Website API discovery guide: setup, demo, privacy and mobile handoff](docs/website-api-discovery.md) · [Implementation issue #69](https://github.com/salmanashraf/mobile-ai-agents/issues/69)
+
+**Next: turn browser evidence into a mobile API contract.** Run `npx mobile-ai-agents@latest network contract --capture /tmp/mobile-api-demo/capture.json --out /tmp/mobile-api-contract-1`. Import HAR with `--har`, or cross-check local OpenAPI JSON with `--openapi`. The output separates observations, documented requirements and unconfirmed inferences; it flags gaps and conflicts while keeping mobile parity unverified. [Contract guide](docs/api-contracts.md). Available starting in `mobile-ai-agents@1.0.40`.
 
 Available in `mobile-ai-agents@1.0.39` and newer. Use `npx mobile-ai-agents@latest network capture --url URL --out NEW_DIRECTORY` for your own authorized site, with optional Playwright installed. Use a new output directory for every run.
 

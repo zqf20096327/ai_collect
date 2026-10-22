@@ -18,7 +18,7 @@ There is no need to move your files or change your folder structure. Enable fold
 
 **Windows:** choose Setup for a standard installation or Portable to keep the app's settings and data beside the executable. When updating Portable, replace only the executable and keep its `ImageMetaHubData` folder.
 
-**macOS:** current builds are unsigned. If macOS blocks the app after you move it to Applications, run this in Terminal:
+**macOS:** current builds are unsigned. Update notifications open [GitHub Releases](https://github.com/LuqP2/Image-MetaHub/releases/latest), where you can download the latest DMG and install it manually. If macOS blocks the app after you move it to Applications, run this in Terminal:
 
 ```bash
 xattr -dr com.apple.quarantine "/Applications/Image MetaHub.app"
@@ -86,12 +86,14 @@ Image MetaHub reads generation metadata from ComfyUI, Automatic1111, InvokeAI, F
 
 | Media | Supported formats |
 | --- | --- |
-| Images | PNG, JPG/JPEG, WEBP, AVIF, GIF |
+| Images | PNG, JPG/JPEG, WEBP, AVIF, GIF; EXR with the optional desktop component |
 | Video | MP4, WEBM, MKV, MOV, AVI |
 | Audio | MP3, WAV, FLAC, OGG/OGA, M4A, AAC, OPUS, AIFF/AIF, WMA |
 | 3D | GLB, GLTF, OBJ, FBX, STL |
 
 Browse and play media, or inspect 3D assets in the interactive viewer and export them. Audio/video playback depends on the codecs available on your system. Files without generation metadata can still be browsed and organized.
+
+For renders, [EXR / OpenColorIO](docs/EXR-OCIO.md) adds color-managed previews, render passes, individual channels, and non-destructive exposure. Install the optional component from **Settings → General → Optional components**; processing then works offline. EXR originals are preserved, and EXR editing/export and deep images are outside this first version.
 
 ![Interactive local 3D model viewer](assets/screenshot-3d-model-library.webp)
 

@@ -266,6 +266,47 @@ Szlif sprawdziliśmy na publicznym artykule medycznym. Ma około 1000 słów i 4
   Średnio jest lepiej, ale nie pewnie, więc strażnik dalej jest potrzebny.
 - **Teksty medyczne, prawne i finansowe** nie nadają się do publikacji bez sprawdzenia przez eksperta. Zmiana „może” na „często” to w nich zmiana faktu.
 
+### Pomiar na polskim korpusie (październik 2026)
+
+Ten test każdy może powtórzyć. Korpus to 55 krótkich polskich tekstów z projektu [watermarks-remover](https://github.com/guillaumemeyer/watermarks-remover) (licencja MIT, kopia w `bench/korpus-pl`): 48 akapitów bez cyfr, 4 z cyframi i 3 dodatkowe, w tym 2 urzędowe. Napisano je po polsku, żeby sprawdzać, czy przepisanie nie psuje przypadków, aspektu, liczebników i zaimków. Każdy tekst to jeden akapit z 50–90 słowami.
+
+Przebieg: Bielik 11B v3.0 (Q6_K) przez Ollamę, tryb standardowy (2 rundy), sens sprawdzał ten sam Bielik. 55 tekstów zajęło 19 minut. Powtórzysz to poleceniem `python3 bench/korpus.py --sprawdz`. Wyniki są w plikach:
+
+- [pełny raport](bench/wyniki/2026-10-21-bielik-11b-v3.0-q6_k.md);
+- [ocena każdej pary](bench/wyniki/2026-10-21-bielik-11b-v3.0-q6_k-ocena.md).
+
+| | Główny korpus | Z cyframi | Dodatkowe |
+|---|---:|---:|---:|
+| Teksty | 48 | 4 | 3 |
+| Bielik oddał tekst słowo w słowo | 8 | 1 | 0 |
+| Zmienione słowa (mediana zmienionych tekstów) | 61% | 50% | 74% |
+| Ostrzeżenie strażnika | 8 | 3 | 2 |
+| Weryfikator: „BEZ ZMIAN” / uwagi | 12 / 28 | 2 / 1 | 0 / 3 |
+
+„Zmienione słowa” to odsetek różnych par sąsiednich słów z obu tekstów, które są tylko w jednym z nich. 0% oznacza ten sam tekst, a 100% brak wspólnej pary.
+
+Wszystkie 46 zmienionych par przeczytał Claude, asystent AI, który napisał ten pomiar, a nie językoznawca. Wynik: w 13 tekstach zmieniła się treść, w 19 szczegół albo odcień, w 14 sens został ten sam.
+
+- **Strażnik ostrzegł przy 6 z 13 realnych zmian.** Były wśród nich dwa dopisane zdania z polecenia, trzy zmiany pewności i zniknięte „6 lat”.
+  - Fałszywy alarm był jeden: „należy do mnie” strażnik wziął za przymus. Jeden alarm był na granicy: „są zobowiązane” → „muszą”.
+  - Dwa razy Bielik zapisał wszystkie cyfry słowami („2 psy” → „dwa psy”). Strażnik wtedy ostrzega, choć wartości się zgadzają.
+- **Bez ostrzeżenia przeszły dokładnie te błędy, które ten korpus sprawdza:**
+  - „Dostawcy potwierdziła też godzinę” (jednemu dostawcy) → „Potwierdziła też dostawcom godzinę” (wielu);
+  - „Wspominają o znajomych” (mówią o nich) → „Wspominają znajomych” (przywołują ich w pamięci);
+  - „Jestem chłopakiem i chcę zaprosić dziewczynę…, ale nie wiem, co powinienem jej powiedzieć” → „Chcę zaprosić dziewczynę…, ale nie wiem, jak to zrobić”. Nie wiadomo już, kto mówi;
+  - „W starej kamienicy znajdują się dwadzieścia dwa mieszkania” → „znajduje się dwadzieścia dwa mieszkania”, czyli błąd zgody;
+  - „Kupili dwa bilety” → „Kupili bilety”. Strażnik nie widzi liczb zapisanych słowami.
+- **Weryfikator, czyli ten sam Bielik, pomaga niewiele.**
+  - Uwagi dał przy 10 z 13 realnych zmian, ale też przy 16 z 19 drobnych i przy 6 z 14 tekstów bez zmiany sensu. Zwykle to lista synonimów, a prawdziwa zmiana jest w niej jednym z wielu punktów.
+  - Przy trzech realnych zmianach napisał „BEZ ZMIAN”, np. przy „Aleksandra, którą rodzina nazywa Olą” → „Ola, nazywana przez rodzinę Aleksandrą”. W poleceniu miał wtedy ostrzeżenie strażnika o tym akapicie.
+  - W czterech odpowiedziach zmyślił akapity, raz z promem „o 9:00”, którego nie ma w żadnym tekście.
+
+  Pary lepiej dać większemu modelowi przez „Kopiuj do weryfikacji”. Tego ten pomiar nie sprawdzał.
+- **Co szósty tekst wraca bez zmian.** Bielik oddał 9 z 55 tekstów słowo w słowo, więc Szlif niczego w nich nie zmienił.
+- **Styl urzędowy znika.** Oba teksty urzędowe Szlif uprościł („są zobowiązane do stosowania się” → „muszą stosować się”), bo tak każe jego polecenie. Korpus sprawdza właśnie, czy styl zostaje, a tu nie zostaje.
+
+To jeden przebieg na krótkich, jednoakapitowych tekstach, a pary ocenił jeden czytelnik. Model za każdym razem odpowiada trochę inaczej, więc kolejny przebieg da trochę inne liczby.
+
 ### Detektory AI
 
 Szlif nie jest narzędziem do omijania detektorów, a w tym teście wcale ich nie omijał:
@@ -347,6 +388,14 @@ Zmierzone na Macu z 36 GB pamięci i Bielikiem 11B `Q6_K`:
 python3 -m unittest discover -s tests
 python3 tests/smoke.py
 ```
+
+Pomiar jakości na polskim korpusie wymaga działającej Ollamy. Z Bielikiem 11B trwa około 20 minut:
+
+```
+python3 bench/korpus.py --sprawdz
+```
+
+Raport trafia do `bench/wyniki`. Opcje: `--model`, `--tryb`, `--tylko 01_ X03` (tylko wybrane pliki).
 
 ## Licencja i podziękowania
 

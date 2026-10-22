@@ -1,9 +1,45 @@
 # nexus-llm-router
 
-![Tests](https://img.shields.io/badge/tests-1705%20passing-brightgreen) ![Python](https://img.shields.io/badge/python-3.11%2B-blue) ![CI](https://github.com/Francis1998/nexus-llm-router/actions/workflows/ci.yml/badge.svg)
+![Tests](https://img.shields.io/badge/tests-1738%20passing-brightgreen) ![Python](https://img.shields.io/badge/python-3.11%2B-blue) ![CI](https://github.com/Francis1998/nexus-llm-router/actions/workflows/ci.yml/badge.svg)
 
 
 > Intelligent multi-LLM routing middleware with task-aware model selection, cost optimization, fallback safety, and a drop-in OpenAI-compatible API.
+
+### GuidedDecodeFsmBlowupAdvisor
+
+![GuidedDecodeFsmBlowupAdvisor](assets/demo/guided-decode-fsm-blowup-advisor.gif)
+
+Offline HITL `fsm_blowup_ratio` bands. Gap vs vLLM/Outlines/Guidance guided-decode FSM blowup monitors. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GUIDED_DECODE_FSM_BLOWUP_ADVISOR_GUIDE.md`.
+
+### MoeExpertDropoutStormAdvisor
+
+![MoeExpertDropoutStormAdvisor](assets/demo/moe-expert-dropout-storm-advisor.gif)
+
+Offline HITL `dropout_storm_ratio` bands. Gap vs vLLM/SGLang/TGI MoE expert-dropout storm monitors. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/MOE_EXPERT_DROPOUT_STORM_ADVISOR_GUIDE.md`.
+
+### SpeculativeDecodeRejectionHysteresisAdvisor
+
+![SpeculativeDecodeRejectionHysteresisAdvisor](assets/demo/speculative-decode-rejection-hysteresis-advisor.gif)
+
+Offline HITL `hysteresis_ratio` bands. Gap vs vLLM/SGLang/TGI speculative-decode rejection-hysteresis monitors. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/SPECULATIVE_DECODE_REJECTION_HYSTERESIS_ADVISOR_GUIDE.md`.
+
+### PagedKvSwapThrashAdvisor
+
+![PagedKvSwapThrashAdvisor](assets/demo/paged-kv-swap-thrash-advisor.gif)
+
+Offline HITL `swap_thrash_ratio` bands. Gap vs vLLM/SGLang/TGI paged-KV swap-thrash monitors. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PAGED_KV_SWAP_THRASH_ADVISOR_GUIDE.md`.
+
+### RopeScaleMismatchBandAdvisor
+
+![RopeScaleMismatchBandAdvisor](assets/demo/rope-scale-mismatch-band-advisor.gif)
+
+Offline HITL `rope_mismatch_ratio` bands. Gap vs vLLM/SGLang/TGI RoPE-scale mismatch monitors. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ROPE_SCALE_MISMATCH_BAND_ADVISOR_GUIDE.md`.
+
+### QuantCalibrationDriftBandAdvisor
+
+![QuantCalibrationDriftBandAdvisor](assets/demo/quant-calibration-drift-band-advisor.gif)
+
+Offline HITL `calib_drift_ratio` bands. Gap vs vLLM/TGI/TensorRT-LLM AWQ/GPTQ quant-calibration drift monitors. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/QUANT_CALIBRATION_DRIFT_BAND_ADVISOR_GUIDE.md`.
 
 ![Nexus use cases](assets/use-cases.gif)
 

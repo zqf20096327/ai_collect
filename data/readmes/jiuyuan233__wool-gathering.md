@@ -63,14 +63,14 @@
 
 ## 📊 今日概况
 
-- 更新时间：**2026-10-21 16:10** 北京时间
-- 进行中：**145** 个 ｜ 即将开始：**4** 个 ｜ 历史收录：**149** 个
+- 更新时间：**2026-10-22 23:49** 北京时间
+- 进行中：**163** 个 ｜ 即将开始：**2** 个 ｜ 历史收录：**165** 个
 
 ---
 
 ## 🗂 分类活动
 
-### 🆓 纯免费（105 条，活跃 101）
+### 🆓 纯免费（114 条，活跃 112）
 
 > 完全免费、0 元可领取的项目
 
@@ -92,7 +92,7 @@
 | 🟢 | MicYou for iOS – 老 iPhone 又有新用途：变成电脑麦克风，免费开源 | — | 长期免费 | — | [领取](https://www.appinn.com/micyou-for-ios/) |
 | 🟢 | VMware Workstation Pro 26H1u1 - 最新免费虚拟机软件专业版 (中文汉化版 / 免激活) | — | 长期免费 | — | [领取](https://www.iplaysoft.com/vmware-workstation.html) |
 
-#### 🎮 游戏喜加一（87 条）
+#### 🎮 游戏喜加一（93 条）
 
 | 状态 | 活动 | 福利 | 时间 | 剩余 | 领取 |
 |------|------|------|------|------|------|
@@ -176,15 +176,21 @@
 | 🟢 | [Steam] (Game) MEMOLOGY: GOYDA（Reddit-FreeGameFindings） | — | 2026-10-21 ~ 2026-10-28 | — | [领取](https://www.reddit.com/r/FreeGameFindings/comments/1xb47wh/steam_game_memology_goyda/) |
 | 🟢 | [Steam] (Game) Uncanny Tales: 1992（Reddit-FreeGameFindings） | — | 2026-10-21 ~ 2026-10-28 | — | [领取](https://www.reddit.com/r/FreeGameFindings/comments/1xacvzs/steam_game_uncanny_tales_1992/) |
 | 🟢 | [Steam] (Game)Deadzone Rogue（Reddit-FreeGameFindings） | — | 2026-10-21 ~ 2026-10-28 | — | [领取](https://www.reddit.com/r/FreeGameFindings/comments/1x9xgb5/steam_gamedeadzone_rogue/) |
+| 🟢 | Epic 免费游戏: Sker Ritual ｜斯克尔仪式 | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://store.epicgames.com/zh-CN/free-games) |
+| 🟢 | Epic 免费游戏: Home - A Unique Horror Adventure ｜归家-独特恐怖冒险 | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://store.epicgames.com/zh-CN/free-games) |
+| 🟢 | [Steam] gear-club-unlimited-3-gear-club-signature-pack（限免） | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://isthereanydeal.com/game/gear-club-unlimited-3-gear-club-signature-pack/info/) |
+| 🟢 | [itch.io] A Monsters Expedition（限免） | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://draknek.itch.io/a-monsters-expedition) |
+| 🟢 | [Epic Games] (Game) Terraspace（Reddit-FreeGameFindings） | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://www.reddit.com/r/FreeGameFindings/comments/1xbxvnd/epic_games_game_terraspace/) |
+| 🟢 | [STEAM] (Game) Amnesia: The Bunker（Reddit-FreeGameFindings） | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://www.reddit.com/r/FreeGameFindings/comments/1xbuqkv/steam_game_amnesia_the_bunker/) |
+| 🟢 | [itch.io] Final Witness（限免） | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://hexnut-studios.itch.io/final-witness) |
+| 🟢 | [Epic Game Store] agent-a-a-puzzle-in-disguise（限免） | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://isthereanydeal.com/game/agent-a-a-puzzle-in-disguise/info/) |
 | 🟢 | Epic 免费游戏: Eternal Threads ｜永恒之线 | — | 2026-10-19 ~ 2026-11-02 | — | [领取](https://store.epicgames.com/zh-CN/free-games) |
 | 🟢 | Epic 免费游戏: Castlevania Anniversary Collection ｜恶魔城周年纪念合集 | — | 2026-10-19 ~ 2026-11-02 | — | [领取](https://store.epicgames.com/zh-CN/free-games) |
 | 🟢 | Epic 免费游戏: 纪念碑谷（Monument Valley） ｜纪念碑谷 | — | 2026-10-19 ~ 2026-11-02 | — | [领取](https://store.epicgames.com/zh-CN/free-games) |
-| 🟡 | Epic 免费游戏: Sker Ritual ｜斯克尔仪式 | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://store.epicgames.com/zh-CN/free-games) |
-| 🟡 | Epic 免费游戏: Home - A Unique Horror Adventure ｜归家-独特恐怖冒险 | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://store.epicgames.com/zh-CN/free-games) |
 | 🟡 | Epic 免费游戏: 《LISA: Definitive Edition》 ｜LISA：决定版 | — | 2026-11-01 ~ 2026-11-10 | — | [领取](https://store.epicgames.com/zh-CN/free-games) |
 | 🟡 | Epic 免费游戏: 《幽灵行者 2》 | — | 2026-12-10 ~ 2027-01-07 | — | [领取](https://store.epicgames.com/zh-CN/free-games) |
 
-#### 🚗 开车线报（5 条）
+#### 🚗 开车线报（8 条）
 
 **AI 车**
 
@@ -192,6 +198,7 @@
 |------|------|------|------|------|------|
 | 🟢 | [福利] 中转站 Midalo 米搭： Claude/GPT/Gemini 全系 57+ 模型一站接入，新用户注册进群即送 2$ | — | 2026-10-19 ~ 2026-10-26 | — | [领取](https://www.v2ex.com/t/1250070) |
 | 🟢 | [midalo 米搭 AI 中转站] 1024 提前给大家发福利， 不降智、7*24 小时稳定，新用户注册进群即送 5$ | — | 2026-10-21 ~ 2026-10-28 | — | [领取](https://www.v2ex.com/t/1250582) |
+| 🟢 | [天机 Tianji] 日本原生住宅 IP， AI 用户友好｜免费体验 24 小时 / 2GB，任意套餐 8 折 | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://www.v2ex.com/t/1250895) |
 
 **会员车**
 
@@ -205,9 +212,11 @@
 |------|------|------|------|------|------|
 | 🟢 | 自建反代还是用现成中转？免费领 10 美元算笔账 | — | 2026-10-19 ~ 2026-10-26 | — | [领取](https://www.v2ex.com/t/1249943) |
 | 🟢 | ✨分享一个最近一直在稳用的 Zooproxy，现在免费送福利，找客服还有折扣 | — | 2026-10-21 ~ 2026-10-28 | — | [领取](https://www.v2ex.com/t/1250573) |
+| 🟢 | 《我享云》机场代理 · 极具性价比与灵活性 · 注册免费试用 5-10 天 · 一块钱就能用上 IX 专线 | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://www.v2ex.com/t/1250813) |
+| 🟢 | MiniMax M3.1 Flash 模型 API 限时免费 | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://www.v2ex.com/t/1250740) |
 
 
-### 💰 打折优惠（44 条，活跃 44）
+### 💰 打折优惠（51 条，活跃 51）
 
 > 有折扣但仍需付费的项目
 
@@ -216,25 +225,25 @@
 | 状态 | 活动 | 福利 | 时间 | 剩余 | 领取 |
 |------|------|------|------|------|------|
 | 🟢 | OpenCode 免费提供 DeepSeek V4.1 Flash 模型 | — | 2026-10-19 ~ 2026-10-28 | — | [领取](https://www.appinn.com/opencode-free-deepseek-v4-1-flash/) |
-| 🟢 | 金山 WPS 大会员 (含AI + 超会) VIP 必入低价优惠 - 送京东 PLUS / 喜马 / 网易云 | — | 2026-10-19 ~ 2026-10-28 | — | [领取](https://www.iplaysoft.com/p/wps-vip) |
-| 🟢 | 复旦「学术版 Codex」客户端上线！送 1 万积分，还可领会员优惠 | — | 2026-10-19 ~ 2026-10-28 | — | [领取](https://www.iplaysoft.com/p/qiewenpaper-codex) |
-| 🟢 | VideoProc Converter AI V7.8 周年庆限时赠送！AI 视频增强、图片修复与 4K/10K 放大工具免费领 | — | 2026-10-19 ~ 2026-10-28 | — | [领取](https://www.appinn.com/videoproc-converter-ai-v7-8/) |
-| 🟢 | 腾讯 WorkBuddy 免费白嫖 DeepSeek 新模型 (国产 Codex / Claude Code 替代) | — | 2026-10-21 ~ 2026-10-28 | — | [领取](https://www.iplaysoft.com/workbuddy.html) |
-| 🟢 | 年度低价！哔哩 B 站大会员 + 送京东 PLUS 年卡优惠 (支持电视端) | — | 2026-10-21 ~ 2026-10-28 | — | [领取](https://www.iplaysoft.com/p/bilibili-vip) |
-| 🟢 | VMware Workstation Pro 26H1u1 - 最新免费虚拟机软件专业版 (中文汉化版 / 免激活) | — | 2026-10-21 ~ 2026-10-28 | — | [领取](https://www.iplaysoft.com/vmware-workstation.html) |
-| 🟢 | 福利：复旦「学术版 Codex」客户端上线,下载登录就送1 万积分，还可享会员 8 折 | — | 2026-10-21 ~ 2026-10-28 | — | [领取](https://www.appinn.com/qiewenpaper-codex-2/) |
-| 🟢 | 双 11 腾讯云和阿里云有没有活动啊？ | — | 2026-10-21 ~ 2026-10-28 | — | [领取](https://www.v2ex.com/t/1250393) |
-| 🟢 | 华为云·免费试用 | — | 2026-10-19 ~ 2026-11-20 | — | [领取](https://activity.huaweicloud.com/free_test/index.html) |
-| 🟢 | 阿里云·免费试用 | — | 2026-10-19 ~ 2026-11-20 | — | [领取](https://free.aliyun.com) |
-| 🟢 | 华为云·老用户权益 | — | 2026-10-19 ~ 2026-11-20 | — | [领取](https://activity.huaweicloud.com/member.html) |
-| 🟢 | 华为云·组合购 | — | 2026-10-19 ~ 2026-11-20 | — | [领取](https://activity.huaweicloud.com/group-purchase/index.html) |
-| 🟢 | 阿里云·高校计划 | — | 2026-10-19 ~ 2026-11-20 | — | [领取](https://university.aliyun.com) |
-| 🟢 | 阿里云·新人特惠 | — | 2026-10-19 ~ 2026-11-20 | — | [领取](https://www.aliyun.com/activity/new) |
-| 🟢 | 腾讯·WorkBuddy AI办公 | 免费版 | 2026-10-19 ~ 2026-11-20 | — | [领取](https://workbuddy.tencent.com/) |
-| 🟢 | 腾讯云·大促代金券 | — | 2026-10-19 ~ 2026-11-20 | — | [领取](https://cloud.tencent.com/act/new) |
-| 🟢 | 腾讯云·校园计划 | — | 2026-10-19 ~ 2026-11-20 | — | [领取](https://cloud.tencent.com/act/campus) |
-| 🟢 | 腾讯云·免费体验 | — | 2026-10-19 ~ 2026-11-20 | — | [领取](https://cloud.tencent.com/act/free) |
-| 🟢 | 腾讯云·开发者 | — | 2026-10-19 ~ 2026-11-20 | — | [领取](https://cloud.tencent.com/act/developer) |
+| 🟢 | 金山 WPS 大会员 (含AI + 超会) VIP 必入低价优惠 - 送京东 PLUS / 喜马 / 网易云 | — | 2026-10-19 ~ 2026-10-29 | — | [领取](https://www.iplaysoft.com/p/wps-vip) |
+| 🟢 | 复旦「学术版 Codex」客户端上线！送 1 万积分，还可领会员优惠 | — | 2026-10-19 ~ 2026-10-29 | — | [领取](https://www.iplaysoft.com/p/qiewenpaper-codex) |
+| 🟢 | VideoProc Converter AI V7.8 周年庆限时赠送！AI 视频增强、图片修复与 4K/10K 放大工具免费领 | — | 2026-10-19 ~ 2026-10-29 | — | [领取](https://www.appinn.com/videoproc-converter-ai-v7-8/) |
+| 🟢 | 双 11 腾讯云和阿里云有没有活动啊？ | — | 2026-10-21 ~ 2026-10-29 | — | [领取](https://www.v2ex.com/t/1250393) |
+| 🟢 | 腾讯 WorkBuddy 免费白嫖 DeepSeek 新模型 (国产 Codex / Claude Code 替代) | — | 2026-10-21 ~ 2026-10-29 | — | [领取](https://www.iplaysoft.com/workbuddy.html) |
+| 🟢 | 年度低价！哔哩 B 站大会员 + 送京东 PLUS 年卡优惠 (支持电视端) | — | 2026-10-21 ~ 2026-10-29 | — | [领取](https://www.iplaysoft.com/p/bilibili-vip) |
+| 🟢 | VMware Workstation Pro 26H1u1 - 最新免费虚拟机软件专业版 (中文汉化版 / 免激活) | — | 2026-10-21 ~ 2026-10-29 | — | [领取](https://www.iplaysoft.com/vmware-workstation.html) |
+| 🟢 | 福利：复旦「学术版 Codex」客户端上线,下载登录就送1 万积分，还可享会员 8 折 | — | 2026-10-21 ~ 2026-10-29 | — | [领取](https://www.appinn.com/qiewenpaper-codex-2/) |
+| 🟢 | 华为云·免费试用 | — | 2026-10-19 ~ 2026-11-21 | — | [领取](https://activity.huaweicloud.com/free_test/index.html) |
+| 🟢 | 阿里云·免费试用 | — | 2026-10-19 ~ 2026-11-21 | — | [领取](https://free.aliyun.com) |
+| 🟢 | 华为云·老用户权益 | — | 2026-10-19 ~ 2026-11-21 | — | [领取](https://activity.huaweicloud.com/member.html) |
+| 🟢 | 华为云·组合购 | — | 2026-10-19 ~ 2026-11-21 | — | [领取](https://activity.huaweicloud.com/group-purchase/index.html) |
+| 🟢 | 阿里云·高校计划 | — | 2026-10-19 ~ 2026-11-21 | — | [领取](https://university.aliyun.com) |
+| 🟢 | 阿里云·新人特惠 | — | 2026-10-19 ~ 2026-11-21 | — | [领取](https://www.aliyun.com/activity/new) |
+| 🟢 | 腾讯·WorkBuddy AI办公 | 免费版 | 2026-10-19 ~ 2026-11-21 | — | [领取](https://workbuddy.tencent.com/) |
+| 🟢 | 腾讯云·大促代金券 | — | 2026-10-19 ~ 2026-11-21 | — | [领取](https://cloud.tencent.com/act/new) |
+| 🟢 | 腾讯云·校园计划 | — | 2026-10-19 ~ 2026-11-21 | — | [领取](https://cloud.tencent.com/act/campus) |
+| 🟢 | 腾讯云·免费体验 | — | 2026-10-19 ~ 2026-11-21 | — | [领取](https://cloud.tencent.com/act/free) |
+| 🟢 | 腾讯云·开发者 | — | 2026-10-19 ~ 2026-11-21 | — | [领取](https://cloud.tencent.com/act/developer) |
 | 🟢 | 阿里百炼·通义千问新用户免费额度 | 新用户免费 token 额度，含 qwen3.8-max/plus/flash 全系列 | 2026-10-19 ~ 2026-12-31 | — | [领取](https://bailian.console.aliyun.com/) |
 | 🟢 | DeepSeek·新用户赠送余额+低价API | 新用户赠送余额，deepseek-flash 空闲时段 input 1元/百万tokens | 2026-10-19 ~ 2026-12-31 | — | [领取](https://platform.deepseek.com/) |
 | 🟢 | 腾讯混元·新用户免费额度 | 新用户免费 token 额度，混元大模型全系列 | 2026-10-19 ~ 2026-12-31 | — | [领取](https://cloud.tencent.com/product/hunyuan) |
@@ -251,12 +260,14 @@
 | 🟢 | Cursor·免费tier（代码Agent） | 免费版：2000 次补全 + 50 次高级请求/月 | 2026-10-19 ~ 2027-12-31 | — | [领取](https://cursor.com/) |
 | 🟢 | 腾讯WorkBuddy·免费使用 | 全场景办公 Agent 工作台，免费使用 | 2026-10-19 ~ 2027-12-31 | — | [领取](https://workbuddy.tencent.com/) |
 
-#### 🛒 购物优惠（2 条）
+#### 🛒 购物优惠（4 条）
 
 | 状态 | 活动 | 福利 | 时间 | 剩余 | 领取 |
 |------|------|------|------|------|------|
+| 🟢 | 本人80后，一路玩着盗版游戏长大的，玩了十几年的英雄联盟都没充过钱，超级白嫖王+铁公鸡。最近开始玩了steam，发现合金弹头3打折了，想着这还要花钱吗？先去登录了我的游聚平台，发现合金弹头下架了，然后 | — | 2026-10-22 ~ 2026-10-22 | — | [领取](https://xiaoheihe.cn/app/bbs/home) |
 | 🟢 | 双 11 打折好价整理！全网视频 VIP / 网盘会员 / 软件打折都在这了… | — | 2026-10-19 ~ 2026-10-26 | — | [领取](https://www.iplaysoft.com/1111.html) |
 | 🟢 | 首发！双 11 红包开领啦~ 积少成多！每天3次 / 可当现金 | — | 2026-10-19 ~ 2026-10-26 | — | [领取](https://www.iplaysoft.com/news/3252) |
+| 🟢 | 别等双 11 了！数码荔枝「十」惠抢先享，8 款热门软件 5 折起 | — | 2026-10-22 ~ 2026-10-29 | — | [领取](https://www.appinn.com/lizhi-2610/) |
 
 #### 📺 视频会员（2 条）
 
@@ -272,14 +283,25 @@
 | 🟢 | 绝对值！夸克网盘 SVIP 会员优惠年卡打折！6TB 大空间 / 不限速 / 离线下载 | — | 2026-10-19 ~ 2026-10-26 | — | [领取](https://www.iplaysoft.com/p/quark-svip) |
 | 🟢 | 百度网盘 SVIP 超级会员年卡历史低价 (送 B 站会员联名) | — | 2026-10-19 ~ 2026-10-26 | — | [领取](https://www.iplaysoft.com/p/baiduwangpan-svip) |
 
-#### 🏷️ 游戏打折（3 条）
+#### 🏷️ 游戏打折（8 条）
 
 | 状态 | 活动 | 福利 | 时间 | 剩余 | 领取 |
 |------|------|------|------|------|------|
+| 🟢 | 【10.20】凌晨迎来一波折扣！Steam发大力。153款佳作！最低3元 | — | 2026-10-22 ~ 2026-10-22 | — | [领取](https://xiaoheihe.cn/app/bbs/home) |
+| 🟢 | 【10.20】凌晨迎来一波折扣！Steam发大力。153款佳作！最低3元Steam新品节正式开启，凌晨迎来一波折扣，Steam发大力！下面给大伙整理了新史低，史低，一折及以下的佳作。整理不易，感谢大家 | — | 2026-10-22 ~ 2026-10-22 | — | [领取](https://xiaoheihe.cn/app/bbs/home) |
+| 🟢 | 是我小婉666，大家会做饭烧菜吗？有时候玩到这些游戏玩着玩着就饿了，也还蛮解压的。刚好碰上steam的烹饪游戏节，今天我来给大家整理了30款烹饪游戏，从中西餐到汉堡小吃，还有夜市小摊应有尽有，还有部分 | — | 2026-10-22 ~ 2026-10-22 | — | [领取](https://xiaoheihe.cn/app/bbs/home) |
+| 🟢 | 新史低！等等党再次大胜利！462款steam折扣游戏 最低3 | — | 2026-10-22 ~ 2026-10-22 | — | [领取](https://xiaoheihe.cn/app/bbs/home) |
+| 🟢 | 不是很热门的异世界小游戏…，热门的就不用了，虽然质量挺烂的，但这种IP本来也没什么东西产出，攒一波等打折入 | — | 2026-10-22 ~ 2026-10-22 | — | [领取](https://xiaoheihe.cn/app/bbs/home) |
 | 🟢 | 【10.20】Steam新品节打折：153款佳作最低3元 ｜小黑盒整理 | 40款新史低+86款史低+27款一折以下，最低3元 | 2026-10-20 ~ 2026-10-27 | — | [领取](https://api.xiaoheihe.cn/v3/bbs/app/api/web/share?h_camp=link&h_src=YXBwX3NoYXJl&link_id=1aa472ac9a13) |
 | 🟢 | 【10.20】Steam骨折价：169款佳作最低3元 ｜小黑盒整理 | 169款佳作骨折价，最低3元，含新史低与史低 | 2026-10-20 ~ 2026-10-27 | — | [领取](https://xiaoheihe.cn/app/bbs/link/194463102) |
 | 🟢 | 【10.20】凌晨迎来一波折扣！Steam发大力。153款佳作！最低3元 ｜小黑盒整理 | 【10.20】凌晨迎来一波折扣！Steam发大力。153款佳作！最低3元；【10.20】凌晨迎来一波折扣！Steam发大力。153款佳作！最低3元；Steam新品节正式开启，凌晨迎来一波折扣，Steam发大力！下面给大伙整理了新史低，史低，一折及以下的佳作。整理不易，感谢大家，双击屏幕支持一下！ | 2026-10-21 ~ 2026-10-28 | — | [领取](https://store.steampowered.com/sale/steamfestival) |
 
+
+## 📌 新功能
+
+> **PENDING_URLS.md 自动抓取**：在 `PENDING_URLS.md` 写 URL，AI 全自动完成添加源 → 抓取内容 → 规范化 → 进日历。用户只需提交 URL，不用做任何规范化。
+>
+> **小黑盒多分区源**：小黑盒社区覆盖全部 8 个分类（AI/开源/开车/购物/视频/网盘/游戏打折/喜加一），每次抓取时自动从小黑盒社区提取对应分类的帖子。
 
 ## 🛠 好用 Agent 工具（网页 + 自带 Key + 沙箱）
 

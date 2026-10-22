@@ -21,7 +21,7 @@ verifiable result before it calls the work done.
 
 _The opening chat is staged. The rest is the real opencode run from [prompt-in-action.mp4](docs/media/prompt-in-action.mp4), sped up in places. Made with [openvidstudio](https://github.com/AnayDhawan/openvidstudio)._
 
-[![Contributors](https://contrib.rocks/image?repo=shauryagangrade/awesome-ai-prompts&t=20260921)](https://github.com/shauryagangrade/awesome-ai-prompts/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=shauryagangrade/awesome-ai-prompts&t=20261022)](https://github.com/shauryagangrade/awesome-ai-prompts/graphs/contributors)
 
 Starring is the hello; a merged PR is the handshake. Every merged prompt PR
 auto-appends its author to [CONTRIBUTORS.md](CONTRIBUTORS.md) - the avatars
@@ -104,6 +104,41 @@ Newcomers should start by scanning the
 label. Beyond the raw files, every prompt here is also a workflow you can reuse,
 so issues often ask for new prompts, which is the fastest way to see your work
 used.
+
+## Usage in the wild
+
+Real projects are the best proof these prompts work, so we collect short
+before/after stories from the people who actually used one: the task, the
+prompt used, what the agent did, and the verified result. Evidence only, no
+testimonials.
+
+- [Removing an invalid data indicator](docs/usage-stories/ucip-elderly-indicator-removal.md) - a data indicator proved to be a district dummy, and removing it cascaded through 83 files. Used `code-review/secure-code-review-prompt.md`.
+- [IPv6 rate limiting bypass](docs/usage-stories/tourneyradar-api-ipv6-ratelimit.md) - a rate limiter keyed on the full IPv6 address, so rotating addresses bypassed it. No prompt from this repo was used here, so it is a case study rather than prompt evidence.
+
+See [docs/usage-stories/TEMPLATE.md](docs/usage-stories/TEMPLATE.md)
+for the template, and open a PR (or a
+[discussion](https://github.com/shauryagangrade/awesome-ai-prompts/discussions))
+with your story.
+
+---
+
+## Translations
+
+English is the source of truth and stays the only version that appears in the
+[one-page catalog](#printable-one-page-catalog). Translated prompts live under
+`i18n/<lang>/`, mirroring the category folders, and each language keeps a
+README with its own status table.
+
+- [Spanish](i18n/es/README.md) - not started yet
+
+We do not machine-translate these prompts. A prompt body is a set of
+instructions an agent follows literally, not prose: "delete the staging branch"
+and "never delete the staging branch" are one word apart and produce opposite
+actions, and no gate can tell afterwards that a translation inverted a rule.
+Every translation is written and tested by a person. See
+[CONTRIBUTING.md](CONTRIBUTING.md#translations) if you want to add one.
+
+---
 
 ### Quick start with an AI agent
 
@@ -446,39 +481,6 @@ described above.
 - [ml-model-deployment-basics-prompt.md](data-ai/ml-model-deployment-basics-prompt.md) <img src="docs/media/spec-badge.svg" alt="spec" style="vertical-align:-3px"> - from notebook to service: versioned artifacts, validated inference API, measured latency, drift triggers, a rehearsed rollback.
 - [fine-tune-vs-rag-vs-prompting-decision-prompt.md](data-ai/fine-tune-vs-rag-vs-prompting-decision-prompt.md) - pick the cheapest sufficient LLM technique: requirements first, evidence-backed matrix, eval plan that could disprove it, reversal criteria.
 - [data-quality-validation-prompt.md](data-ai/data-quality-validation-prompt.md) - define data contracts, checks, and failure response for pipelines.
-
-## Usage in the wild
-
-Real projects are the best proof these prompts work, so we collect short
-before/after stories from the people who actually used one: the task, the
-prompt used, what the agent did, and the verified result. Evidence only, no
-testimonials.
-
-- [Removing an invalid data indicator](docs/usage-stories/ucip-elderly-indicator-removal.md) - a data indicator proved to be a district dummy, and removing it cascaded through 83 files. Used `code-review/secure-code-review-prompt.md`.
-- [IPv6 rate limiting bypass](docs/usage-stories/tourneyradar-api-ipv6-ratelimit.md) - a rate limiter keyed on the full IPv6 address, so rotating addresses bypassed it. No prompt from this repo was used here, so it is a case study rather than prompt evidence.
-
-See [docs/usage-stories/TEMPLATE.md](docs/usage-stories/TEMPLATE.md)
-for the template, and open a PR (or a
-[discussion](https://github.com/shauryagangrade/awesome-ai-prompts/discussions))
-with your story.
-
----
-
-## Translations
-
-English is the source of truth and stays the only version that appears in the
-[one-page catalog](#printable-one-page-catalog). Translated prompts live under
-`i18n/<lang>/`, mirroring the category folders, and each language keeps a
-README with its own status table.
-
-- [Spanish](i18n/es/README.md) - not started yet
-
-We do not machine-translate these prompts. A prompt body is a set of
-instructions an agent follows literally, not prose: "delete the staging branch"
-and "never delete the staging branch" are one word apart and produce opposite
-actions, and no gate can tell afterwards that a translation inverted a rule.
-Every translation is written and tested by a person. See
-[CONTRIBUTING.md](CONTRIBUTING.md#translations) if you want to add one.
 
 ## System & Exploration
 

@@ -2,92 +2,94 @@
 
 # Lynote Humanize Text
 
-**An open-source pipeline for rewriting AI-generated text into natural human prose**
+**Open-source AI humanizer: rewrite AI-generated drafts into natural, human-sounding prose — and see every step it takes.**
 
 <a href="https://trendshift.io/repositories/35405?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-35405" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/35405/daily?language=Python" alt="lynote-ai%2Fhumanize-text | Trendshift" width="250" height="55"/></a>
-<a href="https://trendshift.io/repositories/35405?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-35405" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/35405/daily" alt="lynote-ai%2Fhumanize-text | Trendshift" width="250" height="55"/></a>
 
 [![Stars](https://img.shields.io/github/stars/lynote-ai/humanize-text?style=flat&color=yellow)](https://github.com/lynote-ai/humanize-text/stargazers)
 [![License](https://img.shields.io/github/license/lynote-ai/humanize-text)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![Last commit](https://img.shields.io/github/last-commit/lynote-ai/humanize-text)](https://github.com/lynote-ai/humanize-text/commits)
-[![Open in HF Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm.svg)](https://huggingface.co/spaces/Lynote/free-ai-detector)
 
-[Website](https://lynote.ai) · [**Humanizer API**](https://lynote.ai/ai-humanizer-api) · [Product Hunt](https://www.producthunt.com/products/lynote-ai?launch=lynote-3) · [Try the detector](https://github.com/lynote-ai/ai-text-detector) · [Discord](https://discord.gg/NzcH5DYzBj) · [X](https://x.com/lynote_ai) 
-
-<p align="center">
-  <img src="presentation/banner.png" alt="Humanize-Text" width="600"/>
-</p>
-
+[Quick start](#-quick-start) · [Examples](#-showcase--5-real-examples) · [Try it online](https://lynote.ai/ai-humanizer?utm_source=github&utm_medium=readme&utm_campaign=humanize-text&utm_content=nav) · [Humanizer API](https://lynote.ai/ai-humanizer-api?utm_source=github&utm_medium=readme&utm_campaign=humanize-text&utm_content=nav) · [Discord](https://discord.gg/NzcH5DYzBj) · [中文](README-zh.md)
 
 <p align="center">
-  English | <a href="README-zh.md">中文</a>
+  <img src="presentation/banner.png" alt="Lynote Humanize Text" width="600"/>
 </p>
 
 </div>
 
-> 🚀 **New: the Lynote Humanizer API is live.** Need humanization inside your own app, workflow, or SaaS? Call Lynote's production humanizer with one REST request — no pipeline to host. **[Get an API key → lynote.ai/ai-humanizer-api](https://lynote.ai/ai-humanizer-api)**
+---
+
+## ✨ Before → After
+
+<table>
+<tr>
+<th width="50%">AI draft (input)</th>
+<th width="50%">After the pipeline (output)</th>
+</tr>
+<tr>
+<td>
+
+Quantum computing has been proposed as a paradigm shift for solving certain optimization and simulation tasks. Unlike classical bits, qubits can represent superpositions, enabling parallel computation in specific problem structures.
+
+</td>
+<td>
+
+Quantum computing has attracted much attention as an innovative method for solving certain optimization and simulation problems. Unlike traditional bits, qubits can assume a superposition state, which enables parallel computing in certain problem structures.
+
+</td>
+</tr>
+</table>
+
+<sub>Excerpt from [Example 01](examples/showcase/example_01.md) — the full trace shows every intermediate step (Chinese → Japanese → Finnish → English).</sub>
 
 ---
 
-Most humanizers are a black box with marketing claims attached. This one is open source, so you can read what it actually does.
-
-The current method is a **structure-first data pipeline** that trains the model to rewrite *structure*, not just launder surface style — the full implementation is in [`training-data-pipeline/`](training-data-pipeline/). The original translation-chain approach is kept below as a runnable reference.
-
-## How it works
-
-The current method is a **structure-first data pipeline** that builds the SFT + preference (KTO) training data for our own AI→human rewrite model — it teaches the model to rewrite *structure*, not just launder surface style. Full implementation, policies, tests, and 50 demo records per stage live in [`training-data-pipeline/`](training-data-pipeline/).
-
-```mermaid
-flowchart LR
-    sources["Public Crawl + private pairs"] --> gates["Quality + structure gates"]
-    gates --> split["Deterministic stratified split"]
-    split --> sft["SFT training pool"]
-    sft --> reserve["Reserve a disjoint KTO pool"]
-    reserve --> gen["6 candidate chains · temps 0.3-1.0"]
-    gen --> select["Negative selection + structure-first 60/20/20 mix"]
-    select --> review["Human review gate"] --> kto["Balanced KTO train / validation"]
-```
-
-- **SFT → KTO.** A supervised pass learns the rewrite task; a KTO (preference) pass teaches it to prefer genuine structural rewrites over surface edits.
-- **Structure-first negatives.** Undesirable responses are selected for under-editing, structural damage, semantic drift, over-rewriting, repetition, and refusal — an exact 60% under-edit / 20% source-copy / 20% severe-failure mix.
-- **Controlled prompt diversity.** A pool of equivalent instruction wordings is sampled with a fixed seed, so the model generalizes across phrasings, not one command style.
-- **Deterministic & auditable.** SHA-256 identity per pair, seeded splits, versioned YAML policies, two-layer validation, and a human review gate. No weights, endpoints, or performance claims are shipped.
-
-Full method: [`DATA_CONSTRUCTION.md`](training-data-pipeline/docs/DATA_CONSTRUCTION.md) · [`ARCHITECTURE.md`](training-data-pipeline/docs/ARCHITECTURE.md) · [`PROMPTS.md`](training-data-pipeline/docs/PROMPTS.md)
-
----
-
-## Legacy reference: v1.x translation chain
-
-*The translation chain below is our earlier open exploration. It still runs and is kept as a readable reference — the current method is the structure-first pipeline above.*
-
-### Step-by-Step Pipeline
-
-| Step | Engine | From → To | Purpose |
-|------|--------|-----------|---------|
-| 1 | LLM (temp 1.3) | Input → Chinese (Chinese Rewriting) | LLM humanization rewrite + language shift |
-| 2 | LLM (temp 1.3) | Chinese → Japanese (Japanese Rewriting) | Second LLM humanization, carries Step 1 as history |
-| 3 | Google Translate | Japanese → Finnish (First Round of Translation) | First translation hop — distant language structural disruption |
-| 4 | Niutrans | Finnish → English (Second-Round Translation) | Second translation hop — cross-engine reconstruction |
-
-### Why This Chain Works
-
-1. **Steps 1–2 (LLM Rewrite):** Configurable LLM provider (DeepSeek default, OpenRouter optional) at temperature 1.3 rewrites while translating, breaking AI statistical fingerprints with creative variation. Step 2 carries Step 1 as conversation history for coherent humanization.
-2. **Steps 3–4 (Multi-Engine Translation):** Two different NMT engines (Google → Niutrans) introduce compounding structural changes. No single-engine fingerprint survives.
-3. **Distant Languages:** Chinese → Japanese → Finnish maximizes linguistic distance at each hop, ensuring thorough restructuring before reconstruction to English.
-
-## Quick start
+## 🚀 Quick start
 
 ```bash
 git clone https://github.com/lynote-ai/humanize-text.git
 cd humanize-text
 pip install -r requirements.txt
-cp config/config.example.toml config/config.toml   # add your API key
-python -m src.standard.pipeline --input draft.txt
+cp config/config.example.toml config/config.toml   # add your LLM + Niutrans keys
+
+python -m src.standard.pipeline --input "Your AI-generated text here"
 ```
 
-## Tiers
+`--input` takes either a text string or a path to a `.txt` file. Add `--verbose` to watch each step, or `--json` to get the full step-by-step trace as JSON.
+
+> Don't want to set up keys? Try the hosted version at **[lynote.ai](https://lynote.ai/ai-humanizer?utm_source=github&utm_medium=readme&utm_campaign=humanize-text&utm_content=quickstart)** — paste and go.
+
+---
+
+## Why this project
+
+- **Open, not a black box.** Most humanizers hide what they do behind marketing claims. Here every step is readable code, and every run can be traced.
+- **Runs end-to-end with your own keys.** DeepSeek (default), OpenRouter, Atlas Cloud, OrcaRouter, LiteLLM, or any OpenAI-compatible endpoint.
+- **Three ways to run it.** Python CLI, a no-code [n8n workflow](n8n/humanize_standard.json), or Docker.
+- **Research included.** We also open-source the [structure-first data pipeline](#-how-we-train-our-own-model-research) we use to train our own rewrite model.
+
+---
+
+## How it works
+
+The open pipeline combines two LLM rewrites with two machine-translation hops across distant languages and different engines:
+
+| Step | Engine | From → To | Purpose |
+|------|--------|-----------|---------|
+| 1 | LLM (temp 1.3) | Input → Chinese | Humanizing rewrite + language shift |
+| 2 | LLM (temp 1.3) | Chinese → Japanese | Second rewrite, carries Step 1 as history |
+| 3 | Google Translate | Japanese → Finnish | First hop — distant-language restructuring |
+| 4 | Niutrans | Finnish → English | Second hop — cross-engine reconstruction |
+
+**Why this chain works**
+
+1. **Steps 1–2 (LLM rewrite):** A high-temperature rewrite while translating breaks the statistical patterns typical of AI text. Step 2 carries Step 1 as conversation history to keep the text coherent.
+2. **Steps 3–4 (multi-engine translation):** Two different translation engines introduce compounding structural changes, so no single engine's fingerprint survives.
+3. **Distant languages:** Chinese → Japanese → Finnish maximizes linguistic distance at each hop before reconstructing English.
+
+### Tiers
 
 | Tier | What it does | Best for |
 |---|---|---|
@@ -95,97 +97,21 @@ python -m src.standard.pipeline --input draft.txt
 | `advanced` | + multi-round LLM rewriting | Deeper restructuring |
 | `focus` | + detection-guided feedback loop | Maximum restructuring |
 
-
-**Note on intended use.** This toolkit is for improving the readability
-and natural cadence of AI-assisted drafts. If you are writing in an
-academic setting, follow your institution's policies on AI use and
-disclosure.
-
-> **Important:** Detector scores are probabilistic. This project does not guarantee
-> that rewritten text will be classified as human, and it should not be used to
-> misrepresent authorship or evade institutional policies.
-
-> **Where this repo fits.** The pipeline here is our team's open exploration from early 2026 — the most effective approach we'd found *at the time*, released so anyone can read it, run it, and build on it. We've since moved well beyond it: Lynote.ai now runs **proprietary detect + humanize models we trained ourselves**, using a structure-first SFT + KTO data pipeline (the method in [`training-data-pipeline/`](training-data-pipeline/)) on curated, high-quality datasets.
->
-> **Against this repo's open-source chain, Lynote.ai's current humanizer raises the detector-bypass rate by ~30% and rates ~50% higher on output quality — both are relative gains over this chain.** The detection side draws on the latest research into what actually separates human from AI writing — not surface style, but discourse-level *narrative* structure (e.g. the **[StoryScope](docs/research-notes.md)** study, UMD & Google DeepMind, COLM 2026). Style-only rewriting no longer tells the whole story — which is exactly why this open chain has a ceiling.
->
-> **This repo stays a faithful, runnable reference. For the current best results, try [Lynote.ai](https://lynote.ai).**
-
----
-
-## Lynote.ai — Beyond Standard
-
-<p align="center">
-  <a href="https://lynote.ai/ai-humanizer">
-    <img src="https://github.com/lynote-ai/humanize-text/raw/main/presentation/humanizer.png" alt="Humanize-Text" width="100%">
-  </a>
-</p>
-
-The Standard pipeline above is **one of three tiers** available. Each has different trade-offs:
-
-| Tier | Style Preservation | Speed | Approach |
-|------|-------------------|-------|----------|
-| **Standard** (this repo) | Best | Fast | Translation chain |
-| **Advanced** | Good | Medium | Translation chain + LLM multi-round rewriting |
-| **Focus** | Moderate | Slower | Translation chain + Detection-guided feedback loop |
-
-**Lynote.ai** combines all three tiers and automatically selects the optimal approach for each text passage:
-
-- **Intelligent Tier Selection** — Analyzes text and picks Standard, Advanced, or Focus per-passage
-- **Adaptive Combination** — Can mix tiers within a single document
-- **80+ Languages** — English, Chinese, Japanese, Korean, Spanish, French, German, and more
-- **Paste & Go** — No setup, no API keys, no configuration
-
-<p align="center">
-  <a href="https://lynote.ai"><img src="https://img.shields.io/badge/Try_Lynote.ai_Free-brightgreen?style=for-the-badge" alt="Try Lynote.ai Free"></a>
-</p>
-
-
-
-## Lynote Humanizer API — for developers
-
-Running this repo's pipeline means juggling LLM keys, translation engines, and your own infrastructure. If you just want humanization **inside your product**, the [Lynote Humanizer API](https://lynote.ai/ai-humanizer-api) gives you the same engine that powers Lynote.ai through a single endpoint:
-
-- **One synchronous REST call** — send text, get the rewrite back as JSON. No polling, job queues, or webhooks.
-- **Per-request controls** — 10+ Purpose options, Readability level, and Detection Bypass settings.
-- **Formatting preserved** — Markdown and line breaks carry through to the output.
-- **80+ languages** — strongest in English, Chinese, Spanish, Portuguese, and French.
-- **Simple billing** — 1 credit per input word (Chinese is counted per character: 1 character = 1 word); output is free.
-
-```bash
-curl https://api.lynote.ai/v1/humanize \
-  -H "Authorization: Bearer $LYNOTE_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Your AI-generated draft here", "readability": "University", "purpose": "Academic"}'
-```
-
-<p align="center">
-  <a href="https://lynote.ai/ai-humanizer-api"><img src="https://img.shields.io/badge/Get_your_API_key-Lynote_Humanizer_API-blue?style=for-the-badge" alt="Get your Lynote Humanizer API key"></a>
-</p>
-
-Plans, rate limits, and full docs: **[lynote.ai/ai-humanizer-api](https://lynote.ai/ai-humanizer-api)**
+Technical details: [docs/pipeline.md](docs/pipeline.md) · [docs/techniques.md](docs/techniques.md)
 
 ---
 
 ## Ways to run it
 
-| Method | Who It's For | How |
+| Method | Who it's for | How |
 |--------|-------------|-----|
-| Lynote.ai | Everyone — all tiers, zero setup | Visit [lynote.ai](https://lynote.ai) |
-| **Lynote Humanizer API** | Developers adding humanization to their own app | Get a key at [lynote.ai/ai-humanizer-api](https://lynote.ai/ai-humanizer-api) |
-| n8n Workflow | No-code automation users | Import [`n8n/humanize_standard.json`](n8n/humanize_standard.json) |
-| Python Script | Developers | See below |
+| **Python CLI** | Developers | See [Quick start](#-quick-start) |
+| **n8n workflow** | No-code automation users | Import [`n8n/humanize_standard.json`](n8n/humanize_standard.json) |
+| **Docker** | Self-hosting a REST endpoint | `docker compose up -d` — see [docs/installation.md](docs/installation.md) |
+| **Hosted** | Anyone who wants zero setup | [lynote.ai](https://lynote.ai/ai-humanizer?utm_source=github&utm_medium=readme&utm_campaign=humanize-text&utm_content=ways-to-run) or the [Humanizer API](#hosted-version-lynoteai--api) |
 
-### Python
-
-```bash
-git clone https://github.com/lynote-ai/humanize-text.git
-cd humanize-text
-pip install -r requirements.txt
-cp config/config.example.toml config/config.toml
-# Fill in your API keys in config.toml (see examples below)
-python -m src.standard.pipeline --input "Your AI-generated text here"
-```
+<details>
+<summary><b>Configuration examples (DeepSeek, OpenRouter, Atlas Cloud, OrcaRouter)</b></summary>
 
 **DeepSeek (default):**
 
@@ -234,23 +160,28 @@ provider = "orcarouter"
 model = "deepseek/deepseek-chat"   # any OrcaRouter model slug
 ```
 
-Override the API endpoint with `base_url` in `[llm]`, or via `LLM_BASE_URL` / `LLM_API_KEY` environment variables. Full reference: [docs/configuration.md](docs/configuration.md).
+Override the endpoint with `base_url` in `[llm]`, or via the `LLM_BASE_URL` / `LLM_API_KEY` environment variables. Full reference: [docs/configuration.md](docs/configuration.md).
 
-### n8n Workflow
+</details>
 
-1. Import `n8n/humanize_standard.json` into your n8n instance
-2. Configure the LLM API key and URL in the HTTP Request nodes (defaults to DeepSeek; point at OpenRouter's `https://openrouter.ai/api/v1/chat/completions` to use OpenRouter)
-3. Run — input text goes in, humanized text comes out
+<details>
+<summary><b>n8n workflow setup</b></summary>
+
+1. Import `n8n/humanize_standard.json` into your n8n instance.
+2. Configure the LLM API key and URL in the HTTP Request nodes (defaults to DeepSeek; point at `https://openrouter.ai/api/v1/chat/completions` to use OpenRouter).
+3. Run — input text goes in, rewritten text comes out.
+
+More: [docs/n8n-guide.md](docs/n8n-guide.md)
+
+</details>
 
 ---
 
-## Showcase — 5 Real Examples with Step-by-Step Outputs
+## 📊 Showcase — 5 real examples
 
-> Results below are from the **legacy v1.x translation-chain scheme**, not the current structure-first pipeline.
+We ran the open pipeline end-to-end on 5 real texts and saved every intermediate step.
 
-We ran the pipeline end-to-end on 5 real input texts and saved every intermediate step. On these samples, all five final outputs were classified as `human` by the detector we tested. These are illustrative traces from the open chain, not a guarantee — detection is probabilistic and varies by detector and version (see the note at the top of this README).
-
-| # | Topic | Detection | Confidence |
+| # | Topic | Detector verdict on our test | Confidence |
 |---|-------|-----------|------------|
 | [01](examples/showcase/example_01.md) | Quantum Computing | `human` | 0.9997 |
 | [02](examples/showcase/example_02.md) | Quantum Readiness Strategy | `human` | 0.9982 |
@@ -258,13 +189,11 @@ We ran the pipeline end-to-end on 5 real input texts and saved every intermediat
 | [04](examples/showcase/example_04.md) | Financial Literacy | `human` | 0.9924 |
 | [05](examples/showcase/example_05.md) | Peer Review in Science | `human` | 0.7218 |
 
-Each example shows: original input → Step 1 (中文改写) → Step 2 (日语改写) → Step 3 (一轮翻译) → Step 4 (二轮翻译, final). See [`examples/showcase/`](examples/showcase/) for full traces.
+Each example shows: original input → Step 1 → Step 2 → Step 3 → Step 4 (final). These are illustrative snapshots from one detector at one point in time, not a guarantee — see [Responsible use & limitations](#responsible-use--limitations).
 
----
+### Quality metrics
 
-## Quality Metrics
-
-Tested on 50 text pairs with expert evaluation:
+Expert evaluation on 50 text pairs:
 
 | Dimension | Score (out of 10) |
 |-----------|-------------------|
@@ -275,94 +204,127 @@ Tested on 50 text pairs with expert evaluation:
 | Creativity & Impact | 8.5 |
 | **Overall** | **9.1** |
 
-- **Key Information Retention:** 100% (50/50 pairs)
-- All texts preserved original key information without distortion
-
-> These scores evaluate the **legacy v1.x translation-chain** output only — a static measure of the old scheme, not the current structure-first method or the Lynote.ai figures referenced at the top.
+Key information retention: **100%** (50/50 pairs).
 
 ---
 
-## Comparison with Other Tiers
+## 🔬 How we train our own model (research)
 
-| | Standard (this repo) | Lynote.ai |
+Style-only rewriting has a ceiling: recent research shows that what separates human from AI writing is largely discourse-level structure, not surface style (see our [research notes](docs/research-notes.md) on the StoryScope study, COLM 2026).
+
+So for our own rewrite model we built a **structure-first data pipeline**, and we open-source it in [`training-data-pipeline/`](training-data-pipeline/):
+
+```mermaid
+flowchart LR
+    sources["Public crawl + private pairs"] --> gates["Quality + structure gates"]
+    gates --> split["Deterministic stratified split"]
+    split --> sft["SFT training pool"]
+    sft --> reserve["Reserve a disjoint KTO pool"]
+    reserve --> gen["6 candidate chains · temps 0.3-1.0"]
+    gen --> select["Negative selection + structure-first 60/20/20 mix"]
+    select --> review["Human review gate"] --> kto["Balanced KTO train / validation"]
+```
+
+- **SFT → KTO.** A supervised pass learns the rewrite task; a preference (KTO) pass teaches the model to prefer genuine structural rewrites over surface edits.
+- **Structure-first negatives.** Rejected outputs are selected for under-editing, structural damage, semantic drift, over-rewriting, repetition, and refusal, in a fixed 60% / 20% / 20% mix.
+- **Deterministic & auditable.** SHA-256 identity per pair, seeded splits, versioned YAML policies, two-layer validation, and a human review gate.
+- **What's included:** code, policies, tests, and 50 demo records per stage. Model weights and full datasets are not included.
+
+Docs: [DATA_CONSTRUCTION.md](training-data-pipeline/docs/DATA_CONSTRUCTION.md) · [ARCHITECTURE.md](training-data-pipeline/docs/ARCHITECTURE.md) · [PROMPTS.md](training-data-pipeline/docs/PROMPTS.md)
+
+---
+
+## Hosted version: Lynote.ai & API
+
+If you'd rather not manage keys and infrastructure, [Lynote.ai](https://lynote.ai/ai-humanizer?utm_source=github&utm_medium=readme&utm_campaign=humanize-text&utm_content=hosted) runs our own model trained with the structure-first method above, and automatically picks the right approach for each passage.
+
+| | This repo | Lynote.ai |
 |---|---|---|
-| Tiers Available | Standard only | Standard + Advanced + Focus |
-| Tier Selection | Manual | Automatic per-passage |
-| Style Preservation | Best | Adaptive — best possible per passage |
-| Setup | Python + API keys | Zero setup |
-| Best For | Style-sensitive content | Any content type |
+| Engine | Open translation-chain pipeline | Our own model trained with the structure-first method |
+| Tier selection | Manual | Automatic, per passage |
+| Languages | Configurable target language | 80+ languages |
+| Setup | Python + API keys | None — paste and go |
+
+**For developers — the [Lynote Humanizer API](https://lynote.ai/ai-humanizer-api?utm_source=github&utm_medium=readme&utm_campaign=humanize-text&utm_content=api-section):** one synchronous REST call, Markdown and line breaks preserved, per-request Purpose and Readability controls, 80+ languages. Billing: 1 credit per input word (Chinese counts 1 character as 1 word); output is free.
+
+```bash
+curl https://api.lynote.ai/v1/humanize \
+  -H "Authorization: Bearer $LYNOTE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Your AI-generated draft here", "readability": "University", "purpose": "Academic"}'
+```
+
+Plans, rate limits, and full docs: [lynote.ai/ai-humanizer-api](https://lynote.ai/ai-humanizer-api?utm_source=github&utm_medium=readme&utm_campaign=humanize-text&utm_content=api-docs)
+
+---
+
+## Responsible use & limitations
+
+This toolkit is for improving the readability and natural cadence of AI-assisted drafts. If you are writing in an academic setting, follow your institution's policies on AI use and disclosure. Please don't use it to misrepresent authorship.
+
+- **Detection is probabilistic.** No rewriting method makes text reliably undetectable. Detectors update faster than pipelines do, and results vary by input length, subject matter, and detector. This project guarantees no particular classification.
+- **Translation costs precision.** Technical terms and citations can drift, and deeper tiers trade more of your original voice for more restructuring. Where exact wording matters, review the output carefully.
+
+See also [SECURITY.md](SECURITY.md).
 
 ---
 
 ## Documentation
 
-- [Standard Pipeline Technical Details](docs/pipeline.md) — v1.5 production pipeline
-- [4 Methodologies Reference](docs/techniques.md) — v1.0 underlying methods
-- [Research Notes](docs/research-notes.md) — why style-only humanization has a ceiling (StoryScope, COLM 2026)
-- [Training-Data Pipeline](training-data-pipeline/) — the current structure-first SFT + KTO data method
-- [Configuration Guide](docs/configuration.md)
-- [n8n Workflow Guide](docs/n8n-guide.md)
-- [Lynote.ai vs Open Source Comparison](docs/lynote-comparison.md)
-- [FAQ](docs/faq.md)
+- [Installation](docs/installation.md) · [Configuration](docs/configuration.md) · [n8n guide](docs/n8n-guide.md) · [API reference](docs/api-reference.md)
+- [Pipeline technical details](docs/pipeline.md) · [4 methodologies reference](docs/techniques.md)
+- [Research notes](docs/research-notes.md) · [Training-data pipeline](training-data-pipeline/)
+- [Open source vs Lynote.ai](docs/lynote-comparison.md) · [FAQ](docs/faq.md)
 
-### Repo Structure
+<details>
+<summary><b>Repo structure</b></summary>
 
 ```
-training-data-pipeline/      # ★ current method — structure-first SFT + KTO data pipeline
+src/                         # the open humanizer pipeline (runnable)
+├── standard/                # Standard pipeline — 4-step chain, CLI entry
+│   ├── pipeline.py
+│   ├── llm_client.py        # OpenAI-compatible client
+│   ├── llm_rewriter.py
+│   └── translators.py       # Google + Niutrans engines
+└── methodologies/           # four methodology reference implementations + FastAPI app
+
+training-data-pipeline/      # structure-first SFT + KTO data pipeline (research)
 ├── code/                    # ordered stages a–f, harness, tests
 ├── configs/  data/demos/    # versioned policies + 50 demo records per stage
 └── docs/                    # ARCHITECTURE, DATA_CONSTRUCTION, PROMPTS
 
-src/                         # legacy v1.x translation-chain reference (runnable)
-├── standard/                # Standard Pipeline (4-step chain, CLI entry)
-│   ├── pipeline.py          # 4-step chain, CLI entry
-│   ├── llm_client.py        # OpenAI-compatible client (DeepSeek / OpenRouter)
-│   ├── llm_rewriter.py      # LLM humanization rewrite
-│   └── translators.py       # Google + Niutrans engines
-│
-└── methodologies/           # v1.0 four-methodology reference implementations
-    ├── humanizer.py         # v1.0 dispatcher + FastAPI app
-    ├── translation_chain.py # Method 1
-    ├── llm_rewriter.py      # Method 2
-    ├── detection_pipeline.py# Method 3
-    ├── mixed_engine.py      # Method 4
-    ├── postprocess.py
-    ├── detectors/           # Method 3 detectors
-    └── utils/
-
 examples/
-├── example_usage.py         # ★ v1.5.1 minimal entry
-├── showcase/                # ★ 5 real samples with intermediate-step outputs
-└── legacy/                  # v1.0 examples + 4-method comparison outputs
+├── example_usage.py         # minimal entry
+├── showcase/                # 5 real samples with every intermediate step
+└── legacy/                  # earlier examples + method comparison outputs
+
+n8n/                         # no-code workflow
+docker/                      # Dockerfile for the REST endpoint
 ```
 
+</details>
+
 ---
-## Limitations
 
-Round-trip translation costs precision. Technical terminology and citations can drift, and the deeper tiers trade more of your original voice for more restructuring. If you're working with anything where exact wording matters, read the output carefully rather than trusting the pipeline.
+## Related projects
 
-No rewriting method makes text reliably undetectable. Detectors update faster than pipelines do, and results vary by input length, subject matter, and which detector you're facing. Treat the `showcase/` results as a snapshot, not a guarantee.
+- [AI Text Detector](https://github.com/lynote-ai/ai-text-detector) — our open-source detector · [try it on Hugging Face](https://huggingface.co/spaces/Lynote/free-ai-detector)
+- [Lynote AI Detector](https://lynote.ai/ai-detector?utm_source=github&utm_medium=readme&utm_campaign=humanize-text&utm_content=related) — sentence-level scoring, free
 
-## Related
+## Contributing
 
-- [Lynote AI Detector](https://lynote.ai/ai-detector) — sentence-level scoring, free
-- [Lynote AI Humanizer](https://lynote.ai/ai-humanizer) — hosted version of this pipeline
-- [Lynote Humanizer API](https://lynote.ai/ai-humanizer-api) — the hosted humanizer as a REST API for your own products
-- [Hugging Face Space](https://huggingface.co/spaces/Lynote/free-ai-detector) — try it without installing anything
-
+Issues and PRs are welcome — new LLM providers, translation engines, language pairs, and evaluation scripts are especially useful. See [CONTRIBUTING.md](CONTRIBUTING.md), or start a thread in [Discussions](https://github.com/lynote-ai/humanize-text/discussions).
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE).
 
 ---
 
-## Support & Contact
-⭐ **Star this repository** if this all-in-one text humanization toolkit helps you.
+<div align="center">
 
-🌐 Visit official website [lynote.ai](https://lynote.ai) to unlock full premium features.
+⭐ **If this project helps you, please give it a star** — it helps more people find it.
 
-🔌 **Need an API?** Visit [lynote.ai/ai-humanizer-api](https://lynote.ai/ai-humanizer-api) to get your Humanizer API key.
+[Website](https://lynote.ai?utm_source=github&utm_medium=readme&utm_campaign=humanize-text&utm_content=footer) · [Discord](https://discord.gg/NzcH5DYzBj) · [X](https://x.com/lynote_ai) · [Product Hunt](https://www.producthunt.com/products/lynote-ai?launch=lynote-3)
 
-💬 Have questions, feature requests or usage troubles? Feel free to start a discussion in [Discussions](https://github.com/lynote-ai/humanize-text/discussions).
-
+</div>

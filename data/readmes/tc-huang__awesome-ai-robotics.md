@@ -1,79 +1,42 @@
 # awesome-ai-robotics
-## Library
-- [**LeRobot**](https://github.com/huggingface/lerobot) - LeRobot aims to provide models, datasets, and tools for real-world robotics in PyTorch. LeRobot contains state-of-the-art approaches that have been shown to transfer to the real-world with a focus on imitation learning and reinforcement learning.
-- [**Universal Manipulation Interface**](https://github.com/real-stanford/universal_manipulation_interface) - In-The-Wild Robot Teaching Without In-The-Wild Robots.
-- [**Open-Teach**](https://github.com/aadhithya14/Open-Teach) - A Versatile Teleoperation framework for Robotic Manipulation using Meta Quest3.
 
-## Robotic Arms
-### Hardware
-#### Low-cost
-- [**Low-Cost Robot Arm**](https://github.com/AlexanderKoch-Koch/low_cost_robot) - This repository contains the files to build and control a low-cost robot arm that costs about $250. Such a robot arm is well-suited for robot learning. Two of those arms are also capable of folding clothes.
-- [**Low-Cost Robot Arm: Koch v1.1**](https://github.com/jess-moss/koch-v1-1) - A version 1.1 of the Alexander Koch low-cost robot arm with some small changes.
-- [**moss-robot-arms**](https://github.com/jess-moss/moss-robot-arms) - A repository for affordable, easy-to-assemble robot arms designed for teleoperation applications.
-- [**SO-ARM100**](https://github.com/TheRobotStudio/SO-ARM100) - Standard Open Arm 100.
-- [**SO-ARM102**](https://github.com/roboninecom/SO-ARM-102) - 3D-printable leader-follower arm by Robonine with 5 DOF plus a parallel gripper for LeRobot teleoperation and imitation learning.
-#### More-cost
-- [**Dummy-Robot**](https://github.com/peng-zhihui/Dummy-Robot) - Super compact smart robotic-arm.
-[![Star History Chart](https://api.star-history.com/svg?repos=AlexanderKoch-Koch/low_cost_robot,jess-moss/koch-v1-1,jess-moss/moss-robot-arms,TheRobotStudio/SO-ARM100,peng-zhihui/Dummy-Robot&type=Timeline)](https://star-history.com/#AlexanderKoch-Koch/low_cost_robot&jess-moss/koch-v1-1&jess-moss/moss-robot-arms&TheRobotStudio/SO-ARM100&peng-zhihui/Dummy-Robot&Timeline)
+> [!NOTE]
+> This list is currently being updated. The previous version is available in [README_old.md](README_old.md).
 
-### Applications and Demos
-#### Real
-- [**SimpleAutomation**](https://github.com/1g0rrr/SimpleAutomation) - Opensource robot to automate repetitive tasks. Currently, it's a set of helper scripts on top of LeRobot repo.
-[![Star History Chart](https://api.star-history.com/svg?repos=1g0rrr/simpleautomation&type=Timeline)](https://star-history.com/#1g0rrr/simpleautomation&Timeline)
-#### Simulation
-- [**BiGym**](https://github.com/chernyadev/bigym) - BiGym is a new benchmark and learning environment for mobile bi-manual demo-driven robotic manipulation. BiGym features 40 diverse tasks set in home environments, ranging from simple target reaching to complex kitchen cleaning.
-- [**Aloha Bigym Modifications**](https://github.com/AlmondGod/aloha-bigym) - This Fork of Bigym contains the bigym tasks modified to work with the ALOHA bimanual system.
+## Papers
+### Imitation Learning Policies
+- **Robomimic** (2021): What Matters in Learning from Offline Human Demonstrations for Robot Manipulation. [[Paper]](https://arxiv.org/abs/2108.03298) [[Code]](https://github.com/ARISE-Initiative/robomimic) [[Project]](https://robomimic.github.io/)
+- **Diffusion Policy** (2023): Diffusion Policy: Visuomotor Policy Learning via Action Diffusion. [[Paper]](https://arxiv.org/abs/2303.04137) [[Code]](https://github.com/real-stanford/diffusion_policy) [[Project]](https://diffusion-policy.cs.columbia.edu/)
+- **ACT** (2023): Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware. [[Paper]](https://arxiv.org/abs/2304.13705) [[Code]](https://github.com/tonyzhaozh/act) [[Project]](https://tonyzhaozh.github.io/aloha/)
 
-## Mobile Robot
-- [**RoBart**](https://github.com/trzy/RoBart) - An iPhone-based LLM-controlled autonomous robot. RoBart began as an attempt to build a cheap mobile base using a hoverboard and iPhone Pro. Mobile phones are easy to work with and provide plenty of compute, connectivity, and useful peripherals: RGB cameras, LiDAR, microphones, speakers.
-- [**stretch (hello-robot)**](https://github.com/hello-robot)
-- [**ReallyUsefulRobot**](https://github.com/XRobots/ReallyUsefulRobot)
-- [**Maxwell**](https://github.com/mikeferguson/maxwell) - Maxwell is a custom mobile manipulator based on the Etherbotix.
+### Vision-Language-Action Models
+- **OpenVLA** (2024): OpenVLA: An Open-Source Vision-Language-Action Model. [[Paper]](https://arxiv.org/abs/2406.09246) [[Code]](https://github.com/openvla/openvla) [[Project]](https://openvla.github.io/)
+- **π0** (2024): π0: A Vision-Language-Action Flow Model for General Robot Control. [[Paper]](https://arxiv.org/abs/2410.24164) [[Code]](https://github.com/Physical-Intelligence/openpi) [[Project]](https://www.pi.website/blog/pi0)
+- **OpenVLA-OFT** (2025): Fine-Tuning Vision-Language-Action Models: Optimizing Speed and Success. [[Paper]](https://arxiv.org/abs/2502.19645) [[Code]](https://github.com/moojink/openvla-oft) [[Project]](https://openvla-oft.github.io/)
+- **π0.5** (2025): π0.5: a Vision-Language-Action Model with Open-World Generalization. [[Paper]](https://arxiv.org/abs/2504.16054) [[Code]](https://github.com/Physical-Intelligence/openpi) [[Project]](https://www.pi.website/blog/pi05)
+- **SmolVLA** (2025): SmolVLA: A Vision-Language-Action Model for Affordable and Efficient Robotics. [[Paper]](https://arxiv.org/abs/2506.01844) [[Code]](https://github.com/huggingface/lerobot) [[Project]](https://huggingface.co/blog/smolvla)
 
-## Humanoid
-### Robot
-- **AgiBot X1**
-  - [**agibot_x1_hardware**](https://github.com/AgibotTech/agibot_x1_hardware) - The hardware design for AgiBot X1.
-  - [**agibot_x1_infer**](https://github.com/AgibotTech/agibot_x1_infer) - The inference module for AgiBot X1.
-  - [**agibot_x1_train**](https://github.com/AgibotTech/agibot_x1_train) - The reinforcement learning training code for AgiBot X1.
-- [**rx1 (Red Rabbit Robotics)**](https://github.com/Red-Rabbit-Robotics)
-### Teleoperation
-- [**Open TeleVision**](https://github.com/OpenTeleVision/TeleVision) - This code contains implementation for teleoperation and imitation learning of Open-TeleVision.
+### Tutorials
+- **Step-by-Step Diffusion** (2024): Step-by-Step Diffusion: An Elementary Tutorial. [[Paper]](https://arxiv.org/abs/2406.08929)
+- **Flow Matching Guide** (2024): Flow Matching Guide and Code. [[Paper]](https://arxiv.org/abs/2412.06264) [[Code]](https://github.com/facebookresearch/flow_matching)
+- **Robot Learning Tutorial** (2025): Robot Learning: A Tutorial. [[Paper]](https://arxiv.org/abs/2510.12403) [[Code]](https://github.com/fracapuano/robot-learning-tutorial) [[Project]](https://huggingface.co/spaces/lerobot/robot-learning-tutorial)
 
-## Frameworks
-- [**ROS2**](https://github.com/ros2/ros2) - The Robot Operating System (ROS) is a set of software libraries and tools that help you build robot applications.
-- [**dora-rs**](https://github.com/dora-rs/dora) - DORA (Dataflow-Oriented Robotic Architecture) is middleware designed to streamline and simplify the creation of AI-based robotic applications.
-  - [**dora-lerobot**](https://github.com/dora-rs/dora-lerobot) - Dora-LeRobot is a 100% Dora pipeline for manipulating robots, cameras and all possible hardware compatible with LeRobot.
-- [**AimRT**](https://github.com/AimRT/AimRT) - AimRT is a basic runtime framework for the field of modern robotics. It is developed based on modern C++, is lightweight and easy to deploy, and has more modern designs in resource management and control, asynchronous programming, deployment configuration, etc.
-[![Star History Chart](https://api.star-history.com/svg?repos=ros2/ros2,dora-rs/dora,AimRT/AimRT&type=Timeline)](https://star-history.com/#ros2/ros2&dora-rs/dora&AimRT/AimRT&Timeline)
+## Libraries
+- [**LeRobot**](https://github.com/huggingface/lerobot) by Hugging Face: An end-to-end robot learning library in PyTorch, with datasets, policies such as ACT, Diffusion Policy, π0, and SmolVLA, and support for low-cost robots like the SO-100 and Koch arms. [[Paper]](https://arxiv.org/abs/2602.22818) [[Docs]](https://huggingface.co/docs/lerobot)
+- [**open-pi-zero**](https://github.com/allenzren/open-pi-zero) by [Allen Ren](https://github.com/allenzren): An unofficial re-implementation of π0 based on the paper, pairing a pre-trained PaliGemma VLM with a separate action expert trained with flow matching.
+- [**RLinf**](https://github.com/RLinf/RLinf): Reinforcement learning infrastructure for embodied and agentic AI, including large-scale RL training of VLA models. [[Paper]](https://arxiv.org/abs/2509.15965) [[RLinf-VLA Paper]](https://arxiv.org/abs/2510.06710) [[Docs]](https://rlinf.readthedocs.io/en/latest/)
 
-## Simulation
-- [**ManiSkill**](https://github.com/haosulab/ManiSkill) - SAPIEN Manipulation Skill Framework, a GPU parallelized robotics simulator and benchmark.
+## Learning Resources
+- [**Modern Robotics: Mechanics, Planning, and Control**](https://hades.mech.northwestern.edu/index.php/Modern_Robotics) by Kevin M. Lynch and Frank C. Park: A textbook on the fundamentals of robot kinematics, dynamics, motion planning, and control. [[PDF]](https://hades.mech.northwestern.edu/images/7/7f/MR.pdf) [[Code]](https://github.com/NxRLab/ModernRobotics)
+- [**Spinning Up in Deep RL**](https://spinningup.openai.com/en/latest/) by OpenAI: An educational resource for deep reinforcement learning, with an introduction to key RL concepts, a curated list of key papers, exercises, and clean implementations of VPG, TRPO, PPO, DDPG, TD3, and SAC. [[Code]](https://github.com/openai/spinningup)
 
-## Visualization
-- [**rerun**](https://github.com/rerun-io/rerun) - Visualize streams of multimodal data. Free, fast, easy to use, and simple to integrate. Built in Rust.
+## YouTube
+- [**VLA policies in robotics**](https://www.youtube.com/playlist?list=PLaqgu2SjelC6yZprhmbkLZUGXw3njRxME) by [Ilia](https://www.youtube.com/@ilialarchenko): A video series on Vision-Language-Action policies, covering VLA basics, π0, π0.5, and GR00T, plus a BEHAVIOR Challenge 1st-place solution walkthrough.
+- [**LeHome Challenge at ICRA 2026**](https://www.youtube.com/playlist?list=PLLwBN_w7MtPk) by [Ilia](https://www.youtube.com/@ilialarchenko): The author's laundry-folding solution for the challenge, built with VLAs, reinforcement learning, sim2real, and DAgger-style human-in-the-loop data collection.
+- [**RoboPapers**](https://www.youtube.com/@RoboPapers) by Chris Paxton and Michael Cho: Weekly conversations with the authors of robotics AI papers.
 
-## Data Infrastructure
-- [**CORTEX**](https://github.com/nasa-jpl/cortex) - CORTEX is a framework for accelerating robotics development through a combination of modern data infrastructure, test automation, and intelligent data analysis. The framework enables developers to rapidly prototype and test new algorithms and ideas with minimal effort.
-
-## ROS2
-### ROS2 Packages
-- [**rosa**](https://github.com/nasa-jpl/rosa) - ROSA is an AI Agent designed to interact with ROS1- and ROS2-based robotics systems using natural language queries. ROSA helps robot developers inspect, diagnose, understand, and operate robots.
-- [**ROS-LLM**](https://github.com/Auromix/ROS-LLM) - ROS-LLM is a framework designed for embodied intelligence applications in ROS. It allows natural language interactions and leverages Large Language Models (LLMs) for decision-making and robot control.
-- [**ros2ai**](https://github.com/fujitatomoya/ros2ai) - ros2ai is a next-generation ROS 2 command line interface extension with LLMs.
-- [**ros_deep_learning**](https://github.com/dusty-nv/ros_deep_learning) - Deep learning inference nodes for ROS / ROS2 with support for NVIDIA Jetson and TensorRT.
-### Dev Tools
-- [**VSCode ROS2 Workspace Template**](https://github.com/athackst/vscode_ros2_workspace) - This template will get you set up using ROS2 with VSCode as your IDE.
-- [**tracetools_analysis**](https://github.com/ros-tracing/tracetools_analysis) - Utilities for analyzing trace data from ROS 2 systems generated by the ros2_tracing packages.
-- [**rviz2-panel**](https://github.com/BruceChanJianLe/rviz2-panel) - This repository demonstrates the method for writing a rviz2 dock-able panel.
-- [**fusion2urdf-ros2**](https://github.com/dheena2k2/fusion2urdf-ros2) - A Fusion 360 Script to export URDF for ROS2.
-
-## Learning Source
-- [**Modern Robotics**](https://github.com/NxRLab/ModernRobotics) - This repository contains the code library accompanying Modern Robotics: Mechanics, Planning, and Control (Kevin Lynch and Frank Park, Cambridge University Press 2017).
-- [**ROS2 Cookbook**](https://github.com/mikeferguson/ros2_cookbook) - A collection of snippets ranging multiple topics in ROS 2
-- [**mjctrl**](https://github.com/kevinzakka/mjctrl) - Minimal, clean, single-file implementations of common robotics controllers in MuJoCo.
-- [**Pinocchio**](https://github.com/stack-of-tasks/pinocchio) - Pinocchio instantiates the state-of-the-art Rigid Body Algorithms for poly-articulated systems based on revisited Roy Featherstone's algorithms. Besides, Pinocchio provides the analytical derivatives of the main Rigid-Body Algorithms, such as the Recursive Newton-Euler Algorithm or the Articulated-Body Algorithm.
-  - [**PyRoboPlan**](https://github.com/sea-bass/pyroboplan) - Educational Python library for manipulator motion planning.This library extensively uses the Pinocchio Python bindings for modeling robot kinematics and dynamics.
-
-## Star History of This List
-[![Star History Chart](https://api.star-history.com/svg?repos=tc-huang/awesome-ai-robotics&type=Timeline)](https://star-history.com/#tc-huang/awesome-ai-robotics&Timeline)
+## Article
+- [**Behavioral cloning mystery**](https://seohong.me/blog/behavioral-cloning-mystery/) by [Seohong Park](https://seohong.me/): Reproduces puzzling behavioral cloning phenomena seen with real robot data in a controlled simulated benchmark, and discusses their potential causes and implications.
+- [**How robot arms are controlled**](https://x.com/ja_rothschild/status/2100633491432239411) by [Jacob H. Rothschild](https://x.com/ja_rothschild): How a robot arm such as the SO-100 is controlled, explained for ML practitioners new to robot learning.
+- [**How ACT works**](https://x.com/ja_rothschild/status/2102818197393289678) by [Jacob H. Rothschild](https://x.com/ja_rothschild): Why and how ACT predicts a chunk of future actions instead of only the next one.
+- [**How diffusion policies work**](https://x.com/ja_rothschild/status/2105680794480169137) by [Jacob H. Rothschild](https://x.com/ja_rothschild): Diffusion and flow matching built up from the VAE, as used by Diffusion Policy, GR00T, and most π models.

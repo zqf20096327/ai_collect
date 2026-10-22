@@ -49,14 +49,14 @@ Reliable extraction from documents usually means writing prompts, designing vali
 <!-- markdownlint-disable MD033 -->
 <table>
 <tr>
-<td width="33%" valign="top"><img src="assets/icons/prompts.svg" alt="" width="32" height="32"><br><strong>No prompts to write</strong><br>Prompts are generated from your descriptions of what to extract.</td>
-<td width="33%" valign="top"><img src="assets/icons/typed-output.svg" alt="" width="32" height="32"><br><strong>Typed, validated output</strong><br>Text, numbers, dates, booleans, labels, ratings and JSON objects.</td>
-<td width="34%" valign="top"><img src="assets/icons/source.svg" alt="" width="32" height="32"><br><strong>Every fact traced to its source</strong><br>Items map back to their paragraphs or sentences, with the reasoning on request.</td>
+<td width="33%" valign="top"><div align="center"><img src="assets/icons/prompts.svg" alt="" width="32" height="32"><br><strong>No prompts to write</strong></div><br>Prompts are generated from your descriptions of what to extract.</td>
+<td width="33%" valign="top"><div align="center"><img src="assets/icons/typed-output.svg" alt="" width="32" height="32"><br><strong>Typed, validated output</strong></div><br>Text, numbers, dates, booleans, labels, ratings and JSON objects.</td>
+<td width="34%" valign="top"><div align="center"><img src="assets/icons/source.svg" alt="" width="32" height="32"><br><strong>Every fact traced to its source</strong></div><br>Items map back to their paragraphs or sentences, with the reasoning on request.</td>
 </tr>
 <tr>
-<td valign="top"><img src="assets/icons/nested-context.svg" alt="" width="32" height="32"><br><strong>Nested context</strong><br>Aspects, sub-aspects and concepts focus the model on the text that matters.</td>
-<td valign="top"><img src="assets/icons/routing.svg" alt="" width="32" height="32"><br><strong>The right model for each question</strong><br>An LLM where it takes reasoning, a decision model where a fast, low-cost answer is enough.</td>
-<td valign="top"><img src="assets/icons/decision-model.svg" alt="" width="32" height="32"><br><strong>Answers with probabilities</strong><br>A decision model gives the probability of each possible answer, and you set the threshold.</td>
+<td valign="top"><div align="center"><img src="assets/icons/nested-context.svg" alt="" width="32" height="32"><br><strong>Nested context</strong></div><br>Aspects, sub-aspects and concepts focus the model on the text that matters.</td>
+<td valign="top"><div align="center"><img src="assets/icons/routing.svg" alt="" width="32" height="32"><br><strong>The right model for each question</strong></div><br>An LLM where it takes reasoning, a decision model where a fast, low-cost answer is enough.</td>
+<td valign="top"><div align="center"><img src="assets/icons/decision-model.svg" alt="" width="32" height="32"><br><strong>Answers with probabilities</strong></div><br>A decision model gives the probability of each possible answer, and you set the threshold.</td>
 </tr>
 </table>
 <!-- markdownlint-enable MD033 -->
@@ -94,7 +94,8 @@ ContextGem works with two kinds of models. You describe what to extract in the s
 ## Quick start
 
 ```bash
-uv add contextgem  # or: pip install -U contextgem
+uv add contextgem             # or: pip install -U contextgem
+uv add "contextgem[docling]"  # with Docling, to convert PDF, DOCX and other files
 ```
 
 ### Extract with an LLM
@@ -168,7 +169,7 @@ anomalies = doc.get_concept_by_name("Anomalies").extracted_items
 </p>
 <!-- markdownlint-enable MD033 -->
 
-### Decide with a decision model
+### Extract with a decision model
 
 A decision model answers closed questions (yes/no, one of your labels, a level of a scale) with the probability of each possible answer. Below, it extracts an aspect from a contract, the **termination** clauses, by deciding for each paragraph whether it is one, and answers two questions about the contract, concepts, in one request.
 
@@ -238,7 +239,145 @@ notice_form = doc.get_concept_by_name("Notice form").extracted_items[0]
 
 ```
 
-More examples: [aspects](https://contextgem.shcherbak.ai/quickstart/#aspect-extraction-from-document), [sub-aspects](https://contextgem.shcherbak.ai/quickstart/#extracting-aspect-with-sub-aspects), [concepts of an aspect](https://contextgem.shcherbak.ai/quickstart/#concept-extraction-from-aspect), [concepts from images](https://contextgem.shcherbak.ai/quickstart/#concept-extraction-from-document-vision), [aspects containing concepts](https://contextgem.shcherbak.ai/advanced_usage/#extracting-aspects-containing-concepts), [aspects with a decision model](https://contextgem.shcherbak.ai/decision_models/decision_models/#extracting-aspects), [a decision model and an LLM in one model group](https://contextgem.shcherbak.ai/decision_models/decision_models/#using-a-decision-model-in-a-model-group), [multi-model pipelines](https://contextgem.shcherbak.ai/advanced_usage/#using-a-multi-llm-pipeline-to-extract-data-from-several-documents) and a [chat interface with tool calling](https://contextgem.shcherbak.ai/quickstart/#lightweight-llm-chat-interface).
+<!-- markdownlint-disable MD033 -->
+<p align="center">
+  <img src="docs/source/_static/contextgem_readme_decision_model.svg" alt="What the example above extracts from its contract. For the aspect Termination, the decision model gives each paragraph the probability of a yes: 0.26 for the title, 0.99 for the paragraph on termination for any reason with 30 days' written notice, and 0.03 for the paragraph on governing law. Only the second is above the decision threshold of 0.5, and it comes back as the aspect's paragraph. The two concepts are answered from the whole document in one request: Termination for convenience is True with a probability of 0.98, and Notice form is Written with a probability of 1.00, and 0.00 for each of its other labels." width="832"><br>
+  <sup>What the example above extracts: a yes or no for each paragraph, and an answer for each concept, each with its probability.</sup>
+</p>
+<!-- markdownlint-enable MD033 -->
+
+### Start from a file with Docling
+
+Your documents are files. [Docling](https://github.com/docling-project/docling) converts them, and [`Document.from_docling()`](https://contextgem.shcherbak.ai/documents/docling/) makes a document of the result, in which each paragraph keeps its place in the structure of the file, e.g. the column headers of its table row, and the pages it is on. ContextGem supports files in these formats:
+
+<!-- markdownlint-disable MD033 -->
+<table align="center">
+<tr>
+<td align="center" valign="top"><img src="assets/icons/format-pdf.svg" alt="" width="32" height="32"><br><sub>PDF</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-docx.svg" alt="" width="32" height="32"><br><sub>DOCX, DOC, RTF,<br>ODT, Pages</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-pptx.svg" alt="" width="32" height="32"><br><sub>PPTX, PPT,<br>ODP, Keynote</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-xlsx.svg" alt="" width="32" height="32"><br><sub>XLSX, XLS,<br>ODS, Numbers</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-csv.svg" alt="" width="32" height="32"><br><sub>CSV</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-epub.svg" alt="" width="32" height="32"><br><sub>EPUB</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-email.svg" alt="" width="32" height="32"><br><sub>Email</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-box-notes.svg" alt="" width="32" height="32"><br><sub>Box Notes</sub></td>
+</tr>
+<tr>
+<td align="center" valign="top"><img src="assets/icons/format-image.svg" alt="" width="32" height="32"><br><sub>Images</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-audio.svg" alt="" width="32" height="32"><br><sub>Audio</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-video.svg" alt="" width="32" height="32"><br><sub>Video</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-webvtt.svg" alt="" width="32" height="32"><br><sub>WebVTT</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-html.svg" alt="" width="32" height="32"><br><sub>HTML, MHTML</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-markdown.svg" alt="" width="32" height="32"><br><sub>Markdown</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-asciidoc.svg" alt="" width="32" height="32"><br><sub>AsciiDoc</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-latex.svg" alt="" width="32" height="32"><br><sub>LaTeX</sub></td>
+</tr>
+<tr>
+<td align="center" valign="top"><img src="assets/icons/format-xbrl.svg" alt="" width="32" height="32"><br><sub>XBRL</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-jats.svg" alt="" width="32" height="32"><br><sub>JATS XML</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-uspto.svg" alt="" width="32" height="32"><br><sub>USPTO XML</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-doclang.svg" alt="" width="32" height="32"><br><sub>DocLang</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-docling-json.svg" alt="" width="32" height="32"><br><sub>Docling JSON</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-mets-gbs.svg" alt="" width="32" height="32"><br><sub>METS GBS</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-ebcdic.svg" alt="" width="32" height="32"><br><sub>EBCDIC</sub></td>
+<td align="center" valign="top"><img src="assets/icons/format-afp.svg" alt="" width="32" height="32"><br><sub>AFP</sub></td>
+</tr>
+</table>
+<!-- markdownlint-enable MD033 -->
+
+Each format is tested with files of its own. The [supported formats](https://contextgem.shcherbak.ai/documents/docling/#supported-formats) give the extensions, and what some formats need, e.g. LibreOffice for DOC, PPT, XLS and RTF.
+
+Below, an LLM extracts an aspect and a concept from a [two-page service agreement](tests/other_files/docling/service_agreement.pdf), and each item is cited by its page.
+
+```python
+import os
+
+from docling.document_converter import DocumentConverter
+
+from contextgem import Aspect, Document, DocumentLLM, JsonObjectConcept
+
+
+# Convert the file with Docling, e.g. PDF, DOCX, PPTX, XLSX or HTML
+result = DocumentConverter().convert("service_agreement.pdf")
+# The paragraphs keep their place in the structure of the file and their pages
+doc = Document.from_docling(result.document)
+
+doc.add_aspects(
+    [
+        Aspect(
+            name="Termination",
+            description="Clauses on the term of the agreement and its termination",
+        )
+    ]
+)
+doc.add_concepts(
+    [
+        JsonObjectConcept(
+            name="Fees",
+            description="The monthly fee of each service",
+            structure={"service": str, "monthly_fee_eur": float, "billing": str},
+            add_references=True,
+        )
+    ]
+)
+
+llm = DocumentLLM(
+    model="openai/gpt-6-luna",  # or another LLM, cloud or local
+    api_key=os.environ.get("CONTEXTGEM_OPENAI_API_KEY"),
+)
+doc = llm.extract_all(doc)
+
+termination = doc.get_aspect_by_name("Termination")
+# .extracted_items: 3 items, the heading of section 3 and clauses 3.1 and 3.2
+# .reference_page_numbers: [2]
+
+fees = doc.get_concept_by_name("Fees").extracted_items
+# 3 items, one for each row of the table of fees. The first one:
+# .value: {"service": "Hosting", "monthly_fee_eur": 1200.0,
+#     "billing": "In advance"}
+# .reference_paragraphs: the table row, with the header of each column:
+#     "Service: Hosting; Monthly fee: 1,200 EUR; Billing: In advance"
+# .reference_page_numbers: [1]
+
+```
+
+<!-- markdownlint-disable MD033 -->
+<p align="center">
+  <img src="docs/source/_static/contextgem_docling.svg" alt="What the example above extracts from its PDF file, converted with Docling. From the table of fees on page 1, the concept Fees gives three JSON objects, one for each row of the table, e.g. the service Hosting with a monthly fee of 1200.0 EUR, each cited on page 1. From section 3 on page 2, the aspect Termination gives back the heading and clauses 3.1 and 3.2, cited on page 2." width="832"><br>
+  <sup>What the example above extracts: each fee from its row of the table, and the termination clauses, each cited by its page.</sup>
+</p>
+<!-- markdownlint-enable MD033 -->
+
+### More examples
+
+<!-- markdownlint-disable MD033 -->
+<table>
+<tr>
+<th align="left" valign="middle" width="29%"><img src="assets/icons/documents.svg" alt="" width="32" height="32" align="absmiddle">&nbsp;&nbsp;&nbsp; Documents</th>
+<td valign="middle"><a href="https://contextgem.shcherbak.ai/quickstart/#concept-extraction-from-document-vision">Images</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/documents/docling/#what-the-document-is-made-of">Files&nbsp;from&nbsp;Docling</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/documents/document_config/#providing-additional-context-for-paragraphs">Paragraph&nbsp;context</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/serialization/#example-usage">Saving&nbsp;and&nbsp;loading</a></td>
+</tr>
+<tr>
+<th align="left" valign="middle" width="29%"><img src="assets/icons/nested-context.svg" alt="" width="32" height="32" align="absmiddle">&nbsp;&nbsp;&nbsp; Aspects and concepts</th>
+<td valign="middle"><a href="https://contextgem.shcherbak.ai/quickstart/#aspect-extraction-from-document">Aspects</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/quickstart/#extracting-aspect-with-sub-aspects">Sub-aspects</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/quickstart/#concept-extraction-from-document-text">Concepts&nbsp;of&nbsp;a&nbsp;document</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/quickstart/#concept-extraction-from-aspect">Concepts&nbsp;of&nbsp;an&nbsp;aspect</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/advanced_usage/#extracting-aspects-containing-concepts">Aspects&nbsp;with&nbsp;concepts</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/concepts/json_object_concept/#defining-structure">JSON&nbsp;objects</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/concepts/label_concept/#multi-class-vs-multi-label-classification">Classification</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/concepts/string_concept/#references-and-justifications-for-extraction">References</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/aspects/aspects/#justifications-for-extraction">Justifications</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/pipelines/extraction_pipelines/#simple-pipeline-creation">Reusable&nbsp;pipelines</a></td>
+</tr>
+<tr>
+<th align="left" valign="middle" width="29%"><img src="assets/icons/llm.svg" alt="" width="32" height="32" align="absmiddle">&nbsp;&nbsp;&nbsp; LLMs</th>
+<td valign="middle"><a href="https://contextgem.shcherbak.ai/llms/supported_llms/#cloud-based-llms">Cloud&nbsp;models</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/llms/supported_llms/#local-llms">Local&nbsp;models</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/llms/llm_extraction_methods/">Extraction&nbsp;methods</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/llms/llm_config/#setting-the-reasoning-effort">Reasoning&nbsp;effort</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/llms/llm_config/#configuring-fallback-llms">Fallbacks</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/llms/llm_config/#accessing-usage-and-cost-statistics">Usage&nbsp;and&nbsp;cost</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/quickstart/#lightweight-llm-chat-interface">Chat</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/quickstart/#chat-with-tools">Chat&nbsp;with&nbsp;tools</a></td>
+</tr>
+<tr>
+<th align="left" valign="middle" width="29%"><img src="assets/icons/decision-model.svg" alt="" width="32" height="32" align="absmiddle">&nbsp;&nbsp;&nbsp; Decision models</th>
+<td valign="middle"><a href="https://contextgem.shcherbak.ai/decision_models/decision_models/#supported-providers-and-models">Cloud&nbsp;models</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/decision_models/decision_models/#local-decision-models">Local&nbsp;models</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/decision_models/decision_models/#quick-start">Concepts</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/decision_models/decision_models/#extracting-aspects">Aspects</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/decision_models/decision_models/#decision-threshold">Decision&nbsp;threshold</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/decision_models/decision_models/#fallback-chains">Fallbacks</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/decision_models/decision_models/#usage-and-cost">Usage&nbsp;and&nbsp;cost</a></td>
+</tr>
+<tr>
+<th align="left" valign="middle" width="29%"><img src="assets/icons/routing.svg" alt="" width="32" height="32" align="absmiddle">&nbsp;&nbsp;&nbsp; Model groups</th>
+<td valign="middle"><a href="https://contextgem.shcherbak.ai/llms/llm_config/#model-groups">LLMs&nbsp;with&nbsp;roles</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/decision_models/decision_models/#using-a-decision-model-in-a-model-group">LLM&nbsp;and&nbsp;decision&nbsp;model</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/advanced_usage/#using-a-multi-llm-pipeline-to-extract-data-from-several-documents">Several&nbsp;documents</a></td>
+</tr>
+<tr>
+<th align="left" valign="middle" width="29%"><img src="assets/icons/agentic-workflows.svg" alt="" width="32" height="32" align="absmiddle">&nbsp;&nbsp;&nbsp; Agentic workflows</th>
+<td valign="middle"><a href="https://contextgem.shcherbak.ai/agentic_workflows/#at-ingestion-metadata-for-every-document">Metadata&nbsp;at&nbsp;ingestion</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/agentic_workflows/#in-a-tool-extraction-on-demand">Extraction&nbsp;in&nbsp;a&nbsp;tool</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/agentic_workflows/#serving-the-tool-over-mcp">A&nbsp;tool&nbsp;over&nbsp;MCP</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/agentic_workflows/#at-a-decision-point-choosing-the-next-step">A&nbsp;decision&nbsp;point</a>&nbsp;· <a href="https://contextgem.shcherbak.ai/agentic_workflows/#choosing-the-tools-of-an-agent">Choosing&nbsp;the&nbsp;tools</a></td>
+</tr>
+</table>
+<!-- markdownlint-enable MD033 -->
 
 <!-- markdownlint-disable MD033 -->
 <p align="center"><img src="assets/contextgem-separator.svg" alt="" width="456" height="26"></p>
@@ -253,7 +392,7 @@ More examples: [aspects](https://contextgem.shcherbak.ai/quickstart/#aspect-extr
 </p>
 <!-- markdownlint-enable MD033 -->
 
-1. **Wrap your content in a [Document](https://contextgem.shcherbak.ai/documents/document_config/)**: text, images, or both.
+1. **Wrap your content in a [Document](https://contextgem.shcherbak.ai/documents/document_config/).** Pass text, images or both, or **start from a file** that [Docling](https://github.com/docling-project/docling) converts: [`Document.from_docling()`](https://contextgem.shcherbak.ai/documents/docling/) keeps its structure and the page of each paragraph.
 2. **Say what to extract.** [Aspects](https://contextgem.shcherbak.ai/aspects/aspects/) pull out the parts of the document on a topic, as paragraphs or sentences. [Concepts](https://contextgem.shcherbak.ai/concepts/supported_concepts/) extract typed values from the whole document or from an aspect, with optional references and justifications. Keep a set of both as a reusable [extraction pipeline](https://contextgem.shcherbak.ai/pipelines/extraction_pipelines/).
 3. **Run a model.** One call to an [LLM](https://contextgem.shcherbak.ai/llms/llm_extraction_methods/), a [decision model](https://contextgem.shcherbak.ai/decision_models/decision_models/) or a [model group](https://contextgem.shcherbak.ai/llms/llm_config/#model-groups) of both extracts everything. A group sends each aspect and concept to the model of its role, e.g. the closed questions to a decision model and the rest to an LLM, and each model can have fallbacks.
 
@@ -270,7 +409,7 @@ An agent plans and works across documents and steps. ContextGem reads one docume
 </p>
 <!-- markdownlint-enable MD033 -->
 
-- **At ingestion**: extract the metadata of each new document once, so that agents find documents by their type, parties or dates.
+- **At ingestion**: convert each new file with [Docling](https://contextgem.shcherbak.ai/documents/docling/) and extract its metadata once, so that agents find documents by their type, parties or dates.
 - **In a tool**: an agent calls an extraction and gets the values with the sentences they came from, without the document in its context. The tool is a Python function, for ContextGem's own chat, an agent framework or an MCP server.
 - **At a decision point**: a decision model answers a closed question with the probability of each answer, so that the workflow branches on a value that you defined and knows how sure the model is of it. Before the turn of an agent with many tools, it can also pick the groups of tools that the request needs.
 
@@ -291,9 +430,20 @@ Besides tests that replay recorded responses of real models, [Hypothesis](https:
 Full documentation: **[contextgem.shcherbak.ai](https://contextgem.shcherbak.ai)**
 
 <!-- markdownlint-disable MD033 -->
-| <img src="assets/icons/get-started.svg" alt="" width="32" height="32"><br>Get started | <img src="assets/icons/nested-context.svg" alt="" width="32" height="32"><br>Define what to extract | <img src="assets/icons/models.svg" alt="" width="32" height="32"><br>Run models | <img src="assets/icons/optimize.svg" alt="" width="32" height="32"><br>Optimize |
-|:------------|:-----------------------|:-----------|:---------|
-| [Installation](https://contextgem.shcherbak.ai/installation/)<br>[Quickstart](https://contextgem.shcherbak.ai/quickstart/)<br>[Advanced usage](https://contextgem.shcherbak.ai/advanced_usage/)<br>[How it works](https://contextgem.shcherbak.ai/how_it_works/)<br>[Migrating to v1.0](https://contextgem.shcherbak.ai/migration_v1/) | [Documents](https://contextgem.shcherbak.ai/documents/document_config/)<br>[Aspects](https://contextgem.shcherbak.ai/aspects/aspects/)<br>[Concepts](https://contextgem.shcherbak.ai/concepts/supported_concepts/)<br>[Extraction pipelines](https://contextgem.shcherbak.ai/pipelines/extraction_pipelines/)<br>[Serialization](https://contextgem.shcherbak.ai/serialization/) | [Supported LLMs](https://contextgem.shcherbak.ai/llms/supported_llms/)<br>[LLM configuration](https://contextgem.shcherbak.ai/llms/llm_config/)<br>[Extraction methods](https://contextgem.shcherbak.ai/llms/llm_extraction_methods/)<br>[Decision models](https://contextgem.shcherbak.ai/decision_models/decision_models/)<br>[Chat with tools](https://contextgem.shcherbak.ai/llms/chat_with_tools/)<br>[Agentic workflows](https://contextgem.shcherbak.ai/agentic_workflows/) | [Accuracy](https://contextgem.shcherbak.ai/optimizations/optimization_accuracy/)<br>[Speed](https://contextgem.shcherbak.ai/optimizations/optimization_speed/)<br>[Cost](https://contextgem.shcherbak.ai/optimizations/optimization_cost/)<br>[Long documents](https://contextgem.shcherbak.ai/optimizations/optimization_long_docs/)<br>[Choosing the right LLM(s)](https://contextgem.shcherbak.ai/optimizations/optimization_choosing_llm/) |
+<table>
+<tr>
+<th align="center" valign="top"><img src="assets/icons/get-started.svg" alt="" width="32" height="32"><br>Get started</th>
+<th align="center" valign="top"><img src="assets/icons/nested-context.svg" alt="" width="32" height="32"><br>Define what to extract</th>
+<th align="center" valign="top"><img src="assets/icons/models.svg" alt="" width="32" height="32"><br>Run models</th>
+<th align="center" valign="top"><img src="assets/icons/optimize.svg" alt="" width="32" height="32"><br>Optimize</th>
+</tr>
+<tr>
+<td valign="top"><a href="https://contextgem.shcherbak.ai/installation/">Installation</a><br><a href="https://contextgem.shcherbak.ai/quickstart/">Quickstart</a><br><a href="https://contextgem.shcherbak.ai/advanced_usage/">Advanced usage</a><br><a href="https://contextgem.shcherbak.ai/how_it_works/">How it works</a><br><a href="https://contextgem.shcherbak.ai/migration_v1/">Migrating to v1.0</a></td>
+<td valign="top"><a href="https://contextgem.shcherbak.ai/documents/document_config/">Documents</a><br><a href="https://contextgem.shcherbak.ai/documents/docling/">Files converted with Docling</a><br><a href="https://contextgem.shcherbak.ai/aspects/aspects/">Aspects</a><br><a href="https://contextgem.shcherbak.ai/concepts/supported_concepts/">Concepts</a><br><a href="https://contextgem.shcherbak.ai/pipelines/extraction_pipelines/">Extraction pipelines</a><br><a href="https://contextgem.shcherbak.ai/serialization/">Serialization</a></td>
+<td valign="top"><a href="https://contextgem.shcherbak.ai/llms/supported_llms/">Supported LLMs</a><br><a href="https://contextgem.shcherbak.ai/llms/llm_config/">LLM configuration</a><br><a href="https://contextgem.shcherbak.ai/llms/llm_extraction_methods/">Extraction methods</a><br><a href="https://contextgem.shcherbak.ai/decision_models/decision_models/">Decision models</a><br><a href="https://contextgem.shcherbak.ai/llms/chat_with_tools/">Chat with tools</a><br><a href="https://contextgem.shcherbak.ai/agentic_workflows/">Agentic workflows</a></td>
+<td valign="top"><a href="https://contextgem.shcherbak.ai/optimizations/optimization_accuracy/">Accuracy</a><br><a href="https://contextgem.shcherbak.ai/optimizations/optimization_speed/">Speed</a><br><a href="https://contextgem.shcherbak.ai/optimizations/optimization_cost/">Cost</a><br><a href="https://contextgem.shcherbak.ai/optimizations/optimization_long_docs/">Long documents</a><br><a href="https://contextgem.shcherbak.ai/optimizations/optimization_choosing_llm/">Choosing the right LLM(s)</a></td>
+</tr>
+</table>
 <!-- markdownlint-enable MD033 -->
 
 For LLMs and coding agents, [llms.txt](https://contextgem.shcherbak.ai/llms.txt) indexes the documentation, with a Markdown copy of each page.
@@ -317,7 +467,7 @@ For visual architecture maps and natural language Q&A on the codebase, see [Deep
 
 ## Acknowledgements
 
-ContextGem relies on these excellent open-source packages: [aiolimiter](https://github.com/mjpieters/aiolimiter), [colorlog](https://github.com/borntyping/python-colorlog), [docstring-parser](https://github.com/rr-/docstring_parser), [fastjsonschema](https://github.com/horejsek/python-fastjsonschema), [genai-prices](https://github.com/pydantic/genai-prices), [Jinja2](https://github.com/pallets/jinja), [litellm](https://github.com/BerriAI/litellm), [pillow](https://github.com/python-pillow/Pillow), [pydantic](https://github.com/pydantic/pydantic), [python-ulid](https://github.com/mdomke/python-ulid), [tenacity](https://github.com/jd/tenacity) and [wtpsplit-lite](https://github.com/superlinear-ai/wtpsplit-lite).
+ContextGem relies on these excellent open-source packages: [aiolimiter](https://github.com/mjpieters/aiolimiter), [colorlog](https://github.com/borntyping/python-colorlog), [docstring-parser](https://github.com/rr-/docstring_parser), [fastjsonschema](https://github.com/horejsek/python-fastjsonschema), [genai-prices](https://github.com/pydantic/genai-prices), [Jinja2](https://github.com/pallets/jinja), [litellm](https://github.com/BerriAI/litellm), [pillow](https://github.com/python-pillow/Pillow), [pydantic](https://github.com/pydantic/pydantic), [python-ulid](https://github.com/mdomke/python-ulid), [tenacity](https://github.com/jd/tenacity) and [wtpsplit-lite](https://github.com/superlinear-ai/wtpsplit-lite), and, for converting files, [Docling](https://github.com/docling-project/docling).
 
 ## License
 

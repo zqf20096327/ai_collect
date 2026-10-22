@@ -220,52 +220,110 @@ The board (← on an empty prompt) can show the chats on your other machines
 too: each machine is a section below this one's, with every chat's state —
 working, stalled, needs you, back at, or when it last changed — and anything
 that needs you, on any machine, pinned at the top. A machine that is offline
-stays listed, dimmed, with the chats it had when it was last seen. In this
-first step the list is for seeing what each machine is doing; opening a chat
-on another machine from here comes next.
+stays listed, dimmed, with the chats it had when it was last seen. Choosing a chat
+there opens it live on that machine; a chat is listed only on the machine it
+is on.
 
-`/remote` is where machines are added. It lists the ones you have added
-(connected, offline, or needs update), then the machines
+`/machine` is where machines are kept, as well as where a chat moves: it
+lists this machine, the ones you have added (connected, offline, needs
+update, or install not finished), then the machines
 [Tailscale](https://tailscale.com) knows that are yours — the same Tailscale
 login as this machine, Linux, macOS or Windows, seen in the last 30 days, one
 row per machine (shared-in machines and phones are left out) — and
 **Add by SSH address…** for any `user@host` or `~/.ssh/config` Host alias you
-can reach, Tailscale or not.
+can reach, Tailscale or not. Choosing one moves the chat there (a chat nothing
+was said in becomes a new chat there); choosing one not added yet adds it
+first. The board's Machines list (← twice) adds them too, and VS Code has the
+same in its machine chip and its history's Machines.
 
 It is built on plain SSH. Tailscale only finds the machines and names them,
 and where Tailscale SSH is on, logging in needs no keys; anywhere else your
 SSH keys or agent do. ClikCode never asks for or handles a password
 (`ssh -o BatchMode=yes`), sends no secrets, and opens no port on either
-machine: the board talks to the other machine's own ClikCode over the SSH
-connection, and only while the board or `/remote` is open.
+machine: the window talks to the other machine's own ClikCode over one SSH
+connection per machine, closed with the window.
 
-Choosing a machine installs ClikCode there, fresh from GitHub `main`, a step at
+Adding a machine installs ClikCode there, fresh from GitHub `main`, a step at
 a time in your chat:
 
-1. check the machine (`uname`, git, Node, `$HOME`);
-2. Node.js: when it has none at 22.12 or newer, a user-local one from
-   nodejs.org into `~/.local/share/clikcode/node`, its SHA-256 checked
-   against the published `SHASUMS256.txt` (no sudo);
+1. check the machine (`uname`, on macOS `sw_vers`, git, Node, `$HOME`). A
+   Node counts only if `node -v` runs. A Mac older than macOS 10.15 is
+   refused here, before anything is downloaded: ClikCode needs Node.js 22.12
+   or newer, and no build of it runs there (update macOS, or install Node.js
+   22.12+ yourself and add the machine again);
+2. Node.js: when it has none at 22.12 or newer that runs, a user-local one
+   into `~/.local/share/clikcode/node` (no sudo), from the source that runs
+   on that OS:
+   - Linux, and macOS 13.5 or newer: nodejs.org `latest-v24.x`;
+   - macOS 11.0 – 13.4: nodejs.org `latest-v22.x` (Node 24's macOS builds
+     need 13.5);
+   - macOS 10.15 (Intel): MacPorts' prebuilt `nodejs22`, with the zlib and
+     ICU libraries it loads and MacPorts' `npm10`, every archive checked
+     against a SHA-256 pinned in ClikCode; the libraries are relinked to
+     sit beside it (`install_name_tool`, then `codesign -s -`), nothing goes
+     in `/opt/local`.
+
+   nodejs.org's tarballs are checked against the published
+   `SHASUMS256.txt`. The new Node is then run: if it does not, the install
+   stops here with what it said. An earlier install's Node that no longer
+   runs is replaced, never reused;
 3. git: required — without it the install stops and says how to get it
    (`xcode-select --install` on macOS, the package manager on Linux);
-4. a shallow clone into `~/.local/share/clikcode/src` (or a fetch and reset of
-   that clone; one with local changes is left alone);
+4. a shallow clone into `~/.local/share/clikcode/src` (or a fetch and hard
+   reset of that clone: the directory is ClikCode's own);
 5. `pnpm install --frozen-lockfile` and `pnpm run install-local`, which links
    `~/.local/bin/clikcode`;
 6. the new `~/.local/bin/clikcode` asked for its version and installation id.
 
-If the machine refuses the login, `/remote` asks once which user to log in as
-(the `User` from `~/.ssh/config`, else yours, by default) and remembers it.
+Tailscale gives the address; the one thing it cannot know is the user to log
+in as, so adding a machine asks that first — "Log in to <machine> as which
+user?", typed, with nothing suggested or assumed (Esc adds nothing) — and
+remembers it as `user@host`. A refused login asks once more.
 Nothing is copied from this machine — no accounts, sign-ins or settings: the
 other machine signs in to its providers from scratch, in its own chats.
 Windows machines are listed but not supported yet.
 
-Choosing an added machine offers **Update ClikCode** (offered as "needs
-update" when it runs another commit than this one) and **Remove**: forget it
+It works both ways. Whenever this machine connects to another one, from the
+board, `/machine`, a chat running there or VS Code, it tells the ClikCode there
+how to reach it back: its Tailscale name and the user it runs as. That machine
+then lists this one in its own `/machine` and board, so you can sit at the other
+machine, drive this one, and move a chat back here.
+
+- It is added there only after that machine has logged in to this one with that
+  address. A tailnet policy that allows one direction only lists nothing that
+  cannot be reached.
+- It happens only over Tailscale. Without Tailscale, you add this machine there
+  yourself by SSH address.
+- A machine you remove with **Remove…** does not add itself back. Adding it again
+  by hand undoes that.
+- A machine added this way follows what it says of itself: a new name or user is
+  picked up. It is updated only when you say so ("ask first"), because two
+  machines each keeping the other at its own build would undo each other's
+  updates.
+- A machine you added yourself keeps the address and update setting you gave it.
+
+A machine is kept at this machine's build: when it runs another commit, the
+board updates it to this build's commit in the background (fetched by sha,
+built, installed), once per machine per commit, and its chats switch to the
+new build only once they are quiet — never mid-turn. A failed update is shown
+("update failed") and not retried in a loop. A build with no commit of its own
+(the npm package) updates nothing by itself.
+
+Tab on an added machine in `/machine` offers **Update ClikCode** (to this
+build's commit; **Finish installing** for one whose install stopped),
+**Updates: automatic / ask first** (ask first: it is shown as "needs update"
+and updated only when you say so) and **Remove…**: forget it
 here, and optionally uninstall it there (`~/.local/share/clikcode` and the
 `~/.local/bin/clikcode` link) — its own chats and accounts in `~/.clikcode`
 are deleted only if you choose that too. The machines are kept in
 `~/.clikcode/remote/machines.json`.
+
+`/update [commit]` updates ClikCode on the machine the chat runs on — in a
+chat on another machine, that machine. A ClikCode Remote install is reset to
+GitHub `main` (or the commit) and rebuilt; the npm package runs
+`npm install -g clikcode@latest`; a developer checkout is left alone, and
+`/update` says what to run in it. `clikcode update` does the same from a
+shell.
 
 ## Moving a conversation to another tool
 
@@ -316,6 +374,7 @@ when you would rather type than pick.
 | --- | --- |
 | `clikcode` | Open (or resume) the default interactive session |
 | `clikcode doctor` | Which tools are installed, their versions and what each can do |
+| `clikcode update [commit]` | Update this machine's ClikCode the way it was installed |
 | `clikcode accounts providers` | Every supported tool and how it signs in |
 | `clikcode accounts login <tool> [--label <label>]` | Run that tool's own login, kept separate from your others |
 | `clikcode accounts list` / `status` / `logout` / `remove` | Your accounts: what they are called, and what is left on each |
@@ -345,12 +404,12 @@ and `--debug` adds the stack and HTTP detail when something fails.
 Most of the time you will not type any of those. You will be in a session,
 where everything is a slash away.
 
-Pressing `/` opens a searchable list of ClikCode's 46 commands. Ten are pinned
+Pressing `/` opens a searchable list of ClikCode's 47 commands. Eleven are pinned
 at the top, in the order people reach for them: resume a conversation, pick a
-tool, an account on it, then its model, start over, change what needs your
-approval, then settings, sessions, status and help. (The terminal leaves
-`/resume` out of the list — ← on an empty line is the conversation board — so
-it pins nine; typed, `/resume` still works.)
+tool, an account on it, then its model, the machine it runs on, start over,
+change what needs your approval, then settings, sessions, status and help.
+(The terminal leaves `/resume` out of the list — ← on an empty line is the
+conversation board — so it pins ten; typed, `/resume` still works.)
 
 | Command | What it does |
 | --- | --- |
@@ -444,7 +503,7 @@ Command Code and Auggie get it as their own option.
 | `/fork [@N] [name]` | branch this conversation, or only through your prompt N |
 | `/archive` | archive this conversation |
 | `/delete [confirm]` | delete this conversation |
-| `/remote` | your other machines on the board: add one (ClikCode installs there over SSH), update or remove it ([ClikCode Remote](#your-other-machines-clikcode-remote)) |
+| `/machine` | the machine this chat runs on: move it to this one, one added, one on your tailnet or one by SSH address (added first, ClikCode installed there over SSH); Tab on an added one to update or remove it ([ClikCode Remote](#your-other-machines-clikcode-remote)) |
 
 **Info**
 
@@ -454,6 +513,7 @@ Command Code and Auggie get it as their own option.
 | `/context` | how much of the model's context this conversation is using |
 | `/usage [all]` (also `/cost`) | quota, tokens, and cost for the provider you are in, and this chat; `all` for every provider and the last seven days |
 | `/doctor` | check your installed tools and accounts |
+| `/update [commit]` | update ClikCode on the machine this chat runs on ([ClikCode Remote](#your-other-machines-clikcode-remote)) |
 | `/help` | all commands |
 
 A command that doesn't apply right now — no provider chosen yet, or a
@@ -498,7 +558,7 @@ Everything it owns is under `~/.clikcode`, readable only by you (directories
 - `turn-changes/` — each conversation's per-turn file changes (`/changes`, `/redo`)
 - `profiles/<harness>/<account-id>/` — per-account vendor configuration roots
 - `crash.log` — uncaught errors
-- `remote/machines.json` — the machines `/remote` added, and their chats as last seen
+- `remote/machines.json` — the machines added (`/machine`), and their chats as last seen
 
 Set `CLIKCODE_HOME` to relocate the state directory (tests, portable installs).
 `crash.log` and a gateway credential, if you sign in, always live outside it:

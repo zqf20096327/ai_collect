@@ -12,7 +12,9 @@ This repository contains two Lean 4 (`v4.35.0-rc4`) formalization libraries for 
 | [`Cryptids/`](Cryptids/) | `(Q, 2)` Turing machines for Goldbach, ZF consistency, and the Riemann Hypothesis | Certified state reductions (`25 → 21`, `393 → 380`, `120 → 104 → 95`) and end-to-end halting equivalences (`Halts M ↔ ¬ GoldbachConjecture`, `ZFInconsistent`, `¬ RiemannHypothesis`) | [`Cryptids/README.md`](Cryptids/README.md), [`Cryptids/Semantics/README.md`](Cryptids/Semantics/README.md) |
 | [`BusyBeaver/`](BusyBeaver/) | `BB(6)` `(6, 2)` and `BB(3, 3)` `(3, 3)` holdout Turing machines (some are potential Cryptids, subject to community acceptance) | Shared execution semantics (`BusyBeaver/Defs.lean`), foundational lemmas (`BusyBeaver/Basic.lean`), RLE loader and `ConjectureMachines` bridge (`BusyBeaver/Bridge.lean`), and certified behavioral proofs in [`BusyBeaver/BB6/`](BusyBeaver/BB6/README.md) (53 machines) and [`BusyBeaver/BB33/`](BusyBeaver/BB33/README.md) (6 machines) | [`BusyBeaver/README.md`](BusyBeaver/README.md), [`BusyBeaver/BB6/README.md`](BusyBeaver/BB6/README.md), [`BusyBeaver/BB33/README.md`](BusyBeaver/BB33/README.md) |
 
-All Lean 4 proofs are checked by the kernel without `sorry` and depend only on the standard axioms (`propext`, `Classical.choice`, `Quot.sound`).
+All Lean 4 proofs are checked by the kernel without `sorry` and depend only on standard Lean axioms:
+- **Constructive (`["propext", "Quot.sound"]`, no `Classical.choice`):** All ZF machine-to-proof-search equivalences (`halts_zf393_iff_zfInconsistent`, `Zf380.Semantics.halts_candidate_iff_zfInconsistent`, `halts_zf432_iff_wadeZFInconsistent`), the direct simulation state reductions ([`Goldbach21.lean`](Cryptids/Goldbach21.lean), [`Zf380.lean`](Cryptids/Zf380.lean), [`Riemann104.lean`](Cryptids/Riemann104.lean)), and all four `candidate_fewer_states` theorems, audited in CI via [`comparator/constructive.json`](comparator/constructive.json). Because classical Lean (`ZFSet.{0}` in [`Soundness.lean`](Cryptids/Semantics/Zf/Soundness.lean)) proves `¬ ZFInconsistent`—so any non-halting machine would vacuously satisfy `Halts M ↔ ZFInconsistent` under `Classical.choice`—excluding `Classical.choice` blocks classical `Con(ZF)` shortcuts and ensures the Lean proof-search correspondence is constructive (while internalizing the reduction inside `PA`/`ZF` and establishing both directions of `ZF`-independence are separate metamathematical steps; see [Foundational Note on `Con(ZF)` and Constructive Equivalence](Cryptids/Semantics/README.md#foundational-note-conzf-in-lean-and-constructive-equivalence)).
+- **Classical (`["propext", "Classical.choice", "Quot.sound"]`):** Set-theoretic soundness and non-halting in `ZFSet.{0}` (`zfProvable_sound_zfSet`, `not_zfInconsistent`, `not_halts_zf393`, `not_halts_candidate`), negated-$\Pi_1^0$ Goldbach equivalence (`¬ GoldbachConjecture`, which uses Markov's Principle), the arithmetic-stage `riemann_95` reduction (`Nat.Prime`), complex-analytic `RiemannHypothesis` equivalences, and the `BB(6)` and `BB(3, 3)` holdout reductions, audited via [`comparator/all.json`](comparator/all.json) and [`comparator/busy_beaver.json`](comparator/busy_beaver.json).
 
 The [95-state Riemann machine](artifacts/riemann_95/README.md) has a kernel-checked
 blank-tape halting equivalence to the 104-state machine and to `¬ RiemannHypothesis`.
@@ -30,6 +32,7 @@ Build the conjecture-checking library (`Cryptids` and `Challenge`, default targe
 
 ```bash
 lake build
+lake comparator --config comparator/constructive.json
 lake comparator --config comparator/all.json
 python3 verify.py
 ```

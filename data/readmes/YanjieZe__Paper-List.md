@@ -46,6 +46,9 @@ Papers:
 
 
 # Recent Random Papers
+- [arXiv 2026.10](https://arxiv.org/abs/2610.30136), Agentic World Action Models
+- [arXiv 2026.10](https://arxiv.org/abs/2610.29716), SpatialDex: Learning Bimanual Dexterity from RGB-Only Human Videos with Spatial Context
+- [arXiv 2026.10](https://arxiv.org/abs/2610.28880), Real2Sem2Real: 3D Semantic Augmentations for Robot Learning from a Single Human RGB Demonstration
 - [arXiv 2026.10](https://arxiv.org/abs/2610.28480), SuperMimic: Scaling Humanoid Whole-Body Control with One Differentiable World Model
 - [arXiv 2026.10](https://arxiv.org/abs/2610.27387), Training Controllable World Models via Action Influence Maximization
 - [arXiv 2026.10](https://arxiv.org/abs/2610.26855), Ropedia W0: Scaling Loco-Manipulation World Models across Embodiments with Human Experience
@@ -754,8 +757,4 @@ Papers:
 - ICLR 2022, DroQ: Dropout Q-Functions for Doubly Efficient Reinforcement Learning, [arXiv](https://arxiv.org/abs/2110.02034)
 - arXiv 2023, RoboPianist: A Benchmark for High-Dimensional Robot Control, [Website](https://kzakka.com/robopianist/)
 - ICLR 2021, DDIM: Denoising Diffusion Implicit Models, [arXiv](https://arxiv.org/abs/2010.02502)
-- arXiv 2023, Your Diffusion Model is Secretly a Zero-Shot Classifier, [Website](https://diffusion-classifier.github.io/)
-- CVPR 2023 highlight, F2-NeRF: Fast Neural Radiance Field Training with Free Camera
-- arXiv 2023, Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware, [Website](https://tonyzhaozh.github.io/aloha/)
-- RSS 2021, RMA: Rapid Motor Adaptation for Legged Robots, [Website](https://ashish-kmr.github.io/rma-legged-robots/)
-- ICCV 2021, Where2Act: From Pixels to 
+- arXiv 2023, Your Diffusion Model is Secretly a Zero-Shot Classifier, [Website](https://diffusion-classifier.github.io/

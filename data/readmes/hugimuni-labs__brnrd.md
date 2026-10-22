@@ -112,8 +112,16 @@ curl -LsSf https://hugimuni-labs.github.io/brnrd/install.sh | sh
 brnrd --version
 ```
 
+Then start the loom, brnrd's runtime, as a login service:
+
+```bash
+brnrd loom install       # launchd or systemd --user; prints what it installed
+```
+
+[Install → Run the loom](https://hugimuni-labs.github.io/brnrd/getting-started/install/#run-the-loom)
+has the rest. The earlier runtime, the daemon, still works; you need only one.
 Self-hosted gates and local execution are free — no brnrd account is needed.
-Then pick your door.
+For the daemon, pick your door.
 
 <table>
 <tr>

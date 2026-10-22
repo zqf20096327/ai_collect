@@ -108,9 +108,9 @@
 
 ### Installation
 
-#### Option 1: GitHub Packages (Recommended)
+#### Option 1: Maven Repository (Recommended)
 
-Configure a GitHub Personal Access Token (PAT) with `read:packages` scope in `~/.m2/settings.xml`. The `server` `id` must match the repository `id`. See [`.github/maven-settings.example.xml`](.github/maven-settings.example.xml) for an example.
+Configure credentials for the registry you use in `~/.m2/settings.xml` — the `server` `id` must match the repository `id`. For GitHub Packages this is a Personal Access Token with `read:packages` scope.
 
 **Core Library (Required):**
 
@@ -129,43 +129,9 @@ Configure a GitHub Personal Access Token (PAT) with `read:packages` scope in `~/
 </dependency>
 ```
 
-**HPC Acceleration (Optional):**
+**HPC Acceleration (Built-in):**
 
-Add the Rust native acceleration layer for 3–12× speedup on linear algebra, LP, and more:
-
-```xml
-<repositories>
-  <repository>
-    <id>github-hpc</id>
-    <url>https://maven.pkg.github.com/ScaleFree-Tech/yishape-math-hpc</url>
-  </repository>
-</repositories>
-
-<dependency>
-  <groupId>com.yishape.lab</groupId>
-  <artifactId>yishape-math-hpc</artifactId>
-  <version>0.5.0</version>
-</dependency>
-```
-
-**GPU Acceleration (Optional):**
-
-Add wgpu shader acceleration for GPU execution of autodiff compute graphs:
-
-```xml
-<repositories>
-  <repository>
-    <id>github-gpu</id>
-    <url>https://maven.pkg.github.com/ScaleFree-Tech/yishape-math-gpu</url>
-  </repository>
-</repositories>
-
-<dependency>
-  <groupId>com.yishape.lab</groupId>
-  <artifactId>yishape-math-gpu</artifactId>
-  <version>0.5.0</version>
-</dependency>
-```
+`yishape-math-hpc` — the Rust native acceleration layer giving **3–12×** speedup for linear algebra, linear programming, and more — is a **required dependency**. Maven resolves it automatically from the `gitea` repository above alongside the core library, so no extra `<dependency>` entry is needed. Its native libraries are bundled inside the HPC JAR; add `--enable-native-access=ALL-UNNAMED` at runtime (see JVM options below). If the native library cannot be loaded, the library logs a warning and falls back to SIMD → SISD.
 
 **Plot Extensions (Optional):**
 
@@ -190,31 +156,25 @@ Add ECharts and JavaFX plotting backends (SVG backend is built-in, no extra depe
 
 #### Build from Source
 
-No GitHub account required — just JDK 25:
+No GitHub account required — just JDK 25 and Maven:
 
 ```bash
 git clone https://github.com/ScaleFree-Tech/yishape-math.git
 cd yishape-math
-./mvnw install -DskipTests
+mvn install -DskipTests
 ```
 
-The HPC and GPU extensions can also be built from source (`libs/` contains prebuilt native libraries for each platform — no Rust toolchain required):
+Because `yishape-math-hpc` is required, build and install it first (or resolve it from the Maven repository shown above; `libs/` contains prebuilt native libraries for each platform — no Rust toolchain required):
 
 ```bash
-# HPC (requires prebuilt native libs in libs/)
 git clone https://github.com/ScaleFree-Tech/yishape-math-hpc.git
 cd yishape-math-hpc
-./mvnw install -DskipTests -DskipNativeBuild=true
-
-# GPU (requires prebuilt native libs in libs/)
-git clone https://github.com/ScaleFree-Tech/yishape-math-gpu.git
-cd yishape-math-gpu
-./mvnw install -DskipTests -DskipNativeBuild=true
+mvn install -DskipTests -DskipNativeBuild=true
 ```
 
 #### JAR Download
 
-No Maven needed: the `libs/` directory in this repo contains prebuilt JARs for `yishape-math`, `yishape-math-hpc`, `yishape-math-gpu`, and all dependencies (batik, javafx, pdfbox, echarts-java, etc.). Download and add to your classpath directly. You can also get them from [Releases](https://github.com/ScaleFree-Tech/yishape-math/releases).
+No Maven needed: the `libs/` directory in this repo contains prebuilt JARs for `yishape-math`, `yishape-math-hpc`, and all dependencies (batik, javafx, pdfbox, echarts-java, etc.). Download and add to your classpath directly. You can also get them from [Releases](https://github.com/ScaleFree-Tech/yishape-math/releases).
 
 ### JVM Runtime Options
 
@@ -222,7 +182,7 @@ No Maven needed: the `libs/` directory in this repo contains prebuilt JARs for `
 
 **Without** `--add-modules jdk.incubator.vector`, it still runs normally and vector ops use scalar (SISD) paths. **With** that flag, the runtime can load the Vector API and use SIMD (SIMD is tried by default; use `-Dyishape.math.use.simd=false` to force scalar).
 
-**HPC / GPU native access (required when using the HPC/GPU extensions):**
+**HPC native access (required for native acceleration):**
 
 ```
 --enable-native-access=ALL-UNNAMED
@@ -841,24 +801,7 @@ graph TB
 
 Over the past 40 years, high-performance numerical computing libraries have mainly been built using Fortran, C++ and Rust languages, such as BLAS, LAPACK, Highs, etc. Although we have made the maximum optimization in areas like SIMD and BLAS3, Java, as a virtual machine language mainly used for business systems, is unlikely to fully compensate for the accumulated experience in CPU-intensive numerical computing in the short term. In view of this, we have built an HPC (High Performance Computing) mode for this library, that is, by calling the libraries encapsulated in Rust language such as Faer and Highs through Java FFM, to achieve native high-performance computing. Therefore, this library mainly has three backend supports: SISD, SIMD, and HPC, as introduced in the following table.
 
-The HPC library is optional. To use the HPC extension, you need to include the following reference in your Maven pom.xml.
-
-```xml
-<repositories>
-  <repository>
-    <id>github-hpc</id>
-    <url>https://maven.pkg.github.com/ScaleFree-Tech/yishape-math-hpc</url>
-  </repository>
-</repositories>
-
-<dependency>
-    <groupId>com.yishape.lab</groupId>
-    <artifactId>yishape-math-hpc</artifactId>
-    <version>0.5.0</version>
-</dependency>
-```
-
-Configure a PAT for `github-hpc` in `settings.xml`; see [`.github/maven-settings.example.xml`](.github/maven-settings.example.xml). The Windows prebuilt libraries are packaged into the HPC JAR at `META-INF/native-libs/windows-x86_64/`; applications need `--enable-native-access=ALL-UNNAMED` at runtime.
+The HPC backend ships as a **required dependency** (`yishape-math-hpc`), pulled in automatically with the core library — no extra entry in your Maven pom.xml is needed, as long as the Maven repository that hosts it is declared (see [Installation](#installation)). The prebuilt native libraries are packaged into the HPC JAR at `META-INF/native-libs/<platform>/`; applications need `--enable-native-access=ALL-UNNAMED` at runtime. When the native library is unavailable, the affected operations log a warning and fall back to SIMD → SISD.
 
 **Three Execution Backends**:
 
@@ -866,7 +809,7 @@ Configure a PAT for `github-hpc` in `settings.xml`; see [`.github/maven-settings
 |------|------|------|
 | **YiShape SISD** |Pure Java scalar |Zero-dependency deployment |
 | **YiShape SIMD** |Vector API vectorization |General acceleration |
-| **YiShape HPC** |Rust native via JNI |Max performance at scale |
+| **YiShape HPC** |Rust native via Java FFM |Max performance at scale |
 
 To validate the numerical computing performance of this library, we benchmarked common numerical computing scenarios — SVD, GEMM, linear programming, and more — against other well-known numerical computing libraries, namely Commons Math4 (CM4) and NumPy (Python wrappers around BLAS/LAPACK).
 
@@ -996,7 +939,6 @@ If you encounter any issues while using the library, you can get help through th
 - Multi-Criteria Decision Making
 - Distance Metric Learning
 - Rust Native Support
-- WGPU Support
 - JDK switch to version 25 because the Java FFM API is needed
 
 ### v0.3.8 (2026-05)
@@ -1009,7 +951,6 @@ If you encounter any issues while using the library, you can get help through th
 
 - **Bug Fixes**: Bug fixes and error corrections
 - **Optimization Performance Improvement**: The cache mechanism in optimization algorithms such as L-BFGS has been improved, leading to an enhanced optimization efficiency.
-- **Remove GPU support temporarily**: Due to the heavy dependency of GPU computing packages, the performance improvement in complex optimization algorithms is limited, and GPU support is temporarily removed.
 
 ### v0.3.0 (2025-10)
 
@@ -1024,7 +965,6 @@ If you encounter any issues while using the library, you can get help through th
 
 ### v0.2.0 (2025-08, initial open source)
 
-- GPU acceleration: matrix/vector operations, advanced computing with auto-fallback
 - DataFrame: CSV I/O, data slicing, NumPy-style slicing
 - Visualization: basic/statistical/special charts, ECharts integration
 - Statistics: 14 distributions, statistical descriptions, hypothesis testing

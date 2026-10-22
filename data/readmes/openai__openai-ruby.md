@@ -15,7 +15,7 @@ To use this gem, install via Bundler by adding the following to your application
 <!-- x-release-please-start-version -->
 
 ```ruby
-gem "openai", "~> 0.108.0"
+gem "openai", "~> 0.110.0"
 ```
 
 <!-- x-release-please-end -->
@@ -555,6 +555,12 @@ client = OpenAI::Client.new(
 ```
 
 See [bedrock.md](bedrock.md) for authentication precedence, static and refreshable credentials, endpoint configuration, and SigV4 request constraints.
+
+## Google Vertex AI
+
+Use `OpenAI::Providers.vertex` with the Responses API. See [vertex.md](vertex.md)
+for setup with Google Application Default Credentials, a credentials object, or
+an access-token callback.
 
 ## Workload Identity Authentication
 

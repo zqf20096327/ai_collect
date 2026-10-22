@@ -181,6 +181,7 @@
 	* [Frink](https://frink.dev/)：本地运行的 AI 编程 Agent 工作台，提供多 Agent 并行、可视化工作流、定时触发及人工审批节点。工作流支持 Claude Code 和 Codex，另提供其他 Agent 的预览接入。MIT 开源，本地运行，支持 macOS 和 Linux。软件免费，所接入的 Agent／模型服务费用另计。
 	* [Codex with ChatGPT](https://github.com/XiaoDuoYa/codex-with-chatgpt)：让 ChatGPT 网页版负责代码规划与审查，Codex 负责执行修改和测试，通过只读 MCP 按需读取本地工作区。需配置 ChatGPT 连接器和公网隧道，并自备相关账号。非官方社区项目，MIT 开源。
 	* [CC Switch](https://github.com/farion1231/cc-switch)：AI 编程工具配置管理器，可为 Claude Code、Codex、Gemini CLI 等工具切换 API 供应商，统一管理 MCP、Skills 和提示词。支持 Windows、macOS 和 Linux。MIT 开源，模型服务费用另计。
+	* [Orbi](https://orbi.build/zh/)：面向 GitHub 的 AI 编程交付工具。给 Issue 添加 `ai-ready` 标签后，在独立工作区实现和测试，通过独立 AI 会话评审与修复，并在满足合并条件后自动合并 PR。AGPL-3.0 开源，可自托管；模型服务费用另计，另有提供有限免费试用的付费 Cloud 托管版。
 
 
 
@@ -227,6 +228,7 @@
 * [Vidu](https://www.vidu.studio/)：Vidu 是由清华大学朱军教授团队研发的 AI 视频生成器。支持生成高逼真度的 4 秒或 8 秒 1080p 高清视频。亮点包括生成速度快、角色一致性、支持写实和动漫风格、生成效果连续流畅等，可应用于游戏、影视、教育等领域。
 * [Luma Dream Machine](https://lumalabs.ai/dream-machine)：Luma AI 出品的视频生成模型。支持文生视频、图生视频，可生成 5 秒长度的视频。有免费额度。
 * [剪映专业版（国内版）](https://www.capcut.cn/) / [CapCut（海外版）](https://www.capcut.com/)：字节跳动出品的视频编辑工具，支持 Windows/Mac。它集成了大量基于 AI 技术的音视频处理功能，比如生成字幕、生成配音、降噪、变声、数字人、文生视频等等。
+* [pitchboom.io](https://pitchboom.io)：动效设计（motion design）视频广告 AI 制作工具。粘贴产品网址或用两行文字描述，自动撰写脚本、生成可编辑并确认的分镜、配旁白（34 种语言）和背景音乐，支持主流画幅比例，适用于 TikTok、Reels、YouTube Shorts 等平台的视频广告。付费订阅，每月 30 欧元起（不含增值税），无免费版。
 
 ### 3D 建模
 
@@ -384,6 +386,7 @@
 * [无线麦 SayAll](https://github.com/HD838A/remote-mic-app)：macOS 语音输入配套工具，把小米蓝牙遥控器 2 / 2 Pro 变成无线麦克风，配合豆包、微信输入法等外部工具完成语音转文字。另提供语音历史只读 MCP，仍待完整验收。macOS 代码采用 GPL-3.0-only，部分功能需买断。
 * [ProctorAI](https://github.com/jam3scampbell/ProctorAI)：AI 监工，号称 “拖延症终结者”。开源项目，本地应用程序，通过定时截图来检查你是否在摸鱼，并发出警告，支持语音提醒。可以设置详细的监督规则。底层调用了 GPT-4o 等多模态模型。
 * [llm_aided_ocr](https://github.com/Dicklesworthstone/llm_aided_ocr)：LLM 辅助 OCR，通过大模型来提升 OCR 的准确性。
+* [PlaceCall](https://voygr.tech/placecall/)：AI 电话代理，替你给美国商家打真实电话（订位、预约、询价）。能应对语音菜单、等待和转接，通话中遇到需要你决定的问题会转回来问你，挂断后返回通话结果、文字记录和录音。可通过 MCP 服务器、REST API 或 Agent Skill 接入，可在主流 AI Agent 中使用。仅支持美国号码，当前不支持中文通话。有免费积分，之后按通话结果付费。客户端 MIT 开源，通话服务为闭源托管服务。
 
 ### 教程
 

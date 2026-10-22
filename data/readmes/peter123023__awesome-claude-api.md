@@ -9,13 +9,13 @@
 
 ## 📊 月访问量数据情况（2026-09） <a id="traffic-note"></a>
 
-本期对比 2026-08 与 2026-09 两个月访问量，共覆盖 19 个渠道（已移除停服的 Unity2.Ai，新增收录 LinkAGI、Kunavo 与 TokenDos）。数据来自第三方流量平台估算。
+本期对比 2026-08 与 2026-09 两个月访问量，共覆盖 20 个渠道（已移除停服的 Unity2.Ai，新增收录 LinkAGI、Kunavo、TokenDos 与 AI SaaS Go）。数据来自第三方流量平台估算。
 
 - **头部稳健**：OpenRouter 19.2M → 21.3M（+10.8%），头部格局基本稳定。
 - **涨幅偏大**：B.AI +275%、TeamoRouter +175%、AIHubMix +73.6%。
 - **普遍回落**：ZenMux -74.6%、AIGoCode -73.7%、LLM 大模型照妖镜 -69.7%、EasyRouter -60.6%、IKunCode -43.6%、YesCode -13.6%、CCTest -6.1%。
 - **基本持平**：OfoxAI / Ofox 模型验真 +3.7%；AICoding 9 月归零；CoderPlan、FerryAPI 持续无数据。
-- **新收录**：LinkAGI 10.6K → 9.6K（-10.0%）、Kunavo 156 → 4.5K（大幅增长）、TokenDos 4.9K → 3.5K（-29.2%）。三站均为 2026 年新上线，8 月已有访问量。
+- **新收录**：LinkAGI 10.6K → 9.6K（-10.0%）、Kunavo 156 → 4.5K（大幅增长）、TokenDos 4.9K → 3.5K（-29.2%）。三站均为 2026 年新上线，8 月已有访问量；AI SaaS Go 暂无第三方估算数据。
 
 ## 📋 目录
 
@@ -58,6 +58,7 @@
 | LinkAGI<br><sub>月访问量: 10.6K (2026-08) → 9.6K (2026-09) <span style="color:#27ae60">↓-10.0%</span></sub>         | [api.linktoagi.com](https://api.linktoagi.com/) | • 人民币按量计费，无订阅制，用多少扣多少<br>• GPT-5.6 三档号池：Luna ¥0.15 / 百万输入 Token（输出约 ¥0.90）、Terra ¥0.375（输出约 ¥2.25）、Sol ¥0.75（输出约 ¥4.50）<br>• 新用户注册赠送 ¥0.2 试用额度<br>• 支持微信、支付宝付款，逐次调用可查 Token 与扣费 | • 为 Codex、Claude Code、Gemini CLI 与 OpenAI-compatible 客户端提供统一 API 接入<br>• 支持 OpenAI / Claude / Gemini 三类协议，Claude Code 用根地址、Codex 用 /v1，按客户端自动拼接<br>• 一手 GPT 号池，实时模型广场公开模型名、分组与价格<br>• 逐次调用日志记录模型、Token、响应状态与实际扣费<br>• 提供免费工具：地址诊断器、错误排查中心（401/403/404/429/504）、成本计算器、开源自检脚本<br>• 中文接入文档完善，国内直连，人工支持入口明确 | `人民币计费` `按量付费` `Claude Code支持` `Codex支持` `多协议兼容` `国内直连` `价格透明` |
 | Kunavo<br><sub>月访问量: 156 (2026-08) → 4.5K (2026-09) <span style="color:#c0392b">↑+2778.2%</span></sub>         | [kunavo.com/zh](https://kunavo.com/zh) | • 预付钱包模式，$10 起充，无订阅、无月费、余额不过期<br>• Claude 价格（每百万 token 输入/输出）：Sonnet 5 $1.40/$7.00、Opus 5.5 $2.80/$14.00、Opus 5 $3.50/$17.50、Fable 5.1 $7.00/$35.00、Sonnet 4.6 $2.10/$10.50、Haiku 4.5 $0.70/$3.50<br>• 充值赠额：充 $100 送 $10、充 $1000 送 $200、充 $5000 送 $1250<br>• Stripe 原生计费：信用卡、Apple Pay、Google Pay、支付宝、微信 Pay，及巴西 Pix、韩国 KakaoPay、印度 UPI 等本地方式 | • OpenAI 兼容网关，聚合 OpenAI、Anthropic、Google 三家前沿模型，35 个在线模型，多数低于官方价、最高省 70%<br>• 改一行 base_url 即可迁移，OpenAI SDK drop-in 替代，streaming / function calling / tool use / vision 全线协议兼容<br>• 自动故障转移：每个请求最多在三条上游通道间依次回退，近期失败的通道在请求发出前即被绕开<br>• 原生流式 SSE pass-through，首字 token 时间与上游官方一致，不缓冲、不批处理<br>• Prompt 缓存命中按 10% 输入价计费（Claude Opus 5.5 为 5%、Fable 5.1 为 2.5%），最高省 90%<br>• 精细化用量：按模型 / API key / IP 维度分析，Webhook 推送，CSV 导出，支持按 key 设月度上限与 IP 白名单<br>• 53 个客户端集成（Claude Code、Cline、OpenClaw、n8n 等），每页对照官方文档核实并注明日期<br>• 透明定价，无隐藏乘数，失败请求不计费；美东 Anycast 边缘接入 | `OpenAI兼容` `多模型聚合` `最高省70%` `自动故障转移` `Prompt缓存` `Stripe计费` `Claude全系列` |
 | TokenDos<br><sub>月访问量: 4.9K (2026-08) → 3.5K (2026-09) <span style="color:#27ae60">↓-29.2%</span></sub>         | [tokendos.com/tokendos](https://www.tokendos.com/tokendos) | • 实时按 token 付费，无订阅制<br>• 共享市场定价：聚合提供方闲置 API key，价格显著低于官方直连<br>• Claude Sonnet 5：$0.022 / 百万输入 token、$0.11 / 百万输出 token<br>• Prompt 缓存单独计价：Cache Read $0.0022、Cache Write $0.0275（每百万 token）<br>• GPT-6 Luna 低至 $0.000744 / 百万输入 token、$0.003722 / 百万输出 | • AI API 共享市场模式：连接闲置 API key 的提供方与需求方，把闲置算力变现，同时降低按需调用成本<br>• 双协议端点，可直接替换进现有代码<br>• 模型覆盖 GPT-6 系列（astra / sol / luna）、GPT-5.6（sol / terra）、GPT-5.5、Grok 4.6 / 4.7 及 Claude Sonnet 5<br>• 各模型 Prompt 缓存读 / 写分别计价，长上下文重复读取成本更低<br>• 新站（2026-06 上线），支付方式与团队功能等官方页面暂未公开 | `共享市场` `按量付费` `极低成本` `双协议` `Prompt缓存` `Claude支持` |
+| AI SaaS Go<br><sub>月访问量: 暂无第三方估算数据</sub>         | [aisaasgo.org](https://aisaasgo.org/zh) | • 人民币按实付金额 1:1 到账（¥1 = $1 额度），¥5–¥1000 可充，无额外赠送<br>• Claude 价格（每百万 token 输入/输出）：Sonnet 5 / 4.6 / 4.5 均 $0.9/$4.5，Opus 5 $1.5/$7.5，Opus 5.5 $2/$10，Fable 5 / 5.1 $3/$15<br>• 输入、输出、缓存写入、缓存读取四列分别精确计量<br>• 支持银行卡与支付宝<br>• GPT 模型单次输入超 272K Token 触发长上下文计费（输入与缓存读取 2 倍、输出 1.5 倍）<br>• 视频 / 音频 / 图片模型独立计费，失败任务不扣费 | • 一个接口接入 OpenAI、Claude、Gemini、Grok、Kimi、DeepSeek 等模型<br>• Claude 覆盖 11 个型号：Fable 5 / 5.1、Opus 5.5 / 5 / 4.8 / 4.7 / 4.6 / 4.5、Sonnet 5 / 4.6 / 4.5<br>• 兼容 OpenAI Responses API（原生 SSE 流式），同时支持 Claude 原生接口（可用 x-api-key 鉴权）<br>• 多模态覆盖：文本、图片（GPT Image、Midjourney）、视频（Seedance）、音频（Suno、Doubao Seed Audio）<br>• 控制台可查 API Key、调用记录、Token 用量与实际消费<br>• 错误码文档完整（401/402/429/5xx 分别对应密钥、余额、限流、临时异常）<br>• 注意：第三方中转站评测曾记录其可用率偏低，生产使用建议先小额验证 | `Claude全系列` `多模态` `价格透明` `人民币充值` `双协议兼容` |
 
 ## 🛠️ 检测工具 <a id="tools"></a>
 

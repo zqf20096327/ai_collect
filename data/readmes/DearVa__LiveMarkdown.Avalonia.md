@@ -44,10 +44,6 @@ updating, **especially when streaming large model outputs**.
 - 🖋️ **Mermaid diagram full support**: Render flowcharts, sequence diagrams, and more using [Mermaider](https://github.com/nullean/mermaider)
 - 🛠️ **Extensible Markdown pipeline**: Register custom Markdown nodes and extend the rendering pipeline
 
-> [!NOTE]
-> This library currently only supports `Append` and `Clear` operations on the Markdown content, which is enough for LLM
-> streaming scenarios.
-
 ## ❤️ Sponsor
 
 This project is fully open-source and free. Your support will improve this project a lot. I sincerely thank all my
@@ -734,6 +730,10 @@ Here is a sample style definition that customizes the emphasis styles and adds s
   scope, while still keeping the default renderer-level behavior for simple cases. The old
   `MarkdownRenderer.SelectionScopeName` API is kept for compatibility, but new code should use
   `MarkdownTextBlock.IsSelectionScope`.
+
+  The platform's Select All shortcut and `SelectAll()` select visible text in the current scope. After a renderer
+  changes the selection, all renderers in that scope update `CanCopy`, so a menu attached to any of them can bind to
+  that property. `Copy()` copies the current scope's selected text.
   
   During drag selection, moving the pointer outside a `ScrollViewer` automatically scrolls the nearest scrollable parent.
   For nested scroll viewers, the renderer follows Avalonia scroll chaining: it tries the inner `ScrollViewer` first and

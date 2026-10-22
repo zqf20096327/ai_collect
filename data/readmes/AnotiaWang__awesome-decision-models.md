@@ -67,6 +67,8 @@ Open-weight models you can download and run. Scores are as reported by each proj
 - [VideoJev](https://github.com/MCG-NJU/VideoJev) - Open 4B and 35B-A3B System One models that score temporal candidates and answer options for video grounding and multiple-choice QA, answering multiple queries over one shared video prefix without text generation
 - [OpenThai-SystemOne](https://huggingface.co/iapp/OpenThai-SystemOne) - iApp / OpenThai's Apache-2.0 Thai and English System One 0.8B model: Choice, Score, and Noul in one pass, mirroring `POST /v1/systemone`, with a pip package and an Ollama build `iapp/openthai-systemone`. Independent open re-implementation; not affiliated with TypeSafe.
 
+- [Saina Helm 2 and Omni](https://github.com/run-saina/saina) - Open-weight 0.8B decision models that score caller-defined answers in one shared forward pass: Helm 2 reads text, Omni adds images and short audio, and the server supports Jev-compatible `/v1/systemone` requests
+
 ### Community models
 
 - [Kev](https://github.com/jaredpalmer/kev) - Qwen3.5 decision models (0.8B, 4B, 9B) you can train and serve yourself. Choice, Score, and Noul in one forward pass, with published weights and frozen eval suites, and a local server that speaks `/v1/systemone`.
@@ -349,6 +351,8 @@ Leaderboards first, then single-task studies and evaluation tooling. Most studie
 - [Smoking-history extraction benchmark](https://github.com/vclic/smoking-extraction-benchmark) - 1,000 synthetic notes: Jev vs OpenAI structured outputs on accuracy, cost, and latency
 - [jev-fanout-bench](https://github.com/blowxian/jev-fanout-bench) - Compares batched and separate Jev calls in 2,976 requests through OpenRouter, reporting approximately 261 fixed input tokens per request, charges matching the published token rate, and answer differences comparable to repeat-request noise.
 
+- [minimind-jev](https://github.com/vicfei/minimind-jev) - Train-your-own tiny Jev for Chinese reranking: frozen bge-small-zh + a from-scratch 660K decision head, 3 minutes on a laptop GPU, $0 API. Evaluated via [jev-rag-zh-benchmark](https://github.com/vicfei/jev-rag-zh-benchmark) on T2Reranking hard negatives (n=100, 95% paired CIs): nDCG@5 0.488 — not separable from hosted Jev-1.13 at this n, significantly above BM25. Also documents a distillation negative result (teacher soft labels lost to gold binary labels) and releases the teacher-judgments dataset ([cnfeichen/t2reranking-4level-judgments](https://huggingface.co/datasets/cnfeichen/t2reranking-4level-judgments)). Checkpoint: [cnfeichen/minimind-jev-v0.1](https://huggingface.co/cnfeichen/minimind-jev-v0.1).
+
 ### Tooling
 
 - [System One Playground](https://github.com/goodboybeau/system-one-playground) - Local Apple Silicon workbench comparing Laya, Decider, Kev, Jev, and other engines side by side, with public-dataset benchmarks for accuracy and calibration, input-truncation diagnostics, latency, memory, and load tests
@@ -388,7 +392,7 @@ Community cookbooks.
 
 ## Related
 
-- [awesome-jev-prompts](https://github.com/vicfei/awesome-jev-prompts) - 43 field-tested Jev question patterns (Choice/Score/Noul) with templates, thresholds, and failure modes, plus 10 anti-patterns. CC0, bilingual EN/中文.
+- [awesome-jev-prompts](https://github.com/vicfei/awesome-jev-prompts) - 51 field-tested Jev question patterns across 9 categories (incl. embodied & multimodal, and anti-patterns) with templates, thresholds, and failure modes; every entry sourced under a four-level verification policy. CC0, bilingual EN/中文.
 - [MrJev/awesome-jev](https://github.com/MrJev/awesome-jev) - Selective list behind a 10-star bar, with hands-on reviews at [mrjev.com](https://mrjev.com/best-jev-tools/) recording what each tool sends and where.
 - [Awesome TypeSafe Jev](https://github.com/AbdelStark/awesome-typesafe-jev) - Unofficial source-backed Jev field guide with a typed-decision walkthrough, community project cards, independent evaluation links, and a first-contribution path
 - [laya.tools](https://laya.tools) - Unofficial directory of about 950 projects built on the open Laya model, from GitHub, npm, Hugging Face and X, browsable by platform and use case, with a Laya vs Jev comparison. Not affiliated with TypeSafe or ConvAI

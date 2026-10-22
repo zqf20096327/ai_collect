@@ -43,7 +43,7 @@ Most coding agents assume a human is watching the screen. Octomind is built for 
 - **Proven on real PRs.** It solved 24 of 25 held-out tasks at lower cost than the closest competitor. See the [benchmarks](#benchmarks).
 - **Ready-made specialists.** `octomind run developer:general` pulls a packaged agent (prompt, model, MCP servers, tool permissions) from a [tap](doc/integration/04-tap-system.md). Publish your own with one repo.
 - **Sessions that stay sharp.** Adaptive [compression](doc/usage/08-compression.md) keeps long tasks moving while retaining task knowledge and the live exchange.
-- **Any model, any budget.** Use Octomind Cloud or your own key (OpenRouter, Anthropic, OpenAI, DeepSeek, Ollama, and more), pick a model per role, and cap spend per request and per session.
+- **Any model, any budget.** Use Octomind Cloud or your own key (OpenRouter, Anthropic, OpenAI, DeepSeek, Ollama, and more), pick a model per role, and set spend thresholds per request and per session. A request over its threshold stops; at the session threshold a terminal session asks y/N before continuing, while a non-interactive `octomind run` stops with exit code 75.
 - **One config.** Models, tools, roles, guardrails, budgets: all TOML, no framework code.
 
 ## Quick Start
@@ -102,7 +102,7 @@ Measured on [octobench](https://github.com/Muvon/octobench) against **25 tasks h
 | codex + gpt-5.6-sol | 21/25 | 2127 | $14.86 | 1.0h |
 | opencode + glm-5.2 | 19/25 | 2093 | $129.54 | 3.3h |
 
-- **The harness matters.** opencode used the same model and endpoint; octomind solved 24 vs 19 at roughly half the cost. Octomind ran with a staged tap and a binary override including the unfinished-handback pre-gate, so this measures the complete setup, not individual features.
+- **The harness matters.** opencode used the same model and endpoint; octomind solved 24 vs 19 at roughly half the cost. All four agents ran stock invocations with no tuning, so this measures the whole harness, not individual features.
 - **Worst-case pricing, still ahead.** glm-5.2 ran without prompt caching while Opus billed ~97% of context re-reads at cache rates — and octomind still led on solves, cost, and wall time.
 - **Reproducible.** Per-case table, artifacts, and reproduction guide: [BENCHMARK.md](https://github.com/Muvon/octobench/blob/8aa39684ff6103782aacb1bd79ea98e96e50d6cf/BENCHMARK.md). Background: [blog post](https://octomind.run/blog/coding-agent-benchmark-real-prs).
 

@@ -8,7 +8,8 @@
 ⚡ Building applications with LLMs through composability, with Rust! ⚡
 
 [![Discord](https://dcbadge.vercel.app/api/server/JJFcTFbanu?style=for-the-badge)](https://discord.gg/JJFcTFbanu)
-[![Docs: Tutorial](https://img.shields.io/badge/docs-tutorial-success?style=for-the-badge&logo=appveyor)](https://langchain-rust.sellie.tech/get-started/quickstart)
+[![Docs: docs.rs](https://img.shields.io/docsrs/langchain-rust?style=for-the-badge)](https://docs.rs/langchain-rust)
+[![Examples](https://img.shields.io/badge/examples-github-success?style=for-the-badge)](https://github.com/Abraxas-365/langchain-rust/tree/main/examples)
 
 ## 🤔 What is this?
 
@@ -22,6 +23,7 @@ This is the Rust language implementation of [LangChain](https://github.com/langc
   - [x] [Azure OpenAi](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/llm_azure_open_ai.rs)
   - [x] [Ollama](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/llm_ollama.rs)
   - [x] [Anthropic Claude](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/llm_anthropic_claude.rs)
+  - [x] [Response caching for any LLM](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/llm_cache.rs)
 
 - Embeddings
 
@@ -29,15 +31,23 @@ This is the Rust language implementation of [LangChain](https://github.com/langc
   - [x] [Azure OpenAi](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/embedding_azure_open_ai.rs)
   - [x] [Ollama](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/embedding_ollama.rs)
   - [x] [Local FastEmbed](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/embedding_fastembed.rs)
+  - [x] [Voyage AI](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/embedding_voyage.rs)
   - [x] [MistralAI](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/embedding_mistralai.rs)
+  - [x] [AWS Bedrock (Titan, Cohere)](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/embedding_bedrock.rs)
 
 - VectorStores
 
+  - [x] [MongoDB Atlas](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_mongodb.rs)
   - [x] [OpenSearch](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_opensearch.rs)
+  - [x] [Pinecone](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_pinecone.rs)
   - [x] [Postgres](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_postgres.rs)
   - [x] [Qdrant](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_qdrant.rs)
+  - [x] [Redis](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_redis.rs)
+  - [x] [Chroma](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_chroma.rs)
   - [x] [Sqlite](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_sqlite_vss.rs)
   - [x] [SurrealDB](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_surrealdb/src/main.rs)
+  - [x] [Weaviate](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_weaviate.rs)
+  - [x] [Milvus](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_milvus.rs)
 
 - Chain
 
@@ -47,20 +57,39 @@ This is the Rust language implementation of [LangChain](https://github.com/langc
   - [x] [Conversational Retriever With Vector Store](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/conversational_retriever_chain_with_vector_store.rs)
   - [x] [Sequential Chain](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/sequential_chain.rs)
   - [x] [Q&A Chain](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/qa_chain.rs)
+  - [x] [Map-reduce / refine / map-rerank + Retrieval QA](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/summarize_documents.rs)
   - [x] [SQL Chain](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/sql_chain.rs)
+  - [x] [LLM Math Chain (word problems, exact arithmetic)](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/llm_math.rs)
+  - [x] [Router Chain (LLM picks the chain)](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/router_chain.rs)
+  - [x] [Constitutional Chain (critique and revise against principles)](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/constitutional_chain.rs)
+
+- Output parsers
+
+  - [x] [Typed JSON, structured fields, lists, yes/no and regex](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/output_parsers.rs)
+
+- Memory
+
+  - [x] [Persistent memory (SQLite/Postgres) + token buffer](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/persistent_memory.rs)
+  - [x] [Redis chat history](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/redis_memory.rs)
+  - [x] [MongoDB chat history](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/mongodb_memory.rs)
 
 - Agents
 
   - [x] [Chat Agent with Tools](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/agent.rs)
   - [x] [Open AI Compatible Tools Agent](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/open_ai_tools_agent.rs)
+  - [x] [Streaming agent events + cancellation](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/streaming_agent.rs)
+  - [x] [Tracing spans for LLM calls, tools and agent steps](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/tracing.rs)
 
 - Tools
 
+  - [x] [Custom tools from async functions (`FunctionTool`)](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/function_tool.rs)
+  - [x] [Calculator](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/calculator_tool.rs)
   - [x] Serpapi/Google
   - [x] DuckDuckGo Search
   - [x] [Wolfram/Math](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/wolfram_tool.rs)
   - [x] Command line
   - [x] [Text2Speech](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/speech2text_openai.rs)
+  - [x] Wikipedia
 
 - Semantic Routing
 
@@ -269,10 +298,46 @@ cargo add langchain-rust --features postgres
 cargo add langchain-rust --features surrealdb
 ```
 
+#### With Weaviate
+
+```bash
+cargo add langchain-rust --features weaviate
+```
+
+#### With Milvus
+
+```bash
+cargo add langchain-rust --features milvus
+```
+
+#### With Pinecone
+
+```bash
+cargo add langchain-rust --features pinecone
+```
+
 #### With Qdrant
 
 ```bash
 cargo add langchain-rust --features qdrant
+```
+
+#### With Chroma
+
+```bash
+cargo add langchain-rust --features chroma
+```
+
+#### With MongoDB (Atlas vector store, chat history on any MongoDB)
+
+```bash
+cargo add langchain-rust --features mongodb
+```
+
+#### With Redis (chat history and vector store)
+
+```bash
+cargo add langchain-rust --features redis
 ```
 
 Please remember to replace the feature flags `sqlite`, `postgres` or `surrealdb` based on your

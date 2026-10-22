@@ -3,7 +3,9 @@
 `swarm` is a command-line coding agent for git repositories. You describe a change in plain
 words; it edits your working tree with a local or hosted model, runs your project's checks,
 repairs failures within a fixed number of attempts, and reports what was actually established,
-with a signed record of every command it ran.
+with a signed record of every command it ran. A loop that hits its step limit before it reports
+the task done is continued once, from the same attempts and allowances, once the checks are
+green; the report says whether that happened and what the test files add against the base.
 
 ```sh
 swarm "make slugify in slug.js turn each run of spaces into one dash, and add a test for it" \
@@ -81,9 +83,13 @@ say the code is correct. If a first run fails, see
 
 ## Limitations
 
-Swarm is experimental. In the latest comparison on public tasks with one local model it showed
-no advantage over OpenCode, 7 of 8 correct deliveries against 8 of 8
-([evidence](docs/evidence/2026-10-16/fresh-comparison/README.md)). Model-written checks
+Swarm is experimental. In the latest comparisons on fresh public tasks with one local model it
+has not produced a better artifact than OpenCode: on 2026-10-22 the two delivered equivalent
+correct, complete changes on one task, and no arm completed the other, with Swarm taking several
+times OpenCode's time and tokens ([evidence](docs/evidence/2026-10-22/README.md)); on 2026-10-21
+OpenCode's artifacts passed the frozen evaluation more often, though a later audit found its alias
+patch also breaks behaviour that task kept
+([correction](docs/evidence/2026-10-21/fresh-comparison/correction-2026-10-22/README.md)). Model-written checks
 (`--plan-checks`) guide repair but cannot establish a requirement alone. Commands run on your
 machine under a path policy, not a sandbox, unless you pass `--isolation`.
 

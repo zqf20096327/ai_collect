@@ -104,7 +104,7 @@ ChatCLI keeps itself current with `/update` (Homebrew, `go install` or a signatu
 <td width="50%" valign="top">
 
 ### 🤖 Coder agent
-A ReAct loop with 46 builtin tools: files, search, shell, git, tests, LSP diagnostics, a real browser, Git forges, background processes. Every call goes through an allow/ask/deny policy; edits are checkpointed in a shadow repository; an optional OS sandbox confines commands. [Coder mode →](https://chatcli.edilsonfreitas.com/usage/coder-mode)
+A ReAct loop with 50 builtin tools: files, search, shell, git, tests, LSP navigation and rename, JSON/YAML and diffs, secrets and archives, a real browser, Git forges, background processes. Every call goes through an allow/ask/deny policy; edits are checkpointed in a shadow repository; an optional OS sandbox confines commands. [Coder mode →](https://chatcli.edilsonfreitas.com/usage/coder-mode)
 
 </td>
 <td width="50%" valign="top">
@@ -168,7 +168,7 @@ PDFs and images reach every model, natively where it can read them and as text w
 ### 🗂️ Memory and context
 Long-term memory with a profile and facts, a knowledge base with keyless BM25 retrieval, reversible compression where nothing is lost (`@recall` pages long originals), and sessions that continue across surfaces. [Context →](https://chatcli.edilsonfreitas.com/context/bootstrap-memory)
 
-Measured, not claimed: on [LongMemEval-S](https://chatcli.edilsonfreitas.com/context/longmemeval) (500 questions over about 115k tokens of past conversations each), chatcli answered **90.8%** through its own session recall, 90.0% on the questions not used while tuning it. [Method, data and every answer →](evals/longmemeval)
+Measured, not claimed: on [LongMemEval-S](https://chatcli.edilsonfreitas.com/context/longmemeval) (500 questions over about 115k tokens of past conversations each), chatcli answered **93.5%** of the 260 questions that were not read while tuning it, and 94.6% of all 500 (90.8% before the latest round of changes), through its own session recall. [Method, data and every answer →](evals/longmemeval)
 
 </td>
 </tr>

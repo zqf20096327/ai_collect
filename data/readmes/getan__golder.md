@@ -10,14 +10,24 @@
 
 **单二进制、默认沙箱、密钥不进入模型上下文。**
 
+## 安装
+
 ```bash
+brew install getan/tap/golder
+# 或
 curl -fsSL https://golder-cli.pages.dev/install.sh | sh
-golder
 ```
 
-- **单二进制，无运行时依赖**：Go 编译，不需要 Node/Python；`go install` 或一个 release 压缩包就是全部安装。
-- **默认沙箱**：获准的 shell 调用在 `sandbox-exec` / `bubblewrap` 内运行，读限工作区，网络默认关闭、按次授权。
-- **本地凭据脱敏**：tool output、prompt、compaction、memory 里的 key 在发给模型前替换；只有写文件时才还原占位符。
+macOS / Linux 一条命令装好，不需要 Node/Python。Windows 从 [Releases](https://github.com/getan/golder/releases) 下载 `.zip`；镜像、sha256 校验、从源码构建等细节见[安装细节](#安装细节)。
+
+## 亮点
+
+- **多 Provider 热切换，会话不绑定厂商**：`/provider` 随时换网关，`/resume` 在当前 provider 上继续同一份上下文；内置 19 个会话网关，覆盖 OpenAI Chat / Responses、Anthropic Messages、Gemini 四种线上协议，也可指向任意兼容端点。
+- **轻量 agent + 真正的安全边界**：和 pi 同一量级的单二进制，但多了逐调用审批门与 OS 沙箱（`sandbox-exec` / `bubblewrap`）——读限工作区、写限项目与临时目录、网络默认关闭；密钥和凭据路径读不到。
+- **比 codex-cli 更容易定制**：纯 Go，单语言、单二进制，没有 Node/Python 运行时；加一个工具、一个 provider 或一条审批规则，都在同一个 `go build` 里完成。
+- **常驻内存约 50–100 MB**：同类里的第一梯队，长时间挂着跑也不占机器。
+- **规划中：tuios + kitty-browse**：窗口与浏览器的自由 agent 操作；前后端同时 debug 时，模型能同时看到终端、编辑器、浏览器，上下文最充分。
+- **规划中：MCP 与插件生态**：把外部工具和数据源接进来，扩展不必改核心。
 
 <p align="center">
   <a href="https://golder-cli.pages.dev/?utm_source=github&utm_medium=readme#demo">
@@ -36,7 +46,7 @@ golder
 </tr>
 </table>
 
-## 特性
+## 更多特性
 
 - **TUI 优先**：直接 `golder` 进入全屏 TUI（转录、工具卡片、状态栏、↑↓ 选择菜单）；`--no-tui` 切回行式 REPL，两端命令与行为完全对齐；`golder -p "..."` 无头执行，适合脚本与 CI。
 - **内置工具集**：文件读取、补丁编辑、ripgrep 代码检索、Shell 会话、任务清单、网页抓取、联网搜索等（见[内置工具](#内置工具)）。
@@ -44,14 +54,14 @@ golder
 - **凭据脱敏**：tool output、用户 prompt、assistant 文本、compaction 摘要、memory 与 session 落盘前统一扫描；覆盖 AWS/GCP/Azure/GitHub/GitLab/Slack/Stripe/OpenAI/Anthropic/JWT/PEM/DB URL 等规则，支持 `off | observe | redact | block` 四档，审计只记规则名与 hash。
 - **多 Provider**：默认 OpenCode 网关，内置 19 个网关（OpenAI / Anthropic / OpenRouter / DeepSeek 等），也可指向任意 OpenAI 兼容端点。
 - **会话与分支**：`/resume` 切换历史会话（默认只看当前项目，`--all` 看全部），`/fork` 从任意历史消息分叉，`/clone` 复制当前会话，`/tree` 浏览分支树，`/export` `/import` 做会话存档往返，`/rewind` 把文件与对话一起回滚。
-- **审批与沙箱**：四档权限模式（只读 / 每次询问 / 自动审批 / 完全放行）；**获准执行的 `bash` 调用一律在沙箱内跑**（macOS 用 `sandbox-exec`，Linux 用 `bubblewrap`，需已安装），与命令内容无关——原生文件工具（`read`/`grep`/`find`/`ls`/`view_image`/`apply_patch`）也由一次性沙箱 worker 执行。沙箱走**白名单**：可读仅限项目 + 系统运行时 + 两个 git 配置（`~/.gitconfig`、`~/.config/git/*`），`$HOME` 其余内容（shell rc、SSH/GPG 密钥、`~/.config/*`、凭据、历史）一律读不到；写默认限项目、临时目录与显式授权的写根；**网络默认关闭，且按次授权**——需要联网的调用声明 `network:"on"`，授权门在同一次审批里决定（批了仍在文件沙箱内，不必脱离沙箱）。**路径授权可在弹窗里一键记住**：读授权按 `a`（本会话）/`s`（记住）；写确认弹窗（`apply_patch` 写工作区外）按 `y`/`a`/`s`；越界申请与重准入弹窗里的写行是 `w`（本会话）/`s`（记住）。记住档直接写入 `~/.golder/grants.json`。同一份文件可用 `/boundary readable|writable list|add|rm` 查看与维护，无法编辑文件的机器（脚本、容器）用 `GOLDER_READABLE_ROOTS` 环境变量。工具链在 `$HOME` 内时用 `GOLDER_SANDBOX_READABLE` 追加读白名单。确实需要**文件**访问而沙箱挡不住时，模型可申请 `require_escalated`——这只是**同一次评审**里的又一个能力问题，不是第二轮审批：auto 下由评估器拍板（批了就在沙箱外跑并播报；不批则**当场弹窗**把被拒路径拿给你选：`a` 只读/本会话、`s` 只读/记住、`w` 读+写/本会话、Esc 拒绝——题面写明被拒的是读还是写，需要写时写行在首行，批准后命令**收容重跑**；没有路径可提时则静默收容并播报），ask 下弹窗问你（默认项是"收容重跑"，`e` 才是故意出沙箱），没人可问则收容或失败关闭。**命令被沙箱拒绝时同理**：只要命令或理由点得出路径，就当场问你要不要把它放回沙箱，批准后原命令在沙箱内自动重跑。
+- **审批与沙箱**：四档权限模式（只读 / 每次询问 / 自动审批 / 完全放行）；**获准执行的 `bash` 调用一律在沙箱内跑**（macOS 用 `sandbox-exec`，Linux 用 `bubblewrap`，需已安装），与命令内容无关——原生文件工具（`read`/`grep`/`find`/`ls`/`view_image`/`apply_patch`）也由一次性沙箱 worker 执行。沙箱走**白名单**：可读仅限项目 + 系统运行时 + 两个 git 配置（`~/.gitconfig`、`~/.config/git/*`），`$HOME` 其余内容（shell rc、SSH/GPG 密钥、`~/.config/*`、凭据、历史）一律读不到；写默认限项目、临时目录与显式授权的写根；**网络默认关闭，且按次授权**——需要联网的调用声明 `network:"on"`，授权门在同一次审批里决定（批了仍在文件沙箱内，不必脱离沙箱）。**路径授权可在弹窗里一键记住**：读授权按 `a`（本会话）/`s`（记住）；写确认弹窗（`apply_patch` 写工作区外）按 `y`/`a`/`s`；越界申请与重准入弹窗里的写行是 `w`（本会话）/`s`（记住）。记住档直接写入 `~/.golder/grants.json`。同一份文件可用 `/boundary readable|writable list|add|rm` 查看与维护，无法编辑文件的机器（脚本、容器）用 `GOLDER_READABLE_ROOTS` 环境变量。工具链在 `$HOME` 内时用 `GOLDER_SANDBOX_READABLE` 追加读白名单。确实需要**文件**访问而沙箱挡不住时，模型可申请 `require_escalated`——这只是**同一次评审**里的又一个能力问题，不是第二轮审批：**`auto` 下档位就是全部答案**——`allow`/`confirm` 直接在沙箱外跑并播报，`contain` 收容，`deny` 不跑；`ask` 下弹窗把 `run outside the sandbox` 与其他能力一起列给你，`y`/`a`/`s` 即批准；`enforce` 永远收容，没人可问则收容或失败关闭。**命令被沙箱拒绝时**：只要输出或理由点得出路径，`auto` 由评审自动决定是否补授（不弹窗），`ask` 弹一次路径授权，批准后原命令在沙箱内自动重跑。
 - **长任务支持**：`/compact` 上下文压缩、上下文预算工具、`/goal` 自主目标循环、`/btw` 侧线问答、子 Agent 派发、持久记忆与 `/dream` 记忆整理。
 - **工作区外读取需确认**：读取类工具（`read` / `grep` / `find` / `ls` / `view_image`，以及 `bash` 命令里能识别出的文件操作数）默认只读工作区，越界会先问你——弹窗可选「只读这一次」「本会话允许读该目录」或「记住（跨会话，写入 `grants.json`）」；没有可问的人时失败关闭，并在消息里给出路径与配置办法；TUI/REPL 里的子 agent 会把问题送进同一个弹窗，标题标出 `(from task)` 之类的来源——人就坐在那儿看着，唯一真正问不到人的是 headless 与进程隔离的子 agent。这一步**不受权限模式影响**（完全放行关掉的是审查与沙箱，不是知情同意）。常用目录可预授权：`GOLDER_READABLE_ROOTS` 环境变量，或 `/boundary readable add <路径>`（写入 `grants.json`，重启后仍生效；同时放宽沙箱读白名单）；凭据路径（`~/.ssh`、`~/.zshrc` 等）永远不可授权。
 - **按 Provider 的代理路由**：`/proxy` 单独选择哪些 provider 走代理，互不影响；未选中的 provider 直连，且不继承 shell 的 `HTTP_PROXY` / `HTTPS_PROXY`。
 - **技能与模板**：`~/.agents/skills` 下的技能注册为 `/命令`（无内置技能，目录不存在时零命令）；提示词模板、项目级 `AGENTS.md` 自动装载。
 - **在 tuios / herdr 里就是一个 agent**：跑在 [tuios](https://github.com/Gaurav-Gosain/tuios) 窗口或 [herdr](https://github.com/herdrdev/herdr) pane 里时，golder 自己上报状态，于是它出现在 rail/sidebar 上（working / 等待你 / 空闲 / 完成），审批与提问进 Inbox，daemon 重启后会带着 `golder --resume <会话>` 回到原会话。**两个宿主都不用改、也都不用装**：tuios 需要一份 harness manifest，`golder host-compat install` 写进 `~/.config/tuios/harnesses/`；herdr 什么也不需要，自报即识别。在 tuios 的 Inbox 里可以直接按键替你批准/拒绝——那条路依赖 manifest 里的屏幕规则，所以**改了审批弹窗的文案要同步改那份 manifest**（见 `internal/hostcompat/README.md`）。`golder host-compat status` 说明当前宿主与缺什么；`GOLDER_HOST_REPORT=off` 一键关闭上报。
 
-## 安装
+## 安装细节
 
 ### Homebrew（macOS / Linux）
 
@@ -182,6 +192,54 @@ thinking_level = "max"            # off | minimal | low | medium | high | xhigh 
 
 也可以用环境变量覆盖：`GOLDER_MODEL`、`GOLDER_PROVIDER`、`GOLDER_THINKING_LEVEL`、`GOLDER_PERMISSIONS`。命令行 flag 优先级最高。项目级还可以放一份 `.golder/config.json` 覆盖 `model` / `provider` / `thinkingLevel` / `hooks`——仅在目录被信任时加载。
 
+### tuios shell integration（zsh / bash，推荐）
+
+推荐在 tuios pane 里运行 golder。要完整使用 tuios 的窗口与命令管理，尤其是 `tuios run`、`wait-for command-finished`、`capture-pane --last-command`，pane 的 shell 必须发送 OSC 133 命令标记；否则这些操作会报 `no_shell_integration`，golder 内置 `tuios` 的 `run` 也只能走降级路径。只使用 `list`、`capture`、`wait`（如 `window-output` / `window-idle`）时不需要这些标记。
+
+把对应配置追加到 shell rc 文件末尾，并放在 Starship、Powerlevel10k、oh-my-zsh 等 prompt 初始化之后。
+
+#### zsh
+
+```zsh
+# ~/.zshrc: mark commands for tuios run (OSC 133)
+autoload -Uz add-zsh-hook
+_tuios_osc133_precmd()  { local s=$?; print -n "\e]133;D;$s\a\e]133;A\a"; }
+_tuios_osc133_preexec() { print -n "\e]133;C\a"; }
+add-zsh-hook precmd _tuios_osc133_precmd
+add-zsh-hook preexec _tuios_osc133_preexec
+PS1+=$'%{\e]133;B\a%}'
+```
+
+#### bash
+
+```bash
+# ~/.bashrc: mark commands for tuios run (OSC 133)
+# Needs bash 4.4 or newer. Older bash, such as macOS /bin/bash 3.2, ignores
+# PS0, so it marks prompts and never commands, and run refuses the pane.
+PROMPT_COMMAND='printf "\e]133;D;%s\a\e]133;A\a" "$?"'${PROMPT_COMMAND:+";$PROMPT_COMMAND"}
+PS0='\e]133;C\a'
+PS1+='\[\e]133;B\a\]'
+```
+
+macOS 自带的 `/bin/bash` 是 3.2，不支持这套 `PS0` 配置；请安装 bash 4.4+（例如 `brew install bash`）并把登录 shell 切到它，或直接用 zsh。
+
+新增的 tuios pane 会自动生效；已经打开的 pane 需要重载：
+
+```bash
+source ~/.zshrc      # zsh；也可以 exec zsh
+source ~/.bashrc     # bash
+```
+
+然后验证：
+
+```bash
+tuios doctor shell
+```
+
+对应当前 pane 的 `marks_commands` 应该是 `true`。旧 pane 在重载前通常是 `false`。
+
+这里的 shell integration 和 `golder host-compat install` 是两件事：前者让 tuios 能识别命令边界，后者把 golder 的状态、审批和提问写进 tuios 的 harness manifest，供 rail 与 Inbox 使用。推荐两者都配置。
+
 ### 其他 Provider
 
 可切换的内置网关都能用 `--provider <name> -m <model>` 选中，API Key 按 `<PROVIDER>_API_KEY` 约定从环境变量读取（如 `DEEPSEEK_API_KEY`、`ZAI_API_KEY`），完整列表见 `golder --help`（其中标注了唯一的例外：`typesafe` 是审查器用的决策模型，不接会话，只能用 `/proxy` 路由）。自定义端点直接指定协议与地址：
@@ -288,7 +346,7 @@ golder host-compat uninstall   # 只删 golder 自己写的那份
 - 原生文件工具（`read`/`grep`/`find`/`ls`/`view_image`/`apply_patch`）由 `toolworker` 的一次性沙箱执行时也标 `·sandbox`；`full-access`/Direct/无 runner 退回进程内时标 `·unconfined`；`todo`/`websearch`/`webfetch` 等不走 OS 沙箱的工具没有标记；
 - `GOLDER_SANDBOX=enforce` 仍把每一条都收进沙箱，优先于信封；`full-access` 不变。
 
-网络是另一个维度：Bare 的命令跑在宿主上，网络是它的自然能力，所以 Bare 的 Allow 和自动批准的 Confirm 不再单独问网络（记住的网络拒绝规则仍优先）。默认下 contained 调用和 `enforce` 仍按次授权，或由 `/network` 记住；`/network follow on`（默认关）让 auto 的 Allow（含 contained）直接携带网络；`/network add host|command|tool <key>` 可预授权。信封不是网络白名单，也不是持久授权。
+网络是另一个维度，并且**按次**决定：没有持久化的网络白名单，也没有单独的 `/network` 命令。需要联网的调用由模型在 `bash` 参数里声明 `network:"on`；这条能力请求和外部路径、沙箱外运行一起进入同一次能力决策。`auto` 下评审的 Allow/Confirm 直接携带声明的网络，Contain 只在评审同时授予网络时保留；`ask` 在同一个弹窗里问；`read-only` 拒绝；`full-access` 不问。信封只决定执行位置，不改变网络授权。
 
 ### 权限模式
 
@@ -305,7 +363,7 @@ golder host-compat uninstall   # 只删 golder 自己写的那份
 
 首次在某个目录启动时会询问是否信任该目录；`--approve` 可为单次运行直接授权。未信任目录里也可以只放行读取（`read` / `grep` / `find` / `ls` / `view_image`，本会话 × 本目录）：TUI 弹窗选 `Allow reads in this folder (this session)`，REPL 按 `a`；命令与联网读取仍逐次询问，`/trust off` 会连读授权一起撤销。**首启信任弹窗的按键**：`s` 记住、`p` 本会话、`n` 记住不信任、Esc 取消（不落盘）；**运行中的信任问句**另一套键：`y` 仅这一次、`a` 本会话允许本目录的读取、`p` 本会话允许全部工具——运行中这一问不落盘，持久化是启动选择器的职责。需要操作系统级隔离时参见 [docs/sandboxing.md](docs/sandboxing.md)。
 
-**网络授权（统一能力模型）**：网络是能力请求的一维，不再单独弹第二次窗。`auto` 的 `allow`/`confirm` 直接授予本次调用声明的网络；`ask` 把它和外部路径、沙箱外运行合并进同一个弹窗；`read-only` 拒绝，`full-access` 不问。`/network add host|command|tool <key>` 仍可用于预授权和记住决定，`/network rm` 删除，`/network list` 查看；记住的拒绝始终优先。旧的 `/network follow` 开关只供旧 gate/兼容路径使用，新的 `consent` 链路不依赖它。
+**网络授权（统一能力模型）**：网络是能力请求的一维，不再单独弹第二次窗，也不再有“记住的 host/command 规则”。`auto` 的 `allow`/`confirm` 直接授予本次调用声明的网络；`ask` 把它和外部路径、沙箱外运行合并进同一个弹窗；`read-only` 拒绝，`full-access` 不问。一次批准只覆盖这一次调用；旧的 `network_grants.json` 与 `network.toml` 不再读取，可以删除。
 
 ### 常用开关
 

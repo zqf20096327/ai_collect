@@ -26,16 +26,9 @@
 
 ## Screenshots
 
-<!-- Replace the placeholder images below with actual screenshots -->
-
 <p align="center">
-  <img src="https://cdn.jsdelivr.net/gh/crossoverJie/images@main/images/images20260213123118.png" alt="Dashboard Overview" width="800" />
-  <img src="https://cdn.jsdelivr.net/gh/crossoverJie/images@main/images/images20260224114425.png" alt="Dashboard Registry" width="800" />
-</p>
-
-<p align="center">
-  <img src="docs/screenshots/skill-detail.png" alt="Skill Detail" width="300" height="240"/>
-  <img src="https://cdn.jsdelivr.net/gh/crossoverJie/images@main/images/images20260213122805.png" alt="skill install" width="300" height="240"/>
+  <img src="https://cdn.jsdelivr.net/gh/crossoverJie/images@main/images/imagesdashboard.png" alt="Dashboard Overview" width="800" />
+  <img src="https://cdn.jsdelivr.net/gh/crossoverJie/images@main/images/imagesregistry.png" alt="Registry Browser" width="800" />
 </p>
 
 ## Features
@@ -43,6 +36,7 @@
 - **Multi-Agent Support** — Claude Code, Codex, Gemini CLI, Copilot CLI, OpenCode, Antigravity, Cursor, Kiro, CodeBuddy, OpenClaw, Trae, Qoder
 - **Registry & Marketplace Browser** — Browse [skills.sh](https://skills.sh) leaderboard plus the ClawHub catalog for OpenClaw with search, sorting, and filters
 - **Unified Dashboard** — All skills in one three-pane macOS-native view
+- **Usage Insights** — Track invocation counts per skill across Codex, Claude Code, and Copilot CLI, then sort the dashboard by usage to spot and clean up skills you no longer use
 - **Flexible Imports** — Install from GitHub or import from a local folder, then auto-create symlinks and update the lock file
 - **Update Checker** — Detect remote changes and pull updates with one click
 - **SKILL.md Editor** — Split-pane form + markdown editor with live preview

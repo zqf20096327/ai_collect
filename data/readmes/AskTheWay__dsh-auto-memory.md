@@ -55,6 +55,19 @@ amnesia by design.
 Memories are ordinary files under `$DSH_HOME/memory/` — hand-editable,
 grep-able, git-friendly, yours.
 
+### Trustworthy, not just persistent (1.0.0)
+
+Model-consolidated memories can be confidently wrong — and a wrong memory
+gets re-injected every session. So memories carry a **trust status**:
+consolidation products are born `candidate` (with a verbatim evidence quote
+from the transcript — fabricated citations are dropped by checking against
+it), `verified` can only be granted by *you* in the panel, `disputed` /
+`superseded` are never injected. Every write path passes an injection-pattern
+guard at the store choke point; content changes downgrade trust and expire
+old evidence. A `🩺` health board surfaces unverified / zombie / conflicting
+memories for review. Same flat files, same zero services — now with an audit
+trail for *whether to believe them*.
+
 ## One minute to feel it
 
 ```sh
@@ -66,6 +79,23 @@ calls `memory_write` / `memory_read` / `memory_list` / `memory_delete`,
 following Claude Code's write discipline: **dedupe-and-update over piling up**,
 absolute dates only, `[[name]]` cross-links, `feedback` memories carry
 **Why:** / **How to apply:** lines.
+
+## Import from Claude Code — and take it back
+
+The panel's **📥 Import from Claude Code** button scans
+`~/.claude/projects/*/memory` read-only and lists every memory grouped by source
+project. Tick what you want and apply: fields map one-to-one (same four types,
+H1 → title, ISO `modified` → epoch), same-name memories are skipped, never
+overwritten.
+
+Imported files carry an `origin` block (`kind` / `slug` / `file` / `imported` /
+`hash`) in their frontmatter, so the checkbox becomes reversible: uncheck an
+already-imported memory and apply, and it is deleted from this plugin — the
+Claude Code source stays untouched and can be re-imported any time. If the
+memory was edited after import, the content fingerprint no longer matches; the
+entry is marked **modified** and kept, never silently discarded. Memories
+imported by earlier versions (no `origin` block) are recognised by exact content
+equality and marked **legacy import**, so they can be revoked the same way.
 
 ## What the model actually sees
 
@@ -141,7 +171,7 @@ exclude the policy text, overshooting by ~800 bytes (fixed, regression-tested).
 | dsh version | 0.1.5-rc.2 | 0.2.0-rc.2 | 0.2.1-rc.2 |
 | status | ✓ tools/prompt/consolidation | ✓ panel + import + audit | ✓ panel + import |
 
-**150 tests + three eval layers (L0 deterministic / L1 recall / L3 consolidation). 0 runtime deps beyond `yaml`, ~35 kB installed.**
+**182 tests + three eval layers (L0 deterministic / L1 recall / L3 consolidation). 0 runtime deps beyond `yaml`, ~35 kB installed.**
 
 ## Install
 

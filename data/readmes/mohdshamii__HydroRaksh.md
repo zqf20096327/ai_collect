@@ -2,8 +2,8 @@
 
 **AI-driven groundwater intelligence and water resource decision support for India.**
 
-[![Tests](https://img.shields.io/badge/tests-69%20passing-248653.svg)](tests/unit)
-[![Next.js](https://img.shields.io/badge/Next.js-15.1.7-12345A.svg)](apps/web)
+[![Tests](https://img.shields.io/badge/tests-101%20passing-248653.svg)](tests/unit)
+[![Flask](https://img.shields.io/badge/Flask-3.0.0-12345A.svg)](apps/flask_app)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109.2-245B8F.svg)](apps/api)
 [![Notebooks](https://img.shields.io/badge/Jupyter-16%20notebooks-E88B2A.svg)](ml/notebooks)
 [![Docker](https://img.shields.io/badge/Docker-ready-80B8F0.svg)](docker-compose.yml)
@@ -51,41 +51,22 @@ JalSuraksha turns public groundwater observations into near-real-time, actionabl
 
 All figures are captured from the running application and stored in [`img/`](img).
 
-### Map Layers and Multi-State Exploration
+### 1. Core Map Canvas and Intelligence Dashboard
 
-| # | Module | Description | Screenshot |
-|---|---|---|---|
-| 1 | Core Map Canvas and Intelligence Dashboard | Uttar Pradesh 75-district choropleth, river basin vectors, risk classes, timeline dock, and district dossier. | ![Core dashboard](img/dashboard.png) |
-| 2 | Uttar Pradesh Dashboard — Critical Stress Filter | Dark-theme view of critical-risk districts with water quality assays. | ![Uttar Pradesh](img/UttarPradesh_Dashboard.png) |
-| 3 | Dynamic Multi-State Geography — Andhra Pradesh | All 26 districts under the 2035 climate horizon, with a BIS 10500 chemical compliance dossier. | ![Andhra Pradesh](img/AndhraPradesh.png) |
-| 4 | Safe Assessment Units and Decadal Horizon | Safe units under the 2030 target, with top recharge structures highlighted. | ![Safe units](img/safe_states_dashboard.png) |
-| 5 | Coastal Aquifer and UT Monitoring — Puducherry | All four districts, borewell failure telemetry, and provenance labels. | ![Puducherry](img/puducherry.png) |
-| 6 | Groundwater Intelligence and Resource Atlas | Printable map of aquifer stress across all 75 Uttar Pradesh districts for the 2026 horizon. | ![Resource atlas](img/Atlas.png) |
+Interactive Pan-India groundwater intelligence canvas featuring district choropleth boundaries, river basin vectors, aquifer risk classifications (Over-Exploited, Critical, Semi-Critical, Safe), 2000–2035 planning horizon timeline controls, active IoT piezometers, and real-time district dossier telemetry.
 
-### Telemetry, Timeline, and Benchmarks
+![Core Map Canvas and Intelligence Dashboard](img/dashboard_light.png)
 
-| # | Module | Description | Screenshot |
-|---|---|---|---|
-| 7 | Open Data Telemetry and Provenance Hub | Eight active connectors covering 766 districts, including CGWB, IMD, CWC, Open-Meteo, data.gov.in, and SoilGrids. | ![Telemetry hub](img/PAN_India.png) |
-| 8 | Spatio-Temporal Timeline and Forecasting Hub (2000–2035) | Milestones from the 2000 baseline through NWP, Atal Bhujal, and JJM to the 2030 target and 2035 projections. | ![Timeline](img/TimeLine.png) |
-| 9 | Live Present Observation Horizon | 2026 real-time ingestion mode with variable-speed time-lapse controls. | ![Live present](img/LivePresent.png) |
-| 10 | Groundwater Intelligence Superlatives | State-wide extremes: deepest overdraft, shallowest water table, and fastest annual decline. | ![Groundwater intelligence](img/GroundWater_Intelligence.png) |
-| 11 | District Hydrological Benchmark Fact Cards | Extraction-stage extremes, monsoon rainfall contrasts, hard-rock aquifers, and urban infiltration deficits. | ![Fact cards](img/Facts.png) |
+---
 
-### JalRakshak AI Decision-Support Suite
+### 2. Super Intelligence Lab (AI / ML Studio)
 
-| # | Module | Description | Screenshot |
-|---|---|---|---|
-| 12 | Decision-Support Platform Hub | Unified workspace with 14 specialized tabs. | ![Decision-support hub](img/Decision_Support_Plateform.png) |
-| 13 | Domain Intelligence Copilot | Conversational assistant grounded in CGWB monographs, Atal Bhujal Yojana, and BIS 10500, with contextual prompt chips. | ![Copilot](img/JalRakshakAi.png) |
-| 14 | Multi-Horizon Groundwater Forecaster | 12-month depth projections with confidence bands and SHAP drivers. | ![Forecaster](img/ML_Forcasting.png) |
-| 15 | Hydrological Matrix and Comparative Ranking | Multi-metric district ranking with CSV export. | ![Comparison matrix](img/Matrix.png) |
-| 16 | AI Recharge Suitability and Geomorphological Mapping | Suitability scores, ranked engineering interventions, costs, and annual recharge yields. | ![Recharge suitability](img/Recharge_Sustainiblity.png) |
-| 17 | Non-Revenue Water and Distribution Loss Analytics | Physical leakage, unauthorized extraction, and meter under-registration, with DMA pressure and acoustic burst indicators. | ![NRW leakage](img/NRW_Leakage.png) |
-| 18 | Knapsack Capital Budget Optimizer | Maximizes annual recharge volume under capital ceilings and reports cost efficiency. | ![Budget optimizer](img/Budget_Optimiser.png) |
-| 19 | Rooftop Rainwater Harvesting Calculator | Capturable precipitation, recommended sump capacity, installation cost, and tariff payback. | ![RWH calculator](img/RWH_Calculator.png) |
-| 20 | Crop Water Demand and Low-Water Crop Advisory | Compares high-water crops with drought-resistant alternatives and estimates water savings. | ![Crop advisory](img/Agriculture_Advisory.png) |
-| 21 | Citizen Grievance and Borewell Failure Dispatch Board | Incident logging and triage for dry borewells, tanker extraction, damaged check dams, and pipeline bursts. | ![Grievance board](img/Borewell_Failure_Portal.png) |
+Automated exploratory data analysis (EDA) and hydrological machine learning studio profiling 780 districts across 36 States and Union Territories. Features bivariate hydrological correlation matrices (Pearson r), one-way ANOVA hypothesis testing across physical geological formations, telemetry sentinel data quality certification, and parametric summary distribution statistics.
+
+![Super Intelligence Lab](img/super_intelligence_lab_light.png)
+
+---
+
 ## Pan-India Geography
 
 JalSuraksha extends a single-state prototype to a full national platform. Selecting a state updates, in one step:
@@ -108,19 +89,20 @@ graph TD
     B --> C[Feature Engineering & Validation]
     C --> D[Model Training]
     D --> E[Serialized Artifacts]
-    E --> F[FastAPI Backend]
-    F --> G[Next.js Frontend]
+    E --> F[FastAPI & Flask Backend]
+    F --> G[Flask Web UI & Super Intelligence Lab]
     H[Edge IoT Telemetry<br>ESP32 sensors] --> F
     I[JSON User Store] --> F
 ```
 
-**Stack:** Next.js 15 (App Router, Tailwind CSS), FastAPI (async), SQLAlchemy, TimescaleDB, scikit-learn, gensim, SHAP.
+**Stack:** Python 3.10+, Flask (Jinja2, Vanilla JS), FastAPI (async), SQLAlchemy, TimescaleDB, scikit-learn, gensim, SHAP, JupyterLab.
 
 ```
 JalSuraksha/
 ├── apps/
 │   ├── api/          # FastAPI backend (endpoints, core, db, models, services)
-│   └── web/          # Next.js frontend (atlas and decision suite components)
+│   ├── flask_app/    # Flask application (blueprints, templates, static JS/CSS)
+│   └── web/          # Frontend assets and configurations
 ├── data/             # raw, processed, and private (user store) data
 ├── docs/             # Research papers and runbooks
 ├── img/              # Application screenshots
@@ -240,46 +222,54 @@ The platform never fabricates piezometer readings, failure rates, or model metri
 
 ## Getting Started
 
-**Prerequisites:** Node.js 18+, npm 9+, Python 3.10+, Git.
+**Prerequisites:** Python 3.10+, Git.
 
 ```bash
 git clone https://github.com/mohdshamii/HydroRaksh.git
 cd HydroRaksh
 ```
 
-**Backend**
+### 1. Python Environment Setup
 
 ```bash
-cd apps/api
 python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
+### 2. Launching the Python-First Flask Application
+Launch the unified Flask development server:
+```bash
+# Using Makefile
+make dev-flask
+
+# Or directly with Python
+python server.py --host 0.0.0.0 --port 5000
+```
+
+Open `http://localhost:5000` to access the JalSuraksha Atlas and Super Intelligence Lab.
 API docs are served at `http://127.0.0.1:8000/docs`.
 
-**Frontend** (in a separate terminal)
+### 3. Machine Learning Workspace (JupyterLab)
 
 ```bash
-cd apps/web
-npm install
-npm run dev
+make jupyter
+# or: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser
 ```
 
-Open `http://localhost:3000`.
+Open `http://localhost:8888` to explore all 16 ML notebooks.
 
 ### Docker
 
 ```bash
-# API and frontend
+# Application server (Flask & APIs)
 docker compose up -d --build
 
 # JupyterLab research environment
 docker compose --profile research up -d research
 ```
 
-Web app: `http://localhost:3000` · API: `http://localhost:8000` · JupyterLab: `http://localhost:8888`
+Web app: `http://localhost:5000` · JupyterLab: `http://localhost:8888`
 
 The research container ships with `scikit-learn`, `gensim`, `shap`, `pandas`, and `numpy` and gives access to all 16 notebooks.
 
@@ -288,8 +278,7 @@ The research container ships with `scikit-learn`, `gensim`, `shap`, `pandas`, an
 ## Testing
 
 ```bash
-python -m pytest tests/unit ml/tests -v     # unit tests
-cd apps/web && npm run build                # production build check
+pytest tests/unit/ -v     # 101 automated unit tests
 ```
 
 The suite covers backend APIs, authentication, Pan-India endpoints, and ML modules.

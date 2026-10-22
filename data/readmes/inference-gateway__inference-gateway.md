@@ -56,7 +56,7 @@ use of Mixture of Experts.
 
 | Feature                          | Description                                                                                                                                                                                               |
 | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 🔀 **Unified API**               | One OpenAI-compatible endpoint for OpenAI, Anthropic, Groq, Cohere, Ollama, Ollama Cloud, llama.cpp, Cloudflare, DeepSeek, ElevenLabs, Google, Mistral, MiniMax, Moonshot, Nvidia, and Z.ai               |
+| 🔀 **Unified API**               | One OpenAI-compatible endpoint for OpenAI, Anthropic, Groq, Cohere, Ollama, Ollama Cloud, llama.cpp, Cloudflare, DeepSeek, ElevenLabs, Google, Mistral, MiniMax, Moonshot, Nvidia, Z.ai, and WebWright    |
 | 🔧 **Tool-use Support**          | Function calling capabilities across supported providers with a unified API                                                                                                                               |
 | 🌐 **MCP Support**               | Full Model Context Protocol integration - tools from MCP servers are discovered and exposed to LLMs automatically, and the gateway itself can serve them as an MCP server on `POST /mcp`                  |
 | 🤝 **A2A Server**                | The gateway as an Agent-to-Agent server: one card and one `POST /a2a` endpoint relaying every call to the registered agent that owns it, through the same auth, guardrails and telemetry                  |
@@ -182,6 +182,12 @@ For streaming the tokens simply add to the request body `stream: true`.
 
 All `/v1` endpoints resolve the provider from the `provider/model` prefix, or
 from an explicit `?provider=` query parameter.
+
+`/v1/models` hides models that models.dev marks as deprecated
+(`providers/core/community_statuses.json`, synced via `task status:sync`) for
+every provider. `GET /v1/models?include=deprecated` lists them again, and
+`ALLOWED_MODELS` entries are always listed. Requests naming a deprecated model
+are still forwarded.
 
 With `ROUTING_ENABLED=true` and a `ROUTING_CONFIG_PATH` pool file,
 `/v1/chat/completions` first resolves logical model aliases against the
@@ -706,6 +712,7 @@ The included Grafana dashboard provides:
 - [Moonshot](https://platform.moonshot.ai/)
 - [Nvidia](https://build.nvidia.com/)
 - [Z.ai](https://docs.z.ai/)
+- [WebWright](https://webwright.ai/docs)
 
 ## Configuration
 

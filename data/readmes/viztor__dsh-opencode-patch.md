@@ -57,7 +57,7 @@
 - 🔑 Deterministic `ses_<12hex><14base62>` session hashing with KV-cache affinity across turns, subagents and forks
 - 🌐 Gateway origin restoration — `User-Agent`, `x-opencode-client`, `x-opencode-project`, parent-session lineage
 - 🧰 Free-tier `read` + `bash` tool-schema fallback, so a free-tier body carries the tool definitions its endpoint requires — one cause of a `403` removed, and not the whole of it: the gateway's gate is not in the request, measured
-- 📇 models.dev-backed catalog with offline shims and background SWR refresh — names, context windows, prices
+- 📇 OpenCode-catalog-backed (`models.opencode.ai`, the registry models.dev publishes) with offline shims and background SWR refresh — names, context windows, prices
 - ⭕ Live dual-mode composer meter — Go quota ring (5-hour / weekly / monthly) or Zen pay-as-you-go pill, plus session spend and model rate
 - 🕵️ Strict credential isolation — Zen keys (`oc_sk_…`) never query the Go quota endpoint
 
@@ -123,7 +123,7 @@ Done — the **OpenCode Patch** card appears under _Settings → Plugins_, and t
 | Quotas and balances are invisible | **Live dual-mode composer meter** showing Go quota or Zen pay-as-you-go |
 | Zen keys cause `403 EntitlementError` on Go usage | **Strict credential isolation** keeping Zen keys away from the Go endpoint |
 | Projects share a single `"global"` telemetry bucket | **Dynamic workspace attribution** resolved from the active `session.header.cwd` |
-| Gateway `/models` returns a truncated, unnamed list | **models.dev enrichment** with display names, context windows and prices |
+| Gateway `/models` returns a truncated, unnamed list | **Catalog enrichment** (`models.opencode.ai`) with display names, context windows and prices |
 
 ---
 
@@ -146,7 +146,9 @@ DSH speaks three of the four families itself. The fourth — Google Generative A
 
 ### 2. OpenCode Go (`provider: opencode-go`) — subscription quota
 
-- **OpenAI Chat Completions** (`https://opencode.ai/zen/go/v1/chat/completions`): `deepseek-v4-flash`, `deepseek-v4-flash-vision-exp`, `deepseek-v4-pro`, `deepseek-v4.1-flash`, `glm-5.2`, `glm-5.3`, `glm-5.3-flash`, `hy3`, `hy4-preview`, `kimi-k2.6`, `kimi-k2.7-code`, `kimi-k3`, `longcat-2.0`, `longcat-2.5-preview-free`, `mimo-v2.5`, `mimo-v2.5-pro`, `mimo-v2.6-flash`, `mimo-v2.6-pro`, `qwen3.6-plus`, `qwen3.7-max`, `space-bunny`, `space-bunny-free`, `step-5-preview-free`
+- **Google Generative AI** (`https://opencode.ai/inference/go/google/v1beta/models/*:streamGenerateContent`): `gemini-4-argon-contributor`, served by the internal `opencode-go-google` adapter. Add the model under your existing `opencode-go` provider; the bridge inherits that provider's API key reference (default `OPENCODE_GO_API_KEY`). It supports image attachments and signed tool-call replay. Only configured models are mounted; access still depends on your Go plan. This endpoint is also used with `endpoint: legacy`, because Go has no legacy Google endpoint.
+
+- **OpenAI Chat Completions** (`https://opencode.ai/zen/go/v1/chat/completions`): `deepseek-v4-flash`, `deepseek-v4-flash-vision-exp`, `deepseek-v4-pro`, `deepseek-v4.1-flash`, `glm-5.2`, `glm-5.3`, `glm-5.3-flash`, `hy3`, `hy4-preview`, `kimi-k2.6`, `kimi-k2.7-code`, `kimi-k3`, `longcat-2.0`, `mimo-v2.5`, `mimo-v2.5-pro`, `mimo-v2.6-flash`, `mimo-v2.6-pro`, `qwen3.6-plus`, `qwen3.7-max`, `space-bunny`, `space-bunny-free`, `step-5-preview-free`
 - **OpenAI Responses** (`https://opencode.ai/zen/go/v1/responses`): `gpt-5.6-luna`, `gpt-6-luna`, `grok-4.5`, `grok-4.6`, `grok-4.7`, `muse-spark-1.2-contributor`, `muse-spark-1.3-contributor`
 - **Anthropic Messages** (`https://opencode.ai/zen/go/v1/messages`): `claude-haiku-5-5`, `minimax-m2.7`, `minimax-m3`, `qwen3.7-plus`, `qwen3.8-flash`, `qwen3.8-max`
 - Monitored by the live 3-window quota meter (5-hour rolling, weekly, monthly). The full set ships in the bundled catalog — see [Authoritative Model Catalogs](#7-authoritative-model-catalogs-dual-local-shims--real-time-swr-updates).
@@ -157,13 +159,13 @@ Zen's provider-level SDK is `@ai-sdk/openai-compatible`. models.dev names a **di
 
 | models.dev `provider.npm` | models | protocol | served from |
 | :-- | --: | :-- | :-- |
-| _(absent)_ | 27 | OpenAI Chat Completions | the route you configured |
+| _(absent)_ | 25 | OpenAI Chat Completions | the route you configured |
 | `@ai-sdk/openai` | 31 | OpenAI Responses | `opencode-responses` |
-| `@ai-sdk/anthropic` | 18 | Anthropic Messages | `opencode-anthropic` |
+| `@ai-sdk/anthropic` | 17 | Anthropic Messages | `opencode-anthropic` |
 | `@ai-sdk/google` | 8 | Google Generative AI | `opencode-google` |
 | `@ai-sdk/mistral` | 1 | _(a dialect this plugin does not serve)_ | **not offered** |
 
-Counts are the **85** active `opencode` models in `models.opencode.ai` as of 2026-10-21 — everything else the vendor lists is deprecated or retired, and the patch ships only what the gateway still serves. The same 85 are bundled offline in `src/catalog-data.ts`, so every one of them routes correctly before the first catalog refresh; regenerate that file with `pnpm run catalog:shim`.
+Counts are the **82** active `opencode` models in `models.opencode.ai` as of 2026-10-23 — everything else the vendor lists is deprecated or retired, and the patch ships only what the gateway still serves. The same 82 are bundled offline in `src/catalog-data.ts`, so every one of them routes correctly before the first catalog refresh; regenerate that file with `pnpm run catalog:shim`.
 
 The patch **keeps those two routes out of both the model picker and _Settings → Models_**. Three properties hold today, and one does not yet:
 
@@ -211,15 +213,15 @@ The model list is assembled from four sources, each answering a different questi
 | Source | Answers |
 | :-- | :-- |
 | Bundled shim | what can be offered before any network call — cold start, offline |
-| models.dev | the canonical spec, price and display name |
+| `models.opencode.ai` | the canonical spec, price and display name |
 | The gateway's `/models` | what **this account** actually has |
 | Discovery decoration | what `discoverModels` should answer |
 
-Merging is **additive**: adapter rows are kept, canonical rows are appended when a model is missing, and a row is dropped only when the registry marks it `status: "deprecated"` — a fact, not a guess. Display names and prices come from models.dev, because a gateway listing carries ids and little else.
+Merging is **additive**: adapter rows are kept, canonical rows are appended when a model is missing, and a row is dropped only when the registry marks it `status: "deprecated"` — a fact, not a guess. Display names and prices come from the catalog (`models.opencode.ai`), because a gateway listing carries ids and little else.
 
-Two things follow that you will notice in use. **Cold start is never empty** — the bundled shim answers before the first refresh, so the picker has models immediately. And **a model models.dev has no row for still appears**, with `—` where its rate would be: never a guess, and never the previous model's name.
+Two things follow that you will notice in use. **Cold start is never empty** — the bundled shim answers before the first refresh, so the picker has models immediately. And **a model the catalog has no row for still appears**, with `—` where its rate would be: never a guess, and never the previous model's name.
 
-Both generated files are checked in CI (`catalog:shim`, `limits:shim`); they exit non-zero when the vendor's data moved, which is the only way to notice models.dev changing under you.
+Both generated files are checked in CI (`catalog:shim`, `limits:shim`); they exit non-zero when the vendor's data moved, which is the only way to notice the vendor's registry changing under you.
 
 → Protocol routing, the merge and the UI in technical detail: [`docs/protocol-routing-and-merge.md`](./docs/protocol-routing-and-merge.md) · [中文](./docs/protocol-routing-and-merge.md)
 
@@ -244,7 +246,7 @@ Nine controls in four sections — the decisions a user actually makes. Everythi
 | **Gateway Requests** | Inject User-Agent | `on` | Restores the official OpenCode CLI `User-Agent` so Cloudflare WAF checks pass |
 | **Gateway Requests** | Inject Origin Headers | `on` | Injects `x-opencode-client` (and the origin header set) on gateway traffic |
 | **Gateway Requests** | Attach Workspace Project | `on` | Tags `x-opencode-project` with the active folder name; off omits the header |
-| **Models & Free Tier** | Enrich Models from Models.dev | `on` | Merges canonical specs, display names, prices and active free models into listings **and** native DSH discovery |
+| **Models & Free Tier** | Enrich model metadata from the OpenCode catalog | `on` | Fills catalog context limits, modalities and thinking levels into model info, and lets the gateway `/models` listing carry the full catalog. Does **not** add models to the picker — the picker shows declared models only; use the card's **Check catalog** row to declare more |
 | **Models & Free Tier** | Inject Core Tools | `on` | Adds the `read` + `bash` schemas free-tier `/responses` bodies require |
 | **Quota Meter** | Enable Composer Usage Meter | `on` | Mounts the live meter in the composer dock — the Go quota ring, or the Zen session spend |
 | **Account & Endpoint** | API Endpoint | `auto` | Which endpoint family requests go to: **Automatic** (follow the catalog) · **Legacy** (`zen/v1`) · **Modern** (`inference/v1`) |
@@ -300,7 +302,7 @@ Per-state behaviour — the trigger's three states, both panels, what every row 
 - **Adaptive ring**: a real-time SVG ring for the window that answers the question. A window that is **out** — rate-limited, or at its cap — is shown, widest first (monthly → weekly → 5-hour), because a monthly cap explains a refusal the 5-hour window does not. Otherwise it shows the **5-hour** window, which resets soonest and so is the one you can still act on. On a **free model** the ring renders hollow in the muted track colour — the plan's limit says nothing about a bill that cannot be charged, and red against `$0.00` would read as "you are out of money".
 - **Semantic colors**: green below 80% (`--dsw-alias-state-success-primary`), amber at ≥80% (`--dsw-alias-state-warn-primary`), red at the cap (`--dsw-alias-state-error-primary`).
 - **Click panel**: three window rows with live reset countdowns and a bar per window, a session-spend row naming the **currently selected** model, a Zen-overflow row, a rate-limited alert, and act-on-it links. Hovering the trigger shows a `Tooltip` listing **every** window (`5 hours 11% · Weekly 33% · Monthly 16%`), because the trigger can print only one of them and the next question is always "and the other two?".
-- **A model the catalog has no price for reads `—`, not `Free`.** The panel names whatever the picker has selected, even when models.dev has no entry for it yet (it syncs on a schedule), because showing the previous model's name is worse than showing no price.
+- **A model the catalog has no price for reads `—`, not `Free`.** The panel names whatever the picker has selected, even when the catalog has no entry for it yet (it syncs on a schedule), because showing the previous model's name is worse than showing no price.
 
 ```
 ┌──────────────────────────────────────────────┐
@@ -396,7 +398,7 @@ These exist in the schema but render no control — each is a literal, a marker,
         originClient: "cli"
         injectProject: true # attach workspace folder (or 'global'); false omits the header
         injectCoreTools: true
-        enrichModels: true # merge models.dev specs + active free models into listings
+        enrichModels: true # merge catalog specs into model info + gateway /models listings
         usageEnabled: true # off = no meter and no price row
         # File-level only debug options:
         debug: false
@@ -415,7 +417,7 @@ These exist in the schema but render no control — each is a literal, a marker,
 | `400 MissingSessionID` | No session header attached | Ensure `dsh-opencode-patch` is listed in the profile's `dsh.profile.bundles` |
 | Auto Review fails with `TRANSPORT: Connection error` | Host process not restarted since the update | Stop and restart `dsh web` so the new `lib/index.mjs` loads |
 | Quota ring never appears for a Go model | **Restart `dsh web`, then read the browser console** — the plugin is loaded through a `link:`, so `lib/index.mjs` is read once at process start and a page reload alone keeps the old host code; the meter reports which of its paths returned nothing | The console names the cause: `no remote to mount on`, `did not mount` with the exception, `still waiting for remote.opencodeGoUsage`, `no opencodeGoUsage service on the remote` with the keys it does expose, or `the answer is not a usage shape` with what came back. A missing or unroutable credential is one cause of several, not the only one |
-| A catalog model is missing from Settings → Fetch, or a retired one persists | Stale host module, enrichment off, or the adapter answered from its packaged catalog | `pnpm run build`, restart `dsh web`, keep **Enrich Models** on, fetch from the matching route, search the exact id (e.g. `space-bunny-free`) |
+| A catalog model is missing from Settings → Fetch, or a retired one persists | Stale host module, enrichment off, or the adapter answered from its packaged catalog | `pnpm run build`, restart `dsh web`, keep **Enrich model metadata** on, fetch from the matching route, search the exact id (e.g. `space-bunny-free`) |
 | Popover shows “Limit reached” in red | 100% of a rolling/monthly window reached | Open the [OpenCode Console](https://opencode.ai/console) and enable _Use balance_ to overflow into Zen credits |
 | Non-OpenCode models misbehaving | Unrelated to this patch | Traffic to other providers passes through untouched |
 

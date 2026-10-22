@@ -43,7 +43,7 @@
 
 | Category | Details |
 |---|---|
-| **Multi-Interface** | Terminal UI (TUI), desktop app (GUI), mobile apps (Android & iOS), CLI, IM bots — one agent, everywhere. The desktop backend also runs **headless on a server** (`futureos-headless`: no window or WebView, works over SSH), and the phone↔desktop channel is **end-to-end encrypted** — a Noise handshake with ChaCha20-Poly1305 records, so the relay only carries ciphertext ([headless](docs/guide/desktop-headless.md), [remote](docs/wiki/en/Remote.md)) |
+| **Multi-Interface** | Terminal UI (TUI), desktop app (GUI), mobile apps (Android & iOS), CLI, IM bots — one agent, everywhere. The desktop backend also runs as a **host on a server** (`future host`: no window or WebView, works over SSH), and the phone↔desktop channel is **end-to-end encrypted** — a Noise handshake with ChaCha20-Poly1305 records, so the relay only carries ciphertext ([host mode](docs/guide/desktop-host.md), [remote](docs/wiki/en/Remote.md)) |
 | **Configurable Tool Safety** | read, write, edit, shell — approval rules and sandbox tiers (`off` / `manual` / `sandbox`); macOS Seatbelt, Linux system Bubblewrap, Windows restricted-token write protection. Availability and guarantees differ by platform ([guide](docs/wiki/en/Sandbox.md)) |
 | **Model Flexibility** | **Bring your own key**: the [built-in catalog](docs/wiki/en/Models.md) covers the major providers, and any OpenAI- or Anthropic-compatible endpoint can be added through `models.json`. Or sign in to the **FutureOS provider** (`future auth login`) and have the keys and model list provisioned for you. Both work side by side, and you choose which models the picker offers ([setup](#configure-a-model)) |
 | **Goal Engineering** | Durable goals/todos/gates/monitors for long-horizon runs of 24+ hours — deterministic should-run kernel, event-sourced state, hard checks (evidence floor / acceptance contracts / verify gates), lease liveness, multi-agent ([guide](docs/architecture/goal-control-plane.md)) |
@@ -74,6 +74,14 @@ Step-by-step installation for every platform (desktop app, toolchains, GUI
 packaging) is in the **[Build & Install](docs/guide/build-and-install.md)** guide.
 
 The installers finish by running `future init`.
+
+Both scripts check the downloaded artifact against the release manifest's
+SHA-256 before installing it, including when `FUTUREOS_VERSION` pins a release
+(that release's own `latest.json` is read). An artifact whose checksum cannot be
+established — no manifest, no `sha256` for the platform, or a host without
+`shasum`/`sha256sum` — is refused instead of installed unverified. Only
+`FUTUREOS_SKIP_VERIFY=1` (`$env:FUTUREOS_SKIP_VERIFY = '1'` on Windows) turns
+that check off, and it means installing whatever the mirror served you.
 
 ### Configure a model
 
@@ -128,6 +136,21 @@ For providers with user-specific base URLs (e.g. Azure's `YOUR_RESOURCE`), add a
 }
 ```
 
+Many self-hosted endpoints accept only some thinking levels (often just `low`/`high`). Declare the ones your model accepts with `thinkingLevels` — provider-level as the default, overridable per model. Leave it out and all six levels are offered (`off`/`minimal`/`low`/`medium`/`high`/`xhigh`); a model marked `reasoning: false` offers `off` alone. Pickers list only the declared levels, and a stored level outside the list snaps to the nearest one by depth — a tie goes to the shallower level, so the run never spends more than the level you asked for:
+
+```json
+{
+  "providers": {
+    "my-provider": {
+      "apiKey": "sk-...",
+      "baseUrl": "https://my-api.example.com/v1",
+      "thinkingLevels": ["off", "low", "high"],
+      "models": [{ "id": "my-model" }]
+    }
+  }
+}
+```
+
 </details>
 
 ### Install skills (optional)
@@ -153,11 +176,11 @@ The terminal and CLI clients are thin gRPC clients. They connect over
 a current-user-only named pipe on Windows). Unix honors `FUTURE_AGENT_SOCKET`;
 otherwise the endpoint always lives under the instance's FutureOS home:
 `~/.future/run/agent.sock` by default, `<FUTURE_HOME>/run/agent.sock` for an
-instance started with its own home (`future agent --home DIR`) — see
+instance started with its own home (`FUTURE_HOME=DIR`) — see
 [isolated instances](docs/guide/directory-layout.md#running-several-isolated-instances-future_home).
 If the FutureOS home sits on a filesystem that cannot host Unix sockets (e.g.
 NFS), point `FUTURE_HOME` at a directory on a local filesystem.
-Desktop GUI/headless first attach to a compatible external Agent; when the default
+Desktop GUI and host mode first attach to a compatible external Agent; when the default
 endpoint is absent and its instance lock is free, they run the complete Agent in
 their own process. Incompatible or locked/unavailable services produce an error
 without starting a second Agent. The TUI retains its independent Agent startup.

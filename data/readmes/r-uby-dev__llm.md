@@ -1299,10 +1299,10 @@ cheapest.structured_output?            # => false
 <br>
 
 The `transport:` option selects which HTTP library a provider uses for
-network communication. Three backends ship out of the box: `net/http`
-is always available and the default, `net/http/persistent` pools
-connections for many requests to the same host, and `curb` wraps
-libcurl. They share one interface, so switching is a one-word change.
+network communication. Two backends ship out of the box: `net/http`
+is always available and the default, and `net/http/persistent` pools
+connections for many requests to the same host. They share one
+interface, so switching is a one-word change.
 
 ```ruby
 llm = LLM.deepseek(
@@ -1547,5 +1547,20 @@ Rails deployment at a large-ish company.
 
 ## License
 
-This software is released under the terms of the MIT license. <br>
-See [LICENSE](./LICENSE) for details.
+<center>
+<table align="center" width="60%">
+  <tr>
+    <td valign="middle">
+      <p align="left">
+        This software is released under the terms of the MIT license. <br>
+        See <a href="./LICENSE">LICENSE</a> for details.
+      </p>
+    </td>
+    <td align="right" valign="middle" width="128">
+      <a href="https://www.youtube.com/watch?v=DmV49ogMDEI">
+        <img src="jam.jpg" width="128" alt="Jam">
+      </a>
+    </td>
+  </tr>
+</table>
+</center>

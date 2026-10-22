@@ -8,7 +8,7 @@ Deploy OpenAI-Compatible Blazing-Fast LLM Endpoints powered by the [vLLM](https:
 
 ![vLLM worker banner](https://image.runpod.ai/preview/vllm/vllm-banner.png)
 
-Current vLLM version: [0.31.0](https://github.com/vllm-project/vllm/releases/tag/v0.31.0)
+Current vLLM version: [0.32.0](https://github.com/vllm-project/vllm/releases/tag/v0.32.0)
 
 
 > Want a **load balancing** endpoint (direct HTTP, no job queue)? You don't need this worker — deploy the official vLLM image as-is. See [Option 3: Load Balancing with the vLLM Image](#option-3-load-balancing-with-the-vllm-image).
@@ -105,7 +105,7 @@ For the complete list of all available environment variables, examples, and deta
 
 ### When vLLM will not start
 
-Some startup failures a restart cannot fix: the model does not fit the GPU, `MAX_MODEL_LEN` is larger than the KV cache the GPU can hold, a flag or value vLLM rejects, a gated model without `HF_TOKEN`. Exiting on those crash-loops the worker: every attempt pays for the download and the model load, and the console shows only silent restarts with no error anywhere.
+Some startup failures a restart cannot fix: the model does not fit the GPU, `MAX_MODEL_LEN` is larger than the KV cache the GPU can hold, a flag or value vLLM rejects, a gated model without `HF_TOKEN`, a model that requires repository-provided code without `TRUST_REMOTE_CODE=true`. Exiting on those crash-loops the worker: each attempt repeats the startup (for most of these, the download and the model load), and submitted jobs receive no result.
 
 The worker recognises these and stays up instead, answering every job with the cause and the fix:
 

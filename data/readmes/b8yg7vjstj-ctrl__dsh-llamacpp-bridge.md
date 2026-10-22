@@ -33,14 +33,14 @@
 
 ## 装它
 
-前提是一份 DSH（`web` profile）、一份带 `llama-server` 的 llama.cpp，以及 Node 20 以上。
+前提是一份 DSH（`web` profile，0.2.0-rc.2 与 0.2.1-rc.2 都试过）、一份带 `llama-server` 的 llama.cpp，以及 Node 20 以上。
 
 ### 从 Release 装（最省事）
 
-到 Releases 页面下载 `dsh-llamacpp-bridge-1.5.0.tgz`，然后：
+到 Releases 页面下载 `dsh-llamacpp-bridge-1.6.0.tgz`，然后：
 
 ```bash
-dsh plugin --profile web add ./dsh-llamacpp-bridge-1.5.0.tgz
+dsh plugin --profile web add ./dsh-llamacpp-bridge-1.6.0.tgz
 ```
 
 ### 从源码装
@@ -51,7 +51,7 @@ dsh plugin --profile web add ./dsh-llamacpp-bridge-1.5.0.tgz
 git clone https://github.com/b8yg7vjstj-ctrl/dsh-llamacpp-bridge.git
 cd dsh-llamacpp-bridge
 npm pack
-dsh plugin --profile web add ./dsh-llamacpp-bridge-1.5.0.tgz
+dsh plugin --profile web add ./dsh-llamacpp-bridge-1.6.0.tgz
 ```
 
 想自己重新构建，就多两步。这里有个小前提：`@deepseek-ai/*` 这些类型包并不在 npm 上，它们跟着 DSH 本体一起安装，所以要先让脚本把它们链接到项目里来——**顺序不能颠倒**，因为 `npm install` 会把没有在 `package.json` 里声明的东西清掉：

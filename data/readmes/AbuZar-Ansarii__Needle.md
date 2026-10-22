@@ -10,8 +10,12 @@ An ultra-lightweight, local agentic assistant for Android/Termux that controls p
 
 ## 🌟 Features
 - **Dual Model Support (Needle 3 & Needle 2):** Use the latest **Needle 3** model for superior reasoning, sliceable depth, and grammar-constrained tool calling, or choose **Needle 2** for the ultra-compact 14MB legacy core.
+- **🎙️ Offline "Jarvis" Voice Loop:** Hands-free voice input via speech recognition with spoken audio responses using Android Text-to-Speech (`termux-tts-speak`).
+- **🧠 Offline Personal Knowledge Base (Local RAG):** Store personal notes, credentials, and memories in a local SQLite database with on-device 3,072-dimensional Needle 3 embeddings and semantic search.
+- **📸 Smart Camera Document Extractor:** Photograph receipts, invoices, business cards, and badges, and extract structured JSON schemas completely offline.
+- **🛡️ Smart SMS & Notification Triage:** Intelligently categorizes SMS into OTP, Bank Transactions, Spam, and Personal chats, and automatically extracts verification codes straight to your Android clipboard.
 - **Dynamic On-The-Fly Model Switching:** Switch between Needle 3 and Needle 2 anytime via the Web UI header toggle, CLI commands, or Telegram bot messages without restarting the server.
-- **Interactive Chat Web UI:** Sleek glassmorphic dashboard built using Flask for testing commands, toggling models, and monitoring live logs.
+- **Interactive Chat Web UI:** Sleek light/dark dashboard with tool execution cancellation, live logs, and sidebar studios.
 - **Remote Telegram Bot Control:** Start a background Telegram listener that lets you text your phone commands remotely and receive results instantly, with support for `/model` commands.
 - **Natural Language Translation:** Translates commands like *"turn on flashlight"* or *"tell me the battery status"* to phone API calls.
 - **Hassle-Free Path Setup:** Dynamically detects and prepends Termux binary folders (`/data/data/com.termux/files/usr/bin`) to the environment path at runtime.
@@ -42,7 +46,7 @@ Make sure you have the [Termux:API app](https://f-droid.org/en/packages/com.term
 ### 2. Install Dependencies
 ```bash
 apt update && apt upgrade -y
-apt install git python3 python3-pip python3-venv -y
+apt install git python3 python3-pip python3-venv ca-certificates -y
 ```
 
 Clone this repository and install the dependencies:
@@ -53,6 +57,8 @@ python3 -m venv myenv
 source myenv/bin/activate
 pip3 install -r requirements.txt
 ```
+
+> **Note on PRoot Ubuntu:** `app.py` and `termux_needle.py` automatically sanitize inherited Termux environment variables (`ANDROID_ROOT` and `ANDROID_DATA`) at runtime so that `needle` correctly detects the Ubuntu ARM64 (`manylinux2014_aarch64`) environment and loads the engine seamlessly.
 
 ---
 

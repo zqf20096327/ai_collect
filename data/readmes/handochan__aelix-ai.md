@@ -328,11 +328,13 @@ there is ([#110](https://github.com/handochan/aelix-ai/issues/110)).
 
 ## Architecture
 
-Three packages (a uv workspace), orchestrated by `Agent` and `AgentHarness`:
+Five packages (a uv workspace), orchestrated by `Agent` and `AgentHarness`:
 
 - **`aelix-ai`** — provider-agnostic messages, streaming primitives, tool definitions. No loop, no hooks.
 - **`aelix-agent-core`** — the agent loop, `Agent`, `AgentHarness`, and the typed `HookBus`. No extension deps.
 - **`aelix-coding-agent`** — `ExtensionAPI`, extension loader, built-in `PolicyExtension` / `GuardrailExtension`.
+- **`aelix-server`** — a local daemon that serves the RPC protocol over HTTP (a WebSocket at `/rpc`); not published to PyPI. See [its README](packages/aelix-server/README.md).
+- **`aelix`** — the workspace root and the package you install (see [Install](#install)): the `aelix` command, and an umbrella module that re-exports the main names of the first three packages, which it depends on.
 
 Small kernel, broad extension surface; policy and guardrails as built-in extensions rather
 than core; an explicit hook bus for auditability. Full rationale in [`docs/`](docs/README.md).
@@ -342,6 +344,7 @@ than core; an explicit hook bus for auditability. Full rationale in [`docs/`](do
 [Getting started](docs/guides/getting-started.md) ·
 [Providers & models](docs/guides/providers-and-models.md) ·
 [Credentials](docs/guides/credentials.md) ·
+[Compaction](docs/guides/compaction.md) ·
 [Custom models](docs/guides/models-json.md) ·
 [Agent profiles](docs/guides/agent-profiles.md) ·
 [Writing an extension](docs/guides/extension-authoring.md) ·

@@ -58,6 +58,7 @@ github: github.com/aaravshah1311
   <a href="#-architecture">Architecture</a> •
   <a href="#-tests">Tests</a> •
   <a href="#-documentation">Docs</a>
+  <a href="#-contributors">Contributors</a>
 </p>
 
 ---
@@ -613,6 +614,17 @@ load-bearing in non-obvious ways, and a few exist specifically to block a bug th
 Then: run the suite, add a test that fails against a deliberate break of your change, and keep
 each fact in exactly one place.
 
+---
+| Contributor | Role | What they own |
+|-------------|------|---------------|
+| [Aarav Shah](#) | **Project Lead · Author** | Architecture and the agent turn loop; tool dispatcher and context broker; the DAG, workflow and UltraCode subsystems; CLI, web and dual surfaces; all documentation |
+| [Rudra Marathe](#) | **QA Lead · Release Gatekeeper** | Test strategy across the 51 test modules; sabotage-verified tests; regression triage; the pass/skip report that gates a release |
+| [Vedant Shah](#) | **Community & Operations Lead** | Presentation decks and project administration; scheduling, release notes and public-facing coordination |
+| [Samarjeet Thakore](#) | **API & Integrations Engineer** | REST and Socket.IO surfaces; MCP bridges for Burp Suite and OWASP ZAP; custom-provider support |
+| [Aayushi Shah](#) | **Stability & Bug-Fix Engineer** | Root-cause analysis of reported bugs; critical fixes and hardening of command execution, cancellation and recovery paths |
+| [Astha Desai](#) | **DevOps & Containerization Engineer** | Dockerfile, compose stack and entrypoint; multi-surface runtime; launcher, update and uninstall flow |
+| [Naitik Soni](#) | **UI/UX Designer** | CLI and web visual design; menus, panels and the full-screen diff viewer; accessibility and keyboard ergonomics |
+| [Darshan Vakhariya](#) | **Content Creator** | Demos, walkthroughs and feature showcases; tutorials and release announcements that explain what Agent-2 does and why |
 ---
 
 <p align="center">

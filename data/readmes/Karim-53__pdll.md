@@ -1,7 +1,7 @@
 <h1 align="center">Pairwise Difference Learning (pdll)</h1>
 
 <p align="center">
-  <b>A scikit-learn meta-estimator that makes tree models more accurate on small tabular datasets by learning from <i>pairs of points</i>.</b>
+  <b>A scikit-learn meta-estimator that trains your tree model on <i>pairs of points</i>, for small tabular datasets.</b>
 </p>
 
 <p align="center">
@@ -92,11 +92,11 @@ More in [`examples/`](examples/): uncertainty from the per-anchor posteriors (`p
 `fit` also accepts `sample_weight`. A pair (i, j) is weighted w_i·w_j, which is exactly equivalent to repeating rows.
 
 ## When to use it
-- ✅ **Small tabular data**: up to about 2,000 training rows. In the [real-data benchmark](benchmark/real_world/) PDL matches its base learner on average below 1,000 rows and beats it on many datasets. Above 2,000 rows it was usually *less* accurate than the base learner alone, and `fit` warns you.
-- ✅ **Tree-based base learners**: DecisionTree, RandomForest, ExtraTrees, Bagging, (Hist)GradientBoosting. The weaker the learner, the larger the gain (a single decision tree gains 15 points on small digits data).
+- ✅ **Small tabular data**: PDL is designed for small datasets, up to about 2,000 training rows; above that, `fit` warns you.
+- ✅ **Tree-based base learners**: DecisionTree, RandomForest, ExtraTrees, Bagging, (Hist)GradientBoosting. The weaker the learner, the larger the gain (a single decision tree on 300 rows of digits: macro-F1 0.75 → 0.93 in the CI suite).
 - ⚖️ **Imbalanced classes**: use `class_weight="balanced"`. PDL ranks well (its ROC AUC is on par or better) but under-predicts minority classes by default.
 - ⚠️ **Parametric base learners** (logistic regression, SVM, kNN, naive Bayes, MLP) rarely gain from PDL; pdll warns you.
-- ⏱️ **Cost**: training sees up to `max_pairs` pairs with 3× the features, and prediction compares every point with up to `max_anchors` anchors. With the defaults, a typical dataset fits in seconds and stays well under 2 GB of memory, whatever its size. For more accuracy on a few thousand rows, raise `max_pairs` (e.g. `1_000_000`), at about 10× the time and memory.
+- ⏱️ **Cost**: training sees up to `max_pairs` pairs with 3× the features, and prediction compares every point with up to `max_anchors` anchors. With the defaults, a typical dataset fits in seconds and needs about 1 GB of memory; on the 131 real datasets (up to 436,000 training rows and 3,072 features) peak memory stayed at or below 2.6 GB. For more accuracy on a few thousand rows, raise `max_pairs` (e.g. `1_000_000`), at about 10× the time and memory.
 
 
 ## How does it work?
@@ -160,15 +160,7 @@ Finally, the predicted class is the most likely prediction:
 ## Evaluation
 
 ### Real-world validation (131 datasets)
-Before release, pdll ran with default settings on 131 raw real datasets: OpenML-CC18 and CTR23 (official task splits), Kaggle datasets, scikit-learn datasets and a Zindi dataset. 129 ran, and 2 were refused with an actionable message (sparse text, multi-target). There were no crashes, out-of-memory errors or timeouts, and peak memory stayed at or below 2.6 GB. [Protocol and findings](benchmark/real_world/README.md), [full table](benchmark/real_world/RESULTS.md).
-
-| Training rows | Classification: macro-F1, PDL minus base learner (wins / ties / losses) |
-|---|---|
-| up to 1,000 | -0.001 (10 / 10 / 10) |
-| 1,000 to 2,000 | -0.012 (3 / 5 / 10) |
-| more than 2,000 | -0.061 (5 / 3 / 35) |
-
-The base learner here is a strong default, ExtraTrees with balanced class weights. PDL holds its own on small data and is not meant for large data; `fit` warns from 2,000 rows on.
+Before release, pdll ran with default settings on 131 raw real datasets: OpenML-CC18 and CTR23 (official task splits), Kaggle datasets, scikit-learn datasets and a Zindi dataset. 129 ran, and 2 were refused with an actionable message (sparse text, multi-target). There were no crashes, out-of-memory errors or timeouts, and peak memory stayed at or below 2.6 GB. [Protocol and findings](benchmark/real_world/README.md).
 
 ### Continuous benchmark (CI)
 Every change to `pdll` runs [`tests/e2e`](tests/e2e/): 10 offline datasets (iris, wine, breast cancer, digits, 2D toy problems, synthetic, a Titanic-like mixed-type table and a dataset with a tiny class). Each is scored with 5-fold stratified CV and macro-F1, comparing ExtraTrees, RandomForest and DecisionTree alone versus wrapped in PDC. The build fails if accuracy or speed regresses against the [committed baseline](tests/e2e/baseline.json).
@@ -370,7 +362,7 @@ The search space is inspired from TPOT a state-of-the-art library in optimizing 
 
 ### 2D datasets Examples
 ![2d datasets](./results/2d_datasets.png)
-Here we see the difference in the learned patterns between PDL and the base learner. In case PDL is compatible with the base learner (DecisionTree, RandomForest) then the scores improves. In case the base learner is not compatible with PDL (SVC, AdaBoost, ...) then the scores gets lower. 
+Here we see the difference in the learned decision boundaries between PDL and the base learner on three 2D toy datasets (one train/test split each, 40 test points). The effect on the score depends on both the dataset and the base learner (see the number in each panel): in this figure PDL lowers the decision tree's score on all three datasets, moves random forest, the neural net and AdaBoost up on one dataset and down on another, and leaves the RBF SVM unchanged. These toy examples are too small to rank methods; see the benchmark above for accuracy comparisons.
 
 
 

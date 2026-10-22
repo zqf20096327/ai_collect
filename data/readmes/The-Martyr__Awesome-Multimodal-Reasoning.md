@@ -97,6 +97,8 @@ This repo also select paper about visual generation (image generation/video gene
 
 ### Image Reasoning
 
+(14 Sep 2026) Reasoning with Image Generation [![arXiv](https://img.shields.io/badge/arXiv-b31b1b.svg)](https://arxiv.org/abs/2609.16409)
+
 (09 Sep 2026) On-Policy Distillation for Vision-Language Model Adaptation, an Effective Paradigm on Low-Quality Multimodal Data [![arXiv](https://img.shields.io/badge/arXiv-b31b1b.svg)](https://arxiv.org/abs/2609.10321)
 
 (09 Sep 2026) Beyond Surface Imitation: Contrastive Modeling for Reasoning Path Alignment in Multimodal In-Context Learning [![arXiv](https://img.shields.io/badge/arXiv-b31b1b.svg)](https://arxiv.org/abs/2609.10177)
@@ -1117,6 +1119,4 @@ This repo also select paper about visual generation (image generation/video gene
 
 (13 Jun 2024) Visual Sketchpad: Sketching as a Visual Chain of Thought for Multimodal Language Models [![arXiv](https://img.shields.io/badge/arXiv-b31b1b.svg)](https://arxiv.org/abs/2406.09403)
 
-(28 Dec 2023) Grounding-Prompter: Prompting LLM with Multimodal Information for Temporal Sentence Grounding in Long Videos [![arXiv](https://img.shields.io/badge/arXiv-b31b1b.svg)](https://arxiv.org/abs/2312.17117v1)
-
-(14 Dec 2023) Multi-modal Latent Space Learning for Chain-of-Thought Reasoning in Language Models [![arXiv](htt
+(28 Dec 2023) Grounding-Prompter: Prompting LLM with Multimodal Information for Temporal Sentence Grounding in Long Videos [![arXiv](https://img.shields.io/badge/arXiv-b31b1b.svg)](https://a

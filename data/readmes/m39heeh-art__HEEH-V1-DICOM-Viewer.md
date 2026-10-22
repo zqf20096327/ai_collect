@@ -3,6 +3,7 @@
 [![tests](https://img.shields.io/badge/tests-335%20passed-brightgreen)](verification/tests)
 [![real-data study](https://img.shields.io/badge/real--data%20study-172%2F172%20exact-blue)](docs/tcia_full_series_study_report.md)
 [![CI](https://github.com/m39heeh-art/HEEH-V1-DICOM-Viewer/actions/workflows/ci.yml/badge.svg)](https://github.com/m39heeh-art/HEEH-V1-DICOM-Viewer/actions/workflows/ci.yml)
+
 # HEEH-V1(TM) DICOM Viewer
 
 HEEH-V1(TM) DICOM Viewer is a Streamlit web application for **medical-image
@@ -49,7 +50,24 @@ streamlit run app.py
 Open `http://localhost:8501`. See [Installation](#installation) for platform
 details and development dependencies.
 
-![HEEH-V1 application settings panel](verification/samples/screenshots/sidebar-settings.png)
+## IMAGE of project
+
+
+![HEEH-V1 application settings panel](verification/samples/screenshots/Screenshot%202026-10-22%20172205.png)
+
+![HEEH-V1 application settings panel](verification/samples/screenshots/Screenshot%202026-10-22%20172242.png)
+
+![HEEH-V1 application settings panel](verification/samples/screenshots/Screenshot%202026-10-22%20172550.png)
+
+![HEEH-V1 application settings panel](verification/samples/screenshots/Screenshot%202026-10-22%20191711.png)
+
+![HEEH-V1 application settings panel](verification/samples/screenshots/Screenshot%202026-10-22%20191748.png)
+
+![HEEH-V1 application settings panel](verification/samples/screenshots/Screenshot%202026-10-22%20191820.png)
+
+![HEEH-V1 application settings panel](verification/samples/screenshots/Screenshot%202026-10-22%20172311.png)
+
+![HEEH-V1 application settings panel](verification/samples/screenshots/Screenshot%202026-10-22%20202232.png)
 
 ## Contents
 

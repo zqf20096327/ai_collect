@@ -94,15 +94,22 @@
 ```text
 1. Download the latest JAR from Releases
 2. Drop it into JMeter's lib/ext directory
-3. Copy jmeter-ai-sample.properties into jmeter.properties (or user.properties)
-4. Add API keys and/or enable a local subscription CLI provider, then restart JMeter
+3. Paste jmeter-ai-quickstart.properties into JMeter's bin/user.properties
+4. Uncomment one provider (Claude, OpenAI, Gemini or Ollama), add its key (Ollama needs none), then restart JMeter
 ```
 
 See [Releases](https://github.com/QAInsights/jmeter-ai/releases) for the latest JAR.
 
 ## ⚙️ Configuration
 
-Copy `jmeter-ai-sample.properties` into your `jmeter.properties` or `user.properties` and adjust the values below.
+**First time?** Paste [`jmeter-ai-quickstart.properties`](jmeter-ai-quickstart.properties) into JMeter's `bin/user.properties`, uncomment one provider and add its key (Ollama needs none):
+
+```properties
+jmeter.ai.service.type=anthropic
+anthropic.api.key=YOUR_ANTHROPIC_API_KEY
+```
+
+That is all Feather Wand needs; every other setting has a default. [`jmeter-ai-sample.properties`](jmeter-ai-sample.properties) is the full reference: copy only the settings you want to change from it into `user.properties` (or `jmeter.properties`). The tables below list each setting and its default.
 
 ### General Settings
 
@@ -1205,7 +1212,7 @@ Starting with v3.8.6, Feather Wand sends one small, anonymous usage ping per day
 | Field | Example | Notes |
 | --- | --- | --- |
 | Install ID | `3f1c9a2e-7b4d-4e8a-9c1f-2d5e6a7b8c9d` | Random UUID created once and stored in `~/.jmeter-ai/telemetry.json`. It is not derived from your machine, user name, or account. |
-| Plugin version | `3.8.8` | |
+| Plugin version | `3.8.9` | |
 | JMeter version | `5.6.3` | |
 | Java version | `17.0.12` | |
 | OS and CPU architecture | `Mac OS X`, `aarch64` | |
@@ -1223,8 +1230,10 @@ These counters are also sent, again as counts only:
 | Counter | Meaning |
 | --- | --- |
 | `outcome_completed`, `outcome_step_limit`, `outcome_error`, `outcome_fallback` | How each Agent run ended: finished, stopped at the step limit, failed with a provider or configuration error, or fell back to a plain AI response. |
-| `outcome_tool_failed` | Agent tool calls that returned an error. |
+| `outcome_tool_failed` | Agent tool calls that returned an error, including calls with a missing required parameter or an unknown tool name. |
+| `outcome_tool_declined` | Agent tool calls you declined at a confirmation prompt. The tool never ran. |
 | `tool_<name>` | Agent tool calls per built-in tool, for example `tool_add_element`. Tool arguments and results are never sent. |
+| `toolfail_<name>` | Agent tool calls per built-in tool that returned an error (including a missing required parameter), for example `toolfail_update_element_property`. Calls to a tool name that does not exist count as `toolfail__unknown`, and the requested name is not sent. The error message is never sent. |
 | `route_focused`, `route_all_tools`, `route_unavailable`, `route_expanded` | Smart routing cards: a focused tool pack, all tools (low confidence), backend unavailable, and mid-run tool expansion. |
 | `triage_run`, `triage_unclassified` | Failure triage advisories, and those where no failure could be classified. |
 | `err_<provider>_<type>` | Provider errors, for example `err_openai_auth`. Types: `auth`, `forbidden`, `not_found`, `bad_request`, `rate_limit`, `server`, `timeout`, `unreachable`, `other`. The error message is never sent. |
@@ -1237,7 +1246,7 @@ A complete ping looks like this:
 {
   "installId": "3f1c9a2e-7b4d-4e8a-9c1f-2d5e6a7b8c9d",
   "event": "daily",
-  "pluginVersion": "3.8.8",
+  "pluginVersion": "3.8.9",
   "jmeterVersion": "5.6.3",
   "javaVersion": "17.0.12",
   "os": "Mac OS X",

@@ -546,6 +546,24 @@ uv run uvicorn autoapply_agent.main:app --reload
 | Benevity/YourCause/Rippling disaster-relief leave planners bury related math in closed UIs | Workers lack a local `offered_days` vs `needed_days` band | `DisasterReliefLeaveGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
 ![DisasterReliefLeaveGapAdvisor](assets/demo/disaster-relief-leave-gap-advisor.gif)
 
+| BrightHorizons/Care.com/Workplace Options caregiver backup-care planners bury related math in closed UIs | Workers lack a local `offered_days` vs `needed_days` band | `CaregiverBackupCareGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
+![CaregiverBackupCareGapAdvisor](assets/demo/caregiver-backup-care-gap-advisor.gif)
+
+| BambooHR/Workday/Rippling election-day civic-leave planners bury related math in closed UIs | Workers lack a local `offered_days` vs `needed_days` band | `ElectionDayPtoGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
+![ElectionDayPtoGapAdvisor](assets/demo/election-day-pto-gap-advisor.gif)
+
+| Carrot/Progyny/Kindbody surrogacy benefit planners bury related math in closed UIs | Workers lack a local `offered_days` vs `needed_days` band | `SurrogacyBenefitGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
+![SurrogacyBenefitGapAdvisor](assets/demo/surrogacy-benefit-gap-advisor.gif)
+
+| Rippling/Workday/BambooHR military-leave differential planners bury related math in closed UIs | Workers lack a local `offered_days` vs `needed_days` band | `MilitaryLeaveDifferentialGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
+![MilitaryLeaveDifferentialGapAdvisor](assets/demo/military-leave-differential-gap-advisor.gif)
+
+| Right Management/RiseSmart/CareerBuilder outplacement planners bury related math in closed UIs | Workers lack a local `offered_days` vs `needed_days` band | `OutplacementServiceGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
+![OutplacementServiceGapAdvisor](assets/demo/outplacement-service-gap-advisor.gif)
+
+| Progyny/Carrot/Maven egg-freezing benefit planners bury related math in closed UIs | Workers lack a local `offered_days` vs `needed_days` band | `EggFreezingBenefitGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
+![EggFreezingBenefitGapAdvisor](assets/demo/egg-freezing-benefit-gap-advisor.gif)
+
 ## License
 
 MIT © [Francis1998](https://github.com/Francis1998)

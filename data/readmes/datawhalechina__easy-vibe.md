@@ -55,10 +55,30 @@
 
 </div>
 
+<a id="learning-start"></a>
 <p align="center">
-  <a href="https://datawhalechina.github.io/easy-vibe/en/appendix/">
-    <img src="assets/readme-panels/03-interactive-learning.png" alt="Interactive learning: prompt experiments, RAG exploration, and terminal concepts" width="100%">
-  </a>
+  <img src="assets/readme-panels/05-choose-your-path-en.svg" alt="Choose your starting point. Pick the row that matches what you can do now and what you want to build." width="100%">
+</p>
+
+<p align="center">
+  <a href="https://datawhalechina.github.io/easy-vibe/en/stage-1/learning-map/">Learning guide</a> ·
+  <a href="https://datawhalechina.github.io/easy-vibe/en/stage-1/ai-capabilities-through-games/">New to coding</a> ·
+  <a href="https://datawhalechina.github.io/easy-vibe/en/stage-1/finding-great-idea/">Validate an idea</a> ·
+  <a href="https://datawhalechina.github.io/easy-vibe/en/stage-2/">Ship an application</a> ·
+  <a href="https://datawhalechina.github.io/easy-vibe/en/stage-3/">Advanced projects</a>
+</p>
+
+<a id="learning-progression"></a>
+<p align="center">
+  <img src="assets/readme-panels/06-learning-progression-en.svg" alt="From a first game to complex projects. Make progress visible with a working result at each step. Continue when your goal calls for it." width="100%">
+</p>
+
+<p align="center">
+  <a href="https://datawhalechina.github.io/easy-vibe/en/stage-1/ai-capabilities-through-games/">First experience</a> ·
+  <a href="https://datawhalechina.github.io/easy-vibe/en/stage-1/complete-project-practice/">Stage 1 project</a> ·
+  <a href="https://datawhalechina.github.io/easy-vibe/en/stage-2/assignments/copywriting-platform-supabase/">Stage 2 full-stack project</a> ·
+  <a href="https://datawhalechina.github.io/easy-vibe/en/stage-3/core-skills/workflow/">Stage 3 workflows</a> ·
+  <a href="https://datawhalechina.github.io/easy-vibe/en/appendix/">Appendix</a>
 </p>
 
 <table align="center">
@@ -248,9 +268,7 @@ Illustrative project previews. Explore the corresponding tutorials:
 
 ### 📖 Content Navigation
 
-<div align="center">
-  <img src="assets/readme-panels/01-learning-path.svg" alt="Easy Vibe learning map: from idea validation to full-stack delivery and advanced AI coding" width="100%">
-</div>
+<p><a href="#learning-progression">↑ See the learning progression above, then choose from the chapters below.</a></p>
 
 ### I. Beginner Entry
 

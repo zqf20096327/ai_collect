@@ -15,12 +15,12 @@
   </p>
 </div>
 
-<img src="https://github.com/user-attachments/assets/9d06c118-6be6-4e54-9abc-bb78128eecb2" alt="Debatr: the debate page with the video, the judge's verdict and a 9:16 Short">
+<img src="https://github.com/user-attachments/assets/6a4ba82a-93c6-472b-ad8b-de6486fba684" alt="Debatr: a rap battle page with the video, the judge's score card and a 9:16 Short">
 
 **[Try it live at debatr.tv](https://debatr.tv)** · free models cost nothing, or bring your
 own OpenRouter key.
 
-**Debatr** (the AI Debates studio) is a full-stack service that orchestrates structured debates between AI personas and turns them into content. Powered by **OpenRouter**, it lets you pit **hundreds of LLMs** against each other with custom roles, personalities and stances, watch the debate stream live, get a judge's verdict, and render a **16:9 YouTube video plus a 9:16 Short** right in the browser.
+**Debatr** is a full-stack service that orchestrates structured debates between AI personas and turns them into content. Powered by **OpenRouter**, it lets you pit **hundreds of LLMs** against each other with custom roles, personalities and stances, watch the debate stream live, get a judge's verdict, and render a **16:9 YouTube video plus a 9:16 Short** right in the browser.
 
 Users sign up, run free models or bring their own OpenRouter key, buy credits with **Stripe**, keep a library of their debates and can publish them to a **public gallery** with share links.
 
@@ -30,14 +30,14 @@ Users sign up, run free models or bring their own OpenRouter key, buy credits wi
 
 <table>
   <tr>
-    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/e5fd9288-15cf-4b10-ac53-46e519ae2e1d" alt="Wizard step 1: trending topics from today's news"><br><sub>Topics from today's news</sub></td>
-    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/8149b106-ea3d-424e-b034-8bb9c96d3c20" alt="Wizard step 2: a model, a voice and a persona for every debater"><br><sub>Any model vs any model</sub></td>
-    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/dded1f51-6832-4bc4-a73e-4433eca70115" alt="Debate page: the video and the blind audience vote"><br><sub>The episode and the audience vote</sub></td>
+    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/7af24d45-149f-4f7c-bb19-2a7bcfc31015" alt="Wizard step 1: today's trending rap battles from the news"><br><sub>Topics from today's news</sub></td>
+    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/644d8a17-727f-4a15-801b-3e36ac51b207" alt="Wizard step 2: a model, a flow and a persona for every rapper"><br><sub>Any model vs any model</sub></td>
+    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/75f2c23b-4d50-45e9-8a18-f67f81de0b6c" alt="Debate page: the episode with its AI cover and the blind audience vote"><br><sub>The episode and the audience vote</sub></td>
   </tr>
   <tr>
-    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/4baf0c2d-bcbe-499a-8347-c9ae67847044" alt="The judge's verdict with feedback for every debater"><br><sub>The judge's verdict</sub></td>
-    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/f990d273-2ab6-4584-aabe-f37842eefe1b" alt="9:16 Short with a fact-checked figure on screen"><br><sub>A Short with fact-checked scenes</sub></td>
-    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/84ee7ba6-2788-45dc-a005-84db633ebdb5" alt="Model ranking from audience votes"><br><sub>The model leaderboard</sub></td>
+    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/39a393ee-9232-4dc4-8298-9343ece12a62" alt="The judge's score card with feedback for every rapper"><br><sub>The judge's verdict</sub></td>
+    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/419ed96a-89e6-48e6-b1c2-efdda4f2d870" alt="9:16 Short: the line being rapped, big on stage"><br><sub>A 9:16 Short of the battle</sub></td>
+    <td width="33%" align="center"><img src="https://github.com/user-attachments/assets/7deedcda-48c6-41c9-a912-81d88d3cf760" alt="Model ranking from audience votes"><br><sub>The model leaderboard</sub></td>
   </tr>
 </table>
 
@@ -271,20 +271,20 @@ Run `make` to list every target. The most useful ones:
    - Replace every placeholder secret (`SECRET_KEY`, `POSTGRES_PASSWORD`, e.g.
      `openssl rand -base64 32`).
 5. **Put a reverse proxy in front**: the production stack serves plain HTTP and joins the external
-   Docker network `caddy_net`, where a proxy terminates TLS. With Caddy (it gets the certificates
-   itself and passes the Host header the stack relies on), run a `caddy` container on that
-   network with ports 80 and 443 and this site block:
+   Docker network `caddy_net` as `debatr-frontend`, where a proxy terminates TLS. With Caddy (it
+   gets the certificates itself and passes the Host header the stack relies on), run a `caddy`
+   container on that network with ports 80 and 443 and this site block:
    ```bash
    docker network create caddy_net
    ```
    ```caddyfile
    your-domain.com, admin.your-domain.com {
-       reverse_proxy ai-debates-frontend-1:80
+       reverse_proxy debatr-frontend:80
    }
    # Only after a move: the former domain sends its pages to the new one.
    old-domain.com, www.old-domain.com {
        handle /api/* {
-           reverse_proxy ai-debates-frontend-1:80
+           reverse_proxy debatr-frontend:80
        }
        handle {
            redir https://your-domain.com{uri} 301
@@ -341,7 +341,7 @@ Run `make` to list every target. The most useful ones:
 The [`debatr` CLI](cli/README.md) talks to any Debatr server over its public API:
 
 ```bash
-uv tool install debatr
+uv tool install debatr                        # later: uv tool upgrade debatr
 debatr login                                  # approve this computer in the browser
 debatr run "Should cities ban cars?" -d anthropic/claude-sonnet-4.5 -d openai/gpt-5
 debatr show <id> --format markdown -o debate.md

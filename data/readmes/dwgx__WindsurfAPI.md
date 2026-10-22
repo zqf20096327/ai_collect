@@ -69,6 +69,26 @@ JavaScript · MIT · ★3,046
   <a href="README.en.md">English</a>
 </p>
 
+## 项目定位与使用边界
+
+WindsurfAPI 是一个独立的、开源的、自托管协议兼容网关，用于将部署者**自己拥有或获授权使用的 Windsurf / Devin 账号能力**接入 OpenAI、Anthropic 和 Gemini 兼容客户端。
+
+### 使用模型
+
+- **Bring Your Own Account（BYO-account）**：部署者自行提供并控制自己的上游账号与凭据。
+- 项目本身**不提供、出售、出租、共享或打包任何 Windsurf / Devin 账号、订阅或凭据**。
+- 多账号能力用于同一部署者拥有或获授权管理的账号集合，例如故障切换、健康检查和限流隔离；它不是公共共享账号池。
+- 本项目的目标是协议互操作、自托管客户端兼容和工程研究，不以订阅转售、跨用户账号共享、绕过上游配额或规避访问控制为目的。
+- 部署者应自行确认其账号、订阅以及具体使用方式符合对应上游服务条款和适用法律。
+
+### 独立项目声明
+
+WindsurfAPI 是独立开源项目，与 Cognition、Windsurf、Devin、OpenAI、Anthropic、Google 或其他模型提供商不存在隶属、授权或背书关系，除非另有明确说明。
+
+项目代码依据 [MIT License](LICENSE) 开源。MIT License 授予的是本项目代码的使用权，并不授予任何第三方服务、模型、账号或订阅的访问权。
+
+本节只界定边界；下面说明它具体能做什么。
+
 ## 它到底在干嘛
 
 ```mermaid
@@ -166,6 +186,9 @@ flowchart LR
 
 ## 快速开始
 
+> **运行时要求**：Node.js **22.13+**（24.x 为发布门禁版本）。Node 20 已于 2026-04-30 EOL，不再支持；
+> 本地 Windsurf 账号导入需要 22.13+ 免 flag 的 `node:sqlite`，更早的 22.x 会返回 `sqlite_unavailable`。
+
 ### 一键部署
 
 ```bash
@@ -197,6 +220,22 @@ docker compose logs -f
 
 如果想改持久化目录，可在 `.env` 里设置 `DATA_DIR`。Docker 默认已设为 `/data`。
 
+### Docker 一键更新
+
+Docker 部署用 `deploy/update.sh`：拉新镜像 → 只重建 `windsurf-api` → 等 `/health` → 失败自动回滚到上一个镜像；数据卷全程不动，不需要挂 `docker.sock`，也不需要 Watchtower。
+
+```bash
+bash deploy/update.sh              # 拉 :latest 并更新
+bash deploy/update.sh --tag 3.9.52 # 固定到某个发布版本
+bash deploy/update.sh --build      # 从当前源码重建（本地镜像/分叉用）
+bash deploy/update.sh --dry-run    # 只打印计划，不做任何改动
+bash deploy/update.sh --rollback   # 手动回到上一次更新前的镜像
+```
+
+完整说明、健康门、回滚与排障见 **[docs/DOCKER-UPDATE.md](docs/DOCKER-UPDATE.md)**。
+
+> 下面的 `update.sh` 是给 git/PM2 部署用的；Docker 部署请用 `deploy/update.sh`。
+
 ### 一键更新
 
 部署过之后要拉最新修复，一条命令搞定：
@@ -218,25 +257,40 @@ cd WindsurfAPI
 # Language Server 二进制 —— 自动检测 Linux/macOS，一键下载 + chmod
 bash install-ls.sh
 
-# 下载链：WindsurfAPI release → 公开 LS mirror
-#   https://github.com/dwgx/windsurf-ls-release/releases/latest/download
-# → Exafunction/codeium fallback。需要私有镜像或回滚时可设置：
-#   WINDSURFAPI_LS_RELEASE=https://github.com/<owner>/<repo>/releases/latest/download bash install-ls.sh
-
+# 下载链（manifest 驱动，fail-closed）：
+#   1. 读取 https://windsurf-stable.codeium.com/api/versions
+#   2. 选 ls-pins.json 里最新的固定版本（当前 3.10.67），并要求 manifest 的
+#      commit + archive sha256 与 pin 完全一致
+#   3. 下载桌面端归档 → 校验 archive sha256 → 解出 LS → 校验内层 binary sha256
+#   任何一步不符都退出非 0；不会静默回落到旧 mirror。
+#
+# 先看计划、不下载（推荐首次安装前跑）：
+#   bash install-ls.sh --dry-run
+#
+# 固定版本 / 覆盖来源：
+#   bash install-ls.sh --version 3.10.67
+#   WINDSURFAPI_LS_VERSION=3.10.67 bash install-ls.sh
+#   WINDSURFAPI_LS_MANIFEST_URL=<url|本地路径> bash install-ls.sh
+#   WINDSURFAPI_LS_PINS=/path/to/ls-pins.json bash install-ls.sh
+#
+# 回滚到固定 3.5.17（显式使用 dwgx/windsurf-ls-release 的 v3.5.17 tag）：
+#   bash install-ls.sh --rollback
+#   等价于 bash install-ls.sh --version 3.5.17 --allow-mirror
+#
 # 默认安装路径：
 #   Linux x64:          /opt/windsurf/language_server_linux_x64
-#   Linux arm64:        /opt/windsurf/language_server_linux_arm
 #   macOS Apple Silicon: $HOME/.windsurf/language_server_macos_arm
 #   macOS Intel:        $HOME/.windsurf/language_server_macos_x64
+#   Linux arm64:        上游没有 arm64 归档；用 --file 装桌面端拷出的 binary。
 
 # 如果想用本地已下好的 binary：
 #   bash install-ls.sh /path/to/language_server_linux_x64
-# 或者指定 URL：
-#   bash install-ls.sh --url https://example.com/language_server_linux_x64
+# 或者指定 URL（建议同时给 --sha256；不给会打印 warning）：
+#   bash install-ls.sh --url https://example.com/language_server_linux_x64 --sha256 <64-hex>
 
-# ⚠️ LS binary 版本偏旧 / 想换一个来源？
-# 默认下载链已接入 dwgx/windsurf-ls-release 公开 mirror。
-# 如果 mirror 暂未覆盖你的平台，仍可把 Windsurf 桌面端本体里的 LS binary 拷过来：
+# ⚠️ 平台不在上游归档里 / 想换一个来源？
+# 上游只提供 linux-x64、darwin-arm64、darwin-x64 三种桌面端归档。
+# 其它平台可把 Windsurf 桌面端本体里的 LS binary 拷过来：
 #
 #   macOS:   "$HOME/Library/Application Support/Windsurf/resources/app/extensions/windsurf/bin/language_server_macos_arm"
 #   Linux:   "$HOME/.windsurf/bin/language_server_linux_x64"
@@ -333,6 +387,10 @@ curl http://localhost:3003/v1/messages \
 Gemini 原生客户端不发 `Authorization: Bearer`，它用 `x-goog-api-key` 头或 `?key=`
 查询参数 —— 两种都收，所以官方 SDK 不用改代码就能连。
 
+> **优先用请求头**：`x-goog-api-key`（或 `Authorization: Bearer`）不会把密钥写进 URL。
+> `?key=` 仍可用，但完整 URL 会进反向代理日志、浏览器历史和抓包；自带 nginx 的访问日志
+> 已只记 `$uri`（丢弃全部 query），其它代理和上游日志不归本项目控制。
+
 ```python
 from google import genai
 client = genai.Client(
@@ -421,10 +479,14 @@ curl -X DELETE http://localhost:3003/v1/responses/resp_xxx -H "Authorization: Be
 | `API_KEY` | 空 | 调 API 要带的密钥。空=默认 fail-closed（401，本机 bind 也一样）。本机开放需 `WINDSURFAPI_ALLOW_UNAUTHENTICATED=1` 且本机 bind |
 | `WINDSURFAPI_ALLOW_UNAUTHENTICATED` | 关 | 空 `API_KEY` 时放行本机 bind。默认关。公网 bind 即使设了也不放行 |
 | `DATA_DIR` | 项目根目录 | 持久化 JSON 状态和 `logs/` 的目录，Docker 推荐设成 `/data` |
-| `DEFAULT_MODEL` | `claude-sonnet-4.6` | 不传 model 用哪个。必须是当前后端能解析的名字。Connect 上解析不到默认 400 `model_not_found`（`WINDSURFAPI_STRICT_MODEL=0` 才静默降级到免费 selector） |
+| `DEFAULT_MODEL` | `claude-sonnet-4.6` | 不传 model 用哪个。必须是当前后端能解析的名字。Connect 上解析不到默认 400 `model_not_found`（`WINDSURFAPI_STRICT_MODEL=0` 才降级到**当前真的可调**的免费 selector；连这样的 selector 都没有时仍然 400，不再落到目录里已不存在的 `swe-1-6-slow`） |
 | `MAX_TOKENS` | `8192` | 默认最大回复 token 数 |
-| `LOG_LEVEL` | `info` | debug / info / warn / error |
+| `LOG_LEVEL` | `info` | 控制台级别：debug / info / warn / error；JSONL 文件和 Dashboard 仍接收所有级别 |
+| `LOG_RETENTION_DAYS` | `0`（关闭） | 应用 JSONL 日志保留的 UTC 日历天数，包含当天；示例 `14`。启动及每小时清理，改配置需重启 |
+| `LOG_MAX_FILE_MB` | `0`（关闭） | 单个新写入日志文件的 MiB 上限，示例 `20`；整条 JSONL 记录轮转，不拆行 |
+| `LOG_MAX_TOTAL_MB` | `0`（关闭） | app/error 日志合计的 MiB 上限，示例 `500`；按日期/分段淘汰最旧文件，可能包含当天。超限单条记录跳过磁盘写入。详见 [日志保留策略](docs/ENV-SWITCHES.md#应用磁盘日志) |
 | `WINDSURFAPI_LEAK_TRACE` | off | 推理/内容边界结构化日志(实验性,默认关闭)。开启后输出 `LEAK_TRACE` 前缀日志:原始流事件所属通道(content/reasoning)、think 标记、截断文本样本、settle 时 content/reasoning 字符数。用于在线抓取模型推理泄漏进 content 通道的问题。字段:channel/blockType/think/sample/len/reqId/account/msgId/contentChars/reasoningChars/rerouted |
+| `WAPI_ACCOUNTS_ONLY` | 空（全部） | 每实例账号隔离：逗号分隔的邮箱或账号 id，只从 `accounts.json` 加载匹配账号；大小写不敏感。设为非空但无有效 token 时 fail-closed（不加载任何账号）。多端口共享 `accounts.json` 时用它把每个端口钉到自己的账号 |
 | `WINDSURFAPI_IGNORE_CLOUD_FILTER` | `0` | Cascade 路径下，各账号云端 catalog 同步后，账号池列表展示活跃账号目录的并集，路由则校验所选账号自己的目录；设为 `1` 恢复完整静态 catalog。目录缺失、为空或同步失败时保持 fail-open；`DEVIN_CONNECT` 使用独立 selector catalog |
 | `LS_BINARY_PATH` | `/opt/windsurf/language_server_linux_x64` | LS 二进制位置 |
 | `LS_DATA_DIR` | Linux: `/opt/windsurf/data`；macOS: `~/.windsurf/data` | 每个 proxy 独立的 LS 数据根目录 |
@@ -714,7 +776,11 @@ MIT License. See [LICENSE](LICENSE).
 
 ## 发布与密钥边界
 
-发布流程会自动推 Docker 镜像和 GitHub Release。**别把 token、API key、cookie、上游账号凭据
+发布流程会自动推 Docker 镜像和 GitHub Release，并为四个发布资产（Windows exe/zip、macOS
+arm64 二进制/zip）附上 `SHA256SUMS`。下载后先校验再运行：
+`sha256sum -c SHA256SUMS`（macOS 用 `shasum -a 256 -c SHA256SUMS`）。
+
+**别把 token、API key、cookie、上游账号凭据
 写进 issue、PR、日志或提交的配置文件里。** 如果报告问题必须带上鉴权信息，只贴脱敏后的元数据
 和复现步骤。
 

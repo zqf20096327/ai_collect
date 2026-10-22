@@ -76,16 +76,19 @@ Interpreting genomic variants requires combining sequence context with biologica
 
 The project is intended as an **applied research and engineering prototype** rather than a clinically validated predictor.
 
-Future evaluation should include:
+A reproducible evaluation should:
 
-- Benchmarking against curated variant datasets
-- AUROC / AUPRC / F1 and calibration analysis
-- Comparison against non-Evo2 baselines
-- Inference latency and GPU-cost measurements
-- Robustness across genomic regions and variant classes
-- Error analysis against ClinVar disagreements
+1. **Define the prediction target first.** Specify the variant classes, label source, genome build, and intended interpretation before choosing metrics.
+2. **Prevent data leakage.** Keep duplicate records and variants from the same locus or related samples in the same split where appropriate. Prefer chromosome-, gene-, or locus-aware holdouts when they match the intended generalization claim.
+3. **Record provenance.** Store dataset versions, ClinVar review status and access date, genome build, model/checkpoint identifier, inference settings, and preprocessing version.
+4. **Compare against baselines.** Include simple sequence or annotation-based baselines alongside Evo2, and compare against ClinVar labels only with clear acknowledgement that ClinVar is an evidence database, not an infallible ground truth.
+5. **Report discrimination and calibration.** Use AUROC and AUPRC for suitable binary tasks, class-wise precision/recall/F1 for imbalanced labels, and calibration metrics or reliability plots when output probabilities are interpreted as confidence.
+6. **Measure operational cost.** Track latency, GPU type, memory use, throughput, and cost per evaluated variant.
+7. **Publish error analysis.** Report performance by variant class and data subgroup, confidence intervals where feasible, and representative failure cases.
 
-**No clinical performance claims are made by this repository.**
+Suggested experiment artifacts include a versioned dataset manifest, fixed split definitions, model configuration, machine-readable metrics, and a short report describing limitations. Do not tune on the final held-out test set.
+
+**No clinical performance claims are made by this repository.** Any future results should be independently validated before consideration for clinical use.
 
 ## Getting Started
 

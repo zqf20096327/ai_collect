@@ -23,6 +23,16 @@ Metal; see [Built native](#built-native). Every published number has a
 recorded method, and the experiments that failed stay in the
 [measurements](MEASUREMENTS.md).
 
+The native Slotstream app now offers **Fast** for everyday work and **Smart**
+for harder tasks. Fast is the default for new installs; existing choices stay
+saved. The engine exposes the same `fast` and `smart` aliases. See
+[choosing a model](docs/MODELS.md) for setup and current limits.
+
+The development Mac app also has a **Data** browser for its separate Homes,
+with search, field filters, record details and relationships. Its bundled
+`slotstream-home` command, agent skill and local MCP server use those same
+Homes. See [Homes and integrations](docs/SLOTSTREAM-HOMES.md).
+
 [Get started](#install) · [Speed](#speed) · [Guides](#guides) · [Get help](#support)
 
 ## Who it's for
@@ -248,8 +258,8 @@ time where a step needed one (the gated-delta recurrence, the selected
 attention, the expert routing). No Python runtime or interpreter sits between
 a request and the GPU.
 
-That is deliberate. Built around one model on one kind of hardware, each layer
-is tuned for the one below it: expert records are read from the SSD straight
+That is deliberate. Built around a small maintained set of models on Apple
+Silicon, each layer is tuned for the one below it: expert records are read from the SSD straight
 into the cache slots the GPU computes from, the memory plan is checked against
 what the process really uses, and a governor resizes the cache while other apps
 need room. It is also why the engine ships as one file that installs with one

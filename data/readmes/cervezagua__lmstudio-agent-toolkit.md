@@ -72,7 +72,7 @@ One plugin, six groups. Each group is a switch in the plugin's settings, because
 | 📁 | **Files & Shell** | on | Read, write and edit files, search, run commands | Locked to your project folder · read-before-edit · undo · background tasks · project diagnostics |
 | 🧠 | **Memory & Context** | on | Remember things between chats, keep a todo list, follow skills | Opens each chat with your `AGENTS.md`, today's date and git status · plan mode · can save its own skills and search past chats, if you switch those on |
 | 🌿 | **Git & GitHub** | on | Status, diff, commit, branch, pull requests and issues | Runs `git`/`gh` directly, never through a shell · push is opt-in, never forced |
-| 🌐 | **Web** | off | Search, read pages as markdown, drive a real browser, read feeds, Wikipedia and video transcripts | Private SearXNG search · read just part of a page · reads PDFs · RSS/Atom · Wikipedia in any language · YouTube transcripts via yt-dlp · Edge or Chrome via Playwright |
+| 🌐 | **Web** | off | Search, read pages as markdown, drive a real browser, read feeds, Wikipedia and video transcripts, research with sources | Private SearXNG search · read just part of a page · reads PDFs · RSS/Atom · Wikipedia in any language · YouTube transcripts via yt-dlp · Edge or Chrome via Playwright · cited answers from several pages |
 | 📄 | **Documents** | off | Read PDFs, scans and images from your folder, look at pictures, and write Word and PDF files | Text layer first, free and exact · OCR only when needed · questions about a screenshot or a picture on the web · reports saved as `.docx` or `.pdf` · **your chat model needs no vision** |
 | 🧮 | **Utilities** | off | Do arithmetic exactly, and know today's date and time | Percentages, powers and functions without guessing · any time zone |
 
@@ -143,6 +143,7 @@ Small models often know how to call a tool but not when to stop. [**agent-toolki
 | A web tool fails, or `video_transcript` is missing | Something the Web group needs isn't set up | Ask the model to run `web_doctor`: it checks SearXNG, the browser and yt-dlp, and says how to fix each |
 | *"agent-toolkit did not load AGENTS.md…"* | The file contains a line that looks written to steer the model, such as "ignore previous instructions" | Read the quoted line. Fix the file, or switch off **Scan Loaded Files** if it's a false alarm |
 | *"agent-toolkit hid 2 secrets from the model"*, or the model sees `[redacted: …]` | A tool's result contained something that looks like an API key, token or private key. Your file is untouched; only what the model sees is masked | Nothing, usually. If the model really needs the value, switch off **Redact Secrets** |
+| The model ignores a file you attached, or summarises something else | Nothing turned the file into text. LM Studio leaves that to a plugin | Keep **Read Attached Files** on (the default), or LM Studio's RAG plugin. A scanned PDF needs the **Documents** group for `ocr_document` |
 | A model you just downloaded is missing from a dropdown | The list is read when the plugin starts | Turn the plugin off and on |
 
 ### Platform notes

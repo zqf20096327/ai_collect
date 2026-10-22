@@ -11,7 +11,7 @@ Windows • NVIDIA GPUs
 [![GitHub Downloads](https://img.shields.io/github/downloads/Tavris1/AI-Toolkit-Easy-Install/total)](https://github.com/Tavris1/AI-Toolkit-Easy-Install/releases)
 
   <p align="center">
-    <a href="#%EF%B8%8F-installation">📥 Install</a> &nbsp;·&nbsp;
+    <a href="#%EF%B8%8F-installation">📥 <strong>INSTALL</strong></a> &nbsp;·&nbsp;
     <a href="#-features">✨ Features</a> &nbsp;·&nbsp;
     <a href="#%EF%B8%8F-support-development">❤️ Support Development</a>
   </p>
@@ -31,7 +31,7 @@ No system Python. No VENV. Just run and go.
 |---|---|
 | Git | [![Git version](https://img.shields.io/github/v/tag/git/git?label=&display_name=tag&color=blue)](https://git-scm.com/) - Latest (will install/update if needed) |
 | Node.js | [![Node.js version](https://img.shields.io/github/v/release/nodejs/node?label=&color=green)](https://nodejs.org/en/download/) - Latest (will install/update if needed) |
-| FFmpeg 8 | [![FFmpeg Release](https://img.shields.io/github/v/release/GyanD/codexffmpeg?label=FFmpeg&color=blue&logo=ffmpeg)](https://www.gyan.dev/ffmpeg/builds/) - Latest (will install/update if needed) |
+| FFmpeg 8 | [![FFmpeg](https://img.shields.io/badge/FFmpeg-8.0-blue?logo=ffmpeg)](https://www.gyan.dev/ffmpeg/builds/) - Pinned to 8.0 (installed via winget) |
 | Python | [![Python version](https://img.shields.io/badge/3.12.10-blue)](https://www.python.org/downloads/release/python-31210/) - Embedded portable version |
 | PyTorch | [![PyTorch version](https://img.shields.io/badge/PyTorch%202.13.0-CUDA%2013.0-red)](https://pytorch.org/get-started/locally/) |
 | Triton | [![Triton version](https://img.shields.io/badge/3.7.1.post27-blue)](https://github.com/woct0rdho/triton-windows) - Latest compatible release for Torch 2.13.0 (pinned <3.8) |
@@ -66,8 +66,7 @@ No system Python. No VENV. Just run and go.
 
 ## ❤️ Support Development
 
-Enjoy the project?  
-If it saves you time, your support helps keep development and maintenance going.
+Enjoy the project? Your support helps keep it going.
 
 [![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/tavris1)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/tavris1)

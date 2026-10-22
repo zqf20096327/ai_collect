@@ -8,9 +8,9 @@
 
 A curated collection of **reverse-engineering projects, experiments, and ideas**: revive old devices, rebuild apps, preserve games, and understand hidden behavior.
 
-# 669 cases & projects
+# 752 cases & projects
 
-**Latest case update:** October 21, 2026, 20:34 · **Last maintained:** October 21, 2026, 20:34 · Beijing time (UTC+8). Counts as of this maintenance.
+**Latest case update:** October 22, 2026, 20:14 · **Last maintained:** October 22, 2026, 20:14 · Beijing time (UTC+8). Counts as of this maintenance.
 
 Updates **6× daily** · [Full index](INDEX.en.md) · [Browse categories](#browse-by-category)
 
@@ -22,7 +22,7 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 ## Recent picks
 
-**10 worth reading**, from device interoperability and game preservation to precise AI edits. Public implementations and inspectable comparisons take priority over unsupported rebuild claims. Dates are source or author-update dates, not collection dates.
+**10 worth reading**: practical interoperability, game preservation, and checks on both AI edits and viral claims. Inspectable work and explicit limits come before sweeping reconstruction stories. More projects, experiments and ideas are in the full index. Dates below are source or author-update dates, not collection dates.
 
 1. **[Plustek scanner & ThinkPad camera](cases/en/schaller-opticfilm-thinkpad-linux.md)** · `2026-10-16` — Use Windows reference behavior to improve Linux drivers. Published measurements also disclose low-light and exposure defects. `In progress`
 2. **[Where NIST curve seeds came from](cases/en/nist-ecdsa-origin-claude-report.md)** · `2026-10-16` — Anthropic reports Claude traced public parameters to **lrand48 and timestamps**, publishing code and unresolved questions. **Not an ECDSA break**; not independently recomputed here. `Research report`
@@ -31,9 +31,9 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 5. **[LeanREA: direct CLI vs MCP](cases/en/leanrea-cli-skill-benchmark.md)** · `2026-10-17` — Trace Notion features, inspect a native lock and identify Go dependencies. The public **36-run comparison** reports lower time and cost, but scores are **74/75 vs 75/75**, not identical accuracy. One model and machine; not independently rerun. `Analysis test`
 6. **[MagicSwipe: Magic Mouse gestures on iPad](cases/en/magic-mouse-ipad-opus-virtual-hid.md)** · `2026-10-20` — Opus-assisted research connects **private touch callbacks to virtual-HID shortcuts** for Universal Control. Public code; project-reported device testing only. Requires a privileged driver and substitutes shortcuts, not native continuous gestures. `In progress`
 7. **[xbox-boot-re: the original green blob, reconstructed](cases/en/xbox-boot-re-claude-reconstruction.md)** · `2026-10-16` — Human-directed Opus turns one BIOS into a **C core and WebGPU viewer**, with documented xemu comparisons and successful project CI. One modified BIOS, approximate audio synthesis; not a full console emulator or independently rerun here. `In progress`
-8. **[Open Scrantic: Johnny Castaway returns](cases/en/johnny-castaway-rust-rea.md)** · `2026-10-17` — REA and Claude Code help recover a Windows 3.1 screensaver engine in Rust for three platforms. **Public code and successful project CI**; original assets required, known-build limits and deliberate behavior differences remain. `In progress`
+8. **[Civilization: rebuild the 1991 DOS executable](cases/en/civilization-dos47405-ai-reconstruction-report.md)** · `2026-10-21` — Steve Melia's AI-assisted C/assembly reconstruction has **public code and successful exact-commit hash-checking CI**. A checked **four-byte startup correction** is part of the build, not a remaining mismatch. Inferred names, prior OpenCiv1 work; not original source or an independently rerun build here. `In progress`
 9. **[WayShare: connect your Mac to Hyprland](cases/en/wayshare-apple-remote-desktop-linux.md)** · `2026-10-20` — REA-assisted Apple Remote Desktop research yields a **public Rust implementation with successful project CI**. Claimed 60 fps is unmeasured here; Standard screens and clipboard remain unencrypted. `In progress`
-10. **[sourcepin: click an element, find its source](cases/en/sourcepin-stagewise-rea-file-line.md)** · `2026-10-21` — REA-assisted study of open-source stagewise leads to **file:line mapping before the model call**. Public five-request tests report fewer tool calls, **not faster total turns**; exact mapping is limited to a tested Next.js/React 19 dev setup. Not independently rerun. `In progress`
+10. **[ns2jb: what Codex actually did on Switch 2](cases/en/ns2jb-codex-switch2-human-directed-research.md)** · `2026-10-18` — The author's report credits AI-assisted investigation but corrects the viral shortcut: **roughly two weeks of substantial human effort**, not one magic prompt. The one-day task was a Mario Kart World mod; the automated WebKit goal failed. Tethered, firmware 23.0.1; not independently reproduced. `Research report`
 
 ## Classic cases
 
@@ -48,10 +48,10 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 | Category | Entries |
 | :--- | ---: |
-| [Games & preservation](categories/en/games.md) | **150** |
-| [Hardware & interoperability](categories/en/hardware.md) | **165** |
-| [Applications & clients](categories/en/apps.md) | **297** |
-| [Algorithms & feature recovery](categories/en/algorithms.md) | **57** |
+| [Games & preservation](categories/en/games.md) | **167** |
+| [Hardware & interoperability](categories/en/hardware.md) | **194** |
+| [Applications & clients](categories/en/apps.md) | **327** |
+| [Algorithms & feature recovery](categories/en/algorithms.md) | **64** |
 
 [**View all cases →**](INDEX.en.md) · [Contribute (中文)](CONTRIBUTING.md) · [Maintenance (中文)](MAINTENANCE.md)
 

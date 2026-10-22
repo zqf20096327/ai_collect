@@ -1,0 +1,331 @@
+# AI_GAME_QA_TestCase — tc-team
+
+<a href="https://claude.ai/code">
+  <img src="https://img.shields.io/badge/Built%20with-Claude%20Code-7C3AED?style=for-the-badge&logo=anthropic&logoColor=white" height="40">
+</a>
+<a href="https://nobles92ts-ship-it.github.io/en/built/tc-team/">
+  <img src="https://img.shields.io/badge/Read%20the%20write--up-English-10B981?style=for-the-badge" height="40">
+</a>
+<a href="https://nobles92ts-ship-it.github.io/ko/built/tc-team/">
+  <img src="https://img.shields.io/badge/Read%20the%20write--up-Korean-10B981?style=for-the-badge" height="40">
+</a>
+
+> **Deterministic game-QA test-case pipeline.**
+> Hand it a spec and a sheet — get back a reviewed test-case tab whose structure, gates, and coverage ledger are owned by code, not by a model.
+
+> **Grounded in the ISTQB test process.** Stages **S1–S3** follow the ISTQB test development process — *test analysis → test design → test implementation* — and cases are derived with standard ISTQB test-design techniques (equivalence partitioning, boundary values, state transition), not ad-hoc prompting.
+
+> **Scope, stated honestly:** after a short preparation step (S0 — your Claude Code session fetches the spec and records the target sheet), **one command runs S1–S7 unattended**: `tc-team/scripts/run_pipeline_full.sh`. Model stages go out as short `claude -p` calls, so no multi-agent orchestration tool is needed ([PREREQUISITES §5](docs/PREREQUISITES.md)). It is not a black box that always finishes: a failed integrity gate **stops the run and waits for a person** (exit 14), and in our own logs 13 of 38 full runs stopped at least once before completing. Verified end-to-end on 3 production features.
+
+> 📖 **Before the setup steps, read why it is shaped this way** — the eight stages, why review is adversarial, why the sheet is written exactly once, and the two lessons that cost something:
+> **[Read it in English](https://nobles92ts-ship-it.github.io/en/built/tc-team/)** · **[한국어로 읽기](https://nobles92ts-ship-it.github.io/ko/built/tc-team/)** — same write-up, 같은 글의 한국어판
+
+[![Docs — Architecture](https://img.shields.io/badge/docs-ARCHITECTURE.md-blue?style=flat)](docs/ARCHITECTURE.md)
+[![Docs — Setup](https://img.shields.io/badge/docs-SETUP.md-blue?style=flat)](docs/SETUP.md)
+[![Docs — Prerequisites](https://img.shields.io/badge/docs-PREREQUISITES.md-blue?style=flat)](docs/PREREQUISITES.md)
+
+---
+
+## ⚠️ v4.0.0 — the v2 engine has been retired
+
+This release replaces the `tc-팀-v2` multi-agent orchestrator with **tc-team**, a two-lane pipeline.
+**If you are running v2, read [Migrating from v2](#-migrating-from-v2) before you pull.**
+
+---
+
+## ⚡ TL;DR
+
+- **Two lanes, strictly separated** — the LLM writes sentences and makes judgment calls; **deterministic code owns structure, gates, and the coverage ledger**. No model ever decides whether a gate passes.
+- **8 stages (S0–S7)** — each with a machine-checkable exit condition
+- **7 deterministic gates** — design, content, duplicate, origin, coverage seal, golden diff, traceability ledger
+- **Confidence scoring with zero LLM calls** — a rule-based score (R1–R7) tells you which rows deserve human attention
+- **One sheet touch** — everything is assembled and verified locally, then written once and read back for a 0-diff check
+- **4 input formats** — Confluence URL / PDF / Word / Excel, auto-detected
+- **No external API** — all model calls go through the Claude Code CLI
+- **Isolated model calls** — each `claude -p` child starts without your personal settings, plugins, MCP connectors, global rules or auto-memory; the tools declared in its agent file are the only tools it gets (`TCTEAM_ISOLATE=0` opts a run out)
+- **An AI edition (new in v4.3.6)** — the same S1–S5 engine without a sheet: a spec goes in, and a Markdown bundle an AI agent can execute as QA comes out ([details](#-ai-edition--tc-team-ai))
+
+---
+
+## 🎯 The design decision — why determinism
+
+v2 asked a model to author test cases *and* judge its own output. That works until it doesn't: duplicate rows reach the sheet, fabricated requirements pass review, and coverage is whatever the model says it is. None of it is reproducible.
+
+tc-team draws a hard line:
+
+| Owned by the **LLM** | Owned by **deterministic code** |
+|---|---|
+| Reading the spec, designing coverage | Slicing the spec into rules |
+| Writing each test-case sentence | Row structure, IDs, column contracts |
+| Adversarial review judgments | Every gate pass/fail decision |
+| — | Coverage ledger, exclusions, traceability |
+| — | Duplicate detection, origin verification |
+| — | Sheet write + read-back diff |
+
+**This is a tradeoff, stated plainly:** tc-team takes roughly **2.2× the wall-clock time** of the v2 engine. What you get back is reproducibility, an auditable coverage ledger, and gates that catch a class of defect v2 shipped silently.
+
+---
+
+## 📊 Measured — production run, 2026-07-29
+
+A 277-row feature run, all figures measured rather than asserted:
+
+| Check | Result |
+|---|---|
+| Rows written live | 277 |
+| Sheet read-back diff | **0** |
+| Exact duplicate rows reaching the sheet | **0** (the previous v2-era run shipped 3 duplicate pairs) |
+| Fabricated requirements caught **before** review | **7** — 5 confirmed by the cross-reference lens and promoted to "spec confirmation needed" |
+| Deterministic core test suite | **14 suites, ALL GREEN** |
+
+The 7 fabrications are the important number. In the prior run the same failure mode was only found *after* the sheet was delivered, by hand.
+
+---
+
+## 🏗 Pipeline — S0 to S7
+
+| # | Stage | Lane | What it produces |
+|---|-------|------|------------------|
+| **S0** | Preparation | main | Workspace, spec ingestion, run config |
+| **S1** | Design | **LLM** (Opus 5.5 designer · Sonnet inspection) | Spec analysis → coverage design → cross-reference → design inspection |
+| **S2** | Isolation gate + slicing | code | Spec sliced into addressable rules |
+| **S3** | Sentence fan-out | code + LLM + code | Deterministic skeleton → LLM writes sentences → deterministic merge |
+| **S4** | Adversarial review + coverage ledger | **LLM** judgment, code ledger | Findings, verdicts, coverage/exclusions ledger |
+| **S5** | Apply + gates | code (+ one LLM round to stitch uncovered rules) | Fix plan applied, every gate evaluated |
+| **S6** | Live write | code | **One** sheet touch, then read-back 0-diff verification |
+| **S7** | Completion | code | Confidence scoring, labelling, dashboard, Drive sync |
+
+Full stage contracts: [`skills/tc-team/SKILL.md`](skills/tc-team/SKILL.md) · internals: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · why it is shaped this way: [write-up — English](https://nobles92ts-ship-it.github.io/en/built/tc-team/) / [한국어](https://nobles92ts-ship-it.github.io/ko/built/tc-team/)
+
+### The gates
+
+| Gate | Catches |
+|------|---------|
+| `design_gate` | Design that can't be converted into rows |
+| `content_gate` | Abstract, unverifiable phrasing; column whitelist violations |
+| `dup_gate` | Duplicate and logically-negated-duplicate rows |
+| `origin_gate` | Requirements with no anchor in the source spec (fabrication) |
+| coverage seal | Rules with no covering row, and unjustified exclusions |
+| `golden_diff` | Any unintended drift against the approved snapshot |
+| `traceability` | Rule ↔ row ledger integrity |
+
+A gate failure stops the run. No gate consults a model.
+
+### Confidence scoring — no LLM calls
+
+`tc-team/scripts/confidence/` scores each row deterministically (rules R1–R6: spec-confirmation needed, image-only reference, unresolved cross-reference, cross-reference located only, weak anchor, coverage gap — plus R7, a design-technique badge that is displayed but does not move the score). The output tells a reviewer where to spend attention. Because it is pure code, the same input always yields the same score.
+
+The penalties are tuned, not guessed — `tc-team/scripts/confidence/sweep.js` runs an offline coefficient sweep against your own completed runs so you can see the resulting score distribution before changing anything, and `tc-team/test/confidence.test.js` locks the tables so a retune cannot silently invert a rule.
+
+---
+
+## 🚀 Quick start
+
+Assumes [Claude Code](https://claude.ai/code) is installed.
+
+```bash
+git clone https://github.com/nobles92ts-ship-it/AI_GAME_QA_TestCase.git
+cd AI_GAME_QA_TestCase
+```
+
+```bash
+bash ./setup.sh
+```
+
+On Windows use `.\setup.ps1` instead.
+
+The setup script auto-detects Node.js and the Claude Code CLI, installs agents and skills into `~/.claude/`, substitutes every `{PROJECT_ROOT}` / `{NODE_PATH}` / `{CLAUDE_HOME}` / `{CONFLUENCE_SITE}` placeholder, creates `.env` and `pipeline_config.json` from templates, and runs `npm install`.
+
+It installs one of three editions. `human` is the default and is everything described here. `ai` installs only the [AI edition](#-ai-edition--tc-team-ai) and skips the Google files. `both` installs both:
+
+```bash
+bash ./setup.sh --mode ai
+```
+
+On Windows: `.\setup.ps1 -Mode ai`. Setting `TC_MODE` to `human`, `ai` or `both` does the same, and the one-line Windows installer (`install.ps1`) asks.
+
+Then, in Claude Code, hand it a sheet link and a spec link **together**:
+
+```
+/tc-team <google-sheets-url> <spec-source>
+```
+
+`<spec-source>` can be a Confluence URL, or a path to a `.pdf`, `.docx`, or `.xlsx` file.
+
+Your session then drives S0–S7, reporting at each stage and halting on any gate failure. A spec link **without** a sheet link is rejected rather than guessed at. One feature per run — there is no batch mode.
+
+Full walkthrough: [docs/SETUP.md](docs/SETUP.md) · Dependencies: [docs/PREREQUISITES.md](docs/PREREQUISITES.md)
+
+---
+
+## 🧪 AI edition — `tc-team-ai`
+
+The pipeline above ends in a sheet that a person reads. The AI edition ends in Markdown that an AI agent reads, then executes as QA.
+
+It is not a second engine. `tc-team-ai/scripts/run_ai.js` runs the same S1–S5 chain with `--no-sheet` — same designer, same gates, same coverage ledger — and stops there. S6 and S7 exist to write and label a sheet, so they are skipped: no Google Sheets, no Slack kick-off. S1's designer is told to skip its Drive upload — an instruction rather than a code-level block, which is why the run report checks that its Drive link list came back empty. Two steps follow S5.
+
+| Step | Lane | What it does |
+|------|------|--------------|
+| Rewrite | **LLM** (Sonnet, `Read`/`Write` tools only) | Splits each TC's steps into **precondition / action / expected / observation** |
+| Preservation gate | code | Checks that the split kept the sentence's anchors — numbers (none dropped, none added), names, quoted labels, negation — and most of its key words. A failed split is discarded; that TC runs from its original sentence |
+| Export | code | Confidence scoring without a sheet, then the Markdown bundle |
+
+**The original sentence stays the source of truth.** TC IDs and step sentences in the bundle are byte-identical to the S5 result; the split sits beside them as a reading aid. If a sentence changes after it was split, the split is dropped at export rather than shipped stale.
+
+The bundle lands in `team/specs/_ai_<feature>/ai_bundle/`:
+
+| File | Contents |
+|------|----------|
+| `INDEX.md` | Execution rules, run order, open spec questions, reproduction aids |
+| `cases/NN_<group>.md` | The TCs, one file per screen |
+| `spec.md` | The spec, section by section — where to look when an expected result is ambiguous |
+| `results.md` | A table the executing agent fills in. Re-exporting never overwrites it |
+
+Install with `--mode ai` (or `both`), then in Claude Code:
+
+```
+/tc-team-ai <spec-source>
+```
+
+`<spec-source>` is a Confluence URL or a file. No sheet link is asked for. The skill prepares `team/specs/_ai_<feature>/` and then calls the runner. The runner accepts only names that start with `_ai_` and use letters, digits, `_` and `-`: an AI run's folder is never mistaken for a sheet run's, and a spec title cannot break the shell commands the chain builds from it.
+
+**Scope, stated honestly:** the gate's thresholds are starting values, not yet tuned on a corpus. It cannot see a positive statement turned negative, an added condition with no number in it, or a sub-condition dropped while most of the words survive — which is why the bundle's rules make the original sentence, not the split, the thing to execute. The first production run (one feature, 106 TCs, 98 minutes end to end) shows both sides: every split passed, 8 of them on a retry, yet a hand check of 12 found one that had dropped a sub-condition. Every run ends with an `AI_DONE` line that counts how many TCs fell back to their original sentence; read it before relying on the splits. A run in which not one rewrite output could be read stops with exit 12 instead of shipping an all-original bundle: either nothing was written (CLI missing, wrong model name, no network) or nothing was valid JSON. Prerequisites for this edition, including Confluence access: [PREREQUISITES — AI edition](docs/PREREQUISITES.md#ai-edition-tc-team-ai).
+
+---
+
+## 🔧 Customising the rules — and the two linters
+
+Every pipeline rule lives in `skills/tc-team/rules/` as a Markdown file. Edit those and the pipeline picks the change up on the next run; there is no build step and no copy to keep in sync.
+
+But editing a rule can silently desynchronise it from the machinery that enforces it. Two linters exist for exactly that moment:
+
+| Linter | Question it answers |
+|--------|--------------------|
+| `scripts/util/doc_reality_lint.js` | Does every path, script, and agent named in the docs actually exist? |
+| `scripts/util/ssot_drift_check.js` | Has a rule document drifted from the deterministic code that implements it? |
+
+```bash
+node scripts/util/doc_reality_lint.js
+node scripts/util/ssot_drift_check.js
+```
+
+**These are not part of the pipeline and do not run automatically.** They are maintenance tools: run them after you edit rules, not on every TC run. If you only *use* the pipeline as shipped, you will never need them.
+
+---
+
+## 🧠 Optional — plug in your own knowledge index
+
+Specs reference values they never define — a drop rate that lives in a table doc, a status effect defined on another team's page. The S1 chain can look those up in a **knowledge index of your project's own design docs** and resolve them instead of guessing: definition found → folded into the design · data-table location cited on the TC · **missing spec area discovered → added to the coverage denominator** · no evidence → flagged for spec confirmation rather than invented.
+
+This is a **socket, not a shipped component**: `crossref_brain` is off by default and the pipeline is 100% identical without it. Turning it on takes three things — your own design docs, a one-time `context-mode` indexing pass, and two lines in `team/tc_config.json`. The docs must be *your project's* (the whole point is testing TCs against the design world they belong to); resemblance to anyone else's wiki is irrelevant.
+
+The better the index, the more the pipeline resolves on its own instead of flagging for humans — see the **preparation ladder** in [PREREQUISITES](docs/PREREQUISITES.md).
+
+---
+
+## 🔁 Migrating from v2
+
+**v2 is not deleted — it is pinned.** Everything from the v2 era remains permanently available at the [`v3.1.0`](https://github.com/nobles92ts-ship-it/AI_GAME_QA_TestCase/releases/tag/v3.1.0) tag.
+
+**To stay on v2**, pin that tag and stop pulling `main`:
+
+```bash
+git checkout v3.1.0
+```
+
+**To move to tc-team**, note that v4.0.0 has an unrelated commit history, so `git pull` will fail with *"refusing to merge unrelated histories"*. Re-clone:
+
+```bash
+git clone https://github.com/nobles92ts-ship-it/AI_GAME_QA_TestCase.git
+```
+
+What changed for you:
+
+| v2 | v4 (tc-team) |
+|---|---|
+| `/tc-v2 <sheet> <spec>` | `/tc-team <sheet> <spec>` |
+| 10 `*-v2` agents | 3 `tc-team-*` agents |
+| One skill directory per stage | `skills/tc-team/rules/` — 9 rule files |
+| Review verdicts decide correctness | Deterministic gates decide; LLM only judges |
+
+`tc-대시보드`, `tc-이미지매칭`, and `haiku` are unchanged and still ship.
+
+---
+
+## 🗺 Repository structure
+
+```
+AI_GAME_QA_TestCase/
+├── agents/                       # 3 tc-team agent definitions
+│   ├── tc-team-designer.md       # S1 — spec analysis & coverage design
+│   ├── tc-team-대조.md            # S1 — cross-reference against the knowledge index
+│   └── tc-team-설계검수.md        # S1 — design inspection gate
+│
+├── skills/
+│   ├── tc-team/
+│   │   ├── SKILL.md              # S0–S7 stage contracts (entry point)
+│   │   └── rules/                # 9 rule files — the SSoT you customise
+│   ├── tc-team-ai/
+│   │   ├── SKILL.md              # AI edition — spec intake, run, report
+│   │   └── rules/                # Rewrite rules + the execution rules shipped in every bundle
+│   ├── tc-대시보드/               # Dashboard refresh
+│   ├── tc-이미지매칭/             # Confluence image → sheet column matching
+│   └── haiku/
+│
+├── tc-team/                      # The deterministic engine
+│   ├── lib/                      # 22 modules — gates, slicer, ledger, impact scope, sheet I/O
+│   ├── scripts/                  # Chain drivers + confidence scoring
+│   ├── test/                     # 16 suites
+│   └── docs/                     # Driver reference, EVAL digest, guides
+│
+├── tc-team-ai/                   # AI edition — runs the engine without a sheet
+│   ├── lib/                      # Rewrite stage + preservation gate, Markdown export, sheet-free confidence
+│   ├── scripts/run_ai.js         # The runner
+│   └── test/                     # 6 suites (synthetic fixtures)
+│
+├── scripts/
+│   ├── handoff_gate.py           # Between-step markdown integrity gate
+│   └── util/                     # Shared Node utilities + the 2 linters
+│       └── expander/             # Design expansion & schema validation
+│
+├── team/                         # Pipeline board + config originals (.example / .template)
+├── appscript/                    # Google Apps Script (tabs, dashboard, nav sidebar, Slack)
+├── docs/                         # Setup, prerequisites, architecture
+├── commands/                     # Slash commands
+└── credentials/                  # OAuth files (gitignored, .gitkeep only)
+```
+
+---
+
+## 🛠 Tech stack
+
+| Layer | Tech |
+|-------|------|
+| Agent runtime | Claude Code CLI |
+| Orchestration | Bash + Node.js |
+| Input parsers | `xlsx` · `pdf-parse` / `pdfjs-dist` · `mammoth` · MCP (Confluence ADF) |
+| Output | Google Sheets API via `googleapis` · Markdown bundle (AI edition) |
+| MCP integrations | `google-sheets`, Atlassian |
+
+---
+
+## 🔮 Roadmap
+
+### ✅ Shipped
+- Two-lane pipeline with 7 deterministic gates
+- Coverage ledger with explicit, reason-coded exclusions
+- LLM-free confidence scoring
+- Single-touch sheet write with read-back verification
+- Single-command unattended run (S1–S7) with isolated model calls
+- AI edition: spec-only runs that end in a Markdown bundle an AI agent executes
+
+### 🔜 Next
+- Duplicate-gate threshold tuning against a larger corpus
+- Coverage-denominator handling for superseded spec sections
+- Spec-change detection and surgical TC update on the tc-team engine
+
+---
+
+## 🤖 Built with Claude Code
+
+Every agent definition, orchestration script, rule file, and page of documentation in this project was designed and built using [Claude Code](https://claude.ai/code).

@@ -18,6 +18,65 @@ OpenAI-compatible protocol.
 
 ----
 
+## Modes
+
+Each session runs in one execution mode. Normal is the default. Switch with a
+slash command in the TUI, or pass a flag to headless prompts.
+
+<table>
+<tr>
+<td width="33%" valign="top">
+
+### UltraSave
+
+# 93% cheaper
+
+UltraSave cost **0.069x the credits of Normal** on our 20-case benchmark,
+and all 20 tasks still passed.
+
+It works directly: narrow searches, small reads, short reports. Required checks
+still run before a task counts as done.
+
+`/ultrasave on` or `--ultrasave`
+
+</td>
+<td width="33%" valign="top">
+
+### UltraFast
+
+# ~2x faster
+
+UltraFast finished in **0.509x the wall time of Normal**, about half,
+and all 20 tasks still passed.
+
+It skips planning and delegation rounds and goes straight to the work. Your
+model, effort and verification steps stay the same.
+
+`/ultrafast on` or `--ultrafast`
+
+</td>
+<td width="33%" valign="top">
+
+### UltraCode
+
+# Parallel subagents
+
+UltraCode lets the session split work into smaller tasks and hand them to
+subagents, then checks their changes and evidence before accepting the result.
+
+Delegation is optional and has no speed or cost claim yet. Your model, effort
+and permissions stay the same.
+
+`/ultracode on` or `--ultracode`
+
+</td>
+</tr>
+</table>
+
+Details:
+[UltraSave](docs/ultrasave.md), [UltraFast](docs/ultrafast.md) and
+[UltraCode](docs/ultracode.md).
+
 ## Benchmarks
 
 [![Distill benchmarks: same quality at up to 87% lower cost and up to 76% less time versus native GPT-6 Astra, GPT-6.1 Sol, Claude Opus 5.5 and DeepSeek V4.1 max baselines](docs/images/benchmarks.webp)](BENCHMARKS.md)
@@ -95,4 +154,6 @@ its subagents, and neither has an off switch:
 - [Accounts and local models](docs/local-models.md)
 - [How Jev routes work](docs/jev-routing.md)
 - [UltraCode activation, hierarchy limits and paired comparisons](docs/ultracode.md)
+- [UltraFast execution mode and paired speed/quality evaluation](docs/ultrafast.md)
+- [UltraSave execution mode and paired token/quality evaluation](docs/ultrasave.md)
 - [Where the token savings come from](docs/token-saver.md)

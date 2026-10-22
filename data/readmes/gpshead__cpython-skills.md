@@ -6,7 +6,7 @@ A Claude Code marketplace providing specialized skills for working with the CPyt
 
 This marketplace hosts Claude Code plugins with AI-agent skills for CPython development. Includes one comprehensive plugin with multiple skills providing deep knowledge about CPython's codebase structure, build system, testing infrastructure, and coding standards.
 
-Skills are now invoked as `cpython:dev`, `cpython:build`, `cpython:style`, `cpython:docs`, `cpython:jit`, and `cpython:backport`.
+Skills are now invoked as `cpython:dev`, `cpython:build`, `cpython:style`, `cpython:docs`, `cpython:backport`, and `cpython:scan-triage`.
 
 ## Installation
 
@@ -78,19 +78,7 @@ Covers:
 - Version markers (always use `next`)
 - NEWS file entries for bug fixes and features
 
-#### 5. jit
-**When to use**: Working on CPython's experimental JIT compiler - modifying build scripts in Tools/jit/, editing Python/jit.c, changing bytecodes that affect stencils, debugging JIT failures
-
-Covers:
-- LLVM 21 toolchain setup
-- JIT configure flags (`--enable-experimental-jit` options)
-- Copy-and-patch compilation pipeline (template.c to jit_stencils.h)
-- Stencil regeneration workflow
-- Runtime JIT debugging (comparing `PYTHON_JIT=0` vs `PYTHON_JIT=1`)
-- Supported target platforms and object formats
-- Key concepts: stencils, holes, preserve_none, musttail, GOT
-
-#### 6. backport
+#### 5. backport
 **When to use**: Backporting a merged change to a maintenance branch (3.14, 3.13, ...) - including redoing a failed automated miss-islington backport. Also invocable directly: `/cpython:backport 3.13 <PR URL or number>`
 
 Covers:
@@ -99,6 +87,17 @@ Covers:
 - Building and testing the result on the target branch before offering to push
 - Opening the backport PR with `gh`, including "Manual backport notes" describing any hand adaptations
 - Always asks before pushing or creating the PR (fork auth setups vary)
+
+#### 6. scan-triage
+**When to use**: Turning a batch of automated bug-scanner findings (REPORT.md, repro script, proposed patches) such as those from [Anthropic's OSS Scanner](https://github.com/anthropics/oss-scanner) into upstream issues and draft PRs. Also invocable directly: `/cpython:scan-triage <findings folder>`
+
+Covers:
+- Mirroring findings locally and treating them as untrusted data - only repro scripts run, under `build/python -I` from `do-not-commit/sandbox/`
+- Parallel read-only triage: reproduce on current main, find the introducing change, critique the scanner's patch, search GitHub for duplicates and related work
+- Verdicts (new PR, needs redesign, already covered upstream, docs-only) and a ranked triage report published as a private artifact
+- One worktree and subagent per worthwhile finding: minimal fix, tests that fail without it, one commit with a `gh-XXXXXX` placeholder
+- Terse issue/PR drafts plus an `open.sh` the human runs to file the issue, fill in the number, push to their fork and open a draft PR
+- Reviewing every agent's result before anything is called ready
 
 ### Commands
 
@@ -131,7 +130,7 @@ If you find Claude occasionally still reaches for the system Python (e.g., when 
 }
 ```
 
-The hook receives the tool call as JSON on stdin; exiting with code 2 blocks the call and feeds the stderr message back to Claude. This rejects any Bash command that invokes bare `python`/`python3` without going through `build/python`, while allowing build tooling under `Tools/` (e.g., `python3 Tools/jit/build.py`), which is designed to run under a pre-existing Python. Tune the patterns to your workflow.
+The hook receives the tool call as JSON on stdin; exiting with code 2 blocks the call and feeds the stderr message back to Claude. This rejects any Bash command that invokes bare `python`/`python3` without going through `build/python`, while allowing build tooling under `Tools/` (e.g., `python3 Tools/clinic/clinic.py`), which is designed to run under a pre-existing Python. Tune the patterns to your workflow.
 
 ## License
 

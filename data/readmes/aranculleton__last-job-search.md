@@ -45,12 +45,10 @@ and your brief in the cloud, which follows up for you even when your computer is
 | "What do I owe?" | Replies and follow-ups that are due |
 | "Prep me for my interview at Acme" | Likely questions, your best answers and questions to ask |
 | "They replied" or "I got an interview" | The record updated, and what to do next |
-| "Check my email" | Interview invites, offers and rejections from Gmail, recorded once you say yes |
 | "Make me a dashboard" | One page showing every application and how far it got |
 
-It also says what to learn next, reads your LinkedIn job alerts and takes your own resume
-template. Gmail is connected once, at
-[claude.ai/customize/connectors](https://claude.ai/customize/connectors).
+It also says what to learn next and takes your own resume template. It never asks for your
+email: new jobs and what is due reach you in Claude, in your brief and your job round.
 
 ## Why it works differently
 
@@ -93,7 +91,7 @@ You never need any of this to use it.
 | What a search does, step by step | [RUNBOOK.md](RUNBOOK.md) |
 | How each stage works and what it costs | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | The rules Claude follows, and the command map | [CLAUDE.md](CLAUDE.md) |
-| Daily briefings and scheduled searches | [automation/README.md](automation/README.md) |
+| The twice-weekly brief and scheduled searches | [automation/README.md](automation/README.md) |
 | Scoring rubric, writing style, cost model | [`.claude/skills/job-application-assistant/`](.claude/skills/job-application-assistant/) |
 | Reporting a bug or suggesting something | [CONTRIBUTING.md](CONTRIBUTING.md) |
 | Working on the app itself | [MAINTAINING.md](MAINTAINING.md) |

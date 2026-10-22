@@ -71,6 +71,108 @@ cargo install mentisdb --no-default-features --features server
 
 This produces a smaller binary with no audio dependencies.
 
+### Prebuilt binaries
+
+Every [GitHub release](https://github.com/CloudLLM-ai/mentisdb/releases) ships
+ready-to-run `mentisdb` binaries for macOS (`mentisdb-macos-arm64`,
+`mentisdb-macos-x86_64`), Windows (`mentisdb-windows-x86_64.exe`) and Linux.
+Linux binaries come in two flavours (since 0.10.10, [#21](https://github.com/CloudLLM-ai/mentisdb/issues/21)):
+
+| Asset | Local embeddings (FastEmbed) | Minimum glibc | Runs on |
+| --- | --- | --- | --- |
+| `mentisdb-linux-x86_64`, `mentisdb-linux-arm64` | yes | 2.39 | Ubuntu 24.04+, Debian 13+, Fedora 40+, RHEL 10, Arch |
+| `mentisdb-linux-x86_64-compat`, `mentisdb-linux-arm64-compat` | no | 2.34 | Ubuntu 22.04 LTS, Debian 12, RHEL 9, and everything newer |
+
+The full builds need a recent glibc because the prebuilt ONNX Runtime they link
+for local embeddings is itself built against glibc 2.38+. The `-compat` builds are
+compiled on Ubuntu 22.04 without the `local-embeddings` and `startup-sound`
+features: lexical search and `local-text-v1` vectors work as usual, but there is no
+`fastembed-minilm` semantic vector provider (the same trade-off as the Intel macOS
+binary) and no startup chime, so they need no ALSA (`libasound.so.2`) on the host. Release
+CI fails the build if a `-compat` binary ever needs a glibc newer than 2.35.
+
+Check your glibc before picking one:
+
+```bash
+ldd --version | head -1     # e.g. "ldd (Ubuntu GLIBC 2.35-0ubuntu3) 2.35"
+```
+
+A full binary started on an older glibc fails immediately with
+``version `GLIBC_2.39' not found``. If you are on an older distro and want local
+embeddings, use the [Docker image](#docker): it is self-contained and has full
+features regardless of the host's glibc. (Building from source with
+`--features local-embeddings` does not avoid the floor, because the ONNX Runtime
+library it downloads needs glibc 2.38+ too.)
+
+```bash
+# Example: Ubuntu 22.04 on x86_64
+curl -fLo mentisdb https://github.com/CloudLLM-ai/mentisdb/releases/latest/download/mentisdb-linux-x86_64-compat
+chmod +x mentisdb && ./mentisdb --help
+```
+
+### Docker
+
+Release images are published to GitHub Container Registry for `linux/amd64` and
+`linux/arm64` (first published with 0.10.10.55). Tags: the release tag (for example
+`0.10.10.55`), the crate version (`0.10.10`, moves with each release of that version)
+and `latest`. This is also the way to get full features, including local embeddings,
+on Linux distros older than glibc 2.39 (see [Prebuilt binaries](#prebuilt-binaries)).
+
+```bash
+docker run -d --name mentisdb \
+  -p 127.0.0.1:9471:9471 -p 127.0.0.1:9472:9472 -p 127.0.0.1:9475:9475 \
+  -v mentisdb-data:/var/lib/mentisdb \
+  ghcr.io/cloudllm-ai/mentisdb:latest
+```
+
+The entrypoint is `mentisdb --headless` under `tini`, so no TTY (`-t`) is needed
+and `docker stop` (SIGTERM) drains the servers and exits cleanly. Check it with
+`curl http://127.0.0.1:9472/health`; the image also has a Docker `HEALTHCHECK`.
+
+Docker Compose:
+
+```yaml
+services:
+  mentisdb:
+    image: ghcr.io/cloudllm-ai/mentisdb:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9471:9471"   # MCP (HTTP)
+      - "127.0.0.1:9472:9472"   # REST (HTTP)
+      - "127.0.0.1:9475:9475"   # dashboard (HTTPS, self-signed)
+    volumes:
+      - mentisdb-data:/var/lib/mentisdb
+    environment:
+      MENTISDB_BEARER_TOKEN_ACCESS: "true"
+      MENTISDB_DASHBOARD_PIN: "change-me"
+volumes:
+  mentisdb-data:
+```
+
+| Item | Value |
+| --- | --- |
+| Data volume | `/var/lib/mentisdb` (`MENTISDB_DIR`). Chains, the skill registry, TLS certificates and the local-embedding model cache (`.fastembed_cache`, downloaded on first use) all live here. |
+| User | non-root `mentisdb` (uid/gid `991`). Bind mounts must be writable by uid 991 (`chown 991:991 ./data`). |
+| Ports | `9471` MCP (HTTP), `9472` REST (HTTP), `9475` dashboard (HTTPS). HTTPS MCP/REST (`9473`/`9474`) are off in the image; set `MENTISDB_HTTPS_MCP_PORT` / `MENTISDB_HTTPS_REST_PORT` to enable them. |
+| Configuration | any variable from [Daemon Configuration](#daemon-configuration), passed with `-e` or `environment:`. |
+| Base image | `debian:trixie-slim` (glibc 2.41). The ONNX Runtime used for local embeddings needs glibc 2.38+; the image is self-contained, so your host's glibc does not matter. |
+| Features | server + local embeddings + LLM extraction; the startup-sound/audio feature is not compiled in. |
+
+**Security notes.** Inside the container the daemon binds `0.0.0.0` (required for
+published ports to work), and a fresh daemon has no authentication. Therefore:
+
+- Publish ports on loopback (`-p 127.0.0.1:...`) unless you put a TLS reverse proxy
+  or VPN in front. Never publish `9471`/`9472` to the open internet as-is.
+- For any access beyond the host, set `MENTISDB_BEARER_TOKEN_ACCESS=true` and create
+  tokens: `docker exec mentisdb mentisdb bearertoken create --global admin`.
+- Set `MENTISDB_DASHBOARD_PIN`, and list the hostnames you reach the dashboard by in
+  `MENTISDB_DASHBOARD_ALLOWED_HOSTS` (the dashboard rejects unknown `Host` headers).
+- Back up the volume (`docker run --rm -v mentisdb-data:/d -v "$PWD":/b debian tar czf /b/mentisdb.tgz -C /d .`)
+  after stopping the container.
+
+Build locally with `make docker-build` (or `docker build -t mentisdb .`).
+
+
 ---
 
 ## Quick Start
@@ -82,6 +184,8 @@ cargo install mentisdb --features local-embeddings
 ```
 
 The `local-embeddings` feature enables the built-in `fastembed-minilm` ONNX embedding provider for real semantic vector search. Without it, MentisDB falls back to `local-text-v1` (text hashing). The auto-updater also installs with `--features local-embeddings`.
+
+The prebuilt Intel macOS (`x86_64-apple-darwin`) release binary is built **without** `local-embeddings`, because ONNX Runtime ships no prebuilt library for that target; it uses `local-text-v1` vectors. The same applies to the `mentisdb-linux-*-compat` binaries for older glibc (see [Prebuilt binaries](#prebuilt-binaries)). Every other release binary includes FastEmbed. Builds with `--no-default-features` (optionally re-adding `--features server` etc.) are supported.
 
 Connect your local AI tools the fast way:
 
@@ -368,21 +472,49 @@ Once startup completes, it prints:
   HTTPS dashboard port. Default: `9475`. Set to `0` to disable the web dashboard.
 - `MENTISDB_DASHBOARD_PIN`
   Optional PIN required to access the dashboard. Leave unset only for trusted localhost use.
+- `MENTISDB_DASHBOARD_ALLOWED_HOSTS`
+  Comma-separated extra hostnames or IPs the dashboard accepts in the `Host` header (for
+  example a public DNS name or the name a reverse proxy forwards). Set it in the environment
+  or a `.env` file (`./.env` or `<MENTISDB_DIR>/.env`); it is not editable from the dashboard Settings
+  tab. See "Dashboard API rules" below for the built-in allowlist.
+- `MENTISDB_WEBHOOK_ALLOWED_CIDRS`
+  Private ranges webhooks may target despite the SSRF guard, for self-hosted consumers on a
+  private network. One or more CIDRs or bare IPs separated by commas and/or whitespace, e.g.
+  `100.64.0.0/10,fd7a:115c:a1e0::/48` (Tailscale). Unset (default) keeps every internal range
+  blocked; an invalid value or an entry broader than `/8` (IPv4 or IPv6) stops the daemon
+  from starting. Set it in the
+  environment or a `.env` file (`./.env` or `<MENTISDB_DIR>/.env`). See "Webhook targets" below.
 - `MENTISDB_BEARER_TOKEN_ACCESS`
   Require bearer tokens for MCP requests. Default: `false`. Set `true` for remote
   or multi-user MCP servers. This can also be toggled live from the dashboard Settings screen.
 - `MENTISDB_AUTO_FLUSH`
   Controls per-write durability of the `binary` storage adapter.
-  - `true` (default): every `append_thought` flushes to disk immediately. Full durability.
+  - `true` (default): every `append_thought` returns only after its group commit has been
+    written to the chain file. Survives a process crash; add `MENTISDB_FSYNC=1` to also
+    survive power loss.
   - `false`: writes are batched and flushed every 16 appends (`FLUSH_THRESHOLD`). Up to 15
     thoughts may be lost on a hard crash or power failure, but write throughput increases
     significantly for multi-agent hubs with many concurrent writers.
   Supported values: `1`, `0`, `true`, `false`. Has no effect on the `jsonl` adapter.
 - `MENTISDB_GROUP_COMMIT_MS`
   Group-commit window in milliseconds for the background binary writer.
-  The writer batches appends within this window before flushing to disk.
-  Lower values = lower latency; higher values = better throughput.
+  The writer batches appends that are already queued, waiting up to this window for
+  more; when no other append is queued it flushes immediately, so a lone append never
+  pays the window. Lower values = lower latency; higher values = better throughput.
   Default: `2`
+- `MENTISDB_FSYNC`
+  Set `1` (or `true`, `on`, `yes`) to `fsync` the chain file after every group commit,
+  for power-loss durability. Default: off — each group commit is written to the OS
+  (survives a process crash) but not forced to the device, because a per-commit fsync
+  roughly quadruples append latency (`F_FULLFSYNC` on macOS). Explicit flushes
+  (`POST /v1/admin/flush`), clean shutdown and dropping a chain handle always sync.
+- `MENTISDB_EMBEDDINGS`
+  Process-wide embeddings mode for managed vector sidecars: `off` (lexical/graph only),
+  `local-text` (built-in hashing embeddings, never loads ONNX) or `fastembed`. Unset
+  means FastEmbed when the `local-embeddings` feature is compiled in, `local-text`
+  otherwise. Unknown values are logged and treated as unset.
+- `FASTEMBED_CACHE_DIR`
+  Where the FastEmbed ONNX model is cached. Default: `<MENTISDB_DIR>/.fastembed_cache`.
 - `MENTISDB_UPDATE_CHECK`
   Background GitHub release check for `mentisdb`. Enabled by default; set `0`, `false`, `no`,
   or `off` to disable update checks after startup. Default: `true`
@@ -440,12 +572,13 @@ How the set gets filled:
 Search filtering alone does not invent edges; pair default exclusion with dedup and/or
 good agent discipline on long-running brains.
 
-MentisDB loads environment variables from a `.env` file in the current working directory
-at startup. Existing shell environment variables take precedence over `.env` values. The
-file is silently ignored when absent, so it is safe to commit a template `.env.example`
+MentisDB loads environment variables at startup from a `.env` file in the current working
+directory, then from `<MENTISDB_DIR>/.env` (where the dashboard Settings tab saves its
+changes). Precedence is shell environment > `./.env` > `<MENTISDB_DIR>/.env`; a file never
+overrides a variable that is already set. Missing files are silently ignored, so it is safe to commit a template `.env.example`
 while keeping your actual `.env` in `.gitignore`.
 
-Example — full durability (production default):
+Example — full durability (crash-safe default plus per-commit fsync):
 
 ```bash
 MENTISDB_DIR=/tmp/mentisdb \
@@ -458,8 +591,31 @@ MENTISDB_MCP_PORT=9471 \
 MENTISDB_REST_PORT=9472 \
 MENTISDB_DASHBOARD_PIN=change-me \
 MENTISDB_AUTO_FLUSH=true \
+MENTISDB_FSYNC=1 \
 cargo run --bin mentisdb
 ```
+
+#### Durability and crash recovery (0.10.9)
+
+- **Canonical record first.** An append returns `Ok` as soon as the hash-chained record is
+  durable in the chain file. Derived state (lexical/vector sidecars, implicit-edge overlay,
+  registries) is updated afterwards; if that fails it is logged and retried or rebuilt on
+  the next append or open, instead of failing an append that already committed.
+- **Torn-tail recovery.** If the daemon or machine died mid-write, opening a binary chain
+  truncates a partial final record back to the last complete one and saves the dropped
+  bytes beside the chain file as `<chain file>.torn-<unix-millis>` (mode `0600`) for
+  inspection. Only a genuine partial record is truncated: if the bytes after a bad length
+  prefix still decode as a complete record, the corruption is mid-file, so opening fails
+  with an `InvalidData` error and the chain file is left untouched.
+- **Single writer.** MentisDB assumes one writer process per chain directory; torn-tail
+  repair takes no cross-process lock. Do not point two daemons (or a daemon and an embedded
+  `MentisDb` writer) at the same `MENTISDB_DIR`.
+- **Implicit-edge overlay catch-up.** The overlay records how many thoughts it covers and
+  the chain head it was built against; after a crash it replays the missing tail on open
+  (or rebuilds if the head does not match), so no implicit edges are lost.
+- **Atomic registry writes.** The chain registry, agent registry, webhook list and other
+  JSON registries are written to a temporary file and renamed into place, so a crash never
+  leaves a half-written registry.
 
 Example — multi-agent / long-lived chain (recommended: enable near-duplicate superseding):
 
@@ -551,9 +707,44 @@ REST endpoints:
 - `POST /v1/skills/delete`
 - `POST /v1/webhooks`
 - `GET /v1/webhooks`
-- `GET /v1/webhooks/{id}`
 - `DELETE /v1/webhooks/{id}`
 - `POST /v1/head`
+- `POST /v1/federated-search`
+- `POST /v1/summary-candidates`
+- `POST /v1/entity-types`
+- `POST /v1/entity-types/upsert`
+- `POST /v1/extract-memories`
+- `POST /v1/admin/flush`
+
+#### Chain resolution and error statuses
+
+Only operations that write a chain create it when its `chain_key` does not exist yet:
+`POST /v1/bootstrap`, `POST /v1/thoughts`, `POST /v1/retrospectives`,
+`POST /v1/import-markdown`, `POST /v1/agents/upsert`, `POST /v1/entity-types/upsert`,
+and the target of `POST /v1/chains/merge`. Every other route
+(search, head, agents, thought lookup, metadata updates, ...) returns **404** for an
+unknown `chain_key` and persists nothing. The configured default chain
+(`MENTISDB_DEFAULT_CHAIN_KEY`) is the one exception: it is created on demand so a fresh
+daemon answers reads. Call `POST /v1/bootstrap` (or `mentisdb_bootstrap` over MCP)
+before reading a new chain.
+
+A `chain_key` must be non-empty, at most 256 bytes, and free of control characters;
+anything else is rejected with **400**. The source, target and branch keys of
+`POST /v1/chains/merge` and `POST /v1/chains/branch` (and the matching MCP tools) are
+trimmed of surrounding whitespace and then validated by the same rule.
+
+REST and MCP errors map to HTTP statuses as follows:
+
+| Status | Meaning |
+|---|---|
+| `400` | Invalid input: malformed JSON, bad UUID, unknown thought type/role, invalid `chain_key` |
+| `401` | Missing/invalid bearer token, or a token whose scope does not cover the operation |
+| `403` | Permission denied (e.g. missing or invalid signature on a signed skill upload, inactive agent) |
+| `404` | Unknown chain (see above) or another missing resource |
+| `409` | Conflict, e.g. `POST /v1/chains/branch` into a chain key that already exists |
+| `413` | Request body over 1 MiB (enforced while bearer-token access is enabled) |
+| `500` | Server fault; the body says only `"internal server error"` and details go to the daemon log |
+| `501` | `POST /v1/extract-memories` on a build without the `llm-extraction` feature |
 
 ### Append Thought — `POST /v1/thoughts`
 
@@ -857,7 +1048,7 @@ Starting in 0.8.7, ranked search adds:
 Starting in 0.8.6, ranked search adds three features:
 
 - **Irregular verb lemma expansion** — the query tokenizer maps irregular past-tense verbs to their base form (e.g. "went" → "go", "gave" → "give", "ran" → "run"). About 170 mappings. Indexed content is not modified — expansion is query-time only.
-- **Reciprocal Rank Fusion (RRF)** — an opt-in reranking pass. When `enable_reranking=true` is set on a ranked search query, the engine produces separate lexical-only, vector-only, and graph-only rankings over the top `rerank_k` candidates (default 50), merges them via `1/(k + rank)` with `k=60`, and replaces the additive total with the RRF total plus non-rankable signal adjustments. Use when lexical and vector signals disagree on top candidates.
+- **Reciprocal Rank Fusion (RRF)** — an opt-in reranking pass. When `enable_reranking=true` is set on a ranked search query, the engine produces separate lexical-only, vector-only, and graph-only rankings over the top `rerank_k` candidates (default 50), merges them via `1/(k + rank)` with `k=60`, and adds a scaled consensus bonus to the additive total. Use when lexical and vector signals disagree on top candidates. (Before 0.10.9 the RRF total replaced the additive total, which badly degraded results; see below.)
 - **Per-field BM25 DF cutoffs** — `Bm25DfCutoffs` on `LexicalQuery` allows configuring separate document-frequency cutoff ratios per field (content, tags, concepts, agent_id, agent_registry). Terms whose global DF exceeds the cutoff for a given field are skipped for that field only. Default cutoffs match the original behavior (content=0.30, tags=0.30, concepts=0.30, agent_id=0.70, agent_registry=0.60).
 
 ### Search Scoring (after 0.9.9)
@@ -872,6 +1063,15 @@ The post-0.9.9 ranked-search validation run used real embeddings plus automatic 
 - **Vector sidecar: `fastembed-all-minilm-l6-v2`**, about 28 MB with 5882 indexed thoughts.
 
 The run applied the built-in thesaurus transparently on every `ranked_search` call and matches the whitepaper target of about 72% overall LoCoMo-10P R@10.
+
+### Search Scoring (0.10.9)
+
+- **RRF rerank fixed** — `enable_reranking=true` no longer replaces the additive score with the tiny raw RRF total (which collapsed rankings). RRF now adds a consensus bonus scaled by `RRF_SCORE_SCALE` (50): a rank-1 hit in all three lists is worth about +2.5, enough to break ties and reward agreement without overriding a clearly stronger lexical match. Only lists with a positive score for a candidate contribute.
+- **Stemmed thesaurus keys** — synonyms now expand for inflected query terms (`debugging` expands like `debug`, `deploys` like `deploy`). Because stem keys make expansion fire more often, automatic synonyms are damped to weight 0.3 with at most 3 synonyms per term (the previous 0.7 / 5 displaced literal matches and cost about 2.4 points of LongMemEval R@5).
+- **Federated search keyed by chain + id** — `POST /v1/federated-search` / `mentisdb_federated_search` fuse per-chain rankings with the same additive RRF bonus, keyed by `(chain_key, thought id)`, and deduplicate before paging, so `offset`/`limit` pages no longer repeat or drop results.
+- **Faster ranked, lexical, vector and graph paths** — score-only top-k selection, dense lexical scans, cached vector norms and exact top-k, and a bounded graph-expansion arena. Filtered lexical and heuristic queries are roughly 10x faster in the criterion benches.
+- **Filtered HNSW recall** — when filters are active, the HNSW backend switches to an exact scan over the filtered set or oversamples, so filtered vector searches no longer lose matches the approximate graph skipped.
+- **Benchmarks (0.10.9.54 vs the 0.10.8 code line, `fastembed-minilm`)** — LoCoMo-10P default R@5/R@10 63.8/72.7% → 63.9/73.5%; LoCoMo rerank R@5/R@10 3.6/5.9% → 66.0/74.1%; LongMemEval default R@5/R@10/R@20 66.8/72.0/78.2% → 68.0/72.8/78.8%; LongMemEval rerank R@5 2.8% → 68.6%; query throughput about 206/159 → 384/385 queries/s (LoCoMo/LongMemEval).
 
 ### Vector Sidecars
 
@@ -925,6 +1125,16 @@ Operational flow:
   - sync the sidecar to the latest chain state without changing the enable/disable setting
   - rebuild the sidecar from scratch after an explicit confirmation that the previous file will be deleted and recreated
 - if auto-sync is disabled, new thoughts can make the sidecar stale until the user syncs or rebuilds it
+
+Since 0.10.9 (issue #23, memory blow-up with many chains):
+
+- one FastEmbed model is loaded per process and shared by every chain, and texts are embedded in small bounded batches, so memory no longer grows with the number of open chains
+- the ONNX model cache lives in `<MENTISDB_DIR>/.fastembed_cache` instead of the daemon's working directory; set `FASTEMBED_CACHE_DIR` to put it elsewhere
+- opening a chain never embeds its history on the request path: chains with more than 32 thoughts and no fresh sidecar are rebuilt by a single background worker. Until the rebuilt sidecar is adopted (on the next request or append once the worker finishes), ranked search on that chain returns lexical and graph results only
+- opening a chain no longer rewrites its persisted vector provider configuration
+- `MENTISDB_EMBEDDINGS` selects the embeddings mode process-wide: unset (default: FastEmbed when compiled in, local text otherwise), `off` (no managed sidecars, lexical only), `local-text` (built-in `local-text-v1` hashing, never loads ONNX), or `fastembed`
+
+Upgrading from 0.10.1–0.10.8: the first start after upgrading may show lexical-only ranked results for large chains while their sidecars rebuild in the background. A stray `.fastembed_cache/` left in the directory you used to start the daemon from can be deleted; the model is re-downloaded into the new location once.
 
 ### HNSW approximate-nearest-neighbor vector backend
 
@@ -1089,6 +1299,32 @@ Dashboard capabilities:
 Protect the dashboard with `MENTISDB_DASHBOARD_PIN` whenever the daemon is reachable
 outside localhost.
 
+Dashboard API rules (0.10.9):
+
+- **Host allowlist (DNS-rebinding defence).** Every dashboard route, including `GET` pages
+  and `/dashboard/login`, rejects a request with `403` unless its `Host` header names this
+  daemon: `localhost`, `127.0.0.1`, `[::1]`, `my.mentisdb.com`, the configured
+  `MENTISDB_BIND_HOST`, the machine's own interface IPs when bound to `0.0.0.0` or `::`,
+  or an entry of `MENTISDB_DASHBOARD_ALLOWED_HOSTS` (comma-separated; set via environment
+  or `.env`, not from the dashboard). Reverse proxies must preserve the original `Host`
+  header, or forward a name listed in `MENTISDB_DASHBOARD_ALLOWED_HOSTS`.
+- **CSRF protection.** `POST`, `PATCH` and `DELETE` calls under `/dashboard/api/`, and the
+  `POST /dashboard/login` form, must come from the dashboard's own origin: an `Origin` (or,
+  without it, `Referer`) header whose host matches the request host. Scripts and CLI clients
+  that send neither header must add `X-MentisDB-Dashboard: 1`; anything else gets `403`.
+- **Login rate limiting** is keyed per client IP, so one client's failed PIN attempts do not
+  lock out others. `X-Forwarded-For` is ignored, so behind a reverse proxy all clients share
+  the proxy's address and one rate-limit bucket.
+- **Chain keys** created from the dashboard (bootstrap, branch target, copy-to target) must
+  match `[A-Za-z0-9_-]` and be at most 128 characters, otherwise `400`.
+- **Paging** is clamped to `per_page` at most 500 and `page` at most 1000.
+- **PIN handling.** `GET` on the settings API never returns the PIN value (only whether one is
+  set). Saving settings with a blank PIN keeps the current PIN.
+- **`.env` permissions.** Settings saved from the dashboard are written to
+  `<MENTISDB_DIR>/.env` with mode `0600` (it may hold the PIN), tightening an existing file too.
+- **Errors.** Dashboard `500` responses carry only `"internal server error"`; details go to
+  the daemon log.
+
 ---
 
 ## TLS Certificates
@@ -1207,9 +1443,20 @@ mentisdb backup --dir ~/.cloudllm/mentisdb -o /backups/mentisdb-2026-04-14.menti
 
 When the daemon is running, `backup` calls `POST /v1/admin/flush` before reading files to ensure a consistent snapshot even with `MENTISDB_AUTO_FLUSH=false`. If the daemon is not running, files are captured as-is.
 
+With `MENTISDB_BEARER_TOKEN_ACCESS=true`, `/v1/admin/flush` requires a **global** token.
+Set `MENTISDB_BEARER_TOKEN` to one and `backup` (and `restore`'s running-daemon probe) send
+it as `Authorization: Bearer <token>`:
+
+```bash
+MENTISDB_BEARER_TOKEN=mentisdb_global_token mentisdb backup
+```
+
+Without it the flush is rejected, so `backup` prints a "could not flush daemon" warning and
+captures the files as they are on disk.
+
 ### Restore a backup
 
-The daemon must be stopped before restoring. If `mentisdb` is detected running, the restore aborts with a message to stop the daemon first.
+The daemon must be stopped before restoring. If `mentisdb` is detected running, the restore aborts with a message to stop the daemon first. Any HTTP answer from the flush probe, including `401` from a token-protected daemon, counts as running.
 
 ```bash
 # Idempotent restore (preserves existing files)
@@ -1255,6 +1502,15 @@ A backup is a `.mentis` ZIP archive containing:
 
 Every file is verified by SHA-256 before restore writes anything to disk. A corrupted archive aborts with an error and leaves the target directory untouched.
 
+Restore safety limits (0.10.9):
+
+- archives that declare any entry larger than 64 GiB, or more than 256 GiB in total, are rejected before extraction
+- the manifest itself may be at most 8 MiB and list at most 100,000 files
+- every size the manifest declares must equal the entry's uncompressed size in the ZIP, otherwise the archive is rejected
+- on Unix, restore checks free disk space on the target filesystem against the manifest's total size before extracting anything
+- restore refuses to write through a symlink anywhere under the target directory
+- files are staged in a `.mentisdb-restore-<uuid>` directory created beside the target (same filesystem) and moved into place from there
+
 ### REST flush endpoint
 
 The flush operation is also available as a standalone REST endpoint:
@@ -1263,7 +1519,7 @@ The flush operation is also available as a standalone REST endpoint:
 POST http://127.0.0.1:9472/v1/admin/flush
 ```
 
-Returns `{"status": "flushed"}` on success. Iterates all open chains and calls `flush()` on each adapter, blocking until all writes are durable.
+Returns `{"status": "flushed"}` on success. Iterates all open chains and calls `flush()` on each adapter, blocking until all writes are durable (flush always fsyncs, regardless of `MENTISDB_FSYNC`). When bearer-token access is enabled this endpoint requires a global token.
 
 ---
 
@@ -1344,11 +1600,11 @@ The daemon currently exposes 42 MCP tools:
 - `mentisdb_head`
   Return head metadata, the latest thought at the current chain tip, and integrity state.
 - `mentisdb_register_webhook`
-  Register a webhook to receive HTTP POST notifications when thoughts are appended. Delivery is fire-and-forget with exponential backoff retries (up to 5 attempts).
+  Register a webhook to receive HTTP POST notifications when thoughts are appended. Delivery is fire-and-forget with up to 3 attempts per event (5 s timeout, exponential backoff from 1 s). See the target restrictions below.
 - `mentisdb_list_webhooks`
-  List all registered webhooks.
+  List all registered webhooks. Requires a global token when bearer-token access is enabled.
 - `mentisdb_delete_webhook`
-  Remove a webhook registration by its UUID.
+  Remove a webhook registration by its UUID. Requires a global token when bearer-token access is enabled.
 - `mentisdb_federated_search`
   Run one ranked-search query across multiple chains simultaneously and return one merged, deduplicated, re-scored result list. Each hit carries the `chain_key` it came from, so multi-agent hubs and cross-organizational memory aggregations can share a single query surface. Per-chain queries may override limits, filters, and RRF settings.
 - `mentisdb_extract_memories`
@@ -1357,6 +1613,51 @@ The daemon currently exposes 42 MCP tools:
   List the per-chain entity-type registry (labels like `incident`, `customer`, `deploy`) including descriptions and usage counts.
 - `mentisdb_upsert_entity_type`
   Create or update one entity type (label + optional description) in the per-chain registry. Entity-type labels can be attached to any thought via the `entity_type` field and used as a filter on ranked search.
+
+Webhook targets (0.10.9):
+
+- only `http` and `https` URLs are accepted, and redirects are never followed
+- by default, `localhost`, loopback, private (RFC 1918), link-local, CGNAT (`100.64.0.0/10`), documentation/TEST-NET, benchmarking, multicast, broadcast, reserved and unspecified addresses are rejected, as are IPv6 ULA/link-local/documentation addresses and IPv6 forms that embed a blocked IPv4 address (IPv4-mapped, IPv4-translated `::ffff:0:0:0/96`, NAT64, 6to4); the local-use NAT64 prefix `64:ff9b:1::/48` and Teredo `2001::/32` are rejected outright
+- the same check runs on every address a hostname resolves to at delivery time, so DNS names pointing at internal ranges (or DNS rebinding) cannot reach them
+- webhooks persisted in `mentisdb-webhooks.json` that point at a blocked target are loaded **inactive** with a warning
+- a circuit breaker pauses a webhook for 5 minutes after 5 consecutive failed deliveries; a success resets it
+- logs show only `scheme://host[:port]` of the target, never paths, query strings or credentials
+
+Allowing private webhook targets with `MENTISDB_WEBHOOK_ALLOWED_CIDRS`:
+
+Self-hosted deployments whose webhook consumers live on a private network (a Tailscale
+tailnet, a WireGuard subnet, a LAN host) can open just those ranges:
+
+```bash
+# Tailscale tailnet (IPv4 CGNAT range + Tailscale's IPv6 ULA prefix)
+MENTISDB_WEBHOOK_ALLOWED_CIDRS=100.64.0.0/10,fd7a:115c:a1e0::/48
+# a WireGuard subnet
+MENTISDB_WEBHOOK_ALLOWED_CIDRS=10.8.0.0/24
+# a single host (a bare address means /32 or /128)
+MENTISDB_WEBHOOK_ALLOWED_CIDRS=192.168.1.50
+```
+
+- entries are separated by commas and/or whitespace; each is `addr/prefix` (IPv4 or IPv6,
+  `[...]` brackets allowed around IPv6) or a bare address; host bits are normalized
+  (`10.8.0.7/24` becomes `10.8.0.0/24`)
+- an address inside a listed range is allowed even if it falls in a blocked range; every
+  other internal range stays blocked. IPv4-mapped IPv6 addresses (`::ffff:a.b.c.d`) match
+  IPv4 ranges
+- `localhost` host names are still rejected even if loopback is listed; use the IP literal
+  (`http://127.0.0.1:8080/hook`)
+- the list applies at registration, when persisted registrations are reloaded, and at
+  delivery time (to every resolved DNS address and to literal IPs). Removing the variable,
+  or narrowing it so a registration is no longer covered, loads that registration
+  **inactive** again on the next start
+- any unparsable entry, or any entry broader than `/8` (IPv4 or IPv6; `fd00::/8` still
+  fits), makes the daemon refuse to start. The active ranges are logged as a warning at
+  startup, plus a dedicated warning for any listed range that covers loopback
+  (`127.0.0.1`, `::1`) or the cloud metadata address `169.254.169.254`
+- list only the narrowest ranges your consumers live in (your tailnet, one `/24`, one host).
+  Never list cloud metadata (`169.254.169.254`, `169.254.0.0/16`) or broad ranges like
+  `10.0.0.0/8`: any token allowed to register webhooks (global tokens, and chain-scoped
+  tokens with an in-scope `chain_key_filter`) can make the daemon send requests into the
+  listed ranges
 
 The detailed request and response shapes for the MCP surface live in
 [`MENTISDB_MCP.md`](../MENTISDB_MCP.md). The REST equivalents live in
@@ -1516,6 +1817,10 @@ qwen mcp add --transport http mentisdb http://127.0.0.1:9471
 - the legacy CloudLLM-compatible MCP endpoints at `POST /tools/list` and
   `POST /tools/execute`
 
+`POST /tools/execute` takes `tool` + `parameters`; JSON-RPC `tools/call` takes `name` +
+`arguments`. Authorization checks exactly the fields that transport executes, and a payload
+that mixes both shapes is rejected with `400`.
+
 That means you can:
 
 - use native MCP clients such as Codex and Claude Code against `http://127.0.0.1:9471`
@@ -1562,8 +1867,23 @@ mentisdb bearertoken remove alice-agent
 
 Global tokens can call every MCP tool and access every chain. Chain-scoped tokens
 can call tools for any chain in their configured set, including requests that
-omit `chain_key` when the daemon default chain is in their scope. Tools that
-expose server-wide state, such as `mentisdb_list_chains`, require a global token.
+omit `chain_key` when the daemon default chain is in their scope. REST and MCP
+share one authorization table, so the same rules apply on both surfaces.
+
+Operations that expose or change server-wide state require a **global** token:
+
+- listing chains (`GET /v1/chains`, `mentisdb_list_chains`)
+- listing and deleting webhooks (`GET /v1/webhooks`, `DELETE /v1/webhooks/{id}`, `mentisdb_list_webhooks`, `mentisdb_delete_webhook`)
+- skill registry mutations: upload, deprecate, revoke, delete (`/v1/skills/{upload,deprecate,revoke,delete}` and the matching MCP tools)
+- `POST /v1/admin/flush` (set `MENTISDB_BEARER_TOKEN` to a global token so `mentisdb backup` can flush; see Backup and Restore)
+
+Registering a webhook with a chain-scoped token is allowed only when the request sets
+`chain_key_filter` to a chain inside the token's scope. `POST /v1/agents` (and the other
+agent-registry routes) are checked against the requested `chain_key`; a single-chain token
+that omits it gets its own chain. Out-of-scope calls are rejected with `401`.
+
+A token's `last_used_at` is updated in memory on every request but written to disk at most
+once every 60 seconds, so `mentisdb bearertoken list` may lag by up to a minute.
 
 #### Bearer Token MCP Client Config Examples
 
@@ -2040,135 +2360,4 @@ The extraction uses `openai-rust2` with connection pooling, 3× retry on 429/5xx
 is **untrusted** — always review and optionally sign extracted thoughts before
 appending.
 
-See [docs/llm-extracted-memories-design.md](docs/llm-extracted-memories-design.md) for the full design.
-
----
-
-## Retrospective Memory
-
-MentisDB supports a dedicated retrospective workflow for lessons learned.
-
-- Use `mentisdb_append` for ordinary durable facts, constraints, decisions,
-  plans, and summaries.
-- Use `mentisdb_append_retrospective` after a repeated failure, a long snag,
-  or a non-obvious fix when future agents should avoid repeating the same
-  struggle.
-
-The retrospective helper:
-
-- defaults `thought_type` to `LessonLearned`
-- always stores the thought with `role = Retrospective`
-- still supports tags, concepts, confidence, importance, and `refs` to earlier
-  thoughts such as the original mistake or correction
-
----
-
-## Thought Types And Roles
-
-MentisDB currently defines 31 semantic `ThoughtType` values and 8 operational
-`ThoughtRole` values.
-
-Thought types:
-
-- `PreferenceUpdate`, `UserTrait`, `RelationshipUpdate`
-- `Finding`, `Insight`, `FactLearned`, `PatternDetected`, `Hypothesis`, `Surprise`
-- `Mistake`, `Correction`, `LessonLearned`, `AssumptionInvalidated`, `Reframe`
-- `Constraint`, `Plan`, `Subgoal`, `Goal`, `Decision`, `StrategyShift`
-- `Wonder`, `Question`, `Idea`, `Experiment`
-- `ActionTaken`, `TaskComplete`
-- `Checkpoint`, `StateSnapshot`, `Handoff`, `Summary`, `LLMExtracted`
-
-Thought roles:
-
-- `Memory`
-- `WorkingMemory`
-- `Summary`
-- `Compression`
-- `Checkpoint`
-- `Handoff`
-- `Audit`
-- `Retrospective`
-
-Use `ThoughtType` to say what the memory means semantically, and `ThoughtRole`
-to say how the system should treat it operationally. The crate rustdoc is the
-authoritative source for per-variant semantics, and the Agent Guide on the docs
-site contains a human-oriented explanation of when to use each one.
-
-String forms round-trip through one canonical mapping: `ThoughtType::ALL` lists
-every variant, `as_str()` / `Display` return the canonical PascalCase name, and
-`FromStr` accepts any case with separators ignored (`"fact-learned"`,
-`"factlearned"`, and `"FactLearned"` all parse to `FactLearned`). Unknown input
-returns `ParseThoughtTypeError`, whose message lists the valid types; the REST
-and MCP `thought_type` fields use the same parser.
-
-### Memory Scopes
-
-MentisDB defines a `MemoryScope` enum that controls how far a thought should propagate:
-
-- `User` (default) — visible to all agents and sessions sharing the chain
-- `Session` — visible only within the current agent session
-- `Agent` — visible only to the agent that created it
-
-Scopes are stored as tags on the thought:
-
-- `scope:user`
-- `scope:session`
-- `scope:agent`
-
-Crate API:
-
-- `ThoughtInput::with_scope(MemoryScope)` sets the scope on append
-- `RankedSearchQuery::with_scope(MemoryScope)` filters search results by scope
-
-REST API:
-
-- `POST /v1/thoughts` accepts an optional `scope` field (`"user"`, `"session"`, or `"agent"`)
-- `POST /v1/ranked-search` and `POST /v1/context-bundles` accept an optional `scope` field
-
----
-
-## Shared-Chain Multi-Agent Use
-
-Multiple agents can write to the same `chain_key`.
-
-Each stored thought carries a stable:
-
-- `agent_id`
-
-Agent profile metadata now lives in the per-chain agent registry instead of
-being duplicated into every thought record. Registry records can store:
-
-- `display_name`
-- `agent_owner`
-- `description`
-- `aliases`
-- `status`
-- `public_keys`
-- per-chain activity counters such as `thought_count`, `first_seen_index`, and `last_seen_index`
-
-That allows a shared chain to represent memory from:
-
-- multiple agents in one workflow
-- multiple named roles in one orchestration system
-- multiple tenants or owners writing to the same chain namespace
-
-Queries can filter by:
-
-- `agent_id`
-- `agent_name`
-- `agent_owner`
-
-Administrative tools can also inspect and mutate the agent registry directly,
-so agents can be documented, disabled, aliased, or provisioned with public keys
-before they start writing thoughts.
-
----
-
-## Related Docs
-
-At the repository root:
-
-- `MENTISDB_MCP.md`
-- `MENTISDB_REST.md`
-- `mentisdb/WHITEPAPER.md`
-- `mentisdb/changelog.txt`
+See [docs/llm-extracted-memories-design.md](docs/llm-extracted

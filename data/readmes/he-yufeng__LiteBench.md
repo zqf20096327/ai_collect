@@ -222,12 +222,11 @@ Pure single-file HTML + vanilla JS — no React, no build step, works offline.
 
 ## Roadmap
 
-**Shipped:** a pass@k sampler (`--repeat N` reports pass@1 / pass@N with the unbiased estimator), the CLI, six built-in benchmarks (HumanEval, GSM8K, MMLU, MATH-500, plus YAML-defined custom tasks), an LLM-as-judge mode, agent/tool-use evaluation via litellm function calling, a SQLite run history, resumable runs (`--resume` continues an interrupted run from its checkpoint, skipping every sample that already finished), and a `litebench serve` web dashboard — all under a regression suite that stays green.
+**Shipped:** a pass@k sampler (`--repeat N` reports pass@1 / pass@N with the unbiased estimator), the CLI, six built-in benchmarks (HumanEval, GSM8K, MMLU, MATH-500, plus YAML-defined custom tasks), an LLM-as-judge mode, agent/tool-use evaluation via litellm function calling, a SQLite run history, resumable runs (`--resume` continues an interrupted run from its checkpoint, skipping every sample that already finished), and a `litebench serve` web dashboard — all under a regression suite that stays green. `litebench compare` prices every run from the tokens it recorded (litellm's price map, no second table to keep fresh) and `--sort cost` ranks the leaderboard by accuracy-per-dollar, with unknown-price models honestly marked n/a.
 
 **Planned:**
 
 - **More built-in tasks** — a code-repair task and a tool-use task from real traces, since the runner already supports both shapes and only the curated dataset is missing.
-- **Cost-aware comparison** — sort the leaderboard by accuracy-per-dollar, not just accuracy, using the token data each run already records.
 
 ## Contributing
 

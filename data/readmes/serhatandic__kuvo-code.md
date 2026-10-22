@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/serhatandic/kuvo-code/actions/workflows/ci.yml"><img src="https://github.com/serhatandic/kuvo-code/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="https://github.com/serhatandic/kuvo-code/releases"><img src="https://img.shields.io/github/v/release/serhatandic/kuvo-code?include_prereleases&label=release" alt="Release"></a>
+  <a href="https://github.com/serhatandic/kuvo-code/releases"><img src="https://img.shields.io/github/v/release/serhatandic/kuvo-code?label=release" alt="Release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue.svg" alt="License: PolyForm Noncommercial 1.0.0"></a>
 </p>
 
@@ -98,7 +98,8 @@ side panel and the usage menu.
   each reaches its limit or fails. What it keeps is in
   `~/Library/Application Support/run.kuvo.code/agents`. Each machine runs the
   same bridge beside its engine, with the agents installed and signed in there
-  (in `~/.kuvo-code/agents`).
+  (in `~/.kuvo-code/agents`), and there it also runs the group chats whose bots
+  all live on that machine (in `~/.kuvo-code/groups`).
 - **On a machine you add**, Kuvo Code reaches it with `ssh` and your keys. It
   sends the same engine version's Linux build, downloaded and checked on the
   Mac, to `~/.kuvo-code` there, runs it on the machine's localhost only, and
@@ -106,9 +107,12 @@ side panel and the usage menu.
   The engine outlives the connection, so a
   task carries on while the Mac is off; it stops when the app quits with
   nothing running, or after a day without the app, unless a bot's wake-up or
-  watch is waiting, which it sends or runs when it's due. Your settings and
-  integrations' keys reach it in files only you can read, gone when it stops,
-  never in its environment.
+  watch is waiting, which it sends or runs when it's due, or a group chat there
+  is talking, working or has a meeting set. Your settings and
+  integrations' keys reach it in files only you can read, kept there, never in
+  its environment. After the machine restarts, a line in your crontab there
+  starts the engine again as the app last started it, so the machine works on
+  its own.
 - **The agent's browser tools** are served by the app on `127.0.0.1`, with a
   new port and token each launch. They read a page the way
   [browser-use](https://github.com/browser-use/browser-use) does, as numbered
@@ -121,8 +125,9 @@ side panel and the usage menu.
   drives it over a pipe rather than a port, gives the engine the same tools,
   and streams the page to the panel over SSH.
 - **Updates** come through [Sparkle](https://sparkle-project.org), signed,
-  from this repository's releases. Releases are signed with a Developer ID and
-  notarized by Apple.
+  from this repository's releases, and its betas (prereleases) to copies with
+  Get beta updates on. Releases are signed with a Developer ID and notarized by
+  Apple.
 - **The usage menu** is UsageKit, our fork of
   [OpenUsage](https://github.com/robinebers/openusage) by Robin Ebers. It
   follows the accounts you connect in Kuvo Code and reads their usage with

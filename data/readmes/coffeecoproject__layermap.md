@@ -29,7 +29,9 @@ with dozens of searches:
 
 It maps **TypeScript, JavaScript, Go, Python and Java** with each language's own compiler, so calls
 through interfaces, base classes, templates and decorators resolve as the compiler resolves them,
-including the ones text search misses.
+including the ones text search misses. In WeChat mini-programs, it also links each page's and
+component's template (`.wxml`) to the methods it binds and the components it shows, and each event a
+component emits to the handlers the pages bind to it, so callers reach the pages.
 
 ## Example
 
@@ -143,9 +145,9 @@ This adds LayerMap to every dsh profile. Each session maps the project dsh was s
 
 In every agent, start a new session in a Git repository and ask as usual. LayerMap tells the agent
 when the map helps. A session started in a folder holding several repositories, or one that moves
-to another repository, works too: each map tool call maps the repository its path names. On first
-launch, npx downloads the pinned `layermap` package from npm; later
-launches use the cached copy, even offline.
+to another repository, works too: each map tool call maps the repository its path names. The first
+time a session starts a version of LayerMap, npm installs that pinned `layermap` package into
+LayerMap's cache; later sessions start it from there, even offline.
 
 Claude Code asks once before each map tool runs in a project. Choose "don't ask again", or run
 `npx layermap allow claude` to allow the plugin's read-only tools everywhere.
@@ -162,10 +164,13 @@ request that path: a frontend's fetch, a generated API client, a redirect or a l
 an import between two modules of the project overview, it names it, and says when the two now
 depend on each other; whether that direction suits the project's layers is for the agent to judge. When a
 declaration the change adds reads almost the same as code the project already has, it names both, so
-the agent can use the existing code instead of a copy. It never writes or runs tests. In Claude Code and
+the agent can use the existing code instead of a copy. When the change takes away the last call to a
+declaration, as when new code replaces old, it names that declaration, so the agent can delete what
+the change left behind. It never writes or runs tests. In Claude Code and
 CodeBuddy Code the plugin asks the agent once, before it finishes, to run this check for each repository it edited code in
-and has not checked since, whether through its edit tools or shell commands (changes another session makes in the same
-work tree do not count); the Pi extension does the same after the agent's own edits. Set `LAYERMAP_STOP_CHECK=0` to turn that
+and has not checked since, whether through its edit tools or shell commands, which count for the code files they name
+(changes another session makes in the same work tree do not count); the Pi extension does the same after the agent's own
+edits. Set `LAYERMAP_STOP_CHECK=0` to turn that
 off. Codex and DeepSeek Harness are told to run it.
 
 **Without plugins:** run `npx layermap setup claude` or `npx layermap setup codex`. Setup does three
@@ -175,8 +180,9 @@ things:
 - lets its read-only tools run without a prompt;
 - adds one marked sentence to the agent's instructions file.
 
-Use `--scope project` to set it up for a whole team, and `npx layermap remove …` to undo it. For any
-other MCP client, run `npx -y layermap mcp` as a stdio server in the repository.
+Setup is for one machine; for a whole team, have each member install the plugin. `npx layermap
+remove …` undoes it. For any other MCP client, run `npx -y layermap mcp` as a stdio server in the
+repository.
 
 **Requirements:**
 

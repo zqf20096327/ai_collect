@@ -8,6 +8,7 @@ You build the agent, with the AI framework you already use.<br/>
 Intelligo is everything around it — and it is tested, typed, and yours.
 
 <a href="https://github.com/intelligo-dev/intelligo/actions/workflows/ci.yml"><img src="https://github.com/intelligo-dev/intelligo/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI" /></a>
+<a href="https://scorecard.dev/viewer/?uri=github.com/intelligo-dev/intelligo"><img src="https://api.scorecard.dev/projects/github.com/intelligo-dev/intelligo/badge" alt="OpenSSF Scorecard" /></a>
 <a href="https://www.npmjs.com/package/@intelligo-dev/core"><img src="https://img.shields.io/npm/v/@intelligo-dev/core?label=npm" alt="npm" /></a>
 <img src="https://img.shields.io/badge/licence-Apache--2.0-blue" alt="Apache-2.0" />
 <img src="https://img.shields.io/badge/TypeScript-strict-blue" alt="TypeScript" />
@@ -129,7 +130,7 @@ Services live in npm packages you upgrade. Each takes its dependencies as ports,
 | [`@intelligo-dev/core`](packages/core)             | The schema (Drizzle, Postgres, pgvector); conversations, versioned documents, notifications; data export and per-fact deletion; email, logging, env                                   |
 | [`@intelligo-dev/jobs`](packages/jobs)             | A Postgres-backed job queue — `FOR UPDATE SKIP LOCKED`, retries, backoff. No Redis                                                                                                    |
 | [`@intelligo-dev/audit`](packages/audit)           | Append-only audit events and the memory-audit contract                                                                                                                                |
-| [`@intelligo-dev/admin`](packages/admin)           | The operator's console: platform overview, operations, integration health                                                                                                             |
+| [`@intelligo-dev/admin`](packages/admin)           | The operator's console behind the `admin-console` block: cross-tenant reads, the platform-admin gate, integration health, audited impersonation                                       |
 | [`@intelligo-dev/next`](packages/next)             | The one package that imports `next/*`: request context and the auth route handlers                                                                                                    |
 | [`@intelligo-dev/mastra`](packages/mastra)         | Optional: a bridge from a native Mastra agent to the execution boundary                                                                                                               |
 | [`@intelligo-dev/cli`](packages/cli)               | `create`, `add`, `migrate` (and `--check` to gate a deploy), `doctor`, `upgrade --check` — which knows the generated files you customized, by content hash, and will not clobber them |
@@ -149,6 +150,7 @@ Pages do not come in a package. They arrive as registry **blocks** — pages, th
 | `pricing`          | `checkout`           | `billing-settings`    | `usage`                   |
 | `feature-gating`   | `trial-banner`       | `payment-poll`        | `artifacts`               |
 | `chat`             | `chat-panel`         | `chat-widget`         | `chat-share`              |
+| `admin-console`    |                      |                       |                           |
 
 Browse them running at [intelligo.dev/blocks](https://intelligo.dev/blocks), and the design system's components — AI message parts, motion patterns, restyled primitives — at [intelligo.dev/components](https://intelligo.dev/components).
 
@@ -191,11 +193,11 @@ pnpm registry:build   # rebuild the registry artifacts
 pnpm db:migrate       # apply the framework's schema
 ```
 
-A release is one commit: it bumps every published package and heads [`CHANGELOG.md`](CHANGELOG.md) with its section; merging it publishes to npm with provenance, tags, and creates the GitHub release. [CONTRIBUTING.md](CONTRIBUTING.md) says what a good pull request looks like, and [AGENTS.md](AGENTS.md) is the full map of the codebase — for people as much as for coding agents.
+A release is one squash-merged pull request: it bumps every published package and heads [`CHANGELOG.md`](CHANGELOG.md) with its section; merging it publishes to npm with provenance, tags, and creates the GitHub release. [CONTRIBUTING.md](CONTRIBUTING.md) is where to start a change; [AGENTS.md](AGENTS.md) is the full map of the codebase that coding agents load.
 
 ## Community
 
-Questions and ideas go to [Discussions](https://github.com/intelligo-dev/intelligo/discussions), bugs to [issues](https://github.com/intelligo-dev/intelligo/issues/new/choose), and vulnerabilities go privately, the way [SECURITY.md](SECURITY.md) describes. See also [SUPPORT.md](SUPPORT.md) and the [code of conduct](CODE_OF_CONDUCT.md).
+Questions and ideas go to [Discussions](https://github.com/intelligo-dev/intelligo/discussions), bugs to [issues](https://github.com/intelligo-dev/intelligo/issues/new/choose), and vulnerabilities go privately, the way [SECURITY.md](SECURITY.md) describes. See also [SUPPORT.md](SUPPORT.md) and the [code of conduct](CODE_OF_CONDUCT.md). How the project is run, and how to become a maintainer: [GOVERNANCE.md](GOVERNANCE.md).
 
 ## Licence
 

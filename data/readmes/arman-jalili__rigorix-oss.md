@@ -86,13 +86,18 @@ open.
 ### 1. Risk gating, budgets and autonomy presets (ADR-004, ADR-007, ADR-008)
 
 Every execution runs inside operator-authored risk policy, permission and budget
-boundaries. Budgets are **RAII reservations** — a reservation is taken before the
-call and released after, so a crashed or cancelled run cannot leak its allowance
-(ADR-008). Autonomy is a *preset*, not a vibe: the operator picks the envelope,
-the engine enforces it.
+boundaries. Budgets are **counted per execution and evaluated before each tool
+call**: a call that would exceed its limit is refused with `budget_exceeded` and
+the tool never runs. Limits come from `[enforcement] preset` in `rigorix.toml`
+(`default` = 500 tool calls, 3600 s, 100k tokens), and per-tool `max_calls` is
+enforced from the same counters.
 
-*Business:* it converts "we trust the agent" into "we bounded the agent", which is
-the only form of that sentence an auditor accepts.
+Contested capacity is different and stronger: it is **reserved before dispatch and
+released after**, so a crashed or cancelled run cannot leak its allowance
+(ADR-018). See the demo below, where the refused step's tool never executes.
+
+Autonomy is a *preset*, not a vibe: the operator picks the envelope, the engine
+enforces it.
 
 ### 2. Approval that binds to an intent, not to a screen (ADR-011)
 
@@ -289,6 +294,12 @@ whatever agent you run, so it is measured on these dimensions:
 | **Delegation** | Authority is silently re-delegated | The record is bound to the attesting identity; whether a delegation is legally valid is explicitly out of scope | ADR-012, spec NC-2 |
 | **Semantic** | The effect differs from the intent | Canonical `eff:` effect keys and value-identity matching | ADR-014 |
 
+**Scope evidence needs a declared scope.** Plan creation declares the files a
+step will write, patch, or stage; the post-execution oracle diffs those against
+the run's git changes. A `run_command` step declares no scope unless the plan
+states one, because a command string is not a path list — the oracle is evidence,
+not prevention.
+
 **What this table is not.** It is not a benchmark, not a competitor ranking, and
 not a claim of independent validation. No public independent comparative
 evaluation exists; the [claim ceiling](#claim-ceiling) applies (L1 engineering
@@ -306,6 +317,13 @@ measured against the six dimensions above, using its own documentation.
 authority-fact bundle), usage guide (1); plus 3 auth tools when an identity
 provider is configured.
 
+**MCP is the adapter surface, deliberately.** There are no framework-specific
+adapters (LangChain, OpenAI tools, CrewAI, …) and none are planned: a shim per
+framework would be a second dispatch path with the engine's controls on the far
+side of it, which is the failure this project exists to remove. Any MCP host —
+stdio or Streamable HTTP — reaches every control; a host outside MCP integrates
+through the server or the library, both of which are the same code.
+
 ```bash
 cargo install rigorix-mcp
 ```
@@ -316,8 +334,8 @@ cargo install rigorix-mcp
 
 **CLI** (`rigorix-cli`) — plan, run, inspect, and verify offline: `run`, `plan`,
 `cancel`, `status`, `history`, `explain`, `diff-plan`, `generate`, `template`,
-`audit {list|show|diff|projection|verify-projection}`, `logs`, `config`, `init`,
-`key`, plus the interactive TUI as the default entry point.
+`audit {list|show|diff|projection|verify-projection}`, `logs`, `config`, `doctor`,
+`init`, `key`, plus the interactive TUI as the default entry point.
 
 **Server** (`rigorix-server`) — the OSS reference host: JSON-RPC 2.0 over the
 frozen `rigorix.*` catalog, with an optional MCP Streamable HTTP transport.

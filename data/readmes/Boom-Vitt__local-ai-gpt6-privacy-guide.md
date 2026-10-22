@@ -1,3 +1,7 @@
+<!-- BBN:HEADER:START -->
+<img src=".github/brand/banner.svg" width="100%" alt="Local AI Privacy Guide · Local-first AI with masked, selective GPT-6 escalation" />
+<!-- BBN:HEADER:END -->
+
 # Local AI + Hermes + GPT-6 Privacy Guide
 
 ![ปก Local AI และ Hermes รักษาข้อมูลในเครื่อง ก่อนส่งเฉพาะบริบทที่ Mask แล้วให้ GPT-6](assets/local-ai-hermes-youtube-cover-v3.png)
@@ -123,3 +127,7 @@ assert payload["store"] is False
 ## License / Security / Contributing
 
 เผยแพร่ภายใต้ [MIT License](LICENSE). ก่อนใช้งานหรือส่ง contribution โปรดอ่าน [Security Policy](SECURITY.md) และ [Contributing guide](CONTRIBUTING.md).
+
+<!-- BBN:FOOTER:START -->
+[Made by BoomBigNose](https://github.com/Boom-Vitt)
+<!-- BBN:FOOTER:END -->

@@ -372,6 +372,7 @@ Also, a leaderboard should be included if only:
 | [VMLU](https://vmlu.ai/leaderboard) | VMLU is a benchmark to evaluate overall capabilities of foundation models in Vietnamese. |
 | [Vinayak Multistep Recursive Reasoning Benchmark (VMRRB)](https://rankmodel.github.io) | VMRRB is a benchmark for evaluating advanced reasoning, recursive dependency resolution, and robustness in dynamic, noisy, and structurally challenging environments. [GitHub](https://github.com/vbepipe/vmrrb-benchmark). |
 | [WildBench](https://huggingface.co/spaces/allenai/WildBench) | WildBench is a benchmark for evaluating language models on challenging tasks that closely resemble real-world applications. |
+| [Wordsmith Model Bench](https://wordsmith.page/benchmark/models) | Wordsmith Model Bench scores frontier models on manuscript editing (craft notes, line editing and proofreading polish) using unpublished pages and a cross-maker panel of AI judges. |
 | [Xiezhi](https://github.com/MikeGu721/XiezhiBenchmark?tab=readme-ov-file#leaderboard) | Xiezhi is a benchmark for holistic domain knowledge evaluation of LLMs. |
 | [Yanolja Arena](https://huggingface.co/spaces/yanolja/arena) | Yanolja Arena host a model arena to evaluate the capabilities of LLMs in summarizing and translating text. |
 | [Yet Another LLM Leaderboard](https://huggingface.co/spaces/mlabonne/Yet_Another_LLM_Leaderboard) | Yet Another LLM Leaderboard is a platform for tracking, ranking, and evaluating open LLMs and chatbots. |
@@ -623,5 +624,3 @@ Also, a leaderboard should be included if only:
 | [CFLUE](https://github.com/aliyun/cflue?tab=readme-ov-file#leaderboard) | CFLUE is a benchmark to evaluate LLMs' understanding and processing capabilities in the Chinese financial domain. |
 | [ESGenius](https://angel-ntu.github.io/ESGenius) | ESGenius ranks LLMs on Environmental, Social, and Governance (ESG) and sustainability knowledge using 1,136 expert-validated questions grounded in authoritative standards and frameworks, under both zero-shot and retrieval-augmented settings. |
 | [FinEval](https://github.com/SUFE-AIFLM-Lab/FinEval?tab=readme-ov-file#performance-leaderboard) | FinEval is a benchmark to evaluate financial domain knowledge in LLMs. |
-| [GDPval](https://evals.openai.com/gdpval/leaderboard) | GDPval evaluates AI model performance on real-world economically valuable tasks across 44 occupations. |
-| [Japanese Language Model Financial Evaluation Harness

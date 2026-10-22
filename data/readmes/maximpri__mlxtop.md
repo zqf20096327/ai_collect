@@ -106,7 +106,7 @@ your runtime, send it a prompt, and watch Overview while it answers.
 | Arrows / click, `Enter` / double-click | Select a chart, enlarge or restore it |
 | `+` `-` / wheel | Zoom chart history |
 | `p` / `Space` | Pause sampling |
-| `[` `]` | Select an NVIDIA GPU |
+| `[` `]` | Select a GPU card |
 | `d` | Diagnostics and setup help for the current runtime |
 | `?` / `q` | Help / quit (`Esc` asks first) |
 
@@ -119,9 +119,9 @@ where each reading comes from.
 | --- | :---: | --- |
 | [oMLX](docs/USER_GUIDE.md#omlx-telemetry) | ✓ | Models, prompt and generation speed, requests with prefill progress, cache activity; follows oMLX serving through Splash |
 | [Splash](https://github.com/incoai/splash) | ✓ | Running and waiting requests, prefill progress, decode and prefill speed, prefix-cache reuse, Metal memory, DFlash acceptance, TTFT |
-| [mlx-serve](https://github.com/ddalcu/mlx-serve) | ✓ | Generation and prefill rates, running requests, prefix-cache reuse, MLX memory (start it with `--metrics`) |
+| [mlx-serve](https://github.com/ddalcu/mlx-serve) | ✓ | Generation and prefill rates, running requests with their own speeds, prefix-cache reuse, MLX memory (start it with `--metrics`) |
 | vLLM, SGLang | ✓ | Active and waiting queues, server token rates, KV-cache occupancy, mean first-token time |
-| llama.cpp | with `/metrics` | Active slots and output counts; average rates and queues when `/metrics` is enabled |
+| llama.cpp | ✓ | Active slots, output counts and live generation speed; average rates and queues when `/metrics` is enabled |
 | KoboldCpp | last request | Input and output counts and rates |
 | Ollama | after completion | Loaded models, VRAM, context size, CPU/GPU placement |
 | LM Studio | after completion | Loaded instances and context size |
@@ -140,7 +140,7 @@ custom URLs and authentication.
 | Memory pressure | Native | `MemAvailable` and PSI | Commit charge |
 | Compression | ✓ | — | — |
 | Paging | ✓ | ✓ | Not available from Windows |
-| GPU | Apple GPU | NVIDIA via `nvidia-smi` | NVIDIA via `nvidia-smi` |
+| GPU | Apple GPU | NVIDIA via `nvidia-smi`, AMD via amdgpu sysfs | NVIDIA via `nvidia-smi` |
 
 macOS 11 or later is required. Intel Macs aren't supported.
 

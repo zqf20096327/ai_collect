@@ -12,7 +12,7 @@
 <p>
 <a href="https://github.com/Gentleman-Programming/gentle-ai/releases"><img src="https://img.shields.io/github/v/release/Gentleman-Programming/gentle-ai?style=for-the-badge&labelColor=1A1218&color=F095C8" alt="Release"></a>
 <a href="https://github.com/Gentleman-Programming/gentle-ai/stargazers"><img src="https://img.shields.io/github/stars/Gentleman-Programming/gentle-ai?style=for-the-badge&labelColor=1A1218&color=F095C8" alt="Stars"></a>
-<img src="https://img.shields.io/badge/agents-17-F095C8?style=for-the-badge&labelColor=1A1218" alt="17 agents">
+<img src="https://img.shields.io/badge/agents-18-F095C8?style=for-the-badge&labelColor=1A1218" alt="18 agents">
 <img src="https://img.shields.io/badge/macOS%20%C2%B7%20Linux%20%C2%B7%20Windows-D7A0B8?style=for-the-badge&labelColor=1A1218" alt="Platform">
 <a href="LICENSE"><img src="https://img.shields.io/badge/MIT-D7A0B8?style=for-the-badge&labelColor=1A1218" alt="License: MIT"></a>
 </p>
@@ -130,9 +130,9 @@ The cost of a fresh session is not the tokens — it is you, re-explaining the s
 
 <img width="100%" src="docs/assets/diagrams/odd-cycle.svg" alt="ODD authorizes and understands a request. Read-only work ends separately; authorized work stays lightweight when small or keeps a recoverable record when substantial, then is implemented, checked, and closed." />
 
-Small changes should not need a planning pipeline, and larger work should not lose its context between sessions. **Organic Driven Development (ODD)** keeps understood changes lightweight and gives substantial, authorized work one recoverable feature document. The agent explores before changing code, checks the results, and keeps progress current so work can resume without rebuilding the plan.
+Small changes should not need a planning pipeline, and larger work should not lose its context between sessions. **Organic Driven Development (ODD)** keeps understood changes lightweight and gives substantial, authorized work one recoverable feature document. Questions, reviews and proposals stay read-only until you ask for a change. The agent explores before changing code, checks the results, and keeps progress current so work can resume without rebuilding the plan.
 
-Tasks are sized by understanding, risk, and resumability, never by file count. A small task — understood, with contained risk, and resumable from the diff alone — runs inline: no subagents, no task document. The feature document of a large task holds your spec verbatim, and every handoff points at it instead of paraphrasing it.
+Tasks are sized by understanding, risk, and resumability, never by file count. A small task — understood, with contained risk, and resumable from the diff alone — runs inline: no subagents, no task document. Work becomes large only when it can't be resumed from the diff — several sessions, external waits, or requirements too long to survive compaction — never because of its size. The feature document of a large task holds your spec verbatim, and every handoff points at it instead of paraphrasing it.
 
 https://github.com/user-attachments/assets/857a2195-34b8-4720-87af-f71bca3dec92
 

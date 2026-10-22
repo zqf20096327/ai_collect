@@ -7,7 +7,7 @@
 **Give DeepSeek Harness hands and eyes on your desktop.**
 
 [![awesome · DSH plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com/p/momasiku/dsh-pilot/)
-[![npm](https://img.shields.io/npm/v/@momasiku/dsh-pilot?label=npm)](https://www.npmjs.com/package/@momasiku/dsh-pilot)
+[![npm](https://img.shields.io/npm/v/@momasiku%2Fdsh-pilot?label=npm)](https://www.npmjs.com/package/@momasiku/dsh-pilot)
 [![compat](https://github.com/momasiku/dsh-pilot/actions/workflows/compat.yml/badge.svg)](https://github.com/momasiku/dsh-pilot/actions/workflows/compat.yml)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -28,7 +28,8 @@ looks at the real pixels and then operates them:
 <!-- Served from raw.githubusercontent.com, the same host every asset here uses. If
      that host is slow where you read this, jsDelivr mirrors the same files:
      https://cdn.jsdelivr.net/gh/momasiku/dsh-pilot@main/assets/dsh-pilot-cad.gif
-     https://cdn.jsdelivr.net/gh/momasiku/dsh-pilot@main/assets/dsh-pilot-excel.gif -->
+     https://cdn.jsdelivr.net/gh/momasiku/dsh-pilot@main/assets/dsh-pilot-excel.gif
+     https://cdn.jsdelivr.net/gh/momasiku/dsh-pilot@main/assets/dsh-pilot-blender.gif -->
 
 ![dsh-pilot drawing a mechanical plate in AutoCAD: the model types REC and the corner coordinates, the inner outline, five circles, the centre lines and two linear dimensions into the command line, then zooms to extents](https://raw.githubusercontent.com/momasiku/dsh-pilot/main/assets/dsh-pilot-cad.gif)
 
@@ -38,17 +39,15 @@ looks at the real pixels and then operates them:
 
 **A spreadsheet edit, in one call.** `desktop_sequence` focuses the workbook, moves the pointer to C1, clicks, pastes `Q3 收入`, presses Enter and saves — one round trip for the whole chain.
 
+![dsh-pilot modelling in Blender: the viewport is cleared, a cube is added, and subdivision turns it into a sphere, then the model orbits to check it](https://raw.githubusercontent.com/momasiku/dsh-pilot/main/assets/dsh-pilot-blender.gif)
+
+**A 3D model, built from nothing.** It clears the viewport, adds a cube, then `Ctrl+1` and `Ctrl+3` subdivision turn that cube into a sphere. Real Blender 4.2 on a machine with **no GPU** — driven through Mesa's software OpenGL, which the model set up itself.
+
 | tool | what it does |
 | --- | --- |
 | **`screen_view`** | captures the live desktop and returns the PNG as a **real image block** the model can see — not OCR, not a text summary |
 | **`desktop_control`** | moves the pointer, clicks, drags, scrolls, types, sends keys, focuses and lists windows — and can capture the result in the same call |
 | **`desktop_sequence`** | runs a **whole batch** of those actions in one call and looks once at the end |
-
-```text
-You : 把桌面上那个报表的第三列改名成 "Q3 收入"，然后保存
-DSH : desktop_sequence([focus "报表.xlsx", click 683,192, type "Q3 收入", key enter, key ctrl+s])
-      → 1 round trip, 1 screenshot, per-step timings, done
-```
 
 ## Why this exists
 
@@ -248,6 +247,51 @@ and what `dsh plugin add` checks before it installs anything. Requirements:
 (`deepseek-flash` does).
 
 ### Recent changes
+
+**0.6.0** — a takeover line, a lit pointer, and titles that stop hiding characters.
+
+- **The screen says who is driving.** While an action runs, one line of large
+  translucent type names the operator and the way out — `DSH 正在操作你的电脑 · 按 Esc
+  取消` — and a halo follows the cursor. No border: the first version drew one, and at
+  2560x1600 it was either invisible against a blue wallpaper or heavy enough to feel
+  like a frame. Sizes come from the virtual desktop, so a 4K wall and a 1080p laptop
+  get the same visual weight.
+- **Esc cancels the batch, not the step.** The overlay stamps the cancel token the
+  action loop already polled; that token now belongs to the whole `desktop_sequence`,
+  so a `wait` in the middle is interrupted too, and the result says why:
+  `the person pressed Esc; the batch stopped where it was`. Measured: a 12 s batch with
+  Esc at 4.5 s returned after 7.1 s.
+- **Titles are compared after stripping zero-width characters.** Edge's own title has
+  a U+200B inside `Microsoft Edge`; `focus "Microsoft Edge"` failed with "no visible
+  top-level window matches" on a window the person could read perfectly.
+- **`focus` accepts an `hwnd` on its own**, as the description always promised.
+- **Every helper script must keep its UTF-8 BOM** — `script-smoke` fails if one loses
+  it, because PowerShell 5.1 reads a BOM-less file as ANSI and the Chinese caption
+  renders as mojibake. This caught three other scripts that had already lost it.
+- The pointer halo is drawn, never written: no `SetCursorPos` and no input hook, which
+  is why the ring never makes a person's own mouse feel laggy.
+
+- **A takeover line and a lit pointer.** While an action runs, one line of large
+  translucent type names the operator and the way out — `DSH 正在操作你的电脑 · 按 Esc
+  取消` — and a halo follows the cursor. No border around the screen: the first version
+  drew one, and at 2560x1600 it was either invisible against a blue wallpaper or heavy
+  enough to feel like a frame. The type and the halo say the same thing without taking
+  the desktop hostage. Sizes come from the virtual desktop, so a 4K wall and a 1080p
+  laptop get the same visual weight.
+- **Esc cancels the batch, not the step.** The overlay stamps the same cancel token the
+  action loop already polled; that token now belongs to the whole `desktop_sequence`,
+  so a `wait` in the middle is interrupted too, and the result says why:
+  `the person pressed Esc; the batch stopped where it was`. Measured: a 12 s batch with
+  Esc at 4.5 s returned after 7.1 s.
+- **The pointer is lit, not taken over.** A halo tracks the cursor while the ring is up,
+  so it is obvious the movement is not yours. It is drawing, not the pointer: Windows
+  paints the real cursor above every window, so the halo sits under it and the pointer
+  reads as larger and lit without being replaced — and without the cursor being written,
+  which is what makes other agents' takeovers feel laggy. The halo lives in its own small
+  window rather than as a child of the ring: a child Grid with a runtime margin never
+  painted on this layered surface, while a window that is simply moved does.
+- Fully permissioned sessions are not asked again — the ring is the statement, not a
+  prompt. `takeover: false` turns it off.
 
 **0.5.14** — the coordinate contract stops guessing how big the image you see is.
 
@@ -528,7 +572,8 @@ DSH 原本只会"说"：它能推理、能写代码、能规划，但**看不见
 <!-- 图片走 raw.githubusercontent.com（本仓库所有资源都用这个域名）。若在你那边较慢，
      jsDelivr 上有同样的镜像：
      https://cdn.jsdelivr.net/gh/momasiku/dsh-pilot@main/assets/dsh-pilot-cad.gif
-     https://cdn.jsdelivr.net/gh/momasiku/dsh-pilot@main/assets/dsh-pilot-excel.gif -->
+     https://cdn.jsdelivr.net/gh/momasiku/dsh-pilot@main/assets/dsh-pilot-excel.gif
+     https://cdn.jsdelivr.net/gh/momasiku/dsh-pilot@main/assets/dsh-pilot-blender.gif -->
 
 ![dsh-pilot 在 AutoCAD 里画一块机械板：模型把 REC、角点坐标、内轮廓、五个圆、中心线和两道线性标注依次输入命令行，最后缩放到范围](https://raw.githubusercontent.com/momasiku/dsh-pilot/main/assets/dsh-pilot-cad.gif)
 
@@ -538,17 +583,15 @@ DSH 原本只会"说"：它能推理、能写代码、能规划，但**看不见
 
 **一次调用改完一张表。** `desktop_sequence` 聚焦工作簿、把鼠标移到 C1、点击、粘贴「Q3 收入」、回车、保存——整串动作只花一次往返。
 
+![dsh-pilot 在 Blender 里建模：先清空视口，加一个立方体，再用细分曲面把它磨成一个球，最后轨道旋转检查](https://raw.githubusercontent.com/momasiku/dsh-pilot/main/assets/dsh-pilot-blender.gif)
+
+**从零建一个 3D 模型。** 清空视口 → 加一个立方体 → `Ctrl+1`、`Ctrl+3` 两级细分，方盒子被磨成一个球。真机上的 Blender 4.2，跑在**一台没有显卡的机器**上——靠 Mesa 的软件 OpenGL，而那套环境也是模型自己配好的。
+
 | 工具 | 作用 |
 | --- | --- |
 | **`screen_view`** | 抓取当前屏幕，把 PNG 作为**真正的图像块**交给模型（不是 OCR、不是文字描述），连光标位置、前台窗口、各显示器范围一起给出 |
 | **`desktop_control`** | 移动鼠标、单击/双击/右键、拖拽、滚轮、打字、按键、聚焦与列出窗口；可以在同一次调用里顺手截一张，让效果立刻可见 |
 | **`desktop_sequence`** | **一次调用跑完一整串动作**，最后只看一眼结果 |
-
-```text
-你 ：把桌面上那张报表的第三列改名成 "Q3 收入"，然后保存
-DSH：desktop_sequence([focus "报表.xlsx", click 683,192, type "Q3 收入", key enter, key ctrl+s])
-     → 1 次往返、1 张截图、每步耗时，完成
-```
 
 ## 它到底解决了什么
 

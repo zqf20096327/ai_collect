@@ -63,13 +63,13 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 
 - [Classification & Routing](categories/classification-routing.md) — 75 entries
 - [Adaptive & Realtime UI](categories/adaptive-realtime-ui.md) — 12 entries
-- [Verification & Guardrails](categories/verification-guardrails.md) — 58 entries
+- [Verification & Guardrails](categories/verification-guardrails.md) — 59 entries
 - [Scoring & Ranking](categories/scoring-ranking.md) — 44 entries
-- [Agent Decisions](categories/agent-decisions.md) — 62 entries
+- [Agent Decisions](categories/agent-decisions.md) — 63 entries
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 11 entries
 - [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 45 entries
 - [Calibration & Research](categories/calibration-research.md) — 54 entries
-- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 118 entries
+- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 119 entries
 - [Game & Simulation](categories/game-simulation.md) — 26 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 10 entries
@@ -110,8 +110,8 @@ Optional tags on an entry name the coding agent it targets and the kind of integ
 - **Pi** (16) — [pi-jev-router](https://github.com/mejiasd3v/pi-jev-router) · [pi-jev-skill-picker](https://github.com/safzanpirani/pi-jev-skill-picker) · [pi-gear-router](https://github.com/joslynSmall/pi-gear-router) · [pi-jev](https://github.com/y0usaf/pi-jev) · [pi-heed](https://github.com/Nyarlathoteppppp/pi-heed) · [pi-verdict](https://github.com/jesset/pi-verdict) · [Reflex](https://github.com/kaustav1996/reflex) · [pi-subagent-jev](https://github.com/G0-0000/pi-subagent-jev) · [JevGPT](https://github.com/sunyasheng/JevGPT) · [pi-typesafe-jev](https://github.com/legacybridge-tech/pi-typesafe-jev) · [pi-jev (TheoOliveira)](https://github.com/TheoOliveira/pi-jev) · [pi-quiet-ask](https://github.com/HyunjunJeon/pi-quiet-ask) · [pi-fast-jev-compaction](https://github.com/joelhooks/pi-fast-jev-compaction) · [pi-typesafe-router](https://github.com/jekozyra/pi-typesafe-router) · [mu](https://github.com/qybaihe/mu) · [Testing Jev for Pi extensions (r/PiCodingAgent)](https://reddit.com/r/PiCodingAgent/comments/1whsav6/anyone_else_testing_out_typesafe_ais_new_system/)
 - **Codex** (6) — [Codex Jev Router](https://github.com/suenot/codex-jev-router) · [Jev Auto Router](https://github.com/miniLV/Jev-Auto-Router) · [Foreman](https://github.com/thruwire/foreman) · [fast-dev-compaction](https://github.com/leonaaardob/fast-dev-compaction) · [jev-desktop](https://github.com/yikangy873-gif/jev-desktop) · [jev-browser-use](https://github.com/wy-coliney/jev-browser-use)
 - **DeepSeek Harness** (4) — [dsh-jev-interceptor](https://github.com/AskTheWay/dsh-jev-interceptor) · [dsh-jev-plugin](https://github.com/luobosibing2/dsh-jev-plugin) · [dsh-auto-mode](https://git.allen-software.com/allenh1/dsh-auto-mode) · [dsh-jev-decide](https://github.com/nanami-0713/dsh-jev-decide)
+- **OpenCode** (3) — [opencode-jev-compaction](https://github.com/radqnico/opencode-jev-compaction) · [opencode-jev-safe-compact](https://github.com/lewistouchtech/opencode-jev-safe-compact) · [opencode-jev-pre-llm](https://github.com/murilogteixeira/opencode-jev-pre-llm)
 - **OpenClaw** (2) — [openclaw-jev-leakguard](https://github.com/yousan/openclaw-jev-leakguard) · [openclaw-jev-trigger](https://github.com/yousan/openclaw-jev-trigger)
-- **OpenCode** (2) — [opencode-jev-compaction](https://github.com/radqnico/opencode-jev-compaction) · [opencode-jev-pre-llm](https://github.com/murilogteixeira/opencode-jev-pre-llm)
 - **Cline** (1) — [Cline plugins](https://github.com/cline/plugins)
 
 ## Full list
@@ -276,6 +276,7 @@ Source file: [`categories/verification-guardrails.md`](categories/verification-g
 - [jev-mail-triage](https://github.com/soderlind/jev-mail-triage) ![stars](https://img.shields.io/github/stars/soderlind/jev-mail-triage?style=flat-square&label=%E2%98%85) - Phishing triage: triages spam and phishing locally for Proton Mail Bridge, with an `evaluate --labels` mode that measures accuracy against labelled test emails.
 - [Document review with Unsiloed and Jev](https://www.unsiloed.ai/blog/document-review-unsiloed-typesafe-jev) - Document review: gates extracted fields with `Noul` questions and states the semantics the whole ecosystem depends on — a value of 0.04 is a 4% probability of yes, not a claim that Jev is 4% confident.
 - [ClauJev](https://github.com/Civalski/claujev) ![agent: Claude Code](https://img.shields.io/badge/agent-Claude%20Code-C1512C?style=flat-square) ![stars](https://img.shields.io/github/stars/Civalski/claujev?style=flat-square&label=%E2%98%85) - Second opinion: hooks Jev into Claude Code on the principle that Claude does the work and Jev checks it before the change lands, keeping the request, the verdict and the probability for each check.
+- [MedGemma Ophthalmology + JEV](https://github.com/harsaas/medgemma_Ophthalmology_jev) ![stars](https://img.shields.io/github/stars/harsaas/medgemma_Ophthalmology_jev?style=flat-square&label=%E2%98%85) - Medical check: a research demo that reads retinal fundus images with a fine-tuned MedGemma adapter, has Jev evaluate the generated findings, and drafts separate patient and ophthalmologist summaries - stating explicitly that it is not a clinical decision system.
 
 ### Scoring & Ranking
 
@@ -345,6 +346,4 @@ Source file: [`categories/agent-decisions.md`](categories/agent-decisions.md)
 - [pi-jev (TheoOliveira)](https://github.com/TheoOliveira/pi-jev) ![agent: Pi](https://img.shields.io/badge/agent-Pi-8250DF?style=flat-square) ![stars](https://img.shields.io/github/stars/TheoOliveira/pi-jev?style=flat-square&label=%E2%98%85) - Coding agents: semantic tool routing and typed System One decisions for the Pi coding agent.
 - [pi-quiet-ask](https://github.com/HyunjunJeon/pi-quiet-ask) ![agent: Pi](https://img.shields.io/badge/agent-Pi-8250DF?style=flat-square) ![stars](https://img.shields.io/github/stars/HyunjunJeon/pi-quiet-ask?style=flat-square&label=%E2%98%85) - Coding agents: gives the Pi agent a quiet Jev decision layer for judgments it would otherwise hand to a chat model.
 - [fastbrowse](https://github.com/agent-labs-dev/fastbrowse) ![stars](https://img.shields.io/github/stars/agent-labs-dev/fastbrowse?style=flat-square&label=%E2%98%85) - Browser agents: Jev picks each action from what is on the page while an LLM reads and plans.
-- [super-jev](https://github.com/Kevthetech143/super-jev) ![stars](https://img.shields.io/github/stars/Kevthetech143/super-jev?style=flat-square&label=%E2%98%85) - Decision harness: turns a Jev answer into a bounded action instead of leaving the caller to interpret it.
-- [jev-superpowers](https://github.com/AkashPriyadarshii/jev-superpowers) ![stars](https://img.shields.io/github/stars/AkashPriyadarshii/jev-superpowers?style=flat-square&label=%E2%98%85) - Coding agents: software development framework for AI coding agents that hands package vetting and completion gates to Jev typed decisions.
-- [Jev Browser](https://github.com/jkudish/jev-browser) ![stars](https://img.shields.i
+- [super-jev](https://github.com/Kevthetech143/super-jev) ![stars](https://img.shields.io/github/stars/Kevthetech143/super-jev

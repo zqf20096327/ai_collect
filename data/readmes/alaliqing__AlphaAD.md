@@ -3,7 +3,7 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--21-blue)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--22-blue)
 ![Total Papers](https://img.shields.io/badge/Papers-1419-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
@@ -24,16 +24,16 @@ All 1419 papers remain in this README. For full-text search, filters, and sortin
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 221 | 2026-10-20 | [View papers](#category-perception-sensor-fusion) |
+| Perception & Sensor Fusion | 222 | 2026-10-21 | [View papers](#category-perception-sensor-fusion) |
 | Prediction & World Models | 107 | 2026-10-19 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 95 | 2026-10-20 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 57 | 2026-10-17 | [View papers](#category-control-vehicle-dynamics) |
-| Mapping & Localization | 55 | 2026-10-18 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 160 | 2026-10-18 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 227 | 2026-10-19 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 161 | 2026-10-16 | [View papers](#category-systems-deployment-connectivity) |
+| Planning & Decision-Making | 94 | 2026-10-21 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 56 | 2026-10-17 | [View papers](#category-control-vehicle-dynamics) |
+| Mapping & Localization | 54 | 2026-10-18 | [View papers](#category-mapping-localization) |
+| End-to-End & VLA | 159 | 2026-10-18 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 226 | 2026-10-19 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 163 | 2026-10-21 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 32 | 2026-10-17 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 304 | 2026-10-19 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 306 | 2026-10-21 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,25 +45,36 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 104 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 188 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
-| Synthetic Data | 38 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
+| Dataset | 106 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Simulation | 189 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Synthetic Data | 37 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
 | Cooperative / V2X | 116 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
-| VLA | 91 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
+| VLA | 90 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
 | World Model | 115 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 138 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
-| Imitation Learning | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
-| Hardware / Real-Time | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
-| Survey | 26 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
+| Reinforcement Learning | 139 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
+| Hardware / Real-Time | 101 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
+| Survey | 27 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
 | Explainability | 118 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
-| Human Interaction | 19 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
+| Human Interaction | 18 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 221 papers
+## Perception & Sensor Fusion · 222 papers
+
+<a id="paper-2610-29618"></a>
+
+### FogTTA: Online Test-Time Adaptation for Robust Transformer-based Object Detection in Foggy Weather ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Ali Abedi, Q. M. Jonathan Wu, Ning Zhang, Shiqi Tian<br>
+**Published:** 2026-10-21<br>
+**Research tags:** Hardware / Real-Time<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.29618) | [PDF](https://arxiv.org/pdf/2610.29618.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Object detection models for autonomous driving commonly experience substantial performance drops when deployed under adverse weather due to the domain shift between training data and real-world...
 
 <a id="paper-2610-28508"></a>
 
@@ -131,7 +142,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-20203"></a>
 
-### Investigating Behavior Cloning from Few Demonstrations for Autonomous Driving based on Bird's-Eye View in Simulated Cities ![New](https://img.shields.io/badge/New-red)
+### Investigating Behavior Cloning from Few Demonstrations for Autonomous Driving based on Bird's-Eye View in Simulated Cities ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Eric Aislan Antonelo, Gustavo Claudio Karl Couto, Christian Möller, Pedro Henrique Fernandes<br>
 **Published:** 2026-10-14<br>
@@ -142,7 +153,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-23990"></a>
 
-### Automatic Cause Determination in Road Scene Understanding Using Qualitative Reasoning and Four-Valued Logic ![New](https://img.shields.io/badge/New-red)
+### Automatic Cause Determination in Road Scene Understanding Using Qualitative Reasoning and Four-Valued Logic ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Nassim Belmecheri, Arnaud Gotlieb, Nadjib Lazaar, Helge Spieker<br>
 **Published:** 2026-10-14<br>
@@ -425,7 +436,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-25515"></a>
 
-### Real-World Perception for Autonomous Driving in Adverse Weather: Enhancing Standard Detectors via Foundation-Guided Auto-Annotation ![Recent](https://img.shields.io/badge/Recent-orange)
+### Real-World Perception for Autonomous Driving in Adverse Weather: Enhancing Standard Detectors via Foundation-Guided Auto-Annotation ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Sepideh Gohari, Goodarz Mehr, Azim Eskandarian<br>
 **Published:** 2026-09-21<br>
@@ -1100,7 +1111,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-21526"></a>
 
-### Boosting Robustness for All-Weather Self-Supervised Depth Estimation in Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### Boosting Robustness for All-Weather Self-Supervised Depth Estimation in Autonomous Driving
 
 **Authors:** Mengshi Qi, Xiaoyang Bi, Xianlin Zhang, Huadong Ma<br>
 **Published:** 2026-07-23<br>
@@ -1661,14 +1672,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Research tags:** Hardware / Real-Time<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2606.12066) | [PDF](https://arxiv.org/pdf/2606.12066.pdf) | [↑ BackToTop](#browse-by-topic)
 
-**Abstract:** In modern vehicular systems, robust performance under harsh conditions has become a critical problem of autonomous driving. Our study delivers a comprehensive evaluation of the newest iteration of...
-
-<a id="paper-2606-11989"></a>
-
-### From Nominal Intensity to Equivalent Rainfall: A Path-Based Credibility Evaluation Framework for Simulated Rainfall in Autonomous-Driving Perception Tests
-
-**Authors:** Tian Xia, Xin Zhao, Shaolingfeng Ye, Junyi Chen<br>
-**Published:** 2026-06-10<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.11989) | [PDF](https://arxiv.org/pdf/2606.11989.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Credible simulated-rainfall conditions are essential for identifying perception-system bo
+**Abstract:** In modern vehicular systems, robust performance under harsh conditions has become a criti

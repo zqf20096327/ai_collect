@@ -121,11 +121,13 @@ Each script self-skips when its API keys aren't set, so `make playground-all` ru
 
 | Provider  | Chat | Embeddings | Streaming | Errors |
 |-----------|------|------------|-----------|--------|
-| Anthropic | `messages.create`, `messages.stream`, `beta.messages.*` (sync + async) | route via litellm to Voyage | sync + async | 14-entry `llm_error` taxonomy |
-| OpenAI    | `chat.completions.create`, `responses.create` (sync + async) | `embeddings.create` (sync + async) | sync + async | same |
-| litellm   | `litellm.completion`, `litellm.acompletion` (chat path only) | `litellm.embedding`, `litellm.aembedding` | not yet (`stream=True` raises `NotImplementedError`; see Roadmap) | same |
+| Anthropic | `messages.create`, `messages.stream`, `messages.parse`, `beta.messages.*` (sync + async) | route via litellm to Voyage | `messages.stream`, `messages.create(stream=True)` (sync + async) | 14-entry `llm_error` taxonomy |
+| OpenAI    | `chat.completions.create` / `.parse`, `responses.create` / `.parse`, and their `with_raw_response` counterparts (sync + async) | `embeddings.create` (sync + async) | `create(stream=True)` on chat and Responses (sync + async); the `.stream()` helpers and `with_streaming_response` are not intercepted | same |
+| litellm   | `litellm.completion`, `litellm.acompletion` (chat path; a call litellm serves through the OpenAI SDK is counted once; `text_completion` and `responses` are not patched, see Known limitations) | `litellm.embedding`, `litellm.aembedding` | `completion(stream=True)`, `acompletion(stream=True)` (sync + async) | same |
 
-Streaming events expose `payload.streaming = {ttft_ms, chunk_count, inter_chunk_ms, final_outcome, abort_reason}`. Mid-stream aborts emit `llm_error{error_type="stream_error"}` with partial-chunk and partial-token data.
+The Anthropic row applies to every `anthropic` client class — first-party, Bedrock, Vertex, Google Cloud, Foundry, AWS, Mantle — and to the raw view (`with_raw_response`) and the streaming view (`with_streaming_response`): the streaming view is metered when you call `parse()`, and `create(stream=True)` through either view is metered as the parsed stream is iterated. Every Anthropic `post_call` records the platform the client talked to in `provider_metadata.platform` (`anthropic`, `bedrock`, `bedrock-mantle`, `aws`, `vertex`, `google-cloud`, `foundry`, or the host of a gateway the SDK was pointed at).
+
+Streamed calls report the token counts the provider sends inside the stream, whether you iterate inside a `with` block or without one (a loop left with `break` and never closed is reported at the next LLM call the sensor intercepts after the stream object is collected, or when the session ends). Streaming events expose `payload.streaming = {ttft_ms, chunk_count, inter_chunk_ms, final_outcome, abort_reason}`; `final_outcome` is `aborted` when you leave a stream before the event that ends the response, and `completed` otherwise. A mid-stream failure, inside a `with` block or while iterating without one, emits `llm_error{error_type="stream_error"}` with the chunks and tokens delivered before the failure.
 
 ### Frameworks
 
@@ -170,7 +172,7 @@ Direct SDK calls outside a multi-agent framework emit root sessions; identity is
 
 Flightdeck observes MCP traffic as a first-class event surface alongside chat and embeddings. Six event types (`mcp_tool_list`, `mcp_tool_call`, `mcp_resource_list`, `mcp_resource_read`, `mcp_prompt_list`, `mcp_prompt_get`) emit per operation. The sensor patches `mcp.client.session.ClientSession` directly, so every framework that mediates MCP through the official SDK is observed: LangChain via `langchain-mcp-adapters`, LangGraph via the same, LlamaIndex via `llama-index-tools-mcp`, CrewAI via `mcpadapt`, plus the raw `mcp` SDK.
 
-The sensor supports the official `mcp` SDK from 1.20 up to, but not including, 2.0 (the `mcp` extra pins `<2`); the 2.x line renamed and reshaped the client surface and is on the Roadmap.
+The sensor supports the official `mcp` SDK 1.x (from 1.20) and 2.x; on 2.x it also covers the high-level `mcp.Client`.
 
 The Claude Code plugin's MCP coverage is limited to tool calls; resource reads and prompt fetches are below the plugin hook layer.
 
@@ -260,7 +262,7 @@ fd.init(
 
 ### `patch()` vs `wrap()`
 
-`patch()` is the right answer in almost every case. It installs a class-level descriptor on `anthropic.Anthropic`, `anthropic.AsyncAnthropic`, `openai.OpenAI`, and `openai.AsyncOpenAI` so every instance, including ones frameworks build internally, is intercepted.
+`patch()` is the right answer in almost every case. For Anthropic it patches `create`, `stream` and `parse` on the SDK's `Messages` resource classes, which every `anthropic` client class hands out, so every client — first-party, Bedrock, Vertex, Google Cloud, Foundry, AWS, Mantle, and the ones frameworks build internally — is intercepted, including a client built before `patch()` (from its next call on; only a `with_raw_response` / `with_streaming_response` view first touched before `patch()` stays unmetered). For OpenAI it installs a class-level descriptor on `openai.OpenAI` and `openai.AsyncOpenAI` so every instance, including ones frameworks build internally, is intercepted.
 
 `wrap()` instruments a single client instance:
 
@@ -298,10 +300,17 @@ The sensor reports over HTTP on background daemon threads. Control plane downtim
 
 ### Known limitations
 
-- `patch()` must run before clients are constructed. Instances that already accessed `.messages`, `.chat`, `.responses`, or `.embeddings` before `patch()` keep the raw resource cached and are not intercepted.
+- `patch()` must run before OpenAI clients are constructed. Instances that already accessed `.chat`, `.responses`, or `.embeddings` before `patch()` keep the raw resource cached and are not intercepted. Anthropic clients are intercepted from their next call on, whenever they were built, except that a `with_raw_response` / `with_streaming_response` view first touched before `patch()` binds the unpatched method and is not metered.
+- The Anthropic patch needs `anthropic>=0.86` (the lowest release with the resource layout it imports); an older SDK is reported with a warning at import and its calls are not metered.
+- An Anthropic `with_raw_response.create(stream=True)` response that is never parsed emits no `post_call`: the event stream is metered once `parse()` hands it to the sensor, and a raw response has no close hook to settle on. The streaming view (`with_streaming_response`) always settles: when its `with` block exits, or, for a response dropped without `parse()` or `close()`, at the next LLM call the sensor intercepts after the response is collected or when the session ends.
+- Anthropic Message Batches (`messages.batches.*`) and `count_tokens` are not patched: batch spend runs outside the kill switch and the token budget.
+- With `capture_prompts=True`, prompts sent through the Bedrock, Vertex, Foundry, AWS and Mantle clients — platforms often chosen for data residency — reach the Flightdeck control plane like any other captured prompt. Keep capture off for those sessions, or keep the control plane inside the same residency boundary.
+- llama-index-llms-anthropic (through 0.12.3) always sends `temperature`, which anthropic 1.x's `Messages.create` rejects, so LlamaIndex's Anthropic LLM fails on anthropic 1.x with or without the sensor; the playgrounds skip it there.
+- On mcp 2.x, `mcp.Client` answers `list_tools`, `list_resources`, `list_resource_templates`, `list_prompts` and `read_resource` from its response cache when it can; a cached answer makes no MCP request, so no `mcp_*` event is emitted for it (pass `cache=None` to the `Client` to observe every request). Tool calls are not cached and are always observed and policed.
 - Per-thread Session isolation is not yet supported. Multi-agent frameworks (CrewAI, LangGraph, etc.) work fine under a single `init()` and shared `AGENT_FLAVOR`.
 - Custom directive handler input validation is yours. The `parameters` schema drives the dashboard form and the directive fingerprint; it is not enforced at execution time.
-- litellm streaming is not intercepted. Non-streaming chat calls and embeddings round-trip cleanly.
+- litellm's `text_completion` and `responses` entry points are not patched: `text_completion` on an OpenAI chat model is reported by the OpenAI interceptor, `responses` on a provider without a native Responses API is reported once as a chat call, and litellm's own httpx routes of either are unobserved. Chat calls, streaming or not, and embeddings round-trip cleanly.
+- While a litellm call is in flight, an SDK call made from inside it (by a litellm callback, guardrail or custom provider, or by a task created inside the call and run before it ends) is neither policed nor metered: the litellm wrapper has already metered the call it serves, and the mark that tells the SDK interceptors so covers the whole call.
 
 ---
 
@@ -321,7 +330,7 @@ On install, Flightdeck auto-creates an empty global policy in `blocklist` mode w
 
 Per-server resolution: most-specific scope wins. If the per-flavor policy has an entry for the URL, use it; else if the global policy has an entry, use it; else apply the global mode default (allowlist blocks unknown, blocklist allows unknown).
 
-Server identity is the pair `(URL, name)`. The URL is the security key; the name is the display label and tamper-evidence axis. The fingerprint is `sha256(canonical_url + 0x00 + name)`.
+Server identity is the canonical URL (or stdio command): entries match on it whatever name the server reports, and when a scope has several entries for one URL the most restrictive wins. The name is the display label and tamper-evidence axis; the displayed fingerprint is `sha256(canonical_url + 0x00 + name)`.
 
 ### Configuration
 
@@ -397,10 +406,15 @@ The dashboard fetches its bearer token at runtime from `/runtime-config.json` ra
 helm install flightdeck helm/ \
   --namespace flightdeck --create-namespace \
   --values helm/values.prod.yaml \
-  --set postgres.externalUrl="postgres://user:pass@rds.example.com:5432/flightdeck?sslmode=require"
+  --set postgres.externalUrl="postgres://user:pass@rds.example.com:5432/flightdeck?sslmode=require" \
+  --set api.auth.jwtSecret="<strong-random-secret>" \
+  --set api.corsOrigin="https://flightdeck.example.com" \
+  --set nats.auth.token="<strong-random-token>"
 ```
 
-Without `postgres.externalUrl` the chart ships its own single-instance Postgres StatefulSet (fine for small deployments, not HA, not backed up). NATS is always bundled.
+A production render (`api.env=production`, the default) refuses to proceed without the JWT secret, a non-wildcard CORS origin and the NATS token, and without `postgres.password` when it bundles Postgres. Without `postgres.externalUrl` the chart ships its own single-instance Postgres StatefulSet (fine for small deployments, not HA, not backed up). NATS is always bundled; with more than one replica the servers form a cluster, so events published on any of them reach the workers. The `FLIGHTDECK` JetStream stream itself is created with one replica, so it lives on one server. The token may contain only letters, digits and `. _ ~ -` because it is placed in NATS URLs (`openssl rand -hex 32` works); with more than one replica the cluster routes authenticate with it too.
+
+**Upgrading a v0.5.3 install with `nats.replicas` above 1** (the default is 3): the NATS StatefulSet's pod start policy changes, which Kubernetes does not allow in place. Scale ingestion to zero, give the workers a minute to drain, then run `kubectl delete statefulset <release>-flightdeck-nats` (the data volumes stay) before `helm upgrade`. On first start the clustered servers discard the old per-server streams and ingestion recreates the stream, so any event still on the bus at that point is dropped. A one-replica install upgrades in place and keeps its stream.
 
 The chart is at `version` 0.5.3 with `appVersion` 0.5.3; the default `image.tag` is `v0.5.3`. See [`helm/values.yaml`](helm/values.yaml) for the full schema, including replicas, HPA bounds, ingress, resources, and security contexts.
 
@@ -415,7 +429,8 @@ The chart is at `version` 0.5.3 with `appVersion` 0.5.3; the default `image.tag`
 | `dashboard.replicas` | `2` | Dashboard pod count. |
 | `postgres.externalUrl` | *(empty)* | When set, bundled Postgres StatefulSet is not rendered. |
 | `postgres.storage.size` | `20Gi` | PVC size for the bundled StatefulSet. |
-| `nats.replicas` | `3` | NATS StatefulSet replica count. |
+| `nats.replicas` | `3` | NATS StatefulSet replica count; more than one forms a NATS cluster. |
+| `nats.auth.token` | *(empty)* | Client token for the event bus. Required in production. |
 | `nats.jetstream.fileStore.size` | `10Gi` | PVC size per NATS replica. |
 | `ingress.enabled` | `false` | Render an Ingress routing `/` to dashboard, `/api` to query API, `/ingest` to ingestion API. |
 | `ingress.tls` | `[]` | Pass through to the Ingress `tls:` stanza. |
@@ -440,9 +455,18 @@ Deferred and planned work lives here so it stays visible and user demand can pri
 
 ### Next up (v0.6.0 and v0.7.0)
 
-- Sensor correctness on current SDKs: streaming token accounting, LangChain 1.x and structured-output paths, litellm streaming, Bedrock / Vertex / Foundry clients, mcp 2.x support.
-- Toolchain currency: Node 24, Go 1.27, Python 3.11 through 3.14, Vite 8 / Vitest 5 / React 19, current Postgres, NATS and nginx images, dependency automation and vulnerability scanning in CI.
-- Operations: serve the workers' metrics counters over HTTP (the Prometheus-text handler exists but is not mounted) and add request-latency histograms to the Go services.
+- Helm: replicate the `FLIGHTDECK` JetStream stream across the NATS cluster (it is created with one replica today, so losing that server stalls ingestion until it returns); needs an in-place stream update for existing installs.
+- Sensor correctness on current SDKs: the `OpenAI.beta.chat.completions.parse` structured-output path (the non-beta `parse()` on chat and Responses is intercepted), litellm `text_completion` / `responses`.
+- Streamed-call coverage: with `capture_prompts` on, `messages.create(stream=True)` and `chat.completions.create(stream=True)` store the request but not the streamed response text, because the raw event stream is never assembled into a message; `responses.create(stream=True)` stores neither, having no request `input` on any path; none of the raw streams emit `tool_call` events (the `messages.stream()` helper does both). The OpenAI `chat.completions.stream()` and `responses.stream()` helpers and `chat.completions.with_streaming_response` / `responses.with_streaming_response` are not intercepted (the non-streaming `.parse()` on both APIs is).
+- Failed-stream accounting: the provider-billed tokens a stream delivered before a mid-stream failure (`llm_error.partial_tokens_*`) count only against the sensor's local session budget; server-side session totals (which add `post_call` and `embeddings` events) and the analytics `tokens` and `estimated_cost` metrics (`post_call`) do not include them yet.
+- Raw-response streaming: `chat.completions.with_raw_response.create(stream=True)` and `responses.with_raw_response.create(stream=True)` record the pre-call estimate with no `streaming` block (langchain-openai takes the chat path with `include_response_headers=True`); the non-streaming raw-response `create` / `parse` calls on both resources are metered. The Anthropic raw and streaming views are metered.
+- Responses MCP tool calls: the `tool_call` event for an `mcp_call` output item carries the tool's name but not its `server_label`; carry the server label so the event names the MCP server the call went to.
+- Signal-handler shutdown: the SIGTERM / SIGINT handler runs `Session.end()` on the interrupted thread, which may already hold the session, policy or queue lock, so the shutdown can hang; move that shutdown work off the interrupted thread.
+- Ingestion validation of streaming fields: `streaming.final_outcome`, `streaming.abort_reason`, `error.abort_reason` and the non-negativity of `partial_chunks` / `partial_tokens_*` are stored as sent; only `tokens_input` / `tokens_output` / `tokens_total` are range-checked today.
+- Toolchain currency: Python 3.11 through 3.14, React 19, current nginx images, dependency automation, and npm, pip and container-image vulnerability scanning in CI.
+- Operations: add request-latency histograms to the Go services, bound the NATS stream (`MaxAge` / `MaxBytes`; the `FLIGHTDECK` stream keeps every message today) and rotate the workers' logs in the compose files, so a flood of events cannot fill the NATS store or the host disk.
+- Claude Code plugin tool failures in the dashboard: a failed tool call is stored as a `tool_call` with an `error` block and already shows in the unscoped `/v1/events` `error_type` facet and the Investigate status chip, but the session drawer's error indicator, the `tool_call` rows, the per-session `error_types[]` aggregate and the agent `errors` count do not include it yet. The per-session MCP-server facet keys plugin-bundled servers as `plugin:<plugin>:<server>` for rows stored from v0.6.0 on while older rows keep `plugin_<plugin>_<server>`.
+- Workers: validate the `session_id` shape and cap log field sizes at the NATS consumer boundary. Ingestion validates today and the NATS stream is treated as untrusted, so a direct publisher can still make the worker log oversized ids.
 - Token and cost model: reasoning tokens, the prompt-cache TTL split, per-model cache ratios, a current model catalogue (Claude 5, GPT-6, Gemini 4), agent-reported cost, and model-id normalisation for gateway and cloud-platform ids.
 - Identity model v2: an extensible `client_type` registry and entrypoint detection for headless, SDK and CI runs.
 - Claude Code plugin v2: the remaining hook events (API errors, permission prompts, compaction, model switches, teams and worktrees), native cost from the transcript, async hooks, plugin `userConfig`, and enforcement (kill switch, token budgets and MCP deny) for Claude Code sessions.
@@ -459,7 +483,6 @@ Deferred and planned work lives here so it stays visible and user demand can pri
 ### Carried over
 
 - Continuous live-API smoke runs (a scheduled playground job).
-- NATS authentication in the Helm chart (the compose production overlay already requires it).
 - nginx rate limiting at the edge (a per-token limiter exists in ingestion).
 - Dashboard authentication beyond the single bearer token (lands with OIDC above).
 - MCP policy version history, dry-run preview and YAML import / export (dropped from the first MCP policy release; reinstated on demand).

@@ -44,7 +44,7 @@ Meta-bootstrapping also has built-in **environment adaptivity**: the `cog-bootst
 
 ### 🤖 Real-autonomous
 
-Real-autonomy solves the **problem of system will**: once the system is standing, can it keep moving toward a goal without step-by-step human instructions? Traditional AI is a "you ask, I answer" tool; a truly autonomous Cogneva is a "you set the goal, I find the path" lifeform. Humans are demoted from operators to goal-setters; the system evolves from executor to protagonist.
+Real-autonomy solves the **problem of system will**: once the system is standing, can it keep moving toward a goal without step-by-step human instructions? Traditional AI is a "you ask, I answer" tool; a truly autonomous Cogneva is a "you set the goal, I find the path" lifeform. Humans shift from operators to goal-setters; the system evolves from executor to protagonist.
 
 This autonomy is not a single-point capability, but a **layered closed loop**:
 
@@ -518,7 +518,7 @@ All communication layers are abstracted through `cog-core` Backend Traits — **
 | External API | — | HTTP / WebSocket | — |
 
 `MessageBackend` Trait definition (`crates/cog-core/src/contract/stream.rs`):
-- `publish` / `publish_batch` / `payload_limit` / `subscribe` / `subscribe_from` / `stop_stream` / `create_consumer_group` / `ack` / `claim_pending` / `pending_stats` / `stream_lag` / `dlq` / `delay_publish`
+- `publish` / `publish_batch` / `payload_limit` / `subscribe` / `subscribe_from` / `stop_stream` / `delete_stream` / `create_consumer_group` / `ack` / `claim_pending` / `pending_stats` / `stream_lag` / `dlq` / `delay_publish`
 - Implementations can optimize batching and delayed delivery for Redis pipelines, NATS concurrent publishing, in-memory single-lock, etc.
 
 ### 🗄️ Storage (hot-swappable Backend Traits)

@@ -37,6 +37,7 @@ CoWork OS is a free, open-source desktop app for macOS and Windows that does rea
 - **Get through your inbox without losing control.** It triages, summarizes and drafts replies; nothing is sent until you approve it.
 - **Research in a browser you can watch.** The agent browses in a visible window you can take over at any time, and hands back a report with its sources.
 - **Put a bot on a schedule.** A bot with its own memory posts a morning summary to Telegram, Slack or Discord, and asks you before it acts outside its scope.
+- **Make 3D models and game assets.** "Make a low-poly treasure chest for my Godot game" — Meshy builds it, the approval card names the credit cost first, and the model appears in the chat as a 3D view you can spin, animate and download. [3D Models with Meshy](docs/meshy-3d.md)
 - **Work on code with every command shown.** Real terminal tabs, diffs and test runs in the timeline, and approvals for anything risky.
 - **Keep it all local if you want.** Run on Ollama or LM Studio on your own machine, or sign in with OpenRouter and use free models with no API key to copy.
 
@@ -156,15 +157,15 @@ Use `--from openclaw` for OpenClaw, or **Settings > Import** in the app; first-r
 
 | Signal | Current | All time |
 |---|---:|---:|
-| GitHub stars | 491 | n/a |
-| GitHub forks | 91 | n/a |
-| Installer/server downloads | 1,812 | 1,812 |
-| Download delta | +5 | n/a |
-| npm downloads | 42 (last week) | 9,601 |
-| GitHub views, last 14-ish days | 813 total / 380 unique | n/a |
-| GitHub clones, last 14-ish days | 35,410 total / 1,597 unique | n/a |
+| GitHub stars | 496 | n/a |
+| GitHub forks | 90 | n/a |
+| Installer/server downloads | 1,955 | 1,955 |
+| Download delta | +84 | n/a |
+| npm downloads | 350 (last week) | 9,923 |
+| GitHub views, last 14-ish days | 752 total / 374 unique | n/a |
+| GitHub clones, last 14-ish days | 39,413 total / 1,756 unique | n/a |
 
-Generated 2026-10-19T08:48:44.232Z. These are public GitHub/npm adoption signals, not active-user or in-app telemetry numbers. All-time values are shown only where the source API provides lifetime coverage. [Full report](docs/public-adoption-stats.md).
+Generated 2026-10-22T08:33:46.382Z. These are public GitHub/npm adoption signals, not active-user or in-app telemetry numbers. All-time values are shown only where the source API provides lifetime coverage. [Full report](docs/public-adoption-stats.md).
 <!-- COWORK_PUBLIC_ADOPTION_STATS_END -->
 
 ## License

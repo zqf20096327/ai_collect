@@ -118,7 +118,7 @@ windows-latest and held the whole daemon job red until it was given an allowance
 ## FAQ
 
 **Is RēDesign free?**
-Yes. RēDesign itself is free and open source under the MIT license, so you can run it, modify it, and do what you want with it. The only cost is whatever you spend calling the AI provider APIs you bring your own keys for. A per-run cost meter and an estimate before you hit Run keep that visible.
+For personal and other noncommercial use, yes. RēDesign is free under the PolyForm Noncommercial License, so you can run it, read and change the source, and share it for those purposes; commercial use needs a licence from LunarWerx (see [licensing](LICENSING.md)). Beyond that, the only cost is whatever you spend calling the AI provider APIs you bring your own keys for. A per-run cost meter and an estimate before you hit Run keep that visible.
 
 **Does it work offline?**
 RēDesign's control panel, queue, and viewer all run locally on your machine. Generating a redesign needs internet access to reach whichever AI provider APIs you've configured, since that's where the models run; there's no bundled local model. Its test suite, though, runs fully offline with no keys and no spend.
@@ -143,6 +143,6 @@ Yes. Everything in the UI has a command-line twin (`bun run src/index.ts run`, `
 
 ## License
 
-MIT. Do what you want with it. See [LICENSE](LICENSE).
+[PolyForm Noncommercial 1.0.0](LICENSE) © LunarWerx Studios, from 2026-10-22 on. The source is available and free for personal and other noncommercial use; commercial use needs a licence from LunarWerx ([request one](https://github.com/LunarWerxs/ReDesign/issues/new?template=licence_quote.yml)). Releases through 1.8.0 were MIT, and that grant stays in effect for those copies; see [licensing details](LICENSING.md).
 
 Made by [LunarWerx Studios](https://lunarwerx.com), who also build [RepoYeti](https://repoyeti.com), [SageThumbs](https://sagethumbs.lunarwerx.com), and [QuickDictate](https://quickdictate.lunarwerx.com). Live site: [redes1gn.github.io](https://redes1gn.github.io/).

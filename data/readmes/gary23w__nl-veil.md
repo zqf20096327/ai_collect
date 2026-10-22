@@ -8,14 +8,15 @@ the Veil (nl-veil) is an open-source desktop app for building software with AI. 
 let specialist agents share the work, and carry project memory
 into your next session. Use the built-in model, Ollama, or an OpenAI-compatible endpoint.
 
-**[Download the desktop app](https://github.com/gary23w/nl-veil/releases/tag/v1.1.25)** ·
+**[Download the desktop app](https://github.com/gary23w/nl-veil/releases/tag/v1.1.26)** ·
 **[Get it from the Microsoft Store](https://apps.microsoft.com/detail/9MVQ78SK0CW6)** (Windows) ·
 **[Screenshot walkthrough: setup & build with Cloudflare AI](https://gary23w.github.io/nl-veil/demos/)** ·
 [Installation and requirements](#install) · [Try your first task](#try-your-first-task)
 
 Windows · macOS · Linux · [MIT app code](#license). Local inference needs no provider account or API key;
 hosted providers have their own data handling and costs. The built-in model requires a separate
-download, and coding tools require Python on `PATH` (some checks also use Node).
+download, and coding tools require Python on `PATH` (some checks also use Node); on a machine without it, the
+agent can install it itself through `run_shell` and pick it up with `tool_env`, no restart needed.
 
 ### Try your first task
 
@@ -38,7 +39,7 @@ code and credentials from anything you share.
 
 <p>
   <a href="https://github.com/gary23w/nl-veil/actions/workflows/release.yml"><img alt="build" src="https://github.com/gary23w/nl-veil/actions/workflows/release.yml/badge.svg"></a>
-  <a href="https://github.com/gary23w/nl-veil/releases"><img alt="release" src="https://img.shields.io/badge/release-v1.1.25-A8241B"></a>
+  <a href="https://github.com/gary23w/nl-veil/releases"><img alt="release" src="https://img.shields.io/badge/release-v1.1.26-A8241B"></a>
   <img alt="zig" src="https://img.shields.io/badge/zig-0.16-F7A41D?logo=zig&logoColor=white">
   <a href="https://huggingface.co/gary23w/the-veil-12b"><img alt="built-in model" src="https://img.shields.io/badge/built--in%20model-the--veil--12b-6E4A27?logo=huggingface&logoColor=white"></a>
   <a href="https://huggingface.co/gary23w/gary-neuron-emergent"><img alt="memory cortex" src="https://img.shields.io/badge/cortex-gary--neuron--emergent-6E4A27?logo=huggingface&logoColor=white"></a>
@@ -77,9 +78,13 @@ the server behind it, a web UI, the inference engine, the memory engine, and the
 Nothing to install first — no Docker, no cloud account, no database service, no API key — it will
 **[download a 12B model](https://huggingface.co/gary23w/the-veil-12b) and run it itself**, offline, on
 your GPU. One honest dependency: the agent's **tool belt shells out to Python** (`list_dir`, `run_tests`,
-`web_search`, `deep_crawl`, and its own executor `run_python`) and to Node for a JavaScript syntax check,
-so without `python` on `PATH` the agent can chat but cannot do much work — it tells you exactly which
-tool wanted what. Point it at Ollama or any OpenAI-compatible endpoint instead whenever you'd rather. Your
+`web_search`, `deep_crawl`, and its own executor `run_python`) and to Node for a JavaScript syntax check.
+Without `python` on `PATH` it tells you exactly which tool wanted what, and it can put that right itself:
+`run_shell` runs PowerShell, bash, sh or cmd (so it can `winget install` / `brew install` / `apt install`
+the interpreter), and `tool_env refresh_path` re-reads the machine's PATH — or `tool_env set
+NL_PYTHON_BIN=<path>` names the interpreter directly — for every tool run from then on, with no restart;
+the choice is kept in `tool-env.json` beside your data. Point it at Ollama or any OpenAI-compatible
+endpoint instead whenever you'd rather. Your
 local conversations, keys and memory are stored in a folder next to the binary. Hosted model calls,
 web tools, and optional Cloudflare backups send the data needed for those features to the services
 you connect.
@@ -536,16 +541,16 @@ raylib is a *lazy* dependency, so `-Dapp=false` never fetches it at all.
 
 ## Install
 
-Download your platform's full application bundle from **[v1.1.25](https://github.com/gary23w/nl-veil/releases/tag/v1.1.25)**, extract it,
+Download your platform's full application bundle from **[v1.1.26](https://github.com/gary23w/nl-veil/releases/tag/v1.1.26)**, extract it,
 and run `veil.exe` on Windows or `./start` on macOS/Linux. The bundle includes the desktop
 application and memory engine; model weights are downloaded separately in the app.
 
 | Platform | Application bundle |
 |---|---|
-| Windows x86-64 | [veil-v1.1.25-windows-x86_64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.25/veil-v1.1.25-windows-x86_64.zip) |
-| Linux x86-64 | [veil-v1.1.25-linux-x86_64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.25/veil-v1.1.25-linux-x86_64.zip) |
-| macOS Apple Silicon | [veil-v1.1.25-macos-arm64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.25/veil-v1.1.25-macos-arm64.zip) |
-| macOS Intel | [veil-v1.1.25-macos-x86_64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.25/veil-v1.1.25-macos-x86_64.zip) |
+| Windows x86-64 | [veil-v1.1.26-windows-x86_64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.26/veil-v1.1.26-windows-x86_64.zip) |
+| Linux x86-64 | [veil-v1.1.26-linux-x86_64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.26/veil-v1.1.26-linux-x86_64.zip) |
+| macOS Apple Silicon | [veil-v1.1.26-macos-arm64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.26/veil-v1.1.26-macos-arm64.zip) |
+| macOS Intel | [veil-v1.1.26-macos-x86_64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.26/veil-v1.1.26-macos-x86_64.zip) |
 
 Choose the full `veil-v…` bundle, rather than GitHub's source archive or the standalone server.
 
@@ -721,7 +726,7 @@ On startup the server prints one complete URL per address this machine answers o
 (`src/main.zig:861-889`, using `src/config/lan.zig`):
 
 ```
-neuron-loops 1.1.25 on http://localhost:8787
+neuron-loops 1.1.26 on http://localhost:8787
     open from another machine (phone, laptop) at:
       http://192.168.1.42:8787
 ```
@@ -1081,7 +1086,7 @@ live:
 | group | tools |
 |---|---|
 | **Files & code** | `read_file` `write_file` `edit_file` `delete_file` `list_dir` `stage_file` `stage_delivery` |
-| **Run things** | `host_command` `run_tests` `run_python` `host_status` `host_explore` `stop_process` `poll` `probe` |
+| **Run things** | `host_command` `run_tests` `run_python` `run_shell` `tool_env` `host_status` `host_explore` `stop_process` `poll` `probe` |
 | **Web & research** | `web_search` `web_fetch` `read_url` `fetch_json` `deep_crawl` `read_doc` `osint_scan` |
 | **Your browser** | `browser_navigate` `browser_read` `browser_click` `browser_click_at` `browser_type` `browser_type_text` `browser_key` `browser_scroll` `browser_eval` `browser_console` `browser_network` `browser_close` |
 | **Screen & images** | `pixel_capture` `pixel_ingest` `pixel_search` — screenshots and attached images become searchable text + regions, so a model that can't see gets the picture anyway |
@@ -1435,9 +1440,4 @@ The same binary covers very different jobs — the **mode emerges from your word
 - **Build software, graded by its own tests.** The hive plans a file tree, splits the work, writes
   the project, runs the tests it wrote, and folds the results into its fitness — it keeps going
   until the deliverable actually passes. `veil cast "Build a URL shortener with a REST API and tests" --follow`
-- **Research & brief.** In `--style discourse` the minds research the live web, form and argue
-  their own views, and co-write a briefing. `veil cast "Brief me on fusion power in 2026" --style discourse`
-- **Operate a live device.** Point the Veil at a device that drops telemetry on a file bus and it
-  acts to keep it healthy, graded by an **acceptance oracle** — the device's own measured health,
-  which the Veil never sees and can't write, so only a real fix moves the number. The shipped
-  example is a self-healing security daemon (detect → remove persistence → block C2 → verify);
+- **Research & brief.** In `--style discourse` the minds research the live web, form and ar

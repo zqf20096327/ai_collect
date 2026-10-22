@@ -43,7 +43,7 @@ This tree is Hyperfide 2.0 in development: `hyperfide version` prints `2.0.0-dev
 
 The layers reinforce each other: commits are auto-tagged with the task they implement, memories surface on the task they belong to, `hyperfide why` walks a symbol back to the decisions behind it, and `hyperfide spec trace` walks any task to its symbols, commits, and memories.
 
-**And it is present between the steps, not only at them.** `hyperfide work open` starts with a compact task packet, `hyperfide work update` returns only new state/evidence/workspace deltas, `hyperfide event progress` classifies loops without mistaking activity for progress, and `hyperfide guard` notices when an edit drifts outside declared scope. A built-in MCP server exposes 67 tools, resources, and prompts to every MCP-capable agent, while `hyperfide integrate` plans, applies, and diagnoses each host's native configuration.
+**And it is present between the steps, not only at them.** `hyperfide work open` starts with a compact task packet, `hyperfide work update` returns only new state/evidence/workspace deltas, `hyperfide event progress` classifies loops without mistaking activity for progress, and `hyperfide guard` notices when an edit drifts outside declared scope. A built-in MCP server exposes 71 tools, resources, and prompts to every MCP-capable agent, while `hyperfide integrate` plans, applies, and diagnoses each host's native configuration.
 
 **And it drives agents, not just serves them.** `hyperfide handoff` and `hyperfide resume` move a task between sessions without losing state, `hyperfide spec claim-next` hands an idle agent the next conflict-free task atomically, and `hyperfide spec run` fans a whole wave out to Codex CLI or Claude Code sessions — one sandboxed child process per claimed task, logs and prompts on disk, leases released on failure.
 
@@ -312,7 +312,7 @@ A classified memory carries its class everywhere it appears — `class skill 0.8
 
 | Command | Description |
 | --- | --- |
-| `hyperfide mcp` | Run as an MCP stdio server (it reports itself as `hyperfide`): 67 tools, `hyperfide://` resources for the workflow, each feature spec and the agent context (legacy `codify://` URIs are still read), and the prompts `orient`, `start-work`, `review-change` and `close-task` |
+| `hyperfide mcp` | Run as an MCP stdio server (it reports itself as `hyperfide`): 71 tools, `hyperfide://` resources for the workflow, each feature spec and the agent context (legacy `codify://` URIs are still read), and the prompts `orient`, `start-work`, `review-change` and `close-task` |
 | `hyperfide lsp` | Run as a Language Server (stdio) — every editor, not just VS Code |
 | `hyperfide serve` | One JSON-RPC connection (stdio) for an editor: every MCP tool, any `hyperfide` command (`exec`), `cancel`, and pushed event subscriptions from a sequence number. Idle, it holds no lock and runs no index pass. See [docs/events.md](docs/events.md#hyperfide-serve) |
 | `hyperfide tool list \| call <name> [json]` | Run one MCP tool from a shell, without an MCP client |
@@ -344,6 +344,7 @@ These four are what make Hyperfide present at every step rather than only at the
 | Command | Description |
 | --- | --- |
 | `hyperfide brief` | Session state in one call: root, active task with its criteria, uncommitted paths, recent decisions, and whether `CODEMAP.md` is current |
+| `hyperfide ask raise <kind> <title> [--option O]... [--recommend O] [--deadline D] \| answer <id> <answer> \| list [--all] \| expire` | Durable Asks from an agent to a person: kind (`secret`, `variable`, `permission`, `decision`, `question`), options with one recommended, deadline, escalation chain, and the task, attempt, session and sandbox. `[asks]` in the workflow sets each kind's policy: `block` keeps the task waiting past the deadline, `proceed-and-flag` takes the recommended option and records the default as a decision. Fleet approvals are permission Asks; events `ask.raised`, `ask.answered`, `ask.expired`; `serve`'s snapshot carries the open ones. In distributed mode the same four verbs are client routes to the control service's `human.ask.*` actions (component `1.2-asks`) and take a JSON `--input-file` plus explicit run, operation, idempotency and correlation identities |
 | `hyperfide review` | The change paired with what it claims: changed symbols, callers now at risk, and the task's acceptance criteria |
 | `hyperfide guard [paths] [--strict]` | Grounding, contract, and hygiene findings against the in-progress task's declared `touches`, including edits outside that scope |
 | `hyperfide drift check <id> [--base REF] \| collisions \| coverage \| summary [-f F]` | A task's change against its declared touches and symbols; open tasks that would collide if run at once; acceptance criteria with no qualified task; drift counts for a feature. Warns; see [docs/drift.md](docs/drift.md) |
@@ -483,7 +484,8 @@ approve = ["land"]           # opt-in: wait for `hyperfide fleet approve`
 | `hyperfide fleet sync [--base B]` | In a task worktree, merge its base branch in after a land was merged forward: refused while an uncommitted file is also changed on the base (named), a conflict aborted and named, otherwise the commits and files that came in, then a projection build |
 | `hyperfide fleet plan [-f F]` | Which manager owns each wave and which worker owns each task, planned branches beside live agents |
 | `hyperfide fleet tree [-f F]` | The live tree — main, managers, workers — with each branch's progress, whether it is ahead of its base or already merged, and every worker's attempt and heartbeat. Refused in a repo that runs flat |
-| `hyperfide fleet begin <id> [-f F] [--agent A]` | Create or reuse the task branch and worktree, cut from its wave branch, and claim the task for its worker. Idempotent; `--agent` names a replacement; `--ahead` claims a task whose `requires` are still open |
+| `hyperfide fleet begin <id> [-f F] [--agent A]` | Create or reuse the task branch and worktree, cut from its wave branch, and claim the task for its worker. Idempotent; `--agent` names a replacement; `--ahead` claims a task whose `requires` are still open; `--sparse` (or `[hierarchy] sparse = "slice"`) checks out only the task's slice, `--full-tree REASON` records why it gets the whole tree |
+| `hyperfide slice <id> [-f F] [--manifest FILE]` | The slice manifest a task's worker tree is cut from: its touches, the build files on their directories and the feature's spec, or the service's manifest with `--manifest`; stored for `fleet begin --sparse`. No touches or a glob gives `FULL_TREE` with the reason recorded |
 | `hyperfide fleet merge-up <id> [--keep]` | Merge a **qualified** task branch into its wave branch, after printing the projection's known findings for it. Refused while the branch tip says the task is not `done` (`--force` overrides); conflicts are listed by path and the merge aborted, or left in place with `--keep` |
 | `hyperfide fleet land <wave\|id>` | Merge a wave branch into local main and run the test and lint gates. Refused while a task of the wave is open; red resets main to where it was; green opens the PR when the policy says `auto` and merges main forward into the live wave branches. `--no-pr` skips the PR |
 | `hyperfide fleet pr <wave\|feature>` | Push and open the pull request against `<remote>/<main>` through `gh`, or print the exact commands when `gh` is absent. `--dry-run` calls nothing; an already-open PR is reported, not duplicated |
@@ -698,6 +700,7 @@ flowchart TD
 - **PostgreSQL is the authority.** The control service records tasks, attempts, leases, custody and evidence in a PostgreSQL primary. A read replica serves observation and discovery only; ownership changes, leases, qualification and publication revalidate on the primary.
 - **Providers are adapters with explicit gaps.** Railway and Blaxel adapters create sandboxes. Capabilities a provider lacks are reported as `UNSUPPORTED`, never emulated; the capability table is in the operations guide.
 - **Agents cannot certify themselves.** Claude Code and Codex remain the frontier execution connectors. A worker cannot gain publication authority by naming a branch, reporting a zero exit code, or editing a task status: independent verifiers and commit reviewers check the exact submission, and a publication gateway alone writes protected integration branches. Decision models (Jev and the other evaluated routes) may narrow, rank or flag; deterministic gates decide.
+- **Workers never prompt; they raise Asks.** A native prompt in a sandbox is invisible: nobody is at the worker's terminal, so a Claude Code permission dialog or a Codex approval request would hang the attempt until its lease expired without any person ever seeing it. Every worker launch therefore keeps native prompts disabled (Claude Code `--permission-mode dontAsk --permission-prompts none`; Codex `approvalPolicy` `never`) and carries the `codify` MCP server (`hyperfide mcp`, located by `HF_CODIFY_MCP_BINARY` or beside `hyperfide-native`) with `ask_raise`, `ask_status`, `ask_list` and `approvals_list` allowed, plus the workflow's rule for when to raise each kind. The Ask is the only path by which a worker's question reaches a person; with no codify binary to serve it, the connector refuses the launch.
 
 The services are TypeScript under `services/hyperfide` (Node 24.22.0, pinned by its lockfile). Build them in an execution sandbox:
 
@@ -818,31 +821,4 @@ tests/hyperfide/     the qualification runner (qualify.py), the independent
 tests/fixtures/      sample polyglot project, a spec repo with golden outputs,
                      an explore project with gold queries,
                      stand-ins for curl, gh, and an OpenAI endpoint, and a
-                     scripted fleet driver
-editors/vscode/      VS Code extension (plain JS): kvx language, task tree,
-                     agent panel, memory browser, live fleet view, serve client
-scripts/             install/uninstall scripts (not advertised for 2.0 yet),
-                     release construction, native component discovery
-spec/hyperfide/      the Hyperfide 2.0 specification, design and contracts
-artifacts/hyperfide/ per-task evidence indexes
-docs/ARCHITECTURE.md how the pieces fit together
-docs/hyperfide/operations.md  the control plane: build, start, PostgreSQL,
-                     providers, verification, recovery, migration
-docs/sync.md         the sync gate, freshness, slots, incremental resolution
-docs/config.md       project configuration: relocated spec/context/skills paths, auto-sync
-docs/journal.md      the write journal: what is queued when the database is busy, replay,
-                     hyperfide journal
-docs/retrieval.md    declarations, phrase ranking, path outlines, the budget
-docs/hierarchy.md    roles, branch flow, the supervisor, supervision, approvals,
-                     briefings
-docs/drift.md        spec, collision, interface, and coverage drift
-docs/events.md       the event log, hyperfide serve, drivers, steering
-docs/branches.md     the unified multi-branch graph and its schema
-docs/jev.md          typed decisions: types, transport, configuration, limits
-```
-
-The spec-render goldens were generated by the original Go specgen, so rendering parity is locked in by `make test`. CI (`.github/workflows/ci.yml`) builds and runs the unit and integration suites on pushes to `main` and on pull requests.
-
-## Sharing the graph between the editor and agents
-
-The graph is one SQLite file in WAL mode and every `hyperfide` process in a checkout writes to it — the editor's `hyperfide lsp`, `hyperfide watch`, `hyperfide mcp`, and each agent's commands. Writers take the lock in short bursts (the indexer commits every few dozen files and parses outside the lock), and a CLI command waits up to `HYPERFIDE_BUSY_TIMEOUT_MS` (default 30000) for its turn, so `hyperfide spec start`/`done` during an editor index simply waits
+           

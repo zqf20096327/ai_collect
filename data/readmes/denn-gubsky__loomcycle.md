@@ -4,7 +4,7 @@
 
 <p align="center">
   <strong>An agent-system kernel you self-host.</strong><br/>
-  <em>~80 MB Go binary that owns the agent loop and ships with memory, documents, teams, a Decision tool, a Crypto tool whose keys the model never sees, no-trace runs, ephemeral git-source volumes, a visual canvas, bundled dev toolchain and headless Chromium. A deployment-shape snapshot that carries the whole deployment in one archive. Multi-replica HA on Postgres. Apache-2.0 — v1.118.1.</em>
+  <em>~80 MB Go binary that owns the agent loop and ships with memory, documents, teams, a Decision tool, a Crypto tool whose keys the model never sees, no-trace runs, ephemeral git-source volumes, a visual canvas, bundled dev toolchain and headless Chromium. A deployment-shape snapshot that carries the whole deployment in one archive. Multi-replica HA on Postgres. Apache-2.0 — v1.122.0.</em>
 </p>
 
 <p align="center">
@@ -22,7 +22,7 @@
 
 ---
 
-> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.118) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.122) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ---
 
@@ -199,11 +199,46 @@ been primitives plus hardening: memory, documents, teams, sandboxing, retention
 and erasure. The agentic-memory subsystem and the document surfaces built on it
 remain the main direction.
 
-The most recent line (v1.118) is fixes. A queued run that never starts
+The most recent line (v1.122.0) adds per-agent shell credentials: a
+`shell_credentials` field narrows which operator-listed credentials an agent's
+Bash and Bashbox host commands receive, so one agent can keep a shell without
+seeing every secret. The Web UI's run views show the serving model, tokens in
+and out, a live tok/s, a context-window gauge and the run's context method
+next to Compact, and the agent Library shows each agent's context window.
+Settings → Tokens can rotate and retire per-user tokens again. See
+[`REVISIONS.md`](REVISIONS.md).
+
+Before it, v1.121.0 added embeddings on Amazon Bedrock:
+`memory.embedder` could use Cohere Embed, signed with a Bedrock provider's AWS
+credentials, search queries were embedded in a query mode, and an embedder could
+sit on any provider whose driver has one. It also closed the residuals of an
+independent re-audit of the security review, and a run its caller ends mid-turn
+was recorded `cancelled`. See [`REVISIONS.md`](REVISIONS.md).
+
+Before it, v1.120.0 closed the security review whose fixes
+shipped in v1.119.0. Boot stopped rewrapping operator tokens minted before the
+pepper: `loomcycle tokens rewrap` lists them and rewraps only the rows an
+operator names after reviewing them, and a deployment upgrading straight from a
+release before v1.119.0 must run it once. A config reload kept an admin
+credential in config, a resume gave back exactly the per-user slot a run took,
+and a batch spawn in join mode could no longer wait forever. See
+[`REVISIONS.md`](REVISIONS.md).
+
+Before it, v1.119.0 was the fixes from a security review of the
+whole runtime. A server authenticated only by a minted admin token no longer
+served a request unauthenticated when it could not read its token store. Open
+mode was refused on a public listener, declaring config `principals:` turned
+authentication on, and operator-token hashes were peppered whenever
+`LOOMCYCLE_SECRET_KEY` is set. A shutdown
+paused the runs in flight and a restart resumed them, `POST /v1/runs` started runs
+the way every other transport does, logs could be JSON, and Amazon Bedrock could
+be reached with AWS IAM credentials. See [`REVISIONS.md`](REVISIONS.md).
+
+Before it, v1.118 was fixes. A queued run that never starts
 now releases its idempotency key and publishes its end, and a restart during a
 pause no longer holds the boot or a snapshot restore until the resume. An agent
 told it hit the configured-run cap no longer retries forever, and only an
-operator may change a shared HookDef. The v1.118.1 patch lets a token be limited
+operator may change a shared HookDef. The v1.118.1 patch let a token be limited
 to an agent named in a group, such as `chat/medium`, which every chat bridge
 needs. See [`REVISIONS.md`](REVISIONS.md).
 
@@ -598,7 +633,7 @@ Full request flow, abstractions, and concurrency model: [`docs/ARCHITECTURE.md`]
 - **No vendor binary** in the loop. Pure HTTP to provider APIs. No subprocess auth inheritance.
 - **Default-deny everything.** Every built-in tool is disabled until env-configured. Every agent gets zero tools until `tools` is set.
 - **Two-layer policy + per-request narrowing.** Operator floor in env; agent narrowing in yaml; caller narrowing per-run. Caller can never widen.
-- **SSRF defence.** Hostname allowlist + RFC1918/loopback/link-local IP block at the dial layer. Defeats DNS rebinding.
+- **SSRF defence.** Hostname allowlist + RFC1918/loopback/link-local IP block at the dial layer, re-checked on the connected address, so DNS rebinding cannot slip past it. A private host the operator vouches for **by name** may still resolve to any private address except link-local and cloud metadata; vouch by CIDR to trust no name. See [`docs/TOOLS.md`](docs/TOOLS.md).
 - **Constant-time bearer auth.** `sha256+CTC` on both HTTP and gRPC.
 - **`Bash` is restricted, not isolated.** Run inside a container or VM if you need real isolation.
 

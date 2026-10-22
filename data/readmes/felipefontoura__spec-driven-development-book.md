@@ -30,7 +30,7 @@ English and Brazilian Portuguese. Comes with a ready-to-use SDD kit for Claude C
 ·
 [Request Feature](https://github.com/felipefontoura/spec-driven-development-book/issues/new)
 
-<img src=".github/assets/book-en.png" alt="Spec-Driven Development — cover and sample pages" width="480">
+<a href="https://felipefontoura.com/get/sdd-book/?utm_source=github&utm_medium=referral&utm_campaign=sdd-book&utm_content=cover"><img src=".github/assets/book-en.png" alt="Spec-Driven Development — cover and sample pages" width="480"></a>
 
 </div>
 
@@ -41,7 +41,6 @@ English and Brazilian Portuguese. Comes with a ready-to-use SDD kit for Claude C
 - [Contents](#contents)
 - [The SDD Kit](#the-sdd-kit)
 - [Getting started](#getting-started)
-- [Building the book](#building-the-book)
 - [Repository layout](#repository-layout)
 - [Who it's for](#who-its-for)
 - [Contributing](#contributing)
@@ -165,62 +164,10 @@ Just want to read the source? Open [`BOOK.en.md`](BOOK.en.md) or
 [`BOOK.pt-BR.md`](BOOK.pt-BR.md) directly on GitHub — Mermaid diagrams and tables
 render natively. Prefer the typeset book? [**Download the free PDF**](https://felipefontoura.com/get/sdd-book/?utm_source=github&utm_medium=referral&utm_campaign=sdd-book&utm_content=readme)
 (signup required). The PDF and EPUB are also sold on Amazon Kindle / KDP; this
-repository holds the Markdown source, not the finished ebook. Want your own copy
-from source? Build it locally (below).
+repository holds the Markdown source, not the finished ebook.
 
 Want to apply the method? Copy the [SDD Kit](#the-sdd-kit) into your project and
 run `/sdd-init`.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Building the book
-
-A print-ready **PDF** (6×9", Kindle-Print compatible) and a reflowable **EPUB 3**
-(with a 1600×2560 cover) are generated from the Markdown source by the
-[**book-kit**](https://github.com/felipefontoura/book-kit) engine —
-an open-source (MIT) git submodule mounted at `kit/`. Because the engine is
-public, the submodule clones anonymously over HTTPS. Every book-specific string
-lives in [`book.config.json`](book.config.json); nothing is hardcoded.
-
-### Prerequisites
-
-- [mise](https://mise.jdx.dev) (installs pinned Node + Typst from `mise.toml`),
-  **or** Node ≥ 20 and [Typst](https://typst.app/docs/) on `PATH`.
-- Chromium/Chrome for Mermaid rendering (puppeteer fetches one automatically if
-  none is found).
-
-### Build
-
-```bash
-git clone --recurse-submodules https://github.com/felipefontoura/spec-driven-development-book.git
-cd spec-driven-development-book
-mise install                        # Node + Typst
-bash kit/scripts/build.sh           # PDF + EPUB + cover (default)
-```
-
-Already cloned without `--recurse-submodules`? Run `git submodule update --init`.
-
-```bash
-bash kit/scripts/build.sh --pdf     # PDF only (fastest layout iteration)
-bash kit/scripts/build.sh --epub    # EPUB + cover only
-SOURCE_MD=BOOK.en.md bash kit/scripts/build.sh   # force the English edition
-git submodule update --remote kit   # pull engine updates later
-```
-
-Outputs land in `dist/` (gitignored):
-
-- `dist/book-{pt-br,en}.pdf` — print-ready interior
-- `dist/book-{pt-br,en}.epub` — reflowable ebook (KDP upload)
-- `dist/cover-{pt-br,en}.png` — 1600×2560 cover
-
-`bash kit/scripts/build.sh --print` (with `SOURCE_MD=BOOK.en.md` for the English
-edition) builds the KDP Print files: `dist/book-<lang>-print.pdf` (interior)
-and `dist/cover-<lang>-{paperback,hardcover}.pdf` (full-wrap covers).
-
-CI (`.github/workflows/build.yml`) builds both languages on every push and PR as a
-**validation smoke test** — it proves the book compiles, but it does **not** upload
-or publish the finished PDF/EPUB (the ebook is sold on KDP and must not be freely
-downloadable). Generate the files locally for distribution.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

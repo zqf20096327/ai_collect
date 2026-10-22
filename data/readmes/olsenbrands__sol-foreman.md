@@ -14,6 +14,41 @@ I optimize for cost per accepted user outcome. Lead reasoning, worker time, tool
 use, repair, integration, review, and elapsed time all count. Cheap tokens,
 busy tickets, and model consensus are not delivery.
 
+## What's new in v0.6.0
+
+This release resolves the newest visible version of each Codex model
+line, uses Claude harness aliases and the newest unsuffixed Grok base version,
+and refreshes optional Jev decision support.
+
+Resolve models offline from the skill directory:
+
+```sh
+python3 scripts/resolve_models.py --line sol --json
+```
+
+Routing uses Sol/Luna lines and Claude `opus`/`sonnet`/`haiku` aliases, qualified
+for the task. Confirm with one cheap ping before first real dispatch; if refused,
+record why and try the next-newest version in that line. New known-line versions
+are automatic; new lines require bounded recon. The dated 2026-10-22 snapshot
+resolves Sol to `gpt-6.1-sol`; `gpt-6-sol` is Previous generation and must not be
+selected while the newer version is available. Never use Codex `ultra` because
+it auto-delegates.
+
+Never automatically dispatch Astra or Fable, at any version, for any role,
+fallback, escalation or second opinion. The user must request the premium route
+in this session and then affirm a second confirmation naming the model and its
+cost; record both approvals. Approvals expire at session end. An Astra/Fable lead
+is fine. The review guard is a reservation counter and does not enforce approvals;
+the lead must refuse unapproved premium launches.
+
+Jev is opt-in and advisory: default `~typesafe/jev-latest`, then explicit
+`typesafe/jev-1.14` / `typesafe/jev-1.13` only if model-not-found. Record the served
+`model` and pin it for the remaining session using `--session-result`. Model env,
+flag and CLI overrides remain available. Use it for report dedupe, citation support,
+past-run ranking, evidence/injection screening or failure classification; skip
+trivial work. Never use it for dates, arithmetic, acceptance, or as the decider or
+sole gate for destructive/security actions. See [Jev](skills/sol-foreman/references/jev.md).
+
 ## What I changed in v0.4.1
 
 I updated Sol Foreman so Sol can keep qualified workers responsible for
@@ -61,10 +96,10 @@ result before accepting it.
 - Optional: authorized Codex, Claude, or Grok CLI routes when the task benefits
   from them. No optional provider is required.
 
-## Install v0.4.1
+## Install v0.6.0
 
 The canonical global destination is `~/.agents/skills/sol-foreman`. The
-recommended installer uses the immutable `v0.4.1` tag and refuses to overwrite
+recommended installer uses the immutable `v0.6.0` tag and refuses to overwrite
 that destination. First reconcile active work and local modifications under the
 [version-change guide](skills/sol-foreman/references/compatibility.md). A disk
 update does not replace instructions already loaded by an active session; start
@@ -72,21 +107,21 @@ a fresh session after a successful transition.
 
 Ask Codex:
 
-    Use $skill-installer to install https://github.com/olsenbrands/sol-foreman/tree/v0.4.1/skills/sol-foreman globally.
+    Use $skill-installer to install https://github.com/olsenbrands/sol-foreman/tree/v0.6.0/skills/sol-foreman globally.
 
 Or use Codex's built-in installer on macOS or Linux:
 
     python3 "${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-installer/scripts/install-skill-from-github.py" \
       --repo olsenbrands/sol-foreman \
       --path skills/sol-foreman \
-      --ref v0.4.1 \
+      --ref v0.6.0 \
       --dest "$HOME/.agents/skills"
 
 On Windows:
 
-    py "%USERPROFILE%\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo olsenbrands/sol-foreman --path skills/sol-foreman --ref v0.4.1 --dest "%USERPROFILE%\.agents\skills"
+    py "%USERPROFILE%\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo olsenbrands/sol-foreman --path skills/sol-foreman --ref v0.6.0 --dest "%USERPROFILE%\.agents\skills"
 
-The release asset `sol-foreman-v0.4.1.zip` has the installable skill at
+The release asset `sol-foreman-v0.6.0.zip` has the installable skill at
 `sol-foreman/SKILL.md`. Use it to inspect or stage the tagged source before an
 upgrade; Codex's GitHub installer above is the supported installation path. Do
 not copy the archive over an active skill or a symlinked development checkout.

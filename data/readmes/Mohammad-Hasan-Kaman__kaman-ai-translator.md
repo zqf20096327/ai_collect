@@ -173,15 +173,15 @@ python translator_app_v3.py
 ## Quick start
 
 1. **⚙️ Settings** → pick the engine (Gemini or OpenAI-compatible), paste your API key, set the model name, press **Test connection**.
-2. **📂 انتخاب کتاب (PDF / EPUB)** → open your book.
-3. **Single page:** *ترجمهٔ این صفحه* · **Whole book:** *ترجمهٔ کل کتاب* and in the dialog:
+2. **📂 Open book (PDF / EPUB)** → open your book.
+3. **Single page:** *Translate this page* · **Whole book:** *Translate the whole book* and in the dialog:
    - choose the page range,
    - keep *analyze book structure* on (free & local),
    - enable the *QC review loop* for maximum quality (double API cost),
    - set a delay if your provider rate-limits,
    - decide **continue** or **re-translate from scratch** when saved pages exist.
-4. While it runs: **⏸ توقف** pauses (Settings becomes editable), **■ لغو** cancels safely, and the current page follows along automatically.
-5. When a page finishes: read it → tick **✓ بازبینی شد** if approved → **📋 کپی** or export the whole book.
+4. While it runs: **⏸ Pause** pauses (Settings becomes editable), **■ Cancel** cancels safely, and the current page follows along automatically.
+5. When a page finishes: read it → tick **✓ Reviewed** if approved → **📋 Copy** or export the whole book.
 
 ---
 
@@ -244,7 +244,7 @@ kaman-ai-translator/
 │                           #   engines (Gemini / OpenAI-compatible),
 │                           #   job store, exporters
 ├── tests/test_v3.py       # 303-check offline test-suite
-├── icon.png / icon.ico / icon..ico
+├── icon.png / icon.ico
 ├── requirements.txt
 ├── LICENSE
 └── CONTRIBUTING.md
@@ -277,10 +277,8 @@ Free to use, modify and share — even commercially.
 
 ---
 
-<div dir="rtl">
+---
 
-### سپاس از ستاره ⭐
+### ⭐ Thanks for the star
 
-اگر این ابزار برایتان مفید بود، یک ستاره بدهید — بزرگ‌ترین حمایت از توسعهٔ پروژه است.
-
-</div>
+If this tool is useful to you, please give it a star — the biggest support for continued development of the project.

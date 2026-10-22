@@ -11,6 +11,57 @@
 
 ---
 
+## 📖 [2026-10-20 更新] Qoder 注册链路逆向研究 · 阶段性成果
+
+> 独立研究文档 → **[docs/registration-research/README.md](docs/registration-research/README.md)**（点击查看完整报告）
+
+本轮对 Qoder **Web 端注册流程**做了完整协议还原，主要发现：
+
+| # | 发现 | 说明 |
+|---|---|---|
+| 1 | **真注册接口** | `POST /api/v1/users`（不是 `/users/sign-up`，后者只是前端路由）|
+| 2 | **两轮人机验证** | ① AliyunCaptcha 2.0 滑块（scene `1r7eif79x`）② 阿里 baxia 风控 + 3×3 网格点选（`RGV587` 触发）|
+| 3 | **baxia 可完整解析** | iframe 同源可访问，WASM 解密后经 `putImageData` 写 canvas，**`getImageData` 直接读到明文图片**（样本图片见 `artifacts/baxia/`）|
+| 4 | **★ 设备↔账号绑定** | App 登录会打开 `/device/selectAccounts?nonce=` → 「继续使用此账户吗？」→ 服务端按设备维护账号关联表 |
+| 5 | **★ 权益消失机制** | 网页注册可拿到 **300 积分 + Pro Trial**；同设备登录 App 后消失 → 与 `machineid = f(IOPlatformSerialNumber)` 的设备识别一致（见 `../resetfree/`）|
+| 6 | **剩余卡点** | 题目文字为 anti-OCR 像素图（tesseract 全败），需多模态视觉识别；`bx-ua` 指纹算法未解 |
+
+**欢迎社区接力**：多模态识别方案 / baxia `bx-ua` 算法 / 设备绑定接口细节。
+
+### 🧰 配套工具包
+
+本轮沉淀的可复用工具已整理到 **[tools/qoder-register-kit/](tools/qoder-register-kit/README.md)**：
+
+| 工具 | 用途 |
+|---|---|
+| `cdp.js` | **CDP 驱动**：拟人鼠标轨迹（贝塞尔曲线+抖动）、逐键输入、随机延迟。所有脚本的地基 |
+| `incog.js` | **无痕上下文管理**：规避登录态重定向；每次失败后重建，避免 React/baxia 状态污染 |
+| `mailbox.py` | **临时邮箱客户端**：建地址 → 收信 → 提取 6 位验证码（`x-admin-auth` + Bearer JWT）|
+| `detect_gap.py` | **滑块缺口检测**：拼图块不透明像素做模板匹配，输出缺口 x 坐标 |
+| `flows/page-submit.js` | **注册第 1 步**：填姓名/邮箱 → 提交。含 antd Form 实例绕过（`__reactFiber$` + `setFieldsValue`）|
+| `flows/step2-submit.js` | **注册第 2 步**：填密码 → 提交 → 触发滑块 |
+| `flows/solve-slider6.js` | **滑块自动求解**：缺口检测 + 三段式闭环拖拽（实测拼图/手柄比例 ≈0.91）|
+| `flows/type-code.js` | **填邮箱验证码**：6 位逐键输入 + 调 `onChangeCallback` 触发提交 |
+| `flows/watch-baxia2.js` | **等待 baxia 弹窗**：轮询 punish iframe 是否展示 |
+| `flows/analyze-baxia.js` | **baxia 只读分析**：导出题目图 + 9 张网格图（iframe 同源，无需逆向 WASM）|
+| `flows/capture-success.js` | **全量网络存档**：请求/响应/`bx-ua` 指纹 → JSONL，用于抓人工成功样本 |
+| `flows/net-observe.js` | **单次请求定位**：不确定按钮调什么接口时，一次看清 URL 与 body |
+
+### ⚠️ 协助者注意事项
+
+1. **合规**：本工具包仅供**协议研究与学习**；请勿用于批量注册、绕过风控或商业化滥用，
+   并遵守目标站点服务条款与当地法律法规。
+2. **不要提交凭证**：admin passkey、账号密码、`bx-ua` 指纹等**禁止入库**；
+   抓包存档提交前必须脱敏。
+3. **保持人类节奏**：`cdp.js` 内置随机延迟与拟人轨迹，请勿移除——高频请求会触发风控，
+   也会影响其他人的研究。
+4. **可回滚**：所有实验仅在浏览器无痕上下文内进行，不改动系统配置与硬件信息。
+5. **提交前自检**：`git diff` 确认无凭证、无 `node_modules`、无个人数据。
+
+> ⚠️ 研究性质声明：仅做协议与机制分析，不提供绕过验证的成品工具。
+
+---
+
 ## 🙏 特别致谢 · 贡献者
 
 本项目的海外版签到、多账号池、图片输入等核心特性由社区贡献者 **[LeonardW-sl](https://github.com/LeonardW-sl)** 主导实现，特此致以诚挚谢意。
@@ -160,7 +211,189 @@ curl -X POST http://127.0.0.1:3588/api/checkin -d '{"account_id":"acct_xxx"}'
 
 ---
 
+## ✨ 新功能：Token 自动续期（15 天）
+
+账号的 access token 与 refresh token 均有有效期。此前 bridge **只保存 refresh_token 却从不使用它**，
+一旦两个 token 双双过期，账号会静默失效（控制台额度显示为空、请求 `401 TOKEN_EXPIRE`），只能重新走 OAuth。
+
+本功能利用 Qoder jobToken 端点的 `needRefresh` 模式（传入 `drt-` 前缀的 refresh_token，服务端签发新
+access token 并回传新的 refresh_token）在过期前**主动续期**。
+
+- **⏰ 定时续期**：默认**关闭**，开启后每 6 小时检查一次；token 年龄 ≥ 12 天自动续期（间隔 15 天，留 3 天余量）
+- **🖱️ 手动续期**：控制台「续期 Token」按钮一键续期；「强制续期」忽略年龄窗口
+- **📊 状态可见**：账号表格新增「Token 续期」列，显示 token 年龄、状态徽章、失败原因、下次续期日期
+- **🔀 多模式兼容**：
+  - OAuth 账号：优先用 `refresh_token`（同时拿到新 at + rt），无 rt 时回退 `device_token`
+  - PAT 账号：跳过（每次请求实时交换，无需续期）
+  - 无 secret 账号：跳过
+- **🔁 续期后需重启 Bridge**：续期写入新的 secret 文件，重启后生效（界面会提示）
+
+### 使用方式
+
+控制台「账号列表 / 额度」区域新增一行控制条：
+
+```
+[续期 Token]  [☑ 自动续期(15天)]  [强制续期]   每 15 天自动续期（token 满 12 天触发）
+```
+
+对应接口：
+
+| 接口 | 说明 |
+|------|------|
+| `GET /api/refresh` | 续期状态（开关、间隔、各账号 token 年龄、上次结果） |
+| `POST /api/refresh/run` | 手动续期（跳过未满 12 天的账号） |
+| `POST /api/refresh/run?force=1` | 强制续期全部账号 |
+
+### 续期失败的常见原因
+
+| 报错 | 原因 | 处理 |
+|------|------|------|
+| `personal token is invalid` | refresh_token 本身已过期 | 只能重新 OAuth / PAT 授权 |
+| `TOKEN_EXPIRE` | device_token 已过期但 rt 仍有效 | 续期会自动处理 |
+| `secret 中既无 refresh_token 也无 device_token` | 早期版本只存了 PAT | 重新添加账号 |
+
+> ⚠️ 本功能是**预防性**的：若 token 已彻底死亡（at 和 rt 同时失效），续期无法救回，
+> 必须重新授权。建议开启自动续期避免再次发生。
+
 ## 更新记录
+
+### 🔐 新增：Token 自动续期（15 天）
+
+**2026-10-21**
+
+修复「账号 token 过期后静默失效」问题：bridge 早前只保存 `refresh_token` 却从未使用，
+双 token 同时过期后只能重新走 OAuth。
+
+**改动**：
+
+| 文件 | 内容 |
+|------|------|
+| `refresh.go` (新增) | 续期核心逻辑 + 调度器 + HTTP handlers |
+| `account/model.go` | `Settings` 新增 `auto_refresh_token` 字段 |
+| `account/secret.go` | 导出 `SecretPathFor()`（供 token 年龄判断） |
+| `main.go` | 注册 `/api/refresh` 路由 + 启动调度器 + settings 支持 |
+| `webconsole/index.html` | 账号表格新增「Token 续期」列 + 续期控制条 |
+
+**机制**：调用已有的 `cosy.ExchangeJobToken` 并传入 `drt-` 前缀 token 触发 `needRefresh` 模式，
+服务端返回新的 access token 与 refresh token。token 年龄 ≥ 12 天触发（间隔 15 天）。
+
+**调度**：默认关闭；开启后每 6 小时检查一次，启动时延迟 45s 先跑一次让控制台有状态。
+
+**测试覆盖**：死号（401 明确报错）/ PAT 模式（跳过）/ 无 secret（跳过）/ 新 token（跳过）/
+开关持久化（重启后保持）。
+
+### 🌐 国际版签到的账号差异（灰度投放）
+
+**2026-10-20 CST**
+
+国际版（`qoder.com`）的活动是**按账号灰度投放**的，不同账号拿到的活动**不重叠**。实测两个账号：
+
+| | `yusheng zheng`（老号） | `tmpreg gep`（新号） |
+|---|---|---|
+| 注册时间 / 方式 | 2026-07-29 · `sso.google` | 2026-10-11 · `dashboard.email_pwd` |
+| **每日签到**（每天 100 Credits） | ✅ 可正常自动签到 | ❌ 服务端未下发 |
+| **SOTA 专属积分**（2000，限 Sonus 模型） | ❌ 未下发 | ✅ 已领取 |
+
+两点结论：
+
+1. **老号签到正常，但没有 SOTA 专属积分** —— 自动签到只覆盖「每日签到」这一类活动
+2. **新号无签到，但有 SOTA 积分** —— 用新号的 SOTA 包 ID 给老号代领会返回
+   `CAMPAIGN_NOT_FOUND`（服务端校验活动归属），说明这是运营灰度，不是接口或指纹问题
+
+> 即：**自动签到能领的活动范围，取决于服务端给该账号下发了什么**。
+> qoder2api 只负责把已下发的 `CLAIM_BENEFIT` 活动自动领掉，无法代领未下发的活动。
+
+#### 官方 App 中的 SOTA 专属积分
+
+![国际版 App 的 SOTA 专属积分面板](docs/img/sota-credits-app.jpg)
+
+#### qoder2api 控制台展示效果
+
+![qoder2api 控制台账号额度列表](docs/img/console-account-packages.jpg)
+
+### 📋 模型总表（2026-10-22 实拉）
+
+模型清单由上游 `GET /algo/api/v2/model/list` 在运行时动态拉取，下方为当时快照，仅供对照；
+实际以 `/v1/models` 返回为准。`price_factor` 为相对倍率，`0` 表示限免。
+
+> ⚠️ 同一 key 在**两区的推理支持与最大输出可能不同**（上游按区配置），故分表列出。
+
+#### 国内版 · 11 个（Bridge `8963`）
+
+| Key | 显示名 | 上下文 | 最大输出 | 倍率 | 推理 |
+|-----|--------|--------|----------|------|:----:|
+| `auto` | Auto | 200,000 | 32,768 | 0.5 | ✅ |
+| `qmodel_38max` | Qwen3.8-Max | 200,000 | 32,768 | **0.2** | ✅ |
+| `qfmodel` | Qwen3.8-Flash | 200,000 | 32,768 | **0** 🆓 | ✅ |
+| `qmodel` | Qwen3.7-Plus | 200,000 | 32,768 | 0.1 | ✅ |
+| `dmodel` | DeepSeek-V4-Pro | 200,000 | 32,768 | **0.5** | ✅ |
+| `dfmodel` | DeepSeek-Flash | 200,000 | 16,384 | **0** 🆓 | — |
+| `gmodel` | GLM-5.3 | 200,000 | 32,768 | **0.8** | ✅ |
+| `gfmodel` | GLM-5.3-Flash | 200,000 | 32,768 | 0.1 | ✅ |
+| `kmodel_latest` | Kimi-K3 | 200,000 | 16,384 | **1.4** | — |
+| `kmodel` | Kimi-K2.8-Preview | 200,000 | 32,768 | **0.8** | ✅ |
+| `mmodel` | **MiniMax-M3.1-Flash** | 200,000 | 16,384 | 0.1 | — |
+
+#### 国际版 · 13 个（Bridge `8964`）
+
+| Key | 显示名 | 上下文 | 最大输出 | 倍率 | 推理 |
+|-----|--------|--------|----------|------|:----:|
+| `auto` | Auto | 200,000 | 16,384 | 0.5 | — |
+| `ultimate` | Ultimate | 200,000 | 32,768 | 0.4 | ✅ |
+| `efficient` | Efficient | 200,000 | 16,384 | 0.3 | — |
+| `qmodel_38max` | Qwen3.8-Max | 200,000 | 32,768 | **0.2** | ✅ |
+| `qfmodel` | Qwen3.8-Flash | 200,000 | 32,768 | **0** 🆓 | ✅ |
+| `qmodel` | Qwen3.7-Plus | 200,000 | 16,384 | 0.1 | — |
+| `dmodel` | DeepSeek-V4-Pro | 200,000 | 32,768 | **0.5** | ✅ |
+| `dfmodel` | DeepSeek-Flash | 200,000 | 32,768 | **0** 🆓 | ✅ |
+| `gmodel` | GLM-5.3 | 200,000 | 32,768 | **0.8** | ✅ |
+| `gfmodel` | GLM-5.3-Flash | 200,000 | 32,768 | 0.1 | ✅ |
+| `kmodel_latest` | Kimi-K3 | 200,000 | 16,384 | **1.4** | — |
+| `kmodel` | Kimi-K2.8-Preview | 200,000 | 16,384 | **0.8** | — |
+| `mmodel` | **MiniMax-M3.1-Flash** | 200,000 | 16,384 | 0.1 | — |
+
+**区域差异速览**
+
+| 差异 | 详情 |
+|------|------|
+| 国际独占 | `ultimate` / `efficient` |
+| 推理标记不同 | `auto` / `kmodel` / `qmodel` 国内支持、国际不支持；`dfmodel` 反之 |
+| 最大输出不同 | 多数模型国内 32,768、国际 16,384；`dfmodel` 相反 |
+
+> 加粗为相对上一版的价格变动。
+
+#### ⚠️ SOTA「Sonus」模型不在公开清单内
+
+持有 **SOTA 专属积分**的账号，官方 App 的模型选择器里会多出一个 **Sonus** 模型
+（积分说明：选择 Sonus 时优先抵扣该积分）。但它**不通过 `/algo/api/v2/model/list` 下发**：
+
+- 实测持有该积分的账号（`tmpreg gep`）直接调 `model/list` 仍只返回上表 13 个，无 Sonus
+- 客户端包内检索 `sonus` 仅有无关的 `sonus.multitrack`；`/sash/api/v1/me/achievements` 返回空
+
+即 **Sonus 是官方 App 侧按账号特殊展示的模型，API 侧不可见**，因此 qoder2api 无法转发该模型。
+
+### 🔄 上游模型清单更新
+
+**2026-10-20 CST** · 模型列表为运行时动态拉取（`/algo/api/v2/model/list`），无需改代码；以下仅作变更留档。
+
+**国内版（14 个）**
+
+| Key | 显示名 | 变化 |
+|-----|--------|------|
+| `mmodel` | **MiniMax-M3.1-Flash** | 🔄 更名（原 MiniMax-M2.7） |
+| `qmodel_38max` | Qwen3.8-Max | 💰 price 0.5 → **0.2**（降价） |
+| `dmodel` | DeepSeek-V4-Pro | 💰 price 0.8 → **0.5**（降价） |
+| `gmodel` | GLM-5.3 | 💰 price 0.6 → **0.8**（涨价） |
+| `kmodel` | Kimi-K2.8-Preview | 💰 price 0.3 → **0.8**（涨价） |
+| `kmodel_latest` | Kimi-K3 | 💰 price 0.8 → **1.4**（涨价） |
+| `dfmodel` | DeepSeek-Flash | 🆓 price=**0**（免费） |
+| `qfmodel` | Qwen3.8-Flash | 🆓 price=**0**（限免活动延续） |
+
+**国际版（15 个）**：比国内多 `ultimate` / `performance`（ctx **272K**，最大）/ `efficient` 三个独占档位；
+国内独有 `q37fmodel`（Qwen3.7-Flash）与 `gm51model`（GLM-5.2）。
+
+> ⚠️ `mmodel` 只是**显示名**变化，key 未变，已有调用与映射无需调整。
+> 若在控制台手工配过 `ModelMappings` 且使用了旧显示名，请改为 key。
 
 ### 🐛 修复：`--instance=global` 的 Bridge 端口被 settings 默认值冲成 8963
 

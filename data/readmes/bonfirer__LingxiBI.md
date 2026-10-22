@@ -87,7 +87,7 @@ Connect MySQL, PostgreSQL, or Oracle, then:
 | 🧠 | **Self-learning** | Auto-extracts business knowledge per datasource; 👍'd answers become few-shot examples; relevance-ranked recall |
 | 📸 | **Snapshots** | Scheduled metric snapshots for trend / YoY / MoM analysis |
 | 🔔 | **Multi-channel alerts** | Threshold rules → AI-generated email (with Excel) and/or Feishu card (HMAC-SHA256 signed) |
-| 🔗 | **Sharing** | Unguessable share links with publish/draft control |
+| 🔗 | **Sharing** | Unguessable share links with publish/draft control and an optional access password |
 | 👥 | **Multi-user & access control** | Admin/member roles; per-user reports, metrics, conversations & alerts; datasource-level access grants |
 | 🌍 | **i18n** | English + Chinese out of the box |
 | 🔐 | **Security** | JWT auth, login rate-limiting, SQL allowlist validator, SSRF protection, AES-256-GCM encrypted credentials at rest, security headers |

@@ -20,7 +20,7 @@
 
 **读到哪里，问到哪里。**
 
-browsa 是一个 Chrome / Edge 侧边栏扩展：把正在看的文章、视频、PDF 带进对话，让**你自己的 AI** 在旁边帮你读懂。不用复制粘贴，也不用离开页面。通过 Agent Bridge 接入 **Codex / Claude Code / pi / Gemini CLI / dsh**，连接 **opencode / Hermes / OpenSquilla**，或配置 OpenAI、Anthropic、Ollama 等模型接口。
+browsa 是一个 Chrome / Edge 侧边栏扩展：把正在看的文章、视频、PDF 带进对话，让**你自己的 AI** 在旁边帮你读懂。不用复制粘贴，也不用离开页面。通过 Agent Bridge 接入 **Codex / Claude Code / pi / Gemini CLI / dsh / ZCode**，连接 **opencode / Hermes / OpenSquilla**，或配置 OpenAI、Anthropic、Ollama 等模型接口。
 
 **扩展免费，MIT 开源。** 自备模型或 Agent。API Key 保存在本地，用于向你配置的服务进行身份验证。
 
@@ -43,6 +43,7 @@ browsa 是一个 Chrome / Edge 侧边栏扩展：把正在看的文章、视频�
 | **pi**（earendil-works） | agent-bridge 本地桥 | 你在 pi 里配置的模型 |
 | **Gemini CLI**（Google） | agent-bridge 本地桥 | 沿用 CLI 已配置的认证 |
 | **dsh**（DeepSeek） | agent-bridge 本地桥 | DeepSeek API key |
+| **ZCode** | agent-bridge 本地桥（headless CLI） | 沿用 ZCode 桌面版 / CLI 已配置的登录与模型 |
 | opencode | 官方无头服务器直连 | 你给它配置的模型 |
 | Hermes | 自托管部署，`/v1/runs` 协议 | 自托管 |
 | OpenSquilla | 自托管网关，WebSocket（`/ws`）直连 | 网关路由到的模型 |
@@ -65,7 +66,7 @@ flowchart LR
     P["当前标签页<br/>文章 · 视频 · PDF · 复杂页面"]
     B["browsa 侧边栏<br/>读出内容 · 对话 · 审批卡"]
     subgraph Y["你的后端 —— 云端、本机或自托管"]
-        A1["Codex · Claude Code · pi · Gemini CLI · dsh<br/>agent-bridge 桥 · 沿用本地登录"]
+        A1["Codex · Claude Code · pi · Gemini CLI · dsh · ZCode<br/>agent-bridge 桥 · 沿用本地登录"]
         A2["opencode · Hermes · OpenSquilla<br/>本地服务直连"]
         A3["任意 LLM API<br/>OpenAI · Anthropic · Ollama…"]
     end
@@ -125,9 +126,9 @@ npm run package      # → browsa-v<version>.zip
 - 未记录 ID 的旧存档：首次发消息时创建独立智能体会话，并带上已有文字记录
 
 <details>
-<summary><b>🔧 Agent Bridge</b>——桥接本地智能体（<b>Codex</b>、<b>Claude Code</b>、<b>pi</b>、<b>Gemini CLI</b>、<b>dsh</b>…）</summary>
+<summary><b>🔧 Agent Bridge</b>——桥接本地智能体（<b>Codex</b>、<b>Claude Code</b>、<b>pi</b>、<b>Gemini CLI</b>、<b>dsh</b>、<b>ZCode</b>…）</summary>
 
-[agent-bridge](https://github.com/xiaohuzai/agent-bridge) 是一个独立的本地守护进程，把 codex、claude、pi、gemini、dsh 等本地智能体适配成统一的本地 HTTP 协议。它沿用智能体配置的认证方式：
+[agent-bridge](https://github.com/xiaohuzai/agent-bridge) 是一个独立的本地守护进程，把 codex、claude、pi、gemini、dsh、zcode 等本地智能体适配成统一的本地 HTTP 协议。它沿用智能体配置的认证方式：
 
 ```bash
 npm i -g @xiaohuzai/agent-bridge                  # 已发布到 npm（Node 18+）
@@ -141,6 +142,12 @@ agent-bridge serve                                # 每个 entry 一座桥，端
 - 危险操作的审批卡片直接出现在面板里（Agent 请求审批时可播放提示音，设置中可关）
 - 截图、粘贴图片与 PDF 图表随消息发送——单条 ≤18 张，需 agent-bridge ≥0.8.0（旧版桥自动降级为前 8 张并在消息里注明）
 - 多轮上下文由 agent 自己维护；工具调用前的过程自述（codex 宣告使用某技能）折进步骤历史，不混进回复正文
+
+**ZCode**：走官方 CLI 的 headless 模式（需 agent-bridge ≥0.12.0），沿用 ZCode 桌面版 / CLI 已有的登录与模型配置——桥会自动找到桌面版内置的 CLI，改用 PATH 上的 `zcode` 也行。三点与其他 agent 不同：
+
+- **没有审批卡**：headless 回合里没人能点确认，`agents.json` 的 `"mode"` 就是唯一的权限闸。默认 `edit`（自动应用改动）；只想问答设 `plan`（只读）；`guarded` 类似 yolo、只在 `rm -rf` / `git reset --hard` / force push 这类危险命令前停下（headless 下无人可批，表现为直接拒绝该命令）；`build` 会等审批而卡死，headless 下别用
+- **模型由 ZCode 侧的供应商排序决定**（`providerOrder` 第一家 provider 的 `modelOrder` 首项），桥不传模型也传不了；账号订阅类 provider 不会被 headless 自动选中，需要自定义供应商，或先在桌面版/CLI 里选好模型再用会话 ID 续接
+- **图片降级为文字说明**：CLI 只接受本地 `--attach`，桥不往磁盘写用户图片——截图和 PDF 图仍会随消息发出，但以一句提示替代像素
 
 
 </details>
@@ -251,7 +258,7 @@ opensquilla gateway start
 
 - 聊天记录存放在网关侧——browsa 只转发你的文字；📎 附加的页面随下一条消息送出一次，之后住在网关自己的对话记录里
 - 超大页面（超过 6 万字符）作为 `page-context.md` 文档上传，由智能体用自己的工具分段阅读
-- 页面插图以图片附件随行（路由器选到纯文字模型时自动降级为纯文字）；粘贴的截图暂不转发，保留在 browsa 历史里
+- 页面插图以图片附件随行（路由器选到纯文字模型时自动降级为纯文字）；回答里会用 `[图1]`、`[图2]` 引用这些插图；粘贴的截图暂不转发，保留在 browsa 历史里
 - 此协议没有系统提示词字段——语言偏好以普通指令拼在消息开头
 
 </details>
@@ -282,7 +289,7 @@ opensquilla gateway start
 | 你在读 | browsa 发送 |
 |---|---|
 | 文章与文档 | 干净的正文；站点 `llms.txt` 指令一并烘入上下文 |
-| PDF 与论文 | 完整版式——表格、标题、多栏——本机解析；插图区域裁出作为图片发给视觉模型 |
+| PDF 与论文 | 完整版式——表格、标题、多栏——本机解析；插图区域裁出作为图片发给视觉模型，回答按 `[图N]` 引用（与网页文章配图同一套） |
 | Office 文档（`.docx` `.pptx` `.xlsx` `.epub` `.odt` `.rtf`…） | 经 docling-wasm 本机转换为 Markdown——标题、列表、表格保持结构 |
 | 视频 / 播客单集 | 带可点击 `[mm:ss]` 时间戳的字幕/转写；无字幕视频自动转写（ASR，可选——设置中填 ASR Key：火山方舟或阿里云百炼）或画面与语音一起精读；小宇宙单集同样一键转写 |
 | GitHub 仓库与文件页 | 文件页直接抓 `raw.githubusercontent.com` 原始源码——markdown 与代码保持结构；仓库页附加结构化元数据（描述、topics、license、星数）加 README 原文，侧栏信息不再被当作导航丢掉 |
@@ -307,10 +314,10 @@ opensquilla gateway start
 | **思考块** | ` thinking` / `<thinking>` 内容显示为可折叠块，流式结束后自动收起 |
 | **Markdown 渲染与高亮** | 完整 GFM（表格、代码块、列表）；40+ 种语言（highlight.js）；`diff` 代码块 `+` 标绿 / `-` 标红 |
 | **你输入的代码也会渲染** | 在输入框贴一段 ``` 围栏代码，你自己的气泡里就是带高亮和复制按钮的代码块；不写语言标签也能自动检测。消息里的其他文字逐字保持原样——你写的内容不会被再解释一遍 |
-| **LaTeX** | 行内 `$...$` 和块级 `$$...$$`（KaTeX）——公式多的消息卸载到 Web Worker 渲染，面板不卡顿 |
+| **LaTeX** | 行内 `$...$` 和块级 `$$...$$`（KaTeX）——公式多的消息卸载到 Web Worker 渲染，面板不卡顿；思维导图里的公式用原生 MathML，Mermaid / ECharts / DOT 标签内的公式按各自渲染能力呈现为上下标或 Unicode（不伪造 LaTeX 支持） |
 | **Mermaid · ECharts · Markmap** | ` ```mermaid ` / ` ```echarts ` / ` ```markmap ` 代码块内联渲染，各带缩放/复制/导出 PNG 工具栏（鼠标拖动、键盘 +/−/方向键、触控板或双指捏合）；直接说要一张图表或思维导图——模型懂这个格式。Mermaid 流程图可一键横/纵切换（窄侧栏里横向图不再缩成蚂蚁），拖动侧栏宽度后自动按新宽度重排；中文长标签按标点智能断行。Mermaid 解析失败时，一键让 AI 修复重绘——修复后的图先经本地解析校验再替换 |
-| **分子式 · 蛋白质 · 关系图** | ` ```smiles ` / ` ```pdb ` / ` ```dot ` 代码块同样内联实时渲染——2D 结构式与化学反应式由 RDKit 绘制并附分子性质条（分子量、logP、TPSA、氢键供体/受体；化学上不成立的结构直接判废、保留原文），按 PDB ID 或 AlphaFold ID 交互查看蛋白质 3D 结构（Mol* 查看器：悬停即出残基信息、自带序列条、AlphaFold 模型按 pLDDT 置信度着色）、Graphviz DOT 架构图（神经网络、数据流、依赖关系）；各带复制/导出工具栏 |
-| **追问（Follow-up）** | 选中回复中的任意文本，打开仅针对这段摘录的独立侧边对话，不碰主历史；大小可调；可直接粘贴图片，与主输入框一致；输入框 ↑/↓ 只召回追问里发过的问题；引用里的公式照常渲染成公式；视频会话里卡内生成的时间戳同样可点击跳转 |
+| **分子式 · 蛋白质 · 关系图** | ` ```smiles ` / ` ```pdb ` / ` ```dot ` 代码块同样内联实时渲染——2D 结构式与化学反应式由 RDKit 绘制并附分子性质条（分子量、logP、TPSA、氢键供体/受体；化学上不成立的结构直接判废、保留原文），按 PDB ID 或 AlphaFold ID 交互查看蛋白质 3D 结构（Mol* 查看器：悬停即出残基信息、自带序列条、AlphaFold 模型按 pLDDT 置信度着色）、Graphviz DOT 架构图（神经网络、数据流、依赖关系；标签里的 `_k`、`^{T}` 会按真正的上下标排版，公式不再显示成字面下划线）；各带复制/导出工具栏 |
+| **追问（Follow-up）** | 选中回复中的任意文本，打开仅针对这段摘录的独立侧边对话，不碰主历史；选中的原文会在回复里持续高亮（重开侧栏也保留）；卡片可折叠、也可关闭；关闭侧栏再打开时卡片会自动折叠成引用（只存在于当前浏览器会话，关闭卡片即删除）；大小可调；可直接粘贴图片，与主输入框一致；输入框 ↑/↓ 只召回追问里发过的问题；引用里的公式照常渲染成公式；视频会话里卡内生成的时间戳同样可点击跳转 |
 | **大纲导航** | 对话满 4 轮后出现刻度导航条——点击跳转、悬停预览 |
 | **编辑并重发 · 重新生成** | ✏ 编辑并重发任意用户消息；⟳ 重新运行任意回复 |
 | **排队追问** | 流式回答期间继续输入会自动排队，回答结束后依次发出 |

@@ -636,6 +636,8 @@ Reading list and comments/short reviews around reasoning models, training techni
 - [Athanor: An Agent-Native System for Autonomous Post-Training Research](https://arxiv.org/abs/2610.21055)
 - [FDE-Gym: The Last Mile of AI Delivery](https://arxiv.org/abs/2610.22350) - interesting real-world tasks
 - [Into the Unknown: Benchmarking AI agents on open scientific research problems](https://arxiv.org/abs/2610.19159)
+- [Evidence-First Agentic Verification](https://arxiv.org/abs/2610.17724)
+- [Predicting Privileged Information Effectiveness for On-Policy Self-Distillation](https://arxiv.org/abs/2610.22512)
 
 #### Topic - Audio Reasoning
 
@@ -664,4 +666,4 @@ Start with the first-linked survey.
 
 **Emerging topic, seen a few papers around this theme recently.**
 
-- [Learning to Reason without External Rewards](https://arxiv.org/abs/2505.19590) - "We propose Intuitor, an RLIF method that uses a model's own confidence, termed self-certainty, as its sole reward signal. Intuitor replaces external rewards in Group Relative Policy Optimization (GRPO) with self-certainty scores, enabling fully unsupervised learning. Experiments demonstrate that Intuitor matches GRPO's performance on mathematical benchmarks while achieving superior generaliza
+- [Learning to Reason without External Rewards](https://arxiv.org/abs/2505.19590) - "We propose Intuitor, an RLIF method that uses a model's own confidence, termed self-certainty, as its sole reward signal. Intuitor replaces external rewards in Group Relative Policy Optimization (GRPO) w

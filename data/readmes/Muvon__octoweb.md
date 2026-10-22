@@ -420,7 +420,9 @@ Full-text search with highlighting. Uses CSS Custom Highlight API for fast, nati
 brew install --cask muvon/tap/octoweb
 ```
 
-**Direct download:** grab the archive for your Mac — Apple Silicon or Intel — from [GitHub Releases](https://github.com/muvon/octoweb/releases), unpack it, and drop `Octoweb.app` into `/Applications`.
+**Direct download:** the notarized DMG for Apple Silicon from [octoweb.xyz/download](https://octoweb.xyz/download). Open it and drag `Octoweb.app` into `/Applications`.
+
+**Updates:** Octoweb checks for a new version once a day, downloads it in the background and installs it when you quit. Turn either off in Settings → General → Updates. The Homebrew cask installs the same DMG, so it updates the same way. Details: [docs/auto-updates.md](docs/auto-updates.md).
 
 **Build from source** (requires Rust toolchain and Xcode Command Line Tools):
 
@@ -433,6 +435,9 @@ cd octoweb
 
 # Release build (requires Developer ID cert)
 ./build.sh
+
+# Publish a release as a Sparkle update (owner only, see docs/auto-updates.md)
+./release.sh
 
 # Run
 open dist/Octoweb.app

@@ -12,50 +12,46 @@ the `updates.check` setting (a Settings switch is coming in the UX update) or `S
 the bridge download from npm.
 
 <p align="center">
-  <a href="site/public/demo/v014/tour.mp4"><img src="site/public/demo/v014/tour.jpg" width="880" alt="A tour recorded on 0.1.4: the chat beside the architecture map and the whiteboard. Opens the tour video." /></a>
+  <a href="site/public/demo/v0184/tour-full.mp4"><img src="site/public/demo/v0184/hero-dark-1080.webp" width="880" alt="Sequence 0.1.8.4: the chat answering beside the architecture map of a sample shop repository. Opens the 30 second tour video." /></a>
 </p>
 
-## What's new in 0.1.8
+## What's new in 0.1.8.4
 
-- Components: 38 ready-made skills ship in the app and load at run time as tools, not by default. Three modes (auto, approval cards, off), `/components` and the + next to the chat box.
-- Spaces replaces the whiteboard, and agents can draw with colours, lines, frames, SVG, scenes and video.
-- Free web search and fetch for Claude, Codex and Sequence's own model, with no key.
-- Mac: partial updates (the first update after a dmg install downloads the full zip once), and Cmd+C and Cmd+V work.
-- Switching branches rescans the architecture board; files show status for the current branch.
-- `/goal` on Claude and Codex, and a coverage line under agent answers.
+- A new sidebar: Workflows, Components, Profiles and Skills open as views, with hover cards that preview an item and launch a workflow. Every chat lives under its workspace folder.
+- Spaces are per chat, and a workflow you launch is watched live on the Agents surface.
+- The chat overview and file buttons float; Focused or Detailed tool calls is one control in Settings > General.
+- Coming back to the Architecture tab no longer shows the cards jumping: 12 different arrangements before the final one are now 0, and 446 ms to settle is now 99 ms ([docs/bench/PERF-0.1.8.4.md](docs/bench/PERF-0.1.8.4.md)). Everything else measured the same within noise.
+- The desktop app starts its engine before it builds the window.
+- Stop closes the provider connection on Node 20 and 22 too; board tabs, the status bar and the narrow drawer are fixed for screen readers and stacking.
 
-The full list is in [docs/releases/v0.1.8.md](docs/releases/v0.1.8.md).
+The full list is in [docs/releases/v0.1.8.4.md](docs/releases/v0.1.8.4.md) and [CHANGELOG.md](CHANGELOG.md). 0.1.8 added components, Spaces, free web search and `/goal`; see [docs/releases/v0.1.8.md](docs/releases/v0.1.8.md).
 
-## A tour (clips recorded on 0.1.4)
+## A tour (clips recorded on 0.1.8.4)
 
 <table>
   <tr>
-    <td width="50%"><a href="site/public/demo/v014/workspaces.mp4"><img src="site/public/demo/v014/workspaces.jpg" alt="The Workspaces tree with chats under each workspace" /></a><br /><b>Workspaces.</b> Chats sit under each workspace, and New chat starts in the open one.</td>
-    <td width="50%"><a href="site/public/demo/v014/whiteboard-draw.mp4"><img src="site/public/demo/v014/whiteboard-draw.jpg" alt="A diagram drawn from chat laying itself out on the whiteboard" /></a><br /><b>Whiteboard.</b> Ask for a diagram in chat. It lays itself out and animates in.</td>
+    <td width="50%"><a href="site/public/demo/v0184/ask-live.mp4"><img src="site/public/demo/v0184/ask-live.jpg" alt="Asking about the architecture; the answer streams in beside the map" /></a><br /><b>Ask.</b> The answer streams in beside the map and ends with the files it came from.</td>
+    <td width="50%"><a href="site/public/demo/v0184/surfaces.mp4"><img src="site/public/demo/v0184/surfaces.jpg" alt="Switching between Files, Whiteboard, Agents, Terminal and Architecture" /></a><br /><b>Surfaces.</b> Files, Spaces, Agents, the terminal and the map, one tab apart.</td>
   </tr>
   <tr>
-    <td width="50%"><a href="site/public/demo/v014/ask-in-place.mp4"><img src="site/public/demo/v014/ask-in-place.jpg" alt="Asking about one box on the whiteboard" /></a><br /><b>Ask in place.</b> Point at a box on the whiteboard or the map and ask. The chat gets that exact reference with a snapshot.</td>
-    <td width="50%"><a href="site/public/demo/v014/files.mp4"><img src="site/public/demo/v014/files.jpg" alt="Files with a one-line breadcrumb and rendered Markdown" /></a><br /><b>Files.</b> A one-line breadcrumb, VS Code status colours, rendered Markdown and diagrams.</td>
-  </tr>
-  <tr>
-    <td width="50%"><a href="site/public/demo/v014/agents-workflows.mp4"><img src="site/public/demo/v014/agents-workflows.jpg" alt="The Agents pane with Context and Output figures" /></a><br /><b>Agents.</b> Context and Output as the agent reports them. Workflows and runs stay collapsed until you open them.</td>
-    <td width="50%"><a href="site/public/demo/v014/rewind.mp4"><img src="site/public/demo/v014/rewind.jpg" alt="Edit from here on a finished message" /></a><br /><b>Edit from here.</b> Take a message and everything after it out of the chat. Undo until the next send.</td>
+    <td width="50%"><a href="site/public/demo/v0184/rail-and-settings.mp4"><img src="site/public/demo/v0184/rail-and-settings.jpg" alt="The sidebar's Workflows, Components, Profiles and Skills views, then Settings" /></a><br /><b>Sidebar.</b> Workflows, Components, Profiles and Skills, then Settings.</td>
+    <td width="50%"><a href="site/public/demo/v0184/board-tour.mp4"><img src="site/public/demo/v0184/board-tour.jpg" alt="Selecting a card on the board, the view menu, zoom and fit" /></a><br /><b>Board.</b> Select a card, open the view menu, zoom in and fit to screen.</td>
   </tr>
 </table>
 
-Each picture links to its clip. The clips use a sample shop repository; the app and scan are real, model answers are scripted replies. The run history and token figures in the Agents clip are illustrative.
+Each picture links to its clip. Stills (dark, light and phone) are in [site/public/demo/v0184/stills](site/public/demo/v0184/stills). The app, the scan and the board in every clip are real, on a copy of a sample shop repository. **The model is not:** the chat is connected to a local stand-in that streams an answer written by hand, so the answer text is not model output. [What is real and what is not, and how the clips were checked](site/public/demo/v0184/MEDIA-NOTES.md).
 
-Also in 0.1.4: a reasoning slider, a one-line terminal prompt, drawings and chart cards inline in chat,
+Also in earlier releases (0.1.4): a reasoning slider, a one-line terminal prompt, drawings and chart cards inline in chat,
 Claude setting itself up the first time it is used, restart and continue, importing old Claude Code
 and Codex chats, several agents at once with compare and merge, and opening a pull request from a
 worktree chat.
 
 ## Download
 
-The current version is 0.1.8. Installers are on the
-[v0.1.8 release page](https://github.com/naidx0/sequence-arch-tool/releases/tag/v0.1.8). Free, no account.
+The current downloadable version is 0.1.8.4 on the
+[v0.1.8.4 release page](https://github.com/naidx0/sequence-arch-tool/releases/tag/v0.1.8.4), with installers for Windows, macOS and Linux. The release page carries `SHASUMS256.txt` so you can check your copy. Free, no account.
 
-- **Windows**: `Sequence Setup 0.1.8.exe` (installer) or `Sequence-0.1.8-win.zip` (portable).
+- **Windows**: installer or portable ZIP.
 - **macOS**: Apple silicon (`-arm64.dmg` / `-arm64-mac.zip`). Intel builds are on the release page but are not tested on every release.
 - **Linux**: an AppImage or a deb.
 

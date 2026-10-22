@@ -1,6 +1,6 @@
 # Claude Faces Expert
 
-*Version 1.8.0*
+*Version 1.9.0*
 
 Drop-in Jakarta Faces knowledge base for [Claude Code](https://claude.com/claude-code), with installers for [GitHub Copilot](https://github.com/features/copilot), [Cursor](https://cursor.com), [Codex](https://developers.openai.com/codex), [OpenCode](https://opencode.ai/) and [Antigravity](https://antigravity.google).
 Makes the coding agent more aware of Jakarta Faces (formerly JSF) best practices, common pitfalls, and diagnostic decision trees.
@@ -22,7 +22,7 @@ Why is this important? Below is an example conversation with Opus 4.6:
 
 | File | Description |
 |------|-------------|
-| `.claude/faces/rules.md` | Core rules: terminology, view state, namespaces, CDI, scopes, page authoring, resources, components, ajax, common errors |
+| `.claude/faces/rules.md` | Core rules: terminology, view state, namespaces, CDI, scopes, page authoring, resources, components, ajax, localization, common errors |
 | `.claude/faces/topics/configuration.md` | Minimal project configuration (web.xml, taglibs, component tags, directory structure) |
 | `.claude/faces/topics/diagnostics.md` | Decision trees for 6 common errors (action not invoked, target unreachable, ViewExpiredException, etc.) |
 | `.claude/faces/topics/primefaces.md` | PrimeFaces-specific rules and gotchas |

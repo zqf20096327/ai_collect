@@ -162,6 +162,7 @@ A curated list of awesome platforms, tools, practices and resources that helps r
 - <img src="https://img.shields.io/badge/Mistral%20AI-%23FA520F?logo=mistralai&logoColor=%23FFFFFF" height="17" align="texttop"/> [Mellum 2.1](https://huggingface.co/collections/JetBrains/mellum21) - an assistant model trained by JetBrain
 - [MiniMax-M3](https://huggingface.co/MiniMaxAI/MiniMax-M3) - a native multimodal model with 1M context
 - [MiniMax-M2](https://huggingface.co/collections/MiniMaxAI/minimax-m2) - a collection of SOTA models for real-world dev & agents
+- [Flint](https://huggingface.co/RecursiveSI/flint) - a mixture-of-experts language model for coding agents
 - [Laguna-S-2.1](https://huggingface.co/poolside/Laguna-S-2.1) - a 118B total parameter Mixture-of-Experts model with 8B activated parameters per token, designed for agentic coding and long-horizon work
 - [SWE-FastContext](https://huggingface.co/collections/microsoft/swe-fastcontext) - a family of code-search models from Microsoft powering the Explore subagent for coding agents
 - [AesCode-32B](https://huggingface.co/microsoft/AesCode-32B) & [AesCode-8B](https://huggingface.co/microsoft/AesCode-8B) - models from Microsoft that generates information-rich visual artifacts such as slides, posters, and dashboards as HTML/CSS
@@ -202,9 +203,8 @@ A curated list of awesome platforms, tools, practices and resources that helps r
 - [Qwen3-ASR](https://huggingface.co/collections/Qwen/qwen3-asr) - a collection of models that support language identification and ASR for 52 languages and dialects
 - [Qwen3-TTS](https://huggingface.co/collections/Qwen/qwen3-tts) - a collection of TTS models that cover 10 major languages as well as multiple dialectal voice profiles to meet global application needs
 - [Granite Speech](https://huggingface.co/collections/ibm-granite/granite-speech) - a collection of compact and efficient speech-language models from IBM, specifically designed for multilingual automatic speech recognition (ASR) and bidirectional automatic speech translation (AST)
-- <img src="https://img.shields.io/badge/Mistral%20AI-%23FA520F?logo=mistralai&logoColor=%23FFFFFF" height="17" align="texttop"/> [Voxtral-Small-24B-2507](https://huggingface.co/mistralai/Voxtral-Small-24B-2507) - an enhancement of Mistral Small 3, incorporating state-of-the-art audio input capabilities while retaining best-in-class text performance
-- <img src="https://img.shields.io/badge/Mistral%20AI-%23FA520F?logo=mistralai&logoColor=%23FFFFFF" height="17" align="texttop"/> [Voxtral-Mini-4B-Realtime-2602](https://huggingface.co/mistralai/Voxtral-Mini-4B-Realtime-2602) - a multilingual, realtime speech-transcription model and among the first open-source solutions to achieve accuracy comparable to offline systems with a delay of <500ms
-- <img src="https://img.shields.io/badge/Mistral%20AI-%23FA520F?logo=mistralai&logoColor=%23FFFFFF" height="17" align="texttop"/> [Voxtral-4B-TTS-2603](https://huggingface.co/mistralai/Voxtral-4B-TTS-2603) - frontier, open-weights text-to-speech model that’s fast, instantly adaptable, and produces lifelike speech for voice agents
+- <img src="https://img.shields.io/badge/Mistral%20AI-%23FA520F?logo=mistralai&logoColor=%23FFFFFF" height="17" align="texttop"/> [Voxtral](https://huggingface.co/collections/mistralai/voxtral) - a collection of Mistral AI Audio models
+- [Ming-3.0](https://huggingface.co/collections/inclusionAI/ming-30) - a collection of inclusionAI AI Audio models
 - [chatterbox](https://huggingface.co/ResembleAI/chatterbox) - first production-grade open-source TTS model
 - [VibeVoice](https://huggingface.co/collections/microsoft/vibevoice-68a2ef24a875c44be47b034f) - a collection of frontier text-to-speech models from Microsoft
 - [Kitten TTS](https://huggingface.co/KittenML/models) - a collection of open-source realistic text-to-speech models designed for lightweight deployment and high-quality voice synthesis

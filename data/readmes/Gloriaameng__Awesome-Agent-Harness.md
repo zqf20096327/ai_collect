@@ -212,6 +212,8 @@ The four featured systems above are joined by ten coding harnesses in the compar
 - **[LongHorizon-Harness](https://github.com/AMAP-ML/LongHorizon-Harness)** — A meta-harness that wraps existing coding agents in plan–act–verify, durable state, role isolation, audit, checkpoint, and recovery loops. [Paper](https://arxiv.org/abs/2608.01964)
 - **[Hermes Agent](https://github.com/nousresearch/hermes-agent)** — A persistent personal-agent runtime with memory, agent-created skills, multi-channel gateways, several sandbox backends, subagents, approvals, checkpoints, context compression, trajectories, and batch evaluation. [Docs](https://hermes-agent.nousresearch.com/docs/)
 - **[SandBase](https://github.com/sandbaseai/sandbase-harness)** — A local-first operations and security control plane with resumable sessions, audit and replay, MCP toolsets, credential and approval policy, several sandbox backends, typed SDKs, and conformance tests.
+- **[CUGA](https://github.com/cuga-project/cuga-agent)** — IBM Research's open-source generalist agent harness on LangGraph that runs API (OpenAPI, MCP, LangChain tools), web, and hybrid tasks under configurable policies (intent guard, playbooks, tool approval), with skills, A2A sub-agents, and ACP. [Paper](https://arxiv.org/abs/2510.23856)
+- **[oh-my-agent](https://github.com/first-fluke/oh-my-agent)** — An open-source harness layered on existing coding agents that installs into 14 runtimes (Claude Code, Codex CLI, Cursor and others), shares skills from one `.agents/skills/` folder with supported runtimes, and has an optional Stop hook that runs the project's typecheck, test or lint script before the agent finishes.
 
 #### Workplace and personal-agent harnesses
 
@@ -255,6 +257,7 @@ These systems remain in the index while their public architecture, maturity, or 
 
 #### Long-horizon and domain-specific harnesses
 
+- **[RobotUse](https://github.com/robotuse-team/RobotUse)** — A robot agent harness combining visual target and pose selection, subagent-local interaction histories, and persistent playbooks for learning from execution, with geometry, motion planning, and control handled by the backend. [Paper](https://arxiv.org/abs/2610.04929) · [Project](https://robotuse-team.github.io/)
 - **[CheetahClaws](https://github.com/SAIL-Research-Lab/cheetahclaws)** — A research harness for system-level scaling around fixed models, including orchestration, tools, context, and parallel work. [Paper](https://arxiv.org/abs/2605.26112)
 - **[DataFlow-Harness](https://github.com/OpenDCAI/DataFlow-WebUI)** — A data-centric harness for composing, running, and evaluating agentic data workflows. [Paper](https://arxiv.org/abs/2607.16617)
 
@@ -345,12 +348,14 @@ A benchmark belongs here when it reveals something about the **runtime around th
 
 These benchmarks ask **what tasks an agent can complete**. Harness studies use them as task substrates and add controls that isolate the runtime as an experimental variable.
 
+- **[RoboQuest](https://github.com/declare-lab/RoboQuest)** — Simulated mobile-manipulation tasks for multimodal agents acting through tool calls; hidden information must be found by searching, inspecting, or testing. [Paper](https://arxiv.org/abs/2610.10388)
 - **[AgencyBench](https://arxiv.org/abs/2601.11044)** — Long-context, consequential tasks for autonomous agents; report its aggregate and ecosystem-specific findings separately.
 - **[ClawBench](https://github.com/TIGER-AI-Lab/ClawBench)** — Everyday online tasks for personal and computer-use agents. [Paper](https://arxiv.org/abs/2604.08523)
 - **[OSWorld](https://github.com/xlang-ai/OSWorld)** — Open-ended computer tasks in real operating-system environments.
 - **[WebArena](https://github.com/web-arena-x/webarena)** — Realistic websites and end-to-end tasks for autonomous web agents.
 - **[GAIA](https://arxiv.org/abs/2311.12983)** — General-assistant questions that require reasoning, tools, and multiple modalities.
 - **[SWE-bench](https://github.com/swe-bench/SWE-bench)** — Real GitHub issues resolved against executable repositories.
+- **[EC2-Bench](https://github.com/OpenBMB/EC2-Bench)** — OpenClaw workspace tasks run by an edge model that can call a cloud model; compares who controls cloud invocation (external router vs. edge agent) on completion, cost, and privacy exposure. [Paper](https://arxiv.org/abs/2610.17816)
 
 ---
 
@@ -440,6 +445,7 @@ The hardest harness problems appear where execution, context, state, permissions
 - <u>WildClawBench</u>†: **"WildClawBench: A Benchmark for Real-World, Long-Horizon Agent Evaluation"**. *Ding et al.* arXiv 2026. [[Paper](https://arxiv.org/abs/2605.10912)]
 - <u>HarnessAudit-Bench</u>†: **"Auditing Agent Harness Safety"**. *Liu et al.* arXiv 2026. [[Paper](https://arxiv.org/abs/2605.14271)]
 - <u>AgentSWE</u>†: **"AgentSWE: Can Coding Agents Build the Agent You Actually Want?"**. *Wang et al.* arXiv 2026. [[Paper](https://arxiv.org/abs/2610.13361)]
+- <u>EC2-Bench</u>†: **"Empowering Edge Agents: A Systematic Analysis of Edge-Cloud Collaboration in LLM Agent Execution"**. *Huang et al.* arXiv 2026. [[Paper](https://arxiv.org/abs/2610.17816)] [[Code](https://github.com/OpenBMB/EC2-Bench)] [[Project](https://passionate11.github.io/ec2-bench-project-page/)]
 
 #### Protocol Standardization
 

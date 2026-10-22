@@ -35,12 +35,14 @@ part comes from bringing up a dual Arc A770 server on Debian 13 in 2026.
 - **Staged verification** — hard gates between layers (`lspci` →
   `nvidia-smi` or i915/xe + render nodes + GuC → GPU-in-Docker → service
   health); the skill never proceeds past a failing gate. `scripts/check.sh`
-  detects the vendor and runs the gates automatically.
+  detects the vendor and runs the gates automatically, then fails any running
+  vLLM, Infinity or OpenWebUI container that still reports to its vendor.
 - **Inference presets (optional)** — the mandatory deliverable is the verified
   Docker + GPU base; serving stacks go on top only when asked for. Ready
   docker-compose files for **vLLM** (per-GPU model services), **Infinity**
   (embeddings), **OpenWebUI** (web UI) and **Ollama** (llama.cpp runs the same
-  way via its official image), with the flags that matter explained.
+  way via its official image), with the flags that matter explained and vendor
+  telemetry switched off in every one of them.
 - **GPU power limit** — on request: query the card's allowed range, cap with
   `nvidia-smi -pl` or Intel hwmon `power1_max`, verify the limit took effect,
   persist it across reboots with a systemd unit (`scripts/arc-power-cap.sh`
@@ -49,8 +51,8 @@ part comes from bringing up a dual Arc A770 server on Debian 13 in 2026.
   curves cannot be changed from Linux, and what works instead: case fans via
   `fancontrol` from the hottest GPU temperature (including an out-of-tree
   `it87` for Gigabyte boards), and ASPM L1 on the Arc chains only
-  (`scripts/arc-aspm.sh`), which takes an idle A770 from 50-56 C to about
-  40-45 C.
+  (`scripts/arc-aspm.sh`, set after the GPU driver has probed the cards), which
+  takes an idle A770 from 50-56 C to about 40-45 C.
 - **Troubleshooting** — symptom → cause → fix table for the classic failures:
   Secure Boot vs DKMS, "Driver/library version mismatch",
   `could not select device driver "nvidia"`, CUDA OOM, silent CPU fallback.
@@ -65,6 +67,7 @@ gpu-server-setup/
 ├─ SKILL.md                 # the skill: workflow, vendor routing, hard rules
 ├─ references/
 │  ├─ docker-engine.md      # Docker CE, daemon defaults, /opt/containers layout (both vendors)
+│  ├─ telemetry.md          # vendor telemetry switches of the stacks and how to check them
 │  ├─ nvidia/
 │  │  ├─ driver-cuda.md     # CUDA repo, driver choice, headers, pinning, Secure Boot
 │  │  ├─ container-toolkit.md  # nvidia-ctk, runtime, GPU passthrough

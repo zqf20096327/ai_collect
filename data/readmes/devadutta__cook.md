@@ -56,11 +56,15 @@ cook /create-pr
   - [Piped Input](#piped-input)
   - [Command Aliases](#command-aliases)
   - [Agents](#agents)
+  - [Decision Agents](#decision-agents)
   - [Output Modes](#output-modes)
   - [Raw Terminal Mode](#raw-terminal-mode)
 - [Providers & Models](#providers--models)
+  - [Sign in with ChatGPT](#sign-in-with-chatgpt)
+  - [Thinking & Fast Mode](#thinking--fast-mode)
 - [Safety](#safety)
 - [Configuration](#configuration)
+  - [Interactive Mode](#interactive-mode)
   - [Config Precedence](#config-precedence)
   - [Example Config](#example-config)
   - [System Prompt Composition](#system-prompt-composition)
@@ -161,7 +165,57 @@ cook "summarize this repo"
 cook --agent fast "what does main.ts export?"
 ```
 
-Agents are defined in your config file — see [Configuration](#configuration).
+Agents are defined in your config file — see [Configuration](#configuration). In [interactive mode](#interactive-mode), `/new-agent` creates one without changing your default, and `/delete-agent` removes one.
+
+### Decision Agents
+
+A decision agent skips the tool loop. It sends your input straight to a System 1 decision model, such as TypeSafe's Jev, and prints an answer for each question. A choice question gets the chosen option and its probability. A score question gets a score out of the top level, and a yes/no question gets the probability of yes. Decision agents run on the Vercel AI Gateway, so they need `AI_GATEWAY_API_KEY`.
+
+```json
+{
+  "agents": {
+    "decide": { "type": "decision", "provider": "gateway", "model": "typesafe-ai/jev" }
+  }
+}
+```
+
+Keep reusable question sets as JSON files in `.cook/questions/` (in the project) or `~/.cook/questions/`, and start the input with `@name` to load one. The rest of the input is what gets judged. Here is `~/.cook/questions/asset-kind.json`:
+
+```json
+{
+  "kind": {
+    "type": "choice",
+    "instructions": "What kind of asset this ticker or symbol is",
+    "criteria": {
+      "stock": "Shares of a single company",
+      "etf": "An exchange-traded fund that holds a basket of assets",
+      "index": "A market index that tracks prices and cannot be bought directly",
+      "crypto": "A cryptocurrency or token"
+    }
+  }
+}
+```
+
+```bash
+cook --agent decide @asset-kind SPY          # kind: etf (1.00)
+echo BTC | cook --agent decide @asset-kind   # the state can come from stdin
+cook --agent decide @asset-kind @risk "…"    # combine question files
+cook --agent decide --json @asset-kind AAPL  # model, every probability, and token usage
+```
+
+For a one-off question, pass a whole request instead: a JSON object with `questions` and `state`.
+
+```bash
+cook --agent decide '{"state": "SPY", "questions": {"is_fund": {"type": "boolean", "instructions": "This ticker is a fund"}}}'
+```
+
+The state can be text, JSON, or an image, if the model takes images. Pipe in a PNG, JPEG, GIF, or WebP, or pass AI SDK `file` parts:
+
+```bash
+cook --agent decide @damage < photo.jpg
+```
+
+Questions follow the AI SDK's decision format: `choice` (with `criteria` naming the options), `score` (with `criteria` listing the levels, lowest first), and `boolean`. Every question needs `instructions`. An agent can also carry fixed `questions` in its config; a question file or a request replaces them for that run. `/new-agent` in [interactive mode](#interactive-mode) can create a decision agent and lists the gateway's decision models.
 
 ### Output Modes
 
@@ -227,7 +281,7 @@ This uses OpenAI's ChatGPT OAuth flow and Codex Responses endpoint, so usage cou
 
 Cook stores the access and refresh tokens in `~/.cook/auth.json` with owner-only permissions (`0600`) and refreshes access automatically. Treat that file like a password. `cook logout` removes it.
 
-To pin subscription-backed OpenAI models, configure `openai-codex` agents:
+`/model openai-codex` lists the models your ChatGPT plan offers. To pin subscription-backed OpenAI models, configure `openai-codex` agents:
 
 ```json
 {
@@ -241,6 +295,34 @@ To pin subscription-backed OpenAI models, configure `openai-codex` agents:
       "provider": "openai-codex",
       "model": "gpt-5.6-luna"
     }
+  }
+}
+```
+
+### Thinking & Fast Mode
+
+Set `thinking` on an agent, or pass `--thinking <level>`, to choose how much the model reasons: `off`, `minimal`, `low`, `medium`, `high`, `xhigh`, or `max`. Leave it unset to use the provider's default. cook turns the level into each provider's own setting, capped at the highest level the provider has:
+
+| Provider | What cook sends |
+|----------|-----------------|
+| OpenAI API, ChatGPT login | Reasoning effort (`off` → `none`) |
+| Anthropic | Adaptive thinking at that effort (`minimal` → `low`); `off` disables thinking |
+| Google | Gemini 3: thinking level (`off` → `minimal`, `xhigh` and `max` → `high`). Gemini 2.x: a thinking token budget |
+| Groq | Reasoning effort (`off` → `none`, `minimal` → `low`, `xhigh` and `max` → `high`) |
+| Vercel AI Gateway | The setting above, for `openai/`, `anthropic/`, and `google/` models |
+
+Models accept different ranges, so a level a model doesn't support comes back as the provider's error. For example, Claude Opus 5.5 can't turn thinking off, and ChatGPT models start at `low`.
+
+Set `fast: true`, or pass `--fast`, for faster responses at a higher price. Other providers ignore it.
+
+- **OpenAI API and ChatGPT login:** the priority service tier ("Fast" in Codex). On ChatGPT it uses more of your plan.
+- **Anthropic:** fast mode, available for Claude Opus 5.5, Opus 5, and Opus 4.8 through the Anthropic API at premium pricing.
+
+```json
+{
+  "agents": {
+    "deep": { "provider": "anthropic", "model": "claude-opus-5-5", "thinking": "max" },
+    "quick": { "provider": "openai-codex", "model": "gpt-6-luna", "thinking": "low", "fast": true }
   }
 }
 ```
@@ -279,6 +361,31 @@ cook --allow-outside-cwd "update ~/.bashrc"
 ---
 
 ## Configuration
+
+### Interactive Mode
+
+Run `cook` with no arguments to open an interactive session. Type `/` to see commands:
+
+| Command | What it does |
+|---------|--------------|
+| `/model [provider] [id]` | Pick a provider, then a model from its live list (with context size and pricing for the Vercel AI Gateway). `/model groq` jumps straight to Groq's models |
+| `/thinking [level]` | Set the thinking level for the current agent, with what it means for that provider |
+| `/fast [on\|off]` | Toggle fast mode for the current agent (OpenAI and Anthropic) |
+| `/agent [name]` | Switch the default agent, or create a new one from the current agent |
+| `/new-agent [name]` | Create an agent: pick its type (tools or [decision](#decision-agents)), model, thinking level, and fast mode. Your default stays the same |
+| `/delete-agent [name]` | Remove an agent from the config file you're saving to, after you confirm. The default agent can't be deleted until you pick another |
+| `/settings` | Model, thinking, fast mode, API keys, steps, timeouts, confirmations, prompt files, and the other config options |
+| `/keys` | Just the provider API keys (input is masked) |
+| `/scope [global\|local]` | Choose whether changes go to `~/.cook/config.json` (default) or `./.cook/config.json` |
+| `/config` | Show the merged config, with keys masked |
+| `/login`, `/logout` | Sign in or out with ChatGPT |
+| `/clear` | Start a new conversation |
+
+Anything that isn't a command runs as a normal cook task, and so do your [command aliases](#command-aliases). When the task finishes you're back at the prompt, and your next message continues the conversation: cook sees the earlier tasks, its answers, and the tools it ran. Changes you make with `/model` or `/agent` between messages apply to the next one. `ctrl+c` stops a running task without leaving cook, and the task is left out of the conversation. On an empty prompt, `ctrl+c` or `/quit` exits. [Decision agents](#decision-agents) answer each message on its own.
+
+The interactive session loads only when `cook` runs without arguments, so `cook <instruction>` starts as fast as before.
+
+Model lists for OpenAI, Anthropic, Google, and Groq need that provider's API key, and the ChatGPT list needs `/login`. Without them, type any model id.
 
 ### Config Precedence
 
@@ -344,12 +451,16 @@ cook config init --global --local --force
 
 | Option | Default | Description |
 |--------|---------|-------------|
+| `type` | `agent` | `decision` sends the input straight to a decision model — see [Decision Agents](#decision-agents) |
 | `provider` | auto | One of: `gateway`, `openai`, `openai-codex`, `anthropic`, `google`, `groq` |
 | `model` | auto | Model identifier for the provider |
+| `thinking` | provider default | `off`, `minimal`, `low`, `medium`, `high`, `xhigh`, or `max` — see [Thinking & Fast Mode](#thinking--fast-mode) |
+| `fast` | `false` | Fast mode for OpenAI and Anthropic agents |
 | `raw_bash_output` | `false` | Enable raw terminal output mode |
 | `prompt_files.system` | — | Custom system prompt file |
 | `prompt_files.system_append` | — | Additional prompt files appended in order |
 | `ignore_agents_md` | `false` | Skip `AGENTS.md` and `CLAUDE.md` context files |
+| `questions` | — | Decision agents only: default questions, used when the input doesn't name a [question file](#decision-agents) |
 
 ### System Prompt Composition
 
@@ -391,6 +502,7 @@ This creates a `session.html` file you can open in any browser.
 ## CLI Reference
 
 ```
+cook                                   # interactive session
 cook [options] <instruction>
 cook config init [--global] [--local] [--force]
 cook login [openai] [--device-code] [--no-browser]
@@ -411,6 +523,9 @@ cook /alias-name
 | `--allow-outside-cwd` | Allow file access outside working directory |
 | `--dry-run` | Preview mutations without executing |
 | `--raw` | Enable raw bash terminal output |
+| `--thinking <level>` | Override the agent's thinking level |
+| `--fast` | Use fast mode for this run |
+| `--json` | Decision agents: print the model, answers with probabilities, and usage as JSON |
 | `-V`, `--version` | Print version and exit |
 
 ---
@@ -458,7 +573,7 @@ bun run build:compile    # → dist/cook (standalone binary)
 bun install              # install dependencies
 bun test                 # run tests
 bun run typecheck        # type-check without emitting
-bun run build            # bundle → dist/cook.js (needs Bun runtime)
+bun run build            # bundle → dist/cook.js, dist/tui/app.js, dist/decision.js (needs Bun runtime)
 bun run build:compile    # compile → dist/cook (standalone binary)
 bun run release          # build all platform binaries → dist/release/
 ```

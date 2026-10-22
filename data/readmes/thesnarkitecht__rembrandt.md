@@ -71,8 +71,10 @@ checks it against the published SHA-256 sums, and restarts the server.
 - **Ask in words**: type “warmer and a bit brighter”, “down exposure by ten points”, “shadows +25”
   or “paste the edits from the previous photo” (Ctrl/⌘ K), or say it: press the microphone in the
   side panel and say “bring lens blur down”. A small Rembrandt in dots thinks it over,
-  then makes each change while you watch the sliders move. It runs on your device: a vocabulary, not
-  a language model.
+  then makes each change while you watch the sliders move. It understands everyday phrasing too
+  (“the sky is too white”, “it looks too yellow”, “start over”) through
+  [Needle 3](https://huggingface.co/Cactus-Compute/needle3), a 36 MB language model that runs on your
+  device; exact requests like “shadows +25” never need it, and with AI off the words still work.
 - **Edit the photo itself**: drag up or down on any part of the picture to lighten or darken that
   tone, left or right to change that colour; the sliders follow.
 - **AI looks**: Enhance, Relight, Sky (deepen it, or replace it with a clear, cloudy, golden-hour,
@@ -86,13 +88,19 @@ checks it against the published SHA-256 sums, and restarts the server.
 - **Background work that stays out of the way**: AI Denoise, Super Resolution and merges run in small
   GPU slices that pause while you edit, or when you're away, or overnight in a night window you set
   (Settings › Performance). The queue survives restarts.
-- **Merge**: HDR from brackets, panoramas and focus stacks, each to a RAW-like DNG.
+- **Merge**: HDR from brackets, panoramas and focus stacks, each to a RAW-like DNG. **HDR from one
+  photo** makes darker and brighter exposures of a single shot and blends each where it looks best,
+  so shadows open and highlights hold without a tripod or brackets.
 - **RAW** from 1,000+ cameras, developed on the GPU: tone, colour, curves, grading, dehaze, detail.
   Default colour measured against Camera Raw on test charts, and the tone sliders (Highlights,
   Shadows, Whites, Blacks) are broad, overlapping zones fitted to how Lightroom's move each tone, so
   adjustments blend into the light around them, without halos, banding or hue shifts. A 24 MP RAW is
   ready to edit in a second or two (half size first, full size in the background), and going back to
-  one you just had open is instant.
+  one you just had open is instant. Two profiles of our own: **Rembrandt Standard** (neutral, matched
+  to Camera Raw) and **Rembrandt Color** (the default: a little more contrast, richer reds and
+  yellows, calmer greens), or **Match my camera** for your camera's own look.
+- **Your workspace**: hide the tools and panel sections you don't use (Settings › Workspace), and
+  turn AI off altogether: its tools disappear and no model is downloaded or run.
 - **Made for old computers too**: Rembrandt times your graphics card once and picks a working size it
   can keep up with, works at half size while a slider moves, and needs only WebGL 2 (OpenGL 3.3-class
   graphics).
@@ -153,7 +161,7 @@ checks it against the published SHA-256 sums, and restarts the server.
 | **What it is** | A RAW developer and photo library, in the same family as Lightroom Classic: develop, adjust, mask, retouch, organise and export your own photos. Every edit is non-destructive. |
 | **What it isn't** | A layer-based pixel editor like Photoshop or GIMP (no layers, text or painting), or a generative AI tool: it doesn't make images from a prompt or invent new objects. Its AI effects (fog, sun rays, lens blur, background replacement with a picture you choose) are built from each photo's own depth and subject. |
 | **The AI** | Selects people, faces, subjects, objects and depth for masks, removes blemishes, denoises, refocuses, upscales and picks your best shots. It all runs on your computer. |
-| **Typing or talking** | You can ask for edits in words ("warmer", "lens blur down") or by voice. It understands editing terms, not general requests. |
+| **Typing or talking** | You can ask for edits in words ("warmer", "the sky is too white", "lens blur down") or by voice. It understands photo edits, not general requests. |
 | **Your photos** | Stay on your computer. Originals are never changed; edits are saved as standard XMP that Lightroom and darktable read. |
 | **Cost** | Free, no account. There is no Rembrandt Cloud or sync service yet. |
 | **Runs on** | macOS, Windows and Linux, or self-hosted and used in any browser. |

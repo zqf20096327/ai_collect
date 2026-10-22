@@ -61,10 +61,34 @@ uv run compile.py --help
 
 The implementation is contained in [`compile.py`](compile.py).
 
-## Paper
+## Citation
 
-[Compile by Training: Turning Natural-Language Specifications into Local Neural Functions](https://arxiv.org/abs/2609.04199), Yuntian Deng, Pengyu Nie, and Stuart Shieber.
+If you use this compiler in research, please cite Compile by Training for the training-based compiler and Program-as-Weights for the underlying fuzzy-function programming model.
 
-## License
+**[Compile by Training: Turning Natural-Language Specifications into Local Neural Functions](https://arxiv.org/abs/2609.04199)**
 
-MIT
+```bibtex
+@misc{paw_2609_04199,
+  title = {{Compile by Training: Turning Natural-Language Specifications into Local Neural Functions}},
+  author = {Deng, Yuntian and Nie, Pengyu and Shieber, Stuart},
+  year = {2026},
+  note = {arXiv preprint},
+  eprint = {2609.04199},
+  archivePrefix = {arXiv},
+  url = {https://arxiv.org/abs/2609.04199}
+}
+```
+
+**[Program-as-Weights: A Programming Paradigm for Fuzzy Functions](https://openreview.net/forum?id=ppCD0mb6ty)**
+
+NeurIPS 2026 · [Preprint](https://arxiv.org/abs/2607.02512)
+
+```bibtex
+@inproceedings{zhang2026programasweights,
+  title = {{Program-as-Weights: A Programming Paradigm for Fuzzy Functions}},
+  author = {Zhang, Wentao and Hotsko, Liliana and Kim, Woojeong and Nie, Pengyu and Shieber, Stuart and Deng, Yuntian},
+  booktitle = {The Fortieth Annual Conference on Neural Information Processing Systems},
+  year = {2026},
+  url = {https://openreview.net/forum?id=ppCD0mb6ty}
+}
+```

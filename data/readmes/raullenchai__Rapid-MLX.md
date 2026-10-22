@@ -4,6 +4,11 @@
 
 <h1 align="center">Rapid-MLX</h1>
 
+<p align="center"><strong>Run Codex, Claude Code, OpenCode, Pi, Hermes, Crush or Goose with a local model on Mac:</strong><br><code>rapid-mlx launch &lt;agent&gt;</code></p>
+
+Install on a stock Apple Silicon Mac with `curl -fsSL https://rapidmlx.com/install.sh | bash`, restart your terminal (or run `export PATH="$HOME/.local/bin:$PATH"`), then install your chosen coding agent and run, for example, `rapid-mlx launch codex`. Run the same command tomorrow; `rapid-mlx launch codex --remove` removes Rapid's private profile without changing your existing Codex settings. [One-command guides for each agent](https://rapidmlx.com/docs/agents/). A first reply can take longer while a model downloads, loads, or processes the agent's opening prompt.
+
+
 <p align="center">
   <strong>Rapid-MLX is an open-source (Apache 2.0) OpenAI- and Anthropic-compatible LLM inference server for Apple Silicon, built on MLX, focused on reliable tool calling for coding agents.</strong>
   <br>
@@ -90,6 +95,8 @@ Use Rapid-MLX as a local backend for agents, apps, or your own code. If a
 client accepts an OpenAI- or Anthropic-compatible endpoint, it can usually use
 Rapid-MLX without an adapter.
 
+For Claude Desktop, [set up its in-app Gateway](https://rapidmlx.com/docs/claude-desktop/).
+
 <p>
   <a href="https://github.com/openai/codex"><img src="https://img.shields.io/badge/Codex_CLI-F3F4F6?style=flat&amp;logo=openai&amp;logoColor=111827" alt="Codex CLI"></a>
   <a href="https://www.anthropic.com/claude-code"><img src="https://img.shields.io/badge/Claude_Code-F3F4F6?style=flat&amp;logo=anthropic&amp;logoColor=111827" alt="Claude Code"></a>
@@ -174,7 +181,7 @@ or read the [protocol and privacy details](https://github.com/raullenchai/Rapid-
 rapid-mlx chat
 ```
 
-Defaults to `qwen3.5-4b-4bit`. First run downloads the weights (~3 GB) with a progress bar and drops you into a REPL. Type `/help` for slash commands, `/exit` to quit.
+A complete cached chat model that fits this Mac starts without another download. Otherwise Rapid-MLX selects a starter model and downloads its weights before opening the REPL. Type `/help` for slash commands, `/exit` to quit.
 
 **2. Or serve it for use from other apps:**
 
@@ -205,13 +212,13 @@ print(client.chat.completions.create(
 rapid-mlx launch claude-code
 ```
 
-This saves a private Claude Code profile, starts a local server if needed, and launches Claude Code without editing `~/.claude/settings.json`. The same command works after a restart. Swap in `codex`, `pi`, or another supported coding agent. For the original config-writing behavior, use `--legacy-config`; `cline` and `continue-dev` keep their existing setup flow.
+This saves a private Claude Code profile, starts a local server if needed, and launches Claude Code without editing `~/.claude/settings.json`. The same command works after a restart. Swap in `codex`, `opencode`, `pi`, `hermes`, `crush`, or `goose`. For the original config-writing behavior, use `--legacy-config`; `cline` and `continue-dev` keep their existing setup flow.
 
 [Agent setup details](docs/guides/ai-clients.md#coding-agents).
 
 > **Cursor:** Cursor currently routes BYOK requests through its own servers, so its servers cannot reach a Rapid-MLX endpoint on `localhost`. Rapid-MLX therefore does not generate a Cursor localhost config. If you intentionally expose the server through a public HTTPS tunnel, set `RAPID_MLX_API_KEY=your-secret` for both `rapid-mlx serve ...` and `rapid-mlx launch cursor --server-url https://your-public-host`. This is no longer a fully local connection; never expose an unauthenticated server. Rapid-MLX rejects explicit local/private addresses but cannot verify reachability from Cursor's network, whose DNS view may differ from your Mac.
 
-> **Vision / image / video models?** They work out of the box with `pip install rapid-mlx` (and Rapid-MLX Desktop), which include the vision, image-generation and video-generation runtimes (image and video generation need Python 3.11+). Audio (TTS, STT, voice cloning) and embeddings ship as opt-in extras. → [Optional extras](https://rapidmlx.com/docs/extras.html)
+> **Vision / image / video models?** They work out of the box with the official installer above (and Rapid-MLX Desktop), which include the vision, image-generation and video-generation runtimes (image and video generation need Python 3.11+). Audio (TTS, STT, voice cloning) and embeddings ship as opt-in extras. → [Optional extras](https://rapidmlx.com/docs/extras.html)
 
 > **Not into the terminal?** [**Rapid-MLX Desktop**](https://rapidmlx.com/desktop) bundles the same engine inside a one-click Mac app.
 
@@ -360,11 +367,13 @@ compute per second of footage, not real time.
 
 ## Audio: speech, transcription, voice cloning
 
+The dependency commands below use the official `install.sh` environment. For Homebrew or another install method, follow [optional extras](https://rapidmlx.com/docs/extras.html).
+
 44 audio aliases behind the OpenAI-compatible `/v1/audio/*` endpoints — any
 OpenAI SDK works unchanged.
 
 ```bash
-pip install 'rapid-mlx[audio]'
+~/.rapid-mlx/bin/python -m pip install 'rapid-mlx[audio]'
 
 # Text to speech
 rapid-mlx serve kokoro
@@ -409,8 +418,10 @@ Cloudflare Clef adds joint-schema decisions from text, images, and video frames,
 on native MLX or with its official head on Torch/Metal. Decider-2b and
 OpenJev (27B, non-commercial weights) run on native MLX with no extra install.
 
+For the official `install.sh` environment, use the commands below. Other install methods follow [optional extras](https://rapidmlx.com/docs/extras.html).
+
 ```bash
-pip install 'rapid-mlx[system-one]'
+~/.rapid-mlx/bin/python -m pip install 'rapid-mlx[system-one]'
 rapid-mlx system-one convaiinnovations/laya
 # Decider needs no extra:
 rapid-mlx system-one decider-2b
@@ -419,7 +430,7 @@ rapid-mlx system-one openjev
 # Cloudflare Clef on native MLX (4-bit weights), no extra install:
 rapid-mlx system-one clef-flash-mlx
 # Or with the official Torch head (bf16 weights):
-pip install 'rapid-mlx[clef]'
+~/.rapid-mlx/bin/python -m pip install 'rapid-mlx[clef]'
 rapid-mlx system-one clef-flash
 ```
 
@@ -447,7 +458,7 @@ PyTorch or vLLM while serving.
 | | | |
 |---|---|---|
 | **Chat in the terminal** | `rapid-mlx chat qwen3.5-9b-4bit` | Streaming REPL, `/help` for slash commands, `--think` / `--no-think` to control CoT. |
-| **OpenAI server for your apps** | `rapid-mlx serve qwen3.5-9b-4bit` | Point Aider, LibreChat, Open WebUI, or LangChain at `http://localhost:8000/v1`. |
+| **OpenAI server for your apps** | `rapid-mlx serve qwen3.5-9b-4bit` | OpenAI-compatible API at `http://localhost:8000/v1` — point Aider, LibreChat, LangChain, or any OpenAI SDK client at it. |
 | **Agent backends** | `rapid-mlx serve qwen3.6-35b-8bit &`<br>`rapid-mlx agents codex --setup && codex` | 14 clients, including Cline, Goose, and Crush, auto-configure via `agents <name> --setup` once the server is up (12 in the family matrix, 5 Tier-1) — see [Agent support](#agent-support). |
 | **Benchmark your Mac** | `rapid-mlx benchmark run qwen3.5-9b-4bit` | Reproducible model-first benchmark; saves privately, with a separate consent-gated `benchmark share RUN_ID`. |
 
@@ -584,6 +595,14 @@ snapshot revisions preserved in the full record.
 
 The installer and desktop app use the same RAM-tier recommendation catalog. Run `rapid-mlx recipe` to see its Smart and Fast picks for this Mac (`--max-ram 32` simulates another tier; `--json` is machine-readable). If you want to shop the full catalog: `rapid-mlx models` lists every alias, `rapid-mlx info <alias>` shows the per-alias profile (parser, MoE / hybrid flags, KV codec eligibility, speculative-decoding gates).
 
+Current Smart picks by unified memory:
+
+- **8 GB and up:** `lfm2.5-2.6b-4bit` — `rapid-mlx serve lfm2.5-2.6b-4bit`
+- **16 GB and up:** `qwen3.5-4b-4bit` — `rapid-mlx serve qwen3.5-4b-4bit`
+- **18 GB and up:** `qwen3.5-9b-4bit` — `rapid-mlx serve qwen3.5-9b-4bit`
+- **24 GB and up:** `bonsai-27b-2bit` — `rapid-mlx serve bonsai-27b-2bit`
+- **32 GB and up:** `qwen3.8-27b-4bit` — `rapid-mlx serve qwen3.8-27b-4bit`
+
 This table is the same one the desktop app's picker reads, and the installer
 prints the matching line for your Mac — a CI test parses both files and fails
 if they drift apart. Measured rows use the standard ~8K prompt peak of the
@@ -675,11 +694,11 @@ Don't have uv yet? `curl -LsSf https://astral.sh/uv/install.sh | sh`. Upgrade wi
 python3.12 -m pip install rapid-mlx
 ```
 
-If `pip install rapid-mlx` says "no matching distribution", your Python is too old. `brew install python@3.12` first. Upgrade with `pip install -U rapid-mlx`.
+If `python3.12` is missing, use the official installer above or install Python 3.12 with Homebrew first. Upgrade a Python 3.12 installation with `python3.12 -m pip install -U rapid-mlx`.
 
 Image-input / VLM models (Qwen-VL, Gemma 4, true multimodal) need no extra step — the vision runtime ships with the base install. See [Optional extras](https://rapidmlx.com/docs/extras.html) for audio and embeddings.
 
-For the complete feature set — chat, embeddings, audio, and System One on top of the base install — install the `[all]` extra: `pip install 'rapid-mlx[all]'`. Audio alone is `pip install 'rapid-mlx[audio]'`; see [Optional extras](https://rapidmlx.com/docs/extras.html).
+For the complete feature set — chat, embeddings, audio, and System One on top of the base install — install the `[all]` extra: `python3.12 -m pip install 'rapid-mlx[all]'`. Audio alone is `python3.12 -m pip install 'rapid-mlx[audio]'`; see [Optional extras](https://rapidmlx.com/docs/extras.html).
 
 </details>
 

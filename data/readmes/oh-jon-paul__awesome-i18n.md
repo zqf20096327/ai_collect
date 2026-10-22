@@ -11,7 +11,7 @@
 - do not add libraries that required paid service to work
 - do not add the same link into multiple categories
 - do not add links with query search like example.com/?q=php
-- keep your entry as short as possible (<150 chars)
+- keep your entry as short as possible (**less than 120 chars**)
 - entry must be short enough to not wrap
 - do not end your entry with a period
 - try to keep it lowercase
@@ -24,7 +24,6 @@
 ## 📦 Libraries
 
 ### JavaScript / TypeScript
-
 
 - [MessageFormat2](https://messageformat.unicode.org) - full featured localization system, from Unicode
 - [date-formatter-i18n](https://github.com/asmaelabid/date-formatter-i18n) - lightweight library for formatting dates with i18n support, relative time
@@ -51,9 +50,11 @@
 - [schummar-translate](https://github.com/schummar/schummar-translate) - TypeScript powered translation library for React and Node.js
 - [messageformat](https://github.com/messageformat/messageformat) - ICU MessageFormat for JavaScript, plural and gender capable messages
 - [rosetta](https://github.com/lukeed/rosetta) - A general purpose internationalization library in ~300 bytes (including dependencies)
-- [ilingo](https://ilingo.tada5hi.net) - framework-agnostic i18n core with pluggable stores, BCP-47 fallback and Intl-native plurals & formatters
+- [ilingo](https://ilingo.tada5hi.net) - framework-agnostic i18n core with pluggable stores and intl-native plurals/formatters
+- [@i18n-micro/runtime](https://github.com/s00d/nuxt-i18n-micro/tree/main/packages/runtime) - framework-agnostic createI18n for browser and workers, no fs
 - [bazi-terms](https://github.com/favkit/bazi-kit) - bilingual (zh/en) bazi & four-pillars terminology database with a translate() helper
 - [BidiLens](https://github.com/CodeinScrubs/BidiLens) - per-block rtl/ltr direction and inline isolation without rewriting source text
+- [comvi](https://github.com/comvi-io/comvi-js) - type-checked keys, plurals, html tags in translations
 
 - (archived) [Intl.js](https://github.com/andyearnshaw/Intl.js) - implementation of the ECMAScript Internationalization API
 - (archived) [facebook/fbt](https://github.com/facebook/fbt) - i18n framework for JS/TS designed to be powerful, flexible, simple and intuitive
@@ -79,6 +80,7 @@
 - [react-translate-component](https://github.com/martinandert/react-translate-component) - component that utilizes the Counterpart/Interpolate components
 - [react-littera](https://github.com/DRFR0ST/react-littera) - lightweight library for i18n using hooks
 - [talkr](https://github.com/DoneDeal0/Talkr) - light i18n provider for React (< 1kb), Typescript, smart autocompletion, plural rules
+- [babelize elements](https://github.com/babelize/babelize-elements) - copy-paste React + Tailwind components for language switchers and locale pickers
 
 
 #### Other JS/TS frameworks 
@@ -121,6 +123,7 @@
 - [Python-i18n](https://pypi.org/project/python-i18n/) - internationalization package
 - [deep-translator](https://github.com/nidhaloff/deep-translator) - library to translate between different languages in a simple way using multiple translators
 - [LangLint](https://github.com/HzaCode/Langlint) - high-performance Rust-powered automated translation tool for code comments and docstrings
+- [Languages](https://github.com/jnehring/languages-of-the-world) - ISO-639 codes, endonyms, scripts and official languages per country for 7,900+ languages
 
 ### Jekyll
 
@@ -136,13 +139,19 @@
 - (JS) [anywhen](https://github.com/kirilinsky/anywhen) - relative and absolute fuzzy date formatting for any language, zero deps, native Intl
 - (JS) [FormatJS CLI](https://formatjs.io/docs/tooling/cli/) - extract messages from project with FormatJS library
 - (JS) [ux-ui-audit](https://github.com/uxbyissa/ux-ui-audit) - browser probes that audit arabic plural agreement, numeral mixing and bidi hazards
+- (JS) [fitlocale](https://melliforge.github.io/fitlocale/) - playwright checks: truncated text, raw keys, pseudo-locales, rtl bugs
+- (JS) [arabic-core](https://github.com/getkirnu/arabic-core) - grammatical arabic number-to-words, currency amounts in words, hijri dates, zero deps
+- (JS) [zhtw-guard](https://github.com/zzoraemon043/zhtw-guard) - flags simplified characters, mainland terms and mojibake in traditional chinese (taiwan) text
+- (JS) [Hreflang Cluster Auditor](https://github.com/edilec/hreflang-cluster-auditor) - verifies hreflang links
+- (Rust) [chislo](https://github.com/rekurt/chislo) - russian number-to-words with gender, currency and date formatting
+- (Go) [go-propisyu](https://github.com/rekurt/go-propisyu) - russian number-to-words and currency formatting with grammatical declension
+- (JSON) [Hosted for world data](https://simplelocalize.io/data/) - hosted and free list of languages, countries, flags, and timezones in json
 
 
 ## Apps and extensions for translation management
 
 - [POEditor](https://poeditor.com) - tool for managing PO language files
 - [SimpleLocalize.io](https://simplelocalize.io) - dead simple app for managing translations and markdowns
-- [App Store Localizer](https://asolocalization.com) - free OSS tool to localize App Store / Play Store listing metadata and screenshots
 - [Dire](https://github.com/juliandreas/dire-cli) - cli that processes missing translations in JSON files using AI
 - [IntelliJ plugin for extracting i18n keys](https://github.com/nyavro/i18nPlugin) - IntelliJ IDEA plugin for extracing i18n keys
 - [Crow Translate](https://github.com/crow-translate/crow-translate) - lightweight desktop translator
@@ -152,7 +161,7 @@
 - [ai-i18n](https://github.com/i18n-actions/ai-i18n) - GitHub Action that translates i18n files (XLIFF, JSON) using LLM providers
 - [i18n Checker](https://github.com/theluckystrike/bln-i18n-checker) - GitHub Action that detects hardcoded user-facing strings in JS/TS
 - [japan-ux-copy](https://github.com/create-aquarius/japan-ux-copy) - local-first CLI and GitHub Action for Japanese locale checks
-- [Shipi18n](https://github.com/Shipi18n/shipi18n) - ci linter for locale files: key/placeholder/plural checks + optional llm mistranslation pass; json, po, xliff, arb, xcstrings
+- [Locale Guard](https://github.com/Mohamed-Almarag/locale-guard) - github action that comments on PRs with missing keys or issues
 - [gettext](http://www.gnu.org/software/gettext) - tool for adding native language support to applications
 - [i18n-ally](https://github.com/antfu/i18n-ally) - VS Code extension for i18n
 - [i18n-inline-editor](https://github.com/thezuck/i18n-inline-editor-vite-demo) - inline translation editor for Vite
@@ -165,19 +174,25 @@
 - [Fink](https://inlang.com/m/tdozzpar/app-inlang-editor) - git-based editor in the browser that connects to your repo
 - [i18n-convert](https://github.com/i18n-agent/i18n-convert) - cli that losslessly converts between i18n file formats
 - [XLIFF Word Counter](https://nextgenailearning.com/tools/xliff-word-counter) - counts translatable words in XLIFF, minus locked units and repeats
-- [enum-plus](https://github.com/shijistar/enum-plus) - localized labels, badges and dropdown options straight from your enums, with React/Vue/Next plugins
+- [enum-plus](https://github.com/shijistar/enum-plus) - localized labels, badges and dropdowns straight from your enums React + Vue
 
 
 ## Text translation services
 - [DeepL](https://deepl.com) - text translation service
 - [Google Translate](https://translate.google.com) - text translation service
 - [Microsoft Translator](https://www.microsoft.com/en-GB/translator/) - text translation service
-- [Gengo](http://gengo.com) - translation made by real people, but you can make an order using API
+- [Gengo](https://gengo.com) - translation made by real people, but you can make an order using API
+- [TheSubAI](https://thesubai.com) - freemium movie subtitles translation service (*.src, *.vtt, *.ass, *.saa, *.sbv, *.ttml)
 
 
 ## Other
 
 - [fakenumber.org](https://fakenumber.org) - fake phone number generator
+- [Spoof Me](https://spoof-me.com/) - chrome/firefox extension to view sites as a user with another language, locale and timezone
+- [Oh My Android](https://github.com/ateymoori/oh-my-android) - switch android emulator and phone locale, rtl and pseudo-locales in one click on macos
+- [AppStore Localizer](https://simplelocalize.io/tools/app-store-localizer/) - free tool to translate AppStore listings
+- [Google Play Store Localizer](https://simplelocalize.io/tools/google-play-localizer/) - free tool to translate Google Play listings
+- [Store Localizer](https://asolocalization.com) - paid tool to localize mobile store listings
 
 
 ## 📚 Resources

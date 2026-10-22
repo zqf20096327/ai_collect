@@ -21,6 +21,9 @@
   <a href="https://github.com/Kreuzhofen/hk-npu-studio/stargazers">
     <img src="https://img.shields.io/github/stars/Kreuzhofen/hk-npu-studio?style=flat-square&color=gold" alt="Stars">
   </a>
+  <a href="https://github.com/sponsors/Kreuzhofen">
+    <img src="https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ea4aaa?style=flat-square&logo=githubsponsors&logoColor=white" alt="Sponsor HK NPU STUDIO">
+  </a>
   <br>
   <a href="https://learn.microsoft.com/windows/arm/">
     <img src="https://img.shields.io/badge/Platform-Windows_11_ARM64-0078D4?style=flat-square&logo=windows11&logoColor=white" alt="Platform">
@@ -61,6 +64,7 @@
 - [Testing](#-testing)
 - [Diagnostics](#-diagnostics)
 - [FAQ](#-faq)
+- [💖 Support HK NPU STUDIO](#-support-hk-npu-studio)
 - [Support](#-support)
 - [License](#-license)
 - [Trademark Notice](#trademark-notice)
@@ -662,6 +666,16 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.
 Please do not disclose security vulnerabilities publicly. Follow [SECURITY.md](SECURITY.md) for responsible reporting.
 
 ---
+
+## 💖 Support HK NPU STUDIO
+
+HK NPU STUDIO is developed independently, and building reliable local AI pipelines for Snapdragon® hardware is resource-intensive. It requires substantial engineering time, compatible hardware, model integration, compatibility testing, maintenance, and documentation.
+
+**Financial support helps secure the project's continued development.** Sponsorship helps cover development and testing costs, fix issues, improve reliability, and keep the project moving forward over the long term. Every contribution helps make sustained independent development more achievable.
+
+If the project is useful to you, please consider supporting it through GitHub Sponsors.
+
+[![Sponsor HK NPU STUDIO](https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ea4aaa?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/Kreuzhofen)
 
 ## 💬 Support
 

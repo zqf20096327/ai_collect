@@ -47,7 +47,7 @@ Download the ZIP, extract it, then open PowerShell in the extracted
 `Pilang-v<version>` folder:
 
 ```powershell
-.\bin\pilang.exe --version
+.\bin\pilang.exe ver
 .\bin\pilang.exe samples\hello.pi
 ```
 
@@ -56,7 +56,7 @@ Download the ZIP, extract it, then open PowerShell in the extracted
 Download and extract the `.tar.gz` archive, then run from its `Pilang-v<version>` folder:
 
 ```sh
-./bin/pilang --version
+./bin/pilang ver
 ./bin/pilang samples/hello.pi
 ```
 
@@ -124,37 +124,15 @@ targets:
     output: "my-app.exe"
 ```
 
-## Math Plotting
+## Visual Computing
 
-Turn arrays, functions, and simulations into 2D charts or interactive 3D
-surface, mesh, and wireframe plots. The plotting modules are designed for quick
-visual feedback while you experiment.
-
-<p align="center">
-    <a href="./samples/surface.pi">
-        <img src="resources/math_plot.png" alt="Pilang mathematical plot" height="400">
-    </a>
-</p>
-
-## Image Processing
-
-Load, inspect, and transform images with built-in operations such as grayscale
-conversion and edge detection, then display the result in the same script.
+Turn data, functions, and simulations into 2D charts or interactive 3D plots;
+process images with built-in filters; and explore scenes, meshes, and OBJ
+models without leaving Pilang.
 
 <p align="center">
- <a href="./samples/imshow.pi">
-    <img src="resources/img_process.png" alt="Pilang image processing" height="400">
-  </a>
-</p>
-
-## 3D Graphics
-
-Explore software-projected 3D scenes, meshes, and OBJ model rendering without
-leaving Pilang.
-
-<p align="center">
-  <a href="./samples/graphics/tunnel_3d.pi">
-    <img src="resources/3d_models.png" alt="Pilang 3D graphics in progress" height="400">
+  <a href="./samples/">
+    <img src="resources/features.png" alt="Pilang charts, image processing, and 3D graphics" height="400">
   </a>
 </p>
 
@@ -167,7 +145,7 @@ Windows executables. [for ready to run games](https://github.com/rolandbrake/pil
 
 <p align="center">
   <a href="https://github.com/rolandbrake/pilang-games" target="_blank">
-    <img src="resources/_games.png" alt="Pilang games in progress" height="600">
+    <img src="resources/_games.png" alt="Pilang games in progress" height="500">
   </a>
 </p>
 
@@ -392,7 +370,6 @@ Developer helpers:
 
 ```sh
 ./bin/pilang dis test.pi
-./bin/pilang dis -o bytecode.txt test.pi
 ./bin/pilang fmt test.pi
 ./bin/pilang min test.pi
 ```

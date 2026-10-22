@@ -509,6 +509,9 @@ Local validation: `node --test test/package-release.test.mjs` (after
 - Reads the manifests and lockfiles from Git; never changes pins, installs
   service dependencies, or runs Cargo. Only the checker's locked public
   dependencies are installed, with lifecycle scripts disabled.
+- Supports single-document pnpm v9 lockfiles and pnpm 12 multi-document
+  lockfiles (toolchain graph followed by the application graph). Both graphs
+  are audited; malformed or unrecognized document layouts fail.
 - **npm:** all direct/transitive `@photon-hq/*` registry packages must use exact
   stable, published, non-deprecated versions. Dev, optional and peer
   dependencies are included. A workspace package's `peerDependencies` may
@@ -1284,6 +1287,8 @@ Uses AI to read the project's `README.md` alongside the PR's changed files and d
 **Path:** `.github/blocks/generate-release-info/action.yaml`
 
 Generates a semantic version number and AI-written release notes by analyzing commit history since the last release. Combines `determine-publish-version` with release note generation in one step.
+
+Both AI steps use Codex's `read-only` safety strategy and receive the supplied API key explicitly. They return text without editing the checkout or changing the runner's sudo access. The notes step uses a separate temporary Codex home so it does not reuse version detection's proxy configuration.
 
 #### Inputs
 

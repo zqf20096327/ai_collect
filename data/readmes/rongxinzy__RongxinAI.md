@@ -39,13 +39,13 @@
 
 ## Get started
 
-1. **Download** the installer from the [official website](https://www.rongxzyai.com/#download): Windows x64 (lite, CPU and CUDA editions), macOS (Apple Silicon and Intel) and Linux x64 (`.deb` and AppImage).
+1. **Download** from the [official website](https://www.rongxzyai.com/#download) or [GitHub Releases](https://github.com/rongxinzy/RongxinAI/releases): **Windows** x64 lite, CPU, and CUDA installers (`.exe`); **macOS** Apple Silicon and Intel CPU builds (`.dmg` and `.zip`); **Linux** x64 CPU and CUDA packages (`.deb` and AppImage).
 2. **Open the app** and chat with the built-in free model — no API key required.
 3. **Pick a project folder**, describe your task, then follow progress and approve actions as it works.
 
 Developers iterating on the UI can start with `bun run web:preview` after installation (Node 24.x, Bun 1.4.0). See [Developer quick start](#developer-quick-start) for setup and desktop development commands.
 
-The free model requires a network connection; availability and usage limits are shown in the app. You can also [run from source](#developer-quick-start) on other platforms.
+The free model requires a network connection; availability and usage limits are shown in the app. For architectures or editions without a published installer, [run from source](#developer-quick-start).
 
 ### Use local models
 
@@ -65,6 +65,7 @@ Tool execution follows the permission mode chosen in the task composer. **Allow 
 | --- | :-: | :-: | :-: | :-: | :-: |
 | Assign tasks from WeChat / Feishu / DingTalk | ✅ (also WeCom, QQ, email) | ❌ (Slack, Gmail connectors) | ❌ (Slack connector) | ❌ | ❌ |
 | Open-source desktop app | ✅ AGPL-3.0 | ❌ closed source | ❌ closed source | ✅ AGPL-3.0 | ❌ Apache-2.0 terminal app; GUI is a separate project |
+| Installers for Windows, macOS, and Linux | ✅ | ❌ | ✅ | ✅ | ❌ |
 | Built-in GGUF model market (no Ollama needed) | ✅ llama.cpp runtime | ❌ cloud only | ❌ cloud only | ❌ via Ollama / LM Studio | ❌ via Ollama / LM Studio |
 | Free model + local model + fully open source | ✅ all three | ❌ free tier only (300 credits/day) | ❌ free tier only | ✅ CherryAI free (Qwen3-8B) + Ollama/LM Studio | ❌ no built-in free model |
 | Agent: files + commands + browser | ✅ | ✅ | ✅ paid plans only (Cowork) | ? | ✅ (browser via QA skill) |
@@ -191,7 +192,7 @@ Preview the renderer in a plain browser without Electron:
 bun run web:preview
 ```
 
-This starts a Vite dev server on port 5176 with a typed mock of the Electron preload API. Use it as the fast path for day-to-day renderer UI changes: hot reload, browser developer tools, responsive layouts, themes, and interactions. `bun run web:preview:check` starts that server, walks the main screens in light and dark (sessions, a streamed reply, every settings panel, skills, MCP, automation, local inference, IM, and dialogs), fails on any console error, and writes screenshots to `.github/pr-assets/browser-preview/`. The mock covers the full preload contract: unimplemented calls return a typed default and warn once.
+This starts a Vite dev server on port 5176 with a typed mock of the Electron preload API. Use it as the fast path for day-to-day renderer UI changes: hot reload, browser developer tools, responsive layouts, themes, and interactions. `bun run web:preview:check` runs Playwright against that server in light and dark (sessions, a streamed reply, every settings panel, skills, MCP, automation, local inference, IM, and dialogs) and fails on console errors. `bun run preview:doc-screenshots` writes 1280×800 documentation PNGs to `docs/theme-previews/` (main interface, appearance, platform models, local inference). The mock covers the full preload contract: unimplemented calls return a typed default and warn once.
 
 The mock is only active in browser mode (`import.meta.env.DEV` + no `window.electron`). Production builds and Electron runs use the real preload bridge. Verify affected IPC, system, native-window, and end-to-end behavior with `bun run electron:dev`; browser preview does not exercise those integrations. See [CONTRIBUTING.md](CONTRIBUTING.md) for the UI workflow.
 

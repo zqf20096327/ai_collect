@@ -4,6 +4,13 @@ A Go CLI for evaluating agent workflows, skills, and custom agents — author re
 
 📖 **[Getting Started / Docs](https://microsoft.github.io/waza/)**
 
+The docs header includes **Ask Waza** for cited documentation Q&A and pasted
+YAML/error troubleshooting. The panel currently explains that public chat is
+unavailable; sending remains source-hard-disabled. Development
+fixtures are explicitly simulated. A separately launched, authenticated
+loopback-only private preview can test the operator backend without putting its
+Function key in the browser. See [scope, privacy, and integration handoff](site/src/content/docs/guides/docs-assistant.mdx).
+
 **Choose your path:** [Concepts and learning order](site/src/content/docs/concepts.mdx)
 → [offline harness Quick Start](site/src/content/docs/quick-start.mdx)
 → [authenticated workflow evaluation](site/src/content/docs/getting-started.mdx)
@@ -2052,18 +2059,4 @@ jobs:
 |-------------|---------|
 | **Go Version** | 1.26 or higher |
 | **Executor** | Use `mock` executor for CI (no API keys needed) |
-| **Copilot Auth** | Required for the default `copilot-sdk` route; set `GITHUB_TOKEN` in CI. Custom providers can be configured with `COPILOT_BASE_URL` or `COPILOT_PROVIDER_BASE_URL` instead. |
-| **Exit Codes** | 0=success, 1=test failure, 2=config error |
-
-#### Expected Skill Structure
-
-```
-your-skill/
-├── SKILL.md              # Skill definition
-└── eval/                 # Evaluation suite
-    ├── eval.yaml         # Benchmark spec
-    ├── tasks/            # Task definitions
-    │   └── *.yaml
-    └── fixtures/         # Context files
-        ├── .github/
-        │ 
+| **Copilot Auth** | Required for the default `copilot-sdk` route; set `GITHUB_T

@@ -49,8 +49,6 @@
 npx aeorank-cli@0.1.1 scan https://your-site.com
 ```
 
-Need it delivered? [Mindtrades](https://mindtrades.com) offers an AI Visibility Audit (separate paid service). AEOrank stays MIT/free: [aeorank.dev](https://aeorank.dev).
-
 <p align="center">
   <img src=".github/demo.gif" alt="AEOrank CLI scanning stripe.com — 56/100 (C) with per-dimension breakdown and top recommendations" width="100%" />
 </p>
@@ -217,7 +215,7 @@ The working score path is the CLI above — no account. The hosted dashboard at 
 
 See [DEMO.md](./DEMO.md) for today's auto-generated scan.
 
-Last updated: October 19, 2026
+Last updated: October 22, 2026
 
 ## Star History
 
@@ -259,5 +257,5 @@ If AEOrank saved you a closed monitoring subscription, the best thank-you is a s
 
 ## License
 
-[MIT](LICENSE) — built by [Vin Patel](https://github.com/vinpatel), sponsored by [Linx Agency](https://linx.agency) & [Mindtrades](https://mindtrades.com).
+[MIT](LICENSE) — built by [Vin Patel](https://github.com/vinpatel).
 

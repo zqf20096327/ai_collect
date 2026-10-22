@@ -117,6 +117,13 @@ This workflow leverages Claude Code to automate and streamline software developm
   `/retrofit-scenarios @path/to/file.feature "feature description"`, or \
   `/retrofit-scenarios @path/to/file.feature @path/to/source1 @path/to/source2/*`
 
+- **Prepare a pull request for review** \
+  Prompt in **auto mode**: \
+  `/prepare-implementation-review` to prepare the current branch's PR, or \
+  `/prepare-implementation-review 123 @path/to/story.md` to prepare a PR by ID, with an optional story markdown for requirement traceability, or \
+  `/prepare-implementation-review <package PR URL> <app PR URL>` to prepare one story split across repositories together. \
+  Helps reviewers by posting comments and evidence on the pull requests.
+
 ### Extension
 
 Extend the workflow with your own domain knowledge by adding custom skills. \
@@ -128,6 +135,7 @@ Example:
 - `.claude/skills/implement-story-markdown/SKILL.md`
 - `.claude/skills/plan-bdd-scenarios/SKILL.md`
 - `.claude/skills/execute-bdd-scenario/SKILL.md`
+- `.claude/skills/prepare-implementation-review-comments/SKILL.md`
 
 ### Installation
 

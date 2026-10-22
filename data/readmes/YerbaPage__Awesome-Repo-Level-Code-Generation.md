@@ -22,10 +22,12 @@
 - [Star History](#star-history)
 
 ## 💥 Repo-Level Issue Resolution
+- Evaluating Code Slop in Long-Horizon Coding Agents [2026-COLM-Workshop] [[📄 paper](https://openreview.net/forum?id=VLgFkLRUfV)]
 - SkillForge: Self-Distilling Agents for Project-Specific Issue Resolution [2026-08-arXiv] [[📄 paper](https://arxiv.org/abs/2608.18933)] [[🔗 repo](https://github.com/cslsolow/SkillForge)]
 - LLM Agents Can See Code Repositories [2026-ASE] [[📄 paper](https://arxiv.org/abs/2606.14061)] [[🔗 repo](https://github.com/cslsolow/SeeRepo)]
 - Function-Aware Fill-in-the-Middle as Mid-Training for Coding Agent Foundation Models [2026-07-arXiv] [[📄 paper](https://arxiv.org/abs/2607.12463)] [[🔗 repo](https://github.com/TIGER-AI-Lab/FIM-Midtraining)]
 - Know Before Fix: QA-Driven Repository Knowledge Acquisition for Software Issue Resolution [2026-07-arXiv] [[📄 paper](https://arxiv.org/abs/2607.11111)] [[🔗 repo](https://github.com/LionLin2003/ACQUIRE)]
+- Steer, Don't Solve: Training Small Critic Models for Large Code Agents [2026-06-arXiv] [[📄 paper](https://arxiv.org/abs/2606.21811)] [[🔗 repo](https://github.com/shubhamrgandhi/critic-training)]
 - DeNovoSWE: Scaling Long-Horizon Environments for Generating Entire Repositories from Scratch [2026-06-arXiv] [[📄 paper](https://arxiv.org/abs/2606.10728)] [[🔗 repo](https://github.com/AweAI-Team/DeNovoSWE)]
 - SWE-AGILE: A Software Agent Framework for Efficiently Managing Dynamic Reasoning Context [2026-ACL-Findings] [[📄 paper](https://arxiv.org/abs/2604.11716)]
 - GALA: Multimodal Graph Alignment for Bug Localization in Automated Program Repair [2026-04-arXiv] [[📄 paper](https://arxiv.org/abs/2604.08089)]
@@ -69,6 +71,7 @@
 - Coding Agents with Multimodal Browsing are Generalist Problem Solvers [2025-06-arXiv] [[📄 paper](https://arxiv.org/pdf/2506.03011)] [[🔗 repo](https://github.com/adityasoni9998/OpenHands-Versa)]
 - CoRet: Improved Retriever for Code Editing [2025-05-arXiv] [[📄 paper](https://arxiv.org/abs/2505.24715)] 
 - Darwin Godel Machine: Open-Ended Evolution of Self-Improving Agents [2025-05-arXiv] [[📄 paper](https://arxiv.org/abs/2505.22954)] [[🔗 repo](https://github.com/jennyzzt/dgm)]
+- An Empirical Study on Strong-Weak Model Collaboration for Repo-level Code Generation [2025-EMNLP] [[📄 paper](https://arxiv.org/abs/2505.20182)] [[🔗 repo](https://github.com/shubhamrgandhi/codegen-strong-weak-collab)]
 - SWE-Dev: Evaluating and Training Autonomous Feature-Driven Software Development [2025-05-arXiv] [[📄 paper](https://arxiv.org/abs/2505.16975)] [[🔗 repo](https://github.com/justLittleWhite/SWE-Dev)]
 - Putting It All into Context: Simplifying Agents with LCLMs [2025-05-arXiv] [[📄 paper](https://arxiv.org/abs/2505.08120)]
 - SkyRL-v0: Train Real-World Long-Horizon Agents via Reinforcement Learning [2025-05-arXiv] [[📄 blog](https://novasky-ai.notion.site/skyrl-v0)] [[🔗 repo](https://github.com/novasky-ai/skyrl-v0)]
@@ -188,6 +191,7 @@
 
 
 - Rethinking the Value of Agent-Generated Tests for LLM-Based Software Engineering Agents [2026-02-arXiv] [[📄 paper](https://arxiv.org/abs/2602.07900)]
+- SWE-Tester: Training Open-Source LLMs for Issue Reproduction in Real-World Repositories [2026-01-arXiv] [[📄 paper](https://arxiv.org/abs/2601.13713)] [[🔗 repo](https://github.com/adityasoni9998/SWE-Tester)]
 - Execution-Feedback Driven Test Generation from SWE Issues [2025-08-arXiv] [[📄 paper](https://www.arxiv.org/abs/2508.06365)]
 - AssertFlip: Reproducing Bugs via Inversion of LLM-Generated Passing Tests [2025-07-arXiv] [[📄 paper](https://arxiv.org/abs/2507.17542)]
 - Mystique: Automated Vulnerability Patch Porting with Semantic and Syntactic-Enhanced LLM  [2025-06-arXiv] [[📄 paper](https://dl.acm.org/doi/10.1145/3715718)]
@@ -381,6 +385,8 @@
 - **RepoEval**: Repository-Level Code Completion Through Iterative Retrieval and Generation [2023-EMNLP] [[📄 paper](https://aclanthology.org/2023.emnlp-main.151/)] [[🔗 repo](https://github.com/microsoft/CodeT/tree/main/RepoCoder)]
 - **CrossCodeEval**: A Diverse and Multilingual Benchmark for Cross-File Code Completion [2023-NeurIPS] [[📄 paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/920f2dced7d32ab2ba2f1970bc306af6-Paper-Datasets_and_Benchmarks.pdf)] [[🔗 site](https://crosscodeeval.github.io/)]
 - **Skeleton-Guided-Translation**: A Benchmarking Framework for Code Repository Translation with Fine-Grained Quality Evaluation [2025-01-arxiv] [[📄 paper](https://arxiv.org/abs/2501.16050)] [[🔗 repo](https://github.com/microsoft/TransRepo)]
+- **LoopArena**: Benchmarking Models as Runtime Controllers for Loop Engineering [2026-08-arXiv] [[📄 HF paper](https://huggingface.co/papers/2608.28281)] [[📄 ModelScope](https://www.modelscope.cn/papers/2608.28281)] [[🔗 repo](https://github.com/AMAP-ML/LoopArena)]
+
 ## Star History
 
 [![Star History Chart](https://star-history.dera.page/svg?repos=YerbaPage/Awesome-Repo-Level-Code-Generation&type=Date)](https://star-history.dera.page/#YerbaPage/Awesome-Repo-Level-Code-Generation&Date)

@@ -223,6 +223,10 @@ Image segmentation is a crucial step in image analysis and computer vision, with
 
 Note that deforestation detection may be treated as a segmentation task or a change detection task
 
+- [Auditing GeoFM Evaluation](https://github.com/thesantoshpant/auditing-geofm-evaluation) -> reproducible audit of label proxies, supervised baselines, and frozen versus fine-tuned Prithvi and TerraMind decoders for single-date Sentinel-2 field-extent segmentation across six countries. Paper: Auditing GeoFM Evaluation for Field-Extent Segmentation: Label Proxies, Baselines, and When Frozen Features Match Fine-tuning
+
+- [field-boundary-zero-shot](https://github.com/PratyushTripathy/field-boundary-zero-shot) -> zero-shot Segment Anything inference, post-processing, and evaluation for delineating sub-0.1 ha smallholder fields from 0.8 m pansharpened SkySat imagery in Bihar. Paper: Zero-shot inference strategies for smallholder (<0.1 ha) agriculture field delineation with the Segment Anything foundation model
+
 - [DetecTree](https://github.com/martibosch/detectree) -> Tree detection from aerial imagery in Python, a LightGBM classifier of tree/non-tree pixels from aerial imagery
 
 - [kenya-crop-mask](https://github.com/nasaharvest/kenya-crop-mask) -> Annual and in-season crop mapping in Kenya - LSTM classifier to classify pixels as containing crop or not, and a multi-spectral forecaster that provides a 12 month time series given a partial input. Dataset downloaded from GEE and pytorch lightning used for training
@@ -359,6 +363,8 @@ Note that deforestation detection may be treated as a segmentation task or a cha
 
 - [Cropland PAtteRNS](https://github.com/JoeMetc/CroplandPAtteRNS) -> code for paper: Cropland PAtteRNS: Parallel Dimensional Attention Networks and Attention to Dataset Disparity for Crop Segmentation in Satellite Imagery Time Series Data
 
+- [1mCHM forest conservation](https://github.com/mldv/1mCHM-forest-conservation) -> U-Net workflow for predicting pixel-level boreal-forest conservation value from metre-resolution canopy-height models. Paper: Meter-resolution canopy height data alone can be used for predicting the conservation value of Boreal forests
+
 ### Segmentation - Water, coastlines, rivers & floods
 
 - [sat-water](https://github.com/busayojee/sat-water) -> Semantic segmentation of water bodies in satellite imagery, producing pixel-wise water masks from remote sensing images using a U-Net–style deep learning pipeline (data preparation, training, inference, and evaluation).
@@ -423,6 +429,8 @@ Note that deforestation detection may be treated as a segmentation task or a cha
 
 - [utae-water-segmentation](https://github.com/khlaifiabilel/utae-water-segmentation) -> UTAE-PAPS model for water/land segmentation using Sentinel-1 and Sentinel-2 data with IBM Granite flood detection dataset
 
+- [Flood-Mapping](https://github.com/taylor-millin-reade/Flood-Mapping) -> self-contained Sentinel-1, Sentinel-2, and dual-encoder fusion pipelines for training and comparing flood-segmentation models on STURM-Fusion-24.
+
 ### Segmentation - Fire, smoke & burn areas
 
 - [SatelliteVu-AWS-Disaster-Response-Hackathon](https://github.com/SatelliteVu/SatelliteVu-AWS-Disaster-Response-Hackathon) -> fire spread prediction using classical ML & deep learning
@@ -457,6 +465,8 @@ Note that deforestation detection may be treated as a segmentation task or a cha
 (Prithvi-v2, TerraMind, DINOv3) using LoRA, to detect wildfire burned areas from bi-temporal (pre-fire / post-fire) Sentinel-2 imagery.
 
 - [TMB-S3](https://github.com/links-ads/tmb-s3) -> code for paper: Temporal Modelling for Burn Scars on Sentinel-3
+
+- [FireScope](https://github.com/insait-institute/FireScope) -> wildfire-risk raster prediction using a chain-of-thought oracle, with training, evaluation, and ablation code. Paper: FireScope: Wildfire Risk Raster Prediction with a Chain-of-Thought Oracle
 
 ### Segmentation - Landslides
 
@@ -507,6 +517,8 @@ Note that deforestation detection may be treated as a segmentation task or a cha
 - [Project-Eucalyptus](https://github.com/Orbio-Earth/Project-Eucalyptus) -> pipelines for satellite-based methane detection. Includes trained segmentation models, a synthetic plume generator, and benchmarking tools for Sentinel-2, Landsat 8/9, and EMIT.
 
 - [plume-hunter: Towards Methane Detection On Board Satellites ](https://github.com/spaceml-org/plume-hunter)
+
+- [SB-SHOT](https://github.com/ayushprd/gfm-methane-domain-shift) -> spatially aware test-time adaptation for geographic domain shift in satellite methane-plume segmentation, with seven comparison methods.
 
 ### Segmentation - Other environmental
 
@@ -891,6 +903,8 @@ Extracting roads is challenging due to the occlusions caused by other objects an
 
 ### Segmentation - Miscellaneous
 
+- [SegEarth-R2](https://github.com/earth-insights/SegEarth-R2) -> code and models for comprehensive language-guided segmentation of remote-sensing imagery. Paper: SegEarth-R2: Towards Comprehensive Language-guided Segmentation for Remote Sensing Images
+
 - [seg-eval](https://github.com/itracasa/seg-eval) -> SegEval is a Python library that provides tools for evaluating semantic segmentation models. Generate evaluation regions and to analyze segmentation results within them.
 
 - [awesome-satellite-images-segmentation](https://github.com/mrgloom/awesome-semantic-segmentation#satellite-images-segmentation)
@@ -1182,32 +1196,4 @@ Orinted bounding boxes (OBB) are polygons representing rotated rectangles. For d
 
 - [Rotation-EfficientDet-D0](https://github.com/HsLOL/Rotation-EfficientDet-D0) -> A PyTorch Implementation Rotation Detector based EfficientDet Detector, applied to custom rotation vehicle datasets
 
-- [DODet](https://github.com/yanqingyao1994/DODet) -> Dual alignment for oriented object detection, uses DOTA dataset
-
-- [GF-CSL](https://github.com/WangJian981002/GF-CSL) -> Gaussian Focal Loss: Learning Distribution Polarized Angle Prediction for Rotated Object Detection in Aerial Images
-
-- [Polar-Encodings](https://github.com/flyingshan/Learning-Polar-Encodings-For-Arbitrary-Oriented-Ship-Detection-In-SAR-Images) -> Learning Polar Encodings for Arbitrary-Oriented Ship Detection in SAR Images
-
-- [R-CenterNet](https://github.com/ZeroE04/R-CenterNet) -> detector for rotated-object based on CenterNet
-
-- [piou](https://github.com/clobotics/piou) -> Orientated Object Detection; IoU Loss, applied to DOTA dataset
-
-- [DAFNe](https://github.com/steven-lang/DAFNe) -> A One-Stage Anchor-Free Approach for Oriented Object Detection
-
-- [AProNet](https://github.com/geovsion/AProNet) -> Detecting objects with precise orientation from aerial images. Applied to datasets DOTA and HRSC2016
-
-- [UCAS-AOD-benchmark](https://github.com/ming71/UCAS-AOD-benchmark) -> A benchmark of UCAS-AOD dataset
-
-- [RotateObjectDetection](https://github.com/XinzeLee/RotateObjectDetection) -> based on Ultralytics/yolov5, with adjustments to enable rotate prediction boxes. Also see [PolygonObjectDetection](https://github.com/XinzeLee/PolygonObjectDetection)
-
-- [AD-Toolbox](https://github.com/liuyanyi/AD-Toolbox) -> Aerial Detection Toolbox based on MMDetection and MMRotate, with support for more datasets
-
-- [GGHL](https://github.com/Shank2358/GGHL) -> A General Gaussian Heatmap Label Assignment for Arbitrary-Oriented Object Detection
-
-- [NPMMR-Det](https://github.com/Shank2358/NPMMR-Det) -> A Novel Nonlocal-Aware Pyramid and Multiscale Multitask Refinement Detector for Object Detection in Remote Sensing Images
-
-- [AOPG](https://github.com/jbwang1997/AOPG) -> Anchor-Free Oriented Proposal Generator for Object Detection
-
-- [SE2-Det](https://github.com/Virusxxxxxxx/SE2-Det) -> Semantic-Edge-Supervised Single-Stage Detector for Oriented Object Detection in Remote Sensing Imagery
-
-- [OrientedRepPoints](https://github.com/LiWento
+- [DODet](https://github.com/yanqingyao19

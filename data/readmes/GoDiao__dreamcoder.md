@@ -12,6 +12,8 @@ English | [简体中文](./README_zh.md)
 
 *Manage Claude Code workflows on your desktop and continue sessions from your phone on the same LAN.*
 
+[**⬇️ Download for macOS (Apple Silicon)**](https://github.com/GoDiao/dreamcoder/releases/latest) · [**⬇️ Download for Windows (x64)**](https://github.com/GoDiao/dreamcoder/releases/latest)
+
 [![Tauri 2](https://img.shields.io/badge/Tauri-2-blue)](https://v2.tauri.app/)
 [![React 18](https://img.shields.io/badge/React-18-61DAFB)](https://react.dev/)
 [![Bun](https://img.shields.io/badge/Bun-✓-fbf0df)](https://bun.sh/)
@@ -24,6 +26,8 @@ English | [简体中文](./README_zh.md)
 Also hosted on AtomGit: [atomgit.com/GoDiao/DreamCoder](https://atomgit.com/GoDiao/DreamCoder) (mirror; please open issues and pull requests on [GitHub](https://github.com/GoDiao/dreamcoder))
 
 </div>
+
+> 🎉 **500 stars!** Thank you to everyone who starred, tried, reported issues, and contributed. DreamCoder is only five months old, and it has grown step by step because of you. Next, we'll keep pace with the best practices of frontier coding agents and try everything that can make the experience better, along with brand-new features. Our goal will always be to **reach for the stars**.
 
 > 🌱 **Contributions welcome!** Browse [good first issues](https://github.com/GoDiao/dreamcoder/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) and [help wanted](https://github.com/GoDiao/dreamcoder/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22), and read the [contributing guide](docs/CONTRIBUTING_en.md) before starting.
 
@@ -117,6 +121,7 @@ To learn how a coding agent works under the hood, read the [Coding Agent Impleme
 > The maintainer now develops primarily on **macOS (Apple Silicon)**, running from source (`bun run tauri dev`); it ships as a `.dmg` from v0.5.0.
 > **Windows x64** was the main platform before and has been tested extensively, but the maintainer no longer develops on it day to day, so feedback on how new changes behave on Windows is especially welcome.
 > **Linux** has `#[cfg(target_os = "linux")]` branches in the codebase, but it is not part of the maintainer's day-to-day workflow, so Linux support is still best-effort.
+> For the validated Ubuntu browser workflow, exFAT installation workaround, and local Ollama results, see the [Linux validation report](docs/LINUX_BROWSER_VALIDATION.md). For startup, shutdown, and termination by PID, see the [browser usage guide](docs/WEB_USAGE.md).
 > If you're running DreamCoder on Windows or Linux, issues and PRs are especially valuable;
 > for the current Linux memory investigation, see [#25](https://github.com/GoDiao/dreamcoder/issues/25).
 > Check [GitHub Releases](https://github.com/GoDiao/dreamcoder/releases) for the actual assets available with each release.
@@ -183,6 +188,10 @@ bun run tauri dev
 On first launch, DreamCoder detects your system locale: Chinese systems (`zh-*`) get the Chinese UI, everything else defaults to English. You can switch languages anytime in **Settings**, and your manual choice is persisted and always takes precedence afterwards.
 
 ---
+
+## 💝 Sponsorship
+
+DreamCoder is maintained by one person in their spare time. Companies and individuals are welcome to sponsor its development. See the [sponsorship policy](docs/SPONSORS_en.md) for tiers and rules, and email diaoshengjia@gmail.com to get in touch.
 
 ## 🤝 Contributing
 

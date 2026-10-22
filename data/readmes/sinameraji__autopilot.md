@@ -38,7 +38,7 @@ On OpenRouter you also get:
 
 - **Up to 1M+ context** (model-dependent) — Read entire modules, large configs, and full stack traces without the model losing track.
 - **Image understanding** — Drop image paths (PNG, JPG, WebP, GIF, BMP up to 5 MB) into any prompt. Great for UI reviews, diagrams, and screenshots.
-- **Plan / Edit / Auto modes** — `plan` is a whitelist-only research mode: only read-only tools (read, glob, grep, web search, GitHub read-only, browser fetch) are allowed. Writes, edits, mutating bash, MCP tools, and LSP renames are all blocked. `edit` (default) prompts per mutating call. `auto` approves everything for trusted tasks.
+- **Plan / Edit / Auto modes** — `plan` is a whitelist-only research mode: only read-only tools (read, glob, grep, web search, GitHub read-only, browser fetch) are allowed. Writes, edits, mutating bash, MCP tools, and LSP renames are all blocked. `edit` (default) prompts per mutating call. `auto` approves everything for trusted tasks. In `plan` and `edit`, reading a credentials file (`~/.ssh`, `~/.aws`, Autopilot's own config with your provider keys, `.env`, `/proc/*/environ`) also asks first, so a prompt injection cannot quietly read a key and send it out with `web_fetch`.
 - **Subagents** — By default, the coordinator assesses substantial tasks for independent research and may delegate without special phrasing. Worker calls still go through permission checks and need a configured backend. See the [subagents guide](docs/subagents.md) for examples, controls, limits, and setup.
 - **Long-running unattended runs** — The headless server can launch detached jobs, sleep between check-ins, and resume from saved checkpoints. Overall runtime, token, cost, and action budgets are optional; explicit budget exhaustion pauses for input. See the [long-running runs guide](docs/long-running-unattended-runs.md).
 - **Windows support** — OS-aware shell auto-detects `cmd.exe` / PowerShell on Windows, `bash` on Unix. The `bash` tool works out of the box on all platforms.
@@ -694,6 +694,28 @@ new hooks there, while enabling or disabling an existing hook edits the
 file it lives in. Legacy files are never moved or dropped; if your hooks
 are only in a legacy file, autopilot shows a one-time notice naming the
 new path. `/hooks path` prints all four.
+
+### Project trust
+
+A repository can ship hooks (`.autopilot/settings.json`,
+`.kimiflare/settings.json`) and language servers (`.kimiflare/lsp.json`),
+and both run commands on your machine. Autopilot does not load a
+project's copies until you have trusted them, so cloning a repository and
+starting Autopilot in it runs nothing the repository chose. When a project
+has untrusted settings, Autopilot says so at startup.
+
+- `/trust` (or `autopilot trust` in the project directory) lists every
+  command the files would run. `/trust yes` (or answering `y`) trusts
+  exactly that content.
+- Trust is recorded per file as a SHA-256 of its content in
+  `~/.config/autopilot/trusted-project-files.json`. Any later change,
+  such as a `git pull` or a branch switch, needs review again.
+- Hooks you add with `/hooks`, the wizard or the dashboard, and LSP
+  settings saved by `/lsp config`, stay trusted: they are your own edits.
+- For CI and other headless runs in repositories you control, set
+  `AUTOPILOT_TRUST_PROJECT=1` to trust project files for that process.
+
+Global settings (`~/.config/...`) are always loaded.
 
 ### Matchers
 

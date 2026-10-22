@@ -105,8 +105,11 @@ n2n-nexus install codex     # ~/.codex/hooks.json (or $CODEX_HOME) + codex mcp a
 
 - Codex runs new hooks only after you trust them: open Codex and run `/hooks` once.
 - Pass `--endpoint <url>` to both commands when the daemon is not at `http://127.0.0.1:5688`.
+- The hooks and the MCP server command use an absolute Node path, because GUI clients started from the Dock (such as Claude Desktop) do not read your shell's `PATH`. By default `install` writes the `node` found on `PATH` when it is the same file as the Node running `install` (for example `/usr/local/bin/node`, `/opt/homebrew/bin/node`, `~/.local/bin/node` or a version manager's stable entry point), and otherwise the real path of the running Node. `install` prints the path it wrote as `Node: <path>`.
+- Pass `--node <path>` to choose the Node path yourself. It must exist, be executable and satisfy the `engines` range in package.json (`^22.14.0 || >=23.6.0`); otherwise `install` exits with code 1 and writes nothing.
+- After upgrading Node: if `install` warned that the Node path contains a version directory (Homebrew `Cellar`, nvm, fnm, Volta, asdf, `node-v<version>`), run `n2n-nexus install <claude|codex>` again after each upgrade, or pass `--node` with a stable path. `n2n-nexus doctor [claude|codex]` checks that the Node path and the entry script in the installed hook and MCP commands still exist and run, and exits with code 1 when they do not.
 - `n2n-nexus uninstall <claude|codex>` removes the hooks and the MCP server that `install` added and leaves the rest of the configuration alone.
-- Supported on Linux, WSL and macOS. Other MCP clients can use every tool except direct messages.
+- Supported on Linux, WSL and macOS; Codex hooks also support Windows PowerShell. Other MCP clients can use every tool except direct messages.
 
 Each conversation then appears in `peers`. A new direct message is announced to the recipient automatically: when the user sends a prompt, after each tool call, and once before the turn ends. The recipient reads the text with `read`. With `listen` on, a conversation that finished its turn keeps waiting for up to about 10 minutes and continues when a message arrives; while it waits, input you type is queued until you press Esc.
 
@@ -118,6 +121,9 @@ Each conversation then appears in `peers`. A new direct message is announced to 
 | WSL IDE to Windows daemon | `http://host.docker.internal:5688` |
 | Windows IDE to WSL daemon | `http://<WSL-IP>:5688` |
 | Remote machine | `http://<Server-IP>:5688` |
+| Find a daemon on the LAN | `discover` |
+
+With `discover`, the adapter and the hooks broadcast a query on UDP `NEXUS_DISCOVERY_PORT` and use the first daemon that answers; the result is cached in `~/.n2n-nexus/discovered-endpoint` and looked up again when that daemon cannot be reached. A daemon answers only when it is bound to a non-loopback address (`--host 0.0.0.0`), so allow UDP and TCP 5688 through its firewall for the trusted network. When none answers, the client uses `http://127.0.0.1:5688` (starting a local daemon as usual) and looks again after a minute; it never becomes reachable from the LAN itself.
 
 ## 🛠️ Toolset
 
@@ -191,8 +197,12 @@ n2n-nexus daemon [--port 5688] [--root ~/.n2n-nexus] [--host 127.0.0.1]
 NEXUS_ENDPOINT=http://127.0.0.1:5688 n2n-nexus mcp
 
 # Install / remove the hooks and MCP server for Claude Code or Codex
-n2n-nexus install <claude|codex> [--endpoint <url>]
+# --node <path>: the Node executable to write into the client configuration
+n2n-nexus install <claude|codex> [--endpoint <url>] [--node <path>]
 n2n-nexus uninstall <claude|codex>
+
+# Check that the installed hook and MCP commands still run (exit 1 when not)
+n2n-nexus doctor [claude|codex]
 
 # Hook entry point (written into the client configuration by install)
 n2n-nexus hook <claude|codex> [--endpoint <url>]
@@ -202,10 +212,11 @@ n2n-nexus hook <claude|codex> [--endpoint <url>]
 
 | Variable | Description | Default |
 | --- | --- | --- |
-| `NEXUS_ENDPOINT` | Daemon URL for the MCP adapter and the hooks | `http://127.0.0.1:5688` |
+| `NEXUS_ENDPOINT` | Daemon URL for the MCP adapter and the hooks, or `discover` to find one on the LAN | `http://127.0.0.1:5688` |
 | `NEXUS_ROOT` | Storage root for daemon | `~/.n2n-nexus` |
 | `NEXUS_HOST` | Daemon bind host | `127.0.0.1` |
 | `NEXUS_DAEMON_PORT` | Daemon port (overridden by `--port`) | `5688` |
+| `NEXUS_DISCOVERY_PORT` | UDP port of LAN discovery, for the daemon and for clients using `discover` | `5688` |
 | `NEXUS_RATE_LIMIT` | Tool calls per second per instance; each client address gets 5x. `0` disables rate limiting | `20` |
 | `NEXUS_RATE_BURST` | Calls an instance may make at once before the per-second limit applies (minimum 1) | `60` |
 | `NEXUS_ALLOWED_HOSTS` | Extra DNS names accepted in the `Host` header (IP literals, `localhost`, `host.docker.internal` are always accepted) | empty |

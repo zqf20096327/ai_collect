@@ -1,0 +1,165 @@
+# Agora Workbench
+<p align="left">
+  <img src="logo.png" alt="Agora Workbench logo" width="250">
+</p>
+
+
+![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
+[![MIT License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+A workbench for wrapping your tooling with MCP
+
+<h2><a href="https://microsoft.github.io/agora-workbench">Documentation</a></h2>
+
+> [!IMPORTANT]
+> **Research software and support**
+>
+> Agora Workbench is research software and is not an officially supported Microsoft product. It is provided
+> as-is and may change without notice. No support, service-level commitments, or compatibility guarantees are
+> provided. Issues and contributions are welcome, but responses, fixes, and continued maintenance are not
+> guaranteed.
+
+## Overview
+
+Agora Workbench is a toolkit for building MCP (Model Context Protocol) servers that provide sandboxed Python execution with domain-specific packages. It is agent-framework agnostic — any MCP-compatible client can take advantage of the servers created by Agora Workbench.
+
+Use Agora Workbench to:
+
+- **Wrap domain-specific Python tooling as MCP servers** — expose Python environments through isolated, session-aware execution environments that any MCP client can call
+- **Make tools discoverable** — register tools and skills in a searchable catalog so agents can find what they need by natural-language query
+- **Serve data alongside code** — attach a file catalog so agents can locate and load datasets without hardcoded paths
+- **Deploy to Azure Container Apps** — use the included Bicep templates and CLI to ship your servers with Entra ID auth and managed identity
+
+## Getting Started
+
+### Prerequisites
+
+- **Python 3.11+**
+- **Git**
+- **[uv](https://docs.astral.sh/uv/)** for dependency management
+- **Docker** (required for the bundled container examples and local Compose workflows)
+
+### Installation
+
+**With uv (recommended for development):**
+
+```bash
+git clone https://github.com/microsoft/agora-workbench.git
+cd agora-workbench
+uv sync --group dev  # install the project and dev tools
+```
+
+**With pip (for using as a library):**
+
+```bash
+pip install "agora-workbench==0.4.1"
+```
+
+The installed deployment CLI can also scaffold the standalone Activity UI:
+
+```bash
+agora-workbench-deploy init --target activity-ui
+```
+
+With uv, add the same release to your project with:
+
+```bash
+uv add "agora-workbench==0.4.1"
+```
+
+See the [changelog](https://github.com/microsoft/agora-workbench/blob/main/CHANGELOG.md) for release history and
+[release guide](https://github.com/microsoft/agora-workbench/blob/main/RELEASING.md) for the versioning policy.
+
+The base install supports local code-execution servers, connectors, and local
+catalogs with SQLite FTS5 keyword search. It does not install Azure SDKs,
+sqlite-vec, or the OpenAI client.
+
+**Optional extras:**
+
+| Extra | Capability |
+|-------|------------|
+| `azure` | Entra credentials, Azure Blob Storage, Azure AI Search, and Azure deployment runtime integrations |
+| `catalog-vector` | sqlite-vec plus the OpenAI client used by Azure OpenAI catalog embeddings |
+| `openai-agents` | OpenAI Agents SDK adapter |
+| `copilot-sdk` | GitHub Copilot SDK adapter |
+| `geo` | Geospatial example server dependencies (rasterio, etc.) |
+
+Use the command for your installation method:
+
+```bash
+# uv (inside the cloned repo)
+uv sync --extra openai-agents
+
+# pip (consuming as a library)
+pip install "agora-workbench[openai-agents]==0.4.1"
+```
+
+For the previously bundled Azure plus hybrid-catalog feature set, install both
+runtime extras:
+
+```bash
+pip install "agora-workbench[azure,catalog-vector]>=0.3.0"
+```
+
+Installing Azure dependencies does not require cloud configuration: local
+no-op auth and local sources still work without credentials or endpoints.
+Conversely, a base-only installation means the Azure SDKs are not installed at
+all; selecting an Azure or vector capability reports the required extra.
+
+The base distribution continues to include the existing execution, session,
+kernel, MCP, and connector dependencies. Importing the backend-neutral
+`agora_workbench.data_lake` contracts does not load execution or cloud modules.
+Concrete catalog, resolver, and execution integrations remain available from
+their documented public submodules; the extras above control only whether their
+cloud and vector backends are installed.
+
+### Configuration
+
+For local testing, no external credentials are required. Use the no-op auth config to skip authentication entirely:
+
+```python
+from agora_workbench.code_execution import CodeExecutionServer, ServerConfig
+from agora_workbench.code_execution.auth import create_noop_auth_config
+
+config = ServerConfig(
+    name="myserver",
+    description="My local test server",
+    type="uv",
+    dependency_file="numpy\npandas\n",
+)
+server = CodeExecutionServer(
+    server_config=config,
+    auth_config=create_noop_auth_config(),
+)
+```
+For Docker-based local deployment and Azure Container Apps, see the [deployment guide](https://microsoft.github.io/agora-workbench/guide/deploying/). For Entra ID authentication setup, see the [authentication guide](https://microsoft.github.io/agora-workbench/guide/authentication/).
+
+## Contributing
+
+This project welcomes contributions and suggestions. Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit [Contributor License Agreements](https://cla.opensource.microsoft.com).
+
+When you submit a pull request, a CLA bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
+
+**Guidelines:**
+- For changes more complex than typos, please submit an issue first to discuss the proposed changes
+- Follow the development practices outlined in the project documentation
+
+### Contact
+
+For questions or feedback, please [open an issue](https://github.com/microsoft/agora-workbench/issues).
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## Trademarks
+
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft
+trademarks or logos is subject to and must follow
+[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks/usage/general).
+Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
+Any use of third-party trademarks or logos are subject to those third-party's policies.

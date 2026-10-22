@@ -123,7 +123,7 @@ schema-dependent rules (R1, and R3's high-confidence tier). Don't have one? `tra
 spans.json --format openinference -o tools.json` bootstraps a starter contract from the trace —
 schemas discovered where the telemetry carries them, behavior fields left as placeholders to review.
 Using MCP tools? `tracelint init --from-mcp tools_list.json -o tools.json` builds the contract straight from a saved `tools/list` response: `inputSchema` becomes the argument schema, and the server's `readOnlyHint` / `idempotentHint` become `side_effecting` / `idempotent`. Those annotations are advisory, so they are applied only where the server states them — a tool with no hint is left for you to classify rather than guessed.
-Not sure why rules are suppressing on a trace? `tracelint doctor <trace>` diagnoses the gap — tool content the instrumentation didn't record vs a missing `tools.json` — and names the one fix, instead of a wall of suppressions.
+Not sure why rules are suppressing on a trace? `tracelint doctor <trace>` diagnoses the gap — tool content the instrumentation didn't record vs a missing `tools.json` — and names the one fix, instead of a wall of suppressions. It also measures the [record quality](https://github.com/AshwinUgale/tracelint/blob/main/docs/record-quality.md) of a batch of traces — results, outcomes, arguments and reasoning recorded, runs that stop on an unanswered call, subagent runs that were never exported — with `--group-by dir|model`, `--json`, and an optional `--fail-under results=90` gate. On the Terminal-Bench 2.0 leaderboard only 67% of tool calls had a recorded result and 3.5% of results said whether they succeeded.
 A multi-trace input (a JSON array, an OTLP export, or a `.jsonl` file) fans out to one report per
 run. Spans are grouped into runs by trace id, so a `.jsonl` file can hold one span per line
 (Phoenix's `to_json(..., lines=True)`, an OTel file exporter), whole runs, or export batches, and a
@@ -304,6 +304,11 @@ has short, reproducible one-pagers, each validated on a **real captured trace**:
 - **Agent harnesses (benchmark and RL runs):**
   [Harbor / ATIF](https://github.com/AshwinUgale/tracelint/blob/main/docs/integrations/atif.md) —
   one reader for every agent Harbor runs (Terminal-Bench and the datasets in its registry).
+- **Transcript scanning:** [Inspect Scout](https://github.com/AshwinUgale/tracelint/blob/main/docs/integrations/inspect-scout.md)
+  — the rules as Scout scanners (`pip install "tracelint[scout]"`, then
+  `scout scan tracelint/tracelint`), over Inspect logs and everything Scout imports (Phoenix,
+  LangSmith, Logfire, Weave, MLflow, Claude Code, Harbor), with each finding citing its message;
+  `scout scan tracelint/record_quality` checks whether each transcript is complete enough to trust.
 - **Eval suites (already running one?):** tracelint drops in as a deterministic, judge-free check —
   [DeepEval](https://github.com/AshwinUgale/tracelint/blob/main/docs/integrations/deepeval.md)
   (`TracelintMetric`, via `pip install "tracelint[deepeval]"`) or
@@ -352,7 +357,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       # ... your step that runs the agent and writes traces to ./traces ...
-      - uses: AshwinUgale/tracelint@v0.13.0
+      - uses: AshwinUgale/tracelint@v0.14.0
         with:
           traces: "traces/*.jsonl"
           format: "openinference"     # or native / openai / langfuse / langsmith / atif
@@ -386,7 +391,7 @@ gate, so an `if: always()` upload step runs even when a defect fails the job:
 ```yaml
 repos:
   - repo: https://github.com/AshwinUgale/tracelint
-    rev: v0.13.0
+    rev: v0.14.0
     hooks:
       - id: tracelint
         files: ^traces/.*\.jsonl$

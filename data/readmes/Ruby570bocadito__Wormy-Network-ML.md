@@ -1,0 +1,365 @@
+<div align="center">
+
+<img src="docs/images/banner.png" alt="Wormy — an ML-driven network propagation framework" width="680">
+
+# Wormy
+
+**An ML-driven network propagation framework for authorized security labs**
+
+Deep reinforcement learning decides *where* to spread and *which* exploit to use —
+wrapped in a safety-first engineering discipline: dry-run mode, geofencing, an
+authorization gate, hard infection caps and a kill switch.
+
+[![CI](https://github.com/Ruby570bocadito/Wormy-ML-Network-Worm/actions/workflows/ci.yml/badge.svg)](https://github.com/Ruby570bocadito/Wormy-ML-Network-Worm/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+[![Tests](https://img.shields.io/badge/tests-525%20passing-brightgreen)](#testing--ci)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+`wormy doctor` · `wormy lab up` · `wormy run --dry-run` · `wormy shell`
+
+</div>
+
+---
+
+## ⚠️ Authorized use only
+
+Wormy actively exploits vulnerabilities. It is an **educational red-team framework**
+built for TFG-level research, labs and controlled engagements.
+
+- Run it **only** against networks you own or have **written authorization** to test.
+- Live mode is gated: `wormy run` refuses to exploit unless you pass
+  `--yes-i-am-authorized` (or set `WORMY_AUTHORIZED=1`).
+- `--dry-run` gives you the full pipeline with zero real exploits —
+  simulation only, safe to demo anywhere.
+- The authors take no responsibility for misuse. See [docs/SAFETY.md](docs/SAFETY.md).
+
+## Real code, simulated attacks
+
+The honest answer to the obvious question: **everything you run is real code —
+what it does to targets is your choice of mode.**
+
+| Layer | Status | Detail |
+|---|---|---|
+| CLI, REPL, report hub, CSV/HTML/JSON exports | **real** | real files written, real parsing, 525 unit tests |
+| Reconnaissance (`wormy scan`, `run`) | **real** | live TCP port scan + banner grabbing against your target range |
+| RL brain | **real** | PyTorch Double-DQN + PER, real training and inference |
+| Docker lab | **real** | actually-vulnerable services (SSH, Tomcat, Redis, Postgres…) bound to 127.0.0.1 |
+| Exploitation in `--dry-run` | **simulated** | the pipeline runs end-to-end, but the exploit step logs `[DRY RUN] would exploit <ip>` and marks hosts as would-be-infected — no exploit module is launched, no payload leaves the machine |
+| Dashboard `--demo` | **simulated** | clearly-labelled synthetic engagement data |
+| Exploitation in live mode | **real, gated** | the 44 exploit modules run for real — behind `--yes-i-am-authorized`, geofence and hard caps |
+
+> The GIFs and screenshots below are **real recordings of the real tool**: pty
+> sessions of the actual CLI (typed commands, live progress bar, genuine output)
+> and a browser capture of a live `run --dry-run --web` engagement. No mock-ups,
+> no staged players.
+
+## What is Wormy?
+
+Wormy models a self-propagating network worm in which a **Deep Q-Network** learns
+the propagation policy: which host to attack next and which exploit to use, based
+on 15 features per host (open ports, OS guess, asset value, credential count,
+detection risk…). The engine is deliberately transparent — every decision, every
+exploit attempt and every safety check is logged and reported, which makes it a
+good teaching artifact for both **offensive security** and **applied RL**.
+
+Everything runs against a disposable **Docker lab** of deliberately vulnerable
+services (SSH, Tomcat, Log4Shell, Struts, Redis, Postgres…), so the whole
+pipeline can be demonstrated end-to-end without touching a real network.
+
+## Quick start
+
+> Requirements: Python 3.10+, Docker (for the lab), and `pip install -r requirements.txt`.
+
+```bash
+git clone https://github.com/Ruby570bocadito/Wormy-ML-Network-Worm.git
+cd Wormy-ML-Network-Worm
+pip install -r requirements.txt          # or: pip install .
+
+# 0) Sanity-check the environment (deps, config, docker, feature geometry)
+wormy doctor
+
+# 1) Start the vulnerable lab (15 services, bound to 127.0.0.1)
+wormy lab up
+
+# 2) Reconnaissance only — no exploitation, JSON/CSV-exportable
+wormy scan --target 127.0.0.0/24 --output scan.json
+wormy scan --target 127.0.0.0/24 --csv hosts.csv   # spreadsheet-ready
+
+# 3) Full pipeline in simulation mode — safe by design
+wormy run --dry-run --target 127.0.0.0/24
+
+# 4) Inspect what the engine produced and what it will use
+wormy report show                     # latest engagement, rendered
+wormy report compare --metrics infected,success_rate   # focus on 2 KPIs
+wormy report prune --keep 20 --dry-run # retention preview (audit trail)
+wormy config show --profile stealth   # effective configuration
+
+# 5) Watch it think in the interactive REPL
+wormy shell --dry-run --max-infections 2   # demo session with a tight cap
+
+# or the 10-second version, no lab needed:
+make demo
+```
+
+Live mode (authorized engagements only):
+
+```bash
+wormy run --profile stealth --yes-i-am-authorized
+```
+
+## See it in action
+
+**The CLI** — `wormy doctor` verifying the environment, then a live
+`wormy scan` against the loopback lab: the single-line progress bar, real
+host discovery, vulnerability scores and the scan summary. A pty recording
+of the actual tool, replayed with its real timing:
+
+<p align="center">
+  <img src="docs/images/demo-cli.gif" alt="wormy doctor + wormy scan — real terminal recording" width="720">
+</p>
+
+**The REPL** — `wormy shell` in dry-run mode: `scan`, `exploit 127.0.0.2`,
+`report list` and a clean exit. The status prompt (`○ IDLE wormy::1 infected::3`)
+updates live as the session progresses — again, a real recording:
+
+<p align="center">
+  <img src="docs/images/demo-shell.gif" alt="wormy shell — real REPL session in dry-run mode" width="720">
+</p>
+
+## The CLI
+
+`wormy` is a subcommand-driven CLI (rich-formatted help, machine-readable
+`--json` output, predictable exit codes: `0` ok · `1` error · `2` usage · `130`
+interrupted).
+
+<p align="center">
+  <img src="docs/images/cli-help.png" alt="wormy --help" width="720">
+</p>
+
+The built-in `doctor` verifies the environment before you do anything else —
+critical problems are red, optional capabilities (torch, Docker) are yellow
+warnings with a fix hint (see the CLI GIF above).
+
+| Command | What it does |
+|---|---|
+| `wormy run` | Full propagation pipeline. Flags: `--dry-run`, `--scan-only`, `--profile {stealth,aggressive,audit,lab_docker}`, `--target CIDR…`, `--max-infections N`, `--max-runtime H`, `--web`, `--interactive`, `--kill-switch CODE`, `--yes-i-am-authorized` |
+| `wormy scan` | Reconnaissance only. `--basic`, `--json`, `--output FILE`, `--csv FILE` (one row per host, `-` = stdout) |
+| `wormy report` | Engagement reports: `list` (inventory + KPIs), `show [ID]` (terminal rendering), `html [ID]` (self-contained HTML export), `compare [ID1] [ID2]` (side-by-side deltas, older = baseline, `--metrics` to focus on chosen KPIs), `prune` (retention: keep the newest N, previewed + confirmed, `--keep N`, `--yes`, `--dry-run`). `--json`, `--reports-dir` |
+| `wormy config` | Inspect the effective configuration: `show --profile stealth` renders what the engine will use, with profile overrides marked. `--json` |
+| `wormy lab` | Docker lab manager: `up`, `down`, `status`, `rebuild`, `urls` (`--expanded` for the 15-service compose) |
+| `wormy train` | Train ML models: `rl` (curriculum), `classifier`, `evasion`, `all`; `--list-scenarios`, `--status` |
+| `wormy doctor` | Environment health check: deps, torch/CUDA, docker, config validity, feature geometry, writable dirs |
+| `wormy shell` | Interactive REPL: `scan`, `targets`, `exploit <ip>`, `creds`, `run`, `stop`, `report [new\|list\|show\|compare\|html\|prune]`, … Supports `--dry-run` and the same cap flags as `run` (`--max-infections`, `--max-runtime`). Boots **quiet** (engine INFO logs go to `logs/`, terminal stays clean); `--verbose` streams them back |
+| `wormy version` | Version + platform info (`--json` for scripts) |
+
+## Engagement reports
+
+Every run writes an audit trail to `reports/audit_report_<timestamp>.json|csv|txt`,
+and `wormy report` turns that trail into something you can actually consume:
+`list`, `show`, `html`, `compare` and `prune`, all scriptable with `--json`.
+
+The signature view is `compare`: two engagements side-by-side with signed
+deltas over 10 KPIs, trend arrows (`▲` better, `▼` worse) and a stable
+baseline rule (the older report is always the baseline). Focus on the KPIs
+you care about with `--metrics infected,success_rate`.
+
+<p align="center">
+  <img src="docs/images/report-compare.png" alt="wormy report compare — side-by-side engagement deltas with trend arrows" width="720">
+</p>
+
+<p align="center"><em>Two real dry-run engagements compared: the candidate discovered 3 lab hosts
+and would-have-infected 4 (patient zero included) versus a bare 1-host
+baseline; duration, scans and recommendation deltas stay plain (no value
+judgement by design).</em></p>
+
+Reconnaissance exports travel well too: `wormy scan --csv hosts.csv` writes
+one row per discovered host (ports and services flattened with `;`) so the
+results drop straight into a spreadsheet.
+
+## Web dashboard
+
+Start the engine with `wormy run --web` (or `wormy run --dry-run --web`) and open
+**http://127.0.0.1:5000**. The recording below is a live engagement: KPIs tick
+as hosts are discovered and infected, the timeline and topology update as the
+worm propagates, and the activity feed streams every decision.
+
+<p align="center">
+  <img src="docs/images/demo-dashboard.gif" alt="Wormy operations dashboard — live dry-run engagement" width="780">
+</p>
+
+You can also preview the UI **without any engine** using synthetic demo data
+(clearly labelled):
+
+```bash
+python -m monitoring.web_dashboard --demo   # clearly-labelled demo engagement
+```
+
+- Live KPIs, propagation timeline, severity distribution (Chart.js, degrades
+  gracefully offline)
+- **Network topology** rendered as an SVG graph — nodes colored by status,
+  edges for lateral movement (solid = success, dashed = failed)
+- Host detail dialog, vulnerabilities table and a live activity feed (all
+  rendered XSS-safe)
+- **Emergency stop** button — cooperative stop, same code path as the CLI
+- Binds to `127.0.0.1` by default; command execution over HTTP is **disabled**
+  unless `WORMY_DASHBOARD_COMMANDS=1`
+
+<p align="center">
+  <img src="docs/images/dashboard-overview.png" alt="Wormy operations dashboard — KPIs, propagation timeline, severity distribution and network topology" width="780">
+</p>
+
+<p align="center"><em>Final state of the recorded engagement: 5 of 6 lab hosts infected,
+propagation timeline, severity mix and the live topology.</em></p>
+
+<p align="center">
+  <img src="docs/images/dashboard-tables.png" alt="Dashboard hosts, vulnerabilities and live activity feed" width="780">
+</p>
+
+<p align="center"><em>Host inventory with infection status, vulnerability findings and the
+live activity feed from the same engagement.</em></p>
+
+REST API reference: [docs/API.md](docs/API.md).
+
+## Architecture
+
+```
+                       ┌──────────────────────────────────┐
+                       │            wormy CLI             │
+                       │  run / scan / lab / train / shell│
+                       └───────────────┬──────────────────┘
+                                       │
+                                       ▼
+┌──────────────────────────── WormCore (mixins) ─────────────────────────────┐
+│  scanning ──▶ propagation ──▶ exploitation ──▶ lateral ──▶ reporting       │
+│      │              │              │               │            │          │
+│      ▼              ▼              ▼               ▼            ▼          │
+│  ProScanner     wave planner   44 exploit     AD / SMB    audit report  │
+│  (CIDR/TCP)     + stop_event   modules        + pivots    + MITRE map   │
+└──────┬─────────────┬───────────────┬────────────────┬──────────┬─────────┘
+       │             │               │                │          │
+       ▼             ▼               ▼                ▼          ▼
+  knowledge     rl_engine        exploits/       post_exploit   c2/
+  graph         DQN + PER +      credential      persistence,   HTTPS·DoH·
+  (networkx)    Thompson TS      manager         agents         ICMP·P2P
+```
+
+| Layer | Where | Highlights |
+|---|---|---|
+| CLI / REPL | `worm_core/cli.py`, `worm_core/shell.py` | subcommands, authorization gate, exit codes |
+| Core engine | `worm_core/mixin_*.py` | cooperative `stop_event` consulted at every exploit boundary |
+| RL brain | `rl_engine/` | Double DQN (van Hasselt), PER with IS-weights, TS ensemble with independent optimizers, atomic checkpoints with geometry validation |
+| Feature contract | `rl_engine/features.py` | single canonical `build_host_features()` (15/host) shared by training and inference |
+| Exploits | `exploits/` | 44 modules: Windows, WebApp, Cloud, SCADA, network services |
+| Credentials | `exploits/adaptive_exploit_selector.py`, `attacks/` | Beta-Bernoulli Thompson Sampling, spray + 35 mutation variants |
+| Evasion | `evasion/` | AMSI/ETW patching, DLL unhooking, JA3 spoofing, polymorphic AST engine |
+| C2 | `c2/` | HTTPS, DNS-over-HTTPS, ICMP tunnel, P2P gossip mesh, OTA brain updates |
+| Dashboards | `monitoring/` | Flask web UI (:5000), Armitage-style monitor (:5001) |
+| Lab | `docker-compose-lab.yml` | 9 vulnerable services on 127.0.0.1 (`--expanded`: 15) |
+
+## The RL brain (verified implementation)
+
+- **Double DQN** — action selection with the online network, evaluation with the
+  target network (van Hasselt et al., 2015).
+- **Prioritized Experience Replay** — sum-tree with importance-sampling weights
+  applied to the loss; Welford-normalized rewards frozen at observation time.
+- **Bootstrapped Thompson Sampling ensemble** — 5 Q-heads with independent
+  optimizers and bounded bootstrap memories (no unbounded growth).
+- **Stability details** — gradient clipping, soft target updates (τ=0.005),
+  target network in `eval()` mode, ε-decay driven per episode during training.
+- **Honest checkpoints** — atomic writes (`tmp` + `os.replace`) and geometry
+  validation on load: a mismatched checkpoint fails loudly instead of silently
+  running random weights.
+- **One feature builder** — training and inference share
+  `rl_engine/features.py`, so the policy never sees a different feature layout
+  than the one it learned on.
+
+Reward model: high-value assets score higher (domain controller 100, database
+server 70, workstation 10), multiplied by stealth bonus and technique
+multiplier. Full details in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## Docker lab
+
+```bash
+wormy lab up          # standard lab
+wormy lab urls        # service cheat-sheet (SSH, Tomcat, Redis, Postgres…)
+wormy lab status
+wormy lab down        # also removes volumes
+```
+
+All service ports are published on `127.0.0.1` only. The expanded variant
+(`wormy lab up --expanded`) adds Log4Shell, Struts and more. Credentials are
+documented per service in the `urls` output — nothing here is secret because
+the lab is the target.
+
+## Safety controls
+
+| Control | What it does | Default |
+|---|---|---|
+| **Authorization gate** | live runs require `--yes-i-am-authorized` or `WORMY_AUTHORIZED=1` | enabled |
+| **Dry-run** | full pipeline with simulated exploits | recommended |
+| **Geofence** | target IPs must be inside `safety.allowed_networks` | enabled |
+| **Max infections** | hard cap on compromised hosts | config · `--max-infections N` (warns when raised in live mode) |
+| **Max runtime** | auto-stop after N hours | config · `--max-runtime H` |
+| **Kill switch** | `wormy run --kill-switch CODE` or `touch STOP_WORMY_NOW` | enabled |
+| **Cooperative stop** | `stop_event` checked at every exploit boundary + dashboards | enabled |
+| **Localhost dashboards** | control plane bound to `127.0.0.1` | enabled |
+| **Quiet console** | engine INFO logs flow to `logs/` — stderr stays readable (`WORMY_CONSOLE_LOG_LEVEL`, `--verbose`) | enabled |
+
+Detailed threat model and controls: [docs/SAFETY.md](docs/SAFETY.md).
+
+## Testing & CI
+
+```bash
+make test            # 525 unit tests (pytest)
+make test-cov        # with coverage
+wormy doctor         # environment check
+```
+
+CI runs on every push: syntax checks (`compileall`), the full pytest suite and
+packaging verification. Integration tests that need the Docker lab are marked
+`integration` and excluded from CI by default.
+
+## Documentation
+
+| Doc | Contents |
+|---|---|
+| [docs/DEMO.md](docs/DEMO.md) | safe end-to-end demo walkthrough (`make demo`) |
+| [docs/USAGE.md](docs/USAGE.md) | every command and flag, walkthroughs, recipes |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | components, data flow, RL internals, feature contract |
+| [docs/SAFETY.md](docs/SAFETY.md) | safety controls, threat model, authorization model |
+| [docs/API.md](docs/API.md) | web dashboard REST API |
+| [docs/AUTOMATION.md](docs/AUTOMATION.md) | one-command engagement automation (Kali) |
+| [CHANGELOG.md](CHANGELOG.md) | release history |
+
+## Project structure
+
+```
+├── worm_core/        # engine: mixins + CLI + REPL + profiles
+├── rl_engine/        # DQN agent, PER, features, wrapper
+├── exploits/         # 44 exploit modules + credential manager
+├── attacks/          # AD attacks, brute force, scanning helpers
+├── evasion/          # AMSI/ETW, polymorphic engine, JA3
+├── c2/               # multi-protocol command & control
+├── post_exploit/     # persistence, collection
+├── monitoring/       # web dashboard, CLI monitor, host monitor
+├── training/         # curriculum training + scenarios
+├── scanner/          # professional scanner + host classifier
+├── swarm/            # distributed redundancy
+├── core/             # wave propagation planner
+├── configs/          # Config loader + defaults
+├── docs/             # documentation
+├── tests/            # pytest suite
+└── docker-compose-lab.yml
+```
+
+## Ethics
+
+This project exists to **learn** how worms propagate and how ML policies can
+drive (and be used to study) offensive behavior — in a jar. The same telemetry
+that the engine reports is what defenders actually need to detect this class of
+tooling. If you are a student: demo it against the lab, understand every layer,
+and keep live mode for authorized engagements only.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

@@ -69,7 +69,7 @@
 | | What you get |
 | :--- | :--- |
 | **Your data, connected** | Files, SQL, NoSQL, vector stores, APIs, and MCP tools through YAML-configured adapters. |
-| **Your choice of models** | Switch between local and hosted providers behind one OpenAI-compatible API. |
+| **Your choice of models** | Switch between local and hosted providers behind one OpenAI-compatible API, or let an adapter auto-select a model per request based on how much capability it needs. |
 | **Your infrastructure** | Self-host on-premises or in a private cloud, use local models for air-gapped deployments. |
 | **Operations built in** | Authentication, quotas, audit logs, provider fallbacks, monitoring, and an admin UI. |
 
@@ -109,6 +109,8 @@ Choose **one** flavor:
 | **Gemini** | `schmitech/orbit-gemini:latest` | `GOOGLE_API_KEY` exported in your shell. |
 | **OpenRouter** | `schmitech/orbit-openrouter:latest` | `OPENROUTER_API_KEY` exported in your shell. Free models. |
 | **Cohere** | `schmitech/orbit-cohere:latest` | `COHERE_API_KEY` exported in your shell. |
+
+Each image is also published with a version tag (e.g. `schmitech/orbit-ollama:2.19.1`) if you want to pin to a specific release instead of `:latest`.
 
 **Ollama**
 
@@ -168,6 +170,14 @@ docker run -d --name orbit \
 Once startup completes, open [OrbitChat](http://localhost:5173) to chat or upload a document. The API is available at [http://localhost:3000](http://localhost:3000), with the bundled `multimodal` API key for the document-chat adapter.
 
 View startup progress with `docker logs -f orbit`. Data persists in `orbit-data`; the Ollama flavor also stores downloaded models in `orbit-models`.
+
+To sign in to the [admin dashboard](http://localhost:3000/admin), grab the one-time generated admin password from the container log (it's not baked into the image):
+
+```bash
+docker logs orbit | grep -A3 "one-time admin password"
+```
+
+Log in with `admin` and that password.
 
 See the [Docker guide](docker/README.md#flavor-images-recommended-pull-and-run) for more details.
 
@@ -266,7 +276,7 @@ OrbitChat opens at [http://localhost:5173](http://localhost:5173). See the [exam
 | **Learn ORBIT** | [Tutorial](docs/tutorial.md) · [First chat](docs/tutorial/first-chat.md) · [HTTP APIs](docs/tutorial/http-apis.md) |
 | **Connect private data** | [Files](docs/adapters/file-adapter-guide.md) · [Vector stores](docs/vector-stores/vector_store_integration_guide.md) · [SQL](docs/sql-retriever-architecture.md) · [Intent templates](examples/intent-templates/) · [Adapter system overview](docs/adapters/adapters.md) |
 | **Build agents** | [MCP tools](docs/tutorial/mcp-tool-calling.md) · [Automatic skill routing](docs/tutorial/auto-skill-routing.md) · [A2A](docs/a2a-protocol.md) · [Adapter creation](docs/adapters/adapter-creation.md) |
-| **Make real-time decisions** | [Decision models](docs/adapters/decision-models.md) · [Triage Rush demo](examples/triage-rush-game/) · [Sentiment Pulse](examples/sentiment-pulse/) |
+| **Make real-time decisions** | [Decision models](docs/adapters/decision-models.md) · [Automatic model selection](docs/adapters/auto-model-selection.md) · [Triage Rush demo](examples/triage-rush-game/) · [Sentiment Pulse](examples/sentiment-pulse/) |
 | **Run in production** | [Authentication](docs/authentication.md) · [Cost tracking](docs/token-usage-and-cost-tracking.md) · [Rate limiting](docs/rate-limiting-architecture.md) · [Fault tolerance](docs/fault-tolerance/fault-tolerance-architecture.md) |
 | **Use a client** | [OrbitChat](clients/orbitchat/) · [Realtime Voice](clients/realtime-voice/) · [Node.js SDK](clients/node-api/) · [Python API example](examples/openai-compatible-api/chat_completions.py) |
 

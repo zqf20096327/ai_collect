@@ -59,8 +59,8 @@ sieval dataset download aime_2024
 sieval eval eval.yaml
 ```
 
-See [examples/README.md](examples/README.md) for more scenarios (leaderboard,
-recipe overrides) and [examples/hardware/](examples/hardware/) for
+See [examples/README.md](examples/README.md) for more scenarios (multi-task
+suites, recipe overrides) and [examples/hardware/](examples/hardware/) for
 hardware-pinned reference configs.
 
 **Discover tasks / datasets:**
@@ -76,15 +76,17 @@ sieval dataset download aime_2024     # stage data into $SIEVAL_DATA_DIR
 
 ```bash
 sieval run config.yaml
-sieval run config.yaml --resume
+sieval run config.yaml --resume                        # resume result_dir stage by stage
+sieval run config.yaml --resume outputs/earlier        # start from another run's tasks
+sieval run benchmark.yaml --checkpoint /models/my-sft   # config with no models: section
 ```
 
 **Evaluate against an already-online endpoint:**
 
 ```bash
-sieval eval leaderboards/sft_fast_202511.yaml --model gpt-4o
-# `sieval eval` is a shortcut for the underlying resource verb:
-sieval leaderboard run leaderboards/sft_fast_202511.yaml --model gpt-4o
+sieval eval examples/math-suite.yaml --model gpt-4o
+# a config with no models: section names the endpoint instead:
+sieval eval benchmark.yaml --api-base http://localhost:8000/v1 --model my-sft
 ```
 
 **Inference management:**
@@ -113,7 +115,7 @@ async def main():
 
     runner = TaskRunner(
         task=task,
-        config=TaskRunnerConfig(result_dir="./outputs/mmlu", auto_resume=True),
+        config=TaskRunnerConfig(result_dir="./outputs/mmlu", resume=True),
     )
     results = await runner.arun()
     print(results)
@@ -127,7 +129,7 @@ anyio.run(main)
 - [Concurrency Control](docs/guide/concurrency.md) — four-level concurrency model
 - [Report Metrics](docs/guide/metrics.md) — `report.json` keys, the sampling family (`pass@k` / `pass^k` / `maj@k` / `self_consistency`), and which pairs must be read together
 - [Profiling & Observability](docs/guide/profiling.md) — stage timing, I/O metrics, token tracking
-- [Inference Management](docs/guide/infer.md) — full infer subcommand reference
+- [Inference Management](docs/guide/infer.md) — full infer subcommand reference, and the services SiEval starts for tasks
 - [FAQ](docs/guide/faq.md) — common questions and troubleshooting
 
 ## Contributing

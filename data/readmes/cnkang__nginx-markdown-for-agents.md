@@ -81,8 +81,8 @@ curl -sD - -o /dev/null -H "Accept: text/markdown" http://localhost/
 curl -sD - -o /dev/null -H "Accept: text/html" http://localhost/
 ```
 
-The first request should return `Content-Type: text/markdown`. The second
-request should keep the upstream HTML response. Use the
+The first request returns `Content-Type: text/markdown`. The second
+request keeps the upstream HTML response. Use the
 [installation troubleshooting guide](docs/guides/INSTALLATION.md#10-troubleshooting)
 when the result differs.
 
@@ -119,7 +119,7 @@ http {
 - `markdown_limits` bounds conversion memory, time, decompression, streaming
   buffers, and concurrent work.
 - `markdown_accept strict` is a safe default for staged rollout. Use
-  `wildcard` or `force` only when that behavior is intentional.
+  `force` only when that behavior is intentional.
 - `markdown_error_policy` controls whether conversion errors pass through or
   return a configured status.
 
@@ -209,6 +209,10 @@ installation-specific details.
 
 | NGINX | Channel | OS | libc | Arch | Artifact | Tier | State | Blocking |
 |-------|---------|-----|------|------|----------|------|-------|----------|
+| 1.31.7 | mainline | linux | glibc | arm64 | dynamic-module | best-effort | pending | No |
+| 1.31.7 | mainline | linux | musl | arm64 | dynamic-module | best-effort | pending | No |
+| 1.31.7 | mainline | linux | glibc | amd64 | dynamic-module | best-effort | pending | No |
+| 1.31.7 | mainline | linux | musl | amd64 | dynamic-module | best-effort | pending | No |
 | 1.31.6 | mainline | linux | glibc | arm64 | dynamic-module | supported | pending | Yes |
 | 1.31.6 | mainline | linux | musl | arm64 | dynamic-module | supported | pending | Yes |
 | 1.31.6 | mainline | linux | glibc | amd64 | dynamic-module | supported | pending | Yes |
@@ -228,6 +232,10 @@ installation-specific details.
 | 1.31.5 | mainline | alpine3.24 | musl | amd64 | docker-image | best-effort | pending | No |
 | 1.31.5 | mainline | almalinux9 | glibc | arm64 | rpm-package | best-effort | pending | No |
 | 1.31.5 | mainline | almalinux9 | glibc | amd64 | rpm-package | best-effort | pending | No |
+| 1.30.6 | stable | linux | glibc | arm64 | dynamic-module | best-effort | pending | No |
+| 1.30.6 | stable | linux | musl | arm64 | dynamic-module | best-effort | pending | No |
+| 1.30.6 | stable | linux | glibc | amd64 | dynamic-module | best-effort | pending | No |
+| 1.30.6 | stable | linux | musl | amd64 | dynamic-module | best-effort | pending | No |
 | 1.30.5 | stable | linux | glibc | arm64 | dynamic-module | supported | pending | Yes |
 | 1.30.5 | stable | linux | musl | arm64 | dynamic-module | supported | pending | Yes |
 | 1.30.5 | stable | linux | glibc | amd64 | dynamic-module | supported | pending | Yes |

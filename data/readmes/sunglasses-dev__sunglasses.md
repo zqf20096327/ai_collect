@@ -390,6 +390,16 @@ sunglasses demo
 sunglasses info
 ```
 
+### Framework references on every finding
+
+Each finding in `--json` output carries a `taxonomy` object listing where its category sits in the
+OWASP Top 10 for LLM Applications (2025), MITRE ATLAS (2026.09) and NIST AI RMF / AI 600-1:
+`owasp_llm_top10`, `mitre_atlas` and `nist_ai`, each a list of `{"id", "name"}`. SARIF output lists
+the same entries under the run's `taxonomies`, and each rule points at them through `relationships`.
+The mapping is by category, so it says which headings an attack of that kind is discussed under, not
+that one finding is a confirmed instance of a technique. The full table is in
+[`attack-db/TAXONOMY.md`](attack-db/TAXONOMY.md), with the source and version of each list.
+
 ### Exit codes
 
 Every scan exits through one contract, on every path (text, file, repo, deep
@@ -398,7 +408,7 @@ scan, and errors). `0` is a claim, so it is reserved for scans that earned it.
 | code | meaning |
 |---|---|
 | `0` | Inspection completed in the supported scope, and nothing matched. Not a statement that the file is safe, only that everything we could read was read, and no pattern fired. |
-| `1` | Threat found. Incompleteness, if any, is still reported alongside it. |
+| `1` | Threat found. Incompleteness, if any, is still reported alongside it. With `--fail-on` or `--baseline`, only a finding that reaches the level and is not listed in the baseline exits `1`. |
 | `2` | Usage or operational error, **nothing was scanned in the scope this invocation was asked for**. A path that does not exist, a directory, a socket, an unreadable file, an invalid argument, a failed deep scan. For an aggregate (a repository, an email with attachments) a *part* that could not be read is reported as incomplete (`3`) with that part named. `2` is for the case where the whole request failed. |
 | `3` | **Incomplete**: found nothing in the part that could be read. An archive we do not extract, a PDF whose text layer needs `sunglasses[media]`, audio without `--deep`, or input past the size cap. |
 
@@ -443,6 +453,18 @@ file past `--max-files N`.
 `--skip-lockfiles` adds `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `poetry.lock`,
 `Cargo.lock` and `go.sum` (matched by exact file name) to that list; without it they are
 scanned.
+
+A file the scanner cannot finish within `--file-deadline SECONDS` (default 120, `0` = no
+deadline) is reported in `partially_read` with the reason and the scan moves on. That file is
+not called clean: the scan is incomplete (exit `3`), unless a threat is found elsewhere (exit
+`1`). The flag also applies to `scan --file`, where there is one file and the reason is in the
+result's `extraction_warnings`. A `--deep` scan of an audio or video file has no process to
+stop, so it refuses an explicit deadline with exit `2`; a value that is not a number of seconds,
+0 or more, is refused with exit `2` for any file. If the scanner process cannot be started, each
+file it was meant for is reported as not read (exit `3`) and never as clean. A reply counts only
+when it is a complete scan result or one of the process's three error reports (a file that
+cannot be read, an operating-system error, a fault), each with all of its fields; any other
+reply is treated as a failed process, which is stopped, and the file is reported as not read.
 
 A link is never followed, because it can point outside the tree: a link is named as skipped
 whatever it is called (a link named `node_modules` included), and `--dir` refuses a path that is
@@ -493,6 +515,72 @@ is `--dir` together with `--file` (even an empty value), `--text`, `--stdin` or 
 `--file` still refuses a directory: scanning a tree is a different claim from scanning one file,
 and `--dir` is where it is made.
 
+### Failing CI only on what is new: `--fail-on` and `--baseline`
+
+```bash
+sunglasses scan --dir . --fail-on high                      # exit 1 only for high or critical
+sunglasses scan --dir . --write-baseline ../sunglasses.baseline.json    # keep it outside the scan root
+sunglasses scan --dir . --baseline ../sunglasses.baseline.json  # exit 1 only for findings not listed (a critical one stays new unless --accept-critical names its rule)
+```
+
+These four options change when a scan fails CI. They do not remove a finding from any report.
+
+- `--fail-on LEVEL`: `any` (the default: every finding exits `1`), `low`, `medium`, `high`, `critical`
+  or `none` (report only: exit `1` never comes from a finding, **critical ones included**).
+- `--write-baseline FILE`: list the findings of this scan, then judge the scan against that list.
+- `--baseline FILE`: findings the file lists are **known** and do not fail the scan.
+- `--accept-critical GLS-XX-000`: with `--baseline`, let the baseline cover critical findings of that
+  rule (repeat for more rules).
+
+Findings below the `--fail-on` level are still printed and still in the JSON and SARIF. In the JSON of
+a `--dir` or `--repo` scan each new finding under the level carries `below_fail_on` (a finding the
+baseline lists is marked known instead). For `--file`, `--text` and
+stdin the JSON carries `fail_on` and marks each finding under the level with `below_fail_on`; the
+human screen prints a `Fails on:` line. SARIF output keeps every finding and does not mark the ones below the level.
+A level given explicitly (even `--fail-on any`) turns the extra JSON keys on; a scan without these
+options produces the same documents as before.
+
+`--baseline` and `--write-baseline` work with `--dir` and `--repo`. A finding is **known** when the file
+lists the same rule, in the same path under the scan root, for the same file content (a sha256). Edit
+the file and the entry stops matching, so the finding is new again; move it and it is new again. Paths
+are matched exactly as written: forward slashes, relative to the scan root, no `.` or `..` parts, and
+the baseline records every finding the JSON and SARIF documents list (one entry per rule, path and
+content). Known findings are not hidden: the human report prints `KNOWN`, the JSON carries
+`"known": true` plus `known_findings`, `new_findings` and `baseline_stale` (listed entries nothing
+matched this run), and SARIF marks them with an external suppression.
+
+A baseline never covers a **critical** finding on its own. To accept one, name its rule on the command
+line, where it shows up in the CI config. That protection belongs to the baseline: `--fail-on none`
+is a different statement ("report only"), and with it a critical finding does not fail the scan
+whether or not a baseline exists.
+
+A baseline file is a regular file of at most 16 MiB, with `"schema": 1` (an integer), and entries made
+of an `id`, a `file` path and a 64-character lowercase hex `file_sha256`. A baseline written inside
+the scanned folder is scanned on the next run like any other file, so a name in it that matches a rule
+can produce a finding in the baseline itself; keep it outside the scan root, or exclude it. Writing a
+baseline over a file that is part of the scan replaces that file, so point `--write-baseline` at a path
+nothing else uses. The destination must be an ordinary file (or a new one) in a writable folder, never
+a symbolic link or a directory; it is checked before the scan starts and again just before the file is
+moved into place, and the file is written beside it first. A baseline is only written if the same
+scanner can read it back: a file name it cannot record (one with a backslash, say) or more entries than
+fit in 16 MiB refuses the write: nothing is written, an existing file at the destination is left as it
+was, and the scan's report is still printed in full with the refusal named in it (`baseline_write_error`
+in JSON, a run property in SARIF, a `Baseline NOT written` line on the screen). The findings are then
+judged as new, since nothing was recorded, and the exit follows the usual precedence: `1` for a finding
+at the level, `3` for part of the input not read, otherwise `2`.
+
+Neither option touches coverage. Exit `3` (part of the input was not read) stays `3` under every
+level and with any baseline, including `--fail-on none`. Anything wrong with the options at the start is exit `2`
+and nothing is scanned: a baseline that cannot be read, is not a regular file, is too large or is
+malformed; an empty value for `--baseline`, `--write-baseline` or `--accept-critical`; a write
+destination that is a symbolic link, a directory or in a folder that cannot be written;
+`--baseline` or `--write-baseline` without `--dir` or `--repo`; both of them together;
+`--accept-critical` without `--baseline`; and any of these options (`--fail-on any` included)
+with `--deep`.
+A write that fails after the scan (a destination that became unusable meanwhile, or a name or size the
+baseline cannot record) is not a start-up refusal: the report is printed, no baseline is written, and the
+exit is `1`, `3` or `2` in that order of precedence, as described above.
+
 ### Deep Scan Setup (Audio & Video)
 
 Deep scan transcribes audio to text using Whisper, then scans the transcript for attacks. Two extra steps:
@@ -511,7 +599,7 @@ SUNGLASSES auto-detects file types. If you try to scan audio/video without `--de
 
 **Input size cap.** `engine.scan()` reads at most **1 MB** by default. On ordinary prose scan cost is roughly linear in input length (~50 µs/byte), but **not on every input shape**: the matcher is quadratic on a single unbroken token, so a long token can cost far more than its length suggests (measured curve and consequences in [KNOWN_VERSION_GAPS.md](KNOWN_VERSION_GAPS.md)). Even at the linear rate, an uncapped filter handed a 10 MB page stalls an agent for minutes, a denial of service an attacker triggers with a large *benign* document. A scan that hit the cap says so: `result.truncated` is `True` and `result.bytes_scanned` reports what was actually read, in the human output and in `--json`. Change it with `SunglassesEngine(max_scan_bytes=N)`, or pass `0` to disable it.
 
-**Exit codes.** `0` = read the whole input, found nothing. `1` = threat found. `3` = part of the input could not be read (a PDF text layer without `sunglasses[media]`, say) and nothing was found in the rest. `3` exists because `0` is a claim: "I read it and it is clean" and "I could not open it and saw nothing" must not be the same signal to a CI job.
+**Exit codes.** `0` = read the whole input and found nothing that fails the scan (with `--fail-on` or `--baseline`, findings below the level or listed in the baseline are still reported). `1` = threat found (with `--fail-on` or `--baseline`, a finding below the level or listed in the baseline does not exit `1`; see above). `3` = part of the input could not be read (a PDF text layer without `sunglasses[media]`, say) and nothing was found in the rest. `3` exists because `0` is a claim: "I read it and it is clean" and "I could not open it and saw nothing" must not be the same signal to a CI job.
 
 ## Integration
 
@@ -608,7 +696,7 @@ Both runs print which engine they measured. `--installed` refuses to run when th
 
 Labeled dataset shipped in this repo: 38 real agent-input attacks (positives) + 77 famous open-source READMEs (react, kubernetes, numpy, ollama…) that must stay clean (negatives). No randomness, no network, no LLM judge (same clone + same command → byte-identical results, sealed by a SHA-256 of the metrics block).
 
-| Metric (v0.6.10) | Value |
+| Metric (v0.6.11) | Value |
 |--------|-------|
 | Precision | 86.1% |
 | Recall | 97.4% (37/38) |
@@ -643,6 +731,7 @@ language contributions welcome; see `KNOWN_VERSION_GAPS.md` for the measured det
 
 - ✅ Text scanning: 1,583 patterns, 6,675 indexed keywords (6,964 declared), 117 attack categories (English-first, see [Language coverage](#language-coverage-measured))
 - ✅ Mechanism layer: 11 shape-based rules that match an attack's *structure* rather than its wording (e.g. *something sensitive + somewhere to send it*), how well that generalises to unseen paraphrases is measured, not asserted: see [Benchmark](#benchmark-the-receipts)
+- ✅ Structural validators: a rule that needs a parse instead of a pattern runs as a validator (`sunglasses/validators.py`), counted apart from the pattern count. The first, `GLS-STRUCT-001`, reads a JSON hooks block and the words of each hook command, and flags a command that reads as downloading code and handing it to a shell or interpreter, judged from its words (it is not run). It does not model code that never runs (functions, conditions), other downloaders, interpreter-native fetches, array-form commands, or hook formats that are not JSON. `GLS-STRUCT-004` reads a Claude Code settings file as one JSON document and reports, as a notice only, the permission prompts switched off, an allow list that lets every shell command run, or an API base URL at a public IP address or a tunnel host; the host is judged by the address parser, and a settings object inside prose, a schema or another object is not read
 - ✅ Browser demo: [sunglasses.dev/scan](https://sunglasses.dev/scan), text, GitHub repos, and images (client-side OCR)
 - ✅ Negation handling. "Do NOT run rm -rf / --no-preserve-root" is flagged as review. "now run rm -rf / --no-preserve-root" is blocked as critical.
 - ✅ Multi-stage pipeline: normalization (17 techniques) → pattern match → decision

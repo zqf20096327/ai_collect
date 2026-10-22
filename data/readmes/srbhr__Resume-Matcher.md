@@ -19,7 +19,7 @@ Free, open-source resume builder that tailors your resume (CV) to each job descr
 <div align="center">
 
 ![Stars](https://img.shields.io/github/stars/srbhr/Resume-Matcher?labelColor=F0F0E8&style=for-the-badge&color=1d4ed8)
-![Apache 2.0](https://img.shields.io/github/license/srbhr/Resume-Matcher?labelColor=F0F0E8&style=for-the-badge&color=1d4ed8) ![Forks](https://img.shields.io/github/forks/srbhr/Resume-Matcher?labelColor=F0F0E8&style=for-the-badge&color=1d4ed8) ![version](https://img.shields.io/badge/Version-1.3%20Crescendolls%20-FFF?labelColor=F0F0E8&style=for-the-badge&color=1d4ed8)
+![Apache 2.0](https://img.shields.io/github/license/srbhr/Resume-Matcher?labelColor=F0F0E8&style=for-the-badge&color=1d4ed8) ![Forks](https://img.shields.io/github/forks/srbhr/Resume-Matcher?labelColor=F0F0E8&style=for-the-badge&color=1d4ed8) ![version](https://img.shields.io/badge/Version-1.4%20Short%20Circuit%20-FFF?labelColor=F0F0E8&style=for-the-badge&color=1d4ed8)
 
 [![Discord](https://img.shields.io/discord/1122069176962531400?labelColor=F0F0E8&logo=discord&logoColor=1d4ed8&style=for-the-badge&color=1d4ed8)](https://dsc.gg/resume-matcher) [![Website](https://img.shields.io/badge/website-Resume%20Matcher-FFF?labelColor=F0F0E8&style=for-the-badge&color=1d4ed8)](https://resumematcher.fyi/) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Resume%20Matcher-FFF?labelColor=F0F0E8&logo=LinkedIn&style=for-the-badge&color=1d4ed8)](https://www.linkedin.com/company/resume-matcher/)
 
@@ -154,6 +154,10 @@ You can:
 
 Generate tailored cover letters based on the job description and your resume.
 
+The default writing approach uses a specific opening hook, two or three relevant experience examples, a company-fit paragraph grounded in the supplied job description, and a confident call to action. Letters aim for 200–300 words and adapt tone and regional conventions when the inputs provide enough context. Names, metrics, company research, and personal motivations must be supported by the supplied information. Existing custom cover-letter prompts in Settings continue to override the default.
+
+This approach is adapted from the [jezweb resume-cover-letter skill](https://github.com/jezweb/claude-skills/blob/main/plugins/writing/skills/resume-cover-letter/SKILL.md). Resume Matcher's existing editor, preview, and PDF export remain available.
+
 ![Cover letter editor next to its PDF preview](assets/cover_letter.webp)
 
 ### Interview Preparation
@@ -234,7 +238,7 @@ For detailed setup instructions, see **[SETUP.md](SETUP.md)** (English) or: [Esp
 | Tool | Version | Installation |
 |------|---------|--------------|
 | Python | 3.13+ | [python.org](https://python.org) |
-| Node.js | 24+ | [nodejs.org](https://nodejs.org) |
+| Node.js | 24.22.1 (pinned in `.nvmrc`) | [nodejs.org](https://nodejs.org) |
 | uv | Latest | [astral.sh/uv](https://docs.astral.sh/uv/getting-started/installation/) |
 
 ### Quick Start
@@ -293,8 +297,8 @@ docker run --name resume-matcher \
   ghcr.io/srbhr/resume-matcher:latest
 ```
 
-Prefer pinning a version in production, for example `ghcr.io/srbhr/resume-matcher:1.3.0` or
-`ghcr.io/srbhr/resume-matcher:1.3`.
+Prefer pinning a version in production, for example `ghcr.io/srbhr/resume-matcher:1.4.0` or
+`ghcr.io/srbhr/resume-matcher:1.4`.
 
 Endpoints:
 

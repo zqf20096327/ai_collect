@@ -78,7 +78,7 @@ Spec Harness 把跨会话、跨测试轮次的工程任务保存为可恢复的 
 ```bash
 git clone https://github.com/MicTx/spec-harness.git /tmp/spec-harness
 cd /tmp/spec-harness
-git checkout v0.20.1
+git checkout v0.21.1
 bash install.sh
 ```
 
@@ -100,6 +100,7 @@ bash install.sh
 | `hermes` | Hermes | `~/.hermes/skills` | 可用 `HERMES_HOME` 重定位 |
 | `pi` | Pi agent | `~/.pi/agent/skills` + `~/.pi/agent/prompts` | 可用 `PI_DIR` 重定位；同时写入 `/spec` 与 `/spec:<stage>` 原生命令模板（`PI_PROMPTS_DIR` 重定位，`/reload` 后生效） |
 | `zcode` | ZCode | `~/.zcode/skills` | 项目自有宿主 |
+| `dsh` | DeepSeek Harness | `${DSH_HOME:-~/.dsh}/skills` | 只安装 Skill；`DSH_SKILLS_DIR` 可重定位；dsh 处于 developer preview，未做 live 验收 |
 | `devin`、`devin-desktop` | Devin CLI / Local | `~/.config/devin/skills` | 只安装 Skill；`DEVIN_SKILLS_DIR` 可重定位 |
 | `cursor`、`cursor-cli` | Cursor IDE / CLI | `~/.cursor/skills` | 只安装 Skill；`CURSOR_SKILLS_DIR` 可重定位 |
 | `desktop`、`rpi` | Claude Code + Codex | 两套默认目录 | 组合目标 |
@@ -155,6 +156,8 @@ python3 scripts/export_skill_package.py --output /tmp/spec --force
 手动直调导出器不会自动跳过签名：无凭据环境需显式加 `--skip-signing`（安装器在同样条件下会自动附加并提示）。导出器同样接受 `--profile core|full`（缺省 `full`，与 release 载荷字节等价）。
 
 把导出的 `spec/` 目录放入宿主的 Skill 根目录，然后在 Codex/ZCode 中触发 `$spec`，在 Pi 中使用 `/spec`、`/spec:<stage>` 原生命令（参数经 `$@` 原样透传），在 Claude Code 中使用 `/spec:goal`，或在 Devin/Cursor 中加载 `/spec` 后请求 `spec:goal`。
+
+DeepSeek Harness（dsh）插件模式：`python3 scripts/package_agent_plugin.py --format dsh` 产出 dsh bundle（`package.json` 声明 `dsh.bundle.patch`，`index.js` 在 `ctx.skills` 注册提供者），解压后用 `dsh plugin --profile <name> add ./spec-harness` 装入 profile，`dsh plugin --profile <name> remove spec-harness` 卸载。dsh 处于 developer preview，未做 live 验收。
 
 ## 快速开始
 
@@ -356,6 +359,12 @@ Spec Harness 提供任务包、工作流指令、模板、验证脚本和可选�
 
 > [!WARNING]
 > `server/` 是可选的自托管 HTTP 接入层。公网部署前必须设置 `SPEC_SERVER_TOKEN` 与 `ALLOWED_ROOTS`，并在受信反向代理后提供 TLS；`/health` 仅用于探活，`/start` 和 `/result` 需要 Bearer token。
+
+## 致谢
+
+感谢 [@h565656445](https://github.com/h565656445) 提交 [#3](https://github.com/MicTx/spec-harness/pull/3) 与 [#4](https://github.com/MicTx/spec-harness/pull/4)：定位了 `doctor` 把已渲染 gate hook 误判为项目自有，以及公开 CI 在测试收集阶段中断的问题。两项修复已在 v0.21.1 吸收。
+
+感谢 [@wait4xx](https://github.com/wait4xx) 提出 [#1](https://github.com/MicTx/spec-harness/issues/1)（`spec.md` 的「已证伪路径」段）与 [#2](https://github.com/MicTx/spec-harness/issues/2)（`tasks.md` 的轻量 `claim:` 声明），两项建议均已落地。
 
 ## 许可协议
 

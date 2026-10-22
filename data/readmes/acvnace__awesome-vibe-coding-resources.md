@@ -60,6 +60,7 @@
 
 - [Massvai](https://massvai.com/) - AI agent that builds full-stack Next.js apps from a prompt, with live preview, Supabase setup, GitHub sync and one-click Vercel deploy.
 - [SPOE](https://spoe.ai/) - prompt to a full-stack Next.js, Fastify and Postgres app; a second model from another family reviews every change, and the export is signed and runs with docker compose up, with nothing of SPOE inside.
+- [APPLORE](https://applore.app/) - for the step after a vibe-coded app works: an AI app icon generator that uses a real App Store icon as the style reference, logo animation exported as Lottie for the splash screen, and an App Store screenshot generator that is free with no sign-up. Free to start; paid plans for more AI credits.
 ## Mobile-first Tools
 
 - [Vibecode](https://www.vibecodeapp.com/) - "the mobile app that builds mobile apps".
@@ -109,6 +110,7 @@
 - [Frink](https://frink.dev) - Desktop-first, open-source (MIT) application for running parallel agents, and multi-step custom workflows triggered by schedules, webhooks or events from tools like Linear and Sentry, across your already-used providers. [Source](https://github.com/benord-labs/frink)
 - [Mudroom](https://github.com/Kernel-Hunter/mudroom) - Open-source (MIT) macOS app that runs Claude Code, Codex, Gemini CLI, opencode or Aider in a Linux VM on a copy of your project, with network access limited to hosts you allow. When the agent is done you review the diff and apply all of it, some files or some hunks, with undo. Also a CLI for Linux and Windows.
 - [VinPUT](https://github.com/lrakar/vinput-oss) - Free, open-source (GPL-3.0) voice keyboard for Windows that types dictated speech into any app, with local Parakeet and Whisper models and F2 to press Enter for voice prompts to AI coding agents.
+- [Layerwise](https://layerwise.app) - Desktop app for building, previewing, and publishing full-stack web apps through AI conversations, with local source files, built-in backend services, Agent Skills, and MCP support; macOS, Windows, and Linux (beta), proprietary with a free tier.
 
 ## Plugins and Extensions
 
@@ -246,6 +248,7 @@ AI-generated apps often ship with exposed secrets, open databases, or missing se
 - [VibeToolRank](https://vibetoolrank.com/) - Independent hands-on tests of AI coding tools on the same standard tasks, with scores, timings and free-tier limits.
 - [Internal tool blueprints](https://github.com/samclaassen/internal-tool-blueprints) - Free, build-tested Markdown specs for internal tools (CRM, approvals, help desk, time off and more) with phased prompts and click-through acceptance checks for Claude Code, Cursor, Lovable and other builders.
 - [burntop](https://github.com/agusmdev/fullstack-ai-template) - Open-source FastAPI + React 19 + PostgreSQL template for apps that coding agents build. Nested AGENTS.md files and a project-standards skill tell Claude Code, Cursor or Codex how to add features, and `make ci` fails on mock imports, routes no test calls, and pages no Playwright spec opens, so the agent can't fake a green check.
+- [8B Templates](https://8b.com/templates/) - 20 free MIT website templates for small businesses (restaurant, vet clinic, coworking, accountant, gym and others), each a single `index.html` with GSAP scroll motion in its own GitHub template repo. An AGENTS.md per template lists the classes the scripts depend on and the facts to ask the owner for, so Claude Code, Cursor or Codex can swap in real content without breaking the layout.
 
 ## News and Social Media
 

@@ -12,11 +12,11 @@
 </p>
 
 <p align="center">
-  <strong>An Agent-friendly AI video, image, and voice workspace</strong>
+  <strong>Video, images, and audio — create in the studio or direct an Agent</strong>
 </p>
 
 <p align="center">
-  MiniMax H3 video · Qwen-Image 2.1 BF16 · Voice conversion · Visual studio + h3ctl CLI
+  H3 video · Local + API images · Voice conversion + lyric rewriting · Visual studio + h3ctl CLI
 </p>
 
 <p align="center">
@@ -27,7 +27,38 @@
   <a href="docs/releasing.md">Release policy</a>
 </p>
 
-MiniMax H3 Video Studio is a self-hosted creation workspace for video, images, and voice. Its visual interface combines a persistent node canvas, MiniMax H3 video workflows, multiple image models including Qwen-Image 2.1, and a dedicated voice-conversion workspace. The Agent-friendly `h3ctl` CLI exposes the same backend through composable commands and versioned operations, with durable job IDs and JSON/JSONL receipts. Run ComfyUI locally or on a remote GPU.
+MiniMax H3 Video Studio brings video generation, image creation, voice conversion, and lyric rewriting into one self-hosted workspace.
+
+## Features at a glance
+
+| Category | What you can do |
+| --- | --- |
+| **Video** | Generate video with native audio from text, keyframes, or image/video/audio references; remake source footage, replace a performer, and assemble longer videos with segmented generation and continuation. |
+| **Images** | Generate and edit images with local Z-Image Turbo, Qwen-Image 2.1, and FLUX.2 Klein profiles, or connect **GPT Image, Nano Banana, OpenRouter, and compatible image APIs**. Reuse image results as video references. |
+| **Audio** | Record or upload audio; convert speech and singing voices; separate vocals and accompaniment; transcribe and correct lyrics; re-sing new Mandarin lyrics phrase by phrase over the original backing; preview, export stems, and adjust the vocal/backing mix. Whole-song recreation is also available as an experimental mode. |
+| **Media and projects** | Trim clips, extract frames or audio, replace video soundtracks, and organize reusable assets and results with folders, search, pinning, and durable task history. |
+
+## Visual interface, CLI, or Agent conversation
+
+Use the **browser studio** to compose node workflows, manage references, review video timelines, edit lyrics, and audition results. Use the **`h3ctl` CLI** to run the same backend from a terminal, script, or an Agent with shell access. Both use the same server-side assets, tasks, and results.
+
+**Describe the task to your Agent in chat**, for example:
+
+- “Use this character image to generate a video, then save the finished clip to Assets.”
+- “Replace the centered dancer in this video with this character, keeping the source soundtrack.”
+- “Convert this song to the reference voice and export the dry vocal and accompaniment.”
+- “Transcribe this song, replace the lyrics with my revised version, and let me hear the first phrase.”
+
+The Agent can call `h3ctl` to upload inputs, submit work, inspect progress, wait or resume, and download results. Versioned operations and JSON/JSONL receipts make those steps composable without clicking through the UI. See the [CLI guide](docs/cli.md) and [bundled workflow Skills](#go-cli-for-agent-automation).
+
+## Project highlights
+
+- **Build a complete creative workflow:** image references, H3 video, voice work, media edits, and reusable assets live in one project workspace.
+- **Choose where generation runs:** use local or remote ComfyUI models, configure separate audio runtimes, or call an external image service without a local GPU.
+- **Write naturally for H3:** the canvas formats ordinary descriptions into the matching official structure, preserves complete official prompts, and shows the exact submitted text.
+- **Keep control of longer jobs:** persisted task IDs, reconnectable waiting, cancellation, and segment-level reruns support work across browser and CLI sessions. Sampling continuation is available for explicitly supported H3 Base profiles.
+
+Features depend on the configured models, runtimes, and provider access. External API credentials stay on the Studio server; prompts and connected references are sent to the service you select.
 
 > MiniMax H3 Video Studio is an independent community project. It is not affiliated with or endorsed by MiniMax or ComfyUI.
 
@@ -47,17 +78,6 @@ flowchart LR
   O --> R[Results]
   R -. Save explicitly .-> A[Assets]
 ```
-
-## Why MiniMax H3 Video Studio?
-
-| Need | A raw ComfyUI workflow | MiniMax H3 Video Studio |
-| --- | --- | --- |
-| Reusable creative projects | Reopen and rewire individual graphs | Persistent multi-canvas workspace with assets and results |
-| MiniMax H3 generation modes | Manually change graph inputs | Explicit T2V, I2V, FL2V, R2V, V2V, and RV2V modes |
-| Long-running generations | Keep a browser or script attached | Durable job IDs, reconnectable waiting, cancellation, and resumable sampling |
-| Local and rented GPUs | Manage endpoints and file transfer yourself | Same-origin web gateway plus reusable direct or SSH CLI contexts |
-| Agent automation | Build custom API calls | Stable `h3ctl` commands with JSON/JSONL receipts and atomic media operations |
-| Song and speech voice conversion | Separate tools and ad-hoc files | Upload/record in the UI or use `h3ctl voice`; preview and download completed tracks |
 
 ## Generated result preview
 
@@ -107,35 +127,61 @@ H3 video supports 16:9, 9:16, and 24 FPS. Duration follows the actual `17k+5` fr
   <img src="docs/assets/readme/qwen-image-21-panel.png" width="610" alt="Qwen-Image 2.1 BF16 selected in the image node with an ordered reference-image input">
 </p>
 
-| Model / workflow | Supported operation | Best suited for |
+| Model / service | Supported operation | How it connects |
 | --- | --- | --- |
-| Z-Image Turbo BF16 / INT8 | Text to image; experimental single-image latent img2img | Fast photorealism and Chinese/English text; BF16 is the default high-quality option |
-| Z-Image Turbo + community LoRA | Text to image; experimental single-image latent img2img | Separate, auditable profiles with model-bound parameters |
-| Qwen-Image 2512 | High-quality text to image | Portraits, natural detail, and text layout |
-| Qwen-Image Edit 2511 | Instruction-based single-image editing | Preserve the subject while changing a background, clothing, or local semantics |
-| Qwen-Image 2.1 BF16 | Text to image; one to ten ordered image edits | Native 2K generation and instruction edits without silent weight quantization |
-| FLUX.2 Klein 4B / 9B | Text to image; one to four ordered image references | Combining people, clothing, scenes, and styles across images |
-| Anything V5 | Checkpoint text to image / image to image | Compatibility fallback |
+| Z-Image Turbo BF16 | Text to image; experimental single-image latent img2img | Local / remote ComfyUI |
+| Z-Image Turbo + community LoRA | Separate text-to-image and latent img2img profiles | Local / remote ComfyUI |
+| Qwen-Image 2.1 BF16 | Text to image; one to ten ordered reference images for instruction editing | Local / remote ComfyUI |
+| FLUX.2 Klein 9B | Text to image; up to four ordered image references | Local / remote ComfyUI |
+| Anything V5 | Checkpoint text to image / image to image | Local / remote ComfyUI |
+| GPT Image / OpenAI Images-compatible services | Text to image and reference-image editing, as supported by the configured model | External API |
+| Nano Banana / Gemini | Text to image and reference-image editing | External Gemini API |
+| OpenRouter | Image API or image-output Chat Completions with a configurable model ID | External API |
+
+Configure external models in **Image APIs** in the left rail, then select them in an image node. Retired local profiles remain readable for historical jobs but are not offered for new generation. Live capabilities determine which configured models can be selected.
 
 Image generation supports 1K/2K and 16:9, 9:16, 3:4, and 1:1. Qwen-Image 2.1 uses its native 2K presets, default 40 steps / CFG 1, and one BF16 Profile for text-to-image and instruction editing. Describe multi-image relationships with `<image1>`, `<image2>` (or “图1”, “图2”); references are bound in slot order. Its weights use the [Qwen Research License](https://github.com/QwenLM/Qwen-Image-2.1/blob/main/LICENSE): non-commercial research/evaluation only unless separately licensed. The unreleased Z-Image-Edit capability remains visibly unavailable and is not misrepresented by latent img2img. See [Image Workflows](docs/image-workflows.md) for licenses and exact workflow contracts.
 
-### Voice conversion and song covers
+Measured Qwen-Image 2.1 example on an RTX 5090 with full BF16 weights: 2048 × 2048 at 40 steps completed in 75 seconds for text-to-image and 120 seconds for instruction editing. The same staged gateway also completed CLI generation and editing. These are example runs, not performance guarantees.
+
+### Audio: voice conversion, lyric rewriting, and song covers
 
 <p align="center">
   <img src="docs/assets/readme/voice-studio-yingmusic.png" width="485" alt="YingMusic voice workspace with source and reference upload, microphone recording, step and seed controls, and separate stems, echo, and reverb options">
 </p>
 
-The Voice workspace accepts drag-and-drop uploads, existing audio assets, or a browser microphone recording. Recordings can be assigned explicitly as either the source or the voice reference. Vevo2 FM-only changes a speech/voice recording toward the reference timbre. YingMusic-SVC performs the full song workflow—vocal separation, timbre conversion, and accompaniment remix—with adjustable steps, guidance, and seed for repeatable variants. Select stem retention, echo, and reverb before submitting the task. Its final mix, converted dry vocal, and accompaniment can then be previewed and exported individually; changing effects after completion requires a new task. The preview and downloaded track use the same persisted result. Jobs share one GPU lease queue with video and image generation and remain cancellable and recoverable.
+The Audio workspace accepts uploaded files, existing audio assets, and browser microphone recordings. Choose the engine for the task:
+
+| Engine | What it does |
+| --- | --- |
+| **Vevo2 FM-only** | Convert speech or unaccompanied vocals toward a reference timbre. |
+| **YingMusic-SVC** | Separate song vocals, convert their timbre, and remix with the accompaniment; optionally retain stems and choose echo/reverb before generation. |
+| **YingMusic-Singer-Plus** | Align corrected Mandarin lyrics phrase by phrase, sing the replacement lyrics over the original backing, and use the original singer or a separate reference voice. |
+| **SoulX** | An alternative Mandarin lyric-rewriting pipeline with melody conditioning, editable original lyrics, and first-segment preview. |
+| **ACE-Step XL-SFT** | Experimental whole-song cover/recreation; melody, backing, and vocal delivery may change. |
+
+- Transcribe lyrics, correct the original text, and keep source-specific lyric drafts before generating replacement vocals. Phrase rewriting requires original and new lyrics to have matching line counts.
+- Preview the first phrase/segment for supported rewriting engines, compare source and result, and generate the full song when ready.
+- Preview, download, and save available mix, dry-vocal, accompaniment, or remixed tracks to Assets. For tasks retaining stems and supporting remix, adjust vocal/backing levels without another model generation.
+- Local GPU generation shares the exclusive queue with H3 video and local image models. External image API jobs run independently. Task history, cancellation, and saved results are available through both UI and CLI.
+
+Lyric recognition and synthesized singing can still contain errors; preview before generating the full result. [Phrase rewriting](docs/lyrics-rewrite.md), [SoulX](docs/soulx-rewrite.md), and [audio CLI commands](docs/cli.md#voice-conversion) document the input and runtime requirements.
 
 ```bash
-h3ctl voice convert ./speech.wav --reference ./voice-reference.wav --engine vevo2
+# Convert a song to a reference voice and retain the separated tracks.
 h3ctl voice convert ./song.wav --reference ./voice-reference.wav --engine yingmusic \
-  --steps 75 --cfg 0.9 --seed 42 --keep-stems --echo=false --reverb=false
-h3ctl voice download TASK_ID --track mix --to ./cover.wav
+  --steps 75 --cfg 0.9 --seed 42 --keep-stems --to ./cover.wav
+
+# Re-sing revised Mandarin lyrics over the original backing; preview first.
+h3ctl voice rewrite ./song.wav --engine yingsinger \
+  --original-lyrics-file ./original.txt --lyrics-file ./new.txt \
+  --preview --to ./preview.wav
+
+# Export a retained stem from a completed task.
 h3ctl voice download TASK_ID --track dry_vocal --to ./dry-vocal.wav
 ```
 
-Verified on an RTX 5090 with full BF16 weights: a 2048 × 2048, 40-step Qwen-Image 2.1 text-to-image run completed in 75 seconds, and a 2048 × 2048, 40-step instruction edit completed in 120 seconds. The same staged backend also completed CLI text-to-image and image-to-image jobs through its public gateway. For voice, an existing completed YingMusic task returned byte-identical WAV content from the preview and download endpoints for all three tracks. These are measured example runs, not performance guarantees; generated media and user audio remain outside the repository.
+In an existing completed YingMusic task, the preview and download endpoints returned byte-identical WAV content for each of the three retained tracks. Generated media and user audio remain outside the repository.
 
 ### Long video: segmented generation and continuation
 
@@ -216,7 +262,9 @@ Requirements:
 - Node.js `>=22.13`
 - Python `>=3.11`
 - npm, `ffmpeg`, and `ffprobe`
-- A reachable ComfyUI instance with the nodes and models required by the selected profiles
+- For local image / H3 video generation: a reachable ComfyUI instance with the selected profiles' nodes and models
+- For external image generation: a configured provider API key; no local GPU is required
+- For audio: the corresponding configured engine runtime and weights; see [phrase rewriting](docs/lyrics-rewrite.md) and [SoulX setup](docs/soulx-rewrite.md)
 - Optional: `scenedetect>=0.6.4,<0.8`; smart scene splitting falls back to FFmpeg when it is unavailable
 
 From the project root:
@@ -338,3 +386,17 @@ This command runs ESLint, TypeScript checks, the production build, rendering tes
 MiniMax H3 Video Studio does not present the local H3-Base 768p model as the official, unreleased Context-IR/2K pipeline. It also does not provide an alleged “official NSFW switch” or moderation bypass. Operators may configure local model policies for lawful adult content, but must reject content involving minors, non-consensual intimate material, unauthorized sexual deepfakes of real people, illegal activity, or infringement.
 
 H3 scheduler denoising maps directly to `BasicScheduler.denoise`; it is not CFG, LoRA strength, or a proven reference-preservation weight. For exact model, node, and license information, use `/api/capabilities`, [Image Workflows](docs/image-workflows.md), and the evidence saved with each job.
+
+## External image APIs
+
+Open **Image APIs** in the left rail, add a connection, enter the API base URL (including its version path), model ID and key, then save. Select the resulting **API** model in an image node. The same prompt, connected references, results, downloads and asset import flow work without a local GPU.
+
+Supported protocols are OpenAI Images (GPT Image and compatible services), Gemini generateContent (Nano Banana), OpenRouter Image API, and OpenRouter Chat Images. Presets are editable; access and supported reference counts depend on the selected model and account. Keys live only in the Studio server's private data directory, never in canvas documents or browser storage. All users with access to this Studio API can manage these shared connections. Use the existing authenticated gateway when sharing a deployment.
+
+Requests are never automatically retried: upstream processing may already have incurred charges. Local cancellation discards late results and does not guarantee provider cancellation or a refund. Outputs must be base64 PNG/JPEG/WebP; remote image URLs are not fetched. For fixed-size older models, requested aspect ratio/resolution map to native sizes; actual dimensions appear in the result receipt.
+
+Protocol references: [OpenAI Images](https://developers.openai.com/api/reference/resources/images/methods/generate), [Gemini image generation](https://ai.google.dev/gemini-api/docs/generate-content/image-generation), [OpenRouter Image API](https://openrouter.ai/docs/guides/overview/multimodal/image-generation).
+
+## Automatic H3 prompt formatting
+
+The canvas sends video prompts with `prompt_mode: "auto"`. Ordinary descriptions are organized into the official text/keyframe or full-reference structure using the actual connected media roles. Complete official prompts are preserved apart from resolving asset mentions; incomplete or conflicting templates return a precise validation error instead of being wrapped again. The preview shows the exact compiled text. This is deterministic formatting, without automatic translation or the hosted Context-IR service. Existing callers can still explicitly request `preserve_tags_only`.

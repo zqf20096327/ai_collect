@@ -106,7 +106,7 @@ Releases publish a signed multi-arch image (linux/amd64, linux/arm64) with build
 
 ```bash
 helm install k8s-aibom oci://ghcr.io/googlecloudplatform/charts/k8s-aibom \
-  --version 1.6.0 \
+  --version 1.6.1 \
   --namespace k8s-aibom-system \
   --create-namespace
 ```
@@ -117,9 +117,9 @@ The chart carries the CRDs in its `crds/` directory, which Helm installs once an
 
 ```bash
 helm install k8s-aibom-crds oci://ghcr.io/googlecloudplatform/charts/k8s-aibom-crds \
-  --version 1.6.0 --namespace k8s-aibom-system --create-namespace
+  --version 1.6.1 --namespace k8s-aibom-system --create-namespace
 helm install k8s-aibom oci://ghcr.io/googlecloudplatform/charts/k8s-aibom \
-  --version 1.6.0 --namespace k8s-aibom-system
+  --version 1.6.1 --namespace k8s-aibom-system
 ```
 
 Both charts ship at the same version from the same release and are attested the same way. The main chart's `crds/` directory stays, so a single-chart install keeps working; Helm skips CRDs that already exist.
@@ -127,7 +127,7 @@ Both charts ship at the same version from the same release and are attested the 
 ### Install with kubectl
 
 ```bash
-kubectl apply -f https://github.com/GoogleCloudPlatform/k8s-aibom/releases/download/v1.6.0/install.yaml
+kubectl apply -f https://github.com/GoogleCloudPlatform/k8s-aibom/releases/download/v1.6.1/install.yaml
 ```
 
 Always install from a release asset; the `install.yaml` at the repo root is a development artifact.
@@ -216,13 +216,14 @@ kubectl get aibomcontrollerconfig default -o jsonpath='{range .status.effectiveI
   helm upgrade k8s-aibom      oci://ghcr.io/googlecloudplatform/charts/k8s-aibom      --version <new> -n k8s-aibom-system
   ```
 
-- **Manually:** apply the release's CRDs before upgrading:
+- **Manually** (CRDs not managed by the `k8s-aibom-crds` chart): apply the release's CRDs before upgrading:
 
   ```bash
-  kubectl apply -f https://github.com/GoogleCloudPlatform/k8s-aibom/releases/download/<version>/install.yaml --server-side --field-manager=k8s-aibom-crds
+  helm show crds oci://ghcr.io/googlecloudplatform/charts/k8s-aibom --version <new> \
+    | kubectl apply --server-side --force-conflicts --field-manager=k8s-aibom-crds -f -
   ```
 
-  (or apply the `crds/` directory from the matching chart).
+  `--force-conflicts` is needed because whatever installed the CRDs (Helm, or `kubectl apply` of `install.yaml`) owns their atomic `spec.versions` list. On a Helm install, apply the chart's CRDs rather than the release `install.yaml`: that file also carries the Deployment, RBAC and `AIBOMControllerConfig/default` under the same names a Helm install uses, so applying it would apply those over the release too.
 
 Within 1.x, CRD changes are additive only. **One exception to "degrades gracefully": upgrading to the `v1beta1` graduation release requires the CRD apply** — the graduated controller's informers need the CRDs to serve `v1beta1`, and readiness stays failing (loudly, by design) until they do. Full procedure and the storage-migration details: [docs/migration-v1beta1.md](docs/migration-v1beta1.md).
 
@@ -343,7 +344,7 @@ and a raw kubelet CPU-counter delta over a stated 10-minute window):
   minute** — watch reconnects only, zero writes, zero reconciles,
   1.07 mCPU average. Upgrade 23 s, rollback 17–19 s, all AIBOMs and
   hashes preserved across a full version round trip; see
-  [docs/evidence](docs/evidence/v1.5.1-gke-upgrade-rollback-apiserver.md); v1.6.0-rc.1 two-chart install and DisaggregatedSet roll-up: [docs/evidence/v1.6.0-rc1-gke-two-chart-dset.md](docs/evidence/v1.6.0-rc1-gke-two-chart-dset.md)
+  [docs/evidence](docs/evidence/v1.5.1-gke-upgrade-rollback-apiserver.md); v1.6.0-rc.1 two-chart install and DisaggregatedSet roll-up: [docs/evidence/v1.6.0-rc1-gke-two-chart-dset.md](docs/evidence/v1.6.0-rc1-gke-two-chart-dset.md); v1.6.1 ADR-019 legs with the NVIDIA Dynamo pairing (one AIBOM per DynamoGraphDeployment, operator outage, 1.5.1→1.6.1 upgrade and rollback, cost): [docs/evidence/v1.6.1-gke-adr019-dynamo.md](docs/evidence/v1.6.1-gke-adr019-dynamo.md)
 - 256 KB inline threshold; BOMs exceeding it are offloaded to an
   external sink and referenced by URL in the CR status (boundary
   observed live in NVIDIA/aicr#2310)

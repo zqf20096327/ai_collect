@@ -43,7 +43,7 @@ New things ship here first. A ⭐ on anything above tells me what to build more 
 #### 👷 Recent contributions
 
 - [cubxxw/cubxxw](https://github.com/cubxxw/cubxxw) - Building AI products solo while traveling the world · Core contributor @openimsdk · Voice AI &amp; Agents · cubxxw.com (today)
-- [getyak/StripSearch](https://github.com/getyak/StripSearch) - Evidence-first person research agent and MCP: identity, actions, provenance, and evaluation. Design-stage. (today)
+- [kubbot/imstage](https://github.com/kubbot/imstage) - Synthetic conversations for non-commercial testing, learning and evaluation. Generic chat rendering with visible fictional-content labels. (today)
 - [getyak/leafhour](https://github.com/getyak/leafhour) - Leafhour — your personal reading room, with AI by your side. Open source, private by default, and built for staying with a book. (today)
 - [getyak/capir](https://github.com/getyak/capir) - capri — a personal Agent for important people and unfinished work. Screenshot-first, source-linked, and human-reviewed. (today)
 - [cubxxw/blog](https://github.com/cubxxw/blog) - 顶级审美的个人博客！！！写一些关于 AI、Agent、技术、产品、营销、一些生活思考，个人成长类的精文 (today)
@@ -70,7 +70,7 @@ A new set of [thought notes](https://cubxxw.com/growth/) lands every month, alon
 
 
 📌 **[October 2026 Thought Notes: Daily Life, AI and Agent Systems, Engineering and Open Source](https://cubxxw.com/growth/posts/2026-10-thought-notes/)**
-<sub>🕐 1 week ago</sub>
+<sub>🕐 2 weeks ago</sub>
 
 
 📌 **[Nango in Practice: Let Users Add Their Own MCP Servers in Chat](https://cubxxw.com/ai-agent/posts/nango-user-defined-mcp-integration/)**
@@ -94,7 +94,7 @@ A new set of [thought notes](https://cubxxw.com/growth/) lands every month, alon
 
 
 📌 **[2026年10月思考笔记：日常与其他、AI 与 Agent 系统、工程与开源](https://cubxxw.com/zh/growth/posts/2026-10-thought-notes/)**
-<sub>🕐 1 week ago</sub>
+<sub>🕐 2 weeks ago</sub>
 
 
 📌 **[Nango 接入实战：让用户在聊天中添加自己的 MCP](https://cubxxw.com/zh/ai-agent/posts/nango-user-defined-mcp-integration/)**

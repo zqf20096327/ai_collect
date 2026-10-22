@@ -10,9 +10,9 @@
 ---
 **Dyva** is a dynamic proxy that transparently routes to insecure [Ollama](https://ollama.com/), [vLLM](https://github.com/vllm-project/vllm), [LM Studio](https://lmstudio.ai/), [LocalAI](https://localai.io/), [SGLang](https://github.com/sgl-project/sglang), [KTransformers](https://github.com/kvcache-ai/ktransformers), [MLX](https://github.com/ml-explore/mlx), [llama.cpp](https://github.com/ggml-org/llama.cpp), [ds4 (DwarfStar)](https://github.com/antirez/ds4), [Fooocus](https://github.com/lllyasviel/Fooocus), [Strata](https://github.com/Niko1221/Strata), [A1111 (stable-diffusion-webui)](https://github.com/AUTOMATIC1111/stable-diffusion-webui), [Gradio](https://gradio.app/), and [ComfyUI](https://comfy.org) hosts from [Shodan](https://www.shodan.io/), [ZoomEye](https://www.zoomeye.org/), [Censys](https://search.censys.io/), [hunter.how](https://hunter.how/) and [FOFA](https://fofa.info/) with graceful failover, context-window scaling, and honeypot detection. 
 
-Capable of text generation, embeddings, systemone style decision models, vision, tool calling, image generation and editing, video generatoin, TTS, and music generation in a unified interface with state of the art, real-time tunable router providing sub 1s latency. 
+Capable of text generation, embeddings, systemone (JEV) decision models, vision, tool calling, image generation and editing, video generatoin, TTS, and music generation in a unified interface with state of the art, real-time tunable router providing sub 1s latency. 
 
-Dyva supports unified workflows for stable diffusion, minimax h3, z-image, ltx 2.2, 2.3, 2.5, qwen-image, loras, iris, flux.1, 2 and 3, including the klein variations, and much more. You can just chat with the agent and have it do it for you.
+Dyva supports unified workflows for stable diffusion, MiniMax H3, z-image, LTX 2.2, 2.3, 2.5, Qwen-Image, loras, iris, Flux.1, 2 and 3, including the Klein variations, and much more. You can just chat with the agent and have it do it for you.
 
 [See a demo](https://9ol.es/11434) or run it yourself with a few keystrokes on Linux, Windows, Mac, and even Android. 
 
@@ -30,9 +30,9 @@ Memory footprint is under 1GB:
 </div>
 
 ## Querying for models
-The massive varieties of models and installations are unified through a model query syntax which allows any tool to leverage any subslice of the pool by specifying as the model to use. 
+The massive varieties of models and installations are unified through a model query syntax which allows any tool to leverage any subslice of the pool by specifying the query *as* the model to use. 
 
-This is designed so you can slice and dice the pool in any application. Place it AS the model.
+This is designed so you can slice and dice the pool in any application.
 
 For instance `*` means use any model. `>2026` means anything released after 2026, `qwen>2026>10gb,gemma4` means 'use any qwen released in 2026 over 10gb and fallback to Gemma4 if you can't find any"
 
@@ -55,8 +55,22 @@ There's also a [simple command line](docs/freeollama.md).
 
 #### Notes
 
-* Other dyva servers get flagged and excluded from the survey so this will not just become a hall of mirrors. You can avoid getting picked up by other scanners in the wild by adding a `base_path`, this is configurable in settings on the dash. 
-* Running this might get you blocked temporarily from numerous sites on CDNs such as Cloudflare. This includes IoT networks, imdb, huggingface, cloud storage, all kinds of stuff... even banks. The public surveys have honeypots with tripwires that get the `srcaddr` (you) put in some temporary ban pool with an expiry merely by a `tcp_connect()`. These are also called canaries in the literature. 
-    * There's a rich testing and probing harness in dyva to block these based on an ensemble of techniques. You can also sweep and mark based on model queries to quarantine them but it's a slightly moving target because a static list of honeypots defeats the purpose. There is a protocol called [gossiper](docs/gossiper.md) that's intended to mostly mitigate this. YMMV. Also see the [survey](docs/survey.md) for more notes.
+**Is this dangerous?**
+
+Not really. The pool is truly international and dyva only uses idle machines listed in public search engines. It's arguably below the level of Napster, torrents and Tor. 
+
+**Does this expose me?**
+
+Not really. Other dyva servers get flagged and excluded from the survey so this will not just become a hall of mirrors. You can avoid getting picked up by other scanners in the wild by adding a `base_path`, this is configurable in settings on the dash. 
+
+**What about honeypots?**
+
+Yes! This one is real. Running dyva *might* get you blocked temporarily from numerous sites on CDNs such as Cloudflare. This includes IoT networks, imdb, huggingface, cloud storage, all kinds of stuff... even banks. The public surveys have honeypots with tripwires that get the srcaddr (you) put in some temporary ban pool with an expiry merely by a tcp_connect(). These are also called canaries in the literature.
+
+However, there's a rich testing and probing harness in dyva to block these machines based on an ensemble of techniques. Canary tripping is effectively solved and I haven't seen it in months. But of course, absence of evidence doesn't mean much.
+
+You can also sweep and mark based on model queries to quarantine them but it's a slightly moving target because a static list of honeypots defeats the purpose. There is a protocol called [gossiper](docs/gossiper.md) that's intended to mostly mitigate this. YMMV. Also see the [survey](docs/survey.md) for more notes.
+
+You can also disable all the public surveys in the dash and just use your own list of hosts if you want this to be an enterprise SAAS product. Go put on a tie I guess...
 
 <img alt="dyva-ender" src="https://github.com/user-attachments/assets/2c3c10fa-76f2-4f68-9c3d-2c3c855ef461" />

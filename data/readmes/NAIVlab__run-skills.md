@@ -135,7 +135,7 @@ trainer that cannot resume from a checkpoint. Nothing runs until you say go.
 ## How a run happens
 
 ```text
- agent reads references/INDEX.md ──► picks the target ──► reads that target's reference.md
+ agent reads references/INDEX.md ──► picks the target (run-avail first when you left it open) ──► reads its reference.md
    │
    ├─ run-sync        rsync the code (caches, venvs, data, logs, checkpoints excluded and protected)
    │                  + deploy the harness into <remote dir>/.<target>/ (Slurm) or .ws/ (workstation)
@@ -143,7 +143,8 @@ trainer that cannot resume from a checkpoint. Nothing runs until you say go.
    ├─ one-line plan   … waits for your explicit "go"
    ├─ submit          Slurm: submit.sh → site policy → partition limits → MaxTime → availability → sbatch
    │                  workstation: run-launch → nohup on the idlest GPUs (shown to you first)
-   └─ monitor         status.sh digest; deep reads stay byte-bounded; stopping a run is your call
+   ├─ monitor         status.sh digest; deep reads stay byte-bounded; stopping a run is your call
+   └─ run-pull        copy results back (the same transfer path as run-sync; never deletes local files)
 ```
 
 Each job sources the deployed `env.sh`, which pins every path, then exports a readiness sentinel; the job refuses to
@@ -197,7 +198,8 @@ These are part of the skills' instructions and are enforced by the harness where
   `SBATCH_EXTRA`. A policy refusal is final; `-y` only acknowledges availability warnings.
 - Never create a conda env; never guess the remote directory; never use a machine's stored wandb credentials.
 - Smoke tests run with `WANDB_MODE=disabled`; real runs checkpoint and resume.
-- Monitoring is detect-only and byte-bounded; findings are reported, decisions stay with you.
+- Monitoring is detect-only and byte-bounded; findings are reported, decisions stay with you. The one exception:
+  `run-watch --act` resubmits preempted jobs (or first-submits rows) of a run table you approved, within its budget.
 
 ## Repository layout
 
@@ -205,7 +207,7 @@ These are part of the skills' instructions and are enforced by the harness where
 |---|---|
 | `skills/` | the two skills: a thin `SKILL.md` each + `references/` (procedures, conf keys, project setup, experiment conventions) |
 | `INSTALL.md` | the install runbook your agent follows |
-| `bin/` | local commands: `run-sync`, `run-bootstrap`, `run-launch`, and `run-probe` (read-only discovery) |
+| `bin/` | local commands: `run-avail` (free GPUs everywhere), `run-sync`, `run-pull`, `run-bootstrap`, `run-launch`, `run-watch` (batch watch), `run-probe` |
 | `lib/common.sh` | local helpers: target discovery, conf precedence, conf linter, INDEX generation |
 | `remote/` | deployed next to each project: `env.sh`, `bootstrap.sh`, `status.sh`, `submit.sh`, `job.sbatch` |
 | `targets/` | `_template-slurm/`, `_template-nohup/` |

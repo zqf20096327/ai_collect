@@ -1,298 +1,185 @@
 # Translate Like Me
 
-[![Build Translate Like Me App](https://github.com/wiltodelta/translate-like-me/actions/workflows/build.yml/badge.svg)](https://github.com/wiltodelta/translate-like-me/actions/workflows/build.yml)
+**Dictate, improve, and translate. Still sound like you.**
 
-A tiny macOS menu-bar app that translates the current selection with a global
-hotkey and rewrites it in your own writing style. Select text in any app, press
-the shortcut, and the selection is replaced in place with the translation.
-Website: [translatelikeme.com](https://translatelikeme.com).
+One small Mac app for getting from a thought to a message you can send.
+Speak or type, turn rough wording into clear text, and translate it when you
+need another language. Your writing style carries through rewriting and
+translation.
 
-It detects the direction automatically between the two languages you choose, so
-there is nothing to switch: type in one, get the other. If you use more languages,
-set up to three pairs, each on its own shortcut.
+It works where you write. Hold a key to dictate at the cursor, or select text
+and press a shortcut to improve or translate it in place. The app lives in the
+menu bar, ready when you need it.
 
-It also writes for you: select rough notes, for example dictated, press a
-Rewrite preset's shortcut, and they are replaced with a clear, finished message
-in the same language, in that preset's style.
+[Download for macOS](https://github.com/wiltodelta/translate-like-me/releases/latest)
+· [Website](https://translatelikeme.com)
+· [User guide](docs/user-guide.md)
+
+[![Build](https://github.com/wiltodelta/translate-like-me/actions/workflows/build.yml/badge.svg)](https://github.com/wiltodelta/translate-like-me/actions/workflows/build.yml)
 
 <p align="center">
-  <img src="screenshots/menu.png" alt="Translate Like Me - Menu bar menu" width="250">
-  <img src="screenshots/general.png" alt="Translate Like Me - Settings, General pane with language pairs" width="400">
-  <img src="screenshots/settings.png" alt="Translate Like Me - Settings, Translation pane" width="400">
-  <img src="screenshots/rewrite.png" alt="Translate Like Me - Settings, Rewrite pane" width="400">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="screenshots/menu-dark.png">
+    <img src="screenshots/menu.png" alt="Translate Like Me menu with translation and Rewrite shortcuts and access to the last results" width="299" height="526">
+  </picture>
 </p>
 
-## Features
+## Get started
 
-- **Translate in place**: replaces the selected text directly, in any app.
-- **Automatic direction**: detects which language of the pair you wrote in and
-  translates to the other; text in any other language goes to the pair's first.
-- **Up to three language pairs**: for example Russian ↔ English on ⌥⌘F and
-  Russian ↔ Spanish on ⌥⌘G.
-- **Your writing style, per pair**: an optional style description makes a
-  pair's translations sound like you. Two pairs can share languages, for
-  example one with your style for your own text and a plain one for someone
-  else's.
-- **Rewrite notes into a message**: up to three named presets, each with its
-  own shortcut and writing style, for example Work on ⌥⌘J and Friends on ⌥⌘K.
-  The notes become a message in their own language: filler and repetitions
-  gone, self-corrections resolved, every fact kept, and questions to the
-  recipient kept as questions. Select a received message along with your notes
-  to reply to it. Rewrite never translates; a pair's shortcut does that
-  afterwards. Off until you add a preset.
-- **Bring your own engine**: Claude, ChatGPT or Grok through your existing
-  subscription and the provider's official CLI.
-- **Your model, or the CLI's default**: pick the model and effort each CLI
-  offers, or keep the one you set in the CLI itself; nothing is pinned in the app.
-- **Menu-bar only**: no Dock icon, no window in the way. Click the icon for a
-  standard menu with status, your language pairs, and settings.
-- **Native macOS design**: built to Apple's Human Interface Guidelines, with
-  system controls and readable result panels in both appearances.
-- **In-place updates**: checks once a day and installs a new version when you
-  choose to (Sparkle).
-
-## Requirements
-
-- macOS 15 (Sequoia) or later, on a Mac with Apple silicon.
-- The provider's official CLI installed and signed in (`claude` for Claude,
-  `codex` for ChatGPT, `grok` for Grok).
-
-## Install
-
-### With Homebrew
+Requires **macOS 15 or later** on a Mac with **Apple silicon**.
 
 ```bash
 brew install --cask wiltodelta/tap/translate-like-me
 ```
 
-After that the app keeps itself up to date (Sparkle), not `brew upgrade`.
+Or [download the latest release](https://github.com/wiltodelta/translate-like-me/releases/latest),
+unzip it, and move **Translate Like Me.app** to `/Applications`. Releases are
+signed and notarized. Updates arrive in the app and install when you choose.
 
-### From a release
+First launch recommends languages from macOS and enabled keyboards, then prepares
+two local models for your Mac. Download and verification must finish before
+continuing. Next, grant **Microphone** and **Accessibility** access; the final
+screen explains dictation and translation with your actual shortcuts, or offers
+shortcut setup when none is assigned. Downloads
+can be paused and resumed. Models and other options stay editable in Settings.
+A new profile also gets a neutral Improve Text preset. Cloud engines remain
+optional alternatives that need their official CLI installed and signed in.
 
-1. Download the latest `.zip` from the
-   [Releases](https://github.com/wiltodelta/translate-like-me/releases) page.
-2. Unzip it and move **Translate Like Me.app** to `/Applications`.
-3. Launch it. Releases are signed with a Developer ID and notarized by Apple,
-   so macOS opens them without a warning.
+## Speak first, polish afterwards
 
-### From source
+Hold **Right Option**, say what you want to write, and release to insert the
+transcript at your cursor. Languages are detected automatically. Speech
+recognition runs locally on your Mac and works offline after setup.
+
+Dictate a quick reply as it is, or get a longer thought down without worrying
+about wording. When it needs editing, select the transcript and use **Rewrite**.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="screenshots/dictation-dark.png">
+    <img src="screenshots/dictation.png" alt="Local dictation enabled with the Right Option hold key and the Whisper speech model" width="540" height="563">
+  </picture>
+</p>
+
+## Make it clear. Keep it yours.
+
+Select rough notes or a draft and press a **Rewrite** shortcut. It turns them
+into a finished message in the same language, guided by your writing style.
+You can also select a received message together with your notes to draft a reply.
+
+A style can be as simple as “Clear and polite, short paragraphs.” Create a
+preset for work, another for friends, or use an empty style for a neutral
+rewrite. New profiles include **Improve Text** on **⌥⌘J**. Customize it or add
+more presets in **Settings > Rewrite**.
+
+Rewrite is instructed to remove filler and repetition, resolve self-corrections,
+and preserve your facts and questions for the recipient.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="screenshots/rewrite-dark.png">
+    <img src="screenshots/rewrite.png" alt="Work and Friends Rewrite presets with short style descriptions and separate shortcuts" width="540" height="483">
+  </picture>
+</p>
+
+## Another language. The same voice.
+
+Select text and press your language pair's shortcut. The translation replaces
+it in place. Write in either language: the direction is detected automatically.
+The first pair starts on **⌥⌘F**.
+
+Give a pair a writing style to make translations sound like you. Leave it empty
+for a plain translation, useful when reading someone else's words. You can keep
+up to three pairs, each with its own style and shortcut.
+
+Use translation on its own, or after Rewrite to send a polished message in
+another language.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="screenshots/general-dark.png">
+    <img src="screenshots/general.png" alt="Two Russian-English language pairs, one with a casual writing style and one for plain translation" width="540" height="787">
+  </picture>
+</p>
+
+Screenshots use sample settings and include light and dark versions.
+
+## Use a local model or an account you already have
+
+Dictation runs locally with Whisper or Qwen3-ASR, with no account or API key.
+For translation and Rewrite, choose a local model or use Claude Code, Codex,
+Grok Build, or Antigravity through its official CLI.
+
+Local translation works offline after the model download. CLI engines use the
+account you are signed in to, subject to the provider's plan limits and terms.
+You can keep the CLI's default model and effort settings.
+
+<details>
+<summary>Engine options and local model requirements</summary>
+
+| Engine | Runs through |
+| --- | --- |
+| Claude Code | `claude` |
+| Codex | `codex` |
+| Grok Build | `grok` |
+| Antigravity | `agy` |
+| Local translation | MLX, inside the app |
+
+Fresh profiles select **Gemma 4 E2B** on Macs with **8-16 GB** of memory and
+**TranslateGemma 12B** above **16 GB**. Dictation selects **Whisper Turbo**
+through **16 GB** and **Qwen3-ASR** above that. Existing model choices are
+preserved. TranslateGemma can also be selected manually on a 16 GB Mac.
+The lighter model has more limitations in translation and Rewrite. See the
+[setup instructions and model comparison](docs/user-guide.md#providers).
+
+</details>
+
+## Your text stays under your control
+
+- **Local dictation.** Speech is recognized on your Mac. Temporary audio is
+  deleted after recognition or cancellation.
+- **A choice of where text goes.** Local translation keeps the text and style
+  on your Mac. Cloud engines receive them through their official CLI. The app
+  has no server, analytics, or telemetry.
+- **A protected clipboard.** The original clipboard is restored after insertion.
+  Anything you copy while the app works is preserved.
+- **A result you can recover.** If you switch apps or insertion cannot be
+  confirmed, a popup offers the result to copy. **Copy Last Result** keeps
+  Translation, Rewrite, and Dictation separately until you quit.
+
+CLI history behavior varies. See the [privacy details](docs/user-guide.md#privacy).
+
+## At home on your Mac
+
+Native SwiftUI and AppKit controls, light and dark appearances, global shortcuts,
+and no Dock icon. The interface follows your Mac's language and is available
+in English, Russian, German, French, Spanish, Japanese, Simplified Chinese,
+Brazilian Portuguese, Italian, and Korean.
+
+## Build from source
+
+Requires **Xcode 26 or later** with **Swift 6.3 or later**.
 
 ```bash
 git clone https://github.com/wiltodelta/translate-like-me.git
 cd translate-like-me
 ./build.sh
-open "Translate Like Me.app"
+open "Translate Like Me Dev.app"
 ```
 
-Without the maintainer's Developer ID identity in your keychain, `build.sh`
-signs the app ad hoc, so macOS asks for Accessibility again after every rebuild.
+The development app has its own settings and permissions. Without the
+maintainer's Developer ID in your keychain, it is signed ad hoc and macOS may
+ask for Accessibility again after rebuilding.
 
-## First run
+Run `bash maintain.sh` for lint, tests, and bundle assembly.
+`./capture-screenshots.sh` regenerates both sets of screenshots; it requires
+Accessibility, Screen Recording, and an unlocked Mac left alone during capture.
 
-1. A small icon appears in the menu bar (there is no Dock icon), and a welcome
-   window walks you through setup. First add your language pairs: there are
-   none until you add one, and the first pair you add is suggested from your
-   Mac on ⌥⌘F: its languages (Language & Region), then your keyboard layouts,
-   then your region, then English. When the Mac knows only one language, the
-   second is left for you to choose. Every language macOS has is offered. Then pick an
-   engine: each one (Claude, ChatGPT, Grok) is checked right away with a short
-   test translation, so the list shows which work on your Mac and, for the
-   others, what to fix (install the tool or sign in). Coming
-   back from Terminal after signing in checks again. Everything stays editable
-   in Settings.
-2. Grant **Accessibility** in **System Settings > Privacy & Security >
-   Accessibility**. It is required to read the selection (synthesized ⌘C) and to
-   paste the replacement (⌘V).
-
-## Usage
-
-- Select text in any app, then press a pair's shortcut (the first pair you add
-  starts on **⌥⌘F**) to replace it with the translation.
-- Click the menu-bar icon for the menu: engine and Accessibility status, a
-  **Translate selection** section with one item per language pair and its
-  shortcut, Settings, updates, and Quit. Clicking the engine row opens its settings.
-- Select notes, then press a preset's shortcut (add one under Settings >
-  Rewrite) to replace them with a finished message. The menu then also lists
-  a **Rewrite selection** section with one item per preset.
-- Open Settings with ⌘, when the app is active, or reopen the app to bring Settings back.
-- The icon shows a busy glyph while a translation is running. A run that stops responding
-  times out after two minutes so another translation can start.
-- Automatic insertion requires the original app, field, selection and text to stay
-  unchanged. If you type, switch targets, copy something else, or the app cannot
-  verify the target through Accessibility, the result appears near the cursor with
-  a **Copy** button. Your newer clipboard contents are preserved.
-- If a paste reaches a read-only field, the result stays on the clipboard and in
-  the popup, unless you have copied something newer.
-- If something goes wrong (no text selected, or the translation fails), that same
-  popup shows the message instead.
-
-## Settings
-
-Three panes, **General**, **Translation** and **Rewrite**. Changes apply
-immediately.
-
-- **Languages** (General): up to three pairs, and none is fine too (the menu
-  then offers to add one). Each row has the two languages,
-  the pair's shortcut (click it and press a combo with ⌘, ⌥, or ⌃; Delete
-  clears it, and a combo another pair uses is refused), and a remove button,
-  with the pair's writing style below (Edit Style… opens it): free text applied
-  to that pair's translations. Paste a full voice guide or a short distilled
-  version, or leave it empty for a plain translation. The direction is detected
-  per translation; the order matters only for text in neither language, which
-  is translated into the first one, so put the language you read first.
-- **Rewrite**: up to three presets, none by default. Each row has the preset's
-  name, its shortcut, and a remove button, with its writing style below; an
-  empty style gives a clear, neutral message. Rewrite runs on the translation
-  engine.
-- **Translation engine**: provider (Claude / ChatGPT / Grok), and a **Model**
-  and **Effort** picker listing what the CLI itself offers; **Default** keeps
-  the CLI's configured default.
-- **Launch at login**: start the app automatically when you log in.
-- **Updates**: current version, automatic daily checks on or off, and a "Check
-  for Updates…" button.
-
-## Providers
-
-Three providers, each through its official CLI and your subscription:
-
-| Provider           | CLI                             |
-|--------------------|---------------------------------|
-| Anthropic (Claude) | `claude -p` (Pro/Max)           |
-| OpenAI (ChatGPT)   | `codex exec` (ChatGPT)          |
-| xAI (Grok)         | `grok --prompt-file` (grok.com) |
-
-The app runs the provider's official CLI as a subprocess, using the plan you
-are already signed in to. No API key and no per-token billing beyond your
-plan. For `codex`, run `codex login` once (ChatGPT account) before using it;
-for `grok`, run `grok login` once.
-
-Using the official CLIs with a subscription is an intended, supported way to run
-Claude Code / Codex / Grok Build programmatically. Extracting a subscription OAuth token and using
-it in your own API client is not allowed; this app never does that. It only
-invokes the official binary as a subprocess.
-
-### Model selection
-
-The app never pins a model: it runs the model and effort picked in Settings,
-listed from each CLI's own model catalog (with the efforts each model accepts).
-With **Default**, each CLI runs with your own default model and effort, the
-ones set in Claude Code's `settings.json` (`model`, `effortLevel`), codex's
-`config.toml` (`model`, `model_reasoning_effort`), or grok's config; where none
-is set, the CLI's built-in default applies.
-
-## Privacy
-
-- The text you translate and the pair's writing style go to the engine you
-  picked and nowhere else: Anthropic (Claude), OpenAI (ChatGPT), or xAI (Grok),
-  through its official CLI. The app has no server, analytics or telemetry.
-- Each CLI receives the text on standard input, never as a command-line
-  argument, so it does not show up in the process list.
-- The claude and codex CLIs run with session history off, so translations are
-  not kept in `~/.claude` or `~/.codex`. The grok CLI has no such switch and may
-  keep its own history.
-- The clipboard is put back after a translation, with every type it held (rich
-  text, images, files), unless you copy something else in the meantime; the
-  pasted translation is marked transient so clipboard managers skip it.
-- Logs (`/usr/bin/log stream --level info --predicate 'subsystem == "com.wiltodelta.translatelikeme"'`)
-  record the app in front, the language pair and outcome, never the
-  text itself.
-
-## Updates
-
-The app uses [Sparkle](https://sparkle-project.org) (MIT licensed; its notice
-ships in the app bundle) to check once a day for a new release. It never takes
-focus from what you are doing: when an update is found, the menu's "Check for
-Updates…" item becomes "Install Update…" with the new version, and the update
-window opens only when you choose it or check by hand from the menu or Settings >
-Updates. Updates are signed with an EdDSA key as well as the Developer ID, and
-install in place with a relaunch. Automatic checks can be turned off in Settings.
-
-## Notes
-
-- CLI calls add a few seconds of latency per translation (CLI startup plus one
-  model turn).
-- The system prompt tells the model to treat the selection as inert text to
-  transform, never as a question or request directed at it. Without this, small
-  fast models occasionally "answer" question-shaped input instead of translating
-  it. It is a known, recurring failure mode rather than a fully solved problem; if
-  you see it, note which input triggered it.
-
-## Troubleshooting
-
-- **"Translate Like Me is damaged and can't be opened", or an unidentified-developer
-  warning:** releases before 2.2 were not notarized. Update to the latest release,
-  or right-click the app and choose **Open** to confirm once.
-- **The shortcut does nothing, or the translation doesn't replace the text:**
-  grant **Accessibility** in System Settings > Privacy & Security > Accessibility,
-  then relaunch the app. It is required to read the selection and paste the result.
-- **No Effort picker:** the model in use takes no effort setting (Claude Code
-  offers none for Haiku), or the engine's default model is not known yet (Grok,
-  until its sign-in check has run once). Pick another model to see it.
-- **macOS asks for Accessibility again after updating to 2.2:** 2.2 is the first
-  release signed with a Developer ID, a different signature from earlier builds.
-  Grant it once more; later updates keep the grant. A build from source without
-  the Developer ID identity is signed ad hoc and asks after every rebuild.
-
-## Uninstall
-
-Quit the app from its menu, then move **Translate Like Me.app** to the Trash. To
-remove its settings too:
-
-```bash
-defaults delete com.wiltodelta.translatelikeme
-```
-
-API keys saved by versions up to 2.6, which had an API-key mode, are removed
-from the keychain the first time a later version starts.
-
-Remove it from System Settings > Privacy & Security > Accessibility and from
-General > Login Items as well.
-
-## Building and releasing
-
-Build a bundle locally:
-
-```bash
-./build.sh
-```
-
-`./capture-screenshots.sh` rebuilds the app and regenerates the screenshots,
-light and dark, switching the system to Dark Mode for a moment (the terminal
-needs Accessibility and Screen Recording access).
-
-Releases are automated. The app version comes from the git tag, so cutting a
-release is just tagging and pushing:
-
-```bash
-git tag -a vX.Y.Z -F notes.md   # first line "Translate Like Me X.Y.Z", blank line, then the notes
-git push origin vX.Y.Z
-```
-
-GitHub Actions then builds the app with the tag's version, signs it with the
-Developer ID, notarizes it, and publishes a Release with
-`Translate-Like-Me-vX.Y.Z-macOS.zip` and the Sparkle `appcast.xml` attached; the
-tag annotation's body becomes both the release notes and the text of the update
-window, and its first line the release title. Use `vMAJOR.MINOR` tags. Local
-`./build.sh` bundles carry the latest tag's version and are not meant for
-distribution.
-
-Signing secrets and verification steps are in
-[`docs/build-and-release.md`](docs/build-and-release.md).
-
-### The bundle identifier is not a local label
-
-`CFBundleIdentifier` in `Resources/Info.plist` is `com.wiltodelta.translatelikeme`,
-and macOS keys durable per-app state to it. Three things here depend on that:
-the `UserDefaults.standard` domain behind `Settings`, which holds every persisted
-setting; the keychain items earlier versions kept API keys in, whose service
-name is the identifier and which launch now removes; and the Accessibility grant that `ensureAccessibilityPermission`
-relies on. Changing the identifier migrates none of them. An existing install would come up as a stranger, with its settings
-gone and Accessibility needing to be granted again, so treat it as fixed rather
-than as a string to tidy up. It is registered as an explicit App ID for team
-K2GT9Q4S6U in the Apple Developer portal, which reserves it for a future Mac App
-Store build.
+[User guide](docs/user-guide.md) ·
+[Build and release](docs/build-and-release.md) ·
+[Product direction](docs/product-direction.md)
 
 ## License
 
-Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the
-full text.
+[Apache License 2.0](LICENSE). Dependencies and model weights have their own
+licenses and notices.

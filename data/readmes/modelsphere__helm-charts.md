@@ -1,0 +1,85 @@
+# ModelSphere Helm Charts
+
+Helm charts for running large language models on Kubernetes: the inference
+engine itself, the cache-aware router in front of it, and the pieces that keep
+both healthy.
+
+```bash
+helm repo add modelsphere https://modelsphere.github.io/helm-charts
+helm repo update
+helm search repo modelsphere
+```
+
+## Charts
+
+| Chart | What it deploys |
+|---|---|
+| [`sglang`](charts/sglang) | An SGLang inference deployment — single-node or multi-node (LeaderWorkerSet) — with optional CART, autoscaling, and a hang watcher |
+| [`vllm`](charts/vllm) | The same, on vLLM |
+| [`cart`](charts/cart) | [CART](https://github.com/modelsphere/cache_aware_router) on its own: routes each request to the replica that already holds the longest matching prompt prefix |
+| [`continuation-gateway`](charts/continuation-gateway) | [continuation_gateway](https://github.com/modelsphere/continuation_gateway) on its own: when a streamed completion stalls or drops mid-generation, resumes it once from what the client already received, so the client sees one complete stream |
+| [`llm-slo-decision-gen`](charts/llm-slo-decision-gen) | Turns SLO requirements into replica recommendations: a decision service plus the SLO storage API and its two CRDs |
+| [`autoconfig`](charts/autoconfig) | Keeps the routing layer in step with what is actually deployed: watches backends and rewrites OpenResty peers and cache-aware-router workers |
+| [`llmscaleoperator`](charts/llmscaleoperator) | The autoscaler the `sglang` and `vllm` charts hand their `LLMScaler` objects to: scales replicas on KV-cache utilization, queue depth and TPM rather than CPU |
+| [`rdma-injector`](charts/rdma-injector) | A mutating webhook that injects `NCCL_IB_HCA` and the node's RDMA device list into pods labelled `rdma-ib: "true"` |
+| [`console`](charts/console) | The ModelSphere community portal — identity (users, roles, login) and a federation gateway to Swiss and other backends |
+| [`swiss`](charts/swiss) | swissd, the deploy control plane for the sglang and vllm charts: reads the model catalog, manages releases through its own ServiceAccount, serves the web UI |
+| [`catalog-mirror`](charts/catalog-mirror) | An in-cluster copy of the model catalog and this chart repository, for clusters with a poor route to GitHub; swiss reads it instead of GitHub Pages |
+| [`bodylog-victorialogs`](charts/bodylog-victorialogs) | Ships bodylog's per-request records into VictoriaLogs (Vector next to the bodylog pod) and registers it as a Grafana datasource, for LogsQL search |
+| [`llm-autotune`](charts/llm-autotune) | [LLM AutoTune](https://github.com/modelsphere/llm-autotune): searches an inference engine's launch settings on your GPUs and ranks each configuration on a benchmark. API, worker, web UI and its own Postgres |
+| [`llm-bench`](charts/llm-bench) | [LLM Bench](https://github.com/modelsphere/llm-bench): the benchmark platform AutoTune measures with — synthetic sweeps and replays of recorded traffic, sampled from `bodylog-victorialogs`. API, workers, web UI, Postgres and Redis |
+
+`sglang` and `vllm` pull in `cart` as a subchart, gated on `cart.enabled`.
+Installing either of them gives you an engine and a router that already know
+about each other.
+
+`sglang` and `vllm` also pull in `continuation-gateway` as a subchart, gated on
+`continuationGateway.enabled` (off by default). Enabled, it sits in front of the
+model's `cart`; see the comment above `continuationGateway` in
+[`charts/sglang/values.yaml`](charts/sglang/values.yaml) or
+[`charts/vllm/values.yaml`](charts/vllm/values.yaml) for what that changes in the
+route. Each chart sets the gateway's `config.continuationEngine` to its own engine.
+Which engine + model combinations the gateway has been verified on is listed in the
+[continuation_gateway](https://github.com/modelsphere/continuation_gateway) README.
+
+## Quick start
+
+```bash
+helm install my-model modelsphere/sglang \
+  --set model.name=my-model \
+  --set model.path=/models/my-model \
+  --set cart.enabled=true
+```
+
+Every chart ships a commented `values.yaml`; start there rather than from this
+README, since that is the file that is kept current.
+
+## Images
+
+The charts default to public images on Docker Hub under
+[`4pdosc`](https://hub.docker.com/u/4pdosc), alongside upstream
+`lmsysorg/sglang` and `vllm/vllm-openai` for the engines. Point them at your own
+registry by overriding the `image` values — a mirror is worth setting up if your
+cluster has no egress.
+
+## Custom resources
+
+Some optional features render custom resources that the chart does not define:
+
+- `modelRoute.enabled` needs the `ModelRoute` CRD from
+  [autoconfig](https://github.com/modelsphere/autoconfig)
+- `scaler.enabled` needs the `LLMScaler` CRD from the scaling operator
+
+With the CRD absent, enabling the feature fails the install with
+`no matches for kind ...`. The charts deliberately carry no copy of either
+schema, because the operator that reconciles it owns it.
+
+## Contributing
+
+Charts live under `charts/<name>/`. Bump the chart's `version` in `Chart.yaml`
+in the same change — CI publishes exactly those charts whose version moved, so a
+change without a bump ships nothing.
+
+## License
+
+Apache License 2.0 — see [LICENSE](LICENSE).

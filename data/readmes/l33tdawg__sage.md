@@ -74,7 +74,7 @@ call `sage_inception` and follow its returned memory mode.
 <details>
 <summary>Build from source</summary>
 
-**From source (Go 1.26.9+):**
+**From source (Go 1.26.10+):**
 
 ```bash
 git clone https://github.com/l33tdawg/sage.git && cd sage
@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.24.0`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.24.1`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,17 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.24.0 and earlier)</summary>
+<summary>Recent release notes (v11.24.1 and earlier)</summary>
+
+## What's New in v11.24.1
+
+**App-v29 now activates automatically after its evidence gates pass.** The auto-vote readiness ceiling moves from app-v28 to app-v29, so personal nodes converge on the architecture-independent PoE arithmetic already compiled in v11.24.0. The activation block keeps app-v28 behavior; deterministic EWMA, recency, corroboration, logarithm, exponential and final-weight calculations begin at H+1. Historical blocks continue to replay under their original app versions.
+
+**The app-v29 evidence spans the real failure surfaces.** A four-validator ladder crosses app-v2 through app-v29 with byte-identical AppHash at H-1, H and H+1, then continues through the first post-activation PoE epoch. A separate quorum runs two validators and CometBFT processes on arm64 and two on amd64 against one chain. The real-process crash, partition, restart and state-sync gate targets exact app-v29 state.
+
+**The patch closes the release security gaps.** Go 1.26.10 fixes GO-2026-6809 in `crypto/x509`; certifi 2026.10.19 removes the compromised emSign intermediate CA bundle from all benchmark environments; and the dependency group updates chi, klauspost/compress, go-winio, Playwright and pinned GitHub Actions.
+
+**No chain migration.** Existing memories, identities, governance state and chain history are preserved. Container: `ghcr.io/l33tdawg/sage:11.24.1`. SDK 11.24.1.
 
 ## What's New in v11.24.0
 
@@ -1015,31 +1025,4 @@ identity is durable, a safe concurrent ephemeral fallback, inherited, or
 unavailable.
 
 Claim transfer remains deliberate. `sage_message_handoff` requires the exact
-`claimant_session_id` and `claim_revision` returned by passive history; stale
-or A→B→A delayed transfers fail the revisioned compare-and-swap fence. The
-direct REST route preserves pre-v11.19.5 clients by treating an omitted
-`from_revision` as 0 only, so it can move an untouched first-generation claim
-but safely conflicts after any transfer. SAGE never steals a claim merely
-because it is old.
-
-The new signed, payload-free `GET /v1/inbox/activity-state` returns exactly
-`{version,epoch,seq}` so host hooks can notice fresh task assignments and
-replies. The opaque 32-character database-incarnation `epoch` survives process
-restarts and backup restore, but changes for a fresh database so an old host
-cursor cannot suppress new cues after reinitialization.
-Those events remain nonblocking coordination: they do not change the exact
-three-field `{version,seq,pending}` contract of `/v1/messages/wake` or
-`/v1/messages/wake-state`, and they never make Stop treat a reply as unfinished
-work. Hooks can surface activity on the next prompt, but cannot resurrect an
-already-idle host task.
-
-This patch changes no consensus rule, AppHash input, transaction type, key
-encoding, fork target, or application version. The supported consensus ceiling
-remains app-v27.
-
-Container: `ghcr.io/l33tdawg/sage:11.19.5`. SDK 11.19.5.
-
-## What's New in v11.19.4
-
-**Updater governance compatibility and recovery state are now one atomic
-proof.** 
+`claimant_session_id` and `claim_revisio

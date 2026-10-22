@@ -1,7 +1,7 @@
 # AgenC Core
 
 ![status](https://img.shields.io/badge/status-stable-brightgreen)
-![version](https://img.shields.io/badge/version-0.19.11-blue)
+![version](https://img.shields.io/badge/version-0.19.14-blue)
 ![node](https://img.shields.io/badge/node-26.x-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict%20%E2%80%A2%200%20%40ts--nocheck-3178C6?logo=typescript&logoColor=white)
 
@@ -39,8 +39,8 @@ agents, channel gateway, and remote phone bridge are all clients of that daemon.
 
 | Package | Path | Role |
 | --- | --- | --- |
-| `@tetsuo-ai/agenc` `0.19.11` | `packages/agenc/` | Public launcher binary |
-| `@tetsuo-ai/runtime` `0.19.11` | `runtime/` | Daemon, TUI, tools, providers, tests |
+| `@tetsuo-ai/agenc` `0.19.14` | `packages/agenc/` | Public launcher binary |
+| `@tetsuo-ai/runtime` `0.19.14` | `runtime/` | Daemon, TUI, tools, providers, tests |
 | `@tetsuo-ai/agenc-sdk` `0.3.0` | `packages/agenc-sdk/` | Typed embedding SDK (daemon protocol) |
 
 Documentation map: [`docs/INDEX.md`](docs/INDEX.md). Architecture:
@@ -113,7 +113,7 @@ Documentation map: [`docs/INDEX.md`](docs/INDEX.md). Architecture:
   vision, tools, and structured output; **Grok 4.5** and **Grok 4.3** remain
   selectable in the catalog; also
   openai, anthropic, ollama, lmstudio, openai-compatible, openrouter, groq, venice,
-  deepseek, meta, gemini, mistral, nvidia-nim, minimax, github,
+  abliteration, deepseek, meta, gemini, mistral, nvidia-nim, minimax, github,
   amazon-bedrock, agenc.
   See [`docs/reference/providers.md`](docs/reference/providers.md).
 - **Grok OAuth:** sign in with X during onboarding, via `/grok-login`, or `agenc grok-login` for
@@ -127,8 +127,8 @@ Documentation map: [`docs/INDEX.md`](docs/INDEX.md). Architecture:
 
 ## Project status
 
-**Current version in tree: 0.19.11.** Runtime and launcher are versioned
-`0.19.11`; the embedding SDK package is `0.3.0`. The public launcher is
+**Current version in tree: 0.19.14.** Runtime and launcher are versioned
+`0.19.14`; the embedding SDK package is `0.3.0`. The public launcher is
 [`@tetsuo-ai/agenc`](https://www.npmjs.com/package/@tetsuo-ai/agenc). The root
 workspace is non-publishable (`"private": true`); the GitHub source repository
 is public so npm can issue verifiable provenance. Type-clean: **0**
@@ -142,7 +142,7 @@ Ledger verification, and the independently versioned SDK.
 
 ## Requirements
 
-- Standalone installations carry a private, verified **Node.js 26.5.0** runtime
+- Standalone installations carry a private, verified **Node.js 26.12.1** runtime
   (module ABI 147); no host Node installation is required. Source checkouts,
   the npm launcher, and the SDK require Node.js `>=26.5 <27`; see the
   [supported-host matrix](docs/install.md#supported-hosts).
@@ -243,6 +243,7 @@ Common session flags:
 --no-tui
 --bare
 --light
+--standard
 -c, --continue
 -r, --resume <session-id>
 --profile <name>
@@ -254,9 +255,9 @@ Common session flags:
 --image <file|url|data-url>
 ```
 
-Light mode is experimental and off by default. Use `agenc --light` (or `agenc -p --light "your task"`) for a new session that starts with eight tools for reading, editing, writing, shell execution, polling, file/content search, and tool discovery. It reduces the tool descriptions sent initially; lower total token use, faster completion, and equivalent task performance are not guaranteed.
+New sessions start in Light mode. A Light session starts with five tools: tool search, file read, edit, write and shell. GPT-family models and DeepSeek Flash get `apply_patch` in place of edit and write. Other enabled tools load through `system.searchTools` when a task needs them, and the agent catalog appears once `spawn_agent` is loaded. When skills are installed, a short list names them and the Skill tool loads through tool search. In plan mode the session also gets `AskUserQuestion` and `ExitPlanMode`. If policy disables tool search, the remaining permitted tools stay visible. Light uses a shorter system prompt and shorter tool descriptions, and every call is still validated against the tool's full schema.
 
-Light keeps the standard system instructions and complete parameter documentation. Other enabled tools are discovered through `system.searchTools`; agent and skill catalogs appear when their tools are loaded. If policy disables discovery, the remaining permitted tools stay visible. Project instructions, memory, approvals, sandboxing, hooks, deadlines, and completion checks remain in effect. The mode belongs to the session, survives resume, and is inherited by child agents; changing the default affects new sessions only. Normal remains the default, and `--bare` retains its separate startup behavior.
+To start in standard mode, pass `--standard` (`agenc --standard`, or `agenc -p --standard "your task"`) or set `light_mode = false` in `config.toml`. A flag wins over the config, so `--light` still works and overrides `light_mode = false`. Project instructions, memory, approvals, sandboxing, hooks, deadlines, and completion checks work the same in both modes. The mode belongs to the session: it survives resume, child agents inherit it, and sessions started before Light became the default keep the mode they started with. The status line shows `standard` for a standard session and no label for Light. `--bare` keeps its separate startup behavior.
 
 ### Daemon and agents
 
@@ -368,7 +369,7 @@ check:e2e-all
 check:unused                # knip (informational)
 ```
 
-The full `npm test` release gate runs on a Linux Docker host in a pinned Node 26.5.0
+The full `npm test` release gate runs on a Linux Docker host in a pinned Node 26.12.1
 image with no external network interface (private loopback only), a recursively
 read-only checkout, private IPC/tmpfs state, and a seccomp/ptrace process-tree
 supervisor. Before repository code executes, both the client and a trusted

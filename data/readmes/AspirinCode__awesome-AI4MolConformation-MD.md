@@ -247,6 +247,10 @@ https://github.com/LumosBio/MolData
 
 
 
+* **Force Fields and Simulation Engines: Lessons Learned from Porting Amber ff14SB and ff19SB to GROMACS** [2026]  
+Vedran Miletić, Miłosz Wieczór, Carlos Simmerling, Markus Rampp, Bert L. de Groot, Carsten Kutzner, Vytautas Gapsys.  
+[J. Chem. Theory Comput.(2026)](https://doi.org/10.1021/acs.jctc.6c01592) | [code](https://gitlab.mpcdf.mpg.de/barnsteen/workflow)  
+
 * **PySTARC: GPU-accelerated Brownian dynamics for bimolecular association rate constants** [2026]  
 Anupam Anand Ojha, Gary Huber, Shiksha Dutta, Sonya M. Hanson.  
 [bioRxiv (2026)](https://doi.org/10.64898/2026.09.28.754770) | [code](https://github.com/anandojha/PySTARC)  
@@ -289,7 +293,9 @@ David S. Cerutti, Rafal Wiewiora, Simon Boothroyd, Woody Sherman.
 
 
 
-
+* **Force Fields and Simulation Engines: Lessons Learned from Porting Amber ff14SB and ff19SB to GROMACS** [2026]  
+Vedran Miletić, Miłosz Wieczór, Carlos Simmerling, Markus Rampp, Bert L. de Groot, Carsten Kutzner, Vytautas Gapsys.  
+[J. Chem. Theory Comput.(2026)](https://doi.org/10.1021/acs.jctc.6c01592) | [code](https://gitlab.mpcdf.mpg.de/barnsteen/workflow)  
 
 * **Leveraging Machine Learning Interatomic Potentials into Fitting Fast and Accurate AMBER-Compatible Precise Force Field** [2026]  
 Xuchao Zhou, Xujian Wang, Jiahao Xie, et al.  
@@ -352,7 +358,9 @@ Wang, L., Brasnett, C., Borges-Araújo, L. et al.
 
 
 
-
+* **On-the-Fly Machine-Learned Force Fields for High-Fidelity Polymer Glass Transition Simulations** [2026]  
+Ashutosh Srivastava, Sakshi Agarwal, Shivank Shukla, Harikrishna Sahu, Rampi Ramprasad.  
+[J. Chem. Inf. Model.(2026)](https://doi.org/10.1021/acs.jcim.6c02116) | [code](https://github.com/Ramprasad-Group/OTF-MLFF-Tg)  
 
 * **Learning consistent molecular mechanics force fields from first principles** [2026]  
 Berkay Günes, Leif Seute, Jigyasa Nigam, Frauke Gräter.  
@@ -591,6 +599,8 @@ Barnett, Simon, and John D. Chodera.
 
 ### AI4MD Engines-Frameworks
 
+* [BioEmu2](https://github.com/microsoft/bioemu2) - A foundation model for biomolecular structure and dynamics.
+* [BioEmu](https://github.com/microsoft/bioemu) - Scalable emulation of protein equilibrium ensembles with generative deep learning.  
 * [OpenMM 8](https://github.com/openmm/openmm) - Molecular Dynamics Simulation with Machine Learning Potentials.  
 * [DeePMD-kit](https://github.com/deepmodeling/deepmd-kit) - A deep learning package for many-body potential energy representation and molecular dynamics.  
 * [TorchMD](https://github.com/torchmd/torchmd) - End-To-End Molecular Dynamics (MD) Engine using PyTorch.  
@@ -716,6 +726,10 @@ https://github.com/ipudu/awesome-molecular-dynamics
 
 
 
+
+* **Leveraging elastic networks in a coarse-grained brownian simulation framework for protein conformational dynamics** [2026]  
+Domenico Scaramozzino, Enrica Ruggeri, Mariia Feshyna, Byung Ho Lee, Laura Orellana.  
+[bioRxiv (2026)](https://doi.org/10.64898/2026.09.22.753665) | [code](https://github.com/domenicoscaramozzino/ENM_BD)  
 
 * **Light Martini water accelerates sampling in coarse-grained molecular dynamics simulations** [2026]  
 Aladdin Elgendy, André P. Zeipelt, Lars V. Schäfer.  
@@ -1022,9 +1036,15 @@ Wang, Han, Linfeng Zhang, Jiequn Han, and E. Weinan.
 
 
 
+
+
+* **From Variational Optimization to Flow-Based Transport: Posterior-Geometry Regularization for Ill-Conditioned Data Assimilation** [2026]  
+Siming Liang, Feng Bao, Hristo G. Chipilski, Peter Jan van Leeuwen, Guannan Zhang.  
+[arXiv:2609.27243(2026)](https://doi.org/10.48550/arXiv.2609.27243) | [Code](https://github.com/ESEberhard/ML4DFT)  
+
 * **Physics-Aligned Electronic Ground-State Learning Improves Generalization** [2026]  
 Eike S. Eberhard, Xaver Kainz, Viktor Kotsev, Abdulrahman Aldossary, Stephan Günnemann.  
-[arXiv:2610.10298(2026)](https://doi.org/10.48550/arXiv.2610.10298) | [Code](https://github.com/ESEberhard/ML4DFT)  
+[arXiv:2610.10298(2026)](https://doi.org/10.48550/arXiv.2610.10298)  
 
 * **Enabling Biomolecular Simulations with Neural Network Potentials in GROMACS** [2026]  
 Lukas Müllender, Berk Hess, Erik Lindahl.  
@@ -1506,32 +1526,4 @@ Fuchs, Paul, Stephan Thaler, Sebastien Röcken, and Julija Zavadlav.
 Della Pia, Flaviano and Shi, Benjamin X. and Kapil, Venkat and Zen, Andrea and Alfè, Dario and Michaelides, Angelos.  
 [Chem. Sci. (2025)](https://doi.org/10.1039/D5SC01325A) | [code](https://github.com/water-ice-group/MolCrys-MACE)  
 
-* **Impact of Derivative Observations on Gaussian Process Machine Learning Potentials: A Direct Comparison of Three Modeling Approaches** [2025]  
-Yulian T. Manchev and Paul L. A. Popelier.  
-[J. Chem. Theory Comput. (2025)](https://doi.org/10.1021/acs.jctc.5c00344)  
-
-* **INN-FF: A Scalable and Efficient Machine Learning Potential for Molecular Dynamics** [2025]  
-Taskin Mehereen, Sourav Saha, Intesar Jawad Jaigirdar, Chanwook Park.  
-[arXiv:2505.18141 (2025)](https://doi.org/10.48550/arXiv.2505.18141)  
-
-* **Transferability of MACE Graph Neural Network for Range Corrected Δ-Machine Learning Potential QM/MM Applications** [2025]  
-Timothy J. Giese, Jinzhe Zeng, and Darrin M. York.  
-[J. Phys. Chem. B (2025)](https://doi.org/10.1021/acs.jpcb.5c02006)  
-
-* **OMNI-P2x: A Universal Neural Network Potential for Excited-State Simulations** [2025]  
-Martyka M, Tong X-Y, Jankowska J, Dral PO.  
-[ChemRxiv. (2025)](https://doi.org/10.26434/chemrxiv-2025-j207x) | [code](https://github.com/dralgroup/omni-p2x)  
-
-* **Interpolation and differentiation of alchemical degrees of freedom in machine learning interatomic potentials** [2025]  
-Nam, J., Peng, J. & Gómez-Bombarelli, R.  
-[Nat Commun 16, 4350 (2025)](https://doi.org/10.1038/s41467-025-59543-2) | [code](https://github.com/learningmatter-mit/alchemical-mlip)  
-
-* **Uncertainty quantification for neural network potential foundation models** [2025]  
-Bilbrey, J.A., Firoz, J.S., Lee, MS. et al..  
-[npj Comput Mater 11, 109 (2025)](https://doi.org/10.1038/s41524-025-01572-y) | [code](https://github.com/pnnl/SNAP)  
-
-* **DeePMD-kit v3: A Multiple-Backend Framework for Machine Learning Potentials** [2025]  
-Zeng, Jinzhe, Duo Zhang, Anyang Peng, Xiangyu Zhang, Sensen He, Yan Wang, Xinzijian Liu et al.  
-[J. Chem. Theory Comput. (2025)](https://arxiv.org/abs/2502.19161) | [arXiv:2502.19161 (2025)](https://arxiv.org/abs/2502.19161) | [code](https://github.com/njzjz/benchmark-dpv3)  
-
-* **Multi-fidelity learning for interatomic p
+* **Impact of Derivative Observations on Ga

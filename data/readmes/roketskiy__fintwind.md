@@ -73,6 +73,9 @@ detection, data locations, and WebView2 details.
 
 ## Features
 
+- **App updates.** Stable builds offer the most recently published full release,
+  even when a corrected version number is lower than the installed one. Drafts
+  and prereleases are excluded, and the current release is not offered again.
 - **Projects and session tabs.** Group sessions by project and open multiple
   sessions in one window, with tab reordering and unread indicators.
 - **Session controls.** Switch model, reasoning effort where supported, and
@@ -81,6 +84,11 @@ detection, data locations, and WebView2 details.
   native revert and restore for eligible Git-backed turns. `/btw` asks a
   one-off side question from the session's settled context without disturbing
   the task in progress.
+- **Turn recovery.** Recover missed replies and completion events from OpenCode's
+  stored history. History reads accept responses up to 64 MiB and reduce page
+  sizes when image or tool payloads make a page too large.
+- **Provider marks.** Recognized vendors use their brand marks in the model picker
+  and provider settings, with light and dark variants where available.
 - **Readable agent activity.** View streaming replies, reasoning, tool calls,
   subagent activity, and nested Code Mode calls with OpenCode's tool names.
   Background shell commands surface as capsules on the session card, and
@@ -101,6 +109,10 @@ detection, data locations, and WebView2 details.
 - **Usage statistics.** Explore local OpenCode session history through an
   activity heatmap, daily and hourly charts, and model/provider rankings,
   including subagent usage. Displayed costs are estimates, not billing records.
+- **Anonymous launch statistics.** Stable and beta builds report a randomly
+  generated local installation ID to the project website on each launch to
+  count daily active desktops. No sessions, project paths, or account data
+  are sent.
 - **Provider management.** Sign in and out of built-in providers, see at a
   glance which connections need re-login, and read the provider's own rejection
   reason (quota, key, or model) when a request fails.

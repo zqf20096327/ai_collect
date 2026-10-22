@@ -1,28 +1,27 @@
-<h1 align="center">Holographic Memory System (HMS)</h1>
+# Holographic Memory System (HMS)
 
-<p align="center">
-  <picture><source media="(prefers-color-scheme: dark)" srcset="assets/logo-white.svg"><img width="96" src="assets/logo.png" alt="Holographic Memory System logo"></picture>
-</p>
+<img width="96" src="assets/logo.png" alt="Holographic Memory System logo">
 
-<p align="center"><strong>Local memory for agents and apps: hybrid document search plus a vector-symbolic fact store, in one embeddable engine that never calls out.</strong></p>
+**Local memory for agents and apps: hybrid document search plus a vector-symbolic fact store, in one embeddable engine that never calls out.**
 
-<p align="center">
-  <a href="https://github.com/writerslogic/holographic-memory/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/writerslogic/holographic-memory/ci.yml?branch=main&label=CI"></a>
-  <a href="https://github.com/writerslogic/holographic-memory/actions/workflows/docs.yml"><img alt="Docs" src="https://img.shields.io/github/actions/workflow/status/writerslogic/holographic-memory/docs.yml?branch=main&label=docs"></a>
-  <a href="https://crates.io/crates/holographic-memory"><img alt="crates.io" src="https://img.shields.io/crates/v/holographic-memory.svg"></a>
-  <a href="https://securityscorecards.dev/viewer/?uri=github.com/writerslogic/holographic-memory"><img alt="OpenSSF Scorecard" src="https://img.shields.io/ossf-scorecard/github.com/writerslogic/holographic-memory"></a>
-  <a href="#license"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg"></a>
-</p>
+[![CI](https://img.shields.io/github/actions/workflow/status/writerslogic/holographic-memory/ci.yml?branch=main&label=CI)](https://github.com/writerslogic/holographic-memory/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/github/actions/workflow/status/writerslogic/holographic-memory/docs.yml?branch=main&label=docs)](https://github.com/writerslogic/holographic-memory/actions/workflows/docs.yml)
+[![crates.io](https://img.shields.io/crates/v/holographic-memory.svg)](https://crates.io/crates/holographic-memory)
+[![docs.rs](https://img.shields.io/docsrs/holographic-memory)](https://docs.rs/holographic-memory)
+[![PyPI](https://img.shields.io/pypi/v/holographic-vsa.svg?label=pypi)](https://pypi.org/project/holographic-vsa/)
+![MSRV 1.89](https://img.shields.io/badge/MSRV-1.89-informational.svg)
+[![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/writerslogic/holographic-memory)](https://securityscorecards.dev/viewer/?uri=github.com/writerslogic/holographic-memory)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13977/badge)](https://www.bestpractices.dev/projects/13977)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](#license)
 
-<p align="center">
-  <a href="https://writerslogic.github.io/holographic-memory/">Docs</a> &middot;
-  <a href="#get-started-in-60-seconds">Get started</a> &middot;
-  <a href="#why-is-it-called-holographic">Why "holographic"?</a> &middot;
-  <a href="#how-it-compares">Compare</a> &middot;
-  <a href="#what-ships-today">Capabilities</a> &middot;
-  <a href="#limits">Limits</a> &middot;
-  <a href="CONTRIBUTING.md">Contribute</a>
-</p>
+[Website](https://holographic-memory.com) ·
+[Docs](https://docs.holographic-memory.com/) ·
+[Get started](#get-started-in-60-seconds) ·
+[Why "holographic"?](#why-is-it-called-holographic) ·
+[Compare](#how-it-compares) ·
+[Capabilities](#what-ships-today) ·
+[Limits](#limits) ·
+[Contribute](CONTRIBUTING.md)
 
 **What it is.** A Rust library (with Node.js bindings, a Python client and an HTTP server) that
 stores text and facts on your machine and finds them again: stemmed BM25 fused with exact cosine
@@ -64,7 +63,7 @@ queries, Hopfield cleanup); the resonator network; the union-bundle membership t
 not read the hypervectors), the NSG/IVF graph and inverted-file ANN indexes, the CRC-checked
 append-only memory-mapped storage log, the HTTP server. HMS does not claim holographic behavior
 for these. The longer version, with the tested numbers, is in
-[Concepts](https://writerslogic.github.io/holographic-memory/latest/concepts/holographic/).
+[Concepts](https://docs.holographic-memory.com/latest/concepts/holographic/).
 
 ## Get started in 60 seconds
 
@@ -146,7 +145,7 @@ print(client.query([0.1] * 384, top_k=1)["matches"][0]["id"])
 ```
 
 Endpoints, flags, tenants and limits: [docs/SERVER.md](docs/SERVER.md) and the
-[server docs](https://writerslogic.github.io/holographic-memory/latest/server/).
+[server docs](https://docs.holographic-memory.com/latest/server/).
 A runnable Python quickstart with a toy embedder is in
 [`examples/quickstart/python`](examples/quickstart/python/quickstart.py).
 
@@ -156,11 +155,11 @@ A runnable Python quickstart with a toy embedder is in
 <summary><strong>MCP</strong></summary>
 
 No MCP server ships in this repository today. Integration guides, when published, appear under
-Integrations in the [docs](https://writerslogic.github.io/holographic-memory/).
+Integrations in the [docs](https://docs.holographic-memory.com/).
 
 </details>
 
-The [five-minute quickstart](https://writerslogic.github.io/holographic-memory/latest/quickstart/)
+The [five-minute quickstart](https://docs.holographic-memory.com/latest/quickstart/)
 walks through ingest, search, a SQLite FTS5 comparison and encryption in Rust, Python and Node,
 and CI runs that code on every pull request. For a whole agent memory with no embeddings and no
 network, run `cargo run --example demo-offline-agent`.
@@ -178,9 +177,62 @@ runs, not a substitute for testing your data.
 
 The SciFact and NFCorpus runs were recorded on a loaded machine, so quality is quoted and
 latency is not. More benchmarks, competitor tables and the loss reports are on the
-[benchmarks pages](https://writerslogic.github.io/holographic-memory/latest/benchmarks/).
+[benchmarks pages](https://docs.holographic-memory.com/latest/benchmarks/).
 
 <!-- BENCH:START -->
+
+_Generated from `benchmarks/results/competitive/` by `hms-bench table`; method and caveats in [docs/benchmarks/COMPARISON.md](docs/benchmarks/COMPARISON.md). W = HMS ahead (95% interval excludes parity), T = tie, L = a comparator is ahead._
+
+| Dataset | Metric | HMS | Best other | Advantage | |
+|---|---|---|---|---|---|
+| sift-128-euclidean | QPS @ recall@10 >= 0.95 (QPS) | 17,481 | hnswlib 7,630 | 2.29x | W |
+| sift-128-euclidean | p99 latency @ 0.95 (us) | 105 | hnswlib 220 | 2.10x | W |
+| sift-128-euclidean | Build time (s) | 312.60 | hnswlib 182.49 | 0.58x | L |
+| sift-128-euclidean | RSS, serving (MiB) | 2,204 | hnswlib 1,019 | 0.46x | L |
+| sift-128-euclidean | Index size (MiB) | 446.3 | hnswlib 873.8 | 1.96x | - |
+| beir:fiqa | nDCG@10 | 0.2654 | SQLite FTS5 0.2678 | 0.99x | T |
+| beir:fiqa | QPS (single thread) (QPS) | 3,576 | tantivy 1,617 | 2.21x | W |
+| beir:fiqa | p99 latency (us) | 501 | tantivy 1,269 | 2.53x | W |
+| beir:fiqa | Ingest/build time (s) | 2.16 | SQLite FTS5 1.18 | 0.55x | L |
+| beir:fiqa | Peak RSS, serving (MiB) | 2,480 | SQLite FTS5 2,480 | 1.00x | T |
+| beir:fiqa | On-disk size (MiB) | 20.6 | Apache Lucene 9.12.3 (JVM) 12.2 | 0.59x | L |
+| memory | nDCG@10 | 0.4561 | Apache Lucene 9.12.3 (JVM) 0.4627 | 0.99x | T |
+| memory | QPS (single thread) (QPS) | 2,225 | tantivy 2,399 | 0.93x | T |
+| memory | p99 latency (us) | 786 | tantivy 733 | 0.93x | T |
+| memory | Ingest/build time (s) | 2.52 | SQLite FTS5 2.06 | 0.82x | L |
+| memory | Peak RSS, serving (MiB) | 66 | SQLite FTS5 26 | 0.39x | L |
+| memory | On-disk size (MiB) | 9.8 | Apache Lucene 9.12.3 (JVM) 10.3 | 1.05x | W |
+| memory | nDCG@10 | 0.4561 | Apache Lucene 9.12.3 (JVM) 0.4627 | 0.99x | T |
+| memory | QPS (single thread) (QPS) | 11,857 | tantivy 4,591 | 2.58x | W |
+| memory | p99 latency (us) | 145 | tantivy 412 | 2.85x | W |
+| memory | Ingest/build time (s) | 1.21 | SQLite FTS5 0.88 | 0.73x | L |
+| memory | Peak RSS, serving (MiB) | 2,480 | SQLite FTS5 2,480 | 1.00x | T |
+| memory | On-disk size (MiB) | 9.8 | Apache Lucene 9.12.3 (JVM) 10.3 | 1.05x | W |
+| beir:nfcorpus | nDCG@10 | 0.2916 | SQLite FTS5 0.2914 | 1.00x | T |
+| beir:nfcorpus | QPS (single thread) (QPS) | 38,963 | tantivy 14,705 | 2.65x | W |
+| beir:nfcorpus | p99 latency (us) | 57 | tantivy 150 | 2.62x | W |
+| beir:nfcorpus | Ingest/build time (s) | 0.23 | SQLite FTS5 0.14 | 0.59x | L |
+| beir:nfcorpus | Peak RSS, serving (MiB) | 748 | SQLite FTS5 748 | 1.00x | T |
+| beir:nfcorpus | On-disk size (MiB) | 2.1 | Apache Lucene 9.12.3 (JVM) 1.5 | 0.72x | L |
+| beir:nfcorpus | nDCG@10 | 0.2916 | SQLite FTS5 0.2914 | 1.00x | T |
+| beir:nfcorpus | QPS (single thread) (QPS) | 9,532 | tantivy 7,105 | 1.34x | T |
+| beir:nfcorpus | p99 latency (us) | 298 | tantivy 300 | 1.01x | T |
+| beir:nfcorpus | Ingest/build time (s) | 0.59 | SQLite FTS5 0.29 | 0.48x | L |
+| beir:nfcorpus | Peak RSS, serving (MiB) | 57 | SQLite FTS5 30 | 0.53x | L |
+| beir:nfcorpus | On-disk size (MiB) | 2.1 | Apache Lucene 9.12.3 (JVM) 1.5 | 0.72x | L |
+| beir:scifact | nDCG@10 | 0.7027 | Apache Lucene 9.12.3 (JVM) 0.7022 | 1.00x | T |
+| beir:scifact | QPS (single thread) (QPS) | 17,782 | tantivy 6,450 | 2.76x | W |
+| beir:scifact | p99 latency (us) | 95 | tantivy 292 | 3.09x | W |
+| beir:scifact | Ingest/build time (s) | 0.31 | SQLite FTS5 0.20 | 0.63x | L |
+| beir:scifact | Peak RSS, serving (MiB) | 196 | tantivy 174 | 0.89x | T |
+| beir:scifact | On-disk size (MiB) | 2.9 | Apache Lucene 9.12.3 (JVM) 2.0 | 0.68x | L |
+| beir:scifact | nDCG@10 | 0.7027 | Apache Lucene 9.12.3 (JVM) 0.7022 | 1.00x | T |
+| beir:scifact | QPS (single thread) (QPS) | 2,711 | tantivy 2,879 | 0.94x | L |
+| beir:scifact | p99 latency (us) | 526 | tantivy 520 | 0.99x | T |
+| beir:scifact | Ingest/build time (s) | 1.42 | SQLite FTS5 0.43 | 0.30x | L |
+| beir:scifact | Peak RSS, serving (MiB) | 160 | SQLite FTS5 54 | 0.34x | L |
+| beir:scifact | On-disk size (MiB) | 2.9 | Apache Lucene 9.12.3 (JVM) 2.0 | 0.68x | L |
+
 <!-- BENCH:END -->
 
 ## What ships today
@@ -195,11 +247,13 @@ latency is not. More benchmarks, competitor tables and the loss reports are on t
 | Encrypted stores (`security`) | Ships | AES-256-GCM, Argon2id; covers the log, index caches and the text segment. Metadata, file names and sizes are not encrypted |
 | Signed audit log, credential-gated access, COSE/SCITT/C2PA (`provenance`) | Ships | Host must authenticate DIDs; PoSME, RATS, `did:web` not implemented |
 | On-device models (`local-models`: Qwen3 embed/rerank/LLM) | Ships | Local weights only; never downloads |
-| `hms-server` HTTP API, multi-tenant | Ships | No TLS, one shared key, single node |
+| `hms-server` HTTP API, multi-tenant (`server`) | Ships | Single node; TLS, per-tenant scoped keys ([guide](docs/SERVER.md)) |
 | Node.js bindings | Ships (build from source) | npm package not yet republished |
 | Python | Client + phase substrate | No in-process document search |
-| MCP server | Not shipped | |
-| Query-private search | Experimental | Hides the query vector from the scorer only ([notes](docs/PRIVATE-SEARCH.md)) |
+| MCP server (`mcp`: `hms-mcp`, stdio and HTTP) | Ships | Encryption needs `security`; semantic recall needs `local-models` |
+| Query-private search (`private-search`) | Experimental | For searching an index someone else holds; hides the query vector from the scorer only ([notes](docs/PRIVATE-SEARCH.md)) |
+
+Every capability above except document search is behind a Cargo feature that is off by default; [Cargo features](docs/reference/features.md) lists them all.
 
 ## Architecture
 
@@ -227,7 +281,7 @@ Module map: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 - **Document search is conventional.** It does not use the hypervectors; the holographic parts
   are the algebra and the meaning memory.
 - **Capacity numbers are points, not guarantees**, and are stated only over the tested range
-  ([capacity](https://writerslogic.github.io/holographic-memory/latest/concepts/capacity/)).
+  ([capacity](https://docs.holographic-memory.com/latest/concepts/capacity/)).
 - **Masking is obfuscation.** Client-side vector masking preserves every pairwise similarity.
 - A store is a directory and `HmsCore::new(.., None, ..)` uses the current directory.
 

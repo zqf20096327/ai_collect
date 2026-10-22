@@ -6,23 +6,23 @@
 
 Monsters gives you an orchestrator and a team of agents, each with its own chat, terminal, permissions and model chain.
 They keep their knowledge in an Obsidian-compatible Markdown vault where every change is a git commit you can undo,
-and everything they do lands in an action log. A kill switch (**Ferma**, "stop") halts all work at once. It runs as a
+and everything they do lands in an action log. A kill switch (**Stop**) halts all work at once. It runs as a
 desktop app on Linux, Windows and macOS, and you bring your own models: OpenRouter, API keys, local models, or the
 subscriptions you already pay for.
 
 Website: <https://getmonsters.dev>
 
-![A project with its team](docs/schermate/progetto-squadra-light-1440-2026-10-19.png)
+![A project with its team](docs/schermate/progetto-squadra-light-1440-en.png)
 
 | Chat with questions and options | Per-agent terminal |
 |---|---|
-| ![Chat](docs/schermate/chat-domanda-light-1440-2026-10-20.png) | ![Terminal](docs/schermate/terminale-dark-1440-2026-10-20.png) |
+| ![Chat](docs/schermate/chat-domanda-light-1440-en.png) | ![Terminal](docs/schermate/terminale-dark-1440-en.png) |
 
-![What's new](docs/schermate/novita-dark-1440-2026-10-19.png)
+![What's new](docs/schermate/novita-dark-1440-en.png)
 
 ## Status
 
-**Alpha, version 0.1.0-alpha.18.** It works and is used daily, but expect rough edges and changes. See
+**Alpha, version 0.1.0-alpha.20.** It works and is used daily, but expect rough edges and changes. See
 [`CHANGELOG.md`](CHANGELOG.md) and [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## Features
@@ -48,7 +48,7 @@ Website: <https://getmonsters.dev>
 - **Remote.** Telegram from your phone (including dedicated bots per monster), or the terminal chat over SSH
   (`monsters chat`); the desktop app can also connect as a client to a core running elsewhere through an SSH tunnel.
   See [`docs/remote.md`](docs/remote.md).
-- **Control.** Action log for everything, daily and monthly spending caps (per project too), the **Ferma** kill switch,
+- **Control.** Action log for everything, daily and monthly spending caps (per project too), the **Stop** kill switch,
   secrets in the system keychain.
 
 ## Download
@@ -81,18 +81,20 @@ creating your account. The core listens only on `127.0.0.1`; to reach it from an
 onboarding asks for an [OpenRouter](https://openrouter.ai/keys) key (a free one is enough to start); other providers
 are added later in **Settings → Models**.
 
-Data lives in `~/.monsters` (or `MONSTERS_HOME`), the vault in `~/Monsters Note`. Without a system keychain, start with
+Data lives in `~/.monsters` (or `MONSTERS_HOME`), the vault in `~/Monsters Notes` (`~/Monsters Note` for an
+install that started in Italian). Without a system keychain, start with
 `MONSTERS_SECRETS=file`. Kill switch from another terminal: `monsters kill` (and `monsters resume`, `monsters status`).
 
 For development: `pnpm typecheck && pnpm lint && pnpm test`. See [`AGENTS.md`](AGENTS.md) for all the commands.
 
 ## Documentation
 
-Most technical documents are in **Italian**; the community files (README, CONTRIBUTING, SECURITY, AGENTS) are in English.
+The guides, the community files (README, CONTRIBUTING, SECURITY, AGENTS) and the code are in English. Only
+`docs/DECISIONS.md`, `docs/research/` and `docs/eval/` are an Italian archive (new decisions are written in English).
 
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): how it is built
 - [`docs/DECISIONS.md`](docs/DECISIONS.md): every non-obvious technical decision, with context and rationale
-- [`docs/ROADMAP.md`](docs/ROADMAP.md): phases and direction (English)
+- [`docs/ROADMAP.md`](docs/ROADMAP.md): phases and direction
 - [`docs/security-model.md`](docs/security-model.md): threat model and defenses
 - [`docs/remote.md`](docs/remote.md): Telegram and SSH
 - [`docs/subscriptions.md`](docs/subscriptions.md): using Claude and ChatGPT subscriptions
@@ -111,3 +113,7 @@ the guide for people and coding agents working on the code. To report a vulnerab
 [Apache-2.0](LICENSE); see also [`NOTICE`](NOTICE). The name "Monsters", the monsters' characters and the logo are
 trademarks of Giulio Banchini and Saturday Company: the license does not grant rights to use them, see
 [`TRADEMARKS.md`](TRADEMARKS.md).
+
+---
+
+Made by [Saturday Company](https://saturdaycompany.it).

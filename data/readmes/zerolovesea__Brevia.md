@@ -18,6 +18,7 @@
 
 从线上会议到现场访谈，把完整记录、自己的想法和下一步行动放在一起。
 
+- **随手控制录音。** 快速沿用上次会议配置；最小化或隐藏主窗口后，可通过菜单栏／托盘与悬浮胶囊控制录音、查看字幕和笔记。
 - **一次修正多处。** 在逐字稿、笔记和纪要中预览、选择并批量替换文字，支持撤销；录音时可将规则应用到本场后续字幕。
 - **跟上每一句。** 实时转写支持 30+ 种语言，可配合翻译与悬浮字幕，专注交流也能回看内容。
 - **留住真正重要的事。** 一边听一边记，让 AI 帮你提取决定与待办；笔记和纪要都能继续编辑。
@@ -26,12 +27,12 @@
 
 ## 下载
 
-| 设备    | 下载入口                                                                                                            | 系统要求                  |
-| ------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| Mac     | [下载最新 macOS 版](https://github.com/zerolovesea/Brevia/releases/latest)，选择 `Brevia-<version>-arm64.dmg`       | Apple Silicon · macOS 14+ |
-| Windows | [下载最新 Windows 版](https://github.com/zerolovesea/Brevia/releases/latest)，选择 `Brevia-<version>-x64-setup.exe` | x64                       |
-| iPhone  | [在 App Store 下载](https://apps.apple.com/app/id6819869442)                                                        | iOS 15+                   |
-| Android | [下载签名 APK](https://modelscope.cn/models/zyaztec/brevia-release/resolve/master/android/Brevia-android.apk)       | Android 7+                |
+| 设备    | 下载入口                                                                                                             | 系统要求                  |
+| ------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| Mac     | [下载最新 macOS 版](https://modelscope.cn/models/zyaztec/brevia-release/resolve/master/Brevia-1.4.5-arm64.dmg)       | Apple Silicon · macOS 14+ |
+| Windows | [下载最新 Windows 版](https://modelscope.cn/models/zyaztec/brevia-release/resolve/master/Brevia-1.4.5-x64-setup.exe) | x64                       |
+| iPhone  | [在 App Store 下载](https://apps.apple.com/app/id6819869442)                                                         | iOS 15+                   |
+| Android | [下载签名 APK](https://modelscope.cn/models/zyaztec/brevia-release/resolve/master/android/Brevia-android.apk)        | Android 7+                |
 
 ### 扫码下载 iPhone / Android 应用
 
@@ -59,6 +60,12 @@
 ### 听得专注，也记得完整
 
 会议的实时转写与笔记并排显示，原话与想法随时对照。写下自己的判断，让 AI 帮你梳理决定、待办和未解决的问题；每条建议由你决定是否采纳。
+
+### 收起窗口，继续专注
+
+悬浮录音胶囊让录音状态、时长与暂停控制始终在手边。展开可查看实时字幕与翻译、浏览笔记并采纳 AI 建议；支持固定面板，保存失败时可直接重试。点击言录图标即可返回当前会议。
+
+![悬浮录音胶囊：字幕、笔记、暂停与保存状态](docs/assets/showcase/desktop/zh/capsule.gif)
 
 ### 把讨论变成可执行的计划
 

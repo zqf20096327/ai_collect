@@ -11,7 +11,7 @@
   <a href="https://github.com/metiutek/editorvideo-ai/actions/workflows/ci.yml"><img src="https://github.com/metiutek/editorvideo-ai/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
   <a href="https://pypi.org/project/vedit-mcp/"><img src="https://img.shields.io/pypi/v/vedit-mcp.svg?style=flat-square" alt="PyPI"/></a>
   <a href="https://pypi.org/project/vedit-mcp/"><img src="https://img.shields.io/pypi/pyversions/vedit-mcp.svg?style=flat-square" alt="Python versions"/></a>
-  <img src="https://img.shields.io/badge/AI%20tools-92-blueviolet?style=flat-square" alt="92 AI tools"/>
+  <img src="https://img.shields.io/badge/AI%20tools-114-blueviolet?style=flat-square" alt="114 AI tools"/>
   <img src="https://img.shields.io/badge/runs-100%25%20local-brightgreen?style=flat-square" alt="Runs locally"/>
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License"/>
 </p>
@@ -53,6 +53,33 @@ connects Claude Code to vedit; it does not install anything, so do step 2 first.
 
 Something wrong? `vedit doctor` tells you what is missing and how to fix it.
 
+**Update** to the latest version: `uv tool upgrade vedit-mcp`.
+
+## Using it — the 2-minute tour
+
+1. **New project** (top bar → *new*): pick the format — 16:9 for YouTube, 9:16 for
+   Reels/Shorts/TikTok, 1:1, 4:5… — and the quality. You can change it later from the
+   format button in the top bar.
+2. **Add your footage**: drag files onto the window, or search the web from the **web** tab
+   on the left and click *add* on a photo or video.
+3. **Ask the assistant** (right panel → *assistant*): the first time, pick a model — if you
+   have Claude Code installed there is nothing to configure. Then write what you want:
+   *"make a 30-second vertical video with these clips, on the beat of the music, with
+   titles"*. The edit appears on the timeline while it works; Ctrl+Z undoes anything.
+   Click the model pill at the top of the chat to switch model and **effort** in one click;
+   every project keeps **its own conversation**, so reopening it picks up where you left.
+   Click the model pill at the top of the chat to switch model and **effort** in one click;
+   every project keeps **its own conversation**, so reopening it picks up where you left.
+4. **Voiceover**: top bar → *voice*, write the text, click *generate and add*. The system
+   voice works with nothing to set up; OpenAI, ElevenLabs or Piper sound better.
+5. **Export** (top bar → *export*), then **publish** to YouTube or TikTok if you like
+   (top bar → *publish*, sign in once).
+
+The assistant **remembers your preferences across projects** (your usual format, style,
+voice…): see and edit them from the bookmark button in the assistant tab. In the model
+settings, *what the assistant can use* lets it also use **your skills, MCP servers, plugins
+and Chrome** — or the whole computer, if you choose so.
+
 ---
 
 ## What it is
@@ -61,7 +88,7 @@ vedit is a video editor. The ordinary kind: a timeline, video and audio tracks, 
 drag, cut, speed up, colour-grade and fade into each other.
 
 The difference is that **everything you can do with the mouse, an AI can also do on command** —
-because the buttons and the AI call the exact same 86 operations. Nothing is AI-only, nothing
+because the buttons and the AI call the exact same operations. Nothing is AI-only, nothing
 is mouse-only.
 
 So instead of half an hour of trimming, you type:
@@ -92,7 +119,7 @@ finished file you cannot touch — it is your editing software, with a second pa
 | **vs. an ffmpeg script** | Same speed and precision, but you can actually see what happened, scrub it, and undo it. |
 | **Cost and privacy** | Runs on your machine. No subscription, no upload, no watermark, no render queue. MIT licensed. |
 
-> Code, comments and UI messages are in Italian — that is the project convention.
+> The interface is in English; code and comments are in Italian — that is the project convention.
 
 ---
 
@@ -103,7 +130,7 @@ difference between a demo and something you would actually cut a video with:
 
 | | |
 |---|---|
-| **An agent can actually edit** | 92 MCP tools that are the *same* operations as the buttons: cut, split, speed, keyframes, effects, transitions, render. Nothing is agent-only, nothing is UI-only. |
+| **An agent can actually edit** | 114 MCP tools that are the *same* operations as the buttons: cut, split, speed, keyframes, effects, transitions, render. Nothing is agent-only, nothing is UI-only. |
 | **The agent can see what it did** | `preview_frame` returns the **real rendered frame**, `preview_grid` the whole edit as a contact sheet. An agent that guesses produces garbage; this one looks. |
 | **It cuts on the beat, for real** | `music_beats` returns BPM, beat and bar length, first-beat offset and an energy profile, so cuts land on the music instead of near it. |
 | **It picks the takes** | `plan_edit` splits shots longer than 12s into their own segments and scores them individually — three minutes of continuous footage becomes dozens of candidates with a real in-point. |
@@ -115,6 +142,7 @@ difference between a demo and something you would actually cut a video with:
 ## Table of contents
 
 - [Install — 3 steps](#install--3-steps)
+- [Using it — the 2-minute tour](#using-it--the-2-minute-tour)
 - [Install, in detail](#install)
 - [Quick start](#quick-start)
 - [Driving it from an agent (MCP)](#driving-it-from-an-agent-mcp)
@@ -200,6 +228,7 @@ pip install -e ".[vision]"      # ultralytics — detect_subjects, track_mask, a
 pip install -e ".[transcribe]"  # faster-whisper — transcribe, make_captions, tighten_speech, censor_speech
 pip install -e ".[html]"        # playwright — renders HTML clips (uses the Chrome or Edge you already have)
 pip install -e ".[plugin]"      # pedalboard — VST3 / AU audio plugins (VST2 .dll are not supported)
+pip install -e ".[web]"         # yt-dlp — web_download from video pages (YouTube, Vimeo, social...)
 ```
 
 `numpy` and Pillow are **not** extras: footage analysis, music-timed editing, `preview_grid`
@@ -226,8 +255,12 @@ vedit ui --port 9000 --no-browser
 ```
 
 The `.json` **is** the project: your video files stay where they are, nothing is copied.
-Format presets: `1080p`, `1080p60`, `4k`, `720p`, `vertical` (9:16, for reels and shorts),
-`vertical60`, `square`.
+Formats: any aspect ratio — `16:9`, `9:16` (reels, shorts, TikTok), `1:1`, `4:5` (feed),
+`4:3`, `3:4`, `21:9`, `2:3` — or an exact `WIDTHxHEIGHT`; `--size` sets the short side
+(720, 1080, 2160). The named presets still work: `1080p`, `1080p60`, `4k`, `720p`,
+`vertical`, `vertical60`, `square`. Change it later with `vedit format film.json 9:16 --fill`,
+from the format button in the top bar, or with `project_settings(format=...)` over MCP:
+the timeline stays, the frame changes, and `--fill` crops the clips instead of leaving bars.
 
 ---
 
@@ -561,6 +594,58 @@ comes out with six channels (AAC at double bitrate, Opus, PCM), an `.mp3` folds 
 `censor_speech`; `detect_subjects`, `track_mask`, `auto_reframe`, `remove_background`,
 `pin_to_subject`, `highlight_subject`.
 
+**Voiceover from text** — `generate_voice` (or the *voice* button) turns text into a voice on
+a `VO` audio track: one line at the playhead, or many lines in one call, each starting after
+the previous. Engines: **OpenAI** and any service with the same `/audio/speech` shape —
+including local servers like Kokoro-FastAPI or LocalAI —, **ElevenLabs**, **Google Gemini**
+(pace and tone said in words: *"fast, punchy explainer"*), **Piper** fully
+offline, or the **system voice** (SAPI on Windows, `say` on macOS, `espeak-ng` on Linux) with
+nothing to install. Keys live in `~/.vedit/tts.json`; the audio files sit next to the project,
+and the same line with the same settings is never generated twice.
+
+**Videos told by a voice** (explainers, faceless shorts, animation with no footage) are cut
+the other way round: the audio leads, the picture follows. `speech_times` says at which
+second of the *timeline* the voice says each phrase of the script — taking clip position,
+in-point and speed into account, and searching in script order so a phrase said twice
+lands on the right occurrence — and every animation starts from those times, never from a
+guess. The assistant follows a written method for these videos: sources for every number,
+a script written for the voice, the pace asked to the voice engine (never a sped-up
+track), one animated scene per chapter with visual metaphors instead of text cards, and
+several rounds of frame checks.
+
+**One conversation per project** — the chat is saved next to the project
+(`<project>.chat.json`) and comes back when you reopen it: with Claude Code the session
+resumes, with API models the history is reloaded, and if the model changed the
+conversation is handed over as text. The trash button starts it over.
+
+**Publishing** — the *publish* button (or `publish_video`) uploads an exported file to
+**YouTube** (your own OAuth client, sign in once in the browser; uploads start **private**
+unless you pick otherwise) or to your **TikTok** inbox as a draft you post from the app
+(access token from your TikTok developer app). Nothing is ever published without your click,
+or your yes when the agent asks. Instagram is not supported: its API needs a business account
+tied to a Facebook page and an approved Meta app.
+
+**The web** — no fixed sites: `web_search` searches the whole web (pages, images, videos,
+news), `web_read` reads any page and lists its images and videos, `web_download` grabs any
+image, video or audio — video pages too, with yt-dlp — and imports it into the bin, folder
+`web`. The *web* tab in the left panel does the same by hand. Search works with no key
+(DuckDuckGo, Bing for images) or with Brave, Tavily or your SearXNG. Every file's origin goes
+into `FONTI.md` next to the project: check the license before publishing. Local and private
+network addresses are always refused.
+
+**Your skills and MCP servers in the assistant** — in the model settings, *what the assistant
+can use*: **only the editor**; **editor + my skills and MCP servers** (with Claude Code as the
+model it loads your MCP servers, skills, plugins, claude.ai connectors and Chrome, and safe
+actions run on their own while risky ones are refused; with API models vedit connects to the
+MCP servers configured in Claude Code, Claude Desktop or `~/.vedit/mcp.json` and hands the
+model your skills); or **full access** (Claude Code with no permission prompts: commands,
+files, computer and browser control). Each MCP server can be switched off on its own.
+
+**Memory across projects** — `~/.vedit/MEMORIA.md`: the assistant and the MCP agent note your
+lasting preferences there (usual format, style, voice, channel, things you don't want) with
+`remember` / `forget`, and read them back at every project. Edit it by hand, or from the
+bookmark button in the assistant tab.
+
 ---
 
 ## Keyframes
@@ -592,6 +677,13 @@ backend/vedit/
   proxy.py       proxies, waveforms, thumbnails
   store.py       editing operations + undo/redo + atomic save
   chat.py        assistant: its tools are Store's operations
+  tts.py         voice from text: OpenAI-compatible, ElevenLabs, Piper, system voice
+  social.py      publishing: YouTube (OAuth, resumable upload), TikTok inbox
+  memoria.py     memory across projects (~/.vedit/MEMORIA.md)
+  allinea.py     when the voice says what, in timeline seconds (speech_times)
+  conversazioni.py  the chat of each project, saved next to it
+  web.py         web search, page reading, media download from any site
+  estensioni.py  the user's skills and MCP servers for the in-app assistant
   mcp_server.py  MCP tools
   api.py         REST/WebSocket API for the UI
   cli.py         command line

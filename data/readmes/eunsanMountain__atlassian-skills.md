@@ -246,6 +246,7 @@ Re-run `atls setup` any time. Defaults are non-destructive (`s` skips a product,
 atls jira issue get PROJ-1
 atls jira issue search "project=PROJ AND status=Open" --limit=20
 atls jira issue create --project PROJ --type Story --summary "New feature" --body-file=story.md --body-format=md
+atls jira issue create --project PROJ --type Sub-task --summary "Implement validation" --parent PROJ-1
 
 # Confluence read and managed edit
 atls confluence page get 12345
@@ -618,7 +619,8 @@ never measured against, and on a newer patch they stop matching silently.
 - **0.2.7** — `atls setup` interactive wizard + `atls doctor`; `setup all/codex/claude/paths/status` deprecated
 - **0.4.0** — portable Markdown-first Confluence workflow, source-bound informed consent, exact EOF-append preservation, state-free asset/body recovery, readable view/inspect, and smart asset synchronization
 - **0.4.1** — an explicit, two-step approval for a deliberate whole-page rewrite; `attachment upload-batch --if-exists` actually implemented
-- **0.4.3 (current)** — publishing a document with a picture a second time no longer fails on its first image; a stored filename gets a new attachment version instead of a refused create
+- **0.4.4 (current)** — `jira issue create --parent` for Sub-task issue types; an issue type the server refuses by name is retried once by its id from the project's create-meta
+- **0.4.3** — publishing a document with a picture a second time no longer fails on its first image; a stored filename gets a new attachment version instead of a refused create
 - **0.4.2** — a full-replacement refusal prints the approval command it tells you to run, and only the command shape the CLI actually produces
 - **0.4.0+** — typed table-style editing, Async client, caching, non-interactive `atls setup`, fish shell support, multi-profile wizard
 

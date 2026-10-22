@@ -19,6 +19,7 @@
 ### Features
 
 - **Dual Interface**: CLI commands and REST API
+- **Local Web Research Tools**: HTTP-first multi-angle search with field-weighted BM25, weighted angle consensus, freshness filters, caching and provider cooldown, plus scrape, map, background crawl, and structured extract, exposed over REST and a Dot-ready stdio MCP server (headless-only browser fallback)
 - **LLM Research Tool**: AI-powered web research with citations
 - **Async Architecture**: High-performance concurrent scraping
 - **Production Ready**: Docker, monitoring (Prometheus/Grafana), rate limiting, circuit breaker
@@ -57,6 +58,18 @@ web-scraper serve
 docker compose up --build
 ```
 
+### Google search stays off your screen
+
+Google no longer serves results to plain HTTP clients, and headless Chrome is caught within one request. A headed Chrome gets the real page, so the searcher starts Chrome itself, **minimises its window over CDP before the first search**, and keeps one browser and one tab for the process: ~2 s to start (a brief flash of a small window), then 0.4–1 s per search. If Chrome is missing or refused, **Camoufox** — a patched headless Firefox — takes over.
+
+```bash
+pip install -e ".[playwright]"   # the Chrome path
+pip install -e ".[camoufox]" && python -m camoufox fetch   # the headless fallback
+```
+
+- `GOOGLE_ALLOW_VISIBLE_BROWSER=true` — leave the Chrome window on screen (debugging).
+- `GOOGLE_USE_PLAYWRIGHT=false` — skip Google entirely and rely on DuckDuckGo.
+
 ### API Endpoints
 
 | Endpoint | Method | Description |
@@ -69,6 +82,15 @@ docker compose up --build
 | `/api/v1/scrape/batch` | POST | Batch scrape multiple URLs |
 | `/api/v1/tools/web-research` | POST | Run AI-powered research |
 | `/api/v1/tools/web-research/stream` | POST | Stream research progress |
+| `/api/v1/web/search` | POST | Discover URLs with a search adapter |
+| `/api/v1/web/scrape` | POST | Scrape one page to Markdown, metadata, and links |
+| `/api/v1/web/map` | POST | List URLs from sitemaps and page links |
+| `/api/v1/web/extract` | POST | Extract structured fields with provenance |
+| `/api/v1/web/crawl` | POST | Start a background crawl and return its job id |
+| `/api/v1/web/crawl/{job_id}` | GET | Crawl progress and counters |
+| `/api/v1/web/crawl/{job_id}/results` | GET | Paginated crawl results |
+| `/api/v1/web/crawl/{job_id}/cancel` | POST | Cancel a queued or in-flight crawl |
+| `/api/v1/web/stats` | GET | Web tool latency, cache, and browser state |
 | `/api/v1/research` | POST | Legacy research endpoint |
 | `/api/v1/research/stream` | POST | Legacy streaming research |
 
@@ -92,6 +114,7 @@ curl -X POST "http://127.0.0.1:8000/api/v1/tools/web-research" \
 - [User Guide](./docs/user-guide.md#english)
 - [API Documentation](./docs/api.md#english)
 - [LLM Integration](./docs/llm-tool-integration.md)
+- [Local Web Tools](./docs/web-tools.md)
 - [Production Deployment](./docs/production-deployment.md)
 
 ### License
@@ -109,6 +132,7 @@ MIT License
 ### Özellikler
 
 - **Çift Arayüz**: CLI komutları ve REST API
+- **Yerel Web Araştırma Araçları**: Alan ağırlıklı BM25, ağırlıklı açı uzlaşması, güncellik filtreleri, önbellek ve sağlayıcı soğuması içeren çok açılı HTTP öncelikli arama; kazıma, haritalama, arka plan taraması ve yapılandırılmış çıkarım; REST ve Dot'a hazır stdio MCP sunucusu (yalnızca headless tarayıcı yedeği)
 - **LLM Araştırma Aracı**: Alıntılı AI destekli web araştırması
 - **Asenkron Mimari**: Yüksek performanslı eşzamanlı kazıma
 - **Üretim Hazır**: Docker, izleme (Prometheus/Grafana), hız sınırlama, circuit breaker
@@ -147,6 +171,18 @@ web-scraper serve
 docker compose up --build
 ```
 
+### Google araması ekranda görünmez
+
+Google artık düz HTTP istemcilerine sonuç döndürmüyor ve headless Chrome tek istekte yakalanıyor. Başlı (headed) Chrome gerçek sayfayı alıyor; bu yüzden arayıcı Chrome'u kendisi başlatıp **penceresini ilk aramadan önce CDP ile küçültüyor** ve süreç boyunca tek tarayıcı + tek sekme kullanıyor: başlatma ~2 sn (küçük bir pencere kısa süre görünür), sonrası arama başına 0,4–1 sn. Chrome yoksa ya da reddederse **Camoufox** — yamalı, headless Firefox — devralıyor.
+
+```bash
+pip install -e ".[playwright]"   # Chrome yolu
+pip install -e ".[camoufox]" && python -m camoufox fetch   # görünmez yedek
+```
+
+- `GOOGLE_ALLOW_VISIBLE_BROWSER=true` — Chrome penceresi ekranda kalsın (hata ayıklama).
+- `GOOGLE_USE_PLAYWRIGHT=false` — Google'ı tamamen atla, DuckDuckGo kullan.
+
 ### API Uç Noktaları
 
 | Uç Nokta | Metod | Açıklama |
@@ -159,6 +195,15 @@ docker compose up --build
 | `/api/v1/scrape/batch` | POST | Toplu URL kazıma |
 | `/api/v1/tools/web-research` | POST | AI destekli araştırma |
 | `/api/v1/tools/web-research/stream` | POST | Araştırma ilerlemesi yayını |
+| `/api/v1/web/search` | POST | Arama adaptörüyle URL keşfi |
+| `/api/v1/web/scrape` | POST | Tek sayfayı Markdown, üst veri ve bağlantılara dönüştür |
+| `/api/v1/web/map` | POST | Site haritaları ve sayfa bağlantılarından URL listele |
+| `/api/v1/web/extract` | POST | Kaynak bilgisiyle yapılandırılmış alan çıkar |
+| `/api/v1/web/crawl` | POST | Arka plan taraması başlat, iş kimliğini hemen döndür |
+| `/api/v1/web/crawl/{job_id}` | GET | Tarama ilerlemesi ve sayaçları |
+| `/api/v1/web/crawl/{job_id}/results` | GET | Sayfalanmış tarama sonuçları |
+| `/api/v1/web/crawl/{job_id}/cancel` | POST | Sıradaki veya sürmekte olan taramayı iptal et |
+| `/api/v1/web/stats` | GET | Web aracı gecikmesi, önbellek ve tarayıcı durumu |
 | `/api/v1/research` | POST | Eski araştırma uç noktası |
 | `/api/v1/research/stream` | POST | Eski yayın akışı araştırması |
 
@@ -182,6 +227,7 @@ curl -X POST "http://127.0.0.1:8000/api/v1/tools/web-research" \
 - [Kullanım Kılavuzu](./docs/user-guide.md#türkçe)
 - [API Dokümantasyonu](./docs/api.md#türkçe)
 - [LLM Entegrasyonu](./docs/llm-tool-integration.md)
+- [Yerel Web Araçları](./docs/web-tools.md)
 - [Üretim Dağıtımı](./docs/production-deployment.md)
 
 ### Lisans

@@ -18,6 +18,10 @@
 
 安装本插件包（或手动复制预设）后，DSH 的预设选择器里会出现**四个** agent preset。
 
+> **⚠️ 旧 preset 弃用（v2 / v3 / v4 / v5 / v5r）**：它们仍在仓内作历史参考，但方向已改为
+> `vibe-math-vmu` ＋ pack；对应关系与“为何尚未从发货面移除”见
+> `docs/DEPRECATED-LEGACY-PRESETS.md`。
+
 ---
 
 ## 🧭 导航：我想要……→ 从这里开始
@@ -38,7 +42,7 @@
 ## 🧩 架构图（v2 + v3 + v4 + v5）
 
 > 静态架构图；完整流程说明见 [docs/架构图.md](docs/架构图.md)（v1 历史架构图；v2 起目录布局已变更）与
-> [vibe-math-v5/架构图.md](vibe-math-v5/架构图.md)（v5 全套细节图）；
+> [vibe-math-v5/架构图.md](docs/DEPRECATED-LEGACY-PRESETS.md)（v5 全套细节图）；
 > 可编辑生成脚本：中文 v2/v3 海报由 matplotlib 脚本生成 [v2](docs/generate_framework_diagram_v2.py) / [v3](docs/generate_framework_diagram_v3.py)（matplotlib → PNG）；
 > 英文版 v2/v3 由零依赖 Node 脚本生成 [v2-en](docs/generate_framework_diagram_v2_en.mjs) / [v3-en](docs/generate_framework_diagram_v3_en.mjs)（→ **SVG**）；
 > [v4](docs/generate_framework_diagram_v4.mjs) / [v5](docs/generate_framework_diagram_v5.mjs)
@@ -80,7 +84,7 @@
 ![Vibe Math V5 架构图](示例图/框架图-v5.svg)
 
 > 图源与全部细节图（成员生命周期、一轮时序、共识状态机、会议流程、调度优先级、状态折叠、
-> 提示词构成、任务板、职权矩阵）：[`vibe-math-v5/架构图.md`](vibe-math-v5/架构图.md)。
+> 提示词构成、任务板、职权矩阵）：[`vibe-math-v5/架构图.md`](docs/DEPRECATED-LEGACY-PRESETS.md)。
 > 上面这张 SVG 由零依赖脚本生成：`node docs/generate_framework_diagram_v5.mjs`。
 
 ```mermaid
@@ -110,7 +114,7 @@ flowchart TB
 
 **一句话流水线**：所办（会话根/人）`configure → start` 建所 → **院士**（academician，组织与协调中心）拆解原问题并**分派**任务、定优先级、主持会议、督导进度；**常驻研究员**各自研究并持有表决权，**临时工**可按需雇入（无表决权、可被真实解雇）。**框架只做媒介，绝不指派任务**；一切结论都要 **≥ m = min(`quorumCap`, 在册有表决权人数) 张布尔票且全部同向**才写入 `Verified/`（反向票阻塞、弃权不计票但计入平均概率，未达门槛留库附平均概率）；会议与验证**双向互斥**；状态写在研究所目录下的加固 JSON `State/<研究所>.v5state.json`（零 token 成本、串行写、读前必 load）；**仅当全体有表决权者都认为原问题已解决**才结题。
 
-> 职位与职权、求真规则细节、运行机制、状态与持久化、提示词构成、研究所目录、工具面、与 v4 的差异：见 [`vibe-math-v5/架构图.md`](vibe-math-v5/架构图.md) §13「从 README 移入的 v5 说明」（原文保留）；参数见[参数速查表](#-参数速查表)，最终论文见 [`docs/final-paper.md`](docs/final-paper.md)。
+> 职位与职权、求真规则细节、运行机制、状态与持久化、提示词构成、研究所目录、工具面、与 v4 的差异：见 [`vibe-math-v5/架构图.md`](docs/DEPRECATED-LEGACY-PRESETS.md) §13「从 README 移入的 v5 说明」（原文保留）；参数见[参数速查表](#-参数速查表)，最终论文见 [`docs/final-paper.md`](docs/final-paper.md)。
 
 ---
 
@@ -283,14 +287,14 @@ dsh plugin --profile <你的 profile> add github:ChongCyrus/Vibe-Mathematics
 
 把 v4 的常驻升级为一座**研究所**：**院士**（领头人 / 组织与协调中心：拆解、**分派**、定优先级、主持会议、督导进度）+ **常驻研究员**（有表决权，可自主雇佣/解雇自己的临时工）+ **临时工**（无表决权）；**框架仍然只做中继、任务板、会议与计数，绝不指派任务**。定论门槛为 **≥ m = min(`quorumCap`, 在册有表决权人数) 票布尔一致**（反向票阻塞、弃权不计票但计入平均概率、未达门槛留库附平均概率）；状态写在 `State/<研究所>.v5state.json`（零 token 成本）；会议与验证严格互斥。**选它**：想要"有组织的自组织"、可增减的编制与可调门槛。
 
-v5 的完整架构（成员生命周期、一轮时序、共识状态机、会议流程、调度优先级、状态折叠、提示词构成、任务板、职权矩阵）见 [`vibe-math-v5/架构图.md`](vibe-math-v5/架构图.md)；文字规格见 [`vibe-math-v5/实现方案.md`](vibe-math-v5/实现方案.md)。
+v5 的完整架构（成员生命周期、一轮时序、共识状态机、会议流程、调度优先级、状态折叠、提示词构成、任务板、职权矩阵）见 [`vibe-math-v5/架构图.md`](docs/DEPRECATED-LEGACY-PRESETS.md)；文字规格见 [`vibe-math-v5/实现方案.md`](docs/DEPRECATED-LEGACY-PRESETS.md)。
 
 ---
 
 
 ## 📁 目录结构
 
-> 只列**顶层与高价值路径**；每个文件的完整语义见各预设的 `实现方案.md`（[v2](vibe-math-v2/实现方案.md) · [v3](vibe-math-v3/实现方案.md) · [v4](vibe-math-v4/实现方案.md) · [v5](vibe-math-v5/实现方案.md)）与 [`vibe-math-v5/架构图.md`](vibe-math-v5/架构图.md)。
+> 只列**顶层与高价值路径**；每个文件的完整语义见各预设的 `实现方案.md`（[v2](docs/DEPRECATED-LEGACY-PRESETS.md) · [v3](docs/DEPRECATED-LEGACY-PRESETS.md) · [v4](docs/DEPRECATED-LEGACY-PRESETS.md) · [v5](docs/DEPRECATED-LEGACY-PRESETS.md)）与 [`vibe-math-v5/架构图.md`](docs/DEPRECATED-LEGACY-PRESETS.md)。
 
 ### v2（概率驱动 · 经典）
 
@@ -634,16 +638,16 @@ v3 与 v2 同一开关、同一时序（严格收口；**在调度器停止之�
 
 ## 📚 规格文档
 
-- **v2（概率驱动）**：[`vibe-math-v2/实现方案.md`](vibe-math-v2/实现方案.md)
-- **v3（论文式 md + 规划代理 + 方法库）**：[`vibe-math-v3/实现方案.md`](vibe-math-v3/实现方案.md)
-- **v4（常驻自组织）**：[`vibe-math-v4/实现方案.md`](vibe-math-v4/实现方案.md)
-- **v5（研究所体系）**：[`vibe-math-v5/实现方案.md`](vibe-math-v5/实现方案.md)（文字规格）· [`vibe-math-v5/架构图.md`](vibe-math-v5/架构图.md)（全套架构图）
+- **v2（概率驱动）**：[`vibe-math-v2/实现方案.md`](docs/DEPRECATED-LEGACY-PRESETS.md)
+- **v3（论文式 md + 规划代理 + 方法库）**：[`vibe-math-v3/实现方案.md`](docs/DEPRECATED-LEGACY-PRESETS.md)
+- **v4（常驻自组织）**：[`vibe-math-v4/实现方案.md`](docs/DEPRECATED-LEGACY-PRESETS.md)
+- **v5（研究所体系）**：[`vibe-math-v5/实现方案.md`](docs/DEPRECATED-LEGACY-PRESETS.md)（文字规格）· [`vibe-math-v5/架构图.md`](docs/DEPRECATED-LEGACY-PRESETS.md)（全套架构图）
 - **v5 提示词与交互语料**：[`prompt-corpus-v5/prompt-corpus-v5.md`](prompt-corpus-v5/prompt-corpus-v5.md)（框架真正发出的每一条提示词原文，可直接人工复核身份/编制/交互署名是否正确）
 - **四套 Lean 提示词语料**：[`prompt-corpus-v2/formal-verify-v2.md`](prompt-corpus-v2/formal-verify-v2.md) · [`prompt-corpus-v3/formal-verify-v3.md`](prompt-corpus-v3/formal-verify-v3.md) · [`prompt-corpus-v4/formal-verify-v4.md`](prompt-corpus-v4/formal-verify-v4.md)（各自覆盖 off / encourage / **require** / 忠实性分支 / 工作轮 / 回执契约；工作区归一化为 `<WS>`、VibeMath 根为 `<VIBEMATH>`）
 - **四个预设的 persona 原文**：[`prompt-corpus-persona/persona-corpus.md`](prompt-corpus-persona/persona-corpus.md)（主代理实际收到的提示词：有哪些工具、哪些参数、哪些斜杠子命令；由 `audit-persona-surface.test.mjs` 生成，随包发布）
 - **Lean 形式化验证（四架构共用契约）**：[`docs/formal-verification.md`](docs/formal-verification.md)
 - **最终论文（四架构共用契约）**：[`docs/final-paper.md`](docs/final-paper.md)（五个参数与 v4/v5 的 `paperEditor`、收口顺序"先论文后完成"、`Paper/<id>/` 产物与 9 节骨架、LaTeX 检测顺序与"先修复后降级"、v4/v5 团队合写流程与 v5 所办咨询规则）
-- **测试耗时基线与并行跑法**：[`docs/test-timing.md`](docs/test-timing.md)（`node tests/run-tests.mjs` 并行跑**全部套件 + 全部探针**：`TOTAL 454`（348 套件 + 106 探针/变体，**作业计数**（job count），不是文件计数）；**这些数字必须派生**：`node tests/run-tests.mjs --counts` 是权威来源（**作业计数**，不是文件计数），并由 [`tests/audit-readme-counts.mjs`](tests/audit-readme-counts.mjs) 校验本页与另两份文档；随包发布的是 `files[]` 里的 352 个 `tests/*.mjs`（252 个套件 + 100 个探针/脚本）（文件计数），其余仅开发检出可见，清单见该文档 §1.1；每个 runner 都会打印耗时/加速比供下次选策略）
+- **测试耗时基线与并行跑法**：[`docs/test-timing.md`](docs/test-timing.md)（`node tests/run-tests.mjs` 并行跑**全部套件 + 全部探针**：`TOTAL 472`（364 套件 + 108 探针/变体，**作业计数**（job count），不是文件计数）；**这些数字必须派生**：`node tests/run-tests.mjs --counts` 是权威来源（**作业计数**，不是文件计数），并由 [`tests/audit-readme-counts.mjs`](tests/audit-readme-counts.mjs) 校验本页与另两份文档；随包发布的是 `files[]` 里的 367 个 `tests/*.mjs`（263 个套件 + 104 个探针/脚本）（文件计数），其余仅开发检出可见，清单见该文档 §1.1；每个 runner 都会打印耗时/加速比供下次选策略）
 - **静态提示词面一致性（persona ↔ 工具注册表 ↔ 斜杠命令 hint/usage）**：[`audit-persona-surface.test.mjs`](tests/audit-persona-surface.test.mjs)（260 条断言，并生成 [`prompt-corpus-persona/persona-corpus.md`](prompt-corpus-persona/persona-corpus.md) 供人工复核）+ [`audit-persona-sensitivity.mjs`](tests/audit-persona-sensitivity.mjs)（16 条灵敏度探针）——守"注册的工具必须在 persona 里出现 / persona 里的名字必须真的注册 / `prefix` 与 `text` 两块逐行一致 / hint、usage、实际分支三处必须一致"
 - **全面检查必查清单**：[`AUDIT-CHECKLIST.md`](docs/AUDIT-CHECKLIST.md)（本仓库的强制审计流程；§1.9 专门查"工具参数 schema 收不收得下"）
 - **提示词/交互不变式（四套一起，可一键复核）**：[`audit-prompt-invariants.mjs`](tests/audit-prompt-invariants.mjs)（157 条断言）——把"历史上真实发生过的提示词/工具面缺陷类别"逐条编码成静态不变式（缩写工具名、把忠实性缺陷投成 0、`defect` 只写在提示词里没实现、回执契约缺 `defect`、无 note 放行、字段名错、`off` 档回执仍能写状态、语料不确定、探针缺失、**工具的封闭 schema 收不下它自己文档里的参数**、**schema 声明了参数层却静默丢弃的键**）。加 `--self-probe` 会在内存里注入这些缺陷形状，要求对应不变式**变红**、未变异的对照跑**仍为绿**（5/5）；脚本自身另带 X5–X8b 六条自检（注释扫描器必须认正则字面量——包括 `return /…/ ` 这种**关键字后面**的正则——字符串里的 `//` 必须保留、抹注释不改变行结构，以及"四套源码抹掉注释后仍必须能被 `node --check` 解析"这条解析级判据）

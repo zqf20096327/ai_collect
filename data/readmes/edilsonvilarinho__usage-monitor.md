@@ -82,6 +82,56 @@ API key, entered in **Settings > APIs**; environment variables are never read.
 | `--locale <pt\|en>` | Opens the interface in that language for this run only; the saved choice does not change |
 | `--user-data-dir <dir>` | Keeps this run's settings, history, keys and logs in `<dir>` instead of `~/.usage-monitor`; another folder runs side by side with the default one, with automatic updates and start with the system off |
 
+Terminal commands read the app's last collection and never call the APIs, so the app keeps being
+the one that collects. They follow the app language (`--locale` works here too):
+
+| Command | What it does |
+|---|---|
+| `status [--json] [--max-age <time>]` | Prints every quota: bar, state from your alert thresholds and when it resets. `--json` is a stable contract for scripts |
+| `check [--max <n>] [--max-age <time>] [--quiet]` | Exits with 0 on track, 1 warning, 2 critical, 3 no reading |
+| `wait <quota> --below <n> [--timeout <time>]` | Waits until the quota drops below n% (ids in `status --json`), e.g. `usage-monitor wait anthropic:work:claude-5h --below 50 && claude -p "run the suite"` |
+| `statusline claude-code` | One line under the Claude Code prompt: the account that Claude Code uses, 5h and 7d, session cost and throughput |
+| `statusline tmux` | A segment for the tmux status bar |
+
+```jsonc
+// ~/.claude/settings.json
+"statusLine": { "type": "command", "command": "usage-monitor statusline claude-code" }
+```
+
+```sh
+# ~/.tmux.conf
+set -g status-right '#(usage-monitor statusline tmux)'
+```
+
+Everything in the Settings window can also be done from the terminal, which is what a headless
+server needs. These commands write the app's own files; while the app or the service is collecting,
+the change is sent to it and it is the one that writes, so it applies right away (the proxy after a
+restart, as in the app). Keys and tokens are read from the input without echo, never from an argument:
+
+| Command | What it does |
+|---|---|
+| `setup` | First-time setup: accounts, API keys, alerts, Telegram, language and, on Linux, the service |
+| `config list\|get\|set` | Alerts, monthly budget, language, updates, Telegram bot options and proxy, by stable names such as `alerts.quota.thresholds` |
+| `sources list\|enable\|disable` | The monitored sources |
+| `keys set\|test\|remove <source>` | API keys; a key is tested with a real collection before it is saved |
+| `accounts list\|add\|rename\|enable\|disable\|remove\|rescan` | Claude Code and Codex accounts |
+| `telegram setup\|pair\|test\|status\|enable\|disable\|remove\|readonly` | The Telegram bot; `pair` waits for the chat to send `/start <code>` |
+| `team join\|status\|leave` | The team integration; `join` checks the server and the account links first |
+| `web enable\|disable\|status\|token` | Access from the local network; the address with the token only comes out with `token --show` |
+| `alerts [--since <time>]` | Today's alerts, when and where they went |
+| `update` | Checks for a new version and says how to update this install |
+
+On a Linux server without a display, `service install` creates a systemd user service that runs the
+same collection engine as the app, without a window (`service run`); `service status` shows the
+health of each part and `service logs --follow` the journal. The `.deb`/`.rpm` work on a server; without
+the `libGL`, `libX11` and `fontconfig` libraries the Telegram bot answers in text instead of images.
+
+```sh
+usage-monitor setup                 # answers the questions, installs the service
+sudo loginctl enable-linger "$USER" # keeps it running after you leave SSH
+usage-monitor service status
+```
+
 Without options it opens the app, or brings the running one to the front. On Windows, use
 `usage-monitor.exe` from the install folder: `Usage Monitor.exe` is a windowed program, so its output
 never reaches the terminal. The installer does not add the folder to `PATH`:

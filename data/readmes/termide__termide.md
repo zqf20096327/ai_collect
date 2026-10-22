@@ -104,6 +104,8 @@ Editor, LSP, terminal, git and project layouts are a given among terminal editor
 - **Projects** - Panel layouts restored per project; projects you switch away from keep running in the background, as buttons in the menu bar; `termide --restore` reopens the last run's set
 - **Multi-panel layout** - Stacked panel groups with adjustable heights, a fullscreen toggle (`Alt+F11`) and auto-stacking in narrow terminals
 - **Custom commands** - Global or per-project commands with hotkeys, parameter forms and terminal, background or report modes
+- **Plugins** - Programs in the global plugins directory, run beside each open project over JSON-RPC: they hear files opened and saved, add commands, status bar items and agent tools; each project switches them within the mode you set
+- **Safe with any repository** - A project's files can tighten things, never name what termide runs: its MCP servers, hooks and commands wait for your approval, and its config cannot pick programs, send keys elsewhere or loosen the agent
 - **Command palette and Open prompt** - `Ctrl+P` runs any command by fuzzy name; `Ctrl+G` opens a file, a folder or a URL with path suggestions
 - **Settings** - A full-screen settings modal (`Alt+P`) with in-place keybinding capture
 
@@ -154,37 +156,37 @@ Download the latest release for your platform from [GitHub Releases](https://git
 
 ```bash
 # Linux x86_64 (also works in WSL)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.44.0-x86_64-unknown-linux-gnu.tar.gz
-tar xzf termide-0.44.0-x86_64-unknown-linux-gnu.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.45.0-x86_64-unknown-linux-gnu.tar.gz
+tar xzf termide-0.45.0-x86_64-unknown-linux-gnu.tar.gz
 ./termide
 
 # Linux x86_64 (static musl — Alpine, distroless containers, any glibc-free system)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.44.0-x86_64-unknown-linux-musl.tar.gz
-tar xzf termide-0.44.0-x86_64-unknown-linux-musl.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.45.0-x86_64-unknown-linux-musl.tar.gz
+tar xzf termide-0.45.0-x86_64-unknown-linux-musl.tar.gz
 ./termide
 
 # macOS Intel (x86_64)
-curl -LO https://github.com/termide/termide/releases/latest/download/termide-0.44.0-x86_64-apple-darwin.tar.gz
-tar xzf termide-0.44.0-x86_64-apple-darwin.tar.gz
+curl -LO https://github.com/termide/termide/releases/latest/download/termide-0.45.0-x86_64-apple-darwin.tar.gz
+tar xzf termide-0.45.0-x86_64-apple-darwin.tar.gz
 ./termide
 
 # macOS Apple Silicon (ARM64)
-curl -LO https://github.com/termide/termide/releases/latest/download/termide-0.44.0-aarch64-apple-darwin.tar.gz
-tar xzf termide-0.44.0-aarch64-apple-darwin.tar.gz
+curl -LO https://github.com/termide/termide/releases/latest/download/termide-0.45.0-aarch64-apple-darwin.tar.gz
+tar xzf termide-0.45.0-aarch64-apple-darwin.tar.gz
 ./termide
 
 # Linux ARM64 (Raspberry Pi, ARM servers)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.44.0-aarch64-unknown-linux-gnu.tar.gz
-tar xzf termide-0.44.0-aarch64-unknown-linux-gnu.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.45.0-aarch64-unknown-linux-gnu.tar.gz
+tar xzf termide-0.45.0-aarch64-unknown-linux-gnu.tar.gz
 ./termide
 
 # Linux ARM64 (static musl — Android/Termux, Alpine ARM, any glibc-free ARM64)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.44.0-aarch64-unknown-linux-musl.tar.gz
-tar xzf termide-0.44.0-aarch64-unknown-linux-musl.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.45.0-aarch64-unknown-linux-musl.tar.gz
+tar xzf termide-0.45.0-aarch64-unknown-linux-musl.tar.gz
 ./termide
 
 # Windows x86_64 (download .zip from Releases, extract, run in Windows Terminal)
-# https://github.com/termide/termide/releases/latest/download/termide-0.44.0-x86_64-pc-windows-msvc.zip
+# https://github.com/termide/termide/releases/latest/download/termide-0.45.0-x86_64-pc-windows-msvc.zip
 ```
 
 </details>
@@ -195,13 +197,13 @@ tar xzf termide-0.44.0-aarch64-unknown-linux-musl.tar.gz
 TermIDE runs natively on Windows 10+ via ConPTY. Use **Windows Terminal** for
 the best experience.
 
-1. Download `termide-0.44.0-x86_64-pc-windows-msvc.zip` from [GitHub Releases](https://github.com/termide/termide/releases).
+1. Download `termide-0.45.0-x86_64-pc-windows-msvc.zip` from [GitHub Releases](https://github.com/termide/termide/releases).
 2. Extract the archive.
 3. Run `termide.exe` in Windows Terminal.
 
 Configuration, project layouts and logs live under `%APPDATA%\termide\`.
 
-Alternatively, in **WSL/WSL2** use the Linux x86_64 build (`termide-0.44.0-x86_64-unknown-linux-gnu.tar.gz`) as on any Linux.
+Alternatively, in **WSL/WSL2** use the Linux x86_64 build (`termide-0.45.0-x86_64-unknown-linux-gnu.tar.gz`) as on any Linux.
 
 </details>
 
@@ -212,8 +214,8 @@ Download and install the `.deb` package from [GitHub Releases](https://github.co
 
 ```bash
 # x86_64 only (ARM64 use tar.gz above)
-wget https://github.com/termide/termide/releases/latest/download/termide_0.44.0-1_amd64.deb
-sudo dpkg -i termide_0.44.0-1_amd64.deb
+wget https://github.com/termide/termide/releases/latest/download/termide_0.45.0-1_amd64.deb
+sudo dpkg -i termide_0.45.0-1_amd64.deb
 ```
 
 </details>
@@ -225,8 +227,8 @@ Download and install the `.rpm` package from [GitHub Releases](https://github.co
 
 ```bash
 # x86_64 only (ARM64 use tar.gz above)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.44.0-1.x86_64.rpm
-sudo rpm -i termide-0.44.0-1.x86_64.rpm
+wget https://github.com/termide/termide/releases/latest/download/termide-0.45.0-1.x86_64.rpm
+sudo rpm -i termide-0.45.0-1.x86_64.rpm
 ```
 
 </details>
@@ -297,8 +299,8 @@ glibc `aarch64-unknown-linux-gnu` build won't run on Android's Bionic libc):
 
 ```bash
 pkg install git openssh   # tools termide shells out to (plus any LSP servers)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.44.0-aarch64-unknown-linux-musl.tar.gz
-tar xzf termide-0.44.0-aarch64-unknown-linux-musl.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.45.0-aarch64-unknown-linux-musl.tar.gz
+tar xzf termide-0.45.0-aarch64-unknown-linux-musl.tar.gz
 ./termide
 ```
 
@@ -359,8 +361,8 @@ the same code, just compiled against musl.
 The easiest way is to grab the pre-built tarball from the release:
 
 ```bash
-wget https://github.com/termide/termide/releases/latest/download/termide-0.44.0-x86_64-unknown-linux-musl.tar.gz
-tar xzf termide-0.44.0-x86_64-unknown-linux-musl.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.45.0-x86_64-unknown-linux-musl.tar.gz
+tar xzf termide-0.45.0-x86_64-unknown-linux-musl.tar.gz
 ./termide
 
 # Verify it's fully static — no shared libraries
@@ -558,6 +560,22 @@ mode = "report"  # terminal (default), background, or report
 
 `Commands → Add command...` creates one through a form. See
 [Custom Commands](doc/en/actions.md) for modes, parameters and hotkeys.
+A command from a project's file runs once you have seen what it runs.
+
+### Plugins
+
+A plugin is a directory in `plugins/` beside the global `config.toml`, with a
+`plugin.toml` naming the program termide runs beside each open project:
+
+```toml
+# plugins/save-count/plugin.toml
+command = "./run.py"
+```
+
+The global `config.toml` sets each plugin's mode — `on` (the default),
+`opt-in` or `off` — and a project's `.termide/config.toml` may only switch it
+within that mode (`[plugins.<name>] enabled = true | false`). The protocol,
+JSON-RPC on the plugin's stdin and stdout, is in [Plugins](doc/en/plugins.md).
 
 ## Development
 

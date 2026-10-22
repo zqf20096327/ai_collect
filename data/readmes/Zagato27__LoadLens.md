@@ -24,7 +24,7 @@
 ## Why LoadLens
 
 - **The whole test window from your own metrics.** LoadLens reads Prometheus, VictoriaMetrics or InfluxDB (directly or through Grafana), stores the series of every run in TimescaleDB and builds the report from the test's own data: load tool, JVM, databases, Kafka, services, nodes, load generators, application logs.
-- **Deterministic steps and SLA verdicts.** A step detector finds the plateaus, the stable maximum and the moment the load drops; the SLA check on the last stable step (target RPS, error ratio, p95/p99, CPU, memory) gives `pass`, `risk`, `fail` or `no_data` with the threshold, the fact and the status of every criterion. No model is involved in the verdict.
+- **Deterministic steps and SLA verdicts.** A step detector finds the plateaus, the stable maximum and the moment the load drops; the SLA check (target RPS, error ratio and p95/p99 on the last step where they hold, CPU and memory on the first step at the target) gives `pass`, `risk`, `fail` or `no_data` with the threshold, the fact and the status of every criterion; steps above the target are headroom, so going further never worsens the verdict. No model is involved in the verdict.
 - **AI analysis per domain, every number checked.** Each domain gets its own analysis; several candidates are scored by a judge, and every number in the findings is verified against the collected data before the report says it. Step, soak, spike and stress tests each get their own analysis.
 - **Compare runs and forecast capacity.** Two runs side by side with an automatically chosen baseline, and a Universal Scalability Law forecast: the limit, the safe maximum and the number of pods for a target load.
 - **Launch tests and publish.** Start k6, JMeter, Locust or Gatling on SSH, Docker, Kubernetes, GitLab CI or Jenkins generators with live RPS, errors and p95, then publish the report and the forecast to Confluence.
@@ -53,7 +53,7 @@ echo '{}' > settings_runtime.json && echo '{}' > metrics_config_runtime.json
 cd docker && docker compose up -d --build           # app, TimescaleDB, Redis, Celery worker
 ```
 
-Open http://localhost:5000, sign in with the administrator from `docker/.env` and run the wizard at `/settings?wizard=1`: storage, data sources, domain bindings, query packs for your stack, LLM and SLA, each connection checked before you save. Tagged releases publish the image `ghcr.io/<owner>/loadlens:<tag>` (and `:latest`). Details: [docs/getting-started.md](docs/getting-started.md), [docs/deployment.md](docs/deployment.md).
+Open http://localhost:5000, sign in with the administrator from `docker/.env` and run the wizard at `/settings?wizard=1`: storage, data sources, domain bindings, query packs for your stack, LLM and SLA, each connection checked before you save. Tagged releases publish the image `ghcr.io/<owner>/loadlens:<tag>` (and `:latest`) for linux/amd64 and linux/arm64; [docs/deployment.md](docs/deployment.md#https-with-caddy) puts it behind HTTPS with Caddy. Details: [docs/getting-started.md](docs/getting-started.md), [docs/deployment.md](docs/deployment.md).
 
 ## What it works with
 
@@ -61,7 +61,7 @@ Open http://localhost:5000, sign in with the administrator from `docker/.env` an
 |---|---|
 | Load tools | k6, Gatling, JMeter, Locust, Yandex.Tank through their metrics output (k6 to InfluxDB or Prometheus remote write, JMeter to InfluxDB, Gatling Graphite to InfluxDB or VictoriaMetrics, Locust exporter, Yandex.Tank InfluxUploader); any tool whose metrics land in a supported store, with a command template for launching it |
 | Metric stores | Prometheus (PromQL), VictoriaMetrics (PromQL), InfluxDB 1.x (InfluxQL) and 2.x (Flux), each directly or through a Grafana data source proxy |
-| Query packs | 41 packs with checked queries and SLA references: node_exporter, windows_exporter, kube-state-metrics, JVM (Micrometer, JMX exporter, OpenTelemetry), Go, Python (FastAPI, Flask, Django), HTTP (Micrometer, Go, OpenTelemetry, NGINX ingress, Istio), Kafka (kafka_exporter, broker JMX, client Micrometer), PostgreSQL, PgBouncer, MySQL, MongoDB, Redis, ArangoDB, HikariCP, load generators |
+| Query packs | 43 packs with checked queries and SLA references: node_exporter, windows_exporter, kube-state-metrics, JVM (Micrometer, JMX exporter, OpenTelemetry), Go, Python (FastAPI, Flask, Django), HTTP (Micrometer, Go, OpenTelemetry, NGINX ingress, Istio), Kafka (kafka_exporter, broker JMX, client Micrometer), PostgreSQL, PgBouncer, MySQL, MongoDB, Redis, ArangoDB, HikariCP, load generators |
 | Launching tests | SSH (pinned host key), Docker Engine API, Kubernetes Jobs, GitLab CI and Jenkins pipelines with their parameters, or a manual mode that only marks the window |
 | LLM providers | Perplexity, OpenAI-compatible APIs, Anthropic, GigaChat (mTLS) |
 | Outputs | Web reports (print to PDF), Confluence pages for the report and the forecast, REST API with tokens for CI |
@@ -74,7 +74,7 @@ Open http://localhost:5000, sign in with the administrator from `docker/.env` an
 
 1. **Collect.** For the test window LoadLens runs the queries of every domain against its data source and stores the series in TimescaleDB, so the report can be rebuilt, compared and forecast later.
 2. **Steps.** The step detector works on the assigned RPS series: plateaus of every step, the stable maximum, the moment the load drops; short dips with recovery are not a drop.
-3. **SLA.** A deterministic check on the last stable step (the hold window for soak tests, the spike windows for spike tests): target RPS, error ratio, p95/p99, CPU and memory of the nodes. The verdict is `pass`, `risk`, `fail` or `no_data`.
+3. **SLA.** A deterministic check on the load steps (the hold window for soak tests, the spike windows for spike tests): target RPS, error ratio and p95/p99 on the last step where they hold, CPU and memory of the nodes on the first step at the target RPS. The verdict is `pass`, `risk`, `fail` or `no_data`.
 4. **AI analysis.** Each domain gets a prompt with its data, the test profile and a structured description of the system under test; the model answers in strict JSON, several candidates are scored by a G-Eval-lite judge.
 5. **Verification.** Every number in the findings is checked against the collected data; the report shows which numbers were confirmed and how the answer was chosen. Findings can be voted on, and an engineer can override the verdict with a reason.
 6. **Report.** SLA table, steps, charts with the step zones and thresholds, domain tabs, the overall verdict with its rationale, the engineer summary; a Confluence page that repeats it, and a capacity forecast built from the steps.
@@ -112,12 +112,11 @@ CI: `tests.yml` runs the suite on every push and pull request, `dependency-audit
 
 ## Roadmap
 
-Design notes for finished and planned work live in `docs/*-plan.md` (Russian). Next on the list:
+Finished work is listed in [CHANGELOG.md](CHANGELOG.md). Next on the list:
 
-- More query packs: JMeter with the Prometheus listener, Kafka Burrow, and live-stack verification of the packs that are only checked syntactically today (Windows, MySQL, MongoDB, Istio, NGINX ingress, Yandex.Tank).
+- More query packs: JMeter with the Prometheus listener, Kafka Burrow, and live-stack verification of the 21 packs that are only checked syntactically today (among them Windows, MySQL, MongoDB, Istio, NGINX ingress, JMX exporter, OpenTelemetry, kube-state-metrics and the InfluxQL packs of JMeter, Gatling and Yandex.Tank).
 - Local models through OpenAI-compatible servers as a documented, tested path, and more providers.
 - Import of Grafana dashboards as the starting point of a domain's queries.
-- A link checker for README and docs in CI, and an English build of the query pack catalogue.
 - A quality pass of the English prompts and reports on real providers.
 
 Suggestions and use cases are welcome in Discussions; the pinned roadmap issue tracks what is in progress.

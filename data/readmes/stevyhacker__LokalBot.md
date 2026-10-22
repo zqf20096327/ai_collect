@@ -10,7 +10,7 @@ Private meeting notes, workday recall, dictation, and autocomplete—with AI tha
 Your AI agents can search it too, from Claude Code, Codex, or any MCP client.<br />
 Free and open source. No account. Nothing joins your calls.
 
-[![Download LokalBot for macOS](https://img.shields.io/badge/%E2%80%82Download%20for%20macOS%E2%80%82-LokalBot.dmg-0969da?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/stevyhacker/lokalbot/releases/latest/download/LokalBot.dmg)
+[![Download LokalBot for macOS](https://img.shields.io/badge/%E2%80%82Download%20for%20macOS%E2%80%82-Apple%20Silicon-0969da?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/stevyhacker/lokalbot/releases/latest)
 [![Download LokalBot for Windows (alpha)](https://img.shields.io/badge/%E2%80%82Download%20for%20Windows%E2%80%82-alpha-0969da?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxNiAxNic%2BPHBhdGggZmlsbD0nd2hpdGUnIGQ9J00wIDBoNy41djcuNUgwek04LjUgMEgxNnY3LjVIOC41ek0wIDguNWg3LjVWMTZIMHpNOC41IDguNUgxNlYxNkg4LjV6Jy8%2BPC9zdmc%2B)](https://github.com/stevyhacker/lokalbot/releases/latest)
 [![Download LokalBot for Linux (alpha)](https://img.shields.io/badge/%E2%80%82Download%20for%20Linux%E2%80%82-alpha-0969da?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/stevyhacker/lokalbot/releases/latest)
 
@@ -27,11 +27,11 @@ Free and open source. No account. Nothing joins your calls.
 [Features](#features) · [Windows & Linux](#windows-and-linux) · [Compare](#how-it-compares) · [Privacy](#privacy) · [Get started](#get-started) · [Models](#local-ai-your-choice) · [Agents & CLI](#for-developers--agents) · [Website](https://www.lokalbot.com/)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="Assets/hero/lokalbot-hero-dark.png" />
-  <img src="Assets/hero/lokalbot-hero-light.png" width="920" alt="A LokalBot meeting summary behind Quick Recall, where one search returns screen text you saw and meeting transcripts of what was said" />
+  <source media="(prefers-color-scheme: dark)" srcset="Assets/hero/lokalbot-demo-dark.gif" />
+  <img src="Assets/hero/lokalbot-demo-light.gif" width="920" alt="LokalBot in use, in three looping scenes. One search for &quot;pricing&quot; finds a pricing sheet and a competitor's pricing page seen on screen, and the meeting where the price was set. Clicking the decision &quot;$15 per seat, billed annually&quot; in that meeting's summary opens the transcript at the line where it was said. Asking &quot;What did we decide on pricing?&quot; returns the answer with its sources from the meeting." />
 </picture>
 
-<sub>Real app captures with fictional demo data.</sub>
+<sub>The real app, recorded with fictional demo data.</sub>
 
 </div>
 
@@ -162,7 +162,7 @@ LokalBot runs on Apple Silicon Macs with macOS 15 or later. Windows and Linux ar
 | | macOS | Windows (alpha) | Linux (alpha) |
 | --- | --- | --- | --- |
 | Runs on | Apple Silicon (M1 or later), macOS 15+ | Windows 10 or 11, x64 | x86_64 with glibc 2.39 or later (Ubuntu 24.04, Debian 13, Fedora 40 or newer), PulseAudio or PipeWire, and a Vulkan or OpenGL driver |
-| Install | [LokalBot.dmg](https://github.com/stevyhacker/lokalbot/releases/latest/download/LokalBot.dmg): drag LokalBot to Applications. Or `brew install --cask stevyhacker/tap/lokalbot`. | [`LokalBot-<version>-windows-x86_64-setup.exe`](https://github.com/stevyhacker/lokalbot/releases/latest): run it to install LokalBot for your user, with a Start menu shortcut and no administrator rights. It isn't code-signed yet, so SmartScreen asks first: **More info → Run anyway**. The same release has a portable zip. | [`LokalBot-<version>-linux-x86_64.tar.gz`](https://github.com/stevyhacker/lokalbot/releases/latest): extract it and run `./install.sh`, which adds LokalBot to your applications menu. Or install the `.deb` (Debian, Ubuntu), `.rpm` (Fedora, openSUSE) or Arch package from the same release. The `.deb`, and the `.rpm` on Fedora, add the LokalBot repository, so `sudo apt upgrade` or `sudo dnf upgrade` brings later versions; with the Arch package, LokalBot tells you about updates instead of installing them. |
+| Install | [`LokalBot-<version>-macos-arm64.dmg`](https://github.com/stevyhacker/lokalbot/releases/latest): drag LokalBot to Applications. Or `brew install --cask stevyhacker/tap/lokalbot`. | [`LokalBot-<version>-windows-x86_64-setup.exe`](https://github.com/stevyhacker/lokalbot/releases/latest): run it to install LokalBot for your user, with a Start menu shortcut and no administrator rights. It isn't code-signed yet, so SmartScreen asks first: **More info → Run anyway**. The same release has a portable zip. | [`LokalBot-<version>-linux-x86_64.tar.gz`](https://github.com/stevyhacker/lokalbot/releases/latest): extract it and run `./install.sh`, which adds LokalBot to your applications menu. Or install the `.deb` (Debian, Ubuntu), `.rpm` (Fedora, openSUSE) or Arch package from the same release. The `.deb`, and the `.rpm` on Fedora, add the LokalBot repository, so `sudo apt upgrade` or `sudo dnf upgrade` brings later versions; with the Arch package, LokalBot tells you about updates instead of installing them. |
 | Your library | `~/Library/Application Support/me.dotenv.LokalBot` | `%LOCALAPPDATA%\LokalBot` | `~/.local/share/LokalBot` |
 
 A library recorded on one platform opens on the others. Not every Mac feature is on Windows and Linux yet; see [what works where](LinuxWindows/README.md#what-works-where).
@@ -203,7 +203,7 @@ Yes. On Mac, turn on **Meeting note export** to keep a Markdown note for every m
 <details>
 <summary><strong>Does it run on Windows or Linux?</strong></summary>
 
-Yes, as an alpha. The Windows and Linux app is a native Rust app with the same pages, the same models for summaries and search, and the same library format, so a library moves between computers. Selection actions, meeting note export, About you, spoken summaries, and coding-agent sessions in day memory are Mac only for now, and on Wayland some features depend on your desktop. See [what works where](LinuxWindows/README.md#what-works-where).
+Yes, as an alpha. The Windows and Linux app is a native Rust app with the same pages, the same models for summaries and search, and the same library format, so a library moves between computers. Selection actions, meeting note export, Personal Context, spoken summaries, and coding-agent sessions in day memory are Mac only for now, and on Wayland some features depend on your desktop. See [what works where](LinuxWindows/README.md#what-works-where).
 
 </details>
 

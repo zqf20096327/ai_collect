@@ -55,11 +55,26 @@ Then run any skill:
 - `/pmprompt:feature-prioritization-assistant`
 - `/pmprompt:positioning-canvas`
 
+### Option 3: Codex
+
+This repository includes Codex plugin metadata (`.codex-plugin/plugin.json` and `.agents/plugins/marketplace.json`) for the same PM skills. Add the marketplace, then install the plugin:
+
+```bash
+codex plugin marketplace add pmprompt/claude-plugin-product-management
+codex plugin add pmprompt@pmprompt-skills
+```
+
+Or, after adding the marketplace, install **pmprompt** from the Codex Plugins UI. Codex also turns the workflow commands in `commands/` into skills.
+
+To try a local checkout instead, run `codex plugin marketplace add .` from the repo root.
+
 ## Skills included
 
 | Skill | Description |
 |------|-------------|
 | [ab-test-designer](skills/ab-test-designer/) | Design robust A/B test experiments. Use when testing a new feature, validating a hypothesis, or optimizing conversion rates. |
+| [agent-spec-generator](skills/agent-spec-generator/) | Write a production-ready spec for an AI agent: scope, tools and permissions, autonomy levels, stop rules, escalation, failure modes, evals, and rollout. Use when you are about to build, buy, or expand an AI agent. |
+| [ai-ship-bar](skills/ai-ship-bar/) | Define a measurable quality bar for shipping an AI feature: task completion, precision and recall, p95 latency, cost per successful request, eval set design, sign-off, regression gates, and post-launch monitoring. |
 | [competitive-analysis-framework](skills/competitive-analysis-framework/) | Create detailed competitive analysis and positioning. Use when launching a new product, planning positioning, or identifying differentiation opportunities. |
 | [design-sprint](skills/design-sprint/) | Use when asked to "run a design sprint", "5-day sprint", "prototype in a week", "test ideas before building", or "Jake Knapp sprint". Helps teams go from problem to tested prototype in five days. The Design Sprint framework (created by Jake Knapp at Google Ventures) compresses months of work into one focused week. |
 | [feature-prioritization-assistant](skills/feature-prioritization-assistant/) | Calculate RICE scores and prioritize features systematically. Use when building your product roadmap and need to make data-driven prioritization decisions. |
@@ -88,13 +103,17 @@ Then run any skill:
 
 ## Install (via plugin directory / marketplace)
 
-If/when you find this plugin in the Claude plugin directory, install it from there.
+Install in one step in Claude Code (2.1.275 or later):
 
-If you want to add the marketplace directly in Claude Code:
+```text
+/plugin install pmprompt --marketplace pmprompt/claude-plugin-product-management
+```
+
+Or add the marketplace first, then install:
 
 ```text
 /plugin marketplace add pmprompt/claude-plugin-product-management
-/plugin install pmprompt
+/plugin install pmprompt@pmprompt-skills
 ```
 
 (Exact install UI may vary between Claude Code and Cowork.)
@@ -103,8 +122,28 @@ If you want to add the marketplace directly in Claude Code:
 
 - Plugin manifest: `.claude-plugin/plugin.json`
 - Marketplace metadata: `.claude-plugin/marketplace.json`
+- Codex plugin manifest: `.codex-plugin/plugin.json`
+- Codex marketplace metadata: `.agents/plugins/marketplace.json`
+
+When you bump the version, change it in all three places: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `.codex-plugin/plugin.json`.
+
+## Evals
+
+`evals/product-management/` has a human-review eval set with at least one case for every skill (`cases.jsonl`) and a scoring rubric (`rubric.md`). The cases are harness-neutral, so the same plugin behavior can be checked in Claude Code, Cowork, Codex, or another agent workspace. Run `python3 evals/product-management/check_cases.py` to check that every skill has a case.
+
+## Workflow commands
+
+The plugin also ships 9 workflow commands (for example `/pmprompt:discover`, `/pmprompt:write-prd`) that chain several skills together. See [docs/commands.md](docs/commands.md).
 
 ## Inspiration / credits
+
+Many of the framework skills (20 of them, listed in [NOTICE](NOTICE)) are adapted from David Turner's [product-skills](https://github.com/wdavidturner/product-skills), used under the MIT License:
+
+> MIT License
+>
+> Copyright (c) 2025 David Turner
+
+The full license text and the list of adapted skills are in [NOTICE](NOTICE).
 
 This plugin is inspired by the community ecosystem around Claude skills/plugins, including:
 - Corey Haines’ Marketing Skills for Claude Code: https://github.com/coreyhaines31/marketingskills

@@ -446,6 +446,7 @@ delve into the realm of zero-shot learning in computer vision, covering aspects 
 |[**✅13-Computer Vision Course by hugging face**](https://huggingface.co/learn/computer-vision-course/unit0/welcome/welcome)|we’ll cover everything from the basics to the latest advancements in computer vision.|[Github](https://github.com/huggingface/computer-vision-course/tree/main)|
 |[**✅14-Introduction to Computer Vision and Image Processing by coursera**](https://www.coursera.org/learn/introduction-computer-vision-watson-opencv?irclickid=RIMwY4SGUxycUVyXND0fZwm4UkuSMZQ473AAU80&irgwc=1&afsrc=1&utm_medium=partners&utm_source=impact&utm_campaign=3401872&utm_content=b2c&utm_campaignid=thecleverprogrammer&utm_term=14726_CR_1164545_)|we’ll cover everything from the basics to the latest advancements in computer vision.|[Github](https://github.com/huggingface/computer-vision-course/tree/main)|
 |[**✅15-Deep Learning for Computer Vision Specialization by coursera**](https://www.coursera.org/specializations/deep-learning-computer-vision?irclickid=RIMwY4SGUxycUVyXND0fZwm4UkuSMe1873AAU80&irgwc=1&afsrc=1&utm_medium=partners&utm_source=impact&utm_campaign=3401872&utm_content=b2c&utm_campaignid=thecleverprogrammer&utm_term=14726_CR_1164545_)|we’ll cover everything from the basics to the latest advancements in computer vision.|[Github](https://github.com/huggingface/computer-vision-course/tree/main)|
+|[**✅16-Kaggle Learn**](https://www.kaggle.com/learn)|we’ll cover everything from the basics to the latest advancements in computer vision.|[Github](https://github.com/huggingface/computer-vision-course/tree/main)|
 
 ##  🔹Chapter2: - **Important Website**
 | Title/link| Description | Code |
@@ -514,7 +515,4 @@ delve into the realm of zero-shot learning in computer vision, covering aspects 
 |[**✅5-Community-led Computer Vision Community Course**](https://huggingface.co/learn/computer-vision-course/unit0/welcome/welcome)|This is the repository for a community-led course on Computer Vision. Over 60 contributors from the Hugging Face| Inprogress|
 |[Computer Vision](https://github.com/the-akira/Computer-Science-Resources/blob/master/db/computer_vision.md)|---|---|
 |[Computer Vision Tutorial Series M1C1](https://pub.towardsai.net/computer-vision-tutorial-series-m1c1-535c27cd36ca)|---|---|
-|[Learning-based 3D Vision](https://github.com/dongjiacheng06/Learning-based-3D-Vision)|---|---|
-|[Artificial-Intelligence-Courses by KAUST Academy](https://github.com/KAUST-Academy/Artificial-Intelligence-Courses)|---|---|
-
-## 👁️ Chapter 1: - **🔍 T
+|[Learning-based 3D Vision](https://

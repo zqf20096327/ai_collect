@@ -15,7 +15,7 @@ Full documentation is available at **[platform.claude.com/docs/en/api/sdks/java]
 ### Gradle
 
 ```kotlin
-implementation("com.anthropic:anthropic-java:2.75.0")
+implementation("com.anthropic:anthropic-java:3.1.0")
 ```
 
 ### Maven
@@ -24,7 +24,7 @@ implementation("com.anthropic:anthropic-java:2.75.0")
 <dependency>
   <groupId>com.anthropic</groupId>
   <artifactId>anthropic-java</artifactId>
-  <version>2.75.0</version>
+  <version>3.1.0</version>
 </dependency>
 ```
 
@@ -60,4 +60,4 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License, Version 2.0. See the [LICENSE](LICENSE) file for details. Versions released before the change from the MIT License, and third-party contributions merged before it, remain under the MIT License. See [LICENSE-MIT](LICENSE-MIT).

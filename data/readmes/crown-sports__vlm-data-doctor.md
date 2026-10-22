@@ -1,19 +1,20 @@
 # VLM Data Doctor
 
-Check image-text SFT data for broken records and train/eval overlap before training.
+Catch broken image-text training records and create an auditable train/eval split before submitting a job.
 
-[![CI](https://github.com/chrischen-coder/vlm-data-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/chrischen-coder/vlm-data-doctor/actions/workflows/ci.yml)
+[![CI](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3670a0)](pyproject.toml)
 [![MIT](https://img.shields.io/badge/License-MIT-196c57)](LICENSE)
-[![Public preview](https://img.shields.io/badge/Release-v0.2.0%20preview-196c57)](https://github.com/chrischen-coder/vlm-data-doctor/releases/tag/v0.2.0)
+[![Public preview](https://img.shields.io/badge/Release-v0.3.0%20preview-196c57)](https://github.com/crown-sports/vlm-data-doctor/releases/tag/v0.3.0)
 
-[简体中文](README.zh-CN.md) · [Quick start](#quick-start) · [Use cases](docs/impact.md) · [Checks](docs/checks.md) · [LlamaFactory](docs/integrations/llamafactory.md)
+[简体中文](README.zh-CN.md) · [Quick start](#quick-start) · [Value and evidence](docs/product.md) · [Use cases](docs/impact.md) · [Checks](docs/checks.md) · [LlamaFactory](docs/integrations/llamafactory.md)
 
 Valid JSON can still reference missing images, contain mismatched `<image>` markers,
 or put pages from the same document in both training and evaluation.
 
-Run this checker after exporting your data and before submitting a training job.
-It reports the affected rows and fields, with advice for each finding.
+For dataset owners and ML engineers exporting image-text SFT data. Run it between
+annotation export and training: get an offline report with affected rows/fields,
+or a train/eval pair plus a manifest showing why related records stayed together.
 
 ## When to use it
 
@@ -28,19 +29,21 @@ or detect recompressed, cropped or semantically similar images.
 
 ![HTML report generated from the included broken fixture](docs/assets/report-desktop.png)
 
-Search findings and filter by severity. [Download the offline example](https://github.com/chrischen-coder/vlm-data-doctor/releases/download/v0.2.0/report.html) · [Mobile view](docs/assets/report-mobile.png)
+Search findings and filter by severity. [Download the offline example](https://github.com/crown-sports/vlm-data-doctor/releases/download/v0.2.0/report.html) · [Mobile view](docs/assets/report-mobile.png)
 
 ## Quick start
 
 Python 3.10+. Install from the repository:
 
 ```bash
-git clone https://github.com/chrischen-coder/vlm-data-doctor.git
+git clone --branch v0.3.0 https://github.com/crown-sports/vlm-data-doctor.git
 cd vlm-data-doctor
 python -m venv .venv
 ```
 
 Activate with `source .venv/bin/activate` on macOS/Linux or `.venv\Scripts\Activate.ps1` in Windows PowerShell.
+
+Install this pinned checkout so the examples below are available. No PyPI release is required:
 
 ```bash
 python -m pip install .
@@ -79,6 +82,31 @@ ERROR split_group_overlap eval:1 document_id: The selected group also appears at
 The example includes checks without grouping, with grouping, and with a separate
 manual for evaluation. Group IDs come from your data; the checker does not infer them.
 
+## Create a leakage-aware split
+
+```bash
+vlm-data-doctor split examples/document-split/all.jsonl --group-key document_id --eval-fraction 0.2 --seed 42 --output manual-split
+vlm-data-doctor check manual-split/train.jsonl --eval manual-split/eval.jsonl --image-root examples/document-split --group-key document_id --strict
+```
+
+Expected: all three source records are assigned, both pages of manual A stay
+together, and the final check reports no errors/warnings. Open `manual-split/manifest.json`
+to inspect source rows, groups and audit results. For your own export, replace
+`examples/document-split/all.jsonl` and its image root.
+
+The destination directory must not exist; missing parent directories are created
+automatically. The splitter keeps all rows from the same document together, including transitive connections through
+identical image bytes or identical normalized inputs. It writes `train.jsonl`,
+`eval.jsonl` and a manifest with source rows, SHA-256 fingerprints and the final
+audit. Invalid inputs and inseparable data fail before publishing outputs.
+
+`--eval-fraction` selects a fraction of **independent components**, so the row ratio
+can differ. Fixed seed and unchanged component membership give the same assignment
+even when source rows are reordered. Original rows and image paths are preserved;
+images are not copied. Use the original image root when checking or training from
+the exported files. The manifest records that local absolute root. This command
+loads rows into memory and detects exact evidence reuse, not visual near duplicates.
+
 ## Bring your data
 
 Use a JSON array or JSONL, with `messages` or ShareGPT `conversations`:
@@ -103,7 +131,8 @@ vlm-data-doctor check data/train.jsonl --eval data/test.jsonl --image-root data 
 ```
 
 Exit codes: `0` = no errors; `1` = data errors; `2` = configuration or I/O failure.
-`--strict` also fails on warnings. The output directory must exist. Image reuse
+`--strict` also fails on warnings. For `check` reports, the output parent directory
+must exist. Image reuse
 across splits needs review; it is not always a reason to delete a sample.
 
 [LlamaFactory mapping and training gate](docs/integrations/llamafactory.md) · [Python API, rules and limits](docs/checks.md)
@@ -113,6 +142,10 @@ across splits needs review; it is not always a reason to delete a sample.
 Fixed rules validate the format. Pillow decodes images. SHA-256 fingerprints match
 normalized conversations and image file bytes. Group checks compare the supplied
 source IDs. There is no learned detector or semantic quality score.
+
+The practical distinction is an end-to-end check → connected split → audit trail,
+with regressions for transitive evidence reuse and image paths after export.
+[Implementation evidence, limits and what still needs validation](docs/product.md).
 
 | Validation | Result and scope |
 | --- | --- |

@@ -13,6 +13,42 @@ problem formulations that unnecessarily limit the outcome. Keep the attempts, ev
 Planning and the catalog example are free in your browser. Computer execution uses a separately configured
 native model and isolated runner. [What works now and how to begin](docs/agent/SUCCESSOR_ALPHA.md).
 
+<!-- featured-research-papers -->
+## Featured research
+
+### [TRANSFORMATIONAL INTELLIGENCE ∞](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/Transformational_Intelligence.pdf)
+
+**Learning to Change the Game**
+
+Identify restrictive problem formulations, construct better ones and test that they still serve the intended purpose\. A framework for independently testable reformulation, not just better search\.
+Vincent Boucher · MONTREAL\.AI · 2026-10 · English PDF.
+
+**Companion papers · reading order**
+
+- **[Out\-Learn 📚](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/Out_Learn.pdf)** · Studies how to construct measurement protocols and learn reusable calibration, with error guarantees under declared drift and measurement\-error assumptions in exact synthetic studies\.
+  Vincent Boucher · MONTREAL\.AI · 2026-10-21 · English PDF.
+- **[Out\-Think 🧠](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/Out_Think.pdf)** · Studies executable reasoning representations that preserve required answers and operations, and when to replace rather than refine inherited internal codes, in exact finite models\.
+  Vincent Boucher · MONTREAL\.AI · 2026-10-21 · English PDF.
+- **[Out\-Design 🎨](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/Out_Design.pdf)** · Studies equivalent implementations that preserve required services and release usable capacity for reconfiguration and new capabilities, with checked constructions in finite executable models\.
+  Vincent Boucher · MONTREAL\.AI · 2026-10-21 · English PDF.
+- **[Out\-Strategise ♟️](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/Out_Strategise.pdf)** · Couple observation with construction to create strategies that achieve the required outcome despite unresolved uncertainty\.
+  Vincent Boucher · MONTREAL\.AI · 2026-10-20 · English PDF.
+- **[Out\-Execute ⚡](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/Out_Execute.pdf)** · Preserve progress as tasks change through reusable execution capabilities and independently checked boundary contracts, demonstrated in finite synthetic studies\.
+  Vincent Boucher · MONTREAL\.AI · 2026-10-21 · English PDF.
+- **[Out\-Evolve ♾️](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/Out_Evolve.pdf)** · A proposed architecture for building experimentation and production capabilities that make further discoveries and successor capabilities possible\.
+  Vincent Boucher · MONTREAL\.AI · 2026-10-20 · English PDF.
+
+Research proposals and bounded studies, not claims of general autonomous capability or physical deployment.
+[Explore the papers in English or French](https://montrealai.github.io/AGI-Alpha-Agent-v0/#papers)
+<!-- /featured-research-papers -->
+
+**Current source candidate · 1.38.0.** [Integrated flagship release notes](docs/agent/RELEASE_NOTES_1.38.0.md).
+This combined software candidate adds bounded OUT-EXECUTE execution and brings the seven original papers together
+with the six-stage Discovery Lab, frozen future-task experiments and one replayed evidence docket. It preserves
+existing proposal and Out-Evolve journeys. This is not a claim that every proposed capability is implemented.
+Synthetic results and unsigned work drafts grant no operational authority.
+Predecessor qualification, independent integration review and exact-source publication checks remain required.
+
 ## Choose your next step
 
 **[Open the guided website →](https://montrealai.github.io/AGI-Alpha-Agent-v0/)** · **[Commencer en français →](https://montrealai.github.io/AGI-Alpha-Agent-v0/?lang=fr)**
@@ -1885,93 +1921,4 @@ pytest -vv
 After completion `pytest` prints a summary such as `### passed in 120.00s`.
 
 The suite includes `tests/test_api_rate_limit.py` which spins up
-`api_server.app` with `API_RATE_LIMIT=2` and verifies that exceeding the
-limit returns HTTP `429`.
-
-<a name="62-marketplace-demo-example"></a>
-### 6.2 · Marketplace Demo Example 🛒
-A minimal snippet queues the sample job once the orchestrator is running:
-
-```bash
-alpha-factory --enabled finance,manufacturing &
-python - <<'PY'
-import subprocess, time
-from alpha_factory_v1.demos import alpha_agi_marketplace_v1 as market
-time.sleep(5)
-subprocess.run(["bash", str(market.POST_JOB_SCRIPT), str(market.SAMPLE_JOB)], check=True)
-marketplace_args = ["python", "-m", "alpha_factory_v1.demos.alpha_agi_marketplace_v1.marketplace", str(market.SAMPLE_JOB)]
-subprocess.run(marketplace_args, check=True)
-PY
-```
-
----
-
-### 6.2 · Cross-Industry Demo Quick‑Start 🌐
-Clone the stable `v0.1.0-alpha` release:
-```bash
-git clone --branch v0.1.0-alpha https://github.com/MontrealAI/AGI-Alpha-Agent-v0.git
-cd AGI-Alpha-Agent-v0/alpha_factory_v1/demos/cross_industry_alpha_factory
-# Set AUTO_COMMIT=1 to save generated assets back to the repo
-./deploy_alpha_factory_cross_industry_demo.sh
-```
-
----
-
-### 6.3 · Signing Agent Wheels 🔑
-Sign wheels dropped into `$AGENT_HOT_DIR` with the project ED25519 key.
-You need **OpenSSL** to create and verify signatures. Install it with
-`brew install openssl` on macOS or from the
-[OpenSSL Windows binaries](https://slproweb.com/products/Win32OpenSSL.html).
-Generate `<wheel>.whl.sig` via:
-
-```bash
-openssl dgst -sha512 -binary <wheel>.whl |
-  openssl pkeyutl -sign -inkey agent_signing.key |
-  base64 -w0 > <wheel>.whl.sig
-```
-
-Keep `<wheel>.whl.sig` next to the wheel in `$AGENT_HOT_DIR`.
-
-Verify the signature (PowerShell example):
-
-```powershell
-Get-Content <wheel>.whl -Encoding Byte |
-  openssl dgst -sha512 -binary |
-  openssl pkeyutl -verify -pubin -inkey $env:AGENT_WHEEL_PUBKEY -sigfile <wheel>.whl.sig
-```
-
-Add the base64 signature to `_WHEEL_SIGS` in
-`alpha_factory_v1/backend/agents/__init__.py`. Wheels failing verification are
-ignored.
-
-### 6.4 · Web Dashboard Quick-Start 📊
-Launch the local web interface:
-```bash
-uvicorn alpha_factory_v1.demos.alpha_agi_insight_v1.src.interface.api_server:app --reload
-streamlit run alpha_factory_v1/demos/alpha_agi_insight_v1/src/interface/web_app.py
-# React client
-cd alpha_factory_v1/demos/alpha_agi_insight_v1/src/interface/web_client
-npm ci          # use the lock file for reproducible installs
-npm run dev       # http://localhost:5173
-# build production assets
-npm run build
-python -m http.server --directory dist 9000
-```
-Alternatively run inside Docker:
-```bash
-# build the web client first so `dist/` exists
-make build_web
-# regenerate protobuf modules and Go stubs
-./tools/gen_proto_stubs.sh  # updates alpha_factory_v1/core/utils/a2a_pb2.py and tools/go_a2a_client/a2a.pb.go
-make compose-up  # builds and waits for healthy services
-```
-Run `./tools/gen_proto_stubs.sh` whenever `alpha_factory_v1/core/utils/a2a.proto` changes to keep the
-Python and Go stubs up to date.
-Open <http://localhost:8080> in your browser. When `RUN_MODE=web`, the container
-serves the static files from `alpha_factory_v1/demos/alpha_agi_insight_v1/src/interface/web_client/dist` using `python -m
-http.server`. The FastAPI demo also mounts this folder at `/` when present so the
-dashboard is reachable without additional tooling.
-
-Once running, Docker Compose marks the services **healthy** when:
-
-- `http://localhost:8000/healthz` returns status `200` for the orchestrat
+`api_server.app` with `API_RA

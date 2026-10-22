@@ -40,7 +40,7 @@ in the linked files.
 | [ddr5-9800x3d.md](ddr5-9800x3d.md) | What moving from DDR4 to DDR5 (5950X to 9800X3D) did to CPU-offloaded MoE |
 | [llama-b11434.md](llama-b11434.md), [llama-a868c3e3c.md](llama-a868c3e3c.md) | llama.cpp version-to-version changes, measured before upgrading |
 | [gsq-rco.md](gsq-rco.md) | ISTA-DASLab GSQ-RCO quants (Qwen3.8-27B and Qwen3.8-Flash-Next) against Unsloth's |
-| [strata.md](strata.md) | Qwen3.8-Flash-Next on the Strata engine: IQ3_XXS at 81-102 tok/s, 99.7% of experts on the two cards |
+| [strata.md](strata.md) | Qwen3.8-Flash-Next on the Strata engine: IQ3_XXS at 107-114 tok/s with 12 GiB RAM headroom; Coder IQ1_M tried and deleted |
 | [dflash2-qat-q2.md](dflash2-qat-q2.md) | DFlash2 speculative drafter and QAT Q2_0 for Qwen3.8-27B on 16 GB |
 | [turboquant.md](turboquant.md) | TurboQuant 2-4 bit KV-cache quantization |
 | [instella-moe.md](instella-moe.md) | AMD Instella-MoE-16B-A3B |
@@ -2001,18 +2001,14 @@ model's, not the harness's.
 | Gemma 4-26B-A4B `UD-Q4_K_M` † | ~5.4 | **37/50 (74%)** | 3/7 |
 | Gemma 4-26B-A4B `Q8_0` † | ~8.5 | 33/50 (66%) | 2/7 |
 | Laguna XS 2.1 `Q8_0` | ~8.5 | 27/50 (54%) | 2/7 |
+| Nemotron 3.5 Bolt 74B-A9B 24GB ‡ | ~2.4 | 35/50 (70%) | 2/7 |
+| Nemotron 3.5 Bolt 74B-A9B 24GB, **thinking on** ‡ | ~2.4 | **39/50 (78%)** | 4/7 |
+| Qwen3-Next-80B-A3B-Thinking `Q4_K_M` § | ~4.8 | 27/50 (54%) | 2/7 |
+| Qwen3.8-Flash-Next `IQ3_XXS`, Strata ¶ | ~3.1 | **43/50 (86%)** | 4/7 |
+| Qwen3.8-Flash-Next `IQ3_XXS`, Strata, **thinking medium**, 3 runs ¶ | ~3.1 | **47 / 47 / 47 (94%)** | 5/7 |
+| Qwen3.8-Flash-Next **Coder** `IQ1_M`, Strata ¶ | ~3.5 kept | 42/50 (84%) | 3/7 |
+| Qwen3.8-Flash-Next **Coder** `IQ1_M`, Strata, thinking medium, 3 runs ¶ | ~3.5 kept | 31 / 43 / 39 (mean 75%) | 3-4/7 |
 
 † The two Gemma 4 rows were measured 2026-08-29 at `--max-tokens 12288`; every
 other row used 2400. They are directly comparable to each other but not exactly
-to the rest of the table. Their 4-check spread is inside this probe's noise
-floor — see the Gemma 4 section.
-
-**BPW does not order this table.** The highest-bit quant scores lowest and the
-lowest-bit quant scores highest. IQ4_XS lost 9 checks in one go by emitting
-Python that does not parse (`urljoin`, `SyntaxError`), which is a generation
-failure rather than a knowledge one — but that is exactly the kind of failure
-that matters in an agentic loop, so it is scored, not excused.
-
-**Laguna XS 2.1 is the only model below the band.** 27/50 is 3 checks under the
-previous floor. At `Q4_K_M`, 6 of those losses come from one task
-(`add_months
+to the rest 

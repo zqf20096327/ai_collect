@@ -110,6 +110,18 @@ Assign a profile to a source, or let AI choose. Want a different take? Adapt an 
 
 Run the full pipeline through the CLI, or let an AI assistant call its stages through [MCP](src/mcp/README.md).
 
+## Agent Skill
+
+Let your AI assistant configure sources, customize Profiles, and run Horizon:
+
+```bash
+npx skills add Thysrael/Horizon --skill horizon -g
+```
+
+[Setup and usage](docs/agent-skill.md) · [Download Skill ZIP](https://thysrael.github.io/Horizon/downloads/horizon-skill.zip)
+
+The command requires Node.js 22.20+. Then ask your assistant to install and configure Horizon, or follow the Quick Start below.
+
 ## Quick Start
 
 ### 1. Install
@@ -165,6 +177,8 @@ uv run horizon-wizard
 ```
 
 The wizard asks about your interests (e.g. "LLM inference", "嵌入式", "web security") and auto-generates `data/config.json`. See [Interactive Wizard](docs/configuration.md#interactive-wizard) for CLI options.
+
+Eligible ChatGPT subscribers can choose `openai-chatgpt` to use their plan through [Sign in with ChatGPT](docs/chatgpt.md), without an OpenAI API key.
 
 **Option B: Manual configuration**
 
@@ -239,7 +253,8 @@ results. Categories come from source configuration such as
 ```
 
 Group limits are applied after profile filtering and before enrichment. If
-`category_groups` and `max_items` are omitted, no balanced digest limits apply.
+`category_groups`, `max_items`, and `default_group_limit` are omitted, no balanced
+digest limits apply.
 
 `api_key_env` must be the name of an environment variable, not the API key
 itself. Put the real secret in `.env`:
@@ -339,6 +354,7 @@ Horizon is an open-source project maintained in spare time. If you'd like to sup
 | [Scrapers](docs/scrapers.md) | Source scraper details and extension notes |
 | [Extractors](docs/extractors.md) | Full article extraction for RSS sources |
 | [MCP Tools](src/mcp/README.md) | Tool reference for MCP-compatible clients |
+| [Agent Skill](docs/agent-skill.md) | Use an AI assistant to configure, run, customize, schedule, and extend Horizon |
 
 ## Project Status
 

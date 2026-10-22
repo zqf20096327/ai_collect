@@ -168,6 +168,42 @@ Offline HITL `drift_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen tool-permissio
 Offline HITL `thrash_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen blackboard lease-thrash monitors. See `docs/guides/BLACKBOARD_LEASE_THRASH_ADVISOR_GUIDE.md`.
 
 
+### SharedKvWriteAmplificationAdvisor
+
+![SharedKvWriteAmplificationAdvisor](assets/demo/shared-kv-write-amplification.gif)
+
+Offline HITL `write_amp_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen shared-KV write-amplification monitors. See `docs/guides/SHARED_KV_WRITE_AMPLIFICATION_ADVISOR_GUIDE.md`.
+
+### HandoffPayloadBloatAdvisor
+
+![HandoffPayloadBloatAdvisor](assets/demo/handoff-payload-bloat.gif)
+
+Offline HITL `payload_bloat_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen handoff payload-bloat monitors. See `docs/guides/HANDOFF_PAYLOAD_BLOAT_ADVISOR_GUIDE.md`.
+
+### SupervisorIdleSkewAdvisor
+
+![SupervisorIdleSkewAdvisor](assets/demo/supervisor-idle-skew.gif)
+
+Offline HITL `idle_skew_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen supervisor idle-skew monitors. See `docs/guides/SUPERVISOR_IDLE_SKEW_ADVISOR_GUIDE.md`.
+
+### BlackboardReadStalenessAdvisor
+
+![BlackboardReadStalenessAdvisor](assets/demo/blackboard-read-staleness.gif)
+
+Offline HITL `staleness_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen blackboard read-staleness monitors. See `docs/guides/BLACKBOARD_READ_STALENESS_ADVISOR_GUIDE.md`.
+
+### ToolSideEffectReplayBandAdvisor
+
+![ToolSideEffectReplayBandAdvisor](assets/demo/tool-side-effect-replay-band.gif)
+
+Offline HITL `replay_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen tool side-effect replay monitors. See `docs/guides/TOOL_SIDE_EFFECT_REPLAY_BAND_ADVISOR_GUIDE.md`.
+
+### AgentLoopTokenBleedAdvisor
+
+![AgentLoopTokenBleedAdvisor](assets/demo/agent-loop-token-bleed.gif)
+
+Offline HITL `token_bleed_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen agent-loop token-bleed monitors. See `docs/guides/AGENT_LOOP_TOKEN_BLEED_ADVISOR_GUIDE.md`.
+
 ### PlannerCriticOscillationBandAdvisor
 
 ![PlannerCriticOscillationBandAdvisor](assets/demo/planner-critic-oscillation-band.gif)

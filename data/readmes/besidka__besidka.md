@@ -20,6 +20,11 @@ New to API keys? Read the [BYOK guide](https://besidka.com/byok).
 
 Project board is available [here](https://github.com/orgs/besidka/projects/2).
 
+## Contributing
+
+Issues are welcome. Code contributions are by invitation only; see
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Tech stack
 
 - [Nuxt (Vue + Nitro + Cloudflare workers)](https://nuxt.com/)
@@ -31,8 +36,8 @@ Project board is available [here](https://github.com/orgs/besidka/projects/2).
 - [Daisy UI](https://daisyui.com/)
 - [Vercel AI SDK](https://ai-sdk.dev/docs)
 - [Evlog](https://evlog.dev/) (observability and logging)
-- [Mediabunny](https://mediabunny.dev/) (high-performance streaming video from a Cloudflare R2 bucket)
-- [Plyr](https://plyr.io/) (video player)
+- [Mediabunny](https://mediabunny.dev/) (in-browser hover-thumbnail extraction from the demo MP4 via Range reads (WebCodecs), and upload validation; playback itself is the native `<video>` streaming progressive MP4 from Cloudflare R2 through the Worker route)
+- [Video.js](https://videojs.org/) v10 (video player)
 - [Pele](https://pele.run/) (Mermaid diagrams rendered to SVG)
 
 ## Features

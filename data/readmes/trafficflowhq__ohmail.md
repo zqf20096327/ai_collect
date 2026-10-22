@@ -22,7 +22,7 @@ Any IMAP mailbox, Gmail and Microsoft 365 / Exchange\*.
 [ohmail.app](https://ohmail.app)
 
 [![build](https://github.com/trafficflowhq/ohmail/actions/workflows/build.yml/badge.svg)](https://github.com/trafficflowhq/ohmail/actions/workflows/build.yml)
-[![latest release](https://img.shields.io/badge/download-v0.27.5-a3461c)](https://github.com/trafficflowhq/ohmail/releases/latest)
+[![latest release](https://img.shields.io/badge/download-v0.28.0-a3461c)](https://github.com/trafficflowhq/ohmail/releases/latest)
 [![licence: AGPL-3.0](https://img.shields.io/badge/licence-AGPL--3.0-a3461c)](LICENSE)
 [![macOS 15+](https://img.shields.io/badge/macOS-15%2B-111111)](#macos)
 [![Windows 10+](https://img.shields.io/badge/Windows-10%2B-111111)](#windows)
@@ -67,8 +67,9 @@ confirmed often enough graduates and files itself from then on, spam included;
 or switch on "Act on confident suggestions for me" and a sender whose suggestion
 is confident is filed for you — never someone you have written to — with the
 rule listed for you to undo. A screen-out or spam verdict about a message your
-provider did not confirm files only that message, writes no rule, and lists it
-under Filed automatically to put back. Every move is recorded and reversible. A
+provider did not confirm, or one that rests only on the same subject from other
+first-time senders, files only that message, writes no rule, and lists it under
+Filed automatically to put back. Every move is recorded and reversible. A
 one-time code inside a message is stripped before any model sees it, and
 automatic routing leaves that mail alone entirely.
 
@@ -818,7 +819,9 @@ server up.
 the Xcode command line tools. On Linux also the Tauri prerequisites — on Ubuntu
 24.04:
 
+<!-- run by .github/workflows/contributor.yml: linux-packages -->
 ```bash
+sudo apt-get update
 sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libsoup-3.0-dev \
   libjavascriptcoregtk-4.1-dev librsvg2-dev libayatana-appindicator3-dev \
   libssl-dev build-essential curl wget file patchelf desktop-file-utils
@@ -834,20 +837,25 @@ whole client against a stub engine channel and proves, on the built bundle, that
 the page itself opens no connection. (The app has no demo mode: it opens empty
 until you connect a mailbox. The demo is at ohmail.app/demo.)
 
+<!-- run by .github/workflows/contributor.yml: interface -->
 ```bash
 cd apps/desktop
-npm ci                   # apps/desktop has its own lockfile
+npm ci --ignore-scripts  # apps/desktop has its own lockfile
 npm run ui:build:engine  # → dist/, the bundle the app embeds
 npm run smoke            # → SMOKE OK — renders, offline audit included
 ```
 
 #### The real thing, with the mail engine in it
 
+From the repository root:
+
+<!-- run by .github/workflows/contributor.yml: engine -->
 ```bash
 # The engine, bundled with the pinned esbuild — a devDependency of the root
 # manifest, so `npm ci` at the root is the whole resolution. The bundle is only
 # reproducible for a fixed bundler version, so a different one is refused.
-npm ci
+# --ignore-scripts: no dependency's install script runs, as in CI.
+npm ci --ignore-scripts
 # The changes this repository carries to its dependencies (`patches/`), applied
 # with git. The bundler refuses an engine that does not carry them.
 node scripts/apply-patches.mjs apply
@@ -861,14 +869,14 @@ node scripts/verify-engine-boot.mjs
 # SHASUMS256.txt before it is unpacked. A mismatch is a refusal, not a warning.
 node scripts/vendor-node.mjs
 
-# Building with no network? Put the release archives in a directory and name it:
-# nothing is downloaded, and the bytes are checked against the digests pinned in
-# the script.
-OHMAIL_NODE_ARCHIVES=/path/to/archives node scripts/vendor-node.mjs
-
 # And the app itself.
 cd apps/desktop && npm run app:build:engine
 ```
+
+Building with no network? Put the release archives in a directory and name it,
+`OHMAIL_NODE_ARCHIVES=/path/to/archives node scripts/vendor-node.mjs` in place
+of the plain `vendor-node.mjs` line: nothing is downloaded, and the bytes are
+checked against the digests pinned in the script.
 
 On Linux, a source-built AppImage bundles GTK from the build host, which may
 use a different GTK version than the release artifact. The shell pins GTK's

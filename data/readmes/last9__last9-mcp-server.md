@@ -97,6 +97,8 @@ brew install last9/tap/last9-mcp
 
 **NPM:**
 
+Requires Node.js 22.23.4+, 24.22.1+ or 26.12.1+: earlier releases accept TLS certificates from the compromised eMudhra intermediates when the installer downloads the binary.
+
 ```bash
 npm install -g @last9/mcp-server@latest
 # or directly:
@@ -222,7 +224,7 @@ The NPM route is easier on Windows — no path management.
 | `LAST9_MCP_READ_ONLY`        | `false`              | Set `true` to serve only read-only tools; see [Read-only mode](#read-only-mode). A value that is not a boolean is a startup error. Alias: `LAST9_READ_ONLY` |
 | `LAST9_MCP_ALLOW_WRITE_TOOLS`| —                    | Comma-separated write tools still served in read-only mode. Alias: `LAST9_ALLOW_WRITE_TOOLS` |
 | `LAST9_MAX_GET_LOGS_ENTRIES` | `5000`               | Max entries for chunked `get_logs` requests |
-| `LAST9_USE_LOG_SEARCH_API`   | `false`              | Set `true` to answer `get_logs` and `get_service_logs` with one server-side search call instead of client-side chunking |
+| `LAST9_USE_LOG_SEARCH_API`   | `false`              | Set `true` to answer `get_logs` and `get_service_logs` with one server-side search call instead of client-side chunking. Each call gets 90 seconds, then returns advice to narrow the window; a 502 or 503 is retried once within it |
 | `LAST9_DEBUG_CHUNKING`       | `false`              | Set `true` to log chunk-planning details for `get_logs`, `get_service_logs`, `get_traces` |
 | `LAST9_DISABLE_TELEMETRY`    | `true`               | Set `false` to enable internal OTel tracing |
 | `OTEL_SDK_DISABLED`          | —                    | Standard OTel env var. Overrides `LAST9_DISABLE_TELEMETRY` |
@@ -242,7 +244,7 @@ last9-mcp --read-only --allow-write-tools=acknowledge_alert,mute_alert_group
 - The server refuses to start if an allowed name is not a write tool (a typo, or a read tool's name); the error lists the valid write tools.
 - `--allow-write-tools` without `--read-only` is a startup error, because every write tool is already served.
 - Read-only combines with `--toolsets`: a tool is served only when it passes both. `--toolsets=alerts --read-only --allow-write-tools=mute_alert_group` serves the alerts read tools plus `mute_alert_group`; an allowed write tool outside the chosen toolsets stays hidden.
-- `--http` mode and `dump-tools` honor the same flags and env vars: `go run . dump-tools --read-only` prints the read-only surface.
+- `--http` mode and `dump-tools` honor the same flags and env vars: `go run . dump-tools --read-only` prints the read-only surface, with the server instructions it serves in `instructions`.
 - Read tools' descriptions, schemas and results, and the server instructions, never name a hidden write tool. An allowed write tool can still name its hidden siblings (`create_alert` creates a disabled rule that `patch_alert` enables), so allow such pairs together.
 
 ---
@@ -589,12 +591,18 @@ Returns `now` (and `start`/`end` with `range`) as `{iso, epoch_seconds, local}`;
 
 - `match_query` (string, optional): PromQL filter.
 - `label` (string, required): Label name.
+- `lookback_minutes` (float, optional): Default: 60.
 - `start_time_iso` / `end_time_iso` (string, optional)
+
+When no window is given and `match_query` names one metric (`metric{...}` or `{__name__="metric"}`), an empty 60-minute result is retried once over 4 days; a second text block says which window the result covers.
 
 ### prometheus_labels
 
 - `match_query` (string, optional): PromQL filter.
+- `lookback_minutes` (float, optional): Default: 60.
 - `start_time_iso` / `end_time_iso` (string, optional)
+
+Retries an empty single-metric lookup over 4 days, like `prometheus_label_values`.
 
 ### get_logs
 

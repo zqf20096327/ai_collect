@@ -5,8 +5,9 @@
 <h3>Decide what your agent sees, sends and gets back, in every API it touches.</h3>
 
 <p>
-<a href="https://docs.r28.ai/charter">Documentation</a> ·
 <a href="https://docs.r28.ai/charter/start/quickstart">Quickstart</a> ·
+<a href="https://github.com/r28ai/charter/tree/main/examples">Examples</a> ·
+<a href="https://docs.r28.ai/charter">Documentation</a> ·
 <a href="https://docs.r28.ai/charter/start/coding-agents">Coding agents</a> ·
 <a href="https://docs.r28.ai/charter/packs/overview">Packs</a>
 </p>
@@ -23,12 +24,9 @@
 
 # Charter
 
-Charter is an open-source Python tool-definition layer for agents. Wire tools by hand and
-you're hoping for the best, blind spots and all. Vendor toolkits, MCP servers and catalog
-platforms hand you someone else's.
-
-Charter lets you control every aspect of yours, and checks each call before it's sent. It
-works for any HTTP API, including your own internal ones.
+Charter is an open-source Python tool-definition layer for agents. It lets you control every
+aspect of your tools, and checks each call before it's sent. It works for any HTTP API,
+public or private.
 
 A library, not a service.
 Runs in your process. No proxy, no per-call pricing, no telemetry.
@@ -118,8 +116,8 @@ It can fix the call or stop; Charter never improvises.
 
 | | What Charter does | Measured |
 |---|---|---|
-| **Sees** | Cuts a tool down to the fields the job needs | On Linear's issue list, deepseek-v4p1 was refused 30/30 with the full filter and succeeded 30/30 with a curated one ([details](#shape-a-tool)) |
-| **Sends** | Builds wire formats like MIME, base64 and GraphQL, so the model fills in plain fields | Over 534 runs, a raw HTTP tool sent 32 malformed GraphQL documents and 10 calls to endpoints never declared; Charter sent 0 ([details](#control-what-goes-out)) |
+| **Sees** | Cuts a tool down to the fields the job needs | Google Docs' write tool has 33 kinds of edit; cut to the 3 a job needs, its schema goes from 7,336 tokens to 1,553 ([details](https://docs.r28.ai/charter/tools/projections#why-the-tool-is-shaped-this-way)) |
+| **Sends** | Builds wire formats like MIME, base64 and GraphQL, so the model fills in plain fields | Over 534 runs, a raw HTTP tool sent 32 malformed GraphQL documents and tried 10 calls to endpoints never declared; Charter did neither ([details](#control-what-goes-out)) |
 | **Gets back** | Trims responses, and raises when a `200` is really a failure | GitHub sends 346.6 KB, the model gets 10.7 KB ([details](#control-what-comes-back)) |
 
 ## Who it's for
@@ -134,16 +132,16 @@ It can fix the call or stop; Charter never improvises.
 
 ## Examples
 
-[`examples/`](https://github.com/r28ai/charter/tree/main/examples) has fifteen short
-scripts, numbered in reading order. Most run without an account.
+[`examples/basics/`](https://github.com/r28ai/charter/tree/main/examples/basics) has thirteen
+short scripts, numbered in reading order, and none of them needs a key or an account.
 
 | Example | Shows |
 |---|---|
-| [`02_use_a_pack.py`](https://github.com/r28ai/charter/blob/main/examples/basics/02_use_a_pack.py) | A shipped tool: GitHub sends 346.6 KB, the model gets 10.7 KB |
-| [`03_hand_to_a_model.py`](https://github.com/r28ai/charter/blob/main/examples/basics/03_hand_to_a_model.py) | Tools in Charter's own agent loop, with any OpenAI-compatible model |
-| [`05_errors_for_the_model.py`](https://github.com/r28ai/charter/blob/main/examples/basics/05_errors_for_the_model.py) | A bad argument refused before sending, with a fix the model can apply |
-| [`10_many_tools.py`](https://github.com/r28ai/charter/blob/main/examples/basics/10_many_tools.py) | 613 tools in one session, starting from 4,476 tokens |
-| [`13_one_tool_per_plan.py`](https://github.com/r28ai/charter/blob/main/examples/basics/13_one_tool_per_plan.py) | One tool with a different field set per plan |
+| [`03_errors_for_the_model.py`](https://github.com/r28ai/charter/blob/main/examples/basics/03_errors_for_the_model.py) | A bad argument refused before sending, with a fix the model can apply |
+| [`08_many_tools.py`](https://github.com/r28ai/charter/blob/main/examples/basics/08_many_tools.py) | 613 tools in one session, starting from 4,476 tokens |
+| [`11_one_tool_per_plan.py`](https://github.com/r28ai/charter/blob/main/examples/basics/11_one_tool_per_plan.py) | One tool with a different field set per plan |
+| [`use_a_pack.py`](https://github.com/r28ai/charter/blob/main/examples/connect/use_a_pack.py) | A shipped tool, with your GitHub token: GitHub sends 346.6 KB, the model gets 10.7 KB |
+| [`openai_loop.py`](https://github.com/r28ai/charter/blob/main/examples/frameworks/openai_loop.py) | Tools in Charter's own agent loop, with any OpenAI-compatible model (needs a model key) |
 | [`connect/`](https://github.com/r28ai/charter/tree/main/examples/connect) | Your own account and your users', by OAuth or API key |
 
 ## Shape a tool
@@ -198,8 +196,8 @@ schema_tokens(issues_list_triage)    # 3458
 Keep `team.key`, not `team`: a whole relation brings the recursive filter back and lands you at 46,313 tokens.
 The shipped `linear.issues_list` is curated at 7,652 tokens.
 
-See also [`08_cut_a_tool.py`](https://github.com/r28ai/charter/blob/main/examples/basics/08_cut_a_tool.py), and
-[`11_rules_on_fields.py`](https://github.com/r28ai/charter/blob/main/examples/basics/11_rules_on_fields.py) for hints on a single field
+See also [`06_cut_a_tool.py`](https://github.com/r28ai/charter/blob/main/examples/basics/06_cut_a_tool.py), and
+[`09_rules_on_fields.py`](https://github.com/r28ai/charter/blob/main/examples/basics/09_rules_on_fields.py) for hints on a single field
 instead of in the system prompt.
 
 ## Control what goes out
@@ -240,14 +238,14 @@ scopes_for([gmail.threads_delete])   # ['https://mail.google.com/']
 
 More controls:
 
-- `pin` sets a value the model can't see or change ([`12_pin_a_value.py`](https://github.com/r28ai/charter/blob/main/examples/basics/12_pin_a_value.py))
-- `Mode` gives a tool different fields per plan or region ([`13_one_tool_per_plan.py`](https://github.com/r28ai/charter/blob/main/examples/basics/13_one_tool_per_plan.py))
-- `egress_map` lists everything the model can reach, for code review ([`15_review_the_boundary.py`](https://github.com/r28ai/charter/blob/main/examples/basics/15_review_the_boundary.py))
+- `pin` sets a value the model can't see or change ([`10_pin_a_value.py`](https://github.com/r28ai/charter/blob/main/examples/basics/10_pin_a_value.py))
+- `Mode` gives a tool different fields per plan or region ([`11_one_tool_per_plan.py`](https://github.com/r28ai/charter/blob/main/examples/basics/11_one_tool_per_plan.py))
+- `egress_map` lists everything the model can reach, for code review ([`13_review_the_boundary.py`](https://github.com/r28ai/charter/blob/main/examples/basics/13_review_the_boundary.py))
 
 ## Control what comes back
 
 Packs trim their responses by default, and you can do the same on your own tools with
-`response_handler` ([`06_trim_responses.py`](https://github.com/r28ai/charter/blob/main/examples/basics/06_trim_responses.py)). Some APIs answer a failure with
+`response_handler` ([`04_trim_responses.py`](https://github.com/r28ai/charter/blob/main/examples/basics/04_trim_responses.py)). Some APIs answer a failure with
 `200`, like Slack's `{"ok": false}` or a GraphQL `errors` list. An `Envelope` turns those
 into errors:
 
@@ -269,7 +267,7 @@ tools = to_openai_tools(session)  # function definitions for any chat-completion
 ```
 
 - `charter.adapters.openai.run()` runs the tool-calling loop with any OpenAI-compatible
-  client ([`03_hand_to_a_model.py`](https://github.com/r28ai/charter/blob/main/examples/basics/03_hand_to_a_model.py))
+  client ([`openai_loop.py`](https://github.com/r28ai/charter/blob/main/examples/frameworks/openai_loop.py))
 - `CharterMiddleware` adds a session to a LangChain agent
   ([`frameworks/`](https://github.com/r28ai/charter/tree/main/examples/frameworks))
 - `charter-mcp --pack gmail` serves a pack over MCP

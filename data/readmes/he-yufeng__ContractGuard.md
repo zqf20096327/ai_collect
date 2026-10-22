@@ -144,7 +144,7 @@ for flag in result.red_flags:
 
 | Format | Extension | Notes |
 |--------|-----------|-------|
-| PDF | `.pdf` | Text-based PDFs. Scanned/image-based PDFs require OCR (coming soon). |
+| PDF | `.pdf` | Text-based PDFs directly; scanned/image-only PDFs go through OCR (see below). |
 | Word | `.docx` | Microsoft Word documents |
 | Plain Text | `.txt` | Plain text files |
 | Markdown | `.md` | Markdown files |
@@ -159,9 +159,9 @@ ContractGuard automatically detects the contract type and tailors its analysis a
 | **Residential Leases** | Rent increases, deposit refundability, maintenance obligations, landlord access rights, early termination penalties, habitability guarantees |
 | **NDAs / Confidentiality** | Scope of "confidential information" (too broad?), duration, non-solicitation, non-compete, carve-outs for prior knowledge, return/destruction of materials |
 | **Employment Contracts** | Non-compete scope & duration, IP assignment (does employer own your side projects?), termination notice period, severance, at-will vs. for-cause, benefits |
-| **Freelance / Contractor** | Payment terms & schedule, kill fees, IP ownership, indemnification, scope creep protections, late payment penalties |
+| **Freelance / Contractor** | Statutory compensation on mid-project cancellation, payment deadlines (including acceptance-stall traps), IP attribution & background-IP scope |
 | **SaaS Terms of Service** | Data ownership & portability, auto-renewal & cancellation, SLA guarantees, limitation of liability, unilateral modification rights |
-| **Loan Agreements** | Interest rate (fixed vs. variable), prepayment penalties, default triggers, personal guarantee scope, collateral requirements |
+| **Loan Agreements** | Interest rate cap (4x 1-year LPR, floating), pre-deducted interest ("砍头息"), overdue-rate cap, delivery evidence |
 | **Purchase Agreements** | Warranty terms, return/refund policy, liability limits, dispute resolution (arbitration vs. court), force majeure |
 
 ## How It Works
@@ -217,12 +217,11 @@ Yes. `--json` gives parseable output; exit code is 0 on success, 1 on error. E.g
 
 ## Roadmap
 
-**Shipped:** batch scanning (analyze many contracts in one run), contract comparison (diff two versions and surface what changed, clause by clause), clause-level negotiation drafts (each red flag can carry suggested replacement wording, ready to paste into a negotiation email), jurisdiction-aware statute checks (PRC labor and civil law, plus California residential leases; one US state so far), and a Gradio web UI (`contractguard web`) that shows the LLM analysis alongside the deterministic statute-check panel. Reports export to a clean PDF — statute citations with official links and risk levels included — via `--output report.pdf` or the web download button; weasyprint renders when its system libraries exist, and the bundled pure-python fallback covers hosts where they do not. A release corpus (`corpus/`, gated by `tests/test_corpus.py`) pins checklist verdicts on full-length sample contracts, so rule and parser changes cannot quietly alter real outcomes.
+**Shipped:** batch scanning (analyze many contracts in one run), contract comparison (diff two versions and surface what changed, clause by clause), clause-level negotiation drafts (each red flag can carry suggested replacement wording, ready to paste into a negotiation email), jurisdiction-aware statute checks (PRC labor and civil law, plus California residential leases; one US state so far), and a Gradio web UI (`contractguard web`) that shows the LLM analysis alongside the deterministic statute-check panel. Reports export to a clean PDF — statute citations with official links and risk levels included — via `--output report.pdf` or the web download button; weasyprint renders when its system libraries exist, and the bundled pure-python fallback covers hosts where they do not. Scanned/image-only PDFs go through OCR (`pip install "contractguardian[ocr]"` plus the Tesseract engine — `brew install tesseract tesseract-lang` on macOS, `apt install tesseract-ocr tesseract-ocr-chi-sim` on Debian/Ubuntu; Chinese and English are both read when the language pack is present). Pre-built templates live in `templates/` — loan and NDA starters with inline usage notes and watch lists of the same red flags the scanner checks. A release corpus (`corpus/`, gated by `tests/test_corpus.py`) pins checklist verdicts on full-length sample contracts, so rule and parser changes cannot quietly alter real outcomes.
 
 **Planned:**
 
-- **OCR for scanned PDFs** — handle image-only contracts, not just text PDFs, which is where a lot of real paperwork actually lives.
-- **Pre-built contract templates** — a few common contract types with known red flags, useful both as a starting point and as a test corpus.
+- **SaaS terms template** — `templates/` now covers loan, NDA, and freelance/contracting starters, each with a machine-checked watch list; a SaaS terms-of-service starter is the next family to grow alongside its deterministic rules.
 
 ## Related Projects
 

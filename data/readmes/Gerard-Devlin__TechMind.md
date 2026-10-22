@@ -14,33 +14,20 @@
   </p>
 </div>
 
-![TechMind preview](https://github.com/user-attachments/assets/57a93f58-2a6d-40cb-bdf0-c9e3996b4fe8)
+## About
 
-## 🧭 About
+TechMind is a growing collection of notes and learning resources on computer science and technology. It brings together clear explanations, practical examples, and connections between ideas to make complex topics easier to understand and revisit.
 
-TechMind is my technical notebook: a place to turn scattered facts into a connected understanding of computer science.
+**[Explore TechMind](https://gerard-devlin.github.io/TechMind/start/)** and discover a starting point for your next learning journey.
 
-The notes begin with programming fundamentals and follow the abstractions in both directions—down toward logic, memory, architecture, and compilers; up toward algorithms, databases, machine learning, and deep learning. Most chapters grow out of a question I encountered while studying or building something, then evolve as my understanding improves.
+## AI-assisted learning
 
-This is not a finished textbook. It is a living record of how I learn.
+With **Ask AI**, readers can ask questions as they study, clarify unfamiliar concepts, and find relevant material. It complements the notes with explanations and follow-up discussion, helping readers explore topics and build a deeper understanding.
 
-## ✍️ How these notes are written
+## Contributing
 
-- **Start with the idea.** Terminology matters, but intuition comes first.
-- **Make it concrete.** Code, diagrams, formulas, and worked examples turn concepts into tools.
-- **Connect the layers.** A language feature makes more sense when you can trace it through the compiler and into the machine.
-- **Revise in public.** The notes are updated whenever I find a clearer explanation or a better example.
+Feedback, corrections, and ideas are welcome. Open an [issue](https://github.com/Gerard-Devlin/TechMind/issues) or submit a pull request to help improve the learning resources.
 
-## 📚 Start reading
+## License
 
-The latest version is available at **[gerard-devlin.github.io/TechMind](https://gerard-devlin.github.io/TechMind/)**.
-
-Use the navigation to browse by subject, or search for a specific concept. There is no required reading order—start with the question that brought you here and follow the links outward.
-
-## 🤝 Contributing
-
-Corrections, clearer explanations, and better examples are always welcome. If something is inaccurate or confusing, open an [issue](https://github.com/Gerard-Devlin/TechMind/issues) or submit a pull request.
-
-## 📄 License
-
-Released under the [MIT License](LICENSE).
+Project code is released under the [MIT License](LICENSE). Third-party libraries, fonts, and media retain their respective licenses and attribution.

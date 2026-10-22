@@ -89,10 +89,10 @@ you hit the limit.
 
 ## Pull requests and CI next to the agent
 
-The deck shows the repository's pull requests with every check per job and OS,
+The Pipeline shows the repository's pull requests with every check per job and OS,
 how long they took and what the agents spent on them. A red run, a conflict or
 a branch behind master gets *Fix CI with agent*, *Fix conflict with agent* or
-*Update branch* from the row; the Changes view stages, commits and pushes
+*Update branch* from the pull request, or from its row beside the agent; the Changes view stages, commits and pushes
 without leaving the window.
 
 <picture>
@@ -112,6 +112,10 @@ without leaving the window.
 - **Runaway agents caught.** Loop alerts on repeated tool calls, and an opt-in
   task runner for Claude Code that calls a task done only when your own test
   commands pass.
+- **One card after `/clear`.** A `/clear` or a fork starts a new session id;
+  Caprock links it to the one before, so the conversation stays one card with
+  its earlier parts a click away. Claude itself starts that part with an empty
+  context ([details](docs/app.md#the-window)).
 - **Bring your Obsidian notes.** Import a vault into Second Brain without
   changing its files. Links and tags join the graph; letting agents use the
   notes is a separate choice, off by default ([guide](docs/obsidian.md)).
@@ -142,10 +146,10 @@ Or download the newest build directly: [macOS .dmg](https://github.com/dspv/capr
 [Windows installer](https://github.com/dspv/caprock/releases/latest/download/Caprock-Windows-setup.exe), Linux
 [.AppImage](https://github.com/dspv/caprock/releases/latest/download/Caprock-Linux.AppImage), [.deb](https://github.com/dspv/caprock/releases/latest/download/Caprock-Linux.deb) or
 [.rpm](https://github.com/dspv/caprock/releases/latest/download/Caprock-Linux.rpm) — every version is on
-[Releases](https://github.com/dspv/caprock/releases). The app is
-not notarized or code-signed yet; [docs/install-app.md](docs/install-app.md)
-has the one-time "Open Anyway" step for the `.dmg` and SmartScreen's "Run
-anyway". What is in the window, the shortcuts and the phone:
+[Releases](https://github.com/dspv/caprock/releases). The Mac app
+is signed with a Developer ID and notarized; the Windows installer is not
+code-signed yet, and [docs/install-app.md](docs/install-app.md) has
+SmartScreen's one-time "Run anyway". What is in the window, the shortcuts and the phone:
 [docs/app.md](docs/app.md).
 
 **Or the daemon and its browser dashboard** on their own:
@@ -245,20 +249,23 @@ last said, what changed in the folder, the PRs it opened. For Gemini, install
 the CLI
 (`npm install -g @google/gemini-cli`).
 With a Gemini key set (see [Premium](#premium) for where), Caprock passes it to
-the child process. Gemini has no hooks and writes no transcript, but it does
-write OpenTelemetry, and Caprock asks it to write that to a file it then reads;
+the child process. Gemini has no hooks, and the session history it keeps
+for itself is not something Caprock reads; it does write OpenTelemetry, and
+Caprock asks it to write that to a file it then reads
+(`GEMINI_TELEMETRY_OUTFILE`);
 what you ask it is kept there too, so the Memory screen can find a Gemini
 session by your question. Starting and watching Gemini sessions is free, like
 every other agent.
 
 ## The desktop app
 
-The app opens on your terminals, not on charts. Each project in the sidebar
-opens to its worktrees and the agent sessions and shells in each, with its
-branch, today's cost and a dot for what every session is doing; whatever is
-waiting on you sits at the top. ⌘T opens a shell, ⇧⌘N an agent, ⌘O adds,
-creates or clones a project. Tabs come back when you reopen it, and closing
-one never stops its session. An agent's tab switches between its terminal
+The app opens on your terminals, not on charts. The sidebar starts with
+today's spend and what is running and waiting; each project in it opens to
+its agent sessions and shells, with a dot for what every session is doing,
+and whatever is waiting on you sits at the top.
+⌘T opens a shell, ⇧⌘N an agent, ⌘O adds, creates or clones a project. Tabs
+come back when you reopen it. Closing an agent's tab ends it if it is idle,
+its conversation kept, and asks first if it is working. An agent's tab switches between its terminal
 and a chat view of the same conversation.
 
 Outside the window: the menu bar shows your plan limits, today's spend and
@@ -890,7 +897,9 @@ place Caprock stops being loopback-only:
   sessions, costs, answers, changes and the task board. *It can control
   sessions*, ticked under *Connect a phone* (the default), or *Allow control*
   beside a device afterwards, lets that phone also start a session in
-  any folder under your home directory with Claude Code, Codex or OpenCode, in
+  any folder under your home directory with any agent the phone lists —
+  each coding agent Caprock knows that is installed on the computer, not a
+  custom one — in
   any permission mode (Bypass asks once first, and the computer's one-time
   bypass consent has to have been given at the computer), type into it (a big input
   field plus Esc, Tab, arrows, Enter and Ctrl+C buttons; `/` and `@` pick a

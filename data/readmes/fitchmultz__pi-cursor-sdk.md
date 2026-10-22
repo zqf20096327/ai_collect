@@ -56,11 +56,18 @@ The footer shows status such as `cursor:local · fast:off`, with `plan` or `http
 
 Cursor controls file tools, shell commands, edits, and configured MCP servers. The local MCP bridge exposes active Pi extension tools as `pi__*` names. The bridge is on by default. Pi hides matching built-ins from the bridge by default.
 
-**Pi's `--no-tools`, `--tools`, and `--exclude-tools` do not disable Cursor tools or Cursor MCP servers.** Use Cursor settings to change those tools.
+**Pi's `--no-tools`, `--tools`, and `--exclude-tools` do not disable Cursor tools or Cursor MCP servers.** For local ordinary turns, opt in to `PI_CURSOR_NATIVE_TOOLS=0` to allow only MCP through the public SDK tool surface (including disabling native task/subagents). It leaves configured Cursor MCP available unless you also disable ambient setting sources. Cloud rejects this opt-out for both ordinary and selected-Cloud summary requests; only existing isolated LOCAL summary agents remain unaffected with `tools: []`.
+
+`PI_CURSOR_NATIVE_TOOLS` accepts `0`, `false`, `off`, `none`, `no`, and `disabled` as off (trimmed, case-insensitive); unset, blank, or unrecognized values keep native tools **on**.
+
+A policy mismatch preserves the pending local run: restore its prior policy to finish, or use `/cursor-abort` to explicitly release this session's pending local run before retrying. The command also stops an active owning Cursor Pi turn. Pi's normal abort only signals an active Pi turn; after the mismatch error has settled, it does not reach the old Cursor waiter. Neither recovery path undoes already-executed work.
 
 Local runs leave Cursor auto-review and sandboxing off by default. Read the [safety controls and hook limits](docs/reference.md#cursor-local-agent-config-and-safety-controls) before you depend on those controls or Cursor hooks.
 
 ```bash
+# MCP-only local agent; explicitly expose Pi builtins through the Pi execution path.
+PI_CURSOR_NATIVE_TOOLS=0 PI_CURSOR_EXPOSE_BUILTIN_TOOLS=1 PI_CURSOR_SETTING_SOURCES=none pi --model cursor/grok-4.6
+
 # Disable the Pi tool bridge.
 PI_CURSOR_PI_TOOL_BRIDGE=0 pi --model cursor/grok-4.6
 
@@ -68,7 +75,7 @@ PI_CURSOR_PI_TOOL_BRIDGE=0 pi --model cursor/grok-4.6
 PI_CURSOR_SETTING_SOURCES=none pi --model cursor/grok-4.6
 ```
 
-Cursor activity cards show recorded results. They do not run tools again. Cursor plan and todo cards do not control Pi's separate plan-mode extension or Pi todos.
+Cursor activity cards show recorded results. They do not run tools again. Pi `tool_call` hooks cannot govern already-executed Cursor-native work; hiding replay or disabling the bridge is not enforcement. MCP-only is not a sandbox: exposed Pi/MCP tools can themselves execute arbitrary work. Cursor plan and todo cards do not control Pi's separate plan-mode extension or Pi todos.
 
 See [tool surfaces](docs/cursor-tool-surfaces.md) for bridge options and [native replay](docs/cursor-native-tool-replay.md) for activity cards and SDK limits.
 

@@ -11,13 +11,23 @@
 BenchBoard indexes published benchmark results for current AI models. Every score keeps its model release, benchmark variant, evaluation setting, and original source attached. Results from different harnesses or versions remain separate, and the site does not invent a cross-benchmark composite score.
 
 <!-- DATA_SUMMARY_START -->
-<p align="center"><img src="assets/benchboard-stats.svg?v=2" width="100%" alt="184 models and versions, 561 benchmark families, 9,148 public results, 290 primary sources"></p>
-<p align="center"><sub>126 curated releases + 58 comparison-only models · 1,336 separately ranked metric and version views</sub></p>
+<p align="center"><img src="assets/benchboard-stats.svg?v=2" width="100%" alt="194 models and versions, 560 benchmark families, 9,413 public results, 304 primary sources"></p>
+<p align="center"><sub>131 curated releases + 63 comparison-only models · 1,348 separately ranked metric and version views</sub></p>
 <!-- DATA_SUMMARY_END -->
 
 <h2><img src="assets/readme-icon-news.svg" width="28" alt=""> News</h2>
 
 <table>
+  <tr>
+    <td align="center" width="48"><img src="assets/news-release.svg" width="32" alt="Model update"></td>
+    <td width="132"><strong>2026-10-22</strong><br><sub>DEEPSEEK MODEL UPDATE</sub></td>
+    <td>Added 12 exact first-party results for the distinct <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017">DeepSeek V4.1 Flash 1017 checkpoint</a>, cross-checked against the <a href="https://api-docs.deepseek.com/updates/">October 17 API changelog</a>. The two HLE subsets, Automation-Bench v1.0.6, Apex Bench v1.1, stated harnesses, and ZeroBench pass@5 remain explicit; unspecified reasoning effort stays unstated.</td>
+  </tr>
+  <tr>
+    <td align="center" width="48"><img src="assets/news-audit.svg" width="32" alt="SkillsBench coverage audit"></td>
+    <td width="132"><strong>2026-10-22</strong><br><sub>SKILLSBENCH AUDIT</sub></td>
+    <td>Added 253 SkillsBench results, including GLM-5.3 and GLM-5.3-Flash: all 35 paired configurations from <a href="https://www.vals.ai/benchmarks/skillsbench">Vals AI</a>, plus missing rows from Hy4, Atria, Ling, Qwen, openPangu, dots3, and GitHub Copilot. Accuracy, measured cost, duration, and relative harness comparisons use separate views. Corrected the 78/79-task subset and undated DeepSeek mappings; one SkillsBench entry now groups every recorded variant. See the <a href="docs/audits/skillsbench-2026-10-22.md">source-by-source audit</a> for scope and remaining gaps.</td>
+  </tr>
   <tr>
     <td align="center" width="48"><img src="assets/news-release.svg" width="32" alt="Coding evaluation"></td>
     <td width="132"><strong>2026-10-21</strong><br><sub>CODING EVALUATION</sub></td>

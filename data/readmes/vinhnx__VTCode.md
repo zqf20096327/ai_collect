@@ -24,15 +24,30 @@ Plan, build, and review with hosted or local models, sandboxed tools, and resuma
 
 ## Contents
 
-- [Overview](#overview)
-- [Quick start](#quick-start)
-- [Usage](#usage)
-- [Documentation](#documentation)
-- [Development](#development)
-- [Contributing](#contributing)
-- [Security](#security)
-- [Community and support](#community-and-support)
-- [License](#license)
+- [VT Code](#vt-code)
+  - [Contents](#contents)
+  - [Overview](#overview)
+  - [Quick start](#quick-start)
+    - [1. Install](#1-install)
+    - [2. Configure your project](#2-configure-your-project)
+    - [3. Run your first task](#3-run-your-first-task)
+  - [Usage](#usage)
+    - [Interactive](#interactive)
+    - [Modes](#modes)
+    - [Automation](#automation)
+    - [Sessions](#sessions)
+  - [Documentation](#documentation)
+  - [Development](#development)
+  - [Contributing](#contributing)
+  - [Security](#security)
+  - [Community and support](#community-and-support)
+    - [Security Advisors](#security-advisors)
+    - [Main Contributor](#main-contributor)
+    - [Core Contributors](#core-contributors)
+    - [Contributors](#contributors)
+    - [Resources](#resources)
+    - [Sponsorship](#sponsorship)
+  - [License](#license)
 
 ## Overview
 
@@ -133,15 +148,15 @@ see the [getting started guide](./docs/user-guide/getting-started.md).
 
 Common commands:
 
-| Goal                    | Command                                             |
-| ----------------------- | --------------------------------------------------- |
-| Start the TUI           | `vtcode`                                            |
-| Ask without tools       | `vtcode ask "explain Rc vs Arc"`                    |
-| Run a task headlessly   | `vtcode exec "refactor main.rs"`                    |
-| Review pending changes  | `vtcode review`                                     |
-| Schedule recurring work | `vtcode schedule create --prompt "..." --every 1h`  |
-| Resume the last session | `vtcode continue`                                   |
-| Inspect a run log       | `vtcode trajectory`                                 |
+| Goal                    | Command                                            |
+| ----------------------- | -------------------------------------------------- |
+| Start the TUI           | `vtcode`                                           |
+| Ask without tools       | `vtcode ask "explain Rc vs Arc"`                   |
+| Run a task headlessly   | `vtcode exec "refactor main.rs"`                   |
+| Review pending changes  | `vtcode review`                                    |
+| Schedule recurring work | `vtcode schedule create --prompt "..." --every 1h` |
+| Resume the last session | `vtcode continue`                                  |
+| Inspect a run log       | `vtcode trajectory`                                |
 
 ### Interactive
 
@@ -152,22 +167,18 @@ changes, decisions, and verification without another model call; see the
 [explanation options](./docs/user-guide/commands.md#execution-explanations) and the
 [interactive guide](./docs/user-guide/interactive-mode.md) for controls.
 
-### Headless
+### Modes
 
-`ask` is tool-free, `exec` runs the full tool loop, and `review` inspects uncommitted changes:
+- **`ask`** is tool-free: it prints one reply and exits.
+- **`exec`** runs the full tool loop. It requires `[automation.full_auto]` and `full_auto` workspace trust.
+  Interactive terminals prompt for trust; non-TTY runs need `VTCODE_TRUST_WORKSPACE=full-auto`. Tool allow-lists,
+  explicit denies, and execution policy still apply.
+- **`review`** inspects uncommitted changes.
 
-```bash
-vtcode ask "explain Rc vs Arc"
-vtcode exec "refactor main.rs"
-vtcode review
-```
+See [exec mode](./docs/user-guide/exec-mode.md) and [full automation](./docs/guides/full-automation.md) for
+configuration and output details.
 
 ### Automation
-
-`exec` runs the full tool loop and requires `[automation.full_auto]` plus `full_auto` workspace trust. Interactive
-terminals prompt for trust. Non-TTY runs require `VTCODE_TRUST_WORKSPACE=full-auto`; tool allow-lists, explicit denies,
-and execution policy still apply. See [exec mode](./docs/user-guide/exec-mode.md) and
-[full automation](./docs/guides/full-automation.md) for configuration and output details.
 
 Recurring work uses [scheduled tasks](./docs/user-guide/scheduled-tasks.md), durable prompt jobs on the same exec
 runtime:
@@ -204,13 +215,13 @@ none are required for the quick start.
 
 <!-- markdownlint-disable MD060 -->
 
-| Goal                 | Guides                                                                                                                                                                                                                                                           |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Get started          | [Installation](./docs/installation/README.md) · [Getting started](./docs/user-guide/getting-started.md) · [Providers](./docs/providers/PROVIDER_GUIDES.md) · [OAuth login](./docs/guides/oauth-authentication.md) · [FAQ](./docs/FAQ.md) · [Compatibility](./docs/COMPATIBILITY.md) |
-| Work in the TUI      | [TUI](./docs/user-guide/interactive-mode.md) · [Command reference](./docs/user-guide/commands.md) · [Planning](./docs/guides/planning-workflow.md) · [Turn diffs](./docs/development/diff-preview.md) · [Configuration](./docs/config/CONFIG_FIELD_REFERENCE.md) · [Safety](./docs/security/SECURITY_MODEL.md) |
-| Automate             | [Full automation](./docs/guides/full-automation.md) · [Decisions probe](./docs/guides/decisions-probe.md) · [Scheduled tasks](./docs/user-guide/scheduled-tasks.md) · [Hooks](./docs/guides/hooks-guide.md)                                   |
+| Goal                 | Guides                                                                                                                                                                                                                                                                                                                                                                            |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Get started          | [Installation](./docs/installation/README.md) · [Getting started](./docs/user-guide/getting-started.md) · [Providers](./docs/providers/PROVIDER_GUIDES.md) · [OAuth login](./docs/guides/oauth-authentication.md) · [FAQ](./docs/FAQ.md) · [Compatibility](./docs/COMPATIBILITY.md)                                                                                               |
+| Work in the TUI      | [TUI](./docs/user-guide/interactive-mode.md) · [Command reference](./docs/user-guide/commands.md) · [Planning](./docs/guides/planning-workflow.md) · [Turn diffs](./docs/development/diff-preview.md) · [Configuration](./docs/config/CONFIG_FIELD_REFERENCE.md) · [Safety](./docs/security/SECURITY_MODEL.md)                                                                    |
+| Automate             | [Full automation](./docs/guides/full-automation.md) · [Decisions probe](./docs/guides/decisions-probe.md) · [Scheduled tasks](./docs/user-guide/scheduled-tasks.md) · [Hooks](./docs/guides/hooks-guide.md)                                                                                                                                                                       |
 | Extend and integrate | [Skills](./docs/skills/SKILLS_GUIDE.md) · [Plugins](./docs/guides/agent-plugins.md) · [MCP](./docs/guides/mcp-integration.md) · [Editors (ACP)](./docs/guides/zed-acp.md) · [WebMCP](./docs/user-guide/webmcp.md) · [Companion (experimental)](./docs/user-guide/vtcode-companion.md) · [Memcode](./docs/guides/memcode-mcp.md) · [WebMCP deployment](./docs/reference/webmcp.md) |
-| Develop and evaluate | [Development](./docs/development/README.md) · [Testing](./docs/development/testing.md) · [Evals](./docs/guides/eval.md) · [Architecture](./docs/ARCHITECTURE.md) · [HOVER](./docs/development/hypothesis-revision-validation.md) · [Protocols](./docs/protocols/OPEN_RESPONSES.md) · [Loop engineering](./docs/project/PLAN-loop-engineering.md) |
+| Develop and evaluate | [Development](./docs/development/README.md) · [Testing](./docs/development/testing.md) · [Evals](./docs/guides/eval.md) · [Architecture](./docs/ARCHITECTURE.md) · [HOVER](./docs/development/hypothesis-revision-validation.md) · [Protocols](./docs/protocols/OPEN_RESPONSES.md) · [Loop engineering](./docs/project/PLAN-loop-engineering.md)                                  |
 
 <!-- markdownlint-enable MD060 -->
 
@@ -264,8 +275,7 @@ issue. Details: [security policy](./docs/SECURITY.md).
 
 ## Community and support
 
-VT Code is created and maintained by [@vinhnx](https://github.com/vinhnx), with help from everyone in the grid below.
-Whether you write code, fix docs, or just try a release and tell me what broke, you are welcome here.
+VT Code is created and maintained by Vinh Nguyen, with help from the community. Whether you write code, fix docs, or just try a release and tell me what broke, feel free to contribute. You can also fork the repository and customize it for your own use. If you have suggestions or improvements, don't hesitate to share them.
 
 - [Report a bug](https://github.com/vinhnx/VTCode/issues/new?template=bug_report.md) - something looks off? Tell me,
   and include `vtcode trajectory` output if you can.
@@ -349,31 +359,20 @@ figure it out together.
   evals, security, and lessons learned.
 - [Podcast](https://www.youtube.com/watch?v=XLoswcd5rH0) · [Video](https://www.youtube.com/watch?v=PvL_kPjgU6o)
 
-### Share VT Code
-
-If VT Code helped you ship something, spread the word:
-
-- [Share on X](https://twitter.com/intent/tweet?text=VT%20Code%20is%20an%20open-source%20coding%20agent%20for%20your%20terminal&url=https%3A%2F%2Fgithub.com%2Fvinhnx%2FVTCode)
-- [Share on Hacker News](https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fgithub.com%2Fvinhnx%2FVTCode&t=VT%20Code%20%E2%80%93%20Open-source%20coding%20agent%20for%20your%20terminal)
-- [Share on LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2Fvinhnx%2FVTCode)
-- [Share via Email](mailto:?subject=VT%20Code%3A%20open-source%20coding%20agent%20for%20your%20terminal&body=Check%20out%20VT%20Code%2C%20an%20open-source%20coding%20agent%20for%20your%20terminal%3A%20https%3A%2F%2Fgithub.com%2Fvinhnx%2FVTCode)
-- [Share via SMS](sms:?&body=Check%20out%20VT%20Code%2C%20an%20open-source%20coding%20agent%20for%20your%20terminal%3A%20https%3A%2F%2Fgithub.com%2Fvinhnx%2FVTCode)
-
 ### Sponsorship
 
 VT Code is maintained in spare time; a [sponsorship](https://github.com/sponsors/vinhnx) keeps it independent.
 
 <div align="center">
 
-[![@dnhn](https://avatars.githubusercontent.com/u/2561973?s=80)](https://github.com/dnhn)&nbsp;
+---
+
 [![@codemod](https://avatars.githubusercontent.com/u/78830094?s=80)](https://github.com/codemod)&nbsp;
 [![@coderabbitai](https://avatars.githubusercontent.com/u/132028505?s=80)](https://github.com/coderabbitai)&nbsp;
-[![@KhaiRyth](https://avatars.githubusercontent.com/u/273723951?s=80)](https://github.com/KhaiRyth)
 
-<!-- markdownlint-disable-next-line MD013 -->
+---
 
-[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-30363D?style=for-the-badge&logo=github-sponsors&logoColor=%23EA4AAA)](https://github.com/sponsors/vinhnx)
-[![Buy Me a Coffee](./resources/screenshots/qr_donate.png)](https://buymeacoffee.com/vinhnx)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/vinhnz?style=for-the-badge&label=Click%20to%20sponsor&labelColor=BFB38F&color=000000&link=https%3A%2F%2Fgithub.com%2Fsponsors%2Fvinhnx)](https://github.com/sponsors/vinhnx)
 
 </div>
 

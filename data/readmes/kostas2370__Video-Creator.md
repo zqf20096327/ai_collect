@@ -1112,6 +1112,26 @@ the old thumbnail so it can be regenerated. Apply migration `0036_video_thumbnai
 and restart the API and workers when deploying.
 
 
+## Creator publishing
+
+After exporting a video, use **Publish** in the editor to connect a YouTube, TikTok,
+or Instagram professional account, review the export, edit its post details, and
+submit an upload. Publishing history tracks platform processing and links to the
+result when available. Platforms remain unavailable until the app owner registers
+and configures the corresponding developer application.
+
+See [the creator publishing setup guide](docs/social-publishing.md) for server
+configuration, redirect URLs, platform requirements, private snapshot storage,
+and the distinction between automated checks and real platform testing.
+
+For local HTTPS testing on macOS/Linux, install `cloudflared`, start the Docker
+app, then run `python3 scripts/local-tunnel.py` from the repository root.
+Keep that terminal open; use Ctrl+C or `python3 scripts/local-tunnel.py stop` to
+disable public access, and `python3 scripts/local-tunnel.py status` to inspect it.
+Start updates the local app origins and reloads the backend/workers. Each restart
+creates a new URL, so update the callback and website URLs in the provider
+dashboards using the addresses printed by the script.
+
 ## Diagnosing failures
 
 API responses include an `X-Request-ID` reference. Unexpected API errors return a
@@ -1134,3 +1154,11 @@ provider error messages may contain provider details, so restrict access to logs
 Server startup output and third-party print statements may remain plain text.
 Console output still needs retention/rotation configured by the deployment. This
 change does not add an external error-reporting service or alerting.
+
+### Scene recovery and editor preferences
+
+The editor remembers the selected scene and expanded editing panels in browser storage for each video. Undo keeps the last 20 scene moves/removals in memory for the current visit; reloading clears that history.
+
+Removing a scene archives it with its media and settings for seven days. **Project extras → Recently deleted** lists recoverable scenes and their deadlines, and supports restoration after reloading or returning on another device. Restoration checks ownership, processing status, and the expected current scene order. Expired scenes cannot be restored even if cleanup has not run yet.
+
+Celery Beat schedules `apps.videomanagement.tasks.purge_deleted_scenes` daily. Cleanup locks and rechecks each scene, skips videos being processed, and uses bounded batches with follow-up jobs for larger backlogs. Files referenced elsewhere and reusable Media Library assets are preserved. Apply database migrations and restart the API, Celery workers, and Celery Beat when deploying these changes.

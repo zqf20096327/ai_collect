@@ -168,11 +168,11 @@ GitHub search is free (rate-limited without a token). LLM ranking costs whatever
 
 ## Roadmap
 
-**Shipped:** watch mode (`find --watch` digests only the issues you have not seen, per filter set), repo radar (gauge maintainer responsiveness and merge-friendliness before you invest time), PR success prediction (estimate merge probability for a specific draft), profile mode (infer your skills from your public repos, so the issue search seeds itself), and PR triage (one next action for every open PR you've authored, worst-first).
+**Shipped:** watch mode (`find --watch` digests only the issues you have not seen, per filter set), repo radar (gauge maintainer responsiveness and merge-friendliness before you invest time), PR success prediction (estimate merge probability for a specific draft), profile mode (infer your skills from your public repos, so the issue search seeds itself), PR triage (one next action for every open PR you've authored, worst-first), and difficulty calibration (effort estimates checked against your own closed-issue history). The radar scorecard now folds in the tree itself: CI health (success fraction of the repo's recent workflow runs — a red tree burns your review rounds too) and release cadence (releases in the last year, with quiet repositories flagged), each shown with its number like every other factor.
 
 **Planned:**
 
-- **Difficulty calibration** — check the radar's difficulty estimate against issues you actually closed, so the score gets more honest the more you use it.
+- **Broader calibration sources** — fold PR-review velocity (time from your PR to first maintainer reply, per repo) into the difficulty estimate, so the score reflects reviewer bandwidth, not just your own history.
 
 ## Contributing
 

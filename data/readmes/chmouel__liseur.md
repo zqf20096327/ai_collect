@@ -137,6 +137,16 @@ Another inspiration was a painting by [Pierre-Auguste Renoir](https://en.wikiped
   </picture>
 </p>
 
+## Video 
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=csXAmDJxxok">
+    <img src="docs/video-thumbnail.jpg" alt="Liseur: free and open source, no ads, no account. Watch the video on YouTube" width="640">
+  </a>
+  <br>
+  <sub><a href="https://www.youtube.com/watch?v=csXAmDJxxok">Watch the 30-second tour on YouTube</a></sub>
+</p>
+
 ## Author
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-❤️-ff69b4?style=for-the-badge&logo=github)](https://github.com/sponsors/chmouel)

@@ -20,6 +20,8 @@ Think of TRACES.md as a **flight recorder for agents**: a dedicated, predictable
 
 If this is the file you wish every agent wrote, please **star the repo**. It is how other agents and people find it.
 
+<p align="center"><img src="docs/assets/cli.png" alt="traces --help in a terminal: a gradient TRACES pixel logo, then the commands grouped as record, check, read and analyze, reference" width="720"></p>
+
 ## Install
 
 **Give it to your AI** (any agent that can run shell commands):
@@ -35,6 +37,8 @@ curl -fsSL https://maxont.github.io/TRACES.md/install.sh | bash
 ```
 
 Python 3.9+, standard library only. Or `docker run --rm ghcr.io/maxont/traces --help`.
+
+After your first successful command, the CLI asks once: `Star MaxonT/TRACES.md on GitHub? [y/N]`. The default is no, it never asks again, and it stays silent in CI, pipes and scripts. A yes stars the repo through your own `gh` login (or prints the link if `gh` is missing). Set `NO_STAR_PROMPT=1` to skip the question.
 
 ## The format at a glance
 

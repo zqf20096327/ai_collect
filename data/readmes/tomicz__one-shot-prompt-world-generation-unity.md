@@ -1,6 +1,6 @@
 # One Shot Prompt — World Generation in Unity
 
-A single prompt that drives an AI coding agent to generate a complete procedural 3D landscape inside the Unity Editor — by driving the editor directly through [Unity MCP](https://darkounity.com/blog/how-do-i-use-ai-in-unity-for-free-2026-tutorial), or by writing C# scripts the user runs in the editor.
+A single prompt that drives an AI coding agent to generate a complete procedural 3D landscape inside the Unity Editor — by driving the editor directly through [Unity MCP](https://darkounity.com/blog/how-do-i-use-ai-in-unity-for-free-2026-tutorial?utm_source=github&utm_campaign=world-generation), or by writing C# scripts the user runs in the editor.
 
 ## What it generates
 
@@ -17,7 +17,7 @@ A realistic procedural landscape built in 6 layers:
 
 - **Unity 2022.3+** with **URP** (Universal Render Pipeline)
 - An AI coding agent (Claude Code, Cursor, Windsurf, Copilot, etc.)
-- **Unity MCP server** (recommended) — [setup guide](https://darkounity.com/blog/how-do-i-use-ai-in-unity-for-free-2026-tutorial)
+- **Unity MCP server** (recommended) — [setup guide](https://darkounity.com/blog/how-do-i-use-ai-in-unity-for-free-2026-tutorial?utm_source=github&utm_campaign=world-generation)
 
 ## How agents work
 
@@ -27,7 +27,7 @@ There are two valid execution paths:
 
 The agent executes C# code directly in the Unity Editor through Unity MCP's `execute_code` tool. No script files are written — code runs immediately at runtime like an editor console. This is the fastest feedback loop and the preferred path.
 
-**Setup:** Follow the [Unity MCP setup guide](https://darkounity.com/blog/how-do-i-use-ai-in-unity-for-free-2026-tutorial) to install and connect the server, then use an agent that supports MCP tool calling.
+**Setup:** Follow the [Unity MCP setup guide](https://darkounity.com/blog/how-do-i-use-ai-in-unity-for-free-2026-tutorial?utm_source=github&utm_campaign=world-generation) to install and connect the server, then use an agent that supports MCP tool calling.
 
 ### Path B — C# scripts (no MCP required)
 
@@ -40,7 +40,7 @@ The agent writes `.cs` Editor scripts into your Assets folder. Each script uses 
 ### Step 1 — Set up Unity
 
 - Create a Unity 2022.3+ project with **URP** (Universal Render Pipeline) configured
-- *(Optional)* Install [Unity MCP](https://darkounity.com/blog/how-do-i-use-ai-in-unity-for-free-2026-tutorial) for Path A
+- *(Optional)* Install [Unity MCP](https://darkounity.com/blog/how-do-i-use-ai-in-unity-for-free-2026-tutorial?utm_source=github&utm_campaign=world-generation) for Path A
 
 ### Step 2 — Start the prompt
 
@@ -76,4 +76,4 @@ To review a run later, open `Assets/WorldGenRuns/{run-id}/run-scene.unity`. Prev
 
 ## Community
 
-Visit [darkounity.com](https://darkounity.com) to learn Unity with others, share results, and connect with builders.
+Visit [darkounity.com](https://darkounity.com?utm_source=github&utm_campaign=world-generation) to learn Unity with others, share results, and connect with builders.

@@ -30,7 +30,7 @@ output improves, *which part actually helped?* Aggregate benchmarks can't say.
 
 **CAFE treats every pipeline knob as an experimental factor.** It generates factorial designs, runs each
 configuration as a black box with replication, collects quality judgments from a configurable LLM judge
-(and humans), and attributes the variance in quality with mixed-effects models matched to your rubric's
+(and humans), and attributes the variance in quality with models that account for question difficulty, matched to your rubric's
 scale. You get a direct, statistically grounded answer to:
 
 > **which technique drives quality, by how much, what the best configuration is — and whether the
@@ -46,7 +46,7 @@ https://github.com/user-attachments/assets/f637191d-05f7-4e8f-b1c7-b146f3f0a87c
 
 - **Attribution, not a leaderboard** — per-factor F-tests, p-values, and partial η² tell you which knob
   moves quality and by how much, holding the others fixed.
-- **Statistically honest** — a linear mixed-effects model with a per-question random effect, plus the
+- **Statistically honest** — a linear model that compares configurations within each question, plus the
   **scale-correct model** for your rubric (ordinal → cumulative-link mixed model, binary → logistic).
 - **Built for LLM nondeterminism** — replication and significance testing separate real effects from
   run-to-run noise.
@@ -60,13 +60,23 @@ https://github.com/user-attachments/assets/f637191d-05f7-4e8f-b1c7-b146f3f0a87c
 ### The library
 
 Requires **Python ≥ 3.11** and **R** — the mixed-effects models (ordinal CLMM, logistic GLMM) run in R.
+There are two ways to install the library:
 
 ```bash
+# Option 1: from PyPI, if you just want to use the library
+pip install "cafe-core[all]"                # library + LLM judge + datasets + notebooks
+
+# Option 2: from the repository, if you also want the example notebooks, the example
+# techniques and the web app, or want to change the code (editable install)
 git clone https://github.com/fabian-lu/Cafe.git
 cd Cafe
-pip install -e "packages/cafe-core[all]"    # library + LLM judge + datasets + notebooks
+pip install -e "packages/cafe-core[all]"
+```
 
-# R + the model packages  (Debian/Ubuntu shown; macOS: `brew install r`)
+Either way, install R and its two model packages, then check the setup:
+
+```bash
+# Debian/Ubuntu shown; macOS: `brew install r`
 sudo apt install r-base
 Rscript -e 'install.packages(c("ordinal", "lme4"))'
 
@@ -128,11 +138,12 @@ fractional designs.
 ### The platform (web app)
 
 A self-hostable FastAPI + React platform over the same engine — set up a study, run it with live
-progress, and explore the full analytics in the browser.
+progress, and explore the full analytics in the browser. It needs the repository (option 2 above)
+and Docker; the containers bring their own Python and R.
 
 ```bash
 cd apps/web-app
-cp .env.example .env      # add your LLM keys
+cp ../../.env.example ../../.env   # add your LLM keys to the repo-root .env
 docker compose up
 ```
 
@@ -161,7 +172,7 @@ docs/                 documentation source (MkDocs)
 3. **Execute as a black box** — each configuration runs over your dataset with replication; concurrent
    and crash-safe (resumable checkpoints).
 4. **Judge** — a configurable LLM judge (and/or humans) scores each answer on your rubric.
-5. **Attribute** — scale-matched mixed-effects models give per-factor significance, effect sizes, and
+5. **Attribute** — scale-matched models give per-factor significance, effect sizes, and
    the best configuration.
 
 Full walkthrough — models, rubrics, judges, human ratings, fractional designs — in the

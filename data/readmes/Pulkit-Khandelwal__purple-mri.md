@@ -2,289 +2,162 @@
 
 **Penn Utilities for Registration and Parcellation of Ex vivo MRI**
 
-`purple-mri` is a computational framework for segmentation, registration,
-cortical surface reconstruction, anatomical parcellation, template
-construction, and group-level analysis of ultra-high-resolution postmortem
-human brain MRI.
+`purple-mri` provides segmentation, cortical surface reconstruction, anatomical
+parcellation, registration, and morphometric analysis of high-resolution
+postmortem human brain MRI.
 
-The framework combines deep learning-based volumetric segmentation with
-classical registration and surface-based modeling methods to enable
-native-space anatomical parcellation and quantitative morphometric analysis of
-postmortem MRI.
+[Documentation](https://purple-mri.readthedocs.io/en/latest/) ·
+[PyPI 1.1.0](https://pypi.org/project/purple-mri/1.1.0/) ·
+[Docker image](https://hub.docker.com/r/pulks/docker_purple_mri) ·
+[Release notes](https://purple-mri.readthedocs.io/en/latest/release_notes.html)
 
-📖 **Documentation:** https://purple-mri.readthedocs.io/en/latest/
+## Choose how to run adult processing
 
-## Capabilities
+| Route | Install on the host | Instructions |
+| --- | --- | --- |
+| ITK-SNAP / remote DSS | ITK-SNAP, internet access, and an available provider; no local Docker or GPU | [Illustrated ITK-SNAP guide](https://purple-mri.readthedocs.io/en/latest/itksnap.html) |
+| Python CLI with Docker | Python 3.9+, Docker, and GPU access for DL | [Installation](https://purple-mri.readthedocs.io/en/latest/installation.html) and [quick start](https://purple-mri.readthedocs.io/en/latest/quickstart.html) |
+| Docker directly | Docker and GPU access for DL | [Direct Docker examples](https://purple-mri.readthedocs.io/en/latest/docker.html) |
 
-`purple-mri` supports:
+The two local Docker routes use **`pulks/docker_purple_mri:v1.1.0`**. The image contains the
+trained models, FreeSurfer, Convert3D, atlas resources, and custom pial binary.
+Provide a FreeSurfer license for surfaces. Installing the pip package installs
+the launcher; `purple-mri pull` downloads the scientific environment separately.
 
-- automated multi-label segmentation of postmortem MRI;
-- deep learning-based post-hoc topology correction;
-- cortical white- and pial-surface reconstruction;
-- native-space anatomical parcellation;
-- multiple cortical atlases, including DKT, Destrieux, Schaefer,
-  HCP-MMP1/Glasser, Jülich, Brainnetome, and von Economo-Koskinas;
-- infant-specific cortical reconstruction and parcellation, including M-CRIB-S;
-- ex vivo to in vivo volumetric registration;
-- population-specific volumetric template construction;
-- cortical thickness, area, curvature, and regional morphometry;
-- ROI-wise, vertex-wise, and deformation-based group analyses.
+The CLI is Docker-only; the SIF is separate. Final SIF validation is tracked
+separately in the [container guide](docker/exvivo_docker.md#singularity--apptainer-linux-amd64).
 
+### Submit through ITK-SNAP
 
-## Workflow
+Open a prepared MRI, select **Tools → Distributed Segmentation Service**, connect
+to `https://dss.itksnap.org`, and choose the purple service available to your account.
+The illustrated **purple 0.1.0** registration uses the **InputMRI** tag and is an
+**RH-only test service**. It is separate from Docker/PyPI version `1.1.0`.
 
-A typical workflow is:
+Follow the [illustrated walkthrough](https://purple-mri.readthedocs.io/en/latest/itksnap.html)
+for input assignment, ticket tracking, and the **six attachment downloads**:
+segmentations, surfaces, reports, and three parcellation ZIP files. Use the
+paperclips in the ticket log. This delivery returns results without an MRI copy
+or a result workspace; keep your original MRI for viewing and QC. Provider access
+and availability are required. See the guide before submitting a left hemisphere.
 
-```text
-Postmortem MRI
-      |
-      v
-Pre-processing
-      |
-      v
-Deep learning segmentation
-      |
-      v
-Post-hoc topology correction
-      |
-      v
-Cortical surface reconstruction
-      |
-      v
-Anatomical parcellation
-      |
-      v
-Registration / morphometry
-      |
-      v
-Group and pathology analyses
+### Install and run locally
+
+Use a Linux host with an NVIDIA GPU configured for Docker. For CPU-only surface
+processing, see the surface-only example below. Prepare one excised hemisphere
+per scan and one hemisphere per batch. Name inputs `SUBJECT_0000.nii.gz`.
+
+```bash
+python3 -m venv ~/venvs/purple-mri
+source ~/venvs/purple-mri/bin/activate
+python -m pip install 'purple-mri==1.1.0'
+purple-mri pull
+purple-mri doctor
 ```
 
+Choose the actual hemisphere (`lh` or `rh`), a new output directory, and your
+license path. This runs all adult DL stages, followed by surfaces and parcellation:
 
-## Installation
+```bash
+purple-mri run exvivo_dl exvivo_surface \
+  --input /absolute/path/inputs \
+  --output /absolute/path/new_results \
+  --hemi lh \
+  --license /absolute/path/license.txt \
+  --threads 20
+```
 
-Clone the repository:
+Add `--dry-run` to inspect the command before starting. `doctor` checks Docker
+access and image metadata; it does not run GPU or model checks. See
+[inputs](https://purple-mri.readthedocs.io/en/latest/inputs.html) for naming,
+geometry, and acquisition requirements.
+
+### Run stages separately
+
+```bash
+# Complete DL segmentation, topology correction, and merge
+purple-mri run exvivo_dl \
+  --input /absolute/path/inputs --output /absolute/path/new_dl_results
+
+# Surfaces from the corrected 10-label result; CPU only
+purple-mri run exvivo_surface \
+  --input /absolute/path/inputs \
+  --segmentation /absolute/path/new_dl_results/exvivo_dl/05_purple_corrected \
+  --output /absolute/path/new_surface_results \
+  --hemi lh --license /absolute/path/license.txt --threads 20
+
+# Task2732 subcortical segmentation only
+purple-mri run exvivo_multi_sequence_subcortical \
+  --input /absolute/path/inputs --output /absolute/path/new_subcortical_results
+```
+
+`exvivo_all` remains an alias for **DL only**. The complete adult sequence is
+`exvivo_dl exvivo_surface`. Topology correction is included in `exvivo_dl`.
+The subcortical model is **Task2732**, in both combined and individual runs.
+
+### Find and check results
+
+Paths below are relative to the Python CLI's `--output` directory:
+
+| Output | Location |
+| --- | --- |
+| Corrected Purple 10-label segmentation used for surfaces | `exvivo_dl/05_purple_corrected/` |
+| Final merged DL segmentation | `exvivo_dl/11_final_merged/` |
+| Individual-model predictions | `predictions/` |
+| Surfaces, atlas volumes, annotations, and statistics | `exvivo_surface/SUBJECT/{surf,mri,label,stats}/` |
+| Successful surface completion marker | `exvivo_surface/COMPLETE` |
+| Timings and exit codes | `timings/` |
+| CLI run and Docker image identity | `purple_run.json` |
+
+Surface inputs must use `05_purple_corrected`. The detailed merged segmentation
+has a different label convention. The surface stage supplies eight cortical
+atlas volumes plus `wmparc`; see [parcellations and NIfTI export](https://purple-mri.readthedocs.io/en/latest/parcellation.html).
+
+Use tmux or a job scheduler for long runs. In tmux, detach with **Ctrl+B, then D**.
+CLI 1.1.0 treats **Ctrl+C as cancellation**. Check the exit status, timing reports,
+and output files, then perform [anatomical QC](https://purple-mri.readthedocs.io/en/latest/qc.html).
+
+Docker full DL and LH surfaces completed successfully; the published 1.1.0 wheel
+also passed Task2732 GPU inference. See the
+[validation record](https://purple-mri.readthedocs.io/en/latest/release_notes.html)
+for scope and observed runtimes.
+
+## Documentation and other workflows
+
+Read the Docs is the detailed user manual. The [repository container guide](docker/exvivo_docker.md)
+also documents direct Docker commands using the older project-folder layout.
+The [package README](pkg_src/README.md) covers the Python launcher, and the
+[container build guide](docker/docker_files/README.md) is for maintainers.
+
+The repository also contains workflows beyond the adult container commands:
+
+| Workflow | Guide or source |
+| --- | --- |
+| Ex vivo to in vivo registration | [Registration](https://purple-mri.readthedocs.io/en/latest/registration.html) |
+| Population template construction | [Templates](https://purple-mri.readthedocs.io/en/latest/template_construction.html) |
+| ROI-wise, vertex-wise, and deformation-based analyses | [Group analysis](https://purple-mri.readthedocs.io/en/latest/group_analysis.html) |
+| Infant reconstruction and M-CRIB-S mapping | [Infant scripts](purple_mri/infant_scripts) |
+| Historical pip native surface launcher | [Legacy guide](https://purple-mri.readthedocs.io/en/latest/legacy.html) |
+| Standalone source surface scripts | [Source workflow distinctions](https://purple-mri.readthedocs.io/en/latest/legacy.html#standalone-repository-scripts) |
+
+Infant container stages are placeholders. Registration, templates, and group
+analysis are separate research workflows. Their host dependencies and setup
+are described in their guides; they are not installed by the lightweight CLI.
+The adult container already supplies fsaverage, atlas assets, and the custom
+pial executable, so users do not need the standalone pial container setup.
+
+## Install from source or contribute
 
 ```bash
 git clone https://github.com/Pulkit-Khandelwal/purple-mri.git
 cd purple-mri
+python -m pip install -e .
+purple-mri --help
 ```
 
-Install the Python dependencies:
-
-```bash
-pip install -r dependencies.txt
-```
-
-Different workflows require additional software such as Docker, FreeSurfer,
-`c3d`, ANTs, and `greedy`.
-
-See the full installation guide:
-
-https://purple-mri.readthedocs.io/en/latest/installation.html
-
-
-## Segmentation
-
-Input NIfTI images should be placed inside a directory named:
-
-```text
-data_for_inference/
-```
-
-with filenames ending in:
-
-```text
-_0000.nii.gz
-```
-
-The currently documented Docker image is:
-
-```bash
-docker pull pulks/docker_hippogang_exvivo_segm:v1.4.6
-```
-
-The recommended complete workflow uses:
-
-```text
-exvivo_all
-```
-
-Example:
-
-```bash
-docker run --rm --gpus all --shm-size=8g \
-  -v /path/to/working_directory:/data/exvivo \
-  pulks/docker_hippogang_exvivo_segm:v1.4.6 \
-  /bin/bash /src/commands_nnunet_inference.sh exvivo_all
-```
-
-Individual segmentation models can also be run separately.
-
-Detailed Docker documentation:
-
-https://github.com/Pulkit-Khandelwal/purple-mri/blob/main/docker/exvivo_docker.md
-
-Segmentation documentation:
-
-https://purple-mri.readthedocs.io/en/latest/segmentation.html
-
-
-## Post-hoc Topology Correction
-
-The topology-correction model identifies buried-sulcus regions that should be
-removed from the original `purple-mri` segmentation.
-
-Standalone topology correction uses:
-
-```text
-exvivo_posthoc_topology
-```
-
-Detailed instructions:
-
-https://github.com/Pulkit-Khandelwal/purple-mri/blob/main/docker/topology_correction_notes.md
-
-Documentation:
-
-https://purple-mri.readthedocs.io/en/latest/posthoc_correction.html
-
-
-## Cortical Surface Reconstruction and Parcellation
-
-Once a topology-corrected segmentation has been obtained, use the
-surface-based pipeline to reconstruct the cortex and generate anatomical
-parcellations.
-
-The user-facing entry point is:
-
-```text
-purple_mri/run_surface_pipeline.sh
-```
-
-Run:
-
-```bash
-cd purple_mri
-
-bash run_surface_pipeline.sh \
-  freesurfer_path \
-  working_dir \
-  mri_path \
-  segm_path \
-  external_atlases_path \
-  num_threads \
-  rh
-```
-
-The final argument can be either:
-
-```text
-rh
-```
-
-or:
-
-```text
-lh
-```
-
-The MRI and segmentation files must have matching `.nii.gz` filenames.
-
-Place `fsaverage` inside the working directory.
-
-
-### Pial Surface Placement
-
-Pial-surface placement uses a custom compiled FreeSurfer
-`mris_place_surface` binary distributed as a Docker/Singularity container.
-
-Setup instructions:
-
-https://github.com/Pulkit-Khandelwal/purple-mri/blob/main/docker/pial_surface_binary_docker_singularity.md
-
-Release:
-
-https://github.com/Pulkit-Khandelwal/purple-mri/releases/tag/v0.1.0-fs-binary-docker
-
-Once configured, it is called automatically by the surface pipeline.
-
-
-### Cortical Atlases
-
-The standard postmortem surface pipeline supports atlases including:
-
-- Desikan-Killiany
-- Destrieux
-- DKT
-- Brainnetome
-- HCP-MMP1 / Glasser
-- Schaefer2018 400 parcels / 17 networks
-- Jülich
-- von Economo-Koskinas
-
-The repository also contains a dedicated infant workflow with support for
-M-CRIB-S:
-
-https://github.com/Pulkit-Khandelwal/purple-mri/tree/main/purple_mri/infant_scripts
-
-Full parcellation documentation:
-
-https://purple-mri.readthedocs.io/en/latest/parcellation.html
-
-
-## Ex vivo to In vivo Registration
-
-The paired ex vivo/in vivo registration workflow uses `greedy` to register
-postmortem MRI to matched antemortem MRI.
-
-The current implementation is:
-
-```text
-scripts/registration_exvivo_invivo_greedy_v2.sh
-```
-
-Documentation:
-
-https://purple-mri.readthedocs.io/en/latest/registration.html
-
-
-## Population Template Construction
-
-Population-specific ex vivo MRI templates are constructed using iterative
-registration with `greedy`.
-
-Scripts are located in:
-
-```text
-scripts/intensity_template/
-```
-
-Documentation:
-
-https://purple-mri.readthedocs.io/en/latest/template_construction.html
-
-
-## Group Analysis
-
-The repository includes workflows for:
-
-- vertex-wise cortical morphometry;
-- generalized linear modeling;
-- deformation-based morphometry;
-- ROI-wise statistical analysis;
-- integration of morphometry with neuropathological measurements.
-
-Surface GLM scripts are located in:
-
-```text
-glm/
-```
-
-Documentation:
-
-https://purple-mri.readthedocs.io/en/latest/group_analysis.html
-
+Install `dependencies.txt` only when a separate research workflow requires
+those host libraries. See the [maintainer guide](https://purple-mri.readthedocs.io/en/latest/publishing.html)
+for package checks, documentation builds, and release procedures.
 
 ## Development
 

@@ -150,6 +150,10 @@ Every entry cites its sources, and sources come in three kinds — read them bef
 
 The question-design approach in this list transfers across System One models. Notable developments:
 
+- **2026-10-22 — open weights reach parity on the Chinese benchmark.** First open-weights rows on [jev-rag-zh-benchmark](https://github.com/vicfei/jev-rag-zh-benchmark): [StartLux-Decision 27B AutoThink](https://github.com/StartLuxLabs/Startlux-Decision) (via [bamboonode](https://bamboonode.dev/) free hosting, same `/v1/systemone` request, same frozen question wording) scores nDCG@5 **0.557** score-zh / **0.540** noul-zh on T2Reranking hard negatives — paired vs hosted Jev-1.13 **+0.011 [−0.039, +0.060]** (statistically tied, point estimate ahead) and vs BM25 **+0.144 [+0.064, +0.227]** (significant); its noul separation AUC 0.727 is the highest measured on the sample. For Chinese reranking, "hosted Jev or bust" is no longer the decision — an open-weights model with free hosting is statistically tied. Thresholds still need per-engine fitting.
+
+- **2026-10-22 — the serving layer converges on the System One wire format.** [vllm-jev](https://github.com/mode-io/vllm-jev) (668★) now serves 24+ open checkpoints (Laya, Kev, Decider, Open-Jev, JevK5, …, Clef) on Linux/Apple Silicon, with an experimental RadixFlow scheduler built on the right observation — decision workloads score candidate branches through **prefill**, so shared-prefix reuse is where the throughput lives. [StartLux](https://github.com/StartLuxLabs/Startlux-Decision) (1,183★, 0.8B–27B, arXiv 2610.17309) ships its own vLLM/llama.cpp/MLX engine speaking the same `/v1/systemone` format, plus free 27B hosting. Design impact: "Jev-compatible" is becoming a wire-format property, not a vendor property — the patterns in this list apply to whichever engine answers, and question wording is the portable part.
+
 - **2026-10-21 — a 3-minute from-scratch head ties hosted Jev; a distilled one doesn't.** [minimind-jev](https://github.com/vicfei/minimind-jev) (public) trains a 660K decision head on frozen bge-small-zh over T2Reranking hard negatives — 3 minutes on a laptop RTX 4060, $0 API: nDCG@5 0.488 vs hosted Jev-1.13's 0.546 (paired CI includes 0 at n=100) and significantly above BM25 (+0.075). The instructive negative: distilling a frontier teacher's 4-level judgments — whose own expected-score AUC (0.716) sits in hosted Jev's band — into the same head *drops* it to 0.428, across pure and mixed supervision. When binary gold labels exist for your metric, direct supervision beats teacher soft labels on frozen features. Checkpoint: [cnfeichen/minimind-jev-v0.1](https://huggingface.co/cnfeichen/minimind-jev-v0.1); teacher judgments [released as a dataset](https://huggingface.co/datasets/cnfeichen/t2reranking-4level-judgments). Design impact: for the [RAG relevance](categories/score-patterns.md#relevance-rubric-rag) pattern pair, the choice of *what grades your questions* now has a measured answer — the dataset's own labels, not a teacher rubric.
 
 - **2026-10-12 — the omni-modal race.** The vision wave is now crowded — and name-collided: [OmniJev](https://github.com/tinnel123666888/OmniJev) (omni-modal: images, video, screens, robot scenes; open weights), [shapsider/OmniJev](https://github.com/shapsider/OmniJev) (MuJoCo embodied workbench on a Qwen3.5-9B corrective head — a fourth independent datapoint for our embodied patterns), and [jev-omni.js](https://github.com/ai-ecoverse/jev-omni.js) (decision model in the browser via WebGPU, matching fp32 on DecisionBench) join [OneJev](https://github.com/OmniJev/OneJev) (163★) and [Valen](https://github.com/Liuziyu77/Valen). Three near-identical names, no standard yet — when citing, check which model a name actually means. More suppliers of multimodal typed decisions means more consumers for question design: the patterns in [Embodied & multimodal](categories/embodied-multimodal-patterns.md) apply across all of them.
@@ -190,15 +194,15 @@ The pattern library is the drafting layer of a small toolbox — the community s
 <!-- related-lists:start -->
 | List | Focus | Stars |
 |---|---|---:|
-| [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | General list, highest-frequency updates | 2,431 |
-| [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 900+ project catalog with companion site | 981 |
-| [v-modal/awesome-jev-tools](https://github.com/v-modal/awesome-jev-tools) | Tools list with inclusion criteria | 753 |
-| [logicrw/awesome-jev-projects](https://github.com/logicrw/awesome-jev-projects) | Ecosystem radar web app, auto GitHub sync | 693 |
-| [AnotiaWang/awesome-decision-models](https://github.com/AnotiaWang/awesome-decision-models) | Classic minimal list (renamed from awesome-jev), open replicas & benchmarks | 657 |
-| [AbdelStark/awesome-typesafe-jev](https://github.com/AbdelStark/awesome-typesafe-jev) | Field guide with platform routing & evals | 598 |
+| [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | General list, highest-frequency updates | 2,441 |
+| [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 900+ project catalog with companion site | 968 |
+| [v-modal/awesome-jev-tools](https://github.com/v-modal/awesome-jev-tools) | Tools list with inclusion criteria | 755 |
+| [logicrw/awesome-jev-projects](https://github.com/logicrw/awesome-jev-projects) | Ecosystem radar web app, auto GitHub sync | 695 |
+| [AnotiaWang/awesome-decision-models](https://github.com/AnotiaWang/awesome-decision-models) | Classic minimal list (renamed from awesome-jev), open replicas & benchmarks | 659 |
+| [AbdelStark/awesome-typesafe-jev](https://github.com/AbdelStark/awesome-typesafe-jev) | Field guide with platform routing & evals | 600 |
 | [kydlikebtc/awesome-jev](https://github.com/kydlikebtc/awesome-jev) | Machine-readable catalog by decision pattern | 593 |
 | [cobanov/awesome-jev](https://github.com/cobanov/awesome-jev) | Curated list with dated review notes | 575 |
-| [walidboulanouar/awesome-jev-use-cases](https://github.com/walidboulanouar/awesome-jev-use-cases) | Demos ranked by social metrics, limits & cost | 448 |
+| [walidboulanouar/awesome-jev-use-cases](https://github.com/walidboulanouar/awesome-jev-use-cases) | Demos ranked by social metrics, limits & cost | 451 |
 | [yzfly/awesome-jev-zh](https://github.com/yzfly/awesome-jev-zh) | Chinese-language curated list with an independent, skeptical voice | 85 |
 | [Anil-matcha/awesome-jev-by-typesafe](https://github.com/Anil-matcha/awesome-jev-by-typesafe) | Use cases, starter code, design rules | 2 |
 <!-- related-lists:end -->
@@ -216,5 +220,5 @@ Found a pattern that works, or an anti-pattern that bit you? PRs and issues welc
 **Disclaimer:** this is an independent community resource. It is not affiliated with or endorsed by TypeSafe AI. Facts (pricing, limits, behavior) are cited from public sources and can change — always verify against the [official docs](https://docs.typesafe.ai/).
 
 <!-- last-checked:start -->
-*Last checked: 2026-10-21*
+*Last checked: 2026-10-22*
 <!-- last-checked:end -->

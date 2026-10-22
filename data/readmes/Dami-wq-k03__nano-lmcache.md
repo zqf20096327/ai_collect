@@ -41,6 +41,8 @@ uv run python examples/demo_chunking.py       # chunk keys in isolation
 uv run python examples/demo_prefix_cache.py   # full cache loop + metrics
 uv run python examples/demo_disk_cache.py     # run twice: reuse across restarts
 uv run python examples/demo_tiered_storage.py # memory in front of disk
+uv run python -m nano_lmcache.inspect /path/to/cache  # inspect disk cache
+uv run python -m nano_lmcache.inspect /path/to/cache --json  # JSON output
 ```
 
 With a real model (needs `uv sync --extra hf`):
@@ -71,10 +73,11 @@ New to KV cache concepts? Read the [Glossary and FAQ](docs/glossary.md) for shor
    and disk and tiered memory + disk backends.
 3. **GPU** (done): Real KV tensors verified against a real model, GPU to
    CPU offload, and a GPU -> CPU -> disk hierarchy.
-4. **nano-vLLM integration** (in progress): nano-lmcache as the external
-   KV cache behind [nano-vLLM](https://github.com/GeeeekExplorer/nano-vllm)'s
-   GPU prefix cache. Design:
-   [docs/nanovllm-integration.md](docs/nanovllm-integration.md).
+4. **nano-vLLM integration** (version 1 done, follow-ups open): nano-lmcache
+   as the external KV cache behind
+   [nano-vLLM](https://github.com/GeeeekExplorer/nano-vllm)'s GPU prefix
+   cache. Design: [docs/nanovllm-integration.md](docs/nanovllm-integration.md);
+   when it pays off: [docs/nanovllm-benchmark.md](docs/nanovllm-benchmark.md).
 
 See [ROADMAP.md](ROADMAP.md) for the full task list. Tasks are open for
 contributors to claim.

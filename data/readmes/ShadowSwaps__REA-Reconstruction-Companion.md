@@ -1,34 +1,5 @@
 # REA-Reconstruction-Companion
 
-For date/time-zone and localized data behavior, use the focused
-[date and locale contracts](skills/rea-reconstruction-companion/references/date-locale.md)
-and [bounded offline example](evals/date-locale/README.md). They distinguish
-calendar dates, instants and wall time, selected offset transitions, and display
-from parsing, sorting and stored/exported values.
-
-For narrow windows, enlarged/long text or changing list volume, use the
-[responsive evidence guidance](skills/rea-reconstruction-companion/references/visual-evidence.md#responsive-layouts-and-content-extremes)
-and [small rendered example](evals/responsive-layouts/README.md). Keep visual
-agreement, reachable actions and accessibility evidence separately assessable;
-font simulation does not verify native browser zoom.
-
-For state-dependent journeys, use [workflow state guidance](skills/rea-reconstruction-companion/references/blueprint.md#consequential-workflow-states)
-and the [bounded import-confirmation example](evals/workflow-edge-cases/README.md).
-Separate visible, pending and committed state; preserve untested transitions and
-distinguish local fault injection from original-target evidence.
-
-For conflicting recordings, runtime results, docs or recollections, use
-[evidence reconciliation](skills/rea-reconstruction-companion/references/reconstruction-methods.md#conflicting-evidence-and-ambiguous-behavior)
-and the [bounded sorting example](evals/conflicting-evidence/README.md). Preserve
-source applicability, competing explanations and unresolved acceptance; newer or
-copy-derived evidence alone does not settle a claim.
-
-For reconstructed slices that handle untrusted input, sensitive data or restricted
-operations, use the conditional [security boundary guidance](skills/rea-reconstruction-companion/references/reconstruction-security.md)
-and [small local worked example](evals/reconstruction-security/README.md). Keep
-original behavior, proposed controls and demonstrated protection distinct;
-simulated authentication does not establish real access protection.
-
 ![REA Reconstruction Companion — Understand. Rebuild. Validate.](assets/discord-banner.png)
 
 **Understand existing software. Plan a reconstruction. Build and validate when requested.**
@@ -81,6 +52,50 @@ step and explain a no-charge alternative.
 You can include "Enable integration" or "Skip integration" with the prompt to choose upfront. The [integration explanation](#optional-rea-integration) describes its purpose and benefits. A chat-only assistant without local file and command access can guide you through installation but cannot perform it itself.
 
 Share the repository: [github.com/ShadowSwaps/REA-Reconstruction-Companion](https://github.com/ShadowSwaps/REA-Reconstruction-Companion).
+
+## Install
+
+Download and extract the ZIP from [Releases](https://github.com/ShadowSwaps/REA-Reconstruction-Companion/releases), or clone this repository. Run commands from the extracted folder or repository root. On Windows, macOS, and Linux, the installer commands are the same.
+
+For automatic co-use, first install [REA for your client](https://github.com/morluto/rea#readme). Then choose a command:
+
+```sh
+# Claude Code, with the optional integration
+node install.mjs --client claude-code --integration on
+
+# Codex, with the optional integration
+node install.mjs --client codex --integration on
+
+# Companion only; no changes to REA
+node install.mjs --client claude-code --integration off
+```
+
+Use `--dry-run` on any installation command to inspect the paths and changes without writing files. The `companionChanges` lists identify added, modified, and removed files relative to the companion directory, including local files that a replacement would move into the backup. Use the same command with `--check` afterward to verify the selected installation mode. A missing REA skill or ambiguous choice stops integrated installation before the companion is installed. Differently cased paths to the same REA file are treated as one candidate; genuinely separate installations still require an explicit selection.
+
+`claude_code`, as used by REA, is accepted as an alias for `claude-code` by the installer and updater. Plans, receipts and newly saved update settings use `claude-code`.
+
+<details>
+<summary><strong>Client paths, custom profiles and advanced installation</strong></summary>
+
+Default user locations:
+
+- Claude Code: `~/.claude/skills/rea-reconstruction-companion/`, or `$CLAUDE_CONFIG_DIR/skills/rea-reconstruction-companion/` when a custom configuration directory is set in the installer's environment. See [Claude Code's environment-variable documentation](https://code.claude.com/docs/en/env-vars). REA lookup stays within that selected profile unless `--rea-skill` explicitly selects another location.
+- Codex: `~/.agents/skills/rea-reconstruction-companion/`, or `$CODEX_HOME/skills/rea-reconstruction-companion/` when `CODEX_HOME` is set. The installer also checks the older `~/.codex/skills/` location when locating REA.
+- Generic clients: specify their documented skills directory with `--skills-dir`.
+
+Override paths for an existing installation, a project-scoped skill, or another agent:
+
+```sh
+node install.mjs --client generic --integration on --skills-dir "/path/to/skills" --rea-skill "/path/to/reverse-engineer-anything/SKILL.md"
+```
+
+`--skills-dir` accepts the parent skills directory; the installer creates `rea-reconstruction-companion` beneath it. It takes precedence over client defaults and environment variables. The REA path must identify the skill actually loaded by that client. An override disables broad automatic lookup. Paths with spaces should be quoted. If the installer runs outside the agent's environment, supply that agent's actual directory explicitly.
+
+Keep the downloaded package or checkout separate from the installation destination. The installer rejects overlapping source/destination directories and a REA file inside the companion destination, including existing paths that differ only by casing on a filesystem that treats them as the same location.
+
+The optional `agents/openai.yaml` adapter is installed only for Codex. The portable core and Claude Code installation do not depend on it. Refresh the host's skills or start a fresh session if the new skill is not visible.
+
+</details>
 
 ## Use
 
@@ -167,6 +182,138 @@ check, not a clean OS or independent beginner test. See [handoff guidance](skill
 
 To see the workflow before trying a target, follow the [worked investigation](evals/reference/WALKTHROUGH.md), [reconstruction](evals/reference/reconstruction/README.md), or [resume](evals/resume/WALKTHROUGH.md) for your goal. These disclose answers and prior source exposure; they are teaching material, not prerequisites or evidence of a fresh agent trial. The [first-use review](evals/first-use.md) separates manual intent scenarios from executable checks.
 
+## Find guidance by topic
+
+Choose the topic for your selected slice. The examples are teaching material with
+finite coverage and disclosed source exposure; their local results do not establish
+original parity, real-service behavior or general host/model compatibility.
+
+| Topic | Guidance | Worked example |
+| --- | --- | --- |
+| Copy, cut and paste | [Contract and boundaries](skills/rea-reconstruction-companion/references/clipboard.md) | [Example and limits](evals/clipboard/README.md) |
+| Settings, defaults and saved preferences | [Contract and boundaries](skills/rea-reconstruction-companion/references/settings-preferences.md) | [Example and limits](evals/settings-preferences/README.md) |
+| Unsaved changes and navigation | [Contract and boundaries](skills/rea-reconstruction-companion/references/unsaved-navigation.md) | [Example and limits](evals/unsaved-navigation/README.md) |
+| Undo, redo and destructive actions | [Contract and boundaries](skills/rea-reconstruction-companion/references/undo-destructive.md) | [Example and limits](evals/undo-destructive/README.md) |
+| Search, filters and sorting | [Contract and boundaries](skills/rea-reconstruction-companion/references/search-filter-sort.md) | [Example and limits](evals/search-filter-sort/README.md) |
+| Dates, time zones and locale | [Contract and boundaries](skills/rea-reconstruction-companion/references/date-locale.md) | [Example and limits](evals/date-locale/README.md) |
+| Responsive layouts and content extremes | [Contract and boundaries](skills/rea-reconstruction-companion/references/visual-evidence.md#responsive-layouts-and-content-extremes) | [Example and limits](evals/responsive-layouts/README.md) |
+| Workflow states and confirmation | [Contract and boundaries](skills/rea-reconstruction-companion/references/blueprint.md#consequential-workflow-states) | [Example and limits](evals/workflow-edge-cases/README.md) |
+| Asynchronous results and cancellation | [Contract and boundaries](skills/rea-reconstruction-companion/references/asynchronous-results.md) | [Example and limits](evals/asynchronous-results/README.md) |
+| Conflicting evidence | [Contract and boundaries](skills/rea-reconstruction-companion/references/reconstruction-methods.md#conflicting-evidence-and-ambiguous-behavior) | [Example and limits](evals/conflicting-evidence/README.md) |
+| Security and privacy boundaries | [Contract and boundaries](skills/rea-reconstruction-companion/references/reconstruction-security.md) | [Example and limits](evals/reconstruction-security/README.md) |
+| Numeric quantities, rounding and units | [Contract and boundaries](skills/rea-reconstruction-companion/references/numeric-contracts.md) | [Example and limits](evals/numeric-contracts/README.md) |
+| File import and export | [Contract and boundaries](skills/rea-reconstruction-companion/references/file-compatibility.md) | [Example and limits](evals/import-export/README.md) |
+| Safe changes to an existing reconstruction | [Contract and boundaries](skills/rea-reconstruction-companion/references/safe-changes.md) | [Example and limits](evals/safe-changes/README.md) |
+| Target version changes | [Contract and boundaries](skills/rea-reconstruction-companion/references/version-changes.md) | [Example and limits](evals/version-change/README.md) |
+| Visual evidence | [Contract and boundaries](skills/rea-reconstruction-companion/references/visual-evidence.md) | [Example and limits](evals/visual-evidence/README.md) |
+| Keyboard, focus and accessibility | [Contract and boundaries](skills/rea-reconstruction-companion/references/interface-accessibility.md) | [Example and limits](evals/interface-accessibility/README.md) |
+
+For investigation, reconstruction, optimization and checkpoint/resume walkthroughs,
+see [Use](#use) and the [evaluation kit index](evals/README.md).
+
+<details>
+<summary><strong>Specialist request examples and boundaries</strong></summary>
+
+For copy/cut/paste, use the focused [transfer guidance](skills/rea-reconstruction-companion/references/clipboard.md)
+and [offline example](evals/clipboard/README.md). Recover source/destination,
+representation, insertion/replacement, cut retention and undo/identity effects.
+
+Investigation: “Explain only this editor's cut and paste behavior. Determine when
+the source is removed and what a rejected paste preserves. Keep unknowns explicit;
+do not implement or touch my clipboard or documents.”
+
+Implementation: “Implement the specified copy/cut/paste slice in my reconstruction.
+Use synthetic data and a recording/failure clipboard double. Verify replacement,
+cut failure retention and undo/identity boundaries without real clipboard access.”
+
+For settings, defaults and saved preferences, use the focused
+[preference guidance](skills/rea-reconstruction-companion/references/settings-preferences.md)
+and [offline worked example](evals/settings-preferences/README.md). Distinguish
+unset values from explicit false, zero or empty; recover scope/precedence,
+effective value/source and pending versus applied/saved changes.
+
+Example: “Investigate only this app's display preferences. What do Apply, Cancel
+and Reset change, and what survives reopening this profile? Keep original
+observations separate from proposed improvements; stop after the contract.”
+For an authorized change: “Add this preference to my reconstruction; preserve
+unrelated settings, make its reset policy explicit, and test save/reopen and
+invalid or older data with disposable files.” The example's finite local policy
+does not establish original parity, crash recovery or concurrent-write safety.
+
+For unsaved drafts and document departure, use the focused
+[save and navigation guidance](skills/rea-reconstruction-companion/references/unsaved-navigation.md)
+and [offline worked example](evals/unsaved-navigation/README.md). Distinguish
+draft/saved content and feedback; bind save completion to document/revision and
+check the actual save/discard/cancel destination.
+
+Example: “Investigate only this editor's unsaved changes when switching notes.
+What survives save failure or another edit during save, and where does Cancel
+leave me? Keep unobserved behavior unresolved.” For an authorized implementation:
+“Add save/discard/cancel before leaving my reconstruction's edited note; retain
+the draft on failure and verify the selected destination with synthetic data.”
+The local example does not establish backend durability or browser-close safety.
+
+For undo/redo, deletion or other destructive actions, use the focused
+[history and effect guidance](skills/rea-reconstruction-companion/references/undo-destructive.md)
+and [offline worked example](evals/undo-destructive/README.md). Recover values,
+identity/order, relevant view state, grouping and redo branching; distinguish
+confirmation/cancel and local restoration from irreversible or uncertain effects.
+
+Example: “Investigate only this editor's delete and undo behavior. Check what
+returns, with which identity, position and selection; compare cancel, confirm and
+repeated confirm. Stop after the contract and unanswered questions.” For an
+authorized change: “Implement one undoable delete in my reconstruction, preserving
+item identity and order. Verify undo/redo and cancellation with synthetic data.”
+Neither prompt implies that local undo can reverse an external consequence.
+
+For search, combined filters and sorted lists, use the focused
+[search and ordering guidance](skills/rea-reconstruction-companion/references/search-filter-sort.md)
+and [offline catalog example](evals/search-filter-sort/README.md). Recover matching,
+filter composition and comparator rules; check ordered identities, selection and
+page transitions. Keep observed original behavior separate from proposed changes.
+
+Example: “Reconstruct this catalog's search, category/availability filters and
+price sorting. Establish case/accent/whitespace behavior, missing values and ties;
+check what happens to selection and pages when I filter, reorder, add or delete.”
+For a deliberate improvement, state the changed goal: “Preserve the observed
+matching rules, but retain selection by item identity when sorting.” The companion
+keeps the original observation and proposed acceptance separately testable.
+
+For date/time-zone and localized data behavior, use the focused
+[date and locale contracts](skills/rea-reconstruction-companion/references/date-locale.md)
+and [bounded offline example](evals/date-locale/README.md). They distinguish
+calendar dates, instants and wall time, selected offset transitions, and display
+from parsing, sorting and stored/exported values.
+
+For narrow windows, enlarged/long text or changing list volume, use the
+[responsive evidence guidance](skills/rea-reconstruction-companion/references/visual-evidence.md#responsive-layouts-and-content-extremes)
+and [small rendered example](evals/responsive-layouts/README.md). Keep visual
+agreement, reachable actions and accessibility evidence separately assessable;
+font simulation does not verify native browser zoom.
+
+For state-dependent journeys, use [workflow state guidance](skills/rea-reconstruction-companion/references/blueprint.md#consequential-workflow-states)
+and the [bounded import-confirmation example](evals/workflow-edge-cases/README.md).
+Separate visible, pending and committed state; preserve untested transitions and
+distinguish local fault injection from original-target evidence.
+For delayed work, [trace asynchronous result applicability and uncertain effects](skills/rea-reconstruction-companion/references/asynchronous-results.md).
+The [controlled local example](evals/asynchronous-results/README.md) checks late
+values/errors/finalizers, cancellation distinctions and receipt reconciliation;
+its doubles do not establish real backend or concurrency guarantees.
+
+For conflicting recordings, runtime results, docs or recollections, use
+[evidence reconciliation](skills/rea-reconstruction-companion/references/reconstruction-methods.md#conflicting-evidence-and-ambiguous-behavior)
+and the [bounded sorting example](evals/conflicting-evidence/README.md). Preserve
+source applicability, competing explanations and unresolved acceptance; newer or
+copy-derived evidence alone does not settle a claim.
+
+For reconstructed slices that handle untrusted input, sensitive data or restricted
+operations, use the conditional [security boundary guidance](skills/rea-reconstruction-companion/references/reconstruction-security.md)
+and [small local worked example](evals/reconstruction-security/README.md). Keep
+original behavior, proposed controls and demonstrated protection distinct;
+simulated authentication does not establish real access protection.
+
+</details>
+
 ## What it does
 
 - Identifies the requested subject, evidence carrier, and objective from natural language. No form or bracketed prompt variables are required.
@@ -196,50 +343,6 @@ flowchart LR
 ```
 
 For the method and its sources, see the [skill instructions](skills/rea-reconstruction-companion/SKILL.md) and [research basis](skills/rea-reconstruction-companion/references/research-basis.md).
-
-## Install
-
-Download and extract the ZIP from [Releases](https://github.com/ShadowSwaps/REA-Reconstruction-Companion/releases), or clone this repository. Run commands from the extracted folder or repository root. On Windows, macOS, and Linux, the installer commands are the same.
-
-For automatic co-use, first install [REA for your client](https://github.com/morluto/rea#readme). Then choose a command:
-
-```sh
-# Claude Code, with the optional integration
-node install.mjs --client claude-code --integration on
-
-# Codex, with the optional integration
-node install.mjs --client codex --integration on
-
-# Companion only; no changes to REA
-node install.mjs --client claude-code --integration off
-```
-
-Use `--dry-run` on any installation command to inspect the paths and changes without writing files. The `companionChanges` lists identify added, modified, and removed files relative to the companion directory, including local files that a replacement would move into the backup. Use the same command with `--check` afterward to verify the selected installation mode. A missing REA skill or ambiguous choice stops integrated installation before the companion is installed. Differently cased paths to the same REA file are treated as one candidate; genuinely separate installations still require an explicit selection.
-
-`claude_code`, as used by REA, is accepted as an alias for `claude-code` by the installer and updater. Plans, receipts and newly saved update settings use `claude-code`.
-
-<details>
-<summary><strong>Client paths, custom profiles and advanced installation</strong></summary>
-
-Default user locations:
-
-- Claude Code: `~/.claude/skills/rea-reconstruction-companion/`, or `$CLAUDE_CONFIG_DIR/skills/rea-reconstruction-companion/` when a custom configuration directory is set in the installer's environment. See [Claude Code's environment-variable documentation](https://code.claude.com/docs/en/env-vars). REA lookup stays within that selected profile unless `--rea-skill` explicitly selects another location.
-- Codex: `~/.agents/skills/rea-reconstruction-companion/`, or `$CODEX_HOME/skills/rea-reconstruction-companion/` when `CODEX_HOME` is set. The installer also checks the older `~/.codex/skills/` location when locating REA.
-- Generic clients: specify their documented skills directory with `--skills-dir`.
-
-Override paths for an existing installation, a project-scoped skill, or another agent:
-
-```sh
-node install.mjs --client generic --integration on --skills-dir "/path/to/skills" --rea-skill "/path/to/reverse-engineer-anything/SKILL.md"
-```
-
-`--skills-dir` accepts the parent skills directory; the installer creates `rea-reconstruction-companion` beneath it. It takes precedence over client defaults and environment variables. The REA path must identify the skill actually loaded by that client. An override disables broad automatic lookup. Paths with spaces should be quoted. If the installer runs outside the agent's environment, supply that agent's actual directory explicitly.
-
-Keep the downloaded package or checkout separate from the installation destination. The installer rejects overlapping source/destination directories and a REA file inside the companion destination, including existing paths that differ only by casing on a filesystem that treats them as the same location.
-
-The optional `agents/openai.yaml` adapter is installed only for Codex. The portable core and Claude Code installation do not depend on it. Refresh the host's skills or start a fresh session if the new skill is not visible.
-
-</details>
 
 ## Optional REA integration
 
@@ -348,6 +451,10 @@ The [behavioral evaluation kit](evals/README.md) supplies portable tasks, raw ev
 **Measured environment example:** [revalidate behavior after a relevant setting changes](evals/resume/environment/README.md). Identical fixture bytes run under two controlled cap settings with a minimal local Node probe. Reports retain unaffected formatter evidence and recheck score/integration behavior. Cross-version drift and cross-host compatibility remain unverified.
 
 </details>
+
+**Numeric quantities (v1.3.38):** [separate input, canonical values, rounding and units](evals/numeric-contracts/README.md). One offline fixed length profile uses frozen literal expectations, actual storage/import/reopen and value/state rejection of faulty variants. Same-author finite checks establish a proposed contract, not original parity or a general decimal/locale engine.
+
+**Search, filters and sorting (v1.3.39):** [exercise one proposed catalog profile](evals/search-filter-sort/README.md). Frozen literal orders and intermediate states cover matching, combined filters, missing/numeric values, stable ties, selection identity and page/data changes. Eleven faulty variants pass ordinary checks before selected assertions reject them; finite same-author checks establish neither original parity nor general locale/backend behavior.
 
 ## Support the project
 

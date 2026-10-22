@@ -201,6 +201,7 @@ Key attack vectors in AI/ML systems:
 - [PayloadsAllTheThings — Prompt Injection](https://swisskyrepo.github.io/PayloadsAllTheThings/Prompt%20Injection/)
 - [PALLMs — Payloads for Attacking LLMs](https://github.com/mik0w/pallms/)
 - [L1B3RT4S — jailbreak prompt collection](https://github.com/elder-plinius/L1B3RT4S) — Large, actively updated public jailbreak corpus, useful as a regression-test set
+- [OrcaPromptVault — system prompt archive](https://github.com/Continuum-AI-Corp/OrcaPromptVault) — 119 system prompts and tool schemas from 43 shipping AI products; 44 of them recorded off the wire by a local proxy, each with the command that reproduces it, so a prompt you extracted can be diffed against a reference instead of trusted
 
 ### 3.3 Indirect Prompt Injection
 
@@ -286,6 +287,7 @@ MCP (introduced by Anthropic in late 2024) is the de facto standard for connecti
 - [Checkmarx — 11 Emerging AI Security Risks with MCP](https://checkmarx.com/zero-post/11-emerging-ai-security-risks-with-mcp-model-context-protocol/) — Nov 2025
 - [MCP Prompt Injection: How AI Gets Hacked (YouTube)](https://www.youtube.com/watch?v=bO-7DB-3dL8) — Nov 2025 hands-on walkthrough
 - [ToxicSkills: Snyk Finds Malware in 36% of AI Agent Skills](https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub/) — Feb 2026; 3,984 skills audited, 36.82% flawed, 13.4% critical, confirmed malicious payloads
+- [Shadow MCP Servers: Why They're Hard to Track](https://webofmike.com/shadow-mcp-servers/): Sep 2026. Fingerprints MCP servers in both protocol eras (server/discover, then initialize, then GET /sse), shows what an open server's tools/list hands an anonymous caller, and maps where eight MCP clients keep their server config. Read-only stdlib Python scanner with a seven-endpoint lab
 
 **Notable MCP CVEs and incidents to study:**
 - **CVE-2025-6514** — `mcp-remote` proxy RCE (CVSS 9.6), 437,000+ affected installs
@@ -442,6 +444,7 @@ A practical checklist for engagements:
 | AI/LLM Exploitation Challenges | AI, ML, LLM CTF challenges | [8ksec.io](https://academy.8ksec.io/course/ai-exploitation-challenges) |
 | LLMVault | CTF-style LLM security lab aligned to the OWASP LLM Top 10 | [github.com/CyberSunil/LLMVault](https://github.com/CyberSunil/LLMVault) · `Unverified` |
 | Jackpot | Ten-floor casino, each floor a deliberately broken AI, one per OWASP LLM Top 10 category | [hego.red/jackpot](https://hego.red/jackpot) · `Unverified` |
+| Pwned Labs | Free browser-based prompt injection labs (direct and indirect injection leading to Azure access) in live cloud environments, no account of your own needed | [pwnedlabs.io/explore](https://pwnedlabs.io/explore) |
 
 ### 6.2 Vulnerable-by-Design Projects
 
@@ -551,6 +554,7 @@ A practical checklist for engagements:
 - [Lakera Real World LLM Exploits (PDF)](https://lakera-marketing-public.s3.eu-west-1.amazonaws.com/Lakera%2BAI%2B-%2BReal%2BWorld%2BLLM%2BExploits%2B(Jan%2B2024)-min.pdf)
 - [The Register — Anthropic, Google, Microsoft paid AI bug bounties quietly](https://www.theregister.com/security/2026/04/15/anthropic-google-microsoft-paid-ai-bug-bounties-quietly/) — Apr 2026; agent prompt injection to credential theft across three vendors, and the CVE-assignment gap it exposed
 - [AI Penetration Testing: A Complete Guide — HackingDream](https://www.hackingdream.net/2026/03/ai-penetration-testing-complete-guide-to-ai-red-teaming.html) — Mar 2026 comprehensive playbook
+- [Orca AI Incident Archive](https://github.com/Continuum-AI-Corp/Orca-AI-Incident-Archive) — Open database of real-world AI agent security incidents, Jan 2025 → Sep 2026; every record cites a primary source and flags confirmed harm vs. demonstrated-only, plus whether AI involvement is confirmed
 
 ### 8.2 How to Find LLM Vulnerabilities
 
@@ -637,6 +641,7 @@ Key areas to test when assessing an LLM-powered application:
 | [Sentinel AI](https://github.com/MaxwellCalkin/sentinel-ai) | Real-time detection across 12 languages, Claude Code attack vectors, MCP proxy · `Unverified` |
 | [Armorer Guard](https://github.com/ArmorerLabs/Armorer-Guard) | Local Rust scanner for AI-agent prompt injection, credential leakage, exfiltration, MCP context, risky tool-call enforcement · `Unverified` |
 | [PIC Standard](https://github.com/madeinplutofabio/pic-standard) | Protocol to block unauthorized agent actions via intent + provenance checks · `Unverified` |
+| [Ironheights](https://github.com/Frank-Masciopinto/ironheights) | Local pre-install static scanner for OpenClaw/ClawHub agent skills (`SKILL.md` and bundled files): instruction override, hidden text, credential reads, exfiltration, remote-exec installs, persistence; baseline integrity pinning and quarantine · `Unverified` |
 
 ### Defensive / Scanning Tools
 

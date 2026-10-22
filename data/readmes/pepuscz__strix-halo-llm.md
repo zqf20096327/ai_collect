@@ -51,6 +51,27 @@ For the winning DeepSeek setup, set `STRIX_SYSTEM=vulkan-iq3xxs` before running 
 
 The installer verifies the hardware and kernel, downloads publisher artifacts with pinned hashes, prepares the runtime and model, and installs boot-enabled `strix-halo-inference.service`. The API listens on `127.0.0.1:18109`. Strata exposes OpenAI chat completions and responses, plus Anthropic messages.
 
+## Dual RX 7900 XTX setup
+
+A separate setup for the same box with two **AMD Radeon RX 7900 XTX** cards added, each on its own PCIe 4.0 x4 link (M.2 to OCuLink). It is not part of the single-box comparison above.
+
+**DeepSeek-V4.1-Flash-1017 with Maya DS4 HIP Maya-S IQ2_XXS dual RX 7900 XTX**, one conversation with **256K tokens of context**. The two cards split the model in tensor parallel, the Radeon 8060S serves routed experts beside them, and a DSpark drafter speculates. It passes all **30 quality tests** (measured at 128K) and found all five phrases at every length of the speed test up to 245,760 tokens (50/50).
+
+The chart uses the same five-phrase retrieval test as above, with a fresh model load and no cached input at each point. The top panel shows input-reading speed; the bottom shows answer-writing speed.
+
+![DeepSeek-V4.1-Flash-1017 reading and answer-writing speeds with two RX 7900 XTX cards and a Radeon 8060S helper](docs/benchmark-dual-xtx.svg)
+
+[All ten measurements and test method](docs/BENCHMARKS.md#dual-rx-7900-xtx-deepseek-v41-flash-1017) · [Exact result data](benchmarks/results.json)
+
+```bash
+export STRIX_SYSTEM=maya-ds4-dual-xtx
+bin/strixctl validate
+bin/strixctl install --allow-reboot
+bin/strixctl verify
+```
+
+The recipe is [maya-ds4-dual-xtx-256k.yml](ansible/releases/maya-ds4-dual-xtx-256k.yml). It builds the pinned engine tag, AMD's ROCm 7.2.4 userspace (isolated, nothing installed system-wide), and rocBLAS with the [per-architecture Tensile fix](https://github.com/ROCm/rocm-libraries/pull/4781) that mixed gfx1100/gfx1151 processes need. It needs kernel `7.0.0-38-generic` and about 470 GB free. The from-scratch install ran end to end at 128K; the 256K setting differs only in the context size.
+
 ## Host requirements
 
 Ubuntu 26.04 LTS, 128 GiB RAM, swap and Secure Boot disabled, and the BIOS/large-GTT settings in [HOST-PLATFORM.md](docs/HOST-PLATFORM.md). Qwen uses kernel `7.0.0-31-generic` and requires 220 GB free on `/`; DeepSeek uses `7.0.0-29-generic` and requires 120 GB free.

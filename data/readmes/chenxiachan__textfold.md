@@ -154,6 +154,7 @@ Your questions can go to a stronger model than the one that writes the levels: *
 | **Save**, at the top | keep the page as one file, as Markdown at the level you read, or only your notes |
 | **Aa**, at the top | light or dark, the default or paper style, the text's size, serif or sans-serif, the line spacing, the column's width, and which margins show |
 | `F` | focus: the text alone, the bars back at the screen's edge |
+| **Full screen**, in **Aa** | the window fills the screen (⌃⌘F on a Mac, F11 on Windows) |
 | Select text | highlight, write a note, or ask |
 | **Ask the paper**, bottom right | ask about the whole text |
 | `L` | next language |
@@ -245,7 +246,10 @@ More in [plugins/pi-textfold](https://github.com/chenxiachan/textfold/blob/main/
 
 ## What's new
 
-- **October 21, 2026: a reader to stay in.** **Aa** has light or dark (or your system's) and a paper style, quieter than white, for either; and the line spacing. A text opens where you left it, with a line under the top bar for how far in you are. `F` leaves the text alone on the screen. The sidebar can be pinned beside the text.
+- **October 22, 2026: an accurate conversion keeps your languages, and phones read better.** A PDF converted again accurately is read again in every language it had. A translation of the fast conversion's text no longer lands on the new one, outdated and on the wrong paragraphs. An outdated translation has **Update** at the top of the language menu. On a phone, the button that opens the sidebar no longer covers the logo, and a wide formula scrolls in its own box. A long formula in a Markdown document or a converted PDF keeps its box on every screen, and in a list it is shown. A `textfold://` link to a later part of a split paragraph opens it. Thanks to [@LumenYoung](https://github.com/LumenYoung) and [@adalach](https://github.com/adalach).
+- **October 22, 2026: figures as TeX drew them, and full screen.** In an arXiv paper, a drawing whose words the browser sets itself (a TikZ picture) can have them run out of its boxes, on arXiv's own page too. A button under such a drawing takes the paper's figures of that kind from its PDF, as TeX set them, and another puts them back; nothing is downloaded until you press it. **Full screen** in **Aa** fills the screen, and the Topic map opens beside the original pages too. At Brief, the words that go on to Key stand out by a step, not a jump, and the paper style keeps the default's text colours.
+- **October 22, 2026: lighter on your disk.** Pictures are kept as WebP as they come in: an arXiv paper's figures take a fifth of the space or less, and download four at a time, so a new paper opens sooner. Pictures already in your library stay as they are. The app's copy of the pictures and PDFs it showed stays under 32 MB, and a downloaded update is removed once it is installed. A deleted document stays in papers/.trash for 30 days, then it is erased. At Key and Takeaway, a figure of several panels shows them side by side, no longer one under another and cut off.
+- **October 21, 2026: a reader to stay in.** **Aa** has light or dark (or your system's) and a paper style, quieter than white, for either; and the line spacing. A text opens where you left it. `F` leaves the text alone on the screen. The sidebar can be pinned beside the text.
 - **October 21, 2026: tools for an agent in your browser.** In a browser that offers WebMCP, an agent finds TextFold's own operations as tools: it reads the passage you selected and, when you ask, saves a note on it, imports a file or a Zotero item, or sorts your folders. [The tools](https://github.com/chenxiachan/textfold/blob/main/docs/webmcp.md). Thanks to [@peitianyi23-sudo](https://github.com/peitianyi23-sudo).
 - **October 21, 2026: Topic as a mind map.** At Topic, **Map** beside the levels draws the sections and their topics as a mind map: click a topic to read its paragraph, click a section to fold it. Headings stand apart more clearly, **Aa** can hide the margins (the links, the AI answers, your notes), and **Save** keeps the whole text as Markdown at the level you read. On Windows, the installer asks where to install.
 - **October 20, 2026: your type, and several documents at once.** **Aa** at the top sets the text's size, the column's width and serif or sans-serif, for every text. In the sidebar, ⌘-click (Ctrl-click) or Shift-click picks several documents to move into a folder or delete together, and a delete can be undone for a few seconds.
@@ -292,6 +296,7 @@ More in [plugins/pi-textfold](https://github.com/chenxiachan/textfold/blob/main/
 <a href="https://github.com/mcardZH" title="@mcardZH"><img src="https://github.com/mcardZH.png?size=80" width="40" height="40" alt="@mcardZH" /></a>
 <a href="https://github.com/momoko-sketch" title="@momoko-sketch"><img src="https://github.com/momoko-sketch.png?size=80" width="40" height="40" alt="@momoko-sketch" /></a>
 <a href="https://github.com/Knoety" title="@Knoety"><img src="https://github.com/Knoety.png?size=80" width="40" height="40" alt="@Knoety" /></a>
+<a href="https://github.com/LumenYoung" title="@LumenYoung"><img src="https://github.com/LumenYoung.png?size=80" width="40" height="40" alt="@LumenYoung" /></a>
 
 Contributions are welcome: start with [CONTRIBUTING.md](https://github.com/chenxiachan/textfold/blob/main/CONTRIBUTING.md).
 

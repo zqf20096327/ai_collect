@@ -132,7 +132,7 @@ float[] stored = await e5.EmbedPassageAsync("a document to index");    // "passa
 long bytes = await LocalEmbedder.GetDownloadSizeBytesAsync("default");
 // What that load would still fetch now: 0 once cached, the missing part of a partly cached model
 long remaining = await LocalEmbedder.GetRemainingDownloadBytesAsync("default");
-bool cached = LocalEmbedder.IsModelDownloaded("default");
+bool cached = await LocalEmbedder.IsModelDownloadedAsync("default");
 string? license = EmbedderModelRegistry.Default.Resolve("default").License;   // "MIT"
 ```
 
@@ -266,6 +266,12 @@ if (remaining > 0 && !AskUserToDownload(remaining))
 // Switching GGUF models on one GPU — stop the servers no model uses (dispose the old model first)
 await LlamaServerPool.Instance.ReleaseIdleAsync();
 ```
+
+«Does this model run here?» for any GGUF model, not only the `auto` pool: `GgufModelRegistry.Evaluate(model)` (a catalog
+entry from `GetAllModels()` / `Resolve(...)`, or a `GgufModelInfo` you describe) applies the rule `auto` uses and returns a
+`ModelSelectionCandidate` — `Fits` = runs on the GPU, `FitsInSystemRam` only = runs from system memory (slower), neither =
+too large here. `ModelSelectionResult` / `ModelSelectionCandidate` are a contract an app can show people; the overload
+`Evaluate(model, availableVramBytes, systemRamBytes, contextLength)` judges against budgets you give.
 
 A GGUF model whose llama-server exits (killed, crashed, out of memory) gets a new server on its next call. The call that saw it die throws `InferenceBackendExitedException`, which carries the server's `ExitCode` and `RecentLog` (its last output lines). `LlamaServerProcess.RecentLog` is readable directly too.
 
@@ -432,7 +438,7 @@ GGUF reranker models are auto-detected by `-GGUF` or `_gguf` in repo name.
 |------------------|---------|----------|
 | `gpustack/bge-reranker-v2-m3-GGUF` | 8K | Multilingual, long docs (Q4_K_M: 438 MB) |
 
-Scores are on the same 0..1 scale as the ONNX route, and `LocalReranker.IsModelDownloaded` /
+Scores are on the same 0..1 scale as the ONNX route, and `LocalReranker.IsModelDownloadedAsync` /
 `DownloadModelAsync` accept the same GGUF ids `LoadAsync` does. See the [Reranker Guide](docs/reranker.md).
 
 ### Generator
@@ -888,7 +894,9 @@ For private HuggingFace repositories, set the `HF_TOKEN` environment variable.
 Downloads and Hub requests go to `https://huggingface.co`, or to the URL in the `HF_ENDPOINT` environment variable
 when it is set — the variable `huggingface_hub` reads — for a mirror or an internal hub on a network that cannot reach
 huggingface.co. A model that is not cached and whose host cannot be reached at all (no connection, name resolution,
-proxy, TLS, timeout) fails with `ModelHostUnreachableException` (a `ModelDownloadException`) carrying the `Host`;
+proxy, TLS, timeout) fails with `ModelHostUnreachableException` (a `ModelDownloadException`) carrying the `Host` —
+for ONNX and GGUF models alike, and for the llama-server build (`api.github.com` or its download host) and the ONNX
+Runtime packages (`api.nuget.org`) a first load may need;
 a host that answered — a missing file, a refused request — still fails as before.
 
 ---
@@ -963,7 +971,7 @@ Models are cached following HuggingFace Hub conventions:
   plain files to `snapshots/{revision}/` exactly as earlier versions did. GGUF models (Generator, Embedder, Reranker)
   are written the same way; the private trees earlier versions used for Embedder and Reranker GGUF files
   (`gguf-embeddings/`, `gguf-rerankers/`) and existing `snapshots/main/` directories are still read, and nothing is
-  moved out of them. `IsModelDownloaded`, the loaders and `CacheManager.ModelFileExists` look in every one of these
+  moved out of them. `IsModelDownloadedAsync`, the loaders and `CacheManager.ModelFileExists` look in every one of these
   places; `CacheManager.GetSnapshotDirectories` returns the snapshot directories looked in, in order.
 - **Other tools' files are never modified.** A snapshot is LMSupply's own when LMSupply recorded a download into it
   (a manifest) or when it is named after a revision (`snapshots/main/`, which only LMSupply writes); any other snapshot
@@ -1048,8 +1056,9 @@ RuntimeManager.Configure(new RuntimeManagerOptions
 A host that must not download before the user agrees asks each model package the same three questions through
 `LMSupply.Lifecycle.IModelArtifacts` — `GeneratorArtifacts(options)`, `EmbedderArtifacts(options)`, `RerankerArtifacts(options)`,
 `TranscriberArtifacts(options)`, `DiarizationArtifacts(options)` (the speaker-diarization pair, one id `"default"`),
-`CaptionerArtifacts(options)` and `OcrArtifacts(options)` (its id is a language code, as for
-`LocalOcr.LoadForLanguageAsync`), built with the options the later load will use:
+`CaptionerArtifacts(options)`, `OcrArtifacts(options)` (its id is a language code, as for
+`LocalOcr.LoadForLanguageAsync`), `DetectorArtifacts(options)`, `SegmenterArtifacts(options)`, `TranslatorArtifacts(options)`, `SynthesizerArtifacts(options)`, `DeciderArtifacts(options)` and `ImageGeneratorArtifacts(options)`, built with the options
+the later load will use:
 
 ```csharp
 using LMSupply;
@@ -1061,7 +1070,8 @@ var progress = new Progress<DownloadProgress>(p => Console.WriteLine($"{p.FileNa
 
 if (!await generators.IsAvailableOfflineAsync("gguf:default"))      // weights and, for GGUF, llama-server cached?
 {
-    var bytes = await generators.GetRemainingDownloadBytesAsync("gguf:default");   // for the consent prompt
+    var remaining = await generators.GetRemainingDownloadAsync("gguf:default");    // for the consent prompt
+    // remaining.ModelBytes, remaining.RuntimeBytes (null when it cannot be told), remaining.TotalBytes
     // ... after the user agrees:
     await generators.DownloadAsync("gguf:default", progress);       // weights + llama-server
 }
@@ -1070,7 +1080,11 @@ await using var model = await LocalGenerator.LoadAsync("gguf:default", new Gener
 ```
 
 «Available offline» is exactly what a load with `DisableAutoDownload` needs, so that load then makes no network request.
-`GetRemainingDownloadBytesAsync` counts model files only (llama-server is a shared runtime of a few hundred MB, fetched once).
+`GetRemainingDownloadAsync` states what `DownloadAsync` would fetch on this machine, model files and runtimes apart: for a
+GGUF model the llama-server build and, for CUDA, its runtime companion (about 1.2 GB together on CUDA); for an ONNX model the
+ONNX Runtime native package for the provider its session would use (about 160 MB for the CPU package of 1.31.0), and ONNX Runtime GenAI for an
+ONNX generator — 0 once cached. Runtime bytes are null when the release listing or package feed cannot be read, or when a
+load would not download the runtime (`RuntimeManagerOptions` disables it, or names a runtime directory that lacks it).
 The speaker-diarization pair is a kind of its own (`"diarization"`), not part of the transcriber's — whatever
 `PreloadDiarization` says — so «transcription available» and «speaker labels available» are two statuses, each with its own
 consent and download. A host whose loads preload diarization treats the transcriber as ready when both kinds are.
@@ -1122,9 +1136,9 @@ A `gguf:` registry alias deletes the file it loads on this host (every shard of 
 `gguf:gemma4-balanced` are two quantizations of one repository, and deleting one keeps the other; any other id names one
 model per repository and deletes LMSupply's files of it. A delete removes LMSupply's own files only — another tool's snapshot
 in the shared cache, a local path and llama-server stay (a model still `Ready` after `DeleteAsync` loads from those). Without
-a lifecycle, `LocalGenerator.DeleteModel(id, options)`, `LocalEmbedder.DeleteModel(id, cacheDir)`,
-`LocalReranker.DeleteModel(id, cacheDir)`, `LocalTranscriber.DeleteModel(id, options)` and `LocalCaptioner.DeleteModel(id, options)`
-resolve the id the way their `IsModelDownloaded`/`IsModelDownloadedAsync` does (OCR: `LocalOcr.DeleteLanguageModel(language, options)`
+a lifecycle, `LocalGenerator.DeleteModel(id, options)`, `LocalEmbedder.DeleteModel(id, options)`,
+`LocalReranker.DeleteModel(id, options)`, `LocalTranscriber.DeleteModel(id, options)` and `LocalCaptioner.DeleteModel(id, options)`
+resolve the id the way their `IsModelDownloadedAsync` does (OCR: `LocalOcr.DeleteLanguageModel(language, options)`
 deletes that language's recognizer and keeps the detection model every language shares; languages of one script share a
 recognizer) (a transcriber keeps the shared diarization pair) and call `CacheManager.DeleteModelFiles(cacheDir, repoId, files)` or `CacheManager.DeleteModel`. On Windows a file a running server has open cannot be deleted (`IOException`) — dispose the model
 first.

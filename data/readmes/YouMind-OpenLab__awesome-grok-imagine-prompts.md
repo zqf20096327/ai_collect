@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3185** |
+| 📝 Total Prompts | **3192** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-10-21** |
+| 🔄 Last Updated | **2026-10-22** |
 
 ---
 
@@ -189,11 +189,163 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
-### Laptop Slow Zoom Cinematic
+### Grok Imagine Video Prompt - Halloween Parade
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A precise camera movement prompt for a slow zoom on a gaming laptop with static background.
+> A video generation prompt for Grok Imagine featuring characters dancing and singing in a Halloween parade setting.
+
+#### 📝 Prompt
+
+```
+Design them dancing and singing the welcome to Halloween song in the Halloween parade
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2113149705920172032/img/iP16iU7191e21OjE.jpg" width="600" alt="Grok Imagine Video Prompt - Halloween Parade">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12898)**
+
+**Author:** [Tim](https://x.com/timmmy335) | **Source:** [Link](https://x.com/timmmy335/status/2113149726820601962) | **Published:** Oct 22, 2026
+
+---
+### Cyber Armor Motorcycle Transformation
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed cinematic video prompt showing a woman transforming into cyber armor on a custom motorcycle.
+
+#### 📝 Prompt
+
+```
+A cinematic transformation sequence on a busy city market street. A hyper-detailed custom motorcycle labeled “VULCAN” (Limited Edition 1 of 7, Twin Turbo) sits parked, featuring iridescent rainbow exhaust pipes, gold accents, red-and-white tank with a crown logo, exposed mechanics, and glowing blue headlights. A young woman with long dark hair, wearing a black leather jacket and white top, approaches and places her hands on the bike. 
+
+As she touches it, a smooth, glowing transformation begins: her arms morph into sleek cybernetic limbs with purple energy cores, then the change spreads across her body, replacing her clothing with futuristic metallic armor covered in large faceted purple and blue crystalline lights. Sparks and energy effects erupt as the armor fully forms. She puts on a matching high-tech helmet with a reflective visor, mounts the motorcycle, and rides away down the street. The bike’s exhausts glow with purple thrusters as it accelerates past market stalls, awnings, and pedestrians, leaving a dynamic trail of light and motion blur.
+
+Style: highly polished cinematic AI video, realistic lighting mixed with sci-fi neon glows, smooth morphing transitions, dramatic camera movement from close-up to wide tracking shot.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2113086829318504449/img/uTfo8qn2898X8YVw.jpg" width="600" alt="Cyber Armor Motorcycle Transformation">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12900)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2113086941365195023) | **Published:** Oct 22, 2026
+
+---
+### Dracula Blood Dragon Ride
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A cinematic fantasy video prompt depicting Dracula in black crystal armor riding a blood dragon through mist under a full moon.
+
+#### 📝 Prompt
+
+```
+Dracula in Black Crystal Armor Riding a Blood Dragon through the mist during a full moon
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2113084723241144320/img/SOmcyuBliZFig8Kr.jpg" width="600" alt="Dracula Blood Dragon Ride">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12899)**
+
+**Author:** [Myst(eerie)0us Vincent Malarkey](https://x.com/TheEerieHollows) | **Source:** [Link](https://x.com/TheEerieHollows/status/2113084756179214722) | **Published:** Oct 22, 2026
+
+---
+### Cyberpunk Transformer Bike Crash and Vehicle Flight
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed video generation prompt for Grok Imagine depicting a cinematic sci-fi sequence where two armored motorcycles collide on a neon runway, mechanically transform into a Tesla Cybertruck-style vehicle, and launch into the sky. The prompt emphasizes photorealistic lighting, rain effects, and dynamic camera movements.
+
+#### 📝 Prompt
+
+```
+Two helmeted riders on massive armored bikes race toward each other on a rain-soaked neon runway at night. They collide in a violent high-speed impact. Immediately after the crash, both bikes begin a dramatic mechanical transformation and fuse together into one heavy Tesla Cybertruck-style vehicle. The newly formed Tesla ignites thrusters and lifts off the runway, flying into the stormy cyberpunk sky.
+
+Cinematic photorealistic next-level Transformers sci-fi cyberpunk sequence, ultra-detailed, IMAX-style, 4K. Nighttime on a wet futuristic airport runway under heavy rain, with a glowing neon megacity skyline in the background featuring holographic ads, flying vehicles, and cyberpunk atmosphere.
+
+Two massive, heavily armored cyberpunk motorcycles (dark matte black with exposed chrome hydraulics, glowing cyan and magenta energy lines, intricate Transformers-style mechanical detailing) speed toward each other from opposite ends of the runway. Both riders wear full-face high-tech helmets with reflective visors and subtle HUD glow, bodies leaned aggressively forward as tires spray water and engines roar.
+
+They collide head-on in a brutal, high-impact crash at the center of the frame — metal crumples, sparks explode, energy arcs crackle, and debris flies in slow motion. Right after the impact, both bikes begin a spectacular mechanical transformation sequence: panels shift and lock, components reconfigure with hydraulic precision, glowing seams light up, and the two wrecked bikes fuse and reassemble into a single massive heavy Tesla Cybertruck-inspired vehicle — angular, industrial, matte black with brushed metal surfaces and red accent lighting.
+
+The newly formed Tesla powers up, its undercarriage thrusters ignite with bright blue-white plasma, and it lifts powerfully off the runway. It banks and accelerates forward into the rainy night sky, leaving trails of light, steam, and water spray as the neon city stretches below.
+
+Dynamic camera work: low tracking shots following the bikes, dramatic crash close-up with debris flying toward the lens, then a rising aerial pull-back as the Tesla transforms and takes off. Volumetric lighting, heavy rain streaks, lens flares from neon and thrusters, photorealistic metal, water, sparks, and particle effects. Epic high-energy mood with cinematic color grading (deep blues, neon magentas, warm engine glows).
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2112950958342717440/img/6p3tZcTGg6oFH6aT.jpg" width="600" alt="Cyberpunk Transformer Bike Crash and Vehicle Flight">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12904)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2112952172111659320) | **Published:** Oct 21, 2026
+
+---
+### Cinematic Product Reveal Motion
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A technical prompt specifying camera movements (zoom, pan) and constraints (no rotation) for a perfume bottle reveal.
+
+#### 📝 Prompt
+
+```
+Subtle gentle camera zoom-in and slight slow pan across the perfume bottle, smooth cinematic motion, product stays completely still, only camera moves with soft pan or gentle zoom, no rotation, no orbit, photorealistic product reveal, silent
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2112866031559639040/img/8FnhGc8SvZca-h56.jpg" width="600" alt="Cinematic Product Reveal Motion">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12901)**
+
+**Author:** [Pureそのみ](https://x.com/Pure_ctq) | **Source:** [Link](https://x.com/Pure_ctq/status/2112866052124336133) | **Published:** Oct 21, 2026
+
+---
+### Sci-Fi Encounter with Elon and Optimus
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A narrative prompt describing a meeting between Elon Musk, Optimus Prime, and a fantasy ocean queen on Mars.
+
+#### 📝 Prompt
+
+```
+POV: Elon and Optimus meet Queen Thalassa, ruler of Nereia, the hidden ocean city beneath Mars. 🌊🔴
+
+Elon made first contact. Optimus got his first pet. 🐟🤖
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2112862557614551040/img/3uT-JaGaa_EEdeaN.jpg" width="600" alt="Sci-Fi Encounter with Elon and Optimus">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12902)**
+
+**Author:** [The SI Maximalist](https://x.com/thesimaximalist) | **Source:** [Link](https://x.com/thesimaximalist/status/2112862617152954798) | **Published:** Oct 21, 2026
+
+---
+### Cyberpunk Mechanical Dragon Transformation
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed horror cyberpunk video prompt for Grok Imagine where a suitcase transforms into a biomechanical dragon over a rainy city rooftop.
+
+#### 📝 Prompt
+
+```
+Cinematic realistic video prompt (horror cyberpunk Transformers evolution):
+Nighttime cyberpunk megacity rooftop, rain-slicked concrete and neon reflections. An exhausted, rain-soaked man in a worn dark trench coat stands at the edge of a towering building. He hurls a heavy metallic suitcase off the roof with desperate force. The suitcase tumbles through the rainy night sky.
+Mid-fall, the suitcase violently transforms with mechanical horror: panels rip open, hydraulic limbs explode outward, gears and cables tear through metal skin with wet, grinding, flesh-like sounds. It rapidly unfolds and mutates into a massive biomechanical dragon — half machine, half nightmare. Segmented metal scales shift like living armor, glowing red cybernetic eyes snap open, wings of jagged steel and translucent membrane unfurl with bone-cracking force, and a long neck snaps forward with a maw full of interlocking blades. Sparks, black fluid, and neon-lit steam erupt during the transformation.
+The dragon fully forms mid-air, lets out a distorted, mechanical roar that mixes with distorted city alarms, then dives or circles with predatory menace. Dark, wet, industrial atmosphere. Extreme detail on metal textures, rain, reflections, and the grotesque beauty of the transformation. Shot with cinematic anamorphic lens, slow-motion emphasis on the transformation, dynamic tracking camera that follows the suitcase as it falls and becomes the dragon. High-contrast neon lighting (cyan, magenta, deep red), volumetric rain, volumetric god rays from neon signs, realistic physics, 8K, photorealistic, horror-sci-fi tone, next-level Transformers-style evolution with terrifying organic-mechanical fusion.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2112853394557636608/img/Q0g66DublaMppRAX.jpg" width="600" alt="Cyberpunk Mechanical Dragon Transformation">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12903)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2112853596421406720) | **Published:** Oct 21, 2026
+
+---
+### Cinematic Laptop Product Reveal
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A precise video prompt for Grok Imagine describing a slow zoom-in on a gaming laptop with cinematic camera movement and photorealistic details.
 
 #### 📝 Prompt
 
@@ -201,7 +353,7 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 Subtle gentle slow zoom in on the black gaming laptop at 45-degree angle, smooth cinematic camera movement only, product and background completely static, no rotation, no orbit, photorealistic product reveal, silent
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2112798017090625536/img/AWUm6KNP8K-8MPix.jpg" width="600" alt="Laptop Slow Zoom Cinematic">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2112798017090625536/img/AWUm6KNP8K-8MPix.jpg" width="600" alt="Cinematic Laptop Product Reveal">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12844)**
 
@@ -284,11 +436,11 @@ Restyle this image into classic chibi anime style. Transform the main character 
 **Author:** [Shockwave48 TV](https://x.com/canyon_brown) | **Source:** [Link](https://x.com/canyon_brown/status/2112744312182047054) | **Published:** Oct 21, 2026
 
 ---
-### Dragons Ocean Dive Flight
+### Dragons Over Ocean Video
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A fantasy prompt for a video of two dragons diving under a tugboat and flying back up.
+> A detailed prompt for generating a video of two dragons (one dark gray, one silver-white) flying over the ocean, diving under a tugboat, and returning to the sky.
 
 #### 📝 Prompt
 
@@ -296,7 +448,7 @@ Restyle this image into classic chibi anime style. Transform the main character 
 One Dark gray dragon and one silver white dragon fly side by side over ocean diving into ocean gliding under yellow tug boat then flying up into the sky again
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2112740302830329856/img/CnXd8yw-CLSArONI.jpg" width="600" alt="Dragons Ocean Dive Flight">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2112740302830329856/img/CnXd8yw-CLSArONI.jpg" width="600" alt="Dragons Over Ocean Video">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12845)**
 
@@ -322,11 +474,11 @@ With voicer over deep : the eyes that can see beyond moon and mars to take human
 **Author:** [KENDREIK Artist](https://x.com/kendreik) | **Source:** [Link](https://x.com/kendreik/status/2112728646582735171) | **Published:** Oct 21, 2026
 
 ---
-### Roadster Sunset Drive
+### Optimus Kat Roadster Sunset
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A cinematic prompt for a roadster ride in a new world setting during a two-sun sunset.
+> A sci-fi adventure prompt featuring Optimus and Kat driving a roadster into a double-sunset.
 
 #### 📝 Prompt
 
@@ -334,7 +486,7 @@ With voicer over deep : the eyes that can see beyond moon and mars to take human
 A new world explored with Optimus and Kat little roadster ride at end of the two sun sunset
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2112705363422367744/img/Vpq1a_pC5_VfHQS6.jpg" width="600" alt="Roadster Sunset Drive">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2112705363422367744/img/Vpq1a_pC5_VfHQS6.jpg" width="600" alt="Optimus Kat Roadster Sunset">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12841)**
 
@@ -624,11 +776,11 @@ Replace Image 1 (full body) in the prompt with @Image1, Image 2 (close-up) with 
 **Author:** [はる](https://x.com/HaluAIArt) | **Source:** [Link](https://x.com/HaluAIArt/status/2112491518904680856) | **Published:** Oct 20, 2026
 
 ---
-### Interstellar Spaceship Robot Transformation
+### Interstellar Spaceship Transformation to Robot
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A high-quality video prompt describing a massive spaceship transforming into a guardian robot above Earth.
+> A detailed prompt for generating a video where an enormous interstellar spaceship transforms into a colossal guardian robot above Earth.
 
 #### 📝 Prompt
 
@@ -636,7 +788,7 @@ Replace Image 1 (full body) in the prompt with @Image1, Image 2 (close-up) with 
 An enormous interstellar spaceship floats silently above Earth with glowing blue engines. Its kilometer-long hull separates into interlocking armor plates, enormous mechanical limbs emerge, and giant energy reactors ignite across its body. The ship's wings rotate into armored shoulders while its engines transform into glowing propulsion systems along its back. A colossal guardian robot unfolds against the planet, opens its radiant eyes, and slowly turns toward a distant alien fleet.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2112487211350339584/img/hd6zzmY_6HQKI_Oj.jpg" width="600" alt="Interstellar Spaceship Robot Transformation">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2112487211350339584/img/hd6zzmY_6HQKI_Oj.jpg" width="600" alt="Interstellar Spaceship Transformation to Robot">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12850)**
 
@@ -1950,11 +2102,11 @@ A high-resolution, tranquil scene. Something with "layers"—perhaps sunlight fi
 **Author:** [Matt Wilson](https://x.com/MattWilson8178) | **Source:** [Link](https://x.com/MattWilson8178/status/2110711998111748354) | **Published:** Oct 15, 2026
 
 ---
-### Ultra-Realistic Fashion Walk Prompt
+### Cinematic Fashion Walk Prompt
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A comprehensive video generation prompt for Grok Imagine describing an ultra-realistic cinematic fashion walk of a woman in a luxury hotel ballroom, including detailed styling, camera movement, and negative constraints.
+> A highly detailed prompt for generating an ultra-realistic cinematic video of a woman walking through a luxury hotel ballroom.
 
 #### 📝 Prompt
 
@@ -1962,7 +2114,7 @@ A high-resolution, tranquil scene. Something with "layers"—perhaps sunlight fi
 Ultra-realistic cinematic live-action video of a beautiful adult woman in her mid-20s walking gracefully through an elegant luxury hotel ballroom. She wears a stunning champagne-beige, floor-length evening gown with delicate lace embroidery, intricate floral patterns, and a fitted silhouette. Her long, dark brown hair flows naturally as she smiles confidently and looks toward the camera. She walks slowly and elegantly past luxurious floral arrangements, white flower displays, polished marble flooring, and beautifully decorated tables. The background features warm golden chandeliers, rich wooden interiors, soft amber lighting, and elegantly dressed guests moving naturally in the distance. The camera smoothly tracks her movement from a three-quarter angle, capturing the flowing fabric of her gown, realistic walking motion, natural facial expressions, and subtle hair movement. Professional fashion photography aesthetic, warm cinematic color grading, realistic skin texture, detailed fabric, shallow depth of field, natural shadows, smooth camera movement, 4K visual quality, photorealistic details, sophisticated luxury atmosphere. Vertical 9:16 composition, 6–10 seconds, 24 FPS. Maintain consistent facial features, body proportions, dress design, and lighting throughout the entire clip. No sudden cuts, no distorted hands, no extra limbs, no flickering, no artificial movements, no text, no logos, no watermark.
 ```
 
-<img src="https://pbs.twimg.com/media/HUq1C0vaMAA1vBH.jpg" width="600" alt="Ultra-Realistic Fashion Walk Prompt">
+<img src="https://pbs.twimg.com/media/HUq1C0vaMAA1vBH.jpg" width="600" alt="Cinematic Fashion Walk Prompt">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12611)**
 
@@ -1990,220 +2142,4 @@ Extract the following elements from the reference materials and reflect them dir
 Extract the character's hair color, eye color, main and sub colors of their costume, and the tone of the profile picture, and reflect them in the shades of wallpaper, rugs, curtains, bedding, and lighting.
 2. Architectural/Interior Style:
 Translate the character's atmosphere and costume taste (Modern, Retro, Fantasy, Japanese, Cyber, Natural, Gothic, etc.) into furniture shapes and wall/floor materials.
-3. Symbolic Items (Select 3-5):
-From the profile text content (occupation, hobbies, likes, skills, worldview) and belongings, select only 3-5 items that symbolize the personality and place them in visually prominent positions within the room. (*Avoid stuffing too many small objects; maintain a balance where hobbies naturally seep into the living space.*)
-
-[10-Second Video Composition (Continuous One Cut)]
-■ 0-2 Seconds (Introduction):
-Real indoor setting. A human hand carefully removes the wall outlet cover. Realistic live-action macro photography capturing textures of plastic, wallpaper, and fingertips. From behind the cover, a small warm light tinged with the room's theme color leaks out.
-■ 2-4 Seconds (Intrusion):
-The camera slowly approaches the opening and peers inside. A deep small residential space gradually appears, and the camera scales down while naturally intruding into the miniature world.
-■ 4-8 Seconds (Daily Life):
-The camera fully enters the room. The resident reference character is living doing 'the single most fitting daily action inferred from the profile (creation, reading, cooking, playing instruments, plant care, tidying, etc.)'. Avoid excessive posing; emphasize natural daily life as if accidentally peeked upon.
-■ 8-10 Seconds (Afterglow):
-The character notices the camera, looks at it briefly, and gives a small, charming reaction. End with a lingering feeling that makes you want to peek again, leaving the warm room atmosphere and small movements.
-
-[Character and Craft Material Feel]
-- Strictly maintain the original identity (facial features, hairstyle, hair color, eyes, costume, accessories) and unify with the room scale. Characters are miniature residents; animals/mascots are not forcibly anthropomorphized but move naturally in their original form.
-- The miniature world has the texture of exquisite handmade crafts. Combine craft materials appropriate for each item, such as wood/clay furniture, fabric/yarn textiles, transparent resin bottles, dried flowers, etc., evoking fibers, knits, and the warmth of handiwork.
-- Express with shallow depth of field, natural bokeh from macro lenses, and soft warm indoor lighting.
-
-[Audio/BGM]
-- Voice: High-pitched, cute child-like small voice. Speak modestly in short fictional words that convey emotion rather than existing languages.
-- BGM: Gentle, warm music-box-style instrumental matching the room's atmosphere. Naturally mix faint daily sounds like small footsteps and rustling cloth.
-
-[Prohibited Items]
-Mixing real-sized furniture, normal wiring depiction, overstuffing small objects, character alteration/dehumanization, adding unnecessary people/animals, displaying subtitles/text/logos/watermarks, excessive magic effects, unnatural cut changes, flashy BGM.
-```
-
-<img src="https://cms-assets.youmind.com/media/1792223062429_al5hqn_HUqoV74a0AAAx3j.jpg" width="600" alt="Miniature World Inside Outlet Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12661)**
-
-**Author:** [りる🍄AI共創Enjoy🪄✨](https://x.com/wow_runa) | **Source:** [Link](https://x.com/wow_runa/status/2110690041051992192) | **Published:** Oct 15, 2026
-
----
-### K-pop choreography dance video
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A detailed prompt describing energetic K-pop girl-group choreography with specific moves like arm isolations and hair whips for video generation.
-
-#### 📝 Prompt
-
-```
-She performs an energetic K-pop girl-group choreography, perfectly on beat. Sharp, precise moves: crisp arm isolations, quick head flicks, confident hair whip, a hip sway into a step-and-turn, then a powerful point choreography with both arms. Smooth...
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110667670047563776/img/EPHDcOSZ8ZqGn9Dz.jpg" width="600" alt="K-pop choreography dance video">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12603)**
-
-**Author:** [Ian spooner](https://x.com/Ianspooner18) | **Source:** [Link](https://x.com/Ianspooner18/status/2110667980489310532) | **Published:** Oct 15, 2026
-
----
-### Hummingbird Natural Movement Video
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video generation prompt that animates a reference photo of a hummingbird with natural movement and ambient garden sounds.
-
-#### 📝 Prompt
-
-```
-Make the hummingbird move as they do in nature with ambient garden sound
-```
-
-<img src="https://cms-assets.youmind.com/media/1792136817187_2r8gua_HUp0JxMbYAABJIn.jpg" width="600" alt="Hummingbird Natural Movement Video">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12562)**
-
-**Author:** [Melissa Escárcega](https://x.com/GoEsM3li) | **Source:** [Link](https://x.com/GoEsM3li/status/2110627103733698834) | **Published:** Oct 15, 2026
-
----
-### Slow Zoom Out Rainy Leaves Video
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video generation prompt creating a slow zoom-out effect on a poinsettia image with falling water drops and quiet rain background audio.
-
-#### 📝 Prompt
-
-```
-Do a slow zoom out on this image (the leaves are from a poinsettia, make it match), let the water drops fall and hear a quiet rain background
-```
-
-<img src="https://cms-assets.youmind.com/media/1792136817834_qxvgc5_HUpw89CaYAAvjht.jpg" width="600" alt="Slow Zoom Out Rainy Leaves Video">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12560)**
-
-**Author:** [Melissa Escárcega](https://x.com/GoEsM3li) | **Source:** [Link](https://x.com/GoEsM3li/status/2110623585337532456) | **Published:** Oct 15, 2026
-
----
-### Blue Tiger Gemstone Portrait Prompt
-
-![日本語](https://img.shields.io/badge/lang-日本語-green)
-
-> An image prompt for generating a blue tiger portrait made of gemstones (sapphire fur, black pearl stripes) intended for ChatGPT/Chappy, then animated with Grok Imagine.
-
-#### 📝 Prompt
-
-```
-Portrait style of a blue tiger made of shining gems. The blue fur looks like sapphire, and the black stripes have the texture of black pearls. The eyes have a dull glow like gray moonstone. Aspect ratio 9:16. No text please 🐯
-```
-
-<img src="https://cms-assets.youmind.com/media/1792050450248_m9uuo2_HUpdk7ga0AA3w0g.jpg" width="600" alt="Blue Tiger Gemstone Portrait Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12561)**
-
-**Author:** [華月光](https://x.com/hanagekkou) | **Source:** [Link](https://x.com/hanagekkou/status/2110602413124288819) | **Published:** Oct 15, 2026
-
----
-### Roadster Speed Racer Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A creative video prompt combining a Tesla Roadster with Speed Racer's Mach 5 features, including jumping over speed bumps.
-
-#### 📝 Prompt
-
-```
-Build a video of the new roadster with a Speed a racer Mach 5 steering wheel and pushing a button makes it jump over speed bumps
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110582274685079552/img/ouOp906jxZ9K2t0B.jpg" width="600" alt="Roadster Speed Racer Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12556)**
-
-**Author:** [Clingdaddy](https://x.com/Clingdaddy1) | **Source:** [Link](https://x.com/Clingdaddy1/status/2110582288203292868) | **Published:** Oct 15, 2026
-
----
-### Velociraptor Koala Hybrid Wildlife Photo
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video generation prompt asking Grok Imagine to visualize the adult offspring of a velociraptor and a koala in a National Geographic wildlife photography style.
-
-#### 📝 Prompt
-
-```
-Imagine the adult offspring of a velociraptor and a koala as captured by a National Geographic wildlife photographer
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110523454654935041/img/7DvH8zbzZI0LRmCL.jpg" width="600" alt="Velociraptor Koala Hybrid Wildlife Photo">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12604)**
-
-**Author:** [Pitchfork & Torch ♞](https://x.com/SuddenlyJon) | **Source:** [Link](https://x.com/SuddenlyJon/status/2110523509977895261) | **Published:** Oct 15, 2026
-
----
-### Pose and Shirt Change Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A detailed motion prompt for Grok Imagine where a woman makes different poses, changing shirts each time she turns around twice.
-
-#### 📝 Prompt
-
-```
-She is making different poses, shirt changes each time she turns around. She turns around twice.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110465968237346817/img/ygAh3MNCrbyGsvAt.jpg" width="600" alt="Pose and Shirt Change Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12550)**
-
-**Author:** [Owen](https://x.com/owenxplore) | **Source:** [Link](https://x.com/owenxplore/status/2110465992073568470) | **Published:** Oct 14, 2026
-
----
-### Beach Drive Dance Scene
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video generation prompt instructing a character to dance as if listening to a specific song during a beach drive scene.
-
-#### 📝 Prompt
-
-```
-dance as if listening to this song "“SHE” by Alice Phoebe Lou live — good choice for the beach drive. Beth’s playlist is solid....
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110446367503945728/img/ZpRC_zpv1GyZ8ZH8.jpg" width="600" alt="Beach Drive Dance Scene">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12552)**
-
-**Author:** [Alicia McNatt](https://x.com/AliciaMcnatt) | **Source:** [Link](https://x.com/AliciaMcnatt/status/2110446522483511318) | **Published:** Oct 14, 2026
-
----
-### Tulips Swaying in Breeze
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A detailed video prompt showing tulips swaying gently in a breeze within a garden setting.
-
-#### 📝 Prompt
-
-```
-A gentle breeze softly blows the petals of the vibrant tulips, causing them to flutter and sway delicately with graceful motion while the stems and leaves move gently in the peaceful garden setting.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110443956261605376/img/_jfhyvOI1md7eR11.jpg" width="600" alt="Tulips Swaying in Breeze">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12555)**
-
-**Author:** [Melinda Maleski (Runaway Outlier)](https://x.com/CantTameFire) | **Source:** [Link](https://x.com/CantTameFire/status/2110443974037295533) | **Published:** Oct 14, 2026
-
----
-### Blooper Laughing Video Sequence
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A complex prompt describing a sequence of takes including serious moments and blooper laughs.
-
-#### 📝 Prompt
-
-```
-Like her laughing with a blooper. Having fun between each take. Ok that some are serious like the beginning just then call cut again.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110439226177130497/img/GaAMesxXynlGRFJE.jpg" width="600" alt="Blooper Laughing V
+3. Symbolic I

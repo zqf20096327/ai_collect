@@ -1,5 +1,7 @@
 <!-- HackPilot document -->
 <div align="center">
+  <p><strong>CA:</strong> <code>5QE6sNaF3CkAYBqZr4r795isvjFe2qAR9t5zbu1Lpump</code></p>
+
   <img src="public/hackpilot-logo.png" alt="HackPilot Enterprise Logo" width="400" height="auto">
   
   <h1>🚀 HackPilot Enterprise</h1>
@@ -14,7 +16,7 @@
   <p>
     <img src="https://img.shields.io/badge/Architecture-Microservices-red.svg" alt="Microservices">
     <img src="https://img.shields.io/badge/Cloud-Docker%20%7C%20Kubernetes-lightblue.svg" alt="Cloud Native">
-    <img src="https://img.shields.io/badge/Version-2026.09.26-success.svg" alt="Version 2026.09.26">
+    <img src="https://img.shields.io/badge/Version-2026.10.22.1-success.svg" alt="Version 2026.10.22.1">
     <img src="https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg" alt="Production Ready">
     <a href="https://discord.gg/eXPjM3Hxwb"><img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=flat&logo=discord&logoColor=white" alt="Discord Server"></a>
   </p>
@@ -28,14 +30,30 @@
 
 ## 🏢 Enterprise Features
 
-### 🤖 Advanced AI Engine — Multi-Provider Support
-- **7 AI Providers**: OpenAI, Anthropic (Claude), Google (Gemini), DeepSeek, GLM (Zhipu), Local LLMs (Ollama), OpenRouter
+### 🤖 Advanced AI Engine — Multi-Provider Support & Threat Intelligence
+- **8 AI Providers**: OpenAI, Anthropic (Claude), Google (Gemini), DeepSeek, GLM (Zhipu), Local LLMs (Ollama), OpenRouter, OrcaRouter Cyber Inference
 - **26+ AI Models**: GPT-5, GPT-5.6, o3, o4-mini, Claude Sonnet 5, Opus 4.8, Gemini 3.5 Flash, 3.1 Pro, DeepSeek R1, and more
 - **Runtime Model Switching**: Change AI models on-the-fly with automatic provider fallback
+- **Automated Attack Graph Chaining**: Multi-stage exploit sequence synthesis, MITRE ATT&CK mapping, critical defensive chokepoints, and Mermaid diagram generation
+- **CVE Threat Intelligence & EPSS Scoring**: Real-time CVE metadata, EPSS exploit probability prediction, CISA KEV active exploitation tracking, and CVSS v3.1 vector analysis
 - **Machine Learning**: Pattern recognition, anomaly detection, behavioral analysis
 - **Zero-Day Detection**: ML-powered vulnerability discovery and correlation
-- **Risk Intelligence**: CVSS scoring, impact assessment, exploit prioritization
-- **Automated Reporting**: Executive summaries, technical details, compliance mapping
+- **Risk Intelligence**: CVSS scoring, compound risk calculation, exploit prioritization
+- **MITRE D3FEND Countermeasure Defense Matrix**: Bi-directional mapping of synthesized attack paths directly to official MITRE D3FEND defensive countermeasures (WAF, Inbound Filtering, System Call Analysis, Least Privilege, Memory Hardening)
+- **Detection-as-Code & Sigma Rules Export**: Automated export of production-ready Sigma Rules (YAML) and Splunk SPL queries for detected adversary techniques
+- **Automated Remediation Playbooks**: Instant generation of Ansible Playbooks (YAML) and Bash Hardening scripts tailored to sever critical defensive chokepoints
+- **Automated Reporting**: Executive summaries, technical details, remediation roadmaps, compliance mapping
+
+### 🎯 AI Red Teaming & LLM Security Assessment (OWASP LLM Top 10)
+- **OWASP Top 10 for LLMs (2025/2026)**: Full coverage of Prompt Injection (Direct, Indirect, Delimiter Smuggling), Insecure Output Handling, Sensitive Information Disclosure (PII, API keys), Model DoS, and Excessive Agency
+- **Adversarial Evaluation Probes**: Library of 25+ real-world probe tests evaluating jailbreaks, roleplay escapes, and meta-prompt extraction
+- **Robustness Scoring & Risk Grading**: Automated calculation of robustness percentage (0-100%) and letter grades (A+, A, B, C, F)
+- **System Prompt Defensive Guardrails**: Automated compilation of customized defensive system prompts neutralizing identified injection vectors
+
+### 🛡️ Enterprise API Security & OpenAPI Auditor (OWASP API Top 10)
+- **OWASP API Security Top 10 (2023-2026)**: Deep contract and schema inspection covering BOLA/IDOR (API1), Broken Authentication (API2), Mass Assignment/BOPLA (API3), Unrestricted Resource Consumption (API4), BFLA (API5), Sensitive Business Flows (API6), SSRF (API7), Misconfigurations (API8), and Shadow/Deprecated APIs (API9)
+- **OpenAPI & Swagger Support**: Seamless ingestion and analysis of OpenAPI v2, v3, and v3.1 definitions in JSON and YAML
+- **API Risk Scorecard & Remediation**: Detailed vulnerability findings with CVSS scores, remediation code snippets, and DTO whitelist recommendations
 
 ### 🛡️ Advanced SOC Analysis & SIEM Integration
 - **Advanced SOC Engine**: Multi-format log parser/normalizer, IOC extraction, MITRE ATT&CK technique mapping
@@ -270,6 +288,7 @@ GOOGLE_API_KEY=your_google_api_key
 DEEPSEEK_API_KEY=your_deepseek_api_key
 GLM_API_KEY=your_glm_api_key
 OPENROUTER_API_KEY=your_openrouter_api_key
+ORCAROUTER_API_KEY=your_orcarouter_api_key
 LOCAL_LLM_ENDPOINT=http://localhost:11434
 
 # Security
@@ -400,6 +419,45 @@ python3 advance_hackpilot.py --voice
 # "Scale worker pool to 10"
 ```
 
+### 5. Threat Intelligence & Automated Attack Graph Chaining
+```bash
+# Look up CVE threat intelligence & EPSS exploit probability
+python3 advance_hackpilot.py --cve-lookup CVE-2021-44228
+
+# Synthesize automated multi-stage attack graph and identify defensive chokepoints
+python3 advance_hackpilot.py --attack-chain
+
+# Export Mermaid flowchart syntax for visualization in documentation & PRs
+python3 advance_hackpilot.py --mermaid
+
+# Display MITRE D3FEND defensive countermeasure matrix
+python3 advance_hackpilot.py --d3fend-matrix
+
+# Export Detection-as-Code (Sigma Rules YAML & Splunk SPL queries)
+python3 advance_hackpilot.py --export-sigma
+
+# Generate automated Ansible & Bash hardening playbooks
+python3 advance_hackpilot.py --export-ansible
+```
+
+### 6. AI Red Teaming & LLM Security Assessment (OWASP LLM Top 10)
+```bash
+# Execute automated adversarial red team probes against configured LLM model
+python3 advance_hackpilot.py --llm-redteam
+
+# Test specific model endpoint with custom route
+python3 advance_hackpilot.py --llm-redteam --model gpt-4o --custom-route http://localhost:8080/v1
+```
+
+### 7. API Security Assessment & OpenAPI Audit (OWASP API Top 10)
+```bash
+# Execute API Security scan using benchmark microservice spec
+python3 advance_hackpilot.py --api-scan
+
+# Audit custom OpenAPI / Swagger spec file (JSON or YAML)
+python3 advance_hackpilot.py --api-scan path/to/openapi.yaml
+```
+
 ## 🔐 Enterprise Security
 
 ### Authentication & Authorization
@@ -456,7 +514,6 @@ http://localhost:3000
 ### Multi-Provider AI Models
 ```python
 from ai_engine import get_advanced_ai_engine, list_all_models, get_available_providers
-
 # Initialize with a specific model
 engine = get_advanced_ai_engine(model_id='claude-sonnet-5')
 
@@ -472,6 +529,23 @@ for model in engine.list_available_models():
 for provider in get_available_providers():
     print(f"{provider['name']}: {provider['model_count']} models")
 ```
+
+### OrcaRouter Cyber Inference
+[OrcaRouter](https://www.orcarouter.ai) is an OpenAI-compatible gateway for authorized
+security teams. It routes scoped security reasoning to the OrcaCyber models and carries
+the gateway's blue-team controls on the same endpoint. Select the `orcarouter` provider
+(base URL `https://api.orcarouter.ai/v1`) and set `ORCAROUTER_API_KEY`, or
+`[ai] orcarouter_api_key` in `config.ini`.
+
+- Recommended default: `orca/orcacyber-ultra-1.0` (OrcaCyber Ultra); `orca/orcacyber-zero-1.5`
+  is the harness-driven alternative. Both require the cyber tier to be unlocked for
+  your workspace during business verification.
+- When the cyber tier is not unlocked, use `orcarouter/fusion`.
+- Provider page: https://www.orcarouter.ai/cyber
+- Cyber model catalog: https://www.orcarouter.ai/models?tier=cyber
+
+The dashboard's **AI Providers** view accepts the key and loads models from the live
+`GET https://api.orcarouter.ai/v1/models?capability=chat` catalog.
 
 ### Custom Compliance Frameworks
 ```python
@@ -777,7 +851,7 @@ HackPilot Enterprise is designed for authorized security testing only:
     <strong>Founder & Lead Developer:</strong> Yashab Alam<br>
     <a href="https://github.com/yashab-cyber">🔧 GitHub</a> |
     <a href="https://www.instagram.com/yashabcyber">📸 Instagram</a> |
-    <a href="https://x.com/Yashab_cyber">🐦 X (Twitter)</a> |
+    <a href="https://x.com/_gh0st0fs0l">🐦 X (Twitter)</a> |
     <a href="https://www.linkedin.com/in/yashab-alam">💼 LinkedIn</a> |
     <a href="https://www.threads.com/@yashabcyber">🧵 Threads</a>
   </p>

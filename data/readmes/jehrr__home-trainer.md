@@ -40,9 +40,10 @@ Then open http://localhost:8765.
 
 - **Morning briefing** — one button in the sidebar. The coach checks last night's recovery, today's planned workout, recent training load, and the weather at your training location, and opens with a verdict: as planned, go easier, move indoors, reschedule, or rest. One briefing per day; pressing the button again opens the existing one.
 - **Training plan** — stored locally. The coach builds and reschedules workouts through the chat; the Plan panel shows the schedule and statuses.
+- **Workout review** — a button next to the morning briefing. It fetches fresh data from Intervals.icu and WHOOP and asks the coach to review the past week's workouts you haven't discussed yet; pressing it again the same day checks for newly arrived workouts.
 - **Plan vs. actual** — completed, partial, missed, and unplanned sessions. Statuses update automatically.
 - **Weekly review** — weekly volume and load, intensity distribution, aerobic decoupling on long rides, best efforts and an FTP estimate, fitness and form trends, and recommendations for the next week.
-- **Post-ride feedback** — the **Last ride** block in the sidebar lets you log RPE and how you felt. For activities with no data (imported from Strava), you can also enter duration and average heart rate. You can simply tell the coach in the chat as well.
+- **Post-workout feedback** — the **Recent workouts** block in the sidebar lists your latest workouts; click any of them to log RPE and how you felt. For activities with no data (imported from Strava), you can also enter duration and average heart rate. You can simply tell the coach in the chat as well.
 - **Weather & places** — hourly forecast for your workout window and management of saved training locations, by name or by coordinates.
 
 To have the morning briefing check the weather automatically, set your usual training location and start time under **About me**, or specify them for individual workouts in the plan.
@@ -81,7 +82,7 @@ Tokens are stored in `data/whoop_tokens.json` and refreshed automatically; the `
 
 1. Save your training locations in **Weather & places** and set your usual location and start time under **About me**.
 2. Ask the coach to build a plan, either with the button in the Plan panel or in your own words, e.g. "build a two-week plan, 6 hours a week, long ride on Saturday".
-3. Press **Morning briefing** in the morning, rate your ride in the **Last ride** block afterwards, and run the **Weekly review** at the end of the week.
+3. Press **Morning briefing** in the morning, rate your workouts in the **Recent workouts** block or press **Workout review**, and run the **Weekly review** at the end of the week.
 
 Everything the coach knows about you can be viewed and edited under **About me**.
 

@@ -103,6 +103,17 @@ Community members can contribute compute to any hive through **ClankeR**, the co
 
 Start with [src/docs/contributor-relay.md](src/docs/contributor-relay.md) or the [Hive Hub contribute page](https://hive.hivecommons.dev).
 
+Homebrew is an additional install option:
+
+```bash
+brew install hivecommons/hive/contribute
+```
+
+Follow the [Homebrew setup instructions](src/docs/contributor-relay.md#homebrew)
+to register without a checkout before running `hive-contribute`. The
+[`just` workflow](src/docs/contributor-relay.md#from-source) remains the
+from-source path.
+
 ## Moved sections
 
 ## Quick Start
@@ -129,6 +140,10 @@ Moved to [src/docs/kubernetes-deployment.md](src/docs/kubernetes-deployment.md).
 
 Hive is one of several repositories in the hivecommons organization. See [docs/repositories.md](docs/repositories.md) for the full list, what each one is for, and which ones ship inside a Hive release.
 
+## Adopters
+
+See [ADOPTERS.md](ADOPTERS.md) for the organizations running Hive and how far along each one is. If you use Hive, you can add your organization to that file with a pull request.
+
 ## Contributing
 
 See the [Hive Hub](https://hive.hivecommons.dev) to browse registered hives, view leaderboards, and find hives accepting contributions.
@@ -138,6 +153,8 @@ To contribute to Hive itself, see [CONTRIBUTING.md](CONTRIBUTING.md) and open is
 Recent user-visible changes are recorded in [CHANGELOG.md](CHANGELOG.md).
 
 ## Security
+
+For a code-grounded inventory of agent safety controls, enforcing versus advisory modes, known gaps, and running-hive audit steps, see the [Security Model](src/docs/security-model.md).
 
 Please see [SECURITY.md](SECURITY.md) for the vulnerability disclosure process. Data collection and telemetry paths are documented in [src/docs/telemetry.md](src/docs/telemetry.md). Do not report security vulnerabilities through public issues or pull requests.
 

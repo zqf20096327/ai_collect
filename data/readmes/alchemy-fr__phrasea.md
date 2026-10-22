@@ -99,7 +99,7 @@ flowchart LR
     traefik --> clients
     traefik --> apis
     traefik --> keycloak[Keycloak]
-    traefik --> soketi[Soketi WebSocket]
+    traefik --> sockudo[Sockudo WebSocket]
 
     apis -- auth --> keycloak
     apis --> pg[(PostgreSQL)]
@@ -108,7 +108,7 @@ flowchart LR
     apis --> rabbitmq[[RabbitMQ]]
     apis --> report[Report API]
     databoxApi --> es[(Elasticsearch)]
-    databoxApi --> soketi
+    databoxApi --> sockudo
 
     rabbitmq --> workers[Messenger workers]
     workers --> pg
@@ -195,7 +195,7 @@ Then open:
 Sign in with the user `phrasea-admin` and the password set in `DEFAULT_ADMIN_PASSWORD`.
 
 The images are pulled from Docker Hub; run `bin/build.sh` first to build them from the sources.
-See the [setup guide](./doc/tech/01_setup.md) (Let's Encrypt, cron jobs, fixtures, logs) and the
+See the [setup guide](./doc/tech/01_setup.md) (Let's Encrypt, periodic tasks, fixtures, logs) and the
 [development setup](./doc/tech/02_dev.md) for the rest.
 
 ## Deployment

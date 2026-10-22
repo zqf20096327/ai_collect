@@ -3,7 +3,7 @@
 
 <img src="docs/banner.png" alt="OrchestKit - Stop explaining your stack. Start shipping." width="100%" />
 
-**<!--ork:skills-->110<!--/ork--> skills · <!--ork:agents-->36<!--/ork--> agents · <!--ork:hooks-->162<!--/ork--> hooks**
+**<!--ork:skills-->110<!--/ork--> skills · <!--ork:agents-->36<!--/ork--> agents · <!--ork:hooks-->163<!--/ork--> hooks**
 
 [![Claude Code](https://img.shields.io/badge/Claude_Code-≥2.1.277-7C3AED?style=for-the-badge&logo=anthropic)](https://claude.ai/claude-code)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](./LICENSE)
@@ -25,13 +25,13 @@ OrchestKit is a free, open source Claude Code plugin: skills, agents and hooks f
 claude plugin marketplace add yonatangross/orchestkit && claude plugin install ork@orchestkit
 ```
 
-[Docs](https://orchestkit.yonyon.ai/docs) · [What's new in v10](https://orchestkit.yonyon.ai/docs/whats-new-v10) · [yonyon.ai](https://yonyon.ai)
+[Docs](https://orchestkit.dev/docs) · [What's new in v10](https://orchestkit.dev/docs/whats-new-v10) · [yonyon.ai](https://yonyon.ai)
 <!-- X account link: add it here when the account exists. -->
 
 ---
 
 <p align="center">
-  <a href="https://orchestkit.yonyon.ai/"><strong>Explore the Docs →</strong></a> ·
+  <a href="https://orchestkit.dev/"><strong>Explore the Docs →</strong></a> ·
   <a href="https://yonyon.ai/go/orchestkit?utm_campaign=readme"><strong>OrchestKit Community →</strong></a><br>
   <sub>Skill browser, demo gallery, setup wizard</sub>
 </p>
@@ -59,7 +59,7 @@ Pick the host you actually use. Claude Code is the full plugin (skills + agents 
 
 #### Host support matrix
 
-Measured 2026-09-08 on pi 0.85, Codex CLI and cursor-agent. Details, commands and the lane model: [OrchestKit on pi, Codex and Cursor](https://orchestkit.yonyon.ai/docs/guides/orchestkit-on-pi-codex-cursor). Antigravity measured 2026-09-18 on agy 1.2.6; full evidence in `docs/audits/agy-host-support-2026-09-18.md`.
+Measured 2026-09-08 on pi 0.85, Codex CLI and cursor-agent. Details, commands and the lane model: [OrchestKit on pi, Codex and Cursor](https://orchestkit.dev/docs/guides/orchestkit-on-pi-codex-cursor). Antigravity measured 2026-09-18 on agy 1.2.6; full evidence in `docs/audits/agy-host-support-2026-09-18.md`.
 
 | Surface | Claude Code | Cursor | Codex | pi | Devin | Antigravity |
 |---|---|---|---|---|---|---|
@@ -121,11 +121,11 @@ OrchestKit gives Claude **persistent knowledge** of production patterns that wor
 |-----------|---------|
 | **<!--ork:skills-->110<!--/ork--> Skills** | RAG patterns, FastAPI, React 19, testing, security, database design, ML integration — loaded on-demand, zero overhead |
 | **<!--ork:agents-->36<!--/ork--> Agents** | Specialized personas (backend-architect, frontend-dev, security-auditor) — route tasks to the right expert |
-| **<!--ork:hooks-->162<!--/ork--> Hooks** | Pre-commit checks, git protection, quality gates, browser safety — ship with confidence |
+| **<!--ork:hooks-->163<!--/ork--> Hooks** | Pre-commit checks, git protection, quality gates, browser safety — ship with confidence |
 
 All available in a single `/plugin install ork`. Skills load on-demand. Hooks work automatically.
 
-**[Browse everything in the Docs →](https://orchestkit.yonyon.ai/docs/skills/overview)**
+**[Browse everything in the Docs →](https://orchestkit.dev/docs/skills/overview)**
 
 ---
 
@@ -196,7 +196,7 @@ OrchestKit is a quality-gate plugin, so its hooks are the product rather than an
 add-on. This section states plainly what they see, where it goes, and how to turn
 each piece off.
 
-**Scope: broad and intentional.** OrchestKit registers <!--ork:hooks-->162<!--/ork--> hooks across <!--ork:events-->32<!--/ork-->
+**Scope: broad and intentional.** OrchestKit registers <!--ork:hooks-->163<!--/ork--> hooks across <!--ork:events-->32<!--/ork-->
 lifecycle events, including `SessionStart`, `UserPromptSubmit`, `PreToolUse`,
 `PostToolUse`, and `Stop`. They are **not** gated to a particular framework or
 project type, because the gates they enforce (secret-write blocking, protected-file
@@ -497,7 +497,7 @@ cp .pi/mcp.json.example .pi/mcp.json
 ```
 
 Full detail and the tracking epic:
-[OrchestKit on pi, Codex and Cursor](https://orchestkit.yonyon.ai/docs/guides/orchestkit-on-pi-codex-cursor).
+[OrchestKit on pi, Codex and Cursor](https://orchestkit.dev/docs/guides/orchestkit-on-pi-codex-cursor).
 
 ### Devin
 
@@ -618,7 +618,7 @@ Raising this floor is a breaking change and ships as a major release. See [STABI
 <details>
 <summary><strong>Superpowers vs OrchestKit?</strong></summary>
 
-Complementary, not a rival listing. Superpowers (official Anthropic marketplace) is process — how the agent works a task. OrchestKit is production patterns plus lifecycle hooks. Honest split: [docs](https://orchestkit.yonyon.ai/docs/getting-started/superpowers) · [yonyon.ai](https://yonyon.ai/compare/orchestkit-superpowers).
+Complementary, not a rival listing. Superpowers (official Anthropic marketplace) is process: how the agent works a task. OrchestKit is production patterns plus lifecycle hooks. Honest split: [docs](https://orchestkit.dev/docs/getting-started/superpowers) · [yonyon.ai](https://yonyon.ai/compare/orchestkit-superpowers).
 </details>
 
 ---
@@ -642,6 +642,32 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 <!-- AUTO-GENERATED from CHANGELOG.md by scripts/stamp-whats-new.mjs — do not hand-edit between the ork:whats-new markers. -->
 <!-- Regenerated on `npm run build`; CI (`--check`) fails if this is stale. Full history: [CHANGELOG.md](CHANGELOG.md). -->
 
+**[v10.0.0-beta.187](https://github.com/yonatangross/orchestkit/compare/v10.0.0-beta.186...v10.0.0-beta.187)** · 2026-10-22
+
+- **lesson-cards:** lessons are advisory, never ask or deny (#4842)
+
+**[v10.0.0-beta.186](https://github.com/yonatangross/orchestkit/compare/v10.0.0-beta.185...v10.0.0-beta.186)** · 2026-10-21
+
+- **scripts:** export chosen skills as Gemini app skill zips (#4760)
+- **deps:** vitest 4.1.12 in the hook-contract generic-client example (#4843)
+- **deps-dev:** bump happy-dom from 20.14.5 to 21.0.3 in /docs/site (#4812)
+- **deps:** bump the npm_and_yarn group across 5 directories with 1 update (#4840)
+- **deps:** bump the npm-minor-patch group (#4838)
+- …and 2 more (see [CHANGELOG.md](CHANGELOG.md))
+
+**[v10.0.0-beta.185](https://github.com/yonatangross/orchestkit/compare/v10.0.0-beta.184...v10.0.0-beta.185)** · 2026-10-21
+
+- **site:** move the canonical host to orchestkit.dev for the orank gaps (#4819)
+
+**[v10.0.0-beta.184](https://github.com/yonatangross/orchestkit/compare/v10.0.0-beta.183...v10.0.0-beta.184)** · 2026-10-21
+
+- **docs:** new OrchestKit icon, the rose window conductor (#4833)
+- **lesson-cards:** card-only mode for unattended lanes (#4798)
+- **mods:** list prompt-enhancer in the marketplace as a beta mod (#4816)
+- **deps:** bump vite to 8.3.4 for the launch-editor advisories (#4828)
+- **hooks:** three GA-blocking hook bugs from the verified picks (#4692)
+- …and 15 more (see [CHANGELOG.md](CHANGELOG.md))
+
 **[v10.0.0-beta.183](https://github.com/yonatangross/orchestkit/compare/v10.0.0-beta.182...v10.0.0-beta.183)** · 2026-10-18
 
 - **mods:** prompt-enhancer band, ++ trigger, undo (#4766)
@@ -661,32 +687,6 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 
 - **deps-dev:** bump the vitest group across 1 directory with 2 updates (#4783)
 - bump actions/create-github-app-token (#4784)
-
-**[v10.0.0-beta.179](https://github.com/yonatangross/orchestkit/compare/v10.0.0-beta.178...v10.0.0-beta.179)** · 2026-10-17
-
-- **deps:** upgrade Remotion to remove braces (#4791)
-
-**[v10.0.0-beta.178](https://github.com/yonatangross/orchestkit/compare/v10.0.0-beta.177...v10.0.0-beta.178)** · 2026-10-17
-
-- **explore:** trial Haiku pins for Agent tool explorers (#4676)
-- **review-pr:** require fan-out or blocked verdict (#4743)
-- **traffic:** drop local referrers from snapshot rows (#4626)
-- **deps:** bump the npm-minor-patch group across 1 directory with 11 updates (#4781)
-- **deps:** bump the npm-minor-patch group across 1 directory with 3 updates (#4720)
-- …and 1 more (see [CHANGELOG.md](CHANGELOG.md))
-
-**[v10.0.0-beta.177](https://github.com/yonatangross/orchestkit/compare/v10.0.0-beta.176...v10.0.0-beta.177)** · 2026-10-16
-
-- **doctor:** warn on errorDetails and list noteDetails from plugin rows (#4768)
-- **cc-watch:** admit permission tool nouns as scoped evidence tokens (#4756)
-- **ci:** keep triage issue text away from tokens (P0) (#4755)
-- **ci:** read the hookEventName literal under any minified name (#4754)
-- **docs-site:** bump next to 16.4.1 for three security advisories (#4751)
-- …and 8 more (see [CHANGELOG.md](CHANGELOG.md))
-
-**[v10.0.0-beta.176](https://github.com/yonatangross/orchestkit/compare/v10.0.0-beta.175...v10.0.0-beta.176)** · 2026-10-15
-
-- **hooks:** read a regular-file stdin before the 100ms timer (#4770)
 
 _See [CHANGELOG.md](CHANGELOG.md) for the full release history._
 <!--/ork-->
@@ -724,7 +724,7 @@ Security policy and reporting: [SECURITY.md](SECURITY.md).
 
 <div align="center">
 
-**[Docs](https://orchestkit.yonyon.ai/)** · **[Issues](https://github.com/yonatangross/orchestkit/issues)** · **[Discussions](https://github.com/yonatangross/orchestkit/discussions)** · **[Community](https://platform.yonyon.ai/circle?ref=readme)**
+**[Docs](https://orchestkit.dev/)** · **[Issues](https://github.com/yonatangross/orchestkit/issues)** · **[Discussions](https://github.com/yonatangross/orchestkit/discussions)** · **[Community](https://platform.yonyon.ai/circle?ref=readme)**
 
 MIT License · [@yonatangross](https://github.com/yonatangross)
 

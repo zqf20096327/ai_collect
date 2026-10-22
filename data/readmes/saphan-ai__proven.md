@@ -6,7 +6,7 @@ Proven will review pull requests: proposed changes to a codebase. Every problem 
 
 [Marcin "Wato" Marzec](https://wato.org/) used fleets of AI coding agents on commercial telco software, and built [Saphan Studio](https://saphan.ai/) to direct and check their work. Now he is taking that fleet to the [Open Agent Hackathon 2026](https://hackathon.genai.works/event/open-agent-hackathon-2026), organized by GenAI Works, from **22 to 27 October 2026**, in the track *The Agent That Can Explain Why*, to build Proven. The agents write the code. Marcin sets the direction, makes the decisions, reviews the outcomes and approves every merge.
 
-**Proven does not exist yet.** Its code is written only inside the build window. Everything before 22 October is preparation, and all of it is public.
+**Coding started on 22 October 2026, at 00:00 UTC.** Proven's code is written only inside the build window. Everything before 22 October was preparation, and all of it is public.
 
 <a href="https://vimeo.com/1236933110"><img src="assets/proven-loop.gif" alt="Proven: a pull-request reviewer that has to prove what it says. The opening slides of the introduction video, looping; click to watch it." width="100%"></a>
 
@@ -20,22 +20,35 @@ That work led to patent applications, filed in the U.S. and Europe and still pen
 
 Now that fleet takes on something new. At the hackathon it will build **Proven**, an open-source tool for checking code of the kind it writes itself.
 
-## Where things stand, 21 October 2026
+## Where things stand: end of day 1, 22 October 2026
 
-The final warm-up before the start.
+Day one of six is behind us. **Seventeen changes were merged into Proven on day one**, each one written by an agent, checked again by its master on a clean checkout on another machine, and approved by Marcin. Every merge commit carries the request it answers and the reason it was accepted.
+
+What Proven can do at the end of day one, in sample mode (recorded data, no network):
+- **The six reviewer agents run end to end** behind the command-line shell's request, and honour every field of it: baseline, head, include and exclude paths, and a configuration file.
+- **The Skeptic tries to refute every finding** with a model from another family, and **the Judge settles it by evidence**. A finding nobody could settle is reported as unresolved, never as true.
+- **The Prover writes the test that proves a finding** and runs it only inside a container, once on the base and once on the change.
+- **The Investigator's evidence comes through Zetaris**: KEV, EPSS and OSV queries over REST, and the same queries run locally over samples in sample mode.
+- **Every prompt and every answer passes a guardrail**, on by default, with two backends: NVIDIA's safety model on our own machine, or NVIDIA's hosted API. An unsafe prompt or answer stops the step and is recorded with its categories.
+- **A minimum of Meterless's H-MEM and World Model in Go**, so a finding refuted once does not come back in the next review. Meterless's own conformance suites run against it, and the scorecard is recorded as it is: H-MEM 9 of 13, World Model 7 of 8. The failures are the sections not built yet.
+- **The live generator calls Meterless Nightshift**, reads which model answered, and refuses an answer that did not come from NVIDIA.
+- **One command checks every live service a review needs** before a demo, and names each one that is not ready, without printing a secret.
 
 | what | status | where |
 |---|---|---|
 | Choosing the topic, with eleven answers from the fleet | done, 16 October | [answers](planning/answers/) |
-| The design, as recorded decisions | 24 decisions accepted, 17–21 October | [decisions](fleet/decisions/) |
-| Machines for the coding agents | nearly ready: a Cursor agent ran the first unattended turn (on Grok, with the Node the Cursor agent ships); one refusal left, the class of the executor, expected fixed by 22 October | [order](fleet/orders/TRAIN_ORDER_proven-cursor-infra.md) · [status](fleet/status/STATUS_proven-cursor-infra.md) |
-| Recording every Cursor coding session | decided; the recording is built in Saphan Studio's Cursor backend now, and every recording will be published here | [ADR-0024](fleet/decisions/ADR-0024-every-cursor-coding-session-is-recorded-and-published.md) |
-| Zetaris, the sponsor's data platform, on our own machine | running; the evidence sources explored (CISA KEV, FIRST EPSS, OSV), no data stored yet | [order](fleet/orders/TRAIN_ORDER_proven-zetaris-local.md) · [status](fleet/status/STATUS_proven-zetaris-local.md) · [ADR-0023](fleet/decisions/ADR-0023-how-proven-s-evidence-is-loaded-through-zetaris.md) |
-| Meterless Nightshift, the sponsor's AI provider, isolated in a virtual machine | nearly ready: the VM runs, Nightshift is installed in it, two NVIDIA Nemotron lanes are named, and only the machines that run Proven can reach it; the access token and the first request are left | [order](fleet/orders/TRAIN_ORDER_proven-nightshift-vm.md) · [ADR-0019](fleet/decisions/ADR-0019-meterless-nightshift-is-the-primary-ai-provider.md) |
-| A local NVIDIA safety model | done: running on our own machine | [order](fleet/orders/TRAIN_ORDER_nemotron-content-safety.md) · [status](fleet/status/STATUS_nemotron-content-safety.md) |
-| A test corpus from 28 real review disagreements | 21 case contracts written, case code not built yet; declared prior art | [tests](tests/README.md) · [order](fleet/orders/TRAIN_ORDER_proven-test-corpus.md) |
-| Building Proven | starts 22 October, 00:00 UTC | |
+| The design, as recorded decisions | 25 decisions accepted, 17–21 October | [decisions](fleet/decisions/) |
+| Building Proven | **17 changes merged on day one**, all from the reviewer train; the shell's first change is still in progress | [git log](https://github.com/saphan-ai/proven/commits/main) · [reviewer order](fleet/orders/TRAIN_ORDER_proven-reviewer-core.md) · [shell order](fleet/orders/TRAIN_ORDER_proven-cli-and-action.md) |
+| How the agents code with Cursor | four Cursor accounts on one Linux machine, up to four agents coding at once on Grok 4.7, each inside a jail, its own network and an egress door, with every model request recorded | [how it works](fleet/infra/cursor/README.md) · [order](fleet/orders/TRAIN_ORDER_proven-cursor-infra.md) |
+| Recording every Cursor coding session | every session is recorded by the proxy; the first published recordings will show the coding itself, as excerpts tied to the sealed original | [ADR-0024](fleet/decisions/ADR-0024-every-cursor-coding-session-is-recorded-and-published.md) |
+| Zetaris, the sponsor's data platform | running on our own machine; the Investigator reads its evidence through Zetaris over REST; live Zetaris evidence in a review is next | [order](fleet/orders/TRAIN_ORDER_proven-zetaris-local.md) · [ADR-0023](fleet/decisions/ADR-0023-how-proven-s-evidence-is-loaded-through-zetaris.md) · [setup](fleet/infra/zetaris/README.md) |
+| Meterless Nightshift and NVIDIA Nemotron | running in its own VM; 206 signed receipts checked, every signature verifies, and a receipt ties each answer to the model that gave it | [NVIDIA page](fleet/infra/nvidia/README.md) · [runbook](fleet/infra/nightshift-vm/README.md) · [ADR-0019](fleet/decisions/ADR-0019-meterless-nightshift-is-the-primary-ai-provider.md) |
+| A local NVIDIA safety model | done: running on our own machine, used by the guardrail | [order](fleet/orders/TRAIN_ORDER_nemotron-content-safety.md) |
+| A test corpus from 28 real review disagreements | the 21 case contracts are prior art, written before 22 October; their code is written inside the build window: the first five cases are coded on branches, not merged yet, and the other 16 are ordered, one agent per case | [tests](tests/README.md) · [order](fleet/orders/TRAIN_ORDER_proven-test-corpus.md) |
+| Reviews of the fleet's own changes | every change is checked again by its master; independent reviews run in parallel by two model families. NVIDIA Nemotron reviews resume once they run on Saphan Studio's own agent loop (planned for 23 October); the trains keep a list of the changes waiting for one | [conversation logs](planning/CONVERSATIONS.md) |
 | Public updates | daily, 15:00 UTC | this repository |
+
+**Saphan Studio's Cursor backend, built in parallel.** While the agents coded Proven, Saphan Studio's own fleet kept improving the Cursor backend that those agents run on, and each fix reached the live coding sessions as soon as it landed. Today it gained confinement for Cursor on macOS, Grok models named with their effort (`grok-4.7-high`), every Cursor spawn speaking HTTP/1.1 so the recording proxy can read it, placement of orders signed by a train's master, and a reader of a Cursor account's usage, so the scheduler can place Cursor runs by itself. Still to do: a Cursor seat in a container, and publishing the first session recordings.
 
 Before Proven exists, we also wrote down what it will be tested on: [`tests/`](tests/README.md) turns real review disagreements from our fleet into checkable cases, and is declared as prior art.
 
@@ -51,7 +64,7 @@ Passing tests do not always prove what they claim to prove. A reviewer that asks
 
 ## What Proven is meant to do
 
-*Planned, not built. Each part is described as intended.*
+*The intent, as planned before the build window. What already works is listed under [Where things stand](#where-things-stand-end-of-day-1-22-october-2026).*
 
 - **Every finding carries evidence.** A test that fails on the change and passes without it, or a recorded query and its results, with sources. This applies to every finding, including when two reviewers agree. Agreement is never a substitute for proof.
 - **The reviewer should come from a different AI model family than the one that wrote the code.** A reviewer from the same family tends to share the author's assumptions; another family can challenge them. The change's own commit or pull request says which model wrote it, and by default an NVIDIA model reviews it. Every model is configurable, and no setup is blocked; each review says which model reviewed it and whether that is the author's.
@@ -102,14 +115,26 @@ In the fleet, four Cursor agents write the product code. Other agents plan the w
 
 ## Follow the work
 
+- **[Documentation](docs/README.md)**: how to run Proven, starting with a review on samples (no network, no keys), its architecture and every setting.
 - **[The diary](planning/CONVERSATIONS.md)**: every conversation between Marcin and the fleet, day by day.
 - **[Watch it being built, slice by slice](fleet/)**: from 22 October, each change arrives with the request that asked for it, the builder's report, the independent review and Marcin's decision.
 - **[Design decisions](fleet/decisions/)**: what was decided, and why.
 - **[What it costs](fleet/LEDGER.md)**: the recorded cost of every change, by model.
+- **[How to code with Saphan Studio, step by step](https://github.com/saphan-ai/quake-watch-server)**: published alongside Proven, a sample app built as a series. First the server, an earthquake alert service on the USGS public feed; the mobile clients follow in their own repositories. Every step is recorded as it is built: the order, the agents' work, the review and the owner's decision.
 
 Every agent run records its model and the cost Saphan Studio measured for it. Where a cost was not measured, such as interactive planning sessions, or a share of a subscription the tools cannot read yet, the document says so and why. These figures are what the AI models cost; machines and human time are not included.
 
-**Updates:** once a day at **15:00 UTC** (22:00 in Bangkok; 17:00 in Warsaw during the build week). The last push comes before submissions close on 27 October, 23:45 UTC.
+**Updates:** once a day at **15:00 UTC** (22:00 in Bangkok; 17:00 in Warsaw until 25 October, 16:00 after). The last push comes before submissions close on 27 October, 23:45 UTC.
+
+## Timeline: what each push brought
+
+Every public push is tagged, so you can see exactly what existed before the build window and what each day added.
+
+| push | tag | what came in |
+|---|---|---|
+| before 22 October, 00:00 UTC: **prior art** | [`prior-art`](https://github.com/saphan-ai/proven/tree/prior-art) (`bf05dd2`, 21 October, 19:53 UTC) | Preparation only, no product code: the topic and the fleet's eleven answers, 25 design decisions, the trains' orders, the machines and services for the agents (Cursor seats, Zetaris, Meterless Nightshift, NVIDIA's safety model), and the 21 test-corpus case contracts |
+| 22 October, 00:03 UTC: **coding starts** | [`start`](https://github.com/saphan-ai/proven/compare/prior-art...start) (`3a1a9f0`) | The first line of product code: the agreed seam between the command-line shell and the reviewer, types only |
+| 22 October, 15:17 UTC: **day 1** | [`day-1`](https://github.com/saphan-ai/proven/compare/start...day-1) | 17 changes merged: the six reviewer agents end to end in sample mode, the Skeptic and the Judge, the Prover writing and running its test in a container, evidence through Zetaris, the guardrail, the H-MEM and World Model minimum with Meterless's conformance scorecard, the live generator through Nightshift, the live-service check, and a small live demo a judge can rerun. The first documentation and the Cursor and NVIDIA setup pages. |
 
 **Contact:** Marcin Marzec, [marcin.marzec@wato.org](mailto:marcin.marzec@wato.org), [LinkedIn](https://www.linkedin.com/in/marcinmarzec).
 
@@ -117,6 +142,7 @@ Every agent run records its model and the cost Saphan Studio measured for it. Wh
 
 | | |
 |---|---|
+| [docs/SAMPLE_MODE.md](docs/SAMPLE_MODE.md) | try Proven with no network and no keys: the sample review, its findings and its trace |
 | [DESIGN.md](DESIGN.md) | Proven's design, the sponsors' technology, evidence sources, open questions |
 | [SAPHAN.md](SAPHAN.md) | the platform that runs the fleet, its roles and vocabulary |
 | [AGENTS.md](AGENTS.md) | the rules every agent follows in this repository |

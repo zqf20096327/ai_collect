@@ -28,11 +28,9 @@ npm run ios
 npm run android
 ```
 
-## Storybook
+## Design System Gallery
 
-```bash
-EXPO_PUBLIC_STORYBOOK_ENABLED=true npm start
-```
+Longpress the Echos wordmark on the homescreen in dev mode to open the design system gallery.
 
 ## Testing
 

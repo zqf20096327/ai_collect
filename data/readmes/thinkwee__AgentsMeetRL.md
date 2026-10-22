@@ -4,7 +4,7 @@
 
 <div align="center">
 
-![Base Framework](https://img.shields.io/badge/Base_Framework-30-BFA2DB?style=for-the-badge)
+![Base Framework](https://img.shields.io/badge/Base_Framework-31-BFA2DB?style=for-the-badge)
 ![General](https://img.shields.io/badge/General-21-4E6813?style=for-the-badge)
 ![Search & RAG](https://img.shields.io/badge/Search_&_RAG-50-845C40?style=for-the-badge)
 ![Web & GUI](https://img.shields.io/badge/Web_&_GUI-32-A259FF?style=for-the-badge)
@@ -115,6 +115,7 @@ Then just ask, e.g. *"my GRPO search agent's reward is flat but eval keeps dropp
 | [HarnessX](https://github.com/Darwin-Agent/HarnessX) | <img src="https://img.shields.io/github/stars/Darwin-Agent/HarnessX?style=for-the-badge&logo=github&logoColor=white&labelColor=181717&color=ffd700" alt="Stars"> | 2026.6 | Darwin-Agent | [Paper](https://arxiv.org/abs/2606.14249) |
 | [Dressage](https://github.com/Accio-Lab/Dressage) | <img src="https://img.shields.io/github/stars/Accio-Lab/Dressage?style=for-the-badge&logo=github&logoColor=white&labelColor=181717&color=ffd700" alt="Stars"> | 2026.6 | Accio-Lab | -- |
 | [AReno](https://github.com/inclusionAI/AReno) | <img src="https://img.shields.io/github/stars/inclusionAI/AReno?style=for-the-badge&logo=github&logoColor=white&labelColor=181717&color=ffd700" alt="Stars"> | 2026.6 | Ant Group (inclusionAI) | -- |
+| [Roger Federated](https://github.com/roger-federated/roger-federated) | <img src="https://img.shields.io/github/stars/roger-federated/roger-federated?style=for-the-badge&logo=github&logoColor=white&labelColor=181717&color=ffd700" alt="Stars"> | 2026.6 | Roger Federated | -- |
 | [Polar](https://github.com/NVIDIA-NeMo/ProRL-Agent-Server) | <img src="https://img.shields.io/github/stars/NVIDIA-NeMo/ProRL-Agent-Server?style=for-the-badge&logo=github&logoColor=white&labelColor=181717&color=ffd700" alt="Stars"> | 2026.5 | NVIDIA (NeMo) | [Paper](https://arxiv.org/abs/2605.24220) |
 | [uni-agent](https://github.com/verl-project/uni-agent) | <img src="https://img.shields.io/github/stars/verl-project/uni-agent?style=for-the-badge&logo=github&logoColor=white&labelColor=181717&color=ffd700" alt="Stars"> | 2026.4 | verl-project | -- |
 | [VeRL-Omni](https://github.com/verl-project/verl-omni) | <img src="https://img.shields.io/github/stars/verl-project/verl-omni?style=for-the-badge&logo=github&logoColor=white&labelColor=181717&color=ffd700" alt="Stars"> | 2026.4 | verl-project | -- |
@@ -147,6 +148,7 @@ Then just ask, e.g. *"my GRPO search agent's reward is flat but eval keeps dropp
 | [Libra](https://github.com/NetX-lab/Libra) | Async GRPO | Single | Outcome | Multi | Agentic RL post-training with resource-aware training and rollout | All (Custom/External/Rule) | Yes (search, code execution, validation tools) |
 | [Orchard](https://github.com/microsoft/Orchard) | Online RL (vendored slime) | Single | Both | Multi | Harness-native RL (browser/computer-use/SWE) | Model/Rule | Yes (live browser, containers, agent harnesses) |
 | [AReno](https://github.com/inclusionAI/AReno) | GSPO/GRPO (+SFT/DPO) | Single | Outcome | Multi | Single-node RL post-training (Math/SWE-style/Games) | Custom | Yes (inspect_tree/read_file/rg/apply_patch/run_command) |
+| [Roger Federated](https://github.com/roger-federated/roger-federated) | QLoRA REINFORCE++ (federated, secure aggregation) | Single | Both | Multi | On-device RL on the agent chats the user's own llama.cpp/vLLM server already handles | Model/External (self-evaluation, user reactions, tool results) | Yes (whatever tools the user's client calls) |
 | [Molt](https://github.com/NVIDIA-NeMo/labs-molt) | REINFORCE/RLOO/GRPO/Dr.GRPO/GAE + On-policy Distillation | Single | Outcome | Multi | Domain-agnostic agentic RL (Math/Geometry/Chat) | Custom | Yes (Python exec, HTTP, VLM tools) |
 | [AgentJet](https://github.com/modelscope/AgentJet) | GRPO/PPO (swarm, multi-dim reward) | Both | Both | Multi | Swarm agentic RL (heterogeneous multi-agent, multi-task) | All (Custom/External/Rule) | Yes (tool calls, agent frameworks) |
 | [HarnessX](https://github.com/Darwin-Agent/HarnessX) | GRPO/PPO (slime/verl recipes) | Single | Outcome | Multi | Composable agent-harness foundry (ALFWorld/GAIA/WebShop/SWE-bench) | External + Custom | Yes (harness orchestrates tools/memory) |
@@ -572,6 +574,4 @@ Then just ask, e.g. *"my GRPO search agent's reward is flat but eval keeps dropp
 | [cmriat/l0](https://github.com/cmriat/l0) | <img src="https://img.shields.io/github/stars/cmriat/l0?style=for-the-badge&logo=github&logoColor=white&labelColor=181717&color=ffd700" alt="Stars"> | 2025.6 | CMRIAT | [Paper](https://arxiv.org/abs/2506.23667) | veRL |
 | [agent-distillation](https://github.com/Nardien/agent-distillation) | <img src="https://img.shields.io/github/stars/Nardien/agent-distillation?style=for-the-badge&logo=github&logoColor=white&labelColor=181717&color=ffd700" alt="Stars"> | 2025.5 | KAIST | [Paper](https://arxiv.org/pdf/2505.17612) | Custom |
 | [EasyR1](https://github.com/hiyouga/EasyR1) | <img src="https://img.shields.io/github/stars/hiyouga/EasyR1?style=for-the-badge&logo=github&logoColor=white&labelColor=181717&color=ffd700" alt="Stars"> | 2025.4 | Individual | [repo1](https://github.com/hiyouga/EasyR1)/[paper2](https://arxiv.org/pdf/2409.19256) | veRL |
-| [AutoCoA](https://github.com/ADaM-BJTU/AutoCoA) | <img src="https://img.shields.io/github/stars/ADaM-BJTU/AutoCoA?style=for-the-badge&logo=github&logoColor=white&labelColor=181717&color=ffd700" alt="Stars"> | 2025.3 | BJTU | [Paper](https://arxiv.org/pdf/2503.06580) | veRL |
-| [ToRL](https://github.com/GAIR-NLP/ToRL) | <img src="https://img.shields.io/github/stars/GAIR-NLP/ToRL?style=for-the-badge&logo=github&logoColor=white&labelColor=181717&color=ffd700" alt="Stars"> | 2025.3 | SJTU | [Paper](https://arxiv.org/pdf/2503.23383) | veRL |
-| [ReMA](https://github.com/ziyuwan/ReMA-public) | <img src="https://img.shields.io/github/stars/z
+| [AutoCoA](https://github.com/ADaM-BJTU/AutoCoA) | <img src="https://img.shields.io/github/stars/ADaM-BJTU/AutoCoA?style=for-the-badge&logo=github&logoColor=white&l

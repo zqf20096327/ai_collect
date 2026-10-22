@@ -8,8 +8,9 @@
 
 [![Build](https://img.shields.io/github/actions/workflow/status/KongFangXun/sofagent/verify.yml?branch=main)](https://github.com/KongFangXun/sofagent/actions/workflows/verify.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen)](./LICENSE)
-[![Version](https://img.shields.io/badge/Version-v1.6.0-16B8F3)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-v1.7.0-16B8F3)](./CHANGELOG.md)
 ![npm](https://img.shields.io/npm/v/sofagent)
+![npm downloads](https://img.shields.io/npm/dw/%40sofagent%2Faudit)
 [![Stars](https://img.shields.io/github/stars/KongFangXun/sofagent?style=social)](https://star-history.com/#KongFangXun/sofagent&Date)
 
 </div>
@@ -24,7 +25,7 @@
 - [核心特性](#核心特性)
 - [什么是 FDE Harness](#什么是-fde-harness)
 - [多平台挂载](#多平台挂载)
-- [v1.6.0：判定底座 · 阶段一（判据与数据地基）](#v160判定底座--阶段一判据与数据地基)
+- [v1.7.0：判定底座 · 阶段二（模型与校准）](#v170判定底座--阶段二模型与校准)
 - [FDE Harness 两阶段](#fde-harness-两阶段)
 - [安装](#安装)
 - [使用](#使用)
@@ -71,13 +72,13 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 
 **30 秒–2 分钟轻量试用**（首次含 npx 拉包（网络依赖），复跑秒级；单次引擎审计约 1.1 秒，口径见下）：`npx -y -p sofagent sofagent audit`（任意 git 仓库，密钥泄漏当场拦截）。
 
-> 💡 只要审计 CLI、不想拉全量依赖树？改装裸名总包：`npm i -g sofagent`（单入口 `sofagent audit`；能力面见 [LIMITATIONS](./docs/LIMITATIONS.md)）。
+> 💡 npm 通道只有伞包一个形态：`npm i -g sofagent` 装的就是**完整依赖树**（602 包口径见下）——不存在更小的「轻量包」。要更小安装面，用 npx 临时形态（`npx -y -p sofagent sofagent audit`，用完即弃不常驻；能力面见 [LIMITATIONS](./docs/LIMITATIONS.md)）。
 
 > 💡 试用时提交消息请写 **≥6 字符**（如 `initial audit test`）——A19 质量规则（编号对照见 [SECURITY 规则清单](./SECURITY.md#28-条审计规则完整清单文档级-ssot)）对超短消息（`init`/`add`）判红属设计意图（防无意义提交信息），不是故障。
 
 **五分钟沙箱演示**（v1.5.1 已交付；沙箱隔离、真实文件零接触）：`npx -y -p sofagent sofagent audit demo`——一条命令跑完「沙箱构建 → 注入 → 故意违规 → 审计拦截 → 快照回滚 → HMAC 举证导出」五幕链路（`--speed fast` 为 60 秒版；产物落 `$SOFAGENT_DATA/demo`，不触碰被审仓库）。（demo 经 npm 通道提供；install.sh 安装态 CLI 暂无 demo 子命令）
 
-> 版本说明：v1.6.0 已发版（2026-10-15）；npm 可安装最新版 `@sofagent/audit@1.6.0`。
+> 版本说明：v1.7.0 已发版（2026-10-22）；npm 可安装最新版 `@sofagent/audit@1.7.0`。
 
 ## 该不该装？
 
@@ -94,10 +95,12 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 |---|---|---|---|
 | 定位 | 密钥全量历史扫描 | 通用提交钩子框架 | Agent 行为审计约束层 |
 | 证据面 | 仓库文本模式 | 自定义脚本 | git diff 硬证据 + Agent 日志 + 决策留痕 |
-| 覆盖维度 | 密钥泄漏 | 任意（自己写） | 28 条规则：密钥/越界/注入/权限/后门 |
+| 覆盖维度 | 密钥泄漏 | 任意（自己写） | 28 条规则：密钥/越界/注入/权限/后门/数据产品 |
 | 部署成本 | 低——单二进制，零运行时依赖 | 低——随语言生态装一个 CLI | 中——企业设备需一次 `install.sh` 装约束层（也可先用 npx 零配置试用） |
 | 维护负担 | 低——规则随上游更新 | 中——自定义脚本需自己维护 | 中——规则与 hook 随本仓升级，但每版需重装 hook 并对齐配置 |
 | 建议 | 强密钥合规必配 | 已有体系可保留 | 与前两者并用，专注 Agent 治理维度 |
+
+> 📌 本表只对比**提交时密钥/钩子类**工具；同类治理型工具（审计/约束/编排面）的对比见 [WIKI 生态节](./docs/WIKI.md)与 [VALIDATION 生态定位](./docs/VALIDATION.md)。
 
 ## 核心特性
 
@@ -126,7 +129,7 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 
 - 🏠 **离场后常驻**——FDE 能力留下巡检、审计、优化（daemon 巡检需安装时显式确认，默认不装；QUICK_MODE / 非交互安装自动跳过），commit 时触发审计，人离场治理不离开
 - 🔍 **零配置审计**——`npx -y -p sofagent sofagent audit`，任何 git 仓库秒级审计最近一次 commit（quick 约 1.1s、5 万行 diff 约 6.1s，口径见 [HANDBOOK](./docs/HANDBOOK.md)）
-- 🧱 **规则与安全面：28 条审计规则**——密钥泄漏、越界编辑、注入防御、权限红线，违规当场拦截；fail-fast（critical 命中后其余跳过）、默认非 fail-closed（绕过面见 [LIMITATIONS §三](./docs/LIMITATIONS.md#三安全与信任模型局限)）
+- 🧱 **规则与安全面：28 条审计规则**——密钥泄漏、越界编辑、注入防御、权限红线，违规当场拦截；fail-fast（critical 命中后其余跳过）、默认非 fail-closed（配置可被篡改、hook 可经 `--no-verify` 跳过——绕过面见 [LIMITATIONS §三](./docs/LIMITATIONS.md#三安全与信任模型局限)）
 - 🔧 **工具与能力面：104 个 MCP tool + 证据分档**——28 条规则中 22 条基于 git diff（本地生效、零 token）、4 条 hybrid（diff + Agent 日志）、1 条 filesystem 扫描、1 条走 decision-log（清单见 [SECURITY](./SECURITY.md#28-条审计规则完整清单文档级-ssot)）。其中 commons_invoke 为 dry-run 预检语义（返回能力元数据与调用计划，真实执行由 Agent runtime 注入 executor；见 LIMITATIONS）
 - 🛡️ **自动快照回溯**——每次审计后自动存档，出事一键回到任意快照
 - 🛡️ **AgentShield 五类配置面静态扫描**——`@public` SDK 能力（经 `createAgentShield` 调用），**不在 commit hook 链路上**，按需接入
@@ -172,21 +175,17 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 
 > 📌 `AGENTS.md`（Codex）/ `GEMINI.md`（Gemini CLI）/ `.claude/` / `.cursor/` 为各宿主的分层挂载点，均为对 `SKILL/` 的薄引用。
 
-## v1.6.0：判定底座 · 阶段一（判据与数据地基）
+## v1.7.0：判定底座 · 阶段二（模型与校准）
 
-🧭 **把「判定」从代码里的匹配逻辑，变成可训练、可校验、可举证的判据数据**——四阶段判定底座（v1.6–v1.9）第一版；不训练、不接线、不出权重，产物是定稿判据 schema 与数据地基：
+🧪 **让概率变得有意义**——四阶段判定底座第二版：训练用严格适当评分规则（报真实概率得分优于偏离概率），校准让输出概率可对表读数，纪律门禁让无依据的置信度上不了决策路径：
 
 | 能力 | 一句话 | 触达方式 |
 |---|---|---|
-| **三原语类型化** | Choice（选中+全分布）/ Score（分值+区间）/ Noul（真值概率）定稿；问句集限定与候选兜底 fail-closed | SDK 面 |
-| **审计规则判据重述** | 28 规则重述为 **36 条判据**（判据+证据两段式，双向对账零遗漏）+ 质量 lint 四硬 fail-closed | SDK 面 |
-| **数据集三元组格式** | （状态/问题集/标答）与三原语同构；对比样本四步构造 · 家族级切分 · 防回放泄漏 | SDK 面 |
-| **采集与质量门** | 三源采集（history/HITL/PR）+ 九类困难样本 + 四道质量门 + 主动选样 | SDK 面 |
-| **判定头契约** | `EncoderLike` 契约（换基座不改判定头）+ 三原语头示意实现（真基座排 v1.8.0） | SDK 面 |
-| **零样本基线** | 自产基线**如实落数**（mock 编码器，中英分列不修饰）——阶段二「训练提升多少」的分母 | 可复算（`datasets/`） |
-| **循环 workflow 语义** | `loop:` 声明块 + `exit_when` 可判定性 fail-closed + 预算熔断挂起 + `daemon pause/resume` | CLI 可达 |
-
-> 📌 本版 **SDK 面先行**：用户入口（CLI/MCP 域）排 v1.8.0。完整证据见 [v1.6.0 开发日志](./docs/changelog/v1.6/v1.6.0.md)；旧版能力段见 [CHANGELOG](./CHANGELOG.md)。
+| **RLCD 严格适当评分训练** | 三原语分派损失（noul 对数分数 / choice 对数+球面 / score RPS 序利用）+ 极端口径非对称惩罚 + RLOO/KL 锚/降权三防线；概率目标断言（硬标签拒载）+ 三档加权 + 可复现清单 | CLI：`sofagent train rlcd --data <数据集> [--dryrun]` |
+| **分桶温度校准** | choice/score/noul 三原语分别拟合 · score 保序 · 独立校准集隔离断言（同判据跨侧拒载，违规拒出读数）· 校准制品纯 JSON 独立于权重 | SDK 面 |
+| **校准纪律门禁** | 决策路径消费的置信度/概率阈值须带校准依据或显式 `uncalibrated`——未标注不得上线路（check-calibration-claims 接入发布链） | 门禁 · SDK 面 |
+| **弃权第四态** | 弃权与 pass/warn/fail 并列（三源留痕：低置信/OOD/判据缺失）· 门槛按原语分档 · ECE 未达阈时弃权不可关 | SDK 面 |
+| **三态对照与双达阈判定** | 零样本/训练后/校准后并列对照 · 一致率 ≥0.70（中英分列）与 ECE ≤0.10（分原语分语言）两线独立判定，not-measured 不得记达标；实测：ECE 17/18 格达线、一致率未达 ⇒ 阶段三暂缓（如实裁决） | SDK 面 · `sofagent audit --criteria` 判据列示 CLI 可达 |
 
 ## FDE Harness 两阶段
 
@@ -212,9 +211,9 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 > ⚠️ **企业用户先读** [LIMITATIONS §三](./docs/LIMITATIONS.md#三安全与信任模型局限)——`config.yml` 默认**非 fail-closed**（规则可被 Agent 篡改绕过），多租户**写入侧**隔离尚未落地（v0 已交付查询侧隔离：orgId 过滤 + data/<tenant>/ 路径地基，见 LIMITATIONS）。
 >强合规场景建议 CI 兜底 + 文件权限锁（`chmod 400 .sofagent/config.yml`——辅助层，对同用户进程无效，见 [LIMITATIONS §三](./docs/LIMITATIONS.md)），不要用单机默认配置直接上生产。
 >
-> 🔐 **数据主权**：运行时数据不出本机（除安装时 npm 拉包外不联网）；三个 opt-in 出口（云同步 / 模型推理端点 / 云 VM 执行面）需你显式配置，详见 [SECURITY](./SECURITY.md)。
+> 🔐 **数据主权**：运行时数据不出本机（除安装时 npm 拉包外不联网）；三个 opt-in 出口（云同步 / 模型推理端点 / 云 VM 执行面）需你显式配置（另：dashboard 打开时会匿名只读拉取 GitHub 公开 star 数，无用户数据外发、失败静默降级），详见 [SECURITY](./SECURITY.md)。
 
-**30 秒，零配置**（首次含 npx 拉包约 30 秒，复跑秒级——引擎本体约 1.1s，实测口径见上）——在任何 git 仓库跑一次审计：
+**30 秒起，零配置**（首次含 npx 拉包约 30 秒，复跑秒级——引擎本体约 1.1s，实测口径见上）——在任何 git 仓库跑一次审计：
 
 ```bash
 npx -y -p sofagent sofagent audit
@@ -224,13 +223,23 @@ npx -y -p sofagent sofagent audit
 
 > ⚠️ 这一步是**一次性审计**（当次进程内），不装 git hook——之后 commit 不会被自动拦。要长期守护请跑 `sofagent audit --init`（见下方完整安装）。
 
-拦截特定格式密钥泄漏时是这样的（真实输出；A2（编号对照见 [SECURITY 规则清单](./SECURITY.md#28-条审计规则完整清单文档级-ssot)）检测 AWS AKIA/Secret、OpenAI sk-*、GitHub ghp_、Google AIza、Slack xox*-、JWT、PEM 私钥等已知格式，通用密钥形态暂不覆盖——保守设计防误报，详见 [LIMITATIONS §三 A2](./docs/LIMITATIONS.md#三安全与信任模型局限)）。
-首屏的实拍图为 A1 场景（.env 敏感文件提交被拦、exit 2），A2 密钥格式检测为另一条规则，此处不重复截图。
+拦截特定格式密钥泄漏时是这样的（真实输出；A2（编号对照见 [SECURITY 规则清单](./SECURITY.md#28-条审计规则完整清单文档级-ssot)）检测 AWS AKIA/Secret、OpenAI sk-*、GitHub ghp_、Google AIza、Slack xox*-、JWT、PEM 私钥等已知格式——sk- 形态需 ≥29 字符（主体 ≥27，厂商专属 sk-ant/sk-proj 等 ≥40），Stripe 下划线前缀 ≥24；更短/非标形态暂不覆盖——保守设计防误报，详见 [LIMITATIONS §三 A2](./docs/LIMITATIONS.md#三安全与信任模型局限)）：
+
+```text
+$ npx -y -p sofagent sofagent audit
+🔍 审计首个 commit（4573bb8）——首提交无父基线，对比空树审计全部新增内容。
+
+❌ [sofagent] A2 不泄密钥 [底线]: 检测到疑似密钥/令牌泄漏: app.py: 检测到 AWS Access Key; app.py: 检测到 密钥赋值形态。密钥不应硬编码到源码中。
+
+📊 [sofagent] 1 条违规 · 7 条通过 · ⚠️ 9 条本批未检查（critical 命中后 fail-fast）
+```
+
+首屏实拍图为 A1 场景（.env 敏感文件提交被拦、exit 2）；上为 A2 密钥格式检测实拍（AWS `AKIA` 形态硬编码被拦——修法：移入 `.env` 并加入 `.gitignore`，或改从环境变量/密钥管理服务读取）。
 
 **完整安装**（Node.js ≥ 18，先下载审查再执行）——**装在企业跑 AI 节点的设备上**：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/KongFangXun/sofagent/refs/tags/v1.6.0/bootstrap.sh -o bootstrap.sh
+curl -fsSL https://raw.githubusercontent.com/KongFangXun/sofagent/refs/tags/v1.7.0/bootstrap.sh -o bootstrap.sh
 less bootstrap.sh          # 先看一眼脚本内容，确认安全
 bash bootstrap.sh && rm bootstrap.sh
 ```
@@ -292,7 +301,7 @@ sofagent audit --doctor    # 验证环境（可选）
 >
 > - **旧命令已退役**：12 个旧 bin 兼容期已满**移除**，统一走单入口。
 > - ⚠️ **`npm i -g sofagent` 带来完整依赖树**（含 orchestrator/mcp/train 等能力包；传递依赖实测 602 包（`npm ls --all --parseable` 口径：`npm i sofagent@1.5.8` 时点实测 · npm 11.19.0 / Node v24.21.0 / Darwin arm64 / 2026-10-10），5 个含原生模块——新版 npm 不执行未审阅 install script，其编译**静默跳过**）。
->   **只要审计 CLI** 用 `npx -y -p sofagent sofagent audit` 或 `npm i -g sofagent`。
+>   **只要审计 CLI**（接受完整依赖树取舍）：`npm i -g sofagent` 后用 `sofagent audit`；不想常驻依赖树则用 `npx -y -p sofagent sofagent audit` 临时形态。
 > - **已下架的旧代理包**：npm 上的 `sofagent-audit`（裸名、无 scope）是旧代理包，**已于 2026-09-26 下架**——不要安装。
 
 **规则市场**——社区规则集以 `sofagent-ruleset-*` npm 包发布、`--ruleset-path` 手动加载（plugin 类规则默认关闭，需显式 opt-in，见 SECURITY）：
@@ -314,7 +323,7 @@ npx -y -p sofagent sofagent audit --ruleset security   # 加载安全规则集
 
 ## 生态与文档索引
 
-**Featured in**（社区收录 · 含收录申请中）：
+**Featured in**（社区收录 · 7 项已收录）：
 
 [![Glama](https://img.shields.io/badge/Glama-indexed-4A90D9)](https://glama.ai/mcp/servers/KongFangXun/sofagent)
 [![awesome-dsh-plugin](https://img.shields.io/badge/awesome--dsh--plugin-listed-brightgreen)](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin)
@@ -323,6 +332,9 @@ npx -y -p sofagent sofagent audit --ruleset security   # 加载安全规则集
 [![awesome-deepseek-harness (0xsline)](https://img.shields.io/badge/awesome--deepseek--harness%20%280xsline%29-listed-brightgreen)](https://github.com/0xsline/awesome-deepseek-harness)
 [![awesome-deepseek-harness (Dominic)](https://img.shields.io/badge/awesome--deepseek--harness%20%28Dominic%29-listed-brightgreen)](https://github.com/Dominic789654/awesome-deepseek-harness)
 [![awesome-mcp-servers](https://img.shields.io/badge/awesome--mcp--servers-listed-brightgreen)](https://github.com/punkpeye/awesome-mcp-servers)
+
+**收录申请中（PR open）**：
+
 [![awesome-harness-engineering](https://img.shields.io/badge/awesome--harness--engineering-PR%20open-orange)](https://github.com/ai-boost/awesome-harness-engineering/pull/227)
 [![awesome-ai-agents (e2b)](https://img.shields.io/badge/awesome--ai--agents%20%28e2b%29-PR%20open-orange)](https://github.com/e2b-dev/awesome-ai-agents/pull/1471)
 
@@ -341,7 +353,7 @@ npx -y -p sofagent sofagent audit --ruleset security   # 加载安全规则集
 | 每个版本做了什么 | [CHANGELOG](./CHANGELOG.md) |
 | 安全声明 · 已知局限 | [SECURITY](./SECURITY.md) · [LIMITATIONS](./docs/LIMITATIONS.md) |
 
-> 🧪 **工程可信度**（当前口径）：6230 测试 / 13 模块包 + 11 插件（7 DSH + 4 OpenClaw）· 28 条审计规则 · fresh-eyes 独立审查（见 [review-system](./docs/guides/review-system.md)）。
+> 🧪 **工程可信度**（当前口径）：6512 测试 / 13 模块包 + 11 插件（7 DSH + 4 OpenClaw）· 28 条审计规则 · fresh-eyes 独立审查（见 [review-system](./docs/guides/review-system.md)）。
 > **包数口径**（消歧）：workspace 27 = 13 模块包 + load-chain + dsh-plugin-kit + umbrella + 7 DSH 插件 + 4 OpenClaw 插件（见 [WIKI §六](./docs/WIKI.md#六当前状态)）；**测试计数口径** = 13 模块包（含 test script 的 workspace 共 25 个，插件与工具包不计）——非同一集合。
 > 测试数二口径：**发版时点值**（各版本 `4805→4903` 增量账）与**当前实测值**（上方行）；权威值以 `tools/check/check-test-count.sh` 实跑为准；性能数据为单机参考值。
 
