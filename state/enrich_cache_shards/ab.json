@@ -2259,5 +2259,53 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "Acelogic/Retrieval-based-Voice-Conversion-MLX": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 137,
+  "lang": {
+   "Python": 99,
+   "Shell": 1,
+   "Swift": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "milvus-io/talon": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-08-21",
+  "rel_days": 62,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "Rust": 90,
+   "Java": 4,
+   "Python": 2,
+   "Shell": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

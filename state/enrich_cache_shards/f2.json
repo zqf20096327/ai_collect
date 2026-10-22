@@ -2386,5 +2386,83 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
- }
+ },
+ "waiaas/WAIaaS": {
+  "rel_ver": "v2.16.1-rc.2",
+  "rel_pub": "2026-07-31",
+  "rel_days": 83,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 97,
+   "Python": 1,
+   "HTML": 1,
+   "JavaScript": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "muhd-umer/pyramidtabnet": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2023-01-24",
+  "rel_days": 1367,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "runloopai/api-client-python": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-10-08",
+  "rel_days": 14,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 17,
+  "lang": {
+   "Python": 98,
+   "Shell": 2,
+   "Dockerfile": 0,
+   "Ruby": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "philippnormann/cs-grep": {}
 }

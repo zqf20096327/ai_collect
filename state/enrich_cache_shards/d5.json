@@ -2187,5 +2187,28 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "Aftab48/Haemologix": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "TypeScript": 91,
+   "HTML": 3,
+   "Python": 3,
+   "CSS": 2,
+   "PLpgSQL": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

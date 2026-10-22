@@ -2349,5 +2349,57 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "ARFCON/dsh-hotplug-hub": {
+  "rel_ver": "v1.0.4",
+  "rel_pub": "2026-08-26",
+  "rel_days": 57,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 71,
+   "C#": 20,
+   "HTML": 7,
+   "PowerShell": 2,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "KaJLabs/Lithic": {
+  "rel_ver": "lithic-v0.2.0-preview.3",
+  "rel_pub": "2026-09-21",
+  "rel_days": 31,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 97,
+   "JavaScript": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

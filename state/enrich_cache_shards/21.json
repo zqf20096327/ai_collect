@@ -2154,5 +2154,59 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "logjuicer/logjuicer": {
+  "rel_ver": "0.17.0",
+  "rel_pub": "2026-10-05",
+  "rel_days": 17,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Rust": 97,
+   "Nix": 2,
+   "Cap'n Proto": 1,
+   "Python": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "hanlulong/econ-paper-review-skill": {
+  "rel_ver": "econ-review--v0.2.2",
+  "rel_pub": "2026-07-20",
+  "rel_days": 94,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 78,
+   "TypeScript": 12,
+   "JavaScript": 7,
+   "CSS": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

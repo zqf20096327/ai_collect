@@ -1885,5 +1885,29 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "ratschlab/aestetik": {
+  "rel_ver": "v0.1",
+  "rel_pub": "2025-09-01",
+  "rel_days": 416,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Jupyter Notebook": 97,
+   "Python": 3
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

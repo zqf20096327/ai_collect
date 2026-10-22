@@ -2321,5 +2321,54 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "paypal/gators": {
+  "rel_ver": "v1.3.2",
+  "rel_pub": "2026-09-22",
+  "rel_days": 30,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "TeX": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "langchain-ai/langchain-pinecone": {
+  "rel_ver": "libs/pinecone/v0.2.13rc1",
+  "rel_pub": "2025-11-02",
+  "rel_days": 354,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Python": 99,
+   "Makefile": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

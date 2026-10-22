@@ -2126,5 +2126,55 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "stefanDeveloper/heiFIP": {
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2023-09-15",
+  "rel_days": 1133,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C++": 99,
+   "CMake": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "MerkyorLynn/lynn-engine": {
+  "rel_ver": "v0.79-pivot-20260520",
+  "rel_pub": "2026-05-20",
+  "rel_days": 155,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 85,
+   "Shell": 11,
+   "Cuda": 3,
+   "C++": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

@@ -1907,5 +1907,55 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "hamza01055/hotpulse": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 74,
+   "HTML": 17,
+   "CSS": 7,
+   "JavaScript": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Someblueman/hydra": {
+  "rel_ver": "v2.8.0",
+  "rel_pub": "2026-09-27",
+  "rel_days": 25,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C": 56,
+   "Shell": 37,
+   "Python": 4,
+   "C++": 2,
+   "Makefile": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

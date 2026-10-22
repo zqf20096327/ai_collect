@@ -2112,5 +2112,86 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "dvcdsys/code-index": {
+  "rel_ver": "server/v0.15.0",
+  "rel_pub": "2026-08-27",
+  "rel_days": 56,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 77,
+   "TypeScript": 12,
+   "Shell": 5,
+   "JavaScript": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "open-PASO/openPASO": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-09-24",
+  "rel_days": 28,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "C++": 2,
+   "TypeScript": 1,
+   "CSS": 0,
+   "CMake": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "qmlcode/qmllib": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-02-21",
+  "rel_days": 243,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 40,
+   "Fortran": 38,
+   "C++": 20,
+   "CMake": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

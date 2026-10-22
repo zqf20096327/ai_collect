@@ -1926,5 +1926,77 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "N-Erickson/AetherLink-SDR-MCP": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 86,
+   "Shell": 8,
+   "PowerShell": 6
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "Mr-DooSun/fastapi-agent-blueprint": {
+  "rel_ver": "v0.11.1",
+  "rel_pub": "2026-08-13",
+  "rel_days": 70,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Python": 98,
+   "Shell": 2,
+   "Makefile": 0,
+   "Dockerfile": 0,
+   "Mako": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "fxstein/ascii-guard": {
+  "rel_ver": "v2.3.0",
+  "rel_pub": "2026-02-12",
+  "rel_days": 252,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 82,
+   "Shell": 18
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

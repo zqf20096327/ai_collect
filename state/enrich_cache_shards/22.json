@@ -2617,5 +2617,51 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "nitrictech/examples": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "TypeScript": 71,
+   "Dockerfile": 8,
+   "Python": 7,
+   "Dart": 5,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "yx-fan/multi-agent-orchestration-framework": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2025-11-09",
+  "rel_days": 347,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

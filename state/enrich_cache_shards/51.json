@@ -2151,5 +2151,53 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "Dicklesworthstone/chat_shared_conversation_to_file": {
+  "rel_ver": "v0.4.6",
+  "rel_pub": "2026-08-25",
+  "rel_days": 58,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "Shell": 7,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "lucidrains/ultra-mem": {
+  "rel_ver": "0.1.2",
+  "rel_pub": "2025-11-04",
+  "rel_days": 352,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

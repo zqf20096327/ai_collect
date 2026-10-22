@@ -2305,5 +2305,32 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "zoompilot/zoompilot": {
+  "rel_ver": "agnos-tici-boot-gz",
+  "rel_pub": "2026-09-07",
+  "rel_days": 45,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 425,
+  "lang": {
+   "Python": 71,
+   "C++": 25,
+   "Cap'n Proto": 2,
+   "C": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

@@ -2543,5 +2543,53 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "initMAX/zabbix-ai-skills": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-03-31",
+  "rel_days": 205,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "ProjectChrysalis/Chrysalis-Engine": {
+  "rel_ver": "staging-latest",
+  "rel_pub": "2026-10-22",
+  "rel_days": 0,
+  "rel_n90": 7,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 95,
+   "JavaScript": 3,
+   "Java": 1,
+   "CSS": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

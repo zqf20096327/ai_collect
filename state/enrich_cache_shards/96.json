@@ -2723,5 +2723,52 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "wcollins/packt-netops-ai-workshop": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 82,
+   "Shell": 18
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
+ },
+ "AkshitIreddy/AI-Desktop-Pet": {
+  "rel_ver": "v2.1.9",
+  "rel_pub": "2026-09-30",
+  "rel_days": 22,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 78,
+   "CSS": 12,
+   "Rust": 7,
+   "JavaScript": 2,
+   "Python": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }

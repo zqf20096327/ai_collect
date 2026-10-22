@@ -1923,5 +1923,32 @@
    "contrib": "20261021",
    "lang": "20261021"
   }
+ },
+ "for-real-labs/brickbuilder-ai": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-09-16",
+  "rel_days": 36,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 49,
+   "Python": 46,
+   "JavaScript": 2,
+   "CSS": 1,
+   "PLpgSQL": 1
+  },
+  "enriched_at": "20261022",
+  "dim_ts": {
+   "release": "20261022",
+   "security": "20261022",
+   "contrib": "20261022",
+   "lang": "20261022"
+  }
  }
 }
